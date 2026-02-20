@@ -31,11 +31,10 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			})
 			.then((response) => {
-				const options =
-					(response.data || []).map((store: any) => ({
-						label: store.store_name,
-						value: store.id,
-					}));
+				const options = (response.data || []).map((store: any) => ({
+					label: store.store_name,
+					value: store.id,
+				}));
 
 				setStore(options);
 				setIsLoading(false);
@@ -45,7 +44,6 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 				setIsLoading(false);
 			});
 	}, []);
-
 
 	const handleSingleAction = (action: string, productId: number) => {
 		if (!productId) {
@@ -71,7 +69,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 			)
 			.then(() => {
 				onUpdated?.();
-				doRefreshTableData({})
+				doRefreshTableData({});
 			})
 			.catch(console.error);
 	};
@@ -116,12 +114,12 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 		},
 		price: {
 			label: __('Price', 'multivendorx'),
-			type: 'currency'
+			type: 'currency',
 		},
 		date_created: {
 			label: __('Date', 'multivendorx'),
 			isSortable: true,
-			type: 'date'
+			type: 'date',
 		},
 		action: {
 			type: 'action',
@@ -130,18 +128,19 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 				{
 					label: __('Approve', 'multivendorx'),
 					icon: 'check',
-					onClick: (row) => handleSingleAction('approve_product', row.id),
+					onClick: (row) =>
+						handleSingleAction('approve_product', row.id),
 				},
 				{
 					label: __('Reject', 'multivendorx'),
 					icon: 'close',
-					onClick: (row) => handleSingleAction('reject_product', row.id),
+					onClick: (row) =>
+						handleSingleAction('reject_product', row.id),
 					className: 'danger',
 				},
 			],
 		},
 	};
-
 
 	const filters = [
 		{
@@ -173,14 +172,16 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 					meta_key: 'multivendorx_store_id',
 					value: query?.filter?.store_id,
 					after: query.filter?.created_at?.startDate
-						? toWcIsoDate(query.filter.created_at.startDate, 'start')
+						? toWcIsoDate(
+								query.filter.created_at.startDate,
+								'start'
+							)
 						: undefined,
 
 					before: query.filter?.created_at?.endDate
 						? toWcIsoDate(query.filter.created_at.endDate, 'end')
 						: undefined,
 					status: 'pending',
-
 				},
 			})
 			.then((response) => {
@@ -192,9 +193,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 				setRowIds(ids);
 
 				setRows(products);
-				setTotalRows(
-					Number(response.headers['x-wp-total']) || 0
-				);
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
 			.catch((error) => {
@@ -222,7 +221,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 					priceDecimals: appLocalizer.price_decimals,
 					decimalSeparator: appLocalizer.decimal_separator,
 					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position
+					currencyPosition: appLocalizer.currency_position,
 				}}
 			/>
 			{/* Reject Product Popup */}
@@ -237,7 +236,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 					width={31.25}
 					header={{
 						icon: 'cart',
-						title: __('Reason', 'multivendorx')
+						title: __('Reason', 'multivendorx'),
 					}}
 					footer={
 						<AdminButtonUI
@@ -254,7 +253,9 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 								},
 								{
 									icon: 'cross',
-									text: isSubmitting ? __('Submitting...', 'multivendorx') : __('Reject', 'multivendorx'),
+									text: isSubmitting
+										? __('Submitting...', 'multivendorx')
+										: __('Reject', 'multivendorx'),
 									disabled: isSubmitting,
 									onClick: submitReject,
 								},
@@ -267,7 +268,9 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 							<TextAreaUI
 								name="reject_reason"
 								value={rejectReason}
-								onChange={(value: string) => setRejectReason(value)}
+								onChange={(value: string) =>
+									setRejectReason(value)
+								}
 								placeholder="Enter reason for rejecting this product..."
 								rows={4}
 							/>

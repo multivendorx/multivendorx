@@ -28,14 +28,15 @@ const StoreStatus: React.FC = () => {
 			content: {
 				id: 'activation_flow',
 				headerTitle: 'Activation flow',
-			}
+			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'pending',
 				headerTitle: 'Pending Approval',
-				headerDescription: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
+				headerDescription:
+					'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
 				headerIcon: 'in-progress',
 			},
 		},
@@ -44,7 +45,8 @@ const StoreStatus: React.FC = () => {
 			content: {
 				id: 'rejected',
 				headerTitle: 'Rejected',
-				headerDescription: 'The store application has been rejected. Sellers can view the rejection reason and resubmit their application after addressing the issues.',
+				headerDescription:
+					'The store application has been rejected. Sellers can view the rejection reason and resubmit their application after addressing the issues.',
 				headerIcon: 'rejected',
 			},
 		},
@@ -53,7 +55,8 @@ const StoreStatus: React.FC = () => {
 			content: {
 				id: 'permanently-rejected',
 				headerTitle: 'Permanently Rejected',
-				headerDescription: 'The store application has been permanently rejected. Sellers can view their dashboard in read-only mode but cannot make changes or reapply without admin intervention.',
+				headerDescription:
+					'The store application has been permanently rejected. Sellers can view their dashboard in read-only mode but cannot make changes or reapply without admin intervention.',
 				headerIcon: 'permanently-rejected',
 			},
 		},
@@ -62,14 +65,15 @@ const StoreStatus: React.FC = () => {
 			content: {
 				id: 'activation_flow',
 				headerTitle: 'Post-activation flow',
-			}
+			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'active',
 				headerTitle: 'Active',
-				headerDescription: 'The store is active and fully operational. Stores have complete access to manage products, process orders, receive payouts, and configure all store settings.',
+				headerDescription:
+					'The store is active and fully operational. Stores have complete access to manage products, process orders, receive payouts, and configure all store settings.',
 				headerIcon: 'verification10',
 			},
 		},
@@ -78,7 +82,8 @@ const StoreStatus: React.FC = () => {
 			content: {
 				id: 'under-review',
 				headerTitle: 'Under Review',
-				headerDescription: 'The store is under review due to compliance concerns. Selling is paused, payouts are held, and new product uploads are restricted until the review is complete.',
+				headerDescription:
+					'The store is under review due to compliance concerns. Selling is paused, payouts are held, and new product uploads are restricted until the review is complete.',
 				headerIcon: 'under-review',
 			},
 		},
@@ -87,7 +92,8 @@ const StoreStatus: React.FC = () => {
 			content: {
 				id: 'suspended',
 				headerTitle: 'Suspended',
-				headerDescription: 'The store has been suspended due to policy violations. Products are hidden, payouts are frozen, and selling is disabled. Sellers can appeal through support.',
+				headerDescription:
+					'The store has been suspended due to policy violations. Products are hidden, payouts are frozen, and selling is disabled. Sellers can appeal through support.',
 				headerIcon: 'suspended',
 			},
 		},
@@ -96,12 +102,12 @@ const StoreStatus: React.FC = () => {
 			content: {
 				id: 'deactivated',
 				headerTitle: 'Permanently Deactivated',
-				headerDescription: 'The store has been permanently deactivated. Stores have read-only access to historical data, but the storefront and its product is removed from public view and no changes can be made.',
+				headerDescription:
+					'The store has been permanently deactivated. Stores have read-only access to historical data, but the storefront and its product is removed from public view and no changes can be made.',
 				headerIcon: 'rejecte',
 			},
 		},
 	];
-
 
 	const GetForm = (currentTab: string | null): JSX.Element | null => {
 		const { setting, settingName, setSetting, updateSetting } =
@@ -157,7 +163,7 @@ const StoreStatus: React.FC = () => {
 				settingName="Settings"
 				Link={Link}
 				menuIcon={true}
-				variant='settings'
+				variant="settings"
 			/>
 		</SettingProvider>
 	);

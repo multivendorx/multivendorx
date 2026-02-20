@@ -195,7 +195,7 @@ export default {
 			settingsLink: `${appLocalizer.plugin_url}settings&subtab=general`,
 			proModule: false,
 			category: 'store_management',
-			miniModule: true
+			miniModule: true,
 		},
 		{
 			id: 'import-export',
@@ -210,8 +210,7 @@ export default {
 			id: 'store-policy',
 			name: __('Store Policy', 'multivendorx'),
 			desc: 'Each store publishes its own return, refund, and shipping policies.',
-			docLink:
-				'https://multivendorx.com/docs/knowledgebase/store-policy',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/store-policy',
 			settingsLink: `${appLocalizer.plugin_url}settings&subtab=policy`,
 			proModule: false,
 			category: 'store_management',
@@ -220,8 +219,7 @@ export default {
 			id: 'follow-store',
 			name: __('Follow Store', 'multivendorx'),
 			desc: 'Customers follow stores to receive updates, offers, and product alerts.',
-			docLink:
-				'https://multivendorx.com/docs/knowledgebase/follow-store',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/follow-store',
 			proModule: false,
 			category: ['store_management', 'customer_experience'],
 		},
@@ -229,8 +227,7 @@ export default {
 			id: 'store-review',
 			name: __('Store Review', 'multivendorx'),
 			desc: 'Customers leave ratings and written reviews on store pages.',
-			docLink:
-				'https://multivendorx.com/docs/knowledgebase/store-review',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/store-review',
 			settingsLink: `${appLocalizer.plugin_url}settings&subtab=store-reviews`,
 			proModule: false,
 			category: ['store_management', 'customer_experience'],
@@ -243,7 +240,7 @@ export default {
 				'https://multivendorx.com/docs/knowledgebase/business-hours/',
 			proModule: true,
 			category: 'store_management',
-			miniModule: true
+			miniModule: true,
 		},
 		{
 			id: 'vacation',
@@ -262,7 +259,7 @@ export default {
 			settingsLink: `${appLocalizer.plugin_url}settings&subtab=user-permissions`,
 			proModule: true,
 			category: 'store_management',
-			miniModule: true
+			miniModule: true,
 		},
 		{
 			id: 'privacy',
@@ -288,7 +285,7 @@ export default {
 			//settingsLink: admin_url('admin.php?page=wc-settings&tab=checkout&section=mvx_paypal_marketplace'),
 			proModule: true,
 			category: 'payment_management',
-			miniModule: true
+			miniModule: true,
 		},
 		{
 			id: 'stripe-marketplace',
@@ -299,7 +296,7 @@ export default {
 			//settingsLink: admin_url('admin.php?page=mvx#&submenu=payment&name=payment-stripe-connect'),
 			proModule: true,
 			category: 'payment_management',
-			miniModule: true
+			miniModule: true,
 		},
 		{
 			id: 'mangopay',
@@ -383,7 +380,7 @@ export default {
 			settingsLink: `${appLocalizer.plugin_url}settings&subtab=invoices`,
 			proModule: true,
 			category: 'customer_experience',
-			miniModule: true
+			miniModule: true,
 		},
 		{
 			id: 'live-chat',
@@ -485,7 +482,7 @@ export default {
 			proModule: true,
 			category: 'marketplace_boosters',
 		},
-		
+
 		{
 			id: 'facilitator',
 			name: __('Facilitator', 'multivendorx'),
@@ -494,7 +491,7 @@ export default {
 			settingsLink: `${appLocalizer.plugin_url}settings&subtab=facilitator`,
 			proModule: true,
 			category: 'marketplace_boosters',
-			miniModule: true
+			miniModule: true,
 		},
 		{
 			id: 'marketplace-fee',
@@ -513,7 +510,7 @@ export default {
 			settingsLink: `${appLocalizer.plugin_url}settings&subtab=franchises`,
 			proModule: true,
 			category: ['store_management', 'marketplace_boosters'],
-			miniModule: true
+			miniModule: true,
 		},
 
 		{
@@ -544,7 +541,7 @@ export default {
 			settingsLink: `${appLocalizer.plugin_url}settings&subtab=wholesale`,
 			proModule: true,
 			category: ['analytics_tools', 'store_management'],
-			miniModule: true
+			miniModule: true,
 		},
 		{
 			id: 'store-inventory',
@@ -555,7 +552,7 @@ export default {
 			settingsLink: `${appLocalizer.plugin_url}settings&subtab=inventory`,
 			proModule: true,
 			category: 'marketplace_boosters',
-			miniModule: true
+			miniModule: true,
 		},
 		{
 			id: 'min-max',
@@ -566,7 +563,7 @@ export default {
 			settingsLink: `${appLocalizer.plugin_url}settings&subtab=min-max`,
 			proModule: false,
 			category: 'marketplace_boosters',
-			miniModule: true
+			miniModule: true,
 		},
 		{ type: 'separator', id: 'notification', label: 'Notification' },
 		{
@@ -577,7 +574,7 @@ export default {
 				'https://multivendorx.com/docs/knowledgebase/announcement/',
 			proModule: false,
 			category: ['notification', 'marketplace_boosters'],
-			reloadOnChange: true
+			reloadOnChange: true,
 		},
 		{
 			id: 'knowledgebase',
@@ -587,7 +584,7 @@ export default {
 				'https://multivendorx.com/docs/knowledgebase/knowledgebase/',
 			proModule: false,
 			category: 'notification',
-			reloadOnChange: true
+			reloadOnChange: true,
 		},
 		{ type: 'separator', id: 'integration', label: 'Integration' },
 		{
@@ -699,8 +696,7 @@ export default {
 			id: 'shipstation-module',
 			name: __('Shipstation', 'multivendorx'),
 			desc: 'Integration with ShipStation for advanced shipping management and label printing.',
-			docLink:
-				'https://multivendorx.com/docs/knowledgebase/shipstation/',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/shipstation/',
 			proModule: true,
 			category: ['integration', 'Shipping management'],
 		},

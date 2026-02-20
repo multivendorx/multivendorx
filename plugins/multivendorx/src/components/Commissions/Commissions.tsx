@@ -12,7 +12,7 @@ import {
 	ItemList,
 	TableRow,
 	QueryProps,
-	CategoryCount
+	CategoryCount,
 } from 'zyra';
 import ViewCommission from './ViewCommission';
 import { downloadCSV, formatLocalDate } from '../../services/commonFunction';
@@ -26,9 +26,13 @@ const Commission: React.FC = () => {
 		CategoryCount[] | null
 	>(null);
 	const [store, setStore] = useState<any[] | null>(null);
-	const [commissionLookup, setCommissionLookup] = useState<Record<number, WCTax>>({});
+	const [commissionLookup, setCommissionLookup] = useState<
+		Record<number, WCTax>
+	>({});
 	const [viewCommission, setViewCommission] = useState(false);
-	const [selectedCommissionId, setSelectedCommissionId] = useState<number | string | null>(null);
+	const [selectedCommissionId, setSelectedCommissionId] = useState<
+		number | string | null
+	>(null);
 	const { modules } = useModules();
 
 	const handleSingleAction = (action: string, row) => {
@@ -42,7 +46,7 @@ const Commission: React.FC = () => {
 			data: { action, orderId: row.orderId },
 		})
 			.then(() => {
-				doRefreshTableData({})
+				doRefreshTableData({});
 			})
 			.catch(console.error);
 	};
@@ -53,11 +57,10 @@ const Commission: React.FC = () => {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			})
 			.then((response) => {
-				const options =
-					(response.data || []).map((store: any) => ({
-						label: store.store_name,
-						value: store.id,
-					}));
+				const options = (response.data || []).map((store: any) => ({
+					label: store.store_name,
+					value: store.id,
+				}));
 
 				setStore(options);
 				setIsLoading(false);
@@ -66,7 +69,6 @@ const Commission: React.FC = () => {
 				setStore([]);
 				setIsLoading(false);
 			});
-
 	}, []);
 
 	const headers = {
@@ -90,16 +92,24 @@ const Commission: React.FC = () => {
 					className="price-list"
 					items={Object.entries(row)
 						.filter(([key]) =>
-							['store_earning', 'shipping_amount', 'tax_amount', 'gateway_fee', 'marketplace_commission'].includes(key)
+							[
+								'store_earning',
+								'shipping_amount',
+								'tax_amount',
+								'gateway_fee',
+								'marketplace_commission',
+							].includes(key)
 						)
 						.map(([key, val]) => ({
 							title: key
 								.split('_')
-								.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+								.map(
+									(w) =>
+										w.charAt(0).toUpperCase() + w.slice(1)
+								)
 								.join(' '),
 							value: val,
-						}))
-					}
+						}))}
 				/>
 			),
 			csvDisplay: false,
@@ -173,27 +183,38 @@ const Commission: React.FC = () => {
 					{
 						value: 'paid',
 						label: 'Paid',
-						count: Number(response.headers['x-wp-status-paid']) || 0,
+						count:
+							Number(response.headers['x-wp-status-paid']) || 0,
 					},
 					{
 						value: 'unpaid',
 						label: 'Unpaid',
-						count: Number(response.headers['x-wp-status-unpaid']) || 0,
+						count:
+							Number(response.headers['x-wp-status-unpaid']) || 0,
 					},
 					{
 						value: 'refunded',
 						label: 'Refunded',
-						count: Number(response.headers['x-wp-status-refunded']) || 0,
+						count:
+							Number(response.headers['x-wp-status-refunded']) ||
+							0,
 					},
 					{
 						value: 'partially_refunded',
 						label: 'Partially Refunded',
-						count: Number(response.headers['x-wp-status-partially-refunded']) || 0,
+						count:
+							Number(
+								response.headers[
+									'x-wp-status-partially-refunded'
+								]
+							) || 0,
 					},
 					{
 						value: 'cancelled',
 						label: 'Cancelled',
-						count: Number(response.headers['x-wp-status-cancelled']) || 0,
+						count:
+							Number(response.headers['x-wp-status-cancelled']) ||
+							0,
 					},
 				]);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
@@ -220,17 +241,17 @@ const Commission: React.FC = () => {
 		},
 	];
 
-
-
 	const downloadCommissionsCSV = (selectedIds: number[]) => {
-		if (!selectedIds) return;
+		if (!selectedIds) {
+			return;
+		}
 
 		axios
 			.get(getApiLink(appLocalizer, 'commission'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: { ids: selectedIds },
 			})
-			.then(response => {
+			.then((response) => {
 				const rows = response.data || [];
 				downloadCSV(
 					headers,
@@ -238,7 +259,7 @@ const Commission: React.FC = () => {
 					`selected-commissions-${formatLocalDate(new Date())}.csv`
 				);
 			})
-			.catch(error => {
+			.catch((error) => {
 				console.error('CSV download failed:', error);
 			});
 	};
@@ -293,7 +314,7 @@ const Commission: React.FC = () => {
 		{
 			label: __('Download CSV', 'multivendorx'),
 			icon: 'download',
-			onClickWithQuery: downloadCommissionsCSVByQuery
+			onClickWithQuery: downloadCommissionsCSVByQuery,
 		},
 	];
 
@@ -328,7 +349,7 @@ const Commission: React.FC = () => {
 							priceDecimals: appLocalizer.price_decimals,
 							decimalSeparator: appLocalizer.decimal_separator,
 							thousandSeparator: appLocalizer.thousand_separator,
-							currencyPosition: appLocalizer.currency_position
+							currencyPosition: appLocalizer.currency_position,
 						}}
 					/>
 				</Column>

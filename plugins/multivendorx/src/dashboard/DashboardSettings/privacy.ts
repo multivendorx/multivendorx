@@ -16,7 +16,7 @@ export default {
 			key: 'store_policy',
 			label: __('Store policy', 'multivendorx'),
 			usePlainText: false,
-            moduleEnabled: 'privacy',
+			moduleEnabled: 'privacy',
 		},
 
 		// Shipping Policy
@@ -25,7 +25,7 @@ export default {
 			key: 'shipping_policy',
 			label: __('Shipping policy', 'multivendorx'),
 			usePlainText: false,
-            moduleEnabled: 'privacy',
+			moduleEnabled: 'privacy',
 		},
 
 		// Refund Policy
@@ -34,22 +34,25 @@ export default {
 			key: 'refund_policy',
 			label: __('Refund policy', 'multivendorx'),
 			usePlainText: false,
-            moduleEnabled: 'privacy',
+			moduleEnabled: 'privacy',
 		},
 
 		// Cancellation Policy
 		{
 			type: 'textarea',
 			key: 'cancellation_policy',
-			label: __('Cancellation / return / exchange policy', 'multivendorx'),
+			label: __(
+				'Cancellation / return / exchange policy',
+				'multivendorx'
+			),
 			usePlainText: false,
-            moduleEnabled: 'privacy',
+			moduleEnabled: 'privacy',
 		},
 
 		// Section UI
 		{
 			type: 'section',
-			hint: 'Deactivation'
+			hint: 'Deactivation',
 		},
 
 		// Enable Deactivation Toggle
@@ -62,7 +65,7 @@ export default {
 				{
 					key: 'enable_deactivation',
 					value: 'enable_deactivation',
-				}
+				},
 			],
 		},
 

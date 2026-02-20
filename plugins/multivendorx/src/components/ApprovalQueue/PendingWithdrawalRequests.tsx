@@ -17,7 +17,9 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 	const [rowIds, setRowIds] = useState<number[]>([]);
 
 	const handleSingleAction = (action: string, row: any) => {
-		if (!row?.id) return;
+		if (!row?.id) {
+			return;
+		}
 
 		axios({
 			method: 'PUT',
@@ -43,11 +45,11 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 		},
 		status: {
 			label: __('Status', 'multivendorx'),
-			type: 'status'
+			type: 'status',
 		},
 		withdraw_amount: {
 			label: __('Withdraw Amount', 'multivendorx'),
-			type: 'currency'
+			type: 'currency',
 		},
 		action: {
 			type: 'action',
@@ -64,10 +66,9 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 					className: 'danger',
 					onClick: (row: any) => handleSingleAction('reject', row),
 				},
-			]
+			],
 		},
 	};
-
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -81,7 +82,9 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 				},
 			})
 			.then((response) => {
-				const stores = Array.isArray(response.data) ? response.data : [];
+				const stores = Array.isArray(response.data)
+					? response.data
+					: [];
 
 				const ids = stores.map((s) => s.id);
 				setRowIds(ids);
@@ -113,7 +116,7 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 					priceDecimals: appLocalizer.price_decimals,
 					decimalSeparator: appLocalizer.decimal_separator,
 					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position
+					currencyPosition: appLocalizer.currency_position,
 				}}
 			/>
 		</div>

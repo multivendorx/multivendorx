@@ -17,12 +17,11 @@ import {
 	PopupUI,
 	TableRow,
 	QueryProps,
-	CategoryCount
+	CategoryCount,
 } from 'zyra';
 import Popup from '../Popup/Popup';
 import '../Announcements/Announcements.scss';
 import { formatLocalDate, truncateText } from '@/services/commonFunction';
-
 
 type KBForm = {
 	title: string;
@@ -56,9 +55,10 @@ export const KnowledgeBase: React.FC = () => {
 	} | null>(null);
 	const [confirmOpen, setConfirmOpen] = useState(false);
 
-
 	const handleConfirmDelete = () => {
-		if (!selectedKb) return;
+		if (!selectedKb) {
+			return;
+		}
 
 		const closeConfirm = () => {
 			setConfirmOpen(false);
@@ -113,7 +113,6 @@ export const KnowledgeBase: React.FC = () => {
 		}
 	};
 
-
 	const handleBulkAction = (action: string, selectedIds: any[] = []) => {
 		if (!selectedIds.length) {
 			return;
@@ -133,19 +132,17 @@ export const KnowledgeBase: React.FC = () => {
 				doRefreshTableData({});
 			})
 			.catch(() => {
-				console.log(__('Failed to perform bulk action', 'multivendorx'));
+				console.log(
+					__('Failed to perform bulk action', 'multivendorx')
+				);
 			});
 	};
 
-
 	const handleEdit = (id: number) => {
 		axios
-			.get(
-				getApiLink(appLocalizer, `knowledge/${id}`),
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				}
-			)
+			.get(getApiLink(appLocalizer, `knowledge/${id}`), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
 			.then((response) => {
 				setFormData({
 					title: response.data.title || '',
@@ -160,11 +157,14 @@ export const KnowledgeBase: React.FC = () => {
 			});
 	};
 
-
 	// Submit form
 	const handleSubmit = (status: 'publish' | 'pending' | 'draft') => {
-		if (submitting) return;
-		if (!validateForm()) return;
+		if (submitting) {
+			return;
+		}
+		if (!validateForm()) {
+			return;
+		}
 
 		setSubmitting(true);
 
@@ -196,18 +196,18 @@ export const KnowledgeBase: React.FC = () => {
 
 	const headers = {
 		title: {
-			label: __('Name your article', 'multivendorx')
+			label: __('Name your article', 'multivendorx'),
 		},
 		content: {
-			label: __('Write your explanation or tutorial', 'multivendorx')
+			label: __('Write your explanation or tutorial', 'multivendorx'),
 		},
 		status_label: {
 			label: __('Status', 'multivendorx'),
-			type: 'status'
+			type: 'status',
 		},
 		date_created: {
 			label: __('Date', 'multivendorx'),
-			type: 'date'
+			type: 'date',
 		},
 		action: {
 			type: 'action',
@@ -262,10 +262,31 @@ export const KnowledgeBase: React.FC = () => {
 				setRows(items);
 
 				setCategoryCounts([
-					{ value: 'all', label: 'All', count: Number(response.headers['x-wp-total']) || 0 },
-					{ value: 'publish', label: 'Published', count: Number(response.headers['x-wp-status-publish']) || 0 },
-					{ value: 'pending', label: 'Pending', count: Number(response.headers['x-wp-status-pending']) || 0 },
-					{ value: 'draft', label: 'Draft', count: Number(response.headers['x-wp-status-draft']) || 0 },
+					{
+						value: 'all',
+						label: 'All',
+						count: Number(response.headers['x-wp-total']) || 0,
+					},
+					{
+						value: 'publish',
+						label: 'Published',
+						count:
+							Number(response.headers['x-wp-status-publish']) ||
+							0,
+					},
+					{
+						value: 'pending',
+						label: 'Pending',
+						count:
+							Number(response.headers['x-wp-status-pending']) ||
+							0,
+					},
+					{
+						value: 'draft',
+						label: 'Draft',
+						count:
+							Number(response.headers['x-wp-status-draft']) || 0,
+					},
 				]);
 
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
@@ -284,7 +305,7 @@ export const KnowledgeBase: React.FC = () => {
 			key: 'created_at',
 			label: 'Created Date',
 			type: 'date',
-		}
+		},
 	];
 
 	const bulkActions = [
@@ -334,8 +355,8 @@ export const KnowledgeBase: React.FC = () => {
 						onClick: () => {
 							setValidationErrors({});
 							setAddEntry(true);
-						}
-					}
+						},
+					},
 				]}
 			/>
 
@@ -370,7 +391,10 @@ export const KnowledgeBase: React.FC = () => {
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									onClick: () => handleSubmit(formData.status || 'draft'),
+									onClick: () =>
+										handleSubmit(
+											formData.status || 'draft'
+										),
 								},
 							]}
 						/>
@@ -378,30 +402,49 @@ export const KnowledgeBase: React.FC = () => {
 				>
 					<>
 						<FormGroupWrapper>
-							<FormGroup label={__('Title', 'multivendorx')} htmlFor="Title">
+							<FormGroup
+								label={__('Title', 'multivendorx')}
+								htmlFor="Title"
+							>
 								<BasicInputUI
 									type="text"
 									name="title"
 									value={formData.title}
-									onChange={(val) => handleChange('title', val as string)}
-									msg={{ type: 'error', massage: validationErrors.title }}
+									onChange={(val) =>
+										handleChange('title', val as string)
+									}
+									msg={{
+										type: 'error',
+										massage: validationErrors.title,
+									}}
 								/>
 							</FormGroup>
-							<FormGroup label={__('Content', 'multivendorx')} htmlFor="Content">
+							<FormGroup
+								label={__('Content', 'multivendorx')}
+								htmlFor="Content"
+							>
 								<TextAreaUI
 									name="content"
 									value={formData.content}
-									onChange={(val) => handleChange('content', val as string)}
+									onChange={(val) =>
+										handleChange('content', val as string)
+									}
 									usePlainText={false}
 									tinymceApiKey={
 										appLocalizer.settings_databases_value[
-										'overview'
+											'overview'
 										]['tinymce_api_section'] ?? ''
 									}
-									msg={{ type: 'error', massage: validationErrors.content }}
+									msg={{
+										type: 'error',
+										massage: validationErrors.content,
+									}}
 								/>
 							</FormGroup>
-							<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
+							<FormGroup
+								label={__('Status', 'multivendorx')}
+								htmlFor="status"
+							>
 								<ToggleSettingUI
 									value={formData.status}
 									options={[
@@ -449,8 +492,11 @@ export const KnowledgeBase: React.FC = () => {
 						search={{}}
 						filters={filters}
 						bulkActions={bulkActions}
-						onBulkActionApply={(action: string, selectedIds: []) => {
-							handleBulkAction(action, selectedIds)
+						onBulkActionApply={(
+							action: string,
+							selectedIds: []
+						) => {
+							handleBulkAction(action, selectedIds);
 						}}
 						format={appLocalizer.date_format}
 					/>

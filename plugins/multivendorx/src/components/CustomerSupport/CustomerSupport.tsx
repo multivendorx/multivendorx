@@ -1,4 +1,10 @@
-import {useModules, Container, Column, ComponentStatusView, SettingsNavigator } from 'zyra';
+import {
+	useModules,
+	Container,
+	Column,
+	ComponentStatusView,
+	SettingsNavigator,
+} from 'zyra';
 import '../AdminDashboard/AdminDashboard.scss';
 import Qna from './QnATable';
 import StoreReviews from './StoreReviews';
@@ -60,7 +66,7 @@ const CustomerSupport = () => {
 	};
 	const link =
 		typeof appLocalizer?.module_page_url === 'string' &&
-			appLocalizer.module_page_url.trim().length > 0
+		appLocalizer.module_page_url.trim().length > 0
 			? appLocalizer.module_page_url
 			: undefined;
 
@@ -88,8 +94,14 @@ const CustomerSupport = () => {
 				<Container general>
 					<Column>
 						<ComponentStatusView
-							title={__('Looks like customer support isn’t set up yet!', 'multivendorx')}
-							desc={__('Turn on a support module to start assisting your customers.', 'multivendorx')}
+							title={__(
+								'Looks like customer support isn’t set up yet!',
+								'multivendorx'
+							)}
+							desc={__(
+								'Turn on a support module to start assisting your customers.',
+								'multivendorx'
+							)}
 							buttonText={__('Enable Now', 'multivendorx')}
 							buttonLink={`${appLocalizer.plugin_url}modules`}
 						/>

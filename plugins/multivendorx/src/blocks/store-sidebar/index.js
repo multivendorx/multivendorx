@@ -11,5 +11,5 @@ registerBlockType('multivendorx/store-sidebar', {
 	},
 	save() {
 		return null;
-	}
+	},
 });

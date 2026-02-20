@@ -1,24 +1,22 @@
 /*global jQuery followStoreFrontend*/
 jQuery(document).ready(function ($) {
-
 	// Initialize buttons
 	$('.follow-btn').each(function () {
 		var btn = $(this);
 		var store_id = btn.data('store-id');
-		var user_id  = btn.data('user-id');
+		var user_id = btn.data('user-id');
 
 		$.ajax({
 			url: followStoreFrontend.restUrl + 'follow-store/' + store_id,
 			method: 'GET',
 			headers: {
-				'X-WP-Nonce': followStoreFrontend.nonce
+				'X-WP-Nonce': followStoreFrontend.nonce,
 			},
 			data: {
 				storeId: store_id,
-				userId: user_id
+				userId: user_id,
 			},
 			success: function (res) {
-
 				var isFollowing = res.follow;
 				var count = parseInt(res.follower_count, 10) || 0;
 
@@ -32,7 +30,7 @@ jQuery(document).ready(function ($) {
 				 */
 				var label = count === 1 ? 'Follower' : 'Followers';
 				$('#followers-count-' + store_id).text(count + ' ' + label);
-			}
+			},
 		});
 	});
 
@@ -40,7 +38,7 @@ jQuery(document).ready(function ($) {
 	$(document).on('click', '.follow-btn', function () {
 		var btn = $(this);
 		var store_id = btn.data('store-id');
-		var user_id  = btn.data('user-id');
+		var user_id = btn.data('user-id');
 
 		if (!user_id) {
 			$('#multivendorx-login-modal').data('store-id', store_id).fadeIn();
@@ -53,14 +51,13 @@ jQuery(document).ready(function ($) {
 			url: followStoreFrontend.restUrl + 'follow-store/' + store_id,
 			method: 'POST',
 			headers: {
-				'X-WP-Nonce': followStoreFrontend.nonce
+				'X-WP-Nonce': followStoreFrontend.nonce,
 			},
 			data: {
 				storeId: store_id,
-				userId: user_id
+				userId: user_id,
 			},
 			success: function (res) {
-
 				var isFollowing = res.follow;
 				var count = parseInt(res.follower_count, 10) || 0;
 
@@ -79,7 +76,7 @@ jQuery(document).ready(function ($) {
 			},
 			error: function () {
 				btn.prop('disabled', false);
-			}
+			},
 		});
 	});
 

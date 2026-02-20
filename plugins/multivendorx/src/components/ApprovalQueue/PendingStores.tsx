@@ -16,7 +16,6 @@ import {
 import { formatLocalDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
-
 const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 	const [rows, setRows] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +25,6 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 	const [rejectReason, setRejectReason] = useState('');
 	const [rejectStoreId, setRejectStoreId] = useState<number | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false); // prevent multiple submissions
-
 
 	const handleSingleAction = (action: string, storeId: number) => {
 		if (!storeId) {
@@ -102,7 +100,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 		applied_on: {
 			label: __('Applied On', 'multivendorx'),
 			sortable: true,
-			type: 'date'
+			type: 'date',
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
@@ -116,9 +114,10 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 				{
 					label: __('Reject', 'multivendorx'),
 					icon: 'close',
-					onClick: (row: any) => handleSingleAction('declined', row.id),
+					onClick: (row: any) =>
+						handleSingleAction('declined', row.id),
 				},
-			]
+			],
 		},
 	};
 
@@ -142,7 +141,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 			})
 			.then((response) => {
 				const items = response.data || [];
-				console.log('api', items)
+				console.log('api', items);
 				// Extract IDs for selection
 				const ids = items
 					.filter((item: any) => item?.id != null)
@@ -218,7 +217,9 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 							<TextAreaUI
 								name="reject_reason"
 								value={rejectReason}
-								onChange={(value: string) => setRejectReason(value)}
+								onChange={(value: string) =>
+									setRejectReason(value)
+								}
 								placeholder={__(
 									'Enter reason for rejecting this store...',
 									'multivendorx'

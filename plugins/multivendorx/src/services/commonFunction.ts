@@ -28,7 +28,10 @@ export function formatCurrency(amount: number | string): string {
 
 	// Format number with decimals and separators
 	const parts = absNum.toFixed(price_decimals).split('.');
-	const intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousand_separator);
+	const intPart = parts[0].replace(
+		/\B(?=(\d{3})+(?!\d))/g,
+		thousand_separator
+	);
 	const decimalPart = parts[1] ? decimal_separator + parts[1] : '';
 	const formattedNumber = intPart + decimalPart;
 
@@ -60,9 +63,15 @@ export function formatTimeAgo(dateString: string) {
 
 	const diff = Math.floor((Date.now() - date.getTime()) / 1000);
 
-	if (diff < 60) return 'Just now';
-	if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
-	if (diff < 86400) return `${Math.floor(diff / 3600)} hour ago`;
+	if (diff < 60) {
+		return 'Just now';
+	}
+	if (diff < 3600) {
+		return `${Math.floor(diff / 60)} min ago`;
+	}
+	if (diff < 86400) {
+		return `${Math.floor(diff / 3600)} hour ago`;
+	}
 	return `${Math.floor(diff / 86400)} day ago`;
 }
 
@@ -84,10 +93,14 @@ export function printContent(divId: string) {
 }
 
 export const formatDate = (date?: string): string => {
-	if (!date) return '-';
+	if (!date) {
+		return '-';
+	}
 
 	const d = new Date(date);
-	if (isNaN(d.getTime())) return '-';
+	if (isNaN(d.getTime())) {
+		return '-';
+	}
 
 	return new Intl.DateTimeFormat('en-US', {
 		month: 'short',
@@ -96,10 +109,7 @@ export const formatDate = (date?: string): string => {
 	}).format(d);
 };
 
-export const toWcIsoDate = (
-	date: Date,
-	type: 'start' | 'end'
-): string => {
+export const toWcIsoDate = (date: Date, type: 'start' | 'end'): string => {
 	const d = new Date(date);
 
 	if (type === 'start') {
@@ -112,36 +122,38 @@ export const toWcIsoDate = (
 };
 
 export const downloadCSV = (
-  headers: Record<string, any>,
-  rows: Record<string, any>[],
-  filename: string = 'export.csv'
+	headers: Record<string, any>,
+	rows: Record<string, any>[],
+	filename: string = 'export.csv'
 ) => {
-  if (!rows || rows.length === 0) return;
+	if (!rows || rows.length === 0) {
+		return;
+	}
 
-  // Only include headers with csv: true
-  const csvColumns = Object.entries(headers)
-    .filter(([_, h]) => h.csvDisplay !== false)
-    .map(([key, h]) => ({ key, label: h.label }));
+	// Only include headers with csv: true
+	const csvColumns = Object.entries(headers)
+		.filter(([_, h]) => h.csvDisplay !== false)
+		.map(([key, h]) => ({ key, label: h.label }));
 
-  // Header row
-  const csvRows = [csvColumns.map(c => `"${c.label}"`).join(',')];
+	// Header row
+	const csvRows = [csvColumns.map((c) => `"${c.label}"`).join(',')];
 
-  // Data rows
-  rows.forEach(row => {
-    const rowData = csvColumns
-      .map(col => `"${row[col.key] != null ? row[col.key] : ''}"`)
-      .join(',');
-    csvRows.push(rowData);
-  });
+	// Data rows
+	rows.forEach((row) => {
+		const rowData = csvColumns
+			.map((col) => `"${row[col.key] != null ? row[col.key] : ''}"`)
+			.join(',');
+		csvRows.push(rowData);
+	});
 
-  // Trigger download
-  const csvContent = csvRows.join('\n');
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.setAttribute('download', filename);
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
+	// Trigger download
+	const csvContent = csvRows.join('\n');
+	const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+	const url = URL.createObjectURL(blob);
+	const link = document.createElement('a');
+	link.href = url;
+	link.setAttribute('download', filename);
+	document.body.appendChild(link);
+	link.click();
+	link.remove();
 };

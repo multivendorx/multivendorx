@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { SuccessNotice, getApiLink, Container, Column, Card, FormGroupWrapper, FormGroup, TextAreaUI, NavigatorHeader } from 'zyra';
+import {
+	SuccessNotice,
+	getApiLink,
+	Container,
+	Column,
+	Card,
+	FormGroupWrapper,
+	FormGroup,
+	TextAreaUI,
+	NavigatorHeader,
+} from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const ShopPolicies = () => {
@@ -76,14 +86,20 @@ const ShopPolicies = () => {
 
 			<NavigatorHeader
 				headerTitle={__('Policy', 'multivendorx')}
-				headerDescription={__('Manage your store information and preferences', 'multivendorx')}
+				headerDescription={__(
+					'Manage your store information and preferences',
+					'multivendorx'
+				)}
 			/>
 
 			<Container>
 				<Column>
 					<Card title={__('Shipping Policy', 'multivendorx')}>
 						<FormGroupWrapper>
-							<FormGroup label={__('Title', 'multivendorx')} htmlFor="title">
+							<FormGroup
+								label={__('Title', 'multivendorx')}
+								htmlFor="title"
+							>
 								<TextAreaUI
 									name="shipping_policy"
 									value={formData.shipping_policy}
@@ -103,7 +119,12 @@ const ShopPolicies = () => {
 						</FormGroupWrapper>
 					</Card>
 
-					<Card title={__('Cancellation / Return / Exchange Policy', 'multivendorx')}>
+					<Card
+						title={__(
+							'Cancellation / Return / Exchange Policy',
+							'multivendorx'
+						)}
+					>
 						<FormGroupWrapper>
 							<TextAreaUI
 								name="cancellation_policy"

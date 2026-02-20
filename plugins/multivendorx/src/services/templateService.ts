@@ -5,7 +5,11 @@ const contexts: Record<string, __WebpackModuleApi.RequireContext> = {
 	settings: require.context('../components/Settings', true, /\.ts$/),
 	tools: require.context('../components/StatusAndTools', true, /\.ts$/),
 	storeStatus: require.context('../components/StoreStatus', true, /\.ts$/),
-	dashboardSettings: require.context('../dashboard/DashboardSettings', true, /\.ts$/)
+	dashboardSettings: require.context(
+		'../dashboard/DashboardSettings',
+		true,
+		/\.ts$/
+	),
 };
 
 type SettingNode = {

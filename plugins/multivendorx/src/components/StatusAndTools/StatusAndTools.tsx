@@ -38,7 +38,10 @@ const faqs = [
 		open: true,
 	},
 	{
-		question: __('Why is the out-of-stock form not appearing?', 'multivendorx'),
+		question: __(
+			'Why is the out-of-stock form not appearing?',
+			'multivendorx'
+		),
 		answer: __(
 			'There might be a theme conflict issue. To troubleshoot, switch to a default theme like Twenty Twenty-Four and check if the form appears.',
 			'multivendorx'
@@ -46,7 +49,10 @@ const faqs = [
 		open: false,
 	},
 	{
-		question: __('Does Notifima support product variations?', 'multivendorx'),
+		question: __(
+			'Does Notifima support product variations?',
+			'multivendorx'
+		),
 		answer: __(
 			'Yes, product variations are fully supported and editable from the Inventory Manager. Notifima handles variable products with ease and uses an expandable feature to make managing variations clear and straightforward.',
 			'multivendorx'

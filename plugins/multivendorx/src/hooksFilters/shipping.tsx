@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { addFilter, applyFilters } from '@wordpress/hooks';
-import { BasicInputUI, Card, FormGroup, FormGroupWrapper, SelectInputUI, ToggleSettingUI } from 'zyra';
+import {
+	BasicInputUI,
+	Card,
+	FormGroup,
+	FormGroupWrapper,
+	SelectInputUI,
+	ToggleSettingUI,
+} from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const ShippingCard = ({ product, setProduct, handleChange }) => {
@@ -23,9 +30,9 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 			});
 	}, []);
 
-
 	return (
-		<Card contentHeight
+		<Card
+			contentHeight
 			title={__('Product delivery', 'multivendorx')}
 			// iconName="keyboard-arrow-down arrow-icon icon"
 			// toggle
@@ -53,12 +60,12 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 						]}
 						value={productType}
 						onChange={(val) => {
-							setProductType(val)
+							setProductType(val);
 							if (val == 'physical') {
-								handleChange('virtual', false)
+								handleChange('virtual', false);
 							}
 							if (val == 'downloadable') {
-								handleChange('downloadable', true)
+								handleChange('downloadable', true);
 							}
 						}}
 					/>
@@ -66,40 +73,57 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 				{productType === 'physical' && (
 					<>
 						{/* Weight & Shipping class */}
-						<FormGroup cols={2} label={__('Weight (kg)', 'multivendorx')} htmlFor="Weight">
+						<FormGroup
+							cols={2}
+							label={__('Weight (kg)', 'multivendorx')}
+							htmlFor="Weight"
+						>
 							<BasicInputUI
 								name="weight"
 								value={product.weight}
 								onChange={(e) => {
-									handleChange('weight', e.target.value)
+									handleChange('weight', e.target.value);
 								}}
 							/>
 						</FormGroup>
-						<FormGroup cols={2} label={__('Shipping classes', 'multivendorx')} htmlFor="shipping-classes">
+						<FormGroup
+							cols={2}
+							label={__('Shipping classes', 'multivendorx')}
+							htmlFor="shipping-classes"
+						>
 							<SelectInputUI
 								name="shipping_class"
 								options={shippingClasses}
 								value={product.shipping_class}
 								onChange={(selected) =>
-									handleChange('shipping_class', selected.value)
+									handleChange(
+										'shipping_class',
+										selected.value
+									)
 								}
 							/>
 						</FormGroup>
-						<FormGroup cols={3} label={`${__('Length', 'multivendorx')} (${appLocalizer.dimension_unit})`} >
+						<FormGroup
+							cols={3}
+							label={`${__('Length', 'multivendorx')} (${appLocalizer.dimension_unit})`}
+						>
 							<BasicInputUI
 								name="product_length"
 								value={product.dimensions?.length || ''}
 								placeholder={__('Length', 'multivendorx')}
 								onChange={(e) =>
 									handleChange('dimensions', {
-									...product.dimensions,
-									length: e.target.value,
+										...product.dimensions,
+										length: e.target.value,
 									})
 								}
-								/>
+							/>
 						</FormGroup>
 
-						<FormGroup cols={3} label={`${__('Width', 'multivendorx')} (${appLocalizer.dimension_unit})`}>
+						<FormGroup
+							cols={3}
+							label={`${__('Width', 'multivendorx')} (${appLocalizer.dimension_unit})`}
+						>
 							<BasicInputUI
 								name="product_width"
 								value={product.dimensions?.width}
@@ -113,7 +137,10 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 							/>
 						</FormGroup>
 
-						<FormGroup cols={3} label={`${__('Height', 'multivendorx')} (${appLocalizer.dimension_unit})`}>
+						<FormGroup
+							cols={3}
+							label={`${__('Height', 'multivendorx')} (${appLocalizer.dimension_unit})`}
+						>
 							<BasicInputUI
 								name="product_height"
 								value={product.dimensions?.height}
@@ -148,7 +175,11 @@ addFilter(
 		return (
 			<>
 				{content}
-				<ShippingCard product={product} setProduct={setProduct} handleChange={handleChange} />
+				<ShippingCard
+					product={product}
+					setProduct={setProduct}
+					handleChange={handleChange}
+				/>
 			</>
 		);
 	},

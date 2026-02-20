@@ -56,8 +56,12 @@ const StoreSettings = ({
 	const [newAddress, setNewAddress] = useState<any>(null);
 
 	useEffect(() => {
-		if (!newAddress) return;
-		if (!stateOptions.length) return;
+		if (!newAddress) {
+			return;
+		}
+		if (!stateOptions.length) {
+			return;
+		}
 
 		const foundState = stateOptions.find(
 			(item) =>
@@ -114,7 +118,9 @@ const StoreSettings = ({
 	});
 
 	useEffect(() => {
-		if (!settings?.geolocation) return;
+		if (!settings?.geolocation) {
+			return;
+		}
 
 		const provider = settings.geolocation.choose_map_api;
 
@@ -221,7 +227,6 @@ const StoreSettings = ({
 		}
 		return;
 	};
-
 
 	// Handle country select change (from old code)
 	const handleCountryChange = (newValue: any) => {
@@ -388,7 +393,9 @@ const StoreSettings = ({
 			onLocationUpdate: handleLocationUpdate,
 			labelSearch: __('Search for a location'),
 			labelMap: __('Drag or click on the map to choose a location'),
-			instructionText: __('Enter a search term or drag/drop a pin on the map.'),
+			instructionText: __(
+				'Enter a search term or drag/drop a pin on the map.'
+			),
 			placeholderSearch: __('Search for a location...'),
 		};
 
@@ -421,7 +428,9 @@ const StoreSettings = ({
 										'multivendorx'
 									)}
 									<br />
-									<b>{__('Primary email:', 'multivendorx')}</b>
+									<b>
+										{__('Primary email:', 'multivendorx')}
+									</b>
 									{__(
 										'Click the star icon to set an email as primary. This email will appear on your storefront, and all other email IDs will be hidden from display.',
 										'multivendorx'
@@ -467,7 +476,10 @@ const StoreSettings = ({
 					{/* Communication Address */}
 					<Card title={__('Communication address', 'multivendorx')}>
 						<FormGroupWrapper>
-							<FormGroup label={__('Address *', 'multivendorx')} htmlFor="address">
+							<FormGroup
+								label={__('Address *', 'multivendorx')}
+								htmlFor="address"
+							>
 								<BasicInputUI
 									name="address"
 									value={addressData.address}
@@ -475,14 +487,22 @@ const StoreSettings = ({
 								/>
 							</FormGroup>
 
-							<FormGroup cols={2} label={__('City', 'multivendorx')} htmlFor="City">
+							<FormGroup
+								cols={2}
+								label={__('City', 'multivendorx')}
+								htmlFor="City"
+							>
 								<BasicInputUI
 									name="city"
 									value={addressData.city}
 									onChange={handleAddressChange}
 								/>
 							</FormGroup>
-							<FormGroup cols={2} label={__('Zip code', 'multivendorx')} htmlFor="zip">
+							<FormGroup
+								cols={2}
+								label={__('Zip code', 'multivendorx')}
+								htmlFor="zip"
+							>
 								<BasicInputUI
 									name="zip"
 									value={addressData.zip}
@@ -491,17 +511,23 @@ const StoreSettings = ({
 							</FormGroup>
 
 							{/* Country and State */}
-							<FormGroup cols={2} label={__('Country', 'multivendorx')} htmlFor="country">
+							<FormGroup
+								cols={2}
+								label={__('Country', 'multivendorx')}
+								htmlFor="country"
+							>
 								<SelectInputUI
 									name="country"
 									value={formData.country}
-									options={
-										appLocalizer.country_list || []
-									}
+									options={appLocalizer.country_list || []}
 									onChange={handleCountryChange}
 								/>
 							</FormGroup>
-							<FormGroup cols={2} label={__('State', 'multivendorx')} htmlFor="state">
+							<FormGroup
+								cols={2}
+								label={__('State', 'multivendorx')}
+								htmlFor="state"
+							>
 								<SelectInputUI
 									name="state"
 									value={formData.state}
@@ -527,9 +553,14 @@ const StoreSettings = ({
 				</Column>
 				<Column grid={4}>
 					{/* Manage Store Status */}
-					<Card id="store-status" title={__('Manage store status', 'multivendorx')}>
+					<Card
+						id="store-status"
+						title={__('Manage store status', 'multivendorx')}
+					>
 						<FormGroupWrapper>
-							<FormGroup label={__('Current status', 'multivendorx')}>
+							<FormGroup
+								label={__('Current status', 'multivendorx')}
+							>
 								<SelectInputUI
 									name="status"
 									value={formData.status}
@@ -554,9 +585,17 @@ const StoreSettings = ({
 						</FormGroupWrapper>
 					</Card>
 					{/* Manage Storefront Link */}
-					<Card id="store-slug" title={__('Manage storefront link', 'multivendorx')}>
+					<Card
+						id="store-slug"
+						title={__('Manage storefront link', 'multivendorx')}
+					>
 						<FormGroupWrapper>
-							<FormGroup label={__('Current storefront link', 'multivendorx')}>
+							<FormGroup
+								label={__(
+									'Current storefront link',
+									'multivendorx'
+								)}
+							>
 								<BasicInputUI
 									name="slug"
 									value={formData.slug}
@@ -604,9 +643,9 @@ const StoreSettings = ({
 											{network === 'twitter'
 												? 'X'
 												: network
-													.charAt(0)
-													.toUpperCase() +
-												network.slice(1)}
+														.charAt(0)
+														.toUpperCase() +
+													network.slice(1)}
 										</label>
 										<BasicInputUI
 											name={network}
@@ -622,7 +661,7 @@ const StoreSettings = ({
 						})}
 					</Card>
 				</Column>
-			</Container >
+			</Container>
 		</>
 	);
 };

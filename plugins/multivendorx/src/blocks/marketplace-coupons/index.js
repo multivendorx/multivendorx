@@ -62,7 +62,9 @@ registerBlockType('multivendorx/marketplace-coupons', {
 							type="number"
 							value={attributes.perPage}
 							onChange={(value) =>
-								setAttributes({ perPage: parseInt(value, 10) || 10 })
+								setAttributes({
+									perPage: parseInt(value, 10) || 10,
+								})
 							}
 						/>
 

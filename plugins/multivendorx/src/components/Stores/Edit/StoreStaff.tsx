@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { SuccessNotice, getApiLink, useModules, Container, Column, FormGroupWrapper, FormGroup, Card, SelectInputUI } from 'zyra';
+import {
+	SuccessNotice,
+	getApiLink,
+	useModules,
+	Container,
+	Column,
+	FormGroupWrapper,
+	FormGroup,
+	Card,
+	SelectInputUI,
+} from 'zyra';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
@@ -51,24 +61,19 @@ const StoreSquad = ({ id }: { id: string | null }) => {
 						<FormGroupWrapper>
 							<SelectInputUI
 								name="store_owners"
-								options={
-									appLocalizer.store_owners || []
-								}
+								options={appLocalizer.store_owners || []}
 								type="multi-select"
-								value={(
-									formData.store_owners || []
-								).map((id: any) => {
-									const match = (
-										appLocalizer.store_owners || []
-									).find(
-										(opt: any) =>
-											String(opt.value) ===
-											String(id)
-									);
-									return match
-										? match.value
-										: String(id);
-								})}
+								value={(formData.store_owners || []).map(
+									(id: any) => {
+										const match = (
+											appLocalizer.store_owners || []
+										).find(
+											(opt: any) =>
+												String(opt.value) === String(id)
+										);
+										return match ? match.value : String(id);
+									}
+								)}
 								onChange={(selected: any) => {
 									const store_owners =
 										(selected as any[])?.map(
@@ -85,32 +90,38 @@ const StoreSquad = ({ id }: { id: string | null }) => {
 							/>
 						</FormGroupWrapper>
 
-						{modules.includes('staff-manager') && (
+						{modules.includes('staff-manager') &&
 							applyFilters(
 								'additional_staff_manager_fields',
 								null,
 								formData,
 								setFormData,
 								autoSave
-							))
-						}
+							)}
 
-						{modules.includes('facilitator') && (
+						{modules.includes('facilitator') &&
 							applyFilters(
 								'additional_facilitator_fields',
 								null,
 								formData,
 								setFormData,
 								autoSave
-							))
-						}
+							)}
 					</Card>
 				</Column>
 
 				<Column grid={4}>
-					<Card id="primary-owner" title={__('Primary owner', 'multivendorx')}>
+					<Card
+						id="primary-owner"
+						title={__('Primary owner', 'multivendorx')}
+					>
 						<FormGroupWrapper>
-							<FormGroup label={__('Select primary owner', 'multivendorx')} >
+							<FormGroup
+								label={__(
+									'Select primary owner',
+									'multivendorx'
+								)}
+							>
 								<SelectInputUI
 									name="primary_owner"
 									options={appLocalizer?.store_owners || []}

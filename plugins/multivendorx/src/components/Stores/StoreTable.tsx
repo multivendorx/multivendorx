@@ -2,15 +2,28 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, TableCard,	TableRow,QueryProps,CategoryCount, Container, Column } from 'zyra';
+import {
+	getApiLink,
+	TableCard,
+	TableRow,
+	QueryProps,
+	CategoryCount,
+} from 'zyra';
 import { useNavigate } from 'react-router-dom';
-import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
+import {
+	formatCurrency,
+	formatDate,
+	formatLocalDate,
+} from '../../services/commonFunction';
 
 const StoreTable: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [totalRows, setTotalRows] = useState<number>(0);
+	const [storeSlugMap, setStoreSlugMap] = useState<Record<number, string>>(
+		{}
+	);
 	const [categoryCounts, setCategoryCounts] = useState<
 		CategoryCount[] | null
 	>(null);
@@ -25,7 +38,10 @@ const StoreTable: React.FC = () => {
 				params: {
 					page: query.paged || 1,
 					row: query.per_page || 10,
-					filter_status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+					filter_status:
+						query.categoryFilter === 'all'
+							? ''
+							: query.categoryFilter,
 					search_value: query.searchValue || '',
 					start_date: query.filter?.created_at?.startDate
 						? formatLocalDate(query.filter.created_at.startDate)
@@ -57,22 +73,31 @@ const StoreTable: React.FC = () => {
 					{
 						value: 'active',
 						label: 'Active',
-						count: Number(response.headers['x-wp-status-active']) || 0,
+						count:
+							Number(response.headers['x-wp-status-active']) || 0,
 					},
 					{
 						value: 'under_review',
 						label: 'Under Review',
-						count: Number(response.headers['x-wp-status-under-review']) || 0,
+						count:
+							Number(
+								response.headers['x-wp-status-under-review']
+							) || 0,
 					},
 					{
 						value: 'suspended',
 						label: 'Suspended',
-						count: Number(response.headers['x-wp-status-suspended']) || 0,
+						count:
+							Number(response.headers['x-wp-status-suspended']) ||
+							0,
 					},
 					{
 						value: 'deactivated',
 						label: 'Deactivated',
-						count: Number(response.headers['x-wp-status-deactivated']) || 0,
+						count:
+							Number(
+								response.headers['x-wp-status-deactivated']
+							) || 0,
 					},
 				]);
 
@@ -95,15 +120,11 @@ const StoreTable: React.FC = () => {
 		},
 		lifetime_earning: {
 			label: __('Lifetime Earning', 'multivendorx'),
-			render: (row) => (
-				formatCurrency(row.commission?.commission_total)
-			),
+			render: (row) => formatCurrency(row.commission?.commission_total),
 		},
 		primary_owner: {
 			label: __('Primary Owner', 'multivendorx'),
-			render: (row) => (
-				row.primary_owner?.data?.display_name
-			),
+			render: (row) => row.primary_owner?.data?.display_name,
 		},
 		status: {
 			label: __('Status', 'multivendorx'),
@@ -118,7 +139,9 @@ const StoreTable: React.FC = () => {
 					label: __('Settings', 'multivendorx'),
 					icon: 'setting',
 					onClick: (row) => {
-						navigate(`?page=multivendorx#&tab=stores&edit/${row.id}`);
+						navigate(
+							`?page=multivendorx#&tab=stores&edit/${row.id}`
+						);
 					},
 				},
 				{
@@ -139,7 +162,7 @@ const StoreTable: React.FC = () => {
 			key: 'created_at',
 			label: 'Created Date',
 			type: 'date',
-		}
+		},
 	];
 	return (
 		<Container general>

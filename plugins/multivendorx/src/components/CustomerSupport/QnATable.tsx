@@ -14,7 +14,7 @@ import {
 	PopupUI,
 	TableRow,
 	QueryProps,
-	CategoryCount
+	CategoryCount,
 } from 'zyra';
 
 import Popup from '../Popup/Popup';
@@ -52,7 +52,9 @@ const Qna: React.FC = () => {
 	const [confirmOpen, setConfirmOpen] = useState(false);
 
 	const handleConfirmDelete = () => {
-		if (!selectedQn) return;
+		if (!selectedQn) {
+			return;
+		}
 
 		axios({
 			method: 'DELETE',
@@ -71,7 +73,6 @@ const Qna: React.FC = () => {
 	};
 
 	const fetchQnaById = (id: number) => {
-
 		return axios
 			.get(getApiLink(appLocalizer, `qna/${id}`), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
@@ -90,7 +91,7 @@ const Qna: React.FC = () => {
 				});
 				setQna(item.question_text);
 				setAnswer(item.answer_text || '');
-			})
+			});
 	};
 
 	useEffect(() => {
@@ -99,11 +100,10 @@ const Qna: React.FC = () => {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			})
 			.then((response) => {
-				const options =
-					(response.data || []).map((store: any) => ({
-						label: store.store_name,
-						value: store.id,
-					}));
+				const options = (response.data || []).map((store: any) => ({
+					label: store.store_name,
+					value: store.id,
+				}));
 
 				setStore(options);
 				setIsLoading(false);
@@ -115,7 +115,9 @@ const Qna: React.FC = () => {
 	}, []);
 
 	const handleSaveAnswer = () => {
-		if (!selectedQna) return;
+		if (!selectedQna) {
+			return;
+		}
 
 		axios
 			.put(
@@ -123,7 +125,8 @@ const Qna: React.FC = () => {
 				{
 					question_text: qna,
 					answer_text: answer,
-					question_visibility: selectedQna.question_visibility || 'public',
+					question_visibility:
+						selectedQna.question_visibility || 'public',
 				},
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
@@ -138,7 +141,6 @@ const Qna: React.FC = () => {
 			});
 	};
 
-
 	const headers = {
 		name: {
 			label: 'Product',
@@ -151,7 +153,7 @@ const Qna: React.FC = () => {
 		},
 		question_date: {
 			label: 'Date',
-			type: 'date'
+			type: 'date',
 		},
 		total_votes: {
 			label: 'Votes',
@@ -176,10 +178,9 @@ const Qna: React.FC = () => {
 						setConfirmOpen(true);
 					},
 				},
-			]
+			],
 		},
 	};
-
 
 	const filters = [
 		{
@@ -245,12 +246,17 @@ const Qna: React.FC = () => {
 					{
 						value: 'has_answer',
 						label: 'Answered',
-						count: Number(response.headers['x-wp-status-answered']) || 0,
+						count:
+							Number(response.headers['x-wp-status-answered']) ||
+							0,
 					},
 					{
 						value: 'no_answer',
 						label: 'Unanswered',
-						count: Number(response.headers['x-wp-status-unanswered']) || 0,
+						count:
+							Number(
+								response.headers['x-wp-status-unanswered']
+							) || 0,
 					},
 				]);
 
@@ -334,21 +340,33 @@ const Qna: React.FC = () => {
 					}
 				>
 					<FormGroupWrapper>
-						<FormGroup label={__('Question', 'multivendorx')} htmlFor="phone">
+						<FormGroup
+							label={__('Question', 'multivendorx')}
+							htmlFor="phone"
+						>
 							<BasicInputUI
 								name="phone"
 								value={qna}
 								onChange={(value: string) => setQna(value)}
 							/>
 						</FormGroup>
-						<FormGroup label={__('Answer', 'multivendorx')} htmlFor="ans">
+						<FormGroup
+							label={__('Answer', 'multivendorx')}
+							htmlFor="ans"
+						>
 							<TextAreaUI
 								name="answer"
 								value={answer}
 								onChange={(value: string) => setAnswer(value)}
 							/>
 						</FormGroup>
-						<FormGroup label={__('Decide whether this Q&A is visible to everyone or only to the store team', 'multivendorx')} htmlFor="visibility">
+						<FormGroup
+							label={__(
+								'Decide whether this Q&A is visible to everyone or only to the store team',
+								'multivendorx'
+							)}
+							htmlFor="visibility"
+						>
 							<ToggleSettingUI
 								options={[
 									{
@@ -359,24 +377,19 @@ const Qna: React.FC = () => {
 									{
 										key: 'private',
 										value: 'private',
-										label: __(
-											'Private',
-											'multivendorx'
-										),
+										label: __('Private', 'multivendorx'),
 									},
 								]}
 								value={
-									selectedQna.question_visibility ||
-									'public'
+									selectedQna.question_visibility || 'public'
 								}
 								onChange={(value) =>
 									setSelectedQna((prev) =>
 										prev
 											? {
-												...prev,
-												question_visibility:
-													value,
-											}
+													...prev,
+													question_visibility: value,
+												}
 											: prev
 									)
 								}

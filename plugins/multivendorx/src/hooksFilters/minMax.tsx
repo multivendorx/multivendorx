@@ -1,6 +1,12 @@
 import { addFilter } from '@wordpress/hooks';
 import { useEffect, useState } from 'react';
-import { NestedComponent, Card, BasicInputUI, FormGroup, FormGroupWrapper } from 'zyra';
+import {
+	NestedComponent,
+	Card,
+	BasicInputUI,
+	FormGroup,
+	FormGroupWrapper,
+} from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const MinMax = ({ product, setProduct }) => {
@@ -95,10 +101,7 @@ const MinMax = ({ product, setProduct }) => {
 						preText={__('Min', 'multivendorx')}
 						value={minMaxMeta.min_quantity}
 						onChange={(e) =>
-							handleQuantityChange(
-								'min_quantity',
-								e.target.value
-							)
+							handleQuantityChange('min_quantity', e.target.value)
 						}
 					/>
 
@@ -108,10 +111,7 @@ const MinMax = ({ product, setProduct }) => {
 						preText={__('Max', 'multivendorx')}
 						value={minMaxMeta.max_quantity}
 						onChange={(e) =>
-							handleQuantityChange(
-								'max_quantity',
-								e.target.value
-							)
+							handleQuantityChange('max_quantity', e.target.value)
 						}
 					/>
 				</FormGroup>
@@ -124,10 +124,7 @@ const MinMax = ({ product, setProduct }) => {
 						preText={__('Min', 'multivendorx')}
 						value={minMaxMeta.min_amount}
 						onChange={(e) =>
-							handleQuantityChange(
-								'min_amount',
-								e.target.value
-							)
+							handleQuantityChange('min_amount', e.target.value)
 						}
 					/>
 
@@ -137,10 +134,7 @@ const MinMax = ({ product, setProduct }) => {
 						preText={__('Max', 'multivendorx')}
 						value={minMaxMeta.max_amount}
 						onChange={(e) =>
-							handleQuantityChange(
-								'max_amount',
-								e.target.value
-							)
+							handleQuantityChange('max_amount', e.target.value)
 						}
 					/>
 				</FormGroup>

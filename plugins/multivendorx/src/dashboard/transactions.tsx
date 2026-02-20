@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { Column, Container, getApiLink, NavigatorHeader, TableCard, TableRow, QueryProps, CategoryCount } from 'zyra';
+import {
+	Column,
+	Container,
+	getApiLink,
+	NavigatorHeader,
+	TableCard,
+	TableRow,
+	QueryProps,
+	CategoryCount,
+} from 'zyra';
 import TransactionDetailsModal from './TransactionDetailsModal';
 import { downloadCSV, formatLocalDate } from '../services/commonFunction';
 
@@ -17,7 +26,6 @@ type TransactionRow = {
 	status: string;
 };
 
-
 const Transactions: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [totalRows, setTotalRows] = useState(0);
@@ -27,15 +35,17 @@ const Transactions: React.FC = () => {
 		categoryCounts[] | null
 	>(null);
 
-	const [modalTransaction, setModalTransaction] = useState<TransactionRow | null>(null);
+	const [modalTransaction, setModalTransaction] =
+		useState<TransactionRow | null>(null);
 
 	const headers = {
 		id: { label: __('ID', 'multivendorx') },
 		status: { label: __('Status', 'multivendorx'), type: 'status' },
 		transaction_type: {
 			label: __('Transaction Type', 'multivendorx'),
-			render: (row) => (
-				row.transaction_type?.toLowerCase() === 'commission' && row.commission_id ? (
+			render: (row) =>
+				row.transaction_type?.toLowerCase() === 'commission' &&
+				row.commission_id ? (
 					<span
 						className="link-item"
 						onClick={() => {
@@ -49,15 +59,19 @@ const Transactions: React.FC = () => {
 					<span>
 						{row.narration
 							?.replace(/-/g, ' ')
-							.replace(/\b\w/g, (c: string) => c.toUpperCase()) || '-'}
+							.replace(/\b\w/g, (c: string) => c.toUpperCase()) ||
+							'-'}
 					</span>
-				)
-			),
+				),
 		},
 		created_at: { label: __('Date', 'multivendorx'), type: 'date' },
 		credit: { label: __('Credit', 'multivendorx'), type: 'currency' },
 		debit: { label: __('Debit', 'multivendorx'), type: 'currency' },
-		balance: { label: __('Balance', 'multivendorx'), isSortable: true, type: 'currency' },
+		balance: {
+			label: __('Balance', 'multivendorx'),
+			isSortable: true,
+			type: 'currency',
+		},
 		action: {
 			type: 'action',
 			label: 'Action',
@@ -69,7 +83,7 @@ const Transactions: React.FC = () => {
 					onClick: (row) => {
 						setModalTransaction(row);
 					},
-				}
+				},
 			],
 		},
 	};
@@ -80,22 +94,34 @@ const Transactions: React.FC = () => {
 			type: 'select',
 			options: [
 				{ label: __('Transaction Type', 'multivendorx'), value: '' },
-				{ label: __('Commission', 'multivendorx'), value: 'Commission' },
-				{ label: __('Withdrawal', 'multivendorx'), value: 'Withdrawal' },
+				{
+					label: __('Commission', 'multivendorx'),
+					value: 'Commission',
+				},
+				{
+					label: __('Withdrawal', 'multivendorx'),
+					value: 'Withdrawal',
+				},
 				{ label: __('Refund', 'multivendorx'), value: 'Refund' },
 				{ label: __('Reversed', 'multivendorx'), value: 'Reversed' },
-				{ label: __('COD received', 'multivendorx'), value: 'COD received' }
-			]
+				{
+					label: __('COD received', 'multivendorx'),
+					value: 'COD received',
+				},
+			],
 		},
 		{
 			key: 'transactionStatus',
 			label: 'Financial Transactions',
 			type: 'select',
 			options: [
-				{ label: __('Financial Transactions', 'multivendorx'), value: '' },
+				{
+					label: __('Financial Transactions', 'multivendorx'),
+					value: '',
+				},
 				{ label: __('Credit', 'multivendorx'), value: 'Cr' },
-				{ label: __('Debit', 'multivendorx'), value: 'Dr' }
-			]
+				{ label: __('Debit', 'multivendorx'), value: 'Dr' },
+			],
 		},
 		{
 			key: 'created_at',
@@ -111,14 +137,16 @@ const Transactions: React.FC = () => {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
-				params: buildQueryParams(query)
+				params: buildQueryParams(query),
 			})
 			.then((response) => {
 				const transactions = Array.isArray(response.data)
 					? response.data
 					: [];
 
-				const ids: number[] = transactions.map((p: any) => Number(p.id));
+				const ids: number[] = transactions.map((p: any) =>
+					Number(p.id)
+				);
 				setRowIds(ids);
 
 				setRows(transactions);
@@ -131,23 +159,30 @@ const Transactions: React.FC = () => {
 					{
 						value: 'completed',
 						label: 'Completed',
-						count: Number(response.headers['x-wp-status-completed']) || 0,
+						count:
+							Number(response.headers['x-wp-status-completed']) ||
+							0,
 					},
 					{
 						value: 'processed',
 						label: 'Processed',
-						count: Number(response.headers['x-wp-status-processed']) || 0,
+						count:
+							Number(response.headers['x-wp-status-processed']) ||
+							0,
 					},
 					{
 						value: 'upcoming',
 						label: 'Upcoming',
-						count: Number(response.headers['x-wp-status-upcoming']) || 0,
+						count:
+							Number(response.headers['x-wp-status-upcoming']) ||
+							0,
 					},
 					{
 						value: 'vailed',
 						label: 'Failed',
-						count: Number(response.headers['x-wp-status-failed']) || 0,
-					}
+						count:
+							Number(response.headers['x-wp-status-failed']) || 0,
+					},
 				]);
 
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
@@ -161,14 +196,16 @@ const Transactions: React.FC = () => {
 			});
 	};
 	const downloadTransactionCSV = (selectedIds: number[]) => {
-		if (!selectedIds) return;
+		if (!selectedIds) {
+			return;
+		}
 
 		axios
 			.get(getApiLink(appLocalizer, 'transaction'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: { ids: selectedIds },
 			})
-			.then(response => {
+			.then((response) => {
 				const rows = response.data || [];
 				downloadCSV(
 					headers,
@@ -176,7 +213,7 @@ const Transactions: React.FC = () => {
 					`selected-commissions-${formatLocalDate(new Date())}.csv`
 				);
 			})
-			.catch(error => {
+			.catch((error) => {
 				console.error('CSV download failed:', error);
 			});
 	};
@@ -233,14 +270,17 @@ const Transactions: React.FC = () => {
 		{
 			label: __('Download CSV', 'multivendorx'),
 			icon: 'download',
-			onClickWithQuery: downloadTransactionCSVByQuery
+			onClickWithQuery: downloadTransactionCSVByQuery,
 		},
 	];
 	return (
 		<>
 			<NavigatorHeader
 				headerTitle={__('Transactions', 'multivendorx')}
-				headerDescription={__('Track your earnings, withdrawals, and current balance at a glance.', 'multivendorx')}
+				headerDescription={__(
+					'Track your earnings, withdrawals, and current balance at a glance.',
+					'multivendorx'
+				)}
 			/>
 
 			<Container general>
@@ -264,7 +304,7 @@ const Transactions: React.FC = () => {
 							priceDecimals: appLocalizer.price_decimals,
 							decimalSeparator: appLocalizer.decimal_separator,
 							thousandSeparator: appLocalizer.thousand_separator,
-							currencyPosition: appLocalizer.currency_position
+							currencyPosition: appLocalizer.currency_position,
 						}}
 					/>
 

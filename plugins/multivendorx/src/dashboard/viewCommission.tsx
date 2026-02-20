@@ -12,7 +12,6 @@ type ViewCommissionProps = {
 	commissionId: number;
 };
 
-
 const ViewCommission: React.FC<ViewCommissionProps> = ({
 	open,
 	onClose,
@@ -86,7 +85,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							// store refund map
 							setRefundMap(refundMap);
 						})
-						.catch(() => { });
+						.catch(() => {});
 
 					axios({
 						method: 'GET',
@@ -98,11 +97,13 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 
 							setOrderData(order);
 							if (Array.isArray(order.shipping_lines)) {
-								const mappedRows = order.shipping_lines.map((ship: any) => ({
-									method: ship.method_title,
-									amount: ship.total,
-									tax: ship.total_tax,
-								}));
+								const mappedRows = order.shipping_lines.map(
+									(ship: any) => ({
+										method: ship.method_title,
+										amount: ship.total,
+										tax: ship.total_tax,
+									})
+								);
 
 								setShippingItems(mappedRows);
 							} else {
@@ -110,24 +111,29 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							}
 
 							if (Array.isArray(order.line_items)) {
-								const mappedRows = order.line_items.map((item: any) => {
-									const total = parseFloat(item.total || '0');
-									const tax = parseFloat(item.total_tax || '0');
+								const mappedRows = order.line_items.map(
+									(item: any) => {
+										const total = parseFloat(
+											item.total || '0'
+										);
+										const tax = parseFloat(
+											item.total_tax || '0'
+										);
 
-									return {
-										id: item.name, // product name
-										cost: formatCurrency(item.price),
-										qty: item.quantity,
-										total: formatCurrency(total),
-										tax: formatCurrency(tax),
-									};
-								});
+										return {
+											id: item.name, // product name
+											cost: formatCurrency(item.price),
+											qty: item.quantity,
+											total: formatCurrency(total),
+											tax: formatCurrency(tax),
+										};
+									}
+								);
 
 								setOrderItems(mappedRows);
 							} else {
 								setOrderItems([]);
 							}
-
 						})
 						.catch(() => {
 							setOrderData(null);
@@ -196,10 +202,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 					<div className="heading">
 						{__('Order Details', 'multivendorx')}
 					</div>
-					<TableCard
-						headers={popupColumns}
-						rows={orderItems}
-					/>
+					<TableCard headers={popupColumns} rows={orderItems} />
 
 					{Array.isArray(shippingItems) &&
 						shippingItems.length > 0 && (
@@ -248,11 +251,11 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 								<span className="admin-badge blue">
 									{orderData?.status
 										? orderData.status
-											.replace(/^wc-/, '') // remove 'wc-' prefix if exists
-											.replace(/_/g, ' ') // replace underscores with spaces
-											.replace(/\b\w/g, (c) =>
-												c.toUpperCase()
-											) // capitalize first letter of each word
+												.replace(/^wc-/, '') // remove 'wc-' prefix if exists
+												.replace(/_/g, ' ') // replace underscores with spaces
+												.replace(/\b\w/g, (c) =>
+													c.toUpperCase()
+												) // capitalize first letter of each word
 										: ''}
 								</span>
 							</div>
@@ -271,18 +274,19 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							</div>
 							<div className="value">
 								<span
-									className={`admin-badge ${commissionData?.status === 'paid'
-										? 'green'
-										: 'red'
-										}`}
+									className={`admin-badge ${
+										commissionData?.status === 'paid'
+											? 'green'
+											: 'red'
+									}`}
 								>
 									{commissionData?.status
 										? commissionData.status
-											.replace(/^wc-/, '') // remove any prefix like 'wc-'
-											.replace(/_/g, ' ') // replace underscores with spaces
-											.replace(/\b\w/g, (c) =>
-												c.toUpperCase()
-											) // capitalize each word
+												.replace(/^wc-/, '') // remove any prefix like 'wc-'
+												.replace(/_/g, ' ') // replace underscores with spaces
+												.replace(/\b\w/g, (c) =>
+													c.toUpperCase()
+												) // capitalize each word
 										: ''}
 								</span>
 							</div>
@@ -294,10 +298,10 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							<div className="value">
 								{formatCurrency(
 									parseFloat(commissionData?.amount ?? 0) +
-									parseFloat(
-										commissionData?.commission_refunded ??
-										0
-									)
+										parseFloat(
+											commissionData?.commission_refunded ??
+												0
+										)
 								)}
 							</div>
 						</div>
@@ -316,10 +320,10 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							<div className="value">
 								{formatCurrency(
 									Number(commissionData?.tax || 0) +
-									Number(
-										commissionData?.shipping_tax_amount ||
-										0
-									)
+										Number(
+											commissionData?.shipping_tax_amount ||
+												0
+										)
 								)}
 							</div>
 						</div>

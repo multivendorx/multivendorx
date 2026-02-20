@@ -12,7 +12,7 @@ export default {
 			key: 'restriction_for_under_review',
 			type: 'checkbox',
 			label: __('Account capabilities', 'multivendorx'),
-			 
+
 			options: [
 				{
 					key: 'disable_product',

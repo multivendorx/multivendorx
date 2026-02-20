@@ -14,7 +14,7 @@ const StoreQuickInfo: React.FC<{}> = () => {
 					getApiLink(StoreInfo, `review/${storeDetails.storeId}`),
 					{
 						headers: { 'X-WP-Nonce': StoreInfo.nonce },
-						params:{'storeId' : storeDetails.storeId}
+						params: { storeId: storeDetails.storeId },
 					}
 				);
 				setRatings(response.data);
@@ -38,13 +38,16 @@ const StoreQuickInfo: React.FC<{}> = () => {
 					}
 				);
 				// Total products is in the headers "X-WP-Total"
-				const total = parseInt(response.headers['x-wp-total'] || '0', 10);
+				const total = parseInt(
+					response.headers['x-wp-total'] || '0',
+					10
+				);
 				setTotalProducts(total);
 			} catch (err) {
 				console.error('Failed to fetch total products', err);
 			}
 		};
-		if(StoreInfo.activeModules?.includes('store-review')){
+		if (StoreInfo.activeModules?.includes('store-review')) {
 			fetchRating();
 		}
 		fetchTotalProducts();
@@ -56,13 +59,19 @@ const StoreQuickInfo: React.FC<{}> = () => {
 					{storeDetails.storeLogo ? (
 						<img src={storeDetails.storeLogo} alt="Vendor Avatar" />
 					) : storeDetails.storeName ? (
-						<span>{storeDetails.storeName.slice(0, 2).toUpperCase()}</span>
+						<span>
+							{storeDetails.storeName.slice(0, 2).toUpperCase()}
+						</span>
 					) : null}
 				</div>
 
 				<div className="store-info">
-					{storeDetails.storeName && <h3 className="store-name">{storeDetails.storeName}</h3>}
-					{storeDetails.storeEmail && <p className="store-email">{storeDetails.storeEmail}</p>}
+					{storeDetails.storeName && (
+						<h3 className="store-name">{storeDetails.storeName}</h3>
+					)}
+					{storeDetails.storeEmail && (
+						<p className="store-email">{storeDetails.storeEmail}</p>
+					)}
 					{rating && (
 						<div className="store-rating">
 							<span className="stars">★★★★★</span>
@@ -87,7 +96,9 @@ const StoreQuickInfo: React.FC<{}> = () => {
 				)}
 				{storeDetails.totalSales !== undefined && (
 					<div className="stat-item">
-						<div className="stat-number">{storeDetails.totalSales}</div>
+						<div className="stat-number">
+							{storeDetails.totalSales}
+						</div>
 						<div className="stat-label">Sales</div>
 					</div>
 				)}

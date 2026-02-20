@@ -2,7 +2,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, ItemList, NavigatorHeader, TableCard, useModules } from 'zyra';
+import {
+	getApiLink,
+	ItemList,
+	NavigatorHeader,
+	TableCard,
+	useModules,
+} from 'zyra';
 
 import ViewCommission from './viewCommission';
 import { downloadCSV, formatLocalDate } from '../services/commonFunction';
@@ -52,17 +58,25 @@ const StoreCommission: React.FC = () => {
 					className="feature-list"
 					items={Object.entries(row)
 						.filter(([key]) =>
-							['store_earning', 'shipping_amount', 'tax_amount', 'gateway_fee', 'marketplace_commission'].includes(key)
+							[
+								'store_earning',
+								'shipping_amount',
+								'tax_amount',
+								'gateway_fee',
+								'marketplace_commission',
+							].includes(key)
 						)
 						.map(([key, val]) => ({
 							icon: 'adminfont-commissions',
 							title: key
 								.split('_')
-								.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+								.map(
+									(w) =>
+										w.charAt(0).toUpperCase() + w.slice(1)
+								)
 								.join(' '),
 							desc: val,
-						}))
-					}
+						}))}
 				/>
 			),
 			csvDisplay: false,
@@ -97,11 +111,10 @@ const StoreCommission: React.FC = () => {
 					onClick: (row) => {
 						setModalCommission(row);
 					},
-				}
+				},
 			],
 		},
 	};
-
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -109,7 +122,7 @@ const StoreCommission: React.FC = () => {
 		axios
 			.get(getApiLink(appLocalizer, 'commission'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: buildCommissionQueryParams
+				params: buildCommissionQueryParams,
 			})
 			.then((response) => {
 				const items = response.data || [];
@@ -129,27 +142,38 @@ const StoreCommission: React.FC = () => {
 					{
 						value: 'paid',
 						label: 'Paid',
-						count: Number(response.headers['x-wp-status-paid']) || 0,
+						count:
+							Number(response.headers['x-wp-status-paid']) || 0,
 					},
 					{
 						value: 'unpaid',
 						label: 'Unpaid',
-						count: Number(response.headers['x-wp-status-unpaid']) || 0,
+						count:
+							Number(response.headers['x-wp-status-unpaid']) || 0,
 					},
 					{
 						value: 'refunded',
 						label: 'Refunded',
-						count: Number(response.headers['x-wp-status-refunded']) || 0,
+						count:
+							Number(response.headers['x-wp-status-refunded']) ||
+							0,
 					},
 					{
 						value: 'partially_refunded',
 						label: 'Partially Refunded',
-						count: Number(response.headers['x-wp-status-partially-refunded']) || 0,
+						count:
+							Number(
+								response.headers[
+									'x-wp-status-partially-refunded'
+								]
+							) || 0,
 					},
 					{
 						value: 'cancelled',
 						label: 'Cancelled',
-						count: Number(response.headers['x-wp-status-cancelled']) || 0,
+						count:
+							Number(response.headers['x-wp-status-cancelled']) ||
+							0,
 					},
 				]);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
@@ -171,14 +195,16 @@ const StoreCommission: React.FC = () => {
 	];
 
 	const downloadCommissionsCSV = (selectedIds: number[]) => {
-		if (!selectedIds) return;
+		if (!selectedIds) {
+			return;
+		}
 
 		axios
 			.get(getApiLink(appLocalizer, 'commission'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: { ids: selectedIds },
 			})
-			.then(response => {
+			.then((response) => {
 				const rows = response.data || [];
 				downloadCSV(
 					headers,
@@ -186,7 +212,7 @@ const StoreCommission: React.FC = () => {
 					`selected-commissions-${formatLocalDate(new Date())}.csv`
 				);
 			})
-			.catch(error => {
+			.catch((error) => {
 				console.error('CSV download failed:', error);
 			});
 	};
@@ -242,14 +268,17 @@ const StoreCommission: React.FC = () => {
 		{
 			label: __('Download CSV', 'multivendorx'),
 			icon: 'download',
-			onClickWithQuery: downloadCommissionsCSVByQuery
+			onClickWithQuery: downloadCommissionsCSVByQuery,
 		},
 	];
 	return (
 		<>
 			<NavigatorHeader
 				headerTitle={__('Commission', 'multivendorx')}
-				headerDescription={__('Details of commissions earned by your store for every order, including order amount, commission rate and payout status.', 'multivendorx')}
+				headerDescription={__(
+					'Details of commissions earned by your store for every order, including order amount, commission rate and payout status.',
+					'multivendorx'
+				)}
 				buttons={[
 					{
 						label: __('Export', 'multivendorx'),
@@ -284,7 +313,7 @@ const StoreCommission: React.FC = () => {
 					priceDecimals: appLocalizer.price_decimals,
 					decimalSeparator: appLocalizer.decimal_separator,
 					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position
+					currencyPosition: appLocalizer.currency_position,
 				}}
 			/>
 

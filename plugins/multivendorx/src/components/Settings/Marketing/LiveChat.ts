@@ -47,7 +47,7 @@ export default {
 				'Select the chat provider you want to connect with your store.',
 				'multivendorx'
 			),
-			
+
 			moduleEnabled: 'live-chat',
 			options: [
 				{
@@ -59,10 +59,10 @@ export default {
 					key: 'talkjs',
 					label: __('TalkJS', 'multivendorx'),
 					value: 'talkjs',
-			// 		desc: __(
-			// 	'<a href="https://docs.mapbox.com/help/getting-started/access-tokens/" target="_blank">Click here to generate access token.</a>',
-			// 	'multivendorx'
-			// ),
+					// 		desc: __(
+					// 	'<a href="https://docs.mapbox.com/help/getting-started/access-tokens/" target="_blank">Click here to generate access token.</a>',
+					// 	'multivendorx'
+					// ),
 				},
 				{
 					key: 'whatsapp',

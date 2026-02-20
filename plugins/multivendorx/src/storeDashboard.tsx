@@ -1,6 +1,13 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import axios from 'axios';
-import { getApiLink, ComponentStatusView, Tabs, PopupUI, useModules, Tooltip } from 'zyra';
+import {
+	getApiLink,
+	ComponentStatusView,
+	Tabs,
+	PopupUI,
+	useModules,
+	Tooltip,
+} from 'zyra';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Notifications from './dashboard/notifications';
 import './hooksFilters';
@@ -23,7 +30,9 @@ const Dashboard = () => {
 	const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
 	const [isMenuMinmize, setisMenuMinmize] = useState(false);
 	const { modules } = useModules();
-	const [activeType, setActiveType] = useState<'notification' | 'activity'>('notification');
+	const [activeType, setActiveType] = useState<'notification' | 'activity'>(
+		'notification'
+	);
 	const [newProductId, setNewProductId] = useState(null);
 
 	const location = useLocation();
@@ -79,9 +88,11 @@ const Dashboard = () => {
 				return str.replace(/-([a-z])/g, (match, letter) =>
 					letter.toUpperCase()
 				);
-			}
+			};
 			const convertedKey = kebabToCamelCase(key);
-			const DefaultComponent = require(`./dashboard/${convertedKey}.tsx`).default;
+			const DefaultComponent = require(
+				`./dashboard/${convertedKey}.tsx`
+			).default;
 			return <DefaultComponent />;
 		} catch {
 			return <div>404 not found</div>;
@@ -116,21 +127,22 @@ const Dashboard = () => {
 					page: 1,
 					row: 4,
 					store_id: appLocalizer.store_id,
-					status: 'publish'
+					status: 'publish',
 				},
 			})
 				.then((response) => {
 					setAnnouncement(response.data.items || []);
 				})
-				.catch(() => { });
+				.catch(() => {});
 		}
-
 	}, []);
 
 	// dark mode
 	useEffect(() => {
-		document.body.classList.add(appLocalizer.settings_databases_value['appearance']
-			?.store_color_settings?.selectedPalette);
+		document.body.classList.add(
+			appLocalizer.settings_databases_value['appearance']
+				?.store_color_settings?.selectedPalette
+		);
 		document.body.classList.toggle('dark', isDarkMode);
 
 		return () => {
@@ -419,9 +431,7 @@ const Dashboard = () => {
 		icon: 'adminfont-user-network-icon',
 		desc: item.content,
 		className: 'notification-item',
-		action: () => {
-
-		},
+		action: () => {},
 	}));
 	return (
 		<div
@@ -464,8 +474,9 @@ const Dashboard = () => {
 								return (
 									<li
 										key={key}
-										className={`tab-name ${isParentActive ? 'active' : ''
-											}`}
+										className={`tab-name ${
+											isParentActive ? 'active' : ''
+										}`}
 									>
 										<a
 											className="tab"
@@ -486,21 +497,25 @@ const Dashboard = () => {
 												}
 											}}
 										>
-											<i className={`adminfont-${item.icon}`}></i>
+											<i
+												className={`adminfont-${item.icon}`}
+											></i>
 											<span>{item.name}</span>
 
 											{hasSubmenu && (
 												<i
-													className={`admin-arrow adminfont-pagination-right-arrow ${isOpen ? 'rotate' : ''
-														}`}
+													className={`admin-arrow adminfont-pagination-right-arrow ${
+														isOpen ? 'rotate' : ''
+													}`}
 												></i>
 											)}
 										</a>
 
 										{hasSubmenu && (
 											<ul
-												className={`subtabs ${isOpen ? 'open' : ''
-													}`}
+												className={`subtabs ${
+													isOpen ? 'open' : ''
+												}`}
 											>
 												{item.submenu.map((sub) => {
 													const subActive =
@@ -569,19 +584,25 @@ const Dashboard = () => {
 									}
 								>
 									<div
-										className={`adminfont-icon admin-icon dark-icon adminfont-${isDarkMode
-											? 'light'
-											: 'moon'
-											}`}
+										className={`adminfont-icon admin-icon dark-icon adminfont-${
+											isDarkMode ? 'light' : 'moon'
+										}`}
 									></div>
 								</li>
 
-								<Tooltip text={__('Add product', 'multivendorx')}>
+								<Tooltip
+									text={__('Add product', 'multivendorx')}
+								>
 									<li
 										onClick={() => {
-											if (modules.includes('shared-listing')) {
-
-												if (appLocalizer.permalink_structure) {
+											if (
+												modules.includes(
+													'shared-listing'
+												)
+											) {
+												if (
+													appLocalizer.permalink_structure
+												) {
 													navigate(
 														`${basePath}/${appLocalizer.dashboard_slug}/products/add/`
 													);
@@ -599,7 +620,9 @@ const Dashboard = () => {
 									</li>
 								</Tooltip>
 
-								<Tooltip text={__('view storefront', 'multivendorx')}>
+								<Tooltip
+									text={__('view storefront', 'multivendorx')}
+								>
 									<li
 										onClick={() =>
 											window.open(
@@ -622,14 +645,19 @@ const Dashboard = () => {
 
 									{showNotifications && <Notifications type="notification" />}
 								</li> */}
-								<Tooltip text={__('Notifications', 'multivendorx')}>
+								<Tooltip
+									text={__('Notifications', 'multivendorx')}
+								>
 									<li>
 										<PopupUI
 											position="menu-dropdown"
 											toggleIcon="adminfont-notification"
 											width={24}
 											header={{
-												title: __('Notifications', 'multivendorx'),
+												title: __(
+													'Notifications',
+													'multivendorx'
+												),
 												showCloseButton: false, // Add this to your PopupHeaderProps
 											}}
 										>
@@ -637,25 +665,41 @@ const Dashboard = () => {
 												tabs={[
 													{
 														id: 'notifications',
-														label: __("Notifications", 'multivendorx'),
+														label: __(
+															'Notifications',
+															'multivendorx'
+														),
 														icon: 'adminfont-notification',
-														content: <ul className="notification-list"></ul>,
+														content: (
+															<ul className="notification-list"></ul>
+														),
 														footer: {
 															url: `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/view-notifications/#subtab=notifications`,
 															icon: 'adminfont-eye',
-															text: __('View all notifications', 'multivendorx')
-														}
+															text: __(
+																'View all notifications',
+																'multivendorx'
+															),
+														},
 													},
 													{
 														id: 'activities',
-														label: __("Activities", 'multivendorx'),
+														label: __(
+															'Activities',
+															'multivendorx'
+														),
 														icon: 'adminfont-activity',
-														content: <ul className="notification-list"></ul>,
+														content: (
+															<ul className="notification-list"></ul>
+														),
 														footer: {
 															url: `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/view-notifications/#subtab=activity`,
 															icon: 'adminfont-eye',
-															text: __('View all activities', 'multivendorx')
-														}
+															text: __(
+																'View all activities',
+																'multivendorx'
+															),
+														},
 													},
 												]}
 											/>
@@ -663,9 +707,11 @@ const Dashboard = () => {
 									</li>
 								</Tooltip>
 
-								<Tooltip text={__('Announcement', 'multivendorx')}>
-								<li>
-									{/* <Popover
+								<Tooltip
+									text={__('Announcement', 'multivendorx')}
+								>
+									<li>
+										{/* <Popover
 										toggleIcon="adminfont-announcement"
 										toggleContent={<span className="tooltip-name">Announcements</span>}
 										template="notification"
@@ -707,21 +753,23 @@ const Dashboard = () => {
 											</a>
 										}
 									/> */}
-								</li>
+									</li>
 								</Tooltip>
-								
-								<Tooltip text={__('Full Screen', 'multivendorx')}>
-								<li
-									id="fullscreenToggle"
-									onClick={toggleFullscreen}
+
+								<Tooltip
+									text={__('Full Screen', 'multivendorx')}
 								>
-									<i className="admin-icon adminfont-crop-free"></i>
-									<span className="tooltip-name">
-										Full Screen
-									</span>
-								</li>
+									<li
+										id="fullscreenToggle"
+										onClick={toggleFullscreen}
+									>
+										<i className="admin-icon adminfont-crop-free"></i>
+										<span className="tooltip-name">
+											Full Screen
+										</span>
+									</li>
 								</Tooltip>
-								
+
 								<Tooltip text={__('Settings', 'multivendorx')}>
 									<li className="dropdown login-user">
 										<div
@@ -731,7 +779,10 @@ const Dashboard = () => {
 											<i className="admin-icon adminfont-person"></i>
 										</div>
 										{showUserDropdown && (
-											<div className="dropdown-menu" ref={userDropdownRef}>
+											<div
+												className="dropdown-menu"
+												ref={userDropdownRef}
+											>
 												<div className="dropdown-header">
 													<div className="user-card">
 														<div className="user-avatar">
@@ -788,90 +839,39 @@ const Dashboard = () => {
 														</li>
 														{availableStores.length >
 															0 && (
-																<li className="switch-store-wrapper">
-																	<a
-																		href="#"
-																		onClick={(
-																			e
-																		) => {
-																			e.preventDefault();
-																			setShowStoreList(
-																				(
-																					prev
-																				) =>
-																					!prev
-																			);
-																		}}
-																	>
-																		<i className="adminfont-switch-store"></i>
-																		Switch stores
-																		{firstTwoStores.length >
-																			0 && (
-																				<span className="switch-store-preview">
-																					{!showStoreList && (
-																						<>
-																							{firstTwoStores.map(
-																								(
-																									store,
-																									index
-																								) => (
-																									<span
-																										className={`store-icon admin-color${index + 2}`}
-																										key={
-																											store.id
-																										}
-																									>
-																										{store.name
-																											.charAt(
-																												0
-																											)
-																											.toUpperCase()}
-																									</span>
-																								)
-																							)}
-
-																							{availableStores.length >
-																								2 && (
-																									<span className="store-icon number">
-																										+
-																										{availableStores.length -
-																											2}
-																									</span>
-																								)}
-																						</>
-																					)}
-																					<span className="adminfont-keyboard-arrow-down arrow-icon"></span>
-																				</span>
-																			)}
-																	</a>
-
-																	{showStoreList && (
-																		<div className="switch-store-list">
-																			{availableStores.map(
-																				(
-																					store,
-																					index
-																				) => (
-																					<div
-																						className="store"
-																						key={
-																							store.id
-																						}
-																					>
-																						<a
-																							href="#"
-																							className="switch-store"
-																							onClick={(
-																								e
-																							) => {
-																								e.preventDefault();
-																								switchStore(
-																									store.id
-																								);
-																							}}
-																						>
+															<li className="switch-store-wrapper">
+																<a
+																	href="#"
+																	onClick={(
+																		e
+																	) => {
+																		e.preventDefault();
+																		setShowStoreList(
+																			(
+																				prev
+																			) =>
+																				!prev
+																		);
+																	}}
+																>
+																	<i className="adminfont-switch-store"></i>
+																	Switch
+																	stores
+																	{firstTwoStores.length >
+																		0 && (
+																		<span className="switch-store-preview">
+																			{!showStoreList && (
+																				<>
+																					{firstTwoStores.map(
+																						(
+																							store,
+																							index
+																						) => (
 																							<span
 																								className={`store-icon admin-color${index + 2}`}
+																								key={
+																									store.id
+																								}
 																							>
 																								{store.name
 																									.charAt(
@@ -879,21 +879,73 @@ const Dashboard = () => {
 																									)
 																									.toUpperCase()}
 																							</span>
-																							<div className="details-wrapper">
-																								<div className="store-name">
-																									{
-																										store.name
-																									}
-																								</div>
-																							</div>
-																						</a>
-																					</div>
-																				)
+																						)
+																					)}
+
+																					{availableStores.length >
+																						2 && (
+																						<span className="store-icon number">
+																							+
+																							{availableStores.length -
+																								2}
+																						</span>
+																					)}
+																				</>
 																			)}
-																		</div>
+																			<span className="adminfont-keyboard-arrow-down arrow-icon"></span>
+																		</span>
 																	)}
-																</li>
-															)}
+																</a>
+
+																{showStoreList && (
+																	<div className="switch-store-list">
+																		{availableStores.map(
+																			(
+																				store,
+																				index
+																			) => (
+																				<div
+																					className="store"
+																					key={
+																						store.id
+																					}
+																				>
+																					<a
+																						href="#"
+																						className="switch-store"
+																						onClick={(
+																							e
+																						) => {
+																							e.preventDefault();
+																							switchStore(
+																								store.id
+																							);
+																						}}
+																					>
+																						<span
+																							className={`store-icon admin-color${index + 2}`}
+																						>
+																							{store.name
+																								.charAt(
+																									0
+																								)
+																								.toUpperCase()}
+																						</span>
+																						<div className="details-wrapper">
+																							<div className="store-name">
+																								{
+																									store.name
+																								}
+																							</div>
+																						</div>
+																					</a>
+																				</div>
+																			)
+																		)}
+																	</div>
+																)}
+															</li>
+														)}
 													</ul>
 												</div>
 
@@ -917,39 +969,53 @@ const Dashboard = () => {
 					</div>
 				</div>
 
-
 				<div className="content-wrapper">
 					{storeData && storeData.status !== 'active' ? (
 						<ComponentStatusView
 							title={
 								<>
 									{storeData.status === 'pending' ? (
-										appLocalizer.settings_databases_value?.pending?.pending_msg
+										appLocalizer.settings_databases_value
+											?.pending?.pending_msg
 									) : storeData.status === 'suspended' ? (
-										appLocalizer.settings_databases_value?.suspended?.suspended_msg
+										appLocalizer.settings_databases_value
+											?.suspended?.suspended_msg
 									) : storeData.status === 'under_review' ? (
-										appLocalizer.settings_databases_value?.['under-review']
-											?.under_review_msg
+										appLocalizer.settings_databases_value?.[
+											'under-review'
+										]?.under_review_msg
 									) : storeData.status === 'rejected' ? (
 										<>
 											{
-												appLocalizer.settings_databases_value?.rejected
-													?.rejected_msg
+												appLocalizer
+													.settings_databases_value
+													?.rejected?.rejected_msg
 											}{' '}
 											<a
-												href={appLocalizer.registration_page}
+												href={
+													appLocalizer.registration_page
+												}
 												className="reapply-link"
 												target="__blank"
 											>
-												{__('Click here to reapply.', 'multivendorx')}
+												{__(
+													'Click here to reapply.',
+													'multivendorx'
+												)}
 											</a>
 										</>
 									) : (
-										__('You’re almost ready to sell.', 'multivendorx')
+										__(
+											'You’re almost ready to sell.',
+											'multivendorx'
+										)
 									)}
 								</>
 							}
-							desc={__('To get started, you need to register your store on the marketplace.', 'multivendorx')}
+							desc={__(
+								'To get started, you need to register your store on the marketplace.',
+								'multivendorx'
+							)}
 							buttonText={__('Create your store', 'multivendorx')}
 							buttonLink={appLocalizer.registration_page}
 							buttonTarget="_blank"
@@ -961,13 +1027,12 @@ const Dashboard = () => {
 								'multivendorx'
 							)}
 							buttonText={__('Contact Admin', 'multivendorx')}
-							onButtonClick={() => { }}
+							onButtonClick={() => {}}
 						/>
 					) : (
 						loadComponent(currentTab)
 					)}
 				</div>
-
 			</div>
 		</div>
 	);

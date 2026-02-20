@@ -19,7 +19,7 @@ export default {
 				'Select the product/listing fields stores can configure when adding or managing their products/listings.',
 				'multivendorx'
 			),
-			 
+
 			desc: __(
 				'<ul><li>Virtual - Choose this option for products/listing that don’t have a physical form (e.g., services, memberships). <li>Downloadable - Use this option for products/listing that customers can download (e.g., software, eBooks).</li><ul>',
 				'multivendorx'
@@ -46,7 +46,7 @@ export default {
 				'Control which product/listing data fields are available to stores when creating or editing products/listing.',
 				'multivendorx'
 			),
-			 
+
 			options: [
 				{
 					key: 'general',
@@ -130,7 +130,10 @@ export default {
 				'Control how stores select categories while adding products/listing.',
 				'multivendorx'
 			),
-			title: __('How stores choose product/listing categories', 'multivendorx'),
+			title: __(
+				'How stores choose product/listing categories',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'category_selection_method',
@@ -183,7 +186,10 @@ export default {
 				},
 				{
 					key: 'slugs',
-					label: __('Using the product/listing slug (name)', 'multivendorx'),
+					label: __(
+						'Using the product/listing slug (name)',
+						'multivendorx'
+					),
 					value: 'slugs',
 				},
 				{

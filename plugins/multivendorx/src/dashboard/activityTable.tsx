@@ -19,10 +19,9 @@ const ActivitiesTable = (React.FC = () => {
 		},
 		date: {
 			label: __('Date', 'multivendorx'),
-			type:'date'
+			type: 'date',
 		},
 	};
-
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);

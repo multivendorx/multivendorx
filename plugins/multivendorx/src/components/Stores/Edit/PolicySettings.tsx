@@ -1,7 +1,15 @@
 /* global appLocalizer */
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { SuccessNotice, getApiLink, Container, Column, Card, FormGroupWrapper, TextAreaUI } from 'zyra';
+import {
+	SuccessNotice,
+	getApiLink,
+	Container,
+	Column,
+	Card,
+	FormGroupWrapper,
+	TextAreaUI,
+} from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
@@ -25,7 +33,6 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 	}, [successMsg]);
 
 	const handleChange = (key: string, value: string) => {
-
 		setFormData((prev) => {
 			const updated = {
 				...(prev || {}),
@@ -60,12 +67,13 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 							<TextAreaUI
 								name="store_policy"
 								value={formData.store_policy}
-								onChange={(value: string) => handleChange('store_policy', value)}
+								onChange={(value: string) =>
+									handleChange('store_policy', value)
+								}
 								usePlainText={false}
 								tinymceApiKey={
-									appLocalizer
-										.settings_databases_value[
-									'overview'
+									appLocalizer.settings_databases_value[
+										'overview'
 									]['tinymce_api_section'] ?? ''
 								}
 							/>
@@ -76,12 +84,13 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 							<TextAreaUI
 								name="shipping_policy"
 								value={formData.shipping_policy}
-								onChange={(value: string) => handleChange('shipping_policy', value)}
+								onChange={(value: string) =>
+									handleChange('shipping_policy', value)
+								}
 								usePlainText={false}
 								tinymceApiKey={
-									appLocalizer
-										.settings_databases_value[
-									'overview'
+									appLocalizer.settings_databases_value[
+										'overview'
 									]['tinymce_api_section'] ?? ''
 								}
 							/>
@@ -94,28 +103,35 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 							<TextAreaUI
 								name="refund_policy"
 								value={formData.refund_policy}
-								onChange={(value: string) => handleChange('refund_policy', value)}
+								onChange={(value: string) =>
+									handleChange('refund_policy', value)
+								}
 								usePlainText={false}
 								tinymceApiKey={
-									appLocalizer
-										.settings_databases_value[
-									'overview'
+									appLocalizer.settings_databases_value[
+										'overview'
 									]['tinymce_api_section'] ?? ''
 								}
 							/>
 						</FormGroupWrapper>
 					</Card>
-					<Card title={__('Cancellation / return / exchange policy', 'multivendorx')}>
+					<Card
+						title={__(
+							'Cancellation / return / exchange policy',
+							'multivendorx'
+						)}
+					>
 						<FormGroupWrapper>
 							<TextAreaUI
 								name="cancellation_policy"
 								value={formData.cancellation_policy}
-								onChange={(value: string) => handleChange('cancellation_policy', value)}
+								onChange={(value: string) =>
+									handleChange('cancellation_policy', value)
+								}
 								usePlainText={false}
 								tinymceApiKey={
-									appLocalizer
-										.settings_databases_value[
-									'overview'
+									appLocalizer.settings_databases_value[
+										'overview'
 									]['tinymce_api_section'] ?? ''
 								}
 							/>

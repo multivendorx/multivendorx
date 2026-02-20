@@ -89,9 +89,7 @@ const ProductList: React.FC<ProductListProps> = ({ limit = 4 }) => {
 							</div>
 
 							<h2 className="has-text-align-center wp-block-post-title has-medium-font-size">
-								<a href={product.permalink}>
-									{product.name}
-								</a>
+								<a href={product.permalink}>{product.name}</a>
 							</h2>
 
 							<div className="has-text-align-center wp-block-woocommerce-product-price">

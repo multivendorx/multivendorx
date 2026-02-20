@@ -22,9 +22,9 @@ export default {
 				'multivendorx'
 			),
 			desc: __(
-    '<strong>Example:</strong> You set <em>Min = 1</em> and <em>Max = 5</em> for a T-shirt.<br> If a customer tries to buy 6 units, it will be blocked.<br> However, buying 3 units is allowed.',
-    'multivendorx'
-),
+				'<strong>Example:</strong> You set <em>Min = 1</em> and <em>Max = 5</em> for a T-shirt.<br> If a customer tries to buy 6 units, it will be blocked.<br> However, buying 3 units is allowed.',
+				'multivendorx'
+			),
 
 			moduleEnabled: 'min-max',
 			nestedFields: [
@@ -52,10 +52,10 @@ export default {
 				'multivendorx'
 			),
 			desc: __(
-    '<strong>Example:</strong> You set <em>Min = $20</em> and <em>Max = $100</em> for a Backpack.<br> If a customer tries to buy 1 backpack priced at $10, the purchase is blocked.<br> However, buying 2 backpacks at $30 each (total $60) is allowed.',
-    'multivendorx'
-),
-moduleEnabled: 'min-max',
+				'<strong>Example:</strong> You set <em>Min = $20</em> and <em>Max = $100</em> for a Backpack.<br> If a customer tries to buy 1 backpack priced at $10, the purchase is blocked.<br> However, buying 2 backpacks at $30 each (total $60) is allowed.',
+				'multivendorx'
+			),
+			moduleEnabled: 'min-max',
 			nestedFields: [
 				{
 					key: 'product_min_amount',
@@ -92,9 +92,9 @@ moduleEnabled: 'min-max',
 				'multivendorx'
 			),
 			desc: __(
-	'<strong>Example:</strong> You set <em>Min = 2</em> and <em>Max = 5</em> items for the cart.<br> If a customer tries to place an order with <em>1 item</em>, the purchase is blocked.<br> Adding <em>2 to 5 items</em> to the cart is allowed.',
-	'multivendorx'
-),
+				'<strong>Example:</strong> You set <em>Min = 2</em> and <em>Max = 5</em> items for the cart.<br> If a customer tries to place an order with <em>1 item</em>, the purchase is blocked.<br> Adding <em>2 to 5 items</em> to the cart is allowed.',
+				'multivendorx'
+			),
 
 			moduleEnabled: 'min-max',
 			nestedFields: [
@@ -122,10 +122,9 @@ moduleEnabled: 'min-max',
 				'multivendorx'
 			),
 			desc: __(
-    '<strong>Example:</strong> You set the <em>minimum order value to $50</em> and the <em>maximum order value to $500</em>.<br> If a customer tries to checkout with an order total of $30, the checkout will be blocked.<br> However, checkout with an order total of $120 is allowed.',
-    'multivendorx'
-),
-
+				'<strong>Example:</strong> You set the <em>minimum order value to $50</em> and the <em>maximum order value to $500</em>.<br> If a customer tries to checkout with an order total of $30, the checkout will be blocked.<br> However, checkout with an order total of $120 is allowed.',
+				'multivendorx'
+			),
 
 			moduleEnabled: 'min-max',
 			nestedFields: [

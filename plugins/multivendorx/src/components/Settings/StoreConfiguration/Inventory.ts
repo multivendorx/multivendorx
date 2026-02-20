@@ -47,7 +47,10 @@ export default {
 					beforeElement: {
 						type: 'preposttext',
 						textType: 'pre',
-						preText: __('Notify stores when inventory reaches below', 'multivendorx'),
+						preText: __(
+							'Notify stores when inventory reaches below',
+							'multivendorx'
+						),
 					},
 					afterElement: {
 						type: 'preposttext',
@@ -90,7 +93,10 @@ export default {
 					beforeElement: {
 						type: 'preposttext',
 						textType: 'pre',
-						preText: __('Notify stores when inventory reaches below', 'multivendorx'),
+						preText: __(
+							'Notify stores when inventory reaches below',
+							'multivendorx'
+						),
 					},
 					afterElement: {
 						type: 'preposttext',

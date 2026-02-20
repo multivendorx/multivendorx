@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, SuccessNotice, Card, Container, Column, FormGroupWrapper, FormGroup, BasicInputUI, AdminButtonUI, PopupUI, ItemList, NavigatorHeader } from 'zyra';
+import {
+	getApiLink,
+	SuccessNotice,
+	Card,
+	Container,
+	Column,
+	FormGroupWrapper,
+	FormGroup,
+	BasicInputUI,
+	AdminButtonUI,
+	PopupUI,
+	ItemList,
+	NavigatorHeader,
+} from 'zyra';
 import { formatCurrency } from '../services/commonFunction';
 
 const Withdrawls: React.FC = () => {
@@ -90,10 +103,13 @@ const Withdrawls: React.FC = () => {
 			<SuccessNotice message={message} />
 			<NavigatorHeader
 				headerTitle={__('Withdrawals', 'multivendorx')}
-				headerDescription={__('View and keep track of your withdrawals.', 'multivendorx')}
+				headerDescription={__(
+					'View and keep track of your withdrawals.',
+					'multivendorx'
+				)}
 			/>
 
-			<Container >
+			<Container>
 				<Column grid={6}>
 					<Card title={__('Last Withdrawal', 'multivendorx')}>
 						{lastWithdraws && lastWithdraws.length > 0 ? (
@@ -120,18 +136,16 @@ const Withdrawls: React.FC = () => {
 												'paypal-payout' &&
 												__('PayPal', 'multivendorx')}
 											{item.payment_method ===
-												'bank-transfer'
+											'bank-transfer'
 												? __(
-													'Bank Transfer',
-													'multivendorx'
-												)
+														'Bank Transfer',
+														'multivendorx'
+													)
 												: ''}
 										</div>
 									</div>
 									<div className="right">
-										<div className="date">
-											{item.date}
-										</div>
+										<div className="date">{item.date}</div>
 									</div>
 								</div>
 							))
@@ -144,8 +158,12 @@ const Withdrawls: React.FC = () => {
 						<AdminButtonUI
 							buttons={{
 								icon: 'eye',
-								text: __('View transaction history', 'multivendorx'),
-								onClick: () => (window.location.href = `${appLocalizer.site_url}/dashboard/transactions/`),
+								text: __(
+									'View transaction history',
+									'multivendorx'
+								),
+								onClick: () =>
+									(window.location.href = `${appLocalizer.site_url}/dashboard/transactions/`),
 							}}
 						/>
 					</Card>
@@ -155,13 +173,12 @@ const Withdrawls: React.FC = () => {
 						<div className="payout-card-wrapper">
 							<div className="price-wrapper">
 								<div className="admin-badge green">
-									{__(
-										'Ready to withdraw',
-										'multivendorx'
-									)}
+									{__('Ready to withdraw', 'multivendorx')}
 								</div>
 								<div className="price">
-									{formatCurrency(data.available_balance)}{' '}
+									{formatCurrency(
+										data.available_balance
+									)}{' '}
 								</div>
 								<div className="desc">
 									<b>{formatCurrency(data?.thresold)} </b>{' '}
@@ -177,23 +194,39 @@ const Withdrawls: React.FC = () => {
 									background
 									items={[
 										{
-											title: __('Upcoming Balance', 'multivendorx'),
+											title: __(
+												'Upcoming Balance',
+												'multivendorx'
+											),
 											desc: (
 												<>
-													{__('This amount is being processed and will be released ', 'multivendorx')}
+													{__(
+														'This amount is being processed and will be released ',
+														'multivendorx'
+													)}
 													{data?.payment_schedules ? (
 														<>
-															{data.payment_schedules}{' '}
-															{__(' by the admin.', 'multivendorx')}
+															{
+																data.payment_schedules
+															}{' '}
+															{__(
+																' by the admin.',
+																'multivendorx'
+															)}
 														</>
 													) : (
 														<>
-															{__('automatically every hour.', 'multivendorx')}
+															{__(
+																'automatically every hour.',
+																'multivendorx'
+															)}
 														</>
 													)}
 												</>
 											),
-											time: formatCurrency(data.locking_balance),
+											time: formatCurrency(
+												data.locking_balance
+											),
 										},
 									]}
 								/>
@@ -204,30 +237,52 @@ const Withdrawls: React.FC = () => {
 										border
 										items={[
 											{
-												title: __('Free Withdrawals', 'multivendorx'),
+												title: __(
+													'Free Withdrawals',
+													'multivendorx'
+												),
 												desc: (
 													<>
-														{__('Then', 'multivendorx')}{' '}
+														{__(
+															'Then',
+															'multivendorx'
+														)}{' '}
 														{Number(
-															data?.withdrawal_setting?.[0]?.withdrawal_percentage
+															data
+																?.withdrawal_setting?.[0]
+																?.withdrawal_percentage
 														) || 0}
 														% +{' '}
 														{formatCurrency(
 															Number(
-																data?.withdrawal_setting?.[0]?.withdrawal_fixed
+																data
+																	?.withdrawal_setting?.[0]
+																	?.withdrawal_fixed
 															) || 0
 														)}{' '}
-														{__('fee', 'multivendorx')}
+														{__(
+															'fee',
+															'multivendorx'
+														)}
 													</>
 												),
 												value: (
 													<>
 														{Math.max(
 															0,
-															(data?.withdrawal_setting?.[0]?.free_withdrawals ?? 0) -
-															(data?.free_withdrawal ?? 0)
+															(data
+																?.withdrawal_setting?.[0]
+																?.free_withdrawals ??
+																0) -
+																(data?.free_withdrawal ??
+																	0)
 														)}{' '}
-														<span>{__('Left', 'multivendorx')}</span>
+														<span>
+															{__(
+																'Left',
+																'multivendorx'
+															)}
+														</span>
 													</>
 												),
 											},
@@ -239,7 +294,10 @@ const Withdrawls: React.FC = () => {
 							<AdminButtonUI
 								buttons={{
 									icon: 'withdraw',
-									text: __('Request Withdrawal', 'multivendorx'),
+									text: __(
+										'Request Withdrawal',
+										'multivendorx'
+									),
 									onClick: () => setRequestWithdrawal(true),
 								}}
 							/>
@@ -269,7 +327,10 @@ const Withdrawls: React.FC = () => {
 					}
 				>
 					<FormGroupWrapper>
-						<FormGroup label={__('Amount', 'multivendorx')} htmlFor="Amount">
+						<FormGroup
+							label={__('Amount', 'multivendorx')}
+							htmlFor="Amount"
+						>
 							<BasicInputUI
 								type="number"
 								name="amount"
@@ -277,14 +338,10 @@ const Withdrawls: React.FC = () => {
 								min={0}
 								max={data.available_balance}
 								onChange={(value) =>
-									handleAmountChange(
-										Number(value)
-									)
+									handleAmountChange(Number(value))
 								}
 							/>
-							{error && (
-								<p className="error-message">{error}</p>
-							)}
+							{error && <p className="error-message">{error}</p>}
 						</FormGroup>
 					</FormGroupWrapper>
 				</PopupUI>

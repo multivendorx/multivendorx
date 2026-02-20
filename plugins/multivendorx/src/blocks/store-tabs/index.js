@@ -16,7 +16,10 @@ const Edit = () => {
 		>
 			<strong>{__('Store Tabs', 'multivendorx')}</strong>
 			<p style={{ marginTop: '8px', color: '#666' }}>
-				{__('This block renders store tabs on the frontend.', 'multivendorx')}
+				{__(
+					'This block renders store tabs on the frontend.',
+					'multivendorx'
+				)}
 			</p>
 		</div>
 	);
@@ -30,9 +33,7 @@ registerBlockType('multivendorx/store-tabs', {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-	const el = document.getElementById(
-		'multivendorx-store-tabs'
-	);
+	const el = document.getElementById('multivendorx-store-tabs');
 
 	if (!el) {
 		return;

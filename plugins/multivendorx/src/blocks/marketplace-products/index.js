@@ -52,7 +52,9 @@ const EditBlock = (props) => {
 					<TextControl
 						label="Store Slug"
 						value={attributes.store_slug || ''}
-						onChange={(value) => setAttributes({ store_slug: value })}
+						onChange={(value) =>
+							setAttributes({ store_slug: value })
+						}
 					/>
 					<TextControl
 						label="Products per page"
@@ -60,7 +62,9 @@ const EditBlock = (props) => {
 						min={1}
 						value={attributes.perPage}
 						onChange={(value) =>
-							setAttributes({ perPage: parseInt(value, 10) || 12 })
+							setAttributes({
+								perPage: parseInt(value, 10) || 12,
+							})
 						}
 					/>
 				</PanelBody>
@@ -112,7 +116,9 @@ registerBlockType('multivendorx/marketplace-products', {
 document.addEventListener('DOMContentLoaded', () => {
 	const element = document.getElementById('marketplace-products');
 	if (element) {
-		const attributes = JSON.parse(element.getAttribute('data-attributes') || '{}');
+		const attributes = JSON.parse(
+			element.getAttribute('data-attributes') || '{}'
+		);
 		render(
 			<BrowserRouter>
 				<MarketplaceProductList {...attributes} />

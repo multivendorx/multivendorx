@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { addFilter } from '@wordpress/hooks';
-import {  AdminButtonUI, Card, getApiLink } from 'zyra';
+import { AdminButtonUI, Card, getApiLink } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -170,20 +170,17 @@ const AICard = () => {
 	}
 
 	return (
-		<Card contentHeight
+		<Card
+			contentHeight
 			className="theme-bg"
 			title={__('AI assist', 'multivendorx')}
 			desc={__('Get help creating your product listing', 'multivendorx')}
-		// iconName="pagination-right-arrow arrow-icon"
-		// toggle
+			// iconName="pagination-right-arrow arrow-icon"
+			// toggle
 		>
 			<div className="ai-assist-wrapper">
 				{/* Error */}
-				{error && (
-					<div className="error-message">
-						{error}
-					</div>
-				)}
+				{error && <div className="error-message">{error}</div>}
 
 				{/* Welcome */}
 				{/* {!hasSuggestions && !isLoading && !error && (
@@ -213,7 +210,10 @@ const AICard = () => {
 								className="box clickable-suggestion"
 								key={`product-${index}`}
 							>
-								<h4>{__('Suggestions', 'multivendorx')} {index + 1}</h4>
+								<h4>
+									{__('Suggestions', 'multivendorx')}{' '}
+									{index + 1}
+								</h4>
 
 								{item.title && (
 									<div
@@ -241,7 +241,10 @@ const AICard = () => {
 											)
 										}
 									>
-										{__('Short Description:', 'multivendorx')}
+										{__(
+											'Short Description:',
+											'multivendorx'
+										)}
 										<span>{item.shortDescription}</span>
 										<i className="adminfont-arrow-right"></i>
 									</div>
@@ -268,22 +271,29 @@ const AICard = () => {
 						{/* Product Name */}
 						{aiSuggestions.productName.length > 0 && (
 							<div className="suggestion-category">
-								<h4>{__('Product Name Suggestions', 'multivendorx')}</h4>
-								{aiSuggestions.productName.map((suggestion, index) => (
-									<div
-										className="box clickable-suggestion"
-										key={`name-sugg-${index}`}
-										onClick={() =>
-											handleSuggestionClick(
-												'productName',
-												suggestion
-											)
-										}
-									>
-										<span>{suggestion}</span>
-										<i className="adminfont-arrow-right"></i>
-									</div>
-								))}
+								<h4>
+									{__(
+										'Product Name Suggestions',
+										'multivendorx'
+									)}
+								</h4>
+								{aiSuggestions.productName.map(
+									(suggestion, index) => (
+										<div
+											className="box clickable-suggestion"
+											key={`name-sugg-${index}`}
+											onClick={() =>
+												handleSuggestionClick(
+													'productName',
+													suggestion
+												)
+											}
+										>
+											<span>{suggestion}</span>
+											<i className="adminfont-arrow-right"></i>
+										</div>
+									)
+								)}
 							</div>
 						)}
 
@@ -291,23 +301,28 @@ const AICard = () => {
 						{aiSuggestions.shortDescription.length > 0 && (
 							<div className="suggestion-category">
 								<h4>
-									{__('Product Short Description Suggestions', 'multivendorx')}
+									{__(
+										'Product Short Description Suggestions',
+										'multivendorx'
+									)}
 								</h4>
-								{aiSuggestions.shortDescription.map((suggestion, index) => (
-									<div
-										className="box clickable-suggestion"
-										key={`short-desc-sugg-${index}`}
-										onClick={() =>
-											handleSuggestionClick(
-												'shortDescription',
-												suggestion
-											)
-										}
-									>
-										<span>{suggestion}</span>
-										<i className="adminfont-arrow-right"></i>
-									</div>
-								))}
+								{aiSuggestions.shortDescription.map(
+									(suggestion, index) => (
+										<div
+											className="box clickable-suggestion"
+											key={`short-desc-sugg-${index}`}
+											onClick={() =>
+												handleSuggestionClick(
+													'shortDescription',
+													suggestion
+												)
+											}
+										>
+											<span>{suggestion}</span>
+											<i className="adminfont-arrow-right"></i>
+										</div>
+									)
+								)}
 							</div>
 						)}
 
@@ -315,23 +330,28 @@ const AICard = () => {
 						{aiSuggestions.productDescription.length > 0 && (
 							<div className="suggestion-category">
 								<h4>
-									{__('Product Description Suggestions', 'multivendorx')}
+									{__(
+										'Product Description Suggestions',
+										'multivendorx'
+									)}
 								</h4>
-								{aiSuggestions.productDescription.map((suggestion, index) => (
-									<div
-										className="box clickable-suggestion"
-										key={`desc-sugg-${index}`}
-										onClick={() =>
-											handleSuggestionClick(
-												'productDescription',
-												suggestion
-											)
-										}
-									>
-										<span>{suggestion}</span>
-										<i className="adminfont-arrow-right"></i>
-									</div>
-								))}
+								{aiSuggestions.productDescription.map(
+									(suggestion, index) => (
+										<div
+											className="box clickable-suggestion"
+											key={`desc-sugg-${index}`}
+											onClick={() =>
+												handleSuggestionClick(
+													'productDescription',
+													suggestion
+												)
+											}
+										>
+											<span>{suggestion}</span>
+											<i className="adminfont-arrow-right"></i>
+										</div>
+									)
+								)}
 							</div>
 						)}
 					</div>
@@ -371,7 +391,6 @@ const AICard = () => {
 				/>
 			</div>
 		</Card>
-
 	);
 };
 

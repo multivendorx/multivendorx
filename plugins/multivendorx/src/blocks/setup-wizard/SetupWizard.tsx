@@ -7,18 +7,17 @@ import img from '../../assets/images/multivendorx-logo.png';
 const SetupWizard: React.FC = () => {
 	// Required state for ExpandablePanelGroup
 	const [value, setValue] = useState({
-		'marketplace_setup': {
-			'store_selling_mode': 'default'
+		marketplace_setup: {
+			store_selling_mode: 'default',
 		},
-		'commission_setup': {
-			'disbursement_order_status': ['completed']
+		commission_setup: {
+			disbursement_order_status: ['completed'],
 		},
-		'store_setup': {
-			'approve_store': 'manually'
-		}
+		store_setup: {
+			approve_store: 'manually',
+		},
 	});
 	const settingChanged = useRef(false);
-
 
 	const appLocalizer = (window as any).appLocalizer;
 
@@ -73,7 +72,10 @@ const SetupWizard: React.FC = () => {
 						},
 						{
 							key: 'subscription',
-							label: __('Subscription marketplace', 'multivendorx'),
+							label: __(
+								'Subscription marketplace',
+								'multivendorx'
+							),
 							value: 'subscription',
 						},
 						{
@@ -85,7 +87,7 @@ const SetupWizard: React.FC = () => {
 							key: 'mixed',
 							label: __('Mixed marketplace', 'multivendorx'),
 							value: 'mixed',
-						}
+						},
 					],
 				},
 				{
@@ -179,7 +181,10 @@ const SetupWizard: React.FC = () => {
 						'How stores sell on your marketplace',
 						'multivendorx'
 					),
-					desc: __('Choose how listings are created and sold by stores.', 'multivendorx'),
+					desc: __(
+						'Choose how listings are created and sold by stores.',
+						'multivendorx'
+					),
 					options: [
 						{
 							key: 'default',
@@ -195,7 +200,7 @@ const SetupWizard: React.FC = () => {
 							key: 'franchise',
 							label: __('Franchise', 'multivendorx'),
 							value: 'franchise',
-							proSetting: true
+							proSetting: true,
 						},
 					],
 				},
@@ -228,10 +233,7 @@ const SetupWizard: React.FC = () => {
 				{
 					key: 'approve_store',
 					type: 'setting-toggle',
-					label: __(
-						'Store registration approval',
-						'multivendorx'
-					),
+					label: __('Store registration approval', 'multivendorx'),
 					options: [
 						{
 							key: 'manually',
@@ -332,10 +334,7 @@ const SetupWizard: React.FC = () => {
 				{
 					key: 'disbursement_order_status',
 					type: 'checkbox',
-					label: __(
-						'When stores earn money',
-						'multivendorx'
-					),
+					label: __('When stores earn money', 'multivendorx'),
 					settingDescription: __(
 						'Choose when store earnings are added to their wallet.',
 						'multivendorx'
@@ -455,7 +454,10 @@ const SetupWizard: React.FC = () => {
 					{__('Welcome to the MultivendorX family!', 'multivendorx')}
 				</div>
 				<div className="des">
-					{__('Thank you for choosing MultiVendorX! This quick setup wizard will help you configure the basic settings and have your marketplace ready in no time. It’s completely optional and shouldn’t take longer than five minutes.', 'multivendorx')}
+					{__(
+						'Thank you for choosing MultiVendorX! This quick setup wizard will help you configure the basic settings and have your marketplace ready in no time. It’s completely optional and shouldn’t take longer than five minutes.',
+						'multivendorx'
+					)}
 				</div>
 			</div>
 
