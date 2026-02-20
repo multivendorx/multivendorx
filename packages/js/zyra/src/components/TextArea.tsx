@@ -103,6 +103,7 @@ const TextArea: FieldComponent = {
             placeholder={field.placeholder}
             rowNumber={field.rowNumber} // for row number value
             colNumber={field.colNumber} // for column number value
+            readOnly={field.readOnly}
             value={value || ''}
             usePlainText={field.usePlainText} // Toggle between textarea and TinyMCE
             // tinymceApiKey={

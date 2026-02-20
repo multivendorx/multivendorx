@@ -554,6 +554,9 @@ const RenderComponent: React.FC<RenderProps> = ({
                             }`}
                         onClick={(e) => handleGroupClick(e, inputField)}
                     >
+                        {inputField.icon && (
+                            <i className={`adminfont-${inputField.icon}`}></i>
+                        )}
                         {inputField.label && (
                             <label
                                 className="settings-form-label"
