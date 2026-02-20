@@ -14,7 +14,7 @@ import {
 import React, { useState, useEffect } from 'react';
 import '../components/dashboard.scss';
 import '../dashboard/dashboard1.scss';
-import { AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, CalendarInput, useModules, TableCard, NavigatorHeader } from 'zyra';
+import { AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, useModules, TableCard, NavigatorHeader } from 'zyra';
 import { TableRow } from '@/services/type';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
@@ -70,21 +70,72 @@ const Dashboard: React.FC = () => {
 	const siteUrl = appLocalizer.site_url.replace(/\/$/, '');
 
 	// Table headers
-	const recentOrderHeaders = [
-		{ key: 'id', label: __('Order Id', 'multivendorx') },
-		{ key: 'date', label: __('Order Date', 'multivendorx') },
-		{ key: 'products', label: __('Product Name', 'multivendorx') },
-		{ key: 'amount', label: __('Total Amount', 'multivendorx'), isNumeric: true },
-		{ key: 'status', label: __('Order Status', 'multivendorx') },
-	];
+	const recentOrderHeaders = {
+		id: {
+			label: __('Order Id', 'multivendorx'),
+		},
+		date: {
+			label: __('Order Date', 'multivendorx'),
+			type: 'date'
+		},
+		products: {
+			label: __('Product Name', 'multivendorx'),
+			render: (row) => (
+				row.products && row.products.length > 0 ? (
+					row.products.map((product, index) => (
+						<div key={index} className="product-wrapper">
+							{product.name}
+						</div>
+					))
+				) : (
+					'-'
+				)
+			),
+		},
+		amount: {
+			label: __('Total Amount', 'multivendorx'),
+			type: 'currency'
+		},
+		status: {
+			label: __('Order Status', 'multivendorx'),
+			type: 'status'
+		},
+	};
 
-	const topProductHeaders = [
-		{ key: 'rank', label: '#' },
-		{ key: 'name', label: __('Name', 'multivendorx') },
-		{ key: 'popularity', label: __('Popularity', 'multivendorx') },
-		{ key: 'sales', label: __('Sales', 'multivendorx') },
-	];
+	const topProductHeaders = {
+		serial: {
+			label: __('#.', 'multivendorx'),
+			isNumeric: true,
+		},
 
+		name: {
+			label: __('Product Name', 'multivendorx'),
+		},
+
+		popularity_bar: {
+			label: __('Popularity', 'multivendorx'),
+			render: (row, index) => (
+				<div className="progress-bar">
+					<div className={`progress-bar admin-color${index + 1}`}>
+						<span
+							className={`progress-bar admin-bg-color${index + 1}`}
+							style={{ width: `${row.popularity_bar}%` }}
+						/>
+					</div>
+				</div>
+			),
+		},
+
+		popularity_percent: {
+			label: __('%', 'multivendorx'),
+			render: (row, index) => (
+				<div className={`admin-badge admin-color${index + 1}`}>
+					{row.popularity_percent}%
+				</div>
+			),
+			isNumeric: true,
+		},
+	};
 	// Helper function to get dynamic greeting
 	const getGreeting = () => {
 		const hour = new Date().getHours();
@@ -189,7 +240,7 @@ const Dashboard: React.FC = () => {
 				const products = response.data;
 				const maxSales = Math.max(...products.map((p) => parseInt(p.total_sales) || 0));
 
-				const processed = products.map((p) => {
+				const processedProducts = products.map((p) => {
 					const sales = parseInt(p.total_sales) || 0;
 					const popularity = maxSales > 0 ? Math.round((sales / maxSales) * 100) : 0;
 					return {
@@ -200,40 +251,8 @@ const Dashboard: React.FC = () => {
 					};
 				});
 
-				// Prepare table rows for TableCard
-				const rows = processed.map((product, index) => [
-					{
-						display: String(index + 1).padStart(2, '0'),
-						value: index + 1
-					},
-					{
-						display: product.name,
-						value: product.name
-					},
-					{
-						display: (
-							<div className="progress-bar">
-								<div className={`progress-bar admin-color${index + 1}`}>
-									<span
-										className={`progress-bar admin-bg-color${index + 1}`}
-										style={{ width: `${product.popularity}%` }}
-									/>
-								</div>
-							</div>
-						),
-						value: product.popularity
-					},
-					{
-						display: (
-							<div className={`admin-badge admin-color${index + 1}`}>
-								{product.popularity}%
-							</div>
-						),
-						value: product.popularity
-					}
-				]);
-				setTopProductRows(rows);
-				setTopProductIds(processed.map(p => p.id));
+				setTopProductRows(processedProducts);
+				setTopProductIds(processedProducts.map(p => p.id));
 			});
 
 		// Recent Orders
@@ -265,53 +284,7 @@ const Dashboard: React.FC = () => {
 					currency_symbol: order.currency_symbol,
 				}));
 
-				// Prepare table rows for TableCard
-				const rows = orders.map((item) => {
-					const orderUrl = `/dashboard/sales/orders/#view/${item.id}`;
-					return [
-						{
-							display: (
-								<a href={orderUrl} target="_blank" rel="noopener noreferrer">
-									#{item.id} {__('Customer', 'multivendorx')}
-								</a>
-							),
-							value: item.id
-						},
-						{
-							display: item.date,
-							value: item.date
-						},
-						{
-							display: (
-								<>
-									{item.products && item.products.length > 0 ? (
-										item.products.map((product, index) => (
-											<div key={index} className="product-wrapper">
-												{product.name}
-											</div>
-										))
-									) : (
-										'-'
-									)}
-								</>
-							),
-							value: item.products.map(p => p.name).join(', ')
-						},
-						{
-							display: item.amount,
-							value: item.amount
-						},
-						{
-							display: (
-								<div className="admin-status">
-									{item.status}
-								</div>
-							),
-							value: item.status
-						}
-					];
-				});
-				setRecentOrderRows(rows);
+				setRecentOrderRows(orders);
 				setRecentOrderIds(orders.map(o => o.id));
 			});
 
@@ -678,6 +651,14 @@ const Dashboard: React.FC = () => {
 								title=""
 								showMenu={false}
 								showColumnToggleIcon={false}
+								format={appLocalizer.date_format}
+								currency={{
+									currencySymbol: appLocalizer.currency_symbol,
+									priceDecimals: appLocalizer.price_decimals,
+									decimalSeparator: appLocalizer.decimal_separator,
+									thousandSeparator: appLocalizer.thousand_separator,
+									currencyPosition: appLocalizer.currency_position
+								}}
 							/>
 						) : (
 							<div className="no-data">
@@ -792,7 +773,7 @@ const Dashboard: React.FC = () => {
 														{item.content}
 													</div>
 													<span>
-														{formatTimeAgo(item.date)}
+														{formatTimeAgo(item.date_created)}
 													</span>
 												</div>
 											</li>

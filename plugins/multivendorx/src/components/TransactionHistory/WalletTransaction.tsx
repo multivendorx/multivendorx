@@ -17,11 +17,13 @@ import {
 	PopupUI,
 	TextAreaUI,
 	ItemList,
+	TableRow,
+	QueryProps,
+	CategoryCount
 } from 'zyra';
 
 import { downloadCSV, formatCurrency, formatLocalDate } from '../../services/commonFunction';
 import ViewCommission from '../Commissions/ViewCommission';
-import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 interface WalletTransactionProps {
 	storeId: number | null;
@@ -33,7 +35,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [categoryCounts, setCategoryCounts] = useState<
-		categoryCounts[] | null
+		CategoryCount[] | null
 	>(null);
 	const [wallet, setWallet] = useState<any[]>([]);
 	const [recentDebits, setRecentDebits] = useState<any[]>([]);

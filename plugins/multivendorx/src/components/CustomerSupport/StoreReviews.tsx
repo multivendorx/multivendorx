@@ -11,10 +11,12 @@ import {
 	ToggleSettingUI,
 	PopupUI,
 	TextAreaUI,
+	TableRow,
+	QueryProps,
+	CategoryCount
 } from 'zyra';
 import Popup from '../Popup/Popup';
 import { formatLocalDate } from '@/services/commonFunction';
-import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type Review = {
 	review_id: number;
@@ -43,7 +45,7 @@ const StoreReviews: React.FC = () => {
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [store, setStore] = useState<any[] | null>(null);
 	const [categoryCounts, setCategoryCounts] = useState<
-		categoryCounts[] | null
+		CategoryCount[] | null
 	>(null);
 
 	const [selectedReview, setSelectedReview] = useState<Review | null>(null);

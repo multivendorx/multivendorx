@@ -29,12 +29,12 @@ const FollowStore: React.FC<FollowStoreProps> = ({ showFollowerCount = true }) =
 
     useEffect(() => {
         axios.get(
-            getApiLink(StoreInfo, `follow-store/${storeId}`),
+            getApiLink(StoreInfo, `followers/${storeId}`),
             {
                 headers: { 'X-WP-Nonce': StoreInfo.nonce },
                 params: {
-                    userId,
-                    storeId
+                    user_id:userId,
+                    store_id:storeId
                 }
             }
         ).then((response) => {
@@ -47,10 +47,10 @@ const FollowStore: React.FC<FollowStoreProps> = ({ showFollowerCount = true }) =
 
     const handleFollowToggle = () => {
         axios.post(
-            getApiLink(StoreInfo, `follow-store/${storeId}`),
+            getApiLink(StoreInfo, `followers/${storeId}`),
             {
-                userId,
-                storeId
+                user_id:userId,
+                store_id:storeId
             },
             {
                 headers: { 'X-WP-Nonce': StoreInfo.nonce }

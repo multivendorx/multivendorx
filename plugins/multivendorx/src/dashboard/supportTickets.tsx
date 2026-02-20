@@ -10,13 +10,28 @@ const SupportTickets: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
-	const headers = [
-		{ key: 'title', label: 'Title' },
-		{ key: 'content', label: 'Content' },
-		{ key: 'status', label: 'Status' },
-		{ key: 'recipients', label: 'Recipients' },
-		{ key: 'date', label: 'Date' }
-	];
+	const headers = {
+		title: {
+			label: __('Title', 'multivendorx'),
+		},
+
+		content: {
+			label: __('Content', 'multivendorx'),
+		},
+
+		status: {
+			label: __('Status', 'multivendorx'),
+		},
+
+		recipients: {
+			label: __('Recipients', 'multivendorx'),
+		},
+
+		date: {
+			label: __('Date', 'multivendorx'),
+			type: 'date',
+		},
+	};
 	return (
 		<>
 			<NavigatorHeader

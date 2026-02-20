@@ -8,7 +8,7 @@ import {
 	TableCard,
 } from 'zyra';
 
-import { formatCurrency, formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
+import { formatLocalDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const Refund: React.FC = () => {
@@ -17,15 +17,31 @@ const Refund: React.FC = () => {
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 
-	const headers = [
-		{ key: 'order_id', label: __('Order', 'multivendorx'), isSortable: true },
-		{ key: 'customer_name', label: __('Customer', 'multivendorx') },
-		{ key: 'amount', label: __('Refund Amount', 'multivendorx') },
-		{ key: 'customer_reason', label: __('Refund Reason', 'multivendorx') },
-		{ key: 'status', label: __('Status', 'multivendorx') },
-		{ key: 'date', label: __('Date', 'multivendorx') },
-	];
-
+	const headers = {
+		order_id: {
+			label: __('Order', 'multivendorx'),
+			isSortable: true,
+		},
+		customer_name: {
+			label: __('Customer', 'multivendorx'),
+		},
+		amount: {
+			label: __('Refund Amount', 'multivendorx'),
+			type: 'currency',
+		},
+		customer_reason: {
+			label: __('Refund Reason', 'multivendorx'),
+		},
+		status: {
+			label: __('Status', 'multivendorx'),
+			type: 'status',
+		},
+		date_created: {
+			label: __('Date', 'multivendorx'),
+			type: 'date',
+			isSortable: true,
+		},
+	};
 	const filters = [
 		{
 			key: 'created_at',
@@ -34,7 +50,7 @@ const Refund: React.FC = () => {
 		},
 	];
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, 'refund'), {
@@ -43,16 +59,16 @@ const Refund: React.FC = () => {
 					page: query.paged || 1,
 					row: query.per_page || 10,
 					status: query.categoryFilter || '',
-					searchAction: query.searchAction || 'order_id',
-					searchValue: query.searchValue || '',
-					storeId: appLocalizer.store_id,
-					startDate: query.filter?.created_at?.startDate
+					search_action: query.searchAction || 'order_id',
+					search_value: query.searchValue || '',
+					store_id: appLocalizer.store_id,
+					start_date: query.filter?.created_at?.startDate
 						? formatLocalDate(query.filter.created_at.startDate)
 						: '',
-					endDate: query.filter?.created_at?.endDate
+					end_date: query.filter?.created_at?.endDate
 						? formatLocalDate(query.filter.created_at.endDate)
 						: '',
-					orderBy: query.orderby,
+					order_by: query.orderby,
 					order: query.order,
 				},
 			})
@@ -64,39 +80,7 @@ const Refund: React.FC = () => {
 
 				setRowIds(ids);
 
-				const mappedRows: any[][] = items.map((item: any) => [
-					{
-						value: item.order_id,
-						display: item.order_id || '-',
-						type: 'card',
-						data: {
-							name: `#${item.order_id}`,
-							link: `/dashboard/sales/orders/#view/${item.order_id}`,
-						},
-					},
-					{
-						value: item.customer_name,
-						display: item.customer_name?.trim(),
-					},
-					{
-						value: item.amount,
-						display: formatCurrency(item.amount),
-					},
-					{
-						value: item.customer_reason,
-						display: item.customer_reason,
-					},
-					{
-						value: item.status,
-						display: item.status,
-					},
-					{
-						value: item.date,
-						display: formatWcShortDate(item.date),
-					}
-				]);
-
-				setRows(mappedRows);
+				setRows(items);
 
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
@@ -119,7 +103,7 @@ const Refund: React.FC = () => {
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
-				onQueryUpdate={fetchData}
+				onQueryUpdate={doRefreshTableData}
 				ids={rowIds}
 				search={{
 					placeholder: 'Search...',
@@ -129,6 +113,14 @@ const Refund: React.FC = () => {
 					],
 				}}
 				filters={filters}
+				format={appLocalizer.date_format}
+				currency={{
+					currencySymbol: appLocalizer.currency_symbol,
+					priceDecimals: appLocalizer.price_decimals,
+					decimalSeparator: appLocalizer.decimal_separator,
+					thousandSeparator: appLocalizer.thousand_separator,
+					currencyPosition: appLocalizer.currency_position
+				}}
 			/>
 		</>
 	);

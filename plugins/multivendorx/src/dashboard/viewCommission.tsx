@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, PopupUI,  TableCard } from 'zyra';
+import { getApiLink, PopupUI, TableCard } from 'zyra';
 import { formatCurrency } from '@/services/commonFunction';
 import { TableRow } from '@/services/type';
 
@@ -98,68 +98,36 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 
 							setOrderData(order);
 							if (Array.isArray(order.shipping_lines)) {
-								const mappedRows: TableRow[][] = order.shipping_lines.map((ship: any) => [
-									{ display: ship.method_title, value: ship.method_title },
-									{ display: ship.method_id, value: ship.method_id },
-									{ display: formatCurrency(ship.total), value: ship.total },
-									{ display: formatCurrency(ship.total_tax), value: ship.total_tax },
-								]);
+								const mappedRows = order.shipping_lines.map((ship: any) => ({
+									method: ship.method_title,
+									amount: ship.total,
+									tax: ship.total_tax,
+								}));
+
 								setShippingItems(mappedRows);
 							} else {
 								setShippingItems([]);
 							}
+
 							if (Array.isArray(order.line_items)) {
-								const mappedRows: TableRow[][] = order.line_items.map((item: any) => {
+								const mappedRows = order.line_items.map((item: any) => {
 									const total = parseFloat(item.total || '0');
 									const tax = parseFloat(item.total_tax || '0');
 
-									return [
-										{
-											type: 'product',
-											value: item.id,
-											data: {
-												id: item.id,
-												name: item.name,
-												sku: item.sku,
-												image: item.images?.src,
-											},
-											display: item.name
-										},
-										{ display: formatCurrency(item.price), value: item.price },
-										{
-											type: 'card',
-											value: item.quantity,
-											data: {
-												name: item.quantity,
-												description: refundMap[item.id]?.qty
-											},
-											display: item.quantity
-										},
-										{
-											type: 'card',
-											value: total,
-											data: {
-												name: total,
-												description: formatCurrency(refundMap[item.id]?.total)
-											},
-											display: total
-										},
-										{
-											type: 'card',
-											value: tax,
-											data: {
-												name: tax,
-												description: formatCurrency(refundMap[item.id]?.tax)
-											},
-											display: tax
-										},
-									];
+									return {
+										id: item.name, // product name
+										cost: formatCurrency(item.price),
+										qty: item.quantity,
+										total: formatCurrency(total),
+										tax: formatCurrency(tax),
+									};
 								});
 
 								setOrderItems(mappedRows);
 							} else {
 								setOrderItems([]);
 							}
+
 						})
 						.catch(() => {
 							setOrderData(null);
@@ -175,42 +143,35 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 			});
 	}, [commissionId]);
 
-	const popupColumns = [
-		{
-			key: 'id',
-			label: 'Product',
+	const popupColumns = {
+		id: {
+			label: __('Product', 'multivendorx'),
 		},
-		{
-			key: 'cost',
-			label: 'Cost',
+		cost: {
+			label: __('Cost', 'multivendorx'),
 		},
-		{
-			key: 'qty',
-			label: 'Qty',
+		qty: {
+			label: __('Qty', 'multivendorx'),
 		},
-		{
-			key: 'total',
-			label: 'Total',
+		total: {
+			label: __('Total', 'multivendorx'),
 		},
-		{
-			key: 'tax',
-			label: 'Tax',
-		}
-	];
-	const shippingColumns = [
-		{
-			key: 'method',
-			label: 'Method',
+		tax: {
+			label: __('Tax', 'multivendorx'),
 		},
-		{
-			key: 'Amount',
-			label: 'Amount',
+	};
+
+	const shippingColumns = {
+		method: {
+			label: __('Method', 'multivendorx'),
 		},
-		{
-			key: 'tax',
-			label: 'Tax',
-		}
-	];
+		amount: {
+			label: __('Amount', 'multivendorx'),
+		},
+		tax: {
+			label: __('Tax', 'multivendorx'),
+		},
+	};
 
 	return (
 		<PopupUI

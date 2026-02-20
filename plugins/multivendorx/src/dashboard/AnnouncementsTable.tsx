@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {  getApiLink, TableCard } from 'zyra';
+import { getApiLink, TableCard } from 'zyra';
 
-import {  truncateText } from '@/services/commonFunction';
+import { truncateText } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const AnnouncementsTable = (React.FC = () => {
@@ -12,15 +12,25 @@ const AnnouncementsTable = (React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
 
 
-    const headers = [
-        { key: 'title', label: 'Title' },
-        { key: 'content', label: 'Content' },
-        { key: 'status', label: 'Status' },
-        { key: 'date', label: 'Date' },
-    ];
-    const fetchData = (query: QueryProps) => {
+    const headers = {
+        title: {
+            label: __('Title', 'multivendorx'),
+        },
+        content: {
+            label: __('Content', 'multivendorx'),
+        },
+        status: {
+            label: __('Status', 'multivendorx'),
+            type:'status'
+        },
+        date_created: {
+            label: __('Date', 'multivendorx'),
+            type:'date'
+        },
+    };
+    const doRefreshTableData = (query: QueryProps) => {
         setIsLoading(true);
-    
+
         axios
             .get(getApiLink(appLocalizer, 'announcement'), {
                 headers: { 'X-WP-Nonce': appLocalizer.nonce, withCredentials: true },
@@ -33,21 +43,7 @@ const AnnouncementsTable = (React.FC = () => {
             })
             .then((response) => {
                 const items = response.data || [];
-    
-                const mappedRows: any[][] = items.map((item: any) => [
-                    { display: item.title, value: item.id },
-                    {
-                        display: truncateText(item.content || '', 50),
-                        value: item.content || '',
-                    },
-                    { display: item.status, value: item.status },
-                    {
-                        display: item.date,
-                        value: item.date,
-                    },
-                ]);
-    
-                setRows(mappedRows);
+                setRows(items);
                 setTotalRows(Number(response.headers['x-wp-total']) || 0);
                 setIsLoading(false);
             })
@@ -57,7 +53,7 @@ const AnnouncementsTable = (React.FC = () => {
                 setIsLoading(false);
             });
     };
-    
+
 
     return (
         <>
@@ -66,7 +62,7 @@ const AnnouncementsTable = (React.FC = () => {
                 rows={rows}
                 totalRows={totalRows}
                 isLoading={isLoading}
-                onQueryUpdate={fetchData}
+                onQueryUpdate={doRefreshTableData}
                 format={appLocalizer.date_format}
             />
         </>

@@ -59,7 +59,7 @@ const LatestRefundRequest: React.FC<LatestRefundRequestProps> = ({
 		status: {
 			label: __('Status', 'multivendorx'),
 		},
-		date: {
+		date_created: {
 			label: __('Date', 'multivendorx'),
 		},
 	};

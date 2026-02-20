@@ -113,7 +113,6 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 					zone_id: zoneWithMethod.zone_id,
 				},
 			});
-
 			if (response.data && response.data.settings) {
 				const data = response.data;
 				const methodConfig = data.settings;
@@ -309,7 +308,6 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 				</div>
 			);
 		}
-
 		return (
 			<div className="shipping-method-wrapper">
 				{methodsArray.map((method: any) => (
@@ -351,44 +349,44 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 			</div>
 
 			<div className="admin-table-wrapper">
-					<table className="admin-table">
-						<thead className="admin-table-header">
-							<tr className="header-row">
-								<th className="header-col">
-									{__('Zone Name', 'multivendorx')}
-								</th>
-								<th className="header-col">
-									{__('Region(s)', 'multivendorx')}
-								</th>
-								<th className="header-col">
-									{__('Shipping Method(s)', 'multivendorx')}
-								</th>
+				<table className="admin-table">
+					<thead className="admin-table-header">
+						<tr className="header-row">
+							<th className="header-col">
+								{__('Zone Name', 'multivendorx')}
+							</th>
+							<th className="header-col">
+								{__('Region(s)', 'multivendorx')}
+							</th>
+							<th className="header-col">
+								{__('Shipping Method(s)', 'multivendorx')}
+							</th>
+						</tr>
+					</thead>
+					<tbody className="admin-table-body">
+						{data.length === 0 ? (
+							<tr>
+								<td colSpan={3} className="no-data">
+									<p>{__('No shipping zones found', 'multivendorx')}</p>
+								</td>
 							</tr>
-						</thead>
-						<tbody className="admin-table-body">
-							{data.length === 0 ? (
-								<tr>
-									<td colSpan={3} className="no-data">
-										<p>{__('No shipping zones found', 'multivendorx')}</p>
+						) : (
+							data.map((zone) => (
+								<tr key={zone.id} className="admin-row">
+									<td className="admin-column">
+										{zone.zone_name || '—'}
+									</td>
+									<td className="admin-column">
+										{zone.formatted_zone_location || '—'}
+									</td>
+									<td className="admin-column">
+										{renderShippingMethods(zone)}
 									</td>
 								</tr>
-							) : (
-								data.map((zone) => (
-									<tr key={zone.id} className="admin-row">
-										<td className="admin-column">
-											{zone.zone_name || '—'}
-										</td>
-										<td className="admin-column">
-											{zone.formatted_zone_location || '—'}
-										</td>
-										<td className="admin-column">
-											{renderShippingMethods(zone)}
-										</td>
-									</tr>
-								))
-							)}
-						</tbody>
-					</table>
+							))
+						)}
+					</tbody>
+				</table>
 			</div>
 
 			{addShipping && selectedZone && (
@@ -424,205 +422,202 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 						/>
 					}
 				>
-					<>
-						<div className="form-group-wrapper">
-							<div className="form-group">
-								<label>
-									{__('Shipping Method', 'multivendorx')}
-								</label>
-								<ToggleSettingUI
-									value={formData.shippingMethod}
-									onChange={(val: string) => {
-										console.log('Previous value:', formData.shippingMethod);
-										if (!isEditing) {
-											handleChange('shippingMethod', val);
-										}
-									}}
-									options={
-										isEditing
-											? [
-												{
-													key: formData.shippingMethod,
-													value: formData.shippingMethod,
-													label: formData.shippingMethod
-														.replace('_', ' ')
-														.replace(
-															/\b\w/g,
-															(c) =>
-																c.toUpperCase()
-														),
-												},
-											]
-											: [
-												{
-													key: 'local_pickup',
-													value: 'local_pickup',
-													label: 'Local pickup',
-												},
-												{
-													key: 'free_shipping',
-													value: 'free_shipping',
-													label: 'Free shipping',
-												},
-												{
-													key: 'flat_rate',
-													value: 'flat_rate',
-													label: 'Flat Rate',
-												},
-											]
+					<div className="form-group-wrapper">
+						<div className="form-group">
+							<label>
+								{__('Shipping Method', 'multivendorx')}
+							</label>
+							<ToggleSettingUI
+								value={formData.shippingMethod}
+								onChange={(val: string) => {
+									if (!isEditing) {
+										handleChange('shippingMethod', val);
 									}
-									disabled={isEditing}
+								}}
+								options={
+									isEditing
+										? [
+											{
+												key: formData.shippingMethod,
+												value: formData.shippingMethod,
+												label: formData.shippingMethod
+													.replace('_', ' ')
+													.replace(
+														/\b\w/g,
+														(c) =>
+															c.toUpperCase()
+													),
+											},
+										]
+										: [
+											{
+												key: 'local_pickup',
+												value: 'local_pickup',
+												label: 'Local pickup',
+											},
+											{
+												key: 'free_shipping',
+												value: 'free_shipping',
+												label: 'Free shipping',
+											},
+											{
+												key: 'flat_rate',
+												value: 'flat_rate',
+												label: 'Flat Rate',
+											},
+										]
+								}
+								disabled={isEditing}
+							/>
+						</div>
+
+						{/* Local Pickup */}
+						{formData.shippingMethod === 'local_pickup' && (
+							<div className="form-group">
+								<label>{__('Cost', 'multivendorx')}</label>
+								<BasicInputUI
+									type="number"
+									name="localPickupCost"
+									placeholder="Enter cost"
+									value={formData.localPickupCost}
+									onChange={(val: any) =>
+										handleChange(
+											'localPickupCost',
+											val
+										)
+									}
 								/>
 							</div>
+						)}
 
-							{/* Local Pickup */}
-							{formData.shippingMethod === 'local_pickup' && (
+						{/* Free Shipping */}
+						{formData.shippingMethod === 'free_shipping' && (
+							<>
 								<div className="form-group">
-									<label>{__('Cost', 'multivendorx')}</label>
+									<ToggleSettingUI
+										value={formData.freeShippingType}
+										onChange={(val: string) =>
+											handleChange(
+												'freeShippingType',
+												val
+											)
+										}
+										options={[
+											{
+												key: 'min_order',
+												value: 'min_order',
+												label: 'Min Order',
+											},
+											{
+												key: 'coupon',
+												value: 'coupon',
+												label: 'Coupon',
+											},
+										]}
+									/>
+								</div>
+								{formData.freeShippingType ===
+									'min_order' && (
+										<div className="form-group">
+											<label className="font-medium">
+												{__(
+													'Minimum Order Cost',
+													'multivendorx'
+												)}
+											</label>
+											<BasicInputUI
+												type="number"
+												name="minOrderCost"
+												placeholder="Enter minimum order cost"
+												value={formData.minOrderCost}
+												onChange={(value) =>
+													handleChange(
+														'minOrderCost',
+														value
+													)
+												}
+											/>
+										</div>
+									)}
+							</>
+						)}
+
+						{/* Flat Rate */}
+						{formData.shippingMethod === 'flat_rate' && (
+							<>
+								<div className="form-group">
+									<label className="font-medium">
+										{__('Cost', 'multivendorx')}
+									</label>
 									<BasicInputUI
 										type="number"
-										name="localPickupCost"
+										name="flatRateCost"
 										placeholder="Enter cost"
-										value={formData.localPickupCost}
-										onChange={(val: any) =>
+										value={formData.flatRateCost}
+										onChange={(value) =>
 											handleChange(
-												'localPickupCost',
-												val
+												'flatRateCost',
+												value
 											)
 										}
 									/>
 								</div>
-							)}
 
-							{/* Free Shipping */}
-							{formData.shippingMethod === 'free_shipping' && (
-								<>
-									<div className="form-group">
-										<ToggleSettingUI
-											value={formData.freeShippingType}
-											onChange={(val: string) =>
-												handleChange(
-													'freeShippingType',
-													val
-												)
-											}
-											options={[
-												{
-													key: 'min_order',
-													value: 'min_order',
-													label: 'Min Order',
-												},
-												{
-													key: 'coupon',
-													value: 'coupon',
-													label: 'Coupon',
-												},
-											]}
-										/>
-									</div>
-									{formData.freeShippingType ===
-										'min_order' && (
-											<div className="form-group">
-												<label className="font-medium">
-													{__(
-														'Minimum Order Cost',
-														'multivendorx'
-													)}
-												</label>
-												<BasicInputUI
-													type="number"
-													name="minOrderCost"
-													placeholder="Enter minimum order cost"
-													value={formData.minOrderCost}
-													onChange={(value) =>
-														handleChange(
-															'minOrderCost',
-															value
-														)
-													}
-												/>
-											</div>
+								<div className="form-group">
+									<label className="font-medium">
+										{__(
+											'Cost of Shipping Class',
+											'multivendorx'
 										)}
-								</>
-							)}
+									</label>
+									<BasicInputUI
+										type="text"
+										name="flatRateClassCost"
+										placeholder="Enter class cost"
+										value={formData.flatRateClassCost}
+										onChange={(value) =>
+											handleChange(
+												'flatRateClassCost',
+												value
+											)
+										}
+									/>
+								</div>
 
-							{/* Flat Rate */}
-							{formData.shippingMethod === 'flat_rate' && (
-								<>
-									<div className="form-group">
-										<label className="font-medium">
-											{__('Cost', 'multivendorx')}
-										</label>
-										<BasicInputUI
-											type="number"
-											name="flatRateCost"
-											placeholder="Enter cost"
-											value={formData.flatRateCost}
-											onChange={(value) =>
-												handleChange(
-													'flatRateCost',
-													 value
-												)
-											}
-										/>
-									</div>
-
-									<div className="form-group">
-										<label className="font-medium">
-											{__(
-												'Cost of Shipping Class',
-												'multivendorx'
-											)}
-										</label>
-										<BasicInputUI
-											type="text"
-											name="flatRateClassCost"
-											placeholder="Enter class cost"
-											value={formData.flatRateClassCost}
-											onChange={(value) =>
-												handleChange(
-													'flatRateClassCost',
-													value
-												)
-											}
-										/>
-									</div>
-
-									<div className="form-group">
-										<label className="font-medium">
-											{__(
-												'Calculation Type',
-												'multivendorx'
-											)}
-										</label>
-										<ToggleSettingUI
-											value={
-												formData.flatRateCalculationType
-											}
-											onChange={(val: string) =>
-												handleChange(
-													'flatRateCalculationType',
-													val
-												)
-											}
-											options={[
-												{
-													key: 'class',
-													value: 'class',
-													label: 'Per Class',
-												},
-												{
-													key: 'order',
-													value: 'order',
-													label: 'Per Order',
-												},
-											]}
-										/>
-									</div>
-								</>
-							)}
-						</div>
-					</>
+								<div className="form-group">
+									<label className="font-medium">
+										{__(
+											'Calculation Type',
+											'multivendorx'
+										)}
+									</label>
+									<ToggleSettingUI
+										value={
+											formData.flatRateCalculationType
+										}
+										onChange={(val: string) =>
+											handleChange(
+												'flatRateCalculationType',
+												val
+											)
+										}
+										options={[
+											{
+												key: 'class',
+												value: 'class',
+												label: 'Per Class',
+											},
+											{
+												key: 'order',
+												value: 'order',
+												label: 'Per Order',
+											},
+										]}
+									/>
+								</div>
+							</>
+						)}
+					</div>
 				</PopupUI>
 			)}
 		</>

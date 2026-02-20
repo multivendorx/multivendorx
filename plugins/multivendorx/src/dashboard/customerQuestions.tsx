@@ -12,9 +12,11 @@ import {
 	PopupUI,
 	AdminButtonUI,
 	NavigatorHeader,
+	TableRow,
+	QueryProps,
+	CategoryCount
 } from 'zyra';
-import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
-import { categoryCounts, QueryProps, TableRow } from '@/services/type';
+import { formatLocalDate, truncateText } from '@/services/commonFunction';
 
 type StoreQnaRow = {
 	id: number;
@@ -34,7 +36,7 @@ const CustomerQuestions: React.FC = () => {
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [categoryCounts, setCategoryCounts] = useState<
-		categoryCounts[] | null
+		CategoryCount[] | null
 	>(null);
 
 	const [selectedQna, setSelectedQna] = useState<StoreQnaRow | null>(null);
@@ -52,12 +54,12 @@ const CustomerQuestions: React.FC = () => {
 				{
 					question_text: qna,
 					answer_text: answer,
-					question_visibility:'public',
+					question_visibility: 'public',
 				},
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
 			.then(() => {
-				fetchData({});
+				doRefreshTableData({});
 				setSelectedQna(null);
 				setAnswer('');
 				setSaving(false);
@@ -128,7 +130,7 @@ const CustomerQuestions: React.FC = () => {
 		},
 	];
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, 'qna'), {
@@ -228,7 +230,7 @@ const CustomerQuestions: React.FC = () => {
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
-				onQueryUpdate={fetchData}
+				onQueryUpdate={doRefreshTableData}
 				ids={rowIds}
 				categoryCounts={categoryCounts}
 				search={{}}

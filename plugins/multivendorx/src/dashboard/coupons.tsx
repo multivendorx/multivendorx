@@ -12,11 +12,14 @@ import {
 	TableCard,
 	NavigatorHeader,
 	Tabs,
+	TableRow,
+	QueryProps,
+	CategoryCount
 } from 'zyra';
 
 import axios from 'axios';
 import Popup from '../components/Popup/Popup';
-import { categoryCounts, QueryProps, TableRow } from '@/services/type';
+import { formatLocalDate, toWcIsoDate } from '@/services/commonFunction';
 
 const COUPON_STATUS_MAP: Record<string, string> = {
 	all: __('All', 'multivendorx'),
@@ -48,7 +51,7 @@ const AllCoupon: React.FC = () => {
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [categoryCounts, setCategoryCounts] = useState<
-		categoryCounts[] | null
+		CategoryCount[] | null
 	>(null);
 
 	const [validationErrors, setValidationErrors] = useState<{
@@ -71,7 +74,7 @@ const AllCoupon: React.FC = () => {
 				}
 			)
 			.then(() => {
-				fetchData({});
+				doRefreshTableData({});
 			})
 			.catch((err) => {
 				console.error('Error deleting coupon:', err);
@@ -263,7 +266,7 @@ const AllCoupon: React.FC = () => {
 					customer_email: '',
 					id: '',
 				});
-				fetchData({});
+				doRefreshTableData({});
 			})
 			.catch((err) => {
 				console.error('Error saving coupon:', err);
@@ -501,7 +504,7 @@ const AllCoupon: React.FC = () => {
 				.then(() => {
 					// Refresh the data after action
 					fetchCouponStatusCounts();
-					fetchData({});
+					doRefreshTableData({});
 				})
 				.catch((err: unknown) => {
 					console.error('Error performing bulk coupon action:', err);
@@ -518,38 +521,54 @@ const AllCoupon: React.FC = () => {
 		{ label: 'Delete', value: 'delete' },
 	];
 
-	const headers = [
-		{ key: 'code', label: 'Coupon Code' },
-		{ key: 'discount_type', label: 'Coupon Type' },
-		{ key: 'amount', label: 'Amount' },
-		{ key: 'description', label: 'Description' },
-		{ key: 'usage_limit', label: 'Usage / Limit' },
-		{ key: 'date_expires', label: 'Expiry Date' },
-		{ key: 'status', label: 'Status' },
-		{
-			key: 'action',
+	const headers = {
+		code: {
+			label: __('Coupon Code', 'multivendorx'),
+		},
+		discount_type: {
+			label: __('Coupon Type', 'multivendorx'),
+		},
+		amount: {
+			label: __('Amount', 'multivendorx'),
+			type: 'currency'
+		},
+		description: {
+			label: __('Description', 'multivendorx'),
+		},
+		usage_limit: {
+			label: __('Usage / Limit', 'multivendorx'),
+		},
+		date_expires: {
+			label: __('Expiry Date', 'multivendorx'),
+			type: 'date'
+		},
+		status: {
+			label: __('Status', 'multivendorx'),
+			type: 'status'
+		},
+		action: {
 			type: 'action',
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
 			actions: [
 				{
 					label: __('Edit', 'multivendorx'),
 					icon: 'edit',
-					onClick: (id: number) => handleEditCoupon(id),
+					onClick: (row) => handleEditCoupon(row.id),
 				},
 				{
 					label: __('Delete', 'multivendorx'),
 					icon: 'delete',
-					onClick: (id: number) => {
-						setSelectedCoupon({ id: id });
+					onClick: (row) => {
+						setSelectedCoupon({ id: row.id });
 						setConfirmOpen(true);
 					},
 					className: 'danger',
 				},
 			],
 		},
-	];
+	};
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/coupons`, {
@@ -559,12 +578,13 @@ const AllCoupon: React.FC = () => {
 					row: query.per_page || 10,
 					status: query.categoryFilter || '',
 					search: query.searchValue || '',
-					// after: query.filter?.created_at?.startDate
-					// 	? formatLocalDate(query.filter.created_at.startDate)
-					// 	: '',
-					// before: query.filter?.created_at?.endDate
-					// 	? formatLocalDate(query.filter.created_at.endDate)
-					// 	: '',
+					after: query.filter?.created_at?.startDate
+						? toWcIsoDate(query.filter.created_at.startDate, 'start')
+						: undefined,
+
+					before: query.filter?.created_at?.endDate
+						? toWcIsoDate(query.filter.created_at.endDate, 'end')
+						: undefined,
 					discount_type: query.filter?.couponType,
 					meta_key: 'multivendorx_store_id',
 					value: appLocalizer.store_id,
@@ -577,20 +597,8 @@ const AllCoupon: React.FC = () => {
 					.map((item) => item.id);
 
 				setRowIds(ids);
-				const mappedRows: any[][] = items.map((item: any) => [
-					{ display: item.code, value: item.code },
-					{
-						display: item.discount_type,
-						value: item.discount_type,
-					},
-					{ display: item.amount, value: item.amount },
-					{ display: item.usage_count, value: item.usage_count },
-					{ display: item.usage_limit, value: item.usage_limit },
-					{ display: item.date_expires, value: item.date_expires },
-					{ display: item.description, value: item.description },
-					{ display: item.status, value: item.status },
-				]);
-				setRows(mappedRows);
+
+				setRows(items);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
@@ -783,7 +791,7 @@ const AllCoupon: React.FC = () => {
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
-				onQueryUpdate={fetchData}
+				onQueryUpdate={doRefreshTableData}
 				ids={rowIds}
 				categoryCounts={categoryCounts}
 				search={{}}
@@ -793,6 +801,13 @@ const AllCoupon: React.FC = () => {
 					handleBulkAction(action, selectedIds)
 				}}
 				format={appLocalizer.date_format}
+				currency={{
+					currencySymbol: appLocalizer.currency_symbol,
+					priceDecimals: appLocalizer.price_decimals,
+					decimalSeparator: appLocalizer.decimal_separator,
+					thousandSeparator: appLocalizer.thousand_separator,
+					currencyPosition: appLocalizer.currency_position
+				}}
 			/>
 		</>
 	);

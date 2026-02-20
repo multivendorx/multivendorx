@@ -10,7 +10,7 @@ const NotificationsTable = (React.FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 
 		axios
@@ -25,14 +25,7 @@ const NotificationsTable = (React.FC = () => {
 			})
 			.then((response) => {
 				const items = response.data || [];
-
-				const mappedRows: any[][] = items.map((item: any) => [
-					{ display: item.title, value: item.title },
-					{ display: item.type, value: item.type },
-					{ display: item.date, value: item.date }
-				]);
-
-				setRows(mappedRows);
+				setRows(items);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
@@ -44,21 +37,18 @@ const NotificationsTable = (React.FC = () => {
 			});
 	};
 
-	const headers = [
-		{
-			key: 'title',
-			label: 'Title',
+	const headers = {
+		title: {
+			label: __('Title', 'multivendorx'),
 		},
-		{
-			key: 'type',
-			label: 'Type',
+		type: {
+			label: __('Type', 'multivendorx'),
 		},
-		{
-			key: 'date',
-			label: 'Date',
-		}
-	];
-
+		date: {
+			label: __('Date', 'multivendorx'),
+			type:'date'
+		},
+	};
 	return (
 		<>
 			{error && <div className="error-notice">{error}</div>}
@@ -67,7 +57,7 @@ const NotificationsTable = (React.FC = () => {
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
-				onQueryUpdate={fetchData}
+				onQueryUpdate={doRefreshTableData}
 			/>
 		</>
 	);

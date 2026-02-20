@@ -62,6 +62,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
         if (variant === 'mini-search' && isExpanded && !query) {
             setIsExpanded(false);
         }
+        setIsOpen(false);
     });
 
     const triggerSearch = (value: string, newAction = action) => {
