@@ -376,6 +376,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
     };
 
     const handleAddNewMethod = () => {
+        if(!canAccess) { return;}
         const newMethod = createNewExpandablePanelMethod();
         setExpandablePanelMethods((prev) => [...prev, newMethod]);
 

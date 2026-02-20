@@ -32,6 +32,7 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   number: BasicInput,
   email: BasicInput,
   time: BasicInput,
+  date: BasicInput,
   select: SelectInput,
   radio: RadioInput,
   textarea: TextArea,
