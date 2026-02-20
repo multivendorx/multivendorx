@@ -311,7 +311,7 @@ const StoreCommission: React.FC = () => {
 					{
 						label: __('Export', 'multivendorx'),
 						icon: 'export',
-						onClick: handleExportAll
+						// onClick: handleExportAll
 					},
 				]}
 			/>

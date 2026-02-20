@@ -1,5 +1,9 @@
 import { __ } from '@wordpress/i18n';
 
+const settings =
+		appLocalizer.settings_databases_value['store-permissions']
+			?.edit_store_info_activation || [];
+
 export default {
     id: 'general',
     priority: 1,
@@ -13,35 +17,25 @@ export default {
 	modal: [
 				{
 					type: 'text',
-					name: 'name',
 					label: __('Name', 'multivendorx'),
 					key: 'name',
-					value: '',
-					
-
+					readOnly: !settings.includes('store_name')
 				},
 				{
 					type: 'text',
-					name: 'slug',
 					label: __('Storefront link', 'multivendorx'),
-					key: 'slug',
-					value: '',
-					
+					key: 'slug',	
 				},
 				{
 					type: 'textarea',
-					name: 'description',
 					label: __('Description', 'multivendorx'),
 					key: 'description',
-					value: '',
-					
+					readOnly: !settings.includes('store_description')
 				},
 				{
 					type: 'text',
-					name: 'messageToBuyer',
 					label: __('Buyer welcome message after purchase', 'multivendorx'),
 					key: 'messageToBuyer',
-					value: '',
 				}
 			]
 };

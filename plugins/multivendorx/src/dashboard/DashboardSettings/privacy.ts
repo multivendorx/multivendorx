@@ -13,55 +13,48 @@ export default {
 		// Store Policy
 		{
 			type: 'textarea',
-			group: true,
-			name: 'store_policy',
+			key: 'store_policy',
 			label: __('Store policy', 'multivendorx'),
 			usePlainText: false,
+            moduleEnabled: 'privacy',
 		},
 
 		// Shipping Policy
 		{
 			type: 'textarea',
-			group: true,
-			name: 'shipping_policy',
+			key: 'shipping_policy',
 			label: __('Shipping policy', 'multivendorx'),
 			usePlainText: false,
+            moduleEnabled: 'privacy',
 		},
 
 		// Refund Policy
 		{
 			type: 'textarea',
-			group: true,
-			name: 'refund_policy',
+			key: 'refund_policy',
 			label: __('Refund policy', 'multivendorx'),
 			usePlainText: false,
+            moduleEnabled: 'privacy',
 		},
 
 		// Cancellation Policy
 		{
 			type: 'textarea',
-			name: 'cancellation_policy',
+			key: 'cancellation_policy',
 			label: __('Cancellation / return / exchange policy', 'multivendorx'),
 			usePlainText: false,
+            moduleEnabled: 'privacy',
 		},
 
 		// Section UI
 		{
 			type: 'section',
-			name: 'deactivationSection',
 			hint: 'Deactivation'
-		},
-
-		// Deactivation Warning
-		{
-			type: 'custom',
-			name: 'deactivationWarning',
 		},
 
 		// Enable Deactivation Toggle
 		{
 			type: 'checkbox',
-			name: 'enable_deactivation',
 			label: __('Enable Deactivation', 'multivendorx'),
 			key: 'enable_deactivation',
 			look: 'toggle',
@@ -78,18 +71,10 @@ export default {
 			type: 'textarea',
 			name: 'deactivation_reason',
 			label: __('Deactivation Reason', 'multivendorx'),
+			dependent: {
+				key: 'enable_deactivation',
+				value: 'enable_deactivation',
+			},
 		},
-
-		// Submit Button
-		{
-			type: 'button',
-			name: 'submitDeactivation',
-			buttons: [
-				{
-					icon: 'save',
-					text: 'Submit',
-				}
-			]
-		}
 	],
 };
