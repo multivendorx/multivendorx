@@ -5,6 +5,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import '../Popup/Popup.scss';
 
 interface PopupProps {
+	moduleId?: string;
 	moduleName?: string;
 	wooSetting?: string;
 	wooLink?: string;
@@ -136,11 +137,11 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
                         ]}
                     />
                 </div>
-			) : props.moduleName ? (
+			) : props.moduleId ? (
 
 				<div className="popup-wrapper">
 					<div className="popup-header">
-						<i className={`adminfont-${props.moduleName}`} />
+						<i className={`adminfont-${props.moduleId}`} />
 					</div>
 					<div className="popup-body">
 						<h2>
@@ -156,7 +157,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 									text: __('Enable Now', 'multivendorx'),
 									 onClick: () => {
 										window.open(
-											`${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=modules&module=${props.moduleName}`);
+											`${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=modules&module=${props.moduleId}`);
 									}
 								},
 							]}

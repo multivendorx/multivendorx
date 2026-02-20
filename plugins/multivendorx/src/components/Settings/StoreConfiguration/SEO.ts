@@ -36,6 +36,7 @@ export default {
 				},
 			],
 			moduleEnabled: 'store-seo',
+			moduleName: 'SEO',
 			proSetting: true,
 		},
 	],
