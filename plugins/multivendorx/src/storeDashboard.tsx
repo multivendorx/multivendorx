@@ -75,14 +75,6 @@ const Dashboard = () => {
 
 		try {
 			const activeEndpoint = endpoints.find((ep) => ep.tab === key);
-
-			if (activeEndpoint?.filename) {
-				const CustomComponent = require(
-					`./dashboard/${activeEndpoint.filename}.tsx`
-				).default;
-				return <CustomComponent />;
-			}
-
 			const kebabToCamelCase = (str) => {
 				return str.replace(/-([a-z])/g, (match, letter) =>
 					letter.toUpperCase()
