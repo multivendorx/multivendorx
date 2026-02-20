@@ -34,9 +34,9 @@
         position: fixed;
         width: 31rem;
         z-index: 9999;
-        background: #fff;
+        background: $background-white;
         transition: transform 1s ease 0.3s;
-        border-bottom: 0.313rem;
+        border-radius: $border-light-small;
 
         // header
         .popup-header {

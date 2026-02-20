@@ -1110,7 +1110,8 @@ $index: 1;
 
     }
 
-    input {
+    input,
+    .input-wrapper {
       border: none !important;
 
       &:focus {
