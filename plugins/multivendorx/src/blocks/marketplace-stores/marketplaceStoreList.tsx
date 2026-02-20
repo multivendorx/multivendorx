@@ -62,7 +62,9 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	const [isUserLocation, setIsUserLocation] = useState(false);
 
 	useEffect(() => {
-		if (!settings?.geolocation) return;
+		if (!settings?.geolocation) {
+			return;
+		}
 
 		const provider = settings.geolocation.choose_map_api;
 
@@ -136,15 +138,13 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 				},
 			},
 		})
-		.then((response) => {
-			setData(response.data || []);
-			setTotal(
-				Number(response?.headers?.['x-wp-total']) || 0
+			.then((response) => {
+				setData(response.data || []);
+				setTotal(Number(response?.headers?.['x-wp-total']) || 0);
+			})
+			.catch((error) =>
+				console.error('Error fetching filtered stores:', error)
 			);
-		})
-		.catch((error) =>
-			console.error('Error fetching filtered stores:', error)
-		);
 	}, [filters, page, perPage]);
 
 	const handleInputChange = (
@@ -155,7 +155,9 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	};
 
 	const handleLocationUpdate = (locationData: any) => {
-		if (!locationData) return;
+		if (!locationData) {
+			return;
+		}
 
 		const updatedAddress = {
 			location_lat: locationData.location_lat || '',
@@ -182,29 +184,29 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	};
 
 	const requestUserLocation = () => {
-		if (!navigator.geolocation) return;
+		if (!navigator.geolocation) {
+			return;
+		}
 
-		navigator.geolocation.getCurrentPosition(
-			(position) => {
-				const lat = position.coords.latitude.toString();
-				const lng = position.coords.longitude.toString();
+		navigator.geolocation.getCurrentPosition((position) => {
+			const lat = position.coords.latitude.toString();
+			const lng = position.coords.longitude.toString();
 
-				setIsUserLocation(true);
+			setIsUserLocation(true);
 
-				setFilters((prev) => ({
-					...prev,
-					location_lat: lat,
-					location_lng: lng,
-				}));
+			setFilters((prev) => ({
+				...prev,
+				location_lat: lat,
+				location_lng: lng,
+			}));
 
-				setAddressData((prev) => ({
-					...prev,
-					location_lat: lat,
-					location_lng: lng,
-					address: 'My Current Location',
-				}));
-			}
-		);
+			setAddressData((prev) => ({
+				...prev,
+				location_lat: lat,
+				location_lng: lng,
+				address: 'My Current Location',
+			}));
+		});
 	};
 
 	const renderMapComponent = () => {
@@ -221,7 +223,9 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 			onLocationUpdate: handleLocationUpdate,
 			labelSearch: __('Search for a location'),
 			labelMap: __('Drag or click on the map to choose a location'),
-			instructionText: __('Enter a search term or drag/drop a pin on the map.'),
+			instructionText: __(
+				'Enter a search term or drag/drop a pin on the map.'
+			),
 			placeholderSearch: __('Search for a location...'),
 			stores: { data },
 		};
@@ -244,7 +248,6 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 				{apiKey != '' && (
 					<>
 						<form className="filter-wrapper woocommerce-form woocommerce-form-login login">
-
 							<input
 								type="text"
 								name="address"
@@ -277,13 +280,16 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 						</form>
 
 						<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-							<button className="woocommerce-button button wp-element-button" onClick={requestUserLocation}>
+							<button
+								className="woocommerce-button button wp-element-button"
+								onClick={requestUserLocation}
+							>
 								Use My Current Location
 							</button>
 						</p>
 					</>
 				)}
-				
+
 				<div className="filter-wrapper">
 					<div className="left-section">
 						<ul className="view-tabs">
@@ -355,24 +361,32 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 					/>
 				</div>
 
-				<div className={`store-list-wrapper ${ viewMode === 'split' ? 'is-split' : 'is-list'}`}>
+				<div
+					className={`store-list-wrapper ${viewMode === 'split' ? 'is-split' : 'is-list'}`}
+				>
 					<div className="store-list">
 						{data &&
 							data.map((store) => (
 								<div key={store.id} className="store">
 									<div className="store-image">
-										<img src={store.image} />
-										A
+										<img src={store.image} />A
 									</div>
 
 									<div className="store-details">
 										<h2>{store.store_name}</h2>
 										<div className="contact-wrapper">
 											{store.phone && (
-												<span> <i className="dashicons dashicons-phone" />	{store.phone}</span>
+												<span>
+													{' '}
+													<i className="dashicons dashicons-phone" />{' '}
+													{store.phone}
+												</span>
 											)}
 											{store.address && (
-												<span><i className="dashicons dashicons-location" />{store.address}</span>
+												<span>
+													<i className="dashicons dashicons-location" />
+													{store.address}
+												</span>
 											)}
 										</div>
 
@@ -395,8 +409,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 										</div> */}
 									</div>
 								</div>
-							))
-						}
+							))}
 					</div>
 
 					{renderMapComponent()}
@@ -424,7 +437,6 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 				</div>
 			</div>
 		</>
-
 	);
 };
 

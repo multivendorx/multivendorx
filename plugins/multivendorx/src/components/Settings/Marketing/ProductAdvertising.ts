@@ -30,7 +30,10 @@ export default {
 					beforeElement: {
 						type: 'preposttext',
 						textType: 'pre',
-						preText: __('Each store can promote up to', 'multivendorx'),
+						preText: __(
+							'Each store can promote up to',
+							'multivendorx'
+						),
 					},
 					afterElement: {
 						type: 'preposttext',
@@ -61,10 +64,7 @@ export default {
 					afterElement: {
 						type: 'preposttext',
 						textType: 'post',
-						postText: __(
-							'per promotion slot.',
-							'multivendorx'
-						),
+						postText: __('per promotion slot.', 'multivendorx'),
 					},
 				},
 			],
@@ -81,7 +81,10 @@ export default {
 			beforeElement: {
 				type: 'preposttext',
 				textType: 'pre',
-				preText: __('Promoted products can stay visible for up to', 'multivendorx'),
+				preText: __(
+					'Promoted products can stay visible for up to',
+					'multivendorx'
+				),
 			},
 			postText: __('days', 'multivendorx'),
 			size: '8rem',
@@ -92,7 +95,10 @@ export default {
 			key: 'store_advertisement_advanced_settings',
 			type: 'checkbox',
 			label: __('Advanced advertising settings', 'multivendorx'),
-			settingDescription: __('Manage how promoted products appear. Control featured status, catalog placement, subscription inclusion, and out-of-stock visibility for advertised items.', 'multivendorx'),
+			settingDescription: __(
+				'Manage how promoted products appear. Control featured status, catalog placement, subscription inclusion, and out-of-stock visibility for advertised items.',
+				'multivendorx'
+			),
 			options: [
 				{
 					key: 'enable_advertisement_in_subscription',

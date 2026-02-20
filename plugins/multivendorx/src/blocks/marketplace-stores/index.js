@@ -43,12 +43,13 @@ const EditBlock = (props) => {
 						min={1}
 						value={attributes.perpage}
 						onChange={(value) =>
-							setAttributes({ perpage: parseInt(value, 12) || 12 })
+							setAttributes({
+								perpage: parseInt(value, 12) || 12,
+							})
 						}
 					/>
 				</PanelBody>
 			</InspectorControls>
-
 
 			{/* Pass attributes to StoresList */}
 			<MarketplaceStoreList
@@ -77,14 +78,21 @@ registerBlockType('multivendorx/marketplace-stores', {
 	edit: EditBlock,
 
 	save({ attributes }) {
-		return <div id="marketplace-stores" data-attributes={JSON.stringify(attributes)}></div>;
+		return (
+			<div
+				id="marketplace-stores"
+				data-attributes={JSON.stringify(attributes)}
+			></div>
+		);
 	},
 });
 
 document.addEventListener('DOMContentLoaded', () => {
 	const element = document.getElementById('marketplace-stores');
 	if (element) {
-		const attributes = JSON.parse(element.getAttribute('data-attributes') || '{}');
+		const attributes = JSON.parse(
+			element.getAttribute('data-attributes') || '{}'
+		);
 		render(
 			<BrowserRouter>
 				<MarketplaceStoreList {...attributes} />

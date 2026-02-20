@@ -13,7 +13,7 @@ import {
 	TextAreaUI,
 	TableRow,
 	QueryProps,
-	CategoryCount
+	CategoryCount,
 } from 'zyra';
 import Popup from '../Popup/Popup';
 import { formatLocalDate } from '@/services/commonFunction';
@@ -57,7 +57,9 @@ const StoreReviews: React.FC = () => {
 	const [confirmOpen, setConfirmOpen] = useState(false);
 
 	const handleConfirmDelete = () => {
-		if (!selectedRv) return;
+		if (!selectedRv) {
+			return;
+		}
 
 		axios({
 			method: 'DELETE',
@@ -80,11 +82,10 @@ const StoreReviews: React.FC = () => {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			})
 			.then((response) => {
-				const options =
-					(response.data || []).map((store: any) => ({
-						label: store.store_name,
-						value: store.id,
-					}));
+				const options = (response.data || []).map((store: any) => ({
+					label: store.store_name,
+					value: store.id,
+				}));
 
 				setStore(options);
 				setIsLoading(false);
@@ -97,7 +98,9 @@ const StoreReviews: React.FC = () => {
 
 	// 🔹 Handle reply saving
 	const handleSaveReply = () => {
-		if (!selectedReview) return;
+		if (!selectedReview) {
+			return;
+		}
 
 		axios({
 			method: 'PUT',
@@ -119,7 +122,6 @@ const StoreReviews: React.FC = () => {
 			});
 	};
 
-
 	const fetchReviewById = (id: number) => {
 		axios
 			.get(getApiLink(appLocalizer, `review/${id}`), {
@@ -134,7 +136,7 @@ const StoreReviews: React.FC = () => {
 			})
 			.catch(() => {
 				alert(__('Failed to fetch review data', 'multivendorx'));
-			})
+			});
 	};
 
 	const headers = {
@@ -160,7 +162,7 @@ const StoreReviews: React.FC = () => {
 		date_created: {
 			label: __('Date', 'multivendorx'),
 			sortable: true,
-			type: 'date'
+			type: 'date',
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
@@ -179,7 +181,7 @@ const StoreReviews: React.FC = () => {
 						setConfirmOpen(true);
 					},
 				},
-			]
+			],
 		},
 	};
 
@@ -252,17 +254,23 @@ const StoreReviews: React.FC = () => {
 					{
 						value: 'approved',
 						label: 'Approved',
-						count: Number(response.headers['x-wp-status-approved']) || 0,
+						count:
+							Number(response.headers['x-wp-status-approved']) ||
+							0,
 					},
 					{
 						value: 'pending',
 						label: 'Pending',
-						count: Number(response.headers['x-wp-status-pending']) || 0,
+						count:
+							Number(response.headers['x-wp-status-pending']) ||
+							0,
 					},
 					{
 						value: 'rejected',
 						label: 'Rejected',
-						count: Number(response.headers['x-wp-status-rejected']) || 0,
+						count:
+							Number(response.headers['x-wp-status-rejected']) ||
+							0,
 					},
 				]);
 
@@ -366,18 +374,27 @@ const StoreReviews: React.FC = () => {
 										></div>
 
 										<div className="rating-wrapper">
-											{[...Array(Math.round(selectedReview.overall_rating || 0))].map(
-												(_, i) => (
-													<i
-														key={`filled-${i}`}
-														className="star-icon adminfont-star"
-													></i>
-												)
-											)}
+											{[
+												...Array(
+													Math.round(
+														selectedReview.overall_rating ||
+															0
+													)
+												),
+											].map((_, i) => (
+												<i
+													key={`filled-${i}`}
+													className="star-icon adminfont-star"
+												></i>
+											))}
 
 											{[
 												...Array(
-													5 - Math.round(selectedReview.overall_rating || 0)
+													5 -
+														Math.round(
+															selectedReview.overall_rating ||
+																0
+														)
 												),
 											].map((_, i) => (
 												<i
@@ -406,17 +423,30 @@ const StoreReviews: React.FC = () => {
 						</div>
 
 						<FormGroupWrapper>
-							<FormGroup label={__('Respond to customer', 'multivendorx')} htmlFor="reply">
+							<FormGroup
+								label={__(
+									'Respond to customer',
+									'multivendorx'
+								)}
+								htmlFor="reply"
+							>
 								<TextAreaUI
 									name="reply"
 									value={replyText}
-									onChange={(value: string) => setReplyText(value)}
+									onChange={(value: string) =>
+										setReplyText(value)
+									}
 									usePlainText={true}
 								/>
-
 							</FormGroup>
 
-							<FormGroup label={__('Control if this review appears publicly, stays under moderation, or is excluded from the store page.', 'multivendorx')} htmlFor="control">
+							<FormGroup
+								label={__(
+									'Control if this review appears publicly, stays under moderation, or is excluded from the store page.',
+									'multivendorx'
+								)}
+								htmlFor="control"
+							>
 								<ToggleSettingUI
 									options={[
 										{

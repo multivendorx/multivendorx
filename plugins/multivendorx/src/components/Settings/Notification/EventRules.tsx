@@ -1,6 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './EventRules.scss';
-import { getApiLink, FormGroupWrapper, FormGroup, BasicInputUI, AdminButtonUI, PopupUI, TextAreaUI, Skeleton } from 'zyra';
+import {
+	getApiLink,
+	FormGroupWrapper,
+	FormGroup,
+	BasicInputUI,
+	AdminButtonUI,
+	PopupUI,
+	TextAreaUI,
+	Skeleton,
+} from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -11,7 +20,10 @@ const RECIPIENT_CONFIG: Record<string, { icon: string; badge: string }> = {
 	default: { icon: 'mail', badge: ' default-badge' },
 };
 
-const CHANNEL_CONFIG: Record<string, { icon: string; badge: string; label: string }> = {
+const CHANNEL_CONFIG: Record<
+	string,
+	{ icon: string; badge: string; label: string }
+> = {
 	mail: { icon: 'mail', badge: 'yellow', label: 'Mail' },
 	sms: { icon: 'enquiry', badge: 'green', label: 'SMS' },
 	system: { icon: 'notification', badge: 'blue', label: 'System' },
@@ -33,7 +45,12 @@ interface RecipientBadgeProps {
 	onDelete?: () => void;
 }
 
-const apiRequest = (method: 'GET' | 'POST', path: string, data?: any, params?: any) =>
+const apiRequest = (
+	method: 'GET' | 'POST',
+	path: string,
+	data?: any,
+	params?: any
+) =>
 	axios({
 		method,
 		url: getApiLink(appLocalizer, path),
@@ -43,8 +60,11 @@ const apiRequest = (method: 'GET' | 'POST', path: string, data?: any, params?: a
 	});
 
 const RecipientBadge: React.FC<RecipientBadgeProps> = ({ recipient }) => {
-	if (!recipient.enabled) return null;
-	const { icon, badge } = RECIPIENT_CONFIG[recipient.label] ?? RECIPIENT_CONFIG.default;
+	if (!recipient.enabled) {
+		return null;
+	}
+	const { icon, badge } =
+		RECIPIENT_CONFIG[recipient.label] ?? RECIPIENT_CONFIG.default;
 	return (
 		<div className={`admin-badge ${badge}`} role="button" tabIndex={0}>
 			<i className={`adminfont-${icon}`}></i>
@@ -59,11 +79,17 @@ const EventRules: React.FC = () => {
 	const [openChannel, setOpenChannel] = useState<string | null>(null);
 	const [newRecipientValue, setNewRecipientValue] = useState('');
 	const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
-	const [editingNotification, setEditingNotification] = useState<number | null>(null);
+	const [editingNotification, setEditingNotification] = useState<
+		number | null
+	>(null);
 	const [notificationId, setNotificationId] = useState<number | null>(null);
 	const [formData, setFormData] = useState<Record<string, any>>({});
 	const [activeTag, setActiveTag] = useState<string>('All');
-	const [cursorPos, setCursorPos] = useState<{ start: number; end: number; field: string | null }>({ start: 0, end: 0, field: null });
+	const [cursorPos, setCursorPos] = useState<{
+		start: number;
+		end: number;
+		field: string | null;
+	}>({ start: 0, end: 0, field: null });
 	const [isLoading, setIsLoading] = useState(true);
 
 	// Fetch notifications on mount
@@ -82,19 +108,29 @@ const EventRules: React.FC = () => {
 
 	// Autosave when notificationId changes (triggered by list-row click)
 	useEffect(() => {
-		if (!notifications || notificationId == null) return;
-		const filtered = notifications.filter((item) => item.id === notificationId);
-		apiRequest('POST', `notifications/${notificationId}`, { notifications: filtered })
-			.then((response) => {
-				if (response.data.success) setEditingNotification(null);
-			});
+		if (!notifications || notificationId == null) {
+			return;
+		}
+		const filtered = notifications.filter(
+			(item) => item.id === notificationId
+		);
+		apiRequest('POST', `notifications/${notificationId}`, {
+			notifications: filtered,
+		}).then((response) => {
+			if (response.data.success) {
+				setEditingNotification(null);
+			}
+		});
 	}, [notificationId]);
 
 	// Extract unique bracketed tags from system_message
 	useEffect(() => {
 		if (formData.system_message) {
-			const matches = (formData.system_message as string).match(/\[[^\]]+\]/g) || [];
-			setSystemTags(matches.filter((tag, index) => matches.indexOf(tag) === index));
+			const matches =
+				(formData.system_message as string).match(/\[[^\]]+\]/g) || [];
+			setSystemTags(
+				matches.filter((tag, index) => matches.indexOf(tag) === index)
+			);
 		} else {
 			setSystemTags([]);
 		}
@@ -102,21 +138,33 @@ const EventRules: React.FC = () => {
 
 	// ------------------ Derived state ------------------
 	const uniqueTags = useMemo(() => {
-		const tags = Array.from(new Set(notifications.map((n) => n.tag).filter(Boolean)));
+		const tags = Array.from(
+			new Set(notifications.map((n) => n.tag).filter(Boolean))
+		);
 		return ['All', ...tags];
 	}, [notifications]);
 
 	const filteredNotifications = useMemo(() => {
-		if (activeTag === 'All') return notifications;
+		if (activeTag === 'All') {
+			return notifications;
+		}
 		return notifications.filter((n) => n.tag === activeTag);
 	}, [notifications, activeTag]);
 
-	const editNotification = notifications.find((item) => item.id === notificationId);
-	const defaultRecipients = editNotification?.recipients.filter((r: Recipient) => DEFAULT_RECIPIENT_TYPES.includes(r.type));
-	const customRecipients = editNotification?.recipients.filter((r: Recipient) => !DEFAULT_RECIPIENT_TYPES.includes(r.type));
+	const editNotification = notifications.find(
+		(item) => item.id === notificationId
+	);
+	const defaultRecipients = editNotification?.recipients.filter(
+		(r: Recipient) => DEFAULT_RECIPIENT_TYPES.includes(r.type)
+	);
+	const customRecipients = editNotification?.recipients.filter(
+		(r: Recipient) => !DEFAULT_RECIPIENT_TYPES.includes(r.type)
+	);
 
 	const updateNotification = (id: number, updater: (n: any) => any) =>
-		setNotifications((prev) => prev.map((n) => (n.id === id ? updater(n) : n)));
+		setNotifications((prev) =>
+			prev.map((n) => (n.id === id ? updater(n) : n))
+		);
 
 	const toggleRecipient = (notifId: number, recipientId: number) =>
 		updateNotification(notifId, (n) => ({
@@ -133,7 +181,9 @@ const EventRules: React.FC = () => {
 		}));
 
 	const addRecipient = (notifId: number | null) => {
-		if (!newRecipientValue.trim() || notifId == null) return;
+		if (!newRecipientValue.trim() || notifId == null) {
+			return;
+		}
 		updateNotification(notifId, (n) => {
 			const maxId = n.recipients?.length
 				? Math.max(...n.recipients.map((r: any) => r.id))
@@ -142,7 +192,13 @@ const EventRules: React.FC = () => {
 				...n,
 				recipients: [
 					...(n.recipients || []),
-					{ id: maxId + 1, type: 'extra', label: newRecipientValue, enabled: true, canDelete: true },
+					{
+						id: maxId + 1,
+						type: 'extra',
+						label: newRecipientValue,
+						enabled: true,
+						canDelete: true,
+					},
 				],
 			};
 		});
@@ -156,34 +212,50 @@ const EventRules: React.FC = () => {
 		}));
 
 	const openEditPannel = (notifId: number, channel: string) => {
-		apiRequest('GET', `notifications/${notifId}`)
-			.then((response) => {
-				const notifData = Array.isArray(response.data) ? response.data[0] : response.data;
-				setFormData(notifData || {});
-			});
+		apiRequest('GET', `notifications/${notifId}`).then((response) => {
+			const notifData = Array.isArray(response.data)
+				? response.data[0]
+				: response.data;
+			setFormData(notifData || {});
+		});
 		setOpenChannel(channel);
 	};
 
 	const handleAutoSave = (id: number | null, data?: any) => {
-		if (id == null) return;
-		apiRequest('POST', `notifications/${id}`, { formData: data ?? formData });
+		if (id == null) {
+			return;
+		}
+		apiRequest('POST', `notifications/${id}`, {
+			formData: data ?? formData,
+		});
 	};
 
-	const trackCursor = (e: React.MouseEvent<HTMLTextAreaElement | HTMLInputElement>, field: string) => {
+	const trackCursor = (
+		e: React.MouseEvent<HTMLTextAreaElement | HTMLInputElement>,
+		field: string
+	) => {
 		const target = e.target as HTMLTextAreaElement | HTMLInputElement;
-		setCursorPos({ start: target.selectionStart ?? 0, end: target.selectionEnd ?? 0, field });
+		setCursorPos({
+			start: target.selectionStart ?? 0,
+			end: target.selectionEnd ?? 0,
+			field,
+		});
 	};
 
 	const insertAtCursor = (tag: string) => {
 		const { start, end, field } = cursorPos;
-		if (!field) return;
+		if (!field) {
+			return;
+		}
 		const value = formData[field] || '';
 		const updated = value.slice(0, start) + tag + value.slice(end);
 		const updatedFormData = { ...formData, [field]: updated };
 		setFormData(updatedFormData);
 		requestAnimationFrame(() => {
 			const el = document.activeElement as HTMLTextAreaElement | null;
-			if (el?.setSelectionRange) el.setSelectionRange(start + tag.length, start + tag.length);
+			if (el?.setSelectionRange) {
+				el.setSelectionRange(start + tag.length, start + tag.length);
+			}
 		});
 		handleAutoSave(updatedFormData.id, updatedFormData);
 	};
@@ -199,8 +271,16 @@ const EventRules: React.FC = () => {
 							className={`category-item ${activeTag === tag ? 'active' : ''}`}
 							role="button"
 							tabIndex={0}
-							onClick={(e) => { e.stopPropagation(); setActiveTag(tag); }}
-							onKeyDown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); setActiveTag(tag); } }}
+							onClick={(e) => {
+								e.stopPropagation();
+								setActiveTag(tag);
+							}}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter') {
+									e.stopPropagation();
+									setActiveTag(tag);
+								}
+							}}
 						>
 							{tag}
 						</div>
@@ -213,7 +293,9 @@ const EventRules: React.FC = () => {
 							role="button"
 							tabIndex={0}
 							onClick={() => setViewMode(mode)}
-							onKeyDown={(e) => e.key === 'Enter' && setViewMode(mode)}
+							onKeyDown={(e) =>
+								e.key === 'Enter' && setViewMode(mode)
+							}
 							className="toggle-option"
 						>
 							<input
@@ -226,7 +308,13 @@ const EventRules: React.FC = () => {
 								readOnly
 							/>
 							<label htmlFor={`${mode}-view`}>
-								<i className={mode === 'list' ? 'adminfont-editor-list-ul' : 'adminfont-module'}></i>
+								<i
+									className={
+										mode === 'list'
+											? 'adminfont-editor-list-ul'
+											: 'adminfont-module'
+									}
+								></i>
 							</label>
 						</div>
 					))}
@@ -238,7 +326,9 @@ const EventRules: React.FC = () => {
 					<table className="admin-table">
 						<thead className="admin-table-header">
 							<tr className="header-row">
-								<th className="header-col notificaton">Event</th>
+								<th className="header-col notificaton">
+									Event
+								</th>
 								<th className="header-col">Recipients</th>
 								<th className="header-col">System</th>
 								<th className="header-col action">Action</th>
@@ -247,19 +337,37 @@ const EventRules: React.FC = () => {
 						<tbody className="admin-table-body">
 							{isLoading ? (
 								Array.from({ length: 5 }).map((_, index) => (
-									<tr key={`skeleton-${index}`} className="admin-row skeleton-row">
+									<tr
+										key={`skeleton-${index}`}
+										className="admin-row skeleton-row"
+									>
 										<td className="admin-column notificaton">
 											<div className="table-row-custom">
 												<div className="product-wrapper notification">
-													<Skeleton width={40} height={40} />
+													<Skeleton
+														width={40}
+														height={40}
+													/>
 													<div className="details">
 														<div className="title">
-															<Skeleton width={200} height={20} />
-															<Skeleton width={60} height={24}  />
-															<Skeleton width={60} height={24}  />
+															<Skeleton
+																width={200}
+																height={20}
+															/>
+															<Skeleton
+																width={60}
+																height={24}
+															/>
+															<Skeleton
+																width={60}
+																height={24}
+															/>
 														</div>
 														<div className="des">
-															<Skeleton width={300} height={16} />
+															<Skeleton
+																width={300}
+																height={16}
+															/>
 														</div>
 													</div>
 												</div>
@@ -268,18 +376,36 @@ const EventRules: React.FC = () => {
 										<td className="admin-column">
 											<div className="table-row-custom">
 												<div className="recipients-list">
-													<Skeleton width={80} height={24}  />
-													<Skeleton width={80} height={24}  />
-													<Skeleton width={80} height={24} />
+													<Skeleton
+														width={80}
+														height={24}
+													/>
+													<Skeleton
+														width={80}
+														height={24}
+													/>
+													<Skeleton
+														width={80}
+														height={24}
+													/>
 												</div>
 											</div>
 										</td>
 										<td className="admin-column">
 											<div className="table-row-custom">
 												<div className="system-column">
-													<Skeleton width={24} height={24}  />
-													<Skeleton width={24} height={24}  />
-													<Skeleton width={24} height={24} />
+													<Skeleton
+														width={24}
+														height={24}
+													/>
+													<Skeleton
+														width={24}
+														height={24}
+													/>
+													<Skeleton
+														width={24}
+														height={24}
+													/>
 												</div>
 											</div>
 										</td>
@@ -287,7 +413,10 @@ const EventRules: React.FC = () => {
 											<div className="action-section">
 												<div className="action-icons">
 													<div className="inline-actions">
-														<Skeleton width={24} height={24} />
+														<Skeleton
+															width={24}
+															height={24}
+														/>
 													</div>
 												</div>
 											</div>
@@ -296,7 +425,10 @@ const EventRules: React.FC = () => {
 								))
 							) : filteredNotifications.length === 0 ? (
 								<tr className="admin-row no-results">
-									<td colSpan={4} className="admin-column text-center">
+									<td
+										colSpan={4}
+										className="admin-column text-center"
+									>
 										<div className="no-results-message">
 											<i className="adminfont-inbox"></i>
 											<p>No notifications found</p>
@@ -316,14 +448,29 @@ const EventRules: React.FC = () => {
 										<td className="admin-column notificaton">
 											<div className="table-row-custom">
 												<div className="product-wrapper notification">
-													<span className={`notification-icon ${notif.icon}`}></span>
+													<span
+														className={`notification-icon ${notif.icon}`}
+													></span>
 													<div className="details">
 														<div className="title">
 															{notif.event}
-															<span className={`admin-badge yellow ${notif.tag}`}>{notif.tag} </span>
-															<span className={`admin-badge blue ${notif.category}`}> {notif.category} </span>
+															<span
+																className={`admin-badge yellow ${notif.tag}`}
+															>
+																{notif.tag}{' '}
+															</span>
+															<span
+																className={`admin-badge blue ${notif.category}`}
+															>
+																{' '}
+																{
+																	notif.category
+																}{' '}
+															</span>
 														</div>
-														<div className="des">{notif.description}</div>
+														<div className="des">
+															{notif.description}
+														</div>
 													</div>
 												</div>
 											</div>
@@ -331,8 +478,13 @@ const EventRules: React.FC = () => {
 										<td className="admin-column">
 											<div className="table-row-custom">
 												<div className="recipients-list">
-													{(notif.recipients || []).map((r: any) => (
-														<RecipientBadge key={r.id} recipient={r} />
+													{(
+														notif.recipients || []
+													).map((r: any) => (
+														<RecipientBadge
+															key={r.id}
+															recipient={r}
+														/>
 													))}
 												</div>
 											</div>
@@ -340,21 +492,45 @@ const EventRules: React.FC = () => {
 										<td className="admin-column">
 											<div className="table-row-custom">
 												<div className="system-column">
-													{Object.entries(notif.channels || {}).map(([channel, enabled]: any) => {
-														const cfg = CHANNEL_CONFIG[channel];
-														if (!cfg || !enabled) return null;
-														return (
-															<i
-																key={channel}
-																className={`adminfont-${cfg.icon} admin-badge ${cfg.badge}`}
-																onClick={(e) => {
-																	e.stopPropagation();
-																	setNotificationId(notif.id);
-																	openEditPannel(notif.id, channel);
-																}}
-															/>
-														);
-													})}
+													{Object.entries(
+														notif.channels || {}
+													).map(
+														([
+															channel,
+															enabled,
+														]: any) => {
+															const cfg =
+																CHANNEL_CONFIG[
+																	channel
+																];
+															if (
+																!cfg ||
+																!enabled
+															) {
+																return null;
+															}
+															return (
+																<i
+																	key={
+																		channel
+																	}
+																	className={`adminfont-${cfg.icon} admin-badge ${cfg.badge}`}
+																	onClick={(
+																		e
+																	) => {
+																		e.stopPropagation();
+																		setNotificationId(
+																			notif.id
+																		);
+																		openEditPannel(
+																			notif.id,
+																			channel
+																		);
+																	}}
+																/>
+															);
+														}
+													)}
 												</div>
 											</div>
 										</td>
@@ -364,7 +540,9 @@ const EventRules: React.FC = () => {
 													<div className="inline-actions">
 														<div className="inline-action-btn tooltip-wrapper">
 															<i className="adminfont-edit"></i>
-															<span className="tooltip-name">Edit</span>
+															<span className="tooltip-name">
+																Edit
+															</span>
 														</div>
 													</div>
 												</div>
@@ -386,79 +564,131 @@ const EventRules: React.FC = () => {
 					height="70%"
 					header={{
 						icon: 'cart',
-						title: `${openChannel === 'system' ? __('System Notification', 'multivendorx')
-							: openChannel === 'sms' ? __('SMS Message', 'multivendorx')
-								: __('Email Message', 'multivendorx')
-							} - ${editNotification?.event ?? ''}`,
+						title: `${
+							openChannel === 'system'
+								? __('System Notification', 'multivendorx')
+								: openChannel === 'sms'
+									? __('SMS Message', 'multivendorx')
+									: __('Email Message', 'multivendorx')
+						} - ${editNotification?.event ?? ''}`,
 					}}
 					footer={
 						<AdminButtonUI
-							buttons={[{
-								icon: 'close',
-								text: __('Cancel', 'multivendorx'),
-								color: 'red',
-								onClick: () => setOpenChannel(null),
-							}]}
+							buttons={[
+								{
+									icon: 'close',
+									text: __('Cancel', 'multivendorx'),
+									color: 'red',
+									onClick: () => setOpenChannel(null),
+								},
+							]}
 						/>
 					}
 				>
 					<>
 						<FormGroupWrapper>
 							{openChannel === 'system' && (
-								<FormGroup label={__('System Message', 'multivendorx')} htmlFor="system-message">
+								<FormGroup
+									label={__('System Message', 'multivendorx')}
+									htmlFor="system-message"
+								>
 									<TextAreaUI
 										name="system_message"
 										value={formData.system_message || ''}
-										onClick={(e) => trackCursor(e, 'system_message')}
+										onClick={(e) =>
+											trackCursor(e, 'system_message')
+										}
 										onChange={(value) => {
 											// system: onChange does NOT autosave — only onBlur/onKeyDown do
-											setFormData({ ...formData, system_message: value });
+											setFormData({
+												...formData,
+												system_message: value,
+											});
 										}}
-										onBlur={() => handleAutoSave(formData.id)}
-										onKeyDown={() => handleAutoSave(formData.id)}
+										onBlur={() =>
+											handleAutoSave(formData.id)
+										}
+										onKeyDown={() =>
+											handleAutoSave(formData.id)
+										}
 									/>
 								</FormGroup>
 							)}
 							{openChannel === 'sms' && (
-								<FormGroup label={__('SMS Content', 'multivendorx')} htmlFor="sms-content">
+								<FormGroup
+									label={__('SMS Content', 'multivendorx')}
+									htmlFor="sms-content"
+								>
 									<TextAreaUI
 										name="sms_content"
 										value={formData.sms_content || ''}
-										onClick={(e) => trackCursor(e, 'sms_content')}
+										onClick={(e) =>
+											trackCursor(e, 'sms_content')
+										}
 										onChange={(value) => {
 											// sms: onChange DOES autosave
-											setFormData({ ...formData, sms_content: value });
+											setFormData({
+												...formData,
+												sms_content: value,
+											});
 											handleAutoSave(formData.id);
 										}}
-										onBlur={() => handleAutoSave(formData.id)}
+										onBlur={() =>
+											handleAutoSave(formData.id)
+										}
 									/>
 								</FormGroup>
 							)}
 							{openChannel === 'mail' && (
 								<>
-									<FormGroup cols={2} label={__('Email Subject', 'multivendorx')} htmlFor="email-subject">
+									<FormGroup
+										cols={2}
+										label={__(
+											'Email Subject',
+											'multivendorx'
+										)}
+										htmlFor="email-subject"
+									>
 										<BasicInputUI
 											type="text"
 											name="email_subject"
 											value={formData.email_subject || ''}
-											onClick={(e) => trackCursor(e, 'email_subject')}
+											onClick={(e) =>
+												trackCursor(e, 'email_subject')
+											}
 											onChange={(value) => {
-												setFormData({ ...formData, email_subject: value });
+												setFormData({
+													...formData,
+													email_subject: value,
+												});
 												handleAutoSave(formData.id);
 											}}
-											onBlur={() => handleAutoSave(formData.id)}
+											onBlur={() =>
+												handleAutoSave(formData.id)
+											}
 										/>
 									</FormGroup>
-									<FormGroup cols={2} label={__('Email Body', 'multivendorx')} htmlFor="email-body">
+									<FormGroup
+										cols={2}
+										label={__('Email Body', 'multivendorx')}
+										htmlFor="email-body"
+									>
 										<TextAreaUI
 											name="email_body"
 											value={formData.email_body || ''}
-											onClick={(e) => trackCursor(e, 'email_body')}
+											onClick={(e) =>
+												trackCursor(e, 'email_body')
+											}
 											onChange={(value) => {
-												setFormData({ ...formData, email_body: value });
+												setFormData({
+													...formData,
+													email_body: value,
+												});
 												handleAutoSave(formData.id);
 											}}
-											onBlur={() => handleAutoSave(formData.id)}
+											onBlur={() =>
+												handleAutoSave(formData.id)
+											}
 										/>
 									</FormGroup>
 								</>
@@ -466,7 +696,11 @@ const EventRules: React.FC = () => {
 							{systemTags?.length > 0 && (
 								<div className="tag-list">
 									{systemTags.map((tag, idx) => (
-										<span key={idx} className="tag-item" onClick={() => insertAtCursor(tag)}>
+										<span
+											key={idx}
+											className="tag-item"
+											onClick={() => insertAtCursor(tag)}
+										>
 											{tag}
 										</span>
 									))}
@@ -492,17 +726,37 @@ const EventRules: React.FC = () => {
 					<div className="title">Delivery method</div>
 					<div className="drawer-recipients">
 						{Object.entries(
-							notifications.find((n) => n.id === editingNotification)?.channels || {}
+							notifications.find(
+								(n) => n.id === editingNotification
+							)?.channels || {}
 						).map(([channel, enabled]: any) => {
 							const cfg = CHANNEL_CONFIG[channel];
-							if (!cfg) return null;
+							if (!cfg) {
+								return null;
+							}
 							return (
-								<div key={channel} className={`recipient ${!enabled ? 'disable' : ''}`}>
-									<span className="icon"><i className={cfg.icon}></i></span>
-									<div className="details"><span>{cfg.label}</span></div>
+								<div
+									key={channel}
+									className={`recipient ${!enabled ? 'disable' : ''}`}
+								>
+									<span className="icon">
+										<i className={cfg.icon}></i>
+									</span>
+									<div className="details">
+										<span>{cfg.label}</span>
+									</div>
 									<i
-										onClick={() => toggleChannel(editingNotification, channel)}
-										className={enabled ? 'adminfont-eye' : 'adminfont-eye-blocked'}
+										onClick={() =>
+											toggleChannel(
+												editingNotification,
+												channel
+											)
+										}
+										className={
+											enabled
+												? 'adminfont-eye'
+												: 'adminfont-eye-blocked'
+										}
 									/>
 								</div>
 							);
@@ -512,14 +766,32 @@ const EventRules: React.FC = () => {
 					<div className="title">Recipients</div>
 					<div className="drawer-recipients">
 						{defaultRecipients?.map((r: Recipient) => {
-							const { icon } = RECIPIENT_CONFIG[r.label] ?? RECIPIENT_CONFIG.default;
+							const { icon } =
+								RECIPIENT_CONFIG[r.label] ??
+								RECIPIENT_CONFIG.default;
 							return (
-								<div key={r.id} className={`recipient ${r.enabled ? '' : 'disable'}`}>
-									<span className="icon"><i className={icon}></i></span>
-									<div className="details"><span>{r.label}</span></div>
+								<div
+									key={r.id}
+									className={`recipient ${r.enabled ? '' : 'disable'}`}
+								>
+									<span className="icon">
+										<i className={icon}></i>
+									</span>
+									<div className="details">
+										<span>{r.label}</span>
+									</div>
 									<i
-										onClick={() => toggleRecipient(editingNotification, r.id)}
-										className={r.enabled ? 'adminfont-eye' : 'adminfont-eye-blocked'}
+										onClick={() =>
+											toggleRecipient(
+												editingNotification,
+												r.id
+											)
+										}
+										className={
+											r.enabled
+												? 'adminfont-eye'
+												: 'adminfont-eye-blocked'
+										}
 									/>
 								</div>
 							);
@@ -531,12 +803,24 @@ const EventRules: React.FC = () => {
 							<div className="title">Custom Recipients</div>
 							<div className="drawer-recipients">
 								{customRecipients.map((r: Recipient) => (
-									<div key={r.id} className={`recipient ${r.enabled ? '' : 'disable'}`}>
-										<span className="icon"><i className="adminfont-mail"></i></span>
-										<div className="details"><span>{r.label}</span></div>
+									<div
+										key={r.id}
+										className={`recipient ${r.enabled ? '' : 'disable'}`}
+									>
+										<span className="icon">
+											<i className="adminfont-mail"></i>
+										</span>
+										<div className="details">
+											<span>{r.label}</span>
+										</div>
 										<i
 											className="delete-btn adminfont-delete"
-											onClick={() => deleteRecipient(editingNotification, r.id)}
+											onClick={() =>
+												deleteRecipient(
+													editingNotification,
+													r.id
+												)
+											}
 										/>
 									</div>
 								))}
@@ -550,16 +834,24 @@ const EventRules: React.FC = () => {
 							className="basic-input"
 							placeholder="Type the email address of the additional recipient you want to notify, then click 'Add'. "
 							value={newRecipientValue}
-							onChange={(e) => setNewRecipientValue(e.target.value)}
-							onKeyPress={(e) => e.key === 'Enter' && addRecipient(editingNotification)}
+							onChange={(e) =>
+								setNewRecipientValue(e.target.value)
+							}
+							onKeyPress={(e) =>
+								e.key === 'Enter' &&
+								addRecipient(editingNotification)
+							}
 						/>
 						<AdminButtonUI
-							buttons={[{
-								icon: 'plus',
-								text: __('Add', 'multivendorx'),
-								color: 'purple',
-								onClick: () => addRecipient(editingNotification),
-							}]}
+							buttons={[
+								{
+									icon: 'plus',
+									text: __('Add', 'multivendorx'),
+									color: 'purple',
+									onClick: () =>
+										addRecipient(editingNotification),
+								},
+							]}
 						/>
 					</div>
 				</PopupUI>
@@ -571,10 +863,16 @@ const EventRules: React.FC = () => {
 						<div key={notif.id} className="notification-card">
 							<div className="card-body">
 								<div className="title-wrapper">
-									<i className={`notification-icon adminfonts ${notif.icon}`}></i>
+									<i
+										className={`notification-icon adminfonts ${notif.icon}`}
+									></i>
 									<div className="details">
-										<div className="title">{notif.event}</div>
-										<div className="description">{notif.description}</div>
+										<div className="title">
+											{notif.event}
+										</div>
+										<div className="description">
+											{notif.description}
+										</div>
 									</div>
 								</div>
 								<div className="recipients-list">
@@ -582,28 +880,45 @@ const EventRules: React.FC = () => {
 										<RecipientBadge
 											key={r.id}
 											recipient={r}
-											onToggle={() => toggleRecipient(notif.id, r.id)}
-											onDelete={r.canDelete ? () => deleteRecipient(notif.id, r.id) : undefined}
+											onToggle={() =>
+												toggleRecipient(notif.id, r.id)
+											}
+											onDelete={
+												r.canDelete
+													? () =>
+															deleteRecipient(
+																notif.id,
+																r.id
+															)
+													: undefined
+											}
 										/>
 									))}
 								</div>
 							</div>
 							<div className="card-footer">
 								<div className="system-column">
-									{Object.entries(notif.channels || {}).map(([channel, enabled]: any) => {
-										const cfg = CHANNEL_CONFIG[channel];
-										if (!cfg) return null;
-										return (
-											<i
-												key={channel}
-												className={`adminfont-${cfg.icon} admin-badge ${cfg.badge} ${!enabled ? 'disable' : ''}`}
-												onClick={(e) => {
-													e.stopPropagation();
-													toggleChannel(notif.id, channel);
-												}}
-											/>
-										);
-									})}
+									{Object.entries(notif.channels || {}).map(
+										([channel, enabled]: any) => {
+											const cfg = CHANNEL_CONFIG[channel];
+											if (!cfg) {
+												return null;
+											}
+											return (
+												<i
+													key={channel}
+													className={`adminfont-${cfg.icon} admin-badge ${cfg.badge} ${!enabled ? 'disable' : ''}`}
+													onClick={(e) => {
+														e.stopPropagation();
+														toggleChannel(
+															notif.id,
+															channel
+														);
+													}}
+												/>
+											);
+										}
+									)}
 								</div>
 								<AdminButtonUI
 									buttons={[
@@ -612,7 +927,9 @@ const EventRules: React.FC = () => {
 											text: 'Manage',
 											color: 'purple',
 											onClick: (e) => {
-												setEditingNotification(notif.id)
+												setEditingNotification(
+													notif.id
+												);
 												setNotificationId(notif.id);
 											},
 										},

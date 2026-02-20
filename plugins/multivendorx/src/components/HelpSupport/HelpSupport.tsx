@@ -23,60 +23,87 @@ const HelpSupport: React.FC = () => {
 		{
 			icon: 'facebook-fill',
 			name: __('Facebook community', 'multivendorx'),
-			description: __('Connect with other store owners, share tips, and get quick solutions.', 'multivendorx'),
-			link: 'https://www.facebook.com/groups/226246620006065/'
+			description: __(
+				'Connect with other store owners, share tips, and get quick solutions.',
+				'multivendorx'
+			),
+			link: 'https://www.facebook.com/groups/226246620006065/',
 		},
 		{
 			icon: 'wordpress',
 			name: __('WordPress support forum', 'multivendorx'),
-			description: __('Ask questions and get expert guidance from the WordPress community.', 'multivendorx'),
-			link: 'https://wordpress.org/support/plugin/dc-woocommerce-multi-vendor/'
+			description: __(
+				'Ask questions and get expert guidance from the WordPress community.',
+				'multivendorx'
+			),
+			link: 'https://wordpress.org/support/plugin/dc-woocommerce-multi-vendor/',
 		},
 		{
 			icon: 'forum',
 			name: __('Our forum', 'multivendorx'),
-			description: __('Discuss MultiVendorX features, report issues, and collaborate with other users.', 'multivendorx'),
-			link: 'https://multivendorx.com/support-forum/'
+			description: __(
+				'Discuss MultiVendorX features, report issues, and collaborate with other users.',
+				'multivendorx'
+			),
+			link: 'https://multivendorx.com/support-forum/',
 		},
 		{
 			icon: 'live-chat',
 			name: __('Live chat', 'multivendorx'),
-			description: __('Get real-time support from our team for setup, troubleshooting, and guidance.', 'multivendorx'),
-			link: 'https://tawk.to/chat/5d2eebf19b94cd38bbe7c9ad/1fsg8cq8n'
-		}
+			description: __(
+				'Get real-time support from our team for setup, troubleshooting, and guidance.',
+				'multivendorx'
+			),
+			link: 'https://tawk.to/chat/5d2eebf19b94cd38bbe7c9ad/1fsg8cq8n',
+		},
 	];
 	const DocumentationItems = [
 		{
 			icon: 'document',
 			name: __('Official documentation', 'multivendorx'),
-			description: __('Step-by-step guides for every MultiVendorX feature.', 'multivendorx'),
-			link: 'https://multivendorx.com/docs/knowledgebase/'
+			description: __(
+				'Step-by-step guides for every MultiVendorX feature.',
+				'multivendorx'
+			),
+			link: 'https://multivendorx.com/docs/knowledgebase/',
 		},
 		{
 			icon: 'youtube',
 			name: __('YouTube tutorials', 'multivendorx'),
-			description: __('Watch videos on marketplace setup, store management, payments, and more.', 'multivendorx'),
-			link: 'https://www.youtube.com/@MultiVendorX/videos'
+			description: __(
+				'Watch videos on marketplace setup, store management, payments, and more.',
+				'multivendorx'
+			),
+			link: 'https://www.youtube.com/@MultiVendorX/videos',
 		},
 		{
 			icon: 'faq',
 			name: __('FAQs', 'multivendorx'),
-			description: __('Quick answers to the most common questions about features and troubleshooting.', 'multivendorx'),
-			link: 'https://multivendorx.com/docs/faqs/'
+			description: __(
+				'Quick answers to the most common questions about features and troubleshooting.',
+				'multivendorx'
+			),
+			link: 'https://multivendorx.com/docs/faqs/',
 		},
 		{
 			icon: 'coding',
 			name: __('Coding support', 'multivendorx'),
-			description: __('Professional help for customizations, integrations, and technical issues.', 'multivendorx'),
-			link: 'https://discord.com/channels/1376811097134469191/1376811102020829258'
-		}
+			description: __(
+				'Professional help for customizations, integrations, and technical issues.',
+				'multivendorx'
+			),
+			link: 'https://discord.com/channels/1376811097134469191/1376811102020829258',
+		},
 	];
 	return (
 		<>
 			<NavigatorHeader
 				headerIcon="customer-support"
 				headerTitle={__('Help & Support', 'multivendorx')}
-				headerDescription={__('Get fast help, expert guidance, and easy-to-follow resources - all in one place.', 'multivendorx')}
+				headerDescription={__(
+					'Get fast help, expert guidance, and easy-to-follow resources - all in one place.',
+					'multivendorx'
+				)}
 			/>
 
 			<Container general>
@@ -86,7 +113,9 @@ const HelpSupport: React.FC = () => {
 							{supportItems.map((item, index) => (
 								<div className="support-item" key={index}>
 									<div className="image">
-										<i className={`adminfont-${item.icon}`} />
+										<i
+											className={`adminfont-${item.icon}`}
+										/>
 									</div>
 									<div className="details">
 										<div className="name">
@@ -98,18 +127,25 @@ const HelpSupport: React.FC = () => {
 												{item.name}
 											</a>
 										</div>
-										<div className="des"> {item.description} </div>
+										<div className="des">
+											{' '}
+											{item.description}{' '}
+										</div>
 									</div>
 								</div>
 							))}
 						</div>
 					</Card>
-					<Card title={__( 'Documentation & Learning', 'multivendorx' )}>
+					<Card
+						title={__('Documentation & Learning', 'multivendorx')}
+					>
 						<div className="support-wrapper">
 							{DocumentationItems.map((item, index) => (
 								<div className="support-item" key={index}>
 									<div className="image">
-										<i className={`adminfont-${item.icon}`} />
+										<i
+											className={`adminfont-${item.icon}`}
+										/>
 									</div>
 									<div className="details">
 										<div className="name">
@@ -153,7 +189,7 @@ const HelpSupport: React.FC = () => {
 									rel="noopener noreferrer"
 									className="admin-btn btn-purple"
 								>
-									{__( 'Watch All Tutorials', 'multivendorx' )}
+									{__('Watch All Tutorials', 'multivendorx')}
 								</a>
 							</div>
 
@@ -182,10 +218,7 @@ const HelpSupport: React.FC = () => {
 												)}
 											</div>
 											<div className="des">
-												{__(
-													video.des,
-													'multivendorx'
-												)}
+												{__(video.des, 'multivendorx')}
 											</div>
 										</div>
 									);

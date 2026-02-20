@@ -63,7 +63,7 @@ export default {
 			key: 'onboarding_steps_configuration',
 			type: 'checkbox',
 			label: __('Onboarding steps', 'multivendorx'),
-			 
+
 			options: [
 				{
 					key: 'store_profile_setup',
@@ -200,7 +200,7 @@ export default {
 				{
 					key: 'min_price',
 					label: __('Lowest price', 'multivendorx'),
-					value:'min_price',
+					value: 'min_price',
 				},
 				{
 					key: 'max_price',
@@ -333,7 +333,10 @@ export default {
 				},
 				{
 					key: 'store_and_admin_products',
-					label: __('Store and admin products/listings', 'multivendorx'),
+					label: __(
+						'Store and admin products/listings',
+						'multivendorx'
+					),
 					value: 'store_and_admin_products',
 				},
 			],

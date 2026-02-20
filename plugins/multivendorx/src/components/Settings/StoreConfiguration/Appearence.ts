@@ -40,7 +40,8 @@ export default {
 			key: 'store_banner_template',
 			type: 'color-setting',
 			label: 'Shop banner section',
-			settingDescription: 'Choose how the store’s shop page appears, including banner, logo, and description.',
+			settingDescription:
+				'Choose how the store’s shop page appears, including banner, logo, and description.',
 			templates: [
 				{
 					key: 'banner1',
@@ -59,7 +60,7 @@ export default {
 					label: __('Banner 3', 'multivendorx'),
 					preview: BannerTemplate3,
 					component: BannerTemplate3,
-				}
+				},
 			],
 		},
 		{
@@ -72,21 +73,21 @@ export default {
 					key: 'no-sidebar',
 					label: __('No Sidebar', 'multivendorx'),
 					value: 'no',
-					icon: "right-sidebar"
+					icon: 'right-sidebar',
 				},
 				{
 					key: 'left',
 					label: __('Left Sidebar', 'multivendorx'),
 					value: 'left',
-					icon: "left-sidebar"
+					icon: 'left-sidebar',
 				},
 				{
 					key: 'right',
 					label: __('Right Sidebar', 'multivendorx'),
 					value: 'right',
-					icon: "no-sidebar"
-				}
-			]
+					icon: 'no-sidebar',
+				},
+			],
 		},
 		{
 			key: 'store_color_settings',
@@ -100,7 +101,7 @@ export default {
 					label: __('dashboard', 'multivendorx'),
 					preview: DashboardTemplate,
 					component: DashboardTemplate,
-				}
+				},
 			],
 			predefinedOptions: [
 				{

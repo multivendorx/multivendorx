@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import {  getApiLink, TableCard } from 'zyra';
+import { getApiLink, TableCard } from 'zyra';
 import axios from 'axios';
-import { downloadCSV, formatLocalDate, } from '../../services/commonFunction';
+import { downloadCSV, formatLocalDate } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const RefundedOrderReport: React.FC = () => {
@@ -12,7 +12,6 @@ const RefundedOrderReport: React.FC = () => {
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [store, setStore] = useState([]);
 
-
 	useEffect(() => {
 		axios
 			.get(getApiLink(appLocalizer, 'store'), {
@@ -20,11 +19,10 @@ const RefundedOrderReport: React.FC = () => {
 				params: { options: true },
 			})
 			.then((response) => {
-				const options =
-					(response.data || []).map((store: any) => ({
-						label: store.store_name,
-						value: store.id,
-					}));
+				const options = (response.data || []).map((store: any) => ({
+					label: store.store_name,
+					value: store.id,
+				}));
 
 				setStore(options);
 				setIsLoading(false);
@@ -84,7 +82,7 @@ const RefundedOrderReport: React.FC = () => {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
-				params: buildRefundQueryParams(query)
+				params: buildRefundQueryParams(query),
 			})
 			.then((response) => {
 				const rows = response.data || [];
@@ -104,7 +102,7 @@ const RefundedOrderReport: React.FC = () => {
 		{
 			label: __('Download CSV', 'multivendorx'),
 			icon: 'download',
-			onClickWithQuery: downloadCSVByQuery
+			onClickWithQuery: downloadCSVByQuery,
 		},
 	];
 
@@ -116,7 +114,7 @@ const RefundedOrderReport: React.FC = () => {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
-				params: buildRefundQueryParams(query)
+				params: buildRefundQueryParams(query),
 			})
 			.then((response) => {
 				const orders = Array.isArray(response.data)
@@ -186,7 +184,7 @@ const RefundedOrderReport: React.FC = () => {
 					priceDecimals: appLocalizer.price_decimals,
 					decimalSeparator: appLocalizer.decimal_separator,
 					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position
+					currencyPosition: appLocalizer.currency_position,
 				}}
 			/>
 		</>

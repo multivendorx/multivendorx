@@ -50,7 +50,7 @@ const NotificationTable = (React.FC = () => {
 		},
 		date: {
 			label: __('Date', 'multivendorx'),
-			type:'date'
+			type: 'date',
 		},
 	};
 

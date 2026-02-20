@@ -56,7 +56,7 @@ export default {
 					title: true,
 					description: false,
 				},
-				disableBtn: true
+				disableBtn: true,
 			},
 			proSetting: false,
 			moduleEnabled: 'store-review',

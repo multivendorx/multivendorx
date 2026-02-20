@@ -1,5 +1,11 @@
 import { addFilter } from '@wordpress/hooks';
-import {   BasicInputUI, Card, DynamicRowSetting, FormGroup, FormGroupWrapper } from 'zyra';
+import {
+	BasicInputUI,
+	Card,
+	DynamicRowSetting,
+	FormGroup,
+	FormGroupWrapper,
+} from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const Downloadable = ({ product, setProduct, handleChange }) => {
@@ -39,7 +45,11 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 							name: attachment.filename,
 						});
 						updateDownloadableFile(row.id, 'file', attachment.url);
-						updateDownloadableFile(row.id, 'name', attachment.filename);
+						updateDownloadableFile(
+							row.id,
+							'name',
+							attachment.filename
+						);
 					});
 
 					frame.open();
@@ -47,7 +57,6 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 			},
 		],
 	};
-
 
 	const updateDownloadableFile = (id, key, value) => {
 		setProduct((prev) => ({
@@ -57,7 +66,6 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 			),
 		}));
 	};
-
 
 	return (
 		// <Card contentHeight
@@ -73,7 +81,9 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 					value={product.downloads}
 					addLabel={__('Add new', 'multivendorx')}
 					onChange={(rows) => {
-						const cleanedRows = rows.map(({ upload, ...rest }) => rest);
+						const cleanedRows = rows.map(
+							({ upload, ...rest }) => rest
+						);
 
 						setProduct((prev) => ({
 							...prev,
@@ -83,31 +93,32 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 				/>
 			</FormGroup>
 
-			<FormGroup cols={2} label={__('Download limit', 'multivendorx')} htmlFor="download_limit">
+			<FormGroup
+				cols={2}
+				label={__('Download limit', 'multivendorx')}
+				htmlFor="download_limit"
+			>
 				<BasicInputUI
 					name="download_limit"
 					type="number"
-
 					value={product.download_limit}
 					onChange={(e) =>
-						handleChange(
-							'download_limit',
-							e.target.value
-						)
+						handleChange('download_limit', e.target.value)
 					}
 				/>
 			</FormGroup>
 
-			<FormGroup cols={2} label={__('Download limit', 'multivendorx')} htmlFor="download_limit">
+			<FormGroup
+				cols={2}
+				label={__('Download limit', 'multivendorx')}
+				htmlFor="download_limit"
+			>
 				<BasicInputUI
 					name="download_expiry"
 					type="number"
 					value={product.download_expiry}
 					onChange={(e) =>
-						handleChange(
-							'download_expiry',
-							e.target.value
-						)
+						handleChange('download_expiry', e.target.value)
 					}
 				/>
 			</FormGroup>

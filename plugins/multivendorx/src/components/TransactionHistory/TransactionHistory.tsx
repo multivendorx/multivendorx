@@ -60,7 +60,7 @@ export const TransactionHistory: React.FC = () => {
 			},
 		},
 	];
-	
+
 	const getForm = (tabId: string) => {
 		switch (tabId) {
 			case 'wallet-transaction':

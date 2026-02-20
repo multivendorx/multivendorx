@@ -13,7 +13,6 @@ export default {
 	headerIcon: 'notification',
 	submitUrl: 'settings',
 	modal: [
-
 		{
 			key: 'sender_email_address',
 			type: 'email',
@@ -24,7 +23,10 @@ export default {
 				'The primary email address that will receive system and marketplace notifications.',
 				'multivendorx'
 			),
-			desc: __('You can add multiple email addresses separated by commas to notify additional recipients.', 'multivendorx'),
+			desc: __(
+				'You can add multiple email addresses separated by commas to notify additional recipients.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'sms_receiver_phone_number',
@@ -52,7 +54,8 @@ export default {
 			key: 'email_provider',
 			type: 'setting-toggle',
 			label: __('Email provider', 'multivendorx'),
-			desc: __('<ul>Use the WordPress-supported SMTP plugin, which you can find here: <a href="https://wordpress.org/plugins/tags/smtp/" target="_blank">WordPress SMTP Plugins</a>.<br><strong>Important:</strong> <strong>Sender Email Address</strong> configured in your SMTP plugin match the sender email set in your email delivery setup settings.<br>Otherwise, WordPress may fall back to its default mail method.</ul>',
+			desc: __(
+				'<ul>Use the WordPress-supported SMTP plugin, which you can find here: <a href="https://wordpress.org/plugins/tags/smtp/" target="_blank">WordPress SMTP Plugins</a>.<br><strong>Important:</strong> <strong>Sender Email Address</strong> configured in your SMTP plugin match the sender email set in your email delivery setup settings.<br>Otherwise, WordPress may fall back to its default mail method.</ul>',
 				'multivendorx'
 			),
 		},
@@ -154,7 +157,10 @@ export default {
 			key: 'twilio_account_sid',
 			type: 'text',
 			label: __('Account SID', 'multivendorx'),
-			desc: __('<ul> Send SMS notifications using Twilio.<br> Get your <strong>Account SID</strong> and <strong>Auth Token</strong> from your Twilio dashboard: <a href="https://www.twilio.com/console" target="_blank">Twilio Console</a>.<br> <strong>Important:</strong> Make sure the Account SID and Token you enter here match your Twilio account details exactly.<br> Follow Twilio’s setup instructions to complete the SMS gateway configuration. </ul>', 'multivendorx'),
+			desc: __(
+				'<ul> Send SMS notifications using Twilio.<br> Get your <strong>Account SID</strong> and <strong>Auth Token</strong> from your Twilio dashboard: <a href="https://www.twilio.com/console" target="_blank">Twilio Console</a>.<br> <strong>Important:</strong> Make sure the Account SID and Token you enter here match your Twilio account details exactly.<br> Follow Twilio’s setup instructions to complete the SMS gateway configuration. </ul>',
+				'multivendorx'
+			),
 			dependent: {
 				key: 'sms_gateway_selector',
 				set: true,
@@ -175,7 +181,10 @@ export default {
 			key: 'vonage_api_key',
 			type: 'text',
 			label: __('API Key', 'multivendorx'),
-			desc: __('Send SMS notifications using Vonage (formerly Nexmo).<br> Get your <strong>API Key</strong> and <strong>API Secret</strong> from your Vonage dashboard: <a href="https://dashboard.nexmo.com" target="_blank">Vonage Dashboard</a>.<br> <strong>Important:</strong> Make sure the API Key and Secret you enter here match your Vonage account details exactly.<br> Follow Vonage’s setup instructions to complete the SMS gateway configuration.', 'multivendorx'),
+			desc: __(
+				'Send SMS notifications using Vonage (formerly Nexmo).<br> Get your <strong>API Key</strong> and <strong>API Secret</strong> from your Vonage dashboard: <a href="https://dashboard.nexmo.com" target="_blank">Vonage Dashboard</a>.<br> <strong>Important:</strong> Make sure the API Key and Secret you enter here match your Vonage account details exactly.<br> Follow Vonage’s setup instructions to complete the SMS gateway configuration.',
+				'multivendorx'
+			),
 			dependent: {
 				key: 'sms_gateway_selector',
 				set: true,
@@ -196,7 +205,10 @@ export default {
 			key: 'clickatell_api_key',
 			type: 'text',
 			label: __('API Key', 'multivendorx'),
-			desc: __('<ul> Send SMS notifications using Clickatell.<br> Get your <strong>API Key</strong> from your Clickatell dashboard: <a href="https://platform.clickatell.com/" target="_blank">Clickatell Dashboard</a>.<br> <strong>Important:</strong> Make sure the API Key you enter here matches your Clickatell account details exactly.<br> Follow Clickatell’s setup instructions to complete the SMS gateway configuration. </ul>', 'multivendorx'),
+			desc: __(
+				'<ul> Send SMS notifications using Clickatell.<br> Get your <strong>API Key</strong> from your Clickatell dashboard: <a href="https://platform.clickatell.com/" target="_blank">Clickatell Dashboard</a>.<br> <strong>Important:</strong> Make sure the API Key you enter here matches your Clickatell account details exactly.<br> Follow Clickatell’s setup instructions to complete the SMS gateway configuration. </ul>',
+				'multivendorx'
+			),
 			dependent: {
 				key: 'sms_gateway_selector',
 				set: true,
@@ -207,7 +219,10 @@ export default {
 			key: 'plivo_auth_id',
 			type: 'text',
 			label: __('Auth ID', 'multivendorx'),
-			desc: __('<ul> Send SMS notifications using Plivo.<br> Get your <strong>Auth ID</strong> and <strong>Auth Token</strong> from your Plivo dashboard: <a href="https://console.plivo.com/" target="_blank">Plivo Console</a>.<br> <strong>Important:</strong> Make sure the Auth ID and Token you enter here match your Plivo account details exactly.<br> Follow Plivo’s setup instructions to complete the SMS gateway configuration. </ul>', 'multivendorx'),
+			desc: __(
+				'<ul> Send SMS notifications using Plivo.<br> Get your <strong>Auth ID</strong> and <strong>Auth Token</strong> from your Plivo dashboard: <a href="https://console.plivo.com/" target="_blank">Plivo Console</a>.<br> <strong>Important:</strong> Make sure the Auth ID and Token you enter here match your Plivo account details exactly.<br> Follow Plivo’s setup instructions to complete the SMS gateway configuration. </ul>',
+				'multivendorx'
+			),
 			dependent: {
 				key: 'sms_gateway_selector',
 				set: true,
@@ -224,6 +239,5 @@ export default {
 				value: 'plivo',
 			},
 		},
-
 	],
 };

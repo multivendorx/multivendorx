@@ -111,7 +111,6 @@ const Stores = () => {
 		});
 	};
 
-
 	const saveEmails = (emailList: string[], primary: string) => {
 		const updated = {
 			...formData,
@@ -122,7 +121,6 @@ const Stores = () => {
 	};
 
 	const handleSubmit = async () => {
-
 		const { name, slug, email, store_owners } = formData;
 
 		if (!name?.trim()) {
@@ -261,8 +259,8 @@ const Stores = () => {
 									setFormData({});
 									setImagePreview('');
 									setaddStore(true);
-								}
-							}
+								},
+							},
 						]}
 					/>
 					{addStore && (
@@ -306,34 +304,49 @@ const Stores = () => {
 							}
 						>
 							<FormGroupWrapper>
-								<FormGroup label={__('Store name', 'multivendorx')} htmlFor="store-name">
+								<FormGroup
+									label={__('Store name', 'multivendorx')}
+									htmlFor="store-name"
+								>
 									<BasicInputUI
 										type="text"
 										name="name"
 										value={formData.name || ''}
-										onChange={(val) => handleChange('name', val as string)}
+										onChange={(val) =>
+											handleChange('name', val as string)
+										}
 										msg={error.name}
 									/>
 								</FormGroup>
 
-								<FormGroup label={__('Store slug', 'multivendorx')} htmlFor="store-slug">
+								<FormGroup
+									label={__('Store slug', 'multivendorx')}
+									htmlFor="store-slug"
+								>
 									<BasicInputUI
 										type="text"
 										name="slug"
 										value={formData.slug}
-										onChange={(val) => handleChange('slug', val as string)}
+										onChange={(val) =>
+											handleChange('slug', val as string)
+										}
 										msg={error.slug}
 									/>
 
 									<AdminButtonUI
 										buttons={{
-											text: __('Check Slug', 'multivendorx'),
+											text: __(
+												'Check Slug',
+												'multivendorx'
+											),
 											onClick: handleSlugCheck,
 										}}
 									/>
 								</FormGroup>
 
-								<FormGroup label={__('Store Email', 'multivendorx')}>
+								<FormGroup
+									label={__('Store Email', 'multivendorx')}
+								>
 									<EmailsInput
 										value={formData.emails || []}
 										enablePrimary={true}
@@ -348,7 +361,10 @@ const Stores = () => {
 									)}
 								</FormGroup>
 
-								<FormGroup label={__('Description', 'multivendorx')} htmlFor="Description">
+								<FormGroup
+									label={__('Description', 'multivendorx')}
+									htmlFor="Description"
+								>
 									<TextAreaUI
 										name="description"
 										value={formData.description || ''}
@@ -357,13 +373,16 @@ const Stores = () => {
 										tinymceApiKey={
 											appLocalizer
 												.settings_databases_value[
-											'overview'
+												'overview'
 											]['tinymce_api_section'] ?? ''
 										}
 									/>
 								</FormGroup>
 
-								<FormGroup label={__('Primary owner', 'multivendorx')} htmlFor="store_owners">
+								<FormGroup
+									label={__('Primary owner', 'multivendorx')}
+									htmlFor="store_owners"
+								>
 									<SelectInputUI
 										name="store_owners"
 										options={
@@ -380,8 +399,7 @@ const Stores = () => {
 											}
 											const updated = {
 												...formData,
-												store_owners:
-													newValue.value,
+												store_owners: newValue.value,
 											};
 											setFormData(updated);
 										}}
@@ -393,11 +411,16 @@ const Stores = () => {
 									)}
 								</FormGroup>
 
-								<FormGroup label={__('Profile image', 'multivendorx')} htmlFor="store_owners">
+								<FormGroup
+									label={__('Profile image', 'multivendorx')}
+									htmlFor="store_owners"
+								>
 									<FileInputUI
 										value={formData.image || ''}
 										name="image"
-										accept={".jpg,.jpeg,.png,.gif,.pdf,.zip"} // Backend controls file types: "image/*", ".pdf", "image/*,.pdf"
+										accept={
+											'.jpg,.jpeg,.png,.gif,.pdf,.zip'
+										} // Backend controls file types: "image/*", ".pdf", "image/*,.pdf"
 										imageSrc={imagePreview || ''}
 										imageWidth={75}
 										imageHeight={75}

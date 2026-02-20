@@ -24,7 +24,7 @@ interface StorePaymentConfig {
 }
 
 const storePayment: StorePaymentConfig =
-		(appLocalizer.store_payment_settings as StorePaymentConfig) || {};
+	(appLocalizer.store_payment_settings as StorePaymentConfig) || {};
 
 console.log('StorePayment:', storePayment);
 
@@ -49,7 +49,7 @@ const renderPaymentFields = () => {
 	if (!selectedProvider?.fields || !Array.isArray(selectedProvider.fields)) {
 		return [];
 	}
-    console.log('Rendering fields for provider:', selectedProvider.fields);
+	console.log('Rendering fields for provider:', selectedProvider.fields);
 	return selectedProvider.fields.map((field) => ({
 		// Pass through all original field properties
 		...field,
@@ -57,26 +57,26 @@ const renderPaymentFields = () => {
 		dependent: {
 			key: 'payment_method',
 			value: selectedProvider.key,
-		}
+		},
 	}));
 };
 
 export default {
-    id: 'payout',
-    headerTitle: __('Payout', 'multivendorx'),
-    headerDescription: __(
-        'Enter your payment information and select the method you’d like to use for receiving store payouts.',
-        'multivendorx'
-    ),
-    headerIcon: 'wallet-open',
-	
-    modal: [
-        {
-            key: 'payment_method',
-            type: 'setting-toggle',
-            label: __('Payment Method', 'multivendorx'),
-            options: paymentOptions,
-        },
-        ...renderPaymentFields()
-    ],
+	id: 'payout',
+	headerTitle: __('Payout', 'multivendorx'),
+	headerDescription: __(
+		'Enter your payment information and select the method you’d like to use for receiving store payouts.',
+		'multivendorx'
+	),
+	headerIcon: 'wallet-open',
+
+	modal: [
+		{
+			key: 'payment_method',
+			type: 'setting-toggle',
+			label: __('Payment Method', 'multivendorx'),
+			options: paymentOptions,
+		},
+		...renderPaymentFields(),
+	],
 };

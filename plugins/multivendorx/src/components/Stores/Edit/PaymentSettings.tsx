@@ -175,22 +175,21 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 							<FormGroup
 								desc={
 									paymentOptions &&
-										paymentOptions.length === 0
+									paymentOptions.length === 0
 										? sprintf(
-											/* translators: %s: link to payment integration settings */
-											__(
-												'You haven’t enabled any payment methods yet. Configure payout options <a href="%s">from here</a> to allow stores to receive their earnings.',
-												'multivendorx'
-											),
-											'?page=multivendorx#&tab=settings&subtab=withdrawal-methods'
-										)
+												/* translators: %s: link to payment integration settings */
+												__(
+													'You haven’t enabled any payment methods yet. Configure payout options <a href="%s">from here</a> to allow stores to receive their earnings.',
+													'multivendorx'
+												),
+												'?page=multivendorx#&tab=settings&subtab=withdrawal-methods'
+											)
 										: ''
-								}>
+								}
+							>
 								<ToggleSettingUI
 									options={paymentOptions}
-									value={
-										formData.payment_method || ''
-									}
+									value={formData.payment_method || ''}
 									onChange={(value) =>
 										handleToggleChange(
 											value,
@@ -200,9 +199,11 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 								/>
 							</FormGroup>
 
-
 							{providerFields.map((field, index) => {
-								if (bankDetails && formData.payment_method == 'bank-transfer' &&
+								if (
+									bankDetails &&
+									formData.payment_method ==
+										'bank-transfer' &&
 									!(
 										field.key === 'account_type' ||
 										bankDetails.includes(field.key)
@@ -212,10 +213,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 								}
 
 								// Render HTML (e.g., connect button)
-								if (
-									field.type === 'html' &&
-									field.html
-								) {
+								if (field.type === 'html' && field.html) {
 									return (
 										<div
 											key={`html-${index}`}
@@ -230,30 +228,31 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 								// Render Toggle Settings
 								if (field.type === 'setting-toggle') {
 									return (
-										<FormGroup label={__(field.label, 'multivendorx')} desc= {__(field.desc || '')}htmlFor={field.key}>
+										<FormGroup
+											label={__(
+												field.label,
+												'multivendorx'
+											)}
+											desc={__(field.desc || '')}
+											htmlFor={field.key}
+										>
 											<ToggleSettingUI
 												key={field.key}
 												options={
-													Array.isArray(
-														field.options
-													)
+													Array.isArray(field.options)
 														? field.options.map(
-															(
-																opt
-															) => ({
-																...opt,
-																value: String(
-																	opt.value
-																),
-															})
-														)
+																(opt) => ({
+																	...opt,
+																	value: String(
+																		opt.value
+																	),
+																})
+															)
 														: []
 												}
 												value={
-													formData[
-													field.key ||
+													formData[field.key || ''] ||
 													''
-													] || ''
 												}
 												onChange={(value) =>
 													handleToggleChange(
@@ -268,23 +267,22 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 
 								// Default input field rendering
 								return (
-									<FormGroup label={__(field.label, 'multivendorx')} htmlFor={field.key}>
+									<FormGroup
+										label={__(field.label, 'multivendorx')}
+										htmlFor={field.key}
+									>
 										<BasicInputUI
 											name={field.key || ''}
-											type={
-												field.type || 'text'
-											}
+											type={field.type || 'text'}
 											placeholder={
 												field.placeholder
 													? __(
-														field.placeholder,
-														'multivendorx'
-													)
+															field.placeholder,
+															'multivendorx'
+														)
 													: ''
 											}
-											value={
-												formData[field.key]
-											}
+											value={formData[field.key]}
 											onChange={handleChange}
 										/>
 									</FormGroup>
@@ -295,7 +293,9 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 				</Column>
 				{/* Commission Amount */}
 				<Column grid={4}>
-					<Card title={__('Store-specific commission', 'multivendorx')}>
+					<Card
+						title={__('Store-specific commission', 'multivendorx')}
+					>
 						<BlockTextUI
 							blockTextClass="settings-metabox-note"
 							value={sprintf(
@@ -307,7 +307,11 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 							)}
 						/>
 						<FormGroupWrapper>
-							<FormGroup cols={2} label={__('Fixed', 'multivendorx')} htmlFor="Fixed">
+							<FormGroup
+								cols={2}
+								label={__('Fixed', 'multivendorx')}
+								htmlFor="Fixed"
+							>
 								<BasicInputUI
 									preText={appLocalizer.currency_symbol}
 									name="commission_fixed"
@@ -320,7 +324,11 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 									onChange={handleChange}
 								/>
 							</FormGroup>
-							<FormGroup cols={2} label={__('Percentage', 'multivendorx')} htmlFor="Percentage">
+							<FormGroup
+								cols={2}
+								label={__('Percentage', 'multivendorx')}
+								htmlFor="Percentage"
+							>
 								<BasicInputUI
 									postText="%"
 									name="commission_percentage"
@@ -331,7 +339,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 						</FormGroupWrapper>
 					</Card>
 				</Column>
-			</Container >
+			</Container>
 		</>
 	);
 };

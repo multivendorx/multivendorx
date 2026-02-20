@@ -43,9 +43,7 @@ const StoreTabs: React.FC = () => {
 	);
 
 	// fallback if active tab is not available
-	const [activeTab, setActiveTab] = useState(
-		availableTabs[0]?.key || ''
-	);
+	const [activeTab, setActiveTab] = useState(availableTabs[0]?.key || '');
 
 	if (!availableTabs.length) {
 		return null;
@@ -59,7 +57,9 @@ const StoreTabs: React.FC = () => {
 						{availableTabs.map((tab) => (
 							<li
 								key={tab.key}
-								className={activeTab === tab.key ? 'active' : ''}
+								className={
+									activeTab === tab.key ? 'active' : ''
+								}
 							>
 								<a
 									href={`#tab-${tab.key}`}

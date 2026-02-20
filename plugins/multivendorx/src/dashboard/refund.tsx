@@ -2,11 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	NavigatorHeader,
-	TableCard,
-} from 'zyra';
+import { getApiLink, NavigatorHeader, TableCard } from 'zyra';
 
 import { formatLocalDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
@@ -96,7 +92,10 @@ const Refund: React.FC = () => {
 		<>
 			<NavigatorHeader
 				headerTitle={__('Refund', 'multivendorx')}
-				headerDescription={__('Manage and process refund requests from customers.', 'multivendorx')}
+				headerDescription={__(
+					'Manage and process refund requests from customers.',
+					'multivendorx'
+				)}
 			/>
 			<TableCard
 				headers={headers}
@@ -119,7 +118,7 @@ const Refund: React.FC = () => {
 					priceDecimals: appLocalizer.price_decimals,
 					decimalSeparator: appLocalizer.decimal_separator,
 					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position
+					currencyPosition: appLocalizer.currency_position,
 				}}
 			/>
 		</>

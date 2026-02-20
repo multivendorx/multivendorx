@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {getApiLink, SuccessNotice, TextAreaUI, ToggleSettingUI } from 'zyra';
+import { getApiLink, SuccessNotice, TextAreaUI, ToggleSettingUI } from 'zyra';
 
 const AdditionalInformation = () => {
 	const id = appLocalizer.store_id;
@@ -116,8 +116,10 @@ const AdditionalInformation = () => {
 
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<label>{__('Hide Address', 'multivendorx')}</label>
-								<ToggleSettingUI									 
+								<label>
+									{__('Hide Address', 'multivendorx')}
+								</label>
+								<ToggleSettingUI
 									options={[
 										{
 											key: 'yes',
@@ -140,8 +142,10 @@ const AdditionalInformation = () => {
 
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<label>{__('Hide Phone', 'multivendorx')}</label>
-								<ToggleSettingUI									 
+								<label>
+									{__('Hide Phone', 'multivendorx')}
+								</label>
+								<ToggleSettingUI
 									options={[
 										{
 											key: 'yes',
@@ -164,8 +168,10 @@ const AdditionalInformation = () => {
 
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<label>{__('Hide Email', 'multivendorx')}</label>
-								<ToggleSettingUI									 
+								<label>
+									{__('Hide Email', 'multivendorx')}
+								</label>
+								<ToggleSettingUI
 									options={[
 										{
 											key: 'yes',

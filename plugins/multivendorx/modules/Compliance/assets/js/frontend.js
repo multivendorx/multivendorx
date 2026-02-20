@@ -4,9 +4,15 @@ jQuery(function ($) {
 		var $container = $(container);
 		$container.empty(); // Clear previous messages
 
-		var noticeHtml = '<div class="wc-block-components-notice-banner is-' + type + '">' +
+		var noticeHtml =
+			'<div class="wc-block-components-notice-banner is-' +
+			type +
+			'">' +
 			'<div class="wc-block-components-notice-banner__content">' +
-			'<strong>' + capitalizeFirstLetter(type) + ':</strong> ' + message +
+			'<strong>' +
+			capitalizeFirstLetter(type) +
+			':</strong> ' +
+			message +
 			'</div>' +
 			'</div>';
 
@@ -73,7 +79,9 @@ jQuery(function ($) {
 		e.preventDefault();
 
 		var $btn = $(this);
-		if ($btn.prop('disabled')) return;
+		if ($btn.prop('disabled')) {
+			return;
+		}
 
 		var $form = $btn.closest('.report-abuse-form');
 		var name = $form.find('.report-abuse-name').val().trim();
@@ -100,7 +108,11 @@ jQuery(function ($) {
 		}
 
 		if (!emailRegex.test(email)) {
-			showThemeNotice($msgBox, 'error', 'Please enter a valid email address.');
+			showThemeNotice(
+				$msgBox,
+				'error',
+				'Please enter a valid email address.'
+			);
 			return;
 		}
 
@@ -123,10 +135,10 @@ jQuery(function ($) {
 				if (res.success) {
 					$msgBox.html(
 						'<div class="wc-block-components-notice-banner is-success">' +
-						'<div class="wc-block-components-notice-banner__content">' +
-						'<strong>Success:</strong> ' +
-						res.data +
-						'</div></div>'
+							'<div class="wc-block-components-notice-banner__content">' +
+							'<strong>Success:</strong> ' +
+							res.data +
+							'</div></div>'
 					);
 
 					setTimeout(function () {
@@ -160,10 +172,6 @@ jQuery(function ($) {
 		});
 	});
 
-
-
-
-
 	// OPEN popup
 	$(document).on('click', '.open-popup', function (e) {
 		e.preventDefault();
@@ -195,5 +203,4 @@ jQuery(function ($) {
 	$(document).on('click', '.multivendorx-popup', function () {
 		$(this).fadeOut(200);
 	});
-
 });

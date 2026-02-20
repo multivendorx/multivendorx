@@ -89,56 +89,56 @@ export default {
 				' Choose which shipping providers stores can use. Only the carriers you enable will be available for sellers to ship their products and add tracking details. This helps keep all shipments through trusted, approved providers.',
 				'multivendorx'
 			),
-			 
+
 			addNewBtnText: 'Add Custom Provider',
 			options: [
 				{
 					key: 'australia_post',
 					label: __('Australia post', 'multivendorx'),
 					value: 'australia_post',
-					edit : true,
+					edit: true,
 				},
 				{
 					key: 'canada_post',
 					label: __('Canada post', 'multivendorx'),
 					value: 'canada_post',
-					edit : true,
+					edit: true,
 				},
 				{
 					key: 'city_link',
 					label: __('City link', 'multivendorx'),
 					value: 'city_link',
-					edit : true,
+					edit: true,
 				},
 				{
 					key: 'dhl',
 					label: __('DHL', 'multivendorx'),
 					value: 'dhl',
-					edit : true,
+					edit: true,
 				},
 				{
 					key: 'fastway_south_africa',
 					label: __('Fastway South Africa', 'multivendorx'),
 					value: 'fastway_south_africa',
-					edit : true,
+					edit: true,
 				},
 				{
 					key: 'fedex',
 					label: __('FedEx', 'multivendorx'),
 					value: 'fedex',
-					edit : true,
+					edit: true,
 				},
 				{
 					key: 'ontrac',
 					label: __('OnTrac', 'multivendorx'),
 					value: 'ontrac',
-					edit : true,
+					edit: true,
 				},
 				{
 					key: 'polish_shipping',
 					label: __('Polish shipping providers', 'multivendorx'),
 					value: 'polish_shipping',
-					edit : true,
+					edit: true,
 				},
 			],
 			selectDeselect: true,

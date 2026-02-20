@@ -20,7 +20,9 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 	const [store, setStore] = useState<any[] | null>(null);
 
 	const handleConfirmDelete = () => {
-		if (!deleteId) return;
+		if (!deleteId) {
+			return;
+		}
 
 		axios
 			.delete(getApiLink(appLocalizer, `report-abuse/${deleteId}`), {
@@ -45,11 +47,10 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			})
 			.then((response) => {
-				const options =
-					(response.data || []).map((store: any) => ({
-						label: store.store_name,
-						value: store.id,
-					}));
+				const options = (response.data || []).map((store: any) => ({
+					label: store.store_name,
+					value: store.id,
+				}));
 
 				options.unshift({
 					label: __('Admin', 'multivendorx'),
@@ -78,7 +79,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 		created_at: {
 			label: __('Date created', 'multivendorx'),
 			isSortable: true,
-			type: 'date'
+			type: 'date',
 		},
 		action: {
 			type: 'action',
@@ -92,10 +93,9 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 						setConfirmOpen(true);
 					},
 				},
-			]
+			],
 		},
 	};
-
 
 	const filters = [
 		{
@@ -141,9 +141,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 				setRowIds(ids);
 
 				setRows(products);
-				setTotalRows(
-					Number(response.headers['x-wp-total']) || 0
-				);
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
 			.catch((error) => {

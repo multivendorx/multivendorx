@@ -5,7 +5,6 @@ import { __ } from '@wordpress/i18n';
 import { getApiLink, NavigatorHeader, TableCard } from 'zyra';
 import { QueryProps, TableRow } from '@/services/type';
 
-
 const StoreFollower: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +54,10 @@ const StoreFollower: React.FC = () => {
 		<>
 			<NavigatorHeader
 				headerTitle={__('Store Followers', 'multivendorx')}
-				headerDescription={__('See all your store followers, engage with them, and grow your loyal customer base.', 'multivendorx')}
+				headerDescription={__(
+					'See all your store followers, engage with them, and grow your loyal customer base.',
+					'multivendorx'
+				)}
 			/>
 
 			<TableCard

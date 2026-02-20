@@ -1,4 +1,4 @@
-import {getApiLink, SettingsNavigator, useModules } from 'zyra';
+import { getApiLink, SettingsNavigator, useModules } from 'zyra';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useLocation, Link } from 'react-router-dom';
@@ -36,7 +36,7 @@ const ApprovalQueue = () => {
 
 					setStoreCount(pendingCount);
 				})
-				.catch(() => { })
+				.catch(() => {});
 		}
 
 		// Product Count (only if can publish products)
@@ -57,12 +57,14 @@ const ApprovalQueue = () => {
 				.then((res) =>
 					setProductCount(parseInt(res.headers['x-wp-total']) || 0)
 				)
-				.catch(() => { });
+				.catch(() => {});
 		}
 
 		//Coupon Count (only if can publish coupons)
 		if (
-			settings?.['store-permissions']?.coupons?.includes('publish_coupons')
+			settings?.['store-permissions']?.coupons?.includes(
+				'publish_coupons'
+			)
 		) {
 			axios
 				.get(`${appLocalizer.apiUrl}/wc/v3/coupons`, {
@@ -76,7 +78,7 @@ const ApprovalQueue = () => {
 				.then((res) =>
 					setCouponCount(parseInt(res.headers['x-wp-total']) || 0)
 				)
-				.catch(() => { });
+				.catch(() => {});
 		}
 
 		// Refund Count (only if refund module active)
@@ -95,7 +97,7 @@ const ApprovalQueue = () => {
 				.then((res) =>
 					setRefundCount(Number(res.headers['x-wp-total']) || 0)
 				)
-				.catch(() => { });
+				.catch(() => {});
 		}
 
 		// Report Abuse (only if module active)
@@ -111,7 +113,7 @@ const ApprovalQueue = () => {
 				.then((res) => {
 					setReportAbuseCount(Number(res.headers['x-wp-total']) || 0);
 				})
-				.catch(() => { })
+				.catch(() => {});
 		}
 
 		// Withdraw Count (only if manual withdraw enabled)
@@ -121,16 +123,14 @@ const ApprovalQueue = () => {
 					headers: { 'X-WP-Nonce': appLocalizer.nonce },
 					params: {
 						page: 1,
-						row: 1,          
+						row: 1,
 						pending_withdraw: true,
 					},
 				})
 				.then((res) => {
-					setWithdrawCount(
-						Number(res.headers['x-wp-total']) || 0
-					);
+					setWithdrawCount(Number(res.headers['x-wp-total']) || 0);
 				})
-				.catch(() => { })
+				.catch(() => {});
 		}
 
 		// Deactivate Store Request (always active)
@@ -139,16 +139,14 @@ const ApprovalQueue = () => {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: {
 					page: 1,
-					row: 1,   
+					row: 1,
 					deactivate: true,
 				},
 			})
 			.then((res) => {
-				setDeactivateCount(
-					Number(res.headers['x-wp-total']) || 0
-				);
+				setDeactivateCount(Number(res.headers['x-wp-total']) || 0);
 			})
-			.catch(() => { })
+			.catch(() => {});
 	};
 
 	useEffect(() => {
@@ -177,7 +175,8 @@ const ApprovalQueue = () => {
 				headerTitle: 'Stores',
 				headerDescription: 'Eager to join the marketplace',
 				settingTitle: 'Store in review queue',
-				settingSubTitle: 'Next in line! Approve or reject new store join requests.',
+				settingSubTitle:
+					'Next in line! Approve or reject new store join requests.',
 				headerIcon: 'storefront yellow',
 				count: storeCount,
 			},
@@ -193,7 +192,8 @@ const ApprovalQueue = () => {
 				headerTitle: 'Products',
 				headerDescription: 'Pending your approval',
 				settingTitle: 'Products awaiting review',
-				settingSubTitle: 'Approve these listings to start generating sales in your marketplace.',
+				settingSubTitle:
+					'Approve these listings to start generating sales in your marketplace.',
 				headerIcon: 'multi-product red',
 				count: productCount,
 			},
@@ -209,7 +209,8 @@ const ApprovalQueue = () => {
 				headerTitle: 'Coupons',
 				headerDescription: 'Need a quick review',
 				settingTitle: 'Coupons up for review',
-				settingSubTitle: 'Approve, decline, or tweak before they go live.',
+				settingSubTitle:
+					'Approve, decline, or tweak before they go live.',
 				headerIcon: 'coupon green',
 				count: couponCount,
 			},
@@ -234,7 +235,8 @@ const ApprovalQueue = () => {
 				headerTitle: 'Refunds',
 				headerDescription: 'Need your decision',
 				settingTitle: 'Refund tracker',
-				settingSubTitle: 'Monitor refund trends and stay informed on store returns.',
+				settingSubTitle:
+					'Monitor refund trends and stay informed on store returns.',
 				headerIcon: 'marketplace-refund blue',
 				count: refundCount,
 			},

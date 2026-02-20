@@ -1,6 +1,20 @@
 import { useEffect, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
-import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInputUI, SuccessNotice, TextAreaUI, getApiLink, useModules } from 'zyra';
+import {
+	AdminButtonUI,
+	BasicInputUI,
+	Card,
+	Column,
+	Container,
+	FormGroup,
+	FormGroupWrapper,
+	InfoItem,
+	SelectInputUI,
+	SuccessNotice,
+	TextAreaUI,
+	getApiLink,
+	useModules,
+} from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '../services/commonFunction';
 
@@ -30,14 +44,15 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 		tracking_id: '',
 	});
 	const { modules } = useModules();
-	const customer_information_access = appLocalizer.settings_databases_value['privacy'].customer_information_access;
+	const customer_information_access =
+		appLocalizer.settings_databases_value['privacy']
+			.customer_information_access;
 	const shipping_providers_options =
 		appLocalizer.settings_databases_value['shipping']
 			.shipping_providers_options;
 
 	const selected_shipping_providers =
-		appLocalizer.settings_databases_value['shipping']
-			.shipping_providers;
+		appLocalizer.settings_databases_value['shipping'].shipping_providers;
 
 	// const filteredShippingProviders = shipping_providers_options.filter(
 	// 	(option) => selected_shipping_providers.includes(option.value)
@@ -46,7 +61,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 	const handleItemChange = (id, field, value) => {
 		setRefundItems((prev) => {
 			const item = orderData.line_items.find((i) => i.id === id);
-			if (!item) return prev;
+			if (!item) {
+				return prev;
+			}
 
 			const maxQty = Number(item.quantity);
 			const unitPrice = Number(item.subtotal) / maxQty;
@@ -79,9 +96,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 
 			const refundAmount = Object.values(updated).reduce(
 				(sum, row) =>
-					sum +
-					Number(row.total || 0) +
-					Number(row.tax || 0),
+					sum + Number(row.total || 0) + Number(row.tax || 0),
 				0
 			);
 
@@ -104,9 +119,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 			!refundDetails.refundAmount ||
 			Number(refundDetails.refundAmount) <= 0
 		) {
-			setRefundError(
-				__('Invalid refund amount', 'multivendorx')
-			);
+			setRefundError(__('Invalid refund amount', 'multivendorx'));
 			return;
 		}
 
@@ -126,19 +139,22 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 			url: getApiLink(appLocalizer, 'refund'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			data: { payload },
-		}).then((response) => {
-			if (response.data.success) {
-				window.location.reload();
-			}
-		}).catch((err) => {
-			const message =
-				err?.response?.data?.message ||
-				__('Refund failed. Please try again.', 'multivendorx');
+		})
+			.then((response) => {
+				if (response.data.success) {
+					window.location.reload();
+				}
+			})
+			.catch((err) => {
+				const message =
+					err?.response?.data?.message ||
+					__('Refund failed. Please try again.', 'multivendorx');
 
-			setRefundError(message);
-		}).finally(() => {
-			setIsRefundLoading(false);
-		});
+				setRefundError(message);
+			})
+			.finally(() => {
+				setIsRefundLoading(false);
+			});
 	};
 
 	const [values, setValues] = useState({
@@ -240,7 +256,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 	};
 
 	useEffect(() => {
-		if (!orderData?.meta_data) return;
+		if (!orderData?.meta_data) {
+			return;
+		}
 
 		const meta = (key: string) =>
 			orderData.meta_data.find((m) => m.key === key)?.value ?? '';
@@ -257,9 +275,18 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 				`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
 				{
 					meta_data: [
-						{ key: appLocalizer.order_meta['shipping_provider'], value: shipmentData.provider },
-						{ key: appLocalizer.order_meta['tracking_url'], value: shipmentData.tracking_url },
-						{ key: appLocalizer.order_meta['tracking_id'], value: shipmentData.tracking_id },
+						{
+							key: appLocalizer.order_meta['shipping_provider'],
+							value: shipmentData.provider,
+						},
+						{
+							key: appLocalizer.order_meta['tracking_url'],
+							value: shipmentData.tracking_url,
+						},
+						{
+							key: appLocalizer.order_meta['tracking_id'],
+							value: shipmentData.tracking_id,
+						},
 					],
 				},
 				{
@@ -356,28 +383,42 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 						headerTitle={
 							<>
 								Order #{orderData?.number ?? orderId ?? '—'}
-								
 								{!statusSelect && orderData?.status?.trim() && (
 									<div
-										className={statusBadgeClass(orderData?.status)}
+										className={statusBadgeClass(
+											orderData?.status
+										)}
 										onClick={() => setStatusSelect(true)}
 									>
 										{(orderData?.status || '')
 											.replace(/-/g, ' ')
-											.replace(/\b\w/g, (c) => c.toUpperCase())}
+											.replace(/\b\w/g, (c) =>
+												c.toUpperCase()
+											)}
 										<i className="adminfont-keyboard-arrow-down"></i>
 									</div>
 								)}
-
 								{statusSelect && (
 									<div className="status-edit">
 										<SelectInputUI
 											name="status"
 											options={[
-												{ label: 'Processing', value: 'processing' },
-												{ label: 'On Hold', value: 'on-hold' },
-												{ label: 'Completed', value: 'completed' },
-												{ label: 'Cancelled', value: 'cancelled' },
+												{
+													label: 'Processing',
+													value: 'processing',
+												},
+												{
+													label: 'On Hold',
+													value: 'on-hold',
+												},
+												{
+													label: 'Completed',
+													value: 'completed',
+												},
+												{
+													label: 'Cancelled',
+													value: 'cancelled',
+												},
 											]}
 											value={orderData?.status}
 											onChange={(value) => {
@@ -388,13 +429,15 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 								)}
 							</>
 						}
-						headerDescription={formatDateTime(orderData?.date_created)}
+						headerDescription={formatDateTime(
+							orderData?.date_created
+						)}
 						buttons={[
 							{
 								label: __('Back to Orders', 'multivendorx'),
 								icon: 'arrow-right',
-								onClick: () => onBack()
-							}
+								onClick: () => onBack(),
+							},
 						]}
 					/>
 
@@ -425,7 +468,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 
 										<tbody className="admin-table-body">
 											{orderData?.line_items?.length >
-												0 ? (
+											0 ? (
 												orderData.line_items.map(
 													(item) => (
 														<tr
@@ -487,13 +530,17 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																	<BasicInputUI
 																		name="refund-amount"
 																		type="number"
-																		value={refundItems[
-																			item
-																				.id
-																		]
-																			?.quantity ??
-																			0}
-																		onChange={(value) =>
+																		value={
+																			refundItems[
+																				item
+																					.id
+																			]
+																				?.quantity ??
+																			0
+																		}
+																		onChange={(
+																			value
+																		) =>
 																			handleItemChange(
 																				item.id,
 																				'quantity',
@@ -520,16 +567,16 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																]
 																	?.refunded_line_total !==
 																	0 && (
-																		<div>
-																			{
-																				refundMap[
-																					item
-																						.id
-																				]
-																					.refunded_line_total
-																			}
-																		</div>
-																	)}
+																	<div>
+																		{
+																			refundMap[
+																				item
+																					.id
+																			]
+																				.refunded_line_total
+																		}
+																	</div>
+																)}
 																{isRefund && (
 																	<BasicInputUI
 																		name="refund-amount"
@@ -542,7 +589,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																				?.total ??
 																			0
 																		}
-																		onChange={(value) =>
+																		onChange={(
+																			value
+																		) =>
 																			handleItemChange(
 																				item.id,
 																				'total',
@@ -567,10 +616,16 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																]
 																	?.refunded_tax !==
 																	0 && (
-																		<div>
-																			{refundMap[item.id].refunded_tax}
-																		</div>
-																	)}
+																	<div>
+																		{
+																			refundMap[
+																				item
+																					.id
+																			]
+																				.refunded_tax
+																		}
+																	</div>
+																)}
 																{isRefund && (
 																	<BasicInputUI
 																		name="refund-amount"
@@ -583,7 +638,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																				?.tax ??
 																			0
 																		}
-																		onChange={(value) =>
+																		onChange={(
+																			value
+																		) =>
 																			handleItemChange(
 																				item.id,
 																				'tax',
@@ -646,7 +703,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																				?.total ??
 																			0
 																		}
-																		onChange={(value) =>
+																		onChange={(
+																			value
+																		) =>
 																			handleItemChange(
 																				item.id,
 																				'total',
@@ -662,16 +721,16 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																]
 																	?.refunded_shipping !==
 																	0 && (
-																		<div>
-																			{
-																				refundMap[
-																					item
-																						.id
-																				]
-																					.refunded_shipping
-																			}
-																		</div>
-																	)}
+																	<div>
+																		{
+																			refundMap[
+																				item
+																					.id
+																			]
+																				.refunded_shipping
+																		}
+																	</div>
+																)}
 															</td>
 															<td className="admin-column">
 																{isRefund ? (
@@ -686,7 +745,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																				?.tax ??
 																			0
 																		}
-																		onChange={(value) =>
+																		onChange={(
+																			value
+																		) =>
 																			handleItemChange(
 																				item.id,
 																				'tax',
@@ -702,16 +763,16 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																]
 																	?.refunded_shipping_tax !==
 																	0 && (
-																		<div>
-																			{
-																				refundMap[
-																					item
-																						.id
-																				]
-																					.refunded_shipping_tax
-																			}
-																		</div>
-																	)}
+																	<div>
+																		{
+																			refundMap[
+																				item
+																					.id
+																			]
+																				.refunded_shipping_tax
+																		}
+																	</div>
+																)}
 															</td>
 														</tr>
 													)
@@ -729,9 +790,12 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																		<i className="adminfont-cart green"></i>
 																	</div>
 																	{item.label}
-
 																</div>
-																<div>{item.reason}</div>
+																<div>
+																	{
+																		item.reason
+																	}
+																</div>
 															</td>
 															<td className="admin-column"></td>
 															<td className="admin-column"></td>
@@ -748,14 +812,22 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 
 								<div className="coupons-calculation-wrapper">
 									<div className="left">
-										{modules.includes('marketplace-refund') && (
-											!isRefund ? (
+										{modules.includes(
+											'marketplace-refund'
+										) &&
+											(!isRefund ? (
 												<AdminButtonUI
 													buttons={[
 														{
-															text: __('Refund', 'multivendorx'),
+															text: __(
+																'Refund',
+																'multivendorx'
+															),
 															color: 'purple',
-															onClick: () => setIsRefund(true),
+															onClick: () =>
+																setIsRefund(
+																	true
+																),
 														},
 													]}
 												/>
@@ -766,21 +838,26 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 														{
 															text: `${__('Refund', 'multivendorx')} $${refundDetails.refundAmount.toFixed(2)} ${__('manually', 'multivendorx')}`,
 															color: 'green',
-															onClick: handleRefundSubmit,
-															disabled: isRefundLoading,
+															onClick:
+																handleRefundSubmit,
+															disabled:
+																isRefundLoading,
 														},
 														{
-															text: __('Cancel', 'multivendorx'),
+															text: __(
+																'Cancel',
+																'multivendorx'
+															),
 															color: 'red',
-															onClick: () => setIsRefund(false),
+															onClick: () =>
+																setIsRefund(
+																	false
+																),
 														},
 													]}
 												/>
-											)
-										)}
+											))}
 									</div>
-
-
 
 									{isRefund && (
 										<div className="right">
@@ -788,17 +865,27 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 												<tbody>
 													<tr>
 														<td>
-															{__('Restock refunded items:', 'multivendorx')}
+															{__(
+																'Restock refunded items:',
+																'multivendorx'
+															)}
 														</td>
 														<td>
 															<input
 																type="checkbox"
-																checked={refundDetails.restock}
+																checked={
+																	refundDetails.restock
+																}
 																onChange={(e) =>
-																	setRefundDetails({
-																		...refundDetails,
-																		restock: e.target.checked,
-																	})
+																	setRefundDetails(
+																		{
+																			...refundDetails,
+																			restock:
+																				e
+																					.target
+																					.checked,
+																		}
+																	)
 																}
 															/>
 														</td>
@@ -806,38 +893,58 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 
 													<tr>
 														<td>
-															{__('Amount already refunded:', 'multivendorx')}
+															{__(
+																'Amount already refunded:',
+																'multivendorx'
+															)}
 														</td>
 														<td>
-															- {formatCurrency(totalRefunded)}
-														</td>
-													</tr>
-
-													<tr>
-														<td>
-															{__('Total available to refund:', 'multivendorx')}
-														</td>
-														<td>
+															-{' '}
 															{formatCurrency(
-																orderData.commission_total - totalRefunded
+																totalRefunded
 															)}
 														</td>
 													</tr>
 
 													<tr>
 														<td>
-															{__('Refund amount:', 'multivendorx')}
+															{__(
+																'Total available to refund:',
+																'multivendorx'
+															)}
+														</td>
+														<td>
+															{formatCurrency(
+																orderData.commission_total -
+																	totalRefunded
+															)}
+														</td>
+													</tr>
+
+													<tr>
+														<td>
+															{__(
+																'Refund amount:',
+																'multivendorx'
+															)}
 														</td>
 														<td>
 															<BasicInputUI
 																name="refund-amount"
 																type="number"
-																value={refundDetails.refundAmount}
-																onChange={(value) =>
-																	setRefundDetails({
-																		...refundDetails,
-																		refundAmount: +value,
-																	})
+																value={
+																	refundDetails.refundAmount
+																}
+																onChange={(
+																	value
+																) =>
+																	setRefundDetails(
+																		{
+																			...refundDetails,
+																			refundAmount:
+																				+value,
+																		}
+																	)
 																}
 															/>
 														</td>
@@ -845,17 +952,29 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 
 													<tr>
 														<td>
-															{__('Reason for refund (optional):', 'multivendorx')}
+															{__(
+																'Reason for refund (optional):',
+																'multivendorx'
+															)}
 														</td>
 														<td>
 															<TextAreaUI
-																value={refundDetails.reason}
-																placeholder={__('Reason for refund', 'multivendorx')}
-																onChange={(value) =>
-																	setRefundDetails({
-																		...refundDetails,
-																		reason: value,
-																	})
+																value={
+																	refundDetails.reason
+																}
+																placeholder={__(
+																	'Reason for refund',
+																	'multivendorx'
+																)}
+																onChange={(
+																	value
+																) =>
+																	setRefundDetails(
+																		{
+																			...refundDetails,
+																			reason: value,
+																		}
+																	)
 																}
 															/>
 														</td>
@@ -870,38 +989,67 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 											<table>
 												<tbody>
 													<tr>
-														<td>{__('Commission:', 'multivendorx')}</td>
 														<td>
-															{formatCurrency(orderData?.commission_amount)}
+															{__(
+																'Commission:',
+																'multivendorx'
+															)}
+														</td>
+														<td>
+															{formatCurrency(
+																orderData?.commission_amount
+															)}
 														</td>
 													</tr>
 
-													{modules.includes('store-shipping') && (
+													{modules.includes(
+														'store-shipping'
+													) && (
 														<tr>
-															<td>{__('Shipping:', 'multivendorx')}</td>
 															<td>
-																{formatCurrency(orderData?.shipping_total)}
+																{__(
+																	'Shipping:',
+																	'multivendorx'
+																)}
+															</td>
+															<td>
+																{formatCurrency(
+																	orderData?.shipping_total
+																)}
 															</td>
 														</tr>
 													)}
 
 													<tr>
-														<td>{__('Total:', 'multivendorx')}</td>
 														<td>
-															{formatCurrency(orderData?.total)}
+															{__(
+																'Total:',
+																'multivendorx'
+															)}
+														</td>
+														<td>
+															{formatCurrency(
+																orderData?.total
+															)}
 														</td>
 													</tr>
 
 													<tr>
-														<td>{__('Total Earned:', 'multivendorx')}</td>
 														<td>
-															{formatCurrency(orderData?.commission_total)}
+															{__(
+																'Total Earned:',
+																'multivendorx'
+															)}
+														</td>
+														<td>
+															{formatCurrency(
+																orderData?.commission_total
+															)}
 														</td>
 													</tr>
 												</tbody>
 											</table>
 										</div>
-
 									) : (
 										<></>
 										// <table className="refund-table">
@@ -934,11 +1082,19 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 								<InfoItem
 									title={
 										modules.includes('privacy') &&
-											Array.isArray(customer_information_access) &&
-											customer_information_access.includes('name')
-											? orderData?.billing?.first_name || orderData?.billing?.last_name
+										Array.isArray(
+											customer_information_access
+										) &&
+										customer_information_access.includes(
+											'name'
+										)
+											? orderData?.billing?.first_name ||
+												orderData?.billing?.last_name
 												? `${orderData?.billing?.first_name ?? ''} ${orderData?.billing?.last_name ?? ''}`
-												: __('Guest Customer', 'multivendorx')
+												: __(
+														'Guest Customer',
+														'multivendorx'
+													)
 											: __('Customer', 'multivendorx')
 									}
 									avatar={{
@@ -946,62 +1102,82 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									}}
 									descriptions={[
 										{
-											label: __('Customer ID', 'multivendorx'),
+											label: __(
+												'Customer ID',
+												'multivendorx'
+											),
 											value:
-												orderData?.customer_id && orderData.customer_id !== 0
+												orderData?.customer_id &&
+												orderData.customer_id !== 0
 													? `#${orderData.customer_id}`
 													: '—',
 										},
 										...(modules.includes('privacy') &&
-											Array.isArray(customer_information_access) &&
-											customer_information_access.includes('email_address') &&
-											orderData?.billing?.email
+										Array.isArray(
+											customer_information_access
+										) &&
+										customer_information_access.includes(
+											'email_address'
+										) &&
+										orderData?.billing?.email
 											? [
-												{
-													value: (
-														<>
-															<i className="adminfont-mail" />{' '}
-															{orderData.billing.email}
-														</>
-													),
-												},
-											]
+													{
+														value: (
+															<>
+																<i className="adminfont-mail" />{' '}
+																{
+																	orderData
+																		.billing
+																		.email
+																}
+															</>
+														),
+													},
+												]
 											: []),
 										...(modules.includes('privacy') &&
-											Array.isArray(customer_information_access) &&
-											customer_information_access.includes('phone_number') &&
-											orderData?.billing?.phone
+										Array.isArray(
+											customer_information_access
+										) &&
+										customer_information_access.includes(
+											'phone_number'
+										) &&
+										orderData?.billing?.phone
 											? [
-												{
-													value: (
-														<>
-															<i className="adminfont-phone" />{' '}
-															{orderData.billing.phone}
-														</>
-													),
-												},
-											]
+													{
+														value: (
+															<>
+																<i className="adminfont-phone" />{' '}
+																{
+																	orderData
+																		.billing
+																		.phone
+																}
+															</>
+														),
+													},
+												]
 											: []),
 									]}
 								/>
-
 							</Card>
 
-							<Card
-								title={__('Billing address', 'multivendorx')}
-							>
+							<Card title={__('Billing address', 'multivendorx')}>
 								<FormGroupWrapper>
-									<FormGroup row label={__('Address', 'multivendorx')}>
+									<FormGroup
+										row
+										label={__('Address', 'multivendorx')}
+									>
 										<div className="details">
 											{orderData?.billing?.address_1 ||
-												orderData?.billing?.city ||
-												orderData?.billing?.postcode ||
-												orderData?.billing?.country ? (
+											orderData?.billing?.city ||
+											orderData?.billing?.postcode ||
+											orderData?.billing?.country ? (
 												<div className="address">
 													{orderData.billing
 														.first_name ||
-														orderData.billing
-															.last_name ? (
+													orderData.billing
+														.last_name ? (
 														<>
 															{
 																orderData
@@ -1017,40 +1193,40 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 													) : null}
 													{orderData.billing
 														.company && (
-															<>
-																{' '}
-																,{' '}
-																{
-																	orderData
-																		.billing
-																		.company
-																}{' '}
-															</>
-														)}
+														<>
+															{' '}
+															,{' '}
+															{
+																orderData
+																	.billing
+																	.company
+															}{' '}
+														</>
+													)}
 													{orderData.billing
 														.address_1 && (
-															<>
-																{' '}
-																,{' '}
-																{
-																	orderData
-																		.billing
-																		.address_1
-																}{' '}
-															</>
-														)}
+														<>
+															{' '}
+															,{' '}
+															{
+																orderData
+																	.billing
+																	.address_1
+															}{' '}
+														</>
+													)}
 													{orderData.billing
 														.address_2 && (
-															<>
-																{' '}
-																,{' '}
-																{
-																	orderData
-																		.billing
-																		.address_2
-																}{' '}
-															</>
-														)}
+														<>
+															{' '}
+															,{' '}
+															{
+																orderData
+																	.billing
+																	.address_2
+															}{' '}
+														</>
+													)}
 													{orderData.billing.city && (
 														<>
 															{
@@ -1066,27 +1242,27 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 													)}
 													{orderData.billing
 														.postcode && (
-															<>
-																,{' '}
-																{
-																	orderData
-																		.billing
-																		.postcode
-																}{' '}
-															</>
-														)}
+														<>
+															,{' '}
+															{
+																orderData
+																	.billing
+																	.postcode
+															}{' '}
+														</>
+													)}
 													{orderData.billing
 														.country && (
-															<>
-																{' '}
-																,{' '}
-																{
-																	orderData
-																		.billing
-																		.country
-																}
-															</>
-														)}
+														<>
+															{' '}
+															,{' '}
+															{
+																orderData
+																	.billing
+																	.country
+															}
+														</>
+													)}
 												</div>
 											) : (
 												<div className="address">
@@ -1098,7 +1274,13 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 											)}
 										</div>
 									</FormGroup>
-									<FormGroup row label={__('Payment method', 'multivendorx')}>
+									<FormGroup
+										row
+										label={__(
+											'Payment method',
+											'multivendorx'
+										)}
+									>
 										<div className="admin-badge blue">
 											{orderData?.payment_method_title ||
 												__(
@@ -1108,16 +1290,25 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 										</div>
 									</FormGroup>
 								</FormGroupWrapper>
-
 							</Card>
-							{modules.includes('privacy') && Array.isArray(customer_information_access) &&
-								customer_information_access.includes('shipping_address') && (
+							{modules.includes('privacy') &&
+								Array.isArray(customer_information_access) &&
+								customer_information_access.includes(
+									'shipping_address'
+								) && (
 									<Card
-										title={__('Shipping address', 'multivendorx')}
+										title={__(
+											'Shipping address',
+											'multivendorx'
+										)}
 									>
-										<div>{orderData?.shipping.address_1}</div>
+										<div>
+											{orderData?.shipping.address_1}
+										</div>
 										{orderData?.shipping.address_2 && (
-											<div>{orderData?.shipping.address_2}</div>
+											<div>
+												{orderData?.shipping.address_2}
+											</div>
 										)}
 
 										<div>
@@ -1133,7 +1324,13 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 								title={__('Shipping Tracking', 'multivendorx')}
 							>
 								<FormGroupWrapper>
-									<FormGroup label={__('Create Shipping', 'multivendorx')} htmlFor="create-shipping">
+									<FormGroup
+										label={__(
+											'Create Shipping',
+											'multivendorx'
+										)}
+										htmlFor="create-shipping"
+									>
 										{/* <SelectInput
 											options={filteredShippingProviders}
 											type="single-select"
@@ -1146,7 +1343,13 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 											}
 										/> */}
 									</FormGroup>
-									<FormGroup label={__('Enter Tracking Url ', 'multivendorx')} htmlFor="tracking-number">
+									<FormGroup
+										label={__(
+											'Enter Tracking Url ',
+											'multivendorx'
+										)}
+										htmlFor="tracking-number"
+									>
 										<BasicInputUI
 											value={shipmentData.tracking_url}
 											onChange={(value) =>
@@ -1157,7 +1360,13 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 											}
 										/>
 									</FormGroup>
-									<FormGroup label={__('Enter Tracking ID', 'multivendorx')} htmlFor="tracking-number">
+									<FormGroup
+										label={__(
+											'Enter Tracking ID',
+											'multivendorx'
+										)}
+										htmlFor="tracking-number"
+									>
 										<BasicInputUI
 											value={shipmentData.tracking_id}
 											onChange={(value) =>
@@ -1174,64 +1383,82 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									position="left"
 									buttons={{
 										icon: 'plus',
-										text: __('Create Shipment', 'multivendorx'),
+										text: __(
+											'Create Shipment',
+											'multivendorx'
+										),
 										onClick: saveShipmentToOrder,
 									}}
 								/>
 							</Card>
-							{modules.includes('privacy') && Array.isArray(customer_information_access) &&
-								customer_information_access.includes('order_notes') && (
+							{modules.includes('privacy') &&
+								Array.isArray(customer_information_access) &&
+								customer_information_access.includes(
+									'order_notes'
+								) && (
 									<Card
-										title={__('Order notes', 'multivendorx')}
+										title={__(
+											'Order notes',
+											'multivendorx'
+										)}
 									>
 										{orderData?.order_notes &&
-											orderData.order_notes.length > 0 ? (
+										orderData.order_notes.length > 0 ? (
 											<div className="notification-wrapper">
 												<ul>
-													{orderData.order_notes.slice(0, 5).map(
-														(note: any, index: number) => (
-															<li key={index}>
-																<div className={`icon-wrapper admin-color${index + 2}`}>
-																	<i
-																		className={
-																			note.is_customer_note
-																				? 'adminfont-mail'
-																				: 'adminfont-contact-form'
-																		}
-																	></i>
-																</div>
-																<div className="details">
-																	<div className="notification-title">
-																		{note.author ||
-																			__(
-																				'System Note',
-																				'multivendorx'
-																			)}
-																	</div>
+													{orderData.order_notes
+														.slice(0, 5)
+														.map(
+															(
+																note: any,
+																index: number
+															) => (
+																<li key={index}>
 																	<div
-																		className="des"
-																		dangerouslySetInnerHTML={{
-																			__html:
-																				note.content ||
-																				'',
-																		}}
-																	></div>
-																	<span>
-																		{new Date(
-																			note.date_created.date
-																		).toLocaleDateString(
-																			'en-GB',
-																			{
-																				day: '2-digit',
-																				month: 'short',
-																				year: 'numeric',
+																		className={`icon-wrapper admin-color${index + 2}`}
+																	>
+																		<i
+																			className={
+																				note.is_customer_note
+																					? 'adminfont-mail'
+																					: 'adminfont-contact-form'
 																			}
-																		)}
-																	</span>
-																</div>
-															</li>
-														)
-													)}
+																		></i>
+																	</div>
+																	<div className="details">
+																		<div className="notification-title">
+																			{note.author ||
+																				__(
+																					'System Note',
+																					'multivendorx'
+																				)}
+																		</div>
+																		<div
+																			className="des"
+																			dangerouslySetInnerHTML={{
+																				__html:
+																					note.content ||
+																					'',
+																			}}
+																		></div>
+																		<span>
+																			{new Date(
+																				note
+																					.date_created
+																					.date
+																			).toLocaleDateString(
+																				'en-GB',
+																				{
+																					day: '2-digit',
+																					month: 'short',
+																					year: 'numeric',
+																				}
+																			)}
+																		</span>
+																	</div>
+																</li>
+															)
+														)}
 												</ul>
 											</div>
 										) : (

@@ -38,7 +38,6 @@ const settings: React.FC<SettingsProps> = () => {
 		}
 	}, [successMsg]);
 
-
 	const SimpleLink = ({ to, children, onClick, className }: any) => (
 		<a href={to} onClick={onClick} className={className}>
 			{children}
@@ -61,7 +60,6 @@ const settings: React.FC<SettingsProps> = () => {
 
 	// Build hash URL for a given tab
 	const prepareUrl = (tabId: string) => `#subtab=${tabId}`;
-
 
 	// const settingContent = applyFilters(
 	// 	'multivendorx_store_settings_tabs',
@@ -218,53 +216,50 @@ const settings: React.FC<SettingsProps> = () => {
 	// );
 
 	const GetForm = (currentTab: string | null): JSX.Element | null => {
-		console.log('tab', currentTab)
-			// get the setting context
-			const { setting, settingName, setSetting, updateSetting } =
-				useSetting();
-			const { modules } = useModules();
-	
-			if (!currentTab) {
-				return null;
-			}
-			if (currentTab === 'shipping') {
+		console.log('tab', currentTab);
+		// get the setting context
+		const { setting, settingName, setSetting, updateSetting } =
+			useSetting();
+		const { modules } = useModules();
+
+		if (!currentTab) {
+			return null;
+		}
+		if (currentTab === 'shipping') {
 			return <ShippingDelivery />;
 		}
-			const settingModal = getSettingById(settingsArray as any, currentTab);
-			
-			// Ensure settings context is initialized
-			if (settingName !== currentTab) {
-				setSetting(
-					currentTab,
-					appLocalizer.settings_all_meta || {}
-				);
+		const settingModal = getSettingById(settingsArray as any, currentTab);
+
+		// Ensure settings context is initialized
+		if (settingName !== currentTab) {
+			setSetting(currentTab, appLocalizer.settings_all_meta || {});
+		}
+
+		// eslint-disable-next-line react-hooks/rules-of-hooks
+		useEffect(() => {
+			if (settingName === currentTab) {
+				appLocalizer.settings_all_meta = setting;
 			}
-	
-			// eslint-disable-next-line react-hooks/rules-of-hooks
-			useEffect(() => {
-				if (settingName === currentTab) {
-					appLocalizer.settings_all_meta = setting;
-				}
-			}, [setting, settingName, currentTab]);
-		
-			return (
-				<>
-					{settingName === currentTab ? (
-						<RenderComponent
-							settings={settingModal as SettingContent}
-							proSetting={appLocalizer.pro_settings_list}
-							setting={setting}
-							updateSetting={updateSetting}
-							appLocalizer={appLocalizer}
-							modules={modules}
-							Popup={ShowProPopup}
-						/>
-					) : (
-						<>Loading...</>
-					)}
-				</>
-			);
-		};
+		}, [setting, settingName, currentTab]);
+
+		return (
+			<>
+				{settingName === currentTab ? (
+					<RenderComponent
+						settings={settingModal as SettingContent}
+						proSetting={appLocalizer.pro_settings_list}
+						setting={setting}
+						updateSetting={updateSetting}
+						appLocalizer={appLocalizer}
+						modules={modules}
+						Popup={ShowProPopup}
+					/>
+				) : (
+					<>Loading...</>
+				)}
+			</>
+		);
+	};
 
 	// const getForm = (tabId: string) => {
 	// 	let form: React.ReactNode;
@@ -316,9 +311,9 @@ const settings: React.FC<SettingsProps> = () => {
 
 	return (
 		<>
-		<div className="horizontal-tabs">
-			<SettingProvider>
-				<SettingsNavigator
+			<div className="horizontal-tabs">
+				<SettingProvider>
+					<SettingsNavigator
 						settingContent={settingsArray as any}
 						currentSetting={currentTab}
 						getForm={GetForm}
@@ -328,8 +323,8 @@ const settings: React.FC<SettingsProps> = () => {
 						Link={SimpleLink}
 						menuIcon={true}
 					/>
-			</SettingProvider>
-		</div>
+				</SettingProvider>
+			</div>
 		</>
 	);
 };

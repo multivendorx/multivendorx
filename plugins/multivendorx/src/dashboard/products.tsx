@@ -7,7 +7,7 @@ import {
 	NavigatorHeader,
 	TableRow,
 	QueryProps,
-	CategoryCount
+	CategoryCount,
 } from 'zyra';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -50,8 +50,11 @@ const AllProduct: React.FC = () => {
 
 	if (!element) {
 		const path = location.pathname;
-		if (path.includes('/edit/')) element = 'edit';
-		else if (path.includes('/add/')) element = 'add';
+		if (path.includes('/edit/')) {
+			element = 'edit';
+		} else if (path.includes('/add/')) {
+			element = 'add';
+		}
 	}
 
 	const isAddProduct = element === 'edit';
@@ -110,13 +113,19 @@ const AllProduct: React.FC = () => {
 				}
 			);
 			setCategoriesList(response.data);
-		} catch (error) {
-		}
+		} catch (error) {}
 	};
 
 	const fetchProductStatusCounts = async () => {
 		try {
-			const statuses = ['all', 'publish', 'draft', 'pending', 'private', 'trash'];
+			const statuses = [
+				'all',
+				'publish',
+				'draft',
+				'pending',
+				'private',
+				'trash',
+			];
 
 			const results = await Promise.allSettled(
 				statuses.map(async (status) => {
@@ -165,14 +174,15 @@ const AllProduct: React.FC = () => {
 			});
 
 			setCategoryCounts(counts);
-
 		} catch (error) {
 			console.error('Error fetching product status counts:', error);
 		}
 	};
 
 	const fetchWpmlTranslations = () => {
-		if (!modules.includes('wpml')) return;
+		if (!modules.includes('wpml')) {
+			return;
+		}
 
 		axios
 			.get(getApiLink(appLocalizer, 'multivendorx-wpml'), {
@@ -191,7 +201,9 @@ const AllProduct: React.FC = () => {
 	};
 
 	const fetchLanguageWiseProductCounts = async (langs: any[]) => {
-		if (!langs?.length) return;
+		if (!langs?.length) {
+			return;
+		}
 
 		const fetchCount = async (lang: any) => {
 			try {
@@ -222,16 +234,18 @@ const AllProduct: React.FC = () => {
 			}))
 		);
 
-		const languageItems = counts.filter(l => l.count > 0);
-		if (!languageItems.length) return;
+		const languageItems = counts.filter((l) => l.count > 0);
+		if (!languageItems.length) {
+			return;
+		}
 
 		const totalCount = languageItems.reduce((sum, l) => sum + l.count, 0);
 
-		setCategoryStatus(prev => [
+		setCategoryStatus((prev) => [
 			...prev.filter(
-				item =>
+				(item) =>
 					item.value !== 'all_lang' &&
-					!langs.some(lang => lang.code === item.value)
+					!langs.some((lang) => lang.code === item.value)
 			),
 			{
 				value: 'all_lang',
@@ -272,9 +286,7 @@ const AllProduct: React.FC = () => {
 		}
 	};
 
-	const bulkActions = [
-		{ label: 'Delete', value: 'delete' },
-	];
+	const bulkActions = [{ label: 'Delete', value: 'delete' }];
 
 	const headers = {
 		name: {
@@ -311,7 +323,7 @@ const AllProduct: React.FC = () => {
 
 		status: {
 			label: __('Status', 'multivendorx'),
-			type: 'status'
+			type: 'status',
 		},
 
 		action: {
@@ -344,7 +356,9 @@ const AllProduct: React.FC = () => {
 					label: __('Copy URL', 'multivendorx'),
 					icon: 'copy',
 					onClick: (row) => {
-						navigator.clipboard.writeText(row.permalink).catch(() => { });
+						navigator.clipboard
+							.writeText(row.permalink)
+							.catch(() => {});
 					},
 				},
 				{
@@ -372,7 +386,10 @@ const AllProduct: React.FC = () => {
 					category: query.filter?.category,
 					stock_status: query.filter?.stockStatus,
 					after: query.filter?.created_at?.startDate
-						? toWcIsoDate(query.filter.created_at.startDate, 'start')
+						? toWcIsoDate(
+								query.filter.created_at.startDate,
+								'start'
+							)
 						: undefined,
 
 					before: query.filter?.created_at?.endDate
@@ -405,7 +422,7 @@ const AllProduct: React.FC = () => {
 		{
 			key: 'category',
 			type: 'select',
-			options: categoriesList.map(cat => ({
+			options: categoriesList.map((cat) => ({
 				value: cat.id,
 				label: cat.name,
 			})),
@@ -433,7 +450,7 @@ const AllProduct: React.FC = () => {
 			key: 'created_at',
 			label: 'Created Date',
 			type: 'date',
-		}
+		},
 	];
 
 	return (
@@ -442,17 +459,20 @@ const AllProduct: React.FC = () => {
 				<>
 					<NavigatorHeader
 						headerTitle={__('All Products', 'multivendorx')}
-						headerDescription={__('Manage your store products', 'multivendorx')}
+						headerDescription={__(
+							'Manage your store products',
+							'multivendorx'
+						)}
 						buttons={[
 							...(modules.includes('import-export')
 								? [
-									{
-										custom: applyFilters(
-											'product_import_export',
-											null
-										),
-									},
-								]
+										{
+											custom: applyFilters(
+												'product_import_export',
+												null
+											),
+										},
+									]
 								: []),
 
 							{
@@ -488,8 +508,11 @@ const AllProduct: React.FC = () => {
 						search={{}}
 						filters={filters}
 						bulkActions={bulkActions}
-						onBulkActionApply={(action: string, selectedIds: []) => {
-							handleBulkAction(action, selectedIds)
+						onBulkActionApply={(
+							action: string,
+							selectedIds: []
+						) => {
+							handleBulkAction(action, selectedIds);
 						}}
 						format={appLocalizer.date_format}
 						currency={{
@@ -497,7 +520,7 @@ const AllProduct: React.FC = () => {
 							priceDecimals: appLocalizer.price_decimals,
 							decimalSeparator: appLocalizer.decimal_separator,
 							thousandSeparator: appLocalizer.thousand_separator,
-							currencyPosition: appLocalizer.currency_position
+							currencyPosition: appLocalizer.currency_position,
 						}}
 					/>
 				</>

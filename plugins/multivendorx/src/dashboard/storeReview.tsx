@@ -13,7 +13,7 @@ import {
 	NavigatorHeader,
 	TableRow,
 	QueryProps,
-	CategoryCount
+	CategoryCount,
 } from 'zyra';
 
 import { formatLocalDate } from '@/services/commonFunction';
@@ -94,7 +94,7 @@ const StoreReview: React.FC = () => {
 			})
 			.catch(() => {
 				alert(__('Failed to fetch review data', 'multivendorx'));
-			})
+			});
 	};
 
 	const headers = {
@@ -117,7 +117,7 @@ const StoreReview: React.FC = () => {
 		date_created: {
 			label: __('Date', 'multivendorx'),
 			sortable: true,
-			type: 'date'
+			type: 'date',
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
@@ -128,7 +128,7 @@ const StoreReview: React.FC = () => {
 					icon: 'edit',
 					onClick: (row) => fetchReviewById(row.id),
 				},
-			]
+			],
 		},
 	};
 
@@ -195,17 +195,23 @@ const StoreReview: React.FC = () => {
 					{
 						value: 'approved',
 						label: 'Approved',
-						count: Number(response.headers['x-wp-status-approved']) || 0,
+						count:
+							Number(response.headers['x-wp-status-approved']) ||
+							0,
 					},
 					{
 						value: 'pending',
 						label: 'Pending',
-						count: Number(response.headers['x-wp-status-pending']) || 0,
+						count:
+							Number(response.headers['x-wp-status-pending']) ||
+							0,
 					},
 					{
 						value: 'rejected',
 						label: 'Rejected',
-						count: Number(response.headers['x-wp-status-rejected']) || 0,
+						count:
+							Number(response.headers['x-wp-status-rejected']) ||
+							0,
 					},
 				]);
 
@@ -219,12 +225,14 @@ const StoreReview: React.FC = () => {
 			});
 	};
 
-
 	return (
 		<>
 			<NavigatorHeader
 				headerTitle={__('Store Review', 'multivendorx')}
-				headerDescription={__('See all customer reviews and ratings submitted for your store in one centralized list.', 'multivendorx')}
+				headerDescription={__(
+					'See all customer reviews and ratings submitted for your store in one centralized list.',
+					'multivendorx'
+				)}
 			/>
 
 			<TableCard
@@ -287,18 +295,27 @@ const StoreReview: React.FC = () => {
 										></div>
 
 										<div className="rating-wrapper">
-											{[...Array(Math.round(selectedReview.overall_rating || 0))].map(
-												(_, i) => (
-													<i
-														key={`filled-${i}`}
-														className="star-icon adminfont-star"
-													></i>
-												)
-											)}
+											{[
+												...Array(
+													Math.round(
+														selectedReview.overall_rating ||
+															0
+													)
+												),
+											].map((_, i) => (
+												<i
+													key={`filled-${i}`}
+													className="star-icon adminfont-star"
+												></i>
+											))}
 
 											{[
 												...Array(
-													5 - Math.round(selectedReview.overall_rating || 0)
+													5 -
+														Math.round(
+															selectedReview.overall_rating ||
+																0
+														)
 												),
 											].map((_, i) => (
 												<i
@@ -310,14 +327,11 @@ const StoreReview: React.FC = () => {
 											<div className="date">
 												{new Date(
 													selectedReview.date_created
-												).toLocaleDateString(
-													'en-GB',
-													{
-														day: '2-digit',
-														month: 'short',
-														year: 'numeric',
-													}
-												)}
+												).toLocaleDateString('en-GB', {
+													day: '2-digit',
+													month: 'short',
+													year: 'numeric',
+												})}
 											</div>
 										</div>
 									</div>
@@ -331,7 +345,10 @@ const StoreReview: React.FC = () => {
 
 						<FormGroupWrapper>
 							<FormGroup
-								label={__('Respond to customer', 'multivendorx')}
+								label={__(
+									'Respond to customer',
+									'multivendorx'
+								)}
 								htmlFor="reply"
 							>
 								<TextAreaUI

@@ -43,7 +43,7 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 		date: {
 			label: __('Date', 'multivendorx'),
 			isSortable: true,
-			type:'date'
+			type: 'date',
 		},
 		action: {
 			type: 'action',
@@ -60,10 +60,9 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 					className: 'danger',
 					onClick: (row: any) => handleSingleAction('reject', row),
 				},
-			]
+			],
 		},
 	};
-
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -77,7 +76,9 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 				},
 			})
 			.then((response) => {
-				const stores = Array.isArray(response.data) ? response.data : [];
+				const stores = Array.isArray(response.data)
+					? response.data
+					: [];
 
 				const ids = stores.map((s) => s.id);
 				setRowIds(ids);
