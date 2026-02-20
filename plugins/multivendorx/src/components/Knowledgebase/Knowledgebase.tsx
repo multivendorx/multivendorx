@@ -20,7 +20,6 @@ import {
 	CategoryCount,
 } from 'zyra';
 import Popup from '../Popup/Popup';
-import '../Announcements/Announcements.scss';
 import { formatLocalDate, truncateText } from '@/services/commonFunction';
 
 type KBForm = {

@@ -8,6 +8,8 @@ import {
 	TableRow,
 	QueryProps,
 	CategoryCount,
+	Container,
+	Column,
 } from 'zyra';
 import { useNavigate } from 'react-router-dom';
 import {

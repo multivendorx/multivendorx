@@ -224,11 +224,6 @@
 
                 &.sortable {
                     cursor: pointer;
-
-                    span {
-                        margin-left: 0.313rem;
-                        color: #000;
-                    }
                 }
 
                 &.id {
@@ -350,7 +345,7 @@
                         flex-grow: 1;
                     }
 
-                    &.action {
+                    &.actions {
                         flex-grow: 0;
                         min-width: 5rem;
                     }

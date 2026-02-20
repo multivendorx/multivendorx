@@ -1084,7 +1084,7 @@ $index: 1;
     display: flex;
     gap: 0.125rem;
 
-    .inline-action-btn:has(-delete) {
+    .adminfont-delete {
       color: $accent-color;
     }
   }

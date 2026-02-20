@@ -124,37 +124,31 @@ const Table: React.FC<TableProps> = ({
     );
 
     const getSortIcon = (isSorted: boolean) => {
-        if (!isSorted) return '↕';
-        return sortDir === ASC ? '↑' : '↓';
+        if (!isSorted) {
+            return (
+                <i className="adminfont-arrow-down-up sort-icon" />
+            );
+        }
+        return (
+            <i className={`adminfont-${sortDir === ASC ? 'arrow-up' : 'arrow-down'} sort-icon`}/>
+        );
     };
-
-    const rootClassName = useMemo(
-        () =>
-            [
-                'table-wrapper',
-                className,
-                classNames,
-                isScrollableLeft && 'scroll-left',
-                isScrollableRight && 'scroll-right',
-            ]
-                .filter(Boolean)
-                .join(' '),
-        [className, classNames, isScrollableLeft, isScrollableRight]
-    );
 
     return (
         <div
             ref={containerRef}
-            className={rootClassName}
+            className={`table-wrapper ${classNames}`}
             tabIndex={tabIndex}
             role="group"
             onScroll={updateScrollState}
         >
             <table className="admin-table">
-                <caption className="table-caption screen-reader-only">
-                    {caption}
-                    {tabIndex === 0 && <small>(scroll to see more)</small>}
-                </caption>
+                {caption && (
+                    <caption className="table-caption screen-reader-only">
+                        {caption}
+                        {tabIndex === 0 && <small>(scroll to see more)</small>}
+                    </caption>
+                )}
 
                 <thead className="admin-table-header">
                     <tr className="header-row">
@@ -173,8 +167,6 @@ const Table: React.FC<TableProps> = ({
                                 label,
                                 isSortable,
                                 isNumeric,
-                                isLeftAligned,
-                                cellClassName,
                                 screenReaderLabel,
                             } = config;
 
@@ -182,11 +174,10 @@ const Table: React.FC<TableProps> = ({
 
                             const thClass = [
                                 'header-col',
-                                cellClassName,
                                 isSortable && 'sortable',
                                 isSorted && 'sorted',
                                 isNumeric && 'numeric',
-                                (isLeftAligned || !isNumeric) && 'left',
+                                config.type && config.type
                             ]
                                 .filter(Boolean)
                                 .join(' ');
@@ -194,7 +185,6 @@ const Table: React.FC<TableProps> = ({
                             return (
                                 <th
                                     key={key || i}
-                                    scope="col"
                                     className={thClass}
                                     aria-sort={
                                         isSortable && isSorted
@@ -203,9 +193,10 @@ const Table: React.FC<TableProps> = ({
                                                 : 'descending'
                                             : null
                                     }
+                                    style={ config.width ? { minWidth: `${config.width}rem` } : {}}
                                 >
                                     {isSortable ? (
-                                        <span
+                                        <div
                                             onClick={
                                                 hasData
                                                     ? () => handleSort(config.key)
@@ -213,20 +204,12 @@ const Table: React.FC<TableProps> = ({
                                             }
                                             className="sort-button"
                                         >
-                                            <span className="sort-label">
-                                                {label}
-                                            </span>
-                                            <span className="sort-icon">
-                                                {getSortIcon(isSorted)}
-                                            </span>
-                                        </span>
+                                            {label}
+                                            {getSortIcon(isSorted)}
+                                        </div>
                                     ) : (
                                         <Fragment>
-                                            <span
-                                                aria-hidden={!!screenReaderLabel}
-                                            >
-                                                {label}
-                                            </span>
+                                            {label}
                                             {screenReaderLabel && (
                                                 <span className="screen-reader-only">
                                                     {screenReaderLabel}
@@ -245,10 +228,7 @@ const Table: React.FC<TableProps> = ({
                         Array.from({
                             length: Number(query.per_page) || 5,
                         }).map((_, rowIndex) => (
-                            <tr
-                                className="admin-row"
-                                key={`skeleton-${rowIndex}`}
-                            >
+                            <tr className="admin-row">
                                 {enableBulkSelect && (
                                     <td className="admin-column select">
                                         <Skeleton width={20} height={20} />
@@ -256,10 +236,7 @@ const Table: React.FC<TableProps> = ({
                                 )}
 
                                 {Object.entries(headers).map(([key], colIndex) => (
-                                    <td
-                                        key={`skeleton-${rowIndex}-${colIndex}`}
-                                        className="admin-column"
-                                    >
+                                    <td className="admin-column">
                                         <Skeleton width="100%" />
                                     </td>
                                 ))}
@@ -289,7 +266,8 @@ const Table: React.FC<TableProps> = ({
                                         return (
                                             <td
                                                 key={`${rowId}-${colIndex}`}
-                                                className="admin-column"
+                                                className={`admin-column ${header.type}`}
+                                                style={ header.width ? { minWidth: `${header.width}rem` } : {}}
                                             >
                                                 {header.render(row)}
                                             </td>
@@ -310,7 +288,7 @@ const Table: React.FC<TableProps> = ({
                                         );
                                     }
 
-                                    let displayValue = renderCell(row,header,format,currency);
+                                    let displayValue = renderCell(row, header, format, currency);
 
                                     return (
                                         <td

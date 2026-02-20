@@ -20,7 +20,6 @@ import {
 	QueryProps,
 	CategoryCount,
 } from 'zyra';
-import './Announcements.scss';
 import Popup from '../Popup/Popup';
 import { formatLocalDate, truncateText } from '@/services/commonFunction';
 
