@@ -26,6 +26,7 @@ interface InputField {
     desc?: string;
     placeholder?: string;
     moduleEnabled?: string;
+    moduleName?: string;
     generate?: string;
     apilink?: string;
     method?: string;
@@ -80,6 +81,7 @@ interface DependentCondition {
 
 interface PopupProps {
     moduleName?: string;
+    moduleId?: string;
     settings?: string;
     plugin?: string;
 }
@@ -114,6 +116,7 @@ const RenderComponent: React.FC<RenderProps> = ({
     const [modelOpen, setModelOpen] = useState<boolean>(false);
     const [modulePopupData, setModulePopupData] = useState<PopupProps>({
         moduleName: '',
+        moduleId: '',
         settings: '',
         plugin: '',
     });
@@ -170,6 +173,7 @@ const RenderComponent: React.FC<RenderProps> = ({
             const timeout = setTimeout(() => {
                 setModulePopupData({
                     moduleName: '',
+                    moduleId: '',
                     settings: '',
                     plugin: '',
                 });
@@ -227,7 +231,8 @@ const RenderComponent: React.FC<RenderProps> = ({
         // 2. Module Enabled but not active
         if (field.moduleEnabled && !modules.includes(field.moduleEnabled)) {
             setModulePopupData({
-                moduleName: field.moduleEnabled,
+                moduleId: field.moduleEnabled,
+                moduleName: field.moduleName,
                 settings: '',
                 plugin: '',
             });
@@ -243,6 +248,7 @@ const RenderComponent: React.FC<RenderProps> = ({
             setting[field.dependentSetting].length === 0
         ) {
             setModulePopupData({
+                moduleId: '',
                 moduleName: '',
                 settings: field.dependentSetting,
                 plugin: '',
@@ -349,21 +355,21 @@ const RenderComponent: React.FC<RenderProps> = ({
         VALUE_ADDON_TYPES.includes(field.afterElement?.type);
 
     const openProPopup = () => {
-        setModulePopupData({ moduleName: '', settings: '', plugin: '' });
+        setModulePopupData({ moduleId: '', moduleName: '', settings: '', plugin: '' });
         setModelOpen(true);
     };
 
     const openModulePopup = (module: string) => {
-        setModulePopupData({ moduleName: module, settings: '', plugin: '' });
+        setModulePopupData({ moduleId: '', moduleName: module, settings: '', plugin: '' });
         setModelOpen(true);
     };
 
     const randomKey = (len: number): string =>
-            Array.from({ length: len }, () =>
-                'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(
-                    Math.floor(Math.random() * 62)
-                )
-            ).join('');
+        Array.from({ length: len }, () =>
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(
+                Math.floor(Math.random() * 62)
+            )
+        ).join('');
 
     const renderFieldInternal = (
         field: InputField,
@@ -385,7 +391,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                     onChange(field.responseKey, generatedValue);
                     return;
                 }
-                
+
                 if (field.apilink) {
                     axios({
                         url: getApiLink(
@@ -626,7 +632,7 @@ const RenderComponent: React.FC<RenderProps> = ({
             return fieldContent;
         });
     };
-
+    console.log("mpd", modulePopupData)
     return (
         <>
             {modelOpen && (
@@ -638,6 +644,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                     height="auto"
                 >
                     <Popup
+                        moduleId={String(modulePopupData.moduleId)}
                         moduleName={String(modulePopupData.moduleName)}
                         settings={modulePopupData.settings}
                         plugin={modulePopupData.plugin}
