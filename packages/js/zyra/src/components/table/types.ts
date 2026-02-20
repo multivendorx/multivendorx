@@ -16,6 +16,12 @@ export type QueryProps = {
 	categoryFilter?: string;
 };
 
+export type CategoryCount = {
+	label: string;
+	value: string;
+	count: number
+}
+
 export type TableHeaderConfig = {
 	/**
 	 * Display label
@@ -203,7 +209,7 @@ export type TableCardProps = CommonTableProps & {
 	};
 	onQueryUpdate?: (query: QueryProps) => void;
 	filters?: RealtimeFilterConfig[];
-	categoryCounts?: { label: string; value: string; count: number }[];
+	categoryCounts?: categoryCount[];
 	activeCategory?: string; // optional
 	onCategoryClick?: (value: string) => void;
 	showColumnToggleIcon?: boolean;
