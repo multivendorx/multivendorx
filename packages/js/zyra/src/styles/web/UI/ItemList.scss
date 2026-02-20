@@ -105,12 +105,14 @@
             width: 50%;
             color: #000000db;
             margin-bottom: 0.5rem;
+            display: flex;
+            
 
             i {
                 font-size: 1.125rem;
                 padding-right: 0.5rem;
 
-                &.adminfont-icon-yes {
+                &.icon-yes {
                     color: green;
                 }
 
@@ -194,6 +196,9 @@
         }
     }
 
+    &.search-results{
+        
+    }
     .border {
         border: $border-light-small;
         padding: 0.85rem;

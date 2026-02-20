@@ -375,18 +375,17 @@
         padding: 0;
       }
 
-
       .tab-content {
-        padding: 0.5rem;
+        // padding: 0.5rem;
         box-sizing: border-box;
 
-        .divider-wrapper:first-child {
-          .divider-section {
-            margin: 0;
-            padding: 0 1rem 1rem;
-            margin-bottom: 1rem;
-          }
-        }
+        // .divider-wrapper:first-child {
+        //   .divider-section {
+        //     margin: 0;
+        //     padding: 0 1rem 1rem;
+        //     margin-bottom: 1rem;
+        //   }
+        // }
       }
     }
   }
@@ -410,6 +409,7 @@
   }
 }
 
+// admin top header
 .admin-header {
   display: flex;
   justify-content: space-between;

@@ -352,8 +352,7 @@ $index: 1;
     position: relative;
   }
 
-  &.inner-input {
-    .input-wrapper {
+    &.input-wrapper {
       display: flex;
       border: $border-light-small;
       border-radius: 0.313rem;
@@ -395,7 +394,7 @@ $index: 1;
         padding-left: 0;
       }
     }
-  }
+  
 
   &.input-button {
     .input-wrapper {
@@ -1226,9 +1225,7 @@ $index: 1;
     max-height: 20rem;
     overflow: auto;
     box-shadow: $box-shadow;
-    border-radius: 0.313rem;
-
-    
+    border-radius: 0.313rem;    
   }
 }
 

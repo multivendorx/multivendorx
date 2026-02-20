@@ -142,6 +142,10 @@
                 .settings-btn {
                     display: flex;
                     gap: 0.5rem;
+
+                    li{
+                        margin: 0;
+                    }
                 }
 
                 .disable-icon {

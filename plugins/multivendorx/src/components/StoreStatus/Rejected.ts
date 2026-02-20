@@ -20,29 +20,29 @@ export default {
 					options: [
 						{
 							title: __('Log in to dashboard', 'multivendorx'),
-							icon: 'check adminfont-icon-yes',
+							icon: 'icon-yes',
 						},
 						{
 							title: __('View rejection reason', 'multivendorx'),
-							icon: 'check adminfont-icon-yes',
+							icon: 'icon-yes',
 						},
 						{
 							title: __('Submit new application', 'multivendorx'),
-							icon: 'check adminfont-icon-yes',
+							icon: 'icon-yes',
 						},
 						{
 							title: __(
 								'Cannot modify products or settings',
 								'multivendorx'
 							),
-							icon: 'close adminfont-cross',
+							icon: 'cross',
 						},
 						{
 							title: __(
 								'Cannot sell or fulfill orders',
 								'multivendorx'
 							),
-							icon: 'close adminfont-cross',
+							icon: 'cross',
 						},
 					],
 				},

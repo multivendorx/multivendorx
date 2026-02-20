@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { size } from 'lodash';
 import { CountryCodes } from 'zyra';
 
 export default {
@@ -17,6 +18,7 @@ export default {
 		{
 			key: 'sender_email_address',
 			type: 'email',
+			size: '50%',
 			label: __('Admin email recipient', 'multivendorx'),
 			placeholder: __('noreply@yourstore.com', 'multivendorx'),
 			settingDescription: __(
@@ -28,6 +30,7 @@ export default {
 		{
 			key: 'sms_receiver_phone_number',
 			type: 'text',
+			size: '12rem',
 			label: __('Receiver phone number', 'multivendorx'),
 			placeholder: __('9000012345', 'multivendorx'),
 			settingDescription: __(
@@ -37,7 +40,7 @@ export default {
 			beforeElement: {
 				type: 'select',
 				key: 'country_code',
-				size: '200px',
+				size: '12rem',
 				options: CountryCodes,
 			},
 		},
@@ -58,18 +61,19 @@ export default {
 			key: 'sender_name',
 			type: 'text',
 			label: __('Sender name', 'multivendorx'),
+			size: '50%',
 			placeholder: __('Marketplace Team', 'multivendorx'),
 			settingDescription: __(
 				'The name that will appear in the "From" field of outgoing emails.',
 				'multivendorx'
 			),
 		},
-
 		{
 			key: 'sender_email_address',
 			type: 'email',
 			label: __('Sender email address', 'multivendorx'),
 			placeholder: __('noreply@yourstore.com', 'multivendorx'),
+			size: '50%',
 			settingDescription: __(
 				'The email address from which marketplace notifications will be sent.',
 				'multivendorx'
@@ -87,6 +91,7 @@ export default {
 		{
 			key: 'sms_sender_phone_number',
 			type: 'text',
+			size: '12rem',
 			label: __('Sender phone number', 'multivendorx'),
 			placeholder: __('4151234567', 'multivendorx'),
 			settingDescription: __(
@@ -96,7 +101,7 @@ export default {
 			beforeElement: {
 				type: 'select',
 				key: 'country_code',
-				size: '200px',
+				size: '12rem',
 				options: CountryCodes,
 			},
 		},
@@ -117,32 +122,32 @@ export default {
 				{
 					key: 'none',
 					label: __('None', 'multivendorx'),
-					icon: 'adminfont-rejecte',
+					icon: 'rejecte',
 					value: '',
 				},
 				{
 					key: 'twilio',
 					label: __('Twilio', 'multivendorx'),
 					value: 'twilio',
-					icon: 'adminfont-twilio',
+					icon: 'twilio',
 				},
 				{
 					key: 'vonage',
 					label: __('Vonage', 'multivendorx'),
 					value: 'vonage',
-					icon: 'adminfont-vonage',
+					icon: 'vonage',
 				},
 				{
 					key: 'clickatell',
 					label: __('Clickatell', 'multivendorx'),
 					value: 'clickatell',
-					icon: 'adminfont-clickatell',
+					icon: 'clickatell',
 				},
 				{
 					key: 'plivo',
 					label: __('Plivo', 'multivendorx'),
 					value: 'plivo',
-					icon: 'adminfont-plivo',
+					icon: 'plivo',
 				},
 			],
 		},

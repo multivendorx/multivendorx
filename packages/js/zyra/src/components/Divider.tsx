@@ -13,7 +13,7 @@ export interface DividerBlockData {
 
 // Default divider styles to ensure visibility
 const DEFAULT_DIVIDER_STYLES: Partial<BlockStyle> = {
-  backgroundColor: '#000000ff',
+  backgroundColor: '',
   height: 1,
   marginTop: 10,
   marginBottom: 10,

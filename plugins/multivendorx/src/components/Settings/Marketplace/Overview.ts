@@ -102,6 +102,7 @@ export default {
 			type: 'text',
 			label: __('Receiver phone number', 'multivendorx'),
 			moduleEnabled: 'store-policy',
+			preText: __('Enter the phone number to receive SMS notifications.', 'multivendorx'),
 			beforeElement: {
 				type: 'select',
 				key: 'store_base_pre',

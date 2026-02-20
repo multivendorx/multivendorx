@@ -43,9 +43,7 @@ const ItemList: React.FC<ItemListProps> = ({ items, background, border, classNam
                                 className="item"
                             >
                                 {item.icon && <i className={`item-icon ${item.icon}`}></i>}
-                                <div className="details">
-                                   <div className="title"> {item.title}</div>
-                                </div>
+                                {item.title}
                             </a>
                         ) : (
                             <div
@@ -54,7 +52,7 @@ const ItemList: React.FC<ItemListProps> = ({ items, background, border, classNam
                                     item.action?.();
                                 }}
                             >
-                                {item.icon && <i className={`item-icon ${item.icon}`}></i>}
+                                {item.icon && <i className={`item-icon adminfont-${item.icon}`}></i>}
                                 {item.img && <img src={item.img} alt="" />}
 
                                 <div className="details">
