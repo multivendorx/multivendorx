@@ -145,8 +145,6 @@ const PagePicker: React.FC<PagePickerProps> = ({
           <i className="admin-font adminfont-pagination-next-arrow"></i>
         </span>
       </div>
-
-
     </div>
   );
 };

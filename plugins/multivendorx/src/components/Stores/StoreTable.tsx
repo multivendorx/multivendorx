@@ -2,16 +2,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, TableCard,	TableRow,QueryProps,CategoryCount } from 'zyra';
+import { getApiLink, TableCard,	TableRow,QueryProps,CategoryCount, Container, Column } from 'zyra';
 import { useNavigate } from 'react-router-dom';
-import { formatCurrency, formatDate, formatLocalDate } from '../../services/commonFunction';
+import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
 
 const StoreTable: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [totalRows, setTotalRows] = useState<number>(0);
-	const [storeSlugMap, setStoreSlugMap] = useState<Record<number, string>>({});
 	const [categoryCounts, setCategoryCounts] = useState<
 		CategoryCount[] | null
 	>(null);
@@ -143,8 +142,8 @@ const StoreTable: React.FC = () => {
 		}
 	];
 	return (
-		<div className="general-wrapper">
-			<div className="admin-table-wrapper">
+		<Container general>
+			<Column>
 				<TableCard
 					headers={headers}
 					rows={rows}
@@ -158,8 +157,8 @@ const StoreTable: React.FC = () => {
 					format={appLocalizer.date_format}
 					currencySymbol={appLocalizer.currency_symbol}
 				/>
-			</div>
-		</div>
+			</Column>
+		</Container>
 	);
 };
 

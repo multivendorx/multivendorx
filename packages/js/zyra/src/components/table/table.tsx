@@ -251,7 +251,7 @@ const Table: React.FC<TableProps> = ({
                             >
                                 {enableBulkSelect && (
                                     <td className="admin-column select">
-                                        <Skeleton width="20px" height="20px" />
+                                        <Skeleton width={20} height={20} />
                                     </td>
                                 )}
 
