@@ -133,7 +133,7 @@ const StoreCommission: React.FC = () => {
 					{
 						display: (
 							<ItemList
-								className="feature-list"
+								className="price-list"
 								items={Object.entries(ann)
 									// Filter only the commission keys you want to show
 									.filter(([key]) => [
@@ -144,9 +144,8 @@ const StoreCommission: React.FC = () => {
 										'marketplaceCommission'
 									].includes(key))
 									.map(([key, val]) => ({
-										icon: 'adminfont-commissions', // Consistent icon
 										title: key.replace(/([A-Z])/g, ' $1').trim(), // Formats 'storeEarning' to 'Store Earning'
-										desc: val // This is your commission value (e.g. "112.00")
+										value: val // This is your commission value (e.g. "112.00")
 									}))
 								}
 							/>

@@ -53,9 +53,14 @@ export const renderCell = (
 		}
 
 		case "status": {
+			const formattedValue = String(value)
+				.toLowerCase()
+				.split('-')
+				.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+				.join(' ');
 			return (
 				<span className={`admin-badge badge-${String(value).toLowerCase()}`}>
-					{value}
+					{formattedValue}
 				</span>
 			);
 		}
