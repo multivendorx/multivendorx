@@ -20,7 +20,7 @@ const StoreFollower: React.FC = () => {
 			label: __('Email', 'multivendorx'),
 		},
 
-		date: {
+		date_followed: {
 			label: __('Followed On', 'multivendorx'),
 			type: 'date',
 		},
@@ -29,7 +29,7 @@ const StoreFollower: React.FC = () => {
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
-			.get(getApiLink(appLocalizer, 'follow-store'), {
+			.get(getApiLink(appLocalizer, 'followers'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: {
 					store_id: appLocalizer.store_id,

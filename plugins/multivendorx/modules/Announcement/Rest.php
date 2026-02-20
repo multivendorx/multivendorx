@@ -674,7 +674,7 @@ class Rest extends \WP_REST_Controller
                 Utill::POST_META_SETTINGS['announcement_url'],
                 true
             ),
-            'date'       => get_post_time( 'Y-m-d\TH:i:s', true, $post )
+            'date_created'       => get_post_time( 'Y-m-d\TH:i:s', true, $post )
         );
     }
 }

@@ -454,7 +454,7 @@ class Rest extends \WP_REST_Controller {
             'content'      => $post->post_content,
             'status'       => $post->post_status,
             'status_label' => get_post_status_object( $post->post_status )->label,
-            'date'         => get_post_time( 'Y-m-d\TH:i:s', true, $post ),
+            'date_created' => get_post_time( 'Y-m-d\TH:i:s', true, $post ),
         );
     }
 

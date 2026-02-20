@@ -203,7 +203,7 @@ export const KnowledgeBase: React.FC = () => {
 			label: __('Status', 'multivendorx'),
 			type: 'status'
 		},
-		date: {
+		date_created: {
 			label: __('Date', 'multivendorx'),
 			type: 'date'
 		},

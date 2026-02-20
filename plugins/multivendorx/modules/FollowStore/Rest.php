@@ -27,7 +27,7 @@ class Rest extends \WP_REST_Controller {
      *
      * @var string
      */
-    protected $rest_base = 'follow-store';
+    protected $rest_base = 'followers';
 
     /**
      * Constructor.
@@ -174,7 +174,7 @@ class Rest extends \WP_REST_Controller {
                         'id'    => $user_id,
                         'name'  => $full_name,
                         'email' => $user->user_email,
-                        'date'  => Utill::multivendorx_rest_prepare_date_response( $follow_date ),
+                        'date_followed'  => Utill::multivendorx_rest_prepare_date_response( $follow_date ),
                     );
                 }
             }
@@ -210,8 +210,8 @@ class Rest extends \WP_REST_Controller {
         }
 
         try {
-            $store_id = $request->get_param( 'storeId' );
-            $user_id  = $request->get_param( 'userId' );
+            $store_id = $request->get_param( 'store_id' );
+            $user_id  = $request->get_param( 'user_id' );
 
             if ( ! $store_id ) {
                 return new \WP_Error(
@@ -292,8 +292,8 @@ class Rest extends \WP_REST_Controller {
         }
 
         try {
-            $store_id = $request->get_param( 'storeId' );
-            $user_id  = $request->get_param( 'userId' );
+            $store_id = $request->get_param( 'store_id' );
+            $user_id  = $request->get_param( 'user_id' );
 
             if ( ! $store_id || ! $user_id ) {
                 return new \WP_Error(

@@ -773,7 +773,7 @@ const Dashboard: React.FC = () => {
 														{item.content}
 													</div>
 													<span>
-														{formatTimeAgo(item.date)}
+														{formatTimeAgo(item.date_created)}
 													</span>
 												</div>
 											</li>
