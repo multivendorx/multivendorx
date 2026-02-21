@@ -67,19 +67,19 @@ const OrderReport: React.FC = () => {
 		},
 	};
 
-	const filters = [
-		{
-			key: 'store_id',
-			label: 'Stores',
-			type: 'select',
-			options: store,
-		},
-		{
-			key: 'created_at',
-			label: 'Created Date',
-			type: 'date',
-		},
-	];
+const filters = [
+	{
+		key: 'store_id',
+		label: __('Stores', 'multivendorx'),
+		type: 'select',
+		options: store,
+	},
+	{
+		key: 'created_at',
+		label: __('Created Date', 'multivendorx'),
+		type: 'date',
+	},
+];
 
 	const downloadCSVByQuery = (query: QueryProps) => {
 		axios

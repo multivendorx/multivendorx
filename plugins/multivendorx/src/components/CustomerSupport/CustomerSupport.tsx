@@ -22,7 +22,7 @@ const CustomerSupport = () => {
 			module: 'question-answer',
 			content: {
 				id: 'questions',
-				headerTitle: 'Questions',
+				headerTitle: __('Questions', 'multivendorx'),
 				headerIcon: 'question',
 			},
 		},
@@ -31,7 +31,7 @@ const CustomerSupport = () => {
 			module: 'store-review',
 			content: {
 				id: 'review',
-				headerTitle: 'Store Reviews',
+				headerTitle: __('Store Reviews', 'multivendorx'),
 				headerIcon: 'store-review',
 			},
 		},
@@ -40,7 +40,7 @@ const CustomerSupport = () => {
 			module: 'store-support',
 			content: {
 				id: 'support-ticket',
-				headerTitle: 'Support Ticket',
+				headerTitle: __('Support Ticket', 'multivendorx'),
 				headerIcon: 'vacation',
 			},
 		},
@@ -56,7 +56,7 @@ const CustomerSupport = () => {
 				return (
 					<div className="card-wrapper">
 						<div className="card-content">
-							<h1>Upcoming Feature</h1>
+							<h1>{__('Upcoming Feature', 'multivendorx')}</h1>
 						</div>
 					</div>
 				);
@@ -66,7 +66,7 @@ const CustomerSupport = () => {
 	};
 	const link =
 		typeof appLocalizer?.module_page_url === 'string' &&
-		appLocalizer.module_page_url.trim().length > 0
+			appLocalizer.module_page_url.trim().length > 0
 			? appLocalizer.module_page_url
 			: undefined;
 

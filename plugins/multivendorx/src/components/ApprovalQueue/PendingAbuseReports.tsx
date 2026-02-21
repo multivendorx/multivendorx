@@ -97,19 +97,19 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 		},
 	};
 
-	const filters = [
-		{
-			key: 'store_id',
-			label: 'Stores',
-			type: 'select',
-			options: store,
-		},
-		{
-			key: 'created_at',
-			label: 'Created Date',
-			type: 'date',
-		},
-	];
+const filters = [
+	{
+		key: 'store_id',
+		label: __('Stores', 'multivendorx'),
+		type: 'select',
+		options: store,
+	},
+	{
+		key: 'created_at',
+		label: __('Created Date', 'multivendorx'),
+		type: 'date',
+	},
+];
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);

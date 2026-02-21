@@ -192,7 +192,7 @@ const Orders: React.FC = () => {
 							status === 'all'
 								? __('All', 'multivendorx')
 								: status.charAt(0).toUpperCase() +
-									status.slice(1),
+								status.slice(1),
 						count: total,
 					};
 				});
@@ -266,15 +266,15 @@ const Orders: React.FC = () => {
 			actions: [
 				...(appLocalizer.edit_order_capability
 					? [
-							{
-								label: __('View', 'multivendorx'),
-								icon: 'eye',
-								onClick: (row) => {
-									setSelectedOrder(row);
-									window.location.hash = `view/${row.id}`;
-								},
+						{
+							label: __('View', 'multivendorx'),
+							icon: 'eye',
+							onClick: (row) => {
+								setSelectedOrder(row);
+								window.location.hash = `view/${row.id}`;
 							},
-						]
+						},
+					]
 					: []),
 
 				{
@@ -476,16 +476,16 @@ const Orders: React.FC = () => {
 						isLoading={isLoading}
 						onQueryUpdate={doRefreshTableData}
 						search={{
-							placeholder: 'Search...',
+							placeholder: __('Search...', 'multivendorx'),
 							options: [
-								{ label: 'All', value: 'all' },
-								{ label: 'Order Id', value: 'order_id' },
-								{ label: 'Products', value: 'products' },
+								{ label: __('All', 'multivendorx'), value: 'all' },
+								{ label: __('Order Id', 'multivendorx'), value: 'order_id' },
+								{ label: __('Products', 'multivendorx'), value: 'products' },
 								{
-									label: 'Customer Email',
+									label: __('Customer Email', 'multivendorx'),
 									value: 'customer_email',
 								},
-								{ label: 'Customer', value: 'customer' },
+								{ label: __('Customer', 'multivendorx'), value: 'customer' },
 							],
 						}}
 						filters={filters}

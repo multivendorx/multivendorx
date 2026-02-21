@@ -35,9 +35,9 @@ const SetupWizard: React.FC = () => {
 	const methods = [
 		{
 			id: 'marketplace_setup',
-			label: 'Store Profile',
+			label: __('Store Profile', 'multivendorx'),
 			icon: 'adminfont-storefront',
-			desc: 'Set up how your store appears',
+			desc: __('Set up how your store appears', 'multivendorx'),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
@@ -52,11 +52,11 @@ const SetupWizard: React.FC = () => {
 					),
 				},
 				{
-					key: 'store_name',
+					key: 'store_description',
 					type: 'textarea',
 					label: __('Store description', 'multivendorx'),
 					desc: __(
-						'The name shown on your store page and product listings.',
+						'Describe your store to help customers understand your business.',
 						'multivendorx'
 					),
 				},
@@ -67,22 +67,18 @@ const SetupWizard: React.FC = () => {
 					size: 'small',
 				},
 				{
-					key: 'store_dashboard_site_logo',
+					key: 'store_dashboard_banner',
 					type: 'attachment',
 					label: __('Banner image (optional)', 'multivendorx'),
 					size: 'small',
 				},
 				{
-					key: 'store_name',
+					key: 'contact_phone',
 					type: 'text',
 					label: __('Contact phone', 'multivendorx'),
-					desc: __(
-						'The name shown on your store page and product listings.',
-						'multivendorx'
-					),
 				},
 				{
-					key: 'approve_store',
+					key: 'timezone_mode',
 					type: 'setting-toggle',
 					label: __('Timezone', 'multivendorx'),
 					options: [
@@ -103,12 +99,12 @@ const SetupWizard: React.FC = () => {
 					type: 'buttons',
 					options: [
 						{
-							label: 'Back',
+							label: __('Back', 'multivendorx'),
 							action: 'back',
 							btnClass: 'admin-btn btn-red',
 						},
 						{
-							label: 'Next',
+							label: __('Next', 'multivendorx'),
 							action: 'next',
 							btnClass: 'admin-btn btn-purple',
 						},
@@ -118,74 +114,50 @@ const SetupWizard: React.FC = () => {
 		},
 		{
 			id: 'store_setup',
-			label: 'Business Location',
+			label: __('Business Location', 'multivendorx'),
 			icon: 'adminfont-storefront',
-			desc: 'Confirm your operating address',
+			desc: __('Confirm your operating address', 'multivendorx'),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
 			formFields: [
 				{
-					key: 'approve_store',
-					type: 'setting-toggle',
+					key: 'store_country',
+					type: 'select',
 					label: __('Country', 'multivendorx'),
 					options: [
-						{
-							key: 'manually',
-							label: __('United States', 'multivendorx'),
-							value: 'manually',
-						},
-						{
-							key: 'automatically',
-							label: __('United Kingdom', 'multivendorx'),
-							value: 'automatically',
-						},
-						{
-							key: 'automatically',
-							label: __('Canada', 'multivendorx'),
-							value: 'automatically',
-						},
-						{
-							key: 'automatically',
-							label: __('Australia', 'multivendorx'),
-							value: 'automatically',
-						},
+						{ label: __('United States', 'multivendorx'), value: 'us' },
+						{ label: __('United Kingdom', 'multivendorx'), value: 'uk' },
+						{ label: __('Canada', 'multivendorx'), value: 'ca' },
+						{ label: __('Australia', 'multivendorx'), value: 'au' },
 					],
 				},
 				{
-					key: 'store_name',
+					key: 'store_address',
 					type: 'textarea',
 					label: __('Address', 'multivendorx'),
 				},
 				{
-					key: 'store_name',
+					key: 'store_city',
 					type: 'text',
 					label: __('City', 'multivendorx'),
-					desc: __(
-						'The name shown on your store page and product listings.',
-						'multivendorx'
-					),
 				},
 				{
-					key: 'store_name',
+					key: 'store_postcode',
 					type: 'text',
-					label: __('Postcode / ZIP ', 'multivendorx'),
-					desc: __(
-						'The name shown on your store page and product listings.',
-						'multivendorx'
-					),
+					label: __('Postcode / ZIP', 'multivendorx'),
 				},
 				{
 					key: 'wizardButtons',
 					type: 'buttons',
 					options: [
 						{
-							label: 'Back',
+							label: __('Back', 'multivendorx'),
 							action: 'back',
 							btnClass: 'admin-btn btn-red',
 						},
 						{
-							label: 'Next',
+							label: __('Next', 'multivendorx'),
 							action: 'next',
 							btnClass: 'admin-btn btn-purple',
 						},
@@ -195,42 +167,42 @@ const SetupWizard: React.FC = () => {
 		},
 		{
 			id: 'commission_setup',
-			label: 'Payout Method',
+			label: __('Payout Method', 'multivendorx'),
 			icon: 'adminfont-storefront',
-			desc: 'Choose how you receive earnings',
+			desc: __('Choose how you receive earnings', 'multivendorx'),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
 			formFields: [
 				{
-					key: 'commission_settings',
+					key: 'bank_transfer',
 					type: 'setup',
-					title: 'Bank Transfer',
-					desc: 'Click to configure',
+					title: __('Bank Transfer', 'multivendorx'),
+					desc: __('Click to configure', 'multivendorx'),
 					hideCheckbox: true,
 					link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
 				},
 				{
-					key: 'commission_settings',
+					key: 'paypal',
 					type: 'setup',
-					title: 'PayPal',
-					desc: 'Click to configure',
+					title: __('PayPal', 'multivendorx'),
+					desc: __('Click to configure', 'multivendorx'),
 					hideCheckbox: true,
 					link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
 				},
 				{
-					key: 'commission_settings',
+					key: 'stripe',
 					type: 'setup',
-					title: 'Stripe',
-					desc: 'Click to configure',
+					title: __('Stripe', 'multivendorx'),
+					desc: __('Click to configure', 'multivendorx'),
 					hideCheckbox: true,
 					link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
 				},
 				{
-					key: 'commission_settings',
+					key: 'other_methods',
 					type: 'setup',
-					title: 'Other Methods',
-					desc: 'Click to configure',
+					title: __('Other Methods', 'multivendorx'),
+					desc: __('Click to configure', 'multivendorx'),
 					hideCheckbox: true,
 					link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
 				},
@@ -239,12 +211,12 @@ const SetupWizard: React.FC = () => {
 					type: 'buttons',
 					options: [
 						{
-							label: 'Back',
+							label: __('Back', 'multivendorx'),
 							action: 'back',
 							btnClass: 'admin-btn btn-red',
 						},
 						{
-							label: 'Next',
+							label: __('Next', 'multivendorx'),
 							action: 'next',
 							btnClass: 'admin-btn btn-purple',
 						},
@@ -254,25 +226,25 @@ const SetupWizard: React.FC = () => {
 		},
 		{
 			id: 'more_settings',
-			label: 'Store Policies',
+			label: __('Store Policies', 'multivendorx'),
 			icon: 'adminfont-storefront',
-			desc: 'Set your selling rules',
+			desc: __('Set your selling rules', 'multivendorx'),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
 			formFields: [
 				{
-					key: 'store_name',
+					key: 'refund_policy',
 					type: 'textarea',
 					label: __('Refund & return policy', 'multivendorx'),
 				},
 				{
-					key: 'store_name',
+					key: 'shipping_terms',
 					type: 'textarea',
 					label: __('Shipping terms', 'multivendorx'),
 				},
 				{
-					key: 'store_name',
+					key: 'store_terms',
 					type: 'textarea',
 					label: __('Store terms and conditions', 'multivendorx'),
 				},
@@ -281,12 +253,12 @@ const SetupWizard: React.FC = () => {
 					type: 'buttons',
 					options: [
 						{
-							label: 'Back',
+							label: __('Back', 'multivendorx'),
 							action: 'back',
 							btnClass: 'admin-btn btn-red',
 						},
 						{
-							label: 'Next',
+							label: __('Next', 'multivendorx'),
 							action: 'next',
 							btnClass: 'admin-btn btn-purple',
 						},
@@ -296,29 +268,29 @@ const SetupWizard: React.FC = () => {
 		},
 		{
 			id: 'identity_verification',
-			label: 'Identity Verification',
+			label: __('Identity Verification', 'multivendorx'),
 			icon: 'adminfont-storefront',
-			desc: 'Verify your store details',
+			desc: __('Verify your store details', 'multivendorx'),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
 			formFields: [
 				{
-					key: 'store_dashboard_site_logo',
+					key: 'government_id',
 					type: 'file',
 					label: __('Government-issued ID', 'multivendorx'),
 					size: 'small',
 				},
 				{
-					key: 'store_dashboard_site_logo',
+					key: 'address_proof',
 					type: 'file',
 					label: __('Business address proof', 'multivendorx'),
 					size: 'small',
 				},
 				{
-					key: 'Registration or tax documents',
+					key: 'tax_document',
 					type: 'file',
-					label: __('Government-issued ID', 'multivendorx'),
+					label: __('Registration or tax documents', 'multivendorx'),
 					size: 'small',
 				},
 				{
@@ -326,12 +298,12 @@ const SetupWizard: React.FC = () => {
 					type: 'buttons',
 					options: [
 						{
-							label: 'Back',
+							label: __('Back', 'multivendorx'),
 							action: 'back',
 							btnClass: 'admin-btn btn-red',
 						},
 						{
-							label: 'Next',
+							label: __('Next', 'multivendorx'),
 							action: 'next',
 							btnClass: 'admin-btn btn-purple',
 						},
@@ -341,35 +313,35 @@ const SetupWizard: React.FC = () => {
 		},
 		{
 			id: 'first_product',
-			label: 'First Product',
+			label: __('First Product', 'multivendorx'),
 			icon: 'adminfont-storefront',
-			desc: 'Add at least one item',
+			desc: __('Add at least one item', 'multivendorx'),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
 			formFields: [
 				{
-					key: 'store_name',
+					key: 'product_title',
 					type: 'text',
 					label: __('Product title', 'multivendorx'),
 				},
 				{
-					key: 'store_name',
+					key: 'product_description',
 					type: 'textarea',
 					label: __('Product description', 'multivendorx'),
 				},
 				{
-					key: 'store_name',
+					key: 'product_price',
 					type: 'number',
 					label: __('Price', 'multivendorx'),
 				},
 				{
-					key: 'store_name',
+					key: 'product_inventory',
 					type: 'number',
 					label: __('Inventory', 'multivendorx'),
 				},
 				{
-					key: 'Registration or tax documents',
+					key: 'product_images',
 					type: 'file',
 					label: __('Product images', 'multivendorx'),
 					size: 'small',
@@ -379,12 +351,12 @@ const SetupWizard: React.FC = () => {
 					type: 'buttons',
 					options: [
 						{
-							label: 'Back',
+							label: __('Back', 'multivendorx'),
 							action: 'back',
 							btnClass: 'admin-btn btn-red',
 						},
 						{
-							label: 'Finish',
+							label: __('Finish', 'multivendorx'),
 							action: 'next',
 							btnClass: 'admin-btn btn-purple',
 							redirect: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=modules`,
@@ -405,15 +377,14 @@ const SetupWizard: React.FC = () => {
 		<div className="wizard-container">
 			<div>
 				<div className="welcome-wrapper">
-					{/* <img src={img} alt="" /> */}
 					<h4 className="wizard-title">
-						Welcome to the MultivendorX family!
+						{__('Welcome to the MultivendorX family!', 'multivendorx')}
 					</h4>
 					<div className="des">
-						Thank you for choosing MultiVendorX! This quick setup
-						wizard will help you configure the basic settings and
-						have your marketplace ready in no time. It’s completely
-						optional and shouldn’t take longer than five minutes.
+						{__(
+							'Thank you for choosing MultiVendorX! This quick setup wizard will help you configure the basic settings and have your marketplace ready in no time. It’s completely optional and shouldn’t take longer than five minutes.',
+							'multivendorx'
+						)}
 					</div>
 				</div>
 				<ExpandablePanelGroupUI

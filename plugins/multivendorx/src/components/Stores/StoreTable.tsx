@@ -23,9 +23,6 @@ const StoreTable: React.FC = () => {
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [totalRows, setTotalRows] = useState<number>(0);
-	const [storeSlugMap, setStoreSlugMap] = useState<Record<number, string>>(
-		{}
-	);
 	const [categoryCounts, setCategoryCounts] = useState<
 		CategoryCount[] | null
 	>(null);
@@ -69,37 +66,32 @@ const StoreTable: React.FC = () => {
 				setCategoryCounts([
 					{
 						value: 'all',
-						label: 'All',
+						label: __('All', 'multivendorx'),
 						count: Number(response.headers['x-wp-total']) || 0,
 					},
 					{
 						value: 'active',
-						label: 'Active',
+						label: __('Active', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-active']) || 0,
 					},
 					{
 						value: 'under_review',
-						label: 'Under Review',
+						label: __('Under Review', 'multivendorx'),
 						count:
-							Number(
-								response.headers['x-wp-status-under-review']
-							) || 0,
+							Number(response.headers['x-wp-status-under-review']) || 0,
 					},
 					{
 						value: 'suspended',
-						label: 'Suspended',
+						label: __('Suspended', 'multivendorx'),
 						count:
-							Number(response.headers['x-wp-status-suspended']) ||
-							0,
+							Number(response.headers['x-wp-status-suspended']) || 0,
 					},
 					{
 						value: 'deactivated',
-						label: 'Deactivated',
+						label: __('Deactivated', 'multivendorx'),
 						count:
-							Number(
-								response.headers['x-wp-status-deactivated']
-							) || 0,
+							Number(response.headers['x-wp-status-deactivated']) || 0,
 					},
 				]);
 

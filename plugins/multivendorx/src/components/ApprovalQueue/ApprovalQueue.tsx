@@ -36,7 +36,7 @@ const ApprovalQueue = () => {
 
 					setStoreCount(pendingCount);
 				})
-				.catch(() => {});
+				.catch(() => { });
 		}
 
 		// Product Count (only if can publish products)
@@ -57,7 +57,7 @@ const ApprovalQueue = () => {
 				.then((res) =>
 					setProductCount(parseInt(res.headers['x-wp-total']) || 0)
 				)
-				.catch(() => {});
+				.catch(() => { });
 		}
 
 		//Coupon Count (only if can publish coupons)
@@ -78,7 +78,7 @@ const ApprovalQueue = () => {
 				.then((res) =>
 					setCouponCount(parseInt(res.headers['x-wp-total']) || 0)
 				)
-				.catch(() => {});
+				.catch(() => { });
 		}
 
 		// Refund Count (only if refund module active)
@@ -97,7 +97,7 @@ const ApprovalQueue = () => {
 				.then((res) =>
 					setRefundCount(Number(res.headers['x-wp-total']) || 0)
 				)
-				.catch(() => {});
+				.catch(() => { });
 		}
 
 		// Report Abuse (only if module active)
@@ -113,7 +113,7 @@ const ApprovalQueue = () => {
 				.then((res) => {
 					setReportAbuseCount(Number(res.headers['x-wp-total']) || 0);
 				})
-				.catch(() => {});
+				.catch(() => { });
 		}
 
 		// Withdraw Count (only if manual withdraw enabled)
@@ -130,7 +130,7 @@ const ApprovalQueue = () => {
 				.then((res) => {
 					setWithdrawCount(Number(res.headers['x-wp-total']) || 0);
 				})
-				.catch(() => {});
+				.catch(() => { });
 		}
 
 		// Deactivate Store Request (always active)
@@ -146,7 +146,7 @@ const ApprovalQueue = () => {
 			.then((res) => {
 				setDeactivateCount(Number(res.headers['x-wp-total']) || 0);
 			})
-			.catch(() => {});
+			.catch(() => { });
 	};
 
 	useEffect(() => {
@@ -172,11 +172,13 @@ const ApprovalQueue = () => {
 			condition: settings?.general?.approve_store === 'manually',
 			content: {
 				id: 'stores',
-				headerTitle: 'Stores',
-				headerDescription: 'Eager to join the marketplace',
-				settingTitle: 'Store in review queue',
-				settingSubTitle:
+				headerTitle: __('Stores', 'multivendorx'),
+				headerDescription: __('Eager to join the marketplace', 'multivendorx'),
+				settingTitle: __('Store in review queue', 'multivendorx'),
+				settingSubTitle: __(
 					'Next in line! Approve or reject new store join requests.',
+					'multivendorx'
+				),
 				headerIcon: 'storefront yellow',
 				count: storeCount,
 			},
@@ -189,11 +191,13 @@ const ApprovalQueue = () => {
 				),
 			content: {
 				id: 'products',
-				headerTitle: 'Products',
-				headerDescription: 'Pending your approval',
-				settingTitle: 'Products awaiting review',
-				settingSubTitle:
+				headerTitle: __('Products', 'multivendorx'),
+				headerDescription: __('Pending your approval', 'multivendorx'),
+				settingTitle: __('Products awaiting review', 'multivendorx'),
+				settingSubTitle: __(
 					'Approve these listings to start generating sales in your marketplace.',
+					'multivendorx'
+				),
 				headerIcon: 'multi-product red',
 				count: productCount,
 			},
@@ -206,11 +210,13 @@ const ApprovalQueue = () => {
 				),
 			content: {
 				id: 'coupons',
-				headerTitle: 'Coupons',
-				headerDescription: 'Need a quick review',
-				settingTitle: 'Coupons up for review',
-				settingSubTitle:
+				headerTitle: __('Coupons', 'multivendorx'),
+				headerDescription: __('Need a quick review', 'multivendorx'),
+				settingTitle: __('Coupons up for review', 'multivendorx'),
+				settingSubTitle: __(
 					'Approve, decline, or tweak before they go live.',
+					'multivendorx'
+				),
 				headerIcon: 'coupon green',
 				count: couponCount,
 			},
@@ -220,9 +226,9 @@ const ApprovalQueue = () => {
 			module: 'wholesale',
 			content: {
 				id: 'wholesale-customer',
-				headerTitle: 'Customers',
-				headerDescription: 'Ready for your approval',
-				settingSubTitle: 'Ready for your approval',
+				headerTitle: __('Customers', 'multivendorx'),
+				headerDescription: __('Ready for your approval', 'multivendorx'),
+				settingSubTitle: __('Ready for your approval', 'multivendorx'),
 				headerIcon: 'user-circle pink',
 				count: 9,
 			},
@@ -232,11 +238,13 @@ const ApprovalQueue = () => {
 			module: 'marketplace-refund',
 			content: {
 				id: 'refund-requests',
-				headerTitle: 'Refunds',
-				headerDescription: 'Need your decision',
-				settingTitle: 'Refund tracker',
-				settingSubTitle:
+				headerTitle: __('Refunds', 'multivendorx'),
+				headerDescription: __('Need your decision', 'multivendorx'),
+				settingTitle: __('Refund tracker', 'multivendorx'),
+				settingSubTitle: __(
 					'Monitor refund trends and stay informed on store returns.',
+					'multivendorx'
+				),
 				headerIcon: 'marketplace-refund blue',
 				count: refundCount,
 			},
@@ -246,10 +254,13 @@ const ApprovalQueue = () => {
 			module: 'marketplace-compliance',
 			content: {
 				id: 'report-abuse',
-				headerTitle: 'Flagged',
-				headerDescription: 'Product reported for assessment',
-				settingTitle: 'Flagged products awaiting action',
-				settingSubTitle: 'Review reports and maintain quality.',
+				headerTitle: __('Flagged', 'multivendorx'),
+				headerDescription: __(
+					'Product reported for assessment',
+					'multivendorx'
+				),
+				settingTitle: __('Flagged products awaiting action', 'multivendorx'),
+				settingSubTitle: __('Review reports and maintain quality.', 'multivendorx'),
 				headerIcon: 'product indigo',
 				count: reportAbuseCount,
 			},
@@ -259,10 +270,10 @@ const ApprovalQueue = () => {
 			condition: settings?.disbursement?.withdraw_type === 'manual',
 			content: {
 				id: 'withdrawal',
-				headerTitle: 'Withdrawals',
-				headerDescription: 'Queued for disbursement',
-				settingTitle: 'Withdrawals awaiting approval',
-				settingSubTitle: 'Review and process store payouts.',
+				headerTitle: __('Withdrawals', 'multivendorx'),
+				headerDescription: __('Queued for disbursement', 'multivendorx'),
+				settingTitle: __('Withdrawals awaiting approval', 'multivendorx'),
+				settingSubTitle: __('Review and process store payouts.', 'multivendorx'),
 				headerIcon: 'bank orange',
 				count: withdrawCount,
 			},
@@ -271,19 +282,24 @@ const ApprovalQueue = () => {
 			type: 'file',
 			content: {
 				id: 'deactivate-requests',
-				headerTitle: 'Deactivations',
-				headerDescription: 'Permanent store closure request',
-				settingTitle: 'Stores requesting deactivation',
-				settingSubTitle: 'Approve or reject marketplace joiners.	',
+				headerTitle: __('Deactivations', 'multivendorx'),
+				headerDescription: __(
+					'Permanent store closure request',
+					'multivendorx'
+				),
+				settingTitle: __('Stores requesting deactivation', 'multivendorx'),
+				settingSubTitle: __(
+					'Approve or reject marketplace joiners.',
+					'multivendorx'
+				),
 				headerIcon: 'rejecte teal',
 				count: deactivateCount,
 			},
 		},
 	].filter(
 		(tab) =>
-			//Show if:
-			(!tab.module || modules.includes(tab.module)) && // module active or not required
-			(tab.condition === undefined || tab.condition) // condition true or not set
+			(!tab.module || modules.includes(tab.module)) &&
+			(tab.condition === undefined || tab.condition)
 	);
 
 	const getForm = (tabId: string) => {
@@ -298,8 +314,7 @@ const ApprovalQueue = () => {
 				return <PendingCoupons onUpdated={refreshCounts} />;
 
 			case 'wholesale-customer':
-				return <h1>Upcoming Feature</h1>;
-
+				return <h1>{__('Upcoming Feature', 'multivendorx')}</h1>;
 			case 'refund-requests':
 				return <PendingRefund onUpdated={refreshCounts} />;
 
@@ -318,24 +333,23 @@ const ApprovalQueue = () => {
 	};
 
 	return (
-		<>
-			<SettingsNavigator
-				settingContent={settingContent}
-				currentSetting={location.get('subtab') as string}
-				getForm={getForm}
-				prepareUrl={(subTab: string) =>
-					`?page=multivendorx#&tab=approval-queue&subtab=${subTab}`
-				}
-				appLocalizer={appLocalizer}
-				Link={Link}
-				variant={'card'}
-				headerIcon="approval"
-				headerTitle="Approval Queue"
-				headerDescription={
-					'Manage all pending administrative actions including approvals, payouts, and notifications.'
-				}
-			/>
-		</>
+		<SettingsNavigator
+			settingContent={settingContent}
+			currentSetting={location.get('subtab') as string}
+			getForm={getForm}
+			prepareUrl={(subTab: string) =>
+				`?page=multivendorx#&tab=approval-queue&subtab=${subTab}`
+			}
+			appLocalizer={appLocalizer}
+			Link={Link}
+			variant={'card'}
+			headerIcon="approval"
+			headerTitle={__('Approval Queue', 'multivendorx')}
+			headerDescription={__(
+				'Manage all pending administrative actions including approvals, payouts, and notifications.',
+				'multivendorx'
+			)}
+		/>
 	);
 };
 

@@ -106,19 +106,19 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 		{
 			icon: 'wallet red',
 			number: formatCurrency(storeData.transactions?.balance ?? 0),
-			text: 'Wallet balance',
+			text: __('Wallet Balance', 'multivendorx'),
 		},
 		{
 			icon: 'dollar yellow',
 			number: formatCurrency(
 				storeData.transactions?.locking_balance ?? 0
 			),
-			text: 'Upcoming balance',
+			text: __('Upcoming Balance', 'multivendorx'),
 		},
 		{
 			icon: 'wallet-in blue',
 			number: formatCurrency(storeData.request_withdrawal_amount ?? 0),
-			text: 'Requested payout',
+			text: __('Requested Payout', 'multivendorx'),
 		},
 	];
 
@@ -188,9 +188,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								const editUrl = `${appLocalizer.site_url.replace(
 									/\/$/,
 									''
-								)}/wp-admin/post.php?post=${
-									product.id
-								}&action=edit`;
+								)}/wp-admin/post.php?post=${product.id
+									}&action=edit`;
 
 								return (
 									<InfoItem
@@ -395,8 +394,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 									label: __('Email', 'multivendorx'),
 									value: storeData.primary_owner_info?.data
 										?.user_email ?? (
-										<Skeleton width={150} />
-									),
+											<Skeleton width={150} />
+										),
 								},
 							]}
 							badges={[
