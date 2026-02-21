@@ -39,7 +39,7 @@ export default {
 		{
 			type: 'text',
 			key: 'youtube',
-			icon: 'adminfont-youtube',
+			icon: 'youtube',
 			label: __('YouTube', 'multivendorx'),
 		},
 

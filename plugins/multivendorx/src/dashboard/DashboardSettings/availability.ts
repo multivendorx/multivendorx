@@ -14,31 +14,29 @@ export default {
         // Calendar Input
         {
             type: 'date',
-            name: 'dateRange',
+            key: 'date_range',
             format: 'YYYY-MM-DD',
             multiple: true,
-            value: '',
         },
 
         // Add to Cart Button Text
         {
-            type: 'input',
-            name: 'addToCartText',
+            type: 'text',
+            key: 'add_to_cart_text',
             label: __('"Add to Cart" Button Text', 'multivendorx'),
-            inputType: 'text',
         },
 
         // Notification Message
         {
             type: 'textarea',
-            name: 'notificationMessage',
+            key: 'notification_message',
             label: __('Notification Message', 'multivendorx'),
         },
 
         // Quick Presets Toggle
         {
             type: 'setting-toggle',
-            name: 'quickPresets',
+            key: 'quick_presets',
             label: __('Quick presets', 'multivendorx'),
             options: [
                 {
@@ -77,7 +75,7 @@ export default {
         // Notify Via Toggle
         {
             type: 'setting-toggle',
-            name: 'notifyVia',
+            key: 'notify_via',
             label: __('Notify via', 'multivendorx'),
             options: [
                 {
