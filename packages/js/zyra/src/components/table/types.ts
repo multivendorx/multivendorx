@@ -82,6 +82,8 @@ export type TableHeaderConfig = {
 	actions?: ActionItem[];
 	csvDisplay?: boolean,
 	tableDisplay?: boolean,
+	width?: string | number,
+	className?: string,
 };
 
 

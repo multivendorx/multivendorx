@@ -108,6 +108,7 @@ export const BlockRenderer: React.FC<BlockRendererProps> = ({
             </section>
         )}
         <section className="form-field-container-wrapper">
+            <p>Lorem, ipsum dolor sit</p>
             {renderBlockContent(block, onChange)}
         </section>
     </div>

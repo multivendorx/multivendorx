@@ -8,6 +8,8 @@ import {
 	TableRow,
 	QueryProps,
 	CategoryCount,
+	Container,
+	Column,
 } from 'zyra';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -165,8 +167,8 @@ const StoreTable: React.FC = () => {
 		},
 	];
 	return (
-		<div className="general-wrapper">
-			<div className="admin-table-wrapper">
+		<Container general>
+			<Column>
 				<TableCard
 					headers={headers}
 					rows={rows}
@@ -180,8 +182,8 @@ const StoreTable: React.FC = () => {
 					format={appLocalizer.date_format}
 					currencySymbol={appLocalizer.currency_symbol}
 				/>
-			</div>
-		</div>
+			</Column>
+		</Container>
 	);
 };
 

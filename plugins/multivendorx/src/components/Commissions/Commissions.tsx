@@ -75,6 +75,8 @@ const Commission: React.FC = () => {
 		id: {
 			label: __('ID', 'multivendorx'),
 			isSortable: true,
+			type: 'id',
+			className: 'id',
 		},
 		order_id: {
 			label: __('Order', 'multivendorx'),
@@ -82,11 +84,12 @@ const Commission: React.FC = () => {
 		},
 		total_order_amount: {
 			label: __('Order Amount', 'multivendorx'),
-			isSortable: true,
+			isSortable: true,	
 			type: 'currency',
 		},
 		commission_summary: {
 			label: __('Commission Summary', 'multivendorx'),
+			width: 20,
 			render: (row) => (
 				<ItemList
 					className="price-list"

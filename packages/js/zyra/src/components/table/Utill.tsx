@@ -37,7 +37,7 @@ export const renderCell = (
 			const Wrapper: React.ElementType = link ? "a" : "div";
 
 			return (
-				<Wrapper {...(link ? { href: link } : {})} className="details-wrapper">
+				<Wrapper {...(link ? { href: link } : {})} className="product-wrapper">
 					{image ? (
 						<img src={image} alt={name || ""} className="image" />
 					) : icon ? (
@@ -45,8 +45,8 @@ export const renderCell = (
 					) : null}
 					<div className="details">
 						{name && <div className="title">{name}</div>}
-						{description && <div className="desc">{description}</div>}
-						{subDescription && <div className="desc">{subDescription}</div>}
+						{description && <div className="des">{description}</div>}
+						{subDescription && <div className="des">{subDescription}</div>}
 					</div>
 				</Wrapper>
 			);

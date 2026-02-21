@@ -68,65 +68,6 @@ export default {
 			required: true,
 		},
 		{
-			key: 'marketplace_model',
-			type: 'multi-select',
-			label: __(
-				'What kind of marketplace you are building',
-				'multivendorx'
-			),
-			options: [
-				{
-					key: 'general',
-					label: __('General marketplace', 'multivendorx'),
-					value: 'general',
-				},
-				{
-					key: 'product',
-					label: __('Product marketplace', 'multivendorx'),
-					value: 'product',
-				},
-				{
-					key: 'rental',
-					label: __('Rental marketplace', 'multivendorx'),
-					value: 'rental',
-				},
-				{
-					key: 'auction',
-					label: __('Auction marketplace', 'multivendorx'),
-					value: 'auction',
-				},
-				{
-					key: 'subscription',
-					label: __('Subscription marketplace', 'multivendorx'),
-					value: 'subscription',
-				},
-				{
-					key: 'service',
-					label: __('Service marketplace', 'multivendorx'),
-					value: 'service',
-				},
-				{
-					key: 'mixed',
-					label: __('Mixed marketplace', 'multivendorx'),
-					value: 'mixed',
-				},
-			],
-		},
-		{
-			key: 'default_pages',
-			type: 'button',
-			wrapperClass: 'left',
-			name: __('Create Default MultiVendorX Page', 'multivendorx'),
-			className: 'purple',
-			label: __('MultiVendorX page', 'multivendorx'),
-			desc: __(
-				'This tool will install all the missing MultiVendorX pages. Pages already defined and set up will not be replaced.',
-				'multivendorx'
-			),
-			apilink: 'status',
-			method: 'GET',
-		},
-		{
 			key: 'section',
 			type: 'section',
 			title: __(

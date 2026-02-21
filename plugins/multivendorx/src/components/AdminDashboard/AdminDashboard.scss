@@ -852,7 +852,6 @@
         width: 100%;
 
         li {
-            margin: 1.125rem 0;
             font-size: 1rem;
             font-weight: 500;
             gap: 0.45rem;
@@ -872,7 +871,7 @@
                 padding: 0 1rem;
             }
 
-            &:before {
+            &::before {
                 position: absolute;
                 content: "";
                 width: 100%;
@@ -889,7 +888,6 @@
                 span {
                     width: 1.5rem;
                     height: 1.5rem;
-                    display: inline-block;
                     background: $background-color;
                     border-radius: 0.313rem;
                     position: relative;
@@ -919,7 +917,7 @@
 
             &.checked {
 
-                &:before {
+                &::before {
                     background: $theme-color;
                 }
 
@@ -936,7 +934,7 @@
             }
 
             &.visite {
-                &:before {
+                &::before {
                     background: $theme-color;
                 }
 
@@ -968,7 +966,7 @@
         }
 
         li:first-child {
-            &:before {
+            &::before {
                 height: 0;
             }
         }
