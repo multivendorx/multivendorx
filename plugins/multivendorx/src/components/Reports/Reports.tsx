@@ -22,54 +22,54 @@ const Reports = () => {
 	];
 
 	const overviewData = [
-		{ name: 'Jan', orders: 120, sold_out: 30 },
-		{ name: 'Feb', orders: 90, sold_out: 20 },
-		{ name: 'Mar', orders: 150, sold_out: 40 },
-		{ name: 'Apr', orders: 170, sold_out: 35 },
-		{ name: 'May', orders: 140, sold_out: 25 },
-		{ name: 'Jun', orders: 180, sold_out: 50 },
-		{ name: 'Jul', orders: 200, sold_out: 45 },
-		{ name: 'Aug', orders: 160, sold_out: 30 },
+		{ name: __('Jan', 'multivendorx'), orders: 120, sold_out: 30 },
+		{ name: __('Feb', 'multivendorx'), orders: 90, sold_out: 20 },
+		{ name: __('Mar', 'multivendorx'), orders: 150, sold_out: 40 },
+		{ name: __('Apr', 'multivendorx'), orders: 170, sold_out: 35 },
+		{ name: __('May', 'multivendorx'), orders: 140, sold_out: 25 },
+		{ name: __('Jun', 'multivendorx'), orders: 180, sold_out: 50 },
+		{ name: __('Jul', 'multivendorx'), orders: 200, sold_out: 45 },
+		{ name: __('Aug', 'multivendorx'), orders: 160, sold_out: 30 },
 	];
 
 	const overview = [
 		{
-			id: 'earnings',
-			label: 'No. of orders',
+			id: 'total_orders',
+			label: __('No. of Orders', 'multivendorx'),
 			count: '7896',
 			icon: 'adminfont-order green',
 		},
 		{
-			id: 'Vendors',
-			label: 'Admin Commission',
+			id: 'admin_commission',
+			label: __('Admin Commission', 'multivendorx'),
 			count: '85669',
 			icon: 'adminfont-commission blue',
 		},
 		{
-			id: 'Pending Withdrawals',
-			label: 'Vendor Payout Pending',
+			id: 'vendor_payout_pending',
+			label: __('Vendor Payout Pending', 'multivendorx'),
 			count: '88200',
 			icon: 'adminfont-vendor-shipping red',
 		},
 		{
-			id: 'Pending Withdrawals',
-			label: 'Amount Refunds',
+			id: 'amount_refunds',
+			label: __('Amount Refunds', 'multivendorx'),
 			count: '600',
 			icon: 'adminfont-marketplace-refund green',
 		},
 		{
-			id: 'Pending Withdrawals',
-			label: 'No. of refunds',
+			id: 'total_refunds',
+			label: __('No. of Refunds', 'multivendorx'),
 			count: '600',
 			icon: 'adminfont-calendar blue',
 		},
 	];
 	const pieData = [
-		{ name: 'Admin Net Earning', value: 1200 },
-		{ name: 'Vendor Commission', value: 2400 },
-		{ name: 'Vendor Net Commission', value: 800 },
-		{ name: 'Sub Total', value: 200 },
-		{ name: 'Shipping', value: 200 },
+		{ name: __('Admin Net Earning', 'multivendorx'), value: 1200 },
+		{ name: __('Vendor Commission', 'multivendorx'), value: 2400 },
+		{ name: __('Vendor Net Commission', 'multivendorx'), value: 800 },
+		{ name: __('Sub Total', 'multivendorx'), value: 200 },
+		{ name: __('Shipping', 'multivendorx'), value: 200 },
 	];
 
 	const location = new URLSearchParams(useLocation().hash.substring(1));

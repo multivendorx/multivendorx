@@ -213,25 +213,25 @@ const ProductReport: React.FC = () => {
 	const overview = [
 		{
 			id: 'sales',
-			label: 'Total Products',
+			label: __('Total Products', 'multivendorx'),
 			count: totalRows,
 			icon: 'single-product',
 		},
 		{
-			id: 'earnings',
-			label: 'In Stock',
+			id: 'in_stock',
+			label: __('In Stock', 'multivendorx'),
 			count: inStockCount,
 			icon: 'per-product-shipping',
 		},
 		{
-			id: 'Vendors',
-			label: 'On backorder',
+			id: 'on_backorder',
+			label: __('On Backorder', 'multivendorx'),
 			count: onBackorderCount,
 			icon: 'multi-product',
 		},
 		{
-			id: 'free',
-			label: 'Out of Stock',
+			id: 'out_of_stock',
+			label: __('Out of Stock', 'multivendorx'),
 			count: outOfStockCount,
 			icon: 'out-of-stock',
 		},
@@ -295,13 +295,13 @@ const ProductReport: React.FC = () => {
 	const filters = [
 		{
 			key: 'store_id',
-			label: 'Stores',
+			label: __('Stores', 'multivendorx'),
 			type: 'select',
 			options: store,
 		},
 		{
 			key: 'created_at',
-			label: 'Created Date',
+			label: __('Created Date', 'multivendorx'),
 			type: 'date',
 		},
 	];
@@ -445,13 +445,12 @@ const ProductReport: React.FC = () => {
 										</div>
 										<div className="right">
 											<i
-												className={`adminfont-pagination-right-arrow ${
-													openReviewedCards[
-														product.id
-													]
-														? 'rotate-90 transition-transform'
-														: ''
-												}`}
+												className={`adminfont-pagination-right-arrow ${openReviewedCards[
+													product.id
+												]
+													? 'rotate-90 transition-transform'
+													: ''
+													}`}
 											></i>
 										</div>
 									</div>

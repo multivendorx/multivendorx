@@ -403,22 +403,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 										<SelectInputUI
 											name="status"
 											options={[
-												{
-													label: 'Processing',
-													value: 'processing',
-												},
-												{
-													label: 'On Hold',
-													value: 'on-hold',
-												},
-												{
-													label: 'Completed',
-													value: 'completed',
-												},
-												{
-													label: 'Cancelled',
-													value: 'cancelled',
-												},
+												{ label: __('Processing', 'multivendorx'), value: 'processing' },
+												{ label: __('On Hold', 'multivendorx'), value: 'on-hold' },
+												{ label: __('Completed', 'multivendorx'), value: 'completed' },
+												{ label: __('Cancelled', 'multivendorx'), value: 'cancelled' },
 											]}
 											value={orderData?.status}
 											onChange={(value) => {
@@ -448,27 +436,17 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									<table className="admin-table">
 										<thead className="admin-table-header">
 											<tr className="header-row">
-												<td className="header-col">
-													Item
-												</td>
-												<td className="header-col">
-													Cost
-												</td>
-												<td className="header-col">
-													Qty
-												</td>
-												<td className="header-col">
-													Total
-												</td>
-												<td className="header-col">
-													Tax
-												</td>
+												<td className="header-col">{__('Item', 'multivendorx')}</td>
+												<td className="header-col">{__('Cost', 'multivendorx')}</td>
+												<td className="header-col">{__('Qty', 'multivendorx')}</td>
+												<td className="header-col">{__('Total', 'multivendorx')}</td>
+												<td className="header-col">{__('Tax', 'multivendorx')}</td>
 											</tr>
 										</thead>
 
 										<tbody className="admin-table-body">
 											{orderData?.line_items?.length >
-											0 ? (
+												0 ? (
 												orderData.line_items.map(
 													(item) => (
 														<tr
@@ -567,16 +545,16 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																]
 																	?.refunded_line_total !==
 																	0 && (
-																	<div>
-																		{
-																			refundMap[
-																				item
-																					.id
-																			]
-																				.refunded_line_total
-																		}
-																	</div>
-																)}
+																		<div>
+																			{
+																				refundMap[
+																					item
+																						.id
+																				]
+																					.refunded_line_total
+																			}
+																		</div>
+																	)}
 																{isRefund && (
 																	<BasicInputUI
 																		name="refund-amount"
@@ -616,16 +594,16 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																]
 																	?.refunded_tax !==
 																	0 && (
-																	<div>
-																		{
-																			refundMap[
-																				item
-																					.id
-																			]
-																				.refunded_tax
-																		}
-																	</div>
-																)}
+																		<div>
+																			{
+																				refundMap[
+																					item
+																						.id
+																				]
+																					.refunded_tax
+																			}
+																		</div>
+																	)}
 																{isRefund && (
 																	<BasicInputUI
 																		name="refund-amount"
@@ -721,16 +699,16 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																]
 																	?.refunded_shipping !==
 																	0 && (
-																	<div>
-																		{
-																			refundMap[
-																				item
-																					.id
-																			]
-																				.refunded_shipping
-																		}
-																	</div>
-																)}
+																		<div>
+																			{
+																				refundMap[
+																					item
+																						.id
+																				]
+																					.refunded_shipping
+																			}
+																		</div>
+																	)}
 															</td>
 															<td className="admin-column">
 																{isRefund ? (
@@ -763,16 +741,16 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																]
 																	?.refunded_shipping_tax !==
 																	0 && (
-																	<div>
-																		{
-																			refundMap[
-																				item
-																					.id
-																			]
-																				.refunded_shipping_tax
-																		}
-																	</div>
-																)}
+																		<div>
+																			{
+																				refundMap[
+																					item
+																						.id
+																				]
+																					.refunded_shipping_tax
+																			}
+																		</div>
+																	)}
 															</td>
 														</tr>
 													)
@@ -916,7 +894,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 														<td>
 															{formatCurrency(
 																orderData.commission_total -
-																	totalRefunded
+																totalRefunded
 															)}
 														</td>
 													</tr>
@@ -1005,20 +983,20 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 													{modules.includes(
 														'store-shipping'
 													) && (
-														<tr>
-															<td>
-																{__(
-																	'Shipping:',
-																	'multivendorx'
-																)}
-															</td>
-															<td>
-																{formatCurrency(
-																	orderData?.shipping_total
-																)}
-															</td>
-														</tr>
-													)}
+															<tr>
+																<td>
+																	{__(
+																		'Shipping:',
+																		'multivendorx'
+																	)}
+																</td>
+																<td>
+																	{formatCurrency(
+																		orderData?.shipping_total
+																	)}
+																</td>
+															</tr>
+														)}
 
 													<tr>
 														<td>
@@ -1082,19 +1060,19 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 								<InfoItem
 									title={
 										modules.includes('privacy') &&
-										Array.isArray(
-											customer_information_access
-										) &&
-										customer_information_access.includes(
-											'name'
-										)
+											Array.isArray(
+												customer_information_access
+											) &&
+											customer_information_access.includes(
+												'name'
+											)
 											? orderData?.billing?.first_name ||
 												orderData?.billing?.last_name
 												? `${orderData?.billing?.first_name ?? ''} ${orderData?.billing?.last_name ?? ''}`
 												: __(
-														'Guest Customer',
-														'multivendorx'
-													)
+													'Guest Customer',
+													'multivendorx'
+												)
 											: __('Customer', 'multivendorx')
 									}
 									avatar={{
@@ -1108,55 +1086,55 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 											),
 											value:
 												orderData?.customer_id &&
-												orderData.customer_id !== 0
+													orderData.customer_id !== 0
 													? `#${orderData.customer_id}`
 													: '—',
 										},
 										...(modules.includes('privacy') &&
-										Array.isArray(
-											customer_information_access
-										) &&
-										customer_information_access.includes(
-											'email_address'
-										) &&
-										orderData?.billing?.email
+											Array.isArray(
+												customer_information_access
+											) &&
+											customer_information_access.includes(
+												'email_address'
+											) &&
+											orderData?.billing?.email
 											? [
-													{
-														value: (
-															<>
-																<i className="adminfont-mail" />{' '}
-																{
-																	orderData
-																		.billing
-																		.email
-																}
-															</>
-														),
-													},
-												]
+												{
+													value: (
+														<>
+															<i className="adminfont-mail" />{' '}
+															{
+																orderData
+																	.billing
+																	.email
+															}
+														</>
+													),
+												},
+											]
 											: []),
 										...(modules.includes('privacy') &&
-										Array.isArray(
-											customer_information_access
-										) &&
-										customer_information_access.includes(
-											'phone_number'
-										) &&
-										orderData?.billing?.phone
+											Array.isArray(
+												customer_information_access
+											) &&
+											customer_information_access.includes(
+												'phone_number'
+											) &&
+											orderData?.billing?.phone
 											? [
-													{
-														value: (
-															<>
-																<i className="adminfont-phone" />{' '}
-																{
-																	orderData
-																		.billing
-																		.phone
-																}
-															</>
-														),
-													},
-												]
+												{
+													value: (
+														<>
+															<i className="adminfont-phone" />{' '}
+															{
+																orderData
+																	.billing
+																	.phone
+															}
+														</>
+													),
+												},
+											]
 											: []),
 									]}
 								/>
@@ -1170,14 +1148,14 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									>
 										<div className="details">
 											{orderData?.billing?.address_1 ||
-											orderData?.billing?.city ||
-											orderData?.billing?.postcode ||
-											orderData?.billing?.country ? (
+												orderData?.billing?.city ||
+												orderData?.billing?.postcode ||
+												orderData?.billing?.country ? (
 												<div className="address">
 													{orderData.billing
 														.first_name ||
-													orderData.billing
-														.last_name ? (
+														orderData.billing
+															.last_name ? (
 														<>
 															{
 																orderData
@@ -1193,40 +1171,40 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 													) : null}
 													{orderData.billing
 														.company && (
-														<>
-															{' '}
-															,{' '}
-															{
-																orderData
-																	.billing
-																	.company
-															}{' '}
-														</>
-													)}
+															<>
+																{' '}
+																,{' '}
+																{
+																	orderData
+																		.billing
+																		.company
+																}{' '}
+															</>
+														)}
 													{orderData.billing
 														.address_1 && (
-														<>
-															{' '}
-															,{' '}
-															{
-																orderData
-																	.billing
-																	.address_1
-															}{' '}
-														</>
-													)}
+															<>
+																{' '}
+																,{' '}
+																{
+																	orderData
+																		.billing
+																		.address_1
+																}{' '}
+															</>
+														)}
 													{orderData.billing
 														.address_2 && (
-														<>
-															{' '}
-															,{' '}
-															{
-																orderData
-																	.billing
-																	.address_2
-															}{' '}
-														</>
-													)}
+															<>
+																{' '}
+																,{' '}
+																{
+																	orderData
+																		.billing
+																		.address_2
+																}{' '}
+															</>
+														)}
 													{orderData.billing.city && (
 														<>
 															{
@@ -1242,27 +1220,27 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 													)}
 													{orderData.billing
 														.postcode && (
-														<>
-															,{' '}
-															{
-																orderData
-																	.billing
-																	.postcode
-															}{' '}
-														</>
-													)}
+															<>
+																,{' '}
+																{
+																	orderData
+																		.billing
+																		.postcode
+																}{' '}
+															</>
+														)}
 													{orderData.billing
 														.country && (
-														<>
-															{' '}
-															,{' '}
-															{
-																orderData
-																	.billing
-																	.country
-															}
-														</>
-													)}
+															<>
+																{' '}
+																,{' '}
+																{
+																	orderData
+																		.billing
+																		.country
+																}
+															</>
+														)}
 												</div>
 											) : (
 												<div className="address">
@@ -1403,7 +1381,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 										)}
 									>
 										{orderData?.order_notes &&
-										orderData.order_notes.length > 0 ? (
+											orderData.order_notes.length > 0 ? (
 											<div className="notification-wrapper">
 												<ul>
 													{orderData.order_notes

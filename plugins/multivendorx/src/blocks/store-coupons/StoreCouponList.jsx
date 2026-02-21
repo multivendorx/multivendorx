@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -15,9 +15,7 @@ const StoreCouponList = ({
 	const totalPages = Math.ceil(total / perPage);
 
 	useEffect(() => {
-		if (isEditor) {
-			return;
-		}
+		if (isEditor) return;
 
 		const fetchCoupons = async () => {
 			try {
@@ -31,9 +29,9 @@ const StoreCouponList = ({
 							per_page: perPage,
 							page,
 							orderby,
-							// order,
+							order,
 							meta_key: 'multivendorx_store_id',
-							value: StoreInfo?.storeDetails.storeId,
+							value: StoreInfo?.storeDetails?.storeId,
 						},
 					}
 				);
@@ -41,12 +39,12 @@ const StoreCouponList = ({
 				setCoupons(response.data || []);
 				setTotal(Number(response.headers['x-wp-total']) || 0);
 			} catch (error) {
-				console.error('Failed to load coupons:', error);
+				console.error(__('Failed to load coupons', 'multivendorx'), error);
 			}
 		};
 
 		fetchCoupons();
-	}, [page, perPage, orderby, order]);
+	}, [isEditor, page, perPage, orderby, order]);
 
 	return (
 		<div className="store-coupon-list">
@@ -57,7 +55,9 @@ const StoreCouponList = ({
 							<h4>{coupon.code}</h4>
 
 							<p>
-								<strong>Usage Count:</strong>{' '}
+								<strong>
+									{__('Usage Count', 'multivendorx')}:
+								</strong>{' '}
 								{coupon.usage_count ?? 0}
 							</p>
 						</div>
@@ -68,23 +68,24 @@ const StoreCouponList = ({
 							disabled={page === 1}
 							onClick={() => setPage((p) => p - 1)}
 						>
-							Previous
+							{__('Previous', 'multivendorx')}
 						</button>
 
 						<span>
-							Page {page} of {totalPages}
+							{__('Page', 'multivendorx')} {page}{' '}
+							{__('of', 'multivendorx')} {totalPages}
 						</span>
 
 						<button
 							disabled={page >= totalPages}
 							onClick={() => setPage((p) => p + 1)}
 						>
-							Next
+							{__('Next', 'multivendorx')}
 						</button>
 					</div>
 				</>
 			) : (
-				<p>{__('No coupons', 'multivendorx')}</p>
+				<p>{__('No coupons found', 'multivendorx')}</p>
 			)}
 		</div>
 	);

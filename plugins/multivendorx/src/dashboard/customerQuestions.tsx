@@ -94,40 +94,53 @@ const CustomerQuestions: React.FC = () => {
 			});
 	};
 
-	const headers = [
-		{ key: 'product', label: 'Product' },
-		{ key: 'question', label: 'Question' },
-		{ key: 'question_date', label: 'Date' },
-		{ key: 'votes', label: 'Votes' },
-		{ key: 'status', label: 'Visibility' },
-		{
+	const headers = {
+		name: {
+			label: __('Product', 'multivendorx'),
+		},
+		question_text: {
+			label: __('Question', 'multivendorx'),
+		},
+		answer_text: {
+			label: __('Ans', 'multivendorx'),
+		},
+		question_date: {
+			label: __('Date', 'multivendorx'),
+			type: 'date',
+		},
+		total_votes: {
+			label: __('Votes', 'multivendorx'),
+		},
+		question_visibility: {
+			label: __('Visibility', 'multivendorx'),
+		},
+		action: {
 			key: 'action',
 			type: 'action',
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
 			actions: [
 				{
 					label: __('Answer', 'multivendorx'),
 					icon: 'eye',
-					onClick: (id: number) => fetchQnaById(id),
+					onClick: (row) => fetchQnaById(row.id),
 				},
 			],
 		},
-	];
-
+	};
 	const filters = [
 		{
 			key: 'questionVisibility',
-			label: 'Status',
+			label: __('Status', 'multivendorx'),
 			type: 'select',
 			options: [
-				{ label: 'All', value: '' },
-				{ label: 'Public', value: 'public' },
-				{ label: 'Private', value: 'private' },
+				{ label: __('All', 'multivendorx'), value: '' },
+				{ label: __('Public', 'multivendorx'), value: 'public' },
+				{ label: __('Private', 'multivendorx'), value: 'private' },
 			],
 		},
 		{
 			key: 'created_at',
-			label: 'Created Date',
+			label: __('Created Date', 'multivendorx'),
 			type: 'date',
 		},
 	];
@@ -138,20 +151,22 @@ const CustomerQuestions: React.FC = () => {
 			.get(getApiLink(appLocalizer, 'qna'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: {
-					page: query.paged || 1,
-					row: query.per_page || 10,
-					status: query.categoryFilter || '',
-					searchValue: query.searchValue || '',
-					storeId: appLocalizer.store_id,
-					startDate: query.filter?.created_at?.startDate
-						? formatLocalDate(query.filter.created_at.startDate)
-						: '',
-					endDate: query.filter?.created_at?.endDate
-						? formatLocalDate(query.filter.created_at.endDate)
-						: '',
-					questionVisibility: query?.filter?.questionVisibility,
-					orderBy: query.orderby,
-					order: query.order,
+					params: {
+						page: query.paged || 1,
+						row: query.per_page || 10,
+						status: query.categoryFilter || '',
+						search_value: query.searchValue || '',
+						store_id: appLocalizer.store_id,
+						start_date: query.filter?.created_at?.startDate
+							? formatLocalDate(query.filter.created_at.startDate)
+							: '',
+						end_date: query.filter?.created_at?.endDate
+							? formatLocalDate(query.filter.created_at.endDate)
+							: '',
+						question_visibility: query?.filter?.questionVisibility,
+						order_by: query.orderby,
+						order: query.order,
+					},
 				},
 			})
 			.then((response) => {
@@ -161,60 +176,25 @@ const CustomerQuestions: React.FC = () => {
 					.map((item: any) => item.id);
 
 				setRowIds(ids);
-				const mappedRows: any[][] = items.map((product: any) => [
-					{
-						type: 'product',
-						value: product.id,
-						display: product.name,
-						data: {
-							name: product.product_name,
-							sku: product.sku,
-							image: product.images?.[0]?.src || '',
-							link: `${appLocalizer.site_url}/wp-admin/post.php?post=${product.id}&action=edit`,
-						},
-					},
-					{
-						type: 'card',
-						value: product.id,
-						display: product.name,
-						data: {
-							name: `Q : ${truncateText(product.question_text, 50)}`,
-							description: `By: ${product.author_name}`,
-							subDescription: `A: ${truncateText(product.answer_text, 50)}`,
-						},
-					},
-					{
-						display: formatWcShortDate(product.question_date),
-						value: product.question_date,
-					},
-					{
-						display: product.total_votes,
-						value: product.total_votes || 0,
-					},
-					{
-						display: product.question_visibility,
-						value: product.question_visibility,
-					},
-				]);
 
-				setRows(mappedRows);
+				setRows(items);
 
 				setCategoryCounts([
 					{
 						value: 'all',
-						label: 'All',
+						label: __('All', 'multivendorx'),
 						count: Number(response.headers['x-wp-total']) || 0,
 					},
 					{
 						value: 'has_answer',
-						label: 'Answered',
+						label: __('Answered', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-answered']) ||
 							0,
 					},
 					{
 						value: 'no_answer',
-						label: 'Unanswered',
+						label: __('Unanswered', 'multivendorx'),
 						count:
 							Number(
 								response.headers['x-wp-status-unanswered']

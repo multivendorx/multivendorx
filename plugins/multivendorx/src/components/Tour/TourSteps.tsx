@@ -1,11 +1,18 @@
+import { __ } from '@wordpress/i18n';
+
 export const getTourSteps = (appLocalizer: any) => [
 	{
 		selector: '.card-content',
 		placement: 'auto',
 		content: ({ navigateTo, finishTour }: any) => (
 			<div className="tour-box">
-				<h3>Dashboard</h3>
-				<h4>View and configure your disbursement settings here.</h4>
+				<h3>{__('Dashboard', 'multivendorx')}</h3>
+				<h4>
+					{__(
+						'View and configure your disbursement settings here.',
+						'multivendorx'
+					)}
+				</h4>
 
 				<div className="tour-footer">
 					<button
@@ -17,14 +24,11 @@ export const getTourSteps = (appLocalizer: any) => [
 							)
 						}
 					>
-						Next
+						{__('Next', 'multivendorx')}
 					</button>
 
-					<button
-						className="admin-btn btn-purple"
-						onClick={finishTour}
-					>
-						End Tour
+					<button className="admin-btn btn-purple" onClick={finishTour}>
+						{__('End Tour', 'multivendorx')}
 					</button>
 				</div>
 			</div>
@@ -35,8 +39,13 @@ export const getTourSteps = (appLocalizer: any) => [
 		placement: 'right',
 		content: ({ navigateTo, finishTour }: any) => (
 			<div className="tour-box">
-				<h3>Store Configure</h3>
-				<h4>View and configure your disbursement settings here.</h4>
+				<h3>{__('Store Configure', 'multivendorx')}</h3>
+				<h4>
+					{__(
+						'View and configure your disbursement settings here.',
+						'multivendorx'
+					)}
+				</h4>
 
 				<div className="tour-footer">
 					<button
@@ -48,14 +57,11 @@ export const getTourSteps = (appLocalizer: any) => [
 							)
 						}
 					>
-						Next
+						{__('Next', 'multivendorx')}
 					</button>
 
-					<button
-						className="admin-btn btn-purple"
-						onClick={finishTour}
-					>
-						End Tour
+					<button className="admin-btn btn-purple" onClick={finishTour}>
+						{__('End Tour', 'multivendorx')}
 					</button>
 				</div>
 			</div>
@@ -67,8 +73,13 @@ export const getTourSteps = (appLocalizer: any) => [
 		placement: 'right',
 		content: ({ navigateTo, finishTour }: any) => (
 			<div className="tour-box">
-				<h3>Marketplace commissions</h3>
-				<h4>View and configure your disbursement settings here.</h4>
+				<h3>{__('Marketplace commissions', 'multivendorx')}</h3>
+				<h4>
+					{__(
+						'View and configure your disbursement settings here.',
+						'multivendorx'
+					)}
+				</h4>
 
 				<div className="tour-footer">
 					<button
@@ -80,14 +91,11 @@ export const getTourSteps = (appLocalizer: any) => [
 							)
 						}
 					>
-						Next
+						{__('Next', 'multivendorx')}
 					</button>
 
-					<button
-						className="admin-btn btn-purple"
-						onClick={finishTour}
-					>
-						End Tour
+					<button className="admin-btn btn-purple" onClick={finishTour}>
+						{__('End Tour', 'multivendorx')}
 					</button>
 				</div>
 			</div>
@@ -99,8 +107,13 @@ export const getTourSteps = (appLocalizer: any) => [
 		placement: 'right',
 		content: ({ navigateTo, finishTour }: any) => (
 			<div className="tour-box">
-				<h3>commission value</h3>
-				<h4>View and configure your disbursement settings here.</h4>
+				<h3>{__('Commission Value', 'multivendorx')}</h3>
+				<h4>
+					{__(
+						'View and configure your disbursement settings here.',
+						'multivendorx'
+					)}
+				</h4>
 
 				<div className="tour-footer">
 					<button
@@ -112,14 +125,11 @@ export const getTourSteps = (appLocalizer: any) => [
 							)
 						}
 					>
-						Next
+						{__('Next', 'multivendorx')}
 					</button>
 
-					<button
-						className="admin-btn btn-purple"
-						onClick={finishTour}
-					>
-						End Tour
+					<button className="admin-btn btn-purple" onClick={finishTour}>
+						{__('End Tour', 'multivendorx')}
 					</button>
 				</div>
 			</div>
@@ -131,8 +141,13 @@ export const getTourSteps = (appLocalizer: any) => [
 		placement: 'right',
 		content: ({ navigateTo, finishTour }: any) => (
 			<div className="tour-box">
-				<h3>order status</h3>
-				<h4>View and configure your disbursement settings here.</h4>
+				<h3>{__('Order Status', 'multivendorx')}</h3>
+				<h4>
+					{__(
+						'View and configure your disbursement settings here.',
+						'multivendorx'
+					)}
+				</h4>
 
 				<div className="tour-footer">
 					<button
@@ -144,14 +159,11 @@ export const getTourSteps = (appLocalizer: any) => [
 							)
 						}
 					>
-						Next
+						{__('Next', 'multivendorx')}
 					</button>
 
-					<button
-						className="admin-btn btn-purple"
-						onClick={finishTour}
-					>
-						End Tour
+					<button className="admin-btn btn-purple" onClick={finishTour}>
+						{__('End Tour', 'multivendorx')}
 					</button>
 				</div>
 			</div>
@@ -162,15 +174,17 @@ export const getTourSteps = (appLocalizer: any) => [
 		placement: 'auto',
 		content: ({ finishTour }: any) => (
 			<div className="tour-box">
-				<h3>Modules</h3>
-				<h4>Here you can enable or disable marketplace modules.</h4>
+				<h3>{__('Modules', 'multivendorx')}</h3>
+				<h4>
+					{__(
+						'Here you can enable or disable marketplace modules.',
+						'multivendorx'
+					)}
+				</h4>
 
 				<div className="tour-footer">
-					<button
-						className="admin-btn btn-purple"
-						onClick={finishTour}
-					>
-						Finish Tour
+					<button className="admin-btn btn-purple" onClick={finishTour}>
+						{__('Finish Tour', 'multivendorx')}
 					</button>
 				</div>
 			</div>

@@ -28,11 +28,11 @@ registerBlockType('multivendorx/product-category', {
 		});
 
 		const categories = [
-			{ id: 1, name: 'Electronics', count: 12 },
-			{ id: 2, name: 'Clothing', count: 8 },
-			{ id: 3, name: 'Home & Kitchen', count: 15 },
-			{ id: 4, name: 'Books', count: 23 },
-			{ id: 5, name: 'Sports', count: 7 },
+			{ id: 1, name: __('Electronics', 'multivendorx'), count: 12 },
+			{ id: 2, name: __('Clothing', 'multivendorx'), count: 8 },
+			{ id: 3, name: __('Home & Kitchen', 'multivendorx'), count: 15 },
+			{ id: 4, name: __('Books', 'multivendorx'), count: 23 },
+			{ id: 5, name: __('Sports', 'multivendorx'), count: 7 },
 		];
 
 		return (
@@ -40,14 +40,15 @@ registerBlockType('multivendorx/product-category', {
 				<BlockControls>
 					<AlignmentToolbar
 						value={attributes.align}
-						onChange={(nextAlign) => {
-							setAttributes({ align: nextAlign });
-						}}
+						onChange={(nextAlign) =>
+							setAttributes({ align: nextAlign })
+						}
 					/>
 				</BlockControls>
 
 				<div {...blockProps}>
-					<h3>Product Categories</h3>
+					<h3>{__('Product Categories', 'multivendorx')}</h3>
+
 					<ul className="multivendorx-category-list">
 						{categories.map((category) => (
 							<li
@@ -57,6 +58,7 @@ registerBlockType('multivendorx/product-category', {
 								<span className="multivendorx-category-name">
 									{category.name}
 								</span>
+
 								<span className="multivendorx-category-count">
 									({category.count})
 								</span>
@@ -79,7 +81,10 @@ registerBlockType('multivendorx/product-category', {
 		});
 
 		return (
-			<div {...blockProps} id="multivendorx-store-product-category"></div>
+			<div
+				{...blockProps}
+				id="multivendorx-store-product-category"
+			></div>
 		);
 	},
 });

@@ -248,9 +248,10 @@ const Stores = () => {
 					<NavigatorHeader
 						headerIcon="storefront"
 						headerTitle="Stores"
-						headerDescription={
-							'Manage marketplace stores with ease. Review, edit, or add new stores anytime.'
-						}
+						headerDescription={__(
+							'Manage marketplace stores with ease. Review, edit, or add new stores anytime.',
+							'multivendorx'
+						)}
 						buttons={[
 							{
 								label: __('Add Store', 'multivendorx'),
@@ -373,7 +374,7 @@ const Stores = () => {
 										tinymceApiKey={
 											appLocalizer
 												.settings_databases_value[
-												'overview'
+											'overview'
 											]['tinymce_api_section'] ?? ''
 										}
 									/>

@@ -159,9 +159,11 @@ const RegistrationForm = () => {
 
 					{storeData?.note?.[0]?.note && (
 						<div>
-							<h4>Store Note</h4>
+							<h4>{__('Store Note', 'multivendorx')}</h4>
+
 							<div className="store-note">
-								<strong>Note:</strong> {storeData.note[0].note}
+								<strong>{__('Note', 'multivendorx')}:</strong>{' '}
+								{storeData.note[0].note}
 							</div>
 						</div>
 					)}

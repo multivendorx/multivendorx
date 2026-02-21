@@ -222,6 +222,9 @@ class Rest extends \WP_REST_Controller {
                         'date_created'       => $refund->get_date_created()
                             ? Utill::multivendorx_rest_prepare_date_response( $refund->get_date_created()->date_i18n( 'Y-m-d H:i:s' ) )
                             : '',
+                        'date_created_gmt'       => $refund->get_date_created()
+                            ? Utill::multivendorx_rest_prepare_date_response( $refund->get_date_created()->date_i18n( 'Y-m-d H:i:s' ), true )
+                            : '',
                         'status'             => $refund->get_status(),
                         'customer_id'        => $customer_id,
                         'customer_name'      => $customer_name,

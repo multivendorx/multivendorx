@@ -662,7 +662,8 @@ class Rest extends \WP_REST_Controller {
                 Utill::POST_META_SETTINGS['announcement_url'],
                 true
             ),
-            'date_created' => get_post_time( 'Y-m-d\TH:i:s', true, $post ),
+            'date_created' => Utill::multivendorx_rest_prepare_date_response( get_post_timestamp( $post ) ),
+            'date_created_gmt' => Utill::multivendorx_rest_prepare_date_response( get_post_timestamp( $post ), true ),
         );
     }
 }

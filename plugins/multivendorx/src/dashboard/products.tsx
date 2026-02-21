@@ -113,7 +113,7 @@ const AllProduct: React.FC = () => {
 				}
 			);
 			setCategoriesList(response.data);
-		} catch (error) {}
+		} catch (error) { }
 	};
 
 	const fetchProductStatusCounts = async () => {
@@ -358,7 +358,7 @@ const AllProduct: React.FC = () => {
 					onClick: (row) => {
 						navigator.clipboard
 							.writeText(row.permalink)
-							.catch(() => {});
+							.catch(() => { });
 					},
 				},
 				{
@@ -387,9 +387,9 @@ const AllProduct: React.FC = () => {
 					stock_status: query.filter?.stockStatus,
 					after: query.filter?.created_at?.startDate
 						? toWcIsoDate(
-								query.filter.created_at.startDate,
-								'start'
-							)
+							query.filter.created_at.startDate,
+							'start'
+						)
 						: undefined,
 
 					before: query.filter?.created_at?.endDate
@@ -422,6 +422,7 @@ const AllProduct: React.FC = () => {
 		{
 			key: 'category',
 			type: 'select',
+			label: __('Category', 'multivendorx'),
 			options: categoriesList.map((cat) => ({
 				value: cat.id,
 				label: cat.name,
@@ -430,25 +431,36 @@ const AllProduct: React.FC = () => {
 		{
 			key: 'productType',
 			type: 'select',
+			label: __('Product Type', 'multivendorx'),
 			options: [
-				{ value: 'simple', label: 'Simple Product' },
-				{ value: 'variable', label: 'Variable Product' },
-				{ value: 'grouped', label: 'Grouped Product' },
-				{ value: 'external', label: 'External/Affiliate Product' },
+				{ value: 'simple', label: __('Simple Product', 'multivendorx') },
+				{
+					value: 'variable',
+					label: __('Variable Product', 'multivendorx'),
+				},
+				{ value: 'grouped', label: __('Grouped Product', 'multivendorx') },
+				{
+					value: 'external',
+					label: __('External/Affiliate Product', 'multivendorx'),
+				},
 			],
 		},
 		{
 			key: 'stock_status',
 			type: 'select',
+			label: __('Stock Status', 'multivendorx'),
 			options: [
-				{ value: 'instock', label: 'In Stock' },
-				{ value: 'outofstock', label: 'Out of Stock' },
-				{ value: 'onbackorder', label: 'On Backorder' },
+				{ value: 'instock', label: __('In Stock', 'multivendorx') },
+				{ value: 'outofstock', label: __('Out of Stock', 'multivendorx') },
+				{
+					value: 'onbackorder',
+					label: __('On Backorder', 'multivendorx'),
+				},
 			],
 		},
 		{
 			key: 'created_at',
-			label: 'Created Date',
+			label: __('Created Date', 'multivendorx'),
 			type: 'date',
 		},
 	];
@@ -466,13 +478,13 @@ const AllProduct: React.FC = () => {
 						buttons={[
 							...(modules.includes('import-export')
 								? [
-										{
-											custom: applyFilters(
-												'product_import_export',
-												null
-											),
-										},
-									]
+									{
+										custom: applyFilters(
+											'product_import_export',
+											null
+										),
+									},
+								]
 								: []),
 
 							{

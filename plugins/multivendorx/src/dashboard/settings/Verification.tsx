@@ -176,7 +176,7 @@ const Verification = () => {
 			{
 				provider: 'linkedin',
 				icon: 'adminfont-linkedin yellow',
-				name: 'Verify via LinkedIn',
+				name: __('Verify via LinkedIn', 'multivendorx'),
 				enabled:
 					allVerificationMethods?.['social-verification']
 						?.social_verification_methods?.['linkedin-connect']
@@ -185,7 +185,7 @@ const Verification = () => {
 			{
 				provider: 'google',
 				icon: 'adminfont-google yellow',
-				name: 'Verify via Google',
+				name: __('Verify via Google', 'multivendorx'),
 				enabled:
 					allVerificationMethods?.['social-verification']
 						?.social_verification_methods?.['google-connect']
@@ -194,7 +194,7 @@ const Verification = () => {
 			{
 				provider: 'facebook',
 				icon: 'adminfont-facebook yellow',
-				name: 'Verify via Facebook',
+				name: __('Verify via Facebook', 'multivendorx'),
 				enabled:
 					allVerificationMethods?.['social-verification']
 						?.social_verification_methods?.['facebook-connect']
@@ -203,7 +203,7 @@ const Verification = () => {
 			{
 				provider: 'twitter',
 				icon: 'adminfont-twitter yellow',
-				name: 'Verify via Twitter',
+				name: __('Verify via Twitter', 'multivendorx'),
 				enabled:
 					allVerificationMethods?.['social-verification']
 						?.social_verification_methods?.['twitter-connect']
@@ -239,15 +239,13 @@ const Verification = () => {
 			})
 			.filter(Boolean);
 	};
-
 	return (
 		<>
 			{/* Status Messages */}
 			{statusMessage && (
 				<div
-					className={`alert alert-${
-						statusMessage.type === 'success' ? 'success' : 'error'
-					}`}
+					className={`alert alert-${statusMessage.type === 'success' ? 'success' : 'error'
+						}`}
 				>
 					{statusMessage.text}
 					<button

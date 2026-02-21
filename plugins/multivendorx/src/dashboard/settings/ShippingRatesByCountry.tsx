@@ -41,10 +41,10 @@ const ShippingRatesByCountry: React.FC = () => {
 				try {
 					shippingRates =
 						typeof response.data.multivendorx_shipping_rates ===
-						'string'
+							'string'
 							? JSON.parse(
-									response.data.multivendorx_shipping_rates
-								)
+								response.data.multivendorx_shipping_rates
+							)
 							: response.data.multivendorx_shipping_rates || [];
 				} catch {
 					shippingRates = [];
@@ -90,30 +90,30 @@ const ShippingRatesByCountry: React.FC = () => {
 	/** FIX COUNTRY OPTIONS */
 	const countryOptions = Array.isArray(countries)
 		? countries.map((item: any) => ({
-				label: item.label?.label || item.label,
-				value: item.label?.value || item.value,
-			}))
+			label: item.label?.label || item.label,
+			value: item.label?.value || item.value,
+		}))
 		: Object.entries(countries).map(([value, label]) => ({
-				label,
-				value,
-			}));
+			label,
+			value,
+		}));
 
 	const countryTemplate = {
 		fields: [
 			{
 				key: 'country',
 				type: 'select',
-				label: 'Country',
-				placeholder: 'Select Country',
+				label: __('Country', 'multivendorx'),
+				placeholder: __('Select Country', 'multivendorx'),
 				options: [
-					{ label: 'Everywhere Else', value: 'everywhere' },
+					{ label: __('Everywhere Else', 'multivendorx'), value: 'everywhere' },
 					...countryOptions,
 				],
 			},
 			{
 				key: 'cost',
 				type: 'number',
-				label: 'Cost',
+				label: __('Cost', 'multivendorx'),
 				placeholder: '0.00',
 			},
 		],
@@ -124,14 +124,14 @@ const ShippingRatesByCountry: React.FC = () => {
 			{
 				key: 'state',
 				type: 'select',
-				label: 'State',
-				placeholder: 'Select State',
+				label: __('State', 'multivendorx'),
+				placeholder: __('Select State', 'multivendorx'),
 				options: [],
 			},
 			{
 				key: 'cost',
 				type: 'number',
-				label: 'Cost',
+				label: __('Cost', 'multivendorx'),
 				placeholder: '0.00',
 			},
 		],
@@ -166,9 +166,9 @@ const ShippingRatesByCountry: React.FC = () => {
 
 					const stateOptions = raw
 						? Object.entries(raw).map(([value, label]) => ({
-								value,
-								label,
-							}))
+							value,
+							label,
+						}))
 						: [];
 
 					if (stateOptions.length === 0) {

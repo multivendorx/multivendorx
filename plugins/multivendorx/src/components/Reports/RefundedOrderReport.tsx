@@ -65,13 +65,13 @@ const RefundedOrderReport: React.FC = () => {
 	const filters = [
 		{
 			key: 'store_id',
-			label: 'Stores',
+			label: __('Stores', 'multivendorx'),
 			type: 'select',
 			options: store,
 		},
 		{
 			key: 'created_at',
-			label: 'Created Date',
+			label: __('Created Date', 'multivendorx'),
 			type: 'date',
 		},
 	];

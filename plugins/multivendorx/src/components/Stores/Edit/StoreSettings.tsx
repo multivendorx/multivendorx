@@ -32,12 +32,12 @@ const StoreSettings = ({
 	onUpdate: any;
 }) => {
 	const [formData, setFormData] = useState<FormData>({});
-	const statusOptions = [
-		{ label: 'Under Review', value: 'under_review' },
-		{ label: 'Suspended', value: 'suspended' },
-		{ label: 'Active', value: 'active' },
-		{ label: 'Permanently Deactivated', value: 'deactivated' },
-	];
+const statusOptions = [
+	{ label: __('Under Review', 'multivendorx'), value: 'under_review' },
+	{ label: __('Suspended', 'multivendorx'), value: 'suspended' },
+	{ label: __('Active', 'multivendorx'), value: 'active' },
+	{ label: __('Permanently Deactivated', 'multivendorx'), value: 'deactivated' }
+];
 
 	const [stateOptions, setStateOptions] = useState<
 		{ label: string; value: string }[]

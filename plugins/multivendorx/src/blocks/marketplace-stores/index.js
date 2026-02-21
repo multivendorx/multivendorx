@@ -4,6 +4,7 @@ import { render } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import MarketplaceStoreList from './marketplaceStoreList';
 import { PanelBody, SelectControl, TextControl } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 const EditBlock = (props) => {
 	const { attributes, setAttributes } = props;
@@ -12,33 +13,36 @@ const EditBlock = (props) => {
 	return (
 		<div {...blockProps}>
 			<InspectorControls>
-				<PanelBody title="Store Filters">
+				<PanelBody title={__('Store Filters', 'multivendorx')}>
 					<SelectControl
-						label="Sort by"
+						label={__('Sort by', 'multivendorx')}
 						value={attributes.orderby}
 						options={[
-							{ label: 'Name', value: 'name' },
-							{ label: 'Category', value: 'category' },
-							{ label: 'Registered', value: 'create-time' },
+							{ label: __('Name', 'multivendorx'), value: 'name' },
+							{ label: __('Category', 'multivendorx'), value: 'category' },
+							{ label: __('Registered', 'multivendorx'), value: 'create-time' },
 						]}
 						onChange={(value) => setAttributes({ orderby: value })}
 					/>
+
 					<SelectControl
-						label="Order"
+						label={__('Order', 'multivendorx')}
 						value={attributes.order}
 						options={[
-							{ label: 'Ascending', value: 'asc' },
-							{ label: 'Descending', value: 'desc' },
+							{ label: __('Ascending', 'multivendorx'), value: 'asc' },
+							{ label: __('Descending', 'multivendorx'), value: 'desc' },
 						]}
 						onChange={(value) => setAttributes({ order: value })}
 					/>
+
 					<TextControl
-						label="Category"
+						label={__('Category', 'multivendorx')}
 						value={attributes.category}
 						onChange={(value) => setAttributes({ category: value })}
 					/>
+
 					<TextControl
-						label="per page"
+						label={__('Per page', 'multivendorx')}
 						type="number"
 						min={1}
 						value={attributes.perpage}
@@ -51,7 +55,6 @@ const EditBlock = (props) => {
 				</PanelBody>
 			</InspectorControls>
 
-			{/* Pass attributes to StoresList */}
 			<MarketplaceStoreList
 				orderby={attributes.orderby}
 				order={attributes.order}
@@ -63,7 +66,7 @@ const EditBlock = (props) => {
 
 registerBlockType('multivendorx/marketplace-stores', {
 	apiVersion: 2,
-	title: 'Stores List',
+	title: __('Stores List', 'multivendorx'),
 	icon: 'store',
 	category: 'multivendorx',
 	supports: { html: false },
@@ -86,7 +89,6 @@ registerBlockType('multivendorx/marketplace-stores', {
 		);
 	},
 });
-
 document.addEventListener('DOMContentLoaded', () => {
 	const element = document.getElementById('marketplace-stores');
 	if (element) {

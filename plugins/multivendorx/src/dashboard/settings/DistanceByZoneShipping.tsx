@@ -220,9 +220,9 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 			const method = isUpdate ? 'PUT' : 'POST';
 			const url = isUpdate
 				? getApiLink(
-						appLocalizer,
-						`zone-shipping/${selectedZone.zone_id}`
-					)
+					appLocalizer,
+					`zone-shipping/${selectedZone.zone_id}`
+				)
 				: getApiLink(appLocalizer, 'zone-shipping');
 
 			const requestData: any = {
@@ -266,8 +266,8 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 				alert(
 					__(
 						'Failed to ' +
-							(isUpdate ? 'update' : 'add') +
-							' shipping method',
+						(isUpdate ? 'update' : 'add') +
+						' shipping method',
 						'multivendorx'
 					)
 				);
@@ -275,15 +275,15 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 		} catch (err) {
 			console.error(
 				'Error ' +
-					(isEditing ? 'updating' : 'adding') +
-					' shipping method:',
+				(isEditing ? 'updating' : 'adding') +
+				' shipping method:',
 				err
 			);
 			alert(
 				__(
 					'Error ' +
-						(isEditing ? 'updating' : 'adding') +
-						' shipping method',
+					(isEditing ? 'updating' : 'adding') +
+					' shipping method',
 					'multivendorx'
 				)
 			);
@@ -397,11 +397,10 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 					onClose={() => setAddShipping(false)}
 					header={{
 						icon: 'shipping',
-						title: `${
-							isEditing
-								? __('Edit Shipping', 'multivendorx')
-								: __('Add Shipping', 'multivendorx')
-						} — ${selectedZone.zone_name}`,
+						title: `${isEditing
+							? __('Edit Shipping', 'multivendorx')
+							: __('Add Shipping', 'multivendorx')
+							} — ${selectedZone.zone_name}`,
 					}}
 					footer={
 						<AdminButtonUI
@@ -438,33 +437,31 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 								options={
 									isEditing
 										? [
-												{
-													key: formData.shippingMethod,
-													value: formData.shippingMethod,
-													label: formData.shippingMethod
-														.replace('_', ' ')
-														.replace(/\b\w/g, (c) =>
-															c.toUpperCase()
-														),
-												},
-											]
+											{
+												key: formData.shippingMethod,
+												value: formData.shippingMethod,
+												label: __(formData.shippingMethod
+													.replace('_', ' ')
+													.replace(/\b\w/g, (c) => c.toUpperCase()), 'multivendorx'),
+											},
+										]
 										: [
-												{
-													key: 'local_pickup',
-													value: 'local_pickup',
-													label: 'Local pickup',
-												},
-												{
-													key: 'free_shipping',
-													value: 'free_shipping',
-													label: 'Free shipping',
-												},
-												{
-													key: 'flat_rate',
-													value: 'flat_rate',
-													label: 'Flat Rate',
-												},
-											]
+											{
+												key: 'local_pickup',
+												value: 'local_pickup',
+												label: __('Local pickup', 'multivendorx'),
+											},
+											{
+												key: 'free_shipping',
+												value: 'free_shipping',
+												label: __('Free shipping', 'multivendorx'),
+											},
+											{
+												key: 'flat_rate',
+												value: 'flat_rate',
+												label: __('Flat Rate', 'multivendorx'),
+											},
+										]
 								}
 								disabled={isEditing}
 							/>
@@ -502,12 +499,12 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 											{
 												key: 'min_order',
 												value: 'min_order',
-												label: 'Min Order',
+												label: __('Min Order', 'multivendorx'),
 											},
 											{
 												key: 'coupon',
 												value: 'coupon',
-												label: 'Coupon',
+												label: __('Coupon', 'multivendorx'),
 											},
 										]}
 									/>
@@ -592,12 +589,12 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 											{
 												key: 'class',
 												value: 'class',
-												label: 'Per Class',
+												label: __('Per Class', 'multivendorx'),
 											},
 											{
 												key: 'order',
 												value: 'order',
-												label: 'Per Order',
+												label: __('Per Order', 'multivendorx'),
 											},
 										]}
 									/>

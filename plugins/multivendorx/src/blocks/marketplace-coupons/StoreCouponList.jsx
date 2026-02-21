@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
+import { __ } from '@wordpress/i18n';
 
 const StoreCouponList = ({
 	store_id = '',
@@ -52,7 +53,8 @@ const StoreCouponList = ({
 					<h4>{coupon.code}</h4>
 
 					<p>
-						<strong>Usage Count:</strong> {coupon.usage_count ?? 0}
+						<strong>{__('Usage Count', 'multivendorx')}:</strong>{' '}
+						{coupon.usage_count ?? 0}
 					</p>
 				</div>
 			))}
@@ -62,18 +64,19 @@ const StoreCouponList = ({
 					disabled={page === 1}
 					onClick={() => setPage((p) => p - 1)}
 				>
-					Previous
+					{__('Previous', 'multivendorx')}
 				</button>
 
 				<span>
-					Page {page} of {totalPages}
+					{__('Page', 'multivendorx')} {page}{' '}
+					{__('of', 'multivendorx')} {totalPages}
 				</span>
 
 				<button
 					disabled={page >= totalPages}
 					onClick={() => setPage((p) => p + 1)}
 				>
-					Next
+					{__('Next', 'multivendorx')}
 				</button>
 			</div>
 		</div>

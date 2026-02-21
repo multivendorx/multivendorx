@@ -454,7 +454,9 @@ class Rest extends \WP_REST_Controller {
             'content'      => $post->post_content,
             'status'       => $post->post_status,
             'status_label' => get_post_status_object( $post->post_status )->label,
-            'date_created' => get_post_time( 'Y-m-d\TH:i:s', true, $post ),
+            'date_created' => Utill::multivendorx_rest_prepare_date_response( get_post_timestamp( $post ) ),
+            'date_created_gmt' => Utill::multivendorx_rest_prepare_date_response( get_post_timestamp( $post ), true ),
+
         );
     }
 }

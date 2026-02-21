@@ -39,7 +39,7 @@ type OverviewProps = {
 	COLORS?: string[];
 };
 
-const Overview: React.FC<OverviewProps> = ({}) => {
+const Overview: React.FC<OverviewProps> = ({ }) => {
 	const [commissionDetails, setCommissionDeatils] = useState<any[]>([]);
 	const [earningSummary, setEarningSummary] = useState<any[]>([]);
 	const [pieData, setPieData] = useState<any>([]);
@@ -62,122 +62,121 @@ const Overview: React.FC<OverviewProps> = ({}) => {
 					data.total_order_amount - data.commission_total;
 				const storeEarning = data.commission_total;
 
-				// Overview data (optional if you use it elsewhere)
+
 				const overviewData = [
 					{
 						id: 'total_order_amount',
-						label: 'Total Order Amount',
+						label: __('Total Order Amount', 'multivendorx'),
 						count: formatCurrency(data.total_order_amount),
 						icon: 'order',
 					},
 					{
 						id: 'facilitator_fee',
-						label: 'Facilitator Fee',
+						label: __('Facilitator Fee', 'multivendorx'),
 						count: formatCurrency(data.facilitator_fee),
 						icon: 'facilitator',
 					},
 					{
 						id: 'gateway_fee',
-						label: 'Gateway Fee',
+						label: __('Gateway Fee', 'multivendorx'),
 						count: formatCurrency(data.gateway_fee),
 						icon: 'credit-card',
 					},
 					{
 						id: 'shipping_amount',
-						label: 'Shipping Amount',
+						label: __('Shipping Amount', 'multivendorx'),
 						count: formatCurrency(data.shipping_amount),
 						icon: 'shipping',
 					},
 					{
 						id: 'tax_amount',
-						label: 'Tax Amount',
+						label: __('Tax Amount', 'multivendorx'),
 						count: formatCurrency(data.tax_amount),
 						icon: 'tax-compliance',
 					},
 					{
 						id: 'shipping_tax_amount',
-						label: 'Shipping Tax Amount',
+						label: __('Shipping Tax Amount', 'multivendorx'),
 						count: formatCurrency(data.shipping_tax_amount),
 						icon: 'per-product-shipping',
 					},
 					{
 						id: 'commission_total',
-						label: 'Commission Total',
+						label: __('Commission Total', 'multivendorx'),
 						count: formatCurrency(data.commission_total),
 						icon: 'commission',
 					},
 					{
 						id: 'commission_refunded',
-						label: 'Commission Refunded',
+						label: __('Commission Refunded', 'multivendorx'),
 						count: formatCurrency(data.commission_refunded),
 						icon: 'marketplace-refund',
 					},
 				];
 
-				// Just Admin + Store + Total for Revenue Breakdown
 				const earningSummary = [
 					{
 						id: 'total_order_amount',
-						title: 'Total Order Amount',
+						title: __('Total Order Amount', 'multivendorx'),
 						price: formatCurrency(data.total_order_amount),
 					},
 					{
 						id: 'admin_earning',
-						title: 'Admin Net Earning',
+						title: __('Admin Net Earning', 'multivendorx'),
 						price: formatCurrency(adminEarning),
 					},
 					{
 						id: 'store_earning',
-						title: 'Store Net Earning',
+						title: __('Store Net Earning', 'multivendorx'),
 						price: formatCurrency(storeEarning),
 					},
 					{
 						id: 'facilitator_fee',
-						title: 'Facilitator Fee',
+						title: __('Facilitator Fee', 'multivendorx'),
 						price: formatCurrency(data.facilitator_fee),
 					},
 					{
 						id: 'gateway_fee',
-						title: 'Gateway Fee',
+						title: __('Gateway Fee', 'multivendorx'),
 						price: formatCurrency(data.gateway_fee),
 					},
 					{
 						id: 'shipping_amount',
-						title: 'Shipping Amount',
+						title: __('Shipping Amount', 'multivendorx'),
 						price: formatCurrency(data.shipping_amount),
 					},
 					{
 						id: 'tax_amount',
-						title: 'Tax Amount',
+						title: __('Tax Amount', 'multivendorx'),
 						price: formatCurrency(data.tax_amount),
 					},
 					{
 						id: 'shipping_tax_amount',
-						title: 'Shipping Tax Amount',
+						title: __('Shipping Tax Amount', 'multivendorx'),
 						price: formatCurrency(data.shipping_tax_amount),
 					},
 					{
 						id: 'commission_total',
-						title: 'Commission Total',
+						title: __('Commission Total', 'multivendorx'),
 						price: formatCurrency(data.commission_total),
 					},
 					{
 						id: 'commission_refunded',
-						title: 'Commission Refunded',
+						title: __('Commission Refunded', 'multivendorx'),
 						price: formatCurrency(data.commission_refunded),
 					},
 					{
 						id: 'grand_total',
-						title: 'Grand Total',
+						title: __('Grand Total', 'multivendorx'),
 						price: formatCurrency(adminEarning + storeEarning),
 					},
 				];
 
 				const pieChartData = [
-					{ name: 'Admin Net Earning', value: adminEarning },
-					{ name: 'Store Net Earning', value: storeEarning },
+					{ name: __('Admin Net Earning', 'multivendorx'), value: adminEarning },
+					{ name: __('Store Net Earning', 'multivendorx'), value: storeEarning },
 					{
-						name: 'Commission Refunded',
+						name: __('Commission Refunded', 'multivendorx'),
 						value: data.commission_refunded,
 					},
 				];
@@ -282,7 +281,7 @@ const Overview: React.FC<OverviewProps> = ({}) => {
 									key={product.id}
 									title={product.title}
 									amount={product.price}
-									// isLoading={isLoading}
+								// isLoading={isLoading}
 								/>
 							</>
 						))}
