@@ -29,6 +29,7 @@ interface InputField {
     cols?: number;
     generate?: string;
     apilink?: string;
+    action?: string;
     method?: string;
     responseKey?: string;
     link?: string;
@@ -378,13 +379,38 @@ const RenderComponent: React.FC<RenderProps> = ({
         if (!fieldComponent) return null;
 
         const Render = fieldComponent.render;
-
+        
         const handleInternalChange = (val: any) => {
             if (field.type == 'button') {
                 if (field.generate) {
                     const generatedValue = randomKey(8);
                     onChange(field.responseKey, generatedValue);
                     return;
+                }
+
+                if (field.copy) {
+                    navigator.clipboard.writeText(setting[field.responseKey]);
+                    return;
+                }
+                if (field.delete) {
+                    onChange(field.responseKey, '');
+                    return;
+                }
+
+                if (field.action) {
+                    axios
+                        .post(
+                            appLocalizer.ajaxurl,
+                            new URLSearchParams({
+                                action: field.action,
+                                _ajax_nonce: appLocalizer.nonce,
+                            })
+                        )
+                        .then((res) => {
+                            if (res.data.success && res.data.data.onboarding_url) {
+                                window.location.replace(res.data.data.onboarding_url);
+                            }
+                        });
                 }
                 
                 if (field.apilink) {
@@ -490,6 +516,40 @@ const RenderComponent: React.FC<RenderProps> = ({
 
             // const input = renderFieldInternal(inputField, value, handleChange, access );
 
+            const currentValue = setting[inputField.key] ?? '';
+
+            let computedAfterElement = inputField.afterElement;
+
+            // Special dynamic logic only for generate_key
+            if (inputField.key === 'generate_key') {
+                computedAfterElement = !currentValue
+                    ? [
+                        {
+                            type: 'button',
+                            key: 'generate_button',
+                            name: 'Generate',
+                            generate: true,
+                            responseKey: 'generate_key',
+                        }
+                    ]
+                    : [
+                        {
+                            type: 'button',
+                            key: 'copy_button',
+                            name: 'Copy',
+                            copy: true,
+                            responseKey: 'generate_key',
+                        },
+                        {
+                            type: 'button',
+                            key: 'delete_button',
+                            name: 'Delete',
+                            delete: true,
+                            responseKey: 'generate_key',
+                        }
+                    ];
+            }
+
             const input = (
                 <>
                     {inputField.beforeElement &&
@@ -511,15 +571,28 @@ const RenderComponent: React.FC<RenderProps> = ({
                         appLocalizer
                     )}
 
-                    {inputField.afterElement &&
-                        renderFieldInternal(
-                            inputField.afterElement,
-                            inputField,
-                            value,
-                            handleChange,
-                            access,
-                            appLocalizer
-                        )}
+                    {computedAfterElement &&
+                        (Array.isArray(computedAfterElement)
+                            ? computedAfterElement.map((element) =>
+                                renderFieldInternal(
+                                    element,
+                                    inputField,
+                                    value,
+                                    handleChange,
+                                    access,
+                                    appLocalizer
+                                )
+                            )
+                            : renderFieldInternal(
+                                computedAfterElement,
+                                inputField,
+                                value,
+                                handleChange,
+                                access,
+                                appLocalizer
+                            )
+                        )
+                    }
                 </>
             );
 

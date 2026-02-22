@@ -1,6 +1,5 @@
 <?php
 namespace MultiVendorX\Elementor\Tags;
-
 use Elementor\Core\DynamicTags\Tag;
 use Elementor\Modules\DynamicTags\Module;
 
@@ -13,7 +12,7 @@ class StoreDummyProducts extends Tag {
      *
      * @param array $data
      */
-    public function __construct( $data = array() ) {
+    public function __construct( $data = [] ) {
         parent::__construct( $data );
     }
 
@@ -25,7 +24,7 @@ class StoreDummyProducts extends Tag {
      * @return string
      */
     public function get_name() {
-        return 'mvx-store-dummy-products';
+        return 'multivendorx-store-dummy-products';
     }
 
     /**
@@ -44,7 +43,7 @@ class StoreDummyProducts extends Tag {
     }
 
     public function get_categories() {
-        return array( Module::TEXT_CATEGORY );
+        return [ Module::TEXT_CATEGORY ];
     }
 
 
@@ -56,13 +55,8 @@ class StoreDummyProducts extends Tag {
      * @return void
      */
     public function render() {
-        // if ( mvx_is_store_page() ) {
-        // return;
-        // }
-
-        // echo '<div class="site-main">';
-        // echo do_shortcode( '[products limit="12"]' );
-        // echo '</div>';
-        return 'hello';
+        echo '<div class="site-main">';
+        echo do_shortcode( '[products limit="12"]' );
+        echo '</div>';
     }
 }

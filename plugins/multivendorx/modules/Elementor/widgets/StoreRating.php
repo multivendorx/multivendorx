@@ -77,22 +77,18 @@ class Store_Rating extends Widget_Base {
 	}
 
 	protected function render() {
-        $store = $this->get_store_data();
-        if ( ! $store ) {
-            return;
-        }
 
-        $settings = $this->get_settings_for_display();
+		$store = $this->get_store_data();
+		if ( empty( $store ) || ! is_array( $store ) ) {
+			return;
+		}
 
-        // 5. Logic: Use the dynamic store name
-        $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
-
-        $tag = $settings['header_size'];
-
-        printf(
-            '<%1$s class="multivendorx-store-name elementor-heading-title">%2$s</%1$s>',
-            esc_attr( $tag ),
-            esc_html( $name )
-        );
+		// Render Store Rating (if it exists)
+		if ( isset( $store['store_rating'] ) && $store['store_rating'] !== '' ) {
+			printf(
+				'<div class="multivendorx-store-rating">Rating: <span>%s</span></div>',
+				esc_html( $store['store_rating'] )
+			);
+		}
 	}
 }

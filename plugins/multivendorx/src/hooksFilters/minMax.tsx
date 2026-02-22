@@ -1,7 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
 import { useEffect, useState } from 'react';
 import {
-	NestedComponent,
 	Card,
 	BasicInputUI,
 	FormGroup,

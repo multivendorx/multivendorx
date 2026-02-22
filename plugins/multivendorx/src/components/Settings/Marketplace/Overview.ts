@@ -1,9 +1,5 @@
 import { __ } from '@wordpress/i18n';
 
-const methods = appLocalizer?.all_payments
-	? Object.entries(appLocalizer.all_payments).map(([_, value]) => value)
-	: [];
-
 export default {
 	id: 'overview',
 	priority: 1,
@@ -65,7 +61,6 @@ export default {
 				textType: 'post',
 				postText: '/sample-store/',
 			},
-			required: true,
 		},
 		{
 			key: 'section',

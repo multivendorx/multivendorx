@@ -105,22 +105,43 @@ class Store_Info extends Widget_Icon_List {
 	}
 
 	protected function render() {
+
 		$store = $this->get_store_data();
-        if ( ! $store ) {
-            return;
-        }
+		if ( ! $store ) {
+			return;
+		}
 
-        $settings = $this->get_settings_for_display();
+		$settings = $this->get_settings_for_display();
+		
+		// Store Name
+		$name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
+		$tag  = $settings['header_size'];
 
-        // 5. Logic: Use the dynamic store name
-        $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
+		printf(
+			'<%1$s class="multivendorx-store-name elementor-heading-title">%2$s</%1$s>',
+			esc_attr( $tag ),
+			esc_html( $name )
+		);
 
-        $tag = $settings['header_size'];
+		// Phone Number
+		if ( ! empty( $store['storePhone'] ) ) {
+			printf(
+				'<div class="multivendorx-store-phone">
+					<a href="tel:%1$s">%2$s</a>
+				</div>',
+				esc_attr( preg_replace( "/\s+/", "", $store['storePhone'] ) ),
+				esc_html( $store['storePhone'] )
+			);
+		}
 
-        printf(
-            '<%1$s class="multivendorx-store-name elementor-heading-title">%2$s</%1$s>',
-            esc_attr( $tag ),
-            esc_html( $name )
-        );
+		// Email Address
+		if ( ! empty( $store['storeEmail'] ) ) {
+			printf(
+				'<div class="multivendorx-store-email">
+					<a href="mailto:%1$s">%1$s</a>
+				</div>',
+				esc_attr( $store['storeEmail'] )
+			);
+		}
 	}
 }

@@ -89,6 +89,14 @@ const Dashboard = () => {
 					letter.toUpperCase()
 				);
 			};
+
+			if (activeEndpoint?.filename) {
+				const CustomComponent = require(
+					`./dashboard/${kebabToCamelCase(activeEndpoint.filename)}.tsx`
+				).default;
+				return <CustomComponent />;
+			}
+
 			const convertedKey = kebabToCamelCase(key);
 			const DefaultComponent = require(
 				`./dashboard/${convertedKey}.tsx`
@@ -246,8 +254,16 @@ const Dashboard = () => {
 	};
 
 	useEffect(() => {
-		const tab = getCurrentTabFromURL() || endpoints[0]?.tab || DEFAULT_TAB;
-		setCurrentTab(tab);
+		if (!endpoints.length) return;
+
+		const tabFromUrl = getCurrentTabFromURL();
+
+		if (tabFromUrl) {
+			setCurrentTab(tabFromUrl);
+			return;
+		}
+
+		setCurrentTab(endpoints[0]?.tab || DEFAULT_TAB);
 	}, [location.pathname, location.search, endpoints]);
 
 	useEffect(() => {

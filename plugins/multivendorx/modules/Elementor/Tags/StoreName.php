@@ -3,11 +3,13 @@ namespace MultiVendorX\Elementor\Tags;
 
 use Elementor\Core\DynamicTags\Tag;
 use Elementor\Modules\DynamicTags\Module;
+use MultiVendorX\Elementor\StoreHelper;
 
 class StoreName extends Tag {
+    use StoreHelper;
 
     public function get_name() {
-        return 'mvx-store-name';
+        return 'multivendorx-store-name';
     }
 
     public function get_title() {
@@ -19,10 +21,18 @@ class StoreName extends Tag {
     }
 
     public function get_categories() {
-        return array( Module::TEXT_CATEGORY );
+        return [ Module::TEXT_CATEGORY ];
     }
 
     public function render() {
-        echo 'storeeee';
+        $store = $this->get_store_data();
+        if ( ! $store ) {
+            return;
+        }
+
+        $settings = $this->get_settings_for_display();
+        
+        $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
+        echo $name;
     }
 }

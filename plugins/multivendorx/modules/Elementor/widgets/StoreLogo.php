@@ -56,22 +56,30 @@ class Store_Logo extends Widget_Image {
 	}
 
 	protected function render() {
-        $store = $this->get_store_data();
-        if ( ! $store ) {
-            return;
-        }
 
-        $settings = $this->get_settings_for_display();
+		$store = $this->get_store_data();
+		if ( empty( $store ) || ! is_array( $store ) ) {
+			return;
+		}
 
-        // 5. Logic: Use the dynamic store name
-        $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
+		// Get logo from existing structure
+		$logo = $store['storeLogo'] ?? '';
 
-        $tag = $settings['header_size'];
+		if ( empty( $logo ) ) {
+			return;
+		}
 
-        printf(
-            '<%1$s class="multivendorx-store-name elementor-heading-title">%2$s</%1$s>',
-            esc_attr( $tag ),
-            esc_html( $name )
-        );
+		// If logo stored as attachment ID, convert to URL
+		if ( is_numeric( $logo ) ) {
+			$logo = wp_get_attachment_url( $logo );
+		}
+
+		printf(
+			'<div class="multivendorx-store-logo">
+				<img class="multivendorx-store-logo-img" src="%1$s" alt="%2$s" />
+			</div>',
+			esc_url( $logo ),
+			esc_attr( $store['storeName'] ?? '' )
+		);
 	}
 }

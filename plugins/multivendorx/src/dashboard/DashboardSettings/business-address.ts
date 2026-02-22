@@ -1,63 +1,51 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-    id: 'business-address',
-    priority: 4,
-    headerTitle: __('Business Address', 'multivendorx'),
+	id: 'business-address',
+	priority: 4,
+	headerTitle: __('Business Address', 'multivendorx'),
     headerDescription: __(
         'Provide your business address, city, zip code, country, state, and timezone to ensure accurate order and location settings.',
         'multivendorx'
     ),
     headerIcon: 'location',
-    submitUrl: `store/${appLocalizer.store_id}`,
-    modals: [
-        {
+	submitUrl: `store/${appLocalizer.store_id}`,
+	modal: [
+		{
             type: 'text',
-            name: 'address',
+            key: 'address',
             label: __('Address *', 'multivendorx'),
             required: true,
             placeholder: __('Enter your street address', 'multivendorx')
         },
         {
             type: 'text',
-            name: 'city',
+            key: 'city',
             label: __('City', 'multivendorx'),
             placeholder: __('Enter city name', 'multivendorx')
         },
         {
             type: 'number',
-            name: 'zip',
+            key: 'zip',
             label: __('Zip code', 'multivendorx'),
             placeholder: __('Enter zip/postal code', 'multivendorx')
         },
-        {
+		{
             type: 'select',
-            name: 'country',
+            key: 'country',
             label: __('Country', 'multivendorx'),
-            options: [],
-            placeholder: __('Select country', 'multivendorx')
+            options: appLocalizer.country_list,
         },
         {
             type: 'select',
-            name: 'state',
+            key: 'state',
             label: __('State', 'multivendorx'),
-            options: [], // This will be populated dynamically based on selected country
-            dependsOn: {
-                field: 'country',
-            }
+            options: appLocalizer.state_list, // This will be populated dynamically based on selected country
+            dependent: {
+				key: 'country',
+				set: true,
+			},
         },
-        {
-            type: 'custom',
-            name: 'map_component',
-            render: 'MapComponent' // This would need to be registered in your FIELD_REGISTRY
-        },
-        {
-            type: 'hidden',
-            name: 'location_lat'
-        },
-        {
-            type: 'hidden',
-            name: 'location_lng'
-        }
-    ]
+        //map component load 
+	],
 };

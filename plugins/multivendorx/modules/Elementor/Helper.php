@@ -22,7 +22,6 @@ trait StoreHelper {
 		if ( ! $slug ) {
 			return false;
 		}
-
 		return StoreUtil::get_specific_store_info();
 	}
 }
