@@ -57,21 +57,23 @@ class Store_Chat_Button extends Widget_Button {
 
 	protected function render() {
 		$store = $this->get_store_data();
-        if ( ! $store ) {
-            return;
-        }
+		if (!$store || !isset($store['storeId'])) {
+			return;
+		}
 
-        $settings = $this->get_settings_for_display();
+		$settings = $this->get_settings_for_display();
 
-        // 5. Logic: Use the dynamic store name
-        $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
+		// Store name
+		$name = !empty($store['storeName']) ? $store['storeName'] : ($settings['title'] ?? '');
+		$tag = !empty($settings['header_size']) ? $settings['header_size'] : 'h2';
 
-        $tag = $settings['header_size'];
+		printf(
+			'<%1$s class="multivendorx-store-name elementor-heading-title">%2$s</%1$s>',
+			esc_attr($tag),
+			esc_html($name)
+		);
 
-        printf(
-            '<%1$s class="multivendorx-store-name elementor-heading-title">%2$s</%1$s>',
-            esc_attr( $tag ),
-            esc_html( $name )
-        );
+		do_action('multivendorx_render_livechat_button', $store['storeId'], $store['storeName']);
 	}
+
 }

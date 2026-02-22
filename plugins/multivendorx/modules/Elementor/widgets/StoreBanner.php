@@ -46,22 +46,28 @@ class Store_Banner extends Widget_Image {
 
 	protected function render() {
 
-        $store = $this->get_store_data();
-        if ( ! $store ) {
-            return;
-        }
+		$store = $this->get_store_data();
+		if ( ! $store ) {
+			return;
+		}
+		// Keep original key structure
+		$banner = ! empty( $store['storeBanner'] ) ? $store['storeBanner'] : '';
 
-        $settings = $this->get_settings_for_display();
+		if ( empty( $banner ) ) {
+			return;
+		}
 
-        // 5. Logic: Use the dynamic store name
-        $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
+		// If banner is stored as attachment ID, convert to URL
+		if ( is_numeric( $banner ) ) {
+			$banner = wp_get_attachment_url( $banner );
+		}
 
-        $tag = $settings['header_size'];
-
-        printf(
-            '<%1$s class="multivendorx-store-name elementor-heading-title">%2$s</%1$s>',
-            esc_attr( $tag ),
-            esc_html( $name )
-        );
+		printf(
+			'<div class="multivendorx-store-banner">
+				<img class="multivendorx-store-banner-img" src="%1$s" alt="%2$s" />
+			</div>',
+			esc_url( $banner ),
+			esc_attr( $store['storeName'] ?? '' )
+		);
 	}
 }
