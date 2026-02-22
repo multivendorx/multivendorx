@@ -131,14 +131,16 @@ const SpmvProducts: React.FC = () => {
 		<>
 			<div className="product-category-select-wrapper">
 				<div className="header">
-					<div className="title">Add listings to your shop</div>
+					<div className="title">
+						{__('Add listings to your shop', 'multivendorx')}
+					</div>
 
 					<div className="search-section-wrapper">
 						<div className="search-field">
 							<div className="search-section">
 								<BasicInputUI
 									type="text"
-									placeholder="Search by an existing listing"
+									placeholder={__('Search by an existing listing', 'multivendorx')}
 									value={query}
 									onChange={(value) => setQuery(value)}
 								/>
@@ -146,21 +148,26 @@ const SpmvProducts: React.FC = () => {
 							</div>
 						</div>
 					</div>
+
 					<div className="buttons-wrapper center">
-						<div className="desc">Search by</div>
-						<span className="admin-badge blue">Name</span>
-						<span className="admin-badge pink">UPC</span>
-						<span className="admin-badge teal">ISBN</span>
-						{/* <span className="admin-badge orange">listings</span>
-						<span className="admin-badge yellow">marketplace</span> */}
-						<div className="desc">to locate the right listing.</div>
+						<div className="desc">{__('Search by', 'multivendorx')}</div>
+
+						<span className="admin-badge blue">{__('Name', 'multivendorx')}</span>
+						<span className="admin-badge pink">{__('UPC', 'multivendorx')}</span>
+						<span className="admin-badge teal">{__('ISBN', 'multivendorx')}</span>
+
+						<div className="desc">
+							{__('to locate the right listing.', 'multivendorx')}
+						</div>
 					</div>
+
 					<div className="desc">
-						Find and add existing marketplace listings to start
-						selling instantly or{' '}
+						{__(
+							'Find and add existing marketplace listings to start selling instantly or',
+							'multivendorx'
+						)}{' '}
 						<span onClick={createAutoDraftProduct}>
-							{' '}
-							Create New listing
+							{__('Create New listing', 'multivendorx')}
 						</span>
 					</div>
 				</div>
@@ -213,14 +220,13 @@ const SpmvProducts: React.FC = () => {
 										) : (
 											<i className="product-icon adminfont-multi-product"></i>
 										)}
+
 										<div
 											className="admin-btn btn-blue"
-											onClick={() =>
-												duplicateProduct(product)
-											}
+											onClick={() => duplicateProduct(product)}
 										>
 											<i className="adminfont-vendor-form-copy"></i>
-											Copy
+											{__('Copy', 'multivendorx')}
 										</div>
 									</div>
 
@@ -228,17 +234,16 @@ const SpmvProducts: React.FC = () => {
 
 									<div className="category">
 										{product.categories?.[0]?.name ||
-											'No Category'}
+											__('No Category', 'multivendorx')}
 									</div>
 
 									<div className="price">
-										{formatCurrency(
-											product.price || '0.00'
-										)}
+										{formatCurrency(product.price || '0.00')}
 									</div>
 								</div>
 							);
 						})}
+
 					{!isLoading && paginatedProducts.length === 0 && (
 						<ComponentStatusView
 							title={__('Not found', 'multivendorx')}
@@ -250,7 +255,8 @@ const SpmvProducts: React.FC = () => {
 						<div className="pagination-arrow">
 							<span
 								tabIndex={0}
-								className={`${pageIndex === 0 ? 'pagination-button-disabled' : ''}`}
+								className={`${pageIndex === 0 ? 'pagination-button-disabled' : ''
+									}`}
 								onClick={() => {
 									if (pageIndex === 0) {
 										return;
@@ -263,7 +269,8 @@ const SpmvProducts: React.FC = () => {
 
 							<span
 								tabIndex={0}
-								className={`${pageIndex === 0 ? 'pagination-button-disabled' : ''}`}
+								className={`${pageIndex === 0 ? 'pagination-button-disabled' : ''
+									}`}
 								onClick={() => {
 									if (pageIndex === 0) {
 										return;
@@ -278,9 +285,8 @@ const SpmvProducts: React.FC = () => {
 								{Array.from({ length: pageCount }, (_, i) => (
 									<button
 										key={i}
-										className={`number-btn ${
-											pageIndex === i ? 'active' : ''
-										}`}
+										className={`number-btn ${pageIndex === i ? 'active' : ''
+											}`}
 										onClick={() => setPageIndex(i)}
 									>
 										{i + 1}
@@ -290,11 +296,10 @@ const SpmvProducts: React.FC = () => {
 
 							<span
 								tabIndex={0}
-								className={`${
-									pageIndex === pageCount - 1
+								className={`${pageIndex === pageCount - 1
 										? 'pagination-button-disabled'
 										: ''
-								}`}
+									}`}
 								onClick={() => {
 									if (pageIndex === pageCount - 1) {
 										return;
@@ -307,11 +312,10 @@ const SpmvProducts: React.FC = () => {
 
 							<span
 								tabIndex={0}
-								className={`${
-									pageIndex === pageCount - 1
+								className={`${pageIndex === pageCount - 1
 										? 'pagination-button-disabled'
 										: ''
-								}`}
+									}`}
 								onClick={() => {
 									if (pageIndex === pageCount - 1) {
 										return;

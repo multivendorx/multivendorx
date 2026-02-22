@@ -5,18 +5,18 @@ const HelpSupport: React.FC = () => {
 	const videos = [
 		{
 			link: 'https://www.youtube.com/watch?v=TL1HegIe0jE',
-			title: 'How to Set Up MultiVendorX Marketplace',
-			des: 'A step-by-step guide to setting up your multivendor marketplace.',
+			title: __('How to Set Up MultiVendorX Marketplace', 'multivendorx'),
+			des: __('A step-by-step guide to setting up your multivendor marketplace.', 'multivendorx'),
 		},
 		{
 			link: 'https://www.youtube.com/watch?v=TL1HegIe0jE',
-			title: 'Vendor Dashboard Overview',
-			des: 'Learn everything about the vendor dashboard and features.',
+			title: __('Vendor Dashboard Overview', 'multivendorx'),
+			des: __('Learn everything about the vendor dashboard and features.', 'multivendorx'),
 		},
 		{
 			link: 'https://www.youtube.com/watch?v=TL1HegIe0jE',
-			title: 'Enable Vendor Subscriptions',
-			des: 'Understand how to set up subscription-based vendor plans.',
+			title: __('Enable Vendor Subscriptions', 'multivendorx'),
+			des: __('Understand how to set up subscription-based vendor plans.', 'multivendorx'),
 		},
 	];
 	const supportItems = [

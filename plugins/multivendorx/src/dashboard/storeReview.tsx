@@ -135,24 +135,23 @@ const StoreReview: React.FC = () => {
 	const filters = [
 		{
 			key: 'rating',
-			label: 'Status',
+			label: __('Status', 'multivendorx'),
 			type: 'select',
 			options: [
-				{ label: 'All', value: '' },
-				{ label: '5 Stars & Up', value: '5' },
-				{ label: '4 Stars & Up', value: '4' },
-				{ label: '3 Stars & Up', value: '3' },
-				{ label: '2 Stars & Up', value: '2' },
-				{ label: '1 Stars & Up', value: '1' },
+				{ label: __('All', 'multivendorx'), value: '' },
+				{ label: __('5 Stars & Up', 'multivendorx'), value: '5' },
+				{ label: __('4 Stars & Up', 'multivendorx'), value: '4' },
+				{ label: __('3 Stars & Up', 'multivendorx'), value: '3' },
+				{ label: __('2 Stars & Up', 'multivendorx'), value: '2' },
+				{ label: __('1 Stars & Up', 'multivendorx'), value: '1' },
 			],
 		},
 		{
 			key: 'created_at',
-			label: 'Created Date',
+			label: __('Created Date', 'multivendorx'),
 			type: 'date',
 		},
 	];
-
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 
@@ -189,29 +188,26 @@ const StoreReview: React.FC = () => {
 				setCategoryCounts([
 					{
 						value: 'all',
-						label: 'All',
+						label: __('All', 'multivendorx'),
 						count: Number(response.headers['x-wp-total']) || 0,
 					},
 					{
 						value: 'approved',
-						label: 'Approved',
+						label: __('Approved', 'multivendorx'),
 						count:
-							Number(response.headers['x-wp-status-approved']) ||
-							0,
+							Number(response.headers['x-wp-status-approved']) || 0,
 					},
 					{
 						value: 'pending',
-						label: 'Pending',
+						label: __('Pending', 'multivendorx'),
 						count:
-							Number(response.headers['x-wp-status-pending']) ||
-							0,
+							Number(response.headers['x-wp-status-pending']) || 0,
 					},
 					{
 						value: 'rejected',
-						label: 'Rejected',
+						label: __('Rejected', 'multivendorx'),
 						count:
-							Number(response.headers['x-wp-status-rejected']) ||
-							0,
+							Number(response.headers['x-wp-status-rejected']) || 0,
 					},
 				]);
 
@@ -299,7 +295,7 @@ const StoreReview: React.FC = () => {
 												...Array(
 													Math.round(
 														selectedReview.overall_rating ||
-															0
+														0
 													)
 												),
 											].map((_, i) => (
@@ -312,10 +308,10 @@ const StoreReview: React.FC = () => {
 											{[
 												...Array(
 													5 -
-														Math.round(
-															selectedReview.overall_rating ||
-																0
-														)
+													Math.round(
+														selectedReview.overall_rating ||
+														0
+													)
 												),
 											].map((_, i) => (
 												<i

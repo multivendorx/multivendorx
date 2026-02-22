@@ -92,22 +92,24 @@ registerBlockType('multivendorx/contact-info', {
 				'core/heading',
 				{
 					level: 2,
-					content: 'Contact store',
+					content: __('Contact store', 'multivendorx'),
 					className: 'contact-form-title',
 				},
 			],
 			[
 				'core/paragraph',
 				{
-					content: 'Do you need more information? Write to us!',
+					content: __('Do you need more information? Write to us!', 'multivendorx'),
 					className: 'contact-form-description',
 				},
 			],
 			[
 				'core/paragraph',
 				{
-					content:
+					content: __(
 						'<label>Name <input type="text" name="name" class="input-text" required /></label>',
+						'multivendorx'
+					),
 					className:
 						' woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide',
 				},
@@ -115,8 +117,10 @@ registerBlockType('multivendorx/contact-info', {
 			[
 				'core/paragraph',
 				{
-					content:
+					content: __(
 						'<label>Email <input type="email" name="email" class="input-text" required /></label>',
+						'multivendorx'
+					),
 					className:
 						' woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide',
 				},
@@ -124,8 +128,10 @@ registerBlockType('multivendorx/contact-info', {
 			[
 				'core/paragraph',
 				{
-					content:
+					content: __(
 						'<label>Message <textarea name="message" class="input-text" rows="4" required></textarea></label>',
+						'multivendorx'
+					),
 					className:
 						' woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide',
 				},
@@ -133,12 +139,11 @@ registerBlockType('multivendorx/contact-info', {
 			[
 				'core/button',
 				{
-					text: 'Send Message',
+					text: __('Send Message', 'multivendorx'),
 					className: 'contact-form-submit',
 				},
 			],
 		];
-
 		return (
 			<>
 				<InspectorControls>

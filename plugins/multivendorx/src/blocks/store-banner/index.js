@@ -293,10 +293,10 @@ registerBlockType('multivendorx/store-banner', {
 							value={template}
 							onChange={handleTemplateChange}
 							options={[
-								{ label: 'Template 1', value: 'template-1' },
-								{ label: 'Template 2', value: 'template-2' },
-								{ label: 'Template 3', value: 'template-3' },
-								{ label: 'Custom', value: 'empty' },
+								{ label: __('Template 1', 'multivendorx'), value: 'template-1' },
+								{ label: __('Template 2', 'multivendorx'), value: 'template-2' },
+								{ label: __('Template 3', 'multivendorx'), value: 'template-3' },
+								{ label: __('Custom', 'multivendorx'), value: 'empty' },
 							]}
 						/>
 
@@ -308,39 +308,39 @@ registerBlockType('multivendorx/store-banner', {
 							}
 							options={[
 								{
-									label: 'Center Center',
+									label: __('Center Center', 'multivendorx'),
 									value: 'center center',
 								},
 								{
-									label: 'Center Left',
+									label: __('Center Left', 'multivendorx'),
 									value: 'center flex-start',
 								},
 								{
-									label: 'Center Right',
+									label: __('Center Right', 'multivendorx'),
 									value: 'center flex-end',
 								},
 								{
-									label: 'Top Center',
+									label: __('Top Center', 'multivendorx'),
 									value: 'flex-start center',
 								},
 								{
-									label: 'Top Left',
+									label: __('Top Left', 'multivendorx'),
 									value: 'flex-start flex-start',
 								},
 								{
-									label: 'Top Right',
+									label: __('Top Right', 'multivendorx'),
 									value: 'flex-start flex-end',
 								},
 								{
-									label: 'Bottom Center',
+									label: __('Bottom Center', 'multivendorx'),
 									value: 'flex-end center',
 								},
 								{
-									label: 'Bottom Left',
+									label: __('Bottom Left', 'multivendorx'),
 									value: 'flex-end flex-start',
 								},
 								{
-									label: 'Bottom Right',
+									label: __('Bottom Right', 'multivendorx'),
 									value: 'flex-end flex-end',
 								},
 							]}
@@ -349,35 +349,25 @@ registerBlockType('multivendorx/store-banner', {
 						<SelectControl
 							label={__('Height', 'multivendorx')}
 							value={height}
-							onChange={(value) =>
-								setAttributes({ height: value })
-							}
+							onChange={(value) => setAttributes({ height: value })}
 							options={[
-								{ label: 'Small (300px)', value: '300px' },
-								{ label: 'Medium (400px)', value: '400px' },
-								{ label: 'Large (500px)', value: '500px' },
-								{
-									label: 'Extra Large (600px)',
-									value: '600px',
-								},
-								{ label: 'Auto', value: 'auto' },
+								{ label: __('Small (300px)', 'multivendorx'), value: '300px' },
+								{ label: __('Medium (400px)', 'multivendorx'), value: '400px' },
+								{ label: __('Large (500px)', 'multivendorx'), value: '500px' },
+								{ label: __('Extra Large (600px)', 'multivendorx'), value: '600px' },
+								{ label: __('Auto', 'multivendorx'), value: 'auto' },
 							]}
 						/>
 
 						<SelectControl
 							label={__('Min Height', 'multivendorx')}
 							value={minHeight}
-							onChange={(value) =>
-								setAttributes({ minHeight: value })
-							}
+							onChange={(value) => setAttributes({ minHeight: value })}
 							options={[
-								{ label: 'Small (200px)', value: '200px' },
-								{ label: 'Medium (300px)', value: '300px' },
-								{ label: 'Large (400px)', value: '400px' },
-								{
-									label: 'Extra Large (500px)',
-									value: '500px',
-								},
+								{ label: __('Small (200px)', 'multivendorx'), value: '200px' },
+								{ label: __('Medium (300px)', 'multivendorx'), value: '300px' },
+								{ label: __('Large (400px)', 'multivendorx'), value: '400px' },
+								{ label: __('Extra Large (500px)', 'multivendorx'), value: '500px' },
 							]}
 						/>
 
@@ -388,24 +378,20 @@ registerBlockType('multivendorx/store-banner', {
 								setAttributes({ backgroundPosition: value })
 							}
 							options={[
-								{ label: 'Center', value: 'center' },
-								{ label: 'Top', value: 'top' },
-								{ label: 'Bottom', value: 'bottom' },
-								{ label: 'Left', value: 'left' },
-								{ label: 'Right', value: 'right' },
-								{ label: 'Top Left', value: 'top left' },
-								{ label: 'Top Right', value: 'top right' },
-								{ label: 'Bottom Left', value: 'bottom left' },
-								{
-									label: 'Bottom Right',
-									value: 'bottom right',
-								},
+								{ label: __('Center', 'multivendorx'), value: 'center' },
+								{ label: __('Top', 'multivendorx'), value: 'top' },
+								{ label: __('Bottom', 'multivendorx'), value: 'bottom' },
+								{ label: __('Left', 'multivendorx'), value: 'left' },
+								{ label: __('Right', 'multivendorx'), value: 'right' },
+								{ label: __('Top Left', 'multivendorx'), value: 'top left' },
+								{ label: __('Top Right', 'multivendorx'), value: 'top right' },
+								{ label: __('Bottom Left', 'multivendorx'), value: 'bottom left' },
+								{ label: __('Bottom Right', 'multivendorx'), value: 'bottom right' },
 							]}
 						/>
-						<div style={{ marginTop: '20px' }}>
-							<label>
-								{__('Content Text Color', 'multivendorx')}
-							</label>
+
+						<div style={{ marginTop: 20 }}>
+							<label>{__('Content Text Color', 'multivendorx')}</label>
 							<ColorPalette
 								value={contentColor}
 								onChange={(color) =>
@@ -413,7 +399,8 @@ registerBlockType('multivendorx/store-banner', {
 								}
 							/>
 						</div>
-						<div style={{ marginTop: '20px' }}>
+
+						<div style={{ marginTop: 20 }}>
 							<label>{__('Overlay Color', 'multivendorx')}</label>
 							<ColorPalette
 								value={overlayColor}
@@ -427,15 +414,13 @@ registerBlockType('multivendorx/store-banner', {
 							label={__('Overlay Opacity (%)', 'multivendorx')}
 							value={overlayOpacity}
 							onChange={(value) =>
-								setAttributes({ overlayOpacity: value })
-							}
+								setAttributes({ overlayOpacity: value })}
 							min={0}
 							max={100}
 							step={5}
 						/>
 					</PanelBody>
 				</InspectorControls>
-
 				<div {...blockProps}>
 					<div style={overlayStyle}></div>
 					{innerContentEnabled ? (

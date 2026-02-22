@@ -71,11 +71,11 @@ const BusinessHours = () => {
 		},
 	];
 	const stockStatusOptions = [
-		{ value: '', label: 'Eastern Time (ET)' },
-		{ value: 'instock', label: 'Central Time (CT)' },
-		{ value: 'outofstock', label: 'Mountain Time (MT)' },
-		{ value: 'onbackorder', label: 'Pacific Time (PT)' },
-		{ value: 'onbackorder', label: 'London (GMT)' },
+		{ value: 'ET', label: __('Eastern Time (ET)', 'multivendorx') },
+		{ value: 'CT', label: __('Central Time (CT)', 'multivendorx') },
+		{ value: 'MT', label: __('Mountain Time (MT)', 'multivendorx') },
+		{ value: 'PT', label: __('Pacific Time (PT)', 'multivendorx') },
+		{ value: 'GMT', label: __('London (GMT)', 'multivendorx') },
 	];
 	return (
 		<>
@@ -85,10 +85,10 @@ const BusinessHours = () => {
 						name="stock_status"
 						options={stockStatusOptions}
 						size={'14rem'}
-						// value={product.stock_status}
-						// onChange={(selected) =>
-						//     handleChange('stock_status', selected.value)
-						// }
+					// value={product.stock_status}
+					// onChange={(selected) =>
+					//     handleChange('stock_status', selected.value)
+					// }
 					/>
 				</FormGroup>
 				<FormGroup

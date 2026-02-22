@@ -65,32 +65,29 @@ const StoreReport: React.FC = () => {
 				setOverviewData([
 					{
 						id: 'all',
-						label: 'All Stores',
+						label: __('All Stores', 'multivendorx'),
 						count: Number(response.headers['x-wp-total']) || 0,
 						icon: 'storefront blue',
 					},
 					{
 						id: 'active',
-						label: 'Active Stores',
+						label: __('Active Stores', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-active']) || 0,
 						icon: 'store-policy green',
 					},
 					{
 						id: 'pending',
-						label: 'Pending Stores',
+						label: __('Pending Stores', 'multivendorx'),
 						count:
-							Number(response.headers['x-wp-status-pending']) ||
-							0,
+							Number(response.headers['x-wp-status-pending']) || 0,
 						icon: 'pending yellow',
 					},
 					{
 						id: 'deactivated',
-						label: 'Deactivated Stores',
+						label: __('Deactivated Stores', 'multivendorx'),
 						count:
-							Number(
-								response.headers['x-wp-status-deactivated']
-							) || 0,
+							Number(response.headers['x-wp-status-deactivated']) || 0,
 						icon: 'close-delete red',
 					},
 				]);
@@ -139,37 +136,32 @@ const StoreReport: React.FC = () => {
 				setCategoryCounts([
 					{
 						value: 'all',
-						label: 'All',
+						label: __('All', 'multivendorx'),
 						count: Number(response.headers['x-wp-total']) || 0,
 					},
 					{
 						value: 'active',
-						label: 'Active',
+						label: __('Active', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-active']) || 0,
 					},
 					{
 						value: 'under_review',
-						label: 'Under Review',
+						label: __('Under Review', 'multivendorx'),
 						count:
-							Number(
-								response.headers['x-wp-status-under-review']
-							) || 0,
+							Number(response.headers['x-wp-status-under-review']) || 0,
 					},
 					{
 						value: 'suspended',
-						label: 'Suspended',
+						label: __('Suspended', 'multivendorx'),
 						count:
-							Number(response.headers['x-wp-status-suspended']) ||
-							0,
+							Number(response.headers['x-wp-status-suspended']) || 0,
 					},
 					{
 						value: 'deactivated',
-						label: 'Deactivated',
+						label: __('Deactivated', 'multivendorx'),
 						count:
-							Number(
-								response.headers['x-wp-status-deactivated']
-							) || 0,
+							Number(response.headers['x-wp-status-deactivated']) || 0,
 					},
 				]);
 
@@ -221,7 +213,7 @@ const StoreReport: React.FC = () => {
 			render: (row: any) =>
 				formatCurrency(
 					Number(row.commission?.total_order_amount || 0) -
-						Number(row.commission?.commission_total || 0)
+					Number(row.commission?.commission_total || 0)
 				),
 		},
 	};

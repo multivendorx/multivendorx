@@ -253,29 +253,35 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 								name="address"
 								value={filters.address}
 								onChange={handleInputChange}
-								placeholder="Enter Address"
+								placeholder={__('Enter Address', 'multivendorx')}
 								className="woocommerce-Input woocommerce-Input--text input-text"
 							/>
+
 							<select
 								name="distance"
 								value={filters.distance}
 								onChange={handleInputChange}
-								className=""
 							>
-								<option value="">Within</option>
+								<option value="">{__('Within', 'multivendorx')}</option>
 								<option value="5">5</option>
 								<option value="10">10</option>
 								<option value="25">25</option>
 							</select>
+
 							<select
 								name="miles"
 								value={filters.miles}
 								onChange={handleInputChange}
-								className=""
 							>
-								<option value="miles">Miles</option>
-								<option value="km">Kilometers</option>
-								<option value="nm">Nautical miles</option>
+								<option value="miles">
+									{__('Miles', 'multivendorx')}
+								</option>
+								<option value="km">
+									{__('Kilometers', 'multivendorx')}
+								</option>
+								<option value="nm">
+									{__('Nautical miles', 'multivendorx')}
+								</option>
 							</select>
 						</form>
 
@@ -284,7 +290,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 								className="woocommerce-button button wp-element-button"
 								onClick={requestUserLocation}
 							>
-								Use My Current Location
+								{__('Use My Current Location', 'multivendorx')}
 							</button>
 						</p>
 					</>
@@ -297,43 +303,56 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 								className={viewMode === 'list' ? 'active' : ''}
 								onClick={() => setViewMode('list')}
 							>
-								List
+								{__('List', 'multivendorx')}
 							</li>
 
 							<li
 								className={viewMode === 'split' ? 'active' : ''}
 								onClick={() => setViewMode('split')}
 							>
-								Split
+								{__('Split', 'multivendorx')}
 							</li>
+
 							<li
 								className={viewMode === 'map' ? 'active' : ''}
 								onClick={() => setViewMode('map')}
 							>
-								Map
+								{__('Map', 'multivendorx')}
 							</li>
 						</ul>
 
-						<div className="">Viewing all {data.length} stores</div>
+						<div>
+							{__('Viewing all', 'multivendorx')} {data.length}{' '}
+							{__('stores', 'multivendorx')}
+						</div>
 					</div>
+
 					<select
 						name="sort"
 						value={filters.sort}
 						onChange={handleInputChange}
-						className=""
 					>
-						<option value="name">Select</option>
-						<option value="category">By Category</option>
-						<option value="shipping">By Shipping</option>
+						<option value="name">
+							{__('Select', 'multivendorx')}
+						</option>
+						<option value="category">
+							{__('By Category', 'multivendorx')}
+						</option>
+						<option value="shipping">
+							{__('By Shipping', 'multivendorx')}
+						</option>
 					</select>
+
 					{filters.sort == 'category' && (
 						<select
 							name="category"
 							value={filters.category || ''}
 							onChange={handleInputChange}
-							className=""
 						>
-							<option value="">Select Category</option>
+							<option value="">
+								{__('Select Category', 'multivendorx')}
+							</option>
+
 							{categoryList.map((cat) => (
 								<option key={cat.id} value={cat.id}>
 									{cat.name}
@@ -362,26 +381,28 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 				</div>
 
 				<div
-					className={`store-list-wrapper ${viewMode === 'split' ? 'is-split' : 'is-list'}`}
+					className={`store-list-wrapper ${viewMode === 'split' ? 'is-split' : 'is-list'
+						}`}
 				>
 					<div className="store-list">
 						{data &&
 							data.map((store) => (
 								<div key={store.id} className="store">
 									<div className="store-image">
-										<img src={store.image} />A
+										<img src={store.image} alt="" />
 									</div>
 
 									<div className="store-details">
 										<h2>{store.store_name}</h2>
+
 										<div className="contact-wrapper">
 											{store.phone && (
 												<span>
-													{' '}
 													<i className="dashicons dashicons-phone" />{' '}
 													{store.phone}
 												</span>
 											)}
+
 											{store.address && (
 												<span>
 													<i className="dashicons dashicons-location" />
@@ -389,41 +410,25 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 												</span>
 											)}
 										</div>
-
-										{/* <div className="">
-											<p className="">Top Products</p>
-											<div className="">
-												{vendor.topProducts && vendor.topProducts.length > 0 ? (
-													vendor.topProducts.map((img, idx) => (
-														<img
-															key={idx}
-															src={img}
-															alt="Product"
-															className=""
-														/>
-													))
-												) : (
-													<p className="">No products</p>
-												)}
-											</div>
-										</div> */}
 									</div>
 								</div>
 							))}
 					</div>
 
 					{renderMapComponent()}
+
 					<div className="pagination">
 						<button
 							disabled={page === 1}
 							onClick={() => setPage((p) => p - 1)}
 							className="woocommerce-button button wp-element-button"
 						>
-							Previous
+							{__('Previous', 'multivendorx')}
 						</button>
 
 						<span>
-							Page {page} of {totalPages}
+							{__('Page', 'multivendorx')} {page}{' '}
+							{__('of', 'multivendorx')} {totalPages}
 						</span>
 
 						<button
@@ -431,7 +436,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 							onClick={() => setPage((p) => p + 1)}
 							className="woocommerce-button button wp-element-button"
 						>
-							Next
+							{__('Next', 'multivendorx')}
 						</button>
 					</div>
 				</div>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { __ } from '@wordpress/i18n';
 
 interface Product {
 	id: number;
@@ -52,11 +53,10 @@ const ProductList: React.FC<ProductListProps> = ({ limit = 4 }) => {
 
 	return (
 		<div className="woocommerce">
-			{/* Search Input */}
 			<div style={{ marginBottom: '16px' }}>
 				<input
 					type="search"
-					placeholder="Search products..."
+					placeholder={__('Search products...', 'multivendorx')}
 					value={searchTerm}
 					onChange={(e) => setSearchTerm(e.target.value)}
 					style={{
@@ -68,7 +68,7 @@ const ProductList: React.FC<ProductListProps> = ({ limit = 4 }) => {
 			</div>
 
 			{loading ? (
-				<p>Loading products...</p>
+				<p>{__('Loading products...', 'multivendorx')}</p>
 			) : (
 				<ul className="products columns-4">
 					{products.map((product) => (
@@ -81,7 +81,8 @@ const ProductList: React.FC<ProductListProps> = ({ limit = 4 }) => {
 									<img
 										src={
 											product.images?.[0]?.src ||
-											'http://localhost:8889/wp-content/uploads/woocommerce-placeholder.webp'
+											StoreInfo.placeholderImage ||
+											''
 										}
 										alt={product.name}
 									/>
@@ -94,16 +95,13 @@ const ProductList: React.FC<ProductListProps> = ({ limit = 4 }) => {
 
 							<div className="has-text-align-center wp-block-woocommerce-product-price">
 								<span className="woocommerce-Price-amount amount">
-									$299 (pkoro)
+									{__('Price', 'multivendorx')}
 								</span>
 							</div>
 
 							<div className="wp-block-button align-center wp-block-woocommerce-product-button">
-								<a
-									href="#"
-									className="wp-block-button__link wp-element-button"
-								>
-									Add to cart (pkoro)
+								<a href="#" className="wp-block-button__link wp-element-button">
+									{__('Add to cart', 'multivendorx')}
 								</a>
 							</div>
 						</li>

@@ -173,8 +173,8 @@ const EditStore = () => {
 			type: 'file',
 			content: {
 				id: 'store-overview',
-				headerTitle: 'Overview',
-				headerDescription: 'Store Info',
+				headerTitle: __('Overview', 'multivendorx'),
+				headerDescription: __('Store Information', 'multivendorx'),
 				hideSettingHeader: true,
 				headerIcon: 'credit-card',
 			},
@@ -183,8 +183,8 @@ const EditStore = () => {
 			type: 'file',
 			content: {
 				id: 'store',
-				headerTitle: 'General',
-				headerDescription: 'Store Info',
+				headerTitle: __('General', 'multivendorx'),
+				headerDescription: __('Store Information', 'multivendorx'),
 				hideSettingHeader: true,
 				headerIcon: 'credit-card',
 			},
@@ -193,8 +193,8 @@ const EditStore = () => {
 			type: 'file',
 			content: {
 				id: 'payment',
-				headerTitle: 'Payment',
-				headerDescription: 'Payment Methods',
+				headerTitle: __('Payment', 'multivendorx'),
+				headerDescription: __('Payment Methods', 'multivendorx'),
 				hideSettingHeader: true,
 				headerIcon: 'credit-card',
 			},
@@ -203,8 +203,8 @@ const EditStore = () => {
 			type: 'file',
 			content: {
 				id: 'staff',
-				headerTitle: 'Staff',
-				headerDescription: 'Store staff',
+				headerTitle: __('Staff', 'multivendorx'),
+				headerDescription: __('Store Staff', 'multivendorx'),
 				hideSettingHeader: true,
 				headerIcon: 'credit-card',
 			},
@@ -214,8 +214,8 @@ const EditStore = () => {
 			module: 'store-shipping',
 			content: {
 				id: 'shipping',
-				headerTitle: 'Shipping',
-				headerDescription: 'Store Shipping',
+				headerTitle: __('Shipping', 'multivendorx'),
+				headerDescription: __('Store Shipping', 'multivendorx'),
 				hideSettingHeader: true,
 				headerIcon: 'credit-card',
 			},
@@ -225,8 +225,8 @@ const EditStore = () => {
 			module: 'store-policy',
 			content: {
 				id: 'store-policy',
-				headerTitle: 'Policy',
-				headerDescription: 'Policy',
+				headerTitle: __('Policy', 'multivendorx'),
+				headerDescription: __('Store Policy', 'multivendorx'),
 				hideSettingHeader: true,
 				headerIcon: 'credit-card',
 			},
@@ -235,8 +235,8 @@ const EditStore = () => {
 			type: 'file',
 			content: {
 				id: 'application-details',
-				headerTitle: 'Application Details',
-				headerDescription: 'Application',
+				headerTitle: __('Application Details', 'multivendorx'),
+				headerDescription: __('Application', 'multivendorx'),
 				hideSettingHeader: true,
 				headerIcon: 'credit-card',
 			},
@@ -246,14 +246,15 @@ const EditStore = () => {
 			module: 'facilitator',
 			content: {
 				id: 'store-facilitator',
-				headerTitle: 'Facilitator',
-				headerDescription: 'Facilitator',
+				headerTitle: __('Facilitator', 'multivendorx'),
+				headerDescription: __('Facilitator', 'multivendorx'),
 				hideSettingHeader: true,
 				headerIcon: 'credit-card',
 			},
 		},
-	].filter((setting) => !setting.module || modules.includes(setting.module));
-
+	].filter(
+		(setting) => !setting.module || modules.includes(setting.module)
+	);
 	const handleUpdateData = useCallback((updatedFields: any) => {
 		setData((prev) => ({ ...prev, ...updatedFields }));
 	}, []);
@@ -262,18 +263,18 @@ const EditStore = () => {
 		const updatedTabs = settingContent.map((tab) =>
 			tab.content.id === 'application-details'
 				? {
-						...tab,
-						content: {
-							...tab.content,
-							name:
-								data?.status === 'pending' ||
+					...tab,
+					content: {
+						...tab.content,
+						name:
+							data?.status === 'pending' ||
 								data?.status === 'rejected' ||
 								data?.status === 'permanently_rejected'
-									? // data?.status === 'active'
-										'Application Details'
-									: 'Archive Data',
-						},
-					}
+								? // data?.status === 'active'
+								'Application Details'
+								: 'Archive Data',
+					},
+				}
 				: tab
 		);
 
@@ -464,10 +465,10 @@ const EditStore = () => {
 																) => {
 																	e.stopPropagation();
 																	const updated =
-																		{
-																			...data,
-																			banner: '',
-																		};
+																	{
+																		...data,
+																		banner: '',
+																	};
 																	setData(
 																		updated
 																	);
@@ -551,10 +552,10 @@ const EditStore = () => {
 																		) => {
 																			e.stopPropagation();
 																			const updated =
-																				{
-																					...data,
-																					image: '',
-																				};
+																			{
+																				...data,
+																				image: '',
+																			};
 																			setData(
 																				updated
 																			);
@@ -630,11 +631,10 @@ const EditStore = () => {
 													)}
 
 													<span
-														className={`edit-icon  ${
-															editName
-																? ''
-																: 'admin-badge blue'
-														}`}
+														className={`edit-icon  ${editName
+															? ''
+															: 'admin-badge blue'
+															}`}
 														onClick={(e) => {
 															e.stopPropagation();
 															if (
@@ -669,7 +669,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : data.status ===
-												  'pending' ? (
+													'pending' ? (
 													<span className="status admin-badge yellow">
 														{__(
 															'Pending',
@@ -677,7 +677,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : data.status ===
-												  'rejected' ? (
+													'rejected' ? (
 													<span className="status admin-badge red">
 														{__(
 															'Rejected',
@@ -685,7 +685,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : data.status ===
-												  'suspended' ? (
+													'suspended' ? (
 													<span className="status admin-badge blue">
 														{__(
 															'Suspended',
@@ -693,7 +693,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : data.status ===
-												  'permanently_rejected' ? (
+													'permanently_rejected' ? (
 													<span className="status admin-badge red">
 														{__(
 															'Permanently Rejected',
@@ -701,7 +701,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : data.status ===
-												  'under_review' ? (
+													'under_review' ? (
 													<span className="status admin-badge yellow">
 														{__(
 															'Under Review',
@@ -709,7 +709,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : data.status ===
-												  'deactivated' ? (
+													'deactivated' ? (
 													<span className="status admin-badge red">
 														{__(
 															'Permanently Deactivated',
@@ -723,18 +723,18 @@ const EditStore = () => {
 												{modules.includes(
 													'marketplace-compliance'
 												) && (
-													<>
-														<div className="admin-badge green">
-															<i className="adminfont-store-inventory"></i>
-														</div>
-														<div className="admin-badge blue">
-															<i className="adminfont-geo-my-wp"></i>
-														</div>
-														<div className="admin-badge yellow">
-															<i className="adminfont-staff-manager"></i>
-														</div>
-													</>
-												)}
+														<>
+															<div className="admin-badge green">
+																<i className="adminfont-store-inventory"></i>
+															</div>
+															<div className="admin-badge blue">
+																<i className="adminfont-geo-my-wp"></i>
+															</div>
+															<div className="admin-badge yellow">
+																<i className="adminfont-staff-manager"></i>
+															</div>
+														</>
+													)}
 											</div>
 
 											<div
@@ -773,14 +773,14 @@ const EditStore = () => {
 														autoFocus
 													/>
 												) : Object.keys(data).length ===
-												  0 ? (
+													0 ? (
 													<Skeleton width={150} />
 												) : data?.description ? (
 													<div>
 														<span>
 															{displayText}
 															{shouldTruncate &&
-															!expanded
+																!expanded
 																? '...'
 																: ''}
 														</span>
@@ -795,13 +795,13 @@ const EditStore = () => {
 															>
 																{expanded
 																	? __(
-																			'Read less',
-																			'multivendorx'
-																		)
+																		'Read less',
+																		'multivendorx'
+																	)
 																	: __(
-																			'Read more',
-																			'multivendorx'
-																		)}
+																		'Read more',
+																		'multivendorx'
+																	)}
 															</button>
 														)}
 													</div>
@@ -815,11 +815,10 @@ const EditStore = () => {
 												)}
 
 												<span
-													className={`edit-icon ${
-														editDesc
-															? ''
-															: 'admin-badge blue'
-													}`}
+													className={`edit-icon ${editDesc
+														? ''
+														: 'admin-badge blue'
+														}`}
 													onClick={(e) => {
 														e.stopPropagation();
 														if (
@@ -848,50 +847,46 @@ const EditStore = () => {
 											{modules.includes(
 												'store-review'
 											) && (
-												<div className="reviews-wrapper">
-													{[...Array(5)].map(
-														(_, i) => (
-															<i
-																key={i}
-																className={`review adminfont-star${
-																	data.total_reviews >
+													<div className="reviews-wrapper">
+														{[...Array(5)].map(
+															(_, i) => (
+																<i
+																	key={i}
+																	className={`review adminfont-star${data.total_reviews >
 																		0 &&
-																	i <
+																		i <
 																		Math.round(
 																			data.overall_reviews
 																		)
 																		? ''
 																		: '-o'
-																}`}
-															></i>
-														)
-													)}
+																		}`}
+																></i>
+															)
+														)}
 
-													<span>
-														{data.total_reviews > 0
-															? `${
-																	data.overall_reviews
-																} (${
-																	data.total_reviews
-																} ${
-																	data.total_reviews ===
+														<span>
+															{data.total_reviews > 0
+																? `${data.overall_reviews
+																} (${data.total_reviews
+																} ${data.total_reviews ===
 																	1
-																		? __(
-																				'Review',
-																				'multivendorx'
-																			)
-																		: __(
-																				'Reviews',
-																				'multivendorx'
-																			)
+																	? __(
+																		'Review',
+																		'multivendorx'
+																	)
+																	: __(
+																		'Reviews',
+																		'multivendorx'
+																	)
 																})`
-															: `(${__(
+																: `(${__(
 																	'0 Review',
 																	'multivendorx'
 																)})`}
-													</span>
-												</div>
-											)}
+														</span>
+													</div>
+												)}
 
 											<div className="des">
 												<b>
@@ -907,9 +902,9 @@ const EditStore = () => {
 														{data?.status !=
 															'pending' &&
 															data?.status !=
-																'rejected' &&
+															'rejected' &&
 															data?.status !=
-																'permanently_rejected' && (
+															'permanently_rejected' && (
 																<span
 																	className="edit-icon admin-badge blue"
 																	onClick={() => {
@@ -983,13 +978,13 @@ const EditStore = () => {
 						buttons={[
 							{
 								icon: 'close',
-								text: 'Cancel',
+								text: __('Cancel', 'multivendorx'),
 								color: 'red',
 								onClick: () => setDeleteModal(false),
 							},
 							{
 								icon: 'delete',
-								text: 'Delete',
+								text: __('Delete', 'multivendorx'),
 								color: 'red-bg',
 								onClick: () => {
 									if (deleteOption) {

@@ -173,6 +173,7 @@ class Transactions extends \WP_REST_Controller {
                         'credit'           => 'Cr' === $row['entry_type'] ? $row['amount'] : 0,
                         'debit'            => 'Dr' === $row['entry_type'] ? $row['amount'] : 0,
                         'created_at'       => Utill::multivendorx_rest_prepare_date_response( $row['created_at'] ),
+                        'created_at_gmt'   => Utill::multivendorx_rest_prepare_date_response( $row['created_at'], true ),
                         'order_details'    => $row['order_id'],
                         'transaction_type' => $row['transaction_type'],
                         'narration'        => $row['narration'],

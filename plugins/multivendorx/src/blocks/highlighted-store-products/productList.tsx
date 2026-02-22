@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { __ } from '@wordpress/i18n';
 
 interface Product {
 	id: number;
@@ -80,15 +81,12 @@ const ProductList: React.FC<ProductListProps> = ({
 	return (
 		<>
 			{loading ? (
-				<p>Loading products...</p>
+				<p>{__('Loading products...', 'multivendorx')}</p>
 			) : (
 				<div className="top-products-inner">
 					{products.map((product) => (
 						<div className="product-item" key={product.id}>
-							<a
-								href={product.permalink}
-								className="product-card"
-							>
+							<a href={product.permalink} className="product-card">
 								<div className="product-image">
 									<div className="image-placeholder">
 										<img
@@ -100,16 +98,19 @@ const ProductList: React.FC<ProductListProps> = ({
 										/>
 									</div>
 								</div>
+
 								<div className="product-content">
 									<h3 className="product-title">
 										{product.name}
 									</h3>
+
 									<div className="product-price">
 										{product.salePrice ? (
 											<>
 												<del className="regular-price">
 													{product.price}
 												</del>
+
 												<div className="sale-price">
 													{product.salePrice}
 												</div>
