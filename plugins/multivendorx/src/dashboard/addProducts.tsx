@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -10,13 +10,10 @@ import {
 	FormGroup,
 	getApiLink,
 	BasicInputUI,
-	MultiCheckBoxUI,
 	SelectInputUI,
-	useOutsideClick,
 	TextAreaUI,
 	FileInputUI,
 	NavigatorHeader,
-	InputWithSuggestions,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -38,12 +35,13 @@ const AddProduct = () => {
 
 	const [product, setProduct] = useState({});
 	const [translation, setTranslation] = useState([]);
-
 	const [featuredImage, setFeaturedImage] = useState(null);
 	const [galleryImages, setGalleryImages] = useState([]);
-
 	const [starFill, setstarFill] = useState(false);
-	const visibilityRef = useRef<HTMLDivElement | null>(null);
+	const [selectedCats, setSelectedCats] = useState([]);
+	const [selectedCat, setSelectedCat] = useState(null);
+	const [selectedSub, setSelectedSub] = useState(null);
+	const [selectedChild, setSelectedChild] = useState(null);
 
 	useEffect(() => {
 		if (!productId) {
@@ -84,355 +82,12 @@ const AddProduct = () => {
 		}
 	}, [productId]);
 
-	const getMetaValue = (meta, key) =>
-		meta?.find((m) => m.key === key)?.value || '';
-
-	useEffect(() => {
-		if (!product?.meta_data) {
-			return;
-		}
-
-		setProduct((prev) => ({
-			...prev,
-			shipping_policy: getMetaValue(
-				product.meta_data,
-				'multivendorx_shipping_policy'
-			),
-			refund_policy: getMetaValue(
-				product.meta_data,
-				'multivendorx_refund_policy'
-			),
-			cancellation_policy: getMetaValue(
-				product.meta_data,
-				'multivendorx_cancellation_policy'
-			),
-		}));
-	}, [product?.meta_data]);
-
-	const [categories, setCategories] = useState([]);
-	const [selectedCats, setSelectedCats] = useState([]);
-	const isPyramidEnabled =
-		appLocalizer.settings_databases_value['product-preferencess']
-			?.category_selection_method === 'yes';
-	const wrapperRef = useRef(null);
-	const [selectedCat, setSelectedCat] = useState(null);
-	const [selectedSub, setSelectedSub] = useState(null);
-	const [selectedChild, setSelectedChild] = useState(null);
-	const [isEditingVisibility, setIsEditingVisibility] = useState(false);
-	const [isEditingStatus, setIsEditingStatus] = useState(false);
-	const [existingTags, setExistingTags] = useState([]);
-
-	const VISIBILITY_LABELS: Record<string, string> = {
-		visible: 'Shop and search results',
-		catalog: 'Shop only',
-		search: 'Search results only',
-		hidden: 'Hidden',
-	};
-
-	const STATUS_LABELS: Record<string, string> = {
-		draft: __('Draft', 'multivendorx'),
-		publish: __('Published', 'multivendorx'),
-		pending: __('Submit', 'multivendorx'),
-	};
-
-	useOutsideClick(visibilityRef, () => setIsEditingVisibility(false));
-
-	// Add this useEffect in AddProduct to listen for suggestion clicks
-	useEffect(() => {
-		const handleAISuggestion = (event) => {
-			const { field, value } = event.detail;
-
-			// Update the appropriate field based on suggestion type
-			switch (field) {
-				case 'name':
-					setProduct((prev) => ({ ...prev, name: value }));
-					break;
-				case 'short_description':
-					setProduct((prev) => ({
-						...prev,
-						short_description: value,
-					}));
-					break;
-				case 'description':
-					setProduct((prev) => ({
-						...prev,
-						description: value,
-					}));
-					break;
-				default:
-					break;
-			}
-		};
-
-		window.addEventListener('ai-suggestion-selected', handleAISuggestion);
-
-		return () => {
-			window.removeEventListener(
-				'ai-suggestion-selected',
-				handleAISuggestion
-			);
-		};
-	}, []);
-
-	const handleCategoryClick = (catId) => {
-		if (!isPyramidEnabled) {
-			return;
-		}
-		setSelectedCat(catId);
-		setSelectedSub(null);
-		setSelectedChild(null);
-	};
-
-	const handleSubClick = (subId) => {
-		if (!isPyramidEnabled) {
-			return;
-		}
-		setSelectedSub(subId);
-		setSelectedChild(null);
-	};
-
-	const handleChildClick = (childId) => {
-		if (!isPyramidEnabled) {
-			return;
-		}
-		setSelectedChild(childId);
-	};
-
-	// Breadcrumb path click resets below levels
-	const handlePathClick = (level) => {
-		if (!isPyramidEnabled) {
-			return;
-		}
-		if (level === 'category') {
-			setSelectedSub(null);
-			setSelectedChild(null);
-		}
-		if (level === 'sub') {
-			setSelectedChild(null);
-		}
-	};
-
-	const printPath = () => {
-		if (!isPyramidEnabled) {
-			return;
-		}
-		const cat = treeData.find((c) => c.id === selectedCat);
-
-		const sub = cat?.children?.find((s) => s.id === selectedSub);
-
-		const child = sub?.children?.find((c) => c.id === selectedChild);
-
-		return (
-			<>
-				{cat && (
-					<span onClick={() => handlePathClick('category')}>
-						{cat.name}
-					</span>
-				)}
-
-				{sub && (
-					<>
-						{' / '}
-						<span onClick={() => handlePathClick('sub')}>
-							{sub.name}
-						</span>
-					</>
-				)}
-
-				{child && (
-					<>
-						{' / '}
-						<span>{child.name}</span>
-					</>
-				)}
-			</>
-		);
-	};
-
-	// Reset all
-	const resetSelection = () => {
-		setSelectedCat(null);
-		setSelectedSub(null);
-		setSelectedChild(null);
-	};
-
-	const [treeData, setTreeData] = useState([]);
-
-	const buildTree = (list, parent = 0) =>
-		list
-			.filter((item) => item.parent === parent)
-			.map((item) => ({
-				id: item.id,
-				name: item.name,
-				children: buildTree(list, item.id),
-			}));
-
-	useEffect(() => {
-		if (categories.length) {
-			setTreeData(buildTree(categories));
-		}
-	}, [categories]);
-
-	const preselectCategory = (savedId) => {
-		for (const cat of treeData) {
-			if (cat.id === savedId) {
-				setSelectedCat(cat.id);
-				return;
-			}
-
-			for (const sub of cat.children) {
-				if (sub.id === savedId) {
-					setSelectedCat(cat.id);
-					setSelectedSub(sub.id);
-					return;
-				}
-
-				for (const child of sub.children) {
-					if (child.id === savedId) {
-						setSelectedCat(cat.id);
-						setSelectedSub(sub.id);
-						setSelectedChild(child.id);
-						return;
-					}
-				}
-			}
-		}
-	};
-
-	useEffect(() => {
-		if (!isPyramidEnabled) {
-			return;
-		}
-		const id = selectedChild || selectedSub || selectedCat;
-
-		if (id) {
-			setProduct((prev) => ({
-				...prev,
-				categories: [{ id: Number(id) }],
-			}));
-		}
-	}, [selectedCat, selectedSub, selectedChild]);
-
-	const preselectedRef = useRef(false);
-
-	useEffect(() => {
-		if (preselectedRef.current) {
-			return;
-		}
-
-		if (treeData.length && product?.categories?.length) {
-			const savedId = product.categories[0].id;
-			preselectCategory(savedId);
-			preselectedRef.current = true;
-		}
-	}, [treeData, product]);
-
-	useEffect(() => {
-		axios
-			.get(`${appLocalizer.apiUrl}/wc/v3/products/categories`, {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					per_page: 100,
-				},
-			})
-			.then((res) => setCategories(res.data));
-	}, []);
-
-	useEffect(() => {
-		if (product && product.categories) {
-			setSelectedCats(product.categories.map((c) => c.id));
-		}
-	}, [product]);
-
-	const toggleCategory = (id) => {
-		setSelectedCats((prev) =>
-			prev.includes(id)
-				? prev.filter((item) => item !== id)
-				: [...prev, id]
-		);
-	};
-
-	const buildCategoryTree = (categories) => {
-		const map = {};
-		const roots = [];
-
-		categories.forEach((cat) => {
-			map[cat.id] = { ...cat, children: [] };
-		});
-
-		categories.forEach((cat) => {
-			if (cat.parent === 0) {
-				roots.push(map[cat.id]);
-			} else if (map[cat.parent]) {
-				map[cat.parent].children.push(map[cat.id]);
-			}
-		});
-
-		return roots;
-	};
-
-	const CategoryItem = ({ category, selectedCats, toggleCategory }) => {
-		return (
-			<li className={category.parent === 0 ? 'category' : 'sub-category'}>
-				<input
-					type="checkbox"
-					checked={selectedCats.includes(category.id)}
-					onChange={() => toggleCategory(category.id)}
-				/>
-				{category.name}
-
-				{category.children?.length > 0 && (
-					<ul>
-						{category.children.map((child) => (
-							<CategoryItem
-								key={child.id}
-								category={child}
-								selectedCats={selectedCats}
-								toggleCategory={toggleCategory}
-							/>
-						))}
-					</ul>
-				)}
-			</li>
-		);
-	};
-
-	const CategoryTree = ({ categories, selectedCats, toggleCategory }) => {
-		const nestedCategories = buildCategoryTree(categories);
-		return (
-			<div className="category-wrapper">
-				<ul>
-					{nestedCategories.map((cat) => (
-						<CategoryItem
-							key={cat.id}
-							category={cat}
-							selectedCats={selectedCats}
-							toggleCategory={toggleCategory}
-						/>
-					))}
-				</ul>
-			</div>
-		);
-	};
-
 	const typeOptions = [
 		{ label: 'Select product type', value: '' },
 		{ label: 'Simple Product', value: 'simple' },
 		{ label: 'Variable Product', value: 'variable' },
 	];
-	const stockStatusOptions = [
-		{ value: '', label: 'Stock Status' },
-		{ value: 'instock', label: 'In Stock' },
-		{ value: 'outofstock', label: 'Out of Stock' },
-		{ value: 'onbackorder', label: 'On Backorder' },
-	];
-
-	const backorderOptions = [
-		{ label: 'Do not allow', value: 'no' },
-		{ label: 'Allow, but notify customer', value: 'notify' },
-		{ label: 'Allow', value: 'yes' },
-	];
-
+	
 	const handleChange = (field, value) => {
 		setProduct((prev) => ({
 			...prev,
@@ -502,16 +157,6 @@ const AddProduct = () => {
 				console.error('Error updating product:', error);
 			});
 	};
-
-	useEffect(() => {
-		axios
-			.get(`${appLocalizer.apiUrl}/wc/v3/products/tags`, {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			})
-			.then((res) => {
-				setExistingTags(res.data);
-			});
-	}, []);
 
 	const [checklist, setChecklist] = useState({
 		name: false,
@@ -884,197 +529,31 @@ const AddProduct = () => {
 							</FormGroupWrapper>
 						</Card>
 					)}
-					<Card
-						contentHeight
-						title={__('Inventory', 'multivendorx')}
-						action={
-							<>
-								<div className="field-wrapper">
-									{__('Stock management', 'multivendorx')}
-									<MultiCheckBoxUI
-										look="toggle"
-										value={
-											product.manage_stock
-												? ['manage_stock']
-												: []
-										}
-										onChange={(e) =>
-											handleChange(
-												'manage_stock',
-												(
-													e as React.ChangeEvent<HTMLInputElement>
-												).target
-											)
-										}
-										options={[
-											{
-												key: 'manage_stock',
-												value: 'manage_stock',
-											},
-										]}
-									/>
-								</div>
-							</>
-						}
-					>
-						<FormGroupWrapper>
-							<FormGroup
-								cols={2}
-								label={__('SKU', 'multivendorx')}
-							>
-								<BasicInputUI
-									name="sku"
-									value={product.sku}
-									onChange={(value) =>
-										handleChange('sku', value)
-									}
-								/>
-							</FormGroup>
-							{!product.manage_stock && (
-								<FormGroup
-									cols={2}
-									label={__('Stock Status', 'multivendorx')}
-								>
-									<SelectInputUI
-										name="stock_status"
-										options={stockStatusOptions}
-										value={product.stock_status}
-										onChange={(selected) =>
-											handleChange(
-												'stock_status',
-												selected.value
-											)
-										}
-									/>
-								</FormGroup>
-							)}
-							{product.manage_stock && (
-								<>
-									<FormGroup
-										cols={2}
-										label={__('Quantity', 'multivendorx')}
-									>
-										<BasicInputUI
-											name="stock"
-											value={product.stock}
-											onChange={(value) =>
-												handleChange('stock', value)
-											}
-										/>
-									</FormGroup>
-									<FormGroup
-										cols={2}
-										label={__(
-											'Allow backorders?',
-											'multivendorx'
-										)}
-									>
-										<SelectInputUI
-											name="backorders"
-											options={backorderOptions}
-											value={product.backorders}
-											onChange={(selected) =>
-												handleChange(
-													'backorders',
-													selected.value
-												)
-											}
-										/>
-									</FormGroup>
-									<FormGroup
-										cols={2}
-										label={__(
-											'Low stock threshold',
-											'multivendorx'
-										)}
-									>
-										<BasicInputUI
-											name="low_stock_amount"
-											value={product.low_stock_amount}
-											onChange={(value) =>
-												handleChange(
-													'low_stock_amount',
-													value
-												)
-											}
-										/>
-									</FormGroup>
-								</>
-							)}
-						</FormGroupWrapper>
-					</Card>
 
-					<Card
-						contentHeight
-						title={__('Related listings', 'multivendorx')}
-					>
-						<FormGroupWrapper>
-							<FormGroup
-								cols={2}
-								label={__('Upsells', 'multivendorx')}
-							>
-								<BasicInputUI
-									name="name"
-									// value={product.name}
-									// onChange={(value) => handleChange('name', value)}
-								/>
-							</FormGroup>
-							<FormGroup
-								cols={2}
-								label={__('Cross-sells', 'multivendorx')}
-							>
-								<BasicInputUI
-									name="name"
-									// value={product.name}
-									// onChange={(value) => handleChange('name', value)}
-								/>
-							</FormGroup>
-						</FormGroupWrapper>
-					</Card>
+					{applyFilters(
+						'product_inventory',
+						null,
+						product,
+						setProduct,
+						handleChange
+					)}
 
-					<Card contentHeight title={__('Policies', 'multivendorx')}>
-						<FormGroupWrapper>
-							<FormGroup
-								label={__('Shipping Policy', 'multivendorx')}
-							>
-								<TextAreaUI
-									name="shipping_policy"
-									value={product.shipping_policy}
-									onChange={(value) =>
-										handleChange('shipping_policy', value)
-									}
-								/>
-							</FormGroup>
-							<FormGroup
-								label={__('Refund Policy', 'multivendorx')}
-							>
-								<TextAreaUI
-									name="refund_policy"
-									value={product.refund_policy}
-									onChange={(value) =>
-										handleChange('refund_policy', value)
-									}
-								/>
-							</FormGroup>
-							<FormGroup
-								label={__(
-									'Cancellation Policy',
-									'multivendorx'
-								)}
-							>
-								<TextAreaUI
-									name="cancellation_policy"
-									value={product.cancellation_policy}
-									onChange={(value) =>
-										handleChange(
-											'cancellation_policy',
-											value
-										)
-									}
-								/>
-							</FormGroup>
-						</FormGroupWrapper>
-					</Card>
+					{applyFilters(
+						'product_related_list',
+						null,
+						product,
+						setProduct,
+						handleChange
+					)}
+
+					{applyFilters(
+							'product_policies',
+							null,
+							product,
+							setProduct,
+							handleChange
+						)}
+					
 					{modules.includes('min-max') &&
 						product?.type == 'simple' &&
 						applyFilters(
@@ -1104,335 +583,23 @@ const AddProduct = () => {
 				</Column>
 
 				<Column grid={3}>
-					{applyFilters('product_ai_assist', null, product)}
-					<Card
-						contentHeight
-						title={__('Publishing', 'multivendorx')}
-						action={
-							<>
-								<label
-									onClick={() => setstarFill((prev) => !prev)}
-									style={{ cursor: 'pointer' }}
-									className="field-wrapper"
-								>
-									{__('Featured product', 'multivendorx')}
-									<i
-										className={`star-icon ${starFill || product?.featured ? 'adminfont-star' : 'adminfont-star-o'}`}
-									/>
-								</label>
-							</>
-						}
-					>
-						<FormGroupWrapper>
-							<FormGroup
-								row
-								label={__('Catalog Visibility', 'multivendorx')}
-								htmlFor="catalog-visibility"
-							>
-								<div ref={visibilityRef}>
-									<div className="catalog-visibility">
-										{!isEditingVisibility && (
-											<div
-												onClick={() => {
-													setIsEditingVisibility(
-														(prev) => !prev
-													);
-													setIsEditingStatus(false);
-												}}
-											>
-												<span className="catalog-visibility-value">
-													{
-														VISIBILITY_LABELS[
-															product
-																.catalog_visibility
-														]
-													}
-												</span>
-												<i className="adminfont-arrow-down-up" />
-											</div>
-										)}
-										{isEditingVisibility && (
-											<SelectInputUI
-												name="catalog_visibility"
-												size="14rem"
-												options={[
-													{
-														key: 'visible',
-														value: 'visible',
-														label: 'Shop and search results',
-													},
-													{
-														key: 'catalog',
-														value: 'catalog',
-														label: 'Shop only',
-													},
-													{
-														key: 'search',
-														value: 'search',
-														label: 'Search results only',
-													},
-													{
-														key: 'hidden',
-														value: 'hidden',
-														label: 'Hidden',
-													},
-												]}
-												value={
-													product.catalog_visibility
-												}
-												onChange={(selected) => {
-													handleChange(
-														'catalog_visibility',
-														selected.value
-													);
-													setIsEditingVisibility(
-														false
-													);
-												}}
-											/>
-										)}
-									</div>
-								</div>
-							</FormGroup>
-							<FormGroup
-								row
-								label={__('Product Status', 'multivendorx')}
-								htmlFor="status"
-							>
-								<div className="catalog-visibility">
-									{!isEditingStatus && (
-										<div
-											onClick={() => {
-												setIsEditingStatus(
-													(prev) => !prev
-												);
-												setIsEditingVisibility(false);
-											}}
-										>
-											<span className="catalog-visibility-value">
-												{STATUS_LABELS[product.status]}
-											</span>
-											<i className="adminfont-arrow-down-up" />
-										</div>
-									)}
-									{isEditingStatus && (
-										<SelectInputUI
-											name="status"
-											wrapperClass="fit-content"
-											options={[
-												{
-													key: 'draft',
-													value: 'draft',
-													label: __(
-														'Draft',
-														'multivendorx'
-													),
-												},
-												{
-													key: 'publish',
-													value: 'publish',
-													label: __(
-														'Published',
-														'multivendorx'
-													),
-												},
-												{
-													key: 'pending',
-													value: 'pending',
-													label: __(
-														'Submit',
-														'multivendorx'
-													),
-												},
-											]}
-											value={product.status}
-											onChange={(selected) =>
-												handleChange(
-													'status',
-													selected.value
-												)
-											}
-										/>
-									)}
-								</div>
-							</FormGroup>
+					{applyFilters('product_ai_assist', null, product, setProduct)}
 
-							<FormGroup
-								row
-								label={__('Cataloged at', 'multivendorx')}
-								htmlFor="status"
-							>
-								<div className="catalog-visibility">
-									<span className="catalog-visibility-value">
-										{product?.date_created}{' '}
-										<i className="adminfont-arrow-down-up" />
-									</span>
-								</div>
-							</FormGroup>
-						</FormGroupWrapper>
-					</Card>
-
-					<Card contentHeight title={__('Category', 'multivendorx')}>
-						{appLocalizer.settings_databases_value[
-							'product-preferencess'
-						]?.category_selection_method === 'yes' ? (
-							<>
-								<div className="category-breadcrumb-wrapper">
-									<div className="category-breadcrumb">
-										{printPath()}
-									</div>
-
-									{(selectedCat ||
-										selectedSub ||
-										selectedChild) && (
-										<button
-											onClick={resetSelection}
-											className="admin-btn btn-red"
-										>
-											{__('Reset', 'multivendorx')}
-										</button>
-									)}
-								</div>
-
-								<FormGroupWrapper>
-									<div
-										className="category-wrapper template2"
-										ref={wrapperRef}
-									>
-										<ul className="settings-form-group-radio">
-											{treeData.map((cat) => (
-												<React.Fragment key={cat.id}>
-													<li
-														className={`category ${
-															selectedCat ===
-															cat.id
-																? 'radio-select-active'
-																: ''
-														}`}
-														style={{
-															display:
-																selectedCat ===
-																	null ||
-																selectedCat ===
-																	cat.id
-																	? 'block'
-																	: 'none',
-														}}
-														onClick={() =>
-															handleCategoryClick(
-																cat.id
-															)
-														}
-													>
-														<label>
-															{cat.name}
-														</label>
-													</li>
-													{selectedCat === cat.id &&
-														cat.children?.length >
-															0 && (
-															<ul className="settings-form-group-radio">
-																{cat.children.map(
-																	(sub) => (
-																		<React.Fragment
-																			key={
-																				sub.id
-																			}
-																		>
-																			<li
-																				className={`sub-category ${
-																					selectedSub ===
-																					sub.id
-																						? 'radio-select-active'
-																						: ''
-																				}`}
-																				style={{
-																					display:
-																						!selectedSub ||
-																						selectedSub ===
-																							sub.id
-																							? 'block'
-																							: 'none',
-																				}}
-																				onClick={() =>
-																					handleSubClick(
-																						sub.id
-																					)
-																				}
-																			>
-																				<label>
-																					{
-																						sub.name
-																					}
-																				</label>
-																			</li>
-
-																			{selectedSub ===
-																				sub.id &&
-																				sub
-																					.children
-																					?.length >
-																					0 && (
-																					<ul className="settings-form-group-radio">
-																						{sub.children.map(
-																							(
-																								child
-																							) => (
-																								<li
-																									key={
-																										child.id
-																									}
-																									className={`sub-category ${
-																										selectedChild ===
-																										child.id
-																											? 'radio-select-active'
-																											: ''
-																									}`}
-																									style={{
-																										display:
-																											!selectedChild ||
-																											selectedChild ===
-																												child.id
-																												? 'block'
-																												: 'none',
-																									}}
-																									onClick={() =>
-																										handleChildClick(
-																											child.id
-																										)
-																									}
-																								>
-																									<label>
-																										{
-																											child.name
-																										}
-																									</label>
-																								</li>
-																							)
-																						)}
-																					</ul>
-																				)}
-																		</React.Fragment>
-																	)
-																)}
-															</ul>
-														)}
-												</React.Fragment>
-											))}
-										</ul>
-									</div>
-								</FormGroupWrapper>
-							</>
-						) : (
-							<FormGroupWrapper>
-								<CategoryTree
-									categories={categories}
-									selectedCats={selectedCats}
-									toggleCategory={toggleCategory}
-								/>
-							</FormGroupWrapper>
+					{applyFilters(
+							'product_publishing_catalog_section',
+							null,
+							product,
+							setProduct,
+							starFill,
+							setstarFill,
+							handleChange
 						)}
-					</Card>
+
+					{applyFilters(
+							'product_category_section',
+							null, product, setProduct, selectedCats, setSelectedCats, selectedChild, setSelectedChild, selectedSub, setSelectedSub, selectedCat, setSelectedCat
+						)}
+
 					{modules.includes('wpml') && (
 						<Card
 							title={__('Translations', 'multivendorx')}
@@ -1474,36 +641,13 @@ const AddProduct = () => {
 							</FormGroupWrapper>
 						</Card>
 					)}
-					<Card
-						contentHeight
-						title={__('Product tag', 'multivendorx')}
-					>
-						<FormGroupWrapper>
-							<InputWithSuggestions
-								suggestions={existingTags.map(
-									(tag) => tag.name
-								)}
-								value={
-									product.tags?.map((tag) => tag.name) || []
-								}
-								onChange={(list) => {
-									console.log('Tags updated:', list);
-									const updatedTags = list.map((name) => {
-										const existing = existingTags.find(
-											(tag) => tag.name === name
-										);
-										return existing ? existing : { name };
-									});
-									setProduct((prev) => ({
-										...prev,
-										tags: updatedTags,
-									}));
-								}}
-								placeholder={__('Type tag…', 'multivendorx')}
-								addButtonLabel={__('Add', 'multivendorx')}
-							/>
-						</FormGroupWrapper>
-					</Card>
+
+					{applyFilters(
+						'product_tag',
+						null,
+						product,
+						setProduct
+					)}
 
 					<Card
 						contentHeight

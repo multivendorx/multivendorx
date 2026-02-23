@@ -146,8 +146,9 @@ class StripeConnect {
             $badge_class       = ( $stripe_account_id ) ? 'green' : 'red';
             $fields            = array(
                 array(
-                    'type' => 'html',
-                    'html' => '<div class="form-group"><label>' . __( 'Stripe Status:', 'multivendorx' ) . ' <span class="admin-badge ' . $badge_class . '">' . $onboarding_status . '</span></label></div>',
+                    'type' => 'blocktext',
+                    'title' => __( 'Stripe Status:', 'multivendorx' ),
+                    'blocktext' =>  $onboarding_status,
                 ),
             );
 
@@ -157,6 +158,7 @@ class StripeConnect {
                         'type'   => 'button',
                         'key'    => 'disconnect_account',
                         'label'  => __( 'Disconnect Stripe Account', 'multivendorx' ),
+                        'text'  => __( 'Disconnect', 'multivendorx' ),
                         'action' => 'disconnect_stripe_account',
                         'class'  => 'mvx-stripe-disconnect-btn',
                     );
@@ -165,6 +167,7 @@ class StripeConnect {
                         'type'   => 'button',
                         'key'    => 'create_account',
                         'label'  => __( 'Connect with Stripe', 'multivendorx' ),
+                        'text'  => __( 'Connect', 'multivendorx' ),
                         'action' => 'create_stripe_account',
                         'class'  => 'mvx-stripe-connect-btn',
                     );
