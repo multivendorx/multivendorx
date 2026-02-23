@@ -50,15 +50,22 @@ const AllProduct: React.FC = () => {
 
 	if (!element) {
 		const path = location.pathname;
+
 		if (path.includes('/edit/')) {
 			element = 'edit';
 		} else if (path.includes('/add/')) {
 			element = 'add';
+		} else {
+			// Let PRO decide via filter
+			element = applyFilters(
+				'multivendorx_product_detect_view',
+				null,
+				path
+			);
 		}
 	}
 
-	const isAddProduct = element === 'edit';
-	const isSpmvOn = element === 'add';
+	const view = element ?? 'list';
 
 	const handleDelete = async (productId: number) => {
 		const res = await axios.delete(
@@ -467,7 +474,7 @@ const AllProduct: React.FC = () => {
 
 	return (
 		<>
-			{!isAddProduct && !isSpmvOn && (
+			{view === 'list' && (
 				<>
 					<NavigatorHeader
 						headerTitle={__('All Products', 'multivendorx')}
@@ -475,38 +482,40 @@ const AllProduct: React.FC = () => {
 							'Manage your store products',
 							'multivendorx'
 						)}
-						buttons={[
-							...(modules.includes('import-export')
-								? [
-									{
-										custom: applyFilters(
-											'product_import_export',
-											null
-										),
-									},
-								]
-								: []),
-
-							{
-								label: __('Add New', 'multivendorx'),
-								icon: 'plus',
-								onClick: () => {
-									if (modules.includes('shared-listing')) {
-										if (appLocalizer.permalink_structure) {
-											navigate(
-												`${basePath}/${appLocalizer.dashboard_slug}/products/add/`
-											);
+						buttons={applyFilters(
+							'product_header_buttons',
+							[
+								...(modules.includes('import-export')
+									? [
+										{
+											custom: applyFilters(
+												'product_import_export',
+												null
+											),
+										},
+									]
+									: []),
+								{
+									label: __('Add New', 'multivendorx'),
+									icon: 'plus',
+									onClick: () => {
+										if (modules.includes('shared-listing')) {
+											if (appLocalizer.permalink_structure) {
+												navigate(
+													`${basePath}/${appLocalizer.dashboard_slug}/products/add/`
+												);
+											} else {
+												navigate(
+													`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=add`
+												);
+											}
 										} else {
-											navigate(
-												`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=add`
-											);
+											createAutoDraftProduct();
 										}
-									} else {
-										createAutoDraftProduct();
-									}
+									},
 								},
-							},
-						]}
+							]
+						)}
 					/>
 
 					<TableCard
@@ -518,7 +527,7 @@ const AllProduct: React.FC = () => {
 						ids={rowIds}
 						categoryCounts={categoryCounts}
 						search={{}}
-						filters={filters}
+						// filters={filters}
 						bulkActions={bulkActions}
 						onBulkActionApply={(
 							action: string,
@@ -538,8 +547,13 @@ const AllProduct: React.FC = () => {
 				</>
 			)}
 
-			{isAddProduct && <AddProductCom />}
-			{isSpmvOn && <SpmvProducts />}
+			{view === 'edit' && <AddProductCom />}
+			{view === 'add' && <SpmvProducts />}
+			{applyFilters(
+				'multivendorx_product_extra_views',
+				null,
+				element
+			)}
 		</>
 	);
 };
