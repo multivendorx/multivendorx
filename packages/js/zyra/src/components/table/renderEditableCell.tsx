@@ -73,7 +73,7 @@ export const EditableCell: React.FC<EditableCellProps> = ({
 								value={value}
 								size={20}
 								options={header.options}
-								onChange={handleSave}
+								onChange={(e)=>handleSave(e.value)}
 							/>
 						);
 
