@@ -401,16 +401,25 @@ const SetupWizard: React.FC = () => {
 			formFields: [
 				{
 					key: 'commission_settings',
-					type: 'setup',
-					title: __('Commission settings', 'multivendorx'),
+					type: 'button',
+					name: __('Setup', 'multivendorx'),
 					desc: __(
 						'Adjust commission rules and payout behavior.',
 						'multivendorx'
 					),
-					hideCheckbox: true,
-					link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+					link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=commissions`,
 				},
-
+				// {
+				// 	key: 'commission_settings',
+				// 	type: 'setup',
+				// 	title: __('Commission settings', 'multivendorx'),
+				// 	desc: __(
+				// 		'Adjust commission rules and payout behavior.',
+				// 		'multivendorx'
+				// 	),
+				// 	hideCheckbox: true,
+				// 	link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+				// },
 				{
 					key: 'wizardButtons',
 					type: 'button',

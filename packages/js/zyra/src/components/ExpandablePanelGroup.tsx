@@ -524,7 +524,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
 
     const renderWizardButtons = () => {
         const step = ExpandablePanelMethods[wizardIndex];
-        const buttonField = step?.formFields?.find((f) => f.type === 'button');
+        const buttonField = step?.formFields?.find((f) => f.key === 'wizardButtons');
         if (!buttonField) return null;
         return renderField(step.id, buttonField);
     };
@@ -578,7 +578,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
         const fieldValue = value[methodId]?.[field.key];
         const handleInternalChange = (val: any) => handleInputChange(methodId, field.key, val);
 
-        if (field.type === 'button' && isWizardMode) {
+        if (field.type === 'button' && isWizardMode && Array.isArray(field.options)) {
             const wizardSteps = methods.map((m, i) => ({ ...m, index: i })).filter((m) => m.isWizardMode);
             const isLastMethod = wizardIndex === wizardSteps.length - 1;
             const isFirstMethod = wizardIndex === 0;
@@ -949,7 +949,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                 >
                                     <FormGroupWrapper>
                                         {method.formFields.map((field) => {
-                                            if (isWizardMode && field.type === 'button') return null;
+                                            if (isWizardMode && field.key === 'wizardButtons') return null;
 
                                             const shouldShowField = Array.isArray(field.dependent)
                                                 ? field.dependent.every((dep) => shouldRender(dep, method.id))
