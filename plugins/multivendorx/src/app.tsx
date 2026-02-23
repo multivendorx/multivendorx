@@ -312,6 +312,7 @@ const App = () => {
 				open={openFeaturePopup}
 				onClose={handleCloseFeaturePopup}
 				width={31.25}
+				height={30}
 				header={{
 					icon: 'book',
 					title: __('Import Dummy Data', 'multivendorx'),
@@ -354,123 +355,65 @@ const App = () => {
 							'multivendorx'
 						)}
 					</div>
-					<DoActionBtn
-						buttonKey="import_dummy_data"
-						value={__('Import Dummy Data', 'multivendorx')}
-						apilink="import-dummy-data"
-						parameter="action"
-						interval={1000}
-						proSetting={false}
-						proSettingChanged={() => false}
-						appLocalizer={appLocalizer}
-						successMessage={__(
-							'Dummy data imported successfully!',
-							'multivendorx'
-						)}
-						failureMessage={__(
-							'Failed to import dummy data.',
-							'multivendorx'
-						)}
-						tasks={[
-							{
-								action: 'import_store_owners',
-								message: __(
-									'Importing store owners...',
-									'multivendorx'
-								),
-								cacheKey: 'store_owners',
-								successMessage: __(
-									'Store owners imported',
-									'multivendorx'
-								),
-								failureMessage: __(
-									'Failed to import store owners',
-									'multivendorx'
-								),
+					<AdminButtonUI
+						buttons={{
+							text: __('Import Dummy Data', 'multivendorx'),
+							icon: 'import',
+							color: 'purple',
+							apilink: 'import-dummy-data',
+							parameter: 'action',
+							interval: 1000,
+							appLocalizer: appLocalizer,
+							successMessage: __('Dummy data imported successfully!', 'multivendorx'),
+							failureMessage: __('Failed to import dummy data.', 'multivendorx'),
+							showProgress: true,
+							tasks: [
+								{
+									action: 'import_store_owners',
+									message: __('Importing store owners...', 'multivendorx'),
+									cacheKey: 'store_owners',
+									successMessage: __('Store owners imported', 'multivendorx'),
+									failureMessage: __('Failed to import store owners', 'multivendorx'),
+								},
+								{
+									action: 'import_stores',
+									message: __('Creating stores...', 'multivendorx'),
+									cacheKey: 'store_ids',
+									successMessage: __('Stores created', 'multivendorx'),
+									failureMessage: __('Failed to create stores', 'multivendorx'),
+								},
+								{
+									action: 'import_products',
+									message: __('Importing products...', 'multivendorx'),
+									cacheKey: 'product_ids',
+									successMessage: __('Products imported', 'multivendorx'),
+									failureMessage: __('Failed to import products', 'multivendorx'),
+								},
+								{
+									action: 'import_commissions',
+									message: __('Creating commissions...', 'multivendorx'),
+									successMessage: __('Commissions created', 'multivendorx'),
+									failureMessage: __('Failed to create commissions', 'multivendorx'),
+								},
+								{
+									action: 'import_orders',
+									message: __('Creating orders...', 'multivendorx'),
+									successMessage: __('Orders created', 'multivendorx'),
+									failureMessage: __('Failed to create orders', 'multivendorx'),
+								},
+								{
+									action: 'import_reviews',
+									message: __('Creating reviews...', 'multivendorx'),
+									successMessage: __('Reviews created', 'multivendorx'),
+									failureMessage: __('Failed to create reviews', 'multivendorx'),
+								},
+							],
+							onComplete: (data) => {
+								console.log('Import completed', data);
 							},
-							{
-								action: 'import_stores',
-								message: __(
-									'Creating stores...',
-									'multivendorx'
-								),
-								cacheKey: 'store_ids',
-								successMessage: __(
-									'Stores created',
-									'multivendorx'
-								),
-								failureMessage: __(
-									'Failed to create stores',
-									'multivendorx'
-								),
+							onError: (error) => {
+								console.error('Import failed', error);
 							},
-							{
-								action: 'import_products',
-								message: __(
-									'Importing products...',
-									'multivendorx'
-								),
-								cacheKey: 'product_ids',
-								successMessage: __(
-									'Products imported',
-									'multivendorx'
-								),
-								failureMessage: __(
-									'Failed to import products',
-									'multivendorx'
-								),
-							},
-							{
-								action: 'import_commissions',
-								message: __(
-									'Creating commissions...',
-									'multivendorx'
-								),
-								successMessage: __(
-									'Commissions created',
-									'multivendorx'
-								),
-								failureMessage: __(
-									'Failed to create commissions',
-									'multivendorx'
-								),
-							},
-							{
-								action: 'import_orders',
-								message: __(
-									'Creating orders...',
-									'multivendorx'
-								),
-								successMessage: __(
-									'Orders created',
-									'multivendorx'
-								),
-								failureMessage: __(
-									'Failed to create orders',
-									'multivendorx'
-								),
-							},
-							{
-								action: 'import_reviews',
-								message: __(
-									'Creating reviews...',
-									'multivendorx'
-								),
-								successMessage: __(
-									'Reviews created',
-									'multivendorx'
-								),
-								failureMessage: __(
-									'Failed to create reviews',
-									'multivendorx'
-								),
-							},
-						]}
-						onComplete={(data) => {
-							console.log('Import completed', data);
-						}}
-						onError={(error) => {
-							console.error('Import failed', error);
 						}}
 					/>
 				</FormGroupWrapper>
