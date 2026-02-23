@@ -241,7 +241,7 @@ const App = () => {
 			targetBlank: true,
 		},
 		{
-			title: 'Import Dummy Data',
+			title: __('Import Dummy Data', 'multivendorx'),
 			icon: 'adminfont-import',
 			action: handleOpenFeaturePopup,
 		},
