@@ -110,6 +110,12 @@ class Dashboard extends \WP_REST_Controller {
                 'icon'       => 'coupon',
                 'capability' => array( 'read_shop_coupons' ),
             ),
+            'staff-management'       => array(
+                'name'       => 'Staff Management',
+                'slug'       => 'staff-management',
+                'icon'       => 'coupon',
+                'capability' => array( 'create_stores' ),
+            ),
             'sales'         => array(
                 'name'       => 'Sales',
                 'slug'       => 'sales',
@@ -195,6 +201,7 @@ class Dashboard extends \WP_REST_Controller {
                 ),
                 'capability' => array( 'view_support_tickets' ),
             ),
+            
             'reports'       => array(
                 'name'       => 'Stats / Report',
                 'slug'       => 'reports',
