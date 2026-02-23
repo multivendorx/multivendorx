@@ -335,49 +335,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 			label: 'Created Date',
 			type: 'date',
 		},
-	]; const filters = [
-		{
-			key: 'transactionType',
-			label: __('Transaction Type', 'multivendorx'),
-			type: 'select',
-			options: [
-				{ label: __('Transaction Type', 'multivendorx'), value: '' },
-				{
-					label: __('Commission', 'multivendorx'),
-					value: 'Commission',
-				},
-				{
-					label: __('Withdrawal', 'multivendorx'),
-					value: 'Withdrawal',
-				},
-				{ label: __('Refund', 'multivendorx'), value: 'Refund' },
-				{ label: __('Reversed', 'multivendorx'), value: 'Reversed' },
-				{
-					label: __('COD received', 'multivendorx'),
-					value: 'COD received',
-				},
-			],
-		},
-		{
-			key: 'transactionStatus',
-			label: __('Financial Transactions', 'multivendorx'),
-			type: 'select',
-			options: [
-				{
-					label: __('Financial Transactions', 'multivendorx'),
-					value: '',
-				},
-				{ label: __('Credit', 'multivendorx'), value: 'Cr' },
-				{ label: __('Debit', 'multivendorx'), value: 'Dr' },
-			],
-		},
-		{
-			key: 'created_at',
-			label: __('Created Date', 'multivendorx'),
-			type: 'date',
-		},
-	];
-
+	]; 
+	
 	const downloadTransactionCSV = (selectedIds: number[]) => {
 		if (!selectedIds) {
 			return;

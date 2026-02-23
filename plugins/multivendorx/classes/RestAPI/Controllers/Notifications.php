@@ -254,8 +254,8 @@ class Notifications extends \WP_REST_Controller {
                         'type'       => $notification['type'],
                         'title'      => $notification['title'],
                         'message'    => $notification['message'],
-                        'created_at'       => Utill::multivendorx_rest_prepare_date_response( $notification['created_at'] ) ),
-                        'created_at_gmt'   => Utill::multivendorx_rest_prepare_date_response( $notification['created_at'], true ) ),
+                        'created_at'       => Utill::multivendorx_rest_prepare_date_response( $notification['created_at'] ),
+                        'created_at_gmt'   => Utill::multivendorx_rest_prepare_date_response( $notification['created_at'], true )
                     )
                 );
             }
