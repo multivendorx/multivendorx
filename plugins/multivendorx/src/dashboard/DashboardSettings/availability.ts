@@ -45,8 +45,8 @@ export default {
             desc: 'Automatically close your store on recognized public holidays',
             options: [
                 {
-                    key: 'block_purchases',
-                    value: 'block_purchases',
+                    key: 'block_purchases_on_holidays',
+                    value: 'block_purchases_on_holidays',
                 },
             ],
             look: 'toggle',
@@ -70,10 +70,10 @@ export default {
                 },
             ],
             className: 'checklist',
-            // dependent: {
-            //     key: 'block_purchases',
-            //     set: true,
-            // },
+            dependent: {
+                key: 'block_purchases_on_holidays',
+                set: true,
+            },
         },
         {
             key: 'separator_category_specific',

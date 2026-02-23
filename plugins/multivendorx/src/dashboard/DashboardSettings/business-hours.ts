@@ -12,16 +12,10 @@ export default {
 	submitUrl: `store/${appLocalizer.store_id}`,
 	modal: [
 		{
-			key: 'onboarding_steps_configuration',
+			key: 'store_workflow_preferences',
 			type: 'checkbox',
 			label: __('Lorem ipsum dolor sit amet', 'multivendorx'),
 			options: [
-				{
-					key: 'enable_store_time',
-					label: __('Enable Store Time', 'multivendorx'),
-					desc: __('Lorem ipsum dolor sit amet', 'multivendorx'),
-					value: 'enable_store_time',
-				},
 				{
 					key: 'enable_lunch_break',
 					label: __('Enable Lunch Break', 'multivendorx'),
@@ -53,16 +47,16 @@ export default {
 			key: 'set_week_off_days',
 			type: 'setting-toggle',
 			label: __('Set Week Off Days', 'multivendorx'),
-			// multiSelect: true,
+			multiSelect: true,
 			options: [
-				{ key: 0, label: __('Sun', 'multivendorx'), value: 0 },
-				{ key: 1, label: __('Mon', 'multivendorx'), value: 1 },
-				{ key: 2, label: __('Tue', 'multivendorx'), value: 2 },
-				{ key: 3, label: __('Wed', 'multivendorx'), value: 3 },
-				{ key: 4, label: __('Thu', 'multivendorx'), value: 4 },
-				{ key: 5, label: __('Fri', 'multivendorx'), value: 5 },
-				{ key: 6, label: __('Sat', 'multivendorx'), value: 6 },
-			],
+				{ label: __('Sun', 'multivendorx'), value: 'sun' },
+				{ label: __('Mon', 'multivendorx'), value: 'mon' },
+				{ label: __('Tue', 'multivendorx'), value: 'tue' },
+				{ label: __('Wed', 'multivendorx'), value: 'wed' },
+				{ label: __('Thu', 'multivendorx'), value: 'thu' },
+				{ label: __('Fri', 'multivendorx'), value: 'fri' },
+				{ label: __('Sat', 'multivendorx'), value: 'sat' },
+			]
 		},
 		{
 			key: 'disbursement_fortnightly',

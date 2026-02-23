@@ -222,7 +222,7 @@ class Store {
         $rows = $wpdb->get_results( $sql, ARRAY_A );
         $meta = array();
         foreach ( $rows as $row ) {
-            $meta[ $row['meta_key'] ] = $row['meta_value'];
+            $meta[ $row['meta_key'] ] = maybe_unserialize( $row['meta_value'] );
         }
 
         if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
