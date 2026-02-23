@@ -78,7 +78,7 @@ const StaffManagement: React.FC = () => {
                 <PopupUI
                     open={AddStaff}
                     onClose={() => setAddStaff(false)}
-                    width={50}
+                    width={60}
                     header={{
                         icon: 'coupon',
                         title: __('Add Store Staff Member', 'multivendorx'),
@@ -104,7 +104,15 @@ const StaffManagement: React.FC = () => {
                     }
                 >
                     <>
-                        <FormGroupWrapper>
+                        <FormGroupWrapper className="bg-light-white">
+                            <div className="form-group-title-wrapper">
+                                <div className="title">
+                                    {__(
+                                        'User Information',
+                                        'multivendorx'
+                                    )}
+                                </div>
+                            </div>
                             <FormGroup cols={2} label={__('Username', 'multivendorx')} htmlFor="title" >
                                 <BasicInputUI
                                     type="text"
@@ -127,8 +135,14 @@ const StaffManagement: React.FC = () => {
                                     type="text"
                                 />
                             </FormGroup>
-
-                            <FormGroup cols={2} label={__('Products', 'multivendorx')} htmlFor="title" >
+                        </FormGroupWrapper>
+                        <FormGroupWrapper >
+                            <div className="form-group-title-wrapper">
+                                <div className="title">
+                                    {__('Assign Capabilities', 'multivendorx')}
+                                </div>
+                            </div>
+                            <FormGroup className="bg-light-white" cols={2} label={__('Products', 'multivendorx')} htmlFor="title" >
                                 <MultiCheckBoxUI
                                     description={vendorStorefrontProductsField.desc}
                                     wrapperClass="checkbox-list-side-by-side"
@@ -140,7 +154,7 @@ const StaffManagement: React.FC = () => {
                                 />
                             </FormGroup>
 
-                            <FormGroup cols={2} label={__('Orders', 'multivendorx')} htmlFor="title" >
+                            <FormGroup className="bg-light-white" cols={2} label={__('Orders', 'multivendorx')} htmlFor="title" >
                                 <MultiCheckBoxUI
                                     description={vendorStorefrontProductsField.desc}
                                     wrapperClass="checkbox-list-side-by-side"
@@ -152,7 +166,7 @@ const StaffManagement: React.FC = () => {
                                 />
                             </FormGroup>
 
-                            <FormGroup cols={2} label={__('Coupons', 'multivendorx')} htmlFor="title" >
+                            <FormGroup className="bg-light-white" cols={2} label={__('Coupons', 'multivendorx')} htmlFor="title" >
                                 <MultiCheckBoxUI
                                     description={vendorStorefrontProductsField.desc}
                                     wrapperClass="checkbox-list-side-by-side"
@@ -164,7 +178,7 @@ const StaffManagement: React.FC = () => {
                                 />
                             </FormGroup>
 
-                            <FormGroup cols={2} label={__('Analytics', 'multivendorx')} htmlFor="title" >
+                            <FormGroup className="bg-light-white" cols={2} label={__('Analytics', 'multivendorx')} htmlFor="title" >
                                 <MultiCheckBoxUI
                                     description={vendorStorefrontProductsField.desc}
                                     wrapperClass="checkbox-list-side-by-side"

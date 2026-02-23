@@ -84,47 +84,52 @@ const ProductList: React.FC<ProductListProps> = ({
 				<p>{__('Loading products...', 'multivendorx')}</p>
 			) : (
 				<div className="top-products-inner">
-					{products.map((product) => (
-						<div className="product-item" key={product.id}>
-							<a href={product.permalink} className="product-card">
-								<div className="product-image">
-									<div className="image-placeholder">
-										<img
-											src={
-												product.images?.[0]?.src ||
-												'http://localhost:8889/wp-content/uploads/woocommerce-placeholder.webp'
-											}
-											alt={product.name}
-										/>
+					<h3>{__('Product By Rating', 'multivendorx')}</h3>
+					{products.length > 0 ? (
+						products.map((product) => (
+							<div className="product-item" key={product.id}>
+								<a href={product.permalink} className="product-card">
+									<div className="product-image">
+										<div className="image-placeholder">
+											<img
+												src={
+													product.images?.[0]?.src ||
+													placeholderImage // Changed this line (line 15)
+												}
+												alt={product.name}
+											/>
+										</div>
 									</div>
-								</div>
 
-								<div className="product-content">
-									<h3 className="product-title">
-										{product.name}
-									</h3>
+									<div className="product-content">
+										<h3 className="product-title">
+											{product.name}
+										</h3>
 
-									<div className="product-price">
-										{product.salePrice ? (
-											<>
-												<del className="regular-price">
+										<div className="product-price">
+											{product.salePrice ? (
+												<>
+													<del className="regular-price">
+														{product.price}
+													</del>
+
+													<div className="sale-price">
+														{product.salePrice}
+													</div>
+												</>
+											) : (
+												<span className="regular-price">
 													{product.price}
-												</del>
-
-												<div className="sale-price">
-													{product.salePrice}
-												</div>
-											</>
-										) : (
-											<span className="regular-price">
-												{product.price}
-											</span>
-										)}
+												</span>
+											)}
+										</div>
 									</div>
-								</div>
-							</a>
-						</div>
-					))}
+								</a>
+							</div>
+						))
+					) : (
+						<p>{__('No products found.', 'multivendorx')}</p>
+					)}
 				</div>
 			)}
 		</>

@@ -5,7 +5,6 @@ import {
 	useBlockProps,
 	BlockControls,
 	AlignmentToolbar,
-	BlockAlignmentToolbar,
 } from '@wordpress/block-editor';
 import {
 	PanelBody,

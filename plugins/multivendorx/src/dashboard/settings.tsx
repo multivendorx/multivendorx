@@ -8,7 +8,6 @@ import {
 	getAvailableSettings,
 	getSettingById,
 	RenderComponent,
-	Banner,
 	useModules,
 	SettingsNavigator,
 } from 'zyra';
@@ -60,161 +59,6 @@ const settings: React.FC<SettingsProps> = () => {
 
 	// Build hash URL for a given tab
 	const prepareUrl = (tabId: string) => `#subtab=${tabId}`;
-
-	// const settingContent = applyFilters(
-	// 	'multivendorx_store_settings_tabs',
-	// 	[
-	// 		{
-	// 			type: 'file',
-	// 			content: {
-	// 				id: 'general',
-	// 				headerTitle: __('General', 'multivendorx'),
-	// 				headerDescription: __(
-	// 					'Update your store’s core information - name, slug, description, and buyer message',
-	// 					'multivendorx'
-	// 				),
-	// 				headerIcon: 'tools',
-	// 			},
-	// 		},
-	// 		{
-	// 			type: 'file',
-	// 			condition:
-	// 				settings?.['store-permissions'].edit_store_info_activation.includes(
-	// 					'store_images'
-	// 				),
-	// 			content: {
-	// 				id: 'appearance',
-	// 				headerTitle: __('Appearance', 'multivendorx'),
-	// 				headerDescription: __(
-	// 					'Manage your store’s profile image, banner, and video.',
-	// 					'multivendorx'
-	// 				),
-	// 				headerIcon: 'appearance',
-	// 			},
-	// 		},
-	// 		{
-	// 			type: 'file',
-	// 			condition:
-	// 				settings?.['store-permissions'].edit_store_info_activation.includes(
-	// 					'store_address'
-	// 				),
-	// 			content: {
-	// 				id: 'business-address',
-	// 				headerTitle: __('Business Address', 'multivendorx'),
-	// 				headerDescription: __(
-	// 					'Provide your business address, city, zip code, country, state, and timezone to ensure accurate order and location settings.',
-	// 					'multivendorx'
-	// 				),
-	// 				headerIcon: 'form-address',
-	// 			},
-	// 		},
-	// 		{
-	// 			type: 'file',
-	// 			condition:
-	// 				settings?.['store-permissions'].edit_store_info_activation.includes(
-	// 					'store_contact'
-	// 				),
-	// 			content: {
-	// 				id: 'contact-information',
-	// 				headerTitle: __('Contact Information', 'multivendorx'),
-	// 				headerDescription: __(
-	// 					'Add your store’s contact details so customers can reach you easily through phone, email.',
-	// 					'multivendorx'
-	// 				),
-	// 				headerIcon: 'form-phone',
-	// 			},
-	// 		},
-	// 		{
-	// 			type: 'file',
-	// 			content: {
-	// 				id: 'social-media',
-	// 				headerTitle: __('Social Media', 'multivendorx'),
-	// 				headerDescription: __(
-	// 					'Add your store’s social media links to help buyers connect with you across platforms.',
-	// 					'multivendorx'
-	// 				),
-	// 				headerIcon: 'cohort',
-	// 			},
-	// 		},
-	// 		{
-	// 			type: 'file',
-	// 			content: {
-	// 				id: 'payout',
-	// 				headerTitle: __('Payout', 'multivendorx'),
-	// 				headerDescription: __(
-	// 					'Enter your payment information and select the method you’d like to use for receiving store payouts.',
-	// 					'multivendorx'
-	// 				),
-	// 				headerIcon: 'wallet-open',
-	// 			},
-	// 		},
-	// 		{
-	// 			type: 'file',
-	// 			module: 'store-policy',
-	// 			content: {
-	// 				id: 'privacy',
-	// 				headerTitle: __('Privacy', 'multivendorx'),
-	// 				headerDescription: __(
-	// 					'Define your store’s policies so customers clearly understand your shipping, refund, and return terms.',
-	// 					'multivendorx'
-	// 				),
-	// 				headerIcon: 'privacy',
-	// 			},
-	// 		},
-	// 		{
-	// 			type: 'file',
-	// 			module: 'store-shipping',
-	// 			content: {
-	// 				id: 'shipping',
-	// 				headerTitle: __('Shipping', 'multivendorx'),
-	// 				headerDescription: __(
-	// 					'Manage your store’s shipping method, pricing rules, and location-based rates.',
-	// 					'multivendorx'
-	// 				),
-	// 				headerIcon: 'shipping',
-	// 			},
-	// 		},
-	// 		{
-	// 			type: 'file',
-	// 			module: 'marketplace-compliance',
-	// 			content: {
-	// 				id: 'verification',
-	// 				headerTitle: __('Verification', 'multivendorx'),
-	// 				headerDescription: __('Verification', 'multivendorx'),
-	// 				headerIcon: 'verification5',
-	// 			},
-	// 		},
-	// 		{
-	// 			type: 'file',
-	// 			content: {
-	// 				id: 'availability',
-	// 				headerTitle: __('Availability', 'multivendorx'),
-	// 				headerDescription: __(
-	// 					'Manage your store’s shipping method, pricing rules, and location-based rates.',
-	// 					'multivendorx'
-	// 				),
-	// 				headerIcon: 'shipping',
-	// 			},
-	// 		},
-	// 		{
-	// 			type: 'file',
-	// 			content: {
-	// 				id: 'business-hours',
-	// 				headerTitle: __('Business Hours', 'multivendorx'),
-	// 				headerDescription: __(
-	// 					'Manage your store’s shipping method, pricing rules, and location-based rates.',
-	// 					'multivendorx'
-	// 				),
-	// 				headerIcon: 'shipping',
-	// 			},
-	// 		},
-	// 	].filter(
-	// 		(tab) =>
-	// 			(!tab.module || modules.includes(tab.module)) &&
-	// 			(tab.condition === undefined || tab.condition)
-	// 	)
-	// );
-
 	const GetForm = (currentTab: string | null): JSX.Element | null => {
 		console.log('tab', currentTab);
 		// get the setting context
@@ -263,70 +107,20 @@ const settings: React.FC<SettingsProps> = () => {
 		);
 	};
 
-	// const getForm = (tabId: string) => {
-	// 	let form: React.ReactNode;
-
-	// 	switch (tabId) {
-	// 		case 'general':
-	// 			form = <GeneralSettings />;
-	// 			break;
-	// 		case 'appearance':
-	// 			form = <Appearance />;
-	// 			break;
-	// 		case 'business-address':
-	// 			form = <BusinessAddress />;
-	// 			break;
-	// 		case 'contact-information':
-	// 			form = <ContactInformation />;
-	// 			break;
-	// 		case 'social-media':
-	// 			form = <SocialMedia />;
-	// 			break;
-	// 		case 'payout':
-	// 			form = <Withdrawl />;
-	// 			break;
-	// 		case 'privacy':
-	// 			form = <Privacy />;
-	// 			break;
-	// 		case 'shipping':
-	// 			form = <ShippingDelivery />;
-	// 			break;
-	// 		case 'verification':
-	// 			form = <Verification />;
-	// 		case 'availability':
-	// 			form = <Availability />;
-	// 		case 'business-hours':
-	// 			form = <BusinessHours />;
-	// 			break;
-	// 		default:
-	// 			form = null;
-	// 	}
-
-	// 	return (
-	// 		applyFilters(
-	// 			'multivendorx_store_settings_tab_content',
-	// 			form,
-	// 			tabId
-	// 		) ?? <div />
-	// 	);
-	// };
-
 	return (
 		<>
-			<div className="horizontal-tabs">
-				<SettingProvider>
-					<SettingsNavigator
-						settingContent={settingsArray as any}
-						currentSetting={currentTab}
-						getForm={GetForm}
-						prepareUrl={prepareUrl}
-						appLocalizer={appLocalizer}
-						variant="settings"
-						Link={SimpleLink}
-						menuIcon={true}
-					/>
-				</SettingProvider>
-			</div>
+			<SettingProvider>
+				<SettingsNavigator
+					settingContent={settingsArray as any}
+					currentSetting={currentTab}
+					getForm={GetForm}
+					prepareUrl={prepareUrl}
+					appLocalizer={appLocalizer}
+					variant="settings"
+					Link={SimpleLink}
+					menuIcon={true}
+				/>
+			</SettingProvider>
 		</>
 	);
 };
