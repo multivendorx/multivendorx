@@ -3,7 +3,8 @@
 .form-group-title-wrapper {
     padding: 1rem 0 0.5rem;
     border-bottom: $border-light-small;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
 }
 
 .form-group-wrapper {
@@ -38,6 +39,7 @@
         &[data-cols='4'] {
             flex: 1 1 calc(25% - 1rem);
         }
+
         .settings-form-label {
             .title {
                 font-size: 0.95rem;
@@ -46,7 +48,7 @@
             }
         }
 
-        .settings-input-content{
+        .settings-input-content {
             width: 100%;
 
             &:has(.setting-form-input) {
@@ -54,7 +56,7 @@
                 flex-wrap: wrap;
                 align-items: center;
                 gap: 0.5rem;
-                
+
                 .settings-metabox-description {
                     padding: 0;
                 }
@@ -156,11 +158,13 @@
                 width: 72%;
             }
         }
-        &.full-width{
-            .settings-input-content{
+
+        &.full-width {
+            .settings-input-content {
                 width: 100%;
             }
         }
+
         &.align-bottom {
             align-items: end;
         }
@@ -193,6 +197,12 @@
         .checkbox-list-side-by-side {
             margin-top: 0.625rem;
         }
+    }
+
+    &.bg-light-white, 
+    .form-group.bg-light-white {
+        background: #f7f7f7;
+        padding: 1rem;
     }
 }
 

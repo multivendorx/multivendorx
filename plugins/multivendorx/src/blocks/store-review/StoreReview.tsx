@@ -55,11 +55,10 @@ const StoreReview: React.FC<StoreReviewProps> = ({
 		return Array.from({ length: 5 }).map((_, i) => (
 			<i
 				key={i}
-				className={`dashicons ${
-					i < rating
+				className={`dashicons ${i < rating
 						? 'dashicons-star-filled'
 						: 'dashicons-star-empty'
-				}`}
+					}`}
 			/>
 		));
 	};
@@ -73,59 +72,66 @@ const StoreReview: React.FC<StoreReviewProps> = ({
 	}
 
 	return (
-		<ul className="multivendorx-review-list">
-			{reviews.map((review) => (
-				<li key={review.review_id} className="multivendorx-review-item">
-					<div className="header">
-						<div className="details-wrapper">
-							<div className="avatar">
-								{review.customer_name.charAt(0)}
+		<div className="multivendorx-review-list-wrapper">
+			<h3>{__('Product Review', 'multivendorx')}</h3>
+			{reviews.length > 0 ? (
+				<ul className="multivendorx-review-list">
+					{reviews.map((review) => (
+						<li key={review.review_id} className="multivendorx-review-item">
+							<div className="header">
+								<div className="details-wrapper">
+									<div className="avatar">
+										{review.customer_name?.charAt(0) || 'U'}
+									</div>
+									<div className="name">{review.customer_name}</div>
+									<span className="time">{review.date_created}</span>
+								</div>
 							</div>
-							<div className="name">{review.customer_name}</div>
-							<span className="time">{review.date_created}</span>
-						</div>
-					</div>
 
-					<div className="body">
-						<div className="rating">
-							<span className="stars">
-								{renderStars(review.overall_rating)}
-							</span>
-							<span className="title">{review.review_title}</span>
-						</div>
+							<div className="body">
+								<div className="rating">
+									<span className="stars">
+										{renderStars(review.overall_rating)}
+									</span>
+									<span className="title">{review.review_title}</span>
+								</div>
 
-						<div className="content">{review.review_content}</div>
-					</div>
+								<div className="content">{review.review_content}</div>
+							</div>
 
-					{showImages && review.images?.length ? (
-						<div className="review-images">
-							{review.images.map((img, i) => (
-								<a
-									key={i}
-									href={img}
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									<img
-										src={img}
-										alt={__('Review Image', 'multivendorx')}
-									/>
-								</a>
-							))}
-						</div>
-					) : null}
+							{showImages && review.images?.length ? (
+								<div className="review-images">
+									{review.images.map((img, i) => (
+										<a
+											key={i}
+											href={img}
+											target="_blank"
+											rel="noopener noreferrer"
+										>
+											<img
+												src={img}
+												alt={__('Review Image', 'multivendorx')}
+											/>
+										</a>
+									))}
+								</div>
+							) : null}
 
-					{showAdminReply && review.reply && (
-						<div className="multivendorx-review-reply">
-							<strong>
-								{__('Admin reply:', 'multivendorx')}
-							</strong>
-							<p>{review.reply}</p>
-						</div>
-					)}
-				</li>
-			))}
-		</ul>
+							{showAdminReply && review.reply && (
+								<div className="multivendorx-review-reply">
+									<strong>
+										{__('Admin reply:', 'multivendorx')}
+									</strong>
+									<p>{review.reply}</p>
+								</div>
+							)}
+						</li>
+					))}
+				</ul>
+			) : (
+				<p> {__('No reviews found.', 'multivendorx')}</p>
+			)}
+		</div>
 	);
 };
 

@@ -16,7 +16,7 @@ registerBlockType('multivendorx/store-quick-info', {
 			style: {
 				display: 'flex',
 				alignItems: 'center',
-				gap: '8px',
+				gap: '0.5rem',
 			},
 		});
 
@@ -41,27 +41,27 @@ registerBlockType('multivendorx/store-quick-info', {
 								/>
 							</div>
 							<div className="store-info">
-								<h3 className="store-name">vendor</h3>
-								<p className="store-email">vendor@test.com</p>
+								<h3 className="store-name">{__('Store1', 'multivendorx')}</h3>
+								<p className="store-email">{__('store@test.com', 'multivendorx')}</p>
 								<div className="store-rating">
-									<span className="stars">★★★★★</span>
+									<span className="stars">{__('★★★★★', 'multivendorx')}</span>
 									<span className="rating-number">4.8</span>
 								</div>
 							</div>
-						</div>
 
-						<div className="store-stats">
-							<div className="stat-item">
-								<div className="stat-number">5</div>
-								<div className="stat-label">Products</div>
-							</div>
-							<div className="stat-item">
-								<div className="stat-number">4.8</div>
-								<div className="stat-label">Rating</div>
-							</div>
-							<div className="stat-item">
-								<div className="stat-number">127</div>
-								<div className="stat-label">Sales</div>
+							<div className="store-stats">
+								<div className="stat-item">
+									<div className="stat-number">5</div>
+									<div className="stat-label">{__('Products', 'multivendorx')}</div>
+								</div>
+								<div className="stat-item">
+									<div className="stat-number">4.8</div>
+									<div className="stat-label">{__('Rating', 'multivendorx')}</div>
+								</div>
+								<div className="stat-item">
+									<div className="stat-number">127</div>
+									<div className="stat-label">{__('Sales', 'multivendorx')}</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -71,15 +71,7 @@ registerBlockType('multivendorx/store-quick-info', {
 	},
 
 	save: () => {
-		const blockProps = useBlockProps.save({
-			style: {
-				display: 'flex',
-				alignItems: 'center',
-				gap: '8px',
-			},
-		});
-
-		return <div {...blockProps} id="multivendorx-store-quick-info"></div>;
+		return <div className="" id="multivendorx-store-quick-info"></div>;
 	},
 });
 document.addEventListener('DOMContentLoaded', () => {
