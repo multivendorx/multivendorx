@@ -139,11 +139,7 @@ export type TableProps = CommonTableProps & {
 	onSelectRow?: (id: number, selected: boolean) => void;
 	onSelectAll?: (selected: boolean) => void;
 	rowActions?: ActionItem[]; 
-	onCellEdit?: (data: {
-		id: string | number;
-		key: string;
-		value: string | number | boolean;
-	}) => void;
+	onCellEdit?: (row,value) => void;
 	isLoading?:boolean;
 	enableBulkSelect?: boolean; 
 	format?: string,
@@ -211,17 +207,13 @@ export type TableCardProps = CommonTableProps & {
 	};
 	onQueryUpdate?: (query: QueryProps) => void;
 	filters?: RealtimeFilterConfig[];
-	categoryCounts?: categoryCount[];
+	categoryCounts?: CategoryCount[];
 	activeCategory?: string; // optional
 	onCategoryClick?: (value: string) => void;
 	showColumnToggleIcon?: boolean;
 	rowActions?: ActionItem[];
 	onSelectCsvDownloadApply?: (selectedIds: number[]) => void;
-	onCellEdit?: (data: {
-		id: string | number;
-		key: string;
-		value: string | number | boolean;
-	}) => void;
+	onCellEdit?: (row,value) => void;
 	buttonActions?:ButtonAction[];
 	format?: string;
 	currency?: {};

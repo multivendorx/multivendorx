@@ -1,24 +1,27 @@
-import { TableRow } from './types';
+import { BasicInputUI } from '../BasicInput';
+import { MultiCheckBoxUI } from '../MultiCheckbox';
+import { SelectInputUI } from '../SelectInput';
+import { TableHeaderConfig, TableRow } from './types';
 
 type Props = {
-    header: any;
-    cell: TableRow;
-    isEditing: boolean;
-    onSave: (value: any) => void;
+	header: TableHeaderConfig;
+	row: TableRow;
+	isEditing: boolean;
+	onSave: (value: any) => void;
 };
 
 export const renderEditableCell = ({
-	header,
-	cell,
+	row = {},
+	header = {},
 	isEditing,
 	onSave,
 }: Props) => {
-	const value = cell.value;
+	const value = row[header.key];
 
 	if (!isEditing) {
 		return (
 			<>
-				{cell.display ?? value}
+				{value}
 			</>
 		);
 	}
@@ -26,36 +29,31 @@ export const renderEditableCell = ({
 	switch (header.editType) {
 		case 'toggle':
 			return (
-				<input
-					type="checkbox"
-					defaultChecked={Boolean(value)}
-					onChange={(e) => onSave(e.target.checked)}
-					autoFocus
+				<MultiCheckBoxUI
+					wrapperClass={'toggle-btn'}
+					inputInnerWrapperClass={'toggle-checkbox'}
+					options={header.options}
+					value={[value]}
+					onChange={onSave}
 				/>
 			);
 
 		case 'select':
 			return (
-				<select
-					defaultValue={String(value)}
-					onBlur={(e) => onSave(e.target.value)}
-					autoFocus
-				>
-					{header.options?.map((opt: any) => (
-						<option key={opt.value} value={opt.value}>
-							{opt.label}
-						</option>
-					))}
-				</select>
+				<SelectInputUI
+					value={value}
+					size={8}
+					options={header.options}
+					onChange={onSave}
+				/>
 			);
 
 		default:
 			return (
-				<input
+				<BasicInputUI
 					type="text"
-					defaultValue={String(value ?? '')}
-					onBlur={(e) => onSave(e.target.value)}
-					autoFocus
+					value={value}
+					onChange={onSave}
 				/>
 			);
 	}

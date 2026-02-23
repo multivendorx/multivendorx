@@ -38,7 +38,10 @@ const Table: React.FC<TableProps> = ({
 
     const [isScrollableRight, setIsScrollableRight] = useState(false);
     const [isScrollableLeft, setIsScrollableLeft] = useState(false);
-
+    const [editingCell, setEditingCell] = useState<{
+        rowId: string | number;
+        key: string;
+    } | null>(null);
     const sortedBy = useMemo(() => {
         if (query.orderby) return query.orderby;
 
@@ -130,7 +133,7 @@ const Table: React.FC<TableProps> = ({
             );
         }
         return (
-            <i className={`adminfont-${sortDir === ASC ? 'arrow-up' : 'arrow-down'} sort-icon`}/>
+            <i className={`adminfont-${sortDir === ASC ? 'arrow-up' : 'arrow-down'} sort-icon`} />
         );
     };
 
@@ -193,7 +196,7 @@ const Table: React.FC<TableProps> = ({
                                                 : 'descending'
                                             : null
                                     }
-                                    style={ config.width ? { minWidth: `${config.width}rem` } : {}}
+                                    style={config.width ? { minWidth: `${config.width}rem` } : {}}
                                 >
                                     {isSortable ? (
                                         <div
@@ -261,13 +264,43 @@ const Table: React.FC<TableProps> = ({
 
                                 {Object.entries(headers).map(([key, header], colIndex) => {
                                     const rowId = row.id;
-                                    const cell = row[header.key];
+
+                                    if (header.isEditable) {
+                                        const rowId = row.id;
+                                        const isEditing =
+                                            editingCell?.rowId === rowId &&
+                                            editingCell?.key === key;
+
+                                        return (
+                                            // <td
+                                            //     key={`${rowId}-${key}`}
+                                            //     className="admin-column editable"
+                                            //     onClick={() => {
+                                            //         if (!isEditing) {
+                                            //             setEditingCell({ rowId, key });
+                                            //         }
+                                            //     }}
+                                            // >
+                                            //     {}
+                                            // </td>
+                                            renderEditableCell({
+                                                header,
+                                                row,
+                                                isEditing:true,
+                                                onSave: (newValue: any) => {
+                                                    onCellEdit?.(row, newValue);
+                                                    setEditingCell(null);
+                                                }
+                                            })
+                                        );
+                                    }
+
                                     if (typeof header.render === "function") {
                                         return (
                                             <td
                                                 key={`${rowId}-${colIndex}`}
                                                 className={`admin-column ${header.type}`}
-                                                style={ header.width ? { minWidth: `${header.width}rem` } : {}}
+                                                style={header.width ? { minWidth: `${header.width}rem` } : {}}
                                             >
                                                 {header.render(row)}
                                             </td>
@@ -295,17 +328,7 @@ const Table: React.FC<TableProps> = ({
                                             key={`${rowId}-${colIndex}`}
                                             className="admin-column"
                                         >
-                                            {
-                                                header.isEditable ? (
-                                                    renderEditableCell({
-                                                        header,
-                                                        cell,
-                                                        isEditing: false,
-                                                        onSave: onCellEdit,
-                                                    })
-                                                ) : (
-                                                    displayValue
-                                                )}
+                                            {displayValue}
                                         </td>
                                     );
                                 })}
