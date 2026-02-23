@@ -47,7 +47,6 @@ const SetupWizard: React.FC = () => {
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
-
 			formFields: [
 				{
 					key: 'marketplace_model',

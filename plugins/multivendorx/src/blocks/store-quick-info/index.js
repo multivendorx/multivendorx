@@ -16,7 +16,7 @@ registerBlockType('multivendorx/store-quick-info', {
 			style: {
 				display: 'flex',
 				alignItems: 'center',
-				gap: '8px',
+				gap: '0.5rem',
 			},
 		});
 
@@ -41,8 +41,8 @@ registerBlockType('multivendorx/store-quick-info', {
 								/>
 							</div>
 							<div className="store-info">
-								<h3 className="store-name">vendor</h3>
-								<p className="store-email">vendor@test.com</p>
+								<h3 className="store-name">Store1 </h3>
+								<p className="store-email">store@test.com</p>
 								<div className="store-rating">
 									<span className="stars">★★★★★</span>
 									<span className="rating-number">4.8</span>
@@ -75,7 +75,7 @@ registerBlockType('multivendorx/store-quick-info', {
 			style: {
 				display: 'flex',
 				alignItems: 'center',
-				gap: '8px',
+				gap: '0.5rem',
 			},
 		});
 
