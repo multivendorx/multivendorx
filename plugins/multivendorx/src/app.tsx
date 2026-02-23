@@ -211,31 +211,31 @@ const App = () => {
 
 	const profileItems = [
 		{
-			title: "What's New",
+			title: __("What's New", 'multivendorx'),
 			icon: 'adminfont-new',
 			link: 'https://multivendorx.com/latest-release/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
 			targetBlank: true,
 		},
 		{
-			title: 'Get Support',
+			title: __('Get Support', 'multivendorx'),
 			icon: 'adminfont-customer-support',
 			link: 'https://multivendorx.com/support-forum/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
 			targetBlank: true,
 		},
 		{
-			title: 'Community',
+			title: __('Community', 'multivendorx'),
 			icon: 'adminfont-global-community',
 			link: 'https://multivendorx.com/community/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
 			targetBlank: true,
 		},
 		{
-			title: 'Documentation',
+			title: __('Documentation', 'multivendorx'),
 			icon: 'adminfont-book',
 			link: 'https://multivendorx.com/docs/knowledgebase/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
 			targetBlank: true,
 		},
 		{
-			title: 'Request a Feature',
+			title: __('Request a Feature', 'multivendorx'),
 			icon: 'adminfont-blocks',
 			link: 'https://github.com/multivendorx/multivendorx/issues',
 			targetBlank: true,
@@ -293,11 +293,11 @@ const App = () => {
 				brandImg={Brand}
 				results={results}
 				search={{
-					placeholder: 'Search...',
+					placeholder: __('Search...', 'multivendorx'),
 					options: [
-						{ value: 'all', label: 'Modules & Settings' },
-						{ value: 'modules', label: 'Modules' },
-						{ value: 'settings', label: 'Settings' },
+						{ value: 'all', label: __('Modules & Settings', 'multivendorx') },
+						{ value: 'modules', label: __('Modules', 'multivendorx') },
+						{ value: 'settings', label: __('Settings', 'multivendorx') },
 					],
 				}}
 				onQueryUpdate={handleQueryUpdate}
@@ -345,11 +345,15 @@ const App = () => {
 						label={__('Import Dummy Data', 'multivendorx')}
 					></FormGroup>
 					<div className="desc">
-						Get a hands-on feel of your marketplace in minutes.
-						Import demo stores, store owners, products, and
-						commission data to see how everything works together.
-						<b>Important: </b>Delete all demo data before going live
-						so your real marketplace data stays clean and reliable.
+						{__(
+							'Get a hands-on feel of your marketplace in minutes. Import demo stores, store owners, products, and commission data to see how everything works together.',
+							'multivendorx'
+						)}
+						<b>{__('Important:', 'multivendorx')} </b>
+						{__(
+							'Delete all demo data before going live so your real marketplace data stays clean and reliable.',
+							'multivendorx'
+						)}
 					</div>
 					<DoActionBtn
 						buttonKey="import_dummy_data"
