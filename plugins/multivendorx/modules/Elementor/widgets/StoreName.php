@@ -29,13 +29,26 @@ class Store_Name extends Widget_Heading {
 
         parent::register_controls();
 
+
         $this->update_control(
             'title',
-            array(
-                'label'   => __( 'Placeholder Text', 'multivendorx' ),
-                'default' => __( 'Store Name', 'multivendorx' ),
-            )
+            [
+                'dynamic' => [
+                    'default' => '{{multivendorx-store-name}}'
+                ],
+            ],
+            [
+                'recursive' => true,
+            ]
         );
+
+        $this->update_control(
+            'header_size',
+            [
+                'default' => 'h1',
+            ]
+        );
+
 
         $this->remove_control( 'link' );
     }
@@ -47,7 +60,7 @@ class Store_Name extends Widget_Heading {
         }
 
         $settings = $this->get_settings_for_display();
-
+        
         // 5. Logic: Use the dynamic store name
         $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
 

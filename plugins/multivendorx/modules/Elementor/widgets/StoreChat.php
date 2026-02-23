@@ -23,35 +23,39 @@ class Store_Chat_Button extends Widget_Button {
 	}
 
 	public function get_categories() {
-		return array( 'multivendorx' );
+		return [ 'multivendorx' ];
 	}
 
 	protected function register_controls() {
 		parent::register_controls();
 
+
 		$this->update_control(
 			'text',
-			array(
+			[
 				'default' => __( 'Chat with Vendor', 'multivendorx' ),
-				'dynamic' => array(
+				'dynamic' => [
 					'active' => true,
-				),
-			)
+				],
+			]
 		);
 
 		$this->update_control(
 			'button_background_color',
-			array(
+			[
 				'default' => '#17a2b8',
-			)
+			]
 		);
 
 		$this->update_control(
 			'link',
-			array(
-				'dynamic'     => array( 'active' => false ),
+			[
+				'dynamic' => [
+					'active' => false,
+					'default' => '{{multivendorx-store-chat-tag}}'
+				],
 				'placeholder' => __( 'Chat handled by logic', 'multivendorx' ),
-			)
+			]
 		);
 	}
 
@@ -60,18 +64,6 @@ class Store_Chat_Button extends Widget_Button {
 		if (!$store || !isset($store['storeId'])) {
 			return;
 		}
-
-		$settings = $this->get_settings_for_display();
-
-		// Store name
-		$name = !empty($store['storeName']) ? $store['storeName'] : ($settings['title'] ?? '');
-		$tag = !empty($settings['header_size']) ? $settings['header_size'] : 'h2';
-
-		printf(
-			'<%1$s class="multivendorx-store-name elementor-heading-title">%2$s</%1$s>',
-			esc_attr($tag),
-			esc_html($name)
-		);
 
 		do_action('multivendorx_render_livechat_button', $store['storeId'], $store['storeName']);
 	}

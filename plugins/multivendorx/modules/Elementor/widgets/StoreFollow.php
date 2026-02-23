@@ -23,7 +23,7 @@ class Store_Follow_Button extends Widget_Button {
 	}
 
 	public function get_categories() {
-		return array( 'multivendorx' );
+		return [ 'multivendorx' ];
 	}
 
 	protected function register_controls() {
@@ -31,27 +31,30 @@ class Store_Follow_Button extends Widget_Button {
 
 		$this->update_control(
 			'text',
-			array(
+			[
 				'default' => __( 'Follow', 'multivendorx' ),
-				'dynamic' => array(
+				'dynamic' => [
 					'active' => true,
-				),
-			)
+				],
+			]
 		);
 
 		$this->update_control(
 			'button_background_color',
-			array(
+			[
 				'default' => '#17a2b8',
-			)
+			]
 		);
 
 		$this->update_control(
 			'link',
-			array(
-				'dynamic'     => array( 'active' => false ),
+			[
+				'dynamic' => [
+					'active' => false,
+					'default' => '{{multivendorx-store-follow-tag}}'
+				],
 				'placeholder' => __( 'Handled by Follow logic', 'multivendorx' ),
-			)
+			]
 		);
 	}
 
@@ -61,17 +64,19 @@ class Store_Follow_Button extends Widget_Button {
             return;
         }
 
-        $settings = $this->get_settings_for_display();
+        $store = $this->get_store_data();
+        $store_id = ! empty( $store['storeId'] ) ? $store['storeId'] : '';
+        
+        if ( !empty($store_id) ) {
+            $customer_follow_store = get_user_meta( get_current_user_id(), 'multivendorx_following_stores', true ) ?? array();
+            $store_lists = !empty($customer_follow_store) ? wp_list_pluck( $customer_follow_store, 'user_id' ) : array();
+            $follow_status = in_array($store_id, $store_lists) ? __( 'Unfollow', 'multivendorx' ) : __( 'Follow', 'multivendorx' );
+        } 
+		
+        $this->add_render_attribute( 'button', 'data-store_id', $store_id );
+        $this->add_render_attribute( 'button', 'data-status', $follow_status );			
+		
+        parent::render();
 
-        // 5. Logic: Use the dynamic store name
-        $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
-
-        $tag = $settings['header_size'];
-
-        printf(
-            '<%1$s class="multivendorx-store-name elementor-heading-title">%2$s</%1$s>',
-            esc_attr( $tag ),
-            esc_html( $name )
-        );
 	}
 }

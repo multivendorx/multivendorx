@@ -25,52 +25,67 @@ class Store_Rating extends Widget_Base {
 	}
 
 	public function get_categories() {
-		return array( 'multivendorx' );
+		return [ 'multivendorx' ];
 	}
 
 	public function get_keywords() {
-		return array( 'multivendorx', 'store', 'store', 'rating', 'stars', 'reviews' );
+		return [ 'multivendorx', 'store', 'store', 'rating', 'stars', 'reviews' ];
 	}
 
 	protected function register_controls() {
 		$this->start_controls_section(
 			'section_rating_style',
-			array(
+			[
 				'label' => __( 'Rating Style', 'multivendorx' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
-			)
+			]
+		);
+
+		$this->add_control(
+			'rating',
+			[
+				'label' => __( 'Rating', 'multivendorx' ),
+				'type' => Controls_Manager::NUMBER,
+				'min' => 0,
+				'max' => 10,
+				'step' => 0.1,
+				'default' => 5,
+				'dynamic' => [
+					'default' => '{{multivendorx-store-rating-tag}}'
+				],
+			]
 		);
 
 		$this->add_control(
 			'star_color',
-			array(
+			[
 				'label'     => __( 'Star Color', 'multivendorx' ),
 				'type'      => Controls_Manager::COLOR,
 				'default'   => '#ffcc00',
-				'selectors' => array(
+				'selectors' => [
 					'{{WRAPPER}} .star-rating' => 'color: {{VALUE}};',
-				),
-			)
+				],
+			]
 		);
 
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
-			array(
+			[
 				'name'     => 'text_typography',
 				'label'    => __( 'Count Typography', 'multivendorx' ),
 				'selector' => '{{WRAPPER}} .multivendorx-rating-count',
-			)
+			]
 		);
 
 		$this->add_control(
 			'text_color',
-			array(
+			[
 				'label'     => __( 'Count Color', 'multivendorx' ),
 				'type'      => Controls_Manager::COLOR,
-				'selectors' => array(
+				'selectors' => [
 					'{{WRAPPER}} .multivendorx-rating-count' => 'color: {{VALUE}};',
-				),
-			)
+				],
+			]
 		);
 
 		$this->end_controls_section();
@@ -84,10 +99,10 @@ class Store_Rating extends Widget_Base {
 		}
 
 		// Render Store Rating (if it exists)
-		if ( isset( $store['store_rating'] ) && $store['store_rating'] !== '' ) {
+		if ( isset( $store['storeRating'] ) && $store['storeRating'] !== '' ) {
 			printf(
 				'<div class="multivendorx-store-rating">Rating: <span>%s</span></div>',
-				esc_html( $store['store_rating'] )
+				esc_html( $store['storeRating'] )
 			);
 		}
 	}

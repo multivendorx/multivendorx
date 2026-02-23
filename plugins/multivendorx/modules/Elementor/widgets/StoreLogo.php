@@ -23,11 +23,11 @@ class Store_Logo extends Widget_Image {
 	}
 
 	public function get_categories() {
-		return array( 'multivendorx' );
+		return [ 'multivendorx' ];
 	}
 
 	public function get_keywords() {
-		return array( 'multivendorx', 'store', 'store', 'logo', 'avatar', 'profile' );
+		return [ 'multivendorx', 'store', 'store', 'logo', 'avatar', 'profile' ];
 	}
 
 	protected function register_controls() {
@@ -35,19 +35,20 @@ class Store_Logo extends Widget_Image {
 
 		$this->update_control(
 			'section_image',
-			array(
+			[
 				'label' => __( 'Store Logo Settings', 'multivendorx' ),
-			)
+			]
 		);
 
 		// Automatically link the image control to the store logo dynamic tag
 		$this->update_control(
 			'image',
-			array(
-				'dynamic' => array(
-					'active' => true,
-				),
-			)
+			[
+				'dynamic' => [
+					'active'  => true,
+					'default' => '{{multivendorx-store-logo}}'
+				],
+			]
 		);
 
 		// Clean up unnecessary controls for a Store Logo

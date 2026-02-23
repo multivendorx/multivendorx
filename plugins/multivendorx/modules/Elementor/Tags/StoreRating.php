@@ -1,10 +1,11 @@
 <?php
 namespace MultiVendorX\Elementor\Tags;
-
 use Elementor\Core\DynamicTags\Tag;
 use Elementor\Modules\DynamicTags\Module;
+use MultiVendorX\Elementor\StoreHelper;
 
 class StoreRating extends Tag {
+    use StoreHelper;
 
     /**
      * Class constructor
@@ -13,7 +14,7 @@ class StoreRating extends Tag {
      *
      * @param array $data
      */
-    public function __construct( $data = array() ) {
+    public function __construct( $data = [] ) {
         parent::__construct( $data );
     }
 
@@ -25,7 +26,7 @@ class StoreRating extends Tag {
      * @return string
      */
     public function get_name() {
-        return 'mvx-store-rating-tag';
+        return 'multivendorx-store-rating-tag';
     }
 
     /**
@@ -44,7 +45,7 @@ class StoreRating extends Tag {
     }
 
     public function get_categories() {
-        return array( Module::TEXT_CATEGORY );
+        return [ Module::TEXT_CATEGORY ];
     }
 
     /**
@@ -55,8 +56,8 @@ class StoreRating extends Tag {
      * @return void
      */
     public function get_value() {
-        // global $mvx_elementor;
-        // return $mvx_elementor->get_mvx_store_data( 'rating' );
-        return 'rating';
+        $store = $this->get_store_data();
+        $rating = ! empty( $store['storeRating'] ) ? $store['storeRating'] : '';
+        return $rating;
     }
 }

@@ -23,7 +23,7 @@ class Store_Get_Support extends Widget_Button {
     }
 
     public function get_categories() {
-        return array( 'multivendorx' );
+        return [ 'multivendorx' ];
     }
 
     protected function register_controls() {
@@ -31,20 +31,21 @@ class Store_Get_Support extends Widget_Button {
 
         $this->update_control(
             'text',
-            array(
+            [
                 'default' => __( 'Get Support', 'multivendorx' ),
-                'dynamic' => array(
+                'dynamic' => [
                     'active' => true,
-                ),
-            )
+                    'default' => '{{multivendorx-store-get-support-tag}}'
+                ],
+            ]
         );
 
         $this->update_control(
             'link',
-            array(
-                'dynamic'     => array( 'active' => false ),
+            [
+                'dynamic' => ['active' => false],
                 'placeholder' => __( 'Triggers Support Modal', 'multivendorx' ),
-            )
+            ]
         );
     }
 
@@ -53,18 +54,6 @@ class Store_Get_Support extends Widget_Button {
         if (!$store) {
             return;
         }
-
-        $settings = $this->get_settings_for_display();
-
-        // Store name
-        $name = !empty($store['storeName']) ? $store['storeName'] : $settings['title'];
-        $tag  = !empty($settings['header_size']) ? $settings['header_size'] : 'h2';
-
-        printf(
-            '<%1$s class="multivendorx-store-name elementor-heading-title">%2$s</%1$s>',
-            esc_attr($tag),
-            esc_html($name)
-        );
 
         // Render a single button with a data attribute for store ID
         echo '<button class="multivendorx-livechat-button button" data-store-id="' . esc_attr($store['storeId']) . '">';

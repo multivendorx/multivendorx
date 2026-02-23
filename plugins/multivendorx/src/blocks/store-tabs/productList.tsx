@@ -14,7 +14,7 @@ const ProductsTab: React.FC = () => {
 				},
 			})
 			.then((response) => {
-				setHtml(response.data); // ✅ FIX
+				setHtml(response.data);
 			})
 			.catch((error) => {
 				console.error('Error loading products:', error);
