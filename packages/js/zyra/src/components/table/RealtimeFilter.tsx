@@ -66,7 +66,7 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
                             onFilterChange(filter.key, newRange as { startDate: Date; endDate: Date });
                           }}
                           format={format}
-                        /> */}
+                        />
                       </div>
                     );
                 }                  
