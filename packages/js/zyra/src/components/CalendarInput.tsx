@@ -111,7 +111,7 @@ const Presets : React.FC<PresetsProps> = ({ setValue, pickerRef, format }) => {
   );
 };
 
-const CalendarInputUI: React.FC<CalendarInputProps> = ({
+export const CalendarInputUI: React.FC<CalendarInputProps> = ({
   wrapperClass = "calender-wrapper",
   inputClass,
   format = "MMMM DD YYYY",

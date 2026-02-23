@@ -2,7 +2,7 @@ import React from 'react';
 import { RealtimeFilterConfig, TableRow } from './types';
 import { SelectInputUI } from '../SelectInput';
 import { AdminButtonUI } from '../AdminButton';
-import CalendarInput, { CalendarRange } from '../CalendarInput';
+import { CalendarInputUI, CalendarRange } from '../CalendarInput';
 
 export type FilterValue =
     | string
@@ -60,7 +60,7 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
 						(value as CalendarRange) || getDefaultDateRange();
                     return (
                       <div key={filter.key} className="group-field">
-                        <CalendarInput
+                        <CalendarInputUI
                           value={range}
                           onChange={(newRange) => {
                             onFilterChange(filter.key, newRange as { startDate: Date; endDate: Date });
