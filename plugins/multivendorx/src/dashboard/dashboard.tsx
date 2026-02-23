@@ -80,7 +80,7 @@ const Dashboard: React.FC = () => {
 
 	const access =
 		appLocalizer.settings_databases_value?.['privacy']?.[
-			'customer_information_access'
+		'customer_information_access'
 		];
 	const siteUrl = appLocalizer.site_url.replace(/\/$/, '');
 
@@ -98,10 +98,10 @@ const Dashboard: React.FC = () => {
 			render: (row) =>
 				row.products && row.products.length > 0
 					? row.products.map((product, index) => (
-							<div key={index} className="product-wrapper">
-								{product.name}
-							</div>
-						))
+						<div key={index} className="product-wrapper">
+							{product.name}
+						</div>
+					))
 					: '-',
 		},
 		amount: {
@@ -151,18 +151,21 @@ const Dashboard: React.FC = () => {
 	// Helper function to get dynamic greeting
 	const getGreeting = () => {
 		const hour = new Date().getHours();
-		if (hour >= 5 && hour < 12) {
-			return 'Good Morning';
-		}
-		if (hour >= 12 && hour < 17) {
-			return 'Good Afternoon';
-		}
-		if (hour >= 17 && hour < 21) {
-			return 'Good Evening';
-		}
-		return 'Good Night';
-	};
 
+		if (hour >= 5 && hour < 12) {
+			return __('Good Morning', 'multivendorx');
+		}
+
+		if (hour >= 12 && hour < 17) {
+			return __('Good Afternoon', 'multivendorx');
+		}
+
+		if (hour >= 17 && hour < 21) {
+			return __('Good Evening', 'multivendorx');
+		}
+
+		return __('Good Night', 'multivendorx');
+	};
 	useEffect(() => {
 		setIsLoading(true);
 
@@ -462,8 +465,7 @@ const Dashboard: React.FC = () => {
 				},
 			})
 			.then((response) => {
-				const data = response.data;
-				setRevenueData(data);
+				setRevenueData(Array.isArray(response.data.data) ? response.data.data : []);
 			});
 	}, [dateRange, modules]);
 
@@ -656,20 +658,20 @@ const Dashboard: React.FC = () => {
 										key={item.id}
 										title={
 											item.payment_method ===
-											'stripe-connect'
+												'stripe-connect'
 												? __('Stripe', 'multivendorx')
 												: item.payment_method ===
-													  'bank-transfer'
+													'bank-transfer'
 													? __(
-															'Direct to Local Bank (INR)',
+														'Direct to Local Bank (INR)',
+														'multivendorx'
+													)
+													: item.payment_method ===
+														'paypal-payout'
+														? __(
+															'PayPal',
 															'multivendorx'
 														)
-													: item.payment_method ===
-														  'paypal-payout'
-														? __(
-																'PayPal',
-																'multivendorx'
-															)
 														: ''
 										}
 										isLoading={isLoading}
@@ -847,7 +849,7 @@ const Dashboard: React.FC = () => {
 					<Column grid={4}>
 						<Card title={__('Admin Announcements', 'multivendorx')}>
 							<div className="notification-wrapper">
-								{announcement && announcement.length > 0 ? (
+								{Array.isArray(announcement) && announcement.length > 0 ? (
 									<ul>
 										{announcement.map((item, index) => (
 											<li key={item.id}>
@@ -969,7 +971,7 @@ const Dashboard: React.FC = () => {
 				<Column grid={4}>
 					<Card title={__('Store Activity', 'multivendorx')}>
 						<div className="activity-log">
-							{activities && activities.length > 0 ? (
+							{Array.isArray(activities) && activities.length > 0 ? (
 								activities.slice(0, 5).map((a, i) => (
 									<div key={i} className="activity">
 										<div className="title">{a.title}</div>

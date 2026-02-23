@@ -1,12 +1,11 @@
 <?php
 namespace MultiVendorX\Elementor\Tags;
-
 use Elementor\Core\DynamicTags\Tag;
 use Elementor\Modules\DynamicTags\Module;
-
-use Elementor\Controls_Manager;
+use MultiVendorX\Elementor\StoreHelper;
 
 class StoreInfo extends Tag {
+    use StoreHelper;
 
     /**
      * Tag name
@@ -16,7 +15,7 @@ class StoreInfo extends Tag {
      * @return string
      */
     public function get_name() {
-        return 'mvx-store-info';
+        return 'multivendorx-store-info';
     }
 
     /**
@@ -35,7 +34,7 @@ class StoreInfo extends Tag {
     }
 
     public function get_categories() {
-        return array( Module::TEXT_CATEGORY );
+        return [ Module::TEXT_CATEGORY ];
     }
 
     /**
@@ -46,58 +45,55 @@ class StoreInfo extends Tag {
      * @return void
      */
     protected function get_value() {
-    	// global $mvx_elementor;
-        // $store_data = $mvx_elementor->get_mvx_store_data();
+        $store_data = $this->get_store_data();        
 
-        // $store_info = [
-        // [
-        // 'key'         => 'address',
-        // 'title'       => __( 'Address', 'multivendorx' ),
-        // 'text'        => $store_data['address'],
-        // 'icon'        => 'mvx-font ico-location-icon',
-        // 'show'        => true,
-        // '__dynamic__' => [
-        // 'text' => $store_data['address'],
-        // ]
-        // ],
-        // [
-        // 'key'         => 'email',
-        // 'title'       => __( 'Email', 'multivendorx' ),
-        // 'text'        => $store_data['email'],
-        // 'icon'        => 'mvx-font ico-mail-icon',
-        // 'show'        => true,
-        // '__dynamic__' => [
-        // 'text' => $store_data['email'],
-        // ]
-        // ],
-        // [
-        // 'key'         => 'phone',
-        // 'title'       => __( 'Phone No', 'multivendorx' ),
-        // 'text'        => $store_data['phone'],
-        // 'icon'        => 'mvx-font ico-call-icon',
-        // 'show'        => true,
-        // '__dynamic__' => [
-        // 'text' => $store_data['phone'],
-        // ]
-        // ],
-        // [
-        // 'key'         => 'store_description',
-        // 'title'       => __( 'Store Description', 'multivendorx' ),
-        // 'text'        => $store_data['store_description'],
-        // 'icon'        => 'mvx-font ico-location-icon',
-        // 'show'        => true,
-        // '__dynamic__' => [
-        // 'text' => $store_data['store_description'],
-        // ]
-        // ],
-        // ];
+        $store_info = [
+            [
+                'key'         => 'address',
+                'title'       => __( 'Address', 'multivendorx' ),
+                'text'        => $store_data['storeAddress'],
+                'icon'        => 'mvx-font ico-location-icon',
+                'show'        => true,
+                '__dynamic__' => [
+                    'text' => $store_data['storeAddress'],
+                ]
+            ],
+            [
+                'key'         => 'email',
+                'title'       => __( 'Email', 'multivendorx' ),
+                'text'        => $store_data['storeEmail'],
+                'icon'        => 'mvx-font ico-mail-icon',
+                'show'        => true,
+                '__dynamic__' => [
+                    'text' => $store_data['storeEmail'],
+                ]
+            ],
+            [
+                'key'         => 'phone',
+                'title'       => __( 'Phone No', 'multivendorx' ),
+                'text'        => $store_data['storePhone'],
+                'icon'        => 'mvx-font ico-call-icon',
+                'show'        => true,
+                '__dynamic__' => [
+                    'text' => $store_data['storePhone'],
+                ]
+            ],
+            [
+                'key'         => 'store_description',
+                'title'       => __( 'Store Description', 'multivendorx' ),
+                'text'        => $store_data['storeDescription'],
+                'icon'        => 'mvx-font ico-location-icon',
+                'show'        => true,
+                '__dynamic__' => [
+                    'text' => $store_data['storeDescription'],
+                ]
+            ],
+        ];
 
-        // return apply_filters( 'mvx_elementor_tags_store_info_value', $store_info );
-        return array();
+        return apply_filters( 'multivendorx_elementor_tags_store_info_value', $store_info );
     }
 
     protected function render() {
-        // echo json_encode( $this->get_value() );
-        echo 'hellooooo';
+        echo json_encode( $this->get_value() );
     }
 }

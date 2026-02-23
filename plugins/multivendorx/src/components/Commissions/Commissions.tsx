@@ -75,6 +75,8 @@ const Commission: React.FC = () => {
 		id: {
 			label: __('ID', 'multivendorx'),
 			isSortable: true,
+			type: 'id',
+			className: 'id',
 		},
 		order_id: {
 			label: __('Order', 'multivendorx'),
@@ -87,6 +89,7 @@ const Commission: React.FC = () => {
 		},
 		commission_summary: {
 			label: __('Commission Summary', 'multivendorx'),
+			width: 20,
 			render: (row) => (
 				<ItemList
 					className="price-list"
@@ -177,41 +180,41 @@ const Commission: React.FC = () => {
 				setCategoryCounts([
 					{
 						value: 'all',
-						label: 'All',
+						label: __('All', 'multivendorx'),
 						count: Number(response.headers['x-wp-total']) || 0,
 					},
 					{
 						value: 'paid',
-						label: 'Paid',
+						label: __('Paid', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-paid']) || 0,
 					},
 					{
 						value: 'unpaid',
-						label: 'Unpaid',
+						label: __('Unpaid', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-unpaid']) || 0,
 					},
 					{
 						value: 'refunded',
-						label: 'Refunded',
+						label: __('Refunded', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-refunded']) ||
 							0,
 					},
 					{
 						value: 'partially_refunded',
-						label: 'Partially Refunded',
+						label: __('Partially Refunded', 'multivendorx'),
 						count:
 							Number(
 								response.headers[
-									'x-wp-status-partially-refunded'
+								'x-wp-status-partially-refunded'
 								]
 							) || 0,
 					},
 					{
 						value: 'cancelled',
-						label: 'Cancelled',
+						label: __('Cancelled', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-cancelled']) ||
 							0,
@@ -227,19 +230,19 @@ const Commission: React.FC = () => {
 			});
 	};
 
-	const filters = [
-		{
-			key: 'store_id',
-			label: 'Stores',
-			type: 'select',
-			options: store,
-		},
-		{
-			key: 'created_at',
-			label: 'Created Date',
-			type: 'date',
-		},
-	];
+const filters = [
+	{
+		key: 'store_id',
+		label: __('Stores', 'multivendorx'),
+		type: 'select',
+		options: store,
+	},
+	{
+		key: 'created_at',
+		label: __('Created Date', 'multivendorx'),
+		type: 'date',
+	},
+];
 
 	const downloadCommissionsCSV = (selectedIds: number[]) => {
 		if (!selectedIds) {

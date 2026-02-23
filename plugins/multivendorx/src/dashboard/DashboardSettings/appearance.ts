@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
 
-const storeOptions = [
-	{ value: 'static_image', label: 'Static Image' },
-	{ value: 'slider_image', label: 'Slider Image' },
-	{ value: 'video', label: 'Video' },
+const imageOptions = [
+	{ value: 'static_image', label: __('Static Image', 'multivendorx') },
+	{ value: 'slider_image', label: __('Slider Image', 'multivendorx') },
+	{ value: 'video', label: __('Video', 'multivendorx') },
 ];
 
 export default {
@@ -17,7 +17,6 @@ export default {
 	headerIcon: 'appearance',
 	submitUrl: `store/${appLocalizer.store_id}`,
 	modal: [
-		// Form Group Wrapper
 		{
 			type: 'attachment',
 			label: __('Profile Image', 'multivendorx'),
@@ -26,16 +25,12 @@ export default {
 			imageHeight: 75,
 			openUploader: __('Upload Image', 'multivendorx'),
 		},
-
-		// Banner Type
 		{
 			type: 'select',
 			label: __('Banner / Cover Image', 'multivendorx'),
 			key: 'banner_type',
-			options: storeOptions,
+			options: imageOptions,
 		},
-
-		// Static Banner Image (conditional)
 		{
 			type: 'attachment',
 			label: __('Static Banner Image', 'multivendorx'),
@@ -49,8 +44,6 @@ export default {
 				value: 'static_image',
 			},
 		},
-
-		// Slider Images (conditional)
 		{
 			type: 'attachment',
 			label: __('Slider Images', 'multivendorx'),
@@ -65,8 +58,6 @@ export default {
 				value: 'slider_image',
 			},
 		},
-
-		// Video Banner (conditional)
 		{
 			type: 'text',
 			label: __('Banner Video URL', 'multivendorx'),

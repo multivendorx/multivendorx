@@ -26,8 +26,6 @@ interface StorePaymentConfig {
 const storePayment: StorePaymentConfig =
 	(appLocalizer.store_payment_settings as StorePaymentConfig) || {};
 
-console.log('StorePayment:', storePayment);
-
 const filteredStorePayment = Object.fromEntries(
 	Object.entries(storePayment).filter(([_, value]) => value !== null)
 );
@@ -37,8 +35,6 @@ const paymentOptions = Object.values(filteredStorePayment).map((p) => ({
 	value: p.id,
 	label: p.label,
 }));
-
-console.log('Payment Options:', paymentOptions);
 
 // Generate all payment fields for all providers with conditions
 const generateAllPaymentFields = () => {
@@ -58,7 +54,6 @@ const generateAllPaymentFields = () => {
 		}
 	});
 	
-	console.log('All generated fields:', allFields);
 	return allFields;
 };
 

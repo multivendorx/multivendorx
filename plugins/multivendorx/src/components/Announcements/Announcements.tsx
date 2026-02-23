@@ -20,7 +20,6 @@ import {
 	QueryProps,
 	CategoryCount,
 } from 'zyra';
-import './Announcements.scss';
 import Popup from '../Popup/Popup';
 import { formatLocalDate, truncateText } from '@/services/commonFunction';
 
@@ -270,9 +269,9 @@ export const Announcements: React.FC = () => {
 	};
 
 	const bulkActions = [
-		{ label: 'Published', value: 'publish' },
-		{ label: 'Pending', value: 'pending' },
-		{ label: 'Delete', value: 'delete' },
+		{ label: __('Published', 'multivendorx'), value: 'publish' },
+		{ label: __('Pending', 'multivendorx'), value: 'pending' },
+		{ label: __('Delete', 'multivendorx'), value: 'delete' },
 	];
 
 	const headers = {
@@ -337,26 +336,24 @@ export const Announcements: React.FC = () => {
 				setCategoryCounts([
 					{
 						value: 'all',
-						label: 'All',
+						label: __('All', 'multivendorx'),
 						count: Number(response.headers['x-wp-total']) || 0,
 					},
 					{
 						value: 'publish',
-						label: 'Published',
+						label: __('Published', 'multivendorx'),
 						count:
-							Number(response.headers['x-wp-status-publish']) ||
-							0,
+							Number(response.headers['x-wp-status-publish']) || 0,
 					},
 					{
 						value: 'pending',
-						label: 'Pending',
+						label: __('Pending', 'multivendorx'),
 						count:
-							Number(response.headers['x-wp-status-pending']) ||
-							0,
+							Number(response.headers['x-wp-status-pending']) || 0,
 					},
 					{
 						value: 'draft',
-						label: 'Draft',
+						label: __('Draft', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-draft']) || 0,
 					},
@@ -377,7 +374,7 @@ export const Announcements: React.FC = () => {
 	const filters = [
 		{
 			key: 'created_at',
-			label: 'Created Date',
+			label: __('Created Date', 'multivendorx'),
 			type: 'date',
 		},
 	];
@@ -393,10 +390,10 @@ export const Announcements: React.FC = () => {
 			>
 				<Popup
 					confirmMode
-					title="Are you sure"
+					title={__('Are you sure', 'multivendorx')}
 					confirmMessage={selectedAn ? `` : ''}
-					confirmYesText="Delete"
-					confirmNoText="Cancel"
+					confirmYesText={__('Delete', 'multivendorx')}
+					confirmNoText={__('Cancel', 'multivendorx')}
 					onConfirm={handleConfirmDelete}
 					onCancel={() => {
 						setConfirmOpen(false);
@@ -406,10 +403,11 @@ export const Announcements: React.FC = () => {
 			</PopupUI>
 			<NavigatorHeader
 				headerIcon="announcement"
-				headerDescription={
-					'Central hub for managing marketplace announcements. Review past updates and create new ones to keep stores informed.'
-				}
-				headerTitle="Announcements"
+				headerDescription={__(
+					'Central hub for managing marketplace announcements. Review past updates and create new ones to keep stores informed.',
+					'multivendorx'
+				)}
+				headerTitle={__('Announcements', 'multivendorx')}
 				buttons={[
 					{
 						label: __('Add New', 'multivendorx'),
@@ -487,7 +485,7 @@ export const Announcements: React.FC = () => {
 							usePlainText={false}
 							tinymceApiKey={
 								appLocalizer.settings_databases_value[
-									'overview'
+								'overview'
 								]['tinymce_api_section'] ?? ''
 							}
 							msg={{

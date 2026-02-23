@@ -151,19 +151,7 @@ const Documentation: React.FC = () => {
 												)}
 											</a>
 										</>
-									),
-									tags: (
-										<>
-											<div className="tag">
-												<span className="admin-badge yellow">
-													{__(
-														'Products',
-														'multivendorx'
-													)}
-												</span>
-											</div>
-										</>
-									),
+									)
 								},
 							]}
 						/>

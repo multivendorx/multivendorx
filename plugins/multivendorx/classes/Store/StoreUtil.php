@@ -691,7 +691,13 @@ class StoreUtil {
             'cancellationPolicy' => $store_obj->get_meta( 'cancellation_policy' ),
             'storeAddress'       => $store_obj->get_meta( 'address' ),
         );
-
-        return $info;
+        /**
+         * Filter store info before returning.
+         *
+         * @param array $info
+         * @param int   $store_id
+         * @param object $store_obj
+         */
+        return apply_filters('multivendorx_store_info',$info,$store_obj->get_id());
     }
 }

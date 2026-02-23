@@ -1,7 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
 import { useEffect, useState } from 'react';
 import {
-	NestedComponent,
 	Card,
 	BasicInputUI,
 	FormGroup,
@@ -145,7 +144,7 @@ const MinMax = ({ product, setProduct }) => {
 
 addFilter(
 	'product_min_max',
-	'my-plugin/min_max',
+	'multivendorx/min_max',
 	(content, product, setProduct) => {
 		return (
 			<>

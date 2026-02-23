@@ -20,7 +20,6 @@ import {
 	CategoryCount,
 } from 'zyra';
 import Popup from '../Popup/Popup';
-import '../Announcements/Announcements.scss';
 import { formatLocalDate, truncateText } from '@/services/commonFunction';
 
 type KBForm = {
@@ -264,26 +263,26 @@ export const KnowledgeBase: React.FC = () => {
 				setCategoryCounts([
 					{
 						value: 'all',
-						label: 'All',
+						label: __('All', 'multivendorx'),
 						count: Number(response.headers['x-wp-total']) || 0,
 					},
 					{
 						value: 'publish',
-						label: 'Published',
+						label: __('Published', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-publish']) ||
 							0,
 					},
 					{
 						value: 'pending',
-						label: 'Pending',
+						label: __('Pending', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-pending']) ||
 							0,
 					},
 					{
 						value: 'draft',
-						label: 'Draft',
+						label: __('Draft', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-draft']) || 0,
 					},
@@ -303,17 +302,16 @@ export const KnowledgeBase: React.FC = () => {
 	const filters = [
 		{
 			key: 'created_at',
-			label: 'Created Date',
+			label: __('Created Date', 'multivendorx'),
 			type: 'date',
 		},
 	];
 
 	const bulkActions = [
-		{ label: 'Published', value: 'publish' },
-		{ label: 'Pending', value: 'pending' },
-		{ label: 'Delete', value: 'delete' },
+		{ label: __('Published', 'multivendorx'), value: 'publish' },
+		{ label: __('Pending', 'multivendorx'), value: 'pending' },
+		{ label: __('Delete', 'multivendorx'), value: 'delete' },
 	];
-
 	return (
 		<>
 			<PopupUI
@@ -325,14 +323,14 @@ export const KnowledgeBase: React.FC = () => {
 			>
 				<Popup
 					confirmMode
-					title="Delete Knowledge Base"
+					title={__('Delete Knowledge Base', 'multivendorx')}
 					confirmMessage={
 						selectedKb
-							? `Are you sure you want to delete knowledge base?`
+							? __('Are you sure you want to delete this knowledge base?', 'multivendorx')
 							: ''
 					}
-					confirmYesText="Delete"
-					confirmNoText="Cancel"
+					confirmYesText={__('Delete', 'multivendorx')}
+					confirmNoText={__('Cancel', 'multivendorx')}
 					onConfirm={handleConfirmDelete}
 					onCancel={() => {
 						setConfirmOpen(false);
@@ -432,7 +430,7 @@ export const KnowledgeBase: React.FC = () => {
 									usePlainText={false}
 									tinymceApiKey={
 										appLocalizer.settings_databases_value[
-											'overview'
+										'overview'
 										]['tinymce_api_section'] ?? ''
 									}
 									msg={{

@@ -143,27 +143,27 @@ const Qna: React.FC = () => {
 
 	const headers = {
 		name: {
-			label: 'Product',
+			label: __('Product', 'multivendorx'),
 		},
 		question_text: {
-			label: 'Question',
+			label: __('Question', 'multivendorx'),
 		},
 		answer_text: {
-			label: 'Ans',
+			label: __('Ans', 'multivendorx'),
 		},
 		question_date: {
-			label: 'Date',
+			label: __('Date', 'multivendorx'),
 			type: 'date',
 		},
 		total_votes: {
-			label: 'Votes',
+			label: __('Votes', 'multivendorx'),
 		},
 		question_visibility: {
-			label: 'Visibility',
+			label: __('Visibility', 'multivendorx'),
 		},
 		action: {
 			type: 'action',
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
 			actions: [
 				{
 					label: __('Answer', 'multivendorx'),
@@ -185,23 +185,23 @@ const Qna: React.FC = () => {
 	const filters = [
 		{
 			key: 'storeId',
-			label: 'Stores',
+			label: __('Stores', 'multivendorx'),
 			type: 'select',
 			options: store,
 		},
 		{
 			key: 'questionVisibility',
-			label: 'Status',
+			label: __('Status', 'multivendorx'),
 			type: 'select',
 			options: [
-				{ label: 'All', value: '' },
-				{ label: 'Public', value: 'public' },
-				{ label: 'Private', value: 'private' },
+				{ label: __('All', 'multivendorx'), value: '' },
+				{ label: __('Public', 'multivendorx'), value: 'public' },
+				{ label: __('Private', 'multivendorx'), value: 'private' },
 			],
 		},
 		{
 			key: 'created_at',
-			label: 'Created Date',
+			label: __('Created Date', 'multivendorx'),
 			type: 'date',
 		},
 	];
@@ -240,19 +240,19 @@ const Qna: React.FC = () => {
 				setCategoryCounts([
 					{
 						value: 'all',
-						label: 'All',
+						label: __('All', 'multivendorx'),
 						count: Number(response.headers['x-wp-total']) || 0,
 					},
 					{
 						value: 'has_answer',
-						label: 'Answered',
+						label: __('Answered', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-answered']) ||
 							0,
 					},
 					{
 						value: 'no_answer',
-						label: 'Unanswered',
+						label: __('Unanswered', 'multivendorx'),
 						count:
 							Number(
 								response.headers['x-wp-status-unanswered']
@@ -280,14 +280,14 @@ const Qna: React.FC = () => {
 			>
 				<Popup
 					confirmMode
-					title="Delete Question"
+					title={__('Delete Question', 'multivendorx')}
 					confirmMessage={
 						selectedQn
-							? `Are you sure you want to delete Question?`
+							? __('Are you sure you want to delete Question?', 'multivendorx')
 							: ''
 					}
-					confirmYesText="Delete"
-					confirmNoText="Cancel"
+					confirmYesText={__('Delete', 'multivendorx')}
+					confirmNoText={__('Cancel', 'multivendorx')}
 					onConfirm={handleConfirmDelete}
 					onCancel={() => {
 						setConfirmOpen(false);
@@ -387,9 +387,9 @@ const Qna: React.FC = () => {
 									setSelectedQna((prev) =>
 										prev
 											? {
-													...prev,
-													question_visibility: value,
-												}
+												...prev,
+												question_visibility: value,
+											}
 											: prev
 									)
 								}

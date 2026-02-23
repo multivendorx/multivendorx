@@ -167,6 +167,8 @@ class Rest extends \WP_REST_Controller {
                         'reason'        => $r['message'],
                         'created_at'    => Utill::multivendorx_rest_prepare_date_response( $r['created_at'] ),
                         'updated_at'    => Utill::multivendorx_rest_prepare_date_response( $r['updated_at'] ),
+                        'created_at_gmt'=> Utill::multivendorx_rest_prepare_date_response( $r['created_at'], true ),
+                        'updated_at_gmt'=> Utill::multivendorx_rest_prepare_date_response( $r['updated_at'], true ),
                     );
                 },
                 $reports

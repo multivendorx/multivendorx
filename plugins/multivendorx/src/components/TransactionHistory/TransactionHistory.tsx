@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
-import '../Announcements/Announcements.scss';
 import { getApiLink, SelectInputUI, SettingsNavigator } from 'zyra';
 import axios from 'axios';
 import WalletTransaction from './WalletTransaction';

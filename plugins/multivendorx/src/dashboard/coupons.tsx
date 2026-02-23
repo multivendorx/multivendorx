@@ -231,13 +231,13 @@ const AllCoupon: React.FC = () => {
 
 		const request = formData.id
 			? axios.put(
-					`${appLocalizer.apiUrl}/wc/v3/coupons/${formData.id}`,
-					payload,
-					{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-				)
+				`${appLocalizer.apiUrl}/wc/v3/coupons/${formData.id}`,
+				payload,
+				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+			)
 			: axios.post(`${appLocalizer.apiUrl}/wc/v3/coupons`, payload, {
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				});
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			});
 
 		request
 			.then(() => {
@@ -676,9 +676,9 @@ const AllCoupon: React.FC = () => {
 					search: query.searchValue || '',
 					after: query.filter?.created_at?.startDate
 						? toWcIsoDate(
-								query.filter.created_at.startDate,
-								'start'
-							)
+							query.filter.created_at.startDate,
+							'start'
+						)
 						: undefined,
 
 					before: query.filter?.created_at?.endDate
@@ -711,17 +711,17 @@ const AllCoupon: React.FC = () => {
 	const filters = [
 		{
 			key: 'couponType',
-			label: 'Status',
+			label: __('Status', 'multivendorx'),
 			type: 'select',
 			options: [
-				{ label: 'Percentage Discount', value: 'percent' },
-				{ label: 'Fixed Cart Discount', value: 'fixed_cart' },
-				{ label: 'Fixed Product Discount', value: 'fixed_product' },
+				{ label: __('Percentage Discount', 'multivendorx'), value: 'percent' },
+				{ label: __('Fixed Cart Discount', 'multivendorx'), value: 'fixed_cart' },
+				{ label: __('Fixed Product Discount', 'multivendorx'), value: 'fixed_product' },
 			],
 		},
 		{
 			key: 'created_at',
-			label: 'Created Date',
+			label: __('Created Date', 'multivendorx'),
 			type: 'date',
 		},
 	];
@@ -845,9 +845,9 @@ const AllCoupon: React.FC = () => {
 					confirmMessage={
 						selectedCoupon
 							? __(
-									`Are you sure you want to delete coupon "${selectedCoupon.code}"?`,
-									'multivendorx'
-								)
+								`Are you sure you want to delete coupon "${selectedCoupon.code}"?`,
+								'multivendorx'
+							)
 							: ''
 					}
 					confirmYesText={__('Delete', 'multivendorx')}

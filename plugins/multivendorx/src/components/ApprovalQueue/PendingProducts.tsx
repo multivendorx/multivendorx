@@ -123,7 +123,8 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 		},
 		action: {
 			type: 'action',
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
+
 			actions: [
 				{
 					label: __('Approve', 'multivendorx'),
@@ -145,13 +146,13 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 	const filters = [
 		{
 			key: 'store_id',
-			label: 'Stores',
+			label: __('Stores', 'multivendorx'),
 			type: 'select',
 			options: store,
 		},
 		{
 			key: 'created_at',
-			label: 'Created Date',
+			label: __('Created Date', 'multivendorx'),
 			type: 'date',
 		},
 	];
@@ -173,9 +174,9 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 					value: query?.filter?.store_id,
 					after: query.filter?.created_at?.startDate
 						? toWcIsoDate(
-								query.filter.created_at.startDate,
-								'start'
-							)
+							query.filter.created_at.startDate,
+							'start'
+						)
 						: undefined,
 
 					before: query.filter?.created_at?.endDate
@@ -263,19 +264,20 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 						/>
 					}
 				>
-					<>
-						<div className="form-group">
-							<TextAreaUI
-								name="reject_reason"
-								value={rejectReason}
-								onChange={(value: string) =>
-									setRejectReason(value)
-								}
-								placeholder="Enter reason for rejecting this product..."
-								rows={4}
-							/>
-						</div>
-					</>
+					<div className="form-group">
+						<TextAreaUI
+							name="reject_reason"
+							value={rejectReason}
+							onChange={(value: string) =>
+								setRejectReason(value)
+							}
+							placeholder={__(
+								'Enter reason for rejecting this product...',
+								'multivendorx'
+							)}
+							rows={4}
+						/>
+					</div>
 				</PopupUI>
 			)}
 		</>

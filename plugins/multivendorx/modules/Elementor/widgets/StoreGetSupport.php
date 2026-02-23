@@ -50,21 +50,25 @@ class Store_Get_Support extends Widget_Button {
 
     protected function render() {
         $store = $this->get_store_data();
-        if ( ! $store ) {
+        if (!$store) {
             return;
         }
 
         $settings = $this->get_settings_for_display();
 
-        // 5. Logic: Use the dynamic store name
-        $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
-
-        $tag = $settings['header_size'];
+        // Store name
+        $name = !empty($store['storeName']) ? $store['storeName'] : $settings['title'];
+        $tag  = !empty($settings['header_size']) ? $settings['header_size'] : 'h2';
 
         printf(
             '<%1$s class="multivendorx-store-name elementor-heading-title">%2$s</%1$s>',
-            esc_attr( $tag ),
-            esc_html( $name )
+            esc_attr($tag),
+            esc_html($name)
         );
+
+        // Render a single button with a data attribute for store ID
+        echo '<button class="multivendorx-livechat-button button" data-store-id="' . esc_attr($store['storeId']) . '">';
+        echo esc_html(__('Get Support', 'multivendorx'));
+        echo '</button>';
     }
 }

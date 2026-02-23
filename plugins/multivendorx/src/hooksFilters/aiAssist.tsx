@@ -4,7 +4,7 @@ import { AdminButtonUI, Card, getApiLink } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
-const AICard = () => {
+const AICard = ({ product, setProduct }) => {
 	const [aiSuggestions, setAiSuggestions] = useState({
 		productName: [],
 		shortDescription: [],
@@ -14,6 +14,42 @@ const AICard = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState('');
 	const [hasSuggestions, setHasSuggestions] = useState(false);
+
+	useEffect(() => {
+		const handleAISuggestion = (event) => {
+			const { field, value } = event.detail;
+
+			// Update the appropriate field based on suggestion type
+			switch (field) {
+				case 'name':
+					setProduct((prev) => ({ ...prev, name: value }));
+					break;
+				case 'short_description':
+					setProduct((prev) => ({
+						...prev,
+						short_description: value,
+					}));
+					break;
+				case 'description':
+					setProduct((prev) => ({
+						...prev,
+						description: value,
+					}));
+					break;
+				default:
+					break;
+			}
+		};
+
+		window.addEventListener('ai-suggestion-selected', handleAISuggestion);
+
+		return () => {
+			window.removeEventListener(
+				'ai-suggestion-selected',
+				handleAISuggestion
+			);
+		};
+	}, []);
 
 	// Function to update product fields (will be passed from parent)
 	const updateProductField = (field, value) => {
@@ -397,12 +433,12 @@ const AICard = () => {
 // Modified filter to use React component
 addFilter(
 	'product_ai_assist',
-	'my-plugin/ai-assist-card',
-	(content, product) => {
+	'multivendorx/ai-assist-card',
+	(content, product, setProduct) => {
 		return (
 			<>
 				{content}
-				<AICard product={product} />
+				<AICard product={product} setProduct={setProduct}/>
 			</>
 		);
 	},

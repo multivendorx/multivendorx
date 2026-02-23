@@ -463,6 +463,9 @@ class Rest extends \WP_REST_Controller {
             'reply_date'     => Utill::multivendorx_rest_prepare_date_response( $review['reply_date'] ) ?? '',
             'date_created'   => Utill::multivendorx_rest_prepare_date_response( $review['date_created'] ),
             'date_modified'  => Utill::multivendorx_rest_prepare_date_response( $review['date_modified'] ),
+            'reply_date_gmt'     => Utill::multivendorx_rest_prepare_date_response( $review['reply_date'], true ) ?? '',
+            'date_created_gmt'   => Utill::multivendorx_rest_prepare_date_response( $review['date_created'], true ),
+            'date_modified_gmt'  => Utill::multivendorx_rest_prepare_date_response( $review['date_modified'], true ),
         );
     }
 }

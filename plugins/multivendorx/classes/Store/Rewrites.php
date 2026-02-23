@@ -166,6 +166,12 @@ class Rewrites {
 
         if ( ! empty( $store_name ) ) {
 
+            $filtered_template = apply_filters( 'multivendorx_store_elementor_template', '' );
+
+            if ( $filtered_template && file_exists( $filtered_template ) ) {
+                return $filtered_template;
+            }
+
             // Path to plugin block template
             $plugin_template = MultiVendorX()->plugin_path . 'templates/store/store.html';
 
@@ -174,15 +180,8 @@ class Rewrites {
                 return MultiVendorX()->plugin_path . 'templates/store/store-wrapper.php';
             }
 
-            $filtered_template = apply_filters( 'multivendorx_store_elementor_template', '' );
-
-            if ( $filtered_template && file_exists( $filtered_template ) ) {
-                return $filtered_template;
-            }
-
-            $store = Store::get_store( $store_name, 'slug' );
-
             // Classic PHP fallback
+            $store = Store::get_store( $store_name, 'slug' );
             return MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ) );
         }
 

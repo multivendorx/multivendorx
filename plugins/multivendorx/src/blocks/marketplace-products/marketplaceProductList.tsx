@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { store } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 interface Product {
 	id: number;
@@ -85,6 +86,7 @@ const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
 								}
 								alt={product.name}
 							/>
+
 							<h2 className="has-text-align-center">
 								{product.name}
 							</h2>
@@ -98,18 +100,19 @@ const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
 					disabled={page === 1}
 					onClick={() => setPage((p) => p - 1)}
 				>
-					Previous
+					{__('Previous', 'multivendorx')}
 				</button>
 
 				<span>
-					Page {page} of {totalPages}
+					{__('Page', 'multivendorx')} {page}{' '}
+					{__('of', 'multivendorx')} {totalPages}
 				</span>
 
 				<button
 					disabled={page >= totalPages}
 					onClick={() => setPage((p) => p + 1)}
 				>
-					Next
+					{__('Next', 'multivendorx')}
 				</button>
 			</div>
 		</>

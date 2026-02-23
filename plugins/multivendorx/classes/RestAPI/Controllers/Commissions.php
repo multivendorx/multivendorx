@@ -379,6 +379,8 @@ class Commissions extends \WP_REST_Controller {
             'commission_note'        => $commission['commission_note'] ?? '',
             'created_at'             => Utill::multivendorx_rest_prepare_date_response( $commission['created_at'] ?? '' ),
             'updated_at'             => Utill::multivendorx_rest_prepare_date_response( $commission['updated_at'] ?? '' ),
+            'created_at_gmt'         => Utill::multivendorx_rest_prepare_date_response( $commission['created_at'] ?? '', true ),
+            'updated_at_gmt'         => Utill::multivendorx_rest_prepare_date_response( $commission['updated_at'] ?? '', true ),
         );
 
         if ( $with_items && ! empty( $commission['order_id'] ) ) {

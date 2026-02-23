@@ -8,6 +8,8 @@ import {
 	TableRow,
 	QueryProps,
 	CategoryCount,
+	Container,
+	Column,
 } from 'zyra';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -21,9 +23,6 @@ const StoreTable: React.FC = () => {
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [totalRows, setTotalRows] = useState<number>(0);
-	const [storeSlugMap, setStoreSlugMap] = useState<Record<number, string>>(
-		{}
-	);
 	const [categoryCounts, setCategoryCounts] = useState<
 		CategoryCount[] | null
 	>(null);
@@ -67,37 +66,32 @@ const StoreTable: React.FC = () => {
 				setCategoryCounts([
 					{
 						value: 'all',
-						label: 'All',
+						label: __('All', 'multivendorx'),
 						count: Number(response.headers['x-wp-total']) || 0,
 					},
 					{
 						value: 'active',
-						label: 'Active',
+						label: __('Active', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-active']) || 0,
 					},
 					{
 						value: 'under_review',
-						label: 'Under Review',
+						label: __('Under Review', 'multivendorx'),
 						count:
-							Number(
-								response.headers['x-wp-status-under-review']
-							) || 0,
+							Number(response.headers['x-wp-status-under-review']) || 0,
 					},
 					{
 						value: 'suspended',
-						label: 'Suspended',
+						label: __('Suspended', 'multivendorx'),
 						count:
-							Number(response.headers['x-wp-status-suspended']) ||
-							0,
+							Number(response.headers['x-wp-status-suspended']) || 0,
 					},
 					{
 						value: 'deactivated',
-						label: 'Deactivated',
+						label: __('Deactivated', 'multivendorx'),
 						count:
-							Number(
-								response.headers['x-wp-status-deactivated']
-							) || 0,
+							Number(response.headers['x-wp-status-deactivated']) || 0,
 					},
 				]);
 
@@ -165,8 +159,8 @@ const StoreTable: React.FC = () => {
 		},
 	];
 	return (
-		<div className="general-wrapper">
-			<div className="admin-table-wrapper">
+		<Container general>
+			<Column>
 				<TableCard
 					headers={headers}
 					rows={rows}
@@ -180,8 +174,8 @@ const StoreTable: React.FC = () => {
 					format={appLocalizer.date_format}
 					currencySymbol={appLocalizer.currency_symbol}
 				/>
-			</div>
-		</div>
+			</Column>
+		</Container>
 	);
 };
 

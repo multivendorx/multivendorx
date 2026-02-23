@@ -403,7 +403,8 @@ class Stores extends \WP_REST_Controller {
                         'phone'               => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['phone'] ] ?? '',
                         'primary_owner'       => $owner,
                         'primary_owner_image' => get_avatar( $owner_id, 48 ),
-                        'applied_on'          => Utill::multivendorx_rest_prepare_date_response( $store['create_time'] ),
+                        'create_time'         => Utill::multivendorx_rest_prepare_date_response( $store['create_time'] ),
+                        'create_time_gmt'     => Utill::multivendorx_rest_prepare_date_response( $store['create_time'], true ),
                         'store_image'         => $store_meta->meta_data['image'] ?? '',
                         'store_banner'        => $store_meta->meta_data['banner'] ?? '',
                         'address'             => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['address'] ] ?? '',
@@ -838,10 +839,8 @@ class Stores extends \WP_REST_Controller {
                 'description'        => $store->get( Utill::STORE_SETTINGS_KEYS['description'] ),
                 'who_created'        => $store->get( Utill::STORE_SETTINGS_KEYS['who_created'] ),
                 'status'             => $store->get( Utill::STORE_SETTINGS_KEYS['status'] ),
-                'create_time'        => gmdate(
-                    'M j, Y',
-                    strtotime( $store->get( Utill::STORE_SETTINGS_KEYS['create_time'] ) )
-                ),
+                'create_time'         => Utill::multivendorx_rest_prepare_date_response( Utill::STORE_SETTINGS_KEYS['create_time'] ),
+                'create_time_gmt'     => Utill::multivendorx_rest_prepare_date_response( Utill::STORE_SETTINGS_KEYS['create_time'], true ),
                 'commission'         => $commission,
                 'transactions'       => $transactions,
                 'primary_owner_info' => $primary_owner_info,
@@ -1383,7 +1382,8 @@ class Stores extends \WP_REST_Controller {
                     'status'          => $store['status'],
                     'email'           => $store_meta->meta_data['email'] ?? '',
                     'withdraw_amount' => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['request_withdrawal_amount'] ],
-                    'applied_on'      => Utill::multivendorx_rest_prepare_date_response( $store['create_time'] ),
+                    'create_time'     => Utill::multivendorx_rest_prepare_date_response( $store['create_time'] ),
+                    'create_time_gmt' => Utill::multivendorx_rest_prepare_date_response( $store['create_time'], true ),
                 );
             }
         }
@@ -1423,12 +1423,8 @@ class Stores extends \WP_REST_Controller {
                     'id'         => (int) $store['ID'],
                     'store_name' => $store['name'],
                     'reason'     => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['deactivation_reason'] ],
-                    'date'       => gmdate(
-                        'M j, Y',
-                        strtotime(
-                            $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['deactivation_request_date'] ]
-                        )
-                    ),
+                    'deactivation_request_date'         => Utill::multivendorx_rest_prepare_date_response( $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['deactivation_request_date'] ] ),
+                    'deactivation_request_date_gmt'     => Utill::multivendorx_rest_prepare_date_response( $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['deactivation_request_date'] ] , true ),
                 );
             }
         }

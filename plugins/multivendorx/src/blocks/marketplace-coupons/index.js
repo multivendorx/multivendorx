@@ -4,6 +4,7 @@ import { PanelBody, TextControl } from '@wordpress/components';
 import { render } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import StoreCouponList from './StoreCouponList';
+import { __ } from '@wordpress/i18n';
 
 registerBlockType('multivendorx/marketplace-coupons', {
 	apiVersion: 2,
@@ -34,64 +35,64 @@ registerBlockType('multivendorx/marketplace-coupons', {
 		},
 	},
 
-	edit({ attributes, setAttributes }) {
-		const blockProps = useBlockProps();
+edit({ attributes, setAttributes }) {
+	const blockProps = useBlockProps();
 
-		return (
-			<div {...blockProps}>
-				<InspectorControls>
-					<PanelBody title="Coupon Settings" initialOpen={true}>
-						<TextControl
-							label="Store ID"
-							value={attributes.store_id}
-							onChange={(value) =>
-								setAttributes({ store_id: value })
-							}
-						/>
+	return (
+		<div {...blockProps}>
+			<InspectorControls>
+				<PanelBody title={__('Coupon Settings', 'multivendorx')} initialOpen={true}>
+					<TextControl
+						label={__('Store ID', 'multivendorx')}
+						value={attributes.store_id}
+						onChange={(value) =>
+							setAttributes({ store_id: value })
+						}
+					/>
 
-						<TextControl
-							label="Store Slug"
-							value={attributes.store_slug}
-							onChange={(value) =>
-								setAttributes({ store_slug: value })
-							}
-						/>
+					<TextControl
+						label={__('Store Slug', 'multivendorx')}
+						value={attributes.store_slug}
+						onChange={(value) =>
+							setAttributes({ store_slug: value })
+						}
+					/>
 
-						<TextControl
-							label="Coupons Per Page"
-							type="number"
-							value={attributes.perPage}
-							onChange={(value) =>
-								setAttributes({
-									perPage: parseInt(value, 10) || 10,
-								})
-							}
-						/>
+					<TextControl
+						label={__('Coupons Per Page', 'multivendorx')}
+						type="number"
+						value={attributes.perPage}
+						onChange={(value) =>
+							setAttributes({
+								perPage: parseInt(value, 10) || 10,
+							})
+						}
+					/>
 
-						<TextControl
-							label="Order By"
-							help="date, id, title, code, modified"
-							value={attributes.orderby}
-							onChange={(value) =>
-								setAttributes({ orderby: value })
-							}
-						/>
+					<TextControl
+						label={__('Order By', 'multivendorx')}
+						help={__('date, id, title, code, modified', 'multivendorx')}
+						value={attributes.orderby}
+						onChange={(value) =>
+							setAttributes({ orderby: value })
+						}
+					/>
 
-						<TextControl
-							label="Order"
-							help="ASC or DESC"
-							value={attributes.order}
-							onChange={(value) =>
-								setAttributes({ order: value })
-							}
-						/>
-					</PanelBody>
-				</InspectorControls>
+					<TextControl
+						label={__('Order', 'multivendorx')}
+						help={__('ASC or DESC', 'multivendorx')}
+						value={attributes.order}
+						onChange={(value) =>
+							setAttributes({ order: value })
+						}
+					/>
+				</PanelBody>
+			</InspectorControls>
 
-				<StoreCouponList {...attributes} />
-			</div>
-		);
-	},
+			<StoreCouponList {...attributes} />
+		</div>
+	);
+},
 
 	save({ attributes }) {
 		return (
