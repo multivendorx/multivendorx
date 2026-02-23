@@ -121,9 +121,9 @@ class Settings extends \WP_REST_Controller {
                         'disbursement_order_status' => $value['commission_setup']['disbursement_order_status'] ?? array( 'completed' ),
                     );
 
-                    MultiVendorX()->setting->update_setting( Utill::MULTIVENDORX_SETTINGS['onboarding'], $general_settings );
-                    MultiVendorX()->setting->update_setting( Utill::MULTIVENDORX_SETTINGS['commissions'], $commission_settings );
-                    MultiVendorX()->setting->update_setting( Utill::MULTIVENDORX_SETTINGS['payouts'], $disbursment_settings );
+                    MultiVendorX()->setting->update_option( Utill::MULTIVENDORX_SETTINGS['onboarding'], $general_settings );
+                    MultiVendorX()->setting->update_option( Utill::MULTIVENDORX_SETTINGS['commissions'], $commission_settings );
+                    MultiVendorX()->setting->update_option( Utill::MULTIVENDORX_SETTINGS['payouts'], $disbursment_settings );
                 }
 
                 return;

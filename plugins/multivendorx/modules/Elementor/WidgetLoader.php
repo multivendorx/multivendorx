@@ -8,7 +8,7 @@ class WidgetLoader {
 	public function __construct() {
 		add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ) );
 		add_action( 'elementor/elements/categories_registered', array( $this, 'register_category' ) );
-		add_action( 'elementor/dynamic_tags/register_tags', array( $this, 'register_dynamic_tags' ) );
+		add_action( 'elementor/dynamic_tags/register_tags', [ $this, 'register_dynamic_tags' ] );
 	}
 
 	public function register_category( $elements_manager ) {
@@ -26,16 +26,16 @@ class WidgetLoader {
 		$widgets = array(
 			'StoreName'        => 'MultiVendorX\Elementor\Widgets\Store_Name',
 			'StoreDescription' => 'MultiVendorX\Elementor\Widgets\Store_Description',
-			'StoreBanner'      => 'MultiVendorX\Elementor\Widgets\Store_Banner',
-			'StoreChat'        => 'MultiVendorX\Elementor\Widgets\Store_Chat_Button',
-			'StoreFollow'      => 'MultiVendorX\Elementor\Widgets\Store_Follow_Button',
-			'StoreGetSupport'  => 'MultiVendorX\Elementor\Widgets\Store_Get_Support',
-			'StoreInfo'        => 'MultiVendorX\Elementor\Widgets\Store_Info',
-			'StoreLogo'        => 'MultiVendorX\Elementor\Widgets\Store_Logo',
-			'StoreRating'      => 'MultiVendorX\Elementor\Widgets\Store_Rating',
-			'StoreSocial'      => 'MultiVendorX\Elementor\Widgets\Store_Social',
+			'StoreBanner' => 'MultiVendorX\Elementor\Widgets\Store_Banner',
+			'StoreChat' => 'MultiVendorX\Elementor\Widgets\Store_Chat_Button',
+			'StoreFollow' => 'MultiVendorX\Elementor\Widgets\Store_Follow_Button',
+			'StoreGetSupport' => 'MultiVendorX\Elementor\Widgets\Store_Get_Support',
+			'StoreInfo' => 'MultiVendorX\Elementor\Widgets\Store_Info',
+			'StoreLogo' => 'MultiVendorX\Elementor\Widgets\Store_Logo',
+			'StoreRating' => 'MultiVendorX\Elementor\Widgets\Store_Rating',
+			'StoreSocial' => 'MultiVendorX\Elementor\Widgets\Store_Social',
 			'StoreTabContents' => 'MultiVendorX\Elementor\Widgets\Store_Tab_Contents',
-			'StoreTabs'        => 'MultiVendorX\Elementor\Widgets\Store_Tabs',
+			'StoreTabs' => 'MultiVendorX\Elementor\Widgets\Store_Tabs',
 		);
 
 		foreach ( $widgets as $file => $class ) {
@@ -56,26 +56,27 @@ class WidgetLoader {
 		// Register Group
 		$dynamic_tags->register_group(
 			'multivendorx',
-			array(
+			[
 				'title' => __( 'MultiVendorX', 'multivendorx' ),
-			)
+			]
 		);
 
 		// Include Tag File
 		// $path = MultiVendorX()->plugin_path . 'modules/Elementor/Tags/StoreName.php';
 
 		// if ( file_exists( $path ) ) {
-		// require_once $path;
+		// 	require_once $path;
 
-		// if ( class_exists( '\MultiVendorX\Elementor\Tags\StoreName' ) ) {
-		// $dynamic_tags->register(
-		// new \MultiVendorX\Elementor\Tags\StoreName()
-		// );
-		// }
+		// 	if ( class_exists( '\MultiVendorX\Elementor\Tags\StoreName' ) ) {
+		// 		$dynamic_tags->register(
+		// 			new \MultiVendorX\Elementor\Tags\StoreName()
+		// 		);
+		// 	}
 		// }
 		$tags_path = MultiVendorX()->plugin_path . 'modules/Elementor/Tags/';
 
 		foreach ( glob( $tags_path . '*.php' ) as $file ) {
+
 			require_once $file;
 
 			// Get class name from file name
@@ -87,4 +88,5 @@ class WidgetLoader {
 			}
 		}
 	}
+
 }
