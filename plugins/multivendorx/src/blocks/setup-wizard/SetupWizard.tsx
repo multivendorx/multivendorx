@@ -17,7 +17,6 @@ const SetupWizard: React.FC = () => {
 			approve_store: 'manually',
 		},
 	});
-	const settingChanged = useRef(false);
 
 	const appLocalizer = (window as any).appLocalizer;
 
@@ -25,11 +24,7 @@ const SetupWizard: React.FC = () => {
 		key: 'setup_wizard',
 		proSetting: false,
 		apiLink: 'settings',
-		moduleEnabled: true,
-		dependentSetting: '',
-		dependentPlugin: '',
 		modal: [],
-		buttonEnable: true,
 	};
 
 	const methods = [
@@ -47,7 +42,6 @@ const SetupWizard: React.FC = () => {
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
-
 			formFields: [
 				{
 					key: 'marketplace_model',
@@ -56,7 +50,6 @@ const SetupWizard: React.FC = () => {
 						'What kind of marketplace you are building',
 						'multivendorx'
 					),
-
 					options: [
 						{
 							key: 'general',
@@ -95,7 +88,6 @@ const SetupWizard: React.FC = () => {
 						},
 					],
 				},
-
 				{
 					key: 'product_types',
 					type: 'multi-select',
@@ -103,7 +95,6 @@ const SetupWizard: React.FC = () => {
 						'What kind of listings stores can create',
 						'multivendorx'
 					),
-
 					options: [
 						{ key: 'simple', label: __('Simple', 'multivendorx'), value: 'simple' },
 						{ key: 'variable', label: __('Variable', 'multivendorx'), value: 'variable' },
@@ -122,7 +113,6 @@ const SetupWizard: React.FC = () => {
 						},
 					],
 				},
-
 				{
 					key: 'notice_rental',
 					type: 'blocktext',
@@ -136,7 +126,6 @@ const SetupWizard: React.FC = () => {
 						value: 'rental',
 					},
 				},
-
 				{
 					key: 'notice_auction',
 					type: 'blocktext',
@@ -150,7 +139,6 @@ const SetupWizard: React.FC = () => {
 						value: 'auction',
 					},
 				},
-
 				{
 					key: 'notice_subscription',
 					type: 'blocktext',
@@ -164,7 +152,6 @@ const SetupWizard: React.FC = () => {
 						value: 'subscription',
 					},
 				},
-
 				{
 					key: 'store_selling_mode',
 					type: 'setting-toggle',
@@ -198,7 +185,6 @@ const SetupWizard: React.FC = () => {
 						},
 					],
 				},
-
 				{
 					key: 'wizardButtons',
 					type: 'button',
@@ -221,16 +207,13 @@ const SetupWizard: React.FC = () => {
 			id: 'store_setup',
 			label: __('Configure Your Store', 'multivendorx'),
 			icon: 'storefront',
-
 			desc: __(
 				'How stores sell on your marketplace.',
 				'multivendorx'
 			),
-
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
-
 			formFields: [
 				{
 					key: 'approve_store',
@@ -254,7 +237,6 @@ const SetupWizard: React.FC = () => {
 						},
 					],
 				},
-
 				{
 					key: 'wizardButtons',
 					type: 'button',
@@ -274,45 +256,34 @@ const SetupWizard: React.FC = () => {
 		},
 		{
 			id: 'commission_setup',
-
 			label: __(
 				'How marketplace commission is calculated',
 				'multivendorx'
 			),
-
 			icon: 'storefront',
-
 			desc: __(
 				'Decide how your marketplace earns money.',
 				'multivendorx'
 			),
-
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
-
 			formFields: [
 				{
 					key: 'commission_type',
 					type: 'setting-toggle',
-
 					label: __(
 						'How commission is calculated',
 						'multivendorx'
 					),
-
 					settingDescription: __(
 						'Choose how marketplace commission is applied.',
 						'multivendorx'
 					),
-
-					desc: `
-<ul>
-<li>${__('Store order based - Calculated on the full order amount of each store.', 'multivendorx')}</li>
-<li>${__('Per item based - Applied to each product in the order.', 'multivendorx')}</li>
-</ul>
-			`,
-
+					desc: `<ul>
+							<li>${__('Store order based - Calculated on the full order amount of each store.', 'multivendorx')}</li>
+							<li>${__('Per item based - Applied to each product in the order.', 'multivendorx')}</li>
+							</ul>`,
 					options: [
 						{
 							key: 'store_order',
@@ -326,21 +297,15 @@ const SetupWizard: React.FC = () => {
 						},
 					],
 				},
-
 				{
 					key: 'commission_value',
-
 					type: 'nested',
-
 					label: __('Commission value', 'multivendorx'),
-
 					single: true,
-
 					desc: __(
 						'Set global commission rates that apply to each individual item quantity. Commission will be calculated by multiplying the rate with the total number of items across all products in the order.',
 						'multivendorx'
 					),
-
 					nestedFields: [
 						{
 							key: 'commission_fixed',
@@ -369,18 +334,14 @@ const SetupWizard: React.FC = () => {
 						},
 					],
 				},
-
 				{
 					key: 'disbursement_order_status',
 					type: 'checkbox',
-
 					label: __('When stores earn money', 'multivendorx'),
-
 					settingDescription: __(
 						'Choose when store earnings are added to their wallet.',
 						'multivendorx'
 					),
-
 					options: [
 						{
 							key: 'completed',
@@ -405,14 +366,11 @@ const SetupWizard: React.FC = () => {
 							proSetting: true,
 						},
 					],
-
 					selectDeselect: true,
 				},
-
 				{
 					key: 'wizardButtons',
 					type: 'button',
-
 					options: [
 						{
 							label: __('Back', 'multivendorx'),
@@ -428,38 +386,28 @@ const SetupWizard: React.FC = () => {
 		},
 		{
 			id: 'more_settings',
-
 			label: __(
 				'Want to configure more settings?',
 				'multivendorx'
 			),
-
 			icon: 'storefront',
-
 			desc: __(
 				"You're all set with the basics! Use the quick links below to fine-tune your marketplace now — or come back later anytime.",
 				'multivendorx'
 			),
-
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
-
 			formFields: [
 				{
 					key: 'commission_settings',
-
 					type: 'setup',
-
 					title: __('Commission settings', 'multivendorx'),
-
 					desc: __(
 						'Adjust commission rules and payout behavior.',
 						'multivendorx'
 					),
-
 					hideCheckbox: true,
-
 					link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
 				},
 
@@ -510,17 +458,12 @@ const SetupWizard: React.FC = () => {
 				methods={methods}
 				value={value}
 				onChange={(data: any) => {
-					settingChanged.current = true;
 					updateSetting(inputField.key, data);
 				}}
 				isWizardMode={true}
 				canAccess={true}
 			/>
 
-			{/* <div className="welcome-wrapper">
-                    <div className="wizard-title">! Well Done</div>
-                    <div className="des">Thank you for choosing MultiVendorX!</div>
-                </div> */}
 		</div>
 	);
 };
