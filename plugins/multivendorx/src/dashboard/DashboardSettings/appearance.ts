@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
 
 const imageOptions = [
-	{ value: 'static_image', label: 'Static Image' },
-	{ value: 'slider_image', label: 'Slider Image' },
-	{ value: 'video', label: 'Video' },
+	{ value: 'static_image', label: __('Static Image', 'multivendorx') },
+	{ value: 'slider_image', label: __('Slider Image', 'multivendorx') },
+	{ value: 'video', label: __('Video', 'multivendorx') },
 ];
 
 export default {
