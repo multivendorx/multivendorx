@@ -80,7 +80,7 @@ export const EditableCell: React.FC<EditableCellProps> = ({
 					default:
 						return (
 							<BasicInputUI
-								type="text"
+								type={header.editType}
 								value={value}
 								onChange={handleSave}
 							/>
