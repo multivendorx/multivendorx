@@ -9,7 +9,7 @@
   font-display: block;
 }
 
-[class^="adminfont-"], [class*=" adminfont-"], input::before, .adminfonts {
+[class^="adminfont-"], [class*=" adminfont-"], input::before, .adminfonts, .notification-icon::before {
   font-family: adminfonts , sans-serif !important;
   speak: never;
   font-style: normal;

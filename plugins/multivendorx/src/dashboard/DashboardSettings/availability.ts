@@ -17,6 +17,7 @@ export default {
             key: 'date_range',
             format: 'YYYY-MM-DD',
             multiple: true,
+            showInput: false,
         },
 
         // Add to Cart Button Text
