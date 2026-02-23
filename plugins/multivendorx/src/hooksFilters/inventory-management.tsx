@@ -1,3 +1,4 @@
+import InventoryView from "@/dashboard/InventoryView";
 import { addFilter } from "@wordpress/hooks";
 import { __ } from "@wordpress/i18n";
 
@@ -36,7 +37,7 @@ addFilter(
     (output, element) => {
         const path = location.pathname;
         if (path.includes('/inventory/')) {
-            return <>hwekjhdsfg test</>;
+           return <InventoryView />;
         }
         return output;
     }
