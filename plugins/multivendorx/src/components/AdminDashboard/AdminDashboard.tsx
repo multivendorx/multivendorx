@@ -932,7 +932,7 @@ const AdminDashboard = () => {
 		<>
 			<Notice
 				message={successMsg}
-				variant={successMsg.startsWith('Failed') ? 'error' : 'success'}
+				variant={successMsg}
 				display="toast"
 				autoDismiss={3000}
 				onDismiss={() => setSuccessMsg('')}

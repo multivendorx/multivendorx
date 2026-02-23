@@ -2,57 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import "../styles/web/UI/SuccessNotice.scss";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-export type NoticeVariant = 'success' | 'error' | 'warning' | 'info';
-
-export type NoticeDisplay = 'toast' | 'inline' | 'banner';
-
-export interface NoticeProps {
-    /** The body text of the notice */
-    message?: string;
-    /** Optional heading above the message */
-    title?: string;
-    /** Visual style of the notice */
-    variant?: NoticeVariant;
-    /**
-     * Controls the layout/positioning CSS class on the root element.
-     *
-     * Pass one of the pre-defined display modes OR any custom class string:
-     *   - "toast"   → "admin-notice-wrapper"   (floating popup, legacy behaviour)
-     *   - "inline"  → "admin-notice-inline"    (sits in document flow)
-     *   - "banner"  → "admin-notice-banner"    (full-width strip)
-     *   - any other string is forwarded as-is  (escape hatch for legacy classes
-     *     like "field-error" or "invalid-massage")
-     */
-    display?: NoticeDisplay | string;
-    /** Completely override the root className (skips display mapping) */
-    className?: string;
-    /** Show a close/dismiss button */
-    dismissible?: boolean;
-    /** Called when the user dismisses the notice */
-    onDismiss?: () => void;
-    /**
-     * Auto-dismiss after N milliseconds.
-     * Pass 0 or omit to keep the notice visible until manually dismissed.
-     */
-    autoDismiss?: number;
-    /** Override the icon class (adminfont-*) */
-    iconClass?: string;
-}
-
-// ─── Constants ────────────────────────────────────────────────────────────────
-
-const DISPLAY_CLASS_MAP: Record<string, string> = {
-    toast:  'admin-notice-wrapper',  // keeps full backward-compat with SuccessNotice
-    inline: 'admin-notice-inline',
-    banner: 'admin-notice-banner',
-};
-
-const VARIANT_DEFAULTS: Record<
-    NoticeVariant,
-    { title: string; iconClass: string; modifierClass: string }
-> = {
+export const VARIANT_MODES = {
     success: {
         title:         'Great!',
         iconClass:     'adminfont-icon-yes',
@@ -75,7 +25,30 @@ const VARIANT_DEFAULTS: Record<
     },
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
+export const DISPLAY_MODES = {
+    toast:  'admin-notice-wrapper', 
+    inline: 'admin-notice-inline',
+    banner: 'admin-notice-banner',
+};
+
+export type NoticeVariant = keyof typeof VARIANT_MODES;
+export type NoticeDisplay = keyof typeof DISPLAY_MODES;
+
+export interface NoticeProps {
+    /** The body text of the notice */
+    message?: string;
+    /** Optional heading above the message */
+    title?: string;
+    /** Visual style of the notice */
+    variant?: NoticeVariant;
+    display?: NoticeDisplay | string;
+    className?: string;
+    dismissible?: boolean;
+    onDismiss?: () => void;
+    autoDismiss?: number;
+    iconClass?: string;
+}
+
 
 const Notice: React.FC<NoticeProps> = ({
     message,
@@ -105,12 +78,12 @@ const Notice: React.FC<NoticeProps> = ({
 
     if (!message) return null;
 
-    const variantMeta  = VARIANT_DEFAULTS[variant];
+    const variantMeta  = VARIANT_MODES[variant];
     const resolvedIcon = iconClass ?? variantMeta.iconClass;
     const resolvedTitle = title ?? variantMeta.title;
     const displayClass =
         className ??
-        (DISPLAY_CLASS_MAP[display as string] ?? display);
+        (DISPLAY_MODES[display as NoticeDisplay] ?? display);
 
     const rootClass = [
         displayClass

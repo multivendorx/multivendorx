@@ -150,7 +150,6 @@ const RenderComponent: React.FC<RenderProps> = ({
                             settingName: id,
                         }
                     ).then((response: unknown) => {
-                        console.log('API Response:', response); 
                         const apiResponse = response as ApiResponse;
                         if (apiResponse.error) {
                             setNotice({ message: apiResponse.error, variant: 'success' });

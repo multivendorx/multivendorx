@@ -211,37 +211,37 @@ const App = () => {
 
 	const profileItems = [
 		{
-			title: __("What's New", 'multivendorx'),
+			title: "What's New",
 			icon: 'adminfont-new',
 			link: 'https://multivendorx.com/latest-release/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
 			targetBlank: true,
 		},
 		{
-			title: __('Get Support', 'multivendorx'),
+			title: 'Get Support',
 			icon: 'adminfont-customer-support',
 			link: 'https://multivendorx.com/support-forum/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
 			targetBlank: true,
 		},
 		{
-			title: __('Community', 'multivendorx'),
+			title: 'Community',
 			icon: 'adminfont-global-community',
 			link: 'https://multivendorx.com/community/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
 			targetBlank: true,
 		},
 		{
-			title: __('Documentation', 'multivendorx'),
+			title: 'Documentation',
 			icon: 'adminfont-book',
 			link: 'https://multivendorx.com/docs/knowledgebase/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
 			targetBlank: true,
 		},
 		{
-			title: __('Request a Feature', 'multivendorx'),
+			title: 'Request a Feature',
 			icon: 'adminfont-blocks',
 			link: 'https://github.com/multivendorx/multivendorx/issues',
 			targetBlank: true,
 		},
 		{
-			title: __('Import Dummy Data', 'multivendorx'),
+			title: 'Import Dummy Data',
 			icon: 'adminfont-import',
 			action: handleOpenFeaturePopup,
 		},
@@ -293,11 +293,11 @@ const App = () => {
 				brandImg={Brand}
 				results={results}
 				search={{
-					placeholder: __('Search...', 'multivendorx'),
+					placeholder: 'Search...',
 					options: [
-						{ value: 'all', label: __('Modules & Settings', 'multivendorx') },
-						{ value: 'modules', label: __('Modules', 'multivendorx') },
-						{ value: 'settings', label: __('Settings', 'multivendorx') },
+						{ value: 'all', label: 'Modules & Settings' },
+						{ value: 'modules', label: 'Modules' },
+						{ value: 'settings', label: 'Settings' },
 					],
 				}}
 				onQueryUpdate={handleQueryUpdate}
@@ -345,75 +345,129 @@ const App = () => {
 						label={__('Import Dummy Data', 'multivendorx')}
 					></FormGroup>
 					<div className="desc">
-						{__(
-							'Get a hands-on feel of your marketplace in minutes. Import demo stores, store owners, products, and commission data to see how everything works together.',
-							'multivendorx'
-						)}
-						<b>{__('Important:', 'multivendorx')} </b>
-						{__(
-							'Delete all demo data before going live so your real marketplace data stays clean and reliable.',
-							'multivendorx'
-						)}
+						Get a hands-on feel of your marketplace in minutes.
+						Import demo stores, store owners, products, and
+						commission data to see how everything works together.
+						<b>Important: </b>Delete all demo data before going live
+						so your real marketplace data stays clean and reliable.
 					</div>
-					<AdminButtonUI
-						buttons={{
-							text: __('Import Dummy Data', 'multivendorx'),
-							icon: 'import',
-							color: 'purple',
-							apilink: 'import-dummy-data',
-							parameter: 'action',
-							interval: 1000,
-							appLocalizer: appLocalizer,
-							successMessage: __('Dummy data imported successfully!', 'multivendorx'),
-							failureMessage: __('Failed to import dummy data.', 'multivendorx'),
-							showProgress: true,
-							tasks: [
-								{
-									action: 'import_store_owners',
-									message: __('Importing store owners...', 'multivendorx'),
-									cacheKey: 'store_owners',
-									successMessage: __('Store owners imported', 'multivendorx'),
-									failureMessage: __('Failed to import store owners', 'multivendorx'),
-								},
-								{
-									action: 'import_stores',
-									message: __('Creating stores...', 'multivendorx'),
-									cacheKey: 'store_ids',
-									successMessage: __('Stores created', 'multivendorx'),
-									failureMessage: __('Failed to create stores', 'multivendorx'),
-								},
-								{
-									action: 'import_products',
-									message: __('Importing products...', 'multivendorx'),
-									cacheKey: 'product_ids',
-									successMessage: __('Products imported', 'multivendorx'),
-									failureMessage: __('Failed to import products', 'multivendorx'),
-								},
-								{
-									action: 'import_commissions',
-									message: __('Creating commissions...', 'multivendorx'),
-									successMessage: __('Commissions created', 'multivendorx'),
-									failureMessage: __('Failed to create commissions', 'multivendorx'),
-								},
-								{
-									action: 'import_orders',
-									message: __('Creating orders...', 'multivendorx'),
-									successMessage: __('Orders created', 'multivendorx'),
-									failureMessage: __('Failed to create orders', 'multivendorx'),
-								},
-								{
-									action: 'import_reviews',
-									message: __('Creating reviews...', 'multivendorx'),
-									successMessage: __('Reviews created', 'multivendorx'),
-									failureMessage: __('Failed to create reviews', 'multivendorx'),
-								},
-							],
-							onComplete: (data) => {
-								console.log('Import completed', data);
+					<DoActionBtn
+						buttonKey="import_dummy_data"
+						value={__('Import Dummy Data', 'multivendorx')}
+						apilink="import-dummy-data"
+						parameter="action"
+						interval={1000}
+						proSetting={false}
+						proSettingChanged={() => false}
+						appLocalizer={appLocalizer}
+						successMessage={__(
+							'Dummy data imported successfully!',
+							'multivendorx'
+						)}
+						failureMessage={__(
+							'Failed to import dummy data.',
+							'multivendorx'
+						)}
+						tasks={[
+							{
+								action: 'import_store_owners',
+								message: __(
+									'Importing store owners...',
+									'multivendorx'
+								),
+								cacheKey: 'store_owners',
+								successMessage: __(
+									'Store owners imported',
+									'multivendorx'
+								),
+								failureMessage: __(
+									'Failed to import store owners',
+									'multivendorx'
+								),
 							},
-							onError: (error) => {
-								console.error('Import failed', error);
+							{
+								action: 'import_stores',
+								message: __(
+									'Creating stores...',
+									'multivendorx'
+								),
+								cacheKey: 'store_ids',
+								successMessage: __(
+									'Stores created',
+									'multivendorx'
+								),
+								failureMessage: __(
+									'Failed to create stores',
+									'multivendorx'
+								),
 							},
+							{
+								action: 'import_products',
+								message: __(
+									'Importing products...',
+									'multivendorx'
+								),
+								cacheKey: 'product_ids',
+								successMessage: __(
+									'Products imported',
+									'multivendorx'
+								),
+								failureMessage: __(
+									'Failed to import products',
+									'multivendorx'
+								),
+							},
+							{
+								action: 'import_commissions',
+								message: __(
+									'Creating commissions...',
+									'multivendorx'
+								),
+								successMessage: __(
+									'Commissions created',
+									'multivendorx'
+								),
+								failureMessage: __(
+									'Failed to create commissions',
+									'multivendorx'
+								),
+							},
+							{
+								action: 'import_orders',
+								message: __(
+									'Creating orders...',
+									'multivendorx'
+								),
+								successMessage: __(
+									'Orders created',
+									'multivendorx'
+								),
+								failureMessage: __(
+									'Failed to create orders',
+									'multivendorx'
+								),
+							},
+							{
+								action: 'import_reviews',
+								message: __(
+									'Creating reviews...',
+									'multivendorx'
+								),
+								successMessage: __(
+									'Reviews created',
+									'multivendorx'
+								),
+								failureMessage: __(
+									'Failed to create reviews',
+									'multivendorx'
+								),
+							},
+						]}
+						onComplete={(data) => {
+							console.log('Import completed', data);
+						}}
+						onError={(error) => {
+							console.error('Import failed', error);
 						}}
 					/>
 				</FormGroupWrapper>

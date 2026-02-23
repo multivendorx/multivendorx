@@ -1,440 +1,280 @@
-// External Dependencies
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { AdminButtonUI } from './AdminButton';
+import ItemList, { ItemListUI } from './ItemList';
 
-// Internal Dependencies
-import { getApiLink, sendApiResponse } from '../utils/apiService';
-import '../styles/web/DoActionBtn.scss';
-
-// Types
+// Keep the exact same props interface as the original DoActionBtn
 interface Task {
     action: string;
     message: string;
-    cacheKey?: string; // Dynamic cache key
-    successMessage?: string; // Custom success message
-    failureMessage?: string; // Custom failure message
+    cacheKey?: string;
+    successMessage?: string;
+    failureMessage?: string;
 }
 
-interface SyncStatus {
-    action: string;
-    current: number;
-    total: number;
-}
-
-interface DynamicResponse {
-    success: boolean;
-    running?: boolean;
-    status?: SyncStatus[];
-    data?: any; // Can be any data type
-    message?: string;
-    [key: string]: any; // Allow any additional properties
-}
-
-interface ApiResponse {
-    success?: boolean;
-    [key: string]: any; // Fully dynamic response structure
-}
-
-interface AppLocalizer {
-    nonce: string;
-    apiUrl: string;
-    restUrl: string;
-    [key: string]: string | number | boolean;
-}
-
-interface AdditionalData {
-    [key: string]: any; // Fully dynamic cache storage
-}
-
-interface DoActionBtnProps {
-    buttonKey: string;
-    interval: number;
+interface DoActionTaskListProps {
+    buttonKey: string;          // Keep even if not used
+    value: string;              // Button text
+    apilink: string;            // API endpoint
+    parameter: string;          // Parameter name
+    interval: number;           // Keep for backward compatibility
     proSetting: boolean;
     proSettingChanged: () => boolean;
-    value: string;
-    apilink: string;
-    parameter: string;
+    appLocalizer: {
+        nonce: string;
+        apiUrl: string;
+        restUrl: string;
+        [key: string]: any;
+    };
+    successMessage?: string;
+    failureMessage?: string;
     tasks: Task[];
-    appLocalizer: AppLocalizer;
-    successMessage?: string; // Global success message
-    failureMessage?: string; // Global failure message
-    onComplete?: (data: any) => void; // Callback on completion
-    onError?: (error: any) => void; // Callback on error
-    onTaskComplete?: (task: Task, response: any) => void; // Callback per task
+    onComplete?: (data: any) => void;
+    onError?: (error: any) => void;
+    onTaskComplete?: (task: Task, response: any) => void;
 }
 
-type TaskStatus = 'running' | 'success' | 'failed';
-
-const DoActionBtn: React.FC<DoActionBtnProps> = ({
-    interval,
-    proSetting,
-    proSettingChanged,
+const DoActionBtn: React.FC<DoActionTaskListProps> = ({
+    buttonKey,  // Keep even if not used for backward compatibility
     value,
     apilink,
     parameter,
-    tasks,
+    interval,   // Keep for backward compatibility
+    proSetting,
+    proSettingChanged,
     appLocalizer,
     successMessage = 'Process completed successfully',
     failureMessage = 'Process failed',
+    tasks,
     onComplete,
     onError,
     onTaskComplete,
 }) => {
-    const [syncStarted, setSyncStarted] = useState(false);
-    const [syncStatus, setSyncStatus] = useState<SyncStatus[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [taskSequence, setTaskSequence] = useState<
-        {
-            name: string;
-            message: string;
-            status: TaskStatus;
-            successMessage?: string;
-            failureMessage?: string;
-        }[]
-    >([]);
-    const [processStatus, setProcessStatus] = useState('');
-    const [processResult, setProcessResult] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [processStatus, setProcessStatus] = useState<'success' | 'failed' | null>(null);
+    const [taskStatuses, setTaskStatuses] = useState<Record<string, {
+        status: 'pending' | 'running' | 'success' | 'failed';
+        message: string;
+        customMessage?: string;
+    }>>({});
+    const [cache, setCache] = useState<Record<string, any>>({});
 
-    const fetchStatus = useRef<string>('');
-    const fetchStatusRef = useRef<ReturnType<typeof setInterval> | null>(null);
-    const processStarted = useRef(false);
-    const additionalData = useRef<AdditionalData>({});
-    const taskIndex = useRef(0);
-
-    const sleep = (ms: number) =>
-        new Promise((resolve) => setTimeout(resolve, ms));
-
-    const fetchSyncStatus = useCallback(() => {
-        axios
-            .get(getApiLink(appLocalizer, apilink), {
-                headers: { 'X-WP-Nonce': appLocalizer.nonce },
-                params: { parameter },
-            })
-            .then(({ data }: { data: DynamicResponse }) => {
-                setSyncStarted(data.running || false);
-                setSyncStatus(data.status || []);
-            })
-            .catch(() => {
-                // Handle error gracefully for backward compatibility
-                setSyncStarted(false);
-                setSyncStatus([]);
-            });
-    }, [appLocalizer, apilink, parameter]);
-
-    const updateTaskStatus = (status: TaskStatus, customMessage?: string) => {
-        setTaskSequence((prev) => {
-            const updated = [...prev];
-            const last = updated.length - 1;
-            if (last >= 0) {
-                updated[last].status = status;
-                if (customMessage) {
-                    if (status === 'success') {
-                        updated[last].successMessage = customMessage;
-                    } else if (status === 'failed') {
-                        updated[last].failureMessage = customMessage;
-                    }
-                }
-            }
-            return updated;
-        });
-    };
-
-    const handleTaskResponse = async (
-        currentTask: Task,
-        response: DynamicResponse
-    ): Promise<TaskStatus> => {
-        let status: TaskStatus = 'success';
-        let customMessage = '';
-
-        // Store response data if cacheKey is specified
-        if (currentTask.cacheKey && response.data !== undefined) {
-            additionalData.current[currentTask.cacheKey] = response.data;
-        }
-
-        // Determine task success based on response
-        if (!response?.success) {
-            status = 'failed';
-            customMessage = currentTask.failureMessage || response?.message || 'Task failed';
-
-            // Call error callback if provided
-            if (onError) {
-                onError({ task: currentTask, response, error: customMessage });
-            }
-        } else {
-            // Call task completion callback
-            if (onTaskComplete) {
-                onTaskComplete(currentTask, response);
-            }
-
-            // Use custom success message if provided
-            if (currentTask.successMessage) {
-                customMessage = currentTask.successMessage;
-            }
-        }
-
-        updateTaskStatus(status, customMessage);
-        return status;
-    };
-
-    const executeSequentialTasks = useCallback(async () => {
-        if (taskIndex.current >= tasks.length) {
-            // All tasks completed
-            setProcessStatus('completed');
-            setProcessResult(additionalData.current);
-            setLoading(false);
-            processStarted.current = false;
-
-            // Call completion callback
-            if (onComplete) {
-                onComplete(additionalData.current);
-            }
-            return;
-        }
-
-        const currentTask = tasks[taskIndex.current];
-
-        // Add task to sequence
-        setTaskSequence((prev) => [
-            ...prev,
-            {
-                name: currentTask.action,
-                message: currentTask.message,
-                status: 'running',
-                successMessage: currentTask.successMessage,
-                failureMessage: currentTask.failureMessage,
-            },
-        ]);
-
-        // Add delay between tasks
-        await sleep(interval);
-
-        try {
-            // Build dynamic payload
-            const payload: Record<string, any> = {
-                action: currentTask.action,
-                parameter,
+    // Initialize task statuses
+    useEffect(() => {
+        const initialStatuses: Record<string, any> = {};
+        tasks.forEach(task => {
+            initialStatuses[task.action] = {
+                status: 'pending',
+                message: task.message,
             };
+        });
+        setTaskStatuses(initialStatuses);
+    }, [tasks]);
 
-            // Add all cached data from previous tasks
-            Object.entries(additionalData.current).forEach(([key, value]) => {
-                if (value !== undefined) {
-                    payload[key] = value;
+    const updateTaskStatus = (
+        action: string, 
+        status: 'pending' | 'running' | 'success' | 'failed', 
+        customMessage?: string
+    ) => {
+        setTaskStatuses(prev => ({
+            ...prev,
+            [action]: {
+                ...prev[action],
+                status,
+                customMessage,
+            }
+        }));
+    };
+
+    const executeTasks = async () => {
+        setIsLoading(true);
+        setProcessStatus(null);
+        
+        // Reset all tasks to pending
+        tasks.forEach(task => {
+            updateTaskStatus(task.action, 'pending');
+        });
+        
+        for (let i = 0; i < tasks.length; i++) {
+            const task = tasks[i];
+            
+            // Update current task to running
+            updateTaskStatus(task.action, 'running');
+            
+            try {
+                // Prepare payload with cached data
+                const payload: Record<string, any> = {
+                    action: task.action,
+                    [parameter]: 'action', // Match original parameter structure
+                    ...cache
+                };
+
+                // Use the same API call pattern as original
+                const response = await axios.post(
+                    `${appLocalizer.apiUrl}/${apilink}`, // Match original URL structure
+                    payload,
+                    { 
+                        headers: { 
+                            'X-WP-Nonce': appLocalizer.nonce,
+                            'Content-Type': 'application/json',
+                        } 
+                    }
+                );
+
+                // Check response structure (matches original DynamicResponse)
+                const responseData = response.data;
+                const isSuccess = responseData?.success !== false;
+
+                // Cache response data if needed
+                if (task.cacheKey && responseData?.data !== undefined) {
+                    setCache(prev => ({ 
+                        ...prev, 
+                        [task.cacheKey]: responseData.data 
+                    }));
                 }
-            });
 
-            // Execute task
-            const response = (await sendApiResponse(
-                appLocalizer,
-                getApiLink(appLocalizer, apilink),
-                payload
-            )) as DynamicResponse;
+                if (isSuccess) {
+                    // Task succeeded
+                    updateTaskStatus(
+                        task.action, 
+                        'success', 
+                        task.successMessage || responseData?.message || 'Task completed'
+                    );
+                    
+                    // Call task completion callback
+                    onTaskComplete?.(task, responseData);
+                } else {
+                    // Task failed
+                    updateTaskStatus(
+                        task.action, 
+                        'failed', 
+                        task.failureMessage || responseData?.message || 'Task failed'
+                    );
+                    
+                    setProcessStatus('failed');
+                    onError?.({ task, response: responseData, error: responseData?.message });
+                    setIsLoading(false);
+                    return;
+                }
 
-            // Handle task response
-            const status = await handleTaskResponse(currentTask, response);
-
-            if (status === 'failed') {
+                // Use interval for delay between tasks (matches original)
+                if (i < tasks.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, interval));
+                }
+            } catch (error) {
+                console.error('Task execution failed:', error);
+                updateTaskStatus(task.action, 'failed', 'Execution error');
                 setProcessStatus('failed');
-                setLoading(false);
-                processStarted.current = false;
+                setIsLoading(false);
+                onError?.({ task, error });
                 return;
             }
-
-            // Move to next task
-            taskIndex.current++;
-            await executeSequentialTasks();
-        } catch (error) {
-            console.error('Task execution failed:', error);
-            updateTaskStatus('failed', 'Task execution failed');
-            setProcessStatus('failed');
-            setLoading(false);
-            processStarted.current = false;
-
-            if (onError) {
-                onError({ task: currentTask, error });
-            }
-        }
-    }, [tasks, interval, appLocalizer, apilink, parameter, onComplete, onError, onTaskComplete]);
-
-    const startProcess = useCallback(() => {
-        if (processStarted.current) {
-            return;
-        }
-        processStarted.current = true;
-        setLoading(true);
-        setTaskSequence([]);
-        setProcessStatus('');
-        setProcessResult(null);
-        additionalData.current = {};
-        taskIndex.current = 0;
-        executeSequentialTasks();
-    }, [executeSequentialTasks]);
-
-    useEffect(() => {
-        if (syncStarted) {
-            fetchStatusRef.current = setInterval(fetchSyncStatus, interval);
-        } else if (fetchStatusRef.current) {
-            clearInterval(fetchStatusRef.current);
-            fetchStatusRef.current = null;
         }
 
-        return () => {
-            if (fetchStatusRef.current) {
-                clearInterval(fetchStatusRef.current);
-            }
-        };
-    }, [syncStarted, fetchSyncStatus, interval]);
+        // All tasks completed successfully
+        setProcessStatus('success');
+        onComplete?.(cache);
+        setIsLoading(false);
+    };
 
-    useEffect(() => {
-        fetchSyncStatus();
-    }, [fetchSyncStatus]);
-
-    const handleButtonClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleButtonClick = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
         if (proSettingChanged()) {
             return;
         }
+        executeTasks();
+    }, [proSettingChanged]);
 
-        if (parameter === 'action' || parameter === 'connection_test') {
-            startProcess();
-        } else {
-            setSyncStarted(true);
-            try {
-                const response = await axios.post(
-                    getApiLink(appLocalizer, apilink),
-                    { parameter },
-                    { headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-                );
-                if (response.data) {
-                    setSyncStarted(false);
-                    fetchSyncStatus();
-                }
-            } catch {
-                setSyncStarted(false);
-                fetchStatus.current = 'failed';
-            }
-        }
+    // Convert tasks to ItemList format
+    const getItemListItems = () => {
+        return tasks.map(task => {
+            const taskStatus = taskStatuses[task.action] || { status: 'pending', message: task.message };
+            
+            // Map status to icon
+            let icon = 'pending';
+            if (taskStatus.status === 'running') icon = 'spinner';
+            else if (taskStatus.status === 'success') icon = 'yes';
+            else if (taskStatus.status === 'failed') icon = 'cross';
+
+            // Determine description
+            let desc = task.message;
+            if (taskStatus.status === 'running') desc = 'Processing...';
+            else if (taskStatus.customMessage) desc = taskStatus.customMessage;
+
+            return {
+                id: task.action,
+                title: task.message,
+                desc: desc,
+                icon: icon,
+                className: `task-status-${taskStatus.status}`,
+                // Make items non-clickable
+                action: undefined,
+            };
+        });
     };
 
     return (
-        <>
-            <div className="do-action-wrapper">
-                <div className="loader-wrapper">
-                    <button
-                        className="admin-btn btn-purple btn-effect"
-                        onClick={handleButtonClick}
-                        disabled={loading || syncStarted}
-                    >
-                        {value}
-                    </button>
-                    {(loading || syncStarted) && (
-                        <div className="loader">
-                            <div className="three-body-dot" />
-                            <div className="three-body-dot" />
-                            <div className="three-body-dot" />
-                        </div>
-                    )}
-                    {proSetting && (
-                        <span className="admin-pro-tag">
-                            <i className="adminlib-pro-tag"></i>Pro
-                        </span>
-                    )}
-                </div>
-
-                {syncStarted && (
-                    <div className="fetch-display-output info">
-                        Process started, please wait...
-                    </div>
+        <div className="do-action-task-list" data-button-key={buttonKey}>
+            <div className="action-header">
+                <AdminButtonUI
+                    buttons={[{
+                        text: value,
+                        color: 'purple-bg',
+                        onClick: handleButtonClick,
+                        disabled: isLoading || proSetting,
+                        icon: isLoading ? 'spinner' : 'play',
+                        children: null,
+                        customStyle: {},
+                        style: {},
+                    }]}
+                    wrapperClass="action-button-wrapper"
+                    position="left"
+                />
+                
+                {proSetting && (
+                    <span className="admin-pro-tag">
+                        <i className="adminlib-pro-tag"></i>Pro
+                    </span>
                 )}
-
-                {fetchStatus.current === 'failed' && (
-                    <div className="fetch-display-output failed">
-                        {failureMessage}
-                    </div>
-                )}
-
-                {/* Task Progress Display */}
-                {taskSequence.map((task, index) => (
-                    <div
-                        key={index}
-                        className={`${task.status} details-status-row`}
-                    >
-                        <div className="task-message">
-                            <span className="task-text">{task.message}</span>
-                            {task.status !== 'running' && task.status === 'success' && task.successMessage && (
-                                <span className="task-custom-message success">
-                                    {task.successMessage}
-                                </span>
-                            )}
-                            {task.status === 'failed' && task.failureMessage && (
-                                <span className="task-custom-message failed">
-                                    {task.failureMessage}
-                                </span>
-                            )}
-                        </div>
-                        {task.status !== 'running' && (
-                            <div className="status-meta">
-                                <span className="status-icons">
-                                    <i
-                                        className={`admin-font ${task.status === 'failed'
-                                                ? 'adminlib-cross'
-                                                : 'adminlib-icon-yes'
-                                            }`}
-                                    />
-                                </span>
-                            </div>
-                        )}
-                    </div>
-                ))}
-
-                {/* Process Completion Status */}
-                {processStatus && (
-                    <div
-                        className={`fetch-display-output ${processStatus === 'failed' ? 'failed' : 'success'
-                            }`}
-                    >
-                        {processStatus === 'failed' ? (
-                            <p>
-                                {failureMessage}
-                                {parameter === 'connection_test' && (
-                                    <>
-                                        {' '}Check details in{' '}
-                                        <Link
-                                            className="errorlog-link"
-                                            to="?page=moowoodle#&tab=settings&subtab=log"
-                                        >
-                                            error log
-                                        </Link>
-                                        .
-                                    </>
-                                )}
-                            </p>
-                        ) : (
-                            successMessage
-                        )}
-                    </div>
-                )}
-
-                {/* Sync Status Display */}
-                {syncStatus && syncStatus.length > 0 && (
-                    <div className="sync-status-container">
-                        {syncStatus.map((status, index) => (
-                            <div key={index} className="details-status-row sync-status">
-                                <span className="sync-action">{status.action}</span>
-                                <div className="status-meta">
-                                    <span className="status-icons">
-                                        <i className="admin-font adminlib-icon-yes" />
-                                    </span>
-                                    <span className="sync-progress">
-                                        {status.current} / {status.total}
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
+                
+                {isLoading && (
+                    <div className="loader">
+                        <div className="three-body-dot" />
+                        <div className="three-body-dot" />
+                        <div className="three-body-dot" />
                     </div>
                 )}
             </div>
-        </>
+
+            {/* Task List Display */}
+            {Object.keys(taskStatuses).length > 0 && (
+                <div className="tasks-container">
+                    <ItemListUI
+                        items={getItemListItems()}
+                        className="task-list"
+                        background={true}
+                        border={true}
+                    />
+                </div>
+            )}
+
+            {/* Completion Status */}
+            {processStatus && (
+                <div className={`process-status ${processStatus}`}>
+                    {processStatus === 'success' ? (
+                        <>
+                            <i className="adminfont-yes color-green"></i>
+                            <span>{successMessage}</span>
+                        </>
+                    ) : (
+                        <>
+                            <i className="adminfont-cross color-red"></i>
+                            <span>{failureMessage}</span>
+                        </>
+                    )}
+                </div>
+            )}
+        </div>
     );
 };
 
