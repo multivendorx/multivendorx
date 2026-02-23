@@ -60,13 +60,13 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
 						(value as CalendarRange) || getDefaultDateRange();
                     return (
                       <div key={filter.key} className="group-field">
-                        {/* <CalendarInput
+                        <CalendarInput
                           value={range}
                           onChange={(newRange) => {
                             onFilterChange(filter.key, newRange as { startDate: Date; endDate: Date });
                           }}
                           format={format}
-                        /> */}
+                        />
                       </div>
                     );
                 }                  

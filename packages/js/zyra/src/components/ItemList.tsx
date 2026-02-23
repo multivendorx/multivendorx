@@ -29,13 +29,7 @@ interface ItemListUIProps {
     onItemClick?: (item: Item) => void;
 }
 
-export const ItemListUI: React.FC<ItemListUIProps> = ({ 
-    items, 
-    background, 
-    border, 
-    className,
-    onItemClick 
-}) => {
+export const ItemListUI: React.FC<ItemListUIProps> = ({items, background, border, className, onItemClick }) => {
     return (
         <div className={`item-list ${className || 'default'}`}>
             {items && items.map((item, index) => {
@@ -46,7 +40,7 @@ export const ItemListUI: React.FC<ItemListUIProps> = ({
                 };
 
                 return (
-                    <React.Fragment key={item.id || index}>
+                    <>
                         {item.link ? (
                             <a
                                 href={item.link}
@@ -96,7 +90,7 @@ export const ItemListUI: React.FC<ItemListUIProps> = ({
                                 {item.tags && <div className="tags">{item.tags}</div>}
                             </div>
                         )}
-                    </React.Fragment>
+                    </>
                 );
             })}
         </div>
