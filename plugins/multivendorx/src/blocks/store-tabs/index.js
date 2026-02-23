@@ -1,4 +1,5 @@
 import { registerBlockType } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 import { render } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import StoreTabs from './StoreTabs';

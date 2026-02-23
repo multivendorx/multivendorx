@@ -654,6 +654,18 @@ class Rest {
      * Register REST API routes.
      */
     public function register_rest_api_routes() {
+        register_rest_route(
+            MultiVendorX()->rest_namespace,
+            '/store-products',
+            array(
+                array(
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => array( $this, 'fetch_store_products' ),
+                    'permission_callback' => '__return_true',
+                ),
+            )
+        );
+      
         register_meta(
             'comment',
             'store_rating',
@@ -700,6 +712,51 @@ class Rest {
                 $controller->register_routes();
             }
         }
+    }
+
+    public function fetch_store_products($request) {
+
+        ob_start();
+
+        $store_id = $request->get_param( 'storeId' );
+
+        // Query products for this store
+        $args = [
+            'post_type'      => 'product',
+            'post_status'    => 'publish',
+            'meta_query'     => [
+                [
+                    'key'     => Utill::POST_META_SETTINGS['store_id'],
+                    'value'   => $store_id,
+                    'compare' => '=',
+                ],
+            ],
+        ];
+
+        $custom_query = new \WP_Query( $args );
+
+        if ( $custom_query->have_posts() ) {
+
+            echo '<div class="woocommerce">';
+            woocommerce_product_loop_start();
+
+            while ( $custom_query->have_posts() ) {
+                $custom_query->the_post();
+
+                do_action( 'woocommerce_shop_loop' );
+                wc_get_template_part( 'content', 'product' );
+            }
+
+            woocommerce_product_loop_end();
+            echo '</div>';
+
+        } else {
+            do_action( 'woocommerce_no_products_found' );
+        }
+
+        wp_reset_postdata();
+
+        return ob_get_clean();
     }
 
     /**
