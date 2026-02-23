@@ -17,7 +17,7 @@ export const createBlockID = (type: BlockType, options?: any): Block => {
         id,
         type,
         name:        fixedName ?? `${type}-${id.toString(36)}`,
-        label:       label ?? type,
+        label:       label,
         placeholder,
         context,
         options:     presetOptions,
@@ -108,6 +108,11 @@ export const BlockRenderer: React.FC<BlockRendererProps> = ({
             </section>
         )}
         <section className="form-field-container-wrapper">
+            {block.label &&(
+                <label className="settings-form-label">
+                    <div className="title">{ block.label }</div>
+            </label>
+            )}
             {renderBlockContent(block, onChange)}
         </section>
     </div>
