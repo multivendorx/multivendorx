@@ -19,7 +19,7 @@ const BLOCK_GROUPS = [
         label: 'Registration Fields',
         icon: 'user',
         blocks: [
-            { id: 'text', icon: 't-letter-bold', type: 'text', label: 'Textbox', placeholder: 'Enter your text here' },
+            { id: 'text', icon: 't-letter-bold', type: 'text', value:'TextBox', label: 'Enter the text', placeholder: 'Enter your text here' },
             { id: 'email', icon: 'unread', value: 'email', label: 'Email', placeholder: 'Enter your email here' },
             { id: 'textarea', icon: 'text', value: 'textarea', label: 'Enter your text', placeholder: 'Enter your message here' },
             { id: 'date', icon: 'calendar', value: 'date', label: 'Date Picker', placeholder: 'Select a date' },
@@ -33,9 +33,9 @@ const BLOCK_GROUPS = [
             { id: 'richtext', icon: 'text ', value: 'richtext', label: 'Rich Text Block' },
             { id: 'heading', icon: 'form-textarea', value: 'heading', label: 'Heading' },
             { id: 'image', icon: 'image', value: 'image', label: 'Image' },
-            { id: 'button', icon: 'button', value: 'button', label: 'Button', placeholder: 'Click me' },
-            { id: 'divider', icon: 'divider', value: 'divider', label: 'Divider' },
-            { id: 'columns', icon: 'blocks', value: 'columns', label: 'Columns' },
+            { id: 'button', icon: 'button', value: 'button', placeholder: 'Click me' },
+            { id: 'divider', icon: 'divider', value: 'divider', },
+            { id: 'columns', icon: 'blocks', value: 'columns',  },
             { id: 'section', icon: 'form-section', value: 'section', label: 'Section' },
             { id: 'recaptcha', icon: 'captcha-automatic-code', value: 'recaptcha', label: 'reCaptcha v3' },
         ]
