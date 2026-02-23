@@ -19,7 +19,74 @@ export default {
             multiple: true,
             showInput: false,
         },
-
+        {
+            key: 'calendar_info',
+            type: 'blocktext',
+            blocktext: __(
+                'Selected dates will automatically pause order acceptance and display your custom notification message to customers.', 'multivendorx'
+            ),
+        },
+        {
+            key: 'separator_category_specific',
+            type: 'section',
+            desc: __(
+                'Automatically block purchases on public holidays',
+                'multivendorx'
+            ),
+            title: __(
+                'Holiday Automation',
+                'multivendorx'
+            ),
+        },
+        {
+            key: 'block_purchases_on_holidays',
+            type: 'checkbox',
+            label: 'Block purchases on holidays',
+            desc: 'Automatically close your store on recognized public holidays',
+            options: [
+                {
+                    key: 'block_purchases',
+                    value: 'block_purchases',
+                },
+            ],
+            look: 'toggle',
+        },
+        {
+            key: 'block_purchases_on_holidays_checklist',
+            label: ' ',
+            type: 'itemlist', 
+            items: [ 
+                {
+                    title: __('Christmas Day (2026-12-25)', 'multivendorx'),
+                    icon: 'check adminfont-icon-yes',
+                },
+                {
+                    title: __('New Years Day (2026-01-01)', 'multivendorx'),
+                    icon: 'check adminfont-icon-yes',
+                },
+                {
+                    title: __('Independence Day (2026-07-04)', 'multivendorx'),
+                    icon: 'check adminfont-icon-yes',
+                },
+            ],
+            className: 'checklist',
+            // dependent: {
+            //     key: 'block_purchases',
+            //     set: true,
+            // },
+        },
+        {
+            key: 'separator_category_specific',
+            type: 'section',
+            desc: __(
+                'Customize how customers are informed',
+                'multivendorx'
+            ),
+            title: __(
+                'Customer Notifications',
+                'multivendorx'
+            ),
+        },
         // Add to Cart Button Text
         {
             type: 'text',
@@ -82,16 +149,19 @@ export default {
                 {
                     key: 'store_banner',
                     value: 'store_banner',
+                    icon: 'storefront',
                     label: __('Store banner', 'multivendorx')
                 },
                 {
                     key: 'email',
                     value: 'email',
+                    icon: 'mail',
                     label: __('Email', 'multivendorx')
                 },
                 {
                     key: 'sms',
                     value: 'sms',
+                    icon: 'messaging',
                     label: __('SMS', 'multivendorx')
                 }
             ]
