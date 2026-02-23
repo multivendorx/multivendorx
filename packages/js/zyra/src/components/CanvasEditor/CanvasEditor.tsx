@@ -235,7 +235,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                             {palette.map(({ id: bid, icon: bIcon, label: bLabel, value }) => (
                                 <div key={bid || value} className="elements-items">
                                     <i className={`adminfont-${bIcon}`} />
-                                    <p className="elements-name">{bLabel}</p>
+                                    <p className="elements-name">{value}</p>
                                 </div>
                             ))}
                         </ReactSortable>
