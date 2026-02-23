@@ -123,8 +123,8 @@ registerBlockType('multivendorx/store-review', {
 							label={__('Sort Order')}
 							value={sortOrder}
 							options={[
-								{ label: 'Newest First', value: 'DESC' },
-								{ label: 'Oldest First', value: 'ASC' },
+								{ label: __('Newest First', 'multivendorx'), value: 'DESC' },
+								{ label: __('Oldest First', 'multivendorx'), value: 'ASC' },
 							]}
 							onChange={(value) =>
 								setAttributes({ sortOrder: value })
@@ -156,15 +156,9 @@ registerBlockType('multivendorx/store-review', {
 						<li className="multivendorx-review-item">
 							<div className="header">
 								<div className="details-wrapper">
-									<div className="avatar">
-										{reviewData.avatar}
-									</div>
-									<div className="name">
-										{reviewData.name}
-									</div>
-									<span className="time">
-										{reviewData.time}
-									</span>
+									<div className="avatar">{reviewData.avatar}</div>
+									<div className="name">{reviewData.name}</div>
+									<span className="time">{reviewData.time}</span>
 								</div>
 							</div>
 
@@ -173,14 +167,10 @@ registerBlockType('multivendorx/store-review', {
 									<span className="stars">
 										{renderStars(reviewData.rating, true)}
 									</span>
-									<span className="title">
-										{reviewData.title}
-									</span>
+									<span className="title">{reviewData.title}</span>
 								</div>
 
-								<div className="content">
-									{reviewData.content}
-								</div>
+								<div className="content">{reviewData.content}</div>
 							</div>
 
 							{showImages && reviewData.images.length > 0 && (
@@ -192,10 +182,7 @@ registerBlockType('multivendorx/store-review', {
 											target="_blank"
 											rel="noopener noreferrer"
 										>
-											<img
-												src={image}
-												alt="Review Image"
-											/>
+											<img src={image} alt={__('Review Image', 'multivendorx')} />
 										</a>
 									))}
 								</div>
@@ -203,7 +190,7 @@ registerBlockType('multivendorx/store-review', {
 
 							{showAdminReply && reviewData.adminReply && (
 								<div className="multivendorx-review-reply">
-									<strong>Admin reply:</strong>
+									<strong>{__('Admin reply:', 'multivendorx')}</strong>
 									<p>{reviewData.adminReply}</p>
 								</div>
 							)}

@@ -129,8 +129,7 @@ const AdminDashboard = () => {
 				}));
 
 				setSuccessMsg(
-					`Plugin "${slug}" ${
-						existingPlugin ? 'activated' : 'installed & activated'
+					`Plugin "${slug}" ${existingPlugin ? 'activated' : 'installed & activated'
 					} successfully!`
 				);
 			})
@@ -146,195 +145,195 @@ const AdminDashboard = () => {
 
 	const resources = [
 		{
-			title: 'Documentation',
-			desc: 'Step-by-step guides to set up and manage your marketplace.',
+			title: __('Documentation', 'multivendorx'),
+			desc: __('Step-by-step guides to set up and manage your marketplace.', 'multivendorx'),
 			iconClass: 'adminfont-book',
-			linkText: 'Explore Docs',
+			linkText: __('Explore Docs', 'multivendorx'),
 			href: 'https://multivendorx.com/docs/knowledgebase/',
 		},
 		{
-			title: 'Expert consultation',
-			desc: 'Get tailored advice from our marketplace specialists.',
+			title: __('Expert consultation', 'multivendorx'),
+			desc: __('Get tailored advice from our marketplace specialists.', 'multivendorx'),
 			iconClass: 'adminfont-preview',
-			linkText: 'Book Consultation',
+			linkText: __('Book Consultation', 'multivendorx'),
 			href: 'https://multivendorx.com/custom-development/',
 		},
 		{
-			title: 'Developer community',
-			desc: 'Connect with our team and fellow builders on Discord.',
+			title: __('Developer community', 'multivendorx'),
+			desc: __('Connect with our team and fellow builders on Discord.', 'multivendorx'),
 			iconClass: 'adminfont-global-community',
-			linkText: 'Join Discord',
+			linkText: __('Join Discord', 'multivendorx'),
 			href: 'https://discord.com/channels/1376811097134469191/1376811102020829258',
 		},
 		{
-			title: 'Facebook group',
-			desc: 'Share experiences and tips with other marketplace owners.',
+			title: __('Facebook group', 'multivendorx'),
+			desc: __('Share experiences and tips with other marketplace owners.', 'multivendorx'),
 			iconClass: 'adminfont-user-circle',
-			linkText: 'Join Group',
+			linkText: __('Join Group', 'multivendorx'),
 			href: 'https://www.facebook.com/groups/226246620006065/',
 		},
 	];
 
 	const featuresList = [
 		{
-			title: 'Membership rewards & commission',
-			desc: 'Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.',
+			title: __('Membership rewards & commission', 'multivendorx'),
+			desc: __('Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.', 'multivendorx'),
 			icon: 'adminfont-commission',
-			linkText: 'Join Discord',
+			linkText: __('Join Discord', 'multivendorx'),
 			href: '#',
 		},
 		{
-			title: 'Verified stores only',
-			desc: 'Screen stores with document verification and approval - build a trusted marketplace from day one.',
+			title: __('Verified stores only', 'multivendorx'),
+			desc: __('Screen stores with document verification and approval - build a trusted marketplace from day one.', 'multivendorx'),
 			icon: 'adminfont-verification3',
-			linkText: 'Join Discord',
+			linkText: __('Join Discord', 'multivendorx'),
 			href: '#',
 		},
 		{
-			title: 'Diversified marketplace',
-			desc: 'Enable bookings, subscriptions, and auctions to boost sales and engagement.',
+			title: __('Diversified marketplace', 'multivendorx'),
+			desc: __('Enable bookings, subscriptions, and auctions to boost sales and engagement.', 'multivendorx'),
 			icon: 'adminfont-marketplace',
-			linkText: 'Explore Docs',
+			linkText: __('Explore Docs', 'multivendorx'),
 			href: '#',
 		},
 		{
-			title: 'Vacation mode for stores',
-			desc: 'Stores can pause their stores temporarily with automatic buyer notifications - no missed messages.',
+			title: __('Vacation mode for stores', 'multivendorx'),
+			desc: __('Stores can pause their stores temporarily with automatic buyer notifications - no missed messages.', 'multivendorx'),
 			icon: 'adminfont-vacation',
-			linkText: 'Explore Docs',
+			linkText: __('Explore Docs', 'multivendorx'),
 			href: '#',
 		},
 		{
-			title: 'Never run out of stock',
-			desc: 'Real-time inventory tracking with automatic low-stock alerts keeps sellers prepared and buyers happy.',
+			title: __('Never run out of stock', 'multivendorx'),
+			desc: __('Real-time inventory tracking with automatic low-stock alerts keeps sellers prepared and buyers happy.', 'multivendorx'),
 			icon: 'adminfont-global-community',
-			linkText: 'Book Consultation',
+			linkText: __('Book Consultation', 'multivendorx'),
 			href: '#',
 		},
 		{
-			title: 'Autopilot notifications',
-			desc: 'Automatic emails and alerts for every order, refund, and payout - everyone stays in the loop.',
+			title: __('Autopilot notifications', 'multivendorx'),
+			desc: __('Automatic emails and alerts for every order, refund, and payout - everyone stays in the loop.', 'multivendorx'),
 			icon: 'adminfont-notification',
-			linkText: 'Join Discord',
+			linkText: __('Join Discord', 'multivendorx'),
 			href: '#',
 		},
 	];
 
 	const sections: Section[] = [
 		{
-			title: 'Product & store tools',
+			title: __('Product & store tools', 'multivendorx'),
 			features: [
 				{
-					name: 'Multiple stores per product',
+					name: __('Multiple stores per product', 'multivendorx'),
 					free: true,
 					pro: true,
 				},
-				{ name: 'Store policies', free: true, pro: true },
-				{ name: 'Store reviews', free: true, pro: true },
-				{ name: 'Follow store', free: true, pro: true },
+				{ name: __('Store policies', 'multivendorx'), free: true, pro: true },
+				{ name: __('Store reviews', 'multivendorx'), free: true, pro: true },
+				{ name: __('Follow store', 'multivendorx'), free: true, pro: true },
 				{
-					name: 'Privacy controls to show/hide store details)',
+					name: __('Privacy controls to show/hide store details)', 'multivendorx'),
 					free: true,
 					pro: true,
 				},
 				{
-					name: 'Confirm vendor identity with documents',
+					name: __('Confirm vendor identity with documents', 'multivendorx'),
 					free: false,
 					pro: true,
 				},
 				{
-					name: 'Bulk upload/download product via CSV',
+					name: __('Bulk upload/download product via CSV', 'multivendorx'),
 					free: false,
 					pro: true,
 				},
 				{
-					name: 'Display store opening/closing times',
+					name: __('Display store opening/closing times', 'multivendorx'),
 					free: false,
 					pro: true,
 				},
 				{
-					name: 'Store can temporarily close shop with customer notice',
+					name: __('Store can temporarily close shop with customer notice', 'multivendorx'),
 					free: false,
 					pro: true,
 				},
 				{
-					name: 'Assign assistants to your store and control what they can access',
+					name: __('Assign assistants to your store and control what they can access', 'multivendorx'),
 					free: false,
 					pro: true,
 				},
 			],
 		},
 		{
-			title: ' Get paid without hassle',
+			title: __(' Get paid without hassle', 'multivendorx'),
 			features: [
-				{ name: 'Bank transfer', free: true, pro: true },
-				{ name: 'PayPal payout', free: true, pro: true },
-				{ name: 'Stripe connect', free: true, pro: true },
-				{ name: 'Razorpay', free: true, pro: true },
-				{ name: 'Real-time split payments', free: false, pro: true },
+				{ name: __('Bank transfer', 'multivendorx'), free: true, pro: true },
+				{ name: __('PayPal payout', 'multivendorx'), free: true, pro: true },
+				{ name: __('Stripe connect', 'multivendorx'), free: true, pro: true },
+				{ name: __('Razorpay', 'multivendorx'), free: true, pro: true },
+				{ name: __('Real-time split payments', 'multivendorx'), free: false, pro: true },
 			],
 		},
 		{
-			title: ' Deliver seamless shopping experiences',
+			title: __(' Deliver seamless shopping experiences', 'multivendorx'),
 			features: [
-				{ name: 'Product Q&A', free: true, pro: true },
-				{ name: 'Marketplace refunds', free: true, pro: true },
-				{ name: 'Announcements', free: true, pro: true },
-				{ name: 'Product abuse report', free: true, pro: true },
-				{ name: 'Invoices & packing slips', free: false, pro: true },
-				{ name: 'Live chat', free: false, pro: true },
-				{ name: 'Customer support', free: false, pro: true },
-				{ name: 'Product enquiry', free: false, pro: true },
+				{ name: __('Product Q&A', 'multivendorx'), free: true, pro: true },
+				{ name: __('Marketplace refunds', 'multivendorx'), free: true, pro: true },
+				{ name: __('Announcements', 'multivendorx'), free: true, pro: true },
+				{ name: __('Product abuse report', 'multivendorx'), free: true, pro: true },
+				{ name: __('Invoices & packing slips', 'multivendorx'), free: false, pro: true },
+				{ name: __('Live chat', 'multivendorx'), free: false, pro: true },
+				{ name: __('Customer support', 'multivendorx'), free: false, pro: true },
+				{ name: __('Product enquiry', 'multivendorx'), free: false, pro: true },
 			],
 		},
 		{
-			title: ' Ship the way you want',
+			title: __(' Ship the way you want', 'multivendorx'),
 			features: [
-				{ name: 'Zone-based shipping', free: true, pro: true },
-				{ name: 'Distance-based shipping', free: true, pro: true },
-				{ name: 'Country restrictions', free: true, pro: true },
-				{ name: 'Weight-based shipping', free: true, pro: true },
-				{ name: 'Per-product shipping', free: false, pro: true },
+				{ name: __('Zone-based shipping', 'multivendorx'), free: true, pro: true },
+				{ name: __('Distance-based shipping', 'multivendorx'), free: true, pro: true },
+				{ name: __('Country restrictions', 'multivendorx'), free: true, pro: true },
+				{ name: __('Weight-based shipping', 'multivendorx'), free: true, pro: true },
+				{ name: __('Per-product shipping', 'multivendorx'), free: false, pro: true },
 			],
 		},
 		{
-			title: ' Sell in different ways',
+			title: __(' Sell in different ways', 'multivendorx'),
 			features: [
 				{
-					name: 'Optimize store & product SEO with Yoast or Rank Math',
+					name: __('Optimize store & product SEO with Yoast or Rank Math', 'multivendorx'),
 					free: false,
 					pro: true,
 				},
 				{
-					name: 'Sales, revenue, and order reports',
+					name: __('Sales, revenue, and order reports', 'multivendorx'),
 					free: false,
 					pro: true,
 				},
 				{
-					name: 'Store with different capabilities as per subsctiption plan',
+					name: __('Store with different capabilities as per subsctiption plan', 'multivendorx'),
 					free: false,
 					pro: true,
 				},
-				{ name: 'Paid product promotions', free: false, pro: true },
+				{ name: __('Paid product promotions', 'multivendorx'), free: false, pro: true },
 				{
-					name: 'Special pricing & bulk rules for groups',
+					name: __('Special pricing & bulk rules for groups', 'multivendorx'),
 					free: false,
 					pro: true,
 				},
 				{
-					name: 'Low-stock alerts, waitlists, inventory management',
+					name: __('Low-stock alerts, waitlists, inventory management', 'multivendorx'),
 					free: false,
 					pro: true,
 				},
 			],
 		},
 		{
-			title: 'Automate rules and commissions',
+			title: __('Automate rules and commissions', 'multivendorx'),
 			features: [
-				{ name: 'Payment gateway fees', free: true, pro: true },
-				{ name: 'Min/Max quantities', free: true, pro: true },
-				{ name: 'Facilitator fees', free: false, pro: true },
-				{ name: 'Marketplace fees', free: false, pro: true },
+				{ name: __('Payment gateway fees', 'multivendorx'), free: true, pro: true },
+				{ name: __('Min/Max quantities', 'multivendorx'), free: true, pro: true },
+				{ name: __('Facilitator fees', 'multivendorx'), free: false, pro: true },
+				{ name: __('Marketplace fees', 'multivendorx'), free: false, pro: true },
 			],
 		},
 	];
@@ -352,7 +351,7 @@ const AdminDashboard = () => {
 
 	const [activeTab, setActiveTab] = useState('dashboard');
 	const isPro = !!appLocalizer.khali_dabba;
-	const renderUpgradeButton = (label = 'Upgrade Now') => {
+	const renderUpgradeButton = (label = __('Upgrade Now', 'multivendorx')) => {
 		if (isPro) {
 			return null;
 		}
@@ -363,7 +362,7 @@ const AdminDashboard = () => {
 				className="admin-btn btn-purple"
 			>
 				<i className="adminfont-pro-tag"></i>
-				{label}
+				{__(label, 'multivendorx')}
 				<i className="adminfont-arrow-right icon-pro-btn"></i>
 			</a>
 		);
@@ -401,8 +400,8 @@ const AdminDashboard = () => {
 										<div
 											className="admin-btn"
 											onClick={() =>
-												(window.location.href =
-													'?page=multivendorx-setup')
+											(window.location.href =
+												'?page=multivendorx-setup')
 											}
 										>
 											{__(
@@ -595,21 +594,21 @@ const AdminDashboard = () => {
 																		: 'auto',
 																opacity:
 																	installing ===
-																	'woocommerce-catalog-enquiry'
+																		'woocommerce-catalog-enquiry'
 																		? 0.6
 																		: 1,
 															}}
 														>
 															{installing ===
-															'woocommerce-catalog-enquiry'
+																'woocommerce-catalog-enquiry'
 																? __(
-																		'Installing...',
-																		'multivendorx'
-																	)
+																	'Installing...',
+																	'multivendorx'
+																)
 																: __(
-																		'Install',
-																		'multivendorx'
-																	)}
+																	'Install',
+																	'multivendorx'
+																)}
 														</a>
 													</>
 												),
@@ -701,21 +700,21 @@ const AdminDashboard = () => {
 																		: 'auto',
 																opacity:
 																	installing ===
-																	'woocommerce-product-stock-alert'
+																		'woocommerce-product-stock-alert'
 																		? 0.6
 																		: 1,
 															}}
 														>
 															{installing ===
-															'woocommerce-product-stock-alert'
+																'woocommerce-product-stock-alert'
 																? __(
-																		'Installing...',
-																		'multivendorx'
-																	)
+																	'Installing...',
+																	'multivendorx'
+																)
 																: __(
-																		'Install',
-																		'multivendorx'
-																	)}
+																	'Install',
+																	'multivendorx'
+																)}
 														</a>
 													</>
 												),
@@ -940,11 +939,10 @@ const AdminDashboard = () => {
 								{tabs.map((tab) => (
 									<div
 										key={tab.id}
-										className={`tab ${
-											activeTab === tab.id
-												? 'active-tab'
-												: ''
-										}`}
+										className={`tab ${activeTab === tab.id
+											? 'active-tab'
+											: ''
+											}`}
 										onClick={() => setActiveTab(tab.id)}
 									>
 										<p className="tab-name">

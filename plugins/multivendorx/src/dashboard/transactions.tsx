@@ -32,7 +32,7 @@ const Transactions: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [categoryCounts, setCategoryCounts] = useState<
-		categoryCounts[] | null
+		CategoryCount[] | null
 	>(null);
 
 	const [modalTransaction, setModalTransaction] =
@@ -45,7 +45,7 @@ const Transactions: React.FC = () => {
 			label: __('Transaction Type', 'multivendorx'),
 			render: (row) =>
 				row.transaction_type?.toLowerCase() === 'commission' &&
-				row.commission_id ? (
+					row.commission_id ? (
 					<span
 						className="link-item"
 						onClick={() => {
@@ -153,33 +153,33 @@ const Transactions: React.FC = () => {
 				setCategoryCounts([
 					{
 						value: 'all',
-						label: 'All',
+						label: __('All', 'multivendorx'),
 						count: Number(response.headers['x-wp-total']) || 0,
 					},
 					{
 						value: 'completed',
-						label: 'Completed',
+						label: __('Completed', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-completed']) ||
 							0,
 					},
 					{
 						value: 'processed',
-						label: 'Processed',
+						label: __('Processed', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-processed']) ||
 							0,
 					},
 					{
 						value: 'upcoming',
-						label: 'Upcoming',
+						label: __('Upcoming', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-upcoming']) ||
 							0,
 					},
 					{
-						value: 'vailed',
-						label: 'Failed',
+						value: 'failed',
+						label: __('Failed', 'multivendorx'),
 						count:
 							Number(response.headers['x-wp-status-failed']) || 0,
 					},

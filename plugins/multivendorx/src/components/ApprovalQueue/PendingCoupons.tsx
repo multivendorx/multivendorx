@@ -151,13 +151,13 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 	const filters = [
 		{
 			key: 'store_id',
-			label: 'Stores',
+			label: __('Stores', 'multivendorx'),
 			type: 'select',
 			options: store,
 		},
 		{
 			key: 'created_at',
-			label: 'Created Date',
+			label: __('Created Date', 'multivendorx'),
 			type: 'date',
 		},
 	];
@@ -179,9 +179,9 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 					value: query?.filter?.store_id,
 					after: query.filter?.created_at?.startDate
 						? toWcIsoDate(
-								query.filter.created_at.startDate,
-								'start'
-							)
+							query.filter.created_at.startDate,
+							'start'
+						)
 						: undefined,
 
 					before: query.filter?.created_at?.endDate
@@ -262,9 +262,9 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 										icon: 'cross',
 										text: isSubmitting
 											? __(
-													'Submitting...',
-													'multivendorx'
-												)
+												'Submitting...',
+												'multivendorx'
+											)
 											: __('Reject', 'multivendorx'),
 										disabled: isSubmitting,
 										onClick: submitReject,
@@ -273,17 +273,18 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 							/>
 						}
 					>
-						<>
-							<TextAreaUI
-								name="reject_reason"
-								value={rejectReason}
-								onChange={(value: string) =>
-									setRejectReason(value)
-								}
-								placeholder="Enter reason for rejecting this coupon..."
-								rows={4}
-							/>
-						</>
+						<TextAreaUI
+							name="reject_reason"
+							value={rejectReason}
+							onChange={(value: string) =>
+								setRejectReason(value)
+							}
+							placeholder={__(
+								'Enter reason for rejecting this coupon...',
+								'multivendorx'
+							)}
+							rows={4}
+						/>
 					</PopupUI>
 				)}
 			</div>

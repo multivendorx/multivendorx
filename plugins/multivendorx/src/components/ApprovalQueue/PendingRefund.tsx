@@ -155,7 +155,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 		},
 		action: {
 			type: 'action',
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
 			actions: [
 				{
 					label: __('View Details', 'multivendorx'),
@@ -176,19 +176,19 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 		},
 	};
 
-	const filters = [
-		{
-			key: 'store_id',
-			label: 'Stores',
-			type: 'select',
-			options: store,
-		},
-		{
-			key: 'created_at',
-			label: 'Created Date',
-			type: 'date',
-		},
-	];
+const filters = [
+	{
+		key: 'store_id',
+		label: __('Stores', 'multivendorx'),
+		type: 'select',
+		options: store,
+	},
+	{
+		key: 'created_at',
+		label: __('Created Date', 'multivendorx'),
+		type: 'date',
+	},
+];
 
 	const getMetaValue = (metaData: any[], key: string) =>
 		metaData.find((m: any) => m.key === key)?.value;
@@ -211,9 +211,9 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 					value: query?.filter?.store_id,
 					after: query.filter?.created_at?.startDate
 						? toWcIsoDate(
-								query.filter.created_at.startDate,
-								'start'
-							)
+							query.filter.created_at.startDate,
+							'start'
+						)
 						: undefined,
 					before: query.filter?.created_at?.endDate
 						? toWcIsoDate(query.filter.created_at.endDate, 'end')
@@ -383,7 +383,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 									usePlainText={false}
 									tinymceApiKey={
 										appLocalizer.settings_databases_value[
-											'overview'
+										'overview'
 										]['tinymce_api_section'] ?? ''
 									}
 								/>

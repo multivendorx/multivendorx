@@ -34,7 +34,7 @@ const ViewNotifications = (React.FC = () => {
 			type: 'file',
 			content: {
 				id: 'notifications',
-				headerTitle: 'Notifications',
+				headerTitle: __('Notifications', 'multivendorx'),
 				hideSettingHeader: true,
 				headerIcon: 'notification',
 			},
@@ -43,7 +43,7 @@ const ViewNotifications = (React.FC = () => {
 			type: 'file',
 			content: {
 				id: 'activity',
-				headerTitle: 'Activities',
+				headerTitle: __('Activities', 'multivendorx'),
 				hideSettingHeader: true,
 				headerIcon: 'tools',
 			},
@@ -52,7 +52,7 @@ const ViewNotifications = (React.FC = () => {
 			type: 'file',
 			content: {
 				id: 'announcements',
-				headerTitle: 'Announcements',
+				headerTitle: __('Announcements', 'multivendorx'),
 				hideSettingHeader: true,
 				headerIcon: 'announcement',
 			},

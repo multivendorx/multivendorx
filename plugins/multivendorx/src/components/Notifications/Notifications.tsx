@@ -2,6 +2,7 @@ import { SettingsNavigator } from 'zyra';
 import { Link, useLocation } from 'react-router-dom';
 import NotificationTable from './NotificationTable';
 import ActivityTable from './ActivityTable';
+import { __ } from '@wordpress/i18n';
 
 const Notifications = () => {
 	const location = new URLSearchParams(useLocation().hash.substring(1));
@@ -11,8 +12,8 @@ const Notifications = () => {
 			type: 'file',
 			content: {
 				id: 'notifications',
-				name: 'Notifications',
-				desc: 'Store Info',
+				name: __('Notifications', 'multivendorx'),
+				desc: __('Store Info', 'multivendorx'),
 				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
@@ -21,8 +22,8 @@ const Notifications = () => {
 			type: 'file',
 			content: {
 				id: 'activities',
-				name: 'Activities',
-				desc: 'Store Info',
+				name: __('Activities', 'multivendorx'),
+				desc: __('Store Info', 'multivendorx'),
 				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
