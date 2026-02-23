@@ -13,8 +13,9 @@
         .title {
             display: flex;
             gap: 0.5rem;
-             align-items: center;
+            align-items: center;
         }
+
         .notification-icon {
             position: relative;
 
@@ -23,46 +24,6 @@
             }
         }
     }
-
-    // .title-wrapper {
-    //     display: flex;
-    //     align-items: start;
-    //     gap: 0.5rem;
-
-    //     .notification-icon {
-    //         background: $theme-background-color;
-    //         padding: 0.313rem;
-    //         color: $theme-color;
-    //         border-radius: 0.313rem;
-    //         font-size: 1.25rem;
-    //         position: relative;
-    //         width: 2rem;
-    //         height: 2rem;
-    //         justify-content: center;
-    //         display: flex;
-    //         align-items: center;
-
-    //         // &::before {
-    //         //     position: absolute;
-    //         //     content: "\e930";
-    //         // }
-    //     }
-
-    //     .details {
-    //         .title {
-    //             font-size: 1.125rem;
-    //             font-weight: 500;
-    //             line-height: 1;
-    //             padding-bottom: 0.125rem;
-    //             display: flex;
-    //             gap: 0.5rem;
-    //         }
-
-    //         .description {
-    //             color: #5a5858;
-    //         }
-    //     }
-    // }
 
     .recipients-list {
         display: flex;
@@ -295,11 +256,31 @@
     }
 }
 
-.buttons-wrapper.view-toggle{
+.buttons-wrapper.view-toggle {
     width: 100%;
     justify-content: space-between;
 
-    .tabs-wrapper{
+    .tabs-wrapper {
         padding: 0 !important;
+    }
+}
+
+// icon set
+.notification-container {
+    .store-pending-approval {
+        content: "\ef5f";
+    }
+    .store-activated::before {
+        content: "\e954";
+    }
+    .store-rejected {
+        content: "\e953";
+    }
+    .store-rejected {
+        content: "\e953";
+    }
+    .store-suspende{
+        content: "\e953";
+
     }
 }

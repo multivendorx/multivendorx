@@ -20,7 +20,8 @@ interface BasicInputProps {
     | 'password'
     | 'email'
     | 'file'
-    | 'range';
+    | 'range'
+    | 'time';
     name?: string;
     placeholder?: string;
     value: InputValue;

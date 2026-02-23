@@ -76,6 +76,7 @@ export { default as ComponentStatusView } from './components/UI/ComponentStatusV
 export { default as Skeleton } from './components/UI/Skeleton';
 export { default as PdfDownloadButton } from './components/PdfDownloadButton';
 export { default as ItemList } from './components/ItemList';
+export { ItemListUI } from './components/ItemList';
 export { useModules, initializeModules } from './contexts/ModuleContext';
 export { SettingProvider, useSetting } from './contexts/SettingContext';
 export type { SettingContextType } from './contexts/SettingContext';

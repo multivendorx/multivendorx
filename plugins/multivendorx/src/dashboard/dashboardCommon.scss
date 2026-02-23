@@ -432,16 +432,16 @@ body.dark {
         background: $background-white;
         border-radius: 0.313rem;
 
-            li {
-                padding: 0.5rem 1rem;
-                font-size: 1.125rem;
-                cursor: pointer;
+        li {
+            padding: 0.5rem 1rem;
+            font-size: 1.125rem;
+            cursor: pointer;
 
-                &:hover {
-                    background: $theme-color;
-                    color: #fff;
-                }
+            &:hover {
+                background: $theme-color;
+                color: #fff;
             }
+        }
     }
 }
 
@@ -941,7 +941,8 @@ body.dark {
             border-bottom: 0.063rem solid $text-color;
             cursor: pointer;
         }
-        .search-section{
+
+        .search-section {
             width: 100%;
         }
     }
@@ -1199,6 +1200,19 @@ body.dark {
 
 // variant style end
 
-.search-dropdown{
+.search-dropdown {
     width: 100% !important;
+}
+
+.nested-wrapper:has(.nested-time) {
+    width: 100%;
+
+    .nested-time {
+        .setting-form-input:first-of-type,
+        .setting-form-input:nth-of-type(3),
+        >.email-divider-container+.before+.setting-form-input,
+        >.email-divider-container+.before+.setting-form-input+span+.setting-form-input+.setting-form-input {
+            margin-left: auto;
+        }
+    }
 }
