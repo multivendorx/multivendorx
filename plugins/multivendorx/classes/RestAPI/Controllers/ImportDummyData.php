@@ -58,10 +58,9 @@ class ImportDummyData extends \WP_REST_Controller {
             return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
         }
 
-        $parameter = $request->get_param( 'parameter' );
         $action    = $request->get_param( 'action' );
 
-        if ( $parameter == 'action' && method_exists( $this, $action ) ) {
+        if (method_exists( $this, $action ) ) {
             return $this->$action( $request );
         }
 
