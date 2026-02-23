@@ -9,7 +9,7 @@ import React, {
 import { TableProps } from './types';
 import TableRowActions from './TableRowActions';
 import { renderCell } from './Utill';
-import { renderEditableCell } from './renderEditableCell';
+import { EditableCell } from './renderEditableCell';
 import Skeleton from '../UI/Skeleton';
 import ComponentStatusView from '../UI/ComponentStatusView';
 
@@ -38,10 +38,6 @@ const Table: React.FC<TableProps> = ({
 
     const [isScrollableRight, setIsScrollableRight] = useState(false);
     const [isScrollableLeft, setIsScrollableLeft] = useState(false);
-    const [editingCell, setEditingCell] = useState<{
-        rowId: string | number;
-        key: string;
-    } | null>(null);
     const sortedBy = useMemo(() => {
         if (query.orderby) return query.orderby;
 
@@ -267,31 +263,15 @@ const Table: React.FC<TableProps> = ({
 
                                     if (header.isEditable) {
                                         const rowId = row.id;
-                                        const isEditing =
-                                            editingCell?.rowId === rowId &&
-                                            editingCell?.key === key;
 
                                         return (
-                                            // <td
-                                            //     key={`${rowId}-${key}`}
-                                            //     className="admin-column editable"
-                                            //     onClick={() => {
-                                            //         if (!isEditing) {
-                                            //             setEditingCell({ rowId, key });
-                                            //         }
-                                            //     }}
-                                            // >
-                                            //     {}
-                                            // </td>
-                                            renderEditableCell({
-                                                header,
-                                                row,
-                                                isEditing:true,
-                                                onSave: (newValue: any) => {
-                                                    onCellEdit?.(row, newValue);
-                                                    setEditingCell(null);
-                                                }
-                                            })
+                                            <EditableCell
+                                                header={header}
+                                                row={row}
+                                                onSave={(newValue: any) => {
+                                                    onCellEdit?.(header.key,row, newValue);
+                                                }}
+                                            />
                                         );
                                     }
 

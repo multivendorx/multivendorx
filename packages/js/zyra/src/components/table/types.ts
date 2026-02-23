@@ -69,7 +69,7 @@ export type TableHeaderConfig = {
 	 * Inline editing
 	 */
 	isEditable?: boolean;
-	editType?: 'text' | 'number' | 'select';
+	editType?: 'text' | 'number' | 'select' | 'toggle';
 
 	options?: {
 		label: string;
@@ -139,7 +139,7 @@ export type TableProps = CommonTableProps & {
 	onSelectRow?: (id: number, selected: boolean) => void;
 	onSelectAll?: (selected: boolean) => void;
 	rowActions?: ActionItem[]; 
-	onCellEdit?: (row,value) => void;
+	onCellEdit?: (key, row, value) => void;
 	isLoading?:boolean;
 	enableBulkSelect?: boolean; 
 	format?: string,
@@ -213,7 +213,7 @@ export type TableCardProps = CommonTableProps & {
 	showColumnToggleIcon?: boolean;
 	rowActions?: ActionItem[];
 	onSelectCsvDownloadApply?: (selectedIds: number[]) => void;
-	onCellEdit?: (row,value) => void;
+	onCellEdit?: (key, row, value) => void;
 	buttonActions?:ButtonAction[];
 	format?: string;
 	currency?: {};
