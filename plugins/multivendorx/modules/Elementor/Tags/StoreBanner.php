@@ -27,7 +27,7 @@ class StoreBanner extends Tag {
      * @return string
      */
     public function get_name() {
-        return 'mvx-store-banner';
+        return 'multivendorx-store-banner';
     }
 
     public function get_group() {
