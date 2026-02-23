@@ -144,7 +144,7 @@ const MinMax = ({ product, setProduct }) => {
 
 addFilter(
 	'product_min_max',
-	'my-plugin/min_max',
+	'multivendorx/min_max',
 	(content, product, setProduct) => {
 		return (
 			<>

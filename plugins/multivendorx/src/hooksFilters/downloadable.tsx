@@ -129,7 +129,7 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 
 addFilter(
 	'product_downloadable',
-	'my-plugin/downloadable',
+	'multivendorx/downloadable',
 	(content, product, setProduct, handleChange) => {
 		return (
 			<>

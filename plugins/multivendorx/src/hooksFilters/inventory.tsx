@@ -140,7 +140,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 
 addFilter(
 	'product_inventory',
-	'my-plugin/inventory',
+	'multivendorx/inventory',
 	(content, product, setProduct, handleChange) => {
 		return (
 			<>

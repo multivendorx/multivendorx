@@ -42,7 +42,7 @@ const RelatedList = ({ product, setProduct, handleChange }) => {
 
 addFilter(
 	'product_related_list',
-	'my-plugin/related_list',
+	'multivendorx/related_list',
 	(content, product, setProduct, handleChange) => {
 		return (
 			<>

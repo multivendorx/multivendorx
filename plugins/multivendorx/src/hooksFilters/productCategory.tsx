@@ -423,7 +423,7 @@ const ProductCategorysection = ({ product, setProduct, selectedCats, setSelected
 
 addFilter(
 	'product_category_section',
-	'my-plugin/product_category',
+	'multivendorx/product_category',
 	(content, product, setProduct, selectedCats, setSelectedCats, selectedChild, setSelectedChild, selectedSub, setSelectedSub, selectedCat, setSelectedCat) => {
 		return (
 			<>

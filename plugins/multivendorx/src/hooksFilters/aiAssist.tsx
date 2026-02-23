@@ -433,7 +433,7 @@ const AICard = ({ product, setProduct }) => {
 // Modified filter to use React component
 addFilter(
 	'product_ai_assist',
-	'my-plugin/ai-assist-card',
+	'multivendorx/ai-assist-card',
 	(content, product, setProduct) => {
 		return (
 			<>

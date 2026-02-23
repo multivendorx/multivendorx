@@ -83,7 +83,7 @@ const Policies = ({ product, setProduct, handleChange }) => {
 
 addFilter(
 	'product_policies',
-	'my-plugin/policies',
+	'multivendorx/policies',
 	(content, product, setProduct, handleChange) => {
 		return (
 			<>

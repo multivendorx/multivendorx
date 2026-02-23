@@ -170,7 +170,7 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 
 addFilter(
 	'product_shipping',
-	'my-plugin/shipping',
+	'multivendorx/shipping',
 	(content, product, setProduct, handleChange) => {
 		return (
 			<>

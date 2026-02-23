@@ -56,7 +56,7 @@ const ProductTag = ({ product, setProduct }) => {
 
 addFilter(
 	'product_tag',
-	'my-plugin/product_tag',
+	'multivendorx/product_tag',
 	(content, product, setProduct) => {
 		return (
 			<>

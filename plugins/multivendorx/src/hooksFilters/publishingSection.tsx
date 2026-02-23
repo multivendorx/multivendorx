@@ -201,7 +201,7 @@ const PublishingSection = ({ product, setProduct, starFill, setstarFill, handleC
 
 addFilter(
 	'product_publishing_catalog_section',
-	'my-plugin/publishing_section',
+	'multivendorx/publishing_section',
 	(content, product, setProduct, starFill, setstarFill, handleChange) => {
 		return (
 			<>
