@@ -80,6 +80,8 @@ export { useModules, initializeModules } from './contexts/ModuleContext';
 export { SettingProvider, useSetting } from './contexts/SettingContext';
 export type { SettingContextType } from './contexts/SettingContext';
 export type { QueryProps, TableRow, CategoryCount } from './components/table/types';
+export { default as Notice } from './components/Notice';
+export type { NoticeProps, NoticeVariant, NoticeDisplay } from './components/Notice';
 
 export { default as TableCard } from './components/table/TableCard';
 export { useOutsideClick } from './components/useOutsideClick';

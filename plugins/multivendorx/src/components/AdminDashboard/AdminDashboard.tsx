@@ -31,6 +31,7 @@ import {
 	Container,
 	ItemList,
 	Modules,
+	Notice,
 	SuccessNotice,
 	useModules,
 } from 'zyra';
@@ -929,7 +930,13 @@ const AdminDashboard = () => {
 
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
+			<Notice
+				message={successMsg}
+				variant={successMsg.startsWith('Failed') ? 'error' : 'success'}
+				display="toast"
+				autoDismiss={3000}
+				onDismiss={() => setSuccessMsg('')}
+			/>
 
 			<Container general>
 				<Column>
