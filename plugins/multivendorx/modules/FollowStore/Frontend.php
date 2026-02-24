@@ -38,7 +38,6 @@ class Frontend {
         $scripts['multivendorx-follow-store-frontend-script'] = array(
             'src'     => $base_url . 'modules/FollowStore/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
             'deps'    => array( 'jquery' ),
-            'version' => MultiVendorX()->version,
         );
 
         return $scripts;
@@ -48,11 +47,8 @@ class Frontend {
 
         $scripts['multivendorx-follow-store-frontend-script'] = array(
             'object_name' => 'followStoreFrontend',
-            'data'        => array(
-                'apiUrl'  => untrailingslashit( get_rest_url() ),
-                'restUrl' => MultiVendorX()->rest_namespace,
-                'nonce'   => wp_create_nonce( 'wp_rest' ),
-            ),
+            'use_rest'    => true,
+            'data'        => array(),
         );
 
         return $scripts;

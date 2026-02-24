@@ -46,7 +46,6 @@ class Frontend {
         $scripts['multivendorx-store-shipping-frontend-script'] = array(
             'src'     => $base_url . 'modules/StoreShipping/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
             'deps'    => array( 'jquery' ),
-            'version' => MultiVendorX()->version,
         );
 
         return $scripts;
@@ -56,8 +55,8 @@ class Frontend {
 
         $scripts['multivendorx-store-shipping-frontend-script'] = array(
             'object_name' => 'distanceShippingFrontend',
+            'use_ajax'    => true,
             'data'        => array(
-                'ajaxurl'      => admin_url( 'admin-ajax.php' ),
                 'nonce'        => wp_create_nonce( 'distance_shipping_ajax_nonce' ),
                 'default_lat'  => MultiVendorX()->setting->get_setting( 'default_map_lat', '28.6139' ), // Example default lat.
                 'default_lng'  => MultiVendorX()->setting->get_setting( 'default_map_lng', '77.2090' ), // Example default lng.

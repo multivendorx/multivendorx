@@ -34,7 +34,6 @@ class Frontend {
         $scripts['multivendorx-qna-frontend-script'] = array(
             'src'     => $base_url . 'modules/QuestionsAnswers/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
             'deps'    => array( 'jquery' ),
-            'version' => MultiVendorX()->version,
         );
 
         return $scripts;
@@ -44,8 +43,8 @@ class Frontend {
 
         $scripts['multivendorx-qna-frontend-script'] = array(
             'object_name' => 'qnaFrontend',
+            'use_ajax'    => true,
             'data'        => array(
-                'ajaxurl' => admin_url( 'admin-ajax.php' ),
                 'nonce'   => wp_create_nonce( 'qna_ajax_nonce' ),
             ),
         );

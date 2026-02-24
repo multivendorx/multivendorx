@@ -43,7 +43,6 @@ class Frontend {
         $scripts['multivendorx-review-frontend-script'] = array(
             'src'     => $base_url . 'modules/StoreReview/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
             'deps'    => array( 'jquery' ),
-            'version' => MultiVendorX()->version,
         );
 
         return $scripts;
@@ -53,8 +52,8 @@ class Frontend {
 
         $scripts['multivendorx-review-frontend-script'] = array(
             'object_name' => 'review',
+            'use_ajax'    => true,
             'data'        => array(
-                'ajaxurl'    => admin_url( 'admin-ajax.php' ),
                 'nonce'      => wp_create_nonce( 'review_ajax_nonce' ),
                 'parameters' => MultiVendorX()->setting->get_setting( 'ratings_parameters', array() ),
             ),

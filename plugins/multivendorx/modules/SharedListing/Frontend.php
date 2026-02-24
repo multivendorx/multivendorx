@@ -49,7 +49,6 @@ class Frontend {
         $scripts['multivendorx-sharedlisting-frontend-script'] = array(
             'src'     => $base_url . 'modules/SharedListing/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
             'deps'    => array( 'jquery' ),
-            'version' => MultiVendorX()->version,
         );
 
         return $scripts;
