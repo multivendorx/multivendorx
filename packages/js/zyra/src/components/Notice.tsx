@@ -4,10 +4,10 @@ import "../styles/web/UI/SuccessNotice.scss";
 import { FieldComponent } from './types';
 
 export const DISPLAY_POSITIONS = {
-    float: 'admin-notice-wrapper',
-    inline: 'admin-notice-inline',
-    banner: 'admin-notice-banner',
-    general_notice: 'general',
+    float: 'float', 
+    inline: 'inline',
+    banner: 'banner',
+    general: 'general',
 };
 
 export const NOTICE_TYPES = {
@@ -19,29 +19,23 @@ export const NOTICE_TYPES = {
     error: {
         title:         'Error',
         iconClass:     'adminfont-error',
-        defaultDisplayPosition: 'general_notice',
+        defaultDisplayPosition: 'general',
     },
     warning: {
         title:         'Warning',
         iconClass:     'adminfont-warning',
-        defaultDisplayPosition: 'general_notice',
+        defaultDisplayPosition: 'general',
     },
     info: {
         title:         'Info',
         iconClass:     'adminfont-info',
-        defaultDisplayPosition: 'general_notice',
+        defaultDisplayPosition: 'general',
     },
     banner: {
         title:         '',
         iconClass:     'adminfont-info',
         defaultDisplayPosition: 'banner',
     }
-};
-
-export const DISPLAY_MODES = {
-    toast:  'admin-notice-wrapper', 
-    inline: 'admin-notice-inline',
-    banner: 'admin-notice-banner',
 };
 
 export type NoticeType = NonNullable<keyof typeof NOTICE_TYPES>;
@@ -81,6 +75,8 @@ export const Notice: React.FC<NoticeProps> = ({
     autoDismiss  = 20000,
     iconClass,
 }) => {
+    if (!message || message === '') return null;
+    if (Array.isArray(message) && message.length === 0) return null;
 
     // Auto-dismiss - only for string messages
     useEffect(() => {
@@ -89,9 +85,6 @@ export const Notice: React.FC<NoticeProps> = ({
         const timer = setTimeout(() => onDismiss?.(), autoDismiss);
         return () => clearTimeout(timer);
     }, [message, autoDismiss, onDismiss]);
-
-    if (!message) return null;
-    if (Array.isArray(message) && message.length === 0) return null;
 
    const variantMeta =
     (type && type in NOTICE_TYPES
@@ -107,7 +100,12 @@ export const Notice: React.FC<NoticeProps> = ({
         resolvedDisplayPosition;
 
     const rootClass = [
-        displayModifier, Array.isArray(message) ? 'notice-multiple-items' : '']
+        'ui-notice',
+        `ui-notice-${displayModifier}`,
+        `ui-notice-${type}`,
+        Array.isArray(message) ? 'ui-notice-multiple' : '',
+        className,
+    ]
         .filter(Boolean)
         .join(' ');
 

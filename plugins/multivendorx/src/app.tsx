@@ -298,8 +298,8 @@ const App = () => {
 	return (
 		<>
 			<Notice
+				type="info"
                 message={bannerItems}
-                type="info"
                 displayPosition="banner"
                 dismissible={true}
                 onDismiss={handleDismissBanner}

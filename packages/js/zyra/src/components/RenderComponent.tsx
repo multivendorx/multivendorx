@@ -12,7 +12,7 @@ import { FIELD_REGISTRY } from './FieldRegistry';
 import FormGroupWrapper from './UI/FormGroupWrapper';
 import { PopupUI } from './Popup';
 import axios from 'axios';
-import { Notice, NoticeVariant } from './Notice';
+import { Notice, NoticeType } from './Notice';
 
 interface InputField {
     key: string;
@@ -113,7 +113,7 @@ const RenderComponent: React.FC<RenderProps> = ({
     const settingChanged = useRef<boolean>(false);
     const counter = useRef<number>(0);
     const counterId = useRef<ReturnType<typeof setInterval> | null>(null);
-    const [notice, setNotice] = useState<{ message: string; type: NoticeVariant } | null>(null);
+    const [notice, setNotice] = useState<{ type: NoticeType; message: string;  } | null>(null);
     const [modelOpen, setModelOpen] = useState<boolean>(false);
     const [modulePopupData, setModulePopupData] = useState<PopupProps>({
         moduleName: '',
@@ -151,7 +151,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                     ).then((response: unknown) => {
                         const apiResponse = response as ApiResponse;
                         if (apiResponse.message) {
-                            setNotice({ message: apiResponse.message, type: apiResponse.type});
+                            setNotice({ type: apiResponse.type, message: apiResponse.message, });
                         }
                         setTimeout(() => setNotice(null), 2000);
 
@@ -661,14 +661,10 @@ const RenderComponent: React.FC<RenderProps> = ({
                                 })
                                 : input}
 
-                            {errors && errors[inputField.key] && (
                                     <Notice
-                                        message={errors[inputField.key]}
-                                        variant="error"
-                                        display="field-error"   
-                                        title=""                 
+                                        message={errors[inputField.key] || ''}   
+                                        title=""
                                     />
-                            )}
                             {inputField.desc && (
                                 <p
                                     className="settings-metabox-description"
@@ -727,13 +723,11 @@ const RenderComponent: React.FC<RenderProps> = ({
                 </PopupUI>
 
             )}
-            {notice && (
                 <Notice
-                    message={notice.message}
-                    type={notice.type}
+                    type={notice?.type}
+                    message={notice?.message}
                     onDismiss={() => setNotice(null)}
                 />
-            )}
             <FormGroupWrapper>{renderForm()}</FormGroupWrapper>
         </>
     );
