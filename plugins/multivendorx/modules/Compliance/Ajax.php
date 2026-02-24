@@ -34,7 +34,7 @@ class Ajax {
      */
     public function handle_report_abuse() {
         // Verify nonce.
-        check_ajax_referer( 'report_abuse_ajax_nonce', 'nonce' );
+        check_ajax_referer( 'multivendorx-report-abuse-frontend-script', 'nonce' );
 
         // Get and sanitize inputs.
         $name       = filter_input( INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS );

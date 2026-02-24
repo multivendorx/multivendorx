@@ -208,7 +208,7 @@ if ( is_string( $banner_slider ) ) {
                     <?php endif; ?>
                     <?php
 
-                    do_action( 'mvx_after_vendor_information', $store_id );
+                    do_action( 'multivendorx_after_vendor_information', $store_id );
                     ?>
                 </div>
             </div>

@@ -44,9 +44,6 @@ class Frontend {
         $scripts['multivendorx-qna-frontend-script'] = array(
             'object_name' => 'qnaFrontend',
             'use_ajax'    => true,
-            'data'        => array(
-                'nonce'   => wp_create_nonce( 'qna_ajax_nonce' ),
-            ),
         );
 
         return $scripts;
