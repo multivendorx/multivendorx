@@ -16,7 +16,7 @@ import {
 	formatCurrency,
 	toWcIsoDate,
 	truncateText,
-} from '../../services/commonFunction';
+} from '../../../src/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 interface StoreRow {

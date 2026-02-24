@@ -3,11 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { useLocation, Link } from 'react-router-dom';
+import { applyFilters } from '@wordpress/hooks';
 import PendingStores from './PendingStores';
 import PendingProducts from './PendingProducts';
 import PendingCoupons from './PendingCoupons';
-import PendingRefund from './PendingRefund';
-import PendingReportAbuse from './PendingAbuseReports';
 import PendingWithdrawal from './PendingWithdrawalRequests';
 import PendingDeactivateRequests from './PendingDeactivateRequests';
 
@@ -15,8 +14,6 @@ const ApprovalQueue = () => {
 	const [storeCount, setStoreCount] = useState<number>(0);
 	const [productCount, setProductCount] = useState<number>(0);
 	const [couponCount, setCouponCount] = useState<number>(0);
-	const [refundCount, setRefundCount] = useState<number>(0);
-	const [reportAbuseCount, setReportAbuseCount] = useState<number>(0);
 	const [withdrawCount, setWithdrawCount] = useState<number>(0);
 	const [deactivateCount, setDeactivateCount] = useState<number>(0);
 	const { modules } = useModules();
@@ -82,41 +79,6 @@ const ApprovalQueue = () => {
 				.catch(() => { });
 		}
 
-		// Refund Count (only if refund module active)
-		if (modules.includes('marketplace-refund')) {
-			axios({
-				method: 'GET',
-				url: `${appLocalizer.apiUrl}/wc/v3/orders`,
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					meta_key: 'multivendorx_store_id',
-					status: 'refund-requested',
-					page: 1,
-					per_page: 1,
-				},
-			})
-				.then((res) =>
-					setRefundCount(Number(res.headers['x-wp-total']) || 0)
-				)
-				.catch(() => { });
-		}
-
-		// Report Abuse (only if module active)
-		if (modules.includes('marketplace-compliance')) {
-			axios
-				.get(getApiLink(appLocalizer, 'report-abuse'), {
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-					params: {
-						page: 1,
-						row: 1,
-					},
-				})
-				.then((res) => {
-					setReportAbuseCount(Number(res.headers['x-wp-total']) || 0);
-				})
-				.catch(() => { });
-		}
-
 		// Withdraw Count (only if manual withdraw enabled)
 		if (settings?.disbursement?.withdraw_type === 'manual') {
 			axios
@@ -167,7 +129,7 @@ const ApprovalQueue = () => {
 
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
-	const settingContent = [
+	const baseSettingContent = [
 		{
 			type: 'file',
 			condition: settings?.general?.approve_store === 'manually',
@@ -224,50 +186,6 @@ const ApprovalQueue = () => {
 		},
 		{
 			type: 'file',
-			module: 'wholesale',
-			content: {
-				id: 'wholesale-customer',
-				headerTitle: __('Customers', 'multivendorx'),
-				headerDescription: __('Ready for your approval', 'multivendorx'),
-				settingSubTitle: __('Ready for your approval', 'multivendorx'),
-				headerIcon: 'user-circle pink',
-				count: 9,
-			},
-		},
-		{
-			type: 'file',
-			module: 'marketplace-refund',
-			content: {
-				id: 'refund-requests',
-				headerTitle: __('Refunds', 'multivendorx'),
-				headerDescription: __('Need your decision', 'multivendorx'),
-				settingTitle: __('Refund tracker', 'multivendorx'),
-				settingSubTitle: __(
-					'Monitor refund trends and stay informed on store returns.',
-					'multivendorx'
-				),
-				headerIcon: 'marketplace-refund blue',
-				count: refundCount,
-			},
-		},
-		{
-			type: 'file',
-			module: 'marketplace-compliance',
-			content: {
-				id: 'report-abuse',
-				headerTitle: __('Flagged', 'multivendorx'),
-				headerDescription: __(
-					'Product reported for assessment',
-					'multivendorx'
-				),
-				settingTitle: __('Flagged products awaiting action', 'multivendorx'),
-				settingSubTitle: __('Review reports and maintain quality.', 'multivendorx'),
-				headerIcon: 'product indigo',
-				count: reportAbuseCount,
-			},
-		},
-		{
-			type: 'file',
 			condition: settings?.disbursement?.withdraw_type === 'manual',
 			content: {
 				id: 'withdrawal',
@@ -296,41 +214,52 @@ const ApprovalQueue = () => {
 				headerIcon: 'rejecte teal',
 				count: deactivateCount,
 			},
-		},
-	].filter(
+		}
+	];
+
+	const filteredSettings = applyFilters(
+		'multivendorx_approval_queue_tab',
+		baseSettingContent,
+		{ settings, modules }
+	);
+
+	const settingContent = filteredSettings.filter(
 		(tab) =>
 			(!tab.module || modules.includes(tab.module)) &&
 			(tab.condition === undefined || tab.condition)
 	);
 
 	const getForm = (tabId: string) => {
-		switch (tabId) {
-			case 'stores':
-				return <PendingStores onUpdated={refreshCounts} />;
+		const defaultForm = (() => {
+			switch (tabId) {
+				case 'stores':
+					return <PendingStores onUpdated={refreshCounts} />;
 
-			case 'products':
-				return <PendingProducts onUpdated={refreshCounts} />;
+				case 'products':
+					return <PendingProducts onUpdated={refreshCounts} />;
 
-			case 'coupons':
-				return <PendingCoupons onUpdated={refreshCounts} />;
+				case 'coupons':
+					return <PendingCoupons onUpdated={refreshCounts} />;
 
-			case 'wholesale-customer':
-				return <h1>{__('Upcoming Feature', 'multivendorx')}</h1>;
-			case 'refund-requests':
-				return <PendingRefund onUpdated={refreshCounts} />;
+				case 'withdrawal':
+					return <PendingWithdrawal onUpdated={refreshCounts} />;
 
-			case 'report-abuse':
-				return <PendingReportAbuse onUpdated={refreshCounts} />;
+				case 'deactivate-requests':
+					return <PendingDeactivateRequests onUpdated={refreshCounts} />;
 
-			case 'withdrawal':
-				return <PendingWithdrawal onUpdated={refreshCounts} />;
+				default:
+					return null;
+			}
+		})();
 
-			case 'deactivate-requests':
-				return <PendingDeactivateRequests onUpdated={refreshCounts} />;
-
-			default:
-				return <div></div>;
-		}
+		return applyFilters(
+			'multivendorx_approval_queue_tab_content',
+			defaultForm,
+			{
+				tabId,
+				refreshCounts,
+			}
+		);
 	};
 
 	return (
