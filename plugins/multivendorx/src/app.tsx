@@ -5,11 +5,13 @@ import {
 	AdminButtonUI,
 	AdminHeader,
 	Banner,
-	DoActionBtn,
+	SequentialTaskExecutor,
 	FormGroup,
 	FormGroupWrapper,
 	PopupUI,
 	TourSetup,
+	Notice,
+	NoticeItem,
 } from 'zyra';
 
 import Settings from './components/Settings/Settings';
@@ -285,13 +287,26 @@ const App = () => {
 			items: profileItems,
 		},
 	];
+	const handleDismissBanner = () => {
+        localStorage.setItem('banner', 'false');
+    };
+
+	const bannerItems: NoticeItem[] = products.map(product => ({
+        title: product.title,
+        message: product.description,
+        action: {
+            label: 'Upgrade Now',
+        }
+    }));
 	return (
 		<>
-			<Banner
-				products={products}
-				isPro={appLocalizer.khali_dabba}
-				proUrl={appLocalizer.pro_url}
-			/>
+			<Notice
+				type="banner"
+                message={bannerItems}
+                dismissible={true}
+                onDismiss={handleDismissBanner}
+                className="top-header"
+            />
 			<AdminHeader
 				brandImg={Brand}
 				results={results}
@@ -315,6 +330,7 @@ const App = () => {
 				open={openFeaturePopup}
 				onClose={handleCloseFeaturePopup}
 				width={31.25}
+				height={30}
 				header={{
 					icon: 'book',
 					title: __('Import Dummy Data', 'multivendorx'),
@@ -357,14 +373,12 @@ const App = () => {
 							'multivendorx'
 						)}
 					</div>
-					<DoActionBtn
+					<SequentialTaskExecutor
 						buttonKey="import_dummy_data"
-						value={__('Import Dummy Data', 'multivendorx')}
+						buttonText={__('Import Dummy Data', 'multivendorx')}
 						apilink="import-dummy-data"
-						parameter="action"
+						action="action"
 						interval={1000}
-						proSetting={false}
-						proSettingChanged={() => false}
 						appLocalizer={appLocalizer}
 						successMessage={__(
 							'Dummy data imported successfully!',

@@ -30,8 +30,9 @@ import {
 	Column,
 	Container,
 	ItemList,
+	ItemListUI,
 	Modules,
-	SuccessNotice,
+	Notice,
 	useModules,
 } from 'zyra';
 import axios from 'axios';
@@ -435,7 +436,7 @@ const AdminDashboard = () => {
 									'multivendorx'
 								)}
 							>
-								<ItemList
+								<ItemListUI
 									className="feature-list"
 									items={featuresList.map(
 										({ icon, title, desc }) => ({
@@ -514,7 +515,7 @@ const AdminDashboard = () => {
 						>
 							<Column row>
 								{pluginStatus['woocommerce-catalog-enquiry'] ? (
-									<ItemList
+									<ItemListUI
 										className="mini-card"
 										background
 										items={[
@@ -553,7 +554,7 @@ const AdminDashboard = () => {
 										]}
 									/>
 								) : (
-									<ItemList
+									<ItemListUI
 										className="mini-card"
 										background
 										items={[
@@ -620,7 +621,7 @@ const AdminDashboard = () => {
 								{pluginStatus[
 									'woocommerce-product-stock-alert'
 								] ? (
-									<ItemList
+									<ItemListUI
 										className="mini-card"
 										background
 										items={[
@@ -659,7 +660,7 @@ const AdminDashboard = () => {
 										]}
 									/>
 								) : (
-									<ItemList
+									<ItemListUI
 										className="mini-card"
 										background
 										items={[
@@ -929,7 +930,12 @@ const AdminDashboard = () => {
 
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
+			<Notice
+				type={successMsg}
+				message={successMsg}
+				autoDismiss={3000}
+				onDismiss={() => setSuccessMsg('')}
+			/>
 
 			<Container general>
 				<Column>

@@ -4,8 +4,8 @@ import React, { useRef, useEffect } from 'react';
 // Internal Dependencies
 import { PopupUI } from './Popup';
 import HeaderSearch from './HeaderSearch';
-import ItemList from './ItemList';
-import Tabs from './Tabs';
+import ItemList, { ItemListUI } from './ItemList';
+import Tabs, { TabsUI } from './Tabs';
 
 type SearchItem = {
     icon?: string;
@@ -142,7 +142,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                             toggleIcon={list?.toggleIcon}
                             width={24}
                         >
-                            {list?.tabs && <Tabs tabs={list.tabs} />}
+                            {list?.tabs && <TabsUI tabs={list.tabs} />}
                         </PopupUI>
 
                     ))}
@@ -153,7 +153,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                             position="menu-dropdown"
                             toggleIcon={list.toggleIcon}
                         >
-                            <ItemList items={list.items} />
+                            <ItemListUI items={list.items} />
                         </PopupUI>
                     ))}
 
