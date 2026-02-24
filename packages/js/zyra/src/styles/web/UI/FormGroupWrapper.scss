@@ -5,6 +5,13 @@
     border-bottom: $border-light-small;
     margin-bottom: 0.5rem;
     width: 100%;
+
+    // common adn delete
+    .title {
+        font-size: 1.125rem;
+        font-weight: 500;
+        padding-bottom: 0.45rem;
+    }
 }
 
 .form-group-wrapper {
