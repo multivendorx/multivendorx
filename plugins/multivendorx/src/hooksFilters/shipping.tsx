@@ -34,8 +34,8 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 		<Card
 			contentHeight
 			title={__('Product delivery', 'multivendorx')}
-			// iconName="keyboard-arrow-down arrow-icon icon"
-			// toggle
+		// iconName="keyboard-arrow-down arrow-icon icon"
+		// toggle
 		>
 			{/* Dimensions */}
 			<FormGroupWrapper>
@@ -153,6 +153,11 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 								}
 							/>
 						</FormGroup>
+						{applyFilters(
+							'multivendorx_product_shipping_meta',
+							null,
+							product
+						)}
 					</>
 				)}
 				{productType === 'downloadable' &&

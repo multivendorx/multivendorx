@@ -38,7 +38,7 @@ class Ajax {
      * Submit a review.
      */
     public function submit_review() {
-        check_ajax_referer( 'review_ajax_nonce', 'nonce' );
+        check_ajax_referer( 'multivendorx-review-frontend-script', 'nonce' );
 
         $data = filter_input_array(
             INPUT_POST,

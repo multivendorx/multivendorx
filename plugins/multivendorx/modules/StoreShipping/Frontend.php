@@ -33,9 +33,43 @@ class Frontend {
         add_action( 'woocommerce_checkout_update_order_review', array( $this, 'multivendorx_checkout_user_location_session_set' ), 50 );
         add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'multivendorx_checkout_user_location_save' ), 50 );
 
+        add_filter( 'multivendorx_register_scripts', array( $this, 'register_script' ) );
+        add_filter( 'multivendorx_localize_scripts', array( $this, 'localize_scripts' ) );
         // // Load Google Maps JS.
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
         add_filter( 'woocommerce_cart_shipping_packages', array( $this, 'add_user_location_to_shipping_package' ) );
+    }
+
+    public function register_script( $scripts ) {
+        $base_url = MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name();
+
+        $scripts['multivendorx-store-shipping-frontend-script'] = array(
+            'src'     => $base_url . 'modules/StoreShipping/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+            'deps'    => array( 'jquery' ),
+        );
+
+        return $scripts;
+    }
+
+    public function localize_scripts( $scripts ) {
+
+        $scripts['multivendorx-store-shipping-frontend-script'] = array(
+            'object_name' => 'distanceShippingFrontend',
+            'use_ajax'    => true,
+            'data'        => array(
+                'default_lat'  => MultiVendorX()->setting->get_setting( 'default_map_lat', '28.6139' ), // Example default lat.
+                'default_lng'  => MultiVendorX()->setting->get_setting( 'default_map_lng', '77.2090' ), // Example default lng.
+                'default_zoom' => 13,
+                'store_icon'   => plugin_dir_url( __FILE__ ) . 'assets/images/store-icon.png',
+                'icon_width'   => 40,
+                'icon_height'  => 40,
+                'mapbox_token' => MultiVendorX()->setting->get_setting( 'mapbox_api_key', '' ),
+                'mapbox_style' => 'mapbox://styles/mapbox/streets-v11',
+                'map_provider' => MultiVendorX()->setting->get_setting( 'choose_map_api', '' ),
+            ),
+        );
+
+        return $scripts;
     }
 
     /**

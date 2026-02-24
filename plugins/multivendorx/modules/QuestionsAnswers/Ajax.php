@@ -29,7 +29,7 @@ class Ajax {
      * Submit a question via AJAX
      */
     public function submit_question() {
-        check_ajax_referer( 'qna_ajax_nonce', 'nonce' );
+        check_ajax_referer( 'multivendorx-qna-frontend-script', 'nonce' );
 
         if ( ! is_user_logged_in() ) {
             wp_send_json_error( array( 'message' => 'You must log in to submit a question.' ) );
@@ -67,7 +67,7 @@ class Ajax {
      * Fetch all answered questions via AJAX
      */
     public function search_questions() {
-        check_ajax_referer( 'qna_ajax_nonce', 'nonce' );
+        check_ajax_referer( 'multivendorx-qna-frontend-script', 'nonce' );
 
         $product_id = filter_input( INPUT_POST, 'product_id', FILTER_VALIDATE_INT );
         $search_raw = filter_input( INPUT_POST, 'search', FILTER_UNSAFE_RAW );
@@ -123,7 +123,7 @@ class Ajax {
      * Vote on a question via AJAX
      */
     public function vote_question() {
-        check_ajax_referer( 'qna_ajax_nonce', 'nonce' );
+        check_ajax_referer( 'multivendorx-qna-frontend-script', 'nonce' );
 
         if ( ! is_user_logged_in() ) {
             wp_send_json_error( array( 'message' => 'You must be logged in to vote.' ) );

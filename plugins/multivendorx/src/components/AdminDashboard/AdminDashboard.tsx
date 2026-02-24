@@ -31,7 +31,8 @@ import {
 	Container,
 	ItemListUI,
 	Modules,
-	SuccessNotice,
+	Notice,
+	useModules,
 } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
@@ -928,7 +929,12 @@ const AdminDashboard = () => {
 
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
+			<Notice
+				type={successMsg}
+				message={successMsg}
+				autoDismiss={3000}
+				onDismiss={() => setSuccessMsg('')}
+			/>
 
 			<Container general>
 				<Column>

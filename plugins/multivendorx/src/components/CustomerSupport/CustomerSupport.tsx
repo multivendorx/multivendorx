@@ -6,69 +6,30 @@ import {
 	SettingsNavigator,
 } from 'zyra';
 import '../AdminDashboard/AdminDashboard.scss';
-import Qna from './QnATable';
-import StoreReviews from './StoreReviews';
+import { applyFilters } from '@wordpress/hooks';
 import { useLocation, Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 
 const CustomerSupport = () => {
 	const { modules } = useModules();
-
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
-	const settingContent = [
-		{
-			type: 'file',
-			module: 'question-answer',
-			content: {
-				id: 'questions',
-				headerTitle: __('Questions', 'multivendorx'),
-				headerIcon: 'question',
-			},
-		},
-		{
-			type: 'file',
-			module: 'store-review',
-			content: {
-				id: 'review',
-				headerTitle: __('Store Reviews', 'multivendorx'),
-				headerIcon: 'store-review',
-			},
-		},
-		{
-			type: 'file',
-			module: 'store-support',
-			content: {
-				id: 'support-ticket',
-				headerTitle: __('Support Ticket', 'multivendorx'),
-				headerIcon: 'vacation',
-			},
-		},
-	].filter((tab) => !tab.module || modules.includes(tab.module));
+	const settingContent = applyFilters(
+		'multivendorx_customer_support_tab',
+		[],
+	).filter(
+		(tab) => !tab.module || modules.includes(tab.module)
+	);
 
 	const getForm = (tabId: string) => {
-		switch (tabId) {
-			case 'questions':
-				return <Qna />;
-			case 'review':
-				return <StoreReviews />;
-			case 'support-ticket':
-				return (
-					<div className="card-wrapper">
-						<div className="card-content">
-							<h1>{__('Upcoming Feature', 'multivendorx')}</h1>
-						</div>
-					</div>
-				);
-			default:
-				return <div></div>;
-		}
+		return (
+			applyFilters(
+				'multivendorx_customer_support_tab_content',
+				null,
+				{ tabId }
+			) || <div />
+		);
 	};
-	const link =
-		typeof appLocalizer?.module_page_url === 'string' &&
-			appLocalizer.module_page_url.trim().length > 0
-			? appLocalizer.module_page_url
-			: undefined;
 
 	return (
 		<>

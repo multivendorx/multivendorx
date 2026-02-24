@@ -31,8 +31,34 @@ class Frontend {
         add_filter( 'multivendorx_query_vars', array( $this, 'add_query_vars' ) );
         add_filter( 'multivendorx_store_tabs', array( $this, 'add_store_tab' ), 10, 2 );
 
+        add_filter( 'multivendorx_register_scripts', array( $this, 'register_script' ) );
+        add_filter( 'multivendorx_localize_scripts', array( $this, 'localize_scripts' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
         add_action( 'woocommerce_order_item_meta_end', array( $this, 'multivendorx_add_store_review_button' ), 10, 3 );
+    }
+
+    public function register_script( $scripts ) {
+        $base_url = MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name();
+
+        $scripts['multivendorx-review-frontend-script'] = array(
+            'src'     => $base_url . 'modules/StoreReview/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+            'deps'    => array( 'jquery' ),
+        );
+
+        return $scripts;
+    }
+
+    public function localize_scripts( $scripts ) {
+
+        $scripts['multivendorx-review-frontend-script'] = array(
+            'object_name' => 'review',
+            'use_ajax'    => true,
+            'data'        => array(
+                'parameters' => MultiVendorX()->setting->get_setting( 'ratings_parameters', array() ),
+            ),
+        );
+
+        return $scripts;
     }
 
     /**

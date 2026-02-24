@@ -10,6 +10,7 @@ import {
 	FormGroupWrapper,
 	getApiLink,
 	NavigatorHeader,
+	Notice,
 	PopupUI,
 	SelectInputUI,
 	TextAreaUI,
@@ -20,42 +21,45 @@ import { __ } from '@wordpress/i18n';
 
 const Stores = () => {
 	const location = useLocation();
-	const [addStore, setaddStore] = useState(false);
-	const [formData, setFormData] = useState<Record<string, string>>({});
-	const [imagePreview, setImagePreview] = useState<string>('');
-	const [error, setError] = useState<{
-		[key: string]: { type: string; message: string };
-	}>({});
-
-	const hash = location.hash;
 	const navigate = useNavigate();
 
+	const [addStore, setAddStore] = useState(false);
+	const [formData, setFormData] = useState<Record<string, string>>({});
+	const [imagePreview, setImagePreview] = useState<string>('');
+	const [error, setError] = useState<
+		Record<string, { type: string; message: string }>
+	>({});
+
+	const hash = location.hash;
 	const isTabActive = hash.includes('tab=stores');
 	const isAddStore = hash.includes('create');
-	const iseditStore = hash.includes('edit');
-
-	const generateSlug = (text: string) => {
-		return text
+	const isEditStore = hash.includes('edit');
+	const generateSlug = (text: string) =>
+		text
 			.toLowerCase()
 			.trim()
 			.replace(/[^\w\s-]/g, '')
 			.replace(/\s+/g, '-')
 			.replace(/--+/g, '-');
-	};
 
-	const checkSlugExists = async (slug: string) => {
+	const checkSlugExists = async (slug: string): Promise<boolean> => {
 		try {
-			const response = await axios.get(
-				getApiLink(appLocalizer, 'store'),
-				{
-					params: { slug },
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				}
-			);
+			const response = await axios.get(getApiLink(appLocalizer, 'store'), {
+				params: { slug },
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			});
 			return response.data.exists;
-		} catch (err) {
+		} catch {
 			return false;
 		}
+	};
+
+	const setFieldError = (key: string, message: string) => {
+		setError((prev) => ({ ...prev, [key]: { type: 'error', message } })); //Buddho
+	};
+
+	const setFieldSuccess = (key: string, message: string) => {
+		setError((prev) => ({ ...prev, [key]: { type: 'success', message } })); //Buddho
 	};
 
 	const handleSlugCheck = async () => {
@@ -72,21 +76,9 @@ const Stores = () => {
 		const exists = await checkSlugExists(formData.slug);
 
 		if (exists) {
-			setError((prev) => ({
-				...prev,
-				slug: {
-					type: 'invalid-massage',
-					message: `Slug "${formData.slug}" already exists.`,
-				},
-			}));
+			setFieldError('slug', `${__('Slug', 'multivendorx')} "${formData.slug}" ${__('already exists.', 'multivendorx')}`);
 		} else {
-			setError((prev) => ({
-				...prev,
-				slug: {
-					type: 'success-massage',
-					message: 'Available',
-				},
-			}));
+			setFieldSuccess('slug', __('Available', 'multivendorx'));
 		}
 	};
 
@@ -99,113 +91,72 @@ const Stores = () => {
 					slug: generateSlug(value),
 				};
 			}
-
 			if (name === 'slug') {
 				return {
 					...prev,
 					slug: value.replace(/[^a-zA-Z0-9-]/g, '').toLowerCase(),
 				};
 			}
-
 			return prev;
 		});
 	};
 
 	const saveEmails = (emailList: string[], primary: string) => {
-		const updated = {
-			...formData,
-			primary_email: primary,
-			emails: emailList,
-		};
-		setFormData(updated);
+		setFormData((prev) => ({ ...prev, primary_email: primary, emails: emailList }));
+	};
+
+	const resetForm = () => {
+		setFormData({});
+		setImagePreview('');
+		setError({});
 	};
 
 	const handleSubmit = async () => {
-		const { name, slug, email, store_owners } = formData;
+		const { name, slug, store_owners } = formData;
 
 		if (!name?.trim()) {
-			setError((prev) => ({
-				...prev,
-				name: {
-					type: 'invalid-massage',
-					message: 'Store name is required.',
-				},
-			}));
+			setFieldError('name', __('Store name is required.', 'multivendorx'));
 			return;
 		}
 
 		if (!slug?.trim()) {
-			setError((prev) => ({
-				...prev,
-				slug: {
-					type: 'invalid-massage',
-					message: 'Store slug is required.',
-				},
-			}));
+			setFieldError('slug', __('Store slug is required.', 'multivendorx'));
 			return;
 		}
 
 		if (!formData.primary_email?.trim()) {
-			setError((prev) => ({
-				...prev,
-				email: {
-					type: 'invalid-massage',
-					message: 'Store email is required.',
-				},
-			}));
+			setFieldError('email', __('Store email is required.', 'multivendorx'));
 			return;
 		}
 
 		if (!store_owners) {
-			setError((prev) => ({
-				...prev,
-				primary: {
-					type: 'invalid-massage',
-					message: 'Primary owners is required.',
-				},
-			}));
+			setFieldError('primary', __('Primary owner is required.', 'multivendorx'));
 			return;
 		}
 
-		// Check again before submit (in case slug manually changed)
+		// Re-check slug in case it was manually changed after the last check
 		const exists = await checkSlugExists(slug);
 		if (exists) {
-			setError((prev) => ({
-				...prev,
-				slug: {
-					type: 'invalid-massage',
-					message: `Slug "${formData.slug}" already exists.`,
-				},
-			}));
+			setFieldError('slug', `${__('Slug', 'multivendorx')} "${slug}" ${__('already exists.', 'multivendorx')}`);
 			return;
 		}
 
 		setError({});
-
-		const payload = { ...formData, status: 'active' };
 
 		try {
 			const response = await axios({
 				method: 'POST',
 				url: getApiLink(appLocalizer, 'store'),
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				data: { formData: payload },
+				data: { formData: { ...formData, status: 'active' } },
 			});
 
 			if (response.data.success) {
-				setaddStore(false);
-				navigate(
-					`?page=multivendorx#&tab=stores&edit/${response.data.id}`
-				);
+				setAddStore(false);
+				navigate(`?page=multivendorx#&tab=stores&edit/${response.data.id}`);
 			}
-		} catch (err) {
-			setError((prev) => ({
-				...prev,
-				name: {
-					type: 'invalid-massage',
-					message: 'Something went wrong while saving the store.',
-				},
-			}));
+		} catch {
+			setFieldError('name', __('Something went wrong while saving the store.', 'multivendorx'));
 		}
 	};
 
@@ -217,33 +168,37 @@ const Stores = () => {
 			multiple: false,
 		});
 
-		frame.on('select', function () {
+		frame.on('select', () => {
 			const attachment = frame.state().get('selection').first().toJSON();
-			const updated = { ...formData, [key]: attachment.url };
-
-			setFormData(updated);
+			setFormData((prev) => ({ ...prev, [key]: attachment.url }));
 			setImagePreview(attachment.url);
 		});
 
 		frame.open();
 	};
 
-	// Remove image
 	const handleRemoveImage = (key: string) => {
-		const updated = { ...formData, [key]: '' };
-		setFormData(updated);
+		setFormData((prev) => ({ ...prev, [key]: '' }));
 		setImagePreview('');
 	};
 
-	// Replace image
-	const handleReplaceImage = (key: string) => {
-		runUploader(key);
+	const renderFieldNotice = (key: string) => {
+		const err = error?.[key];
+		if (!err?.message) return null;
+
+		return (
+			<Notice
+				type='inline'
+				message={err.message}
+				title=""
+			/>
+		);
 	};
 	return (
 		<>
-			{isTabActive && iseditStore && !isAddStore && <EditStore />}
+			{isTabActive && isEditStore && !isAddStore && <EditStore />}
 
-			{!isAddStore && !iseditStore && (
+			{!isAddStore && !isEditStore && (
 				<>
 					<NavigatorHeader
 						headerIcon="storefront"
@@ -257,9 +212,8 @@ const Stores = () => {
 								label: __('Add Store', 'multivendorx'),
 								icon: 'plus',
 								onClick: () => {
-									setFormData({});
-									setImagePreview('');
-									setaddStore(true);
+									resetForm();
+									setAddStore(true);
 								},
 							},
 						]}
@@ -269,9 +223,8 @@ const Stores = () => {
 							open={addStore}
 							width={31.25}
 							onClose={() => {
-								setFormData({});
-								setImagePreview('');
-								setaddStore(false);
+								resetForm();
+								setAddStore(false);
 							}}
 							header={{
 								icon: 'storefront',
@@ -289,9 +242,8 @@ const Stores = () => {
 											text: __('Cancel', 'multivendorx'),
 											color: 'red',
 											onClick: () => {
-												setFormData({});
-												setImagePreview('');
-												setaddStore(false);
+												resetForm();
+												setAddStore(false);
 											},
 										},
 										{
@@ -313,11 +265,9 @@ const Stores = () => {
 										type="text"
 										name="name"
 										value={formData.name || ''}
-										onChange={(val) =>
-											handleChange('name', val as string)
-										}
-										msg={error.name}
+										onChange={(val) => handleChange('name', val as string)}
 									/>
+									{renderFieldNotice('name')}
 								</FormGroup>
 
 								<FormGroup
@@ -327,39 +277,25 @@ const Stores = () => {
 									<BasicInputUI
 										type="text"
 										name="slug"
-										value={formData.slug}
-										onChange={(val) =>
-											handleChange('slug', val as string)
-										}
-										msg={error.slug}
+										value={formData.slug || ''}
+										onChange={(val) => handleChange('slug', val as string)}
 									/>
-
+									{renderFieldNotice('slug')}
 									<AdminButtonUI
 										buttons={{
-											text: __(
-												'Check Slug',
-												'multivendorx'
-											),
+											text: __('Check Slug', 'multivendorx'),
 											onClick: handleSlugCheck,
 										}}
 									/>
 								</FormGroup>
 
-								<FormGroup
-									label={__('Store Email', 'multivendorx')}
-								>
+								<FormGroup label={__('Store Email', 'multivendorx')}>
 									<EmailsInput
 										value={formData.emails || []}
 										enablePrimary={true}
-										onChange={(list, primary) => {
-											saveEmails(list, primary);
-										}}
+										onChange={(list, primary) => saveEmails(list, primary)}
 									/>
-									{error?.email?.message && (
-										<div className="invalid-massage">
-											{error?.email?.message}
-										</div>
-									)}
+									{renderFieldNotice('email')}
 								</FormGroup>
 
 								<FormGroup
@@ -372,10 +308,7 @@ const Stores = () => {
 										onChange={handleChange}
 										usePlainText={false}
 										tinymceApiKey={
-											appLocalizer
-												.settings_databases_value[
-											'overview'
-											]['tinymce_api_section'] ?? ''
+											appLocalizer.settings_databases_value['overview']?.['tinymce_api_section'] ?? ''
 										}
 									/>
 								</FormGroup>
@@ -386,30 +319,18 @@ const Stores = () => {
 								>
 									<SelectInputUI
 										name="store_owners"
-										options={
-											appLocalizer?.store_owners || []
-										}
+										options={appLocalizer?.store_owners || []}
 										value={formData.store_owners}
 										type="single-select"
 										onChange={(newValue: any) => {
-											if (
-												!newValue ||
-												Array.isArray(newValue)
-											) {
-												return;
-											}
-											const updated = {
-												...formData,
+											if (!newValue || Array.isArray(newValue)) return;
+											setFormData((prev) => ({
+												...prev,
 												store_owners: newValue.value,
-											};
-											setFormData(updated);
+											}));
 										}}
 									/>
-									{error?.primary?.message && (
-										<div className="invalid-massage">
-											{error?.primary?.message}
-										</div>
-									)}
+									{renderFieldNotice('primary')}
 								</FormGroup>
 
 								<FormGroup

@@ -10,9 +10,9 @@ import { useModules } from '../contexts/ModuleContext';
 import '../styles/web/AdminForm.scss';
 import { FIELD_REGISTRY } from './FieldRegistry';
 import FormGroupWrapper from './UI/FormGroupWrapper';
-import SuccessNotice from './SuccessNotice';
 import { PopupUI } from './Popup';
 import axios from 'axios';
+import { Notice, NoticeType } from './Notice';
 
 interface InputField {
     key: string;
@@ -70,7 +70,8 @@ type SettingValue =
 type Settings = Record<string, SettingValue>;
 
 interface ApiResponse {
-    error?: string;
+    type?: string;
+    message?: string;
     redirect_link?: string;
 }
 
@@ -112,7 +113,7 @@ const RenderComponent: React.FC<RenderProps> = ({
     const settingChanged = useRef<boolean>(false);
     const counter = useRef<number>(0);
     const counterId = useRef<ReturnType<typeof setInterval> | null>(null);
-    const [successMsg, setSuccessMsg] = useState<string>('');
+    const [notice, setNotice] = useState<{ type: NoticeType; message: string;  } | null>(null);
     const [modelOpen, setModelOpen] = useState<boolean>(false);
     const [modulePopupData, setModulePopupData] = useState<PopupProps>({
         moduleName: '',
@@ -149,8 +150,10 @@ const RenderComponent: React.FC<RenderProps> = ({
                         }
                     ).then((response: unknown) => {
                         const apiResponse = response as ApiResponse;
-                        setSuccessMsg(apiResponse.error || '');
-                        setTimeout(() => setSuccessMsg(''), 2000);
+                        if (apiResponse.message) {
+                            setNotice({ type: apiResponse.type, message: apiResponse.message, });
+                        }
+                        setTimeout(() => setNotice(null), 2000);
 
                         if (apiResponse.redirect_link) {
                             window.open(apiResponse.redirect_link, '_self');
@@ -658,11 +661,10 @@ const RenderComponent: React.FC<RenderProps> = ({
                                 })
                                 : input}
 
-                            {errors && errors[inputField.key] && (
-                                <div className="field-error">
-                                    {errors[inputField.key]}
-                                </div>
-                            )}
+                                    <Notice
+                                        message={errors[inputField.key] || ''}   
+                                        title=""
+                                    />
                             {inputField.desc && (
                                 <p
                                     className="settings-metabox-description"
@@ -721,9 +723,11 @@ const RenderComponent: React.FC<RenderProps> = ({
                 </PopupUI>
 
             )}
-            {successMsg && (
-                <SuccessNotice message={successMsg} />
-            )}
+                <Notice
+                    type={notice?.type}
+                    message={notice?.message}
+                    onDismiss={() => setNotice(null)}
+                />
             <FormGroupWrapper>{renderForm()}</FormGroupWrapper>
         </>
     );

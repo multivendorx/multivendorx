@@ -149,7 +149,7 @@
 // checklist start common and delete
 .card-wrapper:has(.checklist-wrapper) {
     height: fit-content;
-    position: sticky !important;
+    // position: sticky !important;
     top: 5rem;
     z-index: 9;
 }
