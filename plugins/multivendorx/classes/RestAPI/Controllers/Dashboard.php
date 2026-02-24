@@ -111,7 +111,7 @@ class Dashboard extends \WP_REST_Controller {
                 'capability' => array( 'read_shop_coupons' ),
             ),
             'staff-management'       => array(
-                'name'       => 'Staff Management',
+                'name'       => 'Staff Management (Pro)',
                 'slug'       => 'staff-management',
                 'icon'       => 'coupon',
                 'capability' => array( 'create_stores' ),
@@ -244,7 +244,7 @@ class Dashboard extends \WP_REST_Controller {
                 'capability' => array( 'manage_store_settings' ),
             ),
             'booking'       => array(
-                'name'       => 'Booking',
+                'name'       => 'Booking (Pro)',
                 'slug'       => 'booking',
                 'icon'       => 'report',
                 'submenu'    => array(
@@ -270,6 +270,38 @@ class Dashboard extends \WP_REST_Controller {
                         'key'        => 'send-notifictaion',
                         'name'       => 'Send Notifictaion',
                         'slug'       => 'send-notifictaion',
+                        'capability' => array( 'read_products' ),
+                    ),
+                ),
+                'capability' => array( 'read_products' ),
+            ),
+            'appointment'       => array(
+                'name'       => 'Appointment (Pro)',
+                'slug'       => 'appointment',
+                'icon'       => 'report',
+                'submenu'    => array(
+                    array(
+                        'key'        => 'all-inventory',
+                        'name'       => 'All inventory',
+                        'slug'       => 'all-inventory',
+                        'capability' => array( 'read_products' ),
+                    ),
+                    array(
+                        'key'        => 'add-inventory',
+                        'name'       => 'Add inventory',
+                        'slug'       => 'add-inventory',
+                        'capability' => array( 'read_products' ),
+                    ),
+                    array(
+                        'key'        => 'quote-requests',
+                        'name'       => 'Quote requests',
+                        'slug'       => 'quote-requests',
+                        'capability' => array( 'read_products' ),
+                    ),
+                    array(
+                        'key'        => 'calender',
+                        'name'       => 'Calender',
+                        'slug'       => 'Calender',
                         'capability' => array( 'read_products' ),
                     ),
                 ),
