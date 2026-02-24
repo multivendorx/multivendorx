@@ -23,7 +23,34 @@ class Frontend {
      */
     public function __construct() {
         add_filter( 'woocommerce_product_tabs', array( $this, 'product_questions_answers_tab' ) );
+        add_filter( 'multivendorx_register_scripts', array( $this, 'register_script' ) );
+        add_filter( 'multivendorx_localize_scripts', array( $this, 'localize_scripts' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
+    }
+
+    public function register_script( $scripts ) {
+        $base_url = MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name();
+
+        $scripts['multivendorx-qna-frontend-script'] = array(
+            'src'     => $base_url . 'modules/QuestionsAnswers/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+            'deps'    => array( 'jquery' ),
+            'version' => MultiVendorX()->version,
+        );
+
+        return $scripts;
+    }
+
+    public function localize_scripts( $scripts ) {
+
+        $scripts['multivendorx-qna-frontend-script'] = array(
+            'object_name' => 'qnaFrontend',
+            'data'        => array(
+                'ajaxurl' => admin_url( 'admin-ajax.php' ),
+                'nonce'   => wp_create_nonce( 'qna_ajax_nonce' ),
+            ),
+        );
+
+        return $scripts;
     }
 
     /**

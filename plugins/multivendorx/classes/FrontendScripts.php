@@ -170,41 +170,6 @@ class FrontendScripts {
 					'deps'    => $component_asset['dependencies'],
 					'version' => $version,
 				),
-                'multivendorx-qna-frontend-script'         => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'modules/QuestionsAnswers/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
-					'deps'    => array( 'jquery' ),
-					'version' => $version,
-				),
-                'multivendorx-spmv-frontend-script'        => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'modules/SPMV/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
-					'deps'    => array( 'jquery' ),
-					'version' => $version,
-				),
-                'multivendorx-follow-store-frontend-script' => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'modules/FollowStore/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
-					'deps'    => array( 'jquery' ),
-					'version' => $version,
-				),
-                'multivendorx-store-policy-frontend-script' => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'modules/StorePolicy/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
-					'deps'    => array( 'jquery' ),
-					'version' => $version,
-				),
-                'multivendorx-store-shipping-frontend-script' => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'modules/StoreShipping/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
-					'deps'    => array( 'jquery' ),
-					'version' => $version,
-				),
-                'multivendorx-report-abuse-frontend-script' => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'modules/Compliance/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
-					'deps'    => array( 'jquery' ),
-					'version' => $version,
-				),
-                'multivendorx-review-frontend-script'      => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'modules/StoreReview/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
-					'deps'    => array( 'jquery' ),
-					'version' => $version,
-				),
                 'multivendorx-contact-info-script'         => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/blocks/contact-info/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
@@ -603,52 +568,6 @@ class FrontendScripts {
 					'data'        => array(
 						'ajaxurl'     => admin_url( 'admin-ajax.php' ),
 						'select_text' => __( 'Select an item...', 'multivendorx' ),
-					),
-				),
-                'multivendorx-qna-frontend-script'         => array(
-					'object_name' => 'qnaFrontend',
-					'data'        => array(
-						'ajaxurl' => admin_url( 'admin-ajax.php' ),
-                        'nonce'   => wp_create_nonce( 'qna_ajax_nonce' ),
-					),
-				),
-                'multivendorx-follow-store-frontend-script' => array(
-					'object_name' => 'followStoreFrontend',
-					'data'        => array(
-                        'apiUrl'  => untrailingslashit( get_rest_url() ),
-                        'restUrl' => MultiVendorX()->rest_namespace,
-                        'nonce'   => wp_create_nonce( 'wp_rest' ),
-					),
-				),
-                'multivendorx-store-shipping-frontend-script' => array(
-					'object_name' => 'distanceShippingFrontend',
-                    'data'        => array(
-                        'ajaxurl'      => admin_url( 'admin-ajax.php' ),
-                        'nonce'        => wp_create_nonce( 'distance_shipping_ajax_nonce' ),
-                        'default_lat'  => MultiVendorX()->setting->get_setting( 'default_map_lat', '28.6139' ), // Example default lat.
-                        'default_lng'  => MultiVendorX()->setting->get_setting( 'default_map_lng', '77.2090' ), // Example default lng.
-                        'default_zoom' => 13,
-                        'store_icon'   => plugin_dir_url( __FILE__ ) . 'assets/images/store-icon.png',
-                        'icon_width'   => 40,
-                        'icon_height'  => 40,
-                        'mapbox_token' => MultiVendorX()->setting->get_setting( 'mapbox_api_key', '' ),
-                        'mapbox_style' => 'mapbox://styles/mapbox/streets-v11',
-                        'map_provider' => MultiVendorX()->setting->get_setting( 'choose_map_api', '' ),
-                    ),
-				),
-                'multivendorx-report-abuse-frontend-script' => array(
-					'object_name' => 'reportAbuseFrontend',
-					'data'        => array(
-						'ajaxurl' => admin_url( 'admin-ajax.php' ),
-                        'nonce'   => wp_create_nonce( 'report_abuse_ajax_nonce' ),
-					),
-				),
-                'multivendorx-review-frontend-script'      => array(
-					'object_name' => 'review',
-					'data'        => array(
-						'ajaxurl'    => admin_url( 'admin-ajax.php' ),
-                        'nonce'      => wp_create_nonce( 'review_ajax_nonce' ),
-                        'parameters' => MultiVendorX()->setting->get_setting( 'ratings_parameters', array() ),
 					),
 				),
                 'multivendorx-dashboard-script'            => array(
