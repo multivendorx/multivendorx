@@ -27,8 +27,6 @@ const settings: React.FC<SettingsProps> = () => {
 	);
 
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
-	const { modules } = useModules();
-	const settings = appLocalizer.settings_all_meta || {};
 
 	useEffect(() => {
 		if (successMsg) {
@@ -59,8 +57,8 @@ const settings: React.FC<SettingsProps> = () => {
 
 	// Build hash URL for a given tab
 	const prepareUrl = (tabId: string) => `#subtab=${tabId}`;
+
 	const GetForm = (currentTab: string | null): JSX.Element | null => {
-		console.log('tab', currentTab);
 		// get the setting context
 		const { setting, settingName, setSetting, updateSetting } =
 			useSetting();
