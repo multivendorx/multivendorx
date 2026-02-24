@@ -188,8 +188,8 @@ const Stores = () => {
 
 		return (
 			<Notice
+				type='inline'
 				message={err.message}
-				display="inline"
 				title=""
 			/>
 		);

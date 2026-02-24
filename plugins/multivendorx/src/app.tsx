@@ -300,7 +300,6 @@ const App = () => {
 			<Notice
 				type="banner"
                 message={bannerItems}
-                displayPosition="banner"
                 dismissible={true}
                 onDismiss={handleDismissBanner}
                 className="top-header"
