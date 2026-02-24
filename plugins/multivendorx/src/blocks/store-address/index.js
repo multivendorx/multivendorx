@@ -21,12 +21,7 @@ const LocationIcon = () => (
 registerBlockType('multivendorx/store-address', {
 	edit: ({ attributes, setAttributes }) => {
 		const blockProps = useBlockProps({
-			className: 'multivendorx-store-address-block',
-			style: {
-				display: 'flex',
-				alignItems: 'center',
-				gap: '8px',
-			},
+			className: 'multivendorx-store-address-block store-details'
 		});
 		const showIcon = attributes.showIcon !== false;
 
@@ -50,19 +45,13 @@ registerBlockType('multivendorx/store-address', {
 	},
 
 	save: ({ attributes }) => {
-		const blockProps = useBlockProps.save({
-			style: {
-				display: 'flex',
-				alignItems: 'center',
-				gap: '8px',
-			},
-		});
+		const blockProps = useBlockProps.save();
 		const showIcon = attributes.showIcon !== false;
 
 		return (
 			<div {...blockProps}>
 				{showIcon && <LocationIcon />}
-				<div className="multivendorx-store-address-block"></div>
+				<div className="multivendorx-store-address-block store-details"></div>
 			</div>
 		);
 	},

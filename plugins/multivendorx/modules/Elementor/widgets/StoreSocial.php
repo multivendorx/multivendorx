@@ -80,19 +80,7 @@ class Store_Social extends Widget_Social_Icons
 		if ( ! $store ) {
 			return;
 		}
-
-		$settings = $this->get_settings_for_display();
-
-		// Render Store Name (dynamic)
-		$name = ! empty( $store['storeName'] ) ? $store['storeName'] : ( $settings['title'] ?? '' );
-		$tag  = ! empty( $settings['header_size'] ) ? $settings['header_size'] : 'h2';
-
-		printf(
-			'<%1$s class="multivendorx-store-name elementor-heading-title">%2$s</%1$s>',
-			esc_attr( $tag ),
-			esc_html( $name )
-		);
-
+		
 		// -------------------------------
 		// Render Dynamic Social Icons
 		// -------------------------------

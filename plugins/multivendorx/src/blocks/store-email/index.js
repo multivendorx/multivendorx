@@ -24,7 +24,7 @@ registerBlockType('multivendorx/store-email', {
 			style: {
 				display: 'flex',
 				alignItems: 'center',
-				gap: '8px',
+				gap: '0.5rem',
 			},
 		});
 
@@ -52,7 +52,7 @@ registerBlockType('multivendorx/store-email', {
 			style: {
 				display: 'flex',
 				alignItems: 'center',
-				gap: '8px',
+				gap: '0.5rem',
 			},
 		});
 
@@ -66,9 +66,15 @@ registerBlockType('multivendorx/store-email', {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-	document
-		.querySelectorAll('.multivendorx-store-email-block')
-		.forEach((el) => {
-			el.textContent = StoreInfo.storeDetails.storeEmail;
-		});
+  document
+    .querySelectorAll('.multivendorx-store-email-block')
+    .forEach((el) => {
+      const email = StoreInfo?.storeDetails?.storeEmail;
+
+      if (email) {
+        el.textContent = email;
+      } else {
+        el.closest('.wp-block-multivendorx-store-email')?.remove();
+      }
+    });
 });

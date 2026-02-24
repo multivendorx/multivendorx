@@ -1,6 +1,7 @@
 import { getApiLink, SettingsNavigator, useModules } from 'zyra';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { __ } from '@wordpress/i18n';
 import { useLocation, Link } from 'react-router-dom';
 import PendingStores from './PendingStores';
 import PendingProducts from './PendingProducts';

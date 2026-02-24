@@ -48,6 +48,7 @@ const StoreCouponList = ({
 
 	return (
 		<div className="store-coupon-list">
+			<h3>{__('Coupons', 'multivendorx')}</h3>
 			{coupons.length > 0 ? (
 				<>
 					{coupons.map((coupon) => (
@@ -88,7 +89,7 @@ const StoreCouponList = ({
 				<p>{__('No coupons found', 'multivendorx')}</p>
 			)}
 		</div>
-	);
+	);	
 };
 
 export default StoreCouponList;

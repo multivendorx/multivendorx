@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 const PolicyTab = () => {
 	const policies = StoreInfo.storeDetails || {};
 

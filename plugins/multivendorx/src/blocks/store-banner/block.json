@@ -9,11 +9,11 @@
   "attributes": {
     "height": {
       "type": "string",
-      "default": "400px"
+      "default": "25rem"
     },
     "minHeight": {
       "type": "string",
-      "default": "300px"
+      "default": "18.75rem"
     },
     "overlayColor": {
       "type": "string",

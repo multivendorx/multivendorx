@@ -215,11 +215,6 @@ class FrontendScripts {
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
-                'multivendorx-marketplace-coupons-script'  => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/blocks/marketplace-coupons/index.js',
-					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
-					'version' => $version,
-				),
                 'multivendorx-store-coupons-script'        => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/blocks/store-coupons/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),

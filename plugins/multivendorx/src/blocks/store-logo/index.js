@@ -163,7 +163,7 @@ registerBlockType('multivendorx/store-logo', {
 						title={__('Color', 'multivendorx')}
 						initialOpen={false}
 					>
-						<div style={{ marginBottom: '20px' }}>
+						<div style={{ marginBottom: '1.25rem' }}>
 							<div
 								style={{
 									display: 'flex',
