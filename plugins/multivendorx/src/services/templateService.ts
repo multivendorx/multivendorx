@@ -1,4 +1,3 @@
-import { applyFilters } from '@wordpress/hooks';
 /// <reference types="webpack-env" />
 
 // Predefined contexts
@@ -129,18 +128,12 @@ const importAll = (
 const getTemplateData = (
 	type: 'settings' | 'tools' | 'storeStatus' | 'dashboardSettings'
 ): SettingNode[] => {
-	let ctx = contexts[type];
+	const ctx = contexts[type];
 
 	if (!ctx) {
 		console.warn(`⚠️ No context found for type: ${type}`);
 		return [];
 	}
-
-	ctx = applyFilters(
-		'multivendorx_settings_context',
-		ctx,
-		type
-	);
 
 	return importAll(ctx);
 };
