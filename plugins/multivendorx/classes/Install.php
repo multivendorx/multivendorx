@@ -573,6 +573,7 @@ class Install {
 					'edit_approved_products',
 					'publish_products',
 					'upload_files',
+                    'edit_products'
 				),
 			'orders'                     =>
 				array(
@@ -643,6 +644,7 @@ class Install {
 					'edit_published_products',
 					'edit_approved_products',
 					'publish_products',
+                    'edit_products',
 					'upload_files',
                     'view_shop_orders',
 					'edit_shop_orders',
