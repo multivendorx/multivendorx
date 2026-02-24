@@ -171,6 +171,7 @@ class StoreUtil {
                     'read_products'           => 'View products',
                     'add_products'            => 'Add products',
                     'publish_products'        => 'Publish products',
+                    'edit_products'           => 'Edit products',
                     'edit_published_products' => 'Edit published products',
                     'edit_approved_products'  => 'Review edits on approved products',
                     'upload_files'            => 'Upload files',
