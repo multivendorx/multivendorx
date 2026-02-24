@@ -9,7 +9,6 @@ import {
 	PopupUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
-import { applyFilters } from '@wordpress/hooks';
 
 type Zone = {
 	id: number;
@@ -435,19 +434,15 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 										handleChange('shippingMethod', val);
 									}
 								}}
-								options={applyFilters(
-									'multivendorx_zone_shipping_methods',
+								options={
 									isEditing
 										? [
 											{
 												key: formData.shippingMethod,
 												value: formData.shippingMethod,
-												label: __(
-													formData.shippingMethod
-														.replace('_', ' ')
-														.replace(/\b\w/g, (c) => c.toUpperCase()),
-													'multivendorx'
-												),
+												label: __(formData.shippingMethod
+													.replace('_', ' ')
+													.replace(/\b\w/g, (c) => c.toUpperCase()), 'multivendorx'),
 											},
 										]
 										: [
@@ -467,7 +462,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 												label: __('Flat Rate', 'multivendorx'),
 											},
 										]
-								)}
+								}
 								disabled={isEditing}
 							/>
 						</div>
@@ -605,14 +600,6 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 									/>
 								</div>
 							</>
-						)}
-						
-						{applyFilters(
-							'multivendorx_zone_shipping_after_fields',
-							null,
-							{
-								zone: selectedZone
-							}
 						)}
 					</div>
 				</PopupUI>

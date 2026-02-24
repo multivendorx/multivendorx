@@ -154,7 +154,7 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 							/>
 						</FormGroup>
 						{applyFilters(
-							'per_product_shipping',
+							'multivendorx_product_shipping_meta',
 							null,
 							product
 						)}
