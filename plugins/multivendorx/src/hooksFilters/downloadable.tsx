@@ -68,17 +68,13 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 	};
 
 	return (
-		// <Card contentHeight
-		// 	title={__('Downloadable', 'multivendorx')}
-		// 	iconName="pagination-right-arrow arrow-icon"
-		// 	toggle
-		// >
 		<>
 			<FormGroup>
 				<DynamicRowSetting
 					keyName="downloads"
 					template={downloadTemplate}
 					value={product.downloads}
+					emptyText={__('No downloadable files added', 'multivendorx')}
 					addLabel={__('Add new', 'multivendorx')}
 					onChange={(rows) => {
 						const cleanedRows = rows.map(
@@ -123,7 +119,6 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 				/>
 			</FormGroup>
 		</>
-		// </Card >
 	);
 };
 
