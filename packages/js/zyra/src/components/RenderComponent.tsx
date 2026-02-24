@@ -70,7 +70,8 @@ type SettingValue =
 type Settings = Record<string, SettingValue>;
 
 interface ApiResponse {
-    error?: string;
+    message?: string;
+    type?: string;
     redirect_link?: string;
 }
 
@@ -149,10 +150,8 @@ const RenderComponent: React.FC<RenderProps> = ({
                         }
                     ).then((response: unknown) => {
                         const apiResponse = response as ApiResponse;
-                        if (apiResponse.error) {
-                            setNotice({ message: apiResponse.error, variant: 'success' });
-                        } else {
-                            setNotice({ message: 'Settings not saved.', variant: 'error' });
+                        if (apiResponse.message) {
+                            setNotice({ message: apiResponse.message, variant: apiResponse.type});
                         }
                         setTimeout(() => setNotice(null), 2000);
 

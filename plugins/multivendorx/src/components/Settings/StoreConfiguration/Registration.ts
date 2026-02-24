@@ -18,6 +18,7 @@ export default {
 				'Only store owners can apply for store registration. Applicants must log in or create an account before proceeding. So, Make sure WooCommerce’s Account & Privacy settings are configured to allow user registration.',
 				'multivendorx'
 			),
+			title: '',
 		},
 		{
 			key: 'store_registration_from',

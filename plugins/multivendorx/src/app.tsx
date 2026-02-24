@@ -373,9 +373,9 @@ const App = () => {
 					</div>
 					<SequentialTaskExecutor
 						buttonKey="import_dummy_data"
-						value={__('Import Dummy Data', 'multivendorx')}
+						buttonText={__('Import Dummy Data', 'multivendorx')}
 						apilink="import-dummy-data"
-						parameter="action"
+						action="action"
 						interval={1000}
 						appLocalizer={appLocalizer}
 						successMessage={__(

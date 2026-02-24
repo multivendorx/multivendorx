@@ -18,12 +18,6 @@ import {
 import { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import type { NoticeVariant } from 'zyra';
-const ERROR_TYPE_TO_VARIANT: Record<string, NoticeVariant> = {
-	'invalid-massage': 'error',
-	'error': 'error',
-	'success-massage': 'success',
-};
 
 const Stores = () => {
 	const location = useLocation();
@@ -195,7 +189,6 @@ const Stores = () => {
 		return (
 			<Notice
 				message={err.message}
-				variant={ERROR_TYPE_TO_VARIANT[err.type] ?? 'error'}
 				display="inline"
 				title=""
 			/>

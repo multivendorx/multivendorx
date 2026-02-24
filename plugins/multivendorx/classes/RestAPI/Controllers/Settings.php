@@ -139,7 +139,9 @@ class Settings extends \WP_REST_Controller {
 
             do_action( 'multivendorx_after_save_settings', $settingsname, $get_settings_data );
 
-            $all_details['error'] = __( 'Settings Saved', 'multivendorx' );
+            $all_details['message'] = __( 'Settings Saved', 'multivendorx' );
+            $all_details['type'] = __( 'success', 'multivendorx' );
+
 
             if ( 'store_permissions' === $settingsname || 'user_permissions' === $settingsname ) {
                 $store_cap = MultiVendorX()->setting->get_option( Utill::MULTIVENDORX_SETTINGS['store-permissions'] );

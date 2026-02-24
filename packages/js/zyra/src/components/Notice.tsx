@@ -60,8 +60,8 @@ export interface NoticeProps {
 export const Notice: React.FC<NoticeProps> = ({
     message,
     title,
-    variant      = 'success',
-    display      = 'toast',
+    variant,
+    display,
     className,
     dismissible  = false,
     onDismiss,
@@ -86,81 +86,17 @@ export const Notice: React.FC<NoticeProps> = ({
         .filter(Boolean)
         .join(' ');
 
-    // Render array of messages
-    if (Array.isArray(message)) {
-        return (
-            <div className={rootClass}>
-                {dismissible && (
-                    <button
-                        type="button"
-                        className="notice-dismiss"
-                        aria-label="Dismiss notice"
-                        onClick={onDismiss}
-                    >
-                        <i className="admin-font adminfont-close" aria-hidden="true" />
-                    </button>
-                )}
-                
-                <div className="notice-items-container">
-                    {message.map((item, index) => {
-                        const itemIcon = item.iconClass ?? iconClass ?? variantMeta.iconClass;
-                        
-                        return (
-                            <div key={index} className="notice-item">
-                                <i className={`admin-font ${itemIcon}`} aria-hidden="true" />
-                                
-                                <div className="notice-item-details">
-                                    {item.title && (
-                                        <div className="item-title">{item.title}</div>
-                                    )}
-                                    <div className="item-message">{item.message}</div>
-                                    
-                                    {item.action && (
-                                        <div className="item-action">
-                                            {item.action.url ? (
-                                                <a 
-                                                    href={item.action.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="action-link"
-                                                >
-                                                    {item.action.label}
-                                                </a>
-                                            ) : (
-                                                <button
-                                                    type="button"
-                                                    className="action-button"
-                                                    onClick={item.action.onClick}
-                                                >
-                                                    {item.action.label}
-                                                </button>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-        );
-    }
-
-    // Render single message (original behavior)
-    const resolvedIcon = iconClass ?? variantMeta.iconClass;
-    const resolvedTitle = title ?? variantMeta.title;
+    // Normalize to array for consistent rendering
+    const items: NoticeItem[] = Array.isArray(message) 
+        ? message 
+        : [{
+            title: title ?? variantMeta.title,
+            message: message,
+            iconClass: iconClass ?? variantMeta.iconClass,
+        }];
 
     return (
         <div className={rootClass}>
-            <i className={`admin-font ${resolvedIcon}`} aria-hidden="true" />
-
-            <div className="notice-details">
-                {resolvedTitle && (
-                    <div className="title">{resolvedTitle}</div>
-                )}
-                <div className="desc">{message}</div>
-            </div>
-
             {dismissible && (
                 <button
                     type="button"
@@ -171,6 +107,49 @@ export const Notice: React.FC<NoticeProps> = ({
                     <i className="admin-font adminfont-close" aria-hidden="true" />
                 </button>
             )}
+            
+            <div className={`notice-items-container ${!Array.isArray(message) ? 'single-item' : ''}`}>
+                {items.map((item, index) => {
+                    const itemIcon = item.iconClass ?? iconClass ?? variantMeta.iconClass;
+                    const itemTitle = item.title;
+                    
+                    return (
+                        <div key={index} className="notice-item">
+                            <i className={`admin-font ${itemIcon}`} aria-hidden="true" />
+                            
+                            <div className="notice-item-details">
+                                {itemTitle && (
+                                    <div className="item-title">{itemTitle}</div>
+                                )}
+                                <div className="item-message">{item.message}</div>
+                                
+                                {item.action && (
+                                    <div className="item-action">
+                                        {item.action.url ? (
+                                            <a 
+                                                href={item.action.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="action-link"
+                                            >
+                                                {item.action.label}
+                                            </a>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                className="action-button"
+                                                onClick={item.action.onClick}
+                                            >
+                                                {item.action.label}
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 };
@@ -185,6 +164,7 @@ const NoticeField: FieldComponent = {
             <Notice
                 key={field.key}
                 message={message}
+                title={field.title}
                 variant={variant}
                 display={display}
                 iconClass={field.iconClass || 'adminfont-info'}

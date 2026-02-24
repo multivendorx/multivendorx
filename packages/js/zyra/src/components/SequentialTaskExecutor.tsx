@@ -15,7 +15,7 @@ interface Task {
 
 interface SequentialTaskExecutorProps {
     buttonKey: string;
-    value: string;
+    buttonText: string;
     apilink: string;
     action: string;
     interval: number;
@@ -36,7 +36,7 @@ interface DynamicResponse {
 }
 
 const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
-    value,
+    buttonText,
     apilink,
     action,
     interval,
@@ -204,13 +204,8 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         return taskSequence.map((task, index) => ({
             id: `task-${index}`,
             title: task.message,
-            desc: task.status === 'running' ? 'Processing...' :
-                task.status === 'success' && task.successMessage ? task.successMessage :
-                    task.status === 'failed' && task.failureMessage ? task.failureMessage :
-                        task.message,
-            icon: task.status === 'failed' ? 'cross' :
-                task.status === 'success' ? 'yes' :
-                    task.status === 'running' ? 'spinner' : 'pending',
+            desc: task.status,
+            icon: task.status,
             className: `task-status-${task.status}`,
         }));
     };
@@ -220,7 +215,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
             <div className="loader-wrapper">
                 <AdminButtonUI
                     buttons={[{
-                        text: value,
+                        text: buttonText,
                         color: 'purple-bg',
                         onClick: handleButtonClick,
                         disabled: loading,
