@@ -12,8 +12,8 @@ import {
 	BasicInputUI,
 	AdminButtonUI,
 	PopupUI,
-	ItemList,
 	NavigatorHeader,
+	ItemListUI,
 } from 'zyra';
 import { formatCurrency } from '../services/commonFunction';
 
@@ -189,7 +189,7 @@ const Withdrawls: React.FC = () => {
 								</div>
 							</div>
 							<Column row>
-								<ItemList
+								<ItemListUI
 									className="mini-card"
 									background
 									items={[
@@ -231,7 +231,7 @@ const Withdrawls: React.FC = () => {
 									]}
 								/>
 								{data?.withdrawal_setting?.length > 0 && (
-									<ItemList
+									<ItemListUI
 										className="mini-card"
 										background
 										border

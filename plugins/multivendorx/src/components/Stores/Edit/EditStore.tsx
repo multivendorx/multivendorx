@@ -13,7 +13,7 @@ import {
 	SettingsNavigator,
 	PopupUI,
 	useOutsideClick,
-	ItemList,
+	ItemListUI,
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -956,7 +956,7 @@ const EditStore = () => {
 						position="menu-dropdown"
 						toggleIcon="adminfont-more-vertical"
 					>
-						<ItemList items={actionItems} />
+						<ItemListUI items={actionItems} />
 					</PopupUI>
 				}
 			/>

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	ItemList,
+	ItemListUI,
 	NavigatorHeader,
 	TableCard,
 	useModules,
@@ -54,7 +54,7 @@ const StoreCommission: React.FC = () => {
 		commission_summary: {
 			label: __('Commission Summary', 'multivendorx'),
 			render: (row) => (
-				<ItemList
+				<ItemListUI
 					className="feature-list"
 					items={Object.entries(row)
 						.filter(([key]) =>

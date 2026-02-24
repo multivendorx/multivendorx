@@ -6,10 +6,9 @@ import {
 	getApiLink,
 	ComponentStatusView,
 	PopupUI,
-	ItemList,
 	HeaderSearch,
 	NavigatorHeader,
-	BasicInputUI,
+	ItemListUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -126,7 +125,7 @@ const Documentation: React.FC = () => {
 				)}
 				{filteredDocuments.map((doc) => (
 					<>
-						<ItemList
+						<ItemListUI
 							className="mini-card"
 							border
 							items={[

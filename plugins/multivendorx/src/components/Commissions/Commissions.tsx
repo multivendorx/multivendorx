@@ -9,10 +9,10 @@ import {
 	Container,
 	Column,
 	TableCard,
-	ItemList,
 	TableRow,
 	QueryProps,
 	CategoryCount,
+	ItemListUI,
 } from 'zyra';
 import ViewCommission from './ViewCommission';
 import { downloadCSV, formatLocalDate } from '../../services/commonFunction';
@@ -91,7 +91,7 @@ const Commission: React.FC = () => {
 			label: __('Commission Summary', 'multivendorx'),
 			width: 20,
 			render: (row) => (
-				<ItemList
+				<ItemListUI
 					className="price-list"
 					items={Object.entries(row)
 						.filter(([key]) =>

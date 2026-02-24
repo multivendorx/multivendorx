@@ -103,11 +103,17 @@ const Tour: React.FC< TourProps > = ( { appLocalizer, steps, forceOpen } ) => {
                     
                     // Prepare buttons array based on step type
                     const buttons = [];
-                    
+                    // Add End Tour button for all steps except last
+                    if (!isLastStep) {
+                        buttons.push({
+                            text: 'End Tour',
+                            color: 'red',
+                            onClick: finishTour,
+                        });
+                    }
                     // Add Next button if not last step and has nextBtn
                     if (!isLastStep && content.nextBtn) {
                         buttons.push({
-                            icon: 'arrow-right',
                             text: 'Next',
                             color: 'purple',
                             onClick: () => navigateTo(
@@ -120,19 +126,8 @@ const Tour: React.FC< TourProps > = ( { appLocalizer, steps, forceOpen } ) => {
                     // Add Finish button for last step
                     if (isLastStep && content.finishBtn) {
                         buttons.push({
-                            icon: 'close',
                             text:'Finish Tour',
                             color: 'purple',
-                            onClick: finishTour,
-                        });
-                    }
-                    
-                    // Add End Tour button for all steps except last
-                    if (!isLastStep) {
-                        buttons.push({
-                            icon: 'close',
-                            text: 'End Tour',
-                            color: 'red',
                             onClick: finishTour,
                         });
                     }

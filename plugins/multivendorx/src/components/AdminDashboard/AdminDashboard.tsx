@@ -29,10 +29,9 @@ import {
 	Card,
 	Column,
 	Container,
-	ItemList,
+	ItemListUI,
 	Modules,
 	SuccessNotice,
-	useModules,
 } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
@@ -435,7 +434,7 @@ const AdminDashboard = () => {
 									'multivendorx'
 								)}
 							>
-								{/* <ItemList
+								<ItemListUI
 									className="feature-list"
 									items={featuresList.map(
 										({ icon, title, desc }) => ({
@@ -444,7 +443,7 @@ const AdminDashboard = () => {
 											desc: desc,
 										})
 									)}
-								/> */}
+								/>
 								<div className="pro-banner">
 									<div className="text">
 										{__(
@@ -513,8 +512,8 @@ const AdminDashboard = () => {
 							title={__('Extend your website', 'multivendorx')}
 						>
 							<Column row>
-								{/* {pluginStatus['woocommerce-catalog-enquiry'] ? (
-									<ItemList
+								{pluginStatus['woocommerce-catalog-enquiry'] ? (
+									<ItemListUI
 										className="mini-card"
 										background
 										items={[
@@ -553,7 +552,7 @@ const AdminDashboard = () => {
 										]}
 									/>
 								) : (
-									<ItemList
+									<ItemListUI
 										className="mini-card"
 										background
 										items={[
@@ -615,12 +614,12 @@ const AdminDashboard = () => {
 											},
 										]}
 									/>
-								)} */}
+								)}
 
-								{/* {pluginStatus[
+								{pluginStatus[
 									'woocommerce-product-stock-alert'
 								] ? (
-									<ItemList
+									<ItemListUI
 										className="mini-card"
 										background
 										items={[
@@ -659,7 +658,7 @@ const AdminDashboard = () => {
 										]}
 									/>
 								) : (
-									<ItemList
+									<ItemListUI
 										className="mini-card"
 										background
 										items={[
@@ -721,7 +720,7 @@ const AdminDashboard = () => {
 											},
 										]}
 									/>
-								)} */}
+								)}
 							</Column>
 						</Card>
 

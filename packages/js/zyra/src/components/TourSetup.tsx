@@ -47,6 +47,7 @@ const TourSetup: React.FC< TourSetupProps > = ( {
             }}
             showPrevNextButtons={false}
             showDots={false}
+            showBadge={false}
             {...rest}
         >
             <Tour

@@ -4,7 +4,7 @@ import React, { useRef, useEffect } from 'react';
 // Internal Dependencies
 import { PopupUI } from './Popup';
 import HeaderSearch from './HeaderSearch';
-import ItemList from './ItemList';
+import { ItemListUI } from './ItemList';
 import Tabs from './Tabs';
 
 type SearchItem = {
@@ -153,7 +153,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                             position="menu-dropdown"
                             toggleIcon={list.toggleIcon}
                         >
-                            <ItemList items={list.items} />
+                            <ItemListUI items={list.items} />
                         </PopupUI>
                     ))}
 
