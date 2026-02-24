@@ -435,7 +435,7 @@ const AdminDashboard = () => {
 									'multivendorx'
 								)}
 							>
-								<ItemList
+								{/* <ItemList
 									className="feature-list"
 									items={featuresList.map(
 										({ icon, title, desc }) => ({
@@ -444,7 +444,7 @@ const AdminDashboard = () => {
 											desc: desc,
 										})
 									)}
-								/>
+								/> */}
 								<div className="pro-banner">
 									<div className="text">
 										{__(
@@ -513,7 +513,7 @@ const AdminDashboard = () => {
 							title={__('Extend your website', 'multivendorx')}
 						>
 							<Column row>
-								{pluginStatus['woocommerce-catalog-enquiry'] ? (
+								{/* {pluginStatus['woocommerce-catalog-enquiry'] ? (
 									<ItemList
 										className="mini-card"
 										background
@@ -615,9 +615,9 @@ const AdminDashboard = () => {
 											},
 										]}
 									/>
-								)}
+								)} */}
 
-								{pluginStatus[
+								{/* {pluginStatus[
 									'woocommerce-product-stock-alert'
 								] ? (
 									<ItemList
@@ -721,7 +721,7 @@ const AdminDashboard = () => {
 											},
 										]}
 									/>
-								)}
+								)} */}
 							</Column>
 						</Card>
 

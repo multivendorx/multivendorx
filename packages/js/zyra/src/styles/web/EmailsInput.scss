@@ -2,7 +2,7 @@
 
 // email component start
 .emails-section {
-    padding: 0.45rem;
+    padding: 0 0.313rem;
     border: $border-light-small;
     border-radius: 0.313rem;
     display: flex;
@@ -44,7 +44,8 @@
     }
 
     input,
-    input:focus {
+    input:focus,
+    .input-wrapper {
         border: none;
         outline: none;
         box-shadow: none;

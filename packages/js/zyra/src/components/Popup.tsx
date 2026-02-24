@@ -1,5 +1,6 @@
 import React, {
     forwardRef,
+    useEffect,
     useRef,
     useState
 } from 'react';
@@ -58,9 +59,22 @@ export const PopupUI = forwardRef<HTMLDivElement, PopupProps>(
     ) => {
         const [internalOpen, setInternalOpen] = useState(false);
         const wrapperRef = useRef<HTMLDivElement>(null);
-
         const isControlled = controlledOpen !== undefined;
         const open = isControlled ? controlledOpen : internalOpen;
+        const scrollPosition = useRef(0);
+
+        useEffect(() => {
+            if (open) {
+                scrollPosition.current = window.scrollY;
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+
+            return () => {
+                document.body.style.overflow = '';
+            };
+        }, [open]);
 
         const handleOpen = () => {
             if (!isControlled) setInternalOpen(true);
