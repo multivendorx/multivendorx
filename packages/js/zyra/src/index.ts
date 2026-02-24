@@ -39,7 +39,7 @@ export { default as SubTabSection } from './components/SubTabSection';
 export { default as Tabs } from './components/Tabs';
 export { default as Support } from './components/Support';
 export { default as DropDownMapping } from './components/DropDownMapping';
-export { default as DoActionBtn } from './components/DoActionBtn';
+export { default as SequentialTaskExecutor } from './components/SequentialTaskExecutor';
 export { default as SettingsNavigator } from './components/SettingsNavigator';
 export { default as TextArea } from './components/TextArea';
 export { TextAreaUI } from './components/TextArea';
@@ -82,7 +82,7 @@ export { SettingProvider, useSetting } from './contexts/SettingContext';
 export type { SettingContextType } from './contexts/SettingContext';
 export type { QueryProps, TableRow, CategoryCount } from './components/table/types';
 export { default as Notice } from './components/Notice';
-export type { NoticeProps, NoticeVariant, NoticeDisplay } from './components/Notice';
+export type { NoticeVariant } from './components/Notice';
 
 export { default as TableCard } from './components/table/TableCard';
 export { useOutsideClick } from './components/useOutsideClick';

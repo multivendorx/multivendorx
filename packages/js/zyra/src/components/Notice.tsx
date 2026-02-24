@@ -1,27 +1,23 @@
 // External dependencies
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import "../styles/web/UI/SuccessNotice.scss";
 
 export const VARIANT_MODES = {
     success: {
         title:         'Great!',
         iconClass:     'adminfont-icon-yes',
-        modifierClass: 'notice--success',
     },
     error: {
         title:         'Error',
-        iconClass:     'adminfont-close',
-        modifierClass: 'notice--error',
+        iconClass:     'adminfont-error',
     },
     warning: {
         title:         'Warning',
         iconClass:     'adminfont-warning',
-        modifierClass: 'notice--warning',
     },
     info: {
         title:         'Info',
         iconClass:     'adminfont-info',
-        modifierClass: 'notice--info',
     },
 };
 
@@ -58,22 +54,16 @@ const Notice: React.FC<NoticeProps> = ({
     className,
     dismissible  = false,
     onDismiss,
-    autoDismiss  = 0,
+    autoDismiss  = 5000,
     iconClass,
 }) => {
-    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // ── Auto-dismiss ──────────────────────────────────────────────────────────
+    // Auto-dismiss
     useEffect(() => {
         if (!message || !autoDismiss) return;
 
-        timerRef.current = setTimeout(() => {
-            onDismiss?.();
-        }, autoDismiss);
-
-        return () => {
-            if (timerRef.current) clearTimeout(timerRef.current);
-        };
+        const timer = setTimeout(() => onDismiss?.(), autoDismiss);
+        return () => clearTimeout(timer);
     }, [message, autoDismiss, onDismiss]);
 
     if (!message) return null;
@@ -91,7 +81,7 @@ const Notice: React.FC<NoticeProps> = ({
         .filter(Boolean)
         .join(' ');
 
-    // ── Render ────────────────────────────────────────────────────────────────
+    // Render
     return (
         <div className={ rootClass }>
             <i className={ `admin-font ${ resolvedIcon }` } aria-hidden="true" />

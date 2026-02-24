@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { sendApiResponse, getApiLink } from '../utils/apiService';
+import { getApiLink } from '../utils/apiService';
 import {AdminButtonUI} from './AdminButton';
 import {ItemListUI} from './ItemList';
 
@@ -13,14 +13,12 @@ interface Task {
     failureMessage?: string;
 }
 
-interface DoActionBtnProps {
+interface SequentialTaskExecutorProps {
     buttonKey: string;
     value: string;
     apilink: string;
     parameter: string;
     interval: number;
-    proSetting: boolean;
-    proSettingChanged: () => boolean;
     appLocalizer: any;
     successMessage?: string;
     failureMessage?: string;
@@ -37,16 +35,14 @@ interface DynamicResponse {
     [key: string]: any;
 }
 
-const DoActionBtn: React.FC<DoActionBtnProps> = ({
+const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
     value,
     apilink,
     parameter,
     interval,
-    proSetting,
-    proSettingChanged,
     appLocalizer,
-    successMessage = 'Process completed successfully',
-    failureMessage = 'Process failed',
+    successMessage,
+    failureMessage,
     tasks,
     onComplete,
     onError,
@@ -71,47 +67,42 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
     const updateTaskStatus = (status: 'running' | 'success' | 'failed', customMessage?: string) => {
         setTaskSequence((prev) => {
             const updated = [...prev];
-            const last = updated.length - 1;
-            if (last >= 0) {
-                updated[last].status = status;
+            const lastTask = updated[updated.length - 1];
+
+            if (lastTask) {
+                lastTask.status = status;
                 if (customMessage) {
-                    if (status === 'success') {
-                        updated[last].successMessage = customMessage;
-                    } else if (status === 'failed') {
-                        updated[last].failureMessage = customMessage;
-                    }
+                    lastTask[status === 'success' ? 'successMessage' : 'failureMessage'] = customMessage;
                 }
             }
             return updated;
         });
     };
 
-    const handleTaskResponse = async (
-        currentTask: Task,
-        response: DynamicResponse
-    ): Promise<'success' | 'failed'> => {
-        let status: 'success' | 'failed' = 'success';
-        let customMessage = '';
+    const handleTaskResponse = async (currentTask: Task, response: DynamicResponse) => {
+        const isSuccess = response?.success === true;
+        const cacheKey = currentTask.cacheKey;
 
-        // Store response data if cacheKey is specified
-        if (currentTask.cacheKey && response.data !== undefined) {
-            additionalData.current[currentTask.cacheKey] = response.data;
+        // Store response data if cacheKey exists
+        if (cacheKey && response.data) {
+            additionalData.current[cacheKey] = response.data;
         }
 
-        // Determine task success based on response
-        if (!response?.success) {
-            status = 'failed';
-            customMessage = currentTask.failureMessage || response?.message || 'Task failed';
-            onError?.({ task: currentTask, response, error: customMessage });
-        } else {
+        // Determine message and trigger callbacks
+        const message = isSuccess
+            ? currentTask.successMessage || response?.message || 'Task completed'
+            : currentTask.failureMessage || response?.message || 'Task failed';
+
+        if (isSuccess) {
             onTaskComplete?.(currentTask, response);
-            if (currentTask.successMessage) {
-                customMessage = currentTask.successMessage;
-            }
+        } else {
+            onError?.({ task: currentTask, response, error: message });
         }
 
-        updateTaskStatus(status, customMessage);
-        return status;
+        // Update UI
+        updateTaskStatus(isSuccess ? 'success' : 'failed', message);
+
+        return isSuccess ? 'success' : 'failed';
     };
 
     const executeSequentialTasks = useCallback(async () => {
@@ -146,15 +137,10 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
 
         // Add cached data
         Object.entries(additionalData.current).forEach(([key, value]) => {
-            if (value !== undefined) {
+            if (value) {
                 payload[key] = value;
             }
         });
-
-        // Debug logs
-        console.log('Making request to:', getApiLink(appLocalizer, apilink));
-        console.log('With payload:', payload);
-        console.log('With nonce:', appLocalizer.nonce);
 
         // Try using axios directly
         const response = await axios.post(
@@ -168,18 +154,12 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
             }
         );
 
-        console.log('Raw response:', response.data);
-        console.log('Response status:', response.status);
-        
-        // Format response to match what handleTaskResponse expects
         const formattedResponse = {
-            success: response.data?.success === true, // Make sure this is boolean
+            success: response.data?.success === true, 
             data: response.data?.data,
             message: response.data?.message,
             ...response.data
         };
-
-        console.log('Formatted response:', formattedResponse);
 
         const status = await handleTaskResponse(currentTask, formattedResponse);
 
@@ -194,14 +174,6 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
         await executeSequentialTasks();
     } catch (error) {
         console.error('Task execution failed:', error);
-        if (axios.isAxiosError(error)) {
-            console.error('Axios error details:', {
-                status: error.response?.status,
-                statusText: error.response?.statusText,
-                data: error.response?.data,
-                headers: error.response?.headers
-            });
-        }
         updateTaskStatus('failed', 'Task execution failed');
         setProcessStatus('failed');
         setLoading(false);
@@ -224,31 +196,23 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
 
     const handleButtonClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        if (proSettingChanged()) return;
         startProcess();
     };
 
     // Convert taskSequence to ItemList items
     const getItemListItems = () => {
-        return taskSequence.map((task, index) => {
-            let icon = 'pending';
-            if (task.status === 'running') icon = 'spinner';
-            else if (task.status === 'success') icon = 'yes';
-            else if (task.status === 'failed') icon = 'cross';
-
-            let description = task.message;
-            if (task.status === 'running') description = 'Processing...';
-            else if (task.status === 'success' && task.successMessage) description = task.successMessage;
-            else if (task.status === 'failed' && task.failureMessage) description = task.failureMessage;
-
-            return {
-                id: `task-${index}`,
-                title: task.message,
-                desc: description,
-                icon: icon,
-                className: `task-status-${task.status}`,
-            };
-        });
+        return taskSequence.map((task, index) => ({
+            id: `task-${index}`,
+            title: task.message,
+            desc: task.status === 'running' ? 'Processing...' :
+                task.status === 'success' && task.successMessage ? task.successMessage :
+                    task.status === 'failed' && task.failureMessage ? task.failureMessage :
+                        task.message,
+            icon: task.status === 'failed' ? 'cross' :
+                task.status === 'success' ? 'yes' :
+                    task.status === 'running' ? 'spinner' : 'pending',
+            className: `task-status-${task.status}`,
+        }));
     };
 
     return (
@@ -259,7 +223,7 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
                         text: value,
                         color: 'purple-bg',
                         onClick: handleButtonClick,
-                        disabled: loading || proSetting,
+                        disabled: loading,
                         icon: loading ? 'spinner' : 'play',
                         children: null,
                         customStyle: {},
@@ -269,16 +233,8 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
                     position="left"
                 />
                 
-                {proSetting && (
-                    <span className="admin-pro-tag">
-                        <i className="adminlib-pro-tag"></i>Pro
-                    </span>
-                )}
-                
                 {loading && (
                     <div className="loader">
-                        <div className="three-body-dot" />
-                        <div className="three-body-dot" />
                         <div className="three-body-dot" />
                     </div>
                 )}
@@ -306,4 +262,4 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
     );
 };
 
-export default DoActionBtn;
+export default SequentialTaskExecutor;

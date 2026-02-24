@@ -10,7 +10,6 @@ import { useModules } from '../contexts/ModuleContext';
 import '../styles/web/AdminForm.scss';
 import { FIELD_REGISTRY } from './FieldRegistry';
 import FormGroupWrapper from './UI/FormGroupWrapper';
-import SuccessNotice from './SuccessNotice';
 import { PopupUI } from './Popup';
 import axios from 'axios';
 import Notice, { NoticeVariant } from './Notice';
@@ -113,8 +112,7 @@ const RenderComponent: React.FC<RenderProps> = ({
     const settingChanged = useRef<boolean>(false);
     const counter = useRef<number>(0);
     const counterId = useRef<ReturnType<typeof setInterval> | null>(null);
-    const [successMsg, setSuccessMsg] = useState<string>('');
-     const [notice, setNotice] = useState<{ message: string; variant: NoticeVariant } | null>(null);
+    const [notice, setNotice] = useState<{ message: string; variant: NoticeVariant } | null>(null);
     const [modelOpen, setModelOpen] = useState<boolean>(false);
     const [modulePopupData, setModulePopupData] = useState<PopupProps>({
         moduleName: '',
@@ -734,8 +732,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                 <Notice
                     message={notice.message}
                     variant={notice.variant}
-                    display="toast"         
-                    autoDismiss={20000}
+                    display="toast"
                     onDismiss={() => setNotice(null)}
                 />
             )}

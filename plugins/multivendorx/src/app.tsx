@@ -5,7 +5,7 @@ import {
 	AdminButtonUI,
 	AdminHeader,
 	Banner,
-	DoActionBtn,
+	SequentialTaskExecutor,
 	FormGroup,
 	FormGroupWrapper,
 	PopupUI,
@@ -355,14 +355,12 @@ const App = () => {
 							'multivendorx'
 						)}
 					</div>
-					<DoActionBtn
+					<SequentialTaskExecutor
 						buttonKey="import_dummy_data"
 						value={__('Import Dummy Data', 'multivendorx')}
 						apilink="import-dummy-data"
 						parameter="action"
 						interval={1000}
-						proSetting={false}
-						proSettingChanged={() => false}
 						appLocalizer={appLocalizer}
 						successMessage={__(
 							'Dummy data imported successfully!',
