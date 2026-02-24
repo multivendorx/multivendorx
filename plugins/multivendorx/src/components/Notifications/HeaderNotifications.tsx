@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getApiLink, ItemList, Skeleton } from 'zyra';
+import { getApiLink, ItemListUI, Skeleton } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -91,7 +91,7 @@ const NotificationTabContent: React.FC<{
 	}
 
 	return (
-		<ItemList
+		<ItemListUI
 			className="notification"
 			items={items.map((item) => ({
 				id: item.id,

@@ -34,7 +34,22 @@ const TourSetup: React.FC< TourSetupProps > = ( {
     ...rest
 } ) => {
     return (
-        <TourProvider steps={ [] } { ...rest }>
+        <TourProvider
+            steps={[]}
+            showNavigation={false}
+            className="tour-content"
+            styles={{
+                popover: (base) => ({
+                    ...base,
+                    padding: '1.125rem',
+                    borderRadius: '0.313rem',
+                })
+            }}
+            showPrevNextButtons={false}
+            showDots={false}
+            showBadge={false}
+            {...rest}
+        >
             <Tour
                 appLocalizer={ appLocalizer }
                 steps={ steps }

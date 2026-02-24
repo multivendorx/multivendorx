@@ -5,6 +5,7 @@ import { StepType, useTour } from '@reactour/tour';
 
 // Internal dependencies
 import { getApiLink } from '../utils/apiService';
+import { AdminButtonUI } from './AdminButton';
 
 interface AppLocalizer {
     enquiry_form_settings_url?: string;
@@ -16,6 +17,16 @@ interface AppLocalizer {
     apiUrl: string;
     nonce: string;
     restUrl: string;
+}
+
+interface TourContent {
+    title: string;
+    description: string;
+    nextBtn?: {
+        link: string;
+        step: number;
+    };
+    finishBtn?: boolean;
 }
 
 interface TourProps {
@@ -78,16 +89,59 @@ const Tour: React.FC< TourProps > = ( { appLocalizer, steps, forceOpen } ) => {
     };
 
     const processedSteps = useMemo( () => {
-        return steps.map( ( step ) => ( {
-            ...step,
-            content: () =>
-                // @ts-ignore
-                step.content( {
-                    navigateTo,
-                    finishTour,
-                    appLocalizer,
-                } ),
-        } ) );
+        return steps.map( ( step, index ) => {
+            const isLastStep = index === steps.length - 1;
+            
+            return {
+                ...step,
+                content: () => {
+                    const content = step.content( {
+                        navigateTo,
+                        finishTour,
+                        appLocalizer,
+                    } ) as TourContent;
+                    
+                    // Prepare buttons array based on step type
+                    const buttons = [];
+                    // Add End Tour button for all steps except last
+                    if (!isLastStep) {
+                        buttons.push({
+                            text: 'End Tour',
+                            color: 'red',
+                            onClick: finishTour,
+                        });
+                    }
+                    // Add Next button if not last step and has nextBtn
+                    if (!isLastStep && content.nextBtn) {
+                        buttons.push({
+                            text: 'Next',
+                            color: 'purple',
+                            onClick: () => navigateTo(
+                                content.nextBtn!.link,
+                                content.nextBtn!.step
+                            ),
+                        });
+                    }
+                    
+                    // Add Finish button for last step
+                    if (isLastStep && content.finishBtn) {
+                        buttons.push({
+                            text:'Finish Tour',
+                            color: 'purple',
+                            onClick: finishTour,
+                        });
+                    }
+                    
+                    return (
+                        <div className="tour-box">
+                            <div className="title">{content.title}</div>
+                            <div className="desc">{content.description}</div>
+                            <AdminButtonUI buttons={buttons} />
+                        </div>
+                    );
+                },
+            };
+        } );
     }, [ steps ] );
 
     useEffect( () => {

@@ -4,190 +4,70 @@ export const getTourSteps = (appLocalizer: any) => [
 	{
 		selector: '.card-content',
 		placement: 'auto',
-		content: ({ navigateTo, finishTour }: any) => (
-			<div className="tour-box">
-				<h3>{__('Dashboard', 'multivendorx')}</h3>
-				<h4>
-					{__(
-						'View and configure your disbursement settings here.',
-						'multivendorx'
-					)}
-				</h4>
-
-				<div className="tour-footer">
-					<button
-						className="admin-btn btn-purple"
-						onClick={() =>
-							navigateTo(
-								`${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=general`,
-								1
-							)
-						}
-					>
-						{__('Next', 'multivendorx')}
-					</button>
-
-					<button className="admin-btn btn-purple" onClick={finishTour}>
-						{__('End Tour', 'multivendorx')}
-					</button>
-				</div>
-			</div>
-		),
+		content: () => ({
+			title: __('Dashboard', 'multivendorx'),
+			description: __('View and configure your disbursement settings here.', 'multivendorx'),
+			nextBtn: {
+				link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=overview`,
+				step: 1
+			}
+		}),
 	},
 	{
 		selector: '.form-group:has(.settings-form-label[for="approve_store"])',
 		placement: 'right',
-		content: ({ navigateTo, finishTour }: any) => (
-			<div className="tour-box">
-				<h3>{__('Store Configure', 'multivendorx')}</h3>
-				<h4>
-					{__(
-						'View and configure your disbursement settings here.',
-						'multivendorx'
-					)}
-				</h4>
-
-				<div className="tour-footer">
-					<button
-						className="admin-btn btn-purple"
-						onClick={() =>
-							navigateTo(
-								`${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
-								2
-							)
-						}
-					>
-						{__('Next', 'multivendorx')}
-					</button>
-
-					<button className="admin-btn btn-purple" onClick={finishTour}>
-						{__('End Tour', 'multivendorx')}
-					</button>
-				</div>
-			</div>
-		),
+		content: () => ({
+			title: __('Store Configure', 'multivendorx'),
+			description: __('View and configure your disbursement settings here.', 'multivendorx'),
+			nextBtn: {
+				link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+				step: 2
+			}
+		}),
 	},
 	{
-		selector:
-			'.form-group:has(.settings-form-label[for="commission_type"])',
+		selector: '.form-group:has(.settings-form-label[for="commission_type"])',
 		placement: 'right',
-		content: ({ navigateTo, finishTour }: any) => (
-			<div className="tour-box">
-				<h3>{__('Marketplace commissions', 'multivendorx')}</h3>
-				<h4>
-					{__(
-						'View and configure your disbursement settings here.',
-						'multivendorx'
-					)}
-				</h4>
-
-				<div className="tour-footer">
-					<button
-						className="admin-btn btn-purple"
-						onClick={() =>
-							navigateTo(
-								`${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
-								3
-							)
-						}
-					>
-						{__('Next', 'multivendorx')}
-					</button>
-
-					<button className="admin-btn btn-purple" onClick={finishTour}>
-						{__('End Tour', 'multivendorx')}
-					</button>
-				</div>
-			</div>
-		),
+		content: () => ({
+			title: __('Marketplace commissions', 'multivendorx'),
+			description: __('View and configure your disbursement settings here.', 'multivendorx'),
+			nextBtn: {
+				link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+				step: 3
+			}
+		}),
 	},
 	{
-		selector:
-			'.form-group:has(.settings-form-label[for="commission_per_store_order"])',
+		selector: '.form-group:has(.settings-form-label[for="commission_per_store_order"])',
 		placement: 'right',
-		content: ({ navigateTo, finishTour }: any) => (
-			<div className="tour-box">
-				<h3>{__('Commission Value', 'multivendorx')}</h3>
-				<h4>
-					{__(
-						'View and configure your disbursement settings here.',
-						'multivendorx'
-					)}
-				</h4>
-
-				<div className="tour-footer">
-					<button
-						className="admin-btn btn-purple"
-						onClick={() =>
-							navigateTo(
-								`${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=disbursement`,
-								4
-							)
-						}
-					>
-						{__('Next', 'multivendorx')}
-					</button>
-
-					<button className="admin-btn btn-purple" onClick={finishTour}>
-						{__('End Tour', 'multivendorx')}
-					</button>
-				</div>
-			</div>
-		),
+		content: () => ({
+			title: __('Commission Value', 'multivendorx'),
+			description: __('View and configure your disbursement settings here.', 'multivendorx'),
+			nextBtn: {
+				link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=disbursement`,
+				step: 4
+			}
+		}),
 	},
 	{
-		selector:
-			'.form-group:has(.settings-form-label[for="disbursement_order_status"])',
+		selector: '.form-group:has(.settings-form-label[for="disbursement_order_status"])',
 		placement: 'right',
-		content: ({ navigateTo, finishTour }: any) => (
-			<div className="tour-box">
-				<h3>{__('Order Status', 'multivendorx')}</h3>
-				<h4>
-					{__(
-						'View and configure your disbursement settings here.',
-						'multivendorx'
-					)}
-				</h4>
-
-				<div className="tour-footer">
-					<button
-						className="admin-btn btn-purple"
-						onClick={() =>
-							navigateTo(
-								`${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=modules`,
-								5
-							)
-						}
-					>
-						{__('Next', 'multivendorx')}
-					</button>
-
-					<button className="admin-btn btn-purple" onClick={finishTour}>
-						{__('End Tour', 'multivendorx')}
-					</button>
-				</div>
-			</div>
-		),
+		content: () => ({
+			title: __('Order Status', 'multivendorx'),
+			description: __('View and configure your disbursement settings here.', 'multivendorx'),
+			nextBtn: {
+				link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=modules`,
+				step: 5
+			}
+		}),
 	},
 	{
 		selector: '[data-tour="appointment-showcase-tour"]',
 		placement: 'auto',
-		content: ({ finishTour }: any) => (
-			<div className="tour-box">
-				<h3>{__('Modules', 'multivendorx')}</h3>
-				<h4>
-					{__(
-						'Here you can enable or disable marketplace modules.',
-						'multivendorx'
-					)}
-				</h4>
-
-				<div className="tour-footer">
-					<button className="admin-btn btn-purple" onClick={finishTour}>
-						{__('Finish Tour', 'multivendorx')}
-					</button>
-				</div>
-			</div>
-		),
+		content: () => ({
+			title: __('Modules', 'multivendorx'),
+			description: __('Here you can enable or disable marketplace modules.', 'multivendorx'),
+			finishBtn: true
+		}),
 	},
 ];

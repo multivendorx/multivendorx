@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useOutsideClick } from './useOutsideClick';
 import { BasicInputUI } from './BasicInput';
-import ItemList from './ItemList';
+import { ItemListUI } from './ItemList';
 import { SelectInputUI } from './SelectInput';
 
 type SearchItem = {
@@ -120,7 +120,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
             </div>
 
             {showResults && (                  
-                <ItemList
+                <ItemListUI
                     className="search-results"
                     items={results.map((item) => ({
                         title: item.name,

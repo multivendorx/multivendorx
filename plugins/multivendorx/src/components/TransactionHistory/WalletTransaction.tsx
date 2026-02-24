@@ -16,10 +16,10 @@ import {
 	AdminButtonUI,
 	PopupUI,
 	TextAreaUI,
-	ItemList,
 	TableRow,
 	QueryProps,
 	CategoryCount,
+	ItemListUI,
 } from 'zyra';
 
 import {
@@ -521,7 +521,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								</div>
 							</div>
 							<Column row>
-								<ItemList
+								<ItemListUI
 									className="mini-card"
 									background
 									items={[
