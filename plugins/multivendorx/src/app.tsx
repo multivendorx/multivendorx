@@ -299,8 +299,8 @@ const App = () => {
 		<>
 			<Notice
                 message={bannerItems}
-                variant="info"
-                display="banner"
+                type="info"
+                displayPosition="banner"
                 dismissible={true}
                 onDismiss={handleDismissBanner}
                 className="top-header"

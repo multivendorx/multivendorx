@@ -70,8 +70,8 @@ type SettingValue =
 type Settings = Record<string, SettingValue>;
 
 interface ApiResponse {
-    message?: string;
     type?: string;
+    message?: string;
     redirect_link?: string;
 }
 
@@ -113,7 +113,7 @@ const RenderComponent: React.FC<RenderProps> = ({
     const settingChanged = useRef<boolean>(false);
     const counter = useRef<number>(0);
     const counterId = useRef<ReturnType<typeof setInterval> | null>(null);
-    const [notice, setNotice] = useState<{ message: string; variant: NoticeVariant } | null>(null);
+    const [notice, setNotice] = useState<{ message: string; type: NoticeVariant } | null>(null);
     const [modelOpen, setModelOpen] = useState<boolean>(false);
     const [modulePopupData, setModulePopupData] = useState<PopupProps>({
         moduleName: '',
@@ -151,7 +151,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                     ).then((response: unknown) => {
                         const apiResponse = response as ApiResponse;
                         if (apiResponse.message) {
-                            setNotice({ message: apiResponse.message, variant: apiResponse.type});
+                            setNotice({ message: apiResponse.message, type: apiResponse.type});
                         }
                         setTimeout(() => setNotice(null), 2000);
 
@@ -730,8 +730,7 @@ const RenderComponent: React.FC<RenderProps> = ({
             {notice && (
                 <Notice
                     message={notice.message}
-                    variant={notice.variant}
-                    display="toast"
+                    type={notice.type}
                     onDismiss={() => setNotice(null)}
                 />
             )}

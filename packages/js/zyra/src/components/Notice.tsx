@@ -3,23 +3,39 @@ import React, { useEffect } from 'react';
 import "../styles/web/UI/SuccessNotice.scss";
 import { FieldComponent } from './types';
 
-export const VARIANT_MODES = {
+export const DISPLAY_POSITIONS = {
+    float: 'admin-notice-wrapper',
+    inline: 'admin-notice-inline',
+    banner: 'admin-notice-banner',
+    general_notice: 'general',
+};
+
+export const NOTICE_TYPES = {
     success: {
         title:         'Great!',
         iconClass:     'adminfont-icon-yes',
+        defaultDisplayPosition: 'float',
     },
     error: {
         title:         'Error',
         iconClass:     'adminfont-error',
+        defaultDisplayPosition: 'general_notice',
     },
     warning: {
         title:         'Warning',
         iconClass:     'adminfont-warning',
+        defaultDisplayPosition: 'general_notice',
     },
     info: {
         title:         'Info',
         iconClass:     'adminfont-info',
+        defaultDisplayPosition: 'general_notice',
     },
+    banner: {
+        title:         '',
+        iconClass:     'adminfont-info',
+        defaultDisplayPosition: 'banner',
+    }
 };
 
 export const DISPLAY_MODES = {
@@ -28,8 +44,8 @@ export const DISPLAY_MODES = {
     banner: 'admin-notice-banner',
 };
 
-export type NoticeVariant = keyof typeof VARIANT_MODES;
-export type NoticeDisplay = keyof typeof DISPLAY_MODES;
+export type NoticeType = NonNullable<keyof typeof NOTICE_TYPES>;
+export type NoticeDisplay = NonNullable<keyof typeof DISPLAY_POSITIONS>;
 
 export interface NoticeItem {
     title?: string;
@@ -43,13 +59,10 @@ export interface NoticeItem {
 }
 
 export interface NoticeProps {
-    /** The body text of the notice - can be string or array of items */
-    message?: string | NoticeItem[];
-    /** Optional heading above the message (only used for string message) */
+    type?: NoticeType;
     title?: string;
-    /** Visual style of the notice */
-    variant?: NoticeVariant;
-    display?: NoticeDisplay | string;
+    message?: string | NoticeItem[];
+    displayPosition?: NoticeDisplay | string;
     className?: string;
     dismissible?: boolean;
     onDismiss?: () => void;
@@ -60,12 +73,12 @@ export interface NoticeProps {
 export const Notice: React.FC<NoticeProps> = ({
     message,
     title,
-    variant,
-    display,
+    type,
+    displayPosition,
     className,
     dismissible  = false,
     onDismiss,
-    autoDismiss  = 5000,
+    autoDismiss  = 20000,
     iconClass,
 }) => {
 
@@ -80,9 +93,21 @@ export const Notice: React.FC<NoticeProps> = ({
     if (!message) return null;
     if (Array.isArray(message) && message.length === 0) return null;
 
-    const variantMeta = VARIANT_MODES[variant];
-    const displayClass = className ?? (DISPLAY_MODES[display as NoticeDisplay] ?? display);
-    const rootClass = [displayClass, Array.isArray(message) ? 'notice-multiple-items' : '']
+   const variantMeta =
+    (type && type in NOTICE_TYPES
+        ? NOTICE_TYPES[type as NoticeType]
+        : NOTICE_TYPES.info);
+    const resolvedDisplayPosition =
+        displayPosition ||
+        variantMeta.defaultDisplayPosition ||
+        'general_notice';
+
+    const displayModifier =
+        DISPLAY_POSITIONS[resolvedDisplayPosition as NoticeDisplay] ??
+        resolvedDisplayPosition;
+
+    const rootClass = [
+        displayModifier, Array.isArray(message) ? 'notice-multiple-items' : '']
         .filter(Boolean)
         .join(' ');
 
@@ -112,7 +137,6 @@ export const Notice: React.FC<NoticeProps> = ({
                 {items.map((item, index) => {
                     const itemIcon = item.iconClass ?? iconClass ?? variantMeta.iconClass;
                     const itemTitle = item.title;
-                    
                     return (
                         <div key={index} className="notice-item">
                             <i className={`admin-font ${itemIcon}`} aria-hidden="true" />
@@ -158,15 +182,15 @@ const NoticeField: FieldComponent = {
     render: ({ field }) => {
         // Handle both legacy and new data structures if needed during migration
         const message = field.notice || field.blocktext; // Fallback for migration
-        const variant = field.variant || 'info';
+        const type = field.type;
         const display = field.display || 'inline';
         return (
             <Notice
                 key={field.key}
-                message={message}
+                type={type}
                 title={field.title}
-                variant={variant}
-                display={display}
+                message={message}
+                displayPosition={display}
                 iconClass={field.iconClass || 'adminfont-info'}
                 dismissible={field.dismissible}
                 className={field.className || 'settings-metabox-note'}
