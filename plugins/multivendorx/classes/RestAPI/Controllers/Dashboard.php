@@ -214,7 +214,7 @@ class Dashboard extends \WP_REST_Controller {
                         'capability' => array( 'view_store_reports', 'export_store_reports' ),
                     ),
                 ),
-                'capability' => array( 'read_shop_coupons' ),
+                'capability' => array( 'read_products' ),
             ),
             'resources'     => array(
                 'name'       => 'Resources',
@@ -242,6 +242,38 @@ class Dashboard extends \WP_REST_Controller {
                 'slug'       => 'settings',
                 'icon'       => 'setting',
                 'capability' => array( 'manage_store_settings' ),
+            ),
+            'booking'       => array(
+                'name'       => 'Booking',
+                'slug'       => 'booking',
+                'icon'       => 'report',
+                'submenu'    => array(
+                    array(
+                        'key'        => 'all-booking',
+                        'name'       => 'All Booking',
+                        'slug'       => 'all-booking',
+                        'capability' => array( 'read_products' ),
+                    ),
+                    array(
+                        'key'        => 'resource',
+                        'name'       => 'Resource',
+                        'slug'       => 'resource',
+                        'capability' => array( 'read_products' ),
+                    ),
+                    array(
+                        'key'        => 'calender-list',
+                        'name'       => 'Calender list',
+                        'slug'       => 'calender-list',
+                        'capability' => array( 'read_products' ),
+                    ),
+                    array(
+                        'key'        => 'send-notifictaion',
+                        'name'       => 'Send Notifictaion',
+                        'slug'       => 'send-notifictaion',
+                        'capability' => array( 'read_products' ),
+                    ),
+                ),
+                'capability' => array( 'read_products' ),
             ),
         );
 
