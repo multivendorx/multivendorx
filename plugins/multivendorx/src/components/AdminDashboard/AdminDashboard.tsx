@@ -30,9 +30,9 @@ import {
 	Column,
 	Container,
 	ItemList,
+	ItemListUI,
 	Modules,
 	Notice,
-	SuccessNotice,
 	useModules,
 } from 'zyra';
 import axios from 'axios';
@@ -436,7 +436,7 @@ const AdminDashboard = () => {
 									'multivendorx'
 								)}
 							>
-								<ItemList
+								<ItemListUI
 									className="feature-list"
 									items={featuresList.map(
 										({ icon, title, desc }) => ({
@@ -515,7 +515,7 @@ const AdminDashboard = () => {
 						>
 							<Column row>
 								{pluginStatus['woocommerce-catalog-enquiry'] ? (
-									<ItemList
+									<ItemListUI
 										className="mini-card"
 										background
 										items={[
@@ -554,7 +554,7 @@ const AdminDashboard = () => {
 										]}
 									/>
 								) : (
-									<ItemList
+									<ItemListUI
 										className="mini-card"
 										background
 										items={[
@@ -621,7 +621,7 @@ const AdminDashboard = () => {
 								{pluginStatus[
 									'woocommerce-product-stock-alert'
 								] ? (
-									<ItemList
+									<ItemListUI
 										className="mini-card"
 										background
 										items={[
@@ -660,7 +660,7 @@ const AdminDashboard = () => {
 										]}
 									/>
 								) : (
-									<ItemList
+									<ItemListUI
 										className="mini-card"
 										background
 										items={[

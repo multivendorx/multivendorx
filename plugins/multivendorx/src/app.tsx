@@ -10,6 +10,8 @@ import {
 	FormGroupWrapper,
 	PopupUI,
 	TourSetup,
+	Notice,
+	NoticeItem,
 } from 'zyra';
 
 import Settings from './components/Settings/Settings';
@@ -282,13 +284,27 @@ const App = () => {
 			items: profileItems,
 		},
 	];
+	const handleDismissBanner = () => {
+        localStorage.setItem('banner', 'false');
+    };
+
+	const bannerItems: NoticeItem[] = products.map(product => ({
+        title: product.title,
+        message: product.description,
+        action: {
+            label: 'Upgrade Now',
+        }
+    }));
 	return (
 		<>
-			<Banner
-				products={products}
-				isPro={appLocalizer.khali_dabba}
-				proUrl={appLocalizer.pro_url}
-			/>
+			<Notice
+                message={bannerItems}
+                variant="info"
+                display="banner"
+                dismissible={true}
+                onDismiss={handleDismissBanner}
+                className="top-header"
+            />
 			<AdminHeader
 				brandImg={Brand}
 				results={results}

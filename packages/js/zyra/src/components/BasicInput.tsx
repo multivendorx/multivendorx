@@ -141,7 +141,7 @@ export const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
                             {rangeUnit}
                         </output>
                     )}
-                {msg && <div className={msg.type}>{msg.message}</div>}
+                {/* {msg && <div className={msg.type}>{msg.message}</div>} */}
             </>
         );
     }

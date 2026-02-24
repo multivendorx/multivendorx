@@ -27,6 +27,7 @@ import Divider from './Divider';
 import MultiCheckboxTable from './MultiCheckboxTable';
 import Tabs from './Tabs';
 import ItemList from './ItemList';
+import NoticeField from './Notice';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -41,6 +42,7 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   button: AdminButton,
   nested: NestedComponent,
   blocktext: BlockText,
+  notice: NoticeField,
   section: Section,
   checkbox: MultiCheckBox,
   log: Log,

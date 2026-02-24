@@ -12,7 +12,7 @@ import { FIELD_REGISTRY } from './FieldRegistry';
 import FormGroupWrapper from './UI/FormGroupWrapper';
 import { PopupUI } from './Popup';
 import axios from 'axios';
-import Notice, { NoticeVariant } from './Notice';
+import { Notice, NoticeVariant } from './Notice';
 
 interface InputField {
     key: string;

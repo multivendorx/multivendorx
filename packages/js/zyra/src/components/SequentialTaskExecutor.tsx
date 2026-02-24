@@ -17,7 +17,7 @@ interface SequentialTaskExecutorProps {
     buttonKey: string;
     value: string;
     apilink: string;
-    parameter: string;
+    action: string;
     interval: number;
     appLocalizer: any;
     successMessage?: string;
@@ -38,7 +38,7 @@ interface DynamicResponse {
 const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
     value,
     apilink,
-    parameter,
+    action,
     interval,
     appLocalizer,
     successMessage,
@@ -132,7 +132,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
     try {
         // Define payload HERE before using it
         const payload: Record<string, any> = {
-            [parameter]: currentTask.action
+            [action]: currentTask.action
         };
 
         // Add cached data
@@ -180,7 +180,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         processStarted.current = false;
         onError?.({ task: currentTask, error });
     }
-}, [tasks, interval, appLocalizer, apilink, parameter, onComplete, onError, onTaskComplete]);
+}, [tasks, interval, appLocalizer, apilink, action, onComplete, onError, onTaskComplete]);
 
     const startProcess = useCallback(() => {
         if (processStarted.current) return;
