@@ -55,11 +55,11 @@ const Stores = () => {
 	};
 
 	const setFieldError = (key: string, message: string) => {
-		setError((prev) => ({ ...prev, [key]: { type: 'invalid-massage', message } }));
+		setError((prev) => ({ ...prev, [key]: { type: 'error', message } })); //Buddho
 	};
 
 	const setFieldSuccess = (key: string, message: string) => {
-		setError((prev) => ({ ...prev, [key]: { type: 'success-massage', message } }));
+		setError((prev) => ({ ...prev, [key]: { type: 'success', message } })); //Buddho
 	};
 
 	const handleSlugCheck = async () => {

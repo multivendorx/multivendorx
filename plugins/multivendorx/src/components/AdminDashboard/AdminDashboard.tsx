@@ -931,9 +931,8 @@ const AdminDashboard = () => {
 	return (
 		<>
 			<Notice
+				type={successMsg}
 				message={successMsg}
-				variant={successMsg}
-				display="toast"
 				autoDismiss={3000}
 				onDismiss={() => setSuccessMsg('')}
 			/>
