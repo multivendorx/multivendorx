@@ -15,7 +15,7 @@ import {
 	QueryProps,
 	CategoryCount,
 } from 'zyra';
-import Popup from '../Popup/Popup';
+import Popup from '../../../src/components/Popup/Popup';
 import { formatLocalDate } from '@/services/commonFunction';
 
 type Review = {

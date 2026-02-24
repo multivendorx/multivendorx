@@ -23,7 +23,33 @@ class Frontend {
      */
     public function __construct() {
         add_action( 'woocommerce_product_meta_start', array( $this, 'add_report_abuse_link' ), 30 );
+        add_filter( 'multivendorx_register_scripts', array( $this, 'register_script' ) );
+        add_filter( 'multivendorx_localize_scripts', array( $this, 'localize_scripts' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
+    }
+
+    public function register_script( $scripts ) {
+        $base_url = MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name();
+
+        $scripts['multivendorx-report-abuse-frontend-script'] = array(
+            'src'     => $base_url . 'modules/Compliance/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+            'deps'    => array( 'jquery' ),
+        );
+
+        return $scripts;
+    }
+
+    public function localize_scripts( $scripts ) {
+
+        $scripts['multivendorx-report-abuse-frontend-script'] = array(
+            'object_name' => 'reportAbuseFrontend',
+            'use_ajax'    => true,
+            'data'        => array(
+                'nonce'   => wp_create_nonce( 'report_abuse_ajax_nonce' ),
+            ),
+        );
+
+        return $scripts;
     }
 
     /**

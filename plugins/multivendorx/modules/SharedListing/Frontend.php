@@ -38,7 +38,20 @@ class Frontend {
             add_action( 'woocommerce_after_add_to_cart_button', array( $this, 'spmv_tab_link' ), 99 );
         }
 
+        add_filter( 'multivendorx_register_scripts', array( $this, 'register_script' ) );
+
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
+    }
+
+    public function register_script( $scripts ) {
+        $base_url = MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name();
+
+        $scripts['multivendorx-sharedlisting-frontend-script'] = array(
+            'src'     => $base_url . 'modules/SharedListing/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+            'deps'    => array( 'jquery' ),
+        );
+
+        return $scripts;
     }
 
     public function filter_duplicate_product( $query ) {
@@ -184,6 +197,6 @@ class Frontend {
      */
     public function load_scripts() {
         FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'multivendorx-spmv-frontend-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-sharedlisting-frontend-script' );
     }
 }
