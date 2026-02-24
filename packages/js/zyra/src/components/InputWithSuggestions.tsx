@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BasicInputUI } from './BasicInput';
 import { AdminButtonUI } from './AdminButton';
+import "../styles/web/InputWithSuggestions.scss";
 
 interface InputWithSuggestionsProps {
     suggestions: string[];

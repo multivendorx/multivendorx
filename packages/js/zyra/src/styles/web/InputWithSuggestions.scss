@@ -1,0 +1,35 @@
+@use '../../global.scss' as *;
+
+.dropdown-field {
+    position: relative;
+    display: flex;
+    gap: 0.625rem;
+
+    .input-dropdown {
+        position: absolute;
+        left: 0;
+        top: 100%;
+        width: 100%;
+        margin: 0;
+        list-style-type: none;
+        background: $background-white;
+        border-radius: 0.313rem;
+
+        li {
+            padding: 0.5rem 1rem;
+            font-size: 1.125rem;
+            cursor: pointer;
+
+            &:hover {
+                background: $theme-color;
+                color: #fff;
+            }
+        }
+    }
+}
+
+.dropdown-field:has(.dropdown-input:focus) {
+    .input-dropdown {
+        display: block;
+    }
+}

@@ -36,6 +36,7 @@ export interface DynamicRowSettingProps {
     value: RowValue[];
     onChange: (rows: RowValue[]) => void;
     addLabel?: string;
+    emptyText?: string; 
     childrenRenderer?: (
         row: RowValue,
         rowIndex: number
@@ -49,6 +50,7 @@ const DynamicRowSetting: React.FC<DynamicRowSettingProps> = ({
     value,
     onChange,
     addLabel = 'Add New',
+    emptyText = 'No items added yet', 
     childrenRenderer = () => false,
     canAccess = true
 }) => {
@@ -103,38 +105,44 @@ const DynamicRowSetting: React.FC<DynamicRowSettingProps> = ({
     return (
         <>
             <div className={`repeater-field-wrapper ${wrapperClass}`}>
-                {value.map((row, rowIndex) => (
-                    <div key={rowIndex} className="repeater-field">
-                        <div className="field">
-                            {template.fields.map((field) => (
-                                renderField(field, row, rowIndex)
-                            ))}
-
-                            <AdminButtonUI
-                                position="left"
-                                buttons={[
-                                    {
-                                        icon: 'delete',
-                                        text: 'Delete',
-                                        color: 'purple',
-                                        onClick: (e) => handleDelete(rowIndex),
-                                    },
-                                ]}
-                            />
-                        </div>
-                        {(() => {
-                            const nestedChildren = childrenRenderer?.(
-                                row,
-                                rowIndex
-                            );
-                            return nestedChildren ? (
-                                <div className="repeater-field-nested">
-                                    {nestedChildren}
-                                </div>
-                            ) : null;
-                        })()}
+                {value.length === 0 ? (
+                    <div className="no-shipping-data">
+                        {emptyText}
                     </div>
-                ))}
+                ) : (
+                    value.map((row, rowIndex) => (
+                        <div key={rowIndex} className="repeater-field">
+                            <div className="field">
+                                {template.fields.map((field) => (
+                                    renderField(field, row, rowIndex)
+                                ))}
+
+                                <AdminButtonUI
+                                    position="left"
+                                    buttons={[
+                                        {
+                                            icon: 'delete',
+                                            text: 'Delete',
+                                            color: 'purple',
+                                            onClick: (e) => handleDelete(rowIndex),
+                                        },
+                                    ]}
+                                />
+                            </div>
+                            {(() => {
+                                const nestedChildren = childrenRenderer?.(
+                                    row,
+                                    rowIndex
+                                );
+                                return nestedChildren ? (
+                                    <div className="repeater-field-nested">
+                                        {nestedChildren}
+                                    </div>
+                                ) : null;
+                            })()}
+                        </div>
+                    ))
+                )}
 
                 <AdminButtonUI
                     position="left"
