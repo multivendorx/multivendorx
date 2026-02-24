@@ -306,6 +306,13 @@ class FrontendScripts {
 		}
 	}
 
+    public static function get_base_ajax_data( $handle ) {
+        return array(
+            'ajaxurl' => admin_url( 'admin-ajax.php' ),
+            'nonce'   => wp_create_nonce( $handle ),
+        );
+    }
+
     /**
 	 * Localize all scripts.
 	 *
@@ -416,14 +423,14 @@ class FrontendScripts {
             }
         }
 
-        $base_ajax = array(
-            'ajaxurl' => admin_url( 'admin-ajax.php' ),
-        );
-
         $base_rest = array(
             'apiUrl'  => untrailingslashit( get_rest_url() ),
             'restUrl' => MultiVendorX()->rest_namespace,
             'nonce'   => wp_create_nonce( 'wp_rest' ),
+        );
+
+        $settings_data = array(
+            'settings_databases_value' => $settings_databases_value
         );
 
         $currency_data = array(
@@ -442,6 +449,7 @@ class FrontendScripts {
                     'object_name' => 'appLocalizer',
                     'use_rest'    => true,
                     'use_ajax'    => true,
+                    'use_settings'    => true,
                     'use_currency'    => true,
 					'data'        => apply_filters(
                         'multivendorx_admin_localize_scripts',
@@ -449,7 +457,6 @@ class FrontendScripts {
 							'woo_nonce'                => wp_create_nonce( 'wc_store_api' ),
 							'khali_dabba'              => Utill::is_khali_dabba(),
 							'tab_name'                 => __( 'MultiVendorX', 'multivendorx' ),
-							'settings_databases_value' => $settings_databases_value,
 							'pages_list'               => $pages_array,
 							'pro_url'                  => esc_url( MULTIVENDORX_PRO_SHOP_URL ),
 							'page_url'                 => admin_url( 'admin.php?page=multivendorx#&tab=dashboard' ),
@@ -505,6 +512,7 @@ class FrontendScripts {
                     'object_name' => 'appLocalizer',
                     'use_rest'    => true,
                     'use_ajax'    => true,
+                    'use_settings'    => true,
                     'use_currency'    => true,
                     'data'        => array(
                         'woo_nonce'                => wp_create_nonce( 'wc_store_api' ),
@@ -532,7 +540,6 @@ class FrontendScripts {
                         'messenger_color'          => MultiVendorX()->setting->get_setting( ' messenger_color' ),
                         'whatsapp_opening_pattern' => MultiVendorX()->setting->get_setting( ' whatsapp_opening_pattern' ),
                         'whatsapp_pre_filled'      => MultiVendorX()->setting->get_setting( ' whatsapp_pre_filled' ),
-                        'settings_databases_value' => $settings_databases_value,
                         'settings_all_meta'        => $all_meta,
                         'site_name'                => get_bloginfo( 'name' ),
                         'current_user'             => wp_get_current_user(),
@@ -583,45 +590,35 @@ class FrontendScripts {
                 ),
                 'multivendorx-marketplace-stores-editor-script' => array(
                     'use_rest'    => true,
+                    'use_settings'    => true,
                     'object_name' => 'storesList',
-                    'data'        => array(
-                        'settings_databases_value' => $settings_databases_value,
-                    ),
                 ),
                 'multivendorx-marketplace-stores-script'   => array(
                     'object_name' => 'storesList',
+                    'use_settings'    => true,
                     'use_rest'    => true,
-                    'data'        => array(
-                        'settings_databases_value' => $settings_databases_value,
-                    ),
                 ),
                 'multivendorx-marketplace-products-editor-script' => array(
                     'object_name' => 'productList',
                     'use_rest'    => true,
-                    'data'        => array(
-                        'settings_databases_value' => $settings_databases_value,
-                    ),
+                    'use_settings' => true,
                 ),
                 'multivendorx-marketplace-products-script' => array(
                     'object_name' => 'productList',
                     'use_rest'    => true,
-                    'data'        => array(
-                        'settings_databases_value' => $settings_databases_value,
-                    ),
+                    'use_settings'    => true,
                 ),
                 'multivendorx-marketplace-coupons-script'  => array(
                     'object_name' => 'couponList',
                     'use_rest'    => true,
-                    'data'        => array(
-                        'settings_databases_value' => $settings_databases_value,
-                    ),
+                    'use_settings'    => true,
                 ),
                 'multivendorx-store-provider-script'       => array(
                     'object_name' => 'StoreInfo',
+                    'use_settings'    => true,
                     'use_rest'    => true,
                     'data'        => array(
                         'storeDetails'             => StoreUtil::get_specific_store_info(),
-                        'settings_databases_value' => $settings_databases_value,
                         'activeModules'            => MultiVendorX()->modules->get_active_modules(),
                         'currentUserId'            => get_current_user_id(),
                     ),
@@ -633,16 +630,28 @@ class FrontendScripts {
 
         $data = array();
 
-        if ( ! empty( $config['use_ajax'] ) ) {
-            $data = array_merge( $config['data'], $base_ajax );
+        if ( ! empty( $config['use_ajax'] ) && ! empty( $config['use_rest'] ) ) {
+            $base_ajax = self::get_base_ajax_data($handle);
+            unset($base_ajax['nonce']);
+            $data = array_merge( $data, $base_ajax );
+        } else {
+            $data = array_merge( $data, self::get_base_ajax_data($handle) );
         }
 
         if ( ! empty( $config['use_rest'] ) ) {
-            $data = array_merge( $config['data'], $base_rest );
+            $data = array_merge( $data, $base_rest );
         }
 
         if ( ! empty( $config['use_currency'] ) ) {
-            $data = array_merge( $config['data'], $currency_data );
+            $data = array_merge( $data, $currency_data );
+        }
+
+        if ( ! empty( $config['use_settings'] ) ) {
+            $data = array_merge( $data, $settings_data );
+        }
+
+        if ( ! empty( $config['data'] ) ) {
+            $data = array_merge( $data, $config['data'] );
         }
 
         if ( isset( $localize_scripts[ $handle ] ) ) {

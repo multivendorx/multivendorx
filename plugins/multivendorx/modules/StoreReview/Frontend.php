@@ -54,7 +54,6 @@ class Frontend {
             'object_name' => 'review',
             'use_ajax'    => true,
             'data'        => array(
-                'nonce'      => wp_create_nonce( 'review_ajax_nonce' ),
                 'parameters' => MultiVendorX()->setting->get_setting( 'ratings_parameters', array() ),
             ),
         );

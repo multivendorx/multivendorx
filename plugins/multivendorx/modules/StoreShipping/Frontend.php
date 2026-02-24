@@ -57,7 +57,6 @@ class Frontend {
             'object_name' => 'distanceShippingFrontend',
             'use_ajax'    => true,
             'data'        => array(
-                'nonce'        => wp_create_nonce( 'distance_shipping_ajax_nonce' ),
                 'default_lat'  => MultiVendorX()->setting->get_setting( 'default_map_lat', '28.6139' ), // Example default lat.
                 'default_lng'  => MultiVendorX()->setting->get_setting( 'default_map_lng', '77.2090' ), // Example default lng.
                 'default_zoom' => 13,

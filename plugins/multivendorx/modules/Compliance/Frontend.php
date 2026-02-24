@@ -44,9 +44,6 @@ class Frontend {
         $scripts['multivendorx-report-abuse-frontend-script'] = array(
             'object_name' => 'reportAbuseFrontend',
             'use_ajax'    => true,
-            'data'        => array(
-                'nonce'   => wp_create_nonce( 'report_abuse_ajax_nonce' ),
-            ),
         );
 
         return $scripts;
