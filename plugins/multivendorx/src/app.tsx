@@ -298,7 +298,7 @@ const App = () => {
 	return (
 		<>
 			<Notice
-				type="info"
+				type="banner"
                 message={bannerItems}
                 displayPosition="banner"
                 dismissible={true}
