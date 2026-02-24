@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink, Container, Column, TableCard, PopupUI } from 'zyra';
 import { QueryProps, TableRow } from '@/services/type';
-import Popup from '../Popup/Popup';
+import Popup from '../../../src/components/Popup/Popup';
 
 interface Props {
 	onUpdated?: () => void;

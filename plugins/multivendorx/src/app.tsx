@@ -21,8 +21,6 @@ import CustomerSupport from './components/CustomerSupport/CustomerSupport';
 import Brand from './assets/images/multivendorx-logo.png';
 import { searchIndex, SearchItem } from './searchIndex';
 import { __ } from '@wordpress/i18n';
-import Announcements from './components/Announcements/Announcements';
-import Knowledgebase from './components/Knowledgebase/Knowledgebase';
 import Commissions from './components/Commissions/Commissions';
 import Analytics from './components/Reports/Reports';
 import HelpSupport from './components/HelpSupport/HelpSupport';
@@ -30,8 +28,15 @@ import ApprovalQueue from './components/ApprovalQueue/ApprovalQueue';
 import Notifications from './components/Notifications/Notifications';
 import TransactionHistory from './components/TransactionHistory/TransactionHistory';
 import { getTourSteps } from './components/Tour/TourSteps';
-import TableCardDemo from './components/table/TableCardDemo';
 import NotificationTabContent from './components/Notifications/HeaderNotifications';
+// Auto-load all modules src folder.
+const modulesContext = require.context(
+	'../modules',
+	true,
+	/\/src\/index\.(ts|tsx)$/
+);
+
+modulesContext.keys().forEach(modulesContext);
 
 localStorage.setItem('force_multivendorx_context_reload', 'true');
 
@@ -115,8 +120,6 @@ const Route = () => {
 			{tab === 'customer-support' && <CustomerSupport />}
 			{tab === 'approval-queue' && <ApprovalQueue />}
 			{tab === 'dashboard' && <AdminDashboard />}
-			{tab === 'announcements' && <Announcements />}
-			{tab === 'knowledgebase' && <Knowledgebase />}
 			{tab === 'transaction-history' && <TransactionHistory />}
 			{tab === 'reports' && <Analytics />}
 			{tab === 'help-support' && <HelpSupport />}
