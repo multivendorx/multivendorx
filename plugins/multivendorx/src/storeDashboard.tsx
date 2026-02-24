@@ -9,6 +9,7 @@ import {
 	Tooltip,
 } from 'zyra';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { applyFilters } from '@wordpress/hooks';
 import Notifications from './dashboard/notifications';
 import './hooksFilters';
 import { __ } from '@wordpress/i18n';
@@ -77,35 +78,65 @@ const Dashboard = () => {
 		}
 	}, [newProductId]);
 
-	const loadComponent = (key) => {
-		if (!endpoints || endpoints.length === 0) {
-			return;
-		}
+
+	const loadComponent = (key: string) => {
+		if (!endpoints || endpoints.length === 0) return null;
 
 		try {
 			const activeEndpoint = endpoints.find((ep) => ep.tab === key);
-			const kebabToCamelCase = (str) => {
-				return str.replace(/-([a-z])/g, (match, letter) =>
-					letter.toUpperCase()
-				);
-			};
 
-			if (activeEndpoint?.filename) {
-				const CustomComponent = require(
-					`./dashboard/${kebabToCamelCase(activeEndpoint.filename)}.tsx`
-				).default;
-				return <CustomComponent />;
+			// Convert kebab-case to CamelCase for filenames
+			const kebabToCamelCase = (str: string) =>
+				str.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+
+			const convertedKey = kebabToCamelCase(activeEndpoint?.filename || key);
+
+			try {
+				const DashboardComponent = require(`./dashboard/${convertedKey}.tsx`).default;
+				return <DashboardComponent />;
+			} catch {
 			}
 
-			const convertedKey = kebabToCamelCase(key);
-			const DefaultComponent = require(
-				`./dashboard/${convertedKey}.tsx`
-			).default;
-			return <DefaultComponent />;
+			return applyFilters(
+				'multivendorx_pro_dashboard_component',
+				null,
+				convertedKey
+			);
+
 		} catch {
 			return <div>404 not found</div>;
 		}
 	};
+
+	// const loadComponent = (key) => {
+	// 	if (!endpoints || endpoints.length === 0) {
+	// 		return;
+	// 	}
+
+	// 	try {
+	// 		const activeEndpoint = endpoints.find((ep) => ep.tab === key);
+	// 		const kebabToCamelCase = (str) => {
+	// 			return str.replace(/-([a-z])/g, (match, letter) =>
+	// 				letter.toUpperCase()
+	// 			);
+	// 		};
+
+	// 		if (activeEndpoint?.filename) {
+	// 			const CustomComponent = require(
+	// 				`./dashboard/${kebabToCamelCase(activeEndpoint.filename)}.tsx`
+	// 			).default;
+	// 			return <CustomComponent />;
+	// 		}
+
+	// 		const convertedKey = kebabToCamelCase(key);
+	// 		const DefaultComponent = require(
+	// 			`./dashboard/${convertedKey}.tsx`
+	// 		).default;
+	// 		return <DefaultComponent />;
+	// 	} catch {
+	// 		return <div>404 not found</div>;
+	// 	}
+	// };
 
 	useEffect(() => {
 		axios({

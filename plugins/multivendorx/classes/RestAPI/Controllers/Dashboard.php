@@ -243,38 +243,6 @@ class Dashboard extends \WP_REST_Controller {
                 'icon'       => 'setting',
                 'capability' => array( 'manage_store_settings' ),
             ),
-            'booking'       => array(
-                'name'       => 'Booking (Pro)',
-                'slug'       => 'booking',
-                'icon'       => 'report',
-                'submenu'    => array(
-                    array(
-                        'key'        => 'all-booking',
-                        'name'       => 'All Booking',
-                        'slug'       => 'all-booking',
-                        'capability' => array( 'read_products' ),
-                    ),
-                    array(
-                        'key'        => 'resource',
-                        'name'       => 'Resource',
-                        'slug'       => 'resource',
-                        'capability' => array( 'read_products' ),
-                    ),
-                    array(
-                        'key'        => 'calender-list',
-                        'name'       => 'Calender list',
-                        'slug'       => 'calender-list',
-                        'capability' => array( 'read_products' ),
-                    ),
-                    array(
-                        'key'        => 'send-notifictaion',
-                        'name'       => 'Send Notifictaion',
-                        'slug'       => 'send-notifictaion',
-                        'capability' => array( 'read_products' ),
-                    ),
-                ),
-                'capability' => array( 'read_products' ),
-            ),
             'appointment'       => array(
                 'name'       => 'Appointment (Pro)',
                 'slug'       => 'appointment',
