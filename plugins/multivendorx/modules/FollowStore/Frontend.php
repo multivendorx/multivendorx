@@ -25,10 +25,35 @@ class Frontend {
         // Default button on vendor info section.
         add_action( 'mvx_after_vendor_information', array( $this, 'render_follow_button' ), 10, 1 );
 
+        add_filter( 'multivendorx_register_scripts', array( $this, 'register_script' ) );
+        add_filter( 'multivendorx_localize_scripts', array( $this, 'localize_scripts' ) );
         // Load scripts.
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
         add_action( 'wp_footer', array( $this, 'render_login_modal' ) );
     }
+
+    public function register_script( $scripts ) {
+        $base_url = MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name();
+
+        $scripts['multivendorx-follow-store-frontend-script'] = array(
+            'src'     => $base_url . 'modules/FollowStore/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+            'deps'    => array( 'jquery' ),
+        );
+
+        return $scripts;
+    }
+
+    public function localize_scripts( $scripts ) {
+
+        $scripts['multivendorx-follow-store-frontend-script'] = array(
+            'object_name' => 'followStoreFrontend',
+            'use_rest'    => true,
+            'data'        => array(),
+        );
+
+        return $scripts;
+    }
+
 
     /**
      * Load follow store JS scripts

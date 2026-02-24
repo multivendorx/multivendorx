@@ -17,7 +17,7 @@ import {
 	CategoryCount,
 } from 'zyra';
 
-import Popup from '../Popup/Popup';
+import Popup from '../../../src/components/Popup/Popup';
 import { formatLocalDate, truncateText } from '@/services/commonFunction';
 
 type StoreQnaRow = {

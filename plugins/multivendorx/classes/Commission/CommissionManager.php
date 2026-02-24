@@ -33,7 +33,6 @@ class CommissionManager {
      */
     public function __construct() {
         $this->init_classes();
-        new Hooks();
     }
 
     /**
