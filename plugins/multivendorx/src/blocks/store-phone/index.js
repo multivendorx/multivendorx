@@ -24,7 +24,7 @@ registerBlockType('multivendorx/store-phone', {
 			style: {
 				display: 'flex',
 				alignItems: 'center',
-				gap: '8px',
+				gap: '0.5rem',
 			},
 		});
 
@@ -52,7 +52,7 @@ registerBlockType('multivendorx/store-phone', {
 			style: {
 				display: 'flex',
 				alignItems: 'center',
-				gap: '8px',
+				gap: '0.5rem',
 			},
 		});
 

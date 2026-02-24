@@ -32,7 +32,7 @@ const TEMPLATE_1 = [
 			},
 			style: {
 				spacing: {
-					blockGap: '20px',
+					blockGap: '1.25rem',
 				},
 			},
 		},
@@ -43,7 +43,7 @@ const TEMPLATE_1 = [
 		],
 	],
 	['multivendorx/store-description', {}],
-	['core/spacer', { height: '20px' }],
+	['core/spacer', { height: '1.25rem' }],
 	['multivendorx/store-engagement-tools', { align: 'right' }],
 ];
 
@@ -157,7 +157,7 @@ registerBlockType('multivendorx/store-banner', {
 		},
 		minHeight: {
 			type: 'string',
-			default: '300px',
+			default: '18.75rem',
 		},
 		overlayColor: {
 			type: 'string',
@@ -351,8 +351,8 @@ registerBlockType('multivendorx/store-banner', {
 							value={height}
 							onChange={(value) => setAttributes({ height: value })}
 							options={[
-								{ label: __('Small (300px)', 'multivendorx'), value: '300px' },
-								{ label: __('Medium (400px)', 'multivendorx'), value: '400px' },
+								{ label: __('Small (18.75rem)', 'multivendorx'), value: '18.75rem' },
+								{ label: __('Medium (25rem)', 'multivendorx'), value: '25rem' },
 								{ label: __('Large (500px)', 'multivendorx'), value: '500px' },
 								{ label: __('Extra Large (600px)', 'multivendorx'), value: '600px' },
 								{ label: __('Auto', 'multivendorx'), value: 'auto' },
@@ -365,8 +365,8 @@ registerBlockType('multivendorx/store-banner', {
 							onChange={(value) => setAttributes({ minHeight: value })}
 							options={[
 								{ label: __('Small (200px)', 'multivendorx'), value: '200px' },
-								{ label: __('Medium (300px)', 'multivendorx'), value: '300px' },
-								{ label: __('Large (400px)', 'multivendorx'), value: '400px' },
+								{ label: __('Medium (18.75rem)', 'multivendorx'), value: '18.75rem' },
+								{ label: __('Large (25rem)', 'multivendorx'), value: '25rem' },
 								{ label: __('Extra Large (500px)', 'multivendorx'), value: '500px' },
 							]}
 						/>

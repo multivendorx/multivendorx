@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { getApiLink } from 'zyra';
+import { __ } from '@wordpress/i18n';
 
 const StoreQuickInfo: React.FC<{}> = () => {
 	const [rating, setRatings] = useState<number | null>(null);
@@ -60,7 +61,7 @@ const StoreQuickInfo: React.FC<{}> = () => {
 			<div className="store-header">
 				<div className="store-avatar">
 					{storeDetails.storeLogo ? (
-						<img src={storeDetails.storeLogo} alt="Vendor Avatar" />
+						<img src={storeDetails.storeLogo} alt="Store Avatar" />
 					) : storeDetails.storeName ? (
 						<span>
 							{storeDetails.storeName.slice(0, 2).toUpperCase()}
@@ -89,14 +90,14 @@ const StoreQuickInfo: React.FC<{}> = () => {
 				{totalProducts !== null && (
 					<div className="stat-item">
 						<div className="stat-number">{totalProducts}</div>
-						<div className="stat-label">Products</div>
+						<div className="stat-label">{__('Products', 'multivendorx')}</div>
 					</div>
 				)}
 
 				{rating !== null && (
 					<div className="stat-item">
 						<div className="stat-number">{rating}</div>
-						<div className="stat-label">Rating</div>
+						<div className="stat-label">{__('Rating', 'multivendorx')}</div>
 					</div>
 				)}
 
@@ -105,7 +106,7 @@ const StoreQuickInfo: React.FC<{}> = () => {
 						<div className="stat-number">
 							{storeDetails.totalSales}
 						</div>
-						<div className="stat-label">Sales</div>
+						<div className="stat-label">{__('Sales', 'multivendorx')}</div>
 					</div>
 				)}
 			</div>

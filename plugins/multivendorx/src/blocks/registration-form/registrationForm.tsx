@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import './storeRegistration.scss';
 import { FormViewer, getApiLink, ToggleSetting } from 'zyra';
 import axios from 'axios';
+import { __ } from '@wordpress/i18n';
 
 const RegistrationForm = () => {
 	const [loading, setLoading] = useState(false);

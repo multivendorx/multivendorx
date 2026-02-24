@@ -54,7 +54,6 @@ class Block {
         $block_names = array(
             'marketplace-stores',
             'marketplace-products',
-            'marketplace-coupons',
             'registration-form',
             'store-coupons',
             'store-tabs',

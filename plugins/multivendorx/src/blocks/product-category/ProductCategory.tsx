@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { __ } from '@wordpress/i18n';
 
 interface Category {
 	id: number;
@@ -38,7 +39,7 @@ const ProductCategory: React.FC<{}> = () => {
 
 	return (
 		<div className="store-card">
-			<h3>Product Categories</h3>
+			<h3>{__('Product Categories', 'multivendorx')}</h3>
 			<ul className="multivendorx-category-list">
 				{categories.map((category) => (
 					<li
