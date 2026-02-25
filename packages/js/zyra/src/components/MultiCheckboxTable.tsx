@@ -1,14 +1,339 @@
 // External dependencies
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
 
 // Internal dependencies
 import '../styles/web/MultiCheckboxTable.scss';
 import { FieldComponent } from './types';
-import  { SelectInputUI, SelectOptions } from './SelectInput'; // Reuse existing Select
-import {MultiCheckBoxUI} from './MultiCheckbox'; // Reuse existing MultiCheckbox
 
 // Types
+interface Option {
+    value: string | number;
+    label: string;
+}
+
+interface SelectedOptionDisplayProps {
+    selectedValues: Option[];
+    clearSelectedValues: () => void;
+    removeSelectedValues: ( value: Option ) => void;
+    setPopupOpend: ( isOpen: boolean ) => void;
+    popupOpend: boolean;
+}
+
+const SelectedOptionDisplay: React.FC< SelectedOptionDisplayProps > = ( {
+    selectedValues,
+    clearSelectedValues,
+    removeSelectedValues,
+    setPopupOpend,
+    popupOpend,
+} ) => {
+    // Get the renderable selected value for all selected values
+    const renderableSelectedValue = popupOpend
+        ? selectedValues
+        : selectedValues.slice( 0, 1 );
+    return (
+        <div className="selected-container">
+            <div className="selected-items-container">
+                { /* All selected values */ }
+                { renderableSelectedValue.map( ( value ) => (
+                    <div className="selected-items" key={ value.value }>
+                        <span>{ value.label }</span>
+                        <div
+                            className=""
+                            role="button"
+                            tabIndex={ 0 }
+                            onClick={ () => removeSelectedValues( value ) }
+                        >
+                            <i className="admin-font adminfont-close"></i>
+                        </div>
+                    </div>
+                ) ) }
+            </div>
+
+            <div className="container-items-controls">
+                { /* Modal open button */ }
+                { ! popupOpend && selectedValues.length > 1 && (
+                    <div
+                        className="open-modal items-controls"
+                        role="button"
+                        tabIndex={ 0 }
+                        onClick={ () => setPopupOpend( true ) }
+                    >
+                        +{ selectedValues.length - 1 }
+                    </div>
+                ) }
+
+                { /* Clear all selected values */ }
+                <div
+                    className="clear-all-data items-controls"
+                    role="button"
+                    tabIndex={ 0 }
+                    onClick={ clearSelectedValues }
+                >
+                    <i className="admin-font adminfont-close"></i>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+interface SearchOptionDisplayProps {
+    options: Option[];
+    filter: string;
+    setFilter: ( value: string ) => void;
+    insertSelectedValues: ( option: Option ) => void;
+    searchStarted: boolean;
+}
+
+const SearchOptionDisplay: React.FC< SearchOptionDisplayProps > = ( {
+    options,
+    filter,
+    setFilter,
+    insertSelectedValues,
+    searchStarted,
+} ) => {
+    const [ modalOpen, setModalOpen ] = useState< boolean >( false );
+
+    useEffect( () => {
+        const setModalClose = () => {
+            setModalOpen( false );
+        };
+
+        document.addEventListener( 'click', setModalClose );
+
+        return () => {
+            document.removeEventListener( 'click', setModalClose );
+        };
+    }, [] );
+
+    return (
+        <>
+            <div className="selected-input">
+                { /* Search section */ }
+                <input
+                    className="basic-input"
+                    placeholder="Select..."
+                    value={ filter }
+                    onChange={ ( event ) => {
+                        setModalOpen( true );
+                        setFilter( event.target.value );
+                    } }
+                    onClick={ ( e ) => {
+                        e.stopPropagation();
+                        setModalOpen( true );
+                    } }
+                />
+
+                <span>
+                    <i className="admin-font adminfont-keyboard-arrow-down"></i>
+                </span>
+            </div>
+
+            { modalOpen && (
+                <div className="option-container">
+                    { ! searchStarted ? (
+                        options.map( ( option ) => (
+                            <div
+                                key={ option.value } // Added a unique key for React list rendering
+                                className="options-item"
+                                role="button"
+                                tabIndex={ 0 }
+                                onClick={ () => {
+                                    insertSelectedValues( option );
+                                    setModalOpen( false );
+                                } }
+                            >
+                                { option.label }
+                            </div>
+                        ) )
+                    ) : (
+                        <div>Searching</div>
+                    ) }
+                </div>
+            ) }
+        </>
+    );
+};
+
+interface SelectProps {
+    values?: Option[];
+    onChange: ( selected: Option[] ) => void;
+    option: Option[];
+    asyncGetOptions?: ( filter: string ) => Promise< Option[] >;
+    asyncFetch?: boolean;
+    isMulti?: boolean;
+}
+
+const Select: React.FC< SelectProps > = ( {
+    values = [],
+    onChange,
+    option = [],
+    asyncGetOptions,
+    asyncFetch = false,
+} ) => {
+    // State to store selected values
+    const [ selectedValues, setSelectedValues ] =
+        useState< Option[] >( values );
+
+    // State to store options
+    const [ options, setOptions ] = useState< Option[] >( option );
+
+    // State for modal open/close
+    const [ popupOpened, setPopupOpened ] = useState< boolean >( false );
+
+    // State to track search
+    const [ searchStarted, setSearchStarted ] = useState< boolean >( false );
+
+    // State for filtering options
+    const [ filter, setFilter ] = useState< string >( '' );
+
+    // Ref to track setting changes
+    const settingChanged = useRef< boolean >( false );
+
+    // Fetch options (sync or async)
+    const getOptions = useCallback( async (): Promise< Option[] > => {
+        let allOptions = option;
+
+        if ( asyncFetch && asyncGetOptions ) {
+            setSearchStarted( true );
+            allOptions = await asyncGetOptions( filter );
+            setSearchStarted( false );
+        }
+
+        return allOptions.filter(
+            ( opt ) =>
+                ! selectedValues.some( ( sel ) => sel.value === opt.value )
+        );
+    }, [
+        asyncFetch,
+        asyncGetOptions,
+        filter,
+        option,
+        selectedValues,
+        setSearchStarted,
+    ] );
+
+    /**
+     * Inserts a selected value into the list of selected values.
+     *
+     * @param {Option} value - The value to insert.
+     */
+    const insertSelectedValues = ( value: Option ) => {
+        settingChanged.current = true;
+        setSelectedValues( ( prev ) => [ ...prev, value ] );
+    };
+
+    /**
+     * Remove a selected value.
+     *
+     * @param {Option} value - The value to remove from the selected values list.
+     */
+    const removeSelectedValues = ( value: Option ) => {
+        settingChanged.current = true;
+        setSelectedValues( ( prev ) =>
+            prev.filter( ( prevValue ) => prevValue.value !== value.value )
+        );
+    };
+
+    /**
+     * Clear all selected values.
+     */
+    const clearSelectedValues = () => {
+        settingChanged.current = true;
+        setSelectedValues( [] );
+    };
+
+    /**
+     * Get filtered options based on the current filter.
+     *
+     * @return {Promise<Option[]>} A promise that resolves to the filtered options list.
+     */
+    const getFilteredOptionValue = useCallback( async (): Promise<
+        Option[]
+    > => {
+        const allOptions = await getOptions();
+        return asyncFetch || ! filter
+            ? allOptions
+            : allOptions.filter(
+                  ( opt ) =>
+                      opt.value.toString().includes( filter ) ||
+                      opt.label.includes( filter )
+              );
+    }, [ asyncFetch, filter, getOptions ] );
+
+    // Trigger onChange event when selected values change
+    useEffect( () => {
+        if ( settingChanged.current ) {
+            settingChanged.current = false;
+            onChange( selectedValues );
+        }
+    }, [ selectedValues, onChange ] );
+
+    // Update options when dependencies change
+    useEffect( () => {
+        getFilteredOptionValue().then( setOptions );
+    }, [ filter, option, selectedValues, getFilteredOptionValue ] );
+
+    // Modal.setAppElement( "#admin-main-wrapper" );
+
+    return (
+        <main className="grid-table-main-container" id="modal-support">
+            <section className="main-container">
+                { /* Display selected values */ }
+                { ! popupOpened && (
+                    <>
+                        <SelectedOptionDisplay
+                            popupOpend={ popupOpened }
+                            setPopupOpend={ setPopupOpened }
+                            selectedValues={ selectedValues }
+                            clearSelectedValues={ clearSelectedValues }
+                            removeSelectedValues={ removeSelectedValues }
+                        />
+                        <SearchOptionDisplay
+                            options={ options }
+                            filter={ filter }
+                            setFilter={ setFilter }
+                            insertSelectedValues={ insertSelectedValues }
+                            searchStarted={ searchStarted }
+                        />
+                    </>
+                ) }
+
+                { /* Modal for selection */ }
+                { popupOpened && (
+                    <Modal
+                        isOpen={ popupOpened }
+                        onRequestClose={ () => setPopupOpened( false ) }
+                        contentLabel="Select Modal"
+                        className="exclusion-modal"
+                    >
+                        <div
+                            className="modal-close-btn"
+                            onClick={ () => setPopupOpened( false ) }
+                        >
+                            <i className="admin-font adminfont-cross"></i>
+                        </div>
+                        <SelectedOptionDisplay
+                            popupOpend={ popupOpened }
+                            setPopupOpend={ setPopupOpened }
+                            selectedValues={ selectedValues }
+                            clearSelectedValues={ clearSelectedValues }
+                            removeSelectedValues={ removeSelectedValues }
+                        />
+                        <SearchOptionDisplay
+                            options={ options }
+                            filter={ filter }
+                            setFilter={ setFilter }
+                            insertSelectedValues={ insertSelectedValues }
+                            searchStarted={ searchStarted }
+                        />
+                    </Modal>
+                ) }
+            </section>
+        </main>
+    );
+};
+
 interface Column {
     key: string;
     label: string;
@@ -27,78 +352,25 @@ interface Row {
 interface CapabilityGroup {
     label: string;
     desc: string;
-    capability: Record<string, string>;
+    capability: Record< string, string >;
 }
 
-type Rows = Record<string, CapabilityGroup>;
+type Rows = Record< string, CapabilityGroup >;
 
 interface MultiCheckboxTableProps {
-    rows: Row[] | Rows;
+    rows: Row[];
     columns: Column[];
-    onChange: (key: string, value: string[] | SelectOptions[]) => void;
-    setting: Record<string, string[] | SelectOptions[]>;
+    description?: string;
+    onChange: ( key: string, value: string[] | Option[] ) => void;
+    setting: Record< string, string[] | Option[] >;
     proSetting?: boolean;
     modules: string[];
-    storeTabSetting: Record<string, string[]>;
+    storeTabSetting: Record< string, string[] >;
     khali_dabba: boolean;
     onBlocked?: (type: 'pro' | 'module', payload?: string) => void;
 }
 
-// Wrapper component to adapt SelectInput for our needs
-const TableSelect: React.FC<{
-    value?: SelectOptions[];
-    onChange: (value: SelectOptions[]) => void;
-    options: { value: string | number; label: string }[];
-}> = ({ value = [], onChange, options }) => {
-    const formatOptions = (opts: typeof options): SelectOptions[] => 
-        opts.map(opt => ({ value: String(opt.value), label: opt.label }));
-
-    return (
-        <SelectInputUI
-            type="multi-select"
-            options={formatOptions(options)}
-            value={value.map(v => v.value)}
-            onChange={(newValue) => {
-                if (Array.isArray(newValue)) {
-                    onChange(newValue as SelectOptions[]);
-                }
-            }}
-            wrapperClass="table-select"
-            size="100%"
-        />
-    );
-};
-
-// Wrapper component to adapt MultiCheckBox for table cells
-const TableCheckbox: React.FC<{
-    column: Column;
-    rowKey: string;
-    isSelected: boolean;
-    onToggle: (checked: boolean) => void;
-    disabled?: boolean;
-}> = ({ column, rowKey, isSelected, onToggle, disabled }) => {
-    const field = {
-        type: 'checkbox',
-        key: `${column.key}_${rowKey}`,
-        options: [{ value: rowKey, label: '' }],
-        proSetting: column.proSetting,
-        moduleEnabled: column.moduleEnabled,
-    };
-
-    return (
-        <MultiCheckBoxUI
-            field={field}
-            value={isSelected ? [rowKey] : []}
-            onChange={(val) => onToggle(val.length > 0)}
-            modules={[]}
-            canAccess={!disabled}
-            appLocalizer={{ khali_dabba: false }}
-            onBlocked={() => {}}
-        />
-    );
-};
-
-const MultiCheckboxTableUI: React.FC<MultiCheckboxTableProps> = ({
+const MultiCheckboxTableUI: React.FC< MultiCheckboxTableProps > = ( {
     rows,
     columns,
     onChange,
@@ -108,161 +380,283 @@ const MultiCheckboxTableUI: React.FC<MultiCheckboxTableProps> = ({
     modules,
     onBlocked,
     khali_dabba,
-}) => {
-    const [openGroup, setOpenGroup] = useState<string | null>(() => {
-        if (!Array.isArray(rows) && rows && Object.keys(rows).length > 0) {
-            return Object.keys(rows)[0];
+} ) => {
+    const [ openGroup, setOpenGroup ] = useState< string | null >( () => {
+        if (
+            ! Array.isArray( rows ) &&
+            rows &&
+            Object.keys( rows ).length > 0
+        ) {
+            return Object.keys( rows )[ 0 ]; // open the first group by default
         }
-        return null;
-    });
-
-    const isValueSelected = (columnKey: string, rowKey: string): boolean => {
-        const columnValue = setting[columnKey];
-        return Array.isArray(columnValue) && columnValue.includes(rowKey);
-    };
-
-    const handleCheckboxChange = (
-        column: Column,
-        rowKey: string,
-        checked: boolean
-    ) => {
-        // Check access restrictions
-        if (column.proSetting && !khali_dabba) {
-            onBlocked?.('pro');
-            return;
-        }
-
-        if (column.moduleEnabled && !modules.includes(column.moduleEnabled)) {
-            onBlocked?.('module', column.moduleEnabled);
-            return;
-        }
-
-        const selectedKeys = Array.isArray(setting[column.key])
-            ? (setting[column.key] as string[])
-            : [];
-
-        const updatedSelection = checked
-            ? [...selectedKeys, rowKey]
-            : selectedKeys.filter((key) => key !== rowKey);
-
-        onChange(column.key, updatedSelection);
-    };
-
-    const handleSelectChange = (cellKey: string, newValue: SelectOptions[]) => {
-        onChange(cellKey, newValue);
-    };
-
-    const renderProTag = (text?: string) => (
-        <span className="admin-pro-tag">
-            <i className="adminfont-pro-tag"></i>
-            {text || 'Pro'}
-        </span>
-    );
-
-    const renderTableHeader = () => (
-        <thead>
-            <tr>
-                <th></th>
-                {columns.map((column) => (
-                    <th key={column.key}>
-                        {column.label}
-                        {column?.proSetting && !khali_dabba && renderProTag()}
-                    </th>
-                ))}
-            </tr>
-        </thead>
-    );
-
-    const renderRowCells = (row: Row) => (
-        <>
-            <td>{row.label}</td>
-            {columns.map((column) => {
-                if (column.type === 'description') {
-                    return <td key={`desc_${row.key}`}>{row.description || '—'}</td>;
-                }
-
-                const cellKey = `${column.key}_${row.key}`;
-                const cellValue = (setting[cellKey] as SelectOptions[]) || [];
-
-                return (
-                    <td key={cellKey}>
-                        {row.options ? (
-                            <TableSelect
-                                value={cellValue}
-                                onChange={(newValue) => handleSelectChange(cellKey, newValue)}
-                                options={row.options}
-                            />
-                        ) : (
-                            <TableCheckbox
-                                column={column}
-                                rowKey={row.key}
-                                isSelected={isValueSelected(column.key, row.key)}
-                                onToggle={(checked) => handleCheckboxChange(column, row.key, checked)}
-                            />
-                        )}
-                    </td>
-                );
-            })}
-        </>
-    );
-
-    const renderGroupedRows = () => {
-        const groupedRows = rows as Rows;
-        
-        return Object.entries(groupedRows).map(([groupKey, group]) => {
-            const isOpen = openGroup === groupKey;
-            
-            return (
-                <React.Fragment key={groupKey}>
-                    <tr className="group-header">
-                        <td colSpan={columns.length + 1}>
-                            <div
-                                className="toggle-header"
-                                onClick={() => setOpenGroup(isOpen ? null : groupKey)}
-                            >
-                                <span className="header-title">
-                                    {group.label}
-                                    <i className={`adminfont-${isOpen ? 'keyboard-arrow-down' : 'pagination-right-arrow'}`}></i>
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-
-                    {isOpen && Object.entries(group.capability).map(([capKey, capLabel]) => {
-                        const hasCapability = storeTabSetting &&
-                            Object.values(storeTabSetting).some(arr => arr?.includes(capKey));
-
-                        return (
-                            <tr key={capKey}>
-                                <td>{capLabel}</td>
-                                {columns.map((column) => (
-                                    <td key={`${column.key}_${capKey}`}>
-                                        <TableCheckbox
-                                            column={column}
-                                            rowKey={capKey}
-                                            isSelected={isValueSelected(column.key, capKey)}
-                                            onToggle={(checked) => handleCheckboxChange(column, capKey, checked)}
-                                            disabled={!hasCapability}
-                                        />
-                                    </td>
-                                ))}
-                            </tr>
-                        );
-                    })}
-                </React.Fragment>
-            );
-        });
-    };
+        return null; // no group open if rows is an array
+    } );
 
     return (
         <>
-            {proSetting && renderProTag()}
+            { proSetting && (
+                <span className="admin-pro-tag">
+                    <i className="adminfont-pro-tag"></i>Pro
+                </span>
+            ) }
             <table className="grid-table">
-                {renderTableHeader()}
+                <thead>
+                    <tr>
+                        <th></th>
+                        { columns.map( ( column ) => (
+                            <th key={ column.key }>
+                                { column.label }
+                                { column?.proSetting && ! khali_dabba && (
+                                    <span className="admin-pro-tag">
+                                        <i className="adminfont-pro-tag"></i>Pro
+                                    </span>
+                                ) }
+                            </th>
+                        ) ) }
+                    </tr>
+                </thead>
+
                 <tbody>
-                    {Array.isArray(rows)
-                        ? rows.map((row) => <tr key={row.key}>{renderRowCells(row)}</tr>)
-                        : renderGroupedRows()}
+                    { Array.isArray( rows )
+                        ? rows.map( ( row ) => (
+                              <tr key={ row.key }>
+                                  <td>{ row.label }</td>
+                                  { columns.map( ( column ) => {
+                                      if ( column.type === 'description' ) {
+                                          return (
+                                              <td key={ `desc_${ row.key }` }>
+                                                  { row.description || '—' }
+                                              </td>
+                                          );
+                                      }
+
+                                      const key = `${ column.key }_${ row.key }`;
+                                      const value =
+                                          ( setting[ key ] as Option[] ) || [];
+
+                                      return (
+                                          <td key={ `${ column.key }_${ row.key }` }>
+                                              { row.options ? (
+                                                  <Select
+                                                      values={ value }
+                                                      onChange={ ( newValue ) =>
+                                                          onChange(
+                                                              key,
+                                                              newValue
+                                                          )
+                                                      }
+                                                      option={ row.options }
+                                                      isMulti
+                                                  />
+                                              ) : (
+                                                  <input
+                                                      type="checkbox"
+                                                      checked={
+                                                          Array.isArray(
+                                                              setting[
+                                                                  column.key
+                                                              ]
+                                                          ) &&
+                                                          (
+                                                              setting[
+                                                                  column.key
+                                                              ] as string[]
+                                                           ).includes( row.key )
+                                                      }
+                                                      onChange={ ( e ) => {
+                                                          if (
+                                                              column.proSetting &&
+                                                              ! khali_dabba
+                                                          ) {
+                                                              onBlocked?.('pro')
+                                                              return;
+                                                          }
+
+                                                          if (
+                                                              column.moduleEnabled &&
+                                                              ! modules.includes(
+                                                                  column.moduleEnabled
+                                                              )
+                                                          ) {
+                                                              onBlocked?.('module', column.moduleEnabled);
+                                                              return;
+                                                          }
+
+                                                          const selectedKeys =
+                                                              Array.isArray(
+                                                                  setting[
+                                                                      column.key
+                                                                  ]
+                                                              )
+                                                                  ? ( setting[
+                                                                        column
+                                                                            .key
+                                                                    ] as string[] )
+                                                                  : [];
+
+                                                          const updatedSelection =
+                                                              e.target.checked
+                                                                  ? [
+                                                                        ...selectedKeys,
+                                                                        row.key,
+                                                                    ]
+                                                                  : selectedKeys.filter(
+                                                                        (
+                                                                            keyVal: string
+                                                                        ) =>
+                                                                            keyVal !==
+                                                                            row.key
+                                                                    );
+
+                                                          onChange(
+                                                              column.key,
+                                                              updatedSelection as string[]
+                                                          );
+                                                      } }
+                                                  />
+                                              ) }
+                                          </td>
+                                      );
+                                  } ) }
+                              </tr>
+                          ) )
+                        : Object.entries( rows as Rows ).map(
+                              ( [ groupKey, group ] ) => {
+                                  const isOpen = openGroup === groupKey;
+                                  return (
+                                      <React.Fragment key={ groupKey }>
+                                          <div
+                                              className="toggle-header"
+                                              onClick={ () =>
+                                                  setOpenGroup(
+                                                      isOpen ? null : groupKey
+                                                  )
+                                              }
+                                          >
+                                              <div className="header-title">
+                                                  { group.label }
+                                                  <i
+                                                      className={ `adminfont-${
+                                                          isOpen
+                                                              ? 'keyboard-arrow-down'
+                                                              : 'pagination-right-arrow'
+                                                      }` }
+                                                  ></i>
+                                              </div>
+                                          </div>
+
+                                          { isOpen &&
+                                              Object.entries(
+                                                  group.capability
+                                              ).map(
+                                                  ( [ capKey, capLabel ] ) => (
+                                                      <tr key={ capKey }>
+                                                          <td>{ capLabel }</td>
+                                                          { columns.map(
+                                                              ( column ) => {
+                                                                  const hasExists =
+                                                                      storeTabSetting &&
+                                                                      Object.values(
+                                                                          storeTabSetting
+                                                                      ).some(
+                                                                          (
+                                                                              arr
+                                                                          ) =>
+                                                                              arr?.includes(
+                                                                                  capKey
+                                                                              )
+                                                                      );
+
+                                                                  return (
+                                                                      <td key={ `${ column.key }_${ capKey }` }>
+                                                                          <input
+                                                                              placeholder="select"
+                                                                              type="checkbox"
+                                                                              checked={
+                                                                                  Array.isArray(
+                                                                                      setting[
+                                                                                          column
+                                                                                              .key
+                                                                                      ]
+                                                                                  ) &&
+                                                                                  (
+                                                                                      setting[
+                                                                                          column
+                                                                                              .key
+                                                                                      ] as string[]
+                                                                                   ).includes(
+                                                                                      capKey
+                                                                                  )
+                                                                              }
+                                                                              disabled={
+                                                                                  ! hasExists
+                                                                              }
+                                                                              onChange={ (
+                                                                                  e
+                                                                              ) => {
+                                                                                  if (
+                                                                                      column.proSetting &&
+                                                                                      ! khali_dabba
+                                                                                  ) {
+                                                                                      onBlocked?.('pro');
+                                                                                      return;
+                                                                                  }
+                                                                                  if (
+                                                                                      column.moduleEnabled &&
+                                                                                      ! modules.includes(
+                                                                                          column.moduleEnabled
+                                                                                      )
+                                                                                  ) {
+                                                                                        onBlocked?.('module', column.moduleEnabled);
+                                                                                        return;
+                                                                                  }
+
+                                                                                  const selectedKeys =
+                                                                                      Array.isArray(
+                                                                                          setting[
+                                                                                              column
+                                                                                                  .key
+                                                                                          ]
+                                                                                      )
+                                                                                          ? ( setting[
+                                                                                                column
+                                                                                                    .key
+                                                                                            ] as string[] )
+                                                                                          : [];
+
+                                                                                  const updatedSelection =
+                                                                                      e
+                                                                                          .target
+                                                                                          .checked
+                                                                                          ? [
+                                                                                                ...selectedKeys,
+                                                                                                capKey,
+                                                                                            ]
+                                                                                          : selectedKeys.filter(
+                                                                                                (
+                                                                                                    keyVal: string
+                                                                                                ) =>
+                                                                                                    keyVal !==
+                                                                                                    capKey
+                                                                                            );
+
+                                                                                  onChange(
+                                                                                      column.key,
+                                                                                      updatedSelection as string[]
+                                                                                  );
+                                                                              } }
+                                                                          />
+                                                                      </td>
+                                                                  );
+                                                              }
+                                                          ) }
+                                                      </tr>
+                                                  )
+                                              ) }
+                                      </React.Fragment>
+                                  );
+                              }
+                          ) }
                 </tbody>
             </table>
         </>
@@ -270,23 +664,28 @@ const MultiCheckboxTableUI: React.FC<MultiCheckboxTableProps> = ({
 };
 
 const MultiCheckboxTable: FieldComponent = {
-    render: ({ field, value, onChange, canAccess, appLocalizer, modules, settings, onBlocked, storeTabSetting }) => (
+    render: ({ field, value, onChange, canAccess, appLocalizer, modules, settings, onOptionsChange, onBlocked, storeTabSetting }) => (
         <MultiCheckboxTableUI
             khali_dabba={appLocalizer?.khali_dabba ?? false}
-            rows={field.rows ?? []}
-            columns={field.columns ?? []}
+            rows={field.rows ?? []} // row array
+            columns={field.columns ?? []} // columns array
+            description={String(field.desc)}
             setting={settings}
             storeTabSetting={storeTabSetting}
             proSetting={field.proSetting ?? false}
-            modules={modules}
+            modules={modules} //Active module list for dependency validation.
             onBlocked={onBlocked}
-            onChange={(key, val) => {
+            onChange={(val) => {
                 if (!canAccess) return;
-                onChange({ [key]: val });
+                onChange(val)
             }}
         />
     ),
-    validate: () => null,
+
+    validate: (field, value) => {
+        return null;
+    },
+
 };
 
 export default MultiCheckboxTable;
