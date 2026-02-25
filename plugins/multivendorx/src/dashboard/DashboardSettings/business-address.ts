@@ -46,6 +46,12 @@ export default {
 				set: true,
 			},
         },
+        {
+            type: 'calendar',
+            key: 'events',
+            label: __('Business Hours', 'multivendorx'),
+            defaultOpen: true,
+        }
         //map component load 
 	],
 };
