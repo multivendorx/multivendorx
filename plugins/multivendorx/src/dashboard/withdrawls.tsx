@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
-	getApiLink,
-	SuccessNotice,
+	getApiLink,	
 	Card,
 	Container,
 	Column,
@@ -14,6 +13,7 @@ import {
 	PopupUI,
 	NavigatorHeader,
 	ItemListUI,
+	Notice,
 } from 'zyra';
 import { formatCurrency } from '../services/commonFunction';
 
@@ -100,7 +100,11 @@ const Withdrawls: React.FC = () => {
 	};
 	return (
 		<>
-			<SuccessNotice message={message} />
+			<Notice
+				message={message}
+				displayPosition={'float'}
+				title={__('Great!', 'multivendorx')}
+			/>
 			<NavigatorHeader
 				headerTitle={__('Withdrawals', 'multivendorx')}
 				headerDescription={__(

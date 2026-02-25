@@ -17,7 +17,7 @@ export interface NoticeProps {
     type?: 'info' | 'success' | 'warning' | 'error';
     title?: string;
     message?: string | NoticeItem[];
-    variant?: 'float' | 'inline' | 'banner' | 'notice' | string;
+    displayPosition?: 'float' | 'inline' | 'banner' | 'notice' | string;
     className?: string;
     dismissible?: boolean;
     onDismiss?: () => void;
@@ -28,11 +28,11 @@ export const Notice: React.FC<NoticeProps> = ({
     message,
     title,
     type = 'success',
-    variant = 'notice',
+    displayPosition = 'notice',
     className,
     dismissible = false,
     onDismiss,
-    autoDismiss = 300000,
+    autoDismiss = 2000,
 }) => {
     if (!message || message === '') return null;
     if (Array.isArray(message) && message.length === 0) return null;
@@ -47,7 +47,7 @@ export const Notice: React.FC<NoticeProps> = ({
 
     const rootClass = [
         'ui-notice',
-        `type-${type}`, `variant-${variant}`,
+        `type-${type}`, `display-${displayPosition}`,
         className,
     ]
         .filter(Boolean)
@@ -77,7 +77,7 @@ export const Notice: React.FC<NoticeProps> = ({
                             )}
                             <div className="notice-desc">
                                 {item.message}
-                                {variant == 'banner' && (
+                                {displayPosition == 'banner' && (
                                     <a
                                         // href={proUrl}
                                         target="_blank"
@@ -87,7 +87,6 @@ export const Notice: React.FC<NoticeProps> = ({
                                     </a>
                                 )}
                             </div>
-
                         </div>
                     </div>
                 );
@@ -108,7 +107,7 @@ const NoticeField: FieldComponent = {
                 type={type}
                 title={field.title}
                 message={message}
-                variant={display}
+                displayPosition={display}
                 dismissible={field.dismissible}
                 className={field.className}
             />

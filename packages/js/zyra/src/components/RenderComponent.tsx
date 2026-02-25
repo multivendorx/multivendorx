@@ -662,8 +662,9 @@ const RenderComponent: React.FC<RenderProps> = ({
                                 : input}
 
                                     <Notice
-                                        message={errors[inputField.key] || ''}   
-                                        title=""
+                                        type="error"
+                                        displayPosition="inline"
+                                        message={errors[inputField.key] || ''}
                                     />
                             {inputField.desc && (
                                 <p
@@ -725,9 +726,10 @@ const RenderComponent: React.FC<RenderProps> = ({
             )}
                 <Notice
                     type={notice?.type}
-                    variant={'float'}
                     message={notice?.message}
-                    // onDismiss={() => setNotice(null)}
+                    displayPosition ={'float'}
+                    title={'Great!'}
+                    onDismiss={() => setNotice(null)}
                 />
             <FormGroupWrapper>{renderForm()}</FormGroupWrapper>
         </>

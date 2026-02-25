@@ -189,7 +189,7 @@ const Stores = () => {
 		return (
 			<Notice
 				type='error'
-				variant= 'inline'
+				displayPosition= 'inline'
 				message={err.message}
 			/>
 		);

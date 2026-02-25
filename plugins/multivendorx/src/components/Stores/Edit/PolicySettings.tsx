@@ -2,13 +2,14 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-	SuccessNotice,
+	
 	getApiLink,
 	Container,
 	Column,
 	Card,
 	FormGroupWrapper,
 	TextAreaUI,
+	Notice,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -58,7 +59,11 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
+			<Notice
+				message={successMsg}
+				displayPosition={'float'}
+				title={__('Great!', 'multivendorx')}
+			/>
 
 			<Container>
 				<Column row>

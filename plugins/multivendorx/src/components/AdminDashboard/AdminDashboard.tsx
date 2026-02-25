@@ -376,10 +376,6 @@ const AdminDashboard = () => {
 			content: (
 				<>
 					<Column grid={8}>
-						<Notice
-							message='Build a professional marketplace'
-							title=""
-						/>
 						<Card contentHeight>
 							<div className="pro-banner-wrapper">
 								<div className="content">
@@ -933,34 +929,6 @@ const AdminDashboard = () => {
 
 	return (
 		<>
-			{/* <Notice
-				type={successMsg}
-				message={successMsg}
-				// autoDismiss={3000}
-				onDismiss={() => setSuccessMsg('')}
-			/>
-
-			<Notice
-				type='float'
-				message={'Floating notice message'}
-				title=""
-			/>
-			<Notice
-				type="banner"
-				// message={bannerItems}
-				// dismissible={true}
-				// onDismiss={handleDismissBanner}
-				className="top-header"
-			/>
-			<Notice
-				message={'Banner content goes here'}
-				title=""
-			/>
-			<Notice
-				type={'success'}
-				message={'success notice message'}
-			// onDismiss={() => setNotice(null)}
-			/> */}
 			<Container general>
 				<Column>
 					<Card>

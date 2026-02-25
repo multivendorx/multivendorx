@@ -3,7 +3,7 @@ import axios from 'axios';
 import {
 	ToggleSettingUI,
 	getApiLink,
-	SuccessNotice,
+	
 	BlockTextUI,
 	Container,
 	Column,
@@ -11,6 +11,7 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	BasicInputUI,
+	Notice,
 } from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
 
@@ -166,8 +167,11 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
-
+			<Notice
+				message={successMsg}
+				displayPosition={'float'}
+				title={__('Great!', 'multivendorx')}
+			/>
 			<Container>
 				<Column grid={8}>
 					<Card title={__('Withdrawal methods', 'multivendorx')}>

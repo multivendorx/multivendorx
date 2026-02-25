@@ -1452,10 +1452,20 @@
             color: red;
         }
     }
+    &.type-info {
+        i {
+            color: $theme-color;
+        }
+    }
+    &.type-warning {
+        i {
+            color: yellow;
+        }
+    }
 
     // common ui style end
 
-    &.variant-float {
+    &.display-float {
         padding: 0.85rem 6rem 0.85rem 0.85rem;
         font-weight: 400;
         position: fixed;
@@ -1478,9 +1488,15 @@
                 font-size: 1.4rem;
             }
         }
+        &.type-error {
+            i {
+                color: #008000;
+                font-size: 1.4rem;
+            }
+        }
     }
 
-    &.variant-inline {
+    &.display-inline {
         &.type-success {
             .notice-desc {
                 color: green;
@@ -1494,7 +1510,7 @@
         }
     }
 
-    &.variant-banner {
+    &.display-banner {
         padding: 0.5rem;
         text-align: center;
         background: $theme-background-color;
@@ -1573,7 +1589,7 @@
         }
     }
 
-    &.variant-notice {
+    &.display-notice {
         .notice-item {
             background: #ece2f991;
             padding: 0.5rem 0.8rem;
