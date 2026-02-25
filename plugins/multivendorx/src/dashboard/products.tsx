@@ -56,7 +56,6 @@ const AllProduct: React.FC = () => {
 		} else if (path.includes('/add/')) {
 			element = 'add';
 		} else {
-			// Let PRO decide via filter
 			element = applyFilters(
 				'multivendorx_resolve_current_context',
 				null,
@@ -528,7 +527,7 @@ const AllProduct: React.FC = () => {
 						ids={rowIds}
 						categoryCounts={categoryCounts}
 						search={{}}
-						// filters={filters}
+						filters={filters}
 						bulkActions={bulkActions}
 						onBulkActionApply={(
 							action: string,
