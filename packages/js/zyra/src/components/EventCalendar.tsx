@@ -39,6 +39,7 @@ export const EventCalendarUI: React.FC<EventCalendarProps> = ({
   label,
 }) => {
   const [selectedDate, setSelectedDate] = useState<DateObject | null>(null);
+  const events = value;
   const [newEvent, setNewEvent] = useState({ title: '', description: '' });
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
 
