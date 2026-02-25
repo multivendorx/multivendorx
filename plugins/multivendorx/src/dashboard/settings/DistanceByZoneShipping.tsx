@@ -9,7 +9,7 @@ import {
 	PopupUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
-import { applyFilters } from '@wordpress/hooks';
+import { applyFilters, doAction } from '@wordpress/hooks';
 
 type Zone = {
 	id: number;
@@ -184,10 +184,10 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 	};
 
 	const handleSave = async () => {
+		doAction('multivendorx_zone_shipping_after_save');
 		if (!selectedZone) {
 			return;
 		}
-
 		try {
 			const shippingData: any = { settings: {} };
 
@@ -263,15 +263,9 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 				});
 				setEditingMethod(null);
 				setIsEditing(false);
-			} else {
-				alert(
-					__(
-						'Failed to ' +
-						(isUpdate ? 'update' : 'add') +
-						' shipping method',
-						'multivendorx'
-					)
-				);
+			}
+			else {
+				setIsEditing(false);
 			}
 		} catch (err) {
 			console.error(
@@ -393,8 +387,8 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 			{addShipping && selectedZone && (
 				<PopupUI
 					open={addShipping}
-					width={31.25}
-					height="60%"
+					width={70}
+					height="80%"
 					onClose={() => setAddShipping(false)}
 					header={{
 						icon: 'shipping',
