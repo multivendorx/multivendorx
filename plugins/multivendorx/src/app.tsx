@@ -304,6 +304,7 @@ const App = () => {
 				displayPosition="banner"
                 message={bannerItems}
                 dismissible={true}
+				icon= ""
                 onDismiss={handleDismissBanner}
             />
 			<AdminHeader
