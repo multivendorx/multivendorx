@@ -21,10 +21,19 @@ interface SettingsProps {
 }
 
 const settings: React.FC<SettingsProps> = () => {
-	const settingsArray: SettingItem[] = getAvailableSettings(
+	const { modules } = useModules();
+
+	const allSettings: SettingItem[] = getAvailableSettings(
 		getTemplateData('dashboardSettings'),
 		[]
 	);
+
+	const settingsArray: SettingItem[] = allSettings.filter((setting) => {
+		if (setting.content.module) {
+			return modules.includes(setting.content.module);
+		}
+		return true;
+	});
 
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
