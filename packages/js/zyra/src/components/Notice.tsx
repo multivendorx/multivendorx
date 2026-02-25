@@ -3,46 +3,9 @@ import React, { useEffect } from 'react';
 import "../styles/web/UI/SuccessNotice.scss";
 import { FieldComponent } from './types';
 
-// export const DISPLAY_POSITIONS = {
-//     float: 'float', 
-//     inline: 'inline',
-//     banner: 'banner',
-//     general: 'general',
-// };
-
-export const NOTICE_TYPES = {
-    success: {
-        title: 'Great!',
-        icon: 'icon-yes',
-        // defaultDisplayPosition: 'float',
-    },
-    error: {
-        title: 'Error',
-        icon: 'error',
-        // defaultDisplayPosition: 'general',
-    },
-    warning: {
-        title: 'Warning',
-        icon: 'warning',
-        // defaultDisplayPosition: 'general',
-    },
-    info: {
-        title: 'Info',
-        icon: 'info',
-        // defaultDisplayPosition: 'general',
-    },
-    // banner: {
-    //     defaultDisplayPosition: 'banner',
-    // }
-};
-
-export type NoticeType = NonNullable<keyof typeof NOTICE_TYPES>;
-// export type NoticeDisplay = NonNullable<keyof typeof DISPLAY_POSITIONS>;
-
 export interface NoticeItem {
     title?: string;
     message: string;
-    icon?: string;
     action?: {
         label: string;
         url?: string;
@@ -51,29 +14,25 @@ export interface NoticeItem {
 }
 
 export interface NoticeProps {
-    type?: NoticeType;
+    type?: 'info' | 'success' | 'warning' | 'error';
     title?: string;
     message?: string | NoticeItem[];
-    // displayPosition?: NoticeDisplay | string;
-    displayPosition?: 'float' | 'inline' | 'banner' | 'notice' | string;
+    variant?: 'float' | 'inline' | 'banner' | 'notice' | string;
     className?: string;
     dismissible?: boolean;
     onDismiss?: () => void;
     autoDismiss?: number;
-    icon?: string;
 }
 
 export const Notice: React.FC<NoticeProps> = ({
     message,
     title,
-    type,
-    // displayPosition,
-    displayPosition = 'notice',
+    type = 'success',
+    variant = 'notice',
     className,
     dismissible = false,
     onDismiss,
     autoDismiss = 300000,
-    icon,
 }) => {
     if (!message || message === '') return null;
     if (Array.isArray(message) && message.length === 0) return null;
@@ -86,24 +45,9 @@ export const Notice: React.FC<NoticeProps> = ({
         return () => clearTimeout(timer);
     }, [message, autoDismiss, onDismiss]);
 
-    const variantMeta =
-        (type && type in NOTICE_TYPES
-            ? NOTICE_TYPES[type as NoticeType]
-            : NOTICE_TYPES.info);
-    // const resolvedDisplayPosition =
-    //     displayPosition ||
-    //     variantMeta.defaultDisplayPosition ||
-    //     'general_notice';
-
-    // const displayModifier =
-    //     DISPLAY_POSITIONS[resolvedDisplayPosition as NoticeDisplay] ??
-    //     resolvedDisplayPosition;
-
     const rootClass = [
         'ui-notice',
-        // `ui-notice-${displayModifier}`,
-        `type-${type}`, `variant-${displayPosition}`,
-        // Array.isArray(message) ? 'ui-notice-multiple' : '',
+        `type-${type}`, `variant-${variant}`,
         className,
     ]
         .filter(Boolean)
@@ -113,9 +57,8 @@ export const Notice: React.FC<NoticeProps> = ({
     const items: NoticeItem[] = Array.isArray(message)
         ? message
         : [{
-            title: title ?? variantMeta.title,
+            title: title ,
             message: message,
-            icon: icon ?? variantMeta.icon,
         }];
 
     return (
@@ -124,19 +67,17 @@ export const Notice: React.FC<NoticeProps> = ({
                 <i className="close-icon adminfont-close" onClick={onDismiss} aria-hidden="true" />
             )}
             {items.map((item, index) => {
-                const itemIcon = item.icon ?? icon ?? variantMeta.icon;
-                const itemTitle = item.title;
                 return (
                     <div key={index} className="notice-item">
-                        <i className={`admin-font adminfont-${itemIcon}`} aria-hidden="true" />
+                        <i className={`admin-font adminfont-${type}`} aria-hidden="true" />
 
                         <div className="notice-item-details">
-                            {itemTitle && (
-                                <div className="notice-text">{itemTitle}</div>
+                            {item.title && (
+                                <div className="notice-text">{item.title}</div>
                             )}
                             <div className="notice-desc">
                                 {item.message}
-                                {displayPosition == 'banner' && (
+                                {variant == 'banner' && (
                                     <a
                                         // href={proUrl}
                                         target="_blank"
@@ -167,8 +108,7 @@ const NoticeField: FieldComponent = {
                 type={type}
                 title={field.title}
                 message={message}
-                displayPosition={display}
-                icon={field.icon}
+                variant={display}
                 dismissible={field.dismissible}
                 className={field.className}
             />

@@ -153,7 +153,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                         if (apiResponse.message) {
                             setNotice({ type: apiResponse.type, message: apiResponse.message, });
                         }
-                        setTimeout(() => setNotice(null), 2000);
+                        setTimeout(() => setNotice(null), 300000);
 
                         if (apiResponse.redirect_link) {
                             window.open(apiResponse.redirect_link, '_self');
@@ -725,7 +725,7 @@ const RenderComponent: React.FC<RenderProps> = ({
             )}
                 <Notice
                     type={notice?.type}
-                    displayPosition={'float'}
+                    variant={'float'}
                     message={notice?.message}
                     // onDismiss={() => setNotice(null)}
                 />

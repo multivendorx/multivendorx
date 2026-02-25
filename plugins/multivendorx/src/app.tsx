@@ -301,7 +301,7 @@ const App = () => {
 	return (
 		<>
 			<Notice
-				displayPosition="banner"
+				variant="banner"
                 message={bannerItems}
                 dismissible={true}
 				icon= ""

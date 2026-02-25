@@ -51,6 +51,7 @@ export default {
             key: "calendar",
             label: __('Business Holidays', 'multivendorx'),
             mulitple: true,
+            showInput: false
         },
         {
             type: 'event-calendar', // Checking purpose
