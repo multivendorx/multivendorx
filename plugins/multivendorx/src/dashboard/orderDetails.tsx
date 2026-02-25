@@ -9,8 +9,9 @@ import {
 	FormGroup,
 	FormGroupWrapper,
 	InfoItem,
+	Notice,
 	SelectInputUI,
-	SuccessNotice,
+	
 	TextAreaUI,
 	getApiLink,
 	useModules,
@@ -304,7 +305,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 
 	return (
 		<>
-			<SuccessNotice message={refundError} />
+			<Notice
+				message={refundError}
+				displayPosition={'float'}
+				title={__('Great!', 'multivendorx')}
+			/>
 			{!appLocalizer.edit_order_capability ? (
 				<p>No access to view the order</p>
 			) : (

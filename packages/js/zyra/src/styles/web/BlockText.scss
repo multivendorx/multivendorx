@@ -2,8 +2,8 @@
 
 .settings-metabox-note {
   background: #fff;
-//   padding: 1rem;
-  width: 100%;  
+  //   padding: 1rem;
+  width: 100%;
 
   .metabox-note-wrapper {
     background: #ece2f991;
@@ -17,62 +17,62 @@
     width: fit-content;
   }
 
-    i {
-      font-size: 1.313rem;
-      color: $theme-color;
-    }
+  i {
+    font-size: 1.313rem;
+    color: $theme-color;
+  }
 
-    ul,
-    li {
-      margin: 0;
-    }
+  ul,
+  li {
+    margin: 0;
+  }
+
+  .title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: $theme-color;
+    line-height: 1.5;
+  }
+
+  p {
+    font-size: 0.875rem;
+    margin: 0;
+  }
+
+  a {
+    color: $theme-color;
+  }
+
+  &.notice {
+    flex-direction: column;
+    align-items: start;
+    width: 100%;
 
     .title {
-      font-size: 1.2rem;
-      font-weight: 500;
-      color: $theme-color;
-      line-height: 1.5;
-    }
+      display: flex;
+      gap: 0.5rem;
 
-    p {
-      font-size: 0.875rem;
-      margin: 0;
-    }
-
-    a {
-      color: $theme-color;
-    }
-
-    &.notice {
-      flex-direction: column;
-      align-items: start;
-      width: 100%;
-
-      .title {
-        display: flex;
-        gap: 0.5rem;
-
-        h3 {
-          margin: 0;
-        }
+      h3 {
+        margin: 0;
       }
     }
+  }
 
-    &.green {
-      background: #d9f5f0d8;
-      border-color: #06be9f;
+  &.green {
+    background: #d9f5f0d8;
+    border-color: #06be9f;
 
-      i {
-        color: #06be9f;
-      }
+    i {
+      color: #06be9f;
     }
+  }
 
-    &.yellow {
-      background: #fff0e1e3;
-      border-color: #ff9f43;
+  &.yellow {
+    background: #fff0e1e3;
+    border-color: #ff9f43;
 
-      i {
-        color: #ff9f43;
-      }
-    }  
+    i {
+      color: #ff9f43;
+    }
+  }
 }

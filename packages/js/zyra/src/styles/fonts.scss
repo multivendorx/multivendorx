@@ -810,7 +810,8 @@
 .adminfont-cross:before {
   content: "\efc1";
 }
-.adminfont-icon-yes:before {
+.adminfont-icon-yes:before,
+.adminfont-success:before {
   content: "\efc2";
 }
 .adminfont-calendar:before {

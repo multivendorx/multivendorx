@@ -2,11 +2,11 @@ import React, { useState, useMemo } from 'react';
 import { getApiLink, sendApiResponse } from '../utils/apiService';
 import { useModules } from '../contexts/ModuleContext';
 import '../styles/web/Modules.scss';
-import SuccessNotice from './SuccessNotice';
 import { MultiCheckBoxUI } from './MultiCheckbox';
 import HeaderSearch from './HeaderSearch';
 import { SelectInputUI } from './SelectInput';
 import { PopupUI } from './Popup';
+import { Notice } from './Notice';
 
 interface Module {
     id: string;
@@ -141,29 +141,29 @@ const Modules: React.FC<ModuleProps> = ({
     };
 
     const filteredModules = useMemo(() => {
-		return modulesArray.modules.filter(module => {
+        return modulesArray.modules.filter(module => {
             if (!isModule(module)) return false;
             if (variant === 'mini-module' && !module.miniModule) return false;
 
-			const moduleCategories = getCategories(module.category);
-			const isActive = modules.includes(module.id);
+            const moduleCategories = getCategories(module.category);
+            const isActive = modules.includes(module.id);
 
-			const matchesCategory =
-				selectedCategory === 'All' ||
-				moduleCategories.includes(selectedCategory);
+            const matchesCategory =
+                selectedCategory === 'All' ||
+                moduleCategories.includes(selectedCategory);
 
-			const matchesStatus =
-				selectedFilter === 'All' ||
-				(selectedFilter === 'Active' && isActive) ||
-				(selectedFilter === 'Inactive' && !isActive);
+            const matchesStatus =
+                selectedFilter === 'All' ||
+                (selectedFilter === 'Active' && isActive) ||
+                (selectedFilter === 'Inactive' && !isActive);
 
-			const matchesSearch =
-				!searchQuery ||
-				module.name.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesSearch =
+                !searchQuery ||
+                module.name.toLowerCase().includes(searchQuery.toLowerCase());
 
-			return matchesCategory && matchesStatus && matchesSearch;
-		});
-	}, [moduleList, selectedCategory, selectedFilter, searchQuery, modules]);
+            return matchesCategory && matchesStatus && matchesSearch;
+        });
+    }, [moduleList, selectedCategory, selectedFilter, searchQuery, modules]);
 
 
     const statusOptions = [
@@ -173,207 +173,211 @@ const Modules: React.FC<ModuleProps> = ({
     ];
 
     return (
-    <>
-        {modelOpen && (
-            <PopupUI
-                position="lightbox"
-                open={modelOpen}
-                onClose={() => setModelOpen(false)}
-                width={31.25}
-                height="auto"
-            >
-                {ProPopupComponent && <ProPopupComponent />}
-            </PopupUI>
-        )}
-
-        {successMsg && (
-            <SuccessNotice title="Success!" message={successMsg} />
-        )}
-
-        <div className="module-container" data-variant={variant}>
-
-            {/* FILTER SECTION */}
-            {variant === 'default' && (
-                <div className="filter-wrapper">
-
-                    {modulesArray.category && categories.length > 1 && (
-                        <div className="category-filter">
-                            {categories.map((category) => (
-                                <span
-                                    key={category.id}
-                                    className={`category-item ${
-                                        selectedCategory === category.id ? 'active' : ''
-                                    }`}
-                                    onClick={() => setSelectedCategory(category.id)}
-                                >
-                                    {category.label}
-                                </span>
-                            ))}
-                        </div>
-                    )}
-
-                    <div className="module-search">
-                        <HeaderSearch
-                            variant="mini-search"
-                            search={{ placeholder: 'Search .....' }}
-                            onQueryUpdate={(e) => {
-                                setSearchQuery(e.searchValue);
-                                if ('searchAction' in e) {
-                                    setSelectedFilter(e.searchAction);
-                                }
-                            }}
-                        />
-
-                        <SelectInputUI
-                            options={statusOptions}
-                            value={selectedFilter}
-                            size="8rem"
-                            onChange={(newValue) =>
-                                setSelectedFilter(newValue.value)
-                            }
-                        />
-                    </div>
-                </div>
+        <>
+            {modelOpen && (
+                <PopupUI
+                    position="lightbox"
+                    open={modelOpen}
+                    onClose={() => setModelOpen(false)}
+                    width={31.25}
+                    height="auto"
+                >
+                    {ProPopupComponent && <ProPopupComponent />}
+                </PopupUI>
             )}
 
-            <div className="module-option-row">
-                {filteredModules.map((item, index) => {
+            {successMsg && (
+                <Notice
+                    message={successMsg}
+                    displayPosition={'float'}
+                    title={'Success!'}
+                    // onDismiss={() => setSuccessMsg(null)}
+                />
+            )}
 
-                    if (!isModule(item)) return null;
+            <div className="module-container" data-variant={variant}>
 
-                    const module = item;
-                    const isActive = modules.includes(module.id);
-                    const requiredPlugins = module.reqPluging || [];
-                    const moduleCategories = getCategories(module.category);
+                {/* FILTER SECTION */}
+                {variant === 'default' && (
+                    <div className="filter-wrapper">
 
-                    const toggleComponent = (
-                        <MultiCheckBoxUI
-                            look="toggle"
-                            type="checkbox"
-                            value={isActive ? [module.id] : []}
-                            onChange={(e) => handleOnChange(e, module)}
-                            options={[{ key: module.id, value: module.id }]}
-                        />
-                    );
+                        {modulesArray.category && categories.length > 1 && (
+                            <div className="category-filter">
+                                {categories.map((category) => (
+                                    <span
+                                        key={category.id}
+                                        className={`category-item ${selectedCategory === category.id ? 'active' : ''
+                                            }`}
+                                        onClick={() => setSelectedCategory(category.id)}
+                                    >
+                                        {category.label}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
 
-                    return (
-                        <div
-                            key={module.id}
-                            id={module.id}
-                            data-index={index}
-                            className="module-list-item"
-                        >
-                            <div className="module-body">
+                        <div className="module-search">
+                            <HeaderSearch
+                                variant="mini-search"
+                                search={{ placeholder: 'Search .....' }}
+                                onQueryUpdate={(e) => {
+                                    setSearchQuery(e.searchValue);
+                                    if ('searchAction' in e) {
+                                        setSelectedFilter(e.searchAction);
+                                    }
+                                }}
+                            />
 
-                                <div className="module-header">
-                                    <div className="icon">
-                                        <i className={`font adminfont-${module.id}`} />
-                                    </div>
+                            <SelectInputUI
+                                options={statusOptions}
+                                value={selectedFilter}
+                                size="8rem"
+                                onChange={(newValue) =>
+                                    setSelectedFilter(newValue.value)
+                                }
+                            />
+                        </div>
+                    </div>
+                )}
 
-                                    {module.proModule && !appLocalizer.khali_dabba && (
-                                        <div className="pro-tag">
-                                            <i className="adminfont-pro-tag" />
+                <div className="module-option-row">
+                    {filteredModules.map((item, index) => {
+
+                        if (!isModule(item)) return null;
+
+                        const module = item;
+                        const isActive = modules.includes(module.id);
+                        const requiredPlugins = module.reqPluging || [];
+                        const moduleCategories = getCategories(module.category);
+
+                        const toggleComponent = (
+                            <MultiCheckBoxUI
+                                look="toggle"
+                                type="checkbox"
+                                value={isActive ? [module.id] : []}
+                                onChange={(e) => handleOnChange(e, module)}
+                                options={[{ key: module.id, value: module.id }]}
+                            />
+                        );
+
+                        return (
+                            <div
+                                key={module.id}
+                                id={module.id}
+                                data-index={index}
+                                className="module-list-item"
+                            >
+                                <div className="module-body">
+
+                                    <div className="module-header">
+                                        <div className="icon">
+                                            <i className={`font adminfont-${module.id}`} />
                                         </div>
-                                    )}
 
-                                    {variant === 'mini-module' &&
-                                        (appLocalizer.khali_dabba || !module.proModule) && (
-                                            <div className="toggle-checkbox">
-                                                {toggleComponent}
+                                        {module.proModule && !appLocalizer.khali_dabba && (
+                                            <div className="pro-tag">
+                                                <i className="adminfont-pro-tag" />
                                             </div>
                                         )}
-                                </div>
 
-                                <div className="module-details">
-                                    <div className="meta-name">
-                                        {module.name}
-                                    </div>
-
-                                    {variant === 'default' && (
-                                        <>
-                                            {moduleCategories.length > 0 && (
-                                                <div className="tag-wrapper">
-                                                    {moduleCategories.map((cat, idx) => (
-                                                        <span
-                                                            key={idx}
-                                                            className="admin-badge blue"
-                                                        >
-                                                            {formatCategory(cat)}
-                                                        </span>
-                                                    ))}
+                                        {variant === 'mini-module' &&
+                                            (appLocalizer.khali_dabba || !module.proModule) && (
+                                                <div className="toggle-checkbox">
+                                                    {toggleComponent}
                                                 </div>
                                             )}
+                                    </div>
 
-                                            <p
-                                                className="meta-description"
-                                                dangerouslySetInnerHTML={{
-                                                    __html: module.desc || '',
-                                                }}
-                                            />
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-
-                            {variant === 'default' && (
-                                <div className="footer-wrapper">
-
-                                    {requiredPlugins.length > 0 && (
-                                        <div className="requires">
-                                            <div className="requires-title">
-                                                Requires:
-                                            </div>
-                                            {requiredPlugins.map((plugin, idx) => (
-                                                <span key={idx}>
-                                                    <a
-                                                        href={plugin.link}
-                                                        className="link-item"
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        {plugin.name}
-                                                    </a>
-                                                    {idx < requiredPlugins.length - 1 ? ', ' : ''}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    )}
-
-                                    <div className="module-footer">
-                                        <div className="buttons">
-                                            {module.docLink && (
-                                                <a href={module.docLink} target="_blank" rel="noreferrer">
-                                                    <i className="adminfont-book" />
-                                                </a>
-                                            )}
-                                            {module.videoLink && (
-                                                <a href={module.videoLink} target="_blank" rel="noreferrer">
-                                                    <i className="adminfont-button-appearance" />
-                                                </a>
-                                            )}
-                                            {module.settingsLink && (
-                                                <a href={module.settingsLink}>
-                                                    <i className="adminfont-setting" />
-                                                </a>
-                                            )}
+                                    <div className="module-details">
+                                        <div className="meta-name">
+                                            {module.name}
                                         </div>
 
-                                        <div
-                                            className="toggle-checkbox"
-                                            data-tour={`${module.id}-showcase-tour`}
-                                        >
-                                            {toggleComponent}
-                                        </div>
+                                        {variant === 'default' && (
+                                            <>
+                                                {moduleCategories.length > 0 && (
+                                                    <div className="tag-wrapper">
+                                                        {moduleCategories.map((cat, idx) => (
+                                                            <span
+                                                                key={idx}
+                                                                className="admin-badge blue"
+                                                            >
+                                                                {formatCategory(cat)}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
+
+                                                <p
+                                                    className="meta-description"
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: module.desc || '',
+                                                    }}
+                                                />
+                                            </>
+                                        )}
                                     </div>
                                 </div>
-                            )}
-                        </div>
-                    );
-                })}
+
+                                {variant === 'default' && (
+                                    <div className="footer-wrapper">
+
+                                        {requiredPlugins.length > 0 && (
+                                            <div className="requires">
+                                                <div className="requires-title">
+                                                    Requires:
+                                                </div>
+                                                {requiredPlugins.map((plugin, idx) => (
+                                                    <span key={idx}>
+                                                        <a
+                                                            href={plugin.link}
+                                                            className="link-item"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                        >
+                                                            {plugin.name}
+                                                        </a>
+                                                        {idx < requiredPlugins.length - 1 ? ', ' : ''}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        <div className="module-footer">
+                                            <div className="buttons">
+                                                {module.docLink && (
+                                                    <a href={module.docLink} target="_blank" rel="noreferrer">
+                                                        <i className="adminfont-book" />
+                                                    </a>
+                                                )}
+                                                {module.videoLink && (
+                                                    <a href={module.videoLink} target="_blank" rel="noreferrer">
+                                                        <i className="adminfont-button-appearance" />
+                                                    </a>
+                                                )}
+                                                {module.settingsLink && (
+                                                    <a href={module.settingsLink}>
+                                                        <i className="adminfont-setting" />
+                                                    </a>
+                                                )}
+                                            </div>
+
+                                            <div
+                                                className="toggle-checkbox"
+                                                data-tour={`${module.id}-showcase-tour`}
+                                            >
+                                                {toggleComponent}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
-        </div>
-    </>
-);
+        </>
+    );
 };
 
 export default Modules;
