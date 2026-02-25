@@ -48,10 +48,14 @@ export default {
         },
         {
             type: 'calendar',
+            key: "calendar",
+            label: __('Business Holidays', 'multivendorx'),
+            mulitple: true,
+        },
+        {
+            type: 'eventcalendar',
             key: 'events',
             label: __('Business Hours', 'multivendorx'),
-            defaultOpen: true,
-            multiple: true,
         }
         //map component load 
 	],
