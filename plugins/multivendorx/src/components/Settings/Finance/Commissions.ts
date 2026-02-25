@@ -76,13 +76,14 @@ export default {
 	modal: [
 		{
 			key: 'store_rating_page',
-			type: 'blocktext',
-			blocktext: __(
+			type: 'notice',
+			notice: __(
 				'You are currently using the older vendor-specific commission system from previous versions of MultiVendorX. Because of that, the <b>Marketplace commission</b> and <b>Commission value</b> fields shown below will continue to work as vendor-specific until you update or modify this settings page.<br><br>Once you make any change, your marketplace will automatically switch to the new <b>Marketplace commission</b> model. From that point onward, all commissions will be calculated using the updated system, and this notice will no longer appear.',
 				'multivendorx'
 			),
+			noticeType: 'info',
+			display: 'notice',
 		},
-
 		{
 			key: 'commission_type',
 			type: 'setting-toggle',
@@ -316,13 +317,15 @@ export default {
 		},
 		{
 			key: 'store_rating_page',
-			type: 'blocktext',
-			blocktext: __(
+			type: 'notice',
+			notice: __(
 				'Allow each store to manage its own shipping methods, zones, and rates, and to pass shipping amounts to stores, please enable the <a href="' +
 					appLocalizer.site_url +
 					'/wp-admin/admin.php?page=multivendorx#&tab=modules"> "Shipping module".</a></b>',
 				'multivendorx'
 			),
+			noticeType: 'info',
+			display: 'notice',
 		},
 		{
 			key: 'taxable',

@@ -390,7 +390,7 @@ const EditStore = () => {
 		<>
 			<Notice
 				message={successMsg}
-				displayPosition={'float'}
+				displayPosition='float'
 				title={__('Great!', 'multivendorx')}
 			/>
 			<SettingsNavigator

@@ -98,8 +98,8 @@ export const Notice: React.FC<NoticeProps> = ({
 const NoticeField: FieldComponent = {
     render: ({ field }) => {
         // Handle both legacy and new data structures if needed during migration
-        const message = field.notice || field.blocktext; // Fallback for migration
-        const type = field.type;
+        const message = field.notice
+        const type = field.noticeType || field.type;
         const display = field.display || 'inline';
         return (
             <Notice

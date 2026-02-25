@@ -14,11 +14,13 @@ export default {
 	modal: [
 		{
 			key: 'store_rating_page',
-			type: 'blocktext',
-			blocktext: __(
+			type: 'notice',
+			notice: __(
 				'<b>Note: </b>You can configure or customize the notification templates for these alerts from the <b><a href="#&tab=settings&subtab=notifications">Notification Settings</a> </b> section.',
 				'multivendorx'
 			),
+			noticeType: 'info',
+			display: 'notice',
 		},
 		{
 			key: 'low_stock_notifications', // changed key

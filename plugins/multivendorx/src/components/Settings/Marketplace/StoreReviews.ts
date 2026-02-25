@@ -13,11 +13,13 @@ export default {
 	modal: [
 		{
 			key: 'store_rating_page',
-			type: 'blocktext',
-			blocktext: __(
+			type: 'notice',
+			notice: __(
 				'<b>Store reviews are managed separately from product/listing reviews. You can configure product/listing reviews directly from your <a href="/wp-admin/admin.php?page=wc-settings&tab=products" target="_blank">WooCommerce settings</a>.</b>',
 				'multivendorx'
 			),
+			noticeType: 'info',
+			display: 'notice',
 		},
 		{
 			key: 'is_storereview_varified',

@@ -12,11 +12,13 @@ export default {
 	modal: [
 		{
 			key: 'store_rating_page',
-			type: 'blocktext',
-			blocktext: __(
+			type: 'notice',
+			notice: __(
 				'From MultiVendorX 5.0.0, Wallet Support has been introduced. <b> Workflow: Customer makes a purchase ➝ Commission is credited to the store wallet ➝ Payout is released from the wallet based on the configured payout frequency.</b>',
 				'multivendorx'
 			),
+			noticeType: 'info',
+			display: 'notice',
 		},
 		{
 			key: 'disbursement_order_status',

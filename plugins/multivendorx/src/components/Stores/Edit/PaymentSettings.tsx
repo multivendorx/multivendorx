@@ -3,8 +3,6 @@ import axios from 'axios';
 import {
 	ToggleSettingUI,
 	getApiLink,
-	
-	BlockTextUI,
 	Container,
 	Column,
 	Card,
@@ -169,7 +167,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 		<>
 			<Notice
 				message={successMsg}
-				displayPosition={'float'}
+				displayPosition='float'
 				title={__('Great!', 'multivendorx')}
 			/>
 			<Container>
@@ -179,15 +177,15 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 							<FormGroup
 								desc={
 									paymentOptions &&
-									paymentOptions.length === 0
+										paymentOptions.length === 0
 										? sprintf(
-												/* translators: %s: link to payment integration settings */
-												__(
-													'You haven’t enabled any payment methods yet. Configure payout options <a href="%s">from here</a> to allow stores to receive their earnings.',
-													'multivendorx'
-												),
-												'?page=multivendorx#&tab=settings&subtab=withdrawal-methods'
-											)
+											/* translators: %s: link to payment integration settings */
+											__(
+												'You haven’t enabled any payment methods yet. Configure payout options <a href="%s">from here</a> to allow stores to receive their earnings.',
+												'multivendorx'
+											),
+											'?page=multivendorx#&tab=settings&subtab=withdrawal-methods'
+										)
 										: ''
 								}
 							>
@@ -207,7 +205,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 								if (
 									bankDetails &&
 									formData.payment_method ==
-										'bank-transfer' &&
+									'bank-transfer' &&
 									!(
 										field.key === 'account_type' ||
 										bankDetails.includes(field.key)
@@ -245,13 +243,13 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 												options={
 													Array.isArray(field.options)
 														? field.options.map(
-																(opt) => ({
-																	...opt,
-																	value: String(
-																		opt.value
-																	),
-																})
-															)
+															(opt) => ({
+																...opt,
+																value: String(
+																	opt.value
+																),
+															})
+														)
 														: []
 												}
 												value={
@@ -281,9 +279,9 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 											placeholder={
 												field.placeholder
 													? __(
-															field.placeholder,
-															'multivendorx'
-														)
+														field.placeholder,
+														'multivendorx'
+													)
 													: ''
 											}
 											value={formData[field.key]}
@@ -300,15 +298,15 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 					<Card
 						title={__('Store-specific commission', 'multivendorx')}
 					>
-						<BlockTextUI
-							blockTextClass="settings-metabox-note"
-							value={sprintf(
+						<Notice
+							message={sprintf(
 								__(
 									'If no store-specific commission is set, the <a href="%s">global commission</a> will automatically apply.',
 									'multivendorx'
 								),
 								`${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=store-commissions`
 							)}
+							displayPosition='info'
 						/>
 						<FormGroupWrapper>
 							<FormGroup
