@@ -51,6 +51,7 @@ export default {
             key: 'events',
             label: __('Business Hours', 'multivendorx'),
             defaultOpen: true,
+            multiple: true,
         }
         //map component load 
 	],
