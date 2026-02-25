@@ -5,7 +5,7 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\QuestionsAnswers;
+namespace MultiVendorX\QuestionAnswer;
 
 use MultiVendorX\FrontendScripts;
 
@@ -32,7 +32,7 @@ class Frontend {
         $base_url = MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name();
 
         $scripts['multivendorx-qna-frontend-script'] = array(
-            'src'     => $base_url . 'modules/QuestionsAnswers/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+            'src'     => $base_url . 'modules/QuestionAnswer/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
             'deps'    => array( 'jquery' ),
         );
 

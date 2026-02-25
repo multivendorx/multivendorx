@@ -40,7 +40,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
 	const storePayment: StorePaymentConfig =
-		(appLocalizer.all_store_settings as StorePaymentConfig) || {};
+		(appLocalizer.store_payment_settings as StorePaymentConfig) || {};
 
 	const filteredStorePayment = Object.fromEntries(
 		Object.entries(storePayment).filter(([_, value]) => value !== null)

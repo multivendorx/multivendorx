@@ -81,13 +81,13 @@ const settings: React.FC<SettingsProps> = () => {
 
 		// Ensure settings context is initialized
 		if (settingName !== currentTab) {
-			setSetting(currentTab, appLocalizer.settings_all_meta || {});
+			setSetting(currentTab, appLocalizer.all_store_meta || {});
 		}
 
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		useEffect(() => {
 			if (settingName === currentTab) {
-				appLocalizer.settings_all_meta = setting;
+				appLocalizer.all_store_meta = setting;
 			}
 		}, [setting, settingName, currentTab]);
 
