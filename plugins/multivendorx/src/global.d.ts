@@ -58,7 +58,7 @@ declare global {
 		shipping_methods: any;
 		state_list: any;
 		module_page_url: any;
-		plugin_url: any;
+		admin_dashboard_url: any;
 		store_page_url: string;
 		pro_data: any;
 		shop_url: any;

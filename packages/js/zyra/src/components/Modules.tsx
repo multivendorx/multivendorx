@@ -19,7 +19,7 @@ interface Module {
     icon: string;
     docLink?: string;
     videoLink?: string;
-    reqPluging?: { name: string; link: string }[];
+    reqPluging?: { name: string; slug: string; link: string }[];
     settingsLink?: string;
     proModule?: boolean;
     category?: string | string[];
@@ -69,7 +69,6 @@ const Modules: React.FC<ModuleProps> = ({
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [selectedFilter, setSelectedFilter] = useState<string>('All');
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const [highlightedId, setHighlightedId] = useState<string | null>(null);
 
     const { modules, insertModule, removeModule } = useModules();
     const totalCount = modulesArray.modules.filter(isModule).length;
@@ -140,6 +139,21 @@ const Modules: React.FC<ModuleProps> = ({
         if (!isModuleAvailable(moduleId)) {
             setModelOpen(true);
             return;
+        }
+
+        const module = modulesArray.modules.find(
+            (moduleData) => isModule(moduleData) && moduleData.id === moduleId
+        ) as Module;
+
+        if (module.reqPluging?.length) {
+            const activePlugins = appLocalizer?.active_plugins || [];
+            const hasMissingPlugin = module.reqPluging.some(
+                (plugin) => !activePlugins.includes(plugin.slug)
+            );
+
+            if (hasMissingPlugin) {
+                return;
+            }
         }
 
         const action = event.length > 0 ? 'activate' : 'deactivate';

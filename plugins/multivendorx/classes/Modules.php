@@ -199,7 +199,6 @@ class Modules {
                 [
                     'path'      => trailingslashit( MultiVendorX()->plugin_path . 'modules' ),
                     'namespace' => 'MultiVendorX',
-                    'pro_module' => false,
                 ],
             ]
         );
@@ -208,7 +207,6 @@ class Modules {
 
             $base_path = $source['path'];
             $namespace = $source['namespace'];
-            $is_pro     = $source['pro_module'] ?? false;
 
             if ( ! is_dir( $base_path ) ) {
                 continue;
@@ -234,15 +232,11 @@ class Modules {
                     'id'           => $module_id,
                     'module_file'  => $module_file,
                     'module_class' => "{$namespace}\\{$folder}\\Module",
-                    'pro_module'   => $is_pro,
                 ];
             }
         }
 
-        return $this->modules = apply_filters(
-            'multivendorx_modules',
-            $this->modules
-        );
+        return $this->modules;
     }
 
     /**
@@ -269,7 +263,6 @@ class Modules {
             return;
         }
 
-        $license_active = Utill::is_khali_dabba();
         $active_modules = $this->get_active_modules();
         $all_modules    = $this->get_all_modules();
 
@@ -283,7 +276,7 @@ class Modules {
 
             $module = $all_modules[ $module_id ];
 
-            if ( ! $this->is_module_available( $module, $license_active ) ) {
+            if ( ! $this->is_module_available( $module ) ) {
                 continue;
             }
 
@@ -324,7 +317,7 @@ class Modules {
      * @param bool  $license_active Whether the license for pro modules is active.
      * @return bool
      */
-    private function is_module_available( $module, $license_active ) {
+    private function is_module_available( $module ) {
         if ( ! file_exists( $module['module_file'] ) ) {
             return false;
         }
@@ -339,19 +332,7 @@ class Modules {
             }
         }
 
-        $is_pro_module = $module['pro_module'] ?? false;
-
-        // if it is free module.
-        if ( ! $is_pro_module ) {
-            return true;
-        }
-
-        // if it is pro module.
-        if ( $is_pro_module && $license_active ) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     /**
@@ -369,12 +350,10 @@ class Modules {
      * @return array
      */
     public function get_available_modules(): array {
-
-        $license_active = Utill::is_khali_dabba();
         $available      = [];
 
         foreach ( $this->get_all_modules() as $id => $module ) {
-            if ( $this->is_module_available( $module, $license_active ) ) {
+            if ( $this->is_module_available( $module ) ) {
                 $available[] = $id;
             }
         }
