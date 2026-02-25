@@ -7,6 +7,7 @@ import {
 	AdminButtonUI,
 	ToggleSettingUI,
 	PopupUI,
+	useModules,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import { applyFilters, doAction } from '@wordpress/hooks';
@@ -27,7 +28,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 	id,
 }) => {
 	let store_id = appLocalizer.store_id ? appLocalizer.store_id : id;
-
+	const {modules} = useModules();
 	const [data, setData] = useState<Zone[]>([]);
 	const [error, setError] = useState<string>();
 	const [addShipping, setAddShipping] = useState<boolean>(false);
@@ -429,8 +430,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 										handleChange('shippingMethod', val);
 									}
 								}}
-								options={applyFilters(
-									'multivendorx_zone_shipping_methods',
+								options={
 									isEditing
 										? [
 											{
@@ -444,24 +444,28 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 												),
 											},
 										]
-										: [
-											{
-												key: 'local_pickup',
-												value: 'local_pickup',
-												label: __('Local pickup', 'multivendorx'),
-											},
-											{
-												key: 'free_shipping',
-												value: 'free_shipping',
-												label: __('Free shipping', 'multivendorx'),
-											},
-											{
-												key: 'flat_rate',
-												value: 'flat_rate',
-												label: __('Flat Rate', 'multivendorx'),
-											},
-										]
-								)}
+										: applyFilters(
+											'multivendorx_zone_shipping_methods',
+											[
+												{
+													key: 'local_pickup',
+													value: 'local_pickup',
+													label: __('Local pickup', 'multivendorx'),
+												},
+												{
+													key: 'free_shipping',
+													value: 'free_shipping',
+													label: __('Free shipping', 'multivendorx'),
+												},
+												{
+													key: 'flat_rate',
+													value: 'flat_rate',
+													label: __('Flat Rate', 'multivendorx'),
+												},
+											],
+											modules
+										)
+								}
 								disabled={isEditing}
 							/>
 						</div>
