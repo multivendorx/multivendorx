@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
 	getApiLink,
-	SuccessNotice,
+	
 	useModules,
 	EmailsInput,
 	GoogleMap,
@@ -14,6 +14,7 @@ import {
 	FormGroup,
 	BasicInputUI,
 	SelectInputUI,
+	Notice,
 } from 'zyra';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
@@ -413,7 +414,11 @@ const statusOptions = [
 
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
+			<Notice
+				message={successMsg}
+				displayPosition={'float'}
+				title={__('Great!', 'multivendorx')}
+			/>
 			<Container>
 				<Column grid={8}>
 					{/* Contact Information */}

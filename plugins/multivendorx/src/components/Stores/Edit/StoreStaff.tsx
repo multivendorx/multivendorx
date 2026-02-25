@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-	SuccessNotice,
+	
 	getApiLink,
 	useModules,
 	Container,
@@ -10,6 +10,7 @@ import {
 	FormGroup,
 	Card,
 	SelectInputUI,
+	Notice,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
@@ -53,7 +54,11 @@ const StoreSquad = ({ id }: { id: string | null }) => {
 
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
+			<Notice
+				message={successMsg}
+				displayPosition={'float'}
+				title={__('Great!', 'multivendorx')}
+			/>
 
 			<Container>
 				<Column grid={8}>

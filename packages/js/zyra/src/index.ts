@@ -51,7 +51,6 @@ export { default as NestedComponent } from './components/NestedComponent';
 export { NestedComponentUI } from './components/NestedComponent';
 export { default as ExpandablePanelGroup } from './components/ExpandablePanelGroup';
 export { ExpandablePanelGroupUI } from './components/ExpandablePanelGroup';
-export { default as SuccessNotice } from './components/SuccessNotice';
 export { default as EmailsInput } from './components/EmailsInput';
 export { default as TourSetup } from './components/TourSetup';
 export { default as DynamicRowSetting } from './components/DynamicRowSetting';

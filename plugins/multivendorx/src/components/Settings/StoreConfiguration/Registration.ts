@@ -19,6 +19,7 @@ export default {
 				'multivendorx'
 			),
 			title: '',
+			type: 'error' 
 		},
 		{
 			key: 'store_registration_from',

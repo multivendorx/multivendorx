@@ -4,7 +4,7 @@ import {
 	ToggleSettingUI,
 	getApiLink,
 	useModules,
-	SuccessNotice,
+	
 	FormGroupWrapper,
 	FormGroup,
 	Skeleton,
@@ -14,6 +14,7 @@ import {
 	PopupUI,
 	useOutsideClick,
 	ItemListUI,
+	Notice,
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -387,7 +388,11 @@ const EditStore = () => {
 	].filter(Boolean);
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
+			<Notice
+				message={successMsg}
+				displayPosition={'float'}
+				title={__('Great!', 'multivendorx')}
+			/>
 			<SettingsNavigator
 				settingContent={visibleTabs}
 				currentSetting={currentTab}

@@ -7,8 +7,9 @@ import {
 	getApiLink,
 	GoogleMap,
 	Mapbox,
+	Notice,
 	SelectInputUI,
-	SuccessNotice,
+	
 	useModules,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
@@ -306,7 +307,11 @@ const BusinessAddress = () => {
 
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
+			<Notice
+				message={successMsg}
+				displayPosition={'float'}
+				title={__('Great!', 'multivendorx')}
+			/>
 
 			{errorMsg && <div className="error-message">{errorMsg}</div>}
 

@@ -153,7 +153,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                         if (apiResponse.message) {
                             setNotice({ type: apiResponse.type, message: apiResponse.message, });
                         }
-                        setTimeout(() => setNotice(null), 2000);
+                        setTimeout(() => setNotice(null), 300000);
 
                         if (apiResponse.redirect_link) {
                             window.open(apiResponse.redirect_link, '_self');
@@ -662,8 +662,9 @@ const RenderComponent: React.FC<RenderProps> = ({
                                 : input}
 
                                     <Notice
-                                        message={errors[inputField.key] || ''}   
-                                        title=""
+                                        type="error"
+                                        displayPosition="inline"
+                                        message={errors[inputField.key] || ''}
                                     />
                             {inputField.desc && (
                                 <p
@@ -726,6 +727,8 @@ const RenderComponent: React.FC<RenderProps> = ({
                 <Notice
                     type={notice?.type}
                     message={notice?.message}
+                    displayPosition ={'float'}
+                    title={'Great!'}
                     onDismiss={() => setNotice(null)}
                 />
             <FormGroupWrapper>{renderForm()}</FormGroupWrapper>

@@ -929,13 +929,6 @@ const AdminDashboard = () => {
 
 	return (
 		<>
-			<Notice
-				type={successMsg}
-				message={successMsg}
-				autoDismiss={3000}
-				onDismiss={() => setSuccessMsg('')}
-			/>
-
 			<Container general>
 				<Column>
 					<Card>

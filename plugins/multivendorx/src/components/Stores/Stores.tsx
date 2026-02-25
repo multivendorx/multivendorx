@@ -188,9 +188,9 @@ const Stores = () => {
 
 		return (
 			<Notice
-				type='inline'
+				type='error'
+				displayPosition= 'inline'
 				message={err.message}
-				title=""
 			/>
 		);
 	};

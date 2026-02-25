@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { getApiLink, SuccessNotice, TextAreaUI, ToggleSettingUI } from 'zyra';
+import { getApiLink, Notice,  TextAreaUI, ToggleSettingUI } from 'zyra';
 
 const AdditionalInformation = () => {
 	const id = appLocalizer.store_id;
@@ -87,7 +87,11 @@ const AdditionalInformation = () => {
 
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
+			<Notice
+				message={successMsg}
+				displayPosition={'float'}
+				title={__('Great!', 'multivendorx')}
+			/>
 
 			<div className="container-wrapper">
 				<div className="card-wrapper column-8">
