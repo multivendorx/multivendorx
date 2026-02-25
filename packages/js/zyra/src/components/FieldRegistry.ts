@@ -28,6 +28,8 @@ import MultiCheckboxTable from './MultiCheckboxTable';
 import Tabs from './Tabs';
 import ItemList from './ItemList';
 import NoticeField from './Notice';
+import CalendarInput from './CalendarInput';
+import EventCalendar from './EventCalendar';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -47,6 +49,8 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   checkbox: MultiCheckBox,
   log: Log,
   tab: Tabs,
+  'calendar-input': CalendarInput,
+  'event-calendar': EventCalendar,
   'multi-select': SelectInput,
   'expandable-panel': ExpandablePanelGroup,
   'setting-toggle': ToggleSetting,
