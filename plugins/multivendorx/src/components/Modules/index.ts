@@ -16,7 +16,8 @@ export default {
 				'https://multivendorx.com/docs/knowledgebase/booking-product',
 			reqPluging: [
 				{
-					name: 'WooCommerce Booking',
+					name: 'WooCommerce Bookings',
+					slug: 'woocommerce-bookings/woocommerce-bookings.php',
 					link: 'https://woocommerce.com/products/woocommerce-bookings/',
 				},
 			],
@@ -33,7 +34,8 @@ export default {
 			proModule: true,
 			reqPluging: [
 				{
-					name: 'WooCommerce Appointment',
+					name: 'WooCommerce Appointments',
+					slug: 'woocommerce-appointments/woocommerce-appointments.php',
 					link: 'https://bookingwp.com/plugins/woocommerce-appointments/',
 				},
 			],
@@ -49,7 +51,8 @@ export default {
 			proModule: true,
 			reqPluging: [
 				{
-					name: 'WooCommerce Subscription',
+					name: 'WooCommerce Subscriptions',
+					slug: 'woocommerce-subscriptions/woocommerce-subscriptions.php',
 					link: 'https://woocommerce.com/products/woocommerce-subscriptions/',
 				},
 			],
@@ -65,11 +68,13 @@ export default {
 			proModule: true,
 			reqPluging: [
 				{
-					name: 'WooCommerce Booking',
+					name: 'WooCommerce Bookings',
+					slug: 'woocommerce-bookings/woocommerce-bookings.php',
 					link: 'https://woocommerce.com/products/woocommerce-bookings/',
 				},
 				{
-					name: 'WooCommerce Accommodation Booking',
+					name: 'WooCommerce Accommodation Bookings',
+					slug: 'woocommerce-accommodation-bookings/woocommerce-accommodation-bookings.php',
 					link: 'https://woocommerce.com/products/woocommerce-accommodation-bookings/',
 				},
 			],
@@ -84,7 +89,8 @@ export default {
 			proModule: true,
 			reqPluging: [
 				{
-					name: 'Product Bundle',
+					name: 'Product Bundles',
+					slug: 'woocommerce-product-bundles/woocommerce-product-bundles.php',
 					link: 'https://woocommerce.com/products/product-bundles/',
 				},
 			],
@@ -99,11 +105,13 @@ export default {
 			proModule: true,
 			reqPluging: [
 				{
-					name: 'WooCommerce Simple Auction',
+					name: 'WooCommerce Simple Auctions',
+					slug: 'woocommerce-simple-auctions/woocommerce-simple-auctions.php',
 					link: 'https://codecanyon.net/item/woocommerce-simple-auctions-wordpress-auctions/6811382',
 				},
 				{
-					name: 'YITH WooCommerce Auction',
+					name: 'YITH WooCommerce Auctions',
+					slug: 'yith-woocommerce-auctions/init.php',
 					link: 'https://yithemes.com/themes/plugins/yith-woocommerce-auctions/',
 				},
 			],
@@ -120,6 +128,7 @@ export default {
 			reqPluging: [
 				{
 					name: 'RnB WooCommerce Booking & Rental',
+					slug: 'rnb/rnb.php',
 					link: 'https://codecanyon.net/item/rnb-woocommerce-rental-booking-system/14835145?ref=redqteam',
 				},
 			],
@@ -176,6 +185,7 @@ export default {
 			reqPluging: [
 				{
 					name: 'YITH WooCommerce Gift Cards',
+					slug: 'yith-woocommerce-gift-cards/init.php',
 					link: 'https://wordpress.org/plugins/yith-woocommerce-gift-cards/',
 				},
 			],
@@ -192,7 +202,7 @@ export default {
 			desc: 'Allows more than one store to sell the same product with their own price and stock.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/single-product-multiple-vendors-spmv',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=general`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=general`,
 			proModule: false,
 			category: 'store_management',
 			miniModule: true,
@@ -211,7 +221,7 @@ export default {
 			name: __('Store Policy', 'multivendorx'),
 			desc: 'Each store publishes its own return, refund, and shipping policies.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/store-policy',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=policy`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=policy`,
 			proModule: false,
 			category: 'store_management',
 		},
@@ -228,7 +238,7 @@ export default {
 			name: __('Store Review', 'multivendorx'),
 			desc: 'Customers leave ratings and written reviews on store pages.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/store-review',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=store-reviews`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=store-reviews`,
 			proModule: false,
 			category: ['store_management', 'customer_experience'],
 		},
@@ -256,7 +266,7 @@ export default {
 			desc: 'Store owners add staff accounts with role-based access to manage orders, products, or support.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/staff-manager',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=user-permissions`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=user-permissions`,
 			proModule: true,
 			category: 'store_management',
 			miniModule: true,
@@ -266,7 +276,7 @@ export default {
 			name: __('Privacy', 'multivendorx'),
 			desc: 'Hide sensitive store information from customers, including contact details, location, or other specified data.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=privacy`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=privacy`,
 			proModule: false,
 			category: 'store_management',
 		},
@@ -327,7 +337,7 @@ export default {
 			desc: 'Shipping charges calculated based on distance between store address and delivery location.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/distance-shipping',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=shipping`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=shipping`,
 			proModule: false,
 			category: 'shipping_management',
 		},
@@ -340,11 +350,12 @@ export default {
 			desc: 'Shipping cost determined by weight, order value, or product quantity.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/weight-shipping',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=shipping`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=shipping`,
 			proModule: false,
 			reqPluging: [
 				{
 					name: 'Table Rate Shipping',
+					slug: 'woocommerce-table-rate-shipping/woocommerce-table-rate-shipping.php',
 					link: 'https://woocommerce.com/products/table-rate-shipping/',
 				},
 			],
@@ -356,11 +367,12 @@ export default {
 			desc: 'Custom shipping charge applied to individual products.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/per-product-shipping',
-			//settingsLink: '${appLocalizer.plugin_url}settings&subtab=single-product-multiple-store',
+			//settingsLink: '${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=single-product-multiple-store',
 			proModule: true,
 			reqPluging: [
 				{
 					name: 'Per Product Shipping for WooCommerce',
+					slug: 'woocommerce-per-product-shipping/woocommerce-per-product-shipping.php',
 					link: 'https://woocommerce.com/products/per-product-shipping/',
 				},
 			],
@@ -377,7 +389,7 @@ export default {
 			desc: 'Generates invoices and packing slips that can be printed or emailed to customers.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/invoice-packing-slip',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=invoices`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=invoices`,
 			proModule: true,
 			category: 'customer_experience',
 			miniModule: true,
@@ -387,7 +399,7 @@ export default {
 			name: __('Live Chat', 'multivendorx'),
 			desc: 'Customers send real-time messages to stores about products or orders.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/live-chat',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=live-chat`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=live-chat`,
 			proModule: true,
 			category: 'customer_experience',
 		},
@@ -416,6 +428,7 @@ export default {
 			reqPluging: [
 				{
 					name: 'CatalogX',
+					slug: 'woocommerce-catalog-enquiry/woocommerce-catalog-enquiry.php',
 					link: 'https://catalogx.com/?utm_source=multivendorx&utm_medium=pluginsettings&utm_campaign=multivendorx',
 				},
 			],
@@ -428,7 +441,7 @@ export default {
 			desc: 'Customers submit refund requests, and stores review and process them directly.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/marketplace-refund',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=refunds`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=refunds`,
 			proModule: false,
 			category: ['store_management', 'customer_experience'],
 		},
@@ -447,7 +460,7 @@ export default {
 			name: __('Store SEO', 'multivendorx'),
 			desc: 'SEO settings for store pages and products using Rank Math or Yoast SEO.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/store-seo',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=seo`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=seo`,
 			proModule: true,
 			category: ['analytics_tools', 'store_management'],
 		},
@@ -469,7 +482,7 @@ export default {
 			name: __('Compliance', 'multivendorx'),
 			desc: 'Ensure stores meet marketplace requirements with automated policy checks.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=compliance`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=compliance`,
 			// proModule: true,
 			category: 'marketplace_boosters',
 		},
@@ -488,7 +501,7 @@ export default {
 			name: __('Facilitator', 'multivendorx'),
 			desc: 'Share commission on a sale between the store and another designated user. Each participant receives their assigned portion automatically.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=facilitator`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=facilitator`,
 			proModule: true,
 			category: 'marketplace_boosters',
 			miniModule: true,
@@ -498,7 +511,7 @@ export default {
 			name: __('Marketplace Fee', 'multivendorx'),
 			desc: 'Set and manage platform fees for each order or store to cover operational costs',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=store-commissions`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=store-commissions`,
 			proModule: true,
 			category: 'marketplace_boosters',
 		},
@@ -507,7 +520,7 @@ export default {
 			name: __('Franchises', 'multivendorx'),
 			desc: 'Enables franchise-style ordering with store-created orders, admin-product ordering, and automatic store assignment based on customer location.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=franchises`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=franchises`,
 			proModule: true,
 			category: ['store_management', 'marketplace_boosters'],
 			miniModule: true,
@@ -519,7 +532,7 @@ export default {
 			desc: 'Payment gateway fees are deducted from vendor commissions by the admin, ensuring platform costs are covered automatically.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/payment-gateway-charge/',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=store-commissions`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=store-commissions`,
 			proModule: false,
 			category: ['store_management', 'payment_management'],
 		},
@@ -529,7 +542,7 @@ export default {
 			desc: 'Paid promotion for products within the marketplace, boosting visibility.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/advertise-product/',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=product-advertising`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=product-advertising`,
 			proModule: true,
 			category: 'marketplace_boosters',
 		},
@@ -538,7 +551,7 @@ export default {
 			name: __('Wholesale', 'multivendorx'),
 			desc: 'Stores set wholesale prices and bulk purchase rules for selected customer groups.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/wholesale',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=wholesale`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=wholesale`,
 			proModule: true,
 			category: ['analytics_tools', 'store_management'],
 			miniModule: true,
@@ -549,7 +562,7 @@ export default {
 			desc: 'Manages stock levels, sends low-stock alerts, and maintains a waitlist for out-of-stock products.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/store-inventory',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=inventory`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=inventory`,
 			proModule: true,
 			category: 'marketplace_boosters',
 			miniModule: true,
@@ -560,7 +573,7 @@ export default {
 			desc: 'Defines the minimum or maximum number of items a customer can purchase in a single order.',
 			docLink:
 				'https://multivendorx.com/docs/non-knowledgebase/min-max-quantities/',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=min-max`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=min-max`,
 			proModule: false,
 			category: 'marketplace_boosters',
 			miniModule: true,
@@ -597,10 +610,12 @@ export default {
 			reqPluging: [
 				{
 					name: 'Elementor Website Builder',
+					slug: 'elementor/elementor.php',
 					link: 'https://wordpress.org/plugins/elementor/',
 				},
 				{
 					name: 'Elementor Pro',
+					slug: 'elementor-pro/elementor-pro.php',
 					link: 'https://elementor.com/pricing/',
 				},
 			],
@@ -616,6 +631,7 @@ export default {
 			reqPluging: [
 				{
 					name: 'BuddyPress',
+					slug: 'buddypress/bp-loader.php',
 					link: 'https://wordpress.org/plugins/buddypress/',
 				},
 			],
@@ -628,9 +644,14 @@ export default {
 			docLink: 'https://multivendorx.com/docs/knowledgebase/mvx-wpml',
 			proModule: false,
 			reqPluging: [
-				{ name: 'WPML', link: 'https://wpml.org/' },
+				{
+					name: 'WPML',
+					slug: 'sitepress-multilingual-cms/sitepress.php',
+					link: 'https://wpml.org/',
+				},
 				{
 					name: 'WooCommerce Multilingual',
+					slug: 'woocommerce-multilingual/wpml-woocommerce.php',
 					link: 'https://wordpress.org/plugins/woocommerce-multilingual/',
 				},
 			],
@@ -644,7 +665,8 @@ export default {
 			proModule: true,
 			reqPluging: [
 				{
-					name: 'Advance Custom Field',
+					name: 'Advanced Custom Fields',
+					slug: 'advanced-custom-fields/acf.php',
 					link: 'https://wordpress.org/plugins/advanced-custom-fields/',
 				},
 			],
@@ -659,6 +681,7 @@ export default {
 			reqPluging: [
 				{
 					name: 'GEOmyWP',
+					slug: 'geo-my-wp/geo-my-wp.php',
 					link: 'https://wordpress.org/plugins/geo-my-wp/',
 				},
 			],
@@ -670,10 +693,14 @@ export default {
 			desc: 'Affiliate program that tracks referrals and commissions for marketplace products.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/affiliate-product/',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=affiliate`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=affiliate`,
 			proModule: true,
 			reqPluging: [
-				{ name: 'Affiliate WP', link: 'https://affiliatewp.com/' },
+				{
+					name: 'AffiliateWP',
+					slug: 'affiliate-wp/affiliate-wp.php',
+					link: 'https://affiliatewp.com/',
+				},
 			],
 			category: 'integration',
 		},
@@ -686,7 +713,8 @@ export default {
 			proModule: true,
 			reqPluging: [
 				{
-					name: 'Product Addons',
+					name: 'Product AddOns',
+					slug: 'woocommerce-product-addons/woocommerce-product-addons.php',
 					link: 'https://woocommerce.com/products/product-add-ons/',
 				},
 			],
@@ -706,7 +734,7 @@ export default {
 			desc: 'Lets stores pinpoint their location on an interactive map, making it easy for customers to discover nearby stores and shop locally.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/store-location/',
-			settingsLink: `${appLocalizer.plugin_url}settings&subtab=geolocation`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=geolocation`,
 			proModule: false,
 			category: 'store_management',
 		},

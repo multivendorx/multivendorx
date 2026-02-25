@@ -1,5 +1,5 @@
 <?php
-namespace MultiVendorX\QuestionsAnswers;
+namespace MultiVendorX\QuestionAnswer;
 
 use MultiVendorX\Utill;
 

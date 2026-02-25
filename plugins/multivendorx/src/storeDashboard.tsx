@@ -370,8 +370,8 @@ const Dashboard = () => {
 			?.store_dashboard_site_logo || '';
 
 	const availableStores = appLocalizer.store_ids.filter((store) => {
-		return appLocalizer.active_store
-			? store.id !== String(appLocalizer.active_store)
+		return appLocalizer.store_id
+			? store.id !== String(appLocalizer.store_id)
 			: true;
 	});
 

@@ -68,111 +68,172 @@ class Modules {
      *
      * @return array
      */
-    public function get_all_modules() {
-        if ( ! $this->modules ) {
-            $this->modules = apply_filters(
-                'multivendorx_modules',
-                array(
-                    'simple'                 => array(
-                        'id'           => 'simple',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/Simple/Module.php',
-                        'module_class' => 'MultiVendorX\Simple\Module',
-                    ),
-                    'store-policy'           => array(
-                        'id'           => 'store-policy',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/StorePolicy/Module.php',
-                        'module_class' => 'MultiVendorX\StorePolicy\Module',
-                    ),
-                    'store-review'           => array(
-                        'id'           => 'store-review',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/StoreReview/Module.php',
-                        'module_class' => 'MultiVendorX\StoreReview\Module',
-                    ),
-                    'question-answer'        => array(
-                        'id'           => 'question-answer',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/QuestionsAnswers/Module.php',
-                        'module_class' => 'MultiVendorX\QuestionsAnswers\Module',
-                    ),
-                    'marketplace-refund'     => array(
-                        'id'           => 'marketplace-refund',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/Refund/Module.php',
-                        'module_class' => 'MultiVendorX\Refund\Module',
-                    ),
-                    'shared-listing'         => array(
-                        'id'           => 'shared-listing',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/SharedListing/Module.php',
-                        'module_class' => 'MultiVendorX\SharedListing\Module',
-                    ),
-                    'follow-store'           => array(
-                        'id'           => 'follow-store',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/FollowStore/Module.php',
-                        'module_class' => 'MultiVendorX\FollowStore\Module',
-                    ),
-                    'marketplace-compliance' => array(
-                        'id'           => 'marketplace-compliance',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/Compliance/Module.php',
-                        'module_class' => 'MultiVendorX\Compliance\Module',
-                    ),
-                    'geo-location'           => array(
-                        'id'           => 'geo-location',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/GeoLocation/Module.php',
-                        'module_class' => 'MultiVendorX\GeoLocation\Module',
-                    ),
-                    'store-shipping'         => array(
-                        'id'           => 'store-shipping',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/StoreShipping/Module.php',
-                        'module_class' => 'MultiVendorX\StoreShipping\Module',
-                    ),
-                    'announcement'           => array(
-                        'id'           => 'announcement',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/Announcement/Module.php',
-                        'module_class' => 'MultiVendorX\Announcement\Module',
-                    ),
-                    'knowledgebase'          => array(
-                        'id'           => 'knowledgebase',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/Knowledgebase/Module.php',
-                        'module_class' => 'MultiVendorX\Knowledgebase\Module',
-                    ),
-                    'privacy'                => array(
-                        'id'           => 'privacy',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/Privacy/Module.php',
-                        'module_class' => 'MultiVendorX\Privacy\Module',
-                    ),
-                    'marketplace-gateway'    => array(
-                        'id'           => 'marketplace-gateway',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/MarketplaceGateway/Module.php',
-                        'module_class' => 'MultiVendorX\MarketplaceGateway\Module',
-                    ),
-                    'min-max'                => array(
-                        'id'           => 'min-max',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/MinMax/Module.php',
-                        'module_class' => 'MultiVendorX\MinMax\Module',
-                    ),
-                    'elementor'              => array(
-                        'id'           => 'elementor',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/Elementor/Module.php',
-                        'module_class' => 'MultiVendorX\Elementor\Module',
-                        'requires'     => array(
-                            'plugin' => array(
-                                'elementor/elementor.php',
-                                'elementor-pro/elementor-pro.php',
-                            ),
-                        ),
-                    ),
-                    'wpml'                   => array(
-                        'id'           => 'wpml',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/WPML/Module.php',
-                        'module_class' => 'MultiVendorX\WPML\Module',
-                        'requires'     => array(
-                            'plugin' => array(
-                                'sitepress-multilingual-cms/sitepress.php',
-                                'wpml-string-translation/plugin.php',
-                                'woocommerce-multilingual/wpml-woocommerce.php',
-                            ),
-                        ),
-                    ),
-                )
-            );
+    // public function get_all_modules() {
+    //     if ( ! $this->modules ) {
+    //         $this->modules = apply_filters(
+    //             'multivendorx_modules',
+    //             array(
+    //                 'simple'                 => array(
+    //                     'id'           => 'simple',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/Simple/Module.php',
+    //                     'module_class' => 'MultiVendorX\Simple\Module',
+    //                 ),
+    //                 'store-policy'           => array(
+    //                     'id'           => 'store-policy',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/StorePolicy/Module.php',
+    //                     'module_class' => 'MultiVendorX\StorePolicy\Module',
+    //                 ),
+    //                 'store-review'           => array(
+    //                     'id'           => 'store-review',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/StoreReview/Module.php',
+    //                     'module_class' => 'MultiVendorX\StoreReview\Module',
+    //                 ),
+    //                 'question-answer'        => array(
+    //                     'id'           => 'question-answer',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/QuestionsAnswers/Module.php',
+    //                     'module_class' => 'MultiVendorX\QuestionsAnswers\Module',
+    //                 ),
+    //                 'marketplace-refund'     => array(
+    //                     'id'           => 'marketplace-refund',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/Refund/Module.php',
+    //                     'module_class' => 'MultiVendorX\Refund\Module',
+    //                 ),
+    //                 'shared-listing'         => array(
+    //                     'id'           => 'shared-listing',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/SharedListing/Module.php',
+    //                     'module_class' => 'MultiVendorX\SharedListing\Module',
+    //                 ),
+    //                 'follow-store'           => array(
+    //                     'id'           => 'follow-store',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/FollowStore/Module.php',
+    //                     'module_class' => 'MultiVendorX\FollowStore\Module',
+    //                 ),
+    //                 'marketplace-compliance' => array(
+    //                     'id'           => 'marketplace-compliance',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/Compliance/Module.php',
+    //                     'module_class' => 'MultiVendorX\Compliance\Module',
+    //                 ),
+    //                 'geo-location'           => array(
+    //                     'id'           => 'geo-location',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/GeoLocation/Module.php',
+    //                     'module_class' => 'MultiVendorX\GeoLocation\Module',
+    //                 ),
+    //                 'store-shipping'         => array(
+    //                     'id'           => 'store-shipping',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/StoreShipping/Module.php',
+    //                     'module_class' => 'MultiVendorX\StoreShipping\Module',
+    //                 ),
+    //                 'announcement'           => array(
+    //                     'id'           => 'announcement',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/Announcement/Module.php',
+    //                     'module_class' => 'MultiVendorX\Announcement\Module',
+    //                 ),
+    //                 'knowledgebase'          => array(
+    //                     'id'           => 'knowledgebase',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/Knowledgebase/Module.php',
+    //                     'module_class' => 'MultiVendorX\Knowledgebase\Module',
+    //                 ),
+    //                 'privacy'                => array(
+    //                     'id'           => 'privacy',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/Privacy/Module.php',
+    //                     'module_class' => 'MultiVendorX\Privacy\Module',
+    //                 ),
+    //                 'marketplace-gateway'    => array(
+    //                     'id'           => 'marketplace-gateway',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/MarketplaceGateway/Module.php',
+    //                     'module_class' => 'MultiVendorX\MarketplaceGateway\Module',
+    //                 ),
+    //                 'min-max'                => array(
+    //                     'id'           => 'min-max',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/MinMax/Module.php',
+    //                     'module_class' => 'MultiVendorX\MinMax\Module',
+    //                 ),
+    //                 'elementor'              => array(
+    //                     'id'           => 'elementor',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/Elementor/Module.php',
+    //                     'module_class' => 'MultiVendorX\Elementor\Module',
+    //                     'requires'     => array(
+    //                         'plugin' => array(
+    //                             'elementor/elementor.php',
+    //                             'elementor-pro/elementor-pro.php',
+    //                         ),
+    //                     ),
+    //                 ),
+    //                 'wpml'                   => array(
+    //                     'id'           => 'wpml',
+    //                     'module_file'  => MultiVendorX()->plugin_path . 'modules/WPML/Module.php',
+    //                     'module_class' => 'MultiVendorX\WPML\Module',
+    //                     'requires'     => array(
+    //                         'plugin' => array(
+    //                             'sitepress-multilingual-cms/sitepress.php',
+    //                             'wpml-string-translation/plugin.php',
+    //                             'woocommerce-multilingual/wpml-woocommerce.php',
+    //                         ),
+    //                     ),
+    //                 ),
+    //             )
+    //         );
+    //     }
+
+    //     return $this->modules;
+    // }
+
+    private function camel_to_kebab( string $string ): string {
+        return strtolower(
+            preg_replace( '/(?<!^)[A-Z]/', '-$0', $string )
+        );
+    }
+
+    /**
+     * Get all modules dynamically from /modules directory
+     */
+    public function get_all_modules(): array {
+
+        if ( ! empty( $this->modules ) ) {
+            return $this->modules;
+        }
+
+        $sources = apply_filters(
+            'multivendorx_module_sources',
+            [
+                [
+                    'path'      => trailingslashit( MultiVendorX()->plugin_path . 'modules' ),
+                    'namespace' => 'MultiVendorX',
+                ],
+            ]
+        );
+
+        foreach ( $sources as $source ) {
+
+            $base_path = $source['path'];
+            $namespace = $source['namespace'];
+
+            if ( ! is_dir( $base_path ) ) {
+                continue;
+            }
+
+            $folders = scandir( $base_path );
+
+            foreach ( $folders as $folder ) {
+
+                if ( in_array( $folder, ['.', '..'], true ) ) {
+                    continue;
+                }
+
+                $module_file = $base_path . $folder . '/Module.php';
+
+                if ( ! is_dir( $base_path . $folder ) || ! file_exists( $module_file ) ) {
+                    continue;
+                }
+
+                $module_id = $this->camel_to_kebab( $folder );
+
+                $this->modules[ $module_id ] = [
+                    'id'           => $module_id,
+                    'module_file'  => $module_file,
+                    'module_class' => "{$namespace}\\{$folder}\\Module",
+                ];
+            }
         }
 
         return $this->modules;
@@ -189,9 +250,7 @@ class Modules {
             return $this->active_modules;
         }
 
-        $this->active_modules = MultiVendorX()->setting->get_option( Utill::ACTIVE_MODULES_DB_KEY, array() );
-
-        return $this->active_modules;
+        return MultiVendorX()->setting->get_option( Utill::ACTIVE_MODULES_DB_KEY, array() );
     }
 
     /**
@@ -204,49 +263,48 @@ class Modules {
             return;
         }
 
-        $license_active    = Utill::is_khali_dabba();
-        $active_modules    = $this->get_active_modules();
-        $all_modules       = $this->get_all_modules();
-        $activated_modules = array();
+        $active_modules = $this->get_active_modules();
+        $all_modules    = $this->get_all_modules();
 
-        foreach ( $active_modules as $modules_id ) {
-            if ( ! isset( $all_modules[ $modules_id ] ) ) {
+        $validated_active = [];
+
+        foreach ( $active_modules as $module_id ) {
+
+            if ( empty( $all_modules[ $module_id ] ) ) {
                 continue;
             }
 
-            $module = $all_modules[ $modules_id ];
-            // Check if the module is available.
-            if ( ! $this->is_module_available( $module, $license_active ) ) {
+            $module = $all_modules[ $module_id ];
+
+            if ( ! $this->is_module_available( $module ) ) {
                 continue;
             }
 
-            // Store the module as active module.
-            if ( file_exists( $module['module_file'] ) ) {
-                $activated_modules[] = $modules_id;
+            if ( isset( $this->container[ $module_id ] ) ) {
+                $validated_active[] = $module_id;
+                continue;
             }
 
-            // Activate the module.
-            if ( file_exists( $module['module_file'] ) && ! in_array( $modules_id, $this->container, true ) ) {
-                require_once $module['module_file'];
+            require_once $module['module_file'];
 
-                $module_class = $module['module_class'];
-                try {
-                    $this->container[ $modules_id ] = new $module_class();
-                } catch ( \Throwable $e ) {
-                    MultiVendorX()->util->log( $e );
-                }
-                /**
-                 * Module activation hook
-                 *
-                 * @param object $name module object
-                 */
-                do_action( 'multivendorx_activated_module_' . $modules_id, $this->container[ $modules_id ] );
+            try {
+                $class = $module['module_class'];
+                $this->container[ $module_id ] = new $class();
+                $validated_active[] = $module_id;
+            } catch ( \Throwable $e ) {
+                MultiVendorX()->util->log( $e );
+                continue;
             }
+
+            do_action(
+                "multivendorx_activated_module_{$module_id}",
+                $this->container[ $module_id ]
+            );
         }
 
-        // store activated module as active module.
-        if ( $activated_modules !== $active_modules ) {
-            update_option( Utill::ACTIVE_MODULES_DB_KEY, $activated_modules );
+        if ( $validated_active !== $active_modules ) {
+            update_option( Utill::ACTIVE_MODULES_DB_KEY, $validated_active );
+            $this->active_modules = $validated_active;
         }
 
         self::$module_activated = true;
@@ -259,30 +317,22 @@ class Modules {
      * @param bool  $license_active Whether the license for pro modules is active.
      * @return bool
      */
-    private function is_module_available( $module, $license_active ) {
+    private function is_module_available( $module ) {
+        if ( ! file_exists( $module['module_file'] ) ) {
+            return false;
+        }
 
-        if ( ! empty( $module['requires']['plugin'] ) ) {
-            $plugins = $module['requires']['plugin'];
-            foreach ( $plugins as $plugin_slug ) {
-                if ( ! Utill::is_active_plugin( $plugin_slug ) ) {
-                    return false;
-                }
+        require_once $module['module_file'];
+
+        $class = $module['module_class'];
+
+        if ( class_exists( $class ) && method_exists( $class, 'is_compatible' ) ) {
+            if ( ! $class::is_compatible() ) {
+                return false;
             }
         }
 
-        $is_pro_module = $module['pro_module'] ?? false;
-
-        // if it is free module.
-        if ( ! $is_pro_module ) {
-            return true;
-        }
-
-        // if it is pro module.
-        if ( $is_pro_module && $license_active ) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     /**
@@ -291,8 +341,7 @@ class Modules {
      * @return array
      */
     public function get_all_modules_ids() {
-        $modules = $this->get_all_modules();
-        return array_keys( $modules );
+        return array_keys( $this->get_all_modules() );
     }
 
     /**
@@ -300,23 +349,16 @@ class Modules {
      *
      * @return array
      */
-    public function get_available_modules() {
-        $modules           = $this->get_all_modules();
-        $license_active    = Utill::is_khali_dabba();
-        $available_modules = array();
+    public function get_available_modules(): array {
+        $available      = [];
 
-        foreach ( $modules as $module_id => $module ) {
-            // Check if the module is available.
-            if ( ! $this->is_module_available( $module, $license_active ) ) {
-                continue;
-            }
-
-            if ( file_exists( $module['module_file'] ) ) {
-                $available_modules[] = $module['id'];
+        foreach ( $this->get_all_modules() as $id => $module ) {
+            if ( $this->is_module_available( $module ) ) {
+                $available[] = $id;
             }
         }
 
-        return $available_modules;
+        return $available;
     }
 
     /**
@@ -344,16 +386,11 @@ class Modules {
      * @param array $modules The module name to deactivate.
      * @return array
      */
-    public function deactivate_modules( $modules ) {
-        $active_modules = $this->get_active_modules();
+    public function deactivate_modules( array $modules ): array {
 
-        foreach ( $modules as $module_id ) {
-            $active_modules = array_diff( $active_modules, array( $module_id ) );
-        }
-
-        $active_modules = array_values( $active_modules );
-
-        $this->active_modules = $active_modules;
+        $this->active_modules = array_values(
+            array_diff( $this->get_active_modules(), $modules )
+        );
 
         update_option( Utill::ACTIVE_MODULES_DB_KEY, $this->active_modules );
 
@@ -361,12 +398,12 @@ class Modules {
             'shutdown',
             function () use ( $modules ) {
                 foreach ( $modules as $module_id ) {
-                    /**
-                     * Module deactivation hook
-                     *
-                     * @param object $module deactivated module object
-                     */
-                    do_action( 'multivendorx_deactivated_module_' . $module_id, $this->container[ $module_id ] );
+                    if ( isset( $this->container[ $module_id ] ) ) {
+                        do_action(
+                            "multivendorx_deactivated_module_{$module_id}",
+                            $this->container[ $module_id ]
+                        );
+                    }
                 }
             }
         );
