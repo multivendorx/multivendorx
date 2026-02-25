@@ -26,53 +26,32 @@ class Util {
      * @param int $store_id The ID of the store.
      */
     public static function get_zones( $store_id ) {
-
         $data_store = WC_Data_Store::load( 'shipping-zone' );
         $raw_zones  = $data_store->get_zones();
         $zones      = array();
-
         foreach ( $raw_zones as $raw_zone ) {
-
             $zone            = new WC_Shipping_Zone( $raw_zone );
-            $enabled_methods  = $zone->get_shipping_methods( true );
-            $zone_id         = $zone->get_id();
+            $enabled_methods = $zone->get_shipping_methods( true );
 
-            // Collect method IDs
             $methods_id = wp_list_pluck( $enabled_methods, 'id' );
 
-            /**
-             * Logic:
-             * Return zone only if store shipping is enabled.
-             * If table_rate exists, store shipping must also exist.
-             */
-            if ( ! in_array( 'multivendorx_store_shipping', $methods_id, true ) ) {
-                continue;
+            if ( in_array( 'multivendorx_store_shipping', $methods_id, true ) ) {
+                $zones[ $zone->get_id() ]                            = $zone->get_data();
+                $zones[ $zone->get_id() ]['zone_id']                 = $zone->get_id();
+                $zones[ $zone->get_id() ]['formatted_zone_location'] = $zone->get_formatted_location();
+                $zones[ $zone->get_id() ]['shipping_methods']        = self::get_shipping_methods( $zone->get_id(), $store_id );
             }
+        }
+        // Everywhere zone if has method called vendor shipping.
+        $overall_zone    = new WC_Shipping_Zone( 0 );
+        $enabled_methods = $overall_zone->get_shipping_methods( true );
+        $methods_id      = wp_list_pluck( $enabled_methods, 'id' );
 
-            // Initialize zone structure
-            if ( ! isset( $zones[ $zone_id ] ) ) {
-
-                $zones[ $zone_id ]                            = $zone->get_data();
-                $zones[ $zone_id ]['zone_id']                 = $zone_id;
-                $zones[ $zone_id ]['formatted_zone_location'] = $zone->get_formatted_location();
-                $zones[ $zone_id ]['shipping_methods']        = self::get_shipping_methods( $zone_id, $store_id );
-                $zones[ $zone_id ]['methods']                 = array();
-            }
-
-            // Process methods with dependency rule
-            foreach ( $enabled_methods as $raw_method ) {
-
-                $method_id = $raw_method->id;
-
-                if (
-                    in_array( $method_id, array( 'table_rate', 'multivendorx_store_shipping' ), true )
-                ) {
-                    $zones[ $zone_id ]['methods'][] = array(
-                        'method_id'   => $method_id,
-                        'instance_id' => $raw_method->instance_id ?? 0,
-                    );
-                }
-            }
+        if ( in_array( 'multivendorx_store_shipping', $methods_id, true ) ) {
+            $zones[ $overall_zone->get_id() ]                            = $overall_zone->get_data();
+            $zones[ $overall_zone->get_id() ]['zone_id']                 = $overall_zone->get_id();
+            $zones[ $overall_zone->get_id() ]['formatted_zone_location'] = $overall_zone->get_formatted_location();
+            $zones[ $overall_zone->get_id() ]['shipping_methods']        = self::get_shipping_methods( $overall_zone->get_id(), $store_id );
         }
 
         return $zones;
