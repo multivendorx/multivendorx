@@ -1,7 +1,5 @@
 import { __ } from '@wordpress/i18n';
-const methods = appLocalizer?.all_payments
-	? Object.entries(appLocalizer.all_payments).map(([_, value]) => value)
-	: [];
+
 
 export default {
 	id: 'delivery',

@@ -38,6 +38,10 @@ class Module {
         require_once MultiVendorX()->plugin_path . 'modules/Elementor/Helper.php';
     }
 
+    public static function is_compatible(): bool {
+        return defined( 'ELEMENTOR_VERSION' );
+    }
+
     /**
      * Init helper classes
      *

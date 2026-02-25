@@ -5,7 +5,7 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\QuestionsAnswers;
+namespace MultiVendorX\QuestionAnswer;
 
 /**
  * MultiVendorX Questions Answers Admin class

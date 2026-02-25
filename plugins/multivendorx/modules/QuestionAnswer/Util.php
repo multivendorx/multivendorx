@@ -6,7 +6,7 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\QuestionsAnswers;
+namespace MultiVendorX\QuestionAnswer;
 
 use MultiVendorX\Utill;
 

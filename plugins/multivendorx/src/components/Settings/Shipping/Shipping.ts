@@ -38,7 +38,7 @@ export default {
 							type: 'clickable-list',
 							label: 'Shipping Zones',
 							desc: 'Create shipping zones in WooCommerce → Shipping using the ‘Add Zone’ button. Assign the shipping method ‘Store shipping’ to let each store set its own shipping costs for that zone.',
-							items: appLocalizer.all_zones,
+							items: appLocalizer.zones_list,
 							button: {
 								label: 'Add New Zone',
 								url: `${appLocalizer.admin_url}admin.php?page=wc-settings&tab=shipping`,

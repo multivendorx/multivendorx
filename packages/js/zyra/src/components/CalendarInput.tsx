@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import DatePicker, { Calendar, DateObject, DatePickerRef } from 'react-multi-date-picker'; 
+import DatePicker, { Calendar, DateObject, DatePickerRef } from 'react-multi-date-picker';
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
 import { FieldComponent } from './types';
 
@@ -9,14 +9,12 @@ export interface CalendarRange {
 }
 
 interface CalendarInputProps {
-  wrapperClass?: string;
   inputClass?: string;
   format?: string;
   value?: CalendarRange;
   onChange?: (range?: CalendarRange) => void;
   multiple?: boolean;
-  proSetting?: boolean;
-  showInput?: boolean; 
+  showInput?: boolean;
   NumberOfMonth?: number;
   fullYear?: boolean;
 }
@@ -39,7 +37,7 @@ interface PresetsProps {
   format: string;
 }
 
-const Presets : React.FC<PresetsProps> = ({ setValue, pickerRef, format }) => {
+const Presets: React.FC<PresetsProps> = ({ setValue, pickerRef, format }) => {
   const now = new Date();
 
   const startOfWeek = (date: Date) => {
@@ -112,7 +110,6 @@ const Presets : React.FC<PresetsProps> = ({ setValue, pickerRef, format }) => {
 };
 
 export const CalendarInputUI: React.FC<CalendarInputProps> = ({
-  wrapperClass = "calender-wrapper",
   inputClass,
   format = "MMMM DD YYYY",
   value,
@@ -169,7 +166,7 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
     value: internalValue,
     format,
     range: !multiple,
-    numberOfMonths: {NumberOfMonth},
+    numberOfMonths: { NumberOfMonth },
     sort: true,
     onChange: handleChange,
     maxDate: new Date(),
@@ -179,7 +176,7 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
   };
 
   return (
-    <div className={`settings-calender ${wrapperClass || ''}`}>
+    <div className='settings-calender'>
       {showInput ? (
         <DatePicker
           {...commonProps}
@@ -196,8 +193,19 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
   );
 };
 
-const CalendarInput: FieldComponent= {
-  render: CalendarInputUI,
-}
+const CalendarInput: FieldComponent = {
+  render: ({ field, value, onChange }) => (
+    <CalendarInputUI
+      inputClass={field.inputClass}
+      format={field.format}
+      multiple={field.multiple ?? field.mulitple ?? false}
+      showInput={field.showInput}
+      NumberOfMonth={field.NumberOfMonth}
+      fullYear={field.fullYear}
+      value={value}
+      onChange={onChange}
+    />
+  ),
+};
 
 export default CalendarInput;

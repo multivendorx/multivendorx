@@ -1,7 +1,4 @@
-// External dependencies
-import React, { useEffect, useState } from 'react';
-
-// Internal dependencies
+import React, { useState, useMemo } from 'react';
 import { getApiLink, sendApiResponse } from '../utils/apiService';
 import { useModules } from '../contexts/ModuleContext';
 import '../styles/web/Modules.scss';
@@ -11,7 +8,6 @@ import HeaderSearch from './HeaderSearch';
 import { SelectInputUI } from './SelectInput';
 import { PopupUI } from './Popup';
 
-// Types
 interface Module {
     id: string;
     name: string;
@@ -19,7 +15,7 @@ interface Module {
     icon: string;
     docLink?: string;
     videoLink?: string;
-    reqPluging?: { name: string; link: string }[];
+    reqPluging?: { name: string; slug: string; link: string }[];
     settingsLink?: string;
     proModule?: boolean;
     category?: string | string[];
@@ -41,19 +37,18 @@ interface AppLocalizer {
     nonce: string;
     apiUrl: string;
     restUrl: string;
+    active_plugins?: string[];
 }
 
 interface ModuleProps {
     modulesArray?: { category: boolean; modules: ModuleItem[] };
     apiLink: string;
     pluginName: string;
-    brandImg: string;
     appLocalizer: AppLocalizer;
     proPopupContent?: React.FC;
-    variant?: 'default' | 'mini-module'
+    variant?: 'default' | 'mini-module';
 }
 
-// Type Guard
 const isModule = (item: ModuleItem): item is Module => !('type' in item);
 
 const Modules: React.FC<ModuleProps> = ({
@@ -64,20 +59,22 @@ const Modules: React.FC<ModuleProps> = ({
     pluginName,
     variant = 'default'
 }) => {
-    const [modelOpen, setModelOpen] = useState<boolean>(false);
-    const [successMsg, setSuccessMsg] = useState<string>('');
-    const [selectedCategory, setSelectedCategory] = useState<string>('All');
-    const [selectedFilter, setSelectedFilter] = useState<string>('All');
-    const [searchQuery, setSearchQuery] = useState<string>('');
-    const [highlightedId, setHighlightedId] = useState<string | null>(null);
+
+    const [modelOpen, setModelOpen] = useState(false);
+    const [successMsg, setSuccessMsg] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [selectedFilter, setSelectedFilter] = useState('All');
+    const [searchQuery, setSearchQuery] = useState('');
 
     const { modules, insertModule, removeModule } = useModules();
-    const totalCount = modulesArray.modules.filter(isModule).length;
 
-    const activeCount = modulesArray.modules.filter(
-        (item) => isModule(item) && modules.includes(item.id)
-    ).length;
+    const moduleList = useMemo(
+        () => modulesArray.modules.filter(isModule),
+        [modulesArray.modules]
+    );
 
+    const totalCount = moduleList.length;
+    const activeCount = moduleList.filter(m => modules.includes(m.id)).length;
     const inactiveCount = totalCount - activeCount;
 
     const formatCategory = (category: string): string =>
@@ -86,126 +83,88 @@ const Modules: React.FC<ModuleProps> = ({
             .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
             .join(' ');
 
-    const getCategories = (category?: string | string[]): string[] =>
+    const getCategories = (category?: string | string[]) =>
         category ? (Array.isArray(category) ? category : [category]) : [];
 
     const categories = [
         { id: 'All', label: 'All' },
         ...modulesArray.modules
-            .filter((item): item is Separator => !isModule(item) && item.type === 'separator')
-            .map((item) => ({ id: item.id, label: item.label })),
+            .filter((item): item is Separator => !isModule(item))
+            .map(item => ({ id: item.id, label: item.label })),
     ];
 
-    const filteredModules = modulesArray.modules.filter((item) => {
-        if (!isModule(item)) {
-            // Separator logic: show if it has any modules in that category
-            const separatorCategory = item.id;
-            const hasModulesInCategory = modulesArray.modules.some(
-                (m) => isModule(m) && getCategories(m.category).includes(separatorCategory)
-            );
-            return (selectedCategory === 'All' || item.id === selectedCategory) && hasModulesInCategory;
-        }
+    const isModuleAvailable = (module: Module) =>
+        module.proModule ? appLocalizer.khali_dabba ?? false : true;
 
-        // Module logic
-        // For mini-module variant, only show modules with miniModule: true
-        if (variant === 'mini-module' && !item.miniModule) {
-            return false;
-        }
-
-        const modCats = getCategories(item.category);
-        if (selectedCategory !== 'All' && !modCats.includes(selectedCategory)) return false;
-        if (selectedFilter === 'Active' && !modules.includes(item.id)) return false;
-        if (selectedFilter === 'Inactive' && modules.includes(item.id)) return false;
-        if (searchQuery && !item.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-        return true;
-    });
-
-    const isModuleAvailable = (moduleId: string): boolean => {
-        const module = modulesArray.modules.find(
-            (moduleData) => isModule(moduleData) && moduleData.id === moduleId
-        ) as Module;
-        return module?.proModule ? appLocalizer.khali_dabba ?? false : true;
-    };
-
-    const handleOnChange = async (
-        event: [],
-        moduleId: string,
-        reloadOnChange = false
+    const handleOnChange = (
+        event: string[],
+        module: Module
     ) => {
-        const highlightedEl = document.querySelector('.module-list-item.highlight');
-        if (highlightedEl) {
-            highlightedEl.classList.remove('highlight');
-        }
 
-        if (!isModuleAvailable(moduleId)) {
+        document.querySelector('.module-list-item.highlight')
+            ?.classList.remove('highlight');
+
+        if (!isModuleAvailable(module)) {
             setModelOpen(true);
             return;
         }
 
+        if (module.reqPluging?.some(
+            plugin => !appLocalizer.active_plugins?.includes(plugin.slug)
+        )) return;
+
         const action = event.length > 0 ? 'activate' : 'deactivate';
-        try {
-            if (action === 'activate') {
-                insertModule?.(moduleId);
-            } else {
-                removeModule?.(moduleId);
-            }
-            localStorage.setItem(`force_${pluginName}_context_reload`, 'true');
-            await sendApiResponse(appLocalizer, getApiLink(appLocalizer, apiLink), {
-                id: moduleId,
-                action,
+
+        action === 'activate'
+            ? insertModule?.(module.id)
+            : removeModule?.(module.id);
+
+        localStorage.setItem(`force_${pluginName}_context_reload`, 'true');
+
+        sendApiResponse(
+            appLocalizer,
+            getApiLink(appLocalizer, apiLink),
+            { id: module.id, action }
+        )
+            .then(() => {
+                setSuccessMsg(`Module ${action}d`);
+                setTimeout(() => setSuccessMsg(''), 2000);
+
+                if (module.reloadOnChange) {
+                    window.location.reload();
+                }
+            })
+            .catch(() => {
+                setSuccessMsg(`Error: Failed to ${action} module`);
+                setTimeout(() => setSuccessMsg(''), 2000);
             });
-            setSuccessMsg(`Module ${action}d`);
-            setTimeout(() => setSuccessMsg(''), 2000);
-            if (reloadOnChange) window.location.reload();
-        } catch (error) {
-            setSuccessMsg(`Error: Failed to ${action} module ${error}`);
-            setTimeout(() => setSuccessMsg(''), 2000);
-        }
     };
 
-    useEffect(() => {
-        let highlightedElement: HTMLElement | null = null;
-        let hasHighlightedOnce = false;
+    const filteredModules = useMemo(() => {
+		return modulesArray.modules.filter(module => {
+            if (!isModule(module)) return false;
+            if (variant === 'mini-module' && !module.miniModule) return false;
 
-        const scrollToTargetSection = () => {
-            if (hasHighlightedOnce) return;
-            const hash = window.location.hash;
-            const params = new URLSearchParams(hash.replace('#&', ''));
-            const targetId = params.get('module');
-            if (!targetId) return;
+			const moduleCategories = getCategories(module.category);
+			const isActive = modules.includes(module.id);
 
-            setTimeout(() => {
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    targetElement.classList.add('highlight');
-                    highlightedElement = targetElement;
-                    hasHighlightedOnce = true;
-                }
-            }, 500);
-        };
+			const matchesCategory =
+				selectedCategory === 'All' ||
+				moduleCategories.includes(selectedCategory);
 
-        const handleClickAnywhere = (e: Event) => {
-            const toggleCheckbox = (e.target as HTMLElement).closest('.toggle-checkbox');
-            if (toggleCheckbox) {
-                const highlightedModule = document.querySelector('.module-list-item.highlight');
-                if (highlightedModule) {
-                    highlightedModule.classList.remove('highlight');
-                    highlightedElement = null;
-                }
-                return;
-            }
+			const matchesStatus =
+				selectedFilter === 'All' ||
+				(selectedFilter === 'Active' && isActive) ||
+				(selectedFilter === 'Inactive' && !isActive);
 
-            if (highlightedElement && !highlightedElement.contains(e.target as Node)) {
-                highlightedElement.classList.remove('highlight');
-                highlightedElement = null;
-            }
-        };
+			const matchesSearch =
+				!searchQuery ||
+				module.name.toLowerCase().includes(searchQuery.toLowerCase());
 
-        scrollToTargetSection();
-        document.addEventListener('pointerdown', handleClickAnywhere);
-        return () => document.removeEventListener('pointerdown', handleClickAnywhere);
-    }, []);
+			return matchesCategory && matchesStatus && matchesSearch;
+		});
+	}, [moduleList, selectedCategory, selectedFilter, searchQuery, modules]);
+
 
     const statusOptions = [
         { label: `All (${totalCount})`, value: 'All' },
@@ -214,163 +173,207 @@ const Modules: React.FC<ModuleProps> = ({
     ];
 
     return (
-        <>
-            {modelOpen && (
-                <PopupUI
-                    position="lightbox"
-                    open={modelOpen}
-                    onClose={() => setModelOpen(false)}
-                    width={31.25}
-                    height="auto"
-                >
-                    {ProPopupComponent && <ProPopupComponent />}
-                </PopupUI>
+    <>
+        {modelOpen && (
+            <PopupUI
+                position="lightbox"
+                open={modelOpen}
+                onClose={() => setModelOpen(false)}
+                width={31.25}
+                height="auto"
+            >
+                {ProPopupComponent && <ProPopupComponent />}
+            </PopupUI>
+        )}
+
+        {successMsg && (
+            <SuccessNotice title="Success!" message={successMsg} />
+        )}
+
+        <div className="module-container" data-variant={variant}>
+
+            {/* FILTER SECTION */}
+            {variant === 'default' && (
+                <div className="filter-wrapper">
+
+                    {modulesArray.category && categories.length > 1 && (
+                        <div className="category-filter">
+                            {categories.map((category) => (
+                                <span
+                                    key={category.id}
+                                    className={`category-item ${
+                                        selectedCategory === category.id ? 'active' : ''
+                                    }`}
+                                    onClick={() => setSelectedCategory(category.id)}
+                                >
+                                    {category.label}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="module-search">
+                        <HeaderSearch
+                            variant="mini-search"
+                            search={{ placeholder: 'Search .....' }}
+                            onQueryUpdate={(e) => {
+                                setSearchQuery(e.searchValue);
+                                if ('searchAction' in e) {
+                                    setSelectedFilter(e.searchAction);
+                                }
+                            }}
+                        />
+
+                        <SelectInputUI
+                            options={statusOptions}
+                            value={selectedFilter}
+                            size="8rem"
+                            onChange={(newValue) =>
+                                setSelectedFilter(newValue.value)
+                            }
+                        />
+                    </div>
+                </div>
             )}
 
-            {successMsg && (<SuccessNotice title={'Success!'} message={successMsg} />)}
-            <div className="module-container" data-variant={variant}>
-                {variant === 'default' && (
-                    <div className="filter-wrapper">
-                        <div className="category-filter">
-                            {modulesArray.category && categories.length > 1 &&
-                                categories.map((category) => (
-                                    <span
-                                        key={category.id}
-                                        className={`category-item ${selectedCategory === category.id ? 'active' : ''}`}
-                                        onClick={() => setSelectedCategory(category.id)}
-                                    >
-                                        {category.label}
-                                    </span>
-                                ))
-                            }
-                        </div>
-                        <div className="module-search">
-                            <HeaderSearch
-                                variant="mini-search"
-                                search={{ placeholder: 'Search .....' }}
-                                onQueryUpdate={(e) => {
-                                    setSearchQuery(e.searchValue);
-                                    if ('searchAction' in e) {
-                                        setSelectedFilter(e.searchAction);
-                                    }
-                                }}
-                            />
-                            <SelectInputUI
-                                options={statusOptions}
-                                value={selectedFilter}
-                                size={'8rem'}
-                                onChange={(newValue) => {
-                                    const val = newValue.value;
-                                    setSelectedFilter(val);
-                                    setSearchQuery(searchQuery);
-                                }}
-                            />
-                        </div>
-                    </div>
-                )}
+            <div className="module-option-row">
+                {filteredModules.map((item, index) => {
 
-                <div className="module-option-row" >
-                    {filteredModules.map((item, index) => {
-                        if (!isModule(item)) return null;
+                    if (!isModule(item)) return null;
 
-                        const module = item;
-                        const requiredPlugins = module.reqPluging || [];
+                    const module = item;
+                    const isActive = modules.includes(module.id);
+                    const requiredPlugins = module.reqPluging || [];
+                    const moduleCategories = getCategories(module.category);
 
-                        return (
-                            <div data-index={index} className="module-list-item" key={module.id} id={module.id}>
-                                <div className="module-body">
-                                    <div className="module-header">
-                                        <div className="icon"><i className={`font adminfont-${module.id}`}></i></div>
-                                        {module.proModule && !appLocalizer.khali_dabba && (
-                                            <div className="pro-tag">
-                                                <i className="adminfont-pro-tag"></i>
+                    const toggleComponent = (
+                        <MultiCheckBoxUI
+                            look="toggle"
+                            type="checkbox"
+                            value={isActive ? [module.id] : []}
+                            onChange={(e) => handleOnChange(e, module)}
+                            options={[{ key: module.id, value: module.id }]}
+                        />
+                    );
+
+                    return (
+                        <div
+                            key={module.id}
+                            id={module.id}
+                            data-index={index}
+                            className="module-list-item"
+                        >
+                            <div className="module-body">
+
+                                <div className="module-header">
+                                    <div className="icon">
+                                        <i className={`font adminfont-${module.id}`} />
+                                    </div>
+
+                                    {module.proModule && !appLocalizer.khali_dabba && (
+                                        <div className="pro-tag">
+                                            <i className="adminfont-pro-tag" />
+                                        </div>
+                                    )}
+
+                                    {variant === 'mini-module' &&
+                                        (appLocalizer.khali_dabba || !module.proModule) && (
+                                            <div className="toggle-checkbox">
+                                                {toggleComponent}
                                             </div>
                                         )}
-                                        {variant === 'mini-module' &&
-                                            (appLocalizer.khali_dabba || !module.proModule) && (
-                                                <div className="toggle-checkbox">
-                                                    <MultiCheckBoxUI
-                                                        look="toggle"
-                                                        type="checkbox"
-                                                        value={modules.includes(module.id) ? [module.id] : []}
-                                                        onChange={(e) =>
-                                                            handleOnChange(
-                                                                e,
-                                                                module.id,
-                                                                module.reloadOnChange
-                                                            )}
-                                                        options={[
-                                                            { key: module.id, value: module.id },
-                                                        ]}
-                                                    />
+                                </div>
+
+                                <div className="module-details">
+                                    <div className="meta-name">
+                                        {module.name}
+                                    </div>
+
+                                    {variant === 'default' && (
+                                        <>
+                                            {moduleCategories.length > 0 && (
+                                                <div className="tag-wrapper">
+                                                    {moduleCategories.map((cat, idx) => (
+                                                        <span
+                                                            key={idx}
+                                                            className="admin-badge blue"
+                                                        >
+                                                            {formatCategory(cat)}
+                                                        </span>
+                                                    ))}
                                                 </div>
                                             )}
-                                    </div>
-                                    <div className="module-details">
-                                        <div className="meta-name">{module.name}</div>
-                                        {variant === 'default' && (
-                                            <>
-                                                {getCategories(module.category).length > 0 && (
-                                                    <div className="tag-wrapper">
-                                                        {getCategories(module.category).map((cat, idx) => (
-                                                            <span key={idx} className="admin-badge blue">
-                                                                {formatCategory(cat)}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                                <p className="meta-description" dangerouslySetInnerHTML={{ __html: module.desc || '' }}></p>
-                                            </>
-                                        )}
-                                    </div>
+
+                                            <p
+                                                className="meta-description"
+                                                dangerouslySetInnerHTML={{
+                                                    __html: module.desc || '',
+                                                }}
+                                            />
+                                        </>
+                                    )}
                                 </div>
-                                {variant === 'default' && (
-                                    <div className="footer-wrapper">
-                                        {requiredPlugins.length > 0 && (
-                                            <div className="requires">
-                                                <div className="requires-title">Requires:</div>
-                                                {requiredPlugins.map((plugin, idx) => (
-                                                    <span key={idx}>
-                                                        <a href={plugin.link} className="link-item" target="_blank" rel="noopener noreferrer">
-                                                            {plugin.name}
-                                                        </a>
-                                                        {idx < requiredPlugins.length - 1 ? ', ' : ''}
-                                                    </span>
-                                                ))}
+                            </div>
+
+                            {variant === 'default' && (
+                                <div className="footer-wrapper">
+
+                                    {requiredPlugins.length > 0 && (
+                                        <div className="requires">
+                                            <div className="requires-title">
+                                                Requires:
                                             </div>
-                                        )}
-                                        <div className="module-footer">
-                                            <div className="buttons">
-                                                {module.docLink && <a href={module.docLink} target="_blank"><i className="adminfont-book"></i></a>}
-                                                {module.videoLink && <a href={module.videoLink} target="_blank"><i className="adminfont-button-appearance"></i></a>}
-                                                {module.settingsLink && <a href={module.settingsLink}><i className="adminfont-setting"></i></a>}
-                                            </div>
-                                            <div className="toggle-checkbox" data-tour={`${module.id}-showcase-tour`}>
-                                                <MultiCheckBoxUI
-                                                    look="toggle"
-                                                    type="checkbox"
-                                                    value={modules.includes(module.id) ? [module.id] : []}
-                                                    onChange={(e) =>
-                                                        handleOnChange(
-                                                            e,
-                                                            module.id,
-                                                            module.reloadOnChange
-                                                        )}
-                                                    options={[
-                                                        { key: module.id, value: module.id },
-                                                    ]}
-                                                />
-                                            </div>
+                                            {requiredPlugins.map((plugin, idx) => (
+                                                <span key={idx}>
+                                                    <a
+                                                        href={plugin.link}
+                                                        className="link-item"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        {plugin.name}
+                                                    </a>
+                                                    {idx < requiredPlugins.length - 1 ? ', ' : ''}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    <div className="module-footer">
+                                        <div className="buttons">
+                                            {module.docLink && (
+                                                <a href={module.docLink} target="_blank" rel="noreferrer">
+                                                    <i className="adminfont-book" />
+                                                </a>
+                                            )}
+                                            {module.videoLink && (
+                                                <a href={module.videoLink} target="_blank" rel="noreferrer">
+                                                    <i className="adminfont-button-appearance" />
+                                                </a>
+                                            )}
+                                            {module.settingsLink && (
+                                                <a href={module.settingsLink}>
+                                                    <i className="adminfont-setting" />
+                                                </a>
+                                            )}
+                                        </div>
+
+                                        <div
+                                            className="toggle-checkbox"
+                                            data-tour={`${module.id}-showcase-tour`}
+                                        >
+                                            {toggleComponent}
                                         </div>
                                     </div>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
             </div>
-        </>
-    );
+        </div>
+    </>
+);
 };
 
 export default Modules;
