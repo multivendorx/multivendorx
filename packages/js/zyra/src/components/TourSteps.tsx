@@ -156,7 +156,7 @@ const Tour: React.FC< TourProps > = ( { appLocalizer, steps, forceOpen } ) => {
             return;
         }
         const fetchTourState = async () => {
-            if ( window.location.href === appLocalizer.page_url ) {
+            if ( window.location.href === `${appLocalizer.admin_dashboard_url}#&tab=dashboard` ) {
                 try {
                     const response = await axios.get(
                         getApiLink( appLocalizer, 'tour' ),

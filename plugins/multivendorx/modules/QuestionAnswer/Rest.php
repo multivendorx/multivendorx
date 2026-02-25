@@ -6,9 +6,9 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\QuestionsAnswers;
+namespace MultiVendorX\QuestionAnswer;
 
-use MultiVendorX\QuestionsAnswers\Util;
+use MultiVendorX\QuestionAnswer\Util;
 use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;

@@ -64,7 +64,7 @@ const CustomerSupport = () => {
 								'multivendorx'
 							)}
 							buttonText={__('Enable Now', 'multivendorx')}
-							buttonLink={`${appLocalizer.plugin_url}modules`}
+							buttonLink={`${appLocalizer.admin_dashboard_url}#&tab=modules`}
 						/>
 					</Column>
 				</Container>

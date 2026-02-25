@@ -40,7 +40,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
 	const storePayment: StorePaymentConfig =
-		(appLocalizer.all_store_settings as StorePaymentConfig) || {};
+		(appLocalizer.store_payment_settings as StorePaymentConfig) || {};
 
 	const filteredStorePayment = Object.fromEntries(
 		Object.entries(storePayment).filter(([_, value]) => value !== null)
@@ -303,7 +303,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 									'If no store-specific commission is set, the <a href="%s">global commission</a> will automatically apply.',
 									'multivendorx'
 								),
-								`${appLocalizer.plugin_url}settings&subtab=store-commissions`
+								`${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=store-commissions`
 							)}
 						/>
 						<FormGroupWrapper>

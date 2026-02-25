@@ -5,7 +5,7 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\Refund;
+namespace MultiVendorX\MarketplaceRefund;
 
 /**
  * MultiVendorX Refund Module class
