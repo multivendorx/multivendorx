@@ -9,32 +9,33 @@ import {
 	QueryProps,
 	CategoryCount,
 } from 'zyra';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toWcIsoDate } from '../services/commonFunction';
-import AddProductCom from './addProducts';
-import SpmvProducts from './spmvProducts';
 import { applyFilters } from '@wordpress/hooks';
-
-// ---------------------------------------------------------------------------
-// Navigation helper — mirrors the one in dashboard.tsx
-// ---------------------------------------------------------------------------
 
 const buildPath = (segments: string[]): string =>
 	`/${segments.filter(Boolean).join('/')}`;
 
+const sanitize = (value: string) =>
+	value.replace(/[^a-zA-Z0-9_-]/g, '');
+
 const updatePlainPermalinkUrl = (segments: string[]) => {
 	const [segment = '', element = '', context_id = ''] = segments;
+
 	const params = new URLSearchParams({
 		page_id: appLocalizer.dashboard_page_id,
-		segment,
-		...(element    ? { element }    : {}),
-		...(context_id ? { context_id } : {}),
+		segment: sanitize(segment),
+		...(element ? { element: sanitize(element) } : {}),
+		...(context_id ? { context_id: sanitize(context_id) } : {}),
 	});
-	window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
-};
 
-// ---------------------------------------------------------------------------
+	window.history.pushState(
+		{},
+		'',
+		`${window.location.pathname}?${params.toString()}`
+	);
+};
 
 const STATUS_LABELS: Record<string, string> = {
 	all:     __('All',       'multivendorx'),
@@ -55,19 +56,9 @@ const AllProduct: React.FC = () => {
 	const [newProductId, setNewProductId]         = useState<number | null>(null);
 
 	const { modules } = useModules();
-
-	// -------------------------------------------------------------------------
-	// Routing — read :element from useParams (set by /:tab/:element route)
-	// -------------------------------------------------------------------------
-	const { element } = useParams<{ element?: string }>();
 	const navigate    = useNavigate();
 
-	const isEditProduct = element === 'edit';
-	const isAddProduct  = element === 'add';
-
-	// -------------------------------------------------------------------------
 	// dashNavigate — single helper for all navigation (pretty + plain)
-	// -------------------------------------------------------------------------
 	const dashNavigate = (segments: string[]) => {
 		const path = buildPath(segments);
 		if (!appLocalizer.permalink_structure) {
@@ -76,9 +67,6 @@ const AllProduct: React.FC = () => {
 		navigate(path);
 	};
 
-	// -------------------------------------------------------------------------
-	// Auto-draft product: navigate to edit once ID is available
-	// -------------------------------------------------------------------------
 	const createAutoDraftProduct = () => {
 		axios
 			.post(
@@ -95,9 +83,6 @@ const AllProduct: React.FC = () => {
 		dashNavigate(['products', 'edit', String(newProductId)]);
 	}, [newProductId]);
 
-	// -------------------------------------------------------------------------
-	// Data fetching
-	// -------------------------------------------------------------------------
 	const fetchCategories = async () => {
 		try {
 			const response = await axios.get(
@@ -214,9 +199,6 @@ const AllProduct: React.FC = () => {
 		fetchWpmlTranslations();
 	}, []);
 
-	// -------------------------------------------------------------------------
-	// Table actions
-	// -------------------------------------------------------------------------
 	const handleDelete = async (productId: number) => {
 		await axios.delete(`${appLocalizer.apiUrl}/wc/v3/products/${productId}`, {
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
@@ -278,9 +260,6 @@ const AllProduct: React.FC = () => {
 			});
 	};
 
-	// -------------------------------------------------------------------------
-	// Table config
-	// -------------------------------------------------------------------------
 	const bulkActions = [{ label: 'Delete', value: 'delete' }];
 
 	const filters = [
@@ -378,66 +357,52 @@ const AllProduct: React.FC = () => {
 		},
 	};
 
-	// -------------------------------------------------------------------------
-	// Render
-	// -------------------------------------------------------------------------
 	return (
 		<>
-			{/* Product list */}
-			{!isEditProduct && !isAddProduct && (
-				<>
-					<NavigatorHeader
-						headerTitle={__('All Products', 'multivendorx')}
-						headerDescription={__('Manage your store products', 'multivendorx')}
-						buttons={[
-							...(modules.includes('import-export')
-								? [{ custom: applyFilters('product_import_export', null) }]
-								: []),
-							{
-								label: __('Add New', 'multivendorx'),
-								icon: 'plus',
-								onClick: () => {
-									if (modules.includes('shared-listing')) {
-										dashNavigate(['products', 'add']);
-									} else {
-										createAutoDraftProduct();
-									}
-								},
-							},
-						]}
-					/>
+			<NavigatorHeader
+				headerTitle={__('All Products', 'multivendorx')}
+				headerDescription={__('Manage your store products', 'multivendorx')}
+				buttons={[
+					...(modules.includes('import-export')
+						? [{ custom: applyFilters('product_import_export', null) }]
+						: []),
+					{
+						label: __('Add New', 'multivendorx'),
+						icon: 'plus',
+						onClick: () => {
+							if (modules.includes('shared-listing')) {
+								dashNavigate(['products', 'add']);
+							} else {
+								createAutoDraftProduct();
+							}
+						},
+					},
+				]}
+			/>
 
-					<TableCard
-						headers={headers}
-						rows={rows}
-						totalRows={totalRows}
-						isLoading={isLoading}
-						onQueryUpdate={doRefreshTableData}
-						ids={rowIds}
-						categoryCounts={categoryCounts}
-						search={{}}
-						filters={filters}
-						bulkActions={bulkActions}
-						onBulkActionApply={(action: string, selectedIds: []) =>
-							handleBulkAction(action, selectedIds)
-						}
-						format={appLocalizer.date_format}
-						currency={{
-							currencySymbol:    appLocalizer.currency_symbol,
-							priceDecimals:     appLocalizer.price_decimals,
-							decimalSeparator:  appLocalizer.decimal_separator,
-							thousandSeparator: appLocalizer.thousand_separator,
-							currencyPosition:  appLocalizer.currency_position,
-						}}
-					/>
-				</>
-			)}
-
-			{/* Edit product */}
-			{isEditProduct && <AddProductCom />}
-
-			{/* Add product (SPMV) */}
-			{isAddProduct && <SpmvProducts />}
+			<TableCard
+				headers={headers}
+				rows={rows}
+				totalRows={totalRows}
+				isLoading={isLoading}
+				onQueryUpdate={doRefreshTableData}
+				ids={rowIds}
+				categoryCounts={categoryCounts}
+				search={{}}
+				filters={filters}
+				bulkActions={bulkActions}
+				onBulkActionApply={(action: string, selectedIds: []) =>
+					handleBulkAction(action, selectedIds)
+				}
+				format={appLocalizer.date_format}
+				currency={{
+					currencySymbol:    appLocalizer.currency_symbol,
+					priceDecimals:     appLocalizer.price_decimals,
+					decimalSeparator:  appLocalizer.decimal_separator,
+					thousandSeparator: appLocalizer.thousand_separator,
+					currencyPosition:  appLocalizer.currency_position,
+				}}
+			/>
 		</>
 	);
 };

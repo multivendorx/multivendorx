@@ -11,12 +11,8 @@ import {
 import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
-import { formatTimeAgo } from './services/commonFunction';
 import './hooksFilters';
-
-// ---------------------------------------------------------------------------
-// Navigation helper — abstracts pretty vs plain permalink differences
-// ---------------------------------------------------------------------------
+import { DASHBOARD_ROUTES } from './dashboardConfig';
 
 /**
  * Builds a navigable path string.
@@ -30,19 +26,25 @@ import './hooksFilters';
  */
 const buildPath = (segments: string[]): string => `/${segments.filter(Boolean).join('/')}`;
 
+const sanitize = (value: string) =>
+	value.replace(/[^a-zA-Z0-9_-]/g, '');
+
 const updatePlainPermalinkUrl = (segments: string[]) => {
 	const [segment = '', element = '', context_id = ''] = segments;
+
 	const params = new URLSearchParams({
 		page_id: appLocalizer.dashboard_page_id,
-		segment,
-		...(element     ? { element }     : {}),
-		...(context_id  ? { context_id }  : {}),
+		segment: sanitize(segment),
+		...(element ? { element: sanitize(element) } : {}),
+		...(context_id ? { context_id: sanitize(context_id) } : {}),
 	});
-	const newUrl = `${window.location.pathname}?${params.toString()}`;
-	window.history.pushState({}, '', newUrl);
-};
 
-// ---------------------------------------------------------------------------
+	window.history.pushState(
+		{},
+		'',
+		`${window.location.pathname}?${params.toString()}`
+	);
+};
 
 const Dashboard = () => {
 	const { tab: urlTab, element, context_id } = useParams();
@@ -66,10 +68,6 @@ const Dashboard = () => {
 
 	const DEFAULT_TAB = 'dashboard';
 
-	// -------------------------------------------------------------------------
-	// Helpers
-	// -------------------------------------------------------------------------
-
 	const hasCapability = (capability: any): boolean => {
 		if (!capability) return true;
 		const userCaps = appLocalizer.current_user?.allcaps || {};
@@ -89,6 +87,11 @@ const Dashboard = () => {
 	 * @param segments  e.g. ['products'], ['products', 'edit'], ['products', 'edit', '123']
 	 */
 	const dashNavigate = (segments: string[]) => {
+		const ALLOWED_SEGMENTS = ['products', 'orders', 'dashboard'];
+
+		if (!ALLOWED_SEGMENTS.includes(segments)) {
+			return;
+		}
 		const path = buildPath(segments);
 		if (!appLocalizer.permalink_structure) {
 			updatePlainPermalinkUrl(segments);
@@ -96,14 +99,8 @@ const Dashboard = () => {
 		navigate(path);
 	};
 
-	// -------------------------------------------------------------------------
-	// Storefront URL for "View storefront" button
-	// -------------------------------------------------------------------------
 	const storefrontUrl = `${appLocalizer.store_page_url}${storeData?.slug}`;
 
-	// -------------------------------------------------------------------------
-	// Auto-draft product creation
-	// -------------------------------------------------------------------------
 	const createAutoDraftProduct = () => {
 		axios
 			.post(
@@ -120,9 +117,7 @@ const Dashboard = () => {
 		dashNavigate(['products', 'edit', String(newProductId)]);
 	}, [newProductId]);
 
-	// -------------------------------------------------------------------------
-	// Data fetching
-	// -------------------------------------------------------------------------
+
 	useEffect(() => {
 		axios({
 			method: 'GET',
@@ -150,9 +145,7 @@ const Dashboard = () => {
 		}
 	}, []);
 
-	// -------------------------------------------------------------------------
 	// Dark mode
-	// -------------------------------------------------------------------------
 	useEffect(() => {
 		const palette =
 			appLocalizer.settings_databases_value['appearance']
@@ -162,16 +155,12 @@ const Dashboard = () => {
 		return () => document.body.classList.remove('dark');
 	}, [isDarkMode]);
 
-	// -------------------------------------------------------------------------
 	// Sync current tab from URL params
-	// -------------------------------------------------------------------------
 	useEffect(() => {
 		setCurrentTab(urlTab || DEFAULT_TAB);
 	}, [urlTab]);
 
-	// -------------------------------------------------------------------------
 	// Permission check for current tab
-	// -------------------------------------------------------------------------
 	useEffect(() => {
 		if (!currentTab) return;
 
@@ -190,9 +179,7 @@ const Dashboard = () => {
 		setNoPermission(!hasCapability(capability));
 	}, [currentTab, menu]);
 
-	// -------------------------------------------------------------------------
 	// Auto-open parent submenu when a child tab is active
-	// -------------------------------------------------------------------------
 	useEffect(() => {
 		const open: Record<string, boolean> = {};
 		Object.entries(menu).forEach(([key, item]) => {
@@ -204,9 +191,7 @@ const Dashboard = () => {
 		setOpenSubmenus(open);
 	}, [currentTab, menu]);
 
-	// -------------------------------------------------------------------------
 	// Submenu toggle (closes other open submenus)
-	// -------------------------------------------------------------------------
 	const toggleSubmenu = (key: string) => {
 		setOpenSubmenus((prev) => {
 			const updated: Record<string, boolean> = {};
@@ -217,9 +202,7 @@ const Dashboard = () => {
 		});
 	};
 
-	// -------------------------------------------------------------------------
-	// Endpoint list (flat) for component loader
-	// -------------------------------------------------------------------------
+	// Endpoint list
 	const endpoints = useMemo(() => {
 		const list: { tab: string; filename: string }[] = [];
 		Object.entries(menu).forEach(([key, item]) => {
@@ -231,18 +214,27 @@ const Dashboard = () => {
 		return list;
 	}, [menu]);
 
-	// -------------------------------------------------------------------------
-	// Dynamic component loader
-	// -------------------------------------------------------------------------
 	const loadComponent = (key: string) => {
 		if (!endpoints.length) return null;
 
 		try {
+
+			const matchedRoute = DASHBOARD_ROUTES.find(
+				(route) =>
+					route.tab === urlTab &&
+					route.element === element
+			);
+
+			if (matchedRoute) {
+				const Component = matchedRoute.component;
+				return <Component contextId={context_id} />;
+			}
+
 			const activeEndpoint = endpoints.find((ep) => ep.tab === key);
 			const kebabToCamelCase = (str: string) =>
 				str.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 			const convertedKey = kebabToCamelCase(activeEndpoint?.filename || key);
-
+			
 			try {
 				const DashboardComponent = require(`./dashboard/${convertedKey}.tsx`).default;
 				return <DashboardComponent contextId={context_id} />;
@@ -256,9 +248,7 @@ const Dashboard = () => {
 		}
 	};
 
-	// -------------------------------------------------------------------------
 	// Menu filtered by capability + active modules
-	// -------------------------------------------------------------------------
 	const filteredMenu = useMemo(() => {
 		const result: Record<string, any> = {};
 		Object.entries(menu).forEach(([key, item]: any) => {
@@ -277,9 +267,6 @@ const Dashboard = () => {
 		return result;
 	}, [menu, modules]);
 
-	// -------------------------------------------------------------------------
-	// Helpers for hrefs (used on <a> tags for accessibility / right-click open)
-	// -------------------------------------------------------------------------
 	const tabHref = (tab: string): string => {
 		if (appLocalizer.permalink_structure) {
 			return `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/${tab}`;
@@ -407,9 +394,7 @@ const Dashboard = () => {
 				)}
 			</div>
 
-			{/* ---------------------------------------------------------------- */}
 			{/* Main content area                                                 */}
-			{/* ---------------------------------------------------------------- */}
 			<div className="dashboard-content tab-wrapper">
 				{/* Top Navbar */}
 				<div className="top-navbar-wrapper">
