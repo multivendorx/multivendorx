@@ -95,7 +95,7 @@ const AllProduct: React.FC = () => {
 
 	const fetchProductStatusCounts = async () => {
 		try {
-			const statuses = ['all', 'publish', 'draft', 'pending', 'private', 'trash'];
+			const statuses = Object.keys(STATUS_LABELS);
 
 			const results = await Promise.allSettled(
 				statuses.map(async (status) => {
