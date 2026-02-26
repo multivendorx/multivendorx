@@ -26,6 +26,7 @@ class StoreUtil {
      * @param array $args Array of arguments.
      */
     public static function add_store_users( $args ) {
+        file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders:args : " . var_export($args, true) . "\n", FILE_APPEND);
         global $wpdb;
         $table = "{$wpdb->prefix}" . Utill::TABLES['store_users'];
 
@@ -255,7 +256,14 @@ class StoreUtil {
 
         );
 
-        return $capabilities;
+        /**
+         * Filter store capabilities.
+         *
+         * Allows developers to add, modify, or remove store capabilities.
+         *
+         * @param array $capabilities
+         */
+        return apply_filters( 'multivendorx_store_capabilities', $capabilities );
     }
 
     /**
