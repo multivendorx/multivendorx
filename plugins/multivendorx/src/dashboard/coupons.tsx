@@ -15,6 +15,7 @@ import {
 	TableRow,
 	QueryProps,
 	CategoryCount,
+	EventCalendarUI,
 } from 'zyra';
 
 import axios from 'axios';
@@ -725,7 +726,7 @@ const AllCoupon: React.FC = () => {
 			type: 'date',
 		},
 	];
-
+	// const [events, setEvents] = useState<EventsData>({});
 	return (
 		<>
 			<NavigatorHeader
@@ -746,6 +747,12 @@ const AllCoupon: React.FC = () => {
 					},
 				]}
 			/>
+
+
+			{/* <EventCalendarUI
+				value={events}
+				onChange={setEvents}
+			/> */}
 
 			{AddCoupon && (
 				<PopupUI
@@ -869,8 +876,7 @@ const AllCoupon: React.FC = () => {
 				showBackdrop={true}
 				header={{
 					icon: 'warning',
-					title: __('Are you sure?', 'multivendorx'),
-					showCloseButton: true,
+					title: __('Are you sure?', 'multivendorx')
 				}}
 				footer={
 					<AdminButtonUI

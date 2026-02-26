@@ -452,8 +452,7 @@ const Dashboard = () => {
 											toggleIcon="adminfont-notification"
 											width={24}
 											header={{
-												title: __('Notifications', 'multivendorx'),
-												showCloseButton: false,
+												title: __('Notifications', 'multivendorx')
 											}}
 										>
 											<Tabs

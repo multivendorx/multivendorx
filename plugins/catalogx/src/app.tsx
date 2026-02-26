@@ -140,7 +140,6 @@ const App = () => {
                 beforeClose={ enableBody }
                 disableDotsNavigation={ true }
                 showNavigation={ false }
-                showCloseButton={ false }
             >
                 <Tour
                     appLocalizer={ ( window as any ).appLocalizer }

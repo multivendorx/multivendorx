@@ -168,6 +168,11 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                         className="wp-admin-notice"
                         dangerouslySetInnerHTML={{ __html: html }}
                     />
+                    <Notice
+                        type="error"
+                        displayPosition="notice"
+                        message={html}
+                    />
                     </>
                 ))}
         </>

@@ -143,7 +143,7 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
       const date = val.toDate();
       onChange?.({ startDate: date, endDate: date });
 
-      pickerRef.current?.closeCalendar();
+      pickerRef.current?.closeCalendar(); 
     }
   };
 
@@ -173,6 +173,11 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
     multiple,
     plugins,
     fullYear,
+     mapDays: () => {
+      return {
+        className: 'calendar-day-wrapper',
+      };
+    }
   };
 
   return (
@@ -185,7 +190,7 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
         />
       ) : (
         <Calendar
-          className="calender"
+          className={`calendar-wrapper ${!showInput ? 'calendar' : ''}`}
           {...commonProps}
         />
       )}
