@@ -123,12 +123,11 @@ export default {
 			desc: 'Offer rental or real estate booking services.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/rental-product',
-			//settingsLink: appLocalizer.site_url,
 			proModule: true,
 			reqPluging: [
 				{
 					name: 'RnB WooCommerce Booking & Rental',
-					slug: 'rnb/rnb.php',
+					slug: 'woocommerce-rental-and-booking/redq-rental-and-bookings.php',
 					link: 'https://codecanyon.net/item/rnb-woocommerce-rental-booking-system/14835145?ref=redqteam',
 				},
 			],
@@ -141,7 +140,6 @@ export default {
 			desc: 'Covers basic products such as physical goods (books, clothing) or digital items (PDFs, music, software).',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/simple-product',
-			//settingsLink: appLocalizer.site_url,
 			proModule: false,
 			category: 'product_types',
 		},
@@ -151,7 +149,6 @@ export default {
 			desc: 'A product with variations, like different SKU, price, stock option, etc.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/variable-product',
-			//settingsLink: appLocalizer.site_url,
 			proModule: true,
 			category: 'product_types',
 		},
@@ -161,7 +158,6 @@ export default {
 			desc: 'List and describe products on your marketplace but sell them elsewhere.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/external-product/',
-			//settingsLink: appLocalizer.site_url,
 			proModule: true,
 			category: 'product_types',
 		},
@@ -171,7 +167,6 @@ export default {
 			desc: 'A collection of simple, related products that can be purchased individually.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/grouped-product',
-			//settingsLink: appLocalizer.site_url,
 			proModule: true,
 			category: 'product_types',
 		},
@@ -180,7 +175,6 @@ export default {
 			name: __('Gift Cards', 'multivendorx'),
 			desc: 'Sell gift cards to boost sales and attract new customers.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/gift-card/',
-			//settingsLink: appLocalizer.site_url,
 			proModule: true,
 			reqPluging: [
 				{
@@ -308,15 +302,15 @@ export default {
 			category: 'payment_management',
 			miniModule: true,
 		},
-		{
-			id: 'mangopay',
-			name: __('Mangopay', 'multivendorx'),
-			desc: 'Gives the benefit of both realtime split transfer and scheduled distribution',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/mangopay',
-			//settingsLink: admin_url('admin.php?page=mvx-setting-admin'),
-			proModule: true,
-			category: 'payment_management',
-		},
+		// {
+		// 	id: 'mangopay',
+		// 	name: __('Mangopay', 'multivendorx'),
+		// 	desc: 'Gives the benefit of both realtime split transfer and scheduled distribution',
+		// 	docLink: 'https://multivendorx.com/docs/knowledgebase/mangopay',
+		// 	//settingsLink: admin_url('admin.php?page=mvx-setting-admin'),
+		// 	proModule: true,
+		// 	category: 'payment_management',
+		// },
 		{
 			id: 'razorpay',
 			name: __('Razorpay', 'multivendorx'),
@@ -367,7 +361,7 @@ export default {
 			desc: 'Custom shipping charge applied to individual products.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/per-product-shipping',
-			//settingsLink: '${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=single-product-multiple-store',
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=shipping`,
 			proModule: true,
 			reqPluging: [
 				{
@@ -424,7 +418,7 @@ export default {
 			id: 'enquiry',
 			name: __('Enquiry', 'multivendorx'),
 			desc: 'Customers can send private product inquiries.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
+			//docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
 			reqPluging: [
 				{
 					name: 'CatalogX',
@@ -473,6 +467,7 @@ export default {
 			id: 'marketplace-intelligence',
 			name: __('Intelligence', 'multivendorx'),
 			desc: 'Let stores create high-converting product descriptions and images instantly using AI.',
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=intelligence`,
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/marketplace-intelligence',
 			category: 'marketplace_boosters',
@@ -483,8 +478,7 @@ export default {
 			desc: 'Ensure stores meet marketplace requirements with automated policy checks.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=compliance`,
-			// proModule: true,
-			category: 'marketplace_boosters',
+						category: 'marketplace_boosters',
 		},
 		{
 			id: 'marketplace-membership',
@@ -631,7 +625,7 @@ export default {
 			reqPluging: [
 				{
 					name: 'BuddyPress',
-					slug: 'buddypress/bp-loader.php',
+					slug: 'buddypress/class-buddypress.php',
 					link: 'https://wordpress.org/plugins/buddypress/',
 				},
 			],
