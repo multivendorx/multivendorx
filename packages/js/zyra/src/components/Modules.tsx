@@ -7,6 +7,7 @@ import HeaderSearch from './HeaderSearch';
 import { SelectInputUI } from './SelectInput';
 import { PopupUI } from './Popup';
 import { Notice } from './Notice';
+import { EnhancedSelectInputUI } from './EnhancedSelectInput';
 
 interface Module {
     id: string;
@@ -228,13 +229,12 @@ const Modules: React.FC<ModuleProps> = ({
                                 }}
                             />
 
-                            <SelectInputUI
+                            <EnhancedSelectInputUI
+                                mode="single-select"
                                 options={statusOptions}
                                 value={selectedFilter}
                                 size="8rem"
-                                onChange={(newValue) =>
-                                    setSelectedFilter(newValue.value)
-                                }
+                                onChange={(newValue) => setSelectedFilter(newValue as string)}
                             />
                         </div>
                     </div>

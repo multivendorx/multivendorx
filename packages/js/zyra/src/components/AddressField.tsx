@@ -6,6 +6,7 @@ import { ReactSortable } from 'react-sortablejs';
 import { SelectInputUI } from './SelectInput';
 import { BasicInputUI } from './BasicInput';
 import { FieldComponent } from './types';
+import { EnhancedSelectInputUI } from './EnhancedSelectInput';
 
 // Constants for default address fields with sequential IDs
 const DEFAULT_ADDRESS_FIELDS = [
@@ -96,7 +97,8 @@ const AddressFieldUI: React.FC< AddressFieldProps > = ( {
             return (
                 <div className="address-field-item">
                     <label className="field-label">{field.label}</label>
-                    <SelectInputUI
+                    <EnhancedSelectInputUI
+                        mode="single-select"
                         options={field.options?.map((opt) => ({
                             value: opt,
                             label: opt,
