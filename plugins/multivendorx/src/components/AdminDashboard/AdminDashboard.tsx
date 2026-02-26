@@ -351,6 +351,16 @@ const AdminDashboard = () => {
 
 	const [activeTab, setActiveTab] = useState('dashboard');
 	const isPro = !!appLocalizer.khali_dabba;
+	const bannerItem = [
+		"<b>Marketplace monetization:</b> Create flexible membership plans that let you charge stores for access, features, and growth opportunities.",
+		"<b>Built-in tax compliance:</b> Automatically generate tax-ready invoices for orders, commissions, and payouts to keep your marketplace compliant.",
+		"<b>Franchise-ready scaling:</b> Run multiple regional or franchise marketplaces with centralized control and consistent branding.",
+		"<b>Recurring revenue engine:</b> Enable subscription-based selling so your marketplace benefits from predictable, recurring income.",
+		"<b>Service and booking sales:</b> Allow stores to sell bookings for services, appointments, rentals, and experiences on your platform.",
+		"<b>High-value rentals:</b> Launch rental marketplace with date-based availability and higher order values.",
+		"<b>Verified stores:</b> Verify store identities using documents and badges to build trust and reduce risk on your marketplace.",
+		"<b>Vacation mode:</b> Allow stores to temporarily pause their shop during vacations while keeping their listings intact."
+	];
 	const renderUpgradeButton = (label = __('Upgrade Now', 'multivendorx')) => {
 		if (isPro) {
 			return null;
@@ -376,6 +386,47 @@ const AdminDashboard = () => {
 			content: (
 				<>
 					<Column grid={8}>
+						{/* banner */}
+						<Notice
+							// type="success"
+							// type="warning"
+							display="banner"
+							message={bannerItem}
+							actionLabel="Upgrade Now"
+						// onAction={() => handleUpgrade()}
+						/>
+
+
+						{/* notice */}
+						<Notice
+							type="success"
+							// type="success"
+							// type="warning"
+							display="notice"
+							title="Success!"
+							message="Settings saved successfully"
+						/>
+
+						{/* float */}
+						<Notice
+							type="success"
+							// type="success"
+							// type="warning"
+							display="float"
+							title= "Save"
+							message="Changes saved"
+						/>
+
+
+						{/* inline */}
+						<Notice 
+							type="error"
+							// type="success"
+							// type="warning"
+							display="inline"
+							message="Name field is required"
+						/>
+
 						<Card contentHeight>
 							<div className="pro-banner-wrapper">
 								<div className="content">
