@@ -1430,12 +1430,9 @@
 
 
 .ui-notice {
-    // common ui style start
-    .notice-item {
-        display: flex;
-        justify-content: flex-start;
-        gap: 0.5rem;
-    }
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.5rem;
 
     &.type-success {
         i {
@@ -1448,11 +1445,13 @@
             color: red;
         }
     }
+
     &.type-info {
         i {
             color: $theme-color;
         }
     }
+
     &.type-warning {
         i {
             color: yellow;
@@ -1484,6 +1483,7 @@
                 font-size: 1.4rem;
             }
         }
+
         &.type-error {
             i {
                 color: #008000;
@@ -1526,7 +1526,7 @@
         }
 
 
-        .notice-item {
+        .notice-desc {
             opacity: 0;
             visibility: hidden;
             position: absolute;
@@ -1535,11 +1535,6 @@
             pointer-events: none;
             display: flex;
             justify-content: center;
-
-            .notice-item-details {
-                display: flex;
-                gap: 0.5rem;
-            }
 
             @for $i from 1 through 8 {
                 &:nth-child(#{$i}) {

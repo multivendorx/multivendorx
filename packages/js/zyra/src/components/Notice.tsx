@@ -5,7 +5,7 @@ import { FieldComponent } from './types';
 
 export interface NoticeProps {
     title?: string;
-    message?: string | string[]; 
+    message?: string | string[];
     type?: 'info' | 'success' | 'warning' | 'error';
     display?: 'inline' | 'float' | 'banner' | 'notice';
     actionLabel?: string;
@@ -44,22 +44,23 @@ export const Notice: React.FC<NoticeProps> = ({
 
     const renderMessage = () => {
         if (!message) return null;
-        
+
         if (Array.isArray(message)) {
             return (
-                <div className="notice-messages">
+                <>
                     {message.map((msg, index) => (
                         <div key={index} className="notice-desc">
                             {msg}
-                            {actionLabel && ( 
+                            {actionLabel && (
                                 <button className="notice-action" onClick={onAction}> {actionLabel} </button>
                             )}
                         </div>
                     ))}
-                </div>
+                    <i className="close-icon adminfont-close" onClick={handleDismiss} />
+                </>
             );
         }
-        
+
         return (
             <div className="notice-desc">{message}</div>
         );
@@ -68,18 +69,11 @@ export const Notice: React.FC<NoticeProps> = ({
     return (
         <div className={rootClass}>
             <i className={`admin-font adminfont-${type}`} />
-            
-            <div className="notice-message-wrapper">
+
+            <div className="notice-details">
                 {title && <div className="notice-text">{title}</div>}
                 {renderMessage()}
-            </div>                       
-            {display !== 'inline' && (
-                <i 
-                    className="close-icon adminfont-close" 
-                    onClick={handleDismiss}
-                    aria-hidden="true"
-                />
-            )}
+            </div>
         </div>
     );
 };
