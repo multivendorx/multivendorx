@@ -38,25 +38,25 @@ const updatePlainPermalinkUrl = (segments: string[]) => {
 };
 
 const STATUS_LABELS: Record<string, string> = {
-	all:     __('All',       'multivendorx'),
+	all: __('All', 'multivendorx'),
 	publish: __('Published', 'multivendorx'),
-	draft:   __('Draft',     'multivendorx'),
-	pending: __('Pending',   'multivendorx'),
-	private: __('Private',   'multivendorx'),
-	trash:   __('Trash',     'multivendorx'),
+	draft: __('Draft', 'multivendorx'),
+	pending: __('Pending', 'multivendorx'),
+	private: __('Private', 'multivendorx'),
+	trash: __('Trash', 'multivendorx'),
 };
 
 const AllProduct: React.FC = () => {
-	const [rows, setRows]                         = useState<TableRow[][]>([]);
-	const [isLoading, setIsLoading]               = useState(false);
-	const [totalRows, setTotalRows]               = useState<number>(0);
-	const [rowIds, setRowIds]                     = useState<number[]>([]);
-	const [categoryCounts, setCategoryCounts]     = useState<CategoryCount[] | null>(null);
-	const [categoriesList, setCategoriesList]     = useState<{ id: number; name: string }[]>([]);
-	const [newProductId, setNewProductId]         = useState<number | null>(null);
+	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const [totalRows, setTotalRows] = useState<number>(0);
+	const [rowIds, setRowIds] = useState<number[]>([]);
+	const [categoryCounts, setCategoryCounts] = useState<CategoryCount[] | null>(null);
+	const [categoriesList, setCategoriesList] = useState<{ id: number; name: string }[]>([]);
+	const [newProductId, setNewProductId] = useState<number | null>(null);
 
 	const { modules } = useModules();
-	const navigate    = useNavigate();
+	const navigate = useNavigate();
 
 	// dashNavigate — single helper for all navigation (pretty + plain)
 	const dashNavigate = (segments: string[]) => {
@@ -90,7 +90,7 @@ const AllProduct: React.FC = () => {
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			);
 			setCategoriesList(response.data);
-		} catch {}
+		} catch { }
 	};
 
 	const fetchProductStatusCounts = async () => {
@@ -230,20 +230,20 @@ const AllProduct: React.FC = () => {
 			.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: {
-					page:         query.paged      || 1,
-					row:          query.per_page   || 10,
-					search:       query.searchValue || '',
-					type:         query.filter?.productType,
-					category:     query.filter?.category,
+					page: query.paged || 1,
+					row: query.per_page || 10,
+					search: query.searchValue || '',
+					type: query.filter?.productType,
+					category: query.filter?.category,
 					stock_status: query.filter?.stockStatus,
-					after:  query.filter?.created_at?.startDate
+					after: query.filter?.created_at?.startDate
 						? toWcIsoDate(query.filter.created_at.startDate, 'start')
 						: undefined,
 					before: query.filter?.created_at?.endDate
 						? toWcIsoDate(query.filter.created_at.endDate, 'end')
 						: undefined,
 					meta_key: 'multivendorx_store_id',
-					value:    appLocalizer.store_id,
+					value: appLocalizer.store_id,
 				},
 			})
 			.then((response) => {
@@ -274,9 +274,9 @@ const AllProduct: React.FC = () => {
 			type: 'select',
 			label: __('Product Type', 'multivendorx'),
 			options: [
-				{ value: 'simple',   label: __('Simple Product',            'multivendorx') },
-				{ value: 'variable', label: __('Variable Product',           'multivendorx') },
-				{ value: 'grouped',  label: __('Grouped Product',            'multivendorx') },
+				{ value: 'simple', label: __('Simple Product', 'multivendorx') },
+				{ value: 'variable', label: __('Variable Product', 'multivendorx') },
+				{ value: 'grouped', label: __('Grouped Product', 'multivendorx') },
 				{ value: 'external', label: __('External/Affiliate Product', 'multivendorx') },
 			],
 		},
@@ -285,9 +285,9 @@ const AllProduct: React.FC = () => {
 			type: 'select',
 			label: __('Stock Status', 'multivendorx'),
 			options: [
-				{ value: 'instock',     label: __('In Stock',      'multivendorx') },
-				{ value: 'outofstock',  label: __('Out of Stock',  'multivendorx') },
-				{ value: 'onbackorder', label: __('On Backorder',  'multivendorx') },
+				{ value: 'instock', label: __('In Stock', 'multivendorx') },
+				{ value: 'outofstock', label: __('Out of Stock', 'multivendorx') },
+				{ value: 'onbackorder', label: __('On Backorder', 'multivendorx') },
 			],
 		},
 		{
@@ -309,10 +309,10 @@ const AllProduct: React.FC = () => {
 			label: __('Stock', 'multivendorx'),
 			render: (row: any) =>
 				row.stock_status === 'instock'
-					? __('In stock',     'multivendorx')
+					? __('In stock', 'multivendorx')
 					: row.stock_status === 'outofstock'
-					? __('Out of stock', 'multivendorx')
-					: row.stock_status,
+						? __('Out of stock', 'multivendorx')
+						: row.stock_status,
 		},
 		categories: {
 			label: __('Categories', 'multivendorx'),
@@ -346,7 +346,7 @@ const AllProduct: React.FC = () => {
 				{
 					label: __('Copy URL', 'multivendorx'),
 					icon: 'copy',
-					onClick: (row: any) => navigator.clipboard.writeText(row.permalink).catch(() => {}),
+					onClick: (row: any) => navigator.clipboard.writeText(row.permalink).catch(() => { }),
 				},
 				{
 					label: __('Delete', 'multivendorx'),
@@ -362,22 +362,28 @@ const AllProduct: React.FC = () => {
 			<NavigatorHeader
 				headerTitle={__('All Products', 'multivendorx')}
 				headerDescription={__('Manage your store products', 'multivendorx')}
-				buttons={[
-					...(modules.includes('import-export')
-						? [{ custom: applyFilters('product_import_export', null) }]
-						: []),
-					{
-						label: __('Add New', 'multivendorx'),
-						icon: 'plus',
-						onClick: () => {
-							if (modules.includes('shared-listing')) {
-								dashNavigate(['products', 'add']);
-							} else {
-								createAutoDraftProduct();
-							}
+				buttons={applyFilters(
+					'multivendorx_product_list_header_buttons',
+					[
+						...(modules.includes('import-export')
+							? [{ custom: applyFilters('product_import_export', null) }]
+							: []),
+
+						{
+							label: __('Add New', 'multivendorx'),
+							icon: 'plus',
+							onClick: () => {
+								if (modules.includes('shared-listing')) {
+									dashNavigate(['products', 'add']);
+								} else {
+									createAutoDraftProduct();
+								}
+							},
 						},
-					},
-				]}
+					],
+					modules,
+					dashNavigate
+				)}
 			/>
 
 			<TableCard
@@ -396,11 +402,11 @@ const AllProduct: React.FC = () => {
 				}
 				format={appLocalizer.date_format}
 				currency={{
-					currencySymbol:    appLocalizer.currency_symbol,
-					priceDecimals:     appLocalizer.price_decimals,
-					decimalSeparator:  appLocalizer.decimal_separator,
+					currencySymbol: appLocalizer.currency_symbol,
+					priceDecimals: appLocalizer.price_decimals,
+					decimalSeparator: appLocalizer.decimal_separator,
 					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition:  appLocalizer.currency_position,
+					currencyPosition: appLocalizer.currency_position,
 				}}
 			/>
 		</>
