@@ -290,6 +290,25 @@ const Dashboard = () => {
 	const store_dashboard_logo =
 		appLocalizer.settings_databases_value['appearance']?.store_dashboard_site_logo || '';
 
+	const availableStores = appLocalizer.store_ids.filter((store) => {
+		return appLocalizer.store_id
+			? store.id !== String(appLocalizer.store_id)
+			: true;
+	});
+
+	const firstTwoStores = availableStores.slice(0, 2);
+
+	const switchStore = (storeId) => {
+		axios({
+			method: 'GET',
+			url: getApiLink(appLocalizer, `store/${storeId}`),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: { action: 'switch' },
+		}).then((res: any) => {
+			window.location.assign(res.data.redirect);
+		});
+	};
+
 	const toggleFullscreen = () => {
 		if (!document.fullscreenElement) {
 			document.documentElement.requestFullscreen().catch((err) =>
@@ -543,6 +562,104 @@ const Dashboard = () => {
 																Account Setting
 															</a>
 														</li>
+														{availableStores.length >
+															0 && (
+															<li className="switch-store-wrapper">
+																<a
+																	href="#"
+																	onClick={(
+																		e
+																	) => {
+																		e.preventDefault();
+																		setShowStoreList(
+																			(
+																				prev
+																			) =>
+																				!prev
+																		);
+																	}}
+																>
+																	<i className="adminfont-switch-store"></i>
+																	Switch
+																	stores
+																	{firstTwoStores.length >
+																		0 && (
+																		<span className="switch-store-preview">
+																			{!showStoreList && (
+																				<>
+																					{firstTwoStores.map((store, index) => (
+																							<span
+																								className={`store-icon admin-color${index + 2}`}
+																								key={
+																									store.id
+																								}
+																							>
+																								{store.name
+																									.charAt(
+																										0
+																									)
+																									.toUpperCase()}
+																							</span>
+																						)
+																					)}
+
+																					{availableStores.length >
+																						2 && (
+																						<span className="store-icon number">
+																							+
+																							{availableStores.length -
+																								2}
+																						</span>
+																					)}
+																				</>
+																			)}
+																			<span className="adminfont-keyboard-arrow-down arrow-icon"></span>
+																		</span>
+																	)}
+																</a>
+
+																{showStoreList && (
+																	<div className="switch-store-list">
+																		{availableStores.map(
+																			(
+																				store,
+																				index
+																			) => (
+																				<div
+																					className="store"
+																					key={ store.id }
+																				>
+																					<a
+																						href="#"
+																						className="switch-store"
+																						onClick={( e ) => {
+																							e.preventDefault();
+																							switchStore(
+																								store.id
+																							);
+																						}}
+																					>
+																						<span
+																							className={`store-icon admin-color${index + 2}`}
+																						>
+																							{store.name
+																								.charAt( 0 ) .toUpperCase()}
+																						</span>
+																						<div className="details-wrapper">
+																							<div className="store-name">
+																								{
+																									store.name
+																								}
+																							</div>
+																						</div>
+																					</a>
+																				</div>
+																			)
+																		)}
+																	</div>
+																)}
+															</li>
+														)}
 													</ul>
 												</div>
 
