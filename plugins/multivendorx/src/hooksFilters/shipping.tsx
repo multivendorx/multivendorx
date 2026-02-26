@@ -8,10 +8,12 @@ import {
 	FormGroupWrapper,
 	SelectInputUI,
 	ToggleSettingUI,
+	useModules,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const ShippingCard = ({ product, setProduct, handleChange }) => {
+	const {modules} = useModules();
 	const [shippingClasses, setShippingClasses] = useState([]);
 	const [productType, setProductType] = useState('physical');
 
@@ -156,7 +158,8 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 						{applyFilters(
 							'multivendorx_product_shipping_meta',
 							null,
-							product
+							product,
+							modules
 						)}
 					</>
 				)}
