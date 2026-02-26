@@ -7,7 +7,7 @@ export interface NoticeProps {
     title?: string;
     message?: string | string[];
     type?: 'info' | 'success' | 'warning' | 'error' | 'banner';
-    displayPosition?: 'inline' | 'float' | 'notice';
+    displayPosition?: 'inline' | 'float' | 'notice' | 'banner';
     actionLabel?: string;
     onAction?: () => void;
 }
@@ -67,18 +67,12 @@ export const Notice: React.FC<NoticeProps> = ({
     };
 
     return (
-        <div>
-            <div
-                className="wp-admin-notice"
-                dangerouslySetInnerHTML={{ __html: '' }}
-            />
-            <div className={rootClass}>
-                <i className={`admin-font adminfont-${type}`} />
+        <div className={rootClass}>
+            <i className={`admin-font adminfont-${type}`} />
 
-                <div className="notice-details">
-                    {title && <div className="notice-text">{title}</div>}
-                    {renderMessage()}
-                </div>
+            <div className="notice-details">
+                {title && <div className="notice-text">{title}</div>}
+                {renderMessage()}
             </div>
         </div>
     );
