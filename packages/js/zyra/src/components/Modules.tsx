@@ -229,7 +229,7 @@ const Modules: React.FC<ModuleProps> = ({
                             />
 
                             <SelectInputUI
-                                type="creatable-multi"
+                                type="single-select"
                                 options={statusOptions}
                                 value={selectedFilter}
                                 size="8rem"
