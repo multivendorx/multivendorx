@@ -416,7 +416,7 @@ const statusOptions = [
 		<>
 			<Notice
 				message={successMsg}
-				displayPosition={'float'}
+				displayPosition='float'
 				title={__('Great!', 'multivendorx')}
 			/>
 			<Container>

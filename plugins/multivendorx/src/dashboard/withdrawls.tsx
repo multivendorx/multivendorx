@@ -102,7 +102,7 @@ const Withdrawls: React.FC = () => {
 		<>
 			<Notice
 				message={message}
-				displayPosition={'float'}
+				displayPosition='float'
 				title={__('Great!', 'multivendorx')}
 			/>
 			<NavigatorHeader

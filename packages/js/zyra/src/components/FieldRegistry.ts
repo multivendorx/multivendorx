@@ -4,7 +4,6 @@ import PrePostText from './PrePostText';
 import AdminButton from './AdminButton';
 import ExpandablePanelGroup from './ExpandablePanelGroup';
 import ToggleSetting from './ToggleSetting';
-import BlockText from './BlockText';
 import ClickableList from './ClickableList';
 import RegistrationForm from './FormRenderer';
 import MultiCheckBox from './MultiCheckbox';
@@ -44,7 +43,6 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   preposttext: PrePostText,
   button: AdminButton,
   nested: NestedComponent,
-  blocktext: BlockText,
   notice: NoticeField,
   section: Section,
   checkbox: MultiCheckBox,

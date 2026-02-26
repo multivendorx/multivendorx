@@ -61,7 +61,7 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 		<>
 			<Notice
 				message={successMsg}
-				displayPosition={'float'}
+				displayPosition='float'
 				title={__('Great!', 'multivendorx')}
 			/>
 

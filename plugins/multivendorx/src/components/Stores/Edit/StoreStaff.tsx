@@ -56,7 +56,7 @@ const StoreSquad = ({ id }: { id: string | null }) => {
 		<>
 			<Notice
 				message={successMsg}
-				displayPosition={'float'}
+				displayPosition='float'
 				title={__('Great!', 'multivendorx')}
 			/>
 

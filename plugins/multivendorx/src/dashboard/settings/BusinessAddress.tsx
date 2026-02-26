@@ -309,7 +309,7 @@ const BusinessAddress = () => {
 		<>
 			<Notice
 				message={successMsg}
-				displayPosition={'float'}
+				displayPosition='float'
 				title={__('Great!', 'multivendorx')}
 			/>
 
