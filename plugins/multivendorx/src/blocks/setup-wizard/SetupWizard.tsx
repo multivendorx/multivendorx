@@ -115,12 +115,14 @@ const SetupWizard: React.FC = () => {
 				},
 				{
 					key: 'notice_rental',
-					type: 'blocktext',
+					type: 'notice',
 					label: '',
-					blocktext: __(
+					message: __(
 						'Ready to unlock the full potential of your marketplace? Activate WooCommerce Rental with MultiVendorX Pro and start selling like a pro today!',
 						'multivendorx'
 					),
+					noticeType: 'info',
+					display: 'notice',
 					dependent: {
 						key: 'marketplace_model',
 						value: 'rental',
@@ -128,12 +130,14 @@ const SetupWizard: React.FC = () => {
 				},
 				{
 					key: 'notice_auction',
-					type: 'blocktext',
+					type: 'notice',
 					label: '',
-					blocktext: __(
+					message: __(
 						'Ready to unlock the full potential of your marketplace? Activate WooCommerce Simple Auction with MultiVendorX Pro and start selling like a pro today!',
 						'multivendorx'
 					),
+					noticeType: 'info',
+					display: 'notice',
 					dependent: {
 						key: 'marketplace_model',
 						value: 'auction',
@@ -141,12 +145,14 @@ const SetupWizard: React.FC = () => {
 				},
 				{
 					key: 'notice_subscription',
-					type: 'blocktext',
+					type: 'notice',
 					label: '',
-					blocktext: __(
+					message: __(
 						'Ready to unlock the full potential of your marketplace? Activate WooCommerce Subscription with MultiVendorX Pro and start selling like a pro today!',
 						'multivendorx'
 					),
+					noticeType: 'info',
+					display: 'notice',
 					dependent: {
 						key: 'marketplace_model',
 						value: 'subscription',

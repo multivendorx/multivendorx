@@ -307,7 +307,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 		<>
 			<Notice
 				message={refundError}
-				displayPosition={'float'}
+				displayPosition='float'
 				title={__('Great!', 'multivendorx')}
 			/>
 			{!appLocalizer.edit_order_capability ? (

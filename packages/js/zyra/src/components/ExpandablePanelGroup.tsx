@@ -30,7 +30,7 @@ interface PanelFormField {
     | 'checkbox'
     | 'setting-toggle'
     | 'clickable-list'
-    | 'blocktext'
+    | 'notice'
     | 'multi-select'
     | 'button'
     | 'nested';
@@ -113,7 +113,7 @@ interface ExpandablePanelGroupProps {
 
 /** Fields that count toward wizard progress (excludes UI-only types). */
 const isCountableField = (f: PanelFormField) =>
-    f.type !== 'button' && f.type !== 'blocktext';
+    f.type !== 'button' && f.type !== 'notice';
 
 /**
  * Merge template formFields into a method without overwriting existing keys.
@@ -963,7 +963,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                                 <FormGroup
                                                     row
                                                     key={field.key}
-                                                    label={field.type !== 'blocktext' ? field.label : undefined}
+                                                    label={field.type !== 'notice' ? field.label : undefined}
                                                     desc={field.desc}
                                                     htmlFor={field.name}
                                                 >

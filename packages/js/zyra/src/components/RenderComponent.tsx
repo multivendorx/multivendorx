@@ -727,9 +727,8 @@ const RenderComponent: React.FC<RenderProps> = ({
                 <Notice
                     type={notice?.type}
                     message={notice?.message}
-                    displayPosition ={'float'}
-                    title={'Great!'}
-                    onDismiss={() => setNotice(null)}
+                    displayPosition ='float'
+                    title='Great!'
                 />
             <FormGroupWrapper>{renderForm()}</FormGroupWrapper>
         </>

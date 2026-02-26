@@ -8,366 +8,273 @@ import {
 	useModules,
 	Tooltip,
 } from 'zyra';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
-import Notifications from './dashboard/notifications';
-import './hooksFilters';
 import { __ } from '@wordpress/i18n';
-import { formatTimeAgo } from './services/commonFunction';
+import './hooksFilters';
+import { getDashboardRoutes } from './dashboardConfig';
+
+/**
+ * Builds a navigable path string.
+ *
+ * Pretty permalinks  → relative path used with react-router navigate()
+ *                      e.g.  "/products/edit/123"
+ *
+ * Plain permalinks   → also a relative path for MemoryRouter navigate(),
+ *                      AND separately updates window.history so the browser
+ *                      URL bar reflects the correct query-param URL.
+ */
+const buildPath = (segments: string[]): string => `/${segments.filter(Boolean).join('/')}`;
+
+const sanitize = (value: string) =>
+	value.replace(/[^a-zA-Z0-9_-]/g, '');
+
+const updatePlainPermalinkUrl = (segments: string[]) => {
+	const [segment = '', element = '', context_id = ''] = segments;
+
+	const params = new URLSearchParams({
+		page_id: appLocalizer.dashboard_page_id,
+		segment: sanitize(segment),
+		...(element ? { element: sanitize(element) } : {}),
+		...(context_id ? { context_id: sanitize(context_id) } : {}),
+	});
+
+	window.history.pushState(
+		{},
+		'',
+		`${window.location.pathname}?${params.toString()}`
+	);
+};
 
 const Dashboard = () => {
-	const [menu, setMenu] = useState({});
-	const [openSubmenus, setOpenSubmenus] = useState({});
-	const [storeData, setStoreData] = useState(null);
-	const [currentTab, setCurrentTab] = useState('');
-	const [announcement, setAnnouncement] = useState<any[]>([]);
-	const [showUserDropdown, setShowUserDropdown] = useState(false);
-	const [showNotifications, setShowNotifications] = useState(false);
-	const [showAnnouncements, setshowAnnouncements] = useState(false);
-	const [noPermission, setNoPermission] = useState(false);
-	const [showStoreList, setShowStoreList] = useState(false);
-	const [isDarkMode, setIsDarkMode] = useState(false);
-	const userDropdownRef = useRef(null);
-	const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
-	const [isMenuMinmize, setisMenuMinmize] = useState(false);
-	const { modules } = useModules();
-	const [activeType, setActiveType] = useState<'notification' | 'activity'>(
-		'notification'
-	);
-	const [newProductId, setNewProductId] = useState(null);
-
-	const location = useLocation();
+	const { tab: urlTab, element, context_id } = useParams();
 	const navigate = useNavigate();
-	const getBasePath = () => {
-		const sitePath = new URL(appLocalizer.site_url).pathname;
-		return sitePath.replace(/\/$/, '');
+
+	const [menu, setMenu]                           = useState<Record<string, any>>({});
+	const [openSubmenus, setOpenSubmenus]           = useState<Record<string, boolean>>({});
+	const [storeData, setStoreData]                 = useState<any>(null);
+	const [currentTab, setCurrentTab]               = useState('');
+	const [announcement, setAnnouncement]           = useState<any[]>([]);
+	const [showUserDropdown, setShowUserDropdown]   = useState(false);
+	const [showStoreList, setShowStoreList]         = useState(false);
+	const [isDarkMode, setIsDarkMode]               = useState(false);
+	const [isMenuCollapsed, setIsMenuCollapsed]     = useState(false);
+	const [isMenuMinmize, setisMenuMinmize]         = useState(false);
+	const [noPermission, setNoPermission]           = useState(false);
+	const [newProductId, setNewProductId]           = useState<number | null>(null);
+
+	const userDropdownRef = useRef<HTMLDivElement>(null);
+	const { modules }     = useModules();
+
+	const DEFAULT_TAB = 'dashboard';
+
+	const hasCapability = (capability: any): boolean => {
+		if (!capability) return true;
+		const userCaps = appLocalizer.current_user?.allcaps || {};
+		if (Array.isArray(capability)) return capability.some((cap) => userCaps[cap] === true);
+		return userCaps[capability] === true;
 	};
-	const basePath = getBasePath();
+
+	const isModuleActive = (requiredModules: any): boolean => {
+		if (!requiredModules) return true;
+		return requiredModules.some((m: string) => modules.includes(m));
+	};
+
+	/**
+	 * Navigate within the dashboard.
+	 * Handles both permalink modes transparently.
+	 *
+	 * @param segments  e.g. ['products'], ['products', 'edit'], ['products', 'edit', '123']
+	 */
+	const dashNavigate = (segments: string[]) => {
+		const ALLOWED_SEGMENTS = ['products', 'orders', 'dashboard'];
+
+		if (!ALLOWED_SEGMENTS.includes(segments)) {
+			return;
+		}
+		const path = buildPath(segments);
+		if (!appLocalizer.permalink_structure) {
+			updatePlainPermalinkUrl(segments);
+		}
+		navigate(path);
+	};
+
+	const storefrontUrl = `${appLocalizer.store_page_url}${storeData?.slug}`;
 
 	const createAutoDraftProduct = () => {
-		const payload = {
-			name: 'Auto Draft',
-			status: 'draft',
-		};
-
 		axios
-			.post(`${appLocalizer.apiUrl}/wc/v3/products/`, payload, {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			})
-			.then((res) => {
-				setNewProductId(res.data.id);
-			})
-			.catch((err) => {
-				console.error('Error creating auto draft product:', err);
-			});
+			.post(
+				`${appLocalizer.apiUrl}/wc/v3/products/`,
+				{ name: 'Auto Draft', status: 'draft' },
+				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+			)
+			.then((res) => setNewProductId(res.data.id))
+			.catch((err) => console.error('Error creating auto draft product:', err));
 	};
 
 	useEffect(() => {
-		if (!newProductId) {
-			return;
-		}
-
-		if (appLocalizer.permalink_structure) {
-			navigate(
-				`${basePath}/${appLocalizer.dashboard_slug}/products/edit/${newProductId}`
-			);
-		} else {
-			navigate(
-				`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=edit&context_id=${newProductId}`
-			);
-		}
+		if (!newProductId) return;
+		dashNavigate(['products', 'edit', String(newProductId)]);
 	}, [newProductId]);
 
-
-	const loadComponent = (key: string) => {
-		if (!endpoints || endpoints.length === 0) return null;
-
-		try {
-			const activeEndpoint = endpoints.find((ep) => ep.tab === key);
-
-			// Convert kebab-case to CamelCase for filenames
-			const kebabToCamelCase = (str: string) =>
-				str.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
-
-			const convertedKey = kebabToCamelCase(activeEndpoint?.filename || key);
-
-			try {
-				const DashboardComponent = require(`./dashboard/${convertedKey}.tsx`).default;
-				return <DashboardComponent />;
-			} catch {
-			}
-
-			return applyFilters(
-				'multivendorx_pro_dashboard_component',
-				null,
-				convertedKey
-			);
-
-		} catch {
-			return <div>404 not found</div>;
-		}
-	};
-
-	// const loadComponent = (key) => {
-	// 	if (!endpoints || endpoints.length === 0) {
-	// 		return;
-	// 	}
-
-	// 	try {
-	// 		const activeEndpoint = endpoints.find((ep) => ep.tab === key);
-	// 		const kebabToCamelCase = (str) => {
-	// 			return str.replace(/-([a-z])/g, (match, letter) =>
-	// 				letter.toUpperCase()
-	// 			);
-	// 		};
-
-	// 		if (activeEndpoint?.filename) {
-	// 			const CustomComponent = require(
-	// 				`./dashboard/${kebabToCamelCase(activeEndpoint.filename)}.tsx`
-	// 			).default;
-	// 			return <CustomComponent />;
-	// 		}
-
-	// 		const convertedKey = kebabToCamelCase(key);
-	// 		const DefaultComponent = require(
-	// 			`./dashboard/${convertedKey}.tsx`
-	// 		).default;
-	// 		return <DefaultComponent />;
-	// 	} catch {
-	// 		return <div>404 not found</div>;
-	// 	}
-	// };
 
 	useEffect(() => {
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, `store/${appLocalizer.store_id}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-		}).then((res: any) => {
-			const data = res.data || {};
-			setStoreData(data || null);
-		});
+		}).then((res: any) => setStoreData(res.data || null));
 	}, [appLocalizer.store_id]);
 
 	useEffect(() => {
 		axios({
-			url: getApiLink(appLocalizer, 'endpoints'),
 			method: 'GET',
+			url: getApiLink(appLocalizer, 'endpoints'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-		}).then((res) => {
-			setMenu(res.data || {});
-		});
+		}).then((res) => setMenu(res.data || {}));
+
 		if (modules.includes('announcement')) {
 			axios({
 				method: 'GET',
 				url: getApiLink(appLocalizer, 'announcement'),
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					page: 1,
-					row: 4,
-					store_id: appLocalizer.store_id,
-					status: 'publish',
-				},
+				params: { page: 1, row: 4, store_id: appLocalizer.store_id, status: 'publish' },
 			})
-				.then((response) => {
-					setAnnouncement(response.data.items || []);
-				})
+				.then((res) => setAnnouncement(res.data.items || []))
 				.catch(() => {});
 		}
 	}, []);
 
-	// dark mode
+	// Dark mode
 	useEffect(() => {
-		document.body.classList.add(
+		const palette =
 			appLocalizer.settings_databases_value['appearance']
-				?.store_color_settings?.selectedPalette
-		);
+				?.store_color_settings?.selectedPalette;
+		if (palette) document.body.classList.add(palette);
 		document.body.classList.toggle('dark', isDarkMode);
-
-		return () => {
-			document.body.classList.remove('dark');
-		};
+		return () => document.body.classList.remove('dark');
 	}, [isDarkMode]);
 
-	const hasCapability = (capability: any) => {
-		if (!capability) {
-			return true;
-		}
-
-		const userCaps = appLocalizer.current_user?.allcaps || {};
-
-		if (Array.isArray(capability)) {
-			return capability.some((cap) => userCaps[cap] === true);
-		}
-
-		return userCaps[capability] === true;
-	};
-
-	const isModuleActive = (requiredModules: any) => {
-		if (!requiredModules) {
-			return true;
-		}
-
-		return requiredModules.some((m) => modules.includes(m));
-	};
-
+	// Sync current tab from URL params
 	useEffect(() => {
-		if (!currentTab) {
-			return;
-		}
+		setCurrentTab(urlTab || DEFAULT_TAB);
+	}, [urlTab]);
+
+	// Permission check for current tab
+	useEffect(() => {
+		if (!currentTab) return;
 
 		let capability = null;
-
 		for (const [key, item] of Object.entries(menu)) {
 			if (key === currentTab) {
 				capability = item.capability;
 				break;
 			}
-
-			const sub = item.submenu?.find((s) => s.key === currentTab);
+			const sub = item.submenu?.find((s: any) => s.key === currentTab);
 			if (sub) {
 				capability = sub.capability;
 				break;
 			}
 		}
-
 		setNoPermission(!hasCapability(capability));
 	}, [currentTab, menu]);
 
-	const endpoints = useMemo(() => {
-		const list = [];
-
+	// Auto-open parent submenu when a child tab is active
+	useEffect(() => {
+		const open: Record<string, boolean> = {};
 		Object.entries(menu).forEach(([key, item]) => {
-			list.push({
-				tab: key,
-				filename: item.filename || key,
-			});
-
-			item.submenu?.forEach((sub) => {
-				list.push({
-					tab: sub.key,
-					filename: sub.filename || sub.key,
-				});
-			});
-		});
-
-		return list;
-	}, [menu]);
-
-	const DEFAULT_TAB = 'dashboard';
-
-	const getCurrentTabFromURL = () => {
-		const slug = appLocalizer.dashboard_slug;
-		const base = getBasePath();
-
-		if (appLocalizer.permalink_structure) {
-			let path = location.pathname
-				.replace(base, '')
-				.replace(`/${slug}/`, '')
-				.replace(/^\/+|\/+$/g, '');
-
-			if (!path) {
-				return DEFAULT_TAB;
-			}
-
-			const parts = path.split('/');
-			return parts[0] || DEFAULT_TAB;
-		}
-
-		const query = new URLSearchParams(location.search);
-		const segment = query.get('segment');
-
-		if (!segment || segment === DEFAULT_TAB) {
-			return DEFAULT_TAB;
-		}
-
-		return segment;
-	};
-
-	useEffect(() => {
-		if (!endpoints.length) return;
-
-		const tabFromUrl = getCurrentTabFromURL();
-
-		if (tabFromUrl) {
-			setCurrentTab(tabFromUrl);
-			return;
-		}
-
-		setCurrentTab(endpoints[0]?.tab || DEFAULT_TAB);
-	}, [location.pathname, location.search, endpoints]);
-
-	useEffect(() => {
-		if (currentTab !== DEFAULT_TAB) {
-			return;
-		}
-
-		const base = getBasePath();
-
-		if (appLocalizer.permalink_structure) {
-			const cleanUrl = `${base}/${appLocalizer.dashboard_slug}`;
-
-			if (location.pathname !== cleanUrl) {
-				window.history.replaceState({}, '', cleanUrl);
-			}
-			return;
-		}
-
-		const cleanUrl = `${base}/?page_id=${appLocalizer.dashboard_page_id}`;
-
-		if (location.search !== `?page_id=${appLocalizer.dashboard_page_id}`) {
-			window.history.replaceState({}, '', cleanUrl);
-		}
-	}, [currentTab]);
-
-	// Handle Tab Navigation
-	const handleTabClick = (tab) => {
-		const base = getBasePath();
-		if (appLocalizer.permalink_structure) {
-			navigate(`${base}/${appLocalizer.dashboard_slug}/${tab}/`);
-		} else {
-			navigate(
-				`${base}/?page_id=${appLocalizer.dashboard_page_id}&segment=${tab}`
-			);
-		}
-	};
-
-	useEffect(() => {
-		const open = {};
-
-		Object.entries(menu).forEach(([key, item]) => {
-			if (!item.submenu?.length) {
-				return;
-			}
-
+			if (!item.submenu?.length) return;
 			const isParentActive = currentTab === key;
-			const isChildActive = item.submenu.some(
-				(s) => s.key === currentTab
-			);
-
-			if (isParentActive || isChildActive) {
-				open[key] = true;
-			}
+			const isChildActive  = item.submenu.some((s: any) => s.key === currentTab);
+			if (isParentActive || isChildActive) open[key] = true;
 		});
-
 		setOpenSubmenus(open);
 	}, [currentTab, menu]);
 
-	const toggleSubmenu = (key) => {
+	// Submenu toggle (closes other open submenus)
+	const toggleSubmenu = (key: string) => {
 		setOpenSubmenus((prev) => {
-			const updated = {};
-
+			const updated: Record<string, boolean> = {};
 			Object.keys(menu).forEach((menuKey) => {
 				updated[menuKey] = menuKey === key ? !prev[key] : false;
 			});
-
 			return updated;
 		});
 	};
 
+	// Endpoint list
+	const endpoints = useMemo(() => {
+		const list: { tab: string; filename: string }[] = [];
+		Object.entries(menu).forEach(([key, item]) => {
+			list.push({ tab: key, filename: item.filename || key });
+			item.submenu?.forEach((sub: any) =>
+				list.push({ tab: sub.key, filename: sub.filename || sub.key })
+			);
+		});
+		return list;
+	}, [menu]);
+
+	const loadComponent = (key: string) => {
+		if (!endpoints.length) return null;
+
+		try {
+
+			const routes = getDashboardRoutes();
+			const matchedRoute = routes.find(
+				(route) => route.tab === urlTab && route.element === element
+			);
+
+			if (matchedRoute) {
+				const Component = matchedRoute.component;
+				return <Component contextId={context_id} />;
+			}
+
+			const activeEndpoint = endpoints.find((ep) => ep.tab === key);
+			const kebabToCamelCase = (str: string) =>
+				str.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+			const convertedKey = kebabToCamelCase(activeEndpoint?.filename || key);
+			
+			try {
+				const DashboardComponent = require(`./dashboard/${convertedKey}.tsx`).default;
+				return <DashboardComponent contextId={context_id} />;
+			} catch {
+				// fall through to filter
+			}
+
+			return applyFilters('multivendorx_pro_dashboard_component', null, convertedKey);
+		} catch {
+			return <div>404 not found</div>;
+		}
+	};
+
+	// Menu filtered by capability + active modules
+	const filteredMenu = useMemo(() => {
+		const result: Record<string, any> = {};
+		Object.entries(menu).forEach(([key, item]: any) => {
+			if (!hasCapability(item.capability)) return;
+			if (!isModuleActive(item.module)) return;
+
+			let filteredSubmenu = item.submenu;
+			if (item.submenu?.length) {
+				filteredSubmenu = item.submenu.filter(
+					(sub: any) => hasCapability(sub.capability) && isModuleActive(sub.module)
+				);
+				if (filteredSubmenu.length === 0) return;
+			}
+			result[key] = { ...item, submenu: filteredSubmenu };
+		});
+		return result;
+	}, [menu, modules]);
+
+	const tabHref = (tab: string): string => {
+		if (appLocalizer.permalink_structure) {
+			return `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/${tab}`;
+		}
+		return `${appLocalizer.site_url.replace(/\/$/, '')}/?page_id=${appLocalizer.dashboard_page_id}&segment=${tab}`;
+	};
+
 	const store_dashboard_logo =
-		appLocalizer.settings_databases_value['appearance']
-			?.store_dashboard_site_logo || '';
+		appLocalizer.settings_databases_value['appearance']?.store_dashboard_site_logo || '';
 
 	const availableStores = appLocalizer.store_ids.filter((store) => {
 		return appLocalizer.store_id
@@ -390,109 +297,31 @@ const Dashboard = () => {
 
 	const toggleFullscreen = () => {
 		if (!document.fullscreenElement) {
-			document.documentElement.requestFullscreen().catch((err) => {
-				console.warn(`Error attempting fullscreen: ${err.message}`);
-			});
+			document.documentElement.requestFullscreen().catch((err) =>
+				console.warn(`Fullscreen error: ${err.message}`)
+			);
 		} else {
 			document.exitFullscreen();
 		}
 	};
 
-	// Toggle user dropdown
-	useEffect(() => {
-		const handleClickOutside = (e) => {
-			if (
-				userDropdownRef.current &&
-				!userDropdownRef.current.contains(e.target)
-			) {
-				setShowUserDropdown(false);
-				setShowStoreList(false);
-				setShowNotifications(false);
-				setshowAnnouncements(false);
-			}
-		};
+	const toggleUserDropdown = () => setShowUserDropdown((prev) => !prev);
 
-		document.addEventListener('mousedown', handleClickOutside);
-		return () =>
-			document.removeEventListener('mousedown', handleClickOutside);
-	}, []);
-
-	const toggleUserDropdown = () => {
-		setShowUserDropdown((prev) => !prev);
-		setShowNotifications(false);
-		setshowAnnouncements(false);
-	};
-
-	// Toggle notifications
-	const toggleNotifications = (e) => {
-		e.stopPropagation();
-		setShowNotifications((prev) => !prev);
-		setShowUserDropdown(false);
-		setshowAnnouncements(false);
-	};
-
-	const toggleAnnouncements = (e) => {
-		e.stopPropagation();
-		setshowAnnouncements((prev) => !prev);
-		setShowNotifications(false);
-		setShowUserDropdown(false);
-	};
-
-	const filteredMenu = useMemo(() => {
-		const result: any = {};
-
-		Object.entries(menu).forEach(([key, item]: any) => {
-			if (!hasCapability(item.capability)) {
-				return;
-			}
-
-			if (!isModuleActive(item.module)) {
-				return;
-			}
-
-			let filteredSubmenu = undefined;
-
-			if (item.submenu?.length) {
-				filteredSubmenu = item.submenu.filter((sub) => {
-					return (
-						hasCapability(sub.capability) &&
-						isModuleActive(sub.module)
-					);
-				});
-				if (filteredSubmenu.length === 0) {
-					return;
-				}
-			}
-
-			result[key] = {
-				...item,
-				submenu: filteredSubmenu,
-			};
-		});
-
-		return result;
-	}, [menu, modules]);
-
-	const announcementItems = (announcement || []).map((item, index) => ({
-		title: item.title,
-		icon: 'adminfont-user-network-icon',
-		desc: item.content,
-		className: 'notification-item',
-		action: () => {},
-	}));
 	return (
 		<div
 			id="store-dashboard"
-			className={`${isDarkMode ? 'dark' : 'light'} ${isMenuCollapsed ? 'collapsed' : ''} ${isMenuMinmize ? 'minimize' : ''}`}
+			className={[
+				isDarkMode       ? 'dark'     : 'light',
+				isMenuCollapsed  ? 'collapsed' : '',
+				isMenuMinmize    ? 'minimize'  : '',
+			]
+				.filter(Boolean)
+				.join(' ')}
 		>
 			<div
 				className="dashboard-tabs-wrapper"
-				onMouseEnter={() => {
-					setisMenuMinmize(false);
-				}}
-				onMouseOut={() => {
-					setisMenuMinmize(true);
-				}}
+				onMouseEnter={() => setisMenuMinmize(false)}
+				onMouseOut={()   => setisMenuMinmize(true)}
 			>
 				<div className="logo-wrapper">
 					{store_dashboard_logo ? (
@@ -506,98 +335,54 @@ const Dashboard = () => {
 					)}
 				</div>
 
-				{storeData?.status == 'active' && (
+				{storeData?.status === 'active' && (
 					<div className="dashboard-tabs">
 						<ul>
 							{Object.entries(filteredMenu).map(([key, item]) => {
-								if (!item.name) {
-									return null;
-								}
+								if (!item.name) return null;
 
-								const hasSubmenu = item.submenu?.length > 0;
+								const hasSubmenu    = item.submenu?.length > 0;
 								const isParentActive = currentTab === key;
-								const isOpen = openSubmenus[key] || false;
+								const isOpen        = openSubmenus[key] || false;
 
 								return (
-									<li
-										key={key}
-										className={`tab-name ${
-											isParentActive ? 'active' : ''
-										}`}
-									>
-										<a
-											className="tab"
-											href={
-												hasSubmenu
-													? '#'
-													: appLocalizer.permalink_structure
-														? `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/${key}`
-														: `${appLocalizer.site_url.replace(/\/$/, '')}/?page_id=${appLocalizer.dashboard_page_id}&segment=${key}`
-											}
-											onClick={(e) => {
-												e.preventDefault();
-
-												if (hasSubmenu) {
-													toggleSubmenu(key);
-												} else {
-													handleTabClick(key);
-												}
-											}}
-										>
-											<i
-												className={`adminfont-${item.icon}`}
-											></i>
-											<span>{item.name}</span>
-
-											{hasSubmenu && (
-												<i
-													className={`admin-arrow adminfont-pagination-right-arrow ${
-														isOpen ? 'rotate' : ''
-													}`}
-												></i>
-											)}
-										</a>
+									
+									<li key={key} className={`tab-name ${isParentActive ? 'active' : ''}`}>
+										{hasSubmenu ? (
+											// Submenu parent — no navigation, just toggle
+											<a
+												className="tab"
+												onClick={() => toggleSubmenu(key)}
+											>
+												<i className={`adminfont-${item.icon}`}></i>
+												<span>{item.name}</span>
+												<i className={`admin-arrow adminfont-pagination-right-arrow ${isOpen ? 'rotate' : ''}`}></i>
+											</a>
+										) : (
+											// Regular tab — let NavLink handle routing
+											<NavLink
+												className={({ isActive }) => `tab ${isActive ? 'active' : ''}`}
+												to={`/${key}`}                    // ← always a path; NavLink works in both BrowserRouter & MemoryRouter
+												onClick={() => setCurrentTab(key)}
+											>
+												<i className={`adminfont-${item.icon}`}></i>
+												<span>{item.name}</span>
+											</NavLink>
+										)}
 
 										{hasSubmenu && (
-											<ul
-												className={`subtabs ${
-													isOpen ? 'open' : ''
-												}`}
-											>
-												{item.submenu.map((sub) => {
-													const subActive =
-														currentTab === sub.key;
-
-													return (
-														<li
-															key={sub.key}
-															className={
-																subActive
-																	? 'active'
-																	: ''
-															}
+											<ul className={`subtabs ${isOpen ? 'open' : ''}`}>
+												{item.submenu.map((sub: any) => (
+													<li key={sub.key}>
+														<NavLink
+															className={({ isActive }) => isActive ? 'active' : ''}
+															to={`/${sub.key}`}
+															onClick={() => setCurrentTab(sub.key)}
 														>
-															<a
-																// href={`?segment=${sub.key}`}
-																href={
-																	appLocalizer.permalink_structure
-																		? `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/${sub.key}`
-																		: `${appLocalizer.site_url.replace(/\/$/, '')}/?page_id=${appLocalizer.dashboard_page_id}&segment=${sub.key}`
-																}
-																onClick={(
-																	e
-																) => {
-																	e.preventDefault();
-																	handleTabClick(
-																		sub.key
-																	);
-																}}
-															>
-																{sub.name}
-															</a>
-														</li>
-													);
-												})}
+															{sub.name}
+														</NavLink>
+													</li>
+												))}
 											</ul>
 										)}
 									</li>
@@ -608,7 +393,9 @@ const Dashboard = () => {
 				)}
 			</div>
 
+			{/* Main content area                                                 */}
 			<div className="dashboard-content tab-wrapper">
+				{/* Top Navbar */}
 				<div className="top-navbar-wrapper">
 					<div className="top-navbar">
 						<div className="navbar-leftside">
@@ -623,13 +410,11 @@ const Dashboard = () => {
 								}}
 							></i>
 						</div>
+
 						<div className="navbar-rightside">
 							<ul className="navbar-right">
-								<li
-									onClick={() =>
-										setIsDarkMode((prev) => !prev)
-									}
-								>
+								{/* Dark mode toggle */}
+								<li onClick={() => setIsDarkMode((prev) => !prev)}>
 									<div
 										className={`adminfont-icon admin-icon dark-icon adminfont-${
 											isDarkMode ? 'light' : 'moon'
@@ -637,27 +422,12 @@ const Dashboard = () => {
 									></div>
 								</li>
 
-								<Tooltip
-									text={__('Add product', 'multivendorx')}
-								>
+								{/* Add product */}
+								<Tooltip text={__('Add product', 'multivendorx')}>
 									<li
 										onClick={() => {
-											if (
-												modules.includes(
-													'shared-listing'
-												)
-											) {
-												if (
-													appLocalizer.permalink_structure
-												) {
-													navigate(
-														`${basePath}/${appLocalizer.dashboard_slug}/products/add/`
-													);
-												} else {
-													navigate(
-														`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=add`
-													);
-												}
+											if (modules.includes('shared-listing')) {
+												dashNavigate(['products', 'add']);
 											} else {
 												createAutoDraftProduct();
 											}
@@ -667,85 +437,47 @@ const Dashboard = () => {
 									</li>
 								</Tooltip>
 
-								<Tooltip
-									text={__('view storefront', 'multivendorx')}
-								>
-									<li
-										onClick={() =>
-											window.open(
-												`${appLocalizer.store_page_url}${storeData?.slug}`,
-												'_blank'
-											)
-										}
-									>
+								{/* View storefront */}
+								<Tooltip text={__('View storefront', 'multivendorx')}>
+									<li onClick={() => window.open(storefrontUrl, '_blank')}>
 										<i className="admin-icon adminfont-storefront"></i>
 									</li>
 								</Tooltip>
-								{/* <li className="tooltip-wrapper bottom">
-									<i
-										className="adminfont-icon notification adminfont-notification"
-										onClick={toggleNotifications}
-									></i>
-									<span className="tooltip-name">
-										Notification
-									</span>
 
-									{showNotifications && <Notifications type="notification" />}
-								</li> */}
-								<Tooltip
-									text={__('Notifications', 'multivendorx')}
-								>
+								{/* Notifications */}
+								<Tooltip text={__('Notifications', 'multivendorx')}>
 									<li>
 										<PopupUI
 											position="menu-dropdown"
 											toggleIcon="adminfont-notification"
 											width={24}
 											header={{
-												title: __(
-													'Notifications',
-													'multivendorx'
-												),
-												showCloseButton: false, // Add this to your PopupHeaderProps
+												title: __('Notifications', 'multivendorx'),
+												showCloseButton: false,
 											}}
 										>
 											<Tabs
 												tabs={[
 													{
 														id: 'notifications',
-														label: __(
-															'Notifications',
-															'multivendorx'
-														),
+														label: __('Notifications', 'multivendorx'),
 														icon: 'adminfont-notification',
-														content: (
-															<ul className="notification-list"></ul>
-														),
+														content: <ul className="notification-list"></ul>,
 														footer: {
-															url: `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/view-notifications/#subtab=notifications`,
+															url: tabHref('view-notifications') + '#subtab=notifications',
 															icon: 'adminfont-eye',
-															text: __(
-																'View all notifications',
-																'multivendorx'
-															),
+															text: __('View all notifications', 'multivendorx'),
 														},
 													},
 													{
 														id: 'activities',
-														label: __(
-															'Activities',
-															'multivendorx'
-														),
+														label: __('Activities', 'multivendorx'),
 														icon: 'adminfont-activity',
-														content: (
-															<ul className="notification-list"></ul>
-														),
+														content: <ul className="notification-list"></ul>,
 														footer: {
-															url: `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/view-notifications/#subtab=activity`,
+															url: tabHref('view-notifications') + '#subtab=activity',
 															icon: 'adminfont-eye',
-															text: __(
-																'View all activities',
-																'multivendorx'
-															),
+															text: __('View all activities', 'multivendorx'),
 														},
 													},
 												]}
@@ -754,116 +486,47 @@ const Dashboard = () => {
 									</li>
 								</Tooltip>
 
-								<Tooltip
-									text={__('Announcement', 'multivendorx')}
-								>
-									<li>
-										{/* <Popover
-										toggleIcon="adminfont-announcement"
-										toggleContent={<span className="tooltip-name">Announcements</span>}
-										template="notification"
-										width="20rem"
-										className="tooltip-wrapper bottom"
-										items={announcement?.length
-											? announcement.map((item, index) => ({
-												title: item.title,
-												desc: item.content,
-												time: formatTimeAgo(item.date),
-												icon: `adminfont-user-network-icon admin-color${index + 1}`,
-												action: () => {
-													// optional: handle click on individual announcement
-													// handleNotificationClick(item.id)
-												},
-											}))
-											: []}
-										header={
-											<div className="title">
-												{__('Announcements', 'multivendorx')}
-												{announcement && announcement.length > 0 && (
-													<span className="admin-badge green">
-														{announcement.length} {__('New', 'multivendorx')}
-													</span>
-												)}
-											</div>
-										}
-										footer={
-											<a
-												href={
-													appLocalizer.permalink_structure
-														? `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/view-notifications/#subtab=announcements`
-														: `${appLocalizer.site_url.replace(/\/$/, '')}/?page_id=${appLocalizer.dashboard_page_id}&segment=view-notifications#subtab=announcements`
-												}
-												className="admin-btn btn-purple"
-											>
-												<i className="adminfont-eye"></i>
-												{__('View all announcements', 'multivendorx')}
-											</a>
-										}
-									/> */}
-									</li>
-								</Tooltip>
+								{/* Announcements */}
+								{modules.includes('announcement') && (
+									<Tooltip text={__('Announcement', 'multivendorx')}>
+										<li>
+											{/* Mount your Announcement popover here */}
+										</li>
+									</Tooltip>
+								)}
 
-								<Tooltip
-									text={__('Full Screen', 'multivendorx')}
-								>
-									<li
-										id="fullscreenToggle"
-										onClick={toggleFullscreen}
-									>
+								{/* Fullscreen */}
+								<Tooltip text={__('Full Screen', 'multivendorx')}>
+									<li id="fullscreenToggle" onClick={toggleFullscreen}>
 										<i className="admin-icon adminfont-crop-free"></i>
-										<span className="tooltip-name">
-											Full Screen
-										</span>
 									</li>
 								</Tooltip>
 
+								{/* User dropdown */}
 								<Tooltip text={__('Settings', 'multivendorx')}>
 									<li className="dropdown login-user">
-										<div
-											className="avatar-wrapper"
-											onClick={toggleUserDropdown}
-										>
+										<div className="avatar-wrapper" onClick={toggleUserDropdown}>
 											<i className="admin-icon adminfont-person"></i>
 										</div>
+
 										{showUserDropdown && (
-											<div
-												className="dropdown-menu"
-												ref={userDropdownRef}
-											>
+											<div className="dropdown-menu" ref={userDropdownRef}>
 												<div className="dropdown-header">
 													<div className="user-card">
 														<div className="user-avatar">
 															<img
-																src={
-																	appLocalizer.current_user_image
-																}
-																alt={
-																	appLocalizer
-																		.current_user
-																		?.data
-																		?.display_name
-																}
+																src={appLocalizer.current_user_image}
+																alt={appLocalizer.current_user?.data?.display_name}
 																width={48}
 																height={48}
 															/>
 														</div>
-
 														<div className="user-info">
 															<span className="user-name">
-																{
-																	appLocalizer
-																		.current_user
-																		?.data
-																		?.display_name
-																}
+																{appLocalizer.current_user?.data?.display_name}
 															</span>
 															<span className="user-email">
-																{
-																	appLocalizer
-																		.current_user
-																		?.data
-																		?.user_email
-																}
+																{appLocalizer.current_user?.data?.user_email}
 															</span>
 														</div>
 													</div>
@@ -877,7 +540,6 @@ const Dashboard = () => {
 																My Profile
 															</a>
 														</li>
-
 														<li>
 															<a href="#">
 																<i className="adminfont-setting"></i>
@@ -909,11 +571,7 @@ const Dashboard = () => {
 																		<span className="switch-store-preview">
 																			{!showStoreList && (
 																				<>
-																					{firstTwoStores.map(
-																						(
-																							store,
-																							index
-																						) => (
+																					{firstTwoStores.map((store, index) => (
 																							<span
 																								className={`store-icon admin-color${index + 2}`}
 																								key={
@@ -953,16 +611,12 @@ const Dashboard = () => {
 																			) => (
 																				<div
 																					className="store"
-																					key={
-																						store.id
-																					}
+																					key={ store.id }
 																				>
 																					<a
 																						href="#"
 																						className="switch-store"
-																						onClick={(
-																							e
-																						) => {
+																						onClick={( e ) => {
 																							e.preventDefault();
 																							switchStore(
 																								store.id
@@ -973,10 +627,7 @@ const Dashboard = () => {
 																							className={`store-icon admin-color${index + 2}`}
 																						>
 																							{store.name
-																								.charAt(
-																									0
-																								)
-																								.toUpperCase()}
+																								.charAt( 0 ) .toUpperCase()}
 																						</span>
 																						<div className="details-wrapper">
 																							<div className="store-name">
@@ -999,12 +650,9 @@ const Dashboard = () => {
 												<div className="footer">
 													<a
 														className="admin-btn btn-red"
-														href={
-															appLocalizer.user_logout_url
-														}
+														href={appLocalizer.user_logout_url}
 													>
-														<i className="adminfont-import"></i>{' '}
-														Sign Out
+														<i className="adminfont-import"></i> Sign Out
 													</a>
 												</div>
 											</div>
@@ -1016,63 +664,19 @@ const Dashboard = () => {
 					</div>
 				</div>
 
+				{/* Page content */}
 				<div className="content-wrapper">
 					{storeData && storeData.status !== 'active' ? (
 						<ComponentStatusView
-							title={
-								<>
-									{storeData.status === 'pending' ? (
-										appLocalizer.settings_databases_value
-											?.pending?.pending_msg
-									) : storeData.status === 'suspended' ? (
-										appLocalizer.settings_databases_value
-											?.suspended?.suspended_msg
-									) : storeData.status === 'under_review' ? (
-										appLocalizer.settings_databases_value?.[
-											'under-review'
-										]?.under_review_msg
-									) : storeData.status === 'rejected' ? (
-										<>
-											{
-												appLocalizer
-													.settings_databases_value
-													?.rejected?.rejected_msg
-											}{' '}
-											<a
-												href={
-													appLocalizer.registration_page
-												}
-												className="reapply-link"
-												target="__blank"
-											>
-												{__(
-													'Click here to reapply.',
-													'multivendorx'
-												)}
-											</a>
-										</>
-									) : (
-										__(
-											'You’re almost ready to sell.',
-											'multivendorx'
-										)
-									)}
-								</>
-							}
-							desc={__(
-								'To get started, you need to register your store on the marketplace.',
-								'multivendorx'
-							)}
+							title={__('Your store is not active', 'multivendorx')}
+							desc={__('To get started, register your store.', 'multivendorx')}
 							buttonText={__('Create your store', 'multivendorx')}
 							buttonLink={appLocalizer.registration_page}
 							buttonTarget="_blank"
 						/>
 					) : noPermission ? (
 						<ComponentStatusView
-							title={__(
-								'You do not have permission to access this page.',
-								'multivendorx'
-							)}
+							title={__('You do not have permission to access this page.', 'multivendorx')}
 							buttonText={__('Contact Admin', 'multivendorx')}
 							onButtonClick={() => {}}
 						/>
