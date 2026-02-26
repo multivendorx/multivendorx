@@ -8,7 +8,8 @@ import {
 	FormGroup,
 	FormGroupWrapper,
 	getApiLink,
-	SuccessNotice,
+	Notice,
+	
 	ToggleSettingUI,
 } from 'zyra';
 import ShippingRatesByCountry from './ShippingRatesByCountry';
@@ -87,7 +88,11 @@ const ShippingDelivery = () => {
 
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
+			<Notice
+				message={successMsg}
+				displayPosition={'float'}
+				title={__('Great!', 'multivendorx')}
+			/>
 			{/* Only show ToggleSetting if shipping_methods has options */}
 			{appLocalizer.shipping_methods &&
 			appLocalizer.shipping_methods.length > 0 ? (

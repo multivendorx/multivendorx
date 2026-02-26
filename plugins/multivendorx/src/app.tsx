@@ -301,11 +301,10 @@ const App = () => {
 	return (
 		<>
 			<Notice
-				type="banner"
+				displayPosition="banner"
                 message={bannerItems}
                 dismissible={true}
                 onDismiss={handleDismissBanner}
-                className="top-header"
             />
 			<AdminHeader
 				brandImg={Brand}

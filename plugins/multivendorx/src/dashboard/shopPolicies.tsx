@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-	SuccessNotice,
+	
 	getApiLink,
 	Container,
 	Column,
@@ -10,6 +10,7 @@ import {
 	FormGroup,
 	TextAreaUI,
 	NavigatorHeader,
+	Notice,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -82,7 +83,11 @@ const ShopPolicies = () => {
 
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
+			<Notice
+				message={successMsg}
+				displayPosition={'float'}
+				title={__('Great!', 'multivendorx')}
+			/>
 
 			<NavigatorHeader
 				headerTitle={__('Policy', 'multivendorx')}

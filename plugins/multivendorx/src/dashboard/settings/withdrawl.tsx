@@ -5,7 +5,8 @@ import {
 	BasicInputUI,
 	FormGroup,
 	FormGroupWrapper,
-	SuccessNotice,
+	Notice,
+	
 	ToggleSettingUI,
 	getApiLink,
 } from 'zyra';
@@ -154,7 +155,11 @@ const Withdrawl: React.FC = () => {
 
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
+			<Notice
+				message={successMsg}
+				displayPosition={'float'}
+				title={__('Great!', 'multivendorx')}
+			/>
 			{/* Payment Method Toggle */}
 			<FormGroupWrapper>
 				<FormGroup

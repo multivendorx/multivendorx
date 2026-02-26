@@ -13,8 +13,9 @@ import {
 	FormGroupWrapper,
 	getApiLink,
 	ComponentStatusView,
-	SuccessNotice,
+	
 	ToggleSettingUI,
+	Notice,
 } from 'zyra';
 
 const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
@@ -89,7 +90,11 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
+			<Notice
+				message={successMsg}
+				displayPosition={'float'}
+				title={__('Great!', 'multivendorx')}
+			/>
 			<Container>
 				{appLocalizer.shipping_methods &&
 				appLocalizer.shipping_methods.length > 0 ? (

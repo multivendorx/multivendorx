@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
 	getApiLink,
-	SuccessNotice,
+	
 	Container,
 	Column,
 	Card,
@@ -12,6 +12,7 @@ import {
 	PdfDownloadButton,
 	AdminButtonUI,
 	TextAreaUI,
+	Notice,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import React from 'react';
@@ -168,7 +169,11 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 
 	return (
 		<>
-			<SuccessNotice message={successMsg} />
+			<Notice
+				message={successMsg}
+				displayPosition={'float'}
+				title={__('Great!', 'multivendorx')}
+			/>
 
 			<Container>
 				<Column>
