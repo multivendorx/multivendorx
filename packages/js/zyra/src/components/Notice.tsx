@@ -1,115 +1,93 @@
 // External dependencies
-import React, { useEffect } from 'react';
-import "../styles/web/UI/SuccessNotice.scss";
+import React, { useEffect, useState } from 'react';
+import "../styles/web/Notice.scss";
 import { FieldComponent } from './types';
 
-export interface NoticeItem {
-    title?: string;
-    message: string;
-    action?: {
-        label: string;
-        url?: string;
-        onClick?: () => void;
-    };
-}
-
 export interface NoticeProps {
-    type?: 'info' | 'success' | 'warning' | 'error';
     title?: string;
-    message?: string | NoticeItem[];
-    displayPosition?: 'float' | 'inline' | 'banner' | 'notice' | string;
-    className?: string;
-    dismissible?: boolean;
-    onDismiss?: () => void;
-    autoDismiss?: number;
+    message?: string | string[];
+    type?: 'info' | 'success' | 'warning' | 'error' | 'banner';
+    displayPosition?: 'inline' | 'float' | 'notice' | 'banner';
+    actionLabel?: string;
+    onAction?: () => void;
 }
 
 export const Notice: React.FC<NoticeProps> = ({
-    message,
     title,
+    message,
     type = 'success',
     displayPosition = 'notice',
-    className,
-    dismissible = false,
-    onDismiss,
-    autoDismiss = 2000,
+    actionLabel,
+    onAction,
 }) => {
-    if (!message || message === '') return null;
-    if (Array.isArray(message) && message.length === 0) return null;
+    const [isVisible, setIsVisible] = useState(true);
 
-    // Auto-dismiss - only for string messages
     useEffect(() => {
-        if (!message || Array.isArray(message) || !autoDismiss) return;
+        if (displayPosition === 'float' && isVisible) {
+            const timer = setTimeout(() => setIsVisible(false), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [displayPosition, isVisible]);
 
-        const timer = setTimeout(() => onDismiss?.(), autoDismiss);
-        return () => clearTimeout(timer);
-    }, [message, autoDismiss, onDismiss]);
+    if (!isVisible) return null;
+    if (!message && !title) return null;
+
+    const handleDismiss = () => setIsVisible(false);
 
     const rootClass = [
         'ui-notice',
-        `type-${type}`, `display-${displayPosition}`,
-        className,
+        `type-${type}`,
+        `display-${displayPosition}`,
     ]
         .filter(Boolean)
         .join(' ');
 
-    // Normalize to array for consistent rendering
-    const items: NoticeItem[] = Array.isArray(message)
-        ? message
-        : [{
-            title: title ,
-            message: message,
-        }];
+    const renderMessage = () => {
+        if (!message) return null;
+
+        if (Array.isArray(message)) {
+            return (
+                <>
+                    {message.map((msg, index) => (
+                        <div key={index} className="notice-desc">
+                            {msg}
+                            {actionLabel && (
+                                <button className="notice-action" onClick={onAction}> {actionLabel} </button>
+                            )}
+                        </div>
+                    ))}
+                    <i className="close-icon adminfont-close" onClick={handleDismiss} />
+                </>
+            );
+        }
+
+        return (
+            <div className="notice-desc">{message}</div>
+        );
+    };
 
     return (
-        <div className={`${rootClass}`}>
-            {dismissible && (
-                <i className="close-icon adminfont-close" onClick={onDismiss} aria-hidden="true" />
-            )}
-            {items.map((item, index) => {
-                return (
-                    <div key={index} className="notice-item">
-                        <i className={`admin-font adminfont-${type}`} aria-hidden="true" />
+        <div className={rootClass}>
+            <i className={`admin-font adminfont-${type}`} />
 
-                        <div className="notice-item-details">
-                            {item.title && (
-                                <div className="notice-text">{item.title}</div>
-                            )}
-                            <div className="notice-desc">
-                                {item.message}
-                                {displayPosition == 'banner' && (
-                                    <a
-                                        // href={proUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        Upgrade Now
-                                    </a>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                );
-            })}
+            <div className="notice-details">
+                {title && <div className="notice-text">{title}</div>}
+                {renderMessage()}
+            </div>
         </div>
     );
 };
 
 const NoticeField: FieldComponent = {
     render: ({ field }) => {
-        // Handle both legacy and new data structures if needed during migration
-        const message = field.notice || field.blocktext; // Fallback for migration
-        const type = field.type;
-        const display = field.display || 'inline';
         return (
             <Notice
-                key={field.key}
-                type={type}
+                type={field.noticeType || field.type}
+                displayPosition={field.displayPosition}
                 title={field.title}
-                message={message}
-                displayPosition={display}
-                dismissible={field.dismissible}
-                className={field.className}
+                message={field.message}
+                actionLabel={field.actionLabel}
+                onAction={field.onAction}
             />
         );
     },

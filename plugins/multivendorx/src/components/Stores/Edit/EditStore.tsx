@@ -389,9 +389,9 @@ const EditStore = () => {
 	return (
 		<>
 			<Notice
+				displayPosition="float"
+				title= {__('Great!', 'multivendorx')}
 				message={successMsg}
-				displayPosition={'float'}
-				title={__('Great!', 'multivendorx')}
 			/>
 			<SettingsNavigator
 				settingContent={visibleTabs}

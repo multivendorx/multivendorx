@@ -189,8 +189,8 @@ const Modules: React.FC<ModuleProps> = ({
             {successMsg && (
                 <Notice
                     message={successMsg}
-                    displayPosition={'float'}
-                    title={'Success!'}
+                    displayPosition='float'
+                    title='Success!'
                     // onDismiss={() => setSuccessMsg(null)}
                 />
             )}

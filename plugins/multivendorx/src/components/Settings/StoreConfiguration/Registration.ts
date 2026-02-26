@@ -14,12 +14,12 @@ export default {
 		{
 			key: 'registration page',
 			type: 'notice',
-			notice: __(
+			message: __(
 				'Only store owners can apply for store registration. Applicants must log in or create an account before proceeding. So, Make sure WooCommerce’s Account & Privacy settings are configured to allow user registration.',
 				'multivendorx'
 			),
-			title: '',
-			type: 'error' 
+			noticeType: 'info',
+			display: 'notice',
 		},
 		{
 			key: 'store_registration_from',

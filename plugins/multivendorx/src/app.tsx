@@ -42,69 +42,69 @@ modulesContext.keys().forEach(modulesContext);
 
 localStorage.setItem('force_multivendorx_context_reload', 'true');
 
-interface Products {
-	title: string;
-	description: string;
-}
+// interface Products {
+// 	title: string;
+// 	description: string;
+// }
 
-const products: Products[] = [
-	{
-		title: __('Marketplace monetization', 'multivendorx'),
-		description: __(
-			'Create flexible membership plans that let you charge stores for access, features, and growth opportunities.',
-			'multivendorx'
-		),
-	},
-	{
-		title: __('Built-in tax compliance', 'multivendorx'),
-		description: __(
-			'Automatically generate tax-ready invoices for orders, commissions, and payouts to keep your marketplace compliant.',
-			'multivendorx'
-		),
-	},
-	{
-		title: __('Franchise-ready scaling', 'multivendorx'),
-		description: __(
-			'Run multiple regional or franchise marketplaces with centralized control and consistent branding.',
-			'multivendorx'
-		),
-	},
-	{
-		title: __('Recurring revenue engine', 'multivendorx'),
-		description: __(
-			'Enable subscription-based selling so your marketplace benefits from predictable, recurring income.',
-			'multivendorx'
-		),
-	},
-	{
-		title: __('Service and booking sales', 'multivendorx'),
-		description: __(
-			'Allow stores to sell bookings for services, appointments, rentals, and experiences on your platform.',
-			'multivendorx'
-		),
-	},
-	{
-		title: __('High-value rentals', 'multivendorx'),
-		description: __(
-			'Launch rental marketplace with date-based availability and higher order values.',
-			'multivendorx'
-		),
-	},
-	{
-		title: __('Verified stores', 'multivendorx'),
-		description: __(
-			'Verify store identities using documents and badges to build trust and reduce risk on your marketplace.',
-			'multivendorx'
-		),
-	},
-	{
-		title: __('Vacation mode', 'multivendorx'),
-		description: __(
-			'Allow stores to temporarily pause their shop during vacations while keeping their listings intact.',
-			'multivendorx'
-		),
-	},
-];
+// const products: Products[] = [
+// 	{
+// 		title: __('Marketplace monetization', 'multivendorx'),
+// 		description: __(
+// 			'Create flexible membership plans that let you charge stores for access, features, and growth opportunities.',
+// 			'multivendorx'
+// 		),
+// 	},
+// 	{
+// 		title: __('Built-in tax compliance', 'multivendorx'),
+// 		description: __(
+// 			'Automatically generate tax-ready invoices for orders, commissions, and payouts to keep your marketplace compliant.',
+// 			'multivendorx'
+// 		),
+// 	},
+// 	{
+// 		title: __('Franchise-ready scaling', 'multivendorx'),
+// 		description: __(
+// 			'Run multiple regional or franchise marketplaces with centralized control and consistent branding.',
+// 			'multivendorx'
+// 		),
+// 	},
+// 	{
+// 		title: __('Recurring revenue engine', 'multivendorx'),
+// 		description: __(
+// 			'Enable subscription-based selling so your marketplace benefits from predictable, recurring income.',
+// 			'multivendorx'
+// 		),
+// 	},
+// 	{
+// 		title: __('Service and booking sales', 'multivendorx'),
+// 		description: __(
+// 			'Allow stores to sell bookings for services, appointments, rentals, and experiences on your platform.',
+// 			'multivendorx'
+// 		),
+// 	},
+// 	{
+// 		title: __('High-value rentals', 'multivendorx'),
+// 		description: __(
+// 			'Launch rental marketplace with date-based availability and higher order values.',
+// 			'multivendorx'
+// 		),
+// 	},
+// 	{
+// 		title: __('Verified stores', 'multivendorx'),
+// 		description: __(
+// 			'Verify store identities using documents and badges to build trust and reduce risk on your marketplace.',
+// 			'multivendorx'
+// 		),
+// 	},
+// 	{
+// 		title: __('Vacation mode', 'multivendorx'),
+// 		description: __(
+// 			'Allow stores to temporarily pause their shop during vacations while keeping their listings intact.',
+// 			'multivendorx'
+// 		),
+// 	},
+// ];
 
 const Route = () => {
 	const location = useLocation();
@@ -251,6 +251,16 @@ const App = () => {
 			action: handleOpenFeaturePopup,
 		},
 	];
+	const bannerItem = [
+    "<b>Marketplace monetization:</b> Create flexible membership plans that let you charge stores for access, features, and growth opportunities.",
+    "<b>Built-in tax compliance:</b> Automatically generate tax-ready invoices for orders, commissions, and payouts to keep your marketplace compliant.",
+    "<b>Franchise-ready scaling:</b> Run multiple regional or franchise marketplaces with centralized control and consistent branding.",
+    "<b>Recurring revenue engine:</b> Enable subscription-based selling so your marketplace benefits from predictable, recurring income.",
+    "<b>Service and booking sales:</b> Allow stores to sell bookings for services, appointments, rentals, and experiences on your platform.",
+    "<b>High-value rentals:</b> Launch rental marketplace with date-based availability and higher order values.",
+    "<b>Verified stores:</b> Verify store identities using documents and badges to build trust and reduce risk on your marketplace.",
+    "<b>Vacation mode:</b> Allow stores to temporarily pause their shop during vacations while keeping their listings intact."
+];
 	const utilityListWithTab = [
 		{
 			toggleIcon: 'adminfont-notification',
@@ -288,24 +298,24 @@ const App = () => {
 		},
 	];
 	const handleDismissBanner = () => {
-        localStorage.setItem('banner', 'false');
-    };
+		localStorage.setItem('banner', 'false');
+	};
 
-	const bannerItems: NoticeItem[] = products.map(product => ({
-        title: product.title,
-        message: product.description,
-        action: {
-            label: 'Upgrade Now',
-        }
-    }));
+	// const bannerItems: NoticeItem[] = products.map(product => ({
+	// 	title: product.title,
+	// 	message: product.description,
+	// 	action: {
+	// 		label: 'Upgrade Now',
+	// 	}
+	// }));
 	return (
 		<>
 			<Notice
-				displayPosition="banner"
-                message={bannerItems}
-                dismissible={true}
-                onDismiss={handleDismissBanner}
-            />
+				type="banner"
+				message={bannerItem}
+				actionLabel="Upgrade Now"
+				onAction={() => handleDismissBanner()}
+			/>
 			<AdminHeader
 				brandImg={Brand}
 				results={results}

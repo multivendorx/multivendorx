@@ -90,7 +90,7 @@ const ShippingDelivery = () => {
 		<>
 			<Notice
 				message={successMsg}
-				displayPosition={'float'}
+				displayPosition='float'
 				title={__('Great!', 'multivendorx')}
 			/>
 			{/* Only show ToggleSetting if shipping_methods has options */}

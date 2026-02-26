@@ -1,3 +1,5 @@
+import { Notice } from "../Notice";
+
 type FormGroupProps = {
 	label?: React.ReactNode;
 	htmlFor?: string;
@@ -8,6 +10,8 @@ type FormGroupProps = {
 	cols?: 1 | 2 | 3 | 4;
 	labelDes?: string;
 	row?: boolean;
+	notice?: string;
+	noticeType?: 'error' | 'success' | 'warning' | 'info';
 };
 
 const FormGroup: React.FC<FormGroupProps> = ({
@@ -20,6 +24,8 @@ const FormGroup: React.FC<FormGroupProps> = ({
 	labelDes,
 	cols = 1,
 	row = false,
+	notice,
+	noticeType = 'error',
 }) => {
 	return (
 		<div
@@ -33,6 +39,15 @@ const FormGroup: React.FC<FormGroupProps> = ({
 			</label>}
 			<div className="settings-input-content">
 				{children}
+				
+				{notice && (
+					<Notice
+						type={noticeType}
+						displayPosition="inline"
+						message={notice}
+					/>
+				)}
+				
 				{desc && (
 					<p
 						className="settings-metabox-description"

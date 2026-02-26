@@ -10,7 +10,6 @@ import {
 	FormGroupWrapper,
 	getApiLink,
 	NavigatorHeader,
-	Notice,
 	PopupUI,
 	SelectInputUI,
 	TextAreaUI,
@@ -55,11 +54,11 @@ const Stores = () => {
 	};
 
 	const setFieldError = (key: string, message: string) => {
-		setError((prev) => ({ ...prev, [key]: { type: 'error', message } })); //Buddho
+		setError((prev) => ({ ...prev, [key]: { type: 'error', message } }));
 	};
 
 	const setFieldSuccess = (key: string, message: string) => {
-		setError((prev) => ({ ...prev, [key]: { type: 'success', message } })); //Buddho
+		setError((prev) => ({ ...prev, [key]: { type: 'success', message } }));
 	};
 
 	const handleSlugCheck = async () => {
@@ -182,18 +181,17 @@ const Stores = () => {
 		setImagePreview('');
 	};
 
-	const renderFieldNotice = (key: string) => {
+	// This function now returns the notice props instead of the Notice component
+	const getFieldNotice = (key: string) => {
 		const err = error?.[key];
-		if (!err?.message) return null;
-
-		return (
-			<Notice
-				type='error'
-				displayPosition= 'inline'
-				message={err.message}
-			/>
-		);
+		if (!err?.message) return { notice: undefined, noticeType: 'error' };
+		
+		return {
+			notice: err.message,
+			noticeType: err.type as 'error' | 'success'
+		};
 	};
+
 	return (
 		<>
 			{isTabActive && isEditStore && !isAddStore && <EditStore />}
@@ -260,6 +258,7 @@ const Stores = () => {
 								<FormGroup
 									label={__('Store name', 'multivendorx')}
 									htmlFor="store-name"
+									{...getFieldNotice('name')}
 								>
 									<BasicInputUI
 										type="text"
@@ -267,12 +266,12 @@ const Stores = () => {
 										value={formData.name || ''}
 										onChange={(val) => handleChange('name', val as string)}
 									/>
-									{renderFieldNotice('name')}
 								</FormGroup>
 
 								<FormGroup
 									label={__('Store slug', 'multivendorx')}
 									htmlFor="store-slug"
+									{...getFieldNotice('slug')}
 								>
 									<BasicInputUI
 										type="text"
@@ -280,7 +279,6 @@ const Stores = () => {
 										value={formData.slug || ''}
 										onChange={(val) => handleChange('slug', val as string)}
 									/>
-									{renderFieldNotice('slug')}
 									<AdminButtonUI
 										buttons={{
 											text: __('Check Slug', 'multivendorx'),
@@ -289,13 +287,15 @@ const Stores = () => {
 									/>
 								</FormGroup>
 
-								<FormGroup label={__('Store Email', 'multivendorx')}>
+								<FormGroup 
+									label={__('Store Email', 'multivendorx')}
+									{...getFieldNotice('email')}
+								>
 									<EmailsInput
 										value={formData.emails || []}
 										enablePrimary={true}
 										onChange={(list, primary) => saveEmails(list, primary)}
 									/>
-									{renderFieldNotice('email')}
 								</FormGroup>
 
 								<FormGroup
@@ -316,6 +316,7 @@ const Stores = () => {
 								<FormGroup
 									label={__('Primary owner', 'multivendorx')}
 									htmlFor="store_owners"
+									{...getFieldNotice('primary')}
 								>
 									<SelectInputUI
 										name="store_owners"
@@ -330,7 +331,6 @@ const Stores = () => {
 											}));
 										}}
 									/>
-									{renderFieldNotice('primary')}
 								</FormGroup>
 
 								<FormGroup
