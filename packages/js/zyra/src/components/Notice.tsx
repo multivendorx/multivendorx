@@ -67,7 +67,7 @@ export const Notice: React.FC<NoticeProps> = ({
 
     return (
         <div className={rootClass}>
-            <i className={`admin-font adminfont-${type}`} aria-hidden="true" />
+            <i className={`admin-font adminfont-${type}`} />
             
             <div className="notice-message-wrapper">
                 {title && <div className="notice-text">{title}</div>}
@@ -88,10 +88,10 @@ const NoticeField: FieldComponent = {
     render: ({ field }) => {
         return (
             <Notice
-                type={field.noticeType || field.type || 'success'}
-                display={field.display || field.displayPosition || 'notice'}
+                type={field.noticeType || field.type}
+                display={field.display}
                 title={field.title}
-                message={field.notice || field.message}
+                message={field.message}
                 actionLabel={field.actionLabel}
                 onAction={field.onAction}
             />
