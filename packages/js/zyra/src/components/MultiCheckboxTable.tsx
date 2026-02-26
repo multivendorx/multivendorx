@@ -27,6 +27,10 @@ interface Row {
     label: string;
     description?: string;
     options?: Option[];
+    // When set, the label cell shows a toggle checkbox.
+    // setting[enabledKey] is a string[] of active row.key values;
+    // unchecked rows have all their cells disabled.
+    enabledKey?: string;
 }
 
 interface CapabilityGroup {
@@ -90,6 +94,7 @@ interface TableCellSelectProps {
     currentValue: Option[];
     onChange: (key: string, value: Option[]) => void;
     isBlocked: () => boolean;
+    disabled?: boolean;
 }
 
 const TableCellSelect: React.FC<TableCellSelectProps> = ({
@@ -99,10 +104,11 @@ const TableCellSelect: React.FC<TableCellSelectProps> = ({
     currentValue,
     onChange,
     isBlocked,
+    disabled = false,
 }) => {
     const [popupOpen, setPopupOpen] = useState(false);
 
-    // SelectInputUI works with string[], so we convert both ways.
+    // EnhancedSelectInputUI works with string[], so we convert both ways.
     const optionStrings = rowOptions.map((o) => ({ value: String(o.value), label: o.label }));
     const selectedStrings = currentValue.map((v) => String(v.value));
 
@@ -122,6 +128,7 @@ const TableCellSelect: React.FC<TableCellSelectProps> = ({
         onChange: handleChange,
         isClearable: true,
         placeholder: 'Select...',
+        disabled,
     };
 
     return (
@@ -191,54 +198,85 @@ export const MultiCheckboxTableUI: React.FC<MultiCheckboxTableUIProps> = ({
     // ── Flat rows ─────────────────────────────────────────────────────────────
 
     const renderFlatRows = (flatRows: Row[]) =>
-        flatRows.map((row) => (
-            <tr key={row.key}>
-                <td>{row.label}</td>
-                {columns.map((column) => {
-                    // Description column
-                    if (column.type === 'description') {
-                        return <td key={`desc_${row.key}`}>{row.description || '—'}</td>;
-                    }
+        flatRows.map((row) => {
+            // Row-level active state — derived from setting, no local state needed.
+            const isRowActive = row.enabledKey
+                ? (setting[row.enabledKey] as string[] | undefined)?.includes(row.key) ?? false
+                : true;
 
-                    // Select cell
-                    if (row.options?.length) {
-                        const cellKey = `${column.key}_${row.key}`;
-                        const rawVal = setting[cellKey];
-                        const cellValue: Option[] = Array.isArray(rawVal)
-                            ? (rawVal as any[]).filter((v) => v && typeof v === 'object' && 'value' in v)
-                            : [];
+            const handleRowToggle = (checked: boolean) => {
+                const current = (setting[row.enabledKey!] as string[]) ?? [];
+                onChange(row.enabledKey!, checked
+                    ? [...current, row.key]
+                    : current.filter((k) => k !== row.key));
+            };
+
+            return (
+                <tr key={row.key} className={row.enabledKey && !isRowActive ? 'row-disabled' : ''}>
+                    {/* Label cell — shows a toggle checkbox when enabledKey is set */}
+                    <td>
+                        {row.enabledKey ? (
+                            <div className="row-label-toggle">
+                                <TableCheckbox
+                                    id={`row-toggle_${row.key}`}
+                                    checked={isRowActive}
+                                    onChange={handleRowToggle}
+                                />
+                                <span>{row.label}</span>
+                            </div>
+                        ) : (
+                            row.label
+                        )}
+                    </td>
+
+                    {columns.map((column) => {
+                        // Description column
+                        if (column.type === 'description') {
+                            return <td key={`desc_${row.key}`}>{row.description || '—'}</td>;
+                        }
+
+                        // Select cell
+                        if (row.options?.length) {
+                            const cellKey = `${column.key}_${row.key}`;
+                            const rawVal = setting[cellKey];
+                            const cellValue: Option[] = Array.isArray(rawVal)
+                                ? (rawVal as any[]).filter((v) => v && typeof v === 'object' && 'value' in v)
+                                : [];
+
+                            return (
+                                <td key={`${column.key}_${row.key}`}>
+                                    <TableCellSelect
+                                        settingKey={cellKey}
+                                        rowLabel={row.label}
+                                        rowOptions={row.options}
+                                        currentValue={cellValue}
+                                        onChange={onChange}
+                                        isBlocked={makeBlockChecker(column)}
+                                        disabled={!isRowActive}
+                                    />
+                                </td>
+                            );
+                        }
+
+                        // Checkbox cell
+                        const isChecked =
+                            Array.isArray(setting[column.key]) &&
+                            (setting[column.key] as string[]).includes(row.key);
 
                         return (
                             <td key={`${column.key}_${row.key}`}>
-                                <TableCellSelect
-                                    settingKey={cellKey}
-                                    rowLabel={row.label}
-                                    rowOptions={row.options}
-                                    currentValue={cellValue}
-                                    onChange={onChange}
-                                    isBlocked={makeBlockChecker(column)}
+                                <TableCheckbox
+                                    id={`chk_${column.key}_${row.key}`}
+                                    checked={isChecked}
+                                    disabled={!isRowActive}
+                                    onChange={(checked) => handleCheckboxChange(column, row.key, checked)}
                                 />
                             </td>
                         );
-                    }
-
-                    // Checkbox cell
-                    const isChecked =
-                        Array.isArray(setting[column.key]) &&
-                        (setting[column.key] as string[]).includes(row.key);
-
-                    return (
-                        <td key={`${column.key}_${row.key}`}>
-                            <TableCheckbox
-                                id={`chk_${column.key}_${row.key}`}
-                                checked={isChecked}
-                                onChange={(checked) => handleCheckboxChange(column, row.key, checked)}
-                            />
-                        </td>
-                    );
-                })}
-            </tr>
-        ));
+                    })}
+                </tr>
+            );
+        });
 
     // ── Grouped rows ──────────────────────────────────────────────────────────
 
