@@ -1,6 +1,5 @@
 // External dependencies
 import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
 import "../styles/web/Notice.scss";
 import { FieldComponent } from './types';
 
@@ -67,28 +66,16 @@ export const Notice: React.FC<NoticeProps> = ({
         );
     };
 
-    const noticeContent = (
+    return (
         <div className={rootClass}>
             <i className={`admin-font adminfont-${type}`} />
+
             <div className="notice-details">
                 {title && <div className="notice-text">{title}</div>}
                 {renderMessage()}
             </div>
         </div>
     );
-
-    // If displayPosition is not 'inline', render into target div
-    if (displayPosition !== 'inline') {
-        const targetId = `mvx-notice-${displayPosition}`;
-        const targetElement = document.getElementById(targetId);
-        
-        if (targetElement) {
-            return ReactDOM.createPortal(noticeContent, targetElement);
-        }
-    }
-
-    // Default inline rendering
-    return noticeContent;
 };
 
 const NoticeField: FieldComponent = {
