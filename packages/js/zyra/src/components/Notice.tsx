@@ -7,7 +7,7 @@ export interface NoticeProps {
     title?: string;
     message?: string | string[];
     type?: 'info' | 'success' | 'warning' | 'error' | 'banner';
-    displayPosition?: 'inline' | 'float' | 'notice';
+    displayPosition?: 'inline' | 'float' | 'notice' | 'banner';
     actionLabel?: string;
     onAction?: () => void;
 }
