@@ -12,7 +12,7 @@ import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import './hooksFilters';
-import { DASHBOARD_ROUTES } from './dashboardConfig';
+import { getDashboardRoutes } from './dashboardConfig';
 
 /**
  * Builds a navigable path string.
@@ -219,10 +219,9 @@ const Dashboard = () => {
 
 		try {
 
-			const matchedRoute = DASHBOARD_ROUTES.find(
-				(route) =>
-					route.tab === urlTab &&
-					route.element === element
+			const routes = getDashboardRoutes();
+			const matchedRoute = routes.find(
+				(route) => route.tab === urlTab && route.element === element
 			);
 
 			if (matchedRoute) {
