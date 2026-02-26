@@ -14,7 +14,7 @@ export default {
 		{
 			key: 'store_rating_page',
 			type: 'notice',
-			notice: __(
+			message: __(
 				'<b>Store reviews are managed separately from product/listing reviews. You can configure product/listing reviews directly from your <a href="/wp-admin/admin.php?page=wc-settings&tab=products" target="_blank">WooCommerce settings</a>.</b>',
 				'multivendorx'
 			),

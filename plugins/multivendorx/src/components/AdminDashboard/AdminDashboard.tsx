@@ -386,47 +386,6 @@ const AdminDashboard = () => {
 			content: (
 				<>
 					<Column grid={8}>
-						{/* banner */}
-						<Notice
-							// type="success"
-							// type="warning"
-							display="banner"
-							message={bannerItem}
-							actionLabel="Upgrade Now"
-						// onAction={() => handleUpgrade()}
-						/>
-
-
-						{/* notice */}
-						<Notice
-							type="success"
-							// type="success"
-							// type="warning"
-							display="notice"
-							title="Success!"
-							message="Settings saved successfully"
-						/>
-
-						{/* float */}
-						<Notice
-							type="success"
-							// type="success"
-							// type="warning"
-							display="float"
-							title= "Save"
-							message="Changes saved"
-						/>
-
-
-						{/* inline */}
-						<Notice 
-							type="error"
-							// type="success"
-							// type="warning"
-							display="inline"
-							message="Name field is required"
-						/>
-
 						<Card contentHeight>
 							<div className="pro-banner-wrapper">
 								<div className="content">

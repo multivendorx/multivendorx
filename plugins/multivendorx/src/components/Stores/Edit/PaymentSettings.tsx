@@ -299,6 +299,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 						title={__('Store-specific commission', 'multivendorx')}
 					>
 						<Notice
+							type='info'
 							message={sprintf(
 								__(
 									'If no store-specific commission is set, the <a href="%s">global commission</a> will automatically apply.',
@@ -306,7 +307,6 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 								),
 								`${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=store-commissions`
 							)}
-							displayPosition='info'
 						/>
 						<FormGroupWrapper>
 							<FormGroup

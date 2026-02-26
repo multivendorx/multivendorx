@@ -1458,55 +1458,7 @@
         }
     }
 
-    // common ui style end
-
-    &.display-float {
-        padding: 0.85rem 6rem 0.85rem 0.85rem;
-        font-weight: 400;
-        position: fixed;
-        z-index: 99999;
-        background: $background-white;
-        box-shadow: $box-shadow;
-        right: 1.85rem;
-        top: 7rem;
-        animation: noticeslide 7s ease-in-out forwards;
-
-        .notice-text {
-            font-size: 1rem;
-            font-weight: 500;
-            line-height: 1.313;
-        }
-
-        &.type-success {
-            i {
-                color: #008000;
-                font-size: 1.4rem;
-            }
-        }
-
-        &.type-error {
-            i {
-                color: #008000;
-                font-size: 1.4rem;
-            }
-        }
-    }
-
-    &.display-inline {
-        &.type-success {
-            .notice-desc {
-                color: green;
-            }
-        }
-
-        &.type-error {
-            .notice-desc {
-                color: red;
-            }
-        }
-    }
-
-    &.display-banner {
+    &.type-banner {
         padding: 0.5rem;
         text-align: center;
         background: $theme-background-color;
@@ -1580,33 +1532,79 @@
         }
     }
 
-    &.display-notice {
-        .notice-item {
-            background: #ece2f991;
-            padding: 0.5rem 0.8rem;
-            display: flex;
-            align-items: start;
-            gap: 0.5rem;
-            border: 0.063rem solid $theme-color;
-            border-radius: 0.313rem;
-            box-sizing: border-box;
-            width: fit-content;
+    // common ui style end
 
-            .notice-text {
-                font-size: 1.2rem;
-                font-weight: 500;
-                line-height: 1.5;
+    &.display-float {
+        padding: 0.85rem 6rem 0.85rem 0.85rem;
+        font-weight: 400;
+        position: fixed;
+        z-index: 99999;
+        background: $background-white;
+        box-shadow: $box-shadow;
+        right: 1.85rem;
+        top: 7rem;
+        animation: noticeslide 7s ease-in-out forwards;
+
+        .notice-text {
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.313;
+        }
+
+        &.type-success {
+            i {
+                color: #008000;
+                font-size: 1.4rem;
             }
+        }
 
+        &.type-error {
+            i {
+                color: #008000;
+                font-size: 1.4rem;
+            }
+        }
+    }
+
+    &.display-inline {
+        &.type-success {
             .notice-desc {
-                font-size: 0.875rem;
+                color: green;
             }
         }
 
-        i {
-            font-size: 1.313rem;
-            color: $theme-color;
+        &.type-error {
+            .notice-desc {
+                color: red;
+            }
         }
+    }
+
+    &.display-notice:not(.type-banner) {
+        background: #ece2f991;
+        padding: 0.5rem 0.8rem;
+        display: flex;
+        align-items: start;
+        gap: 0.5rem;
+        border: 0.063rem solid $theme-color;
+        border-radius: 0.313rem;
+        box-sizing: border-box;
+        width: fit-content;
+
+        .notice-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .notice-desc {
+            font-size: 0.875rem;
+        }
+    }
+
+    i {
+        font-size: 1.313rem;
+        color: $theme-color;
     }
 }
 

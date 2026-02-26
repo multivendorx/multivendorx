@@ -6,8 +6,8 @@ import { FieldComponent } from './types';
 export interface NoticeProps {
     title?: string;
     message?: string | string[];
-    type?: 'info' | 'success' | 'warning' | 'error';
-    display?: 'inline' | 'float' | 'banner' | 'notice';
+    type?: 'info' | 'success' | 'warning' | 'error' | 'banner';
+    displayPosition?: 'inline' | 'float' | 'notice';
     actionLabel?: string;
     onAction?: () => void;
 }
@@ -16,18 +16,18 @@ export const Notice: React.FC<NoticeProps> = ({
     title,
     message,
     type = 'success',
-    display = 'notice',
+    displayPosition = 'notice',
     actionLabel,
     onAction,
 }) => {
     const [isVisible, setIsVisible] = useState(true);
 
     useEffect(() => {
-        if (display === 'float' && isVisible) {
+        if (displayPosition === 'float' && isVisible) {
             const timer = setTimeout(() => setIsVisible(false), 3000);
             return () => clearTimeout(timer);
         }
-    }, [display, isVisible]);
+    }, [displayPosition, isVisible]);
 
     if (!isVisible) return null;
     if (!message && !title) return null;
@@ -37,7 +37,7 @@ export const Notice: React.FC<NoticeProps> = ({
     const rootClass = [
         'ui-notice',
         `type-${type}`,
-        `display-${display}`,
+        `display-${displayPosition}`,
     ]
         .filter(Boolean)
         .join(' ');
@@ -83,7 +83,7 @@ const NoticeField: FieldComponent = {
         return (
             <Notice
                 type={field.noticeType || field.type}
-                display={field.display}
+                displayPosition={field.displayPosition}
                 title={field.title}
                 message={field.message}
                 actionLabel={field.actionLabel}

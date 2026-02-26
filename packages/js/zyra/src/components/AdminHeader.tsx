@@ -6,6 +6,7 @@ import { PopupUI } from './Popup';
 import HeaderSearch from './HeaderSearch';
 import ItemList, { ItemListUI } from './ItemList';
 import Tabs, { TabsUI } from './Tabs';
+import { Notice } from './Notice';
 
 type SearchItem = {
     icon?: string;
@@ -19,7 +20,7 @@ interface PopoverTab {
     label: string;
     icon?: string;
     content: React.ReactNode;
-        footer?: {
+    footer?: {
         url: string;
         icon?: string;
         text: string;
@@ -91,23 +92,23 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
 }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [notices, setNotices] = React.useState<string[]>([]);
-    useEffect( () => {
+    useEffect(() => {
         const captureNotices = () => {
             const noticeNodes = document.querySelectorAll(
                 '#screen-meta + .wrap .notice, #wpbody-content .notice'
             );
 
-            if ( noticeNodes.length > 0 ) {
+            if (noticeNodes.length > 0) {
                 const htmlArray: string[] = [];
-                noticeNodes.forEach( ( node ) => {
-                    htmlArray.push( node.outerHTML );
+                noticeNodes.forEach((node) => {
+                    htmlArray.push(node.outerHTML);
                     node.remove(); // remove from DOM so we control rendering
-                } );
-                setNotices( htmlArray );
+                });
+                setNotices(htmlArray);
             }
         };
-         captureNotices();
-    }, [] );
+        captureNotices();
+    }, []);
 
     return (
         <>
@@ -160,13 +161,20 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                 </div>
             </div>
             {notices.length > 0 &&
-                        notices.map((html, i) => (
-                            <div
-                                key={i}
-                                className="wp-admin-notice"
-                                dangerouslySetInnerHTML={{ __html: html }}
-                            />
-                        ))}
+                notices.map((html, i) => (
+                    <>
+                    <div
+                        key={i}
+                        className="wp-admin-notice"
+                        dangerouslySetInnerHTML={{ __html: html }}
+                    />
+                    <Notice
+                        type="error"
+                        displayPosition="notice"
+                        message={html}
+                    />
+                    </>
+                ))}
         </>
     );
 };

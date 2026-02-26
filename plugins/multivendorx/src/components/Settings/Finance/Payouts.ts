@@ -13,7 +13,7 @@ export default {
 		{
 			key: 'store_rating_page',
 			type: 'notice',
-			notice: __(
+			message: __(
 				'From MultiVendorX 5.0.0, Wallet Support has been introduced. <b> Workflow: Customer makes a purchase ➝ Commission is credited to the store wallet ➝ Payout is released from the wallet based on the configured payout frequency.</b>',
 				'multivendorx'
 			),
