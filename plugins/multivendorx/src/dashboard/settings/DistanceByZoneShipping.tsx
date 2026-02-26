@@ -28,7 +28,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 	id,
 }) => {
 	let store_id = appLocalizer.store_id ? appLocalizer.store_id : id;
-	const {modules} = useModules();
+	const { modules } = useModules();
 	const [data, setData] = useState<Zone[]>([]);
 	const [error, setError] = useState<string>();
 	const [addShipping, setAddShipping] = useState<boolean>(false);
@@ -263,11 +263,8 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 					flatRateCalculationType: '',
 				});
 				setEditingMethod(null);
-				setIsEditing(false);
 			}
-			else {
-				setIsEditing(false);
-			}
+			setIsEditing(false);
 		} catch (err) {
 			console.error(
 				'Error ' +
@@ -606,7 +603,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 						)}
 
 						{applyFilters(
-							'multivendorx_zone_shipping_after_fields',
+							'multivendorx_after_zone_shipping_fields',
 							null,
 							{
 								zone: selectedZone,
