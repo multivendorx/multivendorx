@@ -1,6 +1,6 @@
 // External dependencies
 import React, { useEffect, useState } from 'react';
-import "../styles/web/UI/SuccessNotice.scss";
+import "../styles/web/Notice.scss";
 import { FieldComponent } from './types';
 
 export interface NoticeProps {
