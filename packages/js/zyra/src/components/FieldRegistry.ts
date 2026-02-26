@@ -29,7 +29,6 @@ import ItemList from './ItemList';
 import NoticeField from './Notice';
 import CalendarInput from './CalendarInput';
 import EventCalendar from './EventCalendar';
-import EnhancedSelectInput from './EnhancedSelectInput';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -37,7 +36,7 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   email: BasicInput,
   time: BasicInput,
   date: BasicInput,
-  // select: SelectInput,
+  select: SelectInput,
   radio: RadioInput,
   textarea: TextArea,
   preposttext: PrePostText,
@@ -50,7 +49,7 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   tab: Tabs,
   'calendar-input': CalendarInput,
   'event-calendar': EventCalendar,
-  // 'multi-select': SelectInput,
+  'multi-select': SelectInput,
   'expandable-panel': ExpandablePanelGroup,
   'setting-toggle': ToggleSetting,
   'clickable-list': ClickableList,
@@ -58,7 +57,7 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'email-template': EmailTemplate,
   'checkboxes': MultiCheckBox,
   'system-info': SystemInfo,
-  // 'dropdown': SelectInput,
+  'dropdown': SelectInput,
   'recaptcha': Recaptcha,
   'attachment': FileInput,
   'image': FileInput,
@@ -71,11 +70,6 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'shortcode-table': ShortCodeTable,
   'multi-checkbox-table': MultiCheckboxTable,
   'itemlist': ItemList,
-
-      // Selection — all handled by EnhancedSelectInput via FIELD_TYPE_TO_MODE lookup
-    select:              EnhancedSelectInput,   // single-select, fixed list
-    dropdown:            EnhancedSelectInput,   // alias → single-select
-    'multi-select':      EnhancedSelectInput,   // multi-select, fixed list
-    'creatable':         EnhancedSelectInput,   // free-type + suggestions, single value
-    'creatable-multi':   EnhancedSelectInput,   // free-type + suggestions, tag chips (replaces InputWithSuggestions)
+  'creatable':         SelectInput,
+  'creatable-multi':   SelectInput,
 };

@@ -82,7 +82,6 @@ export type { SettingContextType } from './contexts/SettingContext';
 export type { QueryProps, TableRow, CategoryCount } from './components/table/types';
 export { Notice } from './components/Notice';
 export type { NoticeItem } from './components/Notice';
-export { EnhancedSelectInputUI } from './components/EnhancedSelectInput';
 
 export { default as TableCard } from './components/table/TableCard';
 export { useOutsideClick } from './components/useOutsideClick';

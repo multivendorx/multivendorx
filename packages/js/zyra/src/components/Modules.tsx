@@ -7,7 +7,6 @@ import HeaderSearch from './HeaderSearch';
 import { SelectInputUI } from './SelectInput';
 import { PopupUI } from './Popup';
 import { Notice } from './Notice';
-import { EnhancedSelectInputUI } from './EnhancedSelectInput';
 
 interface Module {
     id: string;
@@ -190,8 +189,8 @@ const Modules: React.FC<ModuleProps> = ({
             {successMsg && (
                 <Notice
                     message={successMsg}
-                    displayPosition='float'
-                    title='Success!'
+                    displayPosition={'float'}
+                    title={'Success!'}
                     // onDismiss={() => setSuccessMsg(null)}
                 />
             )}
@@ -229,8 +228,8 @@ const Modules: React.FC<ModuleProps> = ({
                                 }}
                             />
 
-                            <EnhancedSelectInputUI
-                                mode="single-select"
+                            <SelectInputUI
+                                type="creatable-multi"
                                 options={statusOptions}
                                 value={selectedFilter}
                                 size="8rem"

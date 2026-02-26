@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 // Internal dependencies
 import '../styles/web/MultiCheckboxTable.scss';
 import { FieldComponent } from './types';
-import { EnhancedSelectInputUI } from './EnhancedSelectInput';
+import { SelectInputUI } from './SelectInput';
 import { PopupUI } from './Popup';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -102,7 +102,7 @@ const TableCellSelect: React.FC<TableCellSelectProps> = ({
 }) => {
     const [popupOpen, setPopupOpen] = useState(false);
 
-    // EnhancedSelectInputUI works with string[], so we convert both ways.
+    // SelectInputUI works with string[], so we convert both ways.
     const optionStrings = rowOptions.map((o) => ({ value: String(o.value), label: o.label }));
     const selectedStrings = currentValue.map((v) => String(v.value));
 
@@ -116,7 +116,7 @@ const TableCellSelect: React.FC<TableCellSelectProps> = ({
     };
 
     const sharedSelectProps = {
-        mode: 'multi-select' as const,
+        type: 'creatable-multi' as const,
         options: optionStrings,
         value: selectedStrings,
         onChange: handleChange,
@@ -127,7 +127,7 @@ const TableCellSelect: React.FC<TableCellSelectProps> = ({
     return (
         <>
             {/* Compact cell view — 2 chips max, +N badge opens popup */}
-            <EnhancedSelectInputUI
+            <SelectInputUI
                 {...sharedSelectProps}
                 maxVisibleItems={2}
                 onOverflowClick={() => setPopupOpen(true)}
@@ -144,7 +144,7 @@ const TableCellSelect: React.FC<TableCellSelectProps> = ({
                 height="fit-content"
                 header={{ title: rowLabel, showCloseButton: true }}
             >
-                <EnhancedSelectInputUI
+                <SelectInputUI
                     {...sharedSelectProps}
                     wrapperClass="table-cell-select-popup"
                 />
