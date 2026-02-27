@@ -151,10 +151,10 @@
     }
 }
 
-.settings-calender {
+.settings-calendar {
     width: 100%;
     
-    // without input calender start
+    // without input calendar start
     .calendar-wrapper,
     .rmdp-top-class{
         box-shadow: none;
@@ -174,7 +174,7 @@
                 }
 
                 .rmdp-header-values {
-                    span.calendar-day- {
+                    span.sd- {
                         font-size: 1.125rem;
                     }
                 }
@@ -200,7 +200,7 @@
                     .rmdp-day {
                         height: 6rem;
 
-                        span.calendar-day- {
+                        span.sd- {
                             border-radius: 0.313rem;
                             font-size: 1.5rem;
 
@@ -209,12 +209,12 @@
                             }
                         }
 
-                        &.rmdp-selected span.calendar-day-:not(.highlight) {
+                        &.rmdp-selected span.sd-:not(.highlight) {
                             background: $theme-color;
                         }
 
                         &:not(.rmdp-day-hidden) {
-                            span.calendar-day- {
+                            span.sd- {
                                 background: #efecec;
                             }
                         }
@@ -229,16 +229,16 @@
                     margin: 0;
                     height: 100%;
 
-                    span.calendar-day- {
+                    span.sd- {
                         border-radius: 0.313rem;
                         font-size: 1.25rem;
                     }
 
-                    &.rmdp-selected span.calendar-day- {
+                    &.rmdp-selected span.sd- {
                         background: $theme-color
                     }
 
-                    &:not(.rmdp-selected):hover span.calendar-day- {
+                    &:not(.rmdp-selected):hover span.sd- {
                         background: $theme-background-color;
                     }
                 }
@@ -248,11 +248,11 @@
         .rmdp-panel.right {
             display: none !important;
         }
-    } // without input calender end
+    } // without input calendar end
 }
 
 // event
-.settings-event-calender {
+.settings-event-calendar {
     .rmdp-wrapper {
         width: 100%;
 
@@ -275,7 +275,7 @@
                     }
 
                     .rmdp-header-values {
-                        span.calendar-day- {
+                        span.sd- {
                             font-size: 1.125rem;
                         }
                     }
@@ -307,7 +307,7 @@
                                 justify-content: end;
                             }
 
-                            .calendar-day {
+                            .sd {
                                 .event {
                                     padding: 0.313rem 0.5rem;
                                     background: #ff000029;
@@ -344,16 +344,16 @@
                         margin: 0;
                         height: 100%;
 
-                        span.calendar-day- {
+                        span.sd- {
                             border-radius: 0.313rem;
                             font-size: 1.25rem;
                         }
 
-                        &.rmdp-selected span.calendar-day- {
+                        &.rmdp-selected span.sd- {
                             background: $theme-color
                         }
 
-                        &:not(.rmdp-selected):hover span.calendar-day- {
+                        &:not(.rmdp-selected):hover span.sd- {
                             background: $theme-background-color;
                         }
                     }
@@ -362,6 +362,17 @@
 
             .rmdp-panel.right {
                 display: none !important;
+            }
+        }
+    }
+
+    // event popup
+    .event-item{
+        .event-list{
+            position: relative;
+
+            .buttons-wrapper{
+                position: absolute;
             }
         }
     }

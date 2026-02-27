@@ -173,11 +173,6 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
     multiple,
     plugins,
     fullYear,
-     mapDays: () => {
-      return {
-        className: 'calendar-day',
-      };
-    }
   };
 
   return (
