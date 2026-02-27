@@ -29,22 +29,46 @@ class Store_Get_Support extends Widget_Button {
     protected function register_controls() {
         parent::register_controls();
 
-        $this->update_control(
-            'text',
+       $this->update_control(
+            'icon_align',
             [
-                'default' => __( 'Get Support', 'multivendorx' ),
-                'dynamic' => [
-                    'active' => true,
-                    'default' => '{{multivendorx-store-get-support-tag}}'
-                ],
+                'default' => 'left',
             ]
         );
 
         $this->update_control(
-            'link',
+            'button_text_color',
             [
-                'dynamic' => ['active' => false],
-                'placeholder' => __( 'Triggers Support Modal', 'multivendorx' ),
+                'default' => '#ffffff',
+            ]
+        );
+
+        $this->update_control(
+            'background_color',
+            [
+                'default' => '#17a2b8',
+            ]
+        );
+
+        $this->update_control(
+            'border_color',
+            [
+                'default' => '#17a2b8',
+            ]
+        );
+       
+        $this->update_control(
+            'text',
+            [
+                'dynamic'   => [
+                    'default' => \Elementor\Plugin::instance()
+											->dynamic_tags
+											->tag_data_to_tag_text(null, 'multivendorx-store-get-support-tag'),
+                    'active'  => true,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} > .elementor-widget-container > .elementor-button-wrapper > .mvx-store-get-support-btn' => 'width: auto; margin: 0;',
+                ]
             ]
         );
     }
@@ -55,8 +79,7 @@ class Store_Get_Support extends Widget_Button {
             return;
         }
 
-        // Render a single button with a data attribute for store ID
-        echo '<button class="multivendorx-livechat-button button" data-store-id="' . esc_attr($store['storeId']) . '">';
+        echo '<button>';
         echo esc_html(__('Get Support', 'multivendorx'));
         echo '</button>';
     }

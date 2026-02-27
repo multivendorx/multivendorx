@@ -36,7 +36,7 @@ class Rewrites {
 
         add_action( 'init', array( $this, 'register_rule' ) );
         add_filter( 'query_vars', array( $this, 'register_query_var' ) );
-        add_action( 'wp', array( $this, 'flash_rewrite_rules' ), 99 );
+        add_action( 'wp', array( $this, 'flash_rewrite_rules' ) );
 
         // Make endpoint behave like a page
         add_action( 'pre_get_posts', array( $this, 'make_endpoint_virtual_page' ) );
@@ -178,13 +178,11 @@ class Rewrites {
             }
 
             // Path to plugin block template
-            if ( current_theme_supports( 'editor-styles' ) ) {
-                $plugin_template = MultiVendorX()->plugin_path . 'templates/store/store.html';
+            $plugin_template = MultiVendorX()->plugin_path . 'templates/store/store.html';
 
-                if ( file_exists( $plugin_template ) ) {
-                    // Use a temporary PHP wrapper to render the block template
-                    return MultiVendorX()->plugin_path . 'templates/store/store-wrapper.php';
-                }
+            if ( file_exists( $plugin_template ) ) {
+                // Use a temporary PHP wrapper to render the block template
+                return MultiVendorX()->plugin_path . 'templates/store/store-wrapper.php';
             }
 
             // Classic PHP fallback
@@ -221,6 +219,7 @@ class Rewrites {
         FrontendScripts::enqueue_script( 'multivendorx-store-provider-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-coupons-script' );
         FrontendScripts::localize_scripts( 'multivendorx-store-provider-script' );
+        FrontendScripts::enqueue_style( 'multivendorx-store-tabs-style' );
     }
 
     public function add_sidebar_class_for_block_template( $classes ) {

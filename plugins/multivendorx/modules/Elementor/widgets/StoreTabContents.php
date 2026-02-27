@@ -4,7 +4,7 @@ namespace MultiVendorX\Elementor\Widgets;
 defined( 'ABSPATH' ) || exit;
 
 use Elementor\Widget_Base;
-use Elementor\Controls_Manager;
+use MultiVendorX\Utill;
 use MultiVendorX\Elementor\StoreHelper;
 
 class Store_Tab_Contents extends Widget_Base {
@@ -32,23 +32,23 @@ class Store_Tab_Contents extends Widget_Base {
 	}
 
 	protected function register_controls() {
-		$this->start_controls_section(
-			'section_dummy_style',
-			array(
-				'label' => __( 'Dummy Content Settings', 'multivendorx' ),
-			)
-		);
+		$dynamic_default = \Elementor\Plugin::instance()
+			->dynamic_tags
+			->tag_data_to_tag_text( null, 'multivendorx-store-dummy-products' );
 
 		$this->add_control(
-			'dummy_text',
-			array(
-				'label'   => __( 'Placeholder Text', 'multivendorx' ),
-				'type'    => Controls_Manager::TEXT,
-				'default' => __( 'Store products will be displayed here.', 'multivendorx' ),
-			)
+			'products',
+			[
+				'type' => \Elementor\Controls_Manager::HIDDEN,
+				'dynamic' => [
+					'active'  => true,
+					'default' => $dynamic_default,
+				],
+			],
+			[
+				'position' => [ 'of' => '_title' ],
+			]
 		);
-
-		$this->end_controls_section();
 	}
 
 	protected function render() {
@@ -57,17 +57,11 @@ class Store_Tab_Contents extends Widget_Base {
             return;
         }
 
-        $settings = $this->get_settings_for_display();
-
-        // 5. Logic: Use the dynamic store name
-        $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
-
-        $tag = $settings['header_size'];
-
-        printf(
-            '<%1$s class="multivendorx-store-name elementor-heading-title">%2$s</%1$s>',
-            esc_attr( $tag ),
-            esc_html( $name )
-        );
+        if ( Utill::is_store_page() ) {
+            MultiVendorX()->util->get_template( 'store/store-tabs.php', array( 'store_id' => $store['storeId'] ) );
+        } else {
+            $settings = $this->get_settings_for_display();
+            echo $settings['products'];
+        }
 	}
 }
