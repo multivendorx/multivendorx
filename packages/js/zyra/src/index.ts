@@ -54,7 +54,6 @@ export { ExpandablePanelGroupUI } from './components/ExpandablePanelGroup';
 export { default as EmailsInput } from './components/EmailsInput';
 export { default as TourSetup } from './components/TourSetup';
 export { default as DynamicRowSetting } from './components/DynamicRowSetting';
-export { default as InputWithSuggestions } from './components/InputWithSuggestions';
 export {NavigatorHeader} from './components/SettingsNavigator';
 export {default as HeaderSearch} from './components/HeaderSearch';
 export {default as Tooltip} from './components/UI/Tooltip';
@@ -83,6 +82,7 @@ export { SettingProvider, useSetting } from './contexts/SettingContext';
 export type { SettingContextType } from './contexts/SettingContext';
 export type { QueryProps, TableRow, CategoryCount } from './components/table/types';
 export { Notice } from './components/Notice';
+export { NoticeReceiver } from './components/NoticeReceiver';
 
 export { default as TableCard } from './components/table/TableCard';
 export { useOutsideClick } from './components/useOutsideClick';

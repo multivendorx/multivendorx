@@ -6,7 +6,6 @@ import { PopupUI } from './Popup';
 import HeaderSearch from './HeaderSearch';
 import ItemList, { ItemListUI } from './ItemList';
 import Tabs, { TabsUI } from './Tabs';
-import { Notice } from './Notice';
 
 type SearchItem = {
     icon?: string;

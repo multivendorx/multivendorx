@@ -229,6 +229,7 @@ const Modules: React.FC<ModuleProps> = ({
                             />
 
                             <SelectInputUI
+                                type="single-select"
                                 options={statusOptions}
                                 value={selectedFilter}
                                 size="8rem"
