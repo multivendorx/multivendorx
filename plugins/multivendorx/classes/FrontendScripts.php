@@ -517,7 +517,7 @@ class FrontendScripts {
                         'permalink_structure'      => get_option( Utill::WORDPRESS_SETTINGS['permalink'] ) ? true : false,
                         'all_verification_methods' => MultiVendorX()->setting->get_setting( 'all_verification_methods' ),
                         'shipping_methods'         => apply_filters( 'multivendorx_store_shipping_options', array() ),
-                        'all_store_meta'           => $all_meta,
+                        'all_store_meta'           => $all_meta ?? [],
                         'site_name'                => get_bloginfo( 'name' ),
                         'current_user'             => wp_get_current_user(),
                         'current_user_image'       => get_avatar_url( get_current_user_id(), array( 'size' => 48 ) ),
@@ -600,7 +600,7 @@ class FrontendScripts {
 			);
 
         $localize_scripts = apply_filters( 'multivendorx_localize_scripts', $localize_scripts );
-        $config = $localize_scripts[ $handle ];
+        $config = $localize_scripts[ $handle ] ?? [];
 
         $data = array();
 
