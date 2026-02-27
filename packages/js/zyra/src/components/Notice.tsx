@@ -5,7 +5,7 @@ import { addNotice, NoticePosition } from './NoticeReceiver';
 import "../styles/web/Notice.scss";
 
 export interface NoticeProps {
-    noticeKey?: string; // deduplication key — notices with the same key won't stack
+    uniqueKey?: string; // deduplication key — notices with the same key won't stack
     title?: string;
     message?: string | string[];
     type?: 'info' | 'success' | 'warning' | 'error' | 'banner';
@@ -16,7 +16,7 @@ export interface NoticeProps {
 }
 
 export const Notice: React.FC<NoticeProps> = ({
-    noticeKey,
+    uniqueKey,
     title,
     message,
     type = 'success',
@@ -31,7 +31,7 @@ export const Notice: React.FC<NoticeProps> = ({
         if (position === 'inline') return;
 
         addNotice(
-            { key: noticeKey, title, message, type, position, actionLabel, onAction },
+            { uniqueKey,title, message, type, position, actionLabel, onAction },
             validity
         );
         setIsVisible(false);

@@ -5,8 +5,7 @@ import React, { useEffect, useState } from 'react';
 export type NoticePosition = 'float' | 'notice' | 'banner';
 
 export interface NoticeItem {
-    id: string;
-    key?: string;       // caller-supplied deduplication key — if set, only one notice with this key can exist at a time
+    uniqueKey: string;// caller-supplied deduplication key — if set, only one notice with this key can exist at a time
     title?: string;
     message?: string | string[];
     type?: 'info' | 'success' | 'warning' | 'error' | 'banner';
@@ -16,7 +15,7 @@ export interface NoticeItem {
     expiresAt?: number; // undefined = session-only (never persisted)
 }
 
-const STORAGE_KEY = 'app_notices_v1';
+const STORAGE_KEY = 'zyra_app_notices_v1';
 
 let subscribers: Array<(items: NoticeItem[]) => void> = [];
 
@@ -64,20 +63,21 @@ export const subscribe = (callback: (items: NoticeItem[]) => void) => {
 };
 
 export const addNotice = (
-    notice: Omit<NoticeItem, 'id' | 'expiresAt'>,
+    notice: Omit<NoticeItem, 'expiresAt'>,
     validity: number | 'lifetime' = 'lifetime'
 ) => {
-    // If a key is provided, deduplicate — one notice per key at a time
-    if (notice.key && notices.some(n => n.key === notice.key)) return;
+    // If no uniqueKey passed → generate one
+    const uniqueKey = notice.uniqueKey || Date.now().toString();
 
-    const id =
-        typeof crypto !== 'undefined' && crypto.randomUUID
-            ? crypto.randomUUID()
-            : Date.now().toString();
+    // If same uniqueKey already exists → do nothing
+    if (notices.some(n => n.uniqueKey === uniqueKey)) return;
 
-    const expiresAt = validity === 'lifetime' ? undefined : Date.now() + validity;
+    const id = notice.uniqueKey || Date.now().toString();
 
-    notices.push({ ...notice, id, expiresAt });
+    const expiresAt =
+        validity === 'lifetime' ? undefined : Date.now() + validity;
+
+    notices.push({ ...notice, uniqueKey, expiresAt });
     notify();
 };
 
