@@ -1184,67 +1184,6 @@
 
 // transaction page payment section end
 
-
-// calendar input start
-
-// .calendar-wrapper .rmdp-wrapper {
-//     .range-picker-wrapper {
-//         width: 10rem;
-//         padding-top: 0.625rem;
-
-//         div {
-//             padding: 0.625rem;
-//             font-size: 0.813rem;
-//             border-bottom: $border-light-small;
-//             cursor: pointer;
-
-//             &:hover {
-//                 background: $theme-background-color;
-//             }
-//         }
-//     }
-
-//     .rmdp-calendar {
-
-//         .rmdp-week-day,
-//         .rmdp-week .rmdp-week-day {
-//             color: $theme-color;
-//         }
-
-//         // date
-//         .rmdp-day-picker {
-//             .rmdp-day {
-//                 span:hover {
-//                     background: $theme-background-color !important;
-//                 }
-//             }
-
-//             .rmdp-range {
-//                 background: $theme-color;
-//             }
-//         }
-
-//     }
-// }
-
-.settings-calendar .rmdp-wrapper {
-    .range-picker-wrapper {
-        width: 10rem;
-        padding-top: 0.625rem;
-
-        div {
-            padding: 0.625rem;
-            font-size: 0.813rem;
-            border-bottom: $border-light-small;
-            cursor: pointer;
-
-            &:hover {
-                background: $theme-background-color;
-            }
-        }
-    }
-}
-
 // transaction popup style start
 .available-balance {
     font-size: 1rem;

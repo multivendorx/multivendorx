@@ -3,6 +3,7 @@ import { Calendar, DateObject } from 'react-multi-date-picker';
 import { FieldComponent } from './types';
 import { PopupUI } from './Popup';
 import { ExpandablePanelGroupUI } from './ExpandablePanelGroup';
+import '../styles/web/CalendarInput.scss';
 
 export interface CalendarEvent {
   id: string;
