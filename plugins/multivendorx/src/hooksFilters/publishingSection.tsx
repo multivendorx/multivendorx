@@ -200,9 +200,9 @@ const PublishingSection = ({ product, setProduct, starFill, setstarFill, handleC
 };
 
 addFilter(
-	'product_publishing_catalog_section',
+	'multivendorx_product_before_image_section',
 	'multivendorx/publishing_section',
-	(content, product, setProduct, starFill, setstarFill, handleChange) => {
+	(content,product,setProduct,handleChange,modules,starFill,setstarFill,) => {
 		return (
 			<>
 				{content}

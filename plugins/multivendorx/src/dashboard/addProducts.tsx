@@ -537,20 +537,19 @@ const AddProduct = () => {
 						handleChange,
 						modules
 					)}
-					
+
 				</Column>
 
 				<Column grid={3}>
-					{applyFilters('product_ai_assist', null, product, setProduct)}
-
 					{applyFilters(
-						'product_publishing_catalog_section',
+						'multivendorx_product_before_image_section',
 						null,
 						product,
 						setProduct,
+						handleChange,
+						modules,
 						starFill,
 						setstarFill,
-						handleChange
 					)}
 
 					{applyFilters(
@@ -598,13 +597,6 @@ const AddProduct = () => {
 								</div>
 							</FormGroupWrapper>
 						</Card>
-					)}
-
-					{applyFilters(
-						'product_tag',
-						null,
-						product,
-						setProduct
 					)}
 
 					<Card
