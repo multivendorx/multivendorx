@@ -55,7 +55,7 @@ const ProductTag = ({ product, setProduct }) => {
 };
 
 addFilter(
-	'product_tag',
+	'multivendorx_product_before_image_section',
 	'multivendorx/product_tag',
 	(content, product, setProduct) => {
 		return (

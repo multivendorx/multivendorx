@@ -87,7 +87,7 @@ const AddProduct = () => {
 		{ label: 'Simple Product', value: 'simple' },
 		{ label: 'Variable Product', value: 'variable' },
 	];
-	
+
 	const handleChange = (field, value) => {
 		setProduct((prev) => ({
 			...prev,
@@ -110,12 +110,12 @@ const AddProduct = () => {
 			appLocalizer.settings_databases_value['product-preferencess']
 				?.category_selection_method == 'yes'
 				? [
-						{
-							id: Number(
-								selectedChild || selectedSub || selectedCat
-							),
-						},
-					]
+					{
+						id: Number(
+							selectedChild || selectedSub || selectedCat
+						),
+					},
+				]
 				: selectedCats.map((id) => ({ id }));
 
 		const payload = {
@@ -529,76 +529,33 @@ const AddProduct = () => {
 							</FormGroupWrapper>
 						</Card>
 					)}
-
 					{applyFilters(
-						'product_inventory',
+						'multivendorx_product_after_price_section',
 						null,
 						product,
 						setProduct,
-						handleChange
+						handleChange,
+						modules
 					)}
 
-					{applyFilters(
-						'product_related_list',
-						null,
-						product,
-						setProduct,
-						handleChange
-					)}
-
-					{applyFilters(
-							'product_policies',
-							null,
-							product,
-							setProduct,
-							handleChange
-						)}
-					
-					{modules.includes('min-max') &&
-						product?.type == 'simple' &&
-						applyFilters(
-							'product_min_max',
-							null,
-							product,
-							setProduct,
-							handleChange
-						)}
-
-					{!product.virtual &&
-						applyFilters(
-							'product_shipping',
-							null,
-							product,
-							setProduct,
-							handleChange
-						)}
-
-					{product?.type == 'variable' &&
-						applyFilters(
-							'product_variable',
-							null,
-							product,
-							setProduct
-						)}
 				</Column>
 
 				<Column grid={3}>
-					{applyFilters('product_ai_assist', null, product, setProduct)}
+					{applyFilters(
+						'multivendorx_product_before_image_section',
+						null,
+						product,
+						setProduct,
+						handleChange,
+						modules,
+						starFill,
+						setstarFill,
+					)}
 
 					{applyFilters(
-							'product_publishing_catalog_section',
-							null,
-							product,
-							setProduct,
-							starFill,
-							setstarFill,
-							handleChange
-						)}
-
-					{applyFilters(
-							'product_category_section',
-							null, product, setProduct, selectedCats, setSelectedCats, selectedChild, setSelectedChild, selectedSub, setSelectedSub, selectedCat, setSelectedCat
-						)}
+						'product_category_section',
+						null, product, setProduct, selectedCats, setSelectedCats, selectedChild, setSelectedChild, selectedSub, setSelectedSub, selectedCat, setSelectedCat
+					)}
 
 					{modules.includes('wpml') && (
 						<Card
@@ -640,13 +597,6 @@ const AddProduct = () => {
 								</div>
 							</FormGroupWrapper>
 						</Card>
-					)}
-
-					{applyFilters(
-						'product_tag',
-						null,
-						product,
-						setProduct
 					)}
 
 					<Card
