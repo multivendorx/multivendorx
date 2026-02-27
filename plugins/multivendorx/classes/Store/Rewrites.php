@@ -148,14 +148,19 @@ class Rewrites {
 
     // Virtual page
     public function make_endpoint_virtual_page( $query ) {
-        if ( ! is_admin() && $query->is_main_query() && get_query_var( $this->custom_store_url ) ) {
+        if ( $query->is_main_query() && get_query_var( $this->custom_store_url ) ) {
             $page = get_page_by_path( 'store' );
 
             if ( $page ) {
-                $query->is_page     = true;
-                $query->is_singular = true;
-                $query->post_type   = 'page';
-                $query->posts       = array( $page );
+                $query->is_page           = true;
+                $query->is_singular       = true;
+                $query->is_home           = false;
+                $query->is_archive        = false;
+                $query->post_type         = 'page';
+                $query->posts             = array( $page );
+                $query->post              = $page;
+                $query->queried_object    = $page;
+                $query->queried_object_id = $page->ID;
             }
         }
     }
@@ -173,11 +178,13 @@ class Rewrites {
             }
 
             // Path to plugin block template
-            $plugin_template = MultiVendorX()->plugin_path . 'templates/store/store.html';
+            if ( current_theme_supports( 'editor-styles' ) ) {
+                $plugin_template = MultiVendorX()->plugin_path . 'templates/store/store.html';
 
-            if ( file_exists( $plugin_template ) ) {
-                // Use a temporary PHP wrapper to render the block template
-                return MultiVendorX()->plugin_path . 'templates/store/store-wrapper.php';
+                if ( file_exists( $plugin_template ) ) {
+                    // Use a temporary PHP wrapper to render the block template
+                    return MultiVendorX()->plugin_path . 'templates/store/store-wrapper.php';
+                }
             }
 
             // Classic PHP fallback
@@ -187,6 +194,7 @@ class Rewrites {
 
         return $template;
     }
+    
 
     public function register_store_state() {
         $store_slug = get_query_var( $this->custom_store_url );
