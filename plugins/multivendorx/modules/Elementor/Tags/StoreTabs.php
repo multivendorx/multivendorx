@@ -45,37 +45,49 @@ class StoreTabs extends Tag {
      * @return void
      */
     protected function get_value() {
-        if ( get_query_var('store') ) {
-        $store = $this->get_store_data();
-           $store_tab_items = MultiVendorX()->store->storeutil->get_store_tabs( $store['storeId'] );
+
+        if ( get_query_var( 'store' ) ) {
+            $store = $this->get_store_data();
+            $store_tab_items = MultiVendorX()->store->storeutil->get_store_tabs( $store['storeId'] );
         } else {
             $store_tab_items = $this->get_store_tab_items();
         }
-        
+
         $tab_items = [];
 
-        foreach( $store_tab_items as $item_key => $item ) {
-            $url = $item['url'];
+        foreach ( $store_tab_items as $item ) {
 
-            if ( empty( $url ) && ! $store_id ) {
-                $url = '#';
-            }
+            $url = ! empty( $item['url'] ) ? $item['url'] : '#';
 
             $tab_items[] = [
-                'key'         => $item['id'],
-                'title'       => $item['title'],
-                'text'        => $item['title'],
-                'url'         => $url,
-                'icon'        => '',
-                'show'        => true,
-                '__dynamic__' => [
-                    'text' => $item['title'],
-                    'url'  => $url,
-                ]
+                'text' => $item['title'],
+
+                // IMPORTANT: Icon List expects this format
+                'link' => [
+                    'url' => $url,
+                    'is_external' => false,
+                    'nofollow' => false,
+                ],
+
+                // Disable icon properly
+                'selected_icon' => [
+                    'value' => '',
+                    'library' => '',
+                ],
             ];
         }
 
         return $tab_items;
+    }
+    
+    protected function render() {
+        $value = $this->get_value();
+
+        if ( empty( $value ) ) {
+            return;
+        }
+
+        echo wp_json_encode( $value );
     }
 
     /**
@@ -108,7 +120,4 @@ class StoreTabs extends Tag {
         ];
     }
 
-    protected function render() {
-        echo json_encode( $this->get_store_tab_items() );
-    }
 }

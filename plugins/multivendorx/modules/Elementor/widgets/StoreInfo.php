@@ -33,8 +33,10 @@ class Store_Info extends Widget_Icon_List {
 	}
 
 	protected function register_controls() {
+
 		parent::register_controls();
 
+		// Rename section label
 		$this->update_control(
 			'section_icon',
 			[
@@ -42,49 +44,72 @@ class Store_Info extends Widget_Icon_List {
 			]
 		);
 
+		// Create repeater
 		$repeater = new Repeater();
 
 		$repeater->add_control(
-			'key',
+			'title',
 			[
-				'label'   => __( 'Info Type', 'multivendorx' ),
-				'type'    => Controls_Manager::SELECT,
-				'options' => [
-					'address' => __( 'Address', 'multivendorx' ),
-					'phone'   => __( 'Phone', 'multivendorx' ),
-					'email'   => __( 'Email', 'multivendorx' ),
-					'rating'  => __( 'Rating', 'multivendorx' ),
-				],
-				'default' => 'address',
+				'label'   => __( 'Title', 'multivendorx' ),
+				'type'    => Controls_Manager::HIDDEN,
+				'default' => __( 'Title', 'multivendorx' ),
 			]
 		);
 
 		$repeater->add_control(
-			'selected_icon',
+			'text',
 			[
-				'label'   => __( 'Icon', 'multivendorx' ),
-				'type'    => Controls_Manager::ICONS,
-				'default' => [
-					'value'   => 'fas fa-map-marker-alt',
+				'label'       => __( 'Content', 'multivendorx' ),
+				'type'        => Controls_Manager::HIDDEN,
+				'label_block' => true,
+			]
+		);
+
+		$repeater->add_control(
+			'icon',
+			[
+				'label'       => __( 'Icon', 'multivendorx' ),
+				'type'        => Controls_Manager::ICONS, // modern (ICON is deprecated)
+				'label_block' => true,
+				'default'     => [
+					'value'   => 'fas fa-check',
 					'library' => 'fa-solid',
 				],
 			]
 		);
 
-		// Override the default icon_list control to use our logic
+		// Dynamic default for repeater
+		$dynamic_content = \Elementor\Plugin::instance()
+			->dynamic_tags
+			->get_tag_data_content( null, 'multivendorx-store-info' );
+
 		$this->update_control(
 			'icon_list',
 			[
-				'fields'      => $repeater->get_controls(),
-				'title_field' => '{{{ key.charAt(0).toUpperCase() + key.slice(1) }}}',
-				
-				'default'     => [
-					[ 'key' => 'address', 'selected_icon' => [ 'value' => 'fas fa-map-marker-alt', 'library' => 'fa-solid' ] ],
-					[ 'key' => 'phone',   'selected_icon' => [ 'value' => 'fas fa-phone', 'library' => 'fa-solid' ] ],
-					[ 'key' => 'email',   'selected_icon' => [ 'value' => 'fas fa-envelope', 'library' => 'fa-solid' ] ],
-				],
+				'type'    => Controls_Manager::REPEATER,
+				'fields'  => $repeater->get_controls(),
+				'default' => ! empty( $dynamic_content )
+					? json_decode( $dynamic_content, true )
+					: [],
 			]
 		);
+
+		$this->add_control(
+			'store_info',
+			[
+				'type'    => Controls_Manager::HIDDEN,
+				'dynamic' => [
+					'active'  => true,
+					'default' => \Elementor\Plugin::instance()
+						->dynamic_tags
+						->tag_data_to_tag_text( null, 'multivendorx-store-info' ),
+				],
+			],
+			[
+				'position' => [ 'of' => 'icon_list' ],
+			]
+		);
+
 	}
 
 	protected function render() {

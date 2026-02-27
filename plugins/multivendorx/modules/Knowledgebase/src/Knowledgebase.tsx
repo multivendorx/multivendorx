@@ -375,7 +375,6 @@ export const KnowledgeBase: React.FC = () => {
 							'Write and publish a new knowledge base article to help stores navigate their dashboard.',
 							'multivendorx'
 						),
-						showCloseButton: true,
 					}}
 					footer={
 						<AdminButtonUI

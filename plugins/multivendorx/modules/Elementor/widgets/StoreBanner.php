@@ -30,45 +30,36 @@ class Store_Banner extends Widget_Image {
 		parent::register_controls();
 
 		$this->update_control(
-			'image',
-			[
-				'label' => __( 'Choose Banner', 'multivendorx' ),
-				'dynamic' => [
-					'active'  => true,
-					'default' => '{{multivendorx-store-banner}}',
-				],
-			]
+				'section_image',
+				[
+						'label' => __( 'Banner', 'multivendorx' ),
+				]
 		);
 
-		// Hide controls that might break a banner layout
+		$this->update_control(
+				'image',
+				[
+						'dynamic' => [
+								'default' => \Elementor\Plugin::instance()
+											->dynamic_tags
+											->tag_data_to_tag_text( null, 'multivendorx-store-banner' ),
+						],
+						'selectors' => [
+								'{{WRAPPER}} > .elementor-widget-container > .elementor-image > img' => 'width: 100%;',
+						]
+				],
+				[
+						'recursive' => true,
+				]
+		);
+		
 		$this->remove_control( 'caption_source' );
 		$this->remove_control( 'caption' );
 	}
 
 	protected function render() {
-
-		$store = $this->get_store_data();
-		if ( ! $store ) {
-			return;
-		}
-		// Keep original key structure
-		$banner = ! empty( $store['storeBanner'] ) ? $store['storeBanner'] : '';
-
-		if ( empty( $banner ) ) {
-			return;
-		}
-
-		// If banner is stored as attachment ID, convert to URL
-		if ( is_numeric( $banner ) ) {
-			$banner = wp_get_attachment_url( $banner );
-		}
-
-		printf(
-			'<div class="multivendorx-store-banner">
-				<img class="multivendorx-store-banner-img" src="%1$s" alt="%2$s" />
-			</div>',
-			esc_url( $banner ),
-			esc_attr( $store['storeName'] ?? '' )
-		);
+		echo '<div class="multivendorx-store-banner">';
+		parent::render();
+		echo '</div>';
 	}
 }

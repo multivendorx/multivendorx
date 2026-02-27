@@ -75,6 +75,8 @@ export { default as Skeleton } from './components/UI/Skeleton';
 export { default as PdfDownloadButton } from './components/PdfDownloadButton';
 export { default as ItemList } from './components/ItemList';
 export { ItemListUI } from './components/ItemList';
+export { default as EventCalendar } from './components/EventCalendar';
+export { EventCalendarUI } from './components/EventCalendar';
 export { useModules, initializeModules } from './contexts/ModuleContext';
 export { SettingProvider, useSetting } from './contexts/SettingContext';
 export type { SettingContextType } from './contexts/SettingContext';

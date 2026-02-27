@@ -28,34 +28,49 @@ class Store_Follow_Button extends Widget_Button {
 
 	protected function register_controls() {
 		parent::register_controls();
+        
+        $this->update_control(
+            'icon_align',
+            [
+                'default' => 'left',
+            ]
+        );
 
-		$this->update_control(
-			'text',
-			[
-				'default' => __( 'Follow', 'multivendorx' ),
-				'dynamic' => [
-					'active' => true,
-				],
-			]
-		);
+        $this->update_control(
+            'button_text_color',
+            [
+                'default' => '#ffffff',
+            ]
+        );
 
-		$this->update_control(
-			'button_background_color',
-			[
-				'default' => '#17a2b8',
-			]
-		);
+        $this->update_control(
+            'background_color',
+            [
+                'default' => '#17a2b8',
+            ]
+        );
 
-		$this->update_control(
-			'link',
-			[
-				'dynamic' => [
-					'active' => false,
-					'default' => '{{multivendorx-store-follow-tag}}'
-				],
-				'placeholder' => __( 'Handled by Follow logic', 'multivendorx' ),
-			]
-		);
+        $this->update_control(
+            'border_color',
+            [
+                'default' => '#17a2b8',
+            ]
+        );
+
+        $this->update_control(
+            'text',
+            [
+                'dynamic'   => [
+                    'default' => \Elementor\Plugin::instance()
+											->dynamic_tags
+											->tag_data_to_tag_text( null, 'multivendorx-store-follow-tag' ),
+                    'active'  => true,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} > .elementor-widget-container > .elementor-button-wrapper > .mvx-store-follow-btn' => 'width: auto; margin: 0;',
+                ]
+            ]
+        );
 	}
 
 	protected function render() {
@@ -74,7 +89,7 @@ class Store_Follow_Button extends Widget_Button {
         } 
 		
         $this->add_render_attribute( 'button', 'data-store_id', $store_id );
-        $this->add_render_attribute( 'button', 'data-status', $follow_status );			
+        $this->add_render_attribute( 'button', 'data-status', $follow_status ?? '' );			
 		
         parent::render();
 

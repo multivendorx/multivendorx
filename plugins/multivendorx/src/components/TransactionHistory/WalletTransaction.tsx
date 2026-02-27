@@ -770,33 +770,31 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 				</PopupUI>
 
 				<Column>
-					<div className="admin-table-wrapper admin-pt-2">
-						<TableCard
-							headers={headers}
-							rows={rows}
-							totalRows={totalRows}
-							isLoading={isLoading}
-							onQueryUpdate={doRefreshTableData}
-							search={{ placeholder: 'Search...' }}
-							filters={filters}
-							buttonActions={buttonActions}
-							ids={rowIds}
-							categoryCounts={categoryCounts}
-							bulkActions={[]}
-							onSelectCsvDownloadApply={downloadTransactionCSV}
-							format={appLocalizer.date_format}
-							currency={{
-								currencySymbol: appLocalizer.currency_symbol,
-								priceDecimals: appLocalizer.price_decimals,
-								decimalSeparator:
-									appLocalizer.decimal_separator,
-								thousandSeparator:
-									appLocalizer.thousand_separator,
-								currencyPosition:
-									appLocalizer.currency_position,
-							}}
-						/>
-					</div>
+					<TableCard
+						headers={headers}
+						rows={rows}
+						totalRows={totalRows}
+						isLoading={isLoading}
+						onQueryUpdate={doRefreshTableData}
+						search={{ placeholder: 'Search...' }}
+						filters={filters}
+						buttonActions={buttonActions}
+						ids={rowIds}
+						categoryCounts={categoryCounts}
+						bulkActions={[]}
+						onSelectCsvDownloadApply={downloadTransactionCSV}
+						format={appLocalizer.date_format}
+						currency={{
+							currencySymbol: appLocalizer.currency_symbol,
+							priceDecimals: appLocalizer.price_decimals,
+							decimalSeparator:
+								appLocalizer.decimal_separator,
+							thousandSeparator:
+								appLocalizer.thousand_separator,
+							currencyPosition:
+								appLocalizer.currency_position,
+						}}
+					/>
 				</Column>
 			</Container>
 			{viewCommission && selectedCommissionId !== null && (

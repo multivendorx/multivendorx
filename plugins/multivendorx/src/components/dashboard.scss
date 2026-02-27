@@ -1,20 +1,14 @@
 @use './config.scss' as *;
 
-// payout page price section start
+// payout page price section start  (Common admin panel)
 .payout-card-wrapper {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 
-    .price-wrapper{
+    .price-wrapper {
         width: 50%;
     }
-    // .price-title {
-    //     font-size: 0.95rem;
-    //     line-height: 1rem;
-    //     padding-bottom: 0.625rem;
-    //     color: $sub-text-color;
-    // }
 
     .price {
         font-size: 3rem;
@@ -26,90 +20,9 @@
         gap: 0.5rem;
         color: $text-color;
     }
-
-    // .des {
-    //     margin-bottom: 1rem;
-    // }
-
-    // .small-text {
-    //     line-height: 1.25rem;
-    //     color: $text-color
-    // }
-
-    // .admin-btn {
-    //     margin-top: 1rem;
-    // }
-
-    // .right-section {
-    //     width: 50%;
-    // }
-
-    // .admin-badge {
-    //     display: inline-block;
-    // }
-
-    // .payout-card-wrapper {
-    //     display: flex;
-    //     gap: 1rem;
-    //     margin: 0.813rem 0;
-    //     flex-wrap: wrap;
-
-    //     .payout-card {
-    //         padding: 1rem;
-    //         border-radius: 0.313rem;
-    //         background: #e6e2e275;
-    //         width: 50%;
-
-    //         .card-title {
-    //             font-size: 1.125rem;
-    //         }
-
-    //         .card-price {
-    //             font-size: 1.813rem;
-    //             font-weight: 600;
-    //             line-height: 2rem;
-    //             margin: 0.5rem 0;
-    //         }
-
-    //         .card-des {
-    //             color: #0000009e;
-    //             font-size: 0.813rem;
-    //         }
-    //     }
-    // }
 }
 
-
-.withdrawal-wrapper {
-    background: $theme-background-color;
-    padding: 0.313rem;
-    border-radius: 0.313rem;
-    margin: 1rem 0;
-    color: $theme-color;
-    border: $border-light-small;
-
-    i {
-        color: $theme-color;
-    }
-
-    .title {
-        font-size: 1.45rem;
-        font-weight: 600;
-        line-height: 2rem;
-        padding-bottom: 0.5rem;
-    }
-
-    .withdrawl-notice {
-        font-size: 1rem;
-        font-weight: 500;
-        line-height: 1.313rem;
-
-        i {
-            color: $theme-color;
-        }
-    }
-}
-
+// check membership and remove 
 .recommended-wrapper {
     position: relative;
     cursor: pointer;
@@ -148,50 +61,4 @@
             transform: translate(-2rem, -2.313rem);
         }
     }
-}
-
-
-.calender-wrapper .rmdp-wrapper {
-    .range-picker-wrapper {
-        width: 10rem;
-        padding-top: 0.625rem;
-
-        div {
-            padding: 0.625rem;
-            font-size: 0.813rem;
-            border-bottom: $border-light-small;
-            cursor: pointer;
-
-            &:hover {
-                background: $theme-background-color;
-            }
-        }
-    }
-
-    .rmdp-calendar {
-
-        .rmdp-week-day,
-        .rmdp-week .rmdp-week-day {
-            color: $theme-color;
-        }
-
-        // date
-        .rmdp-day-picker {
-            .rmdp-day {
-                span:hover {
-                    background: $theme-background-color !important;
-                }
-            }
-
-            .rmdp-range {
-                background: $theme-color;
-            }
-        }
-
-    }
-}
-
-.settings-calender:has(.calender){
-    width: 100%;
-        
 }
