@@ -1,6 +1,6 @@
 @use './config.scss' as *;
 
-// payout page price section start
+// payout page price section start  (Common admin panel)
 .payout-card-wrapper {
     display: flex;
     flex-direction: column;
@@ -9,13 +9,6 @@
     .price-wrapper {
         width: 50%;
     }
-
-    // .price-title {
-    //     font-size: 0.95rem;
-    //     line-height: 1rem;
-    //     padding-bottom: 0.625rem;
-    //     color: $sub-text-color;
-    // }
 
     .price {
         font-size: 3rem;
@@ -27,90 +20,9 @@
         gap: 0.5rem;
         color: $text-color;
     }
-
-    // .des {
-    //     margin-bottom: 1rem;
-    // }
-
-    // .small-text {
-    //     line-height: 1.25rem;
-    //     color: $text-color
-    // }
-
-    // .admin-btn {
-    //     margin-top: 1rem;
-    // }
-
-    // .right-section {
-    //     width: 50%;
-    // }
-
-    // .admin-badge {
-    //     display: inline-block;
-    // }
-
-    // .payout-card-wrapper {
-    //     display: flex;
-    //     gap: 1rem;
-    //     margin: 0.813rem 0;
-    //     flex-wrap: wrap;
-
-    //     .payout-card {
-    //         padding: 1rem;
-    //         border-radius: 0.313rem;
-    //         background: #e6e2e275;
-    //         width: 50%;
-
-    //         .card-title {
-    //             font-size: 1.125rem;
-    //         }
-
-    //         .card-price {
-    //             font-size: 1.813rem;
-    //             font-weight: 600;
-    //             line-height: 2rem;
-    //             margin: 0.5rem 0;
-    //         }
-
-    //         .card-des {
-    //             color: #0000009e;
-    //             font-size: 0.813rem;
-    //         }
-    //     }
-    // }
 }
 
-
-.withdrawal-wrapper {
-    background: $theme-background-color;
-    padding: 0.313rem;
-    border-radius: 0.313rem;
-    margin: 1rem 0;
-    color: $theme-color;
-    border: $border-light-small;
-
-    i {
-        color: $theme-color;
-    }
-
-    .title {
-        font-size: 1.45rem;
-        font-weight: 600;
-        line-height: 2rem;
-        padding-bottom: 0.5rem;
-    }
-
-    .withdrawl-notice {
-        font-size: 1rem;
-        font-weight: 500;
-        line-height: 1.313rem;
-
-        i {
-            color: $theme-color;
-        }
-    }
-}
-
+// check membership and remove 
 .recommended-wrapper {
     position: relative;
     cursor: pointer;
@@ -151,7 +63,7 @@
     }
 }
 
-.settings-calendar {
+.settings-calender {
     width: 100%;
     
     // without input calendar start
@@ -174,7 +86,7 @@
                 }
 
                 .rmdp-header-values {
-                    span.sd- {
+                    span.sd {
                         font-size: 1.125rem;
                     }
                 }
@@ -200,7 +112,7 @@
                     .rmdp-day {
                         height: 6rem;
 
-                        span.sd- {
+                        span.sd {
                             border-radius: 0.313rem;
                             font-size: 1.5rem;
 
@@ -209,12 +121,12 @@
                             }
                         }
 
-                        &.rmdp-selected span.sd-:not(.highlight) {
+                        &.rmdp-selected span.sd:not(.highlight) {
                             background: $theme-color;
                         }
 
                         &:not(.rmdp-day-hidden) {
-                            span.sd- {
+                            span.sd {
                                 background: #efecec;
                             }
                         }
@@ -229,16 +141,16 @@
                     margin: 0;
                     height: 100%;
 
-                    span.sd- {
+                    span.sd {
                         border-radius: 0.313rem;
                         font-size: 1.25rem;
                     }
 
-                    &.rmdp-selected span.sd- {
+                    &.rmdp-selected span.sd {
                         background: $theme-color
                     }
 
-                    &:not(.rmdp-selected):hover span.sd- {
+                    &:not(.rmdp-selected):hover span.sd {
                         background: $theme-background-color;
                     }
                 }
@@ -275,7 +187,7 @@
                     }
 
                     .rmdp-header-values {
-                        span.sd- {
+                        span.sd {
                             font-size: 1.125rem;
                         }
                     }
@@ -344,16 +256,16 @@
                         margin: 0;
                         height: 100%;
 
-                        span.sd- {
+                        span.sd {
                             border-radius: 0.313rem;
                             font-size: 1.25rem;
                         }
 
-                        &.rmdp-selected span.sd- {
+                        &.rmdp-selected span.sd {
                             background: $theme-color
                         }
 
-                        &:not(.rmdp-selected):hover span.sd- {
+                        &:not(.rmdp-selected):hover span.sd {
                             background: $theme-background-color;
                         }
                     }
