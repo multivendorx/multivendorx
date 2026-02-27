@@ -8,13 +8,10 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
-// Get store slug from query var
-$store_slug = get_query_var( 'store' );
+$store_page = get_page_by_path( 'store' );
 
-global $post;
-
-if ( $post && ! empty( $post->post_content ) ) {
-    echo do_blocks( $post->post_content ); // renders blocks edited in Gutenberg
+if ( $store_page && ! empty( $store_page->post_content ) ) {
+    echo do_blocks( $store_page->post_content );
 } else {
     // Fallback (unlikely, page should have content)
     $block_template_path = MultiVendorX()->plugin_path . 'templates/store/store.html';

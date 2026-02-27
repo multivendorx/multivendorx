@@ -615,7 +615,7 @@ class FrontendScripts {
 			);
 
         $localize_scripts = apply_filters( 'multivendorx_localize_scripts', $localize_scripts );
-        $config = $localize_scripts[ $handle ];
+        $config = $localize_scripts[ $handle ] ?? [];
 
         $data = array();
 

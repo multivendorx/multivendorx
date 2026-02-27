@@ -21,7 +21,6 @@ export interface PopupHeaderProps {
     icon?: string;
     title?: string;
     description?: string;
-    showCloseButton?: boolean;
 }
 
 export interface PopupProps {
