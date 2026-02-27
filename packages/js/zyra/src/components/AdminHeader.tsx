@@ -6,7 +6,6 @@ import { PopupUI } from './Popup';
 import HeaderSearch from './HeaderSearch';
 import ItemList, { ItemListUI } from './ItemList';
 import Tabs, { TabsUI } from './Tabs';
-import { Notice } from './Notice';
 
 type SearchItem = {
     icon?: string;
@@ -160,7 +159,6 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
 
                 </div>
             </div>
-            <div id="mvx-notice-ba">hello</div>
             {notices.length > 0 &&
                 notices.map((html, i) => (
                     <>
