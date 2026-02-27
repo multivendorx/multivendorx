@@ -15,7 +15,6 @@ import {
 	TableRow,
 	QueryProps,
 	CategoryCount,
-	EventCalendarUI,
 } from 'zyra';
 
 import axios from 'axios';
