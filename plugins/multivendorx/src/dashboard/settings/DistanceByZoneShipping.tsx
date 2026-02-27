@@ -7,8 +7,10 @@ import {
 	AdminButtonUI,
 	ToggleSettingUI,
 	PopupUI,
+	useModules,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
+import { applyFilters, doAction } from '@wordpress/hooks';
 
 type Zone = {
 	id: number;
@@ -26,7 +28,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 	id,
 }) => {
 	let store_id = appLocalizer.store_id ? appLocalizer.store_id : id;
-
+	const { modules } = useModules();
 	const [data, setData] = useState<Zone[]>([]);
 	const [error, setError] = useState<string>();
 	const [addShipping, setAddShipping] = useState<boolean>(false);
@@ -183,10 +185,10 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 	};
 
 	const handleSave = async () => {
+		doAction('multivendorx_zone_shipping_after_save');
 		if (!selectedZone) {
 			return;
 		}
-
 		try {
 			const shippingData: any = { settings: {} };
 
@@ -261,17 +263,8 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 					flatRateCalculationType: '',
 				});
 				setEditingMethod(null);
-				setIsEditing(false);
-			} else {
-				alert(
-					__(
-						'Failed to ' +
-						(isUpdate ? 'update' : 'add') +
-						' shipping method',
-						'multivendorx'
-					)
-				);
 			}
+			setIsEditing(false);
 		} catch (err) {
 			console.error(
 				'Error ' +
@@ -392,8 +385,8 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 			{addShipping && selectedZone && (
 				<PopupUI
 					open={addShipping}
-					width={31.25}
-					height="60%"
+					width={70}
+					height="80%"
 					onClose={() => setAddShipping(false)}
 					header={{
 						icon: 'shipping',
@@ -440,28 +433,35 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 											{
 												key: formData.shippingMethod,
 												value: formData.shippingMethod,
-												label: __(formData.shippingMethod
-													.replace('_', ' ')
-													.replace(/\b\w/g, (c) => c.toUpperCase()), 'multivendorx'),
+												label: __(
+													formData.shippingMethod
+														.replace('_', ' ')
+														.replace(/\b\w/g, (c) => c.toUpperCase()),
+													'multivendorx'
+												),
 											},
 										]
-										: [
-											{
-												key: 'local_pickup',
-												value: 'local_pickup',
-												label: __('Local pickup', 'multivendorx'),
-											},
-											{
-												key: 'free_shipping',
-												value: 'free_shipping',
-												label: __('Free shipping', 'multivendorx'),
-											},
-											{
-												key: 'flat_rate',
-												value: 'flat_rate',
-												label: __('Flat Rate', 'multivendorx'),
-											},
-										]
+										: applyFilters(
+											'multivendorx_zone_shipping_methods',
+											[
+												{
+													key: 'local_pickup',
+													value: 'local_pickup',
+													label: __('Local pickup', 'multivendorx'),
+												},
+												{
+													key: 'free_shipping',
+													value: 'free_shipping',
+													label: __('Free shipping', 'multivendorx'),
+												},
+												{
+													key: 'flat_rate',
+													value: 'flat_rate',
+													label: __('Flat Rate', 'multivendorx'),
+												},
+											],
+											modules
+										)
 								}
 								disabled={isEditing}
 							/>
@@ -600,6 +600,15 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 									/>
 								</div>
 							</>
+						)}
+
+						{applyFilters(
+							'multivendorx_after_zone_shipping_fields',
+							null,
+							{
+								zone: selectedZone,
+								shippingMethod: formData.shippingMethod
+							}
 						)}
 					</div>
 				</PopupUI>
