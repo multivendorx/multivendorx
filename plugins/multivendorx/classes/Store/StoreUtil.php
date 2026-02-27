@@ -255,7 +255,14 @@ class StoreUtil {
 
         );
 
-        return $capabilities;
+        /**
+         * Filter store capabilities.
+         *
+         * Allows developers to add, modify, or remove store capabilities.
+         *
+         * @param array $capabilities
+         */
+        return apply_filters( 'multivendorx_store_capabilities', $capabilities );
     }
 
     /**

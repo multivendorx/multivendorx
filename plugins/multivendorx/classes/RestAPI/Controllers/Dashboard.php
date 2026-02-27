@@ -110,12 +110,6 @@ class Dashboard extends \WP_REST_Controller {
                 'icon'       => 'coupon',
                 'capability' => array( 'read_shop_coupons' ),
             ),
-            'staff-management'       => array(
-                'name'       => 'Staff Management (Pro)',
-                'slug'       => 'staff-management',
-                'icon'       => 'coupon',
-                'capability' => array( 'create_stores' ),
-            ),
             'sales'         => array(
                 'name'       => 'Sales',
                 'slug'       => 'sales',
