@@ -529,63 +529,15 @@ const AddProduct = () => {
 							</FormGroupWrapper>
 						</Card>
 					)}
-
 					{applyFilters(
-						'product_inventory',
+						'multivendorx_product_after_price_section',
 						null,
 						product,
 						setProduct,
-						handleChange
+						handleChange,
+						modules
 					)}
-
-					{applyFilters(
-						'product_related_list',
-						null,
-						product,
-						setProduct,
-						handleChange
-					)}
-
-					{applyFilters(
-						'product_policies',
-						null,
-						product,
-						setProduct,
-						handleChange
-					)}
-					{applyFilters(
-						'multivendorx_product_seo_section',
-						null,
-						product,
-						setProduct,
-						handleChange
-					)}
-					{modules.includes('min-max') &&
-						product?.type == 'simple' &&
-						applyFilters(
-							'product_min_max',
-							null,
-							product,
-							setProduct,
-							handleChange
-						)}
-
-					{!product.virtual &&
-						applyFilters(
-							'product_shipping',
-							null,
-							product,
-							setProduct,
-							handleChange
-						)}
-
-					{product?.type == 'variable' &&
-						applyFilters(
-							'product_variable',
-							null,
-							product,
-							setProduct
-						)}
+					
 				</Column>
 
 				<Column grid={3}>

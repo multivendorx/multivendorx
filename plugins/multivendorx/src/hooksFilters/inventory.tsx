@@ -139,7 +139,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 };
 
 addFilter(
-	'product_inventory',
+	'multivendorx_product_after_price_section',
 	'multivendorx/inventory',
 	(content, product, setProduct, handleChange) => {
 		return (

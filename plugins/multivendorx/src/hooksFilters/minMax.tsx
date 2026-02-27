@@ -143,15 +143,18 @@ const MinMax = ({ product, setProduct }) => {
 };
 
 addFilter(
-	'product_min_max',
-	'multivendorx/min_max',
-	(content, product, setProduct) => {
-		return (
-			<>
-				{content}
-				<MinMax product={product} setProduct={setProduct} />
-			</>
-		);
-	},
-	10
+    'multivendorx_product_after_price_section',
+    'multivendorx/min_max',
+    (content, product, setProduct, handleChange, modules) => {
+        return (
+            <>
+                {content}
+                {modules?.includes('min-max') &&
+                    product?.type === 'simple' && (
+                        <MinMax product={product} setProduct={setProduct} />
+                    )}
+            </>
+        );
+    },
+    10
 );

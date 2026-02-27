@@ -177,19 +177,21 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 };
 
 addFilter(
-	'product_shipping',
-	'multivendorx/shipping',
-	(content, product, setProduct, handleChange) => {
-		return (
-			<>
-				{content}
-				<ShippingCard
-					product={product}
-					setProduct={setProduct}
-					handleChange={handleChange}
-				/>
-			</>
-		);
-	},
-	10
+    'multivendorx_product_after_price_section',
+    'multivendorx/shipping',
+    (content, product, setProduct, handleChange) => {
+        return (
+            <>
+                {content}
+                {!product.virtual && (
+                    <ShippingCard
+                        product={product}
+                        setProduct={setProduct}
+                        handleChange={handleChange}
+                    />
+                )}
+            </>
+        );
+    },
+    10
 );

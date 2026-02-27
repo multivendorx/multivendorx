@@ -41,7 +41,7 @@ const RelatedList = ({ product, setProduct, handleChange }) => {
 };
 
 addFilter(
-	'product_related_list',
+	'multivendorx_product_after_price_section',
 	'multivendorx/related_list',
 	(content, product, setProduct, handleChange) => {
 		return (
