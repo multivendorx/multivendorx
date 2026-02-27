@@ -12,7 +12,8 @@ import { FIELD_REGISTRY } from './FieldRegistry';
 import FormGroupWrapper from './UI/FormGroupWrapper';
 import { PopupUI } from './Popup';
 import axios from 'axios';
-import { Notice, NoticeType } from './Notice';
+import { Notice } from './Notice';
+import { addNotice } from './NoticeReceiver';
 
 interface InputField {
     key: string;
@@ -113,7 +114,6 @@ const RenderComponent: React.FC<RenderProps> = ({
     const settingChanged = useRef<boolean>(false);
     const counter = useRef<number>(0);
     const counterId = useRef<ReturnType<typeof setInterval> | null>(null);
-    const [notice, setNotice] = useState<{ type: NoticeType; message: string;  } | null>(null);
     const [modelOpen, setModelOpen] = useState<boolean>(false);
     const [modulePopupData, setModulePopupData] = useState<PopupProps>({
         moduleName: '',
@@ -151,9 +151,16 @@ const RenderComponent: React.FC<RenderProps> = ({
                     ).then((response: unknown) => {
                         const apiResponse = response as ApiResponse;
                         if (apiResponse.message) {
-                            setNotice({ type: apiResponse.type, message: apiResponse.message, });
+                            addNotice(
+                                {
+                                    title: 'Great!',
+                                    message: apiResponse.message,
+                                    type: apiResponse.type,
+                                    position: 'float',
+                                },
+                                50000
+                            );
                         }
-                        setTimeout(() => setNotice(null), 300000);
 
                         if (apiResponse.redirect_link) {
                             window.open(apiResponse.redirect_link, '_self');
@@ -663,7 +670,7 @@ const RenderComponent: React.FC<RenderProps> = ({
 
                                     <Notice
                                         type="error"
-                                        displayPosition="inline"
+                                        position="inline"
                                         message={errors[inputField.key] || ''}
                                     />
                             {inputField.desc && (
@@ -724,12 +731,6 @@ const RenderComponent: React.FC<RenderProps> = ({
                 </PopupUI>
 
             )}
-                <Notice
-                    type={notice?.type}
-                    message={notice?.message}
-                    displayPosition ='float'
-                    title='Great!'
-                />
             <FormGroupWrapper>{renderForm()}</FormGroupWrapper>
         </>
     );

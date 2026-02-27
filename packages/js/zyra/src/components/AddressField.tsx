@@ -97,6 +97,7 @@ const AddressFieldUI: React.FC< AddressFieldProps > = ( {
                 <div className="address-field-item">
                     <label className="field-label">{field.label}</label>
                     <SelectInputUI
+                        type="single-select"
                         options={field.options?.map((opt) => ({
                             value: opt,
                             label: opt,

@@ -1,73 +1,107 @@
-import BasicInput from './BasicInput';
-import SelectInput from './SelectInput';
-import PrePostText from './PrePostText';
-import AdminButton from './AdminButton';
-import ExpandablePanelGroup from './ExpandablePanelGroup';
-import ToggleSetting from './ToggleSetting';
-import ClickableList from './ClickableList';
-import RegistrationForm from './FormRenderer';
-import MultiCheckBox from './MultiCheckbox';
-import { FieldComponent } from './types';
-import EmailTemplate from './EmailRenderer';
-import SystemInfo from './SystemInfo';
-import Section from './Section';
-import TextArea from './TextArea';
-import Recaptcha from './Recaptcha';
-import RadioInput from './RadioInput';
 import AddressField from './AddressField';
-import NestedComponent from './NestedComponent';
+import AdminButton from './AdminButton';
+import BasicInput from './BasicInput';
+import CalendarInput from './CalendarInput';
+import ClickableList from './ClickableList';
 import ColorSettingInput from './ColorSettingInput';
-import Log from './Log';
-import EndpointEditor from './EndpointEditor';
-import ShortCodeTable from './ShortCodeTable';
-import FileInput from './FileInput';
 import Content from './Content';
 import Divider from './Divider';
-import MultiCheckboxTable from './MultiCheckboxTable';
-import Tabs from './Tabs';
-import ItemList from './ItemList';
-import NoticeField from './Notice';
-import CalendarInput from './CalendarInput';
+import EmailTemplate from './EmailRenderer';
+import EndpointEditor from './EndpointEditor';
 import EventCalendar from './EventCalendar';
+import ExpandablePanelGroup from './ExpandablePanelGroup';
+import FileInput from './FileInput';
+import RegistrationForm from './FormRenderer';
+import ItemList from './ItemList';
+import Log from './Log';
+import MultiCheckBox from './MultiCheckbox';
+import MultiCheckboxTable from './MultiCheckboxTable';
+import NestedComponent from './NestedComponent';
+import PrePostText from './PrePostText';
+import RadioInput from './RadioInput';
+import Recaptcha from './Recaptcha';
+import Section from './Section';
+import SelectInput from './SelectInput';
+import ShortCodeTable from './ShortCodeTable';
+import SystemInfo from './SystemInfo';
+import Tabs from './Tabs';
+import TextArea from './TextArea';
+import ToggleSetting from './ToggleSetting';
+import { FieldComponent } from './types';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
+  // BasicInput
   text: BasicInput,
   number: BasicInput,
   email: BasicInput,
   time: BasicInput,
   date: BasicInput,
+
+  // SelectInput
   select: SelectInput,
-  radio: RadioInput,
-  textarea: TextArea,
-  preposttext: PrePostText,
-  button: AdminButton,
-  nested: NestedComponent,
-  notice: NoticeField,
-  section: Section,
-  checkbox: MultiCheckBox,
-  log: Log,
-  tab: Tabs,
-  'calendar-input': CalendarInput,
-  'event-calendar': EventCalendar,
+  dropdown: SelectInput,
   'multi-select': SelectInput,
-  'expandable-panel': ExpandablePanelGroup,
-  'setting-toggle': ToggleSetting,
-  'clickable-list': ClickableList,
-  'form-builder': RegistrationForm,
-  'email-template': EmailTemplate,
-  'checkboxes': MultiCheckBox,
-  'system-info': SystemInfo,
-  'dropdown': SelectInput,
-  'recaptcha': Recaptcha,
-  'attachment': FileInput,
-  'image': FileInput,
-  'address': AddressField,
-  'divider': Divider,
-  'heading': Content,
-  'richtext': Content,
-  'color-setting' : ColorSettingInput,
-  'endpoint-editor' : EndpointEditor,
-  'shortcode-table': ShortCodeTable,
+  creatable: SelectInput,
+  'creatable-multi': SelectInput,
+
+  // Content
+  heading: Content,
+  richtext: Content,
+
+  // MultiCheckBox
+  checkbox: MultiCheckBox,
+  checkboxes: MultiCheckBox,
+
+  // FileInput
+  attachment: FileInput,
+  image: FileInput,
+
+  textarea: TextArea,
+
+  radio: RadioInput,
+
+  preposttext: PrePostText,
+
+  button: AdminButton,
+
+  nested: NestedComponent,
+
+
+  section: Section,
+
   'multi-checkbox-table': MultiCheckboxTable,
-  'itemlist': ItemList,
+
+  'expandable-panel': ExpandablePanelGroup,
+
+  'setting-toggle': ToggleSetting,
+
+  'clickable-list': ClickableList,
+
+  'form-builder': RegistrationForm,
+
+  'email-template': EmailTemplate,
+
+  'system-info': SystemInfo,
+
+  tab: Tabs,
+
+  log: Log,
+
+  'calendar-input': CalendarInput,
+
+  'event-calendar': EventCalendar,
+
+  recaptcha: Recaptcha,
+
+  address: AddressField,
+
+  divider: Divider,
+
+  'color-setting': ColorSettingInput,
+
+  'endpoint-editor': EndpointEditor,
+
+  'shortcode-table': ShortCodeTable,
+
+  itemlist: ItemList,
 };
