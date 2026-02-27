@@ -87,7 +87,7 @@ const AddProduct = () => {
 		{ label: 'Simple Product', value: 'simple' },
 		{ label: 'Variable Product', value: 'variable' },
 	];
-	
+
 	const handleChange = (field, value) => {
 		setProduct((prev) => ({
 			...prev,
@@ -110,12 +110,12 @@ const AddProduct = () => {
 			appLocalizer.settings_databases_value['product-preferencess']
 				?.category_selection_method == 'yes'
 				? [
-						{
-							id: Number(
-								selectedChild || selectedSub || selectedCat
-							),
-						},
-					]
+					{
+						id: Number(
+							selectedChild || selectedSub || selectedCat
+						),
+					},
+				]
 				: selectedCats.map((id) => ({ id }));
 
 		const payload = {
@@ -547,13 +547,19 @@ const AddProduct = () => {
 					)}
 
 					{applyFilters(
-							'product_policies',
-							null,
-							product,
-							setProduct,
-							handleChange
-						)}
-					
+						'product_policies',
+						null,
+						product,
+						setProduct,
+						handleChange
+					)}
+					{applyFilters(
+						'multivendorx_product_seo_section',
+						null,
+						product,
+						setProduct,
+						handleChange
+					)}
 					{modules.includes('min-max') &&
 						product?.type == 'simple' &&
 						applyFilters(
@@ -586,19 +592,19 @@ const AddProduct = () => {
 					{applyFilters('product_ai_assist', null, product, setProduct)}
 
 					{applyFilters(
-							'product_publishing_catalog_section',
-							null,
-							product,
-							setProduct,
-							starFill,
-							setstarFill,
-							handleChange
-						)}
+						'product_publishing_catalog_section',
+						null,
+						product,
+						setProduct,
+						starFill,
+						setstarFill,
+						handleChange
+					)}
 
 					{applyFilters(
-							'product_category_section',
-							null, product, setProduct, selectedCats, setSelectedCats, selectedChild, setSelectedChild, selectedSub, setSelectedSub, selectedCat, setSelectedCat
-						)}
+						'product_category_section',
+						null, product, setProduct, selectedCats, setSelectedCats, selectedChild, setSelectedChild, selectedSub, setSelectedSub, selectedCat, setSelectedCat
+					)}
 
 					{modules.includes('wpml') && (
 						<Card
