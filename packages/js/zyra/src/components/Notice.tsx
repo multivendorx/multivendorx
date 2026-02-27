@@ -5,6 +5,7 @@ import { addNotice, NoticePosition } from './NoticeReceiver';
 import "../styles/web/Notice.scss";
 
 export interface NoticeProps {
+    noticeKey?: string; // deduplication key — notices with the same key won't stack
     title?: string;
     message?: string | string[];
     type?: 'info' | 'success' | 'warning' | 'error' | 'banner';
@@ -15,22 +16,22 @@ export interface NoticeProps {
 }
 
 export const Notice: React.FC<NoticeProps> = ({
+    noticeKey,
     title,
     message,
     type = 'success',
-    position = 'float',
+    position = 'notice',
     actionLabel,
     onAction,
     validity = 'lifetime',
 }) => {
     const [isVisible, setIsVisible] = useState(true);
+
     useEffect(() => {
         if (position === 'inline') return;
 
-        // addNotice is idempotent — it fingerprints content and ignores duplicates.
-        // No ref guard needed here; safe to call on every mount/remount/tab switch.
         addNotice(
-            { title, message, type, position, actionLabel, onAction },
+            { key: noticeKey, title, message, type, position, actionLabel, onAction },
             validity
         );
         setIsVisible(false);

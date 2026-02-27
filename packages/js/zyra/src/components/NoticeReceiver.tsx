@@ -6,6 +6,7 @@ export type NoticePosition = 'float' | 'notice' | 'banner';
 
 export interface NoticeItem {
     id: string;
+    key?: string;       // caller-supplied deduplication key — if set, only one notice with this key can exist at a time
     title?: string;
     message?: string | string[];
     type?: 'info' | 'success' | 'warning' | 'error' | 'banner';
@@ -13,7 +14,6 @@ export interface NoticeItem {
     actionLabel?: string;
     onAction?: () => void;
     expiresAt?: number; // undefined = session-only (never persisted)
-    _fp?: string;       // internal content fingerprint for deduplication
 }
 
 const STORAGE_KEY = 'app_notices_v1';
@@ -63,45 +63,24 @@ export const subscribe = (callback: (items: NoticeItem[]) => void) => {
     };
 };
 
-// Deterministic fingerprint based on content — used to deduplicate notices.
-// Two notices with the same title/message/type/position are considered identical.
-const fingerprint = (notice: Omit<NoticeItem, 'id' | 'expiresAt'>): string => {
-    return [
-        notice.position,
-        notice.type ?? '',
-        notice.title ?? '',
-        Array.isArray(notice.message) ? notice.message.join('|') : (notice.message ?? ''),
-        notice.actionLabel ?? '',
-    ].join('::');
-};
-
 export const addNotice = (
     notice: Omit<NoticeItem, 'id' | 'expiresAt'>,
     validity: number | 'lifetime' = 'lifetime'
 ) => {
-    const fp = fingerprint(notice);
-
-    // Deduplicate: if an identical notice is already in the store, do nothing.
-    // This makes addNotice idempotent — safe to call on every component mount/remount.
-    const isDuplicate = notices.some(n => n._fp === fp);
-    if (isDuplicate) return;
+    // If a key is provided, deduplicate — one notice per key at a time
+    if (notice.key && notices.some(n => n.key === notice.key)) return;
 
     const id =
         typeof crypto !== 'undefined' && crypto.randomUUID
             ? crypto.randomUUID()
             : Date.now().toString();
 
-    // 'lifetime' → no expiresAt → session-only, not persisted
     const expiresAt = validity === 'lifetime' ? undefined : Date.now() + validity;
 
-    notices.push({ ...notice, id, expiresAt, _fp: fp });
+    notices.push({ ...notice, id, expiresAt });
     notify();
 };
 
-export const removeNotice = (id: string) => {
-    notices = notices.filter(n => n.id !== id);
-    notify();
-};
 
 export const flushExpired = () => {
     const now = Date.now();
