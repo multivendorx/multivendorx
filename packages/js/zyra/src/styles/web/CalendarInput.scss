@@ -4,7 +4,7 @@
     width: 100%;
     
     // without input calendar start
-    .calendar-wrapper,
+    .calendar-wrapper{
     .rmdp-top-class{
         box-shadow: none;
         border: none;
@@ -97,9 +97,8 @@
         .rmdp-panel.right {
             display: none !important;
         }
+        }
     } // without input calendar end.
-
-
 
     // today yesterday section start
    .rmdp-wrapper {
