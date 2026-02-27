@@ -99,7 +99,7 @@ class Utill {
     const MULTIVENDORX_OTHER_SETTINGS = array(
         'installed'              => 'multivendorx_installed',
         'plugin_activated'       => 'multivendorx_plugin_activated',
-        'plugin_db_version'      => 'dc_product_vendor_plugin_db_version',
+        'plugin_db_version'      => 'multivendorx_version',
         'plugin_page_install'    => 'dc_product_vendor_plugin_page_install',
         'log_file'               => 'multivendorx_log_file',
         'tour_active'            => 'multivendorx_tour_active',
