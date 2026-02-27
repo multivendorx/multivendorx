@@ -34,26 +34,28 @@ class Store_Logo extends Widget_Image {
 		parent::register_controls();
 
 		$this->update_control(
-			'section_image',
-			[
-				'label' => __( 'Store Logo Settings', 'multivendorx' ),
-			]
-		);
+            'section_image',
+            [
+                'label' => __( 'Store Logo', 'multivendorx' ),
+            ]
+        );
 
-		// Automatically link the image control to the store logo dynamic tag
-		$this->update_control(
-			'image',
-			[
-				'dynamic' => [
-					'active'  => true,
-					'default' => '{{multivendorx-store-logo}}'
-				],
-			]
-		);
-
-		// Clean up unnecessary controls for a Store Logo
-		$this->remove_control( 'caption_source' );
-		$this->remove_control( 'caption' );
+        $this->update_control(
+            'image',
+            [
+                'dynamic' => [
+                    'default' => \Elementor\Plugin::instance()
+											->dynamic_tags
+											->tag_data_to_tag_text( null, 'multivendorx-store-logo' ),
+                ],
+            ],
+            [
+                'recursive' => true,
+            ]
+        );
+        
+        $this->remove_control( 'caption_source' );
+        $this->remove_control( 'caption' );
 	}
 
 	protected function render() {

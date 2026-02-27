@@ -64,22 +64,32 @@ class StoreBanner extends Tag {
      * @return void
      */
     protected function get_value() {
-        $store = $this->get_store_data();
-        $banner = ! empty( $store['storeBanner'] ) ? $store['storeBanner'] : '';
-        
-        if ( is_numeric( $banner ) ) {
-			$banner = wp_get_attachment_url( $banner );
-		}
-        
-        if ( empty( $banner ) ) {
-            $settings = $this->get_settings();
 
-            if ( ! empty( $settings['fallback']['id'] ) ) {
-                $banner = $settings['fallback'];
-            }
+        $store  = $this->get_store_data();
+        $banner = ! empty( $store['storeBanner'] ) ? $store['storeBanner'] : '';
+
+        if ( is_numeric( $banner ) ) {
+            return [
+                'id'  => (int) $banner,
+                'url' => wp_get_attachment_url( $banner ),
+            ];
         }
 
-        return $banner;
+        if ( ! empty( $banner ) ) {
+            return [
+                'id'  => 0,
+                'url' => $banner,
+            ];
+        }
+
+        // Elementor fallback image
+        $settings = $this->get_settings();
+
+        if ( ! empty( $settings['fallback'] ) ) {
+            return $settings['fallback'];
+        }
+
+        return [];
     }
 
     /**

@@ -92,7 +92,7 @@ class StoreLogo extends Tag {
                 'type' => Controls_Manager::MEDIA,
                 'default' => [
                     'id'  => 0,
-                    'url' => '',
+                    'url' => \Elementor\Utils::get_placeholder_image_src(),
                 ]
             ]
         );
