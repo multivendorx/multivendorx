@@ -117,10 +117,16 @@ class ImportDummyData extends \WP_REST_Controller {
 
                 if ( is_wp_error( $user_id ) ) {
                     continue;
-                }
+                } 
             }
 
             $store_owners[] = (int) $user_id;
+
+            // Store details with credentials
+            $store_owner_details[] = array(
+            'username'  => $username,
+            'password'  => (string)$store->password, 
+        );
 
             // Image handling
             foreach ( $store->images->image as $image ) {
@@ -145,7 +151,10 @@ class ImportDummyData extends \WP_REST_Controller {
 
         return array(
             'success' => true,
-            'data'    => $store_owners,
+            'data'    => array(
+            'details'      => $store_owner_details,
+            'count'        => count($store_owners),
+        ),
             'message' => __( 'Store owners imported successfully.', 'multivendorx' ),
         );
     }
@@ -390,7 +399,6 @@ class ImportDummyData extends \WP_REST_Controller {
                     }
                 }
 
-                do_action( 'multivendorx_after_product_import', $product_id, $store_id );
 
                 $created_products[] = $product_id;
             }

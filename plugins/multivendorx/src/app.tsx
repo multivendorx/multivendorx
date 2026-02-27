@@ -312,7 +312,6 @@ const App = () => {
 						buttonKey="import_dummy_data"
 						buttonText={__('Import Dummy Data', 'multivendorx')}
 						apilink="import-dummy-data"
-						action="action"
 						interval={1000}
 						appLocalizer={appLocalizer}
 						successMessage={__(
@@ -424,6 +423,7 @@ const App = () => {
 						onError={(error) => {
 							console.error('Import failed', error);
 						}}
+						
 					/>
 				</FormGroupWrapper>
 			</PopupUI>

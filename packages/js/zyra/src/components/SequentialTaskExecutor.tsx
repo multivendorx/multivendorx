@@ -56,6 +56,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         failureMessage?: string;
     }[]>([]);
     const [processStatus, setProcessStatus] = useState('');
+    const [storeCredentials, setStoreCredentials] = useState<any[]>([]);
 
     // Refs for tracking state (exactly like original)
     const processStarted = useRef(false);
@@ -86,6 +87,15 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         // Store response data if cacheKey exists
         if (cacheKey && response.data) {
             additionalData.current[cacheKey] = response.data;
+            
+            // If this is the store owners task, extract and store credentials
+            if (cacheKey === 'store_owners' && response.data.details) {
+                const credentials = response.data.details.map((owner: any) => ({
+                    title: owner.username,
+                    value: owner.password,
+                }));
+                setStoreCredentials(credentials);
+            }
         }
 
         // Determine message and trigger callbacks
@@ -132,7 +142,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
     try {
         // Define payload HERE before using it
         const payload: Record<string, any> = {
-            [action]: currentTask.action
+            action: currentTask.action
         };
 
         // Add cached data
@@ -189,6 +199,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         setLoading(true);
         setTaskSequence([]);
         setProcessStatus('');
+        setStoreCredentials([]);
         additionalData.current = {};
         taskIndex.current = 0;
         executeSequentialTasks();
@@ -205,7 +216,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
             id: `task-${index}`,
             title: task.message,
             desc: task.status,
-            icon: task.status,
+            icon: task.status === 'success' ? 'check' : task.status === 'failed' ? 'cross' : 'spinner',
             className: `task-status-${task.status}`,
         }));
     };
@@ -237,6 +248,19 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
                     items={getItemListItems()}
                     className="task-list"
                 />
+            )}
+
+            {/* Store Owners Credentials Display */}
+            {storeCredentials.length > 0 && processStatus === 'completed' && (
+                <div className="store-credentials-wrapper">
+                    <h3>Store Owners Credentials</h3>
+                    <ItemListUI
+                        items={storeCredentials}
+                        className="store-credentials-list"
+                        background={true}
+                        border={true}
+                    />
+                </div>
             )}
 
             {/* Process Completion Status */}
