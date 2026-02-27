@@ -133,9 +133,8 @@ if ( is_string( $banner_slider ) ) {
             <?php endif; ?>
 
             <?php do_action( 'mvx_vendor_store_header_social_link', $store_id ); ?>
-
         </div>
-        <div class='multivendorx-butn-area'>
+        <div class='multivendorx-btn-area'>
             <?php do_action( 'mvx_additional_button_at_banner' ); ?>
         </div>
     </div>
@@ -158,7 +157,6 @@ if ( is_string( $banner_slider ) ) {
 
         <div class="details">
             <div class="container">
-
                 <div class="contact-details">
                     <?php if ( in_array( 'show_store_name', $branding_settings, true ) ) : ?>
                         <div class="heading"><?php echo esc_html( $store_name ); ?></div>
@@ -213,6 +211,5 @@ if ( is_string( $banner_slider ) ) {
                 </div>
             </div>
         </div>
-
     </div>
 </div>

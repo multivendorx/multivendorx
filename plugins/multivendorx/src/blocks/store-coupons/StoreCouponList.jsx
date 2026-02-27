@@ -52,18 +52,35 @@ const StoreCouponList = ({
 			{coupons.length > 0 ? (
 				<>
 					{coupons.map((coupon) => (
-						<div key={coupon.id} className="coupon-card">
-							<h4>{coupon.code}</h4>
+						<div className="coupon-card">
+							{/* <h4>{coupon.code}</h4>
 
 							<p>
 								<strong>
 									{__('Usage Count', 'multivendorx')}:
 								</strong>{' '}
 								{coupon.usage_count ?? 0}
-							</p>
+							</p> */}
+							<p>20% off on-all orders</p>
+							<h4>
+								SAVE20
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 24 24"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+									style={{ opacity: 0.7 }}
+								>
+									<path
+										d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z"
+										fill="currentColor"
+									/>
+								</svg></h4>
+							<p>Expires Mar 1, 2026</p>
 						</div>
 					))}
-
+					
 					<div className="pagination">
 						<button
 							disabled={page === 1}
@@ -89,7 +106,7 @@ const StoreCouponList = ({
 				<p>{__('No coupons found', 'multivendorx')}</p>
 			)}
 		</div>
-	);	
+	);
 };
 
 export default StoreCouponList;
