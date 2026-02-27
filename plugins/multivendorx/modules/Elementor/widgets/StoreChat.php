@@ -26,38 +26,54 @@ class Store_Chat_Button extends Widget_Button {
 		return [ 'multivendorx' ];
 	}
 
-	protected function register_controls() {
-		parent::register_controls();
+	protected function _register_controls() {
+    	  
+        parent::_register_controls();
+        
+        $this->update_control(
+            'icon_align',
+            [
+                'default' => 'left',
+            ]
+        );
 
+        $this->update_control(
+            'button_text_color',
+            [ 
+                'default' => '#ffffff',
+            ]
+        );
 
-		$this->update_control(
-			'text',
-			[
-				'default' => __( 'Chat with Vendor', 'multivendorx' ),
-				'dynamic' => [
-					'active' => true,
-				],
-			]
-		);
+        $this->update_control(
+            'background_color',
+            [
+                'default' => '#17a2b8',
+            ]
+        );
 
-		$this->update_control(
-			'button_background_color',
-			[
-				'default' => '#17a2b8',
-			]
-		);
+        $this->update_control(
+            'border_color',
+            [
+                'default' => '#17a2b8',
+            ]
+        );
 
-		$this->update_control(
-			'link',
-			[
-				'dynamic' => [
-					'active' => false,
-					'default' => '{{multivendorx-store-chat-tag}}'
-				],
-				'placeholder' => __( 'Chat handled by logic', 'multivendorx' ),
-			]
-		);
-	}
+        $this->update_control(
+            'text',
+            [
+                'dynamic'   => [
+                    'default' => \Elementor\Plugin::instance()
+											->dynamic_tags
+											->tag_data_to_tag_text( null, 'multivendorx-store-chat-tag' ),
+                    'active'  => true,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} > .elementor-widget-container > .elementor-button-wrapper > .mvx-store-chat-btn' => 'width: auto; margin: 0;',
+                ]
+            ]
+        );
+        
+    }
 
 	protected function render() {
 		$store = $this->get_store_data();
@@ -65,7 +81,8 @@ class Store_Chat_Button extends Widget_Button {
 			return;
 		}
 
-		do_action('multivendorx_render_livechat_button', $store['storeId'], $store['storeName']);
+		// do_action('multivendorx_render_livechat_button', $store['storeId'], $store['storeName']);
+		parent::render();
 	}
 
 }

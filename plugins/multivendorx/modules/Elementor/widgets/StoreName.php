@@ -29,12 +29,15 @@ class Store_Name extends Widget_Heading {
 
         parent::register_controls();
 
+        $dynamic_default = \Elementor\Plugin::instance()
+            ->dynamic_tags
+            ->tag_data_to_tag_text( null, 'multivendorx-store-name' );
 
         $this->update_control(
             'title',
             [
                 'dynamic' => [
-                    'default' => '{{multivendorx-store-name}}'
+                    'default' => $dynamic_default,
                 ],
             ],
             [
@@ -48,7 +51,6 @@ class Store_Name extends Widget_Heading {
                 'default' => 'h1',
             ]
         );
-
 
         $this->remove_control( 'link' );
     }

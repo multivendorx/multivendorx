@@ -32,55 +32,89 @@ class Store_Tabs extends Widget_Base {
 	}
 
 	protected function register_controls() {
+
 		$this->start_controls_section(
-			'section_tabs_content',
-			array(
-				'label' => __( 'Tabs Setup', 'multivendorx' ),
-			)
+			'section_store_tabs',
+			[
+				'label' => __( 'Store Tabs', 'multivendorx' ),
+			]
 		);
 
+		// Layout Control
 		$this->add_control(
-			'tabs_view',
-			array(
-				'label'   => __( 'Layout', 'multivendorx' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'inline',
-				'options' => array(
-					'block'  => __( 'Vertical', 'multivendorx' ),
-					'inline' => __( 'Horizontal', 'multivendorx' ),
-				),
-			)
+			'layout',
+			[
+				'label' => __( 'Layout', 'multivendorx' ),
+				'type' => Controls_Manager::CHOOSE,
+				'options' => [
+					'horizontal' => [
+						'title' => __( 'Horizontal', 'multivendorx' ),
+						'icon'  => 'eicon-h-align-left',
+					],
+					'vertical' => [
+						'title' => __( 'Vertical', 'multivendorx' ),
+						'icon'  => 'eicon-v-align-top',
+					],
+				],
+				'default' => 'horizontal',
+				'toggle'  => false,
+			]
 		);
 
+		// Default Dynamic Tag Auto-Selected
 		$this->add_control(
-			'dummy_info',
-			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => __( 'Note: Tabs are currently showing dummy links for design preview.', 'multivendorx' ),
-				'content_classes' => 'elementor-descriptor',
-			)
+			'store_tabs_dynamic',
+			[
+				'label' => __( 'Store Tabs', 'multivendorx' ),
+				'type'  => Controls_Manager::TEXT,
+				'dynamic' => [
+					'active'  => true,
+					'default' => \Elementor\Plugin::instance()
+						->dynamic_tags
+						->tag_data_to_tag_text( null, 'multivendorx-store-tabs' ),
+				],
+			]
 		);
 
 		$this->end_controls_section();
 	}
 
 	protected function render() {
-        $store = $this->get_store_data();
-        if ( ! $store ) {
-            return;
-        }
 
-        $settings = $this->get_settings_for_display();
+		$settings = $this->get_settings_for_display();
 
-        // 5. Logic: Use the dynamic store name
-        $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
+		$layout = ! empty( $settings['layout'] )
+			? $settings['layout']
+			: 'horizontal';
 
-        $tag = $settings['header_size'];
+		$tabs = ! empty( $settings['store_tabs_dynamic'] )
+			? json_decode( $settings['store_tabs_dynamic'], true )
+			: [];
 
-        printf(
-            '<%1$s class="multivendorx-store-name elementor-heading-title">%2$s</%1$s>',
-            esc_attr( $tag ),
-            esc_html( $name )
-        );
+		if ( empty( $tabs ) ) {
+			return;
+		}
+
+		$layout_class = $layout === 'vertical'
+			? 'multivendorx-tabs-vertical'
+			: 'multivendorx-tabs-horizontal';
+
+		echo '<div class="multivendorx-store-tabs ' . esc_attr( $layout_class ) . '">';
+		echo '<ul class="multivendorx-store-tabs-list">';
+
+		foreach ( $tabs as $tab ) {
+
+			$title = ! empty( $tab['text'] ) ? $tab['text'] : '';
+			$url   = ! empty( $tab['link']['url'] ) ? $tab['link']['url'] : '#';
+
+			echo '<li class="multivendorx-store-tab-item">';
+			echo '<a href="' . esc_url( $url ) . '" class="multivendorx-store-tab-link">';
+			echo esc_html( $title );
+			echo '</a>';
+			echo '</li>';
+		}
+
+		echo '</ul>';
+		echo '</div>';
 	}
 }
