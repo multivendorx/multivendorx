@@ -11,7 +11,6 @@ import {
 	PopupUI,
 	TourSetup,
 	Notice,
-	NoticeReceiver,
 } from 'zyra';
 
 import Settings from './components/Settings/Settings';
@@ -238,11 +237,7 @@ const App = () => {
 	};
 
 	return (
-		<>
-			<NoticeReceiver position="float" />
-            <NoticeReceiver position="notice" />
-            <NoticeReceiver position="banner" />
-			
+		<>			
 			<AdminHeader
 				brandImg={Brand}
 				results={results}
@@ -432,7 +427,13 @@ const App = () => {
 				appLocalizer={appLocalizer}
 				steps={getTourSteps(appLocalizer)}
 			/>
-
+			<Notice
+				type="banner"
+				position="banner"
+				message={bannerItem}
+				actionLabel="Upgrade Now"
+				onAction={() => handleDismissBanner()}
+			/>
 			<Route />
 		</>
 	);

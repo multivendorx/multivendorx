@@ -39,7 +39,7 @@ if (adminWrapper) {
 // }
 
 
-const vendorWrapper = document.getElementById('multivendorx-vendor-dashboard');
+const vendorWrapper = document.getElementById('multivendorx-store-dashboard');
 
 if (vendorWrapper) {
 		document.documentElement.style.setProperty(
@@ -91,7 +91,7 @@ if (vendorWrapper) {
 	}
 }
 
-// const vendorWrapper = document.getElementById('multivendorx-vendor-dashboard');
+// const vendorWrapper = document.getElementById('multivendorx-store-dashboard');
 
 // if (vendorWrapper) {
 // 	document.documentElement.style.setProperty(

@@ -6,6 +6,7 @@ import { PopupUI } from './Popup';
 import HeaderSearch from './HeaderSearch';
 import ItemList, { ItemListUI } from './ItemList';
 import Tabs, { TabsUI } from './Tabs';
+import { NoticeReceiver } from './NoticeReceiver';
 
 type SearchItem = {
     icon?: string;
@@ -111,6 +112,9 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
 
     return (
         <>
+            <div className="NoticeReceiver-banner-wrapper">
+                <NoticeReceiver position="banner" />
+            </div>
             <div className="admin-header" ref={wrapperRef}>
                 <div className="left-section">
                     <img className="brand-logo" src={brandImg} alt="Logo" />
@@ -162,13 +166,19 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
             {notices.length > 0 &&
                 notices.map((html, i) => (
                     <>
-                    <div
-                        key={i}
-                        className="wp-admin-notice"
-                        dangerouslySetInnerHTML={{ __html: html }}
-                    />
+                        <div
+                            key={i}
+                            className="wp-admin-notice"
+                            dangerouslySetInnerHTML={{ __html: html }}
+                        />
+                        <div className="NoticeReceiver-notice-wrapper">
+                        <NoticeReceiver position="notice" />
+                        </div>
                     </>
                 ))}
+            <div className="NoticeReceiver-float-wrapper">
+                <NoticeReceiver position="float" />
+            </div>
         </>
     );
 };

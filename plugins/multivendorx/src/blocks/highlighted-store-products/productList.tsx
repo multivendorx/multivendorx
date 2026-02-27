@@ -83,53 +83,60 @@ const ProductList: React.FC<ProductListProps> = ({
 			{loading ? (
 				<p>{__('Loading products...', 'multivendorx')}</p>
 			) : (
-				<div className="top-products-inner">
+				<div className="woocommerce">
 					<h3>{__('Product By Rating', 'multivendorx')}</h3>
-					{products.length > 0 ? (
-						products.map((product) => (
-							<div className="product-item" key={product.id}>
-								<a href={product.permalink} className="product-card">
-									<div className="product-image">
-										<div className="image-placeholder">
-											<img
-												src={
-													product.images?.[0]?.src ||
-													placeholderImage // Changed this line (line 15)
-												}
-												alt={product.name}
-											/>
-										</div>
-									</div>
 
-									<div className="product-content">
-										<h3 className="product-title">
-											{product.name}
-										</h3>
+					<ul className="product_list_widget">
+						{products.length > 0 ? (
+							products.map((product) => (
+								<li key={product.id}>
+									<a href={product.permalink}>
+										<img
+											className="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
+											src={
+												product.images?.[0]?.src ||
+												placeholderImage // Changed this line (line 15)
+											}
+											alt={product.name}
+										/>
 
-										<div className="product-price">
+										<span className="product-title">{product.name}</span>
+									</a>
+
+									<span className="woocommerce-Price-amount amount">
+										<bdi>
 											{product.salePrice ? (
 												<>
-													<del className="regular-price">
-														{product.price}
+													<del aria-hidden="true">
+														<span class="woocommerce-Price-amount amount">
+															<bdi>
+																{product.price}
+															</bdi>
+														</span>
 													</del>
-
-													<div className="sale-price">
-														{product.salePrice}
-													</div>
+													<ins aria-hidden="true">
+														<span class="woocommerce-Price-amount amount">
+															<bdi>
+																{product.salePrice}
+															</bdi>
+														</span>
+													</ins>
 												</>
 											) : (
-												<span className="regular-price">
-													{product.price}
+												<span class="woocommerce-Price-amount amount">
+													<bdi>
+														{product.price}
+													</bdi>
 												</span>
 											)}
-										</div>
-									</div>
-								</a>
-							</div>
-						))
-					) : (
-						<p>{__('No products found.', 'multivendorx')}</p>
-					)}
+										</bdi>
+									</span>
+								</li>
+							))
+						) : (
+							<p>{__('No products found.', 'multivendorx')}</p>
+						)}
+					</ul>
 				</div>
 			)}
 		</>
