@@ -5,6 +5,8 @@ import { BasicInputUI } from './BasicInput';
 import { TextAreaUI } from './TextArea';
 import { AdminButtonUI } from './AdminButton';
 import { PopupUI } from './Popup';
+import FormGroup from './UI/FormGroup';
+import FormGroupWrapper from './UI/FormGroupWrapper';
 
 export interface CalendarEvent {
   id: string;
@@ -25,11 +27,11 @@ interface EventCalendarProps {
 
 // Helpers
 const generateId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-const toDateKey = (date: DateObject) => 
+const toDateKey = (date: DateObject) =>
   `${date.year}-${String(date.month.number).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;
 
 export const EventCalendarUI: React.FC<EventCalendarProps> = ({
-  wrapperClass = "event-calendar-wrapper",
+  wrapperClass = "",
   format = "MMMM DD YYYY",
   value = {},
   onChange,
@@ -47,25 +49,25 @@ export const EventCalendarUI: React.FC<EventCalendarProps> = ({
 
   const handleSave = () => {
     if (!selectedDate || !newEvent.title.trim()) return;
-    
+
     const key = toDateKey(selectedDate);
-    const event = { 
-      id: generateId(), 
-      title: newEvent.title, 
-      description: newEvent.description || undefined 
+    const event = {
+      id: generateId(),
+      title: newEvent.title,
+      description: newEvent.description || undefined
     };
-    
+
     updateEvents({
       ...events,
       [key]: [...(events[key] || []), event]
     });
-    
+
     setNewEvent({ title: '', description: '' });
   };
 
   const handleEdit = (event: CalendarEvent) => {
     if (!selectedDate) return;
-    
+
     const key = toDateKey(selectedDate);
     updateEvents({
       ...events,
@@ -76,14 +78,14 @@ export const EventCalendarUI: React.FC<EventCalendarProps> = ({
 
   const handleDelete = (id: string) => {
     if (!selectedDate) return;
-    
+
     const key = toDateKey(selectedDate);
     const filtered = events[key].filter(e => e.id !== id);
     const updated = { ...events };
-    
+
     if (filtered.length) updated[key] = filtered;
     else delete updated[key];
-    
+
     updateEvents(updated);
   };
 
@@ -91,7 +93,6 @@ export const EventCalendarUI: React.FC<EventCalendarProps> = ({
 
   return (
     <div className={`settings-event-calender ${wrapperClass}`}>
-      
       <Calendar
         format={format}
         numberOfMonths={NumberOfMonth}
@@ -101,12 +102,14 @@ export const EventCalendarUI: React.FC<EventCalendarProps> = ({
           return {
             onClick: () => setSelectedDate(date),
             children: (
-              <div className="calendar-day">
-                <span className='date'>{date.day}</span>
-                {dayEvents.map(ev => (
-                  <div key={ev.id} className='event-name'>10:00am {ev.title}</div>
+              <>
+                {date.day}
+                {dayEvents.map(event => (
+                  <div key={event.id}>
+                    {event.title}
+                  </div>
                 ))}
-              </div>
+              </>
             ),
           };
         }}
@@ -116,10 +119,6 @@ export const EventCalendarUI: React.FC<EventCalendarProps> = ({
         position="lightbox"
         open={!!selectedDate}
         onClose={() => setSelectedDate(null)}
-        header={selectedDate ? {
-          title: 'Business Hours',
-          description: selectedDate.toString(),
-        } : undefined}
         width={30}
       >
         {selectedDate && (
@@ -129,14 +128,14 @@ export const EventCalendarUI: React.FC<EventCalendarProps> = ({
               <div key={event.id} className="event-item">
                 {editingEvent?.id === event.id ? (
                   <>
-                    <BasicInputUI 
-                      value={editingEvent.title} 
-                      onChange={val => setEditingEvent({...editingEvent, title: val})}
+                    <BasicInputUI
+                      value={editingEvent.title}
+                      onChange={val => setEditingEvent({ ...editingEvent, title: val })}
                       size="fit-content"
                     />
-                    <TextAreaUI 
-                      value={editingEvent.description || ''} 
-                      onChange={val => setEditingEvent({...editingEvent, description: val})}
+                    <TextAreaUI
+                      value={editingEvent.description || ''}
+                      onChange={val => setEditingEvent({ ...editingEvent, description: val })}
                     />
                     <AdminButtonUI
                       buttons={[
@@ -148,10 +147,9 @@ export const EventCalendarUI: React.FC<EventCalendarProps> = ({
                 ) : (
                   <>
                     <div>
-                      <strong>{event.title}</strong>
-                      {event.description && <p>{event.description}</p>}
-                    </div>
-                    <div>
+                      <div>{event.title}</div>
+                      {event.description && <div>{event.description}</div>}
+
                       <AdminButtonUI
                         buttons={[
                           { icon: 'edit', onClick: () => setEditingEvent(event), color: 'blue' },
@@ -166,19 +164,25 @@ export const EventCalendarUI: React.FC<EventCalendarProps> = ({
 
             {/* Add New Event */}
             <>
-              <BasicInputUI 
-                placeholder="Event title" 
-                value={newEvent.title}
-                onChange={val => setNewEvent({...newEvent, title: val})}
-              />
-              <TextAreaUI 
-                placeholder="Description (optional)" 
-                value={newEvent.description}
-                onChange={val => setNewEvent({...newEvent, description: val})}
-              />
-               <AdminButtonUI
-                buttons={{ text: 'Add Event', onClick: handleSave, icon: 'plus', color: 'purple-bg' }}
-              />
+              <FormGroupWrapper>
+                <FormGroup>
+                  <BasicInputUI
+                    placeholder="Event title"
+                    value={newEvent.title}
+                    onChange={val => setNewEvent({ ...newEvent, title: val })}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <TextAreaUI
+                    placeholder="Description (optional)"
+                    value={newEvent.description}
+                    onChange={val => setNewEvent({ ...newEvent, description: val })}
+                  />
+                </FormGroup>
+                <AdminButtonUI
+                  buttons={{ text: 'Add Event', onClick: handleSave, icon: 'plus', color: 'purple-bg' }}
+                />
+              </FormGroupWrapper>
             </>
           </div>
         )}

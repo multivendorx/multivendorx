@@ -726,7 +726,7 @@ const AllCoupon: React.FC = () => {
 			type: 'date',
 		},
 	];
-	// const [events, setEvents] = useState<EventsData>({});
+	const [events, setEvents] = useState<EventsData>({});
 	return (
 		<>
 			<NavigatorHeader
@@ -749,10 +749,10 @@ const AllCoupon: React.FC = () => {
 			/>
 
 
-			{/* <EventCalendarUI
+			<EventCalendarUI
 				value={events}
 				onChange={setEvents}
-			/> */}
+			/>
 
 			{AddCoupon && (
 				<PopupUI

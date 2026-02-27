@@ -151,50 +151,12 @@
     }
 }
 
-
-.calender-wrapper .rmdp-wrapper {
-    .range-picker-wrapper {
-        width: 10rem;
-        padding-top: 0.625rem;
-
-        div {
-            padding: 0.625rem;
-            font-size: 0.813rem;
-            border-bottom: $border-light-small;
-            cursor: pointer;
-
-            &:hover {
-                background: $theme-background-color;
-            }
-        }
-    }
-
-    .rmdp-calendar {
-
-        .rmdp-week-day,
-        .rmdp-week .rmdp-week-day {
-            color: $theme-color;
-        }
-
-        // date
-        .rmdp-day-picker {
-            .rmdp-day {
-                background: $theme-background-color !important;
-            }
-
-            .rmdp-range {
-                background: $theme-color;
-            }
-        }
-
-    }
-}
-
 .settings-calender {
     width: 100%;
-
+    
+    // without input calender start
     .calendar-wrapper,
-    .rmdp-top-class {
+    .rmdp-top-class{
         box-shadow: none;
         border: none;
         width: 100%;
@@ -212,7 +174,7 @@
                 }
 
                 .rmdp-header-values {
-                    span.calendar-day-wrapper {
+                    span.calendar-day- {
                         font-size: 1.125rem;
                     }
                 }
@@ -238,7 +200,7 @@
                     .rmdp-day {
                         height: 6rem;
 
-                        span.calendar-day-wrapper {
+                        span.calendar-day- {
                             border-radius: 0.313rem;
                             font-size: 1.5rem;
 
@@ -247,12 +209,12 @@
                             }
                         }
 
-                        &.rmdp-selected span.calendar-day-wrapper:not(.highlight) {
+                        &.rmdp-selected span.calendar-day-:not(.highlight) {
                             background: $theme-color;
                         }
 
                         &:not(.rmdp-day-hidden) {
-                            span.calendar-day-wrapper {
+                            span.calendar-day- {
                                 background: #efecec;
                             }
                         }
@@ -267,16 +229,16 @@
                     margin: 0;
                     height: 100%;
 
-                    span.calendar-day-wrapper {
+                    span.calendar-day- {
                         border-radius: 0.313rem;
                         font-size: 1.25rem;
                     }
 
-                    &.rmdp-selected span.calendar-day-wrapper {
+                    &.rmdp-selected span.calendar-day- {
                         background: $theme-color
                     }
 
-                    &:not(.rmdp-selected):hover span.calendar-day-wrapper {
+                    &:not(.rmdp-selected):hover span.calendar-day- {
                         background: $theme-background-color;
                     }
                 }
@@ -286,11 +248,11 @@
         .rmdp-panel.right {
             display: none !important;
         }
-    }
+    } // without input calender end
 }
 
 // event
-.event-calendar-wrapper {
+.settings-event-calender {
     .rmdp-wrapper {
         width: 100%;
 
@@ -313,7 +275,7 @@
                     }
 
                     .rmdp-header-values {
-                        span.calendar-day-wrapper {
+                        span.calendar-day- {
                             font-size: 1.125rem;
                         }
                     }
@@ -346,7 +308,7 @@
                             }
 
                             .calendar-day {
-                                .event-name {
+                                .event {
                                     padding: 0.313rem 0.5rem;
                                     background: #ff000029;
                                     text-align: left;
@@ -354,11 +316,18 @@
                                     border-left: 0.125rem solid;
                                     margin: 0.125rem 0;
                                     box-sizing: border-box;
+
+                                    .name {
+                                        font-size: 1rem;
+                                        line-height: 1;
+                                    }
                                 }
                             }
-                            .date{
+
+                            .date {
                                 font-size: 1.5rem;
                             }
+
                             span:not(.highlight) {
                                 background: none;
                                 box-shadow: none;
@@ -375,16 +344,16 @@
                         margin: 0;
                         height: 100%;
 
-                        span.calendar-day-wrapper {
+                        span.calendar-day- {
                             border-radius: 0.313rem;
                             font-size: 1.25rem;
                         }
 
-                        &.rmdp-selected span.calendar-day-wrapper {
+                        &.rmdp-selected span.calendar-day- {
                             background: $theme-color
                         }
 
-                        &:not(.rmdp-selected):hover span.calendar-day-wrapper {
+                        &:not(.rmdp-selected):hover span.calendar-day- {
                             background: $theme-background-color;
                         }
                     }
@@ -396,4 +365,4 @@
             }
         }
     }
-}
+} // event end
