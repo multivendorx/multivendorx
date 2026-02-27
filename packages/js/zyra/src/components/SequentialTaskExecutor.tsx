@@ -219,12 +219,8 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
                         color: 'purple-bg',
                         onClick: handleButtonClick,
                         disabled: loading,
-                        icon: loading ? 'spinner' : 'play',
-                        children: null,
-                        customStyle: {},
-                        style: {},
+                        icon: loading ? 'spinner' : 'play'
                     }]}
-                    wrapperClass=""
                     position="left"
                 />
                 
@@ -237,14 +233,10 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
 
             {/* Task Progress Display */}
             {taskSequence.length > 0 && (
-                <div className="tasks-container">
-                    <ItemListUI
-                        items={getItemListItems()}
-                        className="task-list"
-                        background={true}
-                        border={true}
-                    />
-                </div>
+                <ItemListUI
+                    items={getItemListItems()}
+                    className="task-list"
+                />
             )}
 
             {/* Process Completion Status */}

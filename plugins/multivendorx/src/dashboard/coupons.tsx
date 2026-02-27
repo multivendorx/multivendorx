@@ -725,7 +725,6 @@ const AllCoupon: React.FC = () => {
 			type: 'date',
 		},
 	];
-
 	return (
 		<>
 			<NavigatorHeader
@@ -869,8 +868,7 @@ const AllCoupon: React.FC = () => {
 				showBackdrop={true}
 				header={{
 					icon: 'warning',
-					title: __('Are you sure?', 'multivendorx'),
-					showCloseButton: true,
+					title: __('Are you sure?', 'multivendorx')
 				}}
 				footer={
 					<AdminButtonUI

@@ -239,6 +239,10 @@
             max-height: 80vh;
             overflow-y: auto;
             animation: modalSlideIn 0.3s ease-out;
+
+            .popup-body{
+                padding: 1rem;
+            }
         }
 
         &[data-position="lightbox"] {
