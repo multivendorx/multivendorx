@@ -185,7 +185,7 @@ const Stores = () => {
 	const getFieldNotice = (key: string) => {
 		const err = error?.[key];
 		if (!err?.message) return { notice: undefined, noticeType: 'error' };
-		
+
 		return {
 			notice: err.message,
 			noticeType: err.type as 'error' | 'success'
@@ -287,7 +287,7 @@ const Stores = () => {
 									/>
 								</FormGroup>
 
-								<FormGroup 
+								<FormGroup
 									label={__('Store Email', 'multivendorx')}
 									{...getFieldNotice('email')}
 								>
@@ -305,7 +305,12 @@ const Stores = () => {
 									<TextAreaUI
 										name="description"
 										value={formData.description || ''}
-										onChange={handleChange}
+										onChange={(val: string) =>
+											setFormData(prev => ({
+												...prev,
+												description: val
+											}))
+										}
 										usePlainText={false}
 										tinymceApiKey={
 											appLocalizer.settings_databases_value['overview']?.['tinymce_api_section'] ?? ''
@@ -324,10 +329,9 @@ const Stores = () => {
 										value={formData.store_owners}
 										type="single-select"
 										onChange={(newValue: any) => {
-											if (!newValue || Array.isArray(newValue)) return;
 											setFormData((prev) => ({
 												...prev,
-												store_owners: newValue.value,
+												store_owners: newValue,
 											}));
 										}}
 									/>
