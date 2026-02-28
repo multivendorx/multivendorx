@@ -275,10 +275,12 @@ const AddProduct = () => {
 							>
 								<SelectInputUI
 									name="type"
+									type="single-select"
 									options={typeOptions}
 									value={product.type}
-									onChange={(selected) =>
-										handleChange('type', selected.value)
+									onChange={(selected) =>{
+										handleChange('type', selected)
+									}
 									}
 								/>
 							</FormGroup>

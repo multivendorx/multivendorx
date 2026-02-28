@@ -26,7 +26,7 @@ const ProductTag = ({ product, setProduct }) => {
 			contentHeight
 			title={__('Product tag', 'multivendorx')}
 		>
-			<FormGroupWrapper>
+			{/* <FormGroupWrapper>
 				<InputWithSuggestions
 					suggestions={existingTags.map(
 						(tag) => tag.name
@@ -49,7 +49,7 @@ const ProductTag = ({ product, setProduct }) => {
 					placeholder={__('Type tag…', 'multivendorx')}
 					addButtonLabel={__('Add', 'multivendorx')}
 				/>
-			</FormGroupWrapper>
+			</FormGroupWrapper> */}
 		</Card>
 	);
 };
