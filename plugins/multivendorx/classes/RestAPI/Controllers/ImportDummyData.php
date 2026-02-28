@@ -89,9 +89,31 @@ class ImportDummyData extends \WP_REST_Controller {
         );
     }
 
-    public function import_store_owners() {
-        $xml          = simplexml_load_file( MultiVendorX()->plugin_path . '/assets/dummy-data/store_owners.xml' );
+    public function import_store_owners( $request ) {
+        $nonce = $request->get_header( 'X-WP-Nonce' );
+            if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+                $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+
+                if ( is_wp_error( $error ) ) {
+                    MultiVendorX()->util->log( $error );
+                }
+
+                return $error;
+            }
+
+        $xml_file = MultiVendorX()->plugin_path . '/assets/dummy-data/store_owners.xml';
+        
+        if ( ! file_exists( $xml_file ) ) {
+            return new \WP_Error( 'file_not_found', __( 'Store owners XML file not found', 'multivendorx' ), array( 'status' => 404 ) );
+        }
+
+        $xml = simplexml_load_file( $xml_file );
+        if ( ! $xml ) {
+            return new \WP_Error( 'invalid_xml', __( 'Invalid XML structure', 'multivendorx' ), array( 'status' => 400 ) );
+        }
+
         $store_owners = array();
+        $store_owner_details = array();
 
         foreach ( $xml->store as $store ) {
             $username = (string) $store->username;
@@ -116,50 +138,70 @@ class ImportDummyData extends \WP_REST_Controller {
                 $user_id = wp_insert_user( $userdata );
 
                 if ( is_wp_error( $user_id ) ) {
+                    MultiVendorX()->util->log( $user_id );
                     continue;
-                } 
+                }
             }
 
             $store_owners[] = (int) $user_id;
-
-            // Store details with credentials
             $store_owner_details[] = array(
-            'username'  => $username,
-            'password'  => (string)$store->password, 
-        );
+                'user_login'    => $username,
+                    'user_pass'     => (string) $store->password,
+                    'user_email'    => $email,
+                    'user_nicename' => (string) $store->nickname,
+                    'first_name'    => (string) $store->firstname,
+                    'last_name'     => (string) $store->lastname,
+                    'role'          => 'store_owner',
+            );
 
             // Image handling
-            foreach ( $store->images->image as $image ) {
-                $src    = plugins_url( $image->src );
-                $upload = wc_rest_upload_image_from_url( esc_url_raw( $src ) );
+            if ( isset( $store->images->image ) ) {
+                foreach ( $store->images->image as $image ) {
+                    $src    = plugins_url( 'multivendorx/' . (string) $image->src );
+                    $upload = wc_rest_upload_image_from_url( esc_url_raw( $src ) );
 
-                if ( is_wp_error( $upload ) ) {
-                    continue;
-                }
+                    if ( is_wp_error( $upload ) ) {
+                        continue;
+                    }
 
-                $attachment_id = wc_rest_set_uploaded_image_as_attachment( $upload, $user_id );
+                    $attachment_id = wc_rest_set_uploaded_image_as_attachment( $upload, $user_id );
 
-                if ( wp_attachment_is_image( $attachment_id ) ) {
-                    if ( $image->position == 'store' ) {
-                        update_user_meta( $user_id, '_store_image', $attachment_id );
-                    } elseif ( $image->position == 'cover' ) {
-                        update_user_meta( $user_id, '_store_banner', $attachment_id );
+                    if ( wp_attachment_is_image( $attachment_id ) ) {
+                        if ( 'store' === (string) $image->position ) {
+                            update_user_meta( $user_id, '_store_image', $attachment_id );
+                        } elseif ( 'cover' === (string) $image->position ) {
+                            update_user_meta( $user_id, '_store_banner', $attachment_id );
+                        }
                     }
                 }
             }
         }
 
-        return array(
+            $response_data = array(
             'success' => true,
-            'data'    => array(
-            'details'      => $store_owner_details,
-            'count'        => count($store_owners),
-        ),
-            'message' => __( 'Store owners imported successfully.', 'multivendorx' ),
+            'data'    => $store_owner_details,
+            'message' => __( 'Store owners imported successfully.', 'multivendorx' )
         );
+        
+        $response = rest_ensure_response( $response_data );
+        $response->header( 'X-WP-Total', count( $store_owners ) );
+        file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export($response, true) . "\n", FILE_APPEND);
+
+        return $response;
     }
 
     public function import_stores( $request ) {
+
+        $nonce = $request->get_header( 'X-WP-Nonce' );
+        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+
+            if ( is_wp_error( $error ) ) {
+                MultiVendorX()->util->log( $error );
+            }
+
+            return $error;
+        }
 
         $xml_url = MultiVendorX()->plugin_path . '/assets/dummy-data/store.xml';
         $xml     = simplexml_load_file(
@@ -236,13 +278,30 @@ class ImportDummyData extends \WP_REST_Controller {
             $created_store_ids[] = $store_id;
         }
 
-        return array(
+        $response_data = array(
             'success' => true,
             'data'    => $created_store_ids,
+            'message' => __( 'Stores imported successfully.', 'multivendorx' )
         );
+
+        $response = rest_ensure_response( $response_data );
+        $response->header( 'X-WP-Total', count( $created_store_ids ) );
+
+        return $response;
     }
 
     public function import_products( $request ) {
+
+        $nonce = $request->get_header( 'X-WP-Nonce' );
+        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+
+            if ( is_wp_error( $error ) ) {
+                MultiVendorX()->util->log( $error );
+            }
+
+            return $error;
+        }
 
         $base_path     = MultiVendorX()->plugin_path . '/assets/dummy-data/';
         $product_files = array(
@@ -308,6 +367,7 @@ class ImportDummyData extends \WP_REST_Controller {
 						'post_author'  => get_current_user_id(),
                     )
                 );
+file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":product id: : " . var_export($product_id, true) . "\n", FILE_APPEND);
 
                 if ( is_wp_error( $product_id ) ) {
                     continue;
@@ -399,18 +459,38 @@ class ImportDummyData extends \WP_REST_Controller {
                     }
                 }
 
+                do_action( 'multivendorx_after_product_import', $product_id, $store_id );
+                file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":product id: : " . var_export($product_id, true) . "\n", FILE_APPEND);
 
                 $created_products[] = $product_id;
             }
         }
 
-        return array(
+        $response_data = array(
             'success' => true,
             'data'    => $created_products,
+            'message' => __( 'Products imported successfully.', 'multivendorx' )
         );
+
+        $response = rest_ensure_response( $response_data );
+        $response->header( 'X-WP-Total', count( $created_products ) );
+        file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":products: : " . var_export($created_products, true) . "\n", FILE_APPEND);
+        
+        return $response;
     }
 
-    public function import_commissions() {
+    public function import_commissions( $request ) {
+
+        $nonce = $request->get_header( 'X-WP-Nonce' );
+        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+
+            if ( is_wp_error( $error ) ) {
+                MultiVendorX()->util->log( $error );
+            }
+
+            return $error;
+        }
 
         libxml_use_internal_errors( true );
         $xml = simplexml_load_file( MultiVendorX()->plugin_path . '/assets/dummy-data/commissions.xml' );
@@ -490,13 +570,29 @@ class ImportDummyData extends \WP_REST_Controller {
             }
         }
 
-        return array(
+        $response_data = array(
             'success' => true,
-            'message' => __( 'Commission data imported successfully.', 'multivendorx' ),
+            'message' => __( 'Commissions imported successfully.', 'multivendorx' )
         );
+        
+        $response = rest_ensure_response( $response_data );
+        
+
+        return $response;
     }
 
     public function import_orders( $request ) {
+
+        $nonce = $request->get_header( 'X-WP-Nonce' );
+        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+
+            if ( is_wp_error( $error ) ) {
+                MultiVendorX()->util->log( $error );
+            }
+
+            return $error;
+        }
 
         $xml = simplexml_load_file(
             MultiVendorX()->plugin_path . '/assets/dummy-data/orders.xml'
@@ -578,12 +674,29 @@ class ImportDummyData extends \WP_REST_Controller {
             }
         }
 
-        return array(
+        $response_data = array(
             'success' => true,
+            'data'    => $order,
+            'message' => __( 'Orders imported successfully.', 'multivendorx' )
         );
+        
+        $response = rest_ensure_response( $response_data );
+        return $response;
+
     }
 
     public function import_reviews( $request ) {
+
+        $nonce = $request->get_header( 'X-WP-Nonce' );
+        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+
+            if ( is_wp_error( $error ) ) {
+                MultiVendorX()->util->log( $error );
+            }
+
+            return $error;
+        }
 
         $product_ids = $request->get_param( 'product_ids' );
 
@@ -656,9 +769,15 @@ class ImportDummyData extends \WP_REST_Controller {
             do_action( 'woocommerce_review_posted', $comment_id );
         }
 
-        return array(
+        $response_data = array(
             'success' => true,
-            'message' => __( 'Reviews imported successfully.', 'multivendorx' ),
+            'data'    => $comment_id,
+            'message' => __( 'Reviews imported successfully.', 'multivendorx' )
         );
+        
+        $response = rest_ensure_response( $response_data );
+        $response->header( 'X-WP-Total', count( $comment_id ) );
+        
+        return $response;
     }
 }

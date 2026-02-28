@@ -12,6 +12,7 @@ import {
 	TourSetup,
 	Notice,
 	NoticeReceiver,
+	ItemListUI,
 } from 'zyra';
 
 import Settings from './components/Settings/Settings';
@@ -309,7 +310,6 @@ const App = () => {
 						)}
 					</div>
 					<SequentialTaskExecutor
-						buttonKey="import_dummy_data"
 						buttonText={__('Import Dummy Data', 'multivendorx')}
 						apilink="import-dummy-data"
 						interval={1000}
@@ -329,7 +329,6 @@ const App = () => {
 									'Importing store owners...',
 									'multivendorx'
 								),
-								cacheKey: 'store_owners',
 								successMessage: __(
 									'Store owners imported',
 									'multivendorx'
@@ -345,7 +344,6 @@ const App = () => {
 									'Creating stores...',
 									'multivendorx'
 								),
-								cacheKey: 'store_ids',
 								successMessage: __(
 									'Stores created',
 									'multivendorx'
@@ -361,7 +359,6 @@ const App = () => {
 									'Importing products...',
 									'multivendorx'
 								),
-								cacheKey: 'product_ids',
 								successMessage: __(
 									'Products imported',
 									'multivendorx'

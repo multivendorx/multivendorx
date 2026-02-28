@@ -1,20 +1,17 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import axios from 'axios';
 import { getApiLink } from '../utils/apiService';
-import {AdminButtonUI} from './AdminButton';
-import {ItemListUI} from './ItemList';
-
+import { AdminButtonUI } from './AdminButton';
+import { ItemListUI } from './ItemList';
 
 interface Task {
     action: string;
     message: string;
-    cacheKey?: string;
     successMessage?: string;
     failureMessage?: string;
 }
 
 interface SequentialTaskExecutorProps {
-    buttonKey: string;
     buttonText: string;
     apilink: string;
     action: string;
@@ -23,7 +20,7 @@ interface SequentialTaskExecutorProps {
     successMessage?: string;
     failureMessage?: string;
     tasks: Task[];
-    onComplete?: (data: any) => void;
+    onComplete?: () => void;
     onError?: (error: any) => void;
     onTaskComplete?: (task: Task, response: any) => void;
 }
@@ -56,11 +53,8 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         failureMessage?: string;
     }[]>([]);
     const [processStatus, setProcessStatus] = useState('');
-    const [storeCredentials, setStoreCredentials] = useState<any[]>([]);
 
-    // Refs for tracking state (exactly like original)
     const processStarted = useRef(false);
-    const additionalData = useRef<Record<string, any>>({});
     const taskIndex = useRef(0);
 
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -82,21 +76,6 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
 
     const handleTaskResponse = async (currentTask: Task, response: DynamicResponse) => {
         const isSuccess = response?.success === true;
-        const cacheKey = currentTask.cacheKey;
-
-        // Store response data if cacheKey exists
-        if (cacheKey && response.data) {
-            additionalData.current[cacheKey] = response.data;
-            
-            // If this is the store owners task, extract and store credentials
-            if (cacheKey === 'store_owners' && response.data.details) {
-                const credentials = response.data.details.map((owner: any) => ({
-                    title: owner.username,
-                    value: owner.password,
-                }));
-                setStoreCredentials(credentials);
-            }
-        }
 
         // Determine message and trigger callbacks
         const message = isSuccess
@@ -116,81 +95,72 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
     };
 
     const executeSequentialTasks = useCallback(async () => {
-    if (taskIndex.current >= tasks.length) {
-        setProcessStatus('completed');
-        setLoading(false);
-        processStarted.current = false;
-        onComplete?.(additionalData.current);
-        return;
-    }
-
-    const currentTask = tasks[taskIndex.current];
-
-    // Add task to sequence
-    setTaskSequence((prev) => [
-        ...prev,
-        {
-            message: currentTask.message,
-            status: 'running',
-            successMessage: currentTask.successMessage,
-            failureMessage: currentTask.failureMessage,
-        },
-    ]);
-
-    await sleep(interval);
-
-    try {
-        // Define payload HERE before using it
-        const payload: Record<string, any> = {
-            action: currentTask.action
-        };
-
-        // Add cached data
-        Object.entries(additionalData.current).forEach(([key, value]) => {
-            if (value) {
-                payload[key] = value;
-            }
-        });
-
-        // Try using axios directly
-        const response = await axios.post(
-            getApiLink(appLocalizer, apilink),
-            payload,
-            { 
-                headers: { 
-                    'X-WP-Nonce': appLocalizer.nonce,
-                    'Content-Type': 'application/json',
-                } 
-            }
-        );
-
-        const formattedResponse = {
-            success: response.data?.success === true, 
-            data: response.data?.data,
-            message: response.data?.message,
-            ...response.data
-        };
-
-        const status = await handleTaskResponse(currentTask, formattedResponse);
-
-        if (status === 'failed') {
-            setProcessStatus('failed');
+        if (taskIndex.current >= tasks.length) {
+            setProcessStatus('completed');
             setLoading(false);
             processStarted.current = false;
+            onComplete?.();
             return;
         }
 
-        taskIndex.current++;
-        await executeSequentialTasks();
-    } catch (error) {
-        console.error('Task execution failed:', error);
-        updateTaskStatus('failed', 'Task execution failed');
-        setProcessStatus('failed');
-        setLoading(false);
-        processStarted.current = false;
-        onError?.({ task: currentTask, error });
-    }
-}, [tasks, interval, appLocalizer, apilink, action, onComplete, onError, onTaskComplete]);
+        const currentTask = tasks[taskIndex.current];
+
+        // Add task to sequence
+        setTaskSequence((prev) => [
+            ...prev,
+            {
+                message: currentTask.message,
+                status: 'running',
+                successMessage: currentTask.successMessage,
+                failureMessage: currentTask.failureMessage,
+            },
+        ]);
+
+        await sleep(interval);
+
+        try {
+            const payload: Record<string, any> = {
+                action: currentTask.action
+            };
+
+            const response = await axios.post(
+                getApiLink(appLocalizer, apilink),
+                payload,
+                { 
+                    headers: { 
+                        'X-WP-Nonce': appLocalizer.nonce,
+                        'Content-Type': 'application/json',
+                    } 
+                }
+            );
+
+            const formattedResponse = {
+                success: response.data?.success === true, 
+                data: response.data?.data,
+                message: response.data?.message,
+                ...response.data
+            };
+
+            const status = await handleTaskResponse(currentTask, formattedResponse);
+
+            if (status === 'failed') {
+                setProcessStatus('failed');
+                setLoading(false);
+                processStarted.current = false;
+                return;
+            }
+
+            taskIndex.current++;
+            await executeSequentialTasks();
+        } catch (error) {
+            console.error('Task execution failed:', error);
+            updateTaskStatus('failed', 'Task execution failed');
+            setProcessStatus('failed');
+            setLoading(false);
+            processStarted.current = false;
+            onError?.({ task: currentTask, error });
+        }
+    }, [tasks, interval, appLocalizer, apilink, action, onComplete, onError, onTaskComplete]);
 
     const startProcess = useCallback(() => {
         if (processStarted.current) return;
@@ -199,8 +169,6 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         setLoading(true);
         setTaskSequence([]);
         setProcessStatus('');
-        setStoreCredentials([]);
-        additionalData.current = {};
         taskIndex.current = 0;
         executeSequentialTasks();
     }, [executeSequentialTasks]);
@@ -210,13 +178,12 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         startProcess();
     };
 
-    // Convert taskSequence to ItemList items
     const getItemListItems = () => {
         return taskSequence.map((task, index) => ({
             id: `task-${index}`,
             title: task.message,
             desc: task.status,
-            icon: task.status === 'success' ? 'check' : task.status === 'failed' ? 'cross' : 'spinner',
+            icon: task.status,
             className: `task-status-${task.status}`,
         }));
     };
@@ -242,7 +209,6 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
                 )}
             </div>
 
-            {/* Task Progress Display */}
             {taskSequence.length > 0 && (
                 <ItemListUI
                     items={getItemListItems()}
@@ -250,20 +216,6 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
                 />
             )}
 
-            {/* Store Owners Credentials Display */}
-            {storeCredentials.length > 0 && processStatus === 'completed' && (
-                <div className="store-credentials-wrapper">
-                    <h3>Store Owners Credentials</h3>
-                    <ItemListUI
-                        items={storeCredentials}
-                        className="store-credentials-list"
-                        background={true}
-                        border={true}
-                    />
-                </div>
-            )}
-
-            {/* Process Completion Status */}
             {processStatus && (
                 <div className={`fetch-display-output ${processStatus === 'failed' ? 'failed' : 'success'}`}>
                     {processStatus === 'failed' ? failureMessage : successMessage}
