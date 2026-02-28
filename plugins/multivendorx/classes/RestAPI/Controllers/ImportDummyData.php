@@ -44,18 +44,6 @@ class ImportDummyData extends \WP_REST_Controller {
      * Permission check for AI Operations
      */
     public function get_items_permissions_check( $request ) {
-
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-            if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-                $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-
-                if ( is_wp_error( $error ) ) {
-                    MultiVendorX()->util->log( $error );
-                }
-
-                return $error;
-            }
-
         return current_user_can( 'edit_products' );
     }
 
@@ -65,6 +53,18 @@ class ImportDummyData extends \WP_REST_Controller {
      * @param \WP_REST_Request $request
      */
     public function process_action( $request ) {
+
+        $nonce = $request->get_header( 'X-WP-Nonce' );
+        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+
+            if ( is_wp_error( $error ) ) {
+                 MultiVendorX()->util->log( $error );
+            }
+
+            return $error;
+        }
+            
         $action    = $request->get_param( 'action' );
 
         if (method_exists( $this, $action ) ) {

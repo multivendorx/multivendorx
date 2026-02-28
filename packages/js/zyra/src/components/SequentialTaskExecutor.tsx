@@ -146,7 +146,6 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
                 { 
                     headers: { 
                         'X-WP-Nonce': appLocalizer.nonce,
-                        'Content-Type': 'application/json',
                     } 
                 }
             );
