@@ -95,7 +95,6 @@ class ImportDummyData extends \WP_REST_Controller {
         $xml = $this->load_dummy_xml( 'store_owners' );
 
         $store_owners = array();
-        $store_owner_details = array();
 
         foreach ( $xml->store as $store ) {
             $username = (string) $store->username;
@@ -126,15 +125,6 @@ class ImportDummyData extends \WP_REST_Controller {
             }
 
             $store_owners[] = (int) $user_id;
-            $store_owner_details[] = array(
-                'user_login'    => $username,
-                    'user_pass'     => (string) $store->password,
-                    'user_email'    => $email,
-                    'user_nicename' => (string) $store->nickname,
-                    'first_name'    => (string) $store->firstname,
-                    'last_name'     => (string) $store->lastname,
-                    'role'          => 'store_owner',
-            );
 
             // Image handling
             if ( isset( $store->images->image ) ) {
