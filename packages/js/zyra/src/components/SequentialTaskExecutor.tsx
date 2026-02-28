@@ -11,7 +11,7 @@ interface Task {
     failureMessage?: string;
 
     // ⭐ ADDED: Generic dependency injection
-    injectFrom?: string;
+    requiresResponeData?: boolean;
 }
 
 interface SequentialTaskExecutorProps {
@@ -61,7 +61,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
     const taskIndex = useRef(0);
 
     // ⭐ ADDED: Import context storage
-    const importContext = useRef<Record<string, any>>({});
+    const lastResult = useRef<any>({});
 
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -89,8 +89,8 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
 
         if (isSuccess) {
             // ⭐ ADDED: Store successful task data into context
-            if (Array.isArray(response?.data)) {
-                importContext.current[currentTask.action] = response.data;
+            if (isSuccess && response?.data !== undefined) {
+                lastResult.current = response.data;
             }
 
             onTaskComplete?.(currentTask, response);
@@ -132,8 +132,8 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
                 action: currentTask.action
             };
 
-            if (currentTask.injectFrom) {
-                payload.responseData = importContext.current[currentTask.injectFrom];
+            if (currentTask.requiresResponeData) {
+                payload.responseData = lastResult.current;
             }
 
             const response = await axios.post(
@@ -184,7 +184,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         taskIndex.current = 0;
 
         // ⭐ ADDED: Reset context on new run
-        importContext.current = {};
+        lastResult.current = {};
 
         executeSequentialTasks();
     }, [executeSequentialTasks]);

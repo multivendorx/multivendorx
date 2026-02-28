@@ -344,7 +344,7 @@ const App = () => {
 									'Creating stores...',
 									'multivendorx'
 								),
-								injectFrom: 'import_store_owners',
+								requiresResponeData: true,
 								successMessage: __(
 									'Stores created',
 									'multivendorx'
@@ -360,7 +360,7 @@ const App = () => {
 									'Importing products...',
 									'multivendorx'
 								),
-								injectFrom: 'import_stores',
+								requiresResponeData: true,
 								successMessage: __(
 									'Products imported',
 									'multivendorx'
@@ -391,7 +391,7 @@ const App = () => {
 									'Creating orders...',
 									'multivendorx'
 								),
-								injectFrom: 'import_products',
+								requiresResponeData: true,
 								successMessage: __(
 									'Orders created',
 									'multivendorx'
@@ -407,7 +407,7 @@ const App = () => {
 									'Creating reviews...',
 									'multivendorx'
 								),
-								injectFrom: 'import_products',
+								requiresResponeData: true,
 								successMessage: __(
 									'Reviews created',
 									'multivendorx'
