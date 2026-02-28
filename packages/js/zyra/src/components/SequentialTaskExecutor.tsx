@@ -11,7 +11,7 @@ interface Task {
     failureMessage?: string;
 
     // ⭐ ADDED: Generic dependency injection
-    injectFrom?: Record<string, string>;
+    injectFrom?: string;
 }
 
 interface SequentialTaskExecutorProps {
@@ -133,11 +133,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
             };
 
             if (currentTask.injectFrom) {
-                Object.entries(currentTask.injectFrom).forEach(
-                    ([payloadKey, sourceAction]) => {
-                        payload[payloadKey] = importContext.current[sourceAction];
-                    }
-                );
+                payload.responseData = importContext.current[currentTask.injectFrom];
             }
 
             const response = await axios.post(

@@ -344,9 +344,7 @@ const App = () => {
 									'Creating stores...',
 									'multivendorx'
 								),
-								injectFrom: {
-									store_owners: 'import_store_owners'
-								},
+								injectFrom: 'import_store_owners',
 								successMessage: __(
 									'Stores created',
 									'multivendorx'
@@ -362,9 +360,7 @@ const App = () => {
 									'Importing products...',
 									'multivendorx'
 								),
-								injectFrom: {
-									store_ids: 'import_stores'
-								},
+								injectFrom: 'import_stores',
 								successMessage: __(
 									'Products imported',
 									'multivendorx'
@@ -395,9 +391,7 @@ const App = () => {
 									'Creating orders...',
 									'multivendorx'
 								),
-								injectFrom: {
-									product_ids: 'import_products'
-								},
+								injectFrom: 'import_products',
 								successMessage: __(
 									'Orders created',
 									'multivendorx'
@@ -413,9 +407,7 @@ const App = () => {
 									'Creating reviews...',
 									'multivendorx'
 								),
-								injectFrom: {
-									product_ids: 'import_products'
-								},
+								injectFrom: 'import_products',
 								successMessage: __(
 									'Reviews created',
 									'multivendorx'

@@ -81,8 +81,8 @@ class ImportDummyData extends \WP_REST_Controller {
      * Get current status
      */
     public function get_status( $request ) {
-        $parameter = $request->get_param( 'parameter' );
-        $status    = get_transient( 'multivendorx_import_status_' . $parameter ) ?: array();
+        $task = $request->get_param( 'task' );
+        $status    = get_transient( 'multivendorx_import_status_' . $task ) ?: array();
 
         return array(
             'success' => true,
@@ -167,8 +167,7 @@ class ImportDummyData extends \WP_REST_Controller {
         
         $response = rest_ensure_response( $response_data );
         $response->header( 'X-WP-Total', count( $store_owners ) );
-        file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export($response, true) . "\n", FILE_APPEND);
-
+        
         return $response;
     }
 
@@ -210,7 +209,7 @@ class ImportDummyData extends \WP_REST_Controller {
 
         foreach ( $xml->store as $store ) {
             $params = $request->get_json_params();
-            $store_owners = $params['store_owners'] ;
+            $store_owners = $params['responseData'] ;
             $owner_index  = (int) $store->owner_index;
             $owner_id     = $store_owners[ $owner_index ] ?? 0;
 
@@ -312,7 +311,7 @@ class ImportDummyData extends \WP_REST_Controller {
             foreach ( $xml->product as $product ) {
                 $store_index = (int) $product->store_index;
                 $params = $request->get_json_params();
-                $store_ids   = $params['store_ids'] ;
+                $store_ids   = $params['responseData'] ;
                 $store_id    = $store_ids[ $store_index ] ?? 0;
                 $sku = (string) $product->sku;
 
@@ -570,7 +569,7 @@ class ImportDummyData extends \WP_REST_Controller {
             // Add products
             foreach ( $order_xml->items->item as $item ) {
                 $params = $request->get_json_params();
-                $product_ids = $params['product_ids'];
+                $product_ids = $params['responseData'];
                 $product_id  = (int) $product_ids[ (int) $item->product_index ] ?? 0;
 
                 if ( ! $product_id ) {
@@ -631,7 +630,7 @@ class ImportDummyData extends \WP_REST_Controller {
     public function import_reviews( $request ) {
 
         $params = $request->get_json_params();
-        $product_ids = $params['product_ids'];
+        $product_ids = $params['responseData'];
 
         if ( empty( $product_ids ) || ! is_array( $product_ids ) ) {
             return array(
