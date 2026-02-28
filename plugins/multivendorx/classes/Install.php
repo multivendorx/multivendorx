@@ -34,7 +34,11 @@ class Install {
         $this->set_default_modules();
         $this->set_default_settings();
 
-        update_option( 'dc_product_vendor_plugin_db_version', MULTIVENDORX_PLUGIN_VERSION );
+        if (get_option( 'dc_product_vendor_plugin_db_version')) {
+            $this->migrate_mvx_to_multivendorx();
+        }
+
+        update_option( 'multivendorx_version', MULTIVENDORX_PLUGIN_VERSION );
 
         do_action( 'multivendorx_updated' );
     }
@@ -1102,6 +1106,15 @@ class Install {
         }
     }
 
+    public function migrate_mvx_to_multivendorx() {
+        $this->migrate_old_modules();
+        $this->migrate_old_settings();
+        $this->migrate_product_category_settings();
+        $this->migrate_tables();
+
+        delete_option('dc_product_vendor_plugin_db_version');
+
+    }
     /**
      * Create pages dynamically based on provided data.
      *

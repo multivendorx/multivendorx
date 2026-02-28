@@ -503,33 +503,48 @@ class FrontendScripts {
                     'use_ajax'    => true,
                     'use_settings'    => true,
                     'use_currency'    => true,
-                    'data'        => array(
-                        'site_url'                 => site_url(),
-                        'state_list'               => WC()->countries->get_states(),
-                        'country_list'             => $country_list,
-                        'color'                    => MultiVendorX()->setting->get_setting( 'store_color_settings' ),
-                        'tinymceApiKey'            => MultiVendorX()->setting->get_setting( 'tinymce_api_section' ),
-                        'store_payment_settings'   => MultiVendorX()->payments->get_all_store_payment_settings(),
-                        'store_id'                 => MultiVendorX()->active_store,
-						'store_page_url'           => get_option( Utill::WORDPRESS_SETTINGS['permalink'] ) ? trailingslashit( site_url() ) . untrailingslashit( MultiVendorX()->setting->get_setting( 'store_url', 'store' ) ) . '/' : site_url( '/?' . MultiVendorX()->setting->get_setting( 'store_url', 'store' ) . '=' ),
-                        'admin_url'                => admin_url(),
-                        'edit_order_capability'    => current_user_can( 'edit_shop_orders' ),
-                        'permalink_structure'      => get_option( Utill::WORDPRESS_SETTINGS['permalink'] ) ? true : false,
-                        'all_verification_methods' => MultiVendorX()->setting->get_setting( 'all_verification_methods' ),
-                        'shipping_methods'         => apply_filters( 'multivendorx_store_shipping_options', array() ),
-                        'all_store_meta'           => $all_meta ?? [],
-                        'site_name'                => get_bloginfo( 'name' ),
-                        'current_user'             => wp_get_current_user(),
-                        'current_user_image'       => get_avatar_url( get_current_user_id(), array( 'size' => 48 ) ),
-                        'user_logout_url'          => esc_url( wp_logout_url( get_permalink( (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) ) ) ),
-                        'store_ids'                => $store_ids,
-                        'dashboard_page_id'        => (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ),
-                        'dashboard_slug'           => (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) ? get_post_field( 'post_name', (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) ) : 'dashboard',
-                        'registration_page'        => esc_url( get_permalink( (int) MultiVendorX()->setting->get_setting( 'store_registration_page' ) ) ),
-                        'dimension_unit'           => get_option( Utill::WOO_SETTINGS['dimension_unit'] ),
-                        'order_meta'               => Utill::ORDER_META_SETTINGS,
-                        'date_format'              => Utill::wp_to_react_date_format( get_option( 'date_format' ) ),
-
+                    'data' => apply_filters(
+                        'multivendorx_dashboard_localize_scripts',
+                        array(
+                            'site_url'               => site_url(),
+                            'state_list'             => WC()->countries->get_states(),
+                            'country_list'           => $country_list,
+                            'color'                  => MultiVendorX()->setting->get_setting( 'store_color_settings' ),
+                            'tinymceApiKey'          => MultiVendorX()->setting->get_setting( 'tinymce_api_section' ),
+                            'store_payment_settings' => MultiVendorX()->payments->get_all_store_payment_settings(),
+                            'store_id'               => MultiVendorX()->active_store,
+                            'store_page_url'         => get_option( Utill::WORDPRESS_SETTINGS['permalink'] ) ?
+                                trailingslashit( site_url() ) .
+                                untrailingslashit( MultiVendorX()->setting->get_setting( 'store_url', 'store' ) ) . '/' :
+                                site_url( '/?' . MultiVendorX()->setting->get_setting( 'store_url', 'store' ) . '=' ),
+                            'admin_url'              => admin_url(),
+                            'edit_order_capability'  => current_user_can( 'edit_shop_orders' ),
+                            'permalink_structure'    => get_option( Utill::WORDPRESS_SETTINGS['permalink'] ) ? true : false,
+                            'all_verification_methods' => MultiVendorX()->setting->get_setting( 'all_verification_methods' ),
+                            'shipping_methods'       => apply_filters( 'multivendorx_store_shipping_options', array() ),
+                            'all_store_meta'         => $all_meta,
+                            'site_name'              => get_bloginfo( 'name' ),
+                            'current_user'           => wp_get_current_user(),
+                            'current_user_image'     => get_avatar_url( get_current_user_id(), array( 'size' => 48 ) ),
+                            'user_logout_url'        => esc_url(
+                                wp_logout_url(
+                                    get_permalink( (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) )
+                                )
+                            ),
+                            'store_ids'              => $store_ids,
+                            'dashboard_page_id'      => (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ),
+                            'dashboard_slug'         => (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' )
+                                ? get_post_field( 'post_name', (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) )
+                                : 'dashboard',
+                            'registration_page'      => esc_url(
+                                get_permalink(
+                                    (int) MultiVendorX()->setting->get_setting( 'store_registration_page' )
+                                )
+                            ),
+                            'dimension_unit'         => get_option( Utill::WOO_SETTINGS['dimension_unit'] ),
+                            'order_meta'             => Utill::ORDER_META_SETTINGS,
+                            'date_format'            => Utill::wp_to_react_date_format( get_option( 'date_format' ) ),
+                        )
                     ),
                 ),
                 'multivendorx-registration-form-editor-script' => array(

@@ -82,7 +82,7 @@ const Policies = ({ product, setProduct, handleChange }) => {
 };
 
 addFilter(
-	'product_policies',
+	'multivendorx_product_after_price_section',
 	'multivendorx/policies',
 	(content, product, setProduct, handleChange) => {
 		return (
