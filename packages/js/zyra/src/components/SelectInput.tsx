@@ -6,6 +6,7 @@ import type { MultiValue, SingleValue, StylesConfig, GroupBase } from 'react-sel
 
 // Internal dependencies
 import { FieldComponent } from './types';
+import { AdminButtonUI } from './AdminButton';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -39,7 +40,6 @@ export interface SelectProps {
     noOptionsText?: string;
     selectDeselect?: boolean;
     selectDeselectLabel?: string;
-    selectDeselectClass?: string;
     onSelectDeselectAll?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     formatCreateLabel?: (inputValue: string) => string;
     disabled?: boolean;
@@ -235,7 +235,6 @@ export const SelectInputUI: React.FC<SelectProps> = ({
     noOptionsText,
     selectDeselect,
     selectDeselectLabel = 'Select / Deselect All',
-    selectDeselectClass,
     onSelectDeselectAll,
     formatCreateLabel = (v) => `Add "${v}"`,
     disabled = false,
@@ -257,12 +256,16 @@ export const SelectInputUI: React.FC<SelectProps> = ({
             style={{ width: size ?? '100%' }}
         >
             {selectDeselect && (
-                <button
-                    className={selectDeselectClass}
-                    onClick={(e) => { e.preventDefault(); onSelectDeselectAll?.(e); }}
-                >
-                    {selectDeselectLabel}
-                </button>
+                <AdminButtonUI
+                    position="left"
+                    buttons={[
+                        {
+                            text: selectDeselectLabel,
+                            color: 'purple',
+                            onClick: (e) => {e.preventDefault(); onSelectDeselectAll?.(e)},
+                        },
+                    ]}
+                />
             )}
 
             <div className="select-wrapper">

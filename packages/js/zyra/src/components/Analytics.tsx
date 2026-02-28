@@ -23,7 +23,6 @@ const Analytics: React.FC<AnalyticsProps> = ({
 	cols,
 	isLoading = false,
 }) => {
-	const skeletonItems = Array.from({ length: data.length || 4 });
 
 	return (
 		<div
