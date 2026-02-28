@@ -719,11 +719,12 @@ class Rest {
         ob_start();
 
         $store_id = $request->get_param( 'storeId' );
-
+        $search   = sanitize_text_field( $request->get_param( 'search' ) );
         // Query products for this store
         $args = [
             'post_type'      => 'product',
             'post_status'    => 'publish',
+            's'              =>  $search,
             'meta_query'     => [
                 [
                     'key'     => Utill::POST_META_SETTINGS['store_id'],

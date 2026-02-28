@@ -66,9 +66,18 @@ registerBlockType('multivendorx/store-phone', {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+	const phone = window?.StoreInfo?.storeDetails?.storePhone;
+
 	document
 		.querySelectorAll('.multivendorx-store-phone-block')
 		.forEach((el) => {
-			el.textContent = StoreInfo.storeDetails.storePhone;
+			const wrapper = el.closest('.wp-block-multivendorx-store-phone');
+
+			if (!phone) {
+				wrapper?.remove(); // removes icon + block completely
+				return;
+			}
+
+			el.textContent = phone;
 		});
 });
