@@ -1151,6 +1151,10 @@ class Stores extends \WP_REST_Controller {
                 if ( Utill::STORE_SETTINGS_KEYS['id'] === $key ) {
                     continue;
                 }
+                if ( Utill::STORE_SETTINGS_KEYS[$key] === 'phone' ) {
+                    $value = $value['country_code'] . $value['phone'];
+                    unset( $data[ 'country_code' ] );
+                }
 
                 $store->update_meta( $key, $value );
 

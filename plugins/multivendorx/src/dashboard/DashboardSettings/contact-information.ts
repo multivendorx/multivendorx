@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { CountryCodes } from 'zyra';
 
 const settings =
 	appLocalizer.settings_databases_value['store-permissions']
@@ -16,10 +17,15 @@ export default {
 	submitUrl: `store/${appLocalizer.store_id}`,
 	modal: [
 		{
+			key: 'phone',
 			type: 'number',
 			label: __('Phone', 'multivendorx'),
-			key: 'phone',
-			readOnly: !settings.includes('store_contact'),
+			beforeElement: {
+				type: 'select',
+				key: 'country_code',
+				size: '200px',
+				options: CountryCodes,
+			}
 		},
 
 		// Email / Additional Email
