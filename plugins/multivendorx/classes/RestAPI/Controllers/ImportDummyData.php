@@ -44,6 +44,18 @@ class ImportDummyData extends \WP_REST_Controller {
      * Permission check for AI Operations
      */
     public function get_items_permissions_check( $request ) {
+
+        $nonce = $request->get_header( 'X-WP-Nonce' );
+            if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+                $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+
+                if ( is_wp_error( $error ) ) {
+                    MultiVendorX()->util->log( $error );
+                }
+
+                return $error;
+            }
+
         return current_user_can( 'edit_products' );
     }
 
@@ -53,11 +65,6 @@ class ImportDummyData extends \WP_REST_Controller {
      * @param \WP_REST_Request $request
      */
     public function process_action( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-        }
-
         $action    = $request->get_param( 'action' );
 
         if (method_exists( $this, $action ) ) {
@@ -74,11 +81,6 @@ class ImportDummyData extends \WP_REST_Controller {
      * Get current status
      */
     public function get_status( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-        }
-
         $parameter = $request->get_param( 'parameter' );
         $status    = get_transient( 'multivendorx_import_status_' . $parameter ) ?: array();
 
@@ -89,28 +91,8 @@ class ImportDummyData extends \WP_REST_Controller {
         );
     }
 
-    public function import_store_owners( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-            if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-                $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-
-                if ( is_wp_error( $error ) ) {
-                    MultiVendorX()->util->log( $error );
-                }
-
-                return $error;
-            }
-
-        $xml_file = MultiVendorX()->plugin_path . '/assets/dummy-data/store_owners.xml';
-        
-        if ( ! file_exists( $xml_file ) ) {
-            return new \WP_Error( 'file_not_found', __( 'Store owners XML file not found', 'multivendorx' ), array( 'status' => 404 ) );
-        }
-
-        $xml = simplexml_load_file( $xml_file );
-        if ( ! $xml ) {
-            return new \WP_Error( 'invalid_xml', __( 'Invalid XML structure', 'multivendorx' ), array( 'status' => 400 ) );
-        }
+    public function import_store_owners( ) {
+        $xml = $this->load_dummy_xml( 'store_owners' );
 
         $store_owners = array();
         $store_owner_details = array();
@@ -190,27 +172,39 @@ class ImportDummyData extends \WP_REST_Controller {
         return $response;
     }
 
-    public function import_stores( $request ) {
+    private function load_dummy_xml( string $filename ) {
 
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+        $base_path = trailingslashit( MultiVendorX()->plugin_path ) . 'assets/dummy-data/';
+        $file_path = $base_path . $filename . '.xml';
 
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
-            }
-
-            return $error;
+        if ( ! file_exists( $file_path ) ) {
+            return new \WP_Error(
+                'file_not_found',
+                sprintf(
+                    __( '%s XML file not found.', 'multivendorx' ),
+                    ucfirst( str_replace( '_', ' ', $filename ) )
+                ),
+                array( 'status' => 404 )
+            );
         }
 
-        $xml_url = MultiVendorX()->plugin_path . '/assets/dummy-data/store.xml';
-        $xml     = simplexml_load_file(
-            $xml_url
-        );
+        libxml_use_internal_errors( true );
+        $xml = simplexml_load_file( $file_path );
 
         if ( ! $xml ) {
-            return;
+            return new \WP_Error(
+                'invalid_xml',
+                __( 'Invalid XML structure.', 'multivendorx' ),
+                array( 'status' => 400 )
+            );
         }
+
+        return $xml;
+    }
+
+    public function import_stores( $request ) {
+
+        $xml = $this->load_dummy_xml( 'stores' );
 
         $created_store_ids = array();
 
@@ -293,18 +287,6 @@ class ImportDummyData extends \WP_REST_Controller {
 
     public function import_products( $request ) {
 
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
-            }
-
-            return $error;
-        }
-
-        $base_path     = MultiVendorX()->plugin_path . '/assets/dummy-data/';
         $product_files = array(
             'simple',
             'variable',
@@ -321,14 +303,9 @@ class ImportDummyData extends \WP_REST_Controller {
         $created_products = array();
 
         foreach ( $product_files as $product_type ) {
-            $xml_path = $base_path . $product_type . '.xml';
+            $xml = $this->load_dummy_xml( $product_type );
 
-            if ( ! file_exists( $xml_path ) ) {
-                continue;
-            }
-
-            $xml = simplexml_load_file( $xml_path );
-            if ( ! $xml || empty( $xml->product ) ) {
+            if ( empty( $xml->product ) ) {
                 continue;
             }
 
@@ -337,9 +314,6 @@ class ImportDummyData extends \WP_REST_Controller {
                 $params = $request->get_json_params();
                 $store_ids   = $params['store_ids'] ;
                 $store_id    = $store_ids[ $store_index ] ?? 0;
-file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":params: : " . var_export($params, true) . "\n", FILE_APPEND);
-file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":store_ids: : " . var_export($store_ids, true) . "\n", FILE_APPEND);
-
                 $sku = (string) $product->sku;
 
                 if ( ! empty( $sku ) ) {
@@ -480,25 +454,9 @@ file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s",
         return $response;
     }
 
-    public function import_commissions( $request ) {
+    public function import_commissions( ) {
 
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
-            }
-
-            return $error;
-        }
-
-        libxml_use_internal_errors( true );
-        $xml = simplexml_load_file( MultiVendorX()->plugin_path . '/assets/dummy-data/commissions.xml' );
-
-        if ( ! $xml ) {
-            return new \WP_Error( 'invalid_xml', 'Invalid XML structure.' );
-        }
+        $xml = $this->load_dummy_xml( 'commissions' );
 
         // Get current commission type setting
         $commission_type = MultiVendorX()->setting->get_setting( 'commission_type' );
@@ -584,24 +542,7 @@ file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s",
 
     public function import_orders( $request ) {
 
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
-            }
-
-            return $error;
-        }
-
-        $xml = simplexml_load_file(
-            MultiVendorX()->plugin_path . '/assets/dummy-data/orders.xml'
-        );
-
-        if ( ! $xml ) {
-            return;
-        }
+        $xml = $this->load_dummy_xml( 'orders' );
 
         foreach ( $xml->order as $order_xml ) {
 
@@ -689,17 +630,6 @@ file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s",
 
     public function import_reviews( $request ) {
 
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
-            }
-
-            return $error;
-        }
-
         $params = $request->get_json_params();
         $product_ids = $params['product_ids'];
 
@@ -710,9 +640,7 @@ file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s",
             );
         }
 
-        $xml = simplexml_load_file(
-            MultiVendorX()->plugin_path . '/assets/dummy-data/reviews.xml'
-        );
+        $xml = $this->load_dummy_xml( 'reviews' );
 
         if ( ! $xml ) {
             return array(
