@@ -140,7 +140,7 @@ const StoreSquad = ({ id }: { id: string | null }) => {
 										}
 										const updated = {
 											...formData,
-											primary_owner: newValue.value,
+											primary_owner: newValue,
 										};
 										setFormData(updated);
 										autoSave(updated);

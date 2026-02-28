@@ -327,7 +327,7 @@ const Stores = () => {
 											if (!newValue || Array.isArray(newValue)) return;
 											setFormData((prev) => ({
 												...prev,
-												store_owners: newValue.value,
+												store_owners: newValue,
 											}));
 										}}
 									/>
