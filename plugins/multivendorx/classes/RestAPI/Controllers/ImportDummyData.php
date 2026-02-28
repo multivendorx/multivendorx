@@ -179,7 +179,7 @@ class ImportDummyData extends \WP_REST_Controller {
 
             $response_data = array(
             'success' => true,
-            'data'    => $store_owner_details,
+            'data'    => $store_owners,
             'message' => __( 'Store owners imported successfully.', 'multivendorx' )
         );
         
@@ -215,7 +215,8 @@ class ImportDummyData extends \WP_REST_Controller {
         $created_store_ids = array();
 
         foreach ( $xml->store as $store ) {
-            $store_owners = $request->get_param( 'store_owners' );
+            $params = $request->get_json_params();
+            $store_owners = $params['store_owners'] ;
             $owner_index  = (int) $store->owner_index;
             $owner_id     = $store_owners[ $owner_index ] ?? 0;
 
@@ -333,8 +334,11 @@ class ImportDummyData extends \WP_REST_Controller {
 
             foreach ( $xml->product as $product ) {
                 $store_index = (int) $product->store_index;
-                $store_ids   = $request->get_param( 'store_ids' );
+                $params = $request->get_json_params();
+                $store_ids   = $params['store_ids'] ;
                 $store_id    = $store_ids[ $store_index ] ?? 0;
+file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":params: : " . var_export($params, true) . "\n", FILE_APPEND);
+file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":store_ids: : " . var_export($store_ids, true) . "\n", FILE_APPEND);
 
                 $sku = (string) $product->sku;
 
@@ -367,7 +371,6 @@ class ImportDummyData extends \WP_REST_Controller {
 						'post_author'  => get_current_user_id(),
                     )
                 );
-file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":product id: : " . var_export($product_id, true) . "\n", FILE_APPEND);
 
                 if ( is_wp_error( $product_id ) ) {
                     continue;
@@ -460,7 +463,6 @@ file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s",
                 }
 
                 do_action( 'multivendorx_after_product_import', $product_id, $store_id );
-                file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":product id: : " . var_export($product_id, true) . "\n", FILE_APPEND);
 
                 $created_products[] = $product_id;
             }
@@ -474,8 +476,7 @@ file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s",
 
         $response = rest_ensure_response( $response_data );
         $response->header( 'X-WP-Total', count( $created_products ) );
-        file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":products: : " . var_export($created_products, true) . "\n", FILE_APPEND);
-        
+
         return $response;
     }
 
@@ -627,7 +628,8 @@ file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s",
 
             // Add products
             foreach ( $order_xml->items->item as $item ) {
-                $product_ids = $request->get_param( 'product_ids' );
+                $params = $request->get_json_params();
+                $product_ids = $params['product_ids'];
                 $product_id  = (int) $product_ids[ (int) $item->product_index ] ?? 0;
 
                 if ( ! $product_id ) {
@@ -698,7 +700,8 @@ file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s",
             return $error;
         }
 
-        $product_ids = $request->get_param( 'product_ids' );
+        $params = $request->get_json_params();
+        $product_ids = $params['product_ids'];
 
         if ( empty( $product_ids ) || ! is_array( $product_ids ) ) {
             return array(
@@ -776,7 +779,6 @@ file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s",
         );
         
         $response = rest_ensure_response( $response_data );
-        $response->header( 'X-WP-Total', count( $comment_id ) );
         
         return $response;
     }

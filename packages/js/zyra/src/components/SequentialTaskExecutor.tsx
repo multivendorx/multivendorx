@@ -9,6 +9,9 @@ interface Task {
     message: string;
     successMessage?: string;
     failureMessage?: string;
+
+    // ⭐ ADDED: Generic dependency injection
+    injectFrom?: Record<string, string>;
 }
 
 interface SequentialTaskExecutorProps {
@@ -57,6 +60,9 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
     const processStarted = useRef(false);
     const taskIndex = useRef(0);
 
+    // ⭐ ADDED: Import context storage
+    const importContext = useRef<Record<string, any>>({});
+
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
     const updateTaskStatus = (status: 'running' | 'success' | 'failed', customMessage?: string) => {
@@ -77,18 +83,21 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
     const handleTaskResponse = async (currentTask: Task, response: DynamicResponse) => {
         const isSuccess = response?.success === true;
 
-        // Determine message and trigger callbacks
         const message = isSuccess
             ? currentTask.successMessage || response?.message || 'Task completed'
             : currentTask.failureMessage || response?.message || 'Task failed';
 
         if (isSuccess) {
+            // ⭐ ADDED: Store successful task data into context
+            if (Array.isArray(response?.data)) {
+                importContext.current[currentTask.action] = response.data;
+            }
+
             onTaskComplete?.(currentTask, response);
         } else {
             onError?.({ task: currentTask, response, error: message });
         }
 
-        // Update UI
         updateTaskStatus(isSuccess ? 'success' : 'failed', message);
 
         return isSuccess ? 'success' : 'failed';
@@ -105,7 +114,6 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
 
         const currentTask = tasks[taskIndex.current];
 
-        // Add task to sequence
         setTaskSequence((prev) => [
             ...prev,
             {
@@ -119,9 +127,18 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         await sleep(interval);
 
         try {
+            // ⭐ UPDATED: Payload now supports generic injection
             const payload: Record<string, any> = {
                 action: currentTask.action
             };
+
+            if (currentTask.injectFrom) {
+                Object.entries(currentTask.injectFrom).forEach(
+                    ([payloadKey, sourceAction]) => {
+                        payload[payloadKey] = importContext.current[sourceAction];
+                    }
+                );
+            }
 
             const response = await axios.post(
                 getApiLink(appLocalizer, apilink),
@@ -135,7 +152,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
             );
 
             const formattedResponse = {
-                success: response.data?.success === true, 
+                success: response.data?.success === true,
                 data: response.data?.data,
                 message: response.data?.message,
                 ...response.data
@@ -164,12 +181,16 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
 
     const startProcess = useCallback(() => {
         if (processStarted.current) return;
-        
+
         processStarted.current = true;
         setLoading(true);
         setTaskSequence([]);
         setProcessStatus('');
         taskIndex.current = 0;
+
+        // ⭐ ADDED: Reset context on new run
+        importContext.current = {};
+
         executeSequentialTasks();
     }, [executeSequentialTasks]);
 
@@ -201,7 +222,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
                     }]}
                     position="left"
                 />
-                
+
                 {loading && (
                     <div className="loader">
                         <div className="three-body-dot" />
