@@ -15,6 +15,7 @@ import {
 	BasicInputUI,
 	SelectInputUI,
 	Notice,
+	CountryCodes
 } from 'zyra';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
@@ -293,69 +294,66 @@ const statusOptions = [
 		}
 	};
 
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e.target;
-		const updated = { ...formData, [name]: value };
-		setFormData(updated);
+	const handleChange = (name: string, value: any) => {
+    const updated = { ...formData, [name]: value };
+    setFormData(updated);
 
-		if (name === 'slug') {
-			const cleanValue = value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+    if (name === 'slug') {
+        const cleanValue = value.toLowerCase().replace(/[^a-z0-9-]/g, '');
 
-			const updated = { ...formData, slug: cleanValue };
-			setFormData(updated);
+        if (cleanValue !== value.toLowerCase()) {
+            setErrorMsg((prev) => ({
+                ...prev,
+                slug: __('Special characters are not allowed.', 'multivendorx'),
+            }));
+            return;
+        }
 
-			if (cleanValue !== value.toLowerCase()) {
-				setErrorMsg((prev) => ({
-					...prev,
-					slug: __(
-						'Special characters are not allowed.',
-						'multivendorx'
-					),
-				}));
-				return;
-			}
+        (async () => {
+            if (!cleanValue.trim()) {
+                setErrorMsg((prev) => ({
+                    ...prev,
+                    slug: __('Slug cannot be blank', 'multivendorx'),
+                }));
+                return;
+            }
 
-			(async () => {
-				const trimmedValue = cleanValue.trim();
-				if (!trimmedValue) {
-					setErrorMsg((prev) => ({
-						...prev,
-						slug: __('Slug cannot be blank', 'multivendorx'),
-					}));
-					return;
-				}
-				const exists = await checkSlugExists(trimmedValue);
+            const exists = await checkSlugExists(cleanValue);
 
-				if (exists) {
-					setErrorMsg((prev) => ({
-						...prev,
-						slug: `Slug "${trimmedValue}" already exists.`,
-					}));
-					return;
-				}
-				setErrorMsg((prev) => ({ ...prev, slug: '' }));
-				autoSave(updated);
-				onUpdate({ slug: trimmedValue });
-			})();
+            if (exists) {
+                setErrorMsg((prev) => ({
+                    ...prev,
+                    slug: `Slug "${cleanValue}" already exists.`,
+                }));
+                return;
+            }
 
-			return;
-		} else if (name === 'phone') {
-			const isValidPhone = /^\+?[0-9\s\-]{7,15}$/.test(value);
-			if (isValidPhone || value == '') {
-				autoSave(updated);
-				setErrorMsg((prev) => ({ ...prev, phone: '' }));
-			} else {
-				setErrorMsg((prev) => ({
-					...prev,
-					phone: __('Invalid phone number', 'multivendorx'),
-				}));
-			}
-		} else if (name !== 'email') {
-			autoSave(updated);
-		}
-	};
+            setErrorMsg((prev) => ({ ...prev, slug: '' }));
+            autoSave(updated);
+            onUpdate({ slug: cleanValue });
+        })();
+
+        return;
+    }
+
+    if (name === 'phone') {
+        const isValidPhone = /^[0-9]{6,15}$/.test(value);
+
+        if (isValidPhone || value === '') {
+            autoSave(updated);
+            setErrorMsg((prev) => ({ ...prev, phone: '' }));
+        } else {
+            setErrorMsg((prev) => ({
+                ...prev,
+                phone: __('Invalid phone number', 'multivendorx'),
+            }));
+        }
+
+        return;
+    }
+
+    autoSave(updated);
+};
 
 	// Then update your autoSave function:
 	const autoSave = (updatedData: any) => {
@@ -454,11 +452,28 @@ const statusOptions = [
 						</FormGroup>
 
 						<FormGroup label={__('Phone', 'multivendorx')}>
+							<SelectInputUI
+								type='single-select'
+								name="country_code"
+								value={formData.country_code}
+								options={CountryCodes}
+								onChange={(newValue: any) => {
+									if (!newValue || Array.isArray(newValue)) return;
+
+									const updated = {
+										...formData,
+										country_code: newValue.value, 
+									};
+
+									setFormData(updated);
+									autoSave(updated);
+								}}
+							/>
 							<BasicInputUI
 								name="phone"
 								type="number"
 								value={formData.phone}
-								onChange={handleChange}
+								onChange={(val) => handleChange('phone', val)}
 							/>
 							{errorMsg.phone && (
 								<p className="invalid-massage">
