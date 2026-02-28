@@ -336,25 +336,26 @@ document.addEventListener('DOMContentLoaded', () => {
 		StoreInfo.storeDetails;
 
 	const map = {
-		facebook: facebook,
-		twitter: twitter,
-		instagram: instagram,
-		youtube: youtube,
-		linkedin: linkedin,
-		pinterest: pinterest,
+		facebook,
+		twitter,
+		instagram,
+		youtube,
+		linkedin,
+		pinterest,
 	};
 
 	Object.entries(map).forEach(([key, url]) => {
-		if (!url) {
-			return;
-		}
-
 		document
 			.querySelectorAll(`.multivendorx-social-${key}`)
 			.forEach((el) => {
-				el.href = url;
-				el.target = '_blank';
-				el.rel = 'noopener noreferrer';
+				if (url) {
+					el.href = url;
+					el.target = '_blank';
+					el.rel = 'noopener noreferrer';
+					el.style.display = '';
+				} else {
+					el.style.display = 'none';
+				}
 			});
 	});
 });

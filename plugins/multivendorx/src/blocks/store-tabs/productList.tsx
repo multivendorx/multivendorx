@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { getApiLink } from 'zyra';
+import { getApiLink, HeaderSearch } from 'zyra';
 
 const ProductsTab: React.FC = () => {
 	const [html, setHtml] = useState('');
+	const [search, setSearch] = useState('');
 
 	useEffect(() => {
 		axios
@@ -11,6 +12,7 @@ const ProductsTab: React.FC = () => {
 				headers: { 'X-WP-Nonce': StoreInfo.nonce },
 				params: {
 					storeId: StoreInfo.storeDetails.storeId,
+					search: search,
 				},
 			})
 			.then((response) => {
@@ -19,9 +21,20 @@ const ProductsTab: React.FC = () => {
 			.catch((error) => {
 				console.error('Error loading products:', error);
 			});
-	}, []);
+	}, [search]);
 
-	return <div dangerouslySetInnerHTML={{ __html: html }} />;
+	return (
+		<div>
+			<HeaderSearch
+				variant="mini-search"
+				search={{ placeholder: 'Search .....' }}
+				onQueryUpdate={(e) => {
+					setSearch(e.searchValue);
+				}}
+			/>
+			<div dangerouslySetInnerHTML={{ __html: html }} />
+		</div>
+	);
 };
 
 export default ProductsTab;

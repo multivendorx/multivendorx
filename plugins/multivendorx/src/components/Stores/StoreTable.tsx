@@ -143,7 +143,7 @@ const StoreTable: React.FC = () => {
 					icon: 'storefront',
 					onClick: (row) => {
 						window.open(
-							`${appLocalizer.store_page_url}${row.slug}`,
+							`${appLocalizer.store_page_url}${row.store_slug}`,
 							'_blank'
 						);
 					},

@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 
 const StoreQuickInfo: React.FC<{}> = () => {
 	const [rating, setRatings] = useState<number | null>(null);
+	const [ratingCount, setRatingsCount] = useState<number | null>(null);
 	const [totalProducts, setTotalProducts] = useState<number | null>(null);
 	const storeDetails = StoreInfo.storeDetails;
 
@@ -23,7 +24,20 @@ const StoreQuickInfo: React.FC<{}> = () => {
 				console.error('Failed to fetch rating', err);
 			}
 		};
-
+		const fetchRatingCount = async () => {
+			try {
+				const response = await axios.get(
+					getApiLink(StoreInfo, `review`),
+					{
+						headers: { 'X-WP-Nonce': StoreInfo.nonce },
+						params: { store_id: storeDetails.storeId },
+					}
+				);
+				setRatingsCount(Number(response.headers['x-wp-total']) || 0);
+			} catch (err) {
+				console.error('Failed to fetch rating', err);
+			}
+		};
 		const fetchTotalProducts = async () => {
 			try {
 				const response = await axios.get(
@@ -51,11 +65,20 @@ const StoreQuickInfo: React.FC<{}> = () => {
 
 		if (StoreInfo.activeModules?.includes('store-review')) {
 			fetchRating();
+			fetchRatingCount();
 		}
 
 		fetchTotalProducts();
 	}, [storeDetails.storeId]);
+	const renderStars = (rating: number | null) => {
+		if (!rating) return null;
 
+		const stars = Array.from({ length: 5 }, (_, index) => {
+			return index < Math.round(rating) ? '★' : '☆';
+		});
+
+		return <span className="stars">{stars.join('')}</span>;
+	};
 	return (
 		<div className="store-card">
 			<div className="store-header">
@@ -77,12 +100,11 @@ const StoreQuickInfo: React.FC<{}> = () => {
 						<p className="store-email">{storeDetails.storeEmail}</p>
 					)}
 
-					{rating !== null && (
-						<div className="store-rating">
-							<span className="stars">★★★★★</span>
-							<span className="rating-number">{rating}</span>
-						</div>
-					)}
+					<div className="store-rating">
+						{renderStars(rating)}
+						<span className="rating-number">{rating}</span>
+					</div>
+
 				</div>
 			</div>
 
@@ -94,21 +116,11 @@ const StoreQuickInfo: React.FC<{}> = () => {
 					</div>
 				)}
 
-				{rating !== null && (
-					<div className="stat-item">
-						<div className="stat-number">{rating}</div>
-						<div className="stat-label">{__('Rating', 'multivendorx')}</div>
-					</div>
-				)}
 
-				{storeDetails.totalSales !== undefined && (
-					<div className="stat-item">
-						<div className="stat-number">
-							{storeDetails.totalSales}
-						</div>
-						<div className="stat-label">{__('Sales', 'multivendorx')}</div>
-					</div>
-				)}
+				<div className="stat-item">
+					<div className="stat-number">{ratingCount}</div>
+					<div className="stat-label">{__('Rating', 'multivendorx')}</div>
+				</div>
 			</div>
 		</div>
 	);

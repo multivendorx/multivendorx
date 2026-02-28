@@ -23,29 +23,31 @@ interface TabsProps {
     value?: any;
     onChange?: (value: any) => void;
     canAccess?: (capability: string) => boolean;
+    headerExtra?: React.ReactNode;
 }
 
-export const TabsUI: React.FC<TabsProps> = ({ 
-    tabs, 
-    defaultActiveIndex = 0, 
-    value, 
-    onChange, 
-    canAccess, 
+export const TabsUI: React.FC<TabsProps> = ({
+    tabs,
+    defaultActiveIndex = 0,
+    value,
+    onChange,
+    canAccess,
+    headerExtra,
 }) => {
     const [activeIndex, setActiveIndex] = useState(defaultActiveIndex);
-    
+
     // Helper function to render a field from configuration
     const renderFieldFromConfig = (fieldConfig: any, index: number) => {
         const registeredField = FIELD_REGISTRY[fieldConfig.type];
         const Render = registeredField?.render;
-        
+
         if (!registeredField || !Render) {
             return null;
         }
-        
+
         // Get the value for this specific field
         const fieldValue = value?.[fieldConfig.key] || '';
-        
+
         // Handle onChange for this specific field
         const handleFieldChange = (newValue: any) => {
             if (onChange) {
@@ -55,20 +57,20 @@ export const TabsUI: React.FC<TabsProps> = ({
                 });
             }
         };
-        
+
         return (
             // <div key={fieldConfig.key || index} className="tab-field-wrapper">
             //     {fieldConfig.label && <label className="tab-field-label">{fieldConfig.label}</label>}
-                <Render
-                    field={fieldConfig}
-                    value={fieldValue}
-                    onChange={handleFieldChange}
-                    canAccess={canAccess}
-                />
+            <Render
+                field={fieldConfig}
+                value={fieldValue}
+                onChange={handleFieldChange}
+                canAccess={canAccess}
+            />
             // </div>
         );
     };
-    
+
     // Helper function to process content recursively
     const processContent = (content: any): React.ReactNode => {
         // If content is an array, map through it
@@ -83,36 +85,36 @@ export const TabsUI: React.FC<TabsProps> = ({
                 return item;
             });
         }
-        
+
         // If content is a plain field config object (not a React element)
         if (content && typeof content === 'object' && !React.isValidElement(content) && typeof content.type === 'string') {
             return renderFieldFromConfig(content, 0);
         }
-        
+
         // Return as is (string, number, React element, etc.)
         return content;
     };
-    
+
     // Helper function to render tab content
     const renderTabContent = () => {
         const currentTab = tabs[activeIndex];
-        
+
         if (!currentTab) return null;
-        
+
         // If type exists (legacy support), render the registered field component
         if (currentTab.type) {
             const registeredField = FIELD_REGISTRY[currentTab.type];
             const Render = registeredField?.render;
-            
+
             if (registeredField && Render) {
                 const tabAsField = {
                     ...currentTab,
                     type: currentTab.type,
                     key: currentTab.key || `tab-${activeIndex}`,
                 };
-                
+
                 const tabValue = value?.[currentTab.key || `tab-${activeIndex}`] || currentTab.value || '';
-                
+
                 const handleTabChange = (newValue: any) => {
                     if (onChange) {
                         onChange({
@@ -121,7 +123,7 @@ export const TabsUI: React.FC<TabsProps> = ({
                         });
                     }
                 };
-                
+
                 return (
                     <Render
                         field={tabAsField}
@@ -131,14 +133,14 @@ export const TabsUI: React.FC<TabsProps> = ({
                     />
                 );
             }
-            
+
             return null;
         }
-        
+
         // Process the content (can be array of fields, single field, or any React node)
         return processContent(currentTab.content);
     };
-    
+
     return (
         <>
             <div className="tabs-wrapper">
@@ -153,8 +155,13 @@ export const TabsUI: React.FC<TabsProps> = ({
                         </div>
                     ))}
                 </div>
+                {headerExtra && (
+                    <div className="tabs-header-extra">
+                        {headerExtra}
+                    </div>
+                )}
             </div>
-            
+
             {renderTabContent()}
 
             {/* Footer */}

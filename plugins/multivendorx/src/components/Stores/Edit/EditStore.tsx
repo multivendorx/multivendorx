@@ -4,7 +4,7 @@ import {
 	ToggleSettingUI,
 	getApiLink,
 	useModules,
-	
+
 	FormGroupWrapper,
 	FormGroup,
 	Skeleton,
@@ -42,7 +42,8 @@ const EditStore = () => {
 	const location = useLocation();
 	const [prevName, setPrevName] = useState('');
 	const [prevDesc, setPrevDesc] = useState('');
-	const headerRef = useRef<HTMLDivElement>(null);
+	const bannerRef = useRef<HTMLDivElement>(null);
+	const logoRef = useRef<HTMLDivElement>(null);
 	const storeRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		if (editName) {
@@ -61,8 +62,11 @@ const EditStore = () => {
 		setEditDesc(false);
 	});
 
-	useOutsideClick(headerRef, () => {
+	useOutsideClick(bannerRef, () => {
 		setBannerMenu(false);
+	});
+
+	useOutsideClick(logoRef, () => {
 		setLogoMenu(false);
 	});
 
@@ -390,7 +394,7 @@ const EditStore = () => {
 		<>
 			<Notice
 				displayPosition="float"
-				title= {__('Great!', 'multivendorx')}
+				title={__('Great!', 'multivendorx')}
 				message={successMsg}
 			/>
 			<SettingsNavigator
@@ -422,7 +426,7 @@ const EditStore = () => {
 									) : null}
 
 									<div className="edit-section">
-										<div className="icon-wrapper edit-wrapper">
+										<div className="icon-wrapper edit-wrapper" ref={bannerRef} >
 											<span
 												className="admin-btn btn-purple"
 												onClick={(e) => {
@@ -430,7 +434,6 @@ const EditStore = () => {
 													setBannerMenu(true);
 													setLogoMenu(false);
 												}}
-												ref={headerRef}
 											>
 												<i className="adminfont-edit"></i>
 												{__(
@@ -510,7 +513,7 @@ const EditStore = () => {
 											)}
 
 											<div className="edit-section">
-												<div className="icon-wrapper edit-wrapper">
+												<div className="icon-wrapper edit-wrapper" ref={logoRef}>
 													<span
 														className="admin-btn btn-purple"
 														onClick={(e) => {

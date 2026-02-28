@@ -58,9 +58,18 @@ registerBlockType('multivendorx/store-address', {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+	const address = window?.StoreInfo?.storeDetails?.storeAddress;
+
 	document
 		.querySelectorAll('.multivendorx-store-address-block')
 		.forEach((el) => {
-			el.textContent = StoreInfo.storeDetails.storeAddress;
+			const wrapper = el.closest('.wp-block-multivendorx-store-address');
+
+			if (!address) {
+				wrapper?.remove();
+				return;
+			}
+
+			el.textContent = address;
 		});
 });

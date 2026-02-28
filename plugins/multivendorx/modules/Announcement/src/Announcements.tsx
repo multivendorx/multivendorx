@@ -279,7 +279,7 @@ export const Announcements: React.FC = () => {
 		content: { label: __('Content', 'multivendorx') },
 		status_label: { label: __('Status', 'multivendorx'), type: 'status' },
 		store_name: { label: __('Recipients', 'multivendorx') },
-		date: { label: __('Date', 'multivendorx'), type: 'date' },
+		date_created: { label: __('Date', 'multivendorx'), type: 'date' },
 		action: {
 			type: 'action',
 			label: __('Action', 'multivendorx'),
@@ -378,7 +378,6 @@ export const Announcements: React.FC = () => {
 			type: 'date',
 		},
 	];
-
 	return (
 		<>
 			<PopupUI
@@ -503,13 +502,13 @@ export const Announcements: React.FC = () => {
 							type="multi-select"
 							options={storeOptions}
 							value={formData.stores.map((id) => id)}
-							onChange={(newValue: StoreOption[]) => {
+							onChange={(newValue) => {
 								if (!Array.isArray(newValue)) {
 									return;
 								}
 
 								const selectedIds = newValue.map((opt) =>
-									Number(opt.value)
+									Number(opt)
 								);
 								const prevStores = formData.stores;
 

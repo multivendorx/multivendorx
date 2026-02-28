@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { getApiLink, sendApiResponse } from '../utils/apiService';
 import { useModules } from '../contexts/ModuleContext';
 import '../styles/web/Modules.scss';
@@ -165,6 +165,39 @@ const Modules: React.FC<ModuleProps> = ({
         });
     }, [moduleList, selectedCategory, selectedFilter, searchQuery, modules]);
 
+    useEffect(() => {
+        let highlightedElement: HTMLElement | null = null;
+        let hasHighlightedOnce = false;
+
+        const scrollToTargetSection = () => {
+            if (hasHighlightedOnce) return;
+            const hash = window.location.hash;
+            const params = new URLSearchParams(hash.replace('#&', ''));
+            const targetId = params.get('module');
+            if (!targetId) return;
+
+            setTimeout(() => {
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    targetElement.classList.add('highlight');
+                    highlightedElement = targetElement;
+                    hasHighlightedOnce = true;
+                }
+            }, 500);
+        };
+
+        const handleClickAnywhere = (e: Event) => {
+            if (highlightedElement && !highlightedElement.contains(e.target as Node)) {
+                highlightedElement.classList.remove('highlight');
+                highlightedElement = null;
+            }
+        };
+
+        scrollToTargetSection();
+        document.addEventListener('pointerdown', handleClickAnywhere);
+        return () => document.removeEventListener('pointerdown', handleClickAnywhere);
+    }, []);
 
     const statusOptions = [
         { label: `All (${totalCount})`, value: 'All' },
@@ -191,7 +224,7 @@ const Modules: React.FC<ModuleProps> = ({
                     message={successMsg}
                     displayPosition='float'
                     title='Success!'
-                    // onDismiss={() => setSuccessMsg(null)}
+                // onDismiss={() => setSuccessMsg(null)}
                 />
             )}
 
