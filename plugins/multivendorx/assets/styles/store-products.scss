@@ -11,6 +11,14 @@
      --text-color-light: var(--wp--preset--color--secondary, #777);
  }
 
+// common style 
+.store-card{
+    h3,h4,h5,p{
+        margin: 0;
+    }
+}
+
+
  // multivendorx-popup start
  .multivendorx-popup {
      width: 100%;
@@ -43,19 +51,19 @@
      }
  }
 
- .store-rating {
-     font-size: 0.95rem;
-     display: flex;
-     align-items: center;
-     margin-bottom: 0.45rem;
+//  .store-rating {
+//      font-size: 0.95rem;
+//      display: flex;
+//      align-items: center;
+//      margin-bottom: 0.45rem;
 
-     i {
-         font-size: 0.95rem;
-         color: $star-color;
-         width: 1rem;
-         height: 1rem;
-     }
- }
+//      i {
+//          font-size: 0.95rem;
+//          color: $star-color;
+//          width: 1rem;
+//          height: 1rem;
+//      }
+//  }
 
  // store template start
  .multivendorx-banner {

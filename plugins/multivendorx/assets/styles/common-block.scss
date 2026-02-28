@@ -1,3 +1,4 @@
+
 // store quick info start (sidebar)
 .store-header {
     display: flex;
@@ -27,12 +28,12 @@
     flex: 1;
 }
 
-.store-name {
-    margin: 0 0 0.313rem 0;
-    font-size: 1.375rem;
-    font-weight: 600;
-    color: #333;
-}
+// .store-name {
+//     margin: 0 0 0.313rem 0;
+//     font-size: 1.375rem;
+//     font-weight: 600;
+//     color: #333;
+// }
 
 .store-email {
     margin: 0 0 0.625rem 0;
@@ -356,3 +357,19 @@
 }
 
 //  store details end
+
+
+// store coupon
+.store-coupon-list {
+    .coupon-card {
+        padding: 1rem;
+        border: 0.063rem dashed;
+        border-radius: 0.313rem;
+        margin-bottom: 0.813rem;
+        width: fit-content;
+
+        p,h4{
+            margin: 0;
+        }
+    }
+}

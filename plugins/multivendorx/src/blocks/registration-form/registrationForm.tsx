@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import './storeRegistration.scss';
 import { FormViewer, getApiLink, ToggleSetting } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
@@ -182,10 +181,7 @@ const RegistrationForm = () => {
 			/>
 			<div>{registrationForm.content_after_form}</div>
 			{responseMessage && (
-				<div className="admin-notice-display-title">
-					<i className="admin-font adminfont-icon-yes"></i>
-					<p>{responseMessage}</p>
-				</div>
+				<p>{responseMessage}</p>
 			)}
 		</>
 	);

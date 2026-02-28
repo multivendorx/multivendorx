@@ -62,10 +62,18 @@ if ( $store ) {
             $rating_value = number_format( (float) $details['overall_reviews'], 1 );
             $review_count = (int) ( $details['total_reviews'] ?? 0 );
 
-            $html .= '<div class="store-rating">
-                <i class="dashicons dashicons-star-filled"></i><i class="dashicons dashicons-star-filled"></i><i class="dashicons dashicons-star-filled"></i><i class="dashicons dashicons-star-filled"></i><i class="dashicons dashicons-star-filled"></i> '
-                . esc_html( $rating_value ) .
-                ' <span>(' . esc_html( $review_count ) . ')</span>
+            $html .= '
+            <div class="comment-form-rating">
+                <p class="stars">
+                    <span>
+                        <span class="star-rating" style="float: left;" role="img" aria-label="Rated ' . esc_attr( $rating_value ) . ' out of 5">
+                            <span style="width:' . esc_attr( ( $rating_value / 5 ) * 100 ) . '%">
+                                Rated <strong class="rating">' . esc_html( $rating_value ) . '</strong> out of 5
+                            </span>
+                        </span>
+                        <span class="review-count">(' . esc_html( $review_count ) . ')</span>
+                    </span>
+                </p>
             </div>';
         }
 

@@ -33,7 +33,7 @@ if ( $is_logged_in && $store_id ) {
 ?>
 
 <div class="woocommerce">
-    <div id="multivendorx-vendor-reviews">
+    <div id="multivendorx-store-reviews">
         <div id="avg-rating"></div>
 
         <div id="review-form-wrapper">
@@ -108,6 +108,6 @@ if ( $is_logged_in && $store_id ) {
 
         <input type="hidden" id="store_for_rating" value="<?php echo esc_attr( $store_id ); ?>">
 
-        <div id="multivendorx-vendor-reviews-list"></div>
+        <div id="multivendorx-store-reviews-list"></div>
     </div>
 </div>

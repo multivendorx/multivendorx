@@ -40,13 +40,16 @@ const ProductCategory: React.FC<{}> = () => {
 	return (
 		<div className="store-card">
 			<h3>{__('Product Categories', 'multivendorx')}</h3>
-			<ul className="multivendorx-category-list">
+			<ul className="wc-block-product-categories-list">
 				{categories.map((category) => (
 					<li
 						key={category.id}
-						className="multivendorx-category-item"
+						className="wc-block-product-categories-list-item"
 					>
-						{category.name}
+						<a href="#">
+							<span className="wc-block-product-categories-list-item__name">{category.name}</span>
+						</a>
+						<span className="wc-block-product-categories-list-item-count">30</span>
 					</li>
 				))}
 			</ul>

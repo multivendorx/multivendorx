@@ -121,8 +121,7 @@ export const NoticeReceiver: React.FC<NoticeReceiverProps> = ({ position }) => {
     return (
         <div className={`receiver receiver-${position}`}>
             {items.map(item => (
-                <div key={item.id} className={`ui-notice type-${item.type}`}>
-                    <div className="notice-details">
+                <div key={item.id} className={`ui-notice type-${item.type} display-${position}`}>
                         {item.title && (
                             <div className="notice-text">{item.title}</div>
                         )}
@@ -148,7 +147,6 @@ export const NoticeReceiver: React.FC<NoticeReceiverProps> = ({ position }) => {
                         >
                             ×
                         </button>
-                    </div>
                 </div>
             ))}
         </div>

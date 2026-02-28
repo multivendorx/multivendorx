@@ -4,8 +4,9 @@ import React, { useRef, useEffect } from 'react';
 // Internal Dependencies
 import { PopupUI } from './Popup';
 import HeaderSearch from './HeaderSearch';
-import ItemList, { ItemListUI } from './ItemList';
-import Tabs, { TabsUI } from './Tabs';
+import { ItemListUI } from './ItemList';
+import { TabsUI } from './Tabs';
+import { NoticeReceiver } from './NoticeReceiver';
 
 type SearchItem = {
     icon?: string;
@@ -111,17 +112,18 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
 
     return (
         <>
+            <NoticeReceiver position="banner" />
             <div className="admin-header" ref={wrapperRef}>
                 <div className="left-section">
                     <img className="brand-logo" src={brandImg} alt="Logo" />
 
                     <div className="version-tag">
                         <span className="admin-badge purple">
-                            <i className="adminfont-info"></i> <b>Free:</b>{' '}
+                            <i className="adminfont-info"></i> <b>Free:</b>
                             {free}
                         </span>
                         <span className="admin-badge red">
-                            <i className="adminfont-pro-tag"></i> Pro:{' '}
+                            <i className="adminfont-pro-tag"></i> Pro:
                             {pro ? pro : 'Not Installed'}
                         </span>
                     </div>
@@ -162,13 +164,15 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
             {notices.length > 0 &&
                 notices.map((html, i) => (
                     <>
-                    <div
-                        key={i}
-                        className="wp-admin-notice"
-                        dangerouslySetInnerHTML={{ __html: html }}
-                    />
+                        <div
+                            key={i}
+                            className="wp-admin-notice"
+                            dangerouslySetInnerHTML={{ __html: html }}
+                        />
+                        <NoticeReceiver position="notice" />
                     </>
                 ))}
+                <NoticeReceiver position="float" />
         </>
     );
 };

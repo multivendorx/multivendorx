@@ -43,30 +43,28 @@ export const Notice: React.FC<NoticeProps> = ({
     if (!title && !message) return null;
 
     return (
-        <div className={`ui-notice type-${type}`}>
-            <div className="notice-details">
-                {title && <div className="notice-text">{title}</div>}
+        <div className={`ui-notice type-${type} display-${position}`}>
+            {title && <div className="notice-text">{title}</div>}
 
-                {Array.isArray(message)
-                    ? message.map((msg, i) => (
-                          <div key={i} className="notice-desc">{msg}</div>
-                      ))
-                    : message && <div className="notice-desc">{message}</div>
-                }
+            {Array.isArray(message)
+                ? message.map((msg, i) => (
+                        <div key={i} className="notice-desc">{msg}</div>
+                    ))
+                : message && <div className="notice-desc">{message}</div>
+            }
 
-                {actionLabel && (
-                    <button className="notice-action" onClick={onAction}>
-                        {actionLabel}
-                    </button>
-                )}
-
-                <button
-                    className="notice-close"
-                    onClick={() => setIsVisible(false)}
-                >
-                    ×
+            {actionLabel && (
+                <button className="notice-action" onClick={onAction}>
+                    {actionLabel}
                 </button>
-            </div>
+            )}
+
+            <button
+                className="notice-close"
+                onClick={() => setIsVisible(false)}
+            >
+                ×
+            </button>
         </div>
     );
 };

@@ -71,13 +71,6 @@ export const ClickableListUI: FC<ClickableListProps> = ({
                     ]}
                 />
             )}
-
-            {/* Description */}
-            {desc && (
-                <div className="settings-metabox-description">
-                    {desc}
-                </div>
-            )}
         </div>
     );
 };
