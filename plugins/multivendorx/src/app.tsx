@@ -12,6 +12,7 @@ import {
 	TourSetup,
 	Notice,
 	NoticeReceiver,
+	ItemListUI,
 } from 'zyra';
 
 import Settings from './components/Settings/Settings';
@@ -309,10 +310,8 @@ const App = () => {
 						)}
 					</div>
 					<SequentialTaskExecutor
-						buttonKey="import_dummy_data"
 						buttonText={__('Import Dummy Data', 'multivendorx')}
 						apilink="import-dummy-data"
-						action="action"
 						interval={1000}
 						appLocalizer={appLocalizer}
 						successMessage={__(
@@ -330,7 +329,6 @@ const App = () => {
 									'Importing store owners...',
 									'multivendorx'
 								),
-								cacheKey: 'store_owners',
 								successMessage: __(
 									'Store owners imported',
 									'multivendorx'
@@ -346,7 +344,7 @@ const App = () => {
 									'Creating stores...',
 									'multivendorx'
 								),
-								cacheKey: 'store_ids',
+								requiresResponeData: true,
 								successMessage: __(
 									'Stores created',
 									'multivendorx'
@@ -362,7 +360,7 @@ const App = () => {
 									'Importing products...',
 									'multivendorx'
 								),
-								cacheKey: 'product_ids',
+								requiresResponeData: true,
 								successMessage: __(
 									'Products imported',
 									'multivendorx'
@@ -393,6 +391,7 @@ const App = () => {
 									'Creating orders...',
 									'multivendorx'
 								),
+								requiresResponeData: true,
 								successMessage: __(
 									'Orders created',
 									'multivendorx'
@@ -408,6 +407,7 @@ const App = () => {
 									'Creating reviews...',
 									'multivendorx'
 								),
+								requiresResponeData: true,
 								successMessage: __(
 									'Reviews created',
 									'multivendorx'
@@ -424,6 +424,7 @@ const App = () => {
 						onError={(error) => {
 							console.error('Import failed', error);
 						}}
+						
 					/>
 				</FormGroupWrapper>
 			</PopupUI>

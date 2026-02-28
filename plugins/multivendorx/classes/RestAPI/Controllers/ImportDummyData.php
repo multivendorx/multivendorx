@@ -53,11 +53,18 @@ class ImportDummyData extends \WP_REST_Controller {
      * @param \WP_REST_Request $request
      */
     public function process_action( $request ) {
+
         $nonce = $request->get_header( 'X-WP-Nonce' );
         if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-        }
+            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
 
+            if ( is_wp_error( $error ) ) {
+                 MultiVendorX()->util->log( $error );
+            }
+
+            return $error;
+        }
+            
         $action    = $request->get_param( 'action' );
 
         if (method_exists( $this, $action ) ) {
@@ -74,13 +81,8 @@ class ImportDummyData extends \WP_REST_Controller {
      * Get current status
      */
     public function get_status( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-        }
-
-        $parameter = $request->get_param( 'parameter' );
-        $status    = get_transient( 'multivendorx_import_status_' . $parameter ) ?: array();
+        $task = $request->get_param( 'task' );
+        $status    = get_transient( 'multivendorx_import_status_' . $task ) ?: array();
 
         return array(
             'success' => true,
@@ -89,8 +91,9 @@ class ImportDummyData extends \WP_REST_Controller {
         );
     }
 
-    public function import_store_owners() {
-        $xml          = simplexml_load_file( MultiVendorX()->plugin_path . '/assets/dummy-data/store_owners.xml' );
+    public function import_store_owners( ) {
+        $xml = $this->load_dummy_xml( 'store_owners' );
+
         $store_owners = array();
 
         foreach ( $xml->store as $store ) {
@@ -116,6 +119,7 @@ class ImportDummyData extends \WP_REST_Controller {
                 $user_id = wp_insert_user( $userdata );
 
                 if ( is_wp_error( $user_id ) ) {
+                    MultiVendorX()->util->log( $user_id );
                     continue;
                 }
             }
@@ -123,48 +127,79 @@ class ImportDummyData extends \WP_REST_Controller {
             $store_owners[] = (int) $user_id;
 
             // Image handling
-            foreach ( $store->images->image as $image ) {
-                $src    = plugins_url( $image->src );
-                $upload = wc_rest_upload_image_from_url( esc_url_raw( $src ) );
+            if ( isset( $store->images->image ) ) {
+                foreach ( $store->images->image as $image ) {
+                    $src    = plugins_url( 'multivendorx/' . (string) $image->src );
+                    $upload = wc_rest_upload_image_from_url( esc_url_raw( $src ) );
 
-                if ( is_wp_error( $upload ) ) {
-                    continue;
-                }
+                    if ( is_wp_error( $upload ) ) {
+                        continue;
+                    }
 
-                $attachment_id = wc_rest_set_uploaded_image_as_attachment( $upload, $user_id );
+                    $attachment_id = wc_rest_set_uploaded_image_as_attachment( $upload, $user_id );
 
-                if ( wp_attachment_is_image( $attachment_id ) ) {
-                    if ( $image->position == 'store' ) {
-                        update_user_meta( $user_id, '_store_image', $attachment_id );
-                    } elseif ( $image->position == 'cover' ) {
-                        update_user_meta( $user_id, '_store_banner', $attachment_id );
+                    if ( wp_attachment_is_image( $attachment_id ) ) {
+                        if ( 'store' === (string) $image->position ) {
+                            update_user_meta( $user_id, '_store_image', $attachment_id );
+                        } elseif ( 'cover' === (string) $image->position ) {
+                            update_user_meta( $user_id, '_store_banner', $attachment_id );
+                        }
                     }
                 }
             }
         }
 
-        return array(
+            $response_data = array(
             'success' => true,
             'data'    => $store_owners,
-            'message' => __( 'Store owners imported successfully.', 'multivendorx' ),
+            'message' => __( 'Store owners imported successfully.', 'multivendorx' )
         );
+        
+        $response = rest_ensure_response( $response_data );
+        $response->header( 'X-WP-Total', count( $store_owners ) );
+        
+        return $response;
+    }
+
+    private function load_dummy_xml( string $filename ) {
+
+        $base_path = trailingslashit( MultiVendorX()->plugin_path ) . 'assets/dummy-data/';
+        $file_path = $base_path . $filename . '.xml';
+
+        if ( ! file_exists( $file_path ) ) {
+            return new \WP_Error(
+                'file_not_found',
+                sprintf(
+                    __( '%s XML file not found.', 'multivendorx' ),
+                    ucfirst( str_replace( '_', ' ', $filename ) )
+                ),
+                array( 'status' => 404 )
+            );
+        }
+
+        libxml_use_internal_errors( true );
+        $xml = simplexml_load_file( $file_path );
+
+        if ( ! $xml ) {
+            return new \WP_Error(
+                'invalid_xml',
+                __( 'Invalid XML structure.', 'multivendorx' ),
+                array( 'status' => 400 )
+            );
+        }
+
+        return $xml;
     }
 
     public function import_stores( $request ) {
 
-        $xml_url = MultiVendorX()->plugin_path . '/assets/dummy-data/store.xml';
-        $xml     = simplexml_load_file(
-            $xml_url
-        );
-
-        if ( ! $xml ) {
-            return;
-        }
+        $xml = $this->load_dummy_xml( 'stores' );
 
         $created_store_ids = array();
 
         foreach ( $xml->store as $store ) {
-            $store_owners = $request->get_param( 'store_owners' );
+            $params = $request->get_json_params();
+            $store_owners = $params['responseData'] ;
             $owner_index  = (int) $store->owner_index;
             $owner_id     = $store_owners[ $owner_index ] ?? 0;
 
@@ -227,15 +262,20 @@ class ImportDummyData extends \WP_REST_Controller {
             $created_store_ids[] = $store_id;
         }
 
-        return array(
+        $response_data = array(
             'success' => true,
             'data'    => $created_store_ids,
+            'message' => __( 'Stores imported successfully.', 'multivendorx' )
         );
+
+        $response = rest_ensure_response( $response_data );
+        $response->header( 'X-WP-Total', count( $created_store_ids ) );
+
+        return $response;
     }
 
     public function import_products( $request ) {
 
-        $base_path     = MultiVendorX()->plugin_path . '/assets/dummy-data/';
         $product_files = array(
             'simple',
             'variable',
@@ -252,22 +292,17 @@ class ImportDummyData extends \WP_REST_Controller {
         $created_products = array();
 
         foreach ( $product_files as $product_type ) {
-            $xml_path = $base_path . $product_type . '.xml';
+            $xml = $this->load_dummy_xml( $product_type );
 
-            if ( ! file_exists( $xml_path ) ) {
-                continue;
-            }
-
-            $xml = simplexml_load_file( $xml_path );
-            if ( ! $xml || empty( $xml->product ) ) {
+            if ( empty( $xml->product ) ) {
                 continue;
             }
 
             foreach ( $xml->product as $product ) {
                 $store_index = (int) $product->store_index;
-                $store_ids   = $request->get_param( 'store_ids' );
+                $params = $request->get_json_params();
+                $store_ids   = $params['responseData'] ;
                 $store_id    = $store_ids[ $store_index ] ?? 0;
-
                 $sku = (string) $product->sku;
 
                 if ( ! empty( $sku ) ) {
@@ -396,20 +431,21 @@ class ImportDummyData extends \WP_REST_Controller {
             }
         }
 
-        return array(
+        $response_data = array(
             'success' => true,
             'data'    => $created_products,
+            'message' => __( 'Products imported successfully.', 'multivendorx' )
         );
+
+        $response = rest_ensure_response( $response_data );
+        $response->header( 'X-WP-Total', count( $created_products ) );
+
+        return $response;
     }
 
-    public function import_commissions() {
+    public function import_commissions( ) {
 
-        libxml_use_internal_errors( true );
-        $xml = simplexml_load_file( MultiVendorX()->plugin_path . '/assets/dummy-data/commissions.xml' );
-
-        if ( ! $xml ) {
-            return new \WP_Error( 'invalid_xml', 'Invalid XML structure.' );
-        }
+        $xml = $this->load_dummy_xml( 'commissions' );
 
         // Get current commission type setting
         $commission_type = MultiVendorX()->setting->get_setting( 'commission_type' );
@@ -482,21 +518,20 @@ class ImportDummyData extends \WP_REST_Controller {
             }
         }
 
-        return array(
+        $response_data = array(
             'success' => true,
-            'message' => __( 'Commission data imported successfully.', 'multivendorx' ),
+            'message' => __( 'Commissions imported successfully.', 'multivendorx' )
         );
+        
+        $response = rest_ensure_response( $response_data );
+        
+
+        return $response;
     }
 
     public function import_orders( $request ) {
 
-        $xml = simplexml_load_file(
-            MultiVendorX()->plugin_path . '/assets/dummy-data/orders.xml'
-        );
-
-        if ( ! $xml ) {
-            return;
-        }
+        $xml = $this->load_dummy_xml( 'orders' );
 
         foreach ( $xml->order as $order_xml ) {
 
@@ -523,7 +558,8 @@ class ImportDummyData extends \WP_REST_Controller {
 
             // Add products
             foreach ( $order_xml->items->item as $item ) {
-                $product_ids = $request->get_param( 'product_ids' );
+                $params = $request->get_json_params();
+                $product_ids = $params['responseData'];
                 $product_id  = (int) $product_ids[ (int) $item->product_index ] ?? 0;
 
                 if ( ! $product_id ) {
@@ -570,14 +606,21 @@ class ImportDummyData extends \WP_REST_Controller {
             }
         }
 
-        return array(
+        $response_data = array(
             'success' => true,
+            'data'    => $order,
+            'message' => __( 'Orders imported successfully.', 'multivendorx' )
         );
+        
+        $response = rest_ensure_response( $response_data );
+        return $response;
+
     }
 
     public function import_reviews( $request ) {
 
-        $product_ids = $request->get_param( 'product_ids' );
+        $params = $request->get_json_params();
+        $product_ids = $params['responseData'];
 
         if ( empty( $product_ids ) || ! is_array( $product_ids ) ) {
             return array(
@@ -586,9 +629,7 @@ class ImportDummyData extends \WP_REST_Controller {
             );
         }
 
-        $xml = simplexml_load_file(
-            MultiVendorX()->plugin_path . '/assets/dummy-data/reviews.xml'
-        );
+        $xml = $this->load_dummy_xml( 'reviews' );
 
         if ( ! $xml ) {
             return array(
@@ -648,9 +689,14 @@ class ImportDummyData extends \WP_REST_Controller {
             do_action( 'woocommerce_review_posted', $comment_id );
         }
 
-        return array(
+        $response_data = array(
             'success' => true,
-            'message' => __( 'Reviews imported successfully.', 'multivendorx' ),
+            'data'    => $comment_id,
+            'message' => __( 'Reviews imported successfully.', 'multivendorx' )
         );
+        
+        $response = rest_ensure_response( $response_data );
+        
+        return $response;
     }
 }
