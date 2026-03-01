@@ -679,12 +679,16 @@ class StoreUtil {
         }
         $store_obj = Store::get_store( $store_slug, 'slug' );
         $phone_meta = $store_obj->get_meta( 'phone' );
-        if ( is_array( $phone_meta ) ) {
-    $store_phone =
-        ($phone_meta['country_code']) . ($phone_meta['phone']);
-} else {
-    $store_phone = $phone_meta;
-}
+    
+        $store_phone = '';
+        if ( is_serialized( $phone_meta ) ) {
+            $phone_data = maybe_unserialize( $phone_meta );
+            if ( is_array( $phone_data ) && isset( $phone_data['country_code'] ) && isset( $phone_data['phone'] ) ) {
+                $store_phone = $phone_data['country_code'] . ' ' . $phone_data['phone'];
+            }
+        } else {
+            $store_phone = $phone_meta;
+        }
         $info      = array(
             'storeName'          => $store_obj->get( 'name' ),
             'storeDescription'   => $store_obj->get( 'description' ),
