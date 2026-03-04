@@ -68,7 +68,6 @@ const AddProduct = () => {
 	}, [productId]);
 
 	const defaultTypeOptions = [
-		{ label: 'Select product type', value: '' },
 		{ label: 'Simple Product', value: 'simple' },
 	];
 
