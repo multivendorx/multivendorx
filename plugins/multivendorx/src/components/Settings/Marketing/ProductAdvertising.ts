@@ -24,7 +24,7 @@ export default {
 			proSetting: true,
 			nestedFields: [
 				{
-					key: 'paid_promotion_limit',
+					key: 'free_promotion_limit',
 					type: 'number',
 					size: '8rem',
 					beforeElement: {
@@ -45,7 +45,7 @@ export default {
 					},
 				},
 				{
-					key: 'promotion_slot_cost',
+					key: 'pro_promotion_limit',
 					type: 'number',
 					size: '8rem',
 					afterElement: {
@@ -58,7 +58,7 @@ export default {
 					},
 				},
 				{
-					key: 'promotion_slot_cost_',
+					key: 'promotion_slot_cost',
 					type: 'number',
 					size: '8rem',
 					afterElement: {
