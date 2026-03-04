@@ -332,28 +332,35 @@ const AllProduct: React.FC = () => {
 		action: {
 			type: 'action',
 			label: __('Action', 'multivendorx'),
-			actions: [
-				{
-					label: __('Edit', 'multivendorx'),
-					icon: 'edit',
-					onClick: (row: any) => dashNavigate(['products', 'edit', String(row.id)]),
-				},
-				{
-					label: __('View', 'multivendorx'),
-					icon: 'eye',
-					onClick: (row: any) => window.location.assign(row.permalink),
-				},
-				{
-					label: __('Copy URL', 'multivendorx'),
-					icon: 'copy',
-					onClick: (row: any) => navigator.clipboard.writeText(row.permalink).catch(() => { }),
-				},
-				{
-					label: __('Delete', 'multivendorx'),
-					icon: 'adminfont-delete delete',
-					onClick: (row: any) => handleDelete(row.id),
-				},
-			],
+			actions: applyFilters(
+				'multivendorx_products_table_actions',
+				[
+					{
+						label: __('Edit', 'multivendorx'),
+						icon: 'edit',
+						onClick: (row: any) =>
+							dashNavigate(['products', 'edit', String(row.id)]),
+					},
+					{
+						label: __('View', 'multivendorx'),
+						icon: 'eye',
+						onClick: (row: any) =>
+							window.location.assign(row.permalink),
+					},
+					{
+						label: __('Copy URL', 'multivendorx'),
+						icon: 'copy',
+						onClick: (row: any) =>
+							navigator.clipboard.writeText(row.permalink).catch(() => { }),
+					},
+					{
+						label: __('Delete', 'multivendorx'),
+						icon: 'adminfont-delete delete',
+						onClick: (row: any) => handleDelete(row.id),
+					},
+				],
+				modules
+			),
 		},
 	};
 
