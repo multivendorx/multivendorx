@@ -11,10 +11,10 @@ import {
 	ToggleSettingUI,
 	TableCard,
 	NavigatorHeader,
-	Tabs,
 	TableRow,
 	QueryProps,
 	CategoryCount,
+	TabsUI,
 } from 'zyra';
 
 import axios from 'axios';
@@ -822,7 +822,7 @@ const AllCoupon: React.FC = () => {
 								/>
 							</FormGroup>
 						</FormGroupWrapper>
-						<Tabs
+						<TabsUI
 							tabs={tabs.map((tab) => ({
 								label: __(tab.label, 'multivendorx'),
 								content: tab.content,

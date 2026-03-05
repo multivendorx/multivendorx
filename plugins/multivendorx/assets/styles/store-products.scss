@@ -18,6 +18,10 @@
     }
 }
 
+.multivendorx-store-wrapper{
+    display: flex;
+    gap: 3rem;
+}
 
  // multivendorx-popup start
  .multivendorx-popup {
@@ -50,20 +54,6 @@
          cursor: pointer;
      }
  }
-
-//  .store-rating {
-//      font-size: 0.95rem;
-//      display: flex;
-//      align-items: center;
-//      margin-bottom: 0.45rem;
-
-//      i {
-//          font-size: 0.95rem;
-//          color: $star-color;
-//          width: 1rem;
-//          height: 1rem;
-//      }
-//  }
 
  // store template start
  .multivendorx-banner {
@@ -277,30 +267,6 @@
      box-shadow: 0 0.125rem 0.5rem 0 rgba(66, 62, 78, 0.12);
  }
 
- //  store tab start
- .multivendorx-store-tabs {
-     display: flex;
-     padding: 0;
-     margin: 2rem 0;
-     gap: 1.5rem;
-     border-bottom: $border-light-small;
-
-     li {
-         list-style-type: none;
-         padding: 0.625rem 0;
-
-         &.active {
-             border-bottom: 0.126rem solid var(--primary);
-
-             a {
-                 color: var(--primary);
-             }
-         }
-     }
- }
-
- // store template end
-
 
  //  single product qna start
  #product-qna {
@@ -418,7 +384,6 @@
          margin-top: 1rem;
      }
  }
-
  //  single product store info end
 
 
@@ -458,7 +423,6 @@
          }
      }
  }
-
  //  store page policy tabs end
 
 
@@ -562,98 +526,6 @@
          }
      }
 
-     #multivendorx-store-reviews-list {
-         .multivendorx-review-list {
-             margin: 0;
-             list-style-type: none;
-
-             .multivendorx-review-item {
-                 padding: 1.5rem 0;
-                 border-bottom: 0.063rem solid #d3d0d0;
-
-                 .header {
-                     display: flex;
-                     justify-content: space-between;
-
-                     .details-wrapper {
-                         display: flex;
-                         align-items: center;
-
-                         .avatar {
-                             width: 2rem;
-                             height: 2rem;
-                             background: var(--primary);
-                             border-radius: 50%;
-                             display: flex;
-                             justify-content: center;
-                             align-items: center;
-                             font-size: 1.25rem;
-                             color: #fff;
-                         }
-
-                         .name {
-                             font-size: 1.125rem;
-                             font-weight: 600;
-                             padding-left: 0.5rem;
-                         }
-
-                         span {
-                             font-size: 0.813rem;
-                             line-height: 0.9;
-                             padding-left: 0.5rem;
-                             color: #00000085;
-                             font-weight: 500;
-                         }
-
-                     }
-                 }
-
-                 .body {
-                     padding-top: 0.5rem;
-
-                     .title {
-                         font-size: 1.063rem;
-                         font-weight: 600;
-                         padding-left: 0.5rem;
-                     }
-
-                     .rating {
-                         padding-left: 0.5rem;
-
-                         i {
-                             color: $star-color;
-                         }
-                     }
-                 }
-
-                 .review-images {
-                     display: flex;
-                     flex-wrap: wrap;
-                     gap: 0.313rem;
-
-                     a {
-                         img {
-                             height: 5rem;
-                             width: auto;
-                         }
-                     }
-                 }
-
-                 .multivendorx-review-reply {
-                     padding: 0.625rem;
-                     background: #8f8f8f1f;
-                     margin-top: 0.5rem;
-                     border-radius: 0.313rem;
-
-                     p {
-                         margin: 0;
-                     }
-                 }
-             }
-
-         }
-     }
-
      #review-form-wrapper {
          margin-top: 1rem;
 
@@ -679,19 +551,10 @@
          transition: color 0.2s;
      }
 
-     .rating .adminlib-star {
-         color: $star-color;
-     }
-
-     .rating i.inactive {
-         color: #ccc;
-     }
-
      .rating .title {
          margin-left: 0.5rem;
          font-size: 0.875rem;
      }
-
  }
 
  .order-refund-product-list {

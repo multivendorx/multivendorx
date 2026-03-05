@@ -26,20 +26,9 @@ do_action( 'woocommerce_before_main_content' );
 // get_sidebar();
 // }
 $sidebar_position = MultiVendorX()->setting->get_setting( 'store_sidebar', array() );
-if ( in_array( $sidebar_position, array( 'left' ), true ) ) {
-    ?>
-    <aside class="multivendorx-store-sidebar multivendorx-store-sidebar-<?php echo esc_attr( $sidebar_position ); ?>">
-        <?php
-        if ( is_active_sidebar( 'multivendorx-store-sidebar' ) ) {
-            dynamic_sidebar( 'multivendorx-store-sidebar' );
-        }
-        ?>
-    </aside>
-    <?php
-}
+
 
 ?>
-<div class="mvx-store-wrapper">
 
     <header class="woocommerce-products-header">
         <?php if ( apply_filters( 'mvx_show_page_title', false ) ) : ?>
@@ -55,30 +44,43 @@ if ( in_array( $sidebar_position, array( 'left' ), true ) ) {
         do_action( 'multivendorx_after_store_banner', $store_id );
         ?>
     </header>
+    <div class="multivendorx-store-wrapper">
+        <!-- left sidebar -->
+        <?php
+        if ( in_array( $sidebar_position, array( 'left' ), true ) ) {
+            ?>
+            <aside class="multivendorx-store-sidebar-<?php echo esc_attr( $sidebar_position ); ?>">
+                <?php
+                if ( is_active_sidebar( 'multivendorx-store-sidebar' ) ) {
+                    dynamic_sidebar( 'multivendorx-store-sidebar' );
+                }
+                ?>
+            </aside>
+            <?php
+        }
+        // Tabs.
+        MultiVendorX()->util->get_template( 'store/store-tabs.php', array( 'store_id' => $store_id ) );
 
-    <?php
-    // Tabs.
-    MultiVendorX()->util->get_template( 'store/store-tabs.php', array( 'store_id' => $store_id ) );
-	?>
-
-</div>
+        // right sidebar
+        if ( in_array( $sidebar_position, array( 'right' ), true ) ) {
+        ?>
+        <aside class="multivendorx-store-sidebar-<?php echo esc_attr( $sidebar_position ); ?>">
+            <?php
+            if ( is_active_sidebar( 'multivendorx-store-sidebar' ) ) {
+                dynamic_sidebar( 'multivendorx-store-sidebar' );
+            }
+            ?>
+        </aside>
+        <?php
+    }
+        ?>
+    </div>
 
 <?php
 // if (MultiVendorX()->setting->get_setting( 'store_sidebar' ) == 'right') {
 // get_sidebar();
 // }
 
-if ( in_array( $sidebar_position, array( 'right' ), true ) ) {
-    ?>
-    <aside class="multivendorx-store-sidebar multivendorx-store-sidebar-<?php echo esc_attr( $sidebar_position ); ?>">
-        <?php
-        if ( is_active_sidebar( 'multivendorx-store-sidebar' ) ) {
-            dynamic_sidebar( 'multivendorx-store-sidebar' );
-        }
-        ?>
-    </aside>
-    <?php
-}
 
 do_action( 'woocommerce_after_main_content' );
 

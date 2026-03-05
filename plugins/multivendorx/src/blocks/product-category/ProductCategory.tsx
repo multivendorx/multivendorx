@@ -39,6 +39,8 @@ const ProductCategory: React.FC<{}> = () => {
 	}, []);
 
 	return (
+		<>
+		<h3>{__('Product Categories', 'multivendorx')}</h3>
 		<ul className="wc-block-product-categories-list">
 			{categories.map((category) => (
 				<li
@@ -54,11 +56,12 @@ const ProductCategory: React.FC<{}> = () => {
 					</a>
 
 					<span className="wc-block-product-categories-list-item-count">
-						{category.count}
+						({category.count})
 					</span>
 				</li>
 			))}
 		</ul>
+		</>
 	);
 };
 

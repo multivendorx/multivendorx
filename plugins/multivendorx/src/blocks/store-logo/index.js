@@ -54,7 +54,6 @@ registerBlockType('multivendorx/store-logo', {
 		} = attributes;
 
 		const blockProps = useBlockProps({
-			className: 'multivendorx-store-logo-block',
 			style: {
 				display: 'inline-block',
 				maxWidth: '100%',

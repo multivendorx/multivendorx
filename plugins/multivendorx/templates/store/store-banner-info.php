@@ -194,15 +194,12 @@ if ( is_string( $banner_slider ) ) {
                         $rating_value > 0
                     ) :
                         ?>
-                        <div class="store-rating">
-                            <i class="dashicons dashicons-star-filled"></i>
-                            <i class="dashicons dashicons-star-filled"></i>
-                            <i class="dashicons dashicons-star-filled"></i>
-                            <i class="dashicons dashicons-star-filled"></i>
-                            <i class="dashicons dashicons-star-filled"></i>
-                            <?php echo esc_html( $rating_value ); ?> / 5
-                            <span> (<?php echo esc_html( $review_count ); ?> Review)</span>
+                       <div class="star-rating" role="img" aria-label="<?php echo sprintf( __( 'Rated %s out of 5', 'multivendorx' ), $rating_value ); ?>">
+                            <span style="width: <?php echo ( floatval( $rating_value ) / 5 ) * 100; ?>%;">
+                                <strong class="rating"><?php echo esc_html( $rating_value ); ?></strong> <?php esc_html_e( 'out of 5', 'multivendorx' ); ?>
+                            </span>
                         </div>
+                        <span class="rating-count">(<?php echo esc_html( $review_count ); ?> <?php esc_html_e( 'Review', 'multivendorx' ); ?>)</span>
                     <?php endif; ?>
                     <?php
 

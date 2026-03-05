@@ -104,14 +104,14 @@ const ProductList: React.FC<ProductListProps> = ({
 											{product.salePrice ? (
 												<>
 													<del aria-hidden="true">
-														<span class="woocommerce-Price-amount amount">
+														<span className="woocommerce-Price-amount amount">
 															<bdi>
 																{product.price}
 															</bdi>
 														</span>
 													</del>
 													<ins aria-hidden="true">
-														<span class="woocommerce-Price-amount amount">
+														<span className="woocommerce-Price-amount amount">
 															<bdi>
 																{product.salePrice}
 															</bdi>
@@ -119,7 +119,7 @@ const ProductList: React.FC<ProductListProps> = ({
 													</ins>
 												</>
 											) : (
-												<span class="woocommerce-Price-amount amount">
+												<span className="woocommerce-Price-amount amount">
 													<bdi>
 														{product.price}
 													</bdi>

@@ -48,23 +48,21 @@ registerBlockType('multivendorx/product-category', {
 
 				<div {...blockProps}>
 					<h3>{__('Product Categories', 'multivendorx')}</h3>
-
-					<ul className="multivendorx-category-list">
+					<div className="wp-block-multivendorx-product-category multivendorx-product-categories">
+					<ul className="wc-block-product-categories-list">
 						{categories.map((category) => (
 							<li
 								key={category.id}
-								className="multivendorx-category-item"
+								className="wc-block-product-categories-list-item"
 							>
-								<span className="multivendorx-category-name">
-									{category.name}
-								</span>
-
-								<span className="multivendorx-category-count">
-									({category.count})
-								</span>
+								<a>
+									<span className="wc-block-product-categories-list-item__name">{category.name}</span>
+								</a>
+								<span className="wc-block-product-categories-list-item-count">{category.count}</span>
 							</li>
 						))}
 					</ul>
+					</div>
 				</div>
 			</>
 		);

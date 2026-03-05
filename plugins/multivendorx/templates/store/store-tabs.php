@@ -40,10 +40,13 @@ foreach ($store_tabs as $key => $tab) {
 }
 
 ?>
-<ul class="multivendorx-store-tabs">
+<div class="woocommerce">
+	<div class="product">
+		<div class="woocommerce-tabs wc-tabs-wrapper">
+<ul class="tabs wc-tabs">
 	<?php foreach ($store_tabs as $key => $tab) : ?>
 		<?php if (! empty($tab['url'])) : ?>
-			<li class="multivendorx-store-tab <?php echo esc_attr($key); ?> <?php echo ($current_tab === $key) ? 'active' : ''; ?>">
+			<li class="<?php echo esc_attr($key); ?> <?php echo ($current_tab === $key) ? 'active' : ''; ?>">
 				<a href="<?php echo esc_url($tab['url']); ?>">
 					<?php echo esc_html($tab['title']); ?>
 				</a>
@@ -53,7 +56,6 @@ foreach ($store_tabs as $key => $tab) {
 </ul>
 
 
-<div class="multivendorx-policies-accordion">
 	<?php
 	switch ($current_tab) {
 		case 'reviews':
@@ -103,55 +105,57 @@ foreach ($store_tabs as $key => $tab) {
 			
 			$products = new WP_Query($args);
 	?>
+		<div class="panel entry-content wc-tab">
+			<form method="get" class="store-product-search">
+				<input
+					type="search"
+					name="store_search"
+					placeholder="<?php esc_attr_e('Search products...', 'multivendorx'); ?>"
+					value="<?php echo esc_attr($search_keyword); ?>"
+					autocomplete="off" />
 
-			<div class="woocommerce">
-				<form method="get" class="store-product-search" style="margin-bottom:20px;">
-					<input
-						type="search"
-						name="store_search"
-						placeholder="<?php esc_attr_e('Search products...', 'multivendorx'); ?>"
-						value="<?php echo esc_attr($search_keyword); ?>"
-						autocomplete="off" />
-
-					<?php
-					// Preserve pagination if needed
-					if ($paged > 1) :
-					?>
-						<input type="hidden" name="paged" value="<?php echo esc_attr($paged); ?>">
-					<?php endif; ?>
-				</form>
-				<?php if ($products->have_posts()) : ?>
-
-					<?php woocommerce_product_loop_start(); ?>
-
-					<?php while ($products->have_posts()) : $products->the_post(); ?>
-
-						<?php
-						do_action('woocommerce_shop_loop');
-						wc_get_template_part('content', 'product');
-						?>
-
-					<?php endwhile; ?>
-
-					<?php woocommerce_product_loop_end(); ?>
-
-					<?php
-					echo paginate_links(array(
-						'total' => $products->max_num_pages,
-					));
-					?>
-
-				<?php else : ?>
-
-					<?php do_action('woocommerce_no_products_found'); ?>
-
+				<?php
+				// Preserve pagination if needed
+				if ($paged > 1) :
+				?>
+					<input type="hidden" name="paged" value="<?php echo esc_attr($paged); ?>">
 				<?php endif; ?>
+			</form>
+			<?php if ($products->have_posts()) : ?>
 
-				<?php wp_reset_postdata(); ?>
-			</div>
+				<?php woocommerce_product_loop_start(); ?>
+
+				<?php while ($products->have_posts()) : $products->the_post(); ?>
+
+					<?php
+					do_action('woocommerce_shop_loop');
+					wc_get_template_part('content', 'product');
+					?>
+
+				<?php endwhile; ?>
+
+				<?php woocommerce_product_loop_end(); ?>
+
+				<?php
+				echo paginate_links(array(
+					'total' => $products->max_num_pages,
+				));
+				?>
+
+			<?php else : ?>
+
+				<?php do_action('woocommerce_no_products_found'); ?>
+
+			<?php endif; ?>
+
+			<?php wp_reset_postdata(); ?>
+		</div>
 
 	<?php
 			break;
 	}
+	
 	?>
+</div>
+</div>
 </div>

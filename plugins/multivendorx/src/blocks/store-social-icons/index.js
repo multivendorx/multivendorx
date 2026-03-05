@@ -73,6 +73,17 @@ const LinkedInIcon = () => (
 		<path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
 	</svg>
 );
+const PinterestIcon = () => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 24 24"
+		fill="currentColor"
+		width="100%"
+		height="100%"
+	>
+		<path d="M12 0c-6.627 0-12 5.373-12 12 0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.781c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.27 1.041-1.009 2.348-1.503 3.146.9.279 1.855.432 2.851.432 6.627 0 12-5.373 12-12s-5.373-12-12-12z" />
+	</svg>
+);
 
 const iconColors = {
 	facebook: '#1877f2',
@@ -176,9 +187,9 @@ registerBlockType('multivendorx/store-social-icons', {
 							help={
 								useThemeColors
 									? __(
-											'Using platform-specific colors',
-											'multivendorx'
-										)
+										'Using platform-specific colors',
+										'multivendorx'
+									)
 									: __('Using custom color', 'multivendorx')
 							}
 						/>
@@ -225,6 +236,11 @@ registerBlockType('multivendorx/store-social-icons', {
 					<div style={iconContainerStyle('linkedin')}>
 						<LinkedInIcon />
 					</div>
+
+					{/* PinterestIcon Icon */}
+					<div style={iconContainerStyle('linkedin')}>
+						<PinterestIcon />
+					</div>
 				</div>
 			</>
 		);
@@ -266,11 +282,9 @@ registerBlockType('multivendorx/store-social-icons', {
 			width: `${iconSize}px`,
 			height: `${iconSize}px`,
 			borderRadius: '50%',
-			backgroundColor: getBackgroundColor(platform),
 			display: 'flex',
 			alignItems: 'center',
 			justifyContent: 'center',
-			color: '#ffffff',
 			textDecoration: 'none',
 			transition: 'all 0.3s ease',
 			padding: '0.4%',
@@ -278,50 +292,71 @@ registerBlockType('multivendorx/store-social-icons', {
 
 		return (
 			<div {...blockProps}>
-				{/* Facebook Icon */}
-				<a
-					href="#"
-					className="multivendorx-social-icon multivendorx-social-facebook"
-					style={iconLinkStyle('facebook')}
-				>
-					<FacebookIcon />
-				</a>
+				<ul className="wp-block-social-links is-layout-flex wp-block-social-links-is-layout-flex">
+					{/* Facebook Icon */}
+					<li className="wp-social-link wp-social-link-facebook  wp-block-social-link">
+						<a
+							href="#"
+							className="wp-block-social-link-anchor"
+							style={iconLinkStyle('facebook')}
+						>
+							<FacebookIcon />
+						</a>
+					</li>
 
-				{/* Twitter Icon */}
-				<a
-					href="#"
-					className="multivendorx-social-icon multivendorx-social-twitter"
-					style={iconLinkStyle('twitter')}
-				>
-					<TwitterIcon />
-				</a>
+					{/* Twitter Icon */}
+					<li className="wp-social-link wp-social-link-x  wp-block-social-linkk">
+						<a
+							href="#"
+							className="wp-block-social-link-anchor"
+							style={iconLinkStyle('twitter')}
+						>
+							<TwitterIcon />
+						</a>
+					</li>
 
-				{/* Instagram Icon */}
-				<a
-					href="#"
-					className="multivendorx-social-icon multivendorx-social-instagram"
-					style={iconLinkStyle('instagram')}
-				>
-					<InstagramIcon />
-				</a>
+					{/* Instagram Icon */}
+					<li className="wp-social-link wp-social-link-instagram  wp-block-social-linkwp-social-link wp-social-link-x  wp-block-social-link">
+						<a
+							href="#"
+							className="wp-block-social-link-anchor"
+							style={iconLinkStyle('instagram')}
+						>
+							<InstagramIcon />
+						</a>
+					</li>
 
-				{/* YouTube Icon */}
-				<a
-					href="#"
-					className="multivendorx-social-icon multivendorx-social-youtube"
-					style={iconLinkStyle('youtube')}
-				>
-					<YouTubeIcon />
-				</a>
-
-				{/* LinkedIn Icon */}
-				<a
-					href="#"
-					className="multivendorx-social-icon multivendorx-social-linkedin"
-					style={iconLinkStyle('linkedin')}
-				>
-					<LinkedInIcon />
-				</a>
+					{/* YouTube Icon */}
+					<li className="wp-social-link wp-social-link-youtube  wp-block-social-link">
+						<a
+							href="#"
+							className="wp-block-social-link-anchor"
+							style={iconLinkStyle('youtube')}
+						>
+							<YouTubeIcon />
+						</a>
+					</li>
+					{/* LinkedIn Icon */}
+					<li className="wp-social-link wp-social-link-linkedin  wp-block-social-link">
+						<a
+							href="#"
+							className="wp-block-social-link-anchor"
+							style={iconLinkStyle('linkedin')}
+						>
+							<LinkedInIcon />
+						</a>
+					</li>
+					{/* PinterestIcon Icon */}
+					<li className="wp-social-link wp-social-link-linkedin  wp-block-social-link">
+						<a
+							href="#"
+							className="wp-block-social-link-anchor"
+							style={iconLinkStyle('linkedin')}
+						>
+							<PinterestIcon />
+						</a>
+					</li>
+				</ul>
 			</div>
 		);
 	},

@@ -297,88 +297,92 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 					)}
 
 					<div className="store-toolbar">
-						<ul className="view-tabs">
-							<li
-								className={viewMode === 'list' ? 'active' : ''}
-								onClick={() => setViewMode('list')}
-							>
-								{__('List', 'multivendorx')}
-							</li>
+						<div className="product">
+							<div className="woocommerce-tabs wc-tabs-wrapper">
+								<ul className="tabs wc-tabs">
+									<li
+										className={viewMode === 'list' ? 'active' : ''}
+										onClick={() => setViewMode('list')}
+									>
+									<a>{__('List', 'multivendorx')}</a>
+									</li>
 
-							<li
-								className={viewMode === 'split' ? 'active' : ''}
-								onClick={() => setViewMode('split')}
-							>
-								{__('Split', 'multivendorx')}
-							</li>
+									<li
+										className={viewMode === 'split' ? 'active' : ''}
+										onClick={() => setViewMode('split')}
+									>
+										<a>{__('Split', 'multivendorx')} </a>
+									</li>
 
-							<li
-								className={viewMode === 'map' ? 'active' : ''}
-								onClick={() => setViewMode('map')}
-							>
-								{__('Map', 'multivendorx')}
-							</li>
-						</ul>
-						<p className="woocommerce-result-count">
-							{__('Showing', 'multivendorx')} {data.length}{' '}
-							{__('stores', 'multivendorx')}
-						</p>
+									<li
+										className={viewMode === 'map' ? 'active' : ''}
+										onClick={() => setViewMode('map')}
+									>
+									<a>	{__('Map', 'multivendorx')} </a>
+									</li>
+								</ul>
+								<p className="woocommerce-result-count">
+									{__('Showing', 'multivendorx')} {data.length}{' '}
+									{__('stores', 'multivendorx')}
+								</p>
 
-						<form className='woocommerce-ordering'>
-							<select
-								name="sort"
-								value={filters.sort}
-								onChange={handleInputChange}
-							>
-								<option value="name">
-									{__('Select', 'multivendorx')}
-								</option>
-								<option value="category">
-									{__('By Category', 'multivendorx')}
-								</option>
-								<option value="shipping">
-									{__('By Shipping', 'multivendorx')}
-								</option>
-							</select>
-
-							{filters.sort == 'category' && (
-								<select
-									name="category"
-									value={filters.category || ''}
-									onChange={handleInputChange}
-								>
-									<option value="">
-										{__('Select Category', 'multivendorx')}
-									</option>
-
-									{categoryList.map((cat) => (
-										<option key={cat.id} value={cat.id}>
-											{cat.name}
+								<form className='woocommerce-ordering'>
+									<select
+										name="sort"
+										value={filters.sort}
+										onChange={handleInputChange}
+									>
+										<option value="name">
+											{__('Select', 'multivendorx')}
 										</option>
-									))}
-								</select>
-							)}
-							<select
-								name="product"
-								value={filters.product || ''}
-								onChange={(e) =>
-									setFilters((prev) => ({
-										...prev,
-										product: e.target.value ? Number(e.target.value) : '',
-									}))
-								}
-							>
-								<option value="">
-									Select Product
-								</option>
+										<option value="category">
+											{__('By Category', 'multivendorx')}
+										</option>
+										<option value="shipping">
+											{__('By Shipping', 'multivendorx')}
+										</option>
+									</select>
 
-								{product.map((p) => (
-									<option key={p.id} value={p.id}>
-										{p.name}
-									</option>
-								))}
-							</select>
-						</form>
+									{filters.sort == 'category' && (
+										<select
+											name="category"
+											value={filters.category || ''}
+											onChange={handleInputChange}
+										>
+											<option value="">
+												{__('Select Category', 'multivendorx')}
+											</option>
+
+											{categoryList.map((cat) => (
+												<option key={cat.id} value={cat.id}>
+													{cat.name}
+												</option>
+											))}
+										</select>
+									)}
+									<select
+										name="product"
+										value={filters.product || ''}
+										onChange={(e) =>
+											setFilters((prev) => ({
+												...prev,
+												product: e.target.value ? Number(e.target.value) : '',
+											}))
+										}
+									>
+										<option value="">
+											{__('Select Product', 'multivendorx')}
+										</option>
+
+										{product.map((p) => (
+											<option key={p.id} value={p.id}>
+												{p.name}
+											</option>
+										))}
+									</select>
+								</form>
+							</div>
+						</div>
 					</div>
 					<ul className="products columns-3">
 						<div
@@ -421,7 +425,6 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 					</ul>
 					<nav className="woocommerce-pagination">
 						<ul className="page-numbers">
-
 							<li>
 								<button
 									disabled={page === 1}
@@ -447,7 +450,6 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 									{__('Next', 'multivendorx')}
 								</button>
 							</li>
-
 						</ul>
 					</nav>
 				</main>

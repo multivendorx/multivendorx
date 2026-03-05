@@ -12,6 +12,7 @@ const StoreCouponList = ({
 	const [coupons, setCoupons] = useState([]);
 	const [page, setPage] = useState(1);
 	const [total, setTotal] = useState(0);
+	const [copiedCode, setCopiedCode] = useState(null); 
 
 	// Always keep minimum page count = 1
 	const totalPages = Math.max(1, Math.ceil(total / perPage));
@@ -20,6 +21,22 @@ const StoreCouponList = ({
 	useEffect(() => {
 		setPage(1);
 	}, [store_id, store_slug, perPage, orderby, order]);
+
+	useEffect(() => {
+		if (copiedCode) {
+			const timer = setTimeout(() => setCopiedCode(null), 2000);
+			return () => clearTimeout(timer);
+		}
+	}, [copiedCode]);
+
+	const copyToClipboard = async (code) => {
+		try {
+			await navigator.clipboard.writeText(code);
+			setCopiedCode(code);
+		} catch (err) {
+			console.error('Failed to copy:', err);
+		}
+	};
 
 	const fetchCoupons = useCallback(async () => {
 		try {
@@ -58,7 +75,44 @@ const StoreCouponList = ({
 		<div className="store-coupon-list">
 			{coupons.map((coupon) => (
 				<div key={coupon.id} className="coupon-card">
-					<h4>{coupon.code}</h4>
+					<h4>
+						{coupon.code}
+
+						{copiedCode === coupon.code ? (
+							<svg
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									d="M4 12.6111L8.92308 17.5L20 6.5"
+									stroke="currentColor"
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								/>
+							</svg>
+						) : (
+							<svg
+								aria-label={__('Copy coupon code', 'multivendorx')}
+								title={__('Copy coupon code', 'multivendorx')}
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+								onClick={() => copyToClipboard(coupon.code)}
+								style={{ cursor: 'pointer', opacity: 0.7 }}
+							>
+								<path
+									d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z"
+									fill="currentColor"
+								/>
+							</svg>
+						)}
+					</h4>
 
 					<p>
 						<strong>{__('Usage Count', 'multivendorx')}:</strong>{' '}

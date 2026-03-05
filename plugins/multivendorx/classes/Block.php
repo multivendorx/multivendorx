@@ -160,12 +160,12 @@ class Block {
         // Adding a new category.
         $categories[] = array(
             'slug'  => 'multivendorx',
-            'title' => 'MultiVendorX',
+            'title' => 'MultiVendorX Store Sidebar',
         );
 
         $categories[] = array(
             'slug'  => 'multivendorx-store-shop',
-            'title' => 'MultiVendorX Store Shop Blocks',
+            'title' => 'MultiVendorX Store Page Builder',
         );
         return $categories;
     }

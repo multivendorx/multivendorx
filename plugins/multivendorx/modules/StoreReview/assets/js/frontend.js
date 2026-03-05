@@ -21,19 +21,18 @@ jQuery(document).ready(function ($) {
 					let html = `<div class="avg-rating-summary">
                                 <div class="overall-wrapper"> 
                                     <div class="overall-rating">
-                                        <div class="total">${overall}</div> 
-                                        <div class="stars">`;
+                                        <div class="total">${overall}</div>`;
 
-					// Render stars dynamically
-					for (let i = 1; i <= 5; i++) {
-						html +=
-							i <= Math.round(overall)
-								? `<i class="dashicons dashicons-star-filled"></i>`
-								: `<i class="dashicons dashicons-star-empty"></i>`;
-					}
+					let ratingValue = Math.round(overall);
+					let ratingPercentage = (ratingValue / 5) * 100;
 
-					html += `</div>
-                         <div class="total-number">${total} Rating${
+					html += `<div class="star-rating" role="img" aria-label="Rated ${ratingValue} out of 5">
+						<span style="width: ${ratingPercentage}%;">
+							<strong class="rating">${ratingValue}</strong> out of 5
+						</span>
+					</div>`;
+
+					html += `<div class="total-number">${total} Rating${
 								total !== 1 ? 's' : ''
 							}</div>
                          </div>
