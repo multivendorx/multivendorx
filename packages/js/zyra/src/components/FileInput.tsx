@@ -9,7 +9,7 @@ interface FileInputProps {
     name?: string;
     placeholder?: string;
     accept?: string;
-    onChange?: (value: string | string[]) => void;
+    onChange?: (value: FileItem | FileItem[]) => void;
     onClick?: (event: React.MouseEvent<HTMLInputElement>) => void;
     onMouseOver?: (event: React.MouseEvent<HTMLInputElement>) => void;
     onMouseOut?: (event: React.MouseEvent<HTMLInputElement>) => void;
@@ -22,6 +22,10 @@ interface FileInputProps {
     size?: string;
     multiple?: boolean;
 }
+interface FileItem {
+    id?: number;
+    url: string;
+};
 
 const getFileIcon = (url: string): string => {
     const filename = url.includes('#') ? url.split('#')[1] : url.split('/').pop() || '';
@@ -29,12 +33,15 @@ const getFileIcon = (url: string): string => {
     return ext || 'file';
 };
 
-const getFileName = (url: string): string => url.includes('#') ? url.split('#')[1].split('?')[0] : url.split('/').pop()?.split('?')[0] || 'File';
+const getFileName = (url?: string): string => {
+    if (!url) return 'File';
+    return url.split('/').pop()?.split('?')[0] || 'File';
+};
 const isImageFile = (url: string): boolean => (url.includes('#') ? url.split('#')[1] : url).match(/\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i) !== null;
 
 export const FileInputUI: React.FC<FileInputProps> = (props) => {
     const inputRef = useRef<HTMLInputElement>(null);
-    const [files, setFiles] = useState<string[]>([]);
+    const [files, setFiles] = useState<FileItem[]>([]);
     const [activeIndex, setActiveIndex] = useState(0);
     const [isReplacing, setIsReplacing] = useState(false);
 
@@ -44,7 +51,7 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
         setActiveIndex(0);
     }, [props.imageSrc]);
 
-    const updateFile = (fileList: string[]) => {
+    const updateFile = (fileList: FileItem[]) => {
         setFiles(fileList);
         props.onChange?.(props.multiple ? fileList : (fileList[0] || ''));
     };
@@ -78,15 +85,17 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
         });
         
         frame.on('select', () => {
-            const urls = frame.state().get('selection').toJSON().map((a: any) => a.url);
-            let result: string[];
+            const selected = frame.state().get('selection').toJSON().map((a: any) => ({
+                id: a.id,
+                url: a.url
+            }));
+            let result: FileItem[];
             if (isReplacing) {
                 result = [...files];
-                if (result[activeIndex]?.startsWith('blob:')) URL.revokeObjectURL(result[activeIndex].split('#')[0]);
-                result[activeIndex] = urls[0];
+                result[activeIndex] = selected[0];
                 setIsReplacing(false);
             } else {
-                result = props.multiple ? [...files, ...urls] : [urls[0]];
+                result = props.multiple ? [...files, ...selected] : [selected[0]];
             }
             updateFile(result);
         });
@@ -101,9 +110,9 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
         if (activeIndex >= result.length) setActiveIndex(Math.max(0, result.length - 1));
     };
 
-    const currentFile = files[activeIndex];
+    const currentFile = files[activeIndex]?.url;
     const isCurrentImage = currentFile && isImageFile(currentFile);
-    const currentSrc = currentFile?.split('#')[0] || currentFile;
+    const currentSrc = currentFile;
 
     return (
         <>
@@ -152,7 +161,7 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
             {props.multiple && files.length > 0 && (
                 <div className="uploaded-image">
                     {files.map((file, i) => {
-                        const fileSrc = file.split('#')[0];
+                        const fileSrc = file.url;
                         const isActive = i === activeIndex;
                         
                         return (
@@ -172,7 +181,7 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
                                     <div>
                                         <i className={`adminfont-attachment`}/>
                                         <span>
-                                            {getFileName(file).substring(0, 12)}
+                                            {getFileName(file.url).substring(0, 12)}
                                         </span>
                                     </div>
                                 )}

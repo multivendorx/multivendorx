@@ -233,22 +233,19 @@ const Modules: React.FC<ModuleProps> = ({
                 {/* FILTER SECTION */}
                 {variant === 'default' && (
                     <div className="filter-wrapper">
-
-                        {modulesArray.category && categories.length > 1 && (
-                            <div className="category-filter">
-                                {categories.map((category) => (
+                        <div className="category-filter">
+                            {modulesArray.category && categories.length > 1 &&
+                                categories.map((category) => (
                                     <span
                                         key={category.id}
-                                        className={`category-item ${selectedCategory === category.id ? 'active' : ''
-                                            }`}
+                                        className={`category-item ${selectedCategory === category.id ? 'active' : ''}`}
                                         onClick={() => setSelectedCategory(category.id)}
                                     >
                                         {category.label}
                                     </span>
-                                ))}
-                            </div>
-                        )}
-
+                                ))
+                            }
+                        </div>
                         <div className="module-search">
                             <HeaderSearch
                                 variant="mini-search"
