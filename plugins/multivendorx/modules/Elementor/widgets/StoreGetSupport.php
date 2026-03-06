@@ -28,34 +28,6 @@ class Store_Get_Support extends Widget_Button {
 
     protected function register_controls() {
         parent::register_controls();
-
-       $this->update_control(
-            'icon_align',
-            [
-                'default' => 'left',
-            ]
-        );
-
-        $this->update_control(
-            'button_text_color',
-            [
-                'default' => '#ffffff',
-            ]
-        );
-
-        $this->update_control(
-            'background_color',
-            [
-                'default' => '#17a2b8',
-            ]
-        );
-
-        $this->update_control(
-            'border_color',
-            [
-                'default' => '#17a2b8',
-            ]
-        );
        
         $this->update_control(
             'text',

@@ -289,9 +289,7 @@ class Commissions extends \WP_REST_Controller {
 
         try {
             $id = absint( $request->get_param( 'id' ) );
-
-            $commission = CommissionUtil::get_commission_information( array( 'ID' => $id ) );
-
+            $commission = reset(CommissionUtil::get_commission_information( array( 'ID' => $id ) ));
             $data = $this->prepare_item_for_response( $commission, true );
 
             return rest_ensure_response( $data );

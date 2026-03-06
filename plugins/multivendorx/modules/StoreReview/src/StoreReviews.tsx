@@ -247,7 +247,7 @@ const StoreReviews: React.FC = () => {
 
 				setCategoryCounts([
 					{
-						value: 'all',
+						value: '',
 						label: 'All',
 						count: Number(response.headers['x-wp-total']) || 0,
 					},

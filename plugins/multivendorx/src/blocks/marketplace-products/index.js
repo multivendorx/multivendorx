@@ -3,11 +3,7 @@ import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { render } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import { PanelBody, SelectControl, TextControl } from '@wordpress/components';
-import { initializeModules } from 'zyra';
 import MarketplaceProductList from './marketplaceProductList';
-
-// Initialize ZYRA modules
-initializeModules(productList, 'multivendorx', 'free', 'modules');
 
 // EditBlock Component
 const EditBlock = (props) => {
@@ -40,18 +36,6 @@ const EditBlock = (props) => {
 						onChange={(value) => setAttributes({ order: value })}
 					/>
 					<TextControl
-						label="Category (slug, comma-separated)"
-						value={attributes.category}
-						onChange={(value) => setAttributes({ category: value })}
-					/>
-					<TextControl
-						label="Store Slug"
-						value={attributes.store_slug || ''}
-						onChange={(value) =>
-							setAttributes({ store_slug: value })
-						}
-					/>
-					<TextControl
 						label="Products per page"
 						type="number"
 						min={1}
@@ -70,7 +54,6 @@ const EditBlock = (props) => {
 				orderby={attributes.orderby}
 				order={attributes.order}
 				category={attributes.category}
-				store_slug={attributes.store_slug}
 				perPage={attributes.perPage}
 			/>
 		</div>
@@ -80,7 +63,7 @@ const EditBlock = (props) => {
 // Register the Block
 registerBlockType('multivendorx/marketplace-products', {
 	apiVersion: 2,
-	title: 'Classic Marketplace Products',
+	title: 'Marketplace Products',
 	icon: 'products',
 	category: 'multivendorx',
 	supports: { html: false },
@@ -90,7 +73,6 @@ registerBlockType('multivendorx/marketplace-products', {
 		order: { type: 'string', default: 'asc' },
 		category: { type: 'string', default: '' },
 		perPage: { type: 'number', default: 12 },
-		store_slug: { type: 'string', default: '' },
 	},
 
 	edit: EditBlock,

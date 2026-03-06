@@ -79,16 +79,12 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
                 return (
                     <div key={filter.key} className="group-field">
                         <SelectInputUI
+                            type={filter.multiple ? 'multi-select' : 'single-select'}
                             options={options}
-                            value={filter.multiple ? (value as string[]) : (value as string)}
+                            value={value}
                             placeholder={`Select ${filter.label}`}
-                            multiple={filter.multiple}
                             onChange={(selected) => {
-                                if (filter.multiple && Array.isArray(selected)) {
-                                    onFilterChange(filter.key, selected.map(s => s.value));
-                                } else if (!Array.isArray(selected)) {
-                                    onFilterChange(filter.key, selected?.value || '');
-                                }
+                                onFilterChange(filter.key, selected);
                             }}
                         />
                     </div>

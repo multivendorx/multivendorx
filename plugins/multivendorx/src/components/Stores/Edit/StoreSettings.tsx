@@ -189,11 +189,7 @@ const StoreSettings = ({
 		}
 	}, [location.state]);
 
-	const handleAddressChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e.target;
-
+	const handleAddressChange = (name, value) => {
 		const newAddressData = {
 			...addressData,
 			[name]: value,
@@ -444,7 +440,7 @@ const StoreSettings = ({
 								value={emails}
 								primary={primaryEmail}
 								enablePrimary={true}
-								onChange={(list, primary) =>
+								onChange={(list, primary) => 
 									saveEmails(list, primary)
 								}
 							/>
@@ -492,7 +488,7 @@ const StoreSettings = ({
 								<BasicInputUI
 									name="address"
 									value={addressData.address}
-									onChange={handleAddressChange}
+									onChange={(value) => handleAddressChange('address', value)}
 								/>
 							</FormGroup>
 
@@ -504,7 +500,7 @@ const StoreSettings = ({
 								<BasicInputUI
 									name="city"
 									value={addressData.city}
-									onChange={handleAddressChange}
+									onChange={(value) => handleAddressChange('city', value)}
 								/>
 							</FormGroup>
 							<FormGroup
@@ -515,7 +511,7 @@ const StoreSettings = ({
 								<BasicInputUI
 									name="zip"
 									value={addressData.zip}
-									onChange={handleAddressChange}
+									onChange={(value) => handleAddressChange('zip', value)}
 								/>
 							</FormGroup>
 
@@ -583,9 +579,9 @@ const StoreSettings = ({
 										}
 										const updated = {
 											...formData,
-											status: newValue.value,
+											status: newValue,
 										};
-										onUpdate({ status: newValue.value });
+										onUpdate({ status: newValue });
 										setFormData(updated);
 										autoSave(updated);
 									}}

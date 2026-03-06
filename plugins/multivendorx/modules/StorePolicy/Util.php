@@ -64,7 +64,6 @@ class Util {
         if ( $store_id ) {
             $store                     = new Store( $store_id );
             $privacy_override_settings = MultiVendorX()->setting->get_setting( 'store_policy_override', array() );
-
             if ( in_array( 'store', $privacy_override_settings, true ) ) {
                 $store_policy = $store->get_meta( Utill::STORE_SETTINGS_KEYS['store_policy'] );
             }
@@ -73,8 +72,11 @@ class Util {
                 $shipping_policy = $store->get_meta( Utill::STORE_SETTINGS_KEYS['shipping_policy'] );
             }
 
-            if ( in_array( 'refund_return', $privacy_override_settings, true ) ) {
+            if ( in_array( 'refund', $privacy_override_settings, true ) ) {
                 $refund_policy       = $store->get_meta( Utill::STORE_SETTINGS_KEYS['refund_policy'] );
+            }
+            
+            if ( in_array( 'cancellation_return', $privacy_override_settings, true ) ) {
                 $cancellation_policy = $store->get_meta( Utill::STORE_SETTINGS_KEYS['cancellation_policy'] );
             }
         }

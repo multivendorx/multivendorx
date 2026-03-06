@@ -95,7 +95,7 @@ const CustomerQuestions: React.FC = () => {
 	};
 
 	const headers = {
-		name: {
+		product_name: {
 			label: __('Product', 'multivendorx'),
 		},
 		question_text: {
@@ -231,6 +231,7 @@ const CustomerQuestions: React.FC = () => {
 				categoryCounts={categoryCounts}
 				search={{}}
 				filters={filters}
+				format={appLocalizer.date_format}
 			/>
 			{selectedQna && (
 				<PopupUI

@@ -18,7 +18,6 @@ interface MarketplaceProductListProps {
 	operator?: string;
 	product_visibility?: string;
 	store_id?: string;
-	store_slug?: string;
 }
 
 const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
@@ -29,52 +28,46 @@ const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
 	category = '',
 	operator = 'IN',
 	product_visibility = '',
-	store_slug = '',
 }) => {
 	const [products, setProducts] = useState<Product[]>([]);
 	const [page, setPage] = useState(1);
-	const [total, setTotal] = useState(0);
+	const [loading, setLoading] = useState(true);
 
-
-	const totalPages = Math.max(1, Math.ceil(total / perPage));
-
-	// ✅ Reset page when filters change
 	useEffect(() => {
 		setPage(1);
-	}, [perPage, orderby, order, category, product_visibility, store_slug]);
+	}, [perPage, orderby, order, category, product_visibility]);
 
 	const fetchProducts = useCallback(async () => {
+		setLoading(true)
+		const params: any = {
+			per_page: perPage,
+			page,
+			orderby,
+			order,
+			cat: category,
+			operator,
+			product_visibility,
+			meta_key: 'multivendorx_store_id',
+		};
+
+		if (productList?.storeDetails?.storeId) {
+			params.value = productList.storeDetails.storeId;
+		}
+
 		try {
 			const response = await axios.get(
 				`${productList.apiUrl}/wc/v3/products`,
 				{
 					headers: { 'X-WP-Nonce': productList.nonce },
-					params: {
-						per_page: perPage,
-						page,
-						orderby,
-						order,
-
-						// Category filter
-						cat: category,
-						operator,
-
-						// Visibility filter
-						product_visibility,
-
-						// Vendor filter (if backend supports it)
-						meta_key: 'multivendorx_store_id',
-						meta_value: '',
-
-						store_slug,
-					},
+					params
 				}
 			);
 
 			setProducts(response.data || []);
-			setTotal(Number(response.headers['x-wp-total']) || 0);
+			setLoading(false)
 		} catch (error) {
 			console.error('Error fetching products:', error);
+			setLoading(false)
 		}
 	}, [
 		page,
@@ -84,7 +77,6 @@ const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
 		category,
 		operator,
 		product_visibility,
-		store_slug,
 	]);
 
 	useEffect(() => {
@@ -93,52 +85,60 @@ const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
 
 	return (
 		<>
-			<div>
-				{products.map((product) => (
-					<li
-						key={product.id}
-						className="wc-block-product product type-product status-publish instock"
-					>
-						<a href={product.permalink} className="product-card">
-							<img
-								src={
-									product.images?.[0]?.src ||
-									'http://localhost:8889/wp-content/uploads/woocommerce-placeholder.webp'
-								}
-								alt={product.name}
-							/>
+			{loading ? (
+				<p>{__('Loading products...', 'multivendorx')}</p>
+			) : (
+				<div className="woocommerce">
+					<ul className="product_list_widget">
+						{products.length > 0 ? (
+							products.map((product) => (
+								<li key={product.id}>
+									<a href={product.permalink}>
+										<img
+											className="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
+											src={
+												product.images?.[0]?.src
+											}
+											alt={product.name}
+										/>
 
-							<h2 className="has-text-align-center">
-								{product.name}
-							</h2>
-						</a>
-					</li>
-				))}
-			</div>
+										<span className="product-title">{product.name}</span>
+									</a>
 
-			{/* Pagination only when needed */}
-			{total > perPage && (
-				<div>
-					<button
-						disabled={page === 1}
-						onClick={() => setPage((p) => Math.max(1, p - 1))}
-					>
-						{__('Previous', 'multivendorx')}
-					</button>
-
-					<span>
-						{__('Page', 'multivendorx')} {page}{' '}
-						{__('of', 'multivendorx')} {totalPages}
-					</span>
-
-					<button
-						disabled={page >= totalPages}
-						onClick={() =>
-							setPage((p) => Math.min(totalPages, p + 1))
-						}
-					>
-						{__('Next', 'multivendorx')}
-					</button>
+									<span className="woocommerce-Price-amount amount">
+										<bdi>
+											{product.salePrice ? (
+												<>
+													<del aria-hidden="true">
+														<span className="woocommerce-Price-amount amount">
+															<bdi>
+																{product.price}
+															</bdi>
+														</span>
+													</del>
+													<ins aria-hidden="true">
+														<span className="woocommerce-Price-amount amount">
+															<bdi>
+																{product.salePrice}
+															</bdi>
+														</span>
+													</ins>
+												</>
+											) : (
+												<span className="woocommerce-Price-amount amount">
+													<bdi>
+														{product.price}
+													</bdi>
+												</span>
+											)}
+										</bdi>
+									</span>
+								</li>
+							))
+						) : (
+							<p>{__('No products found.', 'multivendorx')}</p>
+						)}
+					</ul>
 				</div>
 			)}
 		</>

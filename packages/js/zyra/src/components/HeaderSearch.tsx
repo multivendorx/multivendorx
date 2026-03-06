@@ -92,10 +92,9 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
                     <SelectInputUI
                         options={options}
                         value={action}
-                        onChange={(newValue) => {
-                            const val = newValue.value;
-                            setAction(val);
-                            triggerSearch(query, val);
+                        onChange={(value) => {
+                            setAction(value);
+                            triggerSearch(query, value);
                         }}
                     />
                 </div>

@@ -8,46 +8,46 @@ export default {
 	icon: 'adminfont-store-inventory',
 	submitUrl: 'settings',
 	modal: [
-		{
-			key: 'store_promotion_limit',
-			label: __('Account capabilities', 'multivendorx'),
-			type: 'nested',
-			single: true,
-			nestedFields: [
-				{
-					key: 'paid_promotion_limit',
-					type: 'checklist',
-					options: [
-						{
-							title: __('Log in to dashboard', 'multivendorx'),
-							icon: 'icon-yes',
-						},
-						{
-							title: __('View rejection reason', 'multivendorx'),
-							icon: 'icon-yes',
-						},
-						{
-							title: __('Submit new application', 'multivendorx'),
-							icon: 'icon-yes',
-						},
-						{
-							title: __(
-								'Cannot modify products or settings',
-								'multivendorx'
-							),
-							icon: 'cross',
-						},
-						{
-							title: __(
-								'Cannot sell or fulfill orders',
-								'multivendorx'
-							),
-							icon: 'cross',
-						},
-					],
-				},
-			],
-		},
+		// {
+		// 	key: 'store_promotion_limit',
+		// 	label: __('Account capabilities', 'multivendorx'),
+		// 	type: 'nested',
+		// 	single: true,
+		// 	nestedFields: [
+		// 		{
+		// 			key: 'paid_promotion_limit',
+		// 			type: 'checklist',
+		// 			options: [
+		// 				{
+		// 					title: __('Log in to dashboard', 'multivendorx'),
+		// 					icon: 'icon-yes',
+		// 				},
+		// 				{
+		// 					title: __('View rejection reason', 'multivendorx'),
+		// 					icon: 'icon-yes',
+		// 				},
+		// 				{
+		// 					title: __('Submit new application', 'multivendorx'),
+		// 					icon: 'icon-yes',
+		// 				},
+		// 				{
+		// 					title: __(
+		// 						'Cannot modify products or settings',
+		// 						'multivendorx'
+		// 					),
+		// 					icon: 'cross',
+		// 				},
+		// 				{
+		// 					title: __(
+		// 						'Cannot sell or fulfill orders',
+		// 						'multivendorx'
+		// 					),
+		// 					icon: 'cross',
+		// 				},
+		// 			],
+		// 		},
+		// 	],
+		// },
 		{
 			key: 'rejected_msg',
 			label: __('Message shown to rejected stores', 'multivendorx'),

@@ -160,7 +160,6 @@ class FrontendScripts {
             'contact-info',
             'marketplace-products',
             'marketplace-coupons',
-            'store-coupons',
             'store-name',
             'store-description',
             'store-tabs',
@@ -176,7 +175,6 @@ class FrontendScripts {
             'store-policy',
             'product-category',
             'store-quick-info',
-            'highlighted-store-products',
         ];
 
         $register_scripts = apply_filters(
@@ -402,6 +400,12 @@ class FrontendScripts {
                 'prosetting' => true,
                 'module'     => 'store-inventory',
             ),
+            'view_support_tickets'=> array(
+                'prosetting' => true,
+            ),
+            'reply_support_tickets'=> array(
+                'prosetting' => true,
+            ),
         );
 
         $store_ids = array();
@@ -417,6 +421,7 @@ class FrontendScripts {
 
                 if ( ! empty( $first_store['id'] ) ) {
                     update_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], $first_store['id'] );
+                    MultiVendorX()->active_store = $first_store['id'];
                 }
             }
         }
@@ -595,12 +600,18 @@ class FrontendScripts {
                 'multivendorx-marketplace-products-script' => array(
                     'object_name' => 'productList',
                     'use_rest'    => true,
-                    'use_settings'    => true,
+                    'use_settings'=> true,
+                    'data'        => array(
+                        'storeDetails'  => StoreUtil::get_specific_store_info(),
+                    )
                 ),
                 'multivendorx-marketplace-coupons-script'  => array(
                     'object_name' => 'couponList',
                     'use_rest'    => true,
                     'use_settings'    => true,
+                    'data'        => array(
+                        'storeDetails'  => StoreUtil::get_specific_store_info(),
+                    )
                 ),
                 'multivendorx-store-provider-script'       => array(
                     'object_name' => 'StoreInfo',

@@ -3,10 +3,10 @@ import axios from 'axios';
 import {
 	getApiLink,
 	ComponentStatusView,
-	Tabs,
 	PopupUI,
 	useModules,
 	Tooltip,
+	TabsUI,
 } from 'zyra';
 import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
@@ -455,7 +455,7 @@ const Dashboard = () => {
 												title: __('Notifications', 'multivendorx')
 											}}
 										>
-											<Tabs
+											<TabsUI
 												tabs={[
 													{
 														id: 'notifications',
@@ -489,7 +489,11 @@ const Dashboard = () => {
 								{modules.includes('announcement') && (
 									<Tooltip text={__('Announcement', 'multivendorx')}>
 										<li>
-											{/* Mount your Announcement popover here */}
+											<a
+												href={tabHref('view-notifications') + '#subtab=announcements'}
+											>
+												<i className="adminfont adminfont-announcement"></i>
+											</a>
 										</li>
 									</Tooltip>
 								)}

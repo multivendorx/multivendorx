@@ -68,22 +68,13 @@ const StoreSquad = ({ id }: { id: string | null }) => {
 								name="store_owners"
 								options={appLocalizer.store_owners || []}
 								type="multi-select"
-								value={(formData.store_owners || []).map(
-									(id: any) => {
-										const match = (
-											appLocalizer.store_owners || []
-										).find(
-											(opt: any) =>
-												String(opt.value) === String(id)
-										);
-										return match ? match.value : String(id);
-									}
-								)}
+								value={formData.store_owners || []}
 								onChange={(selected: any) => {
 									const store_owners =
-										(selected as any[])?.map(
-											(option) => option.value
-										) || [];
+										(selected || []).map((option: any) =>
+											typeof option === 'object' ? option.value : option
+										);
+									
 									const updated = {
 										...formData,
 										store_owners,

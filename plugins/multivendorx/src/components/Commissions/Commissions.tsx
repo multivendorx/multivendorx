@@ -230,19 +230,19 @@ const Commission: React.FC = () => {
 			});
 	};
 
-const filters = [
-	{
-		key: 'store_id',
-		label: __('Stores', 'multivendorx'),
-		type: 'select',
-		options: store,
-	},
-	{
-		key: 'created_at',
-		label: __('Created Date', 'multivendorx'),
-		type: 'date',
-	},
-];
+	const filters = [
+		{
+			key: 'store_id',
+			label: __('Stores', 'multivendorx'),
+			type: 'select',
+			options: store,
+		},
+		{
+			key: 'created_at',
+			label: __('Created Date', 'multivendorx'),
+			type: 'date',
+		},
+	];
 
 	const downloadCommissionsCSV = (selectedIds: number[]) => {
 		if (!selectedIds) {
@@ -357,13 +357,11 @@ const filters = [
 					/>
 				</Column>
 			</Container>
-			{viewCommission && selectedCommissionId !== null && (
-				<ViewCommission
-					open={viewCommission}
-					onClose={() => setViewCommission(false)}
-					commissionId={selectedCommissionId}
-				/>
-			)}
+			<ViewCommission
+				open={viewCommission}
+				onClose={() => setViewCommission(false)}
+				commissionId={selectedCommissionId}
+			/>
 		</>
 	);
 };

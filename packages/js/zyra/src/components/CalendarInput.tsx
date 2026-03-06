@@ -7,6 +7,7 @@ import '../styles/web/CalendarInput.scss';
 export interface CalendarRange {
   startDate: Date;
   endDate: Date;
+  selectedDates?: Date[]; // Array of selected dates for multiple mode
 }
 
 interface CalendarInputProps {
@@ -18,6 +19,7 @@ interface CalendarInputProps {
   showInput?: boolean;
   NumberOfMonth?: number;
   fullYear?: boolean;
+  maxDate?: Date;
 }
 
 const convertToDateObjectRange = (
@@ -26,6 +28,12 @@ const convertToDateObjectRange = (
 ) => {
   if (!range) return null;
 
+  // If we have selectedDates array (multiple mode), convert all dates
+  if (range.selectedDates && range.selectedDates.length > 0) {
+    return range.selectedDates.map(date => new DateObject({ date, format }));
+  }
+
+  // Otherwise use startDate and endDate (range mode)
   return [
     new DateObject({ date: range.startDate, format }),
     new DateObject({ date: range.endDate, format }),
@@ -118,7 +126,8 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
   multiple = false,
   showInput = true,
   NumberOfMonth = 1,
-  fullYear
+  fullYear,
+  maxDate = new Date(),
 }) => {
   const pickerRef = useRef<DatePickerRef>(null);
 
@@ -131,20 +140,34 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
 
   const handleChange = (val: DateObject[] | DateObject | null) => {
     setInternalValue(val);
-    if (Array.isArray(val) && val.length === 2) {
-      const [start, end] = val as DateObject[];
 
-      onChange?.({
-        startDate: start.toDate(),
-        endDate: end.toDate(),
-      });
+    if (multiple) {
+      // Handle multiple selection mode - store all selected dates
+      if (val) {
+        const selectedDates = Array.isArray(val)
+          ? val.map(dateObj => dateObj.toDate())
+          : [val.toDate()];
 
-      pickerRef.current?.closeCalendar();
-    } else if (val instanceof DateObject) {
-      const date = val.toDate();
-      onChange?.({ startDate: date, endDate: date });
-
-      pickerRef.current?.closeCalendar(); 
+        onChange?.({ selectedDates });
+      }
+    }
+    else {
+      // Handle range mode (original behavior)
+      if (Array.isArray(val) && val.length === 2) {
+        const [start, end] = val as DateObject[];
+        onChange?.({
+          startDate: start.toDate(),
+          endDate: end.toDate(),
+        });
+        pickerRef.current?.closeCalendar();
+      } else if (val instanceof DateObject) {
+        const date = val.toDate();
+        onChange?.({
+          startDate: date,
+          endDate: date,
+        });
+        pickerRef.current?.closeCalendar();
+      }
     }
   };
 
@@ -170,7 +193,7 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
     numberOfMonths: { NumberOfMonth },
     sort: true,
     onChange: handleChange,
-    maxDate: new Date(),
+    maxDate,
     multiple,
     plugins,
     fullYear,
@@ -205,6 +228,7 @@ const CalendarInput: FieldComponent = {
       fullYear={field.fullYear}
       value={value}
       onChange={onChange}
+      maxDate={field.maxDate}
     />
   ),
 };

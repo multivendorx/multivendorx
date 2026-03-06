@@ -5,139 +5,273 @@ defined( 'ABSPATH' ) || exit;
 
 use Elementor\Widget_Icon_List;
 use Elementor\Controls_Manager;
-use Elementor\Repeater;
 use MultiVendorX\Elementor\StoreHelper;
 
 class Store_Info extends Widget_Icon_List {
 
-	use StoreHelper;
+    use StoreHelper;
 
-	public function get_name() {
-		return 'multivendorx_store_info';
-	}
+    public function get_name() {
+        return 'multivendorx_store_info';
+    }
 
-	public function get_title() {
-		return __( 'Store Info', 'multivendorx' );
-	}
+    public function get_title() {
+        return __( 'Store Info', 'multivendorx' );
+    }
 
-	public function get_icon() {
-		return 'eicon-bullet-list';
-	}
+    public function get_icon() {
+        return 'eicon-bullet-list';
+    }
 
-	public function get_categories() {
-		return [ 'multivendorx' ];
-	}
+    public function get_categories() {
+        return [ 'multivendorx' ];
+    }
 
-	public function get_keywords() {
-		return [ 'multivendorx', 'store', 'store', 'info', 'address', 'location' ];
-	}
+    public function get_keywords() {
+        return [ 'multivendorx', 'store', 'info', 'address', 'location', 'phone', 'email' ];
+    }
 
-	protected function register_controls() {
+    protected function register_controls() {
+        // Register parent controls first
+        parent::register_controls();
 
-		parent::register_controls();
+        // Hide the icon_list control
+        $this->update_control(
+            'icon_list',
+            [
+                'type' => Controls_Manager::HIDDEN,
+                'default' => [],
+            ]
+        );
 
-		// Rename section label
-		$this->update_control(
-			'section_icon',
-			[
-				'label' => __( 'Store Info Details', 'multivendorx' ),
-			]
-		);
+        // Update section label
+        $this->update_control(
+            'section_icon',
+            [
+                'label' => __( 'Store Info Details', 'multivendorx' ),
+            ]
+        );
 
-		// Create repeater
-		$repeater = new Repeater();
+        // Start new section for store info visibility
+        $this->start_controls_section(
+            'store_info_settings',
+            [
+                'label' => __( 'Store Info Visibility', 'multivendorx' ),
+                'tab' => Controls_Manager::TAB_CONTENT,
+            ]
+        );
 
-		$repeater->add_control(
-			'title',
-			[
-				'label'   => __( 'Title', 'multivendorx' ),
-				'type'    => Controls_Manager::HIDDEN,
-				'default' => __( 'Title', 'multivendorx' ),
-			]
-		);
+        $this->add_control(
+            'show_address',
+            [
+                'label' => __( 'Show Address', 'multivendorx' ),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __( 'Show', 'multivendorx' ),
+                'label_off' => __( 'Hide', 'multivendorx' ),
+                'return_value' => 'yes',
+                'default' => 'yes',
+            ]
+        );
 
-		$repeater->add_control(
-			'text',
-			[
-				'label'       => __( 'Content', 'multivendorx' ),
-				'type'        => Controls_Manager::HIDDEN,
-				'label_block' => true,
-			]
-		);
+        $this->add_control(
+            'show_email',
+            [
+                'label' => __( 'Show Email', 'multivendorx' ),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __( 'Show', 'multivendorx' ),
+                'label_off' => __( 'Hide', 'multivendorx' ),
+                'return_value' => 'yes',
+                'default' => 'yes',
+            ]
+        );
 
-		$repeater->add_control(
-			'icon',
-			[
-				'label'       => __( 'Icon', 'multivendorx' ),
-				'type'        => Controls_Manager::ICONS, // modern (ICON is deprecated)
-				'label_block' => true,
-				'default'     => [
-					'value'   => 'fas fa-check',
-					'library' => 'fa-solid',
-				],
-			]
-		);
+        $this->add_control(
+            'show_phone',
+            [
+                'label' => __( 'Show Phone', 'multivendorx' ),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __( 'Show', 'multivendorx' ),
+                'label_off' => __( 'Hide', 'multivendorx' ),
+                'return_value' => 'yes',
+                'default' => 'yes',
+            ]
+        );
 
-		// Dynamic default for repeater
-		$dynamic_content = \Elementor\Plugin::instance()
-			->dynamic_tags
-			->get_tag_data_content( null, 'multivendorx-store-info' );
+        $this->end_controls_section();
+    }
 
-		$this->update_control(
-			'icon_list',
-			[
-				'type'    => Controls_Manager::REPEATER,
-				'fields'  => $repeater->get_controls(),
-				'default' => ! empty( $dynamic_content )
-					? json_decode( $dynamic_content, true )
-					: [],
-			]
-		);
+    /**
+     * Get store info items in the format expected by Elementor
+     */
+    private function get_store_info_items() {
+        $store_data = $this->get_store_data();
+        if (empty($store_data)) {
+            return [];
+        }
 
-		$this->add_control(
-			'store_info',
-			[
-				'type'    => Controls_Manager::HIDDEN,
-				'dynamic' => [
-					'active'  => true,
-					'default' => \Elementor\Plugin::instance()
-						->dynamic_tags
-						->tag_data_to_tag_text( null, 'multivendorx-store-info' ),
-				],
-			],
-			[
-				'position' => [ 'of' => 'icon_list' ],
-			]
-		);
+        $settings = $this->get_settings_for_display();
+        $items = [];
 
-	}
+        // Address
+        if ($settings['show_address'] === 'yes' && !empty($store_data['storeAddress'])) {
+            $items[] = [
+                'text' => $store_data['storeAddress'],
+                'icon' => 'fa fa-map-marker', // Using simpler icon class
+                'icon_advanced' => [
+                    'value' => 'fas fa-map-marker-alt',
+                    'library' => 'fa-solid',
+                ],
+                'link' => false,
+                '_id' => uniqid('address_'), // Add unique ID for each item
+            ];
+        }
 
-	protected function render() {
+        // Email
+        if ($settings['show_email'] === 'yes' && !empty($store_data['storeEmail'])) {
+            $items[] = [
+                'text' => $store_data['storeEmail'],
+                'icon' => 'fa fa-envelope', // Using simpler icon class
+                'icon_advanced' => [
+                    'value' => 'fas fa-envelope',
+                    'library' => 'fa-solid',
+                ],
+                'link' => [
+                    'url' => 'mailto:' . $store_data['storeEmail'],
+                ],
+                '_id' => uniqid('email_'), // Add unique ID for each item
+            ];
+        }
 
-		$store = $this->get_store_data();
-		if ( ! $store ) {
-			return;
-		}
+        // Phone
+        if ($settings['show_phone'] === 'yes' && !empty($store_data['storePhone'])) {
+            $items[] = [
+                'text' => $store_data['storePhone'],
+                'icon' => 'fa fa-phone', // Using simpler icon class
+                'icon_advanced' => [
+                    'value' => 'fas fa-phone-alt',
+                    'library' => 'fa-solid',
+                ],
+                'link' => [
+                    'url' => 'tel:' . preg_replace("/\s+/", "", $store_data['storePhone']),
+                ],
+                '_id' => uniqid('phone_'), // Add unique ID for each item
+            ];
+        }
 
-		// Phone Number
-		if ( ! empty( $store['storePhone'] ) ) {
-			printf(
-				'<div class="multivendorx-store-phone">
-					<a href="tel:%1$s">%2$s</a>
-				</div>',
-				esc_attr( preg_replace( "/\s+/", "", $store['storePhone'] ) ),
-				esc_html( $store['storePhone'] )
-			);
-		}
+        return $items;
+    }
 
-		// Email Address
-		if ( ! empty( $store['storeEmail'] ) ) {
-			printf(
-				'<div class="multivendorx-store-email">
-					<a href="mailto:%1$s">%1$s</a>
-				</div>',
-				esc_attr( $store['storeEmail'] )
-			);
-		}
-	}
+    protected function render() {
+        $items = $this->get_store_info_items();
+
+        if (empty($items)) {
+            return;
+        }
+
+        // Set inline layout class
+        $this->add_render_attribute( 'wrapper', 'class', 'elementor-icon-list-items elementor-inline-items' );
+        
+        // Get current settings
+        $settings = $this->get_settings_for_display();
+        
+        // Override the icon_list with our items
+        $settings['icon_list'] = $items;
+        $this->set_settings($settings);
+        
+        // Manually render the icon list
+        ?>
+        <div class="elementor-icon-list-wrapper">
+            <ul <?php echo $this->get_render_attribute_string( 'wrapper' ); ?>>
+                <?php foreach ( $items as $index => $item ) : 
+                    $repeater_setting_key = $this->get_repeater_setting_key( 'text', 'icon_list', $index );
+                    $this->add_render_attribute( $repeater_setting_key, 'class', 'elementor-icon-list-text' );
+                    
+                    // Add item class
+                    $item_class = 'elementor-icon-list-item elementor-inline-item';
+                    $this->add_render_attribute( 'item-' . $index, 'class', $item_class );
+                    ?>
+                    <li <?php echo $this->get_render_attribute_string( 'item-' . $index ); ?>>
+                        <?php if ( ! empty( $item['icon'] ) ) : ?>
+                            <span class="elementor-icon-list-icon">
+                                <i class="<?php echo esc_attr( $item['icon'] ); ?>" aria-hidden="true"></i>
+                            </span>
+                        <?php endif; ?>
+                        <span <?php echo $this->get_render_attribute_string( $repeater_setting_key ); ?>>
+                            <?php if ( ! empty( $item['link']['url'] ) ) : ?>
+                                <a href="<?php echo esc_url( $item['link']['url'] ); ?>">
+                            <?php endif; ?>
+                            <?php echo wp_kses_post( $item['text'] ); ?>
+                            <?php if ( ! empty( $item['link']['url'] ) ) : ?>
+                                </a>
+                            <?php endif; ?>
+                        </span>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render output in the editor
+     */
+    protected function content_template() {
+        ?>
+        <#
+        var storeData = <?php echo json_encode($this->get_store_data()); ?>;
+        var items = [];
+
+        if (settings.show_address === 'yes' && storeData.storeAddress) {
+            items.push({
+                text: storeData.storeAddress,
+                icon: 'fa fa-map-marker',
+                icon_advanced: { value: 'fas fa-map-marker-alt', library: 'fa-solid' },
+                _id: 'address_' + Math.random().toString(36).substr(2, 9)
+            });
+        }
+
+        if (settings.show_email === 'yes' && storeData.storeEmail) {
+            items.push({
+                text: storeData.storeEmail,
+                icon: 'fa fa-envelope',
+                icon_advanced: { value: 'fas fa-envelope', library: 'fa-solid' },
+                link: { url: 'mailto:' + storeData.storeEmail },
+                _id: 'email_' + Math.random().toString(36).substr(2, 9)
+            });
+        }
+
+        if (settings.show_phone === 'yes' && storeData.storePhone) {
+            items.push({
+                text: storeData.storePhone,
+                icon: 'fa fa-phone',
+                icon_advanced: { value: 'fas fa-phone-alt', library: 'fa-solid' },
+                link: { url: 'tel:' + storeData.storePhone.replace(/\s+/g, '') },
+                _id: 'phone_' + Math.random().toString(36).substr(2, 9)
+            });
+        }
+        #>
+        <div class="elementor-icon-list-wrapper">
+            <ul class="elementor-icon-list-items elementor-inline-items">
+                <# _.each( items, function( item, index ) { #>
+                <li class="elementor-icon-list-item elementor-inline-item">
+                    <# if ( item.icon ) { #>
+                        <span class="elementor-icon-list-icon">
+                            <i class="{{ item.icon }}" aria-hidden="true"></i>
+                        </span>
+                    <# } #>
+                    <span class="elementor-icon-list-text">
+                        <# if ( item.link && item.link.url ) { #>
+                            <a href="{{ item.link.url }}">
+                        <# } #>
+                        {{{ item.text }}}
+                        <# if ( item.link && item.link.url ) { #>
+                            </a>
+                        <# } #>
+                    </span>
+                </li>
+                <# }); #>
+            </ul>
+        </div>
+        <?php
+    }
 }

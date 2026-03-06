@@ -28,35 +28,7 @@ class Store_Follow_Button extends Widget_Button {
 
 	protected function register_controls() {
 		parent::register_controls();
-        
-        $this->update_control(
-            'icon_align',
-            [
-                'default' => 'left',
-            ]
-        );
-
-        $this->update_control(
-            'button_text_color',
-            [
-                'default' => '#ffffff',
-            ]
-        );
-
-        $this->update_control(
-            'background_color',
-            [
-                'default' => '#17a2b8',
-            ]
-        );
-
-        $this->update_control(
-            'border_color',
-            [
-                'default' => '#17a2b8',
-            ]
-        );
-
+    
         $this->update_control(
             'text',
             [
@@ -92,6 +64,10 @@ class Store_Follow_Button extends Widget_Button {
         $this->add_render_attribute( 'button', 'data-status', $follow_status ?? '' );			
 		
         parent::render();
+
+        ?>
+            <p>5 Followers (pkoro)</p>
+        <?php
 
 	}
 }

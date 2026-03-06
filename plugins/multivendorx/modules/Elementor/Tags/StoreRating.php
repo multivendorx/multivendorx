@@ -1,5 +1,6 @@
 <?php
 namespace MultiVendorX\Elementor\Tags;
+
 use Elementor\Core\DynamicTags\Tag;
 use Elementor\Modules\DynamicTags\Module;
 use MultiVendorX\Elementor\StoreHelper;
@@ -41,7 +42,7 @@ class StoreRating extends Tag {
     }
 
     public function get_group() {
-        return 'multivendorx'; // must match group ID
+        return 'multivendorx';
     }
 
     public function get_categories() {
@@ -55,9 +56,9 @@ class StoreRating extends Tag {
      *
      * @return void
      */
-    public function get_value() {
+    public function render() {
         $store = $this->get_store_data();
-        $rating = ! empty( $store['storeRating'] ) ? $store['storeRating'] : '';
-        return $rating;
+        $rating = ! empty( $store['storeRating'] ) ? $store['storeRating'] : 0;
+        echo esc_html( $rating );
     }
 }

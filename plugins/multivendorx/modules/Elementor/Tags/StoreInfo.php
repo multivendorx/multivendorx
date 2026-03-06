@@ -78,16 +78,7 @@ class StoreInfo extends Tag {
                     'text' => $store_data['storePhone'],
                 ]
             ],
-            [
-                'key'         => 'store_description',
-                'title'       => __( 'Store Description', 'multivendorx' ),
-                'text'        => $store_data['storeDescription'],
-                'icon'        => 'mvx-font ico-location-icon',
-                'show'        => true,
-                '__dynamic__' => [
-                    'text' => $store_data['storeDescription'],
-                ]
-            ],
+            // Store description entry removed
         ];
 
         return apply_filters( 'multivendorx_elementor_tags_store_info_value', $store_info );

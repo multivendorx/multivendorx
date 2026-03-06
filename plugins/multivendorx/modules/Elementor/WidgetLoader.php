@@ -34,8 +34,7 @@ class WidgetLoader {
 			'StoreLogo' => 'MultiVendorX\Elementor\Widgets\Store_Logo',
 			'StoreRating' => 'MultiVendorX\Elementor\Widgets\Store_Rating',
 			'StoreSocial' => 'MultiVendorX\Elementor\Widgets\Store_Social',
-			'StoreTabContents' => 'MultiVendorX\Elementor\Widgets\Store_Tab_Contents',
-			'StoreTabs' => 'MultiVendorX\Elementor\Widgets\Store_Tabs',
+			'StoreTab' => 'MultiVendorX\Elementor\Widgets\Store_Tab',
 		);
 
 		foreach ( $widgets as $file => $class ) {

@@ -117,10 +117,10 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 									value={
 										product.catalog_visibility
 									}
-									onChange={(selected) => {
+									onChange={(value) => {
 										handleChange(
 											'catalog_visibility',
-											selected.value
+											value
 										);
 										setIsEditingVisibility(
 											false
@@ -183,10 +183,10 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 									},
 								]}
 								value={product.status}
-								onChange={(selected) =>
+								onChange={(value) =>
 									handleChange(
 										'status',
-										selected.value
+										value
 									)
 								}
 							/>

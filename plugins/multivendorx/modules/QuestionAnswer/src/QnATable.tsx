@@ -142,7 +142,7 @@ const Qna: React.FC = () => {
 	};
 
 	const headers = {
-		name: {
+		product_name: {
 			label: __('Product', 'multivendorx'),
 		},
 		question_text: {
