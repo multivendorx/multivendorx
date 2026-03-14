@@ -38,6 +38,10 @@ const Table: React.FC<TableProps> = ({
 
     const [isScrollableRight, setIsScrollableRight] = useState(false);
     const [isScrollableLeft, setIsScrollableLeft] = useState(false);
+    const [editingCell, setEditingCell] = useState<{ rowId: number; key: string } | null>(null);
+    const handleCellClick = (rowId: number, key: string) => {
+        setEditingCell({ rowId, key });
+    };
 
     const sortedBy = useMemo(() => {
         if (query.orderby) return query.orderby;
@@ -130,7 +134,7 @@ const Table: React.FC<TableProps> = ({
             );
         }
         return (
-            <i className={`adminfont-${sortDir === ASC ? 'arrow-up' : 'arrow-down'} sort-icon`}/>
+            <i className={`adminfont-${sortDir === ASC ? 'arrow-up' : 'arrow-down'} sort-icon`} />
         );
     };
 
@@ -193,7 +197,7 @@ const Table: React.FC<TableProps> = ({
                                                 : 'descending'
                                             : null
                                     }
-                                    style={ config.width ? { minWidth: `${config.width}rem` } : {}}
+                                    style={config.width ? { minWidth: `${config.width}rem` } : {}}
                                 >
                                     {isSortable ? (
                                         <div
@@ -261,13 +265,12 @@ const Table: React.FC<TableProps> = ({
 
                                 {Object.entries(headers).map(([key, header], colIndex) => {
                                     const rowId = row.id;
-                                    const cell = row[header.key];
                                     if (typeof header.render === "function") {
                                         return (
                                             <td
                                                 key={`${rowId}-${colIndex}`}
                                                 className={`admin-column ${header.type}`}
-                                                style={ header.width ? { minWidth: `${header.width}rem` } : {}}
+                                                style={header.width ? { minWidth: `${header.width}rem` } : {}}
                                             >
                                                 {header.render(row)}
                                             </td>
@@ -291,21 +294,18 @@ const Table: React.FC<TableProps> = ({
                                     let displayValue = renderCell(row, header, format, currency);
 
                                     return (
-                                        <td
-                                            key={`${rowId}-${colIndex}`}
-                                            className="admin-column"
-                                        >
-                                            {
-                                                header.isEditable ? (
-                                                    renderEditableCell({
-                                                        header,
-                                                        cell,
-                                                        isEditing: false,
-                                                        onSave: onCellEdit,
-                                                    })
-                                                ) : (
-                                                    displayValue
-                                                )}
+                                        <td key={`${rowId}-${colIndex}`} className="admin-column">
+                                            {header.isEditable && editingCell?.rowId === row.id && editingCell?.key === header.key ? (
+                                                renderEditableCell({
+                                                    header,
+                                                    row,
+                                                    onSave: onCellEdit,
+                                                })
+                                            ) : (
+                                                <span onClick={() => header.isEditable && handleCellClick(row.id, header.key)}>
+                                                    {displayValue}
+                                                </span>
+                                            )}
                                         </td>
                                     );
                                 })}

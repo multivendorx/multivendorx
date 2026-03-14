@@ -50,11 +50,7 @@ const EMPTY_ORDER: RefundOrder = {
 	refund_images: [],
 };
 
-interface Props {
-	onUpdated?: () => void;
-}
-
-const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
+const PendingRefund: React.FC<{setCount?: (count: number) => void;}> = ({ setCount }) => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
@@ -132,7 +128,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 
 			handleCloseForm();
 			doRefreshTableData({});
-			onUpdated?.();
 		} catch (err) {
 			console.log(err);
 		} finally {
@@ -244,6 +239,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 
 				setRows(orders);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				setCount?.(Number(response.headers['x-wp-total']) || 0)
 				setIsLoading(false);
 			})
 			.catch((error) => {

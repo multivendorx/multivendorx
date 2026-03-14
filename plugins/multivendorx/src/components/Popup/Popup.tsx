@@ -15,6 +15,7 @@ interface PopupProps {
 	confirmNoText?: string;
 	onConfirm?: () => void;
 	onCancel?: () => void;
+	plugin?: string;
 }
 
 const proPopupContent = {
@@ -153,7 +154,54 @@ const proPopupContent = {
 
 const ShowProPopup: React.FC<PopupProps> = (props) => {
 	const [selectedBtn, setSelectedBtn] = useState(proPopupContent.btnLink[0]);
+	if (props.plugin) {
+		const pluginData =
+			typeof props.plugin === 'string'
+				? {
+					slug: props.plugin,
+					pluginName: props.plugin.split('/')[0],
+					pluginLink: `${appLocalizer.admin_url}plugins.php`,
+				}
+				: {
+					slug: props.plugin.requiredPlugin,
+					pluginName: props.plugin.pluginName || props.plugin.key,
+					pluginLink: props.plugin.pluginLink || `${appLocalizer.admin_url}plugins.php`,
+				};
 
+		return (
+			<div className="popup-wrapper">
+				<div className="popup-header">
+					<i className={`adminfont-${pluginData.pluginName}`} />
+				</div>
+				<div className="popup-body">
+					<h2>
+						{sprintf(
+							__('Plugin Required: %s', 'multivendorx'),
+							pluginData.pluginName
+						)}
+					</h2>
+					<p>
+						{sprintf(
+							__('This feature requires the "%s" plugin to be active.', 'multivendorx'),
+							pluginData.pluginName
+						)}
+					</p>
+					<ButtonInputUI
+						position="center"
+						buttons={[
+							{
+								icon: 'eye',
+								text: __('Activate Plugin', 'multivendorx'),
+								onClick: () => {
+									window.open(pluginData.pluginLink, '_blank');
+								},
+							},
+						]}
+					/>
+				</div>
+			</div>
+		);
+	}
 	return (
 		<>
 			{props.confirmMode ? (

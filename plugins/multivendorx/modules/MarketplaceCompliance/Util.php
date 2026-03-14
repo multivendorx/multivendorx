@@ -5,12 +5,12 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\Compliance;
+namespace MultiVendorX\MarketplaceCompliance;
 
 use MultiVendorX\Utill;
 
 /**
- * MultiVendorX Questions Answers Util class
+ * MultiVendorX Marketplace Compliance Util class
  *
  * @class       Util class
  * @version     PRODUCT_VERSION

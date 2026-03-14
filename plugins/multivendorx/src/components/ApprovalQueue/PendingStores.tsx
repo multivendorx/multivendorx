@@ -11,12 +11,13 @@ import {
 	ButtonInputUI,
 	TextAreaUI,
 	PopupUI,
+	QueryProps,
 } from 'zyra';
 
-import { formatLocalDate } from '@/services/commonFunction';
-import { QueryProps, TableRow } from '@/services/type';
+import { formatLocalDate, setSession } from '@/services/commonFunction';
+import { useRef } from '@wordpress/element';
 
-const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
+const PendingStores: React.FC<{}> = () => {
 	const [rows, setRows] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
@@ -25,6 +26,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 	const [rejectReason, setRejectReason] = useState('');
 	const [rejectStoreId, setRejectStoreId] = useState<number | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false); // prevent multiple submissions
+	const firstLoadRef = useRef(true);
 
 	const handleSingleAction = (action: string, storeId: number) => {
 		if (!storeId) {
@@ -49,8 +51,8 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 			data: { status: statusValue },
 		})
 			.then(() => {
+				firstLoadRef.current = true;
 				doRefreshTableData({});
-				onUpdated?.();
 			})
 			.catch(console.error);
 	};
@@ -75,8 +77,8 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 				setRejectPopupOpen(false);
 				setRejectReason('');
 				setRejectStoreId(null);
+				firstLoadRef.current = true;
 				doRefreshTableData({});
-				onUpdated?.();
 			})
 			.catch(console.error)
 			.finally(() => setIsSubmitting(false));
@@ -141,7 +143,6 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 			})
 			.then((response) => {
 				const items = response.data || [];
-				console.log('api', items);
 				// Extract IDs for selection
 				const ids = items
 					.filter((item: any) => item?.id != null)
@@ -149,7 +150,12 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 				setRowIds(ids);
 
 				setRows(items);
-				// setTotalRows(Number(response.headers['x-wp-status-pending']) || 0);
+				const count = Number(response.headers['x-wp-status-pending']) || 0;
+				setTotalRows(count);
+				if (firstLoadRef.current) {
+					setSession('storeCount', count);
+					firstLoadRef.current = false;
+				}
 				setIsLoading(false);
 			})
 			.catch(() => {

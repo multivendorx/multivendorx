@@ -8,10 +8,12 @@ import {
 	ButtonInputUI,
 	PopupUI,
 	TextAreaUI,
+	TableRow,
+	QueryProps,
 } from 'zyra';
 
-import { toWcIsoDate } from '@/services/commonFunction';
-import { QueryProps, TableRow } from '@/services/type';
+import { setSession, toWcIsoDate } from '@/services/commonFunction';
+import { useRef } from '@wordpress/element';
 
 const DISCOUNT_TYPE_LABELS: Record<string, string> = {
 	percent: __('Percentage discount', 'multivendorx'),
@@ -19,9 +21,7 @@ const DISCOUNT_TYPE_LABELS: Record<string, string> = {
 	fixed_product: __('Fixed product discount', 'multivendorx'),
 };
 
-const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
-	onUpdated,
-}) => {
+const PendingCoupons: React.FC<{ }> = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
@@ -31,6 +31,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 	const [rejectCouponId, setRejectCouponId] = useState<number | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [store, setStore] = useState<any[] | null>(null);
+	const firstLoadRef = useRef(true);
 
 	useEffect(() => {
 		axios
@@ -75,8 +76,8 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
 			.then(() => {
+				firstLoadRef.current = true;
 				doRefreshTableData({});
-				onUpdated?.();
 			})
 			.catch(console.error);
 	};
@@ -103,8 +104,8 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 				setRejectPopupOpen(false);
 				setRejectReason('');
 				setRejectCouponId(null);
+				firstLoadRef.current = true;
 				doRefreshTableData({});
-				onUpdated?.();
 			})
 			.catch(console.error)
 			.finally(() => setIsSubmitting(false));
@@ -126,7 +127,6 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 		},
 		date_created: {
 			label: __('Date created', 'multivendorx'),
-			isSortable: true,
 			type: 'date',
 		},
 		action: {
@@ -173,8 +173,8 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 					page: query.paged,
 					per_page: query.per_page,
 					search: query.searchValue,
-					orderby: query.orderby,
-					order: query.order,
+					orderby: 'date',
+					order: 'desc',
 					meta_key: 'multivendorx_store_id',
 					value: query?.filter?.store_id,
 					after: query.filter?.created_at?.startDate
@@ -200,6 +200,10 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 
 				setRows(coupons);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				if (firstLoadRef.current) {
+					setSession('withdrawCount', Number(response.headers['x-wp-total']) || 0);
+					firstLoadRef.current = false;
+				}
 				setIsLoading(false);
 			})
 			.catch((error) => {

@@ -62,7 +62,7 @@ export type TableHeaderConfig = {
 	 * Custom renderer (overrides type)
 	 */
 	render?: (
-		row?:{}
+		row?: {}
 	) => React.ReactNode;
 
 	/**
@@ -90,10 +90,10 @@ export type TableHeaderConfig = {
 export type TableRow = {
 	id?: string | number;
 	[key: string]:
-		| string
-		| number
-		| boolean
-		| React.ReactNode
+	| string
+	| number
+	| boolean
+	| React.ReactNode
 };
 
 
@@ -138,16 +138,12 @@ export type TableProps = CommonTableProps & {
 	selectedIds?: Array<number>;
 	onSelectRow?: (id: number, selected: boolean) => void;
 	onSelectAll?: (selected: boolean) => void;
-	rowActions?: ActionItem[]; 
-	onCellEdit?: (data: {
-		id: string | number;
-		key: string;
-		value: string | number | boolean;
-	}) => void;
-	isLoading?:boolean;
-	enableBulkSelect?: boolean; 
+	rowActions?: ActionItem[];
+	onCellEdit?: (key: string, row: TableRow, value: string | number | boolean) => void;
+	isLoading?: boolean;
+	enableBulkSelect?: boolean;
 	format?: string,
-	currency?:{};
+	currency?: {};
 };
 
 export type TableSummaryProps = {
@@ -217,12 +213,8 @@ export type TableCardProps = CommonTableProps & {
 	showColumnToggleIcon?: boolean;
 	rowActions?: ActionItem[];
 	onSelectCsvDownloadApply?: (selectedIds: number[]) => void;
-	onCellEdit?: (data: {
-		id: string | number;
-		key: string;
-		value: string | number | boolean;
-	}) => void;
-	buttonActions?:ButtonAction[];
+	onCellEdit?: (key: string, row: TableRow, value: string | number | boolean) => void;
+	buttonActions?: ButtonAction[];
 	format?: string;
 	currency?: {};
 };

@@ -1,63 +1,56 @@
 import { TableRow } from './types';
 
 type Props = {
-    header: any;
-    cell: TableRow;
-    isEditing: boolean;
-    onSave: (value: any) => void;
+    header: {};
+    row: TableRow;
+    onSave: (key: string, row: TableRow, value: string|number|boolean) => void;
 };
 
 export const renderEditableCell = ({
-	header,
-	cell,
-	isEditing,
-	onSave,
+    header,
+    row,
+    onSave,
 }: Props) => {
-	const value = cell.value;
+    const value = row[header.key];
 
-	if (!isEditing) {
-		return (
-			<>
-				{cell.display ?? value}
-			</>
-		);
-	}
+    const handleChange = (newValue: string|number|boolean) => {
+        onSave(header.key, row, newValue);
+    };
 
-	switch (header.editType) {
-		case 'toggle':
-			return (
-				<input
-					type="checkbox"
-					defaultChecked={Boolean(value)}
-					onChange={(e) => onSave(e.target.checked)}
-					autoFocus
-				/>
-			);
+    switch (header.editType) {
+        case 'toggle':
+            return (
+                <input
+                    type="checkbox"
+                    defaultChecked={Boolean(value)}
+                    onChange={(e) => handleChange(e.target.checked)}
+                    autoFocus
+                />
+            );
 
-		case 'select':
-			return (
-				<select
-					defaultValue={String(value)}
-					onBlur={(e) => onSave(e.target.value)}
-					autoFocus
-				>
-					{header.options?.map((opt: any) => (
-						<option key={opt.value} value={opt.value}>
-							{opt.label}
-						</option>
-					))}
-				</select>
-			);
+        case 'select':
+            return (
+                <select
+                    defaultValue={String(value)}
+                    onBlur={(e) => handleChange(e.target.value)}
+                    autoFocus
+                >
+                    {header.options?.map((opt: any) => (
+                        <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                        </option>
+                    ))}
+                </select>
+            );
 
-		default:
-			return (
-				<input
-					type="text"
-					defaultValue={String(value ?? '')}
-					onBlur={(e) => onSave(e.target.value)}
-					autoFocus
-				/>
-			);
-	}
+        default:
+            return (
+                <input
+                    type="text"
+                    defaultValue={String(value ?? '')}
+                    onBlur={(e) => handleChange(e.target.value)}
+                    autoFocus
+                />
+            );
+    }
 };
-

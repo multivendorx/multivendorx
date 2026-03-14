@@ -8,13 +8,13 @@ import {
 	ButtonInputUI,
 	PopupUI,
 	TextAreaUI,
+	TableRow,
+	QueryProps,
 } from 'zyra';
-import { formatCurrency, toWcIsoDate } from '@/services/commonFunction';
-import { QueryProps, TableRow } from '@/services/type';
+import { setSession, toWcIsoDate } from '@/services/commonFunction';
+import { useRef } from '@wordpress/element';
 
-const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
-	onUpdated,
-}) => {
+const PendingProducts: React.FC<{}> = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
@@ -24,6 +24,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 	const [rejectProductId, setRejectProductId] = useState<number | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false); // prevent multiple clicks
 	const [store, setStore] = useState<any[] | null>(null);
+	const firstLoadRef = useRef(true);
 
 	useEffect(() => {
 		axios
@@ -68,7 +69,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
 			.then(() => {
-				onUpdated?.();
+				firstLoadRef.current = true;
 				doRefreshTableData({});
 			})
 			.catch(console.error);
@@ -96,8 +97,8 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 				setRejectPopupOpen(false);
 				setRejectReason('');
 				setRejectProductId(null);
+				firstLoadRef.current = true;
 				doRefreshTableData({});
-				onUpdated?.();
 			})
 			.catch(console.error)
 			.finally(() => setIsSubmitting(false)); // enable button again
@@ -195,6 +196,10 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 
 				setRows(products);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				if (firstLoadRef.current) {
+					setSession('productCount', Number(response.headers['x-wp-total']) || 0);
+					firstLoadRef.current = false;
+				}
 				setIsLoading(false);
 			})
 			.catch((error) => {

@@ -11,6 +11,7 @@ import {
 	ItemListUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
+import { truncateText } from '@/services/commonFunction';
 
 type DocumentItem = {
 	id: number;
@@ -56,14 +57,6 @@ const Documentation: React.FC = () => {
 	const handleReadMore = (doc: DocumentItem) => {
 		setActiveDocument(doc);
 		setPopupOpen(true);
-	};
-
-	const truncateText = (text: string, wordCount: number) => {
-		const words = text.split(' ');
-		if (words.length <= wordCount) {
-			return text;
-		}
-		return words.slice(0, wordCount).join(' ') + '...';
 	};
 
 	//Filter logic — works for API data
@@ -188,7 +181,10 @@ const Documentation: React.FC = () => {
 				>
 					<div className="document-popup-wrapper">
 						<div className="heading">{activeDocument.title}</div>
-						<p className="des">{activeDocument.content}</p>
+						<div
+							className="des"
+							dangerouslySetInnerHTML={{ __html: activeDocument.content || '' }}
+						/>
 					</div>
 				</PopupUI>
 			)}

@@ -1,18 +1,18 @@
 <?php
 /**
- * Modules Compliance Ajax Class
+ * Modules Marketplace Compliance Ajax Class
  *
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\Compliance;
+namespace MultiVendorX\MarketplaceCompliance;
 
-use MultiVendorX\Compliance\Util;
+use MultiVendorX\MarketplaceCompliance\Util;
 use MultiVendorX\Utill;
 use MultiVendorX\Store\Store;
 
 /**
- * MultiVendorX Compliance Module.
+ * MultiVendorX Marketplace Compliance Module.
  *
  * @class       Module class
  * @version     PRODUCT_VERSION

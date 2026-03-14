@@ -7,7 +7,6 @@ import BulkActionDropdown from './BulkActionDropdown';
 import RealtimeFilters from './RealtimeFilter';
 import CategoryFilter from './CategoryFilter';
 import ButtonActions from './ButtonActions';
-import { useOutsideClick } from '../useOutsideClick';
 import HeaderSearch from '../HeaderSearch';
 import Skeleton from '../UI/Skeleton';
 import { PopupUI } from '../Popup';

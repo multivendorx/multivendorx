@@ -6,15 +6,15 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\Compliance;
+namespace MultiVendorX\MarketplaceCompliance;
 
-use MultiVendorX\Compliance\Util;
+use MultiVendorX\MarketplaceCompliance\Util;
 use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * MultiVendorX REST Compliance Controller.
+ * MultiVendorX REST Marketplace Compliance Controller.
  *
  * @class       Module class
  * @version     PRODUCT_VERSION
@@ -145,24 +145,14 @@ class Rest extends \WP_REST_Controller {
             $formatted = array_map(
                 function ( $r ) {
                     $store      = new \MultiVendorX\Store\Store( $r['store_id'] );
-                    $store_name = $store->data['name'] ?? '';
-
-                    $product       = wc_get_product( $r['product_id'] );
-                    $product_name  = $product ? $product->get_name() : '';
-                    $product_link  = $product ? get_permalink( $product->get_id() ) : '';
-                    $product_sku   = $product ? $product->get_sku() : '';
-                    $product_image = $product ? wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ) : '';
-
+                    $product = wc_get_product( $r['product_id'] );
+                    $image = $product ? wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ) : '';
                     return array(
                         'id'             => (int) $r['ID'],
                         'store_id'       => (int) $r['store_id'],
-                        'store_name'     => $store_name,
+                        'store'          => $store ? $store->get_data() : null,
                         'product_id'     => (int) $r['product_id'],
-                        'product_name'   => $product_name,
-                        'product_link'   => $product_link,
-                        'product_sku'    => $product_sku,
-                        'product_image'  => $product_image,
-                        'name'           => $r['name'],
+                        'product'        => $product ? array_merge( $product->get_data(), array( 'image' => $image ) ) : null,                        'name'           => $r['name'],
                         'email'          => $r['email'],
                         'reason'         => $r['message'],
                         'created_at'     => Utill::multivendorx_rest_prepare_date_response( $r['created_at'] ),

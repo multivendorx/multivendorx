@@ -3,16 +3,15 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink, QueryProps, TableCard, TableRow } from 'zyra';
+import { useRef } from '@wordpress/element';
+import { setSession } from '@/services/commonFunction';
 
-interface Props {
-	onUpdated?: () => void;
-}
-
-const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
+const PendingWithdrawal: React.FC<{ setCount?: (count: number) => void }> = ({ setCount }) => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
+	const firstLoadRef = useRef(true);
 
 	const handleSingleAction = (action: string, row: any) => {
 		if (!row?.id) {
@@ -31,8 +30,8 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 			},
 		})
 			.then(() => {
+				firstLoadRef.current = true;
 				doRefreshTableData({});
-				onUpdated?.();
 			})
 			.catch(console.error);
 	};
@@ -89,6 +88,10 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 
 				setRows(stores);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				if (firstLoadRef.current) {
+					setSession('couponCount', Number(response.headers['x-wp-total']) || 0);
+					firstLoadRef.current = false;
+				}
 				setIsLoading(false);
 			})
 			.catch((error) => {

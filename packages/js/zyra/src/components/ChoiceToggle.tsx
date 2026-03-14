@@ -15,24 +15,25 @@ interface Option {
     icon?: string;
     customHtml?: string;
     proSetting?: boolean;
+    requiredPlugin?: string;
 }
 
 interface ChoiceToggleProps {
     options?: Option[];
     wrapperClass?: string;
     value: string | string[];
-    onChange: ( value: string | string[] ) => void;
+    onChange: (value: string | string[]) => void;
     proSetting?: boolean;
     iconEnable?: boolean;
     key?: string;
     multiSelect?: boolean;
     custom?: boolean;
     canAccess?: boolean;
-    appLocalizer?: {[key: string]: string | number | boolean};
-    onBlocked?: (type: 'pro', payload?: string) => void;
+    appLocalizer?: any;
+    onBlocked?: (type: 'pro' | 'plugin', payload?: Option) => void;
 }
 
-export const ChoiceToggleUI: React.FC< ChoiceToggleProps > = ( {
+export const ChoiceToggleUI: React.FC<ChoiceToggleProps> = ({
     options,
     wrapperClass,
     value,
@@ -43,33 +44,37 @@ export const ChoiceToggleUI: React.FC< ChoiceToggleProps > = ( {
     multiSelect = false,
     appLocalizer,
     onBlocked
-} ) => {
+}) => {
     const block = (option: Option) => {
         // Check pro setting
         if (option.proSetting && !appLocalizer.khali_dabba) {
             onBlocked?.('pro');
             return true;
         }
+
+        if (option.requiredPlugin && !(appLocalizer.active_plugins || []).includes(option.requiredPlugin)) {
+            onBlocked?.('plugin', option);
+            return true;
+        }
         return false;
     };
-
-    const handleChange = ( selectedOptionValue: string, option: Option ) => {
+    const handleChange = (selectedOptionValue: string, option: Option) => {
         // Check if option is blocked (pro)
         if (block(option)) {
             return;
         }
 
-        if ( multiSelect ) {
-            const current = Array.isArray( value ) ? value : [];
+        if (multiSelect) {
+            const current = Array.isArray(value) ? value : [];
             let newValues: string[];
-            if ( current.includes( selectedOptionValue ) ) {
-                newValues = current.filter( ( compareValue ) => compareValue !== selectedOptionValue );
+            if (current.includes(selectedOptionValue)) {
+                newValues = current.filter((compareValue) => compareValue !== selectedOptionValue);
             } else {
-                newValues = [ ...current, selectedOptionValue ];
+                newValues = [...current, selectedOptionValue];
             }
-            onChange( newValues );
+            onChange(newValues);
         } else {
-            onChange( selectedOptionValue );
+            onChange(selectedOptionValue);
         }
     };
 
@@ -78,48 +83,48 @@ export const ChoiceToggleUI: React.FC< ChoiceToggleProps > = ( {
             <div className={`toggle-setting-container ${wrapperClass ? wrapperClass : ''}`}>
 
                 <div className={`toggle-setting-wrapper ${custom ? 'custom' : ''}`}>
-                    { options.map( ( option ) => {
+                    {options.map((option) => {
                         const isChecked = multiSelect
-                            ? Array.isArray( value ) &&
-                              value.includes( option.value )
+                            ? Array.isArray(value) &&
+                            value.includes(option.value)
                             : value === option.value;
                         const isProOption = !!option.proSetting;
 
                         return (
                             <div
                                 role="button"
-                                tabIndex={ 0 }
-                                key={ option.key }
+                                tabIndex={0}
+                                key={option.key}
                                 className="toggle-option"
-                                
+
                             >
                                 <input
                                     className="toggle-setting-form-input"
-                                    type={ multiSelect ? 'checkbox' : 'radio' }
-                                    id={ option.key }
-                                    name={ key }
-                                    value={ option.value }
-                                    checked={ isChecked }
+                                    type={multiSelect ? 'checkbox' : 'radio'}
+                                    id={option.key}
+                                    name={key}
+                                    value={option.value}
+                                    checked={isChecked}
                                     readOnly
-                                    onClick={ () => handleChange(option.value,option) }
+                                    onClick={() => handleChange(option.value, option)}
                                 />
-                                <label htmlFor={ option.key }>
+                                <label htmlFor={option.key}>
                                     <span>
-                                        { iconEnable ? (
-                                            <i className={ option.value }></i>
+                                        {iconEnable ? (
+                                            <i className={option.value}></i>
                                         ) : option.img ? (
                                             <>
-                                                <img src={ option.img } />
-                                                { option.label }
+                                                <img src={option.img} />
+                                                {option.label}
                                             </>
                                         ) : option.icon ? (
                                             <>
                                                 <i className={`adminfont-${option.icon} `}></i>
-                                                { option.label }
+                                                {option.label}
                                             </>
                                         ) : (
                                             option.label
-                                        ) }
+                                        )}
                                     </span>
                                     {option.desc && (
                                         <div className="des">{option.desc}</div>
@@ -135,7 +140,7 @@ export const ChoiceToggleUI: React.FC< ChoiceToggleProps > = ( {
                                 )}
                             </div>
                         );
-                    } ) }
+                    })}
                 </div>
             </div>
         </>
@@ -156,9 +161,9 @@ const ChoiceToggle: FieldComponent = {
             options={
                 Array.isArray(field.options)
                     ? field.options.map((opt) => ({
-                            ...opt,
-                            value: String(opt.value), // this can be an icon class
-                        }))
+                        ...opt,
+                        value: String(opt.value), // this can be an icon class
+                    }))
                     : []
             }
             value={

@@ -199,6 +199,9 @@ export const KnowledgeBase: React.FC = () => {
 		},
 		content: {
 			label: __('Write your explanation or tutorial', 'multivendorx'),
+			render:(row) =>(
+				truncateText(row.content,30)
+			)
 		},
 		status_label: {
 			label: __('Status', 'multivendorx'),
@@ -442,32 +445,26 @@ export const KnowledgeBase: React.FC = () => {
 								htmlFor="status"
 							>
 								<ChoiceToggleUI
-									value={formData.status}
 									options={[
 										{
-											label: __('Draft', 'multivendorx'),
+											key: 'draft',
 											value: 'draft',
+											label: __('Draft', 'multivendorx'),
 										},
 										{
-											label: __(
-												'Pending',
-												'multivendorx'
-											),
+											key: 'pending',
 											value: 'pending',
+											label: __('Pending', 'multivendorx'),
 										},
 										{
-											label: __(
-												'Published',
-												'multivendorx'
-											),
+											key: 'publish',
 											value: 'publish',
+											label: __('Published', 'multivendorx'),
 										},
 									]}
-									onChange={(value) =>
-										setFormData((prev) => ({
-											...prev,
-											status: value,
-										}))
+									value={formData.status}
+									onChange={(val: string) =>
+										handleChange('status', val)
 									}
 								/>
 							</FormGroup>

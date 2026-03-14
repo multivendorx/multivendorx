@@ -2,15 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, Container, Column, TableCard, PopupUI } from 'zyra';
-import { QueryProps, TableRow } from '@/services/type';
+import { getApiLink, Container, Column, TableCard, PopupUI, TableRow, QueryProps, ItemCardUI } from 'zyra';
 import Popup from '../../../src/components/Popup/Popup';
 
-interface Props {
-	onUpdated?: () => void;
-}
-
-const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
+const PendingReportAbuse: React.FC<{ setCount?: (count: number) => void; }> = ({ setCount }) => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
@@ -30,7 +25,6 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 			})
 			.then(() => {
 				doRefreshTableData({});
-				onUpdated?.();
 			})
 			.catch(() => {
 				alert(__('Failed to delete report', 'multivendorx'));
@@ -69,6 +63,16 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 	const headers = {
 		product: {
 			label: __('Product', 'multivendorx'),
+			render: (row: any) => (
+				<ItemCardUI
+					id={row.product?.id}
+					title={row.product?.name}
+					sku={row.product?.sku}
+					image={row.product?.image}
+					icon={"inventory"}
+					link={`/wp-admin/post.php?post=${row.product?.id}&action=edit`}
+				/>
+			),
 		},
 		email: {
 			label: __('Reported By', 'multivendorx'),
@@ -97,19 +101,19 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 		},
 	};
 
-const filters = [
-	{
-		key: 'store_id',
-		label: __('Stores', 'multivendorx'),
-		type: 'select',
-		options: store,
-	},
-	{
-		key: 'created_at',
-		label: __('Created Date', 'multivendorx'),
-		type: 'date',
-	},
-];
+	const filters = [
+		{
+			key: 'store_id',
+			label: __('Stores', 'multivendorx'),
+			type: 'select',
+			options: store,
+		},
+		{
+			key: 'created_at',
+			label: __('Created Date', 'multivendorx'),
+			type: 'date',
+		},
+	];
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -142,6 +146,7 @@ const filters = [
 
 				setRows(products);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				setCount?.(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
 			.catch((error) => {

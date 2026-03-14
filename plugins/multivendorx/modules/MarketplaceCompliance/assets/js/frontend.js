@@ -135,13 +135,15 @@ jQuery(function ($) {
 				if (res.success) {
 					$msgBox.html(
 						'<div class="wc-block-components-notice-banner is-success">' +
-							'<div class="wc-block-components-notice-banner__content">' +
-							'<strong>Success:</strong> ' +
-							res.data +
-							'</div></div>'
+						'<div class="wc-block-components-notice-banner__content">' +
+						'<strong>Success:</strong> ' +
+						res.data +
+						'</div></div>'
 					);
 
+					// CLOSE POPUP AFTER SUCCESS
 					setTimeout(function () {
+						$form.closest('.multivendorx-popup').fadeOut(200);
 						$form.find('.report-abuse-msg-box').empty();
 					}, 1000);
 
