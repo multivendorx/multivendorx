@@ -7,17 +7,18 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 /**
  * Internal dependencies
  */
+import { TextAreaUI } from '../src/components/TextArea';
 import TextArea from '../src/components/TextArea';
 
-const meta: Meta<typeof TextArea> = {
+const meta: Meta<typeof TextAreaUI> = {
     title: 'Zyra/Components/TextArea',
-    component: TextArea,
+    component: TextAreaUI,
     tags: ['autodocs'],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof TextArea>;
+type Story = StoryObj<typeof TextAreaUI>;
 
 /**
  * 1. Plain TextArea (Controlled)
@@ -27,18 +28,17 @@ export const PlainText: Story = {
         const [value, setValue] = useState('Initial comment text');
 
         return (
-            <TextArea
+            <TextAreaUI
                 id="comments-textarea"
                 name="comments"
                 value={value}
                 rowNumber={5}
                 colNumber={50}
-                usePlainText
-                description="Please enter your detailed comments."
-                descClass="settings-metabox-description"
-                onChange={(e) => {
-                    console.log('Changed:', e.target.value);
-                    setValue(e.target.value);
+                usePlainText = {true}
+                proSetting={true}
+                onChange={(val) => {
+                    console.log('Changed:', val);
+                    setValue(val);
                 }}
                 onFocus={(e) => console.log('Focused', e.target)}
                 onBlur={(e) => console.log('Blurred', e.target)}
@@ -55,17 +55,41 @@ export const TinyMCEEditor: Story = {
         const [value, setValue] = useState('<p>Initial editor content</p>');
 
         return (
-            <TextArea
+            <TextAreaUI
                 name="editor"
                 value={value}
                 tinymceApiKey="no-api-key-needed-for-storybook"
                 rowNumber={8}
-                description="Rich text editor using TinyMCE"
-                descClass="settings-metabox-description"
-                onChange={(e) => {
-                    console.log('Editor Changed:', e.target.value);
-                    setValue(e.target.value);
+                onChange={(val) => {
+                    console.log('Editor Changed:', val);
+                    setValue(val);
                 }}
+            />
+        );
+    },
+};
+
+export const ReadOnly: Story = {
+    render: () => {
+        const [value, setValue] = useState('for read only purpose');
+
+        return (
+            <TextAreaUI
+                id="comments-textarea"
+                name="comments"
+                placeholder='write comment'
+                value={value}
+                rowNumber={5}
+                colNumber={50}
+                usePlainText = {true}
+                readOnly= {true}
+                onChange={(val) => {
+                    console.log('Changed:', val);
+                    setValue(val);
+                }}
+                
+                onFocus={(e) => console.log('Focused', e.target)}
+                onBlur={(e) => console.log('Blurred', e.target)}
             />
         );
     },

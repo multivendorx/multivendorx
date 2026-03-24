@@ -6,7 +6,7 @@ import { FieldComponent } from './fieldUtils';
 import '../styles/web/UI/ItemList.scss';
 import Skeleton from './UI/Skeleton';
 
-interface Item {
+export interface Item {
     id?: string;
     title?: string;
     icon?: string;

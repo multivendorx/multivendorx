@@ -4,7 +4,7 @@ import { ComponentStatusView, getApiLink, ItemListUI } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
-type NotificationItem = {
+export type NotificationItem = {
 	id: number;
 	icon?: string;
 	title: string;

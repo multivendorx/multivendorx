@@ -1,109 +1,169 @@
-// BasicInputProProps.stories.tsx
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import   { BasicInputUI } from '../src/components/BasicInput';
 
-const meta: Meta<typeof BasicInput> = {
-    title: 'Zyra/Components/BasicInput/ProExamples',
-    component: BasicInput,
+import { BasicInputUI } from '../src/components/BasicInput';
+
+const meta: Meta<typeof BasicInputUI> = {
+    title: 'Zyra/Components/BasicInput',
+    component: BasicInputUI,
     tags: ['autodocs'],
+    args: {
+        value: '',
+        onChange: () => { },
+    },
 };
 
 export default meta;
-type Story = StoryObj<typeof BasicInput>;
 
-export const AllInteractiveProps: Story = {
-    render: () => {
-        const [textValue, setTextValue] = useState('');
-        const [passwordValue, setPasswordValue] = useState('');
-        const [rangeValue, setRangeValue] = useState(50);
+type Story = StoryObj<typeof BasicInputUI>;
 
-        return (
-            <div style={{ display: 'grid', gap: '24px', maxWidth: '600px' }}>
-                {/* Text Input with pre/post text */}
-                <BasicInputUI
-                    wrapperClass="input-wrapper"
-                    inputLabel="Text Input"
-                    value={textValue}
-                    placeholder="Enter text"
-                    preText="<b>PreText:</b>"
-                    postText="<i>:PostText</i>"
-                    preInsideText="@"
-                    postInsideText=".com"
-                    size="100%"
-                    onChange={(e) => setTextValue(e.target.value)}
-                    description="Text input demonstrating preText, postText, and inside text"
-                    proSetting
-                />
+const ControlledTemplate = (
+    args: React.ComponentProps<typeof BasicInputUI>
+) => {
+    const [value, setValue] = useState(args.value);
 
-                {/* Password with Generate / Copy / Clear */}
-                <BasicInputUI
-                    wrapperClass="input-wrapper"
-                    inputLabel="Password Input"
-                    type="text"
-                    value={passwordValue}
-                    generate="true"
-                    size="100%"
-                    onChange={(e) => setPasswordValue(e.target.value)}
-                    description="Generate a random key and copy/clear functionality"
-                    proSetting
-                />
+    return (
+        <div style={{ maxWidth: '420px', padding: '16px' }}>
+            <BasicInputUI
+                {...args}
+                value={value}
+                onChange={(nextValue) => {
+                    setValue(nextValue);
+                }}
+            />
+        </div>
+    );
+};
 
-                {/* Range input with unit */}
-                <BasicInputUI
-                    wrapperClass="input-wrapper"
-                    inputLabel="Range Input"
-                    type="range"
-                    value={rangeValue}
-                    min={0}
-                    max={100}
-                    rangeUnit="%"
-                    size="100%"
-                    onChange={(e) => setRangeValue(Number(e.target.value))}
-                    description="Range input with unit and live output"
-                    proSetting
-                />
-
-                {/* Button Input */}
-                <BasicInputUI
-                    wrapperClass="input-wrapper"
-                    inputLabel="Custom Button Input"
-                    type="button"
-                    clickBtnName="Click Me"
-                    onclickCallback={() =>
-                        alert(`Button clicked with current value: ${textValue}`)
-                    }
-                    description="Button input with click callback"
-                    proSetting
-                />
-
-                {/* Disabled / ReadOnly */}
-                <BasicInputUI
-                    wrapperClass="input-wrapper"
-                    inputLabel="Disabled Input"
-                    value="Disabled"
-                    disabled
-                    description="Disabled input field"
-                />
-                <BasicInputUI
-                    wrapperClass="input-wrapper"
-                    inputLabel="ReadOnly Input"
-                    value="Read Only"
-                    readOnly
-                    description="Read-only input field"
-                />
-
-                {/* Feedback Example */}
-                <BasicInputUI
-                    wrapperClass="input-wrapper"
-                    inputLabel="Input with Feedback"
-                    value={textValue}
-                    onChange={(e) => setTextValue(e.target.value)}
-                    feedback={{ type: 'error', message: 'Invalid input' }}
-                    description="Shows feedback message below input"
-                    proSetting
-                />
-            </div>
-        );
+export const Default: Story = {
+    render: (args) => <ControlledTemplate {...args} />,
+    
+    args: {
+        id: 'basic-input-default',
+        type: 'text',
+        value: '',
+        inputLabel: 'Store Name',
+        name: 'store_name',
+        placeholder: 'Enter store name',
     },
 };
+
+export const WithPreAndPostText: Story = {
+    render: (args) => <ControlledTemplate {...args} />,
+
+    args: {
+        id: 'basic-input-price',
+        inputLabel: 'Commission',
+        name: 'commission',
+        type: 'number',
+        value: '25',
+        preText: '$',
+        postText: '<strong>USD</strong>',
+        minNumber: 0,
+        maxNumber: 100,
+    },
+};
+
+export const NumberInput: Story = {
+    render: (args) => <ControlledTemplate {...args} />,
+
+    args: {
+        id: 'basic-input-number',
+        inputLabel: 'Number Input(Zip code)',
+        name: 'zip_code',
+        type: 'number',
+        value: '700064',
+        placeholder: 'Enter zip code',
+        minNumber: 0,
+        maxNumber: 999999,
+    },
+};
+
+export const PasswordInput: Story = {
+    render: (args) => <ControlledTemplate {...args} />,
+
+    args: {
+        id: 'basic-input-password',
+        type: 'password',
+        name: 'password',
+        placeholder: 'password must be strong',
+        value: '',
+        required: true,
+        inputLabel: 'Password',
+        onChange: () => { },
+    },
+};
+
+export const EmailInput: Story = {
+    render: (args) => <ControlledTemplate {...args} />,
+
+    args: {
+        id: 'basic-input-email',
+        type: 'email',
+        name: 'email',
+        placeholder: 'Enter your Email',
+        value: '',
+        inputLabel: 'Email',
+        onChange: () => { },
+    },
+};
+
+export const ColorInput: Story = {
+    render: (args) => <ControlledTemplate {...args} />,
+
+    args: {
+        id: 'basic-input-color',
+        type: 'color',
+        name: 'brand_color',
+        value: '#3b82f6',
+        required: false,
+        inputLabel: 'Brand Color',
+        onChange: () => { },
+    },
+};
+
+export const RangeInput: Story = {
+    render: (args) => <ControlledTemplate {...args} />,
+
+    args: {
+        id: 'basic-input-range',
+        type: 'range',
+        name: 'shipping_radius',
+        value: 25,
+        inputLabel: 'Shipping Radius',
+        minNumber: 0,
+        maxNumber: 100,
+        onChange: () => { },
+        rangeUnit: 'km',
+    },
+};
+
+export const Disabled: Story = {
+    render: (args) => <ControlledTemplate {...args} />,
+
+    args: {
+        id: 'basic-input-disabled',
+        type: 'text',
+        name: 'store_name_disabled',
+        value: 'multivendorx store',
+        inputLabel: 'Store Name',
+        disabled: true,
+        onChange: () => { },
+    },
+};
+
+export const ReadOnly: Story = {
+    render: (args) => <ControlledTemplate {...args} />,
+
+    args: {
+        id: 'basic-input-readonly',
+        type: 'text',
+        name: 'api_key',
+        value: 'mvx_demo_key_12345',
+        inputLabel: 'API KEY',
+        readOnly: true,
+        onChange: () => { },
+    },
+};
+
+

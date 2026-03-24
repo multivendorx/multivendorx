@@ -10,7 +10,7 @@ interface PrePostTextProps {
     postText?: string;
 }
 
-const PrePostTextUI: React.FC<PrePostTextProps> = ({
+export const PrePostTextUI: React.FC<PrePostTextProps> = ({
     textType,
     preText,
     postText,
