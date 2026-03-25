@@ -169,10 +169,10 @@ class Dokan {
                     'customer_id'            => $order->get_customer_id(),
                     'total_order_value'      => $row->order_total,
                     'net_items_cost'         => $row->order_total,
-                    'marketplace_commission' => $row->net_amount,
-                    'store_earning'          => $row->order_total - $row->net_amount,
-                    'store_payable'          => $row->order_total - $row->net_amount,
-                    'marketplace_payable'    => $row->net_amount,
+                    'marketplace_commission' => $row->order_total - $row->net_amount,
+                    'store_earning'          => $row->net_amount,
+                    'store_payable'          => $row->net_amount,
+                    'marketplace_payable'    => $row->order_total - $row->net_amount,
                     'currency'               => $order->get_currency(),
                     'status'                 => 'paid',
                 ),
@@ -199,11 +199,49 @@ class Dokan {
             $order->save();
         }
 
-        // $balance_table = $wpdb->prefix . 'dokan_vendor_balance';
-        // $transaction_table = $wpdb->prefix . Utill::TABLES['commission'];
-        // $dokan_vendor_balances = $wpdb->get_results( "SELECT * FROM {$balance_table}" );
+        $balance_table = $wpdb->prefix . 'dokan_vendor_balance';
+        $dokan_vendor_balances = $wpdb->get_results( "SELECT * FROM {$balance_table}" );
 
-        // foreach ( $dokan_vendor_balances as $row ) {
-        // }
+        foreach ( $dokan_vendor_balances as $row ) {
+            $order_id = $row->trn_id;
+            $order    = wc_get_order( $order_id );
+            $store_id  = get_user_meta( $row->vendor_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
+
+            if ($row->debit > 0) {
+                $entry_type = 'Cr';
+                $transaction_type = 'Commission';
+                $amount = $row->debit;
+            } 
+            
+            if ($row->credit > 0 && $row->trn_type == 'dokan_withdraw') {
+                $entry_type = 'Dr';
+                $transaction_type = 'Withdraw';
+                $amount = $row->credit;
+            } 
+
+            if ($row->credit > 0 && $row->trn_type == 'dokan_refund') {
+                $entry_type = 'Dr';
+                $transaction_type = 'Refund';
+                $amount = $row->credit;
+            } 
+
+            $data = array(
+                'store_id'         => (int) $store_id,
+                'order_id'         => (int) $order_id,
+                'commission_id'    => (int) $order->get_meta( 'multivendorx_commission_id', true ),
+                'entry_type'       => $entry_type,
+                'transaction_type' => $transaction_type,
+                'amount'           => (float) $amount,
+                'currency'         => $order->get_currency(),
+                'payment_method'    =>$order->get_payment_method(),
+                'narration'        => $row->perticulars,
+                'status'           => 'Completed',
+            );
+
+            $format = array( '%d', '%d', '%d', '%s', '%s', '%f', '%s', '%s', '%s', '%s' );
+
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+            $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $data, $format );
+        }
     }
 }
