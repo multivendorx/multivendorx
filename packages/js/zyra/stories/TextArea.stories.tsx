@@ -8,7 +8,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
  * Internal dependencies
  */
 import { TextAreaUI } from '../src/components/TextArea';
-import TextArea from '../src/components/TextArea';
+
 
 const meta: Meta<typeof TextAreaUI> = {
     title: 'Zyra/Components/TextArea',

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ItemList, { ItemListUI } from "../src/components/ItemList";
+import { ItemListUI } from "../src/components/ItemList";
 
 import { StoryObj, Meta } from "@storybook/react-vite";
 import type { Item } from "../src/components/ItemList";
