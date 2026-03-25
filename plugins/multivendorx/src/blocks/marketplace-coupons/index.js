@@ -1,10 +1,18 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { PanelBody, TextControl, SelectControl } from '@wordpress/components';
-import { createRoot } from '@wordpress/element';
+import {
+	PanelBody,
+	TextControl,
+	SelectControl,
+} from '@wordpress/components';
+import { createRoot, useEffect, useState } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import StoreCouponList from './StoreCouponList';
 import { __ } from '@wordpress/i18n';
+import axios from 'axios';
+import { getApiLink } from 'zyra';
+
+/* global couponList */
 
 registerBlockType('multivendorx/marketplace-coupons', {
 	apiVersion: 2,
@@ -15,7 +23,7 @@ registerBlockType('multivendorx/marketplace-coupons', {
 	attributes: {
 		perPage: {
 			type: 'number',
-			default: 10,
+			default: 5,
 		},
 		orderby: {
 			type: 'string',
@@ -25,10 +33,38 @@ registerBlockType('multivendorx/marketplace-coupons', {
 			type: 'string',
 			default: 'DESC',
 		},
+		storeId: {
+			type: 'number',
+			default: 0,
+		},
 	},
 
 	edit({ attributes, setAttributes }) {
 		const blockProps = useBlockProps();
+		const [stores, setStores] = useState([]);
+
+		useEffect(() => {
+			axios({
+				method: 'GET',
+				url: getApiLink(couponList, 'store'),
+				headers: { 'X-WP-Nonce': couponList.nonce },
+				params: {options:true},
+			})
+				.then((response) => {
+					setStores(response.data || []);
+				})
+				.catch(() => {
+					setStores([]);
+				});
+		}, []);
+
+		const storeOptions = [
+			{ label: __('Select Store', 'multivendorx'), value: 0 },
+			...stores.map((store) => ({
+				label: store.store_name,
+				value: store.id,
+			})),
+		];
 
 		return (
 			<div {...blockProps}>
@@ -37,13 +73,24 @@ registerBlockType('multivendorx/marketplace-coupons', {
 						title={__('Coupon Settings', 'multivendorx')}
 						initialOpen={true}
 					>
+						<SelectControl
+							label={__('Select Store', 'multivendorx')}
+							value={attributes.storeId}
+							options={storeOptions}
+							onChange={(value) =>
+								setAttributes({
+									storeId: parseInt(value, 10),
+								})
+							}
+						/>
+
 						<TextControl
 							label={__('Coupons Per Page', 'multivendorx')}
 							type="number"
 							value={attributes.perPage}
 							onChange={(value) =>
 								setAttributes({
-									perPage: parseInt(value, 10) || 10,
+									perPage: parseInt(value, 10) || 5,
 								})
 							}
 						/>
@@ -99,7 +146,11 @@ registerBlockType('multivendorx/marketplace-coupons', {
 				</InspectorControls>
 
 				<BrowserRouter>
-					<StoreCouponList {...attributes} isPreview={true} />
+					<StoreCouponList
+						{...attributes}
+						storeId={attributes.storeId}
+						isPreview={true}
+					/>
 				</BrowserRouter>
 			</div>
 		);

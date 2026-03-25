@@ -766,7 +766,7 @@ class Stores extends \WP_REST_Controller {
 
                 $date_range_label = $args['start_date'] . '_' . $args['end_date'];
 
-                $cached_data        = get_transient( $transient_key ) ?: array();
+                $cached_data        = get_transient( $transient_key ) ?? array();
                 $cached_data[ $id ] = $cached_data[ $id ] ?? array();
 
                 if ( isset( $cached_data[ $id ][ $date_range_label ] ) ) {

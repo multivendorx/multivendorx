@@ -87,14 +87,16 @@ class Widgets {
      * Restrict MultiVendorX store blocks outside store pages.
      *
      * @param array $allowed_blocks  Array of allowed block names.
-     * @param array $editor_context  Editor context. (Not used).
+     * @param array $editor_context  Editor context.
      * @return array Filtered array of allowed block names.
      */
-    public function restrict_store_blocks( $allowed_blocks, $editor_context ) {// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+    public function restrict_store_blocks( $allowed_blocks, $editor_context ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
-        $restricted_category = 'multivendorx-store-shop';
+        $restricted_categories = array(
+            'multivendorx-store-shop',
+            'multivendorx-shortcodes',
+        );
 
-        // Allow all blocks if we are on a store page.
         if ( Utill::is_store_page() ) {
             return $allowed_blocks;
         }
@@ -106,8 +108,7 @@ class Widgets {
         foreach ( $all_blocks as $block_name => $block_type ) {
             $category = $block_type->category ?? '';
 
-            // Skip MultiVendorX store blocks outside store pages.
-            if ( $restricted_category === $category ) {
+            if ( in_array( $category, $restricted_categories, true ) ) {
                 continue;
             }
 

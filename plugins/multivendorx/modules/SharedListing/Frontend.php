@@ -95,10 +95,11 @@ class Frontend {
         $primary_ids = array();
 
         $table = $wpdb->prefix . Utill::TABLES['products_map'];
-        $limit = apply_filters( 'multivendorx_shared_listing_product_map_query_limit', 10000 );
-        /* phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
+        $limit = apply_filters( 'multivendorx_shared_listing_product_map_query_limit', 100 );
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         $query = $wpdb->prepare( "SELECT product_map FROM {$table} LIMIT %d", $limit );
-        $maps  = $wpdb->get_results( $query );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        $maps = $wpdb->get_results( $query );
         foreach ( $maps as $map ) {
             $ids = maybe_unserialize( $map->product_map );
 
@@ -199,15 +200,17 @@ class Frontend {
         $table      = $wpdb->prefix . Utill::TABLES['products_map'];
         $product_id = (int) $product->get_id();
 
-        // Search serialized data
-        $like = '%' . $wpdb->esc_like( 'i:' . $product_id . ';' ) . '%';
+		// Search serialized data.
+		$like = '%' . $wpdb->esc_like( 'i:' . $product_id . ';' ) . '%';
 
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         $row = $wpdb->get_row(
             $wpdb->prepare(
                 "SELECT product_map FROM {$table} WHERE product_map LIKE %s",
                 $like
             )
         );
+        // phpcs:enable
 
         if ( ! $row ) {
             return;

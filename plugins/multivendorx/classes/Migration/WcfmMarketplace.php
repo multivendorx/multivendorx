@@ -14,43 +14,23 @@ use MultiVendorX\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * MultiVendorX Dokan migration class
+ * MultiVendorX WCFM migration class
  *
- * @class       Dokan class
+ * @class       WCFM class
  * @version     PRODUCT_VERSION
  * @author      MultiVendorX
  */
-class Dokan {
-    /**
-     * Constructor.
-     *
-     * Initializes the migration process by running vendor,
-     * product, and order/commission migrations.
-     *
-     * @return void
-     */
+class WcfmMarketplace {
     public function __construct() {
         $this->migrate_vendors();
         $this->migrate_products();
         $this->migrate_orders_and_commissions();
     }
-	/**
-	 * Migrate Dokan vendors to MultiVendorX stores.
-	 *
-	 * This method:
-	 * - Retrieves users with the `seller` role.
-	 * - Converts their role to `store_owner`.
-	 * - Creates a corresponding store entry.
-	 * - Assigns the user as the primary store owner.
-	 * - Migrates vendor profile data such as address, phone, banner, and logo
-	 *   into the MultiVendorX store meta.
-	 *
-	 * @return void
-	 */
+
     public function migrate_vendors() {
         $vendors = get_users(
             array(
-				'role__in' => array( 'seller' ),
+				'role__in' => array( 'wcfm_vendor' ),
 				'fields'   => array( 'ID' ),
             )
         );
@@ -63,16 +43,16 @@ class Dokan {
             $wp_user->set_role( 'store_owner' );
 
             // Get all user meta.
-            $profile_settings = get_user_meta( $user_id, 'dokan_profile_settings', true );
-            $userdata         = get_userdata( $user_id );
+            $profile_settings = get_user_meta( $user_id, 'wcfmmp_profile_settings', true );
             $status           = 'active';
 
             // Store create.
             $store = new Store();
-            $store->set( 'name', get_user_meta( $user_id, 'dokan_store_name', true ) );
-            $store->set( 'slug', $userdata->user_nicename );
+            $store->set( 'name', $profile_settings['store_name'] );
+            $store->set( 'slug', $profile_settings['store_slug'] );
             $store->set( 'status', $status );
             $store->set( 'who_created', $user_id );
+            $store->set( 'description', get_user_meta( $user_id, '_store_description', true ) ?? '' );
             $store_id = $store->save();
 
             // primary owner set and add store-users table.
@@ -87,8 +67,8 @@ class Dokan {
             );
 
             // add meta in store-meta table.
-            $store->update_meta( 'primary_email', $user->email );
-            $store->update_meta( 'emails', array( $user->email ) );
+            $store->update_meta( 'primary_email', $profile_settings['store_email'] );
+            $store->update_meta( 'emails', array( $profile_settings['store_email'] ) );
 
             if ( ! empty( $profile_settings['address'] ) && is_array( $profile_settings['address'] ) ) {
                 $address = $profile_settings['address'];
@@ -141,15 +121,7 @@ class Dokan {
             }
         }
     }
-	/**
-	 * Migrate products to associate them with MultiVendorX stores.
-	 *
-	 * Retrieves all WooCommerce products and checks the author of each product.
-	 * If the author has the `seller` role, the product is linked to the vendor's
-	 * active store by updating the store ID in the product meta.
-	 *
-	 * @return void
-	 */
+
     public function migrate_products() {
         $products = wc_get_products(
             array(
@@ -164,61 +136,68 @@ class Dokan {
             $user      = get_user_by( 'id', $author_id );
 
             // Check if user is a vendor and update post meta.
-            if ( in_array( 'seller', (array) $user->roles, true ) ) {
+            if ( in_array( 'wcfm_vendor', (array) $user->roles, true ) ) {
                 $active_store = get_user_meta( $author_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
                 update_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], $active_store );
             }
         }
     }
-	/**
-	 * Migrate orders, commissions, and transactions from Dokan to MultiVendorX.
-	 *
-	 * This method performs the following operations:
-	 * - Reads order records from the Dokan orders table.
-	 * - Creates corresponding commission entries in the MultiVendorX commission table.
-	 * - Updates WooCommerce order meta with store and commission references.
-	 * - Removes legacy Dokan order metadata.
-	 * - Migrates vendor balance records into the MultiVendorX transaction table
-	 *   (commission, withdrawal, and refund transactions).
-	 *
-	 * Note: This migration directly queries Dokan database tables and inserts
-	 * records into MultiVendorX custom tables.
-	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
-	 * @return void
-	 */
+
     public function migrate_orders_and_commissions() {
         global $wpdb;
-        $table      = $wpdb->prefix . 'dokan_orders';
+        $wcfm_orders_table      = $wpdb->prefix . 'wcfm_marketplace_orders';
         $table_name = $wpdb->prefix . Utill::TABLES['commission'];
 
-        $dokan_orders = $wpdb->get_results( "SELECT * FROM {$table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $wcfm_orders = $wpdb->get_results( "SELECT * FROM {$wcfm_orders_table}" );
 
-        foreach ( $dokan_orders as $row ) {
+        foreach ( $wcfm_orders as $row ) {
             $order_id = $row->order_id;
             $order    = wc_get_order( $order_id );
             if ( ! $order ) {
 				continue;
             }
+            $store_id  = get_user_meta( $row->vendor_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
 
-            $seller_id = $row->seller_id;
-            $store_id  = get_user_meta( $seller_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
+            $suborder = wc_create_order([
+                'customer_id' => $order->get_customer_id(),
+            ]);
+            // Set parent order
+            $suborder->set_parent_id($order_id);
+            $product = wc_get_product($row->product_id);
+            $suborder->add_product(
+                $product,
+                $row->quantity,
+                [
+                    'subtotal' => $row->item_sub_total,
+                    'total'    => $row->item_total,
+                ]
+            );
+            // Copy billing & shipping
+            $suborder->set_address($order->get_address('billing'), 'billing');
+            $suborder->set_address($order->get_address('shipping'), 'shipping');
+            $suborder->set_payment_method($order->get_payment_method());
+            // Calculate totals
+            $suborder->calculate_totals();
+            // Set status
+            $suborder->update_status('processing');
+            $suborder->set_created_via( Utill::ORDER_META_SETTINGS['multivendorx_store_order'] );
+            $suborder->update_meta_data( Utill::POST_META_SETTINGS['store_id'], $store_id );
+            $suborder->save();
 
             $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
                 $table_name,
                 array(
-					'order_id'               => $order_id,
+					'order_id'               => $suborder->get_id(),
                     'store_id'               => $store_id,
-                    'customer_id'            => $order->get_customer_id(),
-                    'total_order_value'      => $row->order_total,
-                    'net_items_cost'         => $row->order_total,
-                    'marketplace_commission' => $row->order_total - $row->net_amount,
-                    'store_earning'          => $row->net_amount,
-                    'store_payable'          => $row->net_amount,
-                    'marketplace_payable'    => $row->order_total - $row->net_amount,
+                    'customer_id'            => $row->customer_id,
+                    'total_order_value'      => $suborder->get_total(),
+                    'net_items_cost'         => $row->item_total,
+                    'marketplace_commission' => $suborder->get_total() - $row->commission_amount,
+                    'store_earning'          => $row->commission_amount,
+                    'store_payable'          => $row->total_commission,
+                    'marketplace_payable'    => $suborder->get_total() - $row->total_commission,
                     'currency'               => $order->get_currency(),
-                    'status'                 => 'paid',
+                    'status'                 => in_array($row->order_status, ['pending', 'on-hold', 'cancelled', 'draft', 'failed']) ? 'unpaid' : 'paid',
                 ),
                 array(
 					'%d',
@@ -239,44 +218,69 @@ class Dokan {
             $order->update_meta_data( 'multivendorx_store_id', $store_id );
             $order->update_meta_data( 'multivendorx_commission_id', $insert_id );
             $order->update_meta_data( 'multivendorx_commissions_processed', 'yes' );
-            $order->delete_meta_data( '_dokan_vendor_id' );
             $order->save();
         }
 
-        $balance_table         = $wpdb->prefix . 'dokan_vendor_balance';
-        $dokan_vendor_balances = $wpdb->get_results( "SELECT * FROM {$balance_table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-        foreach ( $dokan_vendor_balances as $row ) {
-            $order_id = $row->trn_id;
-            $order    = wc_get_order( $order_id );
-            $store_id = get_user_meta( $row->vendor_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
+        $balance_table = $wpdb->prefix . 'wcfm_marketplace_vendor_ledger';
+        $wcfm_vendor_balances = $wpdb->get_results( "SELECT * FROM {$balance_table}" );
 
-            if ( $row->debit > 0 ) {
-                $entry_type       = 'Cr';
-                $transaction_type = 'Commission';
-                $amount           = $row->debit;
+        foreach ( $wcfm_vendor_balances as $row ) {
+            $wcfm_commission_id = $row->reference_id;
+
+            $query = $wpdb->prepare(
+                "SELECT * FROM {$wcfm_orders_table} WHERE ID = %d",
+                $wcfm_commission_id
+            );
+
+            $wcfm_order = $wpdb->get_row($query);
+
+            if (in_array($wcfm_order->order_status, ['pending', 'on-hold', 'cancelled', 'draft', 'failed'])) {
+                continue;
             }
-			if ( $row->credit > 0 && 'dokan_withdraw' === $row->trn_type ) {
-				$entry_type       = 'Dr';
-				$transaction_type = 'Withdraw';
-				$amount           = $row->credit;
-			}
 
-			if ( $row->credit > 0 && 'dokan_refund' === $row->trn_type ) {
-				$entry_type       = 'Dr';
-				$transaction_type = 'Refund';
-				$amount           = $row->credit;
-			}
+            $matched_suborder = null;
+            $suborders = MultiVendorX()->order->get_suborders( $wcfm_order->order_id );
+            foreach ($suborders as $sub) {
+                $suborder = wc_get_order($sub->ID);
+                foreach ($suborder->get_items() as $item_id => $item) {
+                    $product_id = $item->get_product_id();
+                    if ($product_id == $wcfm_order->product_id) {
+                        $matched_suborder = $suborder;
+                        break 2;
+                    }
+                }
+            }
+
+            $store_id  = get_user_meta( $row->vendor_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
+
+            if ($row->reference == 'order') {
+                $entry_type = 'Cr';
+                $transaction_type = 'Commission';
+                $amount = $row->credit;
+            } 
+            
+            if ($row->reference == 'withdraw') {
+                $entry_type = 'Dr';
+                $transaction_type = 'Withdraw';
+                $amount = $row->debit;
+            } 
+
+            if ($row->reference == 'refund') {
+                $entry_type = 'Dr';
+                $transaction_type = 'Refund';
+                $amount = $row->debit;
+            } 
 
             $data = array(
                 'store_id'         => (int) $store_id,
-                'order_id'         => (int) $order_id,
-                'commission_id'    => (int) $order->get_meta( 'multivendorx_commission_id', true ),
+                'order_id'         => (int) $matched_suborder->get_id(),
+                'commission_id'    => (int) $matched_suborder->get_meta( 'multivendorx_commission_id', true ),
                 'entry_type'       => $entry_type,
                 'transaction_type' => $transaction_type,
                 'amount'           => (float) $amount,
-                'currency'         => $order->get_currency(),
-                'payment_method'   => $order->get_payment_method(),
-                'narration'        => $row->perticulars,
+                'currency'         => $matched_suborder->get_currency(),
+                'payment_method'   => $matched_suborder->get_payment_method(),
+                'narration'        => $transaction_type,
                 'status'           => 'Completed',
             );
 
@@ -288,15 +292,20 @@ class Dokan {
         $this->deactive_previous_multivendor();
     }
 
-    public function deactive_previous_multivendor() {
+    // Deactive WCFM multivendor
+	public function deactive_previous_multivendor() {
+		// WCFM free deactive
 		require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
-		// dokan free deactive
-		if ( is_plugin_active('dokan-lite/dokan.php') ) {
-	    	deactivate_plugins('dokan-lite/dokan.php');    
+		if ( is_plugin_active('wc-multivendor-marketplace/wc-multivendor-marketplace.php') ) {
+	    	deactivate_plugins('wc-multivendor-marketplace/wc-multivendor-marketplace.php');    
 	    }
-	    // dokan pro deactive
-	    if ( is_plugin_active('dokan-pro/dokan-pro.php') ) {
-	    	deactivate_plugins('dokan-pro/dokan-pro.php');    
+	    // WCFM frontend manager deactive
+	    if ( is_plugin_active('wc-frontend-manager/wc_frontend_manager.php') ) {
+	    	deactivate_plugins('wc-frontend-manager/wc_frontend_manager.php');    
+	    }
+	    // WCFM membership deactive
+	    if ( is_plugin_active('wc-multivendor-membership/wc-multivendor-membership.php') ) {
+	    	deactivate_plugins('wc-multivendor-membership/wc-multivendor-membership.php');    
 	    }
 	}
 

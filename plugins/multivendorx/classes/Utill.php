@@ -505,7 +505,7 @@ class Utill {
                 $start_date = $start_dt->format( 'Y-m-d H:i:s' );
                 $end_date   = $end_dt->format( 'Y-m-d H:i:s' );
             } catch ( \Exception $e ) {
-                // Log error or handle invalid date format
+                // Log error or handle invalid date format.
                 return array(
 					'start_date' => '',
 					'end_date'   => '',

@@ -1,9 +1,11 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { createRoot } from '@wordpress/element';
+import { createRoot, useEffect, useState } from '@wordpress/element';
 import { PanelBody, SelectControl, TextControl } from '@wordpress/components';
 import MarketplaceProductList from './marketplaceProductList';
+import { getApiLink } from 'zyra';
+import axios from 'axios';
 
 // EditBlock Component
 const EditBlock = (props) => {
@@ -11,11 +13,44 @@ const EditBlock = (props) => {
 	const blockProps = useBlockProps({
 		className: 'marketplace-products-edit',
 	});
+	const [stores, setStores] = useState([]);
 
+	useEffect(() => {
+		axios({
+			method: 'GET',
+			url: getApiLink(productList, 'store'),
+			headers: { 'X-WP-Nonce': productList.nonce },
+			params: { options: true },
+		})
+			.then((response) => {
+				setStores(response.data || []);
+			})
+			.catch(() => {
+				setStores([]);
+			});
+	}, []);
+
+	const storeOptions = [
+		{ label: __('Select Store', 'multivendorx'), value: 0 },
+		...stores.map((store) => ({
+			label: store.store_name,
+			value: store.id,
+		})),
+	];
 	return (
 		<div {...blockProps}>
 			<InspectorControls>
 				<PanelBody title="Product Filters" initialOpen={true}>
+					<SelectControl
+						label={__('Select Store', 'multivendorx')}
+						value={attributes.storeId}
+						options={storeOptions}
+						onChange={(value) =>
+							setAttributes({
+								storeId: parseInt(value, 10),
+							})
+						}
+					/>
 					<SelectControl
 						label="Sort by"
 						value={attributes.orderby}
@@ -59,7 +94,7 @@ const EditBlock = (props) => {
 						value={attributes.perPage}
 						onChange={(value) =>
 							setAttributes({
-								perPage: parseInt(value, 10) || 12,
+								perPage: parseInt(value, 10) || 5,
 							})
 						}
 					/>
@@ -89,7 +124,7 @@ registerBlockType('multivendorx/marketplace-products', {
 		orderby: { type: 'string', default: 'title' },
 		order: { type: 'string', default: 'asc' },
 		category: { type: 'string', default: '' },
-		perPage: { type: 'number', default: 12 },
+		perPage: { type: 'number', default: 5 },
 	},
 
 	edit: EditBlock,

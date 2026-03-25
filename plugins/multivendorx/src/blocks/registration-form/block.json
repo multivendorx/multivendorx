@@ -2,7 +2,7 @@
 	"apiVersion": 2,
 	"name": "multivendorx/registration-form",
 	"title": "Registration Form",
-	"category": "multivendorx",
+	"category": "multivendorx-shortcodes",
 	"icon": "admin-users",
 	"description": "A block that renders the vendor registration form using React.",
 	"supports": {

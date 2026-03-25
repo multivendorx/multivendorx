@@ -23,7 +23,8 @@ interface CalendarInputProps {
     showInput?: boolean;
     numberOfMonths?: number;
     fullYear?: boolean;
-    maxFutureMonths?: number; // New prop: number of months from today
+    maxFutureMonths?: number;
+    showCompare?: boolean;
 }
 
 const convertToDateObjectRange = (
@@ -108,6 +109,21 @@ const Presets: React.FC<PresetsProps> = ({ setValue, pickerRef, format }) => {
 
     const lastMonthEnd = endOfMonth(lastMonthStart);
 
+    const startOfQuarter = (date: Date) => {
+        const month = date.getMonth();
+        const quarterStartMonth = Math.floor(month / 3) * 3;
+        return new Date(date.getFullYear(), quarterStartMonth, 1);
+    };
+
+    const startOfYear = (date: Date) => {
+        return new Date(date.getFullYear(), 0, 1);
+    };
+
+    const weekToDateStart = startOfWeek(now);
+    const monthToDateStart = startOfMonth(now);
+    const quarterToDateStart = startOfQuarter(now);
+    const yearToDateStart = startOfYear(now);
+
     return (
         <div className="range-picker-wrapper">
             <div onClick={() => apply([now])}>Today</div>
@@ -126,6 +142,22 @@ const Presets: React.FC<PresetsProps> = ({ setValue, pickerRef, format }) => {
             <div onClick={() => apply([lastMonthStart, lastMonthEnd])}>
                 Last Month
             </div>
+
+            <div onClick={() => apply([weekToDateStart, now])}>
+                Week to date
+            </div>
+
+            <div onClick={() => apply([monthToDateStart, now])}>
+                Month to date
+            </div>
+
+            <div onClick={() => apply([quarterToDateStart, now])}>
+                Quarter to date
+            </div>
+
+            <div onClick={() => apply([yearToDateStart, now])}>
+                Year to date
+            </div>
         </div>
     );
 };
@@ -140,6 +172,7 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
     numberOfMonths = 1,
     fullYear,
     maxFutureMonths, // New prop
+    showCompare = false,
 }) => {
     const pickerRef = useRef<DatePickerRef>(null);
     const maxDate = calculateMaxDate(maxFutureMonths);
@@ -212,6 +245,47 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
         fullYear,
     };
 
+    const getPrevYearDate = (date: Date) => {
+        const d = new Date(date);
+        d.setFullYear(d.getFullYear() - 1);
+        return d;
+    };
+
+    const formatDate = (date: Date) => {
+        const d = date instanceof Date ? date : new Date(date);
+
+        return d.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+        });
+    };
+
+    const getDisplayValue = () => {
+        if (!value?.startDate) return '';
+
+        const start = value.startDate;
+        const end = value.endDate || value.startDate;
+
+        const isSameDay = start === end;
+
+        const currentText = isSameDay
+            ? formatDate(start)
+        : `${formatDate(start)} ~ ${formatDate(end)}`;
+
+        if (!showCompare) return currentText;
+
+        const prevStart = getPrevYearDate(start);
+        const prevEnd = getPrevYearDate(end);
+
+        const prevText = isSameDay
+            ? formatDate(prevStart)
+        : `${formatDate(prevStart)} ~ ${formatDate(prevEnd)}`;
+
+
+        return `${currentText}  vs ${prevText}`;
+    };
+
     return (
         <div className="settings-calender">
             {showInput ? (
@@ -219,6 +293,15 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
                     {...commonProps}
                     className={inputClass}
                     placeholder={format}
+                    render={(value, openCalendar) => (
+                        <input
+                            className= 'rmdp-input'
+                            onFocus={openCalendar}
+                            readOnly
+                            name="calendar-input"
+                            value={getDisplayValue()}
+                        />
+                    )}
                 />
             ) : (
                 <Calendar
@@ -243,7 +326,8 @@ const CalendarInput: FieldComponent = {
             fullYear={field.fullYear}
             value={value}
             onChange={onChange}
-            maxFutureMonths={field.maxFutureMonths} // Pass the new prop
+            maxFutureMonths={field.maxFutureMonths}
+            showCompare={field.showCompare}
         />
     ),
 };

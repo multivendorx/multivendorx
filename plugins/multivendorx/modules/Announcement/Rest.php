@@ -631,7 +631,8 @@ class Rest extends \WP_REST_Controller {
 	 *
 	 * Retrieves all relevant announcement data and associated store names.
 	 *
-	 * @param WP_Post $post Announcement post object to prepare.
+	 * @param WP_Post         $post Announcement post object to prepare.
+     * @param WP_REST_Request $request REST request object (optional).
 	 * @return array Array containing announcement ID, title, content, status, store info, URL, and dates.
 	 */
     public function prepare_item_for_response( $post, $request ) {

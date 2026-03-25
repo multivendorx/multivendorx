@@ -61,7 +61,7 @@ interface ApiResponse {
 interface DependentCondition {
     key: string;
     set?: boolean;
-    value?: string | number | boolean;
+    value?: string | number | boolean | (string | number | boolean)[];
 }
 
 interface PopupProps {
@@ -244,10 +244,14 @@ const RenderComponent: React.FC<RenderProps> = ({
 
     const isContain = (
         key: string,
-        value: string | number | boolean | null = null
+        value: string | number | boolean | (string | number | boolean)[] | null = null
     ): boolean => {
         const settingValue = setting[key];
 
+        if (Array.isArray(value)) {
+            return value.includes(settingValue as string | number | boolean);
+        }
+        
         // If settingValue is an array
         if (Array.isArray(settingValue)) {
             // If value is null and settingValue has elements, return true
@@ -524,16 +528,13 @@ const RenderComponent: React.FC<RenderProps> = ({
                 ) : (
                     <div
                         key={inputField.key}
-                        className={`form-group ${
-                            inputField.row === false ? '' : 'row'
-                        }  ${inputField.classes ? inputField.classes : ''} ${
-                            inputField.proSetting ? 'pro-setting' : ''
-                        } ${
-                            inputField.moduleEnabled &&
-                            !modules.includes(inputField.moduleEnabled)
+                        className={`form-group ${inputField.row === false ? '' : 'row'
+                            }  ${inputField.classes ? inputField.classes : ''} ${inputField.proSetting ? 'pro-setting' : ''
+                            } ${inputField.moduleEnabled &&
+                                !modules.includes(inputField.moduleEnabled)
                                 ? 'module-enabled'
                                 : ''
-                        }`}
+                            }`}
                         data-cols={inputField.cols}
                         onClick={(e) => handleGroupClick(e, inputField)}
                     >
@@ -560,14 +561,14 @@ const RenderComponent: React.FC<RenderProps> = ({
                         )}
                         <div className="settings-input-content">
                             {isLocked &&
-                            React.isValidElement<
-                                React.HTMLAttributes<HTMLElement>
-                            >(input)
+                                React.isValidElement<
+                                    React.HTMLAttributes<HTMLElement>
+                                >(input)
                                 ? React.cloneElement(input, {
-                                      onClick: (e) => {
-                                          e.stopPropagation();
-                                      },
-                                  })
+                                    onClick: (e) => {
+                                        e.stopPropagation();
+                                    },
+                                })
                                 : input}
 
                             {errors[inputField.key] && (

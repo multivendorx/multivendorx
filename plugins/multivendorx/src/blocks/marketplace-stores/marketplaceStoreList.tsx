@@ -40,7 +40,7 @@ interface Product {
 
 const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	order = '',
-	perPage = 12,
+	perPage = 5,
 	showMap = true,
 }) => {
 	const [data, setData] = useState<StoreRow[] | []>([]);

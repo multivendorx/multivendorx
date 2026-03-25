@@ -354,6 +354,7 @@ import TextArea from './TextArea';
 import ChoiceToggle from './ChoiceToggle';
 import RandomInputKeyGenerator from './RandomInputKeyGenerator';
 import CopyToClipboard from './UI/CopyToClipboard';
+import EmailsInput from './EmailsInput';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
     // BasicInput
@@ -362,6 +363,8 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
     email: BasicInput,
     time: BasicInput,
     date: BasicInput,
+
+    'email-input': EmailsInput,
 
     // SelectInput
     select: SelectInput,

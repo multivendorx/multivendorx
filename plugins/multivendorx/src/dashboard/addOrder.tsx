@@ -15,7 +15,7 @@ import {
 	TextAreaUI,
 	getApiLink,
 	useOutsideClick,
-	EmailsInput,
+	EmailsInputUI,
 	InfoItem,
 } from 'zyra';
 import axios from 'axios';
@@ -1147,7 +1147,7 @@ const AddOrder = () => {
 									label={__('Email', 'multivendorx')}
 									htmlFor="email"
 								>
-									<EmailsInput
+									<EmailsInputUI
 										mode="single"
 										value={
 											newCustomer.email

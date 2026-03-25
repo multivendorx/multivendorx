@@ -11,6 +11,7 @@ import React, {
 // Internal dependencies
 import '../styles/web/EmailsInput.scss';
 import { BasicInputUI } from './BasicInput';
+import { FieldComponent } from './fieldUtils';
 
 export interface EmailsInputProps {
     mode?: 'single' | 'multiple';
@@ -19,10 +20,10 @@ export interface EmailsInputProps {
     primary?: string;
     enablePrimary?: boolean;
     placeholder?: string;
-    onChange?: (emails: string[], primary: string) => void;
+    onChange?: (list: string[], primary: string) => void;
 }
 
-const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
+export const EmailsInputUI = forwardRef<HTMLInputElement, EmailsInputProps>(
     (
         {
             mode = 'multiple',
@@ -35,7 +36,7 @@ const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
         },
         ref
     ) => {
-        const [emails, setEmails] = useState<string[]>(value);
+        const [list, setList] = useState<string[]>(value);
         const [primaryEmail, setPrimaryEmail] = useState<string>(
             enablePrimary ? primary : ''
         );
@@ -44,11 +45,11 @@ const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
         const inputRef = useRef<HTMLInputElement>(null);
 
         const isMultiple = mode === 'multiple';
-        const hasEmail = emails.length > 0;
+        const hasEmail = list.length > 0;
 
         // Sync with parent props
         useEffect(() => {
-            setEmails(value);
+            setList(value);
         }, [value]);
 
         useEffect(() => {
@@ -69,14 +70,14 @@ const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
                 if (
                     !email ||
                     !isValidEmail(email) ||
-                    emails.includes(email) ||
-                    (max && emails.length >= max)
+                    list.includes(email) ||
+                    (max && list.length >= max)
                 ) {
                     return;
                 }
 
-                const updated = [...emails, email];
-                setEmails(updated);
+                const updated = [...list, email];
+                setList(updated);
 
                 let newPrimary = primaryEmail;
 
@@ -89,7 +90,7 @@ const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
                 onChange?.(updated, newPrimary);
             },
             [
-                emails,
+                list,
                 max,
                 isValidEmail,
                 enablePrimary,
@@ -101,16 +102,16 @@ const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
 
         const removeEmail = useCallback(
             (email: string) => {
-                const updated = emails.filter((e) => e !== email);
+                const updated = list.filter((e) => e !== email);
 
                 if (enablePrimary && primaryEmail === email) {
                     setPrimaryEmail(updated[0] || '');
                 }
 
-                setEmails(updated);
+                setList(updated);
                 onChange?.(updated, enablePrimary ? updated[0] || '' : '');
             },
-            [emails, primaryEmail, enablePrimary, onChange]
+            [list, primaryEmail, enablePrimary, onChange]
         );
 
         const togglePrimary = useCallback(
@@ -119,9 +120,9 @@ const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
                     return;
                 }
                 setPrimaryEmail(email);
-                onChange?.(emails, email);
+                onChange?.(list, email);
             },
-            [enablePrimary, isMultiple, emails, onChange]
+            [enablePrimary, isMultiple, list, onChange]
         );
 
         const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -138,14 +139,14 @@ const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
             !isInputReadOnly &&
             trimmedInput &&
             isValidEmail(trimmedInput) &&
-            (!isMultiple || !emails.includes(trimmedInput));
+            (!isMultiple || !list.includes(trimmedInput));
 
         return (
             <div
                 className="emails-section"
                 onClick={() => !isInputReadOnly && inputRef.current?.focus()}
             >
-                {emails.map((email) => (
+                {list.map((email) => (
                     <div
                         className={`email ${
                             enablePrimary && primaryEmail === email
@@ -202,5 +203,29 @@ const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
         );
     }
 );
+
+
+const EmailsInput: FieldComponent = {
+    render: ({ field, value, onChange }) => (
+        <EmailsInputUI
+            mode={field.mode}
+            max={field.max}
+            value={value?.list || []}
+            primary={value?.primary || ''}
+            enablePrimary={field.enablePrimary}
+            placeholder={field.placeholder}
+            onChange={(list, primary) =>
+                onChange?.({
+                    list,
+                    primary,
+                })
+            }
+        />
+    ),
+
+    validate: () => {
+        return null;
+    },
+};
 
 export default EmailsInput;

@@ -4,7 +4,7 @@ import axios from 'axios';
 import {
 	getApiLink,
 	useModules,
-	EmailsInput,
+	EmailsInputUI,
 	MapProviderUI,
 	Container,
 	Column,
@@ -488,7 +488,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 									</>
 								}
 							>
-								<EmailsInput
+								<EmailsInputUI
 									value={data?.emails || []}
 									primary={data?.primary_email || ''}
 									enablePrimary={true}

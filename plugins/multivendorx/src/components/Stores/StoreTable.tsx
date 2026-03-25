@@ -12,7 +12,6 @@ import {
 	Column,
 	InfoItem,
 } from 'zyra';
-import { useNavigate } from 'react-router-dom';
 import {
 	formatCurrency,
 	formatDate,
@@ -28,8 +27,6 @@ const StoreTable: React.FC = () => {
 	const [categoryCounts, setCategoryCounts] = useState<
 		CategoryCount[] | null
 	>(null);
-
-	const navigate = useNavigate();
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -175,7 +172,10 @@ const StoreTable: React.FC = () => {
 					label: __('Settings', 'multivendorx'),
 					icon: 'setting',
 					onClick: (row) => {
-						navigate(getUrl(row.id, 'store', 'edit'));
+						window.open(
+							getUrl(row.id, 'store', 'edit'),
+							'_blank'
+						);
 					},
 				},
 				{

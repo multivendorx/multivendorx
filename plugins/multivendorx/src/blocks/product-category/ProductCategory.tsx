@@ -12,31 +12,21 @@ const ProductCategory: React.FC<object> = () => {
 	const [categories, setCategories] = useState<Category[]>([]);
 
 	useEffect(() => {
-		const fetchCategories = async () => {
-			try {
-				const response = await axios.get(
-					`${StoreInfo.apiUrl}/wc/v3/products/categories`,
-					{
-						headers: { 'X-WP-Nonce': StoreInfo.nonce },
-					}
-				);
-
-				const allCategories: Category[] = response.data.map((cat) => ({
-					id: cat.id,
-					name: cat.name,
-					slug: cat.slug,
-					count: cat.count,
-				}));
-
-				setCategories(allCategories);
-			} catch (err) {
-				console.error('Failed to fetch categories', err);
-			}
+		const fetchCategories = () => {
+			axios
+				.get(`${StoreInfo.apiUrl}/wc/v3/products/categories`, {
+					headers: { 'X-WP-Nonce': StoreInfo.nonce },
+				})
+				.then((response) => {
+					setCategories(response.data);
+				})
+				.catch((err) => {
+					console.error('Failed to fetch categories', err);
+				});
 		};
 
 		fetchCategories();
 	}, []);
-
 	return (
 		<>
 			<h3>{__('Product Categories', 'multivendorx')}</h3>
@@ -46,7 +36,7 @@ const ProductCategory: React.FC<object> = () => {
 						key={category.id}
 						className="wc-block-product-categories-list-item"
 					>
-						<a href={`/product-category/${category.slug}`}>
+						<a href={`${StoreInfo.site_url}/product-category/${category.slug}`}>
 							<span className="wc-block-product-categories-list-item__name">
 								{category.name}
 							</span>

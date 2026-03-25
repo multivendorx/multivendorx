@@ -19,7 +19,7 @@ registerBlockType('multivendorx/registration-form', {
 	apiVersion: 2,
 	title: 'Registration Form',
 	icon: 'admin-users',
-	category: 'multivendorx',
+	category: 'multivendorx-shortcodes',
 	supports: { html: false },
 
 	edit: EditBlock,

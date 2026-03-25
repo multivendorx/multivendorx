@@ -641,6 +641,7 @@ class FrontendScripts {
                             'currentUserId'       => MultiVendorX()->current_user_id,
                             'loginUrl'            => wc_get_page_permalink( 'myaccount' ),
                             'default_user_avatar' => get_avatar_url( 0 ),
+                            'site_url'            => site_url(),
                         )
                     ),
                 ),

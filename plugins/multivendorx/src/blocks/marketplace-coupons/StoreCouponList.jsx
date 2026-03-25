@@ -3,11 +3,35 @@ import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { formatDate } from '@/services/commonFunction';
-
+const previewCoupons = [
+	{
+		id: 1,
+		code: 'SAVE10',
+		amount: '10',
+		discount_type: 'percent',
+		date_expires: '2026-12-31',
+	},
+	{
+		id: 2,
+		code: 'WELCOME20',
+		amount: '20',
+		discount_type: 'percent',
+		date_expires: '2026-10-01',
+	},
+	{
+		id: 3,
+		code: 'FLAT50',
+		amount: '50',
+		discount_type: 'fixed_cart',
+		date_expires: null,
+	},
+];
 const StoreCouponList = ({
-	perPage = 10,
+	perPage = 5,
 	orderby = 'date',
 	order = 'DESC',
+	storeId,
+	isPreview = false,
 }) => {
 	const [coupons, setCoupons] = useState([]);
 	const [page, setPage] = useState(1);
@@ -40,6 +64,10 @@ const StoreCouponList = ({
 			meta_key: 'multivendorx_store_id',
 		};
 
+		if(storeId){
+			params.value = storeId;
+		}
+		
 		if (couponList?.storeDetails?.storeId) {
 			params.value = couponList.storeDetails.storeId;
 		}
@@ -60,8 +88,13 @@ const StoreCouponList = ({
 	}, [page, perPage, orderby, order]);
 
 	useEffect(() => {
+		if (isPreview) {
+			setCoupons(previewCoupons);
+			return;
+		}
+
 		fetchCoupons();
-	}, [fetchCoupons]);
+	}, [fetchCoupons, isPreview]);
 
 	//If no coupons → render nothing
 	if (!coupons.length) {
@@ -136,10 +169,12 @@ const StoreCouponList = ({
 							)}
 						</h4>
 
-						<p>
-							<strong>{__('Expires', 'multivendorx')}:</strong>{' '}
-							{formatDate(coupon.date_expires)}
-						</p>
+						{coupon?.date_expires && (
+							<p>
+								<strong>{__('Expires', 'multivendorx')}:</strong>{' '}
+								{formatDate(coupon.date_expires)}
+							</p>
+						)}
 					</div>
 				);
 			})}

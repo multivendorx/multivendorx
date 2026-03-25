@@ -21,8 +21,7 @@ interface StoresListProps {
 const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	orderby = 'name',
 	order = 'asc',
-	perPage = 12,
-	showMap = true,
+	perPage = 5,
 }) => {
 	const [data, setData] = useState<StoreRow[] | []>([]);
 	const [page, setPage] = useState(1);

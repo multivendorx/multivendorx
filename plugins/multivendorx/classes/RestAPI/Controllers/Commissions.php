@@ -1,5 +1,4 @@
 <?php
-
 /**
  * MultiVendorX REST API Controller for Commission
  *
@@ -130,7 +129,7 @@ class Commissions extends \WP_REST_Controller {
                 if ( $dashboard ) {
                     $transient_key    = Utill::MULTIVENDORX_TRANSIENT_KEYS['report_transient'];
                     $date_range_label = $args['start_date'] . '_' . $args['end_date'];
-                    $cached_data      = get_transient( $transient_key ) ?: array();
+                    $cached_data      = get_transient( $transient_key ) ?? array();
                     if ( isset( $cached_data[ $store_id ][ $date_range_label ] ) ) {
                         return $cached_data[ $store_id ][ $date_range_label ];
                     }

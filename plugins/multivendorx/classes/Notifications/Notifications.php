@@ -223,7 +223,7 @@ class Notifications {
 					'tag'              => 'Store',
 					'category'         => 'activity',
 				),
-				// didi
+				// didi.
 									'store_deactivation_request_rejected' => array(
 										'name'             => 'Store deactivation rejected',
 										'customer_enabled' => false,
@@ -327,7 +327,7 @@ class Notifications {
 					'tag'              => 'Shipping',
 					'category'         => 'notification',
 				),
-				// Pro
+				// Pro.
 				'order_delivered'                    => array(
 					'name'             => 'Order delivered',
 					'customer_enabled' => true,
@@ -407,7 +407,7 @@ class Notifications {
 					'tag'              => 'Review',
 					'category'         => 'activity',
 				),
-				// didi product_name remove and text final and review_url remove
+				// didi product_name remove and text final and review_url remove.
 				'review_reply'                       => array(
 					'name'             => 'Admin replied to review',
 					'desc'             => 'Marketplace admin replies to a review.',
@@ -468,7 +468,7 @@ class Notifications {
 					'tag'              => 'Product',
 					'category'         => 'activity',
 				),
-				// PRO
+				// PRO.
 				'product_low_stock'                  => array(
 					'name'             => 'Product low stock',
 					'customer_enabled' => false,
@@ -483,7 +483,7 @@ class Notifications {
 					'tag'              => 'Product',
 					'category'         => 'notification',
 				),
-				// PRO
+				// PRO.
 				'product_out_of_stock'               => array(
 					'name'             => 'Product out of stock',
 					'customer_enabled' => false,
@@ -499,7 +499,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 				// PRODUCT QUESTIONS (Q&A).
-				// didi remove question_url
+				// didi remove question_url.
 					'product_question_submitted'     => array(
 						'name'             => 'Product question submitted',
 						'desc'             => 'Customer submits a question on a product.',
@@ -516,7 +516,7 @@ class Notifications {
 						'tag'              => 'Product',
 						'category'         => 'notification',
 					),
-				// didi content change
+				// didi content change.
 				'product_question_reply'             => array(
 					'name'             => 'Store replied to product question',
 					'desc'             => 'Store owner replies to a product question.',
@@ -675,7 +675,7 @@ class Notifications {
 					'tag'              => 'Follower',
 					'category'         => 'notification',
 				),
-				// Pro
+				// Pro.
 				'store_vacation_alert_to_followers'  => array(
 					'name'             => 'Store vacation alert',
 					'customer_enabled' => true,
@@ -693,7 +693,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				// WHOLESALE BUYER.(PRO)
+				// WHOLESALE BUYER.(PRO).
 				'wholesale_buyer_approved'           => array(
 					'name'             => 'Wholesale buyer approved',
 					'desc'             => 'User request for wholesale access has been approved.',

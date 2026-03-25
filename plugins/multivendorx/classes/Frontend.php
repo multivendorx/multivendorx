@@ -472,21 +472,36 @@ class Frontend {
 		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
-    public function add_woocommerce_login_from( $content ) {
-        ob_start();
-        if ( is_user_logged_in() ) {
-            ?>
-            <p class="woocommerce">
-                Welcome <?php echo esc_html( MultiVendorX()->current_user->display_name ); ?>
-            </p>
-            <?php
-        } else {
-            echo '<div class="multivendorx-registration woocommerce">';
-            echo '<div class="woocommerce-notices-wrapper"><div class="woocommerce-error">  <div class="wc-block-components-notice-banner__content"><strong> Kindly login before registration </strong></div></div></div>';
-            wc_get_template( 'myaccount/form-login.php' );
-            echo '</div>';
-        }
+	/**
+	 * Render WooCommerce login form or welcome message for MultiVendorX registration.
+	 *
+	 * @param string $content Original content passed by the filter (unused).
+	 * @return string Rendered login or welcome HTML.
+	 */
+	public function add_woocommerce_login_from( $content ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+		ob_start();
 
-        return ob_get_clean();
-    }
+		if ( is_user_logged_in() ) {
+			?>
+        <p class="woocommerce">
+            <?php
+            printf(
+                /* translators: %s: Current user display name */
+                esc_html__( 'Welcome %s', 'multivendorx' ),
+                esc_html( MultiVendorX()->current_user->display_name )
+            );
+			?>
+        </p>
+			<?php
+		} else {
+			echo '<div class="multivendorx-registration woocommerce">';
+			echo '<div class="woocommerce-notices-wrapper"><div class="woocommerce-error"><div class="wc-block-components-notice-banner__content"><strong>' .
+            esc_html__( 'Kindly login before registration', 'multivendorx' ) .
+			'</strong></div></div></div>';
+			wc_get_template( 'myaccount/form-login.php' );
+			echo '</div>';
+		}
+
+		return ob_get_clean();
+	}
 }

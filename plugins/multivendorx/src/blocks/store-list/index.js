@@ -59,7 +59,7 @@ const EditBlock = (props) => {
 						value={attributes.perpage}
 						onChange={(value) =>
 							setAttributes({
-								perpage: parseInt(value, 10) || 12,
+								perpage: parseInt(value, 10) || 5,
 							})
 						}
 					/>
@@ -85,7 +85,7 @@ registerBlockType('multivendorx/store-list', {
 	attributes: {
 		orderby: { type: 'string', default: 'name' },
 		order: { type: 'string', default: 'asc' },
-		perpage: { type: 'number', default: 12 },
+		perpage: { type: 'number', default: 5 },
 	},
 
 	edit: EditBlock,

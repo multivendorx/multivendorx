@@ -688,9 +688,8 @@ class StoreUtil {
             $params[] = $end_date;
         }
 
-        $result = $wpdb->get_var(
-            $wpdb->prepare( $query, $params )
-        );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        $result = $wpdb->get_var( $wpdb->prepare( $query, $params ) );
 
         return (int) $result;
     }
@@ -833,7 +832,7 @@ class StoreUtil {
         );
         // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
         return $wpdb->get_col( $sql );
     }
 }

@@ -5,7 +5,7 @@ import EditStore from './Edit/EditStore';
 import {
 	ButtonInputUI,
 	BasicInputUI,
-	EmailsInput,
+	EmailsInputUI,
 	FileInputUI,
 	FormGroup,
 	FormGroupWrapper,
@@ -305,7 +305,7 @@ const Stores = () => {
 									label={__('Store Email', 'multivendorx')}
 									{...getFieldNotice('email')}
 								>
-									<EmailsInput
+									<EmailsInputUI
 										value={formData.emails || []}
 										enablePrimary={true}
 										onChange={(list, primary) =>

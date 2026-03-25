@@ -2,7 +2,7 @@
 	"apiVersion": 2,
 	"name": "multivendorx/marketplace-stores",
 	"title": "Stores List",
-	"category": "multivendorx",
+	"category": "multivendorx-shortcodes",
 	"icon": "list-view",
 	"description": "A block that displays stores list using React.",
 	"supports": {
