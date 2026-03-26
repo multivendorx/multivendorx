@@ -151,6 +151,8 @@ const PendingTaxCompliance: React.FC<{ setCount?: (count: number) => void }> = (
                         if (!data || typeof data !== 'object') return;
                         if (!data.document_url) return;
 
+						if (data.status !== 'under_review') return;
+
                         flattenedRows.push({
                             id: `${store.id}-${section}`,
                             store_id: store.id,

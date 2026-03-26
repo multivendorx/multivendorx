@@ -135,7 +135,7 @@ addFilter(
 	'multivendorx/identity-tab-content',
 	(defaultForm, { tabId }) => {
 		if (tabId === 'identity') {
-			return console.log(identityState.count) ||<PendingVerification setCount={setIdentityCount}/>;
+			return <PendingVerification setCount={setIdentityCount}/>;
 		}
 
 		return defaultForm;

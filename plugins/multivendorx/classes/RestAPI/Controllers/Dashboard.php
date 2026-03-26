@@ -274,6 +274,20 @@ class Dashboard extends \WP_REST_Controller {
                 'slug'       => 'compliance',
                 'icon'       => 'coupon',
                 'capability' => array( 'read_products' ),
+                'submenu'    => array(
+                    array(
+                        'key'        => 'verification',
+                        'name'       => 'Verification',
+                        'slug'       => 'verification',
+                        'capability' => array( 'read_products' ),
+                    ),
+                    array(
+                        'key'        => 'tax-compliance',
+                        'name'       => 'Tax Compliance',
+                        'slug'       => 'tax-compliance',
+                        'capability' => array( 'read_products' ),
+                    ),
+                ),
             ),
         );
 

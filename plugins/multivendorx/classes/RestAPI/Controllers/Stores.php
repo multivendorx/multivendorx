@@ -247,6 +247,7 @@ class Stores extends \WP_REST_Controller {
                 'deactivate'       => 'get_stores_with_deactivate_requests',
                 'options'          => 'get_stores_dropdown',
                 'status'           => 'get_pending_stores',
+                'approval_queue'    => 'get_stores_in_approval_queue',
             );
 
             foreach ( $flag_map as $param => $method ) {
@@ -433,6 +434,28 @@ class Stores extends \WP_REST_Controller {
         $response->set_data( $formatted_stores );
 
         return $response;
+    }
+
+    public function get_stores_in_approval_queue(  ) {
+        $stores = StoreUtil::get_store_information( $args );
+
+            $formatted_stores = array();
+            foreach ( $stores as $store ) {
+                $store_id           = (int) $store['ID'];
+                $store_meta         = Store::get_store( $store_id );
+                $formatted_stores[] = apply_filters(
+                    'multivendorx_stores_details',
+                    array(
+                        'id'                  => $store_id,
+                        'store_name'          => $store['name'],
+                        'store_slug'          => $store['slug'],
+                        'status'              => $store['status'],
+                        'tax_compliance'      => $store_meta->meta_data['tax_compliance']?? array(),
+                        ),
+                    $store_id
+                );
+            }
+        return rest_ensure_response( $formatted_stores );
     }
 
     /**
