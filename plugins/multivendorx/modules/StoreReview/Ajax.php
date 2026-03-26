@@ -78,49 +78,47 @@ class Ajax {
 		$uploaded_images = [];
 		$files = $_FILES['review_images'] ?? null;
 
-		if (empty($files) || !is_array($files) || empty(($files['name'] ?? [])[0])) {
-			return;
-		}
-
-		require_once ABSPATH . 'wp-admin/includes/file.php';
-		// Validate required file structure.
-		$required_keys = ['name', 'type', 'tmp_name', 'error', 'size'];
-		foreach ($required_keys as $key) {
-			if (!is_array($files[$key])) {
-				wp_send_json_error([
-					'message' => __('Invalid file upload data.', 'multivendorx')
-				]);
+		if (!empty($files) && is_array($files)) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			// Validate required file structure.
+			$required_keys = ['name', 'type', 'tmp_name', 'error', 'size'];
+			foreach ($required_keys as $key) {
+				if (!is_array($files[$key])) {
+					wp_send_json_error([
+						'message' => __('Invalid file upload data.', 'multivendorx')
+					]);
+				}
 			}
-		}
-
-		// Normalize safely.
-		$file_names  = array_map('sanitize_file_name', (array) ($files['name'] ?? []));
-		$file_types  = (array) ($files['type'] ?? []);
-		$file_tmp    = (array) ($files['tmp_name'] ?? []);
-		$file_errors = array_map('intval', (array) ($files['error'] ?? []));
-		$file_sizes  = array_map('intval', (array) ($files['size'] ?? []));
-
-		foreach ($file_names as $index => $name) {
-			$tmp   = $file_tmp[$index] ?? '';
-			$type  = $file_types[$index] ?? '';
-			$error = $file_errors[$index] ?? UPLOAD_ERR_NO_FILE;
-			$size  = $file_sizes[$index] ?? 0;
-			// Basic validation.
-			if ($name === '' || $tmp === '' || $error !== UPLOAD_ERR_OK) {
-				continue;
+	
+			// Normalize safely.
+			$file_names  = array_map('sanitize_file_name', (array) ($files['name'] ?? []));
+			$file_types  = (array) ($files['type'] ?? []);
+			$file_tmp    = (array) ($files['tmp_name'] ?? []);
+			$file_errors = array_map('intval', (array) ($files['error'] ?? []));
+			$file_sizes  = array_map('intval', (array) ($files['size'] ?? []));
+	
+			foreach ($file_names as $index => $name) {
+				$tmp   = $file_tmp[$index] ?? '';
+				$type  = $file_types[$index] ?? '';
+				$error = $file_errors[$index] ?? UPLOAD_ERR_NO_FILE;
+				$size  = $file_sizes[$index] ?? 0;
+				// Basic validation.
+				if ($name === '' || $tmp === '' || $error !== UPLOAD_ERR_OK) {
+					continue;
+				}
+				$file = [
+					'name'     => $name,
+					'type'     => sanitize_mime_type($type),
+					'tmp_name' => $tmp,
+					'error'    => $error,
+					'size'     => $size,
+				];
+				$upload = wp_handle_upload($file, ['test_form' => false]);
+				if (!empty($upload['error']) || empty($upload['url'])) {
+					continue;
+				}
+				$uploaded_images[] = esc_url_raw($upload['url']);
 			}
-			$file = [
-				'name'     => $name,
-				'type'     => sanitize_mime_type($type),
-				'tmp_name' => $tmp,
-				'error'    => $error,
-				'size'     => $size,
-			];
-			$upload = wp_handle_upload($file, ['test_form' => false]);
-			if (!empty($upload['error']) || empty($upload['url'])) {
-				continue;
-			}
-			$uploaded_images[] = esc_url_raw($upload['url']);
 		}
 
 		// Insert review with image data.

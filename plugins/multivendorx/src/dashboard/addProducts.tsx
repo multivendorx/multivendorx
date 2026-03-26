@@ -18,6 +18,7 @@ import {
 	PopupUI,
 	ButtonInputUI,
 	SectionUI,
+	Notice,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -248,7 +249,9 @@ const AddProduct = () => {
 						</div>
 					</div>
 				))}
-			<Notice type="error" validity="lifetime" displayPosition="notice" message={errorMsg}/>
+			{errorMsg &&
+				<Notice type="error" validity="lifetime" displayPosition="notice" message={errorMsg} />
+			}
 			<NavigatorHeader
 				headerTitle={__('Add Product', 'multivendorx')}
 				headerDescription={__(

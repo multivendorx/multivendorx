@@ -33,7 +33,7 @@
 
     &.type-warning {
         i {
-            color: yellow;
+            color: map-get(map-get($color-palette, yellow), color);
         }
     }
 
@@ -176,9 +176,15 @@
                 color: map-get(map-get($color-palette, red), color);
             }
         }
+        &.type-warning {
+            .notice-desc {
+                color: map-get(map-get($color-palette, yellow), color);
+            }
+        }
     }
 
-    &.display-notice:not(.type-banner) {
+    &.display-notice:not(.type-banner),
+    &.display-inline-notice:not(.type-banner) {
         padding: 0.5rem 0.8rem;
         display: flex;
         // align-items: center;
@@ -220,6 +226,15 @@
 
             .notice-desc {
                 color: map-get(map-get($color-palette, green), color);
+
+            }
+        }
+        &.type-warning {
+            background: map-get(map-get($color-palette, yellow), light-color);
+            border-color: map-get(map-get($color-palette, yellow), color);;
+
+            .notice-desc {
+                color: map-get(map-get($color-palette, yellow), color);
 
             }
         }

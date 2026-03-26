@@ -35,8 +35,7 @@ if ( $store ) {
 
             $heading_text = sprintf(
                 // translators: %1$s is the vendor/owner name, %2$s is the clickable store name link.
-                __( 'Meet our %1$s of shop %2$s', 'multivendorx' ),
-                esc_html( $details['owner_name'] ),
+                __( 'Meet our shop %1$s', 'multivendorx' ),
                 $store_name_link
             );
         } else {

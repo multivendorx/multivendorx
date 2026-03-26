@@ -218,61 +218,65 @@ const Dashboard: React.FC = () => {
 		setIsLoading(true);
 
 		// Reviews
-		axios
-			.get(getApiLink(appLocalizer, 'review'), {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					page: 1,
-					row: 4,
-					store_id: appLocalizer.store_id,
-					orderBy: 'date_created',
-					order: 'desc',
-					startDate: dateRange.startDate,
-					endDate: dateRange.endDate,
-					dashboard: true,
-				},
-			})
-			.then((response) => {
-				const items = response.data || [];
-				setReview(items);
-			})
-			.catch(() => {
-				setReview([]);
-			});
+		if (modules.includes('store-review')) {
+			axios
+				.get(getApiLink(appLocalizer, 'review'), {
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params: {
+						page: 1,
+						row: 4,
+						store_id: appLocalizer.store_id,
+						orderBy: 'date_created',
+						order: 'desc',
+						startDate: dateRange.startDate,
+						endDate: dateRange.endDate,
+						dashboard: true,
+					},
+				})
+				.then((response) => {
+					const items = response.data || [];
+					setReview(items);
+				})
+				.catch(() => {
+					setReview([]);
+				});
+		}
 
 		// Pending Refunds
-		axios
-			.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					meta_key: 'multivendorx_store_id',
-					value: appLocalizer.store_id,
-					status: 'refund-requested',
-					page: 1,
-					per_page: 4,
-					orderby: 'date',
-					order: 'desc',
-					after: dateRange.startDate.toISOString().replace('Z', ''),
-					before: dateRange.endDate.toISOString().replace('Z', ''),
-				},
-			})
-			.then((response) => {
-				const items = response.data || [];
-				const formatData = items.map((order) => ({
-					id: order.id,
-					name: `${order.billing.first_name} ${order.billing.last_name}`,
-					reason:
-						order.meta_data.find(
-							(m) => m.key === '_customer_refund_reason'
-						)?.value || 'No reason',
-					time: order.date_created,
-					amount: order.total,
-				}));
-				setPendingRefund(formatData);
-			})
-			.catch(() => {
-				setPendingRefund([]);
-			});
+		if (modules.includes('marketplace-refund')) {
+			axios
+				.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params: {
+						meta_key: 'multivendorx_store_id',
+						value: appLocalizer.store_id,
+						status: 'refund-requested',
+						page: 1,
+						per_page: 4,
+						orderby: 'date',
+						order: 'desc',
+						after: dateRange.startDate.toISOString().replace('Z', ''),
+						before: dateRange.endDate.toISOString().replace('Z', ''),
+					},
+				})
+				.then((response) => {
+					const items = response.data || [];
+					const formatData = items.map((order) => ({
+						id: order.id,
+						name: `${order.billing.first_name} ${order.billing.last_name}`,
+						reason:
+							order.meta_data.find(
+								(m) => m.key === '_customer_refund_reason'
+							)?.value || 'No reason',
+						time: order.date_created,
+						amount: order.total,
+					}));
+					setPendingRefund(formatData);
+				})
+				.catch(() => {
+					setPendingRefund([]);
+				});
+		}
 
 		// Announcements
 		if (modules.includes('announcement')) {

@@ -329,82 +329,80 @@ class Frontend {
         /* phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized */
         $files = $_FILES['product_img'] ?? null;
 
-        if (empty($files) || empty($files['name'])) {
-            return;
-        }
-
-        // Normalize safely.
-        $file_names  = array_map('sanitize_file_name', (array) ($files['name'] ?? []));
-        $file_types  = (array) ($files['type'] ?? []);
-        $file_tmp    = (array) ($files['tmp_name'] ?? []);
-        $file_errors = (array) ($files['error'] ?? []);
-        $file_sizes  = (array) ($files['size'] ?? []);
-
-        require_once ABSPATH . 'wp-admin/includes/file.php';
-        require_once ABSPATH . 'wp-admin/includes/image.php';
-
-        $max_file_size = 10 * 1024 * 1024; // 10MB
-        $allowed_mimes = array(
-            'jpg|jpeg|jpe' => 'image/jpeg',
-            'gif'          => 'image/gif',
-            'png'          => 'image/png',
-            'webp'         => 'image/webp',
-        );
-
-        foreach ( $file_names as $index => $name ) {
-            if ( empty( $name ) ||
-                ! isset(
-                    $file_errors[ $index ],
-                    $file_sizes[ $index ],
-                    $file_types[ $index ],
-                    $file_tmp[ $index ]
-                )
-            ) {
-                continue;
-            }
-
-            $sanitized_name = sanitize_file_name( $name );
-
-            if ( UPLOAD_ERR_OK !== (int) $file_errors[ $index ] ) {
-                continue;
-            }
-
-            if ( (int) $file_sizes[ $index ] > $max_file_size ) {
-                continue;
-            }
-
-            $file_type = wp_check_filetype( $sanitized_name, $allowed_mimes );
-            if ( empty( $file_type['type'] ) ) {
-                continue;
-            }
-
-            $file = array(
-                'name'     => $sanitized_name,
-                'type'     => sanitize_mime_type( $file_types[ $index ] ),
-                'tmp_name' => $file_tmp[ $index ],
-                'error'    => (int) $file_errors[ $index ],
-                'size'     => (int) $file_sizes[ $index ],
+        if (!empty($files) && !empty($files['name'])) {
+            // Normalize safely.
+            $file_names  = array_map('sanitize_file_name', (array) ($files['name'] ?? []));
+            $file_types  = (array) ($files['type'] ?? []);
+            $file_tmp    = (array) ($files['tmp_name'] ?? []);
+            $file_errors = (array) ($files['error'] ?? []);
+            $file_sizes  = (array) ($files['size'] ?? []);
+    
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+    
+            $max_file_size = 10 * 1024 * 1024; // 10MB
+            $allowed_mimes = array(
+                'jpg|jpeg|jpe' => 'image/jpeg',
+                'gif'          => 'image/gif',
+                'png'          => 'image/png',
+                'webp'         => 'image/webp',
             );
-
-            $upload = wp_handle_upload( $file, array( 'test_form' => false ) );
-
-            if ( $upload && ! isset( $upload['error'] ) ) {
-                $uploaded_image_urls[] = esc_url_raw( $upload['url'] );
-
-                $attachment = array(
-                    'guid'           => $upload['url'],
-                    'post_mime_type' => $upload['type'],
-                    'post_title'     => sanitize_text_field( pathinfo( $sanitized_name, PATHINFO_FILENAME ) ),
-                    'post_content'   => '',
-                    'post_status'    => 'inherit',
+    
+            foreach ( $file_names as $index => $name ) {
+                if ( empty( $name ) ||
+                    ! isset(
+                        $file_errors[ $index ],
+                        $file_sizes[ $index ],
+                        $file_types[ $index ],
+                        $file_tmp[ $index ]
+                    )
+                ) {
+                    continue;
+                }
+    
+                $sanitized_name = sanitize_file_name( $name );
+    
+                if ( UPLOAD_ERR_OK !== (int) $file_errors[ $index ] ) {
+                    continue;
+                }
+    
+                if ( (int) $file_sizes[ $index ] > $max_file_size ) {
+                    continue;
+                }
+    
+                $file_type = wp_check_filetype( $sanitized_name, $allowed_mimes );
+                if ( empty( $file_type['type'] ) ) {
+                    continue;
+                }
+    
+                $file = array(
+                    'name'     => $sanitized_name,
+                    'type'     => sanitize_mime_type( $file_types[ $index ] ),
+                    'tmp_name' => $file_tmp[ $index ],
+                    'error'    => (int) $file_errors[ $index ],
+                    'size'     => (int) $file_sizes[ $index ],
                 );
-
-                $attach_id = wp_insert_attachment( $attachment, $upload['file'] );
-
-                if ( $attach_id ) {
-                    $attach_data = wp_generate_attachment_metadata( $attach_id, $upload['file'] );
-                    wp_update_attachment_metadata( $attach_id, $attach_data );
-                    $attach_ids[] = $attach_id;
+    
+                $upload = wp_handle_upload( $file, array( 'test_form' => false ) );
+    
+                if ( $upload && ! isset( $upload['error'] ) ) {
+                    $uploaded_image_urls[] = esc_url_raw( $upload['url'] );
+    
+                    $attachment = array(
+                        'guid'           => $upload['url'],
+                        'post_mime_type' => $upload['type'],
+                        'post_title'     => sanitize_text_field( pathinfo( $sanitized_name, PATHINFO_FILENAME ) ),
+                        'post_content'   => '',
+                        'post_status'    => 'inherit',
+                    );
+    
+                    $attach_id = wp_insert_attachment( $attachment, $upload['file'] );
+    
+                    if ( $attach_id ) {
+                        $attach_data = wp_generate_attachment_metadata( $attach_id, $upload['file'] );
+                        wp_update_attachment_metadata( $attach_id, $attach_data );
+                        $attach_ids[] = $attach_id;
+                    }
                 }
             }
         }
