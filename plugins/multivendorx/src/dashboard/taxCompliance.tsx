@@ -8,6 +8,8 @@ import {
 	FileInputUI,
 	getApiLink,
 	SelectInputUI,
+	ButtonInputUI,
+	PopupUI,
 } from 'zyra';
 import axios from 'axios';
 
@@ -27,6 +29,7 @@ const TaxCompliance = () => {
 	const [storeData, setStoreData] = useState<any>({});
 	const [taxState, setTaxState] = useState<Record<string, any>>({});
 	const [selectedOptions, setSelectedOptions] = useState<Record<string, any>>({});
+	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
 	// ================= FETCH =================
 	useEffect(() => {
@@ -125,17 +128,45 @@ const TaxCompliance = () => {
 		return [
 			{
 				title: item.label,
-				desc: item.document_url?.split('/').pop() || '',
+				desc: (
+					<span
+						className="doc-link"
+						style={{ cursor: 'pointer', color: '#6c5ce7' }}
+						onClick={() => setPreviewUrl(item.document_url)}
+					>
+						{item.document_url?.split('/').pop() || ''}
+					</span>
+				),
 				tags: (
 					<>
-						<FileInputUI
-							imageSrc={item.document_url}
-							imageWidth={75}
-							imageHeight={75}
-							openUploader={__('Replace', 'multivendorx')}
-							onChange={(fileData: any) =>
-								handleUpload(sectionKey, item, fileData)
-							}
+						<ButtonInputUI
+							buttons={{
+								text: __('Replace Document', 'multivendorx'),
+								color: 'purple',
+								onClick: () => {
+									if (!wp?.media) return;
+
+									const frame = wp.media({
+										title: 'Select or Upload File',
+										button: { text: 'Use this file' },
+										multiple: false,
+									});
+
+									frame.on('select', () => {
+										const selected = frame
+											.state()
+											.get('selection')
+											.toJSON();
+
+										const file = selected?.[0];
+										if (!file?.url) return;
+
+										handleUpload(sectionKey, item, file);
+									});
+
+									frame.open();
+								},
+							}}
 						/>
 					</>
 				),
@@ -175,12 +206,39 @@ const TaxCompliance = () => {
 				isClearable
 			/>
 
-			<FileInputUI
-				key={selectedOptions[sectionKey]?.value || 'empty'}
-				openUploader={__('Upload Document', 'multivendorx')}
-				onChange={(fileData: any) =>
-					handleUpload(sectionKey, selectedOptions[sectionKey], fileData)
-				}
+			<ButtonInputUI
+				buttons={{
+					text: __('Upload Document', 'multivendorx'),
+					color: 'purple',
+					onClick: () => {
+						if (!selectedOptions[sectionKey]) {
+							alert('Please select a document type');
+							return;
+						}
+
+						if (!wp?.media) return;
+
+						const frame = wp.media({
+							title: 'Select or Upload File',
+							button: { text: 'Use this file' },
+							multiple: false,
+						});
+
+						frame.on('select', () => {
+							const selected = frame
+								.state()
+								.get('selection')
+								.toJSON();
+
+							const file = selected?.[0];
+							if (!file?.url) return;
+
+							handleUpload(sectionKey, selectedOptions[sectionKey], file);
+						});
+
+						frame.open();
+					},
+				}}
 			/>
 		</div>
 	);
@@ -237,6 +295,32 @@ const TaxCompliance = () => {
 					</Card>
 				)}
 			</Column>
+			<PopupUI
+				position="lightbox"
+				open={!!previewUrl}
+				onClose={() => setPreviewUrl(null)}
+				width="80%"
+				height="80%"
+				header={{
+					title: 'Document Preview',
+				}}
+			>
+				{previewUrl && (
+					previewUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+						<img
+							src={previewUrl}
+							alt="preview"
+							style={{ width: '100%', height: 'auto' }}
+						/>
+					) : (
+						<iframe
+							src={previewUrl}
+							title="Document"
+							style={{ width: '100%', height: '100%' }}
+						/>
+					)
+				)}
+			</PopupUI>
 		</Container>
 	);
 };
