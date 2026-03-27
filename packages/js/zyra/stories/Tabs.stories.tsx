@@ -49,7 +49,7 @@ const upgradeButton = !ZyraVariable.khali_dabba && (
         className="admin-btn btn-purple"
     >
         <i className="adminfont-pro-tag"></i>
-        {__('Upgrade Now', 'multivendorx')}
+        { 'Upgrade Now'}
         <i className="adminfont-arrow-right icon-pro-btn"></i>
     </a>
 );
