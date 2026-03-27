@@ -22,7 +22,7 @@ type BadgeProps = {
     onClick?: () => void;
 };
 
-type InfoItemProps = {
+export type InfoItemProps = {
     title: string;
     titleLink?: string;
     avatar?: AvatarProps;

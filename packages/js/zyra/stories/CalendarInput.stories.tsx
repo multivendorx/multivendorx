@@ -1,40 +1,34 @@
 // CalendarInput.stories.tsx
-import React, { useState } from 'react';
-import CalendarInput from '../src/components/CalendarInput';
+import { useState } from 'react';
+import { CalendarInputUI } from '../src/components/CalendarInput';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { DateObject } from 'react-multi-date-picker';
 
-const meta: Meta<typeof CalendarInput> = {
+import { CalendarRange } from '../src/components/CalendarInput';
+
+const meta: Meta<typeof CalendarInputUI> = {
     title: 'Zyra/Components/CalendarInput',
-    component: CalendarInput,
+    component: CalendarInputUI,
     tags: ['autodocs'],
 };
 
 export default meta;
-type Story = StoryObj<typeof CalendarInput>;
+type Story = StoryObj<typeof CalendarInputUI>;
 
 export const DefaultDate: Story = {
     render: () => {
-        const [value, setValue] = useState('2025-12-19');
+        let date = new Date();
+        const [value, setValue] = useState<CalendarRange | undefined>({
+            startDate: date,
+            endDate: date,
+            selectedDates: [date, date]
+        });
 
         return (
-            <CalendarInput
-                wrapperClass="calendar-input-wrapper"
+            <CalendarInputUI
                 inputClass="calendar-input"
                 value={value}
-                onChange={(date) => {
-                    if (Array.isArray(date)) {
-                        const formatted = date
-                            .map((d) =>
-                                Array.isArray(d)
-                                    ? `${d[0].format('YYYY-MM-DD')} - ${d[1].format('YYYY-MM-DD')}`
-                                    : d.format('YYYY-MM-DD')
-                            )
-                            .join(', ');
-                        setValue(formatted);
-                    } else {
-                        setValue((date as DateObject).format('YYYY-MM-DD'));
-                    }
+                onChange={(range: CalendarRange | undefined): void => {
+                    setValue(range);
                 }}
             />
         );
@@ -43,81 +37,86 @@ export const DefaultDate: Story = {
 
 export const MultipleDates: Story = {
     render: () => {
-        const [value, setValue] = useState('2025-12-19, 2025-12-20');
+        let date = new Date();
+        const [value, setValue] = useState<CalendarRange | undefined>({
+            startDate: date,
+            endDate: date,
+            selectedDates: [date, date]
+        });
 
         return (
-            <CalendarInput
-                wrapperClass="calendar-input-wrapper"
+            <CalendarInputUI
                 inputClass="calendar-input"
                 value={value}
                 multiple
-                onChange={(date) => {
-                    if (Array.isArray(date)) {
-                        const formatted = date
-                            .map((d) =>
-                                Array.isArray(d)
-                                    ? `${d[0].format('YYYY-MM-DD')} - ${d[1].format('YYYY-MM-DD')}`
-                                    : d.format('YYYY-MM-DD')
-                            )
-                            .join(', ');
-                        setValue(formatted);
-                    }
+                onChange={(range: CalendarRange | undefined): void => {
+                    setValue(range);
                 }}
             />
         );
     },
 };
 
-export const RangeDates: Story = {
+export const StagnantCalenderWithShowinputFlag: Story = {
     render: () => {
-        const [value, setValue] = useState('2025-12-19 - 2025-12-25');
+        let date = new Date();
+        const [value, setValue] = useState<CalendarRange | undefined>({
+            startDate: date,
+            endDate: date,
+            selectedDates: [date, date]
+        });
 
         return (
-            <CalendarInput
-                wrapperClass="calendar-input-wrapper"
+            <CalendarInputUI
                 inputClass="calendar-input"
                 value={value}
-                range
-                onChange={(date) => {
-                    if (Array.isArray(date)) {
-                        const formatted = date
-                            .map((d) =>
-                                Array.isArray(d)
-                                    ? `${d[0].format('YYYY-MM-DD')} - ${d[1].format('YYYY-MM-DD')}`
-                                    : d.format('YYYY-MM-DD')
-                            )
-                            .join(', ');
-                        setValue(formatted);
-                    }
+                showInput={false}
+                onChange={(range: CalendarRange | undefined): void => {
+                    setValue(range);
                 }}
             />
         );
     },
 };
 
-export const WithProTag: Story = {
+export const FullYearCalender: Story = {
     render: () => {
-        const [value, setValue] = useState('2025-12-19');
+        let date = new Date();
+        const [value, setValue] = useState<CalendarRange | undefined>({
+            startDate: date,
+            endDate: date,
+            selectedDates: [date, date]
+        });
 
         return (
-            <CalendarInput
-                wrapperClass="calendar-input-wrapper"
+            <CalendarInputUI
                 inputClass="calendar-input"
                 value={value}
-                proSetting
-                onChange={(date) => {
-                    if (Array.isArray(date)) {
-                        const formatted = date
-                            .map((d) =>
-                                Array.isArray(d)
-                                    ? `${d[0].format('YYYY-MM-DD')} - ${d[1].format('YYYY-MM-DD')}`
-                                    : d.format('YYYY-MM-DD')
-                            )
-                            .join(', ');
-                        setValue(formatted);
-                    } else {
-                        setValue((date as DateObject).format('YYYY-MM-DD'));
-                    }
+                fullYear={true}
+                onChange={(range: CalendarRange | undefined): void => {
+                    setValue(range);
+                }}
+            />
+        );
+    },
+};
+
+export const ComparisonWithPreviousYear: Story = {
+    render: () => {
+        let date = new Date();
+        const [value, setValue] = useState<CalendarRange | undefined>({
+            startDate: date,
+            endDate: date,
+            selectedDates: [date, date]
+        });
+
+        return (
+            <CalendarInputUI
+                inputClass="calendar-input"
+                value={value}
+                showCompare={true}
+                onChange={(range: CalendarRange | undefined): void => {
+                    setValue(range);
                 }}
             />
         );

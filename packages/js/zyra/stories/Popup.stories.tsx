@@ -4,6 +4,9 @@ import { useState } from "react";
 import { PopupUI } from "../src/components/Popup";
 import { ItemListUI } from "../src/components/ItemList";
 
+import '../src/styles/fonts.scss';
+import '../src/styles/common.scss';
+
 const meta: Meta<typeof PopupUI> = {
     title: 'Zyra/Components/Popup',
     component: PopupUI,

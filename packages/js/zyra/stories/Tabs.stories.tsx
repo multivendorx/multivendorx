@@ -8,91 +8,96 @@ import { MemoryRouter, Link as RouterLink } from 'react-router-dom';
 /**
  * Internal dependencies
  */
-import Tabs from '../src/components/Tabs';
+import { TabsUI } from '../src/components/Tabs';
+import { ZyraVariable } from '../src/components/fieldUtils';
+import DashboardTab from '../../../../plugins/multivendorx/src/components/AdminDashboard/DashboardTab';
+import FreeVsProTab from '../../../../plugins/multivendorx/src/components/AdminDashboard/FreeVsProTab';
 
-const meta: Meta<typeof Tabs> = {
+const meta: Meta<typeof TabsUI> = {
     title: 'Zyra/Components/Tabs',
-    component: Tabs,
-    decorators: [
-        (Story) => (
-            <MemoryRouter initialEntries={['/general']}>
-                <Story />
-            </MemoryRouter>
-        ),
-    ],
+    component: TabsUI,
+    tags: ['autodocs']
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Tabs>;
+type Story = StoryObj<typeof TabsUI>;
 
 /**
  * Dummy tab data
  */
 const tabData = [
     {
-        type: 'file',
-        content: {
-            id: 'general',
-            name: 'General',
-            desc: 'General settings description',
-            icon: 'settings',
-        },
+        key: 'dashboard',
+        label: 'Dashboard',
+        icon: 'module',
+        content: <DashboardTab />,
     },
     {
-        type: 'folder',
-        name: 'Advanced',
-        content: [
-            {
-                type: 'file',
-                content: {
-                    id: 'advanced-one',
-                    name: 'Advanced One',
-                    desc: 'Advanced tab one',
-                },
-            },
-            {
-                type: 'file',
-                content: {
-                    id: 'advanced-two',
-                    name: 'Advanced Two',
-                    desc: 'Advanced tab two',
-                },
-            },
-        ],
+        key: 'free-vs-pro',
+        pro: true,
+        label: 'Free vs Pro',
+        icon: 'pros-and-cons',
+        content: <FreeVsProTab />,
     },
-];
+]
 
-/**
- * Dummy getForm renderer
- */
-const getForm = (tabId: string) => {
-    return (
-        <div style={{ padding: 16 }}>
-            <strong>Active Tab:</strong> {tabId}
-        </div>
-    );
-};
+const upgradeButton = !ZyraVariable.khali_dabba && (
+    <a
+        href={ZyraVariable.shop_url}
+        target="_blank"
+        className="admin-btn btn-purple"
+    >
+        <i className="adminfont-pro-tag"></i>
+        {__('Upgrade Now', 'multivendorx')}
+        <i className="adminfont-arrow-right icon-pro-btn"></i>
+    </a>
+);
 
-/**
- * Dummy URL builder
- */
-const prepareUrl = (tabId: string) => `/${tabId}`;
+export const MultipleTabs: Story = {
+    render: () => {
+        return (
+            <TabsUI
+                tabs={tabData}
+                className="background" 
+            />
+        )
+    }
+}
 
-export const Basic: Story = {
-    render: () => (
-        <Tabs
-            tabData={tabData}
-            currentTab="general"
-            getForm={getForm}
-            prepareUrl={prepareUrl}
-            Link={RouterLink}
-            settingName="Settings"
-            supprot={[]}
-            appLocalizer={{
-                khali_dabba: false,
-                shop_url: 'https://example.com',
-            }}
-        />
-    ),
-};
+export const SingleTab: Story = {
+    render: () => {
+        return (
+            <TabsUI
+                tabs={[tabData[0]]}
+                className="background" 
+            />
+        )
+    }
+}
+
+export const TabsWithHeaderExtra: Story = {
+    render: () => {
+        return (
+            <TabsUI
+                tabs={tabData}
+                className="background" 
+                headerExtra={upgradeButton}
+            />
+        )
+    }
+}
+
+export const MultipleTabsWithDefaultActiveIndex2 : Story = {
+    render: ()=>{
+        return (
+            <TabsUI 
+                tabs={tabData}
+                className="background" 
+                defaultActiveIndex = {2}
+                headerExtra={upgradeButton}
+            />
+        )
+    }
+}
+
