@@ -412,10 +412,12 @@ export default {
 					label: 'to be',
 					options: [
 						{
+							key: 'customer',
 							value: 'customer',
 							label: 'added to the customer’s order total',
 						},
 						{
+							key: 'store',
 							value: 'store',
 							label: 'deducted from the store’s commission',
 						},

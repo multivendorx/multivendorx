@@ -2120,6 +2120,13 @@ class Install {
             '_vendor_customer_email'          => '',
             '_vendor_turn_off'                => '',
             '_dismiss_to_do_list'             => '',
+            '_mvx_shipping_by_country'        => '',
+            '_mvx_country_rates'              => '',
+            '_mvx_state_rates'                => '',
+            '_mvx_shipping_by_distance'       => '',
+            '_mvx_shipping_by_distance_rates' => '',
+            '_mvx_user_location_lat'          => 'location_lat',
+            '_mvx_user_location_lng'          => 'location_lng',
         );
         return $map_meta;
     }
@@ -2233,6 +2240,87 @@ class Install {
                     continue;
                 }
 
+                // country wise shipping.
+				if ( '_mvx_shipping_by_country' === $meta_key ) {
+                     $shipping_meta_map = [
+                        '_mvx_shipping_type_price' => 'multivendorx_shipping_type_price',
+                        '_mvx_additional_product'  => 'multivendorx_additional_product',
+                        '_mvx_additional_qty'      => 'multivendorx_additional_qty',
+                        '_free_shipping_amount'    => 'free_shipping_amount',
+                        '_local_pickup_cost'       => 'local_pickup_cost',
+                    ];
+
+                    foreach ( $meta_values as $item => $value ) {
+                        if ( array_key_exists( $item, $shipping_meta_map ) ) {
+                            $store->update_meta( $shipping_meta_map[ $item ], $value );
+                        }
+                    }
+                    continue;
+                }
+
+                if ( '_mvx_country_rates' === $meta_key ) {
+                    $state_rates = get_user_meta( $user_id, '_mvx_state_rates', true);
+                    $result = [];
+
+                    if ( ! empty( $meta_values ) ) {
+                        foreach ( $meta_values as $country => $cost ) {
+                            $country_obj = new \stdClass();
+                            $country_obj->country = $country;
+                            $country_obj->cost    = (string) $cost;
+                            $country_obj->states  = [];
+
+                            // Check if this country has state data.
+                            if ( ! empty( $state_rates[ $country ] ) && is_array( $state_rates[ $country ] ) ) {
+                                foreach ( $state_rates[ $country ] as $state => $state_cost ) {
+                                    $state_obj = new \stdClass();
+                                    $state_obj->state = $state;
+                                    $state_obj->cost  = (string) $state_cost;
+                                    $country_obj->states[] = $state_obj;
+                                }
+                            }
+                            $result[] = $country_obj;
+                        }
+                    }
+                    $store->update_meta( 'multivendorx_shipping_rates', $result );
+                    continue;
+                }
+
+                // Distance wise shipping.
+				if ( '_mvx_shipping_by_distance' === $meta_key ) {
+                     $shipping_meta_map = [
+                        '_default_cost'         => 'distance_default_cost',
+                        '_max_distance'         => 'distance_max',
+                        '_local_pickup_cost'    => 'distance_local_pickup_cost',
+                    ];
+
+                    foreach ( $meta_values as $item => $value ) {
+                        if ( array_key_exists( $item, $shipping_meta_map ) ) {
+                            $store->update_meta( $shipping_meta_map[ $item ], $value );
+                        }
+                    }
+                    continue;
+                }
+
+                if ( '_mvx_shipping_by_distance_rates' == $meta_key ) {
+                    $new_meta = [];
+    
+                    if ( ! empty( $meta_values ) && is_array( $meta_values ) ) {
+                        foreach ( $meta_values as $item ) {
+                            if ( empty( $item['mvx_distance_unit'] ) || empty( $item['mvx_distance_price'] ) ) {
+                                continue;
+                            }
+    
+                            $new_meta[] = [
+                                'max_distance' => (string) $item['mvx_distance_unit'],
+                                'cost'         => (string) $item['mvx_distance_price'],
+                            ];
+                        }
+                    }
+                    $store->update_meta( 'distance_rules', $new_meta );
+                    continue;
+                }
+
+
                 // Skip meta keys that are not mapped.
                 if ( ! isset( $map_meta[ $meta_key ] ) ) {
                     continue;
@@ -2243,6 +2331,16 @@ class Install {
                 if ( 'address' === $new_meta_key ) {
                     $existing    = $store->get_meta( 'address' );
                     $meta_values = trim( $existing . ' ' . $meta_values );
+                }
+
+                if ( 'shipping_options' == $new_meta_key ) {
+                    if ($meta_values == 'distance_by_zone' ) {
+                        $meta_values = 'shipping_by_zone';
+                    } elseif ($meta_values == 'distance_by_shipping' ) {
+                        $meta_values = 'shipping_by_distance';
+                    } else {
+                        $meta_values = 'shipping_by_country';
+                    }
                 }
 
                 $store->update_meta( $new_meta_key, $meta_values );
@@ -2276,6 +2374,20 @@ class Install {
 
             update_user_meta( $user_id, 'multivendorx_following_stores', array_unique( $results ) );
             delete_user_meta( $user_id, 'mvx_customer_follow_vendor' );
+        }
+
+        //Shipping zone methods table migrate.
+        $zone_table = $wpdb->prefix . 'mvx_shipping_zone_methods';
+        $results = $wpdb->get_results( "SELECT * FROM {$zone_table}" );
+
+        if ( ! empty( $results ) ) {
+            foreach ( $results as $row ) {
+                $vendor_id = $row->vendor_id;
+                $store_id = get_user_meta( $vendor_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
+                $meta_key = $row->method_id . '_' . $row->zone_id;
+                $store = new Store($store_id);
+                $store->update_meta( $meta_key, $row->settings );
+            }
         }
 
         // Announcement table migrate.

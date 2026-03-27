@@ -110,12 +110,6 @@ export default {
 				'Choose your preferred AI model from OpenRouter.',
 				'multivendorx'
 			),
-			dependent: {
-				key: 'choose_ai_provider',
-				set: true,
-				value: 'openrouter_api',
-			},
-
 			options: [
 				{
 					key: 'openai/gpt-4o-mini',
@@ -133,6 +127,11 @@ export default {
 					value: 'google/gemini-2.0-flash-exp:free',
 				},
 			],
+			dependent: {
+				key: 'choose_ai_provider',
+				set: true,
+				value: 'openrouter_api',
+			},
 		},
 		// --- Image Enhancement Provider ---
 		{
@@ -199,12 +198,6 @@ export default {
 				'Choose your preferred AI model for image enhancement from OpenRouter.',
 				'multivendorx'
 			),
-			dependent: {
-				key: 'image_enhancement_provider',
-				set: true,
-				value: 'openrouter_api',
-			},
-
 			options: [
 				{
 					key: 'google/gemini-2.5-flash-image-preview',
@@ -222,6 +215,11 @@ export default {
 					value: 'google/gemini-3-pro-image-preview',
 				},
 			],
+			dependent: {
+				key: 'image_enhancement_provider',
+				set: true,
+				value: 'openrouter_api',
+			},
 		},
 	],
 };
