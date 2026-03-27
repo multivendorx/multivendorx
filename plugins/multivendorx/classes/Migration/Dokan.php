@@ -21,19 +21,6 @@ defined( 'ABSPATH' ) || exit;
  * @author      MultiVendorX
  */
 class Dokan {
-    /**
-     * Constructor.
-     *
-     * Initializes the migration process by running vendor,
-     * product, and order/commission migrations.
-     *
-     * @return void
-     */
-    public function __construct() {
-        $this->migrate_vendors();
-        $this->migrate_products();
-        $this->migrate_orders_and_commissions();
-    }
 	/**
 	 * Migrate Dokan vendors to MultiVendorX stores.
 	 *
@@ -45,7 +32,7 @@ class Dokan {
 	 * - Migrates vendor profile data such as address, phone, banner, and logo
 	 *   into the MultiVendorX store meta.
 	 *
-	 * @return void
+	 * @return int
 	 */
     public function migrate_vendors() {
         $vendors = get_users(
@@ -54,7 +41,7 @@ class Dokan {
 				'fields'   => array( 'ID' ),
             )
         );
-
+        $created_store_ids = array(); 
         foreach ( $vendors as $user ) {
             $user_id = $user->ID;
 
@@ -75,6 +62,7 @@ class Dokan {
             $store->set( 'who_created', $user_id );
             $store_id = $store->save();
 
+            $created_store_ids[] = $store_id; 
             // primary owner set and add store-users table.
             StoreUtil::set_primary_owner( $user_id, $store_id );
             update_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['active_store'], $store_id );
@@ -140,6 +128,7 @@ class Dokan {
                 }
             }
         }
+        return count( $created_store_ids );
     }
 	/**
 	 * Migrate products to associate them with MultiVendorX stores.
@@ -148,7 +137,7 @@ class Dokan {
 	 * If the author has the `seller` role, the product is linked to the vendor's
 	 * active store by updating the store ID in the product meta.
 	 *
-	 * @return void
+	 * @return int
 	 */
     public function migrate_products() {
         $products = wc_get_products(
@@ -157,7 +146,7 @@ class Dokan {
 				'return' => 'ids',
             )
         );
-
+        $updated_count = 0;
         foreach ( $products as $product_id ) {
             // Migrate product vendor.
             $author_id = (int) get_post_field( 'post_author', $product_id );
@@ -167,8 +156,10 @@ class Dokan {
             if ( in_array( 'seller', (array) $user->roles, true ) ) {
                 $active_store = get_user_meta( $author_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
                 update_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], $active_store );
+                $updated_count++;
             }
         }
+        return $updated_count;
     }
 	/**
 	 * Migrate orders, commissions, and transactions from Dokan to MultiVendorX.
@@ -286,6 +277,8 @@ class Dokan {
             $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $data, $format );
         }
         $this->deactive_previous_multivendor();
+
+		wp_clear_scheduled_hook('multivendorx_order_migration');
     }
 
     public function deactive_previous_multivendor() {

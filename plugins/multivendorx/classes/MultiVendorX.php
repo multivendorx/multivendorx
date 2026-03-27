@@ -155,6 +155,7 @@ final class MultiVendorX {
         $this->container['notifications']   = new Notifications\Notifications();
         $this->container['widgets']         = new Widgets();
         $this->container['pattern']         = new Pattern();
+        $this->container['migration']       = new Migration\Cron();
 
         // Load all active modules.
         $this->container['modules']->load_active_modules();

@@ -569,126 +569,127 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                       } settings`
                     : 'Input settings'}
             </div>
+            <FormGroupWrapper>
+                {/* Always show label */}
+                <InputField
+                    label="Field label"
+                    value={formField.label || ''}
+                    onChange={handleLabelChange}
+                />
 
-            {/* Always show label */}
-            <InputField
-                label="Field label"
-                value={formField.label || ''}
-                onChange={handleLabelChange}
-            />
-
-            {formField.readonly ? (
-                // Readonly mode
-                <>
-                    <InputField
-                        label="Placeholder"
-                        value={formField.placeholder || ''}
-                        onChange={handlePlaceholderChange}
-                    />
-                    <VisibilityToggle
-                        disabled={formField.disabled}
-                        onChange={handleDisabledChange}
-                    />
-                </>
-            ) : (
-                // Edit mode
-                <>
-                    {metaType === 'setting-meta' ? (
-                        <FormFieldSelect
-                            inputTypeList={inputTypeList}
-                            formField={formField}
-                            onTypeChange={(type) => onTypeChange?.(type)}
-                        />
-                    ) : (
+                {formField.readonly ? (
+                    // Readonly mode
+                    <>
                         <InputField
-                            label="Value"
-                            value={option?.value || ''}
-                            onChange={handleValueChange}
+                            label="Placeholder"
+                            value={formField.placeholder || ''}
+                            onChange={handlePlaceholderChange}
                         />
-                    )}
+                        <VisibilityToggle
+                            disabled={formField.disabled}
+                            onChange={handleDisabledChange}
+                        />
+                    </>
+                ) : (
+                    // Edit mode
+                    <>
+                        {metaType === 'setting-meta' ? (
+                            <FormFieldSelect
+                                inputTypeList={inputTypeList}
+                                formField={formField}
+                                onTypeChange={(type) => onTypeChange?.(type)}
+                            />
+                        ) : (
+                            <InputField
+                                label="Value"
+                                value={option?.value || ''}
+                                onChange={handleValueChange}
+                            />
+                        )}
 
-                    <InputField
-                        label={metaType === 'setting-meta' ? 'Name' : 'Label'}
-                        value={
-                            metaType === 'setting-meta'
-                                ? formField.name || ''
-                                : option?.label || ''
-                        }
-                        readonly={
-                            metaType === 'setting-meta' && formField.readonly
-                        }
-                        onChange={handleNameChange}
-                    />
+                        <InputField
+                            label={metaType === 'setting-meta' ? 'Name' : 'Label'}
+                            value={
+                                metaType === 'setting-meta'
+                                    ? formField.name || ''
+                                    : option?.label || ''
+                            }
+                            readonly={
+                                metaType === 'setting-meta' && formField.readonly
+                            }
+                            onChange={handleNameChange}
+                        />
 
-                    {metaType === 'setting-meta' && (
-                        <>
-                            {/* Block-specific content settings */}
-                            {formField.type && (
-                                <FieldRenderer
-                                    formField={formField}
-                                    onChange={onChange}
-                                />
-                            )}
-
-                            {/* Centralized Style Controls for styled blocks */}
-                            {hasStyleControls && (
-                                <StyleControls
-                                    style={formField.style || {}}
-                                    onChange={handleStyleChange}
-                                    includeTextStyles={hasTextStyles}
-                                />
-                            )}
-
-                            {/* Visibility and Required for non-styled blocks */}
-                            {!hasStyleControls && (
-                                <>
-                                    <VisibilityToggle
-                                        disabled={formField.disabled}
-                                        onChange={handleDisabledChange}
+                        {metaType === 'setting-meta' && (
+                            <>
+                                {/* Block-specific content settings */}
+                                {formField.type && (
+                                    <FieldRenderer
+                                        formField={formField}
+                                        onChange={onChange}
                                     />
-                                    <FormGroup label="Required">
-                                        <div className="input-wrapper">
-                                            <MultiCheckBoxUI
-                                                options={[
-                                                    {
-                                                        key: 'required',
-                                                        value: 'required',
-                                                        label: 'Required',
-                                                    },
-                                                ]}
-                                                value={
-                                                    formField.required
-                                                        ? ['required']
-                                                        : []
-                                                }
-                                                onChange={(vals) => {
-                                                    const next =
-                                                        vals.includes(
-                                                            'required'
-                                                        );
+                                )}
 
-                                                    if (
-                                                        next ===
-                                                        formField.required
-                                                    ) {
-                                                        return; // prevent unnecessary update
-                                                    }
+                                {/* Centralized Style Controls for styled blocks */}
+                                {hasStyleControls && (
+                                    <StyleControls
+                                        style={formField.style || {}}
+                                        onChange={handleStyleChange}
+                                        includeTextStyles={hasTextStyles}
+                                    />
+                                )}
 
-                                                    handleRequiredChange({
-                                                        target: {
-                                                            checked: next,
+                                {/* Visibility and Required for non-styled blocks */}
+                                {!hasStyleControls && (
+                                    <>
+                                        <VisibilityToggle
+                                            disabled={formField.disabled}
+                                            onChange={handleDisabledChange}
+                                        />
+                                        <FormGroup label="Required">
+                                            <div className="input-wrapper">
+                                                <MultiCheckBoxUI
+                                                    options={[
+                                                        {
+                                                            key: 'required',
+                                                            value: 'required',
+                                                            label: 'Required',
                                                         },
-                                                    } as React.ChangeEvent<HTMLInputElement>);
-                                                }}
-                                            />
-                                        </div>
-                                    </FormGroup>
-                                </>
-                            )}
-                        </>
-                    )}
-                </>
-            )}
+                                                    ]}
+                                                    value={
+                                                        formField.required
+                                                            ? ['required']
+                                                            : []
+                                                    }
+                                                    onChange={(vals) => {
+                                                        const next =
+                                                            vals.includes(
+                                                                'required'
+                                                            );
+
+                                                        if (
+                                                            next ===
+                                                            formField.required
+                                                        ) {
+                                                            return; // prevent unnecessary update
+                                                        }
+
+                                                        handleRequiredChange({
+                                                            target: {
+                                                                checked: next,
+                                                            },
+                                                        } as React.ChangeEvent<HTMLInputElement>);
+                                                    }}
+                                                />
+                                            </div>
+                                        </FormGroup>
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </>
+                )}
+            </FormGroupWrapper>
         </div>
     );
 };

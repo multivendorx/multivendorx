@@ -16,6 +16,7 @@ import {
 	ItemListUI,
 	Container,
 	NoticeManager,
+	Column,
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -257,18 +258,18 @@ const EditStore = () => {
 		const updatedTabs = settingContent.map((tab) =>
 			tab.content.id === 'application-details'
 				? {
-						...tab,
-						content: {
-							...tab.content,
-							name:
-								data?.status === 'pending' ||
+					...tab,
+					content: {
+						...tab.content,
+						name:
+							data?.status === 'pending' ||
 								data?.status === 'rejected' ||
 								data?.status === 'permanently_rejected'
-									? // data?.status === 'active'
-										'Application Details'
-									: 'Archive Data',
-						},
-					}
+								? // data?.status === 'active'
+								'Application Details'
+								: 'Archive Data',
+					},
+				}
 				: tab
 		);
 
@@ -450,99 +451,215 @@ const EditStore = () => {
 										/>
 									</PopupUI>
 								</div>
-								<div className="details-wrapper">
-									<div className="left-section">
-										<div className="store-logo">
-											{data?.image ? (
-												<img src={data.image} alt="" />
-											) : (
-												<div className="placeholder-400x400" />
+
+								<div className="logo-wrapper">
+									<div className="store-logo">
+										{data?.image ? (
+											<img src={data.image} alt="" />
+										) : (
+											<div className="placeholder-400x400" />
+										)}
+										<PopupUI
+											position="menu-dropdown"
+											tooltipName={__(
+												'Logo',
+												'multivendorx'
 											)}
-											<PopupUI
-												position="menu-dropdown"
-												tooltipName={__(
-													'Logo',
+											toggleIcon="edit theme-background"
+										>
+											<ItemListUI
+												items={[
+													{
+														id: 'upload',
+														title: __(
+															'Upload',
+															'multivendorx'
+														),
+														icon: 'cloud-upload',
+														action: (
+															item,
+															e
+														) => {
+															e?.stopPropagation();
+															runUploader(
+																'image'
+															);
+														},
+													},
+													{
+														id: 'delete',
+														title: __(
+															'Delete',
+															'multivendorx'
+														),
+														icon: 'delete',
+														className: 'delete',
+														action: (
+															item,
+															e
+														) => {
+															e?.stopPropagation();
+															const updated =
+															{
+																...data,
+																image: '',
+															};
+															setData(
+																updated
+															);
+															autoSave(
+																updated
+															);
+														},
+													},
+												]}
+											/>
+										</PopupUI>
+									</div>
+
+									<div className="tag-wrapper">
+										{data.status === 'active' ? (
+											<span className="status admin-badge green">
+												{__(
+													'Active',
 													'multivendorx'
 												)}
-												toggleIcon="edit theme-background"
-											>
-												<ItemListUI
-													items={[
-														{
-															id: 'upload',
-															title: __(
-																'Upload',
-																'multivendorx'
-															),
-															icon: 'cloud-upload',
-															action: (
-																item,
-																e
-															) => {
-																e?.stopPropagation();
-																runUploader(
-																	'image'
-																);
-															},
-														},
-														{
-															id: 'delete',
-															title: __(
-																'Delete',
-																'multivendorx'
-															),
-															icon: 'delete',
-															className: 'delete',
-															action: (
-																item,
-																e
-															) => {
-																e?.stopPropagation();
-																const updated =
-																	{
-																		...data,
-																		image: '',
-																	};
-																setData(
-																	updated
-																);
-																autoSave(
-																	updated
-																);
-															},
-														},
-													]}
-												/>
-											</PopupUI>
-										</div>
+											</span>
+										) : data.status ===
+											'pending' ? (
+											<span className="status admin-badge yellow">
+												{__(
+													'Pending',
+													'multivendorx'
+												)}
+											</span>
+										) : data.status ===
+											'rejected' ? (
+											<span className="status admin-badge red">
+												{__(
+													'Rejected',
+													'multivendorx'
+												)}
+											</span>
+										) : data.status ===
+											'suspended' ? (
+											<span className="status admin-badge blue">
+												{__(
+													'Suspended',
+													'multivendorx'
+												)}
+											</span>
+										) : data.status ===
+											'permanently_rejected' ? (
+											<span className="status admin-badge red">
+												{__(
+													'Permanently Rejected',
+													'multivendorx'
+												)}
+											</span>
+										) : data.status ===
+											'under_review' ? (
+											<span className="status admin-badge yellow">
+												{__(
+													'Under Review',
+													'multivendorx'
+												)}
+											</span>
+										) : data.status ===
+											'deactivated' ? (
+											<span className="status admin-badge red">
+												{__(
+													'Permanently Deactivated',
+													'multivendorx'
+												)}
+											</span>
+										) : (
+											<Skeleton width={100} />
+										)}
 
+										{modules.includes(
+											'marketplace-compliance'
+										) && (
+												<>
+													<div className="admin-badge green">
+														<i className="adminfont-store-inventory"></i>
+														{__('Gold Plan', 'multivendorx')}
+													</div>
+													<div className="admin-badge blue">
+														<i className="adminfont-geo-my-wp"></i>
+														{__('On Vacation', 'multivendorx')}
+													</div>
+													<div className="admin-badge yellow">
+														<i className="adminfont-staff-manager"></i>
+														{__('Closed', 'multivendorx')}
+													</div>
+													<div className="admin-badge yellow">
+														<i className="adminfont-staff-manager"></i>
+														{__('Complained', 'multivendorx')}
+													</div>
+												</>
+											)}
+									</div>
+								</div>
+								<div className="details-wrapper">
+									<div className="left-section">
 										<div className="details">
-											<div
-												className="name"
-												ref={storeRef}
-											>
+											<div className="heading">
 												<div
-													className="store-name"
-													onClick={() =>
-														setEditName(true)
-													}
+													className="name"
+													ref={storeRef}
 												>
-													{editName ? (
-														<input
-															type="text"
-															value={
-																data?.name || ''
-															}
-															onChange={(e) =>
-																setData({
-																	...data,
-																	name: e
-																		.target
-																		.value,
-																})
-															}
-															onBlur={() => {
+													<div
+														className="store-name"
+														onClick={() =>
+															setEditName(true)
+														}
+													>
+														{editName ? (
+															<input
+																type="text"
+																value={
+																	data?.name || ''
+																}
+																onChange={(e) =>
+																	setData({
+																		...data,
+																		name: e
+																			.target
+																			.value,
+																	})
+																}
+																onBlur={() => {
+																	if (
+																		!data?.name?.trim()
+																	) {
+																		setData({
+																			...data,
+																			name: prevName,
+																		});
+																	}
+																	setEditName(
+																		false
+																	);
+																}}
+																className="basic-input"
+																autoFocus
+															/>
+														) : data?.name ? (
+															data.name
+														) : (
+															<Skeleton width={150} />
+														)}
+
+														<span
+															className={`edit-icon  ${editName
+																? ''
+																: 'admin-badge blue'
+																}`}
+															onClick={(e) => {
+																e.stopPropagation();
 																if (
+																	editName &&
 																	!data?.name?.trim()
 																) {
 																	setData({
@@ -551,124 +668,74 @@ const EditStore = () => {
 																	});
 																}
 																setEditName(
-																	false
+																	!editName
 																);
 															}}
-															className="basic-input"
-															autoFocus
-														/>
-													) : data?.name ? (
-														data.name
-													) : (
-														<Skeleton width={150} />
-													)}
+														>
+															<i
+																className={
+																	editName
+																		? ''
+																		: 'adminfont-edit'
+																}
+															></i>
+														</span>
+													</div>
 
-													<span
-														className={`edit-icon  ${
-															editName
-																? ''
-																: 'admin-badge blue'
-														}`}
-														onClick={(e) => {
-															e.stopPropagation();
-															if (
-																editName &&
-																!data?.name?.trim()
-															) {
-																setData({
-																	...data,
-																	name: prevName,
-																});
-															}
-															setEditName(
-																!editName
-															);
-														}}
-													>
-														<i
-															className={
-																editName
-																	? ''
-																	: 'adminfont-edit'
-															}
-														></i>
-													</span>
 												</div>
+												<div className="storefront-link">
+													<a href="#" className="link-item">
+														<b>
+															{__(
+																'Storefront link',
+																'multivendorx'
+															)}
+														</b>
+													</a>
+													{/* {appLocalizer.store_page_url} */}
+													{data?.slug ? (
+														<>
+															{/* {data.slug}{' '} */}
+															{data?.status !=
+																'pending' &&
+																data?.status !=
+																'rejected' &&
+																data?.status !=
+																'permanently_rejected' && (
+																	<span
+																		className="edit-icon admin-badge blue"
+																		onClick={() => {
+																			navigate(
+																				`?page=multivendorx#&tab=stores&edit/${data.id}/&subtab=store`,
+																				{
+																					state: {
+																						highlightTarget:
+																							'store-slug',
+																					},
+																				}
+																			);
 
-												{data.status === 'active' ? (
-													<span className="status admin-badge green">
-														{__(
-															'Active',
-															'multivendorx'
-														)}
-													</span>
-												) : data.status ===
-												  'pending' ? (
-													<span className="status admin-badge yellow">
-														{__(
-															'Pending',
-															'multivendorx'
-														)}
-													</span>
-												) : data.status ===
-												  'rejected' ? (
-													<span className="status admin-badge red">
-														{__(
-															'Rejected',
-															'multivendorx'
-														)}
-													</span>
-												) : data.status ===
-												  'suspended' ? (
-													<span className="status admin-badge blue">
-														{__(
-															'Suspended',
-															'multivendorx'
-														)}
-													</span>
-												) : data.status ===
-												  'permanently_rejected' ? (
-													<span className="status admin-badge red">
-														{__(
-															'Permanently Rejected',
-															'multivendorx'
-														)}
-													</span>
-												) : data.status ===
-												  'under_review' ? (
-													<span className="status admin-badge yellow">
-														{__(
-															'Under Review',
-															'multivendorx'
-														)}
-													</span>
-												) : data.status ===
-												  'deactivated' ? (
-													<span className="status admin-badge red">
-														{__(
-															'Permanently Deactivated',
-															'multivendorx'
-														)}
-													</span>
-												) : (
-													<Skeleton width={100} />
-												)}
-
-												{modules.includes(
-													'marketplace-compliance'
-												) && (
-													<>
-														<div className="admin-badge green">
-															<i className="adminfont-store-inventory"></i>
-														</div>
-														<div className="admin-badge blue">
-															<i className="adminfont-geo-my-wp"></i>
-														</div>
-														<div className="admin-badge yellow">
-															<i className="adminfont-staff-manager"></i>
-														</div>
-													</>
-												)}
+																			setTimeout(
+																				() => {
+																					navigate(
+																						`?page=multivendorx#&tab=stores&edit/${data.id}/&subtab=store`,
+																						{
+																							replace: true,
+																						}
+																					);
+																				},
+																				500
+																			);
+																		}}
+																	>
+																		<i className="adminfont-edit"></i>
+																	</span>
+																)}
+														</>
+													) : (
+														<Skeleton width={100} />
+													)}
+												</div>
 											</div>
 
 											<div
@@ -707,14 +774,14 @@ const EditStore = () => {
 														autoFocus
 													/>
 												) : Object.keys(data).length ===
-												  0 ? (
+													0 ? (
 													<Skeleton width={150} />
 												) : data?.description ? (
 													<div>
 														<span>
 															{displayText}
 															{shouldTruncate &&
-															!expanded
+																!expanded
 																? '...'
 																: ''}
 														</span>
@@ -729,13 +796,13 @@ const EditStore = () => {
 															>
 																{expanded
 																	? __(
-																			'Read less',
-																			'multivendorx'
-																		)
+																		'Read less',
+																		'multivendorx'
+																	)
 																	: __(
-																			'Read more',
-																			'multivendorx'
-																		)}
+																		'Read more',
+																		'multivendorx'
+																	)}
 															</button>
 														)}
 													</div>
@@ -749,11 +816,10 @@ const EditStore = () => {
 												)}
 
 												<span
-													className={`edit-icon ${
-														editDesc
-															? ''
-															: 'admin-badge blue'
-													}`}
+													className={`edit-icon ${editDesc
+														? ''
+														: 'admin-badge blue'
+														}`}
 													onClick={(e) => {
 														e.stopPropagation();
 														if (
@@ -779,109 +845,82 @@ const EditStore = () => {
 												</span>
 											</div>
 
-											{modules.includes(
-												'store-review'
-											) && (
+											<div className="contact-info">
+												<div className="desc store-info">
+													<i className="adminfont-form-phone"></i>
+													Registered since 2020
+												</div>
+												<div className="desc store-info">
+													<i className="adminfont-form-phone"></i>
+													9874563135
+												</div>
+												<div className="desc store-info">
+													<i className="adminfont-mail"></i>
+													test@gmail.com
+												</div>
+											</div>
+
+											<div className="desc store-info">
+												<i className="adminfont-user-circle"></i>
+												<b> Primary Owner: </b> Store1
+											</div>
+										</div>
+									</div>
+									<div className="right-section">
+										{modules.includes(
+											'store-review'
+										) && (
 												<div className="reviews-wrapper">
 													{[...Array(5)].map(
 														(_, i) => (
 															<i
 																key={i}
-																className={`review adminfont-star${
-																	data.total_reviews >
-																		0 &&
+																className={`review adminfont-star${data.total_reviews >
+																	0 &&
 																	i <
-																		Math.round(
-																			data.overall_reviews
-																		)
-																		? ''
-																		: '-o'
-																}`}
+																	Math.round(
+																		data.overall_reviews
+																	)
+																	? ''
+																	: '-o'
+																	}`}
 															></i>
 														)
 													)}
 
 													<span>
 														{data.total_reviews > 0
-															? `${
-																	data.overall_reviews
-																} (${
-																	data.total_reviews
-																} ${
-																	data.total_reviews ===
-																	1
-																		? __(
-																				'Review',
-																				'multivendorx'
-																			)
-																		: __(
-																				'Reviews',
-																				'multivendorx'
-																			)
-																})`
-															: `(${__(
-																	'0 Review',
+															? `${data.overall_reviews
+															} (${data.total_reviews
+															} ${data.total_reviews ===
+																1
+																? __(
+																	'Review',
 																	'multivendorx'
-																)})`}
+																)
+																: __(
+																	'Reviews',
+																	'multivendorx'
+																)
+															})`
+															: `(${__(
+																'0 Review',
+																'multivendorx'
+															)})`}
 													</span>
 												</div>
 											)}
 
-											<div className="des">
-												<b>
-													{__(
-														'Storefront link:',
-														'multivendorx'
-													)}{' '}
-												</b>
-												{appLocalizer.store_page_url}
-												{data?.slug ? (
-													<>
-														{data.slug}{' '}
-														{data?.status !=
-															'pending' &&
-															data?.status !=
-																'rejected' &&
-															data?.status !=
-																'permanently_rejected' && (
-																<span
-																	className="edit-icon admin-badge blue"
-																	onClick={() => {
-																		navigate(
-																			`?page=multivendorx#&tab=stores&edit/${data.id}/&subtab=store`,
-																			{
-																				state: {
-																					highlightTarget:
-																						'store-slug',
-																				},
-																			}
-																		);
-
-																		setTimeout(
-																			() => {
-																				navigate(
-																					`?page=multivendorx#&tab=stores&edit/${data.id}/&subtab=store`,
-																					{
-																						replace: true,
-																					}
-																				);
-																			},
-																			500
-																		);
-																	}}
-																>
-																	<i className="adminfont-edit"></i>
-																</span>
-															)}
-													</>
-												) : (
-													<Skeleton width={100} />
-												)}
+										<div className="details-box">
+											<div className="details">
+												<div className="number"><i className="adminfont-single-product blue"></i> 15</div>
+												<div className="desc">Products</div>
+											</div>
+											<div className="details">
+												<div className="number"><i className="adminfont-order pink"></i> 15</div>
+												<div className="desc">Orders</div>
 											</div>
 										</div>
-									</div>
-									<div className="right-section">
-										<div className="tag-wrapper"></div>
 									</div>
 								</div>
 							</div>

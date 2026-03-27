@@ -227,6 +227,7 @@ const SetupWizard: React.FC = () => {
 				{
 					key: 'wizardButtons',
 					type: 'button',
+					position: 'right',
 					options: [
 						{
 							label: __('Back', 'multivendorx'),
@@ -272,6 +273,7 @@ const SetupWizard: React.FC = () => {
 				{
 					key: 'wizardButtons',
 					type: 'button',
+					position: 'right',
 					options: [
 						{
 							label: __('Back', 'multivendorx'),
@@ -399,6 +401,50 @@ const SetupWizard: React.FC = () => {
 				{
 					key: 'wizardButtons',
 					type: 'button',
+					position: 'right',
+					options: [
+						{
+							label: __('Back', 'multivendorx'),
+							action: 'back',
+						},
+						{
+							label: __('Next', 'multivendorx'),
+							action: 'next',
+						},
+					],
+				},
+			],
+		},
+		{
+			id: 'migration',
+			label: __('Migration', 'multivendorx'),
+			icon: 'storefront',
+			desc: __('Migration.', 'multivendorx'),
+			countBtn: true,
+			isWizardMode: true,
+			openForm: true,
+			formFields: [
+				{
+					key: 'notice',
+					type: 'notice',
+					label: '',
+					message: appLocalizer.multivendor_plugin || 'No multivendor plugin active currently',
+					noticeType: 'info',
+					display: 'notice',
+				},
+				{
+					key: 'migrate',
+					type: 'button',
+					name: __('Run Migration Wizard', 'multivendorx'),
+					label: __('Multivendor migration', 'multivendorx'),
+					apilink: 'migration',
+					method: 'POST',
+					action: ['import_stores', 'import_products'],
+				},
+				{
+					key: 'wizardButtons',
+					type: 'button',
+					position: 'right',
 					options: [
 						{
 							label: __('Back', 'multivendorx'),

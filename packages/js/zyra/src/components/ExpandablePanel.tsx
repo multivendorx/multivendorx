@@ -700,11 +700,16 @@ const PanelControls: React.FC = () => {
                 {/* Progress counter (non-disableBtn methods only) */}
                 {!method.disableBtn &&
                     method.countBtn &&
-                    cntFlds.length > 0 && (
-                        <div className="admin-badge red">
-                            {state.progress[idx] || 0}/{cntFlds.length}
-                        </div>
-                    )}
+                    cntFlds.length > 0 && (() => {
+                        const completed = (state.progress[idx] || 0) === cntFlds.length;
+
+                        return (
+                            <div className={`admin-badge ${completed ? 'green' : 'red'}`}>
+                                <i className={`adminfont-${completed ? 'check' : 'error'}`} />
+                                {state.progress[idx] || 0}/{cntFlds.length}
+                            </div>
+                        );
+                    })()}
             </ul>
 
             {/* 3-dot dropdown — non-custom, enabled methods */}
@@ -771,7 +776,7 @@ const PanelBody: React.FC = () => {
     if (!hasFields) {
         return null;
     }
-    if (!(method.openForm || (isOpen && (isOn || method.isCustom)))) {
+    if (!(isOpen && (isOn || method.isCustom || method.openForm))) {
         return null;
     }
 
@@ -829,6 +834,7 @@ const PanelItem: React.FC<{
     idx: number;
 }> = ({ method, idx }) => {
     const { state, value } = usePanel();
+    const itemRef = useRef<HTMLDivElement>(null);
 
     // Cache methodValue once - KEY OPTIMIZATION
     const methodValue = value[method.id] ?? {};
@@ -843,6 +849,17 @@ const PanelItem: React.FC<{
     const title = (methodValue.title as string) || method.label;
     const desc = (methodValue.description as string) || method.desc;
     const cntFlds = method.formFields?.filter(isCountableField) ?? [];
+    useEffect(() => {
+    if (isOpen && itemRef.current) {
+        const top =
+            itemRef.current.getBoundingClientRect().top + window.scrollY;
+
+        window.scrollTo({
+            top: top - 20,
+            behavior: 'smooth',
+        });
+    }
+}, [isOpen]);
 
     const itemContextValue: PanelItemContextType = {
         method,
@@ -861,6 +878,7 @@ const PanelItem: React.FC<{
     return (
         <PanelItemContext.Provider value={itemContextValue}>
             <div
+                ref={itemRef}
                 className={[
                     'expandable-item',
                     method.disableBtn && !isOn ? 'disable' : '',

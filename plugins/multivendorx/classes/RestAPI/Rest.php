@@ -22,6 +22,7 @@ use MultiVendorX\RestAPI\Controllers\Tracking;
 
 use MultiVendorX\Store\Store;
 use MultiVendorX\Commission\CommissionUtil;
+use MultiVendorX\RestAPI\Controllers\Migration;
 use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Utill;
 
@@ -649,7 +650,7 @@ class Rest {
             return;
         }
 
-        $referer = isset( $_SERVER['HTTP_REFERER'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '';
+        $referer = filter_input(INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL) ?? '';
         $path    = wp_parse_url( $referer, PHP_URL_PATH );
 		if ( false === strpos( $path, 'products' ) ) {
 			return;
@@ -752,10 +753,7 @@ class Rest {
 			return;
 		}
 
-		$referer = isset( $_SERVER['HTTP_REFERER'] )
-        ? esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) )
-        : '';
-
+        $referer = filter_input(INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL) ?? '';
 		$path = wp_parse_url( $referer, PHP_URL_PATH ) ?? '';
 
 		if ( false === strpos( $path, 'coupons' ) ) {
@@ -810,6 +808,7 @@ class Rest {
             'logs'              => new Logs(),
             'ai_assistant'      => new AI(),
             'import_dummy_data' => new ImportDummyData(),
+            'Migration'         => new Migration(),
             'Tracking'          => new Tracking(),
         );
     }

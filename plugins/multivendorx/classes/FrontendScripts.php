@@ -504,6 +504,7 @@ class FrontendScripts {
 							),
                             'placeholder_url  '      => wc_placeholder_img_src(),
                             'default_user_avatar'    => get_avatar_url( 0 ),
+                            'multivendor_plugin'     => Utill::get_active_multivendor(),
                         )
                     ),
                 ),

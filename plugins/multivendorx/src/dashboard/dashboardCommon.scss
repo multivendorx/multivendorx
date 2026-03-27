@@ -1191,16 +1191,18 @@ body.dark {
         }
     }
 
-    &.image{
-        .section{
-            &.left{
+    &.image {
+        .section {
+            &.left {
                 padding: 2rem;
             }
-            &.left1{
+
+            &.left1 {
                 display: flex;
                 flex-wrap: wrap;
                 flex-direction: row;
-                .image{
+
+                .image {
                     background: $theme-background-color;
                     border-radius: $border-radius-small;
                     box-sizing: border-box;
@@ -1208,18 +1210,20 @@ body.dark {
                     height: 100%;
                 }
             }
-            &.left2{
+
+            &.left2 {
                 display: flex;
                 flex-wrap: wrap;
                 flex-direction: row;
-                .image{
+
+                .image {
                     width: 48%;
                     background: $theme-background-color;
                     border-radius: $border-radius-small;
                     box-sizing: border-box;
                 }
             }
-           
+
         }
     }
 }
@@ -1229,5 +1233,42 @@ body.dark {
         font-size: 1.5rem;
         color: $theme-color;
         cursor: pointer;
+    }
+}
+
+
+
+// view order page Refund Request section start
+.refund-request-wrapper {
+    padding: 1rem;
+    border-radius: $border-light-small;
+    border: $border-light-small;
+    
+    .refund-header {
+        display: flex;
+        justify-content: space-between;
+
+        .price {
+            font-size: 1.85rem;
+            color: $theme-color;
+            line-height: 1;
+            font-weight: 500;
+        }
+    }
+
+    .buttons-wrapper{
+        justify-content: start;
+        padding: 1rem 0;
+    }
+
+    .reason{
+        padding: 1rem;
+        background: $theme-background-color;
+        border-radius: $border-radius-small;
+
+        .title{
+            color: $theme-color;
+            padding-bottom: 0.45rem;
+        }
     }
 }

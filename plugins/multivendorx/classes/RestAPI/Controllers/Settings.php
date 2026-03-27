@@ -160,6 +160,12 @@ class Settings extends \WP_REST_Controller {
                     }
                 }
 
+                if (!empty($get_settings_data['role_access_table'])) {
+                    foreach ($get_settings_data['role_access_table'] as $role => $caps) {
+                        $user_cap[$role] = $caps; // overwrite
+                    }
+                }
+
                 MultiVendorX()->setting->update_option( Utill::MULTIVENDORX_SETTINGS['user-permissions'], array_merge( $user_cap, $result ) );
 
                 $role = get_role( 'store_owner' );

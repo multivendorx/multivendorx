@@ -18,6 +18,7 @@ import {
 	PopupUI,
 	ButtonInputUI,
 	SectionUI,
+	Notice,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -37,6 +38,7 @@ const AddProduct = () => {
 	const [generateAi, setgenerateAi] = useState(false);
 	const [generatedAi, setgeneratedAi] = useState(false);
 	const [generateAiImage, setgenerateAiImage] = useState(false);
+	const [appeal, setAppeal] = useState(false);
 
 	useEffect(() => {
 		if (!productId) {
@@ -248,7 +250,9 @@ const AddProduct = () => {
 						</div>
 					</div>
 				))}
-			<Notice type="error" validity="lifetime" displayPosition="notice" message={errorMsg}/>
+			{errorMsg &&
+				<Notice type="error" validity="lifetime" displayPosition="notice" message={errorMsg} />
+			}
 			<NavigatorHeader
 				headerTitle={__('Add Product', 'multivendorx')}
 				headerDescription={__(
@@ -610,6 +614,25 @@ const AddProduct = () => {
 				</Column>
 
 				<Column grid={6}>
+					<Card title={__('Product Rejected by Admin', 'multivendorx')}
+						action={<ButtonInputUI
+							buttons={[
+								{
+									icon: 'plus',
+									text: __('Appeal Decision', 'multivendorx'),
+									color: 'purple',
+									onClick: ()=> setAppeal(true),
+								},
+							]}
+						/>}
+					>
+						<Notice
+							type="error"
+							title="Admin Note"
+							displayPosition="inline-notice"
+							message={__('"This product listing does not meet our marketplace guidelines. Please provide a detailed description that includes materials, sizing, and care instructions. Also ensure your product images have a clean background and show the product from at least 2 angles."', 'multivendorx')}
+						/>
+					</Card>
 					<Card title={__('General information', 'multivendorx')}>
 						<FormGroupWrapper>
 							<FormGroup
@@ -697,7 +720,47 @@ const AddProduct = () => {
 							)}
 						</FormGroupWrapper>
 					</Card>
-
+					<PopupUI
+						open={appeal}
+						onClose= {() => {setAppeal(false)}}
+						width={31.25}
+						header={{
+							icon: 'announcement',
+							title: __('Appeal Rejection Decision', 'multivendorx'),
+							description: __(
+								'Explain why you believe this product meets marketplace guidelines. Our team will review your appeal within 48 hours.',
+								'multivendorx'
+							),
+						}}
+						footer={
+							<ButtonInputUI
+								buttons={[
+									{
+										icon: 'close',
+										text: __('Cancel', 'multivendorx'),
+										color: 'red',
+										onClick: () => setAppeal(false),
+									},
+									{
+										icon: 'save',
+										text: __('Submit Appeal', 'multivendorx'),
+										// onClick: () => handleSubmit(),
+									},
+								]}
+							/>
+						}
+					>
+						<FormGroupWrapper>
+							<FormGroup
+								label={__('Your appeal message', 'multivendorx')}
+								htmlFor="title"
+							>
+								<TextAreaUI
+									name="content"
+								/>
+							</FormGroup>
+						</FormGroupWrapper>
+					</PopupUI>
 					{product?.type === 'simple' &&
 						productFields.includes('general') && (
 							<Card title={__('Price', 'multivendorx')}>

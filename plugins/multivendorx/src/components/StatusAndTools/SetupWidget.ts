@@ -22,7 +22,7 @@ export default {
 				'Launch the step-by-step wizard to configure your marketplace quickly and effortlessly.',
 				'multivendorx'
 			),
-			link: `${appLocalizer.admin_url}index.php?page=multivendorx-setup`,
+			redirect_url: `${appLocalizer.admin_url}index.php?page=multivendorx-setup`,
 		},
 	],
 };

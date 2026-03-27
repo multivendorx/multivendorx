@@ -117,6 +117,8 @@
         border-radius: $border-radius-small;
 
         .form-field {
+            position: relative;
+
             .admin-badge {
                 padding: 0.125rem;
 
@@ -333,6 +335,7 @@
 
 .multioption-wrapper {
     margin-bottom: 1.125rem;
+    width: 100%;
 
     label {
         font-size: 1rem;

@@ -147,8 +147,21 @@ export const ButtonInputUI: React.FC<ButtonInputProps> = ({
 
 const ButtonInput: FieldComponent = {
     render: ({ field, onChange, canAccess }) => {
+        const [apiMessage, setApiMessage] = useState<string>('');
+
         const handleClick = () => {
             if (!canAccess) {
+                return;
+            }
+            if (field.action === 'open_modal') {
+                window.dispatchEvent(
+                    new CustomEvent('multivendorx:action', {
+                        detail: {
+                            type: 'open_modal',
+                            key: field.key,
+                        },
+                    })
+                );
                 return;
             }
             // Redirect url
@@ -164,11 +177,21 @@ const ButtonInput: FieldComponent = {
                     headers: {
                         'X-WP-Nonce': ZyraVariable.nonce,
                     },
-                    params: {
-                        key: field.key,
-                    },
-                }).then(() => {
-                    console.log('API Triggered');
+                    ...(field.method === 'GET' && {
+                        params: {
+                            key: field.key,
+                        },
+                    }),
+                    ...(field.method === 'POST' && {
+                        data: {
+                            action: field.action || [],
+                        },
+                    }),
+                }).then((res) => {
+                    if (res.data.message) {
+                        const msg = res?.data?.message;
+                        setApiMessage(msg);
+                    }
                 });
 
                 return;
@@ -207,11 +230,18 @@ const ButtonInput: FieldComponent = {
                   ];
 
         return (
-            <ButtonInputUI
-                wrapperClass={field.wrapperClass || ''}
-                buttons={resolvedButtons}
-                position={field.position || 'left'}
-            />
+            <>
+                <ButtonInputUI
+                    wrapperClass={field.wrapperClass || ''}
+                    buttons={resolvedButtons}
+                    position={field.position || 'left'}
+                />
+                {apiMessage && (
+                    <p className="api-message">
+                        {apiMessage}
+                    </p>
+                )}
+            </>
         );
     },
 

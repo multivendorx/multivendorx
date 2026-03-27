@@ -104,37 +104,11 @@ const REGISTRATION_BLOCK_GROUPS = [
                 options: OPTION_PRESETS,
             },
             {
-                id: 'address',
-                icon: 'form-address ',
-                value: 'address',
-                label: 'Address',
-            },
-            {
                 id: 'attachment',
                 icon: 'submission-message ',
                 value: 'attachment',
                 label: 'Attachment',
             },
-            {
-                id: 'richtext',
-                icon: 'text ',
-                value: 'richtext',
-                label: 'Rich Text Block',
-            },
-            {
-                id: 'heading',
-                icon: 'form-textarea',
-                value: 'heading',
-                label: 'Heading',
-            },
-            { id: 'image', icon: 'image', value: 'image', label: 'Image' },
-            {
-                id: 'button',
-                icon: 'button',
-                value: 'button',
-                placeholder: 'Click me',
-            },
-            { id: 'columns', icon: 'blocks', value: 'columns' },
             { id: 'section', icon: 'form-section', value: 'section' },
             {
                 id: 'recaptcha',

@@ -327,16 +327,19 @@ class Frontend {
          * All indexes are validated, mime types checked, filenames sanitized.
          */
         /* phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized */
-        if ( isset( $_FILES['product_img'] ) ) {
-            $file_names  = isset( $_FILES['product_img']['name'] ) ? (array) $_FILES['product_img']['name'] : array();
-            $file_types  = isset( $_FILES['product_img']['type'] ) ? (array) $_FILES['product_img']['type'] : array();
-            $file_tmp    = isset( $_FILES['product_img']['tmp_name'] ) ? (array) $_FILES['product_img']['tmp_name'] : array();
-            $file_errors = isset( $_FILES['product_img']['error'] ) ? (array) $_FILES['product_img']['error'] : array();
-            $file_sizes  = isset( $_FILES['product_img']['size'] ) ? (array) $_FILES['product_img']['size'] : array();
+        $files = $_FILES['product_img'] ?? null;
 
+        if (!empty($files) && !empty($files['name'])) {
+            // Normalize safely.
+            $file_names  = array_map('sanitize_file_name', (array) ($files['name'] ?? []));
+            $file_types  = (array) ($files['type'] ?? []);
+            $file_tmp    = (array) ($files['tmp_name'] ?? []);
+            $file_errors = (array) ($files['error'] ?? []);
+            $file_sizes  = (array) ($files['size'] ?? []);
+    
             require_once ABSPATH . 'wp-admin/includes/file.php';
             require_once ABSPATH . 'wp-admin/includes/image.php';
-
+    
             $max_file_size = 10 * 1024 * 1024; // 10MB
             $allowed_mimes = array(
                 'jpg|jpeg|jpe' => 'image/jpeg',
@@ -344,10 +347,9 @@ class Frontend {
                 'png'          => 'image/png',
                 'webp'         => 'image/webp',
             );
-
+    
             foreach ( $file_names as $index => $name ) {
-                if (
-                    empty( $name ) ||
+                if ( empty( $name ) ||
                     ! isset(
                         $file_errors[ $index ],
                         $file_sizes[ $index ],
@@ -357,22 +359,22 @@ class Frontend {
                 ) {
                     continue;
                 }
-
+    
                 $sanitized_name = sanitize_file_name( $name );
-
+    
                 if ( UPLOAD_ERR_OK !== (int) $file_errors[ $index ] ) {
                     continue;
                 }
-
+    
                 if ( (int) $file_sizes[ $index ] > $max_file_size ) {
                     continue;
                 }
-
+    
                 $file_type = wp_check_filetype( $sanitized_name, $allowed_mimes );
                 if ( empty( $file_type['type'] ) ) {
                     continue;
                 }
-
+    
                 $file = array(
                     'name'     => $sanitized_name,
                     'type'     => sanitize_mime_type( $file_types[ $index ] ),
@@ -380,12 +382,12 @@ class Frontend {
                     'error'    => (int) $file_errors[ $index ],
                     'size'     => (int) $file_sizes[ $index ],
                 );
-
+    
                 $upload = wp_handle_upload( $file, array( 'test_form' => false ) );
-
+    
                 if ( $upload && ! isset( $upload['error'] ) ) {
                     $uploaded_image_urls[] = esc_url_raw( $upload['url'] );
-
+    
                     $attachment = array(
                         'guid'           => $upload['url'],
                         'post_mime_type' => $upload['type'],
@@ -393,9 +395,9 @@ class Frontend {
                         'post_content'   => '',
                         'post_status'    => 'inherit',
                     );
-
+    
                     $attach_id = wp_insert_attachment( $attachment, $upload['file'] );
-
+    
                     if ( $attach_id ) {
                         $attach_data = wp_generate_attachment_metadata( $attach_id, $upload['file'] );
                         wp_update_attachment_metadata( $attach_id, $attach_data );

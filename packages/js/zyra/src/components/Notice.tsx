@@ -77,7 +77,7 @@ export const NoticeManager = {
         if (validity !== undefined) {
             finalValidity = validity;
         } else {
-            finalValidity = notice.position === 'float' ? 3000 : 'lifetime';
+            finalValidity = notice.position === 'float' ? 2000 : 'lifetime';
         }
 
         const expiresAt =
@@ -162,7 +162,7 @@ export interface NoticeProps {
     title?: string;
     message?: string | string[];
     type?: 'info' | 'success' | 'warning' | 'error' | 'banner';
-    displayPosition?: 'inline' | NoticePosition;
+    displayPosition?: 'inline' | 'inline-notice' | NoticePosition;
     actionLabel?: string;
     onAction?: () => void;
     validity?: number | 'lifetime';
@@ -176,12 +176,12 @@ export const Notice: React.FC<NoticeProps> = ({
     displayPosition = 'notice',
     actionLabel,
     onAction,
-    validity = 5000,
+    validity,
 }) => {
     const [isVisible, setIsVisible] = useState(true);
 
     useEffect(() => {
-        if (displayPosition === 'inline') {
+        if (displayPosition === 'inline' || displayPosition === 'inline-notice') {
             return;
         }
         NoticeManager.add(
@@ -200,9 +200,11 @@ export const Notice: React.FC<NoticeProps> = ({
         setIsVisible(false);
     }, []);
 
-    if (displayPosition !== 'inline' || !isVisible || (!title && !message)) {
-        return null;
-    }
+    const isInline = ['inline', 'inline-notice'].includes(displayPosition);
+
+        if (!isInline || !isVisible || (!title && !message)) {
+            return null;
+        }
 
     const item: NoticeItem = {
         uniqueKey: uniqueKey || 'inline',

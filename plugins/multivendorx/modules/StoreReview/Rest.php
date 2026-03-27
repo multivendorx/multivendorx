@@ -347,27 +347,40 @@ class Rest extends \WP_REST_Controller {
 
             $overall = array_sum( array_map( 'intval', $ratings ) ) / count( $ratings );
 
-            $uploaded_images = array();
-            if ( ! empty( $_FILES['review_images']['name'][0] ) ) {
+            $uploaded_images = [];
+            $files = $_FILES['review_images'] ?? null;
+
+            if (!empty(($files['name'])[0])) {
                 require_once ABSPATH . 'wp-admin/includes/file.php';
-                $files = $_FILES['review_images'];
+                // Normalize + sanitize
+                $file_names  = array_map('sanitize_file_name', (array) ($files['name'] ?? []));
+                $file_types  = (array) ($files['type'] ?? []);
+                $file_tmp    = (array) ($files['tmp_name'] ?? []);
+                $file_errors = array_map('intval', (array) ($files['error'] ?? []));
+                $file_sizes  = array_map('intval', (array) ($files['size'] ?? []));
+    
+                foreach ($file_names as $index => $name) {
+                    $tmp   = $file_tmp[$index] ?? '';
+                    $type  = $file_types[$index] ?? '';
+                    $error = $file_errors[$index] ?? UPLOAD_ERR_NO_FILE;
+                    $size  = $file_sizes[$index] ?? 0;
 
-                foreach ( $files['name'] as $key => $value ) {
-                    if ( $files['name'][ $key ] ) {
-                        $file = array(
-                            'name'     => $files['name'][ $key ],
-                            'type'     => $files['type'][ $key ],
-                            'tmp_name' => $files['tmp_name'][ $key ],
-                            'error'    => $files['error'][ $key ],
-                            'size'     => $files['size'][ $key ],
-                        );
-
-                        $upload = wp_handle_upload( $file, array( 'test_form' => false ) );
-
-                        if ( ! isset( $upload['error'] ) && isset( $upload['url'] ) ) {
-                            $uploaded_images[] = esc_url_raw( $upload['url'] );
-                        }
+                    if ($error !== UPLOAD_ERR_OK) {
+                        continue;
                     }
+    
+                    $file = [
+                        'name'     => $name,
+                        'type'     => sanitize_mime_type($type),
+                        'tmp_name' => $tmp,
+                        'error'    => $error,
+                        'size'     => $size,
+                    ];
+                    $upload = wp_handle_upload($file, ['test_form' => false]);
+                    if (!empty($upload['error']) || empty($upload['url'])) {
+                        continue;
+                    }
+                    $uploaded_images[] = esc_url_raw($upload['url']);
                 }
             }
 

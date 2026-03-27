@@ -223,6 +223,10 @@ class Rewrites {
             return;
         }
 
+        // Review block specific style.
+        wp_enqueue_style('wc-blocks-style');
+        wp_enqueue_style('wc-blocks-style-all-reviews');
+        
         FrontendScripts::load_scripts();
         FrontendScripts::enqueue_script( 'multivendorx-store-name-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-description-script' );

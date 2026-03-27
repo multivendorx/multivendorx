@@ -61,8 +61,8 @@ const ShippingRatesByCountry: React.FC = () => {
 						states: Array.isArray(r.states) ? r.states : [],
 					}))
 				);
-			} catch (error) {
-				console.error('Failed to fetch shipping rates:', error);
+			}catch(error){
+				console.error(error)
 			}
 		};
 
@@ -84,8 +84,8 @@ const ShippingRatesByCountry: React.FC = () => {
 					},
 				}
 			);
-		} catch (error) {
-			console.error('Failed to save:', error);
+		}catch(error){
+			console.error(error)
 		}
 	};
 
