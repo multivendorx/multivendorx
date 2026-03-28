@@ -49,9 +49,15 @@ const SetupWizard: React.FC = () => {
 	const methods = [
 		{
 			id: 'marketplace_setup',
-			label: __('Store Profile', 'multivendorx'),
-			icon: 'adminfont-storefront',
-			desc: __('Set up how your store appears', 'multivendorx'),
+			label: __(
+				'Store Profile',
+				'multivendorx'
+			),
+			icon: 'storefront',
+			desc: __(
+				'Set up how your store appears',
+				'multivendorx'
+			),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
@@ -92,35 +98,18 @@ const SetupWizard: React.FC = () => {
 					label: __('Contact phone', 'multivendorx'),
 				},
 				{
-					key: 'timezone_mode',
-					type: 'choice-toggle',
-					label: __('Timezone', 'multivendorx'),
-					options: [
-						{
-							key: 'manually',
-							label: __('Manual', 'multivendorx'),
-							value: 'manually',
-						},
-						{
-							key: 'automatically',
-							label: __('Automatic', 'multivendorx'),
-							value: 'automatically',
-						},
-					],
-				},
-				{
 					key: 'wizardButtons',
-					type: 'buttons',
+					type: 'button',
+					position: 'right',
 					options: [
 						{
 							label: __('Back', 'multivendorx'),
+							color: 'red',
 							action: 'back',
-							btnClass: 'admin-btn btn-red',
 						},
 						{
 							label: __('Next', 'multivendorx'),
 							action: 'next',
-							btnClass: 'admin-btn btn-purple',
 						},
 					],
 				},
@@ -128,9 +117,9 @@ const SetupWizard: React.FC = () => {
 		},
 		{
 			id: 'store_setup',
-			label: __('Business Location', 'multivendorx'),
-			icon: 'adminfont-storefront',
-			desc: __('Confirm your operating address', 'multivendorx'),
+			label: __('Configure Your Store', 'multivendorx'),
+			icon: 'storefront',
+			desc: __('How stores sell on your marketplace.', 'multivendorx'),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
@@ -169,17 +158,16 @@ const SetupWizard: React.FC = () => {
 				},
 				{
 					key: 'wizardButtons',
-					type: 'buttons',
+					type: 'button',
+					position: 'right',
 					options: [
 						{
 							label: __('Back', 'multivendorx'),
 							action: 'back',
-							btnClass: 'admin-btn btn-red',
 						},
 						{
 							label: __('Next', 'multivendorx'),
 							action: 'next',
-							btnClass: 'admin-btn btn-purple',
 						},
 					],
 				},
@@ -187,9 +175,15 @@ const SetupWizard: React.FC = () => {
 		},
 		{
 			id: 'commission_setup',
-			label: __('Payout Method', 'multivendorx'),
-			icon: 'adminfont-storefront',
-			desc: __('Choose how you receive earnings', 'multivendorx'),
+			label: __(
+				'Payout Method',
+				'multivendorx'
+			),
+			icon: 'storefront',
+			desc: __(
+				'Choose how you receive earnings',
+				'multivendorx'
+			),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
@@ -228,27 +222,26 @@ const SetupWizard: React.FC = () => {
 				},
 				{
 					key: 'wizardButtons',
-					type: 'buttons',
+					type: 'button',
+					position: 'right',
 					options: [
 						{
 							label: __('Back', 'multivendorx'),
 							action: 'back',
-							btnClass: 'admin-btn btn-red',
 						},
 						{
 							label: __('Next', 'multivendorx'),
 							action: 'next',
-							btnClass: 'admin-btn btn-purple',
 						},
 					],
 				},
 			],
 		},
 		{
-			id: 'more_settings',
+			id: 'migration',
 			label: __('Store Policies', 'multivendorx'),
-			icon: 'adminfont-storefront',
-			desc: __('Set your selling rules', 'multivendorx'),
+			icon: 'storefront',
+			desc: __('Set your selling rules.', 'multivendorx'),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
@@ -270,27 +263,29 @@ const SetupWizard: React.FC = () => {
 				},
 				{
 					key: 'wizardButtons',
-					type: 'buttons',
+					type: 'button',
+					position: 'right',
 					options: [
 						{
 							label: __('Back', 'multivendorx'),
 							action: 'back',
-							btnClass: 'admin-btn btn-red',
 						},
 						{
 							label: __('Next', 'multivendorx'),
 							action: 'next',
-							btnClass: 'admin-btn btn-purple',
 						},
 					],
 				},
 			],
 		},
 		{
-			id: 'identity_verification',
+			id: 'more_settings',
 			label: __('Identity Verification', 'multivendorx'),
-			icon: 'adminfont-storefront',
-			desc: __('Verify your store details', 'multivendorx'),
+			icon: 'storefront',
+			desc: __(
+				"You're all set with the basics! Use the quick links below to fine-tune your marketplace now — or come back later anytime.",
+				'multivendorx'
+			),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
@@ -315,27 +310,43 @@ const SetupWizard: React.FC = () => {
 				},
 				{
 					key: 'wizardButtons',
-					type: 'buttons',
+					type: 'button',
+					position: 'right',
 					options: [
 						{
 							label: __('Back', 'multivendorx'),
 							action: 'back',
-							btnClass: 'admin-btn btn-red',
 						},
 						{
 							label: __('Next', 'multivendorx'),
 							action: 'next',
-							btnClass: 'admin-btn btn-purple',
 						},
 					],
 				},
+				// {
+				// 	key: 'wizardButtons',
+				// 	type: 'button',
+				// 	position: 'right',
+				// 	options: [
+				// 		{
+				// 			label: __('Back', 'multivendorx'),
+				// 			action: 'back',
+				// 			color: 'red',
+				// 		},
+				// 		{
+				// 			label: __('Finish', 'multivendorx'),
+				// 			action: 'next',
+				// 			redirect: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=modules`,
+				// 		},
+				// 	],
+				// },
 			],
 		},
 		{
-			id: 'first_product',
+			id: 'more_settings',
 			label: __('First Product', 'multivendorx'),
-			icon: 'adminfont-storefront',
-			desc: __('Add at least one item', 'multivendorx'),
+			icon: 'storefront',
+			desc: __("Add at least one item", 'multivendorx'),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
@@ -368,17 +379,17 @@ const SetupWizard: React.FC = () => {
 				},
 				{
 					key: 'wizardButtons',
-					type: 'buttons',
+					type: 'button',
+					position: 'right',
 					options: [
 						{
 							label: __('Back', 'multivendorx'),
 							action: 'back',
-							btnClass: 'admin-btn btn-red',
+							color: 'red',
 						},
 						{
 							label: __('Finish', 'multivendorx'),
 							action: 'next',
-							btnClass: 'admin-btn btn-purple',
 							redirect: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=modules`,
 						},
 					],
@@ -386,48 +397,45 @@ const SetupWizard: React.FC = () => {
 			],
 		},
 	];
-
 	const updateSetting = (key: string, data: WizardData) => {
 		setValue(data);
 	};
 
 	return (
 		<div className="wizard-container">
-			<div>
-				<div className="welcome-wrapper">
-					<h4 className="wizard-title">
-						{__(
-							'Welcome to the MultivendorX family!',
-							'multivendorx'
-						)}
-					</h4>
-					<div className="des">
-						{__(
-							'Thank you for choosing MultiVendorX! This quick setup wizard will help you configure the basic settings and have your marketplace ready in no time. It’s completely optional and shouldn’t take longer than five minutes.',
-							'multivendorx'
-						)}
-					</div>
+			<div className="welcome-wrapper">
+				<h4 className="wizard-title">
+					{__(
+						'Welcome to the MultivendorX family!',
+						'multivendorx'
+					)}
+				</h4>
+				<div className="des">
+					{__(
+						'Thank you for choosing MultiVendorX! This quick setup wizard will help you configure the basic settings and have your marketplace ready in no time. It’s completely optional and shouldn’t take longer than five minutes.',
+						'multivendorx'
+					)}
 				</div>
-				<ExpandablePanelUI
-					key={inputField.key}
-					name={inputField.key}
-					apilink={String(inputField.apiLink)}
-					appLocalizer={appLocalizer}
-					methods={methods}
-					value={value}
-					onChange={(data) => {
-						settingChanged.current = true;
-						updateSetting(inputField.key, data);
-					}}
-					isWizardMode={true}
-					canAccess={true}
-				/>
-
-				{/* <div className="welcome-wrapper">
-                    <div className="wizard-title">! Well Done</div>
-                    <div className="des">Thank you for choosing MultiVendorX!</div>
-                </div> */}
 			</div>
+			<ExpandablePanelUI
+				key={inputField.key}
+				name={inputField.key}
+				apilink={String(inputField.apiLink)}
+				appLocalizer={appLocalizer}
+				methods={methods}
+				value={value}
+				onChange={(data) => {
+					settingChanged.current = true;
+					updateSetting(inputField.key, data);
+				}}
+				isWizardMode={true}
+				canAccess={true}
+			/>
+
+			{/* <div className="welcome-wrapper">
+				<div className="wizard-title">! Well Done</div>
+				<div className="des">Thank you for choosing MultiVendorX!</div>
+			</div> */}
 		</div>
 	);
 };

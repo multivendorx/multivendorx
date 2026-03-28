@@ -446,7 +446,7 @@ const AddProduct = () => {
 									icon: 'plus',
 									text: __('Appeal Decision', 'multivendorx'),
 									color: 'purple',
-									onClick: ()=> setAppeal(true),
+									onClick: () => setAppeal(true),
 								},
 							]}
 						/>}
@@ -460,100 +460,99 @@ const AddProduct = () => {
 					</Card>
 					<Card title={__('General information', 'multivendorx')}>
 						<FormGroupWrapper>
-							<FormGroup
-								label={__('Product name', 'multivendorx')}
-								desc={__(
-									'A unique name for your product',
-									'multivendorx'
-								)}
-								className="ai-form"
-							>
-								{applyFilters(
-									'multivendorx_product_field_suggestions',
-									null,
-									{
-										product,
-										setProduct,
-										field: 'name',
-									}
-								)}
-								<BasicInputUI
-									name="name"
-									value={product.name}
-									onChange={(value) =>
-										handleChange('name', value)
-									}
-								/>
-							</FormGroup>
+							<div className="form-group  ai-form">
+								<label className="settings-form-label">
+									{__('Product name', 'multivendorx')}
+									{applyFilters(
+										'multivendorx_product_field_suggestions',
+										null,
+										{
+											product,
+											setProduct,
+											field: 'name',
+										}
+									)}
+								</label>
+
+								<div className="settings-input-content">
+									<BasicInputUI
+										name="name"
+										value={product.name}
+										onChange={(value) =>
+											handleChange('name', value)
+										}
+									/>
+									<div className="settings-metabox-description">{__('A unique name for your product', 'multivendorx')}</div>
+								</div>
+							</div>
+
 
 							{productFields.includes('general') && (
 								<>
-									<FormGroup
-										label={__(
-											'Product short description',
-											'multivendorx'
-										)}
-										desc={__(
-											'A short description displayed on product and checkout pages',
-											'multivendorx'
-										)}
-										className="ai-form"
-									>
-										{applyFilters(
-											'multivendorx_product_field_suggestions',
-											null,
-											{
-												product,
-												setProduct,
-												field: 'short_description',
-											}
-										)}
-										<TextAreaUI
-											name="short_description"
-											value={product.short_description}
-											onChange={(value) =>
-												handleChange(
-													'short_description',
-													value
-												)
-											}
-										/>
-									</FormGroup>
+									<div className="form-group  ai-form">
+										<label className="settings-form-label">
+											{__('Product short description', 'multivendorx')}
+											{applyFilters(
+												'multivendorx_product_field_suggestions',
+												null,
+												{
+													product,
+													setProduct,
+													field: 'short_description',
+												}
+											)}
+										</label>
 
-									<FormGroup
-										label={__(
-											'Product description',
-											'multivendorx'
-										)}
-										className="ai-form"
-									>
-										{applyFilters(
-											'multivendorx_product_field_suggestions',
-											null,
-											{
-												product, 
-												setProduct, 
-												field: 'description',
-											}
-										)}
-										<TextAreaUI
-											name="description"
-											value={product.description}
-											onChange={(value) =>
-												handleChange(
-													'description',
-													value
-												)
-											}
-										/>
-									</FormGroup>
+										<div className="settings-input-content">
+											<TextAreaUI
+												name="short_description"
+												value={product.short_description}
+												onChange={(value) =>
+													handleChange(
+														'short_description',
+														value
+													)
+												}
+											/>
+											<div className="settings-metabox-description">{__('A short description displayed on product and checkout pages', 'multivendorx')}</div>
+										</div>
+									</div>
+
+									<div className="form-group  ai-form">
+										<label className="settings-form-label">
+											{__('Product description', 'multivendorx')}
+											{applyFilters(
+												'multivendorx_product_field_suggestions',
+												null,
+												{
+													product,
+													setProduct,
+													field: 'description',
+												}
+											)}
+										</label>
+
+										<div className="settings-input-content">
+											<TextAreaUI
+												name="description"
+												value={product.description}
+												onChange={(value) =>
+													handleChange(
+														'description',
+														value
+													)
+												}
+											/>
+											<div className="settings-metabox-description">{__('A short description displayed on product and checkout pages', 'multivendorx')}</div>
+										</div>
+									</div>
 								</>
 							)}
 						</FormGroupWrapper>
 					</Card>
 					<PopupUI
 						open={appeal}
-						onClose= {() => {setAppeal(false)}}
+						onClose={() => { setAppeal(false) }}
 						width={31.25}
 						header={{
 							icon: 'announcement',
@@ -721,19 +720,17 @@ const AddProduct = () => {
 										});
 									}}
 								/>
-
-								{applyFilters(
-									'product_image_enhancement',
-									null,
-									{
-										currentImage: featuredImage ?? null,
-										isFeaturedImage: true,
-										setImage: setFeaturedImage,
-										product: product
-									}
-								)}
 							</FormGroup>
-
+							{applyFilters(
+								'product_image_enhancement',
+								null,
+								{
+									currentImage: featuredImage ?? null,
+									isFeaturedImage: true,
+									setImage: setFeaturedImage,
+									product: product
+								}
+							)}
 							<FormGroup
 								label={__('Product gallery', 'multivendorx')}
 							>

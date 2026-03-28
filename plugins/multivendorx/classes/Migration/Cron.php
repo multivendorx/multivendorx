@@ -32,7 +32,7 @@ class Cron {
     public function custom_schedules_for_migration($schedules) {
         $schedules['every_5_minutes'] = array(
             'interval' => 5 * 60,
-            'display'  => __('Every 5 Minutes'),
+            'display'  => __('Every 5 Minutes','multivendorx' ),
         );
         return $schedules;
     }

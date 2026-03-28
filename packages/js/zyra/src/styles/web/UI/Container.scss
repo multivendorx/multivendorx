@@ -48,18 +48,10 @@
 
 // for settings panel
 .admin-settings {
-    .container-wrapper,
-    .form-group-wrapper{
-        gap: 0;
-
+    .container-wrapper{
         .tabs-wrapper{
            border: none;
-        }
-        .form-group {
-            background: $background-white;
-            padding: 1rem;
-        }
-        
+        }        
     }
     .popup-body{
         .form-group-wrapper{

@@ -706,7 +706,9 @@ const PanelControls: React.FC = () => {
                         return (
                             <div className={`admin-badge ${completed ? 'green' : 'red'}`}>
                                 <i className={`adminfont-${completed ? 'check' : 'error'}`} />
-                                {state.progress[idx] || 0}/{cntFlds.length}
+                               {completed
+                                ? "Complete"
+                                : `${state.progress[idx] || 0} of ${cntFlds.length} done`}                               
                             </div>
                         );
                     })()}
