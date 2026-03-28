@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FieldComponent, ZyraVariable } from './fieldUtils';
 
 // Types
-interface Option {
+export interface Option {
     key?: string;
     value: string;
     label?: string;
@@ -18,7 +18,7 @@ interface FieldContext {
     rowKey?: string;
 }
 
-interface MultiCheckBoxProps {
+export interface MultiCheckBoxProps {
     wrapperClass?: string;
     selectDeselect?: boolean;
     addNewBtn?: string;
@@ -114,7 +114,7 @@ export const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
 
     const allSelected = value.length === options.length;
 
-    const turnOffSiblings = (
+    const turnOffChildren = (
         selected: string[],
         options: Option[],
         parent: string
@@ -125,44 +125,20 @@ export const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
 
         children.forEach((child) => {
             updated = updated.filter((v) => v !== child.value);
-            updated = turnOffSiblings(updated, options, child.value);
+            updated = turnOffChildren(updated, options, child.value);
         });
 
         return updated;
     };
 
-    const turnOnSiblings = (
-        selected: string[],
-        options: Option[],
-        childValue: string
-    ): string[] => {
-        let updated = [...selected];
-
-        const option = options.find((opt) => opt.value === childValue);
-
-        if (option?.dependent) {
-            if (!updated.includes(option.dependent)) {
-                updated.push(option.dependent);
-            }
-            updated = turnOnParents(updated, options, option.dependent);
-        }
-
-        return updated;
-    };
-
     const toggle = (val: string) => {
-        let updated: string[];
+        let updated = value.includes(val)
+            ? value.filter((v) => v !== val)
+            : [...value, val];
 
         if (value.includes(val)) {
-            // turning OFF.
-            updated = value.filter((v) => v !== val);
-            updated = turnOffSiblings(updated, options, val);
-        } else {
-            // turning ON.
-            updated = [...value, val];
-            updated = turnOnSiblings(updated, options, val);
+            updated = turnOffChildren(updated, options, val);
         }
-
         onChange(updated);
     };
 
@@ -369,7 +345,7 @@ export const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
                                                             setEditIndex(index);
                                                             setEditValue(
                                                                 option.label ??
-                                                                option.value
+                                                                    option.value
                                                             );
                                                         }}
                                                     />
@@ -447,18 +423,18 @@ const MultiCheckBox: FieldComponent = {
         const normalizedValue: string[] = Array.isArray(value)
             ? value.filter((v) => v?.trim())
             : typeof value === 'string' && value.trim()
-                ? [value]
-                : [];
+              ? [value]
+              : [];
 
         // Prefer live options from settings over static field definition
         const sourceOptions =
             settings?.[`${field.key}_options`] ?? field.options;
         const normalizedOptions: Option[] = Array.isArray(sourceOptions)
             ? sourceOptions.map((opt) => ({
-                ...opt,
-                value: String(opt.value),
-                edit: opt.edit ?? !!field.addNewBtnText,
-            }))
+                  ...opt,
+                  value: String(opt.value),
+                  edit: opt.edit ?? !!field.addNewBtnText,
+              }))
             : [];
 
         return (
@@ -467,8 +443,8 @@ const MultiCheckBox: FieldComponent = {
                     field.look === 'toggle'
                         ? 'toggle-btn'
                         : field.selectDeselect === true
-                            ? 'checkbox-list-side-by-side'
-                            : 'simple-checkbox'
+                          ? 'checkbox-list-side-by-side'
+                          : 'simple-checkbox'
                 }
                 inputInnerWrapperClass={
                     field.look === 'toggle'
