@@ -35,6 +35,7 @@ class Frontend {
 
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
         add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'add_to_cart_link_min_qty' ), 10, 2 );
+        add_filter( 'woocommerce_add_to_cart_quantity', array( $this, 'add_to_cart_min_qty'), 10, 2 );
     }
     /**
      * Get min and max rules for a product or order context.
@@ -127,12 +128,12 @@ class Frontend {
 
             if ( 'order_quantity' === $context ) {
                 // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
-                return $return_number ? $rules['min'] : __( 'Minimum order quantity is required ' . $rules['min'], 'multivendorx' );
+                return $return_number ? $rules['min'] : __( 'Minimum order quantity required is ' . $rules['min'], 'multivendorx' );
             }
 
             if ( 'order_amount' === $context ) {
                 // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
-                return $return_number ? $rules['min'] : __( 'Minimum order amount is required ' . $rules['min'], 'multivendorx' );
+                return $return_number ? $rules['min'] : __( 'Minimum order amount required is ' . $rules['min'], 'multivendorx' );
             }
         }
 
@@ -149,12 +150,12 @@ class Frontend {
 
             if ( 'order_quantity' === $context ) {
                 // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
-                return $return_number ? $rules['max'] : __( 'Maximum order quantity is required ' . $rules['max'], 'multivendorx' );
+                return $return_number ? $rules['max'] : __( 'Maximum order quantity required is ' . $rules['max'], 'multivendorx' );
             }
 
             if ( 'order_amount' === $context ) {
                 // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
-                return $return_number ? $rules['max'] : __( 'Maximum order amount is required ' . $rules['max'], 'multivendorx' );
+                return $return_number ? $rules['max'] : __( 'Maximum order amount required is ' . $rules['max'], 'multivendorx' );
             }
         }
 
@@ -431,7 +432,14 @@ class Frontend {
     public function add_to_cart_link_min_qty( $html, $product ) {
 
         $min = $this->get_rules( $product->get_id(), 'quantity' )['min'];
-
         return $min ? str_replace( '<a ', '<a data-quantity="' . $min . '" ', $html ) : $html;
+    }
+
+    public function add_to_cart_min_qty( $quantity, $product_id ) {
+        $min = $this->get_rules( $product_id, 'quantity' )['min'];
+        if ( $min && $quantity < $min ) {
+            return $min;
+        }
+        return $quantity;
     }
 }

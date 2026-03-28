@@ -16,6 +16,7 @@ interface Option {
     customHtml?: string;
     proSetting?: boolean;
     requiredPlugin?: string;
+    moduleEnabled?: string;
 }
 
 interface ChoiceToggleProps {
@@ -29,7 +30,15 @@ interface ChoiceToggleProps {
     multiSelect?: boolean;
     custom?: boolean;
     canAccess?: boolean;
-    onBlocked?: (type: 'pro' | 'plugin', payload?: Option) => void;
+    modules?: string[];
+    onBlocked?: (type: 'pro' | 'plugin' | 'module', payload?: Option) => void;
+}
+
+function formatModuleLabel(moduleKey: string): string {
+    return moduleKey
+        .split('-')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
 }
 
 export const ChoiceToggleUI: React.FC<ChoiceToggleProps> = ({
@@ -41,12 +50,17 @@ export const ChoiceToggleUI: React.FC<ChoiceToggleProps> = ({
     iconEnable = false,
     custom,
     multiSelect = false,
+    modules,
     onBlocked,
 }) => {
     const block = (option: Option) => {
         // Check pro setting
         if (option.proSetting && !ZyraVariable.khali_dabba) {
             onBlocked?.('pro');
+            return true;
+        }
+        if (option.moduleEnabled && !modules.includes(option.moduleEnabled)) {
+            onBlocked?.('module', option.moduleEnabled);
             return true;
         }
 
@@ -139,6 +153,23 @@ export const ChoiceToggleUI: React.FC<ChoiceToggleProps> = ({
                                             option.label
                                         )}
                                     </span>
+                                    {/* Module-locked badge */}
+                                    {!option.proSetting &&
+                                        option.moduleEnabled &&
+                                        !modules.includes(
+                                            option.moduleEnabled
+                                        ) && (
+                                            <span className="admin-pro-tag module">
+                                                <i
+                                                    className={`adminfont-${option.moduleEnabled}`}
+                                                />
+                                                {formatModuleLabel(
+                                                    option.moduleEnabled
+                                                )}
+                                                <i className="adminfont-lock" />
+                                            </span>
+                                        )}
+
                                     {option.desc && (
                                         <div className="des">{option.desc}</div>
                                     )}
@@ -166,7 +197,7 @@ export const ChoiceToggleUI: React.FC<ChoiceToggleProps> = ({
 };
 
 const ChoiceToggle: FieldComponent = {
-    render: ({ field, value, onChange, canAccess, onBlocked }) => (
+    render: ({ field, value, onChange, canAccess, modules, onBlocked }) => (
         <ChoiceToggleUI
             wrapperClass={field.wrapperClass}
             key={field.key}
@@ -174,6 +205,7 @@ const ChoiceToggle: FieldComponent = {
             custom={field.custom}
             multiSelect={field.multiSelect} // If true, allows selecting multiple options (checkboxes), else single select (radio)
             canAccess={canAccess}
+            modules={modules}
             onBlocked={onBlocked}
             options={
                 Array.isArray(field.options)

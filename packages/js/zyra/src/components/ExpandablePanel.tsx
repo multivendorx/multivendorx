@@ -81,6 +81,7 @@ interface ExpandablePanelProps {
     addNewBtn?: boolean;
     addNewTemplate?: AddNewTemplate;
     min?: number;
+    onBlocked?: (type: 'pro' | 'plugin', payload?: unknown) => void;
 }
 
 // ── State Types ───────────────────────────────────────────────────────────────
@@ -908,6 +909,7 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
     addNewBtn,
     addNewTemplate,
     min,
+    onBlocked,
 }) => {
     const tplFields = addNewTemplate?.formFields ?? [];
 
@@ -1171,6 +1173,7 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
                         value={fieldVal}
                         onChange={onChangeF}
                         canAccess={canAccess}
+                        onBlocked={onBlocked}
                     />
                 );
             }

@@ -102,7 +102,7 @@ class PaymentProcessor {
 				'payment_method'   => '',
 				'amount'           => 0,
 				'currency'         => get_woocommerce_currency(),
-				'narration'        => 'Withdrawal failed because store default payment method not found',
+				'narration'        => "Withdrawal of {$amount} failed: no payment method configured.",
 				'status'           => 'Failed',
 			);
 

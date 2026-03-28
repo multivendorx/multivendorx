@@ -5,7 +5,7 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\WPML;
+namespace MultiVendorX\Wpml;
 
 defined( 'ABSPATH' ) || exit;
 

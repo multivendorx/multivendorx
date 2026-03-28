@@ -74,6 +74,22 @@ interface TableCellProps {
     onBlocked?: (type: 'pro' | 'module', payload?: string) => void;
 }
 
+function isBlocked(
+    opt: Option,
+    modules: string[],
+    onBlocked?: MultiCheckBoxProps['onBlocked']
+): boolean {
+    if (opt.proSetting && !ZyraVariable?.khali_dabba) {
+        onBlocked?.('pro');
+        return true;
+    }
+    if (opt.moduleEnabled && !modules.includes(opt.moduleEnabled)) {
+        onBlocked?.('module', opt.moduleEnabled);
+        return true;
+    }
+    return false;
+}
+
 export const TableCell: React.FC<TableCellProps> = ({
     type,
     fieldKey,
@@ -187,7 +203,13 @@ export const MultiInputTableUI: React.FC<MultiInputTableUIProps> = ({
                                     type="checkbox"
                                     checked={checked}
                                     disabled={!isRowActive}
-                                    onChange={handleCheckboxChange}
+                                    onChange={(e) => {
+                                        if (isBlocked(column, modules, onBlocked)) {
+                                            return; // 🚫 block interaction
+                                        }
+                                        console.log("checkbox trigger");
+                                        handleCheckboxChange(e); // ✅ use existing logic
+                                    }}
                                 />
                             );
                         } else {

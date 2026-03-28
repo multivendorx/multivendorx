@@ -25,6 +25,7 @@ import {
 import {
 	downloadCSV,
 	formatCurrency,
+	formatDate,
 	formatLocalDate,
 } from '../../services/commonFunction';
 import ViewCommission from '../Commissions/ViewCommission';
@@ -412,6 +413,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 			onClickWithQuery: downloadTransactionCSVByQuery,
 		},
 	];
+
 	return (
 		<>
 			<Container>
@@ -431,7 +433,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 														char.toUpperCase()
 													) // capitalize each word
 											: __(
-													'No Payment Method Selected',
+													'No payment method configured',
 													'multivendorx'
 												);
 
@@ -448,16 +450,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 														)}
 													</div>
 													<div className="des">
-														{new Date(
-															txn.date
-														).toLocaleDateString(
-															'en-US',
-															{
-																month: 'short',
-																day: '2-digit',
-																year: 'numeric',
-															}
-														)}
+														{formatDate(txn.created_at)}
 													</div>
 												</div>
 											</div>

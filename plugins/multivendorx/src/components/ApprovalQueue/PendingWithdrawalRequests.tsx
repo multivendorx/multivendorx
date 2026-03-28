@@ -74,15 +74,15 @@ const PendingWithdrawal: React.FC<object> = () => {
 								icon: 'check',
 								text: __('Approve', 'multivendorx'),
 								color: 'purple',
-								onClick: (row: any) =>
-									handleSingleAction('approve', row.id),
+								onClick: () =>
+                        			handleSingleAction('approve', row),
 							},
 							{
 								icon: 'close',
 								text: __('Reject', 'multivendorx'),
 								color: 'red',
-								onClick: (row: any) =>
-									handleSingleAction('reject', row.id),
+								onClick: () =>
+									handleSingleAction('reject', row),
 							},
 						]}
 					/>
@@ -109,16 +109,10 @@ const PendingWithdrawal: React.FC<object> = () => {
 
 				const ids = stores.map((s) => s.id);
 				setRowIds(ids);
-
 				setRows(stores);
-				setTotalRows(Number(response.headers['x-wp-total']) || 0);
-				if (firstLoadRef.current) {
-					setSession(
-						'couponCount',
-						Number(response.headers['x-wp-total']) || 0
-					);
-					firstLoadRef.current = false;
-				}
+				const total = Number(response.headers['x-wp-total']) || 0;
+				setTotalRows(total);
+				onCountChange?.(total);
 				setIsLoading(false);
 			})
 			.catch((error) => {

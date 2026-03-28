@@ -635,6 +635,7 @@ const SetupWizard: React.FC = () => {
 				}}
 				isWizardMode={true}
 				canAccess={true}
+				onBlocked={methods.formField.option[proSetting]??''}
 			/>
 		</div>
 	);

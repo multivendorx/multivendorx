@@ -216,7 +216,7 @@ const PendingCoupons: React.FC<object> = () => {
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				if (firstLoadRef.current) {
 					setSession(
-						'withdrawCount',
+						'couponCount',
 						Number(response.headers['x-wp-total']) || 0
 					);
 					firstLoadRef.current = false;

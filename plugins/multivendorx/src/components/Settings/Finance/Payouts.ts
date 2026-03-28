@@ -465,6 +465,11 @@ export default {
 					label: __('Manual', 'multivendorx'),
 					value: 'manual',
 				},
+				{
+					key: 'disable',
+					label: __('Block withdrawal', 'multivendorx'),
+					value: 'disable',
+				},
 			],
 		},
 		{

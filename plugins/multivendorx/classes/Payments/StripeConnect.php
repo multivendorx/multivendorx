@@ -262,7 +262,7 @@ class StripeConnect {
             'https://connect.stripe.com/oauth/authorize'
         );
 
-        wp_safe_redirect( $url );
+        wp_redirect( $url );
         exit;
     }
 
@@ -273,7 +273,7 @@ class StripeConnect {
         $code  = sanitize_text_field( filter_input( INPUT_GET, 'code', FILTER_DEFAULT ) );
         $state = sanitize_text_field( filter_input( INPUT_GET, 'state', FILTER_DEFAULT ) );
         if ( ! $code || ! $state ) {
-            wp_safe_redirect( $this->get_redirect_url( 'error', 'stripe_oauth' ) );
+            wp_redirect( $this->get_redirect_url( 'error', 'stripe_oauth' ) );
             exit;
         }
         $config     = $this->get_store_stripe_config();
@@ -288,7 +288,7 @@ class StripeConnect {
         ) {
             // Invalid or expired.
             $store->delete_meta( Utill::STORE_SETTINGS_KEYS['stripe_oauth_state'] );
-            wp_safe_redirect( $this->get_redirect_url( 'error', 'invalid_state' ) );
+            wp_redirect( $this->get_redirect_url( 'error', 'invalid_state' ) );
             exit;
         }
 
@@ -307,12 +307,12 @@ class StripeConnect {
         );
         // Missing stripe_user_id -> fail.
         if ( $response && empty( $response['stripe_user_id'] ) ) {
-            wp_safe_redirect( $this->get_redirect_url( 'error', 'stripe_connection_failed' ) );
+            wp_redirect( $this->get_redirect_url( 'error', 'stripe_connection_failed' ) );
             exit;
         }
         $store->update_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'], sanitize_text_field( $response['stripe_user_id'] ) );
         // Success.
-        wp_safe_redirect( $this->get_redirect_url( '', '' ) );
+        wp_redirect( $this->get_redirect_url( '', '' ) );
         exit;
     }
 
@@ -340,7 +340,7 @@ class StripeConnect {
         }
 
         $store->delete_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] );
-        wp_safe_redirect( $this->get_redirect_url( 'disconnected', 'true' ) );
+        wp_redirect( $this->get_redirect_url( 'disconnected', 'true' ) );
         exit;
     }
 

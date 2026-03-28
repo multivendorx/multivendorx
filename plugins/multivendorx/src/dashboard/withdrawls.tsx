@@ -15,6 +15,7 @@ import {
 	NavigatorHeader,
 	ItemListUI,
 	NoticeManager,
+	TextAreaUI,
 } from 'zyra';
 import { formatCurrency } from '../services/commonFunction';
 interface WithdrawalData {
@@ -41,6 +42,7 @@ const Withdrawls: React.FC = () => {
 	const [amount, setAmount] = useState<number>();
 	const [error, setError] = useState<string>('');
 	const [lastWithdraws, setLastWithdraws] = useState<WithdrawalItem[]>([]);
+	const [storeData, setStoreData] = useState(null);
 
 	const [requestWithdrawal, setRequestWithdrawal] = useState(false);
 
@@ -76,6 +78,15 @@ const Withdrawls: React.FC = () => {
 				setLastWithdraws(response.data.transaction || []);
 			})
 			.catch(() => setData([]));
+
+		axios({
+			method: 'GET',
+			url: getApiLink(appLocalizer, `store/${appLocalizer.store_id}`),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+		})
+			.then((response) => {
+				setStoreData(response.data || {});
+			}).catch((err) => console.error(err));
 	}, []);
 
 	const handleAmountChange = (value: number) => {
@@ -121,6 +132,15 @@ const Withdrawls: React.FC = () => {
 			});
 		});
 	};
+	const formatMethod = (method) => {
+		if (!method) {
+			return '';
+		}
+		return method
+			.replace(/-/g, ' ') // stripe-connect → stripe connect
+			.replace(/\b\w/g, (c) => c.toUpperCase()); // Stripe connect → Stripe Connect
+	};
+
 	return (
 		<>
 			<NavigatorHeader
@@ -158,11 +178,11 @@ const Withdrawls: React.FC = () => {
 												'paypal-payout' &&
 												__('PayPal', 'multivendorx')}
 											{item.payment_method ===
-											'bank-transfer'
+												'bank-transfer'
 												? __(
-														'Bank Transfer',
-														'multivendorx'
-													)
+													'Bank Transfer',
+													'multivendorx'
+												)
 												: ''}
 										</div>
 									</div>
@@ -296,8 +316,8 @@ const Withdrawls: React.FC = () => {
 																?.withdrawal_setting?.[0]
 																?.free_withdrawals ??
 																0) -
-																(data?.free_withdrawal ??
-																	0)
+															(data?.free_withdrawal ??
+																0)
 														)}{' '}
 														<span>
 															{__(
@@ -329,44 +349,85 @@ const Withdrawls: React.FC = () => {
 			</Container>
 
 			{requestWithdrawal && (
-				<PopupUI
-					open={requestWithdrawal}
-					width={31.25}
-					height="40%"
-					onClose={() => setRequestWithdrawal(false)}
-					header={{
-						icon: 'wallet',
-						title: __('Request Withdrawal', 'multivendorx'),
-					}}
-					footer={
-						<ButtonInputUI
-							buttons={{
-								icon: 'withdraw',
-								text: __('Disburse', 'multivendorx'),
-								onClick: () => handleWithdrawal(),
-							}}
-						/>
-					}
-				>
-					<FormGroupWrapper>
-						<FormGroup
-							label={__('Amount', 'multivendorx')}
-							htmlFor="Amount"
-						>
-							<BasicInputUI
-								type="number"
-								name="amount"
-								value={amount}
-								min={0}
-								max={data.available_balance}
-								onChange={(value) =>
-									handleAmountChange(Number(value))
-								}
+				<>
+					<PopupUI
+						open={requestWithdrawal}
+						onClose={() => setRequestWithdrawal(false)}
+						width={28.125}
+						height="75%"
+						header={{
+							icon: 'wallet',
+							title: __('Disburse payment', 'multivendorx'),
+							description: __(
+								'Release earnings to your stores in a few simple steps - amount, payment processor, and an optional note.',
+								'multivendorx'
+							),
+						}}
+						footer={
+							<ButtonInputUI
+								buttons={[
+									{
+										icon: 'wallet',
+										text: __('Disburse', 'multivendorx'),
+										color: 'purple',
+										onClick: () => handleWithdrawal(),
+									},
+								]}
 							/>
-							{error && <p className="error-message">{error}</p>}
-						</FormGroup>
-					</FormGroupWrapper>
-				</PopupUI>
+						}
+					>
+						<>
+							{/* start left section */}
+							<FormGroupWrapper>
+								<div className="available-balance">
+									{__('Withdrawable balance', 'multivendorx')}{' '}
+									<div>
+										{formatCurrency(data.available_balance)}
+									</div>
+								</div>
+								<FormGroup
+									label={__('Payment Processor', 'multivendorx')}
+									htmlFor="payment_method"
+								>
+									<div className="payment-method">
+										{storeData?.payment_method ? (
+											<div className="method">
+												<i className="adminfont-bank"></i>
+												{formatMethod(
+													storeData.payment_method
+												)}
+											</div>
+										) : (
+											<span>
+												{__(
+													'No payment method saved',
+													'multivendorx'
+												)}
+											</span>
+										)}
+									</div>
+								</FormGroup>
+
+								<FormGroup
+									label={__('Amount', 'multivendorx')}
+									htmlFor="Amount"
+									notice={error}
+								>
+									<BasicInputUI
+										type="number"
+										name="amount"
+										value={amount}
+										min={0}
+										max={data.available_balance}
+										onChange={(value) =>
+											handleAmountChange(Number(value))
+										}
+									/>
+								</FormGroup>
+							</FormGroupWrapper>
+						</>
+					</PopupUI>
+				</>
 			)}
 		</>
 	);

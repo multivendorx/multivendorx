@@ -45,7 +45,7 @@ const StoreReview: React.FC<StoreReviewProps> = ({
 				params: {
 					page: 1,
 					row: reviewsToShow,
-					storeId: StoreInfo.storeDetails.storeId,
+					store_id: StoreInfo.storeDetails.storeId,
 					status: 'approved',
 				},
 			})

@@ -35,9 +35,6 @@ const AddProduct = () => {
 	const [featuredImage, setFeaturedImage] = useState(null);
 	const [galleryImages, setGalleryImages] = useState([]);
 	const [errorMsg, setErrorMsg] = useState('');
-	const [generateAi, setgenerateAi] = useState(false);
-	const [generatedAi, setgeneratedAi] = useState(false);
-	const [generateAiImage, setgenerateAiImage] = useState(false);
 	const [appeal, setAppeal] = useState(false);
 
 	useEffect(() => {
@@ -227,6 +224,10 @@ const AddProduct = () => {
 		appLocalizer.settings_databases_value?.['product-preferencess']
 			?.type_options || [];
 
+	const rejectNote = product?.meta_data?.find(
+		(m) => m.key === '_reject_note'
+	)?.value;
+
 	return (
 		<>
 			{translation
@@ -252,6 +253,11 @@ const AddProduct = () => {
 					'multivendorx'
 				)}
 				buttons={applyFilters('multivendorx_product_button', [
+					{
+						label: __('view', 'multivendorx'),
+						icon: 'save',
+						onClick: () => window.open(product?.permalink, '_blank'),
+					},
 					{
 						label: __('Save', 'multivendorx'),
 						icon: 'save',
@@ -439,25 +445,28 @@ const AddProduct = () => {
 				</Column>
 
 				<Column grid={6}>
+				{rejectNote && (
 					<Card title={__('Product Rejected by Admin', 'multivendorx')}
-						action={<ButtonInputUI
-							buttons={[
-								{
-									icon: 'plus',
-									text: __('Appeal Decision', 'multivendorx'),
-									color: 'purple',
-									onClick: () => setAppeal(true),
-								},
-							]}
-						/>}
+						// action={
+						// <ButtonInputUI
+						// 	buttons={[
+						// 		{
+						// 			icon: 'plus',
+						// 			text: __('Appeal Decision', 'multivendorx'),
+						// 			color: 'purple',
+						// 			onClick: () => setAppeal(true),
+						// 		},
+						// 	]}
+						// />}
 					>
 						<Notice
 							type="error"
 							title="Admin Note"
 							displayPosition="inline-notice"
-							message={__('"This product listing does not meet our marketplace guidelines. Please provide a detailed description that includes materials, sizing, and care instructions. Also ensure your product images have a clean background and show the product from at least 2 angles."', 'multivendorx')}
+							message={rejectNote}
 						/>
 					</Card>
+				)}
 					<Card title={__('General information', 'multivendorx')}>
 						<FormGroupWrapper>
 							<div className="form-group  ai-form">
@@ -481,6 +490,7 @@ const AddProduct = () => {
 										onChange={(value) =>
 											handleChange('name', value)
 										}
+										disabled={modules.includes('shared-listing')}
 									/>
 									<div className="settings-metabox-description">{__('A unique name for your product', 'multivendorx')}</div>
 								</div>

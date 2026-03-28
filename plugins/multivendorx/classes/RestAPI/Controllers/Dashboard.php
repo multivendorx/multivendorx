@@ -201,7 +201,6 @@ class Dashboard extends \WP_REST_Controller {
                         'module'     => array( 'store-review' ),
                     ),
                 ),
-                'capability' => array( 'view_support_tickets' ),
             ),
 
             'reports'       => array(

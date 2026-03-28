@@ -44,7 +44,7 @@ const ApprovalQueue = () => {
 		{
 			type: 'file',
 			condition:
-				settings?.['store-permissions']?.products?.includes(
+				!settings?.['store-permissions']?.products?.includes(
 					'publish_products'
 				),
 			content: {
