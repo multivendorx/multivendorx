@@ -1,18 +1,5 @@
 @use '../../../global.scss' as *;
 
-// .form-group-title-wrapper {
-//     padding: 1rem 0 0.5rem;
-//     border-bottom: $border-light-small;
-//     margin-bottom: 0.5rem;
-//     width: 100%;
-
-//     // common adn delete
-//     .title {
-//         font-size: 1.125rem;
-//         font-weight: 500;
-//         padding-bottom: 0.45rem;
-//     }
-// }
 
 .form-group-wrapper {
     width: 100%;
@@ -185,22 +172,23 @@
         }
 
         // copy btn 
-        &.copy-btn{
-            .settings-input-content{
+        &.copy-btn {
+            .settings-input-content {
                 flex-wrap: nowrap;
                 gap: 0;
 
-                .input-wrapper{
+                .input-wrapper {
                     border-top-right-radius: 0;
                     border-bottom-right-radius: 0;
                 }
-                .admin-btn{
+
+                .admin-btn {
                     border-top-left-radius: 0;
                     border-bottom-left-radius: 0;
                 }
             }
         }
-        
+
         .button-wrapper {
             display: flex;
             justify-content: start;
@@ -269,5 +257,17 @@
 
     a {
         color: $theme-color;
+    }
+}
+
+.admin-settings,
+.expandable-panel-group {
+    .form-group-wrapper {
+        gap: 0;
+
+        .form-group {
+            background: $background-white;
+            padding: 1rem;
+        }
     }
 }

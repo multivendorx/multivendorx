@@ -154,23 +154,41 @@ class Frontend {
                         $selected_id = $pid;
                     }
                 }
+
+                // Fallback to min price if no rating found
+                if ( $best <= 0 ) {
+                    $selected_id = $this->get_min_price_product( $ids );
+                }
                 break;
 
             case 'min_price':
             default:
-                $best = PHP_FLOAT_MAX;
-                foreach ( $ids as $pid ) {
-                    $price = (float) get_post_meta( $pid, '_price', true );
-                    if ( $price > 0 && $price < $best ) {
-                        $best        = $price;
-                        $selected_id = $pid;
-                    }
-                }
+                $selected_id = $this->get_min_price_product( $ids );
                 break;
         }
 
         return $selected_id;
     }
+
+    /**
+     * Get product with minimum price
+     */
+    public function get_min_price_product( array $ids ) {
+        $best_price  = PHP_FLOAT_MAX;
+        $selected_id = null;
+
+        foreach ( $ids as $pid ) {
+            $price = (float) get_post_meta( $pid, '_price', true );
+
+            if ( $price > 0 && $price < $best_price ) {
+                $best_price  = $price;
+                $selected_id = $pid;
+            }
+        }
+
+        return $selected_id;
+    }
+
     /**
      * Add a "More Offers" tab to the WooCommerce single product tabs.
      *

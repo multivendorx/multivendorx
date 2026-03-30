@@ -293,7 +293,6 @@ const EditStore = () => {
 	const displayText = expanded
 		? data?.description
 		: words.slice(0, 50).join(' ');
-
 	const getForm = useCallback(
 		(tabId: string) => {
 			switch (tabId) {
@@ -848,21 +847,23 @@ const EditStore = () => {
 											<div className="contact-info">
 												<div className="desc store-info">
 													<i className="adminfont-form-phone"></i>
-													Registered since 2020
+													Registered since {data?.create_time?.split('-')[0]}
 												</div>
-												<div className="desc store-info">
-													<i className="adminfont-form-phone"></i>
-													9874563135
-												</div>
+												{data.phone &&
+													<div className="desc store-info">
+														<i className="adminfont-form-phone"></i>
+														{data.phone}
+													</div>
+												}
 												<div className="desc store-info">
 													<i className="adminfont-mail"></i>
-													test@gmail.com
+													{data.primary_email}
 												</div>
 											</div>
 
 											<div className="desc store-info">
 												<i className="adminfont-user-circle"></i>
-												<b> Primary Owner: </b> Store1
+												<b> Primary Owner: </b> {data.primary_owner_info?.data?.display_name}
 											</div>
 										</div>
 									</div>

@@ -109,9 +109,10 @@ export const ItemListUI: React.FC<ItemListUIProps> = ({
                                     )}
 
                                     <div className="details">
-                                        <div className="item-title">
-                                            {item.title}
-                                        </div>
+                                        <div
+                                            className="item-title"
+                                            dangerouslySetInnerHTML={{ __html: item.title }}
+                                        />
                                         {item.value && (
                                             <div className="value">
                                                 {item.value}

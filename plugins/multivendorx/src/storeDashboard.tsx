@@ -261,12 +261,21 @@ const Dashboard = () => {
 			}
 
 			let filteredSubmenu = item.submenu;
+			
 			if (item.submenu?.length) {
-				filteredSubmenu = item.submenu.filter(
-					(sub) =>
-						hasCapability(sub.capability) &&
-						isModuleActive(sub.module)
-				);
+				filteredSubmenu = item.submenu.filter((sub) => {
+					const hasCap = hasCapability(sub.capability);
+					const hasModule = isModuleActive(sub.module);
+
+					let hasSetting = true;
+
+					if (sub.key === 'withdrawls') {
+						hasSetting =
+							appLocalizer.settings_databases_value?.['payouts']?.withdraw_type != 'disable';
+					}
+
+					return hasCap && hasModule && hasSetting;
+				});
 				if (filteredSubmenu.length === 0) {
 					return;
 				}

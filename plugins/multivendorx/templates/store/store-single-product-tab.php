@@ -11,6 +11,7 @@
 
 use MultiVendorX\Store\Store;
 use MultiVendorX\Privacy\Util;
+use MultiVendorX\Store\StoreUtil;
 
 global $product;
 $html  = '';
@@ -89,7 +90,7 @@ if ( $store ) {
 
         if ( in_array( 'show_store_phone', $store_contact_details, true ) && ! empty( $details['phone'] ) ) {
             $html .= '<div class="store-info"><i class="dashicons dashicons-phone"></i>'
-                . esc_html( $details['phone'] ) .
+                . esc_html( StoreUtil::get_phone($details['phone']) ) .
             '</div>';
         }
 

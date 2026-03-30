@@ -21,6 +21,7 @@ export default {
 				'Seamlessly transfer your store data from your previous multivendor plugin (i.e. Dokan, WCFM and WC Vendor) using this migration tool.',
 				'multivendorx'
 			),
+			action: 'open_modal'
 		},
 	],
 };

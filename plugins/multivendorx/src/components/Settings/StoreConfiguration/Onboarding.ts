@@ -172,6 +172,7 @@ export default {
 					key: 'shared_listing',
 					label: __('Shared listing', 'multivendorx'),
 					value: 'shared_listing',
+					moduleEnabled: 'shared-listing',
 				},
 				{
 					key: 'franchise',

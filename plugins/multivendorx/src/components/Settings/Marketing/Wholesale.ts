@@ -84,9 +84,9 @@ export default {
 					value: 'with_retail',
 				},
 				{
-					key: 'wholesale_only',
+					key: 'wholesale_price',
 					label: __('Wholesale price only', 'multivendorx'),
-					value: 'wholesale_only',
+					value: 'wholesale_price',
 				},
 			],
 			moduleEnabled: 'wholesale',

@@ -35,9 +35,7 @@ const AddProduct = () => {
 	const [featuredImage, setFeaturedImage] = useState(null);
 	const [galleryImages, setGalleryImages] = useState([]);
 	const [errorMsg, setErrorMsg] = useState('');
-	const [generateAi, setgenerateAi] = useState(false);
-	const [generatedAi, setgeneratedAi] = useState(false);
-	const [generateAiImage, setgenerateAiImage] = useState(false);
+	const [appeal, setAppeal] = useState(false);
 
 	useEffect(() => {
 		if (!productId) {
@@ -226,13 +224,9 @@ const AddProduct = () => {
 		appLocalizer.settings_databases_value?.['product-preferencess']
 			?.type_options || [];
 
-	const handleCloseForm = () => {
-		setgenerateAi(false);
-	};
-
-	const generatedAiClose = () => {
-		setgeneratedAi(false);
-	};
+	const rejectNote = product?.meta_data?.find(
+		(m) => m.key === '_reject_note'
+	)?.value;
 
 	return (
 		<>
@@ -258,181 +252,19 @@ const AddProduct = () => {
 					'Enter your product details - name, price, stock, and image & publish.',
 					'multivendorx'
 				)}
-				buttons={[
+				buttons={applyFilters('multivendorx_product_button', [
 					{
-						label: __('Generate with AI', 'multivendorx'),
-						icon: 'star-notifima',
-						color: ' ',
-						onClick: () => setgenerateAi(true),
+						label: __('view', 'multivendorx'),
+						icon: 'save',
+						onClick: () => window.open(product?.permalink, '_blank'),
 					},
 					{
 						label: __('Save', 'multivendorx'),
 						icon: 'save',
 						onClick: () => createProduct(),
 					},
-				]}
+				])}
 			/>
-
-			<PopupUI
-				open={generateAi}
-				onClose={handleCloseForm}
-				position="lightbox"
-				width={33}
-				header={{
-					icon: 'star-notifima',
-					title: __('Create With AI', 'multivendorx'),
-				}}
-			>
-				<div className="ai-wrapper">
-					<FormGroupWrapper>
-						<FormGroup>
-							<TextAreaUI
-								name="reject_reason"
-								placeholder={__(
-									'Enter reason for rejecting this store...',
-									'multivendorx'
-								)}
-								rows={5}
-							/>
-						</FormGroup>
-						<ButtonInputUI
-							buttons={[
-								{
-									icon: 'star-notifima',
-									text: 'Generate Now',
-									color: 'purple',
-									onClick: () => {
-										setgenerateAi(false);
-										setTimeout(() => {
-											setgeneratedAi(true);
-										}, 0);
-									},
-								},
-							]}
-						/>
-					</FormGroupWrapper>
-				</div>
-			</PopupUI>
-
-			{/* 2nd screen */}
-			<PopupUI
-				open={generatedAi}
-				onClose={generatedAiClose}
-				position="lightbox"
-				width={'70%'}
-				height={80}
-			>
-				<div className="ai-content-wrapper">
-					<div className="section left">
-						<div className="product">Product 1</div>
-						{/* <img src="" alt="" /> */}
-						<div className="product-image"></div>
-						<SectionUI
-							title={__('Product Details', 'multivendorx')}
-						/>
-
-						<div className="title">Short Description</div>
-						<div className="desc">
-							Lorem ipsum dolor sit amet consectetur adipisicing
-							elit. Quae natus voluptatem temporibus facere
-							dignissimos optio sit, vero harum nobis suscipit ea
-							ipsa repellendus, commodi architecto?
-						</div>
-
-						<div className="title">Description</div>
-						<div className="desc">
-							Lorem ipsum dolor, sit amet consectetur adipisicing
-							elit. Ipsa ipsam atque accusantium voluptatibus.
-							Quasi maiores officiis ipsa? Nulla doloribus quae
-							iusto est perspiciatis cumque sequi maiores
-							voluptates dolor possimus, voluptate fugiat sed
-							corrupti nihil cum distinctio suscipit voluptas
-							placeat. Harum incidunt assumenda cum, perferendis
-							facilis accusantium sapiente iusto cupiditate
-							quidem?{' '}
-						</div>
-					</div>
-					<div className="section right">
-						<div className="generated-product">
-							<div className="product">
-								<div className="title">
-									Lorem ipsum dolor sit amet.
-								</div>
-								<div className="desc">
-									Lorem ipsum dolor sit amet consectetur
-									adipisicing elit. Dolor, perferendis. Rerum
-									explicabo ducimus, praesentium a excepturi
-									ut! Aliquam quidem exercitationem ipsum!
-									Placeat, molestias? Ea, animi.
-								</div>
-
-								<ButtonInputUI
-									buttons={[
-										{
-											icon: 'plus-circle',
-											text: 'Append the product',
-											color: 'purple',
-										},
-									]}
-								/>
-							</div>
-							<div className="product">
-								<div className="title">
-									Lorem ipsum dolor sit amet.
-								</div>
-								<div className="desc">
-									Lorem ipsum dolor sit amet consectetur
-									adipisicing elit. Dolor, perferendis. Rerum
-									explicabo ducimus, praesentium a excepturi
-									ut! Aliquam quidem exercitationem ipsum!
-									Placeat, molestias? Ea, animi.
-								</div>
-
-								<ButtonInputUI
-									buttons={[
-										{
-											icon: 'refresh',
-											text: 'Regenerate Product',
-											color: 'blue',
-										},
-										{
-											icon: 'plus-circle',
-											text: 'Append the product',
-											color: 'purple',
-										},
-									]}
-								/>
-							</div>
-						</div>
-
-						<ButtonInputUI
-							buttons={[
-								{
-									icon: 'close',
-									text: 'Cancel',
-									color: 'red',
-									// onClick: () =>
-									//     dispatch( {
-									//         type: 'SET_ACTIVE_TAB',
-									//         id: isOpen ? null : method.id,
-									//     } ),
-								},
-								{
-									icon: 'plus-circle',
-									text: 'Append the product',
-									color: 'purple-bg',
-									// onClick: () =>
-									//     dispatch( {
-									//         type: 'SET_ACTIVE_TAB',
-									//         id: isOpen ? null : method.id,
-									//     } ),
-								},
-							]}
-						/>
-					</div>
-				</div>
-			</PopupUI>
-
 			<Container>
 				<Column grid={3}>
 					<Card title={__('Product type', 'multivendorx')}>
@@ -613,94 +445,162 @@ const AddProduct = () => {
 				</Column>
 
 				<Column grid={6}>
+				{rejectNote && (
+					<Card title={__('Product Rejected by Admin', 'multivendorx')}
+						// action={
+						// <ButtonInputUI
+						// 	buttons={[
+						// 		{
+						// 			icon: 'plus',
+						// 			text: __('Appeal Decision', 'multivendorx'),
+						// 			color: 'purple',
+						// 			onClick: () => setAppeal(true),
+						// 		},
+						// 	]}
+						// />}
+					>
+						<Notice
+							type="error"
+							title="Admin Note"
+							displayPosition="inline-notice"
+							message={rejectNote}
+						/>
+					</Card>
+				)}
 					<Card title={__('General information', 'multivendorx')}>
 						<FormGroupWrapper>
-							<FormGroup
-								label={__('Product name', 'multivendorx')}
-								desc={__(
-									'A unique name for your product',
-									'multivendorx'
-								)}
-								className="ai-form"
-								iconRight="star-notifima"
-							>
-								<PopupUI
-									position="menu-dropdown"
-									toggleIcon="star-notifima"
-									width={20}
-									header={{
-										icon: 'form-textarea',
-										title: __(
-											'Change Name',
-											'multivendorx'
-										),
-									}}
-								>
-									<div className="ai-wrapper">
-										<div className="title">Product 1</div>
-										<div className="title">Product 2</div>
-										<div className="title">Product 3</div>
-									</div>
-								</PopupUI>
-								<BasicInputUI
-									name="name"
-									value={product.name}
-									onChange={(value) =>
-										handleChange('name', value)
-									}
-								/>
-							</FormGroup>
+							<div className="form-group  ai-form">
+								<label className="settings-form-label">
+									{__('Product name', 'multivendorx')}
+									{applyFilters(
+										'multivendorx_product_field_suggestions',
+										null,
+										{
+											product,
+											setProduct,
+											field: 'name',
+										}
+									)}
+								</label>
+
+								<div className="settings-input-content">
+									<BasicInputUI
+										name="name"
+										value={product.name}
+										onChange={(value) =>
+											handleChange('name', value)
+										}
+										disabled={modules.includes('shared-listing')}
+									/>
+									<div className="settings-metabox-description">{__('A unique name for your product', 'multivendorx')}</div>
+								</div>
+							</div>
+
 
 							{productFields.includes('general') && (
 								<>
-									<FormGroup
-										label={__(
-											'Product short description',
-											'multivendorx'
-										)}
-										desc={__(
-											'A short description displayed on product and checkout pages',
-											'multivendorx'
-										)}
-										className="ai-form"
-										iconRight="star-notifima"
-									>
-										<TextAreaUI
-											name="short_description"
-											value={product.short_description}
-											onChange={(value) =>
-												handleChange(
-													'short_description',
-													value
-												)
-											}
-										/>
-									</FormGroup>
+									<div className="form-group  ai-form">
+										<label className="settings-form-label">
+											{__('Product short description', 'multivendorx')}
+											{applyFilters(
+												'multivendorx_product_field_suggestions',
+												null,
+												{
+													product,
+													setProduct,
+													field: 'short_description',
+												}
+											)}
+										</label>
 
-									<FormGroup
-										label={__(
-											'Product description',
-											'multivendorx'
-										)}
-										className="ai-form"
-										iconRight="star-notifima"
-									>
-										<TextAreaUI
-											name="description"
-											value={product.description}
-											onChange={(value) =>
-												handleChange(
-													'description',
-													value
-												)
-											}
-										/>
-									</FormGroup>
+										<div className="settings-input-content">
+											<TextAreaUI
+												name="short_description"
+												value={product.short_description}
+												onChange={(value) =>
+													handleChange(
+														'short_description',
+														value
+													)
+												}
+											/>
+											<div className="settings-metabox-description">{__('A short description displayed on product and checkout pages', 'multivendorx')}</div>
+										</div>
+									</div>
+
+									<div className="form-group  ai-form">
+										<label className="settings-form-label">
+											{__('Product description', 'multivendorx')}
+											{applyFilters(
+												'multivendorx_product_field_suggestions',
+												null,
+												{
+													product,
+													setProduct,
+													field: 'description',
+												}
+											)}
+										</label>
+
+										<div className="settings-input-content">
+											<TextAreaUI
+												name="description"
+												value={product.description}
+												onChange={(value) =>
+													handleChange(
+														'description',
+														value
+													)
+												}
+											/>
+											<div className="settings-metabox-description">{__('A short description displayed on product and checkout pages', 'multivendorx')}</div>
+										</div>
+									</div>
 								</>
 							)}
 						</FormGroupWrapper>
 					</Card>
-
+					<PopupUI
+						open={appeal}
+						onClose={() => { setAppeal(false) }}
+						width={31.25}
+						header={{
+							icon: 'announcement',
+							title: __('Appeal Rejection Decision', 'multivendorx'),
+							description: __(
+								'Explain why you believe this product meets marketplace guidelines. Our team will review your appeal within 48 hours.',
+								'multivendorx'
+							),
+						}}
+						footer={
+							<ButtonInputUI
+								buttons={[
+									{
+										icon: 'close',
+										text: __('Cancel', 'multivendorx'),
+										color: 'red',
+										onClick: () => setAppeal(false),
+									},
+									{
+										icon: 'save',
+										text: __('Submit Appeal', 'multivendorx'),
+										// onClick: () => handleSubmit(),
+									},
+								]}
+							/>
+						}
+					>
+						<FormGroupWrapper>
+							<FormGroup
+								label={__('Your appeal message', 'multivendorx')}
+								htmlFor="title"
+							>
+								<TextAreaUI
+									name="content"
+								/>
+							</FormGroup>
+						</FormGroupWrapper>
+					</PopupUI>
 					{product?.type === 'simple' &&
 						productFields.includes('general') && (
 							<Card title={__('Price', 'multivendorx')}>
@@ -830,18 +730,17 @@ const AddProduct = () => {
 										});
 									}}
 								/>
-
-								{applyFilters(
-									'product_image_enhancement',
-									null,
-									{
-										currentImage: featuredImage ?? null,
-										isFeaturedImage: true,
-										setImage: setFeaturedImage,
-									}
-								)}
 							</FormGroup>
-
+							{applyFilters(
+								'product_image_enhancement',
+								null,
+								{
+									currentImage: featuredImage ?? null,
+									isFeaturedImage: true,
+									setImage: setFeaturedImage,
+									product: product
+								}
+							)}
 							<FormGroup
 								label={__('Product gallery', 'multivendorx')}
 							>
@@ -870,86 +769,6 @@ const AddProduct = () => {
 										setGalleryImages(formatted);
 									}}
 								/>
-
-								<ButtonInputUI
-									buttons={[
-										{
-											icon: 'star-notifima',
-											text: 'Generate Now',
-											color: 'purple',
-											onClick: () => {
-												setgenerateAiImage(true);
-											},
-										},
-									]}
-								/>
-
-								{/* image generate popup */}
-								<PopupUI
-									open={generateAiImage}
-									onClose={generatedAiClose}
-									position="lightbox"
-									width={'70%'}
-									height={80}
-								>
-									<div className="ai-content-wrapper image">
-										{/* single image  */}
-										{/* <div className="section left left1">
-											<div className="image"></div>
-										</div> */}
-
-										{/* multi image  */}
-										<div className="section left left2">
-											<div className="image"></div>
-											<div className="image"></div>
-											<div className="image"></div>
-											<div className="image"></div>
-										</div>
-										<div className="section right">
-											<FormGroupWrapper>
-												<FormGroup
-													label={__(
-														'Describe your image',
-														'multivendorx'
-													)}
-												>
-													<TextAreaUI
-														name="reject_reason"
-														placeholder={__(
-															'Enter reason for rejecting this store...',
-															'multivendorx'
-														)}
-														rows={5}
-													/>
-												</FormGroup>
-											</FormGroupWrapper>
-											<ButtonInputUI
-												buttons={[
-													{
-														icon: 'close',
-														text: 'Cancel',
-														color: 'red',
-														// onClick: () =>
-														//     dispatch( {
-														//         type: 'SET_ACTIVE_TAB',
-														//         id: isOpen ? null : method.id,
-														//     } ),
-													},
-													{
-														icon: 'plus-circle',
-														text: 'Append the product',
-														color: 'purple-bg',
-														// onClick: () =>
-														//     dispatch( {
-														//         type: 'SET_ACTIVE_TAB',
-														//         id: isOpen ? null : method.id,
-														//     } ),
-													},
-												]}
-											/>
-										</div>
-									</div>
-								</PopupUI>
 							</FormGroup>
 						</FormGroupWrapper>
 					</Card>

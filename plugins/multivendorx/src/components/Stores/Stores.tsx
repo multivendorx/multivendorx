@@ -103,6 +103,9 @@ const Stores = () => {
 			}
 			return prev;
 		});
+
+		clearFieldError(name);
+		
 	};
 
 	const saveEmails = (emailList: string[], primary: string) => {
@@ -111,6 +114,8 @@ const Stores = () => {
 			primary_email: primary,
 			emails: emailList,
 		}));
+
+		clearFieldError('email');
 	};
 
 	const resetForm = () => {
@@ -202,6 +207,14 @@ const Stores = () => {
 			notice: err.message,
 			noticeType: err.type as 'error' | 'success',
 		};
+	};
+
+	const clearFieldError = (key: string) => {
+		setError((prev) => {
+			const updated = { ...prev };
+			delete updated[key];
+			return updated;
+		});
 	};
 	return (
 		<>
@@ -354,6 +367,8 @@ const Stores = () => {
 												...prev,
 												store_owners: newValue,
 											}));
+
+											clearFieldError('primary');
 										}}
 									/>
 								</FormGroup>

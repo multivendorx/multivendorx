@@ -134,6 +134,11 @@
         }
     }
 
+    &.full-width{
+        .item{
+            width: 100%;
+        }
+    }
     &.feature-list,
     &.mini-card {
         position: relative;

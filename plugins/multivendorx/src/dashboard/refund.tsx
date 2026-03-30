@@ -19,6 +19,15 @@ const Refund: React.FC = () => {
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const navigate = useNavigate();
+	const privacy = appLocalizer.settings_databases_value?.privacy?.['customer_information_access'];
+	const privacyHeaders = privacy?.includes('name')
+		? {
+			customer_name: {
+				label: __('Customer', 'multivendorx'),
+			},
+		}
+		: {};
+
 	const headers = {
 		order_id: {
 			label: __('Order', 'multivendorx'),
@@ -37,20 +46,23 @@ const Refund: React.FC = () => {
 				</span>
 			),
 		},
-		customer_name: {
-			label: __('Customer', 'multivendorx'),
-		},
+
+		...privacyHeaders,
+
 		amount: {
 			label: __('Refund Amount', 'multivendorx'),
 			type: 'currency',
 		},
+
 		customer_reason: {
 			label: __('Refund Reason', 'multivendorx'),
 		},
+
 		status: {
 			label: __('Status', 'multivendorx'),
 			type: 'status',
 		},
+
 		date_created: {
 			label: __('Date', 'multivendorx'),
 			type: 'date',

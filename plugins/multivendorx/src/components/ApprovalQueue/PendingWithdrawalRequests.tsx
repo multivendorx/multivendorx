@@ -9,15 +9,13 @@ import {
 	TableCard,
 	TableRow,
 } from 'zyra';
-import { useRef } from '@wordpress/element';
-import { getUrl, setSession } from '@/services/commonFunction';
+import { getUrl } from '@/services/commonFunction';
 
-const PendingWithdrawal: React.FC<object> = () => {
+const PendingWithdrawal: React.FC<object> = ({onCountChange}) => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
-	const firstLoadRef = useRef(true);
 
 	const handleSingleAction = (action: string, row) => {
 		if (!row?.id) {
@@ -36,7 +34,6 @@ const PendingWithdrawal: React.FC<object> = () => {
 			},
 		})
 			.then(() => {
-				firstLoadRef.current = true;
 				doRefreshTableData({});
 			})
 			.catch(console.error);
@@ -74,15 +71,15 @@ const PendingWithdrawal: React.FC<object> = () => {
 								icon: 'check',
 								text: __('Approve', 'multivendorx'),
 								color: 'purple',
-								onClick: (row: any) =>
-									handleSingleAction('approve', row.id),
+								onClick: () =>
+                        			handleSingleAction('approve', row),
 							},
 							{
 								icon: 'close',
 								text: __('Reject', 'multivendorx'),
 								color: 'red',
-								onClick: (row: any) =>
-									handleSingleAction('reject', row.id),
+								onClick: () =>
+									handleSingleAction('reject', row),
 							},
 						]}
 					/>
@@ -109,16 +106,10 @@ const PendingWithdrawal: React.FC<object> = () => {
 
 				const ids = stores.map((s) => s.id);
 				setRowIds(ids);
-
 				setRows(stores);
-				setTotalRows(Number(response.headers['x-wp-total']) || 0);
-				if (firstLoadRef.current) {
-					setSession(
-						'couponCount',
-						Number(response.headers['x-wp-total']) || 0
-					);
-					firstLoadRef.current = false;
-				}
+				const total = Number(response.headers['x-wp-total']) || 0;
+				setTotalRows(total);
+				onCountChange?.(total);
 				setIsLoading(false);
 			})
 			.catch((error) => {

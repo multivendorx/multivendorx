@@ -31,16 +31,27 @@ const getStored = (): NoticeItem[] => {
         if (!data) {
             return [];
         }
+
+        const now = Date.now();
+
         const parsed: NoticeItem[] = JSON.parse(data);
-        return parsed.filter((n) => typeof n.expiresAt === 'number');
+
+        return parsed.filter(
+            (n) =>
+                typeof n.expiresAt === 'number' &&
+                n.expiresAt > now
+        );
     } catch {
         return [];
     }
 };
 
 const persist = () => {
+    const now = Date.now();
+
     const persistable = noticeQueue.filter(
-        (n) => typeof n.expiresAt === 'number'
+        (n) => typeof n.expiresAt === 'number' &&
+            n.expiresAt > now
     );
     if (persistable.length === 0) {
         localStorage.removeItem(STORAGE_KEY);

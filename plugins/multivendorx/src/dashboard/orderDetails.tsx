@@ -616,6 +616,7 @@ const OrderDetails: React.FC = () => {
 									<TableCard
 										headers={tableHeaders}
 										rows={tableRows}
+										showMenu={false}
 									/>
 								) : (
 									<p>
@@ -869,6 +870,63 @@ const OrderDetails: React.FC = () => {
 									)}
 								</div>
 							</Card>
+
+							<Card title={__('Refund Request — Action Required', 'multivendorx')}>
+								<div className="refund-request-wrapper">
+									<div className="refund-header">
+										<div className="details">
+											<div className="title">#120 - order</div>
+											<div className="desc"> March 26, 2026  ·  10:11 AM</div>
+										</div>
+										<div className="price-wrapper">
+											<div className="price">$360.00</div>
+											<div className="desc">requested refund</div>
+										</div>
+									</div>
+
+									<div className="buttons-wrapper">
+										<div className="admin-badge blue">Hoodie with Logo x 2 ($300.00)</div>
+										<div className="admin-badge blue">Hoodie with Logo x 2 ($300.00)</div>
+										<div className="admin-badge blue">Hoodie with Logo x 2 ($300.00)</div>
+										<div className="admin-badge blue">Hoodie with Logo x 2 ($300.00)</div>
+										<div className="admin-badge blue">Hoodie with Logo x 2 ($300.00)</div>
+									</div>
+
+
+									<div className="reason">
+										<div className="title">Customer's Reason</div>
+										<div className="desc">New Reasons — The items received were not as described on the product page. The hoodie color was different and the long sleeve tee had a sizing issue. Requesting a full refund for both items.</div>
+									</div>
+								</div>
+
+
+								<div className="refund-request-wrapper">
+									<div className="refund-header">
+										<div className="details">
+											<div className="title">#120 - order</div>
+											<div className="desc"> March 26, 2026  ·  10:11 AM</div>
+										</div>
+										<div className="price-wrapper">
+											<div className="price">$360.00</div>
+											<div className="desc">requested refund</div>
+										</div>
+									</div>
+
+									<div className="buttons-wrapper">
+										<div className="admin-badge blue">Hoodie with Logo x 2 ($300.00)</div>
+										<div className="admin-badge blue">Hoodie with Logo x 2 ($300.00)</div>
+										<div className="admin-badge blue">Hoodie with Logo x 2 ($300.00)</div>
+										<div className="admin-badge blue">Hoodie with Logo x 2 ($300.00)</div>
+										<div className="admin-badge blue">Hoodie with Logo x 2 ($300.00)</div>
+									</div>
+
+
+									<div className="reason">
+										<div className="title">Customer's Reason</div>
+										<div className="desc">New Reasons — The items received were not as described on the product page. The hoodie color was different and the long sleeve tee had a sizing issue. Requesting a full refund for both items.</div>
+									</div>
+								</div>
+							</Card>
 						</Column>
 
 						<Column grid={4}>
@@ -1117,9 +1175,7 @@ const OrderDetails: React.FC = () => {
 									</Card>
 								)}
 
-							<Card
-								title={__('Shipping Tracking', 'multivendorx')}
-							>
+							<Card title={__('Shipping Tracking', 'multivendorx')}>
 								<FormGroupWrapper>
 									<FormGroup
 										label={__(

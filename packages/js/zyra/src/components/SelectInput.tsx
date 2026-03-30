@@ -430,10 +430,10 @@ const SelectInput: FieldComponent = {
         let resolvedOptions: FieldOptions = field.options || [];
 
         // Handle dependent fields (ex: state depends on country)
-        if (field.dependent?.key && field.options) {
-            const parentValue = settings?.[field.dependent.key];
-            resolvedOptions = field.options?.[parentValue] || {};
-        }
+        // if (field.dependent?.key && field.options) {
+        //     const parentValue = settings?.[field.dependent.key];
+        //     resolvedOptions = field.options?.[parentValue] || {};
+        // }
 
         // Convert options to react-select format
         const formattedOptions = Array.isArray(resolvedOptions)

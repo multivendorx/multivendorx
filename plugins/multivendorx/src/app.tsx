@@ -69,6 +69,7 @@ const App = () => {
 	const currentTabParams = new URLSearchParams(useLocation().hash);
 	const [openFeaturePopup, setOpenFeaturePopup] = useState(false);
 	const [results, setResults] = useState<SearchItem[]>([]);
+	const [activeModal, setActiveModal] = useState<string | null>(null);
 
 	const handleOpenFeaturePopup = () => {
 		setOpenFeaturePopup(true);
@@ -228,6 +229,20 @@ const App = () => {
 	const handleDismissBanner = () => {
 		localStorage.setItem('banner', 'false');
 	};
+
+    useEffect(() => {
+        const handler = (e: any) => {
+            if (e.detail?.type === 'open_modal') {
+                setActiveModal(e.detail.key);
+            }
+        };
+
+        window.addEventListener('multivendorx:action', handler);
+
+        return () => {
+            window.removeEventListener('multivendorx:action', handler);
+        };
+    }, []);
 
 	return (
 		<>
@@ -420,6 +435,77 @@ const App = () => {
 				actionLabel="Upgrade Now"
 				onAction={() => handleDismissBanner()}
 			/>
+
+			{activeModal === 'migrate' && (
+				<>
+					<PopupUI
+						open={activeModal}
+						onClose={() => setActiveModal(null)}
+						width={31.25}
+						height={50}
+						header={{
+							icon: 'knowledgebase',
+							title: __('Migration', 'multivendorx'),
+							description: __(
+								'Get a hands-on feel of your marketplace in minutes.',
+								'multivendorx'
+							),
+						}}
+					>
+						<FormGroupWrapper>
+							<FormGroup
+								label={__('Migration', 'multivendorx')}
+							></FormGroup>
+							<div className="desc">
+								{appLocalizer.multivendor_plugin || 'No multivendor plugin active currently'}
+							</div>
+							<SequentialTaskExecutor
+								buttonText={__('Import', 'multivendorx')}
+								apilink="migration"
+								interval={1000}
+								appLocalizer={appLocalizer}
+								successMessage={__('Migrate successfully!', 'multivendorx')}
+								failureMessage={__('Failed to migrate.', 'multivendorx')}
+								tasks={[
+									{
+										action: 'import_stores',
+										message: __(
+											'Creating stores...',
+											'multivendorx'
+										),
+										requiresResponeData: true,
+										successMessage: __(
+											'Stores created',
+											'multivendorx'
+										),
+										failureMessage: __(
+											'Failed to create stores',
+											'multivendorx'
+										),
+									},
+									{
+										action: 'import_products',
+										message: __(
+											'Importing products...',
+											'multivendorx'
+										),
+										requiresResponeData: true,
+										successMessage: __(
+											'Products imported',
+											'multivendorx'
+										),
+										failureMessage: __(
+											'Failed to import products',
+											'multivendorx'
+										),
+									},
+								]}
+							/>
+						</FormGroupWrapper>
+					</PopupUI>
+				</>
+            )}
+
 			<Route />
 		</>
 	);

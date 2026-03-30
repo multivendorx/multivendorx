@@ -26,6 +26,7 @@ export default {
 				'<a href="https://ai.google.dev/gemini-api/docs/api-key" target="_blank">Click here to generate your Gemini API key.</a>',
 				'multivendorx'
 			),
+			proSetting: true,
 		},
 		// --- OpenAI API Key Section ---
 		{
@@ -40,6 +41,7 @@ export default {
 				'<a href="https://platform.openai.com/api-keys" target="_blank">Click here to generate your OpenAI API key.</a>',
 				'multivendorx'
 			),
+			proSetting: true,
 		},
 		{
 			key: 'openrouter_api_key',
@@ -53,6 +55,7 @@ export default {
 				'<a href="https://openrouter.ai/settings/keys" target="_blank">Generate an OpenRouter API key</a>',
 				'multivendorx'
 			),
+			proSetting: true,
 		},
 		// --- AI Provider Choice ---
 		{
@@ -64,6 +67,7 @@ export default {
 				'multivendorx'
 			),
 			moduleEnabled: 'marketplace-intelligence',
+			proSetting: true,
 		},
 		{
 			key: 'choose_ai_provider',
@@ -98,6 +102,7 @@ export default {
 					icon: 'openrouter',
 				},
 			],
+			proSetting: true,
 		},
 
 		// --- OpenRouter API Key Section ---
@@ -110,12 +115,6 @@ export default {
 				'Choose your preferred AI model from OpenRouter.',
 				'multivendorx'
 			),
-			dependent: {
-				key: 'choose_ai_provider',
-				set: true,
-				value: 'openrouter_api',
-			},
-
 			options: [
 				{
 					key: 'openai/gpt-4o-mini',
@@ -133,6 +132,12 @@ export default {
 					value: 'google/gemini-2.0-flash-exp:free',
 				},
 			],
+			proSetting: true,
+			dependent: {
+				key: 'choose_ai_provider',
+				set: true,
+				value: 'openrouter_api',
+			},
 		},
 		// --- Image Enhancement Provider ---
 		{
@@ -173,6 +178,7 @@ export default {
 				},
 			],
 			defaultValue: 'gemini_api_image_enhancement',
+			proSetting: true,
 		},
 		// --- Gemini Image Enhancement Settings ---
 		// {
@@ -199,12 +205,6 @@ export default {
 				'Choose your preferred AI model for image enhancement from OpenRouter.',
 				'multivendorx'
 			),
-			dependent: {
-				key: 'image_enhancement_provider',
-				set: true,
-				value: 'openrouter_api',
-			},
-
 			options: [
 				{
 					key: 'google/gemini-2.5-flash-image-preview',
@@ -222,6 +222,12 @@ export default {
 					value: 'google/gemini-3-pro-image-preview',
 				},
 			],
+			proSetting: true,
+			dependent: {
+				key: 'image_enhancement_provider',
+				set: true,
+				value: 'openrouter_api',
+			},
 		},
 	],
 };

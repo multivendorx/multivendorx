@@ -573,4 +573,20 @@ class Utill {
 			return wp_date( 'Y-m-d\TH:i:s', $timestamp );
 		}
 	}
+
+    public static function get_active_multivendor() {
+        if (Utill::is_active_plugin('dokan-lite/dokan.php')) {
+            return 'Dokan';
+        }
+
+        if (Utill::is_active_plugin('wc-frontend-manager/wcfm.php')) {
+            return 'WcfmMarketplace';
+        }
+
+        if (Utill::is_active_plugin('wc-vendors/class-wc-vendors.php')) {
+            return 'WcVendors';
+        }
+
+        return '';
+    }
 }

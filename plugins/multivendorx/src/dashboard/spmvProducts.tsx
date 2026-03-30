@@ -87,7 +87,7 @@ const SpmvProducts: React.FC = () => {
 
 	const duplicateProduct = async (product) => {
 		const newProductPayload = {
-			name: product.name + ' Copy',
+			name: product.name,
 			type: product.type,
 			regular_price: product.price,
 			description: product.description,

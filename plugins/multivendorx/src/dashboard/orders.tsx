@@ -40,6 +40,7 @@ const Orders: React.FC = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const hash = location.hash.replace(/^#/, '') || '';
+	const privacy = appLocalizer.settings_databases_value?.privacy?.['customer_information_access'];
 
 	const exportAllOrders = () => {
 		let allOrders = [];
@@ -156,7 +157,7 @@ const Orders: React.FC = () => {
 							status === 'all'
 								? __('All', 'multivendorx')
 								: status.charAt(0).toUpperCase() +
-									status.slice(1),
+								status.slice(1),
 						count: total,
 					};
 				});
@@ -195,17 +196,26 @@ const Orders: React.FC = () => {
 		{ label: 'Failed', value: 'failed' },
 	];
 
+
+	const privacyHeaders = privacy?.includes('name')
+		? {
+			customer: {
+				label: __('Customer', 'multivendorx'),
+				render: (row) =>
+					row.billing?.first_name
+						? `${row.billing.first_name} ${row.billing.last_name || ''}`
+						: 'Guest',
+			},
+		}
+		: {};
+
 	const headers = {
 		id: {
 			label: __('Order ID', 'multivendorx'),
 			render: (row) => (
 				<span
 					onClick={() =>
-						dashNavigate(navigate, [
-							'orders',
-							'view',
-							String(row.id),
-						])
+						dashNavigate(navigate, ['orders', 'view', String(row.id)])
 					}
 				>
 					#{row.id}
@@ -213,13 +223,7 @@ const Orders: React.FC = () => {
 			),
 		},
 
-		customer: {
-			label: __('Customer', 'multivendorx'),
-			render: (row) =>
-				row.billing?.first_name
-					? `${row.billing.first_name} ${row.billing.last_name || ''}`
-					: 'Guest',
-		},
+		...privacyHeaders,
 
 		date_created: {
 			label: __('Date', 'multivendorx'),
@@ -242,18 +246,18 @@ const Orders: React.FC = () => {
 			actions: [
 				...(appLocalizer.edit_order_capability
 					? [
-							{
-								label: __('View', 'multivendorx'),
-								icon: 'eye',
-								onClick: (row) => {
-									dashNavigate(navigate, [
-										'orders',
-										'view',
-										String(row.id),
-									]);
-								},
+						{
+							label: __('View', 'multivendorx'),
+							icon: 'eye',
+							onClick: (row) => {
+								dashNavigate(navigate, [
+									'orders',
+									'view',
+									String(row.id),
+								]);
 							},
-						]
+						},
+					]
 					: []),
 
 				{

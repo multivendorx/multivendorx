@@ -474,7 +474,7 @@ export default {
 			category: 'marketplace_boosters',
 		},
 		{
-			id: 'compliance',
+			id: 'marketplace-compliance',
 			name: __('Compliance', 'multivendorx'),
 			desc: 'Ensure stores meet marketplace requirements with automated policy checks.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',

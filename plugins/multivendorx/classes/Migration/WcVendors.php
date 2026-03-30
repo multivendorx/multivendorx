@@ -21,12 +21,6 @@ defined( 'ABSPATH' ) || exit;
  * @author      MultiVendorX
  */
 class WcVendors {
-    public function __construct() {
-        $this->migrate_vendors();
-        $this->migrate_products();
-        $this->migrate_orders_and_commissions();
-    }
-
     public function migrate_vendors() {
         $vendors = get_users(
             array(
@@ -34,6 +28,7 @@ class WcVendors {
 				'fields'   => array( 'ID' ),
             )
         );
+        $created_store_ids = array();
 
         foreach ( $vendors as $user ) {
             $user_id = $user->ID;
@@ -52,6 +47,7 @@ class WcVendors {
             $store->set( 'description', get_user_meta( $user_id, 'pv_shop_description', true ) ?? '' );
             $store_id = $store->save();
 
+            $created_store_ids[] = $store_id; 
             // primary owner set and add store-users table.
             StoreUtil::set_primary_owner( $user_id, $store_id );
             update_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['active_store'], $store_id );
@@ -88,8 +84,8 @@ class WcVendors {
                     'phone'        => preg_replace( '/[^0-9]/', '', get_user_meta($user_id, '_wcv_store_phone', true) ),
                 )
             );
-           
         }
+        return count( $created_store_ids );
     }
 
     public function migrate_products() {
@@ -99,7 +95,7 @@ class WcVendors {
 				'return' => 'ids',
             )
         );
-
+        $updated_count = 0;
         foreach ( $products as $product_id ) {
             // Migrate product vendor.
             $author_id = (int) get_post_field( 'post_author', $product_id );
@@ -109,8 +105,10 @@ class WcVendors {
             if ( in_array( 'vendor', (array) $user->roles, true ) ) {
                 $active_store = get_user_meta( $author_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
                 update_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], $active_store );
+                $updated_count++;
             }
         }
+        return $updated_count;
     }
 
     public function migrate_orders_and_commissions() {
@@ -229,6 +227,7 @@ class WcVendors {
         }
 
         $this->deactive_previous_multivendor();
+        wp_clear_scheduled_hook('multivendorx_order_migration');
     }
 
     // Deactive wc vendor multivendor

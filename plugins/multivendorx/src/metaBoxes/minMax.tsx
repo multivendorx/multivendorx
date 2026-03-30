@@ -53,10 +53,10 @@ const MinMax = ({ product, setProduct }) => {
 				updatedMeta.push({
 					key: KEY,
 					value: {
-						min_quantity: newValue.min_quantity || 0,
-						max_quantity: newValue.max_quantity || 0,
-						min_amount: newValue.min_amount || 0,
-						max_amount: newValue.max_amount || 0,
+						min_quantity: newValue.min_quantity || null,
+						max_quantity: newValue.max_quantity || null,
+						min_amount: newValue.min_amount || null,
+						max_amount: newValue.max_amount || null,
 					},
 				});
 			}

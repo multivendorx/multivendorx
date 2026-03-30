@@ -74,6 +74,22 @@ interface TableCellProps {
     onBlocked?: (type: 'pro' | 'module', payload?: string) => void;
 }
 
+function isBlocked(
+    opt: Option,
+    modules: string[],
+    onBlocked?: MultiCheckBoxProps['onBlocked']
+): boolean {
+    if (opt.proSetting && !ZyraVariable?.khali_dabba) {
+        onBlocked?.('pro');
+        return true;
+    }
+    if (opt.moduleEnabled && !modules.includes(opt.moduleEnabled)) {
+        onBlocked?.('module', opt.moduleEnabled);
+        return true;
+    }
+    return false;
+}
+
 export const TableCell: React.FC<TableCellProps> = ({
     type,
     fieldKey,
@@ -160,34 +176,63 @@ export const MultiInputTableUI: React.FC<MultiInputTableUIProps> = ({
         rowLabel: string,
         isRowActive: boolean
     ) => {
-        const fields = column.fields ?? [
-            { key: column.key, type: column.type },
-        ];
-
+        const fields = column.fields ?? [{ key: column.key, type: 'checkbox' }];
+    
         return (
             <td key={`${column.key}_${rowKey}`}>
                 <div className="multi-field-cell">
                     {fields.map((field) => {
-                        const fieldKey = column.fields
-                            ? `${column.key}_${field.key}_${rowKey}`
-                            : `${column.key}_${rowKey}`;
+                        if (column.type == "checkbox") {
+                            const roleKey = column.key;
+                            const currentValues: string[] = (setting['role_access_table']?.[roleKey] as string[]) ?? 
+                                (setting[roleKey] as string[]) ?? 
+                                [];
+                            const checked = currentValues.includes(rowKey);
+    
+                            const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+                                const newValues = e.target.checked
+                                    ? [...currentValues, rowKey]
+                                    : currentValues.filter((k) => k !== rowKey);
+    
+                                onChange(roleKey, newValues);
+                            };
+    
+                            return (
+                                <input
+                                    key={`${column.key}_${field.key}_${rowKey}`}
+                                    type="checkbox"
+                                    checked={checked}
+                                    disabled={!isRowActive}
+                                    onChange={(e) => {
+                                        if (isBlocked(column, modules, onBlocked)) {
+                                            return; // 🚫 block interaction
+                                        }
+                                        console.log("checkbox trigger");
+                                        handleCheckboxChange(e); // ✅ use existing logic
+                                    }}
+                                />
+                            );
+                        } else {
+                            const fieldKey = column.fields
+                                ? `${column.key}_${field.key}_${rowKey}`
+                                : `${column.key}`;
 
-                        return (
-                            <TableCell
-                                key={fieldKey}
-                                type={field.type}
-                                fieldKey={fieldKey}
-                                rowKey={rowKey}
-                                column={column}
-                                rowLabel={rowLabel}
-                                value={setting[fieldKey] ?? false}
-                                disabled={!isRowActive}
-                                onChange={onChange}
-                                modules={modules}
-                                // appLocalizer={appLocalizer}
-                                onBlocked={onBlocked}
-                            />
-                        );
+                            return (
+                                <TableCell
+                                    key={fieldKey}
+                                    type={field.type}
+                                    fieldKey={fieldKey}
+                                    rowKey={rowKey}
+                                    column={column}
+                                    rowLabel={rowLabel}
+                                    value={setting[fieldKey] ?? []}
+                                    disabled={!isRowActive}
+                                    onChange={onChange}
+                                    modules={modules}
+                                    onBlocked={onBlocked}
+                                />
+                            );
+                        }
                     })}
                 </div>
             </td>
@@ -288,7 +333,6 @@ export const MultiInputTableUI: React.FC<MultiInputTableUIProps> = ({
                                                     col,
                                                     capKey,
                                                     capLabel,
-                                                    undefined,
                                                     hasExists
                                                 )
                                             )}
@@ -375,7 +419,7 @@ const MultiInputTable: FieldComponent = {
                 khali_dabba={ZyraVariable?.khali_dabba ?? false}
                 rows={field.rows ?? []}
                 columns={field.columns ?? []}
-                setting={currentSetting}
+                setting={settings || currentSetting}
                 visibilityContext={settings as FieldSetting}
                 storeTabSetting={storeTabSetting ?? {}}
                 proSetting={field.proSetting ?? false}
