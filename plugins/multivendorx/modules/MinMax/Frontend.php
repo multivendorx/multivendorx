@@ -118,12 +118,12 @@ class Frontend {
         if ( $rules['min'] && $value < $rules['min'] ) {
             if ( 'quantity' === $context ) {
                 // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
-                return $return_number ? $rules['min'] : __( 'Minimum product ' . $context . ' is required ' . $rules['min'], 'multivendorx' );
+                return $return_number ? $rules['min'] : __( 'Minimum product ' . $context . ' required is ' . $rules['min'], 'multivendorx' );
             }
 
             if ( 'amount' === $context ) {
                 // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
-                return $return_number ? $rules['min'] : __( 'Minimum product ' . $context . ' is required ' . $rules['min'], 'multivendorx' );
+                return $return_number ? $rules['min'] : __( 'Minimum product ' . $context . ' required is ' . $rules['min'], 'multivendorx' );
             }
 
             if ( 'order_quantity' === $context ) {
@@ -140,12 +140,12 @@ class Frontend {
         if ( $rules['max'] && $value > $rules['max'] ) {
             if ( 'quantity' === $context ) {
                 // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
-                return $return_number ? $rules['max'] : __( 'Maximum product ' . $context . ' is required ' . $rules['max'], 'multivendorx' );
+                return $return_number ? $rules['max'] : __( 'Maximum product ' . $context . ' required is ' . $rules['max'], 'multivendorx' );
             }
 
             if ( 'amount' === $context ) {
                 // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
-                return $return_number ? $rules['max'] : __( 'Maximum product ' . $context . ' is required ' . $rules['max'], 'multivendorx' );
+                return $return_number ? $rules['max'] : __( 'Maximum product ' . $context . ' required is ' . $rules['max'], 'multivendorx' );
             }
 
             if ( 'order_quantity' === $context ) {

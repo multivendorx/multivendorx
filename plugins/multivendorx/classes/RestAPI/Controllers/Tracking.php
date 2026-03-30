@@ -85,5 +85,7 @@ class Tracking extends \WP_REST_Controller {
                 'category'        => 'notification',
             )
         );
+
+        do_action( 'multivendorx_shipment_tracking', $order_id );
     }
 }

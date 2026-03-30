@@ -43,9 +43,21 @@ const OrderDetails: React.FC = () => {
 	});
 	const [shipmentData, setShipmentData] = useState({
 		provider: '',
+		tracking_date: '',
 		tracking_url: '',
 		tracking_id: '',
 	});
+
+	const providers =
+		appLocalizer.settings_databases_value.shipping.shipping_providers || [];
+
+	const formattedProviders = providers.map((provider) => ({
+		value: provider,
+		label: provider
+			.replace(/[-_]/g, ' ')
+			.replace(/\b\w/g, (char) => char.toUpperCase()),
+	}));
+
 	const { modules } = useModules();
 	const customer_information_access =
 		appLocalizer.settings_databases_value['privacy']
@@ -252,6 +264,7 @@ const OrderDetails: React.FC = () => {
 			orderData.meta_data.find((m) => m.key === key)?.value ?? '';
 		setShipmentData({
 			provider: meta(appLocalizer.order_meta['shipping_provider']),
+			tracking_date: meta(appLocalizer.order_meta['tracking_date']),
 			tracking_url: meta(appLocalizer.order_meta['tracking_url']),
 			tracking_id: meta(appLocalizer.order_meta['tracking_id']),
 		});
@@ -266,6 +279,10 @@ const OrderDetails: React.FC = () => {
 						{
 							key: appLocalizer.order_meta['shipping_provider'],
 							value: shipmentData.provider,
+						},
+						{
+							key: appLocalizer.order_meta['tracking_date'],
+							value: shipmentData.tracking_date,
 						},
 						{
 							key: appLocalizer.order_meta['tracking_url'],
@@ -288,6 +305,19 @@ const OrderDetails: React.FC = () => {
 			.catch((error) => {
 				console.error('Error saving shipment to order:', error);
 			});
+
+		axios({
+			method: 'POST',
+			url: getApiLink(appLocalizer, `tracking`),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			data: {
+				...shipmentData,
+				order_id: orderId,
+			},
+		}).then(() => {
+			
+		});
+
 	};
 
 	const tableRows = useMemo(() => {
@@ -1178,12 +1208,39 @@ const OrderDetails: React.FC = () => {
 							<Card title={__('Shipping Tracking', 'multivendorx')}>
 								<FormGroupWrapper>
 									<FormGroup
-										label={__(
-											'Create Shipping',
-											'multivendorx'
-										)}
-										htmlFor="create-shipping"
-									></FormGroup>
+										cols={2}
+										label={__('Shipping Providers', 'multivendorx-pro')}
+										htmlFor="title"
+									>
+										<SelectInputUI
+											type="single-select"
+											name="provider"
+											value={shipmentData.provider || ''}
+											options={formattedProviders}
+											onChange={(selected) =>
+												setShipmentData((prev) => ({
+													...prev,
+													provider: selected,
+												}))
+											}
+										/>
+									</FormGroup>
+									<FormGroup
+										cols={2}
+										label={__('Date', 'multivendorx-pro')}
+										htmlFor="title"
+									>
+										<BasicInputUI
+											type="date"
+											value={shipmentData.tracking_date}
+											onChange={(value: any) =>
+												setShipmentData((prev) => ({
+													...prev,
+													tracking_date: value,
+												}))
+											}
+										/>
+									</FormGroup>
 									<FormGroup
 										label={__(
 											'Enter Tracking Url ',

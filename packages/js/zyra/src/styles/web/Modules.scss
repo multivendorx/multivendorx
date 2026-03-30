@@ -22,8 +22,8 @@
         .module-separator {
             width: 100%;
             flex-basis: 100%;
-            margin: 40px 0 1.25rem;
-            border-bottom: 1px solid #ccc;
+            margin: 2.5rem 0 1.25rem;
+            border-bottom: $border-light-small;
 
             .separator-title {
                 font-size: 1.2rem;

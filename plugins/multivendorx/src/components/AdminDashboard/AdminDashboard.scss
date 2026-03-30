@@ -1038,11 +1038,6 @@
 
         .details {
             width: 100%;
-
-            h2,
-            .store-address {
-                text-align: left;
-            }
         }
 
         img {
@@ -1080,10 +1075,20 @@
         }
     }
 
+    .store-name {
+        font-size: 1.125rem;
+        font-weight: 600;
+    }
+
     &.template1 {
         .contact-details {
             flex-direction: column;
             padding: 0;
+        }
+
+        .store-name,
+        .store-address {
+            text-align: left;
         }
 
         .store-details {
@@ -1099,8 +1104,8 @@
 
     &.template2 {
 
-        h2,
-        .store-address {
+        .store-address,
+        .store-name {
             text-align: center;
         }
 
@@ -1148,6 +1153,11 @@
     &.template3 {
         .contact-details {
             flex-direction: column;
+        }
+
+        .store-name,
+        .store-address {
+            text-align: left;
         }
 
         .store-details {

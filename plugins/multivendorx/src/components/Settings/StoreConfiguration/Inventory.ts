@@ -16,7 +16,7 @@ export default {
 			key: 'store_rating_page',
 			type: 'notice',
 			message: __(
-				'<b>Note: </b>You can configure or customize the notification templates for these alerts from the <b><a href="#&tab=settings&subtab=notifications">Notification Settings</a> </b> section.',
+				'<b>Note: </b>You can configure or customize the notification templates for these alerts from the <b><a class="link-item" href="#&tab=settings&subtab=events-delivery">Notification Settings</a> </b> section.',
 				'multivendorx'
 			),
 			noticeType: 'info',

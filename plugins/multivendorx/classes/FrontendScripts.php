@@ -389,7 +389,7 @@ class FrontendScripts {
             }
         }
 
-        $gateways     = WC()->payment_gateways->payment_gateways();
+        $gateways     = WC()->payment_gateways->get_available_payment_gateways();
         $gateway_list = array();
         foreach ( $gateways as $gateway_id => $gateway ) {
             if ( 'cheque' === $gateway_id ) {

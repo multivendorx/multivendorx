@@ -12,13 +12,20 @@ interface SkeletonProps {
 
 const Skeleton: React.FC<SkeletonProps> = ({
     variant = 'text',
-    width,
-    height,
+    width = '100%',
+    height = 1,
     className = '',
 }) => {
+    const formatValue = (value: number | string ): string  => {
+        if (typeof value === 'number') {
+            return `${value}rem`;
+        }
+        return value;
+    };
+
     const styles: React.CSSProperties = {
-        width,
-        height,
+        width: formatValue(width),
+        height: formatValue(height),
     };
 
     return (

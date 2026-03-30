@@ -1,22 +1,5 @@
 @use '../../global.scss' as *;
 
-.settings-wrapper{
-  &[data-template="default"],
-  &[data-template="settings"] {
-    .divider-section {
-        padding: 1rem 1rem .5rem;
-        background: $background-white;
-      }
-  }
-
-  &[data-template="compact"] {
-    .divider-section {
-      padding-top: 0;
-      padding-bottom: 1.5rem;
-    }
-  }
-}
-
 .divider-section {
   margin-top: 1rem;
 
@@ -59,4 +42,21 @@
 
 .divider-section:not(:first-child) {
   width: 100%;
+}
+
+.settings-wrapper{
+  &[data-template="default"],
+  &[data-template="settings"] {
+    .divider-section {
+        padding: 1rem 1rem .5rem;
+        background: $background-white;
+      }
+  }
+
+  &[data-template="compact"] {
+    .divider-section {
+      padding-top: 0;
+      padding-bottom: 1.5rem;
+    }
+  }
 }

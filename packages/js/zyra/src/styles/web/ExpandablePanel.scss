@@ -17,8 +17,6 @@
             cursor: pointer;
             border: $border-light-small;
             border-radius: $border-radius-small;
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
             position: relative;
 
             .toggle-icon {
@@ -178,6 +176,7 @@
             transition: max-height 0.4s ease, opacity 0.4s ease;
             max-height: 0;
             opacity: 0;
+            border-radius: 0 0 $border-radius-small $border-radius-small;
 
             &.open {
                 opacity: 1;
@@ -208,11 +207,10 @@
             }
         }
 
-        &.open-form {
-            cursor: default;
-
+        &:has(.expandable-panel){
             .expandable-header {
-                cursor: default;
+               border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
             }
         }
     }

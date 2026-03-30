@@ -197,7 +197,7 @@ export default {
 			beforeElement: {
 				type: 'preposttext',
 				textType: 'pre',
-				preText: 'At',
+				preText: __('At', 'multivendorx'),
 			},
 			afterElement: {
 				type: 'preposttext',
@@ -286,7 +286,11 @@ export default {
 				},
 				{
 					key: 'store_opening_time',
-					preText: __('at', 'multivendorx'),
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('at', 'multivendorx'),
+					},
 					type: 'time',
 					// label: __('Store Opening Time', 'multivendorx'),
 					// description: __('Select the time your store opens.', 'multivendorx'),
@@ -311,7 +315,11 @@ export default {
 			nestedFields: [
 				{
 					key: 'payouts_every_month', // day of month
-					preText: __('On', 'multivendorx'),
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('On', 'multivendorx'),
+					},
 					type: 'number',
 					size: '8rem',
 					options: [
@@ -325,7 +333,11 @@ export default {
 				{
 					key: 'monthly_payout_time', // time of day
 					type: 'time', // links to TimeSelect component
-					preText: __('at', 'multivendorx'),
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('at', 'multivendorx'),
+					},
 					description: __(
 						'Select the time of day your monthly payout should occur.',
 						'multivendorx'
@@ -344,7 +356,11 @@ export default {
 			key: 'daily_payout_time', // unique key for daily payout time
 			type: 'time', // links to TimeSelect component
 			label: __('Daily payout time', 'multivendorx'),
-			preText: __('At', 'multivendorx'),
+			beforeElement: {
+				type: 'preposttext',
+				textType: 'pre',
+				preText: __('At', 'multivendorx'),
+			},
 			description: __('Once per day<br/>Run payouts at:', 'multivendorx'),
 			defaultValue: '09:00', // optional: default payout time
 			dependent: {

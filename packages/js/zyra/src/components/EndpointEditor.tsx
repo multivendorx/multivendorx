@@ -5,6 +5,7 @@ import '../styles/web/EndpointEditor.scss';
 import { getApiLink } from '../utils/apiService';
 import { BasicInputUI } from './BasicInput';
 import { useOutsideClick, FieldComponent, ZyraVariable } from './fieldUtils';
+import Skeleton from './UI/Skeleton';
 
 interface Submenu {
     name: string;
@@ -33,10 +34,12 @@ const EndpointEditorUI: React.FC<EndpointEditorProps> = ({
     const [editKey, setEditKey] = useState<string | null>(null);
     const [editName, setEditName] = useState('');
     const [editSlug, setEditSlug] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
     const editRef = useRef<HTMLDivElement>(null);
     useOutsideClick(editRef, () => setEditKey(null));
 
     useEffect(() => {
+        setIsLoading(true);
         axios({
             url: getApiLink(ZyraVariable, apilink),
             method: 'GET',
@@ -50,6 +53,7 @@ const EndpointEditorUI: React.FC<EndpointEditorProps> = ({
             ]) as [string, Endpoint][];
 
             setEndpoints(formatted);
+            setIsLoading(false);
         });
     }, [apilink]);
 
@@ -276,6 +280,20 @@ const EndpointEditorUI: React.FC<EndpointEditorProps> = ({
             </div>
         );
     };
+
+    if (isLoading) {
+        return (
+            <div className="endpoints-wrapper">
+                {[...Array(10).keys()].map((i) => (
+                    <div key={i} className="endpoint drag-row">
+                        <div className="menu-item">
+                            <Skeleton height={2.813} />
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    }
 
     return (
         <div className="endpoints-wrapper">

@@ -153,22 +153,6 @@ export const ChoiceToggleUI: React.FC<ChoiceToggleProps> = ({
                                             option.label
                                         )}
                                     </span>
-                                    {/* Module-locked badge */}
-                                    {!option.proSetting &&
-                                        option.moduleEnabled &&
-                                        !modules.includes(
-                                            option.moduleEnabled
-                                        ) && (
-                                            <span className="admin-pro-tag module">
-                                                <i
-                                                    className={`adminfont-${option.moduleEnabled}`}
-                                                />
-                                                {formatModuleLabel(
-                                                    option.moduleEnabled
-                                                )}
-                                                <i className="adminfont-lock" />
-                                            </span>
-                                        )}
 
                                     {option.desc && (
                                         <div className="des">{option.desc}</div>
@@ -182,6 +166,22 @@ export const ChoiceToggleUI: React.FC<ChoiceToggleProps> = ({
                                         />
                                     )}
                                 </label>
+                                {/* Module-locked badge */}
+                                {!option.proSetting &&
+                                    option.moduleEnabled &&
+                                    !modules.includes(
+                                        option.moduleEnabled
+                                    ) && (
+                                        <span className="admin-pro-tag module">
+                                            <i
+                                                className={`adminfont-${option.moduleEnabled}`}
+                                            />
+                                            {formatModuleLabel(
+                                                option.moduleEnabled
+                                            )}
+                                            <i className="adminfont-lock" />
+                                        </span>
+                                    )}
                                 {isProOption && !ZyraVariable.khali_dabba && (
                                     <span className="admin-pro-tag">
                                         <i className="adminfont-pro-tag"></i>Pro

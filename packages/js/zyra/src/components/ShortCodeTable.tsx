@@ -44,22 +44,18 @@ const ShortCodeTableUI: React.FC<ShortCodeTableProps> = (props) => {
                         <div className="des">{option.desc}</div>
                     </div>
 
-                    <div className="shortcode-table">
-                        <table>
-                            {option.arguments &&
-                                option.arguments.length > 0 && (
-                                    <thead>
-                                        <tr>
-                                            {headers.map((header, idx) => (
-                                                <th key={idx}>{header}</th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                )}
-                            <tbody>
-                                {Array.isArray(option.arguments) &&
-                                option.arguments.length > 0 ? (
-                                    option.arguments.map((arg, index) => (
+                    {option.arguments && option.arguments.length > 0 ? (
+                        <div className="shortcode-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        {headers.map((header, idx) => (
+                                            <th key={idx}>{header}</th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {option.arguments.map((arg, index) => (
                                         <tr key={index}>
                                             <td>
                                                 <b>{arg.attribute}</b>
@@ -68,20 +64,13 @@ const ShortCodeTableUI: React.FC<ShortCodeTableProps> = (props) => {
                                             <td>{arg.accepted}</td>
                                             <td>{arg.default}</td>
                                         </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td
-                                            colSpan={headers.length}
-                                            className="no-args"
-                                        >
-                                            No arguments required
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <div className="no-args-message">No arguments required</div>
+                    )}
                 </div>
             ))}
         </>

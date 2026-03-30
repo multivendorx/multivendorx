@@ -7,11 +7,10 @@
     border-radius: $border-radius-small;
 
     .shortcode-details {
-        padding-bottom: 0.5rem;
+        padding-bottom: 0.813rem;
         margin-top: 0.313rem;
 
         .shortcode-title {
-            padding-bottom: 0.625rem;
             font-size: 1.125rem;
             display: flex;
             gap: 0.5rem;
@@ -71,5 +70,13 @@
                 }
             }
         }
+    }
+
+    .no-args-message {
+        padding: 0.813rem;
+        background: $background-color;
+        border-radius: $border-radius-small;
+        font-size: 1.063rem;
+        font-weight: 400;
     }
 }

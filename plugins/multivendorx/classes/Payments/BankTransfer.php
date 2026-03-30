@@ -106,64 +106,86 @@ class BankTransfer {
         $settings = ! empty( $payment_admin_settings['bank-transfer'] ) ? $payment_admin_settings['bank-transfer'] : array();
 
         if ( ! empty( $settings ) && $settings['enable'] ) {
+            $fields = array(
+                array(
+                    'key'     => 'account_type',
+                    'type'    => 'choice-toggle',
+                    'label'   => __( 'Account type', 'multivendorx' ),
+                    'options' => array(
+                        array(
+                            'key'   => 'current',
+                            'label' => __( 'Current', 'multivendorx' ),
+                            'value' => 'current',
+                        ),
+                        array(
+                            'key'   => 'savings',
+                            'label' => __( 'Savings', 'multivendorx' ),
+                            'value' => 'savings',
+                        ),
+                    ),
+                ),
+            );
+
+            if ( in_array( 'bank_name', $settings['bank_details'] ) ) {
+                $fields[] = array(
+                    'key'   => 'bank_name',
+                    'type'  => 'text',
+                    'label' => 'Bank name',
+                );
+            }
+
+            if ( in_array( 'account_holder_name', $settings['bank_details'] ) ) {
+                $fields[] = array(
+                    'key'   => 'account_holder_name',
+                    'type'  => 'text',
+                    'label' => 'Account holder name',
+                );
+            }
+
+            if ( in_array( 'account_number', $settings['bank_details'] ) ) {
+                $fields[] = array(
+                    'key'   => 'account_number',
+                    'type'  => 'text',
+                    'label' => 'Account number',
+                );
+            }
+
+            if ( in_array( 'bank_address', $settings['bank_details'] ) ) {
+                $fields[] = array(
+                    'key'   => 'bank_address',
+                    'type'  => 'textarea',
+                    'label' => 'Bank address',
+                );
+            }
+
+            if ( in_array( 'routing_number', $settings['bank_details'] ) ) {
+                $fields[] = array(
+                    'key'   => 'routing_number',
+                    'type'  => 'text',
+                    'label' => 'ABA routing number',
+                );
+            }
+
+            if ( in_array( 'iban', $settings['bank_details'] ) ) {
+                $fields[] = array(
+                    'key'   => 'iban',
+                    'type'  => 'text',
+                    'label' => 'IBAN',
+                );
+            }
+
+            if ( in_array( 'destination_currency', $settings['bank_details'] ) ) {
+                $fields[] = array(
+                    'key'   => 'destination_currency',
+                    'type'  => 'text',
+                    'label' => 'Destination currency',
+                );
+            }
+
             return array(
                 'id'     => $this->get_id(),
                 'label'  => __( 'Bank Transfer', 'multivendorx' ),
-                'fields' => array(
-
-                    array(
-                        'key'   => 'account_holder_name',
-                        'type'  => 'text',
-                        'label' => 'Account holder name',
-                    ),
-                    array(
-                        'key'     => 'account_type',
-                        'type'    => 'choice-toggle',
-                        'label'   => __( 'Account type', 'multivendorx' ),
-                        'options' => array(
-                            array(
-								'key'   => 'current',
-								'label' => __( 'Current', 'multivendorx' ),
-								'value' => 'current',
-							),
-                            array(
-								'key'   => 'savings',
-								'label' => __( 'Savings', 'multivendorx' ),
-								'value' => 'savings',
-							),
-                        ),
-                    ),
-                    array(
-                        'key'   => 'bank_name',
-                        'type'  => 'text',
-                        'label' => 'Bank name',
-                    ),
-                    array(
-                        'key'   => 'account_number',
-                        'type'  => 'text',
-                        'label' => 'Account number',
-                    ),
-                    array(
-                        'key'   => 'bank_address',
-                        'type'  => 'textarea',
-                        'label' => 'Bank address',
-                    ),
-                    array(
-                        'key'   => 'routing_number',
-                        'type'  => 'text',
-                        'label' => 'ABA routing number',
-                    ),
-                    array(
-                        'key'   => 'iban',
-                        'type'  => 'text',
-                        'label' => 'IBAN',
-                    ),
-                    array(
-                        'key'   => 'destination_currency',
-                        'type'  => 'text',
-                        'label' => 'Destination currency',
-                    ),
-                ),
+                'fields' => $fields,
             );
         }
     }

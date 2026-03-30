@@ -15,7 +15,7 @@
 
     &.type-success {
         i {
-            color: map-get(map-get($color-palette, green), color);;
+            color: map-get(map-get($color-palette, green), color);
         }
     }
 

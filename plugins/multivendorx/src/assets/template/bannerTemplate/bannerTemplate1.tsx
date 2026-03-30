@@ -35,7 +35,7 @@ const BannerTemplate1 = () => {
 				<div className="details">
 					<div className="container">
 						<div className="contact-details">
-							<h2>store155</h2>
+							<div className="store-name">store155</div>
 							<div className="row">
 								<div className="store-email">
 									<i className="dashicons dashicons-email"></i>{' '}

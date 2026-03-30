@@ -10,13 +10,13 @@
         position: sticky;
         top: 1.8rem;
         z-index: 1;
-        background: #fff;
+        background: $background-white;
 
         tr {
             display: flex;
             align-items: stretch;
             align-content: stretch;
-            margin: 0.5rem 0.25rem 0;
+            // margin: 0.5rem 0.25rem 0;
             padding: 0.5rem;
 
             th {
@@ -50,7 +50,7 @@
             align-items: stretch;
             align-content: stretch;
             padding: 0.75rem 0;
-            background: #fff;
+            background: $background-color;
 
             td {
                 display: flex;
@@ -221,7 +221,7 @@
                         background: #fff;
                         display: flex;
                         padding: 0.5rem;
-                        border: 0.115rem solid rgb(0 0 0 / 12.5%);
+                        border: 0.115rem solid #00000020;
                         flex-direction: column;
                         gap: 0.25rem;
 

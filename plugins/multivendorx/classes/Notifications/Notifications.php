@@ -73,6 +73,7 @@ class Notifications {
 				// Store Registration & Approval.
 				'store_pending_approval'             => array(
 					'name'             => 'Store pending approval',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -91,6 +92,7 @@ class Notifications {
 
 				'store_rejected'                     => array(
 					'name'             => 'Store rejected',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -107,6 +109,7 @@ class Notifications {
 
 				'store_permanently_rejected'         => array(
 					'name'             => 'Store permanently rejected',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -146,6 +149,7 @@ class Notifications {
 				// POST ACTIVATION FLOW.
 				'store_activated'                    => array(
 					'name'             => 'Store activated',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -162,6 +166,7 @@ class Notifications {
 
 				'store_under_review'                 => array(
 					'name'             => 'Store under review',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -177,6 +182,7 @@ class Notifications {
 
 				'store_suspended'                    => array(
 					'name'             => 'Store suspended',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -193,6 +199,7 @@ class Notifications {
 
 				'store_permanently_deactivated'      => array(
 					'name'             => 'Store permanently deactivated',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -224,24 +231,26 @@ class Notifications {
 					'category'         => 'activity',
 				),
 				// didi.
-									'store_deactivation_request_rejected' => array(
-										'name'             => 'Store deactivation rejected',
-										'customer_enabled' => false,
-										'store_enabled'    => true,
-										'admin_enabled'    => false,
-										'system_enabled'   => true,
-										'email_subject'    => 'Your store "[store_name]" deactivation request has been rejected',
-										'email_body'       => '<p>Hello,</p>
-											<p>Your store <strong>[store_name]</strong> has been permanently deactivated.</p>
-											',
-										'sms_content'      => 'Store [store_name] deactivation request has been rejected',
-										'system_message'   => 'Your store deactivation request has been rejected.',
-										'tag'              => 'Store',
-										'category'         => 'activity',
-									),
+				'store_deactivation_request_rejected' => array(
+					'name'             => 'Store deactivation rejected',
+					'desc'             => '',
+					'customer_enabled' => false,
+					'store_enabled'    => true,
+					'admin_enabled'    => false,
+					'system_enabled'   => true,
+					'email_subject'    => 'Your store "[store_name]" deactivation request has been rejected',
+					'email_body'       => '<p>Hello,</p>
+						<p>Your store <strong>[store_name]</strong> has been permanently deactivated.</p>
+						',
+					'sms_content'      => 'Store [store_name] deactivation request has been rejected',
+					'system_message'   => 'Your store deactivation request has been rejected.',
+					'tag'              => 'Store',
+					'category'         => 'activity',
+				),
 				// ORDER NOTIFICATIONS.
 				'new_order_store'                    => array(
 					'name'             => 'New order received',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -313,6 +322,7 @@ class Notifications {
 				// SHIPMENT TRACKING.
 				'shipment_tracking_added'            => array(
 					'name'             => 'Shipment tracking added',
+					'desc'             => '',
 					'customer_enabled' => true,
 					'store_enabled'    => false,
 					'admin_enabled'    => false,
@@ -330,6 +340,7 @@ class Notifications {
 				// Pro.
 				'order_delivered'                    => array(
 					'name'             => 'Order delivered',
+					'desc'             => '',
 					'customer_enabled' => true,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -345,6 +356,7 @@ class Notifications {
 
 				'refund_requested'                   => array(
 					'name'             => 'Refund requested',
+					'desc'             => '',
 					'customer_enabled' => true,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -362,6 +374,7 @@ class Notifications {
 
 				'refund_accepted'                    => array(
 					'name'             => 'Refund accepted',
+					'desc'             => '',
 					'customer_enabled' => true,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -379,6 +392,7 @@ class Notifications {
 
 				'refund_rejected'                    => array(
 					'name'             => 'Refund rejected',
+					'desc'             => '',
 					'customer_enabled' => true,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -396,6 +410,7 @@ class Notifications {
 				// REVIEWS.
 				'new_store_review'                   => array(
 					'name'             => 'New store review',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -427,6 +442,7 @@ class Notifications {
 				// PRODUCT NOTIFICATIONS.
 				'product_submitted'                  => array(
 					'name'             => 'Product submitted',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -441,6 +457,7 @@ class Notifications {
 
 				'product_approved'                   => array(
 					'name'             => 'Product approved',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -456,6 +473,7 @@ class Notifications {
 
 				'product_rejected'                   => array(
 					'name'             => 'Product rejected',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -471,6 +489,7 @@ class Notifications {
 				// PRO.
 				'product_low_stock'                  => array(
 					'name'             => 'Product low stock',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -486,6 +505,7 @@ class Notifications {
 				// PRO.
 				'product_out_of_stock'               => array(
 					'name'             => 'Product out of stock',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -627,6 +647,7 @@ class Notifications {
 				// STORE FOLLOWER NOTIFICATIONS.
 				'store_followed'                     => array(
 					'name'             => 'Store followed',
+					'desc'             => '',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -644,6 +665,7 @@ class Notifications {
 
 				'store_new_product_to_followers'     => array(
 					'name'             => 'New product from followed store',
+					'desc'             => '',
 					'customer_enabled' => true,
 					'store_enabled'    => false,
 					'admin_enabled'    => false,
@@ -661,6 +683,7 @@ class Notifications {
 
 				'store_new_coupon_to_followers'      => array(
 					'name'             => 'New coupon from followed store',
+					'desc'             => '',
 					'customer_enabled' => true,
 					'store_enabled'    => false,
 					'admin_enabled'    => false,
@@ -678,6 +701,7 @@ class Notifications {
 				// Pro.
 				'store_vacation_alert_to_followers'  => array(
 					'name'             => 'Store vacation alert',
+					'desc'             => '',
 					'customer_enabled' => true,
 					'store_enabled'    => false,
 					'admin_enabled'    => false,

@@ -385,7 +385,7 @@ const Orders: React.FC = () => {
 
 	const [formData, setFormData] = useState({
 		provider: '',
-		date: '',
+		tracking_date: '',
 		tracking_url: '',
 		tracking_number: '',
 	});
@@ -581,8 +581,8 @@ const Orders: React.FC = () => {
 						htmlFor="title"
 					>
 						<BasicInputUI
-							type="text"
-							value={formData.date}
+							type="date"
+							value={formData.tracking_date}
 							onChange={(value: any) =>
 								handleChange('date', value)
 							}

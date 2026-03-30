@@ -124,7 +124,7 @@
                 padding-right: 0.5rem;
 
                 &.adminfont-check-fill {
-                    color: green;
+                    color: map-get(map-get($color-palette, green), color);
                 }
 
                 &.adminfont-cross {

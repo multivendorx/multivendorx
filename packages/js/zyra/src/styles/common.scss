@@ -584,6 +584,7 @@ $index: 1;
   gap: 0.125rem;
   z-index: 2;
   border-radius: $border-radius-small;
+  white-space: nowrap;  // for stop word wrapping
 
   &.module {
     background: #d9f5f0;
@@ -594,20 +595,12 @@ $index: 1;
 
 // pro tag end
 
-// .rdrDefinedRangesWrapper,
-// .rdrCalendarWrapper,
-// .rdrStaticRange {
-//   background: $background-white;
-// }
-
 // Commone loader style
 .loader-wrapper {
   display: flex;
   gap: 1rem;
   position: relative;
   width: fit-content;
-
-  // margin: 0.5rem 0;
 
   .loader {
     --uib-size: 2.205rem;

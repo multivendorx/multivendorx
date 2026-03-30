@@ -102,7 +102,6 @@ do_action( 'multivendorx_before_store_tabs', $store_id );
                             'post_type'      => 'product',
                             'posts_per_page' => get_option( 'posts_per_page' ),
                             'paged'          => $paged_number,
-                            'author'         => $store_id,
                             'post_status'    => 'publish',
                             'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
                                 array(
@@ -125,7 +124,7 @@ do_action( 'multivendorx_before_store_tabs', $store_id );
                             $paged_number
                         );
 
-                        $products = new WP_Query( $args );
+                        $products = new \WP_Query( $args );
                         ?>
                         <div class="panel entry-content wc-tab">
                             <form method="get" class="store-product-search">

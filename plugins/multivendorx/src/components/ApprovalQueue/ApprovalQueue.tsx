@@ -17,6 +17,7 @@ const ApprovalQueue = () => {
 	const [couponCount, setCouponCount] = useState<number>(0);
 	const [withdrawCount, setWithdrawCount] = useState<number>(0);
 	const [deactivateCount, setDeactivateCount] = useState<number>(0);
+	const [moduleTabCounts, setModuleTabCounts] = useState<Record<string, number>>({});
 
 	useEffect(() => {
 		const fetchPendingCount = () => {
@@ -88,6 +89,23 @@ const ApprovalQueue = () => {
 	
 		};
 		fetchPendingCount();
+
+		// Replay counts that fired before this component mounted
+        if (window.__multivendorxPendingCounts) {
+            setModuleTabCounts({ ...window.__multivendorxPendingCounts });
+        }
+
+        // Listen for future updates
+        const handler = (e: CustomEvent) => {
+            const { id, count } = e.detail;
+            setModuleTabCounts((prev) => {
+				if (prev[id] === count) return prev;
+				return { ...prev, [id]: count };
+			});
+        };
+
+        window.addEventListener('multivendorx:count-update', handler as EventListener);
+        return () => window.removeEventListener('multivendorx:count-update', handler as EventListener);
 	}, []);
 
 	const { modules } = useModules();
@@ -202,12 +220,19 @@ const ApprovalQueue = () => {
 		baseSettingContent,
 		{ settings, modules }
 	);
-	const settingContent = filteredSettings.filter(
-		(tab) =>
-			(!tab.module || modules.includes(tab.module)) &&
-			(tab.condition === undefined || tab.condition)
-	);
 
+	 const settingContent = filteredSettings.filter(
+            (tab) =>
+                (!tab.module || modules.includes(tab.module)) &&
+                (tab.condition === undefined || tab.condition)
+        ).map((tab) => {
+            const liveCount = moduleTabCounts[tab.content?.id];
+            if (liveCount !== undefined) {
+                return { ...tab, content: { ...tab.content, count: liveCount } };
+            }
+            return tab;
+        });
+		
 	const getForm = (tabId: string) => {
 		const defaultForm = (() => {
 			switch (tabId) {

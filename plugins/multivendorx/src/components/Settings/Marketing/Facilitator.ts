@@ -25,7 +25,7 @@ export default {
 			desc: __(
 				'Configure the facilitator fee structure directly from <a href="' +
 					appLocalizer.site_url +
-					'/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-commissions">this section</a>.',
+					'/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=commissions">this section</a>.',
 				'multivendorx'
 			),
 			moduleEnabled: 'facilitator',
