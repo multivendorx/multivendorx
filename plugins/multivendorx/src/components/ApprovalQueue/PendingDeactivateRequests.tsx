@@ -9,15 +9,12 @@ import {
 	TableCard,
 	TableRow,
 } from 'zyra';
-import { useRef } from '@wordpress/element';
-import { setSession } from '@/services/commonFunction';
 
-const PendingDeactivateRequests: React.FC<object> = () => {
+const PendingDeactivateRequests: React.FC<object> = ({onCountChange}) => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
-	const firstLoadRef = useRef(true);
 
 	const handleSingleAction = (action: string, storeId: number) => {
 		if (!storeId) {
@@ -31,7 +28,6 @@ const PendingDeactivateRequests: React.FC<object> = () => {
 			data: { deactivate: true, action, id: storeId },
 		})
 			.then(() => {
-				firstLoadRef.current = true;
 				doRefreshTableData({});
 			})
 			.catch(console.error);
@@ -98,13 +94,7 @@ const PendingDeactivateRequests: React.FC<object> = () => {
 
 				setRows(stores);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
-				if (firstLoadRef.current) {
-					setSession(
-						'deactivateCount',
-						Number(response.headers['x-wp-total']) || 0
-					);
-					firstLoadRef.current = false;
-				}
+				onCountChange?.(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
 			.catch((error) => {

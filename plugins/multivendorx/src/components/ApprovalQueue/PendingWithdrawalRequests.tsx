@@ -9,15 +9,13 @@ import {
 	TableCard,
 	TableRow,
 } from 'zyra';
-import { useRef } from '@wordpress/element';
-import { getUrl, setSession } from '@/services/commonFunction';
+import { getUrl } from '@/services/commonFunction';
 
-const PendingWithdrawal: React.FC<object> = () => {
+const PendingWithdrawal: React.FC<object> = ({onCountChange}) => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
-	const firstLoadRef = useRef(true);
 
 	const handleSingleAction = (action: string, row) => {
 		if (!row?.id) {
@@ -36,7 +34,6 @@ const PendingWithdrawal: React.FC<object> = () => {
 			},
 		})
 			.then(() => {
-				firstLoadRef.current = true;
 				doRefreshTableData({});
 			})
 			.catch(console.error);

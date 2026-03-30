@@ -13,13 +13,12 @@ import {
 	InfoItem,
 } from 'zyra';
 
-import { getUrl, setSession, toWcIsoDate } from '@/services/commonFunction';
-import { useRef } from '@wordpress/element';
+import { getUrl, toWcIsoDate } from '@/services/commonFunction';
 type StoreOption = {
 	label: string;
 	value: number;
 };
-const PendingCoupons: React.FC<object> = () => {
+const PendingCoupons: React.FC<object> = ({onCountChange}) => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
@@ -29,7 +28,6 @@ const PendingCoupons: React.FC<object> = () => {
 	const [rejectCouponId, setRejectCouponId] = useState<number | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [store, setStore] = useState<StoreOption[] | null>(null);
-	const firstLoadRef = useRef(true);
 
 	useEffect(() => {
 		axios
@@ -70,7 +68,6 @@ const PendingCoupons: React.FC<object> = () => {
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
 			.then(() => {
-				firstLoadRef.current = true;
 				doRefreshTableData({});
 			})
 			.catch(console.error);
@@ -98,7 +95,6 @@ const PendingCoupons: React.FC<object> = () => {
 				setRejectPopupOpen(false);
 				setRejectReason('');
 				setRejectCouponId(null);
-				firstLoadRef.current = true;
 				doRefreshTableData({});
 			})
 			.catch(console.error)
@@ -214,13 +210,7 @@ const PendingCoupons: React.FC<object> = () => {
 
 				setRows(coupons);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
-				if (firstLoadRef.current) {
-					setSession(
-						'couponCount',
-						Number(response.headers['x-wp-total']) || 0
-					);
-					firstLoadRef.current = false;
-				}
+				onCountChange?.(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
 			.catch((error) => {

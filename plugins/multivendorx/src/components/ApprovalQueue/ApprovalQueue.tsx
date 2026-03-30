@@ -1,5 +1,7 @@
 /* global appLocalizer */
-import { SettingsNavigator, useModules } from 'zyra';
+import { useState, useEffect } from 'react';
+import { SettingsNavigator, useModules, getApiLink } from 'zyra';
+import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { useLocation, Link } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
@@ -8,14 +10,85 @@ import PendingProducts from './PendingProducts';
 import PendingCoupons from './PendingCoupons';
 import PendingWithdrawal from './PendingWithdrawalRequests';
 import PendingDeactivateRequests from './PendingDeactivateRequests';
-import { getSession } from '@/services/commonFunction';
 
 const ApprovalQueue = () => {
-	const storeCount = getSession('storeCount', 0);
-	const productCount = getSession('productCount', 0);
-	const couponCount = getSession('couponCount', 0);
-	const withdrawCount = getSession('withdrawCount', 0);
-	const deactivateCount = getSession('deactivateCount', 0);
+	const [storeCount, setStoreCount] = useState<number>(0);
+	const [productCount, setProductCount] = useState<number>(0);
+	const [couponCount, setCouponCount] = useState<number>(0);
+	const [withdrawCount, setWithdrawCount] = useState<number>(0);
+	const [deactivateCount, setDeactivateCount] = useState<number>(0);
+
+	useEffect(() => {
+		const fetchPendingCount = () => {
+			axios({
+				method: 'GET',
+				url: getApiLink(appLocalizer, 'store'),
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: { status: 'pending', page: 1, row: 1 },
+			})
+				.then((res) => {
+					const pendingCount =
+						Number(res.headers['x-wp-status-pending']) || 0;
+
+					setStoreCount(pendingCount);
+				});
+		
+			axios
+				.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params: {
+						per_page: 1,
+						meta_key: 'multivendorx_store_id',
+						status: 'pending',
+					},
+				})
+				.then((res) =>
+					setProductCount(parseInt(res.headers['x-wp-total']) || 0)
+				);
+		
+
+			axios
+				.get(`${appLocalizer.apiUrl}/wc/v3/coupons`, {
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params: {
+						per_page: 1,
+						meta_key: 'multivendorx_store_id',
+						status: 'pending',
+					},
+				})
+				.then((res) =>
+					setCouponCount(parseInt(res.headers['x-wp-total']) || 0)
+				);
+		
+			axios
+				.get(getApiLink(appLocalizer, 'store'), {
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params: {
+						page: 1,
+						row: 1,
+						pending_withdraw: true,
+					},
+				})
+				.then((res) => {
+					setWithdrawCount(Number(res.headers['x-wp-total']) || 0);
+				});
+		
+		axios
+			.get(getApiLink(appLocalizer, 'store'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					page: 1,
+					row: 1,
+					deactivate: true,
+				},
+			})
+			.then((res) => {
+				setDeactivateCount(Number(res.headers['x-wp-total']) || 0);
+			});
+	
+		};
+		fetchPendingCount();
+	}, []);
 
 	const { modules } = useModules();
 	const settings = appLocalizer.settings_databases_value || {};
@@ -44,7 +117,7 @@ const ApprovalQueue = () => {
 		{
 			type: 'file',
 			condition:
-				!settings?.['store-permissions']?.products?.includes(
+				settings?.['store-permissions']?.products?.includes(
 					'publish_products'
 				),
 			content: {
@@ -139,19 +212,19 @@ const ApprovalQueue = () => {
 		const defaultForm = (() => {
 			switch (tabId) {
 				case 'stores':
-					return <PendingStores />;
+					return <PendingStores onCountChange={setStoreCount}/>;
 
 				case 'products':
-					return <PendingProducts />;
+					return <PendingProducts onCountChange={setProductCount}/>;
 
 				case 'coupons':
-					return <PendingCoupons />;
+					return <PendingCoupons onCountChange={setCouponCount}/>;
 
 				case 'withdrawal':
-					return <PendingWithdrawal />;
+					return <PendingWithdrawal onCountChange={setWithdrawCount}/>;
 
 				case 'deactivate-requests':
-					return <PendingDeactivateRequests />;
+					return <PendingDeactivateRequests onCountChange={setDeactivateCount} />;
 
 				default:
 					return null;

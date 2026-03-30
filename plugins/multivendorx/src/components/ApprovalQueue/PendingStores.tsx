@@ -15,10 +15,9 @@ import {
 	InfoItem,
 } from 'zyra';
 
-import { formatLocalDate, setSession } from '@/services/commonFunction';
-import { useRef } from '@wordpress/element';
+import { formatLocalDate } from '@/services/commonFunction';
 
-const PendingStores: React.FC<object> = () => {
+const PendingStores: React.FC<object> = ({onCountChange}) => {
 	const [rows, setRows] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
@@ -27,7 +26,6 @@ const PendingStores: React.FC<object> = () => {
 	const [rejectReason, setRejectReason] = useState('');
 	const [rejectStoreId, setRejectStoreId] = useState<number | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const firstLoadRef = useRef(true);
 
 	const handleSingleAction = (action: string, storeId: number) => {
 		if (!storeId) {
@@ -52,7 +50,6 @@ const PendingStores: React.FC<object> = () => {
 			data: { status: statusValue },
 		})
 			.then(() => {
-				firstLoadRef.current = true;
 				doRefreshTableData({});
 			})
 			.catch(console.error);
@@ -78,7 +75,6 @@ const PendingStores: React.FC<object> = () => {
 				setRejectPopupOpen(false);
 				setRejectReason('');
 				setRejectStoreId(null);
-				firstLoadRef.current = true;
 				doRefreshTableData({});
 			})
 			.catch(console.error)
@@ -167,10 +163,7 @@ const PendingStores: React.FC<object> = () => {
 				setRows(items);
 				const count = Number(response.headers['x-wp-total']) || 0;
 				setTotalRows(count);
-				if (firstLoadRef.current) {
-					setSession('storeCount', count);
-					firstLoadRef.current = false;
-				}
+				onCountChange?.(count);
 				setIsLoading(false);
 			})
 			.catch(() => {
