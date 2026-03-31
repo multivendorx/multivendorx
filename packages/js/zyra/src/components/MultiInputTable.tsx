@@ -414,12 +414,14 @@ const MultiInputTable: FieldComponent = {
             onChange({ ...currentSetting, ...patch });
         };
 
+        const effectiveSetting = field.storeSetting ? currentSetting : settings;
+
         return (
             <MultiInputTableUI
                 khali_dabba={ZyraVariable?.khali_dabba ?? false}
                 rows={field.rows ?? []}
                 columns={field.columns ?? []}
-                setting={settings || currentSetting}
+                setting={effectiveSetting}
                 visibilityContext={settings as FieldSetting}
                 storeTabSetting={storeTabSetting ?? {}}
                 proSetting={field.proSetting ?? false}

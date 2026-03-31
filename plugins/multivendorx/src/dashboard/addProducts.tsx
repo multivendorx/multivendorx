@@ -717,13 +717,16 @@ const AddProduct = () => {
 										'multivendorx'
 									)}
 									onChange={(val) => {
+										const [file] = Array.isArray(val)
+												? val
+												: [val];
+										const url = file?.url || '';
 										if (!val) {
 											setFeaturedImage(null);
 											return;
 										}
-										const url = val as string;
 										setFeaturedImage({
-											id: 0, // wp.media id not available from current FileInput
+											id: file?.id, // wp.media id not available from current FileInput
 											src: url,
 											thumbnail: url,
 										});

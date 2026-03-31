@@ -175,7 +175,6 @@ const StoreTable: React.FC = () => {
 					onClick: (row) => {
 						window.open(
 							getUrl(row.id, 'store', 'edit'),
-							'_blank'
 						);
 					},
 				},

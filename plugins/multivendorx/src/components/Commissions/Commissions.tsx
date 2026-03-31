@@ -12,6 +12,7 @@ import {
 	QueryProps,
 	CategoryCount,
 	ItemListUI,
+	useModules,
 } from 'zyra';
 import ViewCommission from './ViewCommission';
 import {
@@ -37,6 +38,7 @@ const Commission: React.FC = () => {
 	const [selectedCommissionId, setSelectedCommissionId] = useState<
 		number | string | null
 	>(null);
+	const { modules } = useModules();
 
 	const handleSingleAction = (action: string, row) => {
 		if (!row.id) {
@@ -74,7 +76,6 @@ const Commission: React.FC = () => {
 				setIsLoading(false);
 			});
 	}, []);
-
 	const headers = {
 		id: {
 			label: __('ID', 'multivendorx'),
@@ -112,43 +113,52 @@ const Commission: React.FC = () => {
 		commission_summary: {
 			label: __('Commission Summary', 'multivendorx'),
 			width: 20,
-			render: (row) => (
-				<ItemListUI
-					className="price-list"
-					items={[
-						{
-							title: 'Store Earning',
-							value: formatCurrency(row.store_earning),
-						},
-						{
-							title: 'Shipping Amount',
-							value: '+' + formatCurrency(row.shipping_amount),
-						},
-						{
-							title: 'Tax Amount',
-							value: '+' + formatCurrency(row.tax_amount),
-						},
-						{
-							title: 'Gateway Fee',
-							value: '-' + formatCurrency(row.gateway_fee),
-						},
-						{
-							title: 'Marketplace Commission',
-							value:
-								'-' +
-								formatCurrency(row.marketplace_commission),
-						},
-						{
-							title: 'Store Discount',
-							value: '-' + formatCurrency(row.store_discount),
-						},
-						{
-							title: 'Admin Discount',
-							value: formatCurrency(row.admin_discount),
-						},
-					]}
-				/>
-			),
+			render: (row) => {
+				const earningItems = [
+					{
+						title: 'Store Earning',
+						display: true,
+						value: formatCurrency(row.store_earning),
+					},
+					{
+						title: 'Shipping Amount',
+						display: modules.includes('store-shipping'),
+						value: '+' + formatCurrency(row.shipping_amount),
+					},
+					{
+						title: 'Tax Amount',
+						display: appLocalizer.taxes_enabled ==='yes',
+						value: '+' + formatCurrency(row.tax_amount),
+					},
+					{
+						title: 'Gateway Fee',
+						display: modules.includes('marketplace-gateway'),
+						value: '-' + formatCurrency(row.gateway_fee),
+					},
+					{
+						title: 'Marketplace Commission',
+						display: true,
+						value: '-' + formatCurrency(row.marketplace_commission),
+					},
+					{
+						title: 'Store Discount',
+						display: Number(row.store_discount) !== 0,
+						value: '-' + formatCurrency(row.store_discount),
+					},
+					{
+						title: 'Admin Discount',
+						display: Number(row.admin_discount) !== 0,
+						value: formatCurrency(row.admin_discount),
+					},
+				].filter(item => item.display !== false);
+
+				return (
+					<ItemListUI
+						className="price-list"
+						items={earningItems}
+					/>
+				);
+			},
 			csvDisplay: false,
 		},
 		store_payable: {
@@ -242,7 +252,7 @@ const Commission: React.FC = () => {
 						count:
 							Number(
 								response.headers[
-									'x-wp-status-partially-refunded'
+								'x-wp-status-partially-refunded'
 								]
 							) || 0,
 					},

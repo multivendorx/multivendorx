@@ -38,11 +38,11 @@ const EditStore = () => {
 	const [editName, setEditName] = useState(false);
 	const [editDesc, setEditDesc] = useState(false);
 	const [selectedOwner, setSelectedOwner] = useState(null);
+	const [orderCount, setOrderCount] = useState(0);
+	const [productCount, setProductCount] = useState(0);
 	const location = useLocation();
 	const [prevName, setPrevName] = useState('');
 	const [prevDesc, setPrevDesc] = useState('');
-	const bannerRef = useRef<HTMLDivElement>(null);
-	const logoRef = useRef<HTMLDivElement>(null);
 	const storeRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		if (editName) {
@@ -108,6 +108,36 @@ const EditStore = () => {
 			const data = res.data || {};
 			setData(data);
 		});
+		axios
+			.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					per_page: 1,
+					meta_key: 'multivendorx_store_id',
+					meta_value: editId,
+				},
+			})
+			.then((response) => {
+				setOrderCount(Number(response.headers['x-wp-total']) || 0);
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+		axios
+			.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					per_page: 1,
+					meta_key: 'multivendorx_store_id',
+					meta_value: editId,
+				},
+			})
+			.then((response) => {
+				setProductCount(Number(response.headers['x-wp-total']) || 0);
+			})
+			.catch((err) => {
+				console.error(err);
+			});
 	}, [editId]);
 
 	const runUploader = (key: string) => {
@@ -849,12 +879,12 @@ const EditStore = () => {
 													<i className="adminfont-form-phone"></i>
 													Registered since {data?.create_time?.split('-')[0]}
 												</div>
-												{data.phone &&
+												{data.phone && (
 													<div className="desc store-info">
 														<i className="adminfont-form-phone"></i>
-														{data.phone}
+														{`${data.phone.country_code} ${data.phone.phone}`}
 													</div>
-												}
+												)}
 												<div className="desc store-info">
 													<i className="adminfont-mail"></i>
 													{data.primary_email}
@@ -914,12 +944,12 @@ const EditStore = () => {
 
 										<div className="details-box">
 											<div className="details">
-												<div className="number"><i className="adminfont-single-product blue"></i> 15</div>
-												<div className="desc">Products</div>
+												<div className="number"><i className="adminfont-single-product blue"></i> {productCount}</div>
+												<div className="desc">{__('Products', 'multivendorx')}</div>
 											</div>
 											<div className="details">
-												<div className="number"><i className="adminfont-order pink"></i> 15</div>
-												<div className="desc">Orders</div>
+												<div className="number"><i className="adminfont-order pink"></i> {orderCount}</div>
+												<div className="desc">{__('Orders', 'multivendorx')}</div>
 											</div>
 										</div>
 									</div>

@@ -422,94 +422,94 @@ const PanelHeader: React.FC = () => {
                     <div className="expandable-header-info">
                         {/* Title (inline-editable for custom) */}
                         <div className="title-wrapper">
-                                {editing &&
-                                editField === 'title' &&
-                                canEditField(
-                                    method,
-                                    'title',
-                                    addNewTemplate
-                                ) ? (
-                                    <BasicInputUI
-                                        ref={titleRef}
-                                        value={editTitle}
-                                        onChange={(value: string) =>
-                                            dispatch({
-                                                type: 'UPDATE_EDIT_TITLE',
-                                                title: value,
-                                            })
-                                        }
-                                        onKeyDown={(e: React.KeyboardEvent) =>
-                                            e.key === 'Enter' && commitEdit()
-                                        }
-                                        onClick={(e: React.MouseEvent) =>
-                                            e.stopPropagation()
-                                        }
-                                    />
-                                ) : (
-                                    <span
-                                        className={`title ${
-                                            canEditField(
-                                                method,
-                                                'title',
-                                                addNewTemplate
-                                            )
-                                                ? 'editable-title'
-                                                : ''
-                                        }`}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            if (
-                                                canEditField(
-                                                    method,
-                                                    'title',
-                                                    addNewTemplate
-                                                )
-                                            ) {
-                                                dispatch({
-                                                    type: 'START_EDIT',
-                                                    id: method.id,
-                                                    field: 'title',
-                                                    title:
-                                                        (methodValue.title as string) ||
-                                                        method.label ||
-                                                        '',
-                                                });
-                                            }
-                                        }}
-                                        title={
-                                            canEditField(
-                                                method,
-                                                'title',
-                                                addNewTemplate
-                                            )
-                                                ? 'Click to edit'
-                                                : undefined
-                                        }
-                                    >
-                                        {title}
-                                        {canEditField(
+                            {editing &&
+                            editField === 'title' &&
+                            canEditField(
+                                method,
+                                'title',
+                                addNewTemplate
+                            ) ? (
+                                <BasicInputUI
+                                    ref={titleRef}
+                                    value={editTitle}
+                                    onChange={(value: string) =>
+                                        dispatch({
+                                            type: 'UPDATE_EDIT_TITLE',
+                                            title: value,
+                                        })
+                                    }
+                                    onKeyDown={(e: React.KeyboardEvent) =>
+                                        e.key === 'Enter' && commitEdit()
+                                    }
+                                    onClick={(e: React.MouseEvent) =>
+                                        e.stopPropagation()
+                                    }
+                                />
+                            ) : (
+                                <span
+                                    className={`title ${
+                                        canEditField(
                                             method,
                                             'title',
                                             addNewTemplate
-                                        ) && (
-                                            <i className="adminfont-edit inline-edit-icon" />
-                                        )}
-                                    </span>
-                                )}
+                                        )
+                                            ? 'editable-title'
+                                            : ''
+                                    }`}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (
+                                            canEditField(
+                                                method,
+                                                'title',
+                                                addNewTemplate
+                                            )
+                                        ) {
+                                            dispatch({
+                                                type: 'START_EDIT',
+                                                id: method.id,
+                                                field: 'title',
+                                                title:
+                                                    (methodValue.title as string) ||
+                                                    method.label ||
+                                                    '',
+                                            });
+                                        }
+                                    }}
+                                    title={
+                                        canEditField(
+                                            method,
+                                            'title',
+                                            addNewTemplate
+                                        )
+                                            ? 'Click to edit'
+                                            : undefined
+                                    }
+                                >
+                                    {title}
+                                    {canEditField(
+                                        method,
+                                        'title',
+                                        addNewTemplate
+                                    ) && (
+                                        <i className="adminfont-edit inline-edit-icon" />
+                                    )}
+                                </span>
+                            )}
 
-                                {/* Active/Inactive badge — predefined disableBtn methods only */}
-                                {method.disableBtn && !method.isCustom && (
-                                    <div className="panel-badges">
-                                        <div
-                                            className={`admin-badge ${
-                                                isOn ? 'green' : 'red'
-                                            }`}
-                                        >
-                                            {isOn ? 'Active' : 'Inactive'}
-                                        </div>
+                            {/* Active/Inactive badge — predefined disableBtn methods only */}
+                            {method.disableBtn && !method.isCustom && (
+                                <div className="panel-badges">
+                                    <div
+                                        className={`admin-badge ${
+                                            isOn ? 'green' : 'red'
+                                        }`}
+                                    >
+                                        {isOn ? 'Active' : 'Inactive'}
                                     </div>
-                                )}
-                            </span>
+                                </div>
+                            )}
+                        </div>
 
                         {/* Description (inline-editable for custom) */}
                         <div className="panel-description">

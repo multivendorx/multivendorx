@@ -18,7 +18,7 @@ type StoreOption = {
 	label: string;
 	value: number;
 };
-const PendingCoupons: React.FC<object> = ({onCountChange}) => {
+const PendingCoupons: React.FC<object> = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
@@ -210,7 +210,7 @@ const PendingCoupons: React.FC<object> = ({onCountChange}) => {
 
 				setRows(coupons);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
-				onCountChange?.(Number(response.headers['x-wp-total']) || 0);
+				window.multivendorxStore?.setCount('coupons', Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
 			.catch((error) => {

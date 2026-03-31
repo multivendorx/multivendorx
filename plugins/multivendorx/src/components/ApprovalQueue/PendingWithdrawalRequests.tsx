@@ -11,7 +11,7 @@ import {
 } from 'zyra';
 import { getUrl } from '@/services/commonFunction';
 
-const PendingWithdrawal: React.FC<object> = ({onCountChange}) => {
+const PendingWithdrawal: React.FC<object> = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
@@ -109,7 +109,7 @@ const PendingWithdrawal: React.FC<object> = ({onCountChange}) => {
 				setRows(stores);
 				const total = Number(response.headers['x-wp-total']) || 0;
 				setTotalRows(total);
-				onCountChange?.(total);
+				window.multivendorxStore?.setCount('withdrawal', total);
 				setIsLoading(false);
 			})
 			.catch((error) => {

@@ -609,6 +609,7 @@ $star-color: #d49c00;
         width: 5rem;
     }
 }
+
 //  review page end
 
 .order-refund-product-list {
@@ -643,6 +644,51 @@ $star-color: #d49c00;
 
 }
 
+
+// my account view order tab start
+
+// refund reason section
+.multivendorx-refund-reason {
+    .category-name {
+        display: flex;
+        gap: 0.313rem;
+
+        .multivendorx-badge {
+            color: var(--theme-primary);
+            background: var(--theme-background);
+            padding: 0.063rem 0.625rem;
+        }
+    }
+
+    .refund-reason-image {
+        display: flex;
+        gap: 0.625rem;
+        img {
+            width: 4rem;
+        }
+    }
+}
+
+// Request timeline section
+.multivendorx-timeline {
+    .multivendorx-timeline-item {
+        display: flex;
+        gap: 1.5rem;
+        border-left: 0.125rem solid var(--theme-background);
+        margin-left: 1rem;
+        align-items: start;
+
+        .timeline-icon {
+            background: #efebeb;
+            display: flex;
+            padding: 0.313rem;
+            border-radius: 50%;
+            margin-left: -1rem;
+        }
+    }
+}
+
+// my account view order tab end
 
 
 // elementor banner 

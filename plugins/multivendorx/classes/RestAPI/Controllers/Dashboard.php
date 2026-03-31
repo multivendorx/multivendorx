@@ -308,6 +308,12 @@ class Dashboard extends \WP_REST_Controller {
                 'icon'       => 'coupon',
                 'capability' => array( 'read_products' ),
             ),
+            'media-library'       => array(
+                'name'       => 'Media Library',
+                'slug'       => 'media-library',
+                'icon'       => 'coupon',
+                'capability' => array( 'read_products' ),
+            ),
         );
 
         $saved_endpoints = MultiVendorX()->setting->get_setting( 'menu_manager' );

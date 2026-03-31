@@ -40,7 +40,7 @@ interface WithdrawalItem {
 const Withdrawls: React.FC = () => {
 	const [data, setData] = useState<WithdrawalData>([]);
 	const [amount, setAmount] = useState<number>();
-	const [error, setError] = useState<string>('');
+	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [lastWithdraws, setLastWithdraws] = useState<WithdrawalItem[]>([]);
 	const [storeData, setStoreData] = useState(null);
 
@@ -90,25 +90,32 @@ const Withdrawls: React.FC = () => {
 	}, []);
 
 	const handleAmountChange = (value: number) => {
-		if (value > data.available_balance) {
-			setError(
-				`Amount cannot be greater than available balance (${data.available_balance})`
-			);
-		} else {
-			setError('');
-		}
 		setAmount(value);
+
+		setErrors(prev => ({
+			...prev,
+			amount: value > data.available_balance
+				? `Amount cannot exceed ${data.available_balance}`
+				: ''
+		}));
 	};
 
 	const handleWithdrawal = () => {
-		if (amount > data.available_balance) {
-			setError(
-				`Amount cannot be greater than available balance (${data.available_balance})`
-			);
-			setRequestWithdrawal(true);
-			return;
+		const newErrors = {};
+
+		if (!storeData?.payment_method || storeData.payment_method === '') {
+			newErrors.payment = __('Please configure a valid payment method before requesting a withdrawal.', 'multivendorx');
 		}
 
+		if (amount > data.available_balance) {
+			newErrors.amount = `Amount cannot be greater than available balance (${data.available_balance})`;
+		}
+
+		setErrors(newErrors);
+		
+		if (Object.keys(newErrors).length > 0) {
+			return;
+		}
 		axios({
 			method: 'POST',
 			url: getApiLink(
@@ -388,6 +395,7 @@ const Withdrawls: React.FC = () => {
 								<FormGroup
 									label={__('Payment Processor', 'multivendorx')}
 									htmlFor="payment_method"
+									notice={errors.payment}
 								>
 									<div className="payment-method">
 										{storeData?.payment_method ? (
@@ -411,7 +419,7 @@ const Withdrawls: React.FC = () => {
 								<FormGroup
 									label={__('Amount', 'multivendorx')}
 									htmlFor="Amount"
-									notice={error}
+									notice={errors.amount}
 								>
 									<BasicInputUI
 										type="number"

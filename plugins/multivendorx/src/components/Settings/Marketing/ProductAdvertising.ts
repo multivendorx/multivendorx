@@ -20,7 +20,7 @@ export default {
 			),
 			type: 'nested',
 			single: true,
-			moduleEnabled: 'advertise-product',
+			moduleEnabled: 'product-advertising',
 			proSetting: true,
 			nestedFields: [
 				{
@@ -88,7 +88,7 @@ export default {
 			},
 			postText: __('days', 'multivendorx'),
 			size: '8rem',
-			moduleEnabled: 'advertise-product',
+			moduleEnabled: 'product-advertising',
 			proSetting: true,
 		},
 		{
@@ -101,18 +101,6 @@ export default {
 			),
 			options: [
 				{
-					key: 'enable_advertisement_in_subscription',
-					label: __(
-						'Include advertising in subscriptions',
-						'multivendorx'
-					),
-					value: 'enable_advertisement_in_subscription',
-					desc: __(
-						'Allow stores to advertise products at no extra cost if included in their subscription plan.',
-						'multivendorx'
-					),
-				},
-				{
 					key: 'mark_advertised_product_as_featured',
 					label: __(
 						'Mark advertised products as featured',
@@ -121,18 +109,6 @@ export default {
 					value: 'mark_advertised_product_as_featured',
 					desc: __(
 						'Automatically mark advertised products as featured. They will be removed from the featured list once advertising expires.',
-						'multivendorx'
-					),
-				},
-				{
-					key: 'display_advertised_product_on_top',
-					label: __(
-						'Show promoted products at the top',
-						'multivendorx'
-					),
-					value: 'display_advertised_product_on_top',
-					desc: __(
-						'Display advertised products at the top of catalog pages such as the shop or store page.',
 						'multivendorx'
 					),
 				},
@@ -151,6 +127,7 @@ export default {
 			],
 			selectDeselect: true,
 			proSetting: true,
+			moduleEnabled: 'product-advertising',
 		},
 	],
 };

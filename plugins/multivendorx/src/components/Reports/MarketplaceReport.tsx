@@ -366,7 +366,11 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 			},
 		})
 			.then((response) => {
-				setTopCustomers(response.data);
+				const filteredCustomers = response.data.filter(customer => {
+					return customer.orders_count > 0 && customer.total_spend > 0;
+				});
+
+				setTopCustomers(filteredCustomers);
 			})
 			.finally(() => {
 				setIsLoading(false);
@@ -532,8 +536,8 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 														'percent'
 														? `${coupon.amount}%`
 														: formatCurrency(
-																coupon.amount
-															)
+															coupon.amount
+														)
 													: '-'}
 											</span>
 										</div>
@@ -608,7 +612,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 												<span>
 													{formatCurrency(
 														customer.total_spend ||
-															0
+														0
 													)}
 												</span>
 											</div>
@@ -656,7 +660,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 												),
 												value: formatCurrency(
 													store.commission_refunded ||
-														0
+													0
 												),
 											},
 										]}

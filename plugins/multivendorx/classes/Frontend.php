@@ -49,6 +49,12 @@ class Frontend {
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
         // user information before registration.
         add_filter( 'multivendorx_add_content_before_form', array( $this, 'add_woocommerce_login_from' ) );
+        // Display custom message in My Account Dashboard.
+        add_action( 'woocommerce_account_dashboard', [ $this, 'custom_my_account_dashboard_message'] );
+        // Restrict media for store dashboard.
+        add_filter('ajax_query_attachments_args', [ $this, 'multivendorx_restrict_store_media' ] );
+      
+        add_action( 'woocommerce_view_order', array( $this, 'view_order_content' ) );
     }
 
 	/**
@@ -62,6 +68,9 @@ class Frontend {
 	public function load_scripts() {
 		FrontendScripts::load_scripts();
 		FrontendScripts::enqueue_script( 'multivendorx-store-products-script' );
+        if ( is_account_page() ) {
+            FrontendScripts::enqueue_style( 'multivendorx-store-tabs-style' );
+        }
 	}
 
     /**
@@ -91,7 +100,102 @@ class Frontend {
             $q->set( 'post__not_in', $exclude );
         }
     }
+    public function view_order_content( $order_id ) {
+        if ( ! is_wc_endpoint_url( 'view-order' ) ) {
+            return;
+        }
+        ?>
+        <section class="woocommerce-customer-details multivendorx-refund-reason">
+            <h2 class="woocommerce-column__title">
+                <?php esc_html_e( 'Refund reason', 'multivendorx' ); ?>
+            </h2>
 
+            <address>
+                <!-- Category -->
+                <p class="category-name">
+                    <strong><?php esc_html_e( 'Category:', 'multivendorx' ); ?></strong><br/>
+                    <span class="multivendorx-badge">
+                        <?php esc_html_e( 'Wrong item received', 'multivendorx' ); ?>
+                    </span>
+                </p>
+
+                <!-- Reason -->
+                <address>
+                    <?php esc_html_e( "I ordered a medium-sized jacket but received a large instead. The tag also shows a different product code than what was listed on the order. I'd like a full refund as the correct size isn't available.", 'multivendorx' ); ?>
+                </address>
+
+                <!-- Attachments -->
+                <p>
+                    <strong><?php esc_html_e( 'Attached images:', 'multivendorx' ); ?></strong>
+                </p>
+                
+                <div class="refund-reason-image">
+                <img src="<?php echo esc_url( wc_placeholder_img_src() ); ?>" alt="" />
+                <img src="<?php echo esc_url( wc_placeholder_img_src() ); ?>" alt="" />
+                <img src="<?php echo esc_url( wc_placeholder_img_src() ); ?>" alt="" />
+                <img src="<?php echo esc_url( wc_placeholder_img_src() ); ?>" alt="" />
+                </div>
+            </address>
+
+        </section>
+
+        <section class="woocommerce-customer-details multivendorx-request-timeline">
+            <h2 class="woocommerce-column__title">
+                <?php esc_html_e( 'Request timeline', 'multivendorx' ); ?>
+            </h2>
+            <address>
+                <div class="multivendorx-timeline">
+                    <!-- Step 1 -->
+                    <div class="multivendorx-timeline-item">
+                        <div class="timeline-icon">
+                            <span class="dashicons dashicons-yes"></span>
+                        </div>
+                        <div class="multivendorx-timeline-content">
+                            <div class="multivendorx-timeline-title">
+                            <strong> <?php esc_html_e( 'Refund requested', 'multivendorx' ); ?> </strong>
+                            </div>
+                            <span class="multivendorx-timeline-time">
+                                Mar 30, 2026 · 10:42 AM
+                            </span>
+                            <div class="multivendorx-timeline-note">
+                                <?php esc_html_e( 'Customer submitted request with 3 attachments.', 'multivendorx' ); ?>
+                            </div>
+                        </div>
+                            
+                    </div>
+
+                    <div class="multivendorx-timeline-item">
+                        <div class="timeline-icon">
+                            <span class="dashicons dashicons-ellipsis"></span>
+                        </div>
+                        <div class="multivendorx-timeline-content">
+                            <div class="multivendorx-timeline-title">
+                            <strong> <?php esc_html_e( 'Under review', 'multivendorx' ); ?> </strong>
+                            </div>
+                            <span class="multivendorx-timeline-time">
+                                Awaiting admin action
+                            </span>
+                            <div class="multivendorx-timeline-note">
+                                <?php esc_html_e( 'Request is pending review by the store admin.', 'multivendorx' ); ?>
+                            </div>
+                        </div>                            
+                    </div>
+
+                    <div class="multivendorx-timeline-item">
+                        <div class="timeline-icon">
+                            <span class="dashicons dashicons-minus"></span>
+                        </div>
+                        <div class="multivendorx-timeline-content">
+                            <div class="multivendorx-timeline-title">
+                            <strong> <?php esc_html_e( 'Decision pending', 'multivendorx' ); ?> </strong>
+                            </div>
+                        </div>                            
+                    </div>
+                </div>
+            </address>
+        </section>
+        <?php
+    }
     /**
      * Restrict products from cart
      *
@@ -504,4 +608,21 @@ class Frontend {
 
 		return ob_get_clean();
 	}
+
+    public function custom_my_account_dashboard_message() {
+        if ( in_array( 'store_owner', MultiVendorX()->current_user->roles, true ) ) {
+            $dashboard_url = get_permalink((int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ));
+            echo '<div class="woocommerce-message">';
+            echo 'Manage your store, orders, and products <a href="' . esc_url($dashboard_url) . '">Open dashboard</a>.';
+            echo '</div>';
+        }
+    }
+
+    public function multivendorx_restrict_store_media($query) {
+        if ( in_array('store_owner', MultiVendorX()->current_user->roles, true) ) {
+            $query['author'] = MultiVendorX()->current_user_id;
+        }
+
+        return $query;
+    }
 }

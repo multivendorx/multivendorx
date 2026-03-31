@@ -507,7 +507,7 @@ export default {
 			name: __('Marketplace Fee', 'multivendorx'),
 			desc: 'Set and manage platform fees for each order or store to cover operational costs',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
-			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=store-commissions`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=commissions`,
 			proModule: true,
 			category: 'marketplace_boosters',
 		},
@@ -516,7 +516,7 @@ export default {
 			name: __('Franchises', 'multivendorx'),
 			desc: 'Enables franchise-style ordering with store-created orders, admin-product ordering, and automatic store assignment based on customer location.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
-			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=franchises`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=onboarding`,
 			proModule: true,
 			category: ['store_management', 'marketplace_boosters'],
 			miniModule: true,
@@ -528,12 +528,12 @@ export default {
 			desc: 'Payment gateway fees are deducted from vendor commissions by the admin, ensuring platform costs are covered automatically.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/payment-gateway-charge/',
-			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=store-commissions`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=commissions`,
 			proModule: false,
 			category: ['store_management', 'payment_management'],
 		},
 		{
-			id: 'advertise-product',
+			id: 'product-advertising',
 			name: __('Advertise Product', 'multivendorx'),
 			desc: 'Paid promotion for products within the marketplace, boosting visibility.',
 			docLink:
@@ -558,7 +558,7 @@ export default {
 			desc: 'Manages stock levels, sends low-stock alerts, and maintains a waitlist for out-of-stock products.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/store-inventory',
-			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=inventory`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=store-inventory`,
 			proModule: true,
 			category: 'marketplace_boosters',
 			miniModule: true,

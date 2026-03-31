@@ -859,6 +859,7 @@ class Notifications {
 					$value = implode( ' ', $value );
 				}
 				$message = str_replace( '[' . $key . ']', $value, $message );
+				$subject = str_replace( '[' . $key . ']', $value, $subject );
 			}
 			$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 

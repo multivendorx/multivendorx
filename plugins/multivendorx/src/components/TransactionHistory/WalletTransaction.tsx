@@ -46,10 +46,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	const [recentDebits, setRecentDebits] = useState([]);
 	const [storeData, setStoreData] = useState(null);
 	const [requestWithdrawal, setRequestWithdrawal] = useState(false);
-	const [validationErrors, setValidationErrors] = useState<{
-		amount?: string;
-		paymentMethod?: string;
-	}>({});
 	const [amount, setAmount] = useState<number>(0);
 	const [note, setNote] = useState('');
 
@@ -58,6 +54,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 		number | null
 	>(null);
 	const [walletLoading, setWalletLoading] = useState(true);
+	const [errors, setErrors] = useState<Record<string, string>>({});
 
 	// 🔹 Fetch wallet/transaction overview whenever store changes
 	useEffect(() => {
@@ -118,30 +115,21 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	}, [storeId]);
 
 	const handleWithdrawal = () => {
-		// Clear all old errors first
-		setValidationErrors({});
-
 		const newErrors = {};
-		// Amount validations
-		if (!amount || amount <= 0) {
-			newErrors.amount = 'Please enter a valid amount.';
-		} else if (amount > (wallet.available_balance ?? 0)) {
-			newErrors.amount = `Amount cannot be greater than available balance (${formatCurrency(
-				wallet.available_balance
-			)})`;
+
+		if (!storeData?.payment_method || storeData.payment_method === '') {
+			newErrors.payment = __('Please configure a valid payment method before requesting a withdrawal.', 'multivendorx');
 		}
 
-		// Payment method validation
-		if (!storeData.payment_method) {
-			newErrors.paymentMethod = 'Please select a payment processor.';
+		if (amount > wallet.available_balance) {
+			newErrors.amount = `Amount cannot be greater than available balance (${wallet.available_balance})`;
 		}
 
-		// If any validation errors exist, show them and stop
+		setErrors(newErrors);
+
 		if (Object.keys(newErrors).length > 0) {
-			setValidationErrors(newErrors);
 			return;
 		}
-
 		// Submit request
 		axios({
 			method: 'POST',
@@ -169,6 +157,12 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 
 	const AmountChange = (value: number) => {
 		setAmount(value);
+		setErrors(prev => ({
+			...prev,
+			amount: value > wallet.available_balance
+				? `Amount cannot exceed ${wallet.available_balance}`
+				: ''
+		}));
 	};
 
 	const formatMethod = (method) => {
@@ -200,7 +194,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 			label: __('Transaction Type', 'multivendorx'),
 			render: (row) =>
 				row.transaction_type?.toLowerCase() === 'commission' &&
-				row.commission_id ? (
+					row.commission_id ? (
 					<span
 						className="link-item"
 						onClick={() => {
@@ -428,14 +422,14 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 									const formattedPaymentMethod =
 										txn.payment_method
 											? txn.payment_method
-													.replace(/[-_]/g, ' ') // replace - and _ with spaces
-													.replace(/\b\w/g, (char) =>
-														char.toUpperCase()
-													) // capitalize each word
+												.replace(/[-_]/g, ' ') // replace - and _ with spaces
+												.replace(/\b\w/g, (char) =>
+													char.toUpperCase()
+												) // capitalize each word
 											: __(
-													'No payment method configured',
-													'multivendorx'
-												);
+												'No payment method configured',
+												'multivendorx'
+											);
 
 									return (
 										<div key={txn.id} className="info-item">
@@ -457,12 +451,11 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 
 											<div className="right-details">
 												<div
-													className={`price ${
-														parseFloat(txn.debit) <
-														0
+													className={`price ${parseFloat(txn.debit) <
+															0
 															? 'color-red'
 															: 'color-green'
-													}`}
+														}`}
 												>
 													{formatCurrency(txn.debit)}
 												</div>
@@ -557,59 +550,59 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 										},
 
 										...(wallet?.withdrawal_setting?.length >
-										0
+											0
 											? [
-													{
-														title: __(
-															'Free Withdrawals',
-															'multivendorx'
-														),
-														desc: (
-															<>
-																{__(
-																	'Then',
-																	'multivendorx'
-																)}{' '}
-																{Number(
+												{
+													title: __(
+														'Free Withdrawals',
+														'multivendorx'
+													),
+													desc: (
+														<>
+															{__(
+																'Then',
+																'multivendorx'
+															)}{' '}
+															{Number(
+																wallet
+																	?.withdrawal_setting?.[0]
+																	?.withdrawal_percentage
+															) || 0}
+															% +{' '}
+															{formatCurrency(
+																Number(
 																	wallet
 																		?.withdrawal_setting?.[0]
-																		?.withdrawal_percentage
-																) || 0}
-																% +{' '}
-																{formatCurrency(
-																	Number(
-																		wallet
-																			?.withdrawal_setting?.[0]
-																			?.withdrawal_fixed
-																	) || 0
-																)}{' '}
+																		?.withdrawal_fixed
+																) || 0
+															)}{' '}
+															{__(
+																'fee',
+																'multivendorx'
+															)}
+														</>
+													),
+													value: (
+														<>
+															{Math.max(
+																0,
+																(wallet
+																	?.withdrawal_setting?.[0]
+																	?.free_withdrawals ??
+																	0) -
+																(wallet?.free_withdrawal ??
+																	0)
+															)}{' '}
+															<span>
 																{__(
-																	'fee',
+																	'Left',
 																	'multivendorx'
 																)}
-															</>
-														),
-														value: (
-															<>
-																{Math.max(
-																	0,
-																	(wallet
-																		?.withdrawal_setting?.[0]
-																		?.free_withdrawals ??
-																		0) -
-																		(wallet?.free_withdrawal ??
-																			0)
-																)}{' '}
-																<span>
-																	{__(
-																		'Left',
-																		'multivendorx'
-																	)}
-																</span>
-															</>
-														),
-													},
-												]
+															</span>
+														</>
+													),
+												},
+											]
 											: []),
 									]}
 								/>
@@ -666,6 +659,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							<FormGroup
 								label={__('Payment Processor', 'multivendorx')}
 								htmlFor="payment_method"
+								notice={errors.payment}
 							>
 								<div className="payment-method">
 									{storeData?.payment_method ? (
@@ -689,7 +683,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							<FormGroup
 								label={__('Amount', 'multivendorx')}
 								htmlFor="Amount"
-								notice={validationErrors.amount}
+								notice={errors.amount}
 							>
 								<BasicInputUI
 									type="number"
@@ -702,8 +696,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 
 								<div className="free-wrapper">
 									{wallet?.withdrawal_setting?.length > 0 &&
-									wallet?.withdrawal_setting?.[0]
-										?.free_withdrawals ? (
+										wallet?.withdrawal_setting?.[0]
+											?.free_withdrawals ? (
 										<>
 											{freeLeft > 0 ? (
 												<span>

@@ -651,7 +651,15 @@ class StoreUtil {
                 return true;
             }
 
-            if ( 'suspended' === $status && in_array( 'store_visible_in_checkout', $suspend_settings, true ) ) {
+            if ( 'under_review' === $status && in_array( 'hide_store_products', $review_settings, true ) ) {
+                return true;
+            }
+
+            if ( 'suspended' === $status && in_array( 'disable_checkout', $suspend_settings, true ) ) {
+                return true;
+            }
+
+            if ( 'suspended' === $status && in_array( 'hide_store_products', $suspend_settings, true ) ) {
                 return true;
             }
         }

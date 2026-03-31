@@ -17,7 +17,7 @@ import {
 
 import { formatLocalDate } from '@/services/commonFunction';
 
-const PendingStores: React.FC<object> = ({onCountChange}) => {
+const PendingStores: React.FC<object> = () => {
 	const [rows, setRows] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
@@ -163,7 +163,7 @@ const PendingStores: React.FC<object> = ({onCountChange}) => {
 				setRows(items);
 				const count = Number(response.headers['x-wp-total']) || 0;
 				setTotalRows(count);
-				onCountChange?.(count);
+				window.multivendorxStore?.setCount('stores', count);
 				setIsLoading(false);
 			})
 			.catch(() => {

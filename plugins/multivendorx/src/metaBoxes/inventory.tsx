@@ -66,7 +66,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 							options={stockStatusOptions}
 							value={product.stock_status}
 							onChange={(selected) =>
-								handleChange('stock_status', selected.value)
+								handleChange('stock_status', selected)
 							}
 						/>
 					</FormGroup>
@@ -94,7 +94,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 								options={backorderOptions}
 								value={product.backorders}
 								onChange={(selected) =>
-									handleChange('backorders', selected.value)
+									handleChange('backorders', selected)
 								}
 							/>
 						</FormGroup>

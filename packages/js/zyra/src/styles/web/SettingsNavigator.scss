@@ -586,21 +586,21 @@
     }
   }
 
-  .menu-close {
-    position: absolute;
-    width: 2.25rem;
-    height: 2.25rem;
-    top: 1.25rem;
-    font-size: 1.15rem;
-    right: 0.63rem;
-    border-radius: 0.5rem;
-    background-color: $color-white;
-    color: $color-active;
-    border: none;
-    outline: none;
-    align-items: center;
-    justify-content: center;
-  }
+  // .menu-close {
+  //   position: absolute;
+  //   width: 2.25rem;
+  //   height: 2.25rem;
+  //   top: 1.25rem;
+  //   font-size: 1.15rem;
+  //   right: 0.63rem;
+  //   border-radius: 0.5rem;
+  //   background-color: $color-white;
+  //   color: $color-active;
+  //   border: none;
+  //   outline: none;
+  //   align-items: center;
+  //   justify-content: center;
+  // }
 
   .tab-wrapper {
     width: 100%;
@@ -627,10 +627,10 @@
     }
   }
 
-  &.background {
-    background: $background-white;
-    border: none;
-    border-radius: $border-radius-small;
-    padding: 1rem;
-  }
+  // &.background {
+  //   background: $background-white;
+  //   border: none;
+  //   border-radius: $border-radius-small;
+  //   padding: 1rem;
+  // }
 }

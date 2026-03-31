@@ -13,15 +13,17 @@
         var(--ast-global-color-1,
         var(--global-palette2,
         var(--secondary-color,
-        var(--theme-primary)))));
+        var(--theme-secondary-rgb)))));
 
     --theme-border-color:
         var(--wp--preset--color--border,
-        var(--ast-global-color-1,
+        var(--ast-global-color-3,
         var(--global-palette3,
         var(--border-color,
         #dddddd))));
 
     /* RGB fallback */
     --theme-secondary-rgb: 80, 7, 170;
+
+    --theme-background: color-mix(in srgb, var(--theme-primary) 10%, transparent);
 }

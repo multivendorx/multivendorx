@@ -4,27 +4,24 @@ import { __ } from '@wordpress/i18n';
 import PendingRefund from './PendingRefund';
 import axios from 'axios';
 
-window.__multivendorxPendingCounts = window.__multivendorxPendingCounts || {};
-
-axios
-    .get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
-        headers: { 'X-WP-Nonce': appLocalizer.nonce },
-        params: {
-            meta_key: 'multivendorx_store_id',
-            status: 'refund-requested',
-            page: 1,
-            per_page: 1,
-        },
-    })
-    .then((res) => {
-        const count = Number(res.headers['x-wp-total']) || 0;
-        window.__multivendorxPendingCounts['refund-requests'] = count;
-        window.dispatchEvent(
-            new CustomEvent('multivendorx:count-update', {
-                detail: { id: 'refund-requests', count },
-            })
-        );
-    });
+addFilter(
+	'multivendorx_approval_queue_api_configs',
+	'multivendorx/refund-api',
+	(configs, { appLocalizer }) => {
+		configs.push({
+			id: 'refund-requests',
+			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
+			params: {
+				meta_key: 'multivendorx_store_id',
+				status: 'refund-requested',
+				page: 1,
+				per_page: 1,
+			},
+			header: 'x-wp-total',
+		});
+		return configs;
+	}
+);
 
 addFilter(
     'multivendorx_approval_queue_tab',
@@ -43,7 +40,6 @@ addFilter(
                     'multivendorx'
                 ),
                 headerIcon: 'marketplace-refund blue',
-                count: 0,
             },
         });
 
@@ -57,17 +53,7 @@ addFilter(
     (defaultForm, { tabId }) => {
         if (tabId === 'refund-requests') {
             return (
-                <PendingRefund
-                    setCount={(count) => {
-                        window.__multivendorxPendingCounts['refund-requests'] = count;
-
-                        window.dispatchEvent(
-                            new CustomEvent('multivendorx:count-update', {
-                                detail: { id: 'refund-requests', count },
-                            })
-                        );
-                    }}
-                />
+                <PendingRefund />
             );
         }
 

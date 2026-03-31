@@ -35,9 +35,7 @@ interface ReportAbuse {
 	reason?: string;
 	created_at?: string;
 }
-const PendingReportAbuse: React.FC<{ setCount?: (count: number) => void }> = ({
-	setCount,
-}) => {
+const PendingReportAbuse: React.FC<object> = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
@@ -193,7 +191,7 @@ const PendingReportAbuse: React.FC<{ setCount?: (count: number) => void }> = ({
 
 				setRows(products);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
-				setCount?.(Number(response.headers['x-wp-total']) || 0);
+				window.multivendorxStore?.setCount('report-abuse', Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
 			.catch((error) => {

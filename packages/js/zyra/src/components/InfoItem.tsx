@@ -80,7 +80,7 @@ const InfoItem: React.FC<InfoItemProps> = ({
     };
 
     const Title = titleLink ? (
-        <a href={titleLink} target="_blank" rel="noopener noreferrer">
+        <a href={titleLink} rel="noopener noreferrer">
             {title}
         </a>
     ) : onClick ? (

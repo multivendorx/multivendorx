@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-	id: 'inventory',
+	id: 'store-inventory',
 	priority: 6,
-	headerTitle: __('Inventory', 'multivendorx'),
+	headerTitle: __('Store Inventory', 'multivendorx'),
 	settingTitle: 'Store Inventory Notifications',
 	headerDescription: __(
 		'Manage inventory alerts and stock monitoring settings for stores in your marketplace.',

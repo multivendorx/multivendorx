@@ -4,8 +4,7 @@ export default {
 	id: 'intelligence',
 	priority: 10,
 	name: 'Intelligence',
-	headerTitle: 'API Keys',
-	moduleEnabled: 'marketplace-intelligence',
+	headerTitle: 'Intelligence',
 	headerDescription: __(
 		'AI services can be enabled to assist with creating product details and enhancing images automatically. These settings can be configured to control which AI services are used.',
 		'multivendorx'
@@ -27,6 +26,7 @@ export default {
 				'multivendorx'
 			),
 			proSetting: true,
+			moduleEnabled: 'intelligence',
 		},
 		// --- OpenAI API Key Section ---
 		{
@@ -42,6 +42,7 @@ export default {
 				'multivendorx'
 			),
 			proSetting: true,
+			moduleEnabled: 'intelligence',
 		},
 		{
 			key: 'openrouter_api_key',
@@ -56,6 +57,7 @@ export default {
 				'multivendorx'
 			),
 			proSetting: true,
+			moduleEnabled: 'intelligence',
 		},
 		// --- AI Provider Choice ---
 		{
@@ -66,8 +68,8 @@ export default {
 				'AI can be used to suggest product titles, descriptions, and other details automatically. The AI provider and model can be selected here.',
 				'multivendorx'
 			),
-			moduleEnabled: 'marketplace-intelligence',
 			proSetting: true,
+			moduleEnabled: 'intelligence',
 		},
 		{
 			key: 'choose_ai_provider',
@@ -103,6 +105,7 @@ export default {
 				},
 			],
 			proSetting: true,
+			moduleEnabled: 'intelligence',
 		},
 
 		// --- OpenRouter API Key Section ---
@@ -133,6 +136,7 @@ export default {
 				},
 			],
 			proSetting: true,
+			moduleEnabled: 'intelligence',
 			dependent: {
 				key: 'choose_ai_provider',
 				set: true,
@@ -144,11 +148,11 @@ export default {
 			key: 'section',
 			type: 'section',
 			title: __('Image AI', 'multivendorx'),
-			moduleEnabled: 'marketplace-intelligence',
 			desc: __(
 				'Product images can be enhanced automatically to look professional, improving visual appeal and customer engagement.',
 				'multivendorx'
 			),
+			moduleEnabled: 'intelligence',
 		},
 		{
 			key: 'image_enhancement_provider',
@@ -179,6 +183,7 @@ export default {
 			],
 			defaultValue: 'gemini_api_image_enhancement',
 			proSetting: true,
+			moduleEnabled: 'intelligence',
 		},
 		// --- Gemini Image Enhancement Settings ---
 		// {
@@ -223,6 +228,7 @@ export default {
 				},
 			],
 			proSetting: true,
+			moduleEnabled: 'intelligence',
 			dependent: {
 				key: 'image_enhancement_provider',
 				set: true,

@@ -34,6 +34,7 @@
     .table-filter-wrapper {
         background: #fff;
         border-radius: $border-radius-small;
+        display: flex;
 
         .table-filter {
             display: flex;

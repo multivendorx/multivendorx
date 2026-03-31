@@ -259,7 +259,7 @@ final class MultiVendorX {
      */
     public static function multivendorx_settings( $links ) {
         $plugin_links = array(
-            '<a href="' . admin_url( 'admin.php?page=multivendorx#&tab=settings&subtab=appearance' ) . '">' . __( 'Settings', 'multivendorx' ) . '</a>',
+            '<a href="' . admin_url( 'admin.php?page=multivendorx#&tab=settings&subtab=overview' ) . '">' . __( 'Settings', 'multivendorx' ) . '</a>',
         );
 
         if ( ! Utill::is_khali_dabba() ) {
