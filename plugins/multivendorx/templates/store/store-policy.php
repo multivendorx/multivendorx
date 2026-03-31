@@ -26,9 +26,11 @@ if ( empty( $policies ) ) {
     foreach ( $policies_list as $key => $label ) :
         if ( ! empty( $policies[ $key ] ) ) :
 			?>
-            <div class="accordion-item">
-                <div class="accordion-header"><?php echo esc_html( $label ); ?></div>
-                <div class="accordion-body"><?php echo wp_kses_post( $policies[ $key ] ); ?></div>
+            <div class="multivendorx-policies-accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header"><?php echo esc_html( $label ); ?></div>
+                    <div class="accordion-body"><?php echo wp_kses_post( $policies[ $key ] ); ?></div>
+                </div>
             </div>
 			<?php
         endif;

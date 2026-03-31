@@ -33,19 +33,17 @@
 
     .table-filter-wrapper {
         background: #fff;
+        border-radius: $border-radius-small;
 
         .table-filter {
             display: flex;
             border-radius: $border-radius-small;
-            justify-content: center;
             position: sticky;
             bottom: 1rem;
             gap: 0.5rem;
-            align-items: center;
             background: $theme-background-color;
 
             .title {
-                height: 100%;
                 display: flex;
                 align-items: center;
                 padding: 0 0.5rem;
@@ -84,7 +82,9 @@
             .bulk-action {
                 display: flex;
             }
-
+            .title {
+                background: $theme-color;
+            }
             &.bulk {
                 background: #202020;
                 color: #fff;
@@ -130,12 +130,6 @@
                     option {
                         background: #fff;
                     }
-                }
-            }
-
-            &.filter {
-                .title {
-                    background: $theme-color;
                 }
             }
 
@@ -218,7 +212,7 @@
                 font-size: 1rem;
                 font-weight: 500;
                 display: flex;
-                flex: 1 0 0;
+                // flex: 1 0 0;
                 width: 100%;
                 border: none;
                 color: $text-color;
@@ -538,9 +532,9 @@
                 min-width: 12rem;
             }
 
-            &.actions {
+            &.action {
                 flex-grow: 0;
-                min-width: 5rem;
+                max-width: 4rem;
             }
 
             &.notificaton {

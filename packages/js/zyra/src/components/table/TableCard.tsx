@@ -276,6 +276,7 @@ const TableCard: React.FC<TableCardProps> = ({
                             <PopupUI
                                 position="menu-dropdown"
                                 toggleIcon="more-vertical"
+                                tooltipName="menu"
                             >
                                 <ItemListUI
                                     className="default table-menu"

@@ -15,7 +15,7 @@ export default {
 
 			options: [
 				{
-					key: 'disable_product',
+					key: 'disable_product_upload',
 					label: __('Disable product upload', 'multivendorx'),
 					value: 'disable_product',
 					desc: __(
@@ -31,16 +31,7 @@ export default {
 						'Suspends payout processing. Earnings will be released once the store successfully clears the review.',
 						'multivendorx'
 					),
-				},
-				{
-					key: 'restrict_new_product_uploads',
-					label: __('Restrict new product uploads', 'multivendorx'),
-					value: 'restrict_new_product_uploads',
-					desc: __(
-						'Prevents sellers from adding or editing products during the review period. Existing listings remain visible to customers.',
-						'multivendorx'
-					),
-				},
+				}
 			],
 			selectDeselect: true,
 		},

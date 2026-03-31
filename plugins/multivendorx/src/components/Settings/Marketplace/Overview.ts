@@ -156,11 +156,11 @@ export default {
 			key: 'available_shortcodes',
 			type: 'shortcode-table',
 			label: __('Available shortcodes', 'multivendorx'),
-			desc: __('', 'multivendorx'),
 			optionLabel: [
-				'Shortcodes and block library',
-				'Description',
-				'Arguments',
+				__('Shortcodes and block', 'multivendorx'),
+				__('Description', 'multivendorx'),
+				__('Arguments', 'multivendorx'),
+				__('Example usage', 'multivendorx'),
 			],
 			options: [
 				{

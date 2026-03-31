@@ -37,7 +37,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
                 >
                     <div className="analytics-icon">
                         {isLoading ? (
-                            <Skeleton width={60} height={60} />
+                            <Skeleton width={3.75} height={3.75} />
                         ) : (
                             item.icon && (
                                 <i
@@ -51,17 +51,17 @@ const Analytics: React.FC<AnalyticsProps> = ({
 
                     <div className="details">
                         <div className="number">
-                            {isLoading ? <Skeleton width={80} /> : item.number}
+                            {isLoading ? <Skeleton width={5} /> : item.number}
                         </div>
 
                         <div className="text">
-                            {isLoading ? <Skeleton width={100} /> : item.text}
+                            {isLoading ? <Skeleton width={6.25} /> : item.text}
                         </div>
 
                         {variant === 'dashboard' && (
                             <div className="report">
                                 {isLoading ? (
-                                    <Skeleton width={60} />
+                                    <Skeleton width={3.75} />
                                 ) : (
                                     item.extra
                                 )}

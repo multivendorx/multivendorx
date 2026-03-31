@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import './AdminDashboard.scss';
 import '../dashboard.scss';
-import { TabsUI } from 'zyra';
+import { Column, Container, TabsUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import FreeVsProTab from './FreeVsProTab';
 import DashboardTab from './DashboardTab';
@@ -36,11 +36,15 @@ const AdminDashboard = () => {
 	].filter((tab) => !(appLocalizer?.khali_dabba && tab.pro));
 
 	return (
-		<TabsUI
-			tabs={tabs}
-			className="background"
-			headerExtra={upgradeButton}
-		/>
+		<Container general className="dashboard-tab">
+			<Column>
+				<TabsUI
+					tabs={tabs}
+					className="background"
+					headerExtra={upgradeButton}
+				/>
+			</Column>
+		</Container>
 	);
 };
 

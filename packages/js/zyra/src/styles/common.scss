@@ -289,7 +289,7 @@ $index: 1;
   border: $border-light-small !important; // for overwrite wordpress style
   border-radius: $border-radius-small;
   padding: 0.313rem 0.5rem;
-  background: transparent !important; // for overwrite theme style
+  // background: transparent !important; // for overwrite theme style
   font-size: 0.875rem;
   line-height: 1.5;
   box-shadow: none;
@@ -1248,6 +1248,7 @@ $index: 1;
     display: flex;
     align-items: center;
     gap: 1rem;
+    white-space: nowrap;
 
     .showing-number {
       padding-top: 0.125rem;
@@ -1283,8 +1284,8 @@ $index: 1;
 
   .input-field {
     position: absolute;
-    top: 0.85rem;
-    left: 0.85rem;
+    top: 3.83rem;
+    left: 0.625rem;
     z-index: 9;
   }
 

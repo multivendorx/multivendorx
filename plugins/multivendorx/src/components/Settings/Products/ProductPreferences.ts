@@ -144,9 +144,7 @@ export default {
 				'multivendorx'
 			),
 			desc: __(
-				'<ul><li>Guided selection – Stores must first choose a primary category, then select from its subcategories.</li><li>Free selection – Stores can choose any number of categories and subcategories without restrictions.</li><ul>',
-				'multivendorx'
-			),
+				'<ul><li><strong>Never (let me set them)</strong> – SKUs will not be generated automatically. Stores must manually enter a SKU.</li><li><strong>Using the product/listing slug (name)</strong> – Automatically generate the SKU from the product or listing slug if none is provided.</li><li><strong>Using the product/listing ID</strong> – Automatically generate the SKU using the product or listing ID if none is provided.</li></ul>','multivendorx'),
 			options: [
 				{
 					key: 'yes',
@@ -175,9 +173,8 @@ export default {
 			type: 'choice-toggle',
 			label: __('SKU management for products/listing', 'multivendorx'),
 			settingDescription: __(
-				'Choose how SKUs for simple, external, or parent products/listing are generated.',
-				'multivendorx'
-			),
+				'<ul><li><strong>Never (let me set them)</strong> – SKUs will not be generated automatically. Stores must manually enter a SKU.</li><li><strong>Using the product/listing slug (name)</strong> – Automatically generate the SKU from the product or listing slug if none is provided.</li><li><strong>Using the product/listing ID</strong> – Automatically generate the SKU using the product or listing ID if none is provided.</li></ul>',
+				'multivendorx'),
 			options: [
 				{
 					key: 'never',
@@ -204,9 +201,8 @@ export default {
 			type: 'choice-toggle',
 			label: __('SKU space handling', 'multivendorx'),
 			settingDescription: __(
-				'Choose how spaces in attribute names should be handled when generating SKUs.',
-				'multivendorx'
-			),
+				'<strong>Space handling options:</strong><ul><li><strong>Keep spaces ( )</strong><br>Spaces in attribute names will remain unchanged in the generated SKU.</li>	<li><strong>Replace with underscore ( _ )</strong><br>Spaces in attribute names will be replaced with underscores when generating the SKU.</li>	<li><strong>Replace with dash ( - )</strong><br>Spaces in attribute names will be replaced with dashes when generating the SKU.</li></ul><strong>Example:</strong><br>Attribute: Blue Large<br>	Keep spaces → Blue Large<br>Underscore → Blue_Large<br>	Dash → Blue-Large', 
+				'multivendorx' ),
 			options: [
 				{
 					key: 'no',

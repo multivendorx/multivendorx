@@ -508,14 +508,11 @@ const Dashboard = () => {
 							</Tooltip>
 
 							{/* Notifications */}
-							<Tooltip
-								position="bottom"
-								text={__('Notifications', 'multivendorx')}
-							>
 								<li>
 									<PopupUI
 										position="menu-dropdown"
 										toggleIcon="notification"
+										tooltipName={__('Notifications', 'multivendorx')}
 										width={24}
 										header={{
 											title: __(
@@ -576,7 +573,6 @@ const Dashboard = () => {
 										/>
 									</PopupUI>
 								</li>
-							</Tooltip>
 
 							{/* Announcements */}
 							{modules.includes('announcement') && (

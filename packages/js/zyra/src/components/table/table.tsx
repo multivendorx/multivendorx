@@ -245,7 +245,7 @@ const Table: React.FC<TableProps> = ({
                             <tr className="admin-row" key={rowIndex ?? row.id}>
                                 {enableBulkSelect && (
                                     <td className="admin-column select">
-                                        <Skeleton width={20} height={20} />
+                                        <Skeleton width={1.25} height={1.25} />
                                     </td>
                                 )}
 
@@ -305,7 +305,7 @@ const Table: React.FC<TableProps> = ({
                                             return (
                                                 <td
                                                     key={`action-${rowId}`}
-                                                    className="admin-column actions"
+                                                    className="admin-column action"
                                                 >
                                                     <TableRowActions
                                                         row={row}

@@ -639,15 +639,15 @@ class StoreUtil {
         $suspend_settings = MultiVendorX()->setting->get_setting( 'restriction_for_suspended', array() );
 
         if ( $check_payouts ) {
-            if ( 'under_review' === $status && in_array( 'hold_payments_release', $review_settings, true ) ) {
+            if ( 'under_review' === $status && in_array( 'disable_payouts', $review_settings, true ) ) {
                 return true;
             }
 
-            if ( 'suspended' === $status && in_array( 'freeze_all_payments', $suspend_settings, true ) ) {
+            if ( 'suspended' === $status && in_array( 'disable_payouts', $suspend_settings, true ) ) {
                 return true;
             }
         } else {
-            if ( 'under_review' === $status && in_array( 'pause_selling_products', $review_settings, true ) ) {
+            if ( 'under_review' === $status && in_array( 'disable_product_upload', $review_settings, true ) ) {
                 return true;
             }
 

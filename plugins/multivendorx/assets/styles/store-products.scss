@@ -507,7 +507,7 @@ $star-color: #d49c00;
                 }
             }
 
-            .rating-breakdown {
+            .rating-count {
                 .rating {
                     font-size: 1rem;
                     font-weight: 500;
@@ -515,9 +515,9 @@ $star-color: #d49c00;
                     align-items: center;
                     gap: 0.45rem;
 
-                    i {
-                        color: $star-color;
-                    }
+                    // i {
+                    //     color: $star-color;
+                    // }
 
                     .bar {
                         width: 20rem;

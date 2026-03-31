@@ -2,7 +2,7 @@
 
 .expandable-panel-group {
     margin: 0;
-    width: 100%;
+    width: 80%;
 
     .expandable-item {
         margin-bottom: 1rem;
@@ -247,6 +247,7 @@
         align-items: center;
         background: $background-white;
         margin: 0;
+        cursor: pointer;
         border: 0.063rem solid transparent;
 
         i {

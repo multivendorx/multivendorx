@@ -735,7 +735,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 						<InfoItem
 							title={
 								storeData.primary_owner_info?.data
-									?.display_name ?? <Skeleton width={150} />
+									?.display_name ?? <Skeleton width={9.375} />
 							}
 							avatar={{
 								iconClass:
@@ -746,7 +746,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 									label: __('Email', 'multivendorx'),
 									value: storeData.primary_owner_info?.data
 										?.user_email ?? (
-										<Skeleton width={150} />
+										<Skeleton width={9.375} />
 									),
 								},
 							]}

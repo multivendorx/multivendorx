@@ -17,7 +17,6 @@ import {
 	NavigatorHeader,
 	PopupUI,
 	ButtonInputUI,
-	SectionUI,
 	Notice,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';

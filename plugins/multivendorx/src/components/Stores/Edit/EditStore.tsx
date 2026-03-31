@@ -573,7 +573,7 @@ const EditStore = () => {
 												)}
 											</span>
 										) : (
-											<Skeleton width={100} />
+											<Skeleton width={6.25} />
 										)}
 
 										{modules.includes(
@@ -647,7 +647,7 @@ const EditStore = () => {
 														) : data?.name ? (
 															data.name
 														) : (
-															<Skeleton width={150} />
+															<Skeleton width={9.375} />
 														)}
 
 														<span
@@ -732,7 +732,7 @@ const EditStore = () => {
 																)}
 														</>
 													) : (
-														<Skeleton width={100} />
+														<Skeleton width={6.25} />
 													)}
 												</div>
 											</div>
@@ -774,7 +774,7 @@ const EditStore = () => {
 													/>
 												) : Object.keys(data).length ===
 													0 ? (
-													<Skeleton width={150} />
+													<Skeleton width={9.375} />
 												) : data?.description ? (
 													<div>
 														<span>
@@ -934,6 +934,7 @@ const EditStore = () => {
 					<PopupUI
 						position="menu-dropdown"
 						toggleIcon="more-vertical"
+						tooltipName={__('Settings', 'multivendorx')}
 					>
 						<ItemListUI items={actionItems} />
 					</PopupUI>

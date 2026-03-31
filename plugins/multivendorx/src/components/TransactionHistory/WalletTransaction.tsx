@@ -491,14 +491,14 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								</div>
 								<div className="price">
 									{walletLoading ? (
-										<Skeleton width={140} />
+										<Skeleton width={8.75} />
 									) : (
 										formatCurrency(wallet.available_balance)
 									)}
 								</div>
 								<div className="desc">
 									{walletLoading ? (
-										<Skeleton width={250} />
+										<Skeleton width={15.625} />
 									) : (
 										<>
 											<b>

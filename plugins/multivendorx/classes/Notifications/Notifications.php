@@ -73,7 +73,7 @@ class Notifications {
 				// Store Registration & Approval.
 				'store_pending_approval'             => array(
 					'name'             => 'Store pending approval',
-					'desc'             => '',
+					'desc' => 'Triggered when a new store application is submitted and placed under admin review.', 	
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -92,7 +92,7 @@ class Notifications {
 
 				'store_rejected'                     => array(
 					'name'             => 'Store rejected',
-					'desc'             => '',
+					'desc'             => 'Admin rejected the store application.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -109,7 +109,7 @@ class Notifications {
 
 				'store_permanently_rejected'         => array(
 					'name'             => 'Store permanently rejected',
-					'desc'             => '',
+					'desc' => 'Permanent rejection of a store application by the admin',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -123,7 +123,7 @@ class Notifications {
 				),
 				'store_account_created_by_admin'     => array(
 					'name'             => 'Store account created by admin',
-					'desc'             => 'Store owner receives notification when an admin manually creates their store account.',
+					'desc'             => 'Admin manually created store account.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -149,7 +149,7 @@ class Notifications {
 				// POST ACTIVATION FLOW.
 				'store_activated'                    => array(
 					'name'             => 'Store activated',
-					'desc'             => '',
+					'desc'             => 'Store activated and ready to start selling.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -166,7 +166,7 @@ class Notifications {
 
 				'store_under_review'                 => array(
 					'name'             => 'Store under review',
-					'desc'             => '',
+					'desc'             => 'Store temporarily placed under admin review.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -182,7 +182,7 @@ class Notifications {
 
 				'store_suspended'                    => array(
 					'name'             => 'Store suspended',
-					'desc'             => '',
+					'desc'             => 'Store temporarily suspended by the admin.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -199,7 +199,7 @@ class Notifications {
 
 				'store_permanently_deactivated'      => array(
 					'name'             => 'Store permanently deactivated',
-					'desc'             => '',
+					'desc'             => 'Admin permanently deactivated the store.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -222,9 +222,7 @@ class Notifications {
 					'admin_enabled'    => true,
 					'system_enabled'   => true,
 					'email_subject'    => 'Store deactivation request – [store_name]',
-					'email_body'       => '<p>Hello Admin,</p><p>The store <strong>[store_name]</strong> has submitted a request to deactivate their store account.</p>
-
-<p>Please review the request and take the appropriate action from the admin dashboard.</p>',
+					'email_body'       => '<p>Hello Admin,</p><p>The store <strong>[store_name]</strong> has submitted a request to deactivate their store account.</p> <p>Please review the request and take the appropriate action from the admin dashboard.</p>',
 					'sms_content'      => 'Store [store_name] requested account deactivation.',
 					'system_message'   => 'Store [store_name] has requested to deactivate their store account.',
 					'tag'              => 'Store',
@@ -233,7 +231,7 @@ class Notifications {
 				// didi.
 				'store_deactivation_request_rejected' => array(
 					'name'             => 'Store deactivation rejected',
-					'desc'             => '',
+					'desc'             => 'Store deactivation request rejected by the admin.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -250,7 +248,7 @@ class Notifications {
 				// ORDER NOTIFICATIONS.
 				'new_order_store'                    => array(
 					'name'             => 'New order received',
-					'desc'             => '',
+					'desc'             => 'New order received by the store.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -322,7 +320,7 @@ class Notifications {
 				// SHIPMENT TRACKING.
 				'shipment_tracking_added'            => array(
 					'name'             => 'Shipment tracking added',
-					'desc'             => '',
+					'desc'             => 'Tracking details added for the order shipment.',
 					'customer_enabled' => true,
 					'store_enabled'    => false,
 					'admin_enabled'    => false,
@@ -340,7 +338,7 @@ class Notifications {
 				// Pro.
 				'order_delivered'                    => array(
 					'name'             => 'Order delivered',
-					'desc'             => '',
+					'desc'             => 'Order marked as delivered.',
 					'customer_enabled' => true,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -356,15 +354,14 @@ class Notifications {
 
 				'refund_requested'                   => array(
 					'name'             => 'Refund requested',
-					'desc'             => '',
+					'desc' => 'Refund request submitted for the order.',
 					'customer_enabled' => true,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
 					'system_enabled'   => true,
 					'email_subject'    => 'Refund requested – Order #[order_id]',
 					'email_body'       => '
-									<p>Hello,</p>
-									<p>A refund request has been submitted for <strong>Order #[order_id]</strong>.</p>
+									<p>Hello,</p><p>A refund request has been submitted for <strong>Order #[order_id]</strong>.</p>
 									',
 					'sms_content'      => 'Refund requested for order #[order_id].',
 					'system_message'   => 'Refund request submitted.',
@@ -374,7 +371,7 @@ class Notifications {
 
 				'refund_accepted'                    => array(
 					'name'             => 'Refund accepted',
-					'desc'             => '',
+					'desc'             => 'Refund request approved for the order.',
 					'customer_enabled' => true,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -392,7 +389,7 @@ class Notifications {
 
 				'refund_rejected'                    => array(
 					'name'             => 'Refund rejected',
-					'desc'             => '',
+					'desc'             => 'Refund request rejected for the order.',
 					'customer_enabled' => true,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -410,7 +407,7 @@ class Notifications {
 				// REVIEWS.
 				'new_store_review'                   => array(
 					'name'             => 'New store review',
-					'desc'             => '',
+					'desc' => 'New customer review submitted for the store.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -431,8 +428,7 @@ class Notifications {
 					'admin_enabled'    => false,
 					'system_enabled'   => true,
 					'email_subject'    => 'Marketplace response to your review – [product_name]',
-					'email_body'       => '<p>Hello [customer_name],</p><p>The marketplace team has responded to your review for <strong>[product_name]</strong>.</p>
-<p><a href="[review_url]">View reply</a></p>',
+					'email_body'       => '<p>Hello [customer_name],</p><p>The marketplace team has responded to your review for <strong>[store_name]</strong>.</p><p><a href="[review_url]">View reply</a></p>',
 					'sms_content'      => 'Marketplace replied to your review.',
 					'system_message'   => 'Admin has replied to your review.',
 					'tag'              => 'Review',
@@ -442,7 +438,7 @@ class Notifications {
 				// PRODUCT NOTIFICATIONS.
 				'product_submitted'                  => array(
 					'name'             => 'Product submitted',
-					'desc'             => '',
+					'desc' => 'Product submitted for admin review.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -457,7 +453,7 @@ class Notifications {
 
 				'product_approved'                   => array(
 					'name'             => 'Product approved',
-					'desc'             => '',
+					'desc'             => 'Product approved and published.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -473,7 +469,7 @@ class Notifications {
 
 				'product_rejected'                   => array(
 					'name'             => 'Product rejected',
-					'desc'             => '',
+					'desc'             => 'Product rejected after review.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -489,7 +485,7 @@ class Notifications {
 				// PRO.
 				'product_low_stock'                  => array(
 					'name'             => 'Product low stock',
-					'desc'             => '',
+					'desc'             => 'Product stock running low.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -505,7 +501,7 @@ class Notifications {
 				// PRO.
 				'product_out_of_stock'               => array(
 					'name'             => 'Product out of stock',
-					'desc'             => '',
+					'desc'             => 'Product is currently unavailable due to no stock.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -647,7 +643,7 @@ class Notifications {
 				// STORE FOLLOWER NOTIFICATIONS.
 				'store_followed'                     => array(
 					'name'             => 'Store followed',
-					'desc'             => '',
+					'desc'             => 'Customer started following the store.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -665,7 +661,7 @@ class Notifications {
 
 				'store_new_product_to_followers'     => array(
 					'name'             => 'New product from followed store',
-					'desc'             => '',
+					'desc'             => 'New product published by a followed store.',
 					'customer_enabled' => true,
 					'store_enabled'    => false,
 					'admin_enabled'    => false,
@@ -683,7 +679,7 @@ class Notifications {
 
 				'store_new_coupon_to_followers'      => array(
 					'name'             => 'New coupon from followed store',
-					'desc'             => '',
+					'desc'             => 'New coupon created by a followed store.',
 					'customer_enabled' => true,
 					'store_enabled'    => false,
 					'admin_enabled'    => false,
@@ -701,7 +697,7 @@ class Notifications {
 				// Pro.
 				'store_vacation_alert_to_followers'  => array(
 					'name'             => 'Store vacation alert',
-					'desc'             => '',
+					'desc'             => 'Followed store marked as on vacation.',
 					'customer_enabled' => true,
 					'store_enabled'    => false,
 					'admin_enabled'    => false,

@@ -48,11 +48,13 @@ interface PopoverItem {
 
 interface HeaderPopover {
     toggleIcon: string;
+    tooltipName?: string;
     items?: PopoverItem[];
 }
 
 interface HeaderPopoverWithTab {
     toggleIcon: string;
+    tooltipName?: string;
     tabs?: PopoverTab[];
 }
 
@@ -143,6 +145,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                             key={index}
                             position="menu-dropdown"
                             toggleIcon={list?.toggleIcon}
+                            tooltipName={list?.tooltipName}
                             width={24}
                         >
                             {list?.tabs && <TabsUI tabs={list.tabs} />}
@@ -154,6 +157,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                             key={index}
                             position="menu-dropdown"
                             toggleIcon={list.toggleIcon}
+                            tooltipName={list?.tooltipName}
                         >
                             <ItemListUI items={list.items} />
                         </PopupUI>

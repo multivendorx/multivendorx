@@ -63,15 +63,15 @@ const Card = ({
                 <>
                     <div className="card-header">
                         <div className="left">
-                            <Skeleton width={100} />
-                            <Skeleton width={160} />
+                            <Skeleton width={6.25} />
+                            <Skeleton width={10} />
                         </div>
 
                         <div className="right">
                             <Skeleton
                                 variant="circular"
-                                width={24}
-                                height={24}
+                                width={1.5}
+                                height={1.5}
                             />
                         </div>
                     </div>

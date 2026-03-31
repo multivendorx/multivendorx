@@ -422,7 +422,6 @@ const PanelHeader: React.FC = () => {
                     <div className="expandable-header-info">
                         {/* Title (inline-editable for custom) */}
                         <div className="title-wrapper">
-                            <span className="title">
                                 {editing &&
                                 editField === 'title' &&
                                 canEditField(
@@ -511,7 +510,6 @@ const PanelHeader: React.FC = () => {
                                     </div>
                                 )}
                             </span>
-                        </div>
 
                         {/* Description (inline-editable for custom) */}
                         <div className="panel-description">
@@ -718,7 +716,7 @@ const PanelControls: React.FC = () => {
             {/* 3-dot dropdown — non-custom, enabled methods */}
             {!method.isCustom && isOn && (
                 <div className="icon-wrapper">
-                    <PopupUI position="menu-dropdown" toggleIcon="more-vertical">
+                    <PopupUI position="menu-dropdown" toggleIcon="more-vertical" tooltipName="Settings">
                             <ItemListUI
                                 items={[
                                     ...(method.disableBtn && hasFields

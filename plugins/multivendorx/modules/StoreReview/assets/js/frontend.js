@@ -37,7 +37,7 @@ jQuery(document).ready(function ($) {
 						total !== 1 ? 's' : ''
 					}</div>
                          </div>
-                         <div class="rating-breakdown">`;
+                         <div class="rating-count">`;
 
 					//Add breakdown dynamically
 					for (let i = 5; i >= 1; i--) {

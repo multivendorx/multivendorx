@@ -387,8 +387,33 @@ const Orders: React.FC = () => {
 		provider: '',
 		tracking_date: '',
 		tracking_url: '',
-		tracking_number: '',
+		tracking_id: '',
 	});
+
+	const fetchOrder = () => {
+		axios
+			.get(`${appLocalizer.apiUrl}/wc/v3/orders/${trackingOrderId}`, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
+			.then((res) => {
+				const meta = (key: string) =>
+					res.data.meta_data.find((m) => m.key === key)?.value ?? '';
+				setFormData({
+					provider: meta(appLocalizer.order_meta['shipping_provider']),
+					tracking_date: meta(appLocalizer.order_meta['tracking_date']),
+					tracking_url: meta(appLocalizer.order_meta['tracking_url']),
+					tracking_id: meta(appLocalizer.order_meta['tracking_id']),
+				});
+			});
+	};
+
+	useEffect(() => {
+		if (!trackingOrderId) {
+			return;
+		}
+
+		fetchOrder();
+	}, [trackingOrderId]);
 
 	const handleChange = (key, value) => {
 		setFormData((prev) => ({
@@ -608,9 +633,9 @@ const Orders: React.FC = () => {
 					>
 						<BasicInputUI
 							type="text"
-							value={formData.tracking_number}
+							value={formData.tracking_id}
 							onChange={(value: any) =>
-								handleChange('tracking_number', value)
+								handleChange('tracking_id', value)
 							}
 						/>
 					</FormGroup>

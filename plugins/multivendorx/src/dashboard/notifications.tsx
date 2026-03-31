@@ -62,16 +62,16 @@ const Notifications: React.FC<NotificationsProps> = ({ type }) => {
 				<>
 					<li>
 						<div className="item">
-							<Skeleton width={400} height={70} />
+							<Skeleton width={25} height={4.375} />
 						</div>
 						<div className="item">
-							<Skeleton width={400} height={70} />
+							<Skeleton width={25} height={4.375} />
 						</div>
 						<div className="item">
-							<Skeleton width={400} height={70} />
+							<Skeleton width={25} height={4.375} />
 						</div>
 						<div className="item">
-							<Skeleton width={400} height={70} />
+							<Skeleton width={25} height={4.375} />
 						</div>
 					</li>
 				</>

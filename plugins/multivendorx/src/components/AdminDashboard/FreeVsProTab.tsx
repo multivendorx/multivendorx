@@ -259,7 +259,7 @@ const FreeVsProTab: React.FC<object> = () => {
 	};
 
 	return (
-		<Container general>
+		<Container>
 			<Column grid={8}>
 				<Card
 					title={__('Free vs Pro comparison', 'multivendorx')}

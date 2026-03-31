@@ -63,7 +63,7 @@ export const CopyToClipboardUI: React.FC<CopyToClipboardProps> = ({
         <div className="copy-to-clipboard">
             <code>{text}</code>
 
-            <Tooltip text={copied ? copiedLabel : copyButtonLabel}>
+            <Tooltip className={copied ? "copied" : ""} text={copied ? copiedLabel : copyButtonLabel}>
                 <i
                     className={
                         copied

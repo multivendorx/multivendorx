@@ -183,6 +183,10 @@ const PendingRefund: React.FC<{ setCount?: (count: number) => void }> = ({
 					appLocalizer.order_meta.customer_refund_reason
 				),
 		},
+		status: {
+			label: __('Status', 'multivendorx'),
+			type: 'status',
+		},
 		date_created: {
 			label: __('Date', 'multivendorx'),
 			isSortable: true,
@@ -256,14 +260,14 @@ const PendingRefund: React.FC<{ setCount?: (count: number) => void }> = ({
 					value: query?.filter?.store_id,
 					after: query.filter?.created_at?.startDate
 						? toWcIsoDate(
-								query.filter.created_at.startDate,
-								'start'
-							)
+							query.filter.created_at.startDate,
+							'start'
+						)
 						: undefined,
 					before: query.filter?.created_at?.endDate
 						? toWcIsoDate(query.filter.created_at.endDate, 'end')
 						: undefined,
-					status: 'refund-requested',
+					status: 'refund-requested,refund-accepted',
 				},
 			})
 			.then((response) => {
@@ -438,7 +442,7 @@ const PendingRefund: React.FC<{ setCount?: (count: number) => void }> = ({
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer.settings_databases_value[
-										'overview'
+									'overview'
 									]['tinymce_api_section'] ?? ''
 								}
 							/>

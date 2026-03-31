@@ -684,7 +684,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 										<div className="name">
 											{formData.primary_owner_info?.data
 												?.display_name ?? (
-													<Skeleton width={150} />
+													<Skeleton width={9.375} />
 												)}
 										</div>
 									</div>
@@ -694,7 +694,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 										<i className="adminfont-mail"></i>
 										{formData.primary_owner_info?.data
 											?.user_email ?? (
-												<Skeleton width={150} />
+												<Skeleton width={9.375} />
 											)}
 									</li>
 								</ul>

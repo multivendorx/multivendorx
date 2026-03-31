@@ -197,7 +197,7 @@ export default {
 			desc: 'Allows more than one store to sell the same product with their own price and stock.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/single-product-multiple-vendors-spmv',
-			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=general`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=onboarding`,
 			proModule: false,
 			category: 'store_management',
 			miniModule: true,
@@ -216,7 +216,7 @@ export default {
 			name: __('Store Policy', 'multivendorx'),
 			desc: 'Each store publishes its own return, refund, and shipping policies.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/store-policy',
-			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=policy`,
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=policies`,
 			proModule: false,
 			category: 'store_management',
 		},

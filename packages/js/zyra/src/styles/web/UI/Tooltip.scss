@@ -19,7 +19,8 @@
     inset: 0 auto auto 0;
   }
 
-  &:hover {
+  &:hover,
+  &.copied {
     .tooltip-name {
       opacity: 1;
     }
@@ -32,7 +33,7 @@
   }
   &.top {
     .tooltip-name {
-      transform: translate(-2.313rem, -3.5rem);
+      transform: translate(-2.45rem, -2.313rem);
     }
   }
 

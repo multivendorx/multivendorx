@@ -353,7 +353,7 @@ export const MultiInputTableUI: React.FC<MultiInputTableUIProps> = ({
                 </span>
             )}
 
-            <table className="grid-table">
+            <table className="multi-input-table">
                 <thead>
                     <tr>
                         <th />

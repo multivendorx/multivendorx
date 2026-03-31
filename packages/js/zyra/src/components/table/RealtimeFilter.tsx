@@ -49,7 +49,7 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
 
     return (
         <div className="table-filter-wrapper">
-            <div className="table-filter filter">
+            <div className="table-filter">
                 <span className="title">
                     <i className="adminfont-filter" />
                     Filter

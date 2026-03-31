@@ -1,6 +1,6 @@
 @use '../../global.scss' as *;
 
-.grid-table {
+.multi-input-table {
     width: 100%;
     font-size: 0.875rem;
     position: relative;
@@ -50,7 +50,7 @@
             align-items: stretch;
             align-content: stretch;
             padding: 0.75rem 0;
-            background: $background-color;
+            background: $background-white;
 
             td {
                 display: flex;
@@ -147,7 +147,7 @@
                     }
                 }
 
-                .grid-table-main-container {
+                .multi-input-table-main-container {
                     position: relative;
                     max-width: 15.625rem;
                     width: 100%;

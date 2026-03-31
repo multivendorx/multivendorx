@@ -15,6 +15,7 @@ export default {
 			key: 'shipping_stage',
 			type: 'expandable-panel',
 			proSetting: true,
+			moduleEnabled: 'store-shipping',
 			label: __('Delivery progress stages', 'multivendorx'),
 			settingDescription: __(
 				'Steps customers see as their order moves toward delivery. These stages show up in order tracking so customers know where their package is.',

@@ -27,25 +27,26 @@ export default {
 					moduleEnabled: 'marketplace-compliance',
 					formFields: [
 						{
-							key: 'enable_advertisement_in_subscription',
-							type: 'setup',
-							title: 'Identity verification',
-							des: 'Store is verified through official business documents like trade license or permit.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-identity`,
-						},
-						{
-							key: 'display_advertised_product_on_top',
-							type: 'setup',
-							title: 'Social verification',
-							des: 'Store authenticity is validated using connected social media accounts.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-identity`,
-						},
-						{
-							key: 'out_of_stock_visibility',
-							type: 'setup',
-							title: 'Email verification',
-							des: 'The registered email address is verified to confirm the authenticity.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-identity`,
+							key: 'paid_promotion_limit',
+							type: 'itemlist',
+							className: 'mini-card',
+							items: [
+								{
+									title: __('Identity verification', 'multivendorx'),
+									desc: __('Store is verified through official business documents like trade license or permit.', 'multivendorx'),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-identity">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+								{
+									title: __('Social verification', 'multivendorx'),
+									desc: __('Store authenticity is validated using connected social media accounts.', 'multivendorx'),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-identity">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+								{
+									title: __('Email verification', 'multivendorx'),
+									desc: __('The registered email address is verified to confirm the authenticity.', 'multivendorx'),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-identity">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+							],
 						},
 						{
 							key: 'required_tasks',
@@ -104,31 +105,30 @@ export default {
 					formFields: [
 						{
 							key: 'prohibited_items_check',
-							type: 'setup',
-							title: 'Prohibited items check',
-							des: 'Block restricted or banned products to maintain marketplace compliance.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance`,
-						},
-						{
-							key: 'product_images_descriptions',
-							type: 'setup',
-							title: 'Product images & descriptions',
-							des: 'Approve product reviews before publishing to ensure quality and consistency.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance`,
-						},
-						{
-							key: 'product_authenticity_certificates',
-							type: 'setup',
-							title: 'Product authenticity certificates',
-							des: 'Enforce product image and description standards for authenticity and trust.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance`,
-						},
-						{
-							key: 'product_abuse_reporting',
-							type: 'setup',
-							title: 'Product abuse reporting',
-							des: 'Handle product violation or abuse reports effectively to ensure compliance.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance`,
+							type: 'itemlist',
+							className: 'mini-card',
+							items: [
+								{
+									title: __('Prohibited items check', 'multivendorx'),
+									desc: __('Block restricted or banned products to maintain marketplace compliance.', 'multivendorx'),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+								{
+									title: __('Product images & descriptions', 'multivendorx'),
+									desc: __('Approve product reviews before publishing to ensure quality and consistency.', 'multivendorx'),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+								{
+									title: __('Product authenticity certificates', 'multivendorx'),
+									desc: __('Enforce product image and description standards for authenticity and trust.', 'multivendorx'),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+								{
+									title: __('Product abuse reporting', 'multivendorx'),
+									desc: __('Handle product violation or abuse reports effectively to ensure compliance.', 'multivendorx'),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+							],
 						},
 						{
 							key: 'non_compliance_action',
@@ -186,32 +186,31 @@ export default {
 					desc: 'Require acceptance of platform terms and policies',
 					formFields: [
 						{
-							key: 'terms_conditions',
-							type: 'setup',
-							title: 'Terms & Conditions',
-							des: 'Require stores to accept platform terms and conditions before proceeding.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=legal-compliance`,
-						},
-						{
-							key: 'privacy_policy_consent',
-							type: 'setup',
-							title: 'Privacy policy consent',
-							des: 'Ensure stores acknowledge and agree to your platform’s data handling policies.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=legal-compliance`,
-						},
-						{
-							key: 'seller_agreement_upload',
-							type: 'setup',
-							title: 'Seller agreement upload',
-							des: 'Collect signed seller agreements as part of the onboarding process.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=legal-compliancen`,
-						},
-						{
-							key: 'return_policy_compliance',
-							type: 'setup',
-							title: 'Return policy compliance',
-							des: 'Ensure stores follow the marketplace’s standard refund and return guidelines.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=legal-compliance`,
+							key: 'prohibited_items_check',
+							type: 'itemlist',
+							className: 'mini-card',
+							items: [
+								{
+									title: __('Terms & Conditions', 'multivendorx'),
+									desc: __('Require stores to accept platform terms and conditions before proceeding.', 'multivendorx'),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=legal-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+								{
+									title: __('Privacy policy consent', 'multivendorx'),
+									desc: __('Ensure stores acknowledge and agree to your platform’s data handling policies.', 'multivendorx'),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=legal-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+								{
+									title: __('Seller agreement upload', 'multivendorx'),
+									desc: __('Collect signed seller agreements as part of the onboarding process.', 'multivendorx'),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=legal-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+								{
+									title: __('Return policy compliance', 'multivendorx'),
+									desc: __('Ensure stores follow the marketplace’s standard refund and return guidelines.', 'multivendorx'),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=legal-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+							],
 						},
 						{
 							key: 'non_compliance_action',
@@ -269,18 +268,21 @@ export default {
 					desc: 'Verify tax information and monitor transactions',
 					formFields: [
 						{
-							key: 'tax_information',
-							type: 'setup',
-							title: 'Tax information',
-							des: 'Require stores to provide valid TIN, VAT, GST, EIN, or other tax identification.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=tax-compliance`,
-						},
-						{
-							key: 'bank_account_details',
-							type: 'setup',
-							title: 'Bank account details',
-							des: 'Collect verified bank details to ensure secure and accurate payouts.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=tax-compliance`,
+							key: 'paid_promotion_limit',
+							type: 'itemlist',
+							className: 'mini-card',
+							items: [
+								{
+									title: __('Tax information', 'multivendorx'),
+									desc: __('Require stores to provide valid TIN, VAT, GST, EIN, or other tax identification.', 'multivendorx'),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=tax-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+								{
+									title: __('Bank account details', 'multivendorx'),
+									desc: __('Collect verified bank details to ensure secure and accurate payouts.', 'multivendorx'),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=tax-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+							],
 						},
 						{
 							key: 'non_compliance_action',

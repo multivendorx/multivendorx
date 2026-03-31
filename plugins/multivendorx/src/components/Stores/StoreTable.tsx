@@ -148,6 +148,7 @@ const StoreTable: React.FC = () => {
 						titleLink={getUrl(row.id, 'store', 'edit')}
 						avatar={{
 							imageHtml: row.primary_owner_image,
+							iconClass: row.primary_owner_image ? 'person' : '',
 						}}
 						descriptions={[
 							{
