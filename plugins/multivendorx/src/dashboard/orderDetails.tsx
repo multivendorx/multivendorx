@@ -309,6 +309,25 @@ const OrderDetails: React.FC = () => {
 				console.error('Error saving shipment to order:', error);
 			});
 
+		const noteContent = `
+			Shipment Details:
+			Provider: ${shipmentData.provider}
+			Date: ${shipmentData.tracking_date}
+			Tracking URL: ${shipmentData.tracking_url}
+			Tracking ID: ${shipmentData.tracking_id}
+			`;
+
+			axios.post(
+				`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}/notes`,
+				{
+					note: noteContent,
+					customer_note: false, 
+				},
+				{
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				}
+			);
+
 		axios({
 			method: 'POST',
 			url: getApiLink(appLocalizer, `tracking`),
@@ -927,7 +946,7 @@ const OrderDetails: React.FC = () => {
 								</div>
 							</Card>
 							{orderData && orderData?.status === 'refund-requested' && (
-								<Card title={__('Refund Request — Action Required', 'multivendorx')}>
+								<Card title={__('Refund Request - Action Required', 'multivendorx')}>
 									<div className="refund-request-wrapper">
 										{/* Header */}
 										<div className="refund-header">

@@ -185,6 +185,17 @@ class Rewrites {
 	 */
     public function load_store_template( $template ) {
         $store_name = get_query_var( $this->custom_store_url );
+        $store      = Store::get_store( $store_name, 'slug' );
+
+        if ($store) {
+            $status = $store->get('status');
+            $restricted_statuses = MultiVendorX()->setting->get_setting( 'restriction_for_under_review', array() );
+    
+            if ( in_array( $status, ['under_review', 'suspended'], true ) && in_array( 'hide_store_products', $restricted_statuses, true ) ) {
+                wp_safe_redirect( wc_get_page_permalink( 'shop' ) );
+                exit();
+            }
+        }
 
         if ( ! empty( $store_name ) ) {
             $filtered_template = apply_filters( 'multivendorx_store_elementor_template', '' );

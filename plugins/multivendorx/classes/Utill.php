@@ -143,6 +143,7 @@ class Utill {
         'commissions_processed'           => 'multivendorx_commissions_processed',
         'commission_id'                   => 'multivendorx_commission_id',
         'shipping_provider'               => 'multivendorx_shipping_provider',
+        'tracking_date'               => 'multivendorx_tracking_date',
         'tracking_url'                    => 'multivendorx_tracking_url',
         'tracking_id'                     => 'multivendorx_tracking_id',
     );
