@@ -2,6 +2,8 @@
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import PendingReportAbuse from './PendingAbuseReports';
+import PendingVerification from './PendingVerification';
+import PendingTaxCompliance from './PendingTaxCompliance';
 import axios from 'axios';
 import { getApiLink } from 'zyra';
 
@@ -19,6 +21,18 @@ addFilter(
 		return configs;
 	}
 );
+
+const identityState = { count: 0 };
+
+const setIdentityCount = (count: number) => {
+	identityState.count = count;
+};
+
+const taxState = { count: 0 };
+
+const setTaxCount = (count: number) => {
+	taxState.count = count;
+};
 
 addFilter(
     'multivendorx_approval_queue_tab',
