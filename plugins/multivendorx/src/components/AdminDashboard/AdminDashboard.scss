@@ -962,7 +962,7 @@
         background: #5756560d;
         display: flex;
         justify-content: center;
-        height: 25rem;
+        height: 12rem;
         position: relative;
 
         img {
@@ -981,6 +981,20 @@
             align-items: center;
             font-size: 8rem;
             color: #0000007d;
+        }
+
+        &::after {
+            position: absolute;
+            content: "700 X 400";
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            font-size: 5rem;
+            color: #afaeae;
         }
     }
 

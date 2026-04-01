@@ -253,7 +253,7 @@ const AddProduct = () => {
 				)}
 				buttons={applyFilters('multivendorx_product_button', [
 					{
-						label: __('view', 'multivendorx'),
+						label: __('View', 'multivendorx'),
 						icon: 'save',
 						onClick: () => window.open(product?.permalink, '_blank'),
 					},

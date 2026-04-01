@@ -57,7 +57,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
     const [isOpen, setIsOpen] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
-
+    
     /* Close dropdown when query is cleared */
     useEffect(() => {
         if (!query) {
@@ -111,9 +111,9 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
             {/* Input */}
             <div
                 className={`search-section ${
-                    variant === 'mini-search' && isExpanded ? 'mini-search' : ''
+                    variant === 'mini-search' && !isExpanded ? 'mini-search' : ''
                 }`}
-            >
+                >
                 <BasicInputUI
                     type={'text'}
                     placeholder={placeholder}

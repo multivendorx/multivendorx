@@ -521,7 +521,7 @@ export default {
 						type: 'preposttext',
 						textType: 'post',
 						postText: __(
-							'free withdrawals. After that, each withdrawal costs',
+							'free withdrawals. After that, each withdrawal costs fixed',
 							'multivendorx'
 						),
 					},
@@ -531,11 +531,6 @@ export default {
 					type: 'number',
 					size: '8rem',
 					preText: appLocalizer.currency_symbol,
-					beforeElement: {
-						type: 'preposttext',
-						textType: 'pre',
-						preText: __('fixed', 'multivendorx'),
-					},
 					afterElement: {
 						type: 'preposttext',
 						textType: 'post',
@@ -547,11 +542,6 @@ export default {
 					type: 'number',
 					size: '8rem',
 					postText: __('%', 'multivendorx'),
-					beforeElement: {
-						type: 'preposttext',
-						textType: 'pre',
-						preText: '.',
-					},
 				},
 			],
 		},

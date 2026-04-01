@@ -20,8 +20,6 @@
             position: relative;
 
             .toggle-icon {
-                padding-right: 0.5rem;
-                border-right: $border-light-small;
                 width: 1.125rem;
 
                 i {
@@ -121,6 +119,11 @@
                         }
                     }
                 }
+
+                &.toggle{
+                    padding-left: 0.5rem;
+                    border-left: $border-light-small;
+                }
             }
 
             .right-section {
@@ -142,7 +145,9 @@
                 .settings-btn {
                     display: flex;
                     gap: 0.5rem;
-
+                    .btn-red-color{
+                        font-size: 1rem;
+                    }
                     li{
                         margin: 0;
                     }

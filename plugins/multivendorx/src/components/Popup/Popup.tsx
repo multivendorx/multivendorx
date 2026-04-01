@@ -180,7 +180,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 		return (
 			<div className="popup-wrapper">
 				<div className="popup-header">
-					<i className={`adminfont-${pluginData.pluginName}`} />
+					<i className={`adminfont-${pluginData.pluginName}`} />					
 				</div>
 				<div className="popup-body">
 					<h2>

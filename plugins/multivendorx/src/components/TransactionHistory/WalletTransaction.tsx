@@ -507,6 +507,24 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 										</>
 									)}
 								</div>
+								<div className="desc">
+									{walletLoading ? (
+										<Skeleton width={15.625} />
+									) : (
+										<>
+											<b>
+												{' '}
+												{formatCurrency(
+													wallet?.reserve_balance
+												)}{' '}
+											</b>
+											{__(
+												'reserve balance',
+												'multivendorx'
+											)}
+										</>
+									)}
+								</div>
 							</div>
 							<Column row>
 								<ItemListUI

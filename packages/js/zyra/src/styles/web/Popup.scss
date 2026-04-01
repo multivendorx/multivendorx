@@ -53,26 +53,19 @@
                     margin-right: 0.5rem;
                 }
             }
+        }
 
-            // p {
-            //     font-size: 0.85rem;
-            //     margin: 0;
-            //     padding-top: 0.125rem;
-            //     font-weight: 400;
-            //     padding-right: 1rem;
-            // }
-
-            .icon {
-                position: absolute;
-                background: #fde8e4;
-                padding: 0.125rem;
-                font-size: 0.95rem;
-                color: $accent-color;
-                border-radius: 50%;
-                cursor: pointer;
-                top: 1.313rem;
-                right: 1.313rem;
-            }
+        .close-icon {
+            position: fixed;
+            background: #fde8e4;
+            padding: 0.125rem;
+            font-size: 0.95rem;
+            color: $accent-color;
+            border-radius: 50%;
+            cursor: pointer;
+            top: 1.313rem;
+            right: 1.313rem;
+            z-index: 99;
         }
 
         // footer
@@ -106,11 +99,12 @@
                 .tabs-wrapper {
                     margin: 0;
                 }
-                .tabs-footer{
+
+                .tabs-footer {
                     padding: 0.5rem;
                     border-top: $border-light-small;
 
-                    .admin-btn{
+                    .admin-btn {
                         width: 100%;
                         box-sizing: border-box;
                     }

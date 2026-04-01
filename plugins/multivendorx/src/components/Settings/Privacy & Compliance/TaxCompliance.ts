@@ -19,6 +19,7 @@ export default {
 				'Specify which financial or tax-related documents stores must upload for compliance verification.',
 				'multivendorx'
 			),
+			addNewBtnText: 'Add Required Store Uploads',
 			options: [
 				{
 					key: 'bank_account_details',

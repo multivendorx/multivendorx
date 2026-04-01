@@ -29,7 +29,7 @@ export const TextAreaUI: React.FC<TextAreaProps> = ({
     id,
     name,
     value,
-    rowNumber = 4,
+    rowNumber = 6,
     colNumber = 50,
     readOnly,
     placeholder,
@@ -57,7 +57,7 @@ export const TextAreaUI: React.FC<TextAreaProps> = ({
                     apiKey={tinymceApiKey}
                     value={value as string}
                     init={{
-                        height: rowNumber * 20,
+                        height: rowNumber * 50,
                         menubar: false,
                         plugins: [
                             'advlist autolink lists link image charmap print preview anchor',

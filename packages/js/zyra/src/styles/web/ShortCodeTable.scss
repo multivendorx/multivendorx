@@ -11,9 +11,10 @@
         margin-top: 0.313rem;
 
         .shortcode-title {
-            font-size: 1.125rem;
+            font-size: 1.25rem;
             display: flex;
             gap: 0.5rem;
+            font-weight: 500;
         }
     }
 
@@ -22,7 +23,6 @@
             border-collapse: collapse;
             width: 100%;
         }
-
         th,
         td {
             text-align: left;
@@ -33,6 +33,9 @@
             .name {
                 margin-bottom: 0.5rem;
             }
+        }
+        th{
+            font-weight: 500;
         }
 
         ul {

@@ -98,7 +98,7 @@
 
         .notice-text,
         .notice-desc {
-            font-size: 0.75rem;
+            font-size: 0.813rem;
         }
 
         .notice-desc {
@@ -280,4 +280,9 @@
         width: 100%;
         left: 0;
     }
+}
+
+// for woocommerce notice 
+.notice-wrapper{
+    margin-top: 2.5rem;
 }

@@ -236,6 +236,13 @@ const Withdrawls: React.FC = () => {
 										'multivendorx'
 									)}
 								</div>
+								<div className="desc">
+									<b>{formatCurrency(data?.reserve_balance)} </b>{' '}
+									{__(
+										'reserve balance',
+										'multivendorx'
+									)}
+								</div>
 							</div>
 							<Column row>
 								<ItemListUI
@@ -273,7 +280,7 @@ const Withdrawls: React.FC = () => {
 													)}
 												</>
 											),
-											time: formatCurrency(
+											value: formatCurrency(
 												data.locking_balance
 											),
 										},

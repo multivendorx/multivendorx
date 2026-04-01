@@ -600,7 +600,7 @@ export default {
 								},
 								{
 									key: 'black',
-									label: 'black',
+									label: 'Black Diamond',
 									value: 'black',
 									colors: {
 										colorPrimary: '#2c3e50',
@@ -718,7 +718,7 @@ export default {
 								},
 								{
 									key: 'black',
-									label: 'black',
+									label: 'Black Diamond',
 									value: 'black',
 									colors: {
 										colorPrimary: '#2c3e50',
@@ -836,7 +836,7 @@ export default {
 								},
 								{
 									key: 'black',
-									label: 'black',
+									label: 'Black Diamond',
 									value: 'black',
 									colors: {
 										colorPrimary: '#2c3e50',
@@ -954,7 +954,7 @@ export default {
 								},
 								{
 									key: 'black',
-									label: 'black',
+									label: 'Black Diamond',
 									value: 'black',
 									colors: {
 										colorPrimary: '#2c3e50',
@@ -1072,7 +1072,7 @@ export default {
 								},
 								{
 									key: 'black',
-									label: 'black',
+									label: 'Black Diamond',
 									value: 'black',
 									colors: {
 										colorPrimary: '#2c3e50',
@@ -1190,7 +1190,7 @@ export default {
 								},
 								{
 									key: 'black',
-									label: 'black',
+									label: 'Black Diamond',
 									value: 'black',
 									colors: {
 										colorPrimary: '#2c3e50',

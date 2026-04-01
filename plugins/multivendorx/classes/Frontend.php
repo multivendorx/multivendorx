@@ -105,6 +105,25 @@ class Frontend {
             return;
         }
         ?>
+        <div class="woocommerce-info confirm-section" id="confirm-section">
+            <div class="confirm-left">
+                <!-- <div class="confirm-icon">
+                    <span class="dashicons dashicons-trash"></span>
+                </div> -->
+
+                <div class="confirm-heading">
+                  <strong> <?php esc_html_e( 'Did you receive your package?', 'multivendorx' ); ?> </strong> 
+                </div>
+                <div class="confirm-sub">
+                    <?php esc_html_e( 'Let us know once your order has arrived safely.', 'multivendorx' ); ?>
+                </div>
+            </div>
+
+            <button type="button" class="button confirm-btn" id="confirm-btn">
+                <?php esc_html_e( 'Confirm Order Received', 'multivendorx' ); ?>
+            </button>
+
+        </div>
         <section class="woocommerce-customer-details multivendorx-refund-reason">
             <h2 class="woocommerce-column__title">
                 <?php esc_html_e( 'Refund reason', 'multivendorx' ); ?>
@@ -616,6 +635,113 @@ class Frontend {
             echo 'Manage your store, orders, and products <a href="' . esc_url($dashboard_url) . '">Open dashboard</a>.';
             echo '</div>';
         }
+        ?>
+            <div class="woocommerce-message">
+                <p><strong><?php esc_html_e( 'Unlock Wholesale Pricing', 'multivendorx' ); ?></strong></p>
+                <p>
+                    <?php esc_html_e( 'Apply for wholesale access to get exclusive bulk discounts.', 'multivendorx' ); ?> 
+                    <button type="button" class="multivendorx-apply-now-btn">
+                        <?php esc_html_e( 'Apply Now', 'multivendorx' ); ?>
+                    </button>
+                </p>
+            </div>
+
+            <div id="wholesale-popup" class="wholesale-popup">
+                <div class="popup-content">
+                     <span class="popup-close dashicons dashicons-no-alt"></span>
+                    <h2><?php esc_html_e( 'Apply for Wholesale Access', 'multivendorx' ); ?></h2>
+                    <p><?php esc_html_e( 'Fill in your business details and upload the required verification documents.', 'multivendorx' ); ?></p>
+
+                    <form method="post" class="woocommerce-form wholesale-form">
+
+                        <!-- <p class="form-section-title">
+                            <?php esc_html_e( 'Business Information', 'multivendorx' ); ?>
+                        </p> -->
+
+                        <!-- Row -->
+                        <div class="form-row form-row-first">
+                            <label for="biz-name"><?php esc_html_e( 'Business Name *', 'multivendorx' ); ?></label>
+                            <input type="text" id="biz-name" name="biz_name" class="input-text" placeholder="Acme Retail Ltd." />
+                        </div>
+
+                        <div class="form-row form-row-last">
+                            <label for="biz-type"><?php esc_html_e( 'Business Type *', 'multivendorx' ); ?></label>
+                            <select id="biz-type" name="biz_type" class="select">
+                                <option value=""><?php esc_html_e( 'Select type…', 'multivendorx' ); ?></option>
+                                <option value="retailer"><?php esc_html_e( 'Retailer', 'multivendorx' ); ?></option>
+                                <option value="distributor"><?php esc_html_e( 'Distributor', 'multivendorx' ); ?></option>
+                                <option value="reseller"><?php esc_html_e( 'Reseller', 'multivendorx' ); ?></option>
+                                <option value="other"><?php esc_html_e( 'Other', 'multivendorx' ); ?></option>
+                            </select>
+                        </div>
+
+                        <div class="clear"></div>
+
+                        <!-- Row -->
+                        <div class="form-row form-row-first">
+                            <label for="tax-num"><?php esc_html_e( 'GST / Tax Number *', 'multivendorx' ); ?></label>
+                            <input type="text" id="tax-num" name="tax_num" class="input-text" placeholder="22AAAAA0000A1Z5" />
+                        </div>
+
+                        <div class="form-row form-row-last">
+                            <label for="volume"><?php esc_html_e( 'Expected Monthly Volume', 'multivendorx' ); ?></label>
+                            <select id="volume" name="volume" class="select">
+                                <option>₹50,000 – ₹2,00,000</option>
+                                <option>₹2,00,000 – ₹5,00,000</option>
+                                <option>₹5,00,000+</option>
+                            </select>
+                        </div>
+
+                        <div class="clear"></div>
+
+                        <!-- Address -->
+                        <p class="form-row form-row-wide">
+                            <label for="biz-addr"><?php esc_html_e( 'Business Address *', 'multivendorx' ); ?></label>
+                            <textarea id="biz-addr" name="biz_addr" class="input-text" placeholder="123 Market Street, Kolkata, WB 700001"></textarea>
+                        </p>
+
+                        <!-- Reason -->
+                        <p class="form-row form-row-wide">
+                            <label for="biz-reason"><?php esc_html_e( 'Why do you want wholesale access?', 'multivendorx' ); ?></label>
+                            <textarea id="biz-reason" name="biz_reason" class="input-text" rows="3"></textarea>
+                        </p>
+
+                        <!-- Documents -->
+                        <fieldset class="wholesale-documents">
+                            <legend><?php esc_html_e( 'Verification Documents', 'multivendorx' ); ?></legend>
+
+                            <p class="form-row form-row-wide">
+                                <label><?php esc_html_e( 'Business Registration Certificate *', 'multivendorx' ); ?></label>
+                                <input type="file" name="doc_brc" accept=".pdf,.jpg,.jpeg,.png" />
+                            </p>
+
+                            <p class="form-row form-row-wide">
+                                <label><?php esc_html_e( 'Tax Identification Document *', 'multivendorx' ); ?></label>
+                                <input type="file" name="doc_tax" accept=".pdf,.jpg,.jpeg,.png" />
+                            </p>
+
+                            <p class="form-row form-row-wide">
+                                <label><?php esc_html_e( 'Address Proof *', 'multivendorx' ); ?></label>
+                                <input type="file" name="doc_addr" accept=".pdf,.jpg,.jpeg,.png" />
+                            </p>
+
+                            <p class="form-row form-row-wide">
+                                <label><?php esc_html_e( 'Identity Proof (Owner / Authorized) *', 'multivendorx' ); ?></label>
+                                <input type="file" name="doc_id" accept=".pdf,.jpg,.jpeg,.png" />
+                            </p>
+                        </fieldset>
+
+                        <!-- Actions -->
+                        <p class="form-row">
+                            <button type="submit" class="button button-primary">
+                                <?php esc_html_e( 'Submit Application', 'multivendorx' ); ?>
+                            </button>
+                        </p>
+
+                    </form>
+                </div>
+            </div>
+        <?php
     }
 
     public function multivendorx_restrict_store_media($query) {

@@ -9,7 +9,7 @@ export default {
 		'AI services can be enabled to assist with creating product details and enhancing images automatically. These settings can be configured to control which AI services are used.',
 		'multivendorx'
 	),
-	headerIcon: 'ai',
+	headerIcon: 'intelligence',
 	submitUrl: 'settings',
 	modal: [
 		// --- Gemini API Key Section ---

@@ -132,13 +132,11 @@ export const PopupUI = forwardRef<HTMLDivElement, PopupProps>(
                                         {header.description}
                                     </div>
                                 )}
-                                <i
-                                    onClick={handleClose}
-                                    className="icon adminfont-close"
-                                ></i>
                             </div>
                         )}
-
+                        {position != "menu-dropdown" && 
+                            <i onClick={handleClose} className="close-icon adminfont-close" />
+                        }
                         <div className="popup-body">{children}</div>
 
                         {footer && <div className="popup-footer">{footer}</div>}
