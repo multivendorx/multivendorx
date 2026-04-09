@@ -14,7 +14,8 @@ const Notifications = () => {
 			content: {
 				id: 'notifications',
 				headerTitle: __('Notifications', 'multivendorx'),
-				headerIcon: 'credit-card',
+				headerIcon: 'marketplace-membership',
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -22,7 +23,8 @@ const Notifications = () => {
 			content: {
 				id: 'activities',
 				headerTitle: __('Activities', 'multivendorx'),
-				headerIcon: 'credit-card',
+				headerIcon: 'marketplace-membership',
+				hideSettingHeader: true,
 			},
 		},
 	];
@@ -47,6 +49,13 @@ const Notifications = () => {
 				`?page=multivendorx#&tab=notifications&subtab=${tabid}`
 			}
 			appLocalizer={appLocalizer}
+			menuIcon={true}
+			headerIcon="report"
+			headerTitle={__('notifications', 'multivendorx')}
+			headerDescription={__(
+				'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis odio atque sunt autem exercitationem praesentium ullam deleniti iste laboriosam iure.',
+				'multivendorx'
+			)}
 			variant={'compact'}
 			Link={Link}
 		/>

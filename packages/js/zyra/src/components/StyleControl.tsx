@@ -22,7 +22,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
         <>
             {/* Text Styles - Conditionally included */}
             {includeTextStyles && (
-                <Card toggle defaultExpanded={true} title="Text">
+                <Card toggle defaultExpanded={false} title="Text">
                     <FormGroupWrapper>
                         <FormGroup label="Text Align">
                             <ChoiceToggleUI
@@ -137,9 +137,9 @@ const StyleControls: React.FC<StyleControlsProps> = ({
             )}
 
             {/* Background Group */}
-            <Card toggle defaultExpanded={true} title="Color">
+            <Card toggle defaultExpanded={false} title="Color">
                 <FormGroupWrapper>
-                    <FormGroup cols={2} label="Background Color">
+                    <FormGroup cols={2} label="Background">
                         <BasicInputUI
                             type="color"
                             value={style.backgroundColor || '#ffffff'}
@@ -148,7 +148,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                             }}
                         />
                     </FormGroup>
-                    <FormGroup cols={2} label="Text Color">
+                    <FormGroup cols={2} label="Text">
                         <BasicInputUI
                             type="color"
                             value={style.color || '#000000'}
@@ -161,7 +161,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
             </Card>
 
             {/* Padding & Margin Group */}
-            <Card toggle defaultExpanded={true} title="Spacing">
+            <Card toggle defaultExpanded={false} title="Spacing">
                 <FormGroupWrapper>
                     {/* Padding */}
                     <FormGroup label="Padding">
@@ -216,7 +216,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                                                 });
                                             }}
                                         />
-                                        <label>{position}</label>
+                                        <label>{position}(rem)</label>
                                     </div>
                                 )
                             )}
@@ -226,10 +226,10 @@ const StyleControls: React.FC<StyleControlsProps> = ({
             </Card>
 
             {/* Border Group */}
-            <Card toggle defaultExpanded={true} title="Border">
+            <Card toggle defaultExpanded={false} title="Border">
                 <FormGroupWrapper>
                     {/* Border Width */}
-                    <FormGroup label="Border Width (rem)">
+                    <FormGroup label="Width(rem)" cols={2}>  
                         <BasicInputUI
                             type="number"
                             minNumber={0}
@@ -244,7 +244,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                     </FormGroup>
 
                     {/* Border Radius */}
-                    <FormGroup label="Border Radius (rem)">
+                    <FormGroup label="Radius(rem)" cols={2}>
                         <BasicInputUI
                             type="number"
                             minNumber={0}
@@ -257,8 +257,17 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                             }}
                         />
                     </FormGroup>
-
-                    <FormGroup label="Border Style">
+                    {/* Border Color */}
+                    <FormGroup label="Color" cols={2}>
+                        <BasicInputUI
+                            type="color"
+                            value={style.borderColor || '#000000'}
+                            onChange={(val) => {
+                                onChange({ ...style, borderColor: val });
+                            }}
+                        />
+                    </FormGroup>
+                    <FormGroup label="Style" cols={2}>
                         <select
                             value={style.borderStyle || 'solid'}
                             className="basic-input"
@@ -275,17 +284,6 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                             <option value="double">Double</option>
                             <option value="none">None</option>
                         </select>
-                    </FormGroup>
-
-                    {/* Border Color */}
-                    <FormGroup label="Border Color">
-                        <BasicInputUI
-                            type="color"
-                            value={style.borderColor || '#000000'}
-                            onChange={(val) => {
-                                onChange({ ...style, borderColor: val });
-                            }}
-                        />
                     </FormGroup>
                 </FormGroupWrapper>
             </Card>

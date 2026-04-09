@@ -87,12 +87,32 @@ const EditBlock = (props) => {
 				</PanelBody>
 			</InspectorControls>
 
-			<MarketplaceStoreList
-				orderby={attributes.orderby}
-				order={attributes.order}
-				category={attributes.category}
-				showMap={attributes.showMap}
-			/>
+			<div className="store-dummy-list">
+				<div className="store-card">
+					<h3 className="store-name">
+						{__('Amazon', 'multivendorx')}
+					</h3>
+
+					<div className="store-rating">
+						{__('Rated 3.00 out of 5', 'multivendorx')}
+					</div>
+
+					<div className="store-details">
+						<span className="store-phone">
+							<i className="dashicons dashicons-phone"></i>{' '}
+							{__('+91 7001166803', 'multivendorx')}
+						</span>
+
+						<span className="store-location">
+							<i className="dashicons dashicons-location"></i>{' '}
+							{__(
+								'Salt Lake, West Bengal, India',
+								'multivendorx'
+							)}
+						</span>
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 };

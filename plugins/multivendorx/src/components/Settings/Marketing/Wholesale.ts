@@ -92,5 +92,15 @@ export default {
 			moduleEnabled: 'wholesale',
 			proSetting: true,
 		},
+		{
+			key: 'wholesale_registration_from',
+			type: 'block-builder',
+			classes: 'full-width',
+			visibleGroups: ['registration'],
+			desc: 'Customise personalised store registration form for marketplace.',
+			context: 'form',
+			moduleEnabled: 'wholesale',
+			proSetting: true,
+		},
 	],
 };

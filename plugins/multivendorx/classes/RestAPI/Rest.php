@@ -59,6 +59,7 @@ class Rest {
         add_filter( 'woocommerce_analytics_products_query_args', array( $this, 'analytics_products_filter_low_stock_meta' ), 10, 1 );
         add_action( 'woocommerce_rest_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 10, 3 );
         add_action( 'woocommerce_rest_insert_shop_coupon_object', array( $this, 'send_notifications' ), 10, 2 );
+        add_filter( 'woocommerce_rest_product_shipping_class_query', array( $this, 'filter_shipping_classes_by_meta' ), 10, 2 );
     }
 
     /**
@@ -355,11 +356,20 @@ class Rest {
 
         if ( $store_id > 0 ) {
             $store = new Store( $store_id );
+            $phone_meta = $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone']);
+
+            $formatted_phone = '';
+            if ( ! empty( $phone_meta['country_code'] ) && ! empty( $phone_meta['phone'] ) ) {
+                $formatted_phone = $phone_meta['country_code'] . '-' . $phone_meta['phone'];
+            }
 
             $response->data['store_id']   = $store_id;
             $response->data['store_name'] = (string) $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
             $response->data['store_slug'] = (string) $store->get( Utill::STORE_SETTINGS_KEYS['slug'] );
+            $response->data['store_address'] = (string) $store->get_meta( Utill::STORE_SETTINGS_KEYS['address'] );
+            $response->data['store_phone'] = $formatted_phone;
         }
+        $response->data['paid_status'] = $order->is_paid();
 
         $commission_id = (int) $order->get_meta( Utill::ORDER_META_SETTINGS['commission_id'] );
 
@@ -649,7 +659,7 @@ class Rest {
             return;
         }
 
-        $referer = filter_input(INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL) ?? '';
+        $referer = filter_input( INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL ) ?? '';
         $path    = wp_parse_url( $referer, PHP_URL_PATH );
 		if ( false === strpos( $path, 'products' ) ) {
 			return;
@@ -663,48 +673,24 @@ class Rest {
 		);
 
 		if ( isset( $creating ) && true === $creating && 'pending' === $new_status ) {
-			do_action(
-				'multivendorx_notify_product_submitted',
-				'product_submitted',
-				array(
-					'admin_email'  => MultiVendorX()->setting->get_setting( 'receiver_email_address' ),
-					'admin_phone'  => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-					'store_phone'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-					'store_email'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-					'product_name' => $product->get_name(),
-					'category'     => 'activity',
-				)
-			);
+            MultiVendorX()->notifications->send_notification_helper('product_submitted', $store, null, [
+				'product_name' => $product->get_name(),
+				'category'    => 'activity',
+			]);
 		}
 
 		if ( 'pending' === $old_status && 'publish' === $new_status ) {
-			do_action(
-				'multivendorx_notify_product_approved',
-				'product_approved',
-				array(
-					'admin_email'  => MultiVendorX()->setting->get_setting( 'receiver_email_address' ),
-					'admin_phone'  => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-					'store_phone'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-					'store_email'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-					'product_name' => $product->get_name(),
-					'category'     => 'activity',
-				)
-			);
+            MultiVendorX()->notifications->send_notification_helper('product_approved', $store, null, [
+				'product_name' => $product->get_name(),
+				'category'    => 'activity',
+			]);
 		}
 
 		if ( 'publish' === $old_status && 'draft' === $new_status ) {
-			do_action(
-				'multivendorx_notify_product_rejected',
-				'product_rejected',
-				array(
-					'admin_email'  => MultiVendorX()->setting->get_setting( 'receiver_email_address' ),
-					'admin_phone'  => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-					'store_phone'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-					'store_email'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-					'product_name' => $product->get_name(),
-					'category'     => 'activity',
-				)
-			);
+            MultiVendorX()->notifications->send_notification_helper('product_rejected', $store, null, [
+				'product_name' => $product->get_name(),
+				'category'    => 'activity',
+			]);
 		}
 
 		if ( 'publish' === $new_status && ( 'pending' === $old_status || 'draft' === $old_status ) ) {
@@ -752,8 +738,8 @@ class Rest {
 			return;
 		}
 
-        $referer = filter_input(INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL) ?? '';
-		$path = wp_parse_url( $referer, PHP_URL_PATH ) ?? '';
+        $referer = filter_input( INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL ) ?? '';
+		$path    = wp_parse_url( $referer, PHP_URL_PATH ) ?? '';
 
 		if ( false === strpos( $path, 'coupons' ) ) {
 			return;
@@ -935,5 +921,21 @@ class Rest {
         }
 
         return new \WP_Error( sprintf( 'Call to unknown class %s.', $class ) );
+    }
+
+    public function filter_shipping_classes_by_meta( $args, $request ) {
+        $meta_key   = $request->get_param( 'meta_key' );
+        $meta_value = $request->get_param( 'meta_value' );
+
+        if ( ! empty( $meta_key ) ) {
+            $args['meta_query'] = array(
+                array(
+                    'key'     => sanitize_text_field( $meta_key ),
+                    'value'   => sanitize_text_field( $meta_value ),
+                    'compare' => '=',
+                ),
+            );
+        }
+        return $args;
     }
 }

@@ -224,7 +224,7 @@ const DashboardTemplate: React.FC<DashboardTemplateProps> = ({ colors }) => {
 									background: theme.support,
 								}}
 							>
-								<i className="adminfont-store-seo"></i>
+								<i className="adminfont-search-discovery"></i>
 							</div>
 						</div>
 						<div

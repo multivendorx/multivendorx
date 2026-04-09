@@ -116,6 +116,7 @@ export const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
                         readOnly={readOnly}
                         required={required}
                         multiple={multiple}
+                        autoComplete="off"
                     />
 
                     {type === 'color' && (

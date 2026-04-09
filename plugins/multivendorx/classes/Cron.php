@@ -146,16 +146,16 @@ class Cron {
                 );
 
             case 'weekly':
-                $weekly_settings = MultiVendorX()->setting->get_setting( 'disbursement_weekly', [] );
-                $raw = reset($weekly_settings) ?? [];
+                $weekly_settings = MultiVendorX()->setting->get_setting( 'disbursement_weekly', array() );
+                $raw             = reset( $weekly_settings ) ?? array();
                 return array(
                     'weekday' => $raw['weekly_payout_day']['value'] ?? 'monday',
                     'time'    => $raw['weekly_payout_time'] ?? '09:00',
                 );
 
             case 'fortnightly':
-                $fortnightly_settings = MultiVendorX()->setting->get_setting( 'disbursement_fortnightly', [] );
-                $raw = reset($fortnightly_settings) ?? [];
+                $fortnightly_settings = MultiVendorX()->setting->get_setting( 'disbursement_fortnightly', array() );
+                $raw                  = reset( $fortnightly_settings ) ?? array();
                 return array(
                     'nth'     => $raw['payout_frequency'] ?? 'first',
                     'weekday' => $raw['payout_day']['value'] ?? 'monday',
@@ -163,8 +163,8 @@ class Cron {
                 );
 
             case 'monthly':
-                $monthly_settings = MultiVendorX()->setting->get_setting( 'disbursement_monthly', [] );
-                $raw = reset($monthly_settings) ?? [];
+                $monthly_settings = MultiVendorX()->setting->get_setting( 'disbursement_monthly', array() );
+                $raw              = reset( $monthly_settings ) ?? array();
                 return array(
                     'day_of_month' => $raw['payouts_every_month'] ? (int) $raw['payouts_every_month'] : 1,
                     'time'         => $raw['monthly_payout_time'] ?? '09:00',

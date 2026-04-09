@@ -147,21 +147,10 @@ class OrderManager {
 
             $store_order->save();
             $store = new Store( $store_id );
-
-            do_action(
-                'multivendorx_notify_new_order_store',
-                'new_order_store',
-                array(
-                    'admin_email'    => MultiVendorX()->setting->get_setting( 'receiver_email_address' ),
-                    'admin_phone'    => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                    'store_phone'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-                    'store_email'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                    'customer_email' => $store_order->get_billing_email(),
-                    'customer_phone' => $store_order->get_billing_phone(),
-                    'order_id'       => $store_order->get_id(),
-                    'category'       => 'activity',
-                )
-            );
+            MultiVendorX()->notifications->send_notification_helper('new_order_store', $store, $store_order, [
+                'order_id'       => $store_order->get_id(),
+                'category'       => 'activity',
+            ]);
         }
     }
 

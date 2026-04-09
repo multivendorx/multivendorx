@@ -22,7 +22,9 @@ if ( empty( $policies ) ) {
         'refund_policy'       => __( 'Refund Policy', 'multivendorx' ),
         'cancellation_policy' => __( 'Cancellation / Return / Exchange Policy', 'multivendorx' ),
     );
-
+    ?>
+    <div class="woocommerce-Tabs-panel panel entry-content wc-tab">
+    <?php
     foreach ( $policies_list as $key => $label ) :
         if ( ! empty( $policies[ $key ] ) ) :
 			?>
@@ -35,4 +37,5 @@ if ( empty( $policies ) ) {
 			<?php
         endif;
     endforeach;
-	?>
+    ?>
+    </div>

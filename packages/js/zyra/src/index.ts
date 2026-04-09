@@ -4,6 +4,7 @@ import './styles/common.scss';
 
 export { default as RenderComponent } from './components/RenderComponent';
 export { default as PrePostText } from './components/PrePostText';
+export { PrePostTextUI } from './components/PrePostText';
 export { default as BasicInput } from './components/BasicInput';
 export { BasicInputUI } from './components/BasicInput';
 export { default as CalendarInput } from './components/CalendarInput';
@@ -19,6 +20,7 @@ export { default as Modules } from './components/Modules';
 export { default as MultiCheckBox } from './components/MultiCheckbox';
 export { MultiCheckBoxUI } from './components/MultiCheckbox';
 export { default as MultiInputTable } from './components/MultiInputTable';
+export { MultiInputTableUI } from './components/MultiInputTable';
 export { default as BlockBuilder } from './components/BlockBuilder';
 export { default as Section } from './components/Section';
 export { SectionUI } from './components/Section';
@@ -69,6 +71,9 @@ export { default as EventCalendar } from './components/EventCalendar';
 export { EventCalendarUI } from './components/EventCalendar';
 export { useModules, initializeModules } from './contexts/ModuleContext';
 export { SettingProvider, useSetting } from './contexts/SettingContext';
+export { default as ColorSettingInput } from './components/ColorSettingInput';
+export { ColorSettingInputUI } from './components/ColorSettingInput';
+
 export type { SettingContextType } from './contexts/SettingContext';
 export type {
     QueryProps,

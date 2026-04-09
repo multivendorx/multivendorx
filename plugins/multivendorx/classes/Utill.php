@@ -39,7 +39,6 @@ class Utill {
         'store_users'           => 'multivendorx_store_users',
         'store_meta'            => 'multivendorx_store_meta',
         'transaction'           => 'multivendorx_transactions',
-        'real_time_transaction' => 'multivendorx_real_time_transactions',
         'product_qna'           => 'multivendorx_questions_and_answers',
         'report_abuse'          => 'multivendorx_report_abuse',
         'review'                => 'multivendorx_store_reviews',
@@ -143,7 +142,7 @@ class Utill {
         'commissions_processed'           => 'multivendorx_commissions_processed',
         'commission_id'                   => 'multivendorx_commission_id',
         'shipping_provider'               => 'multivendorx_shipping_provider',
-        'tracking_date'               => 'multivendorx_tracking_date',
+        'tracking_date'                   => 'multivendorx_tracking_date',
         'tracking_url'                    => 'multivendorx_tracking_url',
         'tracking_id'                     => 'multivendorx_tracking_id',
     );
@@ -186,7 +185,7 @@ class Utill {
         'registration_data'            => 'multivendorx_registration_data',
         'request_withdrawal_amount'    => 'request_withdrawal_amount',
         'store_reject_note'            => 'store_reject_note',
-        'primary_email'                => 'primary_email',
+        'store_email'                  => 'store_email',
         'phone'                        => 'phone',
         'address'                      => 'address',
         'address_1'                    => 'address_1',
@@ -222,6 +221,7 @@ class Utill {
         'distance_type'                => 'distance_type',
         'shipping_by_country'          => 'shipping_by_country',
         'shipping_by_distance'         => 'shipping_by_distance',
+        'store_tour_completed'         => 'store_tour_completed',
     );
 
     const USER_SETTINGS_KEYS = array(
@@ -576,15 +576,15 @@ class Utill {
 	}
 
     public static function get_active_multivendor() {
-        if (Utill::is_active_plugin('dokan-lite/dokan.php')) {
+        if ( self::is_active_plugin( 'dokan-lite/dokan.php' ) ) {
             return 'Dokan';
         }
 
-        if (Utill::is_active_plugin('wc-frontend-manager/wcfm.php')) {
+        if ( self::is_active_plugin( 'wc-frontend-manager/wcfm.php' ) ) {
             return 'WcfmMarketplace';
         }
 
-        if (Utill::is_active_plugin('wc-vendors/class-wc-vendors.php')) {
+        if ( self::is_active_plugin( 'wc-vendors/class-wc-vendors.php' ) ) {
             return 'WcVendors';
         }
 

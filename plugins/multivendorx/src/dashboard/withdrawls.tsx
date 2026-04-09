@@ -86,17 +86,19 @@ const Withdrawls: React.FC = () => {
 		})
 			.then((response) => {
 				setStoreData(response.data || {});
-			}).catch((err) => console.error(err));
+			})
+			.catch((err) => console.error(err));
 	}, []);
 
 	const handleAmountChange = (value: number) => {
 		setAmount(value);
 
-		setErrors(prev => ({
+		setErrors((prev) => ({
 			...prev,
-			amount: value > data.available_balance
-				? `Amount cannot exceed ${data.available_balance}`
-				: ''
+			amount:
+				value > data.available_balance
+					? `Amount cannot exceed ${data.available_balance}`
+					: '',
 		}));
 	};
 
@@ -104,7 +106,10 @@ const Withdrawls: React.FC = () => {
 		const newErrors = {};
 
 		if (!storeData?.payment_method || storeData.payment_method === '') {
-			newErrors.payment = __('Please configure a valid payment method before requesting a withdrawal.', 'multivendorx');
+			newErrors.payment = __(
+				'Please configure a valid payment method before requesting a withdrawal.',
+				'multivendorx'
+			);
 		}
 
 		if (amount > data.available_balance) {
@@ -112,7 +117,7 @@ const Withdrawls: React.FC = () => {
 		}
 
 		setErrors(newErrors);
-		
+
 		if (Object.keys(newErrors).length > 0) {
 			return;
 		}
@@ -158,7 +163,7 @@ const Withdrawls: React.FC = () => {
 				)}
 			/>
 
-			<Container>
+			<Container className='store-withdrawals'>
 				<Column grid={6}>
 					<Card title={__('Last Withdrawal', 'multivendorx')}>
 						{lastWithdraws && lastWithdraws.length > 0 ? (
@@ -185,11 +190,11 @@ const Withdrawls: React.FC = () => {
 												'paypal-payout' &&
 												__('PayPal', 'multivendorx')}
 											{item.payment_method ===
-												'bank-transfer'
+											'bank-transfer'
 												? __(
-													'Bank Transfer',
-													'multivendorx'
-												)
+														'Bank Transfer',
+														'multivendorx'
+													)
 												: ''}
 										</div>
 									</div>
@@ -236,6 +241,14 @@ const Withdrawls: React.FC = () => {
 										'multivendorx'
 									)}
 								</div>
+								<div className="desc">
+									<b>
+										{formatCurrency(
+											data?.reserve_balance
+										)}{' '}
+									</b>{' '}
+									{__('reserve balance', 'multivendorx')}
+								</div>
 							</div>
 							<Column row>
 								<ItemListUI
@@ -273,7 +286,7 @@ const Withdrawls: React.FC = () => {
 													)}
 												</>
 											),
-											time: formatCurrency(
+											value: formatCurrency(
 												data.locking_balance
 											),
 										},
@@ -323,8 +336,8 @@ const Withdrawls: React.FC = () => {
 																?.withdrawal_setting?.[0]
 																?.free_withdrawals ??
 																0) -
-															(data?.free_withdrawal ??
-																0)
+																(data?.free_withdrawal ??
+																	0)
 														)}{' '}
 														<span>
 															{__(
@@ -393,7 +406,10 @@ const Withdrawls: React.FC = () => {
 									</div>
 								</div>
 								<FormGroup
-									label={__('Payment Processor', 'multivendorx')}
+									label={__(
+										'Payment Processor',
+										'multivendorx'
+									)}
 									htmlFor="payment_method"
 									notice={errors.payment}
 								>

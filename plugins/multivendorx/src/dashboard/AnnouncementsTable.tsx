@@ -63,6 +63,7 @@ const AnnouncementsTable = (React.FC = () => {
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}
 				format={appLocalizer.date_format}
+				showMenu={false}
 			/>
 		</>
 	);

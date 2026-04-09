@@ -237,9 +237,9 @@ const ButtonInput: FieldComponent = {
                     position={field.position || 'left'}
                 />
                 {apiMessage && (
-                    <p className="api-message">
+                    <div className="api-message">
                         {apiMessage}
-                    </p>
+                    </div>
                 )}
             </>
         );

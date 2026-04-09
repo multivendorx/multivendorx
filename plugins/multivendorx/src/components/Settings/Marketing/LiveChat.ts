@@ -32,9 +32,9 @@ export default {
 					value: 'store_info',
 				},
 				{
-					key: 'none',
+					key: 'both',
 					label: __('Both', 'multivendorx'),
-					value: 'none',
+					value: 'both',
 				},
 			],
 			proSetting: true,
@@ -44,7 +44,7 @@ export default {
 			type: 'choice-toggle',
 			label: __('Chat platform integration', 'multivendorx'),
 			desc: __(
-				'Select the chat provider you want to connect with your store.',
+				'Select the chat provider you want to connect with your store. For step-by-step setup instructions, please check our documentation.',
 				'multivendorx'
 			),
 
@@ -69,51 +69,12 @@ export default {
 					label: __('WhatsApp', 'multivendorx'),
 					value: 'whatsapp',
 				},
-			],
-			proSetting: true,
-		},
-		{
-			key: 'whatsapp_opening_pattern',
-			type: 'choice-toggle',
-			label: __('WhatsApp opening pattern', 'multivendorx'),
-			// desc: __(
-			// 	'Choose whether WhatsApp chats open in browser or app.',
-			// 	'multivendorx'
-			// ),
-			options: [
 				{
-					key: 'browser',
-					label: __('Open in browser', 'multivendorx'),
-					value: 'browser',
-				},
-				{
-					key: 'app',
-					label: __('Open in WhatsApp app', 'multivendorx'),
-					value: 'app',
+					key: 'tawk',
+					label: __('Tawk.to', 'multivendorx'),
+					value: 'tawk',
 				},
 			],
-			dependent: {
-				key: 'chat_provider',
-				set: true,
-				value: 'whatsapp',
-			},
-			moduleEnabled: 'live-chat',
-			proSetting: true,
-		},
-		{
-			key: 'whatsapp_pre_filled',
-			type: 'textarea',
-			label: __('Pre-filled WhatsApp message', 'multivendorx'),
-			desc: __(
-				'Define default text for the WhatsApp chat window. You can use variables {store_name} and {store_url}.',
-				'multivendorx'
-			),
-			dependent: {
-				key: 'chat_provider',
-				set: true,
-				value: 'whatsapp',
-			},
-			moduleEnabled: 'live-chat',
 			proSetting: true,
 		},
 		{
@@ -121,7 +82,7 @@ export default {
 			type: 'text',
 			label: __('TalkJS App ID', 'multivendorx'),
 			desc: __(
-				'Enter the App ID provided in your TalkJS dashboard.',
+				'Enter your TalkJS App ID. Go to the <a href="https://talkjs.com/dashboard" target="_blank">TalkJS dashboard</a> → select your project → copy the App ID.',
 				'multivendorx'
 			),
 			dependent: {
@@ -137,7 +98,7 @@ export default {
 			type: 'text',
 			label: __('TalkJS App Secret', 'multivendorx'),
 			desc: __(
-				'Enter the App Secret from your TalkJS dashboard. You can retrieve both the App ID and Secret from your TalkJS account settings.',
+				'Enter the App Secret for the selected TalkJS project. Copy it from the project settings in your <a href="https://talkjs.com/dashboard" target="_blank">TalkJS dashboard.</a>',
 				'multivendorx'
 			),
 			dependent: {

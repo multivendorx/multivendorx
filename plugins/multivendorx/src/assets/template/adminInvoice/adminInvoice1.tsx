@@ -243,12 +243,12 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 									fontWeight: 'bold',
 								}}
 							>
-								Customer Details:
+								Artisan Market Co.
 							</Text>
 							<Text
 								style={{ fontSize: '12px', fontWeight: 'bold' }}
 							>
-								John Smith
+								Vendor Rajan Mehta
 							</Text>
 							<Text style={{ fontSize: '10px' }}>
 								{' '}
@@ -258,130 +258,10 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 								john.smith@email.com
 							</Text>
 							<Text style={{ fontSize: '10px' }}>
-								{' '}
-								<Text style={{ fontWeight: 'bold' }}>
-									Phone:{' '}
-								</Text>
-								+1 (555) 123-4567
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								{' '}
-								<Text style={{ fontWeight: 'bold' }}>
-									Customer ID:{' '}
-								</Text>
-								CUST-20250315
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								{' '}
-								<Text style={{ fontWeight: 'bold' }}>
-									Customer Tax ID:{' '}
-								</Text>
-								TAX-CUST-567890
-							</Text>
-
-							<Text
-								style={{
-									fontSize: '14px',
-									color: colors.colorPrimary,
-									margin: '5px 0',
-									fontWeight: 'bold',
-								}}
-							>
-								Tax Information:
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								{' '}
-								<Text style={{ fontWeight: 'bold' }}>
-									Tax ID:{' '}
-								</Text>
-								US-TAX-123456789
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								{' '}
-								<Text style={{ fontWeight: 'bold' }}>
-									GST/VAT Number:{' '}
-								</Text>
-								GST-US-987654321
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								{' '}
-								<Text style={{ fontWeight: 'bold' }}>
-									Business Registration:{' '}
-								</Text>
-								BRN-2020-MKT-4567
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								{' '}
-								<Text style={{ fontWeight: 'bold' }}>
-									Tax Jurisdiction:{' '}
-								</Text>
-								United States
+								42 Commerce Lane, Suite 5, Mumbai 400001, India
 							</Text>
 						</View>
 
-						<View
-							id="left-details"
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-								gap: '5px',
-								width: '100%',
-								padding: '10px',
-								backgroundColor: '#f0f0f0',
-								border: '1px solid #ccc',
-								borderRadius: '5px',
-							}}
-						>
-							<Text
-								style={{
-									fontSize: '14px',
-									color: colors.colorPrimary,
-									marginBottom: '5px',
-									fontWeight: 'bold',
-								}}
-							>
-								Billing Address:
-							</Text>
-							<Text
-								style={{ fontSize: '10px', fontWeight: 'bold' }}
-							>
-								John Smith
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								456 Customer Lane
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								Manchester, M1 2AB
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								United Kingdom
-							</Text>
-
-							<Text
-								style={{
-									fontSize: '14px',
-									color: colors.colorPrimary,
-									marginBottom: '5px',
-									fontWeight: 'bold',
-								}}
-							>
-								Shipping Address:
-							</Text>
-							<Text
-								style={{ fontSize: '10px', fontWeight: 'bold' }}
-							>
-								John Smith
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								456 Customer Lane
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								Manchester, M1 2AB
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								United Kingdom
-							</Text>
-						</View>
 					</View>
 					{/* billing section end */}
 
@@ -404,7 +284,7 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 						>
 							{/* Description */}
 							<View style={{ flex: 4 }}>
-								<Text style={{ fontWeight: 600 }}>Seller</Text>
+								<Text style={{ fontWeight: 600 }}>Order ID</Text>
 							</View>
 
 							<Text
@@ -414,7 +294,7 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 									fontWeight: 600,
 								}}
 							>
-								Product / Service
+								Date
 							</Text>
 							<Text
 								style={{
@@ -423,7 +303,7 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 									fontWeight: 600,
 								}}
 							>
-								Qty
+								Products
 							</Text>
 							<Text
 								style={{
@@ -432,7 +312,7 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 									fontWeight: 600,
 								}}
 							>
-								Unit Price
+								Order total
 							</Text>
 							<Text
 								style={{
@@ -441,7 +321,7 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 									fontWeight: 600,
 								}}
 							>
-								Subtotal
+								Marketplace Commission
 							</Text>
 							<Text
 								style={{
@@ -450,16 +330,7 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 									fontWeight: 600,
 								}}
 							>
-								Tax
-							</Text>
-							<Text
-								style={{
-									flex: 2,
-									textAlign: 'right',
-									fontWeight: 600,
-								}}
-							>
-								Amount
+								Vendor earnings
 							</Text>
 						</View>
 						{rows.map((row, index) => {
@@ -506,16 +377,6 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 									>
 										{row.tax}
 									</Text>
-
-									{/* Amount */}
-									<Text
-										style={{
-											flex: 2,
-											textAlign: 'right',
-										}}
-									>
-										{row.total}
-									</Text>
 								</View>
 							);
 						})}
@@ -534,130 +395,6 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 							flexDirection: 'row',
 						}}
 					>
-						<View
-							style={{
-								border: '1px solid #ccc',
-								borderRadius: '5px',
-								padding: '10px',
-								backgroundColor: '#f9f9f9',
-								width: '50%',
-								alignSelf: 'flex-end',
-							}}
-						>
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									borderBottom: `1px solid #ccc`,
-									paddingBottom: '8px',
-									marginBottom: '8px',
-								}}
-							>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-									}}
-								>
-									Order Totals
-								</Text>
-								{/* <Text style={{ fontSize: "12px", fontWeight: "bold", marginLeft: "10px" }}>$69.62</Text> */}
-							</View>
-
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									marginBottom: '8px',
-								}}
-							>
-								<Text style={{ fontSize: '12px' }}>
-									Items Subtotal:
-								</Text>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										marginLeft: '10px',
-									}}
-								>
-									$205.00
-								</Text>
-							</View>
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									marginBottom: '8px',
-								}}
-							>
-								<Text style={{ fontSize: '12px' }}>
-									Shipping Fees:
-								</Text>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										marginLeft: '10px',
-									}}
-								>
-									$15.00
-								</Text>
-							</View>
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									marginBottom: '8px',
-								}}
-							>
-								<Text style={{ fontSize: '12px' }}>
-									Tax Collected:
-								</Text>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										marginLeft: '10px',
-									}}
-								>
-									$20.50
-								</Text>
-							</View>
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									borderTop: `1px solid ${colors.colorPrimary}`,
-									paddingTop: '8px',
-								}}
-							>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										color: colors.colorPrimary,
-									}}
-								>
-									Total Paid by Customer:
-								</Text>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										color: colors.colorPrimary,
-										marginLeft: '10px',
-									}}
-								>
-									$240.50
-								</Text>
-							</View>
-						</View>
 
 						<View
 							style={{
@@ -685,7 +422,7 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 										fontWeight: 'bold',
 									}}
 								>
-									Marketplace Revenue
+									Settlement summary
 								</Text>
 								{/* <Text style={{ fontSize: "12px", fontWeight: "bold", marginLeft: "10px" }}>$69.62</Text> */}
 							</View>
@@ -699,7 +436,7 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 								}}
 							>
 								<Text style={{ fontSize: '12px' }}>
-									Platform Fees Collected:
+									Total sales:
 								</Text>
 								<Text
 									style={{
@@ -720,7 +457,7 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 								}}
 							>
 								<Text style={{ fontSize: '12px' }}>
-									Shipping Fees (if applicable):
+									Commission (15%):
 								</Text>
 								<Text
 									style={{
@@ -741,7 +478,7 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 								}}
 							>
 								<Text style={{ fontSize: '12px' }}>
-									Payment Processing Fees:
+									Platform fee:
 								</Text>
 								<Text
 									style={{
@@ -751,168 +488,6 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors }) => {
 									}}
 								>
 									$7.50
-								</Text>
-							</View>
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									borderTop: `1px solid ${colors.colorPrimary}`,
-									paddingTop: '8px',
-								}}
-							>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										color: colors.colorPrimary,
-									}}
-								>
-									Total Marketplace Revenue:
-								</Text>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										color: colors.colorPrimary,
-										marginLeft: '10px',
-									}}
-								>
-									$32.70
-								</Text>
-							</View>
-						</View>
-					</View>
-
-					<View
-						id="total-section-row2"
-						style={{
-							marginBottom: '20px',
-							marginTop: '10px',
-							display: 'flex',
-						}}
-					>
-						<View
-							style={{
-								border: '1px solid #ccc',
-								borderRadius: '5px',
-								padding: '10px',
-								backgroundColor: '#f9f9f9',
-								width: '46%',
-							}}
-						>
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									borderBottom: `1px solid #ccc`,
-									paddingBottom: '8px',
-									marginBottom: '8px',
-								}}
-							>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-									}}
-								>
-									Seller Payouts
-								</Text>
-								{/* <Text style={{ fontSize: "12px", fontWeight: "bold", marginLeft: "10px" }}>$69.62</Text> */}
-							</View>
-
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									marginBottom: '8px',
-								}}
-							>
-								<Text style={{ fontSize: '12px' }}>
-									Premium Electronics:
-								</Text>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										marginLeft: '10px',
-									}}
-								>
-									$175.00
-								</Text>
-							</View>
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									marginBottom: '8px',
-								}}
-							>
-								<Text style={{ fontSize: '12px' }}>
-									Tech Accessories Co:
-								</Text>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										marginLeft: '10px',
-									}}
-								>
-									$30.00
-								</Text>
-							</View>
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									marginBottom: '8px',
-								}}
-							>
-								<Text style={{ fontSize: '12px' }}>
-									Taxes Remitted to Sellers:
-								</Text>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										marginLeft: '10px',
-									}}
-								>
-									$20.50
-								</Text>
-							</View>
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									borderTop: `1px solid ${colors.colorPrimary}`,
-									paddingTop: '8px',
-								}}
-							>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										color: colors.colorPrimary,
-									}}
-								>
-									Total Seller Payouts:
-								</Text>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										color: colors.colorPrimary,
-										marginLeft: '10px',
-									}}
-								>
-									$225.50
 								</Text>
 							</View>
 						</View>

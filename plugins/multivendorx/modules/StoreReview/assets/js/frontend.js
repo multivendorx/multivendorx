@@ -46,7 +46,7 @@ jQuery(document).ready(function ($) {
 							total > 0 ? Math.round((count / total) * 100) : 0;
 						html += `
                         <div class="rating">
-                            ${i} <i class="dashicons dashicons-star-filled"></i> 
+                            ${i} Star</i> 
                             <div class="bar"><span style="width:${percent}%;"></span></div> 
                             <span>${count} Review${
 								count !== 1 ? 's' : ''

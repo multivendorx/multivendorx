@@ -7,7 +7,7 @@ import Tooltip from './Tooltip';
 // Types
 interface CopyToClipboardProps {
     text?: string;
-    variant?: 'code' | 'button';
+    variant?: 'code' | 'button' | 'icon';
     copyButtonLabel?: string;
     copiedLabel?: string;
     onCopy?: () => string | void;
@@ -58,6 +58,21 @@ export const CopyToClipboardUI: React.FC<CopyToClipboardProps> = ({
             </div>
         );
     }
+
+    if (variant === 'icon') {
+    return (
+        <Tooltip className={copied ? "copied" : ""} text={copied ? copiedLabel : copyButtonLabel}>
+            <i
+                className={
+                    copied
+                        ? 'adminfont-check'
+                        : 'adminfont-vendor-form-copy'
+                }
+                onClick={handleCopy}
+            />
+        </Tooltip>
+    );
+}
 
     return (
         <div className="copy-to-clipboard">

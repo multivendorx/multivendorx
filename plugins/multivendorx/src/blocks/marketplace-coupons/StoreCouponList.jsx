@@ -64,10 +64,10 @@ const StoreCouponList = ({
 			meta_key: 'multivendorx_store_id',
 		};
 
-		if(storeId){
+		if (storeId) {
 			params.value = storeId;
 		}
-		
+
 		if (couponList?.storeDetails?.storeId) {
 			params.value = couponList.storeDetails.storeId;
 		}
@@ -171,7 +171,9 @@ const StoreCouponList = ({
 
 						{coupon?.date_expires && (
 							<p>
-								<strong>{__('Expires', 'multivendorx')}:</strong>{' '}
+								<strong>
+									{__('Expires', 'multivendorx')}:
+								</strong>{' '}
 								{formatDate(coupon.date_expires)}
 							</p>
 						)}

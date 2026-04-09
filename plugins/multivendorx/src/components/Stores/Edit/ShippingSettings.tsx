@@ -109,7 +109,9 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 			}
 		});
 	};
-
+	const selectedMethodExists = appLocalizer.shipping_methods.some(
+		(method) => method.value === formData.shipping_options
+	);
 	return (
 		<Container>
 			{appLocalizer.shipping_methods &&
@@ -137,402 +139,415 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 							</FormGroup>
 
 							{/* //zone by shipping */}
-							{formData.shipping_options ===
-								'shipping_by_zone' && (
-								<DistanceByZoneShipping id={id} />
-							)}
+							{formData.shipping_options === 'shipping_by_zone' &&
+								selectedMethodExists && (
+									<DistanceByZoneShipping id={id} />
+								)}
 
 							{/* country wise shipping */}
 							{formData.shipping_options ===
-								'shipping_by_country' && (
-								<>
-									<SectionUI
-										title={__(
-											'Default Shipping Rules',
-											'multivendorx'
-										)}
-										desc={__(
-											'Set base rates that apply to all orders',
-											'multivendorx'
-										)}
-									/>
-
-									{/* Default Shipping Price */}
-									<FormGroup
-										label={__(
-											`Default Shipping Price (${appLocalizer.currency_symbol})`,
-											'multivendorx'
-										)}
-										htmlFor="multivendorx_shipping_type_price"
-										desc={__(
-											'This is the shipping cost applied to every order.',
-											'multivendorx'
-										)}
-									>
-										<BasicInputUI
-											type="number"
-											name="multivendorx_shipping_type_price"
-											size="12rem"
-											placeholder={__(
-												'0.00',
+								'shipping_by_country' &&
+								selectedMethodExists && (
+									<>
+										<SectionUI
+											title={__(
+												'Default Shipping Rules',
 												'multivendorx'
 											)}
-											value={
-												formData.multivendorx_shipping_type_price ||
-												''
-											}
-											onChange={(value: string) =>
-												handleChange(
-													'multivendorx_shipping_type_price',
-													value
-												)
-											}
+											desc={__(
+												'Set base rates that apply to all orders',
+												'multivendorx'
+											)}
+										/>
+
+										{/* Default Shipping Price */}
+										<FormGroup
+											label={__(
+												`Default Shipping Price (${appLocalizer.currency_symbol})`,
+												'multivendorx'
+											)}
+											htmlFor="multivendorx_shipping_type_price"
 											desc={__(
 												'This is the shipping cost applied to every order.',
 												'multivendorx'
 											)}
-										/>
-									</FormGroup>
-									{/* Per Product Additional Price */}
-									<FormGroup
-										label={__(
-											`Per Product Additional Price (${appLocalizer.currency_symbol})`,
-											'multivendorx'
-										)}
-										htmlFor="multivendorx_additional_product"
-										desc={__(
-											'This amount will be added to the Default Shipping Price for each additional product type in the cart. Example: If Default Shipping is $5 and this is set to $2, a customer buying Product A and Product B will pay $5 (for Product A) + $2 (for Product B) = $7 total shipping.',
-											'multivendorx'
-										)}
-									>
-										<BasicInputUI
-											type="number"
-											name="multivendorx_additional_product"
-											size="12rem"
-											placeholder={__(
-												'0.00',
+										>
+											<BasicInputUI
+												type="number"
+												name="multivendorx_shipping_type_price"
+												size="12rem"
+												placeholder={__(
+													'0.00',
+													'multivendorx'
+												)}
+												value={
+													formData.multivendorx_shipping_type_price ||
+													''
+												}
+												onChange={(value: string) =>
+													handleChange(
+														'multivendorx_shipping_type_price',
+														value
+													)
+												}
+												desc={__(
+													'This is the shipping cost applied to every order.',
+													'multivendorx'
+												)}
+											/>
+										</FormGroup>
+										{/* Per Product Additional Price */}
+										<FormGroup
+											label={__(
+												`Per Product Additional Price (${appLocalizer.currency_symbol})`,
 												'multivendorx'
 											)}
-											value={
-												formData.multivendorx_additional_product ||
-												''
-											}
-											onChange={(value: string) =>
-												handleChange(
-													'multivendorx_additional_product',
-													value
-												)
-											}
-										/>
-									</FormGroup>
-
-									{/* Per Qty Additional Price */}
-									<FormGroup
-										label={__(
-											`Per Qty Additional Price (${appLocalizer.currency_symbol})`,
-											'multivendorx'
-										)}
-										htmlFor="multivendorx_additional_qty"
-										desc={__(
-											'This amount will be added to the Default Shipping Price for each additional quantity of the same product. Example: If Default Shipping is $5 and this is set to $1, a customer buying 3 units of Product A will pay $5 (first unit) + $1 (second unit) + $1 (third unit) = $7 total shipping.',
-											'multivendorx'
-										)}
-									>
-										<BasicInputUI
-											type="number"
-											name="multivendorx_additional_qty"
-											size="12rem"
-											placeholder={__(
-												'0.00',
+											htmlFor="multivendorx_additional_product"
+											desc={__(
+												'This amount will be added to the Default Shipping Price for each additional product type in the cart. Example: If Default Shipping is $5 and this is set to $2, a customer buying Product A and Product B will pay $5 (for Product A) + $2 (for Product B) = $7 total shipping.',
 												'multivendorx'
 											)}
-											value={
-												formData.multivendorx_additional_qty ||
-												''
-											}
-											onChange={(value: string) =>
-												handleChange(
-													'multivendorx_additional_qty',
-													value
-												)
-											}
-										/>
-									</FormGroup>
+										>
+											<BasicInputUI
+												type="number"
+												name="multivendorx_additional_product"
+												size="12rem"
+												placeholder={__(
+													'0.00',
+													'multivendorx'
+												)}
+												value={
+													formData.multivendorx_additional_product ||
+													''
+												}
+												onChange={(value: string) =>
+													handleChange(
+														'multivendorx_additional_product',
+														value
+													)
+												}
+											/>
+										</FormGroup>
 
-									{/* Free Shipping Minimum Order Amount */}
-									<FormGroup
-										label={__(
-											`Free Shipping Minimum Order Amount (${appLocalizer.currency_symbol})`,
-											'multivendorx'
-										)}
-										htmlFor="free_shipping_amount"
-										desc={__(
-											"If the customer's order total exceeds this amount, shipping becomes free. Leave this field empty if you do not want to offer free shipping.",
-											'multivendorx'
-										)}
-									>
-										<BasicInputUI
-											type="number"
-											name="free_shipping_amount"
-											placeholder={__(
-												'NO Free Shipping',
+										{/* Per Qty Additional Price */}
+										<FormGroup
+											label={__(
+												`Per Qty Additional Price (${appLocalizer.currency_symbol})`,
 												'multivendorx'
 											)}
-											value={
-												formData.free_shipping_amount ||
-												''
-											}
-											onChange={(value: string) =>
-												handleChange(
-													'free_shipping_amount',
-													value
-												)
-											}
-										/>
-									</FormGroup>
-
-									{/* Local Pickup Cost */}
-									<FormGroup
-										label={__(
-											`Local Pickup Cost (${appLocalizer.currency_symbol})`,
-											'multivendorx'
-										)}
-										htmlFor="local_pickup_cost"
-										desc={__(
-											'This is the fee customers need to pay if they choose Local Pickup as the delivery option.',
-											'multivendorx'
-										)}
-									>
-										<BasicInputUI
-											type="number"
-											name="local_pickup_cost"
-											placeholder={__(
-												'0.00',
+											htmlFor="multivendorx_additional_qty"
+											desc={__(
+												'This amount will be added to the Default Shipping Price for each additional quantity of the same product. Example: If Default Shipping is $5 and this is set to $1, a customer buying 3 units of Product A will pay $5 (first unit) + $1 (second unit) + $1 (third unit) = $7 total shipping.',
 												'multivendorx'
 											)}
-											value={
-												formData.local_pickup_cost || ''
-											}
-											onChange={(value: string) =>
-												handleChange(
-													'local_pickup_cost',
-													value
-												)
-											}
-										/>
-									</FormGroup>
-									<SectionUI
-										title={__(
-											'Country-Specific Rates',
-											'multivendorx'
-										)}
-										desc={__(
-											'Country-specific rates will be added to the Default Shipping Price. If state/region rates are defined, the final shipping cost will be State Rate + Default Shipping Price.',
-											'multivendorx'
-										)}
-									/>
+										>
+											<BasicInputUI
+												type="number"
+												name="multivendorx_additional_qty"
+												size="12rem"
+												placeholder={__(
+													'0.00',
+													'multivendorx'
+												)}
+												value={
+													formData.multivendorx_additional_qty ||
+													''
+												}
+												onChange={(value: string) =>
+													handleChange(
+														'multivendorx_additional_qty',
+														value
+													)
+												}
+											/>
+										</FormGroup>
 
-									<ShippingRatesByCountry />
-								</>
-							)}
+										{/* Free Shipping Minimum Order Amount */}
+										<FormGroup
+											label={__(
+												`Free Shipping Minimum Order Amount (${appLocalizer.currency_symbol})`,
+												'multivendorx'
+											)}
+											
+											htmlFor="free_shipping_amount"
+											desc={__(
+												"If the customer's order total exceeds this amount, shipping becomes free. Leave this field empty if you do not want to offer free shipping.",
+												'multivendorx'
+											)}
+										>
+											<BasicInputUI
+												type="number"
+												name="free_shipping_amount"
+												size="12rem"
+												placeholder={__(
+													'NO Free Shipping',
+													'multivendorx'
+												)}
+												value={
+													formData.free_shipping_amount ||
+													''
+												}
+												onChange={(value: string) =>
+													handleChange(
+														'free_shipping_amount',
+														value
+													)
+												}
+											/>
+										</FormGroup>
+
+										{/* Local Pickup Cost */}
+										<FormGroup
+											label={__(
+												`Local Pickup Cost (${appLocalizer.currency_symbol})`,
+												'multivendorx'
+											)}
+											htmlFor="local_pickup_cost"
+											desc={__(
+												'This is the fee customers need to pay if they choose Local Pickup as the delivery option.',
+												'multivendorx'
+											)}
+										>
+											<BasicInputUI
+												type="number"
+												name="local_pickup_cost"
+												size="12rem"
+												placeholder={__(
+													'0.00',
+													'multivendorx'
+												)}
+												value={
+													formData.local_pickup_cost ||
+													''
+												}
+												onChange={(value: string) =>
+													handleChange(
+														'local_pickup_cost',
+														value
+													)
+												}
+											/>
+										</FormGroup>
+										<SectionUI
+											title={__(
+												'Country-Specific Rates',
+												'multivendorx'
+											)}
+											desc={__(
+												'Country-specific rates will be added to the Default Shipping Price. If state/region rates are defined, the final shipping cost will be State Rate + Default Shipping Price.',
+												'multivendorx'
+											)}
+										/>
+
+										<ShippingRatesByCountry storeId={id} />
+									</>
+								)}
 
 							{formData.shipping_options ===
-								'shipping_by_distance' && (
-								<>
-									<SectionUI
-										title={__(
-											'Distance-wise Shipping Configuration',
-											'multivendorx'
-										)}
-									/>
-
-									{/* Default Cost */}
-									<FormGroup
-										row
-										label={__(
-											`Default Cost (${appLocalizer.currency_symbol}) *`,
-											'multivendorx'
-										)}
-										htmlFor="distance_default_cost"
-									>
-										<BasicInputUI
-											type="number"
-											name="distance_default_cost"
-											placeholder={__(
-												'0.00',
+								'shipping_by_distance' &&
+								selectedMethodExists && (
+									<>
+										<SectionUI
+											title={__(
+												'Distance-wise Shipping Configuration',
 												'multivendorx'
 											)}
-											size={'8rem'}
-											value={
-												formData.distance_default_cost ||
-												''
-											}
-											onChange={(value: string) =>
-												handleChange(
-													'distance_default_cost',
-													value
-												)
-											}
-											min="0"
 										/>
-									</FormGroup>
 
-									{/* Distance Type */}
-									<FormGroup
-										row
-										label={__(
-											'Distance Type',
-											'multivendorx'
-										)}
-										desc={__(
-											'Choose your preferred shipping method.',
-											'multivendorx'
-										)}
-									>
-										<ChoiceToggleUI
-											options={[
-												{
-													label: 'Kilometers (km)',
-													value: 'K',
-												},
-												{
-													label: 'Miles (mi)',
-													value: 'M',
-												},
-											]}
-											value={formData.distance_type || ''}
-											onChange={(value) =>
-												handleToggleChange(
-													value,
-													'distance_type'
-												)
-											}
-										/>
-									</FormGroup>
-
-									{/* Max Distance */}
-									<FormGroup
-										row
-										label={__(
-											'Max Distance',
-											'multivendorx'
-										)}
-										htmlFor="distance_max"
-									>
-										<BasicInputUI
-											type="number"
-											name="distance_max"
-											size={'8rem'}
-											placeholder={__(
-												'0',
+										{/* Default Cost */}
+										<FormGroup
+											row
+											label={__(
+												`Default Cost (${appLocalizer.currency_symbol}) *`,
 												'multivendorx'
 											)}
-											value={formData.distance_max || ''}
-											onChange={(value: string) =>
-												handleChange(
-													'distance_max',
-													value
-												)
-											}
-											min="0"
-										/>
-									</FormGroup>
+											htmlFor="distance_default_cost"
+										>
+											<BasicInputUI
+												type="number"
+												name="distance_default_cost"
+												placeholder={__(
+													'0.00',
+													'multivendorx'
+												)}
+												size={'8rem'}
+												value={
+													formData.distance_default_cost ||
+													''
+												}
+												onChange={(value: string) =>
+													handleChange(
+														'distance_default_cost',
+														value
+													)
+												}
+												min="0"
+											/>
+										</FormGroup>
 
-									{/* Local Pickup Cost */}
-									<FormGroup
-										row
-										label={__(
-											`Local Pickup Cost (${appLocalizer.currency_symbol}) (Optional)`,
-											'multivendorx'
-										)}
-										htmlFor="distance_local_pickup_cost"
-									>
-										<BasicInputUI
-											type="number"
-											name="distance_local_pickup_cost"
-											size={'8rem'}
-											placeholder={__(
-												'0.00',
+										{/* Distance Type */}
+										<FormGroup
+											row
+											label={__(
+												'Distance Type',
 												'multivendorx'
 											)}
-											value={
-												formData.distance_local_pickup_cost ||
-												''
-											}
-											onChange={(value: string) =>
-												handleChange(
-													'distance_local_pickup_cost',
-													value
-												)
-											}
-											min="0"
-										/>
-									</FormGroup>
-
-									{/* Distance–Cost Rules */}
-									<FormGroup
-										row
-										label={__(
-											'Distance-Cost Rules',
-											'multivendorx'
-										)}
-									>
-										<DynamicRowSetting
-											keyName="distance_rules"
-											addLabel={__(
-												'Add Rule',
+											desc={__(
+												'Choose your preferred shipping method.',
 												'multivendorx'
 											)}
-											value={
-												formData.distance_rules || []
-											}
-											template={{
-												fields: [
+										>
+											<ChoiceToggleUI
+												options={[
 													{
-														key: 'max_distance',
-														type: 'number',
-														// label: __(
-														// 	'Up to',
-														// 	'multivendorx'
-														// ),
-														placeholder: __(
-															'Up to',
-															'multivendorx'
-														),
-														size: '8rem',
-														step: '0.1',
-														min: '0',
+														key: 'K',
+														label: 'Kilometers (km)',
+														value: 'K',
 													},
 													{
-														key: 'cost',
-														type: 'number',
-														// label: __(
-														// 	`Cost (${appLocalizer.currency_symbol})`,
-														// 	'multivendorx'
-														// ),
-														placeholder: __(
-															`Cost ${appLocalizer.currency_symbol}`,
-															'multivendorx'
-														),
-														step: '0.01',
-														size: '8rem',
-														min: '0',
+														key: 'M',
+														label: 'Miles (mi)',
+														value: 'M',
 													},
-												],
-											}}
-											onChange={(updatedRules) => {
-												const updated = {
-													...formData,
-													distance_rules:
-														updatedRules,
-												};
-												setFormData(updated);
-												autoSave(updated);
-											}}
-										/>
-									</FormGroup>
-								</>
-							)}
+												]}
+												value={
+													formData.distance_type || ''
+												}
+												onChange={(value) =>
+													handleToggleChange(
+														value,
+														'distance_type'
+													)
+												}
+											/>
+										</FormGroup>
+
+										{/* Max Distance */}
+										<FormGroup
+											row
+											label={__(
+												'Max Distance',
+												'multivendorx'
+											)}
+											htmlFor="distance_max"
+										>
+											<BasicInputUI
+												type="number"
+												name="distance_max"
+												size={'8rem'}
+												placeholder={__(
+													'0',
+													'multivendorx'
+												)}
+												value={
+													formData.distance_max || ''
+												}
+												onChange={(value: string) =>
+													handleChange(
+														'distance_max',
+														value
+													)
+												}
+												min="0"
+											/>
+										</FormGroup>
+
+										{/* Local Pickup Cost */}
+										<FormGroup
+											row
+											label={__(
+												`Local Pickup Cost (${appLocalizer.currency_symbol}) (Optional)`,
+												'multivendorx'
+											)}
+											htmlFor="distance_local_pickup_cost"
+										>
+											<BasicInputUI
+												type="number"
+												name="distance_local_pickup_cost"
+												size={'8rem'}
+												placeholder={__(
+													'0.00',
+													'multivendorx'
+												)}
+												value={
+													formData.distance_local_pickup_cost ||
+													''
+												}
+												onChange={(value: string) =>
+													handleChange(
+														'distance_local_pickup_cost',
+														value
+													)
+												}
+												min="0"
+											/>
+										</FormGroup>
+
+										{/* Distance–Cost Rules */}
+										<FormGroup
+											row
+											label={__(
+												'Distance-Cost Rules',
+												'multivendorx'
+											)}
+										>
+											<DynamicRowSetting
+												keyName="distance_rules"
+												addLabel={__(
+													'Add Rule',
+													'multivendorx'
+												)}
+												value={
+													formData.distance_rules ||
+													[]
+												}
+												template={{
+													fields: [
+														{
+															key: 'max_distance',
+															type: 'number',
+															// label: __(
+															// 	'Up to',
+															// 	'multivendorx'
+															// ),
+															placeholder: __(
+																'Up to',
+																'multivendorx'
+															),
+															size: '8rem',
+															step: '0.1',
+															min: '0',
+														},
+														{
+															key: 'cost',
+															type: 'number',
+															// label: __(
+															// 	`Cost (${appLocalizer.currency_symbol})`,
+															// 	'multivendorx'
+															// ),
+															placeholder: __(
+																`Cost ${appLocalizer.currency_symbol}`,
+																'multivendorx'
+															),
+															step: '0.01',
+															size: '8rem',
+															min: '0',
+														},
+													],
+												}}
+												onChange={(updatedRules) => {
+													const updated = {
+														...formData,
+														distance_rules:
+															updatedRules,
+													};
+													setFormData(updated);
+													autoSave(updated);
+												}}
+											/>
+										</FormGroup>
+									</>
+								)}
 						</FormGroupWrapper>
 					</Card>
 				</Column>

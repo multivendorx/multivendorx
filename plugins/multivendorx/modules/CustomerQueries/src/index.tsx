@@ -1,17 +1,17 @@
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
-import Qna from './QnATable';
+import Queries from './QueriesTable';
 
 addFilter(
-	'multivendorx_customer_support_tab',
-	'multivendorx/question-answer-tab',
+	'multivendorx_customers_tab',
+	'multivendorx/customer-queries-tab',
 	(tabs) => {
 		tabs.push({
 			type: 'file',
-			module: 'question-answer',
+			module: 'customer-queries',
 			content: {
-				id: 'questions',
-				headerTitle: __('Questions', 'multivendorx'),
+				id: 'customer-queries',
+				headerTitle: __('Queries', 'multivendorx'),
 				settingTitle: __('Product questions in queue', 'multivendorx'),
 				settingSubTitle: __(
 					'Waiting for your response',
@@ -26,11 +26,11 @@ addFilter(
 );
 
 addFilter(
-	'multivendorx_customer_support_tab_content',
-	'multivendorx/question-answer-content',
+	'multivendorx_customers_tab_content',
+	'multivendorx/customer-queries-content',
 	(defaultForm, { tabId }) => {
-		if (tabId === 'questions') {
-			return <Qna />;
+		if (tabId === 'customer-queries') {
+			return <Queries />;
 		}
 
 		return defaultForm;

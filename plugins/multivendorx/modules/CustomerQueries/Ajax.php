@@ -5,7 +5,7 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\QuestionAnswer;
+namespace MultiVendorX\CustomerQueries;
 
 use MultiVendorX\Store\Store;
 use MultiVendorX\Utill;
@@ -76,19 +76,11 @@ class Ajax {
             $store   = new Store( $store_id );
             $product = wc_get_product( $product_id );
 
-            do_action(
-                'multivendorx_notify_product_question_submitted',
-                'product_question_submitted',
-                array(
-                    'admin_email'   => MultiVendorX()->setting->get_setting( 'receiver_email_address' ),
-                    'admin_phone'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                    'store_phone'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-                    'store_email'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                    'product_name'  => $product->get_name(),
-                    'customer_name' => get_user_by( 'id', $user_id )->display_name,
-                    'category'      => 'activity',
-                )
-            );
+            MultiVendorX()->notifications->send_notification_helper('product_question_submitted', $store, null, [
+                'product_name'  => $product->get_name(),
+                'customer_name' => get_user_by( 'id', $user_id )->display_name,
+                'category'      => 'activity',
+            ]);
             wp_send_json_success( array( 'message' => 'Question submitted successfully.' ) );
         } else {
             wp_send_json_error( array( 'message' => 'Failed to submit question.' ) );
@@ -125,16 +117,21 @@ class Ajax {
         if ( ! empty( $questions ) ) {
             foreach ( $questions as $row ) {
                 ?>
-                <li data-qna="<?php echo esc_attr( $row['id'] ); ?>" class="qna-item">
-                    <p class="qna-question"><strong>Q:</strong> <?php echo esc_html( $row['question_text'] ); ?></p>
-                    <small class="qna-meta">
-                        By <?php echo esc_html( get_the_author_meta( 'display_name', $row['question_by'] ) ); ?>,
-                        <?php echo esc_html( human_time_diff( strtotime( $row['question_date'] ), time() ) ) . ' ago'; ?>                    </small>
-                    <p class="qna-answer"><strong>A:</strong> <?php echo esc_html( $row['answer_text'] ); ?></p>
-                    <div class="qna-votes">
-                        <span class="qna-vote dashicons dashicons-thumbs-up" data-type="up"></span>
-                        <span class="qna-vote dashicons dashicons-thumbs-down" data-type="down"></span>
-                        <p><?php echo intval( $row['total_votes'] ); ?></p>
+                <li data-qna="<?php echo esc_attr( $row['id'] ); ?>" class="qna-item review byuser comment-author-customer">
+                    <div class="comment_container">
+                        <div class="comment-text">
+                            <p class="qna-question meta">
+                                <strong class="woocommerce-review__author">Q: <?php echo esc_html( $row['question_text'] ); ?> </strong>
+                                <em class="woocommerce-review__verified verified">(By <?php echo esc_html( get_the_author_meta( 'display_name', $row['question_by'] ) ); ?>)</em>
+                                <time class="woocommerce-review__published-date"><?php echo esc_html( human_time_diff( strtotime( $row['question_date'] ), time() ) ) . ' ago'; ?></time>
+                            </p>
+                            <div class="description"><strong>A:</strong> <?php echo esc_html( $row['answer_text'] ); ?></div>
+                            <div class="qna-votes">
+                                <span class="qna-vote dashicons dashicons-thumbs-up" data-type="up"></span>
+                                <span class="qna-vote dashicons dashicons-thumbs-down" data-type="down"></span>
+                                <p><?php echo intval( $row['total_votes'] ); ?></p>
+                            </div>
+                        </div>
                     </div>
                 </li>
                 <?php

@@ -16,6 +16,7 @@ import {
 	Analytics,
 	ItemListUI,
 	Notice,
+	ComponentStatusView,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import React from 'react';
@@ -73,7 +74,7 @@ const RegistrationPdf: React.FC<RegistrationPdfProps> = ({
 								</Text>
 								{String(
 									value ||
-									__('[Not Provided]', 'multivendorx')
+										__('[Not Provided]', 'multivendorx')
 								)}
 							</Text>
 						</View>
@@ -198,9 +199,9 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 						status === 'approve'
 							? __('Store approved successfully!', 'multivendorx')
 							: __(
-								'Store rejected successfully!',
-								'multivendorx'
-							),
+									'Store rejected successfully!',
+									'multivendorx'
+								),
 					type: status === 'approve' ? 'success' : 'error',
 					position: 'float',
 				});
@@ -279,8 +280,12 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 					title={__('Verification Methods', 'multivendorx')}
 					action={
 						<>
-							<span className="admin-badge green">1 Approved</span>
-							<span className="admin-badge yellow">1 Pending</span>
+							<span className="admin-badge green">
+								1 Approved
+							</span>
+							<span className="admin-badge yellow">
+								1 Pending
+							</span>
 							<span className="admin-badge red">1 Rejected</span>
 						</>
 					}
@@ -291,7 +296,10 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 						border
 						items={[
 							{
-								title: __('Business Registration Certificate', 'multivendorx'),
+								title: __(
+									'Business Registration Certificate',
+									'multivendorx'
+								),
 								desc: __(
 									'Confirms the store is legally registered as a business entity.',
 									'multivendorx'
@@ -305,8 +313,11 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 											buttons={[
 												{
 													icon: 'eye',
-													text: __('View', 'multivendorx'),
-													color: 'blue'
+													text: __(
+														'View',
+														'multivendorx'
+													),
+													color: 'blue',
 												},
 											]}
 										/>
@@ -314,7 +325,10 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 								),
 							},
 							{
-								title: __('Trade License or Permit', 'multivendorx'),
+								title: __(
+									'Trade License or Permit',
+									'multivendorx'
+								),
 								desc: __(
 									'Validates that the store is authorized to operate and conduct business legally.',
 									'multivendorx'
@@ -328,8 +342,11 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 											buttons={[
 												{
 													icon: 'eye',
-													text: __('View', 'multivendorx'),
-													color: 'blue'
+													text: __(
+														'View',
+														'multivendorx'
+													),
+													color: 'blue',
 												},
 											]}
 										/>
@@ -337,7 +354,10 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 								),
 							},
 							{
-								title: __('Address Proof of Business Location', 'multivendorx'),
+								title: __(
+									'Address Proof of Business Location',
+									'multivendorx'
+								),
 								desc: __(
 									'Confirms the stores physical or operational business address.',
 									'multivendorx'
@@ -351,8 +371,11 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 											buttons={[
 												{
 													icon: 'eye',
-													text: __('View', 'multivendorx'),
-													color: 'blue'
+													text: __(
+														'View',
+														'multivendorx'
+													),
+													color: 'blue',
 												},
 											]}
 										/>
@@ -363,9 +386,12 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 					/>
 				</Card>
 				<Card
-					title={__('Tax Compliance & Financial Documents', 'multivendorx')}
+					title={__(
+						'Tax Compliance & Financial Documents',
+						'multivendorx'
+					)}
 					action={
-							<span className="admin-badge yellow">2 Pending</span>
+						<span className="admin-badge yellow">2 Pending</span>
 					}
 				>
 					<div className="title">Required Uploads</div>
@@ -375,7 +401,10 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 						border
 						items={[
 							{
-								title: __('Bank Account Details', 'multivendorx'),
+								title: __(
+									'Bank Account Details',
+									'multivendorx'
+								),
 								desc: __(
 									'Cancelled cheque • Uploaded Mar 20, 2026 • 520 KB',
 									'multivendorx'
@@ -389,8 +418,11 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 											buttons={[
 												{
 													icon: 'eye',
-													text: __('View', 'multivendorx'),
-													color: 'blue'
+													text: __(
+														'View',
+														'multivendorx'
+													),
+													color: 'blue',
 												},
 											]}
 										/>
@@ -398,7 +430,10 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 								),
 							},
 							{
-								title: __('GST Registration Certificate', 'multivendorx'),
+								title: __(
+									'GST Registration Certificate',
+									'multivendorx'
+								),
 								desc: __(
 									'Tax identification • Uploaded Mar 20, 2026 • 780 KB',
 									'multivendorx'
@@ -412,8 +447,11 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 											buttons={[
 												{
 													icon: 'eye',
-													text: __('View', 'multivendorx'),
-													color: 'blue'
+													text: __(
+														'View',
+														'multivendorx'
+													),
+													color: 'blue',
 												},
 											]}
 										/>
@@ -421,7 +459,10 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 								),
 							},
 							{
-								title: __('PAN Card — Business', 'multivendorx'),
+								title: __(
+									'PAN Card — Business',
+									'multivendorx'
+								),
 								desc: __(
 									'Tax ID document • Uploaded Mar 19, 2026 • 210 KB',
 									'multivendorx'
@@ -435,8 +476,11 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 											buttons={[
 												{
 													icon: 'eye',
-													text: __('View', 'multivendorx'),
-													color: 'blue'
+													text: __(
+														'View',
+														'multivendorx'
+													),
+													color: 'blue',
 												},
 											]}
 										/>
@@ -444,7 +488,10 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 								),
 							},
 							{
-								title: __('Business Registration — MCA Filing', 'multivendorx'),
+								title: __(
+									'Business Registration — MCA Filing',
+									'multivendorx'
+								),
 								desc: __(
 									'Business Registration — MCA FilingIncorporation proof • Uploaded Mar 18, 2026 • 1.4 MB',
 									'multivendorx'
@@ -458,8 +505,11 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 											buttons={[
 												{
 													icon: 'eye',
-													text: __('View', 'multivendorx'),
-													color: 'blue'
+													text: __(
+														'View',
+														'multivendorx'
+													),
+													color: 'blue',
 												},
 											]}
 										/>
@@ -471,7 +521,10 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 					<Notice
 						type="info"
 						displayPosition="inline-notice"
-						message={__('ℹ Stores must provide valid bank account details and tax documents (PAN, GST, VAT, TIN) to receive payouts. Payment processor verification may be required. Non-compliant stores may be restricted from payouts.', 'multivendorx')}
+						message={__(
+							'ℹ Stores must provide valid bank account details and tax documents (PAN, GST, VAT, TIN) to receive payouts. Payment processor verification may be required. Non-compliant stores may be restricted from payouts.',
+							'multivendorx'
+						)}
 					/>
 				</Card>
 			</Column>
@@ -488,35 +541,49 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 							row
 							label={__('Business Name', 'multivendorx')}
 						>
-							{__('TechNest Electronics Pvt. Ltd.', 'multivendorx')}
+							{__(
+								'TechNest Electronics Pvt. Ltd.',
+								'multivendorx'
+							)}
 						</FormGroup>
-						<FormGroup row label={__('Owner Name', 'multivendorx')} >
+						<FormGroup row label={__('Owner Name', 'multivendorx')}>
 							{__('Arjun Mehta', 'multivendorx')}
 						</FormGroup>
-						<FormGroup row label={__('Email', 'multivendorx')} >
+						<FormGroup row label={__('Email', 'multivendorx')}>
 							{__('arjun@technest.in', 'multivendorx')}
 						</FormGroup>
-						<FormGroup row label={__('Phone', 'multivendorx')} >
+						<FormGroup row label={__('Phone', 'multivendorx')}>
 							{__('+91 98765 43210', 'multivendorx')}
 						</FormGroup>
-						<FormGroup row label={__('Business Address', 'multivendorx')} >
-							{__('14B, Sector 5, Salt Lake, Kolkata — 700 091', 'multivendorx')}
+						<FormGroup
+							row
+							label={__('Business Address', 'multivendorx')}
+						>
+							{__(
+								'14B, Sector 5, Salt Lake, Kolkata — 700 091',
+								'multivendorx'
+							)}
 						</FormGroup>
-						<FormGroup row label={__('Business Type', 'multivendorx')} >
+						<FormGroup
+							row
+							label={__('Business Type', 'multivendorx')}
+						>
 							{__('Private Limited Company', 'multivendorx')}
 						</FormGroup>
-						<FormGroup row label={__('Category', 'multivendorx')} >
-							{__('Electronics, Gadgets & Accessories', 'multivendorx')}
+						<FormGroup row label={__('Category', 'multivendorx')}>
+							{__(
+								'Electronics, Gadgets & Accessories',
+								'multivendorx'
+							)}
 						</FormGroup>
-						<FormGroup row label={__('Website', 'multivendorx')} >
+						<FormGroup row label={__('Website', 'multivendorx')}>
 							{__('technestindia.com', 'multivendorx')}
 						</FormGroup>
 					</FormGroupWrapper>
 				</Card>
 				<Card title={__('Activity Log', 'multivendorx')}>
 					<div className="activity-log">
-						{Array.isArray(activities) &&
-							activities.length > 0 ? (
+						{Array.isArray(activities) && activities.length > 0 ? (
 							activities.slice(0, 5).map((a, i) => (
 								<div key={i} className="activity">
 									<div className="title">{a.title}</div>
@@ -525,9 +592,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 								</div>
 							))
 						) : (
-							<div className="no-data">
-								{__('No activity found.', 'multivendorx')}
-							</div>
+							<ComponentStatusView title={__('No activity found.', 'multivendorx')} />
 						)}
 					</div>
 				</Card>
@@ -536,60 +601,60 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 			<Column>
 				{(formData.core_data?.status == 'pending' ||
 					formData.core_data?.status == 'rejected') && (
-						<>
-							<div className="card-content">
-								<div className="card-header">
-									<div className="left">
-										<div className="title">
-											{__('Store details', 'multivendorx')}
-										</div>
+					<>
+						<div className="card-content">
+							<div className="card-header">
+								<div className="left">
+									<div className="title">
+										{__('Store details', 'multivendorx')}
 									</div>
 								</div>
-
-								{/* Core Data */}
-								<div className="card-body">
-									{formData.core_data &&
-										Object.entries(formData.core_data).map(
-											([label, value]) => (
-												<div
-													className="form-details"
-													key={label}
-												>
-													<label className="label">
-														{label} :
-													</label>
-													<div className="value">
-														{value ||
-															__(
-																'[Not Provided]',
-																'multivendorx'
-															)}
-													</div>
-												</div>
-											)
-										)}
-								</div>
-								{/* Registration Data (if needed) */}
 							</div>
-						</>
-					)}
+
+							{/* Core Data */}
+							<div className="card-body">
+								{formData.core_data &&
+									Object.entries(formData.core_data).map(
+										([label, value]) => (
+											<div
+												className="form-details"
+												key={label}
+											>
+												<label className="label">
+													{label} :
+												</label>
+												<div className="value">
+													{value ||
+														__(
+															'[Not Provided]',
+															'multivendorx'
+														)}
+												</div>
+											</div>
+										)
+									)}
+							</div>
+							{/* Registration Data (if needed) */}
+						</div>
+					</>
+				)}
 				<div className="card-content">
 					<div className="card-header">
 						<div className="left">
 							<div className="title">
 								{formData.core_data?.status === 'pending' ||
-									formData.core_data?.status === 'rejected'
+								formData.core_data?.status === 'rejected'
 									? __(
-										'Registration form details',
-										'multivendorx'
-									)
+											'Registration form details',
+											'multivendorx'
+										)
 									: __('Archive data', 'multivendorx')}
 							</div>
 						</div>
 						<div className="right">
 							{formData.registration_data &&
 								Object.keys(formData.registration_data).length >
-								0 && (
+									0 && (
 									<div className="admin-btn btn-purple">
 										<i className="adminfont-download"></i>
 										<PdfDownloadButton
@@ -607,7 +672,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 					<div className="card-body" id="registration-archive">
 						{/* Registration Data */}
 						{formData.registration_data &&
-							Object.keys(formData.registration_data).length > 0 ? (
+						Object.keys(formData.registration_data).length > 0 ? (
 							Object.entries(formData.registration_data).map(
 								([label, value]) => {
 									const isAttachment =
@@ -667,122 +732,122 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 			{(formData.core_data?.status == 'pending' ||
 				formData.core_data?.status == 'rejected' ||
 				formData.core_data?.status == 'permanently_rejected') && (
-					<Column grid={8}>
-						<Card title="Submitted by">
-							<div className="store-owner-details owner">
-								<div className="profile">
-									<div className="avatar">
-										{(
-											(
-												formData.primary_owner_info?.data?.display_name?.trim() ||
-												formData.primary_owner_info?.data
-													?.user_login
-											)?.charAt(0) || ''
-										).toUpperCase()}
-									</div>
-									<div className="details">
-										<div className="name">
-											{formData.primary_owner_info?.data
-												?.display_name ?? (
-													<Skeleton width={9.375} />
-												)}
-										</div>
+				<Column grid={8}>
+					<Card title="Submitted by">
+						<div className="store-owner-details owner">
+							<div className="profile">
+								<div className="avatar">
+									{(
+										(
+											formData.primary_owner_info?.data?.display_name?.trim() ||
+											formData.primary_owner_info?.data
+												?.user_login
+										)?.charAt(0) || ''
+									).toUpperCase()}
+								</div>
+								<div className="details">
+									<div className="name">
+										{formData.primary_owner_info?.data
+											?.display_name ?? (
+											<Skeleton width={9.375} />
+										)}
 									</div>
 								</div>
-								<ul className="contact-details">
-									<li>
-										<i className="adminfont-mail"></i>
-										{formData.primary_owner_info?.data
-											?.user_email ?? (
-												<Skeleton width={9.375} />
-											)}
-									</li>
-								</ul>
 							</div>
-						</Card>
-						<>
-							{previousNotes.length > 0 && (
-								<Card title="Previous Notes">
-									<div className="form-group-wrapper">
-										<div className="form-group">
-											<ul>
-												{previousNotes.map((item, idx) => (
-													<li key={idx}>
-														<strong>
-															{item.date}:
-														</strong>{' '}
-														{item.note}
-													</li>
-												))}
-											</ul>
-										</div>
+							<ul className="contact-details">
+								<li>
+									<i className="adminfont-mail"></i>
+									{formData.primary_owner_info?.data
+										?.user_email ?? (
+										<Skeleton width={9.375} />
+									)}
+								</li>
+							</ul>
+						</div>
+					</Card>
+					<>
+						{previousNotes.length > 0 && (
+							<Card title="Previous Notes">
+								<div className="form-group-wrapper">
+									<div className="form-group">
+										<ul>
+											{previousNotes.map((item, idx) => (
+												<li key={idx}>
+													<strong>
+														{item.date}:
+													</strong>{' '}
+													{item.note}
+												</li>
+											))}
+										</ul>
 									</div>
-								</Card>
-							)}
+								</div>
+							</Card>
+						)}
 
-							{formData.core_data?.status !=
-								'permanently_rejected' && (
-									<Card title="Note">
-										<FormGroupWrapper>
-											<FormGroup>
-												<TextAreaUI
-													name="store_application_note"
-													placeholder={__(
-														'Optional note for approval or rejection',
-														'multivendorx'
-													)}
-													value={
-														formData.store_application_note ||
-														''
-													}
-													onChange={handleChange}
-												/>
-											</FormGroup>
-											<FormGroup>
-												<label className="checkbox-label">
-													<input
-														type="checkbox"
-														name="store_permanent_reject"
-														checked={
-															formData.store_permanent_reject ||
-															false
-														}
-														onChange={handleChange}
-													/>
-													{__(
-														'Reject store permanently',
-														'multivendorx'
-													)}
-												</label>
-											</FormGroup>
-											<ButtonInputUI
-												buttons={[
-													{
-														text: __(
-															'Approve',
-															'multivendorx'
-														),
-														color: 'green',
-														onClick: () =>
-															handleSubmit('approve'),
-													},
-													{
-														text: __(
-															'Reject',
-															'multivendorx'
-														),
-														color: 'red',
-														onClick: () =>
-															handleSubmit('rejected'),
-													},
-												]}
+						{formData.core_data?.status !=
+							'permanently_rejected' && (
+							<Card title="Note">
+								<FormGroupWrapper>
+									<FormGroup>
+										<TextAreaUI
+											name="store_application_note"
+											placeholder={__(
+												'Optional note for approval or rejection',
+												'multivendorx'
+											)}
+											value={
+												formData.store_application_note ||
+												''
+											}
+											onChange={handleChange}
+										/>
+									</FormGroup>
+									<FormGroup>
+										<label className="checkbox-label">
+											<input
+												type="checkbox"
+												name="store_permanent_reject"
+												checked={
+													formData.store_permanent_reject ||
+													false
+												}
+												onChange={handleChange}
 											/>
-										</FormGroupWrapper>
-									</Card>
-								)}
-						</>
-					</Column>
-				)}
+											{__(
+												'Reject store permanently',
+												'multivendorx'
+											)}
+										</label>
+									</FormGroup>
+									<ButtonInputUI
+										buttons={[
+											{
+												text: __(
+													'Approve',
+													'multivendorx'
+												),
+												color: 'green',
+												onClick: () =>
+													handleSubmit('approve'),
+											},
+											{
+												text: __(
+													'Reject',
+													'multivendorx'
+												),
+												color: 'red',
+												onClick: () =>
+													handleSubmit('rejected'),
+											},
+										]}
+									/>
+								</FormGroupWrapper>
+							</Card>
+						)}
+					</>
+				</Column>
+			)}
 		</Container>
 	);
 };

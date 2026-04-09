@@ -89,11 +89,9 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 		}
 
 		const provider = settings.geolocation.choose_map_api;
-		setApiKey(settings.geolocation[`${provider}_api_key`] || '');
-
 		setMapConfig({
 			provider: provider || null,
-			apiKey: apiKey,
+			apiKey: settings.geolocation[`${provider}_api_key`],
 		});
 	}, [settings]);
 
@@ -512,7 +510,14 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 																<span>
 																	<i className="dashicons dashicons-phone" />{' '}
 																	{
-																		store.phone
+																		store
+																			.phone
+																			.country_code
+																	}{' '}
+																	{
+																		store
+																			.phone
+																			.phone
 																	}
 																</span>
 															)}

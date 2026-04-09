@@ -72,14 +72,14 @@ class Dashboard extends \WP_REST_Controller {
                     'capability' => array( 'read_products' ),
                     'filename'   => 'view-notifications',
                 ),
-                 'setup-wizard' => array(
-                    'name'       => '',
-                    'icon'       => '',
-                    'slug'       => 'setup-wizard',
-                    'submenu'    => array(),
-                    'capability' => array( 'read_products' ),
-                    'filename'   => 'setup-wizard',
-                ),
+                'setup-wizard'       => array(
+					'name'       => '',
+					'icon'       => '',
+					'slug'       => 'setup-wizard',
+					'submenu'    => array(),
+					'capability' => array( 'read_products' ),
+					'filename'   => 'setup-wizard',
+				),
             )
         );
 
@@ -98,27 +98,27 @@ class Dashboard extends \WP_REST_Controller {
     public function all_endpoints( $menu_only = false ) {
         // Default endpoints.
         $all_endpoints = array(
-            'dashboard'     => array(
+            'dashboard'       => array(
                 'name'       => 'Dashboard',
                 'icon'       => 'module',
                 'slug'       => '',
                 'submenu'    => array(),
                 'capability' => array( 'create_stores' ),
             ),
-            'products'      => array(
+            'products'        => array(
                 'name'       => 'Products',
                 'slug'       => 'products',
                 'icon'       => 'single-product',
                 'submenu'    => array(),
                 'capability' => array( 'read_products', 'add_products', 'publish_products', 'edit_published_products', 'upload_files' ),
             ),
-            'coupons'       => array(
+            'coupons'         => array(
                 'name'       => 'Coupons',
                 'slug'       => 'coupons',
                 'icon'       => 'coupon',
                 'capability' => array( 'read_shop_coupons', 'add_shop_coupons', 'publish_coupons' ),
             ),
-            'sales'         => array(
+            'sales'           => array(
                 'name'       => 'Sales',
                 'slug'       => 'sales',
                 'icon'       => 'sales',
@@ -146,7 +146,7 @@ class Dashboard extends \WP_REST_Controller {
                 'capability' => array( 'view_shop_orders', 'view_commission_history' ),
 
             ),
-            'wallet'        => array(
+            'wallet'          => array(
                 'name'       => 'Wallet',
                 'icon'       => 'wallet',
                 'slug'       => 'wallet',
@@ -167,11 +167,11 @@ class Dashboard extends \WP_REST_Controller {
                 'capability' => array( 'edit_withdrawl_request' ),
             ),
 
-            'store_support' => array(
-                'name'       => 'Store Support',
-                'icon'       => 'customer-service',
-                'slug'       => 'store-support',
-                'submenu'    => array(
+            'store_support'   => array(
+                'name'    => 'Store Support',
+                'icon'    => 'customer-service',
+                'slug'    => 'store-support',
+                'submenu' => array(
                     array(
                         'key'        => 'support-tickets',
                         'name'       => 'Support Tickets',
@@ -184,7 +184,7 @@ class Dashboard extends \WP_REST_Controller {
                         'name'       => 'Product Questions',
                         'slug'       => 'customer-questions',
                         'capability' => array( 'view_customer_questions', 'reply_customer_questions' ),
-                        'module'     => array( 'question-answer' ),
+                        'module'     => array( 'customer-queries' ),
                     ),
                     array(
                         'key'        => 'store-followers',
@@ -203,7 +203,7 @@ class Dashboard extends \WP_REST_Controller {
                 ),
             ),
 
-            'reports'       => array(
+            'reports'         => array(
                 'name'       => 'Stats / Report',
                 'slug'       => 'reports',
                 'icon'       => 'report',
@@ -217,7 +217,7 @@ class Dashboard extends \WP_REST_Controller {
                 ),
                 'capability' => array( 'read_products' ),
             ),
-            'resources'     => array(
+            'resources'       => array(
                 'name'       => 'Resources',
                 'icon'       => 'resources',
                 'slug'       => 'resources',
@@ -238,13 +238,13 @@ class Dashboard extends \WP_REST_Controller {
                 ),
                 'capability' => array( 'view_documentation' ),
             ),
-            'settings'      => array(
+            'settings'        => array(
                 'name'       => 'Settings',
                 'slug'       => 'settings',
                 'icon'       => 'setting',
                 'capability' => array( 'manage_store_settings' ),
             ),
-            'appointment'   => array(
+            'appointment'     => array(
                 'name'       => 'Rental (pro)',
                 'slug'       => 'appointment',
                 'icon'       => 'report',
@@ -276,7 +276,7 @@ class Dashboard extends \WP_REST_Controller {
                 ),
                 'capability' => array( 'read_products' ),
             ),
-            'compliance'       => array(
+            'compliance'      => array(
                 'name'       => 'Compliance',
                 'slug'       => 'compliance',
                 'icon'       => 'coupon',
@@ -302,13 +302,13 @@ class Dashboard extends \WP_REST_Controller {
                 'icon'       => 'coupon',
                 'capability' => array( 'read_products' ),
             ),
-            'add-appointment'       => array(
+            'add-appointment' => array(
                 'name'       => 'Add Appointment (Pro)',
                 'slug'       => 'add-appointment',
-                'icon'       => 'coupon',
+                'icon'       => 'appointment',
                 'capability' => array( 'read_products' ),
             ),
-            'media-library'       => array(
+            'media-library'   => array(
                 'name'       => 'Media Library',
                 'slug'       => 'media-library',
                 'icon'       => 'coupon',

@@ -2,13 +2,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, QueryProps, TableCard, TableRow } from 'zyra';
+import { getApiLink, NoticeManager, QueryProps, TableCard, TableRow } from 'zyra';
 
 const NotificationsTable = (React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [totalRows, setTotalRows] = useState(0);
 	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -30,7 +29,12 @@ const NotificationsTable = (React.FC = () => {
 				setIsLoading(false);
 			})
 			.catch((error) => {
-				setError(__('Failed to load announcements', 'multivendorx'));
+				NoticeManager.add({
+					title: __('Error', 'multivendorx'),
+					message: __('Failed to load announcements', 'multivendorx'),
+					type: 'error',
+					position: 'float',
+				});
 				setRows([]);
 				setTotalRows(0);
 				setIsLoading(false);
@@ -51,16 +55,14 @@ const NotificationsTable = (React.FC = () => {
 		},
 	};
 	return (
-		<>
-			{error && <div className="error-notice">{error}</div>}
-			<TableCard
-				headers={headers}
-				rows={rows}
-				totalRows={totalRows}
-				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
-			/>
-		</>
+		<TableCard
+			headers={headers}
+			rows={rows}
+			totalRows={totalRows}
+			isLoading={isLoading}
+			onQueryUpdate={doRefreshTableData}
+			showMenu={false}
+		/>
 	);
 });
 

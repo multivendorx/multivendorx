@@ -63,6 +63,9 @@ const SpmvProducts: React.FC = () => {
 		const payload = {
 			name: 'Auto Draft',
 			status: 'draft',
+			meta_data: [
+				{ key: '_is_auto_draft', value: true }
+			]
 		};
 
 		axios
@@ -176,25 +179,25 @@ const SpmvProducts: React.FC = () => {
 								<div className="product-header">
 									<Skeleton
 										variant="rectangular"
-										width={40}
-										height={40}
+										width={2.5}
+										height={2.5}
 										className="product-thumb"
 									/>
 									<Skeleton
 										variant="rectangular"
-										width={70}
-										height={32}
+										width={4.375}
+										height={2}
 										style={{ borderRadius: 4 }}
 									/>
 								</div>
 								<div className="name">
-									<Skeleton width="80%" height={24} />
+									<Skeleton width="80%" height={1.5} />
 								</div>
 								<div className="category">
-									<Skeleton width="60%" height={20} />
+									<Skeleton width="60%" height={1.25} />
 								</div>
 								<div className="price">
-									<Skeleton width="40%" height={22} />
+									<Skeleton width="40%" height={1.375} />
 								</div>
 							</div>
 						))}

@@ -1,10 +1,6 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import {
-	PanelBody,
-	TextControl,
-	SelectControl,
-} from '@wordpress/components';
+import { PanelBody, TextControl, SelectControl } from '@wordpress/components';
 import { createRoot, useEffect, useState } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import StoreCouponList from './StoreCouponList';
@@ -48,7 +44,7 @@ registerBlockType('multivendorx/marketplace-coupons', {
 				method: 'GET',
 				url: getApiLink(couponList, 'store'),
 				headers: { 'X-WP-Nonce': couponList.nonce },
-				params: {options:true},
+				params: { options: true },
 			})
 				.then((response) => {
 					setStores(response.data || []);

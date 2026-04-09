@@ -20,9 +20,11 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-.adminfont-shared-listing:before {
-  content: "\e900";
+.adminfont-media:before {
+  content: "\e968";
+}
+.adminfont-refresh:before {
+  content: "\e969";
 }
 .adminfont-cart:before {
   content: "\8907";
@@ -95,6 +97,9 @@
 }
 .adminfont-plus-circle:before {
   content: "\e8f7";
+}
+.adminfont-Shared-listing:before {
+  content: "\e900";
 }
 .adminfont-pinterest:before {
   content: "\e901";
@@ -252,7 +257,7 @@
 .adminfont-product-addon:before {
   content: "\e934";
 }
-.adminfont-advertise-product:before {
+.adminfont-product-advertising:before {
   content: "\e935";
 }
 .adminfont-marketplace-gateway:before {
@@ -540,7 +545,7 @@
 .adminfont-seller-analytics:before {
   content: "\ef61";
 }
-.adminfont-store-seo:before {
+.adminfont-search-discovery:before {
   content: "\ef62";
 }
 .adminfont-stripe-connect:before {
@@ -762,7 +767,7 @@
 .adminfont-pagination-prev-arrow:before {
   content: "\efab";
 }
-.adminfont-refresh:before {
+.adminfont-refresh-bold:before {
   content: "\efac";
 }
 .adminfont-refresh-buttons:before {
@@ -825,7 +830,7 @@
 .adminfont-cross:before {
   content: "\efc1";
 }
-.adminfont-check-fill:before {
+.adminfont-success:before {
   content: "\efc2";
 }
 .adminfont-calendar:before {

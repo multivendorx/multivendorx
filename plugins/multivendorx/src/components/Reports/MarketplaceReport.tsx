@@ -366,8 +366,10 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 			},
 		})
 			.then((response) => {
-				const filteredCustomers = response.data.filter(customer => {
-					return customer.orders_count > 0 && customer.total_spend > 0;
+				const filteredCustomers = response.data.filter((customer) => {
+					return (
+						customer.orders_count > 0 && customer.total_spend > 0
+					);
 				});
 
 				setTopCustomers(filteredCustomers);
@@ -477,72 +479,32 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 					<Card title={__('Top Selling Coupons', 'multivendorx')}>
 						{topCoupons.length > 0 ? (
 							topCoupons.map((coupon: Coupon, index: number) => (
-								<div
-									className="info-item"
-									key={`coupon-${coupon.id}`}
-								>
-									<div className="details-wrapper">
-										<div className="avatar">
-											<a
-												href={`${appLocalizer.site_url}/wp-admin/post.php?post=${coupon.id}&action=edit`}
-												target="_blank"
-												rel="noopener noreferrer"
-											>
-												<i
-													className={`adminfont-coupon admin-color${index + 1}`}
-												></i>
-											</a>
-										</div>
-
-										<div className="details">
-											<div className="name">
-												<a
-													href={`${appLocalizer.site_url}/wp-admin/post.php?post=${coupon.id}&action=edit`}
-													target="_blank"
-													rel="noopener noreferrer"
-												>
-													{coupon.code}
-												</a>
-											</div>
-											<div className="des">
-												{__('Used', 'multivendorx')}{' '}
-												{coupon.usage_count || 0}{' '}
-												{__('times', 'multivendorx')}
-											</div>
-											{coupon.description && (
-												<div className="des">
-													{coupon.description}
-												</div>
-											)}
-											{coupon.store_name && (
-												<div className="des">
-													<b>
-														{__(
-															'Store:',
-															'multivendorx'
-														)}
-													</b>{' '}
-													{coupon.store_name}
-												</div>
-											)}
-										</div>
-									</div>
-
-									<div className="right-details">
-										<div className="price">
-											<span>
-												{coupon.amount
-													? coupon.discount_type ===
-														'percent'
-														? `${coupon.amount}%`
-														: formatCurrency(
-															coupon.amount
-														)
-													: '-'}
-											</span>
-										</div>
-									</div>
-								</div>
+								<InfoItem
+									key={`store-${index}`}
+									title={coupon.code}
+									isLoading={isLoading}
+									titleLink={`${appLocalizer.site_url}/wp-admin/post.php?post=${coupon.id}&action=edit`}
+									avatar={{
+										iconClass: 'coupon',
+									}}
+									descriptions={[
+										{
+											label: __('Used', 'multivendorx'),
+											value: `${coupon.usage_count} ${__('times', 'multivendorx')}`,
+										},
+										{
+											label: __('Store', 'multivendorx'),
+											value: coupon.store_name,
+										},
+									]}
+									amount={
+										coupon.amount
+											? coupon.discount_type === 'percent'
+												? `${coupon.amount}%`
+												: formatCurrency(coupon.amount)
+											: '-'
+									}
+								/>
 							))
 						) : (
 							<ComponentStatusView
@@ -557,73 +519,50 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 						{topCustomers.length > 0 ? (
 							topCustomers.map(
 								(customer: Customer, index: number) => (
-									<div
-										className="info-item"
-										key={`customer-${customer.user_id}`}
-									>
-										<div className="details-wrapper">
-											<div className="avatar">
-												<a
-													href={`${appLocalizer.site_url}/wp-admin/user-edit.php?user_id=${customer.user_id}&wp_http_referer=%2Fwp-admin%2Fusers.php`}
-													target="_blank"
-													rel="noopener noreferrer"
-												>
-													<span
-														className={`admin-color${index + 1}`}
-													>
-														{(
-															(
-																customer.name?.trim() ||
-																customer.username
-															)?.charAt(0) || ''
-														).toUpperCase()}
-													</span>
-												</a>
-											</div>
-
-											<div className="details">
-												<div className="name">
-													<a
-														href={`${appLocalizer.site_url}/wp-admin/user-edit.php?user_id=${customer.user_id}&wp_http_referer=%2Fwp-admin%2Fusers.php`}
-														target="_blank"
-														rel="noopener noreferrer"
-													>
-														{customer.name?.trim() ||
-															customer.username}
-													</a>
-												</div>
-												<div className="des">
-													{__(
-														'Orders',
-														'multivendorx'
-													)}
-													:
-													{customer.orders_count || 0}
-												</div>
-												<div className="des">
-													{customer.email ||
-														__('', 'multivendorx')}
-												</div>
-											</div>
-										</div>
-
-										<div className="right-details">
-											<div className="price">
-												<span>
-													{formatCurrency(
-														customer.total_spend ||
-														0
-													)}
-												</span>
-											</div>
-										</div>
-									</div>
+									<InfoItem
+										key={`store-${index}`}
+										title={customer.username}
+										isLoading={isLoading}
+										titleLink={`${appLocalizer.site_url}//wp-admin/user-edit.php?user_id=${customer.user_id}&wp_http_referer=%2Fwp-admin%2Fusers.php`}
+										avatar={{
+											text: (
+												customer.username
+													?.trim()
+													.charAt(0) || ''
+											).toUpperCase(),
+											iconClass: 'person',
+											link: `${appLocalizer.site_url}/wp-admin/post.php?post=${coupon.id}&action=edit`,
+										}}
+										descriptions={[
+											{
+												label: __(
+													'Orders',
+													'multivendorx'
+												),
+												value:
+													customer.orders_count || 0,
+											},
+											{
+												label: __(
+													'Email:',
+													'multivendorx'
+												),
+												value: customer.email,
+											},
+										]}
+										amount={formatCurrency(
+											customer.total_spend || 0
+										)}
+									/>
 								)
 							)
 						) : (
-							<p>
-								{__('No top customers found.', 'multivendorx')}
-							</p>
+							<ComponentStatusView
+								title={__(
+									'No top customers found.',
+									'multivendorx'
+								)}
+							/>
 						)}
 					</Card>
 					<Card title={__('Top Stores', 'multivendorx')}>
@@ -641,6 +580,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 													?.trim()
 													.charAt(0) || ''
 											).toUpperCase(),
+											iconClass: 'storefront',
 											link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${store.store_id}/&subtab=store-overview`,
 										}}
 										descriptions={[
@@ -660,7 +600,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 												),
 												value: formatCurrency(
 													store.commission_refunded ||
-													0
+														0
 												),
 											},
 										]}

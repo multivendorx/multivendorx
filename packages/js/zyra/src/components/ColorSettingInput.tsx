@@ -413,7 +413,7 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
                                     });
                                 }}
                             >
-                                <p>{template.label}</p>
+                                <label>{template.label}</label>
                             </div>
                         ))}
                     </div>
@@ -475,7 +475,7 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
                                         src={imgOption.img}
                                         alt={imgOption.label}
                                     />
-                                    <p>{imgOption.label}</p>
+                                    <label>{imgOption.label}</label>
                                 </div>
                             ))}
                     </div>

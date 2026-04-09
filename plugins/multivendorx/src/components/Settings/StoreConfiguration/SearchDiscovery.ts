@@ -8,7 +8,7 @@ export default {
 		'Enable stores to enhance their product visibility using advanced third-party SEO plugins.',
 		'multivendorx'
 	),
-	headerIcon: 'store-seo',
+	headerIcon: 'search-discovery',
 	submitUrl: 'settings',
 	modal: [
 		{

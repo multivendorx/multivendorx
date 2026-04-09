@@ -112,7 +112,7 @@ class Store_Tab extends Widget_Base {
 			?>
 			<div class="woocommerce">
 				<div class="product">
-					<div class="woocommerce-tabs wc-tabs-wrapper">
+					<div class="woocommerce-tabs wc-tabs-wrapper site-main">
 						<ul class="tabs wc-tabs">
 							<li class="active"><?php esc_html_e( 'Products', 'multivendorx' ); ?></li>
 							<li><?php esc_html_e( 'Policy', 'multivendorx' ); ?></li>

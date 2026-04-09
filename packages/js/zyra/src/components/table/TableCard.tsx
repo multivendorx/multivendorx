@@ -38,6 +38,8 @@ const TableCard: React.FC<TableCardProps> = ({
     totalRows = 0,
     categoryCounts = [],
     activeCategory = 'all',
+    languageFilterCounts = [],
+    activeLanguageFilter = 'all',
     filters = [],
     showColumnToggleIcon = true,
     onSelectCsvDownloadApply,
@@ -57,6 +59,7 @@ const TableCard: React.FC<TableCardProps> = ({
         per_page: 10,
         filter: {},
         categoryFilter: activeCategory,
+        languageFilter: activeLanguageFilter,
     });
     /**
      * TableCard query handler
@@ -104,14 +107,27 @@ const TableCard: React.FC<TableCardProps> = ({
             categoryFilter: value,
         }));
     };
-
+    const handleLanguageChange = (value: string) => {
+        setQuery((prev) => ({
+            ...prev,
+            paged: 1,
+            languageFilter: value,
+        }));
+    };
     const visibleCategories = React.useMemo(() => {
         if (!categoryCounts || !Array.isArray(categoryCounts)) {
             return [];
         }
         return categoryCounts.filter((cat) => cat && cat.count > 0);
     }, [categoryCounts]);
-
+    const visibleLanguages = React.useMemo(() => {
+        if (!languageFilterCounts || !Array.isArray(languageFilterCounts)) {
+            return [];
+        }
+        return languageFilterCounts.filter(
+            (lang) => lang && lang.count > 0
+        );
+    }, [languageFilterCounts]);
     useEffect(() => {
         props.onQueryUpdate?.(query);
     }, [query]);
@@ -222,87 +238,105 @@ const TableCard: React.FC<TableCardProps> = ({
                 buttonActions ||
                 search ||
                 (showMenu && showColumnToggleIcon)) && (
-                <div className="admin-top-filter">
-                    {/* Category Filter - Integrated directly (was CategoryFilter component) */}
-                    {visibleCategories.length > 0 && (
+                    <div className="admin-top-filter">
+                        {/* Category Filter - Integrated directly (was CategoryFilter component) */}
                         <div className="filter-wrapper">
-                            {visibleCategories.map(
-                                ({ label, value, count }) => (
-                                    <div
-                                        key={value}
-                                        className={`filter-item ${
-                                            (query.categoryFilter ||
+                        {visibleCategories.length > 0 && (
+                            <div className="filter category">
+                                {visibleCategories.map(
+                                    ({ label, value, count }) => (
+                                        <div
+                                            key={value}
+                                            className={`filter-item ${(query.categoryFilter ||
                                                 activeCategory) === value
                                                 ? 'active'
                                                 : ''
-                                        }`}
-                                        onClick={() =>
-                                            handleCategoryChange(value)
-                                        }
+                                                }`}
+                                            onClick={() =>
+                                                handleCategoryChange(value)
+                                            }
+                                        >
+                                            {label} ({count})
+                                        </div>
+                                    )
+                                )}
+                            </div>
+                        )}
+                        {visibleLanguages.length > 0 && (
+                            <div className="filter language">
+                                {visibleLanguages.map(({ label, value, count }) => (
+                                    <div
+                                        key={value}
+                                        className={`filter-item ${(query.languageFilter || activeLanguageFilter) === value
+                                                ? 'active'
+                                                : ''
+                                            }`}
+                                        onClick={() => handleLanguageChange(value)}
                                     >
                                         {label} ({count})
                                     </div>
-                                )
+                                ))}
+                            </div>
+                        )}
+                        </div>
+                        <div className="table-action-wrapper">
+                            {buttonActions && (
+                                <ButtonActions
+                                    actions={buttonActions}
+                                    query={query}
+                                />
+                            )}
+                            {search && (
+                                <HeaderSearch
+                                    search={{
+                                        placeholder: search.placeholder,
+                                        options: search.options,
+                                    }}
+                                    width={search.size}
+                                    onQueryUpdate={(payload) => {
+                                        onQueryChange('searchValue')(
+                                            payload.searchValue
+                                        );
+                                        if ('searchAction' in payload) {
+                                            onQueryChange('searchAction')(
+                                                String(payload.searchAction)
+                                            );
+                                        }
+                                    }}
+                                />
+                            )}
+                            {showMenu && showColumnToggleIcon && (
+                                <PopupUI
+                                    position="menu-dropdown"
+                                    toggleIcon="more-vertical"
+                                    tooltipName="Manage display"
+                                    tooltipPosition="end"
+                                >
+                                    <ItemListUI
+                                        className="default table-menu"
+                                        items={Object.entries(headers)
+                                            .filter(([_, config]) => !config.required)
+                                            .map(([key, config]) => ({
+                                                id: key,
+                                                title: config.label,
+                                                action: () => onColumnToggle(key),
+                                                tags: (
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={showCols.includes(key)}
+                                                        onChange={(e) => {
+                                                            e.stopPropagation();
+                                                            onColumnToggle(key);
+                                                        }}
+                                                    />
+                                                ),
+                                            }))}
+                                    />
+                                </PopupUI>
                             )}
                         </div>
-                    )}
-
-                    <div className="table-action-wrapper">
-                        {buttonActions && (
-                            <ButtonActions
-                                actions={buttonActions}
-                                query={query}
-                            />
-                        )}
-                        {search && (
-                            <HeaderSearch
-                                search={{
-                                    placeholder: search.placeholder,
-                                    options: search.options,
-                                }}
-                                onQueryUpdate={(payload) => {
-                                    onQueryChange('searchValue')(
-                                        payload.searchValue
-                                    );
-                                    if ('searchAction' in payload) {
-                                        onQueryChange('searchAction')(
-                                            String(payload.searchAction)
-                                        );
-                                    }
-                                }}
-                            />
-                        )}
-                        {showMenu && showColumnToggleIcon && (
-                            <PopupUI
-                                position="menu-dropdown"
-                                toggleIcon="more-vertical"
-                                tooltipName="menu"
-                            >
-                                <ItemListUI
-                                    className="default table-menu"
-                                    items={Object.entries(headers)
-                                        .filter(([_, config]) => !config.required)
-                                        .map(([key, config]) => ({
-                                            id: key,
-                                            title: config.label,
-                                            action: () => onColumnToggle(key),
-                                            tags: (
-                                                <input
-                                                    type="checkbox"
-                                                    checked={showCols.includes(key)}
-                                                    onChange={(e) => {
-                                                        e.stopPropagation();
-                                                        onColumnToggle(key);
-                                                    }}
-                                                />
-                                            ),
-                                        }))}
-                                />
-                            </PopupUI>
-                        )}
                     </div>
-                </div>
-            )}
+                )}
 
             <Table
                 rows={rows}
@@ -372,7 +406,7 @@ const TableCard: React.FC<TableCardProps> = ({
 
 
             <div className="filter-wrapper">
-                { selectedIds.length <= 1 && filters.length > 0 && (
+                {selectedIds.length <= 1 && filters.length > 0 && (
                     <RealtimeFilters
                         filters={filters}
                         query={query.filter || {}}
@@ -389,8 +423,8 @@ const TableCard: React.FC<TableCardProps> = ({
                     />
                 )}
 
-                { selectedIds.length > 1 &&
-                    ( bulkActions.length > 0 || onSelectCsvDownloadApply ) && (
+                {selectedIds.length > 1 &&
+                    (bulkActions.length > 0 || onSelectCsvDownloadApply) && (
                         <BulkActionDropdown
                             actions={bulkActions}
                             selectedIds={selectedIds}

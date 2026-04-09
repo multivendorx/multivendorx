@@ -547,7 +547,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                                 <div className="title">
                                     {inputField.icon && (
                                         <i
-                                            className={`adminfont-${inputField.icon}`}
+                                            className={`adminfont-${inputField.icon} ${inputField.icon}`}
                                         />
                                     )}
                                     {inputField.label}

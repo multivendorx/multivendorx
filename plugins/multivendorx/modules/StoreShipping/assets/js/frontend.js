@@ -22,7 +22,7 @@ jQuery(document).ready(function ($) {
 		var latlng = new google.maps.LatLng(lat, lng);
 
 		var map = new google.maps.Map(
-			document.getElementById('mvx-user-locaton-map'),
+			document.getElementById('multivendorx-user-locaton-map'),
 			{
 				center: latlng,
 				zoom: parseInt(opts.default_zoom),
@@ -86,7 +86,7 @@ jQuery(document).ready(function ($) {
 			$('#multivendorx_user_location_lng').val() || opts.default_lng;
 
 		var map = new mapboxgl.Map({
-			container: 'mvx-user-locaton-map',
+			container: 'multivendorx-user-locaton-map',
 			style: opts.mapbox_style,
 			center: [lng, lat],
 			zoom: opts.default_zoom,

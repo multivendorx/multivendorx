@@ -1,5 +1,14 @@
 @use '../../global.scss' as *;
 
+// admin dashboard 
+.dashboard-tab{
+    margin: 0.313rem 1rem 1rem;
+
+    .tabs-wrapper{
+        margin: 0;
+    }
+}
+
 .title {
     font-size: 1.125rem;
     font-weight: 500;
@@ -66,12 +75,11 @@
     }
 }
 
-.settings-metabox-description.slug i {
-    font-size: 0.813rem;
-}
-
-.admin-pt-2 {
-    padding-top: 2rem;
+.settings-metabox-description.slug {
+    word-break: break-all;
+    i {
+        font-size: 0.813rem;
+    }
 }
 
 // review style

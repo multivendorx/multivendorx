@@ -24,39 +24,37 @@ addFilter(
 );
 
 addFilter(
-    'multivendorx_approval_queue_tab',
-    'multivendorx/refund-tab',
-    (settingContent) => {
-        settingContent.push({
-            type: 'file',
-            module: 'marketplace-refund',
-            content: {
-                id: 'refund-requests',
-                headerTitle: __('Refunds', 'multivendorx'),
-                headerDescription: __('Need your decision', 'multivendorx'),
-                settingTitle: __('Refund tracker', 'multivendorx'),
-                settingSubTitle: __(
-                    'Monitor refund trends and stay informed on returns.',
-                    'multivendorx'
-                ),
-                headerIcon: 'marketplace-refund blue',
-            },
-        });
+	'multivendorx_approval_queue_tab',
+	'multivendorx/refund-tab',
+	(settingContent) => {
+		settingContent.push({
+			type: 'file',
+			module: 'marketplace-refund',
+			content: {
+				id: 'refund-requests',
+				headerTitle: __('Refunds', 'multivendorx'),
+				headerDescription: __('Need your decision', 'multivendorx'),
+				settingTitle: __('Refund tracker', 'multivendorx'),
+				settingSubTitle: __(
+					'Monitor refund trends and stay informed on returns.',
+					'multivendorx'
+				),
+				headerIcon: 'marketplace-refund blue',
+			},
+		});
 
-        return settingContent;
-    }
+		return settingContent;
+	}
 );
 
 addFilter(
-    'multivendorx_approval_queue_tab_content',
-    'multivendorx/refund-tab-content',
-    (defaultForm, { tabId }) => {
-        if (tabId === 'refund-requests') {
-            return (
-                <PendingRefund />
-            );
-        }
+	'multivendorx_approval_queue_tab_content',
+	'multivendorx/refund-tab-content',
+	(defaultForm, { tabId }) => {
+		if (tabId === 'refund-requests') {
+			return <PendingRefund />;
+		}
 
-        return defaultForm;
-    }
+		return defaultForm;
+	}
 );

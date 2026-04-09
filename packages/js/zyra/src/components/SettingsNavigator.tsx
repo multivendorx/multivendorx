@@ -30,6 +30,7 @@ type BreadcrumbItem = { name: string; id: string; type: string };
 type SettingsNavigatorProps = {
     settingContent: SettingContent[];
     className?: string;
+    /* - 'default variant + without-border class': tab body content without border (default has border) */
     currentSetting: string;
     getForm: (settingId: string) => ReactNode;
     prepareUrl: (settingId: string) => string;
@@ -333,7 +334,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                         }
                     }}
                 >
-                    <p className="tab-name">
+                    <div className="tab-name">
                         {menuIcon && setting.headerIcon && (
                             <i
                                 className={`adminfont-${setting.headerIcon}`}
@@ -341,7 +342,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                         )}
                         <span>{setting.count}</span>
                         {setting.headerTitle}
-                    </p>
+                    </div>
                     {variant !== 'default' &&
                         variant !== 'settings' &&
                         setting.headerDescription && (
@@ -376,7 +377,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                         }
                     }}
                 >
-                    <p className="tab-name">{item.name}</p>
+                    <div className="tab-name">{item.name}</div>
                 </Link>
             );
         }

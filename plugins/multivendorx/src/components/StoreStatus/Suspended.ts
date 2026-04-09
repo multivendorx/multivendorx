@@ -16,10 +16,7 @@ export default {
 			options: [
 				{
 					key: 'hide_store_products',
-					label: __(
-						'Hide store and products',
-						'multivendorx'
-					),
+					label: __('Hide store and products', 'multivendorx'),
 					value: 'hide_store_products',
 					desc: __(
 						'Removes the store and all its products from the marketplace. Customers cannot view the store, access products, or place orders.',
@@ -28,10 +25,7 @@ export default {
 				},
 				{
 					key: 'disable_checkout',
-					label: __(
-						'Disable checkout',
-						'multivendorx'
-					),
+					label: __('Disable checkout', 'multivendorx'),
 					value: 'disable_checkout',
 					desc: __(
 						'Prevents customers from placing new orders from this store while keeping the store and its products visible.',

@@ -67,7 +67,11 @@ const NotificationTabContent: React.FC<{
 	};
 
 	if (items.length === 0) {
-		return ( <ComponentStatusView title={__( 'No notifications', 'multivendorx' )}/> )
+		return (
+			<ComponentStatusView
+				title={__('No notifications', 'multivendorx')}
+			/>
+		);
 	}
 
 	return (

@@ -223,7 +223,10 @@ const PendingProducts: React.FC<object> = () => {
 
 				setRows(products);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
-				window.multivendorxStore?.setCount('products', Number(response.headers['x-wp-total']) || 0);
+				window.multivendorxStore?.setCount(
+					'products',
+					Number(response.headers['x-wp-total']) || 0
+				);
 				setIsLoading(false);
 			})
 			.catch((error) => {

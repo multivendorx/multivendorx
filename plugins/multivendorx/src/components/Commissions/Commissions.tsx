@@ -79,6 +79,7 @@ const Commission: React.FC = () => {
 	const headers = {
 		id: {
 			label: __('ID', 'multivendorx'),
+			type: 'id',
 			isSortable: true,
 			render: (row) => (
 				<span
@@ -86,6 +87,7 @@ const Commission: React.FC = () => {
 						setSelectedCommissionId(row.id ?? null);
 						setViewCommission(true);
 					}}
+					className="link-item"
 				>
 					#{row.id}
 				</span>
@@ -127,7 +129,7 @@ const Commission: React.FC = () => {
 					},
 					{
 						title: 'Tax Amount',
-						display: appLocalizer.taxes_enabled ==='yes',
+						display: appLocalizer.taxes_enabled === 'yes',
 						value: '+' + formatCurrency(row.tax_amount),
 					},
 					{
@@ -150,13 +152,10 @@ const Commission: React.FC = () => {
 						display: Number(row.admin_discount) !== 0,
 						value: formatCurrency(row.admin_discount),
 					},
-				].filter(item => item.display !== false);
+				].filter((item) => item.display !== false);
 
 				return (
-					<ItemListUI
-						className="price-list"
-						items={earningItems}
-					/>
+					<ItemListUI className="price-list" items={earningItems} />
 				);
 			},
 			csvDisplay: false,
@@ -252,7 +251,7 @@ const Commission: React.FC = () => {
 						count:
 							Number(
 								response.headers[
-								'x-wp-status-partially-refunded'
+									'x-wp-status-partially-refunded'
 								]
 							) || 0,
 					},

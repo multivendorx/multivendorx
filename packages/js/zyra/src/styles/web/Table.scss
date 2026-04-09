@@ -1,14 +1,6 @@
 @use '../../global.scss' as *;
 
-.admin-table-wrapper.transparent-table {
-    .admin-table {
-        background: transparent;
 
-        .admin-table-body tr {
-            border-top: $border-light-small;
-        }
-    }
-}
 
 .admin-top-filter {
     display: flex;
@@ -88,7 +80,6 @@
             }
             &.bulk {
                 background: #202020;
-                color: #fff;
                 font-size: 1rem;
                 padding: 0.5rem;
 
@@ -97,6 +88,7 @@
                     transition: all 0.3s ease;
                     border-radius: $border-radius-small;
                     display: flex;
+                     color: #fff;
 
                     .admin-btn {
                         background: transparent;
@@ -124,14 +116,14 @@
                     }
                 }
 
-                select {
-                    color: #fff;
-                    font-size: 0.95rem;
+                // select {
+                //     color: #fff;
+                //     font-size: 0.95rem;
 
-                    option {
-                        background: #fff;
-                    }
-                }
+                //     option {
+                //         background: #fff;
+                //     }
+                // }
             }
 
             .date-picker-section-wrapper {
@@ -144,30 +136,37 @@
 // admin table filter style
 .filter-wrapper:has(.filter-item) {
     display: flex;
+    flex-direction: column;
+    font-size: 0.875rem;  
     align-items: center;
-    font-size: 0.875rem;
-    background: #fff;
-    padding: 0.45rem;
     border-radius: $border-radius-small;
     width: fit-content;
-    gap: 0.313rem;
+    gap: 0.5rem;
 
-    .filter-item {
-        cursor: pointer;
-        border-radius: $border-radius-small;
-        padding: 0.313rem 0.625rem;
-        font-weight: 600;
-        color: #000000af;
-        font-size: 0.95rem;
-        transition: all 0.4s ease;
+    .filter{
+        padding: 0.45rem;
+        background: $background-white;
+        border-radius: $border-light-small;
+        display: flex;
+        gap: 0.313rem;
 
-        &:not(.active):hover {
-            background: #f3f1f1;
-        }
+        .filter-item {
+            cursor: pointer;
+            border-radius: $border-radius-small;
+            padding: 0.313rem 0.625rem;
+            font-weight: 600;
+            color: #000000af;
+            font-size: 0.95rem;
+            transition: all 0.4s ease;
 
-        &.active {
-            background: $theme-background-color;
-            color: $theme-color;
+            &:not(.active):hover {
+                background: #f3f1f1;
+            }
+
+            &.active {
+                background: $theme-background-color;
+                color: $theme-color;
+            }
         }
     }
 }
@@ -236,6 +235,10 @@
                 &.commission-summary {
                     flex-grow: 0;
                     min-width: 18rem;
+                }
+                .sort-button{
+                    display: flex;
+                    align-items: center;
                 }
             }
         }
@@ -442,7 +445,7 @@
                     flex-grow: 1;
                 }
 
-                .admin-column:has(.action-section) {
+                .admin-column:has(.table-action) {
                     overflow: visible;
                     padding: 0 1rem;
                 }
@@ -535,7 +538,7 @@
 
             &.action {
                 flex-grow: 0;
-                max-width: 4rem;
+                max-width: 5rem;
             }
 
             &.notificaton {
@@ -546,11 +549,19 @@
 }
 
 // action btn style start
-.action-section {
+.table-action {
     display: flex;
     flex-direction: column;
     align-items: start;
 
+    .inline-actions {
+    display: flex;
+    gap: 0.125rem;
+
+    .adminfont-delete {
+      color: $accent-color;
+    }
+  }
     .action-btn {
         display: flex;
         gap: 0.5rem;
@@ -644,7 +655,8 @@
 .badge-public,
 .badge-publish,
 .badge-published,
-.badge-instock {
+.badge-instock,
+.badge-refund-accepted {
     color: map-get(map-get($color-palette, green), color);
     background: map-get(map-get($color-palette, green), light-color);
 }
@@ -659,7 +671,8 @@
 .badge-under_review,
 .badge-private,
 .badge-upcoming,
-.badge-draft {
+.badge-draft,
+.badge-onbackorder {
     color: map-get(map-get($color-palette, blue), color);
     background: map-get(map-get($color-palette, blue), light-color);
 }
@@ -668,7 +681,8 @@
 .badge-unpaid,
 .badge-cancelled,
 .badge-failed,
-.badge-expired {
+.badge-expired,
+.badge-outofstock {
     color: map-get(map-get($color-palette, red), color);
     background: map-get(map-get($color-palette, red), light-color);
 }
@@ -677,11 +691,13 @@
     color: map-get(map-get($color-palette, teal), color);
     background: map-get(map-get($color-palette, teal), light-color);
 }
-
-.badge-refunded,
 .badge-processed,
-.badge-processing,
-.badge-refund-requested {
+.badge-processing{
+    color: map-get(map-get($color-palette, blue), color);
+    background: map-get(map-get($color-palette, blue), light-color);
+}
+.badge-refunded
+{
     color: map-get(map-get($color-palette, orange), color);
     background: map-get(map-get($color-palette, orange), light-color);
 }
@@ -697,7 +713,8 @@
 }
 
 .badge-permanently_rejected,
-.badge-inactive {
+.badge-inactive,
+.badge-refund-requested {
     color: map-get(map-get($color-palette, pink), color);
     background: map-get(map-get($color-palette, pink), light-color);
 }

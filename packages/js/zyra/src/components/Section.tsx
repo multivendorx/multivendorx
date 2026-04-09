@@ -26,10 +26,10 @@ export const SectionUI: React.FC<SectionProps> = ({
             } ${wrapperClass}`}
         >
             {title && (
-                <p
+                <div
                     className="title"
                     dangerouslySetInnerHTML={{ __html: title }}
-                ></p>
+                ></div>
             )}
             {desc && <span className="desc">{desc}</span>}
         </div>

@@ -322,7 +322,6 @@ const Modules: React.FC<ModuleProps> = ({
                         </div>
                         <div className="module-search">
                             <HeaderSearch
-                                variant="mini-search"
                                 search={{ placeholder: 'Search .....' }}
                                 onQueryUpdate={(e) => {
                                     setSearchQuery(e.searchValue);

@@ -66,6 +66,12 @@ const OrderReport: React.FC = () => {
 					avatar={{
 						iconClass: 'store-inventory',
 					}}
+					descriptions={[
+						{
+							label: __('SKU', 'multivendorx'),
+							value: row.store_sku,
+						},
+					]}
 				/>
 			),
 		},
@@ -80,7 +86,6 @@ const OrderReport: React.FC = () => {
 		date_created: {
 			label: __('Date', 'multivendorx'),
 			type: 'date',
-			isSortable: true,
 		},
 		status: {
 			label: __('Status', 'multivendorx'),

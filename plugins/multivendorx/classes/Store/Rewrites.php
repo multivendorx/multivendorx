@@ -187,11 +187,11 @@ class Rewrites {
         $store_name = get_query_var( $this->custom_store_url );
         $store      = Store::get_store( $store_name, 'slug' );
 
-        if ($store) {
-            $status = $store->get('status');
+        if ( $store ) {
+            $status              = $store->get( 'status' );
             $restricted_statuses = MultiVendorX()->setting->get_setting( 'restriction_for_under_review', array() );
-    
-            if ( in_array( $status, ['under_review', 'suspended'], true ) && in_array( 'hide_store_products', $restricted_statuses, true ) ) {
+
+            if ( in_array( $status, array( 'under_review', 'suspended' ), true ) && in_array( 'hide_store_products', $restricted_statuses, true ) ) {
                 wp_safe_redirect( wc_get_page_permalink( 'shop' ) );
                 exit();
             }
@@ -235,9 +235,9 @@ class Rewrites {
         }
 
         // Review block specific style.
-        wp_enqueue_style('wc-blocks-style');
-        wp_enqueue_style('wc-blocks-style-all-reviews');
-        
+        wp_enqueue_style( 'wc-blocks-style' );
+        wp_enqueue_style( 'wc-blocks-style-all-reviews' );
+
         FrontendScripts::load_scripts();
         FrontendScripts::enqueue_script( 'multivendorx-store-name-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-description-script' );

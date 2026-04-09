@@ -59,20 +59,18 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
                     const value = query[filter.key];
 
                     if (filter.type === 'date') {
-                        const range =
-                            (value as CalendarRange) || getDefaultDateRange();
+                        const range = (value as CalendarRange) || getDefaultDateRange();
                         return (
                             <div key={filter.key} className="group-field">
                                 <CalendarInputUI
                                     value={range}
                                     onChange={(newRange) => {
-                                        onFilterChange(
-                                            filter.key,
-                                            newRange as {
-                                                startDate: Date;
-                                                endDate: Date;
-                                            }
-                                        );
+                                        if (newRange) {
+                                            onFilterChange(
+                                                filter.key,
+                                                newRange
+                                            );
+                                        }
                                     }}
                                     format={format}
                                 />
@@ -96,6 +94,7 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
                                 }
                                 options={options}
                                 value={value}
+                                size={`${filter.size}rem`}
                                 placeholder={`Select ${filter.label}`}
                                 onChange={(selected) => {
                                     onFilterChange(filter.key, selected);

@@ -8,7 +8,7 @@ export default {
 		'Let stores promote their top products or unique offerings in site-wide placements.',
 		'multivendorx'
 	),
-	headerIcon: 'advertise-product',
+	headerIcon: 'product-advertising',
 	submitUrl: 'settings',
 	modal: [
 		{

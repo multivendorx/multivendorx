@@ -1,11 +1,9 @@
 @use '../../global.scss' as *;
 
 .divider-section {
-  margin-top: 1rem;
-
-  //   width: 100%;
   border-bottom: $border-light-small;
-  padding: 1rem 0 0.5rem;
+  // padding: 1rem 0 0.5rem;
+  width: 100%;
 
   .title {
     font-size: 1.15rem;
@@ -36,20 +34,16 @@
   }
 }
 
-.divider-section:first-child {
-  margin: 0;
-}
-
-.divider-section:not(:first-child) {
-  width: 100%;
-}
-
 .settings-wrapper{
   &[data-template="default"],
   &[data-template="settings"] {
-    .divider-section {
+    // this style not for card body inner section
+    .divider-section:not(.card-body .divider-section) {
         padding: 1rem 1rem .5rem;
         background: $background-white;
+      }
+      .divider-section:not(:first-child):not([data-template="settings"] .divider-section) {
+        margin-top: 1rem;
       }
   }
 
@@ -58,5 +52,13 @@
       padding-top: 0;
       padding-bottom: 1.5rem;
     }
+  }
+
+  .divider-section:first-child {
+    margin: 0;
+  }
+
+  .divider-section:not(:first-child) {
+    width: 100%;
   }
 }

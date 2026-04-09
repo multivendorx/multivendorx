@@ -130,6 +130,7 @@ class Shortcode {
         FrontendScripts::load_scripts();
 
         FrontendScripts::enqueue_script( 'multivendorx-marketplace-stores-script' );
+        FrontendScripts::enqueue_style( 'multivendorx-common-block-style' );
         FrontendScripts::localize_scripts( 'multivendorx-marketplace-stores-script' );
 
         return '<div id="marketplace-stores" data-attributes="' . $json_attrs . '"></div>';

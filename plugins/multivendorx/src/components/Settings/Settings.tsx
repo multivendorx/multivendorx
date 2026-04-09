@@ -14,6 +14,7 @@ import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 import EventRules from './Notification/EventRules.tsx';
 import StoreStatus from './StoreConfiguration/StoreStatus.tsx';
+import Invoice from './StoreConfiguration/Invoice';
 
 interface SettingsProps {
 	id: string;
@@ -90,9 +91,9 @@ const Settings: React.FC<SettingsProps> = () => {
 		if (currentTab === 'store-status') {
 			return <StoreStatus />;
 		}
-		// if (currentTab === 'invoices') {
-		// 	return <Invoice />;
-		// }
+		if (currentTab === 'invoices') {
+			return <Invoice />;
+		}
 
 		return (
 			<>

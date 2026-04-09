@@ -18,7 +18,7 @@ interface MarketplaceProductListProps {
 	operator?: string;
 	product_visibility?: string;
 	store_id?: string;
-	storeId?: string|number;
+	storeId?: string | number;
 }
 
 const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
@@ -139,9 +139,9 @@ const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
 									</li>
 								))
 							) : (
-								<p>
+								<div>
 									{__('No products found.', 'multivendorx')}
-								</p>
+								</div>
 							)}
 						</ul>
 					</div>

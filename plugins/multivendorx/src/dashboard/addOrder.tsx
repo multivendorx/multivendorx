@@ -528,26 +528,6 @@ const AddOrder = () => {
 				}
 			},
 		},
-		actions: {
-			type: 'action',
-			label: __('Actions', 'multivendorx'),
-			actions: [
-				{
-					icon: 'trash',
-					onClick: (row) => {
-						if (row.rowType === 'product') {
-							setAddedProducts((prev) =>
-								prev.filter((p) => p.id !== row.id)
-							);
-						} else {
-							setShippingLines((prev) =>
-								prev.filter((s) => s.id !== row.id)
-							);
-						}
-					},
-				},
-			],
-		},
 	};
 
 	// Tax headers
@@ -807,6 +787,7 @@ const AddOrder = () => {
 								<TableCard
 									headers={tableHeaders}
 									rows={tableRows}
+									showMenu={false}
 								/>
 
 								<div className="total-summary">
@@ -940,6 +921,7 @@ const AddOrder = () => {
 											headers={taxTableHeaders}
 											rows={taxRates}
 											ids={rowIds}
+											showMenu={false}
 										/>
 										<ButtonInputUI
 											buttons={[

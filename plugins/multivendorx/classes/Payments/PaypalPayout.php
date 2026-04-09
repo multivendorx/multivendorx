@@ -40,13 +40,16 @@ class PaypalPayout {
             'id'         => $this->get_id(),
             'label'      => 'Paypal Payout',
             'disableBtn' => true,
-            'desc'       => 'Full marketplace solution with instant payouts, comprehensive dispute handling, and global coverage. Best for established marketplaces.',
+            'desc'       => 'Full marketplace solution with instant payouts, comprehensive dispute handling, and global coverage.',
             'formFields' => array(
                 array(
                     'key'     => 'payment_mode',
                     'type'    => 'choice-toggle',
                     'label'   => __( 'Payment mode', 'multivendorx' ),
-                    'options' => array(
+                    'settingDescription'    => __( "Choose the environment your PayPal payout integration will use.", 'multivendorx' ),
+                    'desc' => __('Use <strong>Sandbox</strong> to test payouts using PayPal developer test accounts. Switch to <strong>Live</strong> when you are ready to send real payouts to stores from your PayPal business account.<br/><a href="https://developer.paypal.com/tools/sandbox/" class="link-item" target="blank">Create and manage PayPal sandbox accounts <i class="adminfont-external"/></i></a>',
+    'multivendorx'
+),'options' => array(
                         array(
 							'key'   => 'sandbox',
 							'label' => __( 'Sandbox', 'multivendorx' ),
@@ -64,12 +67,16 @@ class PaypalPayout {
                     'type'        => 'text',
                     'label'       => 'Client ID',
                     'placeholder' => 'Enter Client id',
+                    'settingDescription'    => __( "Your app's public identifier issued by PayPal. Each environment (Sandbox / Live) has a different Client ID — make sure you use the one that matches your selected Payment Mode.", 'multivendorx' ),
+                    'desc' => __( 'Make sure the Client ID matches the Payment Mode selected above.<br/><a href="https://developer.paypal.com/dashboard/applications" class="link-item" target="blank">Get your Client ID <i class="adminfont-external"/></i></a>.', 'multivendorx' ),
                 ),
                 array(
                     'key'         => 'client_secret',
                     'type'        => 'text',
                     'label'       => 'Client secret key',
                     'placeholder' => 'Enter Secret Key',
+                    'settingDescription'    => __( "A private key that authenticates your server when calling the PayPal API.", 'multivendorx' ),
+                    'desc' => __( 'Treat it like a password and never expose it publicly.<br/><a href="https://developer.paypal.com/dashboard/applications" class="link-item" target="blank">Get your Client Secret <i class="adminfont-external"/></i></a>', 'multivendorx' ),
                 ),
             ),
         );

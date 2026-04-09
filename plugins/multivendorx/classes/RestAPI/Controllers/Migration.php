@@ -76,16 +76,14 @@ class Migration extends \WP_REST_Controller {
         }
 
         $action = $request->get_param( 'action' );
-        if ( is_array($action) ) {
+        if ( is_array( $action ) ) {
             foreach ( $action as $act ) {
                 if ( method_exists( $this, $act ) ) {
                     return $this->$act( $request );
                 }
             }
-        } else {
-            if ( method_exists( $this, $action ) ) {
+        } elseif ( method_exists( $this, $action ) ) {
                 return $this->$action( $request );
-            }
         }
 
         return array(
@@ -96,19 +94,21 @@ class Migration extends \WP_REST_Controller {
 
     public function import_stores( $request ) {
         $active_plugin = Utill::get_active_multivendor();
-        if (empty($active_plugin)) {
-            return rest_ensure_response([
-                'success' => false,
-                'message' => __('No active plugin found.', 'multivendorx'),
-            ]);
+        if ( empty( $active_plugin ) ) {
+            return rest_ensure_response(
+                array(
+					'success' => false,
+					'message' => __( 'No active plugin found.', 'multivendorx' ),
+                )
+            );
         }
 
-        $class = "\\MultiVendorX\\Migration\\{$active_plugin}";
+        $class    = "\\MultiVendorX\\Migration\\{$active_plugin}";
         $migrator = new $class();
 
-        $created_store_ids = method_exists($migrator, 'migrate_vendors')
+        $created_store_ids = method_exists( $migrator, 'migrate_vendors' )
             ? $migrator->migrate_vendors()
-            : [];
+            : array();
 
         $response_data = array(
             'success' => true,
@@ -122,19 +122,21 @@ class Migration extends \WP_REST_Controller {
 
     public function import_products( $request ) {
         $active_plugin = Utill::get_active_multivendor();
-        if (empty($active_plugin)) {
-            return rest_ensure_response([
-                'success' => false,
-                'message' => __('No active plugin found.', 'multivendorx'),
-            ]);
+        if ( empty( $active_plugin ) ) {
+            return rest_ensure_response(
+                array(
+					'success' => false,
+					'message' => __( 'No active plugin found.', 'multivendorx' ),
+                )
+            );
         }
 
-        $class = "\\MultiVendorX\\Migration\\{$active_plugin}";
+        $class    = "\\MultiVendorX\\Migration\\{$active_plugin}";
         $migrator = new $class();
 
-        $created_products = method_exists($migrator, 'migrate_products')
+        $created_products = method_exists( $migrator, 'migrate_products' )
             ? $migrator->migrate_products()
-            : [];
+            : array();
 
         $response_data = array(
             'success' => true,
@@ -147,5 +149,4 @@ class Migration extends \WP_REST_Controller {
 
         return $response;
     }
-    
 }

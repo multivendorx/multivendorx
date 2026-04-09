@@ -22,7 +22,21 @@ import {
 	formatLocalDate,
 	toWcIsoDate,
 	dashNavigate,
+	formatCurrency,
 } from '../services/commonFunction';
+import { pdf } from '@react-pdf/renderer';
+// import StoreInvoicePDF from '@/assets/template/invoicePdf/Invoice-1';
+
+const fetchOrderById = async (orderId: number) => {
+  const res = await axios.get(
+    `${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
+    {
+      headers: { 'X-WP-Nonce': appLocalizer.nonce },
+    }
+  );
+
+  return res.data;
+};
 
 const Orders: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -40,7 +54,10 @@ const Orders: React.FC = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const hash = location.hash.replace(/^#/, '') || '';
-	const privacy = appLocalizer.settings_databases_value?.privacy?.['customer_information_access'];
+	const privacy =
+		appLocalizer.settings_databases_value?.privacy?.[
+			'customer_information_access'
+		];
 
 	const exportAllOrders = () => {
 		let allOrders = [];
@@ -157,7 +174,7 @@ const Orders: React.FC = () => {
 							status === 'all'
 								? __('All', 'multivendorx')
 								: status.charAt(0).toUpperCase() +
-								status.slice(1),
+									status.slice(1),
 						count: total,
 					};
 				});
@@ -187,26 +204,25 @@ const Orders: React.FC = () => {
 	}, []);
 
 	const bulkActions = [
-		{ label: 'Pending Payment', value: 'pending' },
-		{ label: 'Processing', value: 'processing' },
-		{ label: 'On Hold', value: 'on-hold' },
-		{ label: 'Completed', value: 'completed' },
-		{ label: 'Cancelled', value: 'cancelled' },
-		{ label: 'Refunded', value: 'refunded' },
-		{ label: 'Failed', value: 'failed' },
+		{ label: __('Pending Payment', 'multivendorx'), value: 'pending' },
+		{ label: __('Processing', 'multivendorx'), value: 'processing' },
+		{ label: __('On Hold', 'multivendorx'), value: 'on-hold' },
+		{ label: __('Completed', 'multivendorx'), value: 'completed' },
+		{ label: __('Cancelled', 'multivendorx'), value: 'cancelled' },
+		{ label: __('Refunded', 'multivendorx'), value: 'refunded' },
+		{ label: __('Failed', 'multivendorx'), value: 'failed' },
 	];
-
 
 	const privacyHeaders = privacy?.includes('name')
 		? {
-			customer: {
-				label: __('Customer', 'multivendorx'),
-				render: (row) =>
-					row.billing?.first_name
-						? `${row.billing.first_name} ${row.billing.last_name || ''}`
-						: 'Guest',
-			},
-		}
+				customer: {
+					label: __('Customer', 'multivendorx'),
+					render: (row) =>
+						row.billing?.first_name
+							? `${row.billing.first_name} ${row.billing.last_name || ''}`
+							: 'Guest',
+				},
+			}
 		: {};
 
 	const headers = {
@@ -215,8 +231,13 @@ const Orders: React.FC = () => {
 			render: (row) => (
 				<span
 					onClick={() =>
-						dashNavigate(navigate, ['orders', 'view', String(row.id)])
+						dashNavigate(navigate, [
+							'orders',
+							'view',
+							String(row.id),
+						])
 					}
+					className="link-item"
 				>
 					#{row.id}
 				</span>
@@ -246,31 +267,71 @@ const Orders: React.FC = () => {
 			actions: [
 				...(appLocalizer.edit_order_capability
 					? [
-						{
-							label: __('View', 'multivendorx'),
-							icon: 'eye',
-							onClick: (row) => {
-								dashNavigate(navigate, [
-									'orders',
-									'view',
-									String(row.id),
-								]);
+							{
+								label: __('View', 'multivendorx'),
+								icon: 'eye',
+								onClick: (row) => {
+									dashNavigate(navigate, [
+										'orders',
+										'view',
+										String(row.id),
+									]);
+								},
 							},
-						},
-					]
+						]
 					: []),
 
 				{
 					label: __('Download', 'multivendorx'),
 					icon: 'download',
-					onClick: (row) => {
-						window.location.href = `?page=multivendorx#&tab=stores&edit/${row.id}`;
+					onClick: async (row) => {
+						try {
+							// 1. Fetch order
+							const order = await fetchOrderById(row.id);
+
+							// 2. Map order → invoice rows
+							const invoiceRows = order.line_items.map((item) => ({
+								description: item.name,
+								qty: item.quantity,
+								price: formatCurrency(item.price),
+								amount: formatCurrency(item.total),
+							}));
+							console.log('Order Object:', order);
+							// 3. Generate PDF blob
+							const blob = await pdf(
+								// <StoreInvoicePDF
+								// 	invoiceRows={invoiceRows}
+								// 	order = {order}
+								// 	colors={{
+								// 		colorPrimary: appLocalizer.settings_databases_value?.invoices?.test.invoice_template.colors.colorPrimary || '#000',
+								// 		colorSecondary: appLocalizer.settings_databases_value?.invoices?.test.invoice_template.colors.colorSecondary || '#ccc',
+								// 		colorAccent: appLocalizer.settings_databases_value?.invoices?.test.invoice_template.colors.colorAccent || '#000',
+								// 		colorSupport: appLocalizer.settings_databases_value?.invoices?.test.invoice_template.colors.colorSupport || '#999',
+								// 	}}
+								// />
+							).toBlob();
+
+							// 4. Create download link
+							const url = URL.createObjectURL(blob);
+
+							const link = document.createElement('a');
+							link.href = url;
+							link.download = `invoice-${row.id}.pdf`;
+							document.body.appendChild(link);
+							link.click();
+							document.body.removeChild(link);
+
+							URL.revokeObjectURL(url);
+
+						} catch (error) {
+							console.error('Invoice download failed:', error);
+						}
 					},
 				},
 
 				{
 					label: __('Copy URL', 'multivendorx'),
-					icon: 'eye',
+					icon: 'vendor-form-copy',
 					onClick: () => {
 						navigator.clipboard.writeText(window.location.href);
 					},
@@ -278,7 +339,7 @@ const Orders: React.FC = () => {
 
 				{
 					label: __('Shipping', 'multivendorx'),
-					icon: 'eye',
+					icon: 'shipping',
 					onClick: (row) => {
 						setTracking(true);
 						setTrackingOrderId(row.id);
@@ -287,7 +348,7 @@ const Orders: React.FC = () => {
 
 				{
 					label: __('PDF', 'multivendorx'),
-					icon: 'eye',
+					icon: 'pdf',
 					onClick: (row) => {
 						window.location.href = `?page=multivendorx#&tab=stores&edit/${row.id}`;
 					},
@@ -399,8 +460,12 @@ const Orders: React.FC = () => {
 				const meta = (key: string) =>
 					res.data.meta_data.find((m) => m.key === key)?.value ?? '';
 				setFormData({
-					provider: meta(appLocalizer.order_meta['shipping_provider']),
-					tracking_date: meta(appLocalizer.order_meta['tracking_date']),
+					provider: meta(
+						appLocalizer.order_meta['shipping_provider']
+					),
+					tracking_date: meta(
+						appLocalizer.order_meta['tracking_date']
+					),
 					tracking_url: meta(appLocalizer.order_meta['tracking_url']),
 					tracking_id: meta(appLocalizer.order_meta['tracking_id']),
 				});
@@ -484,11 +549,11 @@ const Orders: React.FC = () => {
 					'multivendorx'
 				)}
 				buttons={[
-					{
-						label: __('Export', 'multivendorx'),
-						icon: 'export',
-						onClick: exportAllOrders,
-					},
+					// {
+					// 	label: __('Export', 'multivendorx'),
+					// 	icon: 'export',
+					// 	onClick: exportAllOrders,
+					// },
 					{
 						label: __('Add New', 'multivendorx'),
 						icon: 'plus',
@@ -506,6 +571,7 @@ const Orders: React.FC = () => {
 				onQueryUpdate={doRefreshTableData}
 				search={{
 					placeholder: __('Search...', 'multivendorx'),
+					size: 10,
 					options: [
 						{ label: __('All', 'multivendorx'), value: 'all' },
 						{
@@ -555,13 +621,12 @@ const Orders: React.FC = () => {
 
 			{tracking && (
 				<PopupUI
-					position="lightbox"
 					open={tracking}
 					onClose={() => setTracking(false)}
 					width={31.25}
-					height="70%"
+					height={40}
 					header={{
-						icon: 'warning',
+						icon: 'tools',
 						title: __('Tracking', 'multivendorx'),
 					}}
 					footer={

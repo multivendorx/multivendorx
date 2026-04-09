@@ -1,7 +1,7 @@
 @use '../../../global.scss' as *;
 
 .item-list {
-    padding: 0.5rem 0;
+    // padding: 0.5rem 0;
     width: 100%;
 
     &.default {
@@ -64,10 +64,10 @@
                 cursor: pointer;
 
                 &.adminfont-check{
-                     right: 1.5rem;
+                     right: 2rem;
                 }   
                 &.adminfont-cross{
-                    right: 0.125rem;
+                    right: 0.625rem;
                 }
             }
 
@@ -123,7 +123,7 @@
                 font-size: 1.125rem;
                 padding-right: 0.5rem;
 
-                &.adminfont-check-fill {
+                &.adminfont-success {
                     color: map-get(map-get($color-palette, green), color);
                 }
 
@@ -197,8 +197,11 @@
 
     &.mini-card {
         width: 100%;
-
-        .item {
+        .price{
+            font-size: 1.45rem;
+            font-weight: 500;
+        }
+        .item { 
             width: 100%;
             flex-direction: column;
             position: relative;

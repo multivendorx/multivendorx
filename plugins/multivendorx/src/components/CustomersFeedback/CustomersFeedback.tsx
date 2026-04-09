@@ -11,18 +11,18 @@ import { applyFilters } from '@wordpress/hooks';
 import { useLocation, Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 
-const CustomerSupport = () => {
+const CustomersFeedback = () => {
 	const { modules } = useModules();
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
 	const settingContent = applyFilters(
-		'multivendorx_customer_support_tab',
+		'multivendorx_customers_tab',
 		[]
 	).filter((tab) => !tab.module || modules.includes(tab.module));
 
 	const getForm = (tabId: string) => {
 		return (
-			applyFilters('multivendorx_customer_support_tab_content', null, {
+			applyFilters('multivendorx_customers_tab_content', null, {
 				tabId,
 			}) || <div />
 		);
@@ -36,7 +36,7 @@ const CustomerSupport = () => {
 					currentSetting={location.get('subtab') as string}
 					getForm={getForm}
 					prepareUrl={(subTab: string) =>
-						`?page=multivendorx#&tab=customer-support&subtab=${subTab}`
+						`?page=multivendorx#&tab=customers&subtab=${subTab}`
 					}
 					appLocalizer={appLocalizer}
 					Link={Link}
@@ -71,4 +71,4 @@ const CustomerSupport = () => {
 	);
 };
 
-export default CustomerSupport;
+export default CustomersFeedback;

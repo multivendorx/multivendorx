@@ -9,6 +9,7 @@ namespace MultiVendorX\SharedListing;
 
 use MultiVendorX\Utill;
 use MultiVendorX\StoreReview\Util;
+use MultiVendorX\Store\Store;
 use MultiVendorX\FrontendScripts;
 
 defined( 'ABSPATH' ) || exit;
@@ -129,7 +130,6 @@ class Frontend {
      * @return int|null Selected primary product ID or null if none found.
      */
     public function select_primary_product( array $ids, string $priority ) {
-        $selected_id = null;
 
         switch ( $priority ) {
             case 'max_price':
@@ -161,6 +161,47 @@ class Frontend {
                 }
                 break;
 
+            case 'nearby_location':
+                $user_lat = isset( $_COOKIE['user_lat'] ) ? (float) $_COOKIE['user_lat'] : 0;
+                $user_lng = isset( $_COOKIE['user_lng'] ) ? (float) $_COOKIE['user_lng'] : 0;
+
+                // Fallback if user location not available
+                if ( ! $user_lat || ! $user_lng ) {
+                    return $this->get_min_price_product( $ids );
+                }
+
+                $closest_distance = PHP_FLOAT_MAX;
+
+                foreach ( $ids as $pid ) {
+                    $store_id = get_post_meta( $pid, 'multivendorx_store_id', true );
+
+                    if ( ! $store_id ) {
+						continue;
+                    }
+
+                    $store = new Store( $store_id );
+
+                    if ( ! $store ) {
+						continue;
+                    }
+
+                    $store_lat = (float) $store->get_meta( 'location_lat' );
+                    $store_lng = (float) $store->get_meta( 'location_lng' );
+
+                    if ( ! $store_lat || ! $store_lng ) {
+						continue;
+                    }
+
+                    // Calculate distance
+                    $distance = $this->calculate_distance( $user_lat, $user_lng, $store_lat, $store_lng );
+
+                    if ( $distance < $closest_distance ) {
+                        $closest_distance = $distance;
+                        $selected_id      = $pid;
+                    }
+                }
+                break;
+
             case 'min_price':
             default:
                 $selected_id = $this->get_min_price_product( $ids );
@@ -187,6 +228,21 @@ class Frontend {
         }
 
         return $selected_id;
+    }
+
+    public function calculate_distance( $ulat, $ulng, $slat, $slng ) {
+        $earth_radius = 6371; // in KM
+
+        $dLat = deg2rad( $slat - $ulat );
+        $dLng = deg2rad( $slng - $ulng );
+
+        $a = sin( $dLat / 2 ) * sin( $dLat / 2 ) +
+            cos( deg2rad( $ulat ) ) * cos( deg2rad( $slat ) ) *
+            sin( $dLng / 2 ) * sin( $dLng / 2 );
+
+        $c = 2 * atan2( sqrt( $a ), sqrt( 1 - $a ) );
+
+        return $earth_radius * $c;
     }
 
     /**

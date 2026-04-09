@@ -16,7 +16,9 @@ if (!window.multivendorxStore) {
 		counts: {},
 		listeners: [],
 		setCount(id, count) {
-			if (this.counts[id] === count) return;
+			if (this.counts[id] === count) {
+				return;
+			}
 			this.counts[id] = count;
 			this.listeners.forEach((fn) => fn(this.counts));
 		},
@@ -46,7 +48,7 @@ const ApprovalQueue = () => {
 
 	useEffect(() => {
 		const store = window.multivendorxStore;
-		
+
 		let apiConfigs: any[] = [
 			{
 				id: 'stores',
@@ -101,14 +103,13 @@ const ApprovalQueue = () => {
 				url: config.url,
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: config.params || {},
-			})
-				.then((res) => {
-					const count = config.transform
-						? config.transform(res)
-						: Number(res.headers[config.header || 'x-wp-total']) || 0;
+			}).then((res) => {
+				const count = config.transform
+					? config.transform(res)
+					: Number(res.headers[config.header || 'x-wp-total']) || 0;
 
-					store.setCount(config.id, count);
-				});
+				store.setCount(config.id, count);
+			});
 		});
 	}, []);
 
@@ -137,7 +138,10 @@ const ApprovalQueue = () => {
 		},
 		{
 			type: 'file',
-			condition: !settings?.['store-permissions']?.products?.includes('publish_products'),
+			condition:
+				!settings?.['store-permissions']?.products?.includes(
+					'publish_products'
+				),
 			content: {
 				id: 'products',
 				headerTitle: __('Products', 'multivendorx'),
@@ -152,7 +156,10 @@ const ApprovalQueue = () => {
 		},
 		{
 			type: 'file',
-			condition: !settings?.['store-permissions']?.coupons?.includes('publish_coupons'),
+			condition:
+				!settings?.['store-permissions']?.coupons?.includes(
+					'publish_coupons'
+				),
 			content: {
 				id: 'coupons',
 				headerTitle: __('Coupons', 'multivendorx'),

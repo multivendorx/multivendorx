@@ -25,7 +25,8 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 
 	return (
 		<Card
-			title={__('Inventory', 'multivendorx')}
+			title={__('Stock & inventory', 'multivendorx')}
+			desc={__("Track your available quantity and let customers know what's in stock.", 'multivendorx')}
 			action={
 				<>
 					<div className="field-wrapper">
@@ -49,7 +50,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 			}
 		>
 			<FormGroupWrapper>
-				<FormGroup cols={2} label={__('SKU', 'multivendorx')}>
+				<FormGroup cols={2} label={__('SKU', 'multivendorx')} desc={__("Used to identify this product in your inventory.", 'multivendorx')}>
 					<BasicInputUI
 						name="sku"
 						value={product.sku}

@@ -160,9 +160,9 @@ class Settings extends \WP_REST_Controller {
                     }
                 }
 
-                if (!empty($get_settings_data['role_access_table'])) {
-                    foreach ($get_settings_data['role_access_table'] as $role => $caps) {
-                        $user_cap[$role] = $caps; // overwrite
+                if ( ! empty( $get_settings_data['role_access_table'] ) ) {
+                    foreach ( $get_settings_data['role_access_table'] as $role => $caps ) {
+                        $user_cap[ $role ] = $caps; // overwrite
                     }
                 }
 

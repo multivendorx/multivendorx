@@ -31,52 +31,52 @@ const TableRowActions: React.FC<TableRowActionsProps> = ({
     });
 
     return (
-        <div className="action-section" ref={containerRef}>
-            <div className="action-icons">
-                <div className="inline-actions">
-                    {showInline ? (
-                        rowActions.map((action) => (
-                            <Tooltip text={action.label}>
-                                <i
-                                    onClick={() => action.onClick(row)}
-                                    className={`adminfont-${action.icon}`}
-                                />
-                            </Tooltip>
-                        ))
-                    ) : (
-                        <>
+        <div className="table-action" ref={containerRef}>                            
+                {showInline ? (
+                    <div className="inline-actions">
+                    {rowActions.map((action) => (
+                        <Tooltip text={action.label}>
                             <i
-                                className="adminfont-more-vertical"
-                                onClick={() => setOpen((v) => !v)}
+                                onClick={() => action.onClick(row)}
+                                className={`adminfont-${action.icon}`}
                             />
-                            <div
-                                className={`action-dropdown ${
-                                    open ? 'show' : 'hover'
-                                }`}
-                            >
-                                <ul>
-                                    {rowActions.map((action, index) => (
-                                        <div
-                                            key={index}
-                                            onClick={() => {
-                                                action.onClick(row);
-                                                setOpen(false);
-                                            }}
-                                        >
-                                            <i
-                                                className={`adminfont-${action.icon}`}
-                                            />
-                                            <span className="tooltip-name">
-                                                {action.label}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </ul>
-                            </div>
-                        </>
-                    )}
-                </div>
-            </div>
+                        </Tooltip>
+                    ))}
+                    </div>
+                ) : (
+                    <>
+                    <div className="action-icons">
+                        <i
+                            className="adminfont-more-vertical"
+                            onClick={() => setOpen((v) => !v)}
+                        />
+                        <div
+                            className={`action-dropdown ${
+                                open ? 'show' : 'hover'
+                            }`}
+                        >
+                            <ul>
+                                {rowActions.map((action, index) => (
+                                    <li
+                                        key={index}
+                                        onClick={() => {
+                                            action.onClick(row);
+                                            setOpen(false);
+                                        }}
+                                    >
+                                        <i
+                                            className={`adminfont-${action.icon}`}
+                                        />
+                                        <span className="tooltip-name">
+                                            {action.label}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        </div>
+                    </>
+                )}
         </div>
     );
 };

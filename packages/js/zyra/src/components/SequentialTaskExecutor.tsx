@@ -253,7 +253,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
             {processStatus && (
                 <Notice
                     type={processStatus === 'failed' ? 'error' : 'success'}
-                    displayPosition="notice"
+                    displayPosition="inline-notice"
                     message={
                         processStatus === 'failed'
                             ? failureMessage

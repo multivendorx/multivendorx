@@ -35,10 +35,12 @@ interface AddressData {
 	zip: string;
 	timezone: string;
 }
-
+interface StoreEmail {
+	list: string[];
+	primary: string;
+}
 interface FormData extends Partial<AddressData> {
-	primary_email?: string;
-	emails?: string[];
+	store_email?: StoreEmail;
 	slug?: string;
 	status?: string;
 	country_code?: string;
@@ -51,10 +53,12 @@ interface FormData extends Partial<AddressData> {
 	pinterest?: string;
 	[key: string]: string | string[] | undefined;
 }
-
+interface StoreEmail {
+	list: string[];
+	primary: string;
+}
 interface StoreData {
-	emails?: string[];
-	primary_email?: string;
+	store_email?: StoreEmail;
 	phone?: PhoneData;
 	location_lat?: string;
 	location_lng?: string;
@@ -240,8 +244,10 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 	const saveEmails = (emailList: string[], primary: string) => {
 		const updated = {
 			...formData,
-			primary_email: primary,
-			emails: emailList,
+			store_email: {
+				list: emailList,
+				primary: primary,
+			},
 		};
 		setFormData(updated);
 		autoSave(updated);
@@ -489,16 +495,17 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 								}
 							>
 								<EmailsInputUI
-									value={data?.emails || []}
-									primary={data?.primary_email || ''}
+									value={data?.store_email?.list || []}
+									primary={data?.store_email?.primary || ''}
 									enablePrimary={true}
-									onChange={(list, primary) =>
-										saveEmails(list, primary)
-									}
+									onChange={(list, primary) => saveEmails(list, primary)}
 								/>
 							</FormGroup>
 
-							<FormGroup label={__('Phone', 'multivendorx')} notice={errorMsg.phone}>
+							<FormGroup
+								label={__('Phone', 'multivendorx')}
+								notice={errorMsg.phone}
+							>
 								<SelectInputUI
 									type="single-select"
 									name="country_code"
@@ -628,6 +635,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 						<FormGroupWrapper>
 							<FormGroup
 								label={__('Current status', 'multivendorx')}
+								desc={__('Learn what permissions each status provides, visit Store satus settings', 'multivendorx')}
 							>
 								<SelectInputUI
 									name="status"
@@ -708,9 +716,9 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 											network === 'twitter'
 												? 'X'
 												: network
-														.charAt(0)
-														.toUpperCase() +
-													network.slice(1)
+													.charAt(0)
+													.toUpperCase() +
+												network.slice(1)
 										}
 									>
 										<BasicInputUI

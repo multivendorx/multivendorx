@@ -341,11 +341,6 @@ class Zone_Shipping extends \WC_Shipping_Method {
                                 $highest_class_cost = max( $highest_class_cost, $class_cost );
                             }
                         }
-
-                        // For calculation_type = order.
-                        if ( 'order' === $calculation_type && $highest_class_cost ) {
-                            $cost += $highest_class_cost;
-                        }
                     }
                 } elseif ( 'free_shipping' === $method['id'] ) {
                     $is_available = self::free_shipping_is_available( $package, $method );

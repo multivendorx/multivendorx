@@ -167,7 +167,7 @@ class Frontend {
         // show ONLY when distance-based shipping is used.
         if (
             WC()->cart->needs_shipping()
-            && apply_filters( 'mvx_is_allow_checkout_user_location', true )
+            && apply_filters( 'multivendorx_is_allow_checkout_user_location', true )
             && $this->cart_has_distance_shipping()
         ) {
             $fields['billing']['multivendorx_user_location'] = array(
@@ -206,14 +206,16 @@ class Frontend {
      * Add map to checkout page
      */
     public function multivendorx_checkout_user_location_map() {
-        if ( ( true === WC()->cart->needs_shipping() ) && apply_filters( 'mvx_is_allow_checkout_user_location', true ) ) {
+        if ( ( true === WC()->cart->needs_shipping() ) 
+            && apply_filters( 'multivendorx_is_allow_checkout_user_location', true ) 
+            && $this->cart_has_distance_shipping()) {
             echo '<div class="woocommerce-billing-fields__field-wrapper">';
-            echo '<div id="mvx-user-locaton-map" style="width:100%; height:18.75rem; margin-bottom:1.25rem;"></div>';
+            echo '<div id="multivendorx-user-locaton-map" style="width:100%; height:18.75rem; margin-bottom:1.25rem;"></div>';
             echo '</div>';
 			?>
             <style>
                 /*Ensure map always visible even if inline CSS fails */
-                #mvx-user-locaton-map {
+                #multivendorx-user-locaton-map {
                     width: 100%;
                     min-height: 18.75rem;
                     margin-bottom: 1.25rem;
@@ -337,11 +339,9 @@ class Frontend {
         foreach ( WC()->cart->get_cart() as $cart_item ) {
             $product_id = $cart_item['product_id'];
             $store_id   = get_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], true );
-
             if ( $store_id ) {
                 $store         = new \MultiVendorX\Store\Store( $store_id );
                 $shipping_type = $store->meta_data['shipping_options'] ?? '';
-
                 if ( 'shipping_by_distance' === $shipping_type ) {
                     return true;
                 }

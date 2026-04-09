@@ -3,6 +3,8 @@
 .notification-container {
     position: relative;
     width: 100%;
+    padding: 0 1rem 1rem;
+    box-sizing: border-box;
 
     .admin-badge.disable {
         filter: grayscale(1);
@@ -139,67 +141,6 @@
     }
 }
 
-// grid style start
-// .notification-grid {
-//     display: grid;
-//     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-//     gap: 1rem;
-//     margin-top: 1rem;
-
-
-//     .notification-card {
-//         border: $border-light-small;
-//         padding: 1rem;
-//         border-radius: $border-radius-small;
-//         display: flex;
-//         flex-direction: column;
-//         justify-content: space-between;
-//         background: #fff;
-
-//         .title-wrapper {
-//             border-bottom: $border-light-small;
-//             padding-bottom: 0.5rem;
-//         }
-
-//         .card-footer {
-//             border-top: $border-light-small;
-//             padding-top: 0.5rem;
-//             display: flex;
-//             justify-content: space-between;
-//             align-items: center;
-
-//             .price {
-//                 font-size: 1.5rem;
-
-//                 span {
-//                     font-size: 0.95rem;
-//                     color: $sub-text-color;
-//                 }
-//             }
-//         }
-
-//         .card-body {
-//             .checklist-title {
-//                 font-size: 1.125rem;
-//                 padding: 0.5rem 0;
-//             }
-
-//             .checklist {
-//                 padding-bottom: 0.5rem;
-
-//                 li {
-//                     width: 100%;
-//                     font-size: 0.813rem;
-//                 }
-//             }
-
-//             .recipients-list {
-//                 padding: 1rem 0;
-//             }
-//         }
-//     }
-// }
-
 .drawer-add-recipient {
     display: flex;
     gap: 0.5rem;
@@ -220,10 +161,6 @@
     color: $accent-color;
     cursor: pointer;
 }
-
-// .primary-email {
-//     color: #0000ffb5;
-// }
 
 .buttons-wrapper.left {
     justify-content: start !important;

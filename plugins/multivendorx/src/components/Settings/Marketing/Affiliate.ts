@@ -21,7 +21,7 @@ export default {
 			type: 'choice-toggle',
 			label: __('Who pays affiliate commissions', 'multivendorx'),
 			desc: __(
-				'Select who is responsible for paying affiliate referral commissions:<ul><strong>Example setup:</strong><br>' +
+				'Select who is responsible for paying affiliate referral commissions:<strong> <br> Example setup:</strong><br>' +
 					'Total product/listing price = $1,000<br>' +
 					'Marketplace commission = 20%<br>' +
 					'Affiliate commission = $50 + 5%<br>' +
@@ -35,8 +35,7 @@ export default {
 					'<li><strong>Option 2 – Store pays affiliate:</strong><br>' +
 					'Marketplace commission = 20% of $1,000 = $200<br>' +
 					'Affiliate commission = $50 + 5% of $1,000 = $100<br>' +
-					'Store receives = $1,000 − ($200 + $100) = $700</li>' +
-					'</ul>',
+					'Store receives = $1,000 − ($200 + $100) = $700</li>',
 				'multivendorx'
 			),
 			proSetting: true,

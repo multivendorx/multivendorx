@@ -90,7 +90,7 @@ if ( $store ) {
 
         if ( in_array( 'show_store_phone', $store_contact_details, true ) && ! empty( $details['phone'] ) ) {
             $html .= '<div class="store-info"><i class="dashicons dashicons-phone"></i>'
-                . esc_html( StoreUtil::get_phone($details['phone']) ) .
+                . esc_html( StoreUtil::get_phone( $details['phone'] ) ) .
             '</div>';
         }
 
@@ -108,7 +108,7 @@ if ( $store ) {
         $html .= '</div>'; // .mvx-vendor-info
     }
 
-    $html .= apply_filters( 'mvx_after_seller_info_tab', '' );
+    $html .= apply_filters( 'multivendorx_store_info_tab', '' );
 
     echo wp_kses_post( $html );
 

@@ -36,7 +36,7 @@ const AdminDashboard = () => {
 	].filter((tab) => !(appLocalizer?.khali_dabba && tab.pro));
 
 	return (
-		<Container general className="dashboard-tab">
+		<Container className="dashboard-tab">
 			<Column>
 				<TabsUI
 					tabs={tabs}

@@ -30,7 +30,7 @@ const Policies = ({ product, setProduct, handleChange }) => {
 	}, [product?.meta_data]);
 
 	return (
-		<Card title={__('Policies', 'multivendorx')}>
+		<Card title={__('Policies', 'multivendorx')} desc={__('Let customers know what to expect after they buy.', 'multivendorx')}>
 			<FormGroupWrapper>
 				<FormGroup label={__('Shipping Policy', 'multivendorx')}>
 					<TextAreaUI

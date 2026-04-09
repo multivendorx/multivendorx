@@ -64,14 +64,16 @@ class FrontendScripts {
         $base_dir = plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/';
         $base_url = MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/';
         self::enqueue_scripts_from_dir( $base_dir . 'externals/', $base_url . 'externals/' );
-        if ( MultiVendorX()->is_dev ) {
+		// Shared/root chunks are required by block bundles in both dev and production.
+		// Example: packages_js_zyra_build_index_js.js for zyra exports like MapProviderUI.
+        // if (MultiVendorX()->is_dev) checking need to debug in frontend
             self::enqueue_scripts_from_dir(
                 $base_dir,
                 $base_url,
                 array( 'index.js', 'components.js' ),
                 '/min\.js$/i'
             );
-        }
+        // }
     }
 
 	/**
@@ -598,6 +600,16 @@ class FrontendScripts {
                     'use_rest'     => true,
                     'use_settings' => true,
                     'object_name'  => 'storesList',
+                ),
+                'multivendorx-store-list-script'   => array(
+                    'object_name'  => 'storesList',
+                    'use_settings' => true,
+                    'use_rest'     => true,
+                    'data'         => array(
+                        'store_page_url'      => MultiVendorX()->store->storeutil->get_store_url( null, '', true ),
+                        'placeholder_url'     => wc_placeholder_img_src(),
+                        'default_user_avatar' => get_avatar_url( 0 ),
+                    ),
                 ),
                 'multivendorx-marketplace-stores-script'   => array(
                     'object_name'  => 'storesList',

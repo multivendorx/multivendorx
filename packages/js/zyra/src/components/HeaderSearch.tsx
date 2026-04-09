@@ -57,7 +57,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
     const [isOpen, setIsOpen] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
-
+    
     /* Close dropdown when query is cleared */
     useEffect(() => {
         if (!query) {
@@ -104,16 +104,16 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
                             setAction(value);
                             triggerSearch(query, value);
                         }}
+                        background='var(--theme-background-color)'
+                        color='var(--theme-color)'
                     />
                 </div>
             )}
 
             {/* Input */}
             <div
-                className={`search-section ${
-                    variant === 'mini-search' && isExpanded ? 'mini-search' : ''
-                }`}
-            >
+                className={`search-section`}
+                >
                 <BasicInputUI
                     type={'text'}
                     placeholder={placeholder}

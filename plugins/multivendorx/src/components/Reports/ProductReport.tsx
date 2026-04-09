@@ -283,6 +283,7 @@ const ProductReport: React.FC = () => {
 								value: row.sku || '—',
 							},
 						]}
+						isLoading={isDashboardLoading}
 					/>
 				);
 			},
@@ -296,6 +297,7 @@ const ProductReport: React.FC = () => {
 					avatar={{
 						iconClass: 'store-inventory',
 					}}
+					isLoading={isDashboardLoading}
 				/>
 			),
 		},
@@ -395,7 +397,7 @@ const ProductReport: React.FC = () => {
 	) => {
 		const params = {
 			search: query.searchValue,
-			orderby: 'date',
+			orderby: 'popularity',
 			order: query.order,
 			meta_key: 'multivendorx_store_id',
 			value: query?.filter?.store_id,
@@ -472,118 +474,31 @@ const ProductReport: React.FC = () => {
 					{/* Top Reviewed Products Section */}
 					<Card title="Top Reviewed Products">
 						{toReviewedProduct.length > 0 ? (
-							toReviewedProduct.map((product: Product) => (
-								<div
-									className="card-content"
-									key={`review-${product.id}`}
-								>
-									<div
-										className="card-header"
-										onClick={() =>
-											toggleReviewedCard(
-												product.id.toString()
-											)
-										}
-									>
-										<div className="left">
-											<div className="product-name font-medium">
-												{product.name}
-											</div>
-											<div className="price text-sm text-gray-600">
-												<b>
-													{__(
-														'Rating:',
-														'multivendorx'
-													)}
-												</b>{' '}
-												{product.average_rating || '0'}
-												<i className="adminfont-card"></i>
-											</div>
-										</div>
-										<div className="right">
-											<i
-												className={`adminfont-pagination-right-arrow ${
-													openReviewedCards[
-														product.id
-													]
-														? 'rotate-90 transition-transform'
-														: ''
-												}`}
-											></i>
-										</div>
-									</div>
-
-									{openReviewedCards[product.id] && (
-										<div className="top-items">
-											<div className="items">
-												<div className="left-side">
-													<div className="avatar">
-														{product.images
-															?.length ? (
-															<img
-																src={
-																	product
-																		.images[0]
-																		.src
-																}
-																alt={
-																	product.name
-																}
-															/>
-														) : (
-															<div>
-																{product.name?.charAt(
-																	0
-																) || '?'}
-															</div>
-														)}
-													</div>
-
-													<div className="details">
-														<div>
-															{__(
-																'Price:',
-																'multivendorx'
-															)}
-															<span
-																dangerouslySetInnerHTML={{
-																	__html:
-																		product.price_html ||
-																		product.price ||
-																		'-',
-																}}
-															/>
-														</div>
-														<div>
-															{__(
-																'Total Sales:',
-																'multivendorx'
-															)}
-															{product.total_sales ||
-																0}
-														</div>
-														<div>
-															{__(
-																'Category:',
-																'multivendorx'
-															)}
-															{product.categories
-																?.map(
-																	(
-																		cat: Category
-																	) =>
-																		cat.name
-																)
-																.join(', ') ||
-																'-'}
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									)}
-								</div>
-							))
+							toReviewedProduct.map(
+								(product: Product, index: number) => (
+									<InfoItem
+										key={`selling-${product.id}`}
+										title={product.name}
+										avatar={{
+											image: product.images?.[0]?.src,
+											text:
+												product.name?.charAt(0) || '?',
+											iconClass: `admin-color${index + 1}`,
+										}}
+										amount={product.price}
+										descriptions={[
+											{
+												label: __(
+													'Total Sales:',
+													'multivendorx'
+												),
+												value: product.total_sales || 0,
+											},
+										]}
+										isLoading={isDashboardLoading}
+									/>
+								)
+							)
 						) : (
 							<ComponentStatusView
 								title={__(
@@ -615,6 +530,7 @@ const ProductReport: React.FC = () => {
 												value: product.total_sales || 0,
 											},
 										]}
+										isLoading={isDashboardLoading}
 									/>
 								)
 							)

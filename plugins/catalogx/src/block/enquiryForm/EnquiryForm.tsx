@@ -65,7 +65,7 @@ const EnquiryForm = () => {
             <div>{enquiryFormData.content_after_form}</div>
             {toast && (
                 <div className="admin-notice-display-title">
-                    <i className="admin-font adminlib-check-fill"></i>
+                    <i className="admin-font adminlib-success"></i>
                     {responseMessage}
                 </div>
             )}

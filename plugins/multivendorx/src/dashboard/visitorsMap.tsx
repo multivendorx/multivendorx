@@ -86,11 +86,11 @@ const VisitorsMap: React.FC<VisitorsMapProps> = ({ dateRange }) => {
 								position: 'absolute',
 								top: 10,
 								left: 10,
-								background: '#5007aa',
-								padding: '6px 10px',
-								borderRadius: '4px',
-								boxShadow: '0 0 4px rgba(0,0,0,0.25)',
-								fontSize: '12px',
+								background: 'var(--backgroundColor)',
+								color: 'var(--colorPrimary)',
+								padding: '0.5rem 1rem',
+								borderRadius: '0.25rem',
+								fontSize: '1rem',
 								pointerEvents: 'none',
 								zIndex: 10,
 							}}
@@ -134,18 +134,18 @@ const VisitorsMap: React.FC<VisitorsMapProps> = ({ dateRange }) => {
 
 					{tableRows.length > 0 && (
 						<div className="table-wrapper">
-							<table>
-								<thead>
-									<tr className="header">
-										<td>Country</td>
-										<td>Visitors</td>
+							<table className="admin-table">
+								<thead className="admin-table-header">
+									<tr className="header-row">
+										<td className="header-col">Country</td>
+										<td className="header-col">Visitors</td>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody className="admin-table-body">
 									{tableRows.map((row) => (
-										<tr key={row.countryCode}>
-											<td>{row.countryCode}</td>
-											<td>{row.visitors}</td>
+										<tr className="admin-row" key={row.countryCode}>
+											<td className="admin-column">{row.countryCode}</td>
+											<td className="admin-column">{row.visitors}</td>
 										</tr>
 									))}
 								</tbody>

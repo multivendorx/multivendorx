@@ -75,49 +75,51 @@ class Ajax {
 		$overall  = array_sum( $ratings ) / count( $ratings );
 
 		// Handle image uploads.
-		$uploaded_images = [];
-		$files = $_FILES['review_images'] ?? null;
+		$uploaded_images = array();
+		$files           = $_FILES['review_images'] ?? null;
 
-		if (!empty($files) && is_array($files)) {
+		if ( ! empty( $files ) && is_array( $files ) ) {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 			// Validate required file structure.
-			$required_keys = ['name', 'type', 'tmp_name', 'error', 'size'];
-			foreach ($required_keys as $key) {
-				if (!is_array($files[$key])) {
-					wp_send_json_error([
-						'message' => __('Invalid file upload data.', 'multivendorx')
-					]);
+			$required_keys = array( 'name', 'type', 'tmp_name', 'error', 'size' );
+			foreach ( $required_keys as $key ) {
+				if ( ! is_array( $files[ $key ] ) ) {
+					wp_send_json_error(
+                        array(
+							'message' => __( 'Invalid file upload data.', 'multivendorx' ),
+                        )
+                    );
 				}
 			}
-	
+
 			// Normalize safely.
-			$file_names  = array_map('sanitize_file_name', (array) ($files['name'] ?? []));
-			$file_types  = (array) ($files['type'] ?? []);
-			$file_tmp    = (array) ($files['tmp_name'] ?? []);
-			$file_errors = array_map('intval', (array) ($files['error'] ?? []));
-			$file_sizes  = array_map('intval', (array) ($files['size'] ?? []));
-	
-			foreach ($file_names as $index => $name) {
-				$tmp   = $file_tmp[$index] ?? '';
-				$type  = $file_types[$index] ?? '';
-				$error = $file_errors[$index] ?? UPLOAD_ERR_NO_FILE;
-				$size  = $file_sizes[$index] ?? 0;
+			$file_names  = array_map( 'sanitize_file_name', (array) ( $files['name'] ?? array() ) );
+			$file_types  = (array) ( $files['type'] ?? array() );
+			$file_tmp    = (array) ( $files['tmp_name'] ?? array() );
+			$file_errors = array_map( 'intval', (array) ( $files['error'] ?? array() ) );
+			$file_sizes  = array_map( 'intval', (array) ( $files['size'] ?? array() ) );
+
+			foreach ( $file_names as $index => $name ) {
+				$tmp   = $file_tmp[ $index ] ?? '';
+				$type  = $file_types[ $index ] ?? '';
+				$error = $file_errors[ $index ] ?? UPLOAD_ERR_NO_FILE;
+				$size  = $file_sizes[ $index ] ?? 0;
 				// Basic validation.
-				if ($name === '' || $tmp === '' || $error !== UPLOAD_ERR_OK) {
+				if ( $name === '' || $tmp === '' || $error !== UPLOAD_ERR_OK ) {
 					continue;
 				}
-				$file = [
+				$file   = array(
 					'name'     => $name,
-					'type'     => sanitize_mime_type($type),
+					'type'     => sanitize_mime_type( $type ),
 					'tmp_name' => $tmp,
 					'error'    => $error,
 					'size'     => $size,
-				];
-				$upload = wp_handle_upload($file, ['test_form' => false]);
-				if (!empty($upload['error']) || empty($upload['url'])) {
+				);
+				$upload = wp_handle_upload( $file, array( 'test_form' => false ) );
+				if ( ! empty( $upload['error'] ) || empty( $upload['url'] ) ) {
 					continue;
 				}
-				$uploaded_images[] = esc_url_raw($upload['url']);
+				$uploaded_images[] = esc_url_raw( $upload['url'] );
 			}
 		}
 
@@ -125,17 +127,9 @@ class Ajax {
 		$review_id = Util::insert_review( $store_id, $user_id, $review_title, $review_content, $overall, $order_id, $uploaded_images );
 		Util::insert_ratings( $review_id, $ratings );
 		$store = new Store( $store_id );
-		do_action(
-			'multivendorx_notify_new_store_review',
-			'new_store_review',
-			array(
-				'admin_email' => MultiVendorX()->setting->get_setting( 'receiver_email_address' ),
-				'admin_phone' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-				'store_phone' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-				'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-				'category'    => 'activity',
-			)
-		);
+		MultiVendorX()->notifications->send_notification_helper('new_store_review', $store, null, [
+			'category'      => 'activity',
+		]);
 		wp_send_json_success( array( 'message' => __( 'Review submitted successfully!', 'multivendorx' ) ) );
 	}
 

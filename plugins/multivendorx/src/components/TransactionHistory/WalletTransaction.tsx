@@ -118,7 +118,10 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 		const newErrors = {};
 
 		if (!storeData?.payment_method || storeData.payment_method === '') {
-			newErrors.payment = __('Please configure a valid payment method before requesting a withdrawal.', 'multivendorx');
+			newErrors.payment = __(
+				'Please configure a valid payment method before requesting a withdrawal.',
+				'multivendorx'
+			);
 		}
 
 		if (amount > wallet.available_balance) {
@@ -157,11 +160,12 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 
 	const AmountChange = (value: number) => {
 		setAmount(value);
-		setErrors(prev => ({
+		setErrors((prev) => ({
 			...prev,
-			amount: value > wallet.available_balance
-				? `Amount cannot exceed ${wallet.available_balance}`
-				: ''
+			amount:
+				value > wallet.available_balance
+					? `Amount cannot exceed ${wallet.available_balance}`
+					: '',
 		}));
 	};
 
@@ -188,13 +192,13 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	const fee = amount * (percentage / 100) + fixed;
 
 	const headers = {
-		id: { label: __('ID', 'multivendorx') },
+		id: { label: __('ID', 'multivendorx'), type: 'id' },
 		status: { label: __('Status', 'multivendorx'), type: 'status' },
 		transaction_type: {
 			label: __('Transaction Type', 'multivendorx'),
 			render: (row) =>
 				row.transaction_type?.toLowerCase() === 'commission' &&
-					row.commission_id ? (
+				row.commission_id ? (
 					<span
 						className="link-item"
 						onClick={() => {
@@ -291,6 +295,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 			key: 'transactionType',
 			label: 'Transaction Type',
 			type: 'select',
+			size: 13,
 			options: [
 				{ label: __('Transaction Type', 'multivendorx'), value: '' },
 				{
@@ -313,6 +318,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 			key: 'transactionStatus',
 			label: 'Financial Transactions',
 			type: 'select',
+			size: 14,
 			options: [
 				{
 					label: __('Financial Transactions', 'multivendorx'),
@@ -414,62 +420,44 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 				<Column fullHeight grid={6}>
 					<Card title="Recent payouts">
 						{recentDebits.length > 0 ? (
-							<>
-								{recentDebits.slice(0, 5).map((txn) => {
-									const hasPaymentMethod =
-										!!txn.payment_method;
+							<ItemListUI
+								className="mini-card"
+								items={recentDebits.slice(0, 5).map((txn) => {
+									const hasPaymentMethod = !!txn.payment_method;
 									// Format payment method nicely (e.g., "stripe-connect" -> "Stripe Connect")
-									const formattedPaymentMethod =
-										txn.payment_method
-											? txn.payment_method
-												.replace(/[-_]/g, ' ') // replace - and _ with spaces
-												.replace(/\b\w/g, (char) =>
-													char.toUpperCase()
-												) // capitalize each word
-											: __(
-												'No payment method configured',
-												'multivendorx'
-											);
+									const formattedPaymentMethod = txn.payment_method
+										? txn.payment_method
+											.replace(/[-_]/g, ' ') // replace - and _ with spaces
+											.replace(/\b\w/g, (char) => char.toUpperCase()) // capitalize each word
+										: __('No payment method configured', 'multivendorx');
 
-									return (
-										<div key={txn.id} className="info-item">
-											<div className="details-wrapper">
-												<div className="details">
-													<div className="name">
-														{formattedPaymentMethod}
-														{hasPaymentMethod && (
-															<div className="admin-badge green">
-																Completed
-															</div>
-														)}
+									return {
+										title: formattedPaymentMethod,
+										desc: formatDate(txn.created_at),
+										tags: (
+											<>
+												{hasPaymentMethod && (
+													<div className="admin-badge green">
+														{__('Completed', 'multivendorx')}
 													</div>
-													<div className="des">
-														{formatDate(txn.created_at)}
-													</div>
-												</div>
-											</div>
-
-											<div className="right-details">
+												)}
 												<div
-													className={`price ${parseFloat(txn.debit) <
-															0
+													className={`price ${
+														parseFloat(txn.debit) < 0
 															? 'color-red'
 															: 'color-green'
-														}`}
+													}`}
 												>
 													{formatCurrency(txn.debit)}
 												</div>
-											</div>
-										</div>
-									);
+											</>
+										),
+									};
 								})}
-							</>
+							/>
 						) : (
 							<ComponentStatusView
-								title={__(
-									'No recent payouts transactions found.',
-									'multivendorx'
-								)}
+								title={__('No recent payouts transactions found.', 'multivendorx')}
 							/>
 						)}
 					</Card>
@@ -502,6 +490,24 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 											</b>
 											{__(
 												'minimum required to withdraw',
+												'multivendorx'
+											)}
+										</>
+									)}
+								</div>
+								<div className="desc">
+									{walletLoading ? (
+										<Skeleton width={15.625} />
+									) : (
+										<>
+											<b>
+												{' '}
+												{formatCurrency(
+													wallet?.reserve_balance
+												)}{' '}
+											</b>
+											{__(
+												'reserve balance',
 												'multivendorx'
 											)}
 										</>
@@ -550,59 +556,59 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 										},
 
 										...(wallet?.withdrawal_setting?.length >
-											0
+										0
 											? [
-												{
-													title: __(
-														'Free Withdrawals',
-														'multivendorx'
-													),
-													desc: (
-														<>
-															{__(
-																'Then',
-																'multivendorx'
-															)}{' '}
-															{Number(
-																wallet
-																	?.withdrawal_setting?.[0]
-																	?.withdrawal_percentage
-															) || 0}
-															% +{' '}
-															{formatCurrency(
-																Number(
+													{
+														title: __(
+															'Free Withdrawals',
+															'multivendorx'
+														),
+														desc: (
+															<>
+																{__(
+																	'Then',
+																	'multivendorx'
+																)}{' '}
+																{Number(
 																	wallet
 																		?.withdrawal_setting?.[0]
-																		?.withdrawal_fixed
-																) || 0
-															)}{' '}
-															{__(
-																'fee',
-																'multivendorx'
-															)}
-														</>
-													),
-													value: (
-														<>
-															{Math.max(
-																0,
-																(wallet
-																	?.withdrawal_setting?.[0]
-																	?.free_withdrawals ??
-																	0) -
-																(wallet?.free_withdrawal ??
-																	0)
-															)}{' '}
-															<span>
+																		?.withdrawal_percentage
+																) || 0}
+																% +{' '}
+																{formatCurrency(
+																	Number(
+																		wallet
+																			?.withdrawal_setting?.[0]
+																			?.withdrawal_fixed
+																	) || 0
+																)}{' '}
 																{__(
-																	'Left',
+																	'fee',
 																	'multivendorx'
 																)}
-															</span>
-														</>
-													),
-												},
-											]
+															</>
+														),
+														value: (
+															<>
+																{Math.max(
+																	0,
+																	(wallet
+																		?.withdrawal_setting?.[0]
+																		?.free_withdrawals ??
+																		0) -
+																		(wallet?.free_withdrawal ??
+																			0)
+																)}{' '}
+																<span>
+																	{__(
+																		'Left',
+																		'multivendorx'
+																	)}
+																</span>
+															</>
+														),
+													},
+												]
 											: []),
 									]}
 								/>
@@ -696,8 +702,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 
 								<div className="free-wrapper">
 									{wallet?.withdrawal_setting?.length > 0 &&
-										wallet?.withdrawal_setting?.[0]
-											?.free_withdrawals ? (
+									wallet?.withdrawal_setting?.[0]
+										?.free_withdrawals ? (
 										<>
 											{freeLeft > 0 ? (
 												<span>

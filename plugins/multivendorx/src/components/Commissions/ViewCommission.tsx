@@ -6,6 +6,7 @@ import {
 	FormGroupWrapper,
 	getApiLink,
 	InfoItem,
+	Notice,
 	PopupUI,
 	SectionUI,
 	TableCard,
@@ -161,6 +162,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 	const popupColumns = {
 		id: {
 			label: __('Product', 'multivendorx'),
+			width: 14,
 			render: (row) => {
 				return (
 					<InfoItem
@@ -228,7 +230,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 		>
 			<div className="content multi">
 				<div className="section left">
-					<div className="title">
+					{/* <div className="title">
 						{storeData?.id ? (
 							<a
 								href={`${appLocalizer.site_url.replace(
@@ -246,16 +248,14 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 						) : (
 							(storeData?.name ?? '-')
 						)}
-					</div>
-					<div className="details">
-						{storeData?.email && (
-							<div className="desc">
-								<i className="adminfont-mail"></i>
-								<b>{__('Email:', 'multivendorx')}</b>{' '}
-								{storeData.email.split(/\s*[\n,]\s*/)[0]}
-							</div>
-						)}
-					</div>
+					</div> */}
+					{storeData?.email && (
+						<div className="desc">
+							<i className="adminfont-mail"></i>
+							<b>{__('Email:', 'multivendorx')}</b>{' '}
+							{storeData.email.split(/\s*[\n,]\s*/)[0]}
+						</div>
+					)}
 
 					<SectionUI title={__('Order Details', 'multivendorx')} />
 					<TableCard
@@ -404,10 +404,11 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							<SectionUI
 								title={__('Commission Notes', 'multivendorx')}
 							/>
-							<div className="settings-metabox-note">
-								<i className="adminfont-info"></i>
-								<p>{commissionData?.commission_note}</p>
-							</div>
+							<Notice
+								type="info"
+								displayPosition="inline-notice"
+								message={commissionData?.commission_note}
+							/>
 						</>
 					)}
 				</div>

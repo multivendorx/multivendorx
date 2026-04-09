@@ -37,16 +37,20 @@ export interface BlockStyle {
     // Dimensions
     width?: string;
     height?: string | number;
+
+    justifyContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
+    alignItems?: 'stretch' | 'flex-start' | 'center' | 'flex-end' | 'baseline';
+    gap?: number;
 }
 
 export const formatSpacing = (
     type: 'padding' | 'margin',
     style: BlockStyle
 ): string => {
-    const top = style[`${type}Top`] ?? 0.85;
-    const right = style[`${type}Right`] ?? 0.85;
-    const bottom = style[`${type}Bottom`] ?? 0.85;
-    const left = style[`${type}Left`] ?? 0.85;
+    const top = style[`${type}Top`] ?? 0;
+    const right = style[`${type}Right`] ?? 0;
+    const bottom = style[`${type}Bottom`] ?? 0;
+    const left = style[`${type}Left`] ?? 0;
     return `${top}rem ${right}rem ${bottom}rem ${left}rem`;
 };
 
@@ -125,7 +129,17 @@ export const generateDimensionStyles = (
         height: style.height,
     };
 };
-
+// Generate CSS properties for column layout styles
+export const generateColumnStyles = (
+    style?: BlockStyle
+): React.CSSProperties => {
+    if (!style) {
+        return {};
+    }
+    return {
+        justifyContent: style.justifyContent,
+    };
+};
 // Generate complete block styles Combines all style categories
 export const generateBlockStyles = (
     style?: BlockStyle,
@@ -145,6 +159,7 @@ export const generateBlockStyles = (
         ...generateBorderStyles(style),
         ...(includeText ? generateTextStyles(style) : {}),
         ...(includeDimensions ? generateDimensionStyles(style) : {}),
+        ...generateColumnStyles(style),
     };
 };
 
@@ -170,7 +185,7 @@ export const BLOCK_STYLE_PRESETS = {
     button: {
         backgroundColor: '#007bff',
         color: '#ffffff',
-        fontSize: 16,
+        fontSize: 1,
         fontWeight: 'bold',
         paddingTop: 10,
         paddingRight: 20,

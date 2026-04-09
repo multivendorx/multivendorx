@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, Container, Column, TableCard, InfoItem } from 'zyra';
+import { getApiLink, Container, Column, TableCard, InfoItem, NoticeManager } from 'zyra';
 import { QueryProps, TableRow } from '@/services/type';
 import { getUrl } from '@/services/commonFunction';
 
@@ -10,7 +10,6 @@ const ActivityTable = (React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [totalRows, setTotalRows] = useState(0);
 	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -32,7 +31,12 @@ const ActivityTable = (React.FC = () => {
 			})
 			.catch((error) => {
 				console.error('Failed to fetch announcements', error);
-				setError(__('Failed to load announcements', 'multivendorx'));
+				NoticeManager.add({
+					title: __('Error', 'multivendorx'),
+					message: __('Failed to load announcements', 'multivendorx'),
+					type: 'error',
+					position: 'float',
+				});
 				setRows([]);
 				setTotalRows(0);
 				setIsLoading(false);
@@ -66,9 +70,8 @@ const ActivityTable = (React.FC = () => {
 	};
 
 	return (
-		<Container general>
+		<Container>
 			<Column>
-				{error && <div className="error-notice">{error}</div>}
 				<TableCard
 					headers={headers}
 					rows={rows}
@@ -76,6 +79,7 @@ const ActivityTable = (React.FC = () => {
 					isLoading={isLoading}
 					onQueryUpdate={doRefreshTableData}
 					format={appLocalizer.date_format}
+					showMenu={false}
 				/>
 			</Column>
 		</Container>

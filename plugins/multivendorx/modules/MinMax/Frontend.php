@@ -35,7 +35,7 @@ class Frontend {
 
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
         add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'add_to_cart_link_min_qty' ), 10, 2 );
-        add_filter( 'woocommerce_add_to_cart_quantity', array( $this, 'add_to_cart_min_qty'), 10, 2 );
+        add_filter( 'woocommerce_add_to_cart_quantity', array( $this, 'add_to_cart_min_qty' ), 10, 2 );
     }
     /**
      * Get min and max rules for a product or order context.

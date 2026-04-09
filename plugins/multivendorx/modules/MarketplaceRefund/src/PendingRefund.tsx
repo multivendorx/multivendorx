@@ -124,6 +124,10 @@ const PendingRefund: React.FC<object> = () => {
 							key: '_customer_refund_order',
 							value: 'refund_rejected',
 						},
+						{
+							key: 'multivendorx_admin_refund_reject_note',
+							value: formData.content,
+						},
 					],
 				},
 			});
@@ -258,9 +262,9 @@ const PendingRefund: React.FC<object> = () => {
 					value: query?.filter?.store_id,
 					after: query.filter?.created_at?.startDate
 						? toWcIsoDate(
-							query.filter.created_at.startDate,
-							'start'
-						)
+								query.filter.created_at.startDate,
+								'start'
+							)
 						: undefined,
 					before: query.filter?.created_at?.endDate
 						? toWcIsoDate(query.filter.created_at.endDate, 'end')
@@ -279,7 +283,10 @@ const PendingRefund: React.FC<object> = () => {
 
 				setRows(orders);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
-				window.multivendorxStore?.setCount('refund-requests', Number(response.headers['x-wp-total']) || 0);
+				window.multivendorxStore?.setCount(
+					'refund-requests',
+					Number(response.headers['x-wp-total']) || 0
+				);
 				setIsLoading(false);
 			})
 			.catch((error) => {
@@ -440,7 +447,7 @@ const PendingRefund: React.FC<object> = () => {
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer.settings_databases_value[
-									'overview'
+										'overview'
 									]['tinymce_api_section'] ?? ''
 								}
 							/>

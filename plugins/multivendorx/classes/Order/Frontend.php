@@ -51,9 +51,19 @@ class Frontend {
      * @return array
      */
     public function woocommerce_my_account_my_orders_columns( $columns ) {
-        $suborder_column['multivendorx_suborder'] = __( 'Suborders', 'multivendorx' );
-        $columns                                  = array_slice( $columns, 0, 1, true ) + $suborder_column + array_slice( $columns, 1, count( $columns ) - 1, true );
-        return $columns;
+        $suborder_column = array(
+                'multivendorx_suborder' => __( 'Store orders', 'multivendorx' ),
+            );
+            $new_columns = [];
+
+            foreach ( $columns as $key => $label ) {
+                $new_columns[$key] = $label;
+                if ( 'order-actions' === $key ) {
+                    $new_columns['multivendorx_suborder'] = $suborder_column['multivendorx_suborder'];
+                }
+            }
+
+            return $new_columns;
     }
 
     /**
@@ -66,13 +76,14 @@ class Frontend {
         $multivendorx_suborders = MultiVendorX()->order->get_suborders( $order->get_id(), array( 'type' => 'shop_order' ) );
 
         if ( $multivendorx_suborders ) {
-            echo '<ul class="mvx-order-vendor" style="margin:0;list-style:none;">';
+            echo '<ul class="multivendorx-store-suborder" style="margin:0;list-style:none;">';
             foreach ( $multivendorx_suborders as $suborder ) {
                 $store     = Store::get_store( $suborder->get_meta( Utill::POST_META_SETTINGS['store_id'], true ) );
                 $order_uri = esc_url( $suborder->get_view_order_url() );
 
                 printf(
-                    '<li><strong><a href="%s" title="%s">#%s</a></strong> &ndash; <small class="mvx-order-for-vendor">%s %s</small></li>',
+                    // '<li><strong><a href="%s" title="%s">#%s</a></strong> &ndash; <small class="multivendorx-order-for-vendor">%s %s</small></li>',
+                    '<li><mark class="%s tips" data-tip="%s">%s</mark> <span class="store-suborder">$70 for 3qty</span> <div class="suborder-buttons"><button class="woocommerce-button button">View</button> <button class="woocommerce-button button">Invoive</button> </div></li>',
                     esc_url( $order_uri ),
                     esc_attr( sanitize_title( $suborder->get_status() ) ),
                     esc_html( $suborder->get_order_number() ),

@@ -3,14 +3,14 @@ import { __ } from '@wordpress/i18n';
 import StoreReviews from './StoreReviews';
 
 addFilter(
-	'multivendorx_customer_support_tab',
+	'multivendorx_customers_tab',
 	'multivendorx/store-review-tab',
 	(tabs) => {
 		tabs.push({
 			type: 'file',
 			module: 'store-review',
 			content: {
-				id: 'review',
+				id: 'store-review',
 				headerTitle: __('Store Reviews', 'multivendorx'),
 				headerIcon: 'store-review',
 				settingTitle: __('Store reviews at a glance', 'multivendorx'),
@@ -26,10 +26,10 @@ addFilter(
 );
 
 addFilter(
-	'multivendorx_customer_support_tab_content',
+	'multivendorx_customers_tab_content',
 	'multivendorx/store-review-content',
 	(defaultForm, { tabId }) => {
-		if (tabId === 'review') {
+		if (tabId === 'store-review') {
 			return <StoreReviews />;
 		}
 

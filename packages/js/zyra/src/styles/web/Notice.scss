@@ -56,12 +56,16 @@
             cursor: pointer;
         }
 
+        .notice-details {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
 
         .notice-desc {
             opacity: 0;
             visibility: hidden;
             position: absolute;
-            width: 100%;
             transition: none;
             pointer-events: none;
             display: flex;
@@ -98,7 +102,7 @@
 
         .notice-text,
         .notice-desc {
-            font-size: 0.75rem;
+            font-size: 0.813rem;
         }
 
         .notice-desc {
@@ -128,9 +132,11 @@
             font-weight: 500;
             line-height: 1.313;
         }
-        .notice-desc{
+
+        .notice-desc {
             color: $sub-text-color;
         }
+
         &::after {
             content: '';
             position: absolute;
@@ -138,14 +144,15 @@
             left: 0;
             width: 0;
             height: 0.125rem;
-            background-color: map-get(map-get($color-palette, green), color);;
+            background-color: map-get(map-get($color-palette, green), color);
             animation: borderSlide 2.5s ease-in-out;
             animation-delay: 0.5s;
         }
 
         &.type-success {
             i {
-                color: map-get(map-get($color-palette, green), color);;
+                color: map-get(map-get($color-palette, green), color);
+                ;
                 font-size: 1.4rem;
             }
         }
@@ -176,6 +183,7 @@
                 color: map-get(map-get($color-palette, red), color);
             }
         }
+
         &.type-warning {
             .notice-desc {
                 color: map-get(map-get($color-palette, yellow), color);
@@ -222,16 +230,19 @@
 
         &.type-success {
             background: map-get(map-get($color-palette, green), light-color);
-            border-color: map-get(map-get($color-palette, green), color);;
+            border-color: map-get(map-get($color-palette, green), color);
+            ;
 
             .notice-desc {
                 color: map-get(map-get($color-palette, green), color);
 
             }
         }
+
         &.type-warning {
             background: map-get(map-get($color-palette, yellow), light-color);
-            border-color: map-get(map-get($color-palette, yellow), color);;
+            border-color: map-get(map-get($color-palette, yellow), color);
+            ;
 
             .notice-desc {
                 color: map-get(map-get($color-palette, yellow), color);
@@ -280,4 +291,9 @@
         width: 100%;
         left: 0;
     }
+}
+
+// for woocommerce notice 
+.notice-wrapper {
+    margin-top: 2.5rem;
 }

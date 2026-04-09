@@ -32,9 +32,9 @@ export default {
 
 		// Email / Additional Email
 		{
-			type: 'email',
+			type: 'email-input',
 			label: __('Email / Additional Email', 'multivendorx'),
-			key: 'email',
+			key: 'store_email',
 			readOnly: !settings.includes('store_contact'),
 		},
 

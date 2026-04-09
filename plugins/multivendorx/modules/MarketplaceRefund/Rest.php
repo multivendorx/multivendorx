@@ -34,10 +34,10 @@ class Rest extends \WP_REST_Controller {
      */
     public function __construct() {
         add_action( 'rest_api_init', array( $this, 'register_routes' ), 10 );
-        add_filter('woocommerce_rest_shop_order_schema', array($this, 'add_refund_status') );
+        add_filter( 'woocommerce_rest_shop_order_schema', array( $this, 'add_refund_status' ) );
     }
 
-    public function add_refund_status($schema) {
+    public function add_refund_status( $schema ) {
         $schema['properties']['status']['enum'][] = 'refund-requested';
         return $schema;
     }
@@ -198,13 +198,14 @@ class Rest extends \WP_REST_Controller {
                             case 'customer':
                                 $name  = strtolower( $order->get_formatted_billing_full_name() );
                                 $email = strtolower( $order->get_billing_email() );
-                                return ( false !== strpos( $name, $search_value ) ) || ( false !== strpos( $email, $search_field ) );
+                                return ( false !== strpos( $name, $search_value ) ) || ( false !== strpos( $email, $search_value ) );
 
                             default:
                                 return true;
                         }
                     }
                 );
+                $refunds = array_values( $refunds );
             }
 
             // Build response data.

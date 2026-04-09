@@ -50,11 +50,13 @@ const AllProduct: React.FC = () => {
 	const [categoryCounts, setCategoryCounts] = useState<
 		CategoryCount[] | null
 	>(null);
+	const [languageCounts, setLanguageCounts] = useState<CategoryCount[]>([]);
 	const [categoriesList, setCategoriesList] = useState<
 		{ id: number; name: string }[]
 	>([]);
 	const [newProductId, setNewProductId] = useState<number | null>(null);
-	const [bulkActionContent, setBulkActionContent] = useState<React.ReactNode>(null);
+	const [prevQuery, setPrevQuery] = useState<QueryProps>({});
+
 	const { modules } = useModules();
 	const navigate = useNavigate();
 
@@ -62,7 +64,11 @@ const AllProduct: React.FC = () => {
 		axios
 			.post(
 				`${appLocalizer.apiUrl}/wc/v3/products/`,
-				{ name: 'Auto Draft', status: 'draft' },
+				{ name: 'Auto Draft', status: 'draft',
+					meta_data: [
+						{ key: '_is_auto_draft', value: true }
+					]
+				 },
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
 			.then((res) => setNewProductId(res.data.id))
@@ -126,10 +132,10 @@ const AllProduct: React.FC = () => {
 					result.status === 'fulfilled'
 						? result.value
 						: {
-								value: statuses[index],
-								label: STATUS_LABELS[statuses[index]],
-								count: 0,
-							}
+							value: statuses[index],
+							label: STATUS_LABELS[statuses[index]],
+							count: 0,
+						}
 				)
 			);
 		} catch (error) {
@@ -197,14 +203,14 @@ const AllProduct: React.FC = () => {
 
 		const totalCount = languageItems.reduce((sum, l) => sum + l.count, 0);
 
-		setCategoryCounts((prev) => [
+		setLanguageCounts((prev) => [
 			...(prev || []).filter(
 				(item) =>
-					item.value !== 'all_lang' &&
+					item.value !== 'all' &&
 					!langs.some((lang) => lang.code === item.value)
 			),
 			{
-				value: 'all_lang',
+				value: 'all',
 				label: __('All Languages', 'multivendorx'),
 				count: totalCount,
 			},
@@ -228,31 +234,26 @@ const AllProduct: React.FC = () => {
 		doRefreshTableData({});
 	};
 
-	const handleBulkAction = (action: string, selectedIds: number[]) => {
-		if (action === 'delete') {
-			axios
-				.post(
-					`${appLocalizer.apiUrl}/wc/v3/products/batch`,
-					{ delete: selectedIds },
-					{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-				)
-				.then(() => {
-					fetchCategories();
-					fetchProductStatusCounts();
-					fetchWpmlTranslations();
-					doRefreshTableData({});
-				});
+	const handleBulkAction = (action: string, selectedIds: []) => {
+		if (action !== 'delete') {
 			return;
 		}
 
-		const result = applyFilters(
-			'multivendorx_products_bulk_action_handler',
-			null,
-			action,
-			selectedIds,
-			appLocalizer,
-		);
-		setBulkActionContent(result); 
+		axios
+			.post(
+				`${appLocalizer.apiUrl}/wc/v3/products/batch`,
+				{ delete: selectedIds },
+				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+			)
+			.then(() => {
+				fetchCategories();
+				fetchProductStatusCounts();
+				fetchWpmlTranslations();
+				doRefreshTableData({});
+			})
+			.catch((err: unknown) =>
+				console.error('Error performing bulk product action:', err)
+			);
 	};
 
 	const doRefreshTableData = (query: QueryProps) => {
@@ -268,14 +269,18 @@ const AllProduct: React.FC = () => {
 						query.categoryFilter === 'all'
 							? 'any'
 							: query.categoryFilter,
+					lang:
+						query.languageFilter && query.languageFilter !== 'all'
+							? query.languageFilter
+							: undefined,
 					type: query.filter?.productType,
 					category: query.filter?.category,
 					stock_status: query.filter?.stockStatus,
 					after: query.filter?.created_at?.startDate
 						? toWcIsoDate(
-								query.filter.created_at.startDate,
-								'start'
-							)
+							query.filter.created_at.startDate,
+							'start'
+						)
 						: undefined,
 					before: query.filter?.created_at?.endDate
 						? toWcIsoDate(query.filter.created_at.endDate, 'end')
@@ -302,11 +307,7 @@ const AllProduct: React.FC = () => {
 			});
 	};
 
-	const bulkActions = applyFilters(
-		'multivendorx_products_bulk_actions',
-		[{ label: 'Delete', value: 'delete' }],
-		modules
-	);
+	const bulkActions = [{ label: 'Delete', value: 'delete' }];
 
 	const filters = [
 		{
@@ -387,7 +388,7 @@ const AllProduct: React.FC = () => {
 						}}
 						descriptions={[
 							{
-								label: __('SKU:', 'multivendorx'),
+								label: __('SKU', 'multivendorx'),
 								value: row.sku || '—',
 							},
 						]}
@@ -447,7 +448,7 @@ const AllProduct: React.FC = () => {
 						onClick: (row: ProductRow) =>
 							navigator.clipboard
 								.writeText(row.permalink)
-								.catch(() => {}),
+								.catch(() => { }),
 					},
 					{
 						label: __('Delete', 'multivendorx'),
@@ -458,6 +459,28 @@ const AllProduct: React.FC = () => {
 				modules
 			),
 		},
+	};
+
+
+	const handleQueryUpdate = (query: QueryProps) => {
+		const prevLang = prevQuery.languageFilter || 'all';
+		const prevStatus = prevQuery.categoryFilter || 'all';
+
+		const currLang = query.languageFilter || 'all';
+		const currStatus = query.categoryFilter || 'all';
+
+		let newQuery = { ...query };
+
+		if (currLang !== prevLang) {
+			delete newQuery.categoryFilter;
+		}
+
+		else if (currStatus !== prevStatus) {
+			delete newQuery.languageFilter;
+		}
+
+		setPrevQuery(newQuery);
+		doRefreshTableData(newQuery);
 	};
 
 	return (
@@ -471,17 +494,6 @@ const AllProduct: React.FC = () => {
 				buttons={applyFilters(
 					'multivendorx_product_list_header_buttons',
 					[
-						...(modules.includes('import-export')
-							? [
-									{
-										custom: applyFilters(
-											'product_import_export',
-											null
-										),
-									},
-								]
-							: []),
-
 						{
 							label: __('Add New', 'multivendorx'),
 							icon: 'plus',
@@ -490,7 +502,7 @@ const AllProduct: React.FC = () => {
 									modules.includes('shared-listing') &&
 									appLocalizer.settings_databases_value
 										.onboarding?.store_selling_mode ==
-										'shared_listing'
+									'shared_listing'
 								) {
 									dashNavigate(navigate, ['products', 'add']);
 								} else {
@@ -504,15 +516,16 @@ const AllProduct: React.FC = () => {
 					navigate
 				)}
 			/>
-
+			{applyFilters('multivendorx_product_list_header_middle_section',null, modules)}
 			<TableCard
 				headers={headers}
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
+				onQueryUpdate={handleQueryUpdate}
 				ids={rowIds}
 				categoryCounts={categoryCounts}
+				languageFilterCounts={languageCounts}
 				search={{}}
 				filters={filters}
 				bulkActions={bulkActions}
@@ -528,8 +541,6 @@ const AllProduct: React.FC = () => {
 					currencyPosition: appLocalizer.currency_position,
 				}}
 			/>
-
-			{bulkActionContent}
 		</>
 	);
 };

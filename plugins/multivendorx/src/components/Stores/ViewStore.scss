@@ -182,6 +182,11 @@
                     display: flex;
                     align-items: end;
                     gap: 0.313rem;
+                    line-height: 1;
+
+                    .adminfont-storefront{
+                        font-size: 1.25rem;
+                    }
                 }
 
                 .store-name:hover,
@@ -228,6 +233,11 @@
             }
         }
     }
+
+    .edit-icon i{
+        font-size: 1.313rem;
+        padding-right: 0.313rem;
+    }
 }
 
 // check and remove html and css
@@ -261,13 +271,6 @@
     }
 }
 
-
-.store-details-remove-class {
-    .divider-section {
-        padding: 0 !important;
-        margin-top: 0.313rem;
-    }
-}
 
 
 // plan wrapper
@@ -357,4 +360,13 @@
         }
     }
 
+}
+
+
+
+// store staff
+.additional-owners-wrapper{
+    .info-item-wrapper{
+        margin-bottom: 0.75rem;
+    }
 }

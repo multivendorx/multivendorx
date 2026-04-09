@@ -157,10 +157,10 @@ final class MultiVendorX {
         $this->container['pattern']         = new Pattern();
         $this->container['migration']       = new Migration\Cron();
 
+        $this->initialize_multivendorx_log();
+
         // Load all active modules.
         $this->container['modules']->load_active_modules();
-
-        $this->initialize_multivendorx_log();
 
         $this->container['active_store'] = get_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], true );
 
@@ -322,7 +322,7 @@ final class MultiVendorX {
             return $this->container[ $class_name ];
         }
 
-        return new \WP_Error( sprintf( 'Call to unknown class %s.', $class ) );
+        return new \WP_Error( sprintf( 'Call to unknown class %s.', $class_name ) );
     }
 
     /**

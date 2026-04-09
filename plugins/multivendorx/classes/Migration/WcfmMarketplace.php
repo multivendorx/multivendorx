@@ -23,13 +23,13 @@ defined( 'ABSPATH' ) || exit;
 class WcfmMarketplace {
 
     public function migrate_vendors() {
-        $vendors = get_users(
+        $vendors           = get_users(
             array(
 				'role__in' => array( 'wcfm_vendor' ),
 				'fields'   => array( 'ID' ),
             )
         );
-        $created_store_ids = array(); 
+        $created_store_ids = array();
 
         foreach ( $vendors as $user ) {
             $user_id = $user->ID;
@@ -64,9 +64,10 @@ class WcfmMarketplace {
             );
 
             // add meta in store-meta table.
-            $store->update_meta( 'primary_email', $profile_settings['store_email'] );
-            $store->update_meta( 'emails', array( $profile_settings['store_email'] ) );
-
+            $store->update_meta( 'store_email', array(
+                'list'    => array( $profile_settings['store_email'] ),
+                'primary' => $profile_settings['store_email'],
+            ) );
             if ( ! empty( $profile_settings['address'] ) && is_array( $profile_settings['address'] ) ) {
                 $address = $profile_settings['address'];
                 if ( ! empty( $address['street_1'] ) ) {
@@ -121,7 +122,7 @@ class WcfmMarketplace {
     }
 
     public function migrate_products() {
-        $products = wc_get_products(
+        $products      = wc_get_products(
             array(
 				'status' => 'any',
 				'return' => 'ids',
@@ -137,7 +138,7 @@ class WcfmMarketplace {
             if ( in_array( 'wcfm_vendor', (array) $user->roles, true ) ) {
                 $active_store = get_user_meta( $author_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
                 update_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], $active_store );
-                $updated_count++;
+                ++$updated_count;
             }
         }
         return $updated_count;
@@ -145,8 +146,8 @@ class WcfmMarketplace {
 
     public function migrate_orders_and_commissions() {
         global $wpdb;
-        $wcfm_orders_table      = $wpdb->prefix . 'wcfm_marketplace_orders';
-        $table_name = $wpdb->prefix . Utill::TABLES['commission'];
+        $wcfm_orders_table = $wpdb->prefix . 'wcfm_marketplace_orders';
+        $table_name        = $wpdb->prefix . Utill::TABLES['commission'];
 
         $wcfm_orders = $wpdb->get_results( "SELECT * FROM {$wcfm_orders_table}" );
 
@@ -156,30 +157,32 @@ class WcfmMarketplace {
             if ( ! $order ) {
 				continue;
             }
-            $store_id  = get_user_meta( $row->vendor_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
+            $store_id = get_user_meta( $row->vendor_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
 
-            $suborder = wc_create_order([
-                'customer_id' => $order->get_customer_id(),
-            ]);
+            $suborder = wc_create_order(
+                array(
+					'customer_id' => $order->get_customer_id(),
+                )
+            );
             // Set parent order
-            $suborder->set_parent_id($order_id);
-            $product = wc_get_product($row->product_id);
+            $suborder->set_parent_id( $order_id );
+            $product = wc_get_product( $row->product_id );
             $suborder->add_product(
                 $product,
                 $row->quantity,
-                [
+                array(
                     'subtotal' => $row->item_sub_total,
                     'total'    => $row->item_total,
-                ]
+                )
             );
             // Copy billing & shipping
-            $suborder->set_address($order->get_address('billing'), 'billing');
-            $suborder->set_address($order->get_address('shipping'), 'shipping');
-            $suborder->set_payment_method($order->get_payment_method());
+            $suborder->set_address( $order->get_address( 'billing' ), 'billing' );
+            $suborder->set_address( $order->get_address( 'shipping' ), 'shipping' );
+            $suborder->set_payment_method( $order->get_payment_method() );
             // Calculate totals
             $suborder->calculate_totals();
             // Set status
-            $suborder->update_status('processing');
+            $suborder->update_status( 'processing' );
             $suborder->set_created_via( Utill::ORDER_META_SETTINGS['multivendorx_store_order'] );
             $suborder->update_meta_data( Utill::POST_META_SETTINGS['store_id'], $store_id );
             $suborder->save();
@@ -197,7 +200,7 @@ class WcfmMarketplace {
                     'store_payable'          => $row->total_commission,
                     'marketplace_payable'    => $suborder->get_total() - $row->total_commission,
                     'currency'               => $order->get_currency(),
-                    'status'                 => in_array($row->order_status, ['pending', 'on-hold', 'cancelled', 'draft', 'failed']) ? 'unpaid' : 'paid',
+                    'status'                 => in_array( $row->order_status, array( 'pending', 'on-hold', 'cancelled', 'draft', 'failed' ) ) ? 'unpaid' : 'paid',
                 ),
                 array(
 					'%d',
@@ -221,7 +224,7 @@ class WcfmMarketplace {
             $order->save();
         }
 
-        $balance_table = $wpdb->prefix . 'wcfm_marketplace_vendor_ledger';
+        $balance_table        = $wpdb->prefix . 'wcfm_marketplace_vendor_ledger';
         $wcfm_vendor_balances = $wpdb->get_results( "SELECT * FROM {$balance_table}" );
 
         foreach ( $wcfm_vendor_balances as $row ) {
@@ -232,44 +235,44 @@ class WcfmMarketplace {
                 $wcfm_commission_id
             );
 
-            $wcfm_order = $wpdb->get_row($query);
+            $wcfm_order = $wpdb->get_row( $query );
 
-            if (in_array($wcfm_order->order_status, ['pending', 'on-hold', 'cancelled', 'draft', 'failed'])) {
+            if ( in_array( $wcfm_order->order_status, array( 'pending', 'on-hold', 'cancelled', 'draft', 'failed' ) ) ) {
                 continue;
             }
 
             $matched_suborder = null;
-            $suborders = MultiVendorX()->order->get_suborders( $wcfm_order->order_id );
-            foreach ($suborders as $sub) {
-                $suborder = wc_get_order($sub->ID);
-                foreach ($suborder->get_items() as $item_id => $item) {
+            $suborders        = MultiVendorX()->order->get_suborders( $wcfm_order->order_id );
+            foreach ( $suborders as $sub ) {
+                $suborder = wc_get_order( $sub->ID );
+                foreach ( $suborder->get_items() as $item_id => $item ) {
                     $product_id = $item->get_product_id();
-                    if ($product_id == $wcfm_order->product_id) {
+                    if ( $product_id == $wcfm_order->product_id ) {
                         $matched_suborder = $suborder;
                         break 2;
                     }
                 }
             }
 
-            $store_id  = get_user_meta( $row->vendor_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
+            $store_id = get_user_meta( $row->vendor_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
 
-            if ($row->reference == 'order') {
-                $entry_type = 'Cr';
+            if ( $row->reference == 'order' ) {
+                $entry_type       = 'Cr';
                 $transaction_type = 'Commission';
-                $amount = $row->credit;
-            } 
-            
-            if ($row->reference == 'withdraw') {
-                $entry_type = 'Dr';
-                $transaction_type = 'Withdraw';
-                $amount = $row->debit;
-            } 
+                $amount           = $row->credit;
+            }
 
-            if ($row->reference == 'refund') {
-                $entry_type = 'Dr';
+            if ( $row->reference == 'withdraw' ) {
+                $entry_type       = 'Dr';
+                $transaction_type = 'Withdraw';
+                $amount           = $row->debit;
+            }
+
+            if ( $row->reference == 'refund' ) {
+                $entry_type       = 'Dr';
                 $transaction_type = 'Refund';
-                $amount = $row->debit;
-            } 
+                $amount           = $row->debit;
+            }
 
             $data = array(
                 'store_id'         => (int) $store_id,
@@ -290,24 +293,23 @@ class WcfmMarketplace {
             $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $data, $format );
         }
         $this->deactive_previous_multivendor();
-        wp_clear_scheduled_hook('multivendorx_order_migration');
+        wp_clear_scheduled_hook( 'multivendorx_order_migration' );
     }
 
     // Deactive WCFM multivendor
 	public function deactive_previous_multivendor() {
 		// WCFM free deactive
-		require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
-		if ( is_plugin_active('wc-multivendor-marketplace/wc-multivendor-marketplace.php') ) {
-	    	deactivate_plugins('wc-multivendor-marketplace/wc-multivendor-marketplace.php');    
+		require_once ABSPATH . '/wp-admin/includes/plugin.php';
+		if ( is_plugin_active( 'wc-multivendor-marketplace/wc-multivendor-marketplace.php' ) ) {
+	    	deactivate_plugins( 'wc-multivendor-marketplace/wc-multivendor-marketplace.php' );
 	    }
 	    // WCFM frontend manager deactive
-	    if ( is_plugin_active('wc-frontend-manager/wc_frontend_manager.php') ) {
-	    	deactivate_plugins('wc-frontend-manager/wc_frontend_manager.php');    
+	    if ( is_plugin_active( 'wc-frontend-manager/wc_frontend_manager.php' ) ) {
+	    	deactivate_plugins( 'wc-frontend-manager/wc_frontend_manager.php' );
 	    }
 	    // WCFM membership deactive
-	    if ( is_plugin_active('wc-multivendor-membership/wc-multivendor-membership.php') ) {
-	    	deactivate_plugins('wc-multivendor-membership/wc-multivendor-membership.php');    
+	    if ( is_plugin_active( 'wc-multivendor-membership/wc-multivendor-membership.php' ) ) {
+	    	deactivate_plugins( 'wc-multivendor-membership/wc-multivendor-membership.php' );
 	    }
 	}
-
 }

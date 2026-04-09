@@ -226,26 +226,27 @@ const App = () => {
 		{
 			toggleIcon: 'admin-icon adminfont-user-circle',
 			tooltipName: __('Support', 'multivendorx'),
+			tooltipPosition: 'end',
 			items: profileItems,
 		},
 	];
-	const handleDismissBanner = () => {
-		localStorage.setItem('banner', 'false');
-	};
 
-    useEffect(() => {
-        const handler = (e: any) => {
-            if (e.detail?.type === 'open_modal') {
-                setActiveModal(e.detail.key);
-            }
-        };
+	const isBannerDismissed =
+		localStorage.getItem('banner_dismissed') === 'true';
 
-        window.addEventListener('multivendorx:action', handler);
+	useEffect(() => {
+		const handler = (e: any) => {
+			if (e.detail?.type === 'open_modal') {
+				setActiveModal(e.detail.key);
+			}
+		};
 
-        return () => {
-            window.removeEventListener('multivendorx:action', handler);
-        };
-    }, []);
+		window.addEventListener('multivendorx:action', handler);
+
+		return () => {
+			window.removeEventListener('multivendorx:action', handler);
+		};
+	}, []);
 
 	return (
 		<>
@@ -429,15 +430,16 @@ const App = () => {
 				appLocalizer={appLocalizer}
 				steps={getTourSteps(appLocalizer)}
 			/>
-			<Notice
-				uniqueKey="banner"
-				type="banner"
-				validity="lifetime"
-				displayPosition="banner"
-				message={bannerItem}
-				actionLabel="Upgrade Now"
-				onAction={() => handleDismissBanner()}
-			/>
+			{!isBannerDismissed && (
+				<Notice
+					uniqueKey="banner"
+					type="banner"
+					validity="lifetime"
+					displayPosition="banner"
+					message={bannerItem}
+					actionLabel="Upgrade Now"
+				/>
+			)}
 
 			{activeModal === 'migrate' && (
 				<>
@@ -460,15 +462,22 @@ const App = () => {
 								label={__('Migration', 'multivendorx')}
 							></FormGroup>
 							<div className="desc">
-								{appLocalizer.multivendor_plugin || 'No multivendor plugin active currently'}
+								{appLocalizer.multivendor_plugin ||
+									'No multivendor plugin active currently'}
 							</div>
 							<SequentialTaskExecutor
 								buttonText={__('Import', 'multivendorx')}
 								apilink="migration"
 								interval={1000}
 								appLocalizer={appLocalizer}
-								successMessage={__('Migrate successfully!', 'multivendorx')}
-								failureMessage={__('Failed to migrate.', 'multivendorx')}
+								successMessage={__(
+									'Migrate successfully!',
+									'multivendorx'
+								)}
+								failureMessage={__(
+									'Failed to migrate.',
+									'multivendorx'
+								)}
 								tasks={[
 									{
 										action: 'import_stores',
@@ -507,7 +516,7 @@ const App = () => {
 						</FormGroupWrapper>
 					</PopupUI>
 				</>
-            )}
+			)}
 
 			<Route />
 		</>

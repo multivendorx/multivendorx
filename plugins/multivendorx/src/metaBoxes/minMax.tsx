@@ -71,12 +71,12 @@ const MinMax = ({ product, setProduct }) => {
 	return (
 		<Card
 			title={__('Min/Max', 'multivendorx')}
-			iconName="pagination-right-arrow arrow-icon"
-			toggle
+			// iconName="pagination-right-arrow arrow-icon"
+			// toggle
 		>
 			<FormGroupWrapper>
 				{/* Quantity */}
-				<FormGroup label={__('Quantity', 'multivendorx')}>
+				<FormGroup cols={2} label={__('Quantity', 'multivendorx')}>
 					<BasicInputUI
 						name="min_quantity"
 						type="number"
@@ -86,7 +86,8 @@ const MinMax = ({ product, setProduct }) => {
 							handleQuantityChange('min_quantity', value)
 						}
 					/>
-
+				</FormGroup>
+				<FormGroup cols={2}>
 					<BasicInputUI
 						name="max_quantity"
 						type="number"
@@ -99,7 +100,7 @@ const MinMax = ({ product, setProduct }) => {
 				</FormGroup>
 
 				{/* Amount */}
-				<FormGroup label={__('Amount', 'multivendorx')}>
+				<FormGroup cols={2} label={__('Amount', 'multivendorx')}>
 					<BasicInputUI
 						name="min_amount"
 						type="number"
@@ -109,7 +110,8 @@ const MinMax = ({ product, setProduct }) => {
 							handleQuantityChange('min_amount', value)
 						}
 					/>
-
+				</FormGroup>
+				<FormGroup cols={2}>
 					<BasicInputUI
 						name="max_amount"
 						type="number"

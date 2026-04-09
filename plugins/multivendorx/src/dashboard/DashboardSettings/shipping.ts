@@ -9,5 +9,6 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'shipping',
+	module: 'store-shipping',
 	modal: [],
 };

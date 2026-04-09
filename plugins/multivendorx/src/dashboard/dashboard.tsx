@@ -29,6 +29,7 @@ import {
 	NavigatorHeader,
 	CalendarInputUI,
 	TableRow,
+	ItemListUI,
 } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
@@ -89,7 +90,7 @@ const Dashboard: React.FC = () => {
 	const navigate = useNavigate();
 	const access =
 		appLocalizer.settings_databases_value?.['privacy']?.[
-		'customer_information_access'
+			'customer_information_access'
 		];
 	const siteUrl = appLocalizer.site_url.replace(/\/$/, '');
 
@@ -100,8 +101,13 @@ const Dashboard: React.FC = () => {
 			render: (row) => (
 				<span
 					onClick={() =>
-						dashNavigate(navigate, ['orders', 'view', String(row.id)])
+						dashNavigate(navigate, [
+							'orders',
+							'view',
+							String(row.id),
+						])
 					}
+					className='link-item'
 				>
 					#{row.id}
 				</span>
@@ -113,34 +119,35 @@ const Dashboard: React.FC = () => {
 		},
 		products: {
 			label: __('Product Name', 'multivendorx'),
+			width: 14,
 			render: (row) =>
-				row.line_items?.length ? (
-					row.line_items.map((item) => (
-						<InfoItem
-							key={item.id}
-							title={item.name}
-							onClick={() =>
-								dashNavigate(navigate, [
-									'products',
-									'edit',
-									String(item.product_id),
-								])
-							}
-							avatar={{
-								image: item.image?.src || '',
-								iconClass: item.image?.src ? '' : 'single-product',
-							}}
-							descriptions={[
-								{
-									label: __('Qty:', 'multivendorx'),
-									value: item.quantity,
-								},
-							]}
-						/>
-					))
-				) : (
-					'-'
-				),
+				row.line_items?.length
+					? row.line_items.map((item) => (
+							<InfoItem
+								key={item.id}
+								title={item.name}
+								onClick={() =>
+									dashNavigate(navigate, [
+										'products',
+										'edit',
+										String(item.product_id),
+									])
+								}
+								avatar={{
+									image: item.image?.src || '',
+									iconClass: item.image?.src
+										? ''
+										: 'single-product',
+								}}
+								descriptions={[
+									{
+										label: __('Qty:', 'multivendorx'),
+										value: item.quantity,
+									},
+								]}
+							/>
+						))
+					: '-',
 		},
 		total: {
 			label: __('Total', 'multivendorx'),
@@ -184,7 +191,7 @@ const Dashboard: React.FC = () => {
 		},
 		total_sales: {
 			label: __('Sales', 'multivendorx'),
-		}
+		},
 	};
 	// Helper function to get dynamic greeting
 	const getGreeting = () => {
@@ -285,8 +292,12 @@ const Dashboard: React.FC = () => {
 						per_page: 4,
 						orderby: 'date',
 						order: 'desc',
-						after: dateRange.startDate.toISOString().replace('Z', ''),
-						before: dateRange.endDate.toISOString().replace('Z', ''),
+						after: dateRange.startDate
+							.toISOString()
+							.replace('Z', ''),
+						before: dateRange.endDate
+							.toISOString()
+							.replace('Z', ''),
 					},
 				})
 				.then((response) => {
@@ -423,19 +434,24 @@ const Dashboard: React.FC = () => {
 				const uniqueCustomers = [];
 
 				for (const order of data) {
-					const identifier = order.customer_id !== 0 ? order.customer_id : order.billing?.email;
+					const identifier =
+						order.customer_id !== 0
+							? order.customer_id
+							: order.billing?.email;
 
 					if (identifier && !seen.has(identifier)) {
 						seen.add(identifier);
 						uniqueCustomers.push(order);
 					}
 
-					if (uniqueCustomers.length === 5) break;
+					if (uniqueCustomers.length === 5) {
+						break;
+					}
 				}
 				setCustomers(uniqueCustomers);
 			})
 			.catch((err) => {
-				console.error("Failed to fetch customers:", err);
+				console.error('Failed to fetch customers:', err);
 				setCustomers([]);
 			});
 
@@ -496,7 +512,7 @@ const Dashboard: React.FC = () => {
 			prev30: storePreviousYear?.commission?.order_count || 0,
 		},
 		{
-			icon: 'store-seo',
+			icon: 'search-discovery',
 			number: store?.visitors,
 			text: 'Store Views',
 			color: 'accent',
@@ -555,7 +571,7 @@ const Dashboard: React.FC = () => {
 					/>
 				}
 			/>
-			<Container>
+			<Container className='store-dashboard'>
 				<Column>
 					<Analytics
 						variant="dashboard"
@@ -656,20 +672,20 @@ const Dashboard: React.FC = () => {
 										key={item.id}
 										title={
 											item.payment_method ===
-												'stripe-connect'
+											'stripe-connect'
 												? __('Stripe', 'multivendorx')
 												: item.payment_method ===
-													'bank-transfer'
+													  'bank-transfer'
 													? __(
-														'Direct to Local Bank (INR)',
-														'multivendorx'
-													)
-													: item.payment_method ===
-														'paypal-payout'
-														? __(
-															'PayPal',
+															'Direct to Local Bank (INR)',
 															'multivendorx'
 														)
+													: item.payment_method ===
+														  'paypal-payout'
+														? __(
+																'PayPal',
+																'multivendorx'
+															)
 														: ''
 										}
 										isLoading={isLoading}
@@ -851,42 +867,21 @@ const Dashboard: React.FC = () => {
 								window.open(url, '_blank');
 							}}
 						>
-							<div className="notification-wrapper">
-								{Array.isArray(announcement) &&
-									announcement.length > 0 ? (
-									<ul>
-										{announcement.map((item, index) => (
-											<li key={item.id}>
-												<div className="icon-wrapper">
-													<i
-														className={`adminfont-form-paypal-email admin-badge admin-color${index + 2}`}
-													/>
-												</div>
-												<div className="details">
-													<div className="notification-title">
-														{item.title}
-													</div>
-													<div className="des">
-														{item.content}
-													</div>
-													<span>
-														{formatTimeAgo(
-															item.date_created
-														)}
-													</span>
-												</div>
-											</li>
-										))}
-									</ul>
-								) : (
-									<div className="no-data">
-										{__(
-											'No announcements found.',
-											'multivendorx'
-										)}
-									</div>
-								)}
-							</div>
+							{Array.isArray(announcement) && announcement.length > 0 ? (
+								<ItemListUI
+									className="notification-wrapper"
+									items={announcement.map((item, index) => ({
+										id: item.id || index,
+										title: item.title,
+										desc: item.content,
+										icon: `form-paypal-email admin-badge admin-color${index + 2}`,
+										value: formatTimeAgo(item.date_created),
+									}))}
+								/>
+							) : (
+								<ComponentStatusView title={__('No announcements found.', 'multivendorx')}
+							/>
+							)}
 						</Card>
 					</Column>
 				)}
@@ -943,22 +938,24 @@ const Dashboard: React.FC = () => {
 							<Card title={__('Top Customers', 'multivendorx')}>
 								{customers && customers.length > 0 ? (
 									customers.map((order, index) => {
-										const name = `${order.billing?.first_name || ''} ${order.billing?.last_name || ''}`.trim() || __('Guest', 'multivendorx');
+										const name =
+											`${order.billing?.first_name || ''} ${order.billing?.last_name || ''}`.trim() ||
+											__('Guest', 'multivendorx');
 										return (
 											<InfoItem
 												key={index}
 												title={name}
 												avatar={{
-													text: name.charAt(0).toUpperCase(),
-													iconClass: 'user-circle',
+													text: name
+														.charAt(0)
+														.toUpperCase(),
+													iconClass: 'person',
 												}}
 											/>
 										);
 									})
 								) : (
-									<div className="no-data">
-										{__('No customers found.', 'multivendorx')}
-									</div>
+									<ComponentStatusView title={__('No customers found.', 'multivendorx')} />
 								)}
 							</Card>
 						</Column>
@@ -967,7 +964,7 @@ const Dashboard: React.FC = () => {
 					<Card title={__('Store Activity', 'multivendorx')}>
 						<div className="activity-log">
 							{Array.isArray(activities) &&
-								activities.length > 0 ? (
+							activities.length > 0 ? (
 								activities.slice(0, 5).map((a, i) => (
 									<div key={i} className="activity">
 										<div className="title">{a.title}</div>
@@ -976,9 +973,7 @@ const Dashboard: React.FC = () => {
 									</div>
 								))
 							) : (
-								<div className="no-data">
-									{__('No activity found.', 'multivendorx')}
-								</div>
+								<ComponentStatusView title={__('No activity found.', 'multivendorx')} />
 							)}
 						</div>
 					</Card>
@@ -1034,12 +1029,7 @@ const Dashboard: React.FC = () => {
 										</div>
 									))
 								) : (
-									<div className="no-data">
-										{__(
-											'No reviews found.',
-											'multivendorx'
-										)}
-									</div>
+									<ComponentStatusView title={__('No reviews found.', 'multivendorx')} />
 								)}
 							</div>
 						</Card>

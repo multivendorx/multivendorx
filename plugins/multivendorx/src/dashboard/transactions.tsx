@@ -40,7 +40,7 @@ const Transactions: React.FC = () => {
 	const [modalCommission, setModalCommission] =
 		useState<TransactionRow | null>(null);
 	const headers = {
-		id: { label: __('ID', 'multivendorx') },
+		id: { label: __('ID', 'multivendorx'), type: 'id' },
 		status: { label: __('Status', 'multivendorx'), type: 'status' },
 		created_at: { label: __('Date', 'multivendorx'), type: 'date' },
 		transaction_type: {

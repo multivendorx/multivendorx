@@ -409,18 +409,10 @@ class Rest extends \WP_REST_Controller {
             foreach ( $stores as $store_id ) {
                 $store = new Store( $store_id );
 
-                do_action(
-                    'multivendorx_notify_system_announcement',
-                    'system_announcement',
-                    array(
-                        'store_phone'          => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-                        'store_email'          => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                        'admin_email'          => MultiVendorX()->setting->get_setting( 'receiver_email_address' ),
-                        'admin_phone'          => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                        'announcement_message' => $content,
-                        'category'             => 'activity',
-                    )
-                );
+                MultiVendorX()->notifications->send_notification_helper('system_announcement', $store, null, [
+                    'announcement_message' => $content,
+                    'category'             => 'activity',
+                ]);
             }
 
             return rest_ensure_response(

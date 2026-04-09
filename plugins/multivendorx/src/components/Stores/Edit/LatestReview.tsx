@@ -62,6 +62,7 @@ const LatestReview: React.FC<LatestReviewProps> = ({ store_id }) => {
 			rows={rows}
 			isLoading={isLoading}
 			onQueryUpdate={doRefreshTableData}
+			showMenu={false}
 		/>
 	);
 };

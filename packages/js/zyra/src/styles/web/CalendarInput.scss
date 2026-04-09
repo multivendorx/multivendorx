@@ -1,128 +1,159 @@
 @use '../../global.scss' as *;
 
 .settings-calender {
+    position: relative;
     .rmdp-container {
         width: 16.5rem;
     }
 
-    &:has(.calendar-wrapper){
-        width: 100%;
-    }
+
+
+    // &:has(.calendar-wrapper) {
+    //     width: 100%;
+    // }
 
     // without input calendar start
-    .calendar-wrapper{
-    .rmdp-top-class{
-        box-shadow: none;
-        border: none;
-        width: 100%;
-
-        // left side start
-        .rmdp-calendar {
+    .calendar-wrapper {
+        .rmdp-top-class {
+            box-shadow: none;
+            border: none;
             width: 100%;
 
-            // header
-            .rmdp-header {
-                button {
-                    i {
-                        border-color: $theme-color;
-                    }
-                }
-
-                .rmdp-header-values {
-                    span.sd {
-                        font-size: 1.125rem;
-                    }
-                }
-            }
-
-            // date picker
-            .rmdp-day-picker div {
+            // left side start
+            .rmdp-calendar {
                 width: 100%;
 
-                // date row
-                .rmdp-week {
-                    gap: 0.5rem;
-                    padding: 0.25rem;
-                    box-sizing: border-box;
-
-                    // week name 
-                    .rmdp-week-day {
-                        font-size: 1.125rem;
-                        color: $theme-color;
+                // header
+                .rmdp-header {
+                    button {
+                        i {
+                            border-color: $theme-color;
+                        }
                     }
 
-                    // day
+                    .rmdp-header-values {
+                        span.sd {
+                            font-size: 1.125rem;
+                        }
+                    }
+                }
+
+                // date picker
+                .rmdp-day-picker div {
+                    width: 100%;
+
+                    // date row
+                    .rmdp-week {
+                        gap: 0.5rem;
+                        padding: 0.25rem;
+                        box-sizing: border-box;
+
+                        // week name 
+                        .rmdp-week-day {
+                            font-size: 1.125rem;
+                            color: $theme-color;
+                        }
+
+                        // day
+                        .rmdp-day {
+                            height: 6rem;
+
+                            span.sd {
+                                border-radius: $border-radius-small;
+                                font-size: 1.5rem;
+
+                                &:hover {
+                                    background: $theme-background-color;
+                                }
+                            }
+
+                            &.rmdp-selected span.sd:not(.highlight) {
+                                background: $theme-color;
+                            }
+
+                            &:not(.rmdp-day-hidden) {
+                                span.sd {
+                                    background: #efecec;
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                // mont picker
+                .rmdp-month-picker {
                     .rmdp-day {
-                        height: 6rem;
+                        margin: 0;
+                        height: 100%;
 
                         span.sd {
                             border-radius: $border-radius-small;
-                            font-size: 1.5rem;
-
-                            &:hover {
-                                background: $theme-background-color;
-                            }
+                            font-size: 1.25rem;
                         }
 
-                        &.rmdp-selected span.sd:not(.highlight) {
-                            background: $theme-color;
+                        &.rmdp-selected span.sd {
+                            background: $theme-color
                         }
 
-                        &:not(.rmdp-day-hidden) {
-                            span.sd {
-                                background: #efecec;
-                            }
+                        &:not(.rmdp-selected):hover span.sd {
+                            background: $theme-background-color;
                         }
                     }
                 }
             }
 
-
-            // mont picker
-            .rmdp-month-picker {
-                .rmdp-day {
-                    margin: 0;
-                    height: 100%;
-
-                    span.sd {
-                        border-radius: $border-radius-small;
-                        font-size: 1.25rem;
-                    }
-
-                    &.rmdp-selected span.sd {
-                        background: $theme-color
-                    }
-
-                    &:not(.rmdp-selected):hover span.sd {
-                        background: $theme-background-color;
-                    }
-                }
+            .rmdp-panel.right {
+                display: none !important;
             }
         }
+    }
 
-        .rmdp-panel.right {
-            display: none !important;
-        }
-        }
-    } // without input calendar end.
+    // without input calendar end.
 
     // today yesterday section start
-   .rmdp-wrapper {
-    width: 100%;
-    .range-picker-wrapper {
-        width: 10rem;
-        padding-top: 0.625rem;
+    .rmdp-wrapper {
+        width: 100%;
 
-        div {
-            padding: 0.625rem;
-            font-size: 0.813rem;
-            border-bottom: $border-light-small;
-            cursor: pointer;
+        .range-picker-wrapper {
+            width: 10rem;
+            padding-top: 0.625rem;
 
-            &:hover {
-                background: $theme-background-color;
+            div {
+                padding: 0.625rem;
+                font-size: 0.813rem;
+                border-bottom: $border-light-small;
+                cursor: pointer;
+
+                &:hover {
+                    background: $theme-background-color;
+                }
             }
         }
-    } // today yesterday section end
-}
+        // today yesterday section end
+    }
+
+
+    // tabs 
+    .calendar-tabs-container{
+        position: absolute;
+        z-index: 99;
+        background: $background-white;
+        width: 20rem;
+        right: 0;
+
+        .range-picker-wrapper{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            div{
+                width: calc(50% - 0.5rem);
+                padding: 0.625rem;
+                box-sizing: border-box;
+                background: $theme-background-color;
+                border-radius: $border-radius-small;
+            }
+        }
+    }
 }

@@ -104,8 +104,8 @@ class Admin {
                         'subtab'   => '',
                         'priority' => 50,
                     ),
-                    'customer-support'    => array(
-                        'name'     => __( 'Customer Support', 'multivendorx' ),
+                    'customers'    => array(
+                        'name'     => __( 'Customers', 'multivendorx' ),
                         'subtab'   => '',
                         'priority' => 60,
                     ),

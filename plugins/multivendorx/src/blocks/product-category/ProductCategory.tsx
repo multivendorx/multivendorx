@@ -36,7 +36,9 @@ const ProductCategory: React.FC<object> = () => {
 						key={category.id}
 						className="wc-block-product-categories-list-item"
 					>
-						<a href={`${StoreInfo.site_url}/product-category/${category.slug}`}>
+						<a
+							href={`${StoreInfo.site_url}/product-category/${category.slug}`}
+						>
 							<span className="wc-block-product-categories-list-item__name">
 								{category.name}
 							</span>

@@ -69,7 +69,7 @@ class Hooks {
         add_action( 'woocommerce_order_status_changed', array( $this, 'store_order_to_parent_order_status_sync' ), 10, 4 );
 
         add_action( 'woocommerce_order_status_changed', array( $this, 'trigger_order_status_notifications' ), 50, 4 );
-        add_filter( 'woocommerce_order_item_get_formatted_meta_data', array( $this, 'get_formatted_meta_data' ), 10, 2);
+        add_filter( 'woocommerce_order_item_get_formatted_meta_data', array( $this, 'get_formatted_meta_data' ), 10, 2 );
     }
     /**
      * Skip counting sales for suborders.
@@ -312,103 +312,57 @@ class Hooks {
     public function trigger_order_status_notifications( $order_id, $old_status, $new_status, $order ) {
 
         $store_id = $order ? absint( $order->get_meta( Utill::POST_META_SETTINGS['store_id'], true ) ) : 0;
-
         $store = new Store( $store_id );
+
         if ( $order->get_parent_id() > 0 ) {
             if ( 'processing' === $new_status ) {
-                do_action(
-                    'multivendorx_notify_order_processing',
-                    'order_processing',
-                    array(
-						'store_phone'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-						'store_email'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-						'customer_email' => $order->get_billing_email(),
-						'customer_phone' => $order->get_billing_phone(),
-						'order_id'       => $order->get_id(),
-						'category'       => 'activity',
-					)
-                );
+                MultiVendorX()->notifications->send_notification_helper('order_processing', $store, $order, [
+                    'order_id'       => $order->get_id(),
+					'category'       => 'activity',
+                ]);
             }
 
             if ( 'completed' === $new_status ) {
-                do_action(
-                    'multivendorx_notify_order_completed',
-                    'order_completed',
-                    array(
-						'store_phone'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-						'store_email'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-						'customer_email' => $order->get_billing_email(),
-						'customer_phone' => $order->get_billing_phone(),
-						'order_id'       => $order->get_id(),
-						'category'       => 'activity',
-					)
-                );
+                MultiVendorX()->notifications->send_notification_helper('order_completed', $store, $order, [
+                    'order_id'       => $order->get_id(),
+					'category'       => 'activity',
+                ]);
             }
 
             if ( 'cancelled' === $new_status ) {
-                do_action(
-                    'multivendorx_notify_order_cancelled',
-                    'order_cancelled',
-                    array(
-						'admin_email'    => MultiVendorX()->setting->get_setting( 'receiver_email_address' ),
-						'admin_phone'    => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-						'store_phone'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-						'store_email'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-						'customer_email' => $order->get_billing_email(),
-						'customer_phone' => $order->get_billing_phone(),
-						'order_id'       => $order->get_id(),
-						'category'       => 'activity',
-					)
-                );
+                MultiVendorX()->notifications->send_notification_helper('order_cancelled', $store, $order, [
+                    'order_id'       => $order->get_id(),
+					'category'       => 'activity',
+                ]);
             }
 
             if ( 'refunded' === $new_status ) {
-                do_action(
-                    'multivendorx_notify_order_refunded',
-                    'order_refunded',
-                    array(
-						'store_phone'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-						'store_email'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-						'customer_email' => $order->get_billing_email(),
-						'customer_phone' => $order->get_billing_phone(),
-						'order_id'       => $order->get_id(),
-						'category'       => 'activity',
-					)
-                );
+                MultiVendorX()->notifications->send_notification_helper('order_refunded', $store, $order, [
+                    'order_id'       => $order->get_id(),
+					'category'       => 'activity',
+                ]);
             }
 
             if ( 'refund-requested' === $old_status && 'processing' === $new_status ) {
-                do_action(
-                    'multivendorx_notify_refund_rejected',
-                    'refund_rejected',
-                    array(
-						'customer_email' => $order->get_billing_email(),
-						'customer_phone' => $order->get_billing_phone(),
-						'order_id'       => $order->get_id(),
-						'category'       => 'activity',
-					)
-                );
+                MultiVendorX()->notifications->send_notification_helper('refund_rejected', $store, $order, [
+                    'order_id'       => $order->get_id(),
+					'category'       => 'activity',
+                ]);
             }
 
             if ( 'refund-requested' === $old_status && 'refunded' === $new_status ) {
-                do_action(
-                    'multivendorx_notify_refund_accepted',
-                    'refund_accepted',
-                    array(
-						'customer_email' => $order->get_billing_email(),
-						'customer_phone' => $order->get_billing_phone(),
-						'order_id'       => $order->get_id(),
-						'category'       => 'activity',
-					)
-                );
+                MultiVendorX()->notifications->send_notification_helper('refund_accepted', $store, $order, [
+                    'order_id'       => $order->get_id(),
+					'category'       => 'activity',
+                ]);
             }
         }
     }
 
-    public function get_formatted_meta_data($formatted_meta, $item) {
-        foreach ($formatted_meta as $key => $meta) {
-            if ($meta->key === 'multivendorx_sold_by') {
-                $formatted_meta[$key]->display_key = __('Sold by', 'multivendorx');
+    public function get_formatted_meta_data( $formatted_meta, $item ) {
+        foreach ( $formatted_meta as $key => $meta ) {
+            if ( $meta->key === 'multivendorx_sold_by' ) {
+                $formatted_meta[ $key ]->display_key = __( 'Sold by', 'multivendorx' );
             }
         }
 

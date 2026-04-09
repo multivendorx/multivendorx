@@ -352,18 +352,11 @@ class Rest extends \WP_REST_Controller {
             update_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['following_stores'], array_values( $following ) );
             $store->update_meta( Utill::STORE_SETTINGS_KEYS['followers'], array_values( $followers ) );
 
-            do_action(
-                'multivendorx_notify_store_followed',
-                'store_followed',
-                array(
-                    'admin_email' => MultiVendorX()->setting->get_setting( 'receiver_email_address' ),
-                    'admin_phone' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                    'store_phone' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-                    'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                    'store_name'  => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
-                    'category'    => 'activity',
-                )
-            );
+            MultiVendorX()->notifications->send_notification_helper('store_followed', $store, null, [
+                'store_name'  => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
+                'category'    => 'activity',
+            ]);
+
             return rest_ensure_response(
                 array(
 					'follow'         => $follow,

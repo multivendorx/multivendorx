@@ -132,7 +132,7 @@ const PendingCoupons: React.FC<object> = () => {
 			type: 'date',
 		},
 		action: {
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
 			render: (row) => {
 				return (
 					<ButtonInputUI
@@ -210,7 +210,10 @@ const PendingCoupons: React.FC<object> = () => {
 
 				setRows(coupons);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
-				window.multivendorxStore?.setCount('coupons', Number(response.headers['x-wp-total']) || 0);
+				window.multivendorxStore?.setCount(
+					'coupons',
+					Number(response.headers['x-wp-total']) || 0
+				);
 				setIsLoading(false);
 			})
 			.catch((error) => {

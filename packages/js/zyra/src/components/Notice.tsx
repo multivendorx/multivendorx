@@ -122,6 +122,11 @@ export const NoticeManager = {
     },
 };
 
+const handleCloseBanner = (uniqueKey: string): void => {
+    localStorage.setItem('banner_dismissed', 'true');
+    NoticeManager.remove(uniqueKey);
+};
+
 /* ──────────────────────────────────────────────────────────────
    Shared Render Helper
 ────────────────────────────────────────────────────────────── */
@@ -152,7 +157,7 @@ const renderNoticeContent = (item: NoticeItem, onClose?: () => void) => (
                     {onClose && (
                         <i
                             className="close-icon adminfont-close"
-                            onClick={onClose}
+                            onClick={() => handleCloseBanner(item.uniqueKey)}
                         />
                     )}
                 </>

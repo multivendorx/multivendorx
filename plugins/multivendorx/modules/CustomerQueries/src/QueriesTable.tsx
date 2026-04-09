@@ -36,7 +36,7 @@ type StoreOption = {
 	label: string;
 	value: number;
 };
-const Qna: React.FC = () => {
+const Queries: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
@@ -433,4 +433,4 @@ const Qna: React.FC = () => {
 	);
 };
 
-export default Qna;
+export default Queries;

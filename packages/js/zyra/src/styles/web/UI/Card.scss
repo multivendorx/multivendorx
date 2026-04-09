@@ -137,8 +137,9 @@
 
 
 // checklist start common and delete
-.card-wrapper:has(.checklist-wrapper) {
+.card-content:has(.checklist-wrapper) {
     height: fit-content;
+    position: sticky;
     top: 5rem;
     z-index: 9;
 }
@@ -153,9 +154,11 @@
     ul {
         margin: 0;
         list-style-type: none;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
 
         li {
-            margin: 1.125rem 0;
             font-size: 1rem;
             font-weight: 500;
             display: flex;

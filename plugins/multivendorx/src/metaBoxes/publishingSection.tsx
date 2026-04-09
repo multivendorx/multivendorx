@@ -28,10 +28,10 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 	}, [starFill]);
 
 	const VISIBILITY_LABELS: Record<string, string> = {
-		visible: 'Shop and search results',
-		catalog: 'Shop only',
-		search: 'Search results only',
-		hidden: 'Hidden',
+		visible: __('Shop and search results', 'multivendorx'),
+		catalog: __('Shop only', 'multivendorx'),
+		search: __('Search results only', 'multivendorx'),
+		hidden: __('Hidden', 'multivendorx'),
 	};
 
 	const STATUS_LABELS: Record<string, string> = {
@@ -129,55 +129,57 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 					label={__('Product Status', 'multivendorx')}
 					htmlFor="status"
 				>
-					<div className="catalog-visibility">
-						{!isEditingStatus && (
-							<div
-								onClick={() => {
-									setIsEditingStatus((prev) => !prev);
-									setIsEditingVisibility(false);
-								}}
-							>
-								<span className="catalog-visibility-value">
-									{STATUS_LABELS[product.status]}
-								</span>
-								<i className="adminfont-arrow-down-up" />
-							</div>
-						)}
-						{isEditingStatus && (
-							<SelectInputUI
-								name="status"
-								wrapperClass="fit-content"
-								options={[
-									...(appLocalizer.current_user?.allcaps
-										?.publish_products
-										? [
-												{
-													key: 'publish',
-													value: 'publish',
-													label: __(
-														'Published',
-														'multivendorx'
-													),
-												},
-											]
-										: []),
-									{
-										key: 'draft',
-										value: 'draft',
-										label: __('Draft', 'multivendorx'),
-									},
-									{
-										key: 'pending',
-										value: 'pending',
-										label: __('Submit', 'multivendorx'),
-									},
-								]}
-								value={product.status}
-								onChange={(value) =>
-									handleChange('status', value)
-								}
-							/>
-						)}
+					<div ref={visibilityRef}>
+						<div className="catalog-visibility">
+							{!isEditingStatus && (
+								<div
+									onClick={() => {
+										setIsEditingStatus((prev) => !prev);
+										setIsEditingVisibility(false);
+									}}
+								>
+									<span className="catalog-visibility-value">
+										{STATUS_LABELS[product.status]}
+									</span>
+									<i className="adminfont-arrow-down-up" />
+								</div>
+							)}
+							{isEditingStatus && (
+								<SelectInputUI
+									name="status"
+									wrapperClass="fit-content"
+									options={[
+										...(appLocalizer.current_user?.allcaps
+											?.publish_products
+											? [
+													{
+														key: 'publish',
+														value: 'publish',
+														label: __(
+															'Published',
+															'multivendorx'
+														),
+													},
+												]
+											: []),
+										{
+											key: 'draft',
+											value: 'draft',
+											label: __('Draft', 'multivendorx'),
+										},
+										{
+											key: 'pending',
+											value: 'pending',
+											label: __('Submit', 'multivendorx'),
+										},
+									]}
+									value={product.status}
+									onChange={(value) =>
+										handleChange('status', value)
+									}
+								/>
+							)}
+						</div>
 					</div>
 				</FormGroup>
 

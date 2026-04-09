@@ -139,8 +139,8 @@ export const TransactionHistory: React.FC = () => {
 				customContent={
 					<>
 						<label>
-							<i className="switch-store"></i>
-							{__('Switch Store', 'multivendorx')}
+							<i className="adminfont-switch-store"></i>
+							{__('Switch Store:', 'multivendorx')}
 						</label>
 
 						<SelectInputUI

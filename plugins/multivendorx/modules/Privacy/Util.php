@@ -54,7 +54,7 @@ class Util {
             $name        = $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
             $description = $store->get( Utill::STORE_SETTINGS_KEYS['description'] );
             $phone       = $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ) ?? '';
-            $email       = $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ) ?? '';
+            $email       = $store->get_meta( Utill::STORE_SETTINGS_KEYS['store_email'] )['primary'] ?? '';
             $address     = $store->get_meta( Utill::STORE_SETTINGS_KEYS['address'] ) ?? '';
 
             $logo_html = '';

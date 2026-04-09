@@ -172,10 +172,11 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 													)}
 												</div>
 												<div className="contact-wrapper">
-													{store.phone && (
-														<span>
+													{store.phone && (														<span>
 															<i className="dashicons dashicons-phone" />{' '}
-															{store.phone}
+																{typeof store.phone === 'object'
+																	? `${store.phone.country_code || ''} ${store.phone.phone || ''}`
+																	: store.phone}
 														</span>
 													)}
 

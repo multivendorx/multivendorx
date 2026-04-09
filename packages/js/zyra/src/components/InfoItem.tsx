@@ -33,6 +33,7 @@ type InfoItemProps = {
     amountClassName?: string;
     className?: string;
     isLoading?: boolean;
+    rightContent?: React.ReactNode;
 };
 
 const InfoItem: React.FC<InfoItemProps> = ({
@@ -46,6 +47,7 @@ const InfoItem: React.FC<InfoItemProps> = ({
     amountClassName = '',
     className = '',
     isLoading = false,
+    rightContent,
 }) => {
     const renderAvatar = () => {
         if (!avatar) {
@@ -177,6 +179,11 @@ const InfoItem: React.FC<InfoItemProps> = ({
                                 <div className={`price ${amountClassName}`}>
                                     {amount}
                                 </div>
+                            </div>
+                        )}
+                        {rightContent && (
+                            <div className="right-content">
+                                {rightContent}
                             </div>
                         )}
                     </>

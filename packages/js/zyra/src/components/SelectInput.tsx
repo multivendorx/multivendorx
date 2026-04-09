@@ -63,6 +63,8 @@ export interface SelectProps {
     enableOverflowPopup?: boolean;
     popupTitle?: string;
     popupWidth?: number;
+    background?: string;
+    color?: string;
 }
 
 interface TypeConfig {
@@ -163,14 +165,16 @@ const coerceToString = (v: unknown): string | string[] | undefined => {
 };
 
 const buildStyles = (
-    isMulti: boolean
+    isMulti: boolean,
+    background?: string,
+    color?: string
 ): StylesConfig<SelectOption, boolean, GroupBase<SelectOption>> => ({
     control: (base, state) => ({
         ...base,
         borderColor: 'var(--borderColor)',
         boxShadow: state.isFocused ? 'var(--box-shadow-theme)' : 'none',
-        backgroundColor: 'transparent',
-        color: 'var(--textColor)',
+        backgroundColor: background || 'var(--backgroundWhite)',
+        color: color || 'var(--textColor)',
         minHeight: '2.213rem',
         ...(isMulti ? {} : { height: '2.213rem', maxHeight: '2.213rem' }),
         paddingTop: 0,
@@ -341,6 +345,8 @@ export const SelectInputUI: React.FC<SelectProps> = ({
     enableOverflowPopup = false,
     popupTitle,
     popupWidth,
+    background,
+    color
 }) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
     const [popupOpen, setPopupOpen] = React.useState(false);
@@ -373,7 +379,7 @@ export const SelectInputUI: React.FC<SelectProps> = ({
         isClearable,
         onChange: (raw: OnChangeValue<SelectOption, boolean>) =>
             onChange(extractValue(raw ?? (isMulti ? [] : null), isMulti)),
-        styles: buildStyles(isMulti),
+        styles: buildStyles(isMulti, background, color),
         components: CUSTOM_COMPONENTS,
         formatCreateLabel,
         onOverflowClick: handleOverflowClick,
@@ -382,6 +388,12 @@ export const SelectInputUI: React.FC<SelectProps> = ({
         menuContent,
         keepMenuOpenOnMenuContentClick,
         noOptionsText,
+        menuPortalTarget: document.body, 
+        menuPosition: 'fixed',
+        styles: {
+            ...buildStyles(isMulti, background, color),
+            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+        },
     };
 
     return (

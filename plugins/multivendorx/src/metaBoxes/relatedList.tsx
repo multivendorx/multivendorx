@@ -4,16 +4,16 @@ import { __ } from '@wordpress/i18n';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const RelatedList = ({ product, setProduct, handleChange }) => {
 	return (
-		<Card title={__('Related listings', 'multivendorx')}>
+		<Card title={__('Related products', 'multivendorx')} desc={__('Suggest other items to help customers discover more of your store.', 'multivendorx')}>
 			<FormGroupWrapper>
-				<FormGroup cols={2} label={__('Upsells', 'multivendorx')}>
+				<FormGroup cols={2} label={__('Recommend alongside this product', 'multivendorx')} desc={__('Shown as "You might also like" on the product page.', 'multivendorx')}>
 					<BasicInputUI
 						name="name"
 						// value={product.name}
 						// onChange={(value) => handleChange('name', value)}
 					/>
 				</FormGroup>
-				<FormGroup cols={2} label={__('Cross-sells', 'multivendorx')}>
+				<FormGroup cols={2} label={__('Offer as an add-on at checkout', 'multivendorx')} desc={__('Suggested when a customer adds this item to their cart.', 'multivendorx')}>
 					<BasicInputUI
 						name="name"
 						// value={product.name}

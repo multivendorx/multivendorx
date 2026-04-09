@@ -45,7 +45,7 @@ const StoreCommission: React.FC = () => {
 		useState<CommissionRow | null>(null);
 	const navigate = useNavigate();
 	const { modules } = useModules();
-	
+
 	const headers = {
 		id: {
 			label: __('ID', 'multivendorx'),
@@ -124,13 +124,10 @@ const StoreCommission: React.FC = () => {
 						display: Number(row.admin_discount) !== 0,
 						value: formatCurrency(row.admin_discount),
 					},
-				].filter(item => item.display !== false);
+				].filter((item) => item.display !== false);
 
 				return (
-					<ItemListUI
-						className="price-list"
-						items={earningItems}
-					/>
+					<ItemListUI className="price-list" items={earningItems} />
 				);
 			},
 			csvDisplay: false,
@@ -213,7 +210,7 @@ const StoreCommission: React.FC = () => {
 						count:
 							Number(
 								response.headers[
-								'x-wp-status-partially-refunded'
+									'x-wp-status-partially-refunded'
 								]
 							) || 0,
 					},

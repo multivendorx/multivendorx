@@ -63,7 +63,7 @@ class Tour extends \WP_REST_Controller {
      * @param mixed $request Request data.
      */
     public function create_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' );
+        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
     }
 
 
@@ -85,11 +85,26 @@ class Tour extends \WP_REST_Controller {
             return $error;
         }
         try {
-            // Directly fetch stored value.
-            $status = filter_var( get_option( Utill::MULTIVENDORX_OTHER_SETTINGS['tour_completed'], false ), FILTER_VALIDATE_BOOLEAN );
+            $store_id = $request->get_param('store_id');
+
+            // ✅ STORE CONTEXT
+            if ( $store_id ) {
+                $store = new \MultiVendorX\Store\Store( $store_id );
+                $status = $store->get_meta( Utill::STORE_SETTINGS_KEYS['store_tour_completed'] );
+
+                return array(
+                    'completed' => filter_var( $status, FILTER_VALIDATE_BOOLEAN ),
+                );
+            }
+
+            // ✅ ADMIN CONTEXT
+            $status = get_option(
+                Utill::MULTIVENDORX_OTHER_SETTINGS['tour_completed'],
+                false
+            );
 
             return array(
-                'completed' => $status,
+                'completed' => filter_var( $status, FILTER_VALIDATE_BOOLEAN ),
             );
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
@@ -116,7 +131,26 @@ class Tour extends \WP_REST_Controller {
             return $error;
         }
         try {
-            update_option( Utill::MULTIVENDORX_OTHER_SETTINGS['tour_completed'], $request->get_param( 'completed' ) );
+            $store_id = $request->get_param('store_id');
+            $completed = $request->get_param('completed');
+            
+
+            // ✅ STORE CONTEXT
+            if ( $store_id ) {
+                $store    = new \MultiVendorX\Store\Store( $store_id );
+                $store->update_meta(
+                    Utill::STORE_SETTINGS_KEYS['store_tour_completed'],
+                    $completed
+                );
+                return array( 'success' => true );
+            }
+
+            // ✅ ADMIN CONTEXT
+            update_option(
+                Utill::MULTIVENDORX_OTHER_SETTINGS['tour_completed'],
+                $completed
+            );
+
             return array( 'success' => true );
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );

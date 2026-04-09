@@ -67,7 +67,7 @@ export default {
 	id: 'commissions',
 	priority: 1,
 	headerTitle: __('Commissions', 'multivendorx'),
-	settingTitle: 'Commission share from the seller’s product/listing',
+	settingTitle: __('Commission share from the seller’s product/listing', 'multivendorx'),
 	headerDescription: __(
 		'Decide how your marketplace takes commission from sales.',
 		'multivendorx'
@@ -113,36 +113,48 @@ export default {
 		{
 			key: 'commission_per_store_order',
 			type: 'nested',
-			label: 'Commission value',
+			label: __('Commission value', 'multivendorx'),
 			desc: __(
 				'Set your default commission rate that will apply to all orders. You can choose between a fixed amount ($) or a percentage (%) of the order value. Additionally, you can create advanced commission rules below to automatically adjust rates based on specific conditions like product/listing price, quantity, or total order value.',
 				'multivendorx'
 			),
-			addButtonLabel: 'Add New',
-			deleteButtonLabel: 'Remove',
+			addButtonLabel: __('Add New', 'multivendorx'),
+			deleteButtonLabel: __('Remove', 'multivendorx'),
 			nestedFields: [
 				{
 					key: 'rule_type',
 					type: 'choice-toggle',
-					label: 'If',
+					label: __('If', 'multivendorx'),
 					options: [
-						{ key:"price",value: 'price', label: 'Product/listing price' },
 						{
-							key: "quantity",
-							value: 'quantity',
-							label: 'Product/listing quantity',
+							key: 'price',
+							value: 'price',
+							label: __('Product/listing price', 'multivendorx'),
 						},
-						{ key: "order_value",value: 'order_value', label: 'Order value' },
+						{
+							key: 'quantity',
+							value: 'quantity',
+							label: __('Product/listing quantity', 'multivendorx'),
+						},
+						{
+							key: 'order_value',
+							value: 'order_value',
+							label: __('Order value', 'multivendorx'),
+						},
 					],
 					skipFirstRow: true,
 				},
 				{
 					key: 'rule',
 					type: 'choice-toggle',
-					label: 'is',
+					label: __('is', 'multivendorx'),
 					options: [
-						{ key:'rule1', value: 'less_than', label: 'up to' },
-						{ key:'rule2', value: 'more_than', label: 'more than' },
+						{ key: 'rule1', value: 'less_than', label: __('up to', 'multivendorx') },
+						{
+							key: 'rule2',
+							value: 'more_than',
+							label: __('more than', 'multivendorx') ,
+						},
 					],
 					skipFirstRow: true,
 				},

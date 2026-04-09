@@ -138,8 +138,8 @@ const Pagination: React.FC<PaginationProps> = ({
                     value: option,
                     label: option,
                 }))}
-                onChange={(newValue) => {
-                    handlePerPageChange(newValue.value);
+                onChange={(value) => {
+                    handlePerPageChange(value);
                 }}
             />
             entries

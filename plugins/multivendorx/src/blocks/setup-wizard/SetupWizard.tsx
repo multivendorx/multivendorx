@@ -429,48 +429,60 @@ const SetupWizard: React.FC = () => {
 					type: 'notice',
 					label: '',
 					// message: appLocalizer.multivendor_plugin || 'No multivendor plugin active currently',
-					message: __('We found an active multivendor plugin on your site <span class="admin-badge purple">WCFM Marketplace</span>', 'multivendorx'),
+					message: __(
+						'We found an active multivendor plugin on your site <span class="admin-badge purple">WCFM Marketplace</span>',
+						'multivendorx'
+					),
 					noticeType: 'info',
 					display: 'notice',
 				},
 				{
 					key: 'notice',
 					type: 'notice',
-					message: __("We'll copy all your data from <b>WCFM Marketplace</b> into MultivendorX. Once the import is done, <b>WCFM Marketplace</b> will be turned off automatically to prevent any conflicts. Make sure you're ready before you begin.", 'multivendorx'),
+					message: __(
+						"We'll copy all your data from <b>WCFM Marketplace</b> into MultivendorX. Once the import is done, <b>WCFM Marketplace</b> will be turned off automatically to prevent any conflicts. Make sure you're ready before you begin.",
+						'multivendorx'
+					),
 					noticeType: 'info',
 					display: 'notice',
 				},
 				{
 					key: 'paid_promotion_limit',
-					label: __('Before you begin — quick checklist', 'multivendorx'),
+					label: __(
+						'Before you begin — quick checklist',
+						'multivendorx'
+					),
 					type: 'itemlist',
 					row: false,
 					className: 'checklist full-width',
 					items: [
 						{
-							title: __('<b>Back up your database first — </b> export a full backup before starting. If anything goes wrong, you can restore it.', 'multivendorx'),
-							icon: 'check-fill',
+							title: __(
+								'<b>Back up your database first — </b> export a full backup before starting. If anything goes wrong, you can restore it.',
+								'multivendorx'
+							),
+							icon: 'success',
 						},
 						{
 							title: __(
 								'<b>Turn off caching plugins —</b> plugins like WP Rocket or W3 Total Cache can interfere with the import. Disable them temporarily.',
 								'multivendorx'
 							),
-							icon: 'check-fill',
+							icon: 'success',
 						},
 						{
 							title: __(
 								'<b>Keep WCFM Marketplace active for now —</b>it must still be installed and enabled so we can read your existing data.',
 								'multivendorx'
 							),
-							icon: 'check-fill',
+							icon: 'success',
 						},
 						{
 							title: __(
 								'<b>Use a stable internet connection —</b> dropping out mid-migration can leave your data in an incomplete state.',
 								'multivendorx'
 							),
-							icon: 'check-fill',
+							icon: 'success',
 						},
 					],
 				},
@@ -483,41 +495,62 @@ const SetupWizard: React.FC = () => {
 					items: [
 						{
 							title: __('Vendors', 'multivendorx'),
-							desc: __('All vendor accounts and profiles', 'multivendorx'),
+							desc: __(
+								'All vendor accounts and profiles',
+								'multivendorx'
+							),
 							icon: 'storefront',
 						},
 						{
 							title: __('Products', 'multivendorx'),
-							desc: __('All products listed by vendors', 'multivendorx'),
+							desc: __(
+								'All products listed by vendors',
+								'multivendorx'
+							),
 							icon: 'single-product',
 						},
 						{
 							title: __('Orders', 'multivendorx'),
-							desc: __('Vendor-specific order history', 'multivendorx'),
+							desc: __(
+								'Vendor-specific order history',
+								'multivendorx'
+							),
 							icon: 'order',
 						},
 						{
 							title: __('Store details', 'multivendorx'),
-							desc: __('Store name, logo, and settings', 'multivendorx'),
+							desc: __(
+								'Store name, logo, and settings',
+								'multivendorx'
+							),
 							icon: 'store-policy',
 						},
 						{
 							title: __('Product commissions', 'multivendorx'),
-							desc: __('Per-product commission rates', 'multivendorx'),
-							icon: 'advertise-product',
-						},	
+							desc: __(
+								'Per-product commission rates',
+								'multivendorx'
+							),
+							icon: 'product-advertising',
+						},
 						{
 							title: __('Vendor commissions', 'multivendorx'),
-							desc: __('Per-vendor commission rules', 'multivendorx'),
+							desc: __(
+								'Per-vendor commission rules',
+								'multivendorx'
+							),
 							icon: 'commission',
-						},						
+						},
 					],
 				},
 				{
 					key: 'notice',
 					type: 'notice',
 					label: '',
-					message: __("<b> Orders migrate separately.</b> Marketplace orders are not included in this import — they transfer automatically in the background every 5 minutes. Vendor shipping settings will need to be reconfigured manually, as MultivendorX handles shipping differently.", 'multivendorx'),
+					message: __(
+						'<b> Orders migrate separately.</b> Marketplace orders are not included in this import — they transfer automatically in the background every 5 minutes. Vendor shipping settings will need to be reconfigured manually, as MultivendorX handles shipping differently.',
+						'multivendorx'
+					),
 					noticeType: 'warning',
 					display: 'notice',
 				},
@@ -525,7 +558,10 @@ const SetupWizard: React.FC = () => {
 					key: 'notice',
 					type: 'notice',
 					label: '',
-					message: __("<b>Deleted records can't be recovered. </b>Orders or products that were previously deleted cannot be migrated. Also, <b>do not close or refresh this tab </b> while the migration is running.", 'multivendorx'),
+					message: __(
+						"<b>Deleted records can't be recovered. </b>Orders or products that were previously deleted cannot be migrated. Also, <b>do not close or refresh this tab </b> while the migration is running.",
+						'multivendorx'
+					),
 					noticeType: 'error',
 					display: 'notice',
 				},
@@ -635,7 +671,6 @@ const SetupWizard: React.FC = () => {
 				}}
 				isWizardMode={true}
 				canAccess={true}
-				onBlocked={methods.formField.option[proSetting]??''}
 			/>
 		</div>
 	);

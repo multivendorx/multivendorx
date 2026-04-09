@@ -5,10 +5,10 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\QuestionAnswer;
+namespace MultiVendorX\CustomerQueries;
 
 /**
- * MultiVendorX Questions Answers Admin class
+ * MultiVendorX Customer Queries Admin class
  *
  * @class       Admin class
  * @version     PRODUCT_VERSION

@@ -94,7 +94,10 @@ const PendingDeactivateRequests: React.FC<object> = () => {
 
 				setRows(stores);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
-				window.multivendorxStore?.setCount('deactivate-requests', Number(response.headers['x-wp-total']) || 0);
+				window.multivendorxStore?.setCount(
+					'deactivate-requests',
+					Number(response.headers['x-wp-total']) || 0
+				);
 				setIsLoading(false);
 			})
 			.catch((error) => {

@@ -11,9 +11,14 @@
         display: flex;
         flex-direction: column;
         align-items: start;
+        justify-content: end; // for empty label 
         width: 100%;
         position: relative;
         gap: 0.5rem;
+        
+        &:has(label){
+            justify-content: start;
+        }
 
         &[data-cols='1'] {
             flex: 1 1 100%;
@@ -48,13 +53,12 @@
                 display: flex;
                 flex-wrap: wrap;
                 align-items: center;
-                gap: 0.5rem;
+                gap: 0.45rem;
 
                 .settings-metabox-description {
                     padding: 0;
                 }
             }
-
             .after,
             .before {
                 font-size: 0.95rem;
@@ -141,6 +145,7 @@
             flex-direction: row;
             gap: 1rem;
             align-items: start;
+            justify-content: start;
 
             .settings-form-label {
                 width: 25%;
@@ -177,14 +182,33 @@
                 flex-wrap: nowrap;
                 gap: 0;
 
-                .input-wrapper {
+                .input-wrapper{
                     border-top-right-radius: 0;
                     border-bottom-right-radius: 0;
                 }
-
                 .admin-btn {
-                    border-top-left-radius: 0;
-                    border-bottom-left-radius: 0;
+                     border-top-left-radius: 0;
+                     border-bottom-left-radius: 0;
+                }
+                .tooltip-wrapper{
+                    padding: 0.38rem 0.45rem;
+                    border-top: $border-light-small;
+                    border-bottom: $border-light-small;
+
+                    i{
+                        font-size: 1.4rem;
+                    }
+                }
+                .clear-btn{
+                    border: $border-light-small;
+                    padding: 0.38rem 0.45rem;
+                    color: map-get(map-get($color-palette, red), color);
+                    border-top-right-radius: $border-radius-small;
+                    border-bottom-right-radius: $border-radius-small;
+                    cursor: pointer;
+                    i{
+                        font-size: 1.4rem;
+                    }
                 }
             }
         }

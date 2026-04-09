@@ -20,21 +20,31 @@ interface GuidedTourStep extends StepType {
 
 interface GuidedTourProviderProps extends Omit<ProviderProps, 'steps'> {
     steps: GuidedTourStep[];
+    storeId?: number;
 }
 
 const headers = { headers: { 'X-WP-Nonce': ZyraVariable.nonce } };
 
 const TourApi = {
-    fetchTourStatus: async () => {
-        const res = await axios.get(getApiLink(ZyraVariable, 'tour'), headers);
+    fetchTourStatus: async (storeId?: number) => {
+        const res = await axios.get(getApiLink(ZyraVariable, 'tour'),
+            {
+                ...headers,
+                params: {
+                    store_id: storeId ,
+                },
+            });
         return res.data;
     },
 
-    updateTourStatus: async (completed: boolean) => {
+    updateTourStatus: async (completed: boolean, storeId?: number) => {
         try {
             await axios.post(
                 getApiLink(ZyraVariable, 'tour'),
-                { completed },
+                {
+                    completed,
+                    store_id: storeId,
+                },
                 headers
             );
         } catch (e) {
@@ -48,13 +58,13 @@ const STORAGE_KEY = 'guided_tour_step';
 /**
  * Controller that runs the tour
  */
-const GuidedTourController = ({ steps }: { steps: GuidedTourStep[] }) => {
+const GuidedTourController = ({ steps, storeId }: { steps: GuidedTourStep[]; storeId?: number; }) => {
     const { setIsOpen, setSteps, setCurrentStep } = useTour();
 
     const handleFinishTour = useCallback(async () => {
         setIsOpen(false);
         sessionStorage.removeItem(STORAGE_KEY);
-        await TourApi.updateTourStatus(true);
+        await TourApi.updateTourStatus(true, storeId);
     }, [setIsOpen]);
 
     const handleTourNavigation = useCallback(
@@ -75,7 +85,7 @@ const GuidedTourController = ({ steps }: { steps: GuidedTourStep[] }) => {
     useEffect(() => {
         const initializeTour = async () => {
             try {
-                const data = await TourApi.fetchTourStatus();
+                const data = await TourApi.fetchTourStatus(storeId);
 
                 if (!data.completed) {
                     const savedStep = sessionStorage.getItem(STORAGE_KEY);
@@ -159,6 +169,7 @@ const GuidedTourController = ({ steps }: { steps: GuidedTourStep[] }) => {
  */
 const GuidedTourProvider: React.FC<GuidedTourProviderProps> = ({
     steps,
+    storeId,
     ...rest
 }) => {
     return (
@@ -178,12 +189,17 @@ const GuidedTourProvider: React.FC<GuidedTourProviderProps> = ({
             }}
             onClickClose={({ setIsOpen }) => {
                 setIsOpen(false);
-                TourApi.updateTourStatus(true);
+                TourApi.updateTourStatus(true, storeId);
+                sessionStorage.removeItem(STORAGE_KEY);
+            }}
+            onClickMask={({ setIsOpen }) => {
+                setIsOpen(false);
+                TourApi.updateTourStatus(true, storeId);
                 sessionStorage.removeItem(STORAGE_KEY);
             }}
             {...rest}
         >
-            <GuidedTourController steps={steps} />
+            <GuidedTourController steps={steps} storeId={storeId} />
         </TourProvider>
     );
 };

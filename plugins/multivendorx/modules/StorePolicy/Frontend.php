@@ -30,7 +30,7 @@ class Frontend {
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
 
         add_filter( 'multivendorx_store_frontend_localize_scripts', array( $this, 'multivendorx_store_frontend_localize_scripts' ) );
-        add_filter( 'multivendorx_store_info', array( $this, 'add_store_policy' ),10,2 );
+        add_filter( 'multivendorx_store_info', array( $this, 'add_store_policy' ), 10, 2 );
     }
 	/**
 	 * Register store policy frontend script
@@ -170,7 +170,7 @@ class Frontend {
      * @return array Modified localized script data with store policies.
      */
     public function add_store_policy( $info, $store ) {
-        $store_id               = $store->get_id();
+        $store_id         = $store->get_id();
         $info['policies'] = Util::get_store_policies( $store_id );
         return $info;
     }

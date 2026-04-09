@@ -52,15 +52,18 @@ const LatestRefundRequest: React.FC<LatestRefundRequestProps> = ({
 			label: __('Customer', 'multivendorx'),
 		},
 		amount: {
+			type: 'currency',
 			label: __('Refund Amount', 'multivendorx'),
 		},
 		reason: {
 			label: __('Refund Reason', 'multivendorx'),
 		},
 		status: {
+			type: 'status' ,
 			label: __('Status', 'multivendorx'),
 		},
 		date_created: {
+			type: 'date',
 			label: __('Date', 'multivendorx'),
 		},
 	};
@@ -72,6 +75,15 @@ const LatestRefundRequest: React.FC<LatestRefundRequestProps> = ({
 				rows={rows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}
+				showMenu={false}
+				format={appLocalizer.date_format}
+				currency={{
+					currencySymbol: appLocalizer.currency_symbol,
+					priceDecimals: appLocalizer.price_decimals,
+					decimalSeparator: appLocalizer.decimal_separator,
+					thousandSeparator: appLocalizer.thousand_separator,
+					currencyPosition: appLocalizer.currency_position,
+				}}
 			/>
 		</>
 	);

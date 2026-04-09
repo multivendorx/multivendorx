@@ -28,18 +28,18 @@ $current_tab      = 'products'; // Default.
 $sidebar_position = MultiVendorX()->setting->get_setting( 'store_sidebar', array() );
 
 $current_tab = 'products';
-$tab = sanitize_key(filter_input(INPUT_GET, 'tab') ?? '');
+$tab         = sanitize_key( filter_input( INPUT_GET, 'tab' ) ?? '' );
 // Plain permalink.
-if ($tab) {
+if ( $tab ) {
     $current_tab = $tab;
 } else {
     // Pretty permalink.
-    $request_uri = filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_URL) ?? '';
-    $path        = trim(parse_url($request_uri, PHP_URL_PATH) ?? '', '/');
-    $segments = explode('/', $path);
-    $last     = sanitize_key(end($segments));
+    $request_uri = filter_input( INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_URL ) ?? '';
+    $path        = trim( parse_url( $request_uri, PHP_URL_PATH ) ?? '', '/' );
+    $segments    = explode( '/', $path );
+    $last        = sanitize_key( end( $segments ) );
 
-    if ($last && isset($store_tabs[$last])) {
+    if ( $last && isset( $store_tabs[ $last ] ) ) {
         $current_tab = $last;
     }
 }
@@ -64,7 +64,7 @@ do_action( 'multivendorx_before_store_tabs', $store_id );
     
     <div class="woocommerce">
         <div class="product">
-            <div class="woocommerce-tabs wc-tabs-wrapper">
+            <div class="woocommerce-tabs wc-tabs-wrapper site-main">
                 <ul class="tabs wc-tabs">
                     <?php foreach ( $store_tabs as $tab_key => $tab_item ) : ?>
                         <?php if ( ! empty( $tab_item['url'] ) ) : ?>

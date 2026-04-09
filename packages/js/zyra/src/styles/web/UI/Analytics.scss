@@ -71,12 +71,12 @@
     &.flex-wrap{
         flex-wrap: wrap;
         
-    .col-6  {  flex: 1 1 calc(8.3333% - 1rem); }
-    .col-5  {  flex: 1 1 calc(16.6667% - 1rem); }
-    .col-4  {  flex: 1 1 calc(25% - 1rem); }
-    .col-3  {  flex: 1 1 calc(33.3333% - 1rem); }
-    .col-2  {  flex: 1 1 calc(41.6667% - 1rem); }
-    .col-1  {  flex: 1 1 calc(50% - 1rem); }
+    .col-6  {  width: calc(8.3333% - 1rem); }
+    .col-5  {  width: calc(16.6667% - 1rem); }
+    .col-4  {  width: calc(25% - 1rem); }
+    .col-3  {  width: calc(33.3333% - 1rem); }
+    .col-2  {  width: calc(50% - 1rem); }
+    .col-1  {  width: calc(100% - 1rem); }
     }
 
     &[data-template="dashboard"] {

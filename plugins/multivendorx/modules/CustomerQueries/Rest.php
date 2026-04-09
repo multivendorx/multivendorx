@@ -5,9 +5,9 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\QuestionAnswer;
+namespace MultiVendorX\CustomerQueries;
 
-use MultiVendorX\QuestionAnswer\Util;
+use MultiVendorX\CustomerQueries\Util;
 use MultiVendorX\Store\Store;
 use MultiVendorX\Utill;
 

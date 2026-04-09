@@ -113,9 +113,7 @@ class Distance_Shipping extends \WC_Shipping_Method {
         $max_distance      = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_max'] ] ?? 0 );
         $local_pickup_cost = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_local_pickup_cost'] ] ?? 0 );
         $distance_type     = ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_type'] ] ?? 'K' );
-        $distance_rules    = ! empty( $meta[ Utill::STORE_SETTINGS_KEYS['distance_rules'] ] )
-            ? json_decode( $meta[ Utill::STORE_SETTINGS_KEYS['distance_rules'] ], true )
-            : array();
+        $distance_rules    = ! empty( $meta[ Utill::STORE_SETTINGS_KEYS['distance_rules'] ] ) ? $meta[ Utill::STORE_SETTINGS_KEYS['distance_rules'] ] : array();
 
         if ( ! $store_lat || ! $store_lng ) {
             return;

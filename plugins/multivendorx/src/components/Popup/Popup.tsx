@@ -183,13 +183,13 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 					<i className={`adminfont-${pluginData.pluginName}`} />
 				</div>
 				<div className="popup-body">
-					<h2>
+					<div className="module-name">
 						{sprintf(
 							__('Plugin Required: %s', 'multivendorx'),
 							pluginData.pluginName
 						)}
-					</h2>
-					<p>
+					</div>
+					<div className="module-desc">
 						{sprintf(
 							__(
 								'This feature requires the "%s" plugin to be active.',
@@ -197,7 +197,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 							),
 							pluginData.pluginName
 						)}
-					</p>
+					</div>
 					<ButtonInputUI
 						position="center"
 						buttons={[
@@ -223,7 +223,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 				<div className="popup-confirm">
 					<i className="popup-icon adminfont-suspended admin-badge red"></i>
 					<div className="title">{props.title || 'Confirmation'}</div>
-					<p className="desc">{props.confirmMessage}</p>
+					<div className="desc">{props.confirmMessage}</div>
 					<ButtonInputUI
 						position="center"
 						buttons={[
@@ -247,13 +247,13 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 						<i className={`adminfont-${props.moduleName}`} />
 					</div>
 					<div className="popup-body">
-						<h2>
+						<div className="module-name">
 							{sprintf(
 								__('Activate %s', 'multivendorx'),
 								formatModuleName(props.moduleName)
 							)}
-						</h2>
-						<p>
+						</div>
+						<div className="module-desc">
 							{sprintf(
 								__(
 									'This feature is currently unavailable. To activate it, please enable the %s',
@@ -261,7 +261,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 								),
 								formatModuleName(props.moduleName)
 							)}
-						</p>
+						</div>
 
 						<ButtonInputUI
 							position="center"

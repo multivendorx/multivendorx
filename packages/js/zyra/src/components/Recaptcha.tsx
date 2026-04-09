@@ -13,19 +13,12 @@ interface RecaptchaProps {
 export const RecaptchaUI: React.FC<RecaptchaProps> = ({ formField }) => {
     if (!formField?.sitekey) {
         return (
-            <div className="main-input-wrapper recaptcha">
-                <p>
-                    Please enter the reCAPTCHA site key in the field settings to
-                    enable reCAPTCHA.
-                </p>
-            </div>
+            <div className="main-input-wrapper recaptcha">Please enter the reCAPTCHA site key in the field settings to enable reCAPTCHA.</div>
         );
     }
 
     return (
-        <div className="main-input-wrapper recaptcha">
-            <p>reCAPTCHA has been successfully added to the form.</p>
-        </div>
+        <div className="main-input-wrapper recaptcha">reCAPTCHA has been successfully added to the form.</div>
     );
 };
 

@@ -16,7 +16,7 @@ export default {
 			items: [
 				{
 					title: __('Can log in to dashboard', 'multivendorx'),
-					icon: 'check-fill',
+					icon: 'success',
 				},
 				{
 					title: __('Cannot modify store settings', 'multivendorx'),

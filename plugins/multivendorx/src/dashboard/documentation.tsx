@@ -106,7 +106,7 @@ const Documentation: React.FC = () => {
 
 			<Card>
 				<HeaderSearch
-					variant="mini-search"
+					// variant="mini-search"
 					search={{ placeholder: 'Search .....' }}
 					onQueryUpdate={(e) => {
 						setSearchText(e.searchValue);

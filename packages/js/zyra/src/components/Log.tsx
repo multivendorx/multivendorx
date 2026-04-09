@@ -139,9 +139,9 @@ export const LogUI: React.FC<LogProps> = ({
             </div>
             <div className="log-container-wrapper">
                 <div className="wrapper-header">
-                    <p className="log-viewer-text">
+                    <div className="log-viewer-text">
                         {ZyraVariable.tab_name} - log viewer
-                    </p>
+                    </div>
                     
                     <CopyToClipboardUI
                         variant="button"

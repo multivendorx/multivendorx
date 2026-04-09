@@ -291,6 +291,7 @@ export default {
 			proModule: true,
 			category: 'payment_management',
 			miniModule: true,
+			reloadOnChange: true,
 		},
 		{
 			id: 'stripe-marketplace',
@@ -302,6 +303,7 @@ export default {
 			proModule: true,
 			category: 'payment_management',
 			miniModule: true,
+			reloadOnChange: true,
 		},
 		// {
 		// 	id: 'mangopay',
@@ -346,7 +348,7 @@ export default {
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/weight-shipping',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=shipping`,
-			proModule: false,
+			proModule: true,
 			reqPluging: [
 				{
 					name: 'Table Rate Shipping',
@@ -367,7 +369,7 @@ export default {
 			reqPluging: [
 				{
 					name: 'Per Product Shipping for WooCommerce',
-					slug: 'woocommerce-per-product-shipping/woocommerce-per-product-shipping.php',
+					slug: 'woocommerce-shipping-per-product/woocommerce-shipping-per-product.php',
 					link: 'https://woocommerce.com/products/per-product-shipping/',
 				},
 			],
@@ -408,8 +410,8 @@ export default {
 			category: 'customer_experience',
 		},
 		{
-			id: 'question-answer',
-			name: __('Question & Answer', 'multivendorx'),
+			id: 'customer-queries',
+			name: __('Customer Queries', 'multivendorx'),
 			desc: 'Customers can publicly ask product questions.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
 			proModule: false,
@@ -454,7 +456,7 @@ export default {
 			id: 'search-discovery',
 			name: __('Search & Discovery', 'multivendorx'),
 			desc: 'SEO settings for store pages and products using Rank Math or Yoast SEO.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/store-seo',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/search-discovery',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=search-discovery`,
 			proModule: true,
 			category: ['analytics_tools', 'store_management'],
@@ -664,21 +666,6 @@ export default {
 					name: 'Advanced Custom Fields',
 					slug: 'advanced-custom-fields/acf.php',
 					link: 'https://wordpress.org/plugins/advanced-custom-fields/',
-				},
-			],
-			category: 'integration',
-		},
-		{
-			id: 'geo-my-wp',
-			name: __('GEOmyWP', 'multivendorx'),
-			desc: 'Lets stores pinpoint their location on an interactive map, making it easy for customers to discover nearby stores',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/geo-my-wp',
-			proModule: true,
-			reqPluging: [
-				{
-					name: 'GEOmyWP',
-					slug: 'geo-my-wp/geo-my-wp.php',
-					link: 'https://wordpress.org/plugins/geo-my-wp/',
 				},
 			],
 			category: 'integration',

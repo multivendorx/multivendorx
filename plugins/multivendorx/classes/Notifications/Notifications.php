@@ -71,9 +71,9 @@ class Notifications {
             'multivendorx_system_events',
             array(
 				// Store Registration & Approval.
-				'store_pending_approval'             => array(
+				'store_pending_approval'              => array(
 					'name'             => 'Store pending approval',
-					'desc' => 'Triggered when a new store application is submitted and placed under admin review.', 	
+					'desc'             => 'Triggered when a new store application is submitted and placed under admin review.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -90,7 +90,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'store_rejected'                     => array(
+				'store_rejected'                      => array(
 					'name'             => 'Store rejected',
 					'desc'             => 'Admin rejected the store application.',
 					'customer_enabled' => false,
@@ -107,9 +107,9 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'store_permanently_rejected'         => array(
+				'store_permanently_rejected'          => array(
 					'name'             => 'Store permanently rejected',
-					'desc' => 'Permanent rejection of a store application by the admin',
+					'desc'             => 'Permanent rejection of a store application by the admin',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -121,7 +121,7 @@ class Notifications {
 					'tag'              => 'Store',
 					'category'         => 'activity',
 				),
-				'store_account_created_by_admin'     => array(
+				'store_account_created_by_admin'      => array(
 					'name'             => 'Store account created by admin',
 					'desc'             => 'Admin manually created store account.',
 					'customer_enabled' => false,
@@ -147,7 +147,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 				// POST ACTIVATION FLOW.
-				'store_activated'                    => array(
+				'store_activated'                     => array(
 					'name'             => 'Store activated',
 					'desc'             => 'Store activated and ready to start selling.',
 					'customer_enabled' => false,
@@ -164,7 +164,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'store_under_review'                 => array(
+				'store_under_review'                  => array(
 					'name'             => 'Store under review',
 					'desc'             => 'Store temporarily placed under admin review.',
 					'customer_enabled' => false,
@@ -180,7 +180,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'store_suspended'                    => array(
+				'store_suspended'                     => array(
 					'name'             => 'Store suspended',
 					'desc'             => 'Store temporarily suspended by the admin.',
 					'customer_enabled' => false,
@@ -197,7 +197,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'store_permanently_deactivated'      => array(
+				'store_permanently_deactivated'       => array(
 					'name'             => 'Store permanently deactivated',
 					'desc'             => 'Admin permanently deactivated the store.',
 					'customer_enabled' => false,
@@ -214,7 +214,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'store_account_deactivation_request' => array(
+				'store_account_deactivation_request'  => array(
 					'name'             => 'Store account deactivation request',
 					'desc'             => 'Store owner requests deactivation of their store account.',
 					'customer_enabled' => false,
@@ -246,7 +246,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 				// ORDER NOTIFICATIONS.
-				'new_order_store'                    => array(
+				'new_order_store'                     => array(
 					'name'             => 'New order received',
 					'desc'             => 'New order received by the store.',
 					'customer_enabled' => false,
@@ -264,7 +264,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'order_processing'                   => array(
+				'order_processing'                    => array(
 					'name'             => 'Order processing',
 					'desc'             => 'An order status is changed to processing.',
 					'store_enabled'    => true,
@@ -277,7 +277,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'order_completed'                    => array(
+				'order_completed'                     => array(
 					'name'             => 'Order completed',
 					'desc'             => 'An order is completed successfully.',
 					'store_enabled'    => true,
@@ -290,7 +290,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'order_cancelled'                    => array(
+				'order_cancelled'                     => array(
 					'name'             => 'Order cancelled',
 					'desc'             => 'An order is cancelled by the customer or admin.',
 					'store_enabled'    => true,
@@ -304,7 +304,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'order_refunded'                     => array(
+				'order_refunded'                      => array(
 					'name'             => 'Order refunded',
 					'desc'             => 'A refund is issued for an order.',
 					'store_enabled'    => true,
@@ -318,7 +318,7 @@ class Notifications {
 				),
 
 				// SHIPMENT TRACKING.
-				'shipment_tracking_added'            => array(
+				'shipment_tracking_added'             => array(
 					'name'             => 'Shipment tracking added',
 					'desc'             => 'Tracking details added for the order shipment.',
 					'customer_enabled' => true,
@@ -336,7 +336,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 				// Pro.
-				'order_delivered'                    => array(
+				'order_delivered'                     => array(
 					'name'             => 'Order delivered',
 					'desc'             => 'Order marked as delivered.',
 					'customer_enabled' => true,
@@ -352,9 +352,9 @@ class Notifications {
 				),
 				// REFUND NOTIFICATIONS.
 
-				'refund_requested'                   => array(
+				'refund_requested'                    => array(
 					'name'             => 'Refund requested',
-					'desc' => 'Refund request submitted for the order.',
+					'desc'             => 'Refund request submitted for the order.',
 					'customer_enabled' => true,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -369,7 +369,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'refund_accepted'                    => array(
+				'refund_accepted'                     => array(
 					'name'             => 'Refund accepted',
 					'desc'             => 'Refund request approved for the order.',
 					'customer_enabled' => true,
@@ -387,7 +387,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'refund_rejected'                    => array(
+				'refund_rejected'                     => array(
 					'name'             => 'Refund rejected',
 					'desc'             => 'Refund request rejected for the order.',
 					'customer_enabled' => true,
@@ -405,9 +405,9 @@ class Notifications {
 				),
 
 				// REVIEWS.
-				'new_store_review'                   => array(
+				'new_store_review'                    => array(
 					'name'             => 'New store review',
-					'desc' => 'New customer review submitted for the store.',
+					'desc'             => 'New customer review submitted for the store.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => false,
@@ -420,7 +420,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 				// didi product_name remove and text final and review_url remove.
-				'review_reply'                       => array(
+				'review_reply'                        => array(
 					'name'             => 'Admin replied to review',
 					'desc'             => 'Marketplace admin replies to a review.',
 					'customer_enabled' => true,
@@ -436,9 +436,9 @@ class Notifications {
 				),
 
 				// PRODUCT NOTIFICATIONS.
-				'product_submitted'                  => array(
+				'product_submitted'                   => array(
 					'name'             => 'Product submitted',
-					'desc' => 'Product submitted for admin review.',
+					'desc'             => 'Product submitted for admin review.',
 					'customer_enabled' => false,
 					'store_enabled'    => true,
 					'admin_enabled'    => true,
@@ -451,7 +451,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'product_approved'                   => array(
+				'product_approved'                    => array(
 					'name'             => 'Product approved',
 					'desc'             => 'Product approved and published.',
 					'customer_enabled' => false,
@@ -467,7 +467,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'product_rejected'                   => array(
+				'product_rejected'                    => array(
 					'name'             => 'Product rejected',
 					'desc'             => 'Product rejected after review.',
 					'customer_enabled' => false,
@@ -483,7 +483,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 				// PRO.
-				'product_low_stock'                  => array(
+				'product_low_stock'                   => array(
 					'name'             => 'Product low stock',
 					'desc'             => 'Product stock running low.',
 					'customer_enabled' => false,
@@ -499,7 +499,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 				// PRO.
-				'product_out_of_stock'               => array(
+				'product_out_of_stock'                => array(
 					'name'             => 'Product out of stock',
 					'desc'             => 'Product is currently unavailable due to no stock.',
 					'customer_enabled' => false,
@@ -516,7 +516,7 @@ class Notifications {
 				),
 				// PRODUCT QUESTIONS (Q&A).
 				// didi remove question_url.
-					'product_question_submitted'     => array(
+					'product_question_submitted'      => array(
 						'name'             => 'Product question submitted',
 						'desc'             => 'Customer submits a question on a product.',
 						'customer_enabled' => false,
@@ -533,7 +533,7 @@ class Notifications {
 						'category'         => 'notification',
 					),
 				// didi content change.
-				'product_question_reply'             => array(
+				'product_question_reply'              => array(
 					'name'             => 'Store replied to product question',
 					'desc'             => 'Store owner replies to a product question.',
 					'customer_enabled' => true,
@@ -550,7 +550,7 @@ class Notifications {
 				),
 
 				// PAYOUT & WITHDRAWAL.
-				'payout_received'                    => array(
+				'payout_received'                     => array(
 					'name'           => 'Payout received',
 					'desc'           => 'A payment is received for an order.',
 					'store_enabled'  => true,
@@ -563,7 +563,7 @@ class Notifications {
 					'category'       => 'activity',
 				),
 
-				'payout_failed'                      => array(
+				'payout_failed'                       => array(
 					'name'           => 'Payout failed',
 					'desc'           => 'A payout processing attempt has failed.',
 					'admin_enabled'  => true,
@@ -575,7 +575,7 @@ class Notifications {
 					'category'       => 'activity',
 				),
 
-				'withdrawal_requested'               => array(
+				'withdrawal_requested'                => array(
 					'name'           => 'Withdrawal requested',
 					'desc'           => 'A withdrawal request is submitted by a store.',
 					'admin_enabled'  => true,
@@ -588,7 +588,7 @@ class Notifications {
 					'category'       => 'notification',
 				),
 
-				'withdrawal_released'                => array(
+				'withdrawal_released'                 => array(
 					'name'           => 'Withdrawal released',
 					'desc'           => 'A withdrawal is released successfully.',
 					'store_enabled'  => true,
@@ -600,7 +600,7 @@ class Notifications {
 					'category'       => 'notification',
 				),
 
-				'withdrawl_rejected'                 => array(
+				'withdrawl_rejected'                  => array(
 					'name'           => 'Withdrawl rejected',
 					'desc'           => 'A withdrawl request is rejected by the admin.',
 					'store_enabled'  => true,
@@ -612,7 +612,7 @@ class Notifications {
 					'category'       => 'activity',
 				),
 				// ========== REPORT ABUSE ==========
-				'report_abuse_submitted'             => array(
+				'report_abuse_submitted'              => array(
 					'name'             => 'Report abuse submitted',
 					'desc'             => 'A product is reported for abuse by a customer.',
 					'admin_enabled'    => true,
@@ -627,7 +627,7 @@ class Notifications {
 				),
 
 				// ========== ANNOUNCEMENTS ==========
-				'system_announcement'                => array(
+				'system_announcement'                 => array(
 					'name'           => 'System announcement',
 					'desc'           => 'A system-wide announcement is published by the admin.',
 					'store_enabled'  => true,
@@ -641,7 +641,7 @@ class Notifications {
 				),
 
 				// STORE FOLLOWER NOTIFICATIONS.
-				'store_followed'                     => array(
+				'store_followed'                      => array(
 					'name'             => 'Store followed',
 					'desc'             => 'Customer started following the store.',
 					'customer_enabled' => false,
@@ -659,7 +659,7 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'store_new_product_to_followers'     => array(
+				'store_new_product_to_followers'      => array(
 					'name'             => 'New product from followed store',
 					'desc'             => 'New product published by a followed store.',
 					'customer_enabled' => true,
@@ -677,7 +677,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				'store_new_coupon_to_followers'      => array(
+				'store_new_coupon_to_followers'       => array(
 					'name'             => 'New coupon from followed store',
 					'desc'             => 'New coupon created by a followed store.',
 					'customer_enabled' => true,
@@ -695,7 +695,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 				// Pro.
-				'store_vacation_alert_to_followers'  => array(
+				'store_vacation_alert_to_followers'   => array(
 					'name'             => 'Store vacation alert',
 					'desc'             => 'Followed store marked as on vacation.',
 					'customer_enabled' => true,
@@ -714,7 +714,7 @@ class Notifications {
 				),
 
 				// WHOLESALE BUYER.(PRO).
-				'wholesale_buyer_approved'           => array(
+				'wholesale_buyer_approved'            => array(
 					'name'             => 'Wholesale buyer approved',
 					'desc'             => 'User request for wholesale access has been approved.',
 					'customer_enabled' => true,
@@ -734,7 +734,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				'wholesale_buyer_rejected'           => array(
+				'wholesale_buyer_rejected'            => array(
 					'name'             => 'Wholesale buyer rejected',
 					'desc'             => 'User request for wholesale access has been rejected.',
 					'customer_enabled' => true,
@@ -1185,4 +1185,36 @@ class Notifications {
 
         return false;
     }
+
+	public function send_notification_helper( $type, $store = null, $order = null, $extra = [] ) {
+		$store_email = '';
+		$store_phone = '';
+		$customer_email = '';
+		$customer_phone = '';
+
+		if ( $store ) {
+			$store_email_meta = $store->get_meta( Utill::STORE_SETTINGS_KEYS['store_email'] );
+			$store_email      = $store_email_meta['primary'] ?? '';
+			$store_phone      = $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] );
+		}
+
+		if ( $order ) {
+			$customer_email = $order->get_billing_email();
+			$customer_phone = $order->get_billing_phone();
+		}
+
+		$payload = array_merge(
+			[
+				'admin_email'    => MultiVendorX()->setting->get_setting( 'receiver_email_address' ),
+				'admin_phone'    => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+				'store_email'    => $store_email,
+				'store_phone'    => $store_phone,
+				'customer_email' => $customer_email,
+				'customer_phone' => $customer_phone,
+			],
+			$extra
+		);
+
+		do_action( "multivendorx_notify_{$type}", $type, $payload );
+	}
 }

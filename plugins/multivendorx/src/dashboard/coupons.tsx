@@ -21,6 +21,7 @@ import {
 } from 'zyra';
 
 import axios from 'axios';
+import Popup from '../components/Popup/Popup';
 import { toWcIsoDate } from '@/services/commonFunction';
 
 const COUPON_STATUS_MAP: Record<string, string> = {
@@ -233,13 +234,13 @@ const AllCoupon: React.FC = () => {
 
 		const request = formData.id
 			? axios.post(
-					`${appLocalizer.apiUrl}/wc/v3/coupons/${formData.id}`,
-					payload,
-					{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-				)
+				`${appLocalizer.apiUrl}/wc/v3/coupons/${formData.id}`,
+				payload,
+				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+			)
 			: axios.post(`${appLocalizer.apiUrl}/wc/v3/coupons`, payload, {
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				});
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			});
 
 		request
 			.then(() => {
@@ -277,262 +278,256 @@ const AllCoupon: React.FC = () => {
 			id: 'general',
 			label: __('General', 'multivendorx'),
 			content: (
-				<>
-					<FormGroupWrapper>
-						<FormGroup
-							label={__('Discount type', 'multivendorx')}
-							htmlFor="discount_type"
-							notice={validationErrors.discount_type}
-						>
-							<SelectInputUI
-								name="discount_type"
-								value={formData.discount_type}
-								options={discountOptions}
-								onChange={(value) =>
-									setFormData({
-										...formData,
-										discount_type: value || '',
-									})
-								}
-							/>
-						</FormGroup>
+				<FormGroupWrapper>
+					<FormGroup
+						label={__('Discount type', 'multivendorx')}
+						htmlFor="discount_type"
+						notice={validationErrors.discount_type}
+					>
+						<SelectInputUI
+							name="discount_type"
+							value={formData.discount_type}
+							options={discountOptions}
+							onChange={(value) =>
+								setFormData({
+									...formData,
+									discount_type: value || '',
+								})
+							}
+						/>
+					</FormGroup>
 
-						<FormGroup
-							label={__('Coupon amount', 'multivendorx')}
-							htmlFor="coupon_amount"
-						>
-							<BasicInputUI
-								type="number"
-								name="coupon_amount"
-								value={formData.coupon_amount}
-								onChange={(value) =>
-									setFormData({
-										...formData,
-										coupon_amount: value,
-									})
-								}
-							/>
-						</FormGroup>
+					<FormGroup
+						label={__('Coupon amount', 'multivendorx')}
+						htmlFor="coupon_amount"
+					>
+						<BasicInputUI
+							type="number"
+							name="coupon_amount"
+							value={formData.coupon_amount}
+							onChange={(value) =>
+								setFormData({
+									...formData,
+									coupon_amount: value,
+								})
+							}
+						/>
+					</FormGroup>
 
-						<FormGroup
-							label={__('Allow free shipping', 'multivendorx')}
-							htmlFor="free_shipping"
-						>
-							<ChoiceToggleUI
-								options={[
-									{
-										key: 'yes',
-										value: 'yes',
-										label: __('Yes', 'multivendorx'),
-									},
-									{
-										key: 'no',
-										value: 'no',
-										label: __('No', 'multivendorx'),
-									},
-								]}
-								value={formData.free_shipping}
-								onChange={(val) =>
-									setFormData({
-										...formData,
-										free_shipping: val,
-									})
-								}
-							/>
-						</FormGroup>
+					<FormGroup
+						label={__('Allow free shipping', 'multivendorx')}
+						htmlFor="free_shipping"
+					>
+						<ChoiceToggleUI
+							options={[
+								{
+									key: 'yes',
+									value: 'yes',
+									label: __('Yes', 'multivendorx'),
+								},
+								{
+									key: 'no',
+									value: 'no',
+									label: __('No', 'multivendorx'),
+								},
+							]}
+							value={formData.free_shipping}
+							onChange={(val) =>
+								setFormData({
+									...formData,
+									free_shipping: val,
+								})
+							}
+						/>
+					</FormGroup>
 
-						<FormGroup
-							label={__('Coupon expiry date', 'multivendorx')}
-							htmlFor="expiry_date"
-						>
-							<BasicInputUI
-								type="date"
-								name="expiry_date"
-								value={formData.expiry_date}
-								onChange={(value) =>
-									setFormData({
-										...formData,
-										expiry_date: value,
-									})
-								}
-							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</>
+					<FormGroup
+						label={__('Coupon expiry date', 'multivendorx')}
+						htmlFor="expiry_date"
+					>
+						<BasicInputUI
+							type="date"
+							name="expiry_date"
+							value={formData.expiry_date}
+							onChange={(value) =>
+								setFormData({
+									...formData,
+									expiry_date: value,
+								})
+							}
+						/>
+					</FormGroup>
+				</FormGroupWrapper>
 			),
 		},
 		{
 			id: 'limits',
 			label: __('Usage Limits', 'multivendorx'),
 			content: (
-				<>
-					<FormGroupWrapper>
-						<FormGroup
-							label={__('Usage limit per coupon', 'multivendorx')}
-							htmlFor="usage_limit"
-						>
-							<BasicInputUI
-								type="number"
-								name="usage_limit"
-								value={formData.usage_limit}
-								onChange={(value) =>
-									setFormData({
-										...formData,
-										usage_limit: value,
-									})
-								}
-							/>
-						</FormGroup>
+				<FormGroupWrapper>
+					<FormGroup
+						label={__('Usage limit per coupon', 'multivendorx')}
+						htmlFor="usage_limit"
+					>
+						<BasicInputUI
+							type="number"
+							name="usage_limit"
+							value={formData.usage_limit}
+							onChange={(value) =>
+								setFormData({
+									...formData,
+									usage_limit: value,
+								})
+							}
+						/>
+					</FormGroup>
 
-						<FormGroup
-							label={__('Limit usage to X items', 'multivendorx')}
-							htmlFor="limit_usage_to_x_items"
-						>
-							<BasicInputUI
-								type="number"
-								name="limit_usage_to_x_items"
-								value={formData.limit_usage_to_x_items}
-								onChange={(value) =>
-									setFormData({
-										...formData,
-										limit_usage_to_x_items: value,
-									})
-								}
-							/>
-						</FormGroup>
+					<FormGroup
+						label={__('Limit usage to X items', 'multivendorx')}
+						htmlFor="limit_usage_to_x_items"
+					>
+						<BasicInputUI
+							type="number"
+							name="limit_usage_to_x_items"
+							value={formData.limit_usage_to_x_items}
+							onChange={(value) =>
+								setFormData({
+									...formData,
+									limit_usage_to_x_items: value,
+								})
+							}
+						/>
+					</FormGroup>
 
-						<FormGroup
-							label={__('Usage limit per user', 'multivendorx')}
-							htmlFor="usage_limit_per_user"
-						>
-							<BasicInputUI
-								type="number"
-								name="usage_limit_per_user"
-								value={formData.usage_limit_per_user}
-								onChange={(value) =>
-									setFormData({
-										...formData,
-										usage_limit_per_user: value,
-									})
-								}
-							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</>
+					<FormGroup
+						label={__('Usage limit per user', 'multivendorx')}
+						htmlFor="usage_limit_per_user"
+					>
+						<BasicInputUI
+							type="number"
+							name="usage_limit_per_user"
+							value={formData.usage_limit_per_user}
+							onChange={(value) =>
+								setFormData({
+									...formData,
+									usage_limit_per_user: value,
+								})
+							}
+						/>
+					</FormGroup>
+				</FormGroupWrapper>
 			),
 		},
 		{
 			id: 'restriction',
 			label: __('Usage Restriction', 'multivendorx'),
 			content: (
-				<>
-					<FormGroupWrapper>
-						<FormGroup
-							label={__('Minimum spend', 'multivendorx')}
-							htmlFor="minimum_amount"
-						>
-							<BasicInputUI
-								type="number"
-								name="minimum_amount"
-								value={formData.minimum_amount}
-								onChange={(value) =>
-									setFormData({
-										...formData,
-										minimum_amount: value,
-									})
-								}
-							/>
-						</FormGroup>
+				<FormGroupWrapper>
+					<FormGroup
+						label={__('Minimum spend', 'multivendorx')}
+						htmlFor="minimum_amount"
+					>
+						<BasicInputUI
+							type="number"
+							name="minimum_amount"
+							value={formData.minimum_amount}
+							onChange={(value) =>
+								setFormData({
+									...formData,
+									minimum_amount: value,
+								})
+							}
+						/>
+					</FormGroup>
 
-						<FormGroup
-							label={__('Maximum spend', 'multivendorx')}
-							htmlFor="maximum_amount"
-						>
-							<BasicInputUI
-								type="number"
-								name="maximum_amount"
-								value={formData.maximum_amount}
-								onChange={(value) =>
-									setFormData({
-										...formData,
-										maximum_amount: value,
-									})
-								}
-							/>
-						</FormGroup>
+					<FormGroup
+						label={__('Maximum spend', 'multivendorx')}
+						htmlFor="maximum_amount"
+					>
+						<BasicInputUI
+							type="number"
+							name="maximum_amount"
+							value={formData.maximum_amount}
+							onChange={(value) =>
+								setFormData({
+									...formData,
+									maximum_amount: value,
+								})
+							}
+						/>
+					</FormGroup>
 
-						<FormGroup
-							label={__('Individual use only', 'multivendorx')}
-							htmlFor="individual_use"
-						>
-							<ChoiceToggleUI
-								options={[
-									{
-										key: 'yes',
-										value: 'yes',
-										label: __('Yes', 'multivendorx'),
-									},
-									{
-										key: 'no',
-										value: 'no',
-										label: __('No', 'multivendorx'),
-									},
-								]}
-								value={formData.individual_use}
-								onChange={(val: string) =>
-									setFormData({
-										...formData,
-										individual_use: val,
-									})
-								}
-							/>
-						</FormGroup>
+					<FormGroup
+						label={__('Individual use only', 'multivendorx')}
+						htmlFor="individual_use"
+					>
+						<ChoiceToggleUI
+							options={[
+								{
+									key: 'yes',
+									value: 'yes',
+									label: __('Yes', 'multivendorx'),
+								},
+								{
+									key: 'no',
+									value: 'no',
+									label: __('No', 'multivendorx'),
+								},
+							]}
+							value={formData.individual_use}
+							onChange={(val: string) =>
+								setFormData({
+									...formData,
+									individual_use: val,
+								})
+							}
+						/>
+					</FormGroup>
 
-						<FormGroup
-							label={__('Exclude sale items', 'multivendorx')}
-							htmlFor="exclude_sale_items"
-						>
-							<ChoiceToggleUI
-								options={[
-									{
-										key: 'yes',
-										value: 'yes',
-										label: __('Yes', 'multivendorx'),
-									},
-									{
-										key: 'no',
-										value: 'no',
-										label: __('No', 'multivendorx'),
-									},
-								]}
-								value={formData.exclude_sale_items}
-								onChange={(val: string) =>
-									setFormData({
-										...formData,
-										exclude_sale_items: val,
-									})
-								}
-							/>
-						</FormGroup>
+					<FormGroup
+						label={__('Exclude sale items', 'multivendorx')}
+						htmlFor="exclude_sale_items"
+					>
+						<ChoiceToggleUI
+							options={[
+								{
+									key: 'yes',
+									value: 'yes',
+									label: __('Yes', 'multivendorx'),
+								},
+								{
+									key: 'no',
+									value: 'no',
+									label: __('No', 'multivendorx'),
+								},
+							]}
+							value={formData.exclude_sale_items}
+							onChange={(val: string) =>
+								setFormData({
+									...formData,
+									exclude_sale_items: val,
+								})
+							}
+						/>
+					</FormGroup>
 
-						<FormGroup
-							label={__('Allowed emails', 'multivendorx')}
-							htmlFor="customer_email"
-						>
-							<BasicInputUI
-								type="text"
-								name="customer_email"
-								value={formData.customer_email}
-								onChange={(value) =>
-									setFormData({
-										...formData,
-										customer_email: value,
-									})
-								}
-							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</>
+					<FormGroup
+						label={__('Allowed emails', 'multivendorx')}
+						htmlFor="customer_email"
+					>
+						<BasicInputUI
+							type="text"
+							name="customer_email"
+							value={formData.customer_email}
+							onChange={(value) =>
+								setFormData({
+									...formData,
+									customer_email: value,
+								})
+							}
+						/>
+					</FormGroup>
+				</FormGroupWrapper>
 			),
 		},
 	];
@@ -635,8 +630,7 @@ const AllCoupon: React.FC = () => {
 			},
 		},
 		discount_type: {
-			label: __('Discount Type', 'multivendorx'),
-			type: 'status',
+			label: __('Discount Type', 'multivendorx')
 		},
 		amount: {
 			label: __('Amount', 'multivendorx'),
@@ -694,9 +688,9 @@ const AllCoupon: React.FC = () => {
 					search: query.searchValue || '',
 					after: query.filter?.created_at?.startDate
 						? toWcIsoDate(
-								query.filter.created_at.startDate,
-								'start'
-							)
+							query.filter.created_at.startDate,
+							'start'
+						)
 						: undefined,
 
 					before: query.filter?.created_at?.endDate
@@ -731,6 +725,7 @@ const AllCoupon: React.FC = () => {
 			key: 'couponType',
 			label: __('Status', 'multivendorx'),
 			type: 'select',
+			size: 12,
 			options: [
 				{
 					label: __('Percentage Discount', 'multivendorx'),
@@ -824,7 +819,8 @@ const AllCoupon: React.FC = () => {
 									}
 								/>
 								<RandomInputKeyGeneratorUI
-									length="10"
+									value={formData.title}
+									length={10}
 									onChange={(value) => {
 										setFormData({
 											...formData,
@@ -866,42 +862,22 @@ const AllCoupon: React.FC = () => {
 			<PopupUI
 				position="lightbox"
 				open={confirmOpen}
-				onClose={() => {
-					setConfirmOpen(false);
-					setSelectedCoupon(null);
-				}}
-				showBackdrop={true}
-				header={{
-					icon: 'warning',
-					title: __('Are you sure?', 'multivendorx'),
-				}}
-				footer={
-					<ButtonInputUI
-						buttons={[
-							{
-								icon: 'close',
-								text: __('Cancel', 'multivendorx'),
-								color: 'red',
-								onClick: () => {
-									setConfirmOpen(false);
-									setSelectedCoupon(null);
-								},
-							},
-							{
-								icon: 'cross',
-								text: __('Delete', 'multivendorx'),
-								onClick: handleConfirmDelete,
-							},
-						]}
-					/>
-				}
+				onClose={() => setConfirmOpen(false)}
+				width={31.25}
+				height="auto"
 			>
-				<p>
-					{__(
-						'Are you sure you want to delete this coupon?',
-						'multivendorx'
-					)}
-				</p>
+				<Popup
+					confirmMode
+					title={__('Delete Coupon', 'multivendorx')}
+					confirmMessage={__('Are you sure?', 'multivendorx')}
+					confirmYesText={__('Delete', 'multivendorx')}
+					confirmNoText={__('Cancel', 'multivendorx')}
+					onConfirm={handleConfirmDelete}
+					onCancel={() => {
+						setConfirmOpen(false);
+						setSelectedCoupon(null);
+					}}
+				/>
 			</PopupUI>
 			<TableCard
 				headers={headers}

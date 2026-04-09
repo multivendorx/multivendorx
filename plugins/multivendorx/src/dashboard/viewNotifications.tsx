@@ -77,6 +77,11 @@ const ViewNotifications = (React.FC = () => {
 			<SettingsNavigator
 				settingContent={settingContent}
 				currentSetting={currentTab}
+				headerTitle={__('Notifications', 'multivendorx')}
+				headerDescription={__(
+					'lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+					'multivendorx'
+				)}
 				getForm={getForm}
 				prepareUrl={prepareUrl}
 				menuIcon={true}

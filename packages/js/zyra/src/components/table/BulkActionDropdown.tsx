@@ -51,7 +51,7 @@ const BulkActionDropdown: React.FC<BulkActionDropdownProps> = ({
                 </div>
                 {/* Conditional Bulk Actions Dropdown */}
                 {showDropdown && actions.length > 0 && onApply && (
-                    <div className="action">
+                   <div className="group-field">
                         <SelectInputUI
                             options={actions}
                             value={''}

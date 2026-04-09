@@ -105,14 +105,15 @@ const Stores = () => {
 		});
 
 		clearFieldError(name);
-		
 	};
 
 	const saveEmails = (emailList: string[], primary: string) => {
 		setFormData((prev) => ({
 			...prev,
-			primary_email: primary,
-			emails: emailList,
+			store_email: {
+				list: emailList,
+				primary: primary,
+			},
 		}));
 
 		clearFieldError('email');
@@ -142,7 +143,7 @@ const Stores = () => {
 			return;
 		}
 
-		if (!formData.primary_email?.trim()) {
+		if (!formData.store_email.primary?.trim()) {
 			setFieldError(
 				'email',
 				__('Store email is required.', 'multivendorx')
@@ -319,11 +320,10 @@ const Stores = () => {
 									{...getFieldNotice('email')}
 								>
 									<EmailsInputUI
-										value={formData.emails || []}
+										value={formData?.store_email?.list || []}
+										primary={formData?.store_email?.primary || ''}
 										enablePrimary={true}
-										onChange={(list, primary) =>
-											saveEmails(list, primary)
-										}
+										onChange={(list, primary) => saveEmails(list, primary)}
 									/>
 								</FormGroup>
 
@@ -344,7 +344,7 @@ const Stores = () => {
 										tinymceApiKey={
 											appLocalizer
 												.settings_databases_value[
-												'overview'
+											'overview'
 											]?.['tinymce_api_section'] ?? ''
 										}
 									/>

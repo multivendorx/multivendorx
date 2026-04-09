@@ -49,12 +49,14 @@ interface PopoverItem {
 interface HeaderPopover {
     toggleIcon: string;
     tooltipName?: string;
+    tooltipPosition?: 'top' | 'bottom' | 'end' | 'start';
     items?: PopoverItem[];
 }
 
 interface HeaderPopoverWithTab {
     toggleIcon: string;
     tooltipName?: string;
+    tooltipPosition?: 'top' | 'bottom' | 'end' | 'start';
     tabs?: PopoverTab[];
 }
 
@@ -146,6 +148,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                             position="menu-dropdown"
                             toggleIcon={list?.toggleIcon}
                             tooltipName={list?.tooltipName}
+                            tooltipPosition={list?.tooltipPosition}
                             width={24}
                         >
                             {list?.tabs && <TabsUI tabs={list.tabs} />}
@@ -158,23 +161,26 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                             position="menu-dropdown"
                             toggleIcon={list.toggleIcon}
                             tooltipName={list?.tooltipName}
+                            tooltipPosition={list?.tooltipPosition}
                         >
                             <ItemListUI items={list.items} />
                         </PopupUI>
                     ))}
                 </div>
             </div>
-            {notices.length > 0 &&
-                notices.map((html, i) => (
-                    <>
+            <div className="notice-wrapper">
+                {notices.length > 0 &&
+                    notices.map((html, i) => (        
+                        <>            
                         <div
                             key={i}
                             className="wp-admin-notice"
                             dangerouslySetInnerHTML={{ __html: html }}
                         />
                         <NoticeReceiver position="notice" />
-                    </>
+                        </>
                 ))}
+            </div>
             <NoticeReceiver position="float" />
         </>
     );

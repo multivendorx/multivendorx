@@ -9,6 +9,7 @@ import {
 	Tooltip,
 	TabsUI,
 	NoticeReceiver,
+	GuidedTourProvider,
 } from 'zyra';
 import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
@@ -16,6 +17,7 @@ import { __ } from '@wordpress/i18n';
 import './metaBoxes';
 import { getDashboardRoutes } from './dashboardConfig';
 import { dashNavigate } from './services/commonFunction';
+import { getTourSteps } from './dashboard/Tours';
 interface SubmenuItem {
 	key: string;
 	name: string;
@@ -96,7 +98,11 @@ const Dashboard = () => {
 		axios
 			.post(
 				`${appLocalizer.apiUrl}/wc/v3/products/`,
-				{ name: 'Auto Draft', status: 'draft' },
+				{ name: 'Auto Draft', status: 'draft', 
+					meta_data: [
+						{ key: '_is_auto_draft', value: true }
+					]
+				 },
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
 			.then((res) => setNewProductId(res.data.id))
@@ -261,7 +267,7 @@ const Dashboard = () => {
 			}
 
 			let filteredSubmenu = item.submenu;
-			
+
 			if (item.submenu?.length) {
 				filteredSubmenu = item.submenu.filter((sub) => {
 					const hasCap = hasCapability(sub.capability);
@@ -271,7 +277,8 @@ const Dashboard = () => {
 
 					if (sub.key === 'withdrawls') {
 						hasSetting =
-							appLocalizer.settings_databases_value?.['payouts']?.withdraw_type != 'disable';
+							appLocalizer.settings_databases_value?.['payouts']
+								?.withdraw_type != 'disable';
 					}
 
 					return hasCap && hasModule && hasSetting;
@@ -339,11 +346,12 @@ const Dashboard = () => {
 				.filter(Boolean)
 				.join(' ')}
 		>
-			<div
-				className="dashboard-tabs-wrapper"
-				onMouseEnter={() => setisMenuMinimize(false)}
-				onMouseLeave={() => setisMenuMinimize(true)}
-			>
+			<GuidedTourProvider
+				appLocalizer={appLocalizer}
+				steps={getTourSteps(appLocalizer)}
+				storeId={appLocalizer.store_id}
+			/>
+			<div className="dashboard-tabs-wrapper">
 				<div className="logo-wrapper">
 					{store_dashboard_logo ? (
 						<img src={store_dashboard_logo.url} alt="Site Logo" />
@@ -508,71 +516,73 @@ const Dashboard = () => {
 							</Tooltip>
 
 							{/* Notifications */}
-								<li>
-									<PopupUI
-										position="menu-dropdown"
-										toggleIcon="notification"
-										tooltipName={__('Notifications', 'multivendorx')}
-										width={24}
-										header={{
-											title: __(
-												'Notifications',
-												'multivendorx'
-											),
-										}}
-									>
-										<TabsUI
-											tabs={[
-												{
-													id: 'notifications',
-													label: __(
-														'Notifications',
+							<li>
+								<PopupUI
+									position="menu-dropdown"
+									toggleIcon="notification"
+									tooltipName={__(
+										'Notifications',
+										'multivendorx'
+									)}
+									width={24}
+									header={{
+										title: __(
+											'Notifications',
+											'multivendorx'
+										),
+									}}
+								>
+									<TabsUI
+										tabs={[
+											{
+												id: 'notifications',
+												label: __(
+													'Notifications',
+													'multivendorx'
+												),
+												icon: 'adminfont-notification',
+												content: (
+													<ul className="notification-list"></ul>
+												),
+												footer: {
+													url:
+														tabHref(
+															'view-notifications'
+														) +
+														'#subtab=notifications',
+													icon: 'adminfont-eye',
+													text: __(
+														'View all notifications',
 														'multivendorx'
 													),
-													icon: 'adminfont-notification',
-													content: (
-														<ul className="notification-list"></ul>
-													),
-													footer: {
-														url:
-															tabHref(
-																'view-notifications'
-															) +
-															'#subtab=notifications',
-														icon: 'adminfont-eye',
-														text: __(
-															'View all notifications',
-															'multivendorx'
-														),
-													},
 												},
-												{
-													id: 'activities',
-													label: __(
-														'Activities',
+											},
+											{
+												id: 'activities',
+												label: __(
+													'Activities',
+													'multivendorx'
+												),
+												icon: 'adminfont-activity',
+												content: (
+													<ul className="notification-list"></ul>
+												),
+												footer: {
+													url:
+														tabHref(
+															'view-notifications'
+														) + '#subtab=activity',
+													icon: 'adminfont-eye',
+													text: __(
+														'View all activities',
 														'multivendorx'
 													),
-													icon: 'adminfont-activity',
-													content: (
-														<ul className="notification-list"></ul>
-													),
-													footer: {
-														url:
-															tabHref(
-																'view-notifications'
-															) +
-															'#subtab=activity',
-														icon: 'adminfont-eye',
-														text: __(
-															'View all activities',
-															'multivendorx'
-														),
-													},
 												},
-											]}
-										/>
-									</PopupUI>
-								</li>
+											},
+										]}
+									/>
+								</PopupUI>
+							</li>
 
 							{/* Announcements */}
 							{modules.includes('announcement') && (

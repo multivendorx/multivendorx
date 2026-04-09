@@ -32,7 +32,7 @@ if ( $is_logged_in && $store_id ) {
 }
 ?>
 
-<div id="multivendorx-store-reviews">
+<div id="multivendorx-store-reviews" class="woocommerce-Tabs-panel panel entry-content wc-tab">
     <div id="avg-rating"></div>
 
     <div id="review-form-wrapper">

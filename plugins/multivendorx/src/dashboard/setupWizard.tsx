@@ -49,15 +49,9 @@ const SetupWizard: React.FC = () => {
 	const methods = [
 		{
 			id: 'marketplace_setup',
-			label: __(
-				'Store Profile',
-				'multivendorx'
-			),
+			label: __('Store Profile', 'multivendorx'),
 			icon: 'storefront',
-			desc: __(
-				'Set up how your store appears',
-				'multivendorx'
-			),
+			desc: __('Set up how your store appears', 'multivendorx'),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
@@ -175,50 +169,72 @@ const SetupWizard: React.FC = () => {
 		},
 		{
 			id: 'commission_setup',
-			label: __(
-				'Payout Method',
-				'multivendorx'
-			),
+			label: __('Payout Method', 'multivendorx'),
 			icon: 'storefront',
-			desc: __(
-				'Choose how you receive earnings',
-				'multivendorx'
-			),
+			desc: __('Choose how you receive earnings', 'multivendorx'),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
 			formFields: [
 				{
 					key: 'bank_transfer',
-					type: 'setup',
-					title: __('Bank Transfer', 'multivendorx'),
-					desc: __('Click to configure', 'multivendorx'),
-					hideCheckbox: true,
-					link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+					type: 'button',
+					name: __('Setup', 'multivendorx'),
+					label: __('Bank Transfer', 'multivendorx'),
+					desc: __(
+						'Click to configure',
+						'multivendorx'
+					),
+					onClick: () => {
+						window.open(
+							`${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=commissions`
+						);
+					},
 				},
 				{
 					key: 'paypal',
-					type: 'setup',
-					title: __('PayPal', 'multivendorx'),
-					desc: __('Click to configure', 'multivendorx'),
-					hideCheckbox: true,
-					link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+					type: 'button',
+					name: __('Setup', 'multivendorx'),
+					label: __('PayPal', 'multivendorx'),
+					desc: __(
+						'Click to configure',
+						'multivendorx'
+					),
+					onClick: () => {
+						window.open(
+							`${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=commissions`
+						);
+					},
 				},
 				{
 					key: 'stripe',
-					type: 'setup',
-					title: __('Stripe', 'multivendorx'),
-					desc: __('Click to configure', 'multivendorx'),
-					hideCheckbox: true,
-					link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+					type: 'button',
+					name: __('Setup', 'multivendorx'),
+					label: __('Stripe', 'multivendorx'),
+					desc: __(
+						'Click to configure',
+						'multivendorx'
+					),
+					onClick: () => {
+						window.open(
+							`${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=commissions`
+						);
+					},
 				},
 				{
 					key: 'other_methods',
-					type: 'setup',
-					title: __('Other Methods', 'multivendorx'),
-					desc: __('Click to configure', 'multivendorx'),
-					hideCheckbox: true,
-					link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+					type: 'button',
+					name: __('Setup', 'multivendorx'),
+					label: __('Other Methods', 'multivendorx'),
+					desc: __(
+						'Click to configure',
+						'multivendorx'
+					),
+					onClick: () => {
+						window.open(
+							`${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=commissions`
+						);
+					},
 				},
 				{
 					key: 'wizardButtons',
@@ -323,30 +339,13 @@ const SetupWizard: React.FC = () => {
 						},
 					],
 				},
-				// {
-				// 	key: 'wizardButtons',
-				// 	type: 'button',
-				// 	position: 'right',
-				// 	options: [
-				// 		{
-				// 			label: __('Back', 'multivendorx'),
-				// 			action: 'back',
-				// 			color: 'red',
-				// 		},
-				// 		{
-				// 			label: __('Finish', 'multivendorx'),
-				// 			action: 'next',
-				// 			redirect: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=modules`,
-				// 		},
-				// 	],
-				// },
 			],
 		},
 		{
 			id: 'more_settings',
 			label: __('First Product', 'multivendorx'),
 			icon: 'storefront',
-			desc: __("Add at least one item", 'multivendorx'),
+			desc: __('Add at least one item', 'multivendorx'),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
@@ -390,13 +389,14 @@ const SetupWizard: React.FC = () => {
 						{
 							label: __('Finish', 'multivendorx'),
 							action: 'next',
-							redirect: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=modules`,
+							redirect: `${appLocalizer.dashboard_slug}/dashboard/`,
 						},
 					],
 				},
 			],
 		},
 	];
+	
 	const updateSetting = (key: string, data: WizardData) => {
 		setValue(data);
 	};
@@ -405,10 +405,7 @@ const SetupWizard: React.FC = () => {
 		<div className="wizard-container">
 			<div className="welcome-wrapper">
 				<h4 className="wizard-title">
-					{__(
-						'Welcome to the MultivendorX family!',
-						'multivendorx'
-					)}
+					{__('Welcome to the MultivendorX family!', 'multivendorx')}
 				</h4>
 				<div className="des">
 					{__(

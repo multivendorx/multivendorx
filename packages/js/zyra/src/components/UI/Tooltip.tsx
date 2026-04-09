@@ -4,7 +4,7 @@ import '../../styles/web/UI/Tooltip.scss';
 interface TooltipProps {
     text: string;
     children: React.ReactNode;
-    position?: 'top' | 'bottom';
+    position?: 'top' | 'bottom' | 'end' | 'start';
     withOutArrow?: boolean;
     className?: string;  // hidden (opacity 0)
 }

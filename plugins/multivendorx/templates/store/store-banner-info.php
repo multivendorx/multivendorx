@@ -42,7 +42,7 @@ $banner_slider     = $meta_data['banner_slider'] ?? array();
 <div class="multivendorx-banner <?php echo esc_attr( $selected_template ); ?>">
     <div class="banner">
         <?php if ( 'static_image' === $banner_type ) : ?>
-            <?php if ( ! empty( $banner )  && is_string( $banner ) ) : ?>
+            <?php if ( ! empty( $banner ) && is_string( $banner ) ) : ?>
                 <div class="banner-img" >
                     <img src="<?php echo esc_url( $banner ); ?>" alt="">
                 </div>

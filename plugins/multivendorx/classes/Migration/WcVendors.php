@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class WcVendors {
     public function migrate_vendors() {
-        $vendors = get_users(
+        $vendors           = get_users(
             array(
 				'role__in' => array( 'vendor' ),
 				'fields'   => array( 'ID' ),
@@ -36,7 +36,7 @@ class WcVendors {
             // Change role.
             $wp_user = new \WP_User( $user_id );
             $wp_user->set_role( 'store_owner' );
-            $status           = 'active';
+            $status = 'active';
 
             // Store create.
             $store = new Store();
@@ -47,7 +47,7 @@ class WcVendors {
             $store->set( 'description', get_user_meta( $user_id, 'pv_shop_description', true ) ?? '' );
             $store_id = $store->save();
 
-            $created_store_ids[] = $store_id; 
+            $created_store_ids[] = $store_id;
             // primary owner set and add store-users table.
             StoreUtil::set_primary_owner( $user_id, $store_id );
             update_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['active_store'], $store_id );
@@ -60,19 +60,20 @@ class WcVendors {
             );
 
             // add meta in store-meta table.
-            $store->update_meta( 'primary_email', $user->email );
-            $store->update_meta( 'emails', array( $user->email ) );
-
-            $address1 = get_user_meta($user_id, '_wcv_store_address1', true);
-            $address2 = get_user_meta($user_id, '_wcv_store_address2', true);
-            $address = trim($address1 . ' ' . $address2);
+            $store->update_meta( 'store_email', array(
+                'list'    => array( $user->email ),
+                'primary' => $user->email,
+            ) );
+            $address1 = get_user_meta( $user_id, '_wcv_store_address1', true );
+            $address2 = get_user_meta( $user_id, '_wcv_store_address2', true );
+            $address  = trim( $address1 . ' ' . $address2 );
             $store->update_meta( 'address', $address );
-            $store->update_meta( 'city', get_user_meta($user_id, '_wcv_store_city', true) );
-            $store->update_meta( 'zip', get_user_meta($user_id, '_wcv_store_postcode', true) );
-            $store->update_meta( 'country', get_user_meta($user_id, '_wcv_store_country', true) );
-            $store->update_meta( 'state', get_user_meta($user_id, '_wcv_store_state', true) );
+            $store->update_meta( 'city', get_user_meta( $user_id, '_wcv_store_city', true ) );
+            $store->update_meta( 'zip', get_user_meta( $user_id, '_wcv_store_postcode', true ) );
+            $store->update_meta( 'country', get_user_meta( $user_id, '_wcv_store_country', true ) );
+            $store->update_meta( 'state', get_user_meta( $user_id, '_wcv_store_state', true ) );
 
-            $country      = get_user_meta($user_id, '_wcv_store_country', true);
+            $country      = get_user_meta( $user_id, '_wcv_store_country', true );
             $wc_countries = new \WC_Countries();
             $calling_code = $wc_countries->get_country_calling_code( $country );
             $calling_code = ! empty( $calling_code ) ? '+' . $calling_code : '';
@@ -81,7 +82,7 @@ class WcVendors {
                 'phone',
                 array(
                     'country_code' => $calling_code,
-                    'phone'        => preg_replace( '/[^0-9]/', '', get_user_meta($user_id, '_wcv_store_phone', true) ),
+                    'phone'        => preg_replace( '/[^0-9]/', '', get_user_meta( $user_id, '_wcv_store_phone', true ) ),
                 )
             );
         }
@@ -89,7 +90,7 @@ class WcVendors {
     }
 
     public function migrate_products() {
-        $products = wc_get_products(
+        $products      = wc_get_products(
             array(
 				'status' => 'any',
 				'return' => 'ids',
@@ -105,7 +106,7 @@ class WcVendors {
             if ( in_array( 'vendor', (array) $user->roles, true ) ) {
                 $active_store = get_user_meta( $author_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
                 update_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], $active_store );
-                $updated_count++;
+                ++$updated_count;
             }
         }
         return $updated_count;
@@ -113,8 +114,8 @@ class WcVendors {
 
     public function migrate_orders_and_commissions() {
         global $wpdb;
-        $wc_orders_table      = $wpdb->prefix . 'pv_commission';
-        $table_name = $wpdb->prefix . Utill::TABLES['commission'];
+        $wc_orders_table = $wpdb->prefix . 'pv_commission';
+        $table_name      = $wpdb->prefix . Utill::TABLES['commission'];
 
         $wc_orders = $wpdb->get_results( "SELECT * FROM {$wc_orders_table}" );
 
@@ -124,26 +125,28 @@ class WcVendors {
             if ( ! $order ) {
 				continue;
             }
-            $store_id  = get_user_meta( $row->vendor_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
+            $store_id = get_user_meta( $row->vendor_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
 
-            $suborder = wc_create_order([
-                'customer_id' => $order->get_customer_id(),
-            ]);
+            $suborder = wc_create_order(
+                array(
+					'customer_id' => $order->get_customer_id(),
+                )
+            );
             // Set parent order
-            $suborder->set_parent_id($order_id);
-            $product = wc_get_product($row->product_id);
+            $suborder->set_parent_id( $order_id );
+            $product = wc_get_product( $row->product_id );
             $suborder->add_product(
                 $product,
                 $row->quantity,
             );
             // Copy billing & shipping
-            $suborder->set_address($order->get_address('billing'), 'billing');
-            $suborder->set_address($order->get_address('shipping'), 'shipping');
-            $suborder->set_payment_method($order->get_payment_method());
+            $suborder->set_address( $order->get_address( 'billing' ), 'billing' );
+            $suborder->set_address( $order->get_address( 'shipping' ), 'shipping' );
+            $suborder->set_payment_method( $order->get_payment_method() );
             // Calculate totals
             $suborder->calculate_totals();
             // Set status
-            $suborder->update_status($order->get_status());
+            $suborder->update_status( $order->get_status() );
             $suborder->set_created_via( Utill::ORDER_META_SETTINGS['multivendorx_store_order'] );
             $suborder->update_meta_data( Utill::POST_META_SETTINGS['store_id'], $store_id );
             $suborder->save();
@@ -161,7 +164,7 @@ class WcVendors {
                     'store_payable'          => $row->total_due,
                     'marketplace_payable'    => $suborder->get_total() - $row->total_due,
                     'currency'               => $order->get_currency(),
-                    'status'                 => in_array($suborder->get_status(), ['pending', 'on-hold', 'cancelled', 'draft', 'failed']) ? 'unpaid' : 'paid',
+                    'status'                 => in_array( $suborder->get_status(), array( 'pending', 'on-hold', 'cancelled', 'draft', 'failed' ) ) ? 'unpaid' : 'paid',
                 ),
                 array(
 					'%d',
@@ -184,28 +187,27 @@ class WcVendors {
             $order->update_meta_data( 'multivendorx_commissions_processed', 'yes' );
             $order->save();
 
-
             // Transaction
-            if ($row->status == 'paid' && in_array($suborder->get_status(), ['processing','completed'])) {
-                $entry_type = 'Cr';
+            if ( $row->status == 'paid' && in_array( $suborder->get_status(), array( 'processing', 'completed' ) ) ) {
+                $entry_type       = 'Cr';
                 $transaction_type = 'Commission';
-                $amount = $row->total_due;
-                $status = 'Completed';
-            } 
-            
-            if ($row->status == 'due' && in_array($suborder->get_status(), ['processing','completed'])) {
-                $entry_type = 'Cr';
-                $transaction_type = 'Commission';
-                $amount = $row->total_due;
-                $status = 'Upcoming';
-            } 
+                $amount           = $row->total_due;
+                $status           = 'Completed';
+            }
 
-            if ($row->status == 'reversed') {
-                $entry_type = 'Dr';
+            if ( $row->status == 'due' && in_array( $suborder->get_status(), array( 'processing', 'completed' ) ) ) {
+                $entry_type       = 'Cr';
+                $transaction_type = 'Commission';
+                $amount           = $row->total_due;
+                $status           = 'Upcoming';
+            }
+
+            if ( $row->status == 'reversed' ) {
+                $entry_type       = 'Dr';
                 $transaction_type = 'Withdraw';
-                $amount = $row->total_due;
-                $status = 'Completed';
-            } 
+                $amount           = $row->total_due;
+                $status           = 'Completed';
+            }
 
             $data = array(
                 'store_id'         => (int) $store_id,
@@ -227,16 +229,15 @@ class WcVendors {
         }
 
         $this->deactive_previous_multivendor();
-        wp_clear_scheduled_hook('multivendorx_order_migration');
+        wp_clear_scheduled_hook( 'multivendorx_order_migration' );
     }
 
     // Deactive wc vendor multivendor
 	public function deactive_previous_multivendor() {
 		// WC vendor free deactive
-		require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
-		if ( is_plugin_active('wc-vendors/class-wc-vendors.php') ) {
-	    	deactivate_plugins('wc-vendors/class-wc-vendors.php');    
+		require_once ABSPATH . '/wp-admin/includes/plugin.php';
+		if ( is_plugin_active( 'wc-vendors/class-wc-vendors.php' ) ) {
+	    	deactivate_plugins( 'wc-vendors/class-wc-vendors.php' );
 	    }
 	}
-
 }

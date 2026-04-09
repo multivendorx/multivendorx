@@ -10,6 +10,7 @@ import {
 	SelectInputUI,
 	ChoiceToggleUI,
 	useModules,
+	SectionUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -28,6 +29,10 @@ const ShippingCard = ({
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/products/shipping_classes`, {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					meta_key: 'multivendorx_store_id',
+					meta_value: appLocalizer.store_id,
+				},
 			})
 			.then((res) => {
 				const options = res.data.map((cls) => ({
@@ -40,11 +45,7 @@ const ShippingCard = ({
 	}, []);
 
 	return (
-		<Card
-			title={__('Product delivery', 'multivendorx')}
-			// iconName="keyboard-arrow-down arrow-icon icon"
-			// toggle
-		>
+		<Card title={__('How will this be delivered?', 'multivendorx')} desc={__('Choose how customers receive this product after purchase.', 'multivendorx')}>
 			{/* Dimensions */}
 			<FormGroupWrapper>
 				<FormGroup>
@@ -59,6 +60,7 @@ const ShippingCard = ({
 												'Physical',
 												'multivendorx'
 											),
+											desc: __('Customer receives a file — e.g. a PDF, software, or digital artwork.', 'multivendorx'),
 										},
 									]
 								: []),
@@ -66,13 +68,22 @@ const ShippingCard = ({
 								key: 'downloadable',
 								value: 'downloadable',
 								label: __('Downloadable', 'multivendorx'),
+								desc: __("Item is packed and shipped to the customer's address.", 'multivendorx'),
+							},
+							{
+								key: 'digital_product_service',
+								value: 'digital_product_service',
+								label: __('Digital product service', 'multivendorx'),
+								desc: __("Item is packed and shipped to the customer's address.", 'multivendorx'),
 							},
 							{
 								key: 'others',
 								value: 'others',
 								label: __('Others', 'multivendorx'),
+								desc: __("Service, appointment, or something that doesn't fit the above.", 'multivendorx'),
 							},
 						]}
+						custom = {true}
 						value={productType}
 						onChange={(val) => {
 							setProductType(val);
@@ -88,6 +99,7 @@ const ShippingCard = ({
 				{productType === 'physical' &&
 					!typeFields.includes('virtual') && (
 						<>
+							<SectionUI title={__('Package dimensions & weight', 'multivendorx' )} desc={__('Used to calculate accurate shipping rates at checkout.', 'multivendorx')}/>
 							{/* Weight & Shipping class */}
 							<FormGroup
 								cols={2}

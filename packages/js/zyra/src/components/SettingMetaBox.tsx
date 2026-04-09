@@ -13,6 +13,7 @@ import { ButtonInputUI } from './ButtonInput';
 import Card from './UI/Card';
 import FormGroupWrapper from './UI/FormGroupWrapper';
 import FormGroup from './UI/FormGroup';
+import { TextAreaUI } from './TextArea';
 
 // TYPES
 type FormFieldValue =
@@ -151,7 +152,7 @@ const ContentGroup: React.FC<{
     title: string;
     children: React.ReactNode;
 }> = ({ title, children }) => (
-    <Card toggle defaultExpanded={false} title={title}>
+    <Card toggle defaultExpanded={true} title={title}>
         <FormGroupWrapper>{children}</FormGroupWrapper>
     </Card>
 );
@@ -314,20 +315,16 @@ const createFieldRenderers = (): Record<
 
     // Content blocks
     richtext: ({ formField, onChange }) => (
-        <>
-            <ContentGroup title="Content">
-                <FormGroup label="HTML Content">
-                    <textarea
-                        value={formField.html || ''}
-                        onChange={(e) => onChange('html', e.target.value)}
-                        className="basic-input"
-                        placeholder="Enter HTML content"
-                        rows={6}
-                        style={{ fontFamily: 'monospace', width: '100%' }}
-                    />
-                </FormGroup>
-            </ContentGroup>
-        </>
+        <ContentGroup title="Content">
+            <FormGroup label="HTML Content">
+                <TextAreaUI
+                    name="html"
+                    value={formField.html || ''}
+                    onChange={(val) => onChange('html', val as string)}
+                    placeholder="Enter HTML content"
+                />
+            </FormGroup>
+        </ContentGroup>
     ),
 
     heading: ({ formField, onChange }) => (
@@ -400,6 +397,107 @@ const createFieldRenderers = (): Record<
                         ))}
                     </select>
                 </FormGroup>
+                <FormGroup label="Justify Content">
+                <ChoiceToggleUI
+                    options={[
+                        {
+                            key: 'flex-start',
+                            value: 'flex-start',
+                            icon: 'left-align',
+                        },
+                        {
+                            key: 'center',
+                            value: 'center',
+                            icon: 'center-align',
+                        },
+                        {
+                            key: 'flex-end',
+                            value: 'flex-end',
+                            icon: 'right-align',
+                        },
+                        {
+                            key: 'space-between',
+                            value: 'space-between',
+                            icon: 'justify-align',
+                        },
+                        {
+                            key: 'space-around',
+                            value: 'space-around',
+                            icon: 'right-align',
+                        },
+                        {
+                            key: 'space-evenly',
+                            value: 'space-evenly',
+                            icon: 'right-align',
+                        },
+                    ]}
+                    value={formField.style?.justifyContent || 'flex-start'}
+                    onChange={(val) => {
+                        const currentStyle = formField.style || {};
+                        onChange('style', {
+                            ...currentStyle,
+                            justifyContent: val,
+                        });
+                    }}
+                />
+            </FormGroup>
+            <FormGroup label="Align Items">
+                <ChoiceToggleUI
+                    options={[
+                        {
+                            key: 'stretch',
+                            value: 'stretch',
+                            icon: 'align-stretch',
+                        },
+                        {
+                            key: 'flex-start',
+                            value: 'flex-start',
+                            icon: 'align-top',
+                        },
+                        {
+                            key: 'center',
+                            value: 'center',
+                            icon: 'align-center',
+                        },
+                        {
+                            key: 'flex-end',
+                            value: 'flex-end',
+                            icon: 'align-bottom',
+                        },
+                        {
+                            key: 'baseline',
+                            value: 'baseline',
+                            icon: 'align-baseline',
+                        },
+                    ]}
+                    value={formField.style?.alignItems || 'stretch'}
+                    onChange={(val) => {
+                        const currentStyle = formField.style || {};
+                        onChange('style', {
+                            ...currentStyle,
+                            alignItems: val,
+                        });
+                    }}
+                />
+            </FormGroup>
+
+            {/* Gap */}
+            <FormGroup cols={2} label="Gap (rem)">
+                <BasicInputUI
+                    type="number"
+                    minNumber={0}
+                    maxNumber={5}
+                    step={0.25}
+                    value={formField.style?.gap ?? 1}
+                    onChange={(val) => {
+                        const currentStyle = formField.style || {};
+                        onChange('style', {
+                            ...currentStyle,
+                            gap: Number(val),
+                        });
+                    }}
+                />
+            </FormGroup>
             </ContentGroup>
         </>
     ),
@@ -454,7 +552,7 @@ const createFieldRenderers = (): Record<
                     onChange={handleChange}
                     className={!isValid ? 'highlight' : ''}
                 />
-                <p>
+                <div>
                     Register your site with Google to obtain the{' '}
                     <a
                         href="https://www.google.com/recaptcha"
@@ -464,7 +562,7 @@ const createFieldRenderers = (): Record<
                         reCAPTCHA script
                     </a>
                     .
-                </p>
+                </div>
             </>
         );
     },
