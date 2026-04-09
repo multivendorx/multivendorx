@@ -115,7 +115,11 @@ class Modules {
 
                 $module_id = $this->camel_to_kebab( $folder );
 
-                $this->modules[ $module_id ] = array(
+                $key = array_key_exists($module_id, $this->modules)
+                    ? $namespace . '_' . $module_id
+                    : $module_id;
+
+                $this->modules[$key] = array(
                     'id'           => $module_id,
                     'module_file'  => $module_file,
                     'module_class' => "{$namespace}\\{$folder}\\Module",
