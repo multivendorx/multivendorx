@@ -2,15 +2,10 @@
 
 .settings-calender {
     position: relative;
+
     .rmdp-container {
         width: 16.5rem;
     }
-
-
-
-    // &:has(.calendar-wrapper) {
-    //     width: 100%;
-    // }
 
     // without input calendar start
     .calendar-wrapper {
@@ -72,9 +67,7 @@
                             }
 
                             &:not(.rmdp-day-hidden) {
-                                span.sd {
-                                    background: #efecec;
-                                }
+                                background: #efecec;
                             }
                         }
                     }
@@ -130,30 +123,142 @@
                 }
             }
         }
+
         // today yesterday section end
     }
 
 
+    // input calendar start
+
     // tabs 
-    .calendar-tabs-container{
+    .calendar-tabs-container {
         position: absolute;
         z-index: 99;
         background: $background-white;
-        width: 20rem;
+        width: 25rem;
         right: 0;
+        border-radius: $border-radius-small;
+        box-shadow: $box-shadow;
 
-        .range-picker-wrapper{
+        .range-picker-wrapper {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
             justify-content: center;
-            div{
+            padding: 0.85rem;
+
+            div {
                 width: calc(50% - 0.5rem);
                 padding: 0.625rem;
                 box-sizing: border-box;
                 background: $theme-background-color;
                 border-radius: $border-radius-small;
+                color: $theme-color;
+                text-align: center;
+                font-size: 1rem;
+                cursor: pointer;
+            }
+        }
+
+        // tab
+        .tabs-item {
+            width: 100%;
+            padding-top: 0.45rem;
+
+            .tab {
+                width: 50%;
+                justify-content: center;
+                font-size: 1.063rem;
+            }
+        }
+
+    }
+
+    .calendar-tabs-container.open-downward {
+        top: calc(100% + 0.5rem);
+        bottom: auto;
+    }
+
+    .calendar-tabs-container.open-upward {
+        bottom: calc(100% + 0.5rem);
+        top: auto;
+    }
+
+    .input-calendar {
+        box-shadow: none !important; // for overwrite calender component 
+
+        .rmdp-calendar {
+            width: 100%;
+        }
+
+        // header
+        .rmdp-header {
+            .rmdp-header-values {
+                font-size: 1.313rem;
+                font-weight: 500;
+
+            }
+
+            .rmdp-arrow-container {
+                color: $theme-color;
+
+                i {
+                    width: 0.45rem;
+                    height: 0.45rem;
+                    cursor: pointer;
+                    border-color: $theme-color;
+                }
+
+                &:hover {
+                    background: transparent;
+                }
+            }
+        }
+
+        .rmdp-day-picker {
+
+            // week row
+            .rmdp-week .rmdp-week-day {
+                color: $theme-color;
+                width: 3.313rem;
+                font-size: 1.125rem;
+                padding-bottom: 0.5rem;
+            }
+
+            .rmdp-day-picker {
+                justify-content: center;
+            }
+
+            .rmdp-day {
+                width: 3.313rem;
+                height: 3.313rem;
+
+                span.sd {
+                    font-size: 1.063rem;
+                }
+
+                // selected date
+                &.rmdp-range {
+                    background: $theme-background-color;
+                    color: $theme-color;
+                    box-shadow: none;
+                }
+
+                // today date
+                &.rmdp-today span {
+                    background: $theme-color;
+                    color: #fff;
+                }
+            }
+
+
+
+            .rmdp-day:not(.rmdp-disabled, .rmdp-day-hidden) span:hover {
+                background: $theme-background-color;
+                color: $theme-color;
             }
         }
     }
+
+    // input calendar end
 }

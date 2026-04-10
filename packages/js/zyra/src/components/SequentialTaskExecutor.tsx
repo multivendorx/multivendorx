@@ -218,7 +218,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         return taskSequence.map((task, index) => ({
             id: `task-${index}`,
             title: task.message,
-            desc: task.status,
+            // desc: task.status,
             icon: task.status,
             className: `task-status-${task.status}`,
         }));

@@ -21,6 +21,7 @@
             gap: 0.5rem;
             align-items: center;
             white-space: nowrap;
+            flex-wrap: wrap;
         }
 
         .notification-icon {
@@ -197,25 +198,19 @@
         content: "\e953";
     }
     .store-suspended::before {
-        content: "\e953";
-    }
-    .new-order::before{
-       content: "\ef76";
+        content: "\e962";
     }
     .order-completed::before{
-       content: "\e957";
-    }
-    .order-completed::before{
-       content: "\e957";
+       content: "\e959";
     }
     .order-cancelled::before{
-        content: "\e957"; // replace
+        content: "\e927"; 
     }
     .order-delivered-alt::before{
         content: "\e944";
     }
     .product-approved::before{
-        content: "\e93f";
+        content: "\e941";
     }
     .payout-received::before{
         content: "\e940";
@@ -234,5 +229,116 @@
     }
     .product-rejected:before {
         content: "\e964";
+    }
+    .store-permanently-rejected:before{
+        content: "\e912";
+    }
+    .store-account-created-by-admin:before{
+        content: "\e520";
+    }
+    .store-under-review:before{
+        content: "\e964";
+    }
+    .store-deactivation-request-rejected:before{
+        content: "\e955";
+    }
+    .new-order-store:before{
+        content: "\efff";
+    }
+    .order-processing:before{
+        content: "\e953";
+    }
+     .order-processing:before{
+        content: "\e953";
+    }
+    .order-refunded:before{
+        content: "\e957";
+    }
+    .shipment-tracking-added:before{
+        content: "\ef91";
+    }
+    .order-delivered:before{
+        content: "\e945";
+    }
+    .refund-requested:before{
+        content: "\ef4f";
+    }
+    .refund-accepted:before{
+        content: "\e941";
+    }
+    .refund-rejected:before{
+        content: "\e810";
+    }
+    .new-store-review:before{
+        content: "\ef44";
+    }
+    .review-reply:before{
+        content: "\efe2";
+    }
+    .review-reply:before{
+        content: "\efe2";
+    }
+    .product-submitted:before{
+        content: "\ef8a";
+    } 
+    .product-rejected:before{
+        content: "\e928";
+    } 
+    .product-rejected:before{
+        content: "\e928";
+    } 
+    .product-out-of-stock:before{
+        content: "\e951";
+    } 
+    .product-low-stock:before{
+        content: "\ef45";
+    } 
+    .product-question-submitted:before{
+        content: "\e92f";
+    }
+    .product-question-reply:before{
+        content: "\e93f";
+    }
+    .payout-failed:before{
+        content: "\ef53";
+    }
+    .payout-failed:before{
+        content: "\ef53";
+    }
+    .withdrawal-released:before{
+        content: "\ef80";
+    }
+    .withdrawl-rejected:before{
+        content: "\e927";
+    }
+    .report-abuse-submitted:before{
+        content: "\ef58";
+    }
+    .system-announcement:before{
+        content: "\ef37";
+    }
+    .store-followed:before{
+        content: "\ef43";
+    }
+    .store-followed:before{
+        content: "\ef43";
+    }
+    .store-new-product-to-followers:before{
+        content: "\ef8e";
+    }
+    .store-new-coupon-to-followers:before{
+        content: "\e92c";
+    }
+    .store-vacation-alert-to-followers:before{
+        content: "\ef67";
+    }
+    .store-permanently-deactivated:before{
+        content: "\e928";
+    }
+    .store-permanently-deactivated:before{
+        content: "\e928";
+    }
+    .store-account-deactivation-request:before{
+        content: "\ef76";
     }
 }

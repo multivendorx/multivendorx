@@ -200,7 +200,11 @@
                         background: #ebebeb;
                     }
                 }
-
+                .email-column-wrapper {
+                    .email-column{
+                        flex-direction: column;
+                    }
+                }
                 &.layout-1 {
                     flex-direction: column;
 

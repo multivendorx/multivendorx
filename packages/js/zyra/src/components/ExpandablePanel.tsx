@@ -82,6 +82,7 @@ interface ExpandablePanelProps {
     addNewBtn?: boolean;
     addNewTemplate?: AddNewTemplate;
     min?: number;
+    editTitleShow?: boolean;
     onBlocked?: (type: 'pro' | 'plugin', payload?: unknown) => void;
 }
 
@@ -98,6 +99,7 @@ type PanelState = {
     editField: 'title' | 'description' | null;
     editTitle: string;
     editDesc: string;
+    editTitleShow?: boolean;
 };
 
 type PanelAction =
@@ -134,6 +136,7 @@ interface PanelContextType {
     dispatch: React.Dispatch<PanelAction>;
     value: Record<string, Record<string, unknown>>;
     isWizardMode: boolean;
+    editTitleShow: boolean;
     canAccess: boolean;
     addNewTemplate?: AddNewTemplate;
     tplFields: PanelFormField[];
@@ -314,6 +317,7 @@ const PanelHeader: React.FC = () => {
         handleChange,
         commitEdit,
         isWizardMode,
+        editTitleShow
     } = usePanel();
 
     const { method, methodValue, isOpen, isOn, hasFields, icon, title, desc } =
@@ -531,6 +535,7 @@ const PanelHeader: React.FC = () => {
 
                         {/* Description (inline-editable for custom) */}
                         <div className="panel-description">
+                            {editTitleShow && ( <b> {title}: </b> )}
                             {editing &&
                                 editField === 'description' &&
                                 canEditField(
@@ -926,6 +931,7 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
     addNewTemplate,
     min,
     onBlocked,
+    editTitleShow
 }) => {
     const tplFields = addNewTemplate?.formFields ?? [];
 
@@ -1384,6 +1390,7 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
         renderField,
         commitEdit,
         shouldRender,
+        editTitleShow: editTitleShow ?? false,
     };
 
     // ── Render ────────────────────────────────────────────────────────────────

@@ -441,15 +441,14 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                             {label} <span>({palette.length})</span>
                         </div>
                         <i
-                            className={`adminfont-pagination-right-arrow ${
-                                openGroups[id] ? 'rotate' : ''
-                            }`}
+                            className={`adminfont-pagination-right-arrow ${openGroups[id] ? 'rotate' : ''
+                                }`}
                         />
                     </div>
                     {openGroups[id] && (
                         <ReactSortable
                             list={palette}
-                            setList={() => {}}
+                            setList={() => { }}
                             sort={false}
                             group={{
                                 name: groupName,
@@ -491,26 +490,30 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
 
     const renderTemplatesContent = () => (
         <aside className="elements-section">
-            <div className="section-meta">
+            {/* <div className="section-meta">
                 <h2>
                     Templates <span>({templates.length})</span>
                 </h2>
-            </div>
-            <main className="section-container open">
-                {templates.map(({ id, name, previewText }) => (
+            </div> */}
+            <main className="template-list">
+                {templates.map(({ id, name }) => (
                     <div
                         key={id}
-                        className={`template-item ${
-                            id === activeTemplateId ? 'active' : ''
-                        }`}
+                        className={`template-item ${id === activeTemplateId ? 'active' : ''
+                            }`}
                         onClick={() => onTemplateSelect?.(id)}
                     >
                         <div className="template-name">{name}</div>
-                        {previewText && (
-                            <div className="template-preview">
-                                {previewText}
+
+                        <div className="template-image-wrapper">
+                            <div className="template-image">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
                             </div>
-                        )}
+                        </div>
                     </div>
                 ))}
             </main>
@@ -528,11 +531,11 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                         },
                         ...(showTemplatesTab && templates.length
                             ? [
-                                  {
-                                      label: 'Templates',
-                                      content: renderTemplatesContent(),
-                                  },
-                              ]
+                                {
+                                    label: 'Templates',
+                                    content: renderTemplatesContent(),
+                                },
+                            ]
                             : []),
                     ]}
                 />
@@ -600,16 +603,16 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                     )}
                 </ReactSortable>
                 {isFormBuilder && submitBlock && (
-                        <BlockRenderer
-                            block={submitBlock}
-                            isActive={openBlock?.id === submitBlock.id}
-                            onSelect={() => setOpenBlock(submitBlock)}
-                            onChange={(patch) => {
-                                const index = blocks.findIndex(b => b.id === submitBlock.id);
-                                updateBlock(index, patch);
-                            }}
-                            showMeta={false} // no drag, no delete
-                        />
+                    <BlockRenderer
+                        block={submitBlock}
+                        isActive={openBlock?.id === submitBlock.id}
+                        onSelect={() => setOpenBlock(submitBlock)}
+                        onChange={(patch) => {
+                            const index = blocks.findIndex(b => b.id === submitBlock.id);
+                            updateBlock(index, patch);
+                        }}
+                        showMeta={false} // no drag, no delete
+                    />
                 )}
             </div>
 

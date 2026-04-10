@@ -27,14 +27,16 @@
     a:hover {
         color: #000;
     }
-    .image{
+
+    .image {
         display: flex;
         flex-direction: column;
         align-items: end;
+
         img {
             width: 11rem;
         }
-    }       
+    }
 }
 
 // welcome section end
@@ -689,8 +691,12 @@
 
 // template-list style start
 .template-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
     .template-item {
-        width: 47%;
+        width: calc(50% - 0.5rem);
         box-sizing: border-box;
         font-size: 0.95rem;
         font-weight: 400;
@@ -1182,12 +1188,44 @@
 
 
 // common and remove
-.notice-settings{
+.notice-settings {
     .form-group-wrapper {
         gap: 1rem !important;
-        .form-group  {
-        padding: 0 !important;
+
+        .form-group {
+            padding: 0 !important;
+        }
     }
+
+}
+
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+
+    .item {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        width: 60%;
+        position: relative;
+        padding-bottom: 0.5rem;
+        .item-title{
+            font-size: 1rem;
+        }
+        .item-icon{
+            font-size: 1.25rem;
+            color: green;
+        }
+        &:after {
+            position: absolute;
+            width: 100%;
+            height: 0.125rem;
+            content: "";
+            background: green;
+            bottom: 0;
+        }
     }
-    
 }

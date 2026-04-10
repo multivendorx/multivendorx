@@ -98,7 +98,7 @@ a {
   .basic-input,
   .basic-select,
   .textarea-input,
-  .rmdp-input {
+  .calender-input {
     min-height: 2.213rem !important; // for overwrite wordpress style
   }
 
@@ -245,7 +245,7 @@ $index: 1;
 .basic-input,
 .basic-select,
 .textarea-input,
-.rmdp-input,
+.calender-input,
 .basic-input:-webkit-autofill {
   width: 100%;
   border: $border-light-small !important; // for overwrite wordpress style

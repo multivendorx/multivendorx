@@ -397,107 +397,110 @@ const createFieldRenderers = (): Record<
                         ))}
                     </select>
                 </FormGroup>
-                <FormGroup label="Justify Content">
-                <ChoiceToggleUI
-                    options={[
-                        {
-                            key: 'flex-start',
-                            value: 'flex-start',
-                            icon: 'left-align',
-                        },
-                        {
-                            key: 'center',
-                            value: 'center',
-                            icon: 'center-align',
-                        },
-                        {
-                            key: 'flex-end',
-                            value: 'flex-end',
-                            icon: 'right-align',
-                        },
-                        {
-                            key: 'space-between',
-                            value: 'space-between',
-                            icon: 'justify-align',
-                        },
-                        {
-                            key: 'space-around',
-                            value: 'space-around',
-                            icon: 'right-align',
-                        },
-                        {
-                            key: 'space-evenly',
-                            value: 'space-evenly',
-                            icon: 'right-align',
-                        },
-                    ]}
-                    value={formField.style?.justifyContent || 'flex-start'}
-                    onChange={(val) => {
-                        const currentStyle = formField.style || {};
-                        onChange('style', {
-                            ...currentStyle,
-                            justifyContent: val,
-                        });
-                    }}
-                />
-            </FormGroup>
-            <FormGroup label="Align Items">
-                <ChoiceToggleUI
-                    options={[
-                        {
-                            key: 'stretch',
-                            value: 'stretch',
-                            icon: 'align-stretch',
-                        },
-                        {
-                            key: 'flex-start',
-                            value: 'flex-start',
-                            icon: 'align-top',
-                        },
-                        {
-                            key: 'center',
-                            value: 'center',
-                            icon: 'align-center',
-                        },
-                        {
-                            key: 'flex-end',
-                            value: 'flex-end',
-                            icon: 'align-bottom',
-                        },
-                        {
-                            key: 'baseline',
-                            value: 'baseline',
-                            icon: 'align-baseline',
-                        },
-                    ]}
-                    value={formField.style?.alignItems || 'stretch'}
-                    onChange={(val) => {
-                        const currentStyle = formField.style || {};
-                        onChange('style', {
-                            ...currentStyle,
-                            alignItems: val,
-                        });
-                    }}
-                />
-            </FormGroup>
 
-            {/* Gap */}
-            <FormGroup cols={2} label="Gap (rem)">
-                <BasicInputUI
-                    type="number"
-                    minNumber={0}
-                    maxNumber={5}
-                    step={0.25}
-                    value={formField.style?.gap ?? 1}
-                    onChange={(val) => {
-                        const currentStyle = formField.style || {};
-                        onChange('style', {
-                            ...currentStyle,
-                            gap: Number(val),
-                        });
-                    }}
-                />
-            </FormGroup>
+                {/* justify content field  */}
+                {/* <FormGroup label="Justify Content">
+                    <ChoiceToggleUI
+                        options={[
+                            {
+                                key: 'flex-start',
+                                value: 'flex-start',
+                                icon: 'left-align',
+                            },
+                            {
+                                key: 'center',
+                                value: 'center',
+                                icon: 'center-align',
+                            },
+                            {
+                                key: 'flex-end',
+                                value: 'flex-end',
+                                icon: 'right-align',
+                            },
+                            {
+                                key: 'space-between',
+                                value: 'space-between',
+                                icon: 'justify-align',
+                            },
+                            {
+                                key: 'space-around',
+                                value: 'space-around',
+                                icon: 'right-align',
+                            },
+                            {
+                                key: 'space-evenly',
+                                value: 'space-evenly',
+                                icon: 'right-align',
+                            },
+                        ]}
+                        value={formField.style?.justifyContent || 'flex-start'}
+                        onChange={(val) => {
+                            const currentStyle = formField.style || {};
+                            onChange('style', {
+                                ...currentStyle,
+                                justifyContent: val,
+                            });
+                        }}
+                    />
+                </FormGroup> */}
+                {/* align item field  */}
+                {/* <FormGroup label="Align Items">
+                    <ChoiceToggleUI
+                        options={[
+                            {
+                                key: 'stretch',
+                                value: 'stretch',
+                                icon: 'align-stretch',
+                            },
+                            {
+                                key: 'flex-start',
+                                value: 'flex-start',
+                                icon: 'align-top',
+                            },
+                            {
+                                key: 'center',
+                                value: 'center',
+                                icon: 'align-center',
+                            },
+                            {
+                                key: 'flex-end',
+                                value: 'flex-end',
+                                icon: 'align-bottom',
+                            },
+                            {
+                                key: 'baseline',
+                                value: 'baseline',
+                                icon: 'align-baseline',
+                            },
+                        ]}
+                        value={formField.style?.alignItems || 'stretch'}
+                        onChange={(val) => {
+                            const currentStyle = formField.style || {};
+                            onChange('style', {
+                                ...currentStyle,
+                                alignItems: val,
+                            });
+                        }}
+                    />
+                </FormGroup> */}
+
+                {/* Gap */}
+                <FormGroup cols={2} label="Gap (rem)">
+                    <BasicInputUI
+                        type="number"
+                        minNumber={0}
+                        maxNumber={5}
+                        step={0.25}
+                        value={formField.style?.gap ?? 1}
+                        onChange={(val) => {
+                            const currentStyle = formField.style || {};
+                            onChange('style', {
+                                ...currentStyle,
+                                gap: Number(val),
+                            });
+                        }}
+                    />
+                </FormGroup>
             </ContentGroup>
         </>
     ),
@@ -661,10 +664,9 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
         <div className="setting-panel" onClick={(e) => e.stopPropagation()}>
             <div className="settings-title">
                 {formField.type
-                    ? `${
-                          formField.type.charAt(0).toUpperCase() +
-                          formField.type.slice(1)
-                      } settings`
+                    ? `${formField.type.charAt(0).toUpperCase() +
+                    formField.type.slice(1)
+                    } settings`
                     : 'Input settings'}
             </div>
             <FormGroupWrapper>
@@ -691,19 +693,21 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                 ) : (
                     // Edit mode
                     <>
-                        {metaType === 'setting-meta' ? (
+                        {/* {metaType === 'setting-meta' ? (
                             <FormFieldSelect
                                 inputTypeList={inputTypeList}
                                 formField={formField}
                                 onTypeChange={(type) => onTypeChange?.(type)}
                             />
-                        ) : (
+                        ) : ( */}
+                        {!metaType === 'setting-meta' && (
                             <InputField
                                 label="Value"
                                 value={option?.value || ''}
                                 onChange={handleValueChange}
                             />
                         )}
+                        {/* )} */}
 
                         <InputField
                             label={metaType === 'setting-meta' ? 'Name' : 'Label'}

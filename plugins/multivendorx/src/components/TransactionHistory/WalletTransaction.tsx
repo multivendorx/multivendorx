@@ -318,7 +318,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 			key: 'transactionStatus',
 			label: 'Financial Transactions',
 			type: 'select',
-			size: 14,
+			size: 15,
 			options: [
 				{
 					label: __('Financial Transactions', 'multivendorx'),
