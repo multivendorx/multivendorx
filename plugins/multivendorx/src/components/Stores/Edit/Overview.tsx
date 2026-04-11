@@ -210,9 +210,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								/>
 							))
 						) : (
-							<div className="no-data">
-								{__('No recent payout', 'multivendorx')}
-							</div>
+							<ComponentStatusView title={__( 'No recent payout', 'multivendorx' )} />
 						)}
 					</Card>
 					{/* <Card
@@ -364,7 +362,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 									label={__('Application', 'multivendorx')}
 								>
 									<a
-										className="sku"
+										className="sku link-item"
 										onClick={() => {
 											navigate(
 												`?page=multivendorx#&tab=stores&edit/${id}/&subtab=compliance-records`

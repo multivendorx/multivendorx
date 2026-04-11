@@ -51,7 +51,7 @@ const Notifications = () => {
 			appLocalizer={appLocalizer}
 			menuIcon={true}
 			headerIcon="report"
-			headerTitle={__('notifications', 'multivendorx')}
+			headerTitle={__('Notifications', 'multivendorx')}
 			headerDescription={__(
 				'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis odio atque sunt autem exercitationem praesentium ullam deleniti iste laboriosam iure.',
 				'multivendorx'

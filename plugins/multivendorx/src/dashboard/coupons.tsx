@@ -18,6 +18,7 @@ import {
 	TabsUI,
 	RandomInputKeyGeneratorUI,
 	InfoItem,
+	EmailsInputUI,
 } from 'zyra';
 
 import axios from 'axios';
@@ -515,17 +516,16 @@ const AllCoupon: React.FC = () => {
 						label={__('Allowed emails', 'multivendorx')}
 						htmlFor="customer_email"
 					>
-						<BasicInputUI
-							type="text"
-							name="customer_email"
-							value={formData.customer_email}
-							onChange={(value) =>
+						<EmailsInputUI
+							value={formData.customer_email ? [formData.customer_email] : []}
+							placeholder={__('Enter email...', 'multivendorx-pro')}
+							onChange={(emails) =>
 								setFormData({
-									...formData,
-									customer_email: value,
+								...formData,
+								customer_email: emails?.[0] || '',
 								})
 							}
-						/>
+							/>
 					</FormGroup>
 				</FormGroupWrapper>
 			),

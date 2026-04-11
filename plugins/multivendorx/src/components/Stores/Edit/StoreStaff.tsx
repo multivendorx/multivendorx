@@ -231,11 +231,11 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 									}}
 									descriptions={[
 										{
-											label: __('Email: ', 'multivendorx'),
+											label: __('Email', 'multivendorx'),
 											value: selectedOwnerInfo?.email || 'owner@example.com',
 										},
 										{
-											label: __('Phone: ', 'multivendorx'),
+											label: __('Phone', 'multivendorx'),
 											value: selectedOwnerInfo?.phone || '+1 234 567 8900',
 										}
 									]}
@@ -251,24 +251,25 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 												{
 													text: __('Transfer', 'multivendorx'),
 													onClick: () => setShowPrimaryOwnerSelect(true),
-													color: 'gray',
+													color: 'blue',
+													icon: 'switch-store'
 												}
 											]}
 										/>
 									}
 								/>
-
-								{showPrimaryOwnerSelect && (
-									<SelectInputUI
-										name="primary_owner"
-										options={appLocalizer?.store_owners || []}
-										value={formData.primary_owner}
-										onChange={handlePrimaryOwnerSelect}
-									/>
-								)}
 							</>
 						</FormGroup>
-
+						<FormGroup>
+							{showPrimaryOwnerSelect && (
+								<SelectInputUI
+									name="primary_owner"
+									options={appLocalizer?.store_owners || []}
+									value={formData.primary_owner}
+									onChange={handlePrimaryOwnerSelect}
+								/>
+							)}
+						</FormGroup>
 						<FormGroup
 							label={__('Additional owners', 'multivendorx')}
 						>
@@ -298,6 +299,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 													{
 														text: __('Remove', 'multivendorx'),
 														color: 'red',
+														icon: 'delete',
 														onClick: () => handleRemoveAdditionalOwner(owner.id),
 													},
 												]}

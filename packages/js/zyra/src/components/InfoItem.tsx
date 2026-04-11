@@ -158,7 +158,7 @@ const InfoItem: React.FC<InfoItemProps> = ({
 
                                 {descriptions.map((desc, index) => (
                                     <div className="des" key={index}>
-                                        {desc.label && (
+                                        {desc.label && desc.value && (
                                             <>
                                                 {desc.boldLabel ? (
                                                     <b>{desc.label}</b>

@@ -35,7 +35,7 @@ const FormGroup: React.FC<FormGroupProps> = ({
     return (
         <div
             className={`form-group ${row ? 'row' : ''} ${className}`}
-            data-cols={cols}
+            data-col={cols}
         >
             {label && (
                 <label className="settings-form-label" htmlFor={htmlFor}>

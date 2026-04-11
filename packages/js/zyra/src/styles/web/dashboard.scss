@@ -103,6 +103,7 @@
 .review-wrapper {
     display: flex;
     gap: 1.5rem;
+    flex-wrap: wrap;
 
     // remove
     .review-box {

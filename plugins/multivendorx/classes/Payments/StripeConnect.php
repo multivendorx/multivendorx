@@ -61,8 +61,9 @@ class StripeConnect {
                     'key'     => 'payment_mode',
                     'type'    => 'choice-toggle',
                     'label'   => __( 'Payment mode', 'multivendorx' ),
-                    'settingDescription' => __( "Choose Test to simulate payouts or Live to send real payouts to sellers.", 'multivendorx' ),
-                    'desc' => __( '<a href="https://docs.stripe.com/connect/testing/" class="link-item" target="blank">Stripe Connect testing guide <i class="adminfont-external"/></a>', 'multivendorx' ),
+                     'desc' => __( 'Choose Test to simulate payouts or Live to send real payouts to sellers.', 'multivendorx' ),
+                        'options' => array(
+                    'desc' => __( 'Choose Test to simulate payouts or Live to send real payouts to sellers.', 'multivendorx' ),
                     'options' => array(
                         array(
 							'key'   => 'test',
@@ -135,6 +136,7 @@ class StripeConnect {
                     'desc' => __( 'Copy this URL exactly into your Stripe Connect app settings:<br/>https://cus.dualcube.com/mvx1/wp-admin/admin-post.php?action=multivendorx_stripe_oauth_callback<br/><a href="https://docs.stripe.com/connect/oauth-reference" class="link-item" target="blank">Stripe OAuth redirect setup <i class="adminfont-external"/></a>', 'multivendorx' ),
                     ),
             )
+        )
         );
     }
 

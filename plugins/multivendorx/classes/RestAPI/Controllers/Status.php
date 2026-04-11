@@ -138,7 +138,7 @@ class Status extends \WP_REST_Controller {
 
                     // Transient prefixes that include vendor ID.
                     $store_transient_names = apply_filters(
-                        'mvx_clear_all_transients_included_vendor_id',
+                        'multivendorx_clear_all_transients_included_store_id',
                         array(
                             'multivendorx_visitor_stats_data_',
                             'multivendorx_report_data_',
@@ -154,7 +154,7 @@ class Status extends \WP_REST_Controller {
                     }
 
                     $transients_to_clear = apply_filters(
-                        'mvx_vendor_before_transients_to_clear',
+                        'multivendorx_store_before_transients_to_clear',
                         $transients_to_clear,
                         $store_id
                     );
@@ -166,7 +166,7 @@ class Status extends \WP_REST_Controller {
                         }
                     }
 
-                    do_action( 'mvx_vendor_clear_all_transients', $store_id );
+                    do_action( 'multivendorx_store_clear_all_transients', $store_id );
                 }
                 return rest_ensure_response( $deleted );
             }

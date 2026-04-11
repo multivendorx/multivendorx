@@ -287,18 +287,7 @@ registerBlockType('multivendorx/store-social-icons', {
 							className="wp-block-social-link-anchor"
 							style={iconLinkStyle()}
 						>
-							<FacebookIcon />
-						</a>
-					</li>
-
-					{/* Twitter Icon */}
-					<li className="wp-social-link wp-social-link-x  wp-block-social-linkk">
-						<a
-							href="#"
-							className="wp-block-social-link-anchor"
-							style={iconLinkStyle()}
-						>
-							<TwitterIcon />
+							<span class="dashicons dashicons-facebook-alt"></span>
 						</a>
 					</li>
 
@@ -309,7 +298,7 @@ registerBlockType('multivendorx/store-social-icons', {
 							className="wp-block-social-link-anchor"
 							style={iconLinkStyle()}
 						>
-							<InstagramIcon />
+							<span class="dashicons dashicons-instagram"></span>
 						</a>
 					</li>
 
@@ -320,7 +309,7 @@ registerBlockType('multivendorx/store-social-icons', {
 							className="wp-block-social-link-anchor"
 							style={iconLinkStyle()}
 						>
-							<YouTubeIcon />
+							<span class="dashicons dashicons-youtube"></span>
 						</a>
 					</li>
 					{/* LinkedIn Icon */}
@@ -330,7 +319,7 @@ registerBlockType('multivendorx/store-social-icons', {
 							className="wp-block-social-link-anchor"
 							style={iconLinkStyle()}
 						>
-							<LinkedInIcon />
+							<span class="dashicons dashicons-linkedin"></span>
 						</a>
 					</li>
 					{/* PinterestIcon Icon */}
@@ -340,7 +329,7 @@ registerBlockType('multivendorx/store-social-icons', {
 							className="wp-block-social-link-anchor"
 							style={iconLinkStyle()}
 						>
-							<PinterestIcon />
+							<span class="dashicons dashicons-pinterest"></span>
 						</a>
 					</li>
 				</ul>

@@ -115,7 +115,7 @@
       .tab-content{
         border: $border-light-small ;
         border-radius: 0 0 $border-radius-small $border-radius-small;
-        border-top: 0;
+        // border-top: 0;
       }
       .tab-content:has(.notice-settings){
         border: none;
@@ -145,6 +145,12 @@
               transform: rotate(180deg);
             }
           }
+        }
+      }
+
+      &:has(.container-wrapper){
+        .tab-content{
+          border: none;
         }
       }
     }
@@ -362,6 +368,14 @@
 
       .tab-content {
         box-sizing: border-box;
+      }
+      .form-group-wrapper {
+        gap: 1rem;
+        padding: 1rem;
+        box-sizing: border-box;
+        .form-group{
+          padding: 0;
+        }
       }
     }
   }

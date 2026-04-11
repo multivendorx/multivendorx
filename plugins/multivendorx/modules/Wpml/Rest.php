@@ -234,8 +234,8 @@ class Rest extends \WP_REST_Controller {
 				throw new \Exception( 'Failed to create translation' );
 			}
 
-			// MVX hook for post-creation logic.
-			do_action( 'mvx_after_translated_new_product', $new_product_id );
+			// MultiVendorX hook for post-creation logic.
+			do_action( 'multivendorx_after_translated_new_product', $new_product_id );
 
 			return rest_ensure_response(
                 array(

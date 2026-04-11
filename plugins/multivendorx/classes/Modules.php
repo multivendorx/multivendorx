@@ -157,39 +157,34 @@ class Modules {
         $active_modules = $this->get_active_modules();
         $all_modules    = $this->get_all_modules();
 
-        $validated_active = array();
-
+        $validated_active = [];
         foreach ( $active_modules as $module_id ) {
-            if ( empty( $all_modules[ $module_id ] ) ) {
-                continue;
+            foreach ( $all_modules as $key => $module ) {
+                // Match same module id (free + pro both)
+                if ( empty( $module['id'] ) || $module['id'] !== $module_id ) {
+                    continue;
+                }
+                if ( ! $this->is_module_available( $module ) ) {
+                    continue;
+                }
+
+                require_once $module['module_file'];
+
+                try {
+                    $class = $module['module_class'];
+                    $this->container[ $key ] = new $class(); 
+                } catch ( \Throwable $e ) {
+                    MultiVendorX()->util->log( $e );
+                    continue;
+                }
+
+                do_action(
+                    "multivendorx_activated_module_{$module_id}",
+                    $this->container[ $key ]
+                );
             }
 
-            $module = $all_modules[ $module_id ];
-
-            if ( ! $this->is_module_available( $module ) ) {
-                continue;
-            }
-
-            if ( isset( $this->container[ $module_id ] ) ) {
-                $validated_active[] = $module_id;
-                continue;
-            }
-
-            require_once $module['module_file'];
-
-            try {
-                $class                         = $module['module_class'];
-                $this->container[ $module_id ] = new $class();
-                $validated_active[]            = $module_id;
-            } catch ( \Throwable $e ) {
-                MultiVendorX()->util->log( $e );
-                continue;
-            }
-
-            do_action(
-                "multivendorx_activated_module_{$module_id}",
-                $this->container[ $module_id ]
-            );
+            $validated_active[] = $module_id;
         }
 
         if ( $validated_active !== $active_modules ) {

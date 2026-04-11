@@ -22,7 +22,7 @@ export interface CategoryItem {
  * Pure React TableCard
  */
 const TableCard: React.FC<TableCardProps> = ({
-    className,
+    className = '',
     search,
     headers = {},
     ids = [],

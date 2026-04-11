@@ -18,6 +18,8 @@ interface EventCalendarProps {
     format?: string;
     value?: EventsData;
     onChange?: (value: EventsData) => void;
+    onMonthChange?: (date: DateObject) => void;
+    onEventClick?: (event: CalendarEvent, date: DateObject) => void;
     NumberOfMonth?: number;
     fullYear?: boolean;
 }
@@ -35,6 +37,8 @@ export const EventCalendarUI: React.FC<EventCalendarProps> = ({
     format = 'MMMM DD YYYY',
     value = {},
     onChange,
+    onMonthChange,
+    onEventClick,
     NumberOfMonth = 1,
     fullYear,
 }) => {
@@ -114,41 +118,72 @@ export const EventCalendarUI: React.FC<EventCalendarProps> = ({
                 format={format}
                 numberOfMonths={NumberOfMonth}
                 fullYear={fullYear}
+                onMonthChange={onMonthChange}
+                // mapDays={({ date }) => {
+                //     const dayEvents = events[toDateKey(date)] || [];
+                //     return {
+                //         onClick: () => setSelectedDate(date),
+                //         children: (
+                //             <div className="sd">
+                //                 <span className="date">{date.day}</span>
+                //                 {dayEvents.slice(0, 3).map((event) => (
+                //                     <div
+                //                         key={event.id}
+                //                         className="event"
+                //                         title={event.title}
+                //                     >
+                //                         <div className="name">
+                //                             {event.title.length > 20
+                //                                 ? `${event.title.substring(
+                //                                     0,
+                //                                     20
+                //                                 )}...`
+                //                                 : event.title}
+                //                         </div>
+                //                     </div>
+                //                 ))}
+                //                 {dayEvents.length > 3 && (
+                //                     <div className="event-more">
+                //                         +{dayEvents.length - 3} more
+                //                     </div>
+                //                 )}
+                //             </div>
+                //         ),
+                //     };
+                // }}
                 mapDays={({ date }) => {
                     const dayEvents = events[toDateKey(date)] || [];
                     return {
-                        onClick: () => setSelectedDate(date),
                         children: (
                             <div className="sd">
                                 <span className="date">{date.day}</span>
-                                {dayEvents.slice(0, 3).map((event) => (
-                                    <div
-                                        key={event.id}
-                                        className="event"
-                                        title={event.title}
-                                    >
-                                        <div className="name">
-                                            {event.title.length > 20
-                                                ? `${event.title.substring(
-                                                      0,
-                                                      20
-                                                  )}...`
-                                                : event.title}
+                                <div className="events-container">
+                                    {dayEvents.map((event) => (
+                                        <div
+                                            key={event.id}
+                                            className="event"
+                                            title={event.title}
+                                            onClick={(e) => {
+                                                if (onEventClick) {
+                                                    onEventClick(event, date);
+                                                }
+                                            }}
+                                        >
+                                            <div className="name">
+                                                {event.title.length > 20
+                                                    ? `${event.title.substring(0, 20)}...`
+                                                    : event.title}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                                {dayEvents.length > 3 && (
-                                    <div className="event-more">
-                                        +{dayEvents.length - 3} more
-                                    </div>
-                                )}
+                                    ))}
+                                </div>
                             </div>
                         ),
                     };
                 }}
             />
 
-            <PopupUI
+            {/* <PopupUI
                 position="lightbox"
                 open={!!selectedDate}
                 onClose={() => setSelectedDate(null)}
@@ -186,7 +221,7 @@ export const EventCalendarUI: React.FC<EventCalendarProps> = ({
                         }}
                     />
                 )}
-            </PopupUI>
+            </PopupUI> */}
         </div>
     );
 };

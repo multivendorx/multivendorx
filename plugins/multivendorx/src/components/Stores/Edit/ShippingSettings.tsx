@@ -171,6 +171,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 												'This is the shipping cost applied to every order.',
 												'multivendorx'
 											)}
+											row
 										>
 											<BasicInputUI
 												type="number"
@@ -197,7 +198,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 											/>
 										</FormGroup>
 										{/* Per Product Additional Price */}
-										<FormGroup
+										<FormGroup row
 											label={__(
 												`Per Product Additional Price (${appLocalizer.currency_symbol})`,
 												'multivendorx'
@@ -230,7 +231,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 										</FormGroup>
 
 										{/* Per Qty Additional Price */}
-										<FormGroup
+										<FormGroup row
 											label={__(
 												`Per Qty Additional Price (${appLocalizer.currency_symbol})`,
 												'multivendorx'
@@ -263,7 +264,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 										</FormGroup>
 
 										{/* Free Shipping Minimum Order Amount */}
-										<FormGroup
+										<FormGroup row
 											label={__(
 												`Free Shipping Minimum Order Amount (${appLocalizer.currency_symbol})`,
 												'multivendorx'
@@ -297,7 +298,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 										</FormGroup>
 
 										{/* Local Pickup Cost */}
-										<FormGroup
+										<FormGroup row
 											label={__(
 												`Local Pickup Cost (${appLocalizer.currency_symbol})`,
 												'multivendorx'

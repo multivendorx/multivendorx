@@ -88,7 +88,6 @@ export default {
 					value: 'mainorder',
 					customHtml: `<div class="choice-toggle-notice">
 					<div><strong>What it does:</strong> Sends a single order and invoice for the entire purchase.</div>
-					<div><strong>Email/Invoice:</strong> One email, one receipt with your marketplace tax details.</div>
 					<div><strong>My Account:</strong> Shows one combined order.</div>
 					<div><strong>Use this if:</strong> You want a simplified, all-in-one order view for customers.</div>
 				</div>`,
@@ -104,7 +103,6 @@ export default {
 					value: 'suborders',
 					customHtml: `<div class="choice-toggle-notice">
 					<div><strong>What it does:</strong> Sends separate orders and invoices for each store.</div>
-					<div><strong>Email/Invoice:</strong> Separate emails and receipts with each store’s tax details.</div>
 					<div><strong>My Account:</strong> Shows multiple orders (one per store).</div>
 					<div><strong>Use this if:</strong> You want customers to see individual store orders and receipts.</div>
 				</div>`,
@@ -123,7 +121,6 @@ export default {
 					value: 'main_sub',
 					customHtml: `<div class="choice-toggle-notice">
 					<div><strong>What it does:</strong> Sends both a combined order and separate store orders with invoices.</div>
-					<div><strong>Email/Invoice:</strong> One email for the full order + separate emails per store; multiple receipts with marketplace and store tax details.</div>
 					<div><strong>My Account:</strong> Shows combined + individual orders.</div>
 					<div><strong>Use this if:</strong> You want full transparency for both marketplace and individual store orders.</div>
 				</div>`,
@@ -143,7 +140,7 @@ export default {
 			type: 'text',
 			label: __('Tinymce API', 'multivendorx'),
 			desc: __(
-				'Get your <a href= "https://www.tiny.cloud/blog/how-to-get-tinymce-cloud-up-in-less-than-5-minutes/" target= "_blank">TinyMCE API key</a> and paste it here, to unlock visual editing tools across the marketplace. Admin and stores can easily format text, add links, lists, and other styling to their store descriptions, announcements, knowledge base posts, and product/listing details-no coding needed.',
+				'Get your <a href= "https://www.tiny.cloud/blog/how-to-get-tinymce-cloud-up-in-less-than-5-minutes/" target= "_blank">TinyMCE API key <i class="adminfont-external"/></a> and paste it here, to unlock visual editing tools across the marketplace. Admin and stores can easily format text, add links, lists, and other styling to their store descriptions, announcements, knowledge base posts, and product/listing details-no coding needed.',
 				'multivendorx'
 			),
 		},

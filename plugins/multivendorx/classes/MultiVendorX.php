@@ -76,8 +76,7 @@ final class MultiVendorX {
      * @return void
      */
     public function activate() {
-        new Install();
-
+        add_option( Utill::MULTIVENDORX_OTHER_SETTINGS['run_installer'], true );
         if ( ! get_option( Utill::MULTIVENDORX_OTHER_SETTINGS['installed'] ) ) {
             add_option( Utill::MULTIVENDORX_OTHER_SETTINGS['installed'], true );
             add_option( Utill::MULTIVENDORX_OTHER_SETTINGS['plugin_activated'], true );
@@ -112,6 +111,10 @@ final class MultiVendorX {
     public function init_plugin() {
         $this->load_plugin_textdomain();
         $this->init_classes();
+        if ( get_option(Utill::MULTIVENDORX_OTHER_SETTINGS['run_installer']) ) {
+            new Install();
+            delete_option( Utill::MULTIVENDORX_OTHER_SETTINGS['run_installer'] );
+        }
 
         add_action( 'init', array( $this, 'multivendorx_register_setup_wizard' ) );
 

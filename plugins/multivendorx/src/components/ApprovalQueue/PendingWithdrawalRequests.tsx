@@ -121,24 +121,22 @@ const PendingWithdrawal: React.FC<object> = () => {
 	};
 
 	return (
-		<div className="admin-table-wrapper">
-			<TableCard
-				headers={headers}
-				rows={rows}
-				totalRows={totalRows}
-				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
-				ids={rowIds}
-				format={appLocalizer.date_format}
-				currency={{
-					currencySymbol: appLocalizer.currency_symbol,
-					priceDecimals: appLocalizer.price_decimals,
-					decimalSeparator: appLocalizer.decimal_separator,
-					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position,
-				}}
-			/>
-		</div>
+		<TableCard
+			headers={headers}
+			rows={rows}
+			totalRows={totalRows}
+			isLoading={isLoading}
+			onQueryUpdate={doRefreshTableData}
+			ids={rowIds}
+			format={appLocalizer.date_format}
+			currency={{
+				currencySymbol: appLocalizer.currency_symbol,
+				priceDecimals: appLocalizer.price_decimals,
+				decimalSeparator: appLocalizer.decimal_separator,
+				thousandSeparator: appLocalizer.thousand_separator,
+				currencyPosition: appLocalizer.currency_position,
+			}}
+		/>
 	);
 };
 

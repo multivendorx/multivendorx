@@ -111,6 +111,4 @@ if ( $store ) {
     $html .= apply_filters( 'multivendorx_store_info_tab', '' );
 
     echo wp_kses_post( $html );
-
-    do_action( 'mvx_after_vendor_tab' );
 }

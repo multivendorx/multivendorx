@@ -174,21 +174,17 @@ const PendingStores: React.FC<object> = () => {
 	};
 	return (
 		<>
-			<Container>
-				<Column>
-					<TableCard
-						headers={headers}
-						rows={rows}
-						totalRows={totalRows}
-						isLoading={isLoading}
-						onQueryUpdate={doRefreshTableData}
-						ids={rowIds}
-						search={{}}
-						filters={filters}
-						format={appLocalizer.date_format}
-					/>
-				</Column>
-			</Container>
+		<TableCard
+			headers={headers}
+			rows={rows}
+			totalRows={totalRows}
+			isLoading={isLoading}
+			onQueryUpdate={doRefreshTableData}
+			ids={rowIds}
+			search={{}}
+			filters={filters}
+			format={appLocalizer.date_format}
+		/>
 
 			{/* Reject Popup */}
 			{rejectPopupOpen && (

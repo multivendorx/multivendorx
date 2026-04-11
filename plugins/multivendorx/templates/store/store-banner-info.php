@@ -129,11 +129,6 @@ $banner_slider     = $meta_data['banner_slider'] ?? array();
                     <i class="dashicons dashicons-linkedin"></i>
                 </a>
             <?php endif; ?>
-
-            <?php do_action( 'mvx_vendor_store_header_social_link', $store_id ); ?>
-        </div>
-        <div class='multivendorx-btn-area'>
-            <?php do_action( 'mvx_additional_button_at_banner' ); ?>
         </div>
     </div>
     <?php

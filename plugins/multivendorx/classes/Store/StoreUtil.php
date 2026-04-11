@@ -633,33 +633,23 @@ class StoreUtil {
             return false;
         }
         $store = Store::get_store( $store_id );
-
         $status           = $store->get( 'status' );
-        $review_settings  = MultiVendorX()->setting->get_setting( 'restriction_for_under_review', array() );
-        $suspend_settings = MultiVendorX()->setting->get_setting( 'restriction_for_suspended', array() );
+        $permissions = MultiVendorX()->util->get_permissions();
 
         if ( $check_payouts ) {
-            if ( 'under_review' === $status && in_array( 'disable_payouts', $review_settings, true ) ) {
-                return true;
-            }
-
-            if ( 'suspended' === $status && in_array( 'disable_payouts', $suspend_settings, true ) ) {
+            if ( in_array( $status, [ 'suspended', 'under_review' ], true ) || $permissions['disable_payouts'] ) {
                 return true;
             }
         } else {
-            if ( 'under_review' === $status && in_array( 'disable_product_upload', $review_settings, true ) ) {
+            if ( 'under_review' === $status || $permissions['disable_product_upload'] ) {
                 return true;
             }
 
-            if ( 'under_review' === $status && in_array( 'hide_store_products', $review_settings, true ) ) {
+            if ( in_array( $status, [ 'suspended', 'under_review' ], true ) || $permissions['hide_store_products'] ) {
                 return true;
             }
 
-            if ( 'suspended' === $status && in_array( 'disable_checkout', $suspend_settings, true ) ) {
-                return true;
-            }
-
-            if ( 'suspended' === $status && in_array( 'hide_store_products', $suspend_settings, true ) ) {
+            if ( 'suspended' === $status || $permissions['disable_checkout'] ) {
                 return true;
             }
         }

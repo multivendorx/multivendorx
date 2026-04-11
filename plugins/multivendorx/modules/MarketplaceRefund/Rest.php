@@ -381,7 +381,7 @@ class Rest extends \WP_REST_Controller {
                 return new \WP_Error( 'refund_failed', $parent_refund->get_error_message(), array( 'status' => 400 ) );
             }
 
-            do_action( 'mvx_order_refunded', $order_id, $refund->get_id() );
+            do_action( 'multivendorx_sub_order_refunded', $order_id, $refund->get_id() );
 
             if ( did_action( 'woocommerce_order_fully_refunded' ) ) {
                 $response_data['status'] = 'fully_refunded';

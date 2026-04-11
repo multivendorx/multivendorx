@@ -327,7 +327,7 @@ export default {
 				{
 					id: 'financial-compliance',
 					icon: 'dollar',
-					label: 'Financial compliance',
+					label: 'Tax compliance',
 					disableBtn: true,
 					moduleEnabled: 'marketplace-compliance',
 					proSetting: true,
@@ -368,12 +368,30 @@ export default {
 							label: __('Non-Compliance action', 'multivendorx'),
 							options: [
 								{
+									key: 'hide_store_products',
+									label: __('Hide store and products', 'multivendorx'),
+									value: 'hide_store_products',
+									desc: __(
+										'Removes the store and all its products from the marketplace. Customers cannot view the store, access products, or place orders.',
+										'multivendorx'
+									),
+								},
+								{
+									key: 'disable_product_upload',
+									label: __('Disable product upload', 'multivendorx'),
+									value: 'disable_product',
+									desc: __(
+										'Temporarily disables product sales and order fulfillment while the review is in progress.',
+										'multivendorx'
+									),
+								},
+								{
 									key: 'disable_payouts',
 									label: __(
 										'Disable payouts',
 										'multivendorx'
 									),
-									value: 'DisablePayouts',
+									value: 'disable_payouts',
 									desc: __(
 										'Suspends payout processing. Earnings will be released once the store successfully clears the review.',
 										'multivendorx'

@@ -207,20 +207,16 @@ const PendingReportAbuse: React.FC<object> = () => {
 
 	return (
 		<>
-			<Container>
-				<Column>
-					<TableCard
-						headers={headers}
-						rows={rows}
-						totalRows={totalRows}
-						isLoading={isLoading}
-						onQueryUpdate={doRefreshTableData}
-						ids={rowIds}
-						filters={filters}
-						format={appLocalizer.date_format}
-					/>
-				</Column>
-			</Container>
+		<TableCard
+			headers={headers}
+			rows={rows}
+			totalRows={totalRows}
+			isLoading={isLoading}
+			onQueryUpdate={doRefreshTableData}
+			ids={rowIds}
+			filters={filters}
+			format={appLocalizer.date_format}
+		/>
 			<PopupUI
 				position="lightbox"
 				open={confirmOpen}

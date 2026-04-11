@@ -193,7 +193,7 @@ export default {
 		},
 		{
 			id: 'shared-listing',
-			name: __('Shared listing', 'multivendorx'),
+			name: __('Shared Listing', 'multivendorx'),
 			desc: 'Allows more than one store to sell the same product with their own price and stock.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/single-product-multiple-vendors-spmv',

@@ -23,7 +23,7 @@ class Hooks {
      * Constructor
      */
     public function __construct() {
-        add_action( 'mvx_checkout_vendor_order_processed', array( $this, 'create_commission' ), 10, 3 );
+        add_action( 'multivendorx_checkout_store_order_processed', array( $this, 'create_commission' ), 10, 3 );
         add_action( 'woocommerce_order_refunded', array( $this, 'create_commission_refunds' ), 10, 2 );
     }
 
@@ -83,7 +83,7 @@ class Hooks {
              *
              * @since 3.4.0
              */
-            do_action( 'mvx_after_create_commission_refunds', $order_id, $commission_id );
+            do_action( 'multivendorx_after_create_commission_refunds', $order_id, $commission_id );
         }
     }
 }

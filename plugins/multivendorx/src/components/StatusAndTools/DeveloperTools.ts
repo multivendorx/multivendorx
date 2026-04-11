@@ -18,6 +18,7 @@ export default {
 			name: __('Clear Transients', 'multivendorx'),
 			label: __('Dashbaord transients', 'multivendorx'),
 			position: 'left',
+			color: 'red',
 			desc: __(
 				'Clear all store dashboards transient cache.',
 				'multivendorx'

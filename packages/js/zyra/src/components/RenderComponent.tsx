@@ -535,7 +535,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                                 ? 'module-enabled'
                                 : ''
                             }`}
-                        data-cols={inputField.cols}
+                        data-col={inputField.cols}
                         onClick={(e) => handleGroupClick(e, inputField)}
                     >
                         {inputField.label && (

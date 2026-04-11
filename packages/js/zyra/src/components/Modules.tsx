@@ -248,23 +248,23 @@ const Modules: React.FC<ModuleProps> = ({
                         title: `Required plugins missing`,
                         description: `This module needs the following plugins to work.`,
                     }}
-                    footer={
-                        <ButtonInputUI
-                            buttons={[
-                                {
-                                    icon: 'close',
-                                    text: 'Cancel',
-                                    color: 'red',
-                                    // onClick: setRequirePopup(null),
-                                },
-                                {
-                                    icon: 'import',
-                                    text: 'Install All',
-                                    // onClick: () => handleSubmit(),
-                                },
-                            ]}
-                        />
-                    }
+                    // footer={
+                    //     <ButtonInputUI
+                    //         buttons={[
+                    //             {
+                    //                 icon: 'close',
+                    //                 text: 'Cancel',
+                    //                 color: 'red',
+                    //                 // onClick: setRequirePopup(null),
+                    //             },
+                    //             {
+                    //                 icon: 'import',
+                    //                 text: 'Install All',
+                    //                 // onClick: () => handleSubmit(),
+                    //             },
+                    //         ]}
+                    //     />
+                    // }
                 >
                     <div className="required-popup">
                         <div className="title">Plugins required</div>

@@ -35,7 +35,7 @@ get_header( 'shop' );
 
         <?php
         // Store banner & vendor info.
-        do_action( 'mvx_archive_description' );
+        do_action( 'multivendorx_archive_description' );
         MultiVendorX()->util->get_template( 'store/store-banner-info.php', array( 'store_id' => $store_id ) );
         do_action( 'multivendorx_after_store_banner', $store_id );
         ?>

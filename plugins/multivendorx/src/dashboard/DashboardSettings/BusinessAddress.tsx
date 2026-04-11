@@ -8,6 +8,7 @@ import {
 	getApiLink,
 	MapProviderUI,
 	Notice,
+	NoticeManager,
 	SelectInputUI,
 	useModules,
 } from 'zyra';
@@ -39,7 +40,6 @@ interface LocationData {
 const BusinessAddress = () => {
 	const id = appLocalizer?.store_id;
 	const [formData, setFormData] = useState<FormData>({});
-	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 	const [errorMsg, setErrorMsg] = useState<string | null>(null);
 	const [mapConfig, setMapConfig] = useState<{
 		provider: string | null;
@@ -177,13 +177,6 @@ const BusinessAddress = () => {
 	}, [id]);
 
 	useEffect(() => {
-		if (successMsg) {
-			const timer = setTimeout(() => setSuccessMsg(null), 3000);
-			return () => clearTimeout(timer);
-		}
-	}, [successMsg]);
-
-	useEffect(() => {
 		if (formData.country) {
 			fetchStatesByCountry(formData.country);
 		}
@@ -235,9 +228,12 @@ const BusinessAddress = () => {
 			data: formattedData,
 		})
 			.then((res) => {
-				if (res.data.success) {
-					setSuccessMsg('Store saved successfully!');
-				}
+				 NoticeManager.add({
+                    title: 'Success!',
+                    message: `Store saved successfully!`,
+                    type: 'success',
+                    position: 'float',
+                });
 			})
 			.catch((error) => {
 				console.error('Save error:', error);
@@ -273,17 +269,6 @@ const BusinessAddress = () => {
 
 	return (
 		<>
-			<Notice
-				message={successMsg}
-				displayPosition="float"
-				title={__('Great!', 'multivendorx')}
-			/>
-			<Notice
-				message={errorMsg}
-				displayPosition="float"
-				type="error"
-				title={__('Great!', 'multivendorx')}
-			/>
 
 			<FormGroupWrapper>
 				{/* Address */}

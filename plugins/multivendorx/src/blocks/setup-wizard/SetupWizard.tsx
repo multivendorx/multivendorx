@@ -43,7 +43,7 @@ const SetupWizard: React.FC = () => {
 				'Choose what kind of marketplace you are building',
 				'multivendorx'
 			),
-			icon: 'storefront',
+			icon: 'marketplace',
 			desc: __(
 				'This helps us tailor features for your business.',
 				'multivendorx'
@@ -231,7 +231,7 @@ const SetupWizard: React.FC = () => {
 					options: [
 						{
 							label: __('Back', 'multivendorx'),
-							color: 'red',
+							color: 'purple-bg',
 							action: 'back',
 						},
 						{
@@ -245,7 +245,7 @@ const SetupWizard: React.FC = () => {
 		{
 			id: 'store_setup',
 			label: __('Configure Your Store', 'multivendorx'),
-			icon: 'storefront',
+			icon: 'setting',
 			desc: __('How stores sell on your marketplace.', 'multivendorx'),
 			countBtn: true,
 			isWizardMode: true,
@@ -277,6 +277,7 @@ const SetupWizard: React.FC = () => {
 					options: [
 						{
 							label: __('Back', 'multivendorx'),
+							color: 'purple-bg',
 							action: 'back',
 						},
 						{
@@ -293,7 +294,7 @@ const SetupWizard: React.FC = () => {
 				'How marketplace commission is calculated',
 				'multivendorx'
 			),
-			icon: 'storefront',
+			icon: 'commission',
 			desc: __(
 				'Decide how your marketplace earns money.',
 				'multivendorx'
@@ -405,6 +406,7 @@ const SetupWizard: React.FC = () => {
 					options: [
 						{
 							label: __('Back', 'multivendorx'),
+							color: 'purple-bg',
 							action: 'back',
 						},
 						{
@@ -418,7 +420,7 @@ const SetupWizard: React.FC = () => {
 		{
 			id: 'migration',
 			label: __('Migration', 'multivendorx'),
-			icon: 'storefront',
+			icon: 'migration',
 			desc: __('Migration.', 'multivendorx'),
 			countBtn: true,
 			isWizardMode: true,
@@ -449,7 +451,7 @@ const SetupWizard: React.FC = () => {
 				{
 					key: 'paid_promotion_limit',
 					label: __(
-						'Before you begin — quick checklist',
+						'Before you begin - quick checklist',
 						'multivendorx'
 					),
 					type: 'itemlist',
@@ -581,6 +583,7 @@ const SetupWizard: React.FC = () => {
 					options: [
 						{
 							label: __('Back', 'multivendorx'),
+							color: 'purple-bg',
 							action: 'back',
 						},
 						{
@@ -594,7 +597,7 @@ const SetupWizard: React.FC = () => {
 		{
 			id: 'more_settings',
 			label: __('Want to configure more settings?', 'multivendorx'),
-			icon: 'storefront',
+			icon: 'setting-fill',
 			desc: __(
 				"You're all set with the basics! Use the quick links below to fine-tune your marketplace now — or come back later anytime.",
 				'multivendorx'
@@ -626,12 +629,13 @@ const SetupWizard: React.FC = () => {
 					options: [
 						{
 							label: __('Back', 'multivendorx'),
+							color: 'purple-bg',
 							action: 'back',
-							color: 'red',
 						},
 						{
 							label: __('Finish', 'multivendorx'),
 							action: 'next',
+							color: 'green',
 							redirect: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=modules`,
 						},
 					],

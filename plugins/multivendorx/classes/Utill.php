@@ -97,6 +97,7 @@ class Utill {
     );
 
     const MULTIVENDORX_OTHER_SETTINGS = array(
+        'run_installer'          => 'multivendorx_run_installer',
         'installed'              => 'multivendorx_installed',
         'plugin_activated'       => 'multivendorx_plugin_activated',
         'plugin_db_version'      => 'multivendorx_version',
@@ -589,5 +590,16 @@ class Utill {
         }
 
         return '';
+    }
+
+    public function get_permissions() {
+        $permissions = array(
+            'hide_store_products' => false,
+            'disable_product_upload' => false,
+            'disable_payouts' => false,
+            'disable_checkout' => false,
+        );
+
+        return apply_filters( 'multivendorx_modify_permissions', $permissions );
     }
 }

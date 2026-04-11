@@ -74,7 +74,7 @@ class Admin {
                         $store            = Store::get_store( $suborder->get_meta( Utill::POST_META_SETTINGS['store_id'], true ) );
                         $store_page_title = ( $store ) ? $store->get( 'name' ) : esc_html__( 'Deleted store', 'multivendorx' );
 
-                        $order_uri = apply_filters( 'mvx_admin_vendor_shop_order_edit_url', esc_url( 'admin.php?page=wc-orders&action=edit&id=' . $suborder->get_id() . '' ), $suborder->get_id() );
+                        $order_uri = apply_filters( 'multivendorx_admin_store_shop_order_edit_url', esc_url( 'admin.php?page=wc-orders&action=edit&id=' . $suborder->get_id() . '' ), $suborder->get_id() );
 
                         printf(
                             '<li><mark class="%s tips" data-tip="%s">%s</mark> <strong><a href="%s">#%s</a></strong> &ndash; <small class="mvx-order-for-vendor">%s %s</small></li>',
@@ -87,7 +87,7 @@ class Admin {
                             esc_html( $store_page_title )
                         );
 
-                        do_action( 'mvx_after_suborder_details', $suborder );
+                        do_action( 'multivendorx_after_add_suborder_details_admin', $suborder );
                     }
                     echo '</ul>';
                 } else {
@@ -127,7 +127,7 @@ class Admin {
 
 		$commission_id = $order->get_meta( Utill::ORDER_META_SETTINGS['commission_id'], true ) ?? '';
 
-		if ( ! in_array( $order->get_status(), apply_filters( 'mvx_regenerate_order_commissions_statuses', array( 'on-hold', 'pending', 'processing', 'completed' ), $order ), true ) ) {
+		if ( ! in_array( $order->get_status(), apply_filters( 'multivendorx_regenerate_order_commissions_statuses', array( 'on-hold', 'pending', 'processing', 'completed' ), $order ), true ) ) {
 			return;
 		}
 

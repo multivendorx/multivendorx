@@ -105,7 +105,7 @@ const StoreSupport: React.FC<Props> = ({ productName, productId }) => {
 				onClick={() => setIsOpen(true)}
 			>
 				<SupportIcon />
-				{__('Support com', 'multivendorx')}
+				{__('Get Support', 'multivendorx')}
 			</button>
 
 			{isOpen && (
@@ -115,85 +115,87 @@ const StoreSupport: React.FC<Props> = ({ productName, productId }) => {
 						if (e.target === e.currentTarget) setIsOpen(false);
 					}}
 				>
-					<form
-						className="woocommerce-form woocommerce-form-login login multivendorx-popup-content"
-						onSubmit={(e) => e.preventDefault()}
-					>
-						<span
-							className="popup-close"
-							onClick={() => setIsOpen(false)}
+					<div className="woocommerce multivendorx-popup-content">
+						<form
+							className="woocommerce-form woocommerce-form-login login"
+							onSubmit={(e) => e.preventDefault()}
 						>
-							<i className="dashicons dashicons-no-alt"></i>
-						</span>
-
-						<h3>{store?.storeName}</h3>
-						<h2>{__('Create a new support', 'multivendorx')}</h2>
-
-						{/* Subject */}
-						<p className="woocommerce-form-row form-row form-row-wide">
-							<label>{__('Subject', 'multivendorx')}</label>
-							<input
-								type="text"
-								className="woocommerce-Input input-text"
-								value={formData.subject}
-								onChange={(e) =>
-									handleChange('subject', e.target.value)
-								}
-							/>
-						</p>
-
-						{/* Order Dropdown */}
-						<p className="woocommerce-form-row form-row form-row-wide">
-							<label>{__('Order ID', 'multivendorx')}</label>
-							<select
-								className="woocommerce-Input input-select"
-								value={formData.orderId}
-								onChange={(e) =>
-									handleChange('orderId', e.target.value)
-								}
+							<span
+								className="popup-close"
+								onClick={() => setIsOpen(false)}
 							>
-								<option value="">
-									{__('Select order id', 'multivendorx')}
-								</option>
+								<i className="dashicons dashicons-no-alt"></i>
+							</span>
 
-								{orderOptions.length > 0 ? (
-									orderOptions.map((order: any) => (
-										<option
-											key={order.value}
-											value={order.value}
-										>
-											{order.label}
-										</option>
-									))
-								) : (
-									<option disabled>
-										{__('No orders found', 'multivendorx')}
+							<h3>{store?.storeName}</h3>
+							<h2>{__('Create a new support', 'multivendorx')}</h2>
+
+							{/* Subject */}
+							<p className="woocommerce-form-row form-row form-row-wide">
+								<label>{__('Subject', 'multivendorx')}</label>
+								<input
+									type="text"
+									className="woocommerce-Input input-text"
+									value={formData.subject}
+									onChange={(e) =>
+										handleChange('subject', e.target.value)
+									}
+								/>
+							</p>
+
+							{/* Order Dropdown */}
+							<p className="woocommerce-form-row form-row form-row-wide">
+								<label>{__('Order ID', 'multivendorx')}</label>
+								<select
+									className="woocommerce-Input input-select"
+									value={formData.orderId}
+									onChange={(e) =>
+										handleChange('orderId', e.target.value)
+									}
+								>
+									<option value="">
+										{__('Select order id', 'multivendorx')}
 									</option>
-								)}
-							</select>
-						</p>
 
-						{/* Message */}
-						<p className="woocommerce-form-row form-row form-row-wide">
-							<label>{__('Message', 'multivendorx')}</label>
-							<textarea
-								className="input-text"
-								value={formData.message}
-								onChange={(e) =>
-									handleChange('message', e.target.value)
-								}
-							/>
-						</p>
+									{orderOptions.length > 0 ? (
+										orderOptions.map((order: any) => (
+											<option
+												key={order.value}
+												value={order.value}
+											>
+												{order.label}
+											</option>
+										))
+									) : (
+										<option disabled>
+											{__('No orders found', 'multivendorx')}
+										</option>
+									)}
+								</select>
+							</p>
 
-						{/* Submit */}
-						<button
-							type="button"
-							onClick={handleSubmit}
-							className="submit-report-abuse woocommerce-button button wp-element-button"
-						>
-							{__('Submit', 'multivendorx')}
-						</button>
-					</form>
+							{/* Message */}
+							<p className="woocommerce-form-row form-row form-row-wide">
+								<label>{__('Message', 'multivendorx')}</label>
+								<textarea
+									className="input-text"
+									value={formData.message}
+									onChange={(e) =>
+										handleChange('message', e.target.value)
+									}
+								/>
+							</p>
+
+							{/* Submit */}
+							<button
+								type="button"
+								onClick={handleSubmit}
+								className="submit-report-abuse woocommerce-button button wp-element-button"
+							>
+								{__('Submit', 'multivendorx')}
+							</button>
+						</form>
+					</div>
 				</div>
 			)}
 		</>

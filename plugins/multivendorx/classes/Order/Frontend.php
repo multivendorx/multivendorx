@@ -91,7 +91,7 @@ class Frontend {
                     esc_html( $store->get( 'name' ) )
                 );
 
-                do_action( 'mvx_after_suborder_details', $suborder );
+                do_action( 'multivendorx_after_add_suborder_details_my_account', $suborder );
             }
             echo '</ul>';
         } else {

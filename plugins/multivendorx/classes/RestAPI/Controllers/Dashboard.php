@@ -335,6 +335,6 @@ class Dashboard extends \WP_REST_Controller {
             return $visible_endpoints;
         }
 
-        return $all_endpoints;
+        return apply_filters( 'multivendorx_dashboard_menu', $all_endpoints );
     }
 }

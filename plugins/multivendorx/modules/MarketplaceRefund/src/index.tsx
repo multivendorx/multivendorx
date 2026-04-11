@@ -2,7 +2,6 @@
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import PendingRefund from './PendingRefund';
-import axios from 'axios';
 
 addFilter(
 	'multivendorx_approval_queue_api_configs',

@@ -128,7 +128,7 @@ class Hooks {
             $item->add_meta_data( Utill::POST_META_SETTINGS['store_id'], $store_id, true );
             $package_qty = array_sum( wp_list_pluck( $package['contents'], 'quantity' ) );
             $item->add_meta_data( 'package_qty', $package_qty, true );
-            do_action( 'mvx_add_shipping_package_meta' );
+            do_action( 'multivendorx_add_shipping_package_meta' );
         }
     }
 
@@ -197,7 +197,7 @@ class Hooks {
         $items = $order->get_items();
         foreach ( $items as $key => $value ) {
             if ( $order || ( function_exists( 'wcs_is_subscription' ) && wcs_is_subscription( $order ) ) ) {
-                $general_cap = apply_filters( 'mvx_sold_by_text', __( 'Sold By', 'multivendorx' ) );
+                $general_cap = apply_filters( 'multivendorx_sold_by_text', __( 'Sold By', 'multivendorx' ) );
                 $store       = Store::get_store( $value['product_id'], 'product' );
                 if ( $store ) {
                     if ( ! wc_get_order_item_meta( $key, Utill::POST_META_SETTINGS['store_id'] ) ) {

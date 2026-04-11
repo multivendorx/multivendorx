@@ -76,7 +76,7 @@ class CommissionManager {
             }
 
             // Action hook to adjust items commission rates before save.
-            $order->update_meta_data( 'multivendorx_order_items_commission_rates', apply_filters( 'mvx_vendor_order_items_commission_rates', $commission_rates, $order ) );
+            $order->update_meta_data( 'multivendorx_order_items_commission_rates', apply_filters( 'multivendorx_store_order_items_commission_rates', $commission_rates, $order ) );
 
             $marketplace_commission = $commission_amount;
             $store_earning          = (float) ( $order->get_subtotal() - $order->get_discount_total() - $commission_amount );
@@ -453,7 +453,7 @@ class CommissionManager {
             : $order->get_item_total( $item, false, false ) * $item['qty'];
 
         // Filter the item total before calculating item commission.
-        $line_total = apply_filters( 'mvx_get_commission_line_total', $line_total, $item, $order );
+        $line_total = apply_filters( 'multivendorx_get_commission_line_total', $line_total, $item, $order );
 
         if ( $product_id && $store ) {
 
@@ -461,7 +461,7 @@ class CommissionManager {
             $commission = $this->get_commission_amount( $product_id, $item, $store );
 
             // Filter to adjust commission before use.
-            $commission = apply_filters( 'mvx_get_commission_amount', $commission, $product_id, $store->term_id, $item, $order );
+            $commission = apply_filters( 'multivendorx_get_commission_amount', $commission, $product_id, $store->term_id, $item, $order );
 
             $commission_type = MultiVendorX()->setting->get_setting( 'commission_type' );
 
@@ -473,12 +473,12 @@ class CommissionManager {
 
             $product_value_total += $item->get_total();
 
-            if ( apply_filters( 'mvx_admin_pay_commission_more_than_order_amount', true ) && $amount > $product_value_total ) {
+            if ( apply_filters( 'multivendorx_admin_pay_commission_more_than_order_amount', true ) && $amount > $product_value_total ) {
                 $amount = $product_value_total;
             }
         }
 
-        return apply_filters( 'vendor_commission_amount', $amount, $product_id, $item, $order );
+        return apply_filters( 'store_commission_amount', $amount, $product_id, $item, $order );
     }
 
     /**
@@ -579,7 +579,7 @@ class CommissionManager {
         $category_wise_commission->commission_fixed      = (float) ( get_term_meta( $max_commission_term->term_id, Utill::WORDPRESS_SETTINGS['category_fixed_commission'], true ) ?? 0 );
 
         // Filter hook to adjust category wise commission after calculation.
-        return apply_filters( 'mvx_category_wise_commission', $category_wise_commission, $product );
+        return apply_filters( 'multivendorx__category_wise_commission', $category_wise_commission, $product );
     }
 
     /**
@@ -702,7 +702,7 @@ class CommissionManager {
 
             $wpdb->update( $wpdb->prefix . Utill::TABLES['commission'], $data, array( 'ID' => $commission_id ), $format );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
 
-            do_action( 'mvx_after_create_commission_refunds', $store_order, $commission_id );
+            do_action( 'multivendorx_after_create_commission_refunds', $store_order, $commission_id );
 
             $refund_status = MultiVendorX()->setting->get_setting( 'customer_refund_status' );
             if ( ! empty( $refund_status ) && in_array( $store_order->get_status(), $refund_status, true ) ) {

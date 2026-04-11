@@ -57,10 +57,10 @@ const ShippingCard = ({
 											key: 'physical',
 											value: 'physical',
 											label: __(
-												'Physical',
+												'Physical - I pack and post it',
 												'multivendorx'
 											),
-											desc: __('Customer receives a file — e.g. a PDF, software, or digital artwork.', 'multivendorx'),
+											desc: __('Item is packed and shipped to the customer address.', 'multivendorx'),
 										},
 									]
 								: []),
@@ -68,19 +68,19 @@ const ShippingCard = ({
 								key: 'downloadable',
 								value: 'downloadable',
 								label: __('Downloadable', 'multivendorx'),
-								desc: __("Item is packed and shipped to the customer's address.", 'multivendorx'),
+								desc: __("Customer receives a file - e.g. a PDF, software, or digital artwork.", 'multivendorx'),
 							},
 							{
 								key: 'digital_product_service',
 								value: 'digital_product_service',
-								label: __('Digital product service', 'multivendorx'),
-								desc: __("Item is packed and shipped to the customer's address.", 'multivendorx'),
+								label: __('Digital service - Delivered online', 'multivendorx'),
+								desc: __("Service provided remotely - like coaching, consulting, or custom design. No shipping or file download involved.", 'multivendorx'),
 							},
 							{
 								key: 'others',
 								value: 'others',
-								label: __('Others', 'multivendorx'),
-								desc: __("Service, appointment, or something that doesn't fit the above.", 'multivendorx'),
+								label: __('Something else', 'multivendorx'),
+								desc: __("Anything that does not involve posting a package or delivering a file, that doesn't fit the above.", 'multivendorx'),
 							},
 						]}
 						custom = {true}

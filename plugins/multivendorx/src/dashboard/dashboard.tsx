@@ -575,6 +575,7 @@ const Dashboard: React.FC = () => {
 				<Column>
 					<Analytics
 						variant="dashboard"
+						isLoading={isLoading}
 						data={analyticsData.map((item) => ({
 							icon: item.icon,
 							iconClass: `${item.color}-bg`,
