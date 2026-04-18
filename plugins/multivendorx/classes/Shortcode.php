@@ -132,7 +132,6 @@ class Shortcode {
         $json_attrs = esc_attr( wp_json_encode( $attributes ) );
 
         FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_external_scripts();
         FrontendScripts::enqueue_script( 'multivendorx-marketplace-stores-script' );
         FrontendScripts::enqueue_style( 'multivendorx-common-block-style' );
         FrontendScripts::localize_scripts( 'multivendorx-marketplace-stores-script' );

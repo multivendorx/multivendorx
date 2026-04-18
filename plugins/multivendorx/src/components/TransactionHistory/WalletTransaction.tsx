@@ -113,6 +113,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 				setRecentDebits([]);
 				console.error(error);
 			});
+		doRefreshTableData({});
 	}, [storeId]);
 
 	const handleWithdrawal = () => {

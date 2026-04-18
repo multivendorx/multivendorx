@@ -268,7 +268,7 @@ class CommissionManager {
                 'commission_fixed' => (float) ( $commission_values['commission_fixed'] ?? 0 ),
             );
 
-            wc_update_order_item_meta( $item_id, Utill::ORDER_META_SETTINGS['store_item_commission'], $item_commission );
+            // wc_update_order_item_meta( $item_id, Utill::ORDER_META_SETTINGS['store_item_commission'], $item_commission );
 
             $commission_amount += (float) $item_commission;
         }

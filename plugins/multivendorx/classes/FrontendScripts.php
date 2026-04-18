@@ -63,18 +63,17 @@ class FrontendScripts {
 	public static function enqueue_external_scripts() {
         $base_dir = plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/';
         $base_url = MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/';
-        self::enqueue_scripts_from_dir( $base_dir . 'externals/', $base_url . 'externals/' );
+        // self::enqueue_scripts_from_dir( $base_dir . 'externals/', $base_url . 'externals/' );
 		// Shared/root chunks are required by block bundles in both dev and production.
 		// Example: packages_js_zyra_build_index_js.js for zyra exports like MapProviderUI.
-        // checking need to debug in frontend
-        if (MultiVendorX()->is_dev) {
+        // if (MultiVendorX()->is_dev) checking need to debug in frontend
             self::enqueue_scripts_from_dir(
                 $base_dir,
                 $base_url,
                 array( 'index.js', 'components.js' ),
                 '/min\.js$/i'
             );
-        }
+        // }
     }
 
 	/**

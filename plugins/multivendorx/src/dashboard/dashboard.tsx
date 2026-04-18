@@ -307,7 +307,7 @@ const Dashboard: React.FC = () => {
 						name: `${order.billing.first_name} ${order.billing.last_name}`,
 						reason:
 							order.meta_data.find(
-								(m) => m.key === '_customer_refund_reason'
+								(m) => m.key === 'multivendorx_customer_refund_reason'
 							)?.value || 'No reason',
 						time: order.date_created,
 						amount: order.total,

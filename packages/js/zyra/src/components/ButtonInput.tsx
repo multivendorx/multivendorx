@@ -184,6 +184,7 @@ const ButtonInput: FieldComponent = {
                     }),
                     ...(field.method === 'POST' && {
                         data: {
+                            key: field.key,
                             action: field.action || [],
                         },
                     }),
