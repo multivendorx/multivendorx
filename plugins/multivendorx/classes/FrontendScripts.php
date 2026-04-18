@@ -152,7 +152,7 @@ class FrontendScripts {
 	 */
     public static function register_scripts() {
         $version = MultiVendorX()->version;
-        // self::enqueue_external_scripts();
+        self::enqueue_external_scripts();
         $index_asset     = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/index.asset.php';
         $component_asset = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/components.asset.php';
 
