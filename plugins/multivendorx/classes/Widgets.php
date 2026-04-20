@@ -90,12 +90,7 @@ class Widgets {
      * @param array $editor_context  Editor context.
      * @return array Filtered array of allowed block names.
      */
-    public function restrict_store_blocks( $allowed_blocks, $editor_context ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
-
-        $restricted_categories = array(
-            'multivendorx-store-shop',
-            'multivendorx-shortcodes',
-        );
+    public function restrict_store_blocks( $allowed_blocks, $editor_context ) {
 
         if ( Utill::is_store_page() ) {
             return $allowed_blocks;
@@ -103,15 +98,13 @@ class Widgets {
 
         $registry   = \WP_Block_Type_Registry::get_instance();
         $all_blocks = $registry->get_all_registered();
-        $filtered   = array();
 
+        $filtered = array();
         foreach ( $all_blocks as $block_name => $block_type ) {
             $category = $block_type->category ?? '';
-
-            if ( in_array( $category, $restricted_categories, true ) ) {
+            if ( 'multivendorx-store-shop' ===$category  ) {
                 continue;
             }
-
             $filtered[] = $block_name;
         }
 

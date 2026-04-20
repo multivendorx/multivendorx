@@ -16,6 +16,7 @@ import {
 	ItemListUI,
 	NoticeManager,
 	ComponentStatusView,
+	Notice,
 } from 'zyra';
 import { formatCurrency } from '../services/commonFunction';
 interface WithdrawalData {
@@ -183,7 +184,7 @@ const Withdrawals: React.FC = () => {
 											{item.payment_method ===
 												'bank-transfer' &&
 												__(
-													'Direct to Local Bank (INR)',
+													'Direct to Local Bank',
 													'multivendorx'
 												)}
 											{item.payment_method ===
@@ -238,6 +239,7 @@ const Withdrawals: React.FC = () => {
 									)}{' '}
 								</div>
 								<div className="desc">
+									{__( 'Minimum required to withdraw - ','multivendorx')}
 									{data?.threshold > 0 ? (
 										<>
 											<b>
@@ -245,9 +247,7 @@ const Withdrawals: React.FC = () => {
 													data.threshold
 												)}{' '}
 											</b>
-											{__(
-												'minimum required to withdraw',
-												'multivendorx'
+											{__('minimum required to withdraw', 'multivendorx'
 											)}
 										</>
 									) : (
@@ -255,6 +255,7 @@ const Withdrawals: React.FC = () => {
 									)}
 								</div>
 								<div className="desc">
+									{__('Reserve balance - ', 'multivendorx')}
 									{data?.reserve_balance > 0 ? (
 										<>
 											<b>
@@ -316,7 +317,9 @@ const Withdrawals: React.FC = () => {
 										]}
 									/>
 								) : (
-									<ComponentStatusView
+									<Notice
+										type="info"
+										displayPosition="inline-notice"
 										title={__(
 											'No pending earning in clearence',
 											'multivendorx'

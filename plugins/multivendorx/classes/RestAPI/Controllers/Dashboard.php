@@ -64,6 +64,14 @@ class Dashboard extends \WP_REST_Controller {
         $other_endpoints = apply_filters(
             'dashboard_other_endpoints',
             array(
+                'profile' => array(
+                    'name'       => '',
+                    'icon'       => '',
+                    'slug'       => 'profile',
+                    'submenu'    => array(),
+                    'capability' => array( 'read_products' ),
+                    'filename'   => 'profile',
+                ),
                 'view-notifications' => array(
                     'name'       => '',
                     'icon'       => '',

@@ -36,6 +36,7 @@ const StoreCouponList = ({
 	const [coupons, setCoupons] = useState([]);
 	const [page, setPage] = useState(1);
 	const [copiedCode, setCopiedCode] = useState(null);
+	const isWidget = !!couponList?.storeDetails?.storeId;
 
 	// Reset page when filters change
 	useEffect(() => {
@@ -100,7 +101,6 @@ const StoreCouponList = ({
 	if (!coupons.length) {
 		return null;
 	}
-
 	return (
 		<div className="store-coupon-list">
 			<h3>{__('Coupons', 'multivendorx')}</h3>
