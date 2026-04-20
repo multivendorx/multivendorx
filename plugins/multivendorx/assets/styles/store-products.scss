@@ -886,16 +886,17 @@ $star-color: #d49c00;
 
     .multivendorx-tabs {
         display: flex;
-        // gap: 0.625rem;
+        gap: 1rem;
         margin-bottom: 1rem;
 
         .multivendorx-tab {
-            padding: 0.25rem 0.5rem;
+            padding: .45rem .5rem;
             cursor: pointer;
-            background: #ebebeb57;
+            border-bottom: 0.063rem solid #d9d3d3;
 
             &.active {
-                background: var(--theme-primary);
+                border-color: var(--theme-primary);
+                color: var(--theme-primary);
             }
         }
     }

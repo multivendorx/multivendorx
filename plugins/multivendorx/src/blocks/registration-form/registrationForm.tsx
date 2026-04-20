@@ -320,7 +320,7 @@ const RegistrationForm = () => {
 						</div>
 						<h4 className="multivendorxstep-label">
 							{' '}
-							{__('Step 1', 'multivendorx')}
+							{__('Account', 'multivendorx')}
 						</h4>
 					</div>
 						
@@ -333,7 +333,7 @@ const RegistrationForm = () => {
 							<span>2</span>
 						</div>
 						<h4 className="multivendorxstep-label">
-							{__('Step 2', 'multivendorx')}
+							{__('Store info', 'multivendorx')}
 						</h4>
 					</div>
 				</div>

@@ -58,7 +58,7 @@ registerBlockType('multivendorx/store-phone', {
 		return (
 			<div {...blockProps}>
 				<span className="dashicons dashicons-phone"></span>
-				<div className="multivendorx-store-phone-block"></div>
+				<div className="multivendorx-store-details multivendorx-store-phone-block"></div>
 			</div>
 		);
 	},
