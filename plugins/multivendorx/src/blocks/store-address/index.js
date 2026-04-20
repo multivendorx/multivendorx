@@ -49,8 +49,8 @@ registerBlockType('multivendorx/store-address', {
 		const showIcon = attributes.showIcon !== false;
 
 		return (
-			<div {...blockProps}>
-				{showIcon && <LocationIcon />}
+			<div {...blockProps} className="multivendorx-store-details">
+				 <LocationIcon />
 				<div className="multivendorx-store-address-block store-details"></div>
 			</div>
 		);
