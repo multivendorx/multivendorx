@@ -39,47 +39,38 @@ const ratingsField = {
 	),
 	modal: [
 		{
-			id: 'vat-number',
-			label: __('VAT / Tax number', 'multivendorx'),
+			title: __('VAT / Tax number', 'multivendorx'),
 			desc: __('DE987654321', 'multivendorx'),
 			isCustom: true,
 			disableBtn: true,
-			iconEnable: false,
-			formFields: [],
 		},
 		{
-			id: 'tax-id',
-			label: __('Marketplace tax ID', 'multivendorx'),
+			title: __('Marketplace tax ID', 'multivendorx'),
 			desc: __('GB123456789', 'multivendorx'),
 			isCustom: true,
 			disableBtn: true,
-			iconEnable: false,
-			formFields: [],
 		},
 		{
-			id: 'registration-number',
-			label: __('Marketplace registration number', 'multivendorx'),
+			title: __('Marketplace registration number', 'multivendorx'),
 			desc: __('GB123456789', 'multivendorx'),
 			isCustom: true,
 			disableBtn: true,
-			iconEnable: false,
-			formFields: [],
 		},
 		{
-			id: 'company-number',
-			label: __('Company registration number', 'multivendorx'),
+			title: __('Company registration number', 'multivendorx'),
 			desc: __('GB123456789', 'multivendorx'),
 			isCustom: true,
 			disableBtn: true,
-			iconEnable: false,
-			formFields: [],
 		},
 	],
+	addNewBtn: true,
 	addNewTemplate: {
 		label: 'New Rating Parameters',
 		editableFields: {
 			title: true,
 			description: true,
+			disableBtn: true,
+			isCustom: true,
 		},
 	},
 };
@@ -213,7 +204,7 @@ const Invoice: React.FC = () => {
 
 	const [formData, setFormData] = useState(() => {
 		return {
-			...defaultData,
+			// ...defaultData,
 			...(appLocalizer?.settings_databases_value?.invoices || {}),
 		};
 	});
@@ -621,8 +612,8 @@ const Invoice: React.FC = () => {
 							<ExpandablePanelUI
 								name={ratingsField.key}
 								methods={ratingsField.modal}
-								value={formData.value}
-								onChange={(val) => handleChange('value', val)}
+								value={formData.invoice_tax_details || []}
+								onChange={(val) => handleChange('invoice_tax_details', val)}
 								canAccess={true}
 								min={ratingsField.min}
 								addNewBtn={ratingsField.addNewBtn}
@@ -705,10 +696,10 @@ const Invoice: React.FC = () => {
 									'Invoice numbers will include this prefix',
 									'multivendorx'
 								)}
-								// value={formData.name || ''}
-								// onChange={(val) =>
-								//     handleChange('name', val as string)
-								// }
+							// value={formData.name || ''}
+							// onChange={(val) =>
+							//     handleChange('name', val as string)
+							// }
 							/>
 						</FormGroup>
 					</FormGroupWrapper>
@@ -724,19 +715,29 @@ const Invoice: React.FC = () => {
 							label="Company logo"
 							desc={__('', 'multivendorx')}
 						>
-							<FileInputUI />
+							<FileInputUI
+							imageSrc={formData?.invoice_logo|| ''}
+							onChange={(img)=>{
+								handleChange('invoice_logo', img);
+							}}
+							/>
 						</FormGroup>
 						<FormGroup
 							label="Invoice signature"
 							desc={__('', 'multivendorx')}
 						>
-							<FileInputUI />
+							<FileInputUI
+								imageSrc={formData?.invoice_signature|| ''}
+								onChange={(img)=>{
+									handleChange('invoice_signature', img);
+								}}
+							/>	
 						</FormGroup>
 					</FormGroupWrapper>
 				</Card>
 			</Column>
 
-			
+
 		</Container>
 	);
 };

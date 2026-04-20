@@ -32,7 +32,6 @@ const ProfileUpdate: React.FC = () => {
 				first_name: formData.first_name || '',
 				last_name: formData.last_name || '',
 				nickname: formData.nickname || '',
-				email: formData.email || '',
 				url: formData.user_url || '',
 				description: formData.description || '',
 			},
@@ -93,14 +92,6 @@ const ProfileUpdate: React.FC = () => {
 								<BasicInputUI
 									value={formData.nickname || ''}
 									onChange={(val) => handleChange('nickname', val)}
-								/>
-							</FormGroup>
-
-							<FormGroup label={__('Email', 'multivendorx-pro')}>
-								<BasicInputUI
-									type="email"
-									value={formData.email || ''}
-									onChange={(val) => handleChange('email', val)}
 								/>
 							</FormGroup>
 
