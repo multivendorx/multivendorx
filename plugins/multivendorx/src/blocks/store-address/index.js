@@ -50,7 +50,7 @@ registerBlockType('multivendorx/store-address', {
 
 		return (
 			<div {...blockProps}>
-				{showIcon && <LocationIcon />}
+				 <LocationIcon />
 				<div className="multivendorx-store-address-block store-details"></div>
 			</div>
 		);

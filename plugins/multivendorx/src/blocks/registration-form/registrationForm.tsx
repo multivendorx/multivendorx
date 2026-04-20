@@ -318,17 +318,13 @@ const RegistrationForm = () => {
 								<span>1</span>
 							)}
 						</div>
-						<div className="multivendorxstep-info">
-							<h4 className="multivendorxstep-label">
-								{' '}
-								{__('Step 1', 'multivendorx')}
-							</h4>
-							{/* <span className="multivendorxstep-title">Getting Started</span> */}
-						</div>
+						<h4 className="multivendorxstep-label">
+							{' '}
+							{__('Step 1', 'multivendorx')}
+						</h4>
 					</div>
-
-					<div className="multivendorxstep-connector"></div>
-
+						
+					<div className="multivendorx-step-divider"></div>
 					{/* Step 2 */}
 					<div
 						className={`multivendorxstep-item ${currentStep === 2 ? 'active' : ''}`}
@@ -336,12 +332,9 @@ const RegistrationForm = () => {
 						<div className="multivendorxstep-number">
 							<span>2</span>
 						</div>
-						<div className="multivendorxstep-info">
-							<h4 className="multivendorxstep-label">
-								{__('Step 2', 'multivendorx')}
-							</h4>
-							{/* <span className="multivendorxstep-title">Store Details</span> */}
-						</div>
+						<h4 className="multivendorxstep-label">
+							{__('Step 2', 'multivendorx')}
+						</h4>
 					</div>
 				</div>
 				<div className="multivendorxprogress-bar">
@@ -404,6 +397,7 @@ const RegistrationForm = () => {
 			{currentStep === 2 && (
 				<div className="multivendorxstep-content">
 					<div className="multivendorxform-header">
+						<p>Step 2 of 2</p>
 						<h3>
 							{__('Tell us about your store', 'multivendorx')}
 						</h3>
@@ -459,7 +453,7 @@ const RegistrationForm = () => {
 						</div>
 					)}
 
-					<div className="multivendorxstep-actions">
+					{/* <div className="multivendorxstep-actions">
 						<button
 							className="multivendorxbtn multivendorxbtn-secondary"
 							onClick={goToPreviousStep}
@@ -467,7 +461,7 @@ const RegistrationForm = () => {
 						>
 							{__('Back', 'multivendorx')}
 						</button>
-					</div>
+					</div> */}
 				</div>
 			)}
 		</>

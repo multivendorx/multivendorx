@@ -15,18 +15,6 @@ const ButtonStyle = {
 	alignItems: 'center',
 };
 
-const FollowIcon = () => (
-	<svg
-		xmlns="http://www.w3.org/2000/svg"
-		viewBox="0 0 24 24"
-		fill="currentColor"
-		width="20"
-		height="20"
-	>
-		<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-	</svg>
-);
-
 const FollowStore: React.FC<FollowStoreProps> = ({
 	showFollowerCount = true,
 }) => {
@@ -85,7 +73,6 @@ const FollowStore: React.FC<FollowStoreProps> = ({
 				className={`wp-block-button__link has-border-color has-accent-1-border-color wp-element-button multivendorx-store-follow-btn`}
 				onClick={handleFollowToggle}
 			>
-				<FollowIcon />
 				{isFollowing
 					? __('Unfollow Store', 'multivendorx')
 					: __('Follow Store', 'multivendorx')}

@@ -540,13 +540,20 @@ class Frontend {
         </p>
 			<?php
 		} else {
-			echo '<div class="multivendorx-registration woocommerce">';
-			echo '<div class="woocommerce-notices-wrapper"><div class="woocommerce-error"><div class="wc-block-components-notice-banner__content"><strong>' .
-            esc_html__( 'Welcome! To register your store, please log in first. Use the form below to get started.', 'multivendorx' ) .
-			'</strong></div></div></div>';
-			wc_get_template( 'myaccount/form-login.php' );
-			echo '</div>';
-		}
+			?>
+			<div class="multivendorx-registration woocommerce">
+            <p>Step 1 of 2</p>
+            <h3>Create your account</h3>
+            <p>Start by setting up a free account. If you already have one, just sign in.</p>
+            <div class="multivendorx-tabs">
+                <div class="multivendorx-tab active" data-tab="login">Already have an account</div>
+                <div class="multivendorx-tab" data-tab="register">New here? Sign up</div>
+            </div>
+
+            <?php wc_get_template( 'myaccount/form-login.php' ); ?>
+        </div>
+        <?php
+            }
 
 		return ob_get_clean();
 	}
