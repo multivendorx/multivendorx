@@ -148,10 +148,11 @@ MultiVendorX enhances your WordPress multivendor marketplace with seamless compa
 
 ### Short Codes ###
 
-👉 <code>[mvx_vendorslist]</code> = Displays all vendors in a list, allowing users to sort vendors by location, category, etc.
-👉 <code>[mvx_best_selling_products vendor="" ]</code> = Displays the best selling products of the vendor. 
-👉 <code> [mvx_featured_products vendor="" ]</code> = Displays the featured products added by vendor. 
-👉 <code> [mvx_product_category vendor=]</code> = Displays the product categories added by the vendor.
+👉 <code>[marketplace_registration]</code> = Displays the store registration form. Use this to allow new users to sign up as stores.
+👉 <code>[marketplace_dashboard]</code> = Displays the store dashboard where stores manage products/listings, orders, earnings, and store settings.
+👉 <code>[marketplace_stores]</code> = Displays a list of all registered stores with ratings. Use this to help customers discover stores.
+👉 <code>[marketplace_products]</code> = Displays all listings added by a store. Use this to create store-specific listings listing pages.
+👉 <code>[marketplace_coupons]</code> = Displays coupons created by a store along with their usage details.
 And [many more](https://multivendorx.com/list-of-shortcodes/?utm_source=wordpress.org&utm_medium=plugindescription&utm_campaign=MultiVendorxWPOrg). 
 
 ### Widgets ###

@@ -87,38 +87,7 @@ module.exports = {
 	},
 
 	optimization: {
-		...defaultConfig.optimization,
-		splitChunks: {
-			chunks: 'all',
-			minSize: 0,
-			cacheGroups: {
-				// vendors: {
-				// 	test: /[\\/]node_modules[\\/]/,
-				// 	name(module) {
-				// 		const modulePath = module.context;
-				// 		const match = modulePath.match(
-				// 			/[\\/]node_modules[\\/](?:\.pnpm[\\/])?((@[^\\/]+[\\/][^\\/]+)|([^\\/]+))/
-				// 		);
-				// 		if (!match) return 'externals/vendor-unknown';
-				// 		const raw = match[2] || match[3];
-				// 		return `externals/vendor-${raw.replace(
-				// 			/[\\/@]/g,
-				// 			'-'
-				// 		)}`;
-				// 	},
-				// 	chunks: 'all',
-				// 	priority: -10,
-				// 	reuseExistingChunk: true,
-				// },
-				components: {
-					test: /[\\/]src[\\/]components[\\/]/,
-					name: 'components',
-					minChunks: 1,
-					priority: 10,
-					reuseExistingChunk: true,
-				},
-			},
-		},
+	...defaultConfig.optimization,
 	},
 
 	watchOptions: {
