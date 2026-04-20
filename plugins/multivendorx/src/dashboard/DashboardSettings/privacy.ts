@@ -77,7 +77,7 @@ export default {
 		// Deactivation Reason
 		{
 			type: 'textarea',
-			name: 'deactivation_reason',
+			key: 'deactivation_reason',
 			label: __('Deactivation Reason', 'multivendorx'),
 			dependent: {
 				key: 'enable_deactivation',
