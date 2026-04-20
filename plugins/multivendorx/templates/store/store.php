@@ -14,9 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $store_slug = get_query_var( MultiVendorX()->setting->get_setting( 'store_url', 'store' ) );
+if ( !empty($store_slug) ) {
+    wp_safe_redirect( wc_get_page_permalink( 'shop' ) );
+    exit();
+}
+
 $store      = MultiVendorX\Store\Store::get_store( $store_slug, 'slug' );
 $store_id   = $store->get_id();
-
 if ( ! $store_id ) {
     wp_safe_redirect( wc_get_page_permalink( 'shop' ) );
     exit();

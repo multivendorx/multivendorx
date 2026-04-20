@@ -164,6 +164,9 @@ class Frontend {
      * @return array
      */
     public function multivendorx_checkout_user_location_fields( $fields ) {
+        if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+            return $fields;
+        }
 
         // show ONLY when distance-based shipping is used.
         if (
