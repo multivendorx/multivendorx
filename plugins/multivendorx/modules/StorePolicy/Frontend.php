@@ -8,6 +8,7 @@
 namespace MultiVendorX\StorePolicy;
 
 use MultiVendorX\FrontendScripts;
+use MultiVendorX\Utill;
 
 /**
  * MultiVendorX Store Policy Frontend class
@@ -54,8 +55,10 @@ class Frontend {
      * Load follow store JS scripts
      */
     public function load_scripts() {
-        FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'multivendorx-store-policy-frontend-script' );
+        if ( is_product() || Utill::is_store_page()) {
+            FrontendScripts::load_scripts();
+            FrontendScripts::enqueue_script( 'multivendorx-store-policy-frontend-script' );
+        }
     }
 
     /**

@@ -102,8 +102,8 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 
 			<FormGroup
 				cols={2}
-				label={__('Download limit', 'multivendorx')}
-				htmlFor="download_limit"
+				label={__('Download Expiry', 'multivendorx')}
+				htmlFor="download_expiry"
 			>
 				<BasicInputUI
 					name="download_expiry"

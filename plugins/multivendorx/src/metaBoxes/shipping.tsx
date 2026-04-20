@@ -127,7 +127,6 @@ const ShippingCard = ({
 						/>
 					</FormGroup>
 					{productType === 'physical' &&
-						!typeFields.includes('virtual') && (
 							<>
 								<SectionUI
 									title={__(
@@ -239,7 +238,7 @@ const ShippingCard = ({
 									modules
 								)}
 							</>
-						)}
+						}
 					{productType === 'downloadable' &&
 						applyFilters(
 							'product_downloadable',
