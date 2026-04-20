@@ -91,6 +91,7 @@ class FrontendScripts {
     public static function register_scripts() {
         $version = MultiVendorX()->version;
         $index_asset     = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/index.asset.php';
+        $vendor_asset     = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/vendors.asset.php';
         // $component_asset = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/components.asset.php';
 
         $base_url    = MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/';
@@ -121,6 +122,10 @@ class FrontendScripts {
         $register_scripts = apply_filters(
             'multivendorx_register_scripts',
             array(
+                'multivendorx-vendor-script'  => array(
+                	'src'  => $base_url . 'vendors.js',
+                	'deps' => $vendor_asset['dependencies'],
+                ),
                 'multivendorx-dashboard-script'            => array(
                     'src'  => $base_url . 'index.js',
                     'deps' => $index_asset['dependencies'],
@@ -216,9 +221,14 @@ class FrontendScripts {
         // Enqueue all chunk files (External dependencies).
         $index_asset      = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/index.asset.php';
         // $component_asset  = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/components.asset.php';
+        $vendor_asset  = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/vendors.asset.php';
 		$register_scripts = apply_filters(
             'admin_multivendorx_register_scripts',
             array(
+                'multivendorx-vendor-script'  => array(
+                	'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/vendors.js',
+                	'deps' => $vendor_asset['dependencies'],
+                ),
 				'multivendorx-admin-script'       => array(
 					'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/index.js',
 					'deps' => $index_asset['dependencies'],

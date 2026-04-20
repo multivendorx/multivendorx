@@ -228,6 +228,7 @@ class Admin {
             // Support for media.
             wp_enqueue_media();
             FrontendScripts::admin_load_scripts();
+            FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
             FrontendScripts::enqueue_script( 'multivendorx-admin-script' );
             FrontendScripts::enqueue_style( 'multivendorx-index-style' );
             FrontendScripts::localize_scripts( 'multivendorx-admin-script' );

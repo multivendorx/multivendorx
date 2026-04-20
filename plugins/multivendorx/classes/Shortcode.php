@@ -42,6 +42,7 @@ class Shortcode {
         FrontendScripts::enqueue_style( 'multivendorx-store-product-style' );
         if ( Utill::is_store_dashboard() ) {
             wp_deregister_style( 'wc-blocks-style' );
+            FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
             FrontendScripts::enqueue_script( 'multivendorx-dashboard-script' );
             FrontendScripts::localize_scripts( 'multivendorx-dashboard-script' );
             FrontendScripts::enqueue_style( 'multivendorx-dashboard-style' );
