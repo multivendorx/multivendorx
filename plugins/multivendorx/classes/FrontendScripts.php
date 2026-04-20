@@ -55,67 +55,6 @@ class FrontendScripts {
         return 'assets/';
     }
 
-    /**
-	 * Enqueue external JavaScript files.
-	 *
-	 * @return void
-	 */
-	public static function enqueue_external_scripts() {
-        $base_dir = plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/';
-        $base_url = MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/';
-        // self::enqueue_scripts_from_dir( $base_dir . 'externals/', $base_url . 'externals/' );
-		// Shared/root chunks are required by block bundles in both dev and production.
-		// Example: packages_js_zyra_build_index_js.js for zyra exports like MapProviderUI.
-        // if (MultiVendorX()->is_dev) checking need to debug in frontend
-            self::enqueue_scripts_from_dir(
-                $base_dir,
-                $base_url,
-                array( 'index.js', 'components.js' ),
-                '/min\.js$/i'
-            );
-        // }
-    }
-
-	/**
-	 * Enqueue JavaScript files from a directory, optionally excluding some by name or pattern.
-	 *
-	 * @param string   $dir            Full filesystem path to the JS directory.
-	 * @param string   $url            Corresponding URL for the directory.
-	 * @param string[] $exclude_files Array of filenames to exclude.
-	 * @param string   $exclude_pattern Optional regex pattern to exclude.
-	 * @return void
-	 */
-    private static function enqueue_scripts_from_dir( $dir, $url, $exclude_files = array(), $exclude_pattern = '' ) {
-        if ( ! is_dir( $dir ) ) {
-            return;
-        }
-        $js_files = glob( $dir . '*.js' );
-        foreach ( $js_files as $chunk_path ) {
-            $chunk_file = basename( $chunk_path );
-            // Exclude based on filename or regex.
-            if ( in_array( $chunk_file, $exclude_files, true ) ||
-                ( $exclude_pattern && preg_match( $exclude_pattern, $chunk_file ) )
-            ) {
-                continue;
-            }
-            $chunk_handle = 'multivendorx-script-' . sanitize_title( $chunk_file );
-            $asset_file   = str_replace( '.js', '.asset.php', $chunk_path );
-            $deps         = array();
-            $version      = filemtime( $chunk_path );
-            if ( file_exists( $asset_file ) ) {
-                $asset   = include $asset_file;
-                $deps    = $asset['dependencies'] ?? array();
-                $version = $asset['version'] ?? $version;
-            }
-            wp_enqueue_script(
-                $chunk_handle,
-                $url . $chunk_file,
-                $deps,
-                $version,
-                true
-            );
-        }
-    }
 
     /**
 	 * Register and store a script for later use.
@@ -151,9 +90,8 @@ class FrontendScripts {
 	 */
     public static function register_scripts() {
         $version = MultiVendorX()->version;
-        self::enqueue_external_scripts();
         $index_asset     = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/index.asset.php';
-        $component_asset = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/components.asset.php';
+        // $component_asset = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/components.asset.php';
 
         $base_url    = MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/';
         $common_deps = array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' );
@@ -187,13 +125,13 @@ class FrontendScripts {
                     'src'  => $base_url . 'index.js',
                     'deps' => $index_asset['dependencies'],
                 ),
-                'multivendorx-dashboard-components-script' => array(
-                    'src'  => $base_url . 'components.js',
-                    'deps' => $component_asset['dependencies'],
-                ),
+                // 'multivendorx-dashboard-components-script' => array(
+                //     'src'  => $base_url . 'components.js',
+                //     'deps' => $component_asset['dependencies'],
+                // ),
                 'multivendorx-registration-form-script'    => array(
 					'src'  => $base_url . 'block/registration-form/index.js',
-					'deps' => $component_asset['dependencies'],
+					'deps' => $index_asset['dependencies'],
                 ),
                 'multivendorx-store-products-script'       => array(
 					'src'  => $base_url . MULTIVENDORX_PLUGIN_SLUG . '-store-products.min.js',
@@ -203,10 +141,21 @@ class FrontendScripts {
         );
 
         // Add block scripts.
+        // foreach ( $block_scripts as $handle ) {
+        //     $register_scripts[ "multivendorx-{$handle}-script" ] = array(
+        //         'src'  => $base_url . "block/{$handle}/index.js",
+        //         'deps' => $common_deps,
+        //     );
+        // }
         foreach ( $block_scripts as $handle ) {
+            $asset_path = plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . "js/block/{$handle}/index.asset.php";
+            $asset = file_exists( $asset_path )
+                ? include $asset_path
+                : array( 'dependencies' => array(), 'version' => $version );
+
             $register_scripts[ "multivendorx-{$handle}-script" ] = array(
                 'src'  => $base_url . "block/{$handle}/index.js",
-                'deps' => $common_deps,
+                'deps' => $asset['dependencies'],
             );
         }
 
@@ -265,9 +214,8 @@ class FrontendScripts {
     public static function admin_register_scripts() {
 		$version = MultiVendorX()->version;
         // Enqueue all chunk files (External dependencies).
-        self::enqueue_external_scripts();
         $index_asset      = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/index.asset.php';
-        $component_asset  = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/components.asset.php';
+        // $component_asset  = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/components.asset.php';
 		$register_scripts = apply_filters(
             'admin_multivendorx_register_scripts',
             array(
@@ -275,10 +223,10 @@ class FrontendScripts {
 					'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/index.js',
 					'deps' => $index_asset['dependencies'],
 				),
-				'multivendorx-components-script'  => array(
-					'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/components.js',
-					'deps' => $component_asset['dependencies'],
-				),
+				// 'multivendorx-components-script'  => array(
+				// 	'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/components.js',
+				// 	'deps' => $component_asset['dependencies'],
+				// ),
                 'multivendorx-product-tab-script' => array(
 					'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/' . MULTIVENDORX_PLUGIN_SLUG . '-product-tab.min.js',
 					'deps' => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ),
@@ -300,8 +248,11 @@ class FrontendScripts {
 		$register_styles = apply_filters(
             'admin_multivendorx_register_styles',
             array(
-				'multivendorx-components-style' => array(
-					'src' => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/components.css',
+				// 'multivendorx-components-style' => array(
+				// 	'src' => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/components.css',
+				// ),
+				'multivendorx-index-style' => array(
+					'src' => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/index.css',
 				),
 			)
         );
