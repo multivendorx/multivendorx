@@ -17,12 +17,13 @@ import {
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
-import CustomerInvoiceDefault from '../../../assets/template/customerInvoice/customer-invoice-default';
-import adminCommissionDefault from '../../../assets/template/adminCommission/admin-commission-default';
-import membershipInvoiceDefault from '../../../assets/template/membershipInvoice/membership-Invoice-default';
-import packingSlipDefault from '../../../assets/template/packingSlip/packing-slip-default';
+import Default from '../../../assets/template/customerInvoice/Default';
+import adminCommissionDefault from '../../../assets/template/adminCommission/Default';
+import membershipInvoiceDefault from '../../../assets/template/membershipInvoice/Default';
+import packingSlipDefault from '../../../assets/template/packingSlip/Default';
 
 import axios from 'axios';
+import { applyFilters } from '@wordpress/hooks';
 
 const ratingsField = {
 	key: 'ratings_parameters',
@@ -166,6 +167,23 @@ const COLOR_PALETTES = [
 	},
 ];
 
+// Default color palette for new installations
+const DEFAULT_COLOR_PALETTE = 'orchid_bloom';
+
+// Get default colors for a palette
+const getDefaultColors = (paletteKey = DEFAULT_COLOR_PALETTE) => {
+	const palette = COLOR_PALETTES.find(p => p.key === paletteKey);
+	return palette ? palette.colors : COLOR_PALETTES[0].colors;
+};
+
+// Default templates for each invoice type
+const DEFAULT_TEMPLATES = {
+	customer: 'customer_invoice_default',
+	admin: 'admin_commission_default',
+	membership: 'membership_invoice_default',
+	packing: 'packing_slip_default',
+};
+
 const autoSave = (updatedData: Record<string, unknown>) => {
 	axios({
 		method: 'POST',
@@ -200,12 +218,59 @@ const Invoice: React.FC = () => {
 			delivery: { enable: true },
 			service: { enable: true },
 		},
+		// Customer invoice template (default)
+		invoice_template: {
+			selectedPalette: DEFAULT_COLOR_PALETTE,
+			colors: getDefaultColors(DEFAULT_COLOR_PALETTE),
+			templateKey: DEFAULT_TEMPLATES.customer,
+		},
+		// Admin commission template (default)
+		admin_template: {
+			selectedPalette: DEFAULT_COLOR_PALETTE,
+			colors: getDefaultColors(DEFAULT_COLOR_PALETTE),
+			templateKey: DEFAULT_TEMPLATES.admin,
+		},
+		// Membership template (default)
+		membership_template: {
+			selectedPalette: DEFAULT_COLOR_PALETTE,
+			colors: getDefaultColors(DEFAULT_COLOR_PALETTE),
+			templateKey: DEFAULT_TEMPLATES.membership,
+		},
+		// Packing slip template (default)
+		packing_template: {
+			selectedPalette: DEFAULT_COLOR_PALETTE,
+			colors: getDefaultColors(DEFAULT_COLOR_PALETTE),
+			templateKey: DEFAULT_TEMPLATES.packing,
+		},
 	};
 
 	const [formData, setFormData] = useState(() => {
+		const savedData = appLocalizer?.settings_databases_value?.invoices || {};
+		
+		// Helper function to ensure template has all required fields
+		const ensureTemplateDefaults = (savedTemplate: any, defaultTemplate: any) => {
+			if (!savedTemplate || typeof savedTemplate !== 'object') {
+				return { ...defaultTemplate };
+			}
+			
+			return {
+				selectedPalette: savedTemplate.selectedPalette || defaultTemplate.selectedPalette,
+				templateKey: savedTemplate.templateKey || defaultTemplate.templateKey,
+				colors: savedTemplate.colors && Object.keys(savedTemplate.colors).length > 0 
+					? savedTemplate.colors 
+					: defaultTemplate.colors,
+			};
+		};
+		
 		return {
-			// ...defaultData,
 			...(appLocalizer?.settings_databases_value?.invoices || {}),
+			...defaultData,
+			...savedData,
+			// Ensure each template has proper defaults
+			invoice_template: ensureTemplateDefaults(savedData.invoice_template, defaultData.invoice_template),
+			admin_template: ensureTemplateDefaults(savedData.admin_template, defaultData.admin_template),
+			membership_template: ensureTemplateDefaults(savedData.membership_template, defaultData.membership_template),
+			packing_template: ensureTemplateDefaults(savedData.packing_template, defaultData.packing_template),
 		};
 	});
 
@@ -214,6 +279,7 @@ const Invoice: React.FC = () => {
 		setFormData(updated);
 		autoSave(updated);
 	};
+
 	return (
 		<Container className="notice-settings">
 			<Column>
@@ -235,27 +301,23 @@ const Invoice: React.FC = () => {
 										inputClass="setting-form-input"
 										templateSelector={true}
 										showPdfButton={true}
-										idPrefix="color-setting"
-										templates={[
-											{
-												key: 'customer_invoice_default',
-												label: 'Customer Invoice Default',
-												preview: CustomerInvoiceDefault,
-												component: CustomerInvoiceDefault,
-												pdf: CustomerInvoiceDefault,
-											},
-										]}
+										idPrefix="color-setting-customer"
+										templates={applyFilters(
+											'multivendorx_invoice_templates',
+											[
+												{
+													key: 'customer_invoice_default',
+													label: 'Default',
+													preview: Default,
+													component: Default,
+													pdf: Default,
+												},
+											]
+										)}
 										predefinedOptions={COLOR_PALETTES}
-										value={{
-											selectedPalette: 'orchid_bloom',
-											colors: {},
-											templateKey: 'customer_invoice_default',
-										}}
-										onChange={(e) => {
-											handleChange(
-												'invoice_template',
-												e.target.value
-											);
+										value={formData.invoice_template}
+										onChange={(val) => {
+											handleChange('invoice_template', val);
 										}}
 									/>
 								),
@@ -268,8 +330,8 @@ const Invoice: React.FC = () => {
 										wrapperClass="form-group-color-setting"
 										inputClass="setting-form-input"
 										templateSelector={true}
-										// showPdfButton={true}
-										idPrefix="invoice-template-builder"
+										showPdfButton={true}
+										idPrefix="color-setting-admin"
 										templates={[
 											{
 												key: 'admin_commission_default',
@@ -280,16 +342,9 @@ const Invoice: React.FC = () => {
 											},
 										]}
 										predefinedOptions={COLOR_PALETTES}
-										value={{
-											selectedPalette: 'orchid_bloom',
-											colors: {},
-											templateKey: 'admin_commission_default',
-										}}
-										onChange={(e) => {
-											handleChange(
-												'admin_template',
-												e.target.value
-											);
+										value={formData.admin_template}
+										onChange={(val) => {
+											handleChange('admin_template', val);
 										}}
 									/>
 								),
@@ -301,9 +356,9 @@ const Invoice: React.FC = () => {
 										filedKey="membership_template"
 										wrapperClass="form-group-color-setting"
 										inputClass="setting-form-input"
-										templateSelector={false}
+										templateSelector={true}
 										showPdfButton={true}
-										idPrefix="invoice-template-builder"
+										idPrefix="color-setting-membership"
 										templates={[
 											{
 												key: 'membership_invoice_default',
@@ -314,16 +369,9 @@ const Invoice: React.FC = () => {
 											},
 										]}
 										predefinedOptions={COLOR_PALETTES}
-										value={{
-											selectedPalette: 'orchid_bloom',
-											colors: {},
-											templateKey: 'membership_invoice_default',
-										}}
-										onChange={(e) => {
-											handleChange(
-												'membership_template',
-												e.target.value
-											);
+										value={formData.membership_template}
+										onChange={(val) => {
+											handleChange('membership_template', val);
 										}}
 									/>
 								),
@@ -335,9 +383,9 @@ const Invoice: React.FC = () => {
 										filedKey="packing_template"
 										wrapperClass="form-group-color-setting"
 										inputClass="setting-form-input"
-										templateSelector={false}
-										showPdfButton={true}
-										idPrefix="invoice-template-builder"
+										templateSelector={true}
+										showPdfButton={true} 
+										idPrefix="color-setting-packing"
 										templates={[
 											{
 												key: 'packing_slip_default',
@@ -348,16 +396,9 @@ const Invoice: React.FC = () => {
 											},
 										]}
 										predefinedOptions={COLOR_PALETTES}
-										value={{
-											selectedPalette: 'orchid_bloom',
-											colors: {},
-											templateKey: 'packing_slip_default',
-										}}
-										onChange={(e) => {
-											handleChange(
-												'packing_template',
-												e.target.value
-											);
+										value={formData.packing_template}
+										onChange={(val) => {
+											handleChange('packing_template', val);
 										}}
 									/>
 								),
@@ -480,11 +521,6 @@ const Invoice: React.FC = () => {
 						</FormGroup>
 					</FormGroupWrapper>
 				</Card>
-				{/* <Card title={__('Customer access to invoices', 'multivendorx')} desc={__('Control how customers can access and download their order invoices.', 'multivendorx')}>
-                    <FormGroupWrapper>
-                        
-                    </FormGroupWrapper>
-                </Card> */}
 				<Card title={__('Packing slip generator', 'multivendorx')}>
 					<FormGroupWrapper>
 						<FormGroup
@@ -693,13 +729,9 @@ const Invoice: React.FC = () => {
 									handleChange('invoice_prefix', val)
 								}
 								placeholder={__(
-									'Invoice numbers will include this prefix',
+									'Enter invoice prefix',
 									'multivendorx'
 								)}
-							// value={formData.name || ''}
-							// onChange={(val) =>
-							//     handleChange('name', val as string)
-							// }
 							/>
 						</FormGroup>
 					</FormGroupWrapper>
@@ -713,7 +745,7 @@ const Invoice: React.FC = () => {
 					<FormGroupWrapper>
 						<FormGroup
 							label="Company logo"
-							desc={__('', 'multivendorx')}
+							desc={__('Upload your company logo', 'multivendorx')}
 						>
 							<FileInputUI
 							imageSrc={formData?.invoice_logo|| ''}
@@ -724,7 +756,7 @@ const Invoice: React.FC = () => {
 						</FormGroup>
 						<FormGroup
 							label="Invoice signature"
-							desc={__('', 'multivendorx')}
+							desc={__('Upload invoice signature', 'multivendorx')}
 						>
 							<FileInputUI
 								imageSrc={formData?.invoice_signature|| ''}
@@ -736,8 +768,6 @@ const Invoice: React.FC = () => {
 					</FormGroupWrapper>
 				</Card>
 			</Column>
-
-
 		</Container>
 	);
 };

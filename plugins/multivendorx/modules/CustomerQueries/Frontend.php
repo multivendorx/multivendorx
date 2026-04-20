@@ -67,9 +67,11 @@ class Frontend {
      * @return void
      */
     public function load_scripts() {
-        FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'multivendorx-customer-queries-frontend-script' );
-        FrontendScripts::localize_scripts( 'multivendorx-customer-queries-frontend-script' );
+        if (is_product()) {
+            FrontendScripts::load_scripts();
+            FrontendScripts::enqueue_script( 'multivendorx-customer-queries-frontend-script' );
+            FrontendScripts::localize_scripts( 'multivendorx-customer-queries-frontend-script' );
+        }
     }
 
     /**

@@ -64,9 +64,11 @@ class Frontend {
      * Load scripts
      */
     public function load_scripts() {
-        FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'multivendorx-report-abuse-frontend-script' );
-        FrontendScripts::localize_scripts( 'multivendorx-report-abuse-frontend-script' );
+        if ( is_product() ) {
+            FrontendScripts::load_scripts();
+            FrontendScripts::enqueue_script( 'multivendorx-report-abuse-frontend-script' );
+            FrontendScripts::localize_scripts( 'multivendorx-report-abuse-frontend-script' );
+        }
     }
 
     /**

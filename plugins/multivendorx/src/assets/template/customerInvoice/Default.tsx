@@ -18,7 +18,7 @@ interface Props {
 	};
 }
 
-const CustomerInvoiceDefault: React.FC<Props> = ({ invoiceRows, colors }) => {
+const Default: React.FC<Props> = ({ invoiceRows, colors }) => {
 	const rows: Row[] = invoiceRows || [
 		{
 			description: 'Product A',
@@ -371,4 +371,4 @@ const CustomerInvoiceDefault: React.FC<Props> = ({ invoiceRows, colors }) => {
 	);
 };
 
-export default CustomerInvoiceDefault;
+export default Default;

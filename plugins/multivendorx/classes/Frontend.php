@@ -540,13 +540,20 @@ class Frontend {
         </p>
 			<?php
 		} else {
-			echo '<div class="multivendorx-registration woocommerce">';
-			echo '<div class="woocommerce-notices-wrapper"><div class="woocommerce-error"><div class="wc-block-components-notice-banner__content"><strong>' .
-            esc_html__( 'Welcome! To register your store, please log in first. Use the form below to get started.', 'multivendorx' ) .
-			'</strong></div></div></div>';
-			wc_get_template( 'myaccount/form-login.php' );
-			echo '</div>';
-		}
+			?>
+			<div class="multivendorx-registration woocommerce">
+            <p><?php esc_html_e( 'Step 1 of 2', 'multivendorx' ); ?></p>
+            <h3><?php esc_html_e( 'Create your account', 'multivendorx' ); ?></h3>
+            <p><?php esc_html_e( 'Start by setting up a free account. If you already have one, just sign in.', 'multivendorx' ); ?></p>
+            <div class="multivendorx-tabs">
+                <div class="multivendorx-tab active" data-tab="login"><?php esc_html_e( 'Already have an account', 'multivendorx' ); ?></div>
+                <div class="multivendorx-tab" data-tab="register"><?php esc_html_e( 'New here? Sign up', 'multivendorx' ); ?></div>
+            </div>
+
+            <?php wc_get_template( 'myaccount/form-login.php' ); ?>
+        </div>
+        <?php
+            }
 
 		return ob_get_clean();
 	}

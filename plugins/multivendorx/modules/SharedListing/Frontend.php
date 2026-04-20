@@ -331,7 +331,9 @@ class Frontend {
      * @return void
      */
     public function load_scripts() {
-        FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'multivendorx-sharedlisting-frontend-script' );
+        if ( is_product() ) {
+            FrontendScripts::load_scripts();
+            FrontendScripts::enqueue_script( 'multivendorx-sharedlisting-frontend-script' );
+        }
     }
 }

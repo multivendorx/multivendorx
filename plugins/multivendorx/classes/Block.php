@@ -61,46 +61,35 @@ class Block {
      */
     public function initialize_blocks() {
         $blocks = array();
-
-        $block_names = array(
-            'marketplace-stores',
-            'marketplace-products',
-            'registration-form',
-            'store-tabs',
-            'contact-info',
-            'store-name',
-            'store-email',
-            'store-address',
-            'store-banner',
-            'store-engagement-tools',
-            'store-logo',
-            'store-social-icons',
-            'store-phone',
-            'store-description',
-            'store-review',
-            'store-policy',
-            'product-category',
-            'store-quick-info',
-            'marketplace-coupons',
-            'store-list',
-        );
-
         $textdomain = 'multivendorx';
-        $block_path = MultiVendorX()->plugin_path
+
+        $block_base_path = MultiVendorX()->plugin_path
             . FrontendScripts::get_build_path_name()
             . 'js/block/';
 
-        foreach ( $block_names as $block_name ) {
-            $blocks[] = array(
-                'name'       => $block_name,
-                'textdomain' => $textdomain,
-                'block_path' => $block_path,
-            );
+        $exclude_blocks = array( 'setup-wizard' );
+        if ( ! is_dir( $block_base_path ) ) {
+            return $blocks;
+        }
+
+        $folders = glob( $block_base_path . '*', GLOB_ONLYDIR );
+        foreach ( $folders as $folder ) {
+            $block_name = basename( $folder );
+            if ( in_array( $block_name, $exclude_blocks, true ) ) {
+                continue;
+            }
+
+            if ( file_exists( $folder . '/block.json' ) ) {
+                $blocks[] = array(
+                    'name'       => $block_name,
+                    'textdomain' => $textdomain,
+                    'block_path' => $block_base_path,
+                );
+            }
         }
 
         return apply_filters( 'multivendorx_initialize_blocks', $blocks );
     }
-
 
     /**
      * Enqueue assets and localize scripts for all registered blocks.

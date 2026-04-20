@@ -8,6 +8,7 @@
 namespace MultiVendorX\FollowStore;
 
 use MultiVendorX\FrontendScripts;
+use MultiVendorX\Utill;
 
 /**
  * MultiVendorX Follow Store Frontend class
@@ -69,9 +70,11 @@ class Frontend {
      * Load follow store JS scripts
      */
     public function load_scripts() {
-        FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'multivendorx-follow-store-frontend-script' );
-        FrontendScripts::localize_scripts( 'multivendorx-follow-store-frontend-script' );
+        if ( Utill::is_store_page() ) {
+            FrontendScripts::load_scripts();
+            FrontendScripts::enqueue_script( 'multivendorx-follow-store-frontend-script' );
+            FrontendScripts::localize_scripts( 'multivendorx-follow-store-frontend-script' );
+        }
     }
 
     /**
