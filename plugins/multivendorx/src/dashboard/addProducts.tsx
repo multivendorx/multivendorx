@@ -449,7 +449,7 @@ const AddProduct = () => {
 				</Column>
 
 				<Column grid={6}>
-					{rejectNote && (
+					{rejectNote && product?.status === 'pending' && (
 						<Card
 							title={__(
 								'Product Rejected by Admin',
