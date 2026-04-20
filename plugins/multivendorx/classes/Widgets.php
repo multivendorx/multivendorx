@@ -96,15 +96,13 @@ class Widgets {
             return $allowed_blocks;
         }
 
-        $restricted_category = 'multivendorx-store-shop';
-
         $registry   = \WP_Block_Type_Registry::get_instance();
         $all_blocks = $registry->get_all_registered();
 
         $filtered = array();
         foreach ( $all_blocks as $block_name => $block_type ) {
             $category = $block_type->category ?? '';
-            if ( $category === $restricted_category ) {
+            if ( 'multivendorx-store-shop' ===$category  ) {
                 continue;
             }
             $filtered[] = $block_name;

@@ -48,7 +48,7 @@ const ProfileUpdate: React.FC = () => {
 		if (!formData.password) return;
 
 		if (formData.password !== formData.confirm_password) {
-			setError('Passwords do not match');
+			setError(__('Passwords do not match', 'multivendorx-pro'));
 			return;
 		}
 
