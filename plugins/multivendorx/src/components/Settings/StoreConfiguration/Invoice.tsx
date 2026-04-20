@@ -18,10 +18,9 @@ import {
 import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
 import Default from '../../../assets/template/customerInvoice/Default';
-import LuxeDisplay from '../../../assets/template/customerInvoice/LuxeDisplay';
-import adminCommissionDefault from '../../../assets/template/adminCommission/admin-commission-default';
-import membershipInvoiceDefault from '../../../assets/template/membershipInvoice/membership-Invoice-default';
-import packingSlipDefault from '../../../assets/template/packingSlip/packing-slip-default';
+import adminCommissionDefault from '../../../assets/template/adminCommission/Default';
+import membershipInvoiceDefault from '../../../assets/template/membershipInvoice/Default';
+import packingSlipDefault from '../../../assets/template/packingSlip/Default';
 
 import axios from 'axios';
 import { applyFilters } from '@wordpress/hooks';
@@ -320,13 +319,6 @@ const Invoice: React.FC = () => {
 													preview: Default,
 													component: Default,
 													pdf: Default,
-												},
-												{
-													key: 'customer_invoice_luxe_display',
-													label: 'Luxe Display',
-													preview: LuxeDisplay,
-													component: LuxeDisplay,
-													pdf: LuxeDisplay,
 												},
 											]
 										)}
