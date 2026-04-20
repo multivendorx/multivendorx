@@ -137,7 +137,6 @@ class Settings extends \WP_REST_Controller {
             }
             $get_settings_data = $request->get_param( 'setting' );
             $settingsname      = $request->get_param( 'settingName' );
-
             $settingsname      = str_replace( '-', '_', $settingsname );
             $optionname        = 'multivendorx_' . $settingsname . '_settings';
 
