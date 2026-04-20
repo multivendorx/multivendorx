@@ -326,7 +326,6 @@ class Rest {
      * @param string $post_type Post type.
      */
     public function grant_woocommerce_rest_permission( $permission, $context, $object_id, $post_type ) {
-        unset( $context, $object_id, $post_type );
         $user_id = MultiVendorX()->current_user_id;
 
         // Fetch custom user meta.
@@ -339,7 +338,7 @@ class Rest {
             return true;
         }
 
-        return $permission; // Fallback to default.
+        return apply_filters('multivendorx_store_rest_permission',$permission, $user_id, $context, $object_id, $post_type);
     }
 
     /**

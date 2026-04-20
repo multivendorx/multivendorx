@@ -255,7 +255,7 @@ const Dashboard = () => {
 				convertedKey
 			);
 		} catch {
-			return <div>404 not found</div>;
+			return <div>{__('404 not found','multivendorx')}</div>;
 		}
 	};
 
@@ -692,7 +692,7 @@ const Dashboard = () => {
 														}
 														>
 															<i className="adminfont-person"></i>
-															My Profile
+															{__('My Profile', 'multivendorx')}
 														</a>
 													</li>
 													<li>
@@ -701,7 +701,7 @@ const Dashboard = () => {
 														}
 														>
 															<i className="adminfont-setting"></i>
-															Store Setting
+															{__('Store Settings', 'multivendorx')}
 														</a>
 													</li>
 													{availableStores.length >
@@ -722,7 +722,7 @@ const Dashboard = () => {
 																	}}
 																>
 																	<i className="adminfont-switch-store"></i>
-																	Switch stores
+																	{__('Switch stores', 'multivendorx')}
 																	{firstTwoStores.length >
 																		0 && (
 																			<span className="switch-store-preview">
@@ -823,7 +823,7 @@ const Dashboard = () => {
 													}
 												>
 													<i className="adminfont-import"></i>{' '}
-													Sign Out
+													{__('Sign Out', 'multivendorx')}
 												</a>
 											</div>
 										</div>
