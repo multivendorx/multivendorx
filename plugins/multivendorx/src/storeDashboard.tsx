@@ -363,11 +363,16 @@ const Dashboard = () => {
 					{store_dashboard_logo ? (
 						<img src={store_dashboard_logo} alt="Site Logo" />
 					) : (
-						<span className="site-name">
+						<a
+							href={appLocalizer.site_url}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="site-name"
+							>
 							{isMenuCollapsed && isMenuMinimize
 								? appLocalizer.site_name.charAt(0).toUpperCase()
 								: appLocalizer.site_name}
-						</span>
+							</a>
 					)}
 				</div>
 
@@ -835,27 +840,39 @@ const Dashboard = () => {
 					<NoticeReceiver position="notice" />
 
 					{storeData && storeData.status !== 'active' ? (
-						<ComponentStatusView
-							title={__(
-								'Your store is not active',
-								'multivendorx'
-							)}
-							desc={__(
-								'To get started, register your store.',
-								'multivendorx'
-							)}
-							buttonText={__('Create your store', 'multivendorx')}
-							buttonLink={appLocalizer.registration_page}
-							buttonTarget="_blank"
-						/>
+						storeData.status === 'pending' ? (
+							<ComponentStatusView
+								title={appLocalizer.settings_databases_value['pending']?.pending_msg}
+							/>
+						) : storeData.status === 'suspended' ? (
+							<ComponentStatusView
+								title={appLocalizer.settings_databases_value['suspended']?.suspended_msg}
+							/>
+						) : storeData.status === 'under_review' ? (
+							<ComponentStatusView
+								title={appLocalizer.settings_databases_value['under-review']?.under_review_msg}
+							/>
+						) : storeData.status === 'rejected' ? (
+							<ComponentStatusView
+								title={appLocalizer.settings_databases_value['rejected']?.rejected_msg}
+								buttonText={__('Click here to reapply', 'multivendorx')}
+								buttonLink={appLocalizer.registration_page}
+								buttonTarget="_blank"
+							/>
+						) : (
+							<ComponentStatusView
+								title={__('No active store select for this user.', 'multivendorx')}
+								desc={__('To get started, register your store.', 'multivendorx')}
+								buttonText={__('Create your store', 'multivendorx')}
+								buttonLink={appLocalizer.registration_page}
+								buttonTarget="_blank"
+							/>
+						)
 					) : noPermission ? (
 						<ComponentStatusView
-							title={__(
-								'You do not have permission to access this page.',
-								'multivendorx'
-							)}
+							title={__('You do not have permission to access this page.', 'multivendorx')}
 							buttonText={__('Contact Admin', 'multivendorx')}
-							onButtonClick={() => { }}
+							onButtonClick={() => {}}
 						/>
 					) : (
 						loadComponent(currentTab)

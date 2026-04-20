@@ -897,7 +897,7 @@ class MVX {
                 array(
 					'order_id'       => (int) $commission_order_id,
 					'store_id'       => (int) $store_id,
-                    'total_order_value' =>  $order->get_total(),
+                    'total_order_value' =>  !empty($order) ? $order->get_total() : 0,
 					'store_earning'  => $store_earning,
 					'store_shipping' => $store_shipping,
 					'store_tax'      => $store_tax,
