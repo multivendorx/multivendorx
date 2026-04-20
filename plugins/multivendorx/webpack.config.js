@@ -87,7 +87,28 @@ module.exports = {
 	},
 
 	optimization: {
-	...defaultConfig.optimization,
+		...defaultConfig.optimization,
+
+		splitChunks: {
+			chunks: 'all',
+			minSize: 20000,
+			maxInitialRequests: 5,
+			maxAsyncRequests: 5,
+
+			cacheGroups: {
+				default: false,
+
+				// Only split vendor if BIG
+				vendors: {
+					test: /[\\/]node_modules[\\/]/,
+					name: 'vendors',
+					priority: -10,
+					reuseExistingChunk: true,
+				},
+			},
+		},
+
+		runtimeChunk: false,
 	},
 
 	watchOptions: {
