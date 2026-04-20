@@ -58,9 +58,9 @@ registerBlockType('multivendorx/store-email', {
 		});
 
 		return (
-			<div {...blockProps}>
+			<div {...blockProps} className="multivendorx-store-details">
 				<span className="dashicons dashicons-email"></span>
-				<div className="multivendorx-store-details multivendorx-store-details multivendorx-store-email-block"></div>
+				<div className="multivendorx-store-email-block"></div>
 			</div>
 		);
 	},
