@@ -19,6 +19,7 @@ export default {
 				'Documents required to verify vendor bank account details.',
 				'multivendorx'
 			),
+			proSetting: true,
 			options: [
 				{
 					key: 'bank_statement',
@@ -73,6 +74,8 @@ export default {
 				'Documents required for tax verification of the business.',
 				'multivendorx'
 			),
+			proSetting: true,
+
 			options: [
 				{
 					key: 'gst_certificate',
@@ -115,6 +118,8 @@ export default {
 				'Documents required to verify business registration.',
 				'multivendorx'
 			),
+			proSetting: true,
+
 			options: [
 				{
 					key: 'incorporation_certificate',

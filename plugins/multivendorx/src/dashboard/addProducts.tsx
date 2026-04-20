@@ -242,9 +242,10 @@ const AddProduct = () => {
 		appLocalizer.settings_databases_value?.['product-preferences']
 			?.type_options || [];
 
-	const rejectNote = product?.meta_data?.find(
-		(m) => m.key === '_reject_note'
-	)?.value;
+	const rejectNote =
+		product?.status === 'draft'
+			? product?.meta_data?.find((m) => m.key === '_reject_note')?.value
+			: null;
 
 	const isAutoDraft = product?.meta_data?.some(
 		(m) => m.key === '_is_auto_draft' && m.value === '1'
@@ -335,11 +336,11 @@ const AddProduct = () => {
 										<span></span>
 									</div>
 									<div className="details">
-										<div className="title">											
+										<div className="title">
 											{__('Product Name', 'multivendorx')}
 										</div>
 										<div className="des">
-											{__('A clear, descriptive title that helps customers find your product', 'multivendorx')}											
+											{__('A clear, descriptive title that helps customers find your product', 'multivendorx')}
 										</div>
 									</div>
 								</li>
@@ -455,17 +456,17 @@ const AddProduct = () => {
 								'Product Rejected by Admin',
 								'multivendorx'
 							)}
-							// action={
-							// <ButtonInputUI
-							// 	buttons={[
-							// 		{
-							// 			icon: 'plus',
-							// 			text: __('Appeal Decision', 'multivendorx'),
-							// 			color: 'purple',
-							// 			onClick: () => setAppeal(true),
-							// 		},
-							// 	]}
-							// />}
+						// action={
+						// <ButtonInputUI
+						// 	buttons={[
+						// 		{
+						// 			icon: 'plus',
+						// 			text: __('Appeal Decision', 'multivendorx'),
+						// 			color: 'purple',
+						// 			onClick: () => setAppeal(true),
+						// 		},
+						// 	]}
+						// />}
 						>
 							<Notice
 								type="error"

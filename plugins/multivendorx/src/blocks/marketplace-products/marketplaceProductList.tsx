@@ -32,6 +32,7 @@ const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
 	const [products, setProducts] = useState<Product[]>([]);
 	const [page, setPage] = useState(1);
 	const [loading, setLoading] = useState(true);
+	const isWidget = !!productList?.storeDetails?.storeId;
 
 	useEffect(() => {
 		setPage(1);
@@ -78,6 +79,7 @@ const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
 	useEffect(() => {
 		fetchProducts();
 	}, [fetchProducts]);
+
 
 	return (
 		<>
