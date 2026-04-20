@@ -10,6 +10,7 @@ import {
 	TabsUI,
 	NoticeReceiver,
 	GuidedTourProvider,
+	useOutsideClick,
 } from 'zyra';
 import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
@@ -60,6 +61,9 @@ const Dashboard = () => {
 	const [newProductId, setNewProductId] = useState<number | null>(null);
 
 	const userDropdownRef = useRef<HTMLDivElement>(null);
+
+	useOutsideClick(userDropdownRef, () => setShowUserDropdown(false));
+
 	const { modules } = useModules();
 
 	const DEFAULT_TAB = 'dashboard';
@@ -251,7 +255,7 @@ const Dashboard = () => {
 				convertedKey
 			);
 		} catch {
-			return <div>404 not found</div>;
+			return <div>{__('404 not found','multivendorx')}</div>;
 		}
 	};
 
@@ -682,18 +686,24 @@ const Dashboard = () => {
 
 											<div className="dropdown-body">
 												<ul>
-													{/* <li>
-														<a href="#">
+													<li>
+														<a href={
+															tabHref('profile')
+														}
+														>
 															<i className="adminfont-person"></i>
-															My Profile
+															{__('My Profile', 'multivendorx')}
 														</a>
 													</li>
 													<li>
-														<a href="#">
+														<a href={
+															tabHref('settings')
+														}
+														>
 															<i className="adminfont-setting"></i>
-															Account Setting
+															{__('Store Settings', 'multivendorx')}
 														</a>
-													</li> */}
+													</li>
 													{availableStores.length >
 														0 && (
 															<li className="switch-store-wrapper">
@@ -712,7 +722,7 @@ const Dashboard = () => {
 																	}}
 																>
 																	<i className="adminfont-switch-store"></i>
-																	Switch stores
+																	{__('Switch stores', 'multivendorx')}
 																	{firstTwoStores.length >
 																		0 && (
 																			<span className="switch-store-preview">
@@ -813,7 +823,7 @@ const Dashboard = () => {
 													}
 												>
 													<i className="adminfont-import"></i>{' '}
-													Sign Out
+													{__('Sign Out', 'multivendorx')}
 												</a>
 											</div>
 										</div>
