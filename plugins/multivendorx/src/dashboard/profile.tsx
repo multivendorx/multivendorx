@@ -39,7 +39,7 @@ const ProfileUpdate: React.FC = () => {
 		})
 			.then((res) => {
 				if (res.data?.id) {
-					window.location.href = `${appLocalizer.site_url}/dashboard/`;
+					window.location.assign(`${appLocalizer.site_url}/dashboard/`);
 				}
 			})
 			.catch((err) => console.error(err));
@@ -62,7 +62,7 @@ const ProfileUpdate: React.FC = () => {
 		})
 			.then((res) => {
 				if (res.data?.id) {
-					window.location.href = appLocalizer.user_logout_url;
+					window.location.assign(appLocalizer.user_logout_url);
 				}
 			})
 			.catch((err) => console.error(err));
