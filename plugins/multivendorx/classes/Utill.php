@@ -605,6 +605,9 @@ class Utill {
             'disable_checkout'       => false,
             'restrict_store_access'  => false,
             'hide_store_from_view'   => false,
+            'hide_store_analytics'   => false,
+            'hide_staff_manager'     => false,
+            'hide_customer_support'     => false,
         );
 
         return apply_filters( 'multivendorx_modify_permissions', $permissions );
