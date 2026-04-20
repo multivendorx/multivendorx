@@ -333,7 +333,7 @@ const Invoice: React.FC = () => {
 										showPdfButton={true}
 										idPrefix="color-setting-admin"
 										templates={applyFilters(
-											'multivendorx_invoice_templates',
+											'multivendorx_admin_template',
 											[
 												{
 												key: 'admin_commission_default',
