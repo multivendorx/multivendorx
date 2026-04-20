@@ -39,20 +39,14 @@ jQuery(document).ready(function ($) {
 			wrapper.classList.remove('show-register');
 		}
 	}
-
-	// tab click binding
 	document.querySelectorAll('.multivendorx-tab').forEach((tab) => {
 		tab.addEventListener('click', function () {
 			const type = this.dataset.tab;
-
-			// active button UI
 			document.querySelectorAll('.multivendorx-tab').forEach(t => t.classList.remove('active'));
 			this.classList.add('active');
 
 			toggleAuth(type);
 		});
 	});
-
-	// default state
 	toggleAuth('login');
 });
