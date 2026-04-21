@@ -9,7 +9,6 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	Skeleton,
-	PdfDownloadButton,
 	ButtonInputUI,
 	TextAreaUI,
 	NoticeManager,
@@ -20,6 +19,7 @@ import { __ } from '@wordpress/i18n';
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { formatDate } from '@/services/commonFunction';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
 	page: { padding: 24, fontSize: 12 },
@@ -400,14 +400,18 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 						Object.keys(formData.registration_data).length > 0 && (
 							<div className="admin-btn btn-purple">
 								<i className="adminfont-download"></i>
-								<PdfDownloadButton
-									PdfComponent={RegistrationPdf}
+								<PDFDownloadLink
+									document={
+										<RegistrationPdf
+											registrationData={formData.registration_data}
+										/>
+									}
 									fileName="registration-data.pdf"
-									data={{
-										registrationData:
-											formData.registration_data,
-									}}
-								/>
+								>
+									{({ loading }) =>
+										loading ? 'Generating PDF…' : 'Download PDF'
+									}
+								</PDFDownloadLink>
 							</div>
 						)
 					}

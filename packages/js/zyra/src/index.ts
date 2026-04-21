@@ -67,7 +67,6 @@ export { default as Analytics } from './components/UI/Analytics';
 export { CountryCodes } from './components/fieldUtils';
 export { default as ComponentStatusView } from './components/UI/ComponentStatusView';
 export { default as Skeleton } from './components/UI/Skeleton';
-export { default as PdfDownloadButton } from './components/PdfDownloadButton';
 export { default as ItemList } from './components/ItemList';
 export { ItemListUI } from './components/ItemList';
 export { default as EventCalendar } from './components/EventCalendar';

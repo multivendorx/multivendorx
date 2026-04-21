@@ -5,7 +5,7 @@ import React, { ChangeEvent, useState, useEffect, useMemo } from 'react';
 import '../styles/web/ColorSettingInput.scss';
 import { ChoiceToggleUI } from './ChoiceToggle';
 import { SelectInputUI } from './SelectInput';
-import PdfDownloadButton from './PdfDownloadButton';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import { FieldComponent } from './fieldUtils';
 import { BasicInputUI } from './BasicInput';
 
@@ -490,12 +490,12 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
             )}
 
             {showPdfButton && ActivePdf && (
-                <PdfDownloadButton
-                    PdfComponent={() => (
-                        <ActivePdf colors={selectedColors as CustomColors} />
-                    )}
+                <PDFDownloadLink
+                    document={<ActivePdf colors={selectedColors as CustomColors} />}
                     fileName={`invoice-${templateKey}.pdf`}
-                />
+                >
+                    {({ loading }) => (loading ? 'Generating PDF…' : 'Download PDF')}
+                </PDFDownloadLink>
             )}
         </div>
     );
