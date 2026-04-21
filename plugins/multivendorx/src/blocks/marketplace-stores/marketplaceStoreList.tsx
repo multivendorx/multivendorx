@@ -372,7 +372,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 			)
 			}
 			{!isWidget && (
-				<div className="woocommerce multivendorx-store ssssss">
+				<div className="woocommerce multivendorx-store">
 					<div className="view-tabs-wrapper">
 						<ul className="view-tabs">
 							<li
@@ -575,7 +575,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 												)}
 
 												<div className="store-details">
-													<a href={`${storesList.store_page_url}/${store.store_slug || ''}/`}> <h4>{store.store_name}</h4> </a>
+													<a href={`${storesList.store_page_url}/${store.store_slug || ''}`}> <h4>{store.store_name}</h4> </a>
 													<div className="review-rating">
 														{store.rating !==
 															undefined && (
