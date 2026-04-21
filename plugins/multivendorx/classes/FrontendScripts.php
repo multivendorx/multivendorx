@@ -116,7 +116,6 @@ class FrontendScripts {
             'store-policy',
             'product-category',
             'store-quick-info',
-            'store-list',
         );
 
         $register_scripts = apply_filters(
@@ -581,6 +580,7 @@ class FrontendScripts {
                         'store_page_url'      => MultiVendorX()->store->storeutil->get_store_url( null, '', true ),
                         'placeholder_url'     => wc_placeholder_img_src(),
                         'default_user_avatar' => get_avatar_url( 0 ),
+                        'storeDetails'        => StoreUtil::get_specific_store_info(),
                     ),
                 ),
                 'multivendorx-marketplace-products-editor-script' => array(

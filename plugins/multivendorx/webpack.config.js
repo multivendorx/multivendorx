@@ -75,7 +75,6 @@ module.exports = {
 		'block/product-category/index': './src/blocks/product-category/index.js',
 		'block/store-quick-info/index': './src/blocks/store-quick-info/index.js',
 		'block/store-provider/index': './src/blocks/store-provider/index.js',
-		'block/store-list/index': './src/blocks/store-list/index.js',
 	},
 
 	output: {

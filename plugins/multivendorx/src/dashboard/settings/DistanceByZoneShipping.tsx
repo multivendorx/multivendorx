@@ -597,7 +597,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 										type="info"
 										displayPosition="inline-notice"
 										message={__(
-											"<b>10 </b> Fixed base shipping cost <br><b> 10 + (2 × [qty]) </b> Base cost + $2 per item <br><b>10 + [fee percent='10'] - </b>  Base cost + 10% of order value <br>  Use <b>[qty]</b> for item count and <b>[fee percent='x']</b> for percentage-based fees. You can also set <b>min_fee or max_fee.</b> <br> If you're unsure, simply enter a <b>fixed amount like 10.</b>",
+											"Base shipping cost: <b>$10</b> + Heavy item adjustment: <b>$20</b>  Total shipping: <b>$30</b> <br> Leave empty if no additional cost is needed for this shipping class.",
 											'multivendorx'
 										)}
 									/>
@@ -634,7 +634,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 										type="info"
 										displayPosition="inline-notice"
 										message={__(
-											"Base shipping cost: <b>$10</b> + Heavy item adjustment: <b>$20</b>  Total shipping: <b>$30</b> <br> Leave empty if no additional cost is needed for this shipping class.",
+											"<b>10 </b> Fixed base shipping cost <br><b> 10 + (2 × [qty]) </b> Base cost + $2 per item <br><b>10 + [fee percent='10'] - </b>  Base cost + 10% of order value <br>  Use <b>[qty]</b> for item count and <b>[fee percent='x']</b> for percentage-based fees. You can also set <b>min_fee or max_fee.</b> <br> If you're unsure, simply enter a <b>fixed amount like 10.</b>",
 											'multivendorx'
 										)}
 									/>
