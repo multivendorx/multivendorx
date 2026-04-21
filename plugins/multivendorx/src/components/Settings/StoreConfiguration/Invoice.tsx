@@ -280,6 +280,8 @@ const Invoice: React.FC = () => {
 		autoSave(updated);
 	};
 
+	const displayCustomOrder = appLocalizer?.settings_databases_value?.overview?.display_customer_order;
+
 	return (
 		<Container className="notice-settings">
 			<Column>
@@ -419,38 +421,41 @@ const Invoice: React.FC = () => {
 					)}
 				>
 					<FormGroupWrapper>
-						<FormGroup
-							cols={2}
-							label={__(
-								'Invoices will be created based on',
-								'multivendorx'
-							)}
-						>
-							<ChoiceToggleUI
-								options={[
-									{
-										key: 'main-order',
-										value: 'main-order',
-										label: __('Main order', 'multivendorx'),
-									},
-									{
-										key: 'sub-order',
-										value: 'sub-order',
-										label: __(
-											'Store sub-order',
-											'multivendorx'
-										),
-									},
-								]}
-								value={
-									formData.invoice_creation_basis ||
-									'main-order'
-								}
-								onChange={(val) =>
-									handleChange('invoice_creation_basis', val)
-								}
-							/>
-						</FormGroup>
+
+						{displayCustomOrder == 'main_sub' && (
+							<FormGroup
+								cols={2}
+								label={__(
+									'Invoices will be created based on',
+									'multivendorx'
+								)}
+							>
+								<ChoiceToggleUI
+									options={[
+										{
+											key: 'main-order',
+											value: 'main-order',
+											label: __('Main order', 'multivendorx'),
+										},
+										{
+											key: 'sub-order',
+											value: 'sub-order',
+											label: __(
+												'Store sub-order',
+												'multivendorx'
+											),
+										},
+									]}
+									value={
+										formData.invoice_creation_basis ||
+										'main-order'
+									}
+									onChange={(val) =>
+										handleChange('invoice_creation_basis', val)
+									}
+								/>
+							</FormGroup>
+						)}
 						<FormGroup
 							label={__(
 								'Generate invoice when order status becomes',
