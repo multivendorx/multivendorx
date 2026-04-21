@@ -167,6 +167,7 @@ class Shortcode {
         FrontendScripts::load_scripts();
         FrontendScripts::enqueue_script( 'multivendorx-marketplace-coupons-script' );
         FrontendScripts::localize_scripts( 'multivendorx-marketplace-coupons-script' );
+        FrontendScripts::enqueue_style( 'multivendorx-common-block-style' );
 
         return '<div id="marketplace-coupons" data-attributes="' . $json_attrs . '"></div>';
     }

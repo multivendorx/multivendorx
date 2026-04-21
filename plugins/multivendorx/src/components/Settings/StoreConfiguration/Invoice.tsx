@@ -332,15 +332,18 @@ const Invoice: React.FC = () => {
 										templateSelector={true}
 										showPdfButton={true}
 										idPrefix="color-setting-admin"
-										templates={[
-											{
+										templates={applyFilters(
+											'multivendorx_admin_template',
+											[
+												{
 												key: 'admin_commission_default',
 												label: 'Admin Commission Default',
 												preview: adminCommissionDefault,
 												component: adminCommissionDefault,
 												pdf: adminCommissionDefault,
 											},
-										]}
+											]
+										)}
 										predefinedOptions={COLOR_PALETTES}
 										value={formData.admin_template}
 										onChange={(val) => {
