@@ -54,102 +54,6 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	const [apiKey, setApiKey] = useState('');
 	const [viewMode, setViewMode] = useState<'list' | 'split' | 'map'>('list');
 	const isWidget = !!storesList?.storeDetails?.storeId;
-	if (isWidget) {
-		return (
-			<>
-				<div className="woocommerce multivendorx-store">
-					<div className="store-list-wrapper">
-						<div className="store-list">
-							{data &&
-								data.map((store) => (
-									<div key={store.id} className="store">
-										<div className="store-body">
-											<div className="store-header">
-												{store.store_image ? (
-													<div className="store-image">
-														<img
-															src={store.store_image}
-															alt={store.store_name}
-														/>
-													</div>
-												) : (
-													<div className="avatar">
-														{store.store_name
-															?.charAt(0)
-															.toUpperCase()}
-													</div>
-												)}
-
-												<div className="store-details">
-													<a href={`${storesList.store_page_url}/${store.store_slug || ''}/`}> <h4>{store.store_name}</h4> </a>
-
-													<div className="review-rating">
-														{store.rating !==
-															undefined && (
-																<div
-																	className="star-rating"
-																	role="img"
-																	aria-label={sprintf(
-																		__(
-																			'Rated %s out of 5',
-																			'multivendorx'
-																		),
-																		store.rating.toFixed(
-																			2
-																		)
-																	)}
-																>
-																	<span
-																		style={{
-																			width: `${(store.rating / 5) * 100}%`,
-																		}}
-																	>
-																		{__(
-																			'Rated',
-																			'multivendorx'
-																		)}{' '}
-																		<strong className="rating">
-																			{store.rating.toFixed(
-																				2
-																			)}
-																		</strong>{' '}
-																		{__(
-																			'out of 5',
-																			'multivendorx'
-																		)}
-																	</span>
-																</div>
-															)}
-													</div>
-													<div className="contact-wrapper">
-														{store.phone && (
-															<span>
-																<i className="dashicons dashicons-phone" />{' '}
-																{typeof store.phone ===
-																	'object'
-																	? `${store.phone.country_code || ''} ${store.phone.phone || ''}`
-																	: store.phone}
-															</span>
-														)}
-
-														{store.address && (
-															<span>
-																<i className="dashicons dashicons-location" />
-																{store.address}
-															</span>
-														)}
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								))}
-						</div>
-					</div>
-				</div>
-			</>
-		);
-	}
 
 	const [storeTopProducts, setStoreTopProducts] = useState<
 		Record<number, Product[]>
@@ -372,423 +276,520 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	};
 	return (
 		<>
-			<div className="woocommerce multivendorx-store ssssss">
-				<div className="view-tabs-wrapper">
-					<ul className="view-tabs">
-						<li
-							className={viewMode === 'list' ? 'active' : ''}
-							onClick={() => setViewMode('list')}
-						>
-							<a>{__('List', 'multivendorx')}</a>
-						</li>
+			{isWidget && (
+				<>
+					<div className="woocommerce multivendorx-store">
+						<div className="store-list-wrapper">
+							<div className="store-list">
+								{data &&
+									data.map((store) => (
+										<div key={store.id} className="store">
+											<div className="store-body">
+												<div className="store-header">
+													{store.store_image ? (
+														<div className="store-image">
+															<img
+																src={store.store_image}
+																alt={store.store_name}
+															/>
+														</div>
+													) : (
+														<div className="avatar">
+															{store.store_name
+																?.charAt(0)
+																.toUpperCase()}
+														</div>
+													)}
 
-						<li
-							className={viewMode === 'split' ? 'active' : ''}
-							onClick={() => setViewMode('split')}
-						>
-							<a>{__('Split', 'multivendorx')} </a>
-						</li>
+													<div className="store-details">
+														<a href={`${storesList.store_page_url}/${store.store_slug || ''}/`}> <h4>{store.store_name}</h4> </a>
 
-						<li
-							className={viewMode === 'map' ? 'active' : ''}
-							onClick={() => setViewMode('map')}
-						>
-							<a> {__('Map', 'multivendorx')} </a>
-						</li>
-					</ul>
-				</div>
-
-				<div className="store-filter-wrapper">
-					{apiKey != '' && (
-						<>
-							<div className="woocommerce-widget-layered-nav-list">
-								<div className="woocommerce-product-search">
-									<input
-										type="text"
-										className="search-field"
-										value={filters.address}
-										onChange={handleInputChange}
-										placeholder={__(
-											'Enter Address',
-											'multivendorx'
-										)}
-									/>
-									<button
-										type="button"
-										className="button location-button"
-										onClick={requestUserLocation}
-									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											width="16"
-											height="16"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="#3d7a3e"
-											stroke-width="2.2"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-										>
-											<circle
-												cx="12"
-												cy="12"
-												r="3"
-											></circle>
-											<line
-												x1="12"
-												y1="2"
-												x2="12"
-												y2="6"
-											></line>
-											<line
-												x1="12"
-												y1="18"
-												x2="12"
-												y2="22"
-											></line>
-											<line
-												x1="2"
-												y1="12"
-												x2="6"
-												y2="12"
-											></line>
-											<line
-												x1="18"
-												y1="12"
-												x2="22"
-												y2="12"
-											></line>
-										</svg>
-									</button>
-								</div>
-							</div>
-							<select
-								name="distance"
-								value={filters.distance}
-								onChange={handleInputChange}
-							>
-								<option value="">
-									{__('Within', 'multivendorx')}
-								</option>
-								<option value="5">5</option>
-								<option value="10">10</option>
-								<option value="25">25</option>
-							</select>
-
-							<select
-								name="miles"
-								value={filters.miles}
-								onChange={handleInputChange}
-							>
-								<option value="miles">
-									{__('Miles', 'multivendorx')}
-								</option>
-								<option value="km">
-									{__('Kilometers', 'multivendorx')}
-								</option>
-								<option value="nm">
-									{__('Nautical miles', 'multivendorx')}
-								</option>
-							</select>
-						</>
-					)}
-					<select
-						name="sort"
-						value={topFilters.sort}
-						onChange={handleInputChange}
-					>
-						<option value="name">
-							{__('Select', 'multivendorx')}
-						</option>
-						<option value="category">
-							{__('By Category', 'multivendorx')}
-						</option>
-						<option value="shipping">
-							{__('By Shipping', 'multivendorx')}
-						</option>
-					</select>
-
-					{topFilters.sort == 'category' && (
-						<select
-							name="category"
-							value={topFilters.category || ''}
-							onChange={handleInputChange}
-						>
-							<option value="">
-								{__('Select Category', 'multivendorx')}
-							</option>
-
-							{categoryList.map((cat) => (
-								<option key={cat.id} value={cat.id}>
-									{cat.name}
-								</option>
-							))}
-						</select>
-					)}
-					<select
-						name="product"
-						value={filters.product || ''}
-						onChange={(e) =>
-							setFilters((prev) => ({
-								...prev,
-								product: e.target.value
-									? Number(e.target.value)
-									: '',
-							}))
-						}
-					>
-						<option value="">
-							{__('Select Product', 'multivendorx')}
-						</option>
-
-						{product.map((p) => (
-							<option key={p.id} value={p.id}>
-								{p.name}
-							</option>
-						))}
-					</select>
-				</div>
-				<p>
-					{__('Showing', 'multivendorx')} {data.length}{' '}
-					{__('stores', 'multivendorx')}
-				</p>
-				<div className={`store-list-wrapper is-${viewMode}`}>
-					<div className="store-list">
-						{data &&
-							data.map((store) => (
-								<div key={store.id} className="store">
-									<div className="store-body">
-										<div className="store-header">
-											{store.store_image ? (
-												<div className="store-image">
-													<img
-														src={store.store_image}
-														alt={store.store_name}
-													/>
-												</div>
-											) : (
-												<div className="avatar">
-													{store.store_name
-														?.charAt(0)
-														.toUpperCase()}
-												</div>
-											)}
-
-											<div className="store-details">
-												<a href={`${storesList.store_page_url}/${store.store_slug || ''}/`}> <h4>{store.store_name}</h4> </a>
-												<div className="review-rating">
-													{store.rating !==
-														undefined && (
-															<div
-																className="star-rating"
-																role="img"
-																aria-label={sprintf(
-																	__(
-																		'Rated %s out of 5',
-																		'multivendorx'
-																	),
-																	store.rating.toFixed(
-																		2
-																	)
-																)}
-															>
-																<span
-																	style={{
-																		width: `${(store.rating / 5) * 100}%`,
-																	}}
-																>
-																	{__(
-																		'Rated',
-																		'multivendorx'
-																	)}{' '}
-																	<strong className="rating">
-																		{store.rating.toFixed(
-																			2
+														<div className="review-rating">
+															{store.rating !==
+																undefined && (
+																	<div
+																		className="star-rating"
+																		role="img"
+																		aria-label={sprintf(
+																			__(
+																				'Rated %s out of 5',
+																				'multivendorx'
+																			),
+																			store.rating.toFixed(
+																				2
+																			)
 																		)}
-																	</strong>{' '}
-																	{__(
-																		'out of 5',
-																		'multivendorx'
-																	)}
-																</span>
-															</div>
-														)}
-												</div>
-												{store.phone &&
-													store.address && (
+																	>
+																		<span
+																			style={{
+																				width: `${(store.rating / 5) * 100}%`,
+																			}}
+																		>
+																			{__(
+																				'Rated',
+																				'multivendorx'
+																			)}{' '}
+																			<strong className="rating">
+																				{store.rating.toFixed(
+																					2
+																				)}
+																			</strong>{' '}
+																			{__(
+																				'out of 5',
+																				'multivendorx'
+																			)}
+																		</span>
+																	</div>
+																)}
+														</div>
 														<div className="contact-wrapper">
 															{store.phone && (
 																<span>
 																	<i className="dashicons dashicons-phone" />{' '}
-																	{
-																		store
-																			.phone
-																			.country_code
-																	}{' '}
-																	{
-																		store
-																			.phone
-																			.phone
-																	}
+																	{typeof store.phone ===
+																		'object'
+																		? `${store.phone.country_code || ''} ${store.phone.phone || ''}`
+																		: store.phone}
 																</span>
 															)}
 
 															{store.address && (
 																<span>
 																	<i className="dashicons dashicons-location" />
-																	{
-																		store.address
-																	}
+																	{store.address}
 																</span>
 															)}
 														</div>
-													)}
+													</div>
+												</div>
 											</div>
 										</div>
+									))}
+							</div>
+						</div>
+					</div>
+				</>
+			)
+			}
+			{!isWidget && (
+				<div className="woocommerce multivendorx-store ssssss">
+					<div className="view-tabs-wrapper">
+						<ul className="view-tabs">
+							<li
+								className={viewMode === 'list' ? 'active' : ''}
+								onClick={() => setViewMode('list')}
+							>
+								<a>{__('List', 'multivendorx')}</a>
+							</li>
 
-										<div className="store-products">
-											<h4>
-												{' '}
-												{__(
-													'Top Products',
-													'multivendorx'
-												)}{' '}
-											</h4>
-											{storeTopProducts[store.id]
-												?.length > 0 ? (
-												<ul className="products columns-3">
-													{storeTopProducts[
-														store.id
-													]?.map((p) => {
-														return (
-															<li
-																key={p.id}
-																className={`product type-product post-${p.id} status-publish first instock product_cat-${p.categories?.[0]?.slug || 'uncategorized'} has-post-thumbnail shipping-taxable purchasable product-type-simple`}
-															>
-																<a
-																	href={
-																		p.permalink ||
-																		'#'
-																	}
-																	className="woocommerce-LoopProduct-link woocommerce-loop-product__link"
-																>
-																	<img
-																		width="324"
-																		height="324"
-																		src={
-																			p
-																				.images?.[0]
-																				?.src ||
-																			storesList?.placeholder_url
-																		}
-																		alt={
-																			p.name ||
-																			'Product Image'
-																		}
-																		className={
-																			p
-																				.images?.[0]
-																				?.src
-																				? 'attachment-woocommerce_thumbnail size-woocommerce_thumbnail'
-																				: 'woocommerce-placeholder wp-post-image'
-																		}
-																		decoding="async"
-																		loading="lazy"
-																	/>
-																	<h2 className="woocommerce-loop-product__title">
-																		{p.name}
-																	</h2>
+							<li
+								className={viewMode === 'split' ? 'active' : ''}
+								onClick={() => setViewMode('split')}
+							>
+								<a>{__('Split', 'multivendorx')} </a>
+							</li>
 
-																	{/* Add star rating if available */}
-																	{p.average_rating >
-																		0 && (
-																			<div
-																				className="star-rating"
-																				role="img"
-																				aria-label={`Rated ${p.average_rating} out of 5`}
-																			>
-																				<span
-																					style={{
-																						width: `${(p.average_rating / 5) * 100}%`,
-																					}}
-																				>
-																					Rated{' '}
-																					<strong className="rating">
-																						{
-																							p.average_rating
-																						}
-																					</strong>{' '}
-																					out
-																					of
-																					5
-																				</span>
-																			</div>
-																		)}
+							<li
+								className={viewMode === 'map' ? 'active' : ''}
+								onClick={() => setViewMode('map')}
+							>
+								<a> {__('Map', 'multivendorx')} </a>
+							</li>
+						</ul>
+					</div>
 
-																	{/* Price HTML */}
-																	{p.price_html && (
-																		<span
-																			className="price"
-																			dangerouslySetInnerHTML={{
-																				__html: p.price_html,
-																			}}
-																		/>
-																	)}
-																</a>
-															</li>
-														);
-													})}
-												</ul>
-											) : (
-												<div className="no-products-found">
-													<p>No products found</p>
-												</div>
+					<div className="store-filter-wrapper">
+						{apiKey != '' && (
+							<>
+								<div className="woocommerce-widget-layered-nav-list">
+									<div className="woocommerce-product-search">
+										<input
+											type="text"
+											className="search-field"
+											value={filters.address}
+											onChange={handleInputChange}
+											placeholder={__(
+												'Enter Address',
+												'multivendorx'
 											)}
-										</div>
+										/>
+										<button
+											type="button"
+											className="button location-button"
+											onClick={requestUserLocation}
+										>
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												width="16"
+												height="16"
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="#3d7a3e"
+												stroke-width="2.2"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+											>
+												<circle
+													cx="12"
+													cy="12"
+													r="3"
+												></circle>
+												<line
+													x1="12"
+													y1="2"
+													x2="12"
+													y2="6"
+												></line>
+												<line
+													x1="12"
+													y1="18"
+													x2="12"
+													y2="22"
+												></line>
+												<line
+													x1="2"
+													y1="12"
+													x2="6"
+													y2="12"
+												></line>
+												<line
+													x1="18"
+													y1="12"
+													x2="22"
+													y2="12"
+												></line>
+											</svg>
+										</button>
 									</div>
 								</div>
+								<select
+									name="distance"
+									value={filters.distance}
+									onChange={handleInputChange}
+								>
+									<option value="">
+										{__('Within', 'multivendorx')}
+									</option>
+									<option value="5">5</option>
+									<option value="10">10</option>
+									<option value="25">25</option>
+								</select>
+
+								<select
+									name="miles"
+									value={filters.miles}
+									onChange={handleInputChange}
+								>
+									<option value="miles">
+										{__('Miles', 'multivendorx')}
+									</option>
+									<option value="km">
+										{__('Kilometers', 'multivendorx')}
+									</option>
+									<option value="nm">
+										{__('Nautical miles', 'multivendorx')}
+									</option>
+								</select>
+							</>
+						)}
+						<select
+							name="sort"
+							value={topFilters.sort}
+							onChange={handleInputChange}
+						>
+							<option value="name">
+								{__('Select', 'multivendorx')}
+							</option>
+							<option value="category">
+								{__('By Category', 'multivendorx')}
+							</option>
+							<option value="shipping">
+								{__('By Shipping', 'multivendorx')}
+							</option>
+						</select>
+
+						{topFilters.sort == 'category' && (
+							<select
+								name="category"
+								value={topFilters.category || ''}
+								onChange={handleInputChange}
+							>
+								<option value="">
+									{__('Select Category', 'multivendorx')}
+								</option>
+
+								{categoryList.map((cat) => (
+									<option key={cat.id} value={cat.id}>
+										{cat.name}
+									</option>
+								))}
+							</select>
+						)}
+						<select
+							name="product"
+							value={filters.product || ''}
+							onChange={(e) =>
+								setFilters((prev) => ({
+									...prev,
+									product: e.target.value
+										? Number(e.target.value)
+										: '',
+								}))
+							}
+						>
+							<option value="">
+								{__('Select Product', 'multivendorx')}
+							</option>
+
+							{product.map((p) => (
+								<option key={p.id} value={p.id}>
+									{p.name}
+								</option>
 							))}
-						{totalPages > 1 && (
-							<nav className="woocommerce-pagination">
-								<ul className="page-numbers">
-									<li>
-										<button
-											disabled={page === 1}
-											onClick={() =>
-												setPage((p) => p - 1)
-											}
-											className="page-numbers"
-										>
-											{__('Previous', 'multivendorx')}
-										</button>
-									</li>
+						</select>
+					</div>
+					<p>
+						{__('Showing', 'multivendorx')} {data.length}{' '}
+						{__('stores', 'multivendorx')}
+					</p>
+					<div className={`store-list-wrapper is-${viewMode}`}>
+						<div className="store-list">
+							{data &&
+								data.map((store) => (
+									<div key={store.id} className="store">
+										<div className="store-body">
+											<div className="store-header">
+												{store.store_image ? (
+													<div className="store-image">
+														<img
+															src={store.store_image}
+															alt={store.store_name}
+														/>
+													</div>
+												) : (
+													<div className="avatar">
+														{store.store_name
+															?.charAt(0)
+															.toUpperCase()}
+													</div>
+												)}
 
-									<li>
-										<span className="page-numbers current">
-											{page}
-										</span>
-									</li>
+												<div className="store-details">
+													<a href={`${storesList.store_page_url}/${store.store_slug || ''}/`}> <h4>{store.store_name}</h4> </a>
+													<div className="review-rating">
+														{store.rating !==
+															undefined && (
+																<div
+																	className="star-rating"
+																	role="img"
+																	aria-label={sprintf(
+																		__(
+																			'Rated %s out of 5',
+																			'multivendorx'
+																		),
+																		store.rating.toFixed(
+																			2
+																		)
+																	)}
+																>
+																	<span
+																		style={{
+																			width: `${(store.rating / 5) * 100}%`,
+																		}}
+																	>
+																		{__(
+																			'Rated',
+																			'multivendorx'
+																		)}{' '}
+																		<strong className="rating">
+																			{store.rating.toFixed(
+																				2
+																			)}
+																		</strong>{' '}
+																		{__(
+																			'out of 5',
+																			'multivendorx'
+																		)}
+																	</span>
+																</div>
+															)}
+													</div>
+													{store.phone &&
+														store.address && (
+															<div className="contact-wrapper">
+																{store.phone && (
+																	<span>
+																		<i className="dashicons dashicons-phone" />{' '}
+																		{
+																			store
+																				.phone
+																				.country_code
+																		}{' '}
+																		{
+																			store
+																				.phone
+																				.phone
+																		}
+																	</span>
+																)}
 
-									<li>
-										<button
-											disabled={page >= totalPages}
-											onClick={() =>
-												setPage((p) => p + 1)
-											}
-											className="page-numbers"
-										>
-											{__('Next', 'multivendorx')}
-										</button>
-									</li>
-								</ul>
-							</nav>
+																{store.address && (
+																	<span>
+																		<i className="dashicons dashicons-location" />
+																		{
+																			store.address
+																		}
+																	</span>
+																)}
+															</div>
+														)}
+												</div>
+											</div>
+
+											<div className="store-products">
+												<h4>
+													{' '}
+													{__(
+														'Products',
+														'multivendorx'
+													)}{' '}
+												</h4>
+												{storeTopProducts[store.id]
+													?.length > 0 ? (
+													<ul className="products columns-3">
+														{storeTopProducts[
+															store.id
+														]?.map((p) => {
+															return (
+																<li
+																	key={p.id}
+																	className={`product type-product post-${p.id} status-publish first instock product_cat-${p.categories?.[0]?.slug || 'uncategorized'} has-post-thumbnail shipping-taxable purchasable product-type-simple`}
+																>
+																	<a
+																		href={
+																			p.permalink ||
+																			'#'
+																		}
+																		className="woocommerce-LoopProduct-link woocommerce-loop-product__link"
+																	>
+																		<img
+																			width="324"
+																			height="324"
+																			src={
+																				p
+																					.images?.[0]
+																					?.src ||
+																				storesList?.placeholder_url
+																			}
+																			alt={
+																				p.name ||
+																				'Product Image'
+																			}
+																			className={
+																				p
+																					.images?.[0]
+																					?.src
+																					? 'attachment-woocommerce_thumbnail size-woocommerce_thumbnail'
+																					: 'woocommerce-placeholder wp-post-image'
+																			}
+																			decoding="async"
+																			loading="lazy"
+																		/>
+																		<h2 className="woocommerce-loop-product__title">
+																			{p.name}
+																		</h2>
+
+																		{/* Add star rating if available */}
+																		{p.average_rating >
+																			0 && (
+																				<div
+																					className="star-rating"
+																					role="img"
+																					aria-label={`Rated ${p.average_rating} out of 5`}
+																				>
+																					<span
+																						style={{
+																							width: `${(p.average_rating / 5) * 100}%`,
+																						}}
+																					>
+																						Rated{' '}
+																						<strong className="rating">
+																							{
+																								p.average_rating
+																							}
+																						</strong>{' '}
+																						out
+																						of
+																						5
+																					</span>
+																				</div>
+																			)}
+
+																		{/* Price HTML */}
+																		{p.price_html && (
+																			<span
+																				className="price"
+																				dangerouslySetInnerHTML={{
+																					__html: p.price_html,
+																				}}
+																			/>
+																		)}
+																	</a>
+																</li>
+															);
+														})}
+													</ul>
+												) : (
+													<div className="no-products-found">
+														<p>No products found</p>
+													</div>
+												)}
+											</div>
+										</div>
+									</div>
+								))}
+							{totalPages > 1 && (
+								<nav className="woocommerce-pagination">
+									<ul className="page-numbers">
+										<li>
+											<button
+												disabled={page === 1}
+												onClick={() =>
+													setPage((p) => p - 1)
+												}
+												className="page-numbers"
+											>
+												{__('Previous', 'multivendorx')}
+											</button>
+										</li>
+
+										<li>
+											<span className="page-numbers current">
+												{page}
+											</span>
+										</li>
+
+										<li>
+											<button
+												disabled={page >= totalPages}
+												onClick={() =>
+													setPage((p) => p + 1)
+												}
+												className="page-numbers"
+											>
+												{__('Next', 'multivendorx')}
+											</button>
+										</li>
+									</ul>
+								</nav>
+							)}
+						</div>
+						{showMap && (
+							<div className="store-map">{renderMapComponent()}</div>
 						)}
 					</div>
-					{showMap && (
-						<div className="store-map">{renderMapComponent()}</div>
-					)}
 				</div>
-			</div>
+			)}
 		</>
 	);
 };
