@@ -66,7 +66,7 @@ class PaypalPayout {
                 ),
                 array(
                     'key'                => 'client_id',
-                    'type'               => 'text',
+                    'type'               => 'password',
                     'label'              => 'Client ID',
                     'placeholder'        => 'Enter Client id',
                     'settingDescription' => __( "Your app's public identifier issued by PayPal. Each environment (Sandbox / Live) has a different Client ID — make sure you use the one that matches your selected Payment Mode.", 'multivendorx' ),
@@ -74,7 +74,7 @@ class PaypalPayout {
                 ),
                 array(
                     'key'                => 'client_secret',
-                    'type'               => 'text',
+                    'type'               => 'password',
                     'label'              => 'Client secret key',
                     'placeholder'        => 'Enter Secret Key',
                     'settingDescription' => __( 'A private key that authenticates your server when calling the PayPal API.', 'multivendorx' ),

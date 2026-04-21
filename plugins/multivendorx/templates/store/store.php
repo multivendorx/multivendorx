@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $store_slug = get_query_var( MultiVendorX()->setting->get_setting( 'store_url', 'store' ) );
-if ( !empty($store_slug) ) {
+if ( empty($store_slug) ) {
     wp_safe_redirect( wc_get_page_permalink( 'shop' ) );
     exit();
 }
