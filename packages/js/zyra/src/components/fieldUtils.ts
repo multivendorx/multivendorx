@@ -363,6 +363,7 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
     email: BasicInput,
     time: BasicInput,
     date: BasicInput,
+    password: BasicInput,
 
     'email-input': EmailsInput,
 

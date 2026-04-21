@@ -78,7 +78,7 @@ class StripeConnect {
                 ),
                 array(
                     'key'                => 'test_client_id',
-                    'type'               => 'text',
+                    'type'               => 'password',
                     'label'              => __( 'Stripe client ID', 'multivendorx' ),
                     'placeholder'        => __( 'Enter Stripe Client ID', 'multivendorx' ),
                     'settingDescription' => __( "Your application's unique identifier for Stripe Connect OAuth. Matches the selected Payment Mode.", 'multivendorx' ),
@@ -91,7 +91,7 @@ class StripeConnect {
                 ),
                 array(
                     'key'                => 'live_client_id',
-                    'type'               => 'text',
+                    'type'               => 'password',
                     'label'              => __( 'Stripe client ID', 'multivendorx' ),
                     'placeholder'        => __( 'Enter Stripe Client ID', 'multivendorx' ),
                     'settingDescription' => __( "Your application's unique identifier for Stripe Connect OAuth. Matches the selected Payment Mode.", 'multivendorx' ),
@@ -104,7 +104,7 @@ class StripeConnect {
                 ),
                 array(
                     'key'                => 'test_secret_key',
-                    'type'               => 'text',
+                    'type'               => 'password',
                     'label'              => __( 'Secret key', 'multivendorx' ),
                     'placeholder'        => __( 'Enter secret key ', 'multivendorx' ),
                     'settingDescription' => __( 'Private key used to authenticate server-to-Stripe requests.', 'multivendorx' ),
@@ -117,7 +117,7 @@ class StripeConnect {
                 ),
                 array(
                     'key'         => 'live_secret_key',
-                    'type'        => 'text',
+                    'type'        => 'password',
                     'label'       => __( 'Secret key', 'multivendorx' ),
                     'placeholder' => __( 'Enter secret key', 'multivendorx' ),
                     'dependent'   => array(
