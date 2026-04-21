@@ -178,7 +178,7 @@ const getDefaultColors = (paletteKey = DEFAULT_COLOR_PALETTE) => {
 
 // Default templates for each invoice type
 const DEFAULT_TEMPLATES = {
-	customer: 'customer_signature_style',
+	customer: 'customer_invoice_default',
 	admin: 'admin_commission_default',
 	membership: 'membership_invoice_default',
 	packing: 'packing_slip_default',
