@@ -594,6 +594,7 @@ class FrontendScripts {
                     'use_settings' => true,
                     'data'         => array(
                         'storeDetails' => StoreUtil::get_specific_store_info(),
+                        'placeholder_url'     => wc_placeholder_img_src(),
                     ),
                 ),
                 'multivendorx-marketplace-coupons-script'  => array(

@@ -313,6 +313,7 @@
         height: 25rem;
     }
 }
+
 // .stores-list-edit-panel .store-products{
 //     display: none;
 // }
@@ -333,6 +334,17 @@
 
 // store coupon start
 .store-coupon-list {
+    &.shortcode {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+
+        .coupon-card{
+            width: calc(25% - 0.75rem);
+            margin: 0;
+        }
+    }
+
     .coupon-card {
         padding: 1rem;
         border: 0.063rem dashed var(--theme-border-color);
@@ -434,7 +446,7 @@
     }
 }
 
-.multivendorx-store-details{
+.multivendorx-store-details {
     display: flex;
     gap: 0.5rem;
     align-items: center;

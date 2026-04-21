@@ -89,66 +89,148 @@ const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
 				<>
 					<h3>{__('Products', 'multivendorx')}</h3>
 					<div className="woocommerce">
-						<ul className="product_list_widget">
-							{products.length > 0 ? (
-								products.map((product) => (
-									<li key={product.id}>
-										<a href={product.permalink}>
-											<img
-												className="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
-												src={product.images?.[0]?.src}
-												alt={product.name}
-											/>
+						{isWidget && (
+							<ul className="product_list_widget">
+								{products.length > 0 ? (
+									products.map((product) => (
+										<li key={product.id}>
+											<a href={product.permalink}>
+												<img
+													className="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
+													src={product.images?.[0]?.src}
+													alt={product.name}
+												/>
 
-											<span className="product-title">
-												{product.name}
+												<span className="product-title">
+													{product.name}
+												</span>
+											</a>
+
+											<span className="woocommerce-Price-amount amount">
+												<bdi>
+													{product.salePrice ? (
+														<>
+															<del aria-hidden="true">
+																<span className="woocommerce-Price-amount amount">
+																	<bdi>
+																		{
+																			product.price
+																		}
+																	</bdi>
+																</span>
+															</del>
+															<ins aria-hidden="true">
+																<span className="woocommerce-Price-amount amount">
+																	<bdi>
+																		{
+																			product.salePrice
+																		}
+																	</bdi>
+																</span>
+															</ins>
+														</>
+													) : (
+														<span className="woocommerce-Price-amount amount">
+															<bdi>
+																{product.price}
+															</bdi>
+														</span>
+													)}
+												</bdi>
 											</span>
-										</a>
+										</li>
+									))
+								) : (
+									<div>
+										{__(
+											'Ready to receive your first order!',
+											'multivendorx'
+										)}
+									</div>
+								)}
+							</ul>
+						)}
+						{!isWidget && (
+						<ul className="products columns-3">
+							{products.length > 0 && (
+								products.map((product) => (
+									<li
+										key={product.id}
+										className={`product type-product post-${product.id} status-publish first instock product_cat-${product.categories?.[0]?.slug || 'uncategorized'} has-post-thumbnail shipping-taxable purchasable product-type-simple`}
+									>
+										<a
+											href={
+												product.permalink ||
+												'#'
+											}
+											className="woocommerce-LoopProduct-link woocommerce-loop-product__link"
+										>
+											<img
+												width="324"
+												height="324"
+												src={
+													product.images?.[0]?.src ||
+													productList?.placeholder_url
+												}
+												alt={
+													product.name ||
+													'Product Image'
+												}
+												className={
+													product.images?.[0]?.src
+														? 'attachment-woocommerce_thumbnail size-woocommerce_thumbnail'
+														: 'woocommerce-placeholder wp-post-image'
+												}
+												decoding="async"
+												loading="lazy"
+											/>
+											<h2 className="woocommerce-loop-product__title">
+												{product.name}
+											</h2>
 
-										<span className="woocommerce-Price-amount amount">
-											<bdi>
-												{product.salePrice ? (
-													<>
-														<del aria-hidden="true">
-															<span className="woocommerce-Price-amount amount">
-																<bdi>
-																	{
-																		product.price
-																	}
-																</bdi>
-															</span>
-														</del>
-														<ins aria-hidden="true">
-															<span className="woocommerce-Price-amount amount">
-																<bdi>
-																	{
-																		product.salePrice
-																	}
-																</bdi>
-															</span>
-														</ins>
-													</>
-												) : (
-													<span className="woocommerce-Price-amount amount">
-														<bdi>
-															{product.price}
-														</bdi>
-													</span>
+											{/* Add star rating if available */}
+											{product.average_rating >
+												0 && (
+													<div
+														className="star-rating"
+														role="img"
+														aria-label={`Rated ${product.average_rating} out of 5`}
+													>
+														<span
+															style={{
+																width: `${(product.average_rating / 5) * 100}%`,
+															}}
+														>
+															Rated{' '}
+															<strong className="rating">
+																{
+																	product.average_rating
+																}
+															</strong>{' '}
+															out
+															of
+															5
+														</span>
+													</div>
 												)}
-											</bdi>
-										</span>
+
+											{/* Price HTML */}
+											{product.price_html && (
+												<span
+													className="price"
+													dangerouslySetInnerHTML={{
+														__html: product.price_html,
+													}}
+												/>
+											)}
+										</a>
 									</li>
 								))
-							) : (
-								<div>
-									{__(
-										'Ready to receive your first order!',
-										'multivendorx'
-									)}
-								</div>
 							)}
 						</ul>
+						)}
 					</div>
+
 				</>
 			)}
 		</>
