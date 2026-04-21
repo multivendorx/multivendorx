@@ -128,7 +128,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 					{__('stores', 'multivendorx')}
 				</p>
 
-				<div className="store-list-wrapper">
+				<div className="store-list-wrapper sss">
 					<div className="store-list">
 						{data &&
 							data.map((store) => (
@@ -151,7 +151,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 											)}
 
 											<div className="store-details">
-												<h4>{store.store_name}</h4>
+												<a href={`${storesList.store_page_url}/${store.store_slug || ''}/`}> <h4>{store.store_name}</h4> </a>
 
 												<div className="review-rating">
 													{store.rating !==
@@ -211,15 +211,6 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 												</div>
 											</div>
 										</div>
-									</div>
-
-									<div className="store-footer">
-										<a
-											href={`${storesList.store_page_url}/${store.store_slug || ''}/`}
-											className="button"
-										>
-											{__('View Store', 'multivendorx')}
-										</a>
 									</div>
 								</div>
 							))}

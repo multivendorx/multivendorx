@@ -53,6 +53,104 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	const [total, setTotal] = useState(0);
 	const [apiKey, setApiKey] = useState('');
 	const [viewMode, setViewMode] = useState<'list' | 'split' | 'map'>('list');
+	const isWidget = !!storesList?.storeDetails?.storeId;
+	if (isWidget) {
+		return (
+			<>
+				<div className="woocommerce multivendorx-store">
+					<div className="store-list-wrapper">
+						<div className="store-list">
+							{data &&
+								data.map((store) => (
+									<div key={store.id} className="store">
+										<div className="store-body">
+											<div className="store-header">
+												{store.store_image ? (
+													<div className="store-image">
+														<img
+															src={store.store_image}
+															alt={store.store_name}
+														/>
+													</div>
+												) : (
+													<div className="avatar">
+														{store.store_name
+															?.charAt(0)
+															.toUpperCase()}
+													</div>
+												)}
+
+												<div className="store-details">
+													<a href={`${storesList.store_page_url}/${store.store_slug || ''}/`}> <h4>{store.store_name}</h4> </a>
+
+													<div className="review-rating">
+														{store.rating !==
+															undefined && (
+																<div
+																	className="star-rating"
+																	role="img"
+																	aria-label={sprintf(
+																		__(
+																			'Rated %s out of 5',
+																			'multivendorx'
+																		),
+																		store.rating.toFixed(
+																			2
+																		)
+																	)}
+																>
+																	<span
+																		style={{
+																			width: `${(store.rating / 5) * 100}%`,
+																		}}
+																	>
+																		{__(
+																			'Rated',
+																			'multivendorx'
+																		)}{' '}
+																		<strong className="rating">
+																			{store.rating.toFixed(
+																				2
+																			)}
+																		</strong>{' '}
+																		{__(
+																			'out of 5',
+																			'multivendorx'
+																		)}
+																	</span>
+																</div>
+															)}
+													</div>
+													<div className="contact-wrapper">
+														{store.phone && (
+															<span>
+																<i className="dashicons dashicons-phone" />{' '}
+																{typeof store.phone ===
+																	'object'
+																	? `${store.phone.country_code || ''} ${store.phone.phone || ''}`
+																	: store.phone}
+															</span>
+														)}
+
+														{store.address && (
+															<span>
+																<i className="dashicons dashicons-location" />
+																{store.address}
+															</span>
+														)}
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								))}
+						</div>
+					</div>
+				</div>
+			</>
+		);
+	}
+
 	const [storeTopProducts, setStoreTopProducts] = useState<
 		Record<number, Product[]>
 	>({});
@@ -274,7 +372,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	};
 	return (
 		<>
-			<div className="woocommerce multivendorx-store">
+			<div className="woocommerce multivendorx-store ssssss">
 				<div className="view-tabs-wrapper">
 					<ul className="view-tabs">
 						<li
@@ -477,44 +575,44 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 											)}
 
 											<div className="store-details">
-												<h4>{store.store_name}</h4>
+												<a href={`${storesList.store_page_url}/${store.store_slug || ''}/`}> <h4>{store.store_name}</h4> </a>
 												<div className="review-rating">
 													{store.rating !==
 														undefined && (
-														<div
-															className="star-rating"
-															role="img"
-															aria-label={sprintf(
-																__(
-																	'Rated %s out of 5',
-																	'multivendorx'
-																),
-																store.rating.toFixed(
-																	2
-																)
-															)}
-														>
-															<span
-																style={{
-																	width: `${(store.rating / 5) * 100}%`,
-																}}
-															>
-																{__(
-																	'Rated',
-																	'multivendorx'
-																)}{' '}
-																<strong className="rating">
-																	{store.rating.toFixed(
+															<div
+																className="star-rating"
+																role="img"
+																aria-label={sprintf(
+																	__(
+																		'Rated %s out of 5',
+																		'multivendorx'
+																	),
+																	store.rating.toFixed(
 																		2
-																	)}
-																</strong>{' '}
-																{__(
-																	'out of 5',
-																	'multivendorx'
+																	)
 																)}
-															</span>
-														</div>
-													)}
+															>
+																<span
+																	style={{
+																		width: `${(store.rating / 5) * 100}%`,
+																	}}
+																>
+																	{__(
+																		'Rated',
+																		'multivendorx'
+																	)}{' '}
+																	<strong className="rating">
+																		{store.rating.toFixed(
+																			2
+																		)}
+																	</strong>{' '}
+																	{__(
+																		'out of 5',
+																		'multivendorx'
+																	)}
+																</span>
+															</div>
+														)}
 												</div>
 												{store.phone &&
 													store.address && (
@@ -604,28 +702,28 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 																	{/* Add star rating if available */}
 																	{p.average_rating >
 																		0 && (
-																		<div
-																			className="star-rating"
-																			role="img"
-																			aria-label={`Rated ${p.average_rating} out of 5`}
-																		>
-																			<span
-																				style={{
-																					width: `${(p.average_rating / 5) * 100}%`,
-																				}}
+																			<div
+																				className="star-rating"
+																				role="img"
+																				aria-label={`Rated ${p.average_rating} out of 5`}
 																			>
-																				Rated{' '}
-																				<strong className="rating">
-																					{
-																						p.average_rating
-																					}
-																				</strong>{' '}
-																				out
-																				of
-																				5
-																			</span>
-																		</div>
-																	)}
+																				<span
+																					style={{
+																						width: `${(p.average_rating / 5) * 100}%`,
+																					}}
+																				>
+																					Rated{' '}
+																					<strong className="rating">
+																						{
+																							p.average_rating
+																						}
+																					</strong>{' '}
+																					out
+																					of
+																					5
+																				</span>
+																			</div>
+																		)}
 
 																	{/* Price HTML */}
 																	{p.price_html && (
@@ -647,14 +745,6 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 												</div>
 											)}
 										</div>
-									</div>
-									<div className="store-footer">
-										<a
-											href={`${storesList.store_page_url}/${store.store_slug || ''}/`}
-											className="button"
-										>
-											{__('View Store', 'multivendorx')}
-										</a>
 									</div>
 								</div>
 							))}
