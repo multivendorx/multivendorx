@@ -145,6 +145,15 @@ export default {
 			category: 'product_types',
 		},
 		{
+			id: 'buddy-press',
+			name: __('Buddy press', 'multivendorx'),
+			desc: 'Covers basic products such as physical goods (books, clothing) or digital items (PDFs, music, software).',
+			docLink:
+				'https://multivendorx.com/docs/knowledgebase/simple-product',
+			proModule: false,
+			category: 'product_types',
+		},
+		{
 			id: 'variable',
 			name: __('Variable', 'multivendorx'),
 			desc: 'A product with variations, like different SKU, price, stock option, etc.',
