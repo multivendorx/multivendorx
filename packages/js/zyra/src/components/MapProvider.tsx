@@ -414,8 +414,13 @@ export const MapProviderUI = ({
     const [suggestions, setSuggestions] = useState<MapboxSuggestion[]>([]);
     const [googleLoaded, setGoogleLoaded] = useState(false);
 
-    const lat = locationLat ? parseFloat(locationLat) : DEFAULT_LOCATION.lat;
-    const lng = locationLng ? parseFloat(locationLng) : DEFAULT_LOCATION.lng;
+    const [initialCoords, setInitialCoords] = useState<{
+        lat: number;
+        lng: number;
+    }>({
+        lat: locationLat ? parseFloat(locationLat) : DEFAULT_LOCATION.lat,
+        lng: locationLng ? parseFloat(locationLng) : DEFAULT_LOCATION.lng,
+    });
 
     /* -------- UPDATE LOCATION -------- */
 
@@ -430,6 +435,31 @@ export const MapProviderUI = ({
             location_lng: lng.toString(),
         });
     };
+
+    useEffect(() => {
+        if (locationLat && locationLng) return; // already have saved location
+
+        if (!navigator.geolocation) return;
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                setInitialCoords({ lat, lng });
+
+                // OPTIONAL: also update parent form
+                updateLocation(lat, lng);
+            },
+            () => {
+                // Permission denied → fallback stays default
+                setInitialCoords({
+                    lat: DEFAULT_LOCATION.lat,
+                    lng: DEFAULT_LOCATION.lng,
+                });
+            }
+        );
+    }, []);
 
     /* -------- MAP INIT -------- */
 
@@ -446,12 +476,12 @@ export const MapProviderUI = ({
 
             const map = provider.createMap(
                 containerRef.current!,
-                lat,
-                lng,
+                initialCoords.lat,
+                initialCoords.lng,
                 12,
                 mapId
             );
-            const marker = provider.createMarker(map, lat, lng, 'default');
+            const marker = provider.createMarker(map, initialCoords.lat, initialCoords.lng, 'default');
 
             mapRef.current = map;
             markerRef.current = marker;
@@ -461,7 +491,7 @@ export const MapProviderUI = ({
         };
 
         init();
-    }, []);
+    }, [initialCoords]);
 
     useEffect(() => {
         if (!mapRef.current) {
