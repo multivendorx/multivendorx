@@ -465,8 +465,6 @@ export const MapProviderUI = ({
                 updateLocation(lat, lng);
             },
             () => {
-                // Permission denied
-                setInitialCoords(DEFAULT_LOCATION);
                 setIsReady(true);
             }
         );
