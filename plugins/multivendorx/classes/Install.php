@@ -34,7 +34,46 @@ class Install {
      * Runs the database migration process.
      */
     public static function do_migration() {
-        // write migration code from 5.0.0.
+        // write migration code from 5.0.1.
+        $previous_version = get_option( 'multivendorx_version' );
+        if ( version_compare( $previous_version, '5.0.2', '<' ) ) {
+            $previous_settings = get_option( Utill::MULTIVENDORX_SETTINGS['delivery'], [] );
+            $existing_stages = $previous_settings['shipping_stage'] ?? [];
+
+            $new_stages = array(
+                'delivered' => array(
+                    'title'    => 'Delivered',
+                    'desc'     => 'Delivery progress stages.',
+                    'icon'     => 'delivery',
+                    'required' => true,
+                    'isCustom' => true,
+                ),
+                'shipped' => array(
+                    'title'    => 'Shipped',
+                    'desc'     => 'The order has been shipped and handed over to the delivery partner.',
+                    'icon'     => 'rejecte',
+                    'required' => true,
+                    'isCustom' => true,
+                ),
+                'packed' => array(
+                    'title'    => 'Packed',
+                    'desc'     => 'The order has been packed and is ready to be shipped.',
+                    'icon'     => 'rejecte',
+                    'required' => true,
+                    'isCustom' => true,
+                ),
+                'out-for-delivery' => array(
+                    'title'    => 'Out for delivery',
+                    'desc'     => 'The order is on the way and will be delivered soon.',
+                    'icon'     => 'rejecte',
+                    'required' => true,
+                    'isCustom' => true,
+                ),
+            );
+
+            $previous_settings['shipping_stage'] =  array_merge( $new_stages, $existing_stages );
+            update_option( Utill::MULTIVENDORX_SETTINGS['delivery'], $previous_settings );
+        }
     }
 
     public function run_migration() {
@@ -933,15 +972,29 @@ class Install {
         $delivery_settings = array(
             'shipping_stage' => array(
                 'delivered' => array(
-                    'label'    => 'Delivered',
-                    'desc'     => 'Order is received by store',
+                    'title'    => 'Delivered',
+                    'desc'     => 'Delivery progress stages.',
 					'icon'     => 'delivery',
 					'required' => true,
 					'isCustom' => true,
                 ),
                 'shipped'   => array(
-                    'label'    => 'shipped',
-                    'desc'     => 'Order is shipped',
+                    'title'    => 'Shipped',
+                    'desc'     => 'The order has been shipped and handed over to the delivery partner.',
+					'icon'     => 'rejecte',
+					'required' => true,
+					'isCustom' => true,
+                ),
+                'packed'   => array(
+                    'title'    => 'Packed',
+                    'desc'     => 'The order has been packed and is ready to be shipped.',
+					'icon'     => 'rejecte',
+					'required' => true,
+					'isCustom' => true,
+                ),
+                'out-for-delivery'   => array(
+                    'title'    => 'Out for delivery',
+                    'desc'     => 'The order is on the way and will be delivered soon.',
 					'icon'     => 'rejecte',
 					'required' => true,
 					'isCustom' => true,

@@ -399,6 +399,17 @@ class FrontendScripts {
             }
         }
 
+        $order_statuses = wc_get_order_statuses();
+        $formatted = array();
+
+        foreach ( $order_statuses as $key => $label ) {
+            $formatted[] = array(
+                'label' => $label,
+                'value' => str_replace( 'wc-', '', $key ),
+            );
+        }
+
+
         $base_rest = array(
             'apiUrl'  => untrailingslashit( get_rest_url() ),
             'restUrl' => MultiVendorX()->rest_namespace,
@@ -523,6 +534,7 @@ class FrontendScripts {
                             'date_format'              => Utill::wp_to_react_date_format( get_option( 'date_format' ) ),
                             'placeholder_url  '        => wc_placeholder_img_src(),
                             'default_user_avatar'      => get_avatar_url( 0 ),
+                            'order_statuses'           => $formatted,
                         )
                     ),
                 ),
