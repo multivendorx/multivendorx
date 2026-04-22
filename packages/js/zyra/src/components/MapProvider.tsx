@@ -413,15 +413,9 @@ export const MapProviderUI = ({
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState<MapboxSuggestion[]>([]);
     const [googleLoaded, setGoogleLoaded] = useState(false);
-    const [isReady, setIsReady] = useState(false);
 
-    const [initialCoords, setInitialCoords] = useState<{
-        lat: number;
-        lng: number;
-    }>({
-        lat: locationLat ? parseFloat(locationLat) : DEFAULT_LOCATION.lat,
-        lng: locationLng ? parseFloat(locationLng) : DEFAULT_LOCATION.lng,
-    });
+    const lat = locationLat ? parseFloat(locationLat) : DEFAULT_LOCATION.lat;
+    const lng = locationLng ? parseFloat(locationLng) : DEFAULT_LOCATION.lng;
 
     /* -------- UPDATE LOCATION -------- */
 
@@ -437,43 +431,9 @@ export const MapProviderUI = ({
         });
     };
 
-    useEffect(() => {
-        // If parent already passed location → use it
-        if (locationLat && locationLng) {
-            setInitialCoords({
-                lat: parseFloat(locationLat),
-                lng: parseFloat(locationLng),
-            });
-            setIsReady(true);
-            return;
-        }
-
-        if (!navigator.geolocation) {
-            setInitialCoords(DEFAULT_LOCATION);
-            setIsReady(true);
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-
-                setInitialCoords({ lat, lng });
-                setIsReady(true);
-
-                updateLocation(lat, lng);
-            },
-            () => {
-                setIsReady(true);
-            }
-        );
-    }, [locationLat, locationLng]);
-
     /* -------- MAP INIT -------- */
 
     useEffect(() => {
-        if (!isReady) return;
         if (!containerRef.current) {
             return;
         }
@@ -486,12 +446,12 @@ export const MapProviderUI = ({
 
             const map = provider.createMap(
                 containerRef.current!,
-                initialCoords.lat,
-                initialCoords.lng,
+                lat,
+                lng,
                 12,
                 mapId
             );
-            const marker = provider.createMarker(map, initialCoords.lat, initialCoords.lng, 'default');
+            const marker = provider.createMarker(map, lat, lng, 'default');
 
             mapRef.current = map;
             markerRef.current = marker;
@@ -501,7 +461,7 @@ export const MapProviderUI = ({
         };
 
         init();
-    }, [isReady]);
+    }, []);
 
     useEffect(() => {
         if (!mapRef.current) {
