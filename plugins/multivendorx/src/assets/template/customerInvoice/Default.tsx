@@ -78,12 +78,16 @@ const Default: React.FC<Props> = ({ invoiceRows, colors, order }) => {
 			color: '#1e2a38',
 			fontWeight: 'bold',
 		},
-		headerDetails: {
+		headerRight: {
 			textAlign: 'right',
 			fontSize: 14,
 			color: '#555',
 			display: 'flex',
 			flexDirection: 'column',
+		},
+		headerDetails: {
+			display: 'flex',
+			flexDirection: 'row',
 		},
 		// boxDetails start
 		boxDetails: {
@@ -122,8 +126,7 @@ const Default: React.FC<Props> = ({ invoiceRows, colors, order }) => {
 			display: 'flex',
 			flexDirection: 'row',
 			backgroundColor: '#f7f8fa',
-			paddingVertical: 15,
-			paddingHorizontal: 10,
+			padding: 10,
 		},
 		tableHeaderText: {
 			fontWeight: 600,
@@ -135,8 +138,8 @@ const Default: React.FC<Props> = ({ invoiceRows, colors, order }) => {
 			padding: 15,
 			borderBottom: '1px solid #eaeaea',
 		},
-		tableRowText:{
-			fontSize: 14, 
+		tableRowText: {
+			fontSize: 14,
 			color: '#555'
 		},
 		// total section 
@@ -163,14 +166,25 @@ const Default: React.FC<Props> = ({ invoiceRows, colors, order }) => {
 			display: 'flex',
 			flexDirection: 'row',
 			justifyContent: 'space-between',
-			borderTop: `0.188rem solid #1e2a38`,
-			paddingTop: 12,
+			borderTop: `0.125rem solid #61666bff`,
+			paddingTop: 10,
+			marginTop: 10,
 		},
 		total: {
 			fontSize: 16,
 			fontWeight: 600,
 			color: '#1e2a38',
 		},
+
+		// footer notice
+		footerNotice: {
+			padding: 10,
+			display: 'flex',
+			justifyContent: 'center',
+			borderLeft: `0.125rem solid #1e2a38`,
+			margin: 20,
+			backgroundColor: '#f9f9f9',
+		}
 	});
 	const styles = createStyles(colors);
 	return (
@@ -178,13 +192,43 @@ const Default: React.FC<Props> = ({ invoiceRows, colors, order }) => {
 			<Page size="A4" style={styles.page}>
 				{/* Header start */}
 				<View style={styles.header}>
-					<Text style={styles.headerTitle}>INVOICE</Text>
+					<Text style={styles.headerTitle}>{__('INVOICE', 'multivendorx')}</Text>
 
-					<View style={styles.headerDetails}>
-						<Text style={styles.boldText}> {isAdmin ? ('MarketKit Ltd.0f b') : order?.billing?.invoice_name}</Text>
+					<View style={styles.headerRight}>
+						<Text style={styles.boldText}> {isAdmin ? ('Marketplace Solutions Inc.') : order?.billing?.invoice_name}</Text>
 						<Text>{isAdmin ? ('123 Elm Street, Suite 400') : order?.billing?.invoice_address}</Text>
 						<Text>{isAdmin ? ('London') : order?.invoice_phone} {isAdmin ? ('EC1A 1BB') : order?.invoice_email}</Text>
-					</View>
+
+
+						{taxFields.map((field) => {
+							const fieldData = taxDetails?.[field.key];
+
+							// Case 1: Global config (has enable/description)
+							if (fieldData && typeof fieldData === 'object') {
+								if (fieldData.enable !== true) return null;
+
+								return (
+									<View style={styles.headerDetails}>
+										<Text style={styles.boldText}>{field.label}</Text>
+										<Text>{fieldData.description || field.fallback}</Text>
+									</View>
+								);
+							}
+
+							// Case 2: Store data (plain string)
+							if (fieldData) {
+								return (
+									<View style={styles.headerDetails}>
+										<Text style={styles.boldText}>{field.label}</Text>
+										<Text>{fieldData}</Text>
+									</View>
+								);
+							}
+
+							return null;
+						})}
+
+					</View>  {/* headerDetails view end */}
 				</View>
 				{/* Header end */}
 
@@ -338,11 +382,20 @@ const Default: React.FC<Props> = ({ invoiceRows, colors, order }) => {
 						<Text style={styles.subTotal}> {isAdmin ? __('$0.00', 'multivendorx') : order?.currency_symbol}{order?.shipping_total ? formatCurrency(order?.shipping_total) : ''} </Text>
 					</View>
 					<View style={styles.totalWrapper}>
-						<Text style={styles.total}> {__('Shipping (Seller Portion):', 'multivendorx')}</Text>
+						<Text style={styles.total}> {__('Total:', 'multivendorx')}</Text>
 						<Text style={styles.total}> {isAdmin ? __('$6000.00', 'multivendorx') : order?.currency_symbol}{order?.total ? formatCurrency(order?.total) : ''} </Text>
 					</View>
 				</View>
 				{/* Total Section end */}
+
+				{/* note section start */}
+				<View style={styles.footerNotice}>
+					<Text style={styles.boldText}> {__('Notes:', 'multivendorx')} </Text>
+					<Text>
+						{order?.invoice_footer || "This invoice covers items sold by Premium Electronics Store. Tax amounts shown are calculated based on applicable VAT/GST rates for the delivery jurisdiction. For questions regarding this invoice, please contact the seller directly."}
+					</Text>
+				</View>
+				{/* note section end */}
 			</Page>
 		</Document>
 	);
