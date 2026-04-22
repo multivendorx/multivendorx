@@ -413,6 +413,7 @@ export const MapProviderUI = ({
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState<MapboxSuggestion[]>([]);
     const [googleLoaded, setGoogleLoaded] = useState(false);
+    const [isReady, setIsReady] = useState(false);
 
     const [initialCoords, setInitialCoords] = useState<{
         lat: number;
@@ -437,9 +438,21 @@ export const MapProviderUI = ({
     };
 
     useEffect(() => {
-        if (locationLat && locationLng) return; // already have saved location
+        // If parent already passed location → use it
+        if (locationLat && locationLng) {
+            setInitialCoords({
+                lat: parseFloat(locationLat),
+                lng: parseFloat(locationLng),
+            });
+            setIsReady(true);
+            return;
+        }
 
-        if (!navigator.geolocation) return;
+        if (!navigator.geolocation) {
+            setInitialCoords(DEFAULT_LOCATION);
+            setIsReady(true);
+            return;
+        }
 
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -447,23 +460,22 @@ export const MapProviderUI = ({
                 const lng = position.coords.longitude;
 
                 setInitialCoords({ lat, lng });
+                setIsReady(true);
 
-                // OPTIONAL: also update parent form
                 updateLocation(lat, lng);
             },
             () => {
-                // Permission denied → fallback stays default
-                setInitialCoords({
-                    lat: DEFAULT_LOCATION.lat,
-                    lng: DEFAULT_LOCATION.lng,
-                });
+                // Permission denied
+                setInitialCoords(DEFAULT_LOCATION);
+                setIsReady(true);
             }
         );
-    }, []);
+    }, [locationLat, locationLng]);
 
     /* -------- MAP INIT -------- */
 
     useEffect(() => {
+        if (!isReady) return;
         if (!containerRef.current) {
             return;
         }
@@ -491,7 +503,7 @@ export const MapProviderUI = ({
         };
 
         init();
-    }, [initialCoords]);
+    }, [isReady]);
 
     useEffect(() => {
         if (!mapRef.current) {
