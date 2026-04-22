@@ -712,7 +712,7 @@ export default {
 			category: 'integration',
 		},
 		{
-			id: 'shipstation',
+			id: 'ship-station',
 			name: __('Shipstation', 'multivendorx'),
 			desc: 'Integration with ShipStation for advanced shipping management and label printing.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/shipstation/',
