@@ -5,10 +5,10 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\Buddypress;
+namespace MultiVendorX\BuddyPress;
 
 /**
- * MultiVendorX Store Policy Module class
+ * MultiVendorX BuddyPress Module class
  *
  * @class       Module class
  * @version     5.0.0

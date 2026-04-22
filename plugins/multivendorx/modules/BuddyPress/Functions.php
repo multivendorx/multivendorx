@@ -5,7 +5,7 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\Buddypress;
+namespace MultiVendorX\BuddyPress;
 
 use MultiVendorX\Utill;
 use MultiVendorX\Store\Store;
@@ -28,7 +28,7 @@ class Functions {
     public function bp_add_shop_profile_tab() {
 
         bp_core_new_nav_item( array(
-            'name'                => __( 'Shop', 'buddypress' ),
+            'name'                => __( 'Shop', 'multivendorx' ),
             'slug'                => 'shop',
             'position'            => 80,
             'screen_function'     => array( $this, 'bp_shop_tab_screen' ),
