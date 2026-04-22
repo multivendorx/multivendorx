@@ -204,7 +204,7 @@ class Rewrites {
             $status      = $store->get( 'status' );
             $permissions = MultiVendorX()->util->get_permissions();
 
-            if ( in_array( $status, array( 'under_review', 'suspended' ), true ) || $permissions['hide_store_products'] ) {
+            if ( $permissions['hide_store_products'] && (in_array( $status, array( 'suspended', 'under_review' ), true ) || $permissions['hide_for_compliance']) ) {
                 wp_safe_redirect( wc_get_page_permalink( 'shop' ) );
                 exit();
             }
