@@ -71,52 +71,62 @@ class Functions {
             return;
         }
 
-        $store_ids = array_map( function( $store ) {
-            return isset( $store['id'] ) ? (int) $store['id'] : 0;
-        }, $stores );
-        $store_ids = array_filter( $store_ids );
+        // WooCommerce default products per page
+        $posts_per_page = wc_get_default_products_per_row() * wc_get_default_product_rows_per_page();
 
-        if ( empty( $store_ids ) ) {
-            echo '<p>' . esc_html__( 'No stores found for this user.', 'multivendorx' ) . '</p>';
-            return;
-        }
+        foreach ( $stores as $store ) {
 
-        // Query products linked to these stores
-        $args = array(
-            'post_type'      => 'product',
-            'posts_per_page' => -1,
-            'post_status'    => 'publish',
-            'no_found_rows'  => true,
-            'meta_query'     => array(
-                array(
-                    'key'     => Utill::POST_META_SETTINGS['store_id'],
-                    'value'   => $store_ids,
-                    'compare' => 'IN',
+            $store_id = isset( $store['id'] ) ? (int) $store['id'] : 0;
+
+            if ( ! $store_id ) {
+                continue;
+            }
+
+            // Optional: Store title
+            if ( ! empty( $store['name'] ) ) {
+                echo '<h4>' . esc_html( $store['name'] ) . '</h4>';
+            }
+
+            $args = array(
+                'post_type'      => 'product',
+                'posts_per_page' => $posts_per_page,
+                'post_status'    => 'publish',
+                'meta_query'     => array(
+                    array(
+                        'key'     => Utill::POST_META_SETTINGS['store_id'],
+                        'value'   => $store_id,
+                        'compare' => '=',
+                    ),
                 ),
-            ),
-        );
+            );
 
-        $args = apply_filters( 'multivendorx_bp_shop_product_query_args', $args, $user_id, $store_ids );
+            $args = apply_filters(
+                'multivendorx_bp_shop_product_query_args',
+                $args,
+                $user_id,
+                array( $store_id )
+            );
 
-        $query = new \WP_Query( $args );
+            $query = new \WP_Query( $args );
 
-        if ( ! $query->have_posts() ) {
-            do_action( 'woocommerce_no_products_found' );
+            if ( $query->have_posts() ) {
+
+                woocommerce_product_loop_start();
+
+                while ( $query->have_posts() ) {
+                    $query->the_post();
+
+                    do_action( 'woocommerce_shop_loop' );
+                    wc_get_template_part( 'content', 'product' );
+                }
+
+                woocommerce_product_loop_end();
+
+            } else {
+                echo '<p>' . esc_html__( 'No products found for this store.', 'multivendorx' ) . '</p>';
+            }
+
             wp_reset_postdata();
-            return;
         }
-
-        woocommerce_product_loop_start();
-
-        while ( $query->have_posts() ) {
-            $query->the_post();
-
-            do_action( 'woocommerce_shop_loop' );
-            wc_get_template_part( 'content', 'product' );
-        }
-
-        woocommerce_product_loop_end();
-
-        wp_reset_postdata();
     }
 }
