@@ -236,26 +236,22 @@ const AllProduct: React.FC = () => {
 	};
 
 	const handleBulkAction = (action: string, selectedIds: []) => {
-		if (action !== 'delete') {
+		if (action === 'delete') {
+			axios
+				.post(
+					`${appLocalizer.apiUrl}/wc/v3/products/batch`,
+					{ delete: selectedIds },
+					{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+				)
+				.then(() => {
+					fetchCategories();
+					fetchProductStatusCounts();
+					fetchWpmlTranslations();
+					doRefreshTableData({});
+				});
 			return;
 		}
 
-		axios
-			.post(
-				`${appLocalizer.apiUrl}/wc/v3/products/batch`,
-				{ delete: selectedIds },
-				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-			)
-			.then(() => {
-				fetchCategories();
-				fetchProductStatusCounts();
-				fetchWpmlTranslations();
-				doRefreshTableData({});
-			})
-			.catch((err: unknown) =>
-				console.error('Error performing bulk product action:', err)
-			);
-	
 		const result = applyFilters(
 			'multivendorx_products_bulk_action_handler',
 			null,
