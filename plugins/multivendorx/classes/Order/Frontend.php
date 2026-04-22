@@ -89,6 +89,10 @@ class Frontend {
     }
 
     public function disable_new_order_email_conditionally( $enabled, $order ) {
+        if ( ! $order || ! is_a( $order, 'WC_Order' ) ) {
+            return $enabled;
+        }
+
         if ( MultiVendorX()->setting->get_setting( 'display_customer_order' ) == 'suborders' ) {
             return false;
         }
