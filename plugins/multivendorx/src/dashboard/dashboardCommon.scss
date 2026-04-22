@@ -43,10 +43,10 @@
         --colorBlack: #b6c6e3;
 
         --backgroundColor: #121212;
-        --backgroundWhite: #101924;
+        --backgroundWhite: #212631;
         --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
 
-        --borderColor: #203247;
+        --borderColor: #ffffff1a;
         --box-shadow: #1010106e;
     }
 }
@@ -76,10 +76,10 @@
         --colorBlack: #b6c6e3;
 
         --backgroundColor: #121212;
-        --backgroundWhite: #101924;
+        --backgroundWhite: #212631;
         --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
 
-        --borderColor: #203247;
+        --borderColor: #ffffff1a;
         --box-shadow: #1010106e;
     }
 }
@@ -109,10 +109,10 @@
         --colorBlack: #b6c6e3;
 
         --backgroundColor: #121212;
-        --backgroundWhite: #101924;
+        --backgroundWhite: #212631;
         --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
 
-        --borderColor: #203247;
+        --borderColor: #ffffff1a;
         --box-shadow: #1010106e;
     }
 }
@@ -142,10 +142,10 @@
         --colorBlack: #b6c6e3;
 
         --backgroundColor: #121212;
-        --backgroundWhite: #101924;
+        --backgroundWhite: #212631;
         --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
 
-        --borderColor: #203247;
+        --borderColor: #ffffff1a;
         --box-shadow: #1010106e;
     }
 }
@@ -175,10 +175,10 @@
         --colorBlack: #b6c6e3;
 
         --backgroundColor: #121212;
-        --backgroundWhite: #101924;
+        --backgroundWhite: #212631;
         --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
 
-        --borderColor: #203247;
+        --borderColor: #ffffff1a;
         --box-shadow: #1010106e;
     }
 }
@@ -208,10 +208,10 @@
         --colorBlack: #b6c6e3;
 
         --backgroundColor: #121212;
-        --backgroundWhite: #101924;
+        --backgroundWhite: #212631;
         --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
 
-        --borderColor: #203247;
+        --borderColor: #ffffff1a;
         --box-shadow: #1010106e;
     }
 }
@@ -352,25 +352,30 @@ a:focus {
 }
 
 body.dark {
-    background: #0d141d !important;
+    background: #1d222b !important;
 
     .analytics-item {
         background: $background-white !important;
         /*overwrite zyra style*/
     }
 
-    // table style
-    .table-wrapper {
-
-        .admin-table,
-        .admin-pagination {
-            background: $background-color;
-        }
-    }
-
     .site-name {
         color: #fff !important;
+    }  
+
+    // header background color
+    .card-header,
+    .table-wrapper .admin-table,
+    .table-wrapper .admin-pagination,
+    .dropdown-menu .dropdown-header{
+        background: #ffffff08;
     }
+
+    // card header color
+    .card-content{
+        border-color: #ffffff1a
+    }
+    
 }
 
 #store-dashboard .showing-number select {
