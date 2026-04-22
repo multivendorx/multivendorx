@@ -644,43 +644,7 @@ const OrderDetails: React.FC = () => {
 										<SelectInputUI
 											name="status"
 											type="single-select"
-											options={[
-												{
-													label: __(
-														'Processing',
-														'multivendorx'
-													),
-													value: 'processing',
-												},
-												{
-													label: __(
-														'On Hold',
-														'multivendorx'
-													),
-													value: 'on-hold',
-												},
-												{
-													label: __(
-														'Completed',
-														'multivendorx'
-													),
-													value: 'completed',
-												},
-												{
-													label: __(
-														'Cancelled',
-														'multivendorx'
-													),
-													value: 'cancelled',
-												},
-												{
-													label: __(
-														'Shipped',
-														'multivendorx'
-													),
-													value: 'shipped',
-												},
-											]}
+											options={appLocalizer?.order_statuses || []}
 											value={orderData?.status}
 											onChange={(value) => {
 												handleStatusChange(value);
