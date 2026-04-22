@@ -145,15 +145,6 @@ export default {
 			category: 'product_types',
 		},
 		{
-			id: 'buddy-press',
-			name: __('Buddy press', 'multivendorx'),
-			desc: 'Covers basic products such as physical goods (books, clothing) or digital items (PDFs, music, software).',
-			docLink:
-				'https://multivendorx.com/docs/knowledgebase/simple-product',
-			proModule: false,
-			category: 'product_types',
-		},
-		{
 			id: 'variable',
 			name: __('Variable', 'multivendorx'),
 			desc: 'A product with variations, like different SKU, price, stock option, etc.',
@@ -636,22 +627,22 @@ export default {
 			],
 			category: 'integration',
 		},
-		// {
-		// 	id: 'buddypress',
-		// 	name: __('Buddypress', 'multivendorx'),
-		// 	desc: 'Adds social networking features to stores (profiles, connections, messaging).',
-		// 	docLink:
-		// 		'https://multivendorx.com/docs/knowledgebase/mvx-buddypress',
-		// 	proModule: false,
-		// 	reqPluging: [
-		// 		{
-		// 			name: 'BuddyPress',
-		// 			slug: 'buddypress/class-buddypress.php',
-		// 			link: 'https://wordpress.org/plugins/buddypress/',
-		// 		},
-		// 	],
-		// 	category: 'integration',
-		// },
+		{
+			id: 'buddypress',
+			name: __('Buddypress', 'multivendorx'),
+			desc: 'Adds social networking features to stores (profiles, connections, messaging).',
+			docLink:
+				'https://multivendorx.com/docs/knowledgebase/mvx-buddypress',
+			proModule: false,
+			reqPluging: [
+				{
+					name: 'BuddyPress',
+					slug: 'buddypress/class-buddypress.php',
+					link: 'https://wordpress.org/plugins/buddypress/',
+				},
+			],
+			category: 'integration',
+		},
 		{
 			id: 'wpml',
 			name: __('WPML', 'multivendorx'),

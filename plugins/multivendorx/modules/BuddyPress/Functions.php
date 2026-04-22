@@ -5,7 +5,7 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\BuddyPress;
+namespace MultiVendorX\Buddypress;
 
 use MultiVendorX\Utill;
 use MultiVendorX\Store\Store;

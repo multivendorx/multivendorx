@@ -5,7 +5,7 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\BuddyPress;
+namespace MultiVendorX\Buddypress;
 
 /**
  * MultiVendorX Store Policy Module class
