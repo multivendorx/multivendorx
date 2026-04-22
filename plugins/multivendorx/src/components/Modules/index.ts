@@ -629,7 +629,7 @@ export default {
 		},
 		{
 			id: 'buddypress',
-			name: __('Buddypress', 'multivendorx'),
+			name: __('BuddyPress', 'multivendorx'),
 			desc: 'Adds social networking features to stores (profiles, connections, messaging).',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/mvx-buddypress',
