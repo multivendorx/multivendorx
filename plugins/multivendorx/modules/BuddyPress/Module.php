@@ -43,7 +43,7 @@ class Module {
      * @return void
      */
     public function init_classes() {
-        $this->container['frontend'] = new Frontend();
+        $this->container['functions'] = new Functions();
     }
 
     /**
