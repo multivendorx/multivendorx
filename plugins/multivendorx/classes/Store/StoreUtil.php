@@ -647,15 +647,15 @@ class StoreUtil {
         $permissions = MultiVendorX()->util->get_permissions();
 
         if ( $check_payouts ) {
-            if ( in_array( $status, array( 'suspended', 'under_review' ), true ) || $permissions['disable_payouts'] ) {
+            if ( $permissions['disable_payouts'] && (in_array( $status, array( 'suspended', 'under_review' ), true ) || $permissions['hide_for_compliance']) ) {
                 return true;
             }
         } else {
-            if ( 'under_review' === $status || $permissions['disable_product_upload'] ) {
+            if ( $permissions['disable_product_upload'] && ('under_review' === $status || $permissions['hide_for_compliance']) ) {
                 return true;
             }
 
-            if ( in_array( $status, array( 'suspended', 'under_review' ), true ) || $permissions['hide_store_products'] ) {
+            if ( $permissions['hide_store_products'] && (in_array( $status, array( 'suspended', 'under_review' ), true ) || $permissions['hide_for_compliance']) ) {
                 return true;
             }
 
