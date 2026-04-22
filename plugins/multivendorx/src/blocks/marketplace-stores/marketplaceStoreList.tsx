@@ -242,6 +242,12 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 		});
 	};
 
+	useEffect(() => {
+		if (!addressData.location_lat && !addressData.location_lng) {
+			requestUserLocation();
+		}
+	}, []);
+
 	const renderMapComponent = () => {
 		if (!mapConfig.apiKey || !mapConfig.provider) {
 			return null;

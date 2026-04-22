@@ -176,6 +176,43 @@ const BusinessAddress = () => {
 	}, [id]);
 
 	useEffect(() => {
+		// wait until API load finishes
+		if (!id) return;
+
+		// only run if NO location exists
+		if (!addressData.location_lat && !addressData.location_lng) {
+			if (!navigator.geolocation) return;
+
+			navigator.geolocation.getCurrentPosition(
+				(pos) => {
+					const lat = pos.coords.latitude.toString();
+					const lng = pos.coords.longitude.toString();
+
+					const locationData = {
+						location_lat: lat,
+						location_lng: lng,
+						address: 'My Current Location',
+					};
+
+					// update UI
+					setAddressData((prev) => ({
+						...prev,
+						...locationData,
+					}));
+
+					// update backend
+					const updated = { ...formData, ...locationData };
+					setFormData(updated);
+					autoSave(updated);
+				},
+				() => {
+					console.warn('Location permission denied');
+				}
+			);
+		}
+	}, [addressData.location_lat, addressData.location_lng, id]);
+
+	useEffect(() => {
 		if (formData.country) {
 			fetchStatesByCountry(formData.country);
 		}
