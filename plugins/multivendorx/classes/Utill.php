@@ -608,7 +608,6 @@ class Utill {
             'hide_store_analytics'   => false,
             'hide_staff_manager'     => false,
             'hide_customer_support'  => false,
-            'hide_for_compliance'    => false,
         );
 
         return apply_filters( 'multivendorx_modify_permissions', $permissions );
