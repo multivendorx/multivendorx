@@ -7,7 +7,7 @@
   justify-content: center;
   flex-direction: column;
   width: 100%;
-  border: 0.125rem dashed #dbdbdb;
+  border: 0.125rem dashed var(--borderColor);
   padding: 1rem 0;
   background-size: contain;
   background-repeat: no-repeat;
