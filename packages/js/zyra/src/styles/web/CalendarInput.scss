@@ -29,6 +29,7 @@
                     .rmdp-header-values {
                         span.sd {
                             font-size: 1.125rem;
+                            color: $text-color;
                         }
                     }
                 }
@@ -186,6 +187,7 @@
 
     .input-calendar {
         box-shadow: none !important; // for overwrite calender component 
+        background: $background-white;
 
         .rmdp-calendar {
             width: 100%;
@@ -196,7 +198,7 @@
             .rmdp-header-values {
                 font-size: 1.313rem;
                 font-weight: 500;
-
+                color: $text-color;
             }
 
             .rmdp-arrow-container {

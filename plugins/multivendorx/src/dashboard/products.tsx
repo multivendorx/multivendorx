@@ -56,6 +56,7 @@ const AllProduct: React.FC = () => {
 	>([]);
 	const [newProductId, setNewProductId] = useState<number | null>(null);
 	const [prevQuery, setPrevQuery] = useState<QueryProps>({});
+	const [bulkActionContent, setBulkActionContent] = useState<React.ReactNode>(null);
 
 	const { modules } = useModules();
 	const navigate = useNavigate();
@@ -235,25 +236,30 @@ const AllProduct: React.FC = () => {
 	};
 
 	const handleBulkAction = (action: string, selectedIds: []) => {
-		if (action !== 'delete') {
+		if (action === 'delete') {
+			axios
+				.post(
+					`${appLocalizer.apiUrl}/wc/v3/products/batch`,
+					{ delete: selectedIds },
+					{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+				)
+				.then(() => {
+					fetchCategories();
+					fetchProductStatusCounts();
+					fetchWpmlTranslations();
+					doRefreshTableData({});
+				});
 			return;
 		}
 
-		axios
-			.post(
-				`${appLocalizer.apiUrl}/wc/v3/products/batch`,
-				{ delete: selectedIds },
-				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-			)
-			.then(() => {
-				fetchCategories();
-				fetchProductStatusCounts();
-				fetchWpmlTranslations();
-				doRefreshTableData({});
-			})
-			.catch((err: unknown) =>
-				console.error('Error performing bulk product action:', err)
-			);
+		const result = applyFilters(
+			'multivendorx_products_bulk_action_handler',
+			null,
+			action,
+			selectedIds,
+			appLocalizer,
+		);
+		setBulkActionContent(result); 
 	};
 
 	const doRefreshTableData = (query: QueryProps) => {
@@ -307,7 +313,11 @@ const AllProduct: React.FC = () => {
 			});
 	};
 
-	const bulkActions = [{ label: 'Delete', value: 'delete' }];
+	const bulkActions = applyFilters(
+		'multivendorx_products_bulk_actions',
+		[{ label: 'Delete', value: 'delete' }],
+		modules
+	);
 
 	const filters = [
 		{
@@ -542,6 +552,7 @@ const AllProduct: React.FC = () => {
 					currencyPosition: appLocalizer.currency_position,
 				}}
 			/>
+			{bulkActionContent}
 		</>
 	);
 };

@@ -171,7 +171,7 @@
       cursor: pointer;
       display: flex;
       justify-content: center;
-      background: #fff;
+      background: $background-white;
       padding: 1rem 1rem 0.313rem;
       min-width: 11rem;
 
@@ -228,7 +228,7 @@
         width: 24%;
         box-sizing: border-box;
         padding: 1rem 1.313rem;
-        background: #fff;
+        background: $background-white;
         border-radius: $border-radius-small;
         border: 0.063rem solid transparent;
         flex-direction: column;
@@ -315,6 +315,7 @@
           border-radius: $border-radius-small;
           cursor: pointer;
           margin: 0;
+          color: $text-color;
 
           i {
             padding-right: 0.5rem;
@@ -561,7 +562,7 @@
     .tab-name {
       font-size: 0.938rem;
       line-height: 1.5;
-      color: #121116;
+      // color: #121116;
 
       i {
         padding-right: 0.5rem;

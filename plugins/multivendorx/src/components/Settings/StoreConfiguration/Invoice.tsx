@@ -14,7 +14,10 @@ import {
 	TextAreaUI,
 	NoticeManager,
 	getApiLink,
+	PopupUI,
+	useModules
 } from 'zyra';
+import ShowProPopup from '../../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
 import Default from '../../../assets/template/customerInvoice/Default';
@@ -208,6 +211,9 @@ const autoSave = (updatedData: Record<string, unknown>) => {
 };
 
 const Invoice: React.FC = () => {
+	const [showProPopup, setShowProPopup] = useState(false);
+	const [showModulePopup, setShowModulePopup] = useState(false);
+	const { modules } = useModules();
 	const defaultData = {
 		paymentCapability: [],
 		PackingSlip: [],
@@ -274,7 +280,17 @@ const Invoice: React.FC = () => {
 		};
 	});
 
+	const isPro = Boolean(appLocalizer?.khali_dabba);
 	const handleChange = (key: string, value: any) => {
+		if (!isPro) {
+			setShowProPopup(true);
+			return;
+		}
+
+		if (isPro && !modules.includes('invoice')) {
+            setShowModulePopup(true);
+        	return;
+        }
 		const updated = { ...formData, [key]: value };
 		setFormData(updated);
 		autoSave(updated);
@@ -305,7 +321,7 @@ const Invoice: React.FC = () => {
 										showPdfButton={true}
 										idPrefix="color-setting-customer"
 										templates={applyFilters(
-											'multivendorx_invoice_templates',
+											'multivendorx_customer_invoice',
 											[
 												{
 													key: 'customer_invoice_default',
@@ -335,11 +351,11 @@ const Invoice: React.FC = () => {
 										showPdfButton={true}
 										idPrefix="color-setting-admin"
 										templates={applyFilters(
-											'multivendorx_admin_template',
+											'multivendorx_admin_invoice',
 											[
 												{
 												key: 'admin_commission_default',
-												label: 'Admin Commission Default',
+												label: 'Default',
 												preview: adminCommissionDefault,
 												component: adminCommissionDefault,
 												pdf: adminCommissionDefault,
@@ -364,15 +380,18 @@ const Invoice: React.FC = () => {
 										templateSelector={true}
 										showPdfButton={true}
 										idPrefix="color-setting-membership"
-										templates={[
-											{
-												key: 'membership_invoice_default',
-												label: 'Membership Invoice Default',
-												preview: membershipInvoiceDefault,
-												component: membershipInvoiceDefault,
-												pdf: membershipInvoiceDefault,
-											},
-										]}
+										templates={applyFilters(
+											'multivendorx_membership_invoice',
+											[
+												{
+													key: 'membership_invoice_default',
+													label: 'Default',
+													preview: membershipInvoiceDefault,
+													component: membershipInvoiceDefault,
+													pdf: membershipInvoiceDefault,
+												},
+											]
+										)}
 										predefinedOptions={COLOR_PALETTES}
 										value={formData.membership_template}
 										onChange={(val) => {
@@ -391,15 +410,18 @@ const Invoice: React.FC = () => {
 										templateSelector={true}
 										showPdfButton={true} 
 										idPrefix="color-setting-packing"
-										templates={[
-											{
+										templates={applyFilters(
+											'multivendorx_packing_slip_invoice',
+											[
+												{
 												key: 'packing_slip_default',
-												label: 'Packing Slip Default',
+												label: 'Default',
 												preview: packingSlipDefault,
 												component: packingSlipDefault,
 												pdf: packingSlipDefault,
 											},
-										]}
+											]
+										)}
 										predefinedOptions={COLOR_PALETTES}
 										value={formData.packing_template}
 										onChange={(val) => {
@@ -411,7 +433,23 @@ const Invoice: React.FC = () => {
 						]}
 					/>
 				</Card>
+
 			</Column>
+			{isPro &&
+				!modules.includes('invoice') && (
+					<span className="admin-pro-tag module">
+						<i
+							className={`adminfont-invoice`}
+						/>
+						Invoice
+						<i className="adminfont-lock" />
+					</span>
+				)}
+			{!isPro && (
+				<span className="admin-pro-tag">
+					<i className="adminfont-pro-tag"></i>Pro
+				</span>
+			)}
 			<Column grid={8}>
 				<Card
 					title={__('Customer invoice', 'multivendorx')}
@@ -776,6 +814,31 @@ const Invoice: React.FC = () => {
 					</FormGroupWrapper>
 				</Card>
 			</Column>
+
+			{showProPopup && (
+				<PopupUI
+                    position="lightbox"
+                    open={showProPopup}
+                    onClose={() => setShowProPopup(false)}
+                    width={31.25}
+                    height="auto"
+                >
+                    <ShowProPopup />
+                </PopupUI>
+			)}
+			{showModulePopup && (
+				<PopupUI
+                    position="lightbox"
+                    open={showModulePopup}
+                    onClose={() => setShowModulePopup(false)}
+                    width={31.25}
+                    height="auto"
+                >
+                    <ShowProPopup 
+						moduleName='invoice'
+					/>
+                </PopupUI>
+			)}
 		</Container>
 	);
 };

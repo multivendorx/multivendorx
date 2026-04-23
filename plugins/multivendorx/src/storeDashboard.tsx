@@ -482,13 +482,13 @@ const Dashboard = () => {
 
 						<ul className="navbar-right">
 							{/* Dark mode toggle */}
-							{/* <li onClick={() => setIsDarkMode((prev) => !prev)}>
+							<li onClick={() => setIsDarkMode((prev) => !prev)}>
 								<div
 									className={`adminfont-icon admin-icon dark-icon adminfont-${
 										isDarkMode ? 'light' : 'moon'
 									}`}
 								></div>
-							</li> */}
+							</li>
 
 							{/* Add product */}
 							<Tooltip

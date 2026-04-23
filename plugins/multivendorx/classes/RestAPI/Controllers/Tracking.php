@@ -67,6 +67,19 @@ class Tracking extends \WP_REST_Controller {
         $store_id = MultiVendorX()->active_store;
         $store    = new Store( $store_id );
 
+        $order = wc_get_order($order_id);
+
+        $provider        = sanitize_text_field( $data['provider'] ?? '' );
+        $date            = sanitize_text_field( $data['date'] ?? '' );
+        $tracking_number = sanitize_text_field( $data['tracking_number'] ?? '' );
+        $tracking_url    = esc_url_raw( $data['tracking_url'] ?? '' );
+
+        $order->update_meta_data( 'multivendorx_shipping_provider', $provider );
+        $order->update_meta_data( 'multivendorx_tracking_date', $date );
+        $order->update_meta_data( 'multivendorx_tracking_id', $tracking_number );
+        $order->update_meta_data( 'multivendorx_tracking_url', $tracking_url );
+        $order->save();
+
         MultiVendorX()->notifications->send_notification_helper(
             'shipment_tracking_added',
             $store,
@@ -74,10 +87,10 @@ class Tracking extends \WP_REST_Controller {
             array(
 				'store_name'      => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
 				'order_id'        => $order_id,
-				'tracking_url'    => $data['tracking_url'],
-				'tracking_number' => $data['tracking_number'],
-				'provider'        => $data['provider'],
-				'date'            => $data['date'],
+				'tracking_url'    => $tracking_url,
+				'tracking_number' => $tracking_number,
+				'provider'        => $provider,
+				'date'            => $date,
 				'store_id'        => $store_id,
 				'category'        => 'notification',
 			)
