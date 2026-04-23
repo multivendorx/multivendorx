@@ -44,7 +44,7 @@
 		"minify": "node bin/minify.mjs",
 		"version": "node bin/version-replace.mjs",
 		"changelog": "composer install --quiet && composer exec -- changelogger",
-		"makepot": "wp i18n make-pot --domain='multivendorx' --include='assets/js,classes,templates,config.php,dc_product_vendor.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://multivendorx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') Multivendorx Inc. All Rights Reserved.\" languages/multivendorx.pot"
+		"makepot": "wp i18n make-pot --domain='multivendorx' --include='assets/js,classes,templates,modules,config.php,dc_product_vendor.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://multivendorx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') Multivendorx Inc. All Rights Reserved.\" languages/multivendorx.pot"
 	},
 	"repository": {
 		"type": "git",

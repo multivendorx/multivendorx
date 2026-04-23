@@ -107,46 +107,46 @@ class Dashboard extends \WP_REST_Controller {
         // Default endpoints.
         $all_endpoints = array(
             'dashboard'     => array(
-                'name'       => 'Dashboard',
+                'name'       =>  __( 'Dashboard', 'multivendorx' ),
                 'icon'       => 'module',
                 'slug'       => '',
                 'submenu'    => array(),
                 'capability' => array( 'create_stores' ),
             ),
             'products'      => array(
-                'name'       => 'Products',
+                'name'       => __( 'Products', 'multivendorx' ),
                 'slug'       => 'products',
                 'icon'       => 'single-product',
                 'submenu'    => array(),
                 'capability' => array( 'read_products', 'add_products', 'publish_products', 'edit_published_products', 'upload_files' ),
             ),
             'coupons'       => array(
-                'name'       => 'Coupons',
+                'name'       => __( 'Coupons', 'multivendorx' ),
                 'slug'       => 'coupons',
                 'icon'       => 'coupon',
                 'capability' => array( 'read_shop_coupons', 'add_shop_coupons', 'publish_coupons' ),
             ),
             'sales'         => array(
-                'name'       => 'Sales',
+                'name'       => __( 'Sales', 'multivendorx' ),
                 'slug'       => 'sales',
                 'icon'       => 'sales',
                 'submenu'    => array(
                     array(
                         'key'        => 'orders',
-                        'name'       => 'Orders',
+                        'name'       => __( 'Orders', 'multivendorx' ),
                         'slug'       => 'orders',
                         'capability' => array( 'view_shop_orders', 'edit_shop_orders', 'delete_shop_orders', 'add_shop_orders_note' ),
                     ),
                     array(
                         'key'        => 'refund',
-                        'name'       => 'Refund',
+                        'name'       => __( 'Refund', 'multivendorx' ),
                         'slug'       => 'refund',
                         'capability' => array( 'view_shop_orders', 'edit_shop_orders' ),
                         'module'     => array( 'marketplace-refund' ),
                     ),
                     array(
                         'key'        => 'commissions',
-                        'name'       => 'Commissions',
+                        'name'       => __( 'Commissions', 'multivendorx' ),
                         'slug'       => 'commissions',
                         'capability' => array( 'view_commission_history' ),
                     ),
@@ -155,19 +155,19 @@ class Dashboard extends \WP_REST_Controller {
 
             ),
             'wallet'        => array(
-                'name'       => 'Wallet',
+                'name'       => __( 'Wallet', 'multivendorx' ),
                 'icon'       => 'wallet',
                 'slug'       => 'wallet',
                 'submenu'    => array(
                     array(
                         'key'        => 'transactions',
-                        'name'       => 'Transactions',
+                        'name'       => __( 'Transactions', 'multivendorx' ),
                         'slug'       => 'transactions',
                         'capability' => array( 'read_shop_earning', 'view_transactions' ),
                     ),
                     array(
                         'key'        => 'withdrawals',
-                        'name'       => 'Withdrawals',
+                        'name'       => __( 'Withdrawals', 'multivendorx' ),
                         'slug'       => 'withdrawals',
                         'capability' => array( 'read_shop_earning', 'edit_withdrawl_request' ),
                     ),
@@ -176,34 +176,34 @@ class Dashboard extends \WP_REST_Controller {
             ),
 
             'store_support' => array(
-                'name'    => 'Store Support',
+                'name'    => __( 'Store Support', 'multivendorx' ),
                 'icon'    => 'customer-service',
                 'slug'    => 'store-support',
                 'submenu' => array(
                     array(
                         'key'        => 'support-tickets',
-                        'name'       => 'Support Tickets',
+                        'name'       => __( 'Support Tickets', 'multivendorx' ),
                         'slug'       => 'support-tickets',
                         'capability' => array( 'view_support_tickets', 'reply_support_tickets' ),
                         'module'     => array( 'store-support' ),
                     ),
                     array(
                         'key'        => 'customer-questions',
-                        'name'       => 'Product Questions',
+                        'name'       => __( 'Product Questions', 'multivendorx' ),
                         'slug'       => 'customer-questions',
                         'capability' => array( 'view_customer_questions', 'reply_customer_questions' ),
                         'module'     => array( 'customer-queries' ),
                     ),
                     array(
                         'key'        => 'store-followers',
-                        'name'       => 'Followers',
+                        'name'       => __( 'Followers', 'multivendorx' ),
                         'slug'       => 'store-followers',
                         'capability' => array( 'view_store_followers' ),
                         'module'     => array( 'follow-store' ),
                     ),
                     array(
                         'key'        => 'store-review',
-                        'name'       => 'Customer Reviews',
+                        'name'       =>  __( 'Customer Reviews', 'multivendorx' ),
                         'slug'       => 'store-review',
                         'capability' => array( 'view_store_reviews', 'reply_store_reviews' ),
                         'module'     => array( 'store-review' ),
@@ -211,20 +211,20 @@ class Dashboard extends \WP_REST_Controller {
                 ),
             ),
             'resources'     => array(
-                'name'       => 'Resources',
+                'name'       => __( 'Resources', 'multivendorx' ),
                 'icon'       => 'resources',
                 'slug'       => 'resources',
                 'submenu'    => array(
                     array(
                         'key'        => 'documentation',
-                        'name'       => 'Documentation',
+                        'name'       => __( 'Documentation', 'multivendorx' ),
                         'slug'       => 'documentation',
                         'capability' => array( 'view_documentation' ),
                         'module'     => array( 'knowledgebase' ),
                     ),
                     array(
                         'key'        => 'tools',
-                        'name'       => 'Tools',
+                        'name'       => __( 'Tools', 'multivendorx' ),
                         'slug'       => 'tools',
                         'capability' => array( 'access_tools' ),
                     ),
@@ -232,7 +232,7 @@ class Dashboard extends \WP_REST_Controller {
                 'capability' => array( 'view_documentation' ),
             ),
             'settings'      => array(
-                'name'       => 'Settings',
+                'name'       => __( 'Settings', 'multivendorx' ),
                 'slug'       => 'settings',
                 'icon'       => 'setting',
                 'capability' => array( 'manage_store_settings' ),
