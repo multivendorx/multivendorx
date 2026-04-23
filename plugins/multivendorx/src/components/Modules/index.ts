@@ -104,18 +104,13 @@ export default {
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/auction-product',
 			proModule: true,
-			reqPluging: [
-				{
-					name: 'WooCommerce Simple Auctions',
-					slug: 'woocommerce-simple-auctions/woocommerce-simple-auctions.php',
-					link: 'https://codecanyon.net/item/woocommerce-simple-auctions-wordpress-auctions/6811382',
-				},
-				{
-					name: 'YITH WooCommerce Auctions',
-					slug: 'yith-woocommerce-auctions/init.php',
-					link: 'https://yithemes.com/themes/plugins/yith-woocommerce-auctions/',
-				},
-			],
+			// reqPluging: [
+			// 	{
+			// 		name: 'YITH WooCommerce Auctions',
+			// 		slug: 'yith-woocommerce-auctions/init.php',
+			// 		link: 'https://yithemes.com/themes/plugins/yith-woocommerce-auctions/',
+			// 	},
+			// ],
 			category: ['marketplace_types', 'product_types'],
 		},
 		{
