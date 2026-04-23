@@ -14,6 +14,7 @@ import {
 	ToggleControl,
 } from '@wordpress/components';
 import { useDispatch } from '@wordpress/data';
+import { useEffect, useRef } from '@wordpress/element';
 
 // Template 1: Store Header
 const TEMPLATE_1 = [
@@ -206,6 +207,10 @@ registerBlockType('multivendorx/store-banner', {
 		} = attributes;
 
 		const { replaceInnerBlocks } = useDispatch(blockEditorStore);
+		
+		// Track previous template to prevent unnecessary reloads
+		const prevTemplateRef = useRef(template);
+		const isInitialMount = useRef(true);
 
 		const bannerImage =
 			'http://localhost:8889/wp-content/plugins/woocommerce/assets/images/pattern-placeholders/table-wood-house-chair-floor-window.jpg';
@@ -252,17 +257,41 @@ registerBlockType('multivendorx/store-banner', {
 		// Get current template
 		const currentTemplate = TEMPLATES[template] || TEMPLATE_1;
 
+		// Handle template changes with useEffect
+		useEffect(() => {
+			// Skip on initial mount
+			if (isInitialMount.current) {
+				isInitialMount.current = false;
+				prevTemplateRef.current = template;
+				return;
+			}
+
+			// Check if template changed and inner content is enabled
+			if (prevTemplateRef.current !== template && innerContentEnabled) {
+				const newTemplate = TEMPLATES[template] || TEMPLATE_1;
+				// Deep clone to avoid reference issues
+				const clonedTemplate = JSON.parse(JSON.stringify(newTemplate));
+				replaceInnerBlocks(clientId, clonedTemplate);
+				prevTemplateRef.current = template;
+			}
+		}, [template, innerContentEnabled, clientId, replaceInnerBlocks]);
+
 		// Function to handle template change
 		const handleTemplateChange = (newTemplate) => {
-			// Set the template attribute
 			setAttributes({ template: newTemplate });
+		};
 
-			// Only replace inner blocks if inner content is enabled
-			if (innerContentEnabled) {
-				replaceInnerBlocks(
-					clientId,
-					TEMPLATES[newTemplate] || TEMPLATE_1
-				);
+		// Handle inner content toggle
+		const handleInnerContentToggle = (value) => {
+			setAttributes({ innerContentEnabled: value });
+			if (!value) {
+				// Clear inner blocks when disabled
+				replaceInnerBlocks(clientId, []);
+			} else if (template !== 'empty') {
+				// Restore template blocks when enabled
+				const templateBlocks = TEMPLATES[template] || TEMPLATE_1;
+				const clonedTemplate = JSON.parse(JSON.stringify(templateBlocks));
+				replaceInnerBlocks(clientId, clonedTemplate);
 			}
 		};
 
@@ -276,9 +305,7 @@ registerBlockType('multivendorx/store-banner', {
 						<ToggleControl
 							label={__('Inner Banner Content', 'multivendorx')}
 							checked={innerContentEnabled}
-							onChange={(value) =>
-								setAttributes({ innerContentEnabled: value })
-							}
+							onChange={handleInnerContentToggle}
 							help={__(
 								'Enable to show content blocks inside the banner',
 								'multivendorx'
@@ -516,6 +543,7 @@ registerBlockType('multivendorx/store-banner', {
 										? InnerBlocks.ButtonBlockAppender
 										: false
 								}
+								templateLock={template === 'empty' ? false : 'all'}
 							/>
 						</div>
 					) : (
@@ -600,6 +628,8 @@ registerBlockType('multivendorx/store-banner', {
 		);
 	},
 });
+
+// Frontend script to handle dynamic banner images
 document.addEventListener('DOMContentLoaded', () => {
 	if (window.StoreInfo?.storeDetails) {
 		const bannerUrl = window.StoreInfo.storeDetails.storeBanner;
