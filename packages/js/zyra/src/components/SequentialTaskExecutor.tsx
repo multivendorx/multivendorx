@@ -63,7 +63,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
     const taskIndex = useRef(0);
 
     // ⭐ ADDED: Import context storage
-    const lastResult = useRef<string>('');
+    const lastResult = useRef<number[]>([]);
 
     const sleep = (ms: number) =>
         new Promise((resolve) => setTimeout(resolve, ms));
@@ -104,7 +104,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
 
         if (isSuccess) {
             // ⭐ ADDED: Store successful task data into context
-            if (isSuccess && response?.data !== undefined) {
+            if (isSuccess && Array.isArray(response?.data) && response.data.length > 0) {
                 lastResult.current = response.data;
             }
 
@@ -204,7 +204,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         taskIndex.current = 0;
 
         // ⭐ ADDED: Reset context on new run
-        lastResult.current = {};
+        lastResult.current = [];
 
         executeSequentialTasks();
     }, [executeSequentialTasks]);
