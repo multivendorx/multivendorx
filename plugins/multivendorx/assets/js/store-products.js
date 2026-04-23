@@ -24,7 +24,6 @@ jQuery(document).ready(function ($) {
 			$(this).removeClass('active');
 		}
 	});
-	console.log('Popup toggled');
 	function toggleAuth(type) {
 		const wrapper = document.getElementById('customer_login');
 		if (!wrapper) return;
