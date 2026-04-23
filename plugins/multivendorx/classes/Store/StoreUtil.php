@@ -664,7 +664,7 @@ class StoreUtil {
             }
         }
 
-        return false;
+        return apply_filters( 'multivendorx_get_excluded_products', false, $product_id, $store_id );
     }
 
     /**
