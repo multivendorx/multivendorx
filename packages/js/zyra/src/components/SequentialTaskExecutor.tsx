@@ -104,7 +104,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
 
         if (isSuccess) {
             // ⭐ ADDED: Store successful task data into context
-            if (isSuccess && Array.isArray(response?.data) && response.data.length > 0) {
+            if (Array.isArray(response?.data) && response.data.length > 0) {
                 lastResult.current = response.data;
             }
 
