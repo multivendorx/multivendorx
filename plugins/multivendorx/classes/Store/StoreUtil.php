@@ -950,4 +950,51 @@ class StoreUtil {
             $total
         );
     }
+
+    /**
+     * Get store IDs by meta key and/or value.
+     *
+     * @param string $meta_key   Meta key (required).
+     * @param mixed  $meta_value Meta value (optional).
+     * @param bool   $like       Whether to use LIKE for meta_value. Default false.
+     *
+     * @return int[] List of store IDs.
+     */
+    public static function get_store_by_meta( string $meta_key, $meta_value = null, bool $like = false ): array {
+        if ( empty( $meta_key ) ) {
+            return [];
+        }
+
+        global $wpdb;
+        $table = $wpdb->prefix . Utill::TABLES['store_meta'];
+
+        // Start building the query
+        $conditions = [ 'meta_key = %s' ];
+        $params     = [ $meta_key ];
+
+        // Handle meta_value if provided
+        if ( null !== $meta_value ) {
+            // Serialize non-scalar values (arrays/objects)
+            if ( ! is_scalar( $meta_value ) ) {
+                $meta_value = maybe_serialize( $meta_value );
+            }
+
+            if ( $like ) {
+                $conditions[] = "meta_value LIKE %s";
+                $params[]     = '%' . $wpdb->esc_like( (string) $meta_value ) . '%';
+            } else {
+                $conditions[] = "meta_value = %s";
+                $params[]     = $meta_value;
+            }
+        }
+
+        // Join conditions with AND
+        $where_clause = implode( ' AND ', $conditions );
+
+        // Direct query execution
+        $sql     = "SELECT DISTINCT store_id FROM {$table} WHERE {$where_clause}";
+        $results = $wpdb->get_col( $wpdb->prepare( $sql, $params ) );
+
+        return $results ? array_map( 'intval', $results ) : [];
+    }
 }

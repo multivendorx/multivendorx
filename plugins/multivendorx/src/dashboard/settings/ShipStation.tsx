@@ -66,13 +66,13 @@ const ShipStation = () => {
 	const hasCredential = credential && credential.key_id;
 
 	const statusOptions = [
-		{ value: 'pending', label: 'Pending Payment' },
-		{ value: 'processing', label: 'Processing' },
-		{ value: 'on-hold', label: 'On Hold' },
-		{ value: 'completed', label: 'Completed' },
-		{ value: 'cancelled', label: 'Cancelled' },
-		{ value: 'refunded', label: 'Refunded' },
-		{ value: 'failed', label: 'Failed' },
+		{ value: 'wc-pending', label: 'Pending Payment' },
+		{ value: 'wc-processing', label: 'Processing' },
+		{ value: 'wc-on-hold', label: 'On Hold' },
+		{ value: 'wc-completed', label: 'Completed' },
+		{ value: 'wc-cancelled', label: 'Cancelled' },
+		{ value: 'wc-refunded', label: 'Refunded' },
+		{ value: 'wc-failed', label: 'Failed' },
 	];
 
 	const handleChange = (name: string, value: string) => {
