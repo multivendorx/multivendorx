@@ -65,16 +65,6 @@ const ShipStation = () => {
 
 	const hasCredential = credential && credential.key_id;
 
-	const statusOptions = [
-		{ value: 'wc-pending', label: 'Pending Payment' },
-		{ value: 'wc-processing', label: 'Processing' },
-		{ value: 'wc-on-hold', label: 'On Hold' },
-		{ value: 'wc-completed', label: 'Completed' },
-		{ value: 'wc-cancelled', label: 'Cancelled' },
-		{ value: 'wc-refunded', label: 'Refunded' },
-		{ value: 'wc-failed', label: 'Failed' },
-	];
-
 	const handleChange = (name: string, value: string) => {
 		const updated = { ...formData, [name]: value };
 		setFromData(updated);
@@ -147,7 +137,7 @@ const ShipStation = () => {
 					<FormGroup label={__('Export Order Statuses', 'multivendorx')}>
 						<SelectInputUI
 							type="multi-select"
-							options={statusOptions}
+							options={appLocalizer.order_statuses}
 							value={formData.export_statuses || []}
 							onChange={(val) => handleChange('export_statuses', val)}
 							placeholder="Select statuses"
@@ -158,7 +148,7 @@ const ShipStation = () => {
 					<FormGroup label={__('Shipped Order Status', 'multivendorx')}>
 						<SelectInputUI
 							type="single-select"
-							options={statusOptions}
+							options={appLocalizer.order_statuses}
 							value={formData.shipped_status || ''}
 							onChange={(val) => handleChange('shipped_status', val)}
 							placeholder="Select status"
