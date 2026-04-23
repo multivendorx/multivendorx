@@ -8,7 +8,7 @@ export default {
         'Manage your store’s shipping method, pricing rules, and location-based rates.',
         'multivendorx-pro'
     ),
-    module: 'shipstation',
+    module: 'ship-station',
     headerIcon: 'shipstation',
     submitUrl: `store/${appLocalizer.store_id}`,
     modal: [],
