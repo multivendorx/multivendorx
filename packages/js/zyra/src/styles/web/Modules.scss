@@ -46,7 +46,12 @@
             .module-header {
                 display: flex;
                 justify-content: space-between;
-
+                img{
+                    width: 2.5rem;
+                    height: 2.5rem;
+                    border-radius: $border-light-small;
+                    object-fit: cover;
+                }
                 .pro-tag {
                     i {
                         color: $accent-color;

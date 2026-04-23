@@ -128,3 +128,9 @@
         }
     }
 }
+
+@media screen  and (max-width: 600px) {
+    .analytics-container{
+        flex-direction: column;
+    }
+}
