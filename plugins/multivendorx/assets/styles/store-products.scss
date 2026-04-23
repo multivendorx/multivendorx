@@ -906,7 +906,7 @@ $star-color: #d49c00;
     }
 
     #customer_login.show-register .u-column2 {
-        display: block;
+        display: block !important; // for overwrite OceanWP
     }
 
     #customer_login.show-register .u-column1 {
@@ -919,16 +919,4 @@ $star-color: #d49c00;
 }
 .multivendorx-registration:not(:has(.u-columns)) .multivendorx-tabs {
 	display: none;
-}
-
-// membership ui
-.multivendorx-membership-wrapper {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-
-    .plan-wrapper {
-        width: calc(25% - 0.4rem);
-    }
 }

@@ -848,3 +848,13 @@ a {
 .ai-wrapper {
     padding: 1rem;
 }
+
+@media only screen and (max-width: 600px) {
+    .dashboard-tabs-wrapper{
+        display: none;
+    }
+    .tab-wrapper{
+        margin: 0;
+    }
+    
+}

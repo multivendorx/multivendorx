@@ -1,20 +1,16 @@
 jQuery(document).ready(function ($) {
 	// theme color
-	const root = document.documentElement;
-
-	const primary = getComputedStyle(root)
-		.getPropertyValue('--theme-primary')
-		.trim();
-
-	if (!primary || primary === '#1e73be') {
-		const $btn = $('button, .button, .btn').first();
+	jQuery(window).on('load', function () {
+		const root = document.documentElement;
+		const $btn = $('button, .button, .woocommerce-Button').filter(function () {
+			return $(this).css('background-color') !== 'rgba(0, 0, 0, 0)';
+		}).first();
 
 		if ($btn.length) {
 			const color = $btn.css('background-color');
 			root.style.setProperty('--theme-primary', color);
-		}
-	}
-
+		} 
+	});
 	$(document).on('click', '.multivendorx-apply-now-btn', function () {
 		$('#wholesale-popup').addClass('active');
 	});
@@ -28,7 +24,6 @@ jQuery(document).ready(function ($) {
 			$(this).removeClass('active');
 		}
 	});
-
 	function toggleAuth(type) {
 		const wrapper = document.getElementById('customer_login');
 		if (!wrapper) return;
