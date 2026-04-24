@@ -106,13 +106,8 @@ export default {
 			proModule: true,
 			reqPluging: [
 				{
-					name: 'WooCommerce Simple Auctions',
-					slug: 'woocommerce-simple-auctions/woocommerce-simple-auctions.php',
-					link: 'https://codecanyon.net/item/woocommerce-simple-auctions-wordpress-auctions/6811382',
-				},
-				{
 					name: 'YITH WooCommerce Auctions',
-					slug: 'yith-woocommerce-auctions/init.php',
+					slug: 'yith-woocommerce-auctions-premium/init.php',
 					link: 'https://yithemes.com/themes/plugins/yith-woocommerce-auctions/',
 				},
 			],
@@ -712,7 +707,7 @@ export default {
 			category: 'integration',
 		},
 		{
-			id: 'shipstation',
+			id: 'ship-station',
 			name: __('Shipstation', 'multivendorx'),
 			desc: 'Integration with ShipStation for advanced shipping management and label printing.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/shipstation/',

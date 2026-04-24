@@ -16,6 +16,7 @@ import ShowProPopup from '../components/Popup/Popup';
 import ShippingDelivery from './settings/ShippingDelivery';
 import BusinessAddress from './DashboardSettings/BusinessAddress';
 import { __ } from '@wordpress/i18n';
+import ShipStation from './settings/ShipStation';
 
 interface SettingsProps {
 	id: string;
@@ -108,6 +109,10 @@ const settings: React.FC<SettingsProps> = () => {
 		}
 		if (currentTab === 'business-address') {
 			return <BusinessAddress />;
+		}
+
+		if (currentTab === 'ship-station') {
+			return <ShipStation />;
 		}
 
 		return (
