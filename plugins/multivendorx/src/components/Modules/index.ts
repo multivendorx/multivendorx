@@ -637,7 +637,7 @@ export default {
 			reqPluging: [
 				{
 					name: 'BuddyPress',
-					slug: 'buddypress/class-buddypress.php',
+					slug: 'buddypress/bp-loader.php',
 					link: 'https://wordpress.org/plugins/buddypress/',
 				},
 			],
