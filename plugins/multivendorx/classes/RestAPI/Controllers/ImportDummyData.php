@@ -201,27 +201,18 @@ class ImportDummyData extends \WP_REST_Controller {
      * @param string $filename Name of the XML file (without .xml extension).
      * @return SimpleXMLElement|WP_Error Parsed XML object on success, or WP_Error on failure.
      */
-    private function load_dummy_xml( string $filename, array $fallbacks = array() ) {
+    private function load_dummy_xml( string $filename ) {
 
         $base_path = trailingslashit( MultiVendorX()->plugin_path ) . 'assets/dummy-data/';
-        $candidates = array_unique( array_merge( array( $filename ), $fallbacks ) );
-        $file_path  = '';
+        $file_path = $base_path . $filename . '.xml';
 
-        foreach ( $candidates as $candidate ) {
-            $candidate_path = $base_path . $candidate . '.xml';
-            if ( file_exists( $candidate_path ) ) {
-                $file_path = $candidate_path;
-                break;
-            }
-        }
-
-        if ( '' === $file_path ) {
+        if ( ! file_exists( $file_path ) ) {
             return new \WP_Error(
                 'file_not_found',
                 sprintf(
                     // translators: %s is a comma-separated list of XML filenames being checked.
                     __( '%s XML file not found.', 'multivendorx' ),
-                    implode( ', ', $candidates )
+                    ucfirst( str_replace( '_', ' ', $filename ) )
                 ),
                 array( 'status' => 404 )
             );
@@ -251,7 +242,7 @@ class ImportDummyData extends \WP_REST_Controller {
      */
     public function import_stores( $request ) {
 
-        $xml = $this->load_dummy_xml( 'stores', array( 'store' ) );
+        $xml = $this->load_dummy_xml( 'store' );
 
         if ( is_wp_error( $xml ) ) {
             return $xml;
