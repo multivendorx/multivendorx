@@ -120,6 +120,10 @@ class ImportDummyData extends \WP_REST_Controller {
     public function import_store_owners() {
         $xml = $this->load_dummy_xml( 'store_owners' );
 
+        if ( is_wp_error( $xml ) ) {
+            return $xml;
+        }
+
         $store_owners = array();
 
         foreach ( $xml->store as $store ) {
@@ -150,7 +154,12 @@ class ImportDummyData extends \WP_REST_Controller {
                 }
             }
 
-            $store_owners[] = (int) $user_id;
+            $store_owners[] = array(
+                'id'       => (int) $user_id,
+                'username' => $username,
+                'password' => (string) $store->password,
+                'email'    => $email,
+            );
 
             // Image handling.
             if ( isset( $store->images->image ) ) {
@@ -192,18 +201,27 @@ class ImportDummyData extends \WP_REST_Controller {
      * @param string $filename Name of the XML file (without .xml extension).
      * @return SimpleXMLElement|WP_Error Parsed XML object on success, or WP_Error on failure.
      */
-    private function load_dummy_xml( string $filename ) {
+    private function load_dummy_xml( string $filename, array $fallbacks = array() ) {
 
         $base_path = trailingslashit( MultiVendorX()->plugin_path ) . 'assets/dummy-data/';
-        $file_path = $base_path . $filename . '.xml';
+        $candidates = array_unique( array_merge( array( $filename ), $fallbacks ) );
+        $file_path  = '';
 
-        if ( ! file_exists( $file_path ) ) {
+        foreach ( $candidates as $candidate ) {
+            $candidate_path = $base_path . $candidate . '.xml';
+            if ( file_exists( $candidate_path ) ) {
+                $file_path = $candidate_path;
+                break;
+            }
+        }
+
+        if ( '' === $file_path ) {
             return new \WP_Error(
                 'file_not_found',
                 sprintf(
-                    // translators: %s is the name of the XML file being checked.
+                    // translators: %s is a comma-separated list of XML filenames being checked.
                     __( '%s XML file not found.', 'multivendorx' ),
-                    ucfirst( str_replace( '_', ' ', $filename ) )
+                    implode( ', ', $candidates )
                 ),
                 array( 'status' => 404 )
             );
@@ -233,7 +251,11 @@ class ImportDummyData extends \WP_REST_Controller {
      */
     public function import_stores( $request ) {
 
-        $xml = $this->load_dummy_xml( 'stores' );
+        $xml = $this->load_dummy_xml( 'stores', array( 'store' ) );
+
+        if ( is_wp_error( $xml ) ) {
+            return $xml;
+        }
 
         $created_store_ids = array();
 
@@ -341,6 +363,10 @@ class ImportDummyData extends \WP_REST_Controller {
 
         foreach ( $product_files as $product_type ) {
             $xml = $this->load_dummy_xml( $product_type );
+
+            if ( is_wp_error( $xml ) ) {
+                continue;
+            }
 
             if ( empty( $xml->product ) ) {
                 continue;
@@ -502,6 +528,10 @@ class ImportDummyData extends \WP_REST_Controller {
 
         $xml = $this->load_dummy_xml( 'commissions' );
 
+        if ( is_wp_error( $xml ) ) {
+            return $xml;
+        }
+
         // Get current commission type setting.
         $commission_type = MultiVendorX()->setting->get_setting( 'commission_type' );
 
@@ -598,6 +628,10 @@ class ImportDummyData extends \WP_REST_Controller {
     public function import_orders( $request ) {
 
         $xml = $this->load_dummy_xml( 'orders' );
+
+        if ( is_wp_error( $xml ) ) {
+            return $xml;
+        }
 
         foreach ( $xml->order as $order_xml ) {
 
@@ -705,6 +739,10 @@ class ImportDummyData extends \WP_REST_Controller {
         }
 
         $xml = $this->load_dummy_xml( 'reviews' );
+
+        if ( is_wp_error( $xml ) ) {
+            return $xml;
+        }
 
         if ( ! $xml ) {
             return array(
