@@ -3,13 +3,13 @@ import { __, sprintf } from '@wordpress/i18n';
 
 export default {
     id: 'display',
-    priority: 20,
-    name: __( 'Shop Central', 'moowoodle' ),
-    desc: __(
+    priority: 2,
+    headerTitle: __( 'Shop Central', 'moowoodle' ),
+    headerDescription: __(
         'Efficient course information handling for customers.',
         'moowoodle'
     ),
-    icon: 'adminlib-cart',
+    headerIcon: 'cart',
     submitUrl: 'settings',
     modal: [
         {

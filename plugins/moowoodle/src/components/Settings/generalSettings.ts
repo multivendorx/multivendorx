@@ -3,13 +3,13 @@ import { __, sprintf } from '@wordpress/i18n';
 
 export default {
     id: 'general',
-    priority: 10,
-    name: __( 'General', 'moowoodle' ),
-    desc: __(
+    priority: 1,
+    headerTitle: __( 'General', 'moowoodle' ),
+    headerDescription: __(
         'Effortlessly configure and verify your WordPress-Moodle connection.',
         'moowoodle'
     ),
-    icon: 'adminlib-setting',
+    headerIcon: 'setting',
     submitUrl: 'settings',
     modal: [
         {

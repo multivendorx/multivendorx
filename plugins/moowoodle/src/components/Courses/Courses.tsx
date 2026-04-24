@@ -1,36 +1,19 @@
 /* global appLocalizer */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import ProPopup from '../Popup/Popup';
-import { Table, getApiLink, TableCell, AdminBreadcrumbs } from 'zyra';
-import Dialog from '@mui/material/Dialog';
 import {
-    ColumnDef,
-    RowSelectionState,
-    PaginationState,
-} from '@tanstack/react-table';
+    getApiLink,
+    Container,
+    Column,
+    TableCard,
+    NavigatorHeader,
+    CategoryCount,
+    QueryProps,
+} from 'zyra';
 import defaultImage from '../../assets/images/moowoodle-product-default.png';
 
-// Define RealtimeFilter interface with explicit types
-interface RealtimeFilter {
-    name: string;
-    render: (
-        updateFilter: ( key: string, value: string ) => void,
-        filterValue: string | undefined
-    ) => React.ReactNode;
-}
-
-type FilterData = {
-    searchField?: string;
-    searchAction?: string;
-    courseField?: string;
-    productField?: string;
-    catagoryField?: string;
-    searchCourseField?: string;
-};
-
-type CourseRow = {
+interface CourseRow {
     id?: number;
     moodle_course_id?: number;
     course_name?: string;
@@ -39,566 +22,392 @@ type CourseRow = {
     category_name?: string;
     category_url?: string;
     date?: string;
-    products?: Record< string, string >;
+    products?: Record<string, string>;
     enroled_user?: number;
     view_users_url?: string;
     productimage?: string;
-};
+    status?: string;
+}
 
-type Category = {
-    [ key: string ]: string;
-};
+interface Category {
+    [key: string]: string;
+}
 
 const Course: React.FC = () => {
-    const [ data, setData ] = useState< CourseRow[] | null >( null );
-    const [ category, setCategory ] = useState< Category >( {} );
-    const [ rowSelection, setRowSelection ] = useState< RowSelectionState >(
-        {}
-    );
-    const [ totalRows, setTotalRows ] = useState< number >( 0 );
-    const [ pagination, setPagination ] = useState< PaginationState >( {
-        pageIndex: 0,
-        pageSize: 10,
-    } );
-    const [ pageCount, setPageCount ] = useState( 0 );
-    const [ error, setError ] = useState< string | null >( null );
-    const bulkSelectRef = useRef< HTMLSelectElement >( null );
-    const [ openDialog, setOpenDialog ] = useState( false );
-    const [ openModal, setOpenModal ] = useState( false );
-    const [ modalDetails, setModalDetails ] = useState< string >( '' );
+    const [rows, setRows] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [totalRows, setTotalRows] = useState<number>(0);
+    const [categoryCounts, setCategoryCounts] = useState<CategoryCount[] | null>(null);
+    const [category, setCategory] = useState<Category>({});
+    const [error, setError] = useState<string | null>(null);
+    const [rowIds, setRowIds] = useState<number[]>([]);
 
     // Fetch categories on mount
-    useEffect( () => {
-        axios( {
+    useEffect(() => {
+        axios({
             method: 'get',
-            url: getApiLink( appLocalizer, 'filters' ),
+            url: getApiLink(appLocalizer, 'filters'),
             headers: { 'X-WP-Nonce': appLocalizer.nonce },
-        } )
-            .then( ( response ) => {
-                setCategory( response.data.category || {} );
-            } )
-            .catch( () => {
-                setError( __( 'Failed to load categories', 'moowoodle' ) );
-            } );
-    }, [] );
-
-    // add this inside your component
-    useEffect( () => {
-        const handleClickOutside = ( e: MouseEvent ) => {
-            // if click is not on dropdown toggle or inside dropdown → close it
-            if (
-                ! ( e.target as HTMLElement ).closest( '.action-dropdown' ) &&
-                ! ( e.target as HTMLElement ).closest(
-                    '.adminlib-more-vertical'
-                )
-            ) {
-                setShowDropdown( false );
-            }
-        };
-
-        document.addEventListener( 'click', handleClickOutside );
-        return () =>
-            document.removeEventListener( 'click', handleClickOutside );
-    }, [] );
+        })
+            .then((response) => {
+                setCategory(response.data.category || {});
+            })
+            .catch(() => {
+                setError(__('Failed to load categories', 'moowoodle'));
+            });
+    }, []);
 
     // Fetch total rows on mount
-    useEffect( () => {
-        axios( {
+    useEffect(() => {
+        axios({
             method: 'GET',
-            url: getApiLink( appLocalizer, 'courses' ),
+            url: getApiLink(appLocalizer, 'courses'),
             headers: { 'X-WP-Nonce': appLocalizer.nonce },
             params: { count: true },
-        } )
-            .then( ( response ) => {
-                setTotalRows( response.data || 0 );
-                setPageCount(
-                    Math.ceil( response.data / pagination.pageSize )
-                );
-            } )
-            .catch( () => {
-                setError( __( 'Failed to load total rows', 'moowoodle' ) );
-            } );
-    }, [] );
+        })
+            .then((response) => {
+                setTotalRows(response.data || 0);
+            })
+            .catch(() => {
+                setError(__('Failed to load total rows', 'moowoodle'));
+            });
+    }, []);
 
-    useEffect( () => {
-        const currentPage = pagination.pageIndex + 1;
-        const rowsPerPage = pagination.pageSize;
-        requestData( rowsPerPage, currentPage );
-        setPageCount( Math.ceil( totalRows / rowsPerPage ) );
-    }, [ pagination ] );
+    // bulk action
+    const handleBulkAction = (action: string, selectedIds: number[]) => {
+        if (!selectedIds.length) {
+            return;
+        }
 
-    // Fetch data from backend.
-    function requestData(
-        rowsPerPage = 10,
-        currentPage = 1,
-        courseField = '',
-        productField = '',
-        catagoryField = '',
-        searchAction = 'course',
-        searchCourseField = ''
-    ) {
-        setData( null );
-        axios( {
+        if (!action) {
+            return;
+        }
+        const selectedCourses = rows
+            .filter(row => selectedIds.includes(row.id))
+            .map(row => ({
+                course_id: row.id,
+                moodle_course_id: row.moodle_course_id,
+            }));
+
+        if (selectedCourses.length === 0) {
+            return;
+        }
+
+        setIsLoading(true);
+        axios({
             method: 'GET',
-            url: getApiLink( appLocalizer, 'courses' ),
+            url: getApiLink(appLocalizer, 'courses'),
             headers: { 'X-WP-Nonce': appLocalizer.nonce },
-            params: {
-                page: currentPage,
-                row: rowsPerPage,
-                course: courseField,
-                product: productField,
-                catagory: catagoryField,
-                searchaction: searchAction,
-                search: searchCourseField,
+            data: {
+                selected_action: action,
+                course_ids: selectedCourses,
             },
-        } )
-            .then( ( response ) => {
-                setData( response.data || [] );
-            } )
-            .catch( () => {
-                setError( __( 'Failed to load courses', 'moowoodle' ) );
-                setData( [] );
-            } );
-    }
-
-    // Handle pagination and filter changes
-    const requestApiForData = (
-        rowsPerPage: number,
-        currentPage: number,
-        filterData: FilterData
-    ) => {
-        requestData(
-            rowsPerPage,
-            currentPage,
-            filterData.courseField,
-            filterData.productField,
-            filterData.catagoryField,
-            filterData.searchAction,
-            filterData.searchCourseField
-        );
+        })
+            .then(() => {
+                doRefreshTableData({});
+            })
+            .catch(() => {
+                setError(__('Failed to perform bulk action', 'moowoodle'));
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     };
 
     // Handle single row action
-    const handleSingleAction = (
-        actionName: string,
-        courseId: number,
-        moodleCourseId: number
-    ) => {
-        if ( appLocalizer.khali_dabba ) {
-            setData( null );
-            axios( {
-                method: 'post',
-                url: getApiLink( appLocalizer, 'courses' ),
-                headers: { 'X-WP-Nonce': appLocalizer.nonce },
-                data: {
-                    selected_action: actionName,
-                    course_ids: [
-                        {
-                            course_id: courseId,
-                            moodle_course_id: moodleCourseId,
-                        },
-                    ],
-                },
-            } )
-                .then( () => {
-                    requestData();
-                } )
-                .catch( () => {
-                    setError( __( 'Failed to perform action', 'moowoodle' ) );
-                    setData( [] );
-                } );
-        } else {
-            setOpenDialog( true );
+    const handleSingleAction = (actionName: string, courseId: number, moodleCourseId: number) => {
+        if (!appLocalizer.khali_dabba) {
+            return;
         }
+
+        setIsLoading(true);
+        axios({
+            method: 'post',
+            url: getApiLink(appLocalizer, 'courses'),
+            headers: { 'X-WP-Nonce': appLocalizer.nonce },
+            data: {
+                selected_action: actionName,
+                course_ids: [
+                    {
+                        course_id: courseId,
+                        moodle_course_id: moodleCourseId,
+                    },
+                ],
+            },
+        })
+            .then(() => {
+                doRefreshTableData({});
+            })
+            .catch(() => {
+                setError(__('Failed to perform action', 'moowoodle'));
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     };
 
-    // Handle bulk action
-    const handleBulkAction = () => {
-        if ( appLocalizer.khali_dabba ) {
-            if ( ! Object.keys( rowSelection ).length ) {
-                setModalDetails( 'Select rows.' );
-                setOpenModal( true );
-                return;
-            }
-            if ( ! bulkSelectRef.current?.value ) {
-                setModalDetails( 'Please select a action.' );
-                setOpenModal( true );
-                return;
-            }
-            setData( null );
-            axios( {
-                method: 'post',
-                url: getApiLink( appLocalizer, 'courses' ),
-                headers: { 'X-WP-Nonce': appLocalizer.nonce },
-                data: {
-                    selected_action: bulkSelectRef.current?.value,
-                    course_ids: Object.keys( rowSelection ).map( ( index ) => {
-                        const row = data?.[ parseInt( index ) ];
-                        return {
-                            course_id: row?.id,
-                            moodle_course_id: row?.moodle_course_id,
-                        };
-                    } ),
-                },
-            } )
-                .then( () => {
-                    setModalDetails( '' );
-                    setOpenModal( false );
-                    requestData();
-                    setRowSelection( {} );
-                } )
-                .catch( () => {
-                    setError(
-                        __( 'Failed to perform bulk action', 'moowoodle' )
-                    );
-                    setData( [] );
-                } );
-        } else {
-            setOpenDialog( true );
-        }
-    };
-
-    // Column definitions
-    const columns: ColumnDef< CourseRow >[] = [
-        {
-            id: 'select',
-            header: ( { table } ) => (
-                <input
-                    type="checkbox"
-                    checked={ table.getIsAllRowsSelected() }
-                    onChange={ table.getToggleAllRowsSelectedHandler() }
-                />
-            ),
-            cell: ( { row } ) => (
-                <input
-                    type="checkbox"
-                    checked={ row.getIsSelected() }
-                    onChange={ row.getToggleSelectedHandler() }
-                />
-            ),
-        },
-        {
-            header: __( 'Course', 'moowoodle' ),
-            cell: ( { row } ) => (
-                <TableCell title={ row.original.course_name || '' }>
+    // Define table headers
+    const headers = {
+        course_name: {
+            label: __('Course', 'moowoodle'),
+            type: 'custom',
+            render: (row: CourseRow) => (
+                <div className="course-cell">
                     <img
-                        src={ row.original.productimage || defaultImage }
-                        alt={ row.original.course_name || 'Course Image' }
+                        src={row.productimage || defaultImage}
+                        alt={row.course_name || 'Course Image'}
+                        style={{ width: '40px', height: '40px', objectFit: 'cover', marginRight: '10px' }}
                     />
                     <div className="action-section">
-                        <div>{ row.original.course_name }</div>
+                        <div>{row.course_name}</div>
                         <div className="action-btn">
                             <a
                                 target="_blank"
                                 rel="noreferrer"
-                                href={ row.original.moodle_url }
+                                href={row.moodle_url}
                                 className=""
                             >
-                                Edit course
+                                {__('Edit course', 'moowoodle')}
                             </a>
                         </div>
                     </div>
-                </TableCell>
+                </div>
             ),
         },
-        {
-            header: __( 'Short name', 'moowoodle' ),
-            cell: ( { row } ) => (
-                <TableCell title={ row.original.course_short_name || '' }>
-                    { row.original.course_short_name || '-' }
-                </TableCell>
+        course_short_name: {
+            label: __('Short name', 'moowoodle'),
+        },
+        category_name: {
+            label: __('Category', 'moowoodle'),
+        },
+        date: {
+            label: __('Course duration', 'moowoodle'),
+        },
+        products: {
+            label: __('Product', 'moowoodle'),
+            type: 'custom',
+            render: (row: CourseRow) => (
+                <>
+                    {row.products && Object.keys(row.products).length
+                        ? Object.entries(row.products).map(([name, url], index) => (
+                            <div key={index} className="action-section">
+                                <div>{name}</div>
+                                <div className="action-btn">
+                                    <a
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        href={url}
+                                        className=""
+                                    >
+                                        {__('Edit product', 'moowoodle')}
+                                    </a>
+                                </div>
+                            </div>
+                        ))
+                        : '-'}
+                </>
             ),
         },
-        {
-            header: __( 'Category', 'moowoodle' ),
-            cell: ( { row } ) => (
-                <TableCell title={ __( 'Category Name' ) }>
-                    { row.original.category_name || '-' }
-                </TableCell>
-            ),
-        },
-        {
-            header: __( 'Course duration', 'moowoodle' ),
-            cell: ( { row } ) => (
-                <TableCell title={ __( 'Date' ) }>
-                    { row.original.date || '-' }
-                </TableCell>
-            ),
-        },
-        {
-            header: __( 'Product', 'moowoodle' ),
-            cell: ( { row } ) => (
-                <TableCell title={ __( 'Product Name' ) }>
-                    { row.original.products &&
-                    Object.keys( row.original.products ).length
-                        ? Object.entries( row.original.products ).map(
-                              ( [ name, url ], index ) => (
-                                  <div key={ index } className="action-section">
-                                      <div>{ name }</div>
-                                      <div className="action-btn">
-                                          <a
-                                              target="_blank"
-                                              rel="noreferrer"
-                                              href={ url }
-                                              className=""
-                                          >
-                                              { __(
-                                                  'Edit product',
-                                                  'moowoodle'
-                                              ) }
-                                          </a>
-                                      </div>
-                                  </div>
-                              )
-                          )
-                        : '-' }
-                </TableCell>
-            ),
-        },
-        {
-            header: __( 'Enrolled users', 'moowoodle' ),
-            cell: ( { row } ) => (
-                <TableCell title={ __( 'Enrolled users' ) }>
-                    <div className="action-section">
-                        <div>{ row.original.enroled_user || 0 }</div>
-                        <div className="action-btn">
-                            <a
-                                target="_blank"
-                                rel="noreferrer"
-                                href={ row.original.view_users_url }
-                                className=""
-                            >
-                                { __( 'View users', 'moowoodle' ) }
-                            </a>
-                        </div>
+        enroled_user: {
+            label: __('Enrolled users', 'moowoodle'),
+            type: 'custom',
+            render: (row: CourseRow) => (
+                <div className="action-section">
+                    <div>{row.enroled_user || 0}</div>
+                    <div className="action-btn">
+                        <a
+                            target="_blank"
+                            rel="noreferrer"
+                            href={row.view_users_url}
+                            className=""
+                        >
+                            {__('View users', 'moowoodle')}
+                        </a>
                     </div>
-                </TableCell>
-            ),
-        },
-        {
-            id: 'actions',
-            header: () => (
-                <div className="table-action-column">
-                    { __( 'Action', 'moowoodle' ) }
-                    { ! appLocalizer.khali_dabba && (
-                        <span className="admin-pro-tag">
-                            <i className="adminlib-pro-tag"></i> Pro
-                        </span>
-                    ) }
                 </div>
             ),
-            cell: ( { row } ) => (
-                <TableCell
-                    type="action-dropdown"
-                    rowData={ row.original }
-                    header={ {
-                        actions: [
-                            {
-                                label: __( 'Sync Course Data', 'moowoodle' ),
-                                icon: 'adminlib-refresh',
-                                onClick: ( rowData ) => {
-                                    handleSingleAction(
-                                        'sync_courses',
-                                        rowData.id!,
-                                        rowData.moodle_course_id!
-                                    );
-                                },
-                                hover: true,
-                            },
-                            {
-                                label:
-                                    row.original.products &&
-                                    Object.keys( row.original.products ).length
-                                        ? __(
-                                              'Sync Course Data & Update Product',
-                                              'moowoodle'
-                                          )
-                                        : __( 'Create Product', 'moowoodle' ),
-                                icon:
-                                    row.original.products &&
-                                    Object.keys( row.original.products ).length
-                                        ? 'adminlib-update-product'
-                                        : 'adminlib-add-product',
-                                onClick: ( rowData ) => {
-                                    handleSingleAction(
-                                        row.original.products &&
-                                            Object.keys( row.original.products )
-                                                .length
-                                            ? 'update_product'
-                                            : 'create_product',
-                                        rowData.id!,
-                                        rowData.moodle_course_id!
-                                    );
-                                },
-                                hover: true,
-                            },
-                        ],
-                    } }
-                />
-            ),
+        },
+        action: {
+            type: 'action',
+            label: __('Action', 'moowoodle'),
+            actions: [
+                {
+                    label: __('Sync Course Data', 'moowoodle'),
+                    icon: 'adminlib-refresh',
+                    onClick: (row: CourseRow) => {
+                        handleSingleAction('sync_courses', row.id!, row.moodle_course_id!);
+                    },
+                },
+                {
+                    // Use a function that returns the label based on the row
+                    label: (row: CourseRow) => {
+                        return row?.products && Object.keys(row.products).length
+                            ? __('Sync Course Data & Update Product', 'moowoodle')
+                            : __('Create Product', 'moowoodle');
+                    },
+                    icon: (row: CourseRow) => {
+                        return row?.products && Object.keys(row.products).length
+                            ? 'adminlib-update-product'
+                            : 'adminlib-add-product';
+                    },
+                    onClick: (row: CourseRow) => {
+                        handleSingleAction(
+                            row.products && Object.keys(row.products).length
+                                ? 'update_product'
+                                : 'create_product',
+                            row.id!,
+                            row.moodle_course_id!
+                        );
+                    },
+                },
+            ],
+        },
+    };
+
+    // Define bulk actions
+    const bulkActions = [
+        { label: __('Sync course', 'moowoodle'), value: 'sync_courses' },
+        { label: __('Create product', 'moowoodle'), value: 'create_product' },
+        { label: __('Update product', 'moowoodle'), value: 'update_product' },
+    ];
+
+    // Define filters
+    const filters = [
+        {
+            key: 'catagory',
+            label: __('Category', 'moowoodle'),
+            type: 'select',
+            options: [
+                { value: '', label: __('All Categories', 'moowoodle') },
+                ...Object.entries(category).map(([id, name]) => ({
+                    value: id,
+                    label: name,
+                })),
+            ],
         },
     ];
 
-    const BulkAction: React.FC = () => (
-        <div className=" bulk-action">
-            <select
-                name="action"
-                className="basic-select"
-                ref={ bulkSelectRef }
-            >
-                <option value="">{ __( 'Bulk actions', 'moowoodle' ) }</option>
-                <option value="sync_courses">
-                    { __( 'Sync course', 'moowoodle' ) }
-                </option>
-                <option value="create_product">
-                    { __( 'Create product', 'moowoodle' ) }
-                </option>
-                <option value="update_product">
-                    { __( 'Update product', 'moowoodle' ) }
-                </option>
-            </select>
-            { ! appLocalizer.khali_dabba && (
-                <span className="admin-pro-tag">pro</span>
-            ) }
-            <button
-                name="bulk-action-apply"
-                className="admin-btn btn-purple"
-                onClick={ handleBulkAction }
-            >
-                { __( 'Apply', 'moowoodle' ) }
-            </button>
-        </div>
-    );
+    // Search configuration
+    const searchConfig = {
+        fields: [
+            {
+                key: 'searchAction',
+                type: 'select',
+                options: [
+                    { value: 'course', label: __('Course', 'moowoodle') },
+                    { value: 'shortname', label: __('Short name', 'moowoodle') },
+                ],
+                placeholder: __('Search by...', 'moowoodle'),
+            },
+            {
+                key: 'searchCourseField',
+                type: 'text',
+                placeholder: __('Search…', 'moowoodle'),
+            },
+        ],
+    };
 
-    const realtimeFilter: RealtimeFilter[] = [
-        {
-            name: 'catagoryField',
-            render: ( updateFilter, filterValue ) => (
-                <div className="catagory-field">
-                    <select
-                        className="basic-select"
-                        value={ filterValue || '' }
-                        onChange={ ( e ) =>
-                            updateFilter( 'catagoryField', e.target.value )
-                        }
-                    >
-                        <option value="">
-                            { __( 'Category', 'moowoodle' ) }
-                        </option>
-                        { Object.entries( category ).map( ( [ id, name ] ) => (
-                            <option key={ id } value={ id }>
-                                { name }
-                            </option>
-                        ) ) }
-                    </select>
-                </div>
-            ),
-        },
-    ];
+    const doRefreshTableData = (query: QueryProps) => {
+        setIsLoading(true);
 
-    const searchFilter: RealtimeFilter[] = [
-        {
-            name: 'searchAction',
-            render: ( updateFilter, filterValue ) => (
-                <div className="search-action">
-                    <select
-                        className="basic-select"
-                        value={ filterValue || '' }
-                        onChange={ ( e ) => {
-                            updateFilter( 'searchAction', e.target.value );
-                        } }
-                    >
-                        <option value="course">
-                            { __( 'Course', 'moowoodle' ) }
-                        </option>
-                        <option value="shortname">
-                            { __( 'Short name', 'moowoodle' ) }
-                        </option>
-                    </select>
-                </div>
-            ),
-        },
-        {
-            name: 'searchCourseField',
-            render: ( updateFilter, filterValue ) => (
-                <div className="search-section">
-                    <input
-                        type="text"
-                        className="basic-input"
-                        value={ filterValue || '' }
-                        placeholder={ __( 'Search…', 'moowoodle' ) }
-                        onChange={ ( e ) => {
-                            updateFilter( 'searchCourseField', e.target.value );
-                        } }
-                    />
-                    <i className="adminlib-search"></i>
-                </div>
-            ),
-        },
-    ];
+        // Determine which search field to use
+        let searchField = '';
+        let searchValue = '';
+
+        if (query.searchValue) {
+            // If searchValue is an object with multiple fields
+            if (typeof query.searchValue === 'object') {
+                searchField = query.searchValue.searchAction || 'course';
+                searchValue = query.searchValue.searchCourseField || '';
+            } else {
+                searchField = 'course';
+                searchValue = query.searchValue;
+            }
+        }
+
+        axios({
+            method: 'GET',
+            url: getApiLink(appLocalizer, 'courses'),
+            headers: {
+                'X-WP-Nonce': appLocalizer.nonce,
+                withCredentials: true,
+            },
+            params: {
+                page: query.paged || 1,
+                row: query.per_page || 10,
+                catagory: query.filter?.catagory || '',
+                searchaction: searchField,
+                search: searchValue,
+            },
+        })
+            .then((response) => {
+                const items = response.data || [];
+                const ids = items
+                    .filter((course: CourseRow) => course?.id != null)
+                    .map((course: CourseRow) => course.id);
+
+                setRowIds(ids);
+                setRows(items);
+                setTotalRows(Number(response.headers['x-wp-total']) || 0);
+
+                // Set category counts if available from headers
+                setCategoryCounts([
+                    {
+                        value: 'all',
+                        label: __('All', 'moowoodle'),
+                        count: Number(response.headers['x-wp-total']) || 0,
+                    },
+                ]);
+
+                setIsLoading(false);
+            })
+            .catch(() => {
+                console.error('Failed to fetch courses');
+                setError(__('Failed to load courses', 'moowoodle'));
+                setRows([]);
+                setTotalRows(0);
+                setIsLoading(false);
+            });
+    };
 
     return (
         <>
-            { openDialog && (
-                <Dialog
-                    className="admin-module-popup"
-                    open={ openDialog }
-                    onClose={ () => setOpenDialog( false ) }
-                    aria-labelledby="form-dialog-title"
-                >
-                    <span
-                        className="admin-font adminlib-cross"
-                        onClick={ () => setOpenDialog( false ) }
-                    ></span>
-                    <ProPopup />
-                </Dialog>
-            ) }
-            { openModal && modalDetails && (
-                <div className="notice notice-error error-modal">
-                    <div className="modal-wrapper">
-                        <p>{ modalDetails }</p>
-                        <i
-                            onClick={ () => setOpenModal( false ) }
-                            className="admin-font adminLib-cross"
-                        ></i>
-                    </div>
-                </div>
-            ) }
-            <AdminBreadcrumbs
-                activeTabIcon="adminlib-subscription-courses"
-                description={ __(
+            <NavigatorHeader
+                headerIcon="subscription-courses"
+                headerDescription={__(
                     'Comprehensive course data is displayed here, including linked products, enrollment numbers, and related details.',
                     'moowoodle'
-                ) }
-                tabTitle={ __( 'Courses', 'moowoodle' ) }
+                )}
+                headerTitle={__('Courses', 'moowoodle')}
             />
-            { error && (
+
+            {error && (
                 <div className="admin-notice-display-title error">
                     <i className="admin-font adminlib-icon-no"></i>
-                    { error }
+                    {error}
                 </div>
-            ) }
-            <div className="admin-table-wrapper">
-                <Table
-                    data={ data }
-                    columns={
-                        columns as ColumnDef< Record< string, any >, any >[]
-                    }
-                    rowSelection={ rowSelection }
-                    onRowSelectionChange={ setRowSelection }
-                    realtimeFilter={ realtimeFilter }
-                    searchFilter={ searchFilter }
-                    defaultRowsPerPage={ 10 }
-                    pageCount={ pageCount }
-                    pagination={ pagination }
-                    onPaginationChange={ setPagination }
-                    handlePagination={ requestApiForData }
-                    perPageOption={ [ 10, 25, 50 ] }
-                    typeCounts={ [] }
-                    bulkActionComp={ () => <BulkAction /> }
-                    totalCounts={ totalRows }
-                />
-            </div>
+            )}
+
+            <Container general>
+                <Column>
+                    <TableCard
+                        headers={headers}
+                        rows={rows}
+                        totalRows={totalRows}
+                        isLoading={isLoading}
+                        onQueryUpdate={doRefreshTableData}
+                        ids={rowIds}
+                        categoryCounts={categoryCounts}
+                        search={searchConfig}
+                        filters={filters}
+                        bulkActions={bulkActions}
+                        onBulkActionApply={(action: string, selectedIds: number[]) => {
+                            handleBulkAction(action, selectedIds);
+                        }}
+                        format={appLocalizer.date_format}
+                    />
+                </Column>
+            </Container>
         </>
     );
 };

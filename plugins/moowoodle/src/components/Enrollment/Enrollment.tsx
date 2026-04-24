@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ProPopup from '../Popup/Popup';
 import './Enrollment.scss';
 import { Dialog } from '@mui/material';
-import { AdminBreadcrumbs } from 'zyra';
+import {  NavigatorHeader } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const Enrollment: React.FC = () => {
@@ -11,7 +11,7 @@ const Enrollment: React.FC = () => {
     return (
         <>
             <div id="enrollment-list-table">
-                <Dialog
+                {/* <Dialog
                     className="admin-module-popup"
                     open={ openDialog }
                     onClose={ () => setOpenDialog( false ) }
@@ -22,11 +22,11 @@ const Enrollment: React.FC = () => {
                         onClick={ () => setOpenDialog( false ) }
                     ></span>
                     <ProPopup />
-                </Dialog>
-                <AdminBreadcrumbs
-                    activeTabIcon="adminlib-form"
-                    tabTitle={ __( 'All Enrollments', 'moowoodle' ) }
-                    description={ __(
+                </Dialog> */}
+                <NavigatorHeader
+                    headerIcon="form"
+                    headerTitle={ __( 'All Enrollments', 'moowoodle' ) }
+                    headerDescription={ __(
                         'Enrollment records are presented, showing students, their courses, enrollment dates, and current status.',
                         'moowoodle'
                     ) }

@@ -6,12 +6,12 @@ import moodleLogo from '@/assets/images/moodle-to-wordpress.png';
 export default {
     id: 'synchronize-user',
     priority: 20,
-    name: __( 'Users Synchronization', 'moowoodle' ),
-    desc: __(
+    headerTitle: __( 'Users Synchronization', 'moowoodle' ),
+    headerDescription: __(
         'Synchronization on demand with automatic, real-time updates.',
         'moowoodle'
     ),
-    icon: 'adminlib-supervised-user-circle',
+    headerIcon: 'supervised-user-circle',
     submitUrl: 'settings',
     proDependent: true,
     modal: [

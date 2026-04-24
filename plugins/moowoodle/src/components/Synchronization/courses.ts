@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'synchronize-course',
     priority: 10,
-    name: __( 'Courses Synchronization', 'moowoodle' ),
-    desc: __(
+    headerTitle: __( 'Courses Synchronization', 'moowoodle' ),
+    headerDescription: __(
         'Fetch Moodle courses & generate products on demand.',
         'moowoodle'
     ),
-    icon: 'adminlib-book',
+    headerIcon: 'bulk-course-sync',
     submitUrl: 'settings',
     modal: [
         {

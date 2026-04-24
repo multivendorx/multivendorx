@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
-import ProPopup from '../Popup/Popup';
+// import ProPopup from '../Popup/Popup';
 import { Dialog } from '@mui/material';
 import './cohorts.scss';
-import { AdminBreadcrumbs } from 'zyra';
 import { __ } from '@wordpress/i18n';
+import { NavigatorHeader } from 'zyra';
 
 const Cohort: React.FC = () => {
-    const [ openDialog, setOpenDialog ] = useState( false );
+    const [openDialog, setOpenDialog] = useState(false);
 
     return (
         <>
-            <div id="cohort-list-table">
-                <Dialog
+            {/* <Dialog
                     className="admin-module-popup"
                     open={ openDialog }
                     onClose={ () => setOpenDialog( false ) }
@@ -22,22 +21,21 @@ const Cohort: React.FC = () => {
                         onClick={ () => setOpenDialog( false ) }
                     ></span>
                     <ProPopup />
-                </Dialog>
-                <AdminBreadcrumbs
-                    activeTabIcon="adminlib-cohort"
-                    tabTitle={ __( 'Cohorts', 'moowoodle' ) }
-                    description={ __(
-                        'Cohort information is presented with associated products and student enrollments to support administrative actions.',
-                        'moowoodle'
-                    ) }
-                />
-                <div
-                    className="cohort-img image-wrapper"
-                    onClick={ () => {
-                        setOpenDialog( true );
-                    } }
-                ></div>
-            </div>
+                </Dialog> */}
+            <NavigatorHeader
+                headerIcon="cohort"
+                headerDescription={__(
+                    'Cohort information is presented with associated products and student enrollments to support administrative actions.',
+                    'moowoodle'
+                )}
+                headerTitle={__('Cohorts', 'moowoodle')}
+            />
+            <div
+                className="cohort-img image-wrapper"
+                onClick={() => {
+                    setOpenDialog(true);
+                }}
+            ></div>
         </>
     );
 };
