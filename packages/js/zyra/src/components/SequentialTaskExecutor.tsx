@@ -58,6 +58,7 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         }[]
     >([]);
     const [processStatus, setProcessStatus] = useState('');
+    const [dummyOwners, setDummyOwners] = useState<any[]>([]);
 
     const processStarted = useRef(false);
     const taskIndex = useRef(0);
@@ -106,6 +107,9 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
             // ⭐ ADDED: Store successful task data into context
             if (Array.isArray(response?.data) && response.data.length > 0) {
                 lastResult.current = response.data;
+            }
+            if (currentTask.action === 'import_store_owners') {
+                setDummyOwners(response.data as any[]);
             }
 
             onTaskComplete?.(currentTask, response);
@@ -260,6 +264,20 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
                             : successMessage
                     }
                 />
+            )}
+            {dummyOwners.length > 0 && processStatus === 'completed' && (
+                <div className="dummy-owners">
+                    <h3>Dummy Store Owners</h3>
+                    <ul>
+                        {dummyOwners.map((owner, index) => (
+                            <li key={index}>
+                                <strong>{owner.username}</strong> |
+                                Email: {owner.email} |
+                                Password: {owner.password}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             )}
         </>
     );
