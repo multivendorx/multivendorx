@@ -10,6 +10,11 @@ export default {
 			label: 'Marketplace Types',
 		},
 		{
+			id: 'printful',
+			name: __('Printful', 'multivendorx'),
+			proModule: true,
+		},
+		{
 			id: 'booking',
 			name: __('Booking', 'multivendorx'),
 			desc: 'Allow customers to reserve appointments, equipment, or services.',
