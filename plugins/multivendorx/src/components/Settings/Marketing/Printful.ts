@@ -19,7 +19,7 @@ export default {
         },
         {
             key: 'secret-key',
-            type: 'text',
+            type: 'password',
             label: __('Secret Key','multivendorx'),
         }
     ],
