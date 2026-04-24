@@ -6,7 +6,7 @@ export default {
     headerTitle: __('Printful', 'multivendorx'),
     settingTitle: 'Printful settings',
     headerDescription: __(
-        'Set purchase limits for individual products to prevent bulk buying or ensure minimum order quantities.',
+        'Configure your Printful integration by entering your Client ID and Secret Key to connect your store.',
         'multivendorx'
     ),
     headerIcon: 'printful',
