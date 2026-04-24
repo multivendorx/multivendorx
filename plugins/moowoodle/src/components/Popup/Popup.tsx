@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import React, { useState } from 'react';
 import { ButtonInputUI } from 'zyra';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import '../Popup/Popup.scss';
 
 interface PopupProps {
@@ -18,12 +18,6 @@ interface PopupProps {
 	plugin?: string;
 }
 
-const formatModuleName = (name: string): string => {
-	return name
-		.split('-')
-		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-		.join(' ');
-};
 
 const proPopupContent = {
 	messages: [

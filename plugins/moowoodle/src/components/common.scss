@@ -1,0 +1,14 @@
+.image-wrapper {
+    background-repeat: no-repeat;
+    background-position: top left;
+    background-size: contain;
+    height: 100vh;
+
+    &.cohort-img {
+        background-image: url("../assets/images/cohort.png");
+    }
+
+    &.enrollment-img {
+        background-image: url("../assets/images/enrollment.png");
+    }
+}

@@ -1,43 +1,39 @@
 import React, { useState } from 'react';
-import ProPopup from '../Popup/Popup';
-import './Enrollment.scss';
-import { Dialog } from '@mui/material';
-import {  NavigatorHeader } from 'zyra';
+import { NavigatorHeader, PopupUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
+import ShowProPopup from '../Popup/Popup';
+import '../common.scss';
 
 const Enrollment: React.FC = () => {
-    const [ openDialog, setOpenDialog ] = useState( false );
+    const [openPopup, setopenPopup] = useState(false);
 
     return (
         <>
-            <div id="enrollment-list-table">
-                {/* <Dialog
-                    className="admin-module-popup"
-                    open={ openDialog }
-                    onClose={ () => setOpenDialog( false ) }
-                    aria-labelledby="form-dialog-title"
+            {openPopup && (
+                <PopupUI
+                    position="lightbox"
+                    open={openPopup}
+                    onClose={() => setopenPopup(false)}
+                    width={31.25}
+                    height="auto"
                 >
-                    <span
-                        className="admin-font adminlib-cross"
-                        onClick={ () => setOpenDialog( false ) }
-                    ></span>
-                    <ProPopup />
-                </Dialog> */}
-                <NavigatorHeader
-                    headerIcon="form"
-                    headerTitle={ __( 'All Enrollments', 'moowoodle' ) }
-                    headerDescription={ __(
-                        'Enrollment records are presented, showing students, their courses, enrollment dates, and current status.',
-                        'moowoodle'
-                    ) }
-                />
-                <div
-                    className="enrollment-img image-wrapper"
-                    onClick={ () => {
-                        setOpenDialog( true );
-                    } }
-                ></div>
-            </div>
+                    <ShowProPopup />
+                </PopupUI>
+            )}
+            <NavigatorHeader
+                headerIcon="form"
+                headerTitle={__('All Enrollments', 'moowoodle')}
+                headerDescription={__(
+                    'Enrollment records are presented, showing students, their courses, enrollment dates, and current status.',
+                    'moowoodle'
+                )}
+            />
+            <div
+                className="enrollment-img image-wrapper"
+                onClick={() => {
+                    setopenPopup(true);
+                }}
+            ></div>
         </>
     );
 };

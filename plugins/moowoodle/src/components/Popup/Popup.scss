@@ -1,38 +1,5 @@
 @use '../config.scss' as *;
 
-// module popup
-.popup-wrapper {
-    .popup-header {
-        height: 12rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: $theme-color;
-
-        i {
-            color: #fff;
-            font-size: 6rem;
-        }
-    }
-
-    .popup-body {
-        padding: 2rem;
-    }
-
-    .module-name {
-        margin: 0;
-        font-size: 1.75rem;
-        text-align: center;
-    }
-
-    .module-desc {
-        text-align: center;
-        font-size: 1.063rem;
-        padding: 1rem 0;
-    }
-}
-
-
 // pro popup
 .popup-content:has(.top-section) {
     overflow: hidden !important; // for overwrite zyra style
@@ -145,24 +112,4 @@
 .popup-content:has(.top-section) {
     width: 40rem !important;
     height: 75% !important;
-}
-
-// requied plugin popup
-.required-popup {
-    padding: 1.5rem 1.5rem 5.5rem;
-
-    .item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.75rem;
-        background: #edececa3;
-        border-radius: $border-radius-small;
-        margin-top: 0.625rem;
-
-        .plugin-name{
-            font-size: 1.063rem;
-            font-weight: 500;
-        }
-    }
 }

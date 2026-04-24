@@ -1,40 +1,25 @@
 import React, { useState } from 'react';
-// import ProPopup from '../Popup/Popup';
-import { Dialog } from '@mui/material';
-import './cohorts.scss';
+import '../common.scss';
 import { __ } from '@wordpress/i18n';
 import { NavigatorHeader, PopupUI } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 
 const Cohort: React.FC = () => {
-    const [openDialog, setOpenDialog] = useState(false);
+    const [openPopup, setopenPopup] = useState(false);
 
     return (
         <>
-            {/* <Dialog
-                    className="admin-module-popup"
-                    open={ openDialog }
-                    onClose={ () => setOpenDialog( false ) }
-                    aria-labelledby="form-dialog-title"
-                >
-                    <span
-                        className="admin-font adminlib-cross"
-                        onClick={ () => setOpenDialog( false ) }
-                    ></span>
-                    <ProPopup />
-                </Dialog> */}
-
-            {openDialog && (
-				<PopupUI
+            {openPopup && (
+                <PopupUI
                     position="lightbox"
-                    open={openDialog}
-                    onClose={() => setOpenDialog(false)}
+                    open={openPopup}
+                    onClose={() => setopenPopup(false)}
                     width={31.25}
                     height="auto"
                 >
                     <ShowProPopup />
                 </PopupUI>
-			)}
+            )}
             <NavigatorHeader
                 headerIcon="cohort"
                 headerDescription={__(
@@ -46,7 +31,7 @@ const Cohort: React.FC = () => {
             <div
                 className="cohort-img image-wrapper"
                 onClick={() => {
-                    setOpenDialog(true);
+                    setopenPopup(true);
                 }}
             ></div>
         </>
