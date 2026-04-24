@@ -144,7 +144,7 @@ const Settings: React.FC<SettingsProps> = () => {
                 currentSetting={location.get('subtab') as string}
                 getForm={GetForm}
                 prepareUrl={(subTab: string) =>
-                    `?page=multivendorx#&tab=settings&subtab=${subTab}`
+                    `?page=moowoodle#&tab=settings&subtab=${subTab}`
                 }
                 appLocalizer={appLocalizer}
                 Link={Link}

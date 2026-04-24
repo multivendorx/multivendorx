@@ -355,6 +355,7 @@ import ChoiceToggle from './ChoiceToggle';
 import RandomInputKeyGenerator from './RandomInputKeyGenerator';
 import CopyToClipboard from './UI/CopyToClipboard';
 import EmailsInput from './EmailsInput';
+import SequentialTaskExecutor from './SequentialTaskExecutor';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
     // BasicInput
@@ -422,6 +423,8 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
     divider: Section,
 
     'color-setting': ColorSettingInput,
+
+    'sequential-task-executor': SequentialTaskExecutor,
 
     'endpoint-editor': EndpointEditor,
 

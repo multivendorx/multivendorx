@@ -163,7 +163,7 @@ const Synchronization: React.FC<SettingsProps> = () => {
                     currentSetting={location.get('subtab') as string}
                     getForm={GetForm}
                     prepareUrl={(subTab: string) =>
-                        `?page=multivendorx#&tab=synchronization&subtab=${subTab}`
+                        `?page=moowoodle#&tab=synchronization&subtab=${subTab}`
                     }
                     appLocalizer={appLocalizer}
                     Link={Link}

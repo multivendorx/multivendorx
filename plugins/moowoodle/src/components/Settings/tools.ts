@@ -31,7 +31,7 @@ export default {
 			key: 'section',
 			type: 'section',
 			title: __(
-				'Lorem Ipsum is simply dummy text of th',
+				'Lorem Ipsum is simply dummy text of',
 				'moowoodle'
 			),
 		},

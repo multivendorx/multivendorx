@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { Dialog } from '@mui/material';
 import './cohorts.scss';
 import { __ } from '@wordpress/i18n';
-import { NavigatorHeader } from 'zyra';
+import { NavigatorHeader, PopupUI } from 'zyra';
+import ShowProPopup from '../Popup/Popup';
 
 const Cohort: React.FC = () => {
     const [openDialog, setOpenDialog] = useState(false);
@@ -22,6 +23,18 @@ const Cohort: React.FC = () => {
                     ></span>
                     <ProPopup />
                 </Dialog> */}
+
+            {openDialog && (
+				<PopupUI
+                    position="lightbox"
+                    open={openDialog}
+                    onClose={() => setOpenDialog(false)}
+                    width={31.25}
+                    height="auto"
+                >
+                    <ShowProPopup />
+                </PopupUI>
+			)}
             <NavigatorHeader
                 headerIcon="cohort"
                 headerDescription={__(
