@@ -36,7 +36,7 @@ export default {
                 "'<b>My Course</b>' menu will appear beneath the selected menu on the WooCommerce 'My Account' page of customer dashboard.",
                 'moowoodle'
             ),
-            size: '25rem',
+            size: 25,
             label: __( "Endpoint menu position - 'My Course'", 'moowoodle' ),
             options: Object.entries( appLocalizer.accountmenu ).map(
                 ( [ key, label ], index ) => {

@@ -42,7 +42,7 @@ export default {
                 'When WordPress sends a request to the Moodle server for data, communication delays might exceed the default server connection timeout. You can customize the timeout parameters by adjusting them here. <br>Default: 5 seconds.',
                 'moowoodle'
             ),
-            size: '8rem',
+            size: 8,
             postInsideText: __( 'sec', 'moowoodle' ),
             label: __( 'Connection timeout', 'moowoodle' ),
             parameter: __( 'Seconds', 'moowoodle' ),
@@ -54,7 +54,7 @@ export default {
                 'Select the interval for the user synchronization process. Based on this schedule, the cron job will run to sync users between WordPress and Moodle.',
                 'moowoodle'
             ),
-            size: '8rem',
+            size: 8,
             postInsideText: __( 'min', 'moowoodle' ),
             parameter: __( 'Minutes', 'moowoodle' ),
             label: __( 'Automatic synchronization frequency', 'moowoodle' ),
