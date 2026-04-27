@@ -9,8 +9,6 @@ import {
 } from '@wordpress/block-editor';
 import { PanelBody, ToggleControl } from '@wordpress/components';
 import FollowStore from './FollowStore';
-import LiveChat from './LiveChat';
-import StoreSupport from './StoreSupport';
 import { render } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -287,32 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				render(
 					<BrowserRouter>
 						<FollowStore showFollowerCount={showFollowerCount} />
-					</BrowserRouter>,
-					el
-				);
-			});
-	}
-
-	if (activeModules.includes('live-chat')) {
-		// Mount LiveChat
-		document.querySelectorAll('.multivendorx-live-chat').forEach((el) => {
-			render(
-				<BrowserRouter>
-					<LiveChat />
-				</BrowserRouter>,
-				el
-			);
-		});
-	}
-
-	if (activeModules.includes('store-support')) {
-		// Mount Support
-		document
-			.querySelectorAll('.multivendorx-store-support')
-			.forEach((el) => {
-				render(
-					<BrowserRouter>
-						<StoreSupport />
 					</BrowserRouter>,
 					el
 				);
