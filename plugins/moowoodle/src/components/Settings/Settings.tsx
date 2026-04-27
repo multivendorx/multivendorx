@@ -61,7 +61,7 @@ const Settings: React.FC<SettingsProps> = () => {
 						Popup={ShowProPopup}
 					/>
 				) : (
-					<>{__('Loading...', 'multivendorx')}</>
+					<>{__('Loading...', 'moowoodle')}</>
 				)}
 			</>
 		);

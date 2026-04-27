@@ -8,6 +8,7 @@
 namespace MooWoodle;
 
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use MooWoodle\RestAPI\Rest;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -146,7 +147,7 @@ class MooWoodle {
 
 		$this->container['util']             = new Util();
         $this->container['setting']          = new Setting();
-		$this->container['restAPI']          = new RestAPI();
+		$this->container['rest']             = new Rest();
 		$this->container['course']           = new Core\Course();
 		$this->container['category']         = new Core\Category();
 		$this->container['product']          = new Core\Product();
@@ -277,11 +278,11 @@ class MooWoodle {
      */
     public function initialize_moowoodle_log() {
         // The log file name is stored in the options table because it is generated with an arbitrary name.
-        $log_file_name = get_option( 'moowoodle_log_file' );
+        $log_file_name = get_option( Util::MOOWOODLE_OTHER_SETTINGS['log_file'] );
 
         if ( ! $log_file_name ) {
             $log_file_name = uniqid( 'error' ) . '.txt';
-            update_option( 'moowoodle_log_file', $log_file_name );
+            update_option( Util::MOOWOODLE_OTHER_SETTINGS['log_file'], $log_file_name );
         }
 
         $this->container['log_file']          = MooWoodle()->moowoodle_logs_dir . '/' . $log_file_name;
