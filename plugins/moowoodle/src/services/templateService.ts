@@ -4,6 +4,7 @@ import { applyFilters } from '@wordpress/hooks';
 // Predefined contexts
 const contexts: Record<string, __WebpackModuleApi.RequireContext> = {
     settings: require.context('../components/Settings', true, /\.ts$/),
+    synchronization: require.context('../components/Synchronization', true, /\.ts$/),
 };
 
 type SettingNode = {
@@ -119,7 +120,7 @@ const importAll = (
 };
 
 const getTemplateData = (
-    type: 'settings'
+    type: 'settings' | 'synchronization'
 ): SettingNode[] => {
     let ctx = contexts[type];
 

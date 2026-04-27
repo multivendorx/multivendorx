@@ -121,14 +121,14 @@ export default {
             key: 'sync_course_btn',
             label: 'On-demand course',
             settingDescription: 'Courses are fetched from Moodle and synchronized with WordPress, ensuring product details remain updated.',
-            type: 'sequential-task-executor',  
-            buttonText: 'Synchronize courses now!',  
+            type: 'sequential-task-executor',
+            buttonText: 'Synchronize courses now!',
             apilink: 'synchronization',
-            action: 'sync_course',  
+            action: 'sync_course',
             interval: 2500,
             successMessage: 'Courses synchronized successfully!',
             failureMessage: 'Failed to synchronize courses.',
-            tasks: [  
+            tasks: [
                 {
                     action: 'fetch_moodle_courses',
                     message: 'Fetching courses from Moodle...',
