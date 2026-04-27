@@ -137,10 +137,11 @@ export default {
 						},
 						{
 							key: 'redirect_uri',
-							type: 'text',
+							type: 'copy-to-clipboard',
 							label: 'Redirect URI',
-							placeholder: 'Enter Redirect URI',
-						},
+							text: appLocalizer.site_url,
+							desc: __('lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 'multivendorx' ),
+						}
 					],
 				},
 				{
@@ -232,10 +233,11 @@ export default {
 						},
 						{
 							key: 'redirect_uri',
-							type: 'text',
+							type: 'copy-to-clipboard',
 							label: 'Redirect URI',
-							placeholder: 'Enter Redirect URI',
-						},
+							text: appLocalizer.site_url,
+							desc: __('lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 'multivendorx' ),
+						}
 					],
 				},
 			],
