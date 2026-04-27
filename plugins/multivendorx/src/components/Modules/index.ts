@@ -10,11 +10,6 @@ export default {
 			label: 'Marketplace Types',
 		},
 		{
-			id: 'printful',
-			name: __('Printful', 'multivendorx'),
-			proModule: true,
-		},
-		{
 			id: 'booking',
 			name: __('Booking', 'multivendorx'),
 			desc: 'Allow customers to reserve appointments, equipment, or services.',
@@ -383,6 +378,14 @@ export default {
 			category: 'shipping_management',
 		},
 		{
+			id: 'printful',
+			name: __('Printful', 'multivendorx'),
+			desc: 'Automated product syncing, order fulfillment, and shipping are enabled for all stores via Printful.',			
+			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=printful`,
+			proModule: true,			
+			category: 'shipping_management',
+		},
+		{
 			type: 'separator',
 			id: 'customer_experience',
 			label: 'Customer Experience',
@@ -713,7 +716,7 @@ export default {
 		},
 		{
 			id: 'ship-station',
-			name: __('Shipstation', 'multivendorx'),
+			name: __('ShipStation', 'multivendorx'),
 			desc: 'Integration with ShipStation for advanced shipping management and label printing.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/shipstation/',
 			proModule: true,
