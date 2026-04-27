@@ -12,8 +12,8 @@ import {
     SelectControl
 } from '@wordpress/components';
 
-// Template 1: Store Header
-const TEMPLATE_1 = [
+// Luxe Display Template
+const LuxeDisplay = [
     ['multivendorx/store-social-icons', { align: 'right' }],
     ['multivendorx/store-logo', {}],
     ['multivendorx/store-name', {}],
@@ -44,11 +44,60 @@ const TEMPLATE_1 = [
     ['multivendorx/store-engagement-tools', { align: 'right' }],
 ];
 
-// Template 2: Contact Focused
-const TEMPLATE_2 = [
-    ['multivendorx/store-social-icons', { align: 'right' }],
-    ['multivendorx/store-logo', {}],
-    ['multivendorx/store-name', {}],
+// Signature View Template 
+const SignatureView = [
+    // main container
+    [
+        'core/group',
+        {
+            layout: {
+                type: 'flex',
+                flexWrap: 'nowrap',
+                justifyContent: 'center',
+                alignItems: 'center',
+                orientation: 'vertical',
+            },
+            style: {
+                spacing: {
+                    blockGap: '1.25rem',
+                },
+            },
+        },
+        [
+            ['multivendorx/store-logo', {}],
+            ['multivendorx/store-name', {}],
+            [
+                'core/group',
+                {
+                    layout: {
+                        type: 'flex',
+                        flexWrap: 'nowrap',
+                        justifyContent: 'start',
+                        alignItems: 'center',
+                        orientation: 'horizontal',
+                    },
+                    style: {
+                        spacing: {
+                            blockGap: '1.25rem',
+                        },
+                    },
+                },
+                [
+                    ['multivendorx/store-email', {}],
+                    ['multivendorx/store-phone', {}],
+                    ['multivendorx/store-address', {}],
+                ],
+            ],
+            ['multivendorx/store-description',{ align: 'center' }],
+            ['multivendorx/store-engagement-tools', { align: 'right' }],
+
+        ],
+    ],
+];
+
+// Dynamic Showcase Template 
+const DynamicShowcase = [
+    // main container
     [
         'core/group',
         {
@@ -66,39 +115,94 @@ const TEMPLATE_2 = [
             },
         },
         [
-            ['multivendorx/store-email', {}],
-            ['multivendorx/store-phone', {}],
-            ['multivendorx/store-address', {}],
+            // left information
+            ['core/group',
+                {
+                    layout: {
+                        type: 'flex',
+                        flexWrap: 'nowrap',
+                        justifyContent: 'start',
+                        alignItems: 'center',
+                        orientation: 'horizontal',
+                    },
+                    style: {
+                        spacing: {
+                            blockGap: '1.25rem',
+                        },
+                    },
+                },
+                [
+                    // logo
+                    ['multivendorx/store-logo', {}],
+                    // store details
+                    [
+                        'core/group',
+                        {
+                            layout: {
+                                type: 'flex',
+                                flexWrap: 'nowrap',
+                                justifyContent: 'start',
+                                alignItems: 'center',
+                                orientation: 'vartical',
+                            },
+                            style: {
+                                spacing: {
+                                    blockGap: '0',
+                                },
+                            },
+                        },
+                        [
+                            ['multivendorx/store-name', {}],
+                            [
+                                'core/group',
+                                {
+                                    layout: {
+                                        type: 'flex',
+                                        flexWrap: 'nowrap',
+                                        justifyContent: 'start',
+                                        alignItems: 'center',
+                                        orientation: 'horizontal',
+                                    },
+                                    style: {
+                                        spacing: {
+                                            blockGap: '1.25rem',
+                                        },
+                                    },
+                                },
+                                [
+                                    ['multivendorx/store-email', {}],
+                                    ['multivendorx/store-phone', {}],
+                                    ['multivendorx/store-address', {}],
+                                ],
+                            ],
+                            ['multivendorx/store-description', {}],
+                        ],
+                    ],
+                ],
+            ],
+            // right information
+            [
+                'core/group',
+                {
+                    layout: {
+                        type: 'flex',
+                        flexWrap: 'nowrap',
+                        justifyContent: 'start',
+                        alignItems: 'center',
+                        orientation: 'horizontal',
+                    },
+                    style: {
+                        spacing: {
+                            blockGap: '1.25rem',
+                        },
+                    },
+                },
+                [
+                    ['multivendorx/store-engagement-tools', { align: 'right' }],
+                ],
+            ],
         ],
     ],
-    ['multivendorx/store-description', {}],
-    ['core/spacer', { height: '1.25rem' }],
-    ['multivendorx/store-engagement-tools', { align: 'right' }],
-];
-
-// Template 3: Simple Hero
-const TEMPLATE_3 = [
-    ['multivendorx/store-name', {}],
-    ['core/spacer', { height: '15px' }],
-    ['core/paragraph', {
-        content: __('Welcome to our store. We offer the best products with excellent customer service.', 'multivendorx'),
-        align: 'center'
-    }],
-    ['core/spacer', { height: '30px' }],
-    ['core/buttons', {
-        align: 'center'
-    }, [
-            ['core/button', {
-                text: __('Browse Products', 'multivendorx'),
-                className: 'is-style-fill'
-            }],
-            ['core/button', {
-                text: __('Contact Us', 'multivendorx'),
-                className: 'is-style-outline'
-            }]
-        ]],
-    ['core/spacer', { height: '30px' }],
-    ['multivendorx/store-social-icons', {}]
 ];
 
 // Empty template for reset
@@ -106,9 +210,9 @@ const EMPTY_TEMPLATE = [];
 
 // Map templates
 const TEMPLATES = {
-    'template-1': TEMPLATE_1,
-    'template-2': TEMPLATE_2,
-    'template-3': TEMPLATE_3,
+    'luxe-display': LuxeDisplay,
+    'signature-view': SignatureView,
+    'dynamic-showcase': DynamicShowcase,
     'empty': EMPTY_TEMPLATE
 };
 
@@ -135,11 +239,11 @@ registerBlockType('multivendorx/store-banner', {
     attributes: {
         height: {
             type: 'string',
-            default: '400px'
+            default: 'auto'
         },
         minHeight: {
             type: 'string',
-            default: '300px'
+            default: '18.75rem'
         },
         overlayColor: {
             type: 'string',
@@ -151,7 +255,6 @@ registerBlockType('multivendorx/store-banner', {
         },
         contentColor: {
             type: 'string',
-            default: '#ffffff'
         },
         align: {
             type: 'string'
@@ -166,7 +269,7 @@ registerBlockType('multivendorx/store-banner', {
         },
         template: {
             type: 'string',
-            default: 'template-1'
+            default: 'luxe-display'
         },
         bannerUrl: {
             type: 'string',
@@ -187,10 +290,7 @@ registerBlockType('multivendorx/store-banner', {
             bannerUrl
         } = attributes;
 
-        const defaultBannerImage = 'http://localhost:8889/wp-content/plugins/woocommerce/assets/images/pattern-placeholders/table-wood-house-chair-floor-window.jpg';
-
-        // Use dynamic banner URL if available, otherwise use default
-        const currentBannerUrl = bannerUrl || defaultBannerImage;
+        const currentBannerUrl = bannerUrl;
 
         const blockProps = useBlockProps({
             className: `multivendorx-store-banner template-${template}`,
@@ -227,20 +327,20 @@ registerBlockType('multivendorx/store-banner', {
             flexDirection: 'column',
             justifyContent: justifyContent || 'center',
             alignItems: alignItems || 'center',
-            padding: '40px',
+            padding: '2.5rem 0',
             color: contentColor
         };
 
         // Get current template
-        const currentTemplate = TEMPLATES[template] || TEMPLATE_1;
-        const isOverlayTemplate = template === 'template-1';
+        const currentTemplate = TEMPLATES[template] || LuxeDisplay;
+        const isOverlayTemplate = template === 'luxe-display';
 
         // Function to handle template change
         const handleTemplateChange = (newTemplate) => {
             setAttributes({ template: newTemplate });
 
             // Replace inner blocks with the new template
-            const newTemplateBlocks = TEMPLATES[newTemplate] || TEMPLATE_1;
+            const newTemplateBlocks = TEMPLATES[newTemplate] || LuxeDisplay;
 
             if (wp.data.select('core/block-editor')) {
                 wp.data.dispatch('core/block-editor').replaceInnerBlocks(
@@ -260,9 +360,9 @@ registerBlockType('multivendorx/store-banner', {
                             value={template}
                             onChange={handleTemplateChange}
                             options={[
-                                { label: __('Template 1', 'multivendorx'), value: 'template-1' },
-                                { label: __('Template 2', 'multivendorx'), value: 'template-2' },
-                                { label: __('Template 3', 'multivendorx'), value: 'template-3' },
+                                { label: __('Luxe Display', 'multivendorx'), value: 'luxe-display' },
+                                { label: __('Signature View', 'multivendorx'), value: 'signature-view' },
+                                { label: __('Dynamic Showcase', 'multivendorx'), value: 'dynamic-showcase' },
                                 { label: __('Custom', 'multivendorx'), value: 'empty' }
                             ]}
                         />
@@ -272,10 +372,10 @@ registerBlockType('multivendorx/store-banner', {
                             value={height}
                             onChange={(value) => setAttributes({ height: value })}
                             options={[
-                                { label: __('Small (300px)', 'multivendorx'), value: '300px' },
-                                { label: __('Medium (400px)', 'multivendorx'), value: '400px' },
-                                { label: __('Large (500px)', 'multivendorx'), value: '500px' },
-                                { label: __('Extra Large (600px)', 'multivendorx'), value: '600px' },
+                                { label: __('Small (18.75rem)', 'multivendorx'), value: '18.75rem' },
+                                { label: __('Medium (25rem)', 'multivendorx'), value: '25rem' },
+                                { label: __('Large (31.25rem)', 'multivendorx'), value: '31.25rem' },
+                                { label: __('Extra Large (37.5rem)', 'multivendorx'), value: '37.5rem' },
                                 { label: __('Auto', 'multivendorx'), value: 'auto' }
                             ]}
                         />
@@ -285,10 +385,10 @@ registerBlockType('multivendorx/store-banner', {
                             value={minHeight}
                             onChange={(value) => setAttributes({ minHeight: value })}
                             options={[
-                                { label: __('Small (200px)', 'multivendorx'), value: '200px' },
-                                { label: __('Medium (300px)', 'multivendorx'), value: '300px' },
-                                { label: __('Large (400px)', 'multivendorx'), value: '400px' },
-                                { label: __('Extra Large (500px)', 'multivendorx'), value: '500px' }
+                                { label: __('Small (12.5em)', 'multivendorx'), value: '12.5em' },
+                                { label: __('Medium (18.75rem)', 'multivendorx'), value: '18.75rem' },
+                                { label: __('Large (25rem)', 'multivendorx'), value: '25rem' },
+                                { label: __('Extra Large (31.25rem)', 'multivendorx'), value: '31.25rem' }
                             ]}
                         />
 
@@ -326,7 +426,7 @@ registerBlockType('multivendorx/store-banner', {
                             ]}
                         />
 
-                        <div style={{ marginTop: '20px' }}>
+                        <div style={{ marginTop: '1.25em' }}>
                             <label>{__('Content Text Color', 'multivendorx')}</label>
                             <ColorPalette
                                 value={contentColor}
@@ -334,7 +434,7 @@ registerBlockType('multivendorx/store-banner', {
                             />
                         </div>
 
-                        <div style={{ marginTop: '20px' }}>
+                        <div style={{ marginTop: '1.25em' }}>
                             <label>{__('Overlay Color', 'multivendorx')}</label>
                             <ColorPalette
                                 value={overlayColor}
@@ -368,33 +468,26 @@ registerBlockType('multivendorx/store-banner', {
                     </div>
                 ) : (
                     // ✅ TEMPLATE 2 & 3 → banner first, content below
-                    <div className={`multivendorx-store-banner template-${template}`}>
+                    <div {...blockProps}>
+                        <div style={contentContainerStyle}>
+                            {/* Banner Image */}
+                            <div className='banner-image'
+                                style={{
+                                    height: height,
+                                    minHeight: '25rem',
+                                    width: '100%',
+                                    marginBottom: '1rem',
+                                    backgroundImage: `url(${currentBannerUrl})`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: backgroundPosition,
+                                    backgroundRepeat: 'no-repeat',
+                                    position: 'relative'
+                                }}
+                            >
+                                <div style={overlayStyle}></div>
+                            </div>
 
-                        {/* Banner Image */}
-                        <div
-                            style={{
-                                height: height,
-                                minHeight: minHeight,
-                                backgroundImage: `url(${currentBannerUrl})`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: backgroundPosition,
-                                backgroundRepeat: 'no-repeat',
-                                position: 'relative'
-                            }}
-                        >
-                            <div style={overlayStyle}></div>
-                        </div>
-
-                        {/* Content BELOW */}
-                        <div
-                            style={{
-                                padding: '40px',
-                                color: contentColor,
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center'
-                            }}
-                        >
+                            {/* Content BELOW */}
                             <InnerBlocks
                                 template={currentTemplate}
                                 templateLock="all"
@@ -420,8 +513,7 @@ registerBlockType('multivendorx/store-banner', {
             bannerUrl
         } = attributes;
 
-        const defaultBannerImage = 'http://localhost:8889/wp-content/plugins/woocommerce/assets/images/pattern-placeholders/table-wood-house-chair-floor-window.jpg';
-        const currentBannerUrl = bannerUrl || defaultBannerImage;
+        const currentBannerUrl = bannerUrl;
 
         const [justifyContent, alignItems] = contentPosition.split(' ');
 
@@ -458,11 +550,10 @@ registerBlockType('multivendorx/store-banner', {
             flexDirection: 'column',
             justifyContent: justifyContent || 'center',
             alignItems: alignItems || 'center',
-            padding: '40px',
             color: contentColor
         };
 
-        const isOverlayTemplate = template === 'template-1';
+        const isOverlayTemplate = template === 'luxe-display';
 
         return isOverlayTemplate ? (
             <div {...blockProps}>
@@ -472,33 +563,26 @@ registerBlockType('multivendorx/store-banner', {
                 </div>
             </div>
         ) : (
-            <div className={`multivendorx-store-banner template-${template}`}>
+            <div {...blockProps}>
+                <div style={contentContainerStyle}>
+                    {/* Banner Image */}
+                    <div className='banner-image'
+                        style={{
+                            height: height,
+                            minHeight: '25rem',
+                            width: '100%',
+                            marginBottom: '1rem',
+                            backgroundImage: `url(${currentBannerUrl})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: backgroundPosition,
+                            backgroundRepeat: 'no-repeat',
+                            position: 'relative'
+                        }}
+                    >
+                        <div style={overlayStyle}></div>
+                    </div>
 
-                {/* Banner Image */}
-                <div
-                    style={{
-                        height: height,
-                        minHeight: minHeight,
-                        backgroundImage: `url(${currentBannerUrl})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: backgroundPosition,
-                        backgroundRepeat: 'no-repeat',
-                        position: 'relative'
-                    }}
-                >
-                    <div style={overlayStyle}></div>
-                </div>
-
-                {/* Content BELOW */}
-                <div
-                    style={{
-                        padding: '40px',
-                        color: contentColor,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center'
-                    }}
-                >
+                    {/* Content BELOW */}
                     <InnerBlocks.Content />
                 </div>
             </div>
