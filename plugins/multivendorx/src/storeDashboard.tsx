@@ -417,7 +417,7 @@ const Dashboard = () => {
 												className={({ isActive }) =>
 													`tab ${isActive ? 'active' : ''}`
 												}
-												to={`/${key}`} // ← always a path; NavLink works in both BrowserRouter & MemoryRouter
+												to={key === DEFAULT_TAB ? '/' : `/${key}`} // ← always a path; NavLink works in both BrowserRouter & MemoryRouter
 												onClick={() =>
 													setCurrentTab(key)
 												}

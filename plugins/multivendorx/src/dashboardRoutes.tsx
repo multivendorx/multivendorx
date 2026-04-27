@@ -35,7 +35,10 @@ const AppRoutes = () => (
 	<Suspense fallback={<div>Loading...</div>}>
 		<Routes>
 			{/* Redirect bare root to /dashboard */}
-			<Route path="/" element={<Navigate to="/dashboard" replace />} />
+			{/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
+			<Route path="/" element={<Dashboard />} />
+            <Route path={`/${appLocalizer.dashboard_slug}`} element={<Navigate to="/" replace />} /> 
+
 
 			{/* All tab variations */}
 			<Route path="/:tab" element={<Dashboard />} />
