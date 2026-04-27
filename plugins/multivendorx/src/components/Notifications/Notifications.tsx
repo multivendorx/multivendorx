@@ -53,9 +53,7 @@ const Notifications = () => {
 			headerIcon="report"
 			headerTitle={__('Notifications', 'multivendorx')}
 			headerDescription={__(
-				'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis odio atque sunt autem exercitationem praesentium ullam deleniti iste laboriosam iure.',
-				'multivendorx'
-			)}
+				'Track important marketplace updates and activities, including order alerts, store notifications, and recent actions across the platform.','multivendorx')}
 			variant={'compact'}
 			Link={Link}
 		/>
