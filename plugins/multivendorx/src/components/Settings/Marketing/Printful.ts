@@ -26,7 +26,7 @@ export default {
             type: 'password',
             label: __('Secret Key','multivendorx'),
             settingDescription: __( 'Secure key used to authenticate Printful connection for all stores.', 'multivendorx' ),
-            desc: __( 'Keep this key private. It is required to process product sync, orders, and fulfillment via Printful', 'multivendorx' ),
+            desc: __( 'Keep this key private. It is required to process product sync, orders, and fulfillment via Printful.', 'multivendorx' ),
             moduleEnabled: 'printful',
             proSetting: true,
         },
