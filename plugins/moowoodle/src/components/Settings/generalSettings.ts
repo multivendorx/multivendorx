@@ -39,10 +39,10 @@ export default {
         },
         {
             key: 'test_connection',
-            type: 'do-action-btn',
+            type: 'sequential-task-executor',
             apilink: 'synchronization',
             parameter: 'connection_test',
-            value: 'Start Test',
+            buttonText: 'Start Test',
             interval: 2500,
             desc: '',
             label: __( 'MooWoodle test connection', 'moowoodle' ),
