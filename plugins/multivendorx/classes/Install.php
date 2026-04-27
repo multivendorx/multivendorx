@@ -33,7 +33,7 @@ class Install {
     /**
      * Runs the database migration process.
      */
-    public static function do_migration() {
+    public function do_migration() {
         // write migration code from 5.0.1.
         $previous_version = get_option( 'multivendorx_version' );
         if ( version_compare( $previous_version, '5.0.2', '<' ) ) {
@@ -73,6 +73,10 @@ class Install {
 
             $previous_settings['shipping_stage'] =  array_merge( $new_stages, $existing_stages );
             update_option( Utill::MULTIVENDORX_SETTINGS['delivery'], $previous_settings );
+        }
+
+        if ( version_compare( $previous_version, '5.0.3', '<' ) ) {
+            $this->create_database_triggers();
         }
     }
 
@@ -390,6 +394,14 @@ class Install {
                     SET NEW.locking_balance = last_locking_balance;
                 END IF;
             ELSEIF NEW.transaction_type = 'Refund' AND NEW.entry_type = 'Dr' THEN
+                IF NEW.status = 'Completed' THEN
+                    SET NEW.balance = last_balance - NEW.amount;
+                    SET NEW.locking_balance = last_locking_balance;
+                ELSEIF NEW.status = 'Failed' THEN
+                    SET NEW.balance = last_balance;
+                    SET NEW.locking_balance = last_locking_balance;
+                END IF;
+            ELSEIF NEW.transaction_type = 'COD received' AND NEW.entry_type = 'Dr' THEN
                 IF NEW.status = 'Completed' THEN
                     SET NEW.balance = last_balance - NEW.amount;
                     SET NEW.locking_balance = last_locking_balance;
