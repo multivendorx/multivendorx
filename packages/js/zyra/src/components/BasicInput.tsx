@@ -25,7 +25,7 @@ interface BasicInputProps {
     wrapperClass?: string;
     disabled?: boolean;
     readOnly?: boolean;
-    size?: string;
+    size?: number | string;
     minNumber?: number;
     maxNumber?: number;
     onChange: (value: InputValue) => void;
@@ -72,13 +72,14 @@ export const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
         },
         ref
     ) => {
+        const formattedSize = typeof size === 'number' ? `${size}rem` : size;
         return (
             <>
                 <div
                     className={`setting-form-input input-wrapper ${
                         wrapperClass || ''
                     } `}
-                    style={{ width: size || '' }}
+                    style={{ width: formattedSize || '' }}
                 >
                     {preText && (
                         <span

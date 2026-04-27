@@ -7,7 +7,7 @@ const gatewayFields = gatewayList.flatMap((gateway) => [
 		key: `${gateway.value}_fixed`,
 		type: 'number',
 		preText: appLocalizer.currency_symbol,
-		size: '8rem',
+		size: 8,
 		beforeElement: {
 			type: 'preposttext',
 			textType: 'pre',
@@ -23,7 +23,7 @@ const gatewayFields = gatewayList.flatMap((gateway) => [
 		key: `${gateway.value}_percentage`,
 		type: 'number',
 		postText: __('%', 'multivendorx'),
-		size: '8rem',
+		size: 8,
 	},
 	{
 		key: 'divider',
@@ -37,7 +37,7 @@ const nestedFields = [
 		key: 'default_fixed',
 		type: 'number',
 		preText: appLocalizer.currency_symbol,
-		size: '8rem',
+		size: 8,
 		beforeElement: {
 			type: 'preposttext',
 			textType: 'pre',
@@ -53,7 +53,7 @@ const nestedFields = [
 		key: 'default_percentage',
 		type: 'number',
 		postText: __('%', 'multivendorx'),
-		size: '8rem',
+		size: 8,
 	},
 	{
 		key: 'divider',
@@ -172,7 +172,7 @@ export default {
 					key: 'product_price',
 					type: 'number',
 					preText: appLocalizer.currency_symbol,
-					size: '8rem',
+					size: 8,
 					skipFirstRow: true,
 					afterElement: {
 						type: 'preposttext',
@@ -189,7 +189,7 @@ export default {
 					key: 'product_qty',
 					type: 'number',
 					preText: appLocalizer.currency_symbol,
-					size: '8rem',
+					size: 8,
 					skipFirstRow: true,
 					afterElement: {
 						type: 'preposttext',
@@ -205,7 +205,7 @@ export default {
 				{
 					key: 'order_value',
 					type: 'number',
-					size: '8rem',
+					size: 8,
 					preText: appLocalizer.currency_symbol,
 					afterElement: {
 						type: 'preposttext',
@@ -222,7 +222,7 @@ export default {
 					key: 'commission_fixed',
 					type: 'text',
 					preText: appLocalizer.currency_symbol,
-					size: '8rem',
+					size: 8,
 					beforeElement: {
 						type: 'preposttext',
 						textType: 'pre',
@@ -237,7 +237,7 @@ export default {
 				{
 					key: 'commission_percentage',
 					type: 'number',
-					size: '8rem',
+					size: 8,
 					postText: __('%', 'multivendorx'),
 				},
 				{
@@ -269,7 +269,7 @@ export default {
 					key: 'commission_fixed',
 					type: 'number',
 					preText: appLocalizer.currency_symbol,
-					size: '8rem',
+					size: 8,
 					beforeElement: {
 						type: 'preposttext',
 						textType: 'pre',
@@ -285,7 +285,7 @@ export default {
 					key: 'commission_percentage',
 					type: 'number',
 					postText: __('%', 'multivendorx'),
-					size: '8rem',
+					size: 8,
 				},
 			],
 			dependent: {
@@ -411,7 +411,7 @@ export default {
 					key: 'commission_fixed',
 					type: 'text',
 					preText: appLocalizer.currency_symbol,
-					size: '8rem',
+					size: 8,
 					beforeElement: {
 						type: 'preposttext',
 						textType: 'pre',
@@ -426,7 +426,7 @@ export default {
 				{
 					key: 'commission_percentage',
 					type: 'number',
-					size: '8rem',
+					size: 8,
 					postText: __('%', 'multivendorx'),
 				},
 				{
@@ -471,7 +471,7 @@ export default {
 					key: 'facilitator_fixed',
 					type: 'number',
 					preText: appLocalizer.currency_symbol,
-					size: '8rem',
+					size: 8,
 					beforeElement: {
 						type: 'preposttext',
 						textType: 'pre',
@@ -487,7 +487,7 @@ export default {
 					key: 'facilitator_percentage',
 					type: 'number',
 					postText: __('%'),
-					size: '8rem',
+					size: 8,
 				},
 			],
 			moduleEnabled: 'facilitator',

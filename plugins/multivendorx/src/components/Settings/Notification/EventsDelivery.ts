@@ -31,7 +31,7 @@ export default {
 		{
 			key: 'sms_receiver_phone_number',
 			type: 'text',
-			size: '12rem',
+			size: 12,
 			label: __('Receiver phone number', 'multivendorx'),
 			placeholder: __('9000012345', 'multivendorx'),
 			settingDescription: __(
@@ -41,7 +41,7 @@ export default {
 			beforeElement: {
 				type: 'select',
 				key: 'country_code',
-				size: '12rem',
+				size: 12,
 				options: CountryCodes,
 			},
 		},
@@ -93,7 +93,7 @@ export default {
 		{
 			key: 'sms_sender_phone_number',
 			type: 'text',
-			size: '12rem',
+			size: 12,
 			label: __('Sender phone number', 'multivendorx'),
 			placeholder: __('4151234567', 'multivendorx'),
 			settingDescription: __(
@@ -103,7 +103,7 @@ export default {
 			beforeElement: {
 				type: 'select',
 				key: 'country_code',
-				size: '12rem',
+				size: 12,
 				options: CountryCodes,
 			},
 		},

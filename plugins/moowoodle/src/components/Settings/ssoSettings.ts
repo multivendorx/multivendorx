@@ -3,7 +3,7 @@ import { __, sprintf } from '@wordpress/i18n';
 
 export default {
     id: 'sso',
-    priority: 3,
+    priority: 30,
     headerTitle: __( 'Single Sign On', 'moowoodle' ),
     headerDescription: __(
         'Manage seamless login and logout synchronization.',

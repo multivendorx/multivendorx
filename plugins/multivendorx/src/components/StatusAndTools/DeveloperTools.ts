@@ -129,7 +129,7 @@ export default {
 				'<ul>MultiVendorX stores system notifications for both admins and stores.<br>By default, notifications are saved for 180 days. Only notifications within this period are retained; older notifications are automatically deleted.<br>You can set a custom retention period, which will override the default.',
 				'multivendorx'
 			),
-			size: '7rem',
+			size: 7,
 			postText: __('days', 'multivendorx'),
 		},
 		{

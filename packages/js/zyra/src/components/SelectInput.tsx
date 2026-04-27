@@ -51,7 +51,7 @@ export interface SelectProps {
     placeholder?: string;
     inputClass?: string;
     wrapperClass?: string;
-    size?: string;
+    size?: number | string;
     menuContent?: React.ReactNode;
     keepMenuOpenOnMenuContentClick?: boolean;
     noOptionsText?: string;
@@ -394,11 +394,11 @@ export const SelectInputUI: React.FC<SelectProps> = ({
             menuPortal: (base) => ({ ...base, zIndex: 9999 }),
         },
     };
-
+    const formattedSize = typeof size === 'number' ? `${size}rem` : size;
     return (
         <div
             className={`form-select-field ${wrapperClass ?? ''}`}
-            style={{ width: size ?? '' }}
+            style={{ width: formattedSize ?? '' }}
         >
             {selectDeselect && (
                 <ButtonInputUI

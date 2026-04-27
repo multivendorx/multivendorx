@@ -4,7 +4,7 @@ import { __, sprintf } from '@wordpress/i18n';
 
 export default {
     id: 'general',
-    priority: 1,
+    priority: 10,
     headerTitle: __( 'General', 'moowoodle' ),
     headerDescription: __(
         'Effortlessly configure and verify your WordPress-Moodle connection.',
@@ -20,13 +20,13 @@ export default {
                 'Provide the URL of your Moodle site where the course will be hosted. Students will receive access to the course content on that site.',
                 'moowoodle'
             ),
-            size: '25rem',
+            size: 25,
             label: __( 'Moodle site URL', 'moowoodle' ),
         },
         {
             key: 'moodle_access_token',
             type: 'text',
-            size: '25rem',
+            size: 25,
             label: __( 'Moodle access token', 'moowoodle' ),
             desc: sprintf(
                 /* translators: %s: URL to Moodle token page */

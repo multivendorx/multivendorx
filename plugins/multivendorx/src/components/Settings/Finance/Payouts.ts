@@ -67,7 +67,7 @@ export default {
 				'multivendorx'
 			),
 			type: 'number',
-			size: '8rem',
+			size: 8,
 			beforeElement: {
 				type: 'preposttext',
 				textType: 'pre',
@@ -100,7 +100,7 @@ export default {
 				textType: 'post',
 				postText: 'into wallet receive a payout.',
 			},
-			size: '8rem',
+			size: 8,
 			options: [
 				{
 					key: 'commission_percentage',
@@ -128,7 +128,7 @@ export default {
 				textType: 'post',
 				postText: 'in their wallet as a safety reserve.',
 			},
-			size: '8rem',
+			size: 8,
 			options: [
 				{
 					key: 'commission_percentage',
@@ -186,7 +186,7 @@ export default {
 			key: 'disbursement_hourly',
 			label: __('Hourly payouts', 'multivendorx'),
 			type: 'number',
-			size: '8rem',
+			size: 8,
 			options: [
 				{
 					key: 'payouts_every_hour',
@@ -321,7 +321,7 @@ export default {
 						preText: __('On', 'multivendorx'),
 					},
 					type: 'number',
-					size: '8rem',
+					size: 8,
 					options: [
 						{
 							key: 'payouts_every_month',
@@ -368,7 +368,7 @@ export default {
 				set: true,
 				value: 'daily',
 			},
-			size: '7rem',
+			size: 7,
 			proSetting: false, // set true if this is a Pro feature
 		},
 		{
@@ -505,7 +505,7 @@ export default {
 				{
 					key: 'free_withdrawals', // updated key
 					type: 'number',
-					size: '8rem',
+					size: 8,
 					options: [
 						{
 							key: 'free_withdrawals',
@@ -529,7 +529,7 @@ export default {
 				{
 					key: 'withdrawal_fixed', // updated key
 					type: 'number',
-					size: '8rem',
+					size: 8,
 					preText: appLocalizer.currency_symbol,
 					afterElement: {
 						type: 'preposttext',
@@ -540,7 +540,7 @@ export default {
 				{
 					key: 'withdrawal_percentage', // updated key
 					type: 'number',
-					size: '8rem',
+					size: 8,
 					postText: __('%', 'multivendorx'),
 				},
 			],

@@ -56,7 +56,7 @@ export default {
 				'multivendorx'
 			),
 			moduleEnabled: 'marketplace-refund',
-			size: '8rem',
+			size: 8,
 			max: 365,
 			postText: 'days',
 		},
