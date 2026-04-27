@@ -2,7 +2,7 @@
 /**
  * Plugin Name: MultiVendorX
  * Plugin URI: https://multivendorx.com/
- * Description: A Free Extension That Transforms Your WooCommerce Site into a Marketplace.
+ * Description: An AI-powered WooCommerce multivendor marketplace solution to build, manage, and scale your platform.
  * Author: MultiVendorX
  * Version: 5.0.1
  * Author URI: https://multivendorx.com/
