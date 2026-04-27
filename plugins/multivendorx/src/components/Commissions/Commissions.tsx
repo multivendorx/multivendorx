@@ -179,6 +179,7 @@ const Commission: React.FC = () => {
 					<ItemListUI className="price-list" items={earningItems} />
 				);
 			},
+			csvDisplay: false
 		},
 		store_payable: {
 			label: __('Store Earning', 'multivendorx'),
@@ -192,7 +193,7 @@ const Commission: React.FC = () => {
 		},
 		status: {
 			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
+			type: 'status', statusClass: (row) => `${row.status}`,
 		},
 		created_at: {
 			label: __('Date', 'multivendorx'),
@@ -219,6 +220,31 @@ const Commission: React.FC = () => {
 					},
 				},
 			],
+			csvDisplay: false
+		},
+		tax_amount: {
+			label: __('Tax Amount', 'multivendorx'),
+			tableDisplay: false
+		},
+		shipping_tax_amount: {
+			label: __('Shipping Tax', 'multivendorx'),
+			tableDisplay: false
+		},
+		shipping_amount: {
+			label: __('Shipping Amount', 'multivendorx'),
+			tableDisplay: false
+		},
+		platform_fee: {
+			label: __('Platform Fee', 'multivendorx'),
+			tableDisplay: false
+		},
+		facilitator_fee: {
+			label: __('Facilitator Fee', 'multivendorx'),
+			tableDisplay: false
+		},
+		gateway_fee: {
+			label: __('Gateway Fee', 'multivendorx'),
+			tableDisplay: false
 		},
 	};
 
@@ -273,7 +299,7 @@ const Commission: React.FC = () => {
 						count:
 							Number(
 								response.headers[
-									'x-wp-status-partially-refunded'
+								'x-wp-status-partially-refunded'
 								]
 							) || 0,
 					},
