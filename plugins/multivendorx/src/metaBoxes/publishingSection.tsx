@@ -41,7 +41,6 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 		pending: __('Submit', 'multivendorx'),
 	};
 
-	useOutsideClick(visibilityRef, () => setIsEditingVisibility(false));
 
 	return (
 		<Card
@@ -184,9 +183,10 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 										},
 									]}
 									value={product.status}
-									onChange={(value) =>
-										handleChange('status', value)
-									}
+									onChange={(value) => {
+										handleChange('status', value);
+										setIsEditingStatus(false);
+									}}
 								/>
 							)}
 						</div>
