@@ -631,7 +631,7 @@ export default {
 			category: 'integration',
 		},
 		{
-			id: 'buddypress',
+			id: 'buddy-press',
 			name: __('BuddyPress', 'multivendorx'),
 			desc: 'Adds social networking features to stores (profiles, connections, messaging).',
 			docLink:
