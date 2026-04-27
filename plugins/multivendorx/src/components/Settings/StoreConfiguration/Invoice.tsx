@@ -311,7 +311,6 @@ const Invoice: React.FC = () => {
 						'multivendorx'
 					)}
 				>
-					{console.log("TEMPLATE VALUE:", formData.invoice_template)},
 					<TabsUI
 						tabs={[
 							{
