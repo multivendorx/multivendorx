@@ -139,8 +139,10 @@ export default {
 							key: 'redirect_uri',
 							type: 'text',
 							label: 'Redirect URI',
-							placeholder: 'Enter Redirect URI',
-						},
+							// placeholder: 'Enter Redirect URI',
+							value: appLocalizer.site_url,
+							readOnly: true,
+						}
 					],
 				},
 				{
@@ -234,7 +236,8 @@ export default {
 							key: 'redirect_uri',
 							type: 'text',
 							label: 'Redirect URI',
-							placeholder: 'Enter Redirect URI',
+							value: appLocalizer.site_url,
+							readOnly: true,
 						},
 					],
 				},
