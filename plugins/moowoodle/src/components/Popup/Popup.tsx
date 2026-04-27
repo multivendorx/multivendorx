@@ -1,15 +1,27 @@
 /* global appLocalizer */
-import React from 'react';
+import React, { useState } from 'react';
+import { ButtonInputUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
-import { ProPopup } from 'zyra';
-import './Popup.scss';
+import '../Popup/Popup.scss';
+
+interface PopupProps {
+	moduleName?: string;
+	wooSetting?: string;
+	wooLink?: string;
+	confirmMode?: boolean;
+	title?: string;
+	confirmMessage?: string;
+	confirmYesText?: string;
+	confirmNoText?: string;
+	onConfirm?: () => void;
+	onCancel?: () => void;
+	plugin?: string;
+}
+
+
 const proPopupContent = {
-    proUrl: typeof appLocalizer !== 'undefined' ? appLocalizer.pro_url : '#',
-    title: __( 'Your students will love this!', 'moowoodle' ),
-    moreText: __( 'Better courses, bigger profits', 'moowoodle' ),
-    upgradeBtnText: __( 'Yes, Upgrade Me!', 'moowoodle' ),
-    messages: [
-        {
+	messages: [
+		{
             icon: 'adminlib-Bulk-Course-Sync',
             text: __( 'Bulk Course Sync', 'moowoodle' ),
             des: __(
@@ -82,11 +94,131 @@ const proPopupContent = {
             ),
         },
     ],
-    btnLink: appLocalizer.products_link,
+	btnLink: [
+		{
+			site: '1',
+			price: '$299',
+			link: 'https://multivendorx.com/cart/?add-to-cart=143434&variation_id=143443&attribute_pa_site-license=1-site-yearly',
+		},
+		{
+			site: '3',
+			price: '$399',
+			link: 'https://multivendorx.com/cart/?add-to-cart=143434&variation_id=143445&attribute_pa_site-license=3-site-yearly',
+		},
+		{
+			site: '10',
+			price: '$599',
+			link: 'https://multivendorx.com/cart/?add-to-cart=143434&variation_id=143440&attribute_pa_site-license=10-site-yearly',
+		},
+	],
 };
 
-const ShowProPopup: React.FC = () => {
-    return <ProPopup { ...proPopupContent } />;
+const ShowProPopup: React.FC<PopupProps> = (props) => {
+	const [selectedBtn, setSelectedBtn] = useState(proPopupContent.btnLink[0]);
+	
+	return (
+		<>
+			{props.confirmMode ? (
+				<div className="popup-confirm">
+					<i className="popup-icon adminfont-suspended admin-badge red"></i>
+					<div className="title">{props.title || 'Confirmation'}</div>
+					<div className="desc">{props.confirmMessage}</div>
+					<ButtonInputUI
+						position="center"
+						buttons={[
+							{
+								icon: 'close',
+								text: props.confirmNoText || 'Cancel',
+								color: 'red',
+								onClick: props.onCancel,
+							},
+							{
+								icon: 'delete',
+								text: props.confirmYesText || 'Confirm',
+								onClick: props.onConfirm,
+							},
+						]}
+					/>
+				</div>
+			) : (
+				<>
+					{/* pro */}
+					<div className="popup-wrapper">
+						<div className="top-section">
+							<div className="heading">
+								{__(
+									'Upgrade every marketplace needs!',
+									'multivendorx'
+								)}
+							</div>
+							<div className="description">
+								{__(
+									'Recurring revenue for you, empowered stores, automated operations',
+									'multivendorx'
+								)}{' '}
+							</div>
+							<div className="price">{selectedBtn.price}</div>
+							<div className="select-wrapper">
+								{__('For website with', 'multivendorx')}
+								<select
+									value={selectedBtn.link}
+									onChange={(e) => {
+										const found =
+											proPopupContent.btnLink.find(
+												(b) => b.link === e.target.value
+											);
+										if (found) {
+											setSelectedBtn(found);
+										}
+									}}
+								>
+									{proPopupContent.btnLink.map((b, idx) => (
+										<option key={idx} value={b.link}>
+											{b.site}
+										</option>
+									))}
+								</select>
+								{__('site license', 'multivendorx')}
+							</div>
+							<a
+								className="admin-btn"
+								href={selectedBtn.link}
+								target="_blank"
+								rel="noreferrer"
+							>
+								{__('Yes, Upgrade Me!', 'multivendorx')}
+								<i className="adminfont-arrow-right arrow-icon"></i>
+							</a>
+						</div>
+						<div className="popup-details">
+							<div className="heading-text">
+								{__('Why should you upgrade?', 'multivendorx')}
+							</div>
+
+							<ul>
+								{proPopupContent.messages.map(
+									(message, index) => (
+										<li key={index}>
+											<div className="title">
+												<i
+													className={`adminfont-${message.icon}`}
+												/>
+												{message.text}
+											</div>
+											<div className="desc">
+												{' '}
+												{message.des}
+											</div>
+										</li>
+									)
+								)}
+							</ul>
+						</div>
+					</div>
+				</>
+			)}
+		</>
+	);
 };
 
 export default ShowProPopup;

@@ -1,19 +1,17 @@
 import React, { useState, useCallback, useRef } from 'react';
 import axios from 'axios';
+import { FieldComponent, ZyraVariable } from './fieldUtils';
 import { getApiLink } from '../utils/apiService';
 import { ButtonInputUI } from './ButtonInput';
 import { ItemListUI } from './ItemList';
 import { Notice } from './Notice';
-import { ZyraVariable } from './fieldUtils';
 
 interface Task {
     action: string;
     message: string;
     successMessage?: string;
     failureMessage?: string;
-
-    // ⭐ ADDED: Generic dependency injection
-    requiresResponeData?: boolean;
+    requiresResponeData?: boolean;  // Typo preserved for compatibility
 }
 
 interface SequentialTaskExecutorProps {
@@ -36,7 +34,7 @@ interface DynamicResponse {
     [key: string]: unknown;
 }
 
-const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
+export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = ({
     buttonText,
     apilink,
     action,
@@ -61,8 +59,6 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
 
     const processStarted = useRef(false);
     const taskIndex = useRef(0);
-
-    // ⭐ ADDED: Import context storage
     const lastResult = useRef<number[]>([]);
 
     const sleep = (ms: number) =>
@@ -103,7 +99,6 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
             : currentTask.failureMessage || response?.message || 'Task failed';
 
         if (isSuccess) {
-            // ⭐ ADDED: Store successful task data into context
             if (Array.isArray(response?.data) && response.data.length > 0) {
                 lastResult.current = response.data;
             }
@@ -142,7 +137,6 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         await sleep(interval);
 
         try {
-            // ⭐ UPDATED: Payload now supports generic injection
             const payload: Record<string, unknown> = {
                 action: currentTask.action,
             };
@@ -202,8 +196,6 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         setTaskSequence([]);
         setProcessStatus('');
         taskIndex.current = 0;
-
-        // ⭐ ADDED: Reset context on new run
         lastResult.current = [];
 
         executeSequentialTasks();
@@ -218,7 +210,6 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
         return taskSequence.map((task, index) => ({
             id: `task-${index}`,
             title: task.message,
-            // desc: task.status,
             icon: task.status,
             className: `task-status-${task.status}`,
         }));
@@ -263,6 +254,22 @@ const SequentialTaskExecutor: React.FC<SequentialTaskExecutorProps> = ({
             )}
         </>
     );
+};
+const SequentialTaskExecutor: FieldComponent = {
+    render: ({ field }) => (
+        <SequentialTaskExecutorUI
+            buttonText={field.buttonText}
+            apilink={field.apilink}
+            action={field.action}
+            interval={field.interval}
+            successMessage={field.successMessage}
+            failureMessage={field.failureMessage}
+            tasks={field.tasks}
+            onComplete={field.onComplete}
+            onError={field.onError}
+            onTaskComplete={field.onTaskComplete}
+        />
+    ),
 };
 
 export default SequentialTaskExecutor;

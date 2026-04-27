@@ -2,13 +2,13 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'tool',
-    priority: 50,
-    name: __( 'Tools', 'moowoodle' ),
-    desc: __(
+    priority: 5,
+    headerTitle: __( 'Tools', 'moowoodle' ),
+    headerDescription: __(
         'Manage advanced settings for synchronization, error logging, and connection handling.',
         'moowoodle'
     ),
-    icon: 'adminlib-tools',
+    headerIcon: 'tools',
     submitUrl: 'settings',
     modal: [
         {
@@ -28,10 +28,13 @@ export default {
             look: 'toggle',
         },
         {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
-        },
+			key: 'section',
+			type: 'section',
+			title: __(
+				'Lorem Ipsum is simply dummy text of',
+				'moowoodle'
+			),
+		},
         {
             key: 'moodle_timeout',
             type: 'text',

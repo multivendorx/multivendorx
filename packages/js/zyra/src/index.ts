@@ -34,6 +34,7 @@ export { default as ShortCodeTable } from './components/ShortCodeTable';
 export { default as Tabs } from './components/Tabs';
 export { TabsUI } from './components/Tabs';
 export { default as SequentialTaskExecutor } from './components/SequentialTaskExecutor';
+export { SequentialTaskExecutorUI } from './components/SequentialTaskExecutor';
 export { default as SettingsNavigator } from './components/SettingsNavigator';
 export { default as TextArea } from './components/TextArea';
 export { TextAreaUI } from './components/TextArea';

@@ -1,6 +1,6 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { 
+import {
     useBlockProps,
     InnerBlocks,
     InspectorControls
@@ -46,7 +46,7 @@ const TEMPLATE_1 = [
 
 // Template 2: Contact Focused
 const TEMPLATE_2 = [
-     ['multivendorx/store-social-icons', { align: 'right' }],
+    ['multivendorx/store-social-icons', { align: 'right' }],
     ['multivendorx/store-logo', {}],
     ['multivendorx/store-name', {}],
     [
@@ -80,7 +80,7 @@ const TEMPLATE_2 = [
 const TEMPLATE_3 = [
     ['multivendorx/store-name', {}],
     ['core/spacer', { height: '15px' }],
-    ['core/paragraph', { 
+    ['core/paragraph', {
         content: __('Welcome to our store. We offer the best products with excellent customer service.', 'multivendorx'),
         align: 'center'
     }],
@@ -88,15 +88,15 @@ const TEMPLATE_3 = [
     ['core/buttons', {
         align: 'center'
     }, [
-        ['core/button', {
-            text: __('Browse Products', 'multivendorx'),
-            className: 'is-style-fill'
-        }],
-        ['core/button', {
-            text: __('Contact Us', 'multivendorx'),
-            className: 'is-style-outline'
-        }]
-    ]],
+            ['core/button', {
+                text: __('Browse Products', 'multivendorx'),
+                className: 'is-style-fill'
+            }],
+            ['core/button', {
+                text: __('Contact Us', 'multivendorx'),
+                className: 'is-style-outline'
+            }]
+        ]],
     ['core/spacer', { height: '30px' }],
     ['multivendorx/store-social-icons', {}]
 ];
@@ -175,11 +175,11 @@ registerBlockType('multivendorx/store-banner', {
     },
 
     edit: ({ attributes, setAttributes, clientId }) => {
-        const { 
-            height, 
+        const {
+            height,
             minHeight,
-            overlayColor, 
-            overlayOpacity, 
+            overlayColor,
+            overlayOpacity,
             contentColor,
             backgroundPosition,
             contentPosition,
@@ -188,7 +188,7 @@ registerBlockType('multivendorx/store-banner', {
         } = attributes;
 
         const defaultBannerImage = 'http://localhost:8889/wp-content/plugins/woocommerce/assets/images/pattern-placeholders/table-wood-house-chair-floor-window.jpg';
-        
+
         // Use dynamic banner URL if available, otherwise use default
         const currentBannerUrl = bannerUrl || defaultBannerImage;
 
@@ -207,7 +207,7 @@ registerBlockType('multivendorx/store-banner', {
         });
 
         const [justifyContent, alignItems] = contentPosition.split(' ');
-        
+
         // Overlay style
         const overlayStyle = {
             position: 'absolute',
@@ -233,14 +233,15 @@ registerBlockType('multivendorx/store-banner', {
 
         // Get current template
         const currentTemplate = TEMPLATES[template] || TEMPLATE_1;
+        const isOverlayTemplate = template === 'template-1';
 
         // Function to handle template change
         const handleTemplateChange = (newTemplate) => {
             setAttributes({ template: newTemplate });
-            
+
             // Replace inner blocks with the new template
             const newTemplateBlocks = TEMPLATES[newTemplate] || TEMPLATE_1;
-            
+
             if (wp.data.select('core/block-editor')) {
                 wp.data.dispatch('core/block-editor').replaceInnerBlocks(
                     clientId,
@@ -253,7 +254,7 @@ registerBlockType('multivendorx/store-banner', {
             <>
                 <InspectorControls>
                     <PanelBody title={__('Banner Settings', 'multivendorx')} initialOpen={true}>
-                        
+
                         <SelectControl
                             label={__('Template', 'multivendorx')}
                             value={template}
@@ -265,7 +266,7 @@ registerBlockType('multivendorx/store-banner', {
                                 { label: __('Custom', 'multivendorx'), value: 'empty' }
                             ]}
                         />
-                        
+
                         <SelectControl
                             label={__('Height', 'multivendorx')}
                             value={height}
@@ -278,7 +279,7 @@ registerBlockType('multivendorx/store-banner', {
                                 { label: __('Auto', 'multivendorx'), value: 'auto' }
                             ]}
                         />
-                        
+
                         <SelectControl
                             label={__('Min Height', 'multivendorx')}
                             value={minHeight}
@@ -290,7 +291,7 @@ registerBlockType('multivendorx/store-banner', {
                                 { label: __('Extra Large (500px)', 'multivendorx'), value: '500px' }
                             ]}
                         />
-                        
+
                         <SelectControl
                             label={__('Background Position', 'multivendorx')}
                             value={backgroundPosition}
@@ -307,7 +308,7 @@ registerBlockType('multivendorx/store-banner', {
                                 { label: __('Bottom Right', 'multivendorx'), value: 'bottom right' }
                             ]}
                         />
-                        
+
                         <SelectControl
                             label={__('Content Position', 'multivendorx')}
                             value={contentPosition}
@@ -324,7 +325,7 @@ registerBlockType('multivendorx/store-banner', {
                                 { label: __('Bottom Right', 'multivendorx'), value: 'flex-end flex-end' }
                             ]}
                         />
-                        
+
                         <div style={{ marginTop: '20px' }}>
                             <label>{__('Content Text Color', 'multivendorx')}</label>
                             <ColorPalette
@@ -332,7 +333,7 @@ registerBlockType('multivendorx/store-banner', {
                                 onChange={(color) => setAttributes({ contentColor: color })}
                             />
                         </div>
-                        
+
                         <div style={{ marginTop: '20px' }}>
                             <label>{__('Overlay Color', 'multivendorx')}</label>
                             <ColorPalette
@@ -340,7 +341,7 @@ registerBlockType('multivendorx/store-banner', {
                                 onChange={(color) => setAttributes({ overlayColor: color })}
                             />
                         </div>
-                        
+
                         <RangeControl
                             label={__('Overlay Opacity (%)', 'multivendorx')}
                             value={overlayOpacity}
@@ -352,28 +353,66 @@ registerBlockType('multivendorx/store-banner', {
                     </PanelBody>
                 </InspectorControls>
 
-                <div {...blockProps}>
-                    <div style={overlayStyle}></div>
-                    <div style={contentContainerStyle}>
-                        <InnerBlocks 
-                            template={currentTemplate}
-                            templateLock={template === 'empty' ? false : 'all'}
-                            allowedBlocks={ALLOWED_BLOCKS}
-                            orientation="vertical"
-                            renderAppender={template === 'empty' ? InnerBlocks.ButtonBlockAppender : false}
-                        />
+                {isOverlayTemplate ? (
+                    // ✅ TEMPLATE 1 → content over banner
+                    <div {...blockProps}>
+                        <div style={overlayStyle}></div>
+
+                        <div style={contentContainerStyle}>
+                            <InnerBlocks
+                                template={currentTemplate}
+                                templateLock="all"
+                                allowedBlocks={ALLOWED_BLOCKS}
+                            />
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    // ✅ TEMPLATE 2 & 3 → banner first, content below
+                    <div className={`multivendorx-store-banner template-${template}`}>
+
+                        {/* Banner Image */}
+                        <div
+                            style={{
+                                height: height,
+                                minHeight: minHeight,
+                                backgroundImage: `url(${currentBannerUrl})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: backgroundPosition,
+                                backgroundRepeat: 'no-repeat',
+                                position: 'relative'
+                            }}
+                        >
+                            <div style={overlayStyle}></div>
+                        </div>
+
+                        {/* Content BELOW */}
+                        <div
+                            style={{
+                                padding: '40px',
+                                color: contentColor,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <InnerBlocks
+                                template={currentTemplate}
+                                templateLock="all"
+                                allowedBlocks={ALLOWED_BLOCKS}
+                            />
+                        </div>
+                    </div>
+                )}
             </>
         );
     },
 
     save: ({ attributes }) => {
-        const { 
-            height, 
+        const {
+            height,
             minHeight,
-            overlayColor, 
-            overlayOpacity, 
+            overlayColor,
+            overlayOpacity,
             contentColor,
             backgroundPosition,
             contentPosition,
@@ -383,9 +422,9 @@ registerBlockType('multivendorx/store-banner', {
 
         const defaultBannerImage = 'http://localhost:8889/wp-content/plugins/woocommerce/assets/images/pattern-placeholders/table-wood-house-chair-floor-window.jpg';
         const currentBannerUrl = bannerUrl || defaultBannerImage;
-        
+
         const [justifyContent, alignItems] = contentPosition.split(' ');
-        
+
         const blockProps = useBlockProps.save({
             className: `multivendorx-store-banner template-${template}`,
             style: {
@@ -400,7 +439,7 @@ registerBlockType('multivendorx/store-banner', {
                 overflow: 'hidden'
             }
         });
-        
+
         const overlayStyle = {
             position: 'absolute',
             top: 0,
@@ -410,7 +449,7 @@ registerBlockType('multivendorx/store-banner', {
             backgroundColor: overlayColor,
             opacity: overlayOpacity / 100
         };
-        
+
         const contentContainerStyle = {
             position: 'relative',
             zIndex: 2,
@@ -423,10 +462,43 @@ registerBlockType('multivendorx/store-banner', {
             color: contentColor
         };
 
-        return (
+        const isOverlayTemplate = template === 'template-1';
+
+        return isOverlayTemplate ? (
             <div {...blockProps}>
                 <div style={overlayStyle}></div>
                 <div style={contentContainerStyle}>
+                    <InnerBlocks.Content />
+                </div>
+            </div>
+        ) : (
+            <div className={`multivendorx-store-banner template-${template}`}>
+
+                {/* Banner Image */}
+                <div
+                    style={{
+                        height: height,
+                        minHeight: minHeight,
+                        backgroundImage: `url(${currentBannerUrl})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: backgroundPosition,
+                        backgroundRepeat: 'no-repeat',
+                        position: 'relative'
+                    }}
+                >
+                    <div style={overlayStyle}></div>
+                </div>
+
+                {/* Content BELOW */}
+                <div
+                    style={{
+                        padding: '40px',
+                        color: contentColor,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center'
+                    }}
+                >
                     <InnerBlocks.Content />
                 </div>
             </div>
@@ -437,7 +509,7 @@ registerBlockType('multivendorx/store-banner', {
 // Frontend script to handle dynamic banner images
 document.addEventListener('DOMContentLoaded', () => {
     const bannerUrl = window.StoreInfo?.storeDetails?.storeBanner || '';
-    
+
     document.querySelectorAll('.multivendorx-store-banner').forEach(banner => {
         if (bannerUrl) {
             banner.style.backgroundImage = `url(${bannerUrl})`;

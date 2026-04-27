@@ -1,13 +1,13 @@
 import { __ } from '@wordpress/i18n';
 export default {
     id: 'bulk-access',
-    priority: 40,
-    name: __( 'Bulk Access & Gifting', 'moowoodle' ),
-    desc: __(
+    priority: 4,
+    headerTitle: __( 'Bulk Access & Gifting', 'moowoodle' ),
+    headerDescription: __(
         'Distribute courses through gifting and group enrollments.',
         'moowoodle'
     ),
-    icon: 'adminlib-contact-form',
+    headerIcon: 'contact-form',
     submitUrl: 'settings',
     proDependent: true,
     modal: [
