@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'tool',
-    priority: 5,
+    priority: 50,
     headerTitle: __( 'Tools', 'moowoodle' ),
     headerDescription: __(
         'Manage advanced settings for synchronization, error logging, and connection handling.',

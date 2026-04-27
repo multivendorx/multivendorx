@@ -3,7 +3,7 @@ import { __, sprintf } from '@wordpress/i18n';
 
 export default {
     id: 'display',
-    priority: 2,
+    priority: 20,
     headerTitle: __( 'Shop Central', 'moowoodle' ),
     headerDescription: __(
         'Efficient course information handling for customers.',

@@ -4,7 +4,7 @@ import { __, sprintf } from '@wordpress/i18n';
 
 export default {
     id: 'general',
-    priority: 1,
+    priority: 10,
     headerTitle: __( 'General', 'moowoodle' ),
     headerDescription: __(
         'Effortlessly configure and verify your WordPress-Moodle connection.',

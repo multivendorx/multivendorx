@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 export default {
     id: 'bulk-access',
-    priority: 4,
+    priority: 40,
     headerTitle: __( 'Bulk Access & Gifting', 'moowoodle' ),
     headerDescription: __(
         'Distribute courses through gifting and group enrollments.',

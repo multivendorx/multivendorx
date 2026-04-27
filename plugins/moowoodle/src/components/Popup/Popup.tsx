@@ -22,7 +22,7 @@ interface PopupProps {
 const proPopupContent = {
 	messages: [
 		{
-            icon: 'adminlib-Bulk-Course-Sync',
+            icon: 'bulk-course-sync',
             text: __( 'Bulk Course Sync', 'moowoodle' ),
             des: __(
                 'Sync multiple Moodle™ courses to WordPress with one click.',
@@ -30,7 +30,7 @@ const proPopupContent = {
             ),
         },
         {
-            icon: 'adminlib-classroom-enrollment',
+            icon: 'classroom-enrollment',
             text: __( 'Cohort Enrollment', 'moowoodle' ),
             des: __(
                 'Sell and enroll entire Moodle™ cohorts via WooCommerce.',
@@ -38,7 +38,7 @@ const proPopupContent = {
             ),
         },
         {
-            icon: 'adminlib-cohort',
+            icon: 'cohort',
             text: __( 'Group Enrollment', 'moowoodle' ),
             des: __(
                 'Map course variations to Moodle™ groups for targeted enrollment.',
@@ -46,7 +46,7 @@ const proPopupContent = {
             ),
         },
         {
-            icon: 'adminlib-global-community',
+            icon: 'global-community',
             text: __( 'Classroom Enrollment', 'moowoodle' ),
             des: __(
                 'Buy multiple seats and assign them to students or teams.',
@@ -54,7 +54,7 @@ const proPopupContent = {
             ),
         },
         {
-            icon: 'adminlib-Gift-a-Course',
+            icon: 'gift-a-course',
             text: __( 'Gift a Course', 'moowoodle' ),
             des: __(
                 'Let customers purchase and gift courses to others.',
@@ -62,7 +62,7 @@ const proPopupContent = {
             ),
         },
         {
-            icon: 'adminlib-Single-Sign-On',
+            icon: 'single-sign-On',
             text: __( 'Single Sign-On (SSO)', 'moowoodle' ),
             des: __(
                 'Access Moodle™ and WordPress with one login.',
@@ -70,7 +70,7 @@ const proPopupContent = {
             ),
         },
         {
-            icon: 'adminlib-Single-Sign-On',
+            icon: 'single-sign-on',
             text: __( 'Smart Course Sync', 'moowoodle' ),
             des: __(
                 'Keep course details updated between Moodle™ and WordPress.',
@@ -78,7 +78,7 @@ const proPopupContent = {
             ),
         },
         {
-            icon: 'adminlib-subscription-courses',
+            icon: 'subscription-courses',
             text: __( 'Subscription Courses', 'moowoodle' ),
             des: __(
                 'Offer courses with recurring subscription plans.',
@@ -86,7 +86,7 @@ const proPopupContent = {
             ),
         },
         {
-            icon: 'adminlib-user-network-icon',
+            icon: 'user-network-icon',
             text: __( 'Unified Access', 'moowoodle' ),
             des: __(
                 'Give learners one dashboard for all their courses.',
@@ -96,19 +96,19 @@ const proPopupContent = {
     ],
 	btnLink: [
 		{
-			site: '1',
-			price: '$299',
-			link: 'https://multivendorx.com/cart/?add-to-cart=143434&variation_id=143443&attribute_pa_site-license=1-site-yearly',
+			site: 'one',
+			price: '$199',
+			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18156',
 		},
 		{
-			site: '3',
-			price: '$399',
-			link: 'https://multivendorx.com/cart/?add-to-cart=143434&variation_id=143445&attribute_pa_site-license=3-site-yearly',
+			site: 'three',
+			price: '$349',
+			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18158',
 		},
 		{
-			site: '10',
-			price: '$599',
-			link: 'https://multivendorx.com/cart/?add-to-cart=143434&variation_id=143440&attribute_pa_site-license=10-site-yearly',
+			site: 'ten',
+			price: '$499',
+			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18157',
 		},
 	],
 };
@@ -147,19 +147,19 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 						<div className="top-section">
 							<div className="heading">
 								{__(
-									'Upgrade every marketplace needs!',
-									'multivendorx'
+									'Your students will love this!',
+									'moowoodle'
 								)}
 							</div>
 							<div className="description">
 								{__(
-									'Recurring revenue for you, empowered stores, automated operations',
-									'multivendorx'
-								)}{' '}
+									'Better courses, bigger profits',
+									'moowoodle'
+								)}
 							</div>
 							<div className="price">{selectedBtn.price}</div>
 							<div className="select-wrapper">
-								{__('For website with', 'multivendorx')}
+								{__('For website with', 'moowoodle')}
 								<select
 									value={selectedBtn.link}
 									onChange={(e) => {
@@ -178,7 +178,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 										</option>
 									))}
 								</select>
-								{__('site license', 'multivendorx')}
+								{__('site license', 'moowoodle')}
 							</div>
 							<a
 								className="admin-btn"
@@ -186,13 +186,13 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 								target="_blank"
 								rel="noreferrer"
 							>
-								{__('Yes, Upgrade Me!', 'multivendorx')}
+								{__('Yes, Upgrade Me!', 'moowoodle')}
 								<i className="adminfont-arrow-right arrow-icon"></i>
 							</a>
 						</div>
 						<div className="popup-details">
 							<div className="heading-text">
-								{__('Why should you upgrade?', 'multivendorx')}
+								{__('Why should you upgrade?', 'moowoodle')}
 							</div>
 
 							<ul>
