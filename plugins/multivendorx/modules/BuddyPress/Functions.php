@@ -54,7 +54,7 @@ class Functions {
      */
     public function bp_shop_tab_content() {
 
-        echo '<h3>' . esc_html__( 'User Stores Products', 'multivendorx' ) . '</h3>';
+        echo '<p>' . esc_html__( 'Browse all products listed by this seller across their stores. Each section below represents a different store they manage.', 'multivendorx' ) . '</p>';
 
         $user_id = bp_displayed_user_id();
 
@@ -84,7 +84,7 @@ class Functions {
 
             // Optional: Store title
             if ( ! empty( $store['name'] ) ) {
-                echo '<h4>' . esc_html( $store['name'] ) . '</h4>';
+                echo '<h4>' . sprintf( esc_html__( 'Products from %s', 'multivendorx' ), esc_html( $store['name'] ) ) . '</h4>';
             }
 
             $args = array(
@@ -121,9 +121,10 @@ class Functions {
                 }
 
                 woocommerce_product_loop_end();
+                echo '</div>';
 
             } else {
-                echo '<p>' . esc_html__( 'No products found for this store.', 'multivendorx' ) . '</p>';
+                echo '<p>' . esc_html__( 'No products available in this store yet.', 'multivendorx' ) . '</p>';
             }
 
             wp_reset_postdata();
