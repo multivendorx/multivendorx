@@ -1,15 +1,11 @@
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getApiLink } from 'zyra';
 
-interface Props {
-	productName: string;
-	productId: number;
-}
-
-const StoreSupport: React.FC<Props> = ({ productName, productId }) => {
+const StoreSupport: React.FC<{}> = () => {
 	const [isOpen, setIsOpen] = useState(false);
+	const [selectedOrder, setSelectedOrder] = useState('');
 
 	const [formData, setFormData] = useState({
 		subject: '',
@@ -27,6 +23,12 @@ const StoreSupport: React.FC<Props> = ({ productName, productId }) => {
 	};
 
 	const handleSubmit = () => {
+
+		if (!StoreInfo?.currentUserId || StoreInfo.currentUserId === "0") {
+			window.location.assign(StoreInfo?.loginUrl);
+			return;
+		}
+
 		if (!formData.subject || !formData.message) {
 			alert(__('Subject and message are required', 'multivendorx'));
 			return;
@@ -37,7 +39,9 @@ const StoreSupport: React.FC<Props> = ({ productName, productId }) => {
 				id: `support_${Date.now()}_${Math.floor(Math.random() * 10000)}`,
 				subject: formData.subject,
 				message: formData.message,
-				product_id: productId,
+				order_id: selectedOrder,
+				user_id: StoreInfo.currentUserId,
+				created_at: new Date().toISOString(),
 				status: 'open',
 			},
 			id: StoreInfo?.storeDetails?.storeId,
@@ -59,7 +63,7 @@ const StoreSupport: React.FC<Props> = ({ productName, productId }) => {
 					subject: '',
 					message: '',
 				});
-
+				setSelectedOrder('');
 				setIsOpen(false);
 			})
 			.catch((error) => {
@@ -78,7 +82,13 @@ const StoreSupport: React.FC<Props> = ({ productName, productId }) => {
 		<>
 			<button
 				className="wp-block-button__link has-border-color has-accent-1-border-color wp-element-button multivendorx-store-support-btn"
-				onClick={() => setIsOpen(true)}
+				onClick={() => {
+					if (!StoreInfo?.currentUserId || StoreInfo.currentUserId === "0") {
+						window.location.assign(StoreInfo?.loginUrl);
+						return;
+					}
+					setIsOpen(true);
+				}}
 			>
 				{__('Get Support', 'multivendorx')}
 			</button>
@@ -108,7 +118,22 @@ const StoreSupport: React.FC<Props> = ({ productName, productId }) => {
 							<h2>
 								{__('Create a new support', 'multivendorx')}
 							</h2>
+							<p className="woocommerce-form-row form-row form-row-wide">
+								<label>{__('Select Order', 'multivendorx')}</label>
+								<select
+									className="input-text"
+									value={selectedOrder}
+									onChange={(e) => setSelectedOrder(e.target.value)}
+								>
+									<option value="">{__('Select an order', 'multivendorx')}</option>
 
+									{StoreInfo.customer_order_ids.map((id) => (
+										<option key={id} value={id}>
+											#{id}
+										</option>
+									))}
+								</select>
+							</p>
 							{/* Subject */}
 							<p className="woocommerce-form-row form-row form-row-wide">
 								<label>{__('Subject', 'multivendorx')}</label>
