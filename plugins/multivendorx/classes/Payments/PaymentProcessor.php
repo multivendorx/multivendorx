@@ -265,7 +265,7 @@ class PaymentProcessor {
 			$commission_id = $order ? $order->get_meta( Utill::ORDER_META_SETTINGS['commission_id'], true ) : null;
 			$commission    = $commission_id ? CommissionUtil::get_commission_db( $commission_id ) : null;
 
-			$amount = $commission ? (float) $commission->store_payable : 0.00;
+			$amount = $commission ? (float) $commission->total_order_value : 0.00;
 			$store  = new Store( (int) $commission->store_id );
 
             $data = array(
