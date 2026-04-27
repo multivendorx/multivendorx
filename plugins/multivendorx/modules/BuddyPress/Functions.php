@@ -149,6 +149,6 @@ class Functions {
             
             wp_reset_postdata();
         }
-        echo '</div">';
+        echo '</div>';
     }
 }
