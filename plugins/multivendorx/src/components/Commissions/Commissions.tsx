@@ -97,7 +97,8 @@ const Commission: React.FC = () => {
 				setIsLoading(false);
 			});
 	}, []);
-	const headers = {
+
+	const rawHeaders = {
 		id: {
 			label: __('ID', 'multivendorx'),
 			type: 'id',
@@ -179,6 +180,7 @@ const Commission: React.FC = () => {
 					<ItemListUI className="price-list" items={earningItems} />
 				);
 			},
+			csvDisplay: false
 		},
 		store_payable: {
 			label: __('Store Earning', 'multivendorx'),
@@ -192,7 +194,37 @@ const Commission: React.FC = () => {
 		},
 		status: {
 			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
+			type: 'status', statusClass: (row) => `${row.status}`,
+		},
+		tax_amount: {
+			label: __('Tax Amount', 'multivendorx'),
+			tableDisplay: false,
+			condition: appLocalizer.taxes_enabled === 'yes',
+		},
+		shipping_tax_amount: {
+			label: __('Shipping Tax', 'multivendorx'),
+			tableDisplay: false,
+			condition: modules.includes('store-shipping'),
+		},
+		shipping_amount: {
+			label: __('Shipping Amount', 'multivendorx'),
+			tableDisplay: false,
+			condition: modules.includes('store-shipping'),
+		},
+		platform_fee: {
+			label: __('Platform Fee', 'multivendorx'),
+			tableDisplay: false,
+			condition: modules.includes('marketplace-fee'),
+		},
+		facilitator_fee: {
+			label: __('Facilitator Fee', 'multivendorx'),
+			tableDisplay: false,
+			condition: modules.includes('facilitator'),
+		},
+		gateway_fee: {
+			label: __('Gateway Fee', 'multivendorx'),
+			tableDisplay: false,
+			condition: modules.includes('payment-gateway-charge'),
 		},
 		created_at: {
 			label: __('Date', 'multivendorx'),
@@ -219,8 +251,15 @@ const Commission: React.FC = () => {
 					},
 				},
 			],
-		},
+			csvDisplay: false
+		}
 	};
+
+	const headers = Object.fromEntries(
+		Object.entries(rawHeaders).filter(
+			([_, config]) => config.condition !== false
+		)
+	);
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -273,7 +312,7 @@ const Commission: React.FC = () => {
 						count:
 							Number(
 								response.headers[
-									'x-wp-status-partially-refunded'
+								'x-wp-status-partially-refunded'
 								]
 							) || 0,
 					},

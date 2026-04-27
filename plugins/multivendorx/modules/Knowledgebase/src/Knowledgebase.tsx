@@ -47,7 +47,7 @@ export const KnowledgeBase: React.FC = () => {
 	const [formData, setFormData] = useState<KBForm>({
 		title: '',
 		content: '',
-		status: 'draft',
+		status: 'publish',
 	});
 	const [validationErrors, setValidationErrors] = useState<{
 		[key: string]: string;
@@ -206,7 +206,7 @@ export const KnowledgeBase: React.FC = () => {
 		},
 		status_label: {
 			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
+			type: 'status', statusClass: (row) => `${row.status}`,
 		},
 		date_created: {
 			label: __('Date', 'multivendorx'),
@@ -331,9 +331,9 @@ export const KnowledgeBase: React.FC = () => {
 					confirmMessage={
 						selectedKb
 							? __(
-									'Are you sure you want to delete this knowledge base?',
-									'multivendorx'
-								)
+								'Are you sure you want to delete this knowledge base?',
+								'multivendorx'
+							)
 							: ''
 					}
 					confirmYesText={__('Delete', 'multivendorx')}
@@ -435,7 +435,7 @@ export const KnowledgeBase: React.FC = () => {
 									usePlainText={false}
 									tinymceApiKey={
 										appLocalizer.settings_databases_value[
-											'overview'
+										'overview'
 										]['tinymce_api_section'] ?? ''
 									}
 									msg={{
@@ -451,9 +451,12 @@ export const KnowledgeBase: React.FC = () => {
 								<ChoiceToggleUI
 									options={[
 										{
-											key: 'draft',
-											value: 'draft',
-											label: __('Draft', 'multivendorx'),
+											key: 'publish',
+											value: 'publish',
+											label: __(
+												'Published',
+												'multivendorx'
+											),
 										},
 										{
 											key: 'pending',
@@ -464,12 +467,9 @@ export const KnowledgeBase: React.FC = () => {
 											),
 										},
 										{
-											key: 'publish',
-											value: 'publish',
-											label: __(
-												'Published',
-												'multivendorx'
-											),
+											key: 'draft',
+											value: 'draft',
+											label: __('Draft', 'multivendorx'),
 										},
 									]}
 									value={formData.status}

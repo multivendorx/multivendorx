@@ -57,7 +57,7 @@ export const Announcements: React.FC = () => {
 		url: '',
 		content: '',
 		stores: [],
-		status: 'draft',
+		status: 'publish',
 	});
 
 	const fetchStoreOptions = () => {
@@ -276,8 +276,8 @@ export const Announcements: React.FC = () => {
 
 	const headers = {
 		title: { label: __('Title', 'multivendorx') },
-		content: { label: __('Content', 'multivendorx') , type: 'content'},
-		status_label: { label: __('Status', 'multivendorx'), type: 'status' , statusClass: (row) => `${row.status}`},
+		content: { label: __('Content', 'multivendorx'), type: 'content' },
+		status_label: { label: __('Status', 'multivendorx'), type: 'status', statusClass: (row) => `${row.status}` },
 		store_name: { label: __('Recipients', 'multivendorx') },
 		date_created: { label: __('Date', 'multivendorx'), type: 'date' },
 		action: {
@@ -491,7 +491,7 @@ export const Announcements: React.FC = () => {
 							usePlainText={false}
 							tinymceApiKey={
 								appLocalizer.settings_databases_value[
-									'overview'
+								'overview'
 								]['tinymce_api_section'] ?? ''
 							}
 							msg={{
@@ -563,9 +563,9 @@ export const Announcements: React.FC = () => {
 						<ChoiceToggleUI
 							options={[
 								{
-									key: 'draft',
-									value: 'draft',
-									label: __('Draft', 'multivendorx'),
+									key: 'publish',
+									value: 'publish',
+									label: __('Published', 'multivendorx'),
 								},
 								{
 									key: 'pending',
@@ -573,9 +573,9 @@ export const Announcements: React.FC = () => {
 									label: __('Pending', 'multivendorx'),
 								},
 								{
-									key: 'publish',
-									value: 'publish',
-									label: __('Published', 'multivendorx'),
+									key: 'draft',
+									value: 'draft',
+									label: __('Draft', 'multivendorx'),
 								},
 							]}
 							value={formData.status}
