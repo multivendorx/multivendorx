@@ -20,7 +20,7 @@ export default {
                 'Enabling this option allows users to access Moodle courses directly, bypassing the need for login.',
                 'moowoodle'
             ),
-            label: __( 'Single Sign On', 'moowoodle' ),
+            label: __('Single Sign On', 'moowoodle'),
             options: [
                 {
                     key: 'moowoodle_sso_enable',
@@ -33,11 +33,6 @@ export default {
         {
             key: 'moowoodle_sso_secret_key',
             type: 'text',
-            dependent: {
-                key: 'moowoodle_sso_enable', // parent dependent key
-                set: true,
-                value: 'moowoodle_sso_enable', // updated value
-            },
             desc: sprintf(
                 /* translators: %s: URL to Moodle SSO settings page */
                 __(
@@ -45,12 +40,23 @@ export default {
                     'moowoodle'
                 ),
                 appLocalizer.moodle_site_url +
-                    'admin/settings.php?section=authsettingmoowoodle'
+                'admin/settings.php?section=authsettingmoowoodle'
             ),
             size: '50%',
-            label: __( 'SSO secret key', 'moowoodle' ),
+            label: __('SSO secret key', 'moowoodle'),
             proSetting: true,
             generate: true,
-        },
+            dependent: {
+                key: 'moowoodle_sso_enable', // parent dependent key
+                set: true,
+                value: 'moowoodle_sso_enable', // updated value
+            },
+            afterElement: {
+                key: 'moowoodle_sso_secret_key',
+                type: 'random-input-key-generator',
+                textType: 'post',
+                length: 8
+            },
+        }
     ],
 };

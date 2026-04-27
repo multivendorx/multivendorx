@@ -102,6 +102,7 @@
         "@tinymce/tinymce-react": "^5.1.0",
         "@wordpress/data": "wp-6.6",
         "@wordpress/element": "wp-6.6",
+        "@wordpress/hooks": "^4.44.0",
         "@wordpress/i18n": "wp-6.6",
         "@wordpress/react-i18n": "wp-6.6",
         "@wordpress/scripts": "^30.16.0",
