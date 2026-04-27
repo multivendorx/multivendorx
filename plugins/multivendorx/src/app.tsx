@@ -140,6 +140,7 @@ const App = () => {
 	const [openFeaturePopup, setOpenFeaturePopup] = useState(false);
 	const [results, setResults] = useState<SearchItem[]>([]);
 	const [activeModal, setActiveModal] = useState<string | null>(null);
+	const [dummyOwners,setDummyOwners] = useState<any[]>([]);
 
 	const handleOpenFeaturePopup = () => {
 		setOpenFeaturePopup(true);
@@ -509,10 +510,29 @@ const App = () => {
 								),
 							},
 						]}
+						onTaskComplete={(task, response: any) => {
+							if (task.action === 'import_store_owners') {
+								setDummyOwners(response.data);
+							}
+						}}
 						onError={(error) => {
 							console.error('Import failed', error);
 						}}
 					/>
+					{dummyOwners.length > 0 && (
+						<div>
+							<h3>Dummy Store Owners</h3>
+							<ul>
+								{dummyOwners.map((owner, index) => (
+									<li key={index}>
+										<strong>{owner.username}</strong> |
+										Email: {owner.email} |
+										Password: {owner.password}
+									</li>
+								))}
+							</ul>
+						</div>
+					)}
 				</FormGroupWrapper>
 			</PopupUI>
 

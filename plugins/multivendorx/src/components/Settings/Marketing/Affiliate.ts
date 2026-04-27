@@ -17,7 +17,7 @@ export default {
 	moduleEnabled: 'wp-affiliate',
 	modal: [
 		{
-			key: 'approve_store',
+			key: 'affiliate_commission',
 			type: 'choice-toggle',
 			label: __('Who pays affiliate commissions', 'multivendorx'),
 			desc: __(

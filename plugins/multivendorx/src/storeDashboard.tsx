@@ -704,6 +704,9 @@ const Dashboard = () => {
 															{__('Store Settings', 'multivendorx')}
 														</a>
 													</li>
+
+													{applyFilters('multivendorx_extra_profile_menu', null, tabHref)}
+
 													{availableStores.length >
 														0 && (
 															<li className="switch-store-wrapper">

@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'synchronize-cohort',
     priority: 30,
-    name: __( 'Cohorts Synchronization', 'moowoodle' ),
-    desc: __(
+    headerTitle: __( 'Cohorts Synchronization', 'moowoodle' ),
+    headerDescription: __(
         'Fetch Moodle cohort on demand & generate products on demand.',
         'moowoodle'
     ),
-    icon: 'adminlib-book',
+    headerIcon: 'cohort',
     submitUrl: 'settings',
     proDependent: true,
     modal: [

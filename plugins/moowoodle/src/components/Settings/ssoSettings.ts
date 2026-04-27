@@ -3,13 +3,13 @@ import { __, sprintf } from '@wordpress/i18n';
 
 export default {
     id: 'sso',
-    priority: 30,
-    name: __( 'Single Sign On', 'moowoodle' ),
-    desc: __(
+    priority: 3,
+    headerTitle: __( 'Single Sign On', 'moowoodle' ),
+    headerDescription: __(
         'Manage seamless login and logout synchronization.',
         'moowoodle'
     ),
-    icon: 'adminlib-vpn-key',
+    headerIcon: 'vpn-key',
     submitUrl: 'settings',
     proDependent: true,
     modal: [

@@ -16,7 +16,7 @@ import ShowProPopup from '../components/Popup/Popup';
 import ShippingDelivery from './settings/ShippingDelivery';
 import BusinessAddress from './DashboardSettings/BusinessAddress';
 import { __ } from '@wordpress/i18n';
-import ShipStation from './settings/ShipStation';
+import { applyFilters } from '@wordpress/hooks';
 
 interface SettingsProps {
 	id: string;
@@ -104,15 +104,21 @@ const settings: React.FC<SettingsProps> = () => {
 			}
 		}, [setting, settingName, currentTab]);
 
+		const tabComponent = applyFilters(
+			'multivendorx_setting_tab_component',
+			null,
+			currentTab
+		) as React.ReactElement;
+
+		if (tabComponent) {
+			return tabComponent;
+		}
+
 		if (currentTab === 'shipping') {
 			return <ShippingDelivery />;
 		}
 		if (currentTab === 'business-address') {
 			return <BusinessAddress />;
-		}
-
-		if (currentTab === 'ship-station') {
-			return <ShipStation />;
 		}
 
 		return (
