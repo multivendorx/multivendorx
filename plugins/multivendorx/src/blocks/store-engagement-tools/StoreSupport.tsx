@@ -3,12 +3,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { getApiLink } from 'zyra';
 
-interface Props {
-	productName: string;
-	productId: number;
-}
-
-const StoreSupport: React.FC<Props> = () => {
+const StoreSupport: React.FC<{}> = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [selectedOrder, setSelectedOrder] = useState('');
 
