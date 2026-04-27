@@ -123,16 +123,17 @@ export default {
 							type: 'text',
 							label: 'Google Client ID',
 							placeholder: 'Enter Google Client ID',
-							desc: __(
-								'<a href="https://docs.mapbox.com/help/getting-started/access-tokens/" target="_blank">Click here to generate access token.</a>',
-								'multivendorx'
-							),
+							'settingDescription': __( "Unique identifier for your Google OAuth application.", 'multivendorx' ),
+	                        'desc': __( 'Get this from Google Cloud Console → APIs & Services → Credentials.<br/><a href="https://developers.google.com/identity/oauth2/web/guides/get-google-api-clientid" class="link-item" target="_blank">How to generate Google Client ID <i class="adminfont-external"></i></a>', 'multivendorx' ),
+
 						},
 						{
 							key: 'client_secret',
 							type: 'text',
 							label: 'Google Client Secret',
-							placeholder: 'Enter Google Client Secret',
+							'settingDescription': __( 'Private key used to authenticate your application with Google.', 'multivendorx' ),
+	                        'desc': __( 'Keep this secure and do not expose it publicly.<br/><a href="https://developers.google.com/identity/oauth2/web/guides/get-google-api-clientid" class="link-item" target="_blank">Google OAuth credentials guide <i class="adminfont-external"></i></a>', 'multivendorx' ),
+
 						},
 						{
 							key: 'redirect_uri',
@@ -156,22 +157,25 @@ export default {
 							type: 'text',
 							label: 'Twitter API Key',
 							placeholder: 'Enter Twitter API Key',
-							desc: __(
-								'<a href="https://docs.mapbox.com/help/getting-started/access-tokens/" target="_blank">Click here to generate access token.</a>',
-								'multivendorx'
-							),
+							'settingDescription': __( 'Public identifier for your Twitter (X) application.', 'multivendorx' ),
+	                        'desc': __( 'Get this from your Twitter Developer Portal → Projects & Apps → Keys and tokens.<br/><a href="https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api" class="link-item" target="_blank">How to get Twitter API keys <i class="adminfont-external"></i></a>', 'multivendorx' ),
+
 						},
 						{
 							key: 'api_secret_key',
 							type: 'text',
 							label: 'Twitter API Secret Key',
-							placeholder: 'Enter Twitter API Secret Key',
+							'settingDescription': __( 'Private key used to authenticate your application with Twitter (X).', 'multivendorx' ),
+	                        'desc': __( 'Keep this secure and do not expose it publicly.<br/><a href="https://developer.twitter.com/en/docs/authentication/oauth-1-0a/api-key-and-secret" class="link-item" target="_blank">Twitter authentication guide <i class="adminfont-external"></i></a>', 'multivendorx' ),
+
 						},
 						{
 							key: 'bearer_token',
 							type: 'text',
 							label: 'Bearer Token',
-							placeholder: 'Enter Bearer Token',
+							'settingDescription': __( 'Token used for app-only authentication to access Twitter (X) APIs.', 'multivendorx' ),
+	                        'desc': __( 'Used for secure API requests without user context.<br/><a href="https://developer.twitter.com/en/docs/authentication/oauth-2-0/bearer-tokens" class="link-item" target="_blank">Learn about Bearer Token <i class="adminfont-external"></i></a>', 'multivendorx' ),
+
 						},
 					],
 				},
