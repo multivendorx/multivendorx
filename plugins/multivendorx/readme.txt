@@ -5,7 +5,7 @@ Donate link: http://multivendorx.com/donate/
 Requires at least: 6.3
 Tested up to: 6.9.4
 Requires PHP: 8.0
-Stable tag: 5.0.1
+Stable tag: 5.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -245,6 +245,15 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 == Changelog ==
+
+= 5.0.2 - 2026-04-28 =
+* Added     - Support for controlling the number of products displayed on the store shop page as per WooCommerce catalog settings.
+* Added     - BuddyPress integration support.
+* Added     - Minor CSS fixes and improvements.
+* Fixed     - Issue with WooCommerce settings email error.
+* Fixed     - Shop banner section not reflecting on the store shop page.
+* Fixed     - Issue where stores could not navigate to the homepage when clicking the top-right image on the shop page.
+* Updated   - Language file.
 
 = 5.0.1 - 2026-04-21 =
 * Fixed     - Migration-related error when upgrading from older versions to 5.0.
