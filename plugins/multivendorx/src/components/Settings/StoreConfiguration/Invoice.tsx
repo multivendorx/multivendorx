@@ -261,7 +261,9 @@ const Invoice: React.FC = () => {
 			
 			return {
 				selectedPalette: savedTemplate.selectedPalette || defaultTemplate.selectedPalette,
-				templateKey: savedTemplate.templateKey || defaultTemplate.templateKey,
+				templateKey: savedTemplate.templateKey !== undefined
+					? savedTemplate.templateKey
+					: defaultTemplate.templateKey,
 				colors: savedTemplate.colors && Object.keys(savedTemplate.colors).length > 0 
 					? savedTemplate.colors 
 					: defaultTemplate.colors,
@@ -269,9 +271,9 @@ const Invoice: React.FC = () => {
 		};
 		
 		return {
-			...(appLocalizer?.settings_databases_value?.invoices || {}),
 			...defaultData,
 			...savedData,
+			...(appLocalizer?.settings_databases_value?.invoices || {}),
 			// Ensure each template has proper defaults
 			invoice_template: ensureTemplateDefaults(savedData.invoice_template, defaultData.invoice_template),
 			admin_template: ensureTemplateDefaults(savedData.admin_template, defaultData.admin_template),
@@ -291,7 +293,8 @@ const Invoice: React.FC = () => {
             setShowModulePopup(true);
         	return;
         }
-		const updated = { ...formData, [key]: value };
+		const normalizedValue = value?.target?.value || value;
+		const updated = { ...formData, [key]: normalizedValue };
 		setFormData(updated);
 		autoSave(updated);
 	};
@@ -308,12 +311,14 @@ const Invoice: React.FC = () => {
 						'multivendorx'
 					)}
 				>
+					{console.log("TEMPLATE VALUE:", formData.invoice_template)},
 					<TabsUI
 						tabs={[
 							{
 								label: __('Customer Invoice', 'multivendorx'),
 								content: (
 									<ColorSettingInputUI
+										key={formData.invoice_template?.templateKey}
 										filedKey="invoice_template"
 										wrapperClass="form-group-color-setting"
 										inputClass="setting-form-input"
@@ -344,6 +349,7 @@ const Invoice: React.FC = () => {
 								label: __('Admin Commission', 'multivendorx'),
 								content: (
 									<ColorSettingInputUI
+										key={formData.admin_template?.templateKey}
 										filedKey="admin_template"
 										wrapperClass="form-group-color-setting"
 										inputClass="setting-form-input"
@@ -374,6 +380,7 @@ const Invoice: React.FC = () => {
 								label: __('Membership', 'multivendorx'),
 								content: (
 									<ColorSettingInputUI
+										key={formData.membership_template?.templateKey}
 										filedKey="membership_template"
 										wrapperClass="form-group-color-setting"
 										inputClass="setting-form-input"
@@ -404,6 +411,7 @@ const Invoice: React.FC = () => {
 								label: __('Packing Slip', 'multivendorx'),
 								content: (
 									<ColorSettingInputUI
+										key={formData.packing_template?.templateKey}
 										filedKey="packing_template"
 										wrapperClass="form-group-color-setting"
 										inputClass="setting-form-input"
