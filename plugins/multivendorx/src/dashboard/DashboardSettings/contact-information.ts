@@ -20,12 +20,12 @@ export default {
 		{
 			key: 'phone',
 			type: 'number',
-			size: '12rem',
+			size: 12,
 			label: __('Phone', 'multivendorx'),
 			beforeElement: {
 				type: 'select',
 				key: 'country_code',
-				size: '10rem',
+				size: 10,
 				options: CountryCodes,
 			},
 		},

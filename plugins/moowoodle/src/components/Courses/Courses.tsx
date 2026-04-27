@@ -10,6 +10,7 @@ import {
     NavigatorHeader,
     CategoryCount,
     QueryProps,
+    InfoItem,
 } from 'zyra';
 import defaultImage from '../../assets/images/moowoodle-product-default.png';
 
@@ -152,26 +153,14 @@ const Course: React.FC = () => {
             label: __('Course', 'moowoodle'),
             type: 'custom',
             render: (row: CourseRow) => (
-                <div className="course-cell">
-                    <img
-                        src={row.productimage || defaultImage}
-                        alt={row.course_name || 'Course Image'}
-                        style={{ width: '40px', height: '40px', objectFit: 'cover', marginRight: '10px' }}
-                    />
-                    <div className="action-section">
-                        <div>{row.course_name}</div>
-                        <div className="action-btn">
-                            <a
-                                target="_blank"
-                                rel="noreferrer"
-                                href={row.moodle_url}
-                                className=""
-                            >
-                                {__('Edit course', 'moowoodle')}
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <InfoItem
+                    title={row.course_name}
+                    titleLink={row.moodle_url}
+                    avatar={{
+                        image: row.productimage,
+                        iconClass: 'subscription-courses',
+                    }}
+                />
             ),
         },
         course_short_name: {
@@ -233,7 +222,7 @@ const Course: React.FC = () => {
             actions: [
                 {
                     label: __('Sync Course Data', 'moowoodle'),
-                    icon: 'adminlib-refresh',
+                    icon: 'refresh',
                     onClick: (row: CourseRow) => {
                         handleSingleAction('sync_courses', row.id!, row.moodle_course_id!);
                     },
@@ -247,8 +236,8 @@ const Course: React.FC = () => {
                     },
                     icon: (row: CourseRow) => {
                         return row?.products && Object.keys(row.products).length
-                            ? 'adminlib-update-product'
-                            : 'adminlib-add-product';
+                            ? 'update-product'
+                            : 'add-product';
                     },
                     onClick: (row: CourseRow) => {
                         handleSingleAction(
@@ -383,7 +372,7 @@ const Course: React.FC = () => {
 
             {error && (
                 <div className="admin-notice-display-title error">
-                    <i className="admin-font adminlib-icon-no"></i>
+                    <i className="admin-font icon-no"></i>
                     {error}
                 </div>
             )}

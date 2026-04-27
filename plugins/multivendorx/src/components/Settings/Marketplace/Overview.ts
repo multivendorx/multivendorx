@@ -21,7 +21,7 @@ export default {
 				'Choose the page with [store_registration] shortcode, this is where stores sign up.',
 				'multivendorx'
 			),
-			size: '30rem',
+			size: 30,
 			options: appLocalizer.pages_list,
 		},
 		{
@@ -32,7 +32,7 @@ export default {
 				'The page with [marketplace_store] shortcode will act as the store’s control center.',
 				'multivendorx'
 			),
-			size: '30rem',
+			size: 30,
 			options: appLocalizer.pages_list,
 		},
 		{
@@ -43,7 +43,7 @@ export default {
 				'Set a custom base for your store URL. For example, in the URL: https://yourdomain.com/store/sample-store/, the default word [store] can be replaced with any name you define here.',
 				'multivendorx'
 			),
-			size: '8rem',
+			size: 8,
 			beforeElement: {
 				type: 'preposttext',
 				textType: 'pre',

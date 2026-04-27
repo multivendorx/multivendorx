@@ -26,7 +26,7 @@ export default {
 				{
 					key: 'free_promotion_limit',
 					type: 'number',
-					size: '8rem',
+					size: 8,
 					beforeElement: {
 						type: 'preposttext',
 						textType: 'pre',
@@ -47,7 +47,7 @@ export default {
 				{
 					key: 'pro_promotion_limit',
 					type: 'number',
-					size: '8rem',
+					size: 8,
 					afterElement: {
 						type: 'preposttext',
 						textType: 'post',
@@ -60,7 +60,7 @@ export default {
 				{
 					key: 'promotion_slot_cost',
 					type: 'number',
-					size: '8rem',
+					size: 8,
 					afterElement: {
 						type: 'preposttext',
 						textType: 'post',
@@ -87,7 +87,7 @@ export default {
 				),
 			},
 			postText: __('days', 'multivendorx'),
-			size: '8rem',
+			size: 8,
 			moduleEnabled: 'product-advertising',
 			proSetting: true,
 		},

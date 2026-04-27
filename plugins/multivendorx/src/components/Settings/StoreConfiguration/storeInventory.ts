@@ -59,7 +59,7 @@ export default {
 						textType: 'post',
 						postText: __('units.', 'multivendorx'),
 					},
-					size: '8rem',
+					size: 8,
 					dependent: {
 						key: 'low_stock_alert', // field it depends on
 						value: 'low_stock_alert', // value that must be selected
@@ -105,7 +105,7 @@ export default {
 						textType: 'post',
 						postText: __('units.', 'multivendorx'),
 					},
-					size: '8rem',
+					size: 8,
 					dependent: {
 						key: 'out_of_stock_alert', // depends on checkbox
 						value: 'out_of_stock_alert', // show when selected

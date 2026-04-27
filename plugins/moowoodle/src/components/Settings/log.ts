@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'log',
-    priority: 6,
+    priority: 60,
     headerTitle: __( 'Log', 'moowoodle' ),
     headerDescription: __( 'Review all system logs and errors.', 'moowoodle' ),
     headerIcon: 'credit-card',
