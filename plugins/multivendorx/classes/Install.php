@@ -37,6 +37,7 @@ class Install {
         // write migration code from 5.0.1.
         $previous_version = get_option( 'multivendorx_version' );
         if ( version_compare( $previous_version, '5.0.2', '<' ) ) {
+            $this->create_database_triggers();
             $previous_settings = get_option( Utill::MULTIVENDORX_SETTINGS['delivery'], [] );
             $existing_stages = $previous_settings['shipping_stage'] ?? [];
 
@@ -73,10 +74,6 @@ class Install {
 
             $previous_settings['shipping_stage'] =  array_merge( $new_stages, $existing_stages );
             update_option( Utill::MULTIVENDORX_SETTINGS['delivery'], $previous_settings );
-        }
-
-        if ( version_compare( $previous_version, '5.0.3', '<' ) ) {
-            $this->create_database_triggers();
         }
     }
 
