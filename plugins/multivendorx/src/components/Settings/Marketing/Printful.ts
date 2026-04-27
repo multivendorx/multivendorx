@@ -35,14 +35,16 @@ export default {
             type: 'copy-to-clipboard',
             label: __('App URL','multivendorx'),
             text: appLocalizer.site_url,
-            desc: __('lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 'multivendorx'),
+            settingDescription: __( 'The base URL of your store that Printful uses to identify and communicate with your application.', 'multivendorx' ),
+            desc: __('This should match the URL registered in your Printful OAuth app settings. In production, use your live store URL (e.g. https://yourstore.com).', 'multivendorx'),
         },
         {
             key: 'redirect-domains',
             type: 'copy-to-clipboard',
             label: __('Redirection Domains','multivendorx'),
             text: appLocalizer.site_url,
-            desc: __('lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 'multivendorx'),
+            settingDescription: __( 'Domains authorized to receive OAuth callbacks from Printful after vendor authentication.', 'multivendorx' ),
+            desc: __('Only requests originating from these domains will be accepted during the OAuth flow. Add your production domain before going live to prevent authentication failures', 'multivendorx'),
         }
     ],
 };
