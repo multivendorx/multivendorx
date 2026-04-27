@@ -43,7 +43,26 @@ class Ajax {
      * @param array $argument arguments for data filtering or customization.
      * @return void
      */
-    public function export_csv_data( $argument = array() ) {
+    public function export_csv_data( $argument = array(), $nonce = '' ) {
+        if ( !current_user_can( 'manage_options' ) || !current_user_can( 'dc_vendor' ) ) {
+            wp_send_json_error( 'Unauthorized access.' );
+            wp_die();
+        }
+
+        $nonce_value = '';
+        if ( ! empty( $nonce ) ) {
+            $nonce_value = $nonce;
+        } elseif ( isset( $_REQUEST['_wpnonce'] ) ) {
+            $nonce_value = $_REQUEST['_wpnonce'];
+        } elseif ( isset( $_REQUEST['nonce'] ) ) {
+            $nonce_value = $_REQUEST['nonce'];
+        }
+
+        if ( ! wp_verify_nonce( $nonce_value, 'export_subscribers_nonce' ) ) {
+            wp_send_json_error( 'Invalid security token sent.' );
+            wp_die();
+        }
+
         $get_subscribed_user = array();
 
         // Merge the arguments with default arguments.
