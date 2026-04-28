@@ -107,7 +107,7 @@ class FrontendScripts {
             'store-email',
             'store-address',
             'store-banner',
-            'store-engagement-tools',
+            'follow-store',
             'store-social-icons',
             'store-logo',
             'store-phone',
