@@ -13,19 +13,7 @@ const FollowIcon = () => (
 	</svg>
 );
 
-const ChatIcon = () => (
-	<svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-		<path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
-	</svg>
-);
-
-const SupportIcon = () => (
-	<svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-		<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10" />
-	</svg>
-);
-
-registerBlockType('multivendorx/store-engagement-tools', {
+registerBlockType('multivendorx/follow-store', {
 	edit: () => {
 		const blockProps = useBlockProps({
 			className:
@@ -53,22 +41,6 @@ registerBlockType('multivendorx/store-engagement-tools', {
 					<FollowIcon />
 					{__('Follow Store', 'multivendorx')}
 				</button>
-
-				<button
-					style={ButtonStyle}
-					className="wp-block-button__link has-border-color has-accent-1-border-color wp-element-button"
-				>
-					<ChatIcon />
-					{__('Live Chat', 'multivendorx')}
-				</button>
-
-				<button
-					style={ButtonStyle}
-					className="wp-block-button__link has-border-color has-accent-1-border-color wp-element-button"
-				>
-					<SupportIcon />
-					{__('Support', 'multivendorx')}
-				</button>
 			</div>
 		);
 	},
@@ -81,7 +53,7 @@ registerBlockType('multivendorx/store-engagement-tools', {
 
 		return (
 			<div {...blockProps}>
-				<div className="multivendorx-store-engagement-root"></div>
+				<div className="multivendorx-follow-store"></div>
 			</div>
 		);
 	},
@@ -91,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const activeModules = StoreInfo?.activeModules || [];
 
 	document
-		.querySelectorAll('.multivendorx-store-engagement-root')
+		.querySelectorAll('.multivendorx-follow-store')
 		.forEach((root) => {
 			const container = document.createElement('div');
 			container.className = 'multivendorx-follow-wrapper';

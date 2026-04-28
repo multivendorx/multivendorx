@@ -1,7 +1,7 @@
 {
   "apiVersion": 3,
-  "name": "multivendorx/store-engagement-tools",
-  "title": "Store engagement tools",
+  "name": "multivendorx/follow-store",
+  "title": "Follow Store",
   "category": "multivendorx-store-shop",
   "icon": "button",
   "description": "Enable interactive features that let customers follow stores, ask questions, and connect with sellers in real time.",
