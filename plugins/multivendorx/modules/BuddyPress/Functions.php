@@ -53,7 +53,7 @@ class Functions {
      * Content renderer
      */
     public function bp_shop_tab_content() {
-
+        echo '<div class="woocommerce">';
         echo '<p>' . esc_html__( 'Browse all products listed by this seller across their stores. Each section below represents a different store they manage.', 'multivendorx' ) . '</p>';
 
         $user_id = bp_displayed_user_id();
@@ -82,9 +82,30 @@ class Functions {
                 continue;
             }
 
-            // Optional: Store title
             if ( ! empty( $store['name'] ) ) {
-                echo '<h4>' . sprintf( esc_html__( 'Products from %s', 'multivendorx' ), esc_html( $store['name'] ) ) . '</h4>';
+
+                $store_meta         = Store::get_store( $store_id );
+
+                $store_logo     = $store_meta->meta_data['store_logo']['url'] ?? '';
+                 
+                echo '<h3>';
+
+                // Logo
+                if ( $store_logo ) {
+                    echo '<img src="' . esc_url( $store_logo ) . '" 
+                            alt="' . esc_attr( $store['name'] ) . '" 
+                            style="width:40px;height:40px;border-radius:50%;object-fit:cover;" />';
+                } else {
+                    echo '<div style="width:40px;height:40px;border-radius:50%;background:#eee;"></div>';
+                }
+
+                // Title
+                echo  sprintf(
+                    esc_html__( 'Products from %s', 'multivendorx' ),
+                    esc_html( $store['name'] )
+                );
+
+                echo '</h3>';
             }
 
             $args = array(
@@ -108,7 +129,7 @@ class Functions {
             );
 
             $query = new \WP_Query( $args );
-
+            
             if ( $query->have_posts() ) {
 
                 woocommerce_product_loop_start();
@@ -121,13 +142,13 @@ class Functions {
                 }
 
                 woocommerce_product_loop_end();
-                echo '</div>';
 
             } else {
                 echo '<p>' . esc_html__( 'No products available in this store yet.', 'multivendorx' ) . '</p>';
             }
-
+            
             wp_reset_postdata();
         }
+        echo '</div>';
     }
 }

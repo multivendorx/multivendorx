@@ -377,14 +377,14 @@ export default {
 			],
 			category: 'shipping_management',
 		},
-		{
-			id: 'printful',
-			name: __('Printful', 'multivendorx'),
-			desc: 'Automated product syncing, order fulfillment, and shipping are enabled for all stores via Printful.',			
-			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=printful`,
-			proModule: true,			
-			category: 'shipping_management',
-		},
+		// {
+		// 	id: 'printful',
+		// 	name: __('Printful', 'multivendorx'),
+		// 	desc: 'Automated product syncing, order fulfillment, and shipping are enabled for all stores via Printful.',			
+		// 	settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=printful`,
+		// 	proModule: true,			
+		// 	category: 'shipping_management',
+		// },
 		{
 			type: 'separator',
 			id: 'customer_experience',

@@ -31,10 +31,10 @@
     --borderColor: #dbdbdb;
 
     &.dark {
-        --colorPrimary: #FF5959;
-        --colorSecondary: #FADD3A;
-        --colorAccent: #49BEB6;
-        --colorSupport: #075F63;
+        --colorPrimary: #ff5959b2;
+        --colorSecondary: #fadd3ac5;
+        --colorAccent: #49beb6bd;
+        --colorSupport: #075e63af;
 
         --textColor: #fff;
         --subTextColor: #b6c6e3;
@@ -109,7 +109,7 @@
         --colorBlack: #b6c6e3;
 
         --backgroundColor: #121212;
-        --backgroundWhite: #212631;
+        --backgroundWhite: #192231;
         --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
 
         --borderColor: #ffffff1a;
@@ -168,6 +168,11 @@
     --borderColor: #dbdbdb;
 
     &.dark {
+        --colorPrimary: #0e127a98;
+        --colorSecondary: #399169;
+        --colorAccent: #12E2A4;
+        --colorSupport: #DCF516;
+
         --textColor: #fff;
         --subTextColor: #b6c6e3;
 
@@ -178,7 +183,7 @@
         --backgroundWhite: #212631;
         --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
 
-        --borderColor: #ffffff1a;
+        --borderColor: #aaaaaaa6;
         --box-shadow: #1010106e;
     }
 }
@@ -352,30 +357,34 @@ a:focus {
 }
 
 body.dark {
-    background: #1d222b !important;
+    background: #0b1220 !important;
 
     .analytics-item {
         background: $background-white !important;
         /*overwrite zyra style*/
     }
-
+    .tab-name{
+        .adminfont-setting{
+            color: #fff;
+        }
+    }
     .site-name {
         color: #fff !important;
-    }  
+    }
 
     // header background color
     .card-header,
     .table-wrapper .admin-table,
     .table-wrapper .admin-pagination,
-    .dropdown-menu .dropdown-header{
-        background: #ffffff08;
+    .dropdown-menu .dropdown-header {
+        background: #192231;
     }
 
     // card header color
-    .card-content{
-        border-color: #ffffff1a
-    }
-    
+    // .card-content{
+    //     border-color: #d8d5d5
+    // }
+
 }
 
 #store-dashboard .showing-number select {

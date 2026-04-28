@@ -360,20 +360,22 @@ const Dashboard = () => {
 			)}
 			<div className="dashboard-tabs-wrapper">
 				<div className="logo-wrapper">
-					{store_dashboard_logo ? (
-						<img src={store_dashboard_logo} alt="Site Logo" />
-					) : (
-						<a
-							href={appLocalizer.site_url}
-							target="_blank"
-							rel="noopener noreferrer"
-							className="site-name"
-							>
-							{isMenuCollapsed && isMenuMinimize
-								? appLocalizer.site_name.charAt(0).toUpperCase()
-								: appLocalizer.site_name}
-							</a>
-					)}
+					<a
+					href={appLocalizer.site_url}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="site-name"
+					>
+						{store_dashboard_logo ? (
+							<img src={store_dashboard_logo} alt="Site Logo" />
+						) : (
+							<>
+								{isMenuCollapsed && isMenuMinimize
+									? appLocalizer.site_name.charAt(0).toUpperCase()
+									: appLocalizer.site_name}
+							</>							
+						)}
+					</a>
 				</div>
 
 				{storeData?.status === 'active' && (
@@ -415,7 +417,7 @@ const Dashboard = () => {
 												className={({ isActive }) =>
 													`tab ${isActive ? 'active' : ''}`
 												}
-												to={`/${key}`} // ← always a path; NavLink works in both BrowserRouter & MemoryRouter
+												to={key === DEFAULT_TAB ? '/' : `/${key}`} // ← always a path; NavLink works in both BrowserRouter & MemoryRouter
 												onClick={() =>
 													setCurrentTab(key)
 												}
