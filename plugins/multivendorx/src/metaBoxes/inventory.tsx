@@ -91,9 +91,9 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 						>
 							<BasicInputUI
 								name="stock"
-								value={product.stock}
+								value={product.stock_quantity}
 								onChange={(value) =>
-									handleChange('stock', value)
+									handleChange('stock_quantity', value)
 								}
 							/>
 						</FormGroup>
