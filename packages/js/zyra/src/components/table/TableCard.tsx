@@ -238,113 +238,118 @@ const TableCard: React.FC<TableCardProps> = ({
                 (showMenu && showColumnToggleIcon)) && (
                 <div className="admin-top-filter">
                     {/* Category Filter - Integrated directly (was CategoryFilter component) */}
-                    <div className="filter-wrapper">
-                        {visibleCategories.length > 0 && (
-                            <div className="filters category">
-                                {visibleCategories.map(
-                                    ({ label, value, count }) => (
-                                        <div
-                                            key={value}
-                                            className={`filter-item ${
-                                                (query.categoryFilter ||
-                                                    activeCategory) === value
-                                                    ? 'active'
-                                                    : ''
-                                            }`}
-                                            onClick={() =>
-                                                handleCategoryChange(value)
-                                            }
-                                        >
-                                            {label} ({count})
-                                        </div>
-                                    )
+                    {(visibleCategories.length > 0 ||
+                        visibleLanguages.length > 0) && (
+                        <>
+                            <div className="filter-wrapper">
+                                {visibleCategories.length > 0 && (
+                                    <div className="filters category">
+                                        {visibleCategories.map(
+                                            ({ label, value, count }) => (
+                                                <div
+                                                    key={value}
+                                                    className={`filter-item ${
+                                                        (query.categoryFilter ||
+                                                            activeCategory) === value
+                                                            ? 'active'
+                                                            : ''
+                                                    }`}
+                                                    onClick={() =>
+                                                        handleCategoryChange(value)
+                                                    }
+                                                >
+                                                    {label} ({count})
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
+                                )}
+                                {visibleLanguages.length > 0 && (
+                                    <div className="filter language">
+                                        {visibleLanguages.map(
+                                            ({ label, value, count }) => (
+                                                <div
+                                                    key={value}
+                                                    className={`filter-item ${
+                                                        (query.languageFilter ||
+                                                            activeLanguageFilter) ===
+                                                        value
+                                                            ? 'active'
+                                                            : ''
+                                                    }`}
+                                                    onClick={() =>
+                                                        handleLanguageChange(value)
+                                                    }
+                                                >
+                                                    {label} ({count})
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
                                 )}
                             </div>
-                        )}
-                        {visibleLanguages.length > 0 && (
-                            <div className="filter language">
-                                {visibleLanguages.map(
-                                    ({ label, value, count }) => (
-                                        <div
-                                            key={value}
-                                            className={`filter-item ${
-                                                (query.languageFilter ||
-                                                    activeLanguageFilter) ===
-                                                value
-                                                    ? 'active'
-                                                    : ''
-                                            }`}
-                                            onClick={() =>
-                                                handleLanguageChange(value)
+                            <div className="table-action-wrapper">
+                                {buttonActions && (
+                                    <ButtonActions
+                                        actions={buttonActions}
+                                        query={query}
+                                    />
+                                )}
+                                {search && (
+                                    <HeaderSearch
+                                        search={{
+                                            placeholder: search.placeholder,
+                                            options: search.options,
+                                        }}
+                                        width={search.size}
+                                        onQueryUpdate={(payload) => {
+                                            onQueryChange('searchValue')(
+                                                payload.searchValue
+                                            );
+                                            if ('searchAction' in payload) {
+                                                onQueryChange('searchAction')(
+                                                    String(payload.searchAction)
+                                                );
                                             }
-                                        >
-                                            {label} ({count})
-                                        </div>
-                                    )
+                                        }}
+                                    />
+                                )}
+                                {showMenu && showColumnToggleIcon && (
+                                    <PopupUI
+                                        position="menu-dropdown"
+                                        toggleIcon="more-vertical"
+                                        tooltipName="Manage display"
+                                        tooltipPosition="end"
+                                    >
+                                        <ItemListUI
+                                            className="default table-menu"
+                                            items={Object.entries(headers)
+                                                .filter(
+                                                    ([_, config]) => !config.required
+                                                )
+                                                .map(([key, config]) => ({
+                                                    id: key,
+                                                    title: config.label,
+                                                    action: () => onColumnToggle(key),
+                                                    tags: (
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={showCols.includes(
+                                                                key
+                                                            )}
+                                                            onChange={(e) => {
+                                                                e.stopPropagation();
+                                                                onColumnToggle(key);
+                                                            }}
+                                                        />
+                                                    ),
+                                                }))}
+                                        />
+                                    </PopupUI>
                                 )}
                             </div>
-                        )}
-                    </div>
-                    <div className="table-action-wrapper">
-                        {buttonActions && (
-                            <ButtonActions
-                                actions={buttonActions}
-                                query={query}
-                            />
-                        )}
-                        {search && (
-                            <HeaderSearch
-                                search={{
-                                    placeholder: search.placeholder,
-                                    options: search.options,
-                                }}
-                                width={search.size}
-                                onQueryUpdate={(payload) => {
-                                    onQueryChange('searchValue')(
-                                        payload.searchValue
-                                    );
-                                    if ('searchAction' in payload) {
-                                        onQueryChange('searchAction')(
-                                            String(payload.searchAction)
-                                        );
-                                    }
-                                }}
-                            />
-                        )}
-                        {showMenu && showColumnToggleIcon && (
-                            <PopupUI
-                                position="menu-dropdown"
-                                toggleIcon="more-vertical"
-                                tooltipName="Manage display"
-                                tooltipPosition="end"
-                            >
-                                <ItemListUI
-                                    className="default table-menu"
-                                    items={Object.entries(headers)
-                                        .filter(
-                                            ([_, config]) => !config.required
-                                        )
-                                        .map(([key, config]) => ({
-                                            id: key,
-                                            title: config.label,
-                                            action: () => onColumnToggle(key),
-                                            tags: (
-                                                <input
-                                                    type="checkbox"
-                                                    checked={showCols.includes(
-                                                        key
-                                                    )}
-                                                    onChange={(e) => {
-                                                        e.stopPropagation();
-                                                        onColumnToggle(key);
-                                                    }}
-                                                />
-                                            ),
-                                        }))}
-                                />
-                            </PopupUI>
-                        )}
-                    </div>
+                        </>
+                    )}
                 </div>
             )}
 

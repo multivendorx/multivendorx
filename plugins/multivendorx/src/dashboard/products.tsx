@@ -412,7 +412,7 @@ const AllProduct: React.FC = () => {
 		},
 		stock_status: {
 			label: __('Stock', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
+			type: 'status' , statusClass: (row) => `${row.stock_status}`,
 			ClassName: 'transparent-status',
 		},
 		categories: {

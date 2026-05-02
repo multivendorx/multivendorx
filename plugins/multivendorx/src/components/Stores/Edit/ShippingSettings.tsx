@@ -176,7 +176,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 											<BasicInputUI
 												type="number"
 												name="multivendorx_shipping_type_price"
-												size="12rem"
+												size={12}
 												placeholder={__(
 													'0.00',
 													'multivendorx'
@@ -213,7 +213,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 											<BasicInputUI
 												type="number"
 												name="multivendorx_additional_product"
-												size="12rem"
+												size={12}
 												placeholder={__(
 													'0.00',
 													'multivendorx'
@@ -247,7 +247,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 											<BasicInputUI
 												type="number"
 												name="multivendorx_additional_qty"
-												size="12rem"
+												size={12}
 												placeholder={__(
 													'0.00',
 													'multivendorx'
@@ -281,7 +281,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 											<BasicInputUI
 												type="number"
 												name="free_shipping_amount"
-												size="12rem"
+												size={12}
 												placeholder={__(
 													'NO Free Shipping',
 													'multivendorx'
@@ -315,7 +315,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 											<BasicInputUI
 												type="number"
 												name="local_pickup_cost"
-												size="12rem"
+												size={12}
 												placeholder={__(
 													'0.00',
 													'multivendorx'

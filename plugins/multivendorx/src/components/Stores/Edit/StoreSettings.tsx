@@ -512,7 +512,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 								<SelectInputUI
 									type="single-select"
 									name="country_code"
-									size="10rem"
+									size={10}
 									value={formData.country_code || ''}
 									options={CountryCodes}
 									onChange={(selected) =>
@@ -525,7 +525,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 								<BasicInputUI
 									name="phone"
 									type="number"
-									size="12rem"
+									size={12}
 									value={formData.phone || ''}
 									onChange={(value) =>
 										handleChange('phone', value)

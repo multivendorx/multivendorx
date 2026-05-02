@@ -8,7 +8,7 @@ export default {
 		'Manage your store’s shipping method, pricing rules, and location-based rates.',
 		'multivendorx'
 	),
-	headerIcon: 'shipping',
+	headerIcon: 'ship-station',
 	module: 'store-shipping',
 	modal: [],
 };

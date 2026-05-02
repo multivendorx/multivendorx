@@ -660,14 +660,16 @@
 .badge-published,
 .badge-instock,
 .badge-enrolled,
-.badge-refund-accepted {
+.badge-refund-accepted,
+.badge-open {
     color: map-get(map-get($color-palette, green), color);
     background: map-get(map-get($color-palette, green), light-color);
 }
 
 .badge-pending,
 .badge-on-hold,
-.badge-partially_refunded {
+.badge-partially_refunded,
+.badge-resolved {
     color: map-get(map-get($color-palette, yellow), color);
     background: map-get(map-get($color-palette, yellow), light-color);
 }
@@ -689,7 +691,8 @@
 .badge-failed,
 .badge-expired,
 .badge-unenroll,
-.badge-outofstock {
+.badge-outofstock,
+.badge-closed {
     color: map-get(map-get($color-palette, red), color);
     background: map-get(map-get($color-palette, red), light-color);
 }

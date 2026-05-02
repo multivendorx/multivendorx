@@ -67,7 +67,7 @@ class Tracker {
 
     private function wrap_deactivate_link( string $link ): string {
         $slug = esc_attr( $this->slug );
-        $modal = '<div class="modal-wrap" id="modal-' . $slug . '">'
+        $modal = '<div class="modal-wrap" id="modal-' . $slug . '" style="display: none">'
                .     '<div class="modal-bg"></div>'
                .     '<div class="modal-box" id="modal-box-' . $slug . '"></div>'
                . '</div>';
