@@ -95,7 +95,7 @@ class Util {
             )
 		);
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 		return $result;
@@ -132,7 +132,7 @@ class Util {
             )
 		);
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 
@@ -162,7 +162,7 @@ class Util {
 			}
 		}
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 	}
@@ -185,7 +185,7 @@ class Util {
             )
 		);
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 
@@ -208,7 +208,7 @@ class Util {
             )
 		);
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 
@@ -250,7 +250,7 @@ class Util {
 			$averages[ $param_value ] = $avg ? round( $avg, 2 ) : 0;
 		}
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 
@@ -273,7 +273,7 @@ class Util {
             )
 		);
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 
@@ -308,7 +308,7 @@ class Util {
 		);
         // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 		return $result;
@@ -419,7 +419,7 @@ class Util {
 		: $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
         // Log DB error if any.
-        if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+        if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
         }
 
@@ -477,7 +477,7 @@ class Util {
             $where_format
 		);
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 
@@ -528,7 +528,7 @@ class Util {
 
 		$wpdb->query( 'COMMIT' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 

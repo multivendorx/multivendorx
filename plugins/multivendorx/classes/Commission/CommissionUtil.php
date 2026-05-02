@@ -36,7 +36,7 @@ class CommissionUtil {
             $wpdb->prepare( "SELECT * FROM {$table_name} WHERE ID = %d", $id ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		);
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 
@@ -68,7 +68,7 @@ class CommissionUtil {
             $wpdb->prepare( "SELECT * FROM {$table_name} WHERE store_id = %d AND order_id = %d", $store_id, $order_id ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		);
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 
@@ -169,7 +169,7 @@ class CommissionUtil {
         }
 
         /** Centralized error logging */
-        if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+        if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
         }
 
@@ -224,7 +224,7 @@ class CommissionUtil {
             // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
             // phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
 
-            if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+            if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
                 MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
             }
 
@@ -323,7 +323,7 @@ class CommissionUtil {
         $result = $wpdb->get_row( $wpdb->prepare( $query, $params ) );
         // phpcs:enable
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 

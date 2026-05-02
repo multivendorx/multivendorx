@@ -176,7 +176,7 @@ class Util {
             return $wpdb->insert_id;
         }
 
-        if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+        if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log(
                 'Database operation failed',
                 'ERROR',
@@ -257,7 +257,7 @@ class Util {
             $where_format
         );
 
-        if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+        if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log(
                 'Database operation failed',
                 'ERROR',

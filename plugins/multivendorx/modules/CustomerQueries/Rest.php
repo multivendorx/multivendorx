@@ -447,7 +447,7 @@ class Rest extends \WP_REST_Controller {
             ? trim( $author_data->first_name . ' ' . $author_data->last_name )
             : ( $author_data->display_name ?? '' );
 
-        $store_obj  = MultivendorX()->store->get_store( $q['store_id'] );
+        $store_obj  = MultiVendorX()->store->get_store( $q['store_id'] );
         $store_name = $store_obj ? $store_obj->get( 'name' ) : '';
 
         return array(

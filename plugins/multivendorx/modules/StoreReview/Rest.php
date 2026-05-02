@@ -599,7 +599,7 @@ class Rest extends \WP_REST_Controller {
     public function prepare_rest_item_for_response( $review ) {
         $customer      = get_userdata( $review['customer_id'] );
         $customer_name = $customer ? $customer->display_name : __( 'Guest', 'multivendorx' );
-        $store_obj     = MultivendorX()->store->get_store( (int) $review['store_id'] );
+        $store_obj     = MultiVendorX()->store->get_store( (int) $review['store_id'] );
 
         return array(
             'id'                => (int) $review['review_id'],

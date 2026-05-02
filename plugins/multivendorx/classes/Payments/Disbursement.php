@@ -71,7 +71,7 @@ class Disbursement {
                 array( '%d', '%d', '%d', '%s', '%s', '%f', '%s', '%s', '%s', '%s', '%s' )
             );
 
-            if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+            if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
                 MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
             }
         }
@@ -96,7 +96,7 @@ class Disbursement {
         );
         // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-        if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+        if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
         }
 

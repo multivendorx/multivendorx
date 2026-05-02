@@ -96,7 +96,7 @@ class Store {
             $this->meta_data = $this->get_all_meta();
         }
 
-        if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+        if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
         }
     }
@@ -156,7 +156,7 @@ class Store {
             $this->id = $wpdb->insert_id;
         }
 
-        if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+        if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
         }
 
@@ -196,7 +196,7 @@ class Store {
             $value = $wpdb->get_col( $sql );
         }
 
-        if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+        if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
         }
 
@@ -227,7 +227,7 @@ class Store {
 			$meta[ $row['meta_key'] ] = maybe_unserialize( $row['meta_value'] );
 		}
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 
@@ -286,7 +286,7 @@ class Store {
 			);
 		}
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 	}
@@ -421,7 +421,7 @@ class Store {
 					return null;
 			}
 		} catch ( \Exception $e ) {
-			if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+			if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 				MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 			}
 		}
@@ -460,7 +460,7 @@ class Store {
 
 		$exists = (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 
@@ -511,7 +511,7 @@ class Store {
             array( '%d', '%s' )
 		);
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 	}
@@ -533,7 +533,7 @@ class Store {
             array( '%d' )
         );
 
-        if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+        if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
         }
 
@@ -569,7 +569,7 @@ class Store {
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->delete( $store_table, array( 'ID' => $store_id ), array( '%d' ) );
 
-        if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+        if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
         }
 

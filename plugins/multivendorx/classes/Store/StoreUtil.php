@@ -66,7 +66,7 @@ class StoreUtil {
 			}
 		}
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 	}
@@ -91,7 +91,7 @@ class StoreUtil {
 		);
 		$user_ids         = wp_parse_id_list( wp_list_pluck( $users, 'user_id' ) );
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 
@@ -115,7 +115,7 @@ class StoreUtil {
             ARRAY_A
 		);
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 
@@ -355,7 +355,7 @@ class StoreUtil {
         }
 
         // Fetch form settings.
-        $form_settings = MultivendorX()->setting->get_option(
+        $form_settings = MultiVendorX()->setting->get_option(
             'multivendorx_store_registration_form_settings',
             array()
         );
@@ -490,7 +490,7 @@ class StoreUtil {
             )
 		);
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 
@@ -541,7 +541,7 @@ class StoreUtil {
 			);
 		}
 
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 	}
@@ -620,7 +620,7 @@ class StoreUtil {
 		}
 
 		/** Centralized error logging (only once) */
-		if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
 
@@ -640,7 +640,7 @@ class StoreUtil {
         $store_id = ! empty( $store_id ) ? $store_id : get_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], true );
 
         if ( ! $store_id ) {
-            return false;
+            return apply_filters( 'multivendorx_get_excluded_products', false, $product_id );
         }
         $store       = Store::get_store( $store_id );
         $status      = $store->get( 'status' );
