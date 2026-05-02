@@ -3,14 +3,14 @@ import { __, sprintf } from '@wordpress/i18n';
 export default {
     id: 'wholesale',
     priority: 60,
-    name: __( 'Wholesale', 'catalogx' ),
-    desc: __( 'Wholesale sign up and registration management.', 'catalogx' ),
-    icon: 'adminlib-wholesale',
+    headerTitle: __( 'Wholesale', 'catalogx' ),
+    headerDescription: __( 'Wholesale sign up and registration management.', 'catalogx' ),
+    headerIcon: 'wholesale',
     submitUrl: 'settings',
     modal: [
         {
             key: 'approve_wholesaler',
-            type: 'setting-toggle',
+            type: 'choice-toggle',
             label: __(
                 'Approval of wholesale users through registration form',
                 'catalogx'

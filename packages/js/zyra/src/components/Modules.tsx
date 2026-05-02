@@ -463,7 +463,7 @@ const Modules: React.FC<ModuleProps> = ({
                                                         target="_blank"
                                                         rel="noreferrer"
                                                     >
-                                                        <i className="adminfont-book" />
+                                                        <i className="adminfont-document" />
                                                     </a>
                                                 )}
                                                 {module.videoLink && (

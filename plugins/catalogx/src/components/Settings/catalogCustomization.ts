@@ -4,12 +4,12 @@ import SampleProduct from '../../assets/images/sample-product.jpg';
 export default {
     id: 'enquiry-catalog-customization',
     priority: 10,
-    name: __( 'Product Page Builder', 'catalogx' ),
-    desc: __(
+    headerTitle: __( 'Product Page Builder', 'catalogx' ),
+    headerDescription: __(
         'Drag-and-drop to create and customize single product page elements.',
         'catalogx'
     ),
-    icon: 'adminlib-web-page-website',
+    headerIcon: 'web-page-website',
     submitUrl: 'settings',
     modal: [
         {

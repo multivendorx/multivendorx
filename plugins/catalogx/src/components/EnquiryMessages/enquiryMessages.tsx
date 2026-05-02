@@ -1,42 +1,31 @@
 import React, { useState } from 'react';
-import './enquiryMessages.scss';
-import Dialog from '@mui/material/Dialog';
-import ShowPopup from '../Popup/Popup';
+import '../common.scss';
+import { PopupUI } from 'zyra';
+import ShowProPopup from '../Popup/Popup';
 
 const EnquiryMessages = () => {
-    const [ openDialog, setOpenDialog ] = useState( false );
+    const [openPopup, setopenPopup] = useState(false);
 
     return (
-        <>
-            <div id="enquiry-messages">
-                <Dialog
-                    className="admin-module-popup"
-                    open={ openDialog }
-                    onClose={ () => {
-                        setOpenDialog( false );
-                    } }
-                    aria-labelledby="form-dialog-title"
+        <div id="enquiry-messages">
+            {openPopup && (
+                <PopupUI
+                    position="lightbox"
+                    open={openPopup}
+                    onClose={() => setopenPopup(false)}
+                    width={31.25}
+                    height="auto"
                 >
-                    <span
-                        className="admin-font adminlib-cross"
-                        onClick={ () => {
-                            setOpenDialog( false );
-                        } }
-                    ></span>
-                    { ! appLocalizer.khali_dabba ? (
-                        <ShowPopup />
-                    ) : (
-                        <ShowPopup moduleName="Enquiry" />
-                    ) }
-                </Dialog>
-                <div
-                    className="enquiry-img image-wrapper"
-                    onClick={ () => {
-                        setOpenDialog( true );
-                    } }
-                ></div>
-            </div>
-        </>
+                    <ShowProPopup />
+                </PopupUI>
+            )}
+            <div
+                className="enquiry-img image-wrapper"
+                onClick={() => {
+                    setopenPopup(true);
+                }}
+            ></div>
+        </div>
     );
 };
 

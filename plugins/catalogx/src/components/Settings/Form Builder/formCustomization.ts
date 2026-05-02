@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'enquiry-form-customization',
     priority: 30,
-    name: __( 'Enquiry Form Builder', 'catalogx' ),
-    desc: __(
+    headerTitle: __( 'Enquiry Form Builder', 'catalogx' ),
+    headerDescription: __(
         'Design a personalized enquiry form with built-in form builder.',
         'catalogx'
     ),
-    icon: 'adminlib-contact-form',
+    headerIcon: 'contact-form',
     submitUrl: 'settings',
     modal: [
         {

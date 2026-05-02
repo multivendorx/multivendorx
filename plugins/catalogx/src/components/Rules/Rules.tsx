@@ -1,52 +1,41 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import './Rules.scss';
-import Dialog from '@mui/material/Dialog';
-import ShowPopup from '../Popup/Popup';
-import { AdminBreadcrumbs } from 'zyra';
+import { NavigatorHeader, PopupUI } from 'zyra';
+import ShowProPopup from '../Popup/Popup';
+import { __ } from '@wordpress/i18n';
 
 const Rules = () => {
-    // State variable declearation
-    const [ openDialog, setOpenDialog ] = useState( false );
+    const [openPopup, setopenPopup] = useState(false);
 
     return (
-        <>
-            <main
-                className="catalog-rules-main-container"
-                id="rules-list-table"
-            >
-                <Dialog
-                    className="admin-module-popup"
-                    open={ openDialog }
-                    onClose={ () => {
-                        setOpenDialog( false );
-                    } }
-                    aria-labelledby="form-dialog-title"
+        <div id="rules-list-table">
+            {openPopup && (
+                <PopupUI
+                    position="lightbox"
+                    open={openPopup}
+                    onClose={() => setopenPopup(false)}
+                    width={31.25}
+                    height="auto"
                 >
-                    <span
-                        className="admin-font adminlib-cross"
-                        onClick={ () => {
-                            setOpenDialog( false );
-                        } }
-                    ></span>
-                    { ! appLocalizer.khali_dabba ? (
-                        <ShowPopup />
-                    ) : (
-                        <ShowPopup moduleName="Rules" />
-                    ) }
-                </Dialog>
-                <AdminBreadcrumbs
-                    activeTabIcon="adminlib-rules"
-                    tabTitle="Rules"
-                />
-                <div
-                    className="dynamic-rule-img image-wrapper"
-                    onClick={ () => {
-                        setOpenDialog( true );
-                    } }
-                ></div>
-            </main>
-        </>
+                    <ShowProPopup />
+                </PopupUI>
+            )}
+            <NavigatorHeader
+                headerIcon="rules"
+                headerDescription={__(
+                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, facere atque alias quasi aperiam nesciunt.',
+                    'catalogx'
+                )}
+                headerTitle={__('Rules', 'catalogx')}
+            />
+            <div
+                className="dynamic-rule-img image-wrapper"
+                onClick={() => {
+                    setopenPopup(true);
+                }}
+            ></div>
+        </div>
     );
 };
 

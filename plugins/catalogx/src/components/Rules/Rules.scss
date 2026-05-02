@@ -1,13 +1,5 @@
 @use '../config.scss' as *;
 
-.dynamic-rule-img {
-    background-image: url("../../assets/images/dynamic-pro.png");
-    background-repeat: no-repeat;
-    background-position: top center;
-    background-size: contain;
-    height: 100vh;
-}
-
 .draggable-rule-container {
     margin-top: 0.5rem;
 

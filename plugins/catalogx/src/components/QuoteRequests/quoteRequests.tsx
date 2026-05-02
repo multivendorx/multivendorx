@@ -1,46 +1,39 @@
-import Dialog from '@mui/material/Dialog';
 import React, { useState } from 'react';
-import ShowPopup from '../Popup/Popup';
-import './quoteRequests.scss';
-import { AdminBreadcrumbs } from 'zyra';
+import '../common.scss';
+import { NavigatorHeader, PopupUI } from 'zyra';
+import ShowProPopup from '../Popup/Popup';
+import { __ } from '@wordpress/i18n';
 
 export default function QuotesList() {
-    const [ openDialog, setOpenDialog ] = useState( false );
+    const [openPopup, setopenPopup] = useState(false);
 
     return (
         <>
-            <div id="quote-list-table">
-                <Dialog
-                    className="admin-module-popup"
-                    open={ openDialog }
-                    onClose={ () => {
-                        setOpenDialog( false );
-                    } }
-                    aria-labelledby="form-dialog-title"
+            {openPopup && (
+                <PopupUI
+                    position="lightbox"
+                    open={openPopup}
+                    onClose={() => setopenPopup(false)}
+                    width={31.25}
+                    height="auto"
                 >
-                    <span
-                        className="admin-font adminlib-cross"
-                        onClick={ () => {
-                            setOpenDialog( false );
-                        } }
-                    ></span>
-                    { ! appLocalizer.khali_dabba ? (
-                        <ShowPopup />
-                    ) : (
-                        <ShowPopup moduleName="Quote" />
-                    ) }
-                </Dialog>
-                <AdminBreadcrumbs
-                    activeTabIcon="adminlib-quote"
-                    tabTitle="Quote Requests"
-                />
-                <div
-                    className="quote-img image-wrapper"
-                    onClick={ () => {
-                        setOpenDialog( true );
-                    } }
-                ></div>
-            </div>
+                    <ShowProPopup />
+                </PopupUI>
+            )}
+            <NavigatorHeader
+                headerIcon="quote"
+                headerDescription={__(
+                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, facere atque alias quasi aperiam nesciunt.',
+                    'catalogx'
+                )}
+                headerTitle={__('Quote Requests', 'catalogx')}
+            />
+            <div
+                className="quote-img image-wrapper"
+                onClick={() => {
+                    setopenPopup(true);
+                }}
+            ></div>
         </>
     );
 }

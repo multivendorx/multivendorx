@@ -1,0 +1,22 @@
+.image-wrapper {
+    background-repeat: no-repeat;
+    background-position: top left;
+    background-size: contain;
+    height: 100vh;
+
+    &.wholesale-user-image {
+        background-image: url("../assets/images/wholesale-pro.png");
+    }
+
+    &.dynamic-rule-img {
+        background-image: url("../assets/images/dynamic-pro.png");
+    }
+
+    &.quote-img {
+        background-image: url("../assets/images/quote-page-desktop.png");
+    }
+
+    &.enquiry-img {
+        background-image: url("../assets/images/enquiry-page-desktop.png");
+    }
+}

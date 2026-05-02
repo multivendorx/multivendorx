@@ -1,46 +1,39 @@
 import React, { useState } from 'react';
-import Dialog from '@mui/material/Dialog';
-import ShowPopup from '../Popup/Popup';
-import './wholesaleUser.scss';
-import { AdminBreadcrumbs } from 'zyra';
+import ShowProPopup from '../Popup/Popup';
+import '../common.scss';
+import { __ } from '@wordpress/i18n';
+import {  NavigatorHeader, PopupUI } from 'zyra';
 
 const WholesaleUser = () => {
-    const [ openDialog, setOpenDialog ] = useState( false );
+    const [openPopup, setopenPopup] = useState(false);
 
     return (
         <>
-            <AdminBreadcrumbs
-                activeTabIcon="adminlib-wholesale"
-                tabTitle="Wholesale User"
-            />
-            <div id="wholesale-list-table">
-                <Dialog
-                    className="admin-module-popup"
-                    open={ openDialog }
-                    onClose={ () => {
-                        setOpenDialog( false );
-                    } }
-                    aria-labelledby="form-dialog-title"
+            {openPopup && (
+                <PopupUI
+                    position="lightbox"
+                    open={openPopup}
+                    onClose={() => setopenPopup(false)}
+                    width={31.25}
+                    height="auto"
                 >
-                    <span
-                        className="admin-font adminlib-cross"
-                        onClick={ () => {
-                            setOpenDialog( false );
-                        } }
-                    ></span>
-                    { ! appLocalizer.khali_dabba ? (
-                        <ShowPopup />
-                    ) : (
-                        <ShowPopup moduleName="wholesale" />
-                    ) }
-                </Dialog>
-                <div
-                    className="image-wrapper wholesale-user-image"
-                    onClick={ () => {
-                        setOpenDialog( true );
-                    } }
-                ></div>
-            </div>
+                    <ShowProPopup />
+                </PopupUI>
+            )}
+            <NavigatorHeader
+                headerIcon="wholesale"
+                headerDescription={__(
+                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, facere atque alias quasi aperiam nesciunt.',
+                    'catalogx'
+                )}
+                headerTitle={__('Wholesale User', 'catalogx')}
+            />
+            <div
+                className="image-wrapper wholesale-user-image"
+                onClick={() => {
+                    setopenPopup(true);
+                }}
+            ></div>
         </>
     );
 };

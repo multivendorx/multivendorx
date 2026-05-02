@@ -1,0 +1,294 @@
+@use '../config.scss' as *;
+
+// welcome section start
+.pro-banner-wrapper {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    .heading {
+        font-size: 1.75rem;
+        line-height: 2.313rem;
+        font-weight: 600;
+        color: #000000d1;
+    }
+
+    .description {
+        font-size: 0.9rem;
+        padding: 0.313rem 0;
+        margin-bottom: 2rem;
+        line-height: 1.313rem;
+    }
+
+    .button-wrapper {
+        display: flex;
+    }
+
+    a:hover {
+        color: #000;
+    }
+
+    .image {
+        display: flex;
+        flex-direction: column;
+        align-items: end;
+
+        img {
+            width: 11rem;
+        }
+    }
+}
+
+// welcome section end
+
+// section pro banner
+.pro-banner {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: $border-radius-small;
+    margin-top: 2rem;
+
+    .text {
+        font-size: 1.25rem;
+        color: #000;
+    }
+
+    .des {
+        padding-bottom: 0.813rem;
+    }
+}
+
+// pro banner end
+
+.cards {
+    .title-wrapper {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 2.5rem;
+
+        div {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        span {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+    }
+
+    .card-body {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+
+        .value {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+
+            span {
+                font-size: 1.7rem;
+                font-weight: 600;
+            }
+
+            a {
+                text-decoration: underline;
+                color: $text-color;
+            }
+        }
+
+        .icon {
+            padding: 0.625rem;
+            font-size: 1.8rem;
+            color: $theme-color;
+            background: #5007aa26;
+            border-radius: $border-radius-small;
+        }
+    }
+}
+
+// help support tab start
+.support-wrapper {
+    .support-item {
+        display: flex;
+        gap: 1rem;
+        padding: 0.313rem;
+        margin-bottom: 0.313rem;
+        border-bottom: $border-light-small;
+
+        .image {
+            i {
+                font-size: 1.45rem;
+                color: $theme-color;
+            }
+        }
+
+        .details {
+            .name {
+                font-size: 1.063rem;
+                color: $text-color;
+                padding-bottom: 0.313rem;
+            }
+        }
+    }
+}
+
+.video-section {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+
+    .details-wrapper {
+        width: 33%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 0.813rem;
+
+        .title {
+            font-size: 1.45rem;
+            line-height: 1.5rem;
+            text-align: center;
+        }
+
+        .des {
+            font-size: 0.95rem;
+            color: #616060ee;
+            text-align: center;
+
+        }
+    }
+
+    .video-wrapper {
+        width: 33%;
+        padding: 1rem;
+        border: $border-light-small;
+        border-radius: $border-radius-small;
+
+        iframe {
+            width: 100%;
+            max-height: 31.25rem;
+            height: 12rem;
+        }
+
+        .title {
+            font-size: 1.125rem;
+            line-height: 1.5rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+        }
+
+        .des {
+            padding: 0 1rem;
+        }
+    }
+}
+
+// help support tab end
+
+.right-pro-banner {
+    .title {
+        font-size: 1.45rem;
+        line-height: 1.313rem;
+        color: $text-color;
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+
+    .des {
+        font-size: 0.9rem;
+        padding-top: 0.5rem;
+    }
+
+    .image-wrapper {
+        text-align: center;
+        margin: 0;
+        margin-bottom: 1.5rem;
+
+        img {
+            height: 20rem;
+        }
+    }
+
+    ul {
+        margin: 2rem 0;
+        display: flex;
+        flex-wrap: wrap;
+
+        li {
+            width: 48%;
+            color: #000;
+            line-height: 1rem;
+            margin-bottom: 0.625rem;
+
+            i {
+                color: $theme-color;
+                font-size: 1.063rem;
+                padding-right: 0.5rem;
+            }
+        }
+    }
+
+    .button-wrapper {
+        display: flex;
+    }
+}
+
+//  free vs pro tabel start
+.free-vs-pro {
+    .buttons-wrapper {
+        margin-top: 0.5rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 0.063rem solid $theme-background-color;
+
+        thead {
+            tr {
+                background: $theme-background-color;
+                color: $theme-color;
+                font-size: 1.25rem;
+            }
+        }
+
+        tr {
+            td {
+                padding: 0.625rem;
+                font-size: 1rem;
+
+                .close-icon {
+                    color: #f06b4f;
+                }
+
+                .check-icon {
+                    color: $theme-color;
+                }
+            }
+        }
+
+        tbody {
+            tr:nth-child(even) {
+                background: #f8f9fa;
+                ;
+            }
+        }
+
+        td:first-child {
+            width: 70%;
+        }
+
+        td:nth-child(2),
+        td:nth-child(3) {
+            width: 15%;
+        }
+    }
+}
+
+// free vs pro tabel end

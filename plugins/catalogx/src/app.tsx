@@ -8,11 +8,13 @@ import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
 import WholesaleUser from './components/WholesaleUser/wholesaleUser';
 import Rules from './components/Rules/Rules';
 import gif from './assets/images/product-page-builder.gif';
-import { TourProvider } from '@reactour/tour';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
-import { AdminHeader, Banner, Tour, initializeModules } from 'zyra';
+import { AdminHeader, GuidedTourProvider, Notice, initializeModules } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import Brand from './assets/images/Brand.png';
+import AdminDashboard from './components/AdminDashboard/AdminDashboard';
+import HelpSupport from './components/HelpSupport/HelpSupport';
+import { getTourSteps } from './components/Tour/Tours';
 
 const disableBody = ( target: any ) => disableBodyScroll( target );
 const enableBody = ( target: any ) => enableBodyScroll( target );
@@ -26,6 +28,7 @@ const Route = () => {
     const currentTab = new URLSearchParams( useLocation().hash );
     return (
         <>
+            { currentTab.get( 'tab' ) === 'dashboard' && ( <AdminDashboard /> ) }
             { currentTab.get( 'tab' ) === 'settings' && (
                 <Settings id={ 'settings' } />
             ) }
@@ -40,45 +43,31 @@ const Route = () => {
                 <EnquiryMessages />
             ) }
             { currentTab.get( 'tab' ) === 'rules' && <Rules /> }
+            { currentTab.get( 'tab' ) === 'help-support' && ( <HelpSupport /> ) }
         </>
     );
 };
-const products: Products[] = [
-    {
-        title: __( 'Double Opt-In', 'catalogx' ),
-        description: __(
-            'Experience the power of Double Opt-In for our Stock Alert Form - Guaranteed precision in every notification!',
-            'catalogx'
-        ),
-    },
-    {
-        title: __( 'Your Subscription Hub', 'catalogx' ),
-        description: __(
-            'Subscription Dashboard - Easily monitor and download lists of out-of-stock subscribers for seamless management.',
-            'catalogx'
-        ),
-    },
-    {
-        title: __( 'Mailchimp Bridge', 'catalogx' ),
-        description: __(
-            'Seamlessly link WooCommerce out-of-stock subscriptions with Mailchimp for effective marketing.',
-            'catalogx'
-        ),
-    },
-    {
-        title: __( 'Unsubscribe Notifications', 'catalogx' ),
-        description: __(
-            'User-Initiated Unsubscribe from In-Stock Notifications.',
-            'catalogx'
-        ),
-    },
-    {
-        title: __( 'Ban Spam Emails', 'catalogx' ),
-        description: __(
-            'Email and Domain Blacklist for Spam Prevention.',
-            'catalogx'
-        ),
-    },
+const bannerItem = [
+	__(
+		'<b>Double Opt-In:</b> Experience the power of Double Opt-In for our Stock Alert Form - guaranteed precision in every notification!',
+		'catalogx'
+	),
+	__(
+		'<b>Your Subscription Hub:</b> Subscription Dashboard - easily monitor and download lists of out-of-stock subscribers for seamless management.',
+		'catalogx'
+	),
+	__(
+		'<b>Mailchimp Bridge:</b> Seamlessly link WooCommerce out-of-stock subscriptions with Mailchimp for effective marketing.',
+		'catalogx'
+	),
+	__(
+		'<b>Unsubscribe Notifications:</b> Allow users to unsubscribe from in-stock notifications whenever they want.',
+		'catalogx'
+	),
+	__(
+		'<b>Ban Spam Emails:</b> Prevent spam using email and domain blacklists.',
+		'catalogx'
+	),
 ];
 const App = () => {
     const currentTabParams = new URLSearchParams( useLocation().hash );
@@ -118,34 +107,30 @@ const App = () => {
 
     return (
         <>
-            <Banner
-                products={ products }
-                isPro={ appLocalizer.khali_dabba }
-                proUrl={ appLocalizer.pro_url }
-                tag="Why Premium"
-                buttonText="View Pricing"
-                bgCode="#852aff" // backgroud color
-                textCode="#fff" // text code
-                btnCode="#fff" // button color
-                btnBgCode="#e35047" // button backgroud color
-            />
+            {/* shivam  dynamic banner close */}
+            {/* {!isBannerDismissed && ( */}
+				<Notice
+					uniqueKey="banner"
+					type="banner"
+					validity="lifetime"
+					displayPosition="banner"
+					message={bannerItem}
+					actionLabel="Upgrade Now"
+				/>
+			{/* )} */}
             <AdminHeader
-                brandImg={ Brand }
-                onSelectChange={ handleSelectChange }
-                // free={appLocalizer.freeVersion}
-            />
-            <TourProvider
-                steps={ [] }
-                afterOpen={ disableBody }
-                beforeClose={ enableBody }
-                disableDotsNavigation={ true }
-                showNavigation={ false }
-            >
-                <Tour
-                    appLocalizer={ ( window as any ).appLocalizer }
-                    gif={ gif }
-                />
-            </TourProvider>
+				brandImg={Brand}
+				// results={results}
+				// onQueryUpdate={handleSearchChange}
+				// onResultClick={handleResultClick}
+				free={appLocalizer.free_version}
+				// pro={appLocalizer.pro_data.version}
+				// utilityList={utilityList}
+			/>
+            <GuidedTourProvider
+				appLocalizer={appLocalizer}
+				steps={getTourSteps(appLocalizer)}
+			/>
             <Route />
         </>
     );

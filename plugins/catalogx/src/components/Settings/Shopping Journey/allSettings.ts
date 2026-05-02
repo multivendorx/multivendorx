@@ -2,12 +2,12 @@ import { __, sprintf } from '@wordpress/i18n';
 export default {
     id: 'all-settings',
     priority: 1,
-    name: __( 'Shopping', 'catalogx' ),
-    desc: __(
+    headerTitle: __( 'Shopping', 'catalogx' ),
+    headerDescription: __(
         'Set up sales flow and catalog mode with integrated enquiry and quotation management.',
         'catalogx'
     ),
-    icon: 'adminlib-cart',
+    headerIcon: 'cart',
     submitUrl: 'settings',
     modal: [
         {
@@ -38,6 +38,7 @@ export default {
             key: 'redirect_cart_page',
             type: 'select',
             label: __( 'Cart / Checkout Redirect Page', 'catalogx' ),
+            size: 15,
             options: [
                 {
                     value: '',

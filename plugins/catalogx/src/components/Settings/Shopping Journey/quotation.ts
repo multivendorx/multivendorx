@@ -2,12 +2,12 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'quotation',
     priority: 3,
-    name: __( 'Quotation', 'catalogx' ),
-    desc: __(
+    headerTitle: __( 'Quotation', 'catalogx' ),
+    headerDescription: __(
         'Set up sales flow and catalog mode with integrated enquiry and quotation management.',
         'catalogx'
     ),
-    icon: 'adminlib-cart',
+    headerIcon: 'cart',
     submitUrl: 'settings',
     modal: [
         {

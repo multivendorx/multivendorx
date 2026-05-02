@@ -2,12 +2,12 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'enquiry',
     priority: 2,
-    name: __( 'Enquiry', 'catalogx' ),
-    desc: __(
+    headerTitle: __( 'Enquiry', 'catalogx' ),
+    headerDescription: __(
         'Set up sales flow and catalog mode with integrated enquiry and quotation management.',
         'catalogx'
     ),
-    icon: 'adminlib-cart',
+    headerIcon: 'cart',
     submitUrl: 'settings',
     modal: [
         {
@@ -72,7 +72,7 @@ export default {
         },
         {
             key: 'is_disable_popup',
-            type: 'setting-toggle',
+            type: 'choice-toggle',
             label: __( 'Display enquiry form as', 'catalogx' ),
             desc: __(
                 'Select whether the form is displayed directly on the page or in a pop-up window.',

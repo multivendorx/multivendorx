@@ -3,9 +3,9 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'tools',
     priority: 90,
-    name: __( 'Tools', 'catalogx' ),
-    desc: __( 'Review all system logs and errors', 'catalogx' ),
-    icon: 'adminlib-paint-brush',
+    headerTitle: __( 'Tools', 'catalogx' ),
+    headerDescription: __( 'Review all system logs and errors', 'catalogx' ),
+    headerIcon: 'paint-brush',
     submitUrl: 'settings',
     modal: [
         {

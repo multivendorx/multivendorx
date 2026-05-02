@@ -3,8 +3,8 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'enquiry-email-temp',
     priority: 50,
-    name: __( 'Enquiry Email', 'catalogx' ),
-    desc: __(
+    headerTitle: __( 'Enquiry Email', 'catalogx' ),
+    headerDescription: __(
         'Select your preferred enquiry details email template',
         'catalogx'
     ),
