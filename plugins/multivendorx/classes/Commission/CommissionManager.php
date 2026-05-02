@@ -158,7 +158,7 @@ class CommissionManager {
                 $wpdb->update( $wpdb->prefix . Utill::TABLES['commission'], $data, array( 'ID' => $commission_id ), $format );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
             }
 
-            if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+            if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
                 MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
             }
 
@@ -735,7 +735,7 @@ class CommissionManager {
                 );
             }
 
-            if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
+            if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
                 MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
             }
 
