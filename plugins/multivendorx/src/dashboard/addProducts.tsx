@@ -112,9 +112,7 @@ const AddProduct = () => {
 
 		const payload = {
 			...product,
-			status: appLocalizer.current_user?.allcaps?.publish_products
-				? 'publish'
-				: 'draft',
+			status: product.status ? product.status : appLocalizer.current_user?.allcaps?.publish_products ? 'publish' : 'draft',
 			images: imagePayload,
 			meta_data: [
 				...product.meta_data,
