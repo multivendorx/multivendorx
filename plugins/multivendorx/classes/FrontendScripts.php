@@ -382,21 +382,20 @@ class FrontendScripts {
 
         $store_ids = array();
         $all_meta  = array();
-        if ( ! is_admin() ) {
-            $store_ids    = Store::get_store( MultiVendorX()->current_user_id, 'user' );
+        if ( !is_admin() ) {
             $active_store = MultiVendorX()->active_store;
-
-            $store    = new Store( $active_store );
-            $all_meta = array_merge( $store->get_data(), $store->get_all_meta() );
-
-            if ( empty( $active_store ) && ! empty( $store_ids ) ) {
-                $first_store = reset( $store_ids );
-
-                if ( ! empty( $first_store['id'] ) ) {
+            if ( empty( $active_store ) ) {
+                $store_ids = Store::get_store( MultiVendorX()->current_user_id, 'user' );
+                if ( ! empty( $store_ids ) ) {
+                    $first_store = reset( $store_ids );
+                    $active_store = $first_store['id'];
                     update_user_meta( MultiVendorX()->current_user_id, Utill::USER_SETTINGS_KEYS['active_store'], $first_store['id'] );
                     MultiVendorX()->active_store = $first_store['id'];
                 }
             }
+
+            $store    = new Store( $active_store );
+            $all_meta = array_merge( $store->get_data(), $store->get_all_meta() );
         }
 
         $order_statuses = wc_get_order_statuses();

@@ -97,11 +97,16 @@ class Block {
      * @return void
      */
     public function enqueue_all_block_assets() {
-        FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
-        foreach ( $this->get_blocks() as $block_script ) {
-            FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-editor-script' );
-            FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-script' );
+        if ( is_admin() && function_exists( 'get_current_screen' ) ) {
+            $screen = get_current_screen();
+            if ( $screen && $screen->is_block_editor ) {
+                FrontendScripts::load_scripts();
+                FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
+                foreach ( $this->get_blocks() as $block_script ) {
+                    FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-editor-script' );
+                    FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-script' );
+                }
+            }
         }
     }
 	/**
