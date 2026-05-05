@@ -315,7 +315,7 @@ const Dashboard = () => {
 
 	const firstTwoStores = availableStores.slice(0, 2);
 
-	const switchStore = (storeId) => {
+	const switchStore = (storeId: string) => {
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, `stores/${storeId}`),
