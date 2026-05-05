@@ -865,7 +865,7 @@ const Dashboard = () => {
 							/>
 						) : (
 							<ComponentStatusView
-								title={__('No active store select for this user.', 'multivendorx')}
+								title={__('No active store selected for this user.', 'multivendorx')}
 								desc={__('To get started, register your store.', 'multivendorx')}
 								buttonText={__('Create your store', 'multivendorx')}
 								buttonLink={appLocalizer.registration_page}
