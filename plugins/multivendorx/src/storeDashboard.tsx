@@ -56,7 +56,7 @@ const Dashboard = () => {
 	const [showStoreList, setShowStoreList] = useState(false);
 	const [isDarkMode, setIsDarkMode] = useState(false);
 	const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
-	const [isMenuMinimize] = useState(false);
+	const [isMenuMinimize, setIsMenuMinimize] = useState(false);
 	const [noPermission, setNoPermission] = useState(false);
 	const [newProductId, setNewProductId] = useState<number | null>(null);
 
@@ -282,7 +282,7 @@ const Dashboard = () => {
 					if (sub.key === 'withdrawals') {
 						hasSetting =
 							appLocalizer.settings_databases_value?.['payouts']
-								?.withdraw_type != 'disable';
+								?.withdraw_type !== 'disable';
 					}
 
 					return hasCap && hasModule && hasSetting;
@@ -315,7 +315,7 @@ const Dashboard = () => {
 
 	const firstTwoStores = availableStores.slice(0, 2);
 
-	const switchStore = (storeId) => {
+	const switchStore = (storeId: string) => {
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, `stores/${storeId}`),
@@ -359,8 +359,8 @@ const Dashboard = () => {
 				/>
 			)}
 			<div className="dashboard-tabs-wrapper"
-			 	onMouseEnter={() => setisMenuMinimize(false)}
-				onMouseLeave={() => setisMenuMinimize(true)}
+			 	onMouseEnter={() => setIsMenuMinimize(false)}
+				onMouseLeave={() => setIsMenuMinimize(true)}
 				>
 				<div className="logo-wrapper">
 					<a
@@ -376,7 +376,7 @@ const Dashboard = () => {
 								{isMenuCollapsed && isMenuMinimize
 									? appLocalizer.site_name.charAt(0).toUpperCase()
 									: appLocalizer.site_name}
-							</>							
+							</>
 						)}
 					</a>
 				</div>
