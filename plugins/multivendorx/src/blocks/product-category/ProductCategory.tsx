@@ -17,9 +17,8 @@ const ProductCategory: React.FC = () => {
 
 	useEffect(() => {
 		const fetchCategories = async () => {
-			const endpoint = `${StoreInfo.apiUrl}/wc/v3/products/categories`;
 			try {
-				const response = await axios.get(endpoint, {
+				const response = await axios.get(`${StoreInfo.apiUrl}/wc/v3/products/categories`, {
 					headers: { 'X-WP-Nonce': StoreInfo.nonce },
 				});
 
