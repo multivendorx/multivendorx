@@ -99,17 +99,6 @@ const AddProduct = () => {
 			imagePayload.push({ id: img.id });
 		});
 
-		const validation = applyFilters(
-			'multivendorx_product_create_limit',
-			{ allowed: true, message: '' },
-			product
-		);
-
-		if (!validation.allowed) {
-			setErrorMsg(validation.message);
-			return;
-		}
-
 		const payload = {
 			...product,
 			status: product.status ? product.status : appLocalizer.current_user?.allcaps?.publish_products ? 'publish' : 'draft',
