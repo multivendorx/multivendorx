@@ -56,7 +56,7 @@ const Dashboard = () => {
 	const [showStoreList, setShowStoreList] = useState(false);
 	const [isDarkMode, setIsDarkMode] = useState(false);
 	const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
-	const [isMenuMinimize, setisMenuMinimize] = useState(false);
+	const [isMenuMinimize] = useState(false);
 	const [noPermission, setNoPermission] = useState(false);
 	const [newProductId, setNewProductId] = useState<number | null>(null);
 
@@ -255,13 +255,13 @@ const Dashboard = () => {
 				convertedKey
 			);
 		} catch {
-			return <div>{__('404 not found','multivendorx')}</div>;
+			return <div>{__('404 not found', 'multivendorx')}</div>;
 		}
 	};
 
 	// Menu filtered by capability + active modules
 	const filteredMenu = useMemo(() => {
-		const result = {};
+		const result: Record<string, MenuItem> = {};
 		Object.entries(menu).forEach(([key, item]: [string, MenuItem]) => {
 			if (!hasCapability(item.capability)) {
 				return;
@@ -279,7 +279,7 @@ const Dashboard = () => {
 
 					let hasSetting = true;
 
-					if (sub.key === 'withdrawls') {
+					if (sub.key === 'withdrawals') {
 						hasSetting =
 							appLocalizer.settings_databases_value?.['payouts']
 								?.withdraw_type != 'disable';
@@ -865,7 +865,7 @@ const Dashboard = () => {
 							/>
 						) : (
 							<ComponentStatusView
-								title={__('No active store select for this user.', 'multivendorx')}
+								title={__('No active store selected for this user.', 'multivendorx')}
 								desc={__('To get started, register your store.', 'multivendorx')}
 								buttonText={__('Create your store', 'multivendorx')}
 								buttonLink={appLocalizer.registration_page}
