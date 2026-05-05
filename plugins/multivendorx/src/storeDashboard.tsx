@@ -9,6 +9,7 @@ import {
 	Tooltip,
 	TabsUI,
 	NoticeReceiver,
+	Notice,
 	GuidedTourProvider,
 	useOutsideClick,
 } from 'zyra';
@@ -59,6 +60,7 @@ const Dashboard = () => {
 	const [isMenuMinimize, setisMenuMinimize] = useState(false);
 	const [noPermission, setNoPermission] = useState(false);
 	const [newProductId, setNewProductId] = useState<number | null>(null);
+	const [errorMsg, setErrorMsg] = useState('');
 
 	const userDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -99,6 +101,14 @@ const Dashboard = () => {
 	const storefrontUrl = `${appLocalizer.store_page_url}${storeData?.slug}`;
 
 	const createAutoDraftProduct = () => {
+		const validation = applyFilters(
+			'multivendorx_product_create_limit',
+			{ allowed: true, message: '' });
+
+		if (!validation.allowed) {
+			setErrorMsg(validation.message);
+			return;
+		}
 		axios
 			.post(
 				`${appLocalizer.apiUrl}/wc/v3/products/`,
@@ -841,6 +851,14 @@ const Dashboard = () => {
 
 				{/* Page content */}
 				<div className="content-wrapper">
+					{errorMsg && (
+						<Notice
+							type="error"
+							validity="lifetime"
+							displayPosition="notice"
+							message={errorMsg}
+						/>
+					)}
 					<NoticeReceiver position="float" />
 					<NoticeReceiver position="notice" />
 

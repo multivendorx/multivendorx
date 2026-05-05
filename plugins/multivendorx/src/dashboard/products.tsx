@@ -10,6 +10,7 @@ import {
 	QueryProps,
 	CategoryCount,
 	InfoItem,
+	Notice
 } from 'zyra';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -57,11 +58,20 @@ const AllProduct: React.FC = () => {
 	const [newProductId, setNewProductId] = useState<number | null>(null);
 	const [prevQuery, setPrevQuery] = useState<QueryProps>({});
 	const [bulkActionContent, setBulkActionContent] = useState<React.ReactNode>(null);
+	const [errorMsg, setErrorMsg] = useState('');
 
 	const { modules } = useModules();
 	const navigate = useNavigate();
 
 	const createAutoDraftProduct = () => {
+		const validation = applyFilters(
+			'multivendorx_product_create_limit',
+			{ allowed: true, message: '' });
+
+		if (!validation.allowed) {
+			setErrorMsg(validation.message);
+			return;
+		}
 		axios
 			.post(
 				`${appLocalizer.apiUrl}/wc/v3/products/`,
@@ -527,6 +537,14 @@ const AllProduct: React.FC = () => {
 				'multivendorx_product_list_header_middle_section',
 				null,
 				modules
+			)}
+			{errorMsg && (
+				<Notice
+					type="error"
+					validity="lifetime"
+					displayPosition="notice"
+					message={errorMsg}
+				/>
 			)}
 			<TableCard
 				headers={headers}
