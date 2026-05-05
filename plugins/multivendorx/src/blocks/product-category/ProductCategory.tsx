@@ -49,7 +49,7 @@ const ProductCategory: React.FC = () => {
 			if (cat.parent === 0) {
 				roots.push(map[cat.id]);
 			} else if (map[cat.parent]) {
-				map[cat.parent].children!.push(map[cat.id]);
+				map[cat.parent].children?.push(map[cat.id]);
 			}
 		});
 
