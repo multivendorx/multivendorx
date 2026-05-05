@@ -75,7 +75,7 @@ const ProductCategory: React.FC = () => {
 				</span>
 
 				{category.children && category.children.length > 0 && (
-					<ul className="children">
+					<ul className="wc-block-product-categories-list">
 						{category.children.map((child) =>
 							renderCategory(child)
 						)}
