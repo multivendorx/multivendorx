@@ -282,7 +282,7 @@ const Dashboard = () => {
 					if (sub.key === 'withdrawals') {
 						hasSetting =
 							appLocalizer.settings_databases_value?.['payouts']
-								?.withdraw_type != 'disable';
+								?.withdraw_type !== 'disable';
 					}
 
 					return hasCap && hasModule && hasSetting;
