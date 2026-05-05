@@ -398,21 +398,22 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 					action={
 						formData.registration_data &&
 						Object.keys(formData.registration_data).length > 0 && (
-							<div className="admin-btn btn-purple">
-								<i className="adminfont-download"></i>
-								<PDFDownloadLink
-									document={
-										<RegistrationPdf
-											registrationData={formData.registration_data}
-										/>
-									}
-									fileName="registration-data.pdf"
-								>
+							<PDFDownloadLink
+								document={
+									<RegistrationPdf
+										registrationData={formData.registration_data}
+									/>
+								}
+								fileName="registration-data.pdf"
+								className="admin-btn btn-purple"
+							>
+								<>
+									<i className="adminfont-download"></i>
 									{({ loading }) =>
 										loading ? 'Generating PDF…' : 'Download PDF'
 									}
-								</PDFDownloadLink>
-							</div>
+								</>
+							</PDFDownloadLink>
 						)
 					}
 				>

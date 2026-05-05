@@ -92,7 +92,7 @@
                         position: relative;
                         border: $border-light-small;
                         border-radius: $border-radius-small;
-                        padding: 0 0.5rem;
+                        // padding: 0 0.5rem;
                         background: #fff;
 
                         .input-unit {
@@ -104,7 +104,6 @@
                             border: none !important;
 
                             /* overwrite common style */
-                            padding: 0;
 
                             &:focus {
                                 box-shadow: none !important;

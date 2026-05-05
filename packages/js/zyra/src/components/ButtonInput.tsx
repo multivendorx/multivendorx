@@ -41,7 +41,7 @@ export type ButtonConfig = {
 type ButtonInputProps = {
     buttons: ButtonConfig | ButtonConfig[];
     wrapperClass?: string;
-    position: 'left' | 'right' | 'center';
+    position?: 'left' | 'right' | 'center';
 };
 
 type ButtonOption = {

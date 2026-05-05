@@ -62,7 +62,7 @@ body:has(#store-dashboard){
                             display: none;
                         }
 
-                        &:has(.subtabs .active) {
+                        .subtabs .active {
                             a {
                                 background: $theme-color;
                                 color: #fff;
@@ -188,13 +188,10 @@ a {
                 }
             }
 
-            &.active {
-
-                a,
-                a:hover {
-                    background-color: $theme-color;
-                    color: #fff;
-                }
+            a.active.tab,
+            a.active.tab:hover {
+                background-color: $theme-color;
+                color: #fff;
             }
         }
 
