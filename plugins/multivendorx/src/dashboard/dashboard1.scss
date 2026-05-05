@@ -209,8 +209,8 @@ a {
                 }
             }
 
-            a,
-            a:hover {
+            a.tab.active,
+            a.tab.active:hover {
                 color: $theme-color;
                 background: transparent;
             }

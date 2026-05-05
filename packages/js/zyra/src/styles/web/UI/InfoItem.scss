@@ -47,7 +47,9 @@
 
             .des {
                 font-size: 0.813rem;
-                
+                p{
+                    margin: 0; // for overwrite wordpress style
+                }
             }
 
             .small-text {

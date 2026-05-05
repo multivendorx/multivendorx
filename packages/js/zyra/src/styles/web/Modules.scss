@@ -75,7 +75,9 @@
                         display: inline-block;
                     }
                 }
-
+                p{
+                    margin: 0; //for overwrite wordpress style
+                }
                 // .requires {
                 //     font-size: 0.85rem;
                 //     margin: 0.5rem 0;

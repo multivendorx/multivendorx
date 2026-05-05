@@ -16,6 +16,7 @@
         width: 100%;
         position: relative;
         gap: 0.5rem;
+        box-sizing: border-box;
         
         &:has(label){
             justify-content: start;
@@ -26,18 +27,18 @@
         }
 
         &[data-col='2'] {
-            flex: 1 1 calc(50% - 0.5rem);
-            max-width: calc(50% - 0.5rem);
+            flex: 1 1 50%;
+            max-width: 50%;
         }
 
         &[data-col='3'] {
-            flex: 1 1 calc(33.333% - 0.5rem);
-            max-width: calc(33.333% - 0.5rem);
+            flex: 1 1 33.333%;
+            max-width: 33.333%;
         }
 
         &[data-col='4'] {
-            flex: 1 1 calc(25% - 0.5rem);
-            max-width: calc(25% - 0.5rem);
+            flex: 1 1 25%;
+            max-width: 25%;
         }
 
         .settings-form-label {
