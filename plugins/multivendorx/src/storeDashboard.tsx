@@ -255,7 +255,7 @@ const Dashboard = () => {
 				convertedKey
 			);
 		} catch {
-			return <div>{__('404 not found','multivendorx')}</div>;
+			return <div>{__('404 not found', 'multivendorx')}</div>;
 		}
 	};
 
