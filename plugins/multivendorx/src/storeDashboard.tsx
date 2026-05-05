@@ -376,7 +376,7 @@ const Dashboard = () => {
 								{isMenuCollapsed && isMenuMinimize
 									? appLocalizer.site_name.charAt(0).toUpperCase()
 									: appLocalizer.site_name}
-							</>							
+							</>
 						)}
 					</a>
 				</div>
