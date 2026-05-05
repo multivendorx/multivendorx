@@ -359,8 +359,8 @@ const Dashboard = () => {
 				/>
 			)}
 			<div className="dashboard-tabs-wrapper"
-			 	onMouseEnter={() => setisMenuMinimize(false)}
-				onMouseLeave={() => setisMenuMinimize(true)}
+			 	onMouseEnter={() => setIsMenuMinimize(false)}
+				onMouseLeave={() => setIsMenuMinimize(true)}
 				>
 				<div className="logo-wrapper">
 					<a
