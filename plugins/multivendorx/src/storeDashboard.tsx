@@ -474,7 +474,7 @@ const Dashboard = () => {
 								onClick={() => {
 									setIsMenuCollapsed((prev) => {
 										const next = !prev;
-										setisMenuMinimize(next);
+										setIsMenuMinimize(next);
 										return next;
 									});
 								}}
