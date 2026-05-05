@@ -385,14 +385,12 @@ class FrontendScripts {
         $all_meta  = array();
         if ( !is_admin() ) {
             $active_store = MultiVendorX()->active_store;
-            if ( empty( $active_store ) ) {
-                $store_ids = Store::get_store( MultiVendorX()->current_user_id, 'user' );
-                if ( ! empty( $store_ids ) ) {
-                    $first_store = reset( $store_ids );
-                    $active_store = $first_store['id'];
-                    update_user_meta( MultiVendorX()->current_user_id, Utill::USER_SETTINGS_KEYS['active_store'], $first_store['id'] );
-                    MultiVendorX()->active_store = $first_store['id'];
-                }
+            $store_ids = Store::get_store( MultiVendorX()->current_user_id, 'user' );
+            if ( empty( $active_store ) && ! empty( $store_ids ) ) {
+                $first_store = reset( $store_ids );
+                $active_store = $first_store['id'];
+                update_user_meta( MultiVendorX()->current_user_id, Utill::USER_SETTINGS_KEYS['active_store'], $first_store['id'] );
+                MultiVendorX()->active_store = $first_store['id'];
             }
 
             $store    = new Store( $active_store );

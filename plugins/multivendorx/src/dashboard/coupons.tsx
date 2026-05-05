@@ -1,6 +1,7 @@
 /* global appLocalizer */
 import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	ButtonInputUI,
 	BasicInputUI,
@@ -19,6 +20,7 @@ import {
 	RandomInputKeyGeneratorUI,
 	InfoItem,
 	EmailsInputUI,
+	Notice
 } from 'zyra';
 
 import axios from 'axios';
@@ -96,6 +98,13 @@ const AllCoupon: React.FC = () => {
 
 	const validateForm = () => {
 		const errors: { [key: string]: string } = {};
+		const validation = applyFilters(
+			'multivendorx_coupon_create_limit',
+			{ allowed: true, message: '' });
+
+		if (!validation.allowed) {
+			errors.errorMsg = validation.message;
+		}
 
 		if (!formData.title.trim()) {
 			errors.title = __('Coupon code is required', 'multivendorx');
@@ -887,6 +896,14 @@ const AllCoupon: React.FC = () => {
 					}}
 				/>
 			</PopupUI>
+			{validationErrors.errorMsg && (
+				<Notice
+					type="error"
+					validity="lifetime"
+					displayPosition="notice"
+					message={validationErrors.errorMsg}
+				/>
+			)}
 			<TableCard
 				headers={headers}
 				rows={rows}
