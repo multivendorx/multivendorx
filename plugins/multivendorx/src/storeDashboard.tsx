@@ -261,7 +261,7 @@ const Dashboard = () => {
 
 	// Menu filtered by capability + active modules
 	const filteredMenu = useMemo(() => {
-		const result = {};
+		const result: Record<string, MenuItem> = {};
 		Object.entries(menu).forEach(([key, item]: [string, MenuItem]) => {
 			if (!hasCapability(item.capability)) {
 				return;
