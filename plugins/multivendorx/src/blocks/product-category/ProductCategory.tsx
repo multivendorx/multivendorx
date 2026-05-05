@@ -18,17 +18,27 @@ const ProductCategory: React.FC = () => {
 	useEffect(() => {
 		const fetchCategories = async () => {
 			try {
-				const response = await axios.get(
-					`${StoreInfo.apiUrl}/wc/v3/products/categories`,
-					{
-						headers: { 'X-WP-Nonce': StoreInfo.nonce },
-					}
-				);
+				const response = await axios.get(`${StoreInfo.apiUrl}/wc/v3/products/categories`, {
+					headers: { 'X-WP-Nonce': StoreInfo.nonce },
+				});
 
 				const tree = buildCategoryTree(response.data);
 				setCategories(tree);
 			} catch (err) {
-				console.error('Failed to fetch categories', err);
+				if (axios.isAxiosError(err)) {
+					console.error('Failed to fetch categories', {
+						endpoint,
+						status: err.response?.status,
+						statusText: err.response?.statusText,
+						message: err.message,
+						responseData: err.response?.data,
+					});
+				} else {
+					console.error('Failed to fetch categories', {
+						endpoint,
+						error: err,
+					});
+				}
 			}
 		};
 
@@ -49,7 +59,7 @@ const ProductCategory: React.FC = () => {
 			if (cat.parent === 0) {
 				roots.push(map[cat.id]);
 			} else if (map[cat.parent]) {
-				map[cat.parent].children!.push(map[cat.id]);
+				map[cat.parent].children?.push(map[cat.id]);
 			}
 		});
 
