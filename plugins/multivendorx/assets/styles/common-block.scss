@@ -70,10 +70,10 @@
 .placeholder {
     left: 0;
     top: 0;
-    color: #fff;
+    color: var(--theme-primary);
     display: flex;
     justify-content: center;
-    background: var(--theme-primary);
+    background: var(--theme-background);
     align-items: center;
     font-size: 3rem;
     width: 5rem;
@@ -138,14 +138,14 @@
         margin: 0;
         padding: 0.5rem;
         border-radius: 0.313rem;
-        background: var(--theme-primary);
+        background: var(--theme-background);
 
         li {
             cursor: pointer;
             padding: 0 0.45rem;
 
             a {
-                color: #fff;
+                color: var(--theme-primary);
             }
 
             &.active {
@@ -196,13 +196,13 @@
             .store-image {
                 width: 2.5rem;
                 height: 2.5rem;
-                background: var(--theme-primary);
+                background: var(--theme-background);
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 font-size: 1.813rem;
                 border-radius: 0.313rem;
-                color: #fff;
+                color: var(--theme-primary);
             }
 
             .avatar {
@@ -212,9 +212,9 @@
                 display: flex;
                 align-items: center;
                 font-size: 1.5rem;
-                background: var(--theme-primary);
+                background: var(--theme-background);
                 border-radius: 0.313rem;
-                color: #fff;
+                color: var(--theme-primary);
             }
 
             .store-details {

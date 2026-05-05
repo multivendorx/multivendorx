@@ -358,7 +358,10 @@ const Dashboard = () => {
 					storeId={appLocalizer.store_id}
 				/>
 			)}
-			<div className="dashboard-tabs-wrapper">
+			<div className="dashboard-tabs-wrapper"
+			 	onMouseEnter={() => setisMenuMinimize(false)}
+				onMouseLeave={() => setisMenuMinimize(true)}
+				>
 				<div className="logo-wrapper">
 					<a
 					href={appLocalizer.site_url}
@@ -436,13 +439,9 @@ const Dashboard = () => {
 												{item.submenu.map((sub) => (
 													<li key={sub.key}>
 														<NavLink
-															className={({
-																isActive,
-															}) =>
-																isActive
-																	? 'active'
-																	: ''
-															}
+															className={({ isActive }) => 
+																		`tab ${isActive ? 'active' : ''}`
+																	}
 															to={`/${sub.key}`}
 															onClick={() =>
 																setCurrentTab(

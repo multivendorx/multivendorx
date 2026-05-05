@@ -302,10 +302,10 @@ $star-color: #d49c00;
 .placeholder {
     left: 0;
     top: 0;
-    color: #fff;
+    color: var(--theme-primary);
     display: flex;
     justify-content: center;
-    background: var(--theme-primary);
+    background: var(--theme-background);
     align-items: center;
     font-size: 3rem;
     width: 5rem;
