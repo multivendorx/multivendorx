@@ -56,7 +56,7 @@ const Dashboard = () => {
 	const [showStoreList, setShowStoreList] = useState(false);
 	const [isDarkMode, setIsDarkMode] = useState(false);
 	const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
-	const [isMenuMinimize, setisMenuMinimize] = useState(false);
+	const [isMenuMinimize, setIsMenuMinimize] = useState(false);
 	const [noPermission, setNoPermission] = useState(false);
 	const [newProductId, setNewProductId] = useState<number | null>(null);
 
