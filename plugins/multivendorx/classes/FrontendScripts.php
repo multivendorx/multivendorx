@@ -250,7 +250,7 @@ class FrontendScripts {
     /**
 	 * Register admin styles using filters.
 	 *
-	 * Allows style registration through `admin_moowoodle_register_styles` filter.
+	 * Allows style registration through `admin_multivendorx_register_styles` filter.
 	 */
     public static function admin_register_styles() {
 		$version         = MultiVendorX()->version;
@@ -311,6 +311,7 @@ class FrontendScripts {
 
         $pages             = get_pages();
         $woocommerce_pages = array( wc_get_page_id( 'shop' ), wc_get_page_id( 'cart' ), wc_get_page_id( 'checkout' ), wc_get_page_id( 'myaccount' ) );
+        $pages_array = array();
         if ( $pages ) {
             foreach ( $pages as $page ) {
                 if ( ! in_array( $page->ID, $woocommerce_pages, true ) ) {
@@ -474,7 +475,7 @@ class FrontendScripts {
 									'manage_plan_url' => MULTIVENDORX_PRO_SHOP_URL,
 								)
 							),
-                            'placeholder_url  '      => wc_placeholder_img_src(),
+                            'placeholder_url'      => wc_placeholder_img_src(),
                             'default_user_avatar'    => get_avatar_url( 0 ),
                             'multivendor_plugin'     => Utill::get_active_multivendor(),
                         )

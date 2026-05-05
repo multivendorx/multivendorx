@@ -171,7 +171,7 @@ const AddProduct = () => {
 			policies:
 				!!product.shipping_policy ||
 				!!product.refund_policy ||
-				product.cancellation_policy,
+				!!product.cancellation_policy,
 		};
 
 		if (product.type === 'simple') {
