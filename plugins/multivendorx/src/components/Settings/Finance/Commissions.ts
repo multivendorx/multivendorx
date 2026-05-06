@@ -219,7 +219,7 @@ export default {
 				},
 				{
 					key: 'commission_fixed',
-					type: 'text',
+					type: 'number',
 					preText: appLocalizer.currency_symbol,
 					size: 8,
 					beforeElement: {
@@ -408,7 +408,7 @@ export default {
 			nestedFields: [
 				{
 					key: 'commission_fixed',
-					type: 'text',
+					type: 'number',
 					preText: appLocalizer.currency_symbol,
 					size: 8,
 					beforeElement: {
