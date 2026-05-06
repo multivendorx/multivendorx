@@ -485,7 +485,7 @@ export default {
 				{
 					key: 'facilitator_percentage',
 					type: 'number',
-					postText: __('%'),
+					postText: '%',
 					size: 8,
 				},
 			],
