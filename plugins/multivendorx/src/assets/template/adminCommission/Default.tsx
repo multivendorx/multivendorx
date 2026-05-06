@@ -24,7 +24,7 @@ interface Props {
 	};
 }
 
-const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors, order }) => {
+const adminCommissionDefault: React.FC<Props> = ({ invoiceRows, colors, order }) => {
 	const rows: Row[] = invoiceRows || [
 		{
 			orderID: '1',
@@ -752,4 +752,4 @@ const adminInvoice1: React.FC<Props> = ({ invoiceRows, colors, order }) => {
 	);
 };
 
-export default adminInvoice1;
+export default adminCommissionDefault;
