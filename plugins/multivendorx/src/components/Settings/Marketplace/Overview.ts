@@ -76,6 +76,7 @@ export default {
 				'In a multivendor setup, a <b>Main Order</b> is the parent order placed by the customer, while <b>Sub-orders</b> are created for each store.<br/><b>Enabling the Main Order is recommended</b>, as it allows you to send a single email that includes the Main Order and all related Sub-orders. Alternatively, you can send separate emails for the Main Order and each Sub-order.',
 				'multivendorx'
 			),
+			width: '80%',
 			options: [
 				{
 					key: 'mainorder',

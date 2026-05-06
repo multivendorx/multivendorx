@@ -76,7 +76,7 @@ const MinMax = ({ product, setProduct }) => {
 		>
 			<FormGroupWrapper>
 				{/* Quantity */}
-				<FormGroup cols={2} label={__('Quantity', 'multivendorx')}>
+				<FormGroup cols={6} label={__('Quantity', 'multivendorx')}>
 					<BasicInputUI
 						name="min_quantity"
 						type="number"
@@ -87,7 +87,7 @@ const MinMax = ({ product, setProduct }) => {
 						}
 					/>
 				</FormGroup>
-				<FormGroup cols={2}>
+				<FormGroup cols={6}>
 					<BasicInputUI
 						name="max_quantity"
 						type="number"
@@ -100,7 +100,7 @@ const MinMax = ({ product, setProduct }) => {
 				</FormGroup>
 
 				{/* Amount */}
-				<FormGroup cols={2} label={__('Amount', 'multivendorx')}>
+				<FormGroup cols={6} label={__('Amount', 'multivendorx')}>
 					<BasicInputUI
 						name="min_amount"
 						type="number"
@@ -111,7 +111,7 @@ const MinMax = ({ product, setProduct }) => {
 						}
 					/>
 				</FormGroup>
-				<FormGroup cols={2}>
+				<FormGroup cols={6}>
 					<BasicInputUI
 						name="max_amount"
 						type="number"

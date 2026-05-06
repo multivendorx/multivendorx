@@ -81,7 +81,7 @@
                     width: 0.938rem;
                     height: 0.938rem;
                     border: 0.188rem solid rgb(255 255 255 / 0%);
-                    border-radius: 0.25rem;
+                    border-radius: $border-radius-small;
                     position: relative;
                     overflow: hidden;
                     box-shadow: 0 0 0 0.125rem #65438fae;
@@ -183,7 +183,7 @@
                                 .selected-items {
                                     align-items: center;
                                     background: #f2eeee;
-                                    border-radius: .25rem;
+                                    border-radius: $border-radius-small;
                                     display: flex;
                                     font-size: .75rem;
                                     gap: .25rem;

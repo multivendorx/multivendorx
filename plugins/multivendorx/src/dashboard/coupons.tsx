@@ -803,7 +803,7 @@ const AllCoupon: React.FC = () => {
 								{
 									icon: 'contact-form',
 									text: __('Draft', 'multivendorx'),
-									color: 'red',
+									color: 'border-red',
 									onClick: () => handleSave('draft'),
 								},
 								{

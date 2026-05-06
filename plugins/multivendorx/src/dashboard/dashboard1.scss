@@ -205,7 +205,6 @@ a {
             &.active {
                 a {
                     color: $theme-color;
-
                 }
             }
 
@@ -455,7 +454,7 @@ a {
 
                 a {
                     display: flex;
-                    align-items: center;
+                    align-items: end;
                     color: $text-color;
                     font-size: 0.95rem;
                     font-weight: 500;
@@ -465,6 +464,7 @@ a {
                     transition: all 0.5s ease;
                     border-radius: $border-radius-small;
                     line-height: 1rem;
+                    cursor: pointer;
 
                     i {
                         font-size: 1.25rem;

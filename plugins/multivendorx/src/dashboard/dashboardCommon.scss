@@ -440,19 +440,23 @@ body.dark {
             margin: 0 !important;
         }
 
-        .category,
         .sub-category {
-            padding: 0.5rem;
+            padding: 0.5rem 0.5rem 0;
         }
-
+        .category{
+            padding-bottom: 0.5rem;
+        }
+        .category:last-child{
+            padding: 0;
+        }
         ul {
             padding-left: 1.313rem;
         }
     }
 
-    li:has(li) {
-        padding-bottom: 0 !important;
-    }
+    // li:has(li) {
+    //     padding-bottom: 0 !important;
+    // }
 
     &.template2 {
         li {
@@ -1267,7 +1271,7 @@ body.dark {
 
 .prompt-wrapper {
     position: fixed;
-    bottom: 3.5rem;
+    bottom: 0;
     width: 100%;
     box-sizing: border-box;
     background: #fff;
@@ -1534,3 +1538,12 @@ body.dark {
 }
 
 // membership page end
+
+@media only screen and (max-width: 600px) {
+    .dashboard-tabs-wrapper{
+        display: none !important;
+    }
+    .tab-wrapper{
+        margin: 0;
+    }    
+}
