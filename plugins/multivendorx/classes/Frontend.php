@@ -220,15 +220,15 @@ class Frontend {
 		}
 
 		$products = wc_get_products(
-            array(
-				'status'   => 'publish',
-				'limit'    => -1,
-				'exclude'  => array( $product_id ),
-				'return'   => 'ids',
-				'meta_key' => Utill::POST_META_SETTINGS['store_id'], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-            'meta_value'   => $store->get_id(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-            'orderby'      => 'rand',
-            )
+			array(
+				'status'     => 'publish',
+				'limit'      => -1,
+				'exclude'    => array( $product_id ),
+				'return'     => 'ids',
+				'meta_key'   => Utill::POST_META_SETTINGS['store_id'], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_value' => $store->get_id(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'orderby'    => 'rand',
+			)
 		);
 
 		return $products ? $products : $query;
