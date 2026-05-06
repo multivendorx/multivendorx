@@ -339,7 +339,7 @@ export default {
 			],
 		},
 		{
-			key: 'store_rating_page',
+			key: 'shipping_module_notice',
 			type: 'notice',
 			message: __(
 				'Allow each store to manage its own shipping methods, zones, and rates, and to pass shipping amounts to stores, please enable the <a href="' +
