@@ -24,12 +24,14 @@ class Tracker {
     private string $plugin_name;
     private string $settings_url;
     private string $api_url;
+    private string $pro_plugin_version;
 
     public function __construct() {
         $this->slug = MultiVendorX()->plugin_slug;
         $this->plugin_name = 'MultiVendorX';
         $this->plugin_version = MULTIVENDORX_PLUGIN_VERSION;
         $this->pro_shop_url = MULTIVENDORX_PRO_SHOP_URL;
+        $this->pro_plugin_version = defined('MULTIVENDORX_PRO_PLUGIN_VERSION') ? MULTIVENDORX_PRO_PLUGIN_VERSION : '';
         $this->review_url = 'https://wordpress.org/support/plugin/'. MultiVendorX()->plugin_slug .'/reviews/#new-post';
         $this->support_url = "https://multivendorx.com/support-forum/";
         $this->facebook_url = "https://www.facebook.com/groups/226246620006065";
@@ -284,7 +286,8 @@ class Tracker {
         $user     = wp_get_current_user();
         $user_one = get_userdata( 1 );
         $theme    = wp_get_theme();
-
+        $pro_key_details = get_option('wc_am_client_multivendorx_pro', true) ? get_option('wc_am_client_multivendorx_pro', true) : array();
+        
         return [
             'plugin_slug'      => $this->slug,
             'plugin_version'   => $this->plugin_version,
@@ -310,6 +313,10 @@ class Tracker {
             'theme_version'    => sanitize_text_field( $theme->Version),
             'status'           => 'Active',
             'file_location'    => __FILE__,
+            'pro_version'      => $this->pro_plugin_version,
+            'api_key'          => isset($pro_key_details['wc_am_client_multivendorx_pro_api_key']) ? $pro_key_details['wc_am_client_multivendorx_pro_api_key'] : '',
+            'product_id'       => get_option('wc_am_product_id_multivendorx_pro', true) ? get_option('wc_am_product_id_multivendorx_pro', true) : '',
+            'pro_status'       => get_option('wc_am_client_multivendorx_pro_activated', true) ? get_option('wc_am_client_multivendorx_pro_activated', true) : ''
         ];
     }
 
