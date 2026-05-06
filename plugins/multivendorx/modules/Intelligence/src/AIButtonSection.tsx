@@ -396,10 +396,11 @@ const AIButtonSection: React.FC<AIButtonSectionProps> = ({
 								)}
 							</div>
 						</div>
-						<i className="adminfont-product" />
+
+						
 						{applyFilters(
 							'multivendorx_ai_product_image_section',
-							null,
+							<i className="adminfont-image image-placeholder" />,
 							{
 								product,
 								productId,
