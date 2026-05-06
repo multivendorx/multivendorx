@@ -48,7 +48,7 @@ class Frontend {
         add_action( 'template_redirect', array( $this, 'multivendorx_store_visitors_stats' ), 20 );
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
         // user information before registration.
-        add_filter( 'multivendorx_add_content_before_form', array( $this, 'add_woocommerce_login_from' ) );
+        add_filter( 'multivendorx_add_content_before_form', array( $this, 'add_woocommerce_login_form' ) );
 
         // Restrict media for store dashboard.
         add_filter( 'ajax_query_attachments_args', array( $this, 'multivendorx_restrict_store_media' ) );
@@ -220,15 +220,15 @@ class Frontend {
 		}
 
 		$products = wc_get_products(
-            array(
-				'status'   => 'publish',
-				'limit'    => -1,
-				'exclude'  => array( $product_id ),
-				'return'   => 'ids',
-				'meta_key' => Utill::POST_META_SETTINGS['store_id'], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-            'meta_value'   => $store->get_id(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-            'orderby'      => 'rand',
-            )
+			array(
+				'status'     => 'publish',
+				'limit'      => -1,
+				'exclude'    => array( $product_id ),
+				'return'     => 'ids',
+				'meta_key'   => Utill::POST_META_SETTINGS['store_id'], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_value' => $store->get_id(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'orderby'    => 'rand',
+			)
 		);
 
 		return $products ? $products : $query;
@@ -437,7 +437,7 @@ class Frontend {
 					return $data;
 				}
             }
-            $service_endpoint = 'http://ip-api.com/json/%s';
+            $service_endpoint = 'https://ip-api.com/json/%s';
             $response         = wp_safe_remote_get( sprintf( $service_endpoint, $ip_address ), array( 'timeout' => 2 ) );
             if ( ! is_wp_error( $response ) && $response['body'] ) {
                 set_transient( 'multivendorx_' . $ip_address, json_decode( $response['body'] ), 2 * MONTH_IN_SECONDS );
@@ -452,7 +452,7 @@ class Frontend {
     }
 
 	/**
-	 * Save vistor stats for store.
+	 * Save visitor stats for store.
 	 *
 	 * @since 3.0.0
 	 * @param int   $store_id Store ID.
@@ -524,7 +524,7 @@ class Frontend {
 	 * @param string $content Original content passed by the filter (unused).
 	 * @return string Rendered login or welcome HTML.
 	 */
-	public function add_woocommerce_login_from( $content ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+	public function add_woocommerce_login_form( $content ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 		ob_start();
 
 		if ( is_user_logged_in() ) {
