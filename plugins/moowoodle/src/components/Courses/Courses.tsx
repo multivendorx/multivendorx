@@ -4,11 +4,8 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
     getApiLink,
-    Container,
-    Column,
     TableCard,
     NavigatorHeader,
-    CategoryCount,
     QueryProps,
     InfoItem,
 } from 'zyra';
@@ -29,16 +26,13 @@ interface CourseRow {
     status?: string;
 }
 
-interface Category {
-    [key: string]: string;
-}
 
 const Course: React.FC = () => {
     const [rows, setRows] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [totalRows, setTotalRows] = useState<number>(0);
-    const [categoryCounts, setCategoryCounts] = useState<CategoryCount[] | null>(null);
-    const [category, setCategory] = useState<Category>({});
+    const [category, setCategory] = useState([]);
+    const [courses, setCourses] = useState([]);
     const [error, setError] = useState<string | null>(null);
     const [rowIds, setRowIds] = useState<number[]>([]);
 
@@ -46,30 +40,16 @@ const Course: React.FC = () => {
     useEffect(() => {
         axios({
             method: 'get',
-            url: getApiLink(appLocalizer, 'filters'),
+            url: getApiLink(appLocalizer, 'courses'),
             headers: { 'X-WP-Nonce': appLocalizer.nonce },
+            params: { options: true }
         })
             .then((response) => {
-                setCategory(response.data.category || {});
+                setCategory(response.data.category || []);
+                setCourses(response.data.courses || []);
             })
             .catch(() => {
                 setError(__('Failed to load categories', 'moowoodle'));
-            });
-    }, []);
-
-    // Fetch total rows on mount
-    useEffect(() => {
-        axios({
-            method: 'GET',
-            url: getApiLink(appLocalizer, 'courses'),
-            headers: { 'X-WP-Nonce': appLocalizer.nonce },
-            params: { count: true },
-        })
-            .then((response) => {
-                setTotalRows(response.data || 0);
-            })
-            .catch(() => {
-                setError(__('Failed to load total rows', 'moowoodle'));
             });
     }, []);
 
@@ -262,53 +242,18 @@ const Course: React.FC = () => {
             key: 'catagory',
             label: __('Category', 'moowoodle'),
             type: 'select',
-            options: [
-                { value: '', label: __('All Categories', 'moowoodle') },
-                ...Object.entries(category).map(([id, name]) => ({
-                    value: id,
-                    label: name,
-                })),
-            ],
+            options: category,
+        },
+        {
+            key: 'course',
+            label: __('Course', 'moowoodle'),
+            type: 'select',
+            options: courses,
         },
     ];
 
-    // Search configuration
-    const searchConfig = {
-        fields: [
-            {
-                key: 'searchAction',
-                type: 'select',
-                options: [
-                    { value: 'course', label: __('Course', 'moowoodle') },
-                    { value: 'shortname', label: __('Short name', 'moowoodle') },
-                ],
-                placeholder: __('Search by...', 'moowoodle'),
-            },
-            {
-                key: 'searchCourseField',
-                type: 'text',
-                placeholder: __('Search…', 'moowoodle'),
-            },
-        ],
-    };
-
     const doRefreshTableData = (query: QueryProps) => {
         setIsLoading(true);
-
-        // Determine which search field to use
-        let searchField = '';
-        let searchValue = '';
-
-        if (query.searchValue) {
-            // If searchValue is an object with multiple fields
-            if (typeof query.searchValue === 'object') {
-                searchField = query.searchValue.searchAction || 'course';
-                searchValue = query.searchValue.searchCourseField || '';
-            } else {
-                searchField = 'course';
-                searchValue = query.searchValue;
-            }
-        }
 
         axios({
             method: 'GET',
@@ -321,8 +266,8 @@ const Course: React.FC = () => {
                 page: query.paged || 1,
                 row: query.per_page || 10,
                 catagory: query.filter?.catagory || '',
-                searchaction: searchField,
-                search: searchValue,
+                searchaction: query.searchAction || 'course',
+                search: query.searchValue,
             },
         })
             .then((response) => {
@@ -334,16 +279,6 @@ const Course: React.FC = () => {
                 setRowIds(ids);
                 setRows(items);
                 setTotalRows(Number(response.headers['x-wp-total']) || 0);
-
-                // Set category counts if available from headers
-                setCategoryCounts([
-                    {
-                        value: 'all',
-                        label: __('All', 'moowoodle'),
-                        count: Number(response.headers['x-wp-total']) || 0,
-                    },
-                ]);
-
                 setIsLoading(false);
             })
             .catch(() => {
@@ -373,26 +308,26 @@ const Course: React.FC = () => {
                 </div>
             )}
 
-            <Container general>
-                <Column>
-                    <TableCard
-                        headers={headers}
-                        rows={rows}
-                        totalRows={totalRows}
-                        isLoading={isLoading}
-                        onQueryUpdate={doRefreshTableData}
-                        ids={rowIds}
-                        categoryCounts={categoryCounts}
-                        search={searchConfig}
-                        filters={filters}
-                        bulkActions={bulkActions}
-                        onBulkActionApply={(action: string, selectedIds: number[]) => {
-                            handleBulkAction(action, selectedIds);
-                        }}
-                        format={appLocalizer.date_format}
-                    />
-                </Column>
-            </Container>
+            <TableCard
+                headers={headers}
+                rows={rows}
+                totalRows={totalRows}
+                isLoading={isLoading}
+                onQueryUpdate={doRefreshTableData}
+                ids={rowIds}
+                search={{
+                    placeholder: __('Search...', 'moowoodle'),
+                    options: [
+                        { value: 'course', label: __('Course', 'moowoodle') },
+                        { value: 'shortname', label: __('Short name', 'moowoodle') },
+                    ],
+                }}
+                filters={filters}
+                bulkActions={bulkActions}
+                onBulkActionApply={(action: string, selectedIds: number[]) => {
+                    handleBulkAction(action, selectedIds);
+                }}
+            />
         </>
     );
 };

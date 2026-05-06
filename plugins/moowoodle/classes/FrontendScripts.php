@@ -309,6 +309,14 @@ class FrontendScripts {
                         'current_user_id' => get_current_user_id(),
 					),
 				),
+				'moowoodle-product-tab-script' => array(
+					'object_name' => 'moowoodle',
+                    'use_ajax'     => true,
+					'data'        => array(
+						'select_text' => __( 'Select an item...', 'moowoodle' ),
+						'khali_dabba' => MooWoodle()->util->is_khali_dabba(),
+					),
+				),
 			);
 
         $localize_scripts = apply_filters( 'moowoodle_localize_scripts', $localize_scripts );

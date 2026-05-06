@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
  * @property Core\Course $course instance of course class
  * @property Core\Category $category instance of category class
  * @property Core\Product $product instance of product class
- * @property RestAPI $restAPI instance of restapi class
+ * @property Rest $rest instance of restapi class
  */
 class MooWoodle {
     /**

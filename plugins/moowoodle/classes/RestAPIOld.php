@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  * @package     MooWoodle
  * @author      DualCube
  */
-class RestAPI {
+class RestAPIOld {
     /**
      * RestAPI construct function.
      */
