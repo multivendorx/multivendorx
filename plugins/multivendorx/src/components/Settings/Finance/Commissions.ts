@@ -202,7 +202,7 @@ export default {
 					},
 				},
 				{
-					key: 'order_value',
+					key: 'order_value_amount',
 					type: 'number',
 					size: 8,
 					preText: appLocalizer.currency_symbol,
