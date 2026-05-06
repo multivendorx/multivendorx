@@ -600,7 +600,7 @@ class Frontend {
         }
 
         // Return size in MB
-        return round( $total_size / 1024 / 1024, 2 );
+        return round( $total_size / 1024 / 1024 / 1024, 4 );
     }
     public function add_dashboard_button() {
 
