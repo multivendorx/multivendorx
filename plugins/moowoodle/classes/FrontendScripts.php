@@ -93,7 +93,7 @@ class FrontendScripts {
         $common_deps = array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' );
 
         $block_scripts = array(
-            
+            'my-courses',
         );
 
         $register_scripts = apply_filters(
@@ -301,6 +301,13 @@ class FrontendScripts {
 						),
 					),
                 ),
+                'moowoodle-my-courses-script'  => array(
+					'object_name' => 'courseMyAcc',
+                    'use_rest'     => true,
+					'data'        => array(
+						'moodle_site_url' => MooWoodle()->setting->get_setting( 'moodle_url' ),
+					),
+				),
 			);
 
         $localize_scripts = apply_filters( 'moowoodle_localize_scripts', $localize_scripts );
