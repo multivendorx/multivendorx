@@ -188,7 +188,6 @@ export default {
 				{
 					key: 'product_qty',
 					type: 'number',
-					preText: appLocalizer.currency_symbol,
 					size: 8,
 					skipFirstRow: true,
 					afterElement: {
@@ -258,7 +257,7 @@ export default {
 		{
 			key: 'commission_per_item',
 			type: 'nested',
-			label: 'Commission value',
+			label: __('Commission value', 'multivendorx'),
 			single: true,
 			desc: __(
 				'Set global commission rates that apply to each individual item quantity. Commission will be calculated by multiplying the rate with the total number of items across all products/listing in the order.',
@@ -432,7 +431,7 @@ export default {
 				{
 					key: 'rule',
 					type: 'choice-toggle',
-					label: 'to be',
+					label: __('to be', 'multivendorx'),
 					options: [
 						{
 							key: 'customer',
@@ -453,7 +452,7 @@ export default {
 		{
 			key: 'facilitator_fees',
 			type: 'nested',
-			label: 'Facilitator fees',
+			label: __('Facilitator fees', 'multivendorx'),
 			single: true,
 			proSetting: true,
 			settingDescription: __(
