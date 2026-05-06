@@ -332,9 +332,9 @@ export default {
 					value: 'full_tax',
 				},
 				{
-					key: 'commision_based_tax',
+					key: 'commission_based_tax',
 					label: __('Commission based tax', 'multivendorx'),
-					value: 'commision_based_tax',
+					value: 'commission_based_tax',
 				},
 			],
 		},
