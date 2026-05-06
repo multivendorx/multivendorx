@@ -102,7 +102,10 @@ a {
     min-height: 2.213rem !important; // for overwrite wordpress style
     background: $background-white;
   }
-
+  .textarea-input{
+    font-family: Figtree, sans-serif;
+      
+  }
   input[type="color"] {
     cursor: pointer;
   }

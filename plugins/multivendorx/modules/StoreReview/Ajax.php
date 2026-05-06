@@ -217,7 +217,7 @@ class Ajax {
 
 							<?php if ( ! empty( $review->reply ) ) : ?>
                             <div class="multivendorx-review-reply">
-                                <strong><?php esc_html_e( 'Store's reply:', 'multivendorx' ); ?></strong>
+                                <strong><?php esc_html_e( "Store's reply:", "multivendorx" ); ?></strong>
                                 <p><?php echo esc_html( $review->reply ); ?></p>
                             </div>
                         <?php endif; ?>

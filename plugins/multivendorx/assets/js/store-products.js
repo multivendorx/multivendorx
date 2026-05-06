@@ -7,8 +7,10 @@ jQuery(document).ready(function ($) {
 		}).first();
 
 		if ($btn.length) {
-			const color = $btn.css('background-color');
+			const backgroundColor = $btn.css('background-color');
+			const color = $btn.css('color');
 			root.style.setProperty('--theme-primary', color);
+			root.style.setProperty('--theme-background', backgroundColor);
 		} 
 	});
 	$(document).on('click', '.multivendorx-apply-now-btn', function () {

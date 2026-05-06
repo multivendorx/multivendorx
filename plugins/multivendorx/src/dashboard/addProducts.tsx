@@ -99,17 +99,6 @@ const AddProduct = () => {
 			imagePayload.push({ id: img.id });
 		});
 
-		const validation = applyFilters(
-			'multivendorx_product_create_limit',
-			{ allowed: true, message: '' },
-			product
-		);
-
-		if (!validation.allowed) {
-			setErrorMsg(validation.message);
-			return;
-		}
-
 		const payload = {
 			...product,
 			status: product.status ? product.status : appLocalizer.current_user?.allcaps?.publish_products ? 'publish' : 'draft',
@@ -182,7 +171,7 @@ const AddProduct = () => {
 			policies:
 				!!product.shipping_policy ||
 				!!product.refund_policy ||
-				product.cancellation_policy,
+				!!product.cancellation_policy,
 		};
 
 		if (product.type === 'simple') {
@@ -801,35 +790,37 @@ const AddProduct = () => {
 								setImage: setFeaturedImage,
 								product: product,
 							})}
-							<FormGroup
-								label={__('Product gallery', 'multivendorx')}
-							>
-								<FileInputUI
-									imageSrc={galleryImages.map(
-										(img) => img.thumbnail
-									)}
-									multiple={true}
-									openUploader="Add Gallery Image"
-									onChange={(val) => {
-										if (!val) {
-											setGalleryImages([]);
-											return;
-										}
 
-										const urls = Array.isArray(val)
-											? val
-											: [val];
+							{applyFilters(
+								'multivendorx_show_product_gallery',
+								true,
+								{ product }
+							) && (
+								<FormGroup label={__('Product gallery', 'multivendorx')}>
+									<FileInputUI
+										imageSrc={galleryImages.map((img) => img.thumbnail)}
+										multiple={true}
+										openUploader="Add Gallery Image"
+										onChange={(val) => {
+											if (!val) {
+												setGalleryImages([]);
+												return;
+											}
 
-										const formatted = urls.map((file) => ({
-											id: file?.id,
-											src: file?.url,
-											thumbnail: file?.url,
-										}));
+											const urls = Array.isArray(val) ? val : [val];
 
-										setGalleryImages(formatted);
-									}}
-								/>
-							</FormGroup>
+											const formatted = urls.map((file) => ({
+												id: file?.id,
+												src: file?.url,
+												thumbnail: file?.url,
+											}));
+
+											setGalleryImages(formatted);
+										}}
+									/>
+								</FormGroup>
+							)}
+							
 						</FormGroupWrapper>
 					</Card>
 				</Column>

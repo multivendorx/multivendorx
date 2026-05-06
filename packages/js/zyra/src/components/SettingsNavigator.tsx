@@ -114,7 +114,7 @@ export const NavigatorHeader: React.FC<NavigatorHeaderProps> = ({
                     }))}
                 />
             )}
-            {headerCustomContent && headerCustomContent}
+            {headerCustomContent && <div className='title-custom-section'> {headerCustomContent} </div> }
         </div>
     );
 };

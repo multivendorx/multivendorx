@@ -9,6 +9,7 @@ import {
 	Tooltip,
 	TabsUI,
 	NoticeReceiver,
+	Notice,
 	GuidedTourProvider,
 	useOutsideClick,
 } from 'zyra';
@@ -56,9 +57,10 @@ const Dashboard = () => {
 	const [showStoreList, setShowStoreList] = useState(false);
 	const [isDarkMode, setIsDarkMode] = useState(false);
 	const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
-	const [isMenuMinimize, setisMenuMinimize] = useState(false);
+	const [isMenuMinimize, setIsMenuMinimize] = useState(false);
 	const [noPermission, setNoPermission] = useState(false);
 	const [newProductId, setNewProductId] = useState<number | null>(null);
+	const [errorMsg, setErrorMsg] = useState('');
 
 	const userDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -99,6 +101,14 @@ const Dashboard = () => {
 	const storefrontUrl = `${appLocalizer.store_page_url}${storeData?.slug}`;
 
 	const createAutoDraftProduct = () => {
+		const validation = applyFilters(
+			'multivendorx_product_create_limit',
+			{ allowed: true, message: '' });
+
+		if (!validation.allowed) {
+			setErrorMsg(validation.message);
+			return;
+		}
 		axios
 			.post(
 				`${appLocalizer.apiUrl}/wc/v3/products/`,
@@ -255,13 +265,13 @@ const Dashboard = () => {
 				convertedKey
 			);
 		} catch {
-			return <div>{__('404 not found','multivendorx')}</div>;
+			return <div>{__('404 not found', 'multivendorx')}</div>;
 		}
 	};
 
 	// Menu filtered by capability + active modules
 	const filteredMenu = useMemo(() => {
-		const result = {};
+		const result: Record<string, MenuItem> = {};
 		Object.entries(menu).forEach(([key, item]: [string, MenuItem]) => {
 			if (!hasCapability(item.capability)) {
 				return;
@@ -279,10 +289,10 @@ const Dashboard = () => {
 
 					let hasSetting = true;
 
-					if (sub.key === 'withdrawls') {
+					if (sub.key === 'withdrawals') {
 						hasSetting =
 							appLocalizer.settings_databases_value?.['payouts']
-								?.withdraw_type != 'disable';
+								?.withdraw_type !== 'disable';
 					}
 
 					return hasCap && hasModule && hasSetting;
@@ -315,7 +325,7 @@ const Dashboard = () => {
 
 	const firstTwoStores = availableStores.slice(0, 2);
 
-	const switchStore = (storeId) => {
+	const switchStore = (storeId: string) => {
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, `stores/${storeId}`),
@@ -358,7 +368,10 @@ const Dashboard = () => {
 					storeId={appLocalizer.store_id}
 				/>
 			)}
-			<div className="dashboard-tabs-wrapper">
+			<div className="dashboard-tabs-wrapper"
+			 	onMouseEnter={() => setIsMenuMinimize(false)}
+				onMouseLeave={() => setIsMenuMinimize(true)}
+				>
 				<div className="logo-wrapper">
 					<a
 					href={appLocalizer.site_url}
@@ -373,7 +386,7 @@ const Dashboard = () => {
 								{isMenuCollapsed && isMenuMinimize
 									? appLocalizer.site_name.charAt(0).toUpperCase()
 									: appLocalizer.site_name}
-							</>							
+							</>
 						)}
 					</a>
 				</div>
@@ -436,13 +449,9 @@ const Dashboard = () => {
 												{item.submenu.map((sub) => (
 													<li key={sub.key}>
 														<NavLink
-															className={({
-																isActive,
-															}) =>
-																isActive
-																	? 'active'
-																	: ''
-															}
+															className={({ isActive }) => 
+																		`tab ${isActive ? 'active' : ''}`
+																	}
 															to={`/${sub.key}`}
 															onClick={() =>
 																setCurrentTab(
@@ -475,7 +484,7 @@ const Dashboard = () => {
 								onClick={() => {
 									setIsMenuCollapsed((prev) => {
 										const next = !prev;
-										setisMenuMinimize(next);
+										setIsMenuMinimize(next);
 										return next;
 									});
 								}}
@@ -841,6 +850,14 @@ const Dashboard = () => {
 
 				{/* Page content */}
 				<div className="content-wrapper">
+					{errorMsg && (
+						<Notice
+							type="error"
+							validity="lifetime"
+							displayPosition="notice"
+							message={errorMsg}
+						/>
+					)}
 					<NoticeReceiver position="float" />
 					<NoticeReceiver position="notice" />
 
@@ -866,7 +883,7 @@ const Dashboard = () => {
 							/>
 						) : (
 							<ComponentStatusView
-								title={__('No active store select for this user.', 'multivendorx')}
+								title={__('No active store selected for this user.', 'multivendorx')}
 								desc={__('To get started, register your store.', 'multivendorx')}
 								buttonText={__('Create your store', 'multivendorx')}
 								buttonLink={appLocalizer.registration_page}

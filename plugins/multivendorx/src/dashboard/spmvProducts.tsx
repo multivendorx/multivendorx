@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { formatCurrency, dashNavigate } from '../services/commonFunction';
-import { BasicInputUI, ComponentStatusView, Skeleton } from 'zyra';
+import { BasicInputUI, ComponentStatusView, Skeleton, Notice } from 'zyra';
+import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
 const SpmvProducts: React.FC = () => {
@@ -14,6 +15,7 @@ const SpmvProducts: React.FC = () => {
 	const ITEMS_PER_PAGE = 12;
 	const [pageIndex, setPageIndex] = useState(0);
 	const [newProductId, setNewProductId] = useState(null);
+	const [errorMsg, setErrorMsg] = useState('');
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -60,6 +62,15 @@ const SpmvProducts: React.FC = () => {
 	);
 
 	const createAutoDraftProduct = () => {
+		const validation = applyFilters(
+			'multivendorx_product_create_limit',
+			{ allowed: true, message: '' });
+
+		if (!validation.allowed) {
+			setErrorMsg(validation.message);
+			return;
+		}
+
 		const payload = {
 			name: 'Auto Draft',
 			status: 'draft',
@@ -117,6 +128,14 @@ const SpmvProducts: React.FC = () => {
 	};
 	return (
 		<>
+		{errorMsg && (
+				<Notice
+					type="error"
+					validity="lifetime"
+					displayPosition="notice"
+					message={errorMsg}
+				/>
+			)}
 			<div className="product-category-select-wrapper">
 				<div className="header">
 					<div className="title">

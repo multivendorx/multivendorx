@@ -442,7 +442,7 @@ const EventRules: React.FC = () => {
 								<i
 									className={
 										mode === 'list'
-											? 'adminfont-editor-list-ul'
+											? 'adminfont-editor-list'
 											: 'adminfont-module'
 									}
 								></i>
