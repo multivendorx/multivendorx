@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @class       Synchronization class
  * @version     PRODUCT_VERSION
- * @author      MooWoodle
+ * @author      DualCube
  */
 class Synchronization extends \WP_REST_Controller {
 

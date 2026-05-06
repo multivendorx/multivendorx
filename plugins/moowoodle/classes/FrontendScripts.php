@@ -306,6 +306,7 @@ class FrontendScripts {
                     'use_rest'     => true,
 					'data'        => array(
 						'moodle_site_url' => MooWoodle()->setting->get_setting( 'moodle_url' ),
+                        'current_user_id' => get_current_user_id(),
 					),
 				),
 			);

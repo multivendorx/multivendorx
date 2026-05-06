@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @class       Courses class
  * @version     PRODUCT_VERSION
- * @author      MooWoodle
+ * @author      DualCube
  */
 class Courses extends \WP_REST_Controller {
 
