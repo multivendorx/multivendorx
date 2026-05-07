@@ -29,7 +29,7 @@ class Utill {
     }
 
     /**
-     * Constent holds table name
+     * Constant holds table name
      *
      * @var array
      */
