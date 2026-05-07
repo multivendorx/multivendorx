@@ -11,8 +11,6 @@ use MooWoodle\RestAPI\Controllers\Settings;
 use MooWoodle\RestAPI\Controllers\Logs;
 use MooWoodle\RestAPI\Controllers\Synchronization;
 use MooWoodle\RestAPI\Controllers\Courses;
-use MooWoodle\RestAPI\Controllers\Filters;
-use MooWoodle\RestAPI\Controllers\MyCourses;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @version     PRODUCT_VERSION
  * @package     MooWoodle
- * @author      MooWoodle
+ * @author      DualCube
  */
 class Rest {
 
@@ -48,8 +46,6 @@ class Rest {
             'logs'              => new Logs(),
             'synchronization'   => new Synchronization(),
             'courses'           => new Courses(),
-            'filters'           => new Filters(),
-            'my-courses'        => new MyCourses()
         );
     }
     /**

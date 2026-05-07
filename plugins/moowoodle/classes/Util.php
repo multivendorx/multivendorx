@@ -30,13 +30,12 @@ class Util {
     );
 
     const MOOWOODLE_SETTINGS = array(
-        'general'             => 'moowoodle_general_settings',
-        'display'             => 'moowoodle_display_settings',
-        'tool'                => 'moowoodle_tool_settings',
-        'log'                 => 'moowoodle_log_settings',
         'notification'        => 'moowoodle_notification_settings',
         'synchronize-course'  => 'moowoodle_synchronize_course_settings',
         'synchronize-user'    => 'moowoodle_synchronize_user_settings',
+        'connection-access'   => 'moowoodle_connection_access_settings',
+        'course-enrollment'   => 'moowoodle_course_enrollment_settings',
+        'system-logs'         => 'moowoodle_system_logs_settings',
     );
 
     const MOOWOODLE_OTHER_SETTINGS = array(
@@ -147,8 +146,7 @@ class Util {
 
         // Add the main message.
         // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-        $log_lines[] = "{$timestamp} : Message: " . trim( print_r( $message, true ) );
-
+        $log_lines[] = "{$timestamp} : Message: " . (is_string( $message )? trim( $message ): trim( print_r( $message, true ) ));
         // Build final entry block.
         $log_entry = implode( "\n", $log_lines ) . "\n";
 
@@ -188,8 +186,7 @@ class Util {
 	 * @return bool
 	 */
 	public static function is_khali_dabba() {
-		// return apply_filters( 'kothay_dabba', false );
-		return true;
+		return apply_filters( 'kothay_dabba', false );
 	}
 
 	/**

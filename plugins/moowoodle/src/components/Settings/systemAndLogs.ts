@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-    id: 'tool',
-    priority: 50,
-    headerTitle: __( 'Tools', 'moowoodle' ),
+    id: 'system-logs',
+    priority: 3,
+    headerTitle: __('System & Logs', 'moowoodle'),
     headerDescription: __(
         'Manage advanced settings for synchronization, error logging, and connection handling.',
         'moowoodle'
@@ -14,7 +14,7 @@ export default {
         {
             key: 'moowoodle_adv_log',
             type: 'checkbox',
-            label: __( 'Advance log', 'moowoodle' ),
+            label: __('Advance log', 'moowoodle'),
             desc: __(
                 `<span class="highlighted-part">Activating this option will log more detailed error information. Enable it only when essential, as it may result in a larger log file.</span>`,
                 'moowoodle'
@@ -28,13 +28,13 @@ export default {
             look: 'toggle',
         },
         {
-			key: 'section',
-			type: 'section',
-			title: __(
-				'Lorem Ipsum is simply dummy text of',
-				'moowoodle'
-			),
-		},
+            key: 'section',
+            type: 'section',
+            title: __(
+                'Lorem Ipsum is simply dummy text of',
+                'moowoodle'
+            ),
+        },
         {
             key: 'moodle_timeout',
             type: 'text',
@@ -43,9 +43,9 @@ export default {
                 'moowoodle'
             ),
             size: 8,
-            postInsideText: __( 'sec', 'moowoodle' ),
-            label: __( 'Connection timeout', 'moowoodle' ),
-            parameter: __( 'Seconds', 'moowoodle' ),
+            postInsideText: __('sec', 'moowoodle'),
+            label: __('Connection timeout', 'moowoodle'),
+            parameter: __('Seconds', 'moowoodle'),
         },
         {
             key: 'schedule_interval',
@@ -55,9 +55,17 @@ export default {
                 'moowoodle'
             ),
             size: 8,
-            postInsideText: __( 'min', 'moowoodle' ),
-            parameter: __( 'Minutes', 'moowoodle' ),
-            label: __( 'Automatic synchronization frequency', 'moowoodle' ),
+            postInsideText: __('min', 'moowoodle'),
+            parameter: __('Minutes', 'moowoodle'),
+            label: __('Automatic synchronization frequency', 'moowoodle'),
+        },
+        {
+            key: 'moowoodle_adv_log',
+            type: 'log',
+            classes: 'log-section',
+            apiLink: 'logs',
+            fileName: 'error.txt',
+            label: __('Logs', 'moowoodle'),
         },
     ],
 };
