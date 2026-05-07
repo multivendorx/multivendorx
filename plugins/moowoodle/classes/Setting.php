@@ -6,6 +6,7 @@
  */
 
 namespace MooWoodle;
+use MooWoodle\Util;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -72,22 +73,18 @@ class Setting {
         }
 
         /**
-         * Filter for register settings key's
+         * Filter for register settings key's.
          *
          * @var array setting keys
          */
         $this->settings_keys = apply_filters(
             'moowoodle_register_settings_keys',
-            array(
-				'moowoodle_extra_settings',
-				'moowoodle_general_settings',
-				'moowoodle_display_settings',
-				'moowoodle_notification_settings',
-				'moowoodle_tool_settings',
-				'moowoodle_log_settings',
-				'moowoodle_synchronize_course_settings',
-				'moowoodle_synchronize_user_settings',
-			)
+            array_merge(
+                array(
+                    'moowoodle_extra_settings',
+                ),
+                array_values( Util::MOOWOODLE_SETTINGS )
+            )
         );
 
         return $this->settings_keys;

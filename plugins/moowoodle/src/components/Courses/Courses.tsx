@@ -32,7 +32,6 @@ const Course: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [totalRows, setTotalRows] = useState<number>(0);
     const [category, setCategory] = useState([]);
-    const [courses, setCourses] = useState([]);
     const [error, setError] = useState<string | null>(null);
     const [rowIds, setRowIds] = useState<number[]>([]);
 
@@ -46,7 +45,6 @@ const Course: React.FC = () => {
         })
             .then((response) => {
                 setCategory(response.data.category || []);
-                setCourses(response.data.courses || []);
             })
             .catch(() => {
                 setError(__('Failed to load categories', 'moowoodle'));
@@ -75,7 +73,7 @@ const Course: React.FC = () => {
 
         setIsLoading(true);
         axios({
-            method: 'GET',
+            method: 'POST',
             url: getApiLink(appLocalizer, 'courses'),
             headers: { 'X-WP-Nonce': appLocalizer.nonce },
             data: {
@@ -243,13 +241,7 @@ const Course: React.FC = () => {
             label: __('Category', 'moowoodle'),
             type: 'select',
             options: category,
-        },
-        {
-            key: 'course',
-            label: __('Course', 'moowoodle'),
-            type: 'select',
-            options: courses,
-        },
+        }
     ];
 
     const doRefreshTableData = (query: QueryProps) => {
