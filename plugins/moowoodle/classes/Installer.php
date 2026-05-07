@@ -194,6 +194,13 @@ class Installer {
             $tool_settings = get_option( 'moowoodle_tool_settings', array() );
             $log_settings = get_option( 'moowoodle_log_settings', array() );
             update_option( 'moowoodle_system_logs_settings', array_merge( $tool_settings, $log_settings ) );
+
+            delete_option( 'moowoodle_general_settings' );
+            delete_option( 'moowoodle_sso_settings' );
+            delete_option( 'moowoodle_display_settings' );
+            delete_option( 'moowoodle_bulk_access_settings' );
+            delete_option( 'moowoodle_tool_settings' ); 
+            delete_option( 'moowoodle_log_settings' );
         }
     }
 
