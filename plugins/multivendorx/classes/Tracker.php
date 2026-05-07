@@ -18,20 +18,24 @@ class Tracker {
     private string $review_url;
     private string $support_url;
     private string $facebook_url;
-    private string $calendy_url;
+    private string $calendly_url;
     private string $pro_shop_url;
     private string $plugin_version;
+    private string $plugin_name;
     private string $settings_url;
     private string $api_url;
+    private string $pro_plugin_version;
 
     public function __construct() {
         $this->slug = MultiVendorX()->plugin_slug;
+        $this->plugin_name = 'MultiVendorX';
         $this->plugin_version = MULTIVENDORX_PLUGIN_VERSION;
         $this->pro_shop_url = MULTIVENDORX_PRO_SHOP_URL;
+        $this->pro_plugin_version = defined('MULTIVENDORX_PRO_PLUGIN_VERSION') ? MULTIVENDORX_PRO_PLUGIN_VERSION : '';
         $this->review_url = 'https://wordpress.org/support/plugin/'. MultiVendorX()->plugin_slug .'/reviews/#new-post';
         $this->support_url = "https://multivendorx.com/support-forum/";
         $this->facebook_url = "https://www.facebook.com/groups/226246620006065";
-        $this->calendy_url = "https://calendly.com/contact-hkdq/30min";
+        $this->calendly_url = "https://calendly.com/contact-hkdq/30min";
         $this->settings_url = admin_url( 'admin.php?page=multivendorx#&tab=settings&subtab=overview' );
         $this->api_url = 'https://multivendorx.com/wp-json/mvx_thirdparty/v1/users_database_update';
 
@@ -121,7 +125,7 @@ class Tracker {
                         <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10,0.5c-5.247,0-9.5,4.253-9.5,9.5c0,5.247,4.253,9.5,9.5,9.5c5.247,0,9.5-4.253,9.5-9.5C19.5,4.753,15.247,0.5,10,0.5 M10,18.637c-4.77,0-8.636-3.867-8.636-8.637S5.23,1.364,10,1.364S18.637,5.23,18.637,10S14.77,18.637,10,18.637 M10.858,7.949c0-0.349,0.036-0.536,0.573-0.536h0.719v-1.3H11c-1.38,0-1.866,0.65-1.866,1.743v0.845h-0.86V10h0.86v3.887h1.723V10h1.149l0.152-1.299h-1.302L10.858,7.949z"/></svg>
                         <span><?php esc_html_e( 'Facebook Group', 'multivendorx' ); ?></span>
                     </a>
-                    <a href="<?php echo esc_url($this->calendy_url); ?>" target="_blank" rel="noopener noreferrer" class="support-card">
+                    <a href="<?php echo esc_url($this->calendly_url); ?>" target="_blank" rel="noopener noreferrer" class="support-card">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.384,17.752a2.108,2.108,0,0,1-.522,3.359,7.543,7.543,0,0,1-5.476.642C10.5,20.523,3.477,13.5,2.247,8.614a7.543,7.543,0,0,1,.642-5.476,2.108,2.108,0,0,1,3.359-.522L8.333,4.7a2.094,2.094,0,0,1,.445,2.328A3.877,3.877,0,0,1,8,8.2c-2.384,2.384,5.417,10.185,7.8,7.8a3.877,3.877,0,0,1,1.173-.781,2.092,2.092,0,0,1,2.328.445Z"/></svg>
                         <span><?php esc_html_e( 'Book a Call', 'multivendorx' ); ?></span>
                     </a>
@@ -282,10 +286,13 @@ class Tracker {
         $user     = wp_get_current_user();
         $user_one = get_userdata( 1 );
         $theme    = wp_get_theme();
-
+        $pro_key_details = get_option('wc_am_client_multivendorx_pro', true) ? get_option('wc_am_client_multivendorx_pro', true) : array();
+        
         return [
             'plugin_slug'      => $this->slug,
             'plugin_version'   => $this->plugin_version,
+            'plugin'           => $this->plugin_name,
+            'version'          => $this->plugin_version,
             'url'              => get_bloginfo( 'url' ),
             'site_name'        => get_bloginfo( 'name' ),
             'site_version'     => get_bloginfo( 'version' ),
@@ -302,9 +309,14 @@ class Tracker {
                                   ] ) ),
             'active_plugins'   => maybe_serialize( $active_plugins ),
             'inactive_plugins' => maybe_serialize( array_values( array_diff( $all_plugins, $active_plugins ) ) ),
-            'theme'            => sanitize_text_field( $theme->Name    ?? '' ),
-            'theme_version'    => sanitize_text_field( $theme->Version ?? '' ),
+            'theme'            => sanitize_text_field( $theme->Name ),
+            'theme_version'    => sanitize_text_field( $theme->Version),
             'status'           => 'Active',
+            'file_location'    => __FILE__,
+            'pro_version'      => $this->pro_plugin_version,
+            'api_key'          => isset($pro_key_details['wc_am_client_multivendorx_pro_api_key']) ? $pro_key_details['wc_am_client_multivendorx_pro_api_key'] : '',
+            'product_id'       => get_option('wc_am_product_id_multivendorx_pro', true) ? get_option('wc_am_product_id_multivendorx_pro', true) : '',
+            'pro_status'       => get_option('wc_am_client_multivendorx_pro_activated', true) ? get_option('wc_am_client_multivendorx_pro_activated', true) : ''
         ];
     }
 
