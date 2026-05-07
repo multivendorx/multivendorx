@@ -1,654 +1,328 @@
 import React from 'react';
-import { Document, Page, View, Text } from '@react-pdf/renderer';
+import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer';
+import { __ } from '@wordpress/i18n';
 
 type Row = {
-	seller: string;
-	product: string;
-	qty: number;
-	unitPrice: number;
-	subtotal: number;
-	tax: number;
-	total: number;
+    orderID: string;
+    orderAmount: string;
+    storeEarning: number;
+    marketplaceEarning: number;
+    shippingTax: number;
+    shippingAmount: number;
+    date?: string;
 };
 
 interface Props {
-	invoiceRows?: Row[];
-	colors: {
-		colorPrimary: string;
-		colorSecondary: string;
-		colorAccent: string;
-		colorSupport: string;
-	};
+    invoiceRows?: Row[];
+    order?: any;
+    colors: {
+        colorPrimary: string;
+        colorSecondary: string;
+        colorAccent: string;
+        colorSupport: string;
+    };
 }
 
-const adminCommissionDefault: React.FC<Props> = ({ invoiceRows, colors }) => {
-	const rows: Row[] = invoiceRows || [
-		{
-			seller: 'Premium Electronics',
-			product: 'Widget A - Premium Edition',
-			qty: 2,
-			unitPrice: 50,
-			subtotal: 100,
-			tax: 10,
-			total: 110,
+const Default: React.FC<Props> = ({ invoiceRows, colors, order }) => {
+    const rows: Row[] = invoiceRows || [
+        {
+            orderID: '1',
+            date: '2025-10-01',
+            orderAmount: '100',
+            storeEarning: 2,
+            marketplaceEarning: 0.5,
+            shippingTax: 1,
+            shippingAmount: 5,
+        },
+        {
+            orderID: '2',
+            date: '2025-10-02',
+            orderAmount: '200',
+            storeEarning: 2,
+            marketplaceEarning: 0.5,
+            shippingTax: 1,
+            shippingAmount: 5,
+        },
+        {
+            orderID: '3',
+            date: '2025-10-03',
+            orderAmount: '300',
+            storeEarning: 2,
+            marketplaceEarning: 0.5,
+            shippingTax: 1,
+            shippingAmount: 5,
+        },
+    ];
+
+    const createStyles = (colors: Props['colors']) => StyleSheet.create({
+        page: {
+			fontSize: 12,
+			fontFamily: 'Helvetica',
+			backgroundColor: '#fff',
+			position: 'relative',
+			padding: 0,
+			margin: 0
 		},
-		{
-			seller: 'Premium Electronics',
-			product: 'Widget B - Deluxe Model',
-			qty: 1,
-			unitPrice: 75,
-			subtotal: 75,
-			tax: 7.5,
-			total: 82.5,
+		boldText: {
+			fontWeight: 600,
+			fontSize: 14,
+			margin: 0,
 		},
-		{
-			seller: 'Tech Accessories Co',
-			product: 'Premium USB Cable',
-			qty: 2,
-			unitPrice: 15,
-			subtotal: 30,
-			tax: 3,
-			total: 33,
+
+		header: {
+			display: 'flex',
+			justifyContent: 'space-between',
+			alignItems: 'center',
+			flexDirection: 'row',
+			margin: 20,
 		},
-	];
+		headerTitle: {
+			fontSize: 32,
+			color: '#1e2a38',
+			fontWeight: 'bold',
+		},
+		headerRight: {
+			textAlign: 'right',
+			fontSize: 14,
+			color: '#555',
+			display: 'flex',
+			flexDirection: 'column',
+		},
+		headerDetails: {
+			display: 'flex',
+			flexDirection: 'row',
+		},
+		// boxDetails start
+		boxDetails: {
+			display: 'flex',
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			margin: 20,
+		},
+		box: {
+			display: 'flex',
+			flexDirection: 'column',
+			gap: 8,
+		},
+		boxTitle: {
+			fontSize: 16,
+			marginBottom: 8,
+			color: '#1e2a38',
+			fontWeight: 'bold',
+		},
+		boxValueWrapper: {
+			display: 'flex',
+			flexDirection: 'row',
+		},
+		detailsValue: {
+			fontSize: 14,
+			color: '#555'
+		},
 
-	return (
-		<Document>
-			<Page
-				size="A4"
-				style={{
-					fontSize: 12,
-					fontFamily: 'Helvetica',
-					backgroundColor: '#fff',
-					position: 'relative',
-				}}
-			>
-				<View>
-					{/* header start*/}
-					<View
-						id="invoice-header"
-						style={{
-							display: 'flex',
-							justifyContent: 'space-between',
-							flexDirection: 'row',
-							margin: '20px',
-							paddingBottom: '20px',
-							borderBottom: '1px solid #eee',
-						}}
-					>
-						{/* left section */}
-						<View
-							id="invoice-header-left"
-							style={{
-								display: 'flex',
-								justifyContent: 'space-between',
-								gap: 15,
-								flexDirection: 'row',
-								alignItems: 'flex-start',
-							}}
-						>
-							<View
-								style={{
-									padding: 10,
-									backgroundColor: colors.colorPrimary,
-									fontSize: 25,
-									fontWeight: 600,
-									borderRadius: 4,
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'center',
-									alignItems: 'center',
-								}}
-							>
-								<Text style={{ color: '#fff' }}>MS</Text>
-							</View>
-							<View
-								style={{
-									display: 'flex',
-									gap: 5,
-									flexDirection: 'column',
-								}}
-							>
-								<Text
-									id="company-name"
-									style={{ fontSize: 18, fontWeight: 600 }}
-								>
-									Marketplace Solutions Inc.
-								</Text>
-								<Text id="address">
-									789 Commerce Boulevard, Suite 500
-								</Text>
-								<Text id="address">
-									San Francisco, CA 94102, United States
-								</Text>
-								<Text style={{ fontSize: 12, color: '#555' }}>
-									Tax ID:{' '}
-									<Text style={{ fontWeight: 600 }}>
-										US-TAX-123456789
-									</Text>
-								</Text>
-								<Text style={{ fontSize: 12, color: '#555' }}>
-									GST/VAT Number:{' '}
-									<Text style={{ fontWeight: 600 }}>
-										GST-US-987654321
-									</Text>
-								</Text>
-								<Text style={{ fontSize: 12, color: '#555' }}>
-									Business Registration:{' '}
-									<Text style={{ fontWeight: 600 }}>
-										BRN-2020-MKT-4567
-									</Text>
-								</Text>
-							</View>
-						</View>{' '}
-						{/* left section end*/}
-						{/* right section */}
-						<View
-							id="invoice-header-right"
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-								alignItems: 'flex-end',
-								gap: 6,
-							}}
-						>
-							<Text
-								style={{
-									fontSize: 18,
-									fontWeight: 600,
-								}}
-							>
-								Marketplace Order Invoice
-							</Text>
+		// table start
+		table: {
+			display: 'flex',
+			flexDirection: 'column',
+			margin: 20,
+		},
+		tableHeader: {
+			display: 'flex',
+			flexDirection: 'row',
+			backgroundColor: '#f7f8fa',
+			padding: 10,
+		},
+		tableHeaderText: {
+			fontWeight: 600,
+			color: '#1e2a38',
+		},
+		tableRow: {
+			display: 'flex',
+			flexDirection: 'row',
+			padding: 15,
+			borderBottom: '1px solid #eaeaea',
+		},
+		tableRowText: {
+			fontSize: 14,
+			color: '#555'
+		},
+		// total section 
+		totalSection: {
+			display: 'flex',
+			justifyContent: 'flex-end',
+			alignItems: 'flex-end',
+			flexDirection: 'column',
+			margin: 20,
+		},
+		totalDetails: {
+			width: 300,
+			display: 'flex',
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			paddingTop: 12,
+		},
+		subTotal: {
+			fontSize: 15,
+			color: '#1e2a38',
+		},
+		totalWrapper: {
+			width: 300,
+			display: 'flex',
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			borderTop: `0.125rem solid #61666bff`,
+			paddingTop: 10,
+			marginTop: 10,
+		},
+		total: {
+			fontSize: 16,
+			fontWeight: 600,
+			color: '#1e2a38',
+		},
 
-							<Text style={{ fontSize: 12, color: '#555' }}>
-								Invoice #:{' '}
-								<Text style={{ fontWeight: 600 }}>
-									ADMIN-ORD-2026-0001
-								</Text>
-							</Text>
+		// footer notice
+		footerNotice: {
+			padding: 10,
+			display: 'flex',
+			justifyContent: 'center',
+			borderLeft: `0.125rem solid #1e2a38`,
+			margin: 20,
+			backgroundColor: '#f9f9f9',
+		}
+    });
+    const styles = createStyles(colors);
 
-							<Text style={{ fontSize: 12, color: '#555' }}>
-								Date:{' '}
-								<Text style={{ fontWeight: 600 }}>
-									22 Jan 2026
-								</Text>
-							</Text>
+    return (
+        <Document>
+            <Page size="A4" style={styles.page}>
+				{/* Header start */}
+				<View style={styles.header}>
+					<Text style={styles.headerTitle}>{__('Tax Invoice', 'multivendorx')}</Text>
 
-							<Text style={{ fontSize: 12, color: '#555' }}>
-								Order Number:{' '}
-								<Text style={{ fontWeight: 600 }}>
-									ORD-20260122-101
-								</Text>
-							</Text>
-							<Text style={{ fontSize: 12, color: '#555' }}>
-								Order Date:{' '}
-								<Text style={{ fontWeight: 600 }}>
-									22 Jan 2026
-								</Text>
-							</Text>
-
-							<View
-								style={{
-									marginTop: 8,
-									padding: '4px 8px',
-									backgroundColor: '#33920e69',
-									borderRadius: 5,
-								}}
-							>
-								<Text
-									style={{
-										fontSize: 10,
-										fontWeight: 600,
-										color: '#33920eff',
-									}}
-								>
-									Completed
-								</Text>
-							</View>
-						</View>{' '}
-						{/* right section end */}
-					</View>
-					{/* header end*/}
-
-					{/* billing section start */}
-					<View
-						id="billing-section"
-						style={{
-							margin: '20px',
-							display: 'flex',
-							flexDirection: 'row',
-							justifyContent: 'space-between',
-							gap: '20px',
-						}}
-					>
-						<View
-							id="left-details"
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-								gap: '5px',
-								width: '100%',
-								padding: '10px',
-								backgroundColor: '#f0f0f0',
-								border: '1px solid #ccc',
-								borderRadius: '5px',
-							}}
-						>
-							<Text
-								style={{
-									fontSize: '14px',
-									color: colors.colorPrimary,
-									marginBottom: '5px',
-									fontWeight: 'bold',
-								}}
-							>
-								Artisan Market Co.
-							</Text>
-							<Text
-								style={{ fontSize: '12px', fontWeight: 'bold' }}
-							>
-								Vendor Rajan Mehta
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								{' '}
-								<Text style={{ fontWeight: 'bold' }}>
-									Email:{' '}
-								</Text>
-								john.smith@email.com
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								42 Commerce Lane, Suite 5, Mumbai 400001, India
-							</Text>
-						</View>
-					</View>
-					{/* billing section end */}
-
-					{/* table section start */}
-					<View
-						id="invoice-table-wrapper"
-						style={{
-							margin: '20px',
-							display: 'flex',
-							flexDirection: 'column',
-						}}
-					>
-						<View
-							id="invoice-table-header"
-							style={{
-								display: 'flex',
-								flexDirection: 'row',
-								paddingVertical: 8,
-							}}
-						>
-							{/* Description */}
-							<View style={{ flex: 4 }}>
-								<Text style={{ fontWeight: 600 }}>
-									Order ID
-								</Text>
-							</View>
-
-							<Text
-								style={{
-									flex: 2,
-									textAlign: 'right',
-									fontWeight: 600,
-								}}
-							>
-								Date
-							</Text>
-							<Text
-								style={{
-									flex: 2,
-									textAlign: 'right',
-									fontWeight: 600,
-								}}
-							>
-								Products
-							</Text>
-							<Text
-								style={{
-									flex: 2,
-									textAlign: 'right',
-									fontWeight: 600,
-								}}
-							>
-								Order total
-							</Text>
-							<Text
-								style={{
-									flex: 2,
-									textAlign: 'right',
-									fontWeight: 600,
-								}}
-							>
-								Marketplace Commission
-							</Text>
-							<Text
-								style={{
-									flex: 2,
-									textAlign: 'right',
-									fontWeight: 600,
-								}}
-							>
-								Vendor earnings
-							</Text>
-						</View>
-						{rows.map((row, index) => {
-							return (
-								<View
-									id="invoice-table-row"
-									key={index}
-									style={{
-										display: 'flex',
-										flexDirection: 'row',
-										paddingVertical: 8,
-										borderTop: '1px solid #eee',
-									}}
-								>
-									{/* Description */}
-									<View style={{ flex: 4 }}>
-										<Text>{row.seller}</Text>
-									</View>
-
-									{/* Unit Price */}
-									<Text
-										style={{ flex: 2, textAlign: 'right' }}
-									>
-										{row.product}
-									</Text>
-
-									<Text
-										style={{ flex: 2, textAlign: 'right' }}
-									>
-										{row.qty}
-									</Text>
-									<Text
-										style={{ flex: 2, textAlign: 'right' }}
-									>
-										{row.unitPrice}
-									</Text>
-									<Text
-										style={{ flex: 2, textAlign: 'right' }}
-									>
-										{row.subtotal}
-									</Text>
-									<Text
-										style={{ flex: 2, textAlign: 'right' }}
-									>
-										{row.tax}
-									</Text>
-								</View>
-							);
-						})}
-					</View>
-					{/* table section end  */}
-
-					{/* total section start */}
-					<View
-						id="total-section"
-						style={{
-							margin: '20px',
-							marginTop: '10px',
-							display: 'flex',
-							justifyContent: 'flex-end',
-							gap: '20px',
-							flexDirection: 'row',
-						}}
-					>
-						<View
-							style={{
-								border: '1px solid #ccc',
-								borderRadius: '5px',
-								padding: '10px',
-								backgroundColor: '#f9f9f9',
-								width: '50%',
-								alignSelf: 'flex-end',
-							}}
-						>
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									borderBottom: `1px solid #ccc`,
-									paddingBottom: '8px',
-									marginBottom: '8px',
-								}}
-							>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-									}}
-								>
-									Settlement summary
-								</Text>
-								{/* <Text style={{ fontSize: "12px", fontWeight: "bold", marginLeft: "10px" }}>$69.62</Text> */}
-							</View>
-
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									marginBottom: '8px',
-								}}
-							>
-								<Text style={{ fontSize: '12px' }}>
-									Total sales:
-								</Text>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										marginLeft: '10px',
-									}}
-								>
-									$20.50
-								</Text>
-							</View>
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									marginBottom: '8px',
-								}}
-							>
-								<Text style={{ fontSize: '12px' }}>
-									Commission (15%):
-								</Text>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										marginLeft: '10px',
-									}}
-								>
-									$5.00
-								</Text>
-							</View>
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									marginBottom: '8px',
-								}}
-							>
-								<Text style={{ fontSize: '12px' }}>
-									Platform fee:
-								</Text>
-								<Text
-									style={{
-										fontSize: '12px',
-										fontWeight: 'bold',
-										marginLeft: '10px',
-									}}
-								>
-									$7.50
-								</Text>
-							</View>
-						</View>
-					</View>
-					{/* total section end */}
-
-					{/* tax information */}
-					<View
-						id="tax-information"
-						style={{
-							display: 'flex',
-							flexDirection: 'row',
-							justifyContent: 'space-between',
-							gap: '16px',
-							padding: '10px',
-							backgroundColor: '#f9f9f9',
-							margin: '20px',
-							border: `1px solid #ccc`,
-							borderRadius: '5px',
-						}}
-					>
-						<View
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-								gap: '5px',
-							}}
-						>
-							<Text style={{ fontSize: '10px' }}>
-								Payment Method
-							</Text>
-							<Text
-								style={{ fontSize: '10px', fontWeight: 'bold' }}
-							>
-								Credit Card ****5678
-							</Text>
-						</View>
-						<View
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-								gap: '5px',
-							}}
-						>
-							<Text style={{ fontSize: '10px' }}>
-								Transaction ID
-							</Text>
-							<Text
-								style={{ fontSize: '10px', fontWeight: 'bold' }}
-							>
-								TXN-20260122-ABC123
-							</Text>
-						</View>
-						<View
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-								gap: '5px',
-							}}
-						>
-							<Text style={{ fontSize: '10px' }}>
-								Payment Reference
-							</Text>
-							<Text
-								style={{ fontSize: '10px', fontWeight: 'bold' }}
-							>
-								REF-MKT-2026-001234
-							</Text>
-						</View>
-						<View
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-								gap: '5px',
-							}}
-						>
-							<Text style={{ fontSize: '10px' }}>
-								Payment Status
-							</Text>
-							<Text
-								style={{
-									fontSize: '10px',
-									fontWeight: 'bold',
-									color: '#1bc006ff',
-									backgroundColor: '#00ff221f',
-									padding: '2px 6px',
-									borderRadius: '3px',
-									textAlign: 'center',
-								}}
-							>
-								Confirmed & Settled
-							</Text>
-						</View>
-						<View
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-								gap: '5px',
-							}}
-						>
-							<Text style={{ fontSize: '10px' }}>
-								Payment Date
-							</Text>
-							<Text
-								style={{ fontSize: '10px', fontWeight: 'bold' }}
-							>
-								22 Jan 2026
-							</Text>
-						</View>
-						<View
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-								gap: '5px',
-							}}
-						>
-							<Text style={{ fontSize: '10px' }}>
-								Total Amount Paid
-							</Text>
-							<Text
-								style={{
-									fontSize: '10px',
-									fontWeight: 'bold',
-									color: colors.colorPrimary,
-								}}
-							>
-								$240.50
-							</Text>
-						</View>
-					</View>
-					{/* tax information end*/}
-
-					{/* note section start */}
-					<View
-						style={{
-							padding: '10px',
-							display: 'flex',
-							justifyContent: 'center',
-							borderLeft: `3px solid ${colors.colorPrimary}`,
-							margin: '20px',
-							backgroundColor: '#f9f9f9',
-						}}
-					>
-						<Text style={{ fontSize: '12px', fontWeight: 'bold' }}>
-							Admin Note:{' '}
-							<Text style={{ fontSize: '10px' }}>
-								This is an internal administrative copy of the
-								marketplace order invoice. This document
-								contains the complete financial breakdown
-								including marketplace revenue, seller payouts,
-								and tax information. All amounts are in USD.
-								This invoice is for internal accounting and
-								reconciliation purposes only.
-							</Text>
-						</Text>
-					</View>
-					{/* note section end */}
+					<View style={styles.headerRight}>
+						<Text style={styles.boldText}> {__('Marketplace Solutions Inc.', 'multivendorx')}</Text>
+						<Text>{__('123 Elm Street, Suite 400', 'multivendorx')}</Text>
+						<Text>{__('London, EC1A 1BB', 'multivendorx')}</Text>
+						<Text>{__('+91 987456321', 'multivendorx')}</Text>
+						<Text>{__('store@gmail.com', 'multivendorx')}</Text>
+					</View>  {/* headerDetails view end */}
 				</View>
+				{/* Header end */}
+
+				{/* Invoice Info Section start */}
+				<View style={styles.boxDetails}>
+					<View style={styles.box}>
+						<Text style={styles.boxTitle}> {__('Store 1', 'multivendorx')}  </Text>
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}> {__('VAT / Tax number:', 'multivendorx')}</Text>
+							<Text style={styles.detailsValue}> {__('DE987654321', 'multivendorx')}</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}>{__('Marketplace tax ID: ', 'multivendorx')}</Text>
+							<Text style={styles.detailsValue}> {__('GB123456789', 'multivendorx')}</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}>{__('Registration number: ', 'multivendorx')}</Text>
+							<Text style={styles.detailsValue}> {__('GB123456789', 'multivendorx')}</Text>
+						</View>
+					</View>
+
+					<View style={styles.box}>
+						<Text style={styles.boxTitle}> {__('Invoice Details:', 'multivendorx')}  </Text>
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}> {__('Invoice Number:', 'multivendorx')}</Text>
+							<Text style={styles.detailsValue}> {__('INV-2025-091', 'multivendorx')}</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}>{__('Order Number: ', 'multivendorx')}</Text>
+							<Text style={styles.detailsValue}> {__('ORD-2025-456', 'multivendorx')}</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}>{__('Tax ID: ', 'multivendorx')}</Text>
+							<Text style={styles.detailsValue}> {__('3521456', 'multivendorx')}</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}>{__('VAT Number: ', 'multivendorx')}</Text>
+							<Text style={styles.detailsValue}> {__('IE 98547464', 'multivendorx')}</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}>{__('Registration Number: ', 'multivendorx')}</Text>
+							<Text style={styles.detailsValue}> {__('98547464', 'multivendorx')}</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}>{__('Trade License: ', 'multivendorx')}</Text>
+							<Text style={styles.detailsValue}> {__('98547464', 'multivendorx')}</Text>
+						</View>
+					</View>
+				</View>
+				{/* Invoice Info Section end */}
+
+				{/* Table Section start */}
+				<View style={styles.table}>
+					{/* Table Header */}
+					<View style={styles.tableHeader}>
+						<View style={{ flex: 1 }}>
+							<Text style={styles.tableHeaderText}> {__('Order ID', 'multivendorx-pro')}</Text>
+						</View>
+						<View style={{ flex: 1.5 }}>
+							<Text style={styles.tableHeaderText}> {__('Date', 'multivendorx-pro')}</Text>
+						</View>
+						<View style={{ flex: 2 }}>
+							<Text style={styles.tableHeaderText}> {__('Order Amount', 'multivendorx-pro')}</Text>
+						</View>
+						<View style={{ flex: 2 }}>
+							<Text style={styles.tableHeaderText}> {__('Store Earning', 'multivendorx-pro')}</Text>
+						</View>
+						<View style={{ flex: 2.5 }}>
+							<Text style={styles.tableHeaderText}> {__('Marketplace Earning', 'multivendorx-pro')}</Text>
+						</View>
+						<View style={{ flex: 2 }}>
+							<Text style={styles.tableHeaderText}> {__('Shipping Tax', 'multivendorx-pro')}</Text>
+						</View>
+						<View style={{ flex: 2 }}>
+							<Text style={styles.tableHeaderText}> {__('Shipping Amount', 'multivendorx-pro')}</Text>
+						</View>
+					</View>
+
+					{/* Table Rows */}
+					{rows.map((row, index) => {
+						return (
+							<View style={styles.tableRow}>
+								<View style={{ flex: 1 }}>
+									<Text style={styles.tableRowText}> {row.orderID}</Text>
+								</View>
+								<View style={{ flex: 1.5 }}>
+									<Text style={styles.tableRowText}>{row.date}</Text>
+								</View>
+								<View style={{ flex: 2 }}>
+									<Text style={styles.tableRowText}> {row.orderAmount}</Text>
+								</View>
+								<View style={{ flex: 2 }}>
+									<Text style={styles.tableRowText}> {row.storeEarning}</Text>
+								</View>
+								<View style={{ flex: 2.5 }}>
+									<Text style={styles.tableRowText}> {row.marketplaceEarning}</Text>
+								</View>
+								<View style={{ flex: 2 }}>
+									<Text style={styles.tableRowText}> {row.shippingTax}</Text>
+								</View>
+								<View style={{ flex: 2 }}>
+									<Text style={styles.tableRowText}> {row.shippingAmount}</Text>
+								</View>
+							</View>
+						);
+					})}
+				</View>
+				{/* Table Section end */}
 			</Page>
-		</Document>
-	);
+        </Document>
+    );
 };
 
-export default adminCommissionDefault;
+export default Default;
