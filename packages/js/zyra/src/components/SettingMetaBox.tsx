@@ -45,6 +45,7 @@ interface FormField {
     id: number;
     type: string;
     name: string;
+    context: string;
     placeholder?: string;
     charlimit?: number;
     row?: number;
@@ -759,7 +760,8 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                                 )}
 
                                 {/* Visibility and Required for non-styled blocks */}
-                                {!hasStyleControls && (
+                                {(!hasStyleControls || (formField.type === 'richtext' &&
+        formField.context === 'form')) && (
                                     <>
                                         <VisibilityToggle
                                             disabled={formField.disabled}

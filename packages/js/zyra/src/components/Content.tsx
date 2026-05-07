@@ -12,6 +12,9 @@ export interface TextContentBlockData {
     text?: string;
     level?: 1 | 2 | 3;
     style?: BlockStyle;
+    checked?: boolean;
+    required?: boolean;
+    context?: string;
 }
 
 // View Component - Renders the actual content
@@ -54,6 +57,36 @@ export const TextContentView: React.FC<{
             >
                 {field.text || 'Heading Text'}
             </Tag>
+        );
+    }
+
+    if (field.context === 'form') {
+        return (
+            <label className="terms-checkbox">
+                <input
+                    type="checkbox"
+                    checked={field.checked || false}
+                    onChange={(e) =>
+                        onChange({
+                            checked:
+                                e.target.checked,
+                        })
+                    }
+                />
+
+                <div
+                    className="email-text"
+                    style={enhancedStyles}
+                    contentEditable={editable}
+                    suppressContentEditableWarning
+                    onBlur={handleBlur}
+                    dangerouslySetInnerHTML={{
+                        __html:
+                            field.html ||
+                            'I agree to the Terms & Conditions',
+                    }}
+                />
+            </label>
         );
     }
 

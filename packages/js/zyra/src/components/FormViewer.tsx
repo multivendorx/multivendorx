@@ -388,15 +388,11 @@ const FormViewer: React.FC<FormViewerProps> = ({
                     }
                     break;
                 case 'richtext':
-                    return (
-                        <div
-                            key={field.id}
-                            className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide richtext-content"
-                            dangerouslySetInnerHTML={{
-                                __html: field.html || '',
-                            }}
-                        />
-                    );
+                    if (!value) {
+                        error[field.name] =
+                            'Please accept the Terms & Conditions.';
+                    }
+                    break;
             }
         });
 
@@ -883,13 +879,31 @@ const FormViewer: React.FC<FormViewerProps> = ({
                 );
             case 'richtext':
                 return (
-                    <div
+                    <label
                         key={field.id}
-                        className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide richtext-content"
-                        dangerouslySetInnerHTML={{
-                            __html: field.html || '',
-                        }}
-                    />
+                        className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide terms-checkbox"
+                    >
+                        <input
+                            type="checkbox"
+                            checked={Boolean(inputs[name])}
+                            onChange={(e) =>
+                                handleChange(name, e.target.checked)
+                            }
+                        />
+
+                        <div
+                            className="richtext-content"
+                            dangerouslySetInnerHTML={{
+                                __html: field.html || '',
+                            }}
+                        />
+
+                        {error && (
+                            <span className="error-text">
+                                {error}
+                            </span>
+                        )}
+                    </label>
                 );
 
             default:
