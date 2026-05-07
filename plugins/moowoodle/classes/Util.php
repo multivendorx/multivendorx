@@ -30,10 +30,6 @@ class Util {
     );
 
     const MOOWOODLE_SETTINGS = array(
-        'general'             => 'moowoodle_general_settings',
-        'display'             => 'moowoodle_display_settings',
-        'tool'                => 'moowoodle_tool_settings',
-        'log'                 => 'moowoodle_log_settings',
         'notification'        => 'moowoodle_notification_settings',
         'synchronize-course'  => 'moowoodle_synchronize_course_settings',
         'synchronize-user'    => 'moowoodle_synchronize_user_settings',

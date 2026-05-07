@@ -75,7 +75,7 @@ class Admin {
 				),
 				'settings'        => array(
 					'name'   => __( 'Settings', 'moowoodle' ),
-					'subtab' => 'general',
+					'subtab' => 'connection-access',
 				),
 				'help-support'        => array(
 					'name'     => __( 'Help & Support', 'moowoodle' ),
