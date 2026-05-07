@@ -1409,7 +1409,8 @@ body.dark {
             color: $theme-color;
             padding-bottom: 0.45rem;
         }
-        &.red .title{
+
+        &.red .title {
             color: #f7a79a;
         }
     }
@@ -1419,10 +1420,11 @@ body.dark {
 .refund-images-wrapper {
     .images {
         margin-top: 0.625rem;
+
         img {
-        width: 4rem;
-        margin-right: 0.625rem;
-    }
+            width: 4rem;
+            margin-right: 0.625rem;
+        }
     }
 }
 
@@ -1529,6 +1531,49 @@ body.dark {
             font-weight: 500;
             align-items: center;
             margin-bottom: 0.313rem;
+        }
+    }
+}
+
+.topup-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+
+    .topup-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem;
+        background: $theme-background-color;
+        border-radius: 0.313rem;
+
+        .topup-section {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+
+            .topup-details {
+                .title {
+                    margin-bottom: 0.313rem;
+                }
+            }
+
+            .price {
+                font-size: 1.313rem;
+                font-weight: 600;
+            }
+
+            .icon {
+                padding: 0.313rem;
+                background: $theme-color;
+                border-radius: 0.313rem;
+
+                i {
+                    font-size: 1.45rem;
+                    color: #fff;
+                }
+            }
         }
     }
 }
