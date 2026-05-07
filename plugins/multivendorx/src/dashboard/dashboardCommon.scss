@@ -443,12 +443,15 @@ body.dark {
         .sub-category {
             padding: 0.5rem 0.5rem 0;
         }
-        .category{
+
+        .category {
             padding-bottom: 0.5rem;
         }
-        .category:last-child{
+
+        .category:last-child {
             padding: 0;
         }
+
         ul {
             padding-left: 1.313rem;
         }
@@ -1413,7 +1416,8 @@ body.dark {
             color: $theme-color;
             padding-bottom: 0.45rem;
         }
-        &.red .title{
+
+        &.red .title {
             color: #f7a79a;
         }
     }
@@ -1423,10 +1427,11 @@ body.dark {
 .refund-images-wrapper {
     .images {
         margin-top: 0.625rem;
+
         img {
-        width: 4rem;
-        margin-right: 0.625rem;
-    }
+            width: 4rem;
+            margin-right: 0.625rem;
+        }
     }
 }
 
@@ -1540,10 +1545,73 @@ body.dark {
 // membership page end
 
 @media only screen and (max-width: 600px) {
-    .dashboard-tabs-wrapper{
+
+    // dashboard stucture start
+    .dashboard-tabs-wrapper {
         display: none !important;
     }
-    .tab-wrapper{
-        margin: 0;
-    }    
+
+    .dashboard-content {
+        margin: 0 !important;
+
+        .content-wrapper {
+            padding: 4rem 1.25rem !important;
+        }
+    }
+
+    // dashboard stucture end
+
+    // table style start
+    .admin-table-wrapper {
+        .admin-top-filter {
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .table-wrapper {
+            overflow: scroll;
+        }
+
+        .filter-wrapper {
+            .table-filter-wrapper {
+                display: none;
+                position: fixed;
+                top: 40%;
+                right: 0;
+                width: 2rem;
+
+                .table-filter {
+                    .group-field {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+
+    // table style end
+
+
+    // title section 
+    .title-section {
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: end !important;
+    }
+
+    // container.scss
+    [data-cols='1'],
+    [data-cols='2'],
+    [data-cols='3'],
+    [data-cols='4'],
+    [data-cols='5'],
+    [data-cols='6'],
+    [data-cols='7'],
+    [data-cols='8'],
+    [data-cols='9'],
+    [data-cols='10'],
+    [data-cols='11'] {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
 }

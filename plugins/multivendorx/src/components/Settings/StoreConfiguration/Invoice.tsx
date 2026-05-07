@@ -43,28 +43,24 @@ const ratingsField = {
 	),
 	modal: [
 		{
-			id : '1',
 			title: __('VAT / Tax number', 'multivendorx'),
 			desc: __('DE987654321', 'multivendorx'),
 			isCustom: true,
 			disableBtn: true,
 		},
 		{
-			id : '2',
 			title: __('Marketplace tax ID', 'multivendorx'),
 			desc: __('GB123456789', 'multivendorx'),
 			isCustom: true,
 			disableBtn: true,
 		},
 		{
-			id : '3',
 			title: __('Marketplace registration number', 'multivendorx'),
 			desc: __('GB123456789', 'multivendorx'),
 			isCustom: true,
 			disableBtn: true,
 		},
 		{
-			id : '4',
 			title: __('Company registration number', 'multivendorx'),
 			desc: __('GB123456789', 'multivendorx'),
 			isCustom: true,
@@ -473,7 +469,7 @@ const Invoice: React.FC = () => {
 
 						{displayCustomOrder == 'main_sub' && (
 							<FormGroup
-								cols={6}
+								cols={2}
 								label={__(
 									'Invoices will be created based on',
 									'multivendorx'
@@ -581,7 +577,7 @@ const Invoice: React.FC = () => {
 				<Card title={__('Packing slip generator', 'multivendorx')}>
 					<FormGroupWrapper>
 						<FormGroup
-							cols={6}
+							cols={2}
 							label={__(
 								'What appears on packing slips',
 								'multivendorx'
@@ -772,7 +768,7 @@ const Invoice: React.FC = () => {
 							/>
 						</FormGroup>
 						<FormGroup
-							cols={6}
+							cols={2}
 							label="Invoice numbers will include this prefix"
 							desc={__(
 								'<b>Example results:</b> INV-2026-0001, INV-ORD-0001',
