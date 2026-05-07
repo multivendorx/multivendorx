@@ -1,15 +1,6 @@
 import React from 'react';
-import { Document, Page, View, Text } from '@react-pdf/renderer';
-
-type Row = {
-	productName: string;
-	sku: string;
-	qty: number;
-	location: string;
-};
-
+import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer';
 interface Props {
-	invoiceRows?: Row[];
 	colors: {
 		colorPrimary: string;
 		colorSecondary: string;
@@ -18,251 +9,164 @@ interface Props {
 	};
 }
 
-const packingSlipDefault: React.FC<Props> = ({ invoiceRows, colors }) => {
-	const rows: Row[] = invoiceRows || [
-		{
-			productName:
-				'Widget A - Premium Edition (Color: Black | Size: Large)',
-			sku: 'SKU-WA-001',
-			qty: 2,
-			location: 'Shelf A3',
+const Default: React.FC<Props> = ({ colors }) => {
+	const createStyles = (colors: Props['colors']) => StyleSheet.create({
+		page: {
+			fontSize: 12,
+			fontFamily: 'Helvetica',
+			backgroundColor: '#fff',
+			position: 'relative',
+			padding: 0,
+			margin: 0
 		},
-		{
-			productName:
-				'Widget B - Deluxe Model (Color: Silver | Size: Medium)',
-			sku: 'SKU-WB-002',
-			qty: 1,
-			location: 'Shelf B7',
+		boldText: {
+			fontWeight: 600,
+			fontSize: 11,
+			margin: 0,
 		},
-		{
-			productName: 'Premium USB Cable (Length: 2m | Type: USB-C)',
-			sku: 'SKU-CAB-015',
-			qty: 2,
-			location: 'Shelf C2',
+		flexEnd: {
+			display: 'flex',
+			justifyContent: 'flex-end',
+			margin: 20,
 		},
-	];
+		// box details
+		boxDetails: {
+			display: 'flex',
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			gap: 15,
+			padding: 20,
+		},
+		box: {
+			display: 'flex',
+			flexDirection: 'column',
+			gap: 5,
+			width: '100%',
+			borderRadius: 5,
+		},
+		boxTitle: {
+			fontSize: 14,
+			marginBottom: 5,
+			fontWeight: 'bold',
+		},
+		boxValueWrapper: {
+			display: 'flex',
+			flexDirection: 'row',
+		},
+		detailsValue: {},
 
+		// table start
+		table: {
+			display: 'flex',
+			flexDirection: 'column',
+			gap: 10,
+			margin: 20,
+		},
+		tableHeader: {
+			display: 'flex',
+			flexDirection: 'row',
+		},
+		tableHeaderText: {
+			fontWeight: 600,
+		},
+		tableRow: {
+			display: 'flex',
+			flexDirection: 'row',
+			borderTop: '0.063rem solid #eee',
+		},
+		tableRowText: {
+			padding: 8,
+		}
+	});
+	const styles = createStyles(colors);
 	return (
 		<Document>
-			<Page
-				size="A4"
-				style={{
-					fontSize: 12,
-					fontFamily: 'Helvetica',
-					backgroundColor: '#fff',
-					position: 'relative',
-				}}
-			>
-				<View>
-					{/* billing section start */}
-					<View
-						id="billing-section"
-						style={{
-							display: 'flex',
-							flexDirection: 'row',
-							justifyContent: 'space-between',
-							gap: '15px',
-							padding: '20px',
-						}}
-					>
-						<View
-							id="left-details"
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-								gap: '5px',
-								width: '100%',
-								borderRadius: '5px',
-							}}
-						>
-							<Text
-								style={{
-									fontSize: '14px',
-									marginBottom: '5px',
-									fontWeight: 'bold',
-								}}
-							>
-								Ship From:
-							</Text>
-							<Text
-								style={{ fontSize: '12px', fontWeight: 'bold' }}
-							>
-								Premium Electronics Store
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								{' '}
-								<Text style={{ fontWeight: 'bold' }}>
-									Owner:{' '}
-								</Text>
-								Sarah Johnson
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								123 Seller Street
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								{' '}
-								<Text style={{ fontWeight: 'bold' }}>
-									Phone:{' '}
-								</Text>
-								91 9874623146
-							</Text>
+			<Page size="A4" style={styles.page}>
+				{/* billing section start */}
+				<View style={styles.boxDetails}>
+					<View style={styles.box}>
+						<Text style={styles.boxTitle}>Ship From:</Text>
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}>Premium Electronics Store</Text>
 						</View>
-
-						<View
-							id="left-details"
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-								gap: '5px',
-								width: '100%',
-								borderRadius: '5px',
-							}}
-						>
-							<Text
-								style={{
-									fontSize: '14px',
-									marginBottom: '5px',
-									fontWeight: 'bold',
-								}}
-							>
-								Ship To:
-							</Text>
-							<Text
-								style={{ fontSize: '12px', fontWeight: 'bold' }}
-							>
-								John Smith
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								123 Seller Street
-							</Text>
-							<Text style={{ fontSize: '10px' }}>
-								{' '}
-								<Text style={{ fontWeight: 'bold' }}>
-									Phone:{' '}
-								</Text>
-								91 9874623146
-							</Text>
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.detailsValue}>123 Seller Street</Text>
+						</View>
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.detailsValue}>123 Seller Street</Text>
+						</View>
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}>Owner:</Text>
+							<Text style={styles.detailsValue}>Sarah Johnson</Text>
+						</View>
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}>Phone:</Text>
+							<Text style={styles.detailsValue}>91 9874623146</Text>
 						</View>
 					</View>
-					{/* billing section end */}
 
-					{/* table section start */}
-					<View
-						id="invoice-table-wrapper"
-						style={{
-							display: 'flex',
-							flexDirection: 'column',
-							gap: '10px',
-							margin: '20px',
-						}}
-					>
-						<View
-							id="invoice-table-header"
-							style={{
-								display: 'flex',
-								flexDirection: 'row',
-							}}
-						>
-							{/* Description */}
-							<View style={{ flex: 4 }}>
-								<Text style={{ fontWeight: 600 }}>
-									Product Name
-								</Text>
-							</View>
-
-							<Text
-								style={{
-									flex: 2,
-									textAlign: 'right',
-									fontWeight: 600,
-								}}
-							>
-								SKU
-							</Text>
-							<Text
-								style={{
-									flex: 2,
-									textAlign: 'right',
-									fontWeight: 600,
-								}}
-							>
-								Unit Price
-							</Text>
-							<Text
-								style={{
-									flex: 2,
-									textAlign: 'right',
-									fontWeight: 600,
-								}}
-							>
-								Qty
-							</Text>
-							<Text
-								style={{
-									flex: 2,
-									textAlign: 'right',
-									fontWeight: 600,
-								}}
-							>
-								Total
-							</Text>
+					<View style={styles.box}>
+						<Text style={styles.boxTitle}>Ship To:</Text>
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}>John Smith</Text>
 						</View>
-						{rows.map((row, index) => {
-							return (
-								<View
-									id="invoice-table-row"
-									key={index}
-									style={{
-										display: 'flex',
-										flexDirection: 'row',
-										borderTop: '1px solid #eee',
-									}}
-								>
-									{/* Description */}
-									<View style={{ flex: 4 }}>
-										<Text>{row.productName}</Text>
-									</View>
-
-									{/* Unit Price */}
-									<Text
-										style={{ flex: 2, textAlign: 'right' }}
-									>
-										{row.sku}
-									</Text>
-									<Text
-										style={{
-											flex: 2,
-											textAlign: 'right',
-										}}
-									>
-										$250
-									</Text>
-									{/* Amount */}
-									<Text
-										style={{
-											flex: 2,
-											textAlign: 'right',
-										}}
-									>
-										{row.qty}
-									</Text>
-									<Text
-										style={{
-											flex: 2,
-											textAlign: 'right',
-										}}
-									>
-										$250
-									</Text>
-								</View>
-							);
-						})}
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.detailsValue}>123 Seller Street</Text>
+						</View>
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}>Phone:</Text>
+							<Text style={styles.detailsValue}>91 9874623146</Text>
+						</View>
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.detailsValue}>123 Seller Street</Text>
+						</View>
 					</View>
-					{/* table section end  */}
 				</View>
+				{/* billing section end */}
+
+				{/* table section start */}
+				<View style={styles.table}>
+					<View style={styles.tableHeader}>
+						<View style={{ flex: 3 }}>
+							<Text style={styles.tableHeaderText}> Product Name</Text>
+						</View>
+						<View style={{ flex: 1 }}>
+							<Text style={styles.tableHeaderText}> SKU</Text>
+						</View>
+						<View style={{ flex: 1 }}>
+							<Text style={styles.tableHeaderText}> Unit Price</Text>
+						</View>
+						<View style={{ flex: 1 }}>
+							<Text style={styles.tableHeaderText}> QTY</Text>
+						</View>
+						<View style={{ flex: 1 }}>
+							<Text style={styles.tableHeaderText}> Total</Text>
+						</View>
+					</View>
+					{Array.from({ length: 6 }).map((_, index) => (
+						<View style={styles.tableRow}>
+							<View style={{ flex: 3 }}>
+								<Text style={styles.tableRowText}>Product {index}</Text>
+							</View>
+							<View style={{ flex: 1 }}>
+								<Text style={styles.tableRowText}>SKU-000{index}</Text>
+							</View>
+							<View style={{ flex: 1 }}>
+								<Text style={styles.tableRowText}>$250</Text>
+							</View>
+							<View style={{ flex: 1 }}>
+								<Text style={styles.tableRowText}>$250</Text>
+							</View>
+							<View style={{ flex: 1 }}>
+								<Text style={styles.tableRowText}>$250</Text>
+							</View>
+						</View>
+					))}
+				</View>
+				{/* table section end  */}
 			</Page>
-		</Document>
+		</Document >
 	);
 };
 
-export default packingSlipDefault;
+export default Default;
