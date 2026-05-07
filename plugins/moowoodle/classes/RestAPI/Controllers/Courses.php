@@ -395,7 +395,4 @@ class Courses extends \WP_REST_Controller {
             );
         }
     }
-
-
-
 }
