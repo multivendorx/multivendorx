@@ -321,7 +321,7 @@ const BusinessAddress = () => {
 				</FormGroup>
 				{/* City */}
 				<FormGroup
-					cols={2}
+					cols={6}
 					label={__('City', 'multivendorx')}
 					htmlFor="city"
 				>
@@ -335,7 +335,7 @@ const BusinessAddress = () => {
 
 				{/* Zip */}
 				<FormGroup
-					cols={2}
+					cols={6}
 					label={__('Zip code', 'multivendorx')}
 					htmlFor="zip"
 				>
@@ -350,7 +350,7 @@ const BusinessAddress = () => {
 
 				{/* Country */}
 				<FormGroup
-					cols={2}
+					cols={6}
 					label={__('Country', 'multivendorx')}
 					htmlFor="country"
 				>
@@ -365,7 +365,7 @@ const BusinessAddress = () => {
 
 				{/* State */}
 				<FormGroup
-					cols={2}
+					cols={6}
 					label={__('State', 'multivendorx')}
 					htmlFor="state"
 				>

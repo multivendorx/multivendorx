@@ -88,7 +88,7 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 			</FormGroup>
 
 			<FormGroup
-				cols={2}
+				cols={6}
 				label={__('Download limit', 'multivendorx')}
 				htmlFor="download_limit"
 			>
@@ -101,7 +101,7 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 			</FormGroup>
 
 			<FormGroup
-				cols={2}
+				cols={6}
 				label={__('Download Expiry', 'multivendorx')}
 				htmlFor="download_expiry"
 			>

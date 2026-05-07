@@ -182,6 +182,9 @@ const buildStyles = (
         width: '100%',
         margin: 0,
         '&:active': { color: 'var(--colorPrimary)' },
+        ':hover': {
+            borderColor: 'var(--borderColor)'
+        },
     }),
     valueContainer: (base) => ({
         ...base,
@@ -372,6 +375,7 @@ export const SelectInputUI: React.FC<SelectProps> = ({
         name,
         placeholder,
         className: `${inputClass ?? ''} select-wrapper`,
+        classNamePrefix: 'select-prefix',
         value: resolveValue(value, optionsData, isMulti),
         options: optionsData,
         isMulti,

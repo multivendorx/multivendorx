@@ -1,8 +1,10 @@
+@use '../../global.scss' as *;
+
 .section-log-container{ 
   .log-container-wrapper {
     min-height: 6.25rem;
     height: 100%;
-    border-radius: 0.25rem;
+    border-radius: $border-radius-small;
     padding: 0.5rem;
     padding-bottom: 1rem;
     position: relative;
@@ -32,7 +34,7 @@
 
       &::-webkit-scrollbar-track {
         background: #181819;;
-        border-radius: 0.25rem;
+        border-radius: $border-radius-small;
       }
       
       &::-webkit-scrollbar {
@@ -42,7 +44,7 @@
       
       &::-webkit-scrollbar-thumb {
         background-color: rgba($color: #666666cd, $alpha: 100%);
-        border-radius: 0.25rem;
+        border-radius: $border-radius-small;
       }
 
       &::-webkit-scrollbar-corner{

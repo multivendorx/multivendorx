@@ -79,7 +79,7 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
-			key: 'store_rating_page',
+			key: 'commission_migration_notice',
 			type: 'notice',
 			message: __(
 				'You are currently using the older vendor-specific commission system from previous versions of MultiVendorX. Because of that, the <b>Marketplace commission</b> and <b>Commission value</b> fields shown below will continue to work as vendor-specific until you update or modify this settings page.<br><br>Once you make any change, your marketplace will automatically switch to the new <b>Marketplace commission</b> model. From that point onward, all commissions will be calculated using the updated system, and this notice will no longer appear.',
@@ -188,7 +188,6 @@ export default {
 				{
 					key: 'product_qty',
 					type: 'number',
-					preText: appLocalizer.currency_symbol,
 					size: 8,
 					skipFirstRow: true,
 					afterElement: {
@@ -220,7 +219,7 @@ export default {
 				},
 				{
 					key: 'commission_fixed',
-					type: 'text',
+					type: 'number',
 					preText: appLocalizer.currency_symbol,
 					size: 8,
 					beforeElement: {
@@ -258,7 +257,7 @@ export default {
 		{
 			key: 'commission_per_item',
 			type: 'nested',
-			label: 'Commission value',
+			label: __('Commission value', 'multivendorx'),
 			single: true,
 			desc: __(
 				'Set global commission rates that apply to each individual item quantity. Commission will be calculated by multiplying the rate with the total number of items across all products/listing in the order.',
@@ -340,7 +339,7 @@ export default {
 			],
 		},
 		{
-			key: 'store_rating_page',
+			key: 'shipping_module_notice',
 			type: 'notice',
 			message: __(
 				'Allow each store to manage its own shipping methods, zones, and rates, and to pass shipping amounts to stores, please enable the <a href="' +
@@ -380,11 +379,11 @@ export default {
 		{
 			key: 'marketplace_fees',
 			type: 'nested',
-			label: __('Platform fees', 'multivendorx'),
+			label: __('Marketplace fees', 'multivendorx'),
 			single: true,
 			proSetting: true,
 			settingDescription: __(
-				'Set a platform fee as a fixed, percentage, or combined rate calculated on the product/listing price. Choose whether the fee is paid by the customer at checkout or deducted from the store’s commission.',
+				'Set a marketplace fee as a fixed, percentage, or combined rate calculated on the product/listing price. Choose whether the fee is paid by the customer at checkout or deducted from the store’s commission.',
 				'multivendorx'
 			),
 			desc: __(
@@ -409,7 +408,7 @@ export default {
 			nestedFields: [
 				{
 					key: 'commission_fixed',
-					type: 'text',
+					type: 'number',
 					preText: appLocalizer.currency_symbol,
 					size: 8,
 					beforeElement: {
@@ -432,7 +431,7 @@ export default {
 				{
 					key: 'rule',
 					type: 'choice-toggle',
-					label: 'to be',
+					label: __('to be', 'multivendorx'),
 					options: [
 						{
 							key: 'customer',
@@ -453,7 +452,7 @@ export default {
 		{
 			key: 'facilitator_fees',
 			type: 'nested',
-			label: 'Facilitator fees',
+			label: __('Facilitator fees', 'multivendorx'),
 			single: true,
 			proSetting: true,
 			settingDescription: __(
@@ -486,7 +485,7 @@ export default {
 				{
 					key: 'facilitator_percentage',
 					type: 'number',
-					postText: __('%'),
+					postText: '%',
 					size: 8,
 				},
 			],

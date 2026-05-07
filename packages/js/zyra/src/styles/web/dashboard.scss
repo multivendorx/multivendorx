@@ -34,7 +34,7 @@
 #location-map {
     height: 18.75rem;
     width: 100%;
-    border-radius: 0.25rem;
+    border-radius: $border-radius-small;
     margin-top: 0.5rem;
     position: relative;
 }
@@ -256,6 +256,7 @@
                 font-size: 1.063rem;
                 color: $text-color;
                 padding-bottom: 0.313rem;
+                border-radius: 4.5rem;
             }
 
             .value {

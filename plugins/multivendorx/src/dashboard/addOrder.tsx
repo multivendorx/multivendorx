@@ -640,7 +640,7 @@ const AddOrder = () => {
 							</FormGroup>
 
 							<FormGroup
-								cols={2}
+								cols={6}
 								label={__('City', 'multivendorx')}
 								htmlFor={`${type}-city`}
 							>
@@ -668,7 +668,7 @@ const AddOrder = () => {
 							</FormGroup>
 
 							<FormGroup
-								cols={2}
+								cols={6}
 								label={__('Postcode / ZIP', 'multivendorx')}
 								htmlFor={`${type}-postcode`}
 							>
@@ -696,7 +696,7 @@ const AddOrder = () => {
 							</FormGroup>
 
 							<FormGroup
-								cols={2}
+								cols={6}
 								label={__('Country / Region', 'multivendorx')}
 								htmlFor={`${type}-country`}
 							>
@@ -727,7 +727,7 @@ const AddOrder = () => {
 							</FormGroup>
 
 							<FormGroup
-								cols={2}
+								cols={6}
 								label={__('State / County', 'multivendorx')}
 								htmlFor={`${type}-state`}
 							>
@@ -1093,7 +1093,7 @@ const AddOrder = () => {
 						<Card title={__('Create customer', 'multivendorx')}>
 							<FormGroupWrapper>
 								<FormGroup
-									cols={2}
+									cols={6}
 									label={__('First name', 'multivendorx')}
 									htmlFor="Select-customer"
 								>
@@ -1110,7 +1110,7 @@ const AddOrder = () => {
 								</FormGroup>
 
 								<FormGroup
-									cols={2}
+									cols={6}
 									label={__('Last name', 'multivendorx')}
 									htmlFor="last-name"
 								>

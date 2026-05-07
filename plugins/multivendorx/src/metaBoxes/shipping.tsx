@@ -58,6 +58,7 @@ const ShippingCard = ({
 				<FormGroupWrapper>
 					<FormGroup className="full-width">
 						<ChoiceToggleUI
+							width= "49%"
 							options={[
 								{
 									key: 'physical',
@@ -70,6 +71,7 @@ const ShippingCard = ({
 										'Item is packed and shipped to the customer address.',
 										'multivendorx'
 									),
+									icon: 'clickatell'
 								},
 								...(typeFields.includes('downloadable')
 									? [
@@ -84,6 +86,7 @@ const ShippingCard = ({
 													'Customer receives a file - e.g. a PDF, software, or digital artwork.',
 													'multivendorx'
 												),
+												icon: 'download'
 											},
 										]
 									: []),
@@ -100,6 +103,7 @@ const ShippingCard = ({
 													'Service provided remotely - like coaching, consulting, or custom design. No shipping or file download involved.',
 													'multivendorx'
 												),
+												icon: 'store-analytics'
 											},
 										]
 									: []),
@@ -111,6 +115,7 @@ const ShippingCard = ({
 										"Anything that does not involve posting a package or delivering a file, that doesn't fit the above.",
 										'multivendorx'
 									),
+									icon: 'store-analytics'
 								},
 							]}
 							custom={true}
@@ -140,7 +145,7 @@ const ShippingCard = ({
 								/>
 								{/* Weight & Shipping class */}
 								<FormGroup
-									cols={2}
+									cols={6}
 									label={__('Weight (kg)', 'multivendorx')}
 									htmlFor="Weight"
 								>
@@ -153,7 +158,7 @@ const ShippingCard = ({
 									/>
 								</FormGroup>
 								<FormGroup
-									cols={2}
+									cols={6}
 									label={__(
 										'Shipping classes',
 										'multivendorx'
@@ -173,7 +178,7 @@ const ShippingCard = ({
 									/>
 								</FormGroup>
 								<FormGroup
-									cols={3}
+									cols={4}
 									label={`${__('Length', 'multivendorx')} (${appLocalizer.dimension_unit})`}
 								>
 									<BasicInputUI
@@ -193,7 +198,7 @@ const ShippingCard = ({
 								</FormGroup>
 
 								<FormGroup
-									cols={3}
+									cols={4}
 									label={`${__('Width', 'multivendorx')} (${appLocalizer.dimension_unit})`}
 								>
 									<BasicInputUI
@@ -213,7 +218,7 @@ const ShippingCard = ({
 								</FormGroup>
 
 								<FormGroup
-									cols={3}
+									cols={4}
 									label={`${__('Height', 'multivendorx')} (${appLocalizer.dimension_unit})`}
 								>
 									<BasicInputUI

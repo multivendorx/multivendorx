@@ -609,7 +609,7 @@ const EventRules: React.FC = () => {
 							{openChannel === 'mail' && (
 								<>
 									<FormGroup
-										cols={2}
+										cols={6}
 										label={__(
 											'Email Subject',
 											'multivendorx'
@@ -635,7 +635,7 @@ const EventRules: React.FC = () => {
 										/>
 									</FormGroup>
 									<FormGroup
-										cols={2}
+										cols={6}
 										label={__('Email Body', 'multivendorx')}
 										htmlFor="email-body"
 									>

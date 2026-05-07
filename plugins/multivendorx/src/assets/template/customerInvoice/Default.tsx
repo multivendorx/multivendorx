@@ -1,19 +1,6 @@
 import React from 'react';
 import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer';
-import { formatCurrency, formatDate } from '@/services/commonFunction';
-import { __ } from '@wordpress/i18n';
-
-interface Row {
-	description: string;
-	qty?: number | string;
-	unitPrice?: string;
-	subtotal?: string;
-	taxRate?: string;
-	taxAmount?: string;
-}
 interface Props {
-	invoiceRows?: Row[];
-	order?: any;
 	colors: {
 		colorPrimary: string;
 		colorSecondary: string;
@@ -22,35 +9,7 @@ interface Props {
 	};
 }
 
-const Default: React.FC<Props> = ({ invoiceRows, colors, order }) => {
-	const subtotal = (order?.total || 0) - (order?.total_tax || 0) - (order?.shipping_total || 0);
-	const mainOrSub = appLocalizer?.invoice_creation_basis === 'main-order';
-
-	const taxDetails = mainOrSub
-		? appLocalizer?.tax_details
-		: order?.store_tax_details;
-
-	const taxFields = [
-		{ key: 'vat_number', label: 'VAT:', fallback: 'GB123456789' },
-		{ key: 'tax_id', label: 'Tax ID:', fallback: 'TRN-2024-SELL-9012' },
-		{ key: 'registration_number', label: 'Marketplace Registration Number:', fallback: 'TRN-2024-SELL-9012' },
-		{ key: 'company_number', label: 'Company registration number:', fallback: 'TRN-2024-SELL-9012' },
-	];
-	const isAdmin = window.location.pathname.includes('/wp-admin');
-	const rows: Row[] = invoiceRows || [
-		{
-			description: 'Product A',
-			qty: 2,
-			unitPrice: '$250.00',
-			subtotal: '$500.00',
-		},
-		{
-			description: 'Product B',
-			qty: 1,
-			unitPrice: '$850.00',
-			subtotal: '$850.00',
-		},
-	];
+const Default: React.FC<Props> = ({ colors }) => {
 	const createStyles = (colors: Props['colors']) => StyleSheet.create({
 		page: {
 			fontSize: 12,
@@ -192,42 +151,12 @@ const Default: React.FC<Props> = ({ invoiceRows, colors, order }) => {
 			<Page size="A4" style={styles.page}>
 				{/* Header start */}
 				<View style={styles.header}>
-					<Text style={styles.headerTitle}>{__('INVOICE', 'multivendorx')}</Text>
+					<Text style={styles.headerTitle}>INVOICE</Text>
 
 					<View style={styles.headerRight}>
-						<Text style={styles.boldText}> {isAdmin ? ('Marketplace Solutions Inc.') : order?.billing?.invoice_name}</Text>
-						<Text>{isAdmin ? ('123 Elm Street, Suite 400') : order?.billing?.invoice_address}</Text>
-						<Text>{isAdmin ? ('London') : order?.invoice_phone} {isAdmin ? ('EC1A 1BB') : order?.invoice_email}</Text>
-
-
-						{taxFields.map((field) => {
-							const fieldData = taxDetails?.[field.key];
-
-							// Case 1: Global config (has enable/description)
-							if (fieldData && typeof fieldData === 'object') {
-								if (fieldData.enable !== true) return null;
-
-								return (
-									<View style={styles.headerDetails}>
-										<Text style={styles.boldText}>{field.label}</Text>
-										<Text>{fieldData.description || field.fallback}</Text>
-									</View>
-								);
-							}
-
-							// Case 2: Store data (plain string)
-							if (fieldData) {
-								return (
-									<View style={styles.headerDetails}>
-										<Text style={styles.boldText}>{field.label}</Text>
-										<Text>{fieldData}</Text>
-									</View>
-								);
-							}
-
-							return null;
-						})}
-
+						<Text style={styles.boldText}> Marketplace Solutions Inc.</Text>
+						<Text>123 Elm Street, Suite 400</Text>
+						<Text>London, EC1A 1BB</Text>
 					</View>  {/* headerDetails view end */}
 				</View>
 				{/* Header end */}
@@ -235,75 +164,75 @@ const Default: React.FC<Props> = ({ invoiceRows, colors, order }) => {
 				{/* Invoice Info Section start */}
 				<View style={styles.boxDetails}>
 					<View style={styles.box}>
-						<Text style={styles.boxTitle}> {__('Invoice Details:', 'multivendorx')}  </Text>
+						<Text style={styles.boxTitle}> Invoice Details:  </Text>
 						<View style={styles.boxValueWrapper}>
-							<Text style={styles.boldText}> {__('Invoice Number:', 'multivendorx')}</Text>
-							<Text style={styles.detailsValue}> {isAdmin ? __('INV-2025-', 'multivendorx') : appLocalizer.invoice_prefix} {isAdmin ? ('091') : order?.id}</Text>
+							<Text style={styles.boldText}> Invoice Number:</Text>
+							<Text style={styles.detailsValue}> INV-2025-091</Text>
 						</View>
 
 						<View style={styles.boxValueWrapper}>
-							<Text style={styles.boldText}>{__('Order Number:', 'multivendorx')}</Text>
-							<Text style={styles.detailsValue}> {isAdmin ? __('ORD-2025-456', 'multivendorx') : order?.id}</Text>
+							<Text style={styles.boldText}>Order Number:</Text>
+							<Text style={styles.detailsValue}> ORD-2025-456</Text>
 						</View>
 
 						<View style={styles.boxValueWrapper}>
-							<Text style={styles.boldText}>{__('Invoice Date:', 'multivendorx')}</Text>
-							<Text style={styles.detailsValue}> {isAdmin ? __('October 9, 2025', 'multivendorx') : order?.date_created ? formatDate(order.date_created) : ''}</Text>
-						</View>
-					</View>
-
-					<View style={styles.box}>
-						<Text style={styles.boxTitle}> {__('Bill To:', 'multivendorx')}  </Text>
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.boldText}>{isAdmin ? __('Jane Doe', 'multivendorx') : order?.billing?.first_name && order?.billing?.last_name ? `${order.billing.first_name} ${order.billing.last_name}` : ''}</Text>
-						</View>
-
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.detailsValue}> {isAdmin ? __('john.smith@email.com', 'multivendorx') : order?.billing?.email}</Text>
-						</View>
-
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.detailsValue}> {isAdmin ? __('456 Oak Avenue', 'multivendorx') : order?.billing?.address_1}</Text>
-						</View>
-
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.detailsValue}> {isAdmin ? __('Springfield', 'multivendorx') : order?.billing?.city}</Text>
-							<Text style={styles.detailsValue}> {isAdmin ? __('IL', 'multivendorx') : order?.billing?.state}</Text>
-							<Text style={styles.detailsValue}> {isAdmin ? __('62701', 'multivendorx') : order?.billing?.postcode}</Text>
-						</View>
-
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.boldText}>{__('Email:', 'multivendorx')}</Text>
-							<Text style={styles.detailsValue}> {isAdmin ? __('jane.doe@acme.co', 'multivendorx') : order?.billing?.email}</Text>
-						</View>
-
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.boldText}>{__('Phone:', 'multivendorx')}</Text>
-							<Text style={styles.detailsValue}> {isAdmin ? ('(555) 123-4567') : order?.billing?.phone}</Text>
+							<Text style={styles.boldText}>Invoice Date:</Text>
+							<Text style={styles.detailsValue}> October 9, 2025</Text>
 						</View>
 					</View>
 
 					<View style={styles.box}>
-						<Text style={styles.boxTitle}> {__('Ship To:', 'multivendorx')}  </Text>
+						<Text style={styles.boxTitle}> Bill To:  </Text>
 						<View style={styles.boxValueWrapper}>
-							<Text style={styles.boldText}>{isAdmin ? __('Jane Doe', 'multivendorx') : order?.shipping?.first_name && order?.shipping?.last_name ? `${order.shipping.first_name} ${order.shipping.last_name}` : ''}</Text>
+							<Text style={styles.boldText}>Jane Doe</Text>
 						</View>
 
 						<View style={styles.boxValueWrapper}>
-							<Text style={styles.detailsValue}> {isAdmin ? __('789 Distribution Road', 'multivendorx') : order?.shipping?.address_1}</Text>
+							<Text style={styles.detailsValue}> john.smith@email.com</Text>
 						</View>
 
 						<View style={styles.boxValueWrapper}>
-							<Text style={styles.detailsValue}> {isAdmin ? __('Springfield', 'multivendorx') : order?.shipping?.city}</Text>
-							<Text style={styles.detailsValue}> {isAdmin ? __('IL', 'multivendorx') : order?.shipping?.state}</Text>
+							<Text style={styles.detailsValue}> 456 Oak Avenue</Text>
 						</View>
 
 						<View style={styles.boxValueWrapper}>
-							<Text style={styles.detailsValue}> {isAdmin ? __('62701', 'multivendorx') : order?.shipping?.postcode}</Text>
+							<Text style={styles.detailsValue}> Springfield</Text>
+							<Text style={styles.detailsValue}> IL</Text>
+							<Text style={styles.detailsValue}> 62701</Text>
 						</View>
 
 						<View style={styles.boxValueWrapper}>
-							<Text style={styles.detailsValue}> {isAdmin ? __('United Kingdom', 'multivendorx') : order?.shipping?.country}</Text>
+							<Text style={styles.boldText}>Email:</Text>
+							<Text style={styles.detailsValue}> jane.doe@acme.co</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}>Phone:</Text>
+							<Text style={styles.detailsValue}> (555) 123-4567</Text>
+						</View>
+					</View>
+
+					<View style={styles.box}>
+						<Text style={styles.boxTitle}> Ship To:  </Text>
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.boldText}>Jane Doe</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.detailsValue}> 789 Distribution Road</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.detailsValue}> Springfield</Text>
+							<Text style={styles.detailsValue}> IL</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.detailsValue}> 62701</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.detailsValue}> United Kingdom</Text>
 						</View>
 					</View>
 
@@ -315,85 +244,76 @@ const Default: React.FC<Props> = ({ invoiceRows, colors, order }) => {
 					{/* Table Header */}
 					<View style={styles.tableHeader}>
 						<View style={{ flex: 3 }}>
-							<Text style={styles.tableHeaderText}> {__('Product', 'multivendorx')}</Text>
+							<Text style={styles.tableHeaderText}> Product</Text>
 						</View>
 						<View style={{ flex: 1 }}>
-							<Text style={styles.tableHeaderText}> {__('Quantity', 'multivendorx')}</Text>
+							<Text style={styles.tableHeaderText}> Quantity</Text>
 						</View>
 						<View style={{ flex: 1 }}>
-							<Text style={styles.tableHeaderText}> {__('Unit Price', 'multivendorx')}</Text>
+							<Text style={styles.tableHeaderText}> Unit Price</Text>
 						</View>
 						<View style={{ flex: 1 }}>
-							<Text style={styles.tableHeaderText}> {__('Subtotal', 'multivendorx')}</Text>
+							<Text style={styles.tableHeaderText}> Subtotal</Text>
 						</View>
 						<View style={{ flex: 1.5 }}>
-							<Text style={styles.tableHeaderText}> {__('Tax Rate', 'multivendorx')}</Text>
+							<Text style={styles.tableHeaderText}> Tax Rate</Text>
 						</View>
 						<View style={{ flex: 1.5 }}>
-							<Text style={styles.tableHeaderText}> {__('Tax Amount', 'multivendorx')}</Text>
+							<Text style={styles.tableHeaderText}> Tax Amount</Text>
 						</View>
 					</View>
 
 					{/* Table Rows */}
-					{rows.map((row, index) => {
-						// Calculate total if not provided
-						const qty = typeof row.qty === 'number' ? row.qty : parseFloat(row.qty as string) || 0;
-						const price = parseFloat(row.unitPrice?.replace('$', '').replace(',', '') || '0');
-						const total = row.subtotal || `$${(qty * price).toFixed(2)}`;
-
-						return (
-							<View style={styles.tableRow}>
-								<View style={{ flex: 3 }}>
-									<Text style={styles.tableRowText}> {row.description}</Text>
-								</View>
-								<View style={{ flex: 1 }}>
-									<Text style={styles.tableRowText}> {row.qty}</Text>
-								</View>
-								<View style={{ flex: 1 }}>
-									<Text style={styles.tableRowText}> {row.unitPrice}</Text>
-								</View>
-								<View style={{ flex: 1 }}>
-									<Text style={styles.tableRowText}> {row.subtotal}</Text>
-								</View>
-								<View style={{ flex: 1.5 }}>
-									<Text style={styles.tableRowText}> {row.taxRate}</Text>
-								</View>
-								<View style={{ flex: 1.5 }}>
-									<Text style={styles.tableRowText}> {row.taxAmount}</Text>
-								</View>
+					{Array.from({ length: 6 }).map((_, index) => (
+						<View style={styles.tableRow}>
+							<View style={{ flex: 3 }}>
+								<Text style={styles.tableRowText}> Product {index}</Text>
 							</View>
-						);
-					})}
+							<View style={{ flex: 1 }}>
+								<Text style={styles.tableRowText}> 5</Text>
+							</View>
+							<View style={{ flex: 1 }}>
+								<Text style={styles.tableRowText}> $25</Text>
+							</View>
+							<View style={{ flex: 1 }}>
+								<Text style={styles.tableRowText}> $199</Text>
+							</View>
+							<View style={{ flex: 1.5 }}>
+								<Text style={styles.tableRowText}> 10%</Text>
+							</View>
+							<View style={{ flex: 1.5 }}>
+								<Text style={styles.tableRowText}> $299</Text>
+							</View>
+						</View>
+					))}
 				</View>
 				{/* Table Section end */}
 
 				{/* Total Section start */}
 				<View style={styles.totalSection}>
 					<View style={styles.totalDetails}>
-						<Text style={styles.subTotal}> {__('Items Subtotal:', 'multivendorx')}</Text>
-						<Text style={styles.subTotal}> {isAdmin ? __('$4,500.00', 'multivendorx') : order?.currency_symbol}{subtotal ? formatCurrency(subtotal) : ''} </Text>
+						<Text style={styles.subTotal}> Items Subtotal:</Text>
+						<Text style={styles.subTotal}> $4,500.00 </Text>
 					</View>
 					<View style={styles.totalDetails}>
-						<Text style={styles.subTotal}> {__('Tax Subtotal:', 'multivendorx')}</Text>
-						<Text style={styles.subTotal}> {isAdmin ? __('$4,500.00', 'multivendorx') : order?.currency_symbol}{order?.total_tax ? formatCurrency(order?.total_tax) : ''} </Text>
+						<Text style={styles.subTotal}> Tax Subtotal:</Text>
+						<Text style={styles.subTotal}> $4,500.00 </Text>
 					</View>
 					<View style={styles.totalDetails}>
-						<Text style={styles.subTotal}> {__('Shipping (Seller Portion):', 'multivendorx')}</Text>
-						<Text style={styles.subTotal}> {isAdmin ? __('$0.00', 'multivendorx') : order?.currency_symbol}{order?.shipping_total ? formatCurrency(order?.shipping_total) : ''} </Text>
+						<Text style={styles.subTotal}> Shipping (Seller Portion):</Text>
+						<Text style={styles.subTotal}> $0.00 </Text>
 					</View>
 					<View style={styles.totalWrapper}>
-						<Text style={styles.total}> {__('Total:', 'multivendorx')}</Text>
-						<Text style={styles.total}> {isAdmin ? __('$6000.00', 'multivendorx') : order?.currency_symbol}{order?.total ? formatCurrency(order?.total) : ''} </Text>
+						<Text style={styles.total}> Total:</Text>
+						<Text style={styles.total}> $6000.00 </Text>
 					</View>
 				</View>
 				{/* Total Section end */}
 
 				{/* note section start */}
 				<View style={styles.footerNotice}>
-					<Text style={styles.boldText}> {__('Notes:', 'multivendorx')} </Text>
-					<Text>
-						{order?.invoice_footer || "This invoice covers items sold by Premium Electronics Store. Tax amounts shown are calculated based on applicable VAT/GST rates for the delivery jurisdiction. For questions regarding this invoice, please contact the seller directly."}
-					</Text>
+					<Text style={styles.boldText}> Notes: </Text>
+					<Text>This invoice covers items sold by Premium Electronics Store. Tax amounts shown are calculated based on applicable VAT/GST rates for the delivery jurisdiction. For questions regarding this invoice, please contact the seller directly.</Text>
 				</View>
 				{/* note section end */}
 			</Page>

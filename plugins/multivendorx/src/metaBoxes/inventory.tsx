@@ -55,7 +55,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 		>
 			<FormGroupWrapper>
 				<FormGroup
-					cols={2}
+					cols={6}
 					label={__('SKU', 'multivendorx')}
 					desc={__(
 						'Used to identify this product in your inventory.',
@@ -70,7 +70,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 				</FormGroup>
 				{!product.manage_stock && (
 					<FormGroup
-						cols={2}
+						cols={6}
 						label={__('Stock Status', 'multivendorx')}
 					>
 						<SelectInputUI
@@ -86,7 +86,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 				{product.manage_stock && (
 					<>
 						<FormGroup
-							cols={2}
+							cols={6}
 							label={__('Quantity', 'multivendorx')}
 						>
 							<BasicInputUI
@@ -98,7 +98,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 							/>
 						</FormGroup>
 						<FormGroup
-							cols={2}
+							cols={6}
 							label={__('Allow backorders?', 'multivendorx')}
 						>
 							<SelectInputUI
@@ -111,7 +111,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 							/>
 						</FormGroup>
 						<FormGroup
-							cols={2}
+							cols={6}
 							label={__('Low stock threshold', 'multivendorx')}
 						>
 							<BasicInputUI

@@ -1489,7 +1489,7 @@ const OrderDetails: React.FC = () => {
 							>
 								<FormGroupWrapper>
 									<FormGroup
-										cols={2}
+										cols={6}
 										label={__(
 											'Shipping Providers',
 											'multivendorx-pro'
@@ -1510,7 +1510,7 @@ const OrderDetails: React.FC = () => {
 										/>
 									</FormGroup>
 									<FormGroup
-										cols={2}
+										cols={6}
 										label={__('Date', 'multivendorx-pro')}
 										htmlFor="title"
 									>

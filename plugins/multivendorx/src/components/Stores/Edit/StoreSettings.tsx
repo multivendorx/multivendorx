@@ -562,7 +562,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 							</FormGroup>
 
 							<FormGroup
-								cols={2}
+								cols={6}
 								label={__('City', 'multivendorx')}
 								htmlFor="City"
 							>
@@ -575,7 +575,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 								/>
 							</FormGroup>
 							<FormGroup
-								cols={2}
+								cols={6}
 								label={__('Zip code', 'multivendorx')}
 								htmlFor="zip"
 							>
@@ -590,7 +590,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 
 							{/* Country and State */}
 							<FormGroup
-								cols={2}
+								cols={6}
 								label={__('Country', 'multivendorx')}
 								htmlFor="country"
 							>
@@ -602,7 +602,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 								/>
 							</FormGroup>
 							<FormGroup
-								cols={2}
+								cols={6}
 								label={__('State', 'multivendorx')}
 								htmlFor="state"
 							>

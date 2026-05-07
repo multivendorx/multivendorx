@@ -836,7 +836,7 @@ const Dashboard = () => {
 														appLocalizer.user_logout_url
 													}
 												>
-													<i className="adminfont-import"></i>{' '}
+													<i className="adminfont-sign-out"></i>{' '}
 													{__('Sign Out', 'multivendorx')}
 												</a>
 											</div>
