@@ -11,7 +11,8 @@ interface Task {
     message: string;
     successMessage?: string;
     failureMessage?: string;
-    requiresResponeData?: string[];  // Typo preserved for compatibility
+    requiresResponeData?: boolean;
+    requiresPreviousResponse?: string[];  // Typo preserved for compatibility
 }
 
 interface SequentialTaskExecutorProps {
@@ -152,8 +153,12 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                 payload.parameter = parameter;
             }
 
-            if (currentTask.requiresResponeData?.length) {
-                currentTask.requiresResponeData.forEach((taskName: string) => {
+            if (currentTask.requiresResponeData) {
+                payload.responseData = lastResult.current;
+            }
+
+            if (currentTask.requiresPreviousResponse?.length) {
+                currentTask.requiresPreviousResponse.forEach((taskName: string) => {
                     payload[taskName] = allResponses.current[taskName];
                 });
             }
