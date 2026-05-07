@@ -1,21 +1,18 @@
 import React from 'react';
-import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer';
-import { formatCurrency, formatDate } from '@/services/commonFunction';
-import { __ } from '@wordpress/i18n';
+import { Document, Page, View, Text } from '@react-pdf/renderer';
 
 type Row = {
-	orderID: string;
-	orderAmount: string;
-	storeEarning: number;
-	marketplaceEarning: number;
-	shippingTax: number;
-	shippingAmount: number;
-	date?: string;
+	seller: string;
+	product: string;
+	qty: number;
+	unitPrice: number;
+	subtotal: number;
+	tax: number;
+	total: number;
 };
 
 interface Props {
 	invoiceRows?: Row[];
-	order?: any;
 	colors: {
 		colorPrimary: string;
 		colorSecondary: string;
@@ -24,331 +21,248 @@ interface Props {
 	};
 }
 
-const adminCommissionDefault: React.FC<Props> = ({ invoiceRows, colors, order }) => {
+const adminCommissionDefault: React.FC<Props> = ({ invoiceRows, colors }) => {
 	const rows: Row[] = invoiceRows || [
 		{
-			orderID: '1',
-			date: '2025-10-01',
-			orderAmount: '100',
-			storeEarning: 2,
-			marketplaceEarning: 0.5,
-			shippingTax: 1,
-			shippingAmount: 5,
+			seller: 'Premium Electronics',
+			product: 'Widget A - Premium Edition',
+			qty: 2,
+			unitPrice: 50,
+			subtotal: 100,
+			tax: 10,
+			total: 110,
 		},
 		{
-			orderID: '2',
-			date: '2025-10-02',
-			orderAmount: '200',
-			storeEarning: 2,
-			marketplaceEarning: 0.5,
-			shippingTax: 1,
-			shippingAmount: 5,
+			seller: 'Premium Electronics',
+			product: 'Widget B - Deluxe Model',
+			qty: 1,
+			unitPrice: 75,
+			subtotal: 75,
+			tax: 7.5,
+			total: 82.5,
 		},
 		{
-			orderID: '3',
-			date: '2025-10-03',
-			orderAmount: '300',
-			storeEarning: 2,
-			marketplaceEarning: 0.5,
-			shippingTax: 1,
-			shippingAmount: 5,
+			seller: 'Tech Accessories Co',
+			product: 'Premium USB Cable',
+			qty: 2,
+			unitPrice: 15,
+			subtotal: 30,
+			tax: 3,
+			total: 33,
 		},
 	];
-
-	const subtotal = (order?.total || 0) - (order?.total_tax || 0) - (order?.shipping_total || 0);
-
-    const adminTaxDetails = appLocalizer?.tax_details;
-    const storeTaxDetails = order?.store_tax_details;
-
-    const taxFields = [
-        { key: 'vat_number', label: 'VAT:', fallback: 'GB123456789' },
-        { key: 'tax_id', label: 'Tax ID:', fallback: 'TRN-2024-SELL-9012' },
-        { key: 'registration_number', label: 'Marketplace Registration Number:', fallback: 'TRN-2024-SELL-9012' },
-        { key: 'company_number', label: 'Company registration number:', fallback: 'TRN-2024-SELL-9012' },
-    ];
-    const isAdmin = window.location.pathname.includes('/wp-admin');
-	const createStyles = (colors: Props['colors']) => StyleSheet.create({
-		page: {
-			fontSize: 12,
-			fontFamily: 'Helvetica',
-			backgroundColor: '#fff',
-			position: 'relative',
-			padding: 0,
-			margin: 0
-		},
-		boldText: {
-			fontWeight: 600,
-			fontSize: 11,
-			margin: 0,
-		},
-		flexEnd: {
-			display: 'flex',
-			justifyContent: 'flex-end',
-			margin: 20,
-		},
-		// header start
-		header: {
-			display: 'flex',
-			justifyContent: 'space-between',
-			flexDirection: 'row',
-			margin: '20px',
-			paddingBottom: '20px',
-			borderBottom: '1px solid #eee',
-		},
-		headerLeft: {
-			display: 'flex',
-			justifyContent: 'space-between',
-			gap: 15,
-			flexDirection: 'row',
-			alignItems: 'flex-start',
-		},
-		headerAvater: {
-			padding: 10,
-			backgroundColor: colors.colorPrimary,
-			fontSize: 25,
-			fontWeight: 600,
-			borderRadius: 5,
-			display: 'flex',
-			flexDirection: 'row',
-			justifyContent: 'center',
-			alignItems: 'center',
-		},
-		headerLeftDetails: {
-			display: 'flex',
-			gap: 5,
-			flexDirection: 'column',
-		},
-		headerRight: {
-			display: 'flex',
-			flexDirection: 'column',
-			alignItems: 'flex-end',
-			gap: 6,
-		},
-		invoiceText: {
-			fontSize: 26,
-			color: '#fff',
-			fontWeight: 'bold',
-		},
-		invoiceLogo: {
-			width: 120,
-			height: 'auto'
-		},
-		companyName: {
-			fontSize: 20,
-			fontWeight: 600
-		},
-		headerDetails: {
-			display: 'flex',
-			flexDirection: 'row',
-			gap: 4,
-		},
-		headerDetailsLabel: {
-			fontWeight: 600,
-		},
-		headerDetailsValue: {
-			fontSize: 12
-		},
-		// box details
-		boxDetails: {
-			margin: 20,
-			display: 'flex',
-			flexDirection: 'row',
-			justifyContent: 'space-between',
-			gap: 20,
-		},
-		box: {
-			display: 'flex',
-			flexDirection: 'column',
-			gap: 5,
-			width: '100%',
-			padding: 10,
-			backgroundColor: `${colors.colorPrimary}10`,
-			borderRadius: 5,
-		},
-		boxTitle: {
-			fontSize: 14,
-			color: colors.colorPrimary,
-			marginBottom: 5,
-			fontWeight: 600,
-		},
-		boxValueWrapper: {
-			display: 'flex',
-			flexDirection: 'row',
-		},
-		detailsValue: {},
-
-		// total section
-		totalSection: {
-			borderRadius: 5,
-			padding: 8,
-			width: '40%',
-			alignSelf: 'flex-end',
-			marginLeft: 'auto',
-		},
-		totalDetails: {
-			display: 'flex',
-			flexDirection: 'row',
-			justifyContent: 'space-between',
-			marginBottom: 8,
-		},
-		subTotal: {
-			fontSize: 12,
-			fontWeight: 'bold',
-			marginLeft: 10,
-		},
-		totalWrapper: {
-			display: 'flex',
-			flexDirection: 'row',
-			justifyContent: 'space-between',
-			backgroundColor: `${colors.colorPrimary}10`,
-			borderRadius: 5,
-			padding: 8,
-		},
-		total: {
-			fontSize: 14,
-			fontWeight: 'bold',
-			color: colors.colorPrimary,
-		},
-
-		// signature Wrapper
-		signatureWrapper: {
-			marginTop: 20,
-			alignItems: 'flex-end',
-		},
-		signatureImage: {
-			width: 120,
-			height: 50,
-			marginBottom: 4,
-		},
-		signatureText: {
-			fontSize: 14,
-			fontWeight: 600,
-			borderTop: '0.063rem dashed',
-			paddingTop: 6,
-		},
-
-		// footer notice
-		footerNotice: {
-			padding: 10,
-			display: 'flex',
-			justifyContent: 'center',
-			borderLeft: `0.188rem solid ${colors.colorPrimary}`,
-			margin: 20,
-			backgroundColor: '#f9f9f9',
-		},
-		noticeText: {
-			fontSize: 12,
-			fontWeight: 600,
-		},
-		notice: {
-			fontSize: 12,
-			fontWeight: 400,
-		},
-		// table start
-		table: {
-			display: 'flex',
-			flexDirection: 'column',
-			margin: 20,
-			marginTop: 40
-		},
-		tableHeader: {
-			display: 'flex',
-			flexDirection: 'row',
-			padding: 8,
-			backgroundColor: colors.colorPrimary,
-			borderRadius: 4
-		},
-		tableHeaderText: {
-			fontWeight: 600,
-			fontSize: 14,
-			padding: 8,
-			color: '#fff'
-		},
-		tableRow: {
-			display: 'flex',
-			flexDirection: 'row',
-			padding: 8,
-		},
-		tableRowText: {
-			padding: 8,
-		}
-	});
-	const styles = createStyles(colors);
 
 	return (
 		<Document>
 			<Page
 				size="A4"
-				style={styles.page}
+				style={{
+					fontSize: 12,
+					fontFamily: 'Helvetica',
+					backgroundColor: '#fff',
+					position: 'relative',
+				}}
 			>
 				<View>
 					{/* header start*/}
-					<View style={styles.header}>
+					<View
+						id="invoice-header"
+						style={{
+							display: 'flex',
+							justifyContent: 'space-between',
+							flexDirection: 'row',
+							margin: '20px',
+							paddingBottom: '20px',
+							borderBottom: '1px solid #eee',
+						}}
+					>
 						{/* left section */}
-						<View style={styles.headerLeft}>
-							<View style={styles.headerAvater}>
+						<View
+							id="invoice-header-left"
+							style={{
+								display: 'flex',
+								justifyContent: 'space-between',
+								gap: 15,
+								flexDirection: 'row',
+								alignItems: 'flex-start',
+							}}
+						>
+							<View
+								style={{
+									padding: 10,
+									backgroundColor: colors.colorPrimary,
+									fontSize: 25,
+									fontWeight: 600,
+									borderRadius: 4,
+									display: 'flex',
+									flexDirection: 'row',
+									justifyContent: 'center',
+									alignItems: 'center',
+								}}
+							>
 								<Text style={{ color: '#fff' }}>MS</Text>
 							</View>
-							<View style={styles.headerLeftDetails}>
-								<Text style={styles.companyName}> {isAdmin ? ('Marketplace Solutions Inc.') : order?.billing?.invoice_name}</Text>
-								<Text style={styles.headerDetailsValue}>{isAdmin ? ('123 Elm Street, Suite 400') : order?.billing?.invoice_address}</Text>
-								<Text style={styles.headerDetailsValue}>{isAdmin ? ('London') : order?.invoice_phone} {isAdmin ? ('EC1A 1BB') : order?.invoice_email}</Text>
-
-								{taxFields.map((field) => {
-									const adminData = adminTaxDetails?.[field.key];
-									let value = '';
-									// Case 1: Global config (has enable/description)
-									if (adminData && typeof adminData === 'object') {
-										value = adminData.description || '';
-									}
-									else {
-										value = field.fallback;
-									}
-
-									return (
-										<View style={styles.headerDetails} key={field.key}>
-											<Text style={styles.boldText}>{field.label} </Text>
-											<Text>{value}</Text>
-										</View>
-									);
-								})}
+							<View
+								style={{
+									display: 'flex',
+									gap: 5,
+									flexDirection: 'column',
+								}}
+							>
+								<Text
+									id="company-name"
+									style={{ fontSize: 18, fontWeight: 600 }}
+								>
+									Marketplace Solutions Inc.
+								</Text>
+								<Text id="address">
+									789 Commerce Boulevard, Suite 500
+								</Text>
+								<Text id="address">
+									San Francisco, CA 94102, United States
+								</Text>
+								<Text style={{ fontSize: 12, color: '#555' }}>
+									Tax ID:{' '}
+									<Text style={{ fontWeight: 600 }}>
+										US-TAX-123456789
+									</Text>
+								</Text>
+								<Text style={{ fontSize: 12, color: '#555' }}>
+									GST/VAT Number:{' '}
+									<Text style={{ fontWeight: 600 }}>
+										GST-US-987654321
+									</Text>
+								</Text>
+								<Text style={{ fontSize: 12, color: '#555' }}>
+									Business Registration:{' '}
+									<Text style={{ fontWeight: 600 }}>
+										BRN-2020-MKT-4567
+									</Text>
+								</Text>
 							</View>
-						</View>
+						</View>{' '}
 						{/* left section end*/}
 						{/* right section */}
-						<View style={styles.headerRight}>
-							<Text style={styles.companyName}>{isAdmin ? __('Store', 'multivendorx') : order?.store_name}</Text>
-							<View style={styles.headerDetails}>
-								<Text style={styles.headerDetailsLabel}>{__('Invoice Number:', 'multivendorx')}</Text>
-								<Text> {isAdmin ? __('INV-2025-', 'multivendorx') : appLocalizer.invoice_prefix} {isAdmin ? ('091') : order?.id}</Text>
-							</View>
+						<View
+							id="invoice-header-right"
+							style={{
+								display: 'flex',
+								flexDirection: 'column',
+								alignItems: 'flex-end',
+								gap: 6,
+							}}
+						>
+							<Text
+								style={{
+									fontSize: 18,
+									fontWeight: 600,
+								}}
+							>
+								Marketplace Order Invoice
+							</Text>
 
-							<View style={styles.headerDetails}>
-								<Text style={styles.headerDetailsLabel}>{__('Invoice Date:', 'multivendorx')}</Text>
-								<Text> {isAdmin ? __('October 9, 2025', 'multivendorx') : order?.date_created ? formatDate(order.date_created) : ''}</Text>
-							</View>
-							{taxFields.map((field) => {
-								const adminData = storeTaxDetails?.[field.key];
-								let value = '';
-								// Case 1: Global config (has enable/description)
-								if (adminData && typeof adminData === 'object') {
-									value = adminData.description || '';
-								}
-								else {
-									value = field.fallback;
-								}
+							<Text style={{ fontSize: 12, color: '#555' }}>
+								Invoice #:{' '}
+								<Text style={{ fontWeight: 600 }}>
+									ADMIN-ORD-2026-0001
+								</Text>
+							</Text>
 
-								return (
-									<View style={styles.headerDetails} key={field.key}>
-										<Text style={styles.boldText}>{field.label} </Text>
-										<Text>{value}</Text>
-									</View>
-								);
-							})}
-						</View>
+							<Text style={{ fontSize: 12, color: '#555' }}>
+								Date:{' '}
+								<Text style={{ fontWeight: 600 }}>
+									22 Jan 2026
+								</Text>
+							</Text>
+
+							<Text style={{ fontSize: 12, color: '#555' }}>
+								Order Number:{' '}
+								<Text style={{ fontWeight: 600 }}>
+									ORD-20260122-101
+								</Text>
+							</Text>
+							<Text style={{ fontSize: 12, color: '#555' }}>
+								Order Date:{' '}
+								<Text style={{ fontWeight: 600 }}>
+									22 Jan 2026
+								</Text>
+							</Text>
+
+							<View
+								style={{
+									marginTop: 8,
+									padding: '4px 8px',
+									backgroundColor: '#33920e69',
+									borderRadius: 5,
+								}}
+							>
+								<Text
+									style={{
+										fontSize: 10,
+										fontWeight: 600,
+										color: '#33920eff',
+									}}
+								>
+									Completed
+								</Text>
+							</View>
+						</View>{' '}
 						{/* right section end */}
 					</View>
 					{/* header end*/}
+
+					{/* billing section start */}
+					<View
+						id="billing-section"
+						style={{
+							margin: '20px',
+							display: 'flex',
+							flexDirection: 'row',
+							justifyContent: 'space-between',
+							gap: '20px',
+						}}
+					>
+						<View
+							id="left-details"
+							style={{
+								display: 'flex',
+								flexDirection: 'column',
+								gap: '5px',
+								width: '100%',
+								padding: '10px',
+								backgroundColor: '#f0f0f0',
+								border: '1px solid #ccc',
+								borderRadius: '5px',
+							}}
+						>
+							<Text
+								style={{
+									fontSize: '14px',
+									color: colors.colorPrimary,
+									marginBottom: '5px',
+									fontWeight: 'bold',
+								}}
+							>
+								Artisan Market Co.
+							</Text>
+							<Text
+								style={{ fontSize: '12px', fontWeight: 'bold' }}
+							>
+								Vendor Rajan Mehta
+							</Text>
+							<Text style={{ fontSize: '10px' }}>
+								{' '}
+								<Text style={{ fontWeight: 'bold' }}>
+									Email:{' '}
+								</Text>
+								john.smith@email.com
+							</Text>
+							<Text style={{ fontSize: '10px' }}>
+								42 Commerce Lane, Suite 5, Mumbai 400001, India
+							</Text>
+						</View>
+					</View>
+					{/* billing section end */}
 
 					{/* table section start */}
 					<View
@@ -390,7 +304,7 @@ const adminCommissionDefault: React.FC<Props> = ({ invoiceRows, colors, order })
 									fontWeight: 600,
 								}}
 							>
-								Order Amount
+								Products
 							</Text>
 							<Text
 								style={{
@@ -399,7 +313,7 @@ const adminCommissionDefault: React.FC<Props> = ({ invoiceRows, colors, order })
 									fontWeight: 600,
 								}}
 							>
-								Store Earning
+								Order total
 							</Text>
 							<Text
 								style={{
@@ -408,7 +322,7 @@ const adminCommissionDefault: React.FC<Props> = ({ invoiceRows, colors, order })
 									fontWeight: 600,
 								}}
 							>
-								Marketplace Earning
+								Marketplace Commission
 							</Text>
 							<Text
 								style={{
@@ -417,16 +331,7 @@ const adminCommissionDefault: React.FC<Props> = ({ invoiceRows, colors, order })
 									fontWeight: 600,
 								}}
 							>
-								Shipping Tax
-							</Text>
-							<Text
-								style={{
-									flex: 2,
-									textAlign: 'right',
-									fontWeight: 600,
-								}}
-							>
-								Shipping Amount
+								Vendor earnings
 							</Text>
 						</View>
 						{rows.map((row, index) => {
@@ -442,42 +347,36 @@ const adminCommissionDefault: React.FC<Props> = ({ invoiceRows, colors, order })
 									}}
 								>
 									{/* Description */}
-									<View style={{ flex: 2 }}>
-										<Text>{row.orderID}</Text>
+									<View style={{ flex: 4 }}>
+										<Text>{row.seller}</Text>
 									</View>
-
-									<Text
-										style={{ flex: 2, textAlign: 'right' }}
-									>
-										{row.date}
-									</Text>
 
 									{/* Unit Price */}
 									<Text
 										style={{ flex: 2, textAlign: 'right' }}
 									>
-										{row.orderAmount}
+										{row.product}
 									</Text>
 
 									<Text
 										style={{ flex: 2, textAlign: 'right' }}
 									>
-										{row.storeEarning}
+										{row.qty}
 									</Text>
 									<Text
 										style={{ flex: 2, textAlign: 'right' }}
 									>
-										{row.marketplaceEarning}
+										{row.unitPrice}
 									</Text>
 									<Text
 										style={{ flex: 2, textAlign: 'right' }}
 									>
-										{row.shippingTax}
+										{row.subtotal}
 									</Text>
 									<Text
 										style={{ flex: 2, textAlign: 'right' }}
 									>
-										{row.shippingAmount}
+										{row.tax}
 									</Text>
 								</View>
 							);
@@ -596,7 +495,7 @@ const adminCommissionDefault: React.FC<Props> = ({ invoiceRows, colors, order })
 					{/* total section end */}
 
 					{/* tax information */}
-					{/* <View
+					<View
 						id="tax-information"
 						style={{
 							display: 'flex',
@@ -718,7 +617,7 @@ const adminCommissionDefault: React.FC<Props> = ({ invoiceRows, colors, order })
 								$240.50
 							</Text>
 						</View>
-					</View> */}
+					</View>
 					{/* tax information end*/}
 
 					{/* note section start */}
