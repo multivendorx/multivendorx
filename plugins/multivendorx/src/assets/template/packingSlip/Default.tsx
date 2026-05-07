@@ -66,19 +66,19 @@ const Default: React.FC<Props> = ({ invoiceRows, colors }) => {
 			display: 'flex',
 			flexDirection: 'row',
 			justifyContent: 'space-between',
-			gap: '15px',
-			padding: '20px',
+			gap: 15,
+			padding: 20,
 		},
 		box: {
 			display: 'flex',
 			flexDirection: 'column',
-			gap: '5px',
+			gap: 5,
 			width: '100%',
-			borderRadius: '5px',
+			borderRadius: 5,
 		},
 		boxTitle: {
-			fontSize: '14px',
-			marginBottom: '5px',
+			fontSize: 14,
+			marginBottom: 5,
 			fontWeight: 'bold',
 		},
 		boxValueWrapper: {
@@ -91,8 +91,8 @@ const Default: React.FC<Props> = ({ invoiceRows, colors }) => {
 		table: {
 			display: 'flex',
 			flexDirection: 'column',
-			gap: '10px',
-			margin: '20px',
+			gap: 10,
+			margin: 20,
 		},
 		tableHeader: {
 			display: 'flex',
@@ -104,7 +104,7 @@ const Default: React.FC<Props> = ({ invoiceRows, colors }) => {
 		tableRow: {
 			display: 'flex',
 			flexDirection: 'row',
-			borderTop: '1px solid #eee',
+			borderTop: '0.063rem solid #eee',
 		},
 		tableRowText: {
 			padding: 8,
