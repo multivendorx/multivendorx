@@ -29,6 +29,7 @@ interface ChoiceToggleProps {
     key?: string;
     multiSelect?: boolean;
     custom?: boolean;
+    width?: string;
     canAccess?: boolean;
     modules?: string[];
     onBlocked?: (type: 'pro' | 'plugin' | 'module', payload?: Option) => void;
@@ -49,6 +50,7 @@ export const ChoiceToggleUI: React.FC<ChoiceToggleProps> = ({
     onChange,
     iconEnable = false,
     custom,
+    width,
     multiSelect = false,
     modules,
     onBlocked,
@@ -120,6 +122,7 @@ export const ChoiceToggleUI: React.FC<ChoiceToggleProps> = ({
                                 tabIndex={0}
                                 key={option.key}
                                 className="toggle-option"
+                                style={custom && width ? { width } : {}}
                             >
                                 <input
                                     className="choice-toggle-form-input"
@@ -201,6 +204,7 @@ const ChoiceToggle: FieldComponent = {
             key={field.key}
             iconEnable={field.iconEnable} // If true, will display the toggle value as an icon
             custom={field.custom}
+            width={field.width}
             multiSelect={field.multiSelect} // If true, allows selecting multiple options (checkboxes), else single select (radio)
             canAccess={canAccess}
             modules={modules}

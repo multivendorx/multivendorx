@@ -22,7 +22,7 @@ const RelatedList = ({ product, setProduct, handleChange }) => {
 			>
 				<FormGroupWrapper>
 					<FormGroup
-						cols={2}
+						cols={6}
 						label={__(
 							'Recommend alongside this product',
 							'multivendorx'
@@ -39,7 +39,7 @@ const RelatedList = ({ product, setProduct, handleChange }) => {
 						/>
 					</FormGroup>
 					<FormGroup
-						cols={2}
+						cols={6}
 						label={__(
 							'Offer as an add-on at checkout',
 							'multivendorx'

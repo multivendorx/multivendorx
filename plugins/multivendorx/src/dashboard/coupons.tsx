@@ -789,6 +789,7 @@ const AllCoupon: React.FC = () => {
 					open={AddCoupon}
 					onClose={() => setAddCoupon(false)}
 					width={31.25}
+					height="90%"
 					header={{
 						icon: 'coupon',
 						title: __('Add Coupon', 'multivendorx'),
@@ -803,7 +804,7 @@ const AllCoupon: React.FC = () => {
 								{
 									icon: 'contact-form',
 									text: __('Draft', 'multivendorx'),
-									color: 'red',
+									color: 'border-red',
 									onClick: () => handleSave('draft'),
 								},
 								{

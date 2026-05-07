@@ -497,7 +497,7 @@ const Dashboard: React.FC = () => {
 		{
 			icon: 'dollar',
 			number: formatCurrency(store?.commission?.total_order_amount || 0),
-			text: 'Total Revenue',
+			text: __('Total Revenue', 'multivendorx'),
 			color: 'primary',
 			prev30: formatCurrency(
 				storePreviousYear?.commission?.total_order_amount || 0
@@ -506,21 +506,21 @@ const Dashboard: React.FC = () => {
 		{
 			icon: 'order',
 			number: store?.commission?.order_count || 0,
-			text: 'Total Orders',
+			text: __('Total Orders', 'multivendorx'),
 			color: 'secondary',
 			prev30: storePreviousYear?.commission?.order_count || 0,
 		},
 		{
 			icon: 'search-discovery',
 			number: store?.visitors,
-			text: 'Store Views',
+			text: __('Store Views', 'multivendorx'),
 			color: 'accent',
 			prev30: storePreviousYear?.visitors,
 		},
 		{
 			icon: 'commission',
 			number: formatCurrency(store?.commission?.commission_total || 0),
-			text: 'Commission Earned',
+			text: __('Commission Earned', 'multivendorx'),
 			color: 'support',
 			prev30: formatCurrency(
 				storePreviousYear?.commission?.commission_total || 0

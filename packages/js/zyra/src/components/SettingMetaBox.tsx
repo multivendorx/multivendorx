@@ -496,7 +496,7 @@ const createFieldRenderers = (): Record<
                 </FormGroup> */}
 
                 {/* Gap */}
-                <FormGroup cols={2} label="Gap (rem)">
+                <FormGroup cols={6} label="Gap (rem)">
                     <BasicInputUI
                         type="number"
                         minNumber={0}

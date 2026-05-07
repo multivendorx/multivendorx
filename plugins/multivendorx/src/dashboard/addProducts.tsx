@@ -271,7 +271,7 @@ const AddProduct = () => {
 					{
 						label: __('View', 'multivendorx'),
 						icon: 'eye',
-						color: 'yellow',
+						color: 'border-purple',
 						onClick: () =>
 							window.open(product?.permalink, '_blank'),
 					},
@@ -655,7 +655,7 @@ const AddProduct = () => {
 							>
 								<FormGroupWrapper>
 									<FormGroup
-										cols={2}
+										cols={6}
 										label={__(
 											'Regular price',
 											'multivendorx'
@@ -673,7 +673,7 @@ const AddProduct = () => {
 										/>
 									</FormGroup>
 									<FormGroup
-										cols={2}
+										cols={6}
 										label={__('Sale price', 'multivendorx')}
 									>
 										<BasicInputUI

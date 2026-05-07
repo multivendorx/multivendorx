@@ -217,7 +217,7 @@ const AIButtonSection: React.FC<AIButtonSectionProps> = ({
 			{
 				label: __('Generate with AI', 'multivendorx'),
 				icon: 'ai',
-				color: 'purple',
+				color: 'border-purple',
 				onClick: openPopup,
 			},
 			...buttons,
@@ -324,7 +324,7 @@ const AIButtonSection: React.FC<AIButtonSectionProps> = ({
 				title: __('Create Product With AI', 'multivendorx'),
 			}}
 			footer={
-				<>
+				hasSuggestions ? (
 					<ButtonInputUI
 						wrapperClass="append-section"
 						buttons={[
@@ -346,7 +346,7 @@ const AIButtonSection: React.FC<AIButtonSectionProps> = ({
 							},
 						]}
 					/>
-				</>
+				) : null
 			}
 		>
 			{loading ? (
@@ -396,10 +396,11 @@ const AIButtonSection: React.FC<AIButtonSectionProps> = ({
 								)}
 							</div>
 						</div>
-						<i className="adminfont-product" />
+
+						
 						{applyFilters(
 							'multivendorx_ai_product_image_section',
-							null,
+							<i className="adminfont-image image-placeholder" />,
 							{
 								product,
 								productId,
