@@ -43,25 +43,29 @@ const ratingsField = {
 	),
 	modal: [
 		{
-			title: __('VAT / Tax number', 'multivendorx'),
+			id: '1',
+			label: __('VAT / Tax number', 'multivendorx'),
 			desc: __('DE987654321', 'multivendorx'),
 			isCustom: true,
 			disableBtn: true,
 		},
 		{
-			title: __('Marketplace tax ID', 'multivendorx'),
+			id: '2',
+			label: __('Marketplace tax ID', 'multivendorx'),
 			desc: __('GB123456789', 'multivendorx'),
 			isCustom: true,
 			disableBtn: true,
 		},
 		{
-			title: __('Marketplace registration number', 'multivendorx'),
+			id: '3',
+			label: __('Marketplace registration number', 'multivendorx'),
 			desc: __('GB123456789', 'multivendorx'),
 			isCustom: true,
 			disableBtn: true,
 		},
 		{
-			title: __('Company registration number', 'multivendorx'),
+			id: '4',
+			label: __('Company registration number', 'multivendorx'),
 			desc: __('GB123456789', 'multivendorx'),
 			isCustom: true,
 			disableBtn: true,
