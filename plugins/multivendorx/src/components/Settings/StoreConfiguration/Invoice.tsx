@@ -298,7 +298,28 @@ const Invoice: React.FC = () => {
         	return;
         }
 		const normalizedValue = value?.target?.value || value;
-		const updated = { ...formData, [key]: normalizedValue };
+		let updated;
+		if (
+			[
+				'invoice_template',
+				'admin_template',
+				'membership_template',
+				'packing_template',
+			].includes(key)
+		) {
+			updated = {
+				...formData,
+				[key]: {
+					...formData[key],
+					...normalizedValue,
+				},
+			};
+		} else {
+			updated = {
+				...formData,
+				[key]: normalizedValue,
+			};
+		}
 		setFormData(updated);
 		autoSave(updated);
 	};
@@ -642,16 +663,23 @@ const Invoice: React.FC = () => {
 							<ChoiceToggleUI
 								options={[
 									{
-										key: 'public',
-										value: 'public',
+										key: 'per-order',
+										value: 'per-order',
 										label: __('Per order', 'multivendorx'),
 									},
 									{
-										key: 'private',
-										value: 'private',
+										key: 'monthly',
+										value: 'monthly',
 										label: __('Monthly', 'multivendorx'),
 									},
 								]}
+								value={
+									formData.invoice_commission_basis ||
+									'per-order'
+								}
+								onChange={(val) =>
+									handleChange('invoice_commission_basis', val)
+								}
 							/>
 						</FormGroup>
 					</FormGroupWrapper>
