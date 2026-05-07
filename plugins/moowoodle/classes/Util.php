@@ -37,6 +37,9 @@ class Util {
         'notification'        => 'moowoodle_notification_settings',
         'synchronize-course'  => 'moowoodle_synchronize_course_settings',
         'synchronize-user'    => 'moowoodle_synchronize_user_settings',
+        'connection-access'   => 'moowoodle_connection_access_settings',
+        'course-enrollment'   => 'moowoodle_course_enrollment_settings',
+        'system-logs'         => 'moowoodle_system_logs_settings',
     );
 
     const MOOWOODLE_OTHER_SETTINGS = array(
@@ -188,8 +191,7 @@ class Util {
 	 * @return bool
 	 */
 	public static function is_khali_dabba() {
-		// return apply_filters( 'kothay_dabba', false );
-        return true;
+		return apply_filters( 'kothay_dabba', false );
 	}
 
 	/**
