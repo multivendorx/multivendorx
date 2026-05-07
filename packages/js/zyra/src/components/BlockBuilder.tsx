@@ -134,6 +134,13 @@ const REGISTRATION_BLOCK_GROUPS = [
                 label: 'reCaptcha v3',
                 fixedName: 'reCaptcha',
             },
+            {
+                id: 'terms',
+                icon: 't-letter-bold',
+                value: 'richtext',
+                label: 'Terms & Conditions',
+                fixedName: 'Terms & Conditions'
+            },
         ],
     },
     {

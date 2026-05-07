@@ -50,6 +50,7 @@ interface Field {
     type: string;
     name?: string;
     text?: string;
+    html?: string;
     label?: string;
     placeholder?: string;
     required?: boolean;
@@ -384,6 +385,12 @@ const FormViewer: React.FC<FormViewerProps> = ({
                 case 'attachment':
                     if (!value) {
                         error[field.name] = `${field.label} is required.`;
+                    }
+                    break;
+                case 'richtext':
+                    if (!value) {
+                        error[field.name] =
+                            'Please accept the Terms & Conditions.';
                     }
                     break;
             }
@@ -869,6 +876,34 @@ const FormViewer: React.FC<FormViewerProps> = ({
                             }}
                         />
                     </p>
+                );
+            case 'richtext':
+                return (
+                    <label
+                        key={field.id}
+                        className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide terms-checkbox"
+                    >
+                        <input
+                            type="checkbox"
+                            checked={Boolean(inputs[name])}
+                            onChange={(e) =>
+                                handleChange(name, e.target.checked)
+                            }
+                        />
+
+                        <div
+                            className="richtext-content"
+                            dangerouslySetInnerHTML={{
+                                __html: field.html || '',
+                            }}
+                        />
+
+                        {error && (
+                            <span className="error-text">
+                                {error}
+                            </span>
+                        )}
+                    </label>
                 );
 
             default:
