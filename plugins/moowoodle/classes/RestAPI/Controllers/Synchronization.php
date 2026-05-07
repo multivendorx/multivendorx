@@ -185,8 +185,12 @@ class Synchronization extends \WP_REST_Controller {
         }
 
         $action    = $request->get_param( 'action' );
-        $user_id   = $request->get_param( 'user_id' );
-        $course_id = $request->get_param( 'course_id' );
+        $user      = $request->get_param( 'get_user' );
+        $course = $request->get_param( 'get_course' );
+        
+        $user = is_array($user['data']['users']) ? reset($user['data']['users']) : null;
+        $course = is_array($course['courses']) ? ($course['courses'][1]) : null;
+
         $response  = array();
         switch ( $action ) {
             case 'get_site_info':
@@ -205,16 +209,16 @@ class Synchronization extends \WP_REST_Controller {
                 $response = TestConnection::get_user();
                 break;
             case 'update_user':
-                $response = TestConnection::update_user( $user_id );
+                $response = TestConnection::update_user( $user['id'] );
                 break;
             case 'enroll_user':
-                $response = TestConnection::enrol_users( $user_id, $course_id );
+                $response = TestConnection::enrol_users( $user['id'], $course['id'] );
                 break;
             case 'unenroll_user':
-                $response = TestConnection::unenrol_users( $user_id, $course_id );
+                $response = TestConnection::unenrol_users( $user['id'], $course['id'] );
                 break;
             case 'delete_user':
-                $response = TestConnection::delete_users( $user_id );
+                $response = TestConnection::delete_users( $user['id'] );
                 break;
             default:
                 $response = array( 'error' => $action . ' Test connection function is not defiend' );

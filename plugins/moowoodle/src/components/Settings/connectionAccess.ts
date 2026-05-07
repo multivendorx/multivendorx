@@ -55,7 +55,6 @@ export default {
                 {
                     action: 'get_course',
                     message: __('Courses Fetch', 'moowoodle'),
-                    cache: 'course_id',
                 },
                 {
                     action: 'get_category',
@@ -68,23 +67,26 @@ export default {
                 {
                     action: 'get_user',
                     message: __('User Fetch', 'moowoodle'),
-                    cache: 'user_id',
                 },
                 {
                     action: 'update_user',
                     message: __('User Update', 'moowoodle'),
+                    requiresResponeData: ['get_user'],
                 },
                 {
                     action: 'enroll_user',
                     message: __('User Enroll', 'moowoodle'),
+                    requiresResponeData: ['get_user', 'get_course'],
                 },
                 {
                     action: 'unenroll_user',
                     message: __('User Unenroll', 'moowoodle'),
+                    requiresResponeData: ['get_user', 'get_course'],
                 },
                 {
                     action: 'delete_user',
                     message: __('User Remove', 'moowoodle'),
+                    requiresResponeData: ['get_user'],
                 },
             ],
         },

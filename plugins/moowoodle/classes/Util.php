@@ -146,8 +146,7 @@ class Util {
 
         // Add the main message.
         // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-        $log_lines[] = "{$timestamp} : Message: " . trim( print_r( $message, true ) );
-
+        $log_lines[] = "{$timestamp} : Message: " . (is_string( $message )? trim( $message ): trim( print_r( $message, true ) ));
         // Build final entry block.
         $log_entry = implode( "\n", $log_lines ) . "\n";
 
