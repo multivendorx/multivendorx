@@ -50,6 +50,7 @@ interface Field {
     type: string;
     name?: string;
     text?: string;
+    html?: string;
     label?: string;
     placeholder?: string;
     required?: boolean;
@@ -386,6 +387,16 @@ const FormViewer: React.FC<FormViewerProps> = ({
                         error[field.name] = `${field.label} is required.`;
                     }
                     break;
+                case 'richtext':
+                    return (
+                        <div
+                            key={field.id}
+                            className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide richtext-content"
+                            dangerouslySetInnerHTML={{
+                                __html: field.html || '',
+                            }}
+                        />
+                    );
             }
         });
 
@@ -870,8 +881,19 @@ const FormViewer: React.FC<FormViewerProps> = ({
                         />
                     </p>
                 );
+            case 'richtext':
+                return (
+                    <div
+                        key={field.id}
+                        className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide richtext-content"
+                        dangerouslySetInnerHTML={{
+                            __html: field.html || '',
+                        }}
+                    />
+                );
 
             default:
+                console.log("Html render",field.html);
                 return null;
         }
     };
