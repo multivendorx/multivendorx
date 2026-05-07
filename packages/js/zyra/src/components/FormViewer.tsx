@@ -893,7 +893,6 @@ const FormViewer: React.FC<FormViewerProps> = ({
                 );
 
             default:
-                console.log("Html render",field.html);
                 return null;
         }
     };

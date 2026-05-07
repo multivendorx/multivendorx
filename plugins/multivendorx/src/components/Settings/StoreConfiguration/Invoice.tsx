@@ -28,10 +28,10 @@ import packingSlipDefault from '../../../assets/template/packingSlip/Default';
 import axios from 'axios';
 import { applyFilters } from '@wordpress/hooks';
 
-const ratingsField = {
-	key: 'ratings_parameters',
+const invoiceTaxDetailsField = {
+	key: 'tax_details',
 	type: 'expandable-panel',
-	label: __('Rating parameters', 'multivendorx'),
+	label: __('Tax details', 'multivendorx'),
 	settingDescription: __(
 		'Define the key factors customers will use to evaluate each store.',
 		'multivendorx'
@@ -73,7 +73,7 @@ const ratingsField = {
 	],
 	addNewBtn: true,
 	addNewTemplate: {
-		label: 'New Rating Parameters',
+		label: __('New Tax Detail', 'multivendorx'),
 		editableFields: {
 			title: true,
 			description: true,
@@ -682,7 +682,13 @@ const Invoice: React.FC = () => {
 						<FormGroup
 							label={__('Terms and conditions', 'multivendorx')}
 						>
-							<TextAreaUI name="content" />
+							<TextAreaUI
+								name="invoice_terms"
+								value={formData.invoice_terms || ''}
+								onChange={(val) =>
+									handleChange('invoice_terms', val)
+								}
+							/>
 						</FormGroup>
 					</FormGroupWrapper>
 				</Card>
@@ -703,15 +709,15 @@ const Invoice: React.FC = () => {
 							)}
 						>
 							<ExpandablePanelUI
-								name={ratingsField.key}
-								methods={ratingsField.modal}
+								name={invoiceTaxDetailsField.key}
+								methods={invoiceTaxDetailsField.modal}
 								value={formData.invoice_tax_details || []}
 								onChange={(val) => handleChange('invoice_tax_details', val)}
 								canAccess={true}
-								min={ratingsField.min}
-								addNewBtn={ratingsField.addNewBtn}
+								min={invoiceTaxDetailsField.min}
+								addNewBtn={invoiceTaxDetailsField.addNewBtn}
 								editTitleShow={true}
-								addNewTemplate={ratingsField.addNewTemplate}
+								addNewTemplate={invoiceTaxDetailsField.addNewTemplate}
 							/>
 						</FormGroup>
 					</FormGroupWrapper>
