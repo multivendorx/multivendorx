@@ -11,7 +11,7 @@ interface Task {
     message: string;
     successMessage?: string;
     failureMessage?: string;
-    requiresResponeData?: boolean;  // Typo preserved for compatibility
+    requiresResponeData?: string[];  // Typo preserved for compatibility
 }
 
 interface SequentialTaskExecutorProps {
@@ -65,6 +65,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
     const taskIndex = useRef(0);
     const lastResult = useRef<number[]>([]);
     const fetchStatusRef = useRef<NodeJS.Timeout | null>(null);
+    const allResponses = useRef({});
 
     const sleep = (ms: number) =>
         new Promise((resolve) => setTimeout(resolve, ms));
@@ -150,8 +151,11 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
             if (parameter) {
                 payload.parameter = parameter;
             }
-            if (currentTask.requiresResponeData) {
-                payload.responseData = lastResult.current;
+
+            if (currentTask.requiresResponeData?.length) {
+                currentTask.requiresResponeData.forEach((taskName: string) => {
+                    payload[taskName] = allResponses.current[taskName];
+                });
             }
 
             const response = await axios.post(
@@ -163,6 +167,8 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                     },
                 }
             );
+
+            allResponses.current[currentTask.action] = response.data;
 
             const formattedResponse = {
                 success: response.data?.success === true,
@@ -182,7 +188,6 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                 processStarted.current = false;
                 return;
             }
-
             taskIndex.current++;
             await executeSequentialTasks();
         } catch (error) {
@@ -265,7 +270,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                 },
             })
             .then(() => {
-                setSyncStarted( false );
+                setSyncStarted(false);
                 return fetchSyncStatus();
             })
             .then(() => {
