@@ -93,7 +93,7 @@
 .settings-wrapper {
 
   // for without store dashboard tabs
-  &:not(.without-spaceing){
+  &:not(.without-spacing){
     .tabs-wrapper {
       border-bottom: $border-light-small;
       margin: 0 1.25rem;
@@ -101,7 +101,7 @@
   }
 
   // for store dashboard
-  &.without-spaceing .general-wrapper{
+  &.without-spacing .general-wrapper{
     margin: 2.5rem 0 0;
   }
 

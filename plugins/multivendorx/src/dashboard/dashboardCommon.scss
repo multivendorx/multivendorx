@@ -1557,6 +1557,13 @@ body.dark {
         .content-wrapper {
             padding: 4rem 1.25rem !important;
         }
+        // navbar
+        .top-navbar-wrapper{
+            .top-navbar{
+                margin: 0;
+                padding: 0 1rem;
+            }
+        }
     }
 
     // dashboard stucture end
