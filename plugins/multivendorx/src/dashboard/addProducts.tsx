@@ -256,7 +256,7 @@ const AddProduct = () => {
 			{errorMsg && (
 				<Notice
 					type="error"
-					validity="lifetime"
+					validity={2000}
 					displayPosition="notice"
 					message={errorMsg}
 				/>
