@@ -73,6 +73,16 @@ class Stores extends \WP_REST_Controller {
                 ),
             )
         );
+
+         register_rest_route(
+            MultiVendorX()->rest_namespace,
+            '/states/(?P<country>[A-Z]{2})',
+            array(
+                'methods'             => \WP_REST_Server::READABLE,
+                'callback'            => array( $this, 'get_states_by_country' ),
+                'permission_callback' => array( $this, 'get_items_permissions_check' ),
+            )
+        );
     }
 
     /**
@@ -1428,5 +1438,28 @@ class Stores extends \WP_REST_Controller {
         $response->header( 'X-WP-Total', (int) $total );
 
         return $response;
+    }
+
+    /**
+     * Get states by country
+     *
+     * @param object $request WP_REST_Request object.
+     */
+    public function get_states_by_country( $request ) {
+        $country_code = $request->get_param( 'country' );
+        $states       = WC()->countries->get_states( $country_code );
+
+        $state_list = array();
+
+        if ( is_array( $states ) ) {
+            foreach ( $states as $code => $name ) {
+                $state_list[] = array(
+                    'label' => $name,
+                    'value' => $code,
+                );
+            }
+        }
+
+        return rest_ensure_response( $state_list );
     }
 }
