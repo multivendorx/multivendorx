@@ -430,7 +430,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 										<FormGroup
 											row
 											key={label}
-											label={label}
+											label={label.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
 										>
 											{isAttachment ? (
 												<a
@@ -471,7 +471,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 					</FormGroupWrapper>
 				</Card>
 
-				<Card title={__('Activity Log', 'multivendorx')}>
+				{/* <Card title={__('Activity Log', 'multivendorx')}>
 					<div className="activity-log">
 						{Array.isArray(activities) && activities.length > 0 ? (
 							activities.slice(0, 5).map((a, i) => (
@@ -490,7 +490,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 							/>
 						)}
 					</div>
-				</Card>
+				</Card> */}
 			</Column>
 		</Container>
 	);
