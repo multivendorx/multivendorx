@@ -102,8 +102,8 @@ $review_count      = is_array( $reviews ) ? count( $reviews ) : 0;
                     <div class="row">
                         <?php
                         // Show email if not hidden.
-                        if ( in_array( 'show_store_email', $contact_settings, true ) && ! empty( $meta_data['primary_email'] ) && ( $meta_data['hideEmail'] ?? 'no' ) === 'no' ) {
-                            echo '<div class="store-email"><i class="dashicons dashicons-email"></i> ' . esc_html( $meta_data['primary_email'] ) . '</div>';
+                        if ( in_array( 'show_store_email', $contact_settings, true ) && ! empty( $meta_data['store_email']['primary'] ) && ( $meta_data['hideEmail'] ?? 'no' ) === 'no' ) {
+                            echo '<div class="store-email"><i class="dashicons dashicons-email"></i> ' . esc_html( $meta_data['store_email']['primary'] ) . '</div>';
                         }
 
                         // Show phone if not hidden.
