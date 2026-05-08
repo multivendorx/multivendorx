@@ -576,7 +576,9 @@ class Frontend {
             }
 
             $total_size = $this->get_user_media_space_used( $primary_owner );
-            $store->update_meta( 'media_space_used', $total_size );
+            if ( $store->exists() ) {
+                $store->update_meta( 'media_space_used', $total_size );
+            }
         }
         return $data;
     }

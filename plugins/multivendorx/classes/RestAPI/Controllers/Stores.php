@@ -208,7 +208,9 @@ class Stores extends \WP_REST_Controller {
                 foreach ( $rejected_stores as $store ) {
                     $store_id     = (int) $store['ID'];
                     $store_object = new Store( $store_id );
-
+                    if ( ! $store->exists() ) {
+                        continue;
+                    }
                     $all_stores[] = array(
                         'key'   => $store_id,
                         'value' => $store_id,
@@ -787,6 +789,9 @@ class Stores extends \WP_REST_Controller {
             }
 
             $store = new Store( $id );
+            if ( ! $store->exists() ) {
+                return;
+            }
 
             if ( $registrations ) {
                 return rest_ensure_response(
@@ -892,7 +897,9 @@ class Stores extends \WP_REST_Controller {
             if ( ! empty( $ids ) && ! empty( $status ) ) {
                 foreach ( (array) $ids as $store_id ) {
                     $store = new Store( absint( $store_id ) );
-
+                    if ( ! $store->exists() ) {
+                        continue;
+                    }
                     $store->set( Utill::STORE_SETTINGS_KEYS['status'], $status );
                     $store->save();
                 }
@@ -907,6 +914,9 @@ class Stores extends \WP_REST_Controller {
             $data = (array) $request->get_json_params();
 
             $store = new Store( $id );
+            if ( ! $store->exists() ) {
+                return;
+            }
 
             $data = apply_filters( 'multivendorx_before_store_update', $data, $store, $request );
 

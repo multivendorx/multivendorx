@@ -408,7 +408,9 @@ class Rest extends \WP_REST_Controller {
 
             foreach ( $stores as $store_id ) {
                 $store = new Store( $store_id );
-
+                if ( ! $store->exists() ) {
+                    continue;
+                }
                 MultiVendorX()->notifications->send_notification_helper(
                     'system_announcement',
                     $store,
