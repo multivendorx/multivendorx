@@ -8,7 +8,9 @@
 namespace MooWoodle;
 
 defined( 'ABSPATH' ) || exit;
-
+use MooWoodle\Core\Category;
+use MooWoodle\Core\Course;
+use MooWoodle\Enrollment;
 /**
  * MooWoodle Installer class
  *
@@ -248,7 +250,7 @@ class Installer {
 				'parent_id' => (int) $term['parent_id'],
 			);
 
-			$response = \MooWoodle\Core\Category::update_course_category_information( $args );
+			$response = Category::update_course_category_information( $args );
 
             if ( $response ) {
                 wp_delete_term( (int) $term['term_id'], 'course_cat' );
@@ -297,7 +299,7 @@ class Installer {
                 'enddate'          => is_array( $all_meta['_course_enddate'] ?? null ) ? reset( $all_meta['_course_enddate'] ) : 0,
             );
 
-            $new_course_id = \MooWoodle\Core\Course::update_course_information( $course_data );
+            $new_course_id = Course::update_course_information( $course_data );
 
             if ( ! empty( $course_data['product_id'] ) && $new_course_id ) {
                 update_post_meta( $course_data['product_id'], 'linked_course_id', $new_course_id );
@@ -366,7 +368,7 @@ class Installer {
             $moodle_course_id = $product->get_meta( 'moodle_course_id', true );
             $linked_course_id = $product->get_meta( 'linked_course_id', true );
 
-            $course = \MooWoodle\Core\Course::get_course_information(
+            $course = Course::get_course_information(
                 array( 'moodle_course_id' => $moodle_course_id )
             );
 
@@ -385,6 +387,7 @@ class Installer {
                 'enrollment_date' => $enrollment_date,
             );
 
-            \MooWoodle\Enrollment::update_enrollment_information( $enrollment_data );        }
+            Enrollment::update_enrollment_information( $enrollment_data );   
+        }
     }
 }

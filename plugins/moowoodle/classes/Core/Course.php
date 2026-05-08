@@ -8,6 +8,7 @@
 namespace MooWoodle\Core;
 
 use MooWoodle\Util;
+use MooWoodle\FrontendScripts;
 
 /**
  * MooWoodle Course class
@@ -35,10 +36,10 @@ class Course {
      */
 	public function enqueue_admin_assets() {
 
-		\MooWoodle\FrontendScripts::admin_load_scripts();
-		\MooWoodle\FrontendScripts::enqueue_script( 'moowoodle-product-tab-script' );
-		\MooWoodle\FrontendScripts::enqueue_style( 'moowoodle-product-tab-style' );
-		\MooWoodle\FrontendScripts::localize_scripts( 'moowoodle-product-tab-script' );
+		FrontendScripts::admin_load_scripts();
+		FrontendScripts::enqueue_script( 'moowoodle-product-tab-script' );
+		FrontendScripts::enqueue_style( 'moowoodle-product-tab-style' );
+		FrontendScripts::localize_scripts( 'moowoodle-product-tab-script' );
 	}
 
 	/**
@@ -173,7 +174,7 @@ class Course {
 
             $updated_ids[] = self::update_course_information( $args );
 
-            \MooWoodle\Util::increment_sync_count( 'course' );
+            Util::increment_sync_count( 'course' );
         }
 		if ( $force_delete ) {
 			self::remove_exclude_ids( $updated_ids );

@@ -6,7 +6,7 @@
  */
 
 namespace MooWoodle;
-
+use MooWoodle\Util;
 /**
  * MooWoodle Enrollment class
  *
@@ -243,7 +243,7 @@ class Enrollment {
 		);
 
 		if ( empty( $enrol_response['success'] ) && MooWoodle()->show_advanced_log ) {
-			\MooWoodle\Util::log( "[MooWoodle] Enrollment failed for User #{$user_data['purchaser_id']} in Course #{$course_data['moodle_course_id']}. Error: " . wp_json_encode( $enrol_response ) );
+			Util::log( "[MooWoodle] Enrollment failed for User #{$user_data['purchaser_id']} in Course #{$course_data['moodle_course_id']}. Error: " . wp_json_encode( $enrol_response ) );
 		}
 
 		$enrollment_data = array(
