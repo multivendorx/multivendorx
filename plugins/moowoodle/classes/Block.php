@@ -59,7 +59,7 @@ class Block {
      * @return array List of blocks with their configuration.
      */
     public function initialize_blocks() {
-        $blocks = array();
+        $blocks     = array();
         $textdomain = 'moowoodle';
 
         $block_base_path = MooWoodle()->plugin_path

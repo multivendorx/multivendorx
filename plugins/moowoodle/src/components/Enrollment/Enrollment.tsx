@@ -6,41 +6,41 @@ import '../common.scss';
 import { applyFilters } from '@wordpress/hooks';
 
 const Enrollment: React.FC = () => {
-    const [openPopup, setopenPopup] = useState(false);
+	const [openPopup, setopenPopup] = useState(false);
 
-    return (
-        <>
-            {openPopup && (
-                <PopupUI
-                    position="lightbox"
-                    open={openPopup}
-                    onClose={() => setopenPopup(false)}
-                    width={31.25}
-                    height="auto"
-                >
-                    <ShowProPopup />
-                </PopupUI>
-            )}
-            <NavigatorHeader
-                headerIcon="form"
-                headerTitle={__('All Enrollments', 'moowoodle')}
-                headerDescription={__(
-                    'Enrollment records are presented, showing students, their courses, enrollment dates, and current status.',
-                    'moowoodle'
-                )}
-            />
-            {appLocalizer.khali_dabba ? (
-                applyFilters('moowoodle_enrollment_content', null)
-            ) : (
-                <div
-                    className="enrollment-img image-wrapper"
-                    onClick={() => {
-                        setopenPopup(true);
-                    }}
-                ></div>
-            )}
-        </>
-    );
+	return (
+		<>
+			{openPopup && (
+				<PopupUI
+					position="lightbox"
+					open={openPopup}
+					onClose={() => setopenPopup(false)}
+					width={31.25}
+					height="auto"
+				>
+					<ShowProPopup />
+				</PopupUI>
+			)}
+			<NavigatorHeader
+				headerIcon="form"
+				headerTitle={__('All Enrollments', 'moowoodle')}
+				headerDescription={__(
+					'Enrollment records are presented, showing students, their courses, enrollment dates, and current status.',
+					'moowoodle'
+				)}
+			/>
+			{appLocalizer.khali_dabba ? (
+				applyFilters('moowoodle_enrollment_content', null)
+			) : (
+				<div
+					className="enrollment-img image-wrapper"
+					onClick={() => {
+						setopenPopup(true);
+					}}
+				></div>
+			)}
+		</>
+	);
 };
 
 export default Enrollment;

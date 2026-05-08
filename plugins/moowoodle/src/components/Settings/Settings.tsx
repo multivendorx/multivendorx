@@ -47,7 +47,6 @@ const Settings: React.FC<SettingsProps> = () => {
 			}
 		}, [setting, settingName, currentTab]);
 
-
 		return (
 			<>
 				{settingName === currentTab ? (
