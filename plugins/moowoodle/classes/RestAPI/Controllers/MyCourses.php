@@ -1,6 +1,6 @@
 <?php
 /**
- * MooWoodle REST API My Courses controller.
+ * MooWoodle REST API Settings controller.
  *
  * @package MooWoodle
  */
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @class       My Courses class
  * @version     PRODUCT_VERSION
- * @author      MooWoodle
+ * @author      DualCube
  */
 class MyCourses extends \WP_REST_Controller {
 
@@ -27,24 +27,21 @@ class MyCourses extends \WP_REST_Controller {
 	protected $rest_base = 'my-courses';
 
     /**
-     * RestAPI construct function.
-     */
-    public function __construct() {
-
-    }
-
-    /**
      * Register the routes for the objects of the controller.
      */
     public function register_routes() {
+
         register_rest_route(
             MooWoodle()->rest_namespace,
-            '/' . $this->rest_base,
+            '/' . $this->rest_base . '/(?P<id>[\d]+)',
             array(
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
-                    'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'callback'            => array( $this, 'get_item' ),
+                    'permission_callback' => array( $this, 'get_item_permissions_check' ),
+                    'args'                => array(
+                        'id' => array( 'required' => true ),
+                    ),
                 )
             )
         );
@@ -55,16 +52,16 @@ class MyCourses extends \WP_REST_Controller {
      *
      * @param object $request The REST request object.
      */
-    public function get_items_permissions_check( $request ) {
-        return current_user_can( 'customer' ) || current_user_can( 'manage_options' ); ;
+    public function get_item_permissions_check( $request ) {
+        return current_user_can( 'customer' ) || current_user_can( 'manage_options' );
     }
 
     /**
-     * Get all synchronization.
+     * Get a specific course.
      *
      * @param object $request The request object.
      */
-    public function get_items( $request ) {
+    public function get_item( $request ) {
         // ----- Nonce Check -----
         $nonce = $request->get_header( 'X-WP-Nonce' );
         if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
@@ -112,14 +109,9 @@ class MyCourses extends \WP_REST_Controller {
                     ),
                 )
             );
-
+            $response = rest_ensure_response( array() );
             if ( empty( $user_enrollments ) ) {
-                return rest_ensure_response(
-                    array(
-                        'data'   => array(),
-                        'status' => 'success',
-                    )
-                );
+                return $response;
             }
 
             $moodle_password = get_user_meta( $current_user->ID, 'moowoodle_moodle_user_pwd', true );
@@ -156,13 +148,9 @@ class MyCourses extends \WP_REST_Controller {
                 $user_enrollments
             );
 
-            return rest_ensure_response(
-                array(
-                    'data'   => $formatted_courses,
-                    'count'  => $total_user_enrollments,
-                    'status' => 'success',
-                )
-            );
+            $response = $response->set_data( $formatted_courses );
+            $response->header( 'X-WP-Total', $total_user_enrollments );
+            return $response;
             
         } catch ( \Exception $e ) {
             MooWoodle()->util->log( $e );

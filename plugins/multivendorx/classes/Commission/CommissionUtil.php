@@ -231,7 +231,9 @@ class CommissionUtil {
             return array_map(
                 function ( $row ) {
                     $store      = new Store( $row->store_id );
-                    $store_name = $store ? $store->get( 'name' ) : '';
+                    if ( $store->exists() ) {
+                        $store_name = $store->get( 'name' );
+                    }
 
                     return array(
                         'store_id'            => intval( $row->store_id ),

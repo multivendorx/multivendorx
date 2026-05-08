@@ -186,20 +186,6 @@ export default {
             look: 'toggle',
             proSetting: true,
         },
-        // {
-        //     key: 'sync_user_btn',
-        //     type: 'do-action-btn',
-        //     interval: 2500,
-        //     apilink: 'synchronization',
-        //     parameter: 'user',
-        //     label: 'Sync profiles of existing users ',
-        //     value: 'Synchronize users now!! ',
-        //     desc: __(
-        //         "This will trigger immediate synchronization of all existing user accounts between WordPress and Moodle based on the configured data synchronization flow.<br><br><span class='highlighted-part'>User uniqueness will be checked based on email. If the user exists in the other system, their profile information will be synchronized; otherwise, a new user will be created.<br>Synchronizing user information fails if the same username is found in another instance but linked to a different email address.</span>",
-        //         'moowoodle'
-        //     ),
-        //     proSetting: true,
-        // },
         {
             key: 'sync_user_btn',
             label: 'On-demand course',
@@ -207,33 +193,10 @@ export default {
             type: 'sequential-task-executor',
             buttonText: 'Synchronize users now!',
             apilink: 'synchronization',
-            action: 'sync_course',
+            parameter: 'user',
             interval: 2500,
             successMessage: 'Courses synchronized successfully!',
             failureMessage: 'Failed to synchronize courses.',
-            tasks: [
-                {
-                    action: 'fetch_moodle_courses',
-                    message: 'Fetching courses from Moodle...',
-                    successMessage: 'Courses fetched successfully',
-                    failureMessage: 'Failed to fetch courses',
-                    requiresResponeData: true
-                },
-                {
-                    action: 'sync_to_wordpress',
-                    message: 'Synchronizing with WordPress products...',
-                    successMessage: 'Products synchronized',
-                    failureMessage: 'Failed to sync products',
-                    requiresResponeData: true
-                },
-                {
-                    action: 'update_product_metadata',
-                    message: 'Updating product metadata...',
-                    successMessage: 'Metadata updated',
-                    failureMessage: 'Failed to update metadata',
-                    requiresResponeData: false
-                }
-            ],
             desc: "Initiate the immediate synchronization of all courses from Moodle to WordPress.<br><span class='highlighted-part'><br>With the 'Course & product synchronization' option, you have the ability to specify whether you want to create new products, update existing products.<br>Through the 'Course information mapping' feature, you gain the flexibility to define which specific course data gets imported from Moodle, like course ID number/course images etc. By default we will fetch only the category of the product.</span>",
         }
     ],

@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
  * @property Core\Course $course instance of course class
  * @property Core\Category $category instance of category class
  * @property Core\Product $product instance of product class
- * @property RestAPI $restAPI instance of restapi class
+ * @property Rest $rest instance of restapi class
  */
 class MooWoodle {
     /**
@@ -68,7 +68,6 @@ class MooWoodle {
         $this->container['moowoodle_logs_dir'] = ( trailingslashit( wp_upload_dir( null, false )['basedir'] ) . 'mw-logs' );
         $this->container['is_dev']             = defined( 'WP_ENV' ) && WP_ENV === 'development';
         $this->container['plugin_base']        = plugin_basename( $file );
-
         // activation and deactivation hook.
         register_activation_hook( $file, array( $this, 'activate' ) );
         register_deactivation_hook( $file, array( $this, 'deactivate' ) );
