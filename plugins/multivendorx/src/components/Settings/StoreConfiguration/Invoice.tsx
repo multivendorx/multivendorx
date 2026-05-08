@@ -20,9 +20,8 @@ import {
 import ShowProPopup from '../../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
-import Default from '../../../assets/template/customerInvoice/Default';
-import adminCommissionDefault from '../../../assets/template/adminCommission/Default';
-import membershipInvoiceDefault from '../../../assets/template/membershipInvoice/Default';
+import orderInvoiceDefault from '../../../assets/template/orderInvoice/Default';
+import commissionDefault from '../../../assets/template/commission/Default';
 import packingSlipDefault from '../../../assets/template/packingSlip/Default';
 
 import axios from 'axios';
@@ -185,8 +184,8 @@ const getDefaultColors = (paletteKey = DEFAULT_COLOR_PALETTE) => {
 
 // Default templates for each invoice type
 const DEFAULT_TEMPLATES = {
-	customer: 'customer_invoice_default',
-	admin: 'admin_commission_default',
+	customer: 'order_invoice_default',
+	admin: 'commission_default',
 	membership: 'membership_invoice_default',
 	packing: 'packing_slip_default',
 };
@@ -339,7 +338,7 @@ const Invoice: React.FC = () => {
 					<TabsUI
 						tabs={[
 							{
-								label: __('Customer Invoice', 'multivendorx'),
+								label: __('Order Invoice', 'multivendorx'),
 								content: (
 									<ColorSettingInputUI
 										key={formData.invoice_template?.templateKey}
@@ -350,14 +349,14 @@ const Invoice: React.FC = () => {
 										showPdfButton={true}
 										idPrefix="color-setting-customer"
 										templates={applyFilters(
-											'multivendorx_customer_invoice',
+											'multivendorx_order_invoice',
 											[
 												{
-													key: 'customer_invoice_default',
+													key: 'order_invoice_default',
 													label: 'Default',
-													preview: Default,
-													component: Default,
-													pdf: Default,
+													preview: orderInvoiceDefault,
+													component: orderInvoiceDefault,
+													pdf: orderInvoiceDefault,
 												},
 											]
 										)}
@@ -370,7 +369,7 @@ const Invoice: React.FC = () => {
 								),
 							},
 							{
-								label: __('Admin Commission', 'multivendorx'),
+								label: __('Commission', 'multivendorx'),
 								content: (
 									<ColorSettingInputUI
 										key={formData.admin_template?.templateKey}
@@ -381,14 +380,14 @@ const Invoice: React.FC = () => {
 										showPdfButton={true}
 										idPrefix="color-setting-admin"
 										templates={applyFilters(
-											'multivendorx_admin_invoice',
+											'multivendorx_commission_invoice',
 											[
 												{
-												key: 'admin_commission_default',
+												key: 'commission_default',
 												label: 'Default',
-												preview: adminCommissionDefault,
-												component: adminCommissionDefault,
-												pdf: adminCommissionDefault,
+												preview: commissionDefault,
+												component: commissionDefault,
+												pdf: commissionDefault,
 											},
 											]
 										)}
@@ -396,37 +395,6 @@ const Invoice: React.FC = () => {
 										value={formData.admin_template}
 										onChange={(val) => {
 											handleChange('admin_template', val);
-										}}
-									/>
-								),
-							},
-							{
-								label: __('Membership', 'multivendorx'),
-								content: (
-									<ColorSettingInputUI
-										key={formData.membership_template?.templateKey}
-										filedKey="membership_template"
-										wrapperClass="form-group-color-setting"
-										inputClass="setting-form-input"
-										templateSelector={true}
-										showPdfButton={true}
-										idPrefix="color-setting-membership"
-										templates={applyFilters(
-											'multivendorx_membership_invoice',
-											[
-												{
-													key: 'membership_invoice_default',
-													label: 'Default',
-													preview: membershipInvoiceDefault,
-													component: membershipInvoiceDefault,
-													pdf: membershipInvoiceDefault,
-												},
-											]
-										)}
-										predefinedOptions={COLOR_PALETTES}
-										value={formData.membership_template}
-										onChange={(val) => {
-											handleChange('membership_template', val);
 										}}
 									/>
 								),
