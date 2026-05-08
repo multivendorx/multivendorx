@@ -49,6 +49,13 @@ class Store {
     private $container = array();
 
     /**
+     * Cache loaded stores.
+     *
+     * @var array
+     */
+    protected static $store_cache = array();
+
+    /**
      * Constructor.
      *
      * @param int $store_id Store ID.
@@ -84,16 +91,36 @@ class Store {
     public function load( $store_id ) {
         global $wpdb;
 
+        $store_id = (int) $store_id;
+        if ( $store_id <= 0 ) {
+            return false;
+        }
+
+        // Already loaded in current object.
+        if ( $this->id === $store_id && ! empty( $this->data ) ) {
+            return true;
+        }
+
+        // Static cache.
+        if ( isset( self::$store_cache[ $store_id ] ) ) {
+            $cached = self::$store_cache[ $store_id ];
+
+            $this->id        = $cached['id'];
+            $this->data      = $cached['data'];
+            $this->meta_data = $cached['meta_data'];
+
+            return true;
+        }
+
         $table = $wpdb->prefix . Utill::TABLES['store'];
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $sql = $wpdb->prepare(
-            'SELECT * FROM `' . esc_sql( $table ) . '` WHERE ID = %d',
+            "SELECT * FROM {$table} WHERE ID = %d LIMIT 1",
             $store_id
         );
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        $row = $wpdb->get_row( $sql, ARRAY_A );
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $row = $wpdb->get_row( $sql, ARRAY_A );
         if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( $wpdb->last_error, 'ERROR' );
         }
@@ -106,9 +133,17 @@ class Store {
             return false;
         }
 
-        $this->id        = (int) $row['ID'];
-        $this->data      = $row;
+        $this->id   = (int) $row['ID'];
+        $this->data = $row;
+        // Load meta once.
         $this->meta_data = $this->get_all_meta();
+
+        // Save cache.
+        self::$store_cache[ $store_id ] = array(
+            'id'        => $this->id,
+            'data'      => $this->data,
+            'meta_data' => $this->meta_data,
+        );
 
         return true;
     }
@@ -184,35 +219,17 @@ class Store {
      * @return mixed Meta value(s) or null.
      */
     public function get_meta( $key, $single = true ) {
-        global $wpdb;
+        if ( ! isset( $this->meta_data[ $key ] ) ) {
+            return $single ? null : array();
+        }
 
-        $table = esc_sql( $wpdb->prefix . Utill::TABLES['store_meta'] );
+        $value = $this->meta_data[ $key ];
 
         if ( $single ) {
-            $sql = $wpdb->prepare(
-                'SELECT meta_value FROM `' . esc_sql( $table ) . '` WHERE store_id = %d AND meta_key = %s LIMIT 1',
-                $this->id,
-                $key
-            );
-
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-            $value = $wpdb->get_var( $sql );
-        } else {
-            $sql = $wpdb->prepare(
-                'SELECT meta_value FROM `' . esc_sql( $table ) . '` WHERE store_id = %d AND meta_key = %s',
-                $this->id,
-                $key
-            );
-
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-            $value = $wpdb->get_col( $sql );
+            return $value;
         }
 
-        if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
-            MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
-        }
-
-        return maybe_unserialize( $value );
+        return is_array( $value ) ? $value : array( $value );
     }
 
 	/**
@@ -220,31 +237,38 @@ class Store {
 	 *
 	 * @return array Key-value array of all store meta.
 	 */
-	public function get_all_meta() {
-		global $wpdb;
+    public function get_all_meta() {
+        global $wpdb;
 
-		$table = $wpdb->prefix . Utill::TABLES['store_meta'];
+        // Return cached meta.
+        if ( ! empty( $this->meta_data ) ) {
+            return $this->meta_data;
+        }
 
-		$sql = $wpdb->prepare(
-            'SELECT meta_key, meta_value FROM `' . $table . '` WHERE store_id = %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        if ( ! $this->id ) {
+            return array();
+        }
+
+        $table = $wpdb->prefix . Utill::TABLES['store_meta'];
+
+        $sql = $wpdb->prepare(
+            "SELECT meta_key, meta_value FROM {$table} WHERE store_id = %d",
             $this->id
-		);
+        );
 
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-		$rows = $wpdb->get_results( $sql, ARRAY_A );
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $rows = $wpdb->get_results( $sql, ARRAY_A );
 
-		$meta = array();
-		foreach ( $rows as $row ) {
-			$meta[ $row['meta_key'] ] = maybe_unserialize( $row['meta_value'] );
-		}
+        $meta = array();
 
-		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
-			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
-		}
+        foreach ( $rows as $row ) {
+            $meta[ $row['meta_key'] ] = maybe_unserialize( $row['meta_value'] );
+        }
 
-		return $meta;
-	}
+        $this->meta_data = $meta;
+        return $this->meta_data;
+    }
+
 	/**
 	 * Get store data
 	 *
@@ -334,52 +358,43 @@ class Store {
             return null;
         }
 
+        $cache_key = $type . ':' . $value;
+
+        // Return from cache.
+        if ( isset( self::$store_cache[ $cache_key ] ) ) {
+            return self::$store_cache[ $cache_key ];
+        }
+
         if ( 'id' === $type ) {
             $store = new self( (int) $value );
-            return $store->exists() ? $store : null;
+            self::$store_cache[ $cache_key ] = $store->exists() ? $store : null;
+            return self::$store_cache[ $cache_key ];
         }
 
         $table       = esc_sql( $wpdb->prefix . Utill::TABLES['store'] );
         $store_users = esc_sql( $wpdb->prefix . Utill::TABLES['store_users'] );
 
-		try {
-			switch ( $type ) {
-				case 'slug':
-					// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-					$query = $wpdb->prepare(
-						"SELECT ID FROM {$table} WHERE slug = %s LIMIT 1",
-						$value
-					);
-					// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        try {
+            switch ( $type ) {
+                case 'slug':
+                    $query = $wpdb->prepare(
+                        "SELECT ID FROM {$table} WHERE slug = %s LIMIT 1",
+                        $value
+                    );
 
-					$id = $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+                    $id = $wpdb->get_var( $query ); // phpcs:ignore
 
-					return $id ? new self( (int) $id ) : null;
+                    if ( ! $id ) {
+                        self::$store_cache[ $cache_key ] = null;
+                        return null;
+                    }
 
-				case 'name':
-					$like = '%' . $wpdb->esc_like( $value ) . '%';
+                    $store = new self( (int) $id );
+                    self::$store_cache[ $cache_key ] = $store->exists() ? $store : null;
+                    return self::$store_cache[ $cache_key ];
 
-					// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-					$results = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-						$wpdb->prepare(
-                            "SELECT ID FROM {$table} WHERE name LIKE %s AND status = %s",
-                            $like,
-                            'active'
-						)
-					);
-					// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-
-					if ( empty( $results ) ) {
-						return array();
-					}
-
-					return array_map(
-                        fn( $id ) => new self( (int) $id ),
-                        $results
-					);
-
-				case 'product':
-					$product_id = (int) $value;
+                case 'product':
+                    $product_id = (int) $value;
 					$store_id   = (int) get_post_meta(
 						$product_id,
 						Utill::POST_META_SETTINGS['store_id'],
@@ -390,11 +405,35 @@ class Store {
                         return null;
                     }
                     $store = new self( $store_id );
-                    return $store->exists() ? $store : null;
+                    self::$store_cache[ $cache_key ] = $store->exists() ? $store : null;
+                    return self::$store_cache[ $cache_key ];
 
-				case 'primary_owner':
-					$status = sanitize_text_field( $value );
+                case 'name':
+                    $like = '%' . $wpdb->esc_like( $value ) . '%';
 
+                    $results = $wpdb->get_col(
+                        $wpdb->prepare(
+                            "SELECT ID FROM {$table} WHERE name LIKE %s AND status = %s",
+                            $like,
+                            'active'
+                        )
+                    ); // phpcs:ignore
+
+                    if ( empty( $results ) ) {
+                        self::$store_cache[ $cache_key ] = array();
+                        return array();
+                    }
+
+                    $stores = array_map(
+                        fn( $id ) => new self( (int) $id ),
+                        $results
+                    );
+
+                    self::$store_cache[ $cache_key ] = $stores;
+                    return $stores;
+
+                case 'primary_owner':
+                    $status = sanitize_text_field( $value );
 					// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 					$stores = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 						$wpdb->prepare(
@@ -405,43 +444,44 @@ class Store {
 						ARRAY_A
 					);
 					// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                    self::$store_cache[ $cache_key ] = $stores ? $stores : array();
+                    return self::$store_cache[ $cache_key ];
 
-					return $stores ? $stores : array();
-
-				case 'user':
-					$user_id = (int) $value;
-
+                case 'user':
+                    $user_id = (int) $value;
 					$excluded_statuses = array( 'permanently_rejected', 'deactivated' );
 					$placeholders      = implode( ', ', array_fill( 0, count( $excluded_statuses ), '%s' ) );
 					$params            = array_merge( array( $user_id ), $excluded_statuses );
 
 					// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 					$sql = "
-                SELECT
-                    su.store_id AS id,
-                    s.name AS name
-                FROM {$store_users} su
-                INNER JOIN {$table} s ON s.ID = su.store_id
-                WHERE su.user_id = %d
-                AND s.status NOT IN ($placeholders)
-            ";
+                        SELECT
+                            su.store_id AS id,
+                            s.name AS name
+                        FROM {$store_users} su
+                        INNER JOIN {$table} s ON s.ID = su.store_id
+                        WHERE su.user_id = %d
+                        AND s.status NOT IN ($placeholders)
+                    ";
 
 					$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                         $wpdb->prepare( $sql, $params ), // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
                         ARRAY_A
 					);
-                    // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-					return $result ? $result : array();
+                    self::$store_cache[ $cache_key ] = $result ? $result : array();
+                    return self::$store_cache[ $cache_key ];
 
-				default:
-					return null;
-			}
-		} catch ( \Exception $e ) {
-			if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
-				MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
-			}
-		}
+                default:
+                    return null;
+            }
+
+        } catch ( \Exception $e ) {
+
+            if ( MultiVendorX()->show_advanced_log ) {
+                MultiVendorX()->util->log( $e->getMessage(), 'ERROR' );
+            }
+        }
 
         return null;
     }
