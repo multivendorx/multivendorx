@@ -213,7 +213,7 @@ class Rest extends \WP_REST_Controller {
                 function ( $refund ) {
                     $store_id   = $refund->get_meta( Utill::POST_META_SETTINGS['store_id'] );
                     $store      = new Store( $store_id );
-                    $store_name = $store ? $store->get( 'name' ) : '';
+                    $store_name = $store->exists() ? $store->get( 'name' ) : '';
 
                     $order = wc_get_order( $refund->get_parent_id() );
 

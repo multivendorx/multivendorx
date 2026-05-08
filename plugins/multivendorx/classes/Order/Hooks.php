@@ -313,6 +313,9 @@ class Hooks {
 
         $store_id = $order ? absint( $order->get_meta( Utill::POST_META_SETTINGS['store_id'], true ) ) : 0;
         $store    = new Store( $store_id );
+        if ( ! $store->exists() ) {
+            return;
+        }
 
         if ( $order->get_parent_id() > 0 ) {
             if ( 'processing' === $new_status ) {

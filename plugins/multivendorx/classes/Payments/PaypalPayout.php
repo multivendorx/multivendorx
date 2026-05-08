@@ -125,10 +125,12 @@ class PaypalPayout {
 
         $status = 'failed';
 
-        $store          = new Store( $store_id );
-        $receiver_email = $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] ) === 'paypal-payout'
-            ? $store->get_meta( Utill::STORE_SETTINGS_KEYS['paypal_email'] )
-            : '';
+        $store = new Store( $store_id );
+        if ( $store->exists() ) {
+            $receiver_email = $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] ) === 'paypal-payout'
+                ? $store->get_meta( Utill::STORE_SETTINGS_KEYS['paypal_email'] )
+                : '';
+        }
 
         $client_id     = $paypal_settings['client_id'] ?? '';
         $client_secret = $paypal_settings['client_secret'] ?? '';

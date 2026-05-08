@@ -33,6 +33,9 @@ $product_ids = $args['product_ids'];
 
             $store_id        = get_post_meta( $product_id, 'multivendorx_store_id', true );
             $store           = new Store( $store_id );
+            if ( ! $store->exists() ) {
+                continue;
+            }
             $overall_reviews = Util::get_overall_rating( $store_id );
             $reviews         = count( Util::get_reviews_by_store( $store_id ) );
             ?>

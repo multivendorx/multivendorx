@@ -161,7 +161,7 @@ class Transactions extends \WP_REST_Controller {
                     return array(
                         'id'               => (int) $row['id'],
                         'commission_id'    => $row['commission_id'],
-                        'store_name'       => $store ? $store->get( Utill::STORE_SETTINGS_KEYS['name'] ) : '-',
+                        'store_name'       => $store->exists() ? $store->get( Utill::STORE_SETTINGS_KEYS['name'] ) : '-',
                         'amount'           => $row['amount'],
                         'balance'          => $row['balance'],
                         'status'           => $row['status'],
@@ -304,6 +304,9 @@ class Transactions extends \WP_REST_Controller {
         $disbursement = $request->get_param( 'disbursement' );
 
         $store            = new Store( $store_id );
+        if ( ! $store->exists() ) {
+            return;
+        }
         $threshold_amount = MultiVendorX()->setting->get_setting( 'payout_threshold_amount', 0 );
 
         if ( $disbursement ) {
