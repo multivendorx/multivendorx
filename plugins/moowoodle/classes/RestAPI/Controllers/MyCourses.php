@@ -7,7 +7,6 @@
 
 namespace MooWoodle\RestAPI\Controllers;
 
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -42,7 +41,7 @@ class MyCourses extends \WP_REST_Controller {
                     'args'                => array(
                         'id' => array( 'required' => true ),
                     ),
-                )
+                ),
             )
         );
     }
@@ -75,7 +74,7 @@ class MyCourses extends \WP_REST_Controller {
             return $error;
         }
 
-        try {															
+        try {
             $items_per_page = max( 1, (int) $request->get_param( 'row' ) ? $request->get_param( 'row' ) : 10 );
             $page_number    = max( 1, (int) $request->get_param( 'page' ) ? $request->get_param( 'page' ) : 1 );
             $query_offset   = ( $page_number - 1 ) * $items_per_page;
@@ -109,7 +108,7 @@ class MyCourses extends \WP_REST_Controller {
                     ),
                 )
             );
-            $response = rest_ensure_response( array() );
+            $response         = rest_ensure_response( array() );
             if ( empty( $user_enrollments ) ) {
                 return $response;
             }
@@ -151,7 +150,6 @@ class MyCourses extends \WP_REST_Controller {
             $response = $response->set_data( $formatted_courses );
             $response->header( 'X-WP-Total', $total_user_enrollments );
             return $response;
-            
         } catch ( \Exception $e ) {
             MooWoodle()->util->log( $e );
 
