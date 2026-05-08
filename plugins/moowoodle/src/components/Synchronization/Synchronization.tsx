@@ -18,7 +18,10 @@ interface SettingsProps {
 }
 
 const Synchronization: React.FC<SettingsProps> = () => {
-	const settingsArray = getAvailableSettings(getTemplateData('synchronization'), []);
+	const settingsArray = getAvailableSettings(
+		getTemplateData('synchronization'),
+		[]
+	);
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
 	// Render the dynamic form
@@ -45,7 +48,6 @@ const Synchronization: React.FC<SettingsProps> = () => {
 				appLocalizer.settings_databases_value[settingName] = setting;
 			}
 		}, [setting, settingName, currentTab]);
-
 
 		return (
 			<>

@@ -14,24 +14,23 @@ import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import HelpSupport from './components/HelpSupport/HelpSupport';
 
 const Route = () => {
-    const currentTab = new URLSearchParams( useLocation().hash );
-    return (
-        <>
-            { currentTab.get( 'tab' ) === 'settings' && (
-                <Settings id={ 'settings' } />
-            ) }
+	const currentTab = new URLSearchParams(useLocation().hash);
+	return (
+		<>
+			{currentTab.get('tab') === 'settings' && (
+				<Settings id={'settings'} />
+			)}
 
-            { currentTab.get( 'tab' ) === 'synchronization' && (
-                <Synchronization id={ 'synchronization' } />
-            ) }
-            { currentTab.get( 'tab' ) === 'courses' && <Courses /> }
-            { currentTab.get( 'tab' ) === 'enrolments' && <Enrollment /> }
-            { currentTab.get( 'tab' ) === 'cohorts' && <Cohort /> }
-            { currentTab.get( 'tab' ) === 'dashboard' && <AdminDashboard /> }
-            { currentTab.get( 'tab' ) === 'help-support' && <HelpSupport /> }
-
-        </>
-    );
+			{currentTab.get('tab') === 'synchronization' && (
+				<Synchronization id={'synchronization'} />
+			)}
+			{currentTab.get('tab') === 'courses' && <Courses />}
+			{currentTab.get('tab') === 'enrolments' && <Enrollment />}
+			{currentTab.get('tab') === 'cohorts' && <Cohort />}
+			{currentTab.get('tab') === 'dashboard' && <AdminDashboard />}
+			{currentTab.get('tab') === 'help-support' && <HelpSupport />}
+		</>
+	);
 };
 
 const bannerItem = [
@@ -56,84 +55,77 @@ const bannerItem = [
 		'moowoodle'
 	),
 ];
-const isBannerDismissed =
-		localStorage.getItem('banner_dismissed') === 'true';
+const isBannerDismissed = localStorage.getItem('banner_dismissed') === 'true';
 
 const App = () => {
-    const currentTabParams = new URLSearchParams( useLocation().hash );
-    const [ query, setQuery ] = useState( '' );
-    const [ results, setResults ] = useState< SearchItem[] >( [] );
-    const [ selectValue, setSelectValue ] = useState( 'all' );
+	const currentTabParams = new URLSearchParams(useLocation().hash);
+	const [query, setQuery] = useState('');
+	const [results, setResults] = useState<SearchItem[]>([]);
+	const [selectValue, setSelectValue] = useState('all');
 
-    document
-        .querySelectorAll( '#toplevel_page_moowoodle>ul>li>a' )
-        .forEach( ( menuItem ) => {
-            const menuItemUrl = new URL(
-                ( menuItem as HTMLAnchorElement ).href
-            );
-            const menuItemHashParams = new URLSearchParams(
-                menuItemUrl.hash.substring( 1 )
-            );
+	document
+		.querySelectorAll('#toplevel_page_moowoodle>ul>li>a')
+		.forEach((menuItem) => {
+			const menuItemUrl = new URL((menuItem as HTMLAnchorElement).href);
+			const menuItemHashParams = new URLSearchParams(
+				menuItemUrl.hash.substring(1)
+			);
 
-            if ( menuItem.parentNode ) {
-                ( menuItem.parentNode as HTMLElement ).classList.remove(
-                    'current'
-                );
-            }
-            if (
-                menuItemHashParams.get( 'tab' ) ===
-                currentTabParams.get( 'tab' )
-            ) {
-                ( menuItem.parentNode as HTMLElement ).classList.add(
-                    'current'
-                );
-            }
-        } );
-    // 🔹 Search handlers
-    const handleSearchChange = ( value: string ) => {
-        setQuery( value );
+			if (menuItem.parentNode) {
+				(menuItem.parentNode as HTMLElement).classList.remove(
+					'current'
+				);
+			}
+			if (menuItemHashParams.get('tab') === currentTabParams.get('tab')) {
+				(menuItem.parentNode as HTMLElement).classList.add('current');
+			}
+		});
+	// 🔹 Search handlers
+	const handleSearchChange = (value: string) => {
+		setQuery(value);
 
-        if ( ! value.trim() ) {
-            setResults( [] );
-            return;
-        }
+		if (!value.trim()) {
+			setResults([]);
+			return;
+		}
 
-        const lowerValue = value.toLowerCase();
+		const lowerValue = value.toLowerCase();
 
-        const filtered = searchIndex.filter( ( item ) => {
-            // Filter by dropdown selection
-            if ( selectValue !== 'all' && item.tab !== selectValue )
-                return false;
+		const filtered = searchIndex.filter((item) => {
+			// Filter by dropdown selection
+			if (selectValue !== 'all' && item.tab !== selectValue) {
+				return false;
+			}
 
-            // Case-insensitive search
-            const name = item.name?.toLowerCase() || '';
-            const desc = item.desc?.toLowerCase() || '';
-            return name.includes( lowerValue ) || desc.includes( lowerValue );
-        } );
+			// Case-insensitive search
+			const name = item.name?.toLowerCase() || '';
+			const desc = item.desc?.toLowerCase() || '';
+			return name.includes(lowerValue) || desc.includes(lowerValue);
+		});
 
-        setResults( filtered );
-    };
+		setResults(filtered);
+	};
 
-    const handleResultClick = ( item: SearchItem ) => {
-        window.location.hash = item.link;
-        setQuery( '' );
-        setResults( [] );
-    };
-    const profileItems = [
+	const handleResultClick = (item: SearchItem) => {
+		window.location.hash = item.link;
+		setQuery('');
+		setResults([]);
+	};
+	const profileItems = [
 		{
-			title: __("Manage Plan", 'moowoodle'),
+			title: __('Manage Plan', 'moowoodle'),
 			icon: 'person',
 			link: 'https://dualcube.com/my-account/',
 			targetBlank: true,
 		},
-        {
-			title: __("Contact Support", 'moowoodle'),
+		{
+			title: __('Contact Support', 'moowoodle'),
 			icon: 'user-network-icon',
 			// link: 'https://dualcube.com/my-account/',
 			targetBlank: true,
-		}
+		},
 	];
-    const utilityList = [
+	const utilityList = [
 		{
 			toggleIcon: 'admin-icon adminfont-user-circle',
 			tooltipName: __('Support', 'moowoodle'),
@@ -141,9 +133,9 @@ const App = () => {
 			items: profileItems,
 		},
 	];
-    return (
-        <>
-            <AdminHeader
+	return (
+		<>
+			<AdminHeader
 				brandImg={Brand}
 				results={results}
 				onQueryUpdate={handleSearchChange}
@@ -152,19 +144,19 @@ const App = () => {
 				pro={appLocalizer.pro_data.version}
 				utilityList={utilityList}
 			/>
-            {/* {!isBannerDismissed && ( */}
-				<Notice
-					uniqueKey="banner"
-					type="banner"
-					validity="lifetime"
-					displayPosition="banner"
-					message={bannerItem}
-					actionLabel="Upgrade Now"
-				/>
+			{/* {!isBannerDismissed && ( */}
+			<Notice
+				uniqueKey="banner"
+				type="banner"
+				validity="lifetime"
+				displayPosition="banner"
+				message={bannerItem}
+				actionLabel="Upgrade Now"
+			/>
 			{/* )} */}
-            <Route />
-        </>
-    );
+			<Route />
+		</>
+	);
 };
 
 export default App;
