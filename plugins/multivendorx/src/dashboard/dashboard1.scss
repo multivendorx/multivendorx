@@ -91,7 +91,9 @@ a {
     z-index: 9999;
     border-right: $border-light-small;
     transition: all 0.5s ease;
-
+    .close-btn{
+        display: none;
+    }
     .logo-wrapper {
         display: flex;
         align-items: center;

@@ -392,7 +392,7 @@ const Dashboard = () => {
 						)}
 					</a>
 				</div>
-
+				<i className='close-btn adminfont-close red' onClick={() => { setIsMenuResponsive((prev) => !prev);}}/>
 				{storeData?.status === 'active' && (
 					<div className="dashboard-tabs">
 						<ul>
@@ -433,9 +433,10 @@ const Dashboard = () => {
 													`tab ${isActive ? 'active' : ''}`
 												}
 												to={key === DEFAULT_TAB ? '/' : `/${key}`} // ← always a path; NavLink works in both BrowserRouter & MemoryRouter
-												onClick={() =>
-													setCurrentTab(key)
-												}
+												onClick={() => {
+													setCurrentTab(key);
+													setIsMenuResponsive((prev) => !prev);
+												}}
 											>
 												<i
 													className={`adminfont-${item.icon}`}
@@ -455,11 +456,10 @@ const Dashboard = () => {
 																		`tab ${isActive ? 'active' : ''}`
 																	}
 															to={`/${sub.key}`}
-															onClick={() =>
-																setCurrentTab(
-																	sub.key
-																)
-															}
+															onClick={() => {
+																setCurrentTab(sub.key);
+																setIsMenuResponsive((prev) => !prev);
+															}}
 														>
 															{sub.name}
 														</NavLink>

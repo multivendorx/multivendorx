@@ -356,9 +356,10 @@ a:focus {
     color: #181819;
 }
 
-#wpadminbar{
+#wpadminbar {
     display: none; // for hide wordpress section
 }
+
 body.dark {
     background: #0b1220 !important;
 
@@ -1612,6 +1613,16 @@ body.dark {
     .dashboard-tabs-wrapper {
         transform: translateX(-100%);
 
+        .close-btn {
+            position: fixed;
+            right: 0.5rem;
+            top: 0.5rem;
+            padding: 0.313rem;
+            font-size: 1.125rem;
+            border-radius: 50%;
+            display: block !important;
+        }
+
         &.show {
             transform: translateX(0) !important;
         }
@@ -1680,7 +1691,7 @@ body.dark {
     .title-section {
         flex-wrap: wrap;
         gap: 1rem;
-        justify-content: end !important;
+        // justify-content: end !important;
     }
 
     // container.scss
@@ -1777,7 +1788,7 @@ body.dark {
 
     // dashboardCommon.scss
     .product-category-select-wrapper {
-        width: 100% !important; 
+        width: 100% !important;
         box-sizing: border-box;
         padding: 1.5rem;
         margin-top: 1rem;
@@ -1793,9 +1804,20 @@ body.dark {
     }
 
     // choice-toggle-wrapper.css
-    .choice-toggle-wrapper.custom{
-        .toggle-option{
+    .choice-toggle-wrapper.custom {
+        .toggle-option {
             width: 100% !important;
+        }
+    }
+
+    // multi table
+    .settings-input-content:has(.multi-input-table){
+        overflow: auto;
+
+        table.multi-input-table{
+            thead{
+                top: 0 !important;
+            }
         }
     }
 }
