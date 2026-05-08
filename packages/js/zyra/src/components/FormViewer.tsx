@@ -899,12 +899,13 @@ const FormViewer: React.FC<FormViewerProps> = ({
                         <input
                             type="checkbox"
                             checked={Boolean(inputs[name])}
+                            className='woocommerce-form__input woocommerce-form__input-checkbox'
                             onChange={(e) =>
                                 handleChange(name, e.target.checked)
                             }
                         />
 
-                        <div
+                        <span
                             className="richtext-content"
                             dangerouslySetInnerHTML={{
                                 __html: field.html || '',
