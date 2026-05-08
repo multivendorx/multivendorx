@@ -358,6 +358,7 @@ const Dashboard = () => {
 				isDarkMode ? 'dark' : 'light',
 				isMenuCollapsed ? 'collapsed' : '',
 				isMenuMinimize ? 'minimize' : '',
+				isMenuResponsive ? 'show-menu' : ''
 			]
 				.filter(Boolean)
 				.join(' ')}

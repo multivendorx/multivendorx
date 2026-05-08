@@ -356,6 +356,9 @@ a:focus {
     color: #181819;
 }
 
+#wpadminbar{
+    display: none; // for hide wordpress section
+}
 body.dark {
     background: #0b1220 !important;
 
@@ -1540,6 +1543,10 @@ body.dark {
             margin-bottom: 0.313rem;
         }
     }
+
+    .ui-notice {
+        margin-top: 0.75rem;
+    }
 }
 
 .topup-wrapper {
@@ -1588,6 +1595,18 @@ body.dark {
 // membership page end
 
 @media only screen and (max-width: 600px) {
+    #store-dashboard.show-menu {
+        .dashboard-content::after {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: #4b4b4b5e;
+            z-index: 999;
+        }
+    }
 
     // dashboard stucture start
     .dashboard-tabs-wrapper {
@@ -1682,15 +1701,101 @@ body.dark {
 
 
     // SettingsNavigator.scss
-    .settings-wrapper{
-        &[data-template="settings"]{
-            .tabs-wrapper{
-                display: none !important;
+    .settings-wrapper {
+        &[data-template="settings"] {
+            flex-direction: column;
+
+            .tabs-wrapper {
+                width: 100% !important;
+                margin: 0 0 2rem !important;
             }
-            .general-wrapper{
+
+            .general-wrapper {
                 width: 100% !important;
                 margin: 0 !important;
             }
+        }
+
+        &[data-template="compact"] {
+            .tabs-item {
+                flex-wrap: wrap;
+
+                a.tab {
+                    min-width: 5rem !important;
+                }
+            }
+        }
+    }
+
+    // form group wrapper css
+    .form-group.row {
+        flex-direction: column !important;
+
+        .settings-form-label,
+        .settings-input-content {
+            width: 100% !important;
+        }
+    }
+
+    // analytics-container css
+    .analytics-container {
+        &.flex-wrap {
+            flex-direction: row !important;
+
+            .col-6,
+            .col-5,
+            .col-4,
+            .col-3 {
+                width: calc(50% - 0.5rem) !important;
+            }
+
+            .col-2 {
+                width: calc(100% - 1rem) !important;
+            }
+        }
+    }
+
+    // media-library-grid
+    .media-library-grid {
+        .media-item {
+            width: calc(50% - 1rem);
+
+            .media-icon,
+            .media-preview {
+                height: 8rem !important;
+            }
+        }
+    }
+
+    // popup
+    .popup-content {
+        min-width: 10rem !important;
+        max-width: 92% !important;
+
+    }
+
+
+    // dashboardCommon.scss
+    .product-category-select-wrapper {
+        width: 100% !important; 
+        box-sizing: border-box;
+        padding: 1.5rem;
+        margin-top: 1rem;
+
+        .product {
+            width: 100% !important;
+        }
+
+        .header {
+            margin: 0;
+            width: 100%;
+        }
+    }
+
+    // choice-toggle-wrapper.css
+    .choice-toggle-wrapper.custom{
+        .toggle-option{
+            width: 100% !important;
         }
     }
 }
