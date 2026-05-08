@@ -83,7 +83,7 @@ const ShippingCard = ({
 													'multivendorx'
 												),
 												desc: __(
-													'Customer receives a file - e.g. a PDF, software, or digital artwork.',
+													'Customer receives digital file - e.g. a PDF, software etc.',
 													'multivendorx'
 												),
 												icon: 'download'
@@ -100,7 +100,7 @@ const ShippingCard = ({
 													'multivendorx'
 												),
 												desc: __(
-													'Service provided remotely - like coaching, consulting, or custom design. No shipping or file download involved.',
+													'Service provided remotely. No shipping or file download involved.',
 													'multivendorx'
 												),
 												icon: 'store-analytics'
@@ -112,7 +112,7 @@ const ShippingCard = ({
 									value: 'others',
 									label: __('Something else', 'multivendorx'),
 									desc: __(
-										"Anything that does not involve posting a package or delivering a file, that doesn't fit the above.",
+										"Anything that does not fit the above.",
 										'multivendorx'
 									),
 									icon: 'store-analytics'

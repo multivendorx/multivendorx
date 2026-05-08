@@ -288,7 +288,7 @@ const ProductCategorysection = ({ product, setProduct, setErrorMsg }) => {
 	return (
 		<Card
 			title={__(
-				'Category - Where does it belong in your shop?',
+				'Category',
 				'multivendorx'
 			)}
 			desc={__(
