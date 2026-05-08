@@ -6,6 +6,7 @@
  */
 
 namespace MooWoodle\Core;
+use MooWoodle\Util;
 
 /**
  * MooWoodle Product class
@@ -105,7 +106,7 @@ class Product {
 		try {
 			$product->set_sku( $course['idnumber'] );
 		} catch ( \Exception $error ) {
-			\MooWoodle\Util::log( "Unable to set product's( id=" . $product->get_id() . ') SQU.' );
+			Util::log( "Unable to set product's( id=" . $product->get_id() . ') SQU.' );
 		}
 
 		// get the course id linked with moodle.
@@ -156,7 +157,7 @@ class Product {
 		}
 
 		// Update all products.
-		\MooWoodle\Util::set_sync_status(
+		Util::set_sync_status(
             array(
 				'action'  => __( 'Update Product', 'moowoodle' ),
 				'total'   => count( $courses ) - 1,
@@ -178,7 +179,7 @@ class Product {
 				$updated_ids[] = $product_id;
 			}
 
-			\MooWoodle\Util::increment_sync_count( 'course' );
+			Util::increment_sync_count( 'course' );
 		}
 
 		self::remove_exclude_ids( $updated_ids );

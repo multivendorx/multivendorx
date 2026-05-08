@@ -27,7 +27,7 @@ const MyCourse: React.FC = () => {
         setError( '' );
         axios( {
             method: 'GET',
-            url: `${ courseMyAcc.apiUrl }/moowoodle/v1/my-courses`,
+            url: `${ courseMyAcc.apiUrl }/moowoodle/v1/courses/${ ( window as any ).courseMyAcc.current_user_id }`,
             headers: { 'X-WP-Nonce': ( window as any ).courseMyAcc.nonce },
             params: {
                 page: currentPage,
@@ -35,8 +35,8 @@ const MyCourse: React.FC = () => {
             },
         } )
             .then( ( response ) => {
-                setCourses( response.data.data || [] );
-                setTotalRows( response.data.count || 0 );
+                setCourses( response.data || [] );
+                setTotalRows(Number(response.headers['x-wp-total']) || 0);
             } )
             .catch( () => {
                 setError( __( 'Failed to fetch courses.', 'moowoodle' ) );
