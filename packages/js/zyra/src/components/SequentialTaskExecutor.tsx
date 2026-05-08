@@ -12,7 +12,7 @@ interface Task {
     successMessage?: string;
     failureMessage?: string;
     requiresResponeData?: boolean;
-    requiresPreviousResponseData?: string[];
+    previousResponseData?: string[];
 }
 
 interface SequentialTaskExecutorProps {
@@ -157,8 +157,8 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                 payload.responseData = lastResult.current;
             }
 
-            if (currentTask.requiresPreviousResponseData?.length) {
-                currentTask.requiresPreviousResponseData.forEach((taskName: string) => {
+            if (currentTask.previousResponseData?.length) {
+                currentTask.previousResponseData.forEach((taskName: string) => {
                     payload[taskName] = allResponses.current[taskName];
                 });
             }
