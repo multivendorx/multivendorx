@@ -62,6 +62,9 @@ class Frontend {
 
             if ( $store_id ) {
                 $store      = new Store( $store_id );
+                if ( ! $store->exists() ) {
+                    return;
+                }
                 $store_name = $store->get( 'name' );
 
                 echo ' <span class="suborder-label">'

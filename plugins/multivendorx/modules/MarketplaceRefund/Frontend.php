@@ -443,17 +443,18 @@ class Frontend {
         $order->save();
 
         $store_id = $order->get_meta( Utill::POST_META_SETTINGS['store_id'], true );
-        $store    = new Store( $store_id );
-
-        MultiVendorX()->notifications->send_notification_helper(
-            'refund_requested',
-            $store,
-            $order,
-            array(
-				'order_id' => $order->get_id(),
-				'category' => 'activity',
-			)
-        );
+        if (!empty($store_id)) {
+            $store    = new Store( $store_id );
+            MultiVendorX()->notifications->send_notification_helper(
+                'refund_requested',
+                $store,
+                $order,
+                array(
+                    'order_id' => $order->get_id(),
+                    'category' => 'activity',
+                )
+            );
+        }
 
         // Add order note with proper escaping.
         $user_info = get_userdata( MultiVendorX()->current_user_id );
