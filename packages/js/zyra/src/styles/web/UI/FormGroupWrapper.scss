@@ -21,25 +21,21 @@
         &:has(label){
             justify-content: start;
         }
+        
+        // &[data-col='2'] {
+        //     flex: 1 1 calc(50% - 0.5rem);
+        //     max-width: calc(50% - 0.5rem);
+        // }
 
-        &[data-col='1'] {
-            flex: 1 1 100%;
-        }
+        // &[data-col='3'] {
+        //     flex: 1 1 calc(33.333% - 0.75rem);
+        //     max-width: calc(33.333% - 0.75rem);
+        // }
 
-        &[data-col='2'] {
-            flex: 1 1 50%;
-            max-width: 50%;
-        }
-
-        &[data-col='3'] {
-            flex: 1 1 33.333%;
-            max-width: 33.333%;
-        }
-
-        &[data-col='4'] {
-            flex: 1 1 25%;
-            max-width: 25%;
-        }
+        // &[data-col='4'] {
+        //     flex: 1 1 calc(25% - 0.5rem);
+        //     max-width: calc(25% - 0.5rem);
+        // }
 
         .settings-form-label {
             .title {
@@ -177,9 +173,6 @@
         &.full-width {
             .settings-input-content{
                 width: 100%;
-            }
-            .choice-toggle-wrapper.custom {
-                width: 60%;
             }
         }
 

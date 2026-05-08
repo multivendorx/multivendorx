@@ -317,7 +317,7 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 						/>
 						<FormGroupWrapper>
 							<FormGroup
-								cols={2}
+								cols={6}
 								label={__('Fixed', 'multivendorx')}
 								htmlFor="Fixed"
 								className="commission-input-group"
@@ -338,7 +338,7 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 								/>
 							</FormGroup>
 							<FormGroup
-								cols={2}
+								cols={6}
 								label={__('Percentage', 'multivendorx')}
 								htmlFor="Percentage"
 							>

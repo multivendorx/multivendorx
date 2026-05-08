@@ -11,7 +11,7 @@ type FormGroupProps = {
     iconRight?: string;
     children: React.ReactNode;
     className?: string;
-    cols?: 1 | 2 | 3 | 4;
+    cols?: number ;
     labelDes?: string;
     row?: boolean;
     notice?: string;
@@ -27,7 +27,7 @@ const FormGroup: React.FC<FormGroupProps> = ({
     children,
     className = '',
     labelDes,
-    cols = 1,
+    cols = 12,
     row = false,
     notice,
     noticeType = 'error',
@@ -35,7 +35,7 @@ const FormGroup: React.FC<FormGroupProps> = ({
     return (
         <div
             className={`form-group ${row ? 'row' : ''} ${className}`}
-            data-col={cols}
+            data-cols={cols}
         >
             {label && (
                 <label className="settings-form-label" htmlFor={htmlFor}>

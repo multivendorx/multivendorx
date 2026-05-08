@@ -63,7 +63,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                         </FormGroup>
 
                         {/* font-size */}
-                        <FormGroup cols={2} label="Font Size (rem)">
+                        <FormGroup cols={6} label="Font Size (rem)">
                             <BasicInputUI
                                 type="number"
                                 minNumber={0.5}
@@ -78,7 +78,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                             />
                         </FormGroup>
 
-                        <FormGroup cols={2} label="Line Height">
+                        <FormGroup cols={6} label="Line Height">
                             <BasicInputUI
                                 type="number"
                                 minNumber={1}
@@ -94,7 +94,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                         </FormGroup>
 
                         {/* font weight */}
-                        <FormGroup cols={2} label="Font Weight">
+                        <FormGroup cols={6} label="Font Weight">
                             <select
                                 value={style.fontWeight || 'normal'}
                                 className="basic-input"
@@ -113,7 +113,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                             </select>
                         </FormGroup>
 
-                        <FormGroup cols={2} label="Text Decoration">
+                        <FormGroup cols={6} label="Text Decoration">
                             <select
                                 value={style.textDecoration || 'none'}
                                 className="basic-input"
@@ -139,7 +139,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
             {/* Background Group */}
             <Card toggle defaultExpanded={false} title="Color">
                 <FormGroupWrapper>
-                    <FormGroup cols={2} label="Background">
+                    <FormGroup cols={6} label="Background">
                         <BasicInputUI
                             type="color"
                             value={style.backgroundColor || '#ffffff'}
@@ -148,7 +148,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                             }}
                         />
                     </FormGroup>
-                    <FormGroup cols={2} label="Text">
+                    <FormGroup cols={6} label="Text">
                         <BasicInputUI
                             type="color"
                             value={style.color || '#000000'}
@@ -229,7 +229,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
             <Card toggle defaultExpanded={false} title="Border">
                 <FormGroupWrapper>
                     {/* Border Width */}
-                    <FormGroup label="Width(rem)" cols={2}>
+                    <FormGroup label="Width(rem)" cols={6}>
                         <BasicInputUI
                             type="number"
                             minNumber={0}
@@ -244,7 +244,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                     </FormGroup>
 
                     {/* Border Radius */}
-                    <FormGroup label="Radius(rem)" cols={2}>
+                    <FormGroup label="Radius(rem)" cols={6}>
                         <BasicInputUI
                             type="number"
                             minNumber={0}
@@ -258,7 +258,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                         />
                     </FormGroup>
                     {/* Border Color */}
-                    <FormGroup label="Color" cols={2}>
+                    <FormGroup label="Color" cols={6}>
                         <BasicInputUI
                             type="color"
                             value={style.borderColor || '#000000'}
@@ -267,7 +267,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                             }}
                         />
                     </FormGroup>
-                    <FormGroup label="Style" cols={2}>
+                    <FormGroup label="Style" cols={6}>
                         <select
                             value={style.borderStyle || 'solid'}
                             className="basic-input"

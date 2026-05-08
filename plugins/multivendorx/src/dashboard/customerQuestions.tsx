@@ -249,7 +249,7 @@ const CustomerQuestions: React.FC = () => {
 	return (
 		<>
 			<NavigatorHeader
-				headerTitle={__('Customer questions', 'multivendorx')}
+				headerTitle={__('Customer Questions', 'multivendorx')}
 				headerDescription={__(
 					'Track and respond to customer product questions.',
 					'multivendorx'

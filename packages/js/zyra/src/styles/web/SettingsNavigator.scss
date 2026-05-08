@@ -89,13 +89,22 @@
   }
 }
 
-.tabs-wrapper {
-  border-bottom: $border-light-small;
-  margin: 0 1.25rem;
-}
-
 // tabs style end
 .settings-wrapper {
+
+  // for without store dashboard tabs
+  &:not(.without-spaceing){
+    .tabs-wrapper {
+      border-bottom: $border-light-small;
+      margin: 0 1.25rem;
+    }
+  }
+
+  // for store dashboard
+  &.without-spaceing .general-wrapper{
+    margin: 2.5rem 0 0;
+  }
+
   &[data-template="default"] {
     .title-section {
       border: none;
@@ -386,6 +395,7 @@
     }
   }
 
+  
   // custom right section
   .custom-content {
     display: flex;

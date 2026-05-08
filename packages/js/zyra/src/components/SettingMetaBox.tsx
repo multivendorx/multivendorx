@@ -45,6 +45,7 @@ interface FormField {
     id: number;
     type: string;
     name: string;
+    context: string;
     placeholder?: string;
     charlimit?: number;
     row?: number;
@@ -496,7 +497,7 @@ const createFieldRenderers = (): Record<
                 </FormGroup> */}
 
                 {/* Gap */}
-                <FormGroup cols={2} label="Gap (rem)">
+                <FormGroup cols={6} label="Gap (rem)">
                     <BasicInputUI
                         type="number"
                         minNumber={0}
@@ -759,7 +760,8 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                                 )}
 
                                 {/* Visibility and Required for non-styled blocks */}
-                                {!hasStyleControls && (
+                                {(!hasStyleControls || (formField.type === 'richtext' &&
+        formField.context === 'form')) && (
                                     <>
                                         <VisibilityToggle
                                             disabled={formField.disabled}
