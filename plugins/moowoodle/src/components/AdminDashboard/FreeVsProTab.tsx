@@ -41,18 +41,12 @@ const sections: Section[] = [
 				pro: true,
 			},
 			{
-				name: __(
-					'Confirm vendor identity with documents',
-					'moowoodle'
-				),
+				name: __('Confirm vendor identity with documents', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Bulk upload/download product via CSV',
-					'moowoodle'
-				),
+				name: __('Bulk upload/download product via CSV', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
@@ -293,10 +287,7 @@ const FreeVsProTab: React.FC<object> = () => {
 									{section.features.map((feature, i) => (
 										<tr key={i}>
 											<td>
-												{__(
-													feature.name,
-													'moowoodle'
-												)}
+												{__(feature.name, 'moowoodle')}
 											</td>
 											<td>{renderCell(feature.free)}</td>
 											<td>{renderCell(feature.pro)}</td>

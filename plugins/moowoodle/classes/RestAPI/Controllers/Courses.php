@@ -7,7 +7,6 @@
 
 namespace MooWoodle\RestAPI\Controllers;
 
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -38,7 +37,7 @@ class Courses extends \WP_REST_Controller {
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
                     'permission_callback' => array( $this, 'get_items_permissions_check' ),
-                )
+                ),
             )
         );
 
@@ -53,7 +52,7 @@ class Courses extends \WP_REST_Controller {
                     'args'                => array(
                         'id' => array( 'required' => true ),
                     ),
-                )
+                ),
             )
         );
     }
@@ -64,7 +63,7 @@ class Courses extends \WP_REST_Controller {
      * @param object $request The REST request object.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) ;
+        return current_user_can( 'manage_options' );
     }
 
     /**
@@ -96,14 +95,13 @@ class Courses extends \WP_REST_Controller {
             return $error;
         }
 
-        try {				
+        try {
+            $options = $request->get_param( 'options' );
 
-            $options        = $request->get_param( 'options' );
-
-            if( $options) {
+            if ( $options ) {
                 return $this->get_filter_items( $request );
-            }		
-            
+            }
+
             $limit          = max( intval( $request->get_param( 'row' ) ), 10 );
             $page           = max( intval( $request->get_param( 'page' ) ), 1 );
             $offset         = ( $page - 1 ) * $limit;
@@ -201,7 +199,6 @@ class Courses extends \WP_REST_Controller {
             $response->header( 'X-WP-Total', $total_courses );
 
             return $response;
-            
         } catch ( \Exception $e ) {
             MooWoodle()->util->log( $e );
 
@@ -232,7 +229,7 @@ class Courses extends \WP_REST_Controller {
             return $error;
         }
 
-        try {															
+        try {
             $items_per_page = max( 1, (int) $request->get_param( 'row' ) ? $request->get_param( 'row' ) : 10 );
             $page_number    = max( 1, (int) $request->get_param( 'page' ) ? $request->get_param( 'page' ) : 1 );
             $query_offset   = ( $page_number - 1 ) * $items_per_page;
@@ -266,7 +263,7 @@ class Courses extends \WP_REST_Controller {
                     ),
                 )
             );
-            $response = rest_ensure_response( array() );
+            $response         = rest_ensure_response( array() );
             if ( empty( $user_enrollments ) ) {
                 return $response;
             }
@@ -308,7 +305,6 @@ class Courses extends \WP_REST_Controller {
             $response = $response->set_data( $formatted_courses );
             $response->header( 'X-WP-Total', $total_user_enrollments );
             return $response;
-            
         } catch ( \Exception $e ) {
             MooWoodle()->util->log( $e );
 
@@ -339,52 +335,51 @@ class Courses extends \WP_REST_Controller {
             return $error;
         }
 
-        try {															
-        // Fetch all courses.
-        $courses = MooWoodle()->course->get_course_information( array() );
-        if ( empty( $courses ) ) {
-            return rest_ensure_response(
+        try {
+			// Fetch all courses.
+			$courses = MooWoodle()->course->get_course_information( array() );
+			if ( empty( $courses ) ) {
+				return rest_ensure_response(
+                    array(
+						'courses'  => array(),
+						'category' => array(),
+                    )
+				);
+			}
+
+			// Extract unique category IDs.
+			$category_ids = array_unique( wp_list_pluck( $courses, 'category_id' ) );
+
+			// Fetch categories.
+			$category = MooWoodle()->category->get_course_category_information( $category_ids );
+
+			// Prepare formatted course list.
+			$all_courses = array_map(
+                function ( $course ) {
+                    return array(
+                        'label' => $course['fullname'] ?: "Course {$course['id']}",
+                        'value' => (string) $course['id'],
+                    );
+                },
+                $courses
+			);
+
+			$all_category = array_map(
+                function ( $cat ) {
+                    return array(
+                        'label' => $cat['name'] ?: "Category {$cat['id']}",
+                        'value' => (string) $cat['id'],
+                    );
+                },
+                $category
+			);
+
+			return rest_ensure_response(
                 array(
-					'courses'  => array(),
-					'category' => array(),
-                )
-            );
-        }
-
-        // Extract unique category IDs.
-        $category_ids = array_unique( wp_list_pluck( $courses, 'category_id' ) );
-
-        // Fetch categories.
-        $category = MooWoodle()->category->get_course_category_information( $category_ids );
-
-        // Prepare formatted course list.
-        $all_courses = array_map(
-            function( $course ) {
-                return array(
-                    'label' => $course['fullname'] ?: "Course {$course['id']}",
-                    'value' => (string) $course['id'],
-                );
-            },
-            $courses
-        );
-
-        $all_category = array_map(
-            function( $cat ) {
-                return array(
-                    'label' => $cat['name'] ?: "Category {$cat['id']}",
-                    'value' => (string) $cat['id'],
-                );
-            },
-            $category
-        );
-
-        return rest_ensure_response(
-           array(
 					'courses'  => $all_courses,
 					'category' => $all_category,
                 )
-        );
-            
+			);
         } catch ( \Exception $e ) {
             MooWoodle()->util->log( $e );
 

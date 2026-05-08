@@ -53,7 +53,7 @@ class Synchronization extends \WP_REST_Controller {
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'create_item' ),
                     'permission_callback' => array( $this, 'create_item_permissions_check' ),
-                )
+                ),
             )
         );
     }
@@ -64,7 +64,7 @@ class Synchronization extends \WP_REST_Controller {
      * @param object $request The REST request object.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) ;
+        return current_user_can( 'manage_options' );
     }
 
     /**
@@ -73,7 +73,7 @@ class Synchronization extends \WP_REST_Controller {
      * @param object $request The REST request object.
      */
     public function create_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) ;
+        return current_user_can( 'manage_options' );
     }
 
     /**
@@ -97,22 +97,22 @@ class Synchronization extends \WP_REST_Controller {
 
         try {
                         $response = array(
-                'status'  => array(),
-                'running' => false,
-            );
+							'status'  => array(),
+							'running' => false,
+						);
 
-            $status = $request->get_param( 'parameter' );
+						$status = $request->get_param( 'parameter' );
 
-            if ( 'course' === $status ) {
-                $response = array(
-                    'status'  => Util::get_sync_status( 'course' ),
-                    'running' => get_transient( 'course_sync_running' ),
-                );
-            } else {
-                $response = apply_filters( 'moowoodle_sync_status', $request );
-            }
+						if ( 'course' === $status ) {
+							$response = array(
+								'status'  => Util::get_sync_status( 'course' ),
+								'running' => get_transient( 'course_sync_running' ),
+							);
+						} else {
+							$response = apply_filters( 'moowoodle_sync_status', $request );
+						}
 
-            return rest_ensure_response( $response );
+						return rest_ensure_response( $response );
         } catch ( \Exception $e ) {
             MooWoodle()->util->log( $e );
 
@@ -184,14 +184,14 @@ class Synchronization extends \WP_REST_Controller {
             return $error;
         }
 
-        $action    = $request->get_param( 'action' );
-        $user      = $request->get_param( 'get_user' );
+        $action = $request->get_param( 'action' );
+        $user   = $request->get_param( 'get_user' );
         $course = $request->get_param( 'get_course' );
-        
-        $user = is_array($user['data']['users']) ? reset($user['data']['users']) : null;
-        $course = is_array($course['courses']) ? ($course['courses'][1]) : null;
 
-        $response  = array();
+        $user   = is_array( $user['data']['users'] ) ? reset( $user['data']['users'] ) : null;
+        $course = is_array( $course['courses'] ) ? ( $course['courses'][1] ) : null;
+
+        $response = array();
         switch ( $action ) {
             case 'get_site_info':
                 $response = TestConnection::get_site_info();
@@ -245,7 +245,7 @@ class Synchronization extends \WP_REST_Controller {
             MooWoodle()->util->log( $error );
             return $error;
         }
-        
+
         // Flusk course sync status before sync start.
         Util::flush_sync_status( 'course' );
 

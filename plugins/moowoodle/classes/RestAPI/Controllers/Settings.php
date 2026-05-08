@@ -48,7 +48,7 @@ class Settings extends \WP_REST_Controller {
      * @param object $request The REST request object.
      */
     public function update_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) ;
+        return current_user_can( 'manage_options' );
     }
 
     /**
@@ -69,7 +69,6 @@ class Settings extends \WP_REST_Controller {
             return $error;
         }
         try {
-
             $all_details   = array();
             $settings_data = $request->get_param( 'setting' );
             $settingsname  = $request->get_param( 'settingName' );

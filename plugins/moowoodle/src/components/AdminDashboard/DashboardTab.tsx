@@ -1,12 +1,6 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
-import {
-	Card,
-	Column,
-	ItemListUI,
-	Container,
-	NoticeManager,
-} from 'zyra';
+import { Card, Column, ItemListUI, Container, NoticeManager } from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
 import { getModuleData } from '../../services/templateService';
 import axios from 'axios';
@@ -310,10 +304,7 @@ const DashboardTab: React.FC<object> = () => {
 							)}
 
 							<div className="des">
-								{__(
-									'15-day money-back guarantee',
-									'moowoodle'
-								)}
+								{__('15-day money-back guarantee', 'moowoodle')}
 							</div>
 						</div>
 					</Card>
@@ -330,10 +321,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __(
-											'CatalogX Pro',
-											'moowoodle'
-										),
+										title: __('CatalogX Pro', 'moowoodle'),
 										desc: __(
 											'Advanced product catalog with enhanced enquiry features and premium templates',
 											'moowoodle'
@@ -350,10 +338,7 @@ const DashboardTab: React.FC<object> = () => {
 													target="_blank"
 													rel="noopener noreferrer"
 												>
-													{__(
-														'Get Pro',
-														'moowoodle'
-													)}
+													{__('Get Pro', 'moowoodle')}
 												</a>
 											</>
 										),
@@ -423,10 +408,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __(
-											'Notifima Pro',
-											'moowoodle'
-										),
+										title: __('Notifima Pro', 'moowoodle'),
 										desc: __(
 											'Advanced stock alerts, wishlist features, and premium notification system',
 											'moowoodle'
@@ -443,10 +425,7 @@ const DashboardTab: React.FC<object> = () => {
 													target="_blank"
 													rel="noopener noreferrer"
 												>
-													{__(
-														'Get Pro',
-														'moowoodle'
-													)}
+													{__('Get Pro', 'moowoodle')}
 												</a>
 											</>
 										),

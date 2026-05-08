@@ -53,7 +53,7 @@ class Admin {
 
 			// Array contain moowoodle submenu.
 			$submenus = array(
-				'dashboard'         => array(
+				'dashboard'       => array(
 					'name'   => __( 'Dashboard', 'moowoodle' ),
 					'subtab' => '',
 				),
@@ -77,9 +77,9 @@ class Admin {
 					'name'   => __( 'Settings', 'moowoodle' ),
 					'subtab' => 'connection-access',
 				),
-				'help-support'        => array(
-					'name'     => __( 'Help & Support', 'moowoodle' ),
-					'subtab'   => '',
+				'help-support'    => array(
+					'name'   => __( 'Help & Support', 'moowoodle' ),
+					'subtab' => '',
 				),
 			);
 
@@ -134,7 +134,7 @@ class Admin {
 
 		if ( get_current_screen()->id === 'toplevel_page_moowoodle' ) {
 			wp_enqueue_script( 'wp-element' );
-			
+
 			FrontendScripts::admin_load_scripts();
 			FrontendScripts::enqueue_script( 'moowoodle-vendor-script' );
 			FrontendScripts::enqueue_script( 'moowoodle-admin-script' );
