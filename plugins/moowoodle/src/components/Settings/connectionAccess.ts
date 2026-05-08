@@ -71,22 +71,22 @@ export default {
                 {
                     action: 'update_user',
                     message: __('User Update', 'moowoodle'),
-                    requiresPreviousResponse: ['get_user'],
+                    requiresPreviousResponseData: ['get_user'],
                 },
                 {
                     action: 'enroll_user',
                     message: __('User Enroll', 'moowoodle'),
-                    requiresPreviousResponse: ['get_user', 'get_course'],
+                    requiresPreviousResponseData: ['get_user', 'get_course'],
                 },
                 {
                     action: 'unenroll_user',
                     message: __('User Unenroll', 'moowoodle'),
-                    requiresPreviousResponse: ['get_user', 'get_course'],
+                    requiresPreviousResponseData: ['get_user', 'get_course'],
                 },
                 {
                     action: 'delete_user',
                     message: __('User Remove', 'moowoodle'),
-                    requiresPreviousResponse: ['get_user'],
+                    requiresPreviousResponseData: ['get_user'],
                 },
             ],
         },
