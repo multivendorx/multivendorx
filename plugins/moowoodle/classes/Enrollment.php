@@ -83,6 +83,14 @@ class Enrollment {
 			$where[] = $wpdb->prepare( 'status = %s', $args['status'] );
 		}
 
+		if ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) {
+			$where[] = $wpdb->prepare(
+				'enrollment_date BETWEEN %s AND %s',
+				$args['start_date'],
+				$args['end_date']
+			);
+		}
+
 		$where = apply_filters( 'moowoodle_enrollment_query', $where, $args );
 
 		if ( isset( $args['count'] ) ) {

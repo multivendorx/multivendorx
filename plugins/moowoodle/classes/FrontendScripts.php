@@ -299,6 +299,7 @@ class FrontendScripts {
 							5 => __( 'Student', 'moowoodle' ),
 							7 => __( 'Authenticated user', 'moowoodle' ),
 						),
+                        'date_format'            => Util::wp_to_react_date_format( get_option( 'date_format' ) ),
 					),
                 ),
                 'moowoodle-my-courses-script'  => array(
