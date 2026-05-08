@@ -258,7 +258,20 @@ const FormViewer: React.FC<FormViewerProps> = ({
 
     const formList = formFields.formfieldlist || [];
     const buttonField = formList.find((f) => f.type === 'button');
-    const otherFields = formList.filter((f) => f.type !== 'button');
+    const otherFields = formList
+    .filter((f) => f.type !== 'button')
+    .sort((a, b) => {
+        // push richtext to the end
+        if (a.type === 'richtext') {
+            return 1;
+        }
+
+        if (b.type === 'richtext') {
+            return -1;
+        }
+
+        return 0;
+    });
     const recaptchaField = formList.find((f) => f.type === 'recaptcha');
     const siteKey = recaptchaField?.sitekey || null;
     const defaultDate = new Date().getFullYear() + '-01-01';
@@ -886,12 +899,13 @@ const FormViewer: React.FC<FormViewerProps> = ({
                         <input
                             type="checkbox"
                             checked={Boolean(inputs[name])}
+                            className='woocommerce-form__input woocommerce-form__input-checkbox'
                             onChange={(e) =>
                                 handleChange(name, e.target.checked)
                             }
                         />
 
-                        <div
+                        <span
                             className="richtext-content"
                             dangerouslySetInnerHTML={{
                                 __html: field.html || '',

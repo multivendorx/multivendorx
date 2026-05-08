@@ -731,10 +731,12 @@ class StoreUtil {
 			return;
 		}
 		$store_obj        = Store::get_store( $store_slug, 'slug' );
+        if (!$store_obj) {
+            return;
+        }
+        $all_store_meta   = $store_obj->get_all_meta();
 		$store_phone      = self::get_phone( $store_obj->get_meta( 'phone' ) );
         $store_whatsapp   = self::get_phone( $store_obj->get_meta( 'whatsapp_number' ) );
-        $whatsapp_message = $store_obj->get_meta( 'whatsapp_pre_filled' );
-        $facebook_page_id = $store_obj->get_meta( 'page_id' );
 
 		ob_start();
 		MultiVendorX()->util->get_template( 'store/store-tabs.php', array( 'store_id' => $store_obj->get_id() ) );
@@ -745,25 +747,25 @@ class StoreUtil {
 			'storeDescription'   => $store_obj->get( 'description' ),
 			'storeSlug'          => $store_slug,
 			'storeId'            => $store_obj->get_id(),
-			'storeEmail'         => $store_obj->get_meta( 'store_email' )['primary'] ?? '',
+			'storeEmail'         => $all_store_meta['store_email']['primary'] ?? '',
 			'storePhone'         => $store_phone,
-			'facebook'           => $store_obj->get_meta( 'facebook' ),
-			'twitter'            => $store_obj->get_meta( 'twitter' ),
-			'linkedin'           => $store_obj->get_meta( 'linkedin' ),
-			'youtube'            => $store_obj->get_meta( 'youtube' ),
-			'instagram'          => $store_obj->get_meta( 'instagram' ),
-			'pinterest'          => $store_obj->get_meta( 'pinterest' ),
-			'storeLogo'          => $store_obj->get_meta( 'image' ),
-			'storeBanner'        => $store_obj->get_meta( 'banner' ),
-			'storePolicy'        => $store_obj->get_meta( 'store_policy' ),
-			'shippingPolicy'     => $store_obj->get_meta( 'shipping_policy' ),
-			'refundPolicy'       => $store_obj->get_meta( 'refund_policy' ),
-			'cancellationPolicy' => $store_obj->get_meta( 'cancellation_policy' ),
-			'storeAddress'       => $store_obj->get_meta( 'address' ),
+			'facebook'           => $all_store_meta['facebook'] ?? '',
+			'twitter'            => $all_store_meta['twitter'] ?? '',
+			'linkedin'           => $all_store_meta['linkedin'] ?? '',
+			'youtube'            => $all_store_meta['youtube'] ?? '',
+			'instagram'          => $all_store_meta['instagram'] ?? '',
+			'pinterest'          => $all_store_meta['pinterest'] ?? '',
+			'storeLogo'          => $all_store_meta['image'] ?? '',
+			'storeBanner'        => $all_store_meta['banner'] ?? '',
+			'storePolicy'        => $all_store_meta['store_policy'] ?? '',
+			'shippingPolicy'     => $all_store_meta['shipping_policy'] ?? '',
+			'refundPolicy'       => $all_store_meta['refund_policy'] ?? '',
+			'cancellationPolicy' => $all_store_meta['cancellation_policy'] ?? '',
+			'storeAddress'       => $all_store_meta['address'] ?? '',
 			'storeTabs'          => $tabs_html,
             'whatsapp'           => $store_whatsapp,
-            'whatsapp_message'   => $whatsapp_message,
-            'page_id'            => $facebook_page_id,
+            'whatsapp_message'   => $all_store_meta['whatsapp_pre_filled'] ?? '',
+            'page_id'            => $all_store_meta['page_id'] ?? '',
 		);
 		/**
 		 * Filter store info before returning.

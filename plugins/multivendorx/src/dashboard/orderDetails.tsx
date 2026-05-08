@@ -245,21 +245,6 @@ const OrderDetails: React.FC = () => {
 		}
 	};
 
-	const statusBadgeClass = (status?: string) => {
-		switch ((status || '').toLowerCase()) {
-			case 'completed':
-				return 'admin-badge green';
-			case 'on-hold':
-				return 'admin-badge orange';
-			case 'processing':
-				return 'admin-badge blue';
-			case 'cancelled':
-				return 'admin-badge red';
-			default:
-				return 'admin-badge';
-		}
-	};
-
 	useEffect(() => {
 		if (!orderData?.meta_data) {
 			return;
@@ -627,9 +612,7 @@ const OrderDetails: React.FC = () => {
 								{orderData?.number ?? orderId ?? '—'}
 								{!statusSelect && orderData?.status?.trim() && (
 									<div
-										className={statusBadgeClass(
-											orderData?.status
-										)}
+										className={`admin-badge badge-${orderData?.status}`}
 										onClick={() => setStatusSelect(true)}
 									>
 										{(orderData?.status || '')

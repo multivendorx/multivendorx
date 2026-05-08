@@ -12,7 +12,7 @@ const HelpSupport: React.FC = () => {
 				'moowoodle'
 			),
 		},
-        {
+		{
 			link: 'https://youtu.be/fL7wPVYopTU?si=zbX9j87shmQ3i-wl',
 			title: __('How to Set Up moowoodle Marketplace', 'moowoodle'),
 			des: __(
@@ -20,7 +20,7 @@ const HelpSupport: React.FC = () => {
 				'moowoodle'
 			),
 		},
-        {
+		{
 			link: 'https://youtu.be/fL7wPVYopTU?si=zbX9j87shmQ3i-wl',
 			title: __('How to Set Up moowoodle Marketplace', 'moowoodle'),
 			des: __(
@@ -146,9 +146,7 @@ const HelpSupport: React.FC = () => {
 							))}
 						</div>
 					</Card>
-					<Card
-						title={__('Documentation & Learning', 'moowoodle')}
-					>
+					<Card title={__('Documentation & Learning', 'moowoodle')}>
 						<div className="support-wrapper">
 							{DocumentationItems.map((item, index) => (
 								<div className="support-item" key={index}>
@@ -223,10 +221,7 @@ const HelpSupport: React.FC = () => {
 											></iframe>
 
 											<div className="title">
-												{__(
-													video.title,
-													'moowoodle'
-												)}
+												{__(video.title, 'moowoodle')}
 											</div>
 											<div className="des">
 												{__(video.des, 'moowoodle')}

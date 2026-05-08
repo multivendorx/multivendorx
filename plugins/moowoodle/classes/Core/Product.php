@@ -6,6 +6,7 @@
  */
 
 namespace MooWoodle\Core;
+
 use MooWoodle\Util;
 
 /**

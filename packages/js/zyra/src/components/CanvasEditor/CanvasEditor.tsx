@@ -89,8 +89,16 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
         ? blocks.find((b) => b.type === 'button')
         : null;
 
+    const termsBlock = isFormBuilder
+        ? blocks.find(
+            (b) =>
+                b.type === 'richtext' &&
+                b.context === 'form'
+        )
+        : null;
+
     const dynamicBlocks = isFormBuilder
-        ? blocks.filter((b) => b.type !== 'button' && b.type !== 'title')
+        ? blocks.filter((b) => b.type !== 'button' && b.type !== 'title' && b.type !== 'richtext')
         : blocks;
     useEffect(() => {
         if (context !== 'form') {
@@ -158,6 +166,49 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
             ];
         });
     }, []);
+
+    useEffect(() => {
+        if (context !== 'form') {
+            return;
+        }
+
+        const hasExternalTerms = externalBlocks?.some(
+            (b) =>
+                b.type === 'richtext' &&
+                b.context === 'form'
+        );
+
+        // Use persisted blocks if available
+        if (hasExternalTerms) {
+            setBlocks(externalBlocks);
+            return;
+        }
+
+        // Otherwise create default terms block
+        setBlocks((prev) => {
+            const hasTerms = prev.some(
+                (b) =>
+                    b.type === 'richtext' &&
+                    b.context === 'form'
+            );
+
+            if (hasTerms) {
+                return prev;
+            }
+
+            return [
+                ...prev,
+                createBlock({
+                    value: 'richtext',
+                    label: 'Terms & Conditions',
+                    fixedName: 'terms_conditions',
+                    context: 'form',
+                    html: '<a href="#">I agree to the Terms & Conditions</a>',
+                    required: true,
+                }),
+            ];
+        });
+    }, [context, externalBlocks]);
 
     useEffect(() => {
         if (!isInternalUpdate.current) {
@@ -676,7 +727,6 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                             showMeta={false} // 🚀 no drag, no delete
                         />
                     )}
-
                     <ReactSortable
                         list={dynamicBlocks}
                         setList={handleCanvasSetList}
@@ -734,6 +784,21 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                             )
                         )}
                     </ReactSortable>
+                    {isFormBuilder && termsBlock && (
+                        <BlockRenderer
+                            block={termsBlock}
+                            isActive={openBlock?.id === termsBlock.id}
+                            onSelect={() => setOpenBlock(termsBlock)}
+                            onChange={(patch) => {
+                                const index = blocks.findIndex(
+                                    (b) => b.id === termsBlock.id
+                                );
+
+                                updateBlock(index, patch);
+                            }}
+                            showMeta={false}
+                        />
+                    )}
                     {isFormBuilder && submitBlock && (
                         <BlockRenderer
                             block={submitBlock}

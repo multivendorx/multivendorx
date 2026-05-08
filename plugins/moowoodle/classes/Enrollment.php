@@ -6,6 +6,7 @@
  */
 
 namespace MooWoodle;
+
 use MooWoodle\Util;
 /**
  * MooWoodle Enrollment class
@@ -490,7 +491,6 @@ class Enrollment {
 	 */
 	public function restrict_cart_quantity_on_update() {
 		foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-
 			$product_id = $cart_item['product_id'];
 
 			// Check if product has Moodle course ID
