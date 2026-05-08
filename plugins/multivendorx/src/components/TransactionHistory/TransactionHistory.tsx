@@ -82,7 +82,7 @@ export const TransactionHistory: React.FC = () => {
 		{
 			type: 'file',
 			content: {
-				id: 'monthlytax-report',
+				id: 'monthly-tax-report',
 				headerTitle: __('Monthly Tax Report', 'multivendorx'),
 				headerIcon: 'monthly-tax-report',
 				hideSettingHeader: true,
@@ -119,7 +119,7 @@ export const TransactionHistory: React.FC = () => {
 						/>
 					);
 				}
-			case 'monthlytax-report':
+			case 'monthly-tax-report':
 				if (appLocalizer.khali_dabba) {
 					return applyFilters(
 						'multivendorx_monthly_tax_report',
