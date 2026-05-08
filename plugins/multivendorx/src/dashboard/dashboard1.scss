@@ -249,6 +249,10 @@ a {
                     font-size: 1.625rem;
                     color: $sub-text-color;
                     cursor: pointer;
+
+                    &.hamburger{
+                        display: none;
+                    }
                 }
             }
 

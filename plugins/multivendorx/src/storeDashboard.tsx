@@ -57,6 +57,7 @@ const Dashboard = () => {
 	const [showStoreList, setShowStoreList] = useState(false);
 	const [isDarkMode, setIsDarkMode] = useState(false);
 	const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
+	const [isMenuResponsive, setIsMenuResponsive] = useState(false);
 	const [isMenuMinimize, setIsMenuMinimize] = useState(false);
 	const [noPermission, setNoPermission] = useState(false);
 	const [newProductId, setNewProductId] = useState<number | null>(null);
@@ -368,7 +369,7 @@ const Dashboard = () => {
 					storeId={appLocalizer.store_id}
 				/>
 			)}
-			<div className="dashboard-tabs-wrapper"
+			<div className={`dashboard-tabs-wrapper ${isMenuResponsive ? 'show' : ''}`}
 			 	onMouseEnter={() => setIsMenuMinimize(false)}
 				onMouseLeave={() => setIsMenuMinimize(true)}
 				>
@@ -480,7 +481,7 @@ const Dashboard = () => {
 					<div className="top-navbar">
 						<div className="navbar-leftside">
 							<i
-								className={`adminfont-${isMenuCollapsed ? 'menu' : 'arrow-left'} toggle-menu-icon`}
+								className={`adminfont-${isMenuCollapsed ? 'menu' : 'arrow-left'} toggle-menu-icon desktop`}
 								onClick={() => {
 									setIsMenuCollapsed((prev) => {
 										const next = !prev;
@@ -488,6 +489,10 @@ const Dashboard = () => {
 										return next;
 									});
 								}}
+							></i>
+							<i
+								className={`adminfont-menu toggle-menu-icon hamburger`}
+								onClick={() => { setIsMenuResponsive((prev) => !prev);}}
 							></i>
 						</div>
 

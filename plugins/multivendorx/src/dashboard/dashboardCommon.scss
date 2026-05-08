@@ -1542,13 +1542,70 @@ body.dark {
     }
 }
 
+.topup-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+
+    .topup-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem;
+        background: $theme-background-color;
+        border-radius: 0.313rem;
+
+        .topup-section {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+
+            .topup-details {
+                .title {
+                    margin-bottom: 0.313rem;
+                }
+            }
+
+            .price {
+                font-size: 1.313rem;
+                font-weight: 600;
+            }
+
+            .icon {
+                padding: 0.313rem;
+                background: $theme-color;
+                border-radius: 0.313rem;
+
+                i {
+                    font-size: 1.45rem;
+                    color: #fff;
+                }
+            }
+        }
+    }
+}
+
 // membership page end
 
 @media only screen and (max-width: 600px) {
 
     // dashboard stucture start
     .dashboard-tabs-wrapper {
-        display: none !important;
+        transform: translateX(-100%);
+
+        &.show {
+            transform: translateX(0) !important;
+        }
+    }
+
+    .toggle-menu-icon {
+        &.hamburger {
+            display: block !important;
+        }
+
+        &.desktop {
+            display: none;
+        }
     }
 
     .dashboard-content {
@@ -1557,11 +1614,12 @@ body.dark {
         .content-wrapper {
             padding: 4rem 1.25rem !important;
         }
+
         // navbar
-        .top-navbar-wrapper{
-            .top-navbar{
-                margin: 0;
-                padding: 0 1rem;
+        .top-navbar-wrapper {
+            .top-navbar {
+                margin: 0 !important;
+                padding: 0 1rem !important;
             }
         }
     }
@@ -1620,5 +1678,19 @@ body.dark {
     [data-cols='11'] {
         flex: 0 0 100% !important;
         max-width: 100% !important;
+    }
+
+
+    // SettingsNavigator.scss
+    .settings-wrapper{
+        &[data-template="settings"]{
+            .tabs-wrapper{
+                display: none !important;
+            }
+            .general-wrapper{
+                width: 100% !important;
+                margin: 0 !important;
+            }
+        }
     }
 }
