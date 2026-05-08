@@ -27,7 +27,7 @@ const MyCourse: React.FC = () => {
         setError( '' );
         axios( {
             method: 'GET',
-            url: `${ courseMyAcc.apiUrl }/moowoodle/v1/courses/${ courseMyAcc.current_user_id }`,
+            url: `${ courseMyAcc.apiUrl }/moowoodle/v1/my-courses/${ courseMyAcc.current_user_id }`,
             headers: { 'X-WP-Nonce': courseMyAcc.nonce },
             params: {
                 page: currentPage,
