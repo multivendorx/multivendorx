@@ -3,6 +3,7 @@ import { NavigatorHeader, PopupUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import ShowProPopup from '../Popup/Popup';
 import '../common.scss';
+import { applyFilters } from '@wordpress/hooks';
 
 const Enrollment: React.FC = () => {
     const [openPopup, setopenPopup] = useState(false);
@@ -28,12 +29,16 @@ const Enrollment: React.FC = () => {
                     'moowoodle'
                 )}
             />
-            <div
-                className="enrollment-img image-wrapper"
-                onClick={() => {
-                    setopenPopup(true);
-                }}
-            ></div>
+            {appLocalizer.khali_dabba ? (
+                applyFilters('moowoodle_enrollment_content', null)
+            ) : (
+                <div
+                    className="enrollment-img image-wrapper"
+                    onClick={() => {
+                        setopenPopup(true);
+                    }}
+                ></div>
+            )}
         </>
     );
 };

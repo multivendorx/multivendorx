@@ -3,9 +3,9 @@ import { FontSizePicker } from '@wordpress/block-editor';
 import { __, sprintf } from '@wordpress/i18n';
 
 export default {
-    id: 'general',
-    priority: 10,
-    headerTitle: __('General', 'moowoodle'),
+    id: 'connection-access',
+    priority: 1,
+    headerTitle: __('Connection & Access', 'moowoodle'),
     headerDescription: __(
         'Effortlessly configure and verify your WordPress-Moodle connection.',
         'moowoodle'
@@ -55,7 +55,6 @@ export default {
                 {
                     action: 'get_course',
                     message: __('Courses Fetch', 'moowoodle'),
-                    cache: 'course_id',
                 },
                 {
                     action: 'get_category',
@@ -68,25 +67,73 @@ export default {
                 {
                     action: 'get_user',
                     message: __('User Fetch', 'moowoodle'),
-                    cache: 'user_id',
                 },
                 {
                     action: 'update_user',
                     message: __('User Update', 'moowoodle'),
+                    previousResponseData: ['get_user'],
                 },
                 {
                     action: 'enroll_user',
                     message: __('User Enroll', 'moowoodle'),
+                    previousResponseData: ['get_user', 'get_course'],
                 },
                 {
                     action: 'unenroll_user',
                     message: __('User Unenroll', 'moowoodle'),
+                    previousResponseData: ['get_user', 'get_course'],
                 },
                 {
                     action: 'delete_user',
                     message: __('User Remove', 'moowoodle'),
+                    previousResponseData: ['get_user'],
                 },
             ],
         },
+        {
+            key: 'moowoodle_sso_enable',
+            type: 'checkbox',
+            desc: __(
+                'Enabling this option allows users to access Moodle courses directly, bypassing the need for login.',
+                'moowoodle'
+            ),
+            label: __('Single Sign On', 'moowoodle'),
+            options: [
+                {
+                    key: 'moowoodle_sso_enable',
+                    value: 'moowoodle_sso_enable',
+                },
+            ],
+            proSetting: true,
+            look: 'toggle',
+        },
+        {
+            key: 'moowoodle_sso_secret_key',
+            type: 'text',
+            desc: sprintf(
+                /* translators: %s: URL to Moodle SSO settings page */
+                __(
+                    'Generate a unique SSO secret key (must be at least 8 characters) and copy it. Then, go to your Moodle site and paste the copied SSO key <a href="%s" target="_blank" rel="noreferrer">there</a>.',
+                    'moowoodle'
+                ),
+                appLocalizer.moodle_site_url +
+                'admin/settings.php?section=authsettingmoowoodle'
+            ),
+            size: '50%',
+            label: __('SSO secret key', 'moowoodle'),
+            proSetting: true,
+            generate: true,
+            dependent: {
+                key: 'moowoodle_sso_enable', // parent dependent key
+                set: true,
+                value: 'moowoodle_sso_enable', // updated value
+            },
+            afterElement: {
+                key: 'moowoodle_sso_secret_key',
+                type: 'random-input-key-generator',
+                textType: 'post',
+                length: 8
+            },
+        }
     ],
 };

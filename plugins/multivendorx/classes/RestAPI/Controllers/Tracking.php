@@ -85,7 +85,7 @@ class Tracking extends \WP_REST_Controller {
             $store,
             null,
             array(
-				'store_name'      => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
+				'store_name'      => ! $store->exists() ? $store->get( Utill::STORE_SETTINGS_KEYS['name'] ) : '',
 				'order_id'        => $order_id,
 				'tracking_url'    => $tracking_url,
 				'tracking_number' => $tracking_number,

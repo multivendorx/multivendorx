@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @class       Settings class
  * @version     PRODUCT_VERSION
- * @author      MooWoodle
+ * @author      DualCube
  */
 class Settings extends \WP_REST_Controller {
 

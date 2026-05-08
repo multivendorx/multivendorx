@@ -352,7 +352,7 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'customer_email' => $user->user_email,
 					'customer_phone' => get_user_meta( $q->question_by, 'billing_phone', true ),
-                    'store_name'     => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
+                    'store_name'     => $store->exists() ? $store->get( Utill::STORE_SETTINGS_KEYS['name'] ) : '',
                     'customer_name'  => $user->display_name,
                     'category'       => 'activity',
                 )

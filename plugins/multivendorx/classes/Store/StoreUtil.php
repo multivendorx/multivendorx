@@ -155,7 +155,7 @@ class StoreUtil {
 
         if ( $store_id ) {
             $store_data = new Store( $store_id );
-            $store_slug = $store_data ? sanitize_title( $store_data->get( 'slug' ) ) : '';
+            $store_slug = $store_data->exists() ? sanitize_title( $store_data->get( 'slug' ) ) : '';
         }
 
         if ( ! $store_id && ! $placeholder_string ) {
