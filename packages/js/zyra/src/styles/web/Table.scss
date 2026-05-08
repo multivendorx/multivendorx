@@ -5,7 +5,6 @@
 .admin-top-filter {
     display: flex;
     align-items: center;
-    margin: 1.5rem 0;
     justify-content: space-between;
 }
 
@@ -14,6 +13,7 @@
     margin-bottom: 1.5rem;
 }
 
+// footer filter
 .filter-wrapper {
     display: flex;
     border-radius: $border-radius-small;
@@ -136,8 +136,8 @@
     }
 }
 
-// admin table filter style
-.filter-wrapper:has(.filter-item) {
+// admin top total
+.top-filter-wrapper {
     display: flex;
     flex-direction: column;
     font-size: 0.875rem;  
@@ -145,6 +145,7 @@
     border-radius: $border-radius-small;
     width: fit-content;
     gap: 0.5rem;
+     margin: 1.5rem 0;
 
     .filters{
         padding: 0.45rem;
@@ -179,6 +180,7 @@
     align-items: center;
     gap: 0.5rem;
     margin-left: auto;
+    margin: 1.5rem 0;
 
     .action-wrapper {
         display: flex;

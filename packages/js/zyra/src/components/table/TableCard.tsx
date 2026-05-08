@@ -241,7 +241,7 @@ const TableCard: React.FC<TableCardProps> = ({
                         {(visibleCategories.length > 0 ||
                             visibleLanguages.length > 0) && (
                                 <>
-                                    <div className="filter-wrapper">
+                                    <div className="top-filter-wrapper">
                                         {visibleCategories.length > 0 && (
                                             <div className="filters category">
                                                 {visibleCategories.map(
