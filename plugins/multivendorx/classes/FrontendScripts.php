@@ -394,7 +394,9 @@ class FrontendScripts {
             }
 
             $store    = new Store( $active_store );
-            $all_meta = array_merge( $store->get_data(), $store->get_all_meta() );
+            if ( $store->exists() ) {
+                $all_meta = array_merge( $store->get_data(), $store->get_all_meta() );
+            }
         }
 
         $order_statuses = wc_get_order_statuses();

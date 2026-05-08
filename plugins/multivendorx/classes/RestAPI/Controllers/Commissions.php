@@ -356,7 +356,9 @@ class Commissions extends \WP_REST_Controller {
     public function prepare_item_for_response( $commission, $with_items = false ) {
 
         $store      = new Store( $commission['store_id'] ?? 0 );
-        $store_name = $store ? $store->get( Utill::STORE_SETTINGS_KEYS['name'] ) : '';
+        if ( $store->exists() ) {
+            $store_name = $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
+        }
 
         $data = array(
             'id'                     => (int) ( $commission['ID'] ?? 0 ),

@@ -93,7 +93,7 @@ class FrontendScripts {
         $common_deps = array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' );
 
         $block_scripts = array(
-            
+            'my-courses',
         );
 
         $register_scripts = apply_filters(
@@ -299,8 +299,25 @@ class FrontendScripts {
 							5 => __( 'Student', 'moowoodle' ),
 							7 => __( 'Authenticated user', 'moowoodle' ),
 						),
+                        'date_format'            => Util::wp_to_react_date_format( get_option( 'date_format' ) ),
 					),
                 ),
+                'moowoodle-my-courses-script'  => array(
+					'object_name' => 'courseMyAcc',
+                    'use_rest'     => true,
+					'data'        => array(
+						'moodle_site_url' => MooWoodle()->setting->get_setting( 'moodle_url' ),
+                        'current_user_id' => get_current_user_id(),
+					),
+				),
+				'moowoodle-product-tab-script' => array(
+					'object_name' => 'moowoodle',
+                    'use_ajax'     => true,
+					'data'        => array(
+						'select_text' => __( 'Select an item...', 'moowoodle' ),
+						'khali_dabba' => MooWoodle()->util->is_khali_dabba(),
+					),
+				),
 			);
 
         $localize_scripts = apply_filters( 'moowoodle_localize_scripts', $localize_scripts );

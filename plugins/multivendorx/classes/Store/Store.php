@@ -62,6 +62,10 @@ class Store {
         }
     }
 
+    public function exists() {
+        return ! empty( $this->id ) && $this->id > 0;
+    }
+
     /**
      * Initialize all Store classes.
      */
@@ -90,15 +94,23 @@ class Store {
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
         $row = $wpdb->get_row( $sql, ARRAY_A );
 
-        if ( $row ) {
-            $this->id        = $row['ID'];
-            $this->data      = $row;
-            $this->meta_data = $this->get_all_meta();
+        if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
+            MultiVendorX()->util->log( $wpdb->last_error, 'ERROR' );
         }
 
-        if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
-            MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
+        if ( empty( $row ) ) {
+            $this->id        = 0;
+            $this->data      = array();
+            $this->meta_data = array();
+
+            return false;
         }
+
+        $this->id        = (int) $row['ID'];
+        $this->data      = $row;
+        $this->meta_data = $this->get_all_meta();
+
+        return true;
     }
 
     /**
@@ -323,7 +335,8 @@ class Store {
         }
 
         if ( 'id' === $type ) {
-            return $value ? new self( (int) $value ) : null;
+            $store = new self( (int) $value );
+            return $store->exists() ? $store : null;
         }
 
         $table       = esc_sql( $wpdb->prefix . Utill::TABLES['store'] );
@@ -373,7 +386,11 @@ class Store {
 						true
 					);
 
-					return $store_id ? new self( $store_id ) : null;
+                    if ( ! $store_id ) {
+                        return null;
+                    }
+                    $store = new self( $store_id );
+                    return $store->exists() ? $store : null;
 
 				case 'primary_owner':
 					$status = sanitize_text_field( $value );

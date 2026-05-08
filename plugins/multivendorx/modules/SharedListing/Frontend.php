@@ -181,8 +181,8 @@ class Frontend {
 
                     $store = new Store( $store_id );
 
-                    if ( ! $store ) {
-						continue;
+                    if ( ! $store->exists() ) {
+                        continue;
                     }
 
                     $store_lat = (float) $store->get_meta( 'location_lat' );

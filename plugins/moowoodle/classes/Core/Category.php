@@ -97,7 +97,7 @@ class Category {
 
 			self::update_course_category_information( $args );
 
-			\MooWoodle\Util::increment_sync_count( 'course' );
+			Util::increment_sync_count( 'course' );
 		}
 	}
 
@@ -181,7 +181,7 @@ class Category {
 
 			return $category['id'];
 		} else {
-			MooWoodle()->util->log( 'moowoodle url:' . $term->get_error_message() . "\n" );
+			Util::log( 'moowoodle url:' . $term->get_error_message() . "\n" );
 		}
 
 		return null;
@@ -211,7 +211,7 @@ class Category {
 					$updated_ids[] = $categorie_id;
 				}
 
-				\MooWoodle\Util::increment_sync_count( 'course' );
+				Util::increment_sync_count( 'course' );
 			}
 		}
 
