@@ -731,6 +731,9 @@ class StoreUtil {
 			return;
 		}
 		$store_obj        = Store::get_store( $store_slug, 'slug' );
+        if (!$store_obj) {
+            return;
+        }
         $all_store_meta   = $store_obj->get_all_meta();
 		$store_phone      = self::get_phone( $store_obj->get_meta( 'phone' ) );
         $store_whatsapp   = self::get_phone( $store_obj->get_meta( 'whatsapp_number' ) );
