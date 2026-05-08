@@ -81,7 +81,7 @@ export const TextContentView: React.FC<{
                 dangerouslySetInnerHTML={{
                     __html:
                         field.html ||
-                        '<a href="#">I agree to the Terms & Conditions</a>',
+                        'I agree to the <a href="#">Terms & Conditions</a>',
                 }}
             />
             </label>
