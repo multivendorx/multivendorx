@@ -11,6 +11,7 @@ use MooWoodle\RestAPI\Controllers\Settings;
 use MooWoodle\RestAPI\Controllers\Logs;
 use MooWoodle\RestAPI\Controllers\Synchronization;
 use MooWoodle\RestAPI\Controllers\Courses;
+use MooWoodle\RestAPI\Controllers\MyCourses;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -46,6 +47,7 @@ class Rest {
             'logs'              => new Logs(),
             'synchronization'   => new Synchronization(),
             'courses'           => new Courses(),
+            'my_courses'        => new MyCourses(),
         );
     }
     /**

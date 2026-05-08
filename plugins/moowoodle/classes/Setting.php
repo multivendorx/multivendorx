@@ -79,12 +79,7 @@ class Setting {
          */
         $this->settings_keys = apply_filters(
             'moowoodle_register_settings_keys',
-            array_merge(
-                array(
-                    'moowoodle_extra_settings',
-                ),
-                array_values( Util::MOOWOODLE_SETTINGS )
-            )
+            array_values( Util::MOOWOODLE_SETTINGS )
         );
 
         return $this->settings_keys;
@@ -188,6 +183,6 @@ class Setting {
             }
         }
 
-        return 'moowoodle_extra_settings';
+        return '';
     }
 }
