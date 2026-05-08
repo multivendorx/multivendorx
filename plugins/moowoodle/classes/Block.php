@@ -87,7 +87,7 @@ class Block {
             }
         }
 
-        return apply_filters( 'multivendorx_initialize_blocks', $blocks );
+        return apply_filters( 'moowoodle_initialize_blocks', $blocks );
     }
 
     /**

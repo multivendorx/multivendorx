@@ -270,7 +270,7 @@ const Course: React.FC = () => {
 
                 setRowIds(ids);
                 setRows(items);
-                setTotalRows(Number(response.headers['x-wp-total']) || 0);
+                setTotalRows(response.headers['x-wp-total'] || 0);
                 setIsLoading(false);
             })
             .catch(() => {
