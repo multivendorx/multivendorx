@@ -128,6 +128,7 @@ export default {
 				set: true,
 				value: 'moowoodle_sso_enable', // updated value
 			},
+			classes: 'copy-btn',
 			afterElement: {
 				key: 'moowoodle_sso_secret_key',
 				type: 'random-input-key-generator',

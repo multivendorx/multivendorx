@@ -291,14 +291,14 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
             });
     };
 
-    const getItemListItems = () => {
-        return taskSequence.map((task, index) => ({
-            id: `task-${index}`,
-            title: task.message,
-            icon: task.status,
-            className: `task-status-${task.status}`,
-        }));
-    };
+    // const getItemListItems = () => {
+    //     return taskSequence.map((task, index) => ({
+    //         id: `task-${index}`,
+    //         title: task.message,
+    //         icon: task.status,
+    //         className: `task-status-${task.status}`,
+    //     }));
+    // };
 
     return (
         <>
@@ -323,9 +323,20 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                 )}
             </div>
 
-            {taskSequence.length > 0 && (
+            {/* {taskSequence.length > 0 && (
                 <ItemListUI items={getItemListItems()} className="task-list" />
-            )}
+            )} */}
+            {taskSequence.length > 0 &&
+                taskSequence.map((task, index) => (
+                    <div key={index} className="details-status-row">
+                        {task.message}
+                        <div className="status-meta">
+                            <span className="status-icons">
+                                <i className="admin-font adminfont-check" />
+                            </span>
+                        </div>
+                    </div>
+                ))}
 
             {syncStatus &&
                 syncStatus.length > 0 &&
@@ -334,7 +345,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                         {status.action}
                         <div className="status-meta">
                             <span className="status-icons">
-                                <i className="admin-font adminlib-icon-yes" />
+                                <i className="admin-font adminfont-check" />
                             </span>
                             <span>
                                 {status.current} / {status.total}

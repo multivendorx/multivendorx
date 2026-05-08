@@ -6,7 +6,7 @@ export default {
 	priority: 2,
 	headerTitle: __('Course & Enrollment', 'moowoodle'),
 	headerDescription: __(
-		'Efficient course information handling for customers.',
+		'Control how course information appears to customers',
 		'moowoodle'
 	),
 	headerIcon: 'cart',
@@ -49,24 +49,10 @@ export default {
 			),
 		},
 		{
-			key: 'moowoodle_create_user_custom_mail',
-			type: 'checkbox',
-			desc: sprintf(
-				/* translators: %s: URL to WooCommerce email settings */
-				__(
-					'If enabled, default WordPress new user registration emails will be disabled for both admin and user. <br>You can personalize the content of the MooWoodle New User email from <a href="%s" target="_blank" rel="noreferrer">here.</a>',
-					'moowoodle'
-				),
-				appLocalizer.wc_email_url
-			),
-			label: __('Disable new user registration email', 'moowoodle'),
-			options: [
-				{
-					key: 'moowoodle_create_user_custom_mail',
-					value: 'moowoodle_create_user_custom_mail',
-				},
-			],
-			look: 'toggle',
+			key: 'section',
+			type: 'section',
+			title: __('Enrollment & seat management', 'moowoodle'),
+			desc: __('Configure how buyers enroll and manage course seats', 'moowoodle'),
 		},
 		{
 			key: 'bulk_access_enable',
@@ -117,6 +103,32 @@ export default {
 				},
 			],
 			proSetting: true,
+			look: 'toggle',
+		},
+		{
+			key: 'section',
+			type: 'section',
+			title: __('User notifications', 'moowoodle'),
+			desc: __('Manage emails sent to new and existing users', 'moowoodle'),
+		},
+		{
+			key: 'moowoodle_create_user_custom_mail',
+			type: 'checkbox',
+			desc: sprintf(
+				/* translators: %s: URL to WooCommerce email settings */
+				__(
+					'If enabled, default WordPress new user registration emails will be disabled for both admin and user. <br>You can personalize the content of the MooWoodle New User email from <a href="%s" target="_blank" rel="noreferrer">here.</a>',
+					'moowoodle'
+				),
+				appLocalizer.wc_email_url
+			),
+			label: __('Disable new user registration email', 'moowoodle'),
+			options: [
+				{
+					key: 'moowoodle_create_user_custom_mail',
+					value: 'moowoodle_create_user_custom_mail',
+				},
+			],
 			look: 'toggle',
 		},
 	],
