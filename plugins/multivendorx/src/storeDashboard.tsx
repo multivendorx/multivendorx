@@ -57,6 +57,7 @@ const Dashboard = () => {
 	const [showStoreList, setShowStoreList] = useState(false);
 	const [isDarkMode, setIsDarkMode] = useState(false);
 	const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
+	const [isMenuResponsive, setIsMenuResponsive] = useState(false);
 	const [isMenuMinimize, setIsMenuMinimize] = useState(false);
 	const [noPermission, setNoPermission] = useState(false);
 	const [newProductId, setNewProductId] = useState<number | null>(null);
@@ -357,6 +358,7 @@ const Dashboard = () => {
 				isDarkMode ? 'dark' : 'light',
 				isMenuCollapsed ? 'collapsed' : '',
 				isMenuMinimize ? 'minimize' : '',
+				isMenuResponsive ? 'show-menu' : ''
 			]
 				.filter(Boolean)
 				.join(' ')}
@@ -368,7 +370,7 @@ const Dashboard = () => {
 					storeId={appLocalizer.store_id}
 				/>
 			)}
-			<div className="dashboard-tabs-wrapper"
+			<div className={`dashboard-tabs-wrapper ${isMenuResponsive ? 'show' : ''}`}
 			 	onMouseEnter={() => setIsMenuMinimize(false)}
 				onMouseLeave={() => setIsMenuMinimize(true)}
 				>
@@ -390,7 +392,7 @@ const Dashboard = () => {
 						)}
 					</a>
 				</div>
-
+				<i className='close-btn adminfont-close red' onClick={() => { setIsMenuResponsive((prev) => !prev);}}/>
 				{storeData?.status === 'active' && (
 					<div className="dashboard-tabs">
 						<ul>
@@ -431,9 +433,10 @@ const Dashboard = () => {
 													`tab ${isActive ? 'active' : ''}`
 												}
 												to={key === DEFAULT_TAB ? '/' : `/${key}`} // ← always a path; NavLink works in both BrowserRouter & MemoryRouter
-												onClick={() =>
-													setCurrentTab(key)
-												}
+												onClick={() => {
+													setCurrentTab(key);
+													setIsMenuResponsive((prev) => !prev);
+												}}
 											>
 												<i
 													className={`adminfont-${item.icon}`}
@@ -453,11 +456,10 @@ const Dashboard = () => {
 																		`tab ${isActive ? 'active' : ''}`
 																	}
 															to={`/${sub.key}`}
-															onClick={() =>
-																setCurrentTab(
-																	sub.key
-																)
-															}
+															onClick={() => {
+																setCurrentTab(sub.key);
+																setIsMenuResponsive((prev) => !prev);
+															}}
 														>
 															{sub.name}
 														</NavLink>
@@ -480,7 +482,7 @@ const Dashboard = () => {
 					<div className="top-navbar">
 						<div className="navbar-leftside">
 							<i
-								className={`adminfont-${isMenuCollapsed ? 'menu' : 'arrow-left'} toggle-menu-icon`}
+								className={`adminfont-${isMenuCollapsed ? 'menu' : 'arrow-left'} toggle-menu-icon desktop`}
 								onClick={() => {
 									setIsMenuCollapsed((prev) => {
 										const next = !prev;
@@ -488,6 +490,10 @@ const Dashboard = () => {
 										return next;
 									});
 								}}
+							></i>
+							<i
+								className={`adminfont-menu toggle-menu-icon hamburger`}
+								onClick={() => { setIsMenuResponsive((prev) => !prev);}}
 							></i>
 						</div>
 

@@ -1564,7 +1564,7 @@ const OrderDetails: React.FC = () => {
 								<ButtonInputUI
 									position="left"
 									buttons={applyFilters(
-										'multivendorx_shippment_button',
+										'multivendorx_shipment_button',
 										[
 											{
 												icon: 'plus',

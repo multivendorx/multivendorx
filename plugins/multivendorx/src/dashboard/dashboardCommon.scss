@@ -356,6 +356,10 @@ a:focus {
     color: #181819;
 }
 
+#wpadminbar {
+    display: none; // for hide wordpress section
+}
+
 body.dark {
     background: #0b1220 !important;
 
@@ -1540,15 +1544,98 @@ body.dark {
             margin-bottom: 0.313rem;
         }
     }
+
+    .ui-notice {
+        margin-top: 0.75rem;
+    }
+}
+
+.topup-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+
+    .topup-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem;
+        background: $theme-background-color;
+        border-radius: 0.313rem;
+
+        .topup-section {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+
+            .topup-details {
+                .title {
+                    margin-bottom: 0.313rem;
+                }
+            }
+
+            .price {
+                font-size: 1.313rem;
+                font-weight: 600;
+            }
+
+            .icon {
+                padding: 0.313rem;
+                background: $theme-color;
+                border-radius: 0.313rem;
+
+                i {
+                    font-size: 1.45rem;
+                    color: #fff;
+                }
+            }
+        }
+    }
 }
 
 // membership page end
 
 @media only screen and (max-width: 600px) {
+    #store-dashboard.show-menu {
+        .dashboard-content::after {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: #4b4b4b5e;
+            z-index: 999;
+        }
+    }
 
     // dashboard stucture start
     .dashboard-tabs-wrapper {
-        display: none !important;
+        transform: translateX(-100%);
+
+        .close-btn {
+            position: fixed;
+            right: 0.5rem;
+            top: 0.5rem;
+            padding: 0.313rem;
+            font-size: 1.125rem;
+            border-radius: 50%;
+            display: block !important;
+        }
+
+        &.show {
+            transform: translateX(0) !important;
+        }
+    }
+
+    .toggle-menu-icon {
+        &.hamburger {
+            display: block !important;
+        }
+
+        &.desktop {
+            display: none;
+        }
     }
 
     .dashboard-content {
@@ -1556,6 +1643,14 @@ body.dark {
 
         .content-wrapper {
             padding: 4rem 1.25rem !important;
+        }
+
+        // navbar
+        .top-navbar-wrapper {
+            .top-navbar {
+                margin: 0 !important;
+                padding: 0 1rem !important;
+            }
         }
     }
 
@@ -1596,7 +1691,7 @@ body.dark {
     .title-section {
         flex-wrap: wrap;
         gap: 1rem;
-        justify-content: end !important;
+        // justify-content: end !important;
     }
 
     // container.scss
@@ -1613,5 +1708,116 @@ body.dark {
     [data-cols='11'] {
         flex: 0 0 100% !important;
         max-width: 100% !important;
+    }
+
+
+    // SettingsNavigator.scss
+    .settings-wrapper {
+        &[data-template="settings"] {
+            flex-direction: column;
+
+            .tabs-wrapper {
+                width: 100% !important;
+                margin: 0 0 2rem !important;
+            }
+
+            .general-wrapper {
+                width: 100% !important;
+                margin: 0 !important;
+            }
+        }
+
+        &[data-template="compact"] {
+            .tabs-item {
+                flex-wrap: wrap;
+
+                a.tab {
+                    min-width: 5rem !important;
+                }
+            }
+        }
+    }
+
+    // form group wrapper css
+    .form-group.row {
+        flex-direction: column !important;
+
+        .settings-form-label,
+        .settings-input-content {
+            width: 100% !important;
+        }
+    }
+
+    // analytics-container css
+    .analytics-container {
+        &.flex-wrap {
+            flex-direction: row !important;
+
+            .col-6,
+            .col-5,
+            .col-4,
+            .col-3 {
+                width: calc(50% - 0.5rem) !important;
+            }
+
+            .col-2 {
+                width: calc(100% - 1rem) !important;
+            }
+        }
+    }
+
+    // media-library-grid
+    .media-library-grid {
+        .media-item {
+            width: calc(50% - 1rem);
+
+            .media-icon,
+            .media-preview {
+                height: 8rem !important;
+            }
+        }
+    }
+
+    // popup
+    .popup-content {
+        min-width: 10rem !important;
+        max-width: 92% !important;
+
+    }
+
+
+    // dashboardCommon.scss
+    .product-category-select-wrapper {
+        width: 100% !important;
+        box-sizing: border-box;
+        padding: 1.5rem;
+        margin-top: 1rem;
+
+        .product {
+            width: 100% !important;
+        }
+
+        .header {
+            margin: 0;
+            width: 100%;
+        }
+    }
+
+    // choice-toggle-wrapper.css
+    .choice-toggle-wrapper.custom {
+        .toggle-option {
+            width: 100% !important;
+        }
+    }
+
+    // multi table
+    .settings-input-content:has(.multi-input-table){
+        overflow: auto;
+
+        table.multi-input-table{
+            thead{
+                top: 0 !important;
+            }
+        }
     }
 }

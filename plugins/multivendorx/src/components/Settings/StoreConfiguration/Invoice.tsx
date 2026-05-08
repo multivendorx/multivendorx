@@ -473,13 +473,13 @@ const Invoice: React.FC = () => {
 						<i
 							className={`adminfont-invoice`}
 						/>
-						Invoice
+						{__('Invoice', 'multivendorx')}
 						<i className="adminfont-lock" />
 					</span>
 				)}
 			{!isPro && (
 				<span className="admin-pro-tag">
-					<i className="adminfont-pro-tag"></i>Pro
+					<i className="adminfont-pro-tag"></i>{__('Pro', 'multivendorx')}
 				</span>
 			)}
 			<Column grid={8}>
@@ -494,7 +494,7 @@ const Invoice: React.FC = () => {
 
 						{displayCustomOrder == 'main_sub' && (
 							<FormGroup
-								cols={2}
+								cols={6}
 								label={__(
 									'Invoices will be created based on',
 									'multivendorx'
@@ -602,7 +602,7 @@ const Invoice: React.FC = () => {
 				<Card title={__('Packing slip generator', 'multivendorx')}>
 					<FormGroupWrapper>
 						<FormGroup
-							cols={2}
+							cols={6}
 							label={__(
 								'What appears on packing slips',
 								'multivendorx'
@@ -806,7 +806,7 @@ const Invoice: React.FC = () => {
 							/>
 						</FormGroup>
 						<FormGroup
-							cols={2}
+							cols={6}
 							label="Invoice numbers will include this prefix"
 							desc={__(
 								'<b>Example results:</b> INV-2026-0001, INV-ORD-0001',
