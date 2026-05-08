@@ -79,6 +79,15 @@ export const TransactionHistory: React.FC = () => {
 				hideSettingHeader: true,
 			},
 		},
+		{
+			type: 'file',
+			content: {
+				id: 'monthly-tax-report',
+				headerTitle: __('Monthly Tax Report', 'multivendorx'),
+				headerIcon: 'monthly-tax-report',
+				hideSettingHeader: true,
+			},
+		}
 	];
 
 	const getForm = (tabId: string) => {
@@ -91,6 +100,29 @@ export const TransactionHistory: React.FC = () => {
 				if (appLocalizer.khali_dabba) {
 					return applyFilters(
 						'multivendorx_direct_transaction',
+						null,
+						selectedStoreId
+					);
+				} else {
+					return (
+						<ComponentStatusView
+							title={__(
+								'Real-time store payments',
+								'multivendorx'
+							)}
+							desc={__(
+								'Track all direct marketplace payments in real time from a single admin dashboard.',
+								'multivendorx'
+							)}
+							buttonText={__('Upgrade to Pro', 'multivendorx')}
+							buttonLink={appLocalizer.shop_url}
+						/>
+					);
+				}
+			case 'monthly-tax-report':
+				if (appLocalizer.khali_dabba) {
+					return applyFilters(
+						'multivendorx_monthly_tax_report',
 						null,
 						selectedStoreId
 					);
