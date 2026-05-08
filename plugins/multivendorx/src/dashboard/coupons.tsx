@@ -900,7 +900,7 @@ const AllCoupon: React.FC = () => {
 			{validationErrors.errorMsg && (
 				<Notice
 					type="error"
-					validity="lifetime"
+					validity={2000}
 					displayPosition="notice"
 					message={validationErrors.errorMsg}
 				/>
