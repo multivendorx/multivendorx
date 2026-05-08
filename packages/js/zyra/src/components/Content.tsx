@@ -66,26 +66,24 @@ export const TextContentView: React.FC<{
                 <input
                     type="checkbox"
                     checked={field.checked || false}
-                    onChange={(e) =>
-                        onChange({
-                            checked:
-                                e.target.checked,
-                        })
-                    }
                 />
 
                 <div
-                    className="email-text"
-                    style={enhancedStyles}
-                    contentEditable={editable}
-                    suppressContentEditableWarning
-                    onBlur={handleBlur}
-                    dangerouslySetInnerHTML={{
-                        __html:
-                            field.html ||
-                            <a href="#">I agree to the Terms & Conditions</a>
-                    }}
-                />
+                className="email-text"
+                style={enhancedStyles}
+                contentEditable={editable}
+                suppressContentEditableWarning
+                onBlur={(e) => {
+                    onChange({
+                        html: e.currentTarget.innerHTML,
+                    });
+                }}
+                dangerouslySetInnerHTML={{
+                    __html:
+                        field.html ||
+                        '<a href="#">I agree to the Terms & Conditions</a>',
+                }}
+            />
             </label>
         );
     }

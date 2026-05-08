@@ -11,6 +11,8 @@ defined( 'ABSPATH' ) || exit;
 use MooWoodle\Core\Category;
 use MooWoodle\Core\Course;
 use MooWoodle\Enrollment;
+use MooWoodle\Util;
+
 /**
  * MooWoodle Installer class
  *
@@ -41,28 +43,27 @@ class Installer {
      * @return void
      */
     private function set_default_settings() {
-        $general_settings = array(
-            'moodle_url'          => '',
-            'moodle_access_token' => '',
-        );
-        // Default value for sso setting.
-        $sso_settings = array(
+        $connection_access = array(
+            'moodle_url'               => '',
+            'moodle_access_token'      => '',
             'moowoodle_sso_enable'     => array(),
             'moowoodle_sso_secret_key' => '',
         );
-        // Default value for display setting.
-        $display_settings = array(
+
+        $course_enrollment = array(
             'start_end_date'                    => array( 'start_end_date' ),
             'my_courses_priority'               => 0,
             'learners_hub_priority'             => 1,
             'moowoodle_create_user_custom_mail' => array(),
         );
+
         // Default value for log setting.
-        $tool_settings = array(
+        $system_log_settings = array(
             'moowoodle_adv_log' => array(),
             'moodle_timeout'    => 5,
             'schedule_interval' => 1,
         );
+
         // Default value sync course setting.
         $course_settings = array(
             'sync-course-options' => array( 'sync_courses_category' ),
@@ -73,25 +74,12 @@ class Installer {
             'wordpress_user_role' => array( 'customer' ),
             'moodle_user_role'    => array( '5' ),
         );
-        // Update default settings.
-        update_option(
-            'moowoodle_general_settings',
-            array_merge(
-                $general_settings,
-                get_option( 'moowoodle_general_settings', array() )
-            )
-        );
-        update_option(
-            'moowoodle_sso_settings',
-            array_merge(
-                $sso_settings,
-                get_option( 'moowoodle_sso_settings', array() )
-            )
-        );
-        update_option( 'moowoodle_display_settings', $display_settings );
-        update_option( 'moowoodle_tool_settings', $tool_settings );
-        update_option( 'moowoodle_synchronize_course_settings', $course_settings );
-        update_option( 'moowoodle_synchronize_user_settings', $user_settings );
+
+        update_option( Util::MOOWOODLE_SETTINGS['connection-access'], $connection_access );
+        update_option( Util::MOOWOODLE_SETTINGS['course-enrollment'], $course_enrollment );
+        update_option( Util::MOOWOODLE_SETTINGS['system-logs'], $system_log_settings );
+        update_option( Util::MOOWOODLE_SETTINGS['synchronize-course'], $course_settings );
+        update_option( Util::MOOWOODLE_SETTINGS['synchronize-user'], $user_settings );
     }
 
     /**
@@ -186,22 +174,22 @@ class Installer {
 
         if ( version_compare( $previous_version, '3.4.0', '<' ) ) {
             $general_settings = get_option( 'moowoodle_general_settings', array() );
-            $sso_settings = get_option( 'moowoodle_sso_settings', array() );
+            $sso_settings     = get_option( 'moowoodle_sso_settings', array() );
             update_option( 'moowoodle_connection_access_settings', array_merge( $general_settings, $sso_settings ) );
 
-            $display_settings = get_option( 'moowoodle_display_settings', array() );
+            $display_settings     = get_option( 'moowoodle_display_settings', array() );
             $bulk_access_settings = get_option( 'moowoodle_bulk_access_settings', array() );
             update_option( 'moowoodle_course_enrollment_settings', array_merge( $display_settings, $bulk_access_settings ) );
-            
+
             $tool_settings = get_option( 'moowoodle_tool_settings', array() );
-            $log_settings = get_option( 'moowoodle_log_settings', array() );
+            $log_settings  = get_option( 'moowoodle_log_settings', array() );
             update_option( 'moowoodle_system_logs_settings', array_merge( $tool_settings, $log_settings ) );
 
             delete_option( 'moowoodle_general_settings' );
             delete_option( 'moowoodle_sso_settings' );
             delete_option( 'moowoodle_display_settings' );
             delete_option( 'moowoodle_bulk_access_settings' );
-            delete_option( 'moowoodle_tool_settings' ); 
+            delete_option( 'moowoodle_tool_settings' );
             delete_option( 'moowoodle_log_settings' );
         }
     }
@@ -387,7 +375,7 @@ class Installer {
                 'enrollment_date' => $enrollment_date,
             );
 
-            Enrollment::update_enrollment_information( $enrollment_data );   
+            Enrollment::update_enrollment_information( $enrollment_data );
         }
     }
 }

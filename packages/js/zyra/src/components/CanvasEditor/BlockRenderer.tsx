@@ -72,13 +72,16 @@ export const createBlock = (
         return item as Block;
     }
     if (item?.value) {
-        return createBlockID(item.value as BlockType, {
-            fixedName: item.fixedName,
-            placeholder: item.placeholder,
-            label: item.label,
-            options: item.options,
-            context,
-        });
+        return {
+            ...createBlockID(item.value as BlockType, {
+                fixedName: item.fixedName,
+                placeholder: item.placeholder,
+                label: item.label,
+                options: item.options,
+                context,
+            }),
+            ...item,
+        };
     }
     return createBlockID('text', { label: 'Text', context });
 };

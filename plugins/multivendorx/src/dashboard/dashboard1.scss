@@ -91,7 +91,9 @@ a {
     z-index: 9999;
     border-right: $border-light-small;
     transition: all 0.5s ease;
-
+    .close-btn{
+        display: none;
+    }
     .logo-wrapper {
         display: flex;
         align-items: center;
@@ -224,6 +226,7 @@ a {
     min-height: 100vh;
     margin-left: 16rem;
     transition: all 0.4s ease;
+    position: relative;
 
     .top-navbar-wrapper {
         position: fixed;
@@ -249,6 +252,10 @@ a {
                     font-size: 1.625rem;
                     color: $sub-text-color;
                     cursor: pointer;
+
+                    &.hamburger{
+                        display: none;
+                    }
                 }
             }
 

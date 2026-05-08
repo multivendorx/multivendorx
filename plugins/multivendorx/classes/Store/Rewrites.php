@@ -51,6 +51,27 @@ class Rewrites {
     }
 
     /**
+     * Get current queried store.
+     *
+     * @return Store|null
+     */
+    public function get_current_store() {
+        static $store = null;
+
+        if ( null !== $store ) {
+            return $store;
+        }
+
+        $store_slug = get_query_var( $this->custom_store_url );
+        if ( empty( $store_slug ) ) {
+            return null;
+        }
+
+        $store = Store::get_store( $store_slug, 'slug' );
+        return $store;
+    }
+
+    /**
      * Filter store query
      *
      * @param object $query The main query object.
@@ -69,7 +90,7 @@ class Rewrites {
             return;
         }
 
-        $store_obj = Store::get_store( $store_slug, 'slug' );
+        $store_obj = $this->get_current_store();
         if ( ! $store_obj ) {
             return;
         }
@@ -176,8 +197,7 @@ class Rewrites {
 
     public function set_store_page_title( $title ) {
         if ( get_query_var( $this->custom_store_url ) ) {
-            $store_slug = get_query_var( $this->custom_store_url );
-            $store      = Store::get_store( $store_slug, 'slug' );
+            $store = $this->get_current_store();
             if (!$store) {
                 return $title;
             }
@@ -198,13 +218,13 @@ class Rewrites {
 	 */
     public function load_store_template( $template ) {
         $store_name = get_query_var( $this->custom_store_url );
-        $store      = Store::get_store( $store_name, 'slug' );
+        $store = $this->get_current_store();
 
         if ( $store ) {
             $status      = $store->get( 'status' );
-            $permissions = MultiVendorX()->util->get_permissions();
+            $permissions = MultiVendorX()->util->get_permissions() ?? array();
 
-            if ( $permissions['hide_store_products'] && (in_array( $status, array( 'suspended', 'under_review' ), true ) || $permissions['hide_for_compliance']) ) {
+            if ( $permissions && $permissions['hide_store_products'] && (in_array( $status, array( 'suspended', 'under_review' ), true ) || $permissions['hide_for_compliance']) ) {
                 wp_safe_redirect( wc_get_page_permalink( 'shop' ) );
                 exit();
             }

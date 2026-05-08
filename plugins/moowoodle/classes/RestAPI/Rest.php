@@ -43,11 +43,11 @@ class Rest {
      */
     public function init_classes() {
         $this->container = array(
-            'settings'          => new Settings(),
-            'logs'              => new Logs(),
-            'synchronization'   => new Synchronization(),
-            'courses'           => new Courses(),
-            'my_courses'        => new MyCourses(),
+            'settings'        => new Settings(),
+            'logs'            => new Logs(),
+            'synchronization' => new Synchronization(),
+            'courses'         => new Courses(),
+            'my_courses'      => new MyCourses(),
         );
     }
     /**

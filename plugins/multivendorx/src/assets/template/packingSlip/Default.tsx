@@ -21,62 +21,120 @@ const Default: React.FC<Props> = ({ colors }) => {
 		},
 		boldText: {
 			fontWeight: 600,
-			fontSize: 11,
+			fontSize: 14,
 			margin: 0,
 		},
-		flexEnd: {
+
+		header: {
 			display: 'flex',
-			justifyContent: 'flex-end',
+			justifyContent: 'space-between',
+			alignItems: 'center',
+			flexDirection: 'row',
 			margin: 20,
 		},
-		// box details
+		headerTitle: {
+			fontSize: 32,
+			color: '#1e2a38',
+			fontWeight: 'bold',
+		},
+		headerRight: {
+			textAlign: 'right',
+			fontSize: 14,
+			color: '#555',
+			display: 'flex',
+			flexDirection: 'column',
+		},
+		headerDetails: {
+			display: 'flex',
+			flexDirection: 'row',
+		},
+		// boxDetails start
 		boxDetails: {
 			display: 'flex',
 			flexDirection: 'row',
 			justifyContent: 'space-between',
-			gap: 15,
-			padding: 20,
+			margin: 20,
 		},
 		box: {
 			display: 'flex',
 			flexDirection: 'column',
-			gap: 5,
-			width: '100%',
-			borderRadius: 5,
+			gap: 8,
 		},
 		boxTitle: {
-			fontSize: 14,
-			marginBottom: 5,
+			fontSize: 16,
+			marginBottom: 8,
+			color: '#1e2a38',
 			fontWeight: 'bold',
 		},
 		boxValueWrapper: {
 			display: 'flex',
 			flexDirection: 'row',
 		},
-		detailsValue: {},
+		detailsValue: {
+			fontSize: 14,
+			color: '#555'
+		},
 
 		// table start
 		table: {
 			display: 'flex',
 			flexDirection: 'column',
-			gap: 10,
 			margin: 20,
 		},
 		tableHeader: {
 			display: 'flex',
 			flexDirection: 'row',
+			backgroundColor: '#f7f8fa',
+			padding: 10,
 		},
 		tableHeaderText: {
 			fontWeight: 600,
+			color: '#1e2a38',
 		},
 		tableRow: {
 			display: 'flex',
 			flexDirection: 'row',
-			borderTop: '0.063rem solid #eee',
+			padding: 15,
+			borderBottom: '1px solid #eaeaea',
 		},
 		tableRowText: {
-			padding: 8,
-		}
+			fontSize: 14,
+			color: '#555'
+		},
+		// total section 
+		totalSection: {
+			display: 'flex',
+			justifyContent: 'flex-end',
+			alignItems: 'flex-end',
+			flexDirection: 'column',
+			margin: 20,
+		},
+		totalDetails: {
+			width: 300,
+			display: 'flex',
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			paddingTop: 12,
+		},
+		subTotal: {
+			fontSize: 15,
+			color: '#1e2a38',
+		},
+		totalWrapper: {
+			width: 300,
+			display: 'flex',
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			borderTop: `0.125rem solid #61666bff`,
+			paddingTop: 10,
+			marginTop: 10,
+		},
+		total: {
+			fontSize: 16,
+			fontWeight: 600,
+			color: '#1e2a38',
+		},
+
 	});
 	const styles = createStyles(colors);
 	return (
@@ -134,13 +192,7 @@ const Default: React.FC<Props> = ({ colors }) => {
 							<Text style={styles.tableHeaderText}> SKU</Text>
 						</View>
 						<View style={{ flex: 1 }}>
-							<Text style={styles.tableHeaderText}> Unit Price</Text>
-						</View>
-						<View style={{ flex: 1 }}>
 							<Text style={styles.tableHeaderText}> QTY</Text>
-						</View>
-						<View style={{ flex: 1 }}>
-							<Text style={styles.tableHeaderText}> Total</Text>
 						</View>
 					</View>
 					{Array.from({ length: 6 }).map((_, index) => (
@@ -152,13 +204,7 @@ const Default: React.FC<Props> = ({ colors }) => {
 								<Text style={styles.tableRowText}>SKU-000{index}</Text>
 							</View>
 							<View style={{ flex: 1 }}>
-								<Text style={styles.tableRowText}>$250</Text>
-							</View>
-							<View style={{ flex: 1 }}>
-								<Text style={styles.tableRowText}>$250</Text>
-							</View>
-							<View style={{ flex: 1 }}>
-								<Text style={styles.tableRowText}>$250</Text>
+								<Text style={styles.tableRowText}>6</Text>
 							</View>
 						</View>
 					))}
