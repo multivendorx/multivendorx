@@ -389,13 +389,17 @@ class Frontend {
 	 * @return void
 	 */
     public function multivendorx_store_visitors_stats() {
+        $store_page = Utill::is_store_page();
+        if ( !is_product() || !$store_page ) {
+            return;
+        }
         $product_store = false;
 
         if ( is_product() ) {
             global $post;
             $product_store = Store::get_store( $post->ID, 'product' );
-        } elseif ( Utill::is_store_page() ) {
-            $product_store = Utill::is_store_page();
+        } elseif ( $store_page ) {
+            $product_store = $store_page;
         }
 
         $user_id     = MultiVendorX()->current_user_id;
