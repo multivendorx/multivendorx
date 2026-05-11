@@ -183,8 +183,38 @@ export const NestedComponentUI: React.FC<NestedComponentProps> = ({
             updateAndSave(rows.filter((_, i) => i !== index));
         }
     }
+    function getMappedField(
+        field: NestedField,
+        row: RowType,
+        rowIndex: number
+    ) {
+        if (
+            field.type !== 'select' ||
+            !field.options
+        ) {
+            return field;
+        }
+
+        const usedValues = rows
+            .filter((_, index) => index !== rowIndex)
+            .map((item) => item?.[field.key]);
+
+        const updatedField = {
+            ...field,
+            options: field.options.filter(
+                (option) =>
+                    !usedValues.includes(option.value) ||
+                    option.value === row?.[field.key]
+            ),
+        };
+
+        return updatedField;
+    }
 
     function renderField(field: NestedField, row: RowType, rowIndex: number) {
+        if (mapping) {
+            field = getMappedField(field, row, rowIndex);
+        }
         const fieldComponent = FIELD_REGISTRY[field.type];
         if (field.type === 'checklist') {
             return <ItemList className="checklist" items={field.options} />;
