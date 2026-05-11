@@ -20,15 +20,15 @@ interface NestedFieldOption {
 interface NestedField {
     key: string;
     type:
-        | 'number'
-        | 'choice-toggle'
-        | 'text'
-        | 'select'
-        | 'time'
-        | 'checkbox'
-        | 'textarea'
-        | 'checklist'
-        | 'divider';
+    | 'number'
+    | 'choice-toggle'
+    | 'text'
+    | 'select'
+    | 'time'
+    | 'checkbox'
+    | 'textarea'
+    | 'checklist'
+    | 'divider';
     label?: string;
     placeholder?: string;
     options?: NestedFieldOption[];
@@ -62,6 +62,7 @@ interface NestedComponentProps {
     single?: boolean;
     wrapperClass?: string;
     canAccess?: boolean;
+    mapping?: boolean;
 }
 
 export const NestedComponentUI: React.FC<NestedComponentProps> = ({
@@ -74,6 +75,7 @@ export const NestedComponentUI: React.FC<NestedComponentProps> = ({
     single = false,
     wrapperClass = '',
     canAccess,
+    mapping = false,
 }) => {
     const [rows, setRows] = useState<RowType[]>([]);
 
@@ -150,12 +152,27 @@ export const NestedComponentUI: React.FC<NestedComponentProps> = ({
         });
     }
 
+    function canAddMoreRows() {
+        if (!mapping) {
+            return true;
+        }
+
+        const selectField = fields.find(
+            (field) => field.type === 'select'
+        );
+
+        if (!selectField?.options) {
+            return true;
+        }
+
+        return rows.length < selectField.options.length;
+    }
     function addRow() {
         if (single) {
             return;
         }
 
-        if (!isLastRowComplete()) {
+        if (!isLastRowComplete() || !canAddMoreRows()) {
             return;
         }
         updateAndSave([...rows, {}]);
@@ -166,8 +183,38 @@ export const NestedComponentUI: React.FC<NestedComponentProps> = ({
             updateAndSave(rows.filter((_, i) => i !== index));
         }
     }
+    function getMappedField(
+        field: NestedField,
+        row: RowType,
+        rowIndex: number
+    ) {
+        if (
+            field.type !== 'select' ||
+            !field.options
+        ) {
+            return field;
+        }
+
+        const usedValues = rows
+            .filter((_, index) => index !== rowIndex)
+            .map((item) => item?.[field.key]);
+
+        const updatedField = {
+            ...field,
+            options: field.options.filter(
+                (option) =>
+                    !usedValues.includes(option.value) ||
+                    option.value === row?.[field.key]
+            ),
+        };
+
+        return updatedField;
+    }
 
     function renderField(field: NestedField, row: RowType, rowIndex: number) {
+        if (mapping) {
+            field = getMappedField(field, row, rowIndex);
+        }
         const fieldComponent = FIELD_REGISTRY[field.type];
         if (field.type === 'checklist') {
             return <ItemList className="checklist" items={field.options} />;
@@ -193,7 +240,7 @@ export const NestedComponentUI: React.FC<NestedComponentProps> = ({
                     value={fieldValue}
                     onChange={handleInternalChange}
                     canAccess={canAccess}
-                    // appLocalizer={appLocalizer}
+                // appLocalizer={appLocalizer}
                 />
             </>
         );
@@ -204,9 +251,8 @@ export const NestedComponentUI: React.FC<NestedComponentProps> = ({
             {rows.map((row, rowIndex) => (
                 <div
                     key={`nested-row-${rowIndex}`}
-                    className={`nested-row ${
-                        single ? '' : 'multiple'
-                    } ${wrapperClass}`}
+                    className={`nested-row ${single ? '' : 'multiple'
+                        } ${wrapperClass}`}
                 >
                     {fields.map((field) => {
                         if (rowIndex === 0 && field.skipFirstRow) {
@@ -244,27 +290,27 @@ export const NestedComponentUI: React.FC<NestedComponentProps> = ({
                                 //  Add button only on last row
                                 ...(rowIndex === rows.length - 1
                                     ? [
-                                          {
-                                              icon: 'plus',
-                                              color: 'purple',
-                                              text: addButtonLabel,
-                                              onClick: addRow,
-                                              disabled: !isLastRowComplete(),
-                                          },
-                                      ]
+                                        {
+                                            icon: 'plus',
+                                            color: 'purple',
+                                            text: addButtonLabel,
+                                            onClick: addRow,
+                                            disabled: !isLastRowComplete() || !canAddMoreRows(),
+                                        },
+                                    ]
                                     : []),
 
                                 // Delete button on all rows except row 0
                                 ...(rows.length > 1 && rowIndex > 0
                                     ? [
-                                          {
-                                              icon: 'delete',
-                                              text: deleteButtonLabel,
-                                              color: 'red',
-                                              onClick: () =>
-                                                  removeRow(rowIndex),
-                                          },
-                                      ]
+                                        {
+                                            icon: 'delete',
+                                            text: deleteButtonLabel,
+                                            color: 'red',
+                                            onClick: () =>
+                                                removeRow(rowIndex),
+                                        },
+                                    ]
                                     : []),
                             ]}
                         />
@@ -281,6 +327,7 @@ const NestedComponent: FieldComponent = {
             key={field.key}
             id={field.key}
             label={field.label}
+            mapping={field.mapping}
             fields={field.nestedFields ?? []} //The list of inner fields that belong to this section.
             value={value}
             wrapperClass={field.rowClass}

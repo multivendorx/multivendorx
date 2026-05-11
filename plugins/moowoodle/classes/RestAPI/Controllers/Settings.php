@@ -6,6 +6,7 @@
  */
 
 namespace MooWoodle\RestAPI\Controllers;
+use MooWoodle\Util;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -57,16 +58,10 @@ class Settings extends \WP_REST_Controller {
      * @param object $request The REST request object.
      */
     public function update_item( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'moowoodle' ), array( 'status' => 403 ) );
+        $nonce_check = Util::validate_nonce( $request );
 
-            // Log the error.
-            if ( is_wp_error( $error ) ) {
-                MooWoodle()->util->log( $error );
-            }
-
-            return $error;
+        if ( is_wp_error( $nonce_check ) ) {
+            return $nonce_check;
         }
         try {
             $all_details   = array();
@@ -89,9 +84,7 @@ class Settings extends \WP_REST_Controller {
 
             return $all_details;
         } catch ( \Exception $e ) {
-            MooWoodle()->util->log( $e );
-
-            return new \WP_Error( 'server_error', __( 'Unexpected server error', 'moowoodle' ), array( 'status' => 500 ) );
+           return Util::server_error( $e );
         }
     }
 }

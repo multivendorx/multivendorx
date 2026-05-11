@@ -45,7 +45,8 @@ export default {
 			action: 'get_site_info',
 			buttonText: 'Start Test',
 			interval: 2500,
-			desc: '',
+			successMessage: __('Connection test passed!', 'moowoodle'),
+			failureMessage: __('Connection test failed!', 'moowoodle'),
 			label: __('MooWoodle test connection', 'moowoodle'),
 			tasks: [
 				{
@@ -117,7 +118,7 @@ export default {
 					'moowoodle'
 				),
 				appLocalizer.moodle_site_url +
-					'admin/settings.php?section=authsettingmoowoodle'
+				'admin/settings.php?section=authsettingmoowoodle'
 			),
 			size: '50%',
 			label: __('SSO secret key', 'moowoodle'),

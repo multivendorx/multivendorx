@@ -271,4 +271,46 @@ class Util {
 
 		return strtr( $date_format, $map );
 	}
+
+    /**
+     * Validate REST nonce.
+     *
+     * @param \WP_REST_Request $request Request object.
+     * @return true|\WP_Error
+     */
+    public static function validate_nonce( $request ) {
+        $nonce = $request->get_header( 'X-WP-Nonce' );
+
+        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            $error = new \WP_Error(
+                'invalid_nonce',
+                __( 'Invalid nonce', 'moowoodle' ),
+                array( 'status' => 403 )
+            );
+
+            self::log( $error );
+
+            return $error;
+        }
+
+        return true;
+    }
+    /**
+     * Handle server exception response.
+     *
+     * @param \Exception $exception Exception object.
+     * @return \WP_Error
+     */
+    public function server_error( \Exception $exception ) {
+
+        MooWoodle()->util->log( $exception );
+
+        return new \WP_Error(
+            'server_error',
+            __( 'Unexpected server error', 'moowoodle' ),
+            array(
+                'status' => 500,
+            )
+        );
+    }
 }

@@ -4,28 +4,23 @@ import wordpressLogo from '@/assets/images/wordPress-to-moodle.png';
 import moodleLogo from '@/assets/images/moodle-to-wordpress.png';
 const nestedFields = [
 	{
-		key: 'wordPress_user_mapping',
+		key: 'wordPress',
 		type: 'select',
-		label: __('Open Router Model', 'multivendorx'),
-		desc: __(
-			'Choose your preferred AI model from OpenRouter.',
-			'multivendorx'
-		),
 		options: [
 			{
-				key: 'openai/gpt-4o-mini',
+				key: 'firstname',
 				label: 'First name',
-				value: 'openai/gpt-4o-mini',
+				value: 'firstname',
 			},
 			{
-				key: 'last_name',
+				key: 'lastname',
 				label: 'Last name',
-				value: 'last_name',
+				value: 'lastname',
 			},
 			{
-				key: 'user_name',
+				key: 'username',
 				label: 'User name',
-				value: 'user_name',
+				value: 'username',
 			},
 			{
 				key: 'password',
@@ -40,28 +35,23 @@ const nestedFields = [
 		},
 	},
 	{
-		key: 'moodle_user_mapping',
+		key: 'moodle',
 		type: 'select',
-		label: __('Moodle User Mapping', 'multivendorx'),
-		desc: __(
-			'Choose your preferred AI model from OpenRouter.',
-			'multivendorx'
-		),
 		options: [
 			{
-				key: 'openai/gpt-4o-mini',
+				key: 'firstname',
 				label: 'First name',
-				value: 'openai/gpt-4o-mini',
+				value: 'firstname',
 			},
 			{
-				key: 'last_name',
+				key: 'lastname',
 				label: 'Last name',
-				value: 'last_name',
+				value: 'lastname',
 			},
 			{
-				key: 'user_name',
+				key: 'username',
 				label: 'User name',
-				value: 'user_name',
+				value: 'username',
 			},
 			{
 				key: 'password',
@@ -159,9 +149,11 @@ export default {
 		{
 			key: 'user_sync_options',
 			type: 'nested',
-			label: __('Profile information mapping', 'multivendorx'),
+			label: __('Profile information mapping', 'moowoodle'),
 			rowClass: 'single-line',
-			single: true,
+			mapping: true,
+			addButtonLabel: __('Add New', 'moowoodle'),
+			deleteButtonLabel: __('Remove', 'moowoodle'),
 			desc: __(
 				"Define the user profile information mapping between WordPress and Moodle. Add multiple rows above to define all the profile data you wish to map. Any remaining profile field will be excluded from the synchronization process.<br>User will be created based on their e-mail id, hence email id can't be mapped.",
 				'moowoodle'
@@ -196,9 +188,9 @@ export default {
 			apilink: 'synchronization',
 			parameter: 'user',
 			interval: 2500,
-			successMessage: 'Courses synchronized successfully!',
-			failureMessage: 'Failed to synchronize courses.',
-			desc: "Initiate the immediate synchronization of all courses from Moodle to WordPress.<br><span class='highlighted-part'><br>With the 'Course & product synchronization' option, you have the ability to specify whether you want to create new products, update existing products.<br>Through the 'Course information mapping' feature, you gain the flexibility to define which specific course data gets imported from Moodle, like course ID number/course images etc. By default we will fetch only the category of the product.</span>",
+			successMessage: 'Users synchronized successfully!',
+			failureMessage: 'Failed to synchronize users.',
+			desc: "Initiate the immediate synchronization of all users from Moodle to WordPress.<br><span class='highlighted-part'><br>With the 'User & product synchronization' option, you have the ability to specify whether you want to create new products, update existing products.<br>Through the 'User information mapping' feature, you gain the flexibility to define which specific user data gets imported from Moodle, like user ID number/user images etc. By default we will fetch only the category of the product.</span>",
 		},
 	],
 };
