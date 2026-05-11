@@ -107,13 +107,11 @@ class Courses extends \WP_REST_Controller {
             $formatted_courses = array();
 
             foreach ( $courses as $course ) {
-                $course_id       = (int) $course['id'];
-                $product_id      = (int) $course['product_id'];
                 $synced_products = array();
                 $product_image   = '';
 
-                if ( $product_id ) {
-                    $product = wc_get_product( $product_id );
+                if ( $course['product_id'] ) {
+                    $product = wc_get_product( (int)$course['product_id'] );
                     if ( $product ) {
                         $synced_products[ $product->get_name() ] = add_query_arg(
                             array(
@@ -147,7 +145,7 @@ class Courses extends \WP_REST_Controller {
                 $formatted_courses[] = apply_filters(
                     'moowoodle_formatted_course',
                     array(
-                        'id'                => $course_id,
+                        'id'                => (int) $course['id'],
                         'moodle_url'        => $moodle_url,
                         'moodle_course_id'  => $course['moodle_course_id'],
                         'course_short_name' => $course['shortname'],
@@ -172,13 +170,7 @@ class Courses extends \WP_REST_Controller {
 
             return $response;
         } catch ( \Exception $e ) {
-            MooWoodle()->util->log( $e );
-
-            return new \WP_Error(
-                'server_error',
-                __( 'Unexpected server error', 'moowoodle' ),
-                array( 'status' => 500 )
-            );
+           return Util::server_error( $e );
         }
     }
 
@@ -193,65 +185,62 @@ class Courses extends \WP_REST_Controller {
      * @return WP_REST_Response|WP_Error
      */
     public function get_filter_items( $request ) {
-        $nonce_check = Util::validate_nonce( $request );
 
-        if ( is_wp_error( $nonce_check ) ) {
-            return $nonce_check;
-        }
+        $plugin = MooWoodle();
 
-        try {
-			// Fetch all courses.
-			$courses = MooWoodle()->course->get_course_information( array() );
-			if ( empty( $courses ) ) {
-				return rest_ensure_response(
-                    array(
-						'courses'  => array(),
-						'category' => array(),
-                    )
-				);
-			}
+        // Fetch all courses.
+        $courses = $plugin->course->get_course_information( array() );
 
-			// Extract unique category IDs.
-			$category_ids = array_unique( wp_list_pluck( $courses, 'category_id' ) );
-
-			// Fetch categories.
-			$category = MooWoodle()->category->get_course_category_information( $category_ids );
-
-			// Prepare formatted course list.
-			$all_courses = array_map(
-                function ( $course ) {
-                    return array(
-                        'label' => $course['fullname'] ?: "Course {$course['id']}",
-                        'value' => (string) $course['id'],
-                    );
-                },
-                $courses
-			);
-
-			$all_category = array_map(
-                function ( $cat ) {
-                    return array(
-                        'label' => $cat['name'] ?: "Category {$cat['id']}",
-                        'value' => (string) $cat['id'],
-                    );
-                },
-                $category
-			);
-
-			return rest_ensure_response(
+        if ( empty( $courses ) ) {
+            return rest_ensure_response(
                 array(
-					'courses'  => $all_courses,
-					'category' => $all_category,
+                    'courses' => array(),
+                    'category' => array(),
                 )
-			);
-        } catch ( \Exception $e ) {
-            MooWoodle()->util->log( $e );
-
-            return new \WP_Error(
-                'server_error',
-                __( 'Unexpected server error', 'moowoodle' ),
-                array( 'status' => 500 )
             );
         }
+
+        // Extract unique category IDs.
+        $category_ids = array_unique(
+            wp_list_pluck( $courses, 'category_id' )
+        );
+
+        // Fetch categories.
+        $categories = $plugin->category->get_course_category_information(
+            $category_ids
+        );
+
+        // Format courses.
+        $formatted_courses = array_map(
+            function ( $course ) {
+                return array(
+                    'label' => ! empty( $course['fullname'] )
+                        ? $course['fullname']
+                        : "Course {$course['id']}",
+                    'value' => (string) $course['id'],
+                );
+            },
+            $courses
+        );
+
+        // Format categories.
+        $formatted_categories = array_map(
+            function ( $category ) {
+                return array(
+                    'label' => ! empty( $category['name'] )
+                        ? $category['name']
+                        : "Category {$category['id']}",
+                    'value' => (string) $category['id'],
+                );
+            },
+            $categories
+        );
+
+        return rest_ensure_response(
+            array(
+                'courses' => $formatted_courses,
+                'category' => $formatted_categories,
+            )
+        );
     }
 }

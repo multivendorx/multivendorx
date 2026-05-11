@@ -295,4 +295,22 @@ class Util {
 
         return true;
     }
+    /**
+     * Handle server exception response.
+     *
+     * @param \Exception $exception Exception object.
+     * @return \WP_Error
+     */
+    public function server_error( \Exception $exception ) {
+
+        MooWoodle()->util->log( $exception );
+
+        return new \WP_Error(
+            'server_error',
+            __( 'Unexpected server error', 'moowoodle' ),
+            array(
+                'status' => 500,
+            )
+        );
+    }
 }

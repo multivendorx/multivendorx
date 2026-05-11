@@ -84,9 +84,7 @@ class Settings extends \WP_REST_Controller {
 
             return $all_details;
         } catch ( \Exception $e ) {
-            MooWoodle()->util->log( $e );
-
-            return new \WP_Error( 'server_error', __( 'Unexpected server error', 'moowoodle' ), array( 'status' => 500 ) );
+           return Util::server_error( $e );
         }
     }
 }

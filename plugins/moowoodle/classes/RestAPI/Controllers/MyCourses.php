@@ -57,7 +57,7 @@ class MyCourses extends \WP_REST_Controller {
     }
 
     /**
-     * Get a specific course.
+     * Get user enrolled courses.
      *
      * @param object $request The request object.
      */
@@ -119,7 +119,7 @@ class MyCourses extends \WP_REST_Controller {
                 $formatted_enrolled_date = '';
 
                 if ( ! empty( $enrollment['enrollment_date'] ) && strtotime( $enrollment['enrollment_date'] ) ) {
-                    $formatted_enrolled_date = gmdate( 'M j, Y - H:i', strtotime( $enrollment['enrollment_date'] ) );
+                    $formatted_enrolled_date = wp_date('M j, Y - H:i',strtotime( $enrollment['enrollment_date'] ));
                 }
 
                 $formatted_courses[] = array(
@@ -150,13 +150,7 @@ class MyCourses extends \WP_REST_Controller {
 
             return $response;
         } catch ( \Exception $e ) {
-            MooWoodle()->util->log( $e );
-
-            return new \WP_Error(
-                'server_error',
-                __( 'Unexpected server error', 'moowoodle' ),
-                array( 'status' => 500 )
-            );
+            return Util::server_error( $e );
         }
     }
 }

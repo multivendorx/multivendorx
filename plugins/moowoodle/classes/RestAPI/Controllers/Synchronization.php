@@ -107,13 +107,7 @@ class Synchronization extends \WP_REST_Controller {
 
 			    return rest_ensure_response( $response );
         } catch ( \Exception $e ) {
-            MooWoodle()->util->log( $e );
-
-            return new \WP_Error(
-                'server_error',
-                __( 'Unexpected server error', 'moowoodle' ),
-                array( 'status' => 500 )
-            );
+            return Util::server_error( $e );
         }
     }
 
@@ -140,12 +134,7 @@ class Synchronization extends \WP_REST_Controller {
 
             return null;
         } catch ( \Exception $e ) {
-            MooWoodle()->util->log( $e );
-            return new \WP_Error(
-                'server_error',
-                __( 'Unexpected server error', 'moowoodle' ),
-                array( 'status' => 500 )
-            );
+            return Util::server_error( $e );
         }
     }
 
@@ -156,12 +145,6 @@ class Synchronization extends \WP_REST_Controller {
      * @return \WP_Error| \WP_REST_Response
      */
     public function connection_test_synchronization( $request ) {
-        $nonce_check = Util::validate_nonce( $request );
-
-        if ( is_wp_error( $nonce_check ) ) {
-            return $nonce_check;
-        }
-
 
         $action = $request->get_param( 'action' );
         $user   = $request->get_param( 'get_user' );
@@ -213,12 +196,6 @@ class Synchronization extends \WP_REST_Controller {
      * @return \WP_Error | \WP_REST_Response
      */
     public function course_synchronization( $request ) {
-        $nonce_check = Util::validate_nonce( $request );
-
-        if ( is_wp_error( $nonce_check ) ) {
-            return $nonce_check;
-        }
-
         // Flusk course sync status before sync start.
         Util::flush_sync_status( 'course' );
 

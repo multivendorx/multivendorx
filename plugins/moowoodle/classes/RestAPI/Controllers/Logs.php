@@ -26,7 +26,12 @@ class Logs extends \WP_REST_Controller {
 	protected $rest_base = 'logs';
 
     /**
-     * Register the routes for the objects of the controller.
+     * Get logs data.
+     *
+     * Handles log listing, download, and clear actions.
+     *
+     * @param WP_REST_Request $request Request object.
+     * @return \WP_Error|\WP_REST_Response
      */
     public function register_routes() {
         register_rest_route(
@@ -100,11 +105,6 @@ class Logs extends \WP_REST_Controller {
      * @return \WP_Error|\WP_REST_Response
      */
     public function download_log( $request ) {
-        $nonce_check = Util::validate_nonce( $request );
-
-        if ( is_wp_error( $nonce_check ) ) {
-            return $nonce_check;
-        }
         // Get the file parameter from the request.
         $file      = get_option( Util::MOOWOODLE_OTHER_SETTINGS['log_file'] );
         $file      = basename( $file );
