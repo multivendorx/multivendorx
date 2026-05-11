@@ -252,7 +252,7 @@ const Course: React.FC = () => {
 	// Define filters
 	const filters = [
 		{
-			key: 'catagory',
+			key: 'category',
 			label: __('Category', 'moowoodle'),
 			type: 'select',
 			options: category,
@@ -272,7 +272,7 @@ const Course: React.FC = () => {
 			params: {
 				page: query.paged || 1,
 				row: query.per_page || 10,
-				catagory: query.filter?.catagory || '',
+				category: query.filter?.category || '',
 				searchaction: query.searchAction || 'course',
 				search: query.searchValue,
 			},

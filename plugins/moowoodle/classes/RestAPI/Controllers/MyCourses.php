@@ -104,36 +104,38 @@ class MyCourses extends \WP_REST_Controller {
             $moodle_base_url = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) );
             $current_user = MooWoodle()->current_user;
             
-            $formatted_courses = array_map(
-                function ( $enrollment ) use ( $current_user, $moodle_password, $moodle_base_url ) {
-                    $course = MooWoodle()->course->get_course_information(
-                        array(
-                            'id' => $enrollment['course_id'],
-                        )
-                    );
-                    $course = reset( $course );
+            $formatted_courses = array();
 
-                    $formatted_enrolled_date = '';
-                    if ( ! empty( $enrollment['enrollment_date'] ) && strtotime( $enrollment['enrollment_date'] ) ) {
-                        $formatted_enrolled_date = gmdate( 'M j, Y - H:i', strtotime( $enrollment['enrollment_date'] ) );
-                    }
+            foreach ( $user_enrollments as $enrollment ) {
 
-                    return array(
-                        'user_name'       => $current_user->user_login,
-                        'course_name'     => $course['fullname'] ?? '',
-                        'enrollment_date' => $formatted_enrolled_date,
-                        'password'        => $moodle_password,
-                        'moodle_url'      => ! empty( $course['moodle_course_id'] )
+                $course = MooWoodle()->course->get_course_information(
+                    array(
+                        'id' => $enrollment['course_id'],
+                    )
+                );
+
+                $course = reset( $course );
+
+                $formatted_enrolled_date = '';
+
+                if ( ! empty( $enrollment['enrollment_date'] ) && strtotime( $enrollment['enrollment_date'] ) ) {
+                    $formatted_enrolled_date = gmdate( 'M j, Y - H:i', strtotime( $enrollment['enrollment_date'] ) );
+                }
+
+                $formatted_courses[] = array(
+                    'user_name'       => $current_user->user_login,
+                    'course_name'     => $course['fullname'] ?? '',
+                    'enrollment_date' => $formatted_enrolled_date,
+                    'password'        => $moodle_password,
+                    'moodle_url'      => ! empty( $course['moodle_course_id'] )
                         ? apply_filters(
                             'moodle_course_view_url',
                             "{$moodle_base_url}course/view.php?id={$course['moodle_course_id']}",
                             $course['moodle_course_id']
                         )
                         : null,
-                    );
-                },
-                $user_enrollments
-            );
+                );
+            }
 
             $total_user_enrollments = MooWoodle()->enrollment->get_enrollment_information(
                 array(

@@ -77,7 +77,7 @@ class Synchronization extends \WP_REST_Controller {
     }
 
     /**
-     * Get all synchronization.
+     * Synchronization.
      *
      * @param object $request The request object.
      */
@@ -118,7 +118,7 @@ class Synchronization extends \WP_REST_Controller {
     }
 
     /**
-     * Create a single item.
+     * Synchronization.
      *
      * @param object $request Full data about the request.
      */

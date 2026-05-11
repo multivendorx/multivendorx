@@ -77,7 +77,7 @@ class Courses extends \WP_REST_Controller {
             $limit          = max( intval( $request->get_param( 'row' ) ), 10 );
             $page           = max( intval( $request->get_param( 'page' ) ), 1 );
             $offset         = ( $page - 1 ) * $limit;
-            $category_field = $request->get_param( 'catagory' );
+            $category_field = $request->get_param( 'category' );
             $search_action  = $request->get_param( 'searchaction' );
             $search_field   = $request->get_param( 'search' );
 
@@ -108,7 +108,7 @@ class Courses extends \WP_REST_Controller {
 
             foreach ( $courses as $course ) {
                 $course_id       = (int) $course['id'];
-                $product_id      = (int) ( $course['product_id'] );
+                $product_id      = (int) $course['product_id'];
                 $synced_products = array();
                 $product_image   = '';
 
