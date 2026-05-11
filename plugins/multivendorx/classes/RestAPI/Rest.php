@@ -123,6 +123,13 @@ class Rest {
      * @param object $request REST API request object.
      */
     public function query_shop_order_modify( $args, $request ) {
+        if ( ! empty( $request['meta_value'] ) ) {
+            $args['meta_query'][] = array(
+                'key'   => sanitize_text_field( $request['meta_key'] ),
+                'value' => sanitize_text_field( $request['meta_value'] ),
+            );
+        }
+
         $meta_key      = $request->get_param( 'meta_key' ) ?? '';
         $meta_value    = $request->get_param( 'value' ) ?? '';
         $refund_status = $request->get_param( 'refund_status' ) ?? '';
@@ -174,6 +181,13 @@ class Rest {
      * @return array Modified WP_Query arguments.
      */
     public function query_product_modify( $args, $request ) {
+        if ( ! empty( $request['meta_value'] ) ) {
+            $args['meta_query'][] = array(
+                'key'   => sanitize_text_field( $request['meta_key'] ),
+                'value' => sanitize_text_field( $request['meta_value'] ),
+            );
+        }
+
         $meta_key = $request['meta_key'] ?? '';
 
         if ( Utill::POST_META_SETTINGS['store_id'] !== $meta_key ) {

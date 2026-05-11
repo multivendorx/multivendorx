@@ -10,7 +10,7 @@ jQuery(document).ready(function ($) {
 				followStoreFrontend.apiUrl +
 				'/' +
 				followStoreFrontend.restUrl +
-				'/follow-store/' +
+				'/follow-stores/' +
 				store_id,
 			method: 'GET',
 			headers: {
@@ -56,7 +56,7 @@ jQuery(document).ready(function ($) {
 				followStoreFrontend.apiUrl +
 				'/' +
 				followStoreFrontend.restUrl +
-				'/follow-store/' +
+				'/follow-stores/' +
 				store_id,
 			method: 'POST',
 			headers: {

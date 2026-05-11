@@ -105,7 +105,8 @@ class Promotions {
 		</div>
         <?php
 
-        $plugin_action = filter_input(INPUT_GET, 'plugin_action', FILTER_SANITIZE_STRING);
+        $plugin_action = filter_input( INPUT_GET, 'plugin_action', FILTER_UNSAFE_RAW );
+        $plugin_action = is_string( $plugin_action ) ? sanitize_text_field( wp_unslash( $plugin_action ) ) : '';
 
         if ($plugin_action) {
             update_option('plugin_action_block_notice', $plugin_action);

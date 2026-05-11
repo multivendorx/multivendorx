@@ -128,6 +128,9 @@ class Product {
 
         foreach ( $store_ids as $store_id ) {
             $store = Store::get_store( $store_id );
+            if (empty($store)) {
+                continue;
+            }
             printf(
                 '<option value="%s" %s>%s</option>',
                 esc_attr( $store_id ),
