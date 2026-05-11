@@ -6,6 +6,7 @@
  */
 
 namespace MooWoodle\RestAPI\Controllers;
+use MooWoodle\Util;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -40,21 +41,6 @@ class Courses extends \WP_REST_Controller {
                 ),
             )
         );
-
-        register_rest_route(
-            MooWoodle()->rest_namespace,
-            '/' . $this->rest_base . '/(?P<id>[\d]+)',
-            array(
-                array(
-                    'methods'             => \WP_REST_Server::READABLE,
-                    'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
-                    'args'                => array(
-                        'id' => array( 'required' => true ),
-                    ),
-                ),
-            )
-        );
     }
 
     /**
@@ -66,33 +52,19 @@ class Courses extends \WP_REST_Controller {
         return current_user_can( 'manage_options' );
     }
 
-    /**
-     * PUT permission check.
-     *
-     * @param object $request Request data.
-     * @return bool
-     */
-    public function update_item_permissions_check( $request ) {
-        return current_user_can( 'customer' ) || current_user_can( 'manage_options' );
-    }
 
     /**
-     * Get all synchronization.
+     * Get items.
      *
-     * @param object $request The request object.
+     * @param WP_REST_Request $request Request object.
+     * @return WP_REST_Response|WP_Error
      */
     public function get_items( $request ) {
-        // ----- Nonce Check -----
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error(
-                'invalid_nonce',
-                __( 'Invalid nonce', 'moowoodle' ),
-                array( 'status' => 403 )
-            );
 
-            MooWoodle()->util->log( $error );
-            return $error;
+        $nonce_check = Util::validate_nonce( $request );
+
+        if ( is_wp_error( $nonce_check ) ) {
+            return $nonce_check;
         }
 
         try {
@@ -210,129 +182,21 @@ class Courses extends \WP_REST_Controller {
         }
     }
 
-    /**
-     * Get a specific course.
-     *
-     * @param object $request The request object.
-     */
-    public function get_item( $request ) {
-        // ----- Nonce Check -----
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error(
-                'invalid_nonce',
-                __( 'Invalid nonce', 'moowoodle' ),
-                array( 'status' => 403 )
-            );
-
-            MooWoodle()->util->log( $error );
-            return $error;
-        }
-
-        try {
-            $items_per_page = max( 1, (int) $request->get_param( 'row' ) ? $request->get_param( 'row' ) : 10 );
-            $page_number    = max( 1, (int) $request->get_param( 'page' ) ? $request->get_param( 'page' ) : 1 );
-            $query_offset   = ( $page_number - 1 ) * $items_per_page;
-
-            $total_user_enrollments = MooWoodle()->enrollment->get_enrollment_information(
-                array(
-                    'user_id' => $current_user->ID,
-                    'status'  => 'enrolled',
-                    'count'   => true,
-                )
-            );
-            // Allow pre-filtering by custom filters.
-            $user_courses_data = apply_filters( 'moowoodle_user_courses_cohorts_groups_data', null, $request );
-            if ( ! empty( $user_courses_data ) ) {
-                return $user_courses_data;
-            }
-
-            // Fetch paginated enrollments.
-            $user_enrollments = MooWoodle()->enrollment->get_enrollment_information(
-                array(
-                    'user_id'    => $current_user->ID,
-                    'status'     => 'enrolled',
-                    'limit'      => $items_per_page,
-                    'offset'     => $query_offset,
-                    'meta_query' => array(
-                        array(
-                            'key'     => 'course_id',
-                            'value'   => '0',
-                            'compare' => '!=',
-                        ),
-                    ),
-                )
-            );
-            $response         = rest_ensure_response( array() );
-            if ( empty( $user_enrollments ) ) {
-                return $response;
-            }
-
-            $moodle_password = get_user_meta( $current_user->ID, 'moowoodle_moodle_user_pwd', true );
-            $moodle_base_url = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) );
-
-            $formatted_courses = array_map(
-                function ( $enrollment ) use ( $current_user, $moodle_password, $moodle_base_url ) {
-                    $course = MooWoodle()->course->get_course_information(
-                        array(
-                            'id' => $enrollment['course_id'],
-                        )
-                    );
-                    $course = reset( $course );
-
-                    $formatted_enrolled_date = '';
-                    if ( ! empty( $enrollment['enrollment_date'] ) && strtotime( $enrollment['enrollment_date'] ) ) {
-                        $formatted_enrolled_date = gmdate( 'M j, Y - H:i', strtotime( $enrollment['enrollment_date'] ) );
-                    }
-
-                    return array(
-                        'user_name'       => $current_user->user_login,
-                        'course_name'     => $course['fullname'] ?? '',
-                        'enrollment_date' => $formatted_enrolled_date,
-                        'password'        => $moodle_password,
-                        'moodle_url'      => ! empty( $course['moodle_course_id'] )
-                        ? apply_filters(
-                            'moodle_course_view_url',
-                            "{$moodle_base_url}course/view.php?id={$course['moodle_course_id']}",
-                            $course['moodle_course_id']
-                        )
-                        : null,
-                    );
-                },
-                $user_enrollments
-            );
-
-            $response = $response->set_data( $formatted_courses );
-            $response->header( 'X-WP-Total', $total_user_enrollments );
-            return $response;
-        } catch ( \Exception $e ) {
-            MooWoodle()->util->log( $e );
-
-            return new \WP_Error(
-                'server_error',
-                __( 'Unexpected server error', 'moowoodle' ),
-                array( 'status' => 500 )
-            );
-        }
-    }
 
     /**
-     * Get all course filter.
+     * Get course and category filter items.
      *
-     * @param object $request The request object.
+     * Returns formatted course and category options
+     * for filter dropdown fields.
+     *
+     * @param WP_REST_Request $request Request object.
+     * @return WP_REST_Response|WP_Error
      */
     public function get_filter_items( $request ) {
-        // ----- Nonce Check -----
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error(
-                'invalid_nonce',
-                __( 'Invalid nonce', 'moowoodle' ),
-                array( 'status' => 403 )
-            );
+        $nonce_check = Util::validate_nonce( $request );
 
-            MooWoodle()->util->log( $error );
-            return $error;
+        if ( is_wp_error( $nonce_check ) ) {
+            return $nonce_check;
         }
 
         try {

@@ -6,6 +6,7 @@
  */
 
 namespace MooWoodle\RestAPI\Controllers;
+use MooWoodle\Util; 
 
 defined( 'ABSPATH' ) || exit;
 
@@ -61,31 +62,17 @@ class MyCourses extends \WP_REST_Controller {
      * @param object $request The request object.
      */
     public function get_item( $request ) {
-        // ----- Nonce Check -----
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error(
-                'invalid_nonce',
-                __( 'Invalid nonce', 'moowoodle' ),
-                array( 'status' => 403 )
-            );
+        $nonce_check = Util::validate_nonce( $request );
 
-            MooWoodle()->util->log( $error );
-            return $error;
+        if ( is_wp_error( $nonce_check ) ) {
+            return $nonce_check;
         }
 
         try {
-            $items_per_page = max( 1, (int) $request->get_param( 'row' ) ? $request->get_param( 'row' ) : 10 );
-            $page_number    = max( 1, (int) $request->get_param( 'page' ) ? $request->get_param( 'page' ) : 1 );
+            $items_per_page = max( 1, (int) $request->get_param( 'row' ) ?: 10 );
+            $page_number    = max( 1, (int) $request->get_param( 'page' ) ?: 1 );
             $query_offset   = ( $page_number - 1 ) * $items_per_page;
 
-            $total_user_enrollments = MooWoodle()->enrollment->get_enrollment_information(
-                array(
-                    'user_id' => $current_user->ID,
-                    'status'  => 'enrolled',
-                    'count'   => true,
-                )
-            );
             // Allow pre-filtering by custom filters.
             $user_courses_data = apply_filters( 'moowoodle_user_courses_cohorts_groups_data', null, $request );
             if ( ! empty( $user_courses_data ) ) {
@@ -95,7 +82,7 @@ class MyCourses extends \WP_REST_Controller {
             // Fetch paginated enrollments.
             $user_enrollments = MooWoodle()->enrollment->get_enrollment_information(
                 array(
-                    'user_id'    => $current_user->ID,
+                    'user_id'    => MooWoodle()->current_user_id,
                     'status'     => 'enrolled',
                     'limit'      => $items_per_page,
                     'offset'     => $query_offset,
@@ -113,9 +100,10 @@ class MyCourses extends \WP_REST_Controller {
                 return $response;
             }
 
-            $moodle_password = get_user_meta( $current_user->ID, 'moowoodle_moodle_user_pwd', true );
+            $moodle_password = get_user_meta( MooWoodle()->current_user_id, 'moowoodle_moodle_user_pwd', true );
             $moodle_base_url = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) );
-
+            $current_user = MooWoodle()->current_user;
+            
             $formatted_courses = array_map(
                 function ( $enrollment ) use ( $current_user, $moodle_password, $moodle_base_url ) {
                     $course = MooWoodle()->course->get_course_information(
@@ -147,8 +135,17 @@ class MyCourses extends \WP_REST_Controller {
                 $user_enrollments
             );
 
-            $response = $response->set_data( $formatted_courses );
+            $total_user_enrollments = MooWoodle()->enrollment->get_enrollment_information(
+                array(
+                    'user_id' => MooWoodle()->current_user_id,
+                    'status'  => 'enrolled',
+                    'count'   => true,
+                )
+            );
+
+            $response->set_data( $formatted_courses );
             $response->header( 'X-WP-Total', $total_user_enrollments );
+
             return $response;
         } catch ( \Exception $e ) {
             MooWoodle()->util->log( $e );

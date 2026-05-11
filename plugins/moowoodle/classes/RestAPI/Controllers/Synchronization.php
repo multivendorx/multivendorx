@@ -82,37 +82,30 @@ class Synchronization extends \WP_REST_Controller {
      * @param object $request The request object.
      */
     public function get_items( $request ) {
-        // ----- Nonce Check -----
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error(
-                'invalid_nonce',
-                __( 'Invalid nonce', 'moowoodle' ),
-                array( 'status' => 403 )
-            );
+        $nonce_check = Util::validate_nonce( $request );
 
-            MooWoodle()->util->log( $error );
-            return $error;
+        if ( is_wp_error( $nonce_check ) ) {
+            return $nonce_check;
         }
 
         try {
-                        $response = array(
-							'status'  => array(),
-							'running' => false,
-						);
+            $response = array(
+			'status'  => array(),
+			'running' => false,
+			);
 
-						$status = $request->get_param( 'parameter' );
+			$status = $request->get_param( 'parameter' );
 
-						if ( 'course' === $status ) {
-							$response = array(
-								'status'  => Util::get_sync_status( 'course' ),
-								'running' => get_transient( 'course_sync_running' ),
-							);
-						} else {
-							$response = apply_filters( 'moowoodle_sync_status', $request );
-						}
+			if ( 'course' === $status ) {
+				$response = array(
+					'status'  => Util::get_sync_status( 'course' ),
+					'running' => get_transient( 'course_sync_running' ),
+				    );
+				} else {
+					$response = apply_filters( 'moowoodle_sync_status', $request );
+				}
 
-						return rest_ensure_response( $response );
+			    return rest_ensure_response( $response );
         } catch ( \Exception $e ) {
             MooWoodle()->util->log( $e );
 
@@ -130,21 +123,12 @@ class Synchronization extends \WP_REST_Controller {
      * @param object $request Full data about the request.
      */
     public function create_item( $request ) {
-        // Validate nonce.
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error(
-                'invalid_nonce',
-                __( 'Invalid nonce', 'moowoodle' ),
-                array( 'status' => 403 )
-            );
+        $nonce_check = Util::validate_nonce( $request );
 
-            if ( is_wp_error( $error ) ) {
-                MooWoodle()->util->log( $error );
-            }
-
-            return $error;
+        if ( is_wp_error( $nonce_check ) ) {
+            return $nonce_check;
         }
+
 
         try {
             $parameter = $request->get_param( 'parameter' );
@@ -172,17 +156,12 @@ class Synchronization extends \WP_REST_Controller {
      * @return \WP_Error| \WP_REST_Response
      */
     public function connection_test_synchronization( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error(
-                'invalid_nonce',
-                __( 'Invalid nonce', 'moowoodle' ),
-                array( 'status' => 403 )
-            );
+        $nonce_check = Util::validate_nonce( $request );
 
-            MooWoodle()->util->log( $error );
-            return $error;
+        if ( is_wp_error( $nonce_check ) ) {
+            return $nonce_check;
         }
+
 
         $action = $request->get_param( 'action' );
         $user   = $request->get_param( 'get_user' );
@@ -234,16 +213,10 @@ class Synchronization extends \WP_REST_Controller {
      * @return \WP_Error | \WP_REST_Response
      */
     public function course_synchronization( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error(
-                'invalid_nonce',
-                __( 'Invalid nonce', 'moowoodle' ),
-                array( 'status' => 403 )
-            );
+        $nonce_check = Util::validate_nonce( $request );
 
-            MooWoodle()->util->log( $error );
-            return $error;
+        if ( is_wp_error( $nonce_check ) ) {
+            return $nonce_check;
         }
 
         // Flusk course sync status before sync start.
