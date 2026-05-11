@@ -10,7 +10,6 @@ interface Task {
     message: string;
     successMessage?: string;
     failureMessage?: string;
-    requiresResponeData?: boolean;
     previousResponseData?: string[];
 }
 
