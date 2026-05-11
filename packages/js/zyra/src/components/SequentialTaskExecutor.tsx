@@ -121,8 +121,8 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                     },
                 }
             )
-            .then(() => {
-                setProcessStatus('success');
+            .then((response) => {
+                setProcessStatus(response.data === true ? 'success' : 'failed');
                 setLoading(false);
             })
             .catch((error) => {
