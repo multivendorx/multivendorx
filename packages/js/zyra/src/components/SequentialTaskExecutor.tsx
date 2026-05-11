@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { FieldComponent, ZyraVariable } from './fieldUtils';
 import { getApiLink } from '../utils/apiService';
@@ -50,10 +50,6 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
     const fetchStatusRef = useRef<NodeJS.Timeout | null>(null);
     const allResponses = useRef({});
 
-    const sleep = (ms: number) =>
-        new Promise((resolve) => setTimeout(resolve, ms));
-
-
     const executeSequentialTasks = async () => {
         setLoading(true);
         if (taskIndex.current >= tasks.length) {
@@ -64,8 +60,6 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
         }
 
         const currentTask = tasks[taskIndex.current];
-
-        // await sleep(interval);
 
         try {
             const payload: Record<string, unknown> = {};
