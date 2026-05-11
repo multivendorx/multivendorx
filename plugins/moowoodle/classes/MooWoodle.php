@@ -156,6 +156,10 @@ class MooWoodle {
         $this->container['frontendscripts']  = new FrontendScripts();
         $this->container['endpoint']         = new EndPoint();
 
+        
+        $this->container['current_user_id']    = get_current_user_id();
+        $this->container['current_user']       = wp_get_current_user();
+
         $this->initialize_moowoodle_log();
     }
 

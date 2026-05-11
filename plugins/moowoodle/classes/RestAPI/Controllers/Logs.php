@@ -26,7 +26,12 @@ class Logs extends \WP_REST_Controller {
 	protected $rest_base = 'logs';
 
     /**
-     * Register the routes for the objects of the controller.
+     * Get logs data.
+     *
+     * Handles log listing, download, and clear actions.
+     *
+     * @param WP_REST_Request $request Request object.
+     * @return \WP_Error|\WP_REST_Response
      */
     public function register_routes() {
         register_rest_route(
@@ -58,13 +63,16 @@ class Logs extends \WP_REST_Controller {
      * @return \WP_Error|\WP_REST_Response
      */
     public function get_items( $request ) {
+        $nonce_check = Util::validate_nonce( $request );
+
+        if ( is_wp_error( $nonce_check ) ) {
+            return $nonce_check;
+        }
+
         global $wp_filesystem;
-        $nonce     = $request->get_header( 'X-WP-Nonce' );
         $log_count = $request->get_param( 'logcount' );
         $log_count = $log_count ? $log_count : 100;
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'moowoodle' ), array( 'status' => 403 ) );
-        }
+
         if ( ! $wp_filesystem ) {
             require_once ABSPATH . '/wp-admin/includes/file.php';
             WP_Filesystem();
@@ -97,10 +105,6 @@ class Logs extends \WP_REST_Controller {
      * @return \WP_Error|\WP_REST_Response
      */
     public function download_log( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'moowoodle' ), array( 'status' => 403 ) );
-        }
         // Get the file parameter from the request.
         $file      = get_option( Util::MOOWOODLE_OTHER_SETTINGS['log_file'] );
         $file      = basename( $file );
