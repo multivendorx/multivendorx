@@ -151,6 +151,7 @@ class StripeConnect {
         if ( ! empty( $stripe_settings ) && isset( $stripe_settings['enable'] ) && $stripe_settings['enable'] ) {
             $store_id          = MultiVendorX()->active_store;
             $store             = new Store( $store_id );
+            $stripe_account_id = '';
             if ( $store->exists() ) {
                 $stripe_account_id = $store->get_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] );
             }

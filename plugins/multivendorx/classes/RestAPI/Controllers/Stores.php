@@ -507,15 +507,15 @@ class Stores extends \WP_REST_Controller {
             $file_data     = $request->get_file_params();
             $current_user  = MultiVendorX()->current_user;
 
-            if ( ! empty( $store_data['store-name'] ) && empty( $store_data['name'] ) ) {
-                $store_data['name'] = $store_data['store-name'];
+            if ( ! empty( $store_data['Name'] ) && empty( $store_data['name'] ) ) {
+                $store_data['name'] = $store_data['Name'];
             }
 
             if ( ! empty( $store_data['Description'] ) && empty( $store_data['description'] ) ) {
                 $store_data['description'] = $store_data['Description'];
             }
 
-            unset( $store_data['store-name'], $store_data['Description'] );
+            unset( $store_data['Name'], $store_data['Description'] );
             $core_fields = array(
                 Utill::STORE_SETTINGS_KEYS['name'],
                 Utill::STORE_SETTINGS_KEYS['slug'],
