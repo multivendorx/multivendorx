@@ -643,9 +643,14 @@ class StoreUtil {
             return apply_filters( 'multivendorx_get_excluded_products', false, $product_id );
         }
         $store       = Store::get_store( $store_id );
+        if (empty($store)) {
+            return false;
+        }
         $status      = $store->get( 'status' );
         $permissions = MultiVendorX()->util->get_permissions();
-
+        if (empty($permissions)) {
+            return false;
+        }
         if ( $check_payouts ) {
             if ( $permissions['disable_payouts'] && (in_array( $status, array( 'suspended', 'under_review' ), true ) || $permissions['hide_for_compliance']) ) {
                 return true;

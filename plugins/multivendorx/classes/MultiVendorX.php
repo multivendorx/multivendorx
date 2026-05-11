@@ -65,7 +65,7 @@ final class MultiVendorX {
         register_deactivation_hook( $file, array( $this, 'deactivate' ) );
 
         add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
-        add_action( 'woocommerce_loaded', array( $this, 'init_plugin' ) );
+        add_action( 'init', array( $this, 'init_plugin' ) );
         add_action( 'plugins_loaded', array( $this, 'is_woocommerce_loaded' ) );
         add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
         // Major update notice.
