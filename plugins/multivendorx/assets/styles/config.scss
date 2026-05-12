@@ -1,6 +1,6 @@
 :root {
     /* Primary color */
-    --theme-primary:
+    --theme-primary-color:
         var(--wp--preset--color--primary,
         var(--ast-global-color-0,
         var(--global-palette1,
@@ -25,7 +25,7 @@
     /* RGB fallback */
     --theme-secondary-rgb: 80, 7, 170;
 
-    --theme-background: color-mix(in srgb, var(--theme-primary) 10%, transparent);
+    --theme-background: color-mix(in srgb, var(--theme-primary-color) 10%, transparent);
 }
 
 // skeleton style start

@@ -302,6 +302,7 @@ registerBlockType('multivendorx/store-banner', {
                 backgroundRepeat: 'no-repeat',
                 position: 'relative',
                 display: 'flex',
+                padding: '2rem'
             }
         });
 
@@ -527,7 +528,8 @@ registerBlockType('multivendorx/store-banner', {
                 backgroundRepeat: 'no-repeat',
                 position: 'relative',
                 display: 'flex',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                padding: '2rem'
             }
         });
 
