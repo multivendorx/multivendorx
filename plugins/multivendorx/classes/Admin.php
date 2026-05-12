@@ -191,9 +191,9 @@ class Admin {
                     '<style>
                         a:has(.upgrade-to-pro){
                             background: linear-gradient(-28deg, #c4a9e8, #7848b9, #852aff) !important;
-                            color: White !important;
+                            color: white !important;
+                            padding: 5px 0;
                         }
-                        padding: 5px 0;
                     </style>
                     <div style="margin-left: -0.75rem;" class="upgrade-to-pro"><i class="dashicons dashicons-awards"></i>' . esc_html__( 'Upgrade to Pro', 'multivendorx' ) . '</div> ',
                     'manage_options',
@@ -217,7 +217,7 @@ class Admin {
     }
 
     /**
-     * Enqueue JavaScript for admin fronend page and localize script.
+     * Enqueue JavaScript for admin frontend page and localize script.
      *
      * @return void
      */
@@ -380,8 +380,8 @@ class Admin {
      */
     public function save_store_in_product( $post_id ) {
         $linked_store_id                   = absint( filter_input( INPUT_POST, 'linked_store' ) );
-        $fixed_commission_per_product      = absint( filter_input( INPUT_POST, 'product_fixed_commission' ) );
-        $percentage_commission_per_product = absint( filter_input( INPUT_POST, 'product_percentage_commission' ) );
+        $fixed_commission_per_product      = wc_format_decimal( filter_input( INPUT_POST, 'product_fixed_commission' ) );
+        $percentage_commission_per_product = wc_format_decimal( filter_input( INPUT_POST, 'product_percentage_commission' ) );
 
         if ( isset( $linked_store_id ) ) {
             update_post_meta( $post_id, Utill::POST_META_SETTINGS['store_id'], $linked_store_id );

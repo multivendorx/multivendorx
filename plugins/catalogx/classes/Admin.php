@@ -106,12 +106,12 @@ class Admin {
                 'catalogx',
                 __( 'Upgrade to Pro', 'catalogx' ),
                 '<style>
-                    a:has(.upgrade-to-pro){
-                        background: linear-gradient(-28deg, #C4A9E8, #7848B9, #852AFF) !important;
-                        color: White !important;
-                    };
-                    padding: 5px 0;
-                </style>
+                        a:has(.upgrade-to-pro){
+                            background: linear-gradient(-28deg, #c4a9e8, #7848b9, #852aff) !important;
+                            color: white !important;
+                            padding: 5px 0;
+                        }
+                    </style>
                 <div class="upgrade-to-pro"><i style="margin-right: 0.25rem" class="dashicons dashicons-awards"></i>' . __( 'Upgrade to pro', 'catalogx' ) . '</div>',
                 'manage_woocommerce',
                 '',

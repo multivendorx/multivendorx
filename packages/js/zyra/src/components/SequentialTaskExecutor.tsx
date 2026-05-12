@@ -15,6 +15,7 @@ interface Task {
 
 interface SequentialTaskExecutorProps {
     buttonText: string;
+    buttonIcon: string;
     apilink: string;
     parameter?: string;
     action: string;
@@ -29,6 +30,7 @@ interface SequentialTaskExecutorProps {
 
 export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = ({
     buttonText,
+    buttonIcon,
     apilink,
     action,
     parameter,
@@ -48,6 +50,18 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
     const taskIndex = useRef(0);
     const fetchStatusRef = useRef<NodeJS.Timeout | null>(null);
     const allResponses = useRef({});
+
+    const [currentCompletedIndex, setCurrentCompletedIndex] = useState(0);
+
+    useEffect(() => {
+        if (currentCompletedIndex < syncStatus.length) {
+            const timer = setTimeout(() => {
+                setCurrentCompletedIndex((prev) => prev + 1);
+            }, interval);
+
+            return () => clearTimeout(timer);
+        }
+    }, [currentCompletedIndex, syncStatus]);
 
     const executeSequentialTasks = async () => {
         setLoading(true);
@@ -184,7 +198,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                             color: 'purple-bg',
                             onClick: handleButtonClick,
                             disabled: loading,
-                            icon: 'import',
+                            icon: buttonIcon || 'import',
                         },
                     ]}
                     position="left"
@@ -207,7 +221,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                                         <i className={`failed-icon adminfont-error`} />                                    
                                     )}
                                     {processStatus === 'completed' && (                                    
-                                        <i className={`completed-icon adminfont-form-checkboxes`} />
+                                        <i className={`completed-icon adminfont-check`} />
                                     )}
                                 </span>
                                 {status.total && (
@@ -238,6 +252,7 @@ const SequentialTaskExecutor: FieldComponent = {
     render: ({ field }) => (
         <SequentialTaskExecutorUI
             buttonText={field.buttonText}
+            buttonIcon={field.buttonIcon}
             apilink={field.apilink}
             parameter={field.parameter}
             action={field.action}
