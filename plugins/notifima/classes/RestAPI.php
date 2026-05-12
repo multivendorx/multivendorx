@@ -83,7 +83,7 @@ class RestAPI {
 
         return array(
             'type'    => 'success',
-            'message' => __( 'Settings Saved', 'multivendorx' ),
+            'message' => __( 'Settings Saved', 'notifima' ),
         );
     }
 

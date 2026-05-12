@@ -32,7 +32,7 @@ const SubscribersList: React.FC = () => {
                     headerTitle={__('Download product wise subscriber data', 'notifima')}
                     buttons={[
 					{
-						label: __('Download CSV', 'multivendorx'),
+						label: __('Download CSV', 'notifima'),
 						icon: 'plus',
 						onClick:  appLocalizer.export_button,
 					},

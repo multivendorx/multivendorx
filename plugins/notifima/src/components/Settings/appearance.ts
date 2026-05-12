@@ -59,21 +59,21 @@ export default {
         {
 			key: 'display_lead_times',
 			type: 'checkbox',
-			label: __('Stock Status for Lead Time', 'multivendorx'),
+			label: __('Stock Status for Lead Time', 'notifima'),
 			settingDescription: __(
 				'Lead time informs customers when a product will be available again. This setting lets you choose which stock statuses will display the restock estimate.',
-				'multivendorx'
+				'notifima'
 			),
 			options: [
 				{
 					key: 'outofstock',
 					value: 'outofstock',
-					label: __('Out of stock', 'multivendorx'),
+					label: __('Out of stock', 'notifima'),
 				},
                 {
 					key: 'onbackorder',
 					value: 'onbackorder',
-					label: __('On backorder', 'multivendorx'),
+					label: __('On backorder', 'notifima'),
 				}
 			],
 			selectDeselect: true,
