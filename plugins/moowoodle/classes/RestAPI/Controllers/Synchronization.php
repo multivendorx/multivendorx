@@ -32,8 +32,6 @@ class Synchronization extends \WP_REST_Controller {
      * RestAPI construct function.
      */
     public function __construct() {
-		add_filter( 'moowoodle_process_connection_test_synchronization', array( $this, 'connection_test_synchronization' ) );
-		add_filter( 'moowoodle_process_course_synchronization', array( $this, 'course_synchronization' ) );
     }
 
     /**
@@ -117,23 +115,39 @@ class Synchronization extends \WP_REST_Controller {
      * @param object $request Full data about the request.
      */
     public function create_item( $request ) {
+
         $nonce_check = Util::validate_nonce( $request );
 
         if ( is_wp_error( $nonce_check ) ) {
             return $nonce_check;
         }
 
-
         try {
+
             $parameter = $request->get_param( 'parameter' );
-            if ( ! empty( $parameter ) ) {
-                return apply_filters( "moowoodle_process_{$parameter}_synchronization", $request );
-            } else {
-                do_action( 'moowoodle_sync' );
+
+            switch ( $parameter ) {
+
+                case 'connection_test':
+                    return $this->connection_test_synchronization( $request );
+
+                case 'course':
+                    return $this->course_synchronization( $request );
+
+                case ! empty( $parameter ):
+
+                    return apply_filters(
+                        "moowoodle_process_{$parameter}_synchronization",
+                        $request
+                    );
             }
 
+            do_action( 'moowoodle_sync' );
+
             return null;
+
         } catch ( \Exception $e ) {
+
             return Util::server_error( $e );
         }
     }

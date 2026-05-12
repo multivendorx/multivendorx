@@ -173,6 +173,8 @@ class Installer {
         }
 
         if ( version_compare( $previous_version, '3.4.0', '<' ) ) {
+            self::migrate_product_meta_3_4_0();
+
             $general_settings = get_option( 'moowoodle_general_settings', array() );
             $sso_settings     = get_option( 'moowoodle_sso_settings', array() );
             update_option( 'moowoodle_connection_access_settings', array_merge( $general_settings, $sso_settings ) );
@@ -378,4 +380,38 @@ class Installer {
             Enrollment::update_enrollment_information( $enrollment_data );
         }
     }
+
+    public static function migrate_product_meta_3_4_0() {
+
+        global $wpdb;
+
+        $wpdb->query(
+            "
+            UPDATE {$wpdb->postmeta}
+            SET meta_key = CASE meta_key
+                WHEN '_course_startdate' THEN 'moowoodle_course_startdate'
+                WHEN '_course_enddate' THEN 'moowoodle_course_enddate'
+                WHEN 'moodle_course_id' THEN 'moowoodle_moodle_course_id'
+                WHEN 'linked_course_id' THEN 'moowoodle_linked_course_id'
+                WHEN 'linked_cohort_id' THEN 'moowoodle_linked_cohort_id'
+                WHEN 'moodle_cohort_id' THEN 'moowoodle_moodle_cohort_id'
+                WHEN 'moodle_group_id' THEN 'moowoodle_moodle_group_id'
+                WHEN 'linked_group_id' THEN 'moowoodle_linked_group_id'
+            END
+            WHERE meta_key IN (
+                '_course_startdate',
+                '_course_enddate',
+                'moodle_course_id',
+                'linked_course_id',
+                'linked_cohort_id',
+                'moodle_cohort_id',
+                'moodle_group_id',
+                'linked_group_id'
+            )
+            "
+        );
+
+        wp_cache_flush();
+    }
+    
 }

@@ -43,10 +43,10 @@ class Util {
     );
     
     const MOOWOODLE_PRODUCT_META= array(
-        '_course_startdate' => '_course_startdate',
-        '_course_enddate'   => '_course_enddate',
-        'moodle_course_id' => 'moodle_course_id',
-        'linked_course_id' => 'linked_course_id',
+        'course_startdate'  => 'moowoodle_course_startdate',
+        'course_enddate'    => 'moowoodle_course_enddate',
+        'moodle_course_id'  => 'moowoodle_moodle_course_id',
+        'linked_course_id'  => 'moowoodle_linked_course_id',
     );
 
     /**

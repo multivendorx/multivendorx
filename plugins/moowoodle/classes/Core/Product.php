@@ -120,8 +120,8 @@ class Product {
 		$wp_course = reset( $wp_course );
 
         // Set product meta data.
-        $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['_course_startdate'], $course['startdate'] );
-        $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['_course_enddate'], $course['enddate'] );
+        $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['course_startdate'], $course['startdate'] );
+        $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['course_enddate'], $course['enddate'] );
         $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], $course['id'] );
         $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['linked_course_id'], $wp_course['id'] );
 		$product->set_status( 'publish' );
