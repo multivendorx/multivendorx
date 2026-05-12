@@ -252,7 +252,7 @@ class Admin {
      */
     public function textdomain_relative_path( $path, $url ) {
 
-        if ( strpos( $url, 'dc-woocommerce-product-vendor' ) !== false ) {
+        if ( strpos( $url, 'dc-woocommerce-multi-vendor' ) !== false ) {
             foreach ( MultiVendorX()->block_paths as $key => $new_path ) {
                 if ( strpos( $url, $key ) !== false ) {
                     $path = $new_path;
@@ -260,7 +260,7 @@ class Admin {
             }
 
             if ( strpos( $url, 'block' ) === false ) {
-                $path = 'assets/js/components.js';
+                $path = 'assets/js/vendors.js';
             }
         }
 
