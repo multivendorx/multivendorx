@@ -385,7 +385,7 @@ registerBlockType('multivendorx/store-banner', {
                             value={minHeight}
                             onChange={(value) => setAttributes({ minHeight: value })}
                             options={[
-                                { label: __('Small (12.5em)', 'multivendorx'), value: '12.5em' },
+                                { label: __('Small (12.5rem)', 'multivendorx'), value: '12.5rem' },
                                 { label: __('Medium (18.75rem)', 'multivendorx'), value: '18.75rem' },
                                 { label: __('Large (25rem)', 'multivendorx'), value: '25rem' },
                                 { label: __('Extra Large (31.25rem)', 'multivendorx'), value: '31.25rem' }

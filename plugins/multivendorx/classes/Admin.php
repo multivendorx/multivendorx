@@ -27,7 +27,7 @@ class Admin {
      * Admin constructor.
      */
     public function __construct() {
-        // admin pages manu and submenu.
+        // admin pages menu and submenu.
         add_action( 'admin_menu', array( $this, 'add_menus' ), 10 );
         // admin script and style.
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ), 20 );

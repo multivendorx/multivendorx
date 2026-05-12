@@ -41,6 +41,13 @@ class Util {
     const MOOWOODLE_OTHER_SETTINGS = array(
         'log_file' => 'moowoodle_log_file',
     );
+    
+    const MOOWOODLE_PRODUCT_META= array(
+        'course_startdate'  => 'moowoodle_course_startdate',
+        'course_enddate'    => 'moowoodle_course_enddate',
+        'moodle_course_id'  => 'moowoodle_moodle_course_id',
+        'wordpress_course_id'  => 'moowoodle_wordpress_course_id',
+    );
 
     /**
      * Write a formatted log entry for moowoodle.
