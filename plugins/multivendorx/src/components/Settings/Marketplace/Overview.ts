@@ -194,6 +194,12 @@ export default {
 							accepted: 'Any number (Default: 12)',
 							default: '[marketplace_stores per_page="12"]',
 						},
+						{
+							attribute: 'hide_empty',
+							description: 'Set the stores appears based on products.',
+							accepted: 'true or false (Default: false)',
+							default: '[marketplace_stores hide_empty="false"]',
+						},
 					],
 				},
 				{
