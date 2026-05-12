@@ -70,7 +70,7 @@
 .placeholder {
     left: 0;
     top: 0;
-    color: var(--theme-primary);
+    color: var(--theme-primary-color);
     display: flex;
     justify-content: center;
     background: var(--theme-background);
@@ -145,7 +145,7 @@
             padding: 0 0.45rem;
 
             a {
-                color: var(--theme-primary);
+                color: var(--theme-primary-color);
             }
 
             &.active {
@@ -153,7 +153,7 @@
                 border-radius: 0.313rem;
 
                 a {
-                    color: var(--theme-primary);
+                    color: var(--theme-primary-color);
                 }
             }
         }
@@ -202,7 +202,7 @@
                 align-items: center;
                 font-size: 1.813rem;
                 border-radius: 0.313rem;
-                color: var(--theme-primary);
+                color: var(--theme-primary-color);
             }
 
             .avatar {
@@ -214,7 +214,7 @@
                 font-size: 1.5rem;
                 background: var(--theme-background);
                 border-radius: 0.313rem;
-                color: var(--theme-primary);
+                color: var(--theme-primary-color);
             }
 
             .store-details {
