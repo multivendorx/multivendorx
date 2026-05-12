@@ -32,8 +32,6 @@ class Synchronization extends \WP_REST_Controller {
      * RestAPI construct function.
      */
     public function __construct() {
-		add_filter( 'moowoodle_process_connection_test_synchronization', array( $this, 'connection_test_synchronization' ) );
-		add_filter( 'moowoodle_process_course_synchronization', array( $this, 'course_synchronization' ) );
     }
 
     /**
@@ -117,23 +115,39 @@ class Synchronization extends \WP_REST_Controller {
      * @param object $request Full data about the request.
      */
     public function create_item( $request ) {
+
         $nonce_check = Util::validate_nonce( $request );
 
         if ( is_wp_error( $nonce_check ) ) {
             return $nonce_check;
         }
 
-
         try {
+
             $parameter = $request->get_param( 'parameter' );
-            if ( ! empty( $parameter ) ) {
-                return apply_filters( "moowoodle_process_{$parameter}_synchronization", $request );
-            } else {
-                do_action( 'moowoodle_sync' );
+
+            switch ( $parameter ) {
+
+                case 'connection_test':
+                    return $this->connection_test_synchronization( $request );
+
+                case 'course':
+                    return $this->course_synchronization( $request );
+
+                case ! empty( $parameter ):
+
+                    return apply_filters(
+                        "moowoodle_process_{$parameter}_synchronization",
+                        $request
+                    );
             }
 
+            do_action( 'moowoodle_do_synchronization', $parameter, $request );
+
             return null;
+
         } catch ( \Exception $e ) {
+
             return Util::server_error( $e );
         }
     }
@@ -183,25 +197,25 @@ class Synchronization extends \WP_REST_Controller {
                 $response = TestConnection::delete_users( $user['id'] );
                 break;
             default:
-                $response = array( 'error' => $action . ' Test connection function is not defiend' );
+                $response = array( 'error' => $action . ' Test connection function is not defined' );
         }
 
         return rest_ensure_response( $response );
     }
 
     /**
-     * Seve the setting set in react's admin setting page.
+     * Save the setting set in react's admin setting page.
      *
      * @param mixed $request rest api request object.
      * @return \WP_Error | \WP_REST_Response
      */
     public function course_synchronization( $request ) {
-        // Flusk course sync status before sync start.
+        // Flush course sync status before sync start.
         Util::flush_sync_status( 'course' );
 
         set_transient( 'course_sync_running', true );
 
-        $sync_setting = MooWoodle()->setting->get_setting( 'sync-course-options', array() );
+        $sync_setting = MooWoodle()->setting->get_setting( 'sync_course_options', array() );
         // update course and product categories.
         if ( in_array( 'sync_courses_category', $sync_setting, true ) ) {
 
@@ -232,7 +246,7 @@ class Synchronization extends \WP_REST_Controller {
             MooWoodle()->category->update_product_categories_information( $categories, 'product_cat' );
         }
 
-		// get all caurses from moodle.
+		// get all courses from moodle.
 		$response = MooWoodle()->external_service->do_request( 'get_courses' );
         $courses  = $response['data'];
 

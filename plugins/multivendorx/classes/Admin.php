@@ -27,7 +27,7 @@ class Admin {
      * Admin constructor.
      */
     public function __construct() {
-        // admin pages manu and submenu.
+        // admin pages menu and submenu.
         add_action( 'admin_menu', array( $this, 'add_menus' ), 10 );
         // admin script and style.
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ), 20 );
@@ -268,7 +268,7 @@ class Admin {
     }
 
     /**
-     * Redirct to pro shop url.
+     * Redirect to pro shop url.
      *
      * @return never
      */
@@ -473,7 +473,7 @@ class Admin {
      */
     public function edit_product_cat_commission_fields( $term ) {
         $commission_percentage = get_term_meta( $term->term_id, Utill::WORDPRESS_SETTINGS['category_percentage_commission'], true );
-        $commision_fixed       = get_term_meta( $term->term_id, Utill::WORDPRESS_SETTINGS['category_fixed_commission'], true );
+        $commission_fixed      = get_term_meta( $term->term_id, Utill::WORDPRESS_SETTINGS['category_fixed_commission'], true );
 		?>
         <tr class="form-field">
             <th scope="row" valign="top"><label for="category_percentage_commission"><?php esc_html_e( 'Commission Percentage', 'multivendorx' ); ?></label></th>
@@ -482,7 +482,7 @@ class Admin {
 
         <tr class="form-field">
             <th scope="row" valign="top"><label for="category_fixed_commission"><?php esc_html_e( 'Commission Fixed per transaction', 'multivendorx' ); ?></label></th>
-            <td><input type="number" class="short" name="category_fixed_commission" id="category_fixed_commission" value="<?php echo esc_attr( $commision_fixed ); ?>" placeholder=""></td>
+            <td><input type="number" class="short" name="category_fixed_commission" id="category_fixed_commission" value="<?php echo esc_attr( $commission_fixed ); ?>" placeholder=""></td>
         </tr>
 
 		<?php

@@ -50,7 +50,7 @@ class Product {
             array(
 				'meta_query' => array(
 					array(
-						'key'     => 'moodle_course_id',
+						'key'     => Util::MOOWOODLE_PRODUCT_META['moodle_course_id'],
 						'value'   => $moodle_course_id,
 						'compare' => '=',
 					),
@@ -107,7 +107,7 @@ class Product {
 		try {
 			$product->set_sku( $course['idnumber'] );
 		} catch ( \Exception $error ) {
-			Util::log( "Unable to set product's( id=" . $product->get_id() . ') SQU.' );
+			Util::log( "Unable to set product's( id=" . $product->get_id() . ') SKU.' );
 		}
 
 		// get the course id linked with moodle.
@@ -120,10 +120,10 @@ class Product {
 		$wp_course = reset( $wp_course );
 
         // Set product meta data.
-        $product->update_meta_data( '_course_startdate', $course['startdate'] );
-        $product->update_meta_data( '_course_enddate', $course['enddate'] );
-        $product->update_meta_data( 'moodle_course_id', $course['id'] );
-        $product->update_meta_data( 'linked_course_id', $wp_course['id'] );
+        $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['course_startdate'], $course['startdate'] );
+        $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['course_enddate'], $course['enddate'] );
+        $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], $course['id'] );
+        $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], $wp_course['id'] );
 		$product->set_status( 'publish' );
 		$product->save();
 
@@ -261,7 +261,7 @@ class Product {
 				return;
 			}
 
-			$prev_course_id = absint( get_post_meta( $product_id, 'linked_course_id', true ) );
+			$prev_course_id = absint( get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true ) );
 			if ( $prev_course_id === $link_item_id ) {
 				return $product_id;
 			}
@@ -272,8 +272,8 @@ class Product {
 				return;
 			}
 
-			update_post_meta( $product_id, 'linked_course_id', $link_item_id );
-			update_post_meta( $product_id, 'moodle_course_id', (int) $course['moodle_course_id'] );
+			update_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], $link_item_id );
+			update_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], (int) $course['moodle_course_id'] );
 
 			MooWoodle()->course->update_course_information(
 				array(
@@ -289,16 +289,16 @@ class Product {
 	/**
 	 * Unlinks the course from the given WooCommerce product.
 	 *
-	 * - Deletes the linked_course_id and moodle_course_id post meta.
+	 * - Deletes the wordpress_course_id and moodle_course_id post meta.
 	 * - Updates the course table to detach the product.
 	 *
 	 * @param int $product_id The ID of the WooCommerce product.
 	 * @return void
 	 */
 	public function clean_course_previous_link( $product_id ) {
-		delete_post_meta( $product_id, 'linked_course_id' );
+		delete_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'] );
 
-		$moodle_course_id = absint( get_post_meta( $product_id, 'moodle_course_id', true ) );
+		$moodle_course_id = absint( get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true ) );
 
 		if ( ! empty( $moodle_course_id ) ) {
 			MooWoodle()->course->update_course_information(
@@ -309,7 +309,7 @@ class Product {
 			);
 		}
 
-		delete_post_meta( $product_id, 'moodle_course_id' );
+		delete_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'] );
 	}
 
 	/**
@@ -342,7 +342,7 @@ class Product {
 			return;
 		}
 
-		$moodle_course_id = get_post_meta( $product_id, 'moodle_course_id', true );
+		$moodle_course_id = get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
 
 		if ( ! empty( $moodle_course_id ) ) {
 			MooWoodle()->course->update_course_information(
@@ -367,7 +367,7 @@ class Product {
 			return;
 		}
 
-		$moodle_course_id = get_post_meta( $product_id, 'moodle_course_id', true );
+		$moodle_course_id = get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
 
 		if ( ! empty( $moodle_course_id ) ) {
 			MooWoodle()->course->update_course_information(
@@ -380,7 +380,7 @@ class Product {
 	}
 
 	/**
-	 * Delete all the product which id is not prasent in $exclude_ids array.
+	 * Delete all the product which id is not present in $exclude_ids array.
      *
 	 * @param array $exclude_ids product ids.
 	 * @return void
@@ -394,7 +394,7 @@ class Product {
 				'return'     => 'ids',
 				'meta_query' => array(
 					array(
-						'key'     => 'linked_course_id',
+						'key'     => Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'],
 						'compare' => 'EXISTS',
 					),
 				),
