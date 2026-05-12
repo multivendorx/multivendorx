@@ -65,7 +65,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
-			title: __('Course information mapping', 'moowoodle'),
+			title: __('Product synchronization options', 'moowoodle'),
 		},
 		{
 			key: 'product_sync_option',
