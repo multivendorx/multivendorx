@@ -89,6 +89,12 @@ class Rest {
             $response->data['store_id']   = $store_id;
             $response->data['store_name'] = (string) $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
             $response->data['store_slug'] = (string) $store->get( Utill::STORE_SETTINGS_KEYS['slug'] );
+            $response->data['is_printful'] =
+            'yes' === get_post_meta(
+                $product_id,
+                'multivendorx_is_printful',
+                true
+            );
         }
 
         return $response;

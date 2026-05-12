@@ -39,6 +39,7 @@ interface ProductRow {
 	categories?: Array<{ id: number; name: string }>;
 	date_created: string;
 	status: string;
+	is_printful?: boolean;
 	permalink: string;
 	[key: string]: unknown;
 }
@@ -392,7 +393,30 @@ const AllProduct: React.FC = () => {
 			render: (row) => {
 				return (
 					<InfoItem
-						title={row.name}
+						title={
+							<div
+								style={{
+									display: 'flex',
+									alignItems: 'center',
+									gap: '8px',
+								}}
+							>
+								<span>{row.name}</span>
+
+								{row.is_printful && (
+									<img
+										src={`multivendorx/plugins/multivendorx/src/assets/images/printful-logo-png_seeklogo-477154.png`}
+										alt="Printful"
+										title="Printful Product"
+										style={{
+											width: '18px',
+											height: '18px',
+											objectFit: 'contain',
+										}}
+									/>
+								)}
+							</div>
+						}
 						onClick={() =>
 							dashNavigate(navigate, [
 								'products',
