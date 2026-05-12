@@ -109,6 +109,7 @@ registerBlockType('multivendorx/marketplace-stores', {
 		category: { type: 'string', default: '' },
 		perpage: { type: 'number', default: 5 },
 		showMap: { type: 'boolean', default: true },
+		hideEmpty: { type: 'boolean', default: false },
 	},
 
 	edit: EditBlock,

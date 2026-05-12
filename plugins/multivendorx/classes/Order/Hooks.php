@@ -397,6 +397,9 @@ class Hooks {
             if ( $meta->key === 'multivendorx_sold_by' ) {
                 $formatted_meta[ $key ]->display_key = __( 'Sold by', 'multivendorx' );
             }
+            if ( $meta->key === 'store_order_item_id' ) {
+                $formatted_meta[ $key ]->display_key = __( 'Item id', 'multivendorx' );
+            }
         }
 
         return $formatted_meta;

@@ -36,7 +36,7 @@ const PendingStores: React.FC<object> = () => {
 			return;
 		}
 
-		const statusValue = action === 'active' ? 'active' : '';
+		const statusValue = action === 'active' ? 'approve' : '';
 		if (!statusValue) {
 			return;
 		}
@@ -45,7 +45,7 @@ const PendingStores: React.FC<object> = () => {
 			method: 'POST',
 			url: getApiLink(appLocalizer, `stores/${storeId}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			data: { status: statusValue },
+			data: { status: statusValue, approval_queue: true },
 		})
 			.then(() => {
 				doRefreshTableData({});
@@ -66,7 +66,7 @@ const PendingStores: React.FC<object> = () => {
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			data: {
 				status: 'rejected',
-				_reject_note: rejectReason || '', // allow empty reason
+				reject_note: rejectReason || '', // allow empty reason
 			},
 		})
 			.then(() => {
