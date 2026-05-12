@@ -111,13 +111,16 @@ export default {
 			settingDescription:
 				'Courses are fetched from Moodle and synchronized with WordPress, ensuring product details remain updated.',
 			type: 'sequential-task-executor',
-			buttonText: 'Synchronize courses now!',
+			buttonText: __('Synchronize courses now!', 'moowoodle'),
 			apilink: 'synchronization',
 			parameter: 'course',
 			interval: 2500,
 			successMessage: 'Courses synchronized successfully!',
 			failureMessage: 'Failed to synchronize courses.',
-			desc: "Initiate the immediate synchronization of all courses from Moodle to WordPress.<br><span class='highlighted-part'><br>With the 'Course & product synchronization' option, you have the ability to specify whether you want to create new products, update existing products.<br>Through the 'Course information mapping' feature, you gain the flexibility to define which specific course data gets imported from Moodle, like course ID number/course images etc. By default we will fetch only the category of the product.</span>",
+			desc: __(
+				"Initiate the immediate synchronization of all courses from Moodle to WordPress.<br><span class='highlighted-part'><br>With the 'Course & product synchronization' option, you have the ability to specify whether you want to create new products, update existing products.<br>Through the 'Course information mapping' feature, you gain the flexibility to define which specific course data gets imported from Moodle, like course ID number/course images etc. By default we will fetch only the category of the product.</span>",
+				'moowoodle'
+			),
 		},
 	],
 };
