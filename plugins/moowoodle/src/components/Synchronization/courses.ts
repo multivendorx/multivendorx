@@ -107,9 +107,11 @@ export default {
 		},
 		{
 			key: 'sync_course_btn',
-			label: 'On-demand course',
-			settingDescription:
+			label: __('On-demand course', 'moowoodle'),
+			settingDescription: __(
 				'Courses are fetched from Moodle and synchronized with WordPress, ensuring product details remain updated.',
+				'moowoodle'
+			),
 			type: 'sequential-task-executor',
 			buttonText: __('Synchronize courses now!', 'moowoodle'),
 			apilink: 'synchronization',
