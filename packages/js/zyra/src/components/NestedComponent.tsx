@@ -288,14 +288,14 @@ export const NestedComponentUI: React.FC<NestedComponentProps> = ({
                         <ButtonInputUI
                             buttons={[
                                 //  Add button only on last row
-                                ...(rowIndex === rows.length - 1
+                                ...(rowIndex === rows.length - 1 && canAddMoreRows()
                                     ? [
                                         {
                                             icon: 'plus',
                                             color: 'purple',
                                             text: addButtonLabel,
                                             onClick: addRow,
-                                            disabled: !isLastRowComplete() || !canAddMoreRows(),
+                                            disabled: !isLastRowComplete() ,
                                         },
                                     ]
                                     : []),

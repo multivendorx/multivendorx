@@ -114,6 +114,7 @@ export default {
 			),
 			type: 'sequential-task-executor',
 			buttonText: __('Synchronize courses now!', 'moowoodle'),
+			buttonIcon: 'bulk-course-sync',
 			apilink: 'synchronization',
 			parameter: 'course',
 			interval: 2500,
