@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 class Util {
 
 	/**
-     * Constent holds table name
+     * Constant holds table name
      *
      * @var array
      */

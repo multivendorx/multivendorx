@@ -107,7 +107,7 @@ class Product {
 		try {
 			$product->set_sku( $course['idnumber'] );
 		} catch ( \Exception $error ) {
-			Util::log( "Unable to set product's( id=" . $product->get_id() . ') SQU.' );
+			Util::log( "Unable to set product's( id=" . $product->get_id() . ') SKU.' );
 		}
 
 		// get the course id linked with moodle.
@@ -380,7 +380,7 @@ class Product {
 	}
 
 	/**
-	 * Delete all the product which id is not prasent in $exclude_ids array.
+	 * Delete all the product which id is not present in $exclude_ids array.
      *
 	 * @param array $exclude_ids product ids.
 	 * @return void
