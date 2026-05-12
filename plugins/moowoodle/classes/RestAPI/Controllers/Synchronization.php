@@ -197,20 +197,20 @@ class Synchronization extends \WP_REST_Controller {
                 $response = TestConnection::delete_users( $user['id'] );
                 break;
             default:
-                $response = array( 'error' => $action . ' Test connection function is not defiend' );
+                $response = array( 'error' => $action . ' Test connection function is not defined' );
         }
 
         return rest_ensure_response( $response );
     }
 
     /**
-     * Seve the setting set in react's admin setting page.
+     * Save the setting set in react's admin setting page.
      *
      * @param mixed $request rest api request object.
      * @return \WP_Error | \WP_REST_Response
      */
     public function course_synchronization( $request ) {
-        // Flusk course sync status before sync start.
+        // Flush course sync status before sync start.
         Util::flush_sync_status( 'course' );
 
         set_transient( 'course_sync_running', true );
@@ -246,7 +246,7 @@ class Synchronization extends \WP_REST_Controller {
             MooWoodle()->category->update_product_categories_information( $categories, 'product_cat' );
         }
 
-		// get all caurses from moodle.
+		// get all courses from moodle.
 		$response = MooWoodle()->external_service->do_request( 'get_courses' );
         $courses  = $response['data'];
 
