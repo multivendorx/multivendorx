@@ -1,23 +1,35 @@
 import Popup from '../Popup/Popup';
 import { useState } from 'react';
-import { Dialog } from '@mui/material';
 import { __ } from '@wordpress/i18n';
 import './subscribersList.scss';
-import { NavigatorHeader } from 'zyra';
+import '../common.scss';
+import { NavigatorHeader, PopupUI } from 'zyra';
+import ShowProPopup from '../Popup/Popup';
 
 const SubscribersList: React.FC = () => {
-    const [openDialog, setOpenDialog] = useState(false);
+    const [openPopup, setopenPopup] = useState(false);
 
     return (
         <>
             <div id='subscriber-list-table'>
+                {openPopup && (
+                    <PopupUI
+                        position="lightbox"
+                        open={openPopup}
+                        onClose={() => setopenPopup(false)}
+                        width={31.25}
+                        height="auto"
+                    >
+                        <ShowProPopup />
+                    </PopupUI>
+                )}
                 <NavigatorHeader
                     headerIcon="quote"
                     headerDescription={__(
                         'This CSV file contains all subscriber data from your site. Upgrade to <a href="https://notifima.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima" target="_blank">Notifima Pro</a> to generate CSV files based on specific products or users.',
-                        'catalogx'
+                        'notifima'
                     )}
-                    headerTitle={__('Download product wise subscriber data', 'catalogx')}
+                    headerTitle={__('Download product wise subscriber data', 'notifima')}
                     buttons={[
 					{
 						label: __('Download CSV', 'multivendorx'),
@@ -26,24 +38,10 @@ const SubscribersList: React.FC = () => {
 					},
 				]}
                 />
-                {/* <Dialog
-                    className="admin-module-popup"
-                    open={openDialog}
-                    onClose={() => {
-                        setOpenDialog(false);
-                    }}
-                    aria-labelledby="form-dialog-title"
-                >
-                    <span
-                        className="admin-font adminlib-cross"
-                        onClick={() => setOpenDialog(false)}
-                    ></span>
-                    <Popup />
-                </Dialog> */}
                 <div
-                    className="subscriber-img"
+                    className="image-wrapper subscriber"
                     onClick={() => {
-                        setOpenDialog(true);
+                        setopenPopup(true);
                     }}
                 ></div>
             </div>

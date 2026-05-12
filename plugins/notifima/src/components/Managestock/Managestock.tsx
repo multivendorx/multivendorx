@@ -1,32 +1,41 @@
 import React, { useState } from 'react';
 import { Dialog } from '@mui/material';
 import Popup from '../Popup/Popup';
+import { __ } from '@wordpress/i18n';
+import { NavigatorHeader, PopupUI } from 'zyra';
 // import './ManagestockTable.scss';
+import '../common.scss';
+import ShowProPopup from '../Popup/Popup';
 
 const Managestock: React.FC = () => {
-    const [ openDialog, setOpenDialog ] = useState( false );
+    const [openPopup, setopenPopup] = useState(false);
     return (
         <>
             <div id="manage-stock-table">
-                <Dialog
-                    className="admin-module-popup"
-                    open={ openDialog }
-                    onClose={ () => {
-                        setOpenDialog( false );
-                    } }
-                    aria-labelledby="form-dialog-title"
-                >
-                    <span
-                        className="admin-font adminlib-cross"
-                        onClick={ () => setOpenDialog( false ) }
-                    ></span>
-                    <Popup />
-                </Dialog>
+                {openPopup && (
+                    <PopupUI
+                        position="lightbox"
+                        open={openPopup}
+                        onClose={() => setopenPopup(false)}
+                        width={31.25}
+                        height="auto"
+                    >
+                        <ShowProPopup />
+                    </PopupUI>
+                )}
+                <NavigatorHeader
+                    headerIcon="quote"
+                    headerDescription={__(
+                        'Lorem Ipsum is simply dummy text of the printing and typesetting',
+                        'notifima'
+                    )}
+                    headerTitle={__('Manage stock', 'notifima')}
+                />
                 <div
-                    onClick={ () => {
-                        setOpenDialog( true );
-                    } }
-                    className="inventory-manager"
+                    onClick={() => {
+                        setopenPopup(true);
+                    }}
+                    className="image-wrapper manage-stock"
                 ></div>
             </div>
         </>
