@@ -353,8 +353,8 @@ class Installer {
                 continue;
             }
 
-            $moodle_course_id = $product->get_meta( 'moodle_course_id', true );
-            $linked_course_id = $product->get_meta( 'linked_course_id', true );
+            $moodle_course_id = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
+            $linked_course_id = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['linked_course_id'], true );
 
             $course = Course::get_course_information(
                 array( 'moodle_course_id' => $moodle_course_id )
