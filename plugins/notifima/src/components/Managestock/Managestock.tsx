@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Dialog } from '@mui/material';
 import Popup from '../Popup/Popup';
-import './ManagestockTable.scss';
+// import './ManagestockTable.scss';
 
 const Managestock: React.FC = () => {
     const [ openDialog, setOpenDialog ] = useState( false );

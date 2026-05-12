@@ -1,9 +1,10 @@
 import { useLocation } from 'react-router-dom';
 
 import Settings from './components/Settings/Settings';
-import { ModuleProvider } from './contexts/ModuleContext';
 import SubscribersList from './components/SubscriberList/SubscribersList';
 import ManageStock from './components/Managestock/Managestock';
+import { AdminHeader } from 'zyra';
+import Brand from './assets/images/brand-logo.png';
 
 const Route = () => {
     const currentTab = new URLSearchParams( useLocation().hash );
@@ -51,11 +52,16 @@ const App = () => {
 
     return (
         <>
-            <ModuleProvider
-                modules={ ( window as any ).appLocalizer?.active_modules || [] }
-            >
-                <Route />
-            </ModuleProvider>
+            <AdminHeader
+				brandImg={Brand}
+				// results={results}
+				// onQueryUpdate={handleSearchChange}
+				// onResultClick={handleResultClick}
+				// free={appLocalizer.free_version}
+				// pro={appLocalizer.pro_data.version}
+				// utilityList={utilityList}
+			/>
+            <Route />
         </>
     );
 };

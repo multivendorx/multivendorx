@@ -4,20 +4,19 @@ import BrandSmall from '../../assets/images/brand-icon.png';
 import React, { useEffect, JSX } from 'react';
 import { __ } from '@wordpress/i18n';
 // Context
-import { SettingProvider, useSetting } from '../../contexts/SettingContext';
 // Services
 import { getTemplateData } from '../../services/templateService';
 // Utils
 import {
     getAvailableSettings,
     getSettingById,
-    SettingContent,
-    Support,
-    AdminForm,
-    Banner,
-    Tabs,
+    useModules,
+    SettingProvider,
+    useSetting,
+    type SettingContextType,
+    SettingsNavigator,
+    RenderComponent,
 } from 'zyra';
-import { useModules } from '../../contexts/ModuleContext';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 
@@ -152,21 +151,21 @@ const Settings: React.FC< SettingsProps > = () => {
     );
     const location = new URLSearchParams( useLocation().hash.substring( 1 ) );
 
-    const getBanner = () => {
-        return (
-            <Banner
-                products={ products }
-                isPro={ appLocalizer.khali_dabba }
-                proUrl={ appLocalizer.pro_url }
-                tag="Why Premium"
-                buttonText="View Pricing"
-                bgCode="#852aff" // backgroud color
-                textCode="#fff" // text code
-                btnCode="#fff" // button color
-                btnBgCode="#e35047" // button backgroud color
-            />
-        );
-    };
+    // const getBanner = () => {
+    //     return (
+    //         <Banner
+    //             products={ products }
+    //             isPro={ appLocalizer.khali_dabba }
+    //             proUrl={ appLocalizer.pro_url }
+    //             tag="Why Premium"
+    //             buttonText="View Pricing"
+    //             bgCode="#852aff" // backgroud color
+    //             textCode="#fff" // text code
+    //             btnCode="#fff" // button color
+    //             btnBgCode="#e35047" // button backgroud color
+    //         />
+    //     );
+    // };
     // Render the dynamic form
     const GetForm = ( currentTab: string | null ): JSX.Element | null => {
         // get the setting context
@@ -193,29 +192,31 @@ const Settings: React.FC< SettingsProps > = () => {
         }, [ setting, settingName, currentTab ] );
 
         // Special component
-        if ( currentTab === 'faq' ) {
-            return (
-                <Support
-                    title="Thank you for using Notifima"
-                    subTitle="We want to help you enjoy a wonderful experience with all of our products."
-                    url="https://www.youtube.com/embed/cgfeZH5z2dM?si=3zjG13RDOSiX2m1b"
-                    faqData={ faqs }
-                />
-            );
-        }
+        // if ( currentTab === 'faq' ) {
+        //     return (
+        //         <Support
+        //             title="Thank you for using Notifima"
+        //             subTitle="We want to help you enjoy a wonderful experience with all of our products."
+        //             url="https://www.youtube.com/embed/cgfeZH5z2dM?si=3zjG13RDOSiX2m1b"
+        //             faqData={ faqs }
+        //         />
+        //     );
+        // }
 
         return (
             <>
                 { settingName === currentTab ? (
-                    <AdminForm
-                        settings={ settingModal as SettingContent }
-                        proSetting={ appLocalizer.pro_settings_list }
-                        setting={ setting }
-                        updateSetting={ updateSetting }
-                        appLocalizer={ appLocalizer }
-                        modules={ modules }
-                        Popup={ ShowProPopup }
-                    />
+                    <>
+                    <RenderComponent
+						settings={settingModal}
+						proSetting={appLocalizer.pro_settings_list}
+						setting={setting}
+						updateSetting={updateSetting}
+						appLocalizer={appLocalizer}
+						modules={modules}
+						Popup={ShowProPopup}
+					/>
+                    </>
                 ) : (
                     <>Loading...</>
                 ) }
@@ -225,19 +226,17 @@ const Settings: React.FC< SettingsProps > = () => {
 
     return (
         <SettingProvider>
-            <Tabs
-                tabData={ settingsArray as any }
-                currentTab={ location.get( 'subtab' ) as string }
-                getForm={ GetForm }
-                BannerSection={ getBanner }
-                prepareUrl={ ( subTab: string ) =>
-                    `?page=notifima#&tab=settings&subtab=${ subTab }`
+            <SettingsNavigator
+                settingContent={settingsArray}
+                currentSetting={location.get('subtab') as string}
+                getForm={GetForm}
+                prepareUrl={(subTab: string) =>
+                    `?page=notifima#&tab=settings&subtab=${subTab}`
                 }
-                appLocalizer={ appLocalizer }
-                brandImg={ Brand }
-                smallbrandImg={ BrandSmall }
-                supprot={ supportLink }
-                Link={ Link }
+                appLocalizer={appLocalizer}
+                Link={Link}
+                settingName={'Settings'}
+                className="admin-settings"
             />
         </SettingProvider>
     );
