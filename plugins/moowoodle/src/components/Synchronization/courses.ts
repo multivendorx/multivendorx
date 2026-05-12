@@ -65,7 +65,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
-			title: __('Lorem Ipsum is simply dummy text of', 'moowoodle'),
+			title: __('Course information mapping', 'moowoodle'),
 		},
 		{
 			key: 'product_sync_option',
@@ -103,7 +103,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
-			title: __('Lorem Ipsum is simply dummy text of', 'moowoodle'),
+			title: __('On-demand synchronization', 'moowoodle'),
 		},
 		{
 			key: 'sync_course_btn',
