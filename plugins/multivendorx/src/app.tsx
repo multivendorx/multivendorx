@@ -436,7 +436,6 @@ const App = () => {
 									'Creating stores...',
 									'multivendorx'
 								),
-								requiresResponeData: true,
 								successMessage: __(
 									'Stores created',
 									'multivendorx'
@@ -452,7 +451,6 @@ const App = () => {
 									'Importing products...',
 									'multivendorx'
 								),
-								requiresResponeData: true,
 								successMessage: __(
 									'Products imported',
 									'multivendorx'
@@ -483,7 +481,6 @@ const App = () => {
 									'Creating orders...',
 									'multivendorx'
 								),
-								requiresResponeData: true,
 								successMessage: __(
 									'Orders created',
 									'multivendorx'
@@ -499,7 +496,6 @@ const App = () => {
 									'Creating reviews...',
 									'multivendorx'
 								),
-								requiresResponeData: true,
 								successMessage: __(
 									'Reviews created',
 									'multivendorx'
@@ -595,7 +591,6 @@ const App = () => {
 											'Creating stores...',
 											'multivendorx'
 										),
-										requiresResponeData: true,
 										successMessage: __(
 											'Stores created',
 											'multivendorx'
@@ -611,7 +606,6 @@ const App = () => {
 											'Importing products...',
 											'multivendorx'
 										),
-										requiresResponeData: true,
 										successMessage: __(
 											'Products imported',
 											'multivendorx'

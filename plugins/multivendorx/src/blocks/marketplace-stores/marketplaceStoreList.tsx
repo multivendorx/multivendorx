@@ -253,7 +253,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	const visibleStores = hideEmpty
 		? data.filter(
 			(store) =>
-					storeTopProducts[store.id] === undefined || storeTopProducts[store.id].length > 0 
+					storeTopProducts[store.id] && storeTopProducts[store.id].length > 0 
 			)
 			: data;
 
