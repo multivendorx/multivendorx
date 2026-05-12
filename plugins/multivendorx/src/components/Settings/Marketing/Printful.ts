@@ -17,7 +17,7 @@ export default {
             type: 'text',
             label: __('Client ID','multivendorx'),
             settingDescription : __( 'Connect Printful at admin level to allow stores to access and sell Printful products.', 'multivendorx' ),
-            desc: __( 'Used to identify your application when connecting with Printful.<br/>Get your API credentials from the Printful Developer settings.<br/><a href="https://developers.printful.com/docs/#section/Authentication" class="link-item" target="_blank">Printful Authentication guide <i class="adminfont-external"></i></a>', 'multivendorx' ),
+            desc: __( 'Used to identify your application when connecting with Printful.<br/>Get your API credentials from the Printful Developer settings.<br/><a href="https://developers.printful.com/" class="link-item" target="_blank">Printful Authentication guide <i class="adminfont-external"></i></a>', 'multivendorx' ),
             moduleEnabled: 'printful',
             proSetting: true,
         },
