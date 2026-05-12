@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) || exit;
 
 define( 'MULTIVENDORX_PLUGIN_TEXTDOMAIN', 'multivendorx' );
 
-define( 'MULTIVENDORX_PLUGIN_VERSION', '5.0.4' );
+define( 'MULTIVENDORX_PLUGIN_VERSION', '5.0.5' );
 
 define( 'MULTIVENDORX_PRO_SHOP_URL', 'https://multivendorx.com/pricing/' );
 
