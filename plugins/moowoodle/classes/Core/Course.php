@@ -203,7 +203,7 @@ class Course {
 	public function add_additional_product_data_panels() {
 		global $post;
 
-		$linked_course_id = get_post_meta( $post->ID, 'linked_course_id', true );
+		$linked_course_id = get_post_meta( $post->ID, Util::MOOWOODLE_PRODUCT_META['linked_course_id'], true );
 		$linked_cohort_id = apply_filters( 'moowoodle_get_linked_cohort_id', null, $post->ID );
 		$default_type     = $linked_course_id ? 'course' : ( $linked_cohort_id ? 'cohort' : '' );
 		?>

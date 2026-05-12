@@ -193,6 +193,27 @@ class Installer {
             delete_option( 'moowoodle_bulk_access_settings' );
             delete_option( 'moowoodle_tool_settings' );
             delete_option( 'moowoodle_log_settings' );
+
+
+            $synchronize_user_settings = get_option( Util::MOOWOODLE_SETTINGS['synchronize-user'], array() );
+
+            if ( ! empty( $synchronize_user_settings['user_sync_options'] ) ) {
+
+                foreach ( $synchronize_user_settings['user_sync_options'] as &$mapping ) {
+                    if ( isset( $mapping[0], $mapping[1] ) ) {
+                        $mapping = array(
+                            'wordPress' => $mapping[0],
+                            'moodle'    => $mapping[1],
+                        );
+                    }
+                }
+
+                update_option(
+                    Util::MOOWOODLE_SETTINGS['synchronize-user'],
+                    $synchronize_user_settings
+                );
+            }
+
         }
     }
 
