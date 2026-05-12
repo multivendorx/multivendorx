@@ -197,7 +197,7 @@ const Dashboard: React.FC = () => {
 	const getGreeting = () => {
 		const hour = new Date().getHours();
 
-		if (hour >= 5 && hour < 12) {
+		if (hour >= 0 && hour < 12) {
 			return __('Good Morning', 'multivendorx');
 		}
 
@@ -205,7 +205,7 @@ const Dashboard: React.FC = () => {
 			return __('Good Afternoon', 'multivendorx');
 		}
 
-		if (hour >= 17 && hour < 21) {
+		if (hour >= 17 && hour < 24) {
 			return __('Good Evening', 'multivendorx');
 		}
 
