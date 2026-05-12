@@ -111,7 +111,7 @@ export default {
 			settingDescription:
 				'Courses are fetched from Moodle and synchronized with WordPress, ensuring product details remain updated.',
 			type: 'sequential-task-executor',
-			buttonText: 'Synchronize courses now!',
+			buttonText: __('Synchronize courses now!', 'moowoodle'),
 			apilink: 'synchronization',
 			parameter: 'course',
 			interval: 2500,
