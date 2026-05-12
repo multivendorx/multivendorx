@@ -24,10 +24,11 @@
       i {
         font-size: 1.125rem;
 
-        &.completed-icon{
+        &.completed-icon {
           color: green;
         }
-         &.failed-icon{
+
+        &.failed-icon {
           color: red;
         }
       }
@@ -59,6 +60,7 @@
         background-color: #d63638;
       }
     }
+
     @keyframes progress {
       from {
         width: 0;
@@ -87,39 +89,46 @@
   }
 }
 
-// loader style 
-.multivendorx-loader {
-  width: 2rem;
-  aspect-ratio: 1;
-
-  --c: no-repeat radial-gradient(farthest-side,
-      $theme-color 92%,
-      #0000);
-
-  background:
-    var(--c) 50% 0,
-    var(--c) 50% 100%,
-    var(--c) 100% 50%,
-    var(--c) 0 50%;
-
-  background-size: 0.625rem 0.625rem;
-  animation: loader 1s infinite;
+// loader style
+.loader-wrapper {
+  display: flex;
+  gap: 1rem;
   position: relative;
+  width: fit-content;
 
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    margin: 0.1875rem;
+  .multivendorx-loader {
+    width: 2rem;
+    aspect-ratio: 1;
 
-    background: repeating-conic-gradient(#0000 0 35deg,
-        $theme-color 0 90deg);
+    --c: no-repeat radial-gradient(farthest-side,
+        $theme-color 92%,
+        #0000);
 
-    -webkit-mask: radial-gradient(farthest-side,
-        #0000 calc(100% - 0.1875rem),
-        #000 0);
+    background:
+      var(--c) 50% 0,
+      var(--c) 50% 100%,
+      var(--c) 100% 50%,
+      var(--c) 0 50%;
 
-    border-radius: 50%;
+    background-size: 0.625rem 0.625rem;
+    animation: loader 1s infinite;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      margin: 0.1875rem;
+
+      background: repeating-conic-gradient(#0000 0 35deg,
+          $theme-color 0 90deg);
+
+      -webkit-mask: radial-gradient(farthest-side,
+          #0000 calc(100% - 0.1875rem),
+          #000 0);
+
+      border-radius: 50%;
+    }
   }
 }
 
