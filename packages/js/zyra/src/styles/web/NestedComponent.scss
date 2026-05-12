@@ -21,11 +21,7 @@
             }
         }
 
-        &.single-line {
-            .before {
-                width: 10rem;
-            }
-        }
+        
 
         &.multiple {
             padding: 1rem;
@@ -93,7 +89,8 @@
         }
     }
 
-    .nested-row.multiple:first-child {
+    .nested-row.multiple:first-child,
+    .nested-row.multiple.single-multi-line {
         background: transparent;
         padding: 0;
         position: relative;

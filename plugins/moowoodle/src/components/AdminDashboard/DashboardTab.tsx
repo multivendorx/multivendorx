@@ -170,49 +170,65 @@ const DashboardTab: React.FC<object> = () => {
 
 	const featuresList = [
 		{
-			title: __('Membership rewards & commission', 'moowoodle'),
+			title: __('Seamless Moodle integration', 'moowoodle'),
 			desc: __(
-				'Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.',
+				'Connect your WooCommerce store with Moodle and automatically manage courses, enrollments, and learner access from one place.',
 				'moowoodle'
 			),
 			icon: 'commission',
 		},
 		{
-			title: __('Verified stores only', 'moowoodle'),
+			title: __('Sell courses with WooCommerce', 'moowoodle'),
 			desc: __(
-				'Screen stores with document verification and approval - build a trusted marketplace from day one.',
+				'Turn Moodle courses into purchasable WooCommerce products and monetize your learning platform with flexible checkout and payment options.',
 				'moowoodle'
 			),
 			icon: 'verification3',
 		},
 		{
-			title: __('Diversified marketplace', 'moowoodle'),
+			title: __('Single Sign-On access', 'moowoodle'),
 			desc: __(
-				'Enable bookings, subscriptions, and auctions to boost sales and engagement.',
+				'Allow learners to access their Moodle courses directly from WordPress without logging in multiple times.',
 				'moowoodle'
 			),
 			icon: 'marketplace',
 		},
 		{
-			title: __('Vacation mode for stores', 'moowoodle'),
+			title: __('Classroom & bulk enrollment', 'moowoodle'),
 			desc: __(
-				'Stores can pause their stores temporarily with automatic buyer notifications - no missed messages.',
+				'Enable teachers, companies, and training centers to purchase multiple seats and assign courses to learners with ease.',
 				'moowoodle'
 			),
 			icon: 'vacation',
 		},
 		{
-			title: __('Never run out of stock', 'moowoodle'),
+			title: __('Course gifting made simple', 'moowoodle'),
 			desc: __(
-				'Real-time inventory tracking with automatic low-stock alerts keeps sellers prepared and buyers happy.',
+				'Let customers purchase and gift courses to friends, students, employees, or team members directly during checkout.',
 				'moowoodle'
 			),
 			icon: 'global-community',
 		},
 		{
-			title: __('Autopilot notifications', 'moowoodle'),
+			title: __('Real-time user synchronization', 'moowoodle'),
 			desc: __(
-				'Automatic emails and alerts for every order, refund, and payout - everyone stays in the loop.',
+				'Keep user profiles synchronized between WordPress and Moodle automatically for a smooth and connected learning experience.',
+				'moowoodle'
+			),
+			icon: 'notification',
+		},
+		{
+			title: __('Automatic course synchronization', 'moowoodle'),
+			desc: __(
+				'Fetch Moodle courses instantly and keep WooCommerce products updated with the latest course information.',
+				'moowoodle'
+			),
+			icon: 'notification',
+		},
+		{
+			title: __('Cohort synchronization & group learning', 'moowoodle'),
+			desc: __(
+				'Sync Moodle cohorts with WooCommerce products to streamline group enrollments and organization-based learning.',
 				'moowoodle'
 			),
 			icon: 'notification',
@@ -226,11 +242,11 @@ const DashboardTab: React.FC<object> = () => {
 					<div className="pro-banner-wrapper">
 						<div className="content">
 							<div className="heading">
-								{__('Welcome to Moowoodle', 'moowoodle')}
+								{__('Welcome to MooWoodle', 'moowoodle')}
 							</div>
 							<div className="description">
 								{__(
-									'Expand your WooCommerce store by creating a marketplace for multiple stores. Manage, grow, and scale seamlessly.',
+									'Connect WordPress, WooCommerce, and Moodle to sell courses, automate enrollments, and deliver a seamless eLearning experience from a single platform.',
 									'moowoodle'
 								)}
 							</div>
@@ -261,7 +277,7 @@ const DashboardTab: React.FC<object> = () => {
 				{!appLocalizer.khali_dabba && (
 					<Card
 						title={__(
-							'Build a professional marketplace',
+							'Build a smarter eLearning platform',
 							'moowoodle'
 						)}
 						badge={[
@@ -271,7 +287,7 @@ const DashboardTab: React.FC<object> = () => {
 							},
 						]}
 						desc={__(
-							'Unlock advanced features and premium modules to create a marketplace that stands out.',
+							'Unlock advanced synchronization, automation, and enrollment features to create a professional learning experience for individuals, teams, and institutions.',
 							'moowoodle'
 						)}
 					>
@@ -288,13 +304,13 @@ const DashboardTab: React.FC<object> = () => {
 						<div className="pro-banner">
 							<div className="text">
 								{__(
-									'Join 8,000+ successful marketplace owners',
+									'Trusted by growing eLearning businesses',
 									'moowoodle'
 								)}
 							</div>
 							<div className="des">
 								{__(
-									'Create, manage, and grow your marketplace with confidence. Trusted by thousands of entrepreneurs worldwide.',
+									'Create, manage, and scale your online learning platform with confidence. From individual instructors to training organizations, MooWoodle helps simplify course selling and learner management.',
 									'moowoodle'
 								)}
 							</div>

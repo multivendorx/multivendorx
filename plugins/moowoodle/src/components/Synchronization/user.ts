@@ -6,6 +6,7 @@ const nestedFields = [
 	{
 		key: 'wordPress',
 		type: 'select',
+		size: 8,
 		options: [
 			{
 				key: 'firstname',
@@ -37,6 +38,7 @@ const nestedFields = [
 	{
 		key: 'moodle',
 		type: 'select',
+		size: 8,
 		options: [
 			{
 				key: 'firstname',
