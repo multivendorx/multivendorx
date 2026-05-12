@@ -12,7 +12,7 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
-			key: 'sync-course-options',
+			key: 'sync_course_options',
 			type: 'checkbox',
 			settingDescription: __(
 				'Moodle course information is synchronized with WordPress products through categories, IDs, images, and groups.',
@@ -105,18 +105,6 @@ export default {
 			type: 'section',
 			title: __('Lorem Ipsum is simply dummy text of', 'moowoodle'),
 		},
-		// {
-		//     key: 'sync_course_btn',
-		//     label: 'On-demand course ',
-		//     settingDescription:
-		//         'Courses are fetched from Moodle and synchronized with WordPress, ensuring product details remain updated.',
-		//     type: 'do-action-btn',
-		//     interval: 2500,
-		//     apilink: 'synchronization',
-		//     parameter: 'course',
-		//     value: 'Synchronize courses now!',
-		//     desc: "Initiate the immediate synchronization of all courses from Moodle to WordPress.<br><span class='highlighted-part'><br>With the 'Course & product synchronization' option, you have the ability to specify whether you want to create new products, update existing products.<br>Through the 'Course information mapping' feature, you gain the flexibility to define which specific course data gets imported from Moodle, like course ID number/course images etc. By default we will fetch only the category of the product.</span>",
-		// },
 		{
 			key: 'sync_course_btn',
 			label: 'On-demand course',

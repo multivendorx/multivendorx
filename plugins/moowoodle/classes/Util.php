@@ -46,7 +46,7 @@ class Util {
         'course_startdate'  => 'moowoodle_course_startdate',
         'course_enddate'    => 'moowoodle_course_enddate',
         'moodle_course_id'  => 'moowoodle_moodle_course_id',
-        'linked_course_id'  => 'moowoodle_linked_course_id',
+        'wordpress_course_id'  => 'moowoodle_wordpress_course_id',
     );
 
     /**

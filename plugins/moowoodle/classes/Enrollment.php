@@ -169,10 +169,10 @@ class Enrollment {
 			}
 
 			$moodle_course_id = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
-			$linked_course_id = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['linked_course_id'], true );
+			$wordpress_course_id = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
 
 			if ( ! $moodle_course_id ) {
-				Util::log( "Skipping enrollment - Moodle course ID is missing. Linked Course ID: #{$linked_course_id}" );
+				Util::log( "Skipping enrollment - Moodle course ID is missing. Linked Course ID: #{$wordpress_course_id}" );
 				continue;
 			}
 
@@ -188,7 +188,7 @@ class Enrollment {
 					'order_item_id' => $item_id,
 				),
 				array(
-					'course_id'        => $linked_course_id,
+					'course_id'        => $wordpress_course_id,
 					'moodle_course_id' => $moodle_course_id,
 				)
             );

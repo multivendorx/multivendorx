@@ -66,7 +66,7 @@ class Installer {
 
         // Default value sync course setting.
         $course_settings = array(
-            'sync-course-options' => array( 'sync_courses_category' ),
+            'sync_course_options' => array( 'sync_courses_category' ),
             'product_sync_option' => array( 'create', 'update' ),
         );
         // Default value for sync user setting.
@@ -177,15 +177,15 @@ class Installer {
 
             $general_settings = get_option( 'moowoodle_general_settings', array() );
             $sso_settings     = get_option( 'moowoodle_sso_settings', array() );
-            update_option( 'moowoodle_connection_access_settings', array_merge( $general_settings, $sso_settings ) );
+            update_option( Util::MOOWOODLE_SETTINGS['connection-access'], array_merge( $general_settings, $sso_settings ) );
 
             $display_settings     = get_option( 'moowoodle_display_settings', array() );
             $bulk_access_settings = get_option( 'moowoodle_bulk_access_settings', array() );
-            update_option( 'moowoodle_course_enrollment_settings', array_merge( $display_settings, $bulk_access_settings ) );
+            update_option( Util::MOOWOODLE_SETTINGS['course-enrollment'], array_merge( $display_settings, $bulk_access_settings ) );
 
             $tool_settings = get_option( 'moowoodle_tool_settings', array() );
             $log_settings  = get_option( 'moowoodle_log_settings', array() );
-            update_option( 'moowoodle_system_logs_settings', array_merge( $tool_settings, $log_settings ) );
+            update_option( Util::MOOWOODLE_SETTINGS['system-logs'], array_merge( $tool_settings, $log_settings ) );
 
             delete_option( 'moowoodle_general_settings' );
             delete_option( 'moowoodle_sso_settings' );
@@ -211,6 +211,20 @@ class Installer {
                 update_option(
                     Util::MOOWOODLE_SETTINGS['synchronize-user'],
                     $synchronize_user_settings
+                );
+            }
+                        
+            $synchronize_course_settings = get_option( Util::MOOWOODLE_SETTINGS['synchronize-course'], array() );
+
+            if ( ! empty( $synchronize_course_settings['sync-course-options'] ) ) {
+
+                $synchronize_course_settings['sync_course_options'] = $synchronize_course_settings['sync-course-options'];
+
+                unset( $synchronize_course_settings['sync-course-options'] );
+
+                update_option(
+                    Util::MOOWOODLE_SETTINGS['synchronize-course'],
+                    $synchronize_course_settings
                 );
             }
 
@@ -413,11 +427,11 @@ class Installer {
                 WHEN '_course_startdate' THEN 'moowoodle_course_startdate'
                 WHEN '_course_enddate' THEN 'moowoodle_course_enddate'
                 WHEN 'moodle_course_id' THEN 'moowoodle_moodle_course_id'
-                WHEN 'linked_course_id' THEN 'moowoodle_linked_course_id'
-                WHEN 'linked_cohort_id' THEN 'moowoodle_linked_cohort_id'
+                WHEN 'linked_course_id' THEN 'moowoodle_wordpress_course_id'
+                WHEN 'linked_cohort_id' THEN 'moowoodle_wordpress_cohort_id'
                 WHEN 'moodle_cohort_id' THEN 'moowoodle_moodle_cohort_id'
                 WHEN 'moodle_group_id' THEN 'moowoodle_moodle_group_id'
-                WHEN 'linked_group_id' THEN 'moowoodle_linked_group_id'
+                WHEN 'linked_group_id' THEN 'moowoodle_wordpress_group_id'
             END
             WHERE meta_key IN (
                 '_course_startdate',

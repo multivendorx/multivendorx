@@ -215,7 +215,7 @@ class Synchronization extends \WP_REST_Controller {
 
         set_transient( 'course_sync_running', true );
 
-        $sync_setting = MooWoodle()->setting->get_setting( 'sync-course-options', array() );
+        $sync_setting = MooWoodle()->setting->get_setting( 'sync_course_options', array() );
         // update course and product categories.
         if ( in_array( 'sync_courses_category', $sync_setting, true ) ) {
 
