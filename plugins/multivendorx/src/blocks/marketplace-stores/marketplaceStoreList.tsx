@@ -23,6 +23,7 @@ interface StoresListProps {
 	order?: string;
 	perPage?: number;
 	showMap?: boolean;
+	hideEmpty?: boolean;
 }
 
 interface Product {
@@ -45,6 +46,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	order = '',
 	perPage = 5,
 	showMap = true,
+	hideEmpty = false
 }) => {
 	const [data, setData] = useState<StoreRow[] | []>([]);
 	const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -248,6 +250,13 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 		}
 	}, []);
 
+	const visibleStores = hideEmpty
+		? data.filter(
+			(store) =>
+					storeTopProducts[store.id] === undefined || storeTopProducts[store.id].length > 0 
+			)
+			: data;
+
 	const renderMapComponent = () => {
 		if (!mapConfig.apiKey || !mapConfig.provider) {
 			return null;
@@ -288,7 +297,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 						<div className="store-list-wrapper">
 							<div className="store-list">
 								{data &&
-									data.map((store) => (
+									visibleStores.map((store) => (
 										<div key={store.id} className="store">
 											<div className="store-body">
 												<div className="store-header">
@@ -561,7 +570,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 					<div className={`store-list-wrapper is-${viewMode}`}>
 						<div className="store-list">
 							{data &&
-								data.map((store) => (
+								visibleStores.map((store) => (
 									<div key={store.id} className="store">
 										<div className="store-body">
 											<div className="store-header">

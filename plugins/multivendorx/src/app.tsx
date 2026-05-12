@@ -3,12 +3,12 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {
 	AdminHeader,
-	SequentialTaskExecutor,
 	FormGroup,
 	FormGroupWrapper,
 	PopupUI,
 	GuidedTourProvider,
 	Notice,
+	SequentialTaskExecutorUI,
 } from 'zyra';
 
 import Brand from './assets/images/multivendorx-logo.png';
@@ -378,7 +378,7 @@ const App = () => {
 				width={31.25}
 				height={50}
 				header={{
-					icon: 'knowledgebase',
+					icon: 'database',
 					title: __('Import Dummy Data', 'multivendorx'),
 					description: __(
 						'Get a hands-on feel of your marketplace in minutes.',
@@ -401,7 +401,7 @@ const App = () => {
 							'multivendorx'
 						)}
 					</div>
-					<SequentialTaskExecutor
+					<SequentialTaskExecutorUI
 						buttonText={__('Import Dummy Data', 'multivendorx')}
 						apilink="dummy-data"
 						interval={1000}

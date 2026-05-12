@@ -174,11 +174,11 @@ const Queries: React.FC = () => {
 			label: __('Question', 'multivendorx'),
 			render: (row: any) => (
 				<div className="question-wrapper">
-					<div className="question">Q: {row.question_text}</div>
+					<div className="question">{__('Q:', 'multivendorx')} {row.question_text}</div>
 					{row.answer_text && (
-						<div className="answer">A: {row.answer_text}</div>
+						<div className="answer">{__('A:', 'multivendorx')}  {row.answer_text}</div>
 					)}
-					<div className="desc">By {row.author_name}</div>
+					<div className="desc">{__('By', 'multivendorx')} {row.author_name}</div>
 				</div>
 			),
 		},

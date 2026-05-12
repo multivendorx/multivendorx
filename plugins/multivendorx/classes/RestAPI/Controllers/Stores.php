@@ -1031,7 +1031,8 @@ class Stores extends \WP_REST_Controller {
             }
 
             // Registration approval / rejection.
-            if ( ! empty( $data['registration_data'] ) || ! empty( $data['core_data'] ) ) {
+            if ( ! empty( $data['registration_data'] ) || ! empty( $data['core_data'] ) || $data['approval_queue'] ) {
+
                 if ( 'approve' === ( $data['status'] ?? '' ) ) {
                     $users = StoreUtil::get_store_users( $id );
                     $user  = get_userdata(
@@ -1093,6 +1094,12 @@ class Stores extends \WP_REST_Controller {
                         $store->update_meta(
                             Utill::STORE_SETTINGS_KEYS['store_reject_note'],
                             maybe_serialize( $old_notes )
+                        );
+                    }
+
+                    if ( ! empty($data['reject_note']) ) {
+                        $store->update_meta(
+                            Utill::STORE_SETTINGS_KEYS['store_reject_note'], maybe_serialize( $data['reject_note'] )
                         );
                     }
 
