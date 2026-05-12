@@ -39,7 +39,6 @@ interface ProductRow {
 	categories?: Array<{ id: number; name: string }>;
 	date_created: string;
 	status: string;
-	is_printful?: boolean;
 	permalink: string;
 	[key: string]: unknown;
 }
@@ -391,32 +390,14 @@ const AllProduct: React.FC = () => {
 			label: __('Product Name', 'multivendorx'),
 			width: 18,
 			render: (row) => {
+				const logo = applyFilters(
+		'multivendorxpro.dashboard.logo',
+		'',
+		row
+	);
 				return (
 					<InfoItem
-						title={
-							<div
-								style={{
-									display: 'flex',
-									alignItems: 'center',
-									gap: '8px',
-								}}
-							>
-								<span>{row.name}</span>
-
-								{row.is_printful && (
-									<img
-										src={`multivendorx/plugins/multivendorx/src/assets/images/printful-logo-png_seeklogo-477154.png`}
-										alt="Printful"
-										title="Printful Product"
-										style={{
-											width: '18px',
-											height: '18px',
-											objectFit: 'contain',
-										}}
-									/>
-								)}
-							</div>
-						}
+						title={<>{row.name} {logo && <img src={logo} alt="Logo"/>}</>}
 						onClick={() =>
 							dashNavigate(navigate, [
 								'products',
