@@ -142,7 +142,7 @@ const DynamicShowcase = [
                                 flexWrap: 'nowrap',
                                 justifyContent: 'start',
                                 alignItems: 'center',
-                                orientation: 'vartical',
+                                orientation: 'vertical',
                             },
                             style: {
                                 spacing: {

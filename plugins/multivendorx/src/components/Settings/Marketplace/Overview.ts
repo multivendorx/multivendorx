@@ -207,7 +207,7 @@ export default {
 					label: '[marketplace_products]',
 					name: 'Show store listings',
 					desc: __(
-						'Displays all listings added by a store. Use this to create store-specific listings listing pages.',
+						'Displays all listings added by a store. Use this to create store-specific listing pages.',
 						'multivendorx'
 					),
 					arguments: [
