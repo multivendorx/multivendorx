@@ -4,7 +4,7 @@ import { FieldComponent, ZyraVariable } from './fieldUtils';
 import { getApiLink } from '../utils/apiService';
 import { ButtonInputUI } from './ButtonInput';
 import { Notice } from './Notice';
-
+import '../styles/web/SequentialTaskExecutor.scss';
 interface Task {
     action: string;
     message: string;
@@ -184,37 +184,41 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                             color: 'purple-bg',
                             onClick: handleButtonClick,
                             disabled: loading,
-                            icon: loading ? 'spinner' : 'play',
+                            icon: 'import',
                         },
                     ]}
                     position="left"
                 />
 
                 {loading && (
-                    <div className="loader">
-                        <div className="three-body-dot" />
-                    </div>
+                    <div className="multivendorx-loader"></div>
                 )}
             </div>
 
-
-            {syncStatus &&
-                syncStatus.length > 0 &&
-                syncStatus.map((status, idx) => (
-                    <div key={idx} className="details-status-row">
-                        {status.action}
-                        <div className="status-meta">
-                            <span className="status-icons">
-                                <i className="admin-font adminfont-check" />
-                            </span>
-                            {status.total && (
-                                <span>
-                                    {status.current} / {status.total}
+            <div className='sequential-task-executor'>
+                {syncStatus &&
+                    syncStatus.length > 0 &&
+                    syncStatus.map((status, idx) => (
+                        <div key={idx} className={`sequential-task ${processStatus}`} style={{ ['--progress-time' as string]: `${interval / 1000}s`,}}>
+                            {status.action}
+                            <div className="status-wrapper">
+                                <span className="status-icons">
+                                    {processStatus === 'failed' && (                                    
+                                        <i className={`failed-icon adminfont-error`} />                                    
+                                    )}
+                                    {processStatus === 'completed' && (                                    
+                                        <i className={`completed-icon adminfont-form-checkboxes`} />
+                                    )}
                                 </span>
-                            )}
+                                {status.total && (
+                                    <span>
+                                        {status.current} / {status.total}
+                                    </span>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+            </div>
 
             {processStatus && (
                 <Notice
