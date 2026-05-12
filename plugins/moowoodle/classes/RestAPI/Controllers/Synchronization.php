@@ -142,7 +142,7 @@ class Synchronization extends \WP_REST_Controller {
                     );
             }
 
-            do_action( 'moowoodle_sync' );
+            do_action( 'moowoodle_do_synchronization', $parameter, $request );
 
             return null;
 
