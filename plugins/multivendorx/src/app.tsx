@@ -575,7 +575,7 @@ const App = () => {
 								{appLocalizer.multivendor_plugin ||
 									'No multivendor plugin active currently'}
 							</div>
-							<SequentialTaskExecutor
+							<SequentialTaskExecutorUI
 								buttonText={__('Import', 'multivendorx')}
 								apilink="migration"
 								interval={1000}
