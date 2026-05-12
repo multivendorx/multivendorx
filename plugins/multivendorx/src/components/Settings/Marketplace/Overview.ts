@@ -196,7 +196,7 @@ export default {
 						},
 						{
 							attribute: 'hide_empty',
-							description: 'Set the stores appears based on products.',
+							description: 'Choose whether to hide stores that do not have any published products.',
 							accepted: 'true or false (Default: false)',
 							default: '[marketplace_stores hide_empty="false"]',
 						},
