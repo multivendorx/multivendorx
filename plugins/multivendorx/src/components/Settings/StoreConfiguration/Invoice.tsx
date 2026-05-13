@@ -218,7 +218,7 @@ const Invoice: React.FC = () => {
 	const [showModulePopup, setShowModulePopup] = useState(false);
 	const { modules } = useModules();
 	const defaultData = {
-		paymentCapability: [],
+		invoice_order_status: [],
 		PackingSlip: [],
 		invoice_prefix: '',
 		invoice_footer: '',
@@ -555,13 +555,13 @@ const Invoice: React.FC = () => {
 										),
 									},
 								]}
-								value={formData.paymentCapability}
+								value={formData.invoice_order_status}
 								modules={[]} // required prop
 								onChange={(val: string[]) =>
-									handleChange('paymentCapability', val)
+									handleChange('invoice_order_status', val)
 								}
 								onMultiSelectDeselectChange={(val: string[]) =>
-									handleChange('paymentCapability', val)
+									handleChange('invoice_order_status', val)
 								}
 							/>
 						</FormGroup>
