@@ -14,9 +14,10 @@ export default {
         {
             key: 'exclusion',
             type: 'multi-checkbox-table',
-            label: __( '', 'catalogx' ),
-            desc: __( 'Grid Table', 'catalogx' ),
+            label: '',
+            desc: __('Grid Table', 'catalogx'),
             classes: 'gridTable no-label',
+
             rows: [
                 {
                     key: 'userroles_list',
@@ -49,18 +50,22 @@ export default {
                     options: appLocalizer.all_product_brand,
                 },
             ],
+
             columns: [
                 {
                     key: 'catalog_exclusion',
-                    label: __( 'Catalog', 'catalogx' ),
+                    label: __('Catalog', 'catalogx'),
+                    type: 'checkbox',
                 },
                 {
                     key: 'enquiry_exclusion',
-                    label: __( 'Enquiry', 'catalogx' ),
+                    label: __('Enquiry', 'catalogx'),
+                    type: 'checkbox',
                 },
                 {
                     key: 'quote_exclusion',
-                    label: __( 'Quote', 'catalogx' ),
+                    label: __('Quote', 'catalogx'),
+                    type: 'checkbox',
                 },
             ],
         },
