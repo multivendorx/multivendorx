@@ -66,7 +66,6 @@ class Block {
             . FrontendScripts::get_build_path_name()
             . 'js/block/';
 
-        $exclude_blocks = array( 'setup-wizard' );
         if ( ! is_dir( $block_base_path ) ) {
             return $blocks;
         }
@@ -74,10 +73,6 @@ class Block {
         $folders = glob( $block_base_path . '*', GLOB_ONLYDIR );
         foreach ( $folders as $folder ) {
             $block_name = basename( $folder );
-            if ( in_array( $block_name, $exclude_blocks, true ) ) {
-                continue;
-            }
-
             if ( file_exists( $folder . '/block.json' ) ) {
                 $blocks[] = array(
                     'name'       => $block_name,
