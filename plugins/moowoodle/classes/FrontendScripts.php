@@ -134,7 +134,7 @@ class FrontendScripts {
     public static function register_styles() {
         $version         = MooWoodle()->version;
         $register_styles = apply_filters(
-            'moowoolde_register_styles',
+            'moowoodle_register_styles',
             array()
         );
         foreach ( $register_styles as $name => $props ) {
