@@ -37,6 +37,7 @@ class Block {
         add_action( 'enqueue_block_assets', array( $this, 'enqueue_all_block_assets' ) );
         // Localize in frontend.
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
     }
     /**
      * Get the list of initialized blocks.
@@ -114,6 +115,7 @@ class Block {
 	 */
     public function enqueue_scripts() {
         global $post;
+        FrontendScripts::load_scripts();
         FrontendScripts::enqueue_script( 'moowoodle-vendor' );
         foreach ( $this->get_blocks() as $block_script ) {
             $block_name = $block_script['textdomain'] . '/' . $block_script['name'];
