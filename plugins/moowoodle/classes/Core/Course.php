@@ -205,7 +205,15 @@ class Course {
 		$wordpress_cohort_id = apply_filters( 'moowoodle_get_wordpress_cohort_id', null, $post->ID );
 		$default_type     = $wordpress_course_id ? 'course' : ( $wordpress_cohort_id ? 'cohort' : '' );
 		?>
-		<div id="moowoodle-course-link-tab" class="panel">
+		<div
+			id="moowoodle-course-link-tab"
+			class="panel woocommerce_options_panel"
+		>
+
+			<div id="moowoodle-react-product-tab"></div>
+
+		</div>
+		<!-- <div id="moowoodle-course-link-tab" class="panel">
 			<p class="form-field moowoodle-link-type-field">
 				<label><?php esc_html_e( 'Link Type', 'moowoodle' ); ?></label><br>
 				<span class="moowoodle-radio-group">
@@ -241,7 +249,7 @@ class Course {
 			<input type="hidden" name="moowoodle_meta_nonce" value="<?php echo esc_attr( wp_create_nonce( 'moowoodle_meta_nonce' ) ); ?>">
 			<input type="hidden" name="product_meta_nonce" value="<?php echo esc_attr( wp_create_nonce() ); ?>">
 			<input type="hidden" id="post_id" value="<?php echo esc_attr( $post->ID ); ?>">
-		</div>
+		</div> -->
 		<?php
 	}
 

@@ -60,7 +60,6 @@ class Courses extends \WP_REST_Controller {
      * @return WP_REST_Response|WP_Error
      */
     public function get_items( $request ) {
-
         $nonce_check = Util::validate_nonce( $request );
 
         if ( is_wp_error( $nonce_check ) ) {
@@ -68,6 +67,25 @@ class Courses extends \WP_REST_Controller {
         }
 
         try {
+            $product_tab = $request->get_param( 'product_tab' );
+            if ($product_tab) {
+                $post_id = $request->get_param('post_id');
+                $wordpress_course_id = get_post_meta( $post_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
+                $linkable_courses = MooWoodle()->course->get_courses(
+                    array(
+                        'id'         => $wordpress_course_id,
+                        'product_id' => 0,
+                        'condition'  => 'OR',
+                    )
+                );
+                return rest_ensure_response(
+                    array(
+                        'items'       => $linkable_courses,
+				        'selected_id' => $wordpress_course_id,
+                    )
+                );
+            }
+
             $options = $request->get_param( 'options' );
 
             if ( $options ) {

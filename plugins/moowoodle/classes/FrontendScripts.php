@@ -92,6 +92,7 @@ class FrontendScripts {
 
         $block_scripts = array(
             'my-courses',
+            'product-tab'
         );
 
         $register_scripts = apply_filters(
@@ -266,6 +267,14 @@ class FrontendScripts {
 	 * @param string $handle Script handle the data will be attached to.
 	 */
     public static function localize_scripts( $handle ) {
+        global $post;
+        if ($post) {
+            $wordpress_course_id = get_post_meta( $post->ID, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true);
+            $wordpress_cohort_id = apply_filters( 'moowoodle_get_wordpress_cohort_id', null, $post->ID );
+            $default_type = $wordpress_course_id ? 'course' : ( $wordpress_cohort_id ? 'cohort' : '' );
+            $selected_id = $wordpress_course_id ? $wordpress_course_id : $wordpress_cohort_id;
+        }
+        
         $base_rest = array(
             'apiUrl'  => untrailingslashit( get_rest_url() ),
             'restUrl' => MooWoodle()->rest_namespace,
@@ -320,11 +329,15 @@ class FrontendScripts {
 					),
 				),
 				'moowoodle-product-tab' => array(
-					'object_name' => 'moowoodle',
-                    'use_ajax'    => true,
+					'object_name' => 'moowoodleProduct',
+                    'use_rest'    => true,
 					'data'        => array(
-						'select_text' => __( 'Select an item...', 'moowoodle' ),
+                        'selectText' => __( 'Select an item...', 'moowoodle' ),
 						'khali_dabba' => MooWoodle()->util->is_khali_dabba(),
+                        'postId'       => $post->ID,
+                        'linkType'     => $default_type,
+                        'linkedItemId' => $selected_id,
+                        'productMetaNonce' => wp_create_nonce(),
 					),
 				),
 			);
