@@ -94,6 +94,7 @@ class Utill {
         'developer-tools'               => 'multivendorx_developer_tools_settings',
         'invoices'                      => 'multivendorx_invoices_settings',
         'tax-information'               => 'multivendorx_tax_information_settings',
+        'printful'                       => 'multivendorx_printful_settings',
     );
 
     const MULTIVENDORX_OTHER_SETTINGS = array(
