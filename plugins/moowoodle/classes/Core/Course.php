@@ -26,7 +26,7 @@ class Course {
 		add_filter( 'woocommerce_product_data_tabs', array( &$this, 'add_additional_product_tab' ), 99, 1 );
 		add_action( 'woocommerce_product_data_panels', array( &$this, 'add_additional_product_data_panels' ) );
 		add_action( 'wp_ajax_get_linkable_course', array( $this, 'get_linkable_course' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ), 20 );
 	}
 
 	/**
@@ -35,11 +35,9 @@ class Course {
      * @return void
      */
 	public function enqueue_admin_assets() {
-
-		FrontendScripts::admin_load_scripts();
-		FrontendScripts::enqueue_script( 'moowoodle-product-tab-script' );
-		FrontendScripts::enqueue_style( 'moowoodle-product-tab-style' );
-		FrontendScripts::localize_scripts( 'moowoodle-product-tab-script' );
+		FrontendScripts::enqueue_script( 'moowoodle-product-tab' );
+		FrontendScripts::enqueue_style( 'moowoodle-product-tab' );
+		FrontendScripts::localize_scripts( 'moowoodle-product-tab' );
 	}
 
 	/**

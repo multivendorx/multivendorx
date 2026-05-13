@@ -22,7 +22,7 @@ class Admin {
 		// Register admin menu.
         add_action( 'admin_menu', array( $this, 'add_menus' ) );
 		// enqueue scripts in admin panel.
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ), 20 );
 
 		// Allow URL.
         add_filter( 'allowed_redirect_hosts', array( $this, 'allow_moowoodle_redirect_host' ) );
@@ -135,11 +135,11 @@ class Admin {
 		if ( get_current_screen()->id === 'toplevel_page_moowoodle' ) {
 			wp_enqueue_script( 'wp-element' );
 
-			FrontendScripts::admin_load_scripts();
-			FrontendScripts::enqueue_script( 'moowoodle-vendor-script' );
-			FrontendScripts::enqueue_script( 'moowoodle-admin-script' );
-			FrontendScripts::enqueue_style( 'moowoodle-index-style' );
-			FrontendScripts::localize_scripts( 'moowoodle-admin-script' );
+			// FrontendScripts::admin_load_scripts();
+			FrontendScripts::enqueue_script( 'moowoodle-vendor' );
+			FrontendScripts::enqueue_script( 'moowoodle-admin' );
+			FrontendScripts::enqueue_style( 'moowoodle-index' );
+			FrontendScripts::localize_scripts( 'moowoodle-admin' );
 		}
 	}
 

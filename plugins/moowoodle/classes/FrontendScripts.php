@@ -36,10 +36,10 @@ class FrontendScripts {
 	 * @return string Relative path to the build directory.
 	 */
 
-    public static function get_path_url( $type = 'url' ) {
+    public static function get_asset_path( $type = 'url' ) {
         $build_path = MooWoodle()->is_dev ? 'release/assets/' : 'assets/';
 
-        return 'path' === $type
+        return 'file' === $type
             ? MooWoodle()->plugin_path . $build_path
             : MooWoodle()->plugin_url . $build_path;
     }
@@ -53,6 +53,9 @@ class FrontendScripts {
 	 * @param string $version      Optional. Script version. Default empty string.
 	 */
     public static function register_script( $handle, $path, $deps = array(), $version = '' ) {
+        if ( wp_script_is( $handle, 'registered' ) ) {
+			return;
+		}
         wp_register_script( $handle, $path, $deps, $version, true );
         wp_set_script_translations( $handle, 'moowoodle' );
     }
@@ -66,6 +69,9 @@ class FrontendScripts {
 	 * @param string $version  Optional. Style version. Default empty string.
 	 */
     public static function register_style( $handle, $path, $deps = array(), $version = '' ) {
+        if ( wp_style_is( $handle, 'registered' ) ) {
+			return;
+		}
         wp_register_style( $handle, $path, $deps, $version );
     }
 
@@ -76,7 +82,7 @@ class FrontendScripts {
 	 */
     public static function register_scripts() {
         $version      = MooWoodle()->version;
-        $vendor_asset = include self::get_path_url('path') . 'js/vendors.asset.php';
+        $vendor_asset = include self::get_asset_path('file') . 'js/vendors.asset.php';
 
         $block_scripts = array(
             'my-courses',
@@ -85,15 +91,15 @@ class FrontendScripts {
         $register_scripts = apply_filters(
             'moowoodle_register_scripts',
             array(
-                'moowoodle-vendor-script' => array(
-                	'src'  => self::get_path_url() . 'js/vendors.js',
+                'moowoodle-vendor' => array(
+                	'src'  => self::get_asset_path() . 'js/vendors.js',
                 	'deps' => $vendor_asset['dependencies'],
                 ),
             )
         );
 
         foreach ( $block_scripts as $handle ) {
-            $asset_path = self::get_path_url('path') . "js/block/{$handle}/index.asset.php";
+            $asset_path = self::get_asset_path('file') . "js/block/{$handle}/index.asset.php";
             $asset      = file_exists( $asset_path )
                 ? include $asset_path
                 : array(
@@ -101,8 +107,8 @@ class FrontendScripts {
 					'version'      => $version,
 				);
 
-            $register_scripts[ "moowoodle-{$handle}-script" ] = array(
-                'src'  => self::get_path_url() . "js/block/{$handle}/index.js",
+            $register_scripts[ "moowoodle-{$handle}" ] = array(
+                'src'  => self::get_asset_path() . "js/block/{$handle}/index.js",
                 'deps' => $asset['dependencies'],
             );
         }
@@ -153,22 +159,22 @@ class FrontendScripts {
     public static function admin_register_scripts() {
 		$version = MooWoodle()->version;
         // Enqueue all chunk files (External dependencies).
-        $index_asset  = include self::get_path_url('path') . 'js/index.asset.php';
-        $vendor_asset = include self::get_path_url('path') . 'js/vendors.asset.php';
+        $index_asset  = include self::get_asset_path('file') . 'js/index.asset.php';
+        $vendor_asset = include self::get_asset_path('file') . 'js/vendors.asset.php';
 
         $register_scripts = apply_filters(
             'admin_moowoodle_register_scripts',
             array(
-                'moowoodle-vendor-script'      => array(
-                	'src'  => self::get_path_url() . 'js/vendors.js',
+                'moowoodle-vendor'      => array(
+                	'src'  => self::get_asset_path() . 'js/vendors.js',
                 	'deps' => $vendor_asset['dependencies'],
                 ),
-				'moowoodle-admin-script'       => array(
-					'src'  => self::get_path_url() . 'js/index.js',
+				'moowoodle-admin'       => array(
+					'src'  => self::get_asset_path() . 'js/index.js',
 					'deps' => $index_asset['dependencies'],
 				),
-				'moowoodle-product-tab-script' => array(
-					'src'  => self::get_path_url() . 'js/' . MOOWOODLE_PLUGIN_SLUG . '-product-tab.min.js',
+				'moowoodle-product-tab' => array(
+					'src'  => self::get_asset_path() . 'js/' . MOOWOODLE_PLUGIN_SLUG . '-product-tab.min.js',
 					'deps' => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ),
 				),
             )
@@ -188,11 +194,11 @@ class FrontendScripts {
 		$register_styles = apply_filters(
             'admin_moowoodle_register_styles',
             array(
-				'moowoodle-index-style'       => array(
-					'src' => self::get_path_url() . 'styles/index.css',
+				'moowoodle-index'       => array(
+					'src' => self::get_asset_path() . 'styles/index.css',
 				),
-				'moowoodle-product-tab-style' => array(
-					'src'  => self::get_path_url() . 'styles/' . MOOWOODLE_PLUGIN_SLUG . '-product-tab.min.css',
+				'moowoodle-product-tab' => array(
+					'src'  => self::get_asset_path() . 'styles/' . MOOWOODLE_PLUGIN_SLUG . '-product-tab.min.css',
 					'deps' => array(),
 				),
 			)
@@ -266,7 +272,7 @@ class FrontendScripts {
 
         $localize_scripts =
             array(
-                'moowoodle-admin-script'       => array(
+                'moowoodle-admin'       => array(
                     'object_name'  => 'appLocalizer',
                     'use_rest'     => true,
                     'use_ajax'     => true,
@@ -300,14 +306,14 @@ class FrontendScripts {
                         'date_format'     => Util::wp_to_react_date_format( get_option( 'date_format' ) ),
 					),
                 ),
-                'moowoodle-my-courses-script'  => array(
+                'moowoodle-my-courses'  => array(
 					'object_name' => 'courseMyAcc',
                     'use_rest'    => true,
 					'data'        => array(
                         'current_user_id' => MooWoodle()->current_user_id,
 					),
 				),
-				'moowoodle-product-tab-script' => array(
+				'moowoodle-product-tab' => array(
 					'object_name' => 'moowoodle',
                     'use_ajax'    => true,
 					'data'        => array(
