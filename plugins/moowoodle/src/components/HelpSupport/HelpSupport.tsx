@@ -48,24 +48,6 @@ const HelpSupport: React.FC = () => {
 			),
 			link: 'https://wordpress.org/support/plugin/dc-woocommerce-multi-vendor/',
 		},
-		{
-			icon: 'forum',
-			name: __('Our forum', 'moowoodle'),
-			description: __(
-				'Discuss moowoodle features, report issues, and collaborate with other users.',
-				'moowoodle'
-			),
-			link: 'https://moowoodle.com/support-forum/',
-		},
-		{
-			icon: 'live-chat',
-			name: __('Live chat', 'moowoodle'),
-			description: __(
-				'Get real-time support from our team for setup, troubleshooting, and guidance.',
-				'moowoodle'
-			),
-			link: 'https://tawk.to/chat/5d2eebf19b94cd38bbe7c9ad/1fsg8cq8n',
-		},
 	];
 	const DocumentationItems = [
 		{
@@ -85,24 +67,6 @@ const HelpSupport: React.FC = () => {
 				'moowoodle'
 			),
 			link: 'https://www.youtube.com/@moowoodle/videos',
-		},
-		{
-			icon: 'faq',
-			name: __('FAQs', 'moowoodle'),
-			description: __(
-				'Quick answers to the most common questions about features and troubleshooting.',
-				'moowoodle'
-			),
-			link: 'https://moowoodle.com/docs/faqs/',
-		},
-		{
-			icon: 'coding',
-			name: __('Coding support', 'moowoodle'),
-			description: __(
-				'Professional help for customizations, integrations, and technical issues.',
-				'moowoodle'
-			),
-			link: 'https://discord.com/channels/1376811097134469191/1376811102020829258',
 		},
 	];
 	return (
@@ -171,65 +135,6 @@ const HelpSupport: React.FC = () => {
 									</div>
 								</div>
 							))}
-						</div>
-					</Card>
-				</Column>
-
-				<Column>
-					<Card>
-						<div className="video-section">
-							<div className="details-wrapper">
-								<div className="title">
-									{__(
-										'Master moowoodle in minutes!',
-										'moowoodle'
-									)}
-								</div>
-								<div className="des">
-									{__(
-										'Watch our top tutorial videos and learn how to set up your marketplace, manage stores, and enable subscriptions - all in just a few easy steps.',
-										'moowoodle'
-									)}
-								</div>
-								<a
-									href="https://www.youtube.com/@moowoodle/videos"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="admin-btn btn-purple"
-								>
-									<i className="adminfont-eye" />{' '}
-									{__('Watch All Tutorials', 'moowoodle')}
-								</a>
-							</div>
-
-							<div className="video-section">
-								{videos.map((video, index) => {
-									const videoId = new URL(
-										video.link
-									).searchParams.get('v');
-									return (
-										<div
-											key={index}
-											className="video-wrapper"
-										>
-											<iframe
-												src={`https://www.youtube.com/embed/${videoId}`}
-												title={video.title}
-												frameBorder="0"
-												allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-												allowFullScreen
-											></iframe>
-
-											<div className="title">
-												{__(video.title, 'moowoodle')}
-											</div>
-											<div className="des">
-												{__(video.des, 'moowoodle')}
-											</div>
-										</div>
-									);
-								})}
-							</div>
 						</div>
 					</Card>
 				</Column>

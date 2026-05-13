@@ -3,9 +3,9 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'email',
     priority: 4,
-    name: __( 'Email Restriction Policies', 'notifima' ),
-    desc: __( 'Restrict email registrations.', 'notifima' ),
-    icon: 'adminlib-mail',
+    headerTitle: __( 'Email Restriction Policies', 'notifima' ),
+    headerDescription: __( 'Restrict email registrations.', 'notifima' ),
+    headerIcon: 'mail',
     proDependent: true,
     submitUrl: 'settings',
     modal: [
@@ -20,11 +20,6 @@ export default {
             proSetting: true,
         },
         {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
-        },
-        {
             key: 'ban_email_domain_text',
             type: 'textarea',
             label: __( 'Blocked domain alert message', 'notifima' ),
@@ -35,11 +30,6 @@ export default {
             proSetting: true,
         },
         {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
-        },
-        {
             key: 'ban_email_addresses',
             type: 'textarea',
             desc: __(
@@ -48,11 +38,6 @@ export default {
             ),
             label: __( 'Blocked email addresses', 'notifima' ),
             proSetting: true,
-        },
-        {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
         },
         {
             key: 'ban_email_address_text',
@@ -66,9 +51,10 @@ export default {
         },
         {
             key: 'note_blocktext',
-            type: 'blocktext',
-            label: 'no_label',
-            blocktext:
+            type: 'notice',
+            noticeType: 'info',
+			displayPosition: 'notice',
+            message:
                 'Disclaimer – Loco Translator Compatibility: This plugin allows you to customize certain frontend text settings and descriptions. Default texts are Loco Translator-ready, but any changes made in the corresponding custom text box will no longer be available for translation via Loco Translator. Hence, please enter the customized text in your desired language only.',
         },
     ],

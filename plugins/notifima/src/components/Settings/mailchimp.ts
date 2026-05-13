@@ -3,9 +3,9 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'mailchimp',
     priority: 5,
-    name: __( 'Mailchimp Integration', 'notifima' ),
-    desc: __( 'Integrate Mailchimp for email marketing.', 'notifima' ),
-    icon: 'adminlib-mailchimp',
+    headerTitle: __( 'Mailchimp Integration', 'notifima' ),
+    headerDescription: __( 'Integrate Mailchimp for email marketing.', 'notifima' ),
+    headerIcon: 'mailchimp',
     proDependent: true,
     submitUrl: 'settings',
     modal: [

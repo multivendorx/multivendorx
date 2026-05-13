@@ -4,7 +4,7 @@ import { FieldComponent, ZyraVariable } from './fieldUtils';
 import { getApiLink } from '../utils/apiService';
 import { ButtonInputUI } from './ButtonInput';
 import { Notice } from './Notice';
-
+import '../styles/web/SequentialTaskExecutor.scss';
 interface Task {
     action: string;
     message: string;
@@ -15,6 +15,7 @@ interface Task {
 
 interface SequentialTaskExecutorProps {
     buttonText: string;
+    buttonIcon: string;
     apilink: string;
     parameter?: string;
     action: string;
@@ -29,6 +30,7 @@ interface SequentialTaskExecutorProps {
 
 export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = ({
     buttonText,
+    buttonIcon,
     apilink,
     action,
     parameter,
@@ -48,6 +50,18 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
     const taskIndex = useRef(0);
     const fetchStatusRef = useRef<NodeJS.Timeout | null>(null);
     const allResponses = useRef({});
+
+    const [currentCompletedIndex, setCurrentCompletedIndex] = useState(0);
+
+    useEffect(() => {
+        if (currentCompletedIndex < syncStatus.length) {
+            const timer = setTimeout(() => {
+                setCurrentCompletedIndex((prev) => prev + 1);
+            }, interval);
+
+            return () => clearTimeout(timer);
+        }
+    }, [currentCompletedIndex, syncStatus]);
 
     const executeSequentialTasks = async () => {
         setLoading(true);
@@ -184,37 +198,41 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                             color: 'purple-bg',
                             onClick: handleButtonClick,
                             disabled: loading,
-                            icon: loading ? 'spinner' : 'play',
+                            icon: buttonIcon || 'import',
                         },
                     ]}
                     position="left"
                 />
 
                 {loading && (
-                    <div className="loader">
-                        <div className="three-body-dot" />
-                    </div>
+                    <div className="multivendorx-loader"></div>
                 )}
             </div>
 
-
-            {syncStatus &&
-                syncStatus.length > 0 &&
-                syncStatus.map((status, idx) => (
-                    <div key={idx} className="details-status-row">
-                        {status.action}
-                        <div className="status-meta">
-                            <span className="status-icons">
-                                <i className="admin-font adminfont-check" />
-                            </span>
-                            {status.total && (
-                                <span>
-                                    {status.current} / {status.total}
+            <div className='sequential-task-executor'>
+                {syncStatus &&
+                    syncStatus.length > 0 &&
+                    syncStatus.map((status, idx) => (
+                        <div key={idx} className={`sequential-task ${processStatus}`} style={{ ['--progress-time' as string]: `${interval / 1000}s`,}}>
+                            {status.action}
+                            <div className="status-wrapper">
+                                <span className="status-icons">
+                                    {processStatus === 'failed' && (                                    
+                                        <i className={`failed-icon adminfont-error`} />                                    
+                                    )}
+                                    {processStatus === 'completed' && (                                    
+                                        <i className={`completed-icon adminfont-check`} />
+                                    )}
                                 </span>
-                            )}
+                                {status.total && (
+                                    <span>
+                                        {status.current} / {status.total}
+                                    </span>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+            </div>
 
             {processStatus && (
                 <Notice
@@ -234,6 +252,7 @@ const SequentialTaskExecutor: FieldComponent = {
     render: ({ field }) => (
         <SequentialTaskExecutorUI
             buttonText={field.buttonText}
+            buttonIcon={field.buttonIcon}
             apilink={field.apilink}
             parameter={field.parameter}
             action={field.action}

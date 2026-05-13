@@ -6,6 +6,7 @@ const nestedFields = [
 	{
 		key: 'wordPress',
 		type: 'select',
+		size: 8,
 		options: [
 			{
 				key: 'firstname',
@@ -37,6 +38,7 @@ const nestedFields = [
 	{
 		key: 'moodle',
 		type: 'select',
+		size: 8,
 		options: [
 			{
 				key: 'firstname',
@@ -150,7 +152,7 @@ export default {
 			key: 'user_sync_options',
 			type: 'nested',
 			label: __('Profile information mapping', 'moowoodle'),
-			rowClass: 'single-line',
+			rowClass: 'single-multi-line',
 			mapping: true,
 			addButtonLabel: __('Add New', 'moowoodle'),
 			deleteButtonLabel: __('Remove', 'moowoodle'),
@@ -185,6 +187,7 @@ export default {
 				'Courses are fetched from Moodle and synchronized with WordPress, ensuring product details remain updated.',
 			type: 'sequential-task-executor',
 			buttonText: 'Synchronize users now!',
+			buttonIcon: 'bulk-course-sync',
 			apilink: 'synchronization',
 			parameter: 'user',
 			interval: 2500,

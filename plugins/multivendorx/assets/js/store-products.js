@@ -9,7 +9,7 @@ jQuery(document).ready(function ($) {
 		if ($btn.length) {
 			const backgroundColor = $btn.css('background-color');
 			const color = $btn.css('color');
-			root.style.setProperty('--theme-primary', color);
+			root.style.setProperty('--theme-primary-color', color);
 			root.style.setProperty('--theme-background', backgroundColor);
 		} 
 	});

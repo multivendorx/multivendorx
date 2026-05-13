@@ -168,11 +168,11 @@ class Enrollment {
 				}
 			}
 
-			$moodle_course_id = $product->get_meta( 'moodle_course_id', true );
-			$linked_course_id = $product->get_meta( 'linked_course_id', true );
+			$moodle_course_id = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
+			$wordpress_course_id = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
 
 			if ( ! $moodle_course_id ) {
-				Util::log( "Skipping enrollment - Moodle course ID is missing. Linked Course ID: #{$linked_course_id}" );
+				Util::log( "Skipping enrollment - Moodle course ID is missing. Linked Course ID: #{$wordpress_course_id}" );
 				continue;
 			}
 
@@ -188,7 +188,7 @@ class Enrollment {
 					'order_item_id' => $item_id,
 				),
 				array(
-					'course_id'        => $linked_course_id,
+					'course_id'        => $wordpress_course_id,
 					'moodle_course_id' => $moodle_course_id,
 				)
             );
@@ -458,8 +458,8 @@ class Enrollment {
 	public function add_dates_with_product() {
 		global $product;
 
-		$startdate = $product->get_meta( '_course_startdate', true );
-		$enddate   = $product->get_meta( '_course_enddate', true );
+		$startdate = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['course_startdate'], true );
+		$enddate   = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['course_enddate'], true );
 
 		// Get start end date setting.
 		$start_end_date = MooWoodle()->setting->get_setting( 'start_end_date', array() );
@@ -494,7 +494,7 @@ class Enrollment {
 			$product_id = $cart_item['product_id'];
 
 			// Check if product has Moodle course ID
-			$moodle_course_id = get_post_meta( $product_id, 'moodle_course_id', true );
+			$moodle_course_id = get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
 			if ( empty( $moodle_course_id ) ) {
 				continue; // Skip non-Moodle products
 			}

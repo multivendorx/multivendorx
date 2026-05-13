@@ -3,38 +3,28 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'form_submission',
     priority: 3,
-    name: __( 'Prompt Messages', 'notifima' ),
-    desc: __( 'Manage post-form submission messages.', 'notifima' ),
-    icon: 'adminlib-submission-message',
+    headerTitle: __( 'Prompt Messages', 'notifima' ),
+    headerDescription: __( 'Manage post-form submission messages.', 'notifima' ),
+    headerIcon: 'submission-message',
     submitUrl: 'settings',
     modal: [
         {
             key: 'alert_success',
             type: 'textarea',
             desc: __(
-                'Tip: Utilize %product_title% for dynamic product titles and %customer_email% for personalized customer email addresses in your messages.',
+                '<b> Tip: </b>Utilize %product_title% for dynamic product titles and %customer_email% for personalized customer email addresses in your messages.',
                 'notifima'
             ),
             label: __( 'Successful form submission', 'notifima' ),
         },
         {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
-        },
-        {
             key: 'alert_email_exist',
             type: 'textarea',
             desc: __(
-                'Tip: Enhance personalization by incorporating %product_title% for dynamic product titles and %customer_email% for individual customer emails.',
+                '<b> Tip: </b>Enhance personalization by incorporating %product_title% for dynamic product titles and %customer_email% for individual customer emails.',
                 'notifima'
             ),
             label: __( 'Repeated subscription alert', 'notifima' ),
-        },
-        {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
         },
         {
             key: 'valid_email',
@@ -44,11 +34,6 @@ export default {
                 'notifima'
             ),
             label: __( 'Email validation error', 'notifima' ),
-        },
-        {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
         },
         {
             key: 'alert_unsubscribe_message',
@@ -61,9 +46,10 @@ export default {
         },
         {
             key: 'note_blocktext',
-            type: 'blocktext',
-            label: 'no_label',
-            blocktext:
+            type: 'notice',
+            noticeType: 'info',
+			displayPosition: 'notice',
+            message:
                 'Disclaimer – Loco Translator Compatibility: This plugin allows you to customize certain frontend text settings and descriptions. Default texts are Loco Translator-ready, but any changes made in the corresponding custom text box will no longer be available for translation via Loco Translator. Hence, please enter the customized text in your desired language only.',
         },
     ],

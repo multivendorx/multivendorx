@@ -44,6 +44,7 @@ export default {
 			parameter: 'connection_test',
 			action: 'get_site_info',
 			buttonText: 'Start Test',
+			buttonIcon: 'centralized-connections',
 			interval: 2500,
 			successMessage: __('Connection test passed!', 'moowoodle'),
 			failureMessage: __('Connection test failed!', 'moowoodle'),

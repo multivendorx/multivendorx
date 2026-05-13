@@ -1,13 +1,19 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
-import { Card, Column, ItemListUI, Container, NoticeManager } from 'zyra';
+import {
+	Card,
+	Column,
+	ItemListUI,
+	Container,
+	NoticeManager,
+} from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
 import { getModuleData } from '../../services/templateService';
 import axios from 'axios';
 import proPopupContent from '../Popup/Popup';
-import Mascot from '../../assets/images/multivendorx-mascot-scale.png';
-import catalogx from '../../assets/images/catalogx.png';
-import notifima from '../../assets/images/brand-icon.png';
+import Mascot from '../../assets/images/Brand-small.png';
+import catalogx from '../../assets/images/Brand.png';
+import notifima from '../../assets/images/Brand.png';
 
 interface WPPlugin {
 	plugin?: string;
@@ -23,7 +29,7 @@ const DashboardTab: React.FC<object> = () => {
 
 	const isPro = !!appLocalizer.khali_dabba;
 
-	const renderUpgradeButton = (label = __('Upgrade Now', 'moowoodle')) => {
+	const renderUpgradeButton = (label = __('Upgrade Now', 'notifima')) => {
 		if (isPro) {
 			return null;
 		}
@@ -34,7 +40,7 @@ const DashboardTab: React.FC<object> = () => {
 				className="admin-btn btn-purple"
 			>
 				<i className="adminfont-pro-tag"></i>
-				{__(label, 'moowoodle')}
+				{__(label, 'notifima')}
 				<i className="adminfont-arrow-right icon-pro-btn"></i>
 			</a>
 		);
@@ -83,10 +89,10 @@ const DashboardTab: React.FC<object> = () => {
 
 		if (isInstalled) {
 			NoticeManager.add({
-				title: __('Redirecting...', 'moowoodle'),
+				title: __('Redirecting...', 'notifima'),
 				message: __(
 					'Plugin already installed. Redirecting to activate...',
-					'moowoodle'
+					'notifima'
 				),
 				type: 'info',
 				position: 'float',
@@ -114,9 +120,9 @@ const DashboardTab: React.FC<object> = () => {
 			})
 			.catch(() => {
 				NoticeManager.add({
-					title: __('Error!', 'moowoodle'),
+					title: __('Error!', 'notifima'),
 					message: sprintf(
-						__('Could not install "%s".', 'moowoodle'),
+						__('Could not install "%s".', 'notifima'),
 						slug
 					),
 					type: 'error',
@@ -127,109 +133,93 @@ const DashboardTab: React.FC<object> = () => {
 	};
 	const resources = [
 		{
-			title: __('Documentation', 'moowoodle'),
+			title: __('Documentation', 'notifima'),
 			desc: __(
 				'Step-by-step guides to set up and manage your marketplace.',
-				'moowoodle'
+				'notifima'
 			),
 			iconClass: 'knowledgebase',
-			linkText: __('Explore Docs', 'moowoodle'),
-			href: 'https://multivendorx.com/docs/knowledgebase/',
+			linkText: __('Explore Docs', 'notifima'),
+			href: 'https://catalogx.com/docs/knowledgebase/',
 		},
 		{
-			title: __('Expert consultation', 'moowoodle'),
+			title: __('Expert consultation', 'notifima'),
 			desc: __(
 				'Get tailored advice from our marketplace specialists.',
-				'moowoodle'
+				'notifima'
 			),
 			iconClass: 'preview',
-			linkText: __('Book Consultation', 'moowoodle'),
-			href: 'https://multivendorx.com/custom-development/',
+			linkText: __('Book Consultation', 'notifima'),
+			href: 'https://catalogx.com/custom-development/',
 		},
 		{
-			title: __('Developer community', 'moowoodle'),
+			title: __('Developer community', 'notifima'),
 			desc: __(
 				'Connect with our team and fellow builders on Discord.',
-				'moowoodle'
+				'notifima'
 			),
 			iconClass: 'global-community',
-			linkText: __('Join Discord', 'moowoodle'),
+			linkText: __('Join Discord', 'notifima'),
 			href: 'https://discord.com/channels/1376811097134469191/1376811102020829258',
 		},
 		{
-			title: __('Facebook group', 'moowoodle'),
+			title: __('Facebook group', 'notifima'),
 			desc: __(
 				'Share experiences and tips with other marketplace owners.',
-				'moowoodle'
+				'notifima'
 			),
 			iconClass: 'user-circle',
-			linkText: __('Join Group', 'moowoodle'),
+			linkText: __('Join Group', 'notifima'),
 			href: 'https://www.facebook.com/groups/226246620006065/',
 		},
 	];
 
 	const featuresList = [
 		{
-			title: __('Seamless Moodle integration', 'moowoodle'),
+			title: __('Membership rewards & commission', 'notifima'),
 			desc: __(
-				'Connect your WooCommerce store with Moodle and automatically manage courses, enrollments, and learner access from one place.',
-				'moowoodle'
+				'Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.',
+				'notifima'
 			),
 			icon: 'commission',
 		},
 		{
-			title: __('Sell courses with WooCommerce', 'moowoodle'),
+			title: __('Verified stores only', 'notifima'),
 			desc: __(
-				'Turn Moodle courses into purchasable WooCommerce products and monetize your learning platform with flexible checkout and payment options.',
-				'moowoodle'
+				'Screen stores with document verification and approval - build a trusted marketplace from day one.',
+				'notifima'
 			),
 			icon: 'verification3',
 		},
 		{
-			title: __('Single Sign-On access', 'moowoodle'),
+			title: __('Diversified marketplace', 'notifima'),
 			desc: __(
-				'Allow learners to access their Moodle courses directly from WordPress without logging in multiple times.',
-				'moowoodle'
+				'Enable bookings, subscriptions, and auctions to boost sales and engagement.',
+				'notifima'
 			),
 			icon: 'marketplace',
 		},
 		{
-			title: __('Classroom & bulk enrollment', 'moowoodle'),
+			title: __('Vacation mode for stores', 'notifima'),
 			desc: __(
-				'Enable teachers, companies, and training centers to purchase multiple seats and assign courses to learners with ease.',
-				'moowoodle'
+				'Stores can pause their stores temporarily with automatic buyer notifications - no missed messages.',
+				'notifima'
 			),
 			icon: 'vacation',
 		},
 		{
-			title: __('Course gifting made simple', 'moowoodle'),
+			title: __('Never run out of stock', 'notifima'),
 			desc: __(
-				'Let customers purchase and gift courses to friends, students, employees, or team members directly during checkout.',
-				'moowoodle'
+				'Real-time inventory tracking with automatic low-stock alerts keeps sellers prepared and buyers happy.',
+				'notifima'
 			),
 			icon: 'global-community',
 		},
 		{
-			title: __('Real-time user synchronization', 'moowoodle'),
+			title: __('Autopilot notifications', 'notifima'),
 			desc: __(
-				'Keep user profiles synchronized between WordPress and Moodle automatically for a smooth and connected learning experience.',
-				'moowoodle'
-			),
-			icon: 'notification',
-		},
-		{
-			title: __('Automatic course synchronization', 'moowoodle'),
-			desc: __(
-				'Fetch Moodle courses instantly and keep WooCommerce products updated with the latest course information.',
-				'moowoodle'
-			),
-			icon: 'notification',
-		},
-		{
-			title: __('Cohort synchronization & group learning', 'moowoodle'),
-			desc: __(
-				'Sync Moodle cohorts with WooCommerce products to streamline group enrollments and organization-based learning.',
-				'moowoodle'
+				'Automatic emails and alerts for every order, refund, and payout - everyone stays in the loop.',
+				'notifima'
 			),
 			icon: 'notification',
 		},
@@ -242,53 +232,47 @@ const DashboardTab: React.FC<object> = () => {
 					<div className="pro-banner-wrapper">
 						<div className="content">
 							<div className="heading">
-								{__('Welcome to MooWoodle', 'moowoodle')}
+								{__('Welcome to notifima', 'notifima')}
 							</div>
 							<div className="description">
 								{__(
-									'Connect WordPress, WooCommerce, and Moodle to sell courses, automate enrollments, and deliver a seamless eLearning experience from a single platform.',
-									'moowoodle'
+									'Expand your WooCommerce store by creating a marketplace for multiple stores. Manage, grow, and scale seamlessly.',
+									'notifima'
 								)}
 							</div>
 
 							<div className="button-wrapper">
 								{renderUpgradeButton(
-									__('Upgrade Now', 'moowoodle')
+									__('Upgrade Now', 'notifima')
 								)}
 
 								<div
 									className="admin-btn"
 									onClick={() =>
 										(window.location.href =
-											'?page=multivendorx-setup')
+											'?page=catalogx-setup')
 									}
 								>
-									{__('Launch Setup Wizard', 'moowoodle')}
+									{__('Launch Setup Wizard', 'notifima')}
 									<i className="adminfont-import"></i>
 								</div>
 							</div>
 						</div>
 
 						<div className="image">
-							<img src={Mascot} alt="" />
+							{/* <img src={Mascot} alt="" /> */}
 						</div>
 					</div>
 				</Card>
 				{!appLocalizer.khali_dabba && (
 					<Card
 						title={__(
-							'Build a smarter eLearning platform',
-							'moowoodle'
+							'Build a professional marketplace',
+							'notifima'
 						)}
-						badge={[
-							{
-								text: 'Starting at $299/year',
-								color: 'blue',
-							},
-						]}
 						desc={__(
-							'Unlock advanced synchronization, automation, and enrollment features to create a professional learning experience for individuals, teams, and institutions.',
-							'moowoodle'
+							'Unlock advanced features and premium modules to create a marketplace that stands out.',
+							'notifima'
 						)}
 					>
 						<ItemListUI
@@ -304,23 +288,26 @@ const DashboardTab: React.FC<object> = () => {
 						<div className="pro-banner">
 							<div className="text">
 								{__(
-									'Trusted by growing eLearning businesses',
-									'moowoodle'
+									'Join 8,000+ successful marketplace owners',
+									'notifima'
 								)}
 							</div>
 							<div className="des">
 								{__(
-									'Create, manage, and scale your online learning platform with confidence. From individual instructors to training organizations, MooWoodle helps simplify course selling and learner management.',
-									'moowoodle'
+									'Create, manage, and grow your marketplace with confidence. Trusted by thousands of entrepreneurs worldwide.',
+									'notifima'
 								)}
 							</div>
 
 							{renderUpgradeButton(
-								__('Upgrade Now', 'moowoodle')
+								__('Upgrade Now', 'notifima')
 							)}
 
 							<div className="des">
-								{__('15-day money-back guarantee', 'moowoodle')}
+								{__(
+									'15-day money-back guarantee',
+									'notifima'
+								)}
 							</div>
 						</div>
 					</Card>
@@ -329,7 +316,7 @@ const DashboardTab: React.FC<object> = () => {
 
 			{/* Right Side */}
 			<Column grid={4}>
-				<Card title={__('Extend your website', 'moowoodle')}>
+				<Card title={__('Extend your website', 'notifima')}>
 					<Column row>
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
 							<ItemListUI
@@ -337,24 +324,30 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('CatalogX Pro', 'moowoodle'),
+										title: __(
+											'CatalogX Pro',
+											'notifima'
+										),
 										desc: __(
 											'Advanced product catalog with enhanced enquiry features and premium templates',
-											'moowoodle'
+											'notifima'
 										),
-										img: catalogx,
+										// img: catalogx,
 										tags: (
 											<>
 												<span className="admin-badge red">
 													<i className="adminfont-pro-tag"></i>{' '}
-													{__('Pro', 'moowoodle')}
+													{__('Pro', 'notifima')}
 												</span>
 												<a
 													href="https://catalogx.com/pricing/"
 													target="_blank"
 													rel="noopener noreferrer"
 												>
-													{__('Get Pro', 'moowoodle')}
+													{__(
+														'Get Pro',
+														'notifima'
+													)}
 												</a>
 											</>
 										),
@@ -367,16 +360,16 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('CatalogX', 'moowoodle'),
+										title: __('notifima', 'notifima'),
 										desc: __(
 											'Turn your store into a product catalog with enquiry-based sales',
-											'moowoodle'
+											'notifima'
 										),
-										img: catalogx,
+										// img: catalogx,
 										tags: (
 											<>
 												<span className="admin-badge green">
-													{__('Free', 'moowoodle')}
+													{__('Free', 'notifima')}
 												</span>
 												<a
 													href="#"
@@ -404,11 +397,11 @@ const DashboardTab: React.FC<object> = () => {
 													'woocommerce-catalog-enquiry'
 														? __(
 																'Installing...',
-																'moowoodle'
+																'notifima'
 															)
 														: __(
 																'Install',
-																'moowoodle'
+																'notifima'
 															)}
 												</a>
 											</>
@@ -424,24 +417,30 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('Notifima Pro', 'moowoodle'),
+										title: __(
+											'Notifima Pro',
+											'notifima'
+										),
 										desc: __(
 											'Advanced stock alerts, wishlist features, and premium notification system',
-											'moowoodle'
+											'notifima'
 										),
-										img: notifima,
+										// img: notifima,
 										tags: (
 											<>
 												<span className="admin-badge red">
 													<i className="adminfont-pro-tag"></i>{' '}
-													{__('Pro', 'moowoodle')}
+													{__('Pro', 'notifima')}
 												</span>
 												<a
 													href="https://notifima.com/pricing/"
 													target="_blank"
 													rel="noopener noreferrer"
 												>
-													{__('Get Pro', 'moowoodle')}
+													{__(
+														'Get Pro',
+														'notifima'
+													)}
 												</a>
 											</>
 										),
@@ -454,16 +453,16 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('Notifima', 'moowoodle'),
+										title: __('Notifima', 'notifima'),
 										desc: __(
 											'Advanced stock alerts and wishlist features for WooCommerce',
-											'moowoodle'
+											'notifima'
 										),
-										img: notifima,
+										// img: notifima,
 										tags: (
 											<>
 												<span className="admin-badge green">
-													{__('Free', 'moowoodle')}
+													{__('Free', 'notifima')}
 												</span>
 												<a
 													href="#"
@@ -491,11 +490,11 @@ const DashboardTab: React.FC<object> = () => {
 													'woocommerce-product-stock-alert'
 														? __(
 																'Installing...',
-																'moowoodle'
+																'notifima'
 															)
 														: __(
 																'Install',
-																'moowoodle'
+																'notifima'
 															)}
 												</a>
 											</>
@@ -508,7 +507,7 @@ const DashboardTab: React.FC<object> = () => {
 				</Card>
 
 				{/* Quick Links */}
-				<Card title={__('Need help getting started?', 'moowoodle')}>
+				<Card title={__('Need help getting started?', 'notifima')}>
 					<div className="quick-link">
 						{resources.map((res) => (
 							<ItemListUI
@@ -516,8 +515,8 @@ const DashboardTab: React.FC<object> = () => {
 								border
 								items={[
 									{
-										title: __(res.title, 'moowoodle'),
-										desc: __(res.desc, 'moowoodle'),
+										title: __(res.title, 'notifima'),
+										desc: __(res.desc, 'notifima'),
 										icon: res.iconClass,
 										tags: (
 											<>
@@ -527,7 +526,7 @@ const DashboardTab: React.FC<object> = () => {
 												>
 													{__(
 														res.linkText,
-														'moowoodle'
+														'notifima'
 													)}
 													<i className="adminfont-external"></i>
 												</a>

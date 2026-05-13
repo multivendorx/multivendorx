@@ -54,6 +54,7 @@ export default {
 				'Courses are fetched from Moodle and synchronized with WordPress, ensuring product details remain updated.',
 			type: 'sequential-task-executor',
 			buttonText: 'Synchronize cohort now!',
+			buttonIcon: 'bulk-course-sync',
 			apilink: 'synchronization',
 			parameter: 'cohort',
 			interval: 2500,

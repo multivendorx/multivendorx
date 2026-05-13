@@ -27,7 +27,7 @@ class Admin {
      * Admin constructor.
      */
     public function __construct() {
-        // admin pages manu and submenu.
+        // admin pages menu and submenu.
         add_action( 'admin_menu', array( $this, 'add_menus' ), 10 );
         // admin script and style.
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ), 20 );
@@ -191,9 +191,9 @@ class Admin {
                     '<style>
                         a:has(.upgrade-to-pro){
                             background: linear-gradient(-28deg, #c4a9e8, #7848b9, #852aff) !important;
-                            color: White !important;
+                            color: white !important;
+                            padding: 5px 0;
                         }
-                        padding: 5px 0;
                     </style>
                     <div style="margin-left: -0.75rem;" class="upgrade-to-pro"><i class="dashicons dashicons-awards"></i>' . esc_html__( 'Upgrade to Pro', 'multivendorx' ) . '</div> ',
                     'manage_options',
@@ -217,7 +217,7 @@ class Admin {
     }
 
     /**
-     * Enqueue JavaScript for admin fronend page and localize script.
+     * Enqueue JavaScript for admin frontend page and localize script.
      *
      * @return void
      */
@@ -252,7 +252,7 @@ class Admin {
      */
     public function textdomain_relative_path( $path, $url ) {
 
-        if ( strpos( $url, 'dc-woocommerce-product-vendor' ) !== false ) {
+        if ( strpos( $url, 'dc-woocommerce-multi-vendor' ) !== false ) {
             foreach ( MultiVendorX()->block_paths as $key => $new_path ) {
                 if ( strpos( $url, $key ) !== false ) {
                     $path = $new_path;
@@ -260,7 +260,7 @@ class Admin {
             }
 
             if ( strpos( $url, 'block' ) === false ) {
-                $path = 'assets/js/components.js';
+                $path = 'assets/js/vendors.js';
             }
         }
 
@@ -268,7 +268,7 @@ class Admin {
     }
 
     /**
-     * Redirct to pro shop url.
+     * Redirect to pro shop url.
      *
      * @return never
      */
@@ -380,8 +380,8 @@ class Admin {
      */
     public function save_store_in_product( $post_id ) {
         $linked_store_id                   = absint( filter_input( INPUT_POST, 'linked_store' ) );
-        $fixed_commission_per_product      = absint( filter_input( INPUT_POST, 'product_fixed_commission' ) );
-        $percentage_commission_per_product = absint( filter_input( INPUT_POST, 'product_percentage_commission' ) );
+        $fixed_commission_per_product      = wc_format_decimal( filter_input( INPUT_POST, 'product_fixed_commission' ) );
+        $percentage_commission_per_product = wc_format_decimal( filter_input( INPUT_POST, 'product_percentage_commission' ) );
 
         if ( isset( $linked_store_id ) ) {
             update_post_meta( $post_id, Utill::POST_META_SETTINGS['store_id'], $linked_store_id );
@@ -473,7 +473,7 @@ class Admin {
      */
     public function edit_product_cat_commission_fields( $term ) {
         $commission_percentage = get_term_meta( $term->term_id, Utill::WORDPRESS_SETTINGS['category_percentage_commission'], true );
-        $commision_fixed       = get_term_meta( $term->term_id, Utill::WORDPRESS_SETTINGS['category_fixed_commission'], true );
+        $commission_fixed      = get_term_meta( $term->term_id, Utill::WORDPRESS_SETTINGS['category_fixed_commission'], true );
 		?>
         <tr class="form-field">
             <th scope="row" valign="top"><label for="category_percentage_commission"><?php esc_html_e( 'Commission Percentage', 'multivendorx' ); ?></label></th>
@@ -482,7 +482,7 @@ class Admin {
 
         <tr class="form-field">
             <th scope="row" valign="top"><label for="category_fixed_commission"><?php esc_html_e( 'Commission Fixed per transaction', 'multivendorx' ); ?></label></th>
-            <td><input type="number" class="short" name="category_fixed_commission" id="category_fixed_commission" value="<?php echo esc_attr( $commision_fixed ); ?>" placeholder=""></td>
+            <td><input type="number" class="short" name="category_fixed_commission" id="category_fixed_commission" value="<?php echo esc_attr( $commission_fixed ); ?>" placeholder=""></td>
         </tr>
 
 		<?php

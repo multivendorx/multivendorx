@@ -65,7 +65,8 @@ final class MultiVendorX {
         register_deactivation_hook( $file, array( $this, 'deactivate' ) );
 
         add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
-        add_action( 'init', array( $this, 'init_plugin' ) );
+        add_action( 'woocommerce_loaded', array( $this, 'init_plugin' ) );
+        add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
         add_action( 'plugins_loaded', array( $this, 'is_woocommerce_loaded' ) );
         add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
         // Major update notice.
@@ -125,8 +126,7 @@ final class MultiVendorX {
      * @return void
      */
     public function init_plugin() {
-        $this->load_plugin_textdomain();
-        $this->init_classes();
+        add_action( 'init', array( $this, 'init_classes' ), 0 );
         if ( get_option( Utill::MULTIVENDORX_OTHER_SETTINGS['run_installer'] ) ) {
             new Install();
             delete_option( Utill::MULTIVENDORX_OTHER_SETTINGS['run_installer'] );
@@ -135,8 +135,6 @@ final class MultiVendorX {
         add_action( 'init', array( $this, 'multivendorx_register_setup_wizard' ) );
 
         add_filter( 'woocommerce_email_classes', array( $this, 'setup_email_class' ) );
-
-        do_action( 'multivendorx_loaded' );
     }
 
 
@@ -185,6 +183,7 @@ final class MultiVendorX {
 
         $this->container['active_store'] = get_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], true );
 
+        do_action( 'multivendorx_loaded' );
         flush_rewrite_rules();
     }
 
