@@ -306,6 +306,7 @@ class FrontendScripts {
 						'tab_name'                 => __( 'Notifima', 'notifima' ),
 						'settings_databases_value' => $settings_databases_value,
 						'pro_url'                  => esc_url( NOTIFIMA_PRO_SHOP_URL ),
+						'free_version'             => Notifima()->version,
 					),
                 ),
 				'notifima-stock-notification-block-script' => array(
