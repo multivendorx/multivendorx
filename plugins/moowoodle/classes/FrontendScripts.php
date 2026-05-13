@@ -35,14 +35,13 @@ class FrontendScripts {
 	 *
 	 * @return string Relative path to the build directory.
 	 */
-    public static function get_build_path_name() {
-        return MooWoodle()->is_dev
-            ? 'release/assets/'
-            : 'assets/';
-    }
 
-    public static function get_build_path() {
-        return MooWoodle()->plugin_path . self::get_build_path_name();
+    public static function get_path_url( $type = 'url' ) {
+        $build_path = MooWoodle()->is_dev ? 'release/assets/' : 'assets/';
+
+        return 'path' === $type
+            ? MooWoodle()->plugin_path . $build_path
+            : MooWoodle()->plugin_url . $build_path;
     }
 
     /**
@@ -77,8 +76,7 @@ class FrontendScripts {
 	 */
     public static function register_scripts() {
         $version      = MooWoodle()->version;
-        $vendor_asset = include self::get_build_path() . 'js/vendors.asset.php';
-        $base_url    = MooWoodle()->plugin_url . self::get_build_path_name() . 'js/';
+        $vendor_asset = include self::get_path_url('path') . 'js/vendors.asset.php';
 
         $block_scripts = array(
             'my-courses',
@@ -88,14 +86,14 @@ class FrontendScripts {
             'moowoodle_register_scripts',
             array(
                 'moowoodle-vendor-script' => array(
-                	'src'  => $base_url . 'vendors.js',
+                	'src'  => self::get_path_url() . 'js/vendors.js',
                 	'deps' => $vendor_asset['dependencies'],
                 ),
             )
         );
 
         foreach ( $block_scripts as $handle ) {
-            $asset_path = self::get_build_path() . "js/block/{$handle}/index.asset.php";
+            $asset_path = self::get_path_url('path') . "js/block/{$handle}/index.asset.php";
             $asset      = file_exists( $asset_path )
                 ? include $asset_path
                 : array(
@@ -104,7 +102,7 @@ class FrontendScripts {
 				);
 
             $register_scripts[ "moowoodle-{$handle}-script" ] = array(
-                'src'  => $base_url . "block/{$handle}/index.js",
+                'src'  => self::get_path_url() . "js/block/{$handle}/index.js",
                 'deps' => $asset['dependencies'],
             );
         }
@@ -136,6 +134,7 @@ class FrontendScripts {
     public static function load_scripts() {
         self::register_scripts();
         self::register_styles();
+
     }
 
     /**
@@ -154,22 +153,22 @@ class FrontendScripts {
     public static function admin_register_scripts() {
 		$version = MooWoodle()->version;
         // Enqueue all chunk files (External dependencies).
-        $index_asset  = include self::get_build_path() . 'js/index.asset.php';
-        $vendor_asset = include self::get_build_path() . 'js/vendors.asset.php';
+        $index_asset  = include self::get_path_url('path') . 'js/index.asset.php';
+        $vendor_asset = include self::get_path_url('path') . 'js/vendors.asset.php';
 
         $register_scripts = apply_filters(
             'admin_moowoodle_register_scripts',
             array(
                 'moowoodle-vendor-script'      => array(
-                	'src'  => MooWoodle()->plugin_url . self::get_build_path_name() . 'js/vendors.js',
+                	'src'  => self::get_path_url() . 'js/vendors.js',
                 	'deps' => $vendor_asset['dependencies'],
                 ),
 				'moowoodle-admin-script'       => array(
-					'src'  => MooWoodle()->plugin_url . self::get_build_path_name() . 'js/index.js',
+					'src'  => self::get_path_url() . 'js/index.js',
 					'deps' => $index_asset['dependencies'],
 				),
 				'moowoodle-product-tab-script' => array(
-					'src'  => MooWoodle()->plugin_url . self::get_build_path_name() . 'js/' . MOOWOODLE_PLUGIN_SLUG . '-product-tab.min.js',
+					'src'  => self::get_path_url() . 'js/' . MOOWOODLE_PLUGIN_SLUG . '-product-tab.min.js',
 					'deps' => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ),
 				),
             )
@@ -190,10 +189,10 @@ class FrontendScripts {
             'admin_moowoodle_register_styles',
             array(
 				'moowoodle-index-style'       => array(
-					'src' => MooWoodle()->plugin_url . self::get_build_path_name() . 'styles/index.css',
+					'src' => self::get_path_url() . 'styles/index.css',
 				),
 				'moowoodle-product-tab-style' => array(
-					'src'  => MooWoodle()->plugin_url . self::get_build_path_name() . 'styles/' . MOOWOODLE_PLUGIN_SLUG . '-product-tab.min.css',
+					'src'  => self::get_path_url() . 'styles/' . MOOWOODLE_PLUGIN_SLUG . '-product-tab.min.css',
 					'deps' => array(),
 				),
 			)
@@ -216,7 +215,7 @@ class FrontendScripts {
         );
     }
 
-    public static function get_settings_values() {
+    public static function get_admin_settings() {
         if ( null !== self::$settings_cache ) {
             return self::$settings_cache;
         }
@@ -262,7 +261,7 @@ class FrontendScripts {
         );
 
         $settings_data = array(
-            'settings_values' => self::get_settings_values(),
+            'admin_settings' => self::get_admin_settings(),
         );
 
         $localize_scripts =
@@ -305,7 +304,7 @@ class FrontendScripts {
 					'object_name' => 'courseMyAcc',
                     'use_rest'    => true,
 					'data'        => array(
-                        'current_user_id' => get_current_user_id(),
+                        'current_user_id' => MooWoodle()->current_user_id,
 					),
 				),
 				'moowoodle-product-tab-script' => array(

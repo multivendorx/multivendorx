@@ -62,9 +62,7 @@ class Block {
         $blocks     = array();
         $textdomain = 'moowoodle';
 
-        $block_base_path = MooWoodle()->plugin_path
-            . FrontendScripts::get_build_path_name()
-            . 'js/block/';
+        $block_base_path = FrontendScripts::get_path_url('path') . 'js/block/';
 
         if ( ! is_dir( $block_base_path ) ) {
             return $blocks;

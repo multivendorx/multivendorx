@@ -16,7 +16,7 @@ declare global {
 		tab_name: string;
 		khali_dabba: boolean;
 		account_menu: any;
-		settings_values: any; // Use a more specific type if possible
+		admin_settings: any; // Use a more specific type if possible
 		wc_email_url: string;
 		moodle_site_url: string;
 		wp_user_roles: any;
