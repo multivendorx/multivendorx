@@ -81,6 +81,10 @@ class Admin {
 
             // Array contain notifima submenu.
             $submenus = array(
+                'dashboard'          => array(
+                    'name'   => __( 'Dashboard', 'notifima' ),
+                    'subtab' => '',
+                ),
                 'settings'          => array(
                     'name'   => __( 'Settings', 'notifima' ),
                     'subtab' => 'appearance',
@@ -93,6 +97,10 @@ class Admin {
                     'name'   => __( 'Inventory Manager', 'notifima' ) . $pro_sticker,
                     'subtab' => '',
                 ),
+                'help-support'        => array(
+                'name'     => __( 'Help & Support', 'notifima' ),
+                'subtab'   => '',
+            ),
             );
 
             foreach ( $submenus as $slug => $submenu ) {
@@ -142,7 +150,7 @@ class Admin {
      * @return void
      */
     public function create_setting_page() {
-        echo '<div id="admin-main-wrapper"></div>';
+        echo '<div id="admin-main-wrapper" class="admin-main-wrapper"></div>';
     }
 
     /**

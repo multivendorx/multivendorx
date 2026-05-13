@@ -81,9 +81,10 @@ class RestAPI {
 
         do_action( 'notifima_after_save_settings', $settingsname, $get_settings_data );
 
-        $all_details['error'] = __( 'Settings Saved', 'notifima' );
-
-        return $all_details;
+        return array(
+            'type'    => 'success',
+            'message' => __( 'Settings Saved', 'notifima' ),
+        );
     }
 
     /**

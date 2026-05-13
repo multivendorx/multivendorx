@@ -19,6 +19,7 @@ declare global {
         settings_databases_value: any; // Use a more specific type if possible
         pro_url: string;
         pro_settings_list: any;
+        free_version: any;
     }
 
     declare module '*.png';
