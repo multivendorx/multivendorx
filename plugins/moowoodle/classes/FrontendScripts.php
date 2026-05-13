@@ -38,8 +38,10 @@ class FrontendScripts {
 
     public static function get_asset_path( $type = 'url', $plugin_path = '', $plugin_url = '' ) {
         $build_path = MooWoodle()->is_dev ? 'release/assets/' : 'assets/';
-        if ( !empty( $plugin_path ) && !empty( $plugin_url ) ) {
+        if ( $plugin_path === '' ) {
             $plugin_path = MooWoodle()->plugin_path;
+        }
+        if ( $plugin_url === '' ) {
             $plugin_url = MooWoodle()->plugin_url;
         }
 
