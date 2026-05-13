@@ -397,7 +397,7 @@ const AllProduct: React.FC = () => {
 	);
 				return (
 					<InfoItem
-						title={<>{row.name} {logo && <img src={badge} alt="Badge"/>}</>}
+						title={<>{row.name} {badge && <img src={badge} alt="Badge"/>}</>}
 						onClick={() =>
 							dashNavigate(navigate, [
 								'products',
