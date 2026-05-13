@@ -1,0 +1,7 @@
+{
+    "name": "moowoodle/product-tab",
+    "title": "Product meta box",
+    "category": "woocommerce",
+    "apiVersion": 2,
+    "editorScript": "file:./index.js"
+}

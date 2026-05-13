@@ -54,6 +54,7 @@ module.exports = {
 	entry: {
 		index: './src/index.tsx',
 		'block/my-courses/index':'./src/blocks/my-courses/index.js',
+		'block/product-tab/index':'./src/blocks/product-tab/index.js',
 	},
 
 	output: {
