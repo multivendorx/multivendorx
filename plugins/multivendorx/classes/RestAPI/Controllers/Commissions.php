@@ -111,6 +111,7 @@ class Commissions extends \WP_REST_Controller {
             // Check if CSV download is requested.
             $store_id = $request->get_param( 'store_id' );
             $format   = $request->get_param( 'format' );
+            $order_id = $request->get_param( 'order_id' );
 
             if ( 'reports' === $format ) {
                 $top_stores = $request->get_param( 'top_stores' );
@@ -170,6 +171,10 @@ class Commissions extends \WP_REST_Controller {
 
             if ( ! empty( $store_id ) ) {
                 $filter['store_id'] = intval( $store_id );
+            }
+
+            if ( ! empty( $order_id ) ) {
+                $filter['order_id'] = intval( $order_id );
             }
 
             if ( ! empty( $status ) ) {

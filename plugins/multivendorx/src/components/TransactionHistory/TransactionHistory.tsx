@@ -60,7 +60,7 @@ export const TransactionHistory: React.FC = () => {
 
 	const locationUrl = new URLSearchParams(useLocation().hash.substring(1));
 
-	const settingContent = [
+	const defaultSettingContent = [
 		{
 			type: 'file',
 			content: {
@@ -79,23 +79,31 @@ export const TransactionHistory: React.FC = () => {
 				hideSettingHeader: true,
 			},
 		},
-		{
-			type: 'file',
-			content: {
-				id: 'monthly-tax-report',
-				headerTitle: __('Monthly Tax Report', 'multivendorx'),
-				headerIcon: 'monthly-tax-report',
-				hideSettingHeader: true,
-			},
-		}
 	];
 
+	const settingContent = applyFilters(
+		'multivendorx_transaction_history_tabs',
+		defaultSettingContent
+	);
+
 	const getForm = (tabId: string) => {
+		const externalContent = applyFilters(
+			'multivendorx_transaction_history_tab_content',
+			null,
+			tabId,
+			selectedStoreId
+		);
+
+		if (externalContent) {
+			return externalContent;
+		}
+
 		switch (tabId) {
 			case 'wallet-transaction':
 				return selectedStoreId ? (
 					<WalletTransaction storeId={selectedStoreId} />
 				) : null;
+
 			case 'direct-transaction':
 				if (appLocalizer.khali_dabba) {
 					return applyFilters(
@@ -103,45 +111,22 @@ export const TransactionHistory: React.FC = () => {
 						null,
 						selectedStoreId
 					);
-				} else {
-					return (
-						<ComponentStatusView
-							title={__(
-								'Real-time store payments',
-								'multivendorx'
-							)}
-							desc={__(
-								'Track all direct marketplace payments in real time from a single admin dashboard.',
-								'multivendorx'
-							)}
-							buttonText={__('Upgrade to Pro', 'multivendorx')}
-							buttonLink={appLocalizer.shop_url}
-						/>
-					);
 				}
-			case 'monthly-tax-report':
-				if (appLocalizer.khali_dabba) {
-					return applyFilters(
-						'multivendorx_monthly_tax_report',
-						null,
-						selectedStoreId
-					);
-				} else {
-					return (
-						<ComponentStatusView
-							title={__(
-								'Real-time store payments',
-								'multivendorx'
-							)}
-							desc={__(
-								'Track all direct marketplace payments in real time from a single admin dashboard.',
-								'multivendorx'
-							)}
-							buttonText={__('Upgrade to Pro', 'multivendorx')}
-							buttonLink={appLocalizer.shop_url}
-						/>
-					);
-				}
+
+				return (
+					<ComponentStatusView
+						title={__(
+							'Real-time store payments',
+							'multivendorx'
+						)}
+						desc={__(
+							'Track all direct marketplace payments in real time from a single admin dashboard.',
+							'multivendorx'
+						)}
+						buttonText={__('Upgrade to Pro', 'multivendorx')}
+						buttonLink={appLocalizer.shop_url}
+					/>
+				);
 			default:
 				return <div></div>;
 		}
@@ -174,21 +159,21 @@ export const TransactionHistory: React.FC = () => {
 				headerTitle={
 					selectedStoreId
 						? __(
-								`Storewise Transaction History - ${selectedStoreLabel}`,
-								'multivendorx'
-							)
+							`Storewise Transaction History - ${selectedStoreLabel}`,
+							'multivendorx'
+						)
 						: __('Storewise Transaction History', 'multivendorx')
 				}
 				headerDescription={
 					selectedStoreId
 						? __(
-								`View and manage transactions for ${selectedStoreLabel} store`,
-								'multivendorx'
-							)
+							`View and manage transactions for ${selectedStoreLabel} store`,
+							'multivendorx'
+						)
 						: __(
-								'View and manage storewise transactions',
-								'multivendorx'
-							)
+							'View and manage storewise transactions',
+							'multivendorx'
+						)
 				}
 				customContent={
 					<>
