@@ -39,13 +39,13 @@ const Synchronization: React.FC<SettingsProps> = () => {
 		if (settingName !== currentTab) {
 			setSetting(
 				currentTab,
-				appLocalizer.settings_databases_value[currentTab] || {}
+				appLocalizer.settings_values[currentTab] || {}
 			);
 		}
 
 		useEffect(() => {
 			if (settingName === currentTab) {
-				appLocalizer.settings_databases_value[settingName] = setting;
+				appLocalizer.settings_values[settingName] = setting;
 			}
 		}, [setting, settingName, currentTab]);
 

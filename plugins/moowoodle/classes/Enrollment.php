@@ -34,7 +34,7 @@ class Enrollment {
 	 * @param array $args Filter conditions.
 	 * @return array List of enrollment records.
 	 */
-	public static function get_enrollment_information( $args ) {
+	public static function get_enrollments( $args ) {
 		global $wpdb;
 
 		$table = $wpdb->prefix . Util::TABLES['enrollment'];
@@ -123,7 +123,7 @@ class Enrollment {
 	 * @param array $args Enrollment data. Must include 'user_email'. If 'id' is present, updates the record.
 	 * @return int|false Enrollment ID on success, false on failure.
 	 */
-	public static function update_enrollment_information( $args ) {
+	public static function update_enrollment( $args ) {
 		global $wpdb;
 
 		$table = $wpdb->prefix . Util::TABLES['enrollment'];
@@ -257,7 +257,7 @@ class Enrollment {
 			'enrollment_date' => gmdate( 'Y-m-d H:i:s' ),
 		);
 
-		$existing_enrollment = $this->get_enrollment_information(
+		$existing_enrollment = $this->get_enrollments(
 			array(
 				'user_email' => $user_data['user_email'],
 				'course_id'  => $course_data['course_id'],
@@ -270,7 +270,7 @@ class Enrollment {
 			$enrollment_data['id'] = $existing_enrollment['id'];
 		}
 
-		self::update_enrollment_information( $enrollment_data );
+		self::update_enrollment( $enrollment_data );
 
 		return true;
 	}

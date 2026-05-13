@@ -232,7 +232,7 @@ class Synchronization extends \WP_REST_Controller {
                 'course'
             );
 
-            MooWoodle()->category->update_course_categories_information( $categories );
+            MooWoodle()->category->update_course_categories( $categories );
 
             Util::set_sync_status(
                 array(
@@ -243,7 +243,7 @@ class Synchronization extends \WP_REST_Controller {
                 'course'
             );
 
-            MooWoodle()->category->update_product_categories_information( $categories, 'product_cat' );
+            MooWoodle()->category->update_product_categories( $categories, 'product_cat' );
         }
 
 		// get all courses from moodle.
@@ -260,7 +260,7 @@ class Synchronization extends \WP_REST_Controller {
             'course'
         );
 
-        MooWoodle()->course->update_courses_information( $courses );
+        MooWoodle()->course->update_courses( $courses );
 
         MooWoodle()->product->update_products( $courses );
 

@@ -80,7 +80,7 @@ class MyCourses extends \WP_REST_Controller {
             }
 
             // Fetch paginated enrollments.
-            $user_enrollments = MooWoodle()->enrollment->get_enrollment_information(
+            $user_enrollments = MooWoodle()->enrollment->get_enrollments(
                 array(
                     'user_id'    => MooWoodle()->current_user_id,
                     'status'     => 'enrolled',
@@ -108,7 +108,7 @@ class MyCourses extends \WP_REST_Controller {
 
             foreach ( $user_enrollments as $enrollment ) {
 
-                $course = MooWoodle()->course->get_course_information(
+                $course = MooWoodle()->course->get_courses(
                     array(
                         'id' => $enrollment['course_id'],
                     )
@@ -137,7 +137,7 @@ class MyCourses extends \WP_REST_Controller {
                 );
             }
 
-            $total_user_enrollments = MooWoodle()->enrollment->get_enrollment_information(
+            $total_user_enrollments = MooWoodle()->enrollment->get_enrollments(
                 array(
                     'user_id' => MooWoodle()->current_user_id,
                     'status'  => 'enrolled',

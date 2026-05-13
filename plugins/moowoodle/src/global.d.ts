@@ -15,9 +15,8 @@ declare global {
 		video_url: string;
 		tab_name: string;
 		khali_dabba: boolean;
-		accountmenu: any;
-		settings_databases_value: any; // Use a more specific type if possible
-		log_url: string;
+		account_menu: any;
+		settings_values: any; // Use a more specific type if possible
 		wc_email_url: string;
 		moodle_site_url: string;
 		wp_user_roles: any;

@@ -98,7 +98,7 @@ class Courses extends \WP_REST_Controller {
             }
 
             // Get paginated courses.
-            $courses = MooWoodle()->course->get_course_information( $filters );
+            $courses = MooWoodle()->course->get_courses( $filters );
 
             if ( empty( $courses ) ) {
                 return rest_ensure_response( array() );
@@ -132,11 +132,11 @@ class Courses extends \WP_REST_Controller {
                 $view_user_url = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) ) . "user/index.php?id={$course['moodle_course_id']}";
 
                 // Get categories.
-                $categories = MooWoodle()->category->get_course_category_information( (int) $course['category_id'] );
+                $categories = MooWoodle()->category->get_course_category( (int) $course['category_id'] );
                 $categories = reset( $categories );
 
                 // Get enrolled users count.
-                $enroled_user = MooWoodle()->enrollment->get_enrollment_information(
+                $enroled_user = MooWoodle()->enrollment->get_enrollments(
                     array(
                         'course_id' => $course['id'],
                     )
@@ -162,7 +162,7 @@ class Courses extends \WP_REST_Controller {
 
             $response = rest_ensure_response( $formatted_courses );
 
-            $total_courses = MooWoodle()->course->get_course_information(
+            $total_courses = MooWoodle()->course->get_courses(
                 array( 'count' => true )
             );
 
@@ -189,7 +189,7 @@ class Courses extends \WP_REST_Controller {
         $plugin = MooWoodle();
 
         // Fetch all courses.
-        $courses = $plugin->course->get_course_information( array() );
+        $courses = $plugin->course->get_courses( array() );
 
         if ( empty( $courses ) ) {
             return rest_ensure_response(
@@ -206,7 +206,7 @@ class Courses extends \WP_REST_Controller {
         );
 
         // Fetch categories.
-        $categories = $plugin->category->get_course_category_information(
+        $categories = $plugin->category->get_course_category(
             $category_ids
         );
 

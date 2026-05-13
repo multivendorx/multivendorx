@@ -18,23 +18,14 @@ defined( 'ABSPATH' ) || exit;
  */
 class FrontendScripts {
 
-    /**
-     * Holds the scripts.
-     *
-     * @var array
-     */
-    public static $scripts = array();
-	/**
-     * Holds the styles.
-     *
-     * @var array
-     */
-    public static $styles = array();
+    private static $settings_cache = null;
+
+    private static $account_menu_cache = null;
 
     /**
      * FrontendScripts constructor.
      */
-    public function __construct() {
+    public function __construct() {        
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_load_scripts' ) );
     }
@@ -45,12 +36,14 @@ class FrontendScripts {
 	 * @return string Relative path to the build directory.
 	 */
     public static function get_build_path_name() {
-        if ( MooWoodle()->is_dev ) {
-			return 'release/assets/';
-        }
-        return 'assets/';
+        return MooWoodle()->is_dev
+            ? 'release/assets/'
+            : 'assets/';
     }
 
+    public static function get_build_path() {
+        return MooWoodle()->plugin_path . self::get_build_path_name();
+    }
 
     /**
 	 * Register and store a script for later use.
@@ -61,7 +54,6 @@ class FrontendScripts {
 	 * @param string $version      Optional. Script version. Default empty string.
 	 */
     public static function register_script( $handle, $path, $deps = array(), $version = '' ) {
-        self::$scripts[] = $handle;
         wp_register_script( $handle, $path, $deps, $version, true );
         wp_set_script_translations( $handle, 'moowoodle' );
     }
@@ -75,7 +67,6 @@ class FrontendScripts {
 	 * @param string $version  Optional. Style version. Default empty string.
 	 */
     public static function register_style( $handle, $path, $deps = array(), $version = '' ) {
-        self::$styles[] = $handle;
         wp_register_style( $handle, $path, $deps, $version );
     }
 
@@ -86,11 +77,8 @@ class FrontendScripts {
 	 */
     public static function register_scripts() {
         $version      = MooWoodle()->version;
-        $index_asset  = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/index.asset.php';
-        $vendor_asset = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/vendors.asset.php';
-
+        $vendor_asset = include self::get_build_path() . 'js/vendors.asset.php';
         $base_url    = MooWoodle()->plugin_url . self::get_build_path_name() . 'js/';
-        $common_deps = array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' );
 
         $block_scripts = array(
             'my-courses',
@@ -107,7 +95,7 @@ class FrontendScripts {
         );
 
         foreach ( $block_scripts as $handle ) {
-            $asset_path = plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . "js/block/{$handle}/index.asset.php";
+            $asset_path = self::get_build_path() . "js/block/{$handle}/index.asset.php";
             $asset      = file_exists( $asset_path )
                 ? include $asset_path
                 : array(
@@ -166,8 +154,8 @@ class FrontendScripts {
     public static function admin_register_scripts() {
 		$version = MooWoodle()->version;
         // Enqueue all chunk files (External dependencies).
-        $index_asset  = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/index.asset.php';
-        $vendor_asset = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/vendors.asset.php';
+        $index_asset  = include self::get_build_path() . 'js/index.asset.php';
+        $vendor_asset = include self::get_build_path() . 'js/vendors.asset.php';
 
         $register_scripts = apply_filters(
             'admin_moowoodle_register_scripts',
@@ -228,18 +216,12 @@ class FrontendScripts {
         );
     }
 
-    /**
-	 * Localize all scripts.
-	 *
-	 * @param string $handle Script handle the data will be attached to.
-	 */
-    public static function localize_scripts( $handle ) {
-        if ( isset( $localized[ $handle ] ) ) {
-            return;
+    public static function get_settings_values() {
+        if ( null !== self::$settings_cache ) {
+            return self::$settings_cache;
         }
 
-        // Get all tab setting's database value.
-        $settings_databases_value = array();
+        $settings = array();
 
         $tabs_names = apply_filters(
             'moowoodle_additional_tabs_names',
@@ -248,9 +230,31 @@ class FrontendScripts {
 
         foreach ( $tabs_names as $tab_name ) {
             $option_name                           = str_replace( '-', '_', 'moowoodle_' . $tab_name . '_settings' );
-            $settings_databases_value[ $tab_name ] = MooWoodle()->setting->get_option( $option_name );
+            $settings[ $tab_name ] = MooWoodle()->setting->get_option( $option_name );
         }
 
+        self::$settings_cache = $settings;
+        return self::$settings_cache;
+    }
+
+    public static function get_account_menu() {
+        if ( null !== self::$account_menu_cache ) {
+            return self::$account_menu_cache;
+        }
+
+        $menu = wc_get_account_menu_items();
+        unset( $menu['my-courses'] );
+
+        self::$account_menu_cache = $menu;
+        return self::$account_menu_cache;
+    }
+
+    /**
+	 * Localize all scripts.
+	 *
+	 * @param string $handle Script handle the data will be attached to.
+	 */
+    public static function localize_scripts( $handle ) {
         $base_rest = array(
             'apiUrl'  => untrailingslashit( get_rest_url() ),
             'restUrl' => MooWoodle()->rest_namespace,
@@ -258,11 +262,8 @@ class FrontendScripts {
         );
 
         $settings_data = array(
-            'settings_databases_value' => $settings_databases_value,
+            'settings_values' => self::get_settings_values(),
         );
-
-		$my_account_menu = wc_get_account_menu_items();
-		unset( $my_account_menu['my-courses'] );
 
         $localize_scripts =
             array(
@@ -272,19 +273,16 @@ class FrontendScripts {
                     'use_ajax'     => true,
                     'use_settings' => true,
 					'data'         => array(
-                        'test'            => 'test',
 						'khali_dabba'     => Util::is_khali_dabba(),
 						'shop_url'        => MOOWOODLE_PRO_SHOP_URL,
 						'video_url'       => MOOWOODLE_YOUTUBE_VIDEO_URL,
 						'chat_url'        => MOOWOODLE_CHAT_URL,
-						'accountmenu'     => $my_account_menu,
+						'account_menu'     => self::get_account_menu(),
 						'tab_name'        => __( 'MooWoodle', 'moowoodle' ),
-						'log_url'         => get_site_url( null, str_replace( ABSPATH, '', MooWoodle()->log_file ) ),
 						'wc_email_url'    => admin_url( '/admin.php?page=wc-settings&tab=email&section=enrollmentemail' ),
 						'moodle_site_url' => MooWoodle()->setting->get_setting( 'moodle_url' ),
 						'wp_user_roles'   => wp_roles()->get_names(),
 						'free_version'    => MooWoodle()->version,
-						'products_link'   => MOOWOODLE_PRODUCTS_LINKS,
 						'pro_data'        => apply_filters(
                             'moowoodle_update_pro_data',
                             array(
@@ -307,7 +305,6 @@ class FrontendScripts {
 					'object_name' => 'courseMyAcc',
                     'use_rest'    => true,
 					'data'        => array(
-						'moodle_site_url' => MooWoodle()->setting->get_setting( 'moodle_url' ),
                         'current_user_id' => get_current_user_id(),
 					),
 				),
