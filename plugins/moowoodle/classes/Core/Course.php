@@ -26,7 +26,7 @@ class Course {
 		add_filter( 'woocommerce_product_data_tabs', array( &$this, 'add_additional_product_tab' ), 99, 1 );
 		add_action( 'woocommerce_product_data_panels', array( &$this, 'add_additional_product_data_panels' ) );
 		add_action( 'wp_ajax_get_linkable_course', array( $this, 'get_linkable_course' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ), 20 );
 	}
 
 	/**
@@ -35,11 +35,9 @@ class Course {
      * @return void
      */
 	public function enqueue_admin_assets() {
-
-		FrontendScripts::admin_load_scripts();
-		FrontendScripts::enqueue_script( 'moowoodle-product-tab-script' );
-		FrontendScripts::enqueue_style( 'moowoodle-product-tab-style' );
-		FrontendScripts::localize_scripts( 'moowoodle-product-tab-script' );
+		FrontendScripts::enqueue_script( 'moowoodle-product-tab' );
+		FrontendScripts::enqueue_style( 'moowoodle-product-tab' );
+		FrontendScripts::localize_scripts( 'moowoodle-product-tab' );
 	}
 
 	/**
@@ -53,7 +51,7 @@ class Course {
 	 * @param array $args Filter options.
 	 * @return array List of matching courses.
 	 */
-	public static function get_course_information( $args ) {
+	public static function get_courses( $args ) {
 		global $wpdb;
 
 		$where = array();
@@ -126,7 +124,7 @@ class Course {
 	 * @param array $args Course data. Must include 'moodle_course_id'.
 	 * @return int|false Rows affected or false on failure.
 	 */
-	public static function update_course_information( $args ) {
+	public static function update_course( $args ) {
 		global $wpdb;
 
 		if ( empty( $args['moodle_course_id'] ) ) {
@@ -134,7 +132,7 @@ class Course {
 		}
 
 		$table    = $wpdb->prefix . Util::TABLES['course'];
-		$existing = reset( self::get_course_information( array( 'moodle_course_id' => $args['moodle_course_id'] ) ) );
+		$existing = reset( self::get_courses( array( 'moodle_course_id' => $args['moodle_course_id'] ) ) );
 
 		if ( $existing ) {
 			return $wpdb->update( $table, $args, array( 'moodle_course_id' => $args['moodle_course_id'] ) ) !== false // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
@@ -156,7 +154,7 @@ class Course {
 	 * @param bool  $force_delete Whether to remove excluded course IDs after sync.
 	 * @return void
 	 */
-	public function update_courses_information( $courses, $force_delete = true ) {
+	public function update_courses( $courses, $force_delete = true ) {
         foreach ( $courses as $course ) {
             // Skip site format courses.
             if ( 'site' === $course['format'] ) {
@@ -172,7 +170,7 @@ class Course {
                 'enddate'          => (int) ( $course['enddate'] ?? 0 ),
             );
 
-            $updated_ids[] = self::update_course_information( $args );
+            $updated_ids[] = self::update_course( $args );
 
             Util::increment_sync_count( 'course' );
         }
@@ -265,9 +263,9 @@ class Course {
 		// Retrieve and sanitize input.
 		$post_id = absint( filter_input( INPUT_POST, 'post_id' ) );
 
-		$wordpress_course_id = get_post_meta( $post_id, 'wordpress_course_id', true );
+		$wordpress_course_id = get_post_meta( $post_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
 
-		$linkable_courses = $this->get_course_information(
+		$linkable_courses = $this->get_courses(
 			array(
 				'id'         => $wordpress_course_id,
 				'product_id' => 0,
@@ -293,7 +291,7 @@ class Course {
         global $wpdb;
 
         $exclude_ids      = array_map( 'intval', (array) $exclude_ids );
-        $existing_courses = self::get_course_information( array() );
+        $existing_courses = self::get_courses( array() );
         $existing_ids     = array_column( $existing_courses, 'id' );
 
         $ids_to_delete = array_diff( $existing_ids, $exclude_ids );

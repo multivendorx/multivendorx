@@ -92,7 +92,7 @@ class Product {
 		}
 
         // get category term.
-        $term = MooWoodle()->category->get_product_category_information( $course['categoryid'], 'product_cat' );
+        $term = MooWoodle()->category->get_product_category( $course['categoryid'], 'product_cat' );
 
         // Set product properties.
         $product->set_name( $course['fullname'] );
@@ -111,7 +111,7 @@ class Product {
 		}
 
 		// get the course id linked with moodle.
-        $wp_course = MooWoodle()->course->get_course_information(
+        $wp_course = MooWoodle()->course->get_courses(
             array(
 				'moodle_course_id' => $course['id'],
             )
@@ -127,7 +127,7 @@ class Product {
 		$product->set_status( 'publish' );
 		$product->save();
 
-		MooWoodle()->course->update_course_information(
+		MooWoodle()->course->update_course(
             array(
 				'moodle_course_id' => (int) $course['id'],
 				'product_id'       => (int) $product->get_id(),
@@ -266,7 +266,7 @@ class Product {
 				return $product_id;
 			}
 
-			$course = reset( MooWoodle()->course->get_course_information( array( 'id' => $link_item_id ) ) );
+			$course = reset( MooWoodle()->course->get_courses( array( 'id' => $link_item_id ) ) );
 
 			if ( empty( $course['moodle_course_id'] ) ) {
 				return;
@@ -275,7 +275,7 @@ class Product {
 			update_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], $link_item_id );
 			update_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], (int) $course['moodle_course_id'] );
 
-			MooWoodle()->course->update_course_information(
+			MooWoodle()->course->update_course(
 				array(
 					'moodle_course_id' => (int) $course['moodle_course_id'],
 					'product_id'       => (int) $product_id,
@@ -301,7 +301,7 @@ class Product {
 		$moodle_course_id = absint( get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true ) );
 
 		if ( ! empty( $moodle_course_id ) ) {
-			MooWoodle()->course->update_course_information(
+			MooWoodle()->course->update_course(
 				array(
 					'moodle_course_id' => (int) $moodle_course_id,
 					'product_id'       => 0,
@@ -345,7 +345,7 @@ class Product {
 		$moodle_course_id = get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
 
 		if ( ! empty( $moodle_course_id ) ) {
-			MooWoodle()->course->update_course_information(
+			MooWoodle()->course->update_course(
 				array(
 					'moodle_course_id' => $moodle_course_id,
 					'product_id'       => 0,
@@ -370,7 +370,7 @@ class Product {
 		$moodle_course_id = get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
 
 		if ( ! empty( $moodle_course_id ) ) {
-			MooWoodle()->course->update_course_information(
+			MooWoodle()->course->update_course(
 				array(
 					'moodle_course_id' => $moodle_course_id,
 					'product_id'       => $product_id,

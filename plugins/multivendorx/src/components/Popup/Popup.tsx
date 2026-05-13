@@ -153,7 +153,7 @@ const proPopupContent = {
 		},
 		{
 			site: '10',
-			price: '$599',
+			price: '$499',
 			link: 'https://multivendorx.com/cart/?add-to-cart=143434&variation_id=143440&attribute_pa_site-license=10-site-yearly',
 		},
 	],

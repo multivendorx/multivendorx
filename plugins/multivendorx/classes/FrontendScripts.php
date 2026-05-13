@@ -289,9 +289,6 @@ class FrontendScripts {
 	 * @param string $handle Script handle the data will be attached to.
 	 */
     public static function localize_scripts( $handle ) {
-        if ( isset( $localized[ $handle ] ) ) {
-            return;
-        }
 
         // if ( ! wp_script_is( $handle, 'enqueued' ) ) {
         // return;

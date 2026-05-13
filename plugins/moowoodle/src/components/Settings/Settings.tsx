@@ -37,13 +37,13 @@ const Settings: React.FC<SettingsProps> = () => {
 		if (settingName !== currentTab) {
 			setSetting(
 				currentTab,
-				appLocalizer.settings_databases_value[currentTab] || {}
+				appLocalizer.admin_settings[currentTab] || {}
 			);
 		}
 
 		useEffect(() => {
 			if (settingName === currentTab) {
-				appLocalizer.settings_databases_value[settingName] = setting;
+				appLocalizer.admin_settings[settingName] = setting;
 			}
 		}, [setting, settingName, currentTab]);
 

@@ -140,6 +140,8 @@ class MooWoodle {
      * @return void
      */
     public function initialize_classes() {
+        $this->container['current_user_id']    = get_current_user_id();
+        $this->container['current_user']       = wp_get_current_user();
         if ( is_admin() ) {
 			$this->container['admin'] = new Admin();
 		}
@@ -155,11 +157,6 @@ class MooWoodle {
         $this->container['block']            = new Block();
         $this->container['frontendscripts']  = new FrontendScripts();
         $this->container['endpoint']         = new EndPoint();
-
-        
-        $this->container['current_user_id']    = get_current_user_id();
-        $this->container['current_user']       = wp_get_current_user();
-
         $this->initialize_moowoodle_log();
     }
 
