@@ -390,9 +390,14 @@ const AllProduct: React.FC = () => {
 			label: __('Product Name', 'multivendorx'),
 			width: 18,
 			render: (row) => {
+				const badge = applyFilters(
+		'multivendorx_product_badge',
+		'',
+		row
+	);
 				return (
 					<InfoItem
-						title={row.name}
+						title={<>{row.name} {badge && <img src={badge} alt="Badge"/>}</>}
 						onClick={() =>
 							dashNavigate(navigate, [
 								'products',

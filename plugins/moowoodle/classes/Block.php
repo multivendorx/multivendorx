@@ -62,11 +62,8 @@ class Block {
         $blocks     = array();
         $textdomain = 'moowoodle';
 
-        $block_base_path = MooWoodle()->plugin_path
-            . FrontendScripts::get_build_path_name()
-            . 'js/block/';
+        $block_base_path = FrontendScripts::get_asset_path('file') . 'js/block/';
 
-        $exclude_blocks = array( 'setup-wizard' );
         if ( ! is_dir( $block_base_path ) ) {
             return $blocks;
         }
@@ -74,10 +71,6 @@ class Block {
         $folders = glob( $block_base_path . '*', GLOB_ONLYDIR );
         foreach ( $folders as $folder ) {
             $block_name = basename( $folder );
-            if ( in_array( $block_name, $exclude_blocks, true ) ) {
-                continue;
-            }
-
             if ( file_exists( $folder . '/block.json' ) ) {
                 $blocks[] = array(
                     'name'       => $block_name,
@@ -100,10 +93,10 @@ class Block {
             $screen = get_current_screen();
             if ( $screen && $screen->is_block_editor ) {
                 FrontendScripts::load_scripts();
-                FrontendScripts::enqueue_script( 'moowoodle-vendor-script' );
+                FrontendScripts::enqueue_script( 'moowoodle-vendor' );
                 foreach ( $this->get_blocks() as $block_script ) {
-                    FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-editor-script' );
-                    FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-script' );
+                    FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-editor' );
+                    FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] );
                 }
             }
         }
@@ -121,13 +114,12 @@ class Block {
 	 */
     public function enqueue_scripts() {
         global $post;
-        FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'moowoodle-vendor-script' );
+        FrontendScripts::enqueue_script( 'moowoodle-vendor' );
         foreach ( $this->get_blocks() as $block_script ) {
             $block_name = $block_script['textdomain'] . '/' . $block_script['name'];
 
             if ( has_block( $block_name, $post ) ) {
-                $handle = $block_script['textdomain'] . '-' . $block_script['name'] . '-script';
+                $handle = $block_script['textdomain'] . '-' . $block_script['name'];
 
                 FrontendScripts::enqueue_script( $handle );
                 FrontendScripts::localize_scripts( $handle );

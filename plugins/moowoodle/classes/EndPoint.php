@@ -77,9 +77,8 @@ class EndPoint {
      */
 	public function enqueue_assets() {
 		if ( is_account_page() ) {
-			FrontendScripts::load_scripts();
-			FrontendScripts::enqueue_script( 'moowoodle-my-courses-script' );
-			FrontendScripts::localize_scripts( 'moowoodle-my-courses-script' );
+			FrontendScripts::enqueue_script( 'moowoodle-my-courses' );
+			FrontendScripts::localize_scripts( 'moowoodle-my-courses' );
 		}
 	}
 }

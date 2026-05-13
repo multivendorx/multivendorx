@@ -89,6 +89,7 @@ class Rest {
             $response->data['store_id']   = $store_id;
             $response->data['store_name'] = (string) $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
             $response->data['store_slug'] = (string) $store->get( Utill::STORE_SETTINGS_KEYS['slug'] );
+            apply_filters( 'multivendorx_rest_prepare_product_add_store_data', $response, $product, $store );
         }
 
         return $response;
