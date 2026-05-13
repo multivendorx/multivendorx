@@ -36,12 +36,18 @@ class FrontendScripts {
 	 * @return string Relative path to the build directory.
 	 */
 
-    public static function get_asset_path( $type = 'url' ) {
+    public static function get_asset_path( $type = 'url', $plugin_path = '', $plugin_url = '' ) {
         $build_path = MooWoodle()->is_dev ? 'release/assets/' : 'assets/';
+        if ( $plugin_path === '' ) {
+            $plugin_path = MooWoodle()->plugin_path;
+        }
+        if ( $plugin_url === '' ) {
+            $plugin_url = MooWoodle()->plugin_url;
+        }
 
         return 'file' === $type
-            ? MooWoodle()->plugin_path . $build_path
-            : MooWoodle()->plugin_url . $build_path;
+            ? $plugin_path . $build_path
+            : $plugin_url . $build_path;
     }
 
     /**
