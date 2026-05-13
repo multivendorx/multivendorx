@@ -391,7 +391,7 @@ const AllProduct: React.FC = () => {
 			width: 18,
 			render: (row) => {
 				const logo = applyFilters(
-		'multivendorxpro_printful_logo',
+		'multivendorx_product_badge',
 		'',
 		row
 	);
