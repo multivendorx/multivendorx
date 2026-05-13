@@ -390,7 +390,7 @@ const AllProduct: React.FC = () => {
 			label: __('Product Name', 'multivendorx'),
 			width: 18,
 			render: (row) => {
-				const logo = applyFilters(
+				const badge = applyFilters(
 		'multivendorx_product_badge',
 		'',
 		row
