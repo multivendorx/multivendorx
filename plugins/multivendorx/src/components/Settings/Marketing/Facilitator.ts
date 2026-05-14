@@ -14,25 +14,25 @@ export default {
 	moduleEnabled: 'facilitator',
 	proSetting: true,
 	modal: [
-		{
-			key: 'facilitator',
-			type: 'select',
-			label: __('Facilitators', 'multivendorx'),
-			settingDescription: __(
-				'Assign a user as a facilitator who will receive the facilitator fee.',
-				'multivendorx'
-			),
-			desc: __(
-				'Configure the facilitator fee structure directly from <a href="' +
-				appLocalizer.site_url +
-				'/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=commissions">this section</a>.',
-				'multivendorx'
-			),
-			moduleEnabled: 'facilitator',
+		// {
+		// 	key: 'facilitator',
+		// 	type: 'select',
+		// 	label: __('Facilitators', 'multivendorx'),
+		// 	settingDescription: __(
+		// 		'Assign a user as a facilitator who will receive the facilitator fee.',
+		// 		'multivendorx'
+		// 	),
+		// 	desc: __(
+		// 		'Configure the facilitator fee structure directly from <a href="' +
+		// 		appLocalizer.site_url +
+		// 		'/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=commissions">this section</a>.',
+		// 		'multivendorx'
+		// 	),
+		// 	moduleEnabled: 'facilitator',
 
-			size: '40%',
-			options: appLocalizer.facilitators_list,
-		},
+		// 	size: '40%',
+		// 	options: appLocalizer.facilitators_list,
+		// },
 		{
 			key: 'facilitator',
 			type: 'checkbox',
@@ -43,23 +43,32 @@ export default {
 			),
 			options: [
 				{
-					key: 'facilitator_edit_withdrawl_request',
-					label: __('Request withdrawal', 'multivendorx'),
+					key: 'read_shop_earning',
+					label: __('View wallet', 'multivendorx'),
 					desc: __(
-						'Allow facilitators to request payout of their earnings.',
+						'Allow facilitators to access and view wallet earnings.',
 						'multivendorx'
 					),
-					value: 'facilitator_edit_withdrawl_request',
+					value: 'read_shop_earning',
 				},
 				{
-					key: 'facilitator_view_transactions',
+					key: 'view_transactions',
 					label: __('View transactions', 'multivendorx'),
 					desc: __(
-						'Allow facilitators to view all transaction records related to their earnings.',
+						'Allow facilitators to view all wallet transaction records.',
 						'multivendorx'
 					),
-					value: 'facilitator_view_transactions',
-				}
+					value: 'view_transactions',
+				},
+				{
+					key: 'edit_withdrawl_request',
+					label: __('Request withdrawals', 'multivendorx'),
+					desc: __(
+						'Allow facilitators to submit withdrawal requests from wallet balance.',
+						'multivendorx'
+					),
+					value: 'edit_withdrawl_request',
+				},
 			],
 			selectDeselect: true,
 		}
