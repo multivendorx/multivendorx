@@ -7,6 +7,8 @@
 
 namespace CatalogX;
 
+use CatalogX\Utill;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -80,18 +82,12 @@ class Setting {
          */
         $this->settings_keys = apply_filters(
             'catalogx_register_settings_keys',
-            array(
-				'catalogx_extra_settings',
-				'catalogx_enquiry_catalog_customization_settings',
-                'catalogx_all_settings_settings',
-				'catalogx_tools_settings',
-				'catalogx_pages_settings',
-				'catalogx_enquiry_quote_exclusion_settings',
-                'catalogx_enquiry_form_customization_settings',
-                'catalogx_enquiry_email_temp_settings',
-				'catalogx_wholesale_settings',
-				'catalogx_wholesale_registration_settings',
-			)
+            array_merge(
+                array(
+                    'catalogx_extra_settings',
+                ),
+                array_values( Utill::CATALOGX_SETTINGS )
+            )
         );
 
         return $this->settings_keys;
@@ -195,6 +191,6 @@ class Setting {
             }
         }
 
-        return 'catalogx_extra_settings';
+        return Utill::CATALOGX_SETTINGS['extra'];
     }
 }

@@ -8,7 +8,6 @@
 namespace CatalogX\RestAPI\Controllers;
 
 use CatalogX\Modules;
-use CatalogX\Utill;
 
 defined( 'ABSPATH' ) || exit;
 

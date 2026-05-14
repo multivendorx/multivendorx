@@ -5,7 +5,7 @@
  * @package CatalogX
  */
 
-namespace CatalogX;
+namespace CatalogX\RestAPI;
 
 use CatalogX\Enquiry\Module as EnquiryModule;
 use CatalogX\Quote\Module as QuoteModule;
@@ -34,6 +34,7 @@ class Rest {
      * Rest class constructor function
      */
     public function __construct() {
+        $this->init_classes();
         if ( current_user_can( 'manage_options' ) ) {
             add_action( 'rest_api_init', array( $this, 'register_rest_apis' ) );
         }
