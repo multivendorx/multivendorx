@@ -92,7 +92,7 @@ class FrontendScripts {
 
         $block_scripts = array(
             'my-courses',
-            'product-tab'
+            'moodle-enrollment-mapping'
         );
 
         $register_scripts = apply_filters(
@@ -199,11 +199,12 @@ class FrontendScripts {
             array(
 				'moowoodle-index'       => array(
 					'src' => self::get_asset_path() . 'styles/index.css',
-				),
-				'moowoodle-product-tab' => array(
-					'src'  => self::get_asset_path() . 'styles/' . MOOWOODLE_PLUGIN_SLUG . '-product-tab.min.css',
-					'deps' => array(),
-				),
+				)
+			),
+            array(
+				'moowoodle-moodle-enrollment-mapping'       => array(
+					'src' => self::get_asset_path() . 'styles/block/moodle-enrollment-mapping/index.css',
+				)
 			)
         );
 
@@ -311,7 +312,7 @@ class FrontendScripts {
                         'current_user_id' => MooWoodle()->current_user_id,
 					),
 				),
-				'moowoodle-product-tab' => array(
+				'moowoodle-moodle-enrollment-mapping' => array(
 					'object_name' => 'moowoodleProduct',
                     'use_rest'    => true,
 					'data'        => array(
@@ -320,6 +321,7 @@ class FrontendScripts {
                         'linkType'     => $default_type,
                         'linkedItemId' => $selected_id,
                         'productMetaNonce' => wp_create_nonce(),
+                        'syncUrl'       => esc_url( admin_url( 'admin.php?page=moowoodle#&tab=synchronization&subtab=synchronize-course' ) )
 					),
 				),
 			);
