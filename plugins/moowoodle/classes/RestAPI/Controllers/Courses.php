@@ -46,7 +46,7 @@ class Courses extends \WP_REST_Controller {
     /**
      * Check if a given request has access to get items.
      *
-     * @param object $request The REST request object.
+     * @param \WP_REST_Request $request The REST request object.
      */
     public function get_items_permissions_check( $request ) {
         return current_user_can( 'manage_options' );
@@ -56,8 +56,8 @@ class Courses extends \WP_REST_Controller {
     /**
      * Get items.
      *
-     * @param WP_REST_Request $request Request object.
-     * @return WP_REST_Response|WP_Error
+     * @param \WP_REST_Request $request Request object.
+     * @return \WP_REST_Response|WP_Error
      */
     public function get_items( $request ) {
         $nonce_check = Util::validate_nonce( $request );
@@ -68,8 +68,8 @@ class Courses extends \WP_REST_Controller {
 
         try {
             $product_tab = $request->get_param( 'product_tab' );
-            if ($product_tab) {
-                $post_id = $request->get_param('post_id');
+            if ( $product_tab ) {
+                $post_id = (int) $request->get_param('post_id');
                 $wordpress_course_id = get_post_meta( $post_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
                 $linkable_courses = MooWoodle()->course->get_courses(
                     array(
@@ -87,7 +87,6 @@ class Courses extends \WP_REST_Controller {
             }
 
             $options = $request->get_param( 'options' );
-
             if ( $options ) {
                 return $this->get_filter_items( $request );
             }
@@ -142,9 +141,9 @@ class Courses extends \WP_REST_Controller {
                     }
                 }
 
-                $start = $course['startdate'] ? wp_date( 'M j, Y', $course['startdate'] ) : __( 'Not Set', 'moowoodle' );
-                $end   = $course['enddate'] ? wp_date( 'M j, Y', $course['enddate'] ) : __( 'Not Set', 'moowoodle' );
-                $date  = ( $course['startdate'] || $course['enddate'] ) ? "$start - $end" : 'NA';
+                $start = ! empty( $course['startdate'] ) ? wp_date( 'M j, Y', $course['startdate'] ) : __( 'Not Set', 'moowoodle' );
+                $end   = ! empty( $course['enddate'] ) ? wp_date( 'M j, Y', $course['enddate'] ) : __( 'Not Set', 'moowoodle' );
+                $date  = ( ! empty( $course['startdate'] ) || ! empty( $course['enddate'] ) ) ? "$start - $end" : 'NA';
 
                 $moodle_url    = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) ) . "course/edit.php?id={$course['moodle_course_id']}";
                 $view_user_url = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) ) . "user/index.php?id={$course['moodle_course_id']}";
@@ -207,7 +206,7 @@ class Courses extends \WP_REST_Controller {
         $plugin = MooWoodle();
 
         // Fetch all courses.
-        $courses = $plugin->course->get_courses( array() );
+        $courses = $plugin->course->get_courses();
 
         if ( empty( $courses ) ) {
             return rest_ensure_response(

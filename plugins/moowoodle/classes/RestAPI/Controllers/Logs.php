@@ -30,7 +30,7 @@ class Logs extends \WP_REST_Controller {
      *
      * Handles log listing, download, and clear actions.
      *
-     * @param WP_REST_Request $request Request object.
+     * @param \WP_REST_Request $request Request object.
      * @return \WP_Error|\WP_REST_Response
      */
     public function register_routes() {

@@ -23,9 +23,7 @@ class Course {
      */
 	public function __construct() {
 		// Add Link Moodle Course in WooCommerce edit product tab.
-		add_filter( 'woocommerce_product_data_tabs', array( &$this, 'add_additional_product_tab' ), 99, 1 );
-		add_action( 'woocommerce_product_data_panels', array( &$this, 'add_additional_product_data_panels' ) );
-		add_action( 'wp_ajax_get_linkable_course', array( $this, 'get_linkable_course' ) );
+		add_filter( 'add_meta_boxes', array( &$this, 'add_additional_metabox' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ), 20 );
 	}
 
@@ -35,9 +33,13 @@ class Course {
      * @return void
      */
 	public function enqueue_admin_assets() {
-		FrontendScripts::enqueue_script( 'moowoodle-product-tab' );
-		FrontendScripts::enqueue_style( 'moowoodle-product-tab' );
-		FrontendScripts::localize_scripts( 'moowoodle-product-tab' );
+		$screen = get_current_screen();
+		if ( empty( $screen ) || 'product' !== $screen->post_type ) {
+			return;
+		}
+		FrontendScripts::enqueue_style( 'moowoodle-moodle-enrollment-mapping' );
+		FrontendScripts::enqueue_script( 'moowoodle-moodle-enrollment-mapping' );
+		FrontendScripts::localize_scripts( 'moowoodle-moodle-enrollment-mapping' );
 	}
 
 	/**
@@ -51,7 +53,7 @@ class Course {
 	 * @param array $args Filter options.
 	 * @return array List of matching courses.
 	 */
-	public static function get_courses( $args ) {
+	public static function get_courses( $args = array() ) {
 		global $wpdb;
 
 		$where = array();
@@ -182,15 +184,16 @@ class Course {
 	/**
 	 * Creates custom tab for product types.
      *
-	 * @param array $product_data_tabs all product tabs in admin.
-	 * @return array
 	 */
-	public function add_additional_product_tab( $product_data_tabs ) {
-		$product_data_tabs['moowoodle'] = array(
-			'label'  => __( 'Moodle Linked Course or Cohort', 'moowoodle' ),
-			'target' => 'moowoodle-course-link-tab',
+	public function add_additional_metabox( ) {
+		add_meta_box(
+			'moowoodle-product-metabox',
+			__( 'Moodle Enrollment Mapping', 'moowoodle' ),
+			array( $this, 'render_product_metabox' ),
+			'product',
+			'normal',
+			'default'
 		);
-		return $product_data_tabs;
 	}
 
     /**
@@ -198,95 +201,12 @@ class Course {
      *
      * @return void
      */
-	public function add_additional_product_data_panels() {
-		global $post;
-
-		$wordpress_course_id = get_post_meta( $post->ID, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
-		$wordpress_cohort_id = apply_filters( 'moowoodle_get_wordpress_cohort_id', null, $post->ID );
-		$default_type     = $wordpress_course_id ? 'course' : ( $wordpress_cohort_id ? 'cohort' : '' );
+	public function render_product_metabox() {
 		?>
-		<div
-			id="moowoodle-course-link-tab"
-			class="panel woocommerce_options_panel"
-		>
-
-			<div id="moowoodle-react-product-tab"></div>
-
-		</div>
-		<!-- <div id="moowoodle-course-link-tab" class="panel">
-			<p class="form-field moowoodle-link-type-field">
-				<label><?php esc_html_e( 'Link Type', 'moowoodle' ); ?></label><br>
-				<span class="moowoodle-radio-group">
-					<label class="moowoodle-radio-option">
-						<input type="radio" name="link_type" value="course" <?php checked( $default_type, 'course' ); ?>>
-						<?php esc_html_e( 'Course', 'moowoodle' ); ?>
-					</label>
-					<label class="moowoodle-radio-option cohort">
-						<input type="radio" name="link_type" value="cohort" <?php checked( $default_type, 'cohort' ); ?> 
-							<?php echo MooWoodle()->util->is_khali_dabba() ? '' : 'disabled'; ?>>
-						<?php esc_html_e( 'Cohort', 'moowoodle' ); ?>
-						<?php echo MooWoodle()->util->is_khali_dabba() ? '' : '<span>Pro</span>'; ?>
-					</label>
-				</span>
-			</p>
-
-			<p id="dynamic-link-select" class="form-field <?php echo $default_type ? 'show' : ''; ?>">
-				<label for="linked_item_id"><?php esc_html_e( 'Select Item', 'moowoodle' ); ?></label>
-				<select id="linked_item_id" name="linked_item_id">
-					<option value=""><?php esc_html_e( 'Select an item...', 'moowoodle' ); ?></option>
-				</select>
-			</p>
-
-			<p>
-				<span>
-					<?php esc_html_e( "Can't find your course or cohort?", 'moowoodle' ); ?>
-					<a href="<?php echo esc_url( admin_url( 'admin.php?page=moowoodle-synchronization' ) ); ?>" target="_blank">
-						<?php esc_html_e( 'Synchronize Moodle data from here.', 'moowoodle' ); ?>
-					</a>
-				</span>
-			</p>
-
-			<input type="hidden" name="moowoodle_meta_nonce" value="<?php echo esc_attr( wp_create_nonce( 'moowoodle_meta_nonce' ) ); ?>">
-			<input type="hidden" name="product_meta_nonce" value="<?php echo esc_attr( wp_create_nonce() ); ?>">
-			<input type="hidden" id="post_id" value="<?php echo esc_attr( $post->ID ); ?>">
-		</div> -->
+		<div 
+			id="moodle-enrollment-mapping-tab"
+		></div>
 		<?php
-	}
-
-	/**
-	 * Handle AJAX request to fetch linkable courses for a product.
-	 *
-	 * Expects POST: nonce, post_id.
-	 * Returns the list of available courses and the currently linked course.
-	 *
-	 * @return void
-	 */
-	public function get_linkable_course() {
-		// Verify nonce.
-		if ( ! check_ajax_referer( 'moowoodle_meta_nonce', 'nonce', false ) ) {
-			wp_send_json_error( __( 'Invalid nonce', 'moowoodle' ) );
-			return;
-		}
-
-		// Retrieve and sanitize input.
-		$post_id = absint( filter_input( INPUT_POST, 'post_id' ) );
-
-		$wordpress_course_id = get_post_meta( $post_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
-
-		$linkable_courses = $this->get_courses(
-			array(
-				'id'         => $wordpress_course_id,
-				'product_id' => 0,
-				'condition'  => 'OR',
-			)
-		);
-
-		wp_send_json_success(
-			array(
-				'items'       => $linkable_courses,
-				'selected_id' => $wordpress_course_id,
-			)
-		);
 	}
 
 	/**
@@ -299,7 +219,7 @@ class Course {
         global $wpdb;
 
         $exclude_ids      = array_map( 'intval', (array) $exclude_ids );
-        $existing_courses = self::get_courses( array() );
+        $existing_courses = self::get_courses();
         $existing_ids     = array_column( $existing_courses, 'id' );
 
         $ids_to_delete = array_diff( $existing_ids, $exclude_ids );

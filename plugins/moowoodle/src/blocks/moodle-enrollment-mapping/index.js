@@ -1,8 +1,8 @@
 import { render, useEffect, useState } from '@wordpress/element';
-
-import { RadioControl, SelectControl, Spinner } from '@wordpress/components';
-
+import { RadioControl, SelectControl, Spinner, Notice, BaseControl, Disabled } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
+import './index.scss';
 
 const ProductTab = () => {
 	const [linkType, setLinkType] = useState(moowoodleProduct.linkType || '');
@@ -12,7 +12,6 @@ const ProductTab = () => {
 	);
 
 	const [options, setOptions] = useState([]);
-
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
@@ -55,32 +54,39 @@ const ProductTab = () => {
 
 	return (
 		<>
-			<p className="form-field moowoodle-link-type-field">
+			<BaseControl label={ __( 'Link Type', 'moowoodle' ) }>
 				<RadioControl
-					label="Link Type"
-					selected={linkType}
+					selected={ linkType }
 					options={[
 						{
-							label: 'Course',
+							label: __( 'Course', 'moowoodle' ),
 							value: 'course',
 						},
-						{
-							label: moowoodleProduct.khali_dabba
-								? 'Cohort'
-								: 'Cohort Pro',
-
-							value: 'cohort',
-
-							disabled: !moowoodleProduct.khali_dabba,
-						},
 					]}
-					onChange={(value) => {
-						setLinkType(value);
-
-						setLinkedItemId('');
-					}}
+					onChange={ ( value ) => {
+						setLinkType( value );
+						setLinkedItemId( '' );
+					} }
 				/>
-			</p>
+
+				<Disabled isDisabled={ ! moowoodleProduct.khali_dabba }>
+					<RadioControl
+						selected={ linkType }
+						options={[
+							{
+								label: moowoodleProduct.khali_dabba
+									? __( 'Cohort', 'moowoodle' )
+									: __( 'Cohort Pro', 'moowoodle' ),
+								value: 'cohort',
+							},
+						]}
+						onChange={ ( value ) => {
+							setLinkType( value );
+							setLinkedItemId( '' );
+						} }
+					/>
+				</Disabled>
+			</BaseControl>
 
 			{loading && (
 				<p className="form-field">
@@ -89,14 +95,13 @@ const ProductTab = () => {
 			)}
 
 			{!!linkType && !loading && (
-				<p id="dynamic-link-select" className="form-field show">
+				<p className="form-field">
 					<SelectControl
 						label="Select Item"
 						value={linkedItemId}
 						options={[
 							{
-								label: moowoodleProduct.selectText,
-
+								label: __( 'Select an item...', 'moowoodle' ),
 								value: '',
 							},
 							...options,
@@ -108,21 +113,29 @@ const ProductTab = () => {
 				</p>
 			)}
 
-			<p>
-				<span>
-					Can't find your course or cohort?
-					<a
-						href={moowoodleProduct.syncUrl}
-						target="_blank"
-						rel="noreferrer"
-					>
-						Synchronize Moodle data from here.
-					</a>
-				</span>
-			</p>
+			<Notice
+				status="info"
+				isDismissible={ false }
+				actions={[
+					{
+						label: __(
+							'Synchronize Moodle data',
+							'moowoodle'
+						),
+						url: moowoodleProduct.syncUrl,
+						variant: 'primary'
+					},
+				]}
+			>
+				<p>
+					{ __(
+						"Can't find your course or cohort?",
+						'moowoodle'
+					) }
+				</p>
+			</Notice>
 
 			<input type="hidden" name="link_type" value={linkType} />
-
 			<input type="hidden" name="linked_item_id" value={linkedItemId} />
 
 			<input
@@ -130,12 +143,13 @@ const ProductTab = () => {
 				name="product_meta_nonce"
 				value={moowoodleProduct.productMetaNonce}
 			/>
+
 		</>
 	);
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-	const container = document.getElementById('moowoodle-react-product-tab');
+	const container = document.getElementById('moodle-enrollment-mapping-tab');
 
 	if (container) {
 		render(<ProductTab />, container);

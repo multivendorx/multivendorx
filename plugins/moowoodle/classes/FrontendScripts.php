@@ -92,7 +92,7 @@ class FrontendScripts {
 
         $block_scripts = array(
             'my-courses',
-            'product-tab'
+            'moodle-enrollment-mapping'
         );
 
         $register_scripts = apply_filters(
@@ -179,11 +179,7 @@ class FrontendScripts {
 				'moowoodle-admin'       => array(
 					'src'  => self::get_asset_path() . 'js/index.js',
 					'deps' => $index_asset['dependencies'],
-				),
-				'moowoodle-product-tab' => array(
-					'src'  => self::get_asset_path() . 'js/' . MOOWOODLE_PLUGIN_SLUG . '-product-tab.min.js',
-					'deps' => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ),
-				),
+				)
             )
         );
 		foreach ( $register_scripts as $name => $props ) {
@@ -203,11 +199,12 @@ class FrontendScripts {
             array(
 				'moowoodle-index'       => array(
 					'src' => self::get_asset_path() . 'styles/index.css',
-				),
-				'moowoodle-product-tab' => array(
-					'src'  => self::get_asset_path() . 'styles/' . MOOWOODLE_PLUGIN_SLUG . '-product-tab.min.css',
-					'deps' => array(),
-				),
+				)
+			),
+            array(
+				'moowoodle-moodle-enrollment-mapping'       => array(
+					'src' => self::get_asset_path() . 'styles/block/moodle-enrollment-mapping/index.css',
+				)
 			)
         );
 
@@ -215,18 +212,6 @@ class FrontendScripts {
 			self::register_style( $name, $props['src'], array(), $props['version'] ?? $version );
 		}
 	}
-	/**
-	 * Get base AJAX data for frontend scripts
-	 *
-	 * @param string $handle Script handle used for nonce creation.
-	 * @return array Base AJAX data including admin-ajax URL and nonce.
-	 */
-    public static function get_base_ajax_data( $handle ) {
-        return array(
-            'ajaxurl' => admin_url( 'admin-ajax.php' ),
-            'nonce'   => wp_create_nonce( $handle ),
-        );
-    }
 
     public static function get_admin_settings() {
         if ( null !== self::$settings_cache ) {
@@ -290,7 +275,6 @@ class FrontendScripts {
                 'moowoodle-admin'       => array(
                     'object_name'  => 'appLocalizer',
                     'use_rest'     => true,
-                    'use_ajax'     => true,
                     'use_settings' => true,
 					'data'         => array(
 						'khali_dabba'     => Util::is_khali_dabba(),
@@ -328,16 +312,16 @@ class FrontendScripts {
                         'current_user_id' => MooWoodle()->current_user_id,
 					),
 				),
-				'moowoodle-product-tab' => array(
+				'moowoodle-moodle-enrollment-mapping' => array(
 					'object_name' => 'moowoodleProduct',
                     'use_rest'    => true,
 					'data'        => array(
-                        'selectText' => __( 'Select an item...', 'moowoodle' ),
 						'khali_dabba' => MooWoodle()->util->is_khali_dabba(),
                         'postId'       => $post->ID,
                         'linkType'     => $default_type,
                         'linkedItemId' => $selected_id,
                         'productMetaNonce' => wp_create_nonce(),
+                        'syncUrl'       => esc_url( admin_url( 'admin.php?page=moowoodle#&tab=synchronization&subtab=synchronize-course' ) )
 					),
 				),
 			);
@@ -346,14 +330,6 @@ class FrontendScripts {
         $config           = $localize_scripts[ $handle ] ?? array();
 
         $data = array();
-
-        if ( ! empty( $config['use_ajax'] ) && ! empty( $config['use_rest'] ) ) {
-            $base_ajax = self::get_base_ajax_data( $handle );
-            unset( $base_ajax['nonce'] );
-            $data = array_merge( $data, $base_ajax );
-        } else {
-            $data = array_merge( $data, self::get_base_ajax_data( $handle ) );
-        }
 
         if ( ! empty( $config['use_rest'] ) ) {
             $data = array_merge( $data, $base_rest );

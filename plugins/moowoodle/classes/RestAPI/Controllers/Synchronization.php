@@ -29,12 +29,6 @@ class Synchronization extends \WP_REST_Controller {
 	protected $rest_base = 'synchronization';
 
     /**
-     * RestAPI construct function.
-     */
-    public function __construct() {
-    }
-
-    /**
      * Register the routes for the objects of the controller.
      */
     public function register_routes() {
@@ -88,8 +82,8 @@ class Synchronization extends \WP_REST_Controller {
 
         try {
             $response = array(
-			'status'  => array(),
-			'running' => false,
+                'status'  => array(),
+                'running' => false,
 			);
 
 			$status = $request->get_param( 'parameter' );
