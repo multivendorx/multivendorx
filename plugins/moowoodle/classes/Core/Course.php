@@ -23,8 +23,7 @@ class Course {
      */
 	public function __construct() {
 		// Add Link Moodle Course in WooCommerce edit product tab.
-		add_filter( 'woocommerce_product_data_tabs', array( &$this, 'add_additional_product_tab' ), 99, 1 );
-		add_action( 'woocommerce_product_data_panels', array( &$this, 'add_additional_product_data_panels' ) );
+		add_filter( 'add_meta_boxes', array( &$this, 'add_additional_metabox' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ), 20 );
 	}
 
@@ -34,7 +33,13 @@ class Course {
      * @return void
      */
 	public function enqueue_admin_assets() {
-		FrontendScripts::enqueue_style( 'moowoodle-product-tab' );
+		$screen = get_current_screen();
+		if ( empty( $screen ) || 'product' !== $screen->post_type ) {
+			return;
+		}
+		FrontendScripts::enqueue_style( 'moowoodle-moodle-enrollment-mapping' );
+		FrontendScripts::enqueue_script( 'moowoodle-moodle-enrollment-mapping' );
+		FrontendScripts::localize_scripts( 'moowoodle-moodle-enrollment-mapping' );
 	}
 
 	/**
@@ -48,7 +53,7 @@ class Course {
 	 * @param array $args Filter options.
 	 * @return array List of matching courses.
 	 */
-	public static function get_courses( $args ) {
+	public static function get_courses( $args = array() ) {
 		global $wpdb;
 
 		$where = array();
@@ -179,15 +184,16 @@ class Course {
 	/**
 	 * Creates custom tab for product types.
      *
-	 * @param array $product_data_tabs all product tabs in admin.
-	 * @return array
 	 */
-	public function add_additional_product_tab( $product_data_tabs ) {
-		$product_data_tabs['moowoodle'] = array(
-			'label'  => __( 'Moodle Linked Course or Cohort', 'moowoodle' ),
-			'target' => 'moowoodle-course-link-tab',
+	public function add_additional_metabox( ) {
+		add_meta_box(
+			'moowoodle-product-metabox',
+			__( 'Moodle Enrollment Mapping', 'moowoodle' ),
+			array( $this, 'render_product_metabox' ),
+			'product',
+			'normal',
+			'default'
 		);
-		return $product_data_tabs;
 	}
 
     /**
@@ -195,14 +201,11 @@ class Course {
      *
      * @return void
      */
-	public function add_additional_product_data_panels() {
+	public function render_product_metabox() {
 		?>
-		<div
-			id="moowoodle-course-link-tab"
-			class="panel woocommerce_options_panel"
-		>
-			<div id="moowoodle-react-product-tab"></div>
-		</div>
+		<div 
+			id="moodle-enrollment-mapping-tab"
+		></div>
 		<?php
 	}
 
@@ -216,7 +219,7 @@ class Course {
         global $wpdb;
 
         $exclude_ids      = array_map( 'intval', (array) $exclude_ids );
-        $existing_courses = self::get_courses( array() );
+        $existing_courses = self::get_courses();
         $existing_ids     = array_column( $existing_courses, 'id' );
 
         $ids_to_delete = array_diff( $existing_ids, $exclude_ids );
