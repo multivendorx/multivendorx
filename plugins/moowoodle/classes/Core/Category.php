@@ -37,13 +37,14 @@ class Category {
 		}
 
         $table = $wpdb->prefix . Util::TABLES['category'];
-        $where = "SELECT * FROM $table";
-        if ( ! empty( $args ) ) {
-            $in     = implode( ',', array_map( 'intval', $args ) );
-            $where .= " WHERE id IN ($in)";
-        }
-		$results = $wpdb->get_results( $where, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-		return $results ?? array();
+		if ( empty( $args ) ) {
+			return $wpdb->get_results("SELECT * FROM {$table}", ARRAY_A); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		}
+
+		$placeholders = implode( ',', array_map( 'intval', $args ) );
+		$query = $wpdb->prepare("SELECT * FROM {$table} WHERE id IN ($placeholders)", $args);
+
+		return $wpdb->get_results($query, ARRAY_A); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
     }
 
 	/**
@@ -65,14 +66,10 @@ class Category {
             return false;
         }
 
-        $table             = $wpdb->prefix . Util::TABLES['category'];
-        $existing_category = self::get_course_category( $args['id'] );
+        $table = $wpdb->prefix . Util::TABLES['category'];
+        $args = array( 'id' => (int) $args['id'] );
 
-		if ( ! empty( $existing_category ) ) {
-            return $wpdb->update( $table, $args, array( 'id' => (int) $args['id'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        }
-
-        return $wpdb->insert( $table, $args ); //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		return $wpdb->replace( $table, $args ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
     }
 
 	/**
@@ -87,6 +84,10 @@ class Category {
 	 *   - 'parent' (int): Optional parent category ID.
 	 */
 	public static function update_course_categories( $categories ) {
+		if ( empty( $categories ) || ! is_array( $categories ) ) {
+			return;
+		}
+
 		foreach ( $categories as $category ) {
 			$args = array(
 				'id'        => (int) $category['id'],
@@ -95,7 +96,6 @@ class Category {
 			);
 
 			self::update_course_category( $args );
-
 			Util::increment_sync_count( 'course' );
 		}
 	}
@@ -119,7 +119,7 @@ class Category {
 				'hide_empty' => false,
 				'meta_query' => array(
 					array(
-						'key'     => '_category_id',
+						'key'     => Util::MOOWOODLE_TERM_META['category_id'],
 						'value'   => $category_id,
 						'compare' => '=',
 					),
@@ -128,11 +128,11 @@ class Category {
         );
 
 		// Check no category found.
-		if ( empty( $terms ) && is_wp_error( $terms ) ) {
+		if ( is_wp_error( $terms ) || empty( $terms ) ) {
 			return null;
 		}
 
-		return $terms[0];
+		return reset( $terms );
 	}
 
 	/**
@@ -169,14 +169,14 @@ class Category {
 			);
 
 			if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
-				add_term_meta( $term['term_id'], '_category_id', $category['id'], false );
+				add_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['category_id'], $category['id'], false );
             }
 		}
 
 		// In success on update or insert sync meta data.
 		if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
-			update_term_meta( $term['term_id'], '_parent', $category['parent'], '' );
-			update_term_meta( $term['term_id'], '_category_path', $category['path'], false );
+			update_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['parent_id'], $category['parent'], '' );
+			update_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['category_path'], $category['path'], false );
 
 			return $category['id'];
 		} else {
@@ -203,11 +203,11 @@ class Category {
 		if ( $categories ) {
 			foreach ( $categories as $category ) {
 				// Update category.
-				$categorie_id = self::update_product_category( $category, $taxonomy );
+				$category_id = self::update_product_category( $category, $taxonomy );
 
 				// Store updated category id.
-				if ( $categorie_id ) {
-					$updated_ids[] = $categorie_id;
+				if ( $category_id ) {
+					$updated_ids[] = $category_id;
 				}
 
 				Util::increment_sync_count( 'course' );
@@ -226,6 +226,9 @@ class Category {
 	 * @return void
 	 */
 	private static function remove_exclude_ids( $exclude_ids, $taxonomy ) {
+		if ( empty( $taxonomy ) || ! taxonomy_exists( $taxonomy ) ) {
+			return;
+		}
 
 		$terms = get_terms(
             array(
@@ -233,7 +236,7 @@ class Category {
 				'hide_empty' => false,
 				'meta_query' => array(
 					array(
-						'key'     => '_category_id',
+						'key'     => Util::MOOWOODLE_TERM_META['category_id'],
 						'compare' => 'EXISTS',
 					),
 				),
@@ -246,10 +249,13 @@ class Category {
 
 		// Link with parent or delete term.
 		foreach ( $terms as $term ) {
-			$category_id = (int) get_term_meta( $term->term_id, '_category_id', true );
+			$category_id = (int) get_term_meta( $term->term_id, Util::MOOWOODLE_TERM_META['category_id'], true );
 
 			if ( in_array( $category_id, $exclude_ids, true ) ) {
-				$parent_category_id = get_term_meta( $term->term_id, '_parent', true );
+				$parent_category_id = get_term_meta( $term->term_id, Util::MOOWOODLE_TERM_META['parent_id'], true );
+				if ( empty( $parent_category_id ) ) {
+					continue;
+				}
 
 				// get parent term id and continue if not exist.
 				$parent_term = self::get_product_category( $parent_category_id, $taxonomy );
