@@ -20,7 +20,7 @@ interface CourseRow {
 	category_url?: string;
 	date?: string;
 	products?: Record<string, string>;
-	enroled_user?: number;
+	enrolled_user?: number;
 	view_users_url?: string;
 	productimage?: string;
 	status?: string;
@@ -180,11 +180,11 @@ const Course: React.FC = () => {
 				</>
 			),
 		},
-		enroled_user: {
+		enrolled_user: {
 			label: __('Enrolled users', 'moowoodle'),
 			render: (row: CourseRow) => (
 				<div className="action-section">
-					<div>{row.enroled_user || 0}</div>
+					<div>{row.enrolled_user || 0}</div>
 					<div className="action-btn">
 						<a
 							target="_blank"

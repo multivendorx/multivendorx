@@ -308,7 +308,7 @@ class Util {
      * @param \Exception $exception Exception object.
      * @return \WP_Error
      */
-    public function server_error( \Exception $exception ) {
+    public static function server_error( \Exception $exception ) {
 
         MooWoodle()->util->log( $exception );
 
