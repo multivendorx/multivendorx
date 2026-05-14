@@ -207,7 +207,7 @@ final class CatalogX {
         $this->container['setting']   = new Setting();
         $this->container['admin']     = new Admin();
         $this->container['frontend']  = new Frontend();
-        $this->container['restapi']   = new Rest();
+        $this->container['rest']   = new RestAPI\Rest();
         $this->container['util']      = new Utill();
         $this->container['modules']   = new Modules();
         $this->container['shortcode'] = new Shortcode();
