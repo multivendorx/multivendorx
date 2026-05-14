@@ -26,7 +26,7 @@ const ProductTab = () => {
 		const endpoint = 'course' === linkType ? 'courses' : 'cohorts';
 
 		apiFetch({
-			path: `/moowoodle/v1/${endpoint}?post_id=${moowoodleProduct.postId}&row=-1&page=1`,
+			path: `/moowoodle/v1/${endpoint}?unlinked_resources_for=${moowoodleProduct.postId}&row=-1`,
 			method: 'GET',
 		})
 			.then((response) => {

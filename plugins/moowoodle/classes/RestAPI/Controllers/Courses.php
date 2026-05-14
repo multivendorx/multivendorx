@@ -77,7 +77,7 @@ class Courses extends \WP_REST_Controller {
             $category_field = $request->get_param( 'category' );
             $search_action  = $request->get_param( 'searchaction' );
             $search_field   = $request->get_param( 'search' );
-            $post_id        = $request->get_param( 'post_id' );
+            $get_product_id     = $request->get_param( 'unlinked_resources_for' );
 
             // Base filter array.
             $filters = array(
@@ -95,8 +95,8 @@ class Courses extends \WP_REST_Controller {
                 $filters['shortname'] = $search_field;
             }
 
-            if ( ! empty( $post_id ) ) {
-                $selected_course_id = (int) get_post_meta( $post_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
+            if ( ! empty( $get_product_id ) ) {
+                $selected_course_id = (int) get_post_meta( $get_product_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
                 $filters['id'] = $selected_course_id;
                 $filters['product_id'] = 0;
                 $filters['condition'] = 'OR';
@@ -109,7 +109,7 @@ class Courses extends \WP_REST_Controller {
                 return rest_ensure_response( array() );
             }
 
-            if ( !empty( $post_id ) ) {
+            if ( !empty( $get_product_id ) ) {
                 return rest_ensure_response(
                     array(
                         'items'       => $courses,
