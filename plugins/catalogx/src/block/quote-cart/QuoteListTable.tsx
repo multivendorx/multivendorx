@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { __ } from '@wordpress/i18n';
-import {
-    ColumnDef,
-    RowSelectionState,
-    PaginationState,
-} from '@tanstack/react-table';
-import { Table, TableCell } from 'zyra';
+import { TableCard, QueryProps, TableRow, getApiLink } from 'zyra';
 import axios from 'axios';
 import QuoteThankYou from './QuoteThankYou';
+import { formatLocalDate } from '../../services/commonFunction';
 import 'zyra/build/index.css';
 
 type QuoteRow = {
@@ -16,414 +12,236 @@ type QuoteRow = {
     image: string;
     name: string;
     quantity: string | number;
-    total: number;
+    total: string | number;
 };
 
-type DataRow = {
-    id: string | number;
-    key: string;
-    image: string;
-    name: string;
-    quantity: string | number;
-    total: string;
+type CategoryCount = {
+    value: string;
+    label: string;
+    count: number;
 };
 
 const QuoteList = () => {
-    const [ data, setData ] = useState< DataRow[] | null >( null );
-    const [ selectedRows, setSelectedRows ] = useState< DataRow[] >( [] );
-    const [ rowSelection, setRowSelection ] = useState< RowSelectionState >(
-        {}
-    );
-    const [ productQuantity, setProductQuantity ] = useState<
-        Record< string | number, { quantity: string; key: string } >
-    >( {} );
-    const [ loading, setLoading ] = useState( false );
-    const [ responseContent, setResponseContent ] = useState( false );
-    const [ responseStatus, setResponseStatus ] = useState( '' );
-    const [ totalRows, setTotalRows ] = useState< number >( 0 );
-    const [ showThankYou, setShowThankYou ] = useState< string | null >( null );
-    const [ status, setStatus ] = useState( '' );
-    const [ formData, setFormData ] = useState( {
-        name: quoteCart.name || '',
-        email: quoteCart.email || '',
+    const [rows, setRows] = useState<TableRow[]>([]);
+    const [rowIds, setRowIds] = useState<number[]>([]);
+    const [totalRows, setTotalRows] = useState<number>(0);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [responseStatus, setResponseStatus] = useState<'success' | 'error' | ''>('');
+    const [showThankYou, setShowThankYou] = useState<string | null>(null);
+    const [status, setStatus] = useState<string>('');
+    const [categoryCounts, setCategoryCounts] = useState<CategoryCount[]>([]);
+    
+    const [formData, setFormData] = useState({
+        name: (window as any).quoteCart?.name || '',
+        email: (window as any).quoteCart?.email || '',
         phone: '',
         message: '',
-    } );
-    const [ pagination, setPagination ] = useState< PaginationState >( {
-        pageIndex: 0,
-        pageSize: 10,
-    } );
-    const [ pageCount, setPageCount ] = useState( 0 );
+    });
 
-    useEffect( () => {
-        if ( ! Array.isArray( data ) ) return;
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        setShowThankYou(params.get('order_id'));
+        setStatus(params.get('status') || '');
+    }, []);
 
-        const selectedIndices = Object.keys( rowSelection )
-            .filter( ( key ) => rowSelection[ key ] )
-            .map( Number ); // Convert "0", "1" to 0, 1
-
-        const selectedItems = selectedIndices
-            .map( ( index ) => data[ index ] )
-            .filter( Boolean ); // remove undefined if index is out of bounds
-
-        setSelectedRows( selectedItems );
-    }, [ rowSelection, data ] );
-
-    useEffect( () => {
-        const params = new URLSearchParams( location.search );
-        const orderIdParam = params.get( 'order_id' );
-        const statusParam = params.get( 'status' );
-        setShowThankYou( orderIdParam );
-        setStatus( statusParam || '' );
-    }, [ location ] );
-
-    const handleInputChange = (
-        e: React.ChangeEvent< HTMLInputElement | HTMLTextAreaElement >
-    ) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData( ( prevState ) => ( {
-            ...prevState,
-            [ name ]: value,
-        } ) );
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    useEffect( () => {
-        requestData();
-    }, [] );
+    const fetchTableData = useCallback((query: QueryProps) => {
+        setIsLoading(true);
 
-    useEffect( () => {
-        const currentPage = pagination.pageIndex + 1;
-        const rowsPerPage = pagination.pageSize;
-        requestData( rowsPerPage, currentPage );
-        setPageCount( Math.ceil( totalRows / rowsPerPage ) );
-    }, [ pagination ] );
+        axios
+            .post(getApiLink(appLocalizer, 'quote-cart'), {
+                page: query.paged || 1,
+                row: query.per_page || 10,
+                filter_status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+                search_value: query.searchValue || '',
+                start_date: query.filter?.created_at?.startDate ? formatLocalDate(query.filter.created_at.startDate) : '',
+                end_date: query.filter?.created_at?.endDate ? formatLocalDate(query.filter.created_at.endDate) : '',
+                order_by: query.orderby,
+                order: query.order,
+            }, {
+                headers: { 'X-WP-Nonce': appLocalizer.nonce },
+            })
+            .then((response) => {
+                const items = response.data.response || [];
+                const ids = items.filter((item: QuoteRow) => item?.id != null).map((item: QuoteRow) => Number(item.id));
+                
+                setRowIds(ids);
+                setRows(items);
+                setCategoryCounts([
+                    { value: 'all', label: __('All', 'catalogx-pro'), count: Number(response.data.count) || 0 },
+                    { value: 'pending', label: __('Pending', 'catalogx-pro'), count: Number(response.data.pending_count) || 0 },
+                    { value: 'approved', label: __('Approved', 'catalogx-pro'), count: Number(response.data.approved_count) || 0 },
+                    { value: 'rejected', label: __('Rejected', 'catalogx-pro'), count: Number(response.data.rejected_count) || 0 },
+                ]);
+                setTotalRows(Number(response.data.count) || 0);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error('Failed to fetch quote data:', error);
+                setRows([]);
+                setRowIds([]);
+                setTotalRows(0);
+                setIsLoading(false);
+            });
+    }, []);
 
-    const handleQuantityChange = (
-        e: React.ChangeEvent< HTMLInputElement >,
-        id: string | number,
-        key: string
-    ) => {
-        setProductQuantity( ( prev ) => ( {
-            ...prev,
-            [ id ]: {
-                quantity: e.target.value,
-                key,
-            },
-        } ) );
-    };
-
-    function requestData( rowsPerPage = 10, currentPage = 1 ) {
-        //Fetch the data to show in the table
-        axios( {
-            method: 'post',
-            url: `${ quoteCart.apiUrl }/${ quoteCart.restUrl }/quote-cart`,
-            headers: { 'X-WP-Nonce': quoteCart.nonce },
-            data: {
-                page: currentPage,
-                row: rowsPerPage,
-            },
-        } ).then( ( response ) => {
-            setTotalRows( response.data.count );
-            setPageCount(
-                Math.ceil( response.data.count / pagination.pageSize )
-            );
-            setData( response.data.response );
-        } );
-    }
-
-    const handleRemoveCart = (
-        e: React.MouseEvent< HTMLElement >,
-        id: string | number,
-        key: string
-    ) => {
-        axios( {
-            method: 'delete',
-            url: `${ quoteCart.apiUrl }/${ quoteCart.restUrl }/quote-cart`,
-            headers: { 'X-WP-Nonce': quoteCart.nonce },
-            data: {
-                productId: id,
-                key,
-            },
-        } ).then( () => {
-            requestData();
-        } );
-    };
-
-    const handleUpdateCart = () => {
-        const newProductQuantity =
-            selectedRows.length > 0
-                ? selectedRows.map( ( row ) => {
-                      const id = row.id;
-                      const value = productQuantity[ id ].quantity || 1;
-                      return {
-                          key: row.key,
-                          id,
-                          quantity: value,
-                      };
-                  } )
-                : Object.entries( productQuantity ).map(
-                      ( [ id, value ] ) => ( {
-                          id,
-                          quantity: value.quantity,
-                          key: value.key,
-                      } )
-                  );
-
-        axios( {
-            method: 'put',
-            url: `${ quoteCart.apiUrl }/${ quoteCart.restUrl }/quote-cart`,
-            headers: { 'X-WP-Nonce': quoteCart.nonce },
-            data: {
-                products: newProductQuantity,
-            },
-        } ).then( () => {
-            requestData();
-            window.location.reload();
-        } );
-    };
-
-    const handleSendQuote = () => {
-        const sendBtn = document.getElementById( 'send-quote' );
-        if ( sendBtn ) {
-            sendBtn.style.display = 'none';
+    const handleRemoveItem = useCallback(async (row: QuoteRow) => {
+        try {
+            await axios.delete(getApiLink(appLocalizer, 'quote-cart'), {
+                headers: { 'X-WP-Nonce': appLocalizer.nonce },
+                data: { productId: row.id, key: row.key },
+            });
+            fetchTableData({ paged: 1, per_page: 10 });
+        } catch (error) {
+            console.error('Failed to remove item:', error);
         }
-        setLoading( true );
-        axios( {
-            method: 'post',
-            url: `${ quoteCart.apiUrl }/${ quoteCart.restUrl }/quotes`,
-            headers: { 'X-WP-Nonce': quoteCart.nonce },
-            data: {
-                formData,
-            },
-        } ).then( ( response ) => {
-            setLoading( false );
-            setResponseContent( true );
-            if ( response.status === 200 ) {
-                setResponseStatus( 'success' );
-                setShowThankYou( response.data.order_id );
+    }, [fetchTableData]);
+
+    const handleUpdateCart = useCallback(async (selectedIds: number[]) => {
+        const selectedRows = rows.filter(row => selectedIds.includes(Number(row.id)));
+        const productsToUpdate = selectedRows.map(row => ({
+            id: row.id,
+            key: row.key,
+            quantity: row.quantity || 1,
+        }));
+
+        if (productsToUpdate.length === 0) return;
+
+        try {
+            await axios.put(getApiLink(appLocalizer, 'quote-cart'), { products: productsToUpdate }, {
+                headers: { 'X-WP-Nonce': appLocalizer.nonce },
+            });
+            fetchTableData({ paged: 1, per_page: 10 });
+        } catch (error) {
+            console.error('Failed to update cart:', error);
+        }
+    }, [rows, fetchTableData]);
+
+    const handleSendQuote = useCallback(async () => {
+        const sendBtn = document.getElementById('send-quote');
+        if (sendBtn) sendBtn.style.display = 'none';
+
+        try {
+            const response = await axios.post(getApiLink(appLocalizer, 'send-quote'), { formData }, {
+                headers: { 'X-WP-Nonce': appLocalizer.nonce },
+            });
+
+            if (response.status === 200) {
+                setResponseStatus('success');
+                setShowThankYou(response.data.order_id);
             } else {
-                setResponseStatus( 'error' );
-                if ( sendBtn ) {
-                    sendBtn.style.display = 'block';
-                }
+                setResponseStatus('error');
+                if (sendBtn) sendBtn.style.display = 'block';
             }
-        } );
+        } catch (error) {
+            console.error('Failed to send quote:', error);
+            setResponseStatus('error');
+            if (sendBtn) sendBtn.style.display = 'block';
+        }
+    }, [formData]);
+
+    const handleBulkActionApply = useCallback((action: string, selectedIds: number[]) => {
+        if (action === 'update_cart') {
+            handleUpdateCart(selectedIds);
+        } else if (action === 'remove_selected') {
+            Promise.all(selectedIds.map(async (id) => {
+                const row = rows.find(r => Number(r.id) === id);
+                if (row) await handleRemoveItem(row);
+            }));
+        }
+    }, [handleUpdateCart, handleRemoveItem, rows]);
+
+    const headers = {
+        product: {
+            label: __('Product', 'catalogx'),
+            render: (row: QuoteRow) => (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div dangerouslySetInnerHTML={{ __html: row.image || '' }} />
+                    <div dangerouslySetInnerHTML={{ __html: row.name || '' }} />
+                    <i className="adminlib-cross" style={{ cursor: 'pointer' }} onClick={() => handleRemoveItem(row)} />
+                </div>
+            ),
+        },
+        quantity: {
+            label: __('Quantity', 'catalogx'),
+            render: (row: QuoteRow) => (
+                <input type="number" className="basic-input" min="1" defaultValue={row.quantity || 1} />
+            ),
+        },
+        total: {
+            label: __('Subtotal', 'catalogx'),
+            render: (row: QuoteRow) => <div dangerouslySetInnerHTML={{ __html: String(row.total) }} />,
+        },
     };
 
-    const Loader = () => {
-        return (
-            <section className="loader_wrapper">
-                <div className="loader"></div>
-            </section>
-        );
-    };
-
-    //columns for the data table
-    const columns: ColumnDef< QuoteRow >[] = [
-        {
-            id: 'select',
-            header: ( { table } ) => (
-                <input
-                    type="checkbox"
-                    checked={ table.getIsAllRowsSelected() }
-                    onChange={ table.getToggleAllRowsSelectedHandler() }
-                />
-            ),
-            cell: ( { row } ) => (
-                <input
-                    type="checkbox"
-                    checked={ row.getIsSelected() }
-                    onChange={ row.getToggleSelectedHandler() }
-                />
-            ),
-        },
-        {
-            header: __( 'Product', 'catalogx' ),
-            cell: ( { row } ) => (
-                <TableCell title="image">
-                    <p
-                        dangerouslySetInnerHTML={ {
-                            __html: row.original.image,
-                        } }
-                    ></p>
-                    <p
-                        dangerouslySetInnerHTML={ {
-                            __html: row.original.name,
-                        } }
-                    ></p>
-                    { /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */ }
-                    <i
-                        className="adminlib-cross"
-                        onClick={ ( e ) =>
-                            handleRemoveCart(
-                                e,
-                                row.original.id,
-                                row.original.key
-                            )
-                        }
-                    ></i>
-                </TableCell>
-            ),
-        },
-        {
-            header: __( 'Quantity', 'catalogx' ),
-            cell: ( { row } ) => (
-                <TableCell title="quantity">
-                    <input
-                        type="number"
-                        name="quantity"
-                        className="basic-input"
-                        min="1"
-                        value={
-                            productQuantity[ row.original.id ]?.quantity ??
-                            row.original.quantity
-                        }
-                        placeholder="1"
-                        onChange={ ( e ) =>
-                            handleQuantityChange(
-                                e,
-                                row.original.id,
-                                row.original.key
-                            )
-                        }
-                    />
-                </TableCell>
-            ),
-        },
-        {
-            header: __( 'Subtotal', 'catalogx' ),
-            cell: ( { row } ) => (
-                <TableCell title="subtotal">
-                    <p
-                        dangerouslySetInnerHTML={ {
-                            __html: row.original.total,
-                        } }
-                    ></p>
-                </TableCell>
-            ),
-        },
+    const bulkActions = [
+        { label: __('Update Cart', 'catalogx'), value: 'update_cart' },
+        { label: __('Remove Selected', 'catalogx'), value: 'remove_selected' },
     ];
 
+    if (showThankYou || status) {
+        return <QuoteThankYou order_id={showThankYou} status={status} />;
+    }
+
     return (
-        <>
-            { showThankYou || status ? (
-                <QuoteThankYou order_id={ showThankYou } status={ status } />
-            ) : (
-                <>
-                    <div className="quotelist-table-main-wrapper">
-                        <div className="admin-page-title">
-                            <div className="add-to-quotation-button">
-                                <button onClick={ handleUpdateCart }>
-                                    { __( 'Update Cart', 'catalogx' ) }
-                                </button>
-                            </div>
-                        </div>
-                        <Table
-                            data={ data || [] }
-                            columns={
-                                columns as ColumnDef<
-                                    Record< string, any >,
-                                    any
-                                >[]
-                            }
-                            rowSelection={ rowSelection }
-                            onRowSelectionChange={ setRowSelection }
-                            defaultRowsPerPage={ 10 }
-                            pageCount={ pageCount }
-                            pagination={ pagination }
-                            onPaginationChange={ setPagination }
-                            handlePagination={ requestData }
-                            perPageOption={ [ 10, 25, 50 ] }
-                            typeCounts={ [] }
-                        />
+        <div className="quote-list-container">
+            <TableCard
+                headers={headers}
+                rows={rows}
+                ids={rowIds}
+                totalRows={totalRows}
+                isLoading={isLoading}
+                onQueryUpdate={fetchTableData}
+                bulkActions={bulkActions}
+                onBulkActionApply={handleBulkActionApply}
+                categoryCounts={categoryCounts}
+                activeCategory="all"
+                title={__('Quote Cart', 'catalogx')}
+                showColumnToggleIcon={false}
+            />
+
+            {rows.length > 0 && (
+                <div className="form-wrapper">
+                    <h3>{__('Request a Quote', 'catalogx')}</h3>
+                    
+                    <div className="form-field">
+                        <label>{__('Name:', 'catalogx')}<span className="required">*</span></label>
+                        <input type="text" name="name" value={formData.name} onChange={handleInputChange} required />
                     </div>
 
-                    { data && Object.keys( data ).length > 0 && (
-                        <div className="form-wrapper">
-                            { loading && <Loader /> }
-                            <p className="section-wrapper">
-                                <label htmlFor="name">
-                                    { __( 'Name:', 'catalogx' ) }
-                                </label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    className="basic-input"
-                                    value={ formData.name }
-                                    onChange={ handleInputChange }
-                                />
-                            </p>
-                            <p className="section-wrapper">
-                                <label htmlFor="email">
-                                    { __( 'Email:', 'catalogx' ) }
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    className="basic-input"
-                                    value={ formData.email }
-                                    onChange={ handleInputChange }
-                                />
-                            </p>
-                            <p className="section-wrapper">
-                                <label htmlFor="phone">
-                                    { __( 'Phone:', 'catalogx' ) }
-                                </label>
-                                <input
-                                    type="tel"
-                                    id="phone"
-                                    name="phone"
-                                    className="basic-input"
-                                    value={ formData.phone }
-                                    onChange={ handleInputChange }
-                                />
-                            </p>
-                            <p className="section-wrapper">
-                                <label htmlFor="message">
-                                    { __( 'Message:', 'catalogx' ) }
-                                </label>
-                                <textarea
-                                    id="message"
-                                    name="message"
-                                    className="textarea-input"
-                                    rows={ 4 }
-                                    cols={ 50 }
-                                    value={ formData.message }
-                                    onChange={ handleInputChange }
-                                ></textarea>
-                            </p>
-                            <div className="buttons-wrapper">
-                                <button
-                                    id="send-quote"
-                                    onClick={ handleSendQuote }
-                                >
-                                    { __( 'Send Quote', 'catalogx' ) }
-                                </button>
-                            </div>
-                            { responseContent && (
-                                <section
-                                    className={ `response-message-container ${ responseStatus }` }
-                                >
-                                    <p>
-                                        { responseStatus === 'error'
-                                            ? __(
-                                                  'Something went wrong! Try Again',
-                                                  'catalogx'
-                                              )
-                                            : __(
-                                                  'Form submitted successfully',
-                                                  'catalogx'
-                                              ) }
-                                    </p>
-                                </section>
-                            ) }
+                    <div className="form-field">
+                        <label>{__('Email:', 'catalogx')}<span className="required">*</span></label>
+                        <input type="email" name="email" value={formData.email} onChange={handleInputChange} required />
+                    </div>
+
+                    <div className="form-field">
+                        <label>{__('Phone:', 'catalogx')}</label>
+                        <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} />
+                    </div>
+
+                    <div className="form-field">
+                        <label>{__('Message:', 'catalogx')}</label>
+                        <textarea name="message" rows={4} value={formData.message} onChange={handleInputChange} />
+                    </div>
+
+                    <button id="send-quote" onClick={handleSendQuote} disabled={!formData.name || !formData.email}>
+                        {__('Send Quote', 'catalogx')}
+                    </button>
+
+                    {responseStatus && (
+                        <div className={`response-message ${responseStatus}`}>
+                            {responseStatus === 'error' 
+                                ? __('Something went wrong! Please try again.', 'catalogx')
+                                : __('Quote request sent successfully!', 'catalogx')}
                         </div>
-                    ) }
-                </>
-            ) }
-        </>
+                    )}
+                </div>
+            )}
+        </div>
     );
 };
 

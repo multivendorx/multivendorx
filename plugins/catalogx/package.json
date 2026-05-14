@@ -126,6 +126,7 @@
         "@wordpress/data": "^10.0.2",
         "@wordpress/element": "^6.7.0",
         "@wordpress/i18n": "^5.19.0",
+        "@wordpress/hooks": "^4.41.0",
         "@wordpress/shortcode": "^4.7.0",
         "body-scroll-lock": "^4.0.0-beta.0",
         "emoji-picker-react": "^4.12.0",

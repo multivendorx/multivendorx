@@ -28,6 +28,10 @@ class Utill {
         'message' => 'catalogx_messages',
     );
 
+    const CATALOGX_OTHER_SETTINGS = array(
+        'tour_completed'         => 'catalogx_tour_completed',
+    );
+
     /**
      * Function to console and debug errors.
      *
