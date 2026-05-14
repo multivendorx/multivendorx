@@ -154,7 +154,7 @@ class Admin {
     }
 
     /**
-	 * Redirct to pro shop url.
+	 * Redirect to pro shop url.
      *
 	 * @return never
 	 */
