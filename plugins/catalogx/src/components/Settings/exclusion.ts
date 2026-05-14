@@ -3,7 +3,9 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'enquiry-quote-exclusion',
     priority: 40,
-    headerTitle: __( 'Exclusion', 'catalogx' ),
+
+    headerTitle: __('Exclusion', 'catalogx'),
+
     headerDescription: __(
         'Exclude catalog viewing, enquiries, and quotes by user roles and product attributes.',
         'catalogx'
@@ -14,6 +16,7 @@ export default {
         {
             key: 'exclusion',
             type: 'multi-checkbox-table',
+            storeSetting: true,
             label: '',
             desc: __('Grid Table', 'catalogx'),
             classes: 'gridTable no-label',
@@ -21,33 +24,27 @@ export default {
             rows: [
                 {
                     key: 'userroles_list',
-                    label: __( 'User Role', 'catalogx' ),
-                    options: appLocalizer.role_array,
+                    label: __('User Role', 'catalogx'),
                 },
                 {
                     key: 'user_list',
-                    label: __( 'User Name', 'catalogx' ),
-                    options: appLocalizer.all_users,
+                    label: __('User Name', 'catalogx'),
                 },
                 {
                     key: 'product_list',
-                    label: __( 'Product', 'catalogx' ),
-                    options: appLocalizer.all_products,
+                    label: __('Product', 'catalogx'),
                 },
                 {
                     key: 'category_list',
-                    label: __( 'Category', 'catalogx' ),
-                    options: appLocalizer.all_product_cat,
+                    label: __('Category', 'catalogx'),
                 },
                 {
                     key: 'tag_list',
-                    label: __( 'Tag', 'catalogx' ),
-                    options: appLocalizer.all_product_tag,
+                    label: __('Tag', 'catalogx'),
                 },
                 {
                     key: 'brand_list',
-                    label: __( 'Brand', 'catalogx' ),
-                    options: appLocalizer.all_product_brand,
+                    label: __('Brand', 'catalogx'),
                 },
             ],
 
@@ -55,17 +52,68 @@ export default {
                 {
                     key: 'catalog_exclusion',
                     label: __('Catalog', 'catalogx'),
-                    type: 'checkbox',
+                    placeholder: __('Select...', 'catalogx'),
+
+                    options: [
+                        { value: 'admin', label: 'Administrator' },
+                        { value: 'vendor', label: 'Vendor' },
+                        { value: 'customer', label: 'Customer' },
+                        { value: 'guest', label: 'Guest' },
+                    ],
+
+                    isClearable: true,
+
+                    fields: [
+                        {
+                            key: 'value',
+                            type: 'multi-select',
+                        },
+                    ],
                 },
+
                 {
                     key: 'enquiry_exclusion',
                     label: __('Enquiry', 'catalogx'),
-                    type: 'checkbox',
+                    placeholder: __('Select...', 'catalogx'),
+
+                    options: [
+                        { value: 'admin', label: 'Administrator' },
+                        { value: 'vendor', label: 'Vendor' },
+                        { value: 'customer', label: 'Customer' },
+                        { value: 'guest', label: 'Guest' },
+                    ],
+
+                    isClearable: true,
+
+                    fields: [
+                        {
+                            key: 'value',
+                            type: 'multi-select',
+                        },
+                    ],
                 },
+
                 {
                     key: 'quote_exclusion',
                     label: __('Quote', 'catalogx'),
-                    type: 'checkbox',
+
+                    placeholder: __('Select...', 'catalogx'),
+
+                    options: [
+                        { value: 'admin', label: 'Administrator' },
+                        { value: 'vendor', label: 'Vendor' },
+                        { value: 'customer', label: 'Customer' },
+                        { value: 'guest', label: 'Guest' },
+                    ],
+
+                    isClearable: true,
+
+                    fields: [
+                        {
+                            key: 'value',
+                            type: 'multi-select',
+                        },
+                    ],
                 },
             ],
         },
