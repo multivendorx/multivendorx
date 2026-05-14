@@ -488,13 +488,13 @@ class FrontendScripts {
 						'settings_pro'        => CatalogX()->modules->is_active( 'enquiry' ) ? EnquiryFrontend::catalogx_pro_form_settings() : array(),
 						'khali_dabba'         => \CatalogX\Utill::is_khali_dabba(),
 						'product_data' => (
-							function_exists( 'CatalogX_Pro' )
+							function_exists( 'CatalogXPro' )
 							&& \CatalogX\Utill::is_khali_dabba()
-							&& isset( \CatalogX_Pro()->cart )
-							&& ! is_wp_error( \CatalogX_Pro()->cart )
-							&& ! empty( \CatalogX_Pro()->cart->get_cart_data() )
+							&& isset( \CatalogXPro()->cart )
+							&& ! is_wp_error( \CatalogXPro()->cart )
+							&& ! empty( \CatalogXPro()->cart->get_cart_data() )
 						)
-						? \CatalogX_Pro()->cart->get_cart_data()
+						? \CatalogXPro()->cart->get_cart_data()
 						: '',
 						'default_placeholder' => array(
 							'name'  => $current_user->display_name,
