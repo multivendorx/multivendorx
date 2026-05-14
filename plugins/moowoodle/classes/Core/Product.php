@@ -162,7 +162,6 @@ class Product {
             array(
 				'action'  => __( 'Update Product', 'moowoodle' ),
 				'total'   => count( $courses ) - 1,
-				'current' => 0,
             ),
             'course'
         );

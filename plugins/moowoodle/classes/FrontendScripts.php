@@ -306,9 +306,6 @@ class FrontendScripts {
                 'moowoodle-my-courses'  => array(
 					'object_name' => 'courseMyAcc',
                     'use_rest'    => true,
-					'data'        => array(
-                        'current_user_id' => MooWoodle()->current_user_id,
-					),
 				),
 				'moowoodle-moodle-enrollment-mapping' => array(
 					'object_name' => 'moowoodleProduct',

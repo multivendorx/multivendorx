@@ -39,12 +39,12 @@ class Synchronization extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'create_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
             )
         );
@@ -55,16 +55,7 @@ class Synchronization extends \WP_REST_Controller {
      *
      * @param object $request The REST request object.
      */
-    public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' );
-    }
-
-    /**
-     * Check if a given request has access to create items.
-     *
-     * @param object $request The REST request object.
-     */
-    public function create_item_permissions_check( $request ) {
+    public function permissions_check( $request ) {
         return current_user_can( 'manage_options' );
     }
 
@@ -81,11 +72,6 @@ class Synchronization extends \WP_REST_Controller {
         }
 
         try {
-            $response = array(
-                'status'  => array(),
-                'running' => false,
-			);
-
 			$status = $request->get_param( 'parameter' );
 
 			if ( 'course' === $status ) {
@@ -93,11 +79,11 @@ class Synchronization extends \WP_REST_Controller {
 					'status'  => Util::get_sync_status( 'course' ),
 					'running' => get_transient( 'course_sync_running' ),
 				    );
-				} else {
-					$response = apply_filters( 'moowoodle_sync_status', $request );
-				}
+            } else {
+                $response = apply_filters( 'moowoodle_sync_status', $request );
+            }
 
-			    return rest_ensure_response( $response );
+			return rest_ensure_response( $response );
         } catch ( \Exception $e ) {
             return Util::server_error( $e );
         }
@@ -106,10 +92,9 @@ class Synchronization extends \WP_REST_Controller {
     /**
      * Synchronization.
      *
-     * @param object $request Full data about the request.
+     * @param \WP_REST_Request $request Full data about the request.
      */
     public function create_item( $request ) {
-
         $nonce_check = Util::validate_nonce( $request );
 
         if ( is_wp_error( $nonce_check ) ) {
@@ -117,31 +102,22 @@ class Synchronization extends \WP_REST_Controller {
         }
 
         try {
-
             $parameter = $request->get_param( 'parameter' );
 
             switch ( $parameter ) {
-
                 case 'connection_test':
                     return $this->connection_test_synchronization( $request );
 
                 case 'course':
                     return $this->course_synchronization( $request );
 
-                case ! empty( $parameter ):
-
+                default:
                     return apply_filters(
                         "moowoodle_process_{$parameter}_synchronization",
                         $request
                     );
             }
-
-            do_action( 'moowoodle_do_synchronization', $parameter, $request );
-
-            return null;
-
         } catch ( \Exception $e ) {
-
             return Util::server_error( $e );
         }
     }
@@ -160,40 +136,59 @@ class Synchronization extends \WP_REST_Controller {
 
         $user   = is_array( $user['data']['users'] ) ? reset( $user['data']['users'] ) : null;
         $course = is_array( $course['courses'] ) ? ( $course['courses'][1] ) : null;
+        $user_id   = $user['id'] ?? 0;
+        $course_id = $course['id'] ?? 0;
 
         $response = array();
-        switch ( $action ) {
-            case 'get_site_info':
-                $response = TestConnection::get_site_info();
-                break;
-            case 'get_course':
-                $response = TestConnection::get_course();
-                break;
-            case 'get_category':
-                $response = TestConnection::get_category();
-                break;
-            case 'create_user':
-                $response = TestConnection::create_user();
-                break;
-            case 'get_user':
-                $response = TestConnection::get_user();
-                break;
-            case 'update_user':
-                $response = TestConnection::update_user( $user['id'] );
-                break;
-            case 'enroll_user':
-                $response = TestConnection::enrol_users( $user['id'], $course['id'] );
-                break;
-            case 'unenroll_user':
-                $response = TestConnection::unenrol_users( $user['id'], $course['id'] );
-                break;
-            case 'delete_user':
-                $response = TestConnection::delete_users( $user['id'] );
-                break;
-            default:
-                $response = array( 'error' => $action . ' Test connection function is not defined' );
+        $actions = array(
+            'get_site_info' => array(
+                'callback' => array( TestConnection::class, 'get_site_info' ),
+            ),
+            'get_course' => array(
+                'callback' => array( TestConnection::class, 'get_course' ),
+            ),
+            'get_category' => array(
+                'callback' => array( TestConnection::class, 'get_category' ),
+            ),
+            'create_user' => array(
+                'callback' => array( TestConnection::class, 'create_user' ),
+            ),
+            'get_user' => array(
+                'callback' => array( TestConnection::class, 'get_user' ),
+            ),
+            'update_user' => array(
+                'callback' => array( TestConnection::class, 'update_user' ),
+                'args'     => array( $user_id ),
+            ),
+            'enroll_user' => array(
+                'callback' => array( TestConnection::class, 'enrol_users' ),
+                'args'     => array( $user_id, $course_id ),
+            ),
+            'unenroll_user' => array(
+                'callback' => array( TestConnection::class, 'unenrol_users' ),
+                'args'     => array( $user_id, $course_id ),
+            ),
+            'delete_user' => array(
+                'callback' => array( TestConnection::class, 'delete_users' ),
+                'args'     => array( $user_id ),
+            ),
+        );
+
+        if ( empty( $actions[ $action ] ) ) {
+            return new \WP_Error(
+                'invalid_connection_test',
+                sprintf(
+                    __( '%s test connection function is not defined.', 'moowoodle' ),
+                    $action
+                ),
+                array( 'status' => 400 )
+            );
         }
 
+        $callback = $actions[ $action ]['callback'];
+        $args     = $actions[ $action ]['args'] ?? array();
+
+        $response = call_user_func_array( $callback, $args );
         return rest_ensure_response( $response );
     }
 
@@ -220,8 +215,7 @@ class Synchronization extends \WP_REST_Controller {
             Util::set_sync_status(
                 array(
 					'action'  => __( 'Update Course Category', 'moowoodle' ),
-					'total'   => count( $categories ),
-					'current' => 0,
+					'total'   => count( $categories )
                 ),
                 'course'
             );
@@ -231,8 +225,7 @@ class Synchronization extends \WP_REST_Controller {
             Util::set_sync_status(
                 array(
 					'action'  => __( 'Update Product Category', 'moowoodle' ),
-					'total'   => count( $categories ),
-					'current' => 0,
+					'total'   => count( $categories )
                 ),
                 'course'
             );
@@ -248,8 +241,7 @@ class Synchronization extends \WP_REST_Controller {
         Util::set_sync_status(
             array(
 				'action'  => __( 'Update Course', 'moowoodle' ),
-				'total'   => count( $courses ) - 1,
-				'current' => 0,
+				'total'   => max( 0, count( $courses ) - 1 )
             ),
             'course'
         );
