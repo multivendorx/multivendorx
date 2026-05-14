@@ -22,7 +22,7 @@ interface CourseRow {
 	products?: Record<string, string>;
 	enrolled_user?: number;
 	view_users_url?: string;
-	productimage?: string;
+	product_image?: string;
 	product_name?: string;
 	product_url?: string;
 	status?: string;
@@ -138,7 +138,7 @@ const Course: React.FC = () => {
 					title={row.course_name}
 					titleLink={row.moodle_url}
 					avatar={{
-						image: row.productimage,
+						image: row.product_image,
 						iconClass: 'subscription-courses',
 					}}
 				/>

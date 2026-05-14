@@ -163,7 +163,7 @@ class Courses extends \WP_REST_Controller {
                         'course_name'       => $course['fullname'],
                         'product_name'      => $product_name,
                         'product_url'       => $product_url,
-                        'productimage'      => $product_image,
+                        'product_image'     => $product_image,
                         'category_name'     => $categories['name'] ?? '',
                         'enrolled_user'     => $enrolled_users,
                         'view_users_url'    => $view_user_url,
