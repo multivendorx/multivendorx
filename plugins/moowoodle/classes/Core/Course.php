@@ -25,7 +25,6 @@ class Course {
 		// Add Link Moodle Course in WooCommerce edit product tab.
 		add_filter( 'woocommerce_product_data_tabs', array( &$this, 'add_additional_product_tab' ), 99, 1 );
 		add_action( 'woocommerce_product_data_panels', array( &$this, 'add_additional_product_data_panels' ) );
-		add_action( 'wp_ajax_get_linkable_course', array( $this, 'get_linkable_course' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ), 20 );
 	}
 
@@ -35,9 +34,7 @@ class Course {
      * @return void
      */
 	public function enqueue_admin_assets() {
-		FrontendScripts::enqueue_script( 'moowoodle-product-tab' );
 		FrontendScripts::enqueue_style( 'moowoodle-product-tab' );
-		FrontendScripts::localize_scripts( 'moowoodle-product-tab' );
 	}
 
 	/**
@@ -199,94 +196,14 @@ class Course {
      * @return void
      */
 	public function add_additional_product_data_panels() {
-		global $post;
-
-		$wordpress_course_id = get_post_meta( $post->ID, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
-		$wordpress_cohort_id = apply_filters( 'moowoodle_get_wordpress_cohort_id', null, $post->ID );
-		$default_type     = $wordpress_course_id ? 'course' : ( $wordpress_cohort_id ? 'cohort' : '' );
 		?>
 		<div
 			id="moowoodle-course-link-tab"
 			class="panel woocommerce_options_panel"
 		>
-
 			<div id="moowoodle-react-product-tab"></div>
-
 		</div>
-		<!-- <div id="moowoodle-course-link-tab" class="panel">
-			<p class="form-field moowoodle-link-type-field">
-				<label><?php esc_html_e( 'Link Type', 'moowoodle' ); ?></label><br>
-				<span class="moowoodle-radio-group">
-					<label class="moowoodle-radio-option">
-						<input type="radio" name="link_type" value="course" <?php checked( $default_type, 'course' ); ?>>
-						<?php esc_html_e( 'Course', 'moowoodle' ); ?>
-					</label>
-					<label class="moowoodle-radio-option cohort">
-						<input type="radio" name="link_type" value="cohort" <?php checked( $default_type, 'cohort' ); ?> 
-							<?php echo MooWoodle()->util->is_khali_dabba() ? '' : 'disabled'; ?>>
-						<?php esc_html_e( 'Cohort', 'moowoodle' ); ?>
-						<?php echo MooWoodle()->util->is_khali_dabba() ? '' : '<span>Pro</span>'; ?>
-					</label>
-				</span>
-			</p>
-
-			<p id="dynamic-link-select" class="form-field <?php echo $default_type ? 'show' : ''; ?>">
-				<label for="linked_item_id"><?php esc_html_e( 'Select Item', 'moowoodle' ); ?></label>
-				<select id="linked_item_id" name="linked_item_id">
-					<option value=""><?php esc_html_e( 'Select an item...', 'moowoodle' ); ?></option>
-				</select>
-			</p>
-
-			<p>
-				<span>
-					<?php esc_html_e( "Can't find your course or cohort?", 'moowoodle' ); ?>
-					<a href="<?php echo esc_url( admin_url( 'admin.php?page=moowoodle-synchronization' ) ); ?>" target="_blank">
-						<?php esc_html_e( 'Synchronize Moodle data from here.', 'moowoodle' ); ?>
-					</a>
-				</span>
-			</p>
-
-			<input type="hidden" name="moowoodle_meta_nonce" value="<?php echo esc_attr( wp_create_nonce( 'moowoodle_meta_nonce' ) ); ?>">
-			<input type="hidden" name="product_meta_nonce" value="<?php echo esc_attr( wp_create_nonce() ); ?>">
-			<input type="hidden" id="post_id" value="<?php echo esc_attr( $post->ID ); ?>">
-		</div> -->
 		<?php
-	}
-
-	/**
-	 * Handle AJAX request to fetch linkable courses for a product.
-	 *
-	 * Expects POST: nonce, post_id.
-	 * Returns the list of available courses and the currently linked course.
-	 *
-	 * @return void
-	 */
-	public function get_linkable_course() {
-		// Verify nonce.
-		if ( ! check_ajax_referer( 'moowoodle_meta_nonce', 'nonce', false ) ) {
-			wp_send_json_error( __( 'Invalid nonce', 'moowoodle' ) );
-			return;
-		}
-
-		// Retrieve and sanitize input.
-		$post_id = absint( filter_input( INPUT_POST, 'post_id' ) );
-
-		$wordpress_course_id = get_post_meta( $post_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
-
-		$linkable_courses = $this->get_courses(
-			array(
-				'id'         => $wordpress_course_id,
-				'product_id' => 0,
-				'condition'  => 'OR',
-			)
-		);
-
-		wp_send_json_success(
-			array(
-				'items'       => $linkable_courses,
-				'selected_id' => $wordpress_course_id,
-			)
-		);
 	}
 
 	/**

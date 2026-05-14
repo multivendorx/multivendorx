@@ -1,8 +1,7 @@
 import { render, useEffect, useState } from '@wordpress/element';
-
 import { RadioControl, SelectControl, Spinner } from '@wordpress/components';
-
 import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
 
 const ProductTab = () => {
 	const [linkType, setLinkType] = useState(moowoodleProduct.linkType || '');
@@ -12,7 +11,6 @@ const ProductTab = () => {
 	);
 
 	const [options, setOptions] = useState([]);
-
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
@@ -61,13 +59,13 @@ const ProductTab = () => {
 					selected={linkType}
 					options={[
 						{
-							label: 'Course',
+							label: __( 'Course', 'moowoodle' ),
 							value: 'course',
 						},
 						{
 							label: moowoodleProduct.khali_dabba
-								? 'Cohort'
-								: 'Cohort Pro',
+								? __( 'Cohort', 'moowoodle' )
+								: __( 'Cohort Pro', 'moowoodle' ),
 
 							value: 'cohort',
 
@@ -95,8 +93,7 @@ const ProductTab = () => {
 						value={linkedItemId}
 						options={[
 							{
-								label: moowoodleProduct.selectText,
-
+								label: __( 'Select an item...', 'moowoodle' ),
 								value: '',
 							},
 							...options,
