@@ -23,6 +23,8 @@ interface CourseRow {
 	enrolled_user?: number;
 	view_users_url?: string;
 	productimage?: string;
+	product_name?: string;
+	product_url?: string;
 	status?: string;
 }
 
@@ -155,27 +157,24 @@ const Course: React.FC = () => {
 			label: __('Product', 'moowoodle'),
 			render: (row: CourseRow) => (
 				<>
-					{row.products && Object.keys(row.products).length
-						? Object.entries(row.products).map(
-								([name, url], index) => (
-									<div key={index} className="action-section">
-										<div>{name}</div>
-										<div className="action-btn">
-											<a
-												target="_blank"
-												rel="noreferrer"
-												href={url}
-												className=""
-											>
-												{__(
-													'Edit product',
-													'moowoodle'
-												)}
-											</a>
-										</div>
-									</div>
-								)
-							)
+					{row.product_name 
+						? 
+						<div className="action-section">
+							<div>{row.product_name}</div>
+							<div className="action-btn">
+								<a
+									target="_blank"
+									rel="noreferrer"
+									href={row.product_url}
+									className=""
+								>
+									{__(
+										'Edit product',
+										'moowoodle'
+									)}
+								</a>
+							</div>
+						</div>	
 						: '-'}
 				</>
 			),

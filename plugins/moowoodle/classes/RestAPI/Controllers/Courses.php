@@ -121,20 +121,16 @@ class Courses extends \WP_REST_Controller {
             $formatted_courses = array();
             $moodle_base_url = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) );
             foreach ( $courses as $course ) {
-                $synced_products = array();
                 $product_image   = '';
+                $product_name   = '';
+                $product_url   = '';
 
                 if ( ! empty( $course['product_id'] ) ) {
                     $product = wc_get_product( (int) $course['product_id'] );
                     if ( $product ) {
-                        $synced_products[ $product->get_name() ] = add_query_arg(
-                            array(
-                                'post'   => $product->get_id(),
-                                'action' => 'edit',
-                            ),
-                            admin_url( 'post.php' )
-                        );
-                        $product_image                           = wp_get_attachment_url( $product->get_image_id() );
+                        $product_name = $product->get_name();
+                        $product_url = admin_url( 'post.php?post=' . $product->get_id() . '&action=edit' );
+                        $product_image = wp_get_attachment_url( $product->get_image_id() );
                     }
                 }
 
@@ -165,7 +161,8 @@ class Courses extends \WP_REST_Controller {
                         'moodle_course_id'  => $course['moodle_course_id'],
                         'course_short_name' => $course['shortname'],
                         'course_name'       => $course['fullname'],
-                        'products'          => $synced_products,
+                        'product_name'      => $product_name,
+                        'product_url'       => $product_url,
                         'productimage'      => $product_image,
                         'category_name'     => $categories['name'] ?? '',
                         'enrolled_user'     => $enrolled_users,
