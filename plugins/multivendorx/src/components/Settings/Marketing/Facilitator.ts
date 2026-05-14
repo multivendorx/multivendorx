@@ -14,25 +14,25 @@ export default {
 	moduleEnabled: 'facilitator',
 	proSetting: true,
 	modal: [
-		// {
-		// 	key: 'facilitator',
-		// 	type: 'select',
-		// 	label: __('Facilitators', 'multivendorx'),
-		// 	settingDescription: __(
-		// 		'Assign a user as a facilitator who will receive the facilitator fee.',
-		// 		'multivendorx'
-		// 	),
-		// 	desc: __(
-		// 		'Configure the facilitator fee structure directly from <a href="' +
-		// 		appLocalizer.site_url +
-		// 		'/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=commissions">this section</a>.',
-		// 		'multivendorx'
-		// 	),
-		// 	moduleEnabled: 'facilitator',
+		{
+			key: 'facilitator',
+			type: 'select',
+			label: __('Facilitators', 'multivendorx'),
+			settingDescription: __(
+				'Assign a user as a facilitator who will receive the facilitator fee.',
+				'multivendorx'
+			),
+			desc: __(
+				'Configure the facilitator fee structure directly from <a href="' +
+				appLocalizer.site_url +
+				'/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=commissions">this section</a>.',
+				'multivendorx'
+			),
+			moduleEnabled: 'facilitator',
 
-		// 	size: '40%',
-		// 	options: appLocalizer.facilitators_list,
-		// },
+			size: '40%',
+			options: appLocalizer.facilitators_list,
+		},
 		{
 			key: 'facilitator',
 			type: 'checkbox',
