@@ -27,8 +27,8 @@ type AddressSubField = {
     placeholder?: string;
 };
 
-type ValidationMessages = {
-	required?: string;
+type FormMessages = {
+	fieldRequired?: string;
 	invalidEmail?: string;
 	termsRequired?: string;
 };
@@ -89,7 +89,7 @@ interface FormViewerProps {
     ) => void;
     countryList?: Option[];
     stateList?: Record<string, Option[] | Record<string, string>>;
-    validationMessages?: ValidationMessages;
+    formMessages?: FormMessages;
 }
 
 // ─── Placeholder Helpers ─────────────────────────────────────────────────────
@@ -256,7 +256,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
     onSubmit,
     countryList,
     stateList,
-    validationMessages={},
+    formMessages={},
 }) => {
     const [inputs, setInputs] = useState<Record<string, InputValue>>({});
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -364,14 +364,14 @@ const FormViewer: React.FC<FormViewerProps> = ({
 
             if (field.name === 'name') {
                 if (!value || (typeof value === 'string' && !value.trim())) {
-                    error[field.name] = validationMessages.required?.replace( '%s', field.label || 'Store Name' );
+                    error[field.name] = formMessages.fieldRequired?.replace( '%s', field.label || 'Store Name' );
                 }
                 return;
             }
 
             if (field.type === 'email') {
                 if (!isValidEmail(value as string)) {
-                    error[field.name] = validationMessages.invalidEmail;
+                    error[field.name] = formMessages.invalidEmail;
                 }
                 return;
             }
@@ -391,25 +391,25 @@ const FormViewer: React.FC<FormViewerProps> = ({
                         !value ||
                         (typeof value === 'string' && !value.trim())
                     ) {
-                        error[field.name] = validationMessages.required?.replace('%s', field.label || '');
+                        error[field.name] = formMessages.fieldRequired?.replace('%s', field.label || '');
                     }
                     break;
                 case 'checkboxes':
                 case 'multi-select':
                     if (!Array.isArray(value) || value.length === 0) {
-                        error[field.name] = validationMessages.required?.replace('%s', field.label || '');
+                        error[field.name] = formMessages.fieldRequired?.replace('%s', field.label || '');
                     }
                     break;
                 case 'dropdown':
                 case 'radio':
                 case 'attachment':
                     if (!value) {
-                        error[field.name] = validationMessages.required?.replace('%s', field.label || '');
+                        error[field.name] = formMessages.fieldRequired?.replace('%s', field.label || '');
                     }
                     break;
                 case 'richtext':
                     if (!value) {
-                        error[field.name] = validationMessages.termsRequired;
+                        error[field.name] = formMessages.termsRequired;
                     }
                     break;
             }
