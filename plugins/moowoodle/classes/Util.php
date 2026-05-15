@@ -49,6 +49,12 @@ class Util {
         'wordpress_course_id'  => 'moowoodle_wordpress_course_id',
     );
 
+    const MOOWOODLE_TERM_META= array(
+        'category_id'  => '_category_id',
+        'parent_id'    => '_parent',
+        'category_path'  => '_category_path',
+    );
+
     /**
      * Write a formatted log entry for moowoodle.
      *

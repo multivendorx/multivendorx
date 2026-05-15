@@ -75,6 +75,7 @@ class MooWoodle {
         // initialise plugin.
         add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
         add_action( 'woocommerce_loaded', array( $this, 'load_plugin' ) );
+        add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
         add_action( 'plugins_loaded', array( $this, 'is_woocommerce_loaded' ) );
         add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
         add_action( 'init', array( $this, 'migrate_from_previous_version' ) );
@@ -119,13 +120,10 @@ class MooWoodle {
             add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_links' ) );
         }
 
-        add_filter( 'woocommerce_email_classes', array( &$this, 'setup_email_class' ) );
+        add_filter( 'woocommerce_email_classes', array( $this, 'setup_email_class' ) );
 
         // Init required classes.
         $this->initialize_classes();
-
-		// Init Text Domain.
-		$this->load_plugin_textdomain();
 
         /**
          * Actiion hook after moowoodle loaded.

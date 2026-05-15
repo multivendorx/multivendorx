@@ -21,10 +21,10 @@ class Enrollment {
      * Enrollment constructor.
      */
 	public function __construct() {
-		add_action( 'woocommerce_order_status_completed', array( &$this, 'process_order' ), 10, 1 );
-		add_action( 'woocommerce_thankyou', array( &$this, 'enrollment_modified_details' ) );
-		add_action( 'woocommerce_after_shop_loop_item_title', array( &$this, 'add_dates_with_product' ) );
-		add_action( 'woocommerce_product_meta_start', array( &$this, 'add_dates_with_product' ) );
+		add_action( 'woocommerce_order_status_completed', array( $this, 'process_order' ), 10, 1 );
+		add_action( 'woocommerce_thankyou', array( $this, 'enrollment_modified_details' ) );
+		add_action( 'woocommerce_after_shop_loop_item_title', array( $this, 'add_dates_with_product' ) );
+		add_action( 'woocommerce_product_meta_start', array( $this, 'add_dates_with_product' ) );
 		add_action( 'woocommerce_cart_updated', array( $this, 'restrict_cart_quantity_on_update' ) );
 	}
 

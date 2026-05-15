@@ -22,13 +22,13 @@ class Product {
      */
     public function __construct() {
         // Add subcription product notice.
-		add_filter( 'woocommerce_product_class', array( &$this, 'product_type_warning' ), 10 );
+		add_filter( 'woocommerce_product_class', array( $this, 'product_type_warning' ), 10 );
 
 		// Course meta save with WooCommerce product save.
-		add_action( 'woocommerce_process_product_meta', array( &$this, 'save_product_meta_data' ) );
+		add_action( 'woocommerce_process_product_meta', array( $this, 'save_product_meta_data' ) );
 
 		// Support for woocommerce product custom metadata query.
-		add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array( &$this, 'handling_custom_meta_query_keys' ), 10, 2 );
+		add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array( $this, 'modify_custom_meta_query' ), 10, 2 );
 
 		add_action( 'moowoodle_clean_course_previous_link', array( $this, 'clean_course_previous_link' ), 10, 1 );
 
@@ -60,7 +60,8 @@ class Product {
         );
 
 		// Return the first product or null.
-		return reset( $products ) ? reset( $products ) : null;
+		$product = reset( $products );
+		return $product ?: null;
 	}
 
 	/**
@@ -72,7 +73,7 @@ class Product {
 	 * @return int WooCommerce product ID or 0 on failure.
 	 */
 	public static function update_product( $course, $force_create = true, $force_update = false ) {
-		if ( empty( $course ) || 'site' === $course['format'] ) {
+		if (  empty( $course ) || empty( $course['format'] ) || 'site' === $course['format'] ) {
 			return 0;
 		}
 
@@ -95,11 +96,13 @@ class Product {
         $term = MooWoodle()->category->get_product_category( $course['categoryid'], 'product_cat' );
 
         // Set product properties.
-        $product->set_name( $course['fullname'] );
-        $product->set_slug( $course['shortname'] );
-        $product->set_description( $course['summary'] );
+		$product->set_name( sanitize_text_field( $course['fullname'] ?? '' ) );
+		$product->set_slug( sanitize_title( $course['shortname'] ?? '' ) );
+		$product->set_description( wp_kses_post( $course['summary'] ?? '' ) );
         $product->set_status( 'publish' );
-        $product->set_category_ids( array( $term->term_id ) );
+		if ( $term && ! is_wp_error( $term ) ) {
+			$product->set_category_ids( array( $term->term_id ) );
+		}
         $product->set_virtual( true );
         $product->set_catalog_visibility( $course['visible'] ? 'visible' : 'hidden' );
 
@@ -107,7 +110,7 @@ class Product {
 		try {
 			$product->set_sku( $course['idnumber'] );
 		} catch ( \Exception $error ) {
-			Util::log( "Unable to set product's( id=" . $product->get_id() . ') SKU.' );
+			Util::log( sprintf( 'Unable to set SKU for product #%d: %s', $product->get_id(), $error->getMessage() ) );
 		}
 
 		// get the course id linked with moodle.
@@ -124,16 +127,14 @@ class Product {
         $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['course_enddate'], $course['enddate'] );
         $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], $course['id'] );
         $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], $wp_course['id'] );
-		$product->set_status( 'publish' );
 		$product->save();
 
 		MooWoodle()->course->update_course(
-            array(
-				'moodle_course_id' => (int) $course['id'],
-				'product_id'       => (int) $product->get_id(),
-            )
-        );
-
+			array(
+				'moodle_course_id' => $course['id'],
+				'product_id'       => $product->get_id(),
+			)
+		);
 		return $product->get_id();
 	}
 
@@ -161,7 +162,7 @@ class Product {
 		Util::set_sync_status(
             array(
 				'action'  => __( 'Update Product', 'moowoodle' ),
-				'total'   => count( $courses ) - 1,
+				'total'   => max( 0, count( $courses ) - 1 ),
             ),
             'course'
         );
@@ -182,7 +183,9 @@ class Product {
 			Util::increment_sync_count( 'course' );
 		}
 
-		self::remove_exclude_ids( $updated_ids );
+		if ( ! empty( $updated_ids ) ) {
+			self::draft_missing_products( $updated_ids );
+		}
 	}
 
 	/**
@@ -215,7 +218,7 @@ class Product {
 			if ( ! empty( $unsupported_plugins ) ) {
 				add_action(
                     'admin_notices',
-                    function () use ( $unsupported_plugins ) {
+                    static function () use ( $unsupported_plugins ) {
 						$message = sprintf(
 						// Translators: %1$s = plugin list, %2$s = verb.
                             esc_html__( '%1$s %2$s supported only with ', 'moowoodle' ),
@@ -245,7 +248,7 @@ class Product {
 	public function save_product_meta_data( $product_id ) {
 		// Verify nonce.
 		$nonce = filter_input( INPUT_POST, 'product_meta_nonce' );
-		if ( ! $nonce || ! wp_verify_nonce( $nonce ) ) {
+		if ( ! $nonce || ! wp_verify_nonce( $nonce, 'product_meta_nonce' ) ) {
 			return $product_id;
 		}
 
@@ -257,7 +260,7 @@ class Product {
 
 			if ( 0 === $link_item_id ) {
 				$this->clean_course_previous_link( $product_id );
-				return;
+				return $product_id;
 			}
 
 			$prev_course_id = absint( get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true ) );
@@ -268,7 +271,7 @@ class Product {
 			$course = reset( MooWoodle()->course->get_courses( array( 'id' => $link_item_id ) ) );
 
 			if ( empty( $course['moodle_course_id'] ) ) {
-				return;
+				return $product_id;
 			}
 
 			update_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], $link_item_id );
@@ -276,8 +279,8 @@ class Product {
 
 			MooWoodle()->course->update_course(
 				array(
-					'moodle_course_id' => (int) $course['moodle_course_id'],
-					'product_id'       => (int) $product_id,
+					'moodle_course_id' => $course['moodle_course_id'],
+					'product_id'       => $product_id,
 				)
 			);
 		}
@@ -302,7 +305,7 @@ class Product {
 		if ( ! empty( $moodle_course_id ) ) {
 			MooWoodle()->course->update_course(
 				array(
-					'moodle_course_id' => (int) $moodle_course_id,
+					'moodle_course_id' => $moodle_course_id,
 					'product_id'       => 0,
 				)
 			);
@@ -318,9 +321,9 @@ class Product {
 	 * @param mixed $query_vars      Query variables including meta_query.
 	 * @return mixed Modified WP_Query arguments.
 	 */
-	public function handling_custom_meta_query_keys( $wp_query_args, $query_vars ) {
+	public function modify_custom_meta_query( $wp_query_args, $query_vars ) {
 		if ( ! empty( $query_vars['meta_query'] ) ) {
-			$wp_query_args['meta_query'][] = $query_vars['meta_query'];
+			$wp_query_args['meta_query'] = array_merge( $wp_query_args['meta_query'] ?? array(), $query_vars['meta_query'] );
 		}
 
 		return $wp_query_args;
@@ -335,9 +338,7 @@ class Product {
 	 * @param int $product_id The ID of the trashed product.
 	 */
 	public function handle_woocommerce_product_trash( $product_id ) {
-		$product = wc_get_product( $product_id );
-
-		if ( ! $product ) {
+		if ( get_post_type( $product_id ) !== 'product' ) {
 			return;
 		}
 
@@ -375,6 +376,7 @@ class Product {
 					'product_id'       => $product_id,
 				)
 			);
+			
 		}
 	}
 
@@ -384,7 +386,7 @@ class Product {
 	 * @param array $exclude_ids product ids.
 	 * @return void
 	 */
-	public static function remove_exclude_ids( $exclude_ids ) {
+	public static function draft_missing_products( $exclude_ids ) {
         // get all product except $exclude_ids array.
 		$product_ids = \wc_get_products(
             array(
@@ -403,8 +405,12 @@ class Product {
 		// delete product.
 		foreach ( $product_ids as $product_id ) {
             $product = wc_get_product( $product_id );
+			if ( ! $product ) {
+				continue;
+			}
             $product->set_status( 'draft' );
 			$product->save();
 		}
 	}
+
 }
