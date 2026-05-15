@@ -198,7 +198,7 @@ class Admin {
             }
 
             if ( strpos( $url, 'block' ) === false ) {
-                $path = 'assets/js/components.js';
+                $path = 'assets/js/vendors.js';
             }
         }
 

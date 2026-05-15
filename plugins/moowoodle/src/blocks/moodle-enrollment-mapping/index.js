@@ -55,87 +55,92 @@ const ProductTab = () => {
 
 	return (
 		<>
-			<BaseControl label={ __( 'Link Type', 'moowoodle' ) }>
-				<RadioControl
-					selected={ linkType }
-					options={[
-						{
-							label: __( 'Course', 'moowoodle' ),
-							value: 'course',
-						},
-					]}
-					onChange={ ( value ) => {
-						setLinkType( value );
-						setLinkedItemId( '' );
-					} }
-				/>
-
-				<Disabled isDisabled={ ! moowoodleProduct.khali_dabba }>
+			<div className='options_group'>
+				<div className='form-field'>
+					<label htmlFor="linked_item">
+						{__('Link Type', 'moowoodle')}
+					</label>
 					<RadioControl
-						selected={ linkType }
+						selected={linkType}
 						options={[
 							{
-								label: moowoodleProduct.khali_dabba
-									? __( 'Cohort', 'moowoodle' )
-									: __( 'Cohort Pro', 'moowoodle' ),
-								value: 'cohort',
+								label: __('Course', 'moowoodle'),
+								value: 'course',
 							},
-						]}
-						onChange={ ( value ) => {
-							setLinkType( value );
-							setLinkedItemId( '' );
-						} }
-					/>
-				</Disabled>
-			</BaseControl>
-
-			{loading && (
-				<p className="form-field">
-					<Spinner />
-				</p>
-			)}
-
-			{!!linkType && !loading && (
-				<p className="form-field">
-					<SelectControl
-						label="Select Item"
-						value={linkedItemId}
-						options={[
-							{
-								label: __( 'Select an item...', 'moowoodle' ),
-								value: '',
-							},
-							...options,
 						]}
 						onChange={(value) => {
-							setLinkedItemId(value);
+							setLinkType(value);
+							setLinkedItemId('');
 						}}
 					/>
-				</p>
-			)}
 
-			<Notice
-				status="info"
-				isDismissible={ false }
-				actions={[
-					{
-						label: __(
-							'Synchronize Moodle data',
+					<Disabled isDisabled={!moowoodleProduct.khali_dabba}>
+						<RadioControl
+							selected={linkType}
+							options={[
+								{
+									label: moowoodleProduct.khali_dabba
+										? __('Cohort', 'moowoodle')
+										: __('Cohort Pro', 'moowoodle'),
+									value: 'cohort',
+								},
+							]}
+							onChange={(value) => {
+								setLinkType(value);
+								setLinkedItemId('');
+							}}
+						/>
+					</Disabled>
+				</div>
+				{loading && (
+					<p className="form-field">
+						<Spinner />
+					</p>
+				)}
+
+				{!!linkType && !loading && (
+					<p className="form-field">
+						<label htmlFor="linked_item">
+							{__('Select Item', 'moowoodle')}
+						</label>
+						<SelectControl
+							value={linkedItemId}
+							options={[
+								{
+									label: __('Select an item...', 'moowoodle'),
+									value: '',
+								},
+								...options,
+							]}
+							onChange={(value) => {
+								setLinkedItemId(value);
+							}}
+						/>
+					</p>
+				)}
+
+				<Notice
+					status="info"
+					isDismissible={false}
+					actions={[
+						{
+							label: __(
+								'Synchronize Moodle data',
+								'moowoodle'
+							),
+							url: moowoodleProduct.syncUrl,
+							variant: 'link'
+						},
+					]}
+				>
+					<p>
+						{__(
+							"Can't find your course or cohort?",
 							'moowoodle'
-						),
-						url: moowoodleProduct.syncUrl,
-						variant: 'primary'
-					},
-				]}
-			>
-				<p>
-					{ __(
-						"Can't find your course or cohort?",
-						'moowoodle'
-					) }
-				</p>
-			</Notice>
-
+						)}
+					</p>
+				</Notice>
+			</div>
 			<input type="hidden" name="link_type" value={linkType} />
 			<input type="hidden" name="linked_item_id" value={linkedItemId} />
 
