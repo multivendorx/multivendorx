@@ -425,8 +425,8 @@ const RegistrationForm = () => {
 						onSubmit={onSubmit}
 						countryList={memoizedCountryList}
 						stateList={memoizedStateList}
-						validationMessages={{
-							required: __('%s is required.', 'multivendorx'),
+						formMessages={{
+							fieldRequired: __('%s is required.', 'multivendorx'),
 							invalidEmail: __(
 								'Please enter a valid email address.',
 								'multivendorx'
