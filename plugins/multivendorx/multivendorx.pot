@@ -1,0 +1,1966 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: MultiVendorX\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-15 08:13+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.4; wp-6.9.4; php-8.0.30\n"
+"X-Domain: multivendorx"
+
+#. %s: Current user display name
+#: classes/Frontend.php:540
+#, php-format
+msgid ""
+" %s you're one step away from setting up your store. Fill in your business "
+"information below to get started."
+msgstr ""
+
+#: modules/MarketplaceRefund/Admin.php:134
+#: modules/MarketplaceRefund/Admin.php:148
+msgid " refund request for order #"
+msgstr ""
+
+#. %d is the number of followers.
+#: modules/FollowStore/widgets/StoreFollow.php:141
+msgid "%d Follower"
+msgid_plural "%d Followers"
+msgstr[0] ""
+msgstr[1] ""
+
+#. %s: time difference
+#: modules/StoreReview/Ajax.php:192
+#, php-format
+msgid "%s ago"
+msgstr ""
+
+#. %s is a comma-separated list of XML filenames being checked.
+#: classes/RestAPI/Controllers/ImportDummyData.php:214
+#, php-format
+msgid "%s XML file not found."
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:251
+msgid "*** Your request has been accepted. *** "
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:249
+msgid "*** Your request has been rejected ***"
+msgstr ""
+
+#. %s is the Stripe connection status
+#: classes/Payments/StripeConnect.php:164
+#, php-format
+msgid "<b>Stripe Status:</b> %s"
+msgstr ""
+
+#: classes/Payments/PaypalPayout.php:80
+msgid ""
+"A private key that authenticates your server when calling the PayPal API."
+msgstr ""
+
+#: classes/Patterns/store-template.php:13
+msgid "A simple starter layout for a store page."
+msgstr ""
+
+#: classes/Payments/BankTransfer.php:76
+msgid "ABA routing number"
+msgstr ""
+
+#: modules/MarketplaceRefund/Admin.php:129
+msgid "accepted"
+msgstr ""
+
+#: classes/Payments/BankTransfer.php:66
+msgid "Account holder Name"
+msgstr ""
+
+#: classes/Payments/BankTransfer.php:71
+msgid "Account number"
+msgstr ""
+
+#: classes/Payments/BankTransfer.php:113
+msgid "Account type"
+msgstr ""
+
+#: classes/Status.php:54
+msgid "Active modules"
+msgstr ""
+
+#: modules/Elementor/Tags/StoreInfo.php:73
+msgid "Address"
+msgstr ""
+
+#: classes/Admin.php:621
+#: templates/store/shared-listing-single-product-tab.php:44
+msgid "Admin"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:251
+msgid "Alignment"
+msgstr ""
+
+#: classes/Frontend.php:553
+msgid "Already have an account"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"An AI-powered WooCommerce multivendor marketplace solution to build, manage, "
+"and scale your platform."
+msgstr ""
+
+#: modules/Announcement/Rest.php:615
+msgid "Announcement deleted successfully"
+msgstr ""
+
+#: modules/Announcement/Rest.php:287 modules/Announcement/Rest.php:486
+#: modules/Announcement/Rest.php:590
+msgid "Announcement not found"
+msgstr ""
+
+#: modules/Announcement/Frontend.php:35
+msgid "Announcements"
+msgstr ""
+
+#: modules/StoreReview/Ajax.php:156
+msgid "Anonymous"
+msgstr ""
+
+#: classes/Admin.php:104
+msgid "Approval Queue"
+msgstr ""
+
+#: templates/store/store-single-product-customer-queries-tab.php:45
+msgid "Ask now"
+msgstr ""
+
+#: classes/Product.php:177 classes/Admin.php:325 classes/Admin.php:549
+msgid "Assign Store"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:589
+msgid "Attached images:"
+msgstr ""
+
+#: classes/Notifications/Gateways/Clickatell.php:81
+#: classes/Notifications/Gateways/Clickatell.php:87
+msgid "Bad Request"
+msgstr ""
+
+#: classes/Payments/BankTransfer.php:86
+msgid "Bank address"
+msgstr ""
+
+#: classes/Payments/BankTransfer.php:57
+msgid "Bank details required from the store"
+msgstr ""
+
+#: classes/Payments/BankTransfer.php:61
+msgid "Bank name"
+msgstr ""
+
+#: classes/Payments/BankTransfer.php:187
+msgid "Bank Transfer"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreBanner.php:72
+msgid "Banner"
+msgstr ""
+
+#: classes/Patterns/store-template.php:12
+msgid "Basic Store Template"
+msgstr ""
+
+#: classes/Tracker.php:130
+msgid "Book a Call"
+msgstr ""
+
+#: modules/BuddyPress/Functions.php:57
+msgid ""
+"Browse all products listed by this seller across their stores. Each section "
+"below represents a different store they manage."
+msgstr ""
+
+#: templates/store/store-policy.php:24
+#: templates/store/store-single-product-policy-tab.php:35
+msgid "Cancellation / Return / Exchange Policy"
+msgstr ""
+
+#: modules/StorePolicy/Admin.php:59 modules/StorePolicy/Admin.php:124
+#: modules/StorePolicy/Admin.php:141
+msgid "Cancellation Policy"
+msgstr ""
+
+#: modules/StorePolicy/Admin.php:142
+msgid "Cancellation Policy."
+msgstr ""
+
+#: templates/store/store-single-product-customer-queries-tab.php:57
+msgid "Can’t find your answer?"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:570
+msgid "Category:"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:259
+msgid "Center"
+msgstr ""
+
+#: modules/StoreShipping/Zone_Shipping.php:54
+msgid "Charge varying rates based on user defined conditions"
+msgstr ""
+
+#: classes/Frontend.php:183
+msgid "Checkout blocked: your cart contains products from a restricted store."
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:65
+msgid ""
+"Choose Test to simulate payouts or Live to send real payouts to sellers."
+msgstr ""
+
+#: classes/Payments/PaypalPayout.php:49
+msgid "Choose the environment your PayPal payout integration will use."
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:121
+msgid "Choose the product(s) you want a refund for"
+msgstr ""
+
+#: classes/Notifications/Gateways/Clickatell.php:31
+msgid "Clickatell"
+msgstr ""
+
+#: classes/Admin.php:599
+msgid "COD Order Payment"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreInfo.php:151
+msgid "Color"
+msgstr ""
+
+#: classes/Admin.php:415 classes/Admin.php:463
+msgid "Commission Fixed"
+msgstr ""
+
+#: classes/Admin.php:484
+msgid "Commission Fixed per transaction"
+msgstr ""
+
+#: classes/Admin.php:425 classes/Admin.php:459 classes/Admin.php:479
+msgid "Commission Percentage"
+msgstr ""
+
+#: classes/Admin.php:94 classes/RestAPI/Controllers/Dashboard.php:149
+msgid "Commissions"
+msgstr ""
+
+#: classes/RestAPI/Controllers/ImportDummyData.php:599
+msgid "Commissions imported successfully."
+msgstr ""
+
+#: classes/Admin.php:109
+msgid "Compliance"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:279
+msgid "Congratulation: *** Your request has been accepted. *** "
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:187
+msgid "Connect"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:186
+msgid "Connect with Stripe"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:165
+msgid "Connected"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:73
+msgid "Content"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:136
+#, php-format
+msgid ""
+"Copy this URL exactly into your Stripe Connect app settings:<br/>%1$s<br/><a "
+"href=\"https://docs.stripe.com/connect/oauth-reference\" class=\"link-item\" "
+"target=\"_blank\">Stripe OAuth redirect setup <i class=\"adminfont-"
+"external\"></i></a>"
+msgstr ""
+
+#: classes/Promotions.php:132
+msgid "Coupon data is required."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:124
+msgid "Coupons"
+msgstr ""
+
+#: classes/Frontend.php:550
+msgid "Create your account"
+msgstr ""
+
+#: classes/Payments/BankTransfer.php:117
+msgid "Current"
+msgstr ""
+
+#. %d: Number of answered questions for this product
+#: modules/CustomerQueries/Frontend.php:106
+msgid "Customer Queries (%d)"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:206
+msgid "Customer Reviews"
+msgstr ""
+
+#: classes/Roles.php:65
+msgid "Customer Support"
+msgstr ""
+
+#: classes/Admin.php:114
+msgid "Customers"
+msgstr ""
+
+#: classes/Admin.php:84 classes/RestAPI/Controllers/Dashboard.php:110
+msgid "Dashboard"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:644
+msgid "Decision pending"
+msgstr ""
+
+#: classes/Order/Admin.php:75
+msgid "Deleted store"
+msgstr ""
+
+#: modules/StoreShipping/Frontend.php:178
+msgid "Delivery Location"
+msgstr ""
+
+#: modules/Elementor/Helper.php:22
+msgid "Demo Store"
+msgstr ""
+
+#: classes/Payments/BankTransfer.php:81
+msgid "Destination currency"
+msgstr ""
+
+#: templates/store/shared-listing-single-product-tab.php:67
+msgid "Details"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:178
+msgid "Disconnect"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:177
+msgid "Disconnect Stripe Account"
+msgstr ""
+
+#: classes/MultiVendorX.php:255
+msgid "Docs"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:220
+msgid "Documentation"
+msgstr ""
+
+#: modules/MarketplaceCompliance/Frontend.php:123
+#: modules/Elementor/Tags/StoreInfo.php:83
+msgid "Email"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:122
+msgid "Enter secret key"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:109
+msgid "Enter secret key "
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:83 classes/Payments/StripeConnect.php:96
+msgid "Enter Stripe Client ID"
+msgstr ""
+
+#: classes/Payments/PaypalPayout.php:101
+msgid "Enter your PayPal email address"
+msgstr ""
+
+#: classes/Migration/Cron.php:40
+msgid "Every 5 Minutes"
+msgstr ""
+
+#: classes/Migration/Cron.php:44
+msgid "Every minute"
+msgstr ""
+
+#: classes/Tracker.php:126
+msgid "Facebook Group"
+msgstr ""
+
+#: modules/WPML/Rest.php:249
+msgid "Failed to create translated product"
+msgstr ""
+
+#: modules/Announcement/Rest.php:603
+msgid "Failed to delete announcement"
+msgstr ""
+
+#: modules/CustomerQueries/Rest.php:424
+msgid "Failed to delete question"
+msgstr ""
+
+#: modules/MarketplaceCompliance/Rest.php:223
+msgid "Failed to delete report"
+msgstr ""
+
+#: modules/StoreReview/Rest.php:580
+msgid "Failed to delete review"
+msgstr ""
+
+#: modules/Knowledgebase/Rest.php:430
+msgid "Failed to delete the Knowledge Base article"
+msgstr ""
+
+#: modules/StoreShipping/Rest.php:321
+msgid "Failed to save shipping method"
+msgstr ""
+
+#: modules/Elementor/Tags/StoreLogo.php:105
+#: modules/Elementor/Tags/StoreBanner.php:114
+msgid "Fallback"
+msgstr ""
+
+#: classes/Admin.php:417
+msgid "Fixed Commission."
+msgstr ""
+
+#: classes/Admin.php:350
+msgid "Fixed commission."
+msgstr ""
+
+#: modules/FollowStore/widgets/StoreFollow.php:115
+#: modules/FollowStore/Tags/StoreFollow.php:93
+msgid "Follow"
+msgstr ""
+
+#: modules/FollowStore/Tags/StoreFollow.php:99
+msgid "Follow."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:199
+msgid "Followers"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:85 classes/Payments/StripeConnect.php:98
+msgid ""
+"Found in your Stripe Dashboard → Developer → API keys / Connect settings."
+"<br/><a href=\"https://docs.stripe.com/connect/oauth-reference\" "
+"class=\"link-item\" target=\"blank\">Stripe Connect OAuth reference <i "
+"class=\"adminfont-external\"/></a>"
+msgstr ""
+
+#: classes/Status.php:51
+msgid "Free"
+msgstr ""
+
+#: modules/StoreShipping/Country_Shipping.php:116
+#: modules/StoreShipping/Distance_Shipping.php:161
+msgid "Free Shipping"
+msgstr ""
+
+#: classes/Frontend.php:626
+msgid "Go to store dashboard"
+msgstr ""
+
+#: modules/StoreReview/Rest.php:601
+msgid "Guest"
+msgstr ""
+
+#: templates/store/store-single-product-customer-queries-tab.php:24
+msgid "Have a question? Search for an answer."
+msgstr ""
+
+#: templates/store/store-single-product-customer-queries-tab.php:39
+msgid "Have not discovered the information you seek"
+msgstr ""
+
+#: classes/Admin.php:139
+msgid "Help & Support"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:112
+#: modules/Elementor/widgets/StoreInfo.php:108
+#: modules/Elementor/widgets/StoreInfo.php:120
+#: modules/Elementor/widgets/StoreInfo.php:132
+msgid "Hide"
+msgstr ""
+
+#. URI of the plugin
+#. Author URI of the plugin
+msgid "https://multivendorx.com/"
+msgstr ""
+
+#: classes/Tracker.php:260
+msgid "I couldn't get the plugin to work"
+msgstr ""
+
+#: classes/Tracker.php:257
+msgid "I found a better plugin"
+msgstr ""
+
+#: classes/Tracker.php:255
+msgid "I no longer need the plugin"
+msgstr ""
+
+#: classes/Payments/BankTransfer.php:91
+msgid "IBAN"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreInfo.php:143
+msgid "Icon"
+msgstr ""
+
+#: modules/Announcement/Rest.php:275 modules/Announcement/Rest.php:577
+msgid "Invalid announcement ID"
+msgstr ""
+
+#: classes/Notifications/Gateways/Vonage.php:70
+msgid "Invalid API response from Vonage."
+msgstr ""
+
+#: modules/FollowStore/Rest.php:301
+msgid "Invalid data."
+msgstr ""
+
+#: classes/FrontendScripts.php:547 classes/FrontendScripts.php:563
+msgid "Invalid email format"
+msgstr ""
+
+#: modules/StoreReview/Ajax.php:89
+msgid "Invalid file upload data."
+msgstr ""
+
+#: modules/CustomerQueries/Rest.php:250
+msgid "Invalid ID"
+msgstr ""
+
+#: modules/MarketplaceCompliance/Rest.php:99
+#: modules/MarketplaceCompliance/Rest.php:187
+#: modules/Knowledgebase/Rest.php:122 modules/Knowledgebase/Rest.php:213
+#: modules/Knowledgebase/Rest.php:241 modules/Knowledgebase/Rest.php:331
+#: modules/Knowledgebase/Rest.php:408 modules/WPML/Rest.php:90
+#: modules/WPML/Rest.php:182 modules/Announcement/Rest.php:127
+#: modules/Announcement/Rest.php:257 modules/Announcement/Rest.php:314
+#: modules/Announcement/Rest.php:458 modules/Announcement/Rest.php:558
+#: modules/StoreReview/Rest.php:126 modules/StoreReview/Rest.php:264
+#: modules/StoreReview/Rest.php:315 modules/StoreReview/Rest.php:435
+#: modules/StoreReview/Rest.php:544 modules/StoreShipping/Rest.php:123
+#: modules/StoreShipping/Rest.php:151 modules/StoreShipping/Rest.php:239
+#: modules/StoreShipping/Rest.php:281 modules/StoreShipping/Rest.php:356
+#: modules/CustomerQueries/Rest.php:112 modules/CustomerQueries/Rest.php:243
+#: modules/CustomerQueries/Rest.php:271 modules/CustomerQueries/Rest.php:393
+#: modules/FollowStore/Rest.php:104 modules/FollowStore/Rest.php:200
+#: modules/FollowStore/Rest.php:283 modules/MarketplaceRefund/Rest.php:100
+#: classes/RestAPI/Controllers/Notifications.php:109
+#: classes/RestAPI/Controllers/Notifications.php:329
+#: classes/RestAPI/Controllers/Notifications.php:464
+#: classes/RestAPI/Controllers/Status.php:80
+#: classes/RestAPI/Controllers/Status.php:119
+#: classes/RestAPI/Controllers/Transactions.php:98
+#: classes/RestAPI/Controllers/Transactions.php:235
+#: classes/RestAPI/Controllers/Transactions.php:295
+#: classes/RestAPI/Controllers/Tour.php:78
+#: classes/RestAPI/Controllers/Tour.php:124
+#: classes/RestAPI/Controllers/Stores.php:126
+#: classes/RestAPI/Controllers/Stores.php:496
+#: classes/RestAPI/Controllers/Stores.php:733
+#: classes/RestAPI/Controllers/Stores.php:885
+#: classes/RestAPI/Controllers/Commissions.php:101
+#: classes/RestAPI/Controllers/Commissions.php:289
+#: classes/RestAPI/Controllers/Commissions.php:323
+#: classes/RestAPI/Controllers/ImportDummyData.php:72
+#: classes/RestAPI/Controllers/Logs.php:66
+#: classes/RestAPI/Controllers/Logs.php:102
+#: classes/RestAPI/Controllers/Settings.php:96
+#: classes/RestAPI/Controllers/Settings.php:218
+#: classes/RestAPI/Controllers/Migrations.php:69
+msgid "Invalid nonce"
+msgstr ""
+
+#: modules/Intelligence/Rest.php:43
+msgid "Invalid nonce."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Notifications.php:396
+msgid "Invalid notification data"
+msgstr ""
+
+#: modules/CustomerQueries/Rest.php:287 modules/CustomerQueries/Rest.php:403
+msgid "Invalid question ID"
+msgstr ""
+
+#: modules/MarketplaceRefund/Rest.php:305
+msgid "Invalid refund amount."
+msgstr ""
+
+#: modules/MarketplaceCompliance/Rest.php:202
+msgid "Invalid report ID"
+msgstr ""
+
+#: modules/StoreReview/Rest.php:450 modules/StoreReview/Rest.php:559
+msgid "Invalid review ID"
+msgstr ""
+
+#: modules/StoreReview/Rest.php:485
+msgid "Invalid status value"
+msgstr ""
+
+#: modules/FollowStore/Rest.php:219 classes/RestAPI/Controllers/Stores.php:1322
+msgid "Invalid store ID"
+msgstr ""
+
+#: modules/CustomerQueries/Rest.php:324
+msgid "Invalid visibility value"
+msgstr ""
+
+#: classes/RestAPI/Controllers/ImportDummyData.php:227
+msgid "Invalid XML structure."
+msgstr ""
+
+#: classes/Tracker.php:261
+msgid "It's a temporary deactivation"
+msgstr ""
+
+#: classes/Order/Hooks.php:401
+msgid "Item id"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:315
+msgid "Kindly choose a product"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:320
+msgid "Kindly choose a refund reason"
+msgstr ""
+
+#: modules/Knowledgebase/Rest.php:439
+msgid "Knowledge Base article deleted successfully"
+msgstr ""
+
+#: modules/Knowledgebase/Rest.php:224 modules/Knowledgebase/Rest.php:350
+#: modules/Knowledgebase/Rest.php:419
+msgid "Knowledge Base article not found"
+msgstr ""
+
+#: modules/Knowledgebase/Frontend.php:31
+msgid "Knowledgebase"
+msgstr ""
+
+#: modules/StoreReview/Frontend.php:182
+msgid "Leave a Review"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:255
+msgid "Left"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:74 classes/Payments/PaypalPayout.php:62
+msgid "Live"
+msgstr ""
+
+#: templates/store/store-single-product-customer-queries-tab.php:59
+msgid "Log in"
+msgstr ""
+
+#: classes/Payments/PaypalPayout.php:73
+msgid ""
+"Make sure the Client ID matches the Payment Mode selected above.<br/><a "
+"href=\"https://developer.paypal.com/dashboard/applications\" class=\"link-"
+"item\" target=\"blank\">Get your Client ID <i class=\"adminfont-external\"/>"
+"</i></a>."
+msgstr ""
+
+#: classes/Frontend.php:621
+msgid "Manage your store"
+msgstr ""
+
+#: classes/Admin.php:362
+msgid "Marketplace commission (%)"
+msgstr ""
+
+#: classes/Admin.php:348
+msgid "Marketplace commission (fixed)"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:58
+msgid "Marketplace payouts via Stripe Connect (OAuth)."
+msgstr ""
+
+#: modules/MinMax/Admin.php:87
+msgid "Maximum amount to order"
+msgstr ""
+
+#: modules/MinMax/Admin.php:60
+msgid "Maximum quantity to order"
+msgstr ""
+
+#. %1$s is the vendor/owner name, %2$s is the clickable store name link.
+#: templates/store/store-single-product-tab.php:39
+#, php-format
+msgid "Meet our shop %1$s"
+msgstr ""
+
+#: modules/MarketplaceCompliance/Frontend.php:137
+msgid "Message"
+msgstr ""
+
+#: modules/StoreShipping/Zone_Shipping.php:208
+msgid "Method title"
+msgstr ""
+
+#: modules/MinMax/Frontend.php:190
+msgid "Min Amount: "
+msgstr ""
+
+#: modules/MinMax/Frontend.php:187
+msgid "Min Qty: "
+msgstr ""
+
+#: modules/MinMax/Admin.php:74
+msgid "Minimum amount to order"
+msgstr ""
+
+#. %d: minimum quantity required
+#: modules/MinMax/Frontend.php:215
+msgid "Minimum quantity required is %d"
+msgstr ""
+
+#: modules/MinMax/Admin.php:48
+msgid "Minimum quantity to order"
+msgstr ""
+
+#: modules/WPML/Rest.php:204
+msgid "Missing product ID or language"
+msgstr ""
+
+#: modules/StoreReview/Ajax.php:67 modules/StoreReview/Rest.php:331
+msgid "Missing required fields."
+msgstr ""
+
+#: modules/StoreShipping/Rest.php:300 modules/StoreShipping/Rest.php:374
+msgid "Missing required parameters"
+msgstr ""
+
+#: classes/Admin.php:129
+msgid "Modules"
+msgstr ""
+
+#: modules/SharedListing/Frontend.php:259
+msgid "More Offers"
+msgstr ""
+
+#. %1$s is the store/vendor name.
+#: templates/store/store-single-product-tab.php:106
+#, php-format
+msgid "More Products from %1$s"
+msgstr ""
+
+#: modules/SharedListing/Frontend.php:325
+msgid "More Stores"
+msgstr ""
+
+#. Name of the plugin
+#. Author of the plugin
+#: classes/Status.php:43 classes/Pattern.php:46 classes/FrontendScripts.php:443
+#: modules/Elementor/WidgetLoader.php:106
+msgid "MultiVendorX"
+msgstr ""
+
+#: classes/Widgets.php:38
+msgid "MultiVendorX Store Sidebar"
+msgstr ""
+
+#: modules/Elementor/WidgetLoader.php:40
+msgid "MultiVendorX Store Widgets"
+msgstr ""
+
+#: classes/Promotions.php:219
+msgid "MultivendorX Update Required"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Status.php:180
+msgid "MultiVendorX visitors stats successfully deleted"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:572
+msgid "N/A"
+msgstr ""
+
+#: modules/MarketplaceCompliance/Frontend.php:118
+msgid "Name"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:111
+msgid ""
+"Never expose publicly. <br/><a href=\"https://docs.stripe.com/keys/\" "
+"class=\"link-item\" target=\"blank\">Stripe API keys documentation <i "
+"class=\"adminfont-external\"/></a>"
+msgstr ""
+
+#: classes/Frontend.php:554
+msgid "New here? Sign up"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Stores.php:1014
+msgid "New owner ID missing."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Migrations.php:101
+#: classes/RestAPI/Controllers/Migrations.php:129
+msgid "No active plugin found."
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:582
+msgid "No additional information provided."
+msgstr ""
+
+#: templates/store/store-policy.php:17
+msgid "No policy found."
+msgstr ""
+
+#: modules/BuddyPress/Functions.php:147
+msgid "No products available in this store yet."
+msgstr ""
+
+#: modules/StoreReview/Ajax.php:235
+msgid "No reviews yet — they'll show up here once received."
+msgstr ""
+
+#: templates/elementor-canvas.php:49
+msgid ""
+"No store template found. Please create a Store Page template in Elementor."
+msgstr ""
+
+#: modules/BuddyPress/Functions.php:70
+msgid "No stores found for this user."
+msgstr ""
+
+#: classes/Promotions.php:103
+msgid "No Thanks"
+msgstr ""
+
+#: modules/BuddyPress/Functions.php:62
+msgid "No user found."
+msgstr ""
+
+#: modules/StoreReview/Rest.php:494 modules/CustomerQueries/Rest.php:333
+msgid "No valid fields to update"
+msgstr ""
+
+#: classes/Status.php:55
+msgid "None"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:165
+msgid "Not Connected"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Notifications.php:445
+msgid "Notification(s) updated successfully."
+msgstr ""
+
+#: classes/Cron.php:81
+msgid "Once Every Two Weeks"
+msgstr ""
+
+#: classes/Cron.php:85
+msgid "Once Monthly"
+msgstr ""
+
+#: classes/Cron.php:77
+msgid "Once Weekly"
+msgstr ""
+
+#: templates/store/store-review.php:52
+msgid "Only verified buyers can leave a review for this store."
+msgstr ""
+
+#: classes/Roles.php:66
+msgid "Order Assistant"
+msgstr ""
+
+#: classes/Order/Hooks.php:293
+msgctxt "Order note"
+msgid "Sync from store's suborders: "
+msgstr ""
+
+#: classes/Order/Hooks.php:244
+msgctxt "Order note"
+msgid "Update via parent order: "
+msgstr ""
+
+#: modules/MarketplaceRefund/Admin.php:50
+#: modules/MarketplaceRefund/Admin.php:87
+msgctxt "Order status"
+msgid "Refund Accepted"
+msgstr ""
+
+#: modules/MarketplaceRefund/Admin.php:62
+#: modules/MarketplaceRefund/Admin.php:88
+msgctxt "Order status"
+msgid "Refund Rejected"
+msgstr ""
+
+#: modules/MarketplaceRefund/Admin.php:38
+#: modules/MarketplaceRefund/Admin.php:86
+msgctxt "Order status"
+msgid "Refund Requested"
+msgstr ""
+
+#: classes/Order/Admin.php:86
+msgctxt "Order table details"
+msgid "for"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:136
+msgid "Orders"
+msgstr ""
+
+#: classes/RestAPI/Controllers/ImportDummyData.php:703
+msgid "Orders imported successfully."
+msgstr ""
+
+#: classes/Tracker.php:263
+msgid "Other"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:168
+msgid "Others reason"
+msgstr ""
+
+#: templates/store/store-banner-info.php:140 modules/StoreReview/Ajax.php:181
+#: modules/StoreReview/widgets/StoreRating.php:308
+msgid "out of 5"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:64 classes/Payments/PaypalPayout.php:48
+msgid "Payment mode"
+msgstr ""
+
+#: classes/Payments/PaypalPayout.php:100
+msgid "PayPal Email"
+msgstr ""
+
+#: classes/Payments/PaypalPayout.php:95
+msgid "Paypal Payout"
+msgstr ""
+
+#: classes/Admin.php:427
+msgid "Percentage Commission."
+msgstr ""
+
+#: classes/Admin.php:364
+msgid "Percentage commission."
+msgstr ""
+
+#: modules/Elementor/Tags/StoreInfo.php:93
+msgid "Phone No."
+msgstr ""
+
+#: modules/StoreShipping/Country_Shipping.php:305
+#: modules/StoreShipping/Distance_Shipping.php:189
+msgid "Pickup from Store"
+msgstr ""
+
+#: modules/StoreShipping/Frontend.php:179
+msgctxt "placeholder"
+msgid "Insert your address .."
+msgstr ""
+
+#: templates/store/store-review.php:41
+msgid "Please login to submit a review."
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:149
+msgid "Please mention your reason for refund"
+msgstr ""
+
+#: classes/Tracker.php:264
+msgid "Please share the reason"
+msgstr ""
+
+#: classes/Tracker.php:258
+msgid "Please share which plugin"
+msgstr ""
+
+#: classes/Notifications/Gateways/Plivo.php:31
+msgid "Plivo"
+msgstr ""
+
+#: classes/Status.php:50
+msgid "Plugin subscription plan"
+msgstr ""
+
+#: modules/StorePolicy/Frontend.php:138
+msgid "Policies"
+msgstr ""
+
+#: modules/StorePolicy/Admin.php:37 modules/StorePolicy/Frontend.php:108
+#: modules/Elementor/widgets/StoreTab.php:118
+msgid "Policy"
+msgstr ""
+
+#: templates/store/shared-listing-single-product-tab.php:22
+msgid "Price"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:110
+msgid "Private key used to authenticate server-to-Stripe requests."
+msgstr ""
+
+#: classes/Roles.php:64
+msgid "Product Manager"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:192
+msgid "Product Questions"
+msgstr ""
+
+#: classes/Store/StoreUtil.php:135
+#: classes/RestAPI/Controllers/Dashboard.php:117
+#: modules/Elementor/widgets/StoreTab.php:117
+msgid "Products"
+msgstr ""
+
+#: modules/BuddyPress/Functions.php:104
+#, php-format
+msgid "Products from %s"
+msgstr ""
+
+#: classes/RestAPI/Controllers/ImportDummyData.php:502
+#: classes/RestAPI/Controllers/Migrations.php:144
+msgid "Products imported successfully."
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:189
+msgid "Provide additional information"
+msgstr ""
+
+#: modules/CustomerQueries/Rest.php:255 modules/CustomerQueries/Rest.php:297
+#: modules/CustomerQueries/Rest.php:413
+msgid "Question not found"
+msgstr ""
+
+#: templates/store/store-single-product-customer-queries-tab.php:19
+msgid "Questions about this product"
+msgstr ""
+
+#. %s is the rating value out of 5.
+#. %s: rating value
+#: templates/store/store-banner-info.php:135 modules/StoreReview/Ajax.php:177
+#: modules/StoreReview/widgets/StoreRating.php:302
+#, php-format
+msgid "Rated %s out of 5"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:81
+msgid "Rating"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:97
+msgid "Rating Scale"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:132
+msgid "Redirect url"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:142
+msgid "Refund"
+msgstr ""
+
+#. 1: refund id, 2: date, 3: user
+#: classes/RestAPI/Rest.php:468
+#, php-format
+msgid "Refund #%1$s - %2$s by %3$s"
+msgstr ""
+
+#. %s: Number of orders with the "Refund Accepted" status.
+#: modules/MarketplaceRefund/Admin.php:56
+#, php-format
+msgid "Refund Accepted (%s)"
+msgid_plural "Refund Accepted (%s)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: modules/MarketplaceRefund/Rest.php:397
+msgid "Refund Failed"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:247
+#: modules/MarketplaceRefund/Frontend.php:269
+msgid "Refund is not allowed for the current order status."
+msgstr ""
+
+#: templates/store/store-policy.php:23
+#: templates/store/store-single-product-policy-tab.php:30
+#: modules/StorePolicy/Admin.php:91 modules/StorePolicy/Admin.php:108
+msgid "Refund Policy"
+msgstr ""
+
+#: modules/StorePolicy/Admin.php:109
+msgid "Refund Policy."
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:674
+msgid "Refund processed"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:172
+#: modules/MarketplaceRefund/Frontend.php:180
+#: modules/MarketplaceRefund/Frontend.php:564
+msgid "Refund reason"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:642
+msgid "Refund rejected"
+msgstr ""
+
+#. %s: Number of orders with the "Refund Rejected" status.
+#: modules/MarketplaceRefund/Admin.php:68
+#, php-format
+msgid "Refund Rejected (%s)"
+msgid_plural "Refund Rejected (%s)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: modules/MarketplaceRefund/Frontend.php:498
+msgid "Refund request successfully submitted."
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:617
+msgid "Refund requested"
+msgstr ""
+
+#. %s: Number of orders with the "Refund Requested" status.
+#: modules/MarketplaceRefund/Admin.php:44
+#, php-format
+msgid "Refund Requested (%s)"
+msgid_plural "Refund Requested (%s)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: classes/Order/Admin.php:108
+msgid "Regenerate order commissions"
+msgstr ""
+
+#: classes/Order/Admin.php:111
+msgid "Regenerate suborders"
+msgstr ""
+
+#: modules/MarketplaceRefund/Admin.php:131
+msgid "rejected"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:654
+msgid "Rejected by admin:"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:659
+msgid "Rejected by store:"
+msgstr ""
+
+#: classes/Promotions.php:68
+msgid "Remind me later"
+msgstr ""
+
+#: modules/MarketplaceCompliance/Frontend.php:144
+msgid "Report"
+msgstr ""
+
+#: modules/MarketplaceCompliance/Frontend.php:98
+msgid "Report Abuse"
+msgstr ""
+
+#. %s: Product name for abuse report
+#: modules/MarketplaceCompliance/Frontend.php:109
+#, php-format
+msgid "Report abuse for \"%s\""
+msgstr ""
+
+#: modules/MarketplaceCompliance/Rest.php:212
+msgid "Report not found"
+msgstr ""
+
+#: classes/Admin.php:119
+msgid "Reports"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:97
+msgid "Request a refund"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:606
+msgid "Request timeline"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:214
+msgid "Resources"
+msgstr ""
+
+#. label for single/multiple review counts.
+#: templates/store/store-banner-info.php:147
+msgid "Review"
+msgid_plural "Reviews"
+msgstr[0] ""
+msgstr[1] ""
+
+#: modules/StoreReview/Rest.php:404
+msgid "Review could not be created."
+msgstr ""
+
+#: modules/StoreReview/Ajax.php:212
+msgid "Review Image"
+msgstr ""
+
+#: modules/StoreReview/Rest.php:288 modules/StoreReview/Rest.php:460
+#: modules/StoreReview/Rest.php:569
+msgid "Review not found"
+msgstr ""
+
+#: classes/Promotions.php:69
+msgid "Review now"
+msgstr ""
+
+#: modules/StoreReview/Ajax.php:140
+msgid "Review submitted successfully!"
+msgstr ""
+
+#: templates/store/store-review.php:61
+msgid "Review Title"
+msgstr ""
+
+#: modules/StoreReview/Frontend.php:130
+#: modules/Elementor/widgets/StoreTab.php:119
+msgid "Reviews"
+msgstr ""
+
+#: classes/RestAPI/Controllers/ImportDummyData.php:799
+msgid "Reviews imported successfully."
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:263
+msgid "Right"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:130
+msgid "Sales"
+msgstr ""
+
+#: classes/Payments/PaypalPayout.php:57
+msgid "Sandbox"
+msgstr ""
+
+#: classes/Payments/BankTransfer.php:122
+msgid "Savings"
+msgstr ""
+
+#: classes/Admin.php:330 classes/Admin.php:554
+msgid "Search for a store…"
+msgstr ""
+
+#: templates/store/store-tabs.php:134
+msgid "Search products..."
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:108
+#: classes/Payments/StripeConnect.php:121
+msgid "Secret key"
+msgstr ""
+
+#: classes/FrontendScripts.php:485
+msgid "Select an item..."
+msgstr ""
+
+#: modules/Intelligence/Rest.php:57
+msgid "Server error."
+msgstr ""
+
+#: classes/Tracker.php:55 classes/Admin.php:124
+#: classes/RestAPI/Controllers/Dashboard.php:235
+msgid "Settings"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Stores.php:1297
+#: classes/RestAPI/Controllers/Settings.php:201
+msgid "Settings Saved"
+msgstr ""
+
+#: modules/StoreShipping/Frontend.php:111
+msgid "Shipping by Country"
+msgstr ""
+
+#: modules/StoreShipping/Frontend.php:129
+msgid "Shipping by Distance"
+msgstr ""
+
+#: modules/StoreShipping/Frontend.php:147
+msgid "Shipping by Zone"
+msgstr ""
+
+#: modules/StoreShipping/Country_Shipping.php:47
+#: modules/StoreShipping/Distance_Shipping.php:43
+msgid "Shipping Cost"
+msgstr ""
+
+#: modules/StoreShipping/Rest.php:393
+msgid "Shipping method deleted successfully"
+msgstr ""
+
+#: modules/StoreShipping/Rest.php:170
+msgid "Shipping method is required"
+msgstr ""
+
+#: modules/StoreShipping/Util.php:143
+msgid "Shipping method not found"
+msgstr ""
+
+#: modules/StoreShipping/Util.php:111
+msgid "Shipping method not found."
+msgstr ""
+
+#: modules/StoreShipping/Rest.php:337
+msgid "Shipping method saved successfully"
+msgstr ""
+
+#: modules/StoreShipping/Rest.php:218
+msgid "Shipping method settings saved successfully"
+msgstr ""
+
+#: templates/store/store-policy.php:22
+#: templates/store/store-single-product-policy-tab.php:25
+#: modules/StorePolicy/Admin.php:76
+msgid "Shipping Policy"
+msgstr ""
+
+#: modules/StorePolicy/Admin.php:77
+msgid "Shipping Policy."
+msgstr ""
+
+#: modules/BuddyPress/Functions.php:31
+msgid "Shop"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:111
+#: modules/Elementor/widgets/StoreInfo.php:107
+#: modules/Elementor/widgets/StoreInfo.php:119
+#: modules/Elementor/widgets/StoreInfo.php:131
+msgid "Show"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreInfo.php:105
+msgid "Show Address"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreInfo.php:117
+msgid "Show Email"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreInfo.php:129
+msgid "Show Phone"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:109
+msgid "Show Rating Text"
+msgstr ""
+
+#: modules/MarketplaceRefund/Admin.php:134
+#: modules/MarketplaceRefund/Admin.php:148
+msgid "Site admin "
+msgstr ""
+
+#: modules/Elementor/widgets/StoreInfo.php:164
+msgid "Size"
+msgstr ""
+
+#: classes/Tracker.php:163
+msgid "Skip & Deactivate"
+msgstr ""
+
+#: classes/RestAPI/Rest.php:669
+msgid "SKU is not generated!"
+msgstr ""
+
+#: classes/Order/Hooks.php:200 modules/Privacy/Frontend.php:83
+#: modules/Privacy/Frontend.php:106
+msgid "Sold By"
+msgstr ""
+
+#: classes/Order/Hooks.php:398 classes/Order/Frontend.php:71
+msgid "Sold by"
+msgstr ""
+
+#: modules/StoreShipping/Distance_Shipping.php:139
+msgid "Some cart item(s) are not deliverable to your location."
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:273
+msgid "Sorry!! Your request has been rejected"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:132
+msgid "Star Color"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:156
+msgid "Star Size"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:178
+msgid "Stars Spacing"
+msgstr ""
+
+#: classes/Frontend.php:551
+msgid ""
+"Start by setting up a free account. If you already have one, just sign in."
+msgstr ""
+
+#: classes/Admin.php:134
+msgid "Status & Tools"
+msgstr ""
+
+#: classes/Frontend.php:549
+msgid "Step 1 of 2"
+msgstr ""
+
+#: classes/Product.php:56 classes/Admin.php:304 classes/Admin.php:532
+#: classes/Admin.php:625
+#: templates/store/shared-listing-single-product-tab.php:21
+#: modules/Privacy/Frontend.php:50
+msgid "Store"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreBanner.php:39
+#: modules/Elementor/Tags/StoreBanner.php:58
+msgid "Store Banner"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreDescription.php:40
+msgid "Store Description"
+msgstr ""
+
+#: modules/Elementor/Tags/StoreDummyProducts.php:48
+msgid "Store Dummy Products"
+msgstr ""
+
+#: modules/FollowStore/widgets/StoreFollow.php:42
+#: modules/FollowStore/Tags/StoreFollow.php:50
+msgid "Store Follow Button"
+msgstr ""
+
+#: modules/StoreShipping/Rest.php:188
+msgid "Store ID is required"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreInfo.php:43
+#: modules/Elementor/Tags/StoreInfo.php:39
+msgid "Store Info"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreInfo.php:90
+msgid "Store Info Details"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreInfo.php:97
+msgid "Store Info Visibility"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreLogo.php:37
+#: modules/Elementor/widgets/StoreLogo.php:78
+#: modules/Elementor/Tags/StoreLogo.php:49
+msgid "Store Logo"
+msgstr ""
+
+#: classes/Roles.php:63
+msgid "Store Manager"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreName.php:38
+#: modules/Elementor/Tags/StoreName.php:37
+msgid "Store Name"
+msgstr ""
+
+#: classes/Roles.php:62
+msgid "Store Owner"
+msgstr ""
+
+#: classes/RestAPI/Controllers/ImportDummyData.php:190
+msgid "Store owners imported successfully."
+msgstr ""
+
+#: modules/Elementor/StoreDocument.php:51
+msgid "Store Page"
+msgstr ""
+
+#: modules/Elementor/StoreDocument.php:60
+msgid "Store Pages"
+msgstr ""
+
+#: templates/store/store-policy.php:21
+#: templates/store/store-single-product-policy-tab.php:20
+msgid "Store Policy"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:37
+#: modules/StoreReview/Tags/StoreRating.php:46
+msgid "Store Rating"
+msgstr ""
+
+#: modules/StoreShipping/Zone_Shipping.php:53
+#: modules/StoreShipping/Zone_Shipping.php:211
+msgid "Store Shipping"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreSocial.php:33
+#: modules/Elementor/Tags/StoreSocial.php:48
+msgid "Store Social"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:179
+msgid "Store Support"
+msgstr ""
+
+#: modules/Elementor/widgets/StoreTab.php:38
+msgid "Store Tabs"
+msgstr ""
+
+#: modules/StoreReview/Ajax.php:222
+msgid "Store's reply:"
+msgstr ""
+
+#: modules/StoreShipping/Rest.php:258
+msgid "store_id, method_id and zone_id are required"
+msgstr ""
+
+#: classes/Admin.php:89
+msgid "Stores"
+msgstr ""
+
+#: classes/RestAPI/Controllers/ImportDummyData.php:321
+#: classes/RestAPI/Controllers/Migrations.php:116
+msgid "Stores imported successfully."
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:82 classes/Payments/StripeConnect.php:95
+msgid "Stripe client ID"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:196
+msgid "Stripe Connect"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:124
+msgid "Style"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:203
+msgid "Submit"
+msgstr ""
+
+#: classes/Tracker.php:164
+msgid "Submit & Deactivate"
+msgstr ""
+
+#: templates/store/store-review.php:100
+msgid "Submit Review"
+msgstr ""
+
+#: classes/Tracker.php:207
+msgid "Submitting…"
+msgstr ""
+
+#: classes/Order/Admin.php:47
+msgid "Suborders"
+msgstr ""
+
+#: classes/MultiVendorX.php:256
+msgid "Support"
+msgstr ""
+
+#: classes/Tracker.php:122
+msgid "Support Forum"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:185
+msgid "Support Tickets"
+msgstr ""
+
+#: classes/Promotions.php:102
+msgid "Sure, I'd like to help"
+msgstr ""
+
+#: classes/RestAPI/Rest.php:471
+msgid "system"
+msgstr ""
+
+#: modules/StoreShipping/Zone_Shipping.php:215
+msgid "Tax status"
+msgstr ""
+
+#: modules/StoreShipping/Zone_Shipping.php:221
+msgctxt "Tax status"
+msgid "None"
+msgstr ""
+
+#: modules/StoreShipping/Zone_Shipping.php:220
+msgid "Taxable"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:69
+msgid "Test"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:212
+msgid "Text Color"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:227
+msgid "Text Spacing"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:201
+msgid "Text Typography"
+msgstr ""
+
+#: classes/Tracker.php:252
+msgid "Thinking about deactivating? We're here to help — contact us anytime."
+msgstr ""
+
+#: modules/StoreShipping/Zone_Shipping.php:210
+msgid "This controls the title which the user sees during checkout."
+msgstr ""
+
+#: classes/FrontendScripts.php:546 classes/FrontendScripts.php:562
+msgid "This field is required"
+msgstr ""
+
+#: modules/Elementor/Helper.php:23
+msgid ""
+"This is a sample store description shown only in Elementor editor preview."
+msgstr ""
+
+#: classes/Frontend.php:151
+msgid "This product cannot be purchased at the moment."
+msgstr ""
+
+#. %s: URL to MultiVendorX shipping settings page
+#: modules/StoreShipping/Country_Shipping.php:70
+#: modules/StoreShipping/Distance_Shipping.php:66
+#, php-format
+msgid ""
+"This shipping method is fully managed in the <a href=\"%s\" "
+"target=\"_blank\">MultiVendorX Shipping Settings</a>."
+msgstr ""
+
+#: classes/Promotions.php:220
+msgid ""
+"To ensure all the feature compatibility and accessibility, MultiVendorX Pro "
+"minimum v2.0.0 is required."
+msgstr ""
+
+#: templates/store/store-single-product-customer-queries-tab.php:60
+msgid "to share your question with us."
+msgstr ""
+
+#: classes/Frontend.php:623
+msgid ""
+"To view orders, manage products, and access your full store settings, visit "
+"your store dashboard."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:227
+msgid "Tools"
+msgstr ""
+
+#: classes/Admin.php:99
+msgid "Transaction History"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:164
+msgid "Transactions"
+msgstr ""
+
+#: classes/Payments/PaypalPayout.php:81
+msgid ""
+"Treat it like a password and never expose it publicly.<br/><a href=\"https:"
+"//developer.paypal.com/dashboard/applications\" class=\"link-item\" "
+"target=\"blank\">Get your Client Secret <i class=\"adminfont-external\"/></i>"
+"</a>"
+msgstr ""
+
+#: classes/Notifications/Gateways/Twilio.php:31
+msgid "Twilio"
+msgstr ""
+
+#: classes/Promotions.php:151
+msgid "Unable to create coupon."
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:628
+msgid "Under review"
+msgstr ""
+
+#: modules/MarketplaceCompliance/Rest.php:174
+#: modules/MarketplaceCompliance/Rest.php:232
+#: modules/Knowledgebase/Rest.php:199 modules/Knowledgebase/Rest.php:318
+#: modules/Knowledgebase/Rest.php:394 modules/Announcement/Rest.php:240
+#: modules/Announcement/Rest.php:298 modules/Announcement/Rest.php:440
+#: modules/Announcement/Rest.php:537 modules/Announcement/Rest.php:623
+#: modules/StoreReview/Rest.php:252 modules/StoreReview/Rest.php:297
+#: modules/StoreReview/Rest.php:421 modules/StoreReview/Rest.php:532
+#: modules/StoreReview/Rest.php:590 modules/StoreShipping/Rest.php:139
+#: modules/StoreShipping/Rest.php:227 modules/StoreShipping/Rest.php:269
+#: modules/StoreShipping/Rest.php:344 modules/StoreShipping/Rest.php:399
+#: modules/CustomerQueries/Rest.php:229 modules/CustomerQueries/Rest.php:376
+#: modules/FollowStore/Rest.php:186 modules/FollowStore/Rest.php:267
+#: modules/FollowStore/Rest.php:379 modules/MarketplaceRefund/Rest.php:272
+#: classes/RestAPI/Controllers/Notifications.php:267
+#: classes/RestAPI/Controllers/Notifications.php:452
+#: classes/RestAPI/Controllers/Notifications.php:482
+#: classes/RestAPI/Controllers/Status.php:101
+#: classes/RestAPI/Controllers/Status.php:186
+#: classes/RestAPI/Controllers/Transactions.php:219
+#: classes/RestAPI/Controllers/Tour.php:112
+#: classes/RestAPI/Controllers/Tour.php:157
+#: classes/RestAPI/Controllers/Stores.php:405
+#: classes/RestAPI/Controllers/Stores.php:716
+#: classes/RestAPI/Controllers/Stores.php:867
+#: classes/RestAPI/Controllers/Stores.php:1305
+#: classes/RestAPI/Controllers/Commissions.php:275
+#: classes/RestAPI/Controllers/Commissions.php:308
+#: classes/RestAPI/Controllers/Commissions.php:346
+#: classes/RestAPI/Controllers/Settings.php:206
+#: classes/RestAPI/Controllers/Settings.php:248
+msgid "Unexpected server error"
+msgstr ""
+
+#: modules/FollowStore/widgets/StoreFollow.php:114
+#: modules/FollowStore/Tags/StoreFollow.php:92
+msgid "Unfollow"
+msgstr ""
+
+#: classes/Notifications/Gateways/Clickatell.php:75
+#: classes/Notifications/Gateways/Vonage.php:77
+msgid "Unknown error"
+msgstr ""
+
+#: modules/StoreReview/widgets/StoreRating.php:144
+msgid "Unmarked Star Color"
+msgstr ""
+
+#: classes/Promotions.php:224
+msgid "Update Now"
+msgstr ""
+
+#: classes/MultiVendorX.php:260 classes/Tracker.php:66 classes/Admin.php:190
+#: classes/Admin.php:198
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:194
+msgid "Upload an image of the product"
+msgstr ""
+
+#: templates/store/store-review.php:94
+msgid "Upload Images"
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:134
+msgid ""
+"URL Stripe uses to return sellers after OAuth approval. Must match the "
+"Stripe app settings."
+msgstr ""
+
+#: classes/Payments/PaypalPayout.php:50
+msgid ""
+"Use <strong>Sandbox</strong> to test payouts using PayPal developer test "
+"accounts. Switch to <strong>Live</strong> when you are ready to send real "
+"payouts to stores from your PayPal business account.<br/><a href=\"https:"
+"//developer.paypal.com/tools/sandbox/\" class=\"link-item\" target=\"blank\">"
+"Create and manage PayPal sandbox accounts <i class=\"adminfont-external\"/>"
+"</i></a>"
+msgstr ""
+
+#: classes/RestAPI/Rest.php:629
+msgid "Variation SKU is not generated!"
+msgstr ""
+
+#: classes/Status.php:46
+msgid "Version"
+msgstr ""
+
+#: classes/MultiVendorX.php:255
+msgid "View WooCommerce documentation"
+msgstr ""
+
+#: classes/MultiVendorX.php:256
+msgid "Visit community forums"
+msgstr ""
+
+#: classes/Notifications/Gateways/Vonage.php:31
+msgid "Vonage (nexmo)"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:158
+msgid "Wallet"
+msgstr ""
+
+#: classes/Promotions.php:93
+msgid ""
+"Want to help make <strong>MultiVendorX</strong> even better? Allow anonymous "
+"usage tracking and receive a <strong>10% discount coupon</strong> for "
+"premium extensions."
+msgstr ""
+
+#: classes/Promotions.php:66
+msgid ""
+"We appreciate you using MultiVendorX. If it has helped your business, please "
+"consider leaving a quick review."
+msgstr ""
+
+#: classes/Promotions.php:98
+msgid ""
+"We collect non-sensitive diagnostic and usage data, including your site URL, "
+"WordPress and PHP versions, active plugins and themes, and your email "
+"address to send the discount coupon."
+msgstr ""
+
+#: classes/Tracker.php:158
+msgid ""
+"We collect non-sensitive diagnostic data and plugin usage information along "
+"with your feedback."
+msgstr ""
+
+#: classes/Tracker.php:251
+msgid "We're sorry to see you leave 😔"
+msgstr ""
+
+#: classes/Promotions.php:94
+msgid "What we collect."
+msgstr ""
+
+#: classes/Widgets.php:40
+msgid "Widgets for MultiVendorX store pages only."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Transactions.php:405
+msgid "Withdrawal request submitted successfully."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Dashboard.php:170
+msgid "Withdrawals"
+msgstr ""
+
+#: classes/Tracker.php:253
+msgid "Would you quickly share your reason for deactivating?"
+msgstr ""
+
+#: modules/WPML/Rest.php:164
+msgid "WPML Failed"
+msgstr ""
+
+#: modules/WPML/Rest.php:191
+msgid "WPML not active"
+msgstr ""
+
+#: classes/Tracker.php:62
+msgid "Write a Review"
+msgstr ""
+
+#: templates/store/store-review.php:56
+msgid "Write a review"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Transactions.php:366
+msgid "You already have a pending withdrawal request."
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:198
+msgid "You can select multiple images."
+msgstr ""
+
+#: modules/StoreReview/Ajax.php:71 modules/StoreReview/Rest.php:339
+msgid "You have already reviewed this store."
+msgstr ""
+
+#: templates/store/store-review.php:46
+msgid "You have already submitted a review for this store."
+msgstr ""
+
+#: modules/FollowStore/Tags/StoreFollow.php:97
+msgid "You must log in to follow."
+msgstr ""
+
+#: classes/Payments/PaypalPayout.php:72
+msgid ""
+"Your app's public identifier issued by PayPal. Each environment (Sandbox / "
+"Live) has a different Client ID — make sure you use the one that matches "
+"your selected Payment Mode."
+msgstr ""
+
+#: classes/Payments/StripeConnect.php:84 classes/Payments/StripeConnect.php:97
+msgid ""
+"Your application's unique identifier for Stripe Connect OAuth. Matches the "
+"selected Payment Mode."
+msgstr ""
+
+#: classes/Frontend.php:243 classes/Frontend.php:258
+msgid ""
+"Your cart has products from various stores. They’ll be processed and shipped "
+"individually, so expect more than one delivery."
+msgstr ""
+
+#: templates/store/store-single-product-customer-queries-tab.php:51
+msgid ""
+"Your question has been submitted successfully. It will appear once answered."
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:248
+msgid "Your refund period has expired"
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:265
+msgid "Your refund period has expired."
+msgstr ""
+
+#: modules/MarketplaceRefund/Frontend.php:250
+#: modules/MarketplaceRefund/Frontend.php:276
+msgid "Your request is pending."
+msgstr ""
+
+#: templates/store/store-review.php:67
+msgid "Your Review"
+msgstr ""
+
+#: modules/StoreShipping/Rest.php:179
+msgid "Zone ID is required"
+msgstr ""
+
+#: classes/Product.php:179
+msgid "— No change —"
+msgstr ""

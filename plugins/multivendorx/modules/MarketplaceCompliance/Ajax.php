@@ -105,11 +105,11 @@ class Ajax {
         // Extract reason values.
         $reason_list = array();
         foreach ( $reasons as $reason ) {
-            $reason_list[] = $reason['title'];
+            $reason_list[] = __( $reason['title'], 'multivendorx' );
         }
 
         // Add an "Other" option at the end.
-        $reason_list[] = 'Other';
+        $reason_list[] = __( 'Other', 'multivendorx' );
 
         // Send the final list back as JSON.
         wp_send_json_success( $reason_list );
