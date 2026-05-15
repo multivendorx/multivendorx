@@ -111,10 +111,6 @@ class Shortcode {
         ob_start();
         ?>
         <div id="multivendorx-registration-form" class="woocommerce">
-            <div class="multivendorx-registration-loader">
-                <span class="multivendorx-loader-spinner"></span>
-                <p><?php esc_html_e( 'Loading registration form...', 'multivendorx' ); ?></p>
-            </div>
         </div>
         <?php
         // Return the output buffer content.
@@ -140,14 +136,7 @@ class Shortcode {
         FrontendScripts::enqueue_style( 'multivendorx-common-block-style' );
         FrontendScripts::localize_scripts( 'multivendorx-marketplace-stores-script' );
 
-        return '<div id="marketplace-stores" data-attributes="' . esc_attr( $json_attrs ) . '">
-            <div id="multivendorx-registration-form" class="woocommerce">
-                <div class="multivendorx-registration-loader">
-                    <span class="multivendorx-loader-spinner"></span>
-                    <p>' . esc_html__( 'Loading stores...', 'multivendorx' ) . '</p>
-                </div>
-            </div>
-        </div>';
+        return '<div id="marketplace-stores" data-attributes="' . $json_attrs . '"></div>';
     }
     /**
      * Display products list.
@@ -163,12 +152,7 @@ class Shortcode {
         FrontendScripts::enqueue_script( 'multivendorx-marketplace-products-script' );
         FrontendScripts::localize_scripts( 'multivendorx-marketplace-products-script' );
 
-        return '<div id="marketplace-products" data-attributes="' . esc_attr( $json_attrs ) . '">
-            <div class="multivendorx-registration-loader">
-                <span class="multivendorx-loader-spinner"></span>
-                <p>' . esc_html__( 'Loading products...', 'multivendorx' ) . '</p>
-            </div>
-        </div>';  
+        return '<div id="marketplace-products" data-attributes="' . $json_attrs . '"></div>';  
     }
     /**
      * Display coupons list.
@@ -185,12 +169,7 @@ class Shortcode {
         FrontendScripts::localize_scripts( 'multivendorx-marketplace-coupons-script' );
         FrontendScripts::enqueue_style( 'multivendorx-common-block-style' );
 
-        return '<div id="marketplace-coupons" data-attributes="' . esc_attr( $json_attrs ) . '">
-            <div class="multivendorx-registration-loader">
-                <span class="multivendorx-loader-spinner"></span>
-                <p>' . esc_html__( 'Loading coupons...', 'multivendorx' ) . '</p>
-            </div>
-        </div>';    
+        return '<div id="marketplace-coupons" data-attributes="' . $json_attrs . '"></div>';    
     }
 
     public function snake_to_camel_case( $array ) {
