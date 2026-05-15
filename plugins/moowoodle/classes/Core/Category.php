@@ -37,7 +37,7 @@ class Category {
 		}
 
         $table = $wpdb->prefix . Util::TABLES['category'];
-		$query = "SELECT * FROM $table";
+		$query = "SELECT * FROM {$table}";
         if ( ! empty( $args ) ) {
             $in     = implode( ',', array_map( 'intval', $args ) );
             $query .= " WHERE id IN ($in)";
@@ -59,21 +59,22 @@ class Category {
 	 * @return bool|int False on failure, number of rows affected on success.
 	 */
 	public static function update_course_category( $args ) {
-        global $wpdb;
+		global $wpdb;
 
-        if ( empty( $args['id'] ) ) {
-            return false;
-        }
+		if ( empty( $args['id'] ) ) {
+			return false;
+		}
 
-        $table = $wpdb->prefix . Util::TABLES['category'];
-        $args = array(
+		$table = $wpdb->prefix . Util::TABLES['category'];
+
+		$data = array(
 			'id'        => (int) $args['id'],
 			'name'      => sanitize_text_field( $args['name'] ?? '' ),
 			'parent_id' => (int) ( $args['parent_id'] ?? 0 ),
 		);
 
-		return $wpdb->replace( $table, $args ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-    }
+		return $wpdb->replace( $table, $data ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+	}
 
 	/**
 	 * Insert or update multiple course categories in the local table.
@@ -87,14 +88,14 @@ class Category {
 	 *   - 'parent' (int): Optional parent category ID.
 	 */
 	public static function update_course_categories( $categories ) {
-		if ( empty( $categories ) || ! is_array( $categories ) ) {
+		if ( ! is_array( $categories ) || empty( $categories ) ) {
 			return;
 		}
 
 		foreach ( $categories as $category ) {
 			$args = array(
 				'id'        => (int) $category['id'],
-				'name'      => trim( sanitize_text_field( $category['name'] ) ),
+				'name'      => sanitize_text_field( $category['name'] ),
 				'parent_id' => (int) ( $category['parent'] ?? 0 ),
 			);
 
@@ -108,7 +109,7 @@ class Category {
 	 *
 	 * @param int         $category_id Moodle category ID.
 	 * @param string|null $taxonomy    Optional. Taxonomy name. Default null.
-	 * @return object|null Term object on success, or null if not found.
+	 * @return string|array|null Term object on success, or null if not found.
 	 */
 	public static function get_product_category( $category_id, $taxonomy = '' ) {
 		if ( ! $category_id || empty( $taxonomy ) || ! taxonomy_exists( $taxonomy ) ) {
@@ -131,7 +132,7 @@ class Category {
             )
         );
 
-		if ( is_wp_error( $terms ) || empty( $terms ) ) {
+		if ( is_wp_error( $terms ) ) {
 			return null;
 		}
 
@@ -173,7 +174,7 @@ class Category {
 			);
 
 			if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
-				add_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['category_id'], $category['id']);
+				add_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['category_id'], $category['id'], true );
             }
 		}
 
@@ -204,7 +205,7 @@ class Category {
 			return;
 		}
 
-		if ( empty( $categories ) || ! is_array( $categories ) ) {
+		if ( ! is_array( $categories ) || empty( $categories ) ) {
 			return;
 		}
 		$updated_ids = array();

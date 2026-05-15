@@ -183,7 +183,9 @@ class Product {
 			Util::increment_sync_count( 'course' );
 		}
 
-		self::draft_missing_products( $updated_ids );
+		if ( ! empty( $updated_ids ) ) {
+			self::draft_missing_products( $updated_ids );
+		}
 	}
 
 	/**
