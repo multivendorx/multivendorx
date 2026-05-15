@@ -135,9 +135,10 @@ class Course {
 		}
 
 		$table    = $wpdb->prefix . Util::TABLES['course'];
-		$existing = reset( self::get_courses( array( 'moodle_course_id' => $args['moodle_course_id'] ) ) );
+		$existing_course = self::get_courses( array( 'moodle_course_id' => $args['moodle_course_id'] ) );
+		$existing = reset($existing_course);
 
-		if ( $existing ) {
+		if ( ! empty( $existing ) ) {
 			return $wpdb->update( $table, $args, array( 'moodle_course_id' => $args['moodle_course_id'] ) ) !== false // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 				? $existing['id']
 				: false;
@@ -158,6 +159,10 @@ class Course {
 	 * @return void
 	 */
 	public function update_courses( $courses, $force_delete = true ) {
+		if ( empty( $courses ) || ! is_array( $courses ) ) {
+			return;
+		}
+
         foreach ( $courses as $course ) {
             // Skip site format courses.
             if ( 'site' === $course['format'] ) {
@@ -220,6 +225,9 @@ class Course {
         global $wpdb;
 
         $exclude_ids      = array_map( 'intval', (array) $exclude_ids );
+		if ( empty( $exclude_ids ) ) {
+			return;
+		}
         $existing_courses = self::get_courses();
         $existing_ids     = array_column( $existing_courses, 'id' );
 
