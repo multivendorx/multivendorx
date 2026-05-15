@@ -37,14 +37,13 @@ class Category {
 		}
 
         $table = $wpdb->prefix . Util::TABLES['category'];
-		if ( empty( $args ) ) {
-			return $wpdb->get_results("SELECT * FROM {$table}", ARRAY_A); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		}
-
-		$placeholders = implode( ',', array_map( 'intval', $args ) );
-		$query = $wpdb->prepare("SELECT * FROM {$table} WHERE id IN ($placeholders)", $args);
-
-		return $wpdb->get_results($query, ARRAY_A); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$query = "SELECT * FROM $table";
+        if ( ! empty( $args ) ) {
+            $in     = implode( ',', array_map( 'intval', $args ) );
+            $query .= " WHERE id IN ($in)";
+        }
+		$results = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		return $results;
     }
 
 	/**
