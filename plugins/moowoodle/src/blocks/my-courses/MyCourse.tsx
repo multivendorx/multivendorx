@@ -59,29 +59,6 @@ const MyCourse: React.FC = () => {
 			);
 		}
 
-		if (error) {
-			return (
-				<tr className="woocommerce-orders-table__row">
-					<td className="woocommerce-orders-table__cell" colSpan={5}>
-						{error}
-					</td>
-				</tr>
-			);
-		}
-
-		if (!courses.length) {
-			return (
-				<tr className="woocommerce-orders-table__row">
-					<td className="woocommerce-orders-table__cell">
-						{__(
-							"You haven't purchased any courses yet.",
-							'moowoodle'
-						)}
-					</td>
-				</tr>
-			);
-		}
-
 		return courses.map((course, index) => (
 			<tr key={index} className="woocommerce-orders-table__row">
 				<td
@@ -173,33 +150,49 @@ const MyCourse: React.FC = () => {
 
 	return (
 		<div className="moowoodle-my-courses woocommerce-js">
-			<table className="moowoodle-table shop_table shop_table_responsive my_account_orders">
-				<thead>
-					<tr>
-						<th className="woocommerce-orders-table__header">
-							{__('Username', 'moowoodle')}
-						</th>
-						<th className="woocommerce-orders-table__header">
-							{__('Course Name', 'moowoodle')}
-						</th>
-						<th className="woocommerce-orders-table__header">
-							{__('Enrolment Date', 'moowoodle')}
-						</th>
-						<th className="woocommerce-orders-table__header">
-							{__(
-								'Password (First Time Login only)',
-								'moowoodle'
-							)}
-						</th>
-						<th className="woocommerce-orders-table__header">
-							{__('Action', 'moowoodle')}
-						</th>
-					</tr>
-				</thead>
-				<tbody>{renderTableContent()}</tbody>
-			</table>
-
-			{renderPagination()}
+			{courses.length ? (
+				<>
+					<table className="moowoodle-table shop_table shop_table_responsive my_account_orders">
+						<thead>
+							<tr>
+								<th className="woocommerce-orders-table__header">
+									{__('Username', 'moowoodle')}
+								</th>
+								<th className="woocommerce-orders-table__header">
+									{__('Course Name', 'moowoodle')}
+								</th>
+								<th className="woocommerce-orders-table__header">
+									{__('Enrolment Date', 'moowoodle')}
+								</th>
+								<th className="woocommerce-orders-table__header">
+									{__(
+										'Password (First Time Login only)',
+										'moowoodle'
+									)}
+								</th>
+								<th className="woocommerce-orders-table__header">
+									{__('Action', 'moowoodle')}
+								</th>
+							</tr>
+						</thead>
+						<tbody>{renderTableContent()}</tbody>
+					</table>
+					{renderPagination()}
+				</>
+			): (
+				<div className="woocommerce-notices-wrapper">
+					<ul className="woocommerce-error" role="alert">
+						<li>{__("You haven't purchased any courses yet.", 'moowoodle')}</li>
+					</ul>
+				</div>
+			)}
+			{error && (
+				<div className="woocommerce-notices-wrapper">
+					<ul className="woocommerce-error" role="alert">
+						<li>{error}</li>
+					</ul>
+				</div>
+			)}
 		</div>
 	);
 };
