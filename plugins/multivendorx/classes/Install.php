@@ -354,8 +354,7 @@ class Install {
     /**
      * Create database triggers.
      */
-    public function 
-    create_database_triggers() {
+    public function create_database_triggers() {
         global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
