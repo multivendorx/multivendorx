@@ -29,16 +29,13 @@ type TransactionRow = {
 
 const Transactions: React.FC = () => {
 
-	/**
-	 * Render facilitator component dynamically
-	 */
-	const facilitatorComponent = applyFilters(
-		'multivendorx_facilitator_transaction_component',
+	const transactionComponent = applyFilters(
+		'multivendorx_store_dashboard_transactions_page_component',
 		null
 	);
 
-	if (facilitatorComponent) {
-		return facilitatorComponent;
+	if (transactionComponent) {
+		return transactionComponent;
 	}
 
 	const [rows, setRows] = useState<TableRow[][]>([]);
