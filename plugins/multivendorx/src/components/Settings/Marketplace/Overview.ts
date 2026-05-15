@@ -18,7 +18,7 @@ export default {
 			type: 'select',
 			label: __('Store registration page', 'multivendorx'),
 			desc: __(
-				'Choose the page with [store_registration] shortcode, this is where stores sign up.',
+				'Choose the page with [marketplace_registration] shortcode, this is where stores sign up.',
 				'multivendorx'
 			),
 			size: 30,
@@ -29,7 +29,7 @@ export default {
 			type: 'select',
 			label: __('Store dashboard page', 'multivendorx'),
 			desc: __(
-				'The page with [marketplace_store] shortcode will act as the store’s control center.',
+				'The page with [marketplace_dashboard] shortcode will act as the store’s control center.',
 				'multivendorx'
 			),
 			size: 30,

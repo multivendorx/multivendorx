@@ -18,7 +18,6 @@ use MooWoodle\Util;
  */
 class Category {
 
-
 	/**
 	 * Retrieve course categories by ID(s).
 	 *
@@ -31,9 +30,9 @@ class Category {
 	public static function get_course_category( $args ) {
         global $wpdb;
         // Normalize input to an array.
-        if ( is_int( $args ) ) {
-            $args = array( $args );
-        } elseif ( ! is_array( $args ) ) {
+        if ( is_numeric( $args ) ) {
+			$args = array( (int) $args );
+		} elseif ( ! is_array( $args ) ) {
 			$args = array();
 		}
 

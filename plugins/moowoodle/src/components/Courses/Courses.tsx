@@ -20,9 +20,11 @@ interface CourseRow {
 	category_url?: string;
 	date?: string;
 	products?: Record<string, string>;
-	enroled_user?: number;
+	enrolled_user?: number;
 	view_users_url?: string;
-	productimage?: string;
+	product_image?: string;
+	product_name?: string;
+	product_url?: string;
 	status?: string;
 }
 
@@ -136,7 +138,7 @@ const Course: React.FC = () => {
 					title={row.course_name}
 					titleLink={row.moodle_url}
 					avatar={{
-						image: row.productimage,
+						image: row.product_image,
 						iconClass: 'subscription-courses',
 					}}
 				/>
@@ -155,36 +157,33 @@ const Course: React.FC = () => {
 			label: __('Product', 'moowoodle'),
 			render: (row: CourseRow) => (
 				<>
-					{row.products && Object.keys(row.products).length
-						? Object.entries(row.products).map(
-								([name, url], index) => (
-									<div key={index} className="action-section">
-										<div>{name}</div>
-										<div className="action-btn">
-											<a
-												target="_blank"
-												rel="noreferrer"
-												href={url}
-												className=""
-											>
-												{__(
-													'Edit product',
-													'moowoodle'
-												)}
-											</a>
-										</div>
-									</div>
-								)
-							)
+					{row.product_name 
+						? 
+						<div className="action-section">
+							<div>{row.product_name}</div>
+							<div className="action-btn">
+								<a
+									target="_blank"
+									rel="noreferrer"
+									href={row.product_url}
+									className=""
+								>
+									{__(
+										'Edit product',
+										'moowoodle'
+									)}
+								</a>
+							</div>
+						</div>	
 						: '-'}
 				</>
 			),
 		},
-		enroled_user: {
+		enrolled_user: {
 			label: __('Enrolled users', 'moowoodle'),
 			render: (row: CourseRow) => (
 				<div className="action-section">
-					<div>{row.enroled_user || 0}</div>
+					<div>{row.enrolled_user || 0}</div>
 					<div className="action-btn">
 						<a
 							target="_blank"
