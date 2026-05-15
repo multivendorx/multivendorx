@@ -2,7 +2,7 @@ import { render, useEffect, useState } from '@wordpress/element';
 import { RadioControl, SelectControl, Spinner, Notice, BaseControl, Disabled } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
-import './index.scss';
+import './tab.scss';
 
 const ProductTab = () => {
 	const [linkType, setLinkType] = useState(moowoodleProduct.linkType || '');
@@ -26,7 +26,8 @@ const ProductTab = () => {
 		const endpoint = 'course' === linkType ? 'courses' : 'cohorts';
 
 		apiFetch({
-			path: `/moowoodle/v1/${endpoint}?product_tab=true&post_id=${moowoodleProduct.postId}`,
+			path: `/moowoodle/v1/${endpoint}?unlinked_resources_for=${moowoodleProduct.postId}&row=-1`,
+			method: 'GET',
 		})
 			.then((response) => {
 				const formattedOptions = response.items.map((item) => ({

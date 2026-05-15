@@ -57,7 +57,7 @@ class Courses extends \WP_REST_Controller {
      * Get items.
      *
      * @param \WP_REST_Request $request Request object.
-     * @return \WP_REST_Response|WP_Error
+     * @return \WP_REST_Response|\WP_Error
      */
     public function get_items( $request ) {
         $nonce_check = Util::validate_nonce( $request );
@@ -67,36 +67,17 @@ class Courses extends \WP_REST_Controller {
         }
 
         try {
-            $product_tab = $request->get_param( 'product_tab' );
-            if ( $product_tab ) {
-                $post_id = (int) $request->get_param('post_id');
-                $wordpress_course_id = get_post_meta( $post_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
-                $linkable_courses = MooWoodle()->course->get_courses(
-                    array(
-                        'id'         => $wordpress_course_id,
-                        'product_id' => 0,
-                        'condition'  => 'OR',
-                    )
-                );
-                return rest_ensure_response(
-                    array(
-                        'items'       => $linkable_courses,
-				        'selected_id' => $wordpress_course_id,
-                    )
-                );
-            }
-
-            $options = $request->get_param( 'options' );
-            if ( $options ) {
+            if ( $request->get_param( 'options' ) ) {
                 return $this->get_filter_items( $request );
             }
 
-            $limit          = max( intval( $request->get_param( 'row' ) ), 10 );
+            $limit          = intval( $request->get_param( 'row' ) ) ?: 10;
             $page           = max( intval( $request->get_param( 'page' ) ), 1 );
             $offset         = ( $page - 1 ) * $limit;
             $category_field = $request->get_param( 'category' );
             $search_action  = $request->get_param( 'searchaction' );
             $search_field   = $request->get_param( 'search' );
+            $get_product_id     = $request->get_param( 'unlinked_resources_for' );
 
             // Base filter array.
             $filters = array(
@@ -114,6 +95,13 @@ class Courses extends \WP_REST_Controller {
                 $filters['shortname'] = $search_field;
             }
 
+            if ( ! empty( $get_product_id ) ) {
+                $selected_course_id = (int) get_post_meta( $get_product_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
+                $filters['id'] = $selected_course_id;
+                $filters['product_id'] = 0;
+                $filters['condition'] = 'OR';
+            }
+
             // Get paginated courses.
             $courses = MooWoodle()->course->get_courses( $filters );
 
@@ -121,41 +109,47 @@ class Courses extends \WP_REST_Controller {
                 return rest_ensure_response( array() );
             }
 
+            if ( !empty( $get_product_id ) ) {
+                return rest_ensure_response(
+                    array(
+                        'items'       => $courses,
+				        'selected_id' => $selected_course_id ?? 0,
+                    )
+                );
+            }
+
             $formatted_courses = array();
-
+            $moodle_base_url = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) );
             foreach ( $courses as $course ) {
-                $synced_products = array();
                 $product_image   = '';
+                $product_name   = '';
+                $product_url   = '';
 
-                if ( $course['product_id'] ) {
-                    $product = wc_get_product( (int)$course['product_id'] );
+                if ( ! empty( $course['product_id'] ) ) {
+                    $product = wc_get_product( (int) $course['product_id'] );
                     if ( $product ) {
-                        $synced_products[ $product->get_name() ] = add_query_arg(
-                            array(
-                                'post'   => $product->get_id(),
-                                'action' => 'edit',
-                            ),
-                            admin_url( 'post.php' )
-                        );
-                        $product_image                           = wp_get_attachment_url( $product->get_image_id() );
+                        $product_name = $product->get_name();
+                        $product_url = admin_url( 'post.php?post=' . $product->get_id() . '&action=edit' );
+                        $product_image = wp_get_attachment_url( $product->get_image_id() );
                     }
                 }
 
                 $start = ! empty( $course['startdate'] ) ? wp_date( 'M j, Y', $course['startdate'] ) : __( 'Not Set', 'moowoodle' );
                 $end   = ! empty( $course['enddate'] ) ? wp_date( 'M j, Y', $course['enddate'] ) : __( 'Not Set', 'moowoodle' );
-                $date  = ( ! empty( $course['startdate'] ) || ! empty( $course['enddate'] ) ) ? "$start - $end" : 'NA';
+                $date  = ( ! empty( $course['startdate'] ) || ! empty( $course['enddate'] ) ) ? sprintf( '%s - %s', $start, $end ) : 'NA';
 
-                $moodle_url    = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) ) . "course/edit.php?id={$course['moodle_course_id']}";
-                $view_user_url = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) ) . "user/index.php?id={$course['moodle_course_id']}";
+                $moodle_url    =  $moodle_base_url . "course/edit.php?id={$course['moodle_course_id']}";
+                $view_user_url = $moodle_base_url . "user/index.php?id={$course['moodle_course_id']}";
 
                 // Get categories.
                 $categories = MooWoodle()->category->get_course_category( (int) $course['category_id'] );
                 $categories = reset( $categories );
 
                 // Get enrolled users count.
-                $enroled_user = MooWoodle()->enrollment->get_enrollments(
+                $enrolled_users = MooWoodle()->enrollment->get_enrollments(
                     array(
                         'course_id' => $course['id'],
+                        'count'     => true,
                     )
                 );
 
@@ -167,10 +161,11 @@ class Courses extends \WP_REST_Controller {
                         'moodle_course_id'  => $course['moodle_course_id'],
                         'course_short_name' => $course['shortname'],
                         'course_name'       => $course['fullname'],
-                        'products'          => $synced_products,
-                        'productimage'      => $product_image,
-                        'category_name'     => $categories['name'],
-                        'enroled_user'      => count( $enroled_user ),
+                        'product_name'      => $product_name,
+                        'product_url'       => $product_url,
+                        'product_image'     => $product_image,
+                        'category_name'     => $categories['name'] ?? '',
+                        'enrolled_user'     => $enrolled_users,
                         'view_users_url'    => $view_user_url,
                         'date'              => $date,
                     )
@@ -198,15 +193,12 @@ class Courses extends \WP_REST_Controller {
      * Returns formatted course and category options
      * for filter dropdown fields.
      *
-     * @param WP_REST_Request $request Request object.
-     * @return WP_REST_Response|WP_Error
+     * @param \WP_REST_Request $request Request object.
+     * @return \WP_REST_Response|\WP_Error
      */
     public function get_filter_items( $request ) {
-
-        $plugin = MooWoodle();
-
         // Fetch all courses.
-        $courses = $plugin->course->get_courses();
+        $courses = MooWoodle()->course->get_courses();
 
         if ( empty( $courses ) ) {
             return rest_ensure_response(
@@ -223,7 +215,7 @@ class Courses extends \WP_REST_Controller {
         );
 
         // Fetch categories.
-        $categories = $plugin->category->get_course_category(
+        $categories = MooWoodle()->category->get_course_category(
             $category_ids
         );
 

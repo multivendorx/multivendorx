@@ -32,8 +32,6 @@ declare global {
 		apiUrl: string;
 		restUrl: string;
 		nonce: string;
-		moodle_site_url: string;
-		current_user_id: number;
 	}
 
 	declare module '*.png';

@@ -33,15 +33,12 @@ class MyCourses extends \WP_REST_Controller {
 
         register_rest_route(
             MooWoodle()->rest_namespace,
-            '/' . $this->rest_base . '/(?P<id>[\d]+)',
+            '/' . $this->rest_base,
             array(
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
                     'permission_callback' => array( $this, 'get_item_permissions_check' ),
-                    'args'                => array(
-                        'id' => array( 'required' => true ),
-                    ),
                 ),
             )
         );
@@ -69,8 +66,8 @@ class MyCourses extends \WP_REST_Controller {
         }
 
         try {
-            $items_per_page = max( 1, (int) $request->get_param( 'row' ) ?: 10 );
-            $page_number    = max( 1, (int) $request->get_param( 'page' ) ?: 1 );
+            $items_per_page = max( 1, intval( $request->get_param( 'row' ) ?? 10 ) );
+            $page_number    = max( 1, intval( $request->get_param( 'page' ) ?? 1 ) );
             $query_offset   = ( $page_number - 1 ) * $items_per_page;
 
             // Allow pre-filtering by custom filters.
@@ -79,20 +76,26 @@ class MyCourses extends \WP_REST_Controller {
                 return $user_courses_data;
             }
 
+            $enrollment_args = array(
+                'user_id' => MooWoodle()->current_user_id,
+                'status'  => 'enrolled',
+            );
+
             // Fetch paginated enrollments.
             $user_enrollments = MooWoodle()->enrollment->get_enrollments(
-                array(
-                    'user_id'    => MooWoodle()->current_user_id,
-                    'status'     => 'enrolled',
-                    'limit'      => $items_per_page,
-                    'offset'     => $query_offset,
-                    'meta_query' => array(
-                        array(
-                            'key'     => 'course_id',
-                            'value'   => '0',
-                            'compare' => '!=',
+                array_merge(
+                    $enrollment_args,
+                    array(
+                        'limit'      => $items_per_page,
+                        'offset'     => $query_offset,
+                        'meta_query' => array(
+                            array(
+                                'key'     => 'course_id',
+                                'value'   => '0',
+                                'compare' => '!=',
+                            ),
                         ),
-                    ),
+                    )
                 )
             );
             $response         = rest_ensure_response( array() );
@@ -117,9 +120,11 @@ class MyCourses extends \WP_REST_Controller {
                 $course = reset( $course );
 
                 $formatted_enrolled_date = '';
-
-                if ( ! empty( $enrollment['enrollment_date'] ) && strtotime( $enrollment['enrollment_date'] ) ) {
-                    $formatted_enrolled_date = wp_date('M j, Y - H:i',strtotime( $enrollment['enrollment_date'] ));
+                if ( ! empty( $enrollment['enrollment_date'] ) ) {
+                    $timestamp = strtotime( $enrollment['enrollment_date'] );
+                    if ( $timestamp ) {
+                        $formatted_enrolled_date = wp_date( 'M j, Y - H:i', $timestamp );
+                    }
                 }
 
                 $formatted_courses[] = array(
@@ -138,10 +143,11 @@ class MyCourses extends \WP_REST_Controller {
             }
 
             $total_user_enrollments = MooWoodle()->enrollment->get_enrollments(
-                array(
-                    'user_id' => MooWoodle()->current_user_id,
-                    'status'  => 'enrolled',
-                    'count'   => true,
+                array_merge(
+                    $enrollment_args,
+                    array(
+                        'count' => true,
+                    )
                 )
             );
 

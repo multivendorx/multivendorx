@@ -23,7 +23,7 @@ class Course {
      */
 	public function __construct() {
 		// Add Link Moodle Course in WooCommerce edit product tab.
-		add_filter( 'add_meta_boxes', array( &$this, 'add_additional_metabox' ) );
+		add_action( 'add_meta_boxes', array( &$this, 'add_additional_metabox' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ), 20 );
 	}
 
@@ -37,6 +37,7 @@ class Course {
 		if ( empty( $screen ) || 'product' !== $screen->post_type ) {
 			return;
 		}
+		
 		FrontendScripts::enqueue_style( 'moowoodle-moodle-enrollment-mapping' );
 		FrontendScripts::enqueue_script( 'moowoodle-moodle-enrollment-mapping' );
 		FrontendScripts::localize_scripts( 'moowoodle-moodle-enrollment-mapping' );

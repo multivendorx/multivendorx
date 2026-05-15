@@ -206,6 +206,7 @@ class Util {
 	public static function set_sync_status( $status, $key ) {
 		$status_history   = get_transient( 'moowoodle_sync_status_' . $key );
 		$status_history   = is_array( $status_history ) ? $status_history : array();
+        $status['current'] = 0;
 		$status_history[] = $status;
 
 		set_transient( 'moowoodle_sync_status_' . $key, $status_history, 3600 );
@@ -308,7 +309,7 @@ class Util {
      * @param \Exception $exception Exception object.
      * @return \WP_Error
      */
-    public function server_error( \Exception $exception ) {
+    public static function server_error( \Exception $exception ) {
 
         MooWoodle()->util->log( $exception );
 
