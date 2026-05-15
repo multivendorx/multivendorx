@@ -28,17 +28,17 @@ type TransactionRow = {
 };
 
 const Transactions: React.FC = () => {
-	
+
 	/**
 	 * Render facilitator component dynamically
 	 */
-	if (
-		appLocalizer?.current_user?.roles?.includes('facilitator')
-	) {
-		return applyFilters(
-			'multivendorx_facilitator_transaction_component',
-			null
-		);
+	const facilitatorComponent = applyFilters(
+		'multivendorx_facilitator_transaction_component',
+		null
+	);
+
+	if (facilitatorComponent) {
+		return facilitatorComponent;
 	}
 
 	const [rows, setRows] = useState<TableRow[][]>([]);
