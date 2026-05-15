@@ -17,7 +17,7 @@
 
     --theme-border-color:
         var(--wp--preset--color--border,
-        var(--ast-global-color-3,
+        var(--ast-border-color,
         var(--global-palette3,
         var(--border-color,
         #dddddd))));

@@ -132,13 +132,27 @@ const renderNoticeContent = (item: NoticeItem, onClose?: () => void) => (
     <>
         <i className={`admin-font adminfont-${item.type}`} />
 
-        <div className="notice-details">
+        <div 
+            className="notice-details"
+            style={
+                ({
+                    '--total-items': Array.isArray( item.message )
+                        ? item.message.length
+                        : 1,
+                    '--step-time': '4s',
+                    '--banner-duration': `${
+                        (Array.isArray( item.message )
+                            ? item.message.length
+                            : 1) * 4
+                    }s`,
+                } as React.CSSProperties)
+            }>
             {item.title && <div className="notice-text">{item.title}</div>}
 
             {Array.isArray(item.message) ? (
                 <>
                     {item.message.map((msg, i) => (
-                        <div key={i} className="notice-desc">
+                        <div key={i} className="notice-desc" style={ { animationDelay: `${ i * 4 }s`,} }>
                             <span dangerouslySetInnerHTML={{ __html: msg }} />
                             {item.actionLabel && (
                                 <div
