@@ -96,9 +96,9 @@ class Product {
         $term = MooWoodle()->category->get_product_category( $course['categoryid'], 'product_cat' );
 
         // Set product properties.
-        $product->set_name( $course['fullname'] );
-        $product->set_slug( $course['shortname'] );
-        $product->set_description( $course['summary'] );
+		$product->set_name( sanitize_text_field( $course['fullname'] ?? '' ) );
+		$product->set_slug( sanitize_title( $course['shortname'] ?? '' ) );
+		$product->set_description( wp_kses_post( $course['summary'] ?? '' ) );
         $product->set_status( 'publish' );
 		if ( $term && ! is_wp_error( $term ) ) {
 			$product->set_category_ids( array( $term->term_id ) );
@@ -110,7 +110,7 @@ class Product {
 		try {
 			$product->set_sku( $course['idnumber'] );
 		} catch ( \Exception $error ) {
-			Util::log( "Unable to set product's( id=" . $product->get_id() . ') SKU.' );
+			Util::log( sprintf( 'Unable to set SKU for product #%d: %s', $product->get_id(), $error->getMessage() ) );
 		}
 
 		// get the course id linked with moodle.
@@ -129,7 +129,12 @@ class Product {
         $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], $wp_course['id'] );
 		$product->save();
 
-		self::update_course_product_relation( $course['id'], $product->get_id() );
+		MooWoodle()->course->update_course(
+			array(
+				'moodle_course_id' => $course['id'],
+				'product_id'       => $product->get_id(),
+			)
+		);
 		return $product->get_id();
 	}
 
@@ -178,7 +183,9 @@ class Product {
 			Util::increment_sync_count( 'course' );
 		}
 
-		self::draft_missing_products( $updated_ids );
+		if ( ! empty( $updated_ids ) ) {
+			self::draft_missing_products( $updated_ids );
+		}
 	}
 
 	/**
@@ -270,7 +277,12 @@ class Product {
 			update_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], $link_item_id );
 			update_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], (int) $course['moodle_course_id'] );
 
-			self::update_course_product_relation( $course['moodle_course_id'], $product_id );
+			MooWoodle()->course->update_course(
+				array(
+					'moodle_course_id' => $course['moodle_course_id'],
+					'product_id'       => $product_id,
+				)
+			);
 		}
 
 		return $product_id;
@@ -291,7 +303,12 @@ class Product {
 		$moodle_course_id = absint( get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true ) );
 
 		if ( ! empty( $moodle_course_id ) ) {
-			self::update_course_product_relation( $moodle_course_id, 0 );
+			MooWoodle()->course->update_course(
+				array(
+					'moodle_course_id' => $moodle_course_id,
+					'product_id'       => 0,
+				)
+			);
 		}
 
 		delete_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'] );
@@ -306,7 +323,7 @@ class Product {
 	 */
 	public function modify_custom_meta_query( $wp_query_args, $query_vars ) {
 		if ( ! empty( $query_vars['meta_query'] ) ) {
-			$wp_query_args['meta_query'][] = $query_vars['meta_query'];
+			$wp_query_args['meta_query'] = array_merge( $wp_query_args['meta_query'] ?? array(), $query_vars['meta_query'] );
 		}
 
 		return $wp_query_args;
@@ -328,7 +345,12 @@ class Product {
 		$moodle_course_id = get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
 
 		if ( ! empty( $moodle_course_id ) ) {
-			self::update_course_product_relation( $moodle_course_id, 0 );
+			MooWoodle()->course->update_course(
+				array(
+					'moodle_course_id' => $moodle_course_id,
+					'product_id'       => 0,
+				)
+			);
 		}
 	}
 
@@ -348,7 +370,13 @@ class Product {
 		$moodle_course_id = get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
 
 		if ( ! empty( $moodle_course_id ) ) {
-			self::update_course_product_relation( $moodle_course_id, $product_id);
+			MooWoodle()->course->update_course(
+				array(
+					'moodle_course_id' => $moodle_course_id,
+					'product_id'       => $product_id,
+				)
+			);
+			
 		}
 	}
 
@@ -385,12 +413,4 @@ class Product {
 		}
 	}
 
-	public static function update_course_product_relation( $moodle_course_id, $product_id ) {
-		MooWoodle()->course->update_course(
-			array(
-				'moodle_course_id' => (int) $moodle_course_id,
-				'product_id'       => (int) $product_id,
-			)
-		);
-	}
 }
