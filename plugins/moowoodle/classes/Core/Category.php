@@ -29,24 +29,21 @@ class Category {
 	 */
 	public static function get_course_category( $args ) {
         global $wpdb;
-        // Normalize input to an array.
-        if ( is_numeric( $args ) ) {
+
+		if ( is_numeric( $args ) ) {
 			$args = array( (int) $args );
 		} elseif ( ! is_array( $args ) ) {
 			$args = array();
 		}
 
         $table = $wpdb->prefix . Util::TABLES['category'];
-		$sql = "SELECT * FROM $table";
-		if ( ! empty( $args ) ) {
-			$placeholders = implode( ',', array_map( 'intval', $args ) );
-			$sql .= " WHERE id IN ($placeholders)";
-			$query = $wpdb->prepare( $sql, ...$args );
-		} else {
-			$query = $sql;
-		}
-
-		return $wpdb->get_results( $query, ARRAY_A );
+		$query = "SELECT * FROM $table";
+        if ( ! empty( $args ) ) {
+            $in     = implode( ',', array_map( 'intval', $args ) );
+            $query .= " WHERE id IN ($in)";
+        }
+		$results = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		return $results;
     }
 
 	/**
@@ -98,7 +95,7 @@ class Category {
 			$args = array(
 				'id'        => (int) $category['id'],
 				'name'      => trim( sanitize_text_field( $category['name'] ) ),
-				'parent_id' => (int) ( $category['parent'] ),
+				'parent_id' => (int) ( $category['parent'] ?? 0 ),
 			);
 
 			self::update_course_category( $args );
@@ -123,6 +120,7 @@ class Category {
             array(
 				'taxonomy'   => $taxonomy,
 				'hide_empty' => false,
+				'number' => 1,
 				'meta_query' => array(
 					array(
 						'key'     => Util::MOOWOODLE_TERM_META['category_id'],
@@ -133,7 +131,6 @@ class Category {
             )
         );
 
-		// Check no category found.
 		if ( is_wp_error( $terms ) || empty( $terms ) ) {
 			return null;
 		}
@@ -151,6 +148,7 @@ class Category {
 	public static function update_product_category( $category, $taxonomy ) {
 
 		$term = self::get_product_category( $category['id'], $taxonomy );
+		$slug = sanitize_title( $category['name'] . '-' . $category['id'] );
 
 		// If term is exist update it.
 		if ( $term ) {
@@ -159,7 +157,7 @@ class Category {
 				$taxonomy,
 				array(
 					'name'        => $category['name'],
-					'slug'		  => sanitize_title( $category['name'] . '-' . $category['id'] ),
+					'slug'		  => $slug,
 					'description' => $category['description'],
 				)
 			);
@@ -170,12 +168,12 @@ class Category {
 				$taxonomy,
 				array(
 					'description' => $category['description'],
-					'slug'		  => sanitize_title( $category['name'] . '-' . $category['id'] ),
+					'slug'		  => $slug,
 				)
 			);
 
 			if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
-				add_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['category_id'], $category['id'], false );
+				add_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['category_id'], $category['id']);
             }
 		}
 
@@ -185,8 +183,10 @@ class Category {
 			update_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['category_path'], $category['path'] );
 
 			return $category['id'];
-		} else {
-			Util::log( 'moowoodle url:' . $term->get_error_message() . "\n" );
+		}
+
+		if ( is_wp_error( $term ) ) {
+			Util::log( 'MooWoodle category sync error: ' . $term->get_error_message() );
 		}
 
 		return null;
@@ -204,16 +204,13 @@ class Category {
 			return;
 		}
 
-		$updated_ids = array();
-		if ( empty( $categories ) ) {
+		if ( empty( $categories ) || ! is_array( $categories ) ) {
 			return;
 		}
+		$updated_ids = array();
 
 		foreach ( $categories as $category ) {
-			// Update category.
 			$category_id = self::update_product_category( $category, $taxonomy );
-
-			// Store updated category id.
 			if ( $category_id ) {
 				$updated_ids[] = $category_id;
 			}
@@ -250,7 +247,7 @@ class Category {
             )
         );
 
-		if ( empty( $terms ) && is_wp_error( $terms ) ) {
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
 			return;
         }
 

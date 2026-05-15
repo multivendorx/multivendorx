@@ -321,7 +321,7 @@ class Product {
 	 */
 	public function modify_custom_meta_query( $wp_query_args, $query_vars ) {
 		if ( ! empty( $query_vars['meta_query'] ) ) {
-			$wp_query_args['meta_query'][] = $query_vars['meta_query'];
+			$wp_query_args['meta_query'] = array_merge( $wp_query_args['meta_query'] ?? array(), $query_vars['meta_query'] );
 		}
 
 		return $wp_query_args;
