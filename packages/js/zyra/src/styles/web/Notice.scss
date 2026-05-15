@@ -66,37 +66,48 @@
             opacity: 0;
             visibility: hidden;
             position: absolute;
-            transition: none;
+            left: 0;
+            width: 100%;
             pointer-events: none;
             display: flex;
             justify-content: center;
+            align-items: center;
+            animation-name: cycleBanner;
+            animation-duration: var(--banner-duration);
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+            animation-fill-mode: forwards;
 
-            @for $i from 1 through 8 {
-                &:nth-child(#{$i}) {
-                    animation: cycleBanner 16s infinite;
-                    animation-delay: #{($i - 1) * 2}s;
-                }
-            }
-
-            a {
+            a,
+            .banner-btn {
                 pointer-events: auto;
             }
         }
 
         @keyframes cycleBanner {
-
-            0%,
-            12.5% {
-                opacity: 1;
-                visibility: visible;
-                pointer-events: auto;
+            0% {
+                opacity: 0;
+                visibility: hidden;
             }
 
-            12.6%,
+            5% {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            20% {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            25% {
+                opacity: 0;
+                visibility: hidden;
+            }
+
             100% {
                 opacity: 0;
                 visibility: hidden;
-                pointer-events: none;
             }
         }
 

@@ -1,3 +1,21 @@
-#moodle-enrollment-mapping-tab .components-base-control__label {
-	text-transform: none !important;
+#moodle-enrollment-mapping-tab {
+	.form-field{
+		display: flex;
+		align-items: center;
+		.components-radio-control{
+			margin-right: 0.625rem;
+		}
+		label{
+			width: 15%;
+		}
+	}
+
+	.components-notice__content{
+		display: flex;
+
+		p{
+			margin: 0;
+			font-size: 0.875rem;
+		}
+	}
 }
