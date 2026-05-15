@@ -2,12 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Column, ItemListUI, Container, NoticeManager } from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
-import { getModuleData } from '../../services/templateService';
 import axios from 'axios';
-import proPopupContent from '../Popup/Popup';
-import Mascot from '../../assets/images/multivendorx-mascot-scale.png';
+import Mascot from '../../assets/images/brand-small.png';
 import catalogx from '../../assets/images/catalogx.png';
-import notifima from '../../assets/images/brand-icon.png';
+import notifima from '../../assets/images/notifima.png';
 
 interface WPPlugin {
 	plugin?: string;
