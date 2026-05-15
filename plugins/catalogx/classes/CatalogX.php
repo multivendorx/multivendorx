@@ -157,7 +157,7 @@ final class CatalogX {
         new SetupWizard();
         if ( get_option( Utill::CATALOGX_OTHER_SETTINGS['plugin_activated'] ) ) {
             delete_option( Utill::CATALOGX_OTHER_SETTINGS['plugin_activated'] );
-            wp_safe_redirect( admin_url( 'admin.php?page=multivendorx-setup' ) );
+            wp_safe_redirect( admin_url( 'admin.php?page=catalogx-setup' ) );
             exit;
         }
 
@@ -175,7 +175,7 @@ final class CatalogX {
             icl_register_string( 'catalogx', $key, $value );
         }
 
-        $form_settings = CatalogX()->setting->get_option( 'catalogx_enquiry_form_customization_settings' );
+        $form_settings = CatalogX()->setting->get_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'] );
 
         if ( function_exists( 'icl_register_string' ) ) {
             foreach ( $form_settings['formsettings']['formfieldlist'] as $field ) {

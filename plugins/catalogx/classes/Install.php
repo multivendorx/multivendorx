@@ -49,8 +49,8 @@ class Install {
     public function __construct() {
 
         add_action( 'init', array( $this, 'run_migration' ) );
-        $this->do_migration();
-        do_action( 'multivendorx_after_installed' );
+        $this->run_migration();
+        do_action( 'catalogx_after_installed' );
 
         // // Get the previous version and current version.
         // self::$previous_version = get_option( self::VERSION_KEY, '' );

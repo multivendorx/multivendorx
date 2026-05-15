@@ -1,0 +1,13 @@
+{
+	"apiVersion": 3,
+	"name": "catalogx/setup-wizard",
+	"title": "Setup Wizard",
+	"category": "car",
+	"icon": "welcome-widgets-menus",
+	"description": "A block that renders the Setup Wizard using React.",
+	"supports": {
+		"html": false
+	},
+	"editorScript": "file:./index.js",
+	"script": "file:./index.js"
+}

@@ -312,22 +312,35 @@ class FrontendScripts {
         
         // Enqueue all chunk files (External dependencies).
         // self::enqueue_external_scripts();
-        
-        $index_asset     = include self::get_asset_path( 'file' ) . 'js/index.asset.php';
-	    $component_asset = include self::get_asset_path( 'file' ) . 'js/components.asset.php';
 
-        $register_scripts = apply_filters(
+        $index_asset_path = self::get_asset_path( 'file' ) . 'js/index.asset.php';
+        $index_asset      = file_exists( $index_asset_path )
+            ? include $index_asset_path
+            : array(
+                'dependencies' => array(),
+                'version'      => $version,
+            );
+
+        $vendor_asset_path = self::get_asset_path( 'file' ) . 'js/vendors.asset.php';
+        $vendor_asset      = file_exists( $vendor_asset_path )
+            ? include $vendor_asset_path
+            : array(
+                'dependencies' => array(),
+                'version'      => $version,
+            );
+
+	    $register_scripts = apply_filters(
             'admin_catalogx_register_scripts',
             array(
-                'catalogx-admin-script'      => array(
-                    'src'  => self::get_asset_path() . 'js/index.js',
-                    'deps'    => $index_asset['dependencies'],
-                    'version' => $version,
+                'catalogx-vendor-script' => array(
+                    'src'     => self::get_asset_path() . 'js/vendors.js',
+                    'deps'    => $vendor_asset['dependencies'],
+                    'version' => $vendor_asset['version'] ?? $version,
                 ),
-                'catalogx-components-script' => array(
-                    'src'     => self::get_asset_path() . 'js/components.js',
-                    'deps'    => $component_asset['dependencies'],
-                    'version' => $version,
+                'catalogx-admin-script'  => array(
+                    'src'     => self::get_asset_path() . 'js/index.js',
+                    'deps'    => $index_asset['dependencies'],
+                    'version' => $index_asset['version'] ?? $version,
                 ),
             )
         );
@@ -347,15 +360,15 @@ class FrontendScripts {
         $register_styles = apply_filters(
             'admin_catalogx_register_styles',
             array(
-                'catalogx-components-style' => array(
-                    'src'     => self::get_asset_path() . 'styles/components.css',
+                'catalogx-index-style' => array(
+                    'src'     => self::get_asset_path() . 'styles/index.css',
                     'version' => $version,
                 ),
             )
         );
 
         foreach ( $register_styles as $name => $props ) {
-            self::register_style( $name, $props['src'], $props['deps'], $props['version'] );
+			self::register_style( $name, $props['src'], array(), $props['version'] ?? $version );
         }
     }
 

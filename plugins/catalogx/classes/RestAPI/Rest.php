@@ -10,7 +10,7 @@ namespace CatalogX\RestAPI;
 use CatalogX\Enquiry\Module as EnquiryModule;
 use CatalogX\Quote\Module as QuoteModule;
 
-use Catalogx\RestAPI\Controllers\Settings;
+use CatalogX\RestAPI\Controllers\Settings;
 use CatalogX\RestAPI\Controllers\Tour;
 
 defined( 'ABSPATH' ) || exit;

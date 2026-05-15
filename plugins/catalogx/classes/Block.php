@@ -41,6 +41,20 @@ class Block {
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
     }
+    /**
+     * Get the list of initialized blocks.
+     *
+     * If the blocks have not been initialized yet, this method calls
+     * `initialize_blocks()` to populate them.
+     *
+     * @return array List of blocks.
+     */
+    public function get_blocks() {
+        if ( is_null( $this->blocks ) ) {
+            $this->blocks = $this->initialize_blocks();
+        }
+        return $this->blocks;
+    }
 
     /**
      * Initialize blocks based on active modules.
@@ -53,7 +67,7 @@ class Block {
         $block_paths = array();
 
         $block_base_path = CatalogX()->plugin_path
-            . FrontendScripts::get_build_path_name()
+            . FrontendScripts::get_asset_path()
             . 'js/block/';
 
         if ( ! is_dir( $block_base_path ) ) {
@@ -88,7 +102,7 @@ class Block {
 
                 // Translation path mapping.
                 $block_paths[ 'block/' . $block_name ] =
-                    FrontendScripts::get_build_path_name()
+                    FrontendScripts::get_asset_path()
                     . 'js/block/'
                     . $block_name
                     . '/index.js';
@@ -115,6 +129,32 @@ class Block {
                     FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-editor-script' );
                     FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-script' );
                 }
+            }
+        }
+    }
+    /**
+	 * Enqueue frontend scripts for registered blocks.
+	 *
+	 * Iterates through all registered block scripts and enqueues their
+	 * JavaScript files only if the block exists in the current post content.
+	 * Also localizes the scripts with necessary data.
+	 *
+	 * @global WP_Post $post Current post object.
+	 *
+	 * @return void
+	 */
+    public function enqueue_scripts() {
+        global $post;
+        FrontendScripts::load_scripts();
+        FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
+        foreach ( $this->get_blocks() as $block_script ) {
+            $block_name = $block_script['textdomain'] . '/' . $block_script['name'];
+
+            if ( has_block( $block_name, $post ) ) {
+                $handle = $block_script['textdomain'] . '-' . $block_script['name'] . '-script';
+
+                FrontendScripts::enqueue_script( $handle );
+                FrontendScripts::localize_scripts( $handle );
             }
         }
     }

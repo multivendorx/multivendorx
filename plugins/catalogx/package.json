@@ -153,6 +153,7 @@
         "react-sortablejs": "^6.1.4",
         "react-spinners": "^0.13.8",
         "reactour": "^1.19.4",
+		"ts-loader": "9.5.4",
         "router": "^2.1.0",
         "sass": "^1.89.2",
         "sortablejs": "^1.15.3",

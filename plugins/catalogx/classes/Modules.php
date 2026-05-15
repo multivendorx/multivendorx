@@ -144,7 +144,7 @@ class Modules {
             return $this->active_modules;
         }
 
-        return MultiVendorX()->setting->get_option( Utill::ACTIVE_MODULES_DB_KEY, array() );
+        return CatalogX()->setting->get_option( Utill::ACTIVE_MODULES_DB_KEY, array() );
     }
 
     /**
