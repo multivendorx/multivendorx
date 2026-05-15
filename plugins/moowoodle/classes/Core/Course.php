@@ -34,7 +34,7 @@ class Course {
      */
 	public function enqueue_admin_assets() {
 		$screen = get_current_screen();
-		if ( !empty( $screen ) || 'product' === $screen->post_type ) {
+		if ( !empty( $screen ) && 'product' === $screen->post_type ) {
 			FrontendScripts::enqueue_style( 'moowoodle-moodle-enrollment-mapping' );
 			FrontendScripts::enqueue_script( 'moowoodle-moodle-enrollment-mapping' );
 			FrontendScripts::localize_scripts( 'moowoodle-moodle-enrollment-mapping' );
@@ -60,9 +60,10 @@ class Course {
 		$where = array();
 		$params = array();
 
-		$sql = isset( $args['count'] )
-			? "SELECT COUNT(*) FROM $table"
-			: "SELECT * FROM $table";
+		$is_count = ! empty( $args['count'] );
+		$sql = $is_count
+			? "SELECT COUNT(*) FROM {$table}"
+			: "SELECT * FROM {$table}";
 
 		if ( ! empty( $args['id'] ) ) {
 			$ids = array_map( 'intval', (array) $args['id'] );
@@ -72,9 +73,19 @@ class Course {
 			$params  = array_merge( $params, $ids );
 		}
 
-		if ( isset( $args['moodle_course_id'] ) ) {
-			$where[] = "moodle_course_id = %d";
-			$params[] = (int) $args['moodle_course_id'];
+		$fields = array(
+			'moodle_course_id' => '%d',
+			'category_id'      => '%d',
+			'product_id'       => '%d',
+			'startdate'        => '%d',
+			'enddate'          => '%d',
+		);
+
+		foreach ( $fields as $field => $format ) {
+			if ( isset( $args[ $field ] ) ) {
+				$where[]  = "{$field} = {$format}";
+				$params[] = (int) $args[ $field ];
+			}
 		}
 
 		if ( isset( $args['shortname'] ) ) {
@@ -82,29 +93,9 @@ class Course {
 			$params[] = '%' . $wpdb->esc_like( $args['shortname'] ) . '%';
 		}
 
-		if ( isset( $args['category_id'] ) ) {
-			$where[] = "category_id = %d";
-			$params[] = (int) $args['category_id'];
-		}
-
-		if ( isset( $args['product_id'] ) ) {
-			$where[] = "product_id = %d";
-			$params[] = (int) $args['product_id'];
-		}
-
 		if ( isset( $args['fullname'] ) ) {
 			$where[] = "fullname LIKE %s";
 			$params[] = '%' . $wpdb->esc_like( $args['fullname'] ) . '%';
-		}
-
-		if ( isset( $args['startdate'] ) ) {
-			$where[] = "startdate = %d";
-			$params[] = (int) $args['startdate'];
-		}
-
-		if ( isset( $args['enddate'] ) ) {
-			$where[] = "enddate = %d";
-			$params[] = (int) $args['enddate'];
 		}
 
 		if ( ! empty( $where ) ) {
@@ -112,10 +103,14 @@ class Course {
 			$sql .= ' WHERE ' . implode( " $condition ", $where );
 		}
 
-		if ( isset( $args['limit'] ) && isset( $args['offset'] ) ) {
-			$sql .= " LIMIT %d OFFSET %d";
+		if ( isset( $args['limit'] ) ) {
+			$sql .= ' LIMIT %d';
 			$params[] = (int) $args['limit'];
-			$params[] = (int) $args['offset'];
+
+			if ( isset( $args['offset'] ) ) {
+				$sql .= ' OFFSET %d';
+				$params[] = (int) $args['offset'];
+			}
 		}
 
 		// Prepare SQL
@@ -124,7 +119,7 @@ class Course {
 		}
 
 		// Execute
-		if ( isset( $args['count'] ) ) {
+		if ( $is_count ) {
 			$results  = $wpdb->get_var( $sql );
 			return $results ?? 0;
 		}
@@ -141,17 +136,17 @@ class Course {
 	public static function update_course( $args ) {
 		global $wpdb;
 
-		if ( empty( $args['moodle_course_id'] ) ) {
+		$moodle_course_id = (int) $args['moodle_course_id'];
+		if ( empty( $moodle_course_id ) ) {
 			return false;
 		}
 
 		$table    = $wpdb->prefix . Util::TABLES['course'];
-		$existing_course = self::get_courses( array( 'moodle_course_id' => $args['moodle_course_id'] ) );
+		$existing_course = self::get_courses( array( 'moodle_course_id' => $moodle_course_id ) );
 		$existing = reset($existing_course);
 
 		if ( ! empty( $existing ) ) {
-			$updated = $wpdb->update( $table, $args, array( 'moodle_course_id' => $args['moodle_course_id'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-			return $updated !== false ? $existing['id'] : false;
+			return $wpdb->update( $table, $args, array( 'moodle_course_id' => $moodle_course_id ) ) !== false ? $existing['id'] : false; // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		}
 
 		$args['created'] = current_time( 'mysql' );
@@ -220,14 +215,12 @@ class Course {
      */
 	public function render_product_metabox() {
 		?>
-		<div 
-			id="moodle-enrollment-mapping-tab"
-		></div>
+		<div id="moodle-enrollment-mapping-tab"></div>
 		<?php
 	}
 
 	/**
-     * Delete all the course which id is not prasent in $exclude_ids array.
+     * Delete all courses whose IDs are not present in $exclude_ids array.
      *
      * @param array $exclude_ids course ids.
      * @return void
