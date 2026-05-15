@@ -8,12 +8,10 @@ import {
 	NoticeManager,
 } from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
-import { getModuleData } from '../../services/templateService';
 import axios from 'axios';
-import proPopupContent from '../Popup/Popup';
-import Mascot from '../../assets/images/Brand-small.png';
-import catalogx from '../../assets/images/Brand.png';
-import notifima from '../../assets/images/Brand.png';
+import Mascot from '../../assets/images/brand-icon.png';
+import catalogx from '../../assets/images/catalogx.png';
+import multivendorx from '../../assets/images/multivendorx.png';
 
 interface WPPlugin {
 	plugin?: string;
@@ -260,7 +258,7 @@ const DashboardTab: React.FC<object> = () => {
 						</div>
 
 						<div className="image">
-							{/* <img src={Mascot} alt="" /> */}
+							<img src={Mascot} alt="" />
 						</div>
 					</div>
 				</Card>
@@ -332,7 +330,7 @@ const DashboardTab: React.FC<object> = () => {
 											'Advanced product catalog with enhanced enquiry features and premium templates',
 											'notifima'
 										),
-										// img: catalogx,
+										img: catalogx,
 										tags: (
 											<>
 												<span className="admin-badge red">
@@ -365,7 +363,7 @@ const DashboardTab: React.FC<object> = () => {
 											'Turn your store into a product catalog with enquiry-based sales',
 											'notifima'
 										),
-										// img: catalogx,
+										img: catalogx,
 										tags: (
 											<>
 												<span className="admin-badge green">
@@ -425,7 +423,7 @@ const DashboardTab: React.FC<object> = () => {
 											'Advanced stock alerts, wishlist features, and premium notification system',
 											'notifima'
 										),
-										// img: notifima,
+										img: multivendorx,
 										tags: (
 											<>
 												<span className="admin-badge red">
@@ -458,7 +456,7 @@ const DashboardTab: React.FC<object> = () => {
 											'Advanced stock alerts and wishlist features for WooCommerce',
 											'notifima'
 										),
-										// img: notifima,
+										img: multivendorx,
 										tags: (
 											<>
 												<span className="admin-badge green">

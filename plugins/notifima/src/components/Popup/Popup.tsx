@@ -62,7 +62,7 @@ const proPopupContent = {
 			),
 		},
 		{
-			icon: 'recaptcha',
+			icon: 'form-recaptcha',
 			text: __('Recaptcha Support', 'notifima'),
 			des: __(
 				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -78,7 +78,7 @@ const proPopupContent = {
 			),
 		},
 		{
-			icon: 'export-import',
+			icon: 'export-import-stock',
 			text: __('Export/Import Stock', 'notifima'),
 			des: __(
 				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
