@@ -60,6 +60,7 @@ final class CatalogX {
         $this->container['render_enquiry_btn_via'] = '';
         $this->container['render_quote_btn_via']   = '';
         $this->container['is_dev']                 = defined( 'WP_ENV' ) && WP_ENV === 'development';
+        $this->container['date_format']           = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 
         register_activation_hook( $file, array( $this, 'activate' ) );
         register_deactivation_hook( $file, array( $this, 'deactivate' ) );
@@ -67,8 +68,10 @@ final class CatalogX {
         add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
         add_action( 'woocommerce_loaded', array( $this, 'init_plugin' ) );
         add_action( 'plugins_loaded', array( $this, 'is_woocommerce_loaded' ) );
+        add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 
-        add_action( 'init', array( $this, 'migrate_from_previous' ) );
+        // add_action( 'init', array( $this, 'migrate_from_previous' ) );
+        add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
         // Major update notice.
 		add_action( 'in_plugin_update_message-woocommerce-catalog-enquiry/Woocommerce_Catalog_Enquiry.php', array( $this, 'catalogx_plugin_update_message' ) );
     }
@@ -81,7 +84,7 @@ final class CatalogX {
      * @return void
      */
     public function catalogx_plugin_update_message() {
-        if ( version_compare( get_option( 'catalogx_plugin_version' ), '6.0.0', '<' ) ) {
+        if ( version_compare( get_option( 'CATALOGX_PLUGIN_VERSION' ), '6.0.0', '<' ) ) {
             echo '<p><strong>Heads up!</strong> 6.0.0 is a major update. Make a full site backup and before upgrading your marketplace to avoid any undesirable situations.</p>';
             exit;
         }
@@ -93,7 +96,7 @@ final class CatalogX {
      * @return void
      */
     public function declare_compatibility() {
-        FeaturesUtil::declare_compatibility( 'custom_order_tables', WP_CONTENT_DIR . '/plugins/woocommerce-catalog-enquiry/Woocommerce_Catalog_Enquiry.php', true );
+        FeaturesUtil::declare_compatibility( 'custom_order_tables', plugin_basename( $this->file ), true );
     }
 
     /**
@@ -121,18 +124,28 @@ final class CatalogX {
      */
     public function init_plugin() {
 
-        $this->load_plugin_textdomain();
+        // $this->load_plugin_textdomain();
 
-        if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
-            add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_link' ) );
-            add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
+        // if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
+        //     add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_link' ) );
+        //     add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
+        // }
+
+        // $this->init_classes();
+
+        // add_action( 'init', array( $this, 'catalogx_register_strings_and_setup_wizard' ) );
+
+        // do_action( 'catalogx_loaded' );
+
+        // add_filter( 'woocommerce_email_classes', array( $this, 'load_emails' ) );
+
+        add_action( 'init', array( $this, 'init_classes' ), 0 );
+        if ( get_option( Utill::CATALOGX_OTHER_SETTINGS['run_installer'] ) ) {
+            new Install();
+            delete_option( Utill::CATALOGX_OTHER_SETTINGS['run_installer'] );
         }
 
-        $this->init_classes();
-
         add_action( 'init', array( $this, 'catalogx_register_strings_and_setup_wizard' ) );
-
-        do_action( 'catalogx_loaded' );
 
         add_filter( 'woocommerce_email_classes', array( $this, 'load_emails' ) );
     }
@@ -142,9 +155,9 @@ final class CatalogX {
      */
     public function catalogx_register_strings_and_setup_wizard() {
         new SetupWizard();
-        if ( get_option( 'catalogx_plugin_activated' ) ) {
-            delete_option( 'catalogx_plugin_activated' );
-            wp_safe_redirect( admin_url( 'admin.php?page=catalogx-setup' ) );
+        if ( get_option( Utill::CATALOGX_OTHER_SETTINGS['plugin_activated'] ) ) {
+            delete_option( Utill::CATALOGX_OTHER_SETTINGS['plugin_activated'] );
+            wp_safe_redirect( admin_url( 'admin.php?page=multivendorx-setup' ) );
             exit;
         }
 
@@ -219,6 +232,9 @@ final class CatalogX {
 
         $this->container['block']           = new Block();
         $this->container['frontendscripts'] = new FrontendScripts();
+
+        do_action( 'catalogx_loaded' );
+        flush_rewrite_rules();
     }
 
     /**
@@ -261,9 +277,9 @@ final class CatalogX {
             }
 
             return array_merge( $links, $row_meta );
-        } else {
-            return $links;
         }
+        
+        return $links;
     }
 
     /**
@@ -272,8 +288,15 @@ final class CatalogX {
      * @return void
      */
     public function is_woocommerce_loaded() {
-        if ( ! did_action( 'woocommerce_loaded' ) && is_admin() ) {
-            add_action( 'admin_notices', array( $this, 'woocommerce_admin_notice' ) );
+        // if ( ! did_action( 'woocommerce_loaded' ) && is_admin() ) {
+        //     add_action( 'admin_notices', array( $this, 'woocommerce_admin_notice' ) );
+        // }
+        if ( did_action( 'woocommerce_loaded' ) || ! is_admin() ) {
+            $previous_version = get_option( Utill::CATALOGX_OTHER_SETTINGS['plugin_db_version'], '' );
+            if ( version_compare( $previous_version, CatalogX()->version, '<' ) ) {
+                new Install();
+            }
+            return;
         }
     }
 
@@ -321,20 +344,11 @@ final class CatalogX {
      * @return void
      */
     public function activate() {
-        ob_start();
-        $this->container['install'] = new Install();
-
-        if ( ! get_option( 'catalogx_plugin_installed' ) ) {
-            add_option( 'catalogx_plugin_installed', true );
-            add_option( 'catalogx_plugin_activated', true );
+        add_option( Utill::CATALOGX_OTHER_SETTINGS['run_installer'], true );
+        if ( ! get_option( Utill::CATALOGX_OTHER_SETTINGS['installed'] ) ) {
+            add_option( Utill::CATALOGX_OTHER_SETTINGS['installed'], true );
+            add_option( Utill::CATALOGX_OTHER_SETTINGS['plugin_activated'], true );
         }
-
-        if ( ! get_option( 'catalogx_tour_active' ) ) {
-            add_option( 'catalogx_tour_active', true );
-            add_option( 'catalogx_tour_version', CatalogX()->version );
-        }
-        flush_rewrite_rules();
-        ob_end_clean();
     }
 
     /**
@@ -343,7 +357,9 @@ final class CatalogX {
      * @return void
      */
     public function deactivate() {
-        // Nothing to do write now.
+        delete_option( Utill::CATALOGX_OTHER_SETTINGS['installed'] );
+        delete_option( Utill::CATALOGX_OTHER_SETTINGS['plugin_page_install'] );
+        flush_rewrite_rules();
     }
 
     /**

@@ -48,25 +48,29 @@ class Install {
      */
     public function __construct() {
 
-        // Get the previous version and current version.
-        self::$previous_version = get_option( self::VERSION_KEY, '' );
-        // this function should be deleted after 7.0.0 .
-        if ( ! empty( get_option( 'mvx_catalog_general_tab_settings' ) ) ) {
-            $this->create_database_tables();
-            $this->set_default_modules();
-            $this->set_default_settings();
-            $this->migrate_catalog_enquiry_to_catalogx();
-            update_option( self::VERSION_KEY, '6.0.0' );
-        }
-        if ( ! ( get_option( self::VERSION_KEY, false ) ) ) {
-            $this->create_database_tables();
-            $this->set_default_modules();
-            $this->set_default_settings();
-        } else {
-            $this->run_default_migration();
-        }
-        // Update the version in database.
-        update_option( self::VERSION_KEY, CatalogX()->version );
+        add_action( 'init', array( $this, 'run_migration' ) );
+        $this->do_migration();
+        do_action( 'multivendorx_after_installed' );
+
+        // // Get the previous version and current version.
+        // self::$previous_version = get_option( self::VERSION_KEY, '' );
+        // // this function should be deleted after 7.0.0 .
+        // if ( ! empty( get_option( 'mvx_catalog_general_tab_settings' ) ) ) {
+        //     $this->create_database_tables();
+        //     $this->set_default_modules();
+        //     $this->set_default_settings();
+        //     $this->migrate_catalog_enquiry_to_catalogx();
+        //     update_option( self::VERSION_KEY, '6.0.0' );
+        // }
+        // if ( ! ( get_option( self::VERSION_KEY, false ) ) ) {
+        //     $this->create_database_tables();
+        //     $this->set_default_modules();
+        //     $this->set_default_settings();
+        // } else {
+        //     $this->run_default_migration();
+        // }
+        // // Update the version in database.
+        // update_option( self::VERSION_KEY, CatalogX()->version );
     }
 
     /**
@@ -309,7 +313,7 @@ class Install {
      *
      * @return void
      */
-    public function run_default_migration() {
+    public function run_migration() {
         // Migration by specific version controll.
         if ( version_compare( self::$previous_version, '6.0.7', '<' ) ) {
             // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange

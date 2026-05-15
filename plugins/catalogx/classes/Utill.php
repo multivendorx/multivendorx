@@ -42,8 +42,15 @@ class Utill {
     );
 
     const CATALOGX_OTHER_SETTINGS = array(
+        'run_installer'          => 'catalogx_run_installer',
+        'installed'              => 'catalogx_installed',
+        'plugin_activated'       => 'catalogx_plugin_activated',
+        'plugin_page_install'    => 'dc_product_vendor_plugin_page_install',
         'tour_completed'         => 'catalogx_tour_completed',
     );
+
+    const ACTIVE_MODULES_DB_KEY = 'catalogx_all_active_module_list';
+
 
     /**
      * Function to console and debug errors.

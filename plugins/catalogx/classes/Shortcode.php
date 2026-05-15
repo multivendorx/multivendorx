@@ -23,6 +23,8 @@ class Shortcode {
     public function __construct() {
         // For quote page.
         add_shortcode( 'catalogx_request_quote', array( $this, 'display_request_quote' ) );
+
+        add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
     }
 
     /**
@@ -45,7 +47,6 @@ class Shortcode {
      * @return string HTML output for the request quote section.
      */
     public function display_request_quote() {
-        $this->frontend_scripts();
         ob_start();
         ?>
         <div id="request-quote-list">

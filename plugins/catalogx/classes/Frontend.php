@@ -24,7 +24,7 @@ class Frontend {
         add_action( 'init', array( $this, 'display_button_group' ) );
         add_action( 'wp', array( $this, 'display_price_and_description' ) );
         // Enqueue frontend scripts.
-        add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
     }
 
     /**
@@ -32,7 +32,7 @@ class Frontend {
      *
      * @return void
      */
-    public function frontend_scripts() {
+    public function load_scripts() {
         FrontendScripts::load_scripts();
         if ( is_product() || is_shop() || is_account_page() ) {
             FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
