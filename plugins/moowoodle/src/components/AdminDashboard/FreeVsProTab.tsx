@@ -258,12 +258,12 @@ const FreeVsProTab: React.FC<object> = () => {
 				<Card
 					title={__('Free vs Pro comparison', 'moowoodle')}
 					desc={__(
-						'See what you get with MultiVendorX Pro',
+						'See what you get with MooWoodle Pro',
 						'moowoodle'
 					)}
 					action={
 						<a
-							href="https://multivendorx.com/pricing/"
+							href="https://dualcube.com/product/moowoodle-pro/"
 							className="admin-btn btn-purple"
 						>
 							{__('Get Pro Access Today!', 'moowoodle')}
@@ -349,7 +349,7 @@ const FreeVsProTab: React.FC<object> = () => {
 
 						<div className="button-wrapper">
 							<a
-								href="https://multivendorx.com/pricing/"
+								href="https://dualcube.com/product/moowoodle-pro/"
 								className="admin-btn btn-purple"
 							>
 								<i className="adminfont-pro-tag"></i>
@@ -357,15 +357,6 @@ const FreeVsProTab: React.FC<object> = () => {
 								<i className="adminfont-arrow-right icon-pro-btn"></i>
 							</a>
 
-							<div
-								onClick={() =>
-									(window.location.href = `?page=multivendorx-setup`)
-								}
-								className="admin-btn"
-							>
-								{__('Launch Setup Wizard', 'moowoodle')}
-								<i className="adminfont-import"></i>
-							</div>
 						</div>
 					</div>
 				</Card>

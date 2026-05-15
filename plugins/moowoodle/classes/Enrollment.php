@@ -151,6 +151,9 @@ class Enrollment {
 	 */
 	public function process_order( $order_id ) {
 		$order = wc_get_order( $order_id );
+		if ( ! $order ) {
+			return;
+		}
 
 		if ( ! $order->get_customer_id() ) {
 			Util::log( "Order #{$order_id}: Unable to enroll user — customer ID not found." );
@@ -160,11 +163,14 @@ class Enrollment {
 
 		foreach ( $order->get_items() as $item_id => $item ) {
 			$product = $item->get_product();
+			if ( ! $product ) {
+				continue;
+			}
 
 			if ( $product->is_type( 'variation' ) ) {
-				$parent = wc_get_product( $product->get_parent_id() );
-				if ( $parent ) {
-					$product = $parent;
+				$parent_product = wc_get_product( $product->get_parent_id() );
+				if ( $parent_product ) {
+					$product = $parent_product;
 				}
 			}
 
@@ -243,8 +249,8 @@ class Enrollment {
 			)
 		);
 
-		if ( empty( $enrol_response['success'] ) && MooWoodle()->show_advanced_log ) {
-			Util::log( "[MooWoodle] Enrollment failed for User #{$user_data['purchaser_id']} in Course #{$course_data['moodle_course_id']}. Error: " . wp_json_encode( $enrol_response ) );
+		if ( empty( $response['success'] ) && MooWoodle()->show_advanced_log ) {
+			Util::log( "[MooWoodle] Enrollment failed for User #{$user_data['purchaser_id']} in Course #{$course_data['moodle_course_id']}. Error: " . wp_json_encode( $response ) );
 		}
 
 		$enrollment_data = array(
@@ -257,7 +263,7 @@ class Enrollment {
 			'enrollment_date' => gmdate( 'Y-m-d H:i:s' ),
 		);
 
-		$existing_enrollment = $this->get_enrollments(
+		$existing_enrollment = self::get_enrollments(
 			array(
 				'user_email' => $user_data['user_email'],
 				'course_id'  => $course_data['course_id'],
@@ -446,7 +452,13 @@ class Enrollment {
 		if ( 'completed' === $order->get_status() ) {
 			esc_html_e( 'Please check your mail or go to My Courses page to access your courses.', 'moowoodle' );
 		} else {
-			esc_html_e( 'Order status is :- ', 'moowoodle' ) . $order->get_status() . '<br>';
+			printf(
+				/* translators: %s: Order status. */
+				esc_html__( 'Order status is: %s', 'moowoodle' ),
+				esc_html( $order->get_status() )
+			);
+
+			echo '<br>';
 		}
 	}
 
@@ -468,7 +480,7 @@ class Enrollment {
 		if ( $start_end_date ) {
 			if ( $startdate ) {
 				printf(
-					// translators: %s: Start date in Y-m-d format.
+					/* translators: %s: Start date in Y-m-d format. */
 					esc_html__( 'Start Date: %s', 'moowoodle' ),
 					esc_html( gmdate( 'Y-m-d', $startdate ) )
 				);
@@ -477,7 +489,7 @@ class Enrollment {
 
 			if ( $enddate ) {
 				printf(
-					// translators: %s: End date in Y-m-d format.
+					/* translators: %s: End date in Y-m-d format. */
 					esc_html__( 'End Date: %s', 'moowoodle' ),
 					esc_html( gmdate( 'Y-m-d', $enddate ) )
 				);
