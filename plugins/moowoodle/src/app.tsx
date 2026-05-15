@@ -51,7 +51,7 @@ const bannerItem = [
 		'moowoodle'
 	),
 	__(
-		'<b>Automatic User Synchronization for Moodle™ and WordPress:</b> Synchronizes user accounts between Moodle™ and WordPress, ensuring consistent user management across both platforms without manual intervention.',
+		'<b>Automatic User Synchronization for Moodle™ and WordPress:</b>Syncs users between Moodle™ and WordPress for seamless account management across both platforms.',
 		'moowoodle'
 	),
 ];
