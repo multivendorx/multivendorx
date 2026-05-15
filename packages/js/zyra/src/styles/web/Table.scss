@@ -377,7 +377,10 @@
                             color: $theme-color;
                         }
                     }
-
+                    .edit-link{
+                        opacity: 0;
+                        transition: all 0.5s ease;
+                    }
                     .details {
                         margin: 0;
                         position: relative;
@@ -455,6 +458,12 @@
                 .admin-column:has(.table-action) {
                     overflow: visible;
                     padding: 0 1rem;
+                }
+
+                &:has(.edit-link):hover{
+                    .edit-link{
+                        opacity: 1;
+                    }
                 }
             }
 
