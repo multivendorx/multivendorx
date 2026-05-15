@@ -88,14 +88,14 @@ class Category {
 	 *   - 'parent' (int): Optional parent category ID.
 	 */
 	public static function update_course_categories( $categories ) {
-		if ( ! is_array( $categories ) || empty( $categories ) ) {
+		if ( empty( $categories ) ) {
 			return;
 		}
 
 		foreach ( $categories as $category ) {
 			$args = array(
 				'id'        => (int) $category['id'],
-				'name'      => sanitize_text_field( $category['name'] ),
+				'name'      => sanitize_text_field( $category['name'] ?? '' ),
 				'parent_id' => (int) ( $category['parent'] ?? 0 ),
 			);
 
@@ -116,7 +116,7 @@ class Category {
 			return null;
 		}
 
-		// Get the trermes basesd on moodle category id.
+		// Get the terms basesd on moodle category id.
 		$terms = get_terms(
             array(
 				'taxonomy'   => $taxonomy,
@@ -136,7 +136,7 @@ class Category {
 			return null;
 		}
 
-		return reset( $terms );
+		return $terms[0] ?? null;
 	}
 
 	/**
@@ -205,7 +205,7 @@ class Category {
 			return;
 		}
 
-		if ( ! is_array( $categories ) || empty( $categories ) ) {
+		if ( empty( $categories ) ) {
 			return;
 		}
 		$updated_ids = array();
