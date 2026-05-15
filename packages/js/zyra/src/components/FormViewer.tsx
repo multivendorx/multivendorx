@@ -27,6 +27,12 @@ type AddressSubField = {
     placeholder?: string;
 };
 
+type ValidationMessages = {
+	required?: string;
+	invalidEmail?: string;
+	termsRequired?: string;
+};
+
 declare global {
     interface Window {
         grecaptcha?: {
@@ -83,6 +89,7 @@ interface FormViewerProps {
     ) => void;
     countryList?: Option[];
     stateList?: Record<string, Option[] | Record<string, string>>;
+    validationMessages?: ValidationMessages;
 }
 
 // ─── Placeholder Helpers ─────────────────────────────────────────────────────
@@ -249,6 +256,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
     onSubmit,
     countryList,
     stateList,
+    validationMessages={},
 }) => {
     const [inputs, setInputs] = useState<Record<string, InputValue>>({});
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -356,15 +364,14 @@ const FormViewer: React.FC<FormViewerProps> = ({
 
             if (field.name === 'name') {
                 if (!value || (typeof value === 'string' && !value.trim())) {
-                    error[field.name] =
-                        `${field.label || 'Store Name'} is required.`;
+                    error[field.name] = validationMessages.required?.replace( '%s', field.label || 'Store Name' );
                 }
                 return;
             }
 
             if (field.type === 'email') {
                 if (!isValidEmail(value as string)) {
-                    error[field.name] = `Please enter a valid email address.`;
+                    error[field.name] = validationMessages.invalidEmail;
                 }
                 return;
             }
@@ -384,26 +391,25 @@ const FormViewer: React.FC<FormViewerProps> = ({
                         !value ||
                         (typeof value === 'string' && !value.trim())
                     ) {
-                        error[field.name] = `${field.label} is required.`;
+                        error[field.name] = validationMessages.required?.replace('%s', field.label || '');
                     }
                     break;
                 case 'checkboxes':
                 case 'multi-select':
                     if (!Array.isArray(value) || value.length === 0) {
-                        error[field.name] = `${field.label} is required.`;
+                        error[field.name] = validationMessages.required?.replace('%s', field.label || '');
                     }
                     break;
                 case 'dropdown':
                 case 'radio':
                 case 'attachment':
                     if (!value) {
-                        error[field.name] = `${field.label} is required.`;
+                        error[field.name] = validationMessages.required?.replace('%s', field.label || '');
                     }
                     break;
                 case 'richtext':
                     if (!value) {
-                        error[field.name] =
-                            'Please accept the Terms & Conditions.';
+                        error[field.name] = validationMessages.termsRequired;
                     }
                     break;
             }
