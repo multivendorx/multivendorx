@@ -29,16 +29,24 @@ jQuery(document).ready(function ($) {
 					let ratingValue = Math.round(overall);
 					let ratingPercentage = (ratingValue / 5) * 100;
 
-					html += `<div class="star-rating" role="img" aria-label="Rated ${ratingValue} out of 5">
-						<span style="width: ${ratingPercentage}%;">
-							<strong class="rating">${ratingValue}</strong> out of 5
-						</span>
-					</div>`;
+					html += `<div class="star-rating" role="img" aria-label="${__(
+								'Rated',
+								'multivendorx'
+							)} ${ratingValue} ${__('out of 5', 'multivendorx')}">
+							<span style="width: ${ratingPercentage}%;">
+								<strong class="rating">${ratingValue}</strong> ${__(
+												'out of 5',
+												'multivendorx'
+											)}
+							</span>
+						</div>`;
 
-					html += `<div class="total-number">${total} Rating${total !== 1 ? 's' : ''
+					html += `<div class="total-number">${total} ${total !== 1
+							? __('Ratings', 'multivendorx')
+							: __('Rating', 'multivendorx')
 						}</div>
-                         </div>
-                         <div class="rating-count">`;
+						</div>
+						<div class="rating-count">`;
 
 					//Add breakdown dynamically
 					for (let i = 5; i >= 1; i--) {

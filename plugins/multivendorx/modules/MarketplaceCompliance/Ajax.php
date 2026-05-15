@@ -105,7 +105,7 @@ class Ajax {
         // Extract reason values.
         $reason_list = array();
         foreach ( $reasons as $reason ) {
-            $reason_list[] = __( $reason['title'], 'multivendorx' );
+            $reason_list[] = $reason['title'];
         }
 
         // Add an "Other" option at the end.
