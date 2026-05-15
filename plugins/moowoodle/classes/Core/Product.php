@@ -115,12 +115,19 @@ class Product {
 
 		$wp_course = ! empty( $wp_course ) ? reset( $wp_course ) : array();
 
+		$meta_data = [
+			Util::MOOWOODLE_PRODUCT_META['course_startdate']   => $course['startdate'],
+			Util::MOOWOODLE_PRODUCT_META['course_enddate']     => $course['enddate'],
+			Util::MOOWOODLE_PRODUCT_META['moodle_course_id']   => $course['id'],
+			Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'] => $wp_course['id'],
+		];
+
         // Set product meta data.
-        $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['course_startdate'], $course['startdate'] );
-        $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['course_enddate'], $course['enddate'] );
-        $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], $course['id'] );
-        $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], $wp_course['id'] );
-		$product->save();
+		foreach ( $meta_data as $key => $value ) {
+			$product->update_meta_data( $key, $value );
+		}
+
+        $product->save();
 
 		MooWoodle()->course->update_course(
 			array(

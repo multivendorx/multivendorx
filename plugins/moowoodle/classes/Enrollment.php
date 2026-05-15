@@ -157,6 +157,7 @@ class Enrollment {
 
 		if ( ! $order->get_customer_id() ) {
 			Util::log( "Order #{$order_id}: Unable to enroll user — customer ID not found." );
+			return;
 		}
 
 		$email_data = array();
@@ -204,7 +205,7 @@ class Enrollment {
 			}
 		}
 
-		if ( count( $email_data ) > 0 ) {
+		if ( ! empty( $email_data['course'] ) ) {
 			$email = WC()->mailer()->emails['EnrollmentEmail'];
 			$email->trigger( $order->get_billing_email(), $email_data );
 		}
@@ -251,6 +252,7 @@ class Enrollment {
 
 		if ( empty( $response['success'] ) && MooWoodle()->show_advanced_log ) {
 			Util::log( "[MooWoodle] Enrollment failed for User #{$user_data['purchaser_id']} in Course #{$course_data['moodle_course_id']}. Error: " . wp_json_encode( $response ) );
+			return false;
 		}
 
 		$enrollment_data = array(
@@ -448,6 +450,9 @@ class Enrollment {
 	 */
 	public function enrollment_modified_details( $order_id ) {
 		$order = wc_get_order( $order_id );
+		if ( ! $order ) {
+			return;
+		}
 
 		if ( 'completed' === $order->get_status() ) {
 			esc_html_e( 'Please check your mail or go to My Courses page to access your courses.', 'moowoodle' );
