@@ -96,9 +96,9 @@ class Product {
         $term = MooWoodle()->category->get_product_category( $course['categoryid'], 'product_cat' );
 
         // Set product properties.
-        $product->set_name( $course['fullname'] );
-        $product->set_slug( $course['shortname'] );
-        $product->set_description( $course['summary'] );
+		$product->set_name( sanitize_text_field( $course['fullname'] ?? '' ) );
+		$product->set_slug( sanitize_title( $course['shortname'] ?? '' ) );
+		$product->set_description( wp_kses_post( $course['summary'] ?? '' ) );
         $product->set_status( 'publish' );
 		if ( $term && ! is_wp_error( $term ) ) {
 			$product->set_category_ids( array( $term->term_id ) );
@@ -110,7 +110,7 @@ class Product {
 		try {
 			$product->set_sku( $course['idnumber'] );
 		} catch ( \Exception $error ) {
-			Util::log( "Unable to set product's( id=" . $product->get_id() . ') SKU.' );
+			Util::log( sprintf( 'Unable to set SKU for product #%d: %s', $product->get_id(), $error->getMessage() ) );
 		}
 
 		// get the course id linked with moodle.
