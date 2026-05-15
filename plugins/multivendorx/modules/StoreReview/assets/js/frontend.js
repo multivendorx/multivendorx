@@ -47,7 +47,7 @@ jQuery(document).ready(function ($) {
 							total > 0 ? Math.round((count / total) * 100) : 0;
 						html += `
 							<div class="rating">
-								${i} ${__('Star', 'multivendorx')}
+								${i} ${__('Star', 'multivendorx')}</i>
 								<div class="bar"><span style="width:${percent}%;"></span></div> 
 								<span>${count} ${count !== 1 ? __('Reviews', 'multivendorx') : __('Review', 'multivendorx')}</span>
 							</div>`;

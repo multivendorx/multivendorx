@@ -288,7 +288,7 @@ class Frontend {
                     'google-maps',
                     'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&libraries=places,marker',
                     array(),
-                    null,
+                    'weekly',
                     true
                 );
             }
