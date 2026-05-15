@@ -16,9 +16,11 @@ $star-color: #d49c00;
         margin: 0;
     }
 }
-.richtext-content{
+
+.richtext-content {
     padding-left: 0.5rem;
 }
+
 .multivendorx-store-wrapper {
     display: flex;
     gap: 3rem;
@@ -783,7 +785,8 @@ $star-color: #d49c00;
     display: flex;
     flex-direction: column;
     align-items: center;
-    .buttons-wrapper{
+
+    .buttons-wrapper {
         text-align: right;
     }
 
@@ -919,6 +922,38 @@ $star-color: #d49c00;
 .multivendorxstep-content {
     width: 50%;
 }
+
 .multivendorx-registration:not(:has(.u-columns)) .multivendorx-tabs {
-	display: none;
+    display: none;
+}
+
+
+
+// printfull css
+#multivendorx-printful p {
+    margin: 0;
+
+    .printful-section {
+        display: flex;
+        gap: 1rem;
+        padding: 1.5rem 0;
+    }
+
+    .printful-menu {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.313rem;
+
+        .printful-menu-ietm {
+            padding: 0.313rem 0.45rem;
+            background: #f1eeee;
+        }
+    }
+
+    .printful-unit {
+        display: flex;
+        gap: 0.75rem;
+        margin: 0.5rem 0;
+        list-style-type: none;
+    }
 }
