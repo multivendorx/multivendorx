@@ -37,13 +37,16 @@ class Category {
 		}
 
         $table = $wpdb->prefix . Util::TABLES['category'];
-		$query = "SELECT * FROM $table";
-        if ( ! empty( $args ) ) {
-            $in     = implode( ',', array_map( 'intval', $args ) );
-            $query .= " WHERE id IN ($in)";
-        }
-		$results = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-		return $results;
+		$sql = "SELECT * FROM $table";
+		if ( ! empty( $args ) ) {
+			$placeholders = implode( ',', array_map( 'intval', $args ) );
+			$sql .= " WHERE id IN ($placeholders)";
+			$query = $wpdb->prepare( $sql, ...$args );
+		} else {
+			$query = $sql;
+		}
+
+		return $wpdb->get_results( $query, ARRAY_A );
     }
 
 	/**
@@ -66,7 +69,11 @@ class Category {
         }
 
         $table = $wpdb->prefix . Util::TABLES['category'];
-        $args = array( 'id' => (int) $args['id'] );
+        $args = array(
+			'id'        => (int) $args['id'],
+			'name'      => sanitize_text_field( $args['name'] ?? '' ),
+			'parent_id' => (int) ( $args['parent_id'] ?? 0 ),
+		);
 
 		return $wpdb->replace( $table, $args ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
     }
@@ -152,7 +159,7 @@ class Category {
 				$taxonomy,
 				array(
 					'name'        => $category['name'],
-					'slug'        => "{$category['name']} {$category['id']}",
+					'slug'		  => sanitize_title( $category['name'] . '-' . $category['id'] ),
 					'description' => $category['description'],
 				)
 			);
@@ -163,7 +170,7 @@ class Category {
 				$taxonomy,
 				array(
 					'description' => $category['description'],
-					'slug'        => "{$category['name']} {$category['id']}",
+					'slug'		  => sanitize_title( $category['name'] . '-' . $category['id'] ),
 				)
 			);
 
@@ -174,8 +181,8 @@ class Category {
 
 		// In success on update or insert sync meta data.
 		if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
-			update_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['parent_id'], $category['parent'], '' );
-			update_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['category_path'], $category['path'], false );
+			update_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['parent_id'], $category['parent']);
+			update_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['category_path'], $category['path'] );
 
 			return $category['id'];
 		} else {
@@ -198,23 +205,24 @@ class Category {
 		}
 
 		$updated_ids = array();
+		if ( empty( $categories ) ) {
+			return;
+		}
 
-		if ( $categories ) {
-			foreach ( $categories as $category ) {
-				// Update category.
-				$category_id = self::update_product_category( $category, $taxonomy );
+		foreach ( $categories as $category ) {
+			// Update category.
+			$category_id = self::update_product_category( $category, $taxonomy );
 
-				// Store updated category id.
-				if ( $category_id ) {
-					$updated_ids[] = $category_id;
-				}
-
-				Util::increment_sync_count( 'course' );
+			// Store updated category id.
+			if ( $category_id ) {
+				$updated_ids[] = $category_id;
 			}
+
+			Util::increment_sync_count( 'course' );
 		}
 
 		// Remove all term exclude updated ids.
-		self::remove_exclude_ids( $updated_ids, $taxonomy );
+		self::cleanup_categories( $updated_ids, $taxonomy );
 	}
 
 	/**
@@ -224,7 +232,7 @@ class Category {
 	 * @param string $taxonomy    Taxonomy name.
 	 * @return void
 	 */
-	private static function remove_exclude_ids( $exclude_ids, $taxonomy ) {
+	private static function cleanup_categories( $exclude_ids, $taxonomy ) {
 		if ( empty( $taxonomy ) || ! taxonomy_exists( $taxonomy ) ) {
 			return;
 		}
@@ -242,32 +250,32 @@ class Category {
             )
         );
 
-		if ( empty( $term ) && is_wp_error( $terms ) ) {
+		if ( empty( $terms ) && is_wp_error( $terms ) ) {
 			return;
         }
 
 		// Link with parent or delete term.
 		foreach ( $terms as $term ) {
 			$category_id = (int) get_term_meta( $term->term_id, Util::MOOWOODLE_TERM_META['category_id'], true );
-
-			if ( in_array( $category_id, $exclude_ids, true ) ) {
-				$parent_category_id = get_term_meta( $term->term_id, Util::MOOWOODLE_TERM_META['parent_id'], true );
-				if ( empty( $parent_category_id ) ) {
-					continue;
-				}
-
-				// get parent term id and continue if not exist.
-				$parent_term = self::get_product_category( $parent_category_id, $taxonomy );
-				if ( empty( $parent_term ) ) {
-					continue;
-                }
-
-				// sync parent term with term.
-				wp_update_term( $term->term_id, $taxonomy, array( 'parent' => $parent_term->term_id ) );
-			} else {
+			if ( ! in_array( $category_id, $exclude_ids, true ) ) {
 				// delete term if category is not moodle category.
 				wp_delete_term( $term->term_id, $taxonomy );
+				continue;
 			}
+
+			$parent_category_id = get_term_meta( $term->term_id, Util::MOOWOODLE_TERM_META['parent_id'], true );
+			if ( empty( $parent_category_id ) ) {
+				continue;
+			}
+
+			// get parent term id and continue if not exist.
+			$parent_term = self::get_product_category( $parent_category_id, $taxonomy );
+			if ( empty( $parent_term ) ) {
+				continue;
+			}
+
+			// sync parent term with term.
+			wp_update_term( $term->term_id, $taxonomy, array( 'parent' => $parent_term->term_id ) );
 		}
 	}
 }

@@ -129,7 +129,12 @@ class Product {
         $product->update_meta_data( Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], $wp_course['id'] );
 		$product->save();
 
-		self::update_course_product_relation( $course['id'], $product->get_id() );
+		MooWoodle()->course->update_course(
+			array(
+				'moodle_course_id' => $course['id'],
+				'product_id'       => $product->get_id(),
+			)
+		);
 		return $product->get_id();
 	}
 
@@ -270,7 +275,12 @@ class Product {
 			update_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], $link_item_id );
 			update_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], (int) $course['moodle_course_id'] );
 
-			self::update_course_product_relation( $course['moodle_course_id'], $product_id );
+			MooWoodle()->course->update_course(
+				array(
+					'moodle_course_id' => $course['moodle_course_id'],
+					'product_id'       => $product_id,
+				)
+			);
 		}
 
 		return $product_id;
@@ -291,7 +301,12 @@ class Product {
 		$moodle_course_id = absint( get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true ) );
 
 		if ( ! empty( $moodle_course_id ) ) {
-			self::update_course_product_relation( $moodle_course_id, 0 );
+			MooWoodle()->course->update_course(
+				array(
+					'moodle_course_id' => $moodle_course_id,
+					'product_id'       => 0,
+				)
+			);
 		}
 
 		delete_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'] );
@@ -328,7 +343,12 @@ class Product {
 		$moodle_course_id = get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
 
 		if ( ! empty( $moodle_course_id ) ) {
-			self::update_course_product_relation( $moodle_course_id, 0 );
+			MooWoodle()->course->update_course(
+				array(
+					'moodle_course_id' => $moodle_course_id,
+					'product_id'       => 0,
+				)
+			);
 		}
 	}
 
@@ -348,7 +368,13 @@ class Product {
 		$moodle_course_id = get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
 
 		if ( ! empty( $moodle_course_id ) ) {
-			self::update_course_product_relation( $moodle_course_id, $product_id);
+			MooWoodle()->course->update_course(
+				array(
+					'moodle_course_id' => $moodle_course_id,
+					'product_id'       => $product_id,
+				)
+			);
+			
 		}
 	}
 
@@ -385,12 +411,4 @@ class Product {
 		}
 	}
 
-	public static function update_course_product_relation( $moodle_course_id, $product_id ) {
-		MooWoodle()->course->update_course(
-			array(
-				'moodle_course_id' => (int) $moodle_course_id,
-				'product_id'       => (int) $product_id,
-			)
-		);
-	}
 }
