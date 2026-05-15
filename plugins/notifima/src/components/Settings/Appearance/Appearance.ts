@@ -8,22 +8,6 @@ export default {
     submitUrl: 'settings',
     modal: [
         {
-            key: 'subscribe_form',
-            type: 'notifima-form-customizer',
-            label: __( 'Personalize Layout', 'notifima' ),
-        },
-        {
-			key: 'store_registration_from',
-			type: 'block-builder',
-			classes: 'full-width',
-			// desc: 'Customise personalised store registration form for marketplace.',
-			// // Add templates configuration with proper content
-			// emailTemplates: [salesReport],
-			visibleGroups: ['form-customizer'],
-			defaultTemplateId: 'store-registration',
-			context: 'form-customizer',
-		},
-        {
             key: 'unsubscribe_button_text',
             type: 'text',
             label: __( "'Unsubscribe' Button Caption", 'notifima' ),

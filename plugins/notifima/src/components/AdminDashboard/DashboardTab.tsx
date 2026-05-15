@@ -416,7 +416,7 @@ const DashboardTab: React.FC<object> = () => {
 								items={[
 									{
 										title: __(
-											'Notifima Pro',
+											'Multivendorx Pro',
 											'notifima'
 										),
 										desc: __(
@@ -451,7 +451,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('Notifima', 'notifima'),
+										title: __('Multivendorx', 'notifima'),
 										desc: __(
 											'Advanced stock alerts and wishlist features for WooCommerce',
 											'notifima'
