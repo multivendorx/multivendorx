@@ -195,7 +195,7 @@ class Product {
 		}
 
 		$link_type    = sanitize_text_field( filter_input( INPUT_POST, 'link_type', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ?? '' );
-		$link_item_id = absint( filter_input( INPUT_POST, 'linked_item_id' ) );
+		$link_item_id = filter_input( INPUT_POST, 'linked_item_id', FILTER_VALIDATE_INT );
 		// Only process if it's a course link.
 		if ( 'course' === $link_type ) {
 			do_action( 'moowoodle_clean_cohort_previous_link', $product_id );
