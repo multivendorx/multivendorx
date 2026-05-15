@@ -69,7 +69,7 @@ class Dashboard extends \WP_REST_Controller {
                     'icon'       => '',
                     'slug'       => 'profile',
                     'submenu'    => array(),
-                    'capability' => array( 'read_products' ),
+                    'capability' => array( 'read_products','read_shop_earning','view_transactions','edit_withdrawl_request' ),
                     'filename'   => 'profile',
                 ),
                 'view-notifications' => array(
@@ -235,7 +235,7 @@ class Dashboard extends \WP_REST_Controller {
                 'name'       => __( 'Settings', 'multivendorx' ),
                 'slug'       => 'settings',
                 'icon'       => 'setting',
-                'capability' => array( 'manage_store_settings' ),
+                'capability' => array( 'manage_store_settings','edit_withdrawl_request' ),
             )
         );
 

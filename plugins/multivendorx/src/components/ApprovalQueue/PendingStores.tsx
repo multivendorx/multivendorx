@@ -13,7 +13,7 @@ import {
 	InfoItem,
 } from 'zyra';
 
-import { formatLocalDate } from '@/services/commonFunction';
+import { formatLocalDate, getUrl } from '@/services/commonFunction';
 
 const PendingStores: React.FC<object> = () => {
 	const [rows, setRows] = useState([]);
@@ -93,6 +93,7 @@ const PendingStores: React.FC<object> = () => {
 			render: (row) => (
 				<InfoItem
 					title={row.store_name}
+					titleLink={getUrl(row.id, 'store', 'edit')}
 					avatar={{
 						iconClass: 'store-inventory',
 					}}

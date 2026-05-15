@@ -75,6 +75,18 @@ class Install {
             $previous_settings['shipping_stage'] =  array_merge( $new_stages, $existing_stages );
             update_option( Utill::MULTIVENDORX_SETTINGS['delivery'], $previous_settings );
         }
+
+        if ( version_compare( $previous_version, '5.0.6', '<' ) ) {
+            global $wpdb;
+
+            $table = $wpdb->prefix . Utill::TABLES['store'];
+
+            $wpdb->query("
+                ALTER TABLE {$table}
+                MODIFY name VARCHAR(100) NOT NULL,
+                MODIFY slug VARCHAR(100) NOT NULL
+            ");
+        }
     }
 
     public function run_migration() {
@@ -141,8 +153,8 @@ class Install {
         $sql_store = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['store'] . "` (
             `ID` bigint(20) NOT NULL AUTO_INCREMENT,
             `status` varchar(20) DEFAULT NULL,
-            `name` varchar(20) NOT NULL,
-            `slug` varchar(20) NOT NULL,
+            `name` varchar(100) NOT NULL,
+            `slug` varchar(100) NOT NULL,
             `description` TEXT DEFAULT NULL,
             `who_created` bigint(20) DEFAULT NULL,
             `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

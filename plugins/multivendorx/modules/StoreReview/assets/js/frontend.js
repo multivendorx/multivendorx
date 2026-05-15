@@ -1,4 +1,6 @@
 /* global jQuery, review */
+const { __ } = wp.i18n;
+
 jQuery(document).ready(function ($) {
 	const store_id = $('#store_for_rating').val();
 
@@ -27,17 +29,24 @@ jQuery(document).ready(function ($) {
 					let ratingValue = Math.round(overall);
 					let ratingPercentage = (ratingValue / 5) * 100;
 
-					html += `<div class="star-rating" role="img" aria-label="Rated ${ratingValue} out of 5">
-						<span style="width: ${ratingPercentage}%;">
-							<strong class="rating">${ratingValue}</strong> out of 5
-						</span>
-					</div>`;
+					html += `<div class="star-rating" role="img" aria-label="${__(
+								'Rated',
+								'multivendorx'
+							)} ${ratingValue} ${__('out of 5', 'multivendorx')}">
+							<span style="width: ${ratingPercentage}%;">
+								<strong class="rating">${ratingValue}</strong> ${__(
+												'out of 5',
+												'multivendorx'
+											)}
+							</span>
+						</div>`;
 
-					html += `<div class="total-number">${total} Rating${
-						total !== 1 ? 's' : ''
-					}</div>
-                         </div>
-                         <div class="rating-count">`;
+					html += `<div class="total-number">${total} ${total !== 1
+							? __('Ratings', 'multivendorx')
+							: __('Rating', 'multivendorx')
+						}</div>
+						</div>
+						<div class="rating-count">`;
 
 					//Add breakdown dynamically
 					for (let i = 5; i >= 1; i--) {
@@ -45,28 +54,25 @@ jQuery(document).ready(function ($) {
 						const percent =
 							total > 0 ? Math.round((count / total) * 100) : 0;
 						html += `
-                        <div class="rating">
-                            ${i} Star</i> 
-                            <div class="bar"><span style="width:${percent}%;"></span></div> 
-                            <span>${count} Review${
-								count !== 1 ? 's' : ''
-							}</span>
-                        </div>`;
+							<div class="rating">
+								${i} ${__('Star', 'multivendorx')}</i>
+								<div class="bar"><span style="width:${percent}%;"></span></div> 
+								<span>${count} ${count !== 1 ? __('Reviews', 'multivendorx') : __('Review', 'multivendorx')}</span>
+							</div>`;
 					}
 
 					html += `</div></div><ul>`;
 
 					for (let p in data.averages) {
-						html += `<li><span>${
-							Math.round(data.averages[p] * 10) / 10
-						}</span> ${p}</li>`;
+						html += `<li><span>${Math.round(data.averages[p] * 10) / 10
+							}</span> ${p}</li>`;
 					}
 
 					html += `</ul></div>`;
 
 					$('#avg-rating').html(html);
 				} else {
-					$('#avg-rating').html('<p>No ratings yet.</p>');
+					$('#avg-rating').html(`<p>${__('No ratings yet.', 'multivendorx')}</p>`);
 				}
 			}
 		);
@@ -102,16 +108,15 @@ jQuery(document).ready(function ($) {
 		// Inline validation
 		if (!title || !content) {
 			$('#commentform').prepend(`
-            <div class="woocommerce-error review-message">
-                ${
-					!title && !content
-						? 'Please enter both the Review Title and Review Content.'
-						: !title
-							? 'Please enter a Review Title.'
-							: 'Please enter your Review Content.'
+				<div class="woocommerce-error review-message">
+					${!title && !content
+					? __('Please enter both the Review Title and Review Content.', 'multivendorx')
+					: !title
+						? __('Please enter a Review Title.', 'multivendorx')
+						: __('Please enter your Review Content.', 'multivendorx')
 				}
-            </div>
-        `);
+				</div>
+			`);
 			return;
 		}
 
@@ -143,27 +148,27 @@ jQuery(document).ready(function ($) {
 			beforeSend: function () {
 				$('#review_submit')
 					.prop('disabled', true)
-					.text('Submitting...');
+					.text(__('Submitting...', 'multivendorx'));
 			},
 			success: function (res) {
 				$('#review_submit')
 					.prop('disabled', false)
-					.text('Submit Review');
+					.text(__('Submit Review', 'multivendorx'));
 				$('.review-message').remove();
 
 				if (res.success) {
 					$('#review-form-wrapper').html(`
-                    <div class="woocommerce-message review-message">
-                        Thank you for your review!
-                    </div>
-                `);
+						<div class="woocommerce-message review-message">
+							${__('Thank you for your review!', 'multivendorx')}
+						</div>
+					`);
 					loadAverageRatings();
 					loadReviews();
 				} else {
 					const message =
 						res.data && res.data.message
 							? res.data.message
-							: 'Something went wrong. Please try again.';
+							: __('Something went wrong. Please try again.', 'multivendorx');
 					$('#commentform').prepend(`
                     <div class="woocommerce-error review-message">${message}</div>
                 `);
@@ -172,12 +177,12 @@ jQuery(document).ready(function ($) {
 			error: function () {
 				$('#review_submit')
 					.prop('disabled', false)
-					.text('Submit Review');
+					.text(__('Submit Review', 'multivendorx'));
 				$('#commentform').prepend(`
-                <div class="woocommerce-error review-message">
-                    Unable to submit review. Please try again later.
-                </div>
-            `);
+						<div class="woocommerce-error review-message">
+							${__('Unable to submit review. Please try again later.', 'multivendorx')}
+						</div>
+					`);
 			},
 		});
 	});
@@ -248,7 +253,7 @@ jQuery(document).ready(function ($) {
 		$form.slideToggle(300, () => {
 			const formVisible = $form.is(':visible');
 			$('#write-review-btn').text(
-				formVisible ? 'Cancel Review' : 'Write a Review'
+				formVisible ? __('Cancel Review', 'multivendorx') : __('Write a Review', 'multivendorx')
 			);
 		});
 	});
