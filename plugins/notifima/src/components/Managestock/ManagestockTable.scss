@@ -1,37 +1,4 @@
-.products{
-    width: 3.15rem;
-    height: 3.15rem;
-    padding: 0.25rem;
-    border-radius: 0.25rem;
-    box-shadow: 0 0 0.125rem rgba(0, 0, 0, 0.125);
-}
 
-.admin-middle-container-wrapper {
-
-  .inventory-manager-table {
-    width: 100%;
-
-    input,
-    select {
-      background: transparent;
-      border: none;
-      outline: none;
-      box-shadow: none;
-      padding: 0;
-      font-size: 0.875rem;
-
-      &:focus {
-        box-shadow: none !important; // To overwrite default wordpress css
-      }
-    }
-    select {
-      background: transparent url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E) no-repeat right 0.315rem top 55%;
-      padding-right: 1.25rem;
-      font-size: 0.875rem;
-      background-size: 0.875rem;
-    }
-  }
-}
 .admin-row{
   .product-expand{
     padding-top: 0.625rem
@@ -173,21 +140,4 @@
       }
     }
   }
-}
-
-.edit-btn-product {
-  width: 1.563rem;
-  display: flex;
-  padding: 0;
-  margin: 0;
-  background: transparent;
-  opacity: 0;
-  transition: opacity 0.2s linear;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: -1;
 }
