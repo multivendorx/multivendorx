@@ -175,7 +175,7 @@ class Enrollment {
 				}
 			}
 
-			$moodle_course_id = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
+			$moodle_course_id    = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
 			$wordpress_course_id = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
 
 			if ( ! $moodle_course_id ) {

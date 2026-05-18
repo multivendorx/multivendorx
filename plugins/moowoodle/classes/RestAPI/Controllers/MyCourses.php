@@ -6,7 +6,8 @@
  */
 
 namespace MooWoodle\RestAPI\Controllers;
-use MooWoodle\Util; 
+
+use MooWoodle\Util;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -105,12 +106,11 @@ class MyCourses extends \WP_REST_Controller {
 
             $moodle_password = get_user_meta( MooWoodle()->current_user_id, 'moowoodle_moodle_user_pwd', true );
             $moodle_base_url = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) );
-            $current_user = MooWoodle()->current_user;
-            
+            $current_user    = MooWoodle()->current_user;
+
             $formatted_courses = array();
 
             foreach ( $user_enrollments as $enrollment ) {
-
                 $course = MooWoodle()->course->get_courses(
                     array(
                         'id' => $enrollment['course_id'],

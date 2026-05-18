@@ -6,6 +6,7 @@
  */
 
 namespace MooWoodle\RestAPI\Controllers;
+
 use MooWoodle\Util;
 
 defined( 'ABSPATH' ) || exit;
@@ -84,7 +85,7 @@ class Settings extends \WP_REST_Controller {
 
             return $all_details;
         } catch ( \Exception $e ) {
-           return Util::server_error( $e );
+			return Util::server_error( $e );
         }
     }
 }

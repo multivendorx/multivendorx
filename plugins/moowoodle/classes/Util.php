@@ -41,18 +41,18 @@ class Util {
     const MOOWOODLE_OTHER_SETTINGS = array(
         'log_file' => 'moowoodle_log_file',
     );
-    
-    const MOOWOODLE_PRODUCT_META= array(
-        'course_startdate'  => 'moowoodle_course_startdate',
-        'course_enddate'    => 'moowoodle_course_enddate',
-        'moodle_course_id'  => 'moowoodle_moodle_course_id',
-        'wordpress_course_id'  => 'moowoodle_wordpress_course_id',
+
+    const MOOWOODLE_PRODUCT_META = array(
+        'course_startdate'    => 'moowoodle_course_startdate',
+        'course_enddate'      => 'moowoodle_course_enddate',
+        'moodle_course_id'    => 'moowoodle_moodle_course_id',
+        'wordpress_course_id' => 'moowoodle_wordpress_course_id',
     );
 
-    const MOOWOODLE_TERM_META= array(
-        'category_id'  => '_category_id',
-        'parent_id'    => '_parent',
-        'category_path'  => '_category_path',
+    const MOOWOODLE_TERM_META = array(
+        'category_id'   => '_category_id',
+        'parent_id'     => '_parent',
+        'category_path' => '_category_path',
     );
 
     /**
@@ -210,10 +210,10 @@ class Util {
 	 * @return void
 	 */
 	public static function set_sync_status( $status, $key ) {
-		$status_history   = get_transient( 'moowoodle_sync_status_' . $key );
-		$status_history   = is_array( $status_history ) ? $status_history : array();
+		$status_history    = get_transient( 'moowoodle_sync_status_' . $key );
+		$status_history    = is_array( $status_history ) ? $status_history : array();
         $status['current'] = 0;
-		$status_history[] = $status;
+		$status_history[]  = $status;
 
 		set_transient( 'moowoodle_sync_status_' . $key, $status_history, 3600 );
 	}
