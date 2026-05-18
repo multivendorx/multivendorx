@@ -1,12 +1,125 @@
 import React, { useState } from 'react';
 import '../common.scss';
 import { __ } from '@wordpress/i18n';
-import { NavigatorHeader, PopupUI } from 'zyra';
+import {
+	InfoItem,
+	NavigatorHeader,
+	PopupUI,
+	TableCard,
+} from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';
+import { dummyCohorts } from './Cohort';
+
+export interface CohortRow {
+	id?: number;
+	moodle_cohort_id?: number;
+	cohort_name?: string;
+	products?: Record<string, string>;
+	enrolled_user?: number;
+	view_users_url?: string;
+	product_image?: string;
+	status?: string;
+}
 
 const Cohort: React.FC = () => {
 	const [openPopup, setopenPopup] = useState(false);
+
+	let tableProps: any = {};
+
+	// Define table headers
+	const headers = {
+		cohort_name: {
+			label: __('Cohorts', 'moowoodle'),
+			render: (row: CohortRow) => (
+				<InfoItem
+					title={row.cohort_name}
+					avatar={{ iconClass: 'cohort' }}
+				/>
+			),
+		},
+
+		products: {
+			label: __('Product', 'moowoodle'),
+			render: (row: CohortRow) => (
+				<>
+					{row.products && Object.keys(row.products).length
+						? Object.entries(row.products).map(
+							([name], index) => (
+								<React.Fragment key={index}>
+									{name}
+								</React.Fragment>
+							)
+						)
+						: '-'}
+				</>
+			),
+		},
+
+		enrolled_user: {
+			label: __('Enrolled users', 'moowoodle'),
+			render: (row: CohortRow) => (
+				<>
+					{row.enrolled_user || 0}
+				</>
+			),
+		},
+
+		action: {
+			type: 'action',
+			label: __('Action', 'moowoodle'),
+
+			actions: [
+				{
+					label: __('Sync Cohort Data', 'moowoodle'),
+					icon: 'refresh',
+					onClick: (row) => {
+						setopenPopup(true);
+					},
+				},
+
+				{
+					label: (row: CohortRow) => {
+						return row?.products &&
+							Object.keys(row.products).length
+							? __(
+								'Sync Cohort Data & Update Product',
+								'moowoodle'
+							)
+							: __('Create Product', 'moowoodle');
+					},
+
+					icon: (row: CohortRow) => {
+						return row?.products &&
+							Object.keys(row.products).length
+							? 'update-product'
+							: 'add-product';
+					},
+					onClick: (row) => {
+						setopenPopup(true);
+					},
+				},
+			],
+		},
+	};
+
+	const defaultTableProps = {
+		headers,
+
+		rows: dummyCohorts,
+		totalRows: dummyCohorts.length,
+		onQueryUpdate: () => { setopenPopup(true); },
+		onBulkActionApply: () => { setopenPopup(true); },
+
+		search: {
+			placeholder: __('Search...', 'moowoodle'),
+		},
+	};
+
+	tableProps = applyFilters(
+		'moowoodle_cohort_table_props',
+		defaultTableProps,
+	);
 
 	return (
 		<>
@@ -21,6 +134,7 @@ const Cohort: React.FC = () => {
 					<ShowProPopup />
 				</PopupUI>
 			)}
+
 			<NavigatorHeader
 				headerIcon="cohort"
 				headerDescription={__(
@@ -29,16 +143,9 @@ const Cohort: React.FC = () => {
 				)}
 				headerTitle={__('Cohorts', 'moowoodle')}
 			/>
-			{appLocalizer.khali_dabba ? (
-				applyFilters('moowoodle_cohort_content', null)
-			) : (
-				<div
-					className="cohort-img image-wrapper"
-					onClick={() => {
-						setopenPopup(true);
-					}}
-				></div>
-			)}
+			<div onClick={() => (setopenPopup(true))}>
+				<TableCard {...tableProps} />
+			</div>
 		</>
 	);
 };
