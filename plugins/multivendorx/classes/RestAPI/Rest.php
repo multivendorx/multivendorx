@@ -343,8 +343,10 @@ class Rest {
      * @param string $post_type Post type.
      */
     public function grant_woocommerce_rest_permission( $permission, $context, $object_id, $post_type ) {
-        if ( strpos( $_SERVER['REQUEST_URI'], 'products/categories' ) !== false && !is_user_logged_in() && $_SERVER['REQUEST_METHOD'] === 'GET' ) {
-            return true;
+        if ( ! is_user_logged_in() && $_SERVER['REQUEST_METHOD'] === 'GET' ) {
+            if ( strpos( $_SERVER['REQUEST_URI'], 'products' ) !== false || strpos( $_SERVER['REQUEST_URI'], 'products/categories' ) !== false ) {
+                return true;
+            }   
         }
 
         $user_id = MultiVendorX()->current_user_id;

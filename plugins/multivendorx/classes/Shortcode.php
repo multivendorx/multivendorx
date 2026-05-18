@@ -37,6 +37,7 @@ class Shortcode {
      * Load frontend scripts
      */
     public function frontend_scripts() {
+        global $post;
         FrontendScripts::load_scripts();
 
         FrontendScripts::enqueue_style( 'multivendorx-store-product-style' );
@@ -63,6 +64,26 @@ class Shortcode {
             FrontendScripts::enqueue_script( 'multivendorx-registration-form-script' );
             FrontendScripts::localize_scripts( 'multivendorx-registration-form-script' );
             FrontendScripts::enqueue_style( 'multivendorx-store-tabs-style' );
+        }
+
+        if (has_shortcode( $post->post_content, 'marketplace_stores' ) ) {
+            FrontendScripts::enqueue_script( 'multivendorx-marketplace-stores-script' );
+            FrontendScripts::enqueue_style( 'multivendorx-common-block-style' );
+            FrontendScripts::localize_scripts( 'multivendorx-marketplace-stores-script' );
+            FrontendScripts::enqueue_script( 'multivendorx-store-provider-script' );
+            FrontendScripts::localize_scripts( 'multivendorx-store-provider-script' );
+        }
+
+        if (has_shortcode( $post->post_content, 'marketplace_products' ) ) {
+            FrontendScripts::enqueue_script( 'multivendorx-marketplace-products-script' );
+            FrontendScripts::localize_scripts( 'multivendorx-marketplace-products-script' );
+        }
+
+        if (has_shortcode( $post->post_content, 'marketplace_coupons' ) ) {
+            FrontendScripts::enqueue_script( 'multivendorx-marketplace-coupons-script' );
+            FrontendScripts::localize_scripts( 'multivendorx-marketplace-coupons-script' );
+            FrontendScripts::enqueue_style( 'multivendorx-common-block-style' );
+
         }
     }
 
@@ -131,11 +152,6 @@ class Shortcode {
         $attributes = $this->snake_to_camel_case( $attributes );
         $json_attrs = esc_attr( wp_json_encode( $attributes ) );
 
-        FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'multivendorx-marketplace-stores-script' );
-        FrontendScripts::enqueue_style( 'multivendorx-common-block-style' );
-        FrontendScripts::localize_scripts( 'multivendorx-marketplace-stores-script' );
-
         return '<div id="marketplace-stores" data-attributes="' . $json_attrs . '"></div>';
     }
     /**
@@ -148,10 +164,6 @@ class Shortcode {
         $attributes = $this->snake_to_camel_case( $attributes );
         $json_attrs = esc_attr( wp_json_encode( $attributes ) );
 
-        FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'multivendorx-marketplace-products-script' );
-        FrontendScripts::localize_scripts( 'multivendorx-marketplace-products-script' );
-
         return '<div id="marketplace-products" data-attributes="' . $json_attrs . '"></div>';  
     }
     /**
@@ -163,11 +175,6 @@ class Shortcode {
     public function marketplace_coupons( $attributes ) {
         $attributes = $this->snake_to_camel_case( $attributes );
         $json_attrs = esc_attr( wp_json_encode( $attributes ) );
-
-        FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'multivendorx-marketplace-coupons-script' );
-        FrontendScripts::localize_scripts( 'multivendorx-marketplace-coupons-script' );
-        FrontendScripts::enqueue_style( 'multivendorx-common-block-style' );
 
         return '<div id="marketplace-coupons" data-attributes="' . $json_attrs . '"></div>';    
     }

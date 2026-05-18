@@ -97,7 +97,7 @@ const EditBlock = (props) => {
 };
 
 registerBlockType('multivendorx/marketplace-stores', {
-	apiVersion: 2,
+	apiVersion: 3,
 	title: __('Stores List', 'multivendorx'),
 	icon: 'store',
 	category: 'multivendorx-shortcodes',
