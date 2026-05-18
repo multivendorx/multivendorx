@@ -66,7 +66,6 @@ class ExternalService {
 
 			$timeout = MooWoodle()->setting->get_setting( 'moodle_timeout', '' );
 			$timeout = $timeout ? $timeout : '10';
-			
 
 			$response = wp_remote_post(
                 $request_url,
@@ -82,7 +81,7 @@ class ExternalService {
 			}
 		}
 
-		// check the response containe error.
+		// check the response contains error.
 		$response = $this->analyse_moodle_response( $response );
 
 		// return response on success.
@@ -90,17 +89,17 @@ class ExternalService {
 	}
 
 	/**
-	 * Check server resposne result .
+	 * Check server response result .
      *
 	 * @param object | null $response response.
 	 * @return array $response
 	 */
 	private function analyse_moodle_response( $response ) {
 		if ( null === $response ) {
-			return array( 'error' => 'Response is not avialable' );
+			return array( 'error' => 'Response is not available' );
 		}
 
-		// if server response containe error.
+		// if server response contains error.
 		if ( is_wp_error( $response ) || 200 !== $response['response']['code'] ) {
 			// if response is object and multiple error codes.
 			if ( is_object( $response ) && is_array( $response->get_error_code() ) ) {
@@ -123,7 +122,7 @@ class ExternalService {
 			return array( 'error' => __( 'Response is not JSON decodeable', 'moowoodle' ) );
 		}
 
-		// if moodle response containe error.
+		// if moodle response contains error.
 		if ( $response && array_key_exists( 'exception', $response ) ) {
 			if ( str_contains( $response['message'], 'Access control exception' ) ) {
 				return array( 'error' => $response['message'] . ' <a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/settings.php?section=externalservices">Link</a>' );

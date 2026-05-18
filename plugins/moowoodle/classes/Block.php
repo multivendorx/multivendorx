@@ -63,7 +63,7 @@ class Block {
         $blocks     = array();
         $textdomain = 'moowoodle';
 
-        $block_base_path = FrontendScripts::get_asset_path('file') . 'js/block/';
+        $block_base_path = FrontendScripts::get_asset_path( 'file' ) . 'js/block/';
 
         if ( ! is_dir( $block_base_path ) ) {
             return $blocks;

@@ -133,8 +133,7 @@ const Course: React.FC = () => {
 			label: __('Product', 'moowoodle'),
 			render: (row: CourseRow) => (
 				<>
-					{row.product_name
-						?
+					{row.product_name ? (
 						<>
 							{row.product_name}
 							<a
@@ -143,13 +142,12 @@ const Course: React.FC = () => {
 								href={row.product_url}
 								className="link-item edit-link"
 							>
-								{__(
-									'Edit product',
-									'moowoodle'
-								)}
+								{__('Edit product', 'moowoodle')}
 							</a>
 						</>
-						: '-'}
+					) : (
+						'-'
+					)}
 				</>
 			),
 		},

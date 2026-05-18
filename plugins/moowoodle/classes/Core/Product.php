@@ -69,7 +69,7 @@ class Product {
 	 * @return int WooCommerce product ID or 0 on failure.
 	 */
 	public static function update_product( $course, $force_create = true, $force_update = false ) {
-		if (  empty( $course ) || empty( $course['format'] ) || 'site' === $course['format'] ) {
+		if ( empty( $course ) || empty( $course['format'] ) || 'site' === $course['format'] ) {
 			return 0;
 		}
 
@@ -115,12 +115,12 @@ class Product {
 
 		$wp_course = ! empty( $wp_course ) ? reset( $wp_course ) : array();
 
-		$meta_data = [
-			Util::MOOWOODLE_PRODUCT_META['course_startdate']   => $course['startdate'],
-			Util::MOOWOODLE_PRODUCT_META['course_enddate']     => $course['enddate'],
-			Util::MOOWOODLE_PRODUCT_META['moodle_course_id']   => $course['id'],
+		$meta_data = array(
+			Util::MOOWOODLE_PRODUCT_META['course_startdate'] => $course['startdate'],
+			Util::MOOWOODLE_PRODUCT_META['course_enddate'] => $course['enddate'],
+			Util::MOOWOODLE_PRODUCT_META['moodle_course_id'] => $course['id'],
 			Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'] => $wp_course['id'],
-		];
+		);
 
         // Set product meta data.
 		foreach ( $meta_data as $key => $value ) {
@@ -161,8 +161,8 @@ class Product {
 		// Update all products.
 		Util::set_sync_status(
             array(
-				'action'  => __( 'Update Product', 'moowoodle' ),
-				'total'   => max( 0, count( $courses ) - 1 ),
+				'action' => __( 'Update Product', 'moowoodle' ),
+				'total'  => max( 0, count( $courses ) - 1 ),
             ),
             'course'
         );
@@ -329,7 +329,6 @@ class Product {
 					'product_id'       => $product_id,
 				)
 			);
-			
 		}
 	}
 
@@ -365,5 +364,4 @@ class Product {
 			);
 		}
 	}
-
 }

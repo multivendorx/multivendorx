@@ -1,5 +1,12 @@
 import { render, useEffect, useState } from '@wordpress/element';
-import { RadioControl, SelectControl, Spinner, Notice, BaseControl, Disabled } from '@wordpress/components';
+import {
+	RadioControl,
+	SelectControl,
+	Spinner,
+	Notice,
+	BaseControl,
+	Disabled,
+} from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 import './tab.scss';
@@ -45,7 +52,6 @@ const ProductTab = () => {
 				}
 			})
 			.catch((error) => {
-				// eslint-disable-next-line no-console
 				console.error('MooWoodle REST API Error:', error);
 			})
 			.finally(() => {
@@ -55,8 +61,8 @@ const ProductTab = () => {
 
 	return (
 		<>
-			<div className='options_group'>
-				<div className='form-field'>
+			<div className="options_group">
+				<div className="form-field">
 					<label htmlFor="linked_item">
 						{__('Link Type', 'moowoodle')}
 					</label>
@@ -124,20 +130,14 @@ const ProductTab = () => {
 					isDismissible={false}
 					actions={[
 						{
-							label: __(
-								'Synchronize Moodle data',
-								'moowoodle'
-							),
+							label: __('Synchronize Moodle data', 'moowoodle'),
 							url: moowoodleProduct.syncUrl,
-							variant: 'link'
+							variant: 'link',
 						},
 					]}
 				>
 					<p>
-						{__(
-							"Can't find your course or cohort?",
-							'moowoodle'
-						)}
+						{__("Can't find your course or cohort?", 'moowoodle')}
 					</p>
 				</Notice>
 			</div>
@@ -149,7 +149,6 @@ const ProductTab = () => {
 				name="product_meta_nonce"
 				value={moowoodleProduct.productMetaNonce}
 			/>
-
 		</>
 	);
 };
