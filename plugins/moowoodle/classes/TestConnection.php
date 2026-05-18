@@ -93,12 +93,12 @@ class TestConnection {
 	}
 
 	/**
-	 * Create a dumy user for test connection.
+	 * Create a dummy user for test connection.
      *
 	 * @return string[]
 	 */
 	public static function create_user() {
-		// find user on moodle with moodle externel function.
+		// find user on moodle with moodle external function.
 		$response = MooWoodle()->external_service->do_request(
 			'get_moodle_users',
 			array(
@@ -246,7 +246,7 @@ class TestConnection {
 	}
 
 	/**
-	 * Unnrol a user to a particular course.
+	 * Unenrol a user to a particular course.
      *
 	 * @param mixed $user_id user id.
 	 * @param mixed $course_id course id.
