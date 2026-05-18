@@ -34,11 +34,11 @@ class TestConnection {
 
 			// Get register webservice functions.
 			$register_functions = array_map(
-                function ( $all_function ) {
+				function ( $all_function ) {
 					return $all_function['name'];
 				},
-                $response['functions']
-            );
+				$response['functions']
+			);
 
 			// Get missing functions.
 			$missing_functions = array_diff( $webservice_functions, $register_functions );
@@ -76,7 +76,7 @@ class TestConnection {
 
 	/**
 	 * Get all Moodle Category.
-     *
+	 *
 	 * @return array
 	 */
 	public static function get_category() {
