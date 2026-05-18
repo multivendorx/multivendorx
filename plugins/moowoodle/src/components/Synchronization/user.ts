@@ -4,7 +4,7 @@ import wordpressLogo from '@/assets/images/wordPress-to-moodle.png';
 import moodleLogo from '@/assets/images/moodle-to-wordpress.png';
 const nestedFields = [
 	{
-		key: 'wordPress',
+		key: 'wordpress',
 		type: 'select',
 		size: 8,
 		options: [

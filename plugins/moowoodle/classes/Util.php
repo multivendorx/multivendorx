@@ -78,6 +78,9 @@ class Util {
             WP_Filesystem();
         }
 
+        if ( ! $wp_filesystem ) {
+            return false;
+        }
         // Create the logs directory and protect it with .htaccess.
         if ( ! file_exists( MooWoodle()->moowoodle_logs_dir . '/.htaccess' ) ) {
             wp_mkdir_p( MooWoodle()->moowoodle_logs_dir );
@@ -90,7 +93,7 @@ class Util {
                     MooWoodle()->moowoodle_logs_dir . '/index.html',
                     ''
                 );
-            } catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+            } catch ( \Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
                 // Directory creation failed but logging should continue.
             }
         }
@@ -105,16 +108,6 @@ class Util {
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
             $extra['Stack'] = $message->getTraceAsString();
             $message        = 'Exception occurred';
-        }
-        // Convert Throwable into structured metadata.
-        if ( $message instanceof \Throwable ) {
-            $type             = 'EXCEPTION';
-            $extra['Message'] = $message->getMessage();
-            $extra['Code']    = $message->getCode();
-            $extra['File']    = $message->getFile();
-            $extra['Line']    = $message->getLine();
-            $extra['Stack']   = $message->getTraceAsString();
-            $message          = 'Throwable occurred';
         }
 
         // Convert WP_Error into structured metadata.
@@ -226,7 +219,7 @@ class Util {
 	 */
 	public static function get_sync_status( $key ) {
 		$status = get_transient( 'moowoodle_sync_status_' . $key );
-		return $status ? $status : array();
+		return is_array( $status ) ? $status : array();
 	}
 
 	/**
@@ -236,13 +229,16 @@ class Util {
 	 * @return void
 	 */
 	public static function increment_sync_count( $key ) {
-		$sync_status    = get_transient( 'moowoodle_sync_status_' . $key );
+		$sync_status = get_transient( 'moowoodle_sync_status_' . $key );
+        if ( empty( $sync_status ) ) {
+            return;
+        }
 		$current_action = count( $sync_status ) - 1;
 
 		// Update the current action count.
 		++$sync_status[ $current_action ]['current'];
 
-		set_transient( 'moowoodle_sync_status_' . $key, $sync_status, 3600 );
+		set_transient( 'moowoodle_sync_status_' . $key, $sync_status, HOUR_IN_SECONDS );
 	}
 
 	/**
@@ -298,7 +294,7 @@ class Util {
         if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
             $error = new \WP_Error(
                 'invalid_nonce',
-                __( 'Invalid nonce', 'moowoodle' ),
+                esc_html__( 'Invalid nonce.', 'moowoodle' ),
                 array( 'status' => 403 )
             );
 
@@ -317,7 +313,7 @@ class Util {
      */
     public static function server_error( \Exception $exception ) {
 
-        MooWoodle()->util->log( $exception );
+        $this->log( $exception );
 
         return new \WP_Error(
             'server_error',

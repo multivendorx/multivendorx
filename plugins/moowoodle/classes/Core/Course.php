@@ -213,9 +213,7 @@ class Course {
      * @return void
      */
 	public function render_product_metabox() {
-		?>
-		<div id="moodle-enrollment-mapping-tab"></div>
-		<?php
+		echo '<div id="moodle-enrollment-mapping-tab"></div>';
 	}
 
 	/**
