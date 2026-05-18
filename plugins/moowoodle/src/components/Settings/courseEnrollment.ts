@@ -52,7 +52,10 @@ export default {
 			key: 'section',
 			type: 'section',
 			title: __('Enrollment & seat management', 'moowoodle'),
-			desc: __('Configure how buyers enroll and manage course seats', 'moowoodle'),
+			desc: __(
+				'Configure how buyers enroll and manage course seats',
+				'moowoodle'
+			),
 		},
 		{
 			key: 'bulk_access_enable',
@@ -109,7 +112,10 @@ export default {
 			key: 'section',
 			type: 'section',
 			title: __('User notifications', 'moowoodle'),
-			desc: __('Manage emails sent to new and existing users', 'moowoodle'),
+			desc: __(
+				'Manage emails sent to new and existing users',
+				'moowoodle'
+			),
 		},
 		{
 			key: 'moowoodle_create_user_custom_mail',
