@@ -198,9 +198,9 @@ const buildStyles = (
         ...base,
         fontSize: '0.95rem',
         backgroundColor: state.isSelected
-            ? 'var(--backgroundPrimary)'
+            ? 'var(--background-primary)'
             : state.isFocused
-              ? 'var(--backgroundColor)'
+              ? 'var(--background-color)'
               : 'var(--background-white)',
         color: state.isSelected ? 'var(--text-color)' : 'var(--themeColor)',
         cursor: 'pointer',
@@ -208,7 +208,7 @@ const buildStyles = (
     menu: (base) => ({ ...base, borderRadius: 4, marginTop: 0 }),
     multiValue: (base) => ({
         ...base,
-        backgroundColor: 'var(--backgroundPrimary)',
+        backgroundColor: 'var(--background-primary)',
         margin: '0.125rem',
     }),
     multiValueLabel: (base) => ({

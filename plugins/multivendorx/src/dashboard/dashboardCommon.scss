@@ -17,7 +17,7 @@ body.dark {
 
     .analytics-item {
         background: $background-white !important;
-        /*overwrite zyra style*/
+        /* overwrite zyra style */
     }
 
     .tab-name {
@@ -175,8 +175,9 @@ body.dark {
     padding: 0;
     position: absolute;
     width: 0.063rem;
-    word-wrap: normal !important;
+    overflow-wrap: normal !important;
 }
+
 // wordpress image uploader end
 
 
@@ -191,7 +192,7 @@ body.dark {
 }
 
 
-@media only screen and (max-width: 600px) {
+@media only screen and (width <= 600px) {
     #store-dashboard.show-menu {
         .dashboard-content::after {
             position: absolute;
