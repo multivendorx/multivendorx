@@ -48,7 +48,7 @@ class Rest {
             'logs'            => new Logs(),
             'synchronization' => new Synchronization(),
             'courses'         => new Courses(),
-            'my_courses'      => new MyCourses(),
+            'my-courses'      => new MyCourses(),
             'test-connection' => new TestConnection(),
         );
     }
