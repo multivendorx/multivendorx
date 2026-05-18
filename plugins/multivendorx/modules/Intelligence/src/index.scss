@@ -1,0 +1,289 @@
+@use '../../../src/dashboard/dashboardConfig.scss' as *;
+
+.popup-body:has(.ai-content-wrapper) {
+    height: 100%;
+}
+
+.popup-body:has(.prompt-wrapper) {
+    max-height: 90%;
+    min-height: 90%;
+}
+
+.form-group.ai-form {
+    .settings-form-label {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .form-icon {
+        font-size: 1.5rem;
+        color: $theme-color;
+        cursor: pointer;
+    }
+}
+
+.ai-content-wrapper {
+    padding: 1rem 2rem;
+    max-height: 73%;
+    overflow-y: scroll;
+
+    .section {
+        display: flex;
+        gap: 1rem;
+        align-items: start;
+
+        .image-section {
+            width: 35%;
+
+            img {
+                width: 100%;
+
+                // margin-bottom: 1rem;
+            }
+        }
+
+        .image-placeholder {
+            width: 35%;
+            height: 12rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 5rem;
+            background: $theme-background-color;
+            color: $theme-color;
+            border-radius: $border-radius-small;
+        }
+
+        .product-details {
+            width: 65%;
+        }
+    }
+
+
+}
+
+.image-btn {
+    padding: 1.313rem 0;
+}
+
+.text-wrapper {
+    margin-bottom: 1rem;
+    position: relative;
+
+    .check-icon {
+        position: absolute;
+        top: 0.625rem;
+        right: 0.625rem;
+        color: $theme-color;
+    }
+
+    .title {
+        margin-bottom: 0.5rem;
+    }
+
+    &.description {
+        padding-top: 1rem;
+    }
+
+    .ai-item {
+        padding: 0.625rem;
+        border: $border-light-small;
+        border-radius: $border-radius-small;
+        margin-bottom: 0.625rem;
+        font-size: 1rem;
+        line-height: 1.313;
+        color: $sub-text-color;
+        cursor: pointer;
+        position: relative;
+
+        &.selected {
+            border-color: $theme-color;
+            background: $theme-background-color;
+            color: $theme-color;
+        }
+    }
+}
+
+.append-section {
+    padding: 0 2rem;
+}
+
+.prompt-wrapper {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+    background: #fff;
+    z-index: 999;
+
+    .ai-suggestion-item {
+        .desc {
+            display: flex;
+            gap: 0.625rem;
+            align-items: start;
+            font-size: 1rem;
+            line-height: 1.25rem;
+        }
+    }
+}
+
+.prompt-input {
+    position: relative;
+
+    span {
+        position: absolute;
+        right: 0.75rem;
+        bottom: 0.75rem;
+        font-size: 1.45rem;
+        color: $theme-color;
+        cursor: pointer;
+    }
+}
+
+.empty-icon {
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .title {
+        font-size: 1.75rem;
+    }
+
+    i {
+        font-size: 4rem;
+        background: $theme-background-color;
+        padding: 1rem;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px -5px rgb(0 0 0 / 5%),
+            0 8px 10px -6px rgb(0 0 0 / 2%),
+            0 0 0 0 rgb(139 92 246 / 0%);
+        color: $theme-color;
+    }
+}
+
+.skeleton-wrapper {
+    margin-bottom: 1rem;
+
+    .title {
+        margin-bottom: 0.5rem;
+    }
+
+    &.description {
+        padding-top: 1rem;
+    }
+}
+
+// ai suggestions popup
+.ai-suggestions-wrapper {
+    padding: 1.5rem 1.5rem 1rem;
+
+    .title {
+        padding-bottom: 0.5rem;
+    }
+}
+
+// ai image
+.gallery-section {
+    .title {
+        padding-top: 1rem;
+    }
+
+    .ai-image-gallery {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 0.85rem;
+
+        .image {
+            width: 3.313rem;
+            height: 3.313rem;
+            background: #e9e4e4;
+            box-sizing: border-box;
+            border: 0.125rem solid transparent;
+
+            &.active {
+                border: 0.125rem solid $theme-color;
+            }
+        }
+    }
+}
+
+.ai-single-image {
+    img {
+        width: 20rem;
+        margin-top: 1rem;
+    }
+}
+
+
+// remove (old ai design)
+.ai-assist-wrapper {
+    position: relative;
+    overflow: auto;
+    
+    .assistant-loading {
+        height: 80%;
+    }
+
+    .suggestions-wrapper {
+        padding-bottom: 2rem;
+
+        .suggestions-title {
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .box {
+            padding: 1rem;
+            border: 0.063rem solid $theme-color;
+            margin: 1rem 0;
+            background: color-mix(in srgb, $theme-color 5%, #fff);
+            border-radius: 0.5rem;
+
+            span {
+                font-size: 0.95rem;
+                line-height: 1.25rem;
+            }
+        }
+    }
+
+    .sender-wrapper {
+        border: $border-light-small;
+        padding: 0.5rem;
+        position: sticky;
+        width: 100%;
+        box-sizing: border-box;
+        bottom: 0;
+        border-radius: 0.5rem;
+        background: $background-white;
+        margin-bottom: 0.625rem;
+
+        textarea,
+        textarea:focus-visible,
+        textarea:focus {
+            width: 100%;
+            box-sizing: border-box;
+            border: none;
+            font-size: 0.95rem;
+            outline: none;
+            background: transparent;
+            height: 6rem;
+        }
+
+        .icon-wrapper {
+            display: flex;
+            justify-content: space-between;
+
+            i {
+                font-size: 1.063rem;
+                color: $text-color;
+                cursor: pointer;
+            }
+        }
+    }
+}

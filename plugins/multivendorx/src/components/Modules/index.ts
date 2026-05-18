@@ -270,7 +270,7 @@ export default {
 		},
 		{
 			id: 'privacy',
-			name: __('Privacy', 'multivendorx'),
+			name: __('Policies', 'multivendorx'),
 			desc: 'Hide sensitive store information from customers, including contact details, location, or other specified data.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=privacy`,

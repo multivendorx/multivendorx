@@ -25,6 +25,7 @@ import {
 	dashNavigate,
 } from '../services/commonFunction';
 import { applyFilters } from '@wordpress/hooks';
+import './orders.scss';
 
 const fetchOrderById = async (orderId: number) => {
 	const res = await axios.get(

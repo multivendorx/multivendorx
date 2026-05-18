@@ -11,6 +11,7 @@ import { __ } from '@wordpress/i18n';
 import { addFilter, applyFilters, removeFilter } from '@wordpress/hooks';
 import axios from 'axios';
 import AiField from './AIField';
+import './index.scss';
 
 interface AIButtonSectionProps {
 	product: any;

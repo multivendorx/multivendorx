@@ -164,10 +164,11 @@
 		"prettier": "^3.8.1",
 		"replace-in-file": "^8.4.0",
 		"style-loader": "^4.0.0",
+		"stylelint-config-standard-scss": "^17.0.0",
+		"stylelint-scss": "^7.0.0",
 		"terser": "^5.46.0",
 		"typescript": "5.9.3",
 		"wireit": "^0.14.12",
-		"wp-readme-to-markdown": "^1.0.1",
-		"stylelint-config-standard-scss": "^17.0.0"
+		"wp-readme-to-markdown": "^1.0.1"
 	}
 }

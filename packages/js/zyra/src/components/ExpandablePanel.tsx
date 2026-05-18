@@ -663,7 +663,7 @@ const PanelControls: React.FC = () => {
                             {
                                 icon: 'delete',
                                 text: 'Delete',
-                                color: 'red-color',
+                                color: 'red',
                                 onClick: () => handleDelete(method.id),
                             },
                         ]}

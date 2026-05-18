@@ -493,7 +493,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 							/>
 						)}
 					</div>
-				</Card> */}
+				</Card> 
 			</Column>
 		</Container>
 	);

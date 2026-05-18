@@ -1,0 +1,189 @@
+@use './dashboardConfig.scss' as *;
+
+.table-wrapper {
+    .item-details {
+        display: flex;
+        gap: 0.625rem;
+
+        .name {
+            font-size: 1.063rem;
+            margin-bottom: 0.625rem;
+            font-weight: 600;
+        }
+
+        .sku {
+            font-size: 0.813rem;
+        }
+
+        .sub-text {
+            font-size: 0.95rem;
+            margin-bottom: 0.45rem;
+
+            span {
+                width: 4rem;
+                font-weight: 600;
+            }
+        }
+
+        .icon {
+            width: 3.125rem;
+            display: flex;
+            align-items: start;
+
+            i {
+                width: 3.125rem;
+                height: 3.125rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 2rem;
+            }
+        }
+    }
+
+    // .admin-column {
+    //     input {
+    //         width: 5rem;
+    //     }
+    // }
+}
+
+.address-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+}
+
+.coupons-calculation-wrapper {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1rem;
+
+    .left {
+        display: flex;
+        align-items: start;
+        gap: 0.5rem;
+    }
+
+    .coupon {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+        font-size: 1.125rem;
+    }
+
+    .div {
+        width: 100%;
+    }
+
+    .right {
+        width: 50%;
+
+        table {
+            width: 100%;
+
+            tr {
+                height: 1.85rem;
+
+                td {
+                    font-size: 1rem;
+                }
+            }
+
+            tr:last-child {
+                border-top: $border-light-small ;
+            }
+        }
+    }
+}
+
+// view order title
+.order-view-title {
+    display: flex;
+    align-items: end;
+    gap: 0.5rem;
+    padding-bottom: 0.313rem;
+}
+
+.total-summary {
+    .row {
+        justify-content: end;
+        display: flex;
+        gap: 1.5rem;
+        padding-bottom: 1rem;
+    }
+}
+
+.select-product-wrapper {
+    display: flex;
+    align-items: start;
+    margin-top: 1rem;
+
+    label {
+        width: 25%;
+        font-size: 1rem;
+    }
+}
+
+.tax-wrapper {
+    .title {
+        padding: 1.5rem 0 0.625rem;
+    }
+
+    .buttons-wrapper {
+        margin-top: 1rem;
+    }
+}
+
+
+// refund section
+.refund-request-wrapper {
+    // padding: 1rem;
+    // border-radius: $border-light-small;
+    // border: $border-light-small;
+
+    .refund-header {
+        display: flex;
+        justify-content: space-between;
+
+        .title {
+            font-size: 1.25rem;
+            margin-bottom: 0.313rem;
+            line-height: 1;
+        }
+    }
+
+    .buttons-wrapper {
+        justify-content: start;
+        padding: 1rem 0;
+    }
+
+    .reason {
+        padding: 1rem;
+        background: $theme-background-color;
+        border-radius: $border-radius-small;
+        margin: 0.5rem 0;
+
+        .title {
+            color: $theme-color;
+            padding-bottom: 0.45rem;
+        }
+
+        &.red .title {
+            color: #f7a79a;
+        }
+    }
+
+}
+.refund-images-wrapper {
+    .images {
+        margin-top: 0.625rem;
+
+        img {
+            width: 4rem;
+            margin-right: 0.625rem;
+        }
+    }
+}

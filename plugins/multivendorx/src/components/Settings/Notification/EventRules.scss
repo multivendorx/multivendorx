@@ -48,18 +48,18 @@
             gap: 0.25rem;
             padding: 0.25rem 0.5rem;
             border-radius: 0.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgb(255 255 255 / 10%);
             font-size: 0.75rem;
             opacity: 0.5;
             transition: all 0.3s;
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: rgb(255 255 255 / 5%);
 
 
             .toggle-recipient {
                 width: 1rem;
                 height: 0.5rem;
                 border-radius: 1rem;
-                background-color: rgba(255, 255, 255, 0.2);
+                background-color: rgb(255 255 255 / 20%);
                 position: relative;
                 border: none;
                 cursor: pointer;
@@ -96,8 +96,8 @@
             input {
                 padding: 0.25rem 0.5rem;
                 border-radius: 0.5rem;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                background-color: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgb(255 255 255 / 20%);
+                background-color: rgb(255 255 255 / 5%);
                 outline: none;
             }
         }
@@ -105,7 +105,7 @@
         .add-recipient-button {
             padding: 0.25rem 0.5rem;
             border-radius: 0.5rem;
-            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border: 1px dashed rgb(255 255 255 / 20%);
             background: none;
             cursor: pointer;
             font-size: 0.75rem;
@@ -221,124 +221,124 @@
     .withdrawal-requested::before{
         content: "\e913";
     }
-    .wholesale-buyer-approved:before {
+    .wholesale-buyer-approved::before {
         content: "\e965";
     }
-    .wholesale-buyer-rejected:before {
+    .wholesale-buyer-rejected::before {
         content: "\e966";
     }
-    .product-rejected:before {
+    .product-rejected::before {
         content: "\e964";
     }
-    .store-permanently-rejected:before{
+    .store-permanently-rejected::before{
         content: "\e912";
     }
-    .store-account-created-by-admin:before{
+    .store-account-created-by-admin::before{
         content: "\e520";
     }
-    .store-under-review:before{
+    .store-under-review::before{
         content: "\e964";
     }
-    .store-deactivation-request-rejected:before{
+    .store-deactivation-request-rejected::before{
         content: "\e955";
     }
-    .new-order-store:before{
+    .new-order-store::before{
         content: "\efff";
     }
-    .order-processing:before{
+    .order-processing::before{
         content: "\e953";
     }
-     .order-processing:before{
+     .order-processing::before{
         content: "\e953";
     }
-    .order-refunded:before{
+    .order-refunded::before{
         content: "\e957";
     }
-    .shipment-tracking-added:before{
+    .shipment-tracking-added::before{
         content: "\ef91";
     }
-    .order-delivered:before{
+    .order-delivered::before{
         content: "\e945";
     }
-    .refund-requested:before{
+    .refund-requested::before{
         content: "\ef4f";
     }
-    .refund-accepted:before{
+    .refund-accepted::before{
         content: "\e941";
     }
-    .refund-rejected:before{
+    .refund-rejected::before{
         content: "\e810";
     }
-    .new-store-review:before{
+    .new-store-review::before{
         content: "\ef44";
     }
-    .review-reply:before{
+    .review-reply::before{
         content: "\efe2";
     }
-    .review-reply:before{
+    .review-reply::before{
         content: "\efe2";
     }
-    .product-submitted:before{
+    .product-submitted::before{
         content: "\ef8a";
     } 
-    .product-rejected:before{
+    .product-rejected::before{
         content: "\e928";
     } 
-    .product-rejected:before{
+    .product-rejected::before{
         content: "\e928";
     } 
-    .product-out-of-stock:before{
+    .product-out-of-stock::before{
         content: "\e951";
     } 
-    .product-low-stock:before{
+    .product-low-stock::before{
         content: "\ef45";
     } 
-    .product-question-submitted:before{
+    .product-question-submitted::before{
         content: "\e92f";
     }
-    .product-question-reply:before{
+    .product-question-reply::before{
         content: "\e93f";
     }
-    .payout-failed:before{
+    .payout-failed::before{
         content: "\ef53";
     }
-    .payout-failed:before{
+    .payout-failed::before{
         content: "\ef53";
     }
-    .withdrawal-released:before{
+    .withdrawal-released::before{
         content: "\ef80";
     }
-    .withdrawl-rejected:before{
+    .withdrawl-rejected::before{
         content: "\e927";
     }
-    .report-abuse-submitted:before{
+    .report-abuse-submitted::before{
         content: "\ef58";
     }
-    .system-announcement:before{
+    .system-announcement::before{
         content: "\ef37";
     }
-    .store-followed:before{
+    .store-followed::before{
         content: "\ef43";
     }
-    .store-followed:before{
+    .store-followed::before{
         content: "\ef43";
     }
-    .store-new-product-to-followers:before{
+    .store-new-product-to-followers::before{
         content: "\ef8e";
     }
-    .store-new-coupon-to-followers:before{
+    .store-new-coupon-to-followers::before{
         content: "\e92c";
     }
-    .store-vacation-alert-to-followers:before{
+    .store-vacation-alert-to-followers::before{
         content: "\ef67";
     }
-    .store-permanently-deactivated:before{
+    .store-permanently-deactivated::before{
         content: "\e928";
     }
-    .store-permanently-deactivated:before{
+    .store-permanently-deactivated::before{
         content: "\e928";
     }
-    .store-account-deactivation-request:before{
+    .store-account-deactivation-request::before{
         content: "\ef76";
     }
 }

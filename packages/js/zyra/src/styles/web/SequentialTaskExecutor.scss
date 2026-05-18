@@ -14,6 +14,7 @@
     align-items: center;
     font-size: 0.95rem;
     font-weight: 500;
+
     --progress-time: 3s;
 
     .status-wrapper {
@@ -109,7 +110,6 @@
       var(--c) 50% 100%,
       var(--c) 100% 50%,
       var(--c) 0 50%;
-
     background-size: 0.625rem 0.625rem;
     animation: loader 1s infinite;
     position: relative;
@@ -119,14 +119,11 @@
       position: absolute;
       inset: 0;
       margin: 0.1875rem;
-
       background: repeating-conic-gradient(#0000 0 35deg,
           $theme-color 0 90deg);
-
-      -webkit-mask: radial-gradient(farthest-side,
+      mask: radial-gradient(farthest-side,
           #0000 calc(100% - 0.1875rem),
           #000 0);
-
       border-radius: 50%;
     }
   }
