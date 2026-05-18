@@ -23,13 +23,13 @@ class Util {
      *
      * @var array
      */
-    const TABLES = array(
+    public const TABLES = array(
         'enrollment' => 'mw_enrollment',
         'category'   => 'mw_moodle_categories',
         'course'     => 'mw_courses',
     );
 
-    const MOOWOODLE_SETTINGS = array(
+    public const MOOWOODLE_SETTINGS = array(
         'notification'       => 'moowoodle_notification_settings',
         'synchronize-course' => 'moowoodle_synchronize_course_settings',
         'synchronize-user'   => 'moowoodle_synchronize_user_settings',
@@ -38,18 +38,18 @@ class Util {
         'system-logs'        => 'moowoodle_system_logs_settings',
     );
 
-    const MOOWOODLE_OTHER_SETTINGS = array(
+    public const MOOWOODLE_OTHER_SETTINGS = array(
         'log_file' => 'moowoodle_log_file',
     );
 
-    const MOOWOODLE_PRODUCT_META = array(
+    public const MOOWOODLE_PRODUCT_META = array(
         'course_startdate'    => 'moowoodle_course_startdate',
         'course_enddate'      => 'moowoodle_course_enddate',
         'moodle_course_id'    => 'moowoodle_moodle_course_id',
         'wordpress_course_id' => 'moowoodle_wordpress_course_id',
     );
 
-    const MOOWOODLE_TERM_META = array(
+    public const MOOWOODLE_TERM_META = array(
         'category_id'   => '_category_id',
         'parent_id'     => '_parent',
         'category_path' => '_category_path',
@@ -93,7 +93,7 @@ class Util {
                     MooWoodle()->moowoodle_logs_dir . '/index.html',
                     ''
                 );
-            } catch ( \Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+            } catch ( \Exception $exception ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
                 // Directory creation failed but logging should continue.
             }
         }
@@ -126,16 +126,15 @@ class Util {
             $context['Last Query'] = $wpdb->last_query;
         }
 
+        $trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
+        $caller = $trace[1] ?? array();
         // Automatic metadata.
         $meta = array_merge(
             array(
                 'Type'      => $type,
                 'Timestamp' => current_time( 'mysql' ),
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
-                'File'      => debug_backtrace()[1]['file'] ?? '',
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
-                'Line'      => debug_backtrace()[1]['line'] ?? '',
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_wp_debug_backtrace_summary
+                'File' => $caller['file'] ?? '',
+                'Line' => $caller['line'] ?? '',
                 'Stack'     => wp_debug_backtrace_summary(),
             ),
             $context
@@ -144,16 +143,15 @@ class Util {
         $timestamp = $meta['Timestamp'];
         $log_lines = array();
 
-        foreach ( $meta as $key => $val ) {
+        foreach ( $meta as $key => $value ) {
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
             $val         = trim( print_r( $val, true ) );
-            $log_lines[] = "{$timestamp} : {$key}: {$val}";
+            $log_lines[] = "{$timestamp} : {$key}: {$value}";
         }
 
         // Add the main message.
         // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
         $log_lines[] = "{$timestamp} : Message: " . ( is_string( $message ) ? trim( $message ) : trim( print_r( $message, true ) ) );
-        // Build final entry block.
         $log_entry = implode( "\n", $log_lines ) . "\n";
 
         $existing = $wp_filesystem->get_contents( MooWoodle()->log_file );
