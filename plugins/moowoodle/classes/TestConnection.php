@@ -75,7 +75,7 @@ class TestConnection {
 	}
 
 	/**
-	 * Get all Moodle Catagory.
+	 * Get all Moodle Category.
      *
 	 * @return array
 	 */
@@ -84,7 +84,7 @@ class TestConnection {
 
 		if ( $response && ! isset( $response['error'] ) ) {
 			$response = array(
-				'catagories' => $response['data'],
+				'categories' => $response['data'],
 				'success'    => true,
 			);
 		}
