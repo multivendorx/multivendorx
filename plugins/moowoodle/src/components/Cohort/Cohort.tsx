@@ -19,61 +19,6 @@ export interface CohortRow {
 
 const Cohort: React.FC = () => {
 	const [openPopup, setopenPopup] = useState(false);
-	const [rows, setRows] = useState<any[]>([]);
-	const [isLoading, setIsLoading] = useState(false);
-	const [totalRows, setTotalRows] = useState<number>(0);
-	const [error, setError] = useState<string | null>(null);
-	const [rowIds, setRowIds] = useState<number[]>([]);
-
-	// Bulk action
-	const handleBulkAction = (
-		action: string,
-		selectedIds: number[]
-	) => {
-		if (!appLocalizer.khali_dabba) {
-			setopenPopup(true);
-			return;
-		}
-
-		applyFilters(
-			'moowoodle_cohort_bulk_action',
-			null,
-			{
-				action,
-				selectedIds,
-				rows,
-				setError,
-				setIsLoading,
-				doRefreshTableData,
-			}
-		);
-	};
-
-	// Handle single row action
-	const handleSingleAction = (
-		actionName: string,
-		cohortId: number,
-		moodleCohortId: number
-	) => {
-		if (!appLocalizer.khali_dabba) {
-			setopenPopup(true);
-			return;
-		}
-
-		applyFilters(
-			'moowoodle_cohort_single_action',
-			null,
-			{
-				actionName,
-				cohortId,
-				moodleCohortId,
-				setError,
-				setIsLoading,
-				doRefreshTableData,
-			}
-		);
-	};
-
 	// Define table headers
 	const headers = {
 		cohort_name: {
@@ -176,50 +121,23 @@ const Cohort: React.FC = () => {
 		},
 	};
 
-	const bulkActions = [
-		{ label: __('Sync cohort', 'moowoodle'), value: 'sync_cohort' },
-		{
-			label: __('Create product', 'moowoodle'),
-			value: 'create_product',
+	const defaultTableProps = {
+		headers,
+		rows: dummyCohorts,
+		totalRows: dummyCohorts.length,
+		search: {
+			placeholder: __('Search...', 'moowoodle'),
 		},
-		{
-			label: __('Update product', 'moowoodle'),
-			value: 'update_product',
-		},
-	];
-
-	const doRefreshTableData = (
-		query: QueryProps
-	) => {
-		if (!appLocalizer.khali_dabba) {
-			setRows(dummyCohorts)
-			setopenPopup(true);
-			setRowIds(
-				dummyCohorts.map(
-					(item) => item.id || 0
-				)
-			);
-
-			setTotalRows(
-				dummyCohorts.length
-			);
-
-			return;
-		}
-
-		applyFilters(
-			'moowoodle_cohort_refresh_table',
-			null,
-			{
-				query,
-				setRows,
-				setRowIds,
-				setTotalRows,
-				setError,
-				setIsLoading,
-			}
-		);
 	};
+
+	const tableProps = applyFilters(
+		'moowoodle_cohort_table_props',
+		defaultTableProps,
+		{
+			setopenPopup,
+		}
+	);
+
 
 	return (
 		<>
@@ -242,21 +160,8 @@ const Cohort: React.FC = () => {
 				)}
 				headerTitle={__('Cohorts', 'moowoodle')}
 			/>
-			<TableCard
-				headers={headers}
-				rows={rows}
-				totalRows={totalRows}
-				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
-				ids={rowIds}
-				search={{
-					placeholder: __('Search...', 'moowoodle'),
-				}}
-				bulkActions={bulkActions}
-				onBulkActionApply={(action: string, selectedIds: number[]) => {
-					handleBulkAction(action, selectedIds);
-				}}
-			/>
+
+			<TableCard {...tableProps} />
 		</>
 	);
 };
