@@ -296,16 +296,6 @@ class Utill {
             $extra['Stack'] = $message->getTraceAsString();
             $message        = 'Exception occurred';
         }
-        // Convert Throwable into structured metadata.
-        if ( $message instanceof \Throwable ) {
-            $type             = 'EXCEPTION';
-            $extra['Message'] = $message->getMessage();
-            $extra['Code']    = $message->getCode();
-            $extra['File']    = $message->getFile();
-            $extra['Line']    = $message->getLine();
-            $extra['Stack']   = $message->getTraceAsString();
-            $message          = 'Throwable occurred';
-        }
 
         // Convert WP_Error into structured metadata.
         if ( $message instanceof \WP_Error ) {

@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * MooWoodle REST API Settings controller.
  *
- * @class       Settings class
+ * @class       REST API settings controller.
  * @version     PRODUCT_VERSION
  * @author      DualCube
  */
@@ -47,7 +47,7 @@ class Settings extends \WP_REST_Controller {
     /**
      * Check if a given request has access to update settings.
      *
-     * @param object $request The REST request object.
+     * @param \WP_REST_Request $request The REST request object.
      */
     public function update_item_permissions_check( $request ) {
         return current_user_can( 'manage_options' );
@@ -56,7 +56,7 @@ class Settings extends \WP_REST_Controller {
     /**
      * Update settings.
      *
-     * @param object $request The REST request object.
+     * @param \WP_REST_Request $request The REST request object.
      */
     public function update_item( $request ) {
         $nonce_check = Util::validate_nonce( $request );
@@ -65,25 +65,24 @@ class Settings extends \WP_REST_Controller {
             return $nonce_check;
         }
         try {
-            $all_details   = array();
-            $settings_data = $request->get_param( 'setting' );
-            $settingsname  = $request->get_param( 'settingName' );
-            $settingsname  = str_replace( '-', '_', 'moowoodle_' . $settingsname . '_settings' );
+            $settings = $request->get_param( 'setting' );
+            $option_name  = $request->get_param( 'settingName' );
+            $option_name  = str_replace( '-', '_', 'moowoodle_' . $option_name . '_settings' );
 
             // save the settings in database.
-            MooWoodle()->setting->update_option( $settingsname, $settings_data );
+            MooWoodle()->setting->update_option( $option_name, $settings );
 
             /**
              * Moodle after setting save.
              *
-             * @var $settingsname settingname.
-             * @var $settingdata settingdata.
+             * @var $option_name option_name.
+             * @var $settings settings.
              */
-            do_action( 'moowoodle_after_setting_save', $settingsname, $settings_data );
+            do_action( 'moowoodle_after_setting_save', $option_name, $settings );
 
-            $all_details['error'] = __( 'Settings Saved', 'moowoodle' );
-
-            return $all_details;
+            return array(
+                'message' => __( 'Settings saved.', 'moowoodle' ),
+            );
         } catch ( \Exception $e ) {
 			return Util::server_error( $e );
         }

@@ -7,7 +7,6 @@
 
 namespace MooWoodle\RestAPI\Controllers;
 
-use MooWoodle\TestConnection;
 use MooWoodle\Util;
 
 defined( 'ABSPATH' ) || exit;
@@ -105,9 +104,6 @@ class Synchronization extends \WP_REST_Controller {
             $parameter = $request->get_param( 'parameter' );
 
             switch ( $parameter ) {
-                case 'connection_test':
-                    return $this->connection_test_synchronization( $request );
-
                 case 'course':
                     return $this->course_synchronization( $request );
 
@@ -120,76 +116,6 @@ class Synchronization extends \WP_REST_Controller {
         } catch ( \Exception $e ) {
             return Util::server_error( $e );
         }
-    }
-
-    /**
-     * Test Connection with Moodle server.
-     *
-     * @param mixed $request rest request object.
-     * @return \WP_Error| \WP_REST_Response
-     */
-    public function connection_test_synchronization( $request ) {
-
-        $action = $request->get_param( 'action' );
-        $user   = $request->get_param( 'get_user' );
-        $course = $request->get_param( 'get_course' );
-
-        $user      = is_array( $user['data']['users'] ) ? reset( $user['data']['users'] ) : null;
-        $course    = is_array( $course['courses'] ) ? ( $course['courses'][1] ) : null;
-        $user_id   = $user['id'] ?? 0;
-        $course_id = $course['id'] ?? 0;
-
-        $response = array();
-        $actions  = array(
-            'get_site_info' => array(
-                'callback' => array( TestConnection::class, 'get_site_info' ),
-            ),
-            'get_course'    => array(
-                'callback' => array( TestConnection::class, 'get_course' ),
-            ),
-            'get_category'  => array(
-                'callback' => array( TestConnection::class, 'get_category' ),
-            ),
-            'create_user'   => array(
-                'callback' => array( TestConnection::class, 'create_user' ),
-            ),
-            'get_user'      => array(
-                'callback' => array( TestConnection::class, 'get_user' ),
-            ),
-            'update_user'   => array(
-                'callback' => array( TestConnection::class, 'update_user' ),
-                'args'     => array( $user_id ),
-            ),
-            'enroll_user'   => array(
-                'callback' => array( TestConnection::class, 'enrol_users' ),
-                'args'     => array( $user_id, $course_id ),
-            ),
-            'unenroll_user' => array(
-                'callback' => array( TestConnection::class, 'unenrol_users' ),
-                'args'     => array( $user_id, $course_id ),
-            ),
-            'delete_user'   => array(
-                'callback' => array( TestConnection::class, 'delete_users' ),
-                'args'     => array( $user_id ),
-            ),
-        );
-
-        if ( empty( $actions[ $action ] ) ) {
-            return new \WP_Error(
-                'invalid_connection_test',
-                sprintf(
-                    __( '%s test connection function is not defined.', 'moowoodle' ),
-                    $action
-                ),
-                array( 'status' => 400 )
-            );
-        }
-
-        $callback = $actions[ $action ]['callback'];
-        $args     = $actions[ $action ]['args'] ?? array();
-
-        $response = call_user_func_array( $callback, $args );
-        return rest_ensure_response( $response );
     }
 
     /**

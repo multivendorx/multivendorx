@@ -108,7 +108,7 @@ jQuery(function ($) {
 		if (!name || !email || !reason || !msg) {
 			showThemeNotice(
 				$msgBox,
-				__('error','multivendorx'),
+				'error',
 				__('All fields are required.', 'multivendorx')
 			);
 
@@ -118,7 +118,7 @@ jQuery(function ($) {
 		if (!emailRegex.test(email)) {
 			showThemeNotice(
 				$msgBox,
-				__('error','multivendorx'),
+				'error',
 				__('Please enter a valid email address.', 'multivendorx')
 			);
 
@@ -165,7 +165,7 @@ jQuery(function ($) {
 					$form.find('input[type=radio]').prop('checked', false);
 					$form.find('.report-abuse-custom-msg').hide();
 				} else {
-					showThemeNotice($msgBox, __('error','multivendorx'), res.data);
+					showThemeNotice($msgBox, 'error', res.data);
 				}
 
 				$btn.prop('disabled', false);
@@ -175,7 +175,7 @@ jQuery(function ($) {
 			error: function () {
 				showThemeNotice(
 					$msgBox,
-					__('error','multivendorx'),
+					'error',
 					__('Something went wrong. Try again.', 'multivendorx')
 				);
 

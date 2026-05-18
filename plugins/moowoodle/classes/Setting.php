@@ -43,13 +43,13 @@ class Setting {
     /**
      * Load all setting from option table.
      *
-     * @param mixed $fource true or false.
+     * @param mixed $force_reload true or false.
      * @return void
      */
-    private function load_settings( $fource = true ) {
+    private function load_settings( $force_reload = true ) {
 
         // If settings are loaded previously and not force to load.
-        if ( ! $fource && $this->settings ) {
+        if ( ! $force_reload && $this->settings ) {
             return;
         }
 
@@ -68,7 +68,7 @@ class Setting {
      */
     private function get_settings_keys() {
 
-        // Settings key are avialable.
+        // Settings key are available.
         if ( $this->settings_keys ) {
             return $this->settings_keys;
         }
@@ -88,7 +88,7 @@ class Setting {
 
     /**
      * Get the setting that was previously added.
-     * If setting is not present it return defalult value
+     * If setting is not present it return default value
      *
      * @param string $key setting key.
      * @param string $default_value setting value.

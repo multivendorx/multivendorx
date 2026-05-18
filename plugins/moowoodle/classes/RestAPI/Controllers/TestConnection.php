@@ -1,22 +1,102 @@
 <?php
 /**
- * MooWoodle TestConnection file.
+ * MooWoodle REST API Settings controller.
  *
  * @package MooWoodle
  */
 
-namespace MooWoodle;
+namespace MooWoodle\RestAPI\Controllers;
+
+use MooWoodle\Util;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
- * Plugin TestConnection class
+ * MooWoodle REST API TestConnection controller.
  *
- * @version     3.3.0
- * @package     MooWoodle
+ * @class       TestConnection class
+ * @version     PRODUCT_VERSION
  * @author      DualCube
  */
-class TestConnection {
+class TestConnection extends \WP_REST_Controller {
 
 	/**
+	 * Route base.
+	 *
+	 * @var string
+	 */
+	protected $rest_base = 'test-connection';
+
+    /**
+     * Register the routes for the objects of the controller.
+     */
+    public function register_routes() {
+        register_rest_route(
+            MooWoodle()->rest_namespace,
+            '/' . $this->rest_base,
+            array(
+                array(
+                    'methods'             => \WP_REST_Server::CREATABLE,
+                    'callback'            => array( $this, 'create_item' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
+                ),
+            )
+        );
+    }
+
+    /**
+     * Check if a given request has access to get items.
+     *
+     * @param object $request The REST request object.
+     */
+    public function permissions_check( $request ) {
+        return current_user_can( 'manage_options' );
+    }
+
+    /**
+     * Synchronization.
+     *
+     * @param \WP_REST_Request $request Full data about the request.
+     */
+    public function create_item( $request ) {
+        $nonce_check = Util::validate_nonce( $request );
+
+        if ( is_wp_error( $nonce_check ) ) {
+            return $nonce_check;
+        }
+
+		$action = $request->get_param( 'action' );
+        $user   = $request->get_param( 'get_users' );
+        $course = $request->get_param( 'get_courses' );
+
+        $user      = is_array( $user['data']['users'] ) ? reset( $user['data']['users'] ) : null;
+        $course    = is_array( $course['courses'] ) ? ( $course['courses'][1] ) : null;
+        $user_id   = $user['id'] ?? 0;
+        $course_id = $course['id'] ?? 0;
+
+        $args = array(
+            'update_users'   => array( $user_id ),
+            'enroll_users'   => array( $user_id, $course_id ),
+            'unenroll_users' => array( $user_id, $course_id ),
+            'delete_users'   => array( $user_id ),
+        );
+
+        if ( ! method_exists( $this, $action ) ) {
+            return new \WP_Error(
+                'invalid_connection_test',
+                sprintf(
+                    /* translators: %s: action name */
+                    __( '%s test connection function is not defined.', 'moowoodle' ),
+                    $action
+                ),
+                array( 'status' => 400 )
+            );
+        }
+
+        return rest_ensure_response( call_user_func_array( array( $this, $action ), $args[ $action ] ?? array() ) );
+    }
+
+    /**
 	 * Get Site info of the Moodle site.
      *
 	 * @return mixed
@@ -34,11 +114,11 @@ class TestConnection {
 
 			// Get register webservice functions.
 			$register_functions = array_map(
-				function ( $all_function ) {
-					return $all_function['name'];
+                function ( $function ) {
+					return $function['name'];
 				},
-				$response['functions']
-			);
+                $response['functions']
+            );
 
 			// Get missing functions.
 			$missing_functions = array_diff( $webservice_functions, $register_functions );
@@ -61,10 +141,10 @@ class TestConnection {
      *
 	 * @return array
 	 */
-	public static function get_course() {
+	public static function get_courses() {
 		$response = MooWoodle()->external_service->do_request( 'get_courses' );
 
-		if ( $response && ! isset( $response['error'] ) && count( $response['data'] ) > 0 ) {
+		if ( $response && ! isset( $response['error'] ) && ! empty( $response['data'] ) ) {
 			$response = array(
 				'courses' => $response['data'],
 				'success' => true,
@@ -76,10 +156,10 @@ class TestConnection {
 
 	/**
 	 * Get all Moodle Category.
-	 *
+     *
 	 * @return array
 	 */
-	public static function get_category() {
+	public static function get_categories() {
 		$response = MooWoodle()->external_service->do_request( 'get_categories' );
 
 		if ( $response && ! isset( $response['error'] ) ) {
@@ -97,7 +177,7 @@ class TestConnection {
      *
 	 * @return string[]
 	 */
-	public static function create_user() {
+	public static function create_users() {
 		// find user on moodle with moodle external function.
 		$response = MooWoodle()->external_service->do_request(
 			'get_moodle_users',
@@ -119,27 +199,7 @@ class TestConnection {
 		$response = MooWoodle()->external_service->do_request(
             'create_users',
             array(
-				'users' => array(
-					array(
-						'email'       => 'moowoodletestuser@gmail.com',
-						'username'    => 'moowoodletestuser',
-						'password'    => 'Moowoodle@123',
-						'auth'        => apply_filters( 'moowoodle_new_user_auth_type', 'manual' ),
-						'firstname'   => 'moowoodle',
-						'lastname'    => 'testuser',
-						'city'        => 'moowoodlecity',
-						'country'     => 'IN',
-						'preferences' => array_merge(
-							array(
-								array(
-									'type'  => 'auth_forcepasswordchange',
-									'value' => apply_filters( 'moowoodle_new_user_forcepasswordchange_value', 1 ),
-								),
-							),
-							apply_filters( 'moowoodle_new_user_additional_preferences', array() )
-						),
-					),
-				),
+				'users' => self::get_dummy_user_data(),
 			)
         );
 
@@ -155,7 +215,7 @@ class TestConnection {
      *
 	 * @return array
 	 */
-	public static function get_user() {
+	public static function get_users() {
 		$response = MooWoodle()->external_service->do_request(
             'get_moodle_users',
             array(
@@ -168,7 +228,7 @@ class TestConnection {
 			)
         );
 
-		if ( $response && ! isset( $response['error'] ) && count( $response['data']['users'] ) ) {
+		if ( $response && ! isset( $response['error'] ) && ! empty( $response['data']['users'] ) ) {
 			$response['success'] = true;
 		}
 
@@ -181,32 +241,11 @@ class TestConnection {
 	 * @param int $user_id dummy user id.
 	 * @return mixed
 	 */
-	public static function update_user( $user_id ) {
+	public static function update_users( $user_id ) {
 		$response = MooWoodle()->external_service->do_request(
             'update_users',
             array(
-				'users' => array(
-					array(
-						'id'          => $user_id,
-						'email'       => 'moowoodletestuser@gmail.com',
-						'username'    => 'moowoodletestuser',
-						'password'    => 'Moowoodle@123',
-						'auth'        => apply_filters( 'moowoodle_new_user_auth_type', 'manual' ),
-						'firstname'   => 'moowoodle',
-						'lastname'    => 'testuser',
-						'city'        => 'citymoowoodle',
-						'country'     => 'IN',
-						'preferences' => array_merge(
-							array(
-								array(
-									'type'  => 'auth_forcepasswordchange',
-									'value' => apply_filters( 'moowoodle_new_user_forcepasswordchange_preferences', 1 ),
-								),
-							),
-							apply_filters( 'moowoodle_new_user_additional_preferences', array() )
-						),
-					),
-				),
+				'users' => self::get_dummy_user_data( $user_id ),
 			)
         );
 
@@ -224,14 +263,14 @@ class TestConnection {
 	 * @param mixed $course_id course id.
 	 * @return mixed response
 	 */
-	public static function enrol_users( $user_id, $course_id ) {
+	public static function enroll_users( $user_id, $course_id ) {
 		$response = MooWoodle()->external_service->do_request(
             'enrol_users',
             array(
 				'enrolments' => array(
 					array(
-						'courseid' => "$course_id",
-						'userid'   => "$user_id",
+						'courseid' => (string) $course_id,
+						'userid'   => (string) $user_id,
 						'roleid'   => '5',
 					),
 				),
@@ -252,7 +291,7 @@ class TestConnection {
 	 * @param mixed $course_id course id.
 	 * @return mixed response
 	 */
-	public static function unenrol_users( $user_id, $course_id ) {
+	public static function unenroll_users( $user_id, $course_id ) {
 		$response = MooWoodle()->external_service->do_request(
             'unenrol_users',
             array(
@@ -286,5 +325,39 @@ class TestConnection {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Get dummy Moodle user data.
+	 *
+	 * @param int $user_id User ID.
+	 * @return array
+	 */
+	private static function get_dummy_user_data( $user_id = 0 ) {
+		$user_data = array(
+			'email'       => 'moowoodletestuser@gmail.com',
+			'username'    => 'moowoodletestuser',
+			'password'    => 'Moowoodle@123',
+			'auth'        => apply_filters( 'moowoodle_new_user_auth_type', 'manual' ),
+			'firstname'   => 'moowoodle',
+			'lastname'    => 'testuser',
+			'city'        => 'moowoodlecity',
+			'country'     => 'IN',
+			'preferences' => array_merge(
+				array(
+					array(
+						'type'  => 'auth_forcepasswordchange',
+						'value' => apply_filters( 'moowoodle_new_user_forcepasswordchange_value', 1 ),
+					),
+				),
+				apply_filters( 'moowoodle_new_user_additional_preferences', array() )
+			),
+		);
+
+		if ( $user_id > 0 ) {
+			$user_data['id'] = $user_id;
+		}
+
+		return array( $user_data );
 	}
 }
