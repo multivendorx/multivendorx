@@ -76,7 +76,7 @@ class TestConnection {
 
 	/**
 	 * Get all Moodle Category.
-     *
+	 *
 	 * @return array
 	 */
 	public static function get_category() {
