@@ -238,7 +238,7 @@
             bottom: 1rem;
             left: 50%;
             transform: translateX(-50%);
-            animation: slideBottomToTop 0.3s ease-out forwards;
+            animation: slide-bottom-to-top 0.3s ease-out forwards;
         }
 
         &[data-position="lightbox"] {
@@ -378,7 +378,7 @@
     }
 }
 
-@keyframes slideBottomToTop {
+@keyframes slide-bottom-to-top {
     from {
         transform: translateY(100%);
         opacity: 0;

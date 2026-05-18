@@ -174,14 +174,14 @@ const buildStyles = (
         borderColor: 'var(--border-color)',
         boxShadow: state.isFocused ? 'var(--box-shadow-theme)' : 'none',
         backgroundColor: background || 'var(--background-white)',
-        color: color || 'var(--textColor)',
+        color: color || 'var(--text-color)',
         minHeight: '2.213rem',
         ...(isMulti ? {} : { height: '2.213rem', maxHeight: '2.213rem' }),
         paddingTop: 0,
         paddingBottom: 0,
         width: '100%',
         margin: 0,
-        '&:active': { color: 'var(--colorPrimary)' },
+        '&:active': { color: 'var(--color-primary)' },
         ':hover': {
             borderColor: 'var(--border-color)'
         },
@@ -202,7 +202,7 @@ const buildStyles = (
             : state.isFocused
               ? 'var(--backgroundColor)'
               : 'var(--background-white)',
-        color: state.isSelected ? 'var(--textColor)' : 'var(--themeColor)',
+        color: state.isSelected ? 'var(--text-color)' : 'var(--themeColor)',
         cursor: 'pointer',
     }),
     menu: (base) => ({ ...base, borderRadius: 4, marginTop: 0 }),
@@ -213,14 +213,14 @@ const buildStyles = (
     }),
     multiValueLabel: (base) => ({
         ...base,
-        color: 'var(--colorPrimary)',
+        color: 'var(--color-primary)',
         padding: '0 0.25rem',
     }),
     multiValueRemove: (base) => ({
         ...base,
-        color: 'var(--colorPrimary)',
+        color: 'var(--color-primary)',
         ':hover': {
-            backgroundColor: 'var(--colorPrimary)',
+            backgroundColor: 'var(--color-primary)',
             color: 'var(--background-white)',
         },
     }),

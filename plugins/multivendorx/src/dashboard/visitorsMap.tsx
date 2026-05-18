@@ -87,7 +87,7 @@ const VisitorsMap: React.FC<VisitorsMapProps> = ({ dateRange }) => {
 								top: 10,
 								left: 10,
 								background: 'var(--backgroundColor)',
-								color: 'var(--colorPrimary)',
+								color: 'var(--color-primary)',
 								padding: '0.5rem 1rem',
 								borderRadius: '0.25rem',
 								fontSize: '1rem',

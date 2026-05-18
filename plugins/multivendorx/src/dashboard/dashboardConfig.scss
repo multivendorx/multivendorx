@@ -1,35 +1,35 @@
 .orchid_bloom {
-    --colorPrimary: #FF5959;
-    --colorSecondary: #FADD3A;
-    --colorAccent: #49BEB6;
-    --colorSupport: #075F63;
+    --color-primary: #FF5959;
+    --color-secondary: #FADD3A;
+    --color-accent: #49BEB6;
+    --color-support: #075F63;
 
-    --textColor: #000000c7;
+    --text-color: #000000c7;
     --subTextColor: #424242d0;
 
-    --colorWhite: #fff;
+    --color-white: #fff;
 
     --backgroundColor: #52648414;
     --background-white: #fff;
-    --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+    --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
     --border-color: #dbdbdb;
 
     &.dark {
-        --colorPrimary: #ff5959b2;
-        --colorSecondary: #fadd3ac5;
-        --colorAccent: #49beb6bd;
-        --colorSupport: #075e63af;
+        --color-primary: #ff5959b2;
+        --color-secondary: #fadd3ac5;
+        --color-accent: #49beb6bd;
+        --color-support: #075e63af;
 
-        --textColor: #fff;
+        --text-color: #fff;
         --subTextColor: #b6c6e3;
 
-        --colorWhite: #000;
-        --colorBlack: #b6c6e3;
+        --color-white: #000;
+        --color-black: #b6c6e3;
 
         --backgroundColor: #121212;
         --background-white: #212631;
-        --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+        --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
         --border-color: #ffffff1a;
         --box-shadow: #1010106e;
@@ -37,32 +37,32 @@
 }
 
 .emerald_edge {
-    --colorPrimary: #e6b924;
-    --colorSecondary: #d888c1;
-    --colorAccent: #6b7923;
-    --colorSupport: #6e97d0;
+    --color-primary: #e6b924;
+    --color-secondary: #d888c1;
+    --color-accent: #6b7923;
+    --color-support: #6e97d0;
 
-    --textColor: #000000c7;
+    --text-color: #000000c7;
     --subTextColor: #424242d0;
 
-    --colorWhite: #fff;
+    --color-white: #fff;
 
     --backgroundColor: #52648414;
     --background-white: #fff;
-    --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+    --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
     --border-color: #dbdbdb;
 
     &.dark {
-        --textColor: #fff;
+        --text-color: #fff;
         --subTextColor: #b6c6e3;
 
-        --colorWhite: #000;
-        --colorBlack: #b6c6e3;
+        --color-white: #000;
+        --color-black: #b6c6e3;
 
         --backgroundColor: #121212;
         --background-white: #212631;
-        --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+        --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
         --border-color: #ffffff1a;
         --box-shadow: #1010106e;
@@ -70,32 +70,32 @@
 }
 
 .solar_ember {
-    --colorPrimary: #fe900d;
-    --colorSecondary: #6030db;
-    --colorAccent: #17cadb;
-    --colorSupport: #a52fff;
+    --color-primary: #fe900d;
+    --color-secondary: #6030db;
+    --color-accent: #17cadb;
+    --color-support: #a52fff;
 
-    --textColor: #000000c7;
+    --text-color: #000000c7;
     --subTextColor: #424242d0;
 
-    --colorWhite: #fff;
+    --color-white: #fff;
 
     --backgroundColor: #52648414;
     --background-white: #fff;
-    --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+    --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
     --border-color: #dbdbdb;
 
     &.dark {
-        --textColor: #fff;
+        --text-color: #fff;
         --subTextColor: #b6c6e3;
 
-        --colorWhite: #000;
-        --colorBlack: #b6c6e3;
+        --color-white: #000;
+        --color-black: #b6c6e3;
 
         --backgroundColor: #121212;
         --background-white: #192231;
-        --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+        --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
         --border-color: #ffffff1a;
         --box-shadow: #1010106e;
@@ -103,32 +103,32 @@
 }
 
 .crimson_blaze {
-    --colorPrimary: #04e762;
-    --colorSecondary: #f5b700;
-    --colorAccent: #dc0073;
-    --colorSupport: #008bf8;
+    --color-primary: #04e762;
+    --color-secondary: #f5b700;
+    --color-accent: #dc0073;
+    --color-support: #008bf8;
 
-    --textColor: #000000c7;
+    --text-color: #000000c7;
     --subTextColor: #424242d0;
 
-    --colorWhite: #fff;
+    --color-white: #fff;
 
     --backgroundColor: #52648414;
     --background-white: #fff;
-    --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+    --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
     --border-color: #dbdbdb;
 
     &.dark {
-        --textColor: #fff;
+        --text-color: #fff;
         --subTextColor: #b6c6e3;
 
-        --colorWhite: #000;
-        --colorBlack: #b6c6e3;
+        --color-white: #000;
+        --color-black: #b6c6e3;
 
         --backgroundColor: #121212;
         --background-white: #212631;
-        --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+        --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
         --border-color: #ffffff1a;
         --box-shadow: #1010106e;
@@ -136,37 +136,37 @@
 }
 
 .golden_ray {
-    --colorPrimary: #0E117A;
-    --colorSecondary: #399169;
-    --colorAccent: #12E2A4;
-    --colorSupport: #DCF516;
+    --color-primary: #0E117A;
+    --color-secondary: #399169;
+    --color-accent: #12E2A4;
+    --color-support: #DCF516;
 
-    --textColor: #000000c7;
+    --text-color: #000000c7;
     --subTextColor: #424242d0;
 
-    --colorWhite: #fff;
+    --color-white: #fff;
 
     --backgroundColor: #52648414;
     --background-white: #fff;
-    --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+    --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
     --border-color: #dbdbdb;
 
     &.dark {
-        --colorPrimary: #0e127a98;
-        --colorSecondary: #399169;
-        --colorAccent: #12E2A4;
-        --colorSupport: #DCF516;
+        --color-primary: #0e127a98;
+        --color-secondary: #399169;
+        --color-accent: #12E2A4;
+        --color-support: #DCF516;
 
-        --textColor: #fff;
+        --text-color: #fff;
         --subTextColor: #b6c6e3;
 
-        --colorWhite: #000;
-        --colorBlack: #b6c6e3;
+        --color-white: #000;
+        --color-black: #b6c6e3;
 
         --backgroundColor: #121212;
         --background-white: #212631;
-        --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+        --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
         --border-color: #aaaaaaa6;
         --box-shadow: #1010106e;
@@ -174,32 +174,32 @@
 }
 
 .obsidian_night {
-    --colorPrimary: #00eed0;
-    --colorSecondary: #0197af;
-    --colorAccent: #4b227a;
-    --colorSupport: #02153d;
+    --color-primary: #00eed0;
+    --color-secondary: #0197af;
+    --color-accent: #4b227a;
+    --color-support: #02153d;
 
-    --textColor: #000000c7;
+    --text-color: #000000c7;
     --subTextColor: #424242d0;
 
-    --colorWhite: #fff;
+    --color-white: #fff;
 
     --backgroundColor: #52648414;
     --background-white: #fff;
-    --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+    --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
     --border-color: #dbdbdb;
 
     &.dark {
-        --textColor: #fff;
+        --text-color: #fff;
         --subTextColor: #b6c6e3;
 
-        --colorWhite: #000;
-        --colorBlack: #b6c6e3;
+        --color-white: #000;
+        --color-black: #b6c6e3;
 
         --backgroundColor: #121212;
         --background-white: #212631;
-        --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+        --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
         --border-color: #ffffff1a;
         --box-shadow: #1010106e;
@@ -207,32 +207,32 @@
 }
 
 .obsidian {
-    --colorPrimary: #7ccc63;
-    --colorSecondary: #f39c12;
-    --colorAccent: #e74c3c;
-    --colorSupport: #2c3e50;
+    --color-primary: #7ccc63;
+    --color-secondary: #f39c12;
+    --color-accent: #e74c3c;
+    --color-support: #2c3e50;
 
-    --textColor: #000000c7;
+    --text-color: #000000c7;
     --subTextColor: #424242d0;
 
-    --colorWhite: #fff;
+    --color-white: #fff;
 
     --backgroundColor: #52648414;
     --background-white: #fff;
-    --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+    --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
     --border-color: #dbdbdb;
 
     &.dark {
-        --textColor: #fff;
+        --text-color: #fff;
         --subTextColor: #b6c6e3;
 
-        --colorWhite: #000;
-        --colorBlack: #b6c6e3;
+        --color-white: #000;
+        --color-black: #b6c6e3;
 
         --backgroundColor: #121212;
         --background-white: #101924;
-        --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+        --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
         --border-color: #203247;
         --box-shadow: #1010106e;
@@ -240,32 +240,32 @@
 }
 
 .black {
-    --colorPrimary: #2c3e50;
-    --colorSecondary: #2c3e50;
-    --colorAccent: #2c3e50;
-    --colorSupport: #2c3e50;
+    --color-primary: #2c3e50;
+    --color-secondary: #2c3e50;
+    --color-accent: #2c3e50;
+    --color-support: #2c3e50;
 
-    --textColor: #000000c7;
+    --text-color: #000000c7;
     --subTextColor: #424242d0;
 
-    --colorWhite: #fff;
+    --color-white: #fff;
 
     --backgroundColor: #52648414;
     --background-white: #fff;
-    --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+    --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
     --border-color: #dbdbdb;
 
     &.dark {
-        --textColor: #fff;
+        --text-color: #fff;
         --subTextColor: #b6c6e3;
 
-        --colorWhite: #000;
-        --colorBlack: #b6c6e3;
+        --color-white: #000;
+        --color-black: #b6c6e3;
 
         --backgroundColor: #121212;
         --background-white: #101924;
-        --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+        --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
         --border-color: #203247;
         --box-shadow: #1010106e;
@@ -273,50 +273,50 @@
 }
 
 .custom {
-    --colorPrimary: unset;
-    --colorSecondary: unset;
-    --colorAccent: unset;
-    --colorSupport: unset;
+    --color-primary: unset;
+    --color-secondary: unset;
+    --color-accent: unset;
+    --color-support: unset;
 
-    --textColor: #000000c7;
+    --text-color: #000000c7;
     --subTextColor: #424242d0;
 
-    --colorWhite: #fff;
+    --color-white: #fff;
 
     --backgroundColor: #52648414;
     --background-white: #fff;
-    --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+    --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
     --border-color: #dbdbdb;
 
     &.dark {
-        --colorPrimary: unset;
-        --colorSecondary: unset;
-        --colorAccent: unset;
-        --colorSupport: unset;
+        --color-primary: unset;
+        --color-secondary: unset;
+        --color-accent: unset;
+        --color-support: unset;
 
-        --textColor: #fff;
+        --text-color: #fff;
         --subTextColor: #b6c6e3;
 
-        --colorWhite: #000;
-        --colorBlack: #b6c6e3;
+        --color-white: #000;
+        --color-black: #b6c6e3;
 
         --backgroundColor: #121212;
         --background-white: #101924;
-        --backgroundPrimary: color-mix(in srgb, var(--colorPrimary) 10%, transparent);
+        --backgroundPrimary: color-mix(in srgb, var(--color-primary) 10%, transparent);
 
         --border-color: #203247;
         --box-shadow: #1010106e;
     }
 }
 
-$theme-color: var(--colorPrimary);
+$theme-color: var(--color-primary);
 
-$color-white: var(--colorWhite);
+$color-white: var(--color-white);
 $color-black: #181819;
-$color-active: var(--colorPrimary);
+$color-active: var(--color-primary);
 
-$text-color: var(--textColor);
+$text-color: var(--text-color);
 $sub-text-color: var(--subTextColor);
 
 $background-color: var(--backgroundColor);
@@ -326,8 +326,8 @@ $theme-background-color: var(--backgroundPrimary);
 $border-light-small: 0.063rem solid var(--border-color);
 $border-light-medium: 0.120rem solid var(--border-color);
 $border-black-small: 0.063rem solid var(--border-color);
-$border-theme-small: 0.063rem solid var(--colorPrimary);
-$border-theme-medium: 0.115rem solid var(--colorPrimary);
+$border-theme-small: 0.063rem solid var(--color-primary);
+$border-theme-medium: 0.115rem solid var(--color-primary);
 
 $border-radius-small: 0.25rem;
 $accent-color: #e35047;

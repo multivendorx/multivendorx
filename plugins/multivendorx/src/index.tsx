@@ -26,19 +26,19 @@ if (vendorWrapper) {
 	const colors = appLocalizer?.color?.colors || {};
 
 	document.documentElement.style.setProperty(
-		'--colorPrimary',
+		'--color-primary',
 		colors.colorPrimary || '#00EED0'
 	);
 	document.documentElement.style.setProperty(
-		'--colorSecondary',
+		'--color-secondary',
 		colors.colorSecondary || '#0197AF'
 	);
 	document.documentElement.style.setProperty(
-		'--colorAccent',
+		'--color-accent',
 		colors.colorAccent || '#4B227A'
 	);
 	document.documentElement.style.setProperty(
-		'--colorSupport',
+		'--color-support',
 		colors.colorSupport || '#02153D'
 	);
 

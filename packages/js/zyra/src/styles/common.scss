@@ -235,7 +235,7 @@ $index: 1;
   }
 
   // only background color
-  .#{$name}-bg,
+  .#{$name}-bg, 
   .admin-bg-color#{$index} {
     background: map-get($style, color) !important;
   }
