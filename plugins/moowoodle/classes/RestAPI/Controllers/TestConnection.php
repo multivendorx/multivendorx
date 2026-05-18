@@ -69,16 +69,16 @@ class TestConnection extends \WP_REST_Controller {
         $user   = $request->get_param( 'get_users' );
         $course = $request->get_param( 'get_courses' );
 
-        $user   = is_array( $user['data']['users'] ) ? reset( $user['data']['users'] ) : null;
-        $course = is_array( $course['courses'] ) ? ( $course['courses'][1] ) : null;
+        $user      = is_array( $user['data']['users'] ) ? reset( $user['data']['users'] ) : null;
+        $course    = is_array( $course['courses'] ) ? ( $course['courses'][1] ) : null;
         $user_id   = $user['id'] ?? 0;
         $course_id = $course['id'] ?? 0;
 
         $args = array(
-            'update_users' => array( $user_id ),
-            'enroll_users' => array( $user_id, $course_id ),
+            'update_users'   => array( $user_id ),
+            'enroll_users'   => array( $user_id, $course_id ),
             'unenroll_users' => array( $user_id, $course_id ),
-            'delete_users' => array( $user_id ),
+            'delete_users'   => array( $user_id ),
         );
 
         if ( ! method_exists( $this, $action ) ) {
@@ -144,7 +144,7 @@ class TestConnection extends \WP_REST_Controller {
 	public static function get_courses() {
 		$response = MooWoodle()->external_service->do_request( 'get_courses' );
 
-		if ( $response && ! isset( $response['error'] ) && ! empty( $response['data'] )) {
+		if ( $response && ! isset( $response['error'] ) && ! empty( $response['data'] ) ) {
 			$response = array(
 				'courses' => $response['data'],
 				'success' => true,
@@ -245,7 +245,7 @@ class TestConnection extends \WP_REST_Controller {
 		$response = MooWoodle()->external_service->do_request(
             'update_users',
             array(
-				'users' =>self::get_dummy_user_data($user_id),
+				'users' => self::get_dummy_user_data( $user_id ),
 			)
         );
 
@@ -358,6 +358,6 @@ class TestConnection extends \WP_REST_Controller {
 			$user_data['id'] = $user_id;
 		}
 
-		return array($user_data);
+		return array( $user_data );
 	}
 }

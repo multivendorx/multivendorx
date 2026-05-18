@@ -77,7 +77,7 @@ class Synchronization extends \WP_REST_Controller {
 				$response = array(
 					'status'  => Util::get_sync_status( 'course' ),
 					'running' => get_transient( 'course_sync_running' ),
-				    );
+				);
             } else {
                 $response = apply_filters( 'moowoodle_sync_status', $request );
             }
@@ -140,8 +140,8 @@ class Synchronization extends \WP_REST_Controller {
 
             Util::set_sync_status(
                 array(
-					'action'  => __( 'Update Course Category', 'moowoodle' ),
-					'total'   => count( $categories )
+					'action' => __( 'Update Course Category', 'moowoodle' ),
+					'total'  => count( $categories ),
                 ),
                 'course'
             );
@@ -150,8 +150,8 @@ class Synchronization extends \WP_REST_Controller {
 
             Util::set_sync_status(
                 array(
-					'action'  => __( 'Update Product Category', 'moowoodle' ),
-					'total'   => count( $categories )
+					'action' => __( 'Update Product Category', 'moowoodle' ),
+					'total'  => count( $categories ),
                 ),
                 'course'
             );
@@ -166,8 +166,8 @@ class Synchronization extends \WP_REST_Controller {
         // Update all course.
         Util::set_sync_status(
             array(
-				'action'  => __( 'Update Course', 'moowoodle' ),
-				'total'   => max( 0, count( $courses ) - 1 )
+				'action' => __( 'Update Course', 'moowoodle' ),
+				'total'  => max( 0, count( $courses ) - 1 ),
             ),
             'course'
         );

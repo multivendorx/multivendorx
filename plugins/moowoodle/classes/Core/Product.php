@@ -69,7 +69,7 @@ class Product {
 	 * @return int WooCommerce product ID or 0 on failure.
 	 */
 	public static function update_product( $course, $force_create = true, $force_update = false ) {
-		if (  empty( $course ) || empty( $course['format'] ) || 'site' === $course['format'] ) {
+		if ( empty( $course ) || empty( $course['format'] ) || 'site' === $course['format'] ) {
 			return 0;
 		}
 
@@ -102,8 +102,8 @@ class Product {
 		// Set product's sku.
 		try {
 			$product->set_sku( $course['idnumber'] ?? '' );
-		} catch ( \Exception $exception  ) {
-			Util::log( sprintf( 'Unable to set SKU for product #%d: %s', $product->get_id(), $exception ->getMessage() ) );
+		} catch ( \Exception $exception ) {
+			Util::log( sprintf( 'Unable to set SKU for product #%d: %s', $product->get_id(), $exception->getMessage() ) );
 		}
 
 		// get the course id linked with moodle.
@@ -115,12 +115,12 @@ class Product {
 
 		$wordpress_course = ! empty( $wordpress_course ) ? reset( $wordpress_course ) : array();
 
-		$meta_data = [
-			Util::MOOWOODLE_PRODUCT_META['course_startdate']   => $course['startdate'],
-			Util::MOOWOODLE_PRODUCT_META['course_enddate']     => $course['enddate'],
-			Util::MOOWOODLE_PRODUCT_META['moodle_course_id']   => $course['id'],
+		$meta_data = array(
+			Util::MOOWOODLE_PRODUCT_META['course_startdate'] => $course['startdate'],
+			Util::MOOWOODLE_PRODUCT_META['course_enddate'] => $course['enddate'],
+			Util::MOOWOODLE_PRODUCT_META['moodle_course_id'] => $course['id'],
 			Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'] => $wordpress_course['id'],
-		];
+		);
 
 		foreach ( $meta_data as $key => $value ) {
 			$product->update_meta_data( $key, $value );
@@ -160,8 +160,8 @@ class Product {
 		// Update all products.
 		Util::set_sync_status(
             array(
-				'action'  => __( 'Update Product', 'moowoodle' ),
-				'total'   => max( 0, count( $courses ) - 1 ),
+				'action' => __( 'Update Product', 'moowoodle' ),
+				'total'  => max( 0, count( $courses ) - 1 ),
             ),
             'course'
         );
@@ -209,7 +209,7 @@ class Product {
 		if ( 'course' === $link_type ) {
 			do_action( 'moowoodle_clean_cohort_previous_link', $product_id );
 
-			if ( empty($link_item_id) ) {
+			if ( empty( $link_item_id ) ) {
 				$this->clean_course_previous_link( $product_id );
 				return;
 			}
@@ -331,7 +331,6 @@ class Product {
 					'product_id'       => $product_id,
 				)
 			);
-			
 		}
 	}
 
@@ -367,5 +366,4 @@ class Product {
 			);
 		}
 	}
-
 }

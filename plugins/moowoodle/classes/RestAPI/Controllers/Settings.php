@@ -6,6 +6,7 @@
  */
 
 namespace MooWoodle\RestAPI\Controllers;
+
 use MooWoodle\Util;
 
 defined( 'ABSPATH' ) || exit;
@@ -64,7 +65,7 @@ class Settings extends \WP_REST_Controller {
             return $nonce_check;
         }
         try {
-            $details   = array();
+            $details       = array();
             $settings_data = $request->get_param( 'setting' );
             $settingsname  = $request->get_param( 'settingName' );
             $settingsname  = str_replace( '-', '_', 'moowoodle_' . $settingsname . '_settings' );
@@ -84,7 +85,7 @@ class Settings extends \WP_REST_Controller {
 
             return $details;
         } catch ( \Exception $e ) {
-           return Util::server_error( $e );
+			return Util::server_error( $e );
         }
     }
 }

@@ -196,11 +196,9 @@ class Installer {
             delete_option( 'moowoodle_tool_settings' );
             delete_option( 'moowoodle_log_settings' );
 
-
             $synchronize_user_settings = get_option( Util::MOOWOODLE_SETTINGS['synchronize-user'], array() );
 
             if ( ! empty( $synchronize_user_settings['user_sync_options'] ) ) {
-
                 foreach ( $synchronize_user_settings['user_sync_options'] as &$mapping ) {
                     if ( isset( $mapping[0], $mapping[1] ) ) {
                         $mapping = array(
@@ -215,11 +213,10 @@ class Installer {
                     $synchronize_user_settings
                 );
             }
-                        
+
             $synchronize_course_settings = get_option( Util::MOOWOODLE_SETTINGS['synchronize-course'], array() );
 
             if ( ! empty( $synchronize_course_settings['sync-course-options'] ) ) {
-
                 $synchronize_course_settings['sync_course_options'] = $synchronize_course_settings['sync-course-options'];
 
                 unset( $synchronize_course_settings['sync-course-options'] );
@@ -229,7 +226,6 @@ class Installer {
                     $synchronize_course_settings
                 );
             }
-
         }
     }
 
@@ -458,5 +454,4 @@ class Installer {
 
         wp_cache_flush();
     }
-    
 }

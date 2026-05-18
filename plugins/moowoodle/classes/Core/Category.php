@@ -161,7 +161,7 @@ class Category {
 				$taxonomy,
 				array(
 					'name'        => $category['name'],
-					'slug'		  => $slug,
+					'slug'        => $slug,
 					'description' => $category['description'],
 				)
 			);
@@ -172,7 +172,7 @@ class Category {
 				$taxonomy,
 				array(
 					'description' => $category['description'],
-					'slug'		  => $slug,
+					'slug'        => $slug,
 				)
 			);
 
@@ -183,7 +183,7 @@ class Category {
 
 		// In success on update or insert sync meta data.
 		if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
-			update_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['parent_id'], $category['parent']);
+			update_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['parent_id'], $category['parent'] );
 			update_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['category_path'], $category['path'] );
 
 			return $category['id'];

@@ -52,8 +52,8 @@ class EnrollmentEmail extends \WC_Email {
 	 * @return void
 	 */
 	public function trigger( $recipient, $enrollment_details ) {
-		$this->recipient      = $recipient;
-		$this->enrollment_details     = $enrollment_details;
+		$this->recipient          = $recipient;
+		$this->enrollment_details = $enrollment_details;
 
 		if ( ! $this->is_enabled() || ! $this->get_recipient() ) {
 			return;
@@ -120,7 +120,7 @@ class EnrollmentEmail extends \WC_Email {
 		ob_start();
 		MooWoodle()->util->get_template(
             $this->template_plain,
-            $this->get_template_args(true)
+            $this->get_template_args( true )
         );
 		return ob_get_clean();
 	}
