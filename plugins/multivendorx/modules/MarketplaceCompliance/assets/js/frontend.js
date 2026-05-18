@@ -165,7 +165,7 @@ jQuery(function ($) {
 					$form.find('input[type=radio]').prop('checked', false);
 					$form.find('.report-abuse-custom-msg').hide();
 				} else {
-					showThemeNotice($msgBox, __('error','multivendorx'), res.data);
+					showThemeNotice($msgBox, 'error', res.data);
 				}
 
 				$btn.prop('disabled', false);
@@ -175,7 +175,7 @@ jQuery(function ($) {
 			error: function () {
 				showThemeNotice(
 					$msgBox,
-					__('error','multivendorx'),
+					'error',
 					__('Something went wrong. Try again.', 'multivendorx')
 				);
 
