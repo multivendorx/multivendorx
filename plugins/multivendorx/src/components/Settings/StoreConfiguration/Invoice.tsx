@@ -326,7 +326,7 @@ const Invoice: React.FC = () => {
 	const displayCustomOrder = appLocalizer?.settings_databases_value?.overview?.display_customer_order;
 
 	return (
-		<Container className="notice-settings">
+		<Container className="settings-card">
 			<Column>
 				<Card
 					title={__('Invoice preview', 'multivendorx')}

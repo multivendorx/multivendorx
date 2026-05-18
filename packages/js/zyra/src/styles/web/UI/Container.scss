@@ -114,3 +114,20 @@
         }
     }
 }
+
+@media only screen and (width <= 600px) {
+    [data-cols='1'],
+    [data-cols='2'],
+    [data-cols='3'],
+    [data-cols='4'],
+    [data-cols='5'],
+    [data-cols='6'],
+    [data-cols='7'],
+    [data-cols='8'],
+    [data-cols='9'],
+    [data-cols='10'],
+    [data-cols='11'] {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+}

@@ -97,10 +97,10 @@ const RecipientBadge: React.FC<RecipientBadgeProps> = ({ recipient }) => {
 	if (!recipient.enabled) {
 		return null;
 	}
-	const icon = RECIPIENT_CONFIG[recipient.label] ?? RECIPIENT_CONFIG.default;
+	const config = RECIPIENT_CONFIG[recipient.label] ?? RECIPIENT_CONFIG.default;
 	return (
-		<div className={`admin-badge`} role="button" tabIndex={0}>
-			<i className={`adminfont-${icon}`}></i>
+		<div className={`admin-badge ${config.badge}`} role="button" tabIndex={0}>
+			<i className={`adminfont-${config.icon}`}></i>
 			<span>{recipient.label}</span>
 		</div>
 	);
@@ -476,7 +476,7 @@ const EventRules: React.FC = () => {
 					width="90%"
 					height="90%"
 					header={{
-						icon: 'cart',
+						icon: 'notification',
 						title: `${
 							openChannel === 'system'
 								? __('System Notification', 'multivendorx')

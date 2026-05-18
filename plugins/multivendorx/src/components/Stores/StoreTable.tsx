@@ -141,13 +141,12 @@ const StoreTable: React.FC = () => {
 			label: __('Primary Owner', 'multivendorx'),
 			render: (row) => {
 				const owner = row.primary_owner?.data;
-
 				return (
 					<InfoItem
 						title={owner?.display_name}
 						titleLink={getUrl(row.id, 'store', 'edit')}
 						avatar={{
-							imageHtml: row.primary_owner_image,
+							image: row.primary_owner_image,
 							iconClass: row.primary_owner_image ? 'person' : '',
 						}}
 						descriptions={[

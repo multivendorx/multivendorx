@@ -22,42 +22,41 @@ class Setting {
      *
      * @var array
      */
-    private $settings = array();
+    private $settings_cache = array();
 
     /**
-     * Contain global key of all settings.
+     * Stores all registered setting keys.
      *
      * @var array
      */
-    private $settings_keys = array();
+    private $registered_setting_keys = array();
 
     /**
      * Construct function for load setting.
      */
     public function __construct() {
-
-        // Load all settings.
-        $this->load_settings();
+        
+        $this->initialize_settings();
     }
 
     /**
      * Load all setting from option table.
      *
-     * @param mixed $fource true or false.
+     * @param bool $force_reload true or false.
      * @return void
      */
-    private function load_settings( $fource = true ) {
+    private function initialize_settings( $force_reload = true ) {
 
         // If settings are loaded previously and not force to load.
-        if ( ! $fource && $this->settings ) {
+        if ( ! $force_reload && $this->settings_cache ) {
             return;
         }
 
-        $setting_keys = $this->get_settings_keys();
+        $setting_keys = $this->get_registered_setting_keys();
 
         // Get all setting from option table.
         foreach ( $setting_keys as $key ) {
-            $this->settings[ $key ] = get_option( $key, array() );
+            $this->settings_cache[ $key ] = get_option( $key, array() );
         }
     }
 
@@ -66,11 +65,11 @@ class Setting {
      *
      * @return array
      */
-    private function get_settings_keys() {
+    private function get_registered_setting_keys() {
 
-        // Settings key are avialable.
-        if ( $this->settings_keys ) {
-            return $this->settings_keys;
+        // Settings key are available.
+        if ( ! empty( $this->registered_setting_keys ) ) {
+            return $this->registered_setting_keys;
         }
 
         /**
@@ -78,20 +77,20 @@ class Setting {
          *
          * @var array setting keys
          */
-        $this->settings_keys = apply_filters(
+        $this->registered_setting_keys = apply_filters(
             'moowoodle_register_settings_keys',
             array_values( Util::MOOWOODLE_SETTINGS )
         );
 
-        return $this->settings_keys;
+        return $this->registered_setting_keys;
     }
 
     /**
      * Get the setting that was previously added.
-     * If setting is not present it return defalult value
+     * If setting is not present it return default value
      *
      * @param string $key setting key.
-     * @param string $default_value setting value.
+     * @param mixed  $default_value setting value.
      * @param mixed  $option_key option table's key.
      * @return mixed
      */
@@ -102,7 +101,7 @@ class Setting {
             $option_key = $this->get_option_key( $key );
         }
 
-        $setting = $this->settings[ $option_key ] ?? array();
+        $setting = $this->settings_cache[ $option_key ] ?? array();
 
         return $setting[ $key ] ?? $default_value;
     }
@@ -123,13 +122,12 @@ class Setting {
         }
 
         // Get the setting array from setting settings container.
-        $setting = $this->settings[ $option_key ] ?? array();
+        $setting = $this->settings_cache[ $option_key ] ?? array();
 
         // Update setting in setting container.
         $setting[ $key ]               = $value;
-        $this->settings[ $option_key ] = $setting;
+        $this->settings_cache[ $option_key ] = $setting;
 
-        // Update the setting in database.
         update_option( $option_key, $setting );
     }
 
@@ -142,8 +140,8 @@ class Setting {
     public function get_option( $key ) {
 
         // Check key exist in register settings keys.
-        if ( in_array( $key, $this->get_settings_keys(), true ) ) {
-            return $this->settings[ $key ];
+        if ( in_array( $key, $this->get_registered_setting_keys(), true ) ) {
+            return $this->settings_cache[ $key ];
         }
 
         return get_option( $key, array() );
@@ -151,7 +149,7 @@ class Setting {
 
     /**
      * Update the value in option table.
-     * If key does't exist it create it.
+     * If the key does not exist, it will be created.
      *
      * @param string $key settings name.
      * @param mixed  $value settings value.
@@ -159,14 +157,12 @@ class Setting {
      */
     public function update_option( $key, $value ) {
 
-        // Check key exist in register settings keys.
-        if ( in_array( $key, $this->get_settings_keys(), true ) ) {
+        if ( in_array( $key, $this->get_registered_setting_keys(), true ) ) {
 
             // Update the container.
-            $this->settings[ $key ] = $value;
+            $this->settings_cache[ $key ] = $value;
         }
 
-        // Update the option.
         update_option( $key, $value );
     }
 
@@ -177,7 +173,7 @@ class Setting {
      * @return string
      */
     private function get_option_key( $key ) {
-        foreach ( $this->settings as $option_key => $setting ) {
+        foreach ( $this->settings_cache as $option_key => $setting ) {
             // Key exist in a particular setting.
             if ( is_array( $setting ) && array_key_exists( $key, $setting ) ) {
                 return $option_key;

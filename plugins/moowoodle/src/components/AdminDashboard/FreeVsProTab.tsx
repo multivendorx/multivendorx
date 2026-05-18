@@ -14,225 +14,210 @@ interface Section {
 }
 const sections: Section[] = [
 	{
-		title: __('Product & store tools', 'moowoodle'),
+		title: __('Power your Moodle eLearning platform', 'moowoodle'),
 		features: [
 			{
-				name: __('Multiple stores per product', 'moowoodle'),
+				name: __('Connect Moodle with WordPress', 'moowoodle'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Store policies', 'moowoodle'),
+				name: __('WooCommerce course selling', 'moowoodle'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Store reviews', 'moowoodle'),
-				free: true,
-				pro: true,
-			},
-			{ name: __('Follow store', 'moowoodle'), free: true, pro: true },
-			{
-				name: __(
-					'Privacy controls to show/hide store details)',
-					'moowoodle'
-				),
+				name: __('Course synchronization', 'moowoodle'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Confirm vendor identity with documents', 'moowoodle'),
+				name: __('Course category synchronization', 'moowoodle'),
+				free: true,
+				pro: true,
+			},
+			{
+				name: __('One-click enrollment', 'moowoodle'),
+				free: true,
+				pro: true,
+			},
+			{
+				name: __('Student enrollment management', 'moowoodle'),
+				free: true,
+				pro: true,
+			},
+			{
+				name: __('Moodle test connection', 'moowoodle'),
+				free: true,
+				pro: true,
+			},
+			{
+				name: __('Log viewer & debugging tools', 'moowoodle'),
+				free: true,
+				pro: true,
+			},
+			{
+				name: __('Course listing management', 'moowoodle'),
+				free: true,
+				pro: true,
+			},
+			{
+				name: __('Multilingual support', 'moowoodle'),
+				free: true,
+				pro: true,
+			},
+		],
+	},
+	{
+		title: __('Manage courses with advanced controls', 'moowoodle'),
+		features: [
+			{
+				name: __('Import courses as draft', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Bulk upload/download product via CSV', 'moowoodle'),
+				name: __('Course status control', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Display store opening/closing times', 'moowoodle'),
+				name: __('Course image synchronization', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Store can temporarily close shop with customer notice',
-					'moowoodle'
-				),
+				name: __('Course group synchronization', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Assign assistants to your store and control what they can access',
-					'moowoodle'
-				),
+				name: __('Automatically create new products', 'moowoodle'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Automatically update existing products', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
 		],
 	},
 	{
-		title: __(' Get paid without hassle', 'moowoodle'),
+		title: __('Synchronize users and access seamlessly', 'moowoodle'),
 		features: [
 			{
-				name: __('Bank transfer', 'moowoodle'),
+				name: __('Basic user synchronization', 'moowoodle'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('PayPal payout', 'moowoodle'),
-				free: true,
+				name: __('Real-time user synchronization', 'moowoodle'),
+				free: false,
 				pro: true,
 			},
 			{
-				name: __('Stripe connect', 'moowoodle'),
-				free: true,
+				name: __('Bidirectional synchronization', 'moowoodle'),
+				free: false,
 				pro: true,
 			},
-			{ name: __('Razorpay', 'moowoodle'), free: true, pro: true },
 			{
-				name: __('Real-time split payments', 'moowoodle'),
+				name: __('User profile field mapping', 'moowoodle'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Existing user synchronization', 'moowoodle'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Single Sign-On (SSO)', 'moowoodle'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Synced login/logout between Moodle & WordPress', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
 		],
 	},
 	{
-		title: __(' Deliver seamless shopping experiences', 'moowoodle'),
+		title: __('Sell courses your way', 'moowoodle'),
 		features: [
-			{ name: __('Product Q&A', 'moowoodle'), free: true, pro: true },
 			{
-				name: __('Marketplace refunds', 'moowoodle'),
+				name: __('Individual course enrollment', 'moowoodle'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Announcements', 'moowoodle'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Product abuse report', 'moowoodle'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Invoices & packing slips', 'moowoodle'),
-				free: false,
-				pro: true,
-			},
-			{ name: __('Live chat', 'moowoodle'), free: false, pro: true },
-			{
-				name: __('Customer support', 'moowoodle'),
+				name: __('Classroom / multi-seat enrollment', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Product enquiry', 'moowoodle'),
+				name: __('Cohort enrollment', 'moowoodle'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Group enrollment via variations', 'moowoodle'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Course gifting', 'moowoodle'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Seat reassignment', 'moowoodle'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Bulk student enrollment', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
 		],
 	},
 	{
-		title: __(' Ship the way you want', 'moowoodle'),
+		title: __('Flexible pricing and subscriptions', 'moowoodle'),
 		features: [
 			{
-				name: __('Zone-based shipping', 'moowoodle'),
+				name: __('One-time course purchase', 'moowoodle'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Distance-based shipping', 'moowoodle'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Country restrictions', 'moowoodle'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Weight-based shipping', 'moowoodle'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Per-product shipping', 'moowoodle'),
-				free: false,
-				pro: true,
-			},
-		],
-	},
-	{
-		title: __(' Sell in different ways', 'moowoodle'),
-		features: [
-			{
-				name: __(
-					'Optimize store & product SEO with Yoast or Rank Math',
-					'moowoodle'
-				),
+				name: __('Tiered course access', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Sales, revenue, and order reports', 'moowoodle'),
+				name: __('Subscription-based courses', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Store with different capabilities as per subsctiption plan',
-					'moowoodle'
-				),
+				name: __('Tiered subscription support', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Paid product promotions', 'moowoodle'),
+				name: __('Bundled courses', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Special pricing & bulk rules for groups',
-					'moowoodle'
-				),
+				name: __('Multiple pricing models', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Low-stock alerts, waitlists, inventory management',
-					'moowoodle'
-				),
-				free: false,
-				pro: true,
-			},
-		],
-	},
-	{
-		title: __('Automate rules and commissions', 'moowoodle'),
-		features: [
-			{
-				name: __('Payment gateway fees', 'moowoodle'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Min/Max quantities', 'moowoodle'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Facilitator fees', 'moowoodle'),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __('Marketplace fees', 'moowoodle'),
+				name: __('Course variations support', 'moowoodle'),
 				free: false,
 				pro: true,
 			},
@@ -356,7 +341,6 @@ const FreeVsProTab: React.FC<object> = () => {
 								{__('Upgrade Now', 'moowoodle')}
 								<i className="adminfont-arrow-right icon-pro-btn"></i>
 							</a>
-
 						</div>
 					</div>
 				</Card>

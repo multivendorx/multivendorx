@@ -47,10 +47,10 @@ const getCSSVar = (name) =>
 	getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
 const themeColors = [
-	getCSSVar('--colorPrimary'),
-	getCSSVar('--colorSecondary'),
-	getCSSVar('--colorAccent'),
-	getCSSVar('--colorSupport'),
+	getCSSVar('--color-primary'),
+	getCSSVar('--color-secondary'),
+	getCSSVar('--color-accent'),
+	getCSSVar('--color-support'),
 ];
 
 const BarChartData = [

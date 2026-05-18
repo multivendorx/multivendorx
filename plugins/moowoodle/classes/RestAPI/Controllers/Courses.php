@@ -6,6 +6,7 @@
  */
 
 namespace MooWoodle\RestAPI\Controllers;
+
 use MooWoodle\Util;
 
 defined( 'ABSPATH' ) || exit;
@@ -77,7 +78,7 @@ class Courses extends \WP_REST_Controller {
             $category_field = $request->get_param( 'category' );
             $search_action  = $request->get_param( 'searchaction' );
             $search_field   = $request->get_param( 'search' );
-            $get_product_id     = $request->get_param( 'unlinked_resources_for' );
+            $get_product_id = $request->get_param( 'unlinked_resources_for' );
 
             // Base filter array.
             $filters = array(
@@ -96,10 +97,10 @@ class Courses extends \WP_REST_Controller {
             }
 
             if ( ! empty( $get_product_id ) ) {
-                $selected_course_id = (int) get_post_meta( $get_product_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
-                $filters['id'] = $selected_course_id;
+                $selected_course_id    = (int) get_post_meta( $get_product_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'], true );
+                $filters['id']         = $selected_course_id;
                 $filters['product_id'] = 0;
-                $filters['condition'] = 'OR';
+                $filters['condition']  = 'OR';
             }
 
             // Get paginated courses.
@@ -109,7 +110,7 @@ class Courses extends \WP_REST_Controller {
                 return rest_ensure_response( array() );
             }
 
-            if ( !empty( $get_product_id ) ) {
+            if ( ! empty( $get_product_id ) ) {
                 return rest_ensure_response(
                     array(
                         'items'       => $courses,
@@ -119,17 +120,17 @@ class Courses extends \WP_REST_Controller {
             }
 
             $formatted_courses = array();
-            $moodle_base_url = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) );
+            $moodle_base_url   = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) );
             foreach ( $courses as $course ) {
-                $product_image   = '';
-                $product_name   = '';
+                $product_image = '';
+                $product_name  = '';
                 $product_url   = '';
 
                 if ( ! empty( $course['product_id'] ) ) {
                     $product = wc_get_product( (int) $course['product_id'] );
                     if ( $product ) {
-                        $product_name = $product->get_name();
-                        $product_url = admin_url( 'post.php?post=' . $product->get_id() . '&action=edit' );
+                        $product_name  = $product->get_name();
+                        $product_url   = admin_url( 'post.php?post=' . $product->get_id() . '&action=edit' );
                         $product_image = wp_get_attachment_url( $product->get_image_id() );
                     }
                 }
@@ -138,11 +139,11 @@ class Courses extends \WP_REST_Controller {
                 $end   = ! empty( $course['enddate'] ) ? wp_date( 'M j, Y', $course['enddate'] ) : __( 'Not Set', 'moowoodle' );
                 $date  = ( ! empty( $course['startdate'] ) || ! empty( $course['enddate'] ) ) ? sprintf( '%s - %s', $start, $end ) : 'NA';
 
-                $moodle_url    =  $moodle_base_url . "course/edit.php?id={$course['moodle_course_id']}";
+                $moodle_url    = $moodle_base_url . "course/edit.php?id={$course['moodle_course_id']}";
                 $view_user_url = $moodle_base_url . "user/index.php?id={$course['moodle_course_id']}";
 
                 // Get categories.
-                $categories = MooWoodle()->category->get_course_category( (int) $course['category_id'] );
+                $categories = MooWoodle()->category->get_course_categories( (int) $course['category_id'] );
                 $categories = reset( $categories );
 
                 // Get enrolled users count.
@@ -182,7 +183,7 @@ class Courses extends \WP_REST_Controller {
 
             return $response;
         } catch ( \Exception $e ) {
-           return Util::server_error( $e );
+			return Util::server_error( $e );
         }
     }
 
@@ -203,7 +204,7 @@ class Courses extends \WP_REST_Controller {
         if ( empty( $courses ) ) {
             return rest_ensure_response(
                 array(
-                    'courses' => array(),
+                    'courses'  => array(),
                     'category' => array(),
                 )
             );
@@ -215,7 +216,7 @@ class Courses extends \WP_REST_Controller {
         );
 
         // Fetch categories.
-        $categories = MooWoodle()->category->get_course_category(
+        $categories = MooWoodle()->category->get_course_categories(
             $category_ids
         );
 
@@ -247,7 +248,7 @@ class Courses extends \WP_REST_Controller {
 
         return rest_ensure_response(
             array(
-                'courses' => $formatted_courses,
+                'courses'  => $formatted_courses,
                 'category' => $formatted_categories,
             )
         );

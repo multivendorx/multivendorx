@@ -104,7 +104,6 @@ $star-color: #d49c00;
     .banner-img,
     .banner-slider {
         width: 100%;
-
         display: flex;
         justify-content: center;
         position: relative;
@@ -200,7 +199,7 @@ $star-color: #d49c00;
         .profile {
             .multivendorx-profile-img {
                 background: #fff;
-                box-shadow: 0 0.125rem 0.5rem 0 rgba(66, 62, 78, 0.12);
+                box-shadow: 0 0.125rem 0.5rem 0 rgb(66 62 78 / 12%);
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -223,7 +222,7 @@ $star-color: #d49c00;
         }
     }
 
-    &.template1 {
+    &.luxe-display {
         .contact-details {
             margin-top: 0.5rem;
         }
@@ -237,7 +236,7 @@ $star-color: #d49c00;
 
     }
 
-    &.template2 {
+    &.signature-view {
 
         h2,
         .store-address {
@@ -283,7 +282,7 @@ $star-color: #d49c00;
         }
     }
 
-    &.template3 {
+    &.dynamic-showcase {
         .store-details {
             display: flex;
             gap: 1.5rem;
@@ -312,7 +311,7 @@ $star-color: #d49c00;
     font-size: 3rem;
     width: 5rem;
     height: 5rem;
-    box-shadow: 0 0.125rem 0.5rem 0 rgba(66, 62, 78, 0.12);
+    box-shadow: 0 0.125rem 0.5rem 0 rgb(66 62 78 / 12%);
 }
 
 
@@ -551,7 +550,7 @@ $star-color: #d49c00;
                 background: #0080000d;
 
                 span {
-                    color: rgba(0, 128, 0, 0.973);
+                    color: rgb(0 128 0 / 97.3%);
                     font-weight: 600;
                     font-size: 1.125rem;
                 }
@@ -788,7 +787,7 @@ $star-color: #d49c00;
     }
 
     .multivendorxstep-wizard {
-        margin: 1rem 0 2rem 0;
+        margin: 1rem 0 2rem;
         width: 50%;
 
 

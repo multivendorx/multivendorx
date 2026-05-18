@@ -27,6 +27,7 @@ import { formatCurrency, formatDate } from '../services/commonFunction';
 import { useParams, useNavigate } from 'react-router-dom';
 import { dashNavigate } from '../services/commonFunction';
 import { applyFilters } from '@wordpress/hooks';
+import './orders.scss';
 
 const OrderDetails: React.FC = () => {
 	const [isRefundLoading, setIsRefundLoading] = useState(false);

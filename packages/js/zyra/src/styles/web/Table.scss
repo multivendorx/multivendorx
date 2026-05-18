@@ -179,7 +179,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-left: auto;
     margin: 1.5rem 0 1.5rem auto;
 
     .action-wrapper {
@@ -738,3 +737,32 @@
 }
 
 // status color end
+
+@media only screen and (width <= 600px) {
+    .admin-table-wrapper {
+        .admin-top-filter {
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .table-wrapper {
+            overflow: scroll;
+        }
+
+        .filter-wrapper {
+            .table-filter-wrapper {
+                display: none;
+                position: fixed;
+                top: 40%;
+                right: 0;
+                width: 2rem;
+
+                .table-filter {
+                    .group-field {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}

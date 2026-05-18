@@ -46,19 +46,19 @@ export default {
 			templateSelector: true,
 			templates: [
 				{
-					key: 'banner1',
+					key: 'luxe_display',
 					label: __('Luxe Display', 'multivendorx'),
 					preview: LuxeDisplay,
 					component: LuxeDisplay,
 				},
 				{
-					key: 'banner2',
+					key: 'signature_view',
 					label: __('Signature View', 'multivendorx'),
 					preview: SignatureView,
 					component: SignatureView,
 				},
 				{
-					key: 'banner3',
+					key: 'dynamic_showcase',
 					label: __('Dynamic Showcase', 'multivendorx'),
 					preview: DynamicShowcase,
 					component: DynamicShowcase,
