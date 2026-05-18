@@ -65,9 +65,7 @@ class EndPoint {
 	 * @return void
 	 */
 	public function render_my_courses_tab_content() {
-		if ( is_account_page() ) {
-			echo '<div id="moowoodle-my-course"></div>';
-		}
+		echo '<div id="moowoodle-my-course"></div>';
 	}
 
 	/**
