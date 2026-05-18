@@ -1,6 +1,8 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
+    category: true,
+	tab: 'modules',
     modules: [
         {
             id: 'catalog',

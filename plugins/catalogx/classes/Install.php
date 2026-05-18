@@ -48,9 +48,14 @@ class Install {
      */
     public function __construct() {
 
-        add_action( 'init', array( $this, 'run_migration' ) );
         $this->run_migration();
-        do_action( 'catalogx_after_installed' );
+
+    update_option(
+        self::VERSION_KEY,
+        CatalogX()->version
+    );
+
+    do_action( 'catalogx_after_installed' );
 
         // // Get the previous version and current version.
         // self::$previous_version = get_option( self::VERSION_KEY, '' );

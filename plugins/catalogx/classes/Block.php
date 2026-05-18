@@ -22,7 +22,7 @@ class Block {
      *
      * @var array
      */
-    private $blocks;
+    private $blocks = null;
 
     /**
      * Constructor for Block class
@@ -36,7 +36,7 @@ class Block {
         // Register the block.
         add_action( 'init', array( $this, 'register_blocks' ) );
         // Localize the script for block.
-        add_action( 'enqueue_block_assets', array( $this, 'enqueue_all_block_assets' ) );
+        add_action( 'enqueue_block_assets', array( $this, 'enqueue_blocks_assets' ) );
         // Localize in frontend.
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
@@ -120,7 +120,7 @@ class Block {
      *
      * @return void
      */
-    public function enqueue_all_block_assets() {
+    public function enqueue_blocks_assets() {
         if ( is_admin() && function_exists( 'get_current_screen' ) ) {
             $screen = get_current_screen();
             if ( $screen && $screen->is_block_editor ) {

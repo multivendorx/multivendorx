@@ -246,7 +246,7 @@ class Modules {
 
         foreach ( $this->get_all_modules() as $id => $module ) {
             if ( $this->is_module_available( $module ) ) {
-                $available[] = $id;
+                $available_modules[] = $id;
             }
         }
 

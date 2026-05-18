@@ -288,16 +288,16 @@ final class CatalogX {
      * @return void
      */
     public function is_woocommerce_loaded() {
-        // if ( ! did_action( 'woocommerce_loaded' ) && is_admin() ) {
-        //     add_action( 'admin_notices', array( $this, 'woocommerce_admin_notice' ) );
-        // }
-        if ( did_action( 'woocommerce_loaded' ) || ! is_admin() ) {
-            $previous_version = get_option( Utill::CATALOGX_OTHER_SETTINGS['plugin_db_version'], '' );
-            if ( version_compare( $previous_version, CatalogX()->version, '<' ) ) {
-                new Install();
-            }
-            return;
+        if ( ! did_action( 'woocommerce_loaded' ) && is_admin() ) {
+            add_action( 'admin_notices', array( $this, 'woocommerce_admin_notice' ) );
         }
+        // if ( did_action( 'woocommerce_loaded' ) || ! is_admin() ) {
+        //     $previous_version = get_option( Utill::CATALOGX_OTHER_SETTINGS['plugin_db_version'], '' );
+        //     if ( version_compare( $previous_version, CatalogX()->version, '<' ) ) {
+        //         new Install();
+        //     }
+        //     return;
+        // }
     }
 
     /**

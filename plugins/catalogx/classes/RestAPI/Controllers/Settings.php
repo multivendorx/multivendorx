@@ -109,8 +109,8 @@ class Settings extends \WP_REST_Controller {
 
 			$error = new \WP_Error(
 				'invalid_nonce',
-				__( 'Invalid nonce', 'catalogx' ),
-				array( 'status' => 403 )
+				esc_html__( 'Invalid nonce.', 'catalogx' ),
+                array( 'status' => 403 )
 			);
 
 			if ( is_wp_error( $error ) ) {
@@ -213,8 +213,8 @@ class Settings extends \WP_REST_Controller {
 
 			$error = new \WP_Error(
 				'invalid_nonce',
-				__( 'Invalid nonce', 'catalogx' ),
-				array( 'status' => 403 )
+				esc_html__( 'Invalid nonce.', 'catalogx' ),
+                array( 'status' => 403 )
 			);
 
 			if ( is_wp_error( $error ) ) {
@@ -241,6 +241,9 @@ class Settings extends \WP_REST_Controller {
 			switch ( $action ) {
 
 				case 'activate':
+					file_put_contents( plugin_dir_path(__FILE__) . "/error.log",
+        date("d/m/Y H:i:s", time()) . ":activate module hit from rest: : " . var_export($module_id, true) . "\n",
+        FILE_APPEND);
 					CatalogX()->modules->activate_modules(
 						array( $module_id )
 					);

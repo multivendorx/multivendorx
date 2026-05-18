@@ -35,6 +35,7 @@ class Rest {
      */
     public function __construct() {
         $this->init_classes();
+        add_action( 'rest_api_init', array( $this, 'register_rest_api_routes' ), 10 );
     }
 
     /**
@@ -52,16 +53,23 @@ class Rest {
      *
      * @return void
      */
-    public function register_rest_apis() {
+    public function register_rest_api_routes() {
+
+        foreach ( $this->container as $controller ) {
+
+            if ( method_exists( $controller, 'register_routes' ) ) {
+                $controller->register_routes();
+            }
+        }
 
         register_rest_route(
             CatalogX()->rest_namespace,
             '/buttons',
             array(
-				'methods'             => 'GET',
-				'callback'            => array( $this, 'get_buttons' ),
-				'permission_callback' => array( $this, 'catalogx_permission' ),
-			)
+                'methods'             => 'GET',
+                'callback'            => array( $this, 'get_buttons' ),
+                'permission_callback' => array( $this, 'catalogx_permission' ),
+            )
         );
     }
 

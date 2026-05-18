@@ -679,11 +679,11 @@ const SetupWizard: React.FC = () => {
 			<div className="welcome-wrapper">
 				<img src={img} alt="" />
 				<div className="wizard-title">
-					{__('Welcome to the MultivendorX family!', 'catalogx')}
+					{__('Welcome to the CatalogX family!', 'catalogx')}
 				</div>
 				<div className="des">
 					{__(
-						'Thank you for choosing MultiVendorX! This quick setup wizard will help you configure the basic settings and have your marketplace ready in no time. It’s completely optional and shouldn’t take longer than five minutes.',
+						'Thank you for choosing CatalogX! This quick setup wizard will help you configure the basic settings and you will have your marketplace ready in no time. It’s completely optional and shouldn’t take longer than five minutes.',
 						'catalogx'
 					)}
 				</div>

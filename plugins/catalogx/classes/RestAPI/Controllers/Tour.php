@@ -73,8 +73,8 @@ class Tour extends \WP_REST_Controller {
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 			$error = new \WP_Error(
 				'invalid_nonce',
-				__( 'Invalid nonce', 'catalogx' ),
-				array( 'status' => 403 )
+				esc_html__( 'Invalid nonce.', 'catalogx' ),
+                array( 'status' => 403 )
 			);
 
 			if ( is_wp_error( $error ) ) {
@@ -118,7 +118,7 @@ class Tour extends \WP_REST_Controller {
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 			$error = new \WP_Error(
 				'invalid_nonce',
-				__( 'Invalid nonce', 'catalogx' ),
+				esc_html__( 'Invalid nonce.', 'catalogx' ),
 				array( 'status' => 403 )
 			);
 
