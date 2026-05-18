@@ -2,7 +2,7 @@
 /**
  * Setup Wizard class file
  *
- * @package MultiVendorX
+ * @package CatalogX
  */
 
 namespace CatalogX;
@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @class       SetupWizard
  * @version     5.0.0
- * @package     MultiVendorX
+ * @package     CatalogX
  * @author      MultiVendorX
  */
 class SetupWizard {

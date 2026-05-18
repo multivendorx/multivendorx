@@ -91,6 +91,13 @@ class Admin {
             ),
         );
 
+        uasort(
+            $submenus,
+            function ( $a, $b ) {
+				return ( $a['priority'] ?? 0 ) <=> ( $b['priority'] ?? 0 );
+			}
+        );
+
         foreach ( $submenus as $slug => $submenu ) {
             // prepare subtab if subtab is exist.
             $subtab = '';

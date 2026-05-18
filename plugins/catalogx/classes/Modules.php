@@ -74,7 +74,7 @@ class Modules {
     }
 
     /**
-     * Get list of all multivendorX module.
+     * Get list of all catalogx module.
      *
      * @return array
      */

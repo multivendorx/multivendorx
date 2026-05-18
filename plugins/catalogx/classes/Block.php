@@ -146,7 +146,7 @@ class Block {
     public function enqueue_scripts() {
         global $post;
         FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
+        FrontendScripts::enqueue_script( 'catalogx-vendor-script' );
         foreach ( $this->get_blocks() as $block_script ) {
             $block_name = $block_script['textdomain'] . '/' . $block_script['name'];
 
