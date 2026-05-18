@@ -157,23 +157,21 @@ const Course: React.FC = () => {
 			label: __('Product', 'moowoodle'),
 			render: (row: CourseRow) => (
 				<>
-					{row.product_name 
-						? 
+					{row.product_name ? (
 						<>
 							{row.product_name}
-								<a
-									target="_blank"
-									rel="noreferrer"
-									href={row.product_url}
-									className="link-item edit-link"
-								>
-									{__(
-										'Edit product',
-										'moowoodle'
-									)}
-								</a>	
-							</>
-						: '-'}
+							<a
+								target="_blank"
+								rel="noreferrer"
+								href={row.product_url}
+								className="link-item edit-link"
+							>
+								{__('Edit product', 'moowoodle')}
+							</a>
+						</>
+					) : (
+						'-'
+					)}
 				</>
 			),
 		},
@@ -181,7 +179,7 @@ const Course: React.FC = () => {
 			label: __('Enrolled users', 'moowoodle'),
 			render: (row: CourseRow) => (
 				<>
-				{row.enrolled_user || 0}
+					{row.enrolled_user || 0}
 					<a
 						target="_blank"
 						rel="noreferrer"

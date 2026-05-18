@@ -341,7 +341,6 @@ const FreeVsProTab: React.FC<object> = () => {
 								{__('Upgrade Now', 'moowoodle')}
 								<i className="adminfont-arrow-right icon-pro-btn"></i>
 							</a>
-
 						</div>
 					</div>
 				</Card>
