@@ -8,13 +8,13 @@ defined( 'ABSPATH' ) || exit;
  *
  * @version     PRODUCT_VERSION
  * @package     DualCube
- * @author 		DualCube
+ * @author      DualCube
  */
 class Promotions {
-    
+
     private string $pro_shop_url;
     public function __construct() {
-        $this->pro_shop_url     = MOOWOODLE_PRO_SHOP_URL;
+        $this->pro_shop_url = MOOWOODLE_PRO_SHOP_URL;
         add_action( 'admin_notices', array( $this, 'display_product_type_warning' ) );
     }
 
@@ -76,5 +76,4 @@ class Promotions {
         </div>
         <?php
     }
-    
 }

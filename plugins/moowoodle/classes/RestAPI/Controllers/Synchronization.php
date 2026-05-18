@@ -78,7 +78,7 @@ class Synchronization extends \WP_REST_Controller {
 				$response = array(
 					'status'  => Util::get_sync_status( 'course' ),
 					'running' => get_transient( 'course_sync_running' ),
-				    );
+				);
             } else {
                 $response = apply_filters( 'moowoodle_sync_status', $request );
             }
@@ -134,33 +134,33 @@ class Synchronization extends \WP_REST_Controller {
         $user   = $request->get_param( 'get_user' );
         $course = $request->get_param( 'get_course' );
 
-        $user   = is_array( $user['data']['users'] ) ? reset( $user['data']['users'] ) : null;
-        $course = is_array( $course['courses'] ) ? ( $course['courses'][1] ) : null;
+        $user      = is_array( $user['data']['users'] ) ? reset( $user['data']['users'] ) : null;
+        $course    = is_array( $course['courses'] ) ? ( $course['courses'][1] ) : null;
         $user_id   = $user['id'] ?? 0;
         $course_id = $course['id'] ?? 0;
 
         $response = array();
-        $actions = array(
+        $actions  = array(
             'get_site_info' => array(
                 'callback' => array( TestConnection::class, 'get_site_info' ),
             ),
-            'get_course' => array(
+            'get_course'    => array(
                 'callback' => array( TestConnection::class, 'get_course' ),
             ),
-            'get_category' => array(
+            'get_category'  => array(
                 'callback' => array( TestConnection::class, 'get_category' ),
             ),
-            'create_user' => array(
+            'create_user'   => array(
                 'callback' => array( TestConnection::class, 'create_user' ),
             ),
-            'get_user' => array(
+            'get_user'      => array(
                 'callback' => array( TestConnection::class, 'get_user' ),
             ),
-            'update_user' => array(
+            'update_user'   => array(
                 'callback' => array( TestConnection::class, 'update_user' ),
                 'args'     => array( $user_id ),
             ),
-            'enroll_user' => array(
+            'enroll_user'   => array(
                 'callback' => array( TestConnection::class, 'enrol_users' ),
                 'args'     => array( $user_id, $course_id ),
             ),
@@ -168,7 +168,7 @@ class Synchronization extends \WP_REST_Controller {
                 'callback' => array( TestConnection::class, 'unenrol_users' ),
                 'args'     => array( $user_id, $course_id ),
             ),
-            'delete_user' => array(
+            'delete_user'   => array(
                 'callback' => array( TestConnection::class, 'delete_users' ),
                 'args'     => array( $user_id ),
             ),
@@ -214,8 +214,8 @@ class Synchronization extends \WP_REST_Controller {
 
             Util::set_sync_status(
                 array(
-					'action'  => __( 'Update Course Category', 'moowoodle' ),
-					'total'   => count( $categories )
+					'action' => __( 'Update Course Category', 'moowoodle' ),
+					'total'  => count( $categories ),
                 ),
                 'course'
             );
@@ -224,8 +224,8 @@ class Synchronization extends \WP_REST_Controller {
 
             Util::set_sync_status(
                 array(
-					'action'  => __( 'Update Product Category', 'moowoodle' ),
-					'total'   => count( $categories )
+					'action' => __( 'Update Product Category', 'moowoodle' ),
+					'total'  => count( $categories ),
                 ),
                 'course'
             );
@@ -240,8 +240,8 @@ class Synchronization extends \WP_REST_Controller {
         // Update all course.
         Util::set_sync_status(
             array(
-				'action'  => __( 'Update Course', 'moowoodle' ),
-				'total'   => max( 0, count( $courses ) - 1 )
+				'action' => __( 'Update Course', 'moowoodle' ),
+				'total'  => max( 0, count( $courses ) - 1 ),
             ),
             'course'
         );

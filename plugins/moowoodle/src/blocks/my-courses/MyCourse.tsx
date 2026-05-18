@@ -179,10 +179,15 @@ const MyCourse: React.FC = () => {
 					</table>
 					{renderPagination()}
 				</>
-			): (
+			) : (
 				<div className="woocommerce-notices-wrapper">
 					<ul className="woocommerce-error" role="alert">
-						<li>{__("You haven't purchased any courses yet.", 'moowoodle')}</li>
+						<li>
+							{__(
+								"You haven't purchased any courses yet.",
+								'moowoodle'
+							)}
+						</li>
 					</ul>
 				</div>
 			)}

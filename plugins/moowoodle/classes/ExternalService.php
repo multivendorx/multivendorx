@@ -66,7 +66,6 @@ class ExternalService {
 
 			$timeout = MooWoodle()->setting->get_setting( 'moodle_timeout', '' );
 			$timeout = $timeout ? $timeout : '10';
-			
 
 			$response = wp_remote_post(
                 $request_url,
