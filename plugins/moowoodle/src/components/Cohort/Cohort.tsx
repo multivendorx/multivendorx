@@ -107,7 +107,6 @@ const Cohort: React.FC = () => {
 		headers,
 
 		rows: dummyCohorts,
-
 		totalRows: dummyCohorts.length,
 		onQueryUpdate: () => { setopenPopup(true); },
 		onBulkActionApply: () => { setopenPopup(true); },
