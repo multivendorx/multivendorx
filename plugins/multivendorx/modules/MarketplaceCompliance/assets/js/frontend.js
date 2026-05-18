@@ -108,7 +108,7 @@ jQuery(function ($) {
 		if (!name || !email || !reason || !msg) {
 			showThemeNotice(
 				$msgBox,
-				__('error','multivendorx'),
+				'error',
 				__('All fields are required.', 'multivendorx')
 			);
 
@@ -118,7 +118,7 @@ jQuery(function ($) {
 		if (!emailRegex.test(email)) {
 			showThemeNotice(
 				$msgBox,
-				__('error','multivendorx'),
+				'error',
 				__('Please enter a valid email address.', 'multivendorx')
 			);
 
