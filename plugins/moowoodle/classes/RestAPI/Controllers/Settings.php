@@ -64,7 +64,7 @@ class Settings extends \WP_REST_Controller {
             return $nonce_check;
         }
         try {
-            $all_details   = array();
+            $details   = array();
             $settings_data = $request->get_param( 'setting' );
             $settingsname  = $request->get_param( 'settingName' );
             $settingsname  = str_replace( '-', '_', 'moowoodle_' . $settingsname . '_settings' );
@@ -80,9 +80,9 @@ class Settings extends \WP_REST_Controller {
              */
             do_action( 'moowoodle_after_setting_save', $settingsname, $settings_data );
 
-            $all_details['error'] = __( 'Settings Saved', 'moowoodle' );
+            $details['error'] = __( 'Settings Saved', 'moowoodle' );
 
-            return $all_details;
+            return $details;
         } catch ( \Exception $e ) {
            return Util::server_error( $e );
         }

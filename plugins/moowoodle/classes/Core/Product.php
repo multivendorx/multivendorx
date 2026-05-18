@@ -46,6 +46,7 @@ class Product {
 		$products = wc_get_products(
             array(
 				'meta_query' => array(
+					'relation' => 'AND',
 					array(
 						'key'     => Util::MOOWOODLE_PRODUCT_META['moodle_course_id'],
 						'value'   => $moodle_course_id,
@@ -56,7 +57,6 @@ class Product {
             )
         );
 
-		// Return the first product or null.
 		return ! empty( $products ) ? reset( $products ) : null;
 	}
 
@@ -86,43 +86,42 @@ class Product {
 		}
 
         // get category term.
-        $term = MooWoodle()->category->get_product_category( $course['categoryid'], 'product_cat' );
+        $product_term = MooWoodle()->category->get_product_category( $course['categoryid'], 'product_cat' );
 
         // Set product properties.
 		$product->set_name( sanitize_text_field( $course['fullname'] ?? '' ) );
 		$product->set_slug( sanitize_title( $course['shortname'] ?? '' ) );
 		$product->set_description( wp_kses_post( $course['summary'] ?? '' ) );
         $product->set_status( 'publish' );
-		if ( $term && ! is_wp_error( $term ) ) {
-			$product->set_category_ids( array( $term->term_id ) );
+		if ( $product_term && ! is_wp_error( $product_term ) ) {
+			$product->set_category_ids( array( $product_term->term_id ) );
 		}
         $product->set_virtual( true );
         $product->set_catalog_visibility( ! empty( $course['visible'] ) ? 'visible' : 'hidden' );
 
 		// Set product's sku.
 		try {
-			$product->set_sku( $course['idnumber'] );
-		} catch ( \Exception $error ) {
-			Util::log( sprintf( 'Unable to set SKU for product #%d: %s', $product->get_id(), $error->getMessage() ) );
+			$product->set_sku( $course['idnumber'] ?? '' );
+		} catch ( \Exception $exception  ) {
+			Util::log( sprintf( 'Unable to set SKU for product #%d: %s', $product->get_id(), $exception ->getMessage() ) );
 		}
 
 		// get the course id linked with moodle.
-        $wp_course = MooWoodle()->course->get_courses(
+        $wordpress_course = MooWoodle()->course->get_courses(
             array(
 				'moodle_course_id' => $course['id'],
             )
         );
 
-		$wp_course = ! empty( $wp_course ) ? reset( $wp_course ) : array();
+		$wordpress_course = ! empty( $wordpress_course ) ? reset( $wordpress_course ) : array();
 
 		$meta_data = [
 			Util::MOOWOODLE_PRODUCT_META['course_startdate']   => $course['startdate'],
 			Util::MOOWOODLE_PRODUCT_META['course_enddate']     => $course['enddate'],
 			Util::MOOWOODLE_PRODUCT_META['moodle_course_id']   => $course['id'],
-			Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'] => $wp_course['id'],
+			Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'] => $wordpress_course['id'],
 		];
 
-        // Set product meta data.
 		foreach ( $meta_data as $key => $value ) {
 			$product->update_meta_data( $key, $value );
 		}
@@ -200,6 +199,9 @@ class Product {
 		if ( ! $nonce || ! wp_verify_nonce( $nonce, 'product_meta_nonce' ) ) {
 			return;
 		}
+		if ( ! current_user_can( 'edit_product', $product_id ) ) {
+			return;
+		}
 
 		$link_type    = sanitize_text_field( filter_input( INPUT_POST, 'link_type', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ?? '' );
 		$link_item_id = filter_input( INPUT_POST, 'linked_item_id', FILTER_VALIDATE_INT );
@@ -207,7 +209,7 @@ class Product {
 		if ( 'course' === $link_type ) {
 			do_action( 'moowoodle_clean_cohort_previous_link', $product_id );
 
-			if ( 0 === $link_item_id ) {
+			if ( empty($link_item_id) ) {
 				$this->clean_course_previous_link( $product_id );
 				return;
 			}
@@ -255,7 +257,7 @@ class Product {
 
 		$moodle_course_id = absint( get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true ) );
 
-		if ( ! empty( $moodle_course_id ) ) {
+		if ( $moodle_course_id > 0 ) {
 			MooWoodle()->course->update_course(
 				array(
 					'moodle_course_id' => $moodle_course_id,
@@ -347,6 +349,7 @@ class Product {
 				'status'     => 'publish',
 				'return'     => 'ids',
 				'meta_query' => array(
+					'relation' => 'AND',
 					array(
 						'key'     => Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'],
 						'compare' => 'EXISTS',
@@ -355,7 +358,6 @@ class Product {
             )
         );
 
-		// delete product.
 		foreach ( $product_ids as $product_id ) {
 			wp_update_post(
 				array(

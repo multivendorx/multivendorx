@@ -27,7 +27,7 @@ class Category {
 	 * @param int|int[] $args A single category ID or an array of IDs.
 	 * @return array List of course categories as associative arrays.
 	 */
-	public static function get_course_category( $args ) {
+	public static function get_course_categories( $args ) {
         global $wpdb;
 
 		if ( is_numeric( $args ) ) {
@@ -56,7 +56,7 @@ class Category {
 	 *     @type string $name               Required. Category name.
 	 *     @type int    $parent_id          Optional. Parent category ID.
 	 * }
-	 * @return bool|int False on failure, number of rows affected on success.
+	 * @return bool False on failure, number of rows affected on success.
 	 */
 	public static function update_course_category( $args ) {
 		global $wpdb;
@@ -93,6 +93,10 @@ class Category {
 		}
 
 		foreach ( $categories as $category ) {
+			if ( empty( $category['id'] ) || empty( $category['name'] ) ) {
+				continue;
+			}
+
 			$args = array(
 				'id'        => (int) $category['id'],
 				'name'      => sanitize_text_field( $category['name'] ?? '' ),
@@ -109,7 +113,7 @@ class Category {
 	 *
 	 * @param int         $category_id Moodle category ID.
 	 * @param string|null $taxonomy    Optional. Taxonomy name. Default null.
-	 * @return string|array|null Term object on success, or null if not found.
+	 * @return \WP_Term|null Term object on success, or null if not found.
 	 */
 	public static function get_product_category( $category_id, $taxonomy = '' ) {
 		if ( ! $category_id || empty( $taxonomy ) || ! taxonomy_exists( $taxonomy ) ) {
@@ -121,7 +125,6 @@ class Category {
             array(
 				'taxonomy'   => $taxonomy,
 				'hide_empty' => false,
-				'number' => 1,
 				'meta_query' => array(
 					array(
 						'key'     => Util::MOOWOODLE_TERM_META['category_id'],
@@ -163,7 +166,7 @@ class Category {
 				)
 			);
 		} else {
-			// term not exist create it.
+			// Create the term if it does not exist.
 			$term = wp_insert_term(
 				$category['name'],
 				$taxonomy,
@@ -212,7 +215,7 @@ class Category {
 
 		foreach ( $categories as $category ) {
 			$category_id = self::update_product_category( $category, $taxonomy );
-			if ( $category_id ) {
+			if ( ! empty( $category_id ) ) {
 				$updated_ids[] = $category_id;
 			}
 
@@ -272,7 +275,7 @@ class Category {
 				continue;
 			}
 
-			// sync parent term with term.
+			// Assign the parent term.
 			wp_update_term( $term->term_id, $taxonomy, array( 'parent' => $parent_term->term_id ) );
 		}
 	}

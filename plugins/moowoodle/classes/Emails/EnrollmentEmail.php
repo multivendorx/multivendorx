@@ -26,7 +26,7 @@ class EnrollmentEmail extends \WC_Email {
      *
      * @var array
      */
-	public $email_data;
+	public $enrollment_details;
 
 	/**
      * EnrollmentEmail constructor.
@@ -47,14 +47,13 @@ class EnrollmentEmail extends \WC_Email {
 	 * Trigger the email sending process.
 	 *
 	 * @param string $recipient  Email address of the recipient.
-	 * @param array  $email_data Data to be used in the email template.
+	 * @param array  $enrollment_details Data to be used in the email template.
 	 *
 	 * @return void
 	 */
-	public function trigger( $recipient, $email_data ) {
-		$this->customer_email = $recipient;
+	public function trigger( $recipient, $enrollment_details ) {
 		$this->recipient      = $recipient;
-		$this->email_data     = $email_data;
+		$this->enrollment_details     = $enrollment_details;
 
 		if ( ! $this->is_enabled() || ! $this->get_recipient() ) {
 			return;
@@ -76,22 +75,26 @@ class EnrollmentEmail extends \WC_Email {
 	}
 
 	/**
-     * Get default subject.
-     */
+	 * Get the default email subject.
+	 *
+	 * @return string
+	 */
 	public function get_default_subject() {
 		return apply_filters(
-			'moowoodle_enrollment_email_heading',
-			sprintf( __( 'Your enrolment is confirmed - login info inside', 'moowoodle' ) )
+			'moowoodle_enrollment_email_subject',
+			__( 'Your enrolment is confirmed - login info inside', 'moowoodle' )
 		);
 	}
 
 	/**
-     * Get default heading.
-     */
+	 * Get the default email heading.
+	 *
+	 * @return string
+	 */
 	public function get_default_heading() {
 		$site_name = get_bloginfo( 'name' );
 		return apply_filters(
-			'moowoodle_enrollment_email_subject',
+			'moowoodle_enrollment_email_heading',
 			// translators: %s: Site name.
 			sprintf( __( 'Welcome to %s! Your Account and Course Access Details', 'moowoodle' ), $site_name )
 		);
@@ -104,13 +107,7 @@ class EnrollmentEmail extends \WC_Email {
 		ob_start();
 		MooWoodle()->util->get_template(
             $this->template_html,
-            array(
-				'enrollments'   => $this->email_data,
-				'user_email'    => $this->recipient,
-				'email_heading' => $this->get_heading(),
-				'sent_to_admin' => false,
-				'plain_text'    => false,
-            )
+            $this->get_template_args()
         );
 
 		return ob_get_clean();
@@ -123,14 +120,18 @@ class EnrollmentEmail extends \WC_Email {
 		ob_start();
 		MooWoodle()->util->get_template(
             $this->template_plain,
-            array(
-				'enrollments'   => $this->email_data,
-				'user_email'    => $this->recipient,
-				'email_heading' => $this->get_heading(),
-				'sent_to_admin' => false,
-				'plain_text'    => true,
-            )
+            $this->get_template_args(true)
         );
 		return ob_get_clean();
+	}
+
+	public function get_template_args( $plain_text = false ) {
+		return array(
+			'enrollments'   => $this->enrollment_details,
+			'user_email'    => $this->recipient,
+			'email_heading' => $this->get_heading(),
+			'sent_to_admin' => false,
+			'plain_text'    => $plain_text,
+		);
 	}
 }

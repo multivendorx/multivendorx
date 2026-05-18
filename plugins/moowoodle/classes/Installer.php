@@ -25,7 +25,7 @@ class Installer {
      * Installer Constructor.
      */
     public function __construct() {
-		if ( ! ( get_option( 'moowoodle_version', false ) ) ) {
+		if ( ! get_option( 'moowoodle_version', false ) ) {
 			$this->set_default_settings();
 			$this->create_databases();
 		} else {
@@ -166,8 +166,10 @@ class Installer {
 
         if ( version_compare( $previous_version, '3.3.3', '<' ) ) {
             $general_settings = get_option( 'moowoodle_general_settings', array() );
-            unset( $general_settings['moodle_timeout'] );
-            unset( $general_settings['moowoodle_adv_log'] );
+            unset(
+                $general_settings['moodle_timeout'],
+                $general_settings['moowoodle_adv_log']
+            );
 
             update_option( 'moowoodle_general_settings', $general_settings );
         }
@@ -202,7 +204,7 @@ class Installer {
                 foreach ( $synchronize_user_settings['user_sync_options'] as &$mapping ) {
                     if ( isset( $mapping[0], $mapping[1] ) ) {
                         $mapping = array(
-                            'wordPress' => $mapping[0],
+                            'wordpress' => $mapping[0],
                             'moodle'    => $mapping[1],
                         );
                     }
@@ -262,20 +264,20 @@ class Installer {
                 'course_cat'
             );
 
-            $terms = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        $category_terms = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
-		if ( empty( $terms ) ) {
+		if ( empty( $category_terms ) ) {
 			return;
 		}
 
-		foreach ( $terms as $term ) {
-			$args = array(
+		foreach ( $category_terms as $term ) {
+			$category_data = array(
 				'id'        => (int) $term['id'],
 				'name'      => sanitize_text_field( $term['name'] ),
 				'parent_id' => (int) $term['parent_id'],
 			);
 
-			$response = Category::update_course_category( $args );
+			$response = Category::update_course_category( $category_data );
 
             if ( $response ) {
                 wp_delete_term( (int) $term['term_id'], 'course_cat' );
@@ -308,26 +310,26 @@ class Installer {
         }
 
         foreach ( $courses as $course ) {
-            $all_meta = get_post_meta( $course->ID );
+            $course_meta = get_post_meta( $course->ID );
 
-            if ( empty( $all_meta['moodle_course_id'][0] ) ) {
+            if ( empty( $course_meta['moodle_course_id'][0] ) ) {
                 continue;
             }
 
-            $course_data = array(
-                'moodle_course_id' => is_array( $all_meta['moodle_course_id'] ?? null ) ? reset( $all_meta['moodle_course_id'] ) : 0,
-                'shortname'        => is_array( $all_meta['_course_short_name'] ?? null ) ? reset( $all_meta['_course_short_name'] ) : '',
-                'category_id'      => is_array( $all_meta['_category_id'] ?? null ) ? reset( $all_meta['_category_id'] ) : 0,
+            $mapped_course_data = array(
+                'moodle_course_id' => is_array( $course_meta['moodle_course_id'] ?? null ) ? reset( $course_meta['moodle_course_id'] ) : 0,
+                'shortname'        => is_array( $course_meta['_course_short_name'] ?? null ) ? reset( $course_meta['_course_short_name'] ) : '',
+                'category_id'      => is_array( $course_meta['_category_id'] ?? null ) ? reset( $course_meta['_category_id'] ) : 0,
                 'fullname'         => sanitize_text_field( $course->post_title ),
-                'product_id'       => is_array( $all_meta['linked_product_id'] ?? null ) ? reset( $all_meta['linked_product_id'] ) : 0,
-                'startdate'        => is_array( $all_meta['_course_startdate'] ?? null ) ? reset( $all_meta['_course_startdate'] ) : 0,
-                'enddate'          => is_array( $all_meta['_course_enddate'] ?? null ) ? reset( $all_meta['_course_enddate'] ) : 0,
+                'product_id'       => is_array( $course_meta['linked_product_id'] ?? null ) ? reset( $course_meta['linked_product_id'] ) : 0,
+                'startdate'        => is_array( $course_meta['_course_startdate'] ?? null ) ? reset( $course_meta['_course_startdate'] ) : 0,
+                'enddate'          => is_array( $course_meta['_course_enddate'] ?? null ) ? reset( $course_meta['_course_enddate'] ) : 0,
             );
 
-            $new_course_id = Course::update_course( $course_data );
+            $new_course_id = Course::update_course( $mapped_course_data );
 
-            if ( ! empty( $course_data['product_id'] ) && $new_course_id ) {
-                update_post_meta( $course_data['product_id'], 'linked_course_id', $new_course_id );
+            if ( ! empty( $mapped_course_data['product_id'] ) && $new_course_id ) {
+                update_post_meta( $mapped_course_data['product_id'], 'linked_course_id', $new_course_id );
                 wp_delete_post( $course->ID, true );
             }
         }
@@ -357,6 +359,9 @@ class Installer {
         // Migrate all orders.
         foreach ( $order_ids as $order_id ) {
             $order = wc_get_order( $order_id );
+            if ( ! $order instanceof \WC_Order ) {
+                continue;
+            }
             self::migrate_enrollment( $order );
         }
     }
@@ -393,11 +398,11 @@ class Installer {
             $moodle_course_id = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
             $linked_course_id = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['linked_course_id'], true );
 
-            $course = Course::get_courses(
+            $courses = Course::get_courses(
                 array( 'moodle_course_id' => $moodle_course_id )
             );
 
-            $course = reset( $course );
+            $course = reset( $courses );
             if ( empty( $course ) ) {
                 continue;
             }
@@ -416,6 +421,11 @@ class Installer {
         }
     }
 
+    /**
+     * Migrate legacy product meta keys to new prefixed keys.
+     *
+     * @return void
+     */
     public static function migrate_product_meta_3_4_0() {
 
         global $wpdb;

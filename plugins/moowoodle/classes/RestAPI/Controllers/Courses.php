@@ -142,7 +142,7 @@ class Courses extends \WP_REST_Controller {
                 $view_user_url = $moodle_base_url . "user/index.php?id={$course['moodle_course_id']}";
 
                 // Get categories.
-                $categories = MooWoodle()->category->get_course_category( (int) $course['category_id'] );
+                $categories = MooWoodle()->category->get_course_categories( (int) $course['category_id'] );
                 $categories = reset( $categories );
 
                 // Get enrolled users count.
@@ -215,7 +215,7 @@ class Courses extends \WP_REST_Controller {
         );
 
         // Fetch categories.
-        $categories = MooWoodle()->category->get_course_category(
+        $categories = MooWoodle()->category->get_course_categories(
             $category_ids
         );
 
