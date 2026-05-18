@@ -74,6 +74,7 @@
                         position: relative;
                         border: $border-light-small;
                         border-radius: $border-radius-small;
+
                         // padding: 0 0.5rem;
                         background: #fff;
 
@@ -291,7 +292,7 @@
     }
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (width <= 600px) {
     .form-group.row {
         flex-direction: column !important;
 

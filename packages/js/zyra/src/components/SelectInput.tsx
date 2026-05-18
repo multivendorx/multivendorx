@@ -171,9 +171,9 @@ const buildStyles = (
 ): StylesConfig<SelectOption, boolean, GroupBase<SelectOption>> => ({
     control: (base, state) => ({
         ...base,
-        borderColor: 'var(--borderColor)',
+        borderColor: 'var(--border-color)',
         boxShadow: state.isFocused ? 'var(--box-shadow-theme)' : 'none',
-        backgroundColor: background || 'var(--backgroundWhite)',
+        backgroundColor: background || 'var(--background-white)',
         color: color || 'var(--textColor)',
         minHeight: '2.213rem',
         ...(isMulti ? {} : { height: '2.213rem', maxHeight: '2.213rem' }),
@@ -183,7 +183,7 @@ const buildStyles = (
         margin: 0,
         '&:active': { color: 'var(--colorPrimary)' },
         ':hover': {
-            borderColor: 'var(--borderColor)'
+            borderColor: 'var(--border-color)'
         },
     }),
     valueContainer: (base) => ({
@@ -201,7 +201,7 @@ const buildStyles = (
             ? 'var(--backgroundPrimary)'
             : state.isFocused
               ? 'var(--backgroundColor)'
-              : 'var(--backgroundWhite)',
+              : 'var(--background-white)',
         color: state.isSelected ? 'var(--textColor)' : 'var(--themeColor)',
         cursor: 'pointer',
     }),
@@ -221,7 +221,7 @@ const buildStyles = (
         color: 'var(--colorPrimary)',
         ':hover': {
             backgroundColor: 'var(--colorPrimary)',
-            color: 'var(--backgroundWhite)',
+            color: 'var(--background-white)',
         },
     }),
 });

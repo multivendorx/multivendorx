@@ -217,21 +217,21 @@
             top: auto;
             right: 1rem;
             bottom: 1rem;
-            animation: slideRightToLeft 0.3s ease-out forwards;
+            animation: slide-right-to-left 0.3s ease-out forwards;
         }
 
         &[data-position="slide-left-to-right"] {
             top: auto;
             left: 1rem;
             bottom: 1rem;
-            animation: slideLeftToRight 0.3s ease-out forwards;
+            animation: slide-left-to-right 0.3s ease-out forwards;
         }
 
         &[data-position="slide-top-to-bottom"] {
             top: 1rem;
             left: 50%;
             transform: translateX(-50%);
-            animation: slideTopToBottom 0.3s ease-out forwards;
+            animation: slide-top-to-bottom 0.3s ease-out forwards;
         }
 
         &[data-position="slide-bottom-to-top"] {
@@ -244,12 +244,10 @@
         &[data-position="lightbox"] {
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
             min-width: 24rem;
             max-width: 90vw;
             max-height: 80vh;
-            overflow-y: auto;
-            overflow-x: hidden;
+            overflow: hidden auto;
             animation: modalSlideIn 0.3s ease-out;
             position: fixed;
             transform: translate(-50%, -50%) scale(0.95);
@@ -340,10 +338,11 @@
         padding-top: 1.813rem;
     }
 }
+
 // popup-confirm end
 
 // Animations
-@keyframes slideRightToLeft {
+@keyframes slide-right-to-left {
     from {
         transform: translateX(100%);
         opacity: 0;
@@ -355,7 +354,7 @@
     }
 }
 
-@keyframes slideLeftToRight {
+@keyframes slide-left-to-right {
     from {
         transform: translateX(-100%);
         opacity: 0;
@@ -367,7 +366,7 @@
     }
 }
 
-@keyframes slideTopToBottom {
+@keyframes slide-top-to-bottom {
     from {
         transform: translateY(-100%);
         opacity: 0;
@@ -390,9 +389,10 @@
         opacity: 1;
     }
 }
+
 // commission popup style (common and remove)
 
-@media screen  and (max-width: 600px) {
+@media screen  and (width <= 600px) {
     .popup-content {
         min-width: 10rem !important;
         max-width: 92% !important;

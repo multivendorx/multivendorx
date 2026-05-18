@@ -72,7 +72,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            animation-name: cycleBanner;
+            animation-name: cycle-banner;
             animation-duration: var(--banner-duration);
             animation-iteration-count: infinite;
             animation-timing-function: ease-in-out;
@@ -84,7 +84,7 @@
             }
         }
 
-        @keyframes cycleBanner {
+        @keyframes cycle-banner {
             0% {
                 opacity: 0;
                 visibility: hidden;

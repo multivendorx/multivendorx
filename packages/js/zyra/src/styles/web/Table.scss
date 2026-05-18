@@ -179,7 +179,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-left: auto;
     margin: 1.5rem 0 1.5rem auto;
 
     .action-wrapper {
@@ -739,7 +738,7 @@
 
 // status color end
 
-@media only screen and (max-width: 600px) {
+@media only screen and (width <= 600px) {
     .admin-table-wrapper {
         .admin-top-filter {
             flex-wrap: wrap;

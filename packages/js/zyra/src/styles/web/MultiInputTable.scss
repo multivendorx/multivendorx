@@ -259,7 +259,7 @@
     }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (width <= 600px) {
     .settings-input-content:has(.multi-input-table){
         overflow: auto;
 

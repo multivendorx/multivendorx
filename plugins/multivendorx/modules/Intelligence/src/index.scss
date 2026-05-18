@@ -1,3 +1,4 @@
+@use '../../../src/dashboard/dashboardConfig.scss' as *;
 
 .popup-body:has(.ai-content-wrapper) {
     height: 100%;
