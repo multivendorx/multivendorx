@@ -13,6 +13,7 @@ import {
 import TransactionDetailsModal from './TransactionDetailsModal';
 import { downloadCSV, formatLocalDate } from '../services/commonFunction';
 import ViewCommission from './viewCommission';
+import { applyFilters } from '@wordpress/hooks';
 
 type TransactionRow = {
 	id: number;
@@ -27,6 +28,7 @@ type TransactionRow = {
 };
 
 const Transactions: React.FC = () => {
+	let endpoint = applyFilters('multivendorx_store_dashboard_transactions_endpoint','transactions');
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [totalRows, setTotalRows] = useState(0);
 	const [isLoading, setIsLoading] = useState(false);
@@ -41,13 +43,13 @@ const Transactions: React.FC = () => {
 		useState<TransactionRow | null>(null);
 	const headers = {
 		id: { label: __('ID', 'multivendorx'), type: 'id' },
-		status: { label: __('Status', 'multivendorx'), type: 'status' , statusClass: (row) => `${row.status}` },
+		status: { label: __('Status', 'multivendorx'), type: 'status', statusClass: (row) => `${row.status}` },
 		created_at: { label: __('Date', 'multivendorx'), type: 'date' },
 		transaction_type: {
 			label: __('Transaction Type', 'multivendorx'),
 			render: (row) =>
 				row.transaction_type?.toLowerCase() === 'commission' &&
-				row.commission_id ? (
+					row.commission_id ? (
 					<span
 						className="link-item"
 						onClick={() => setModalCommission(row)}
@@ -132,7 +134,7 @@ const Transactions: React.FC = () => {
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
-			.get(getApiLink(appLocalizer, 'transactions'), {
+			.get(getApiLink(appLocalizer, endpoint), {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
@@ -200,7 +202,7 @@ const Transactions: React.FC = () => {
 		}
 
 		axios
-			.get(getApiLink(appLocalizer, 'transactions'), {
+			.get(getApiLink(appLocalizer, endpoint), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: { ids: selectedIds },
 			})
@@ -220,7 +222,7 @@ const Transactions: React.FC = () => {
 	const downloadTransactionCSVByQuery = (query: QueryProps) => {
 		// Call the API
 		axios
-			.get(getApiLink(appLocalizer, 'transactions'), {
+			.get(getApiLink(appLocalizer, endpoint), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: buildQueryParams(query, false),
 			})
@@ -262,7 +264,7 @@ const Transactions: React.FC = () => {
 			params.row = query.per_page || 10;
 		}
 
-		return params;
+		return applyFilters('multivendorx_transactions_query_params',params,query,includePagination);
 	};
 
 	const buttonActions = [

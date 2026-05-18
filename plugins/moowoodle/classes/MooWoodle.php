@@ -18,15 +18,8 @@ defined( 'ABSPATH' ) || exit;
  * @version     3.3.0
  * @package     MooWoodle
  * @author      DualCube
- *
- * @property Util $util instance of utill class
- * @property Setting $setting instance of setting class
- * @property Core\Course $course instance of course class
- * @property Core\Category $category instance of category class
- * @property Core\Product $product instance of product class
- * @property Rest $rest instance of restapi class
  */
-class MooWoodle {
+final class MooWoodle {
     /**
      * Contain reference of MooWoodle class's object
      *
@@ -75,9 +68,9 @@ class MooWoodle {
         // initialise plugin.
         add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
         add_action( 'woocommerce_loaded', array( $this, 'load_plugin' ) );
+        add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
         add_action( 'plugins_loaded', array( $this, 'is_woocommerce_loaded' ) );
         add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
-        add_action( 'init', array( $this, 'migrate_from_previous_version' ) );
 	}
 
     /**
@@ -119,13 +112,10 @@ class MooWoodle {
             add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_links' ) );
         }
 
-        add_filter( 'woocommerce_email_classes', array( &$this, 'setup_email_class' ) );
+        add_filter( 'woocommerce_email_classes', array( $this, 'setup_email_class' ) );
 
         // Init required classes.
         $this->initialize_classes();
-
-		// Init Text Domain.
-		$this->load_plugin_textdomain();
 
         /**
          * Actiion hook after moowoodle loaded.
@@ -157,6 +147,7 @@ class MooWoodle {
         $this->container['block']            = new Block();
         $this->container['frontendscripts']  = new FrontendScripts();
         $this->container['endpoint']         = new EndPoint();
+        $this->container['promotions']       = new Promotions();
         $this->initialize_moowoodle_log();
     }
 
@@ -166,50 +157,13 @@ class MooWoodle {
      * @return void
      */
     public function is_woocommerce_loaded() {
-        if ( ! did_action( 'woocommerce_loaded' ) && is_admin() ) {
-        	add_action( 'admin_notices', array( $this, 'woocommerce_admin_notice' ) );
+        if ( did_action( 'woocommerce_loaded' ) && ! is_admin() ) {
+            $previous_version = get_option( 'moowoodle_version', '' );
+            if ( version_compare( $previous_version, MooWoodle()->version, '<' ) ) {
+                new Installer();
+            }
         }
     }
-
-    /**
-     * Migrate data from previous version.
-     */
-    public function migrate_from_previous_version() {
-        $previous_version = get_option( 'moowoodle_version', '' );
-
-        if ( version_compare( $previous_version, MooWoodle()->version, '<' ) ) {
-            new Installer();
-        }
-    }
-
-    /**
-     * Admin notice for woocommerce deactive.
-     *
-     * @return void
-     */
-    public function woocommerce_admin_notice() {
-		?>
-		<div id="message" class="error">
-            <p>
-            <?php
-            printf(
-                // translators: 1: <strong>, 2: </strong>, 3: <a>, 4: </a>, 5: <a>, 6: </a>.
-                esc_html__(
-                    '%1$sMooWoodle is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for the MooWoodle to work. Please %5$sinstall & activate WooCommerce%6$s',
-                    'moowoodle'
-                ),
-                '<strong>',
-                '</strong>',
-                '<a target="_blank" href="https://wordpress.org/plugins/woocommerce/">',
-                '</a>',
-                '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">',
-                '&nbsp;&raquo;</a>'
-            );
-            ?>
-            </p>
-		</div>
-    	<?php
-	}
 
     /**
      * Add metadata links (e.g. documentation, support) to the plugin row on the Plugins screen.
@@ -265,7 +219,7 @@ class MooWoodle {
      *
 	 * @return void
 	 */
-	private function load_plugin_textdomain() {
+	public function load_plugin_textdomain() {
         if ( version_compare( $GLOBALS['wp_version'], '6.7', '<' ) ) {
             load_plugin_textdomain( 'moowoodle', false, plugin_basename( dirname( __DIR__ ) ) . '/languages' );
         } else {

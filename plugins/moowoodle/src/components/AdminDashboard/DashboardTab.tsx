@@ -2,12 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Column, ItemListUI, Container, NoticeManager } from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
-import { getModuleData } from '../../services/templateService';
 import axios from 'axios';
-import proPopupContent from '../Popup/Popup';
-import Mascot from '../../assets/images/multivendorx-mascot-scale.png';
+import Mascot from '../../assets/images/brand-small.png';
 import catalogx from '../../assets/images/catalogx.png';
-import notifima from '../../assets/images/brand-icon.png';
+import notifima from '../../assets/images/notifima.png';
 
 interface WPPlugin {
 	plugin?: string;
@@ -134,7 +132,7 @@ const DashboardTab: React.FC<object> = () => {
 			),
 			iconClass: 'knowledgebase',
 			linkText: __('Explore Docs', 'moowoodle'),
-			href: 'https://multivendorx.com/docs/knowledgebase/',
+			href: 'https://dualcube.com/knowledgebase/',
 		},
 		{
 			title: __('Expert consultation', 'moowoodle'),
@@ -144,27 +142,7 @@ const DashboardTab: React.FC<object> = () => {
 			),
 			iconClass: 'preview',
 			linkText: __('Book Consultation', 'moowoodle'),
-			href: 'https://multivendorx.com/custom-development/',
-		},
-		{
-			title: __('Developer community', 'moowoodle'),
-			desc: __(
-				'Connect with our team and fellow builders on Discord.',
-				'moowoodle'
-			),
-			iconClass: 'global-community',
-			linkText: __('Join Discord', 'moowoodle'),
-			href: 'https://discord.com/channels/1376811097134469191/1376811102020829258',
-		},
-		{
-			title: __('Facebook group', 'moowoodle'),
-			desc: __(
-				'Share experiences and tips with other marketplace owners.',
-				'moowoodle'
-			),
-			iconClass: 'user-circle',
-			linkText: __('Join Group', 'moowoodle'),
-			href: 'https://www.facebook.com/groups/226246620006065/',
+			href: 'https://dualcube.com/custom-development/',
 		},
 	];
 
@@ -255,17 +233,6 @@ const DashboardTab: React.FC<object> = () => {
 								{renderUpgradeButton(
 									__('Upgrade Now', 'moowoodle')
 								)}
-
-								<div
-									className="admin-btn"
-									onClick={() =>
-										(window.location.href =
-											'?page=multivendorx-setup')
-									}
-								>
-									{__('Launch Setup Wizard', 'moowoodle')}
-									<i className="adminfont-import"></i>
-								</div>
 							</div>
 						</div>
 

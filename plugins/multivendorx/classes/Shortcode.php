@@ -152,7 +152,7 @@ class Shortcode {
         FrontendScripts::enqueue_script( 'multivendorx-marketplace-products-script' );
         FrontendScripts::localize_scripts( 'multivendorx-marketplace-products-script' );
 
-        return '<div id="marketplace-products" data-attributes="' . $json_attrs . '"></div>';
+        return '<div id="marketplace-products" data-attributes="' . $json_attrs . '"></div>';  
     }
     /**
      * Display coupons list.
@@ -169,7 +169,7 @@ class Shortcode {
         FrontendScripts::localize_scripts( 'multivendorx-marketplace-coupons-script' );
         FrontendScripts::enqueue_style( 'multivendorx-common-block-style' );
 
-        return '<div id="marketplace-coupons" data-attributes="' . $json_attrs . '"></div>';
+        return '<div id="marketplace-coupons" data-attributes="' . $json_attrs . '"></div>';    
     }
 
     public function snake_to_camel_case( $array ) {

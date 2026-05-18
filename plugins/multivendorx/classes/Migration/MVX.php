@@ -14,9 +14,9 @@ use MultiVendorX\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * MultiVendorX Dokan migration class
+ * MultiVendorX MVX migration class
  *
- * @class       Dokan class
+ * @class       MVX class
  * @version     5.0.0
  * @author      MultiVendorX
  */

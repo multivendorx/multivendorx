@@ -43,23 +43,32 @@ export default {
 			),
 			options: [
 				{
-					key: 'facilitator_edit_withdrawl_request',
-					label: __('Request withdrawal', 'multivendorx'),
+					key: 'read_shop_earning',
+					label: __('View wallet', 'multivendorx'),
 					desc: __(
-						'Allow facilitators to request payout of their earnings.',
+						'Allow facilitators to access and view wallet earnings.',
 						'multivendorx'
 					),
-					value: 'facilitator_edit_withdrawl_request',
+					value: 'read_shop_earning',
 				},
 				{
-					key: 'facilitator_view_transactions',
+					key: 'view_transactions',
 					label: __('View transactions', 'multivendorx'),
 					desc: __(
-						'Allow facilitators to view all transaction records related to their earnings.',
+						'Allow facilitators to view all wallet transaction records.',
 						'multivendorx'
 					),
-					value: 'facilitator_view_transactions',
-				}
+					value: 'view_transactions',
+				},
+				{
+					key: 'edit_withdrawl_request',
+					label: __('Request withdrawals', 'multivendorx'),
+					desc: __(
+						'Allow facilitators to submit withdrawal requests from wallet balance.',
+						'multivendorx'
+					),
+					value: 'edit_withdrawl_request',
+				},
 			],
 			selectDeselect: true,
 		}
