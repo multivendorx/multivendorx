@@ -66,10 +66,10 @@ class Util {
      *
      * @param mixed  $message Log message, Exception, or WP_Error.
      * @param string $type    Log type (INFO, ERROR, EXCEPTION, WP_ERROR).
-     * @param array  $extra   Additional metadata to include.
+     * @param array  $context   Additional metadata to include.
      * @return bool           True on success, false on failure.
      */
-    public static function log( $message = '', $type = 'INFO', $extra = array() ) {
+    public static function log( $message = '', $type = 'INFO', $context = array() ) {
         global $wp_filesystem, $wpdb;
 
         // Initialize the WordPress filesystem API.
@@ -82,7 +82,7 @@ class Util {
             return false;
         }
         // Create the logs directory and protect it with .htaccess.
-        if ( ! file_exists( MooWoodle()->moowoodle_logs_dir . '/.htaccess' ) ) {
+        if ( ! $wp_filesystem->exists( MooWoodle()->moowoodle_logs_dir . '/.htaccess' ) ) {
             wp_mkdir_p( MooWoodle()->moowoodle_logs_dir );
             try {
                 $wp_filesystem->put_contents(
@@ -101,29 +101,29 @@ class Util {
         // Convert Exception into structured metadata.
         if ( $message instanceof \Exception ) {
             $type             = 'EXCEPTION';
-            $extra['Message'] = $message->getMessage();
-            $extra['Code']    = $message->getCode();
-            $extra['File']    = $message->getFile();
-            $extra['Line']    = $message->getLine();
+            $context['Message'] = $message->getMessage();
+            $context['Code']    = $message->getCode();
+            $context['File']    = $message->getFile();
+            $context['Line']    = $message->getLine();
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-            $extra['Stack'] = $message->getTraceAsString();
+            $context['Stack'] = $message->getTraceAsString();
             $message        = 'Exception occurred';
         }
 
         // Convert WP_Error into structured metadata.
         if ( $message instanceof \WP_Error ) {
             $type             = 'WP_ERROR';
-            $extra['Code']    = $message->get_error_code();
-            $extra['Message'] = $message->get_error_message();
+            $context['Code']    = $message->get_error_code();
+            $context['Message'] = $message->get_error_message();
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-            $extra['Data'] = $message->get_error_data();
+            $context['Data'] = $message->get_error_data();
             $message       = 'WP_Error occurred';
         }
 
         // Automatically capture database errors.
-        if ( isset( $wpdb ) && ! empty( $wpdb->last_error ) ) {
-            $extra['DB Error']   = $wpdb->last_error;
-            $extra['Last Query'] = $wpdb->last_query;
+        if ( ! empty( $wpdb->last_error ) ) {
+            $context['DB Error']   = $wpdb->last_error;
+            $context['Last Query'] = $wpdb->last_query;
         }
 
         // Automatic metadata.
@@ -138,7 +138,7 @@ class Util {
                 // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_wp_debug_backtrace_summary
                 'Stack'     => wp_debug_backtrace_summary(),
             ),
-            $extra
+            $context
         );
 
         $timestamp = $meta['Timestamp'];
@@ -199,16 +199,16 @@ class Util {
 	 * Set moowoodle sync status.
      *
 	 * @param mixed $status status.
-	 * @param mixed $key key.
+	 * @param mixed $sync_key key.
 	 * @return void
 	 */
-	public static function set_sync_status( $status, $key ) {
-		$status_history    = get_transient( 'moowoodle_sync_status_' . $key );
+	public static function set_sync_status( $status, $sync_key ) {
+		$status_history    = get_transient( 'moowoodle_sync_status_' . $sync_key );
 		$status_history    = is_array( $status_history ) ? $status_history : array();
         $status['current'] = 0;
 		$status_history[]  = $status;
 
-		set_transient( 'moowoodle_sync_status_' . $key, $status_history, 3600 );
+		set_transient( 'moowoodle_sync_status_' . $sync_key, $status_history, HOUR_IN_SECONDS );
 	}
 
 	/**
@@ -313,7 +313,7 @@ class Util {
      */
     public static function server_error( \Exception $exception ) {
 
-        $this->log( $exception );
+        self::log( $exception );
 
         return new \WP_Error(
             'server_error',
