@@ -61,7 +61,7 @@ const RegistrationForm = () => {
 	useEffect(() => {
 		axios({
 			method: 'GET',
-			url: getApiLink(registrationForm, `store`),
+			url: getApiLink(registrationForm, `stores`),
 			headers: { 'X-WP-Nonce': registrationForm.nonce },
 			params: { store_registration: true },
 		}).then((res) => {
