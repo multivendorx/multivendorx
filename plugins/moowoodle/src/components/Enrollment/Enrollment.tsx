@@ -113,7 +113,6 @@ const Enrollment: React.FC = () => {
 				},
 			],
 		},
-		format:{appLocalizer.date_format}
 	};
 
 	tableProps = applyFilters(
