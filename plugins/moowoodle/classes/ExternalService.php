@@ -52,10 +52,7 @@ class ExternalService {
 		$moodle_core_functions = $this->get_core_functions();
 
 		// Get the function name.
-		$function_name = '';
-		if ( array_key_exists( $key, $moodle_core_functions ) ) {
-			$function_name = $moodle_core_functions[ $key ];
-		}
+		$function_name = $moodle_core_functions[ $key ] ?? '';
 
 		$moodle_base_url     = MooWoodle()->setting->get_setting( 'moodle_url' );
 		$moodle_access_token = MooWoodle()->setting->get_setting( 'moodle_access_token' );
@@ -67,8 +64,9 @@ class ExternalService {
 		if ( ! empty( $moodle_base_url ) && ! empty( $moodle_access_token ) && $function_name ) {
 			$request_query = http_build_query( $request_param );
 
-			$timeout = MooWoodle()->setting->get_setting( 'moodle_timeout' );
+			$timeout = MooWoodle()->setting->get_setting( 'moodle_timeout', '' );
 			$timeout = $timeout ? $timeout : '10';
+			
 
 			$response = wp_remote_post(
                 $request_url,
@@ -85,7 +83,7 @@ class ExternalService {
 		}
 
 		// check the response containe error.
-		$response = self::analyse_moodle_response( $response );
+		$response = $this->analyse_moodle_response( $response );
 
 		// return response on success.
 		return $response;

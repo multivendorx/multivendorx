@@ -312,9 +312,9 @@ class FrontendScripts {
                     'use_rest'    => true,
 					'data'        => array(
 						'khali_dabba' => MooWoodle()->util->is_khali_dabba(),
-                        'postId'       => $post->ID,
-                        'linkType'     => $default_type,
-                        'linkedItemId' => $selected_id,
+                        'postId'       => $post ? $post->ID : '',
+                        'linkType'     => $default_type ?? '',
+                        'linkedItemId' => $selected_id ?? '',
                         'productMetaNonce' => wp_create_nonce(),
                         'syncUrl'       => esc_url( admin_url( 'admin.php?page=moowoodle#&tab=synchronization&subtab=synchronize-course' ) )
 					),
