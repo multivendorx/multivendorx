@@ -23,13 +23,13 @@ class Util {
      *
      * @var array
      */
-    const TABLES = array(
+    public const TABLES = array(
         'enrollment' => 'mw_enrollment',
         'category'   => 'mw_moodle_categories',
         'course'     => 'mw_courses',
     );
 
-    const MOOWOODLE_SETTINGS = array(
+    public const MOOWOODLE_SETTINGS = array(
         'notification'       => 'moowoodle_notification_settings',
         'synchronize-course' => 'moowoodle_synchronize_course_settings',
         'synchronize-user'   => 'moowoodle_synchronize_user_settings',
@@ -38,18 +38,18 @@ class Util {
         'system-logs'        => 'moowoodle_system_logs_settings',
     );
 
-    const MOOWOODLE_OTHER_SETTINGS = array(
+    public const MOOWOODLE_OTHER_SETTINGS = array(
         'log_file' => 'moowoodle_log_file',
     );
 
-    const MOOWOODLE_PRODUCT_META = array(
+    public const MOOWOODLE_PRODUCT_META = array(
         'course_startdate'    => 'moowoodle_course_startdate',
         'course_enddate'      => 'moowoodle_course_enddate',
         'moodle_course_id'    => 'moowoodle_moodle_course_id',
         'wordpress_course_id' => 'moowoodle_wordpress_course_id',
     );
 
-    const MOOWOODLE_TERM_META = array(
+    public const MOOWOODLE_TERM_META = array(
         'category_id'   => '_category_id',
         'parent_id'     => '_parent',
         'category_path' => '_category_path',
@@ -66,10 +66,10 @@ class Util {
      *
      * @param mixed  $message Log message, Exception, or WP_Error.
      * @param string $type    Log type (INFO, ERROR, EXCEPTION, WP_ERROR).
-     * @param array  $extra   Additional metadata to include.
+     * @param array  $context   Additional metadata to include.
      * @return bool           True on success, false on failure.
      */
-    public static function log( $message = '', $type = 'INFO', $extra = array() ) {
+    public static function log( $message = '', $type = 'INFO', $context = array() ) {
         global $wp_filesystem, $wpdb;
 
         // Initialize the WordPress filesystem API.
@@ -82,7 +82,7 @@ class Util {
             return false;
         }
         // Create the logs directory and protect it with .htaccess.
-        if ( ! file_exists( MooWoodle()->moowoodle_logs_dir . '/.htaccess' ) ) {
+        if ( ! $wp_filesystem->exists( MooWoodle()->moowoodle_logs_dir . '/.htaccess' ) ) {
             wp_mkdir_p( MooWoodle()->moowoodle_logs_dir );
             try {
                 $wp_filesystem->put_contents(
@@ -93,7 +93,7 @@ class Util {
                     MooWoodle()->moowoodle_logs_dir . '/index.html',
                     ''
                 );
-            } catch ( \Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+            } catch ( \Exception $exception ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
                 // Directory creation failed but logging should continue.
             }
         }
@@ -101,59 +101,57 @@ class Util {
         // Convert Exception into structured metadata.
         if ( $message instanceof \Exception ) {
             $type             = 'EXCEPTION';
-            $extra['Message'] = $message->getMessage();
-            $extra['Code']    = $message->getCode();
-            $extra['File']    = $message->getFile();
-            $extra['Line']    = $message->getLine();
+            $context['Message'] = $message->getMessage();
+            $context['Code']    = $message->getCode();
+            $context['File']    = $message->getFile();
+            $context['Line']    = $message->getLine();
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-            $extra['Stack'] = $message->getTraceAsString();
+            $context['Stack'] = $message->getTraceAsString();
             $message        = 'Exception occurred';
         }
 
         // Convert WP_Error into structured metadata.
         if ( $message instanceof \WP_Error ) {
             $type             = 'WP_ERROR';
-            $extra['Code']    = $message->get_error_code();
-            $extra['Message'] = $message->get_error_message();
+            $context['Code']    = $message->get_error_code();
+            $context['Message'] = $message->get_error_message();
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-            $extra['Data'] = $message->get_error_data();
+            $context['Data'] = $message->get_error_data();
             $message       = 'WP_Error occurred';
         }
 
         // Automatically capture database errors.
-        if ( isset( $wpdb ) && ! empty( $wpdb->last_error ) ) {
-            $extra['DB Error']   = $wpdb->last_error;
-            $extra['Last Query'] = $wpdb->last_query;
+        if ( ! empty( $wpdb->last_error ) ) {
+            $context['DB Error']   = $wpdb->last_error;
+            $context['Last Query'] = $wpdb->last_query;
         }
 
+        $trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
+        $caller = $trace[1] ?? array();
         // Automatic metadata.
         $meta = array_merge(
             array(
                 'Type'      => $type,
                 'Timestamp' => current_time( 'mysql' ),
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
-                'File'      => debug_backtrace()[1]['file'] ?? '',
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
-                'Line'      => debug_backtrace()[1]['line'] ?? '',
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_wp_debug_backtrace_summary
+                'File' => $caller['file'] ?? '',
+                'Line' => $caller['line'] ?? '',
                 'Stack'     => wp_debug_backtrace_summary(),
             ),
-            $extra
+            $context
         );
 
         $timestamp = $meta['Timestamp'];
         $log_lines = array();
 
-        foreach ( $meta as $key => $val ) {
+        foreach ( $meta as $key => $value ) {
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
             $val         = trim( print_r( $val, true ) );
-            $log_lines[] = "{$timestamp} : {$key}: {$val}";
+            $log_lines[] = "{$timestamp} : {$key}: {$value}";
         }
 
         // Add the main message.
         // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
         $log_lines[] = "{$timestamp} : Message: " . ( is_string( $message ) ? trim( $message ) : trim( print_r( $message, true ) ) );
-        // Build final entry block.
         $log_entry = implode( "\n", $log_lines ) . "\n";
 
         $existing = $wp_filesystem->get_contents( MooWoodle()->log_file );
@@ -199,16 +197,16 @@ class Util {
 	 * Set moowoodle sync status.
      *
 	 * @param mixed $status status.
-	 * @param mixed $key key.
+	 * @param mixed $sync_key key.
 	 * @return void
 	 */
-	public static function set_sync_status( $status, $key ) {
-		$status_history    = get_transient( 'moowoodle_sync_status_' . $key );
+	public static function set_sync_status( $status, $sync_key ) {
+		$status_history    = get_transient( 'moowoodle_sync_status_' . $sync_key );
 		$status_history    = is_array( $status_history ) ? $status_history : array();
         $status['current'] = 0;
 		$status_history[]  = $status;
 
-		set_transient( 'moowoodle_sync_status_' . $key, $status_history, 3600 );
+		set_transient( 'moowoodle_sync_status_' . $sync_key, $status_history, HOUR_IN_SECONDS );
 	}
 
 	/**
@@ -313,7 +311,7 @@ class Util {
      */
     public static function server_error( \Exception $exception ) {
 
-        $this->log( $exception );
+        self::log( $exception );
 
         return new \WP_Error(
             'server_error',
