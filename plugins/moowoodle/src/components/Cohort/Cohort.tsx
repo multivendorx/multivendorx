@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import '../common.scss';
 import { __ } from '@wordpress/i18n';
-import { InfoItem, NavigatorHeader, PopupUI, QueryProps, TableCard } from 'zyra';
+import {
+	InfoItem,
+	NavigatorHeader,
+	PopupUI,
+	TableCard,
+} from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';
 import { dummyCohorts } from './CohortUtill';
@@ -19,6 +24,9 @@ export interface CohortRow {
 
 const Cohort: React.FC = () => {
 	const [openPopup, setopenPopup] = useState(false);
+
+	let tableProps: any = {};
+
 	// Define table headers
 	const headers = {
 		cohort_name: {
@@ -33,38 +41,41 @@ const Cohort: React.FC = () => {
 				/>
 			),
 		},
+
 		products: {
 			label: __('Product', 'moowoodle'),
 			render: (row: CohortRow) => (
 				<>
 					{row.products && Object.keys(row.products).length
 						? Object.entries(row.products).map(
-							([name, url], index) => (
-								<>
-									{name}
-									<a
-										target="_blank"
-										rel="noreferrer"
-										href={url}
-										className="link-item edit-link"
-									>
-										{__(
-											'Edit product',
-											'moowoodle'
-										)}
-									</a>
-								</>
-							)
-						)
+								([name, url], index) => (
+									<React.Fragment key={index}>
+										{name}
+										<a
+											target="_blank"
+											rel="noreferrer"
+											href={url}
+											className="link-item edit-link"
+										>
+											{__(
+												'Edit product',
+												'moowoodle'
+											)}
+										</a>
+									</React.Fragment>
+								)
+						  )
 						: '-'}
 				</>
 			),
 		},
+
 		enrolled_user: {
 			label: __('Enrolled users', 'moowoodle'),
 			render: (row: CohortRow) => (
 				<>
 					{row.enrolled_user || 0}
+
 					{row.view_users_url && (
 						<a
 							target="_blank"
@@ -78,38 +89,48 @@ const Cohort: React.FC = () => {
 				</>
 			),
 		},
+
 		action: {
 			type: 'action',
 			label: __('Action', 'moowoodle'),
+
 			actions: [
 				{
 					label: __('Sync Cohort Data', 'moowoodle'),
+
 					icon: 'refresh',
+
 					onClick: (row: CohortRow) => {
-						handleSingleAction(
+						tableProps?.onSingleActionApply?.(
 							'sync_cohort',
 							row.id!,
 							row.moodle_cohort_id!
 						);
 					},
 				},
+
 				{
 					label: (row: CohortRow) => {
-						return row?.products && Object.keys(row.products).length
+						return row?.products &&
+							Object.keys(row.products).length
 							? __(
-								'Sync Cohort Data & Update Product',
-								'moowoodle'
-							)
+									'Sync Cohort Data & Update Product',
+									'moowoodle'
+							  )
 							: __('Create Product', 'moowoodle');
 					},
+
 					icon: (row: CohortRow) => {
-						return row?.products && Object.keys(row.products).length
+						return row?.products &&
+							Object.keys(row.products).length
 							? 'update-product'
 							: 'add-product';
 					},
+
 					onClick: (row: CohortRow) => {
-						handleSingleAction(
-							row.products && Object.keys(row.products).length
+						tableProps?.onSingleActionApply?.(
+							row.products &&
+								Object.keys(row.products).length
 								? 'update_product'
 								: 'create_product',
 							row.id!,
@@ -123,21 +144,23 @@ const Cohort: React.FC = () => {
 
 	const defaultTableProps = {
 		headers,
+
 		rows: dummyCohorts,
+
 		totalRows: dummyCohorts.length,
+
 		search: {
 			placeholder: __('Search...', 'moowoodle'),
 		},
 	};
 
-	const tableProps = applyFilters(
+	tableProps = applyFilters(
 		'moowoodle_cohort_table_props',
 		defaultTableProps,
 		{
 			setopenPopup,
 		}
 	);
-
 
 	return (
 		<>
@@ -152,6 +175,7 @@ const Cohort: React.FC = () => {
 					<ShowProPopup />
 				</PopupUI>
 			)}
+
 			<NavigatorHeader
 				headerIcon="cohort"
 				headerDescription={__(
