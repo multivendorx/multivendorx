@@ -69,7 +69,7 @@ final class MooWoodle {
         add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
         add_action( 'woocommerce_loaded', array( $this, 'load_plugin' ) );
         add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
-        add_action( 'plugins_loaded', array( $this, 'is_woocommerce_loaded' ) );
+        add_action( 'plugins_loaded', array( $this, 'handle_plugin_migration' ) );
         add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 	}
 
@@ -109,22 +109,22 @@ final class MooWoodle {
 
         // add link on pugin 'active' button.
         if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
-            add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_links' ) );
+            add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'get_plugin_action_links' ) );
         }
 
-        add_filter( 'woocommerce_email_classes', array( $this, 'setup_email_class' ) );
+        add_filter( 'woocommerce_email_classes', array( $this, 'register_email_classes' ) );
 
         // Init required classes.
         $this->initialize_classes();
 
         /**
-         * Actiion hook after moowoodle loaded.
+         * Action hook after MooWoodle loads.
          */
         do_action( 'moowoodle_loaded' );
     }
 
     /**
-     * Init all MooWoodle classess.
+     * Initialize all MooWoodle classes.
      * Access this classes using magic method.
      *
      * @return void
@@ -156,8 +156,8 @@ final class MooWoodle {
      *
      * @return void
      */
-    public function is_woocommerce_loaded() {
-        if ( did_action( 'woocommerce_loaded' ) && ! is_admin() ) {
+    public function handle_plugin_migration() {
+        if ( did_action( 'woocommerce_loaded' ) ) {
             $previous_version = get_option( 'moowoodle_version', '' );
             if ( version_compare( $previous_version, MooWoodle()->version, '<' ) ) {
                 new Installer();
@@ -176,8 +176,8 @@ final class MooWoodle {
     public function plugin_row_meta( $links, $file ) {
         if ( MooWoodle()->plugin_base === $file ) {
             $row_meta = array(
-                'docs'    => '<a href="https://dualcube.com/docs/moowoodle-set-up-guide/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle" aria-label="' . esc_attr__( 'View documentation', 'moowoodle' ) . '" target="_blank">' . esc_html__( 'Docs', 'moowoodle' ) . '</a>',
-                'support' => '<a href="https://wordpress.org/support/plugin/moowoodle/" aria-label="' . esc_attr__( 'Visit community forums', 'moowoodle' ) . '" target="_blank">' . esc_html__( 'Support', 'moowoodle' ) . '</a>',
+                'docs'    => '<a href="https://dualcube.com/docs/moowoodle-set-up-guide/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle" aria-label="' . esc_attr__( 'View documentation', 'moowoodle' ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Docs', 'moowoodle' ) . '</a>',
+                'support' => '<a href="https://wordpress.org/support/plugin/moowoodle/" aria-label="' . esc_attr__( 'Visit community forums', 'moowoodle' ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Support', 'moowoodle' ) . '</a>',
             );
 
             if ( ! Util::is_khali_dabba() ) {
@@ -196,7 +196,7 @@ final class MooWoodle {
      * @param array $links all links.
      * @return array
      */
-    public static function plugin_links( $links ) {
+    public static function get_plugin_action_links( $links ) {
 
         // Create moowoodle plugin page link.
         $plugin_links = array(
@@ -289,7 +289,7 @@ final class MooWoodle {
      * @param array $emails List of WooCommerce email classes.
      * @return array Modified list of email classes including EnrollmentEmail.
      */
-    public function setup_email_class( $emails ) {
+    public function register_email_classes( $emails ) {
         $emails['EnrollmentEmail'] = new Emails\EnrollmentEmail();
         return $emails;
     }
