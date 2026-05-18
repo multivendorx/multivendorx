@@ -57,6 +57,19 @@ class Frontend {
         add_filter( 'multivendorx_dashboard_menu', array( $this, 'hide_menu' ), 20 );
         add_filter( 'wp_insert_attachment_data', array( $this, 'attach_store_owner_id' ), 10, 1 );
         add_action( 'woocommerce_account_dashboard', array( $this, 'add_dashboard_button' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
+    }
+    /**
+     * Enqueue JavaScript for admin frontend page and localize script.
+     *
+     * @return void
+     */
+    public function frontend_scripts() {
+            FrontendScripts::admin_load_scripts();
+            FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
+            FrontendScripts::enqueue_script( 'multivendorx-admin-script' );
+            FrontendScripts::enqueue_style( 'multivendorx-index-style' );
+            FrontendScripts::localize_scripts( 'multivendorx-admin-script' );
     }
 
     public function modify_permissions( $permissions ) {

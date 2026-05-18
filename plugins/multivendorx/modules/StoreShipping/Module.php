@@ -55,6 +55,7 @@ class Module {
         $this->container['admin']    = new Admin();
         $this->container['util']     = new Util();
         $this->container['rest']     = new Rest();
+        $this->container['block_checkout'] = new Blocks_Checkout_Integration();
     }
 
     /**
