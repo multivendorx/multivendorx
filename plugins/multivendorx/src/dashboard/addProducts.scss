@@ -1,0 +1,96 @@
+@use './dashboardConfig.scss' as *;
+// .card-content {
+//     .right-form-wrapper {
+//         display: flex;
+//         justify-content: end;
+
+//         .form-group {
+//             width: 40%;
+//             display: flex;
+//             align-items: center;
+
+//             label {
+//                 width: 50%;
+//             }
+//         }
+//     }
+// }
+
+.category-breadcrumb-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.625rem;
+    align-items: center;
+
+    span {
+        cursor: pointer;
+        color: $theme-color;
+    }
+}
+
+.category-wrapper {
+    width: 100%;
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+
+        li {
+            position: relative;
+        }
+
+        label {
+            margin: 0 !important;
+        }
+
+        .sub-category {
+            padding: 0.5rem 0.5rem 0;
+        }
+
+        .category {
+            padding-bottom: 0.5rem;
+        }
+
+        .category:last-child {
+            padding: 0;
+        }
+
+        ul {
+            padding-left: 1.313rem;
+        }
+    }
+
+    // li:has(li) {
+    //     padding-bottom: 0 !important;
+    // }
+
+    &.template2 {
+        li {
+            background: $theme-background-color;
+            padding: 0.625rem 1rem;
+            cursor: pointer;
+        }
+
+        .category {
+            input {
+                position: absolute;
+                border-radius: 0;
+                top: 0;
+                left: 0;
+                opacity: 0;
+            }
+        }
+    }
+}
+
+.tag-list {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+
+    .delete-icon {
+        color: $accent-color;
+        cursor: pointer;
+    }
+}

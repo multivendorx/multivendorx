@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
 import { PopupUI } from 'zyra';
+import './index.scss';
 
 const AI_STORAGE_KEY = 'multivendorx_ai_product_suggestions';
 

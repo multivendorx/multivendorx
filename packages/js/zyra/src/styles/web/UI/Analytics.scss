@@ -130,7 +130,22 @@
 }
 
 @media screen  and (max-width: 600px) {
-    .analytics-container{
+    .analytics-container {
         flex-direction: column;
+        
+        &.flex-wrap {
+            flex-direction: row !important;
+
+            .col-6,
+            .col-5,
+            .col-4,
+            .col-3 {
+                width: calc(50% - 0.5rem) !important;
+            }
+
+            .col-2 {
+                width: calc(100% - 1rem) !important;
+            }
+        }
     }
 }

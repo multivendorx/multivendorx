@@ -65,11 +65,8 @@ a {
 .form-select-field input:focus {
   box-shadow: none !important;
   outline: none;
+  min-height: 1.5rem;
 }
-
-// body:has(.admin-main-wrapper) {
-//   background: #f2f5fd8f;
-// }
 
 #admin-main-wrapper {
   margin-left: -1.25rem;
@@ -99,7 +96,8 @@ a {
   .basic-select,
   .textarea-input,
   .calender-input {
-    min-height: 2.125rem !important; // for overwrite wordpress style
+    min-height: 2rem !important; // for overwrite wordpress style
+    max-height: 2rem !important;
     background: $background-white;
   }
   .textarea-input{
@@ -130,7 +128,9 @@ a {
 
   input[type="checkbox"] {
     width: 1.063rem;
+    border-radius: 0.25rem;
     height: 1.063rem;
+    border-color: #8c8f94;
   }
 
   input[type="checkbox"]:checked {

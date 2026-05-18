@@ -1,5 +1,6 @@
 @use './dashboardCommon.scss' as *;
 @use '../components/dashboard.scss' as *;
+@use './dashboardConfig.scss' as *;
 
 ul {
     padding: 0;
@@ -574,28 +575,6 @@ a {
 
 // dropdown style common end
 
-
-// top product start
-// .top-products {
-//     tr {
-//         td:nth-child(1) {
-//             width: 10%;
-//         }
-
-//         td:nth-child(2) {
-//             width: 35%;
-//         }
-
-//         td:nth-child(3) {
-//             width: 40%;
-//         }
-
-//         td:nth-child(4) {
-//             width: 15%;
-//         }
-//     }
-// }
-
 // top customer
 .top-customer-wrapper {
     .customer {
@@ -636,36 +615,6 @@ a {
         }
     }
 }
-
-// .table-wrapper {
-//     border: none !important; /* overwrite zyra style*/
-
-//     table {
-//         width: 100%;
-//         border-collapse: collapse;
-
-//         td {
-//             padding: 0.625rem 0;
-//             border-bottom: $border-light-small;
-//             flex-direction: column;
-//             gap: 0.313rem;
-//         }
-
-//         thead {
-//             td {
-//                 color: $text-color;
-//             }
-//         }
-
-//         tbody {
-//             td {
-//                 color: $sub-text-color;
-//             }
-//         }
-//     }
-// }
-
-// top product end
 
 // progress-bar
 .progress-bar {
@@ -740,28 +689,6 @@ a {
         }
     }
 }
-
-// .avatar {
-//     padding: 0.5rem;
-//     border-radius: 50%;
-//     background: $theme-color;
-//     width: 1.5rem;
-//     height: 1.5rem;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-
-//     span {
-//         color: #fff;
-//         font-size: 1.25rem;
-//         font-weight: 600;
-//     }
-
-//     img {
-//         width: 3rem;
-//     }
-// }
-
 // store profile end
 
 .admin-table-wrapper.transparent-table {

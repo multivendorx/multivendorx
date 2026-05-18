@@ -258,3 +258,15 @@
         }
     }
 }
+
+@media screen and (max-width: 600px) {
+    .settings-input-content:has(.multi-input-table){
+        overflow: auto;
+
+        table.multi-input-table{
+            thead{
+                top: 0 !important;
+            }
+        }
+    }
+}
