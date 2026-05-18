@@ -34,10 +34,7 @@ const Cohort: React.FC = () => {
 			render: (row: CohortRow) => (
 				<InfoItem
 					title={row.cohort_name}
-					avatar={{
-						image: row.product_image,
-						iconClass: 'cohort',
-					}}
+					avatar={{ iconClass: 'cohort' }}
 				/>
 			),
 		},
@@ -48,23 +45,12 @@ const Cohort: React.FC = () => {
 				<>
 					{row.products && Object.keys(row.products).length
 						? Object.entries(row.products).map(
-								([name, url], index) => (
-									<React.Fragment key={index}>
-										{name}
-										<a
-											target="_blank"
-											rel="noreferrer"
-											href={url}
-											className="link-item edit-link"
-										>
-											{__(
-												'Edit product',
-												'moowoodle'
-											)}
-										</a>
-									</React.Fragment>
-								)
-						  )
+							([name], index) => (
+								<React.Fragment key={index}>
+									{name}
+								</React.Fragment>
+							)
+						)
 						: '-'}
 				</>
 			),
@@ -75,17 +61,6 @@ const Cohort: React.FC = () => {
 			render: (row: CohortRow) => (
 				<>
 					{row.enrolled_user || 0}
-
-					{row.view_users_url && (
-						<a
-							target="_blank"
-							rel="noreferrer"
-							href={row.view_users_url}
-							className="link-item edit-link"
-						>
-							{__('View users', 'moowoodle')}
-						</a>
-					)}
 				</>
 			),
 		},
@@ -97,15 +72,9 @@ const Cohort: React.FC = () => {
 			actions: [
 				{
 					label: __('Sync Cohort Data', 'moowoodle'),
-
 					icon: 'refresh',
-
-					onClick: (row: CohortRow) => {
-						tableProps?.onSingleActionApply?.(
-							'sync_cohort',
-							row.id!,
-							row.moodle_cohort_id!
-						);
+					onClick: (row) => {
+						setopenPopup(true);
 					},
 				},
 
@@ -114,9 +83,9 @@ const Cohort: React.FC = () => {
 						return row?.products &&
 							Object.keys(row.products).length
 							? __(
-									'Sync Cohort Data & Update Product',
-									'moowoodle'
-							  )
+								'Sync Cohort Data & Update Product',
+								'moowoodle'
+							)
 							: __('Create Product', 'moowoodle');
 					},
 
@@ -126,16 +95,8 @@ const Cohort: React.FC = () => {
 							? 'update-product'
 							: 'add-product';
 					},
-
-					onClick: (row: CohortRow) => {
-						tableProps?.onSingleActionApply?.(
-							row.products &&
-								Object.keys(row.products).length
-								? 'update_product'
-								: 'create_product',
-							row.id!,
-							row.moodle_cohort_id!
-						);
+					onClick: (row) => {
+						setopenPopup(true);
 					},
 				},
 			],
@@ -148,6 +109,8 @@ const Cohort: React.FC = () => {
 		rows: dummyCohorts,
 
 		totalRows: dummyCohorts.length,
+		onQueryUpdate: () => { setopenPopup(true); },
+		onBulkActionApply: () => { setopenPopup(true); },
 
 		search: {
 			placeholder: __('Search...', 'moowoodle'),
@@ -157,9 +120,6 @@ const Cohort: React.FC = () => {
 	tableProps = applyFilters(
 		'moowoodle_cohort_table_props',
 		defaultTableProps,
-		{
-			setopenPopup,
-		}
 	);
 
 	return (

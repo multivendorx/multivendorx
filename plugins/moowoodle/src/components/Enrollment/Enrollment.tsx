@@ -29,96 +29,16 @@ interface EnrollmentRow {
 
 const Enrollment: React.FC = () => {
 	const [openPopup, setopenPopup] = useState(false);
-	const [rows, setRows] = useState<EnrollmentRow[]>([]);
-	const [isLoading, setIsLoading] = useState(false);
-	const [totalRows, setTotalRows] = useState<number>(0);
-	const [categoryCounts, setCategoryCounts] = useState<
-		CategoryCount[] | null
-	>(null);
-	const [courses, setCourses] = useState([]);
-	const [cohorts, setCohorts] = useState([]);
-	const [groups, setGroups] = useState([]);
-	const [error, setError] = useState<string | null>(null);
-	const [rowIds, setRowIds] = useState<number[]>([]);
-
-	useEffect(() => {
-
-		/**
-		 * FREE VERSION
-		 */
-		if (!appLocalizer.khali_dabba) {
-
-			setCourses([
-				{
-					value: 'react',
-					label: 'React Masterclass',
-				},
-			]);
-
-			setGroups([
-				{
-					value: 'frontend',
-					label: 'Frontend Group',
-				},
-			]);
-
-			setCohorts([
-				{
-					value: 'cohort-a',
-					label: 'Cohort A',
-				},
-			]);
-
-			return;
-		}
-
-		/**
-		 * PRO VERSION
-		 */
-		applyFilters(
-			'moowoodle_enrollment_load_filters',
-			null,
-			{
-				setCourses,
-				setGroups,
-				setCohorts,
-				setError,
-			}
-		);
-
-	}, []);
-
-	const handleSingleAction = (
-		row: EnrollmentRow
-	) => {
-
-		if (!appLocalizer.khali_dabba) {
-			setopenPopup(true);
-			return;
-		}
-
-		applyFilters(
-			'moowoodle_enrollment_single_action',
-			null,
-			{
-				row,
-				setError,
-				setIsLoading,
-				doRefreshTableData,
-			}
-		);
-	};
+	let tableProps: any = {};
 
 	// Define table headers
 	const headers = {
 		learning_unit: {
 			label: __('Learning Unit', 'moowoodle'),
 			render: (row: EnrollmentRow) => {
-				let imageUrl = '';
 				let title = '';
 
 				if (row.course_name) {
-					imageUrl = row.course_image || '';
 					title = row.course_name;
 				} else if (row.group_name) {
 					title = row.group_name;
@@ -130,7 +50,6 @@ const Enrollment: React.FC = () => {
 					<InfoItem
 						title={title}
 						avatar={{
-							image: imageUrl,
 							iconClass: 'learning',
 						}}
 					/>
@@ -143,7 +62,6 @@ const Enrollment: React.FC = () => {
 				<InfoItem
 					title={row.customer_name || '-'}
 					avatar={{
-						image: row.customer_img,
 						iconClass: 'person',
 					}}
 				/>
@@ -169,7 +87,7 @@ const Enrollment: React.FC = () => {
 							: __('Enroll Now', 'moowoodle');
 					},
 					onClick: (row: EnrollmentRow) => {
-						handleSingleAction(row);
+						setopenPopup(true);
 					},
 					icon: 'classroom-enrollment'
 				},
@@ -177,105 +95,31 @@ const Enrollment: React.FC = () => {
 		},
 	};
 
-	const filters = [
-		{
-			key: 'course',
-			label: __('Courses', 'moowoodle'),
-			type: 'select',
-			options: courses,
-		},
-		{
-			key: 'group',
-			label: __('Groups', 'moowoodle'),
-			type: 'select',
-			options: groups,
-		},
-		{
-			key: 'cohort',
-			label: __('Cohorts', 'moowoodle'),
-			type: 'select',
-			options: cohorts,
-		},
-		{
-			key: 'status',
-			label: __('Status', 'moowoodle'),
-			type: 'select',
+	const defaultTableProps = {
+		headers,
+		rows: dummyEnrollments,
+		totalRows: dummyEnrollments.length,
+		onQueryUpdate: () => { setopenPopup(true); },
+		search: {
+			placeholder: __('Search...', 'moowoodle'),
 			options: [
-				{ value: '', label: __('All Status', 'moowoodle') },
-				{ value: 'enrolled', label: __('Enrolled', 'moowoodle') },
 				{
-					value: 'unenrolled',
-					label: __('Unenrolled', 'moowoodle'),
+					value: 'name',
+					label: __('Name', 'moowoodle'),
+				},
+				{
+					value: 'email',
+					label: __('Email', 'moowoodle'),
 				},
 			],
 		},
-		{
-			key: 'created_at',
-			label: __('Created Date', 'moowoodle'),
-			type: 'date',
-		},
-	];
-
-	const doRefreshTableData = (
-		query: QueryProps
-	) => {
-
-		/**
-		 * FREE VERSION
-		 */
-		if (!appLocalizer.khali_dabba) {
-
-			setRows(dummyEnrollments);
-
-			setRowIds(
-				dummyEnrollments.map(
-					(item) => item.id || 0
-				)
-			);
-
-			setTotalRows(
-				dummyEnrollments.length
-			);
-
-			setCategoryCounts([
-				{
-					value: 'all',
-					label: __('All', 'moowoodle'),
-					count:
-						dummyEnrollments.length,
-				},
-				{
-					value: 'enrolled',
-					label: __('Enrolled', 'moowoodle'),
-					count: 1,
-				},
-				{
-					value: 'unenrolled',
-					label: __('Unenrolled', 'moowoodle'),
-					count: 1,
-				},
-			]);
-			setopenPopup(true)
-			return;
-		}
-
-		/**
-		 * PRO VERSION
-		 */
-		applyFilters(
-			'moowoodle_enrollment_refresh_table',
-			null,
-			{
-				query,
-				setRows,
-				setRowIds,
-				setTotalRows,
-				setCategoryCounts,
-				setError,
-				setIsLoading,
-			}
-		);
+		format:{appLocalizer.date_format}
 	};
+
+	tableProps = applyFilters(
+		'moowoodle_enrollment_table_props',
+		defaultTableProps,
+	);
 
 	return (
 		<>
@@ -298,30 +142,7 @@ const Enrollment: React.FC = () => {
 					'moowoodle'
 				)}
 			/>
-			<TableCard
-				headers={headers}
-				rows={rows}
-				totalRows={totalRows}
-				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
-				ids={rowIds}
-				categoryCounts={categoryCounts}
-				search={{
-					options: [
-						{
-							value: 'name',
-							label: __('Name', 'moowoodle'),
-						},
-						{
-							value: 'email',
-							label: __('Email', 'moowoodle'),
-						},
-					],
-					placeholder: __('Search by...', 'moowoodle'),
-				}}
-				filters={filters}
-				format={appLocalizer.date_format}
-			/>
+			<TableCard {...tableProps} />
 		</>
 	);
 };

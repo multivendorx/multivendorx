@@ -39,6 +39,7 @@ const Course: React.FC = () => {
 	const [category, setCategory] = useState([]);
 	const [error, setError] = useState<string | null>(null);
 	const [rowIds, setRowIds] = useState<number[]>([]);
+	let tableProps: any = {};
 
 	// Fetch categories on mount
 	useEffect(() => {
@@ -56,54 +57,6 @@ const Course: React.FC = () => {
 			});
 	}, []);
 
-	// bulk action
-	const handleBulkAction = (
-		action: string,
-		selectedIds: number[]
-	) => {
-		if (!appLocalizer.khali_dabba) {
-			setopenPopup(true);
-			return;
-		}
-
-		applyFilters(
-			'moowoodle_course_bulk_action',
-			null,
-			{
-				action,
-				selectedIds,
-				rows,
-				setError,
-				setIsLoading,
-				doRefreshTableData,
-			}
-		);
-	};
-
-	// Handle single row action
-	const handleSingleAction = (
-		actionName: string,
-		courseId: number,
-		moodleCourseId: number
-	) => {
-		if (!appLocalizer.khali_dabba) {
-			setopenPopup(true);
-			return;
-		}
-
-		applyFilters(
-			'moowoodle_course_single_action',
-			null,
-			{
-				actionName,
-				courseId,
-				moodleCourseId,
-				setError,
-				setIsLoading,
-				doRefreshTableData,
-			}
-		);
-	};
 
 	// Define table headers
 	const headers = {
@@ -174,12 +127,8 @@ const Course: React.FC = () => {
 				{
 					label: __('Sync Course Data', 'moowoodle'),
 					icon: 'refresh',
-					onClick: (row: CourseRow) => {
-						handleSingleAction(
-							'sync_courses',
-							row.id!,
-							row.moodle_course_id!
-						);
+					onClick: (row) => {
+						setopenPopup(true);
 					},
 				},
 				{
@@ -197,14 +146,8 @@ const Course: React.FC = () => {
 							? 'update-product'
 							: 'add-product';
 					},
-					onClick: (row: CourseRow) => {
-						handleSingleAction(
-							row.products && Object.keys(row.products).length
-								? 'update_product'
-								: 'create_product',
-							row.id!,
-							row.moodle_course_id!
-						);
+					onClick: (row) => {
+						setopenPopup(true);
 					},
 				},
 			],
@@ -266,6 +209,37 @@ const Course: React.FC = () => {
 			});
 	};
 
+	const defaultTableProps = {
+		headers,
+		rows,
+		totalRows,
+		isLoading,
+
+		onQueryUpdate: doRefreshTableData,
+
+		ids: rowIds,
+
+		search: {
+			placeholder: __('Search...', 'moowoodle'),
+			options: [
+				{ value: 'course', label: __('Course', 'moowoodle') },
+				{ value: 'shortname', label: __('Short name', 'moowoodle') },
+			],
+		},
+
+		filters: filters,
+
+		bulkActions: bulkActions,
+
+		onBulkActionApply: () => {
+			setopenPopup(true);
+		},
+	};
+
+	tableProps = applyFilters(
+		'moowoodle_course_table_props',
+		defaultTableProps,
+	);
 	return (
 		<>
 			{openPopup && (
@@ -295,29 +269,7 @@ const Course: React.FC = () => {
 				</div>
 			)}
 
-			<TableCard
-				headers={headers}
-				rows={rows}
-				totalRows={totalRows}
-				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
-				ids={rowIds}
-				search={{
-					placeholder: __('Search...', 'moowoodle'),
-					options: [
-						{ value: 'course', label: __('Course', 'moowoodle') },
-						{
-							value: 'shortname',
-							label: __('Short name', 'moowoodle'),
-						},
-					],
-				}}
-				filters={filters}
-				bulkActions={bulkActions}
-				onBulkActionApply={(action: string, selectedIds: number[]) => {
-					handleBulkAction(action, selectedIds);
-				}}
-			/>
+			<TableCard {...tableProps} />
 		</>
 	);
 };
