@@ -2,12 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
+import ShowProPopup from '../Popup/Popup';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	getApiLink,
 	TableCard,
 	NavigatorHeader,
 	QueryProps,
 	InfoItem,
+	PopupUI,
 } from 'zyra';
 
 interface CourseRow {
@@ -29,6 +32,7 @@ interface CourseRow {
 }
 
 const Course: React.FC = () => {
+	const [openPopup, setopenPopup] = useState(false);
 	const [rows, setRows] = useState<any[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
@@ -53,44 +57,27 @@ const Course: React.FC = () => {
 	}, []);
 
 	// bulk action
-	const handleBulkAction = (action: string, selectedIds: number[]) => {
-		if (!selectedIds.length) {
+	const handleBulkAction = (
+		action: string,
+		selectedIds: number[]
+	) => {
+		if (!appLocalizer.khali_dabba) {
+			setopenPopup(true);
 			return;
 		}
 
-		if (!action) {
-			return;
-		}
-		const selectedCourses = rows
-			.filter((row) => selectedIds.includes(row.id))
-			.map((row) => ({
-				course_id: row.id,
-				moodle_course_id: row.moodle_course_id,
-			}));
-
-		if (selectedCourses.length === 0) {
-			return;
-		}
-
-		setIsLoading(true);
-		axios({
-			method: 'POST',
-			url: getApiLink(appLocalizer, 'courses'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			data: {
-				selected_action: action,
-				course_ids: selectedCourses,
-			},
-		})
-			.then(() => {
-				doRefreshTableData({});
-			})
-			.catch(() => {
-				setError(__('Failed to perform bulk action', 'moowoodle'));
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
+		applyFilters(
+			'moowoodle_course_bulk_action',
+			null,
+			{
+				action,
+				selectedIds,
+				rows,
+				setError,
+				setIsLoading,
+				doRefreshTableData,
+			}
+		);
 	};
 
 	// Handle single row action
@@ -100,33 +87,22 @@ const Course: React.FC = () => {
 		moodleCourseId: number
 	) => {
 		if (!appLocalizer.khali_dabba) {
+			setopenPopup(true);
 			return;
 		}
 
-		setIsLoading(true);
-		axios({
-			method: 'post',
-			url: getApiLink(appLocalizer, 'courses'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			data: {
-				selected_action: actionName,
-				course_ids: [
-					{
-						course_id: courseId,
-						moodle_course_id: moodleCourseId,
-					},
-				],
-			},
-		})
-			.then(() => {
-				doRefreshTableData({});
-			})
-			.catch(() => {
-				setError(__('Failed to perform action', 'moowoodle'));
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
+		applyFilters(
+			'moowoodle_course_single_action',
+			null,
+			{
+				actionName,
+				courseId,
+				moodleCourseId,
+				setError,
+				setIsLoading,
+				doRefreshTableData,
+			}
+		);
 	};
 
 	// Define table headers
@@ -157,22 +133,22 @@ const Course: React.FC = () => {
 			label: __('Product', 'moowoodle'),
 			render: (row: CourseRow) => (
 				<>
-					{row.product_name 
-						? 
+					{row.product_name
+						?
 						<>
 							{row.product_name}
-								<a
-									target="_blank"
-									rel="noreferrer"
-									href={row.product_url}
-									className="link-item edit-link"
-								>
-									{__(
-										'Edit product',
-										'moowoodle'
-									)}
-								</a>	
-							</>
+							<a
+								target="_blank"
+								rel="noreferrer"
+								href={row.product_url}
+								className="link-item edit-link"
+							>
+								{__(
+									'Edit product',
+									'moowoodle'
+								)}
+							</a>
+						</>
 						: '-'}
 				</>
 			),
@@ -181,7 +157,7 @@ const Course: React.FC = () => {
 			label: __('Enrolled users', 'moowoodle'),
 			render: (row: CourseRow) => (
 				<>
-				{row.enrolled_user || 0}
+					{row.enrolled_user || 0}
 					<a
 						target="_blank"
 						rel="noreferrer"
@@ -213,9 +189,9 @@ const Course: React.FC = () => {
 					label: (row: CourseRow) => {
 						return row?.products && Object.keys(row.products).length
 							? __(
-									'Sync Course Data & Update Product',
-									'moowoodle'
-								)
+								'Sync Course Data & Update Product',
+								'moowoodle'
+							)
 							: __('Create Product', 'moowoodle');
 					},
 					icon: (row: CourseRow) => {
@@ -294,6 +270,17 @@ const Course: React.FC = () => {
 
 	return (
 		<>
+			{openPopup && (
+				<PopupUI
+					position="lightbox"
+					open={openPopup}
+					onClose={() => setopenPopup(false)}
+					width={31.25}
+					height="auto"
+				>
+					<ShowProPopup />
+				</PopupUI>
+			)}
 			<NavigatorHeader
 				headerIcon="subscription-courses"
 				headerDescription={__(

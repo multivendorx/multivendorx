@@ -77,7 +77,7 @@ const Cohort: React.FC = () => {
 	// Define table headers
 	const headers = {
 		cohort_name: {
-			label: __('Cohorts', 'moowoodle-pro'),
+			label: __('Cohorts', 'moowoodle'),
 			render: (row: CohortRow) => (
 				<InfoItem
 					title={row.cohort_name}
@@ -89,7 +89,7 @@ const Cohort: React.FC = () => {
 			),
 		},
 		products: {
-			label: __('Product', 'moowoodle-pro'),
+			label: __('Product', 'moowoodle'),
 			render: (row: CohortRow) => (
 				<>
 					{row.products && Object.keys(row.products).length
@@ -105,7 +105,7 @@ const Cohort: React.FC = () => {
 									>
 										{__(
 											'Edit product',
-											'moowoodle-pro'
+											'moowoodle'
 										)}
 									</a>
 								</>
@@ -116,7 +116,7 @@ const Cohort: React.FC = () => {
 			),
 		},
 		enrolled_user: {
-			label: __('Enrolled users', 'moowoodle-pro'),
+			label: __('Enrolled users', 'moowoodle'),
 			render: (row: CohortRow) => (
 				<>
 					{row.enrolled_user || 0}
@@ -127,7 +127,7 @@ const Cohort: React.FC = () => {
 							href={row.view_users_url}
 							className="link-item edit-link"
 						>
-							{__('View users', 'moowoodle-pro')}
+							{__('View users', 'moowoodle')}
 						</a>
 					)}
 				</>
@@ -135,10 +135,10 @@ const Cohort: React.FC = () => {
 		},
 		action: {
 			type: 'action',
-			label: __('Action', 'moowoodle-pro'),
+			label: __('Action', 'moowoodle'),
 			actions: [
 				{
-					label: __('Sync Cohort Data', 'moowoodle-pro'),
+					label: __('Sync Cohort Data', 'moowoodle'),
 					icon: 'refresh',
 					onClick: (row: CohortRow) => {
 						handleSingleAction(
@@ -153,9 +153,9 @@ const Cohort: React.FC = () => {
 						return row?.products && Object.keys(row.products).length
 							? __(
 								'Sync Cohort Data & Update Product',
-								'moowoodle-pro'
+								'moowoodle'
 							)
-							: __('Create Product', 'moowoodle-pro');
+							: __('Create Product', 'moowoodle');
 					},
 					icon: (row: CohortRow) => {
 						return row?.products && Object.keys(row.products).length
@@ -177,13 +177,13 @@ const Cohort: React.FC = () => {
 	};
 
 	const bulkActions = [
-		{ label: __('Sync cohort', 'moowoodle-pro'), value: 'sync_cohort' },
+		{ label: __('Sync cohort', 'moowoodle'), value: 'sync_cohort' },
 		{
-			label: __('Create product', 'moowoodle-pro'),
+			label: __('Create product', 'moowoodle'),
 			value: 'create_product',
 		},
 		{
-			label: __('Update product', 'moowoodle-pro'),
+			label: __('Update product', 'moowoodle'),
 			value: 'update_product',
 		},
 	];
@@ -250,7 +250,7 @@ const Cohort: React.FC = () => {
 				onQueryUpdate={doRefreshTableData}
 				ids={rowIds}
 				search={{
-					placeholder: __('Search...', 'moowoodle-pro'),
+					placeholder: __('Search...', 'moowoodle'),
 				}}
 				bulkActions={bulkActions}
 				onBulkActionApply={(action: string, selectedIds: number[]) => {
