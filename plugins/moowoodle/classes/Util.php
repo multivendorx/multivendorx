@@ -294,7 +294,7 @@ class Util {
         if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
             $error = new \WP_Error(
                 'invalid_nonce',
-                esc_html__( 'Invalid nonce.', 'moowoodle' )
+                esc_html__( 'Invalid nonce.', 'moowoodle' ),
                 array( 'status' => 403 )
             );
 
