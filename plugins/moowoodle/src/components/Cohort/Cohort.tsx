@@ -9,7 +9,7 @@ import {
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';
-import { dummyCohorts } from './CohortUtill';
+import { dummyCohorts } from './Cohort';
 
 export interface CohortRow {
 	id?: number;
@@ -143,8 +143,9 @@ const Cohort: React.FC = () => {
 				)}
 				headerTitle={__('Cohorts', 'moowoodle')}
 			/>
-
-			<TableCard {...tableProps} />
+			<div onClick={() => (setopenPopup(true))}>
+				<TableCard {...tableProps} />
+			</div>
 		</>
 	);
 };

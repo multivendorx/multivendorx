@@ -4,7 +4,7 @@ import { __ } from '@wordpress/i18n';
 import ShowProPopup from '../Popup/Popup';
 import '../common.scss';
 import { applyFilters } from '@wordpress/hooks';
-import { dummyEnrollments } from './EnrollmentUtil';
+import { dummyEnrollments } from './Enrollment';
 
 interface EnrollmentRow {
 	id?: number;
@@ -141,7 +141,9 @@ const Enrollment: React.FC = () => {
 					'moowoodle'
 				)}
 			/>
-			<TableCard {...tableProps} />
+			<div onClick={()=>{setopenPopup(true)}}>
+				<TableCard {...tableProps} />
+			</div>
 		</>
 	);
 };
