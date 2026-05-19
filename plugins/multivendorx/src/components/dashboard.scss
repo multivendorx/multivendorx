@@ -38,7 +38,8 @@
             margin-bottom: 0.313rem;
         }
     }
-    .ui-notice{
+
+    .ui-notice {
         margin-top: 0.75rem;
     }
 }
@@ -85,6 +86,7 @@
         }
     }
 }
+
 // membership page end
 
 // add membership top checlist start
@@ -361,6 +363,7 @@
         right: 0.5rem;
     }
 }
+
 // membership checklist end
 
 .media-library-grid {
@@ -431,7 +434,6 @@
 .variant-wrapper {
     border: $border-light-small;
     border-radius: $border-radius-small;
-    margin: 0.5rem 0;
 
     .variant {
         display: flex;
@@ -509,11 +511,14 @@
 
 .variant-list {
     table {
-        border-top: $border-light-small;
-
+        width: 100%;
 
         thead {
             background: $background-color;
+
+            td {
+                padding: 0.5rem 0.313rem; 
+            }
         }
 
         td {
