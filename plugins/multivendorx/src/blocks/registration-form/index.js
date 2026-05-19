@@ -16,7 +16,7 @@ const EditBlock = () => {
 
 // Register the block
 registerBlockType('multivendorx/registration-form', {
-	apiVersion: 2,
+	apiVersion: 3,
 	title: 'Registration Form',
 	icon: 'admin-users',
 	category: 'multivendorx-shortcodes',
