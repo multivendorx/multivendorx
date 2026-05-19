@@ -7,104 +7,172 @@
 
 namespace MultiVendorX\StoreShipping;
 
-use Automattic\WooCommerce\StoreApi\Schemas\V1\CartSchema;
+defined( 'ABSPATH' ) || exit;
 
 /**
- * MultiVendorX Store Review Frontend class
- *
- * @class       Block Checkout class
- * @version     PRODUCT_VERSION
- * @author      MultiVendorX
+ * MultiVendorX Block Checkout class.
  */
 class Block_Checkout {
 
-    /**
-     * Frontend class constructor function
-     */
-    public function __construct() {
-        // Register the schema endpoint namespace alongside the update runtime callback hook
-        add_action( 'woocommerce_blocks_loaded', array( $this, 'register_multivendorx_store_api_extensions' ) );
-        
-        // Final action to persist structural values onto the completed order record context
-        add_action( 'woocommerce_store_api_checkout_update_order_from_request', array( $this, 'multivendorx_block_checkout_user_location_save' ), 10, 2 );
-    }
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
 
-    /**
-     * White-lists the namespace and hooks into the Store API routing workflow pipeline
-     */
-    public function register_multivendorx_store_api_extensions() {
-        if ( ! function_exists( 'woocommerce_store_api_register_endpoint_data' ) || ! function_exists( 'woocommerce_store_api_register_update_callback' ) ) {
-            return;
-        }
+		add_action('init',array( $this, 'register_checkout_update_callback' ),20);
+		add_action('woocommerce_checkout_create_order',array( $this, 'save_order_meta' ),20,2);
 
-        // 1. MUST DO FIRST: Whitelist the 'multivendorx' namespace on the Cart endpoint schema registry
-        woocommerce_store_api_register_endpoint_data( array(
-            'endpoint'        => CartSchema::IDENTIFIER, // Target endpoint route context target string
-            'namespace'       => 'multivendorx',
-            'schema_type'     => ARRAY_A,
-            'schema_callback' => array( $this, 'multivendorx_extension_schema_definition' ),
-            'data_callback'   => array( $this, 'multivendorx_extension_data_fallback' ),
-        ) );
+		// add_filter('woocommerce_cart_shipping_packages',array( $this, 'add_user_location_to_shipping_package' ));
+	}
 
-        // 2. Map runtime handling of client requests executing 'extensionCartUpdate' methods
-        woocommerce_store_api_register_update_callback( array(
-            'namespace' => 'multivendorx',
-            'callback'  => array( $this, 'multivendorx_block_checkout_user_location_update' ),
-        ) );
-    }
+	/**
+	 * Register Store API checkout update callback.
+	 *
+	 * @return void
+	 */
+	public function register_checkout_update_callback() {
 
-    /**
-     * Defines extension value schemas safely for validation processes
-     */
-    public function multivendorx_extension_schema_definition() {
-        return array(
-            'user_location'     => array( 'type' => 'string', 'context' => array( 'view', 'edit' ) ),
-            'user_location_lat' => array( 'type' => 'string', 'context' => array( 'view', 'edit' ) ),
-            'user_location_lng' => array( 'type' => 'string', 'context' => array( 'view', 'edit' ) ),
-        );
-    }
+		if ( ! function_exists( 'woocommerce_store_api_register_update_callback' ) ) {
+			return;
+		}
 
-    /**
-     * Populates schema contexts using ongoing session properties dynamically
-     */
-    public function multivendorx_extension_data_fallback() {
-        return array(
-            'user_location'     => WC()->session->get( '_multivendorx_user_location', '' ),
-            'user_location_lat' => WC()->session->get( '_multivendorx_user_location_lat', '' ),
-            'user_location_lng' => WC()->session->get( '_multivendorx_user_location_lng', '' ),
-        );
-    }
+		woocommerce_store_api_register_update_callback(
+			array(
+				'namespace' => 'multivendorx',
+				'callback'  => array( $this, 'update_checkout_location' ),
+			)
+		);
+	}
 
-    /**
-     * Processes values from custom on-demand Map interactive components seamlessly
-     */
-    public function multivendorx_block_checkout_user_location_update( $data ) {
-        file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: data: " . var_export($data, true) . "\n", FILE_APPEND);
-        if ( empty( $data ) ) {
-            return;
-        }
+	/**
+	 * Handle checkout location updates from frontend.
+	 *
+	 * @param array $data Incoming frontend data.
+	 *
+	 * @return void
+	 */
+	public function update_checkout_location( $data ) {
 
-        WC()->session->set( '_multivendorx_user_location', sanitize_text_field( $data['user_location'] ?? '' ) );
-        WC()->session->set( '_multivendorx_user_location_lat', sanitize_text_field( $data['user_location_lat'] ?? '' ) );
-        WC()->session->set( '_multivendorx_user_location_lng', sanitize_text_field( $data['user_location_lng'] ?? '' ) );
-    }
+		if ( empty( $data ) || ! is_array( $data ) ) {
+			return;
+		}
 
-    /**
-     * Persists cached context values onto Order Meta layers directly during creation
-     */
-    public function multivendorx_block_checkout_user_location_save( $order, $request ) {
-        $user_location     = WC()->session->get( '_multivendorx_user_location' );
-        $user_location_lat = WC()->session->get( '_multivendorx_user_location_lat' );
-        $user_location_lng = WC()->session->get( '_multivendorx_user_location_lng' );
+		$user_location = sanitize_text_field(
+			$data['user_location'] ?? ''
+		);
 
-        if ( ! empty( $user_location ) ) {
-            $order->update_meta_data( '_multivendorx_user_location', $user_location );
-        }
-        if ( ! empty( $user_location_lat ) ) {
-            $order->update_meta_data( '_multivendorx_user_location_lat', $user_location_lat );
-        }
-        if ( ! empty( $user_location_lng ) ) {
-            $order->update_meta_data( '_multivendorx_user_location_lng', $user_location_lng );
-        }
-    }
+		$user_lat = sanitize_text_field(
+			$data['user_location_lat'] ?? ''
+		);
+
+		$user_lng = sanitize_text_field(
+			$data['user_location_lng'] ?? ''
+		);
+
+		/**
+		 * Store location data in WooCommerce session.
+		 */
+		if ( function_exists( 'WC' ) && WC()->session ) {
+
+			WC()->session->set(
+				'_multivendorx_user_location',
+				$user_location
+			);
+
+			WC()->session->set(
+				'_multivendorx_user_location_lat',
+				$user_lat
+			);
+
+			WC()->session->set(
+				'_multivendorx_user_location_lng',
+				$user_lng
+			);
+		}
+	}
+
+	/**
+	 * Save location data into order meta.
+	 *
+	 * @param \WC_Order $order Order object.
+	 * @param array     $data  Checkout data.
+	 *
+	 * @return void
+	 */
+	public function save_order_meta( $order, $data ) {
+
+		if ( ! function_exists( 'WC' ) || ! WC()->session ) {
+			return;
+		}
+
+		$user_location = WC()->session->get(
+			'_multivendorx_user_location'
+		);
+
+		$user_lat = WC()->session->get(
+			'_multivendorx_user_location_lat'
+		);
+
+		$user_lng = WC()->session->get(
+			'_multivendorx_user_location_lng'
+		);
+
+		/**
+		 * Save order meta values.
+		 */
+		if ( ! empty( $user_location ) ) {
+
+			$order->update_meta_data(
+				'_multivendorx_user_location',
+				$user_location
+			);
+		}
+
+		if ( ! empty( $user_lat ) ) {
+
+			$order->update_meta_data(
+				'_multivendorx_user_location_lat',
+				$user_lat
+			);
+		}
+
+		if ( ! empty( $user_lng ) ) {
+
+			$order->update_meta_data(
+				'_multivendorx_user_location_lng',
+				$user_lng
+			);
+		}
+	}
+
+	/**
+	 * Add user location data to shipping packages.
+	 *
+	 * @param array $packages Shipping packages.
+	 *
+	 * @return array
+	 */
+	public function add_user_location_to_shipping_package( $packages ) {
+
+		if ( ! function_exists( 'WC' ) || ! WC()->session ) {
+			return $packages;
+		}
+
+		foreach ( $packages as $index => $package ) {
+
+			$packages[ $index ]['multivendorx_user_location'] = WC()->session->get(
+				'_multivendorx_user_location'
+			);
+
+			$packages[ $index ]['multivendorx_user_location_lat'] = WC()->session->get(
+				'_multivendorx_user_location_lat'
+			);
+
+			$packages[ $index ]['multivendorx_user_location_lng'] = WC()->session->get(
+				'_multivendorx_user_location_lng'
+			);
+		}
+
+		return $packages;
+	}
 }
