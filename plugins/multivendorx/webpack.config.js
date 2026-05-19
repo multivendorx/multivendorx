@@ -264,7 +264,7 @@ module.exports = {
 			injectPolyfill: true,
 		}),
 		new CopyWebpackPlugin({
-			patterns: [...staticPatterns, ...dynamicPatterns, ...dynamicModulePatterns,],
+			patterns: [...staticPatterns, ...dynamicPatterns, ...dynamicModulePatterns],
 		}),
 	],
 
