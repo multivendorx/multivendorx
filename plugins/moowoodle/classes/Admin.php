@@ -97,7 +97,7 @@ class Admin {
 				"<span style='position: relative; display: block; width: 100%;' class='admin-menu'>" . $submenu['name'] . '</span>',
 				'manage_options',
 				'moowoodle#&tab=' . $slug . $subtab,
-				'_-return_null'
+				'__return_null'
 			);
 		}
 
