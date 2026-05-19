@@ -1177,8 +1177,6 @@ class Install {
     public function migrate_mvx_to_multivendorx() {
         $this->migrate_old_modules();
         $this->migrate_old_settings();
-
-        delete_option( 'dc_product_vendor_plugin_db_version' );
     }
     /**
      * Create pages dynamically based on provided data.
