@@ -82,8 +82,7 @@ class Utill {
      * @return bool
      */
     public static function is_khali_dabba() {
-        return true;
-        // return apply_filters( 'kothay_dabba', false );
+        return apply_filters( 'kothay_dabba', false );
     }
 
     /**

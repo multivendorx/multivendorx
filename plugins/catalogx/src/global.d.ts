@@ -54,6 +54,7 @@ declare global {
         quote_base_url: string;
         redirect_url: string;
         free_version: any;
+        pro_data: any;
     }
 
     interface EnquiryFormData {

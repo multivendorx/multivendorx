@@ -74,7 +74,7 @@ class FrontendScripts {
      */
     public static function register_script( $handle, $path, $deps = array(), $version = '' ) {
         // self::$scripts[] = $handle;
-        if ( wp_style_is( $handle, 'registered' ) ) {
+        if ( wp_script_is( $handle, 'registered' ) ) {
 			return;
 		}
         wp_register_script( $handle, $path, $deps, $version, true );
@@ -95,6 +95,76 @@ class FrontendScripts {
 			return;
 		}
         wp_register_style( $handle, $path, $deps, $version );
+    }
+
+    /**
+     * Register frontend scripts using filters and enqueue required external scripts.
+     *
+     * Loads block assets and additional scripts defined through the `catalogx_register_scripts` filter.
+     */
+    public static function register_scripts() {
+        $version = CatalogX()->version;
+        // self::enqueue_external_scripts();
+
+        $register_scripts = apply_filters(
+            'catalogx_register_scripts',
+            array(
+                'catalogx-enquiry-frontend-script'  => array(
+                    'src'     => CatalogX()->plugin_url . self::get_asset_path() . 'modules/Enquiry/js/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
+                    'deps'    => array( 'jquery', 'jquery-blockui' ),
+                    'version' => $version,
+                ),
+                'catalogx-enquiry-form-script'      => array(
+                    'src'     => CatalogX()->plugin_url . self::get_asset_path() . 'js/block/enquiryForm/index.js',
+                    'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks', 'wp-hooks' ),
+                    'version' => $version,
+                ),
+                'catalogx-quote-cart-script'        => array(
+                    'src'     => CatalogX()->plugin_url . self::get_asset_path() . 'js/block/quote-cart/index.js',
+                    'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
+                    'version' => $version,
+                ),
+                'catalogx-add-to-quote-cart-script' => array(
+                    'src'     => CatalogX()->plugin_url . self::get_asset_path() . 'modules/Quote/js/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
+                    'deps'    => array( 'jquery' ),
+                    'version' => $version,
+                ),
+            )
+        );
+
+        foreach ( $register_scripts as $name => $props ) {
+            self::register_script( $name, $props['src'], $props['deps'], $props['version'] );
+        }
+    }
+    
+
+    /**
+     * Register frontend styles using filters.
+     *
+     * Allows style registration through `catalogx_register_styles` filter.
+     */
+    public static function register_styles() {
+        $version = CatalogX()->version;
+
+        $register_styles = apply_filters(
+            'catalogx_register_styles',
+            array(
+                'catalogx-frontend-style'     => array(
+                    'src'     => CatalogX()->plugin_url . self::get_asset_path() . 'styles/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.css',
+                    'deps'    => array(),
+                    'version' => $version,
+                ),
+                'catalogx-enquiry-form-style' => array(
+                    'src'     => CatalogX()->plugin_url . self::get_asset_path() . 'styles/block/enquiryForm/index.css',
+                    'deps'    => array(),
+                    'version' => $version,
+                ),
+            )
+        );
+
+        foreach ( $register_styles as $name => $props ) {
+            self::register_style( $name, $props['src'], $props['deps'], $props['version'] );
+        }
     }
 
     /**
@@ -164,129 +234,6 @@ class FrontendScripts {
     }
 
     /**
-     * Register frontend scripts using filters and enqueue required external scripts.
-     *
-     * Loads block assets and additional scripts defined through the `catalogx_register_scripts` filter.
-     */
-    // public static function register_scripts() {
-    //     $version = CatalogX()->version;
-    //     // self::enqueue_external_scripts();
-
-    //     $register_scripts = apply_filters(
-    //         'catalogx_register_scripts',
-    //         array(
-    //             'catalogx-enquiry-frontend-script'  => array(
-    //                 'src'     => CatalogX()->plugin_url . self::get_asset_path() . 'modules/Enquiry/js/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
-    //                 'deps'    => array( 'jquery', 'jquery-blockui' ),
-    //                 'version' => $version,
-    //             ),
-    //             'catalogx-enquiry-form-script'      => array(
-    //                 'src'     => CatalogX()->plugin_url . self::get_asset_path() . 'js/block/enquiryForm/index.js',
-    //                 'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks', 'wp-hooks' ),
-    //                 'version' => $version,
-    //             ),
-    //             'catalogx-quote-cart-script'        => array(
-    //                 'src'     => CatalogX()->plugin_url . self::get_asset_path() . 'js/block/quote-cart/index.js',
-    //                 'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
-    //                 'version' => $version,
-    //             ),
-    //             'catalogx-add-to-quote-cart-script' => array(
-    //                 'src'     => CatalogX()->plugin_url . self::get_asset_path() . 'modules/Quote/js/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
-    //                 'deps'    => array( 'jquery' ),
-    //                 'version' => $version,
-    //             ),
-    //         )
-    //     );
-
-    //     foreach ( $register_scripts as $name => $props ) {
-    //         self::register_script( $name, $props['src'], $props['deps'], $props['version'] );
-    //     }
-    // }
-    public static function register_scripts() {
-        $version = CatalogX()->version;
-
-        $block_scripts = array( 'enquiryForm', 'quote-cart' );
-
-        $register_scripts = apply_filters(
-            'catalogx_register_scripts',
-            array(
-                'catalogx-enquiry-frontend-script'  => array(
-                    'src'  => self::get_asset_path() . 'modules/Enquiry/js/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
-                    'deps' => array( 'jquery', 'jquery-blockui' ),
-                ),
-
-                'catalogx-add-to-quote-cart-script' => array(
-                    'src'  => self::get_asset_path() . 'modules/Quote/js/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
-                    'deps' => array( 'jquery' ),
-                ),
-            )
-        );
-
-        /**
-         * Dynamically register Gutenberg block scripts.
-         */
-        foreach ( $block_scripts as $handle ) {
-            $asset_path = self::get_asset_path( 'file' ) . "js/block/{$handle}/index.asset.php";
-
-            $asset = file_exists( $asset_path )
-                ? include $asset_path
-                : array(
-                    'dependencies' => array(),
-                    'version'      => $version,
-                );
-
-            $script_handle = "catalogx-{$handle}-script";
-
-            $register_scripts[ $script_handle ] = array(
-                'src'     => self::get_asset_path() . "js/block/{$handle}/index.js",
-                'deps'    => $asset['dependencies'],
-                'version' => $asset['version'] ?? $version,
-            );
-        }
-
-        /**
-         * Register all scripts.
-         */
-        foreach ( $register_scripts as $name => $props ) {
-            self::register_script(
-                $name,
-                $props['src'],
-                $props['deps'] ?? array(),
-                $props['version'] ?? $version
-            );
-        }
-    }
-
-    /**
-     * Register frontend styles using filters.
-     *
-     * Allows style registration through `catalogx_register_styles` filter.
-     */
-    public static function register_styles() {
-        $version = CatalogX()->version;
-
-        $register_styles = apply_filters(
-            'catalogx_register_styles',
-            array(
-                'catalogx-frontend-style'     => array(
-                    'src'     => CatalogX()->plugin_url . self::get_asset_path() . 'styles/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.css',
-                    'deps'    => array(),
-                    'version' => $version,
-                ),
-                'catalogx-enquiry-form-style' => array(
-                    'src'     => CatalogX()->plugin_url . self::get_asset_path() . 'styles/block/enquiryForm/index.css',
-                    'deps'    => array(),
-                    'version' => $version,
-                ),
-            )
-        );
-
-        foreach ( $register_styles as $name => $props ) {
-            self::register_style( $name, $props['src'], $props['deps'], $props['version'] );
-        }
-    }
-
-    /**
      * Register/queue frontend scripts.
      */
     public static function load_scripts() {
@@ -313,21 +260,8 @@ class FrontendScripts {
         // Enqueue all chunk files (External dependencies).
         // self::enqueue_external_scripts();
 
-        $index_asset_path = self::get_asset_path( 'file' ) . 'js/index.asset.php';
-        $index_asset      = file_exists( $index_asset_path )
-            ? include $index_asset_path
-            : array(
-                'dependencies' => array(),
-                'version'      => $version,
-            );
-
-        $vendor_asset_path = self::get_asset_path( 'file' ) . 'js/vendors.asset.php';
-        $vendor_asset      = file_exists( $vendor_asset_path )
-            ? include $vendor_asset_path
-            : array(
-                'dependencies' => array(),
-                'version'      => $version,
-            );
+        $index_asset  = include self::get_asset_path( 'file' ) . 'js/index.asset.php';
+        $vendor_asset = include self::get_asset_path( 'file' ) . 'js/vendors.asset.php';
 
 	    $register_scripts = apply_filters(
             'admin_catalogx_register_scripts',
@@ -537,7 +471,6 @@ class FrontendScripts {
             'restUrl' => CatalogX()->rest_namespace,
             'nonce'   => wp_create_nonce( 'wp_rest' ),
         );
-
         $localize_scripts = apply_filters(
             'catalogx_localize_scripts',
             array(
@@ -582,6 +515,13 @@ class FrontendScripts {
                             'quote_module_active'        => CatalogX()->modules->is_active( 'quote' ),
                             'quote_base_url'             => $quote_base_url,
                             'free_version'               => CatalogX()->version,
+                            'pro_data'               => apply_filters(
+								'catalogx_update_pro_data',
+								array(
+									'version'         => false,
+									'manage_plan_url' => CATALOGX_PRO_SHOP_URL,
+								)
+							),
                         )
                     ),
                 ),

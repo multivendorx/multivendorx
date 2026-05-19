@@ -59,12 +59,12 @@ class Settings extends \WP_REST_Controller {
 			'/' . $this->modules_base,
 			array(
 				array(
-					'methods'             => \WP_REST_Server::CREATABLE,
+					'methods'             => 'POST',
 					'callback'            => array( $this, 'set_modules' ),
 					'permission_callback' => array( $this, 'update_item_permissions_check' ),
 				),
 				array(
-					'methods'             => \WP_REST_Server::READABLE,
+					'methods'             => 'GET',
 					'callback'            => array( $this, 'get_modules' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 				),
@@ -123,18 +123,13 @@ class Settings extends \WP_REST_Controller {
 		try {
 
 			$get_settings_data = $request->get_param( 'setting' );
-
-			$settingsname = $request->get_param( 'settingName' );
-
-			$settingsname = str_replace(
-				'-',
-				'_',
-				'catalogx_' . $settingsname . '_settings'
-			);
+            $settingsname      = $request->get_param( 'settingName' );
+            $settingsname      = str_replace( '-', '_', $settingsname );
+            $optionname        = 'catalogx' . $settingsname . '_settings';
 
 			// Save settings.
 			CatalogX()->setting->update_option(
-				$settingsname,
+				$optionname,
 				$get_settings_data
 			);
 
@@ -241,9 +236,6 @@ class Settings extends \WP_REST_Controller {
 			switch ( $action ) {
 
 				case 'activate':
-					file_put_contents( plugin_dir_path(__FILE__) . "/error.log",
-        date("d/m/Y H:i:s", time()) . ":activate module hit from rest: : " . var_export($module_id, true) . "\n",
-        FILE_APPEND);
 					CatalogX()->modules->activate_modules(
 						array( $module_id )
 					);

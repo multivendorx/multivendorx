@@ -155,7 +155,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 						<div className="top-section">
 							<div className="heading">
 								{__(
-									'Your students will love this!',
+									'Your vendors will love this!',
 									'moowoodle'
 								)}
 							</div>

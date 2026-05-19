@@ -22,7 +22,7 @@ class Block {
      *
      * @var array
      */
-    private $blocks = null;
+    private $registered_blocks = array();
 
     /**
      * Constructor for Block class
@@ -30,7 +30,7 @@ class Block {
      * @return void
      */
     public function __construct() {
-        $this->blocks = $this->initialize_blocks();
+        $this->registered_blocks = $this->initialize_blocks();
         // Register block category.
         add_filter( 'block_categories_all', array( $this, 'register_block_category' ) );
         // Register the block.
@@ -50,10 +50,7 @@ class Block {
      * @return array List of blocks.
      */
     public function get_blocks() {
-        if ( is_null( $this->blocks ) ) {
-            $this->blocks = $this->initialize_blocks();
-        }
-        return $this->blocks;
+        return $this->registered_blocks;
     }
 
     /**
@@ -82,7 +79,7 @@ class Block {
             // Skip blocks based on module activation logic.
             if (
                 (
-                    in_array( $block_name, array( 'enquiry-button', 'enquiryForm' ), true )
+                    in_array( $block_name, array( 'enquiry-button', 'enquiry-form' ), true )
                     && ! CatalogX()->modules->is_active( 'enquiry' )
                 ) ||
                 (
@@ -125,7 +122,7 @@ class Block {
             $screen = get_current_screen();
             if ( $screen && $screen->is_block_editor ) {
                 FrontendScripts::load_scripts();
-                foreach ( $this->blocks as $block_script ) {
+                foreach ( $this->registered_blocks as $block_script ) {
                     FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-editor-script' );
                     FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-script' );
                 }
@@ -180,7 +177,7 @@ class Block {
      * @return void
      */
     public function register_blocks() {
-        foreach ( $this->blocks as $block ) {
+        foreach ( $this->registered_blocks as $block ) {
             register_block_type( $block['block_path'] . $block['name'] );
         }
     }

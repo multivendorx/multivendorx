@@ -161,7 +161,7 @@ class Frontend {
         FrontendScripts::localize_scripts( 'catalogx-enquiry-frontend-script' );
         FrontendScripts::localize_scripts( 'catalogx-enquiry-form-script' );
 
-        if ( is_product() || CatalogX()->render_enquiry_btn_via = 'shortcode' ) {
+        if ( is_product() || CatalogX()->render_enquiry_btn_via === 'shortcode' ) {
             FrontendScripts::enqueue_style( 'catalogx-enquiry-form-style' );
             FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
             FrontendScripts::enqueue_script( 'catalogx-enquiry-frontend-script' );
@@ -181,17 +181,29 @@ class Frontend {
      * @return array List of freeform field settings.
      */
     public static function catalogx_free_form_settings() {
-        $form_settings = CatalogX()->setting->get_option( 'catalogx_enquiry_form_customization_settings', array() );
+        $form_settings = CatalogX()->setting->get_option(
+            'catalogx_enquiry_form_customization_settings',
+            array()
+        );
+
+        $free_form_settings = isset( $form_settings['freefromsetting'] ) &&
+            is_array( $form_settings['freefromsetting'] )
+            ? $form_settings['freefromsetting']
+            : array();
 
         if ( function_exists( 'icl_t' ) ) {
-            foreach ( $form_settings['freefromsetting'] as &$free_field ) {
+            foreach ( $free_form_settings as &$free_field ) {
                 if ( isset( $free_field['label'] ) ) {
-                    $free_field['label'] = icl_t( 'catalogx', 'free_form_label_' . $free_field['key'], $free_field['label'] );
+                    $free_field['label'] = icl_t(
+                        'catalogx',
+                        'free_form_label_' . $free_field['key'],
+                        $free_field['label']
+                    );
                 }
             }
         }
 
-        return $form_settings['freefromsetting'];
+        return $free_form_settings;
     }
 
     /**
@@ -200,25 +212,56 @@ class Frontend {
      * @return array List of pro enquiry form field settings.
      */
     public static function catalogx_pro_form_settings() {
-        $form_settings = CatalogX()->setting->get_option( 'catalogx_enquiry_form_customization_settings', array() );
+        $form_settings = CatalogX()->setting->get_option(
+            'catalogx_enquiry_form_customization_settings',
+            array()
+        );
+
+        $pro_form_settings = isset( $form_settings['formsettings'] ) &&
+            is_array( $form_settings['formsettings'] )
+            ? $form_settings['formsettings']
+            : array();
+
+        $form_field_list = isset( $pro_form_settings['formfieldlist'] ) &&
+            is_array( $pro_form_settings['formfieldlist'] )
+            ? $pro_form_settings['formfieldlist']
+            : array();
 
         if ( function_exists( 'icl_t' ) ) {
-            foreach ( $form_settings['formsettings']['formfieldlist'] as &$field ) {
+            foreach ( $form_field_list as &$field ) {
+
                 if ( isset( $field['label'] ) ) {
-                    $field['label'] = icl_t( 'catalogx', 'form_field_label_' . $field['id'], $field['label'] );
+                    $field['label'] = icl_t(
+                        'catalogx',
+                        'form_field_label_' . $field['id'],
+                        $field['label']
+                    );
                 }
+
                 if ( isset( $field['placeholder'] ) ) {
-                    $field['placeholder'] = icl_t( 'catalogx', 'form_field_placeholder_' . $field['id'], $field['placeholder'] );
+                    $field['placeholder'] = icl_t(
+                        'catalogx',
+                        'form_field_placeholder_' . $field['id'],
+                        $field['placeholder']
+                    );
                 }
-                if ( isset( $field['options'] ) ) {
+
+                if ( isset( $field['options'] ) && is_array( $field['options'] ) ) {
                     foreach ( $field['options'] as &$option ) {
-                        $option['label'] = icl_t( 'catalogx', 'form_field_option_' . $field['id'] . '_' . $option['value'], $option['label'] );
+
+                        $option['label'] = icl_t(
+                            'catalogx',
+                            'form_field_option_' . $field['id'] . '_' . $option['value'],
+                            $option['label']
+                        );
                     }
                 }
             }
         }
 
-        return $form_settings['formsettings'];
+        $pro_form_settings['formfieldlist'] = $form_field_list;
+
+        return $pro_form_settings;
     }
 
     /**
