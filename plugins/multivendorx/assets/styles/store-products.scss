@@ -922,7 +922,13 @@ $star-color: #d49c00;
 	display: none;
 }
 
-    .map{
-        overflow: visible;
-        position: inherit;
-    }
+// printfull
+.multivendorx-upload-field{
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+.multivendorx-printful-button{
+    margin-left: 0.625rem;
+}

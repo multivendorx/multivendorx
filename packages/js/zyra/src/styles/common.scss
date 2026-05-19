@@ -94,11 +94,13 @@ a {
 
   .basic-input,
   .basic-select,
-  .textarea-input,
   .calender-input {
     min-height: 2rem !important; // for overwrite wordpress style
     max-height: 2rem !important;
     background: $background-white;
+  }
+  .textarea-input{
+    background: $background-white;    
   }
 
   // tiny mc error style
