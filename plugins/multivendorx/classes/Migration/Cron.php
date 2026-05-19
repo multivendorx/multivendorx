@@ -31,7 +31,9 @@ class Cron {
         }
 
         add_action( 'multivendorx_order_migration', array( $this, 'order_migration' ) );
-        add_action( 'mvx_full_migration', array( $this, 'run_table_migration_cron' ) );
+        if ( get_option( 'dc_product_vendor_plugin_db_version' ) ) {
+            add_action( 'mvx_full_migration', array( $this, 'run_table_migration_cron' ) );
+        }
     }
 
     public function custom_schedules_for_migration( $schedules ) {

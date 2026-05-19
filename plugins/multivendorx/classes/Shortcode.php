@@ -34,56 +34,144 @@ class Shortcode {
     }
 
     /**
-     * Load frontend scripts
+     * Load frontend scripts.
+     *
+     * @return void
      */
     public function frontend_scripts() {
         global $post;
         FrontendScripts::load_scripts();
-
         FrontendScripts::enqueue_style( 'multivendorx-store-product-style' );
-        if ( Utill::is_store_dashboard() ) {
-            wp_deregister_style( 'wc-blocks-style' );
-            FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
-            FrontendScripts::enqueue_script( 'multivendorx-dashboard-script' );
-            FrontendScripts::localize_scripts( 'multivendorx-dashboard-script' );
-            FrontendScripts::enqueue_style( 'multivendorx-dashboard-style' );
+        $this->load_dashboard_assets();
+        $this->load_registration_assets();
 
-            wp_enqueue_script( 'wp-element' );
-            wp_enqueue_media();
+        if ( empty( $post ) || empty( $post->post_content ) ) {
+            return;
+        }
+        $this->load_shortcode_assets( $post->post_content );
+    }
 
-            $custom_css = MultiVendorX()->setting->get_setting( 'custom_css_product_page', '' );
-            if ( ! empty( $custom_css ) ) {
-                wp_add_inline_style(
-                    'multivendorx-dashboard-style',
-                    wp_strip_all_tags( $custom_css )
-                );
+    /**
+     * Load dashboard assets.
+     *
+     * @return void
+     */
+    public function load_dashboard_assets() {
+        if ( ! Utill::is_store_dashboard() ) {
+            return;
+        }
+
+        wp_deregister_style( 'wc-blocks-style' );
+        FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-dashboard-script' );
+        FrontendScripts::localize_scripts( 'multivendorx-dashboard-script' );
+        FrontendScripts::enqueue_style( 'multivendorx-dashboard-style' );
+        wp_enqueue_script( 'wp-element' );
+        wp_enqueue_media();
+
+        $custom_css = MultiVendorX()->setting->get_setting( 'custom_css_product_page', '' );
+        if ( empty( $custom_css ) ) {
+            return;
+        }
+
+        wp_add_inline_style( 'multivendorx-dashboard-style', wp_strip_all_tags( $custom_css ) );
+    }
+
+    /**
+     * Load registration page assets.
+     *
+     * @return void
+     */
+    public function load_registration_assets() {
+        if ( ! Utill::is_store_registration_page() ) {
+            return;
+        }
+
+        FrontendScripts::enqueue_script( 'multivendorx-registration-form-script' );
+        FrontendScripts::localize_scripts( 'multivendorx-registration-form-script' );
+        FrontendScripts::enqueue_style( 'multivendorx-store-tabs-style' );
+    }
+
+    /**
+     * Load shortcode-based frontend assets.
+     *
+     * @param string $content Post content.
+     *
+     * @return void
+     */
+    public function load_shortcode_assets( $content ) {
+        preg_match_all(
+            '/' . get_shortcode_regex() . '/',
+            $content,
+            $matches
+        );
+
+        $detected_shortcodes = array_unique(
+            $matches[2] ?? array()
+        );
+
+        $shortcode_assets = apply_filters(
+            'multivendorx_shortcode_frontend_assets',
+            array(
+                'marketplace_stores'   => array(
+                    'scripts' => array(
+                        array(
+                            'handle'    => 'multivendorx-marketplace-stores-script',
+                            'localize'  => true,
+                        ),
+                        array(
+                            'handle'    => 'multivendorx-store-provider-script',
+                            'localize'  => true,
+                        ),
+                    ),
+                    'styles'  => array(
+                        'multivendorx-common-block-style',
+                    ),
+                ),
+
+                'marketplace_products' => array(
+                    'scripts' => array(
+                        array(
+                            'handle'    => 'multivendorx-marketplace-products-script',
+                            'localize'  => true,
+                        ),
+                    ),
+                ),
+
+                'marketplace_coupons'  => array(
+                    'scripts' => array(
+                        array(
+                            'handle'    => 'multivendorx-marketplace-coupons-script',
+                            'localize'  => true,
+                        ),
+                    ),
+                    'styles'  => array(
+                        'multivendorx-common-block-style',
+                    ),
+                ),
+            )
+        );
+
+        foreach ( $shortcode_assets as $shortcode => $assets ) {
+            if (! in_array( $shortcode, $detected_shortcodes, true ) ) {
+                continue;
             }
-        }
 
-        if ( Utill::is_store_registration_page() ) {
-            FrontendScripts::enqueue_script( 'multivendorx-registration-form-script' );
-            FrontendScripts::localize_scripts( 'multivendorx-registration-form-script' );
-            FrontendScripts::enqueue_style( 'multivendorx-store-tabs-style' );
-        }
+            foreach ( $assets['scripts'] ?? array() as $script ) {
+                if ( empty( $script['handle'] ) ) {
+                    continue;
+                }
 
-        if (has_shortcode( $post->post_content, 'marketplace_stores' ) ) {
-            FrontendScripts::enqueue_script( 'multivendorx-marketplace-stores-script' );
-            FrontendScripts::enqueue_style( 'multivendorx-common-block-style' );
-            FrontendScripts::localize_scripts( 'multivendorx-marketplace-stores-script' );
-            FrontendScripts::enqueue_script( 'multivendorx-store-provider-script' );
-            FrontendScripts::localize_scripts( 'multivendorx-store-provider-script' );
-        }
+                FrontendScripts::enqueue_script( $script['handle'] );
 
-        if (has_shortcode( $post->post_content, 'marketplace_products' ) ) {
-            FrontendScripts::enqueue_script( 'multivendorx-marketplace-products-script' );
-            FrontendScripts::localize_scripts( 'multivendorx-marketplace-products-script' );
-        }
+                if ( ! empty( $script['localize'] ) ) {
+                    FrontendScripts::localize_scripts( $script['handle'] );
+                }
+            }
 
-        if (has_shortcode( $post->post_content, 'marketplace_coupons' ) ) {
-            FrontendScripts::enqueue_script( 'multivendorx-marketplace-coupons-script' );
-            FrontendScripts::localize_scripts( 'multivendorx-marketplace-coupons-script' );
-            FrontendScripts::enqueue_style( 'multivendorx-common-block-style' );
-
+            foreach ( $assets['styles'] ?? array() as $style_handle ) {
+                FrontendScripts::enqueue_style($style_handle);
+            }
         }
     }
 
@@ -104,10 +192,8 @@ class Shortcode {
      */
     public function display_store_dashboard() {
         ob_start();
-        ?>
-        <?php
         if ( ! is_user_logged_in() ) {
-            if ( ( 'no' === get_option( Utill::WOO_SETTINGS['generate_password'] ) && ! is_user_logged_in() ) ) {
+            if ( ( 'no' === get_option( Utill::WOO_SETTINGS['generate_password'] ) ) ) {
                 wp_enqueue_script( 'wc-password-strength-meter' );
             }
             echo '<div class="multivendorx-registration woocommerce">';
@@ -179,11 +265,17 @@ class Shortcode {
         return '<div id="marketplace-coupons" data-attributes="' . $json_attrs . '"></div>';    
     }
 
-    public function snake_to_camel_case( $array ) {
+    /**
+     * Convert array keys from snake_case to camelCase.
+     *
+     * @param array $attributes Attribute list.
+     * @return array
+     */
+    public function snake_to_camel_case( $attributes ) {
         $result = array();
-        foreach ( $array as $key => $value ) {
-            $camelKey            = lcfirst( str_replace( ' ', '', ucwords( str_replace( '_', ' ', $key ) ) ) );
-            $result[ $camelKey ] = $value;
+        foreach ( $attributes as $key => $value ) {
+            $camel_case_key            = lcfirst( str_replace( ' ', '', ucwords( str_replace( '_', ' ', $key ) ) ) );
+            $result[ $camel_case_key ] = $value;
         }
 
         return $result;
