@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapProviderUI, useModules } from 'zyra';
+import { MapProviderUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 interface MapConfigState {
@@ -21,9 +21,8 @@ const CheckoutMapFill: React.FC = () => {
         address: '',
     });
 
-    const { modules } = useModules();
     const ExperimentalCheckoutFields = (window as any)?.wc?.blocksCheckout?.ExperimentalOrderShippingPackages;
-    const settings = (window as any).appLocalizer?.settings_databases_value;
+    const settings = (window as any)?.blockCheckout?.settings || {};
 
     /**
      * Sends data on-demand to the Store API using the official extensionCartUpdate function.
@@ -62,26 +61,26 @@ const CheckoutMapFill: React.FC = () => {
     };
 
     useEffect(() => {
-        if (!settings?.geolocation) return;
-
-        const provider = settings.geolocation.choose_map_api;
-        const apiKey = settings.geolocation[`${provider}_api_key`] || '';
+        if (!settings) {
+            return;
+        }
+        const provider = settings.choose_map_api;
+        const apiKey = settings[`${provider}_api_key`] || '';
 
         setMapConfig({
             provider: provider || null,
-            apiKey: apiKey,
+            apiKey,
         });
     }, [settings]);
-
     const renderMapComponent = () => {
-        if (!modules.includes('geo-location') || !mapConfig.apiKey || !mapConfig.provider) {
+        if (!mapConfig.apiKey || !mapConfig.provider) {
             return null;
         }
 
         return (
             <MapProviderUI
                 apiKey={mapConfig.apiKey}
-                mapId={settings?.geolocation?.google_map_id || ''}
+                mapId={settings?.google_map_id || ''}
                 locationAddress={addressData.address}
                 locationLat={addressData.location_lat}
                 locationLng={addressData.location_lng}
@@ -100,7 +99,7 @@ const CheckoutMapFill: React.FC = () => {
 
     return (
         <ExperimentalCheckoutFields>
-            <div style={{ marginBottom: '1.25rem', width: '100%' }}>
+            <div >
                 {renderMapComponent()}
             </div>
         </ExperimentalCheckoutFields>

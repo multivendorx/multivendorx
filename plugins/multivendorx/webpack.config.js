@@ -48,11 +48,81 @@ const dynamicPatterns = blockDirs.flatMap((blockName) => {
 	return patterns;
 });
 
+// 3. Dynamic module block entries + copy patterns
+const moduleBasePath = path.resolve(__dirname, 'modules');
+
+const moduleDirs = fs
+	.readdirSync(moduleBasePath, { withFileTypes: true })
+	.filter((dirent) => dirent.isDirectory())
+	.map((dirent) => dirent.name);
+
+const dynamicModuleEntries = {};
+const dynamicModulePatterns = [];
+
+moduleDirs.forEach((moduleName) => {
+	const moduleBlockPath = path.join(
+		moduleBasePath,
+		moduleName,
+		'blocks'
+	);
+
+	// Detect entry file
+	const entryExtensions = ['js', 'ts', 'tsx'];
+
+	for (const ext of entryExtensions) {
+		const entryFile = path.join(
+			moduleBlockPath,
+			`index.${ext}`
+		);
+
+		if (fs.existsSync(entryFile)) {
+			dynamicModuleEntries[
+				`../modules/${moduleName}/blocks/index`
+			] = entryFile;
+
+			break;
+		}
+	}
+
+	// Output path
+	const outPath = path.resolve(
+		__dirname,
+		`release/assets/modules/${moduleName}/blocks`
+	);
+
+	// Copy block.json
+	const blockJsonPath = path.join(
+		moduleBlockPath,
+		'block.json'
+	);
+
+	if (fs.existsSync(blockJsonPath)) {
+		dynamicModulePatterns.push({
+			from: blockJsonPath,
+			to: path.join(outPath, 'block.json'),
+		});
+	}
+
+	// Copy render.php
+	const renderPhpPath = path.join(
+		moduleBlockPath,
+		'render.php'
+	);
+
+	if (fs.existsSync(renderPhpPath)) {
+		dynamicModulePatterns.push({
+			from: renderPhpPath,
+			to: path.join(outPath, 'render.php'),
+		});
+	}
+});
+
 module.exports = {
 	...defaultConfig,
 
 	entry: {
 		index: './src/index.tsx',
+		...dynamicModuleEntries,
 		'block/registration-form/index':
 			'./src/blocks/registration-form/index.js',
 		'block/marketplace-stores/index': './src/blocks/marketplace-stores/index.js',
@@ -194,7 +264,7 @@ module.exports = {
 			injectPolyfill: true,
 		}),
 		new CopyWebpackPlugin({
-			patterns: [...staticPatterns, ...dynamicPatterns],
+			patterns: [...staticPatterns, ...dynamicPatterns, ...dynamicModulePatterns,],
 		}),
 	],
 

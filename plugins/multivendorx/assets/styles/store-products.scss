@@ -921,3 +921,8 @@ $star-color: #d49c00;
 .multivendorx-registration:not(:has(.u-columns)) .multivendorx-tabs {
 	display: none;
 }
+
+    .map{
+        overflow: visible;
+        position: inherit;
+    }

@@ -7,6 +7,9 @@
 
 namespace MultiVendorX\StoreShipping;
 
+use MultiVendorX\FrontendScripts;
+use MultiVendorX\Utill;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -18,12 +21,58 @@ class Block_Checkout {
 	 * Constructor.
 	 */
 	public function __construct() {
+        add_filter( 'multivendorx_register_scripts', array( $this, 'register_script' ) );
+        add_filter( 'multivendorx_localize_scripts', array( $this, 'localize_scripts' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
 
 		add_action('init',array( $this, 'register_checkout_update_callback' ),20);
 		add_action('woocommerce_checkout_create_order',array( $this, 'save_order_meta' ),20,2);
-
-		// add_filter('woocommerce_cart_shipping_packages',array( $this, 'add_user_location_to_shipping_package' ));
 	}
+	/**
+	 * Register follow store frontend script
+	 *
+	 * @param array $scripts Scripts array.
+	 * @return array Modified scripts array
+	 */
+    public function register_script( $scripts ) {
+        $base_url = MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name();
+
+        $scripts['multivendorx-store-shipping-block-checkout'] = array(
+            'src'  => $base_url . 'modules/StoreShipping/blocks/index.js',
+        );
+
+        return $scripts;
+    }
+    /**
+	 * Localize follow store frontend script
+	 *
+	 * @param array $scripts Scripts array.
+	 * @return array Modified scripts array
+	 */
+    public function localize_scripts( $scripts ) {
+
+        $scripts['multivendorx-store-shipping-block-checkout'] = array(
+            'object_name' => 'blockCheckout',
+            'data'        => array(
+                'settings' => MultiVendorX()->setting->get_option(Utill::MULTIVENDORX_SETTINGS['geolocation']),
+            ),
+        );
+
+        return $scripts;
+    }
+
+    /**
+     * Load follow store JS scripts
+     */
+    public function load_scripts() {
+		if ( ! is_checkout() ) {
+			return;
+		}
+        FrontendScripts::load_scripts();
+        FrontendScripts::enqueue_script( 'multivendorx-store-shipping-block-checkout' );
+        FrontendScripts::localize_scripts( 'multivendorx-store-shipping-block-checkout' );
+		FrontendScripts::enqueue_style( 'multivendorx-store-tabs-style' );
+    }
 
 	/**
 	 * Register Store API checkout update callback.
@@ -143,36 +192,5 @@ class Block_Checkout {
 				$user_lng
 			);
 		}
-	}
-
-	/**
-	 * Add user location data to shipping packages.
-	 *
-	 * @param array $packages Shipping packages.
-	 *
-	 * @return array
-	 */
-	public function add_user_location_to_shipping_package( $packages ) {
-
-		if ( ! function_exists( 'WC' ) || ! WC()->session ) {
-			return $packages;
-		}
-
-		foreach ( $packages as $index => $package ) {
-
-			$packages[ $index ]['multivendorx_user_location'] = WC()->session->get(
-				'_multivendorx_user_location'
-			);
-
-			$packages[ $index ]['multivendorx_user_location_lat'] = WC()->session->get(
-				'_multivendorx_user_location_lat'
-			);
-
-			$packages[ $index ]['multivendorx_user_location_lng'] = WC()->session->get(
-				'_multivendorx_user_location_lng'
-			);
-		}
-
-		return $packages;
 	}
 }
