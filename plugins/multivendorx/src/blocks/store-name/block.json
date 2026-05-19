@@ -6,6 +6,7 @@
   "icon": "store",
   "description": "Display store name",
   "editorScript": "file:./index.js",
+  "viewScript": "file:./view.js",
   "supports": {
     "align": true,
     "alignWide": false,

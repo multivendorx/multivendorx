@@ -26,8 +26,6 @@ class Install {
      */
     public function __construct() {
         add_action( 'init', array( $this, 'run_migration' ) );
-        $this->do_migration();
-        do_action( 'multivendorx_after_installed' );
     }
 
     /**
@@ -96,6 +94,8 @@ class Install {
             $this->plugin_create_pages();
             $this->set_default_modules();
             $this->set_default_settings();
+        } else {
+            $this->do_migration();
         }
 
         if ( get_option( 'dc_product_vendor_plugin_db_version' ) ) {
@@ -103,6 +103,7 @@ class Install {
         }
 
         update_option( 'multivendorx_version', MULTIVENDORX_PLUGIN_VERSION );
+        do_action( 'multivendorx_after_installed' );
     }
 
     /**

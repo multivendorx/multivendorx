@@ -104,7 +104,6 @@ class Block {
                 FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
                 foreach ( $this->get_blocks() as $block_script ) {
                     FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-editor-script' );
-                    FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-script' );
                 }
             }
         }
@@ -126,11 +125,10 @@ class Block {
         FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
         foreach ( $this->get_blocks() as $block_script ) {
             $block_name = $block_script['textdomain'] . '/' . $block_script['name'];
-
+            
             if ( has_block( $block_name, $post ) ) {
-                $handle = $block_script['textdomain'] . '-' . $block_script['name'] . '-script';
-
-                FrontendScripts::enqueue_script( $handle );
+                $handle = $block_script['textdomain'] . '-' . $block_script['name'] . '-view-script';
+                // FrontendScripts::enqueue_script( $handle );
                 FrontendScripts::localize_scripts( $handle );
             }
         }

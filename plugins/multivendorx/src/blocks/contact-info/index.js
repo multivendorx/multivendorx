@@ -248,122 +248,27 @@ registerBlockType('multivendorx/contact-info', {
 		const blockProps = useBlockProps.save();
 
 		return (
-			<div {...blockProps}>
-				<form
-					className="woocommerce-form woocommerce-form-login login multivendorx-contact-form"
-					method="post"
-					action=""
-				>
-					{hideFromGuests && (
-						<div style={{ display: 'none' }}>
-							{__('This form is hidden from guests.')}
-						</div>
-					)}
-
-					<h2>{__('Contact store', 'multivendorx')}</h2>
-					<p>
-						{__(
-							'Do you need more information? Write to us!',
-							'multivendorx'
-						)}
-					</p>
-
-					<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-						<label htmlFor="contact-name">
-							{__('Name', 'multivendorx')}{' '}
-							<span className="required">*</span>
-						</label>
-						<input
-							type="text"
-							name="contact_name"
-							id="contact-name"
-							className="input-text"
-							required
-						/>
-					</p>
-
-					<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-						<label htmlFor="contact-email">
-							{__('Email', 'multivendorx')}{' '}
-							<span className="required">*</span>
-						</label>
-						<input
-							type="email"
-							name="contact_email"
-							id="contact-email"
-							className="input-text"
-							required
-						/>
-					</p>
-
-					<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-						<label htmlFor="contact-message">
-							{__('Message', 'multivendorx')}{' '}
-							<span className="required">*</span>
-						</label>
-						<textarea
-							name="contact_message"
-							id="contact-message"
-							className="input-text"
-							rows="4"
-							required
-						></textarea>
-					</p>
-
-					<input
-						type="hidden"
-						name="multivendorx_contact_form"
-						value="1"
-					/>
-					<input type="hidden" name="store_id" value="" />
-
-					<button type="submit" className="contact-form-submit">
-						{__('Send Message', 'multivendorx')}
-					</button>
-
-					{enableGoogleRecaptcha && (
-						<div
-							className="multivendorx-recaptcha-settings"
-							style={{ display: 'none' }}
-						>
-							<input
-								type="hidden"
-								className="multivendorx-recaptcha-enabled"
-								value="1"
-							/>
-							<input
-								type="hidden"
-								className="multivendorx-recaptcha-type"
-								value={googleRecaptchaType}
-							/>
-
-							{googleRecaptchaType === 'v2' &&
-								recaptchaV2Scripts && (
-									<div
-										className="multivendorx-recaptcha-v2-script"
-										dangerouslySetInnerHTML={{
-											__html: recaptchaV2Scripts,
-										}}
-									/>
-								)}
-
-							{googleRecaptchaType === 'v3' && (
-								<>
-									<input
-										type="hidden"
-										className="multivendorx-recaptcha-v3-sitekey"
-										value={recaptchaV3Sitekey}
-									/>
-									<input
-										type="hidden"
-										className="multivendorx-recaptcha-v3-secretkey"
-										value={recaptchaV3Secretkey}
-									/>
-								</>
-							)}
-						</div>
-					)}
-				</form>
+			<div
+				{...blockProps}
+				className="multivendorx-contact-info-wrapper"
+				data-hide-from-guests={hideFromGuests}
+				data-enable-google-recaptcha={
+					enableGoogleRecaptcha
+				}
+				data-google-recaptcha-type={
+					googleRecaptchaType
+				}
+				data-recaptcha-v2-scripts={
+					recaptchaV2Scripts
+				}
+				data-recaptcha-v3-sitekey={
+					recaptchaV3Sitekey
+				}
+				data-recaptcha-v3-secretkey={
+					recaptchaV3Secretkey
+				}
+			>
+				<div className="multivendorx-contact-info"></div>
 			</div>
 		);
 	},
