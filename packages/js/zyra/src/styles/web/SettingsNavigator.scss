@@ -9,7 +9,7 @@
     padding: 0;
   }
 
-  &.tabs-wrapper.background{
+  &.tabs-wrapper.background {
     margin: 0;
   }
 }
@@ -63,11 +63,13 @@
       }
     }
   }
-  .title-custom-section{
+
+  .title-custom-section {
     display: flex;
     align-items: center;
     gap: 0.625rem;
   }
+
   .description {
     padding-top: 0.313rem;
   }
@@ -91,9 +93,8 @@
 
 // tabs style end
 .settings-wrapper {
-
   // for without store dashboard tabs
-  &:not(.without-spacing){
+  &:not(.without-spacing) {
     .tabs-wrapper {
       border-bottom: $border-light-small;
       margin: 0 1.25rem;
@@ -101,7 +102,7 @@
   }
 
   // for store dashboard
-  &.without-spacing .general-wrapper{
+  &.without-spacing .general-wrapper {
     margin: 2.5rem 0 0;
   }
 
@@ -125,15 +126,23 @@
         border-radius: $border-radius-small $border-radius-small 0 0;
         border-bottom: 0;
       }
-      .tab-content{
+
+      .tab-content {
         border: $border-light-small ;
         border-radius: 0 0 $border-radius-small $border-radius-small;
+      }
 
-        // border-top: 0;
+      // for card component inner formgoup design in settings tab
+      .tab-content:has(.settings-card) {
+        .form-group-wrapper {
+          gap: 1rem !important;
+
+          .form-group {
+            padding: 0 !important;
+          }
+        }
       }
-      .tab-content:has(.notice-settings){
-        border: none;
-      }
+
       &.show-menu {
         .tabs-wrapper {
           max-width: 4.125rem;
@@ -162,19 +171,21 @@
         }
       }
 
-      &:has(.container-wrapper){
-        .tab-content{
+      &:has(.container-wrapper) {
+        .tab-content {
           border: none;
+          margin: 0;
         }
       }
     }
   }
+
   &[data-template="default"]:not(.without-border) {
     .general-wrapper {
-      // border: $border-light-small;
       position: relative;
     }
   }
+
   &[data-template="compact"] {
     .tabs-wrapper {
       margin-top: 2rem;
@@ -384,6 +395,7 @@
       .tab-content {
         box-sizing: border-box;
       }
+
       // .form-group-wrapper {
       //   gap: 1rem;
       //   padding: 1rem;
@@ -395,7 +407,7 @@
     }
   }
 
-  
+
   // custom right section
   .custom-content {
     display: flex;
@@ -576,6 +588,7 @@
     .tab-name {
       font-size: 0.938rem;
       line-height: 1.5;
+
       // color: #121116;
 
       i {
@@ -674,4 +687,37 @@
   //   border-radius: $border-radius-small;
   //   padding: 1rem;
   // }
+}
+
+@media only screen and (width <= 600px) {
+  .settings-wrapper {
+    &[data-template="settings"] {
+      flex-direction: column;
+
+      .tabs-wrapper {
+        width: 100% !important;
+        margin: 0 0 2rem !important;
+      }
+
+      .general-wrapper {
+        width: 100% !important;
+        margin: 0 !important;
+      }
+    }
+
+    &[data-template="compact"] {
+      .tabs-item {
+        flex-wrap: wrap;
+
+        a.tab {
+          min-width: 5rem !important;
+        }
+      }
+    }
+  }
+
+  .title-section {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
 }

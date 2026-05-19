@@ -22,6 +22,7 @@ import {
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import { dashNavigate } from '@/services/commonFunction';
+import './addProducts.scss';
 
 const AddProduct = () => {
 	const { modules } = useModules();

@@ -1,6 +1,6 @@
 const SignatureView = () => {
 	return (
-		<div className="multivendorx-banner template2">
+		<div className="multivendorx-banner signature-view">
 			<div className="banner-slider"></div>
 			<div className="banner-right">
 				<div className="social-profile">

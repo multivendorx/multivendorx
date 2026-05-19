@@ -1,7 +1,7 @@
 import React from 'react';
 import { applyFilters } from '@wordpress/hooks';
 import AddProductCom from './dashboard/addProducts';
-import SpmvProducts from './dashboard/spmvProducts';
+import SharedListing from './dashboard/sharedListing';
 import AddOrder from './dashboard/addOrder';
 import OrderDetails from './dashboard/orderDetails';
 
@@ -20,7 +20,7 @@ const BASE_DASHBOARD_ROUTES: DashboardRouteConfig<BaseDashboardProps>[] = [
 	{
 		tab: 'products',
 		element: 'add',
-		component: SpmvProducts,
+		component: SharedListing,
 	},
 	{
 		tab: 'products',
