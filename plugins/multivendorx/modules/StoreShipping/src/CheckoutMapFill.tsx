@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MapProviderUI, useModules } from 'zyra';
 import { __ } from '@wordpress/i18n';
-import { dispatch as wpDispatch } from '@wordpress/data';
 
 interface MapConfigState {
     provider: string | null;
@@ -15,7 +14,6 @@ interface AddressDataState {
 }
 
 const CheckoutMapFill: React.FC = () => {
-    // 1. Core Component States
     const [mapConfig, setMapConfig] = useState<MapConfigState>({ provider: null, apiKey: '' });
     const [addressData, setAddressData] = useState<AddressDataState>({
         location_lat: '',
@@ -23,46 +21,46 @@ const CheckoutMapFill: React.FC = () => {
         address: '',
     });
 
-    // 2. Dependencies and Global Targets
     const { modules } = useModules();
     const ExperimentalCheckoutFields = (window as any)?.wc?.blocksCheckout?.ExperimentalOrderShippingPackages;
     const settings = (window as any).appLocalizer?.settings_databases_value;
 
     /**
-     * Push localized state maps down to the WooCommerce Blocks Extension registry.
+     * Sends data on-demand to the Store API using the official extensionCartUpdate function.
      */
     const saveToCheckout = (locationData: any) => {
-        const wcBlocks = (window as any)?.wc?.wcBlocksData;
-        if (!wcBlocks) return;
+        const blocksCheckout = (window as any)?.wc?.blocksCheckout;
+        if (!blocksCheckout || typeof blocksCheckout.extensionCartUpdate !== 'function') {
+            return;
+        }
 
-        const storeKey = wcBlocks.CHECKOUT_STORE_KEY;
-        const checkoutDispatch = wpDispatch(storeKey);
-
-        // Safely invoke runtime schema mutations outside hook lifecycle limits
-        if (checkoutDispatch && typeof (checkoutDispatch as any).setExtensionData === 'function') {
-            (checkoutDispatch as any).setExtensionData('multivendorx', {
+        // Trigger on-demand cart synchronization instantly as documented
+        blocksCheckout.extensionCartUpdate({
+            namespace: 'multivendorx',
+            data: {
                 user_location: locationData.address,
                 user_location_lat: locationData.location_lat,
                 user_location_lng: locationData.location_lng,
-            });
-        }
+            },
+        }).catch((error: any) => {
+            const wcBlocksData = (window as any)?.wc?.wcBlocksData;
+            if (wcBlocksData && typeof wcBlocksData.processErrorResponse === 'function') {
+                wcBlocksData.processErrorResponse(error);
+            }
+        });
     };
 
-    /**
-     * Map trigger change listener callback
-     */
     const handleLocationUpdate = (locationData: any) => {
         const updatePayload = {
             address: locationData.address || '',
             location_lat: locationData.location_lat || '',
             location_lng: locationData.location_lng || '',
         };
-        
+
         setAddressData(updatePayload);
         saveToCheckout(updatePayload);
     };
 
-    // 3. Initialize Settings Config Mapper
     useEffect(() => {
         if (!settings?.geolocation) return;
 
@@ -75,9 +73,6 @@ const CheckoutMapFill: React.FC = () => {
         });
     }, [settings]);
 
-    /**
-     * Render Method Strategy Pattern Builder
-     */
     const renderMapComponent = () => {
         if (!modules.includes('geo-location') || !mapConfig.apiKey || !mapConfig.provider) {
             return null;
@@ -99,7 +94,6 @@ const CheckoutMapFill: React.FC = () => {
         );
     };
 
-    // Render configuration pipeline fallback for environments lacking active block wrappers
     if (!ExperimentalCheckoutFields) {
         return renderMapComponent();
     }
