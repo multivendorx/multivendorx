@@ -217,24 +217,24 @@ class Shortcode {
         ob_start();
         ?>
         <div id="multivendorx-registration-form" class="woocommerce">
-            <div className="multivendorxstep-wizard">
-				<div className="multivendorxsteps-container">
+            <div class="multivendorxstep-wizard">
+				<div class="multivendorxsteps-container">
 					<div className='multivendorxstep-item'>
 						<span class='skeleton skeleton-circular' style="width: 2.125rem; height: 2.125rem;"> </span>
 						<span class='skeleton skeleton-text' style="width: 5rem; height: 1.5rem;"></span>
 					</div>
 
-					<div className="multivendorx-step-divider"></div>
+					<div class="multivendorx-step-divider"></div>
 					<div className='multivendorxstep-item' >
 						<span class='skeleton skeleton-circular' style="width: 2.125rem; height: 2.125rem;"> </span>
 						<span class='skeleton skeleton-text' style="width: 6rem; height: 1.5rem;"></span>
 					</div>
 
 				</div>
-				<div className="multivendorxprogress-bar"></div>
+				<div class="multivendorxprogress-bar"></div>
 			</div>
-			<div className="multivendorxstep-content multivendorxstep-1-content">
-				<div className="multivendorxprogress-content">
+			<div class="multivendorxstep-content multivendorxstep-1-content">
+				<div class="multivendorxprogress-content">
 					<p><span class='skeleton skeleton-text' style="width: 6rem; height: 1.5rem;"> </span></p>
 					<h3><span class='skeleton skeleton-text' style="width: 14rem; height: 1.5rem;"></span></h3>
 					<p><span class='skeleton skeleton-text' style="width: 80%; height: 1rem;"></span></p>

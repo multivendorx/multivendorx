@@ -24,7 +24,7 @@ registerBlockType('multivendorx/registration-form', {
 
 	// Save function just outputs a placeholder <div> for frontend rendering
 	save() {
-		// return <div id="multivendorx-registration-form"></div>;
+		return <div id="multivendorx-registration-form"></div>;
 	},
 });
 

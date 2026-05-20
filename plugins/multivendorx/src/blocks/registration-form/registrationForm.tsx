@@ -1,7 +1,7 @@
 // RegistrationForm.tsx
 /* global registrationForm, */
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { FormViewer, getApiLink, ChoiceToggle, Skeleton } from 'zyra';
+import { FormViewer, getApiLink, ChoiceToggle } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -50,7 +50,6 @@ const RegistrationForm = () => {
 	const [currentStep, setCurrentStep] = useState<1 | 2>(1);
 	const [step1Completed, setStep1Completed] = useState<boolean>(false);
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-	const [isLoading, setIsLoading] = useState<boolean>(true); // Add loading state for initial data fetch
 
 	// Check if step 1 has content to show
 	const hasBeforeFormContent =
@@ -60,7 +59,6 @@ const RegistrationForm = () => {
 	const shouldShowStep1 = hasBeforeFormContent || hasStoreSelector;
 
 	useEffect(() => {
-		setIsLoading(true);
 		axios({
 			method: 'GET',
 			url: getApiLink(registrationForm, `stores`),
@@ -119,8 +117,6 @@ const RegistrationForm = () => {
 			if (!shouldShowStep1) {
 				setStep1Completed(true);
 			}
-
-			setIsLoading(false);
 		});
 	}, []);
 
@@ -239,95 +235,61 @@ const RegistrationForm = () => {
 	);
 	const memoizedStateList = useMemo(() => registrationForm.state_list, []);
 
-	// Loader Component
-	const Loader = () => (
-		<>
-			<div className="multivendorxstep-wizard">
-				<div className="multivendorxsteps-container">
-					{/* Step 1 */}
-					<div className={`multivendorxstep-item`}>
-						<Skeleton variant="circular" width={2.125} height={2.125} />
-						<Skeleton width={6} height={1.5} />
-					</div>
-
-					<div className="multivendorx-step-divider"></div>
-					{/* Step 2 */}
-					<div className={`multivendorxstep-item`} >
-						<Skeleton variant="circular" width={2.125} height={2.125} />
-						<Skeleton width={6} height={1.5} />
-					</div>
-
-				</div>
-				<div className="multivendorxprogress-bar"></div>
-			</div>
-			<div className="multivendorxstep-content multivendorxstep-1-content">
-				<div className="multivendorxprogress-content">
-					<p><Skeleton width={7} height={1} /></p>
-					<h3><Skeleton width={14} height={1.5} /></h3>
-					<p><Skeleton width='80%' height={1} /></p>
-				</div>
-			</div>
-		</>
-	);
-
-
 	// If there's no step 1 content, just show the form directly
 	if (!shouldShowStep1) {
 		return (
-			<>
-				<div className="woocommerce">
-					{stores.length > 0 && (
-						<>
-							<div className="store-selector">
-								<ChoiceToggle
-									options={stores}
-									value={selectedStore?.value || ''}
-									onChange={(val) => handleStoreChange(val)}
-								/>
-							</div>
-
-							{storeData?.note?.[0]?.note && (
-								<div>
-									<h4>{__('Store Note', 'multivendorx')}</h4>
-									<div className="store-note">
-										<strong>
-											{__('Note', 'multivendorx')}:
-										</strong>{' '}
-										{storeData.note[0].note}
-									</div>
-								</div>
-							)}
-						</>
-					)}
-
-					<FormViewer
-						formFields={formData.settings}
-						response={inputs}
-						onSubmit={onSubmit}
-						countryList={memoizedCountryList}
-						stateList={memoizedStateList}
-					/>
-					<div
-						dangerouslySetInnerHTML={{
-							__html: registrationForm.content_after_form,
-						}}
-					/>
-					{responseMessage && (
-						<div className="woocommerce-notices-wrapper">
-							<ul
-								className={
-									responseMessage.type === 'success'
-										? 'woocommerce-message'
-										: 'woocommerce-error'
-								}
-								role="alert"
-							>
-								<li>{responseMessage.message}</li>
-							</ul>
+			<div className="woocommerce">
+				{stores.length > 0 && (
+					<>
+						<div className="store-selector">
+							<ChoiceToggle
+								options={stores}
+								value={selectedStore?.value || ''}
+								onChange={(val) => handleStoreChange(val)}
+							/>
 						</div>
-					)}
-				</div>
-			</>
+
+						{storeData?.note?.[0]?.note && (
+							<div>
+								<h4>{__('Store Note', 'multivendorx')}</h4>
+								<div className="store-note">
+									<strong>
+										{__('Note', 'multivendorx')}:
+									</strong>{' '}
+									{storeData.note[0].note}
+								</div>
+							</div>
+						)}
+					</>
+				)}
+
+				<FormViewer
+					formFields={formData.settings}
+					response={inputs}
+					onSubmit={onSubmit}
+					countryList={memoizedCountryList}
+					stateList={memoizedStateList}
+				/>
+				<div
+					dangerouslySetInnerHTML={{
+						__html: registrationForm.content_after_form,
+					}}
+				/>
+				{responseMessage && (
+					<div className="woocommerce-notices-wrapper">
+						<ul
+							className={
+								responseMessage.type === 'success'
+									? 'woocommerce-message'
+									: 'woocommerce-error'
+							}
+							role="alert"
+						>
+							<li>{responseMessage.message}</li>
+						</ul>
+					</div>
+				)}
+			</div>
 		);
 	}
 
@@ -361,7 +323,7 @@ const RegistrationForm = () => {
 							{__('Account', 'multivendorx')}
 						</h4>
 					</div>
-
+						
 					<div className="multivendorx-step-divider"></div>
 					{/* Step 2 */}
 					<div
@@ -501,6 +463,16 @@ const RegistrationForm = () => {
 							</ul>
 						</div>
 					)}
+
+					{/* <div className="multivendorxstep-actions">
+						<button
+							className="multivendorxbtn multivendorxbtn-secondary"
+							onClick={goToPreviousStep}
+							disabled={isSubmitting}
+						>
+							{__('Back', 'multivendorx')}
+						</button>
+					</div> */}
 				</div>
 			)}
 		</>
