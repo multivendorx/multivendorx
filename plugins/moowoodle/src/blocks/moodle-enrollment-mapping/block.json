@@ -4,6 +4,5 @@
     "category": "woocommerce",
     "apiVersion": 2,
     "editorScript": "file:./index.js",
-    "script": "file:./index.js",
     "style": "file:./index.css"
 }
