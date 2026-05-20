@@ -128,6 +128,7 @@
         "@wordpress/i18n": "^5.19.0",
         "@wordpress/hooks": "^4.41.0",
         "@wordpress/shortcode": "^4.7.0",
+        "@wordpress/components": "^32.3.0",
         "body-scroll-lock": "^4.0.0-beta.0",
         "emoji-picker-react": "^4.12.0",
         "file-type": "^21.3.1",

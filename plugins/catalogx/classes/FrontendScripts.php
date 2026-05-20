@@ -48,20 +48,11 @@ class FrontendScripts {
      *
      * @return string Relative path to the build directory.
      */
-    public static function get_asset_path( $type = 'url', $plugin_path = '', $plugin_url = '' ) {
-        $build_path = CatalogX()->is_dev ? 'release/assets/' : 'assets/';
-
-        if ( empty( $plugin_path ) ) {
-            $plugin_path = CatalogX()->plugin_path;
+    public static function get_asset_path() {
+        if ( CatalogX()->is_dev ) {
+			return 'release/assets/';
         }
-
-        if ( empty( $plugin_url ) ) {
-            $plugin_url = CatalogX()->plugin_url;
-        }
-
-        return 'file' === $type
-            ? $plugin_path . $build_path
-            : $plugin_url . $build_path;
+        return 'assets/';
     }
 
     /**
@@ -73,10 +64,7 @@ class FrontendScripts {
      * @param string $version      Optional. Script version. Default empty string.
      */
     public static function register_script( $handle, $path, $deps = array(), $version = '' ) {
-        // self::$scripts[] = $handle;
-        if ( wp_script_is( $handle, 'registered' ) ) {
-			return;
-		}
+        self::$scripts[] = $handle;
         wp_register_script( $handle, $path, $deps, $version, true );
         wp_set_script_translations( $handle, 'catalogx' );
     }
@@ -90,10 +78,7 @@ class FrontendScripts {
      * @param string $version  Optional. Style version. Default empty string.
      */
     public static function register_style( $handle, $path, $deps = array(), $version = '' ) {
-        // self::$styles[] = $handle;
-        if ( wp_style_is( $handle, 'registered' ) ) {
-			return;
-		}
+        self::$styles[] = $handle;
         wp_register_style( $handle, $path, $deps, $version );
     }
 
@@ -105,10 +90,17 @@ class FrontendScripts {
     public static function register_scripts() {
         $version = CatalogX()->version;
         // self::enqueue_external_scripts();
+        $index_asset     = include plugin_dir_path( __FILE__ ) . '../' . self::get_asset_path() . 'js/index.asset.php';
+        $vendor_asset    = include plugin_dir_path( __FILE__ ) . '../' . self::get_asset_path() . 'js/vendors.asset.php';
 
+        $base_url    = CatalogX()->plugin_url . self::get_asset_path() . 'js/';
         $register_scripts = apply_filters(
             'catalogx_register_scripts',
             array(
+                'catalogx-vendor-script'  => array(
+                	'src'  => $base_url . 'vendors.js',
+                	'deps' => $vendor_asset['dependencies'],
+                ),
                 'catalogx-enquiry-frontend-script'  => array(
                     'src'     => CatalogX()->plugin_url . self::get_asset_path() . 'modules/Enquiry/js/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
                     'deps'    => array( 'jquery', 'jquery-blockui' ),
@@ -258,23 +250,19 @@ class FrontendScripts {
         $version = CatalogX()->version;
         
         // Enqueue all chunk files (External dependencies).
-        // self::enqueue_external_scripts();
 
-        $index_asset  = include self::get_asset_path( 'file' ) . 'js/index.asset.php';
-        $vendor_asset = include self::get_asset_path( 'file' ) . 'js/vendors.asset.php';
-
-	    $register_scripts = apply_filters(
+	    $index_asset      = include plugin_dir_path( __FILE__ ) . '../' . self::get_asset_path() . 'js/index.asset.php';
+        $vendor_asset  = include plugin_dir_path( __FILE__ ) . '../' . self::get_asset_path() . 'js/vendors.asset.php';
+		$register_scripts = apply_filters(
             'admin_catalogx_register_scripts',
             array(
                 'catalogx-vendor-script' => array(
-                    'src'     => self::get_asset_path() . 'js/vendors.js',
-                    'deps'    => $vendor_asset['dependencies'],
-                    'version' => $vendor_asset['version'] ?? $version,
+                    'src'  => CatalogX()->plugin_url . self::get_asset_path() . 'js/vendors.js',
+                	'deps' => $vendor_asset['dependencies'],
                 ),
                 'catalogx-admin-script'  => array(
-                    'src'     => self::get_asset_path() . 'js/index.js',
+					'src'  => CatalogX()->plugin_url . self::get_asset_path() . 'js/index.js',
                     'deps'    => $index_asset['dependencies'],
-                    'version' => $index_asset['version'] ?? $version,
                 ),
             )
         );
@@ -295,8 +283,7 @@ class FrontendScripts {
             'admin_catalogx_register_styles',
             array(
                 'catalogx-index-style' => array(
-                    'src'     => self::get_asset_path() . 'styles/index.css',
-                    'version' => $version,
+					'src' => CatalogX()->plugin_url . self::get_asset_path() . 'styles/index.css',
                 ),
             )
         );
@@ -451,11 +438,11 @@ class FrontendScripts {
         }
 
         // Get all tab setting's database value.
-        $settings_value = array();
+        $settings_databases_value = array();
         $tabs_names     = array( 'enquiry-catalog-customization', 'all-settings', 'enquiry-form-customization', 'enquiry-quote-exclusion', 'tools', 'enquiry-email-temp', 'wholesale', 'wholesale-registration', 'pages' );
         
         foreach ( $tabs_names as $tab_name ) {
-            $settings_value[ $tab_name ] = CatalogX()->setting->get_option( str_replace( '-', '_', 'catalogx_' . $tab_name . '_settings' ) );
+            $settings_databases_value[ $tab_name ] = CatalogX()->setting->get_option( str_replace( '-', '_', 'catalogx_' . $tab_name . '_settings' ) );
         }
 
         if ( 'administrator' === $current_user_role ) {

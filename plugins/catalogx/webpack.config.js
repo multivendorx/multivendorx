@@ -48,17 +48,29 @@ const dynamicPatterns = blockDirs.flatMap((blockName) => {
 	return patterns;
 });
 
+const blockEntries = {};
+
+blockDirs.forEach((blockName) => {
+	const blockPath = path.join(blockBasePath, blockName);
+
+	if (fs.existsSync(path.join(blockPath, 'index.js'))) {
+		blockEntries[`block/${blockName}/index`] =
+			`./src/blocks/${blockName}/index.js`;
+	}
+
+	if (fs.existsSync(path.join(blockPath, 'view.js'))) {
+		blockEntries[`block/${blockName}/view`] =
+			`./src/blocks/${blockName}/view.js`;
+	}
+});
+
 module.exports = {
 	...defaultConfig,
 
 	entry: {
-        index: './src/index.tsx',
-        'block/enquiry-button/index': './src/blocks/enquiry-button/index.js',
-        'block/enquiryForm/index': './src/blocks/enquiryForm/index.js',
-        'block/quote-button/index': './src/blocks/quote-button/index.js',
-        'block/quote-cart/index': './src/blocks/quote-cart/index.js',
-        'block/setup-wizard/index': './src/blocks/setup-wizard/index.js',
-    },
+		index: './src/index.tsx',
+		...blockEntries
+	},
 
 	output: {
 		...defaultConfig.output,

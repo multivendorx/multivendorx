@@ -2,7 +2,7 @@
 /**
  * Block class file
  *
- * @package CatalogX
+ * @package MultiVendorX
  */
 
 namespace CatalogX;
@@ -10,10 +10,10 @@ namespace CatalogX;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * CatalogX Block class
+ * MultiVendorX Block class
  *
  * @class       Block class
- * @version     6.0.0
+ * @version     5.0.0
  * @author      MultiVendorX
  */
 class Block {
@@ -22,7 +22,7 @@ class Block {
      *
      * @var array
      */
-    private $registered_blocks = array();
+    private $blocks;
 
     /**
      * Constructor for Block class
@@ -30,16 +30,14 @@ class Block {
      * @return void
      */
     public function __construct() {
-        $this->registered_blocks = $this->initialize_blocks();
         // Register block category.
         add_filter( 'block_categories_all', array( $this, 'register_block_category' ) );
         // Register the block.
         add_action( 'init', array( $this, 'register_blocks' ) );
         // Localize the script for block.
-        add_action( 'enqueue_block_assets', array( $this, 'enqueue_blocks_assets' ) );
+        add_action( 'enqueue_block_assets', array( $this, 'enqueue_all_block_assets' ) );
         // Localize in frontend.
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
     }
     /**
      * Get the list of initialized blocks.
@@ -50,7 +48,10 @@ class Block {
      * @return array List of blocks.
      */
     public function get_blocks() {
-        return $this->registered_blocks;
+        if ( is_null( $this->blocks ) ) {
+            $this->blocks = $this->initialize_blocks();
+        }
+        return $this->blocks;
     }
 
     /**
@@ -59,34 +60,22 @@ class Block {
      * @return array List of blocks with their configuration.
      */
     public function initialize_blocks() {
-        $blocks      = array();
-        $textdomain  = 'catalogx';
-        $block_paths = array();
+        $blocks = array();
+        $textdomain = 'catalogx';
 
         $block_base_path = CatalogX()->plugin_path
             . FrontendScripts::get_asset_path()
             . 'js/block/';
 
+        $exclude_blocks = array( 'setup-wizard' );
         if ( ! is_dir( $block_base_path ) ) {
             return $blocks;
         }
 
         $folders = glob( $block_base_path . '*', GLOB_ONLYDIR );
-
         foreach ( $folders as $folder ) {
             $block_name = basename( $folder );
-
-            // Skip blocks based on module activation logic.
-            if (
-                (
-                    in_array( $block_name, array( 'enquiry-button', 'enquiry-form' ), true )
-                    && ! CatalogX()->modules->is_active( 'enquiry' )
-                ) ||
-                (
-                    in_array( $block_name, array( 'quote-button', 'quote-cart' ), true )
-                    && ! CatalogX()->modules->is_active( 'quote' )
-                )
-            ) {
+            if ( in_array( $block_name, $exclude_blocks, true ) ) {
                 continue;
             }
 
@@ -96,18 +85,8 @@ class Block {
                     'textdomain' => $textdomain,
                     'block_path' => $block_base_path,
                 );
-
-                // Translation path mapping.
-                $block_paths[ 'block/' . $block_name ] =
-                    FrontendScripts::get_asset_path()
-                    . 'js/block/'
-                    . $block_name
-                    . '/index.js';
             }
         }
-
-        // Merge translation paths.
-        CatalogX()->block_paths += $block_paths;
 
         return apply_filters( 'catalogx_initialize_blocks', $blocks );
     }
@@ -117,19 +96,19 @@ class Block {
      *
      * @return void
      */
-    public function enqueue_blocks_assets() {
+    public function enqueue_all_block_assets() {
         if ( is_admin() && function_exists( 'get_current_screen' ) ) {
             $screen = get_current_screen();
             if ( $screen && $screen->is_block_editor ) {
                 FrontendScripts::load_scripts();
-                foreach ( $this->registered_blocks as $block_script ) {
+                FrontendScripts::enqueue_script( 'catalogx-vendor-script' );
+                foreach ( $this->get_blocks() as $block_script ) {
                     FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-editor-script' );
-                    FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-script' );
                 }
             }
         }
     }
-    /**
+	/**
 	 * Enqueue frontend scripts for registered blocks.
 	 *
 	 * Iterates through all registered block scripts and enqueues their
@@ -146,18 +125,17 @@ class Block {
         FrontendScripts::enqueue_script( 'catalogx-vendor-script' );
         foreach ( $this->get_blocks() as $block_script ) {
             $block_name = $block_script['textdomain'] . '/' . $block_script['name'];
-
+            
             if ( has_block( $block_name, $post ) ) {
-                $handle = $block_script['textdomain'] . '-' . $block_script['name'] . '-script';
-
-                FrontendScripts::enqueue_script( $handle );
+                $handle = $block_script['textdomain'] . '-' . $block_script['name'] . '-view-script';
+                // FrontendScripts::enqueue_script( $handle );
                 FrontendScripts::localize_scripts( $handle );
             }
         }
     }
 
     /**
-     * Register CatalogX block category in the block editor.
+     * Register MultiVendorX block category in the block editor.
      *
      * @param array $categories Existing block categories.
      * @return array Modified block categories.
@@ -177,7 +155,7 @@ class Block {
      * @return void
      */
     public function register_blocks() {
-        foreach ( $this->registered_blocks as $block ) {
+        foreach ( $this->get_blocks() as $block ) {
             register_block_type( $block['block_path'] . $block['name'] );
         }
     }

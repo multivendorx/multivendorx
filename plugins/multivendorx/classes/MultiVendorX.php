@@ -1,329 +1,643 @@
 <?php
 /**
- * MultiVendorX class file
+ * FrontendScripts class file.
  *
  * @package MultiVendorX
  */
 
 namespace MultiVendorX;
 
-defined( 'ABSPATH' ) || exit;
-use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use MultiVendorX\Store\Store;
+use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
- * MultiVendorX Class.
+ * MultiVendorX FrontendScripts class
  *
- * @class       Module class
+ * @class       FrontendScripts class
  * @version     5.0.0
  * @author      MultiVendorX
  */
-final class MultiVendorX {
+class FrontendScripts {
 
     /**
-     * Holds the single instance of the class (singleton pattern).
-     *
-     * @var self|null
-     */
-    private static $instance = null;
-
-    /**
-     * The main plugin file path.
-     *
-     * @var string
-     */
-    private $file = '';
-
-    /**
-     * Container for dependency injection or shared resources.
+     * Holds the scripts.
      *
      * @var array
      */
-    private $container = array();
+    public static $scripts = array();
+	/**
+     * Holds the styles.
+     *
+     * @var array
+     */
+    public static $styles = array();
 
     /**
-     * Class constructor
-     *
-     * @param object $file file.
+     * FrontendScripts constructor.
      */
-    public function __construct( $file ) {
-        require_once trailingslashit( dirname( $file ) ) . '/config.php';
-
-        $this->file                               = $file;
-        $this->container['plugin_url']            = trailingslashit( plugins_url( '', $plugin = $file ) );
-        $this->container['plugin_path']           = trailingslashit( dirname( $file ) );
-        $this->container['plugin_base']           = plugin_basename( $file );
-        $this->container['multivendorx_logs_dir'] = ( trailingslashit( wp_upload_dir( null, false )['basedir'] ) . 'mw-logs' );
-        $this->container['version']               = MULTIVENDORX_PLUGIN_VERSION;
-        $this->container['rest_namespace']        = 'multivendorx/v1';
-        $this->container['plugin_slug']           = MULTIVENDORX_WORDPRESS_SLUG;
-        $this->container['block_paths']           = array();
-        $this->container['is_dev']                = defined( 'WP_ENV' ) && WP_ENV === 'development';
-        $this->container['date_format']           = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
-
-        register_activation_hook( $file, array( $this, 'activate' ) );
-        register_deactivation_hook( $file, array( $this, 'deactivate' ) );
-
-        add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
-        add_action( 'woocommerce_loaded', array( $this, 'init_plugin' ) );
-        add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
-        add_action( 'plugins_loaded', array( $this, 'is_woocommerce_loaded' ) );
-        add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
-        // Major update notice.
-		add_action( 'in_plugin_update_message-dc-woocommerce-multi-vendor/dc_product_vendor.php', array( $this, 'multivendorx_plugin_update_message' ) );
+    public function __construct() {
+        add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'admin_load_scripts' ) );
     }
 
     /**
-     * Show a plugin update message on the plugin update screen for major versions.
-     *
-     * This is hooked to display a custom admin notice when the installed version is less than 5.0.0.
-     *
-     * @return void
-     */
-    public function multivendorx_plugin_update_message() {
-        if ( version_compare( get_option( 'MULTIVENDORX_PLUGIN_VERSION' ), '5.0.0', '<' ) ) {
-            echo '<p><strong>Heads up!</strong> 5.0.0 is a major update. Make a full site backup and before upgrading your marketplace to avoid any undesirable situations.</p>';
-            exit;
+	 * Get the build path for assets based on environment.
+	 *
+	 * @return string Relative path to the build directory.
+	 */
+    public static function get_build_path_name() {
+        if ( MultiVendorX()->is_dev ) {
+			return 'release/assets/';
+        }
+        return 'assets/';
+    }
+
+
+    /**
+	 * Register and store a script for later use.
+	 *
+	 * @param string $handle       Unique script handle.
+	 * @param string $path         URL to the script file.
+	 * @param array  $deps         Optional. Script dependencies. Default empty array.
+	 * @param string $version      Optional. Script version. Default empty string.
+	 */
+    public static function register_script( $handle, $path, $deps = array(), $version = '' ) {
+        self::$scripts[] = $handle;
+        wp_register_script( $handle, $path, $deps, $version, true );
+        wp_set_script_translations( $handle, 'multivendorx' );
+    }
+
+    /**
+	 * Register and store a style for later use.
+	 *
+	 * @param string $handle   Unique style handle.
+	 * @param string $path     URL to the style file.
+	 * @param array  $deps     Optional. Style dependencies. Default empty array.
+	 * @param string $version  Optional. Style version. Default empty string.
+	 */
+    public static function register_style( $handle, $path, $deps = array(), $version = '' ) {
+        self::$styles[] = $handle;
+        wp_register_style( $handle, $path, $deps, $version );
+    }
+
+    /**
+	 * Register frontend scripts using filters and enqueue required external scripts.
+	 *
+	 * Loads block assets and additional scripts defined through the `multivendorx_register_scripts` filter.
+	 */
+    public static function register_scripts() {
+        $version = MultiVendorX()->version;
+        $index_asset     = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/index.asset.php';
+        $vendor_asset     = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/vendors.asset.php';
+        // $component_asset = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/components.asset.php';
+
+        $base_url    = MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/';
+        $common_deps = array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' );
+
+        $register_scripts = apply_filters(
+            'multivendorx_register_scripts',
+            array(
+                'multivendorx-vendor-script'  => array(
+                	'src'  => $base_url . 'vendors.js',
+                	'deps' => $vendor_asset['dependencies'],
+                ),
+                'multivendorx-dashboard-script'            => array(
+                    'src'  => $base_url . 'index.js',
+                    'deps' => $index_asset['dependencies'],
+                ),
+                'multivendorx-store-products-script'       => array(
+					'src'  => $base_url . MULTIVENDORX_PLUGIN_SLUG . '-store-products.min.js',
+					'deps' => $common_deps,
+				),
+            )
+        );
+
+        foreach ( $register_scripts as $name => $props ) {
+            self::register_script( $name, $props['src'], $props['deps'], $props['version'] ?? $version );
         }
     }
 
     /**
-     * Placeholder for activation function.
-     *
-     * @return void
-     */
-    public function activate() {
-        add_option( Utill::MULTIVENDORX_OTHER_SETTINGS['run_installer'], true );
-        if ( ! get_option( Utill::MULTIVENDORX_OTHER_SETTINGS['installed'] ) ) {
-            add_option( Utill::MULTIVENDORX_OTHER_SETTINGS['installed'], true );
-            add_option( Utill::MULTIVENDORX_OTHER_SETTINGS['plugin_activated'], true );
+	 * Register frontend styles using filters.
+	 *
+	 * Allows style registration through `multivendorx_register_styles` filter.
+	 */
+    public static function register_styles() {
+        $version         = MultiVendorX()->version;
+        $register_styles = apply_filters(
+            'multivendorx_register_styles',
+            array(
+				'multivendorx-dashboard-style'    => array(
+					'src' => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/index.css',
+				),
+                'multivendorx-store-tabs-style'   => array(
+					'src' => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/' . MULTIVENDORX_PLUGIN_SLUG . '-store-products.min.css',
+				),
+                'multivendorx-common-block-style' => array(
+					'src' => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/' . MULTIVENDORX_PLUGIN_SLUG . '-common-block.min.css',
+				),
+			)
+        );
+        foreach ( $register_styles as $name => $props ) {
+            self::register_style( $name, $props['src'], array(), $props['version'] ?? $version );
         }
     }
 
     /**
-     * Placeholder for deactivation function.
-     *
-     * @return void
+     * Register/queue frontend scripts.
      */
-    public function deactivate() {
-        delete_option( Utill::MULTIVENDORX_OTHER_SETTINGS['installed'] );
-        delete_option( Utill::MULTIVENDORX_OTHER_SETTINGS['plugin_page_install'] );
-        flush_rewrite_rules();
+    public static function load_scripts() {
+        self::register_scripts();
+        self::register_styles();
     }
 
     /**
-     * Add High Performance Order Storage Support.
-     *
-     * @return void
-     */
-    public function declare_compatibility() {
-        FeaturesUtil::declare_compatibility( 'custom_order_tables', plugin_basename( $this->file ), true );
+	 * Register/queue admin scripts.
+	 */
+	public static function admin_load_scripts() {
+        self::admin_register_scripts();
+		self::admin_register_styles();
     }
 
     /**
-     * Initilizing plugin on WP init.
-     *
-     * @return void
-     */
-    public function init_plugin() {
-        add_action( 'init', array( $this, 'init_classes' ), 0 );
-        if ( get_option( Utill::MULTIVENDORX_OTHER_SETTINGS['run_installer'] ) ) {
-            new Install();
-            delete_option( Utill::MULTIVENDORX_OTHER_SETTINGS['run_installer'] );
+	 * Register admin scripts using filters.
+	 *
+	 * Loads admin-specific JavaScript assets and chunked dependencies.
+	 */
+    public static function admin_register_scripts() {
+		$version = MultiVendorX()->version;
+        // Enqueue all chunk files (External dependencies).
+        $index_asset      = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/index.asset.php';
+        // $component_asset  = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/components.asset.php';
+        $vendor_asset  = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/vendors.asset.php';
+		$register_scripts = apply_filters(
+            'admin_multivendorx_register_scripts',
+            array(
+                'multivendorx-vendor-script'  => array(
+                	'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/vendors.js',
+                	'deps' => $vendor_asset['dependencies'],
+                ),
+				'multivendorx-admin-script'       => array(
+					'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/index.js',
+					'deps' => $index_asset['dependencies'],
+				),
+                'multivendorx-product-tab-script' => array(
+					'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/' . MULTIVENDORX_PLUGIN_SLUG . '-product-tab.min.js',
+					'deps' => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ),
+				),
+            )
+        );
+		foreach ( $register_scripts as $name => $props ) {
+			self::register_script( $name, $props['src'], $props['deps'], $props['version'] ?? $version );
+		}
+	}
+
+    /**
+	 * Register admin styles using filters.
+	 *
+	 * Allows style registration through `admin_multivendorx_register_styles` filter.
+	 */
+    public static function admin_register_styles() {
+		$version         = MultiVendorX()->version;
+		$register_styles = apply_filters(
+            'admin_multivendorx_register_styles',
+            array(
+				'multivendorx-index-style' => array(
+					'src' => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/index.css',
+				),
+			)
+        );
+
+		foreach ( $register_styles as $name => $props ) {
+			self::register_style( $name, $props['src'], array(), $props['version'] ?? $version );
+		}
+	}
+	/**
+	 * Get base AJAX data for frontend scripts
+	 *
+	 * @param string $handle Script handle used for nonce creation.
+	 * @return array Base AJAX data including admin-ajax URL and nonce.
+	 */
+    public static function get_base_ajax_data( $handle ) {
+        return array(
+            'ajaxurl' => admin_url( 'admin-ajax.php' ),
+            'nonce'   => wp_create_nonce( $handle ),
+        );
+    }
+
+    /**
+	 * Localize all scripts.
+	 *
+	 * @param string $handle Script handle the data will be attached to.
+	 */
+    public static function localize_scripts( $handle ) {
+        // Get all tab setting's database value.
+        $settings_databases_value = array();
+
+        $tabs_names = apply_filters(
+            'multivendorx_additional_tabs_names',
+            array_keys( Utill::MULTIVENDORX_SETTINGS )
+        );
+
+        foreach ( $tabs_names as $tab_name ) {
+            $option_name                           = str_replace( '-', '_', 'multivendorx_' . $tab_name . '_settings' );
+            $settings_databases_value[ $tab_name ] = MultiVendorX()->setting->get_option( $option_name );
         }
 
-        add_action( 'init', array( $this, 'multivendorx_register_setup_wizard' ) );
-
-        add_filter( 'woocommerce_email_classes', array( $this, 'setup_email_class' ) );
-    }
-
-
-    /**
-     * Init all MultiVendorX classess.
-     * Access this classes using magic method.
-     *
-     * @return void
-     */
-    public function init_classes() {
-        $this->container['current_user']    = wp_get_current_user();
-        $this->container['current_user_id'] = get_current_user_id();
-
-        $this->container['util']            = new Utill();
-        $this->container['setting']         = new Setting();
-        $this->container['admin']           = new Admin();
-        $this->container['frontendScripts'] = new FrontendScripts();
-        $this->container['shortcode']       = new Shortcode();
-        $this->container['frontend']        = new Frontend();
-        $this->container['roles']           = new Roles();
-        $this->container['filters']         = new Deprecated\DeprecatedFilterHooks();
-        $this->container['actions']         = new Deprecated\DeprecatedActionHooks();
-        $this->container['commission']      = new Commission\CommissionManager();
-        $this->container['order']           = new Order\OrderManager();
-        $this->container['rest']            = new RestAPI\Rest();
-        $this->container['payments']        = new Payments\Payments();
-        $this->container['store']           = new Store\Store();
-        $this->container['transaction']     = new Transaction\Transaction();
-        $this->container['modules']         = new Modules();
-        $this->container['status']          = new Status();
-        $this->container['product']         = new Product();
-        $this->container['coupon']          = new Coupon();
-        $this->container['cron']            = new Cron();
-        $this->container['block']           = new Block();
-        $this->container['notifications']   = new Notifications\Notifications();
-        $this->container['widgets']         = new Widgets();
-        $this->container['pattern']         = new Pattern();
-        $this->container['tracker']         = new Tracker();
-        $this->container['promotions']      = new Promotions();
-        $this->container['migration']       = new Migration\Cron();
-
-        $this->initialize_multivendorx_log();
-
-        // Load all active modules.
-        $this->container['modules']->load_active_modules();
-
-        $this->container['active_store'] = get_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], true );
-
-        do_action( 'multivendorx_loaded' );
-        flush_rewrite_rules();
-    }
-
-    /**
-     * Register setup wizard.
-     *
-     * @return void
-     */
-    public function multivendorx_register_setup_wizard() {
-        new SetupWizard();
-        if ( get_option( Utill::MULTIVENDORX_OTHER_SETTINGS['plugin_activated'] ) ) {
-            delete_option( Utill::MULTIVENDORX_OTHER_SETTINGS['plugin_activated'] );
-            wp_safe_redirect( admin_url( 'admin.php?page=multivendorx-setup' ) );
-            exit;
-        }
-    }
-
-    /**
-     * Add MultiVendorX Email Class.
-     *
-     * @param array $emails  All MultiVendorX emails.
-     * @return array
-     */
-    public function setup_email_class( $emails ) {
-        return $emails;
-    }
-
-    /**
-     * Take action based on if woocommerce is not loaded.
-     *
-     * @return void
-     */
-    public function is_woocommerce_loaded() {
-        if ( did_action( 'woocommerce_loaded' ) || ! is_admin() ) {
-            $previous_version = get_option( Utill::MULTIVENDORX_OTHER_SETTINGS['plugin_db_version'], '' );
-            if ( version_compare( $previous_version, MultiVendorX()->version, '<' ) ) {
-                new Install();
+        $pages             = get_pages();
+        $woocommerce_pages = array( wc_get_page_id( 'shop' ), wc_get_page_id( 'cart' ), wc_get_page_id( 'checkout' ), wc_get_page_id( 'myaccount' ) );
+        $pages_array = array();
+        if ( $pages ) {
+            foreach ( $pages as $page ) {
+                if ( ! in_array( $page->ID, $woocommerce_pages, true ) ) {
+                    $pages_array[] = array(
+                        'value' => $page->ID,
+                        'label' => $page->post_title,
+                        'key'   => $page->ID,
+                    );
+                }
             }
-            return;
         }
-    }
 
-    /**
-     * Load Localisation files.
-     * Note: the first-loaded translation file overrides any following ones if the same translation is present.
-     *
-     * @access public
-     * @return void
-     */
-    public function load_plugin_textdomain() {
-        if ( version_compare( $GLOBALS['wp_version'], '6.7', '<' ) ) {
-            load_plugin_textdomain( 'multivendorx', false, plugin_basename( dirname( __DIR__ ) ) . '/languages' );
-        } else {
-            load_textdomain( 'multivendorx', WP_LANG_DIR . '/plugins/dc-woocommerce-multi-vendor-' . determine_locale() . '.mo' );
+        $woo_countries = new \WC_Countries();
+        $countries     = $woo_countries->get_allowed_countries();
+        $country_list  = array();
+        foreach ( $countries as $countries_key => $countries_value ) {
+            $country_list[] = array(
+                'label' => $countries_value,
+                'value' => $countries_key,
+            );
         }
-    }
 
-    /**
-     * Add metadata links (e.g. documentation, support) to the plugin row on the Plugins screen.
-     *
-     * @param array  $links An array of the plugin's metadata links.
-     * @param string $file  The path to the plugin file relative to the plugins directory.
-     *
-     * @return array Modified array of metadata links.
-     */
-    public function plugin_row_meta( $links, $file ) {
-        if ( MultiVendorX()->plugin_base === $file ) {
-            $row_meta = array(
-                'docs'    => '<a href="https://multivendorx.com/docs/" aria-label="' . esc_attr__( 'View WooCommerce documentation', 'multivendorx' ) . '" target="_blank">' . esc_html__( 'Docs', 'multivendorx' ) . '</a>',
-                'support' => '<a href="https://wordpress.org/support/plugin/dc-woocommerce-product-vendor/" aria-label="' . esc_attr__( 'Visit community forums', 'multivendorx' ) . '" target="_blank">' . esc_html__( 'Support', 'multivendorx' ) . '</a>',
+        $owners_list = array();
+        if ( is_admin() ) {
+            $store_owners = get_users(
+                array(
+                    'role'    => 'store_owner',
+                    'orderby' => 'ID',
+                    'order'   => 'ASC',
+                )
             );
 
-            if ( ! Utill::is_khali_dabba() ) {
-                $row_meta['go_pro'] = '<a href="' . MULTIVENDORX_PRO_SHOP_URL . '" class="multivendorx-pro-plugin" target="_blank" style="font-weight: 700;background: linear-gradient(110deg, rgb(63, 20, 115) 0%, 25%, rgb(175 59 116) 50%, 75%, rgb(219 75 84) 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;">' . __( 'Upgrade to Pro', 'multivendorx' ) . '</a>';
+            foreach ( $store_owners as $owner ) {
+                $owners_list[] = array(
+                    'label' => $owner->display_name,
+                    'value' => $owner->ID,
+                );
+            }
+        }
+
+        $gateways     = WC()->payment_gateways->get_available_payment_gateways();
+        $gateway_list = array();
+        foreach ( $gateways as $gateway_id => $gateway ) {
+            if ( 'cheque' === $gateway_id ) {
+                continue;
+            }
+            $gateway_list[] = array(
+                'label' => $gateway->get_title(),
+                'value' => $gateway_id,
+            );
+        }
+
+        $capability_pro = array(
+            'export_shop_report'    => array(
+                'prosetting' => true,
+                'module'     => 'store-analytics',
+            ),
+            'edit_stock_alerts'     => array(
+                'prosetting' => true,
+                'module'     => 'store-inventory',
+            ),
+            'view_support_tickets'  => array(
+                'prosetting' => true,
+            ),
+            'reply_support_tickets' => array(
+                'prosetting' => true,
+            ),
+        );
+
+        $store_ids = array();
+        $all_meta  = array();
+        if ( !is_admin() ) {
+            $active_store = MultiVendorX()->active_store;
+            $store_ids = Store::get_store( MultiVendorX()->current_user_id, 'user' );
+            if ( empty( $active_store ) && ! empty( $store_ids ) ) {
+                $first_store = reset( $store_ids );
+                $active_store = $first_store['id'];
+                update_user_meta( MultiVendorX()->current_user_id, Utill::USER_SETTINGS_KEYS['active_store'], $first_store['id'] );
+                MultiVendorX()->active_store = $first_store['id'];
             }
 
-            return array_merge( $links, $row_meta );
+            $store    = new Store( $active_store );
+            if ( $store->exists() ) {
+                $all_meta = array_merge( $store->get_data(), $store->get_all_meta() );
+            }
         }
 
-        return $links;
+        $order_statuses = wc_get_order_statuses();
+        $formatted = array();
+
+        foreach ( $order_statuses as $key => $label ) {
+            $formatted[] = array(
+                'label' => $label,
+                'value' => str_replace( 'wc-', '', $key ),
+            );
+        }
+
+
+        $base_rest = array(
+            'apiUrl'  => untrailingslashit( get_rest_url() ),
+            'restUrl' => MultiVendorX()->rest_namespace,
+            'nonce'   => wp_create_nonce( 'wp_rest' ),
+        );
+
+        $settings_data = array(
+            'settings_databases_value' => $settings_databases_value,
+        );
+
+        $currency_data = array(
+            'currency'           => get_woocommerce_currency(),
+            'currency_symbol'    => get_woocommerce_currency_symbol(),
+            'price_format'       => get_woocommerce_price_format(),
+            'decimal_separator'  => wc_get_price_decimal_separator(),
+            'thousand_separator' => wc_get_price_thousand_separator(),
+            'price_decimals'     => wc_get_price_decimals(),
+            'currency_position'  => get_option( 'woocommerce_currency_pos' ),
+        );
+
+        $localize_scripts =
+            array(
+                'multivendorx-admin-script'                => array(
+                    'object_name'  => 'appLocalizer',
+                    'use_rest'     => true,
+                    'use_ajax'     => true,
+                    'use_settings' => true,
+                    'use_currency' => true,
+					'data'         => apply_filters(
+                        'multivendorx_admin_localize_scripts',
+                        array(
+							'khali_dabba'            => Utill::is_khali_dabba(),
+                            'active_plugins'         => get_option( 'active_plugins', array() ),
+							'tab_name'               => __( 'MultiVendorX', 'multivendorx' ),
+							'pages_list'             => $pages_array,
+							'color'                  => MultiVendorX()->setting->get_setting( 'store_color_settings' ),
+							'taxes_enabled'          => get_option( Utill::WOO_SETTINGS['taxes'] ),
+							'country_list'           => $country_list,
+							'state_list'             => WC()->countries->get_states(),
+							'store_owners'           => $owners_list,
+							'gateway_list'           => $gateway_list,
+							'tinymceApiKey'          => MultiVendorX()->setting->get_setting( 'tinymce_api_section' ),
+							'capabilities'           => StoreUtil::get_store_capability(),
+							'capability_pro'         => $capability_pro,
+							'custom_roles'           => Roles::multivendorx_get_roles(),
+							'payments_settings'      => MultiVendorX()->payments->get_all_payment_settings(),
+							'zones_list'             => apply_filters( 'multivendorx_get_all_store_zones', array() ),
+							'store_payment_settings' => MultiVendorX()->payments->get_all_store_payment_settings(),
+							'freeVersion'            => MultiVendorX()->version,
+							'marketplace_site'       => get_bloginfo(),
+							'site_url'               => site_url(),
+							'admin_url'              => admin_url(),
+							'shop_url'               => MULTIVENDORX_PRO_SHOP_URL,
+							'admin_dashboard_url'    => admin_url( 'admin.php?page=multivendorx' ),
+                            'store_page_url'         => MultiVendorX()->store->storeutil->get_store_url( null, '', true ),
+							'shipping_methods'       => apply_filters( 'multivendorx_store_shipping_options', array() ),
+							'order_meta'             => Utill::ORDER_META_SETTINGS,
+                            'date_format'            => Utill::wp_to_react_date_format( get_option( 'date_format' ) ),
+                            'pro_data'               => apply_filters(
+								'multivendorx_update_pro_data',
+								array(
+									'version'         => false,
+									'manage_plan_url' => MULTIVENDORX_PRO_SHOP_URL,
+								)
+							),
+                            'placeholder_url'      => wc_placeholder_img_src(),
+                            'default_user_avatar'    => get_avatar_url( 0 ),
+                            'multivendor_plugin'     => Utill::get_active_multivendor(),
+                        )
+                    ),
+                ),
+                'multivendorx-product-tab-script'          => array(
+					'object_name' => 'multivendorx',
+                    'use_ajax'    => true,
+					'data'        => array(
+						'select_text' => __( 'Select an item...', 'multivendorx' ),
+					),
+				),
+                'multivendorx-dashboard-script'            => array(
+                    'object_name'  => 'appLocalizer',
+                    'use_rest'     => true,
+                    'use_ajax'     => true,
+                    'use_settings' => true,
+                    'use_currency' => true,
+                    'data'         => apply_filters(
+                        'multivendorx_dashboard_localize_scripts',
+                        array(
+                            'site_url'                 => site_url(),
+                            'state_list'               => WC()->countries->get_states(),
+                            'country_list'             => $country_list,
+                            'color'                    => MultiVendorX()->setting->get_setting( 'store_color_settings' ),
+                            'tinymceApiKey'            => MultiVendorX()->setting->get_setting( 'tinymce_api_section' ),
+                            'store_payment_settings'   => MultiVendorX()->payments->get_all_store_payment_settings(),
+                            'store_id'                 => MultiVendorX()->active_store,
+                            'store_page_url'           => MultiVendorX()->store->storeutil->get_store_url( null, '', true ),
+                            'admin_url'                => admin_url(),
+                            'edit_order_capability'    => current_user_can( 'edit_shop_orders' ),
+                            'permalink_structure'      => get_option( Utill::WORDPRESS_SETTINGS['permalink'] ) ? true : false,
+                            'all_verification_methods' => MultiVendorX()->setting->get_setting( 'all_verification_methods' ),
+                            'shipping_methods'         => apply_filters( 'multivendorx_store_shipping_options', array() ),
+                            'all_store_meta'           => $all_meta,
+                            'site_name'                => get_bloginfo( 'name' ),
+                            'current_user'             => MultiVendorX()->current_user,
+                            'current_user_image'       => get_avatar_url( MultiVendorX()->current_user_id, array( 'size' => 48 ) ),
+                            'user_logout_url'          => esc_url(
+                                wp_logout_url(
+                                    get_permalink( (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) )
+                                )
+                            ),
+                            'store_ids'                => $store_ids,
+                            'dashboard_page_id'        => (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ),
+                            'dashboard_slug'           => (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' )
+                                ? get_post_field( 'post_name', (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) )
+                                : 'dashboard',
+                            'registration_page'        => esc_url(
+                                get_permalink(
+                                    (int) MultiVendorX()->setting->get_setting( 'store_registration_page' )
+                                )
+                            ),
+                            'dimension_unit'           => get_option( Utill::WOO_SETTINGS['dimension_unit'] ),
+                            'order_meta'               => Utill::ORDER_META_SETTINGS,
+                            'date_format'              => Utill::wp_to_react_date_format( get_option( 'date_format' ) ),
+                            'placeholder_url  '        => wc_placeholder_img_src(),
+                            'default_user_avatar'      => get_avatar_url( 0 ),
+                            'order_statuses'           => $formatted,
+                        )
+                    ),
+                ),
+                'multivendorx-registration-form-editor-script' => array(
+                    'object_name' => 'registrationForm',
+                    'use_rest'    => true,
+                    'data'        => array(
+                        'settings'            => MultiVendorX()->setting->get_setting( 'store_registration_from', array() ),
+                        'content_before_form' => apply_filters( 'multivendorx_add_content_before_form', '' ),
+                        'content_after_form'  => apply_filters( 'multivendorx_add_content_after_form', '' ),
+                        'error_strings'       => array(
+                            'required' => __( 'This field is required', 'multivendorx' ),
+                            'invalid'  => __( 'Invalid email format', 'multivendorx' ),
+                        ),
+                        'country_list'        => $country_list,
+						'state_list'          => WC()->countries->get_states(),
+                    ),
+                ),
+                'multivendorx-registration-form-view-script'    => array(
+                    'object_name' => 'registrationForm',
+                    'use_rest'    => true,
+                    'data'        => array(
+                        'settings'            => MultiVendorX()->setting->get_setting( 'store_registration_from', array() ),
+                        'content_before_form' => apply_filters( 'multivendorx_add_content_before_form', '' ),
+                        'content_after_form'  => apply_filters( 'multivendorx_add_content_after_form', '' ),
+                        'is_user_logged_in'   => is_user_logged_in(),
+                        'error_strings'       => array(
+                            'required' => __( 'This field is required', 'multivendorx' ),
+                            'invalid'  => __( 'Invalid email format', 'multivendorx' ),
+                        ),
+                        'country_list'        => $country_list,
+						'state_list'          => WC()->countries->get_states(),
+                    ),
+                ),
+                'multivendorx-marketplace-stores-editor-script' => array(
+                    'use_rest'     => true,
+                    'use_settings' => true,
+                    'object_name'  => 'storesList',
+                    'data'         => array(
+                        'store_page_url'      => MultiVendorX()->store->storeutil->get_store_url( null, '', true ),
+                        'placeholder_url'     => wc_placeholder_img_src(),
+                        'default_user_avatar' => get_avatar_url( 0 ),
+                        'storeDetails'        => StoreUtil::get_specific_store_info(),
+                    ),
+                ),
+                'multivendorx-marketplace-stores-view-script'   => array(
+                    'object_name'  => 'storesList',
+                    'use_settings' => true,
+                    'use_rest'     => true,
+                    'data'         => array(
+                        'store_page_url'      => MultiVendorX()->store->storeutil->get_store_url( null, '', true ),
+                        'placeholder_url'     => wc_placeholder_img_src(),
+                        'default_user_avatar' => get_avatar_url( 0 ),
+                        'storeDetails'        => StoreUtil::get_specific_store_info(),
+                    ),
+                ),
+                'multivendorx-marketplace-products-editor-script' => array(
+                    'object_name'  => 'productList',
+                    'use_rest'     => true,
+                    'use_settings' => true,
+                ),
+                'multivendorx-marketplace-products-view-script' => array(
+                    'object_name'  => 'productList',
+                    'use_rest'     => true,
+                    'use_settings' => true,
+                    'data'         => array(
+                        'storeDetails' => StoreUtil::get_specific_store_info(),
+                        'placeholder_url'     => wc_placeholder_img_src(),
+                    ),
+                ),
+                'multivendorx-marketplace-coupons-editor-script'  => array(
+                    'object_name'  => 'couponList',
+                    'use_rest'     => true,
+                    'use_settings' => true,
+                    'data'         => array(
+                        'storeDetails' => StoreUtil::get_specific_store_info(),
+                    ),
+                ),
+                'multivendorx-marketplace-coupons-view-script'  => array(
+                    'object_name'  => 'couponList',
+                    'use_rest'     => true,
+                    'use_settings' => true,
+                    'data'         => array(
+                        'storeDetails' => StoreUtil::get_specific_store_info(),
+                    ),
+                ),
+                'multivendorx-store-provider-script'       => array(
+                    'object_name'  => 'StoreInfo',
+                    'use_settings' => true,
+                    'use_rest'     => true,
+                    'data'         => apply_filters(
+                        'multivendorx_store_frontend_localize_scripts',
+                        array(
+                            'storeDetails'        => StoreUtil::get_specific_store_info(),
+                            'activeModules'       => MultiVendorX()->modules->get_active_modules(),
+                            'currentUserId'       => MultiVendorX()->current_user_id,
+                            'loginUrl'            => wc_get_page_permalink( 'myaccount' ),
+                            'default_user_avatar' => get_avatar_url( 0 ),
+                            'site_url'            => site_url(),
+                        )
+                    ),
+                ),
+			);
+
+        $localize_scripts = apply_filters( 'multivendorx_localize_scripts', $localize_scripts );
+        $config           = $localize_scripts[ $handle ] ?? array();
+
+        $data = array();
+
+        if ( ! empty( $config['use_ajax'] ) && ! empty( $config['use_rest'] ) ) {
+            $base_ajax = self::get_base_ajax_data( $handle );
+            unset( $base_ajax['nonce'] );
+            $data = array_merge( $data, $base_ajax );
+        } else {
+            $data = array_merge( $data, self::get_base_ajax_data( $handle ) );
+        }
+
+        if ( ! empty( $config['use_rest'] ) ) {
+            $data = array_merge( $data, $base_rest );
+        }
+
+        if ( ! empty( $config['use_currency'] ) ) {
+            $data = array_merge( $data, $currency_data );
+        }
+
+        if ( ! empty( $config['use_settings'] ) ) {
+            $data = array_merge( $data, $settings_data );
+        }
+
+        if ( ! empty( $config['data'] ) ) {
+            $data = array_merge( $data, $config['data'] );
+        }
+
+        if ( isset( $localize_scripts[ $handle ] ) ) {
+            $props = $localize_scripts[ $handle ];
+            self::localize_script( $handle, $props['object_name'], $data );
+        }
     }
 
     /**
-     * Get multivendorx log file name.
-     */
-    public function initialize_multivendorx_log() {
-        // The log file name is stored in the options table because it is generated with an arbitrary name.
-        $log_file_name = get_option( Utill::MULTIVENDORX_OTHER_SETTINGS['log_file'] );
+	 * Localizes a registered script with data for use in JavaScript.
+	 *
+	 * @param string $handle Script handle the data will be attached to.
+	 * @param string $name   JavaScript object name.
+	 * @param array  $data   Data to be made available in JavaScript.
+	 */
+    public static function localize_script( $handle, $name, $data = array() ) {
+		wp_localize_script( $handle, $name, $data );
+	}
 
-        if ( ! $log_file_name ) {
-            $log_file_name = uniqid( 'error' ) . '.txt';
-            update_option( Utill::MULTIVENDORX_OTHER_SETTINGS['log_file'], $log_file_name );
-        }
+	/**
+	 * Enqueues a registered script.
+	 *
+	 * @param string $handle Handle of the registered script to enqueue.
+	 */
+    public static function enqueue_script( $handle ) {
+		wp_enqueue_script( $handle );
+	}
 
-        $this->container['log_file']          = MultiVendorX()->multivendorx_logs_dir . '/' . $log_file_name;
-        $this->container['show_advanced_log'] = in_array( 'multivendorx_adv_log', MultiVendorX()->setting->get_setting( 'multivendorx_adv_log', array() ), true );
-    }
-
-    /**
-     * Magic getter function to get the reference of class.
-     * Accept class name, If valid return reference, else Wp_Error.
-     *
-     * @param  mixed $class_name all classes.
-     */
-    public function __get( $class_name ) {
-     // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound
-        if ( array_key_exists( $class_name, $this->container ) ) {
-            return $this->container[ $class_name ];
-        }
-
-        return new \WP_Error( sprintf( 'Call to unknown class %s.', $class_name ) );
-    }
-
-    /**
-     * Magic setter function to store a reference of a class.
-     * Accepts a class name as the key and stores the instance in the container.
-     *
-     * @param string $class_name The class name or key to store the instance.
-     * @param object $value The instance of the class to store.
-     */
-    public function __set( $class_name, $value ) {
-     // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound
-        $this->container[ $class_name ] = $value;
-    }
-
-    /**
-     * Initializes the Multivendorx class.
-     * Checks for an existing instance
-     * And if it doesn't find one, create it.
-     *
-     * @param  mixed $file file.
-     * @return object | null
-     */
-    public static function init( $file ) {
-        if ( null === self::$instance ) {
-            self::$instance = new self( $file );
-        }
-
-        return self::$instance;
-    }
+	/**
+	 * Enqueues a registered style.
+	 *
+	 * @param string $handle Handle of the registered style to enqueue.
+	 */
+    public static function enqueue_style( $handle ) {
+		wp_enqueue_style( $handle );
+	}
 }
-
-
