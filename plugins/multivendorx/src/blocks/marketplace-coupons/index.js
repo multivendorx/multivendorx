@@ -11,7 +11,7 @@ import { getApiLink } from 'zyra';
 /* global couponList */
 
 registerBlockType('multivendorx/marketplace-coupons', {
-	apiVersion: 2,
+	apiVersion: 3,
 	title: __('Store Coupons', 'multivendorx'),
 	icon: 'tickets-alt',
 	category: 'multivendorx',

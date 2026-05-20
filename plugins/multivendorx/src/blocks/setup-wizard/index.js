@@ -16,7 +16,7 @@ const EditBlock = () => {
 
 // Register the block
 registerBlockType('multivendorx/setup-wizard', {
-	apiVersion: 2,
+	apiVersion: 3,
 	title: 'Setup Wizard',
 	icon: 'welcome-widgets-menus',
 	category: 'multivendorx',

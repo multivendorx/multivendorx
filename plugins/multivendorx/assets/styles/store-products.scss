@@ -921,3 +921,14 @@ $star-color: #d49c00;
 .multivendorx-registration:not(:has(.u-columns)) .multivendorx-tabs {
 	display: none;
 }
+
+// printfull
+.multivendorx-upload-field{
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+.multivendorx-printful-button{
+    margin-left: 0.625rem;
+}

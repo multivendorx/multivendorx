@@ -163,7 +163,7 @@ const Edit = () => {
 };
 
 registerBlockType('multivendorx/store-tabs', {
-	apiVersion: 2,
+	apiVersion: 3,
 	edit: Edit,
 	save() {
 		return <div id="multivendorx-store-tabs"></div>;
