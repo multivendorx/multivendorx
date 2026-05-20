@@ -16,9 +16,11 @@ $star-color: #d49c00;
         margin: 0;
     }
 }
-.richtext-content{
+
+.richtext-content {
     padding-left: 0.5rem;
 }
+
 .multivendorx-store-wrapper {
     display: flex;
     gap: 3rem;
@@ -782,7 +784,8 @@ $star-color: #d49c00;
     display: flex;
     flex-direction: column;
     align-items: center;
-    .buttons-wrapper{
+
+    .buttons-wrapper {
         text-align: right;
     }
 
@@ -918,6 +921,7 @@ $star-color: #d49c00;
 .multivendorxstep-content {
     width: 50%;
 }
+
 .multivendorx-registration:not(:has(.u-columns)) .multivendorx-tabs {
 	display: none;
 }
