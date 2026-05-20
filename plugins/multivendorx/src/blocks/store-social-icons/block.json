@@ -6,6 +6,7 @@
   "icon": "share",
   "description": "Display store social media icons",
   "editorScript": "file:./index.js",
+  "textdomain": "multivendorx",
   "viewScript": "file:./view.js",
   "attributes": {
     "iconSize": {

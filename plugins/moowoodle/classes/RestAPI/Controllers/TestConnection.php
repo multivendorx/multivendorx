@@ -74,7 +74,7 @@ class TestConnection extends \WP_REST_Controller {
         $user_id   = $user['id'] ?? 0;
         $course_id = $course['id'] ?? 0;
 
-        $args = array(
+        $action_args = array(
             'update_users'   => array( $user_id ),
             'enroll_users'   => array( $user_id, $course_id ),
             'unenroll_users' => array( $user_id, $course_id ),
@@ -93,7 +93,7 @@ class TestConnection extends \WP_REST_Controller {
             );
         }
 
-        return rest_ensure_response( call_user_func_array( array( $this, $action ), $args[ $action ] ?? array() ) );
+        return rest_ensure_response( call_user_func_array( array( $this, $action ), $action_args[ $action ] ?? array() ) );
     }
 
     /**
@@ -109,11 +109,11 @@ class TestConnection extends \WP_REST_Controller {
 			$response = $response['data'];
 
 			// Get all webservice functions.
-			$webservice_functions = MooWoodle()->external_service->get_core_functions();
+			$webservice_functions = MooWoodle()->external_service->get_registered_core_functions();
 			$webservice_functions = array_values( $webservice_functions );
 
 			// Get register webservice functions.
-			$register_functions = array_map(
+			$registered_functions = array_map(
                 function ( $function ) {
 					return $function['name'];
 				},
@@ -121,9 +121,9 @@ class TestConnection extends \WP_REST_Controller {
             );
 
 			// Get missing functions.
-			$missing_functions = array_diff( $webservice_functions, $register_functions );
+			$unregistered_functions = array_diff( $webservice_functions, $registered_functions );
 
-			if ( $missing_functions ) {
+			if ( $unregistered_functions ) {
 				MooWoodle()->util->log( 'It seems that Moodle external web service functions [' . implode( ', ', $missing_functions ) . '] not configured correctly.' );
 			}
 
@@ -199,7 +199,7 @@ class TestConnection extends \WP_REST_Controller {
 		$response = MooWoodle()->external_service->do_request(
             'create_users',
             array(
-				'users' => self::get_dummy_user_data(),
+				'users' => self::get_test_user_payload(),
 			)
         );
 
@@ -245,7 +245,7 @@ class TestConnection extends \WP_REST_Controller {
 		$response = MooWoodle()->external_service->do_request(
             'update_users',
             array(
-				'users' => self::get_dummy_user_data( $user_id ),
+				'users' => self::get_test_user_payload( $user_id ),
 			)
         );
 
@@ -333,7 +333,7 @@ class TestConnection extends \WP_REST_Controller {
 	 * @param int $user_id User ID.
 	 * @return array
 	 */
-	private static function get_dummy_user_data( $user_id = 0 ) {
+	private static function get_test_user_payload( $user_id = 0 ) {
 		$user_data = array(
 			'email'       => 'moowoodletestuser@gmail.com',
 			'username'    => 'moowoodletestuser',
