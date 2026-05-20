@@ -5,6 +5,7 @@ import {
 	BlockControls,
 	AlignmentToolbar,
 } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 
 registerBlockType('multivendorx/store-name', {
 	edit: ({ attributes, setAttributes }) => {
@@ -26,7 +27,7 @@ registerBlockType('multivendorx/store-name', {
 					/>
 				</BlockControls>
 
-				<h2 {...blockProps}>Store Name</h2>
+				<h2 {...blockProps}>{__('Store Name', 'multivendorx')}</h2>
 			</>
 		);
 	},

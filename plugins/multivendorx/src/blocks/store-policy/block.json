@@ -7,6 +7,7 @@
     "description": "Display the store’s policies clearly to set expectations before purchase.",
     "editorScript": "file:./index.js",
     "viewScript": "file:./view.js",
+    "textdomain": "multivendorx",
     "supports": {
         "align": true,
         "alignWide": false,
