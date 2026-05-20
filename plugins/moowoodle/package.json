@@ -9,8 +9,8 @@
     },
     "scripts": {
         "build": "echo \"${npm_package_name}\" && pnpm --if-present --workspace-concurrency=Infinity --stream --filter \"${npm_package_name}\" \"/^build:project:.*$/\"",
-        "build:zip": "pnpm install && pnpm run readme && pnpm --if-present \"/^build:project:.*$/\" && pnpm run makepot && node bin/release.mjs",
-        "build:release": "pnpm install && pnpm run readme  && pnpm run version && pnpm --if-present \"/^build:project:.*$/\" && pnpm run makepot && node bin/release.mjs",
+        "build:zip": "pnpm run readme && pnpm --if-present \"/^build:project:.*$/\" && pnpm run makepot && pnpm run makejson && node bin/release.mjs",
+		"build:release": "pnpm install && pnpm run readme  && pnpm run version && pnpm --if-present \"/^build:project:.*$/\" && pnpm run makepot && pnpm run makejson && node bin/release.mjs",
         "build:project": "pnpm --if-present \"/^build:project:.*$/\"",
         "build:project:bundle": "wireit",
         "build:project:translation:domains": "wireit",
@@ -45,7 +45,8 @@
         "minify": "node bin/minify.mjs",
         "version": "node bin/version-replace.mjs",
         "changelog": "composer install --quiet && composer exec -- changelogger",
-        "makepot": "wp i18n make-pot --domain='moowoodle' --include='assets/js,classes,src,templates,config.php,moowoodle.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://dualcube.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') Moowoodle Inc. All Rights Reserved.\" languages/moowoodle.pot"
+        "makepot": "wp i18n make-pot --domain='moowoodle' --include='assets/js,classes,templates,config.php,moowoodle.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://dualcube.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') Moowoodle Inc. All Rights Reserved.\" languages/moowoodle.pot && node bin/fix-pot-paths.mjs",
+		"makejson": "wp i18n make-json languages --pretty-print --no-purge"
     },
     "repository": {
         "type": "git",
