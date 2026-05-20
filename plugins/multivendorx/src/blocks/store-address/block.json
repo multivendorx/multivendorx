@@ -8,6 +8,7 @@
   "keywords": ["address", "location", "store"],
   "editorScript": "file:./index.js",
   "viewScript": "file:./view.js",
+  "textdomain": "multivendorx",
   "supports": {
     "align": true,
     "alignWide": false,

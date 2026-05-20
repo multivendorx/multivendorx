@@ -55,15 +55,15 @@ class Course {
 	public static function get_courses( $args = array() ) {
 		global $wpdb;
 
-		$table = $wpdb->prefix . Util::TABLES['course'];
+		$table_name = $wpdb->prefix . Util::TABLES['course'];
 
 		$where  = array();
 		$params = array();
 
 		$is_count = ! empty( $args['count'] );
 		$sql      = $is_count
-			? "SELECT COUNT(*) FROM {$table}"
-			: "SELECT * FROM {$table}";
+			? "SELECT COUNT(*) FROM {$table_name}"
+			: "SELECT * FROM {$table_name}";
 
 		if ( ! empty( $args['id'] ) ) {
 			$ids          = array_map( 'intval', (array) $args['id'] );
@@ -73,7 +73,7 @@ class Course {
 			$params  = array_merge( $params, $ids );
 		}
 
-		$fields = array(
+		$supported_filters = array(
 			'moodle_course_id' => '%d',
 			'category_id'      => '%d',
 			'product_id'       => '%d',
@@ -81,7 +81,7 @@ class Course {
 			'enddate'          => '%d',
 		);
 
-		foreach ( $fields as $field => $format ) {
+		foreach ( $supported_filters as $field => $format ) {
 			if ( isset( $args[ $field ] ) ) {
 				$where[]  = "{$field} = {$format}";
 				$params[] = (int) $args[ $field ];
@@ -97,9 +97,12 @@ class Course {
 			$where[]  = 'fullname LIKE %s';
 			$params[] = '%' . $wpdb->esc_like( $args['fullname'] ) . '%';
 		}
-
+		
 		if ( ! empty( $where ) ) {
 			$condition = strtoupper( $args['condition'] ?? 'AND' );
+			if ( ! in_array( $condition, array( 'AND', 'OR' ), true ) ) {
+				$condition = 'AND';
+			}
 			$sql      .= ' WHERE ' . implode( " $condition ", $where );
 		}
 
@@ -113,15 +116,13 @@ class Course {
 			}
 		}
 
-		// Prepare SQL
 		if ( ! empty( $params ) ) {
 			$sql = $wpdb->prepare( $sql, $params );
 		}
 
-		// Execute
 		if ( $is_count ) {
-			$results = $wpdb->get_var( $sql );
-			return $results ?? 0;
+			$course_count = $wpdb->get_var( $sql );
+			return $course_count ?? 0;
 		}
 
 		return $wpdb->get_results( $sql, ARRAY_A ) ?: array();
@@ -130,27 +131,36 @@ class Course {
 	/**
 	 * Insert or update a course record by Moodle course ID.
 	 *
-	 * @param array $args Course data. Must include 'moodle_course_id'.
+	 * @param array $course_data Course data. Must include 'moodle_course_id'.
 	 * @return int|false Rows affected or false on failure.
 	 */
-	public static function update_course( $args ) {
+	public static function update_course( $course_data ) {
 		global $wpdb;
 
-		$moodle_course_id = (int) $args['moodle_course_id'];
+		$moodle_course_id = (int) $course_data['moodle_course_id'];
 		if ( empty( $moodle_course_id ) ) {
 			return false;
 		}
 
-		$table           = $wpdb->prefix . Util::TABLES['course'];
-		$existing_course = self::get_courses( array( 'moodle_course_id' => $moodle_course_id ) );
-		$existing        = reset( $existing_course );
+		$table_name      = $wpdb->prefix . Util::TABLES['course'];		
+		$existing_course = self::get_courses(
+			array(
+				'moodle_course_id' => $moodle_course_id,
+				'limit'            => 1,
+			)
+		);
+		$existing = $existing_course[0] ?? array();
 
 		if ( ! empty( $existing ) ) {
-			return $wpdb->update( $table, $args, array( 'moodle_course_id' => $moodle_course_id ) ) !== false ? $existing['id'] : false; // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$updated = $wpdb->update( $table_name, $course_data, array( 'moodle_course_id' => $moodle_course_id ) );
+			if ( false !== $updated ) {
+				return (int) $existing['id'];
+			}
+			return false;
 		}
 
-		$args['created'] = current_time( 'mysql' );
-		return $wpdb->insert( $table, $args ) !== false // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$course_data['created'] = current_time( 'mysql' );
+		return $wpdb->insert( $table_name, $course_data ) !== false // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		? $wpdb->insert_id
 		: false;
 	}
@@ -168,14 +178,13 @@ class Course {
 			return;
 		}
 
-		$updated_ids = array();
+		$synced_course_ids = array();
         foreach ( $courses as $course ) {
-            // Skip site format courses.
             if ( empty( $course['format'] ) || 'site' === $course['format'] ) {
                 continue;
             }
 
-            $args = array(
+            $course_data = array(
                 'moodle_course_id' => (int) $course['id'],
                 'shortname'        => sanitize_text_field( $course['shortname'] ?? '' ),
                 'category_id'      => (int) ( $course['categoryid'] ?? 0 ),
@@ -184,12 +193,12 @@ class Course {
                 'enddate'          => (int) ( $course['enddate'] ?? 0 ),
             );
 
-            $updated_ids[] = self::update_course( $args );
+            $synced_course_ids[] = self::update_course( $course_data );
 
             Util::increment_sync_count( 'course' );
         }
 		if ( $force_delete ) {
-			self::cleanup_courses( $updated_ids );
+			self::cleanup_courses( $synced_course_ids );
 		}
     }
 

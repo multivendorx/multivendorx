@@ -8,6 +8,7 @@
   "keywords": ["logo", "store", "image", "brand"],
   "editorScript": "file:./index.js",
   "viewScript": "file:./view.js",
+  "textdomain": "multivendorx",
   "editorStyle": [ "multivendorx-common-block-style" ],
   "style": [ "multivendorx-common-block-style" ],
   "attributes": {

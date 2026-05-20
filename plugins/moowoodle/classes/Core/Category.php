@@ -29,21 +29,22 @@ class Category {
 	 */
 	public static function get_course_categories( $args ) {
         global $wpdb;
+		$category_ids = array();
 
 		if ( is_numeric( $args ) ) {
-			$args = array( (int) $args );
-		} elseif ( ! is_array( $args ) ) {
-			$args = array();
+			$category_ids = array( (int) $args );
+		} elseif ( is_array( $args ) ) {
+			$category_ids = array_map( 'intval', $args );
 		}
 
         $table = $wpdb->prefix . Util::TABLES['category'];
 		$query = "SELECT * FROM {$table}";
-        if ( ! empty( $args ) ) {
-            $in     = implode( ',', array_map( 'intval', $args ) );
+        if ( ! empty( $category_ids ) ) {
+            $in     = implode( ',', $category_ids );
             $query .= " WHERE id IN ($in)";
         }
-		$results = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-		return $results;
+		$categories = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		return $categories;
     }
 
 	/**
@@ -56,7 +57,7 @@ class Category {
 	 *     @type string $name               Required. Category name.
 	 *     @type int    $parent_id          Optional. Parent category ID.
 	 * }
-	 * @return bool False on failure, number of rows affected on success.
+	 * @return int|false, number of rows affected on success.
 	 */
 	public static function update_course_category( $args ) {
 		global $wpdb;
@@ -67,13 +68,13 @@ class Category {
 
 		$table = $wpdb->prefix . Util::TABLES['category'];
 
-		$data = array(
+		$category_record = array(
 			'id'        => (int) $args['id'],
 			'name'      => sanitize_text_field( $args['name'] ?? '' ),
 			'parent_id' => (int) ( $args['parent_id'] ?? 0 ),
 		);
 
-		return $wpdb->replace( $table, $data ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		return $wpdb->replace( $table, $category_record ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 	}
 
 	/**
@@ -98,9 +99,9 @@ class Category {
 			}
 
 			$args = array(
-				'id'        => (int) $category['id'],
-				'name'      => sanitize_text_field( $category['name'] ?? '' ),
-				'parent_id' => (int) ( $category['parent'] ?? 0 ),
+				'id'        => $category['id'],
+				'name'      => $category['name'],
+				'parent_id' => $category['parent'] ?? 0,
 			);
 
 			self::update_course_category( $args );
@@ -120,8 +121,8 @@ class Category {
 			return null;
 		}
 
-		// Get the terms basesd on moodle category id.
-		$terms = get_terms(
+		// Get terms using the Moodle category ID.
+		$product_category_term = get_terms(
             array(
 				'taxonomy'   => $taxonomy,
 				'hide_empty' => false,
@@ -135,11 +136,11 @@ class Category {
             )
         );
 
-		if ( is_wp_error( $terms ) ) {
+		if ( is_wp_error( $product_category_term ) ) {
 			return null;
 		}
 
-		return $terms[0] ?? null;
+		return $product_category_term[0] ?? null;
 	}
 
 	/**
@@ -154,7 +155,7 @@ class Category {
 		$term = self::get_product_category( $category['id'], $taxonomy );
 		$slug = sanitize_title( $category['name'] . '-' . $category['id'] );
 
-		// If term is exist update it.
+		// Update the term if it already exists.
 		if ( $term ) {
 			$term = wp_update_term(
 				$term->term_id,
@@ -204,26 +205,23 @@ class Category {
 	 * @return void
 	 */
 	public static function update_product_categories( $categories, $taxonomy ) {
-		if ( empty( $taxonomy ) || ! taxonomy_exists( $taxonomy ) ) {
+		if ( empty( $taxonomy ) || ! taxonomy_exists( $taxonomy ) || empty( $categories ) ) {
 			return;
 		}
 
-		if ( empty( $categories ) ) {
-			return;
-		}
-		$updated_ids = array();
+		$synced_category_ids = array();
 
 		foreach ( $categories as $category ) {
 			$category_id = self::update_product_category( $category, $taxonomy );
 			if ( ! empty( $category_id ) ) {
-				$updated_ids[] = $category_id;
+				$synced_category_ids[] = $category_id;
 			}
 
 			Util::increment_sync_count( 'course' );
 		}
 
 		// Remove all term exclude updated ids.
-		self::cleanup_categories( $updated_ids, $taxonomy );
+		self::cleanup_unsynced_categories( $synced_category_ids, $taxonomy );
 	}
 
 	/**
@@ -233,7 +231,7 @@ class Category {
 	 * @param string $taxonomy    Taxonomy name.
 	 * @return void
 	 */
-	private static function cleanup_categories( $exclude_ids, $taxonomy ) {
+	private static function cleanup_unsynced_categories( $exclude_ids, $taxonomy ) {
 		if ( empty( $taxonomy ) || ! taxonomy_exists( $taxonomy ) ) {
 			return;
 		}
@@ -275,7 +273,6 @@ class Category {
 				continue;
 			}
 
-			// Assign the parent term.
 			wp_update_term( $term->term_id, $taxonomy, array( 'parent' => $parent_term->term_id ) );
 		}
 	}
