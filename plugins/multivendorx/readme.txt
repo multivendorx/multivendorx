@@ -249,9 +249,9 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 = 5.0.6 - 2026-05-20 =
 * Added     - Compatibility with WordPress 7.0.0.
 * Added     - Support for adding attribute fields across all product types in the store dashboard #1869.
+* Added     - Store banner support for block based theme #1860.
 * Fixed     - Conflict with Elementor plugin causing issues in store list page loading #1866.
 * Fixed     - Console errors appearing on the store registration page #1867.
-* Fixed     - Store banner not displaying in the settings section according to configured settings #1860.
 * Fixed     - Database errors occurring while refreshing backend pages #1856.
 * Fixed     - Script loading issues affecting functionality #1860.
 * Fixed     - Loading issues on the store registration page #1851.
