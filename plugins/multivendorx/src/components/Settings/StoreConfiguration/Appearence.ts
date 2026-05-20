@@ -38,7 +38,7 @@ export default {
 			),
 		},
 		{
-			key: 'registration page',
+			key: 'store_banner_notice',
 			type: 'notice',
 			message: __(
 				'Choose how the store page displays its banner, logo, and description. </br> <b>Note: </b>Applicable only for non-block themes. For block themes, customize the layout through the Block Editor template settings.</br> <b>Read more: </b> <a class="link-item" href="https://multivendorx.com/docs/knowledgebase/configure-store-template-layout-for-block-based-themes/" >Block theme layout guide</a>',
