@@ -355,7 +355,7 @@ class Stores extends \WP_REST_Controller {
                         'email'               => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['store_email'] ]['primary'] ?? '',
                         'phone'               => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['phone'] ] ?? '',
                         'primary_owner'       => $owner,
-                        'primary_owner_image' => get_avatar( $owner_id, 48 ),
+                        'primary_owner_image' => get_avatar_url( $owner_id, 48 ),
                         'create_time'         => Utill::multivendorx_rest_prepare_date_response( $store['create_time'] ),
                         'create_time_gmt'     => Utill::multivendorx_rest_prepare_date_response( $store['create_time'], true ),
                         'store_image'         => $store_meta->meta_data['image'] ?? '',

@@ -179,7 +179,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-left: auto;
     margin: 1.5rem 0 1.5rem auto;
 
     .action-wrapper {
@@ -377,7 +376,10 @@
                             color: $theme-color;
                         }
                     }
-
+                    .edit-link{
+                        opacity: 0;
+                        transition: all 0.5s ease;
+                    }
                     .details {
                         margin: 0;
                         position: relative;
@@ -455,6 +457,12 @@
                 .admin-column:has(.table-action) {
                     overflow: visible;
                     padding: 0 1rem;
+                }
+
+                &:has(.edit-link):hover{
+                    .edit-link{
+                        opacity: 1;
+                    }
                 }
             }
 
@@ -729,3 +737,32 @@
 }
 
 // status color end
+
+@media only screen and (width <= 600px) {
+    .admin-table-wrapper {
+        .admin-top-filter {
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .table-wrapper {
+            overflow: scroll;
+        }
+
+        .filter-wrapper {
+            .table-filter-wrapper {
+                display: none;
+                position: fixed;
+                top: 40%;
+                right: 0;
+                width: 2rem;
+
+                .table-filter {
+                    .group-field {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}

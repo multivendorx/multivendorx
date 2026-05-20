@@ -1,12 +1,124 @@
-import React, { useState } from 'react';
-import { NavigatorHeader, PopupUI } from 'zyra';
+import React, { useState, useEffect } from 'react';
+import { CategoryCount, InfoItem, NavigatorHeader, PopupUI, QueryProps, TableCard } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import ShowProPopup from '../Popup/Popup';
 import '../common.scss';
 import { applyFilters } from '@wordpress/hooks';
+import { dummyEnrollments } from './Enrollment';
+
+interface EnrollmentRow {
+	id?: number;
+	course_name?: string;
+	group_name?: string;
+	cohort_name?: string;
+	customer_url?: string;
+	customer_name?: string;
+	category_name?: string;
+	status?: string;
+	enrollment_date?: string;
+	customer_img?: string;
+	course_image?: string;
+	order_id?: number;
+	course_id?: number;
+	group_id?: number;
+	cohort_id?: number;
+	customer_id?: number;
+	customer_email?: string;
+	learners_hub_id?: string;
+}
 
 const Enrollment: React.FC = () => {
 	const [openPopup, setopenPopup] = useState(false);
+	let tableProps: any = {};
+
+	// Define table headers
+	const headers = {
+		learning_unit: {
+			label: __('Learning Unit', 'moowoodle'),
+			render: (row: EnrollmentRow) => {
+				let title = '';
+
+				if (row.course_name) {
+					title = row.course_name;
+				} else if (row.group_name) {
+					title = row.group_name;
+				} else if (row.cohort_name) {
+					title = row.cohort_name;
+				}
+
+				return (
+					<InfoItem
+						title={title}
+						avatar={{
+							iconClass: 'learning',
+						}}
+					/>
+				);
+			},
+		},
+		student: {
+			label: __('Student', 'moowoodle'),
+			render: (row: EnrollmentRow) => (
+				<InfoItem
+					title={row.customer_name || '-'}
+					avatar={{
+						iconClass: 'person',
+					}}
+				/>
+			),
+		},
+		enrollment_date: {
+			label: __('Enrollment Date', 'moowoodle'),
+			type: 'date',
+		},
+		status: {
+			label: __('Status', 'moowoodle'),
+			type: 'status',
+			statusClass: (row) => `${row.status}`
+		},
+		action: {
+			type: 'action',
+			label: __('Action', 'moowoodle'),
+			actions: [
+				{
+					label: (row: EnrollmentRow) => {
+						return row.status === 'enrolled'
+							? __('Unenroll Now', 'moowoodle')
+							: __('Enroll Now', 'moowoodle');
+					},
+					onClick: (row: EnrollmentRow) => {
+						setopenPopup(true);
+					},
+					icon: 'classroom-enrollment'
+				},
+			],
+		},
+	};
+
+	const defaultTableProps = {
+		headers,
+		rows: dummyEnrollments,
+		totalRows: dummyEnrollments.length,
+		onQueryUpdate: () => { setopenPopup(true); },
+		search: {
+			placeholder: __('Search...', 'moowoodle'),
+			options: [
+				{
+					value: 'name',
+					label: __('Name', 'moowoodle'),
+				},
+				{
+					value: 'email',
+					label: __('Email', 'moowoodle'),
+				},
+			],
+		},
+	};
+
+	tableProps = applyFilters(
+		'moowoodle_enrollment_table_props',
+		defaultTableProps,
+	);
 
 	return (
 		<>
@@ -29,16 +141,9 @@ const Enrollment: React.FC = () => {
 					'moowoodle'
 				)}
 			/>
-			{appLocalizer.khali_dabba ? (
-				applyFilters('moowoodle_enrollment_content', null)
-			) : (
-				<div
-					className="enrollment-img image-wrapper"
-					onClick={() => {
-						setopenPopup(true);
-					}}
-				></div>
-			)}
+			<div onClick={()=>{setopenPopup(true)}}>
+				<TableCard {...tableProps} />
+			</div>
 		</>
 	);
 };

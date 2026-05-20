@@ -26,7 +26,7 @@ $banner            = $meta_data['banner'] ?? '';
 $profile           = $meta_data['image'] ?? '';
 $description       = $store->get( 'description' );
 $template          = MultiVendorX()->setting->get_setting( 'store_banner_template', array() );
-$selected_template = isset( $template['selectedPalette'] ) ? $template['selectedPalette'] : 'template1';
+$selected_template = isset( $template['templateKey'] ) ? $template['templateKey'] : 'dynamic-showcase';
 $branding_settings = MultiVendorX()->setting->get_setting( 'store_branding_details', array() );
 $contact_settings  = MultiVendorX()->setting->get_setting( 'store_contact_details', array() );
 $overall_reviews   = Util::get_overall_rating( $store->get_id() );
@@ -35,7 +35,7 @@ $rating_value      = $overall_reviews ? number_format( (float) $overall_reviews,
 $review_count      = is_array( $reviews ) ? count( $reviews ) : 0;
 ?>
 
-<div class="multivendorx-banner <?php echo esc_attr( $selected_template ); ?>">
+<div class="multivendorx-banner <?php echo esc_attr( str_replace( '_', '-', $selected_template ) ); ?>">
     <div class="banner">
         <div class="banner-img">
             <img src="<?php echo esc_url( $banner ); ?>" alt="">

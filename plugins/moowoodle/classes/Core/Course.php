@@ -34,7 +34,7 @@ class Course {
      */
 	public function enqueue_admin_assets() {
 		$screen = get_current_screen();
-		if ( !empty( $screen ) && 'product' === $screen->post_type ) {
+		if ( ! empty( $screen ) && 'product' === $screen->post_type ) {
 			FrontendScripts::enqueue_style( 'moowoodle-moodle-enrollment-mapping' );
 			FrontendScripts::enqueue_script( 'moowoodle-moodle-enrollment-mapping' );
 			FrontendScripts::localize_scripts( 'moowoodle-moodle-enrollment-mapping' );
@@ -57,16 +57,16 @@ class Course {
 
 		$table = $wpdb->prefix . Util::TABLES['course'];
 
-		$where = array();
+		$where  = array();
 		$params = array();
 
 		$is_count = ! empty( $args['count'] );
-		$sql = $is_count
+		$sql      = $is_count
 			? "SELECT COUNT(*) FROM {$table}"
 			: "SELECT * FROM {$table}";
 
 		if ( ! empty( $args['id'] ) ) {
-			$ids = array_map( 'intval', (array) $args['id'] );
+			$ids          = array_map( 'intval', (array) $args['id'] );
 			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 
 			$where[] = "id IN ($placeholders)";
@@ -89,26 +89,26 @@ class Course {
 		}
 
 		if ( isset( $args['shortname'] ) ) {
-			$where[] = "shortname LIKE %s";
+			$where[]  = 'shortname LIKE %s';
 			$params[] = '%' . $wpdb->esc_like( $args['shortname'] ) . '%';
 		}
 
 		if ( isset( $args['fullname'] ) ) {
-			$where[] = "fullname LIKE %s";
+			$where[]  = 'fullname LIKE %s';
 			$params[] = '%' . $wpdb->esc_like( $args['fullname'] ) . '%';
 		}
 
 		if ( ! empty( $where ) ) {
 			$condition = strtoupper( $args['condition'] ?? 'AND' );
-			$sql .= ' WHERE ' . implode( " $condition ", $where );
+			$sql      .= ' WHERE ' . implode( " $condition ", $where );
 		}
 
 		if ( isset( $args['limit'] ) ) {
-			$sql .= ' LIMIT %d';
+			$sql     .= ' LIMIT %d';
 			$params[] = (int) $args['limit'];
 
 			if ( isset( $args['offset'] ) ) {
-				$sql .= ' OFFSET %d';
+				$sql     .= ' OFFSET %d';
 				$params[] = (int) $args['offset'];
 			}
 		}
@@ -120,7 +120,7 @@ class Course {
 
 		// Execute
 		if ( $is_count ) {
-			$results  = $wpdb->get_var( $sql );
+			$results = $wpdb->get_var( $sql );
 			return $results ?? 0;
 		}
 
@@ -141,9 +141,9 @@ class Course {
 			return false;
 		}
 
-		$table    = $wpdb->prefix . Util::TABLES['course'];
+		$table           = $wpdb->prefix . Util::TABLES['course'];
 		$existing_course = self::get_courses( array( 'moodle_course_id' => $moodle_course_id ) );
-		$existing = reset($existing_course);
+		$existing        = reset( $existing_course );
 
 		if ( ! empty( $existing ) ) {
 			return $wpdb->update( $table, $args, array( 'moodle_course_id' => $moodle_course_id ) ) !== false ? $existing['id'] : false; // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
@@ -195,9 +195,8 @@ class Course {
 
 	/**
 	 * Creates custom tab for product types.
-     *
 	 */
-	public function add_additional_metabox( ) {
+	public function add_additional_metabox() {
 		add_meta_box(
 			'moowoodle-product-metabox',
 			__( 'Moodle Enrollment Mapping', 'moowoodle' ),
@@ -214,9 +213,7 @@ class Course {
      * @return void
      */
 	public function render_product_metabox() {
-		?>
-		<div id="moodle-enrollment-mapping-tab"></div>
-		<?php
+		echo '<div id="moodle-enrollment-mapping-tab"></div>';
 	}
 
 	/**
@@ -228,7 +225,7 @@ class Course {
     public static function cleanup_courses( $exclude_ids ) {
         global $wpdb;
 
-        $exclude_ids      = array_map( 'intval', (array) $exclude_ids );
+        $exclude_ids = array_map( 'intval', (array) $exclude_ids );
 		if ( empty( $exclude_ids ) ) {
 			return;
 		}

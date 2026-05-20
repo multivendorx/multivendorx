@@ -1,7 +1,5 @@
-import Popup from '../Popup/Popup';
 import { useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import './subscribersList.scss';
 import '../common.scss';
 import { NavigatorHeader, PopupUI } from 'zyra';
 import ShowProPopup from '../Popup/Popup';

@@ -171,19 +171,19 @@ const buildStyles = (
 ): StylesConfig<SelectOption, boolean, GroupBase<SelectOption>> => ({
     control: (base, state) => ({
         ...base,
-        borderColor: 'var(--borderColor)',
+        borderColor: 'var(--border-color)',
         boxShadow: state.isFocused ? 'var(--box-shadow-theme)' : 'none',
-        backgroundColor: background || 'var(--backgroundWhite)',
-        color: color || 'var(--textColor)',
+        backgroundColor: background || 'var(--background-white)',
+        color: color || 'var(--text-color)',
         minHeight: '2.213rem',
         ...(isMulti ? {} : { height: '2.213rem', maxHeight: '2.213rem' }),
         paddingTop: 0,
         paddingBottom: 0,
         width: '100%',
         margin: 0,
-        '&:active': { color: 'var(--colorPrimary)' },
+        '&:active': { color: 'var(--color-primary)' },
         ':hover': {
-            borderColor: 'var(--borderColor)'
+            borderColor: 'var(--border-color)'
         },
     }),
     valueContainer: (base) => ({
@@ -198,30 +198,30 @@ const buildStyles = (
         ...base,
         fontSize: '0.95rem',
         backgroundColor: state.isSelected
-            ? 'var(--backgroundPrimary)'
+            ? 'var(--background-primary)'
             : state.isFocused
-              ? 'var(--backgroundColor)'
-              : 'var(--backgroundWhite)',
-        color: state.isSelected ? 'var(--textColor)' : 'var(--themeColor)',
+              ? 'var(--background-color)'
+              : 'var(--background-white)',
+        color: state.isSelected ? 'var(--text-color)' : 'var(--themeColor)',
         cursor: 'pointer',
     }),
     menu: (base) => ({ ...base, borderRadius: 4, marginTop: 0 }),
     multiValue: (base) => ({
         ...base,
-        backgroundColor: 'var(--backgroundPrimary)',
+        backgroundColor: 'var(--background-primary)',
         margin: '0.125rem',
     }),
     multiValueLabel: (base) => ({
         ...base,
-        color: 'var(--colorPrimary)',
+        color: 'var(--color-primary)',
         padding: '0 0.25rem',
     }),
     multiValueRemove: (base) => ({
         ...base,
-        color: 'var(--colorPrimary)',
+        color: 'var(--color-primary)',
         ':hover': {
-            backgroundColor: 'var(--colorPrimary)',
-            color: 'var(--backgroundWhite)',
+            backgroundColor: 'var(--color-primary)',
+            color: 'var(--background-white)',
         },
     }),
 });

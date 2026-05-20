@@ -7,6 +7,7 @@
   "description": "Display the store’s physical or service location to build trust and clarity.",
   "keywords": ["address", "location", "store"],
   "editorScript": "file:./index.js",
+  "viewScript": "file:./view.js",
   "supports": {
     "align": true,
     "alignWide": false,

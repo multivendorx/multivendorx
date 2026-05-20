@@ -2,12 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
+import ShowProPopup from '../Popup/Popup';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	getApiLink,
 	TableCard,
 	NavigatorHeader,
 	QueryProps,
 	InfoItem,
+	PopupUI,
 } from 'zyra';
 
 interface CourseRow {
@@ -29,12 +32,14 @@ interface CourseRow {
 }
 
 const Course: React.FC = () => {
+	const [openPopup, setopenPopup] = useState(false);
 	const [rows, setRows] = useState<any[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [category, setCategory] = useState([]);
 	const [error, setError] = useState<string | null>(null);
 	const [rowIds, setRowIds] = useState<number[]>([]);
+	let tableProps: any = {};
 
 	// Fetch categories on mount
 	useEffect(() => {
@@ -52,82 +57,6 @@ const Course: React.FC = () => {
 			});
 	}, []);
 
-	// bulk action
-	const handleBulkAction = (action: string, selectedIds: number[]) => {
-		if (!selectedIds.length) {
-			return;
-		}
-
-		if (!action) {
-			return;
-		}
-		const selectedCourses = rows
-			.filter((row) => selectedIds.includes(row.id))
-			.map((row) => ({
-				course_id: row.id,
-				moodle_course_id: row.moodle_course_id,
-			}));
-
-		if (selectedCourses.length === 0) {
-			return;
-		}
-
-		setIsLoading(true);
-		axios({
-			method: 'POST',
-			url: getApiLink(appLocalizer, 'courses'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			data: {
-				selected_action: action,
-				course_ids: selectedCourses,
-			},
-		})
-			.then(() => {
-				doRefreshTableData({});
-			})
-			.catch(() => {
-				setError(__('Failed to perform bulk action', 'moowoodle'));
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
-	};
-
-	// Handle single row action
-	const handleSingleAction = (
-		actionName: string,
-		courseId: number,
-		moodleCourseId: number
-	) => {
-		if (!appLocalizer.khali_dabba) {
-			return;
-		}
-
-		setIsLoading(true);
-		axios({
-			method: 'post',
-			url: getApiLink(appLocalizer, 'courses'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			data: {
-				selected_action: actionName,
-				course_ids: [
-					{
-						course_id: courseId,
-						moodle_course_id: moodleCourseId,
-					},
-				],
-			},
-		})
-			.then(() => {
-				doRefreshTableData({});
-			})
-			.catch(() => {
-				setError(__('Failed to perform action', 'moowoodle'));
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
-	};
 
 	// Define table headers
 	const headers = {
@@ -157,44 +86,38 @@ const Course: React.FC = () => {
 			label: __('Product', 'moowoodle'),
 			render: (row: CourseRow) => (
 				<>
-					{row.product_name 
-						? 
-						<div className="action-section">
-							<div>{row.product_name}</div>
-							<div className="action-btn">
-								<a
-									target="_blank"
-									rel="noreferrer"
-									href={row.product_url}
-									className=""
-								>
-									{__(
-										'Edit product',
-										'moowoodle'
-									)}
-								</a>
-							</div>
-						</div>	
-						: '-'}
+					{row.product_name ? (
+						<>
+							{row.product_name}
+							<a
+								target="_blank"
+								rel="noreferrer"
+								href={row.product_url}
+								className="link-item edit-link"
+							>
+								{__('Edit product', 'moowoodle')}
+							</a>
+						</>
+					) : (
+						'-'
+					)}
 				</>
 			),
 		},
 		enrolled_user: {
 			label: __('Enrolled users', 'moowoodle'),
 			render: (row: CourseRow) => (
-				<div className="action-section">
-					<div>{row.enrolled_user || 0}</div>
-					<div className="action-btn">
-						<a
-							target="_blank"
-							rel="noreferrer"
-							href={row.view_users_url}
-							className=""
-						>
-							{__('View users', 'moowoodle')}
-						</a>
-					</div>
-				</div>
+				<>
+					{row.enrolled_user || 0}
+					<a
+						target="_blank"
+						rel="noreferrer"
+						href={row.view_users_url}
+						className="link-item edit-link"
+					>
+						{__('View users', 'moowoodle')}
+					</a>
+				</>
 			),
 		},
 		action: {
@@ -204,12 +127,8 @@ const Course: React.FC = () => {
 				{
 					label: __('Sync Course Data', 'moowoodle'),
 					icon: 'refresh',
-					onClick: (row: CourseRow) => {
-						handleSingleAction(
-							'sync_courses',
-							row.id!,
-							row.moodle_course_id!
-						);
+					onClick: (row) => {
+						setopenPopup(true);
 					},
 				},
 				{
@@ -217,9 +136,9 @@ const Course: React.FC = () => {
 					label: (row: CourseRow) => {
 						return row?.products && Object.keys(row.products).length
 							? __(
-									'Sync Course Data & Update Product',
-									'moowoodle'
-								)
+								'Sync Course Data & Update Product',
+								'moowoodle'
+							)
 							: __('Create Product', 'moowoodle');
 					},
 					icon: (row: CourseRow) => {
@@ -227,14 +146,8 @@ const Course: React.FC = () => {
 							? 'update-product'
 							: 'add-product';
 					},
-					onClick: (row: CourseRow) => {
-						handleSingleAction(
-							row.products && Object.keys(row.products).length
-								? 'update_product'
-								: 'create_product',
-							row.id!,
-							row.moodle_course_id!
-						);
+					onClick: (row) => {
+						setopenPopup(true);
 					},
 				},
 			],
@@ -296,8 +209,50 @@ const Course: React.FC = () => {
 			});
 	};
 
+	const defaultTableProps = {
+		headers,
+		rows,
+		totalRows,
+		isLoading,
+
+		onQueryUpdate: doRefreshTableData,
+
+		ids: rowIds,
+
+		search: {
+			placeholder: __('Search...', 'moowoodle'),
+			options: [
+				{ value: 'course', label: __('Course', 'moowoodle') },
+				{ value: 'shortname', label: __('Short name', 'moowoodle') },
+			],
+		},
+
+		filters: filters,
+
+		bulkActions: bulkActions,
+
+		onBulkActionApply: () => {
+			setopenPopup(true);
+		},
+	};
+
+	tableProps = applyFilters(
+		'moowoodle_course_table_props',
+		defaultTableProps,
+	);
 	return (
 		<>
+			{openPopup && (
+				<PopupUI
+					position="lightbox"
+					open={openPopup}
+					onClose={() => setopenPopup(false)}
+					width={31.25}
+					height="auto"
+				>
+					<ShowProPopup />
+				</PopupUI>
+			)}
 			<NavigatorHeader
 				headerIcon="subscription-courses"
 				headerDescription={__(
@@ -314,29 +269,7 @@ const Course: React.FC = () => {
 				</div>
 			)}
 
-			<TableCard
-				headers={headers}
-				rows={rows}
-				totalRows={totalRows}
-				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
-				ids={rowIds}
-				search={{
-					placeholder: __('Search...', 'moowoodle'),
-					options: [
-						{ value: 'course', label: __('Course', 'moowoodle') },
-						{
-							value: 'shortname',
-							label: __('Short name', 'moowoodle'),
-						},
-					],
-				}}
-				filters={filters}
-				bulkActions={bulkActions}
-				onBulkActionApply={(action: string, selectedIds: number[]) => {
-					handleBulkAction(action, selectedIds);
-				}}
-			/>
+			<TableCard {...tableProps} />
 		</>
 	);
 };

@@ -47,24 +47,18 @@ jQuery(document).ready(function ($) {
 		});
 
 		var geocoder = new google.maps.Geocoder();
-		const autocomplete = new google.maps.places.PlaceAutocompleteElement();
-		autocomplete.id = 'multivendorx_user_location';
-		autocomplete.placeholder = 'Search location';
+		var input = document.getElementById('multivendorx_user_location');
+		var autocomplete = new google.maps.places.Autocomplete(input);
 
 		autocomplete.bindTo('bounds', map);
 
 		autocomplete.addListener('place_changed', function () {
 			var place = autocomplete.getPlace();
-			if (!place.geometry) {
+			if (!place.geometry || !place.geometry.location) {
 				return;
 			}
-
-			map.setCenter({
-				lat: place.geometry.location.lat(),
-				lng: place.geometry.location.lng(),
-			});
+			map.setCenter(place.geometry.location);
 			marker.position = place.geometry.location;
-
 			bindData(
 				place.formatted_address,
 				place.geometry.location.lat(),
@@ -167,8 +161,8 @@ jQuery(document).ready(function ($) {
 			$.each(features, function (index, feature) {
 				var li = $(
 					'<li style="padding: 8px; cursor: pointer; border-bottom: 1px solid #eee;">' +
-						feature.place_name +
-						'</li>'
+					feature.place_name +
+					'</li>'
 				);
 				li.on('click', function () {
 					$('#multivendorx_user_location').val(feature.place_name);
@@ -208,10 +202,10 @@ jQuery(document).ready(function ($) {
 	function reverseGeocodeMapbox(lat, lng) {
 		$.get(
 			'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
-				lng +
-				',' +
-				lat +
-				'.json',
+			lng +
+			',' +
+			lat +
+			'.json',
 			{
 				access_token: opts.mapbox_token,
 				limit: 1,

@@ -6,7 +6,7 @@ const settings =
 export default {
 	id: 'privacy',
 	priority: 8,
-	headerTitle: __('Privacy', 'multivendorx'),
+	headerTitle: __('Policies', 'multivendorx'),
 	headerDescription: __(
 		'Define your store’s policies so customers clearly understand your shipping, refund, and return terms.',
 		'multivendorx'

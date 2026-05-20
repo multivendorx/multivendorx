@@ -1,7 +1,5 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps } from '@wordpress/block-editor';
-import { render } from '@wordpress/element';
-import { BrowserRouter } from 'react-router-dom';
 import RegistrationForm from './registrationForm';
 
 // Edit component (no attributes needed for this form)
@@ -16,7 +14,7 @@ const EditBlock = () => {
 
 // Register the block
 registerBlockType('multivendorx/registration-form', {
-	apiVersion: 2,
+	apiVersion: 3,
 	title: 'Registration Form',
 	icon: 'admin-users',
 	category: 'multivendorx-shortcodes',
@@ -30,15 +28,3 @@ registerBlockType('multivendorx/registration-form', {
 	},
 });
 
-// Frontend render
-document.addEventListener('DOMContentLoaded', () => {
-	const element = document.getElementById('multivendorx-registration-form');
-	if (element) {
-		render(
-			<BrowserRouter>
-				<RegistrationForm />
-			</BrowserRouter>,
-			element
-		);
-	}
-});

@@ -14,9 +14,9 @@ use MultiVendorX\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * MultiVendorX Dokan migration class
+ * MultiVendorX MVX migration class
  *
- * @class       Dokan class
+ * @class       MVX class
  * @version     5.0.0
  * @author      MultiVendorX
  */
@@ -113,9 +113,6 @@ class MVX {
      * @return void
      */
     public function run_migration_cron() {
-
-        $before = $this->get_all_offsets();
-
         $this->migrate_vendors();
         $this->migrate_product_category_settings();
         $this->migrate_followers();
@@ -127,32 +124,57 @@ class MVX {
 
         // product and coupon store id save.
         $this->migrate_product_coupon_vendor();
-        $after = $this->get_all_offsets();
 
-        if ( $before === $after ) {
+        if ( $this->is_migration_completed() ) {
             wp_clear_scheduled_hook( 'mvx_full_migration' );
+            delete_option( 'dc_product_vendor_plugin_db_version' );
         }
     }
 
-    public function get_all_offsets() {
-        return array(
-            'vendor'        => (int) get_option( 'mvx_vendor_offset', 0 ),
-            'follow'        => (int) get_option( 'mvx_follow_offset', 0 ),
-            'zone'          => (int) get_option( 'mvx_zone_offset', 0 ),
-            'announcement'  => (int) get_option( 'mvx_announcement_offset', 0 ),
-            'kb'            => (int) get_option( 'mvx_kb_offset', 0 ),
-            'visitors'      => (int) get_option( 'mvx_visitors_offset', 0 ),
-            'qna'           => (int) get_option( 'mvx_qna_offset', 0 ),
-            'spmv'          => (int) get_option( 'mvx_spmv_offset', 0 ),
-            'commission'    => (int) get_option( 'mvx_commission_offset', 0 ),
-            'refund'        => (int) get_option( 'mvx_refund_offset', 0 ),
-            'ledger'        => (int) get_option( 'mvx_ledger_offset', 0 ),
-            'product'       => (int) get_option( 'mvx_product_settings_offset', 0 ),
-            'category'      => (int) get_option( 'mvx_category_settings_offset', 0 ),
-            'coupon'        => (int) get_option( 'mvx_coupon_migration_offset', 0 ),
-            'product_store' => (int) get_option( 'mvx_product_migration_offset', 0 ),
-            'rating'        => (int) get_option( 'mvx_rating_offset', 0 ),
+    /**
+     * Check whether all migrations are completed.
+     *
+     * @return bool
+     */
+    public function is_migration_completed() {
+        $migration_status = get_option( 'mvx_migration_status', array() );
+        $required_keys = array(
+            'vendors',
+            'followers',
+            'zones',
+            'announcements',
+            'knowledgebase',
+            'visitors',
+            'qna',
+            'spmv',
+            'commissions',
+            'refunds',
+            'ledger',
+            'product_settings',
+            'category_settings',
+            'products',
+            'coupons',
+            'reviews',
         );
+
+        foreach ( $required_keys as $key ) {
+            if ( empty( $migration_status[ $key ] ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Mark migration as completed.
+     *
+     * @param string $migration_key Migration key.
+     * @return void
+     */
+    public function mark_migration_completed( $migration_key ) {
+        $migration_status = get_option( 'mvx_migration_status', array() );
+        $migration_status[ $migration_key ] = true;
+        update_option( 'mvx_migration_status', $migration_status );
     }
 
     public function migrate_other_tables() {
@@ -177,6 +199,10 @@ class MVX {
                 $store->update_meta( $meta_key, $row->settings );
             }
             update_option( 'mvx_zone_offset', $offset + count( $results ) );
+        }
+
+        if ( count( $results ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'zones' );
         }
 
         // Announcement table migrate.
@@ -218,6 +244,9 @@ class MVX {
         }
 
         update_option( 'mvx_announcement_offset', $offset + count( $announcements ) );
+        if ( count( $announcements ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'announcements' );
+        }
 
         // Knowledgebase table migrate.
         $offset = (int) get_option( 'mvx_kb_offset', 0 );
@@ -241,6 +270,9 @@ class MVX {
             );
         }
         update_option( 'mvx_kb_offset', $offset + count( $knowledgebase ) );
+        if ( count( $knowledgebase ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'knowledgebase' );
+        }
 
         // Visitor stats table migrate.
         $offset = (int) get_option( 'mvx_visitors_offset', 0 );
@@ -289,6 +321,9 @@ class MVX {
 			);
 		}
         update_option( 'mvx_visitors_offset', $offset + count( $rows ) );
+        if ( count( $rows ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'visitors' );
+        }
 
         // Questions and answers table migration.
 		$questions_table = $wpdb->prefix . 'mvx_cust_questions';
@@ -356,6 +391,10 @@ class MVX {
 		}
 
         update_option( 'mvx_qna_offset', $offset + count( $questions ) );
+        if ( count( $questions ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'qna' );
+        }
+
 
         // SPMV table migration.
 		$old_spmv_table = $wpdb->prefix . 'mvx_products_map';
@@ -411,6 +450,9 @@ class MVX {
         }
 
         update_option( 'mvx_spmv_offset', $offset + count( $spmv_products ) );
+        if ( count( $spmv_products ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'spmv' );
+        }
     }
 
     /**
@@ -487,6 +529,9 @@ class MVX {
         }
 
         update_option( 'mvx_product_settings_offset', $offset + count( $products ) );
+        if ( count( $products ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'product_settings' );
+        }
 
         $offset = (int) get_option( 'mvx_category_settings_offset', 0 );
         $terms  = get_terms(
@@ -545,7 +590,10 @@ class MVX {
 			}
         }
 
-        update_option( 'mvx_category_settings_offset', $offset + count( $products ) );
+        update_option( 'mvx_category_settings_offset', $offset + count( $terms ) );
+        if ( count( $terms ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'category_settings' );
+        }
     }
 
     public function migrate_vendors() {
@@ -818,6 +866,9 @@ class MVX {
         }
 
         update_option( 'mvx_vendor_offset', $offset + count( $vendors ) );
+        if ( count( $vendors ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'vendors' );
+        }
     }
 
     public function migrate_followers() {
@@ -854,6 +905,9 @@ class MVX {
         }
 
         update_option( 'mvx_follow_offset', $offset + count( $users ) );
+        if ( count( $users ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'followers' );
+        }
     }
 
     public function migrate_commissions() {
@@ -978,6 +1032,9 @@ class MVX {
         }
 
         update_option( 'mvx_commission_offset', $offset + count( $commission_ids ) );
+        if ( count( $commission_ids ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'commissions' );
+        }
     }
 
     public function migrate_refunds() {
@@ -1003,6 +1060,9 @@ class MVX {
         }
 
         update_option( 'mvx_refund_offset', $offset + count( $refund_ids ) );
+        if ( count( $refund_ids ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'refunds' );
+        }
     }
 
     public function migrate_ledger() {
@@ -1073,6 +1133,9 @@ class MVX {
         }
 
         update_option( 'mvx_ledger_offset', $offset + count( $transactions ) );
+        if ( count( $transactions ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'ledger' );
+        }
     }
 
     public function migrate_product_coupon_vendor() {
@@ -1110,6 +1173,9 @@ class MVX {
         }
 
         update_option( 'mvx_product_migration_offset', $offset + count( $products ) );
+        if ( count( $products ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'products' );
+        }
 
         // Migrate coupon vendor.
         $offset = (int) get_option( 'mvx_coupon_migration_offset', 0 );
@@ -1134,6 +1200,9 @@ class MVX {
         }
 
         update_option( 'mvx_coupon_migration_offset', $offset + count( $coupons ) );
+        if ( count( $coupons ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'coupons' );
+        }
     }
 
     public function migrate_reviews() {
@@ -1176,5 +1245,8 @@ class MVX {
             );
         }
         update_option( 'mvx_rating_offset', $offset + count( $comments ) );
+        if ( count( $comments ) < self::BATCH_SIZE ) {
+            $this->mark_migration_completed( 'reviews' );
+        }
     }
 }

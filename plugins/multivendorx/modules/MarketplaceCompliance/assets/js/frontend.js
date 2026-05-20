@@ -1,4 +1,6 @@
-/* global jQuery, reportAbuseFrontend */
+/* global jQuery, reportAbuseFrontend, wp */
+const { __ } = wp.i18n;
+
 jQuery(function ($) {
 	function showThemeNotice(container, type, message) {
 		var $container = $(container);
@@ -79,6 +81,7 @@ jQuery(function ($) {
 		e.preventDefault();
 
 		var $btn = $(this);
+
 		if ($btn.prop('disabled')) {
 			return;
 		}
@@ -103,7 +106,12 @@ jQuery(function ($) {
 		var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 		if (!name || !email || !reason || !msg) {
-			showThemeNotice($msgBox, 'error', 'All fields are required.');
+			showThemeNotice(
+				$msgBox,
+				'error',
+				__('All fields are required.', 'multivendorx')
+			);
+
 			return;
 		}
 
@@ -111,8 +119,9 @@ jQuery(function ($) {
 			showThemeNotice(
 				$msgBox,
 				'error',
-				'Please enter a valid email address.'
+				__('Please enter a valid email address.', 'multivendorx')
 			);
+
 			return;
 		}
 
@@ -136,7 +145,9 @@ jQuery(function ($) {
 					$msgBox.html(
 						'<div class="wc-block-components-notice-banner is-success">' +
 							'<div class="wc-block-components-notice-banner__content">' +
-							'<strong>Success:</strong> ' +
+							'<strong>' +
+							__('Success', 'multivendorx') +
+							':</strong> ' +
 							res.data +
 							'</div></div>'
 					);
@@ -150,6 +161,7 @@ jQuery(function ($) {
 					$form
 						.find('input[type=text], input[type=email], textarea')
 						.val('');
+
 					$form.find('input[type=radio]').prop('checked', false);
 					$form.find('.report-abuse-custom-msg').hide();
 				} else {
@@ -164,7 +176,7 @@ jQuery(function ($) {
 				showThemeNotice(
 					$msgBox,
 					'error',
-					'Something went wrong. Try again.'
+					__('Something went wrong. Try again.', 'multivendorx')
 				);
 
 				$btn.prop('disabled', false);

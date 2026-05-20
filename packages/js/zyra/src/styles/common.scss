@@ -65,11 +65,8 @@ a {
 .form-select-field input:focus {
   box-shadow: none !important;
   outline: none;
+  min-height: 1.5rem;
 }
-
-// body:has(.admin-main-wrapper) {
-//   background: #f2f5fd8f;
-// }
 
 #admin-main-wrapper {
   margin-left: -1.25rem;
@@ -97,10 +94,18 @@ a {
 
   .basic-input,
   .basic-select,
-  .textarea-input,
   .calender-input {
-    min-height: 2.125rem !important; // for overwrite wordpress style
+    min-height: 2rem !important; // for overwrite wordpress style
+    max-height: 2rem !important;
     background: $background-white;
+  }
+  .textarea-input{
+    background: $background-white;    
+  }
+
+  // tiny mc error style
+  .mce-widget.mce-notification{
+    left: auto;
   }
   .textarea-input{
     font-family: Figtree, sans-serif;
@@ -130,7 +135,9 @@ a {
 
   input[type="checkbox"] {
     width: 1.063rem;
+    border-radius: 0.25rem;
     height: 1.063rem;
+    border-color: #8c8f94;
   }
 
   input[type="checkbox"]:checked {
@@ -230,7 +237,7 @@ $index: 1;
   }
 
   // only background color
-  .#{$name}-bg,
+  .#{$name}-bg, 
   .admin-bg-color#{$index} {
     background: map-get($style, color) !important;
   }
@@ -395,113 +402,6 @@ $index: 1;
   }
 }
 
-.checkbox-list-side-by-side {
-  display: flex;
-  flex-wrap: wrap;
-
-  .checkbox-list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: $border-light-small;
-    padding-bottom: 0.5rem;
-    margin-bottom: 0.5rem;
-    width: 100%;
-
-    .checkbox {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.313rem;
-
-      input:checked::before {
-        content: "\e809";
-      }
-    }
-
-    span {
-      font-size: 0.9rem;
-      color: $theme-color;
-      font-weight: 500;
-    }
-  }
-
-  .toggle-checkbox-header {
-    gap: 0;
-    margin: 0;
-    padding: 0.5rem;
-    width: 47%;
-    transition: all 0.4s ease;
-    flex-wrap: wrap;
-    cursor: pointer;
-
-    &:hover {
-      background: #ece2f969;
-    }
-
-    .default-checkbox {
-      position: relative;
-      width: 100%;
-
-      label {
-        padding: 0 0 0 0.313rem;
-        font-size: 0.9rem;
-        position: relative;
-        display: inline;
-        font-weight: 500;
-
-        .label-des {
-          line-height: 1.313;
-          color: #00000078;
-          font-size: 0.813rem;
-          padding-top: 0.063rem;
-        }
-
-        .admin-pro-tag {
-          margin-left: 1.5rem;
-          top: 0;
-        }
-      }
-
-      .edit-icon {
-        padding-left: 0.45rem;
-        position: absolute;
-        right: 0;
-        top: 0;
-        opacity: 0;
-        transition: all 0.4s ease;
-        display: flex;
-        gap: 0.313rem;
-      }
-    }
-
-    .edit-option-wrapper {
-      display: inline-block;
-
-
-      .edit-option {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-    }
-
-    &:hover {
-      .edit-icon {
-        opacity: 1;
-      }
-    }
-  }
-
-  .default-checkbox:has(input:checked) {
-    color: $theme-color;
-  }
-
-  .settings-checkbox-description {
-    padding-left: 0.5rem;
-  }
-}
-
 // pro tag start
 .admin-pro-tag {
   background: #e350472e;
@@ -539,150 +439,11 @@ $index: 1;
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
-
-  // input {
-  //   display: none;
-  // }
-
-  // label {
-  //   border-radius: 4rem;
-  //   border: $border-light-medium;
-  //   font-weight: 500;
-  //   line-height: 1.125;
-  //   font-size: 0.9rem;
-  //   color: #9fa1a4;
-  //   padding: 0.65rem 1.125rem;
-  //   cursor: pointer;
-  //   position: relative;
-  //   display: flex;
-  //   align-items: center;
-  // }
-
-  // input:checked+label {
-  //   color: $theme-color;
-  //   background: $theme-background-color;
-  //   border: $border-theme-medium;
-  //   padding-left: 2rem;
-
-  //   &::before {
-  //     position: absolute;
-  //     content: "\e809";
-  //   }
-  // }
-
-  // .toggle-checkbox-header {
-  //   padding-bottom: 1rem;
-  //   margin-right: 0;
-  // }
-}
-
-// .settings-from-multi-select {
-//   > :first-child {
-//     margin: 0;
-
-//     > :nth-child(3) {
-//       > :first-child {
-//         padding: 0 0.313rem;
-
-//         > :first-child {
-//           margin: 0;
-//         }
-//       }
-
-//     }
-//   }
-
-//   > :last-child {
-//     margin: 0;
-//   }
-// }
-
-// .settings-from-multi-select> :first-child> :nth-child(3)> :first-child {
-//   padding: 0 0.313rem;
-
-//   > :first-child {
-//     margin: 0;
-
-//     > :first-child {
-//       margin: 0;
-//     }
-//   }
-
-//   > :first-child {
-//     margin: 0;
-//   }
-// }
-
-
-// pro image wrapper start
-.image-wrapper {
-  margin: 2rem;
 }
 
 // pro image wrapper end
 .more-btn {
   cursor: pointer;
-}
-
-// live chart
-.live-chat-wrapper {
-  position: fixed;
-  z-index: 99999;
-  width: 25%;
-  right: 1rem;
-  bottom: 1rem;
-  border-radius: $border-radius-small;
-  box-shadow: $box-shadow;
-  transform: translateX(110%);
-  transition: all 0.4s ease;
-  background: #fff;
-
-  &.open {
-    transform: translateX(0);
-  }
-
-  &.minimized {
-    width: 0;
-    height: 0;
-  }
-
-  i {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    z-index: 99;
-    color: #000;
-    font-size: 1.125rem;
-    background: #fff;
-    padding: 0.125rem;
-    border-radius: 50%;
-    cursor: pointer;
-
-    &.icon {
-      right: 3rem;
-    }
-  }
-
-  iframe {
-    border: none;
-    width: 100%;
-    height: 35rem;
-  }
-}
-
-// live chart
-.minimized-icon {
-  position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  background: $theme-color;
-  z-index: 9999;
-
-  .admin-icon {
-    color: #fff;
-    font-size: 2rem;
-    border-radius: 50%;
-  }
 }
 
 // action icon and dropdown (common and delete)
@@ -889,7 +650,6 @@ $index: 1;
     }
   }
 }
-
 
 // highlight section start (module and edit store page highlight)
 @keyframes animate {

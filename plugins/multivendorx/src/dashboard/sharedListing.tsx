@@ -6,6 +6,7 @@ import { formatCurrency, dashNavigate } from '../services/commonFunction';
 import { BasicInputUI, ComponentStatusView, Skeleton, Notice } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
+import './sharedListing.scss';
 
 const SpmvProducts: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(true);

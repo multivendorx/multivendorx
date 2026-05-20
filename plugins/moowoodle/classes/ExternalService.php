@@ -52,10 +52,7 @@ class ExternalService {
 		$moodle_core_functions = $this->get_core_functions();
 
 		// Get the function name.
-		$function_name = '';
-		if ( array_key_exists( $key, $moodle_core_functions ) ) {
-			$function_name = $moodle_core_functions[ $key ];
-		}
+		$function_name = $moodle_core_functions[ $key ] ?? '';
 
 		$moodle_base_url     = MooWoodle()->setting->get_setting( 'moodle_url' );
 		$moodle_access_token = MooWoodle()->setting->get_setting( 'moodle_access_token' );
@@ -67,7 +64,7 @@ class ExternalService {
 		if ( ! empty( $moodle_base_url ) && ! empty( $moodle_access_token ) && $function_name ) {
 			$request_query = http_build_query( $request_param );
 
-			$timeout = MooWoodle()->setting->get_setting( 'moodle_timeout' );
+			$timeout = MooWoodle()->setting->get_setting( 'moodle_timeout', '' );
 			$timeout = $timeout ? $timeout : '10';
 
 			$response = wp_remote_post(
@@ -84,25 +81,25 @@ class ExternalService {
 			}
 		}
 
-		// check the response containe error.
-		$response = self::analyse_moodle_response( $response );
+		// check the response contains error.
+		$response = $this->analyse_moodle_response( $response );
 
 		// return response on success.
 		return $response;
 	}
 
 	/**
-	 * Check server resposne result .
+	 * Check server response result .
      *
 	 * @param object | null $response response.
 	 * @return array $response
 	 */
 	private function analyse_moodle_response( $response ) {
 		if ( null === $response ) {
-			return array( 'error' => 'Response is not avialable' );
+			return array( 'error' => 'Response is not available' );
 		}
 
-		// if server response containe error.
+		// if server response contains error.
 		if ( is_wp_error( $response ) || 200 !== $response['response']['code'] ) {
 			// if response is object and multiple error codes.
 			if ( is_object( $response ) && is_array( $response->get_error_code() ) ) {
@@ -125,7 +122,7 @@ class ExternalService {
 			return array( 'error' => __( 'Response is not JSON decodeable', 'moowoodle' ) );
 		}
 
-		// if moodle response containe error.
+		// if moodle response contains error.
 		if ( $response && array_key_exists( 'exception', $response ) ) {
 			if ( str_contains( $response['message'], 'Access control exception' ) ) {
 				return array( 'error' => $response['message'] . ' <a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/settings.php?section=externalservices">Link</a>' );

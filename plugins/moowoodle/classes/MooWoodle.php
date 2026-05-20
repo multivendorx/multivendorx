@@ -18,15 +18,8 @@ defined( 'ABSPATH' ) || exit;
  * @version     3.3.0
  * @package     MooWoodle
  * @author      DualCube
- *
- * @property Util $util instance of utill class
- * @property Setting $setting instance of setting class
- * @property Core\Course $course instance of course class
- * @property Core\Category $category instance of category class
- * @property Core\Product $product instance of product class
- * @property Rest $rest instance of restapi class
  */
-class MooWoodle {
+final class MooWoodle {
     /**
      * Contain reference of MooWoodle class's object
      *
@@ -76,9 +69,8 @@ class MooWoodle {
         add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
         add_action( 'woocommerce_loaded', array( $this, 'load_plugin' ) );
         add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
-        add_action( 'plugins_loaded', array( $this, 'is_woocommerce_loaded' ) );
+        add_action( 'plugins_loaded', array( $this, 'handle_plugin_migration' ) );
         add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
-        add_action( 'init', array( $this, 'migrate_from_previous_version' ) );
 	}
 
     /**
@@ -117,29 +109,29 @@ class MooWoodle {
 
         // add link on pugin 'active' button.
         if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
-            add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_links' ) );
+            add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'get_plugin_action_links' ) );
         }
 
-        add_filter( 'woocommerce_email_classes', array( $this, 'setup_email_class' ) );
+        add_filter( 'woocommerce_email_classes', array( $this, 'register_email_classes' ) );
 
         // Init required classes.
         $this->initialize_classes();
 
         /**
-         * Actiion hook after moowoodle loaded.
+         * Action hook after MooWoodle loads.
          */
         do_action( 'moowoodle_loaded' );
     }
 
     /**
-     * Init all MooWoodle classess.
+     * Initialize all MooWoodle classes.
      * Access this classes using magic method.
      *
      * @return void
      */
     public function initialize_classes() {
-        $this->container['current_user_id']    = get_current_user_id();
-        $this->container['current_user']       = wp_get_current_user();
+        $this->container['current_user_id'] = get_current_user_id();
+        $this->container['current_user']    = wp_get_current_user();
         if ( is_admin() ) {
 			$this->container['admin'] = new Admin();
 		}
@@ -155,6 +147,7 @@ class MooWoodle {
         $this->container['block']            = new Block();
         $this->container['frontendscripts']  = new FrontendScripts();
         $this->container['endpoint']         = new EndPoint();
+        $this->container['promotions']       = new Promotions();
         $this->initialize_moowoodle_log();
     }
 
@@ -163,51 +156,14 @@ class MooWoodle {
      *
      * @return void
      */
-    public function is_woocommerce_loaded() {
-        if ( ! did_action( 'woocommerce_loaded' ) && is_admin() ) {
-        	add_action( 'admin_notices', array( $this, 'woocommerce_admin_notice' ) );
+    public function handle_plugin_migration() {
+        if ( did_action( 'woocommerce_loaded' ) ) {
+            $previous_version = get_option( 'moowoodle_version', '' );
+            if ( version_compare( $previous_version, MooWoodle()->version, '<' ) ) {
+                new Installer();
+            }
         }
     }
-
-    /**
-     * Migrate data from previous version.
-     */
-    public function migrate_from_previous_version() {
-        $previous_version = get_option( 'moowoodle_version', '' );
-
-        if ( version_compare( $previous_version, MooWoodle()->version, '<' ) ) {
-            new Installer();
-        }
-    }
-
-    /**
-     * Admin notice for woocommerce deactive.
-     *
-     * @return void
-     */
-    public function woocommerce_admin_notice() {
-		?>
-		<div id="message" class="error">
-            <p>
-            <?php
-            printf(
-                // translators: 1: <strong>, 2: </strong>, 3: <a>, 4: </a>, 5: <a>, 6: </a>.
-                esc_html__(
-                    '%1$sMooWoodle is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for the MooWoodle to work. Please %5$sinstall & activate WooCommerce%6$s',
-                    'moowoodle'
-                ),
-                '<strong>',
-                '</strong>',
-                '<a target="_blank" href="https://wordpress.org/plugins/woocommerce/">',
-                '</a>',
-                '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">',
-                '&nbsp;&raquo;</a>'
-            );
-            ?>
-            </p>
-		</div>
-    	<?php
-	}
 
     /**
      * Add metadata links (e.g. documentation, support) to the plugin row on the Plugins screen.
@@ -220,8 +176,8 @@ class MooWoodle {
     public function plugin_row_meta( $links, $file ) {
         if ( MooWoodle()->plugin_base === $file ) {
             $row_meta = array(
-                'docs'    => '<a href="https://dualcube.com/docs/moowoodle-set-up-guide/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle" aria-label="' . esc_attr__( 'View documentation', 'moowoodle' ) . '" target="_blank">' . esc_html__( 'Docs', 'moowoodle' ) . '</a>',
-                'support' => '<a href="https://wordpress.org/support/plugin/moowoodle/" aria-label="' . esc_attr__( 'Visit community forums', 'moowoodle' ) . '" target="_blank">' . esc_html__( 'Support', 'moowoodle' ) . '</a>',
+                'docs'    => '<a href="https://dualcube.com/docs/moowoodle-set-up-guide/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle" aria-label="' . esc_attr__( 'View documentation', 'moowoodle' ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Docs', 'moowoodle' ) . '</a>',
+                'support' => '<a href="https://wordpress.org/support/plugin/moowoodle/" aria-label="' . esc_attr__( 'Visit community forums', 'moowoodle' ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Support', 'moowoodle' ) . '</a>',
             );
 
             if ( ! Util::is_khali_dabba() ) {
@@ -240,7 +196,7 @@ class MooWoodle {
      * @param array $links all links.
      * @return array
      */
-    public static function plugin_links( $links ) {
+    public static function get_plugin_action_links( $links ) {
 
         // Create moowoodle plugin page link.
         $plugin_links = array(
@@ -263,7 +219,7 @@ class MooWoodle {
      *
 	 * @return void
 	 */
-	private function load_plugin_textdomain() {
+	public function load_plugin_textdomain() {
         if ( version_compare( $GLOBALS['wp_version'], '6.7', '<' ) ) {
             load_plugin_textdomain( 'moowoodle', false, plugin_basename( dirname( __DIR__ ) ) . '/languages' );
         } else {
@@ -333,7 +289,7 @@ class MooWoodle {
      * @param array $emails List of WooCommerce email classes.
      * @return array Modified list of email classes including EnrollmentEmail.
      */
-    public function setup_email_class( $emails ) {
+    public function register_email_classes( $emails ) {
         $emails['EnrollmentEmail'] = new Emails\EnrollmentEmail();
         return $emails;
     }

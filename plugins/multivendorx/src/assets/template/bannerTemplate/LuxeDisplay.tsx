@@ -1,6 +1,6 @@
 const LuxeDisplay = () => {
 	return (
-		<div className="multivendorx-banner template1">
+		<div className="multivendorx-banner luxe-display">
 			<div className="banner-slider"></div>
 			<div className="banner-right">
 				<div className="social-profile">

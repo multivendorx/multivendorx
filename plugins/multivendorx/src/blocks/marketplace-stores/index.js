@@ -1,6 +1,5 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { createRoot } from '@wordpress/element';
 import MarketplaceStoreList from './marketplaceStoreList';
 import {
 	PanelBody,
@@ -97,7 +96,7 @@ const EditBlock = (props) => {
 };
 
 registerBlockType('multivendorx/marketplace-stores', {
-	apiVersion: 2,
+	apiVersion: 3,
 	title: __('Stores List', 'multivendorx'),
 	icon: 'store',
 	category: 'multivendorx-shortcodes',
@@ -124,13 +123,3 @@ registerBlockType('multivendorx/marketplace-stores', {
 	},
 });
 
-window.addEventListener('load', () => {
-	const element = document.getElementById('marketplace-stores');
-	if (element) {
-		const attributes = JSON.parse(
-			element.getAttribute('data-attributes') || '{}'
-		);
-		const root = createRoot(element);
-		root.render(<MarketplaceStoreList {...attributes} />);
-	}
-});

@@ -26,8 +26,6 @@ class Install {
      */
     public function __construct() {
         add_action( 'init', array( $this, 'run_migration' ) );
-        $this->do_migration();
-        do_action( 'multivendorx_after_installed' );
     }
 
     /**
@@ -75,6 +73,18 @@ class Install {
             $previous_settings['shipping_stage'] =  array_merge( $new_stages, $existing_stages );
             update_option( Utill::MULTIVENDORX_SETTINGS['delivery'], $previous_settings );
         }
+
+        if ( version_compare( $previous_version, '5.0.6', '<' ) ) {
+            global $wpdb;
+
+            $table = $wpdb->prefix . Utill::TABLES['store'];
+
+            $wpdb->query("
+                ALTER TABLE {$table}
+                MODIFY name VARCHAR(100) NOT NULL,
+                MODIFY slug VARCHAR(100) NOT NULL
+            ");
+        }
     }
 
     public function run_migration() {
@@ -84,6 +94,8 @@ class Install {
             $this->plugin_create_pages();
             $this->set_default_modules();
             $this->set_default_settings();
+        } else {
+            $this->do_migration();
         }
 
         if ( get_option( 'dc_product_vendor_plugin_db_version' ) ) {
@@ -91,6 +103,7 @@ class Install {
         }
 
         update_option( 'multivendorx_version', MULTIVENDORX_PLUGIN_VERSION );
+        do_action( 'multivendorx_after_installed' );
     }
 
     /**
@@ -141,8 +154,8 @@ class Install {
         $sql_store = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['store'] . "` (
             `ID` bigint(20) NOT NULL AUTO_INCREMENT,
             `status` varchar(20) DEFAULT NULL,
-            `name` varchar(20) NOT NULL,
-            `slug` varchar(20) NOT NULL,
+            `name` varchar(100) NOT NULL,
+            `slug` varchar(100) NOT NULL,
             `description` TEXT DEFAULT NULL,
             `who_created` bigint(20) DEFAULT NULL,
             `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1165,8 +1178,6 @@ class Install {
     public function migrate_mvx_to_multivendorx() {
         $this->migrate_old_modules();
         $this->migrate_old_settings();
-
-        delete_option( 'dc_product_vendor_plugin_db_version' );
     }
     /**
      * Create pages dynamically based on provided data.

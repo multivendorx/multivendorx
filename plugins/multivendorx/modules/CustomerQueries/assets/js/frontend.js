@@ -1,4 +1,6 @@
-/* global jQuery, customerQueriesFrontend */
+/* global jQuery, customerQueriesFrontend, wp */
+const { __ } = wp.i18n;
+
 jQuery(document).ready(function ($) {
 	let productId = $('#product-customer-queries').data('product');
 	let searchTimeout;
@@ -22,7 +24,10 @@ jQuery(document).ready(function ($) {
 			return;
 		}
 
-		$btn.prop('disabled', true).text('Submitting...');
+		$btn
+			.prop('disabled', true)
+			.text(__('Submitting...', 'multivendorx'));
+
 		let question = $(this).data('question');
 
 		$.post(
@@ -47,15 +52,20 @@ jQuery(document).ready(function ($) {
 						.fadeOut(function () {
 							// Reload questions after fade out
 							loadQuestions('');
-							$btn.prop('disabled', false).text('Ask now');
+							$btn
+								.prop('disabled', false)
+								.text(__('Ask now', 'multivendorx'));
 						});
 				} else {
 					alert(res.data.message);
-					$btn.prop('disabled', false).text('Ask now');
+					$btn
+						.prop('disabled', false)
+						.text(__('Ask now', 'multivendorx'));
 				}
 			}
 		);
 	});
+
 	function loadQuestions(search) {
 		$.post(
 			customerQueriesFrontend.ajaxurl,
@@ -92,6 +102,7 @@ jQuery(document).ready(function ($) {
 		const $item = $btn.closest('.customer-queries-item');
 		const queriesId = $item.data('customer-queries');
 		const type = $btn.data('type');
+
 		$.post(
 			customerQueriesFrontend.ajaxurl,
 			{

@@ -8,11 +8,6 @@ export default {
     submitUrl: 'settings',
     modal: [
         {
-            key: 'subscribe_form',
-            type: 'notifima-form-customizer',
-            label: __( 'Personalize Layout', 'notifima' ),
-        },
-        {
             key: 'unsubscribe_button_text',
             type: 'text',
             label: __( "'Unsubscribe' Button Caption", 'notifima' ),

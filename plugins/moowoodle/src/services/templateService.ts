@@ -133,7 +133,7 @@ const getTemplateData = (
 		return [];
 	}
 
-	ctx = applyFilters('multivendorx_settings_context', ctx, type);
+	ctx = applyFilters('moowoodle_settings_context', ctx, type);
 
 	return importAll(ctx);
 };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FieldComponent, ZyraVariable } from './fieldUtils';
+import '../styles/web/MultiCheckbox.scss';
 
 // Types
 interface Option {

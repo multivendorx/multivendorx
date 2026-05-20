@@ -1,7 +1,7 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { PanelBody, TextControl, SelectControl } from '@wordpress/components';
-import { createRoot, useEffect, useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import StoreCouponList from './StoreCouponList';
 import { __ } from '@wordpress/i18n';
@@ -11,7 +11,7 @@ import { getApiLink } from 'zyra';
 /* global couponList */
 
 registerBlockType('multivendorx/marketplace-coupons', {
-	apiVersion: 2,
+	apiVersion: 3,
 	title: __('Store Coupons', 'multivendorx'),
 	icon: 'tickets-alt',
 	category: 'multivendorx',
@@ -165,15 +165,3 @@ registerBlockType('multivendorx/marketplace-coupons', {
 	},
 });
 
-window.addEventListener('load', () => {
-	const elements = document.querySelectorAll('#marketplace-coupons');
-
-	elements.forEach((element) => {
-		const attributes = JSON.parse(
-			element.getAttribute('data-attributes') || '{}'
-		);
-
-		const root = createRoot(element);
-		root.render(<StoreCouponList {...attributes} />);
-	});
-});

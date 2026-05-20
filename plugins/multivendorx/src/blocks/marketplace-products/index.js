@@ -114,7 +114,7 @@ const EditBlock = (props) => {
 
 // Register the Block
 registerBlockType('multivendorx/marketplace-products', {
-	apiVersion: 2,
+	apiVersion: 3,
 	title: 'Marketplace Products',
 	icon: 'products',
 	category: 'multivendorx',
@@ -139,14 +139,3 @@ registerBlockType('multivendorx/marketplace-products', {
 	},
 });
 
-// Render on frontend
-window.addEventListener('load', () => {
-	const element = document.getElementById('marketplace-products');
-	if (element) {
-		const attributes = JSON.parse(
-			element.getAttribute('data-attributes') || '{}'
-		);
-		const root = createRoot(element);
-		root.render(<MarketplaceProductList {...attributes} />);
-	}
-});

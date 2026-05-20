@@ -43,23 +43,3 @@ standard dummy text ever since the 1500s`,
 		);
 	},
 });
-
-/*
- * Localization data should be passed from PHP like:
- *
- * wp_localize_script( 'your-block-script-handle', 'StoreInfo', array(
- *     'storeDetails' => array(
- *         'storeDescription' => __('Your description here', 'multivendorx')
- *     )
- * ));
- */
-
-document.addEventListener('DOMContentLoaded', () => {
-	document
-		.querySelectorAll('.multivendorx-store-description')
-		.forEach((el) => {
-			if (window.StoreInfo?.storeDetails?.storeDescription) {
-				el.textContent = window.StoreInfo.storeDetails.storeDescription;
-			}
-		});
-});

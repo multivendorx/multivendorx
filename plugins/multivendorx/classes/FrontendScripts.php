@@ -97,27 +97,6 @@ class FrontendScripts {
         $base_url    = MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/';
         $common_deps = array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' );
 
-        $block_scripts = array(
-            'contact-info',
-            'marketplace-products',
-            'marketplace-coupons',
-            'store-name',
-            'store-description',
-            'store-tabs',
-            'store-email',
-            'store-address',
-            'store-banner',
-            'follow-store',
-            'store-social-icons',
-            'store-logo',
-            'store-phone',
-            'store-provider',
-            'store-review',
-            'store-policy',
-            'product-category',
-            'store-quick-info',
-        );
-
         $register_scripts = apply_filters(
             'multivendorx_register_scripts',
             array(
@@ -129,39 +108,12 @@ class FrontendScripts {
                     'src'  => $base_url . 'index.js',
                     'deps' => $index_asset['dependencies'],
                 ),
-                // 'multivendorx-dashboard-components-script' => array(
-                //     'src'  => $base_url . 'components.js',
-                //     'deps' => $component_asset['dependencies'],
-                // ),
-                'multivendorx-registration-form-script'    => array(
-					'src'  => $base_url . 'block/registration-form/index.js',
-					'deps' => $index_asset['dependencies'],
-                ),
                 'multivendorx-store-products-script'       => array(
 					'src'  => $base_url . MULTIVENDORX_PLUGIN_SLUG . '-store-products.min.js',
 					'deps' => $common_deps,
 				),
             )
         );
-
-        // Add block scripts.
-        // foreach ( $block_scripts as $handle ) {
-        //     $register_scripts[ "multivendorx-{$handle}-script" ] = array(
-        //         'src'  => $base_url . "block/{$handle}/index.js",
-        //         'deps' => $common_deps,
-        //     );
-        // }
-        foreach ( $block_scripts as $handle ) {
-            $asset_path = plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . "js/block/{$handle}/index.asset.php";
-            $asset = file_exists( $asset_path )
-                ? include $asset_path
-                : array( 'dependencies' => array(), 'version' => $version );
-
-            $register_scripts[ "multivendorx-{$handle}-script" ] = array(
-                'src'  => $base_url . "block/{$handle}/index.js",
-                'deps' => $asset['dependencies'],
-            );
-        }
 
         foreach ( $register_scripts as $name => $props ) {
             self::register_script( $name, $props['src'], $props['deps'], $props['version'] ?? $version );
@@ -232,10 +184,6 @@ class FrontendScripts {
 					'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/index.js',
 					'deps' => $index_asset['dependencies'],
 				),
-				// 'multivendorx-components-script'  => array(
-				// 	'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/components.js',
-				// 	'deps' => $component_asset['dependencies'],
-				// ),
                 'multivendorx-product-tab-script' => array(
 					'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/' . MULTIVENDORX_PLUGIN_SLUG . '-product-tab.min.js',
 					'deps' => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ),
@@ -257,9 +205,6 @@ class FrontendScripts {
 		$register_styles = apply_filters(
             'admin_multivendorx_register_styles',
             array(
-				// 'multivendorx-components-style' => array(
-				// 	'src' => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/components.css',
-				// ),
 				'multivendorx-index-style' => array(
 					'src' => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/index.css',
 				),
@@ -289,10 +234,6 @@ class FrontendScripts {
 	 * @param string $handle Script handle the data will be attached to.
 	 */
     public static function localize_scripts( $handle ) {
-
-        // if ( ! wp_script_is( $handle, 'enqueued' ) ) {
-        // return;
-        // }
         // Get all tab setting's database value.
         $settings_databases_value = array();
 
@@ -550,7 +491,7 @@ class FrontendScripts {
 						'state_list'          => WC()->countries->get_states(),
                     ),
                 ),
-                'multivendorx-registration-form-script'    => array(
+                'multivendorx-registration-form-view-script'    => array(
                     'object_name' => 'registrationForm',
                     'use_rest'    => true,
                     'data'        => array(
@@ -570,18 +511,14 @@ class FrontendScripts {
                     'use_rest'     => true,
                     'use_settings' => true,
                     'object_name'  => 'storesList',
-                ),
-                'multivendorx-store-list-script'           => array(
-                    'object_name'  => 'storesList',
-                    'use_settings' => true,
-                    'use_rest'     => true,
                     'data'         => array(
                         'store_page_url'      => MultiVendorX()->store->storeutil->get_store_url( null, '', true ),
                         'placeholder_url'     => wc_placeholder_img_src(),
                         'default_user_avatar' => get_avatar_url( 0 ),
+                        'storeDetails'        => StoreUtil::get_specific_store_info(),
                     ),
                 ),
-                'multivendorx-marketplace-stores-script'   => array(
+                'multivendorx-marketplace-stores-view-script'   => array(
                     'object_name'  => 'storesList',
                     'use_settings' => true,
                     'use_rest'     => true,
@@ -597,7 +534,7 @@ class FrontendScripts {
                     'use_rest'     => true,
                     'use_settings' => true,
                 ),
-                'multivendorx-marketplace-products-script' => array(
+                'multivendorx-marketplace-products-view-script' => array(
                     'object_name'  => 'productList',
                     'use_rest'     => true,
                     'use_settings' => true,
@@ -606,7 +543,15 @@ class FrontendScripts {
                         'placeholder_url'     => wc_placeholder_img_src(),
                     ),
                 ),
-                'multivendorx-marketplace-coupons-script'  => array(
+                'multivendorx-marketplace-coupons-editor-script'  => array(
+                    'object_name'  => 'couponList',
+                    'use_rest'     => true,
+                    'use_settings' => true,
+                    'data'         => array(
+                        'storeDetails' => StoreUtil::get_specific_store_info(),
+                    ),
+                ),
+                'multivendorx-marketplace-coupons-view-script'  => array(
                     'object_name'  => 'couponList',
                     'use_rest'     => true,
                     'use_settings' => true,

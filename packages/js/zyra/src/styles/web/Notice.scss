@@ -72,7 +72,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            animation-name: cycleBanner;
+            animation-name: cycle-banner;
             animation-duration: var(--banner-duration);
             animation-iteration-count: infinite;
             animation-timing-function: ease-in-out;
@@ -84,7 +84,7 @@
             }
         }
 
-        @keyframes cycleBanner {
+        @keyframes cycle-banner {
             0% {
                 opacity: 0;
                 visibility: hidden;
@@ -156,7 +156,7 @@
             width: 0;
             height: 0.125rem;
             background-color: map-get(map-get($color-palette, green), color);
-            animation: borderSlide 2.5s ease-in-out;
+            animation: border-slide 2.5s ease-in-out;
             animation-delay: 0.5s;
         }
 
@@ -342,7 +342,7 @@
     }
 }
 
-@keyframes borderSlide {
+@keyframes border-slide {
     0% {
         width: 0;
         left: 0;

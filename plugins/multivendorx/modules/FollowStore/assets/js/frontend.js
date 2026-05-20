@@ -1,10 +1,13 @@
-/* global jQuery, followStoreFrontend */
+/* global jQuery, followStoreFrontend, wp */
+const { __ } = wp.i18n;
+
 jQuery(document).ready(function ($) {
 	// Initialize buttons
 	$('.follow-btn').each(function () {
 		var btn = $(this);
 		var store_id = btn.data('store-id');
 		var user_id = btn.data('user-id');
+
 		$.ajax({
 			url:
 				followStoreFrontend.apiUrl +
@@ -27,12 +30,22 @@ jQuery(document).ready(function ($) {
 				/**
 				 * Button text
 				 */
-				btn.text(isFollowing ? 'Unfollow' : 'Follow').show();
+				btn
+					.text(
+						isFollowing
+							? __('Unfollow', 'multivendorx')
+							: __('Follow', 'multivendorx')
+					)
+					.show();
 
 				/**
 				 * Follower count text
 				 */
-				var label = count === 1 ? 'Follower' : 'Followers';
+				var label =
+					count === 1
+						? __('Follower', 'multivendorx')
+						: __('Followers', 'multivendorx');
+
 				$('#followers-count-' + store_id).text(count + ' ' + label);
 			},
 		});
@@ -45,7 +58,10 @@ jQuery(document).ready(function ($) {
 		var user_id = btn.data('user-id');
 
 		if (!user_id) {
-			$('#multivendorx-login-modal').data('store-id', store_id).fadeIn();
+			$('#multivendorx-login-modal')
+				.data('store-id', store_id)
+				.fadeIn();
+
 			return;
 		}
 
@@ -73,12 +89,20 @@ jQuery(document).ready(function ($) {
 				/**
 				 * Button text
 				 */
-				btn.text(isFollowing ? 'Unfollow' : 'Follow');
+				btn.text(
+					isFollowing
+						? __('Unfollow', 'multivendorx')
+						: __('Follow', 'multivendorx')
+				);
 
 				/**
 				 * Follower count
 				 */
-				var label = count === 1 ? 'Follower' : 'Followers';
+				var label =
+					count === 1
+						? __('Follower', 'multivendorx')
+						: __('Followers', 'multivendorx');
+
 				$('#followers-count-' + store_id).text(count + ' ' + label);
 
 				btn.prop('disabled', false);

@@ -23,13 +23,13 @@ class Util {
      *
      * @var array
      */
-    const TABLES = array(
+    public const TABLES = array(
         'enrollment' => 'mw_enrollment',
         'category'   => 'mw_moodle_categories',
         'course'     => 'mw_courses',
     );
 
-    const MOOWOODLE_SETTINGS = array(
+    public const MOOWOODLE_SETTINGS = array(
         'notification'       => 'moowoodle_notification_settings',
         'synchronize-course' => 'moowoodle_synchronize_course_settings',
         'synchronize-user'   => 'moowoodle_synchronize_user_settings',
@@ -38,139 +38,169 @@ class Util {
         'system-logs'        => 'moowoodle_system_logs_settings',
     );
 
-    const MOOWOODLE_OTHER_SETTINGS = array(
+    public const MOOWOODLE_OTHER_SETTINGS = array(
         'log_file' => 'moowoodle_log_file',
     );
-    
-    const MOOWOODLE_PRODUCT_META= array(
-        'course_startdate'  => 'moowoodle_course_startdate',
-        'course_enddate'    => 'moowoodle_course_enddate',
-        'moodle_course_id'  => 'moowoodle_moodle_course_id',
-        'wordpress_course_id'  => 'moowoodle_wordpress_course_id',
+
+    public const MOOWOODLE_PRODUCT_META = array(
+        'course_startdate'    => 'moowoodle_course_startdate',
+        'course_enddate'      => 'moowoodle_course_enddate',
+        'moodle_course_id'    => 'moowoodle_moodle_course_id',
+        'wordpress_course_id' => 'moowoodle_wordpress_course_id',
     );
 
-    const MOOWOODLE_TERM_META= array(
-        'category_id'  => '_category_id',
-        'parent_id'    => '_parent',
-        'category_path'  => '_category_path',
+    public const MOOWOODLE_TERM_META = array(
+        'category_id'   => '_category_id',
+        'parent_id'     => '_parent',
+        'category_path' => '_category_path',
     );
 
     /**
-     * Write a formatted log entry for moowoodle.
-     *
-     * Handles:
-     * - Exceptions
-     * - WP_Error objects
-     * - WordPress DB errors
-     * - Normal text messages
+     * Write log entry to MooWoodle log file.
      *
      * @param mixed  $message Log message, Exception, or WP_Error.
-     * @param string $type    Log type (INFO, ERROR, EXCEPTION, WP_ERROR).
-     * @param array  $extra   Additional metadata to include.
-     * @return bool           True on success, false on failure.
+     * @param string $log_type Log level/type.
+     * @param array  $log_context Additional log context.
+     *
+     * @return bool
      */
-    public static function log( $message = '', $type = 'INFO', $extra = array() ) {
+    public static function log( $message = '', $log_type = 'INFO', $log_context = array() ) {
         global $wp_filesystem, $wpdb;
 
-        // Initialize the WordPress filesystem API.
+        // Initialize WordPress filesystem.
         if ( empty( $wp_filesystem ) ) {
-            require_once ABSPATH . '/wp-admin/includes/file.php';
+            require_once ABSPATH . 'wp-admin/includes/file.php';
             WP_Filesystem();
         }
 
-        // Create the logs directory and protect it with .htaccess.
-        if ( ! file_exists( MooWoodle()->moowoodle_logs_dir . '/.htaccess' ) ) {
-            wp_mkdir_p( MooWoodle()->moowoodle_logs_dir );
-            try {
+        if ( ! $wp_filesystem ) {
+            return false;
+        }
+
+        $logs_dir = trailingslashit( MooWoodle()->moowoodle_logs_dir );
+        $log_file = MooWoodle()->log_file;
+
+        if ( ! $wp_filesystem->is_dir( $logs_dir ) ) {
+            wp_mkdir_p( $logs_dir );
+        }
+
+        try {
+            $htaccess_file = $logs_dir . '.htaccess';
+            $index_file    = $logs_dir . 'index.html';
+
+            if ( ! $wp_filesystem->exists( $htaccess_file ) ) {
                 $wp_filesystem->put_contents(
-                    MooWoodle()->moowoodle_logs_dir . '/.htaccess',
-                    'deny from all'
+                    $htaccess_file,
+                    'deny from all',
+                    FS_CHMOD_FILE
                 );
-                $wp_filesystem->put_contents(
-                    MooWoodle()->moowoodle_logs_dir . '/index.html',
-                    ''
-                );
-            } catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
-                // Directory creation failed but logging should continue.
             }
+
+            if ( ! $wp_filesystem->exists( $index_file ) ) {
+                $wp_filesystem->put_contents(
+                    $index_file,
+                    '',
+                    FS_CHMOD_FILE
+                );
+            }
+        } catch ( \Exception $exception ) {
+            error_log( $exception->getMessage() );
         }
 
-        // Convert Exception into structured metadata.
         if ( $message instanceof \Exception ) {
-            $type             = 'EXCEPTION';
-            $extra['Message'] = $message->getMessage();
-            $extra['Code']    = $message->getCode();
-            $extra['File']    = $message->getFile();
-            $extra['Line']    = $message->getLine();
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-            $extra['Stack'] = $message->getTraceAsString();
-            $message        = 'Exception occurred';
-        }
-        // Convert Throwable into structured metadata.
-        if ( $message instanceof \Throwable ) {
-            $type             = 'EXCEPTION';
-            $extra['Message'] = $message->getMessage();
-            $extra['Code']    = $message->getCode();
-            $extra['File']    = $message->getFile();
-            $extra['Line']    = $message->getLine();
-            $extra['Stack']   = $message->getTraceAsString();
-            $message          = 'Throwable occurred';
+            $log_type = 'EXCEPTION';
+            $log_context = array_merge(
+                $log_context,
+                array(
+                    'exception_message' => $message->getMessage(),
+                    'exception_code'    => $message->getCode(),
+                    'exception_file'    => $message->getFile(),
+                    'exception_line'    => $message->getLine(),
+                    'exception_trace'   => $message->getTraceAsString(),
+                )
+            );
+            $message = 'Exception occurred';
         }
 
-        // Convert WP_Error into structured metadata.
         if ( $message instanceof \WP_Error ) {
-            $type             = 'WP_ERROR';
-            $extra['Code']    = $message->get_error_code();
-            $extra['Message'] = $message->get_error_message();
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-            $extra['Data'] = $message->get_error_data();
-            $message       = 'WP_Error occurred';
+            $log_type = 'WP_ERROR';
+            $log_context = array_merge(
+                $log_context,
+                array(
+                    'error_code'    => $message->get_error_code(),
+                    'error_message' => $message->get_error_message(),
+                    'error_data'    => $message->get_error_data(),
+                )
+            );
+            $message = 'WP_Error occurred';
         }
 
-        // Automatically capture database errors.
-        if ( isset( $wpdb ) && ! empty( $wpdb->last_error ) ) {
-            $extra['DB Error']   = $wpdb->last_error;
-            $extra['Last Query'] = $wpdb->last_query;
+        if ( ! empty( $wpdb->last_error ) ) {
+
+            $log_context['db_error'] = $wpdb->last_error;
+            $log_context['db_query'] = $wpdb->last_query;
         }
 
-        // Automatic metadata.
-        $meta = array_merge(
+        $backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
+        $caller    = $backtrace[1] ?? array();
+        $timestamp = current_time( 'mysql' );
+
+        $log_metadata = array_merge(
             array(
-                'Type'      => $type,
-                'Timestamp' => current_time( 'mysql' ),
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
-                'File'      => debug_backtrace()[1]['file'] ?? '',
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
-                'Line'      => debug_backtrace()[1]['line'] ?? '',
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_wp_debug_backtrace_summary
-                'Stack'     => wp_debug_backtrace_summary(),
+                'type'      => $log_type,
+                'timestamp' => $timestamp,
+                'file'      => $caller['file'] ?? '',
+                'line'      => $caller['line'] ?? '',
+                'stack'     => wp_debug_backtrace_summary(),
             ),
-            $extra
+            $log_context
         );
 
-        $timestamp = $meta['Timestamp'];
+        // Prepare log lines.
         $log_lines = array();
+        foreach ( $log_metadata as $context_key => $context_value ) {
+            if ( ! is_scalar( $context_value ) ) {
+                $context_value = wp_json_encode( $context_value );
+            }
 
-        foreach ( $meta as $key => $val ) {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-            $val         = trim( print_r( $val, true ) );
-            $log_lines[] = "{$timestamp} : {$key}: {$val}";
+            $log_lines[] = sprintf(
+                '%1$s : %2$s: %3$s',
+                $timestamp,
+                $context_key,
+                trim( (string) $context_value )
+            );
         }
 
-        // Add the main message.
-        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-        $log_lines[] = "{$timestamp} : Message: " . ( is_string( $message ) ? trim( $message ) : trim( print_r( $message, true ) ) );
-        // Build final entry block.
-        $log_entry = implode( "\n", $log_lines ) . "\n";
+        // Add main message.
+        $formatted_message = is_scalar( $message )
+            ? trim( (string) $message )
+            : wp_json_encode( $message );
 
-        $existing = $wp_filesystem->get_contents( MooWoodle()->log_file );
-        if ( ! empty( $existing ) ) {
-            $log_entry = "\n" . $log_entry; // Add spacing.
+        $log_lines[] = sprintf(
+            '%1$s : message: %2$s',
+            $timestamp,
+            trim( $formatted_message )
+        );
+
+        $log_entry = implode( PHP_EOL, $log_lines ) . PHP_EOL;
+
+        // Get existing logs.
+        $existing_log_content = '';
+
+        if ( $wp_filesystem->exists( $log_file ) ) {
+            $existing_log_content = $wp_filesystem->get_contents( $log_file );
         }
 
+        // Add spacing between log entries.
+        if ( ! empty( $existing_log_content ) ) {
+            $log_entry = PHP_EOL . $log_entry;
+        }
+
+        // Write logs.
         return $wp_filesystem->put_contents(
-            MooWoodle()->log_file,
-            $existing . $log_entry
+            $log_file,
+            $existing_log_content . $log_entry,
+            FS_CHMOD_FILE
         );
     }
 
@@ -179,10 +209,10 @@ class Util {
      *
      * @access public
      * @param mixed $template_name template name.
-     * @param array $args default: array().
+     * @param array $template_args default: array().
      * @return void
      */
-    public static function get_template( $template_name, $args = array() ) {
+    public static function get_template( $template_name, $template_args = array() ) {
         // Check if the template exists in the theme.
         $theme_template = get_stylesheet_directory() . '/moowoodle/' . $template_name;
 
@@ -190,7 +220,7 @@ class Util {
         $located = file_exists( $theme_template ) ? $theme_template : MooWoodle()->plugin_path . 'templates/' . $template_name;
 
         // Load the template.
-        load_template( $located, false, $args );
+        load_template( $located, false, $template_args );
     }
 
 	/**
@@ -205,54 +235,57 @@ class Util {
 	/**
 	 * Set moowoodle sync status.
      *
-	 * @param mixed $status status.
-	 * @param mixed $key key.
+	 * @param mixed $sync_status status.
+	 * @param mixed $sync_key key.
 	 * @return void
 	 */
-	public static function set_sync_status( $status, $key ) {
-		$status_history   = get_transient( 'moowoodle_sync_status_' . $key );
-		$status_history   = is_array( $status_history ) ? $status_history : array();
-        $status['current'] = 0;
-		$status_history[] = $status;
+	public static function set_sync_status( $sync_status, $sync_key ) {
+		$sync_history    = get_transient( 'moowoodle_sync_status_' . $sync_key );
+		$sync_history    = is_array( $sync_history ) ? $sync_history : array();
+        $sync_status['current'] = 0;
+		$sync_history[]  = $sync_status;
 
-		set_transient( 'moowoodle_sync_status_' . $key, $status_history, 3600 );
+		set_transient( 'moowoodle_sync_status_' . $sync_key, $sync_history, HOUR_IN_SECONDS );
 	}
 
 	/**
 	 * Get moowoodle sync status.
      *
-	 * @param mixed $key key.
+	 * @param mixed $sync_key key.
 	 * @return mixed
 	 */
-	public static function get_sync_status( $key ) {
-		$status = get_transient( 'moowoodle_sync_status_' . $key );
-		return $status ? $status : array();
+	public static function get_sync_status( $sync_key ) {
+		$sync_status = get_transient( 'moowoodle_sync_status_' . $sync_key );
+		return is_array( $sync_status ) ? $sync_status : array();
 	}
 
 	/**
 	 * Increment sync count.
      *
-	 * @param mixed $key key.
+	 * @param mixed $sync_key key.
 	 * @return void
 	 */
-	public static function increment_sync_count( $key ) {
-		$sync_status    = get_transient( 'moowoodle_sync_status_' . $key );
+	public static function increment_sync_count( $sync_key ) {
+		$sync_status = get_transient( 'moowoodle_sync_status_' . $sync_key );
+        if ( empty( $sync_status ) ) {
+            return;
+        }
 		$current_action = count( $sync_status ) - 1;
 
 		// Update the current action count.
 		++$sync_status[ $current_action ]['current'];
 
-		set_transient( 'moowoodle_sync_status_' . $key, $sync_status, 3600 );
+		set_transient( 'moowoodle_sync_status_' . $sync_key, $sync_status, HOUR_IN_SECONDS );
 	}
 
 	/**
 	 * Flush the sync status history.
      *
-	 * @param mixed $key key.
+	 * @param mixed $sync_key key.
 	 * @return void
 	 */
-	public static function flush_sync_status( $key ) {
-		set_transient( 'moowoodle_sync_status_' . $key, array() );
+	public static function flush_sync_status( $sync_key ) {
+		set_transient( 'moowoodle_sync_status_' . $sync_key, array() );
 	}
 
     /**
@@ -293,12 +326,12 @@ class Util {
      * @return true|\WP_Error
      */
     public static function validate_nonce( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
+        $nonce = sanitize_text_field( $request->get_header( 'X-WP-Nonce' ) );
 
         if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
             $error = new \WP_Error(
                 'invalid_nonce',
-                __( 'Invalid nonce', 'moowoodle' ),
+                esc_html__( 'Invalid nonce.', 'moowoodle' ),
                 array( 'status' => 403 )
             );
 
@@ -317,11 +350,11 @@ class Util {
      */
     public static function server_error( \Exception $exception ) {
 
-        MooWoodle()->util->log( $exception );
+        self::log( $exception );
 
         return new \WP_Error(
             'server_error',
-            __( 'Unexpected server error', 'moowoodle' ),
+            esc_html__( 'Unexpected server error.', 'moowoodle' ),
             array(
                 'status' => 500,
             )

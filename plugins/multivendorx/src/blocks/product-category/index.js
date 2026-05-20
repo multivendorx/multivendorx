@@ -5,8 +5,7 @@ import {
 	useBlockProps,
 } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
-import { createRoot } from '@wordpress/element';
-import ProductCategory from './ProductCategory';
+
 
 registerBlockType('multivendorx/product-category', {
 	attributes: {
@@ -85,15 +84,4 @@ registerBlockType('multivendorx/product-category', {
 			<div {...blockProps} id="multivendorx-store-product-category"></div>
 		);
 	},
-});
-
-window.addEventListener('load', () => {
-	const el = document.getElementById('multivendorx-store-product-category');
-
-	if (!el) {
-		return;
-	}
-
-	const root = createRoot(el);
-	root.render(<ProductCategory />);
 });

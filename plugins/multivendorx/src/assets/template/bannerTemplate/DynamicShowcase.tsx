@@ -1,6 +1,6 @@
 const DynamicShowcase = () => {
 	return (
-		<div className="multivendorx-banner template3">
+		<div className="multivendorx-banner dynamic-showcase">
 			<div className="banner-slider"></div>
 			<div className="banner-right">
 				<div className="social-profile">
