@@ -17,9 +17,7 @@ use MooWoodle\Util;
  * @author      DualCube
  */
 class Product {
-    /**
-     * Product class constructor function.
-     */
+
     public function __construct() {
 		// Course meta save with WooCommerce product save.
 		add_action( 'woocommerce_process_product_meta', array( $this, 'save_product_meta_data' ) );
@@ -27,7 +25,7 @@ class Product {
 		// Support for woocommerce product custom metadata query.
 		add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array( $this, 'modify_custom_meta_query' ), 10, 2 );
 
-		add_action( 'moowoodle_clean_course_previous_link', array( $this, 'clean_course_previous_link' ), 10, 1 );
+		add_action( 'moowoodle_clean_course_previous_link', array( $this, 'unlink_previous_course' ), 10, 1 );
 
 		add_action( 'wp_trash_post', array( $this, 'handle_woocommerce_product_trash' ), 10, 1 );
 
@@ -40,13 +38,12 @@ class Product {
 	 * @param int|string $moodle_course_id The Moodle course ID.
 	 * @return \WC_Product|null The associated product, or null if no product is found.
 	 */
-	public static function get_product_from_moodle_course( $moodle_course_id ) {
+	public static function get_product_by_moodle_course_id( $moodle_course_id ) {
 
 		// Query products with matching moodle_course_id.
 		$products = wc_get_products(
             array(
 				'meta_query' => array(
-					'relation' => 'AND',
 					array(
 						'key'     => Util::MOOWOODLE_PRODUCT_META['moodle_course_id'],
 						'value'   => $moodle_course_id,
@@ -73,7 +70,7 @@ class Product {
 			return 0;
 		}
 
-		$product = self::get_product_from_moodle_course( $course['id'] );
+		$product = self::get_product_by_moodle_course_id( $course['id'] );
 
 		if ( ! $product ) {
 			if ( ! $force_create ) {
@@ -85,7 +82,7 @@ class Product {
 			return $product->get_id();
 		}
 
-        // get category term.
+        // Retrieve mapped WooCommerce product category.
         $product_term = MooWoodle()->category->get_product_category( $course['categoryid'], 'product_cat' );
 
         // Set product properties.
@@ -106,7 +103,7 @@ class Product {
 			Util::log( sprintf( 'Unable to set SKU for product #%d: %s', $product->get_id(), $exception->getMessage() ) );
 		}
 
-		// get the course id linked with moodle.
+		// Retrieve linked WordPress course from Moodle course ID.
         $wordpress_course = MooWoodle()->course->get_courses(
             array(
 				'moodle_course_id' => $course['id'],
@@ -210,7 +207,7 @@ class Product {
 			do_action( 'moowoodle_clean_cohort_previous_link', $product_id );
 
 			if ( empty( $link_item_id ) ) {
-				$this->clean_course_previous_link( $product_id );
+				$this->unlink_previous_course( $product_id );
 				return;
 			}
 
@@ -252,7 +249,7 @@ class Product {
 	 * @param int $product_id The ID of the WooCommerce product.
 	 * @return void
 	 */
-	public function clean_course_previous_link( $product_id ) {
+	public function unlink_previous_course( $product_id ) {
 		delete_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'] );
 
 		$moodle_course_id = absint( get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true ) );
@@ -348,7 +345,6 @@ class Product {
 				'status'     => 'publish',
 				'return'     => 'ids',
 				'meta_query' => array(
-					'relation' => 'AND',
 					array(
 						'key'     => Util::MOOWOODLE_PRODUCT_META['wordpress_course_id'],
 						'compare' => 'EXISTS',
