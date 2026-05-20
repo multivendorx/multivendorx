@@ -23,8 +23,8 @@ class Enrollment {
 	public function __construct() {
 		add_action( 'woocommerce_order_status_completed', array( $this, 'process_order' ), 10, 1 );
 		add_action( 'woocommerce_thankyou', array( $this, 'enrollment_modified_details' ) );
-		add_action( 'woocommerce_after_shop_loop_item_title', array( $this, 'add_dates_with_product' ) );
-		add_action( 'woocommerce_product_meta_start', array( $this, 'add_dates_with_product' ) );
+		add_action( 'woocommerce_after_shop_loop_item_title', array( $this, 'display_course_dates' ) );
+		add_action( 'woocommerce_product_meta_start', array( $this, 'display_course_dates' ) );
 		add_action( 'woocommerce_cart_updated', array( $this, 'restrict_cart_quantity_on_update' ) );
 	}
 
@@ -81,7 +81,7 @@ class Enrollment {
 		}
 
 		if ( isset( $args['status'] ) && '' !== $args['status'] ) {
-			$where[] = $wpdb->prepare( 'status = %s', $args['status'] );
+			$where[] = $wpdb->prepare( 'status = %s', sanitize_text_field($args['status']) );
 		}
 
 		if ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) {
@@ -109,8 +109,7 @@ class Enrollment {
 		}
 
 		if ( isset( $args['count'] ) ) {
-			$results = $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-			return $results ?? 0;
+			return $wpdb->get_var( $query ) ?? 0; // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		} else {
 			$results = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 			return $results ?? array();
@@ -472,31 +471,31 @@ class Enrollment {
      *
 	 * @return void
 	 */
-	public function add_dates_with_product() {
+	public function display_course_dates() {
 		global $product;
 
-		$startdate = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['course_startdate'], true );
-		$enddate   = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['course_enddate'], true );
+		$start_date = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['course_startdate'], true );
+		$end_date   = $product->get_meta( Util::MOOWOODLE_PRODUCT_META['course_enddate'], true );
 
 		// Get start end date setting.
 		$start_end_date = MooWoodle()->setting->get_setting( 'start_end_date', array() );
 		$start_end_date = in_array( 'start_end_date', $start_end_date, true );
 
 		if ( $start_end_date ) {
-			if ( $startdate ) {
+			if ( $start_date ) {
 				printf(
 					/* translators: %s: Start date in Y-m-d format. */
 					esc_html__( 'Start Date: %s', 'moowoodle' ),
-					esc_html( gmdate( 'Y-m-d', $startdate ) )
+					esc_html( gmdate( 'Y-m-d', $start_date ) )
 				);
 				echo '<br>';
 			}
 
-			if ( $enddate ) {
+			if ( $end_date ) {
 				printf(
 					/* translators: %s: End date in Y-m-d format. */
 					esc_html__( 'End Date: %s', 'moowoodle' ),
-					esc_html( gmdate( 'Y-m-d', $enddate ) )
+					esc_html( gmdate( 'Y-m-d', $end_date ) )
 				);
 			}
 		}
@@ -516,7 +515,6 @@ class Enrollment {
 				continue; // Skip non-Moodle products
 			}
 
-			// Restrict quantity to 1
 			if ( $cart_item['quantity'] > 1 ) {
 				WC()->cart->set_quantity( $cart_item_key, 1 );
 				wc_add_notice( __( 'You can only purchase one unit of this product.', 'moowoodle' ), 'error' );

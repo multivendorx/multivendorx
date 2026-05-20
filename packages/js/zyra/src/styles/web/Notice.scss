@@ -85,26 +85,13 @@
         }
 
         @keyframes cycle-banner {
-            0% {
-                opacity: 0;
-                visibility: hidden;
-            }
-
-            5% {
+            0%,
+            12.5% {
                 opacity: 1;
                 visibility: visible;
             }
 
-            20% {
-                opacity: 1;
-                visibility: visible;
-            }
-
-            25% {
-                opacity: 0;
-                visibility: hidden;
-            }
-
+            12.6%,
             100% {
                 opacity: 0;
                 visibility: hidden;

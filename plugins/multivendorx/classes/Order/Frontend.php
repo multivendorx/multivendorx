@@ -29,6 +29,9 @@ class Frontend {
         add_filter( 'woocommerce_my_account_my_orders_column_order-number', array( $this, 'add_suborder_tag' ), 99 );
         add_filter( 'woocommerce_customer_available_downloads', array( $this, 'woocommerce_customer_available_downloads' ), 99 );
         add_filter( 'woocommerce_email_enabled_new_order', array( $this, 'disable_new_order_email_conditionally' ), 10, 2 );
+        add_filter( 'woocommerce_email_enabled_customer_processing_order', array( $this, 'disable_new_order_email_conditionally' ), 10, 2 );
+        add_filter( 'woocommerce_email_enabled_customer_on_hold_order', array( $this, 'disable_new_order_email_conditionally' ), 10, 2 );
+        add_filter( 'woocommerce_email_enabled_customer_completed_order', array( $this, 'disable_new_order_email_conditionally' ), 10, 2 );
     }
 
     /**
