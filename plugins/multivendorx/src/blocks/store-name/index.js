@@ -37,9 +37,3 @@ registerBlockType('multivendorx/store-name', {
 		return <h2 {...blockProps} className="multivendorx-store-name"></h2>;
 	},
 });
-
-document.addEventListener('DOMContentLoaded', () => {
-	document.querySelectorAll('.multivendorx-store-name').forEach((el) => {
-		el.textContent = StoreInfo.storeDetails.storeName;
-	});
-});

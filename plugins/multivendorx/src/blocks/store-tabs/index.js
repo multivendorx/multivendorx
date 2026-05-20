@@ -1,8 +1,5 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { render } from '@wordpress/element';
-import { BrowserRouter } from 'react-router-dom';
-import StoreTabs from './StoreTabs';
 
 const Edit = () => {
 	return (
@@ -168,19 +165,4 @@ registerBlockType('multivendorx/store-tabs', {
 	save() {
 		return <div id="multivendorx-store-tabs"></div>;
 	},
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-	const el = document.getElementById('multivendorx-store-tabs');
-
-	if (!el) {
-		return;
-	}
-
-	render(
-		<BrowserRouter>
-			<StoreTabs />
-		</BrowserRouter>,
-		el
-	);
 });

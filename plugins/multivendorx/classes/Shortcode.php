@@ -87,8 +87,8 @@ class Shortcode {
             return;
         }
 
-        FrontendScripts::enqueue_script( 'multivendorx-registration-form-script' );
-        FrontendScripts::localize_scripts( 'multivendorx-registration-form-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-registration-form-view-script' );
+        FrontendScripts::localize_scripts( 'multivendorx-registration-form-view-script' );
         FrontendScripts::enqueue_style( 'multivendorx-store-tabs-style' );
     }
 
@@ -116,7 +116,7 @@ class Shortcode {
                 'marketplace_stores'   => array(
                     'scripts' => array(
                         array(
-                            'handle'    => 'multivendorx-marketplace-stores-script',
+                            'handle'    => 'multivendorx-marketplace-stores-view-script',
                             'localize'  => true,
                         ),
                         array(
@@ -132,7 +132,7 @@ class Shortcode {
                 'marketplace_products' => array(
                     'scripts' => array(
                         array(
-                            'handle'    => 'multivendorx-marketplace-products-script',
+                            'handle'    => 'multivendorx-marketplace-products-view-script',
                             'localize'  => true,
                         ),
                     ),
@@ -141,7 +141,7 @@ class Shortcode {
                 'marketplace_coupons'  => array(
                     'scripts' => array(
                         array(
-                            'handle'    => 'multivendorx-marketplace-coupons-script',
+                            'handle'    => 'multivendorx-marketplace-coupons-view-script',
                             'localize'  => true,
                         ),
                     ),
@@ -163,7 +163,6 @@ class Shortcode {
                 }
 
                 FrontendScripts::enqueue_script( $script['handle'] );
-
                 if ( ! empty( $script['localize'] ) ) {
                     FrontendScripts::localize_scripts( $script['handle'] );
                 }
