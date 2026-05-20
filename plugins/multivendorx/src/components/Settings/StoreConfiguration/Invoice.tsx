@@ -255,24 +255,24 @@ const Invoice: React.FC = () => {
 
 	const [formData, setFormData] = useState(() => {
 		const savedData = appLocalizer?.settings_databases_value?.invoices || {};
-		
+
 		// Helper function to ensure template has all required fields
 		const ensureTemplateDefaults = (savedTemplate: any, defaultTemplate: any) => {
 			if (!savedTemplate || typeof savedTemplate !== 'object') {
 				return { ...defaultTemplate };
 			}
-			
+
 			return {
 				selectedPalette: savedTemplate.selectedPalette || defaultTemplate.selectedPalette,
 				templateKey: savedTemplate.templateKey !== undefined
 					? savedTemplate.templateKey
 					: defaultTemplate.templateKey,
-				colors: savedTemplate.colors && Object.keys(savedTemplate.colors).length > 0 
-					? savedTemplate.colors 
+				colors: savedTemplate.colors && Object.keys(savedTemplate.colors).length > 0
+					? savedTemplate.colors
 					: defaultTemplate.colors,
 			};
 		};
-		
+
 		return {
 			...defaultData,
 			...savedData,
@@ -293,9 +293,9 @@ const Invoice: React.FC = () => {
 		}
 
 		if (isPro && !modules.includes('invoice')) {
-            setShowModulePopup(true);
-        	return;
-        }
+			setShowModulePopup(true);
+			return;
+		}
 		const normalizedValue = value?.target?.value || value;
 		let updated;
 		if (
@@ -346,7 +346,6 @@ const Invoice: React.FC = () => {
 										wrapperClass="form-group-color-setting"
 										inputClass="setting-form-input"
 										templateSelector={true}
-										showPdfButton={true}
 										idPrefix="color-setting-customer"
 										templates={applyFilters(
 											'multivendorx_order_invoice',
@@ -354,6 +353,27 @@ const Invoice: React.FC = () => {
 												{
 													key: 'order_invoice_default',
 													label: 'Default',
+													preview: orderInvoiceDefault,
+													component: orderInvoiceDefault,
+													pdf: orderInvoiceDefault,
+												},
+												{
+													key: 'order_invoice_luxe_display',
+													label: 'Luxe Display',
+													preview: orderInvoiceDefault,
+													component: orderInvoiceDefault,
+													pdf: orderInvoiceDefault,
+												},
+												{
+													key: 'order_invoice_axis_frame',
+													label: 'Axis Frame',
+													preview: orderInvoiceDefault,
+													component: orderInvoiceDefault,
+													pdf: orderInvoiceDefault,
+												},
+												{
+													key: 'order_invoice_signature_style',
+													label: 'Signature Style',
 													preview: orderInvoiceDefault,
 													component: orderInvoiceDefault,
 													pdf: orderInvoiceDefault,
@@ -377,18 +397,38 @@ const Invoice: React.FC = () => {
 										wrapperClass="form-group-color-setting"
 										inputClass="setting-form-input"
 										templateSelector={true}
-										showPdfButton={true}
 										idPrefix="color-setting-admin"
 										templates={applyFilters(
 											'multivendorx_commission_invoice',
 											[
 												{
-												key: 'commission_default',
-												label: 'Default',
-												preview: commissionDefault,
-												component: commissionDefault,
-												pdf: commissionDefault,
-											},
+													key: 'commission_default',
+													label: 'Default',
+													preview: commissionDefault,
+													component: commissionDefault,
+													pdf: commissionDefault,
+												},
+												{
+													key: 'order_invoice_luxe_display',
+													label: 'Luxe Display',
+													preview: commissionDefault,
+													component: commissionDefault,
+													pdf: commissionDefault,
+												},
+												{
+													key: 'order_invoice_axis_frame',
+													label: 'Axis Frame',
+													preview: commissionDefault,
+													component: commissionDefault,
+													pdf: commissionDefault,
+												},
+												{
+													key: 'order_invoice_signature_style',
+													label: 'Signature Style',
+													preview: commissionDefault,
+													component: commissionDefault,
+													pdf: commissionDefault,
+												},
 											]
 										)}
 										predefinedOptions={COLOR_PALETTES}
@@ -408,18 +448,38 @@ const Invoice: React.FC = () => {
 										wrapperClass="form-group-color-setting"
 										inputClass="setting-form-input"
 										templateSelector={true}
-										showPdfButton={true} 
 										idPrefix="color-setting-packing"
 										templates={applyFilters(
 											'multivendorx_packing_slip_invoice',
 											[
 												{
-												key: 'packing_slip_default',
-												label: 'Default',
-												preview: packingSlipDefault,
-												component: packingSlipDefault,
-												pdf: packingSlipDefault,
-											},
+													key: 'packing_slip_default',
+													label: 'Default',
+													preview: packingSlipDefault,
+													component: packingSlipDefault,
+													pdf: packingSlipDefault,
+												},
+												{
+													key: 'order_invoice_luxe_display',
+													label: 'Luxe Display',
+													preview: packingSlipDefault,
+													component: packingSlipDefault,
+													pdf: packingSlipDefault,
+												},
+												{
+													key: 'order_invoice_axis_frame',
+													label: 'Axis Frame',
+													preview: packingSlipDefault,
+													component: packingSlipDefault,
+													pdf: packingSlipDefault,
+												},
+												{
+													key: 'order_invoice_signature_style',
+													label: 'Signature Style',
+													preview: packingSlipDefault,
+													component: packingSlipDefault,
+													pdf: packingSlipDefault,
+												},
 											]
 										)}
 										predefinedOptions={COLOR_PALETTES}
@@ -432,24 +492,23 @@ const Invoice: React.FC = () => {
 							},
 						]}
 					/>
+					{isPro &&
+						!modules.includes('invoice') && (
+							<span className="admin-pro-tag module">
+								<i
+									className={`adminfont-invoice`}
+								/>
+								{__('Invoice', 'multivendorx')}
+								<i className="adminfont-lock" />
+							</span>
+						)}
+					{!isPro && (
+						<span className="admin-pro-tag">
+							<i className="adminfont-pro-tag"></i>{__('Pro', 'multivendorx')}
+						</span>
+					)}
 				</Card>
-
 			</Column>
-			{isPro &&
-				!modules.includes('invoice') && (
-					<span className="admin-pro-tag module">
-						<i
-							className={`adminfont-invoice`}
-						/>
-						{__('Invoice', 'multivendorx')}
-						<i className="adminfont-lock" />
-					</span>
-				)}
-			{!isPro && (
-				<span className="admin-pro-tag">
-					<i className="adminfont-pro-tag"></i>{__('Pro', 'multivendorx')}
-				</span>
-			)}
 			<Column grid={8}>
 				<Card
 					title={__('Customer invoice', 'multivendorx')}
@@ -807,10 +866,10 @@ const Invoice: React.FC = () => {
 							desc={__('Upload your company logo', 'multivendorx')}
 						>
 							<FileInputUI
-							imageSrc={formData?.invoice_logo|| ''}
-							onChange={(img)=>{
-								handleChange('invoice_logo', img);
-							}}
+								imageSrc={formData?.invoice_logo || ''}
+								onChange={(img) => {
+									handleChange('invoice_logo', img);
+								}}
 							/>
 						</FormGroup>
 						<FormGroup
@@ -822,7 +881,7 @@ const Invoice: React.FC = () => {
 								onChange={(img)=>{
 									handleChange('invoice_signature', img);
 								}}
-							/>	
+							/>
 						</FormGroup>
 					</FormGroupWrapper>
 				</Card>
@@ -830,27 +889,27 @@ const Invoice: React.FC = () => {
 
 			{showProPopup && (
 				<PopupUI
-                    position="lightbox"
-                    open={showProPopup}
-                    onClose={() => setShowProPopup(false)}
-                    width={31.25}
-                    height="auto"
-                >
-                    <ShowProPopup />
-                </PopupUI>
+					position="lightbox"
+					open={showProPopup}
+					onClose={() => setShowProPopup(false)}
+					width={31.25}
+					height="auto"
+				>
+					<ShowProPopup />
+				</PopupUI>
 			)}
 			{showModulePopup && (
 				<PopupUI
-                    position="lightbox"
-                    open={showModulePopup}
-                    onClose={() => setShowModulePopup(false)}
-                    width={31.25}
-                    height="auto"
-                >
-                    <ShowProPopup 
+					position="lightbox"
+					open={showModulePopup}
+					onClose={() => setShowModulePopup(false)}
+					width={31.25}
+					height="auto"
+				>
+					<ShowProPopup
 						moduleName='invoice'
 					/>
-                </PopupUI>
+				</PopupUI>
 			)}
 		</Container>
 	);
