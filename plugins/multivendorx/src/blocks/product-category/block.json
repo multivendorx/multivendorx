@@ -6,6 +6,8 @@
   "icon": "screenoptions",
   "description": "Allow customers to filter and browse store products by category.",
   "editorScript": "file:./index.js",
+  "viewScript": "file:./view.js",
+  "textdomain": "multivendorx",
   "attributes": {
     "align": {
       "type": "string"

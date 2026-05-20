@@ -48,72 +48,19 @@ const dynamicPatterns = blockDirs.flatMap((blockName) => {
 	return patterns;
 });
 
-// 3. Dynamic module block entries + copy patterns
-const moduleBasePath = path.resolve(__dirname, 'modules');
+const blockEntries = {};
 
-const moduleDirs = fs
-	.readdirSync(moduleBasePath, { withFileTypes: true })
-	.filter((dirent) => dirent.isDirectory())
-	.map((dirent) => dirent.name);
+blockDirs.forEach((blockName) => {
+	const blockPath = path.join(blockBasePath, blockName);
 
-const dynamicModuleEntries = {};
-const dynamicModulePatterns = [];
-
-moduleDirs.forEach((moduleName) => {
-	const moduleBlockPath = path.join(
-		moduleBasePath,
-		moduleName,
-		'blocks'
-	);
-
-	// Detect entry file
-	const entryExtensions = ['js', 'ts', 'tsx'];
-
-	for (const ext of entryExtensions) {
-		const entryFile = path.join(
-			moduleBlockPath,
-			`index.${ext}`
-		);
-
-		if (fs.existsSync(entryFile)) {
-			dynamicModuleEntries[
-				`../modules/${moduleName}/blocks/index`
-			] = entryFile;
-
-			break;
-		}
+	if (fs.existsSync(path.join(blockPath, 'index.js'))) {
+		blockEntries[`block/${blockName}/index`] =
+			`./src/blocks/${blockName}/index.js`;
 	}
 
-	// Output path
-	const outPath = path.resolve(
-		__dirname,
-		`release/assets/modules/${moduleName}/blocks`
-	);
-
-	// Copy block.json
-	const blockJsonPath = path.join(
-		moduleBlockPath,
-		'block.json'
-	);
-
-	if (fs.existsSync(blockJsonPath)) {
-		dynamicModulePatterns.push({
-			from: blockJsonPath,
-			to: path.join(outPath, 'block.json'),
-		});
-	}
-
-	// Copy render.php
-	const renderPhpPath = path.join(
-		moduleBlockPath,
-		'render.php'
-	);
-
-	if (fs.existsSync(renderPhpPath)) {
-		dynamicModulePatterns.push({
-			from: renderPhpPath,
-			to: path.join(outPath, 'render.php'),
-		});
+	if (fs.existsSync(path.join(blockPath, 'view.js'))) {
+		blockEntries[`block/${blockName}/view`] =
+			`./src/blocks/${blockName}/view.js`;
 	}
 });
 
@@ -122,29 +69,7 @@ module.exports = {
 
 	entry: {
 		index: './src/index.tsx',
-		...dynamicModuleEntries,
-		'block/registration-form/index':
-			'./src/blocks/registration-form/index.js',
-		'block/marketplace-stores/index': './src/blocks/marketplace-stores/index.js',
-		'block/marketplace-products/index': './src/blocks/marketplace-products/index.js',
-		'block/marketplace-coupons/index': './src/blocks/marketplace-coupons/index.js',
-		'block/setup-wizard/index': './src/blocks/setup-wizard/index.js',
-		'block/store-tabs/index': './src/blocks/store-tabs/index.js',
-		'block/contact-info/index': './src/blocks/contact-info/index.js',
-		'block/store-name/index': './src/blocks/store-name/index.js',
-		'block/store-email/index': './src/blocks/store-email/index.js',
-		'block/store-address/index': './src/blocks/store-address/index.js',
-		'block/follow-store/index': './src/blocks/follow-store/index.js',
-		'block/store-phone/index': './src/blocks/store-phone/index.js',
-		'block/store-logo/index': './src/blocks/store-logo/index.js',
-		'block/store-social-icons/index': './src/blocks/store-social-icons/index.js',
-		'block/store-banner/index': './src/blocks/store-banner/index.js',
-		'block/store-description/index': './src/blocks/store-description/index.js',
-		'block/store-review/index': './src/blocks/store-review/index.js',
-		'block/store-policy/index': './src/blocks/store-policy/index.js',
-		'block/product-category/index': './src/blocks/product-category/index.js',
-		'block/store-quick-info/index': './src/blocks/store-quick-info/index.js',
-		'block/store-provider/index': './src/blocks/store-provider/index.js',
+		...blockEntries
 	},
 
 	output: {

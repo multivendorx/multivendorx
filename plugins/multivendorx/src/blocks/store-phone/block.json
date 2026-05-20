@@ -6,6 +6,8 @@
   "icon": "phone",
   "description": "Show the store’s phone number for quick and direct communication.",
   "editorScript": "file:./index.js",
+  "viewScript": "file:./view.js",
+  "textdomain": "multivendorx",
   "supports": {
     "align": true,
     "alignWide": false,

@@ -16,9 +16,11 @@ $star-color: #d49c00;
         margin: 0;
     }
 }
-.richtext-content{
+
+.richtext-content {
     padding-left: 0.5rem;
 }
+
 .multivendorx-store-wrapper {
     display: flex;
     gap: 3rem;
@@ -782,11 +784,14 @@ $star-color: #d49c00;
     display: flex;
     flex-direction: column;
     align-items: center;
-    .buttons-wrapper{
+
+    .buttons-wrapper {
         text-align: right;
     }
 
-    .multivendorxstep-wizard {
+    
+}
+.multivendorxstep-wizard {
         margin: 1rem 0 2rem;
         width: 50%;
 
@@ -875,6 +880,94 @@ $star-color: #d49c00;
             }
         }
     }
+.multivendorxstep-wizard {
+    margin: 1rem 0 2rem;
+    width: 50%;
+
+
+    .multivendorxprogress-bar {
+        height: 0.125rem;
+        background: #d0c7c7;
+        position: relative;
+        margin-top: 1rem;
+
+        .multivendorxprogress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--theme-primary-color);
+            transition: width 0.3s ease;
+        }
+    }
+
+    .multivendorxsteps-container {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+
+        .multivendorxstep-item {
+            display: flex;
+            align-items: center;
+            position: relative;
+            width: 100%;
+            justify-content: center;
+            gap: 0.625rem;
+
+            .multivendorxstep-label {
+                margin: 0;
+            }
+
+            .multivendorxstep-info {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .multivendorxstep-number {
+                width: 2.313rem;
+                height: 2.313rem;
+                justify-content: center;
+                border: 0.063rem solid;
+                display: flex;
+                align-items: center;
+                font-size: 1.313rem;
+                border-radius: 50%;
+                z-index: 999;
+                padding: 0;
+            }
+
+            &.active {
+                .multivendorxstep-number {
+                    background: var(--theme-primary-color);
+                    border-color: transparent;
+                }
+            }
+
+            &.active.completed,
+            &.completed {
+                .multivendorxstep-number {
+                    background: #61b161;
+                    border-color: transparent;
+
+                    svg {
+                        color: #fff;
+                    }
+                }
+            }
+        }
+
+        .multivendorx-step-divider {
+            width: 30%;
+            height: 0.125rem;
+            background: #d0c7c7;
+        }
+
+        .multivendorxstep-actions {
+            display: flex;
+            justify-content: end;
+        }
+    }
 }
 
 .multivendorx-registration {
@@ -918,17 +1011,55 @@ $star-color: #d49c00;
 .multivendorxstep-content {
     width: 50%;
 }
+
 .multivendorx-registration:not(:has(.u-columns)) .multivendorx-tabs {
-	display: none;
+    display: none;
 }
 
 // printfull
-.multivendorx-upload-field{
+.multivendorx-upload-field {
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
     gap: 2rem;
 }
-.multivendorx-printful-button{
+
+.multivendorx-printful-button {
     margin-left: 0.625rem;
+}
+
+
+/* Loader Styles */
+.skeleton {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(90deg, var(#dbdbdb) 25%, var(#fff) 37%, var(#dbdbdb) 63%);
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.4s ease infinite;
+    font-size: inherit;
+    line-height: inherit;
+
+    &-text {
+        height: 1em;
+        border-radius: 0.313rem;
+    }
+
+    &-rectangular {
+        border-radius: 0.313rem;
+    }
+
+    &-circular {
+        border-radius: 50%;
+    }
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: -100% 0;
+    }
 }

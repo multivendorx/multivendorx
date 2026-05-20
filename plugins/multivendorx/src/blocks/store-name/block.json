@@ -6,6 +6,8 @@
   "icon": "store",
   "description": "Display store name",
   "editorScript": "file:./index.js",
+  "viewScript": "file:./view.js",
+  "textdomain": "multivendorx",
   "supports": {
     "align": true,
     "alignWide": false,

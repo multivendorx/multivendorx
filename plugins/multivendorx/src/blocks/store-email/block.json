@@ -7,6 +7,8 @@
   "description": "Display the store’s email address so customers can contact the seller directly.",
   "keywords": ["email", "contact", "store"],
   "editorScript": "file:./index.js",
+  "viewScript": "file:./view.js",
+  "textdomain": "multivendorx",
   "supports": {
     "align": true,
     "alignWide": false,
