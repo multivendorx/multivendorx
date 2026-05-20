@@ -3,7 +3,7 @@ Contributors: wcmp, purnendu
 Tags: marketplace, WooCommerce marketplace, multi vendor, multivendor, multivendor marketplace
 Donate link: http://multivendorx.com/donate/
 Requires at least: 6.3
-Tested up to: 6.9.4
+Tested up to: 7.0.0
 Requires PHP: 8.0
 Stable tag: 5.0.6
 License: GPLv2 or later
@@ -247,6 +247,7 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 == Changelog ==
 
 = 5.0.6 - 2026-05-20 =
+* Added     - Compatibility with WordPress 7.0.0.
 * Added     - Support for adding attribute fields across all product types in the store dashboard #1869.
 * Fixed     - Conflict with Elementor plugin causing issues in store list page loading #1866.
 * Fixed     - Console errors appearing on the store registration page #1867.
