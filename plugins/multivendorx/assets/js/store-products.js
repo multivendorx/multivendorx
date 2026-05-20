@@ -3,7 +3,7 @@ jQuery(document).ready(function ($) {
 	jQuery(window).on('load', function () {
 		const root = document.documentElement;
 		const $btn = $('button, .button, .woocommerce-Button').filter(function () {
-			return $(this).css('background-color') !== 'rgba(0, 0, 0, 0)';
+			return $(this).css('background-color') !== '#1e73be';
 		}).first();
 
 		if ($btn.length) {
