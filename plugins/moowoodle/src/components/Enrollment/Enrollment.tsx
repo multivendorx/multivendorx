@@ -33,7 +33,7 @@ interface EnrollmentRow {
 	cohort_id?: number;
 	customer_id?: number;
 	customer_email?: string;
-	learners_hub_id?: string;
+	learners_hub_id?: number;
 }
 
 const Enrollment: React.FC = () => {
