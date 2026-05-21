@@ -261,9 +261,9 @@ const FreeVsProTab: React.FC = () => {
 							<table key={idx}>
 								<thead>
 									<tr>
-										<td>{section.title}</td>
-										<td>{__('Free', 'moowoodle')}</td>
-										<td>{__('Pro', 'moowoodle')}</td>
+										<th scope="col">{section.title}</th>
+										<th scope="col">{__('Free', 'moowoodle')}</th>
+										<th scope="col">{__('Pro', 'moowoodle')}</th>
 									</tr>
 								</thead>
 								<tbody>
