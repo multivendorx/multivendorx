@@ -258,7 +258,7 @@ const FreeVsProTab: React.FC = () => {
 				>
 					<div id="free-vs-pro" className="free-vs-pro">
 						{sections.map((section, idx) => (
-							<table key={section.title}>
+							<table key={`${idx}-${section.title}`}>
 								<thead>
 									<tr>
 										<th scope="col">{section.title}</th>
