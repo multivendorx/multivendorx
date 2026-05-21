@@ -37,7 +37,7 @@ const ProductTab = () => {
 			method: 'GET',
 		})
 			.then((response) => {
-				const formattedOptions = response.items.map((item) => ({
+				const formattedOptions = (response.items || []).map((item) => ({
 					label: [item.fullname, item.cohort_name]
 						.filter(Boolean)
 						.join(' || '),
