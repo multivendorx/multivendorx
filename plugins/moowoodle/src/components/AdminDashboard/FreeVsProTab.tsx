@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Column, Container } from 'zyra';
 import { __ } from '@wordpress/i18n';
-import freePro from '../../assets/images/dashboard-1.png';
+import MoowoodleConcept from '../../assets/images/moowoodle-concept.png';
 interface Feature {
 	name: string;
 	free: boolean | string;
@@ -289,7 +289,7 @@ const FreeVsProTab: React.FC<object> = () => {
 				<Card>
 					<div className="right-pro-banner">
 						<div className="image-wrapper">
-							<img src={freePro} alt="" />
+							<img src={MoowoodleConcept} alt="" />
 						</div>
 
 						<div className="title">
