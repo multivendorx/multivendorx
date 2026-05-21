@@ -97,7 +97,7 @@ export default {
 					key: 'right',
 					label: __('Right Sidebar', 'multivendorx'),
 					value: 'right',
-					icon: 'no-sidebar',
+					icon: 'right-sidebar',
 				},
 			],
 		},
