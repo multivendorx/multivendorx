@@ -12,9 +12,7 @@ use MooWoodle\Util;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class Logs
- *
- * @package MooWoodle\RestAPI\Controllers
+ * Logs REST controller class.
  */
 class Logs extends \WP_REST_Controller {
 
@@ -25,110 +23,179 @@ class Logs extends \WP_REST_Controller {
 	 */
 	protected $rest_base = 'logs';
 
-    /**
-     * Get logs data.
-     *
-     * Handles log listing, download, and clear actions.
-     *
-     * @param \WP_REST_Request $request Request object.
-     * @return \WP_Error|\WP_REST_Response
-     */
-    public function register_routes() {
-        register_rest_route(
-            MooWoodle()->rest_namespace,
-            '/' . $this->rest_base,
-            array(
+	/**
+	 * Register REST API routes.
+	 *
+	 * @return void
+	 */
+	public function register_routes() {
+		register_rest_route(
+			MooWoodle()->rest_namespace,
+			'/' . $this->rest_base,
+			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
-                ),
+					'permission_callback' => array( $this, 'permissions_check' ),
+				),
+				array(
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'delete_items' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
+				),
 			)
-        );
-    }
+		);
 
-    /**
-     * Get_items_permissions_check checks the get items permissions.
-     *
-     * @param mixed $request all requests params from api.
-     */
-    public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' );
-    }
+		register_rest_route(
+			MooWoodle()->rest_namespace,
+			'/' . $this->rest_base . '/download',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'download_log' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
+				),
+			)
+		);
+	}
 
-    /**
-     * Save the setting set in react's admin setting page.
-     *
-     * @param mixed $request all requests params from api.
-     * @return \WP_Error|\WP_REST_Response
-     */
-    public function get_items( $request ) {
-        $nonce_check = Util::validate_nonce( $request );
+	/**
+	 * Check API request permissions.
+	 *
+	 * @param \WP_REST_Request $request Request object.
+	 * @return bool
+	 */
+	public function permissions_check( $request ) {
+		return current_user_can( 'manage_options' );
+	}
 
-        if ( is_wp_error( $nonce_check ) ) {
-            return $nonce_check;
-        }
+	/**
+	 * Retrieve log entries.
+	 *
+	 * @param \WP_REST_Request $request Request object.
+	 * @return \WP_REST_Response|\WP_Error
+	 */
+	public function get_items( $request ) {
+		$nonce_check = Util::validate_nonce( $request );
 
-        global $wp_filesystem;
-        $log_count = $request->get_param( 'logcount' );
-        $log_count = $log_count ? $log_count : 100;
+		if ( is_wp_error( $nonce_check ) ) {
+			return $nonce_check;
+		}
 
-        if ( ! $wp_filesystem ) {
-            require_once ABSPATH . '/wp-admin/includes/file.php';
-            WP_Filesystem();
-        }
-        $action = $request->get_param( 'action' );
-        switch ( $action ) {
-            case 'download':
-                return $this->download_log( $request );
-            case 'clear':
-                $wp_filesystem->delete( MooWoodle()->log_file );
-                delete_option( Util::MOOWOODLE_OTHER_SETTINGS['log_file'] ); // Remove log file reference from options table.
-                return rest_ensure_response( true );
-            default:
-                $logs = array();
-                if ( file_exists( MooWoodle()->log_file ) ) {
-                    $log_content = $wp_filesystem->get_contents( MooWoodle()->log_file );
-                    if ( ! empty( $log_content ) ) {
-                        $logs = explode( "\n", $log_content );
-                    }
-                }
+		global $wp_filesystem;
 
-                return rest_ensure_response( array_reverse( array_slice( $logs, - $log_count ) ) );
-        }
-    }
+		$log_limit = absint( $request->get_param( 'logcount' ) ?: 100 );
 
-    /**
-     * Download the log.
-     *
-     * @param mixed $request all requests params from api.
-     * @return \WP_Error|\WP_REST_Response
-     */
-    public function download_log( $request ) {
-        // Get the file parameter from the request.
-        $file      = get_option( Util::MOOWOODLE_OTHER_SETTINGS['log_file'] );
-        $file      = basename( $file );
-        $file_path = MooWoodle()->moowoodle_logs_dir . '/' . $file;
+		if ( ! $wp_filesystem ) {
+			require_once ABSPATH . '/wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
 
-        // Check if the file exists and has the right extension.
-        if ( file_exists( $file_path ) && preg_match( '/\.(txt|log)$/', $file ) ) {
-            // Set headers to force download.
-            header( 'Content-Description: File Transfer' );
-            header( 'Content-Type: application/octet-stream' );
-            header( 'Content-Disposition: attachment; filename="' . $file . '"' );
-            header( 'Expires: 0' );
-            header( 'Cache-Control: must-revalidate' );
-            header( 'Pragma: public' );
-            header( 'Content-Length: ' . filesize( $file_path ) );
+		$log_entries = array();
 
-            // Clear output buffer and read the file.
-            ob_clean();
-            flush();
-            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile
-            readfile( $file_path );
-            exit;
-        } else {
-            return new \WP_Error( 'file_not_found', 'File not found', array( 'status' => 404 ) );
-        }
-    }
+		if ( file_exists( MooWoodle()->log_file ) ) {
+			$log_file_content = $wp_filesystem->get_contents( MooWoodle()->log_file );
+
+			if ( ! empty( $log_file_content ) ) {
+				$log_entries = explode( "\n", $log_file_content );
+			}
+		}
+
+		return rest_ensure_response(
+			array_reverse(
+				array_slice( $log_entries, -$log_limit )
+			)
+		);
+	}
+
+	/**
+	 * Delete log file.
+	 *
+	 * @param \WP_REST_Request $request Request object.
+	 * @return \WP_REST_Response|\WP_Error
+	 */
+	public function delete_items( $request ) {
+		$nonce_check = Util::validate_nonce( $request );
+
+		if ( is_wp_error( $nonce_check ) ) {
+			return $nonce_check;
+		}
+
+		global $wp_filesystem;
+
+		if ( ! $wp_filesystem ) {
+			require_once ABSPATH . '/wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+
+		if ( file_exists( MooWoodle()->log_file ) ) {
+			$wp_filesystem->delete( MooWoodle()->log_file );
+		}
+
+		delete_option( Util::MOOWOODLE_OTHER_SETTINGS['log_file'] );
+
+		return rest_ensure_response(
+			array(
+				'success' => true,
+				'message' => __( 'Logs cleared successfully.', 'moowoodle' ),
+			)
+		);
+	}
+
+	/**
+	 * Download log file.
+	 *
+	 * @param \WP_REST_Request $request Request object.
+	 * @return void|\WP_Error
+	 */
+	public function download_log( $request ) {
+		$nonce_check = Util::validate_nonce( $request );
+
+		if ( is_wp_error( $nonce_check ) ) {
+			return $nonce_check;
+		}
+
+		$log_filename = get_option( Util::MOOWOODLE_OTHER_SETTINGS['log_file'] );
+
+		if ( empty( $log_filename ) ) {
+			return new \WP_Error(
+				'log_file_missing',
+				__( 'Log file not found.', 'moowoodle' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		$log_filename  = basename( $log_filename );
+		$log_file_path = MooWoodle()->moowoodle_logs_dir . '/' . $log_filename;
+
+		if (
+			! file_exists( $log_file_path ) ||
+			! preg_match( '/\.(txt|log)$/i', $log_filename )
+		) {
+			return new \WP_Error(
+				'invalid_log_file',
+				__( 'Invalid log file.', 'moowoodle' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		header( 'Content-Description: File Transfer' );
+		header( 'Content-Type: application/octet-stream' );
+		header( 'Content-Disposition: attachment; filename="' . $log_filename . '"' );
+		header( 'Expires: 0' );
+		header( 'Cache-Control: must-revalidate' );
+		header( 'Pragma: public' );
+		header( 'Content-Length: ' . filesize( $log_file_path ) );
+
+		if ( ob_get_length() ) {
+			ob_end_clean();
+		}
+
+		flush();
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile
+		readfile( $log_file_path );
+
+		exit;
+	}
 }

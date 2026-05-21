@@ -14,9 +14,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * MooWoodle REST API Settings controller.
  *
- * @class       REST API settings controller.
  * @version     PRODUCT_VERSION
- * @author      DualCube
  */
 class Settings extends \WP_REST_Controller {
 
@@ -65,9 +63,9 @@ class Settings extends \WP_REST_Controller {
             return $nonce_check;
         }
         try {
-            $settings = $request->get_param( 'setting' );
-            $option_name  = $request->get_param( 'settingName' );
-            $option_name  = str_replace( '-', '_', 'moowoodle_' . $option_name . '_settings' );
+            $settings    = $request->get_param( 'setting' );
+            $option_name = $request->get_param( 'settingName' );
+            $option_name = str_replace( '-', '_', 'moowoodle_' . $option_name . '_settings' );
 
             // save the settings in database.
             MooWoodle()->setting->update_option( $option_name, $settings );

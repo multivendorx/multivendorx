@@ -35,7 +35,7 @@ class Setting {
      * Construct function for load setting.
      */
     public function __construct() {
-        
+
         $this->initialize_settings();
     }
 
@@ -125,7 +125,7 @@ class Setting {
         $setting = $this->settings_cache[ $option_key ] ?? array();
 
         // Update setting in setting container.
-        $setting[ $key ]               = $value;
+        $setting[ $key ]                     = $value;
         $this->settings_cache[ $option_key ] = $setting;
 
         update_option( $option_key, $setting );
