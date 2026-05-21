@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import '../common.scss';
 import { __ } from '@wordpress/i18n';
 import {
+	Column,
+	Container,
 	InfoItem,
 	NavigatorHeader,
 	PopupUI,
@@ -146,9 +147,13 @@ const Cohort: React.FC = () => {
 				)}
 				headerTitle={__('Cohorts', 'moowoodle')}
 			/>
-			<div onClick={handleTableWrapperClick}>
-				<TableCard {...tableProps} />
-			</div>
+			<Container general>
+				<Column>
+					<div onClick={handleTableWrapperClick}>
+						<TableCard {...tableProps} />
+					</div>
+				</Column>
+			</Container>
 		</>
 	);
 };
