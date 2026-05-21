@@ -1,3 +1,4 @@
+/* global appLocalizer */
 import React, { useState, useEffect } from 'react';
 import { CategoryCount, Column, Container, InfoItem, NavigatorHeader, PopupUI, QueryProps, TableCard } from 'zyra';
 import { __ } from '@wordpress/i18n';
