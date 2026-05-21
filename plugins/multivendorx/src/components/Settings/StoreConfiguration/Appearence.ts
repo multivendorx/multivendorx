@@ -85,7 +85,7 @@ export default {
 					key: 'no-sidebar',
 					label: __('No Sidebar', 'multivendorx'),
 					value: 'no',
-					icon: 'right-sidebar',
+					icon: 'no-sidebar',
 				},
 				{
 					key: 'left',
