@@ -25,7 +25,7 @@ class ExternalService {
 	 */
 	public function get_registered_core_functions() {
 		return apply_filters(
-            'additional_core_functions',
+            'moowoodle_registered_core_functions',
             array(
 				'get_site_info'    => 'core_webservice_get_site_info',
 				'get_categories'   => 'core_course_get_categories',
@@ -43,44 +43,53 @@ class ExternalService {
 	/**
 	 * Call to moodle core functions.
 	 *
-	 * @param string $key           Key name for the Moodle function to call. Default: ''.
-	 * @param array  $request_params Parameters to send with the request. Default: empty array.
+	 * @param string $function_key   Key name for the Moodle function to call. Default: ''.
+	 * @param array  $request_args Parameters to send with the request. Default: empty array.
 	 * @return mixed
 	 */
-	public function do_request( $key = '', $request_params = array() ) {
+	public function do_request( $function_key = '', $request_args = array() ) {
 		// Get register core functions.
 		$moodle_core_functions = $this->get_registered_core_functions();
 
-		// Get the function name.
-		$moodle_function = $moodle_core_functions[ $key ] ?? '';
-
-		$moodle_base_url     = MooWoodle()->setting->get_setting( 'moodle_url' );
-		$moodle_access_token = MooWoodle()->setting->get_setting( 'moodle_access_token' );
-
-		$request_url = rtrim( $moodle_base_url, '/' ) . '/webservice/rest/server.php?wstoken=' . $moodle_access_token . '&wsfunction=' . $moodle_function . '&moodlewsrestformat=json';
-
-		// Get response from moodle server.
-		$response = null;
-		if ( ! empty( $moodle_base_url ) && ! empty( $moodle_access_token ) && $moodle_function ) {
-			$request_query = http_build_query( $request_params );
-
-			$timeout = MooWoodle()->setting->get_setting( 'moodle_timeout', '10' );
-
-			$response = wp_remote_post(
-                $request_url,
-                array(
-					'body'    => $request_query,
-					'timeout' => $timeout,
-                )
-            );
-
-            // Log the response result.
-            if ( MooWoodle()->show_advanced_log ) {
-				MooWoodle()->util->log( 'moowoodle moodle_url:' . $request_url . '&' . $request_query . "\n\t\tmoowoodle response:" . wp_json_encode( $response ) . "\n\n" );
-			}
+		if ( empty( $moodle_core_functions[ $function_key ] ) ) {
+			MooWoodle()->util->log( 'Invalid Moodle function key.' );
+			return;
 		}
 
-		return $this->analyze_moodle_response( $response );
+		$moodle_url   = untrailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) );
+		$access_token = MooWoodle()->setting->get_setting( 'moodle_access_token' );
+
+		if ( empty( $moodle_url ) || empty( $access_token ) ) {
+			return array(
+				'error' => __( 'Moodle credentials are missing.', 'moowoodle' ),
+			);
+		}
+
+		$request_url = add_query_arg(
+			array(
+				'wstoken'            => $access_token,
+				'wsfunction'         => $moodle_core_functions[ $function_key ],
+				'moodlewsrestformat' => 'json',
+			),
+			$moodle_url . '/webservice/rest/server.php'
+		);
+
+		$timeout = (int) MooWoodle()->setting->get_setting( 'moodle_timeout', 10 );
+
+		$response = wp_remote_post(
+			$request_url,
+			array(
+				'body'    => $request_args,
+				'timeout' => $timeout,
+			)
+		);
+
+		// Log the response result.
+		if ( MooWoodle()->show_advanced_log ) {
+			MooWoodle()->util->log( 'moowoodle moodle_url:' . $request_url . '&' . wp_json_encode( $request_args ) . "\n\t\tmoowoodle response:" . wp_json_encode( $response ) . "\n\n" );
+		}
+
+		return $this->parse_moodle_response( $response );
 	}
 
 	/**
@@ -89,7 +98,7 @@ class ExternalService {
 	 * @param object | null $response response.
 	 * @return array $response
 	 */
-	private function analyze_moodle_response( $response ) {
+	private function parse_moodle_response( $response ) {
 		if ( null === $response ) {
 			return array( 'error' => 'Response is not available' );
 		}
@@ -114,7 +123,7 @@ class ExternalService {
 
 		// if array convertion failed.
 		if ( json_last_error() !== JSON_ERROR_NONE ) {
-			return array( 'error' => __( 'Response is not JSON decodeable', 'moowoodle' ) );
+			return array( 'error' => __( 'Response is not JSON-decodable', 'moowoodle' ) );
 		}
 
 		// if moodle response contains error.

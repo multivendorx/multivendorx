@@ -27,7 +27,7 @@ class Endpoint {
      */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_endpoint' ) );
-		add_filter( 'woocommerce_account_menu_items', array( $this, 'add_my_courses_tab' ) );
+		add_filter( 'woocommerce_account_menu_items', array( $this, 'add_account_menu_item' ) );
 		add_action( 'woocommerce_account_' . $this->endpoint_slug . '_endpoint', array( $this, 'render_my_courses_content' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
@@ -37,22 +37,21 @@ class Endpoint {
      */
 	public function register_endpoint() {
 		add_rewrite_endpoint( $this->endpoint_slug, EP_ROOT | EP_PAGES );
-		flush_rewrite_rules();
 	}
 
 	/**
 	 * Add "My Courses" menu item to WooCommerce My Account menu.
 	 *
-	 * @param array $menu The existing account menu items.
+	 * @param array $menu_items The existing account menu items.
 	 * @return array Modified menu items with My Courses.
 	 */
-	public function add_my_courses_tab( $menu ) {
+	public function add_account_menu_item( $menu_items ) {
 		$position = (int) MooWoodle()->setting->get_setting( 'my_courses_priority', 0 );
 
 		return array_merge(
-			array_slice( $menu, 0, $position + 1, true ),
+			array_slice( $menu_items, 0, $position + 1, true ),
 			array( $this->endpoint_slug => __( 'My Courses', 'moowoodle' ) ),
-			array_slice( $menu, $position + 1, null, true )
+			array_slice( $menu_items, $position + 1, null, true )
 		);
 	}
 

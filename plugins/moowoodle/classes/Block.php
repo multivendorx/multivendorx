@@ -23,7 +23,7 @@ class Block {
      *
      * @var array
      */
-    private $blocks = null;
+    private $blocks = array();
 
     /**
      * Constructor for Block class
@@ -48,7 +48,7 @@ class Block {
      * @return array List of blocks.
      */
     public function get_blocks() {
-        if ( is_null( $this->blocks ) ) {
+        if ( empty( $this->blocks ) ) {
             $this->blocks = $this->initialize_blocks();
         }
         return $this->blocks;
@@ -69,15 +69,17 @@ class Block {
             return $blocks;
         }
 
-        $folders = glob( $block_base_path . '*', GLOB_ONLYDIR );
-        foreach ( $folders as $folder ) {
-            $block_name = basename( $folder );
-            if ( file_exists( $folder . '/block.json' ) ) {
-                $blocks[] = array(
-                    'name'       => $block_name,
-                    'textdomain' => $textdomain,
-                    'block_path' => $block_base_path,
-                );
+        $block_directories = glob( $block_base_path . '*', GLOB_ONLYDIR );
+        if ( ! empty( $block_directories ) ) {
+            foreach ( $block_directories as $block_directory ) {
+                $block_name = basename( $block_directory );
+                if ( file_exists( trailingslashit( $block_directory ) . '/block.json' ) ) {
+                    $blocks[] = array(
+                        'name'       => $block_name,
+                        'textdomain' => $textdomain,
+                        'block_path' => $block_base_path,
+                    );
+                }
             }
         }
 
@@ -93,11 +95,11 @@ class Block {
         if ( is_admin() && function_exists( 'get_current_screen' ) ) {
             $screen = get_current_screen();
             if ( $screen && $screen->is_block_editor ) {
-                FrontendScripts::load_scripts();
+                FrontendScripts::enqueue_frontend_assets();
                 FrontendScripts::enqueue_script( 'moowoodle-vendor' );
-                foreach ( $this->get_blocks() as $block_script ) {
-                    FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-editor' );
-                    FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] );
+                foreach ( $this->get_blocks() as $block_config ) {
+                    FrontendScripts::localize_scripts( $block_config['textdomain'] . '-' . $block_config['name'] . '-editor' );
+                    FrontendScripts::localize_scripts( $block_config['textdomain'] . '-' . $block_config['name'] );
                 }
             }
         }
@@ -115,12 +117,15 @@ class Block {
 	 */
     public function enqueue_scripts() {
         global $post;
-        FrontendScripts::load_scripts();
+        if ( empty( $post ) || ! $post instanceof \WP_Post ) {
+            return;
+        }
+        FrontendScripts::enqueue_frontend_assets();
         FrontendScripts::enqueue_script( 'moowoodle-vendor' );
-        foreach ( $this->get_blocks() as $block_script ) {
-            $block_name = $block_script['textdomain'] . '/' . $block_script['name'];
+        foreach ( $this->get_blocks() as $block_config ) {
+            $block_name = $block_config['textdomain'] . '/' . $block_config['name'];
             if ( has_block( $block_name, $post ) ) {
-                $handle = $block_script['textdomain'] . '-' . $block_script['name'];
+                $handle = $block_config['textdomain'] . '-' . $block_config['name'];
                 FrontendScripts::enqueue_script( $handle );
                 FrontendScripts::localize_scripts( $handle );
             }
@@ -133,8 +138,8 @@ class Block {
      * @return void
      */
     public function register_blocks() {
-        foreach ( $this->get_blocks() as $block ) {
-            register_block_type( $block['block_path'] . $block['name'] );
+        foreach ( $this->get_blocks() as $block_config ) {
+            register_block_type( $block_config['block_path'] . $block_config['name'] );
         }
     }
 }

@@ -9,7 +9,7 @@ import {
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';
-import { dummyCohorts } from './Cohort';
+import { dummyCohorts } from './CohortUtil';
 
 export interface CohortRow {
 	id?: number;
@@ -108,9 +108,6 @@ const Cohort: React.FC = () => {
 
 		rows: dummyCohorts,
 		totalRows: dummyCohorts.length,
-		onQueryUpdate: () => { setopenPopup(true); },
-		onBulkActionApply: () => { setopenPopup(true); },
-
 		search: {
 			placeholder: __('Search...', 'moowoodle'),
 		},
@@ -120,6 +117,12 @@ const Cohort: React.FC = () => {
 		'moowoodle_cohort_table_props',
 		defaultTableProps,
 	);
+
+	const handleTableWrapperClick = () => {
+		if (!appLocalizer.khali_dabba) {
+			setopenPopup(true);
+		}
+	};
 
 	return (
 		<>
@@ -143,7 +146,7 @@ const Cohort: React.FC = () => {
 				)}
 				headerTitle={__('Cohorts', 'moowoodle')}
 			/>
-			<div onClick={() => (setopenPopup(true))}>
+			<div onClick={handleTableWrapperClick}>
 				<TableCard {...tableProps} />
 			</div>
 		</>
