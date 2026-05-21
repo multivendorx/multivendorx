@@ -225,7 +225,7 @@ const sections: Section[] = [
 	},
 ];
 
-const FreeVsProTab: React.FC<object> = () => {
+const FreeVsProTab: React.FC = () => {
 	const renderCell = (value: string | boolean) => {
 		if (typeof value === 'boolean') {
 			return value ? (
@@ -267,8 +267,8 @@ const FreeVsProTab: React.FC<object> = () => {
 									</tr>
 								</thead>
 								<tbody>
-									{section.features.map((feature, i) => (
-										<tr key={i}>
+									{section.features.map((feature) => (
+										<tr key={`${section.title}-${feature.name}`}>
 											<td>{feature.name}</td>
 											<td>{renderCell(feature.free)}</td>
 											<td>{renderCell(feature.pro)}</td>
@@ -285,7 +285,10 @@ const FreeVsProTab: React.FC<object> = () => {
 				<Card>
 					<div className="right-pro-banner">
 						<div className="image-wrapper">
-							<img src={MoowoodleConcept} alt="" />
+							<img
+								src={MoowoodleConcept}
+								alt={__('Moowoodle marketplace concept illustration', 'moowoodle')}
+							/>
 						</div>
 
 						<div className="title">
