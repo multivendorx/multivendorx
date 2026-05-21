@@ -12,11 +12,9 @@ use MooWoodle\Util;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * MooWoodle REST API TestConnection controller.
+ * REST API controller for Moodle connection testing.
  *
- * @class       TestConnection class
  * @version     PRODUCT_VERSION
- * @author      DualCube
  */
 class TestConnection extends \WP_REST_Controller {
 
@@ -45,10 +43,11 @@ class TestConnection extends \WP_REST_Controller {
     }
 
     /**
-     * Check if a given request has access to get items.
-     *
-     * @param object $request The REST request object.
-     */
+	 * Check request permissions.
+	 *
+	 * @param \WP_REST_Request $request REST request object.
+	 * @return bool
+	 */
     public function permissions_check( $request ) {
         return current_user_can( 'manage_options' );
     }
@@ -66,12 +65,12 @@ class TestConnection extends \WP_REST_Controller {
         }
 
 		$action = $request->get_param( 'action' );
-        $user   = $request->get_param( 'get_users' );
+        $test_user = $request->get_param( 'get_users' );
         $course = $request->get_param( 'get_courses' );
 
-        $user      = is_array( $user['data']['users'] ) ? reset( $user['data']['users'] ) : null;
-        $course    = is_array( $course['courses'] ) ? ( $course['courses'][1] ) : null;
-        $user_id   = $user['id'] ?? 0;
+        $test_user      = isset( $test_user['data']['users'][1] ) ? $test_user['data']['users'][1] : null;
+		$course    = isset( $course['courses'][1] ) ? $course['courses'][1] : null;
+        $user_id   = $test_user['id'] ?? 0;
         $course_id = $course['id'] ?? 0;
 
         $action_args = array(
@@ -81,7 +80,7 @@ class TestConnection extends \WP_REST_Controller {
             'delete_users'   => array( $user_id ),
         );
 
-        if ( ! method_exists( $this, $action ) ) {
+		if ( ! method_exists( $this, $action ) ) {
             return new \WP_Error(
                 'invalid_connection_test',
                 sprintf(
@@ -109,8 +108,8 @@ class TestConnection extends \WP_REST_Controller {
 			$response = $response['data'];
 
 			// Get all webservice functions.
-			$webservice_functions = MooWoodle()->external_service->get_registered_core_functions();
-			$webservice_functions = array_values( $webservice_functions );
+			$registered_core_functions = MooWoodle()->external_service->get_registered_core_functions();
+			$registered_core_functions = array_values( $registered_core_functions );
 
 			// Get register webservice functions.
 			$registered_functions = array_map(
@@ -121,7 +120,7 @@ class TestConnection extends \WP_REST_Controller {
             );
 
 			// Get missing functions.
-			$unregistered_functions = array_diff( $webservice_functions, $registered_functions );
+			$unregistered_functions = array_diff( $registered_core_functions, $registered_functions );
 
 			if ( $unregistered_functions ) {
 				MooWoodle()->util->log( 'It seems that Moodle external web service functions [' . implode( ', ', $unregistered_functions ) . '] not configured correctly.' );
@@ -178,7 +177,7 @@ class TestConnection extends \WP_REST_Controller {
 	 * @return string[]
 	 */
 	public static function create_users() {
-		// find user on moodle with moodle external function.
+		// Find existing Moodle test user.
 		$response = MooWoodle()->external_service->do_request(
 			'get_moodle_users',
 			array(
@@ -192,8 +191,8 @@ class TestConnection extends \WP_REST_Controller {
 		);
 
 		if ( ! empty( $response['data']['users'] ) ) {
-			$user = reset( $response['data']['users'] );
-		    self::delete_users( $user['id'] );
+			$test_user = reset( $response['data']['users'] );
+		    self::delete_users( $test_user['id'] );
 		}
 
 		$response = MooWoodle()->external_service->do_request(
@@ -334,7 +333,7 @@ class TestConnection extends \WP_REST_Controller {
 	 * @return array
 	 */
 	private static function get_test_user_payload( $user_id = 0 ) {
-		$user_data = array(
+		$test_user_payload = array(
 			'email'       => 'moowoodletestuser@gmail.com',
 			'username'    => 'moowoodletestuser',
 			'password'    => 'Moowoodle@123',
@@ -355,9 +354,9 @@ class TestConnection extends \WP_REST_Controller {
 		);
 
 		if ( $user_id > 0 ) {
-			$user_data['id'] = $user_id;
+			$test_user_payload['id'] = $user_id;
 		}
 
-		return array( $user_data );
+		return array( $test_user_payload );
 	}
 }

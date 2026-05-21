@@ -7,7 +7,7 @@ import Enrollment from './components/Enrollment/Enrollment';
 import Courses from './components/Courses/Courses';
 import { useState } from 'react';
 import { searchIndex, SearchItem } from './searchIndex';
-import Brand from './assets/images/brand.png';
+import MoowoodleLogo from './assets/images/moowoodle-logo.png';
 import { __ } from '@wordpress/i18n';
 import { AdminHeader, Notice } from 'zyra';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
@@ -121,7 +121,7 @@ const App = () => {
 		{
 			title: __('Contact Support', 'moowoodle'),
 			icon: 'user-network-icon',
-			// link: 'https://dualcube.com/my-account/',
+			link: 'https://dualcube.com/contact-us/',
 			targetBlank: true,
 		},
 	];
@@ -136,7 +136,7 @@ const App = () => {
 	return (
 		<>
 			<AdminHeader
-				brandImg={Brand}
+				brandImg={MoowoodleLogo}
 				results={results}
 				onQueryUpdate={handleSearchChange}
 				onResultClick={handleResultClick}

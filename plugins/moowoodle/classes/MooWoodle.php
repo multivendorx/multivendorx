@@ -32,7 +32,7 @@ final class MooWoodle {
      *
      * @var array
      */
-    private $container = array();
+    private $services = array();
 
     /**
      * File path of moowoodle plugin.
@@ -53,14 +53,14 @@ final class MooWoodle {
 
         // store plugin info.
         $this->file                            = $file;
-        $this->container['plugin_url']         = trailingslashit( plugins_url( '', $file ) );
-        $this->container['plugin_path']        = trailingslashit( dirname( $file ) );
-        $this->container['version']            = MOOWOODLE_PLUGIN_VERSION;
-        $this->container['block_paths']        = array();
-        $this->container['rest_namespace']     = 'moowoodle/v1';
-        $this->container['moowoodle_logs_dir'] = ( trailingslashit( wp_upload_dir( null, false )['basedir'] ) . 'mw-logs' );
-        $this->container['is_dev']             = defined( 'WP_ENV' ) && WP_ENV === 'development';
-        $this->container['plugin_base']        = plugin_basename( $file );
+        $this->services['plugin_url']         = trailingslashit( plugins_url( '', $file ) );
+        $this->services['plugin_path']        = trailingslashit( dirname( $file ) );
+        $this->services['version']            = MOOWOODLE_PLUGIN_VERSION;
+        $this->services['block_paths']        = array();
+        $this->services['rest_namespace']     = 'moowoodle/v1';
+        $this->services['moowoodle_logs_dir'] = ( trailingslashit( wp_upload_dir( null, false )['basedir'] ) . 'mw-logs' );
+        $this->services['is_dev']             = defined( 'WP_ENV' ) && WP_ENV === 'development';
+        $this->services['plugin_base']        = plugin_basename( $file );
         // activation and deactivation hook.
         register_activation_hook( $file, array( $this, 'activate' ) );
         register_deactivation_hook( $file, array( $this, 'deactivate' ) );
@@ -79,7 +79,9 @@ final class MooWoodle {
      * @return void
      */
     public function activate() {
-        $this->container['install'] = new Installer();
+        $this->services['install'] = new Installer();
+        add_rewrite_endpoint( 'my-courses', EP_ROOT | EP_PAGES );
+        flush_rewrite_rules();
     }
 
     /**
@@ -89,6 +91,7 @@ final class MooWoodle {
      */
     public function deactivate() {
 		// Nothing to write now.
+        flush_rewrite_rules();
     }
 
     /**
@@ -108,14 +111,14 @@ final class MooWoodle {
     public function load_plugin() {
 
         // add link on pugin 'active' button.
-        if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
+        if ( is_admin() && ! wp_doing_ajax() ) {
             add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'get_plugin_action_links' ) );
         }
 
         add_filter( 'woocommerce_email_classes', array( $this, 'register_email_classes' ) );
 
         // Init required classes.
-        $this->initialize_classes();
+        $this->register_services();
 
         /**
          * Action hook after MooWoodle loads.
@@ -129,25 +132,25 @@ final class MooWoodle {
      *
      * @return void
      */
-    public function initialize_classes() {
-        $this->container['current_user_id'] = get_current_user_id();
-        $this->container['current_user']    = wp_get_current_user();
+    public function register_services() {
+        $this->services['current_user_id'] = get_current_user_id();
+        $this->services['current_user']    = wp_get_current_user();
         if ( is_admin() ) {
-			$this->container['admin'] = new Admin();
+			$this->services['admin'] = new Admin();
 		}
 
-		$this->container['util']             = new Util();
-        $this->container['setting']          = new Setting();
-		$this->container['rest']             = new Rest();
-		$this->container['course']           = new Core\Course();
-		$this->container['category']         = new Core\Category();
-		$this->container['product']          = new Core\Product();
-        $this->container['external_service'] = new ExternalService();
-		$this->container['enrollment']       = new Enrollment();
-        $this->container['block']            = new Block();
-        $this->container['frontendscripts']  = new FrontendScripts();
-        $this->container['endpoint']         = new Endpoint();
-        $this->container['promotions']       = new Promotions();
+		$this->services['util']             = new Util();
+        $this->services['setting']          = new Setting();
+		$this->services['rest']             = new Rest();
+		$this->services['course']           = new Core\Course();
+		$this->services['category']         = new Core\Category();
+		$this->services['product']          = new Core\Product();
+        $this->services['external_service'] = new ExternalService();
+		$this->services['enrollment']       = new Enrollment();
+        $this->services['block']            = new Block();
+        $this->services['frontendscripts']  = new FrontendScripts();
+        $this->services['endpoint']         = new Endpoint();
+        $this->services['promotions']       = new Promotions();
         $this->initialize_moowoodle_log();
     }
 
@@ -220,7 +223,8 @@ final class MooWoodle {
 	 * @return void
 	 */
 	public function load_plugin_textdomain() {
-        if ( version_compare( $GLOBALS['wp_version'], '6.7', '<' ) ) {
+        global $wp_version;
+        if ( version_compare( $wp_version, '6.7', '<' ) ) {
             load_plugin_textdomain( 'moowoodle', false, plugin_basename( dirname( __DIR__ ) ) . '/languages' );
         } else {
             load_textdomain( 'moowoodle', WP_LANG_DIR . '/plugins/moowoodle-' . determine_locale() . '.mo' );
@@ -239,8 +243,8 @@ final class MooWoodle {
             update_option( Util::MOOWOODLE_OTHER_SETTINGS['log_file'], $log_file_name );
         }
 
-        $this->container['log_file']          = MooWoodle()->moowoodle_logs_dir . '/' . $log_file_name;
-        $this->container['show_advanced_log'] = in_array( 'moowoodle_adv_log', MooWoodle()->setting->get_setting( 'moowoodle_adv_log', array() ), true );
+        $this->services['log_file']          = MooWoodle()->moowoodle_logs_dir . '/' . $log_file_name;
+        $this->services['show_advanced_log'] = in_array( 'moowoodle_adv_log', MooWoodle()->setting->get_setting( 'moowoodle_adv_log', array() ), true );
     }
 
 	/**
@@ -251,21 +255,21 @@ final class MooWoodle {
      * @return  object | \WP_Error
      */
     public function __get( $class ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound
-        if ( array_key_exists( $class, $this->container ) ) {
-            return $this->container[ $class ];
+        if ( array_key_exists( $class, $this->services ) ) {
+            return $this->services[ $class ];
         }
 
         return new \WP_Error( sprintf( 'Call to unknown class %s.', $class ) );
     }
     /**
      * Magic setter function to store a reference of a class.
-     * Accepts a class name as the key and stores the instance in the container.
+     * Accepts a class name as the key and stores the instance in the services.
      *
      * @param string $class The class name or key to store the instance.
      * @param object $value The instance of the class to store.
      */
     public function __set( $class, $value ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound
-        $this->container[ $class ] = $value;
+        $this->services[ $class ] = $value;
     }
 	/**
      * Initializes the MooWoodle class.
@@ -292,5 +296,10 @@ final class MooWoodle {
     public function register_email_classes( $emails ) {
         $emails['EnrollmentEmail'] = new Emails\EnrollmentEmail();
         return $emails;
+    }
+
+    // Alternative of __get()
+    public function get_service( $service_key ) {
+        return $this->services[ $service_key ] ?? null;
     }
 }

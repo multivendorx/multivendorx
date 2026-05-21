@@ -110,7 +110,7 @@ export default {
 			templates: [
 				{
 					key: 'dashboard',
-					label: __('dashboard', 'multivendorx'),
+					label: __('Dashboard', 'multivendorx'),
 					preview: DashboardTemplate,
 					component: DashboardTemplate,
 				},

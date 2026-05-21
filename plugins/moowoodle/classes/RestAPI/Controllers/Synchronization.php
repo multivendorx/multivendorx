@@ -14,9 +14,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * MooWoodle REST API Synchronization controller.
  *
- * @class       Synchronization class
  * @version     PRODUCT_VERSION
- * @author      DualCube
  */
 class Synchronization extends \WP_REST_Controller {
 
@@ -52,7 +50,7 @@ class Synchronization extends \WP_REST_Controller {
     /**
      * Check if a given request has access to get items.
      *
-     * @param object $request The REST request object.
+     * @param \WP_REST_Request $request The REST request object.
      */
     public function permissions_check( $request ) {
         return current_user_can( 'manage_options' );
@@ -61,7 +59,7 @@ class Synchronization extends \WP_REST_Controller {
     /**
      * Synchronization.
      *
-     * @param object $request The request object.
+     * @param \WP_REST_Request $request The request object.
      */
     public function get_items( $request ) {
         $nonce_check = Util::validate_nonce( $request );
@@ -71,9 +69,9 @@ class Synchronization extends \WP_REST_Controller {
         }
 
         try {
-			$status = $request->get_param( 'parameter' );
+			$sync_type = $request->get_param( 'parameter' );
 
-			if ( 'course' === $status ) {
+			if ( 'course' === $sync_type ) {
 				$response = array(
 					'status'  => Util::get_sync_status( 'course' ),
 					'running' => get_transient( 'course_sync_running' ),
@@ -101,15 +99,15 @@ class Synchronization extends \WP_REST_Controller {
         }
 
         try {
-            $parameter = $request->get_param( 'parameter' );
+            $sync_type = $request->get_param( 'parameter' );
 
-            switch ( $parameter ) {
+            switch ( $sync_type ) {
                 case 'course':
                     return $this->course_synchronization( $request );
 
                 default:
                     return apply_filters(
-                        "moowoodle_process_{$parameter}_synchronization",
+                        "moowoodle_process_{$sync_type}_synchronization",
                         $request
                     );
             }
@@ -130,9 +128,9 @@ class Synchronization extends \WP_REST_Controller {
 
         set_transient( 'course_sync_running', true );
 
-        $sync_setting = MooWoodle()->setting->get_setting( 'sync_course_options', array() );
+        $sync_settings = MooWoodle()->setting->get_setting( 'sync_course_options', array() );
         // update course and product categories.
-        if ( in_array( 'sync_courses_category', $sync_setting, true ) ) {
+        if ( in_array( 'sync_courses_category', $sync_settings, true ) ) {
 
             // get all category from moodle.
             $response   = MooWoodle()->external_service->do_request( 'get_categories' );

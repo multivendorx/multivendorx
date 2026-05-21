@@ -14,9 +14,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * MooWoodle REST API Courses controller.
  *
- * @class       Courses class
  * @version     PRODUCT_VERSION
- * @author      DualCube
  */
 class Courses extends \WP_REST_Controller {
 
@@ -61,21 +59,21 @@ class Courses extends \WP_REST_Controller {
      * @return \WP_REST_Response|\WP_Error
      */
     public function get_items( $request ) {
-        $nonce_check = Util::validate_nonce( $request );
+        $nonce_validation = Util::validate_nonce( $request );
 
-        if ( is_wp_error( $nonce_check ) ) {
-            return $nonce_check;
+        if ( is_wp_error( $nonce_validation ) ) {
+            return $nonce_validation;
         }
 
         try {
             if ( $request->get_param( 'options' ) ) {
-                return $this->get_filter_items( $request );
+                return $this->get_filter_options( $request );
             }
 
             $limit          = intval( $request->get_param( 'row' ) ) ?: 10;
             $page           = max( intval( $request->get_param( 'page' ) ), 1 );
             $offset         = ( $page - 1 ) * $limit;
-            $category_field = $request->get_param( 'category' );
+            $category_id    = $request->get_param( 'category' );
             $search_action  = $request->get_param( 'searchaction' );
             $search_field   = $request->get_param( 'search' );
             $get_product_id = $request->get_param( 'unlinked_resources_for' );
@@ -86,8 +84,8 @@ class Courses extends \WP_REST_Controller {
                 'offset' => $offset,
             );
 
-            if ( ! empty( $category_field ) ) {
-                $filters['category_id'] = $category_field;
+            if ( ! empty( $category_id ) ) {
+                $filters['category_id'] = $category_id;
             }
             // Add search filter.
             if ( 'course' === $search_action ) {
@@ -130,14 +128,20 @@ class Courses extends \WP_REST_Controller {
                     $product = wc_get_product( (int) $course['product_id'] );
                     if ( $product ) {
                         $product_name  = $product->get_name();
-                        $product_url   = admin_url( 'post.php?post=' . $product->get_id() . '&action=edit' );
+                        $product_url   = esc_url_raw( admin_url( 'post.php?post=' . $product->get_id() . '&action=edit' ) );
                         $product_image = wp_get_attachment_url( $product->get_image_id() );
                     }
                 }
 
                 $start = ! empty( $course['startdate'] ) ? wp_date( 'M j, Y', $course['startdate'] ) : __( 'Not Set', 'moowoodle' );
                 $end   = ! empty( $course['enddate'] ) ? wp_date( 'M j, Y', $course['enddate'] ) : __( 'Not Set', 'moowoodle' );
-                $date  = ( ! empty( $course['startdate'] ) || ! empty( $course['enddate'] ) ) ? sprintf( '%s - %s', $start, $end ) : 'NA';
+                $course_duration  = ( ! empty( $course['startdate'] ) || ! empty( $course['enddate'] ) ) 
+                                    ? sprintf(
+                                        /* translators: 1: Start date, 2: End date */
+                                        __( '%1$s - %2$s', 'moowoodle' ),
+                                        $start,
+                                        $end
+                                    ) : 'NA';
 
                 $moodle_url    = $moodle_base_url . "course/edit.php?id={$course['moodle_course_id']}";
                 $view_user_url = $moodle_base_url . "user/index.php?id={$course['moodle_course_id']}";
@@ -168,7 +172,7 @@ class Courses extends \WP_REST_Controller {
                         'category_name'     => $categories['name'] ?? '',
                         'enrolled_user'     => $enrolled_users,
                         'view_users_url'    => $view_user_url,
-                        'date'              => $date,
+                        'date'              => $course_duration,
                     )
                 );
             }
@@ -197,7 +201,7 @@ class Courses extends \WP_REST_Controller {
      * @param \WP_REST_Request $request Request object.
      * @return \WP_REST_Response|\WP_Error
      */
-    public function get_filter_items( $request ) {
+    public function get_filter_options( $request ) {
         // Fetch all courses.
         $courses = MooWoodle()->course->get_courses();
 

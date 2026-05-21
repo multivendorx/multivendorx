@@ -108,7 +108,7 @@ class Util {
         }
 
         if ( $message instanceof \Exception ) {
-            $log_type = 'EXCEPTION';
+            $log_type    = 'EXCEPTION';
             $log_context = array_merge(
                 $log_context,
                 array(
@@ -119,11 +119,11 @@ class Util {
                     'exception_trace'   => $message->getTraceAsString(),
                 )
             );
-            $message = 'Exception occurred';
+            $message     = 'Exception occurred';
         }
 
         if ( $message instanceof \WP_Error ) {
-            $log_type = 'WP_ERROR';
+            $log_type    = 'WP_ERROR';
             $log_context = array_merge(
                 $log_context,
                 array(
@@ -132,11 +132,10 @@ class Util {
                     'error_data'    => $message->get_error_data(),
                 )
             );
-            $message = 'WP_Error occurred';
+            $message     = 'WP_Error occurred';
         }
 
         if ( ! empty( $wpdb->last_error ) ) {
-
             $log_context['db_error'] = $wpdb->last_error;
             $log_context['db_query'] = $wpdb->last_query;
         }
@@ -240,10 +239,10 @@ class Util {
 	 * @return void
 	 */
 	public static function set_sync_status( $sync_status, $sync_key ) {
-		$sync_history    = get_transient( 'moowoodle_sync_status_' . $sync_key );
-		$sync_history    = is_array( $sync_history ) ? $sync_history : array();
+		$sync_history           = get_transient( 'moowoodle_sync_status_' . $sync_key );
+		$sync_history           = is_array( $sync_history ) ? $sync_history : array();
         $sync_status['current'] = 0;
-		$sync_history[]  = $sync_status;
+		$sync_history[]         = $sync_status;
 
 		set_transient( 'moowoodle_sync_status_' . $sync_key, $sync_history, HOUR_IN_SECONDS );
 	}

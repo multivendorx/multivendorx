@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Column, Container } from 'zyra';
 import { __ } from '@wordpress/i18n';
-import freePro from '../../assets/images/dashboard-1.png';
+import MoowoodleConcept from '../../assets/images/moowoodle-concept.png';
 interface Feature {
 	name: string;
 	free: boolean | string;
@@ -225,7 +225,7 @@ const sections: Section[] = [
 	},
 ];
 
-const FreeVsProTab: React.FC<object> = () => {
+const FreeVsProTab: React.FC = () => {
 	const renderCell = (value: string | boolean) => {
 		if (typeof value === 'boolean') {
 			return value ? (
@@ -258,22 +258,18 @@ const FreeVsProTab: React.FC<object> = () => {
 				>
 					<div id="free-vs-pro" className="free-vs-pro">
 						{sections.map((section, idx) => (
-							<table key={idx}>
+							<table key={`${idx}-${section.title}`}>
 								<thead>
 									<tr>
-										<td>
-											{__(section.title, 'moowoodle')}
-										</td>
-										<td>{__('Free', 'moowoodle')}</td>
-										<td>{__('Pro', 'moowoodle')}</td>
+										<th scope="col">{section.title}</th>
+										<th scope="col">{__('Free', 'moowoodle')}</th>
+										<th scope="col">{__('Pro', 'moowoodle')}</th>
 									</tr>
 								</thead>
 								<tbody>
-									{section.features.map((feature, i) => (
-										<tr key={i}>
-											<td>
-												{__(feature.name, 'moowoodle')}
-											</td>
+									{section.features.map((feature) => (
+										<tr key={`${section.title}-${feature.name}`}>
+											<td>{feature.name}</td>
 											<td>{renderCell(feature.free)}</td>
 											<td>{renderCell(feature.pro)}</td>
 										</tr>
@@ -289,19 +285,22 @@ const FreeVsProTab: React.FC<object> = () => {
 				<Card>
 					<div className="right-pro-banner">
 						<div className="image-wrapper">
-							<img src={freePro} alt="" />
+							<img
+								src={MoowoodleConcept}
+								alt={__('Moowoodle marketplace concept illustration', 'moowoodle')}
+							/>
 						</div>
 
 						<div className="title">
 							{__(
-								'Join 8,000+ successful marketplace owners',
+								'Powering modern eLearning businesses worldwide',
 								'moowoodle'
 							)}
 						</div>
 
 						<div className="des">
 							{__(
-								'Build, manage, and expand your marketplace with confidence. Loved by entrepreneurs globally.',
+								'From individual educators to large training organizations, MooWoodle helps simplify course selling, learner management, and Moodle-WooCommerce integration at scale.',
 								'moowoodle'
 							)}
 						</div>
@@ -309,27 +308,24 @@ const FreeVsProTab: React.FC<object> = () => {
 						<ul>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Flexible selling models', 'moowoodle')}
+								{__('Sell course with WooCommerce', 'moowoodle')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
 								{__(
-									'Effortless inventory control',
+									'Automate course enrollments',
 									'moowoodle'
 								)}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Intelligent alert system', 'moowoodle')}
+								{__('Classroom, cohort based learning', 'moowoodle')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Secure seller onboarding', 'moowoodle')}
+								{__('Seamless Single Sign-On experiences', 'moowoodle')}
 							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Recurring revenue tools', 'moowoodle')}
-							</li>
+							
 						</ul>
 
 						<div className="button-wrapper">

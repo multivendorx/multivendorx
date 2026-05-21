@@ -4,11 +4,9 @@ namespace MooWoodle;
 
 defined( 'ABSPATH' ) || exit;
 /**
- * @class       MooWoodle Promotions Class
  *
  * @version     PRODUCT_VERSION
  * @package     DualCube
- * @author      DualCube
  */
 class Promotions {
 
@@ -34,15 +32,15 @@ class Promotions {
 			'woocommerce-product-bundles/woocommerce-product-bundles.php' => 'WooCommerce Product Bundles',
 		);
 
-        $active_plugins = (array) get_option( 'active_plugins', array() );
+        $active_plugins = get_option( 'active_plugins', array() );
 
         // Merge network active plugins in multisite.
         if ( is_multisite() ) {
             $network_plugins = array_keys(
-                (array) get_site_option( 'active_sitewide_plugins', array() )
+                get_site_option( 'active_sitewide_plugins', array() )
             );
 
-            $active_plugins = array_unique(array_merge( $active_plugins, $network_plugins ));
+            $active_plugins = array_unique( array_merge( $active_plugins, $network_plugins ) );
         }
 
         $active_pro_only_extensions = array();
@@ -58,9 +56,13 @@ class Promotions {
 
         $message = sprintf(
             /* translators: %s: Plugin names */
-            esc_html__(
-                '%s are supported only in MooWoodle Pro.',
-                'moowoodle'
+            esc_html(
+                _n(
+                    '%s is supported only in MooWoodle Pro.',
+                    '%s are supported only in MooWoodle Pro.',
+                    count( $active_pro_only_extensions ),
+                    'moowoodle'
+                )
             ),
             esc_html( implode( ', ', $active_pro_only_extensions ) )
         );
