@@ -225,7 +225,7 @@ const sections: Section[] = [
 	},
 ];
 
-const FreeVsProTab: React.FC<object> = () => {
+const FreeVsProTab: React.FC = () => {
 	const renderCell = (value: string | boolean) => {
 		if (typeof value === 'boolean') {
 			return value ? (
@@ -258,22 +258,18 @@ const FreeVsProTab: React.FC<object> = () => {
 				>
 					<div id="free-vs-pro" className="free-vs-pro">
 						{sections.map((section, idx) => (
-							<table key={idx}>
+							<table key={`${idx}-${section.title}`}>
 								<thead>
 									<tr>
-										<td>
-											{__(section.title, 'moowoodle')}
-										</td>
-										<td>{__('Free', 'moowoodle')}</td>
-										<td>{__('Pro', 'moowoodle')}</td>
+										<th scope="col">{section.title}</th>
+										<th scope="col">{__('Free', 'moowoodle')}</th>
+										<th scope="col">{__('Pro', 'moowoodle')}</th>
 									</tr>
 								</thead>
 								<tbody>
-									{section.features.map((feature, i) => (
-										<tr key={i}>
-											<td>
-												{__(feature.name, 'moowoodle')}
-											</td>
+									{section.features.map((feature) => (
+										<tr key={`${section.title}-${feature.name}`}>
+											<td>{feature.name}</td>
 											<td>{renderCell(feature.free)}</td>
 											<td>{renderCell(feature.pro)}</td>
 										</tr>
@@ -289,19 +285,22 @@ const FreeVsProTab: React.FC<object> = () => {
 				<Card>
 					<div className="right-pro-banner">
 						<div className="image-wrapper">
-							<img src={MoowoodleConcept} alt="" />
+							<img
+								src={MoowoodleConcept}
+								alt={__('Moowoodle marketplace concept illustration', 'moowoodle')}
+							/>
 						</div>
 
 						<div className="title">
 							{__(
-								'Join 8,000+ successful marketplace owners',
+								'Join thousands of growing online course businesses',
 								'moowoodle'
 							)}
 						</div>
 
 						<div className="des">
 							{__(
-								'Build, manage, and expand your marketplace with confidence. Loved by entrepreneurs globally.',
+								'Connect WordPress and Moodle to streamline course delivery, learner enrollment, and training management from one workflow.',
 								'moowoodle'
 							)}
 						</div>
@@ -309,26 +308,26 @@ const FreeVsProTab: React.FC<object> = () => {
 						<ul>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Flexible selling models', 'moowoodle')}
+								{__('Automatic WooCommerce to Moodle enrollment', 'moowoodle')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
 								{__(
-									'Effortless inventory control',
+									'Seamless course and category synchronization',
 									'moowoodle'
 								)}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Intelligent alert system', 'moowoodle')}
+								{__('Centralized learner and course access management', 'moowoodle')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Secure seller onboarding', 'moowoodle')}
+								{__('Secure and reliable LMS integration workflow', 'moowoodle')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Recurring revenue tools', 'moowoodle')}
+								{__('Built for scalable online training growth', 'moowoodle')}
 							</li>
 						</ul>
 
