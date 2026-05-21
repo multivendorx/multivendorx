@@ -33,12 +33,16 @@ class Shortcode {
      * @return void
      */
     public function frontend_scripts() {
-        if ( CatalogX()->modules->is_active( 'quote' ) ) {
+            wp_deregister_style( 'wc-blocks-style' );
+
             FrontendScripts::load_scripts();
             FrontendScripts::localize_scripts( 'catalogx-quote-cart-script' );
             FrontendScripts::enqueue_script( 'catalogx-quote-cart-script' );
-            FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
-        }
+        
+        FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
+        FrontendScripts::enqueue_script( 'catalogx-enquiry-button-view-script' );
+        FrontendScripts::localize_scripts( 'catalogx-enquiry-button-view-script' );
+
     }
 
     /**

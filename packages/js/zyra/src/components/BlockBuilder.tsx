@@ -23,6 +23,7 @@ interface BlockBuilderProps {
         defaultTemplateId?: string;
         emailTemplates?: EmailTemplate[];
         availablePlaceholder?: string[];
+        proSetting?: boolean;
     };
     setting?: Record<string, BuilderValue>;
     proSettingChange?: (...args: unknown[]) => boolean;
@@ -318,7 +319,7 @@ export const BlockBuilderUI: React.FC<BlockBuilderProps> = ({
     onChange,
     field,
     setting = {},
-    proSettingChange = () => false,
+    proSettingChange = () => !!field?.proSetting,
     name = field?.key,
 }) => {
     const builderContext = field?.context || 'form';

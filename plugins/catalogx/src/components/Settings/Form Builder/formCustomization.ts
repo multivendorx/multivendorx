@@ -25,9 +25,10 @@ export default {
 			key: 'store_registration_from',
 			type: 'block-builder',
 			classes: 'full-width',
-			visibleGroups: ['registration', 'store'],
+			visibleGroups: ['registration'],
 			desc: 'Customise personalised store registration form for marketplace.',
 			context: 'form',
+			proSetting: true,
 		},
 	],
 };

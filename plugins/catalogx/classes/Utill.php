@@ -32,6 +32,8 @@ class Utill {
         'extra'                          => 'catalogx_extra_settings',
         'enquiry-catalog-customization' => 'catalogx_enquiry_catalog_customization_settings',
         'all-settings'                  => 'catalogx_all_settings_settings',
+        'enquiry' => 'catalogx_enquiry_settings',
+        'quotation' => 'catalogx_quotation_settings',
         'tools'                         => 'catalogx_tools_settings',
         'pages'                         => 'catalogx_pages_settings',
         'enquiry-quote-exclusion'       => 'catalogx_enquiry_quote_exclusion_settings',

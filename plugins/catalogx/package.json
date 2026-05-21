@@ -9,7 +9,7 @@
     },
     "scripts": {
         "build": "echo \"${npm_package_name}\" && pnpm --if-present --workspace-concurrency=Infinity --stream --filter \"${npm_package_name}\" \"/^build:project:.*$/\"",
-        "build:zip": "pnpm install && pnpm run readme && pnpm --if-present \"/^build:project:.*$/\" && pnpm run makepot && node bin/release.mjs",
+        "build:zip": "pnpm run readme && pnpm --if-present \"/^build:project:.*$/\" && pnpm run makepot && node bin/release.mjs",
         "build:project": "pnpm --if-present \"/^build:project:.*$/\"",
         "build:project:bundle": "wireit",
         "build:project:translation:domains": "wireit",
@@ -41,7 +41,7 @@
         "clean": "node bin/clean-files.mjs",
         "minify": "node bin/minify.mjs",
         "changelog": "composer install --quiet && composer exec -- changelogger",
-        "makepot": "wp i18n make-pot --domain='catalogx' --include='assets/js,classes,templates,src,modules,config.php,Woocommerce_Catalog_Enquiry.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://catalogx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') CatalogX Inc. All Rights Reserved.\" languages/catalogx.pot"
+        "makepot": "wp i18n make-pot --domain='catalogx' --include='assets/js,classes,templates,src,modules,config.php,dc_product_vendor.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://catalogx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') CatalogX Inc. All Rights Reserved.\" languages/catalogx.pot"
     },
     "repository": {
         "type": "git",

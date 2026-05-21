@@ -1,25 +1,57 @@
 {
-    "apiVersion": 2,
+    "apiVersion": 3,
     "name": "catalogx/enquiry-button",
     "title": "Enquiry Button",
     "category": "catalogx",
-    "icon": "admin-comments",
+    "icon": "button",
     "description": "A block that displays enquiry button.",
-    "supports": {
-        "html": false
-    },
+    "editorScript": "file:./index.js",
+    "viewScript": "file:./view.js",
     "textdomain": "catalogx",
-    "editorScript": [
-        "file:./index.js",
-        "catalogx-enquiry-frontend-script",
-        "catalogx-enquiry-form-script"
+    "supports": {
+        "align": true,
+        "alignWide": false,
+        "html": false,
+        "color": {
+            "text": true,
+            "background": true,
+            "__experimentalDefaultControls": {
+                "text": true,
+                "background": true
+            }
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true,
+            "__experimentalDefaultControls": {
+                "fontSize": true
+            }
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "__experimentalDefaultControls": {
+                "margin": true,
+                "padding": true
+            }
+        },
+        "__experimentalBorder": {
+            "color": true,
+            "style": true,
+            "width": true,
+            "__experimentalDefaultControls": {
+                "color": true,
+                "style": true,
+                "width": true
+            }
+        }
+    },
+    "editorStyle": [
+        "catalogx-enquiry-form-style",
+        "catalogx-frontend-style"
     ],
-    "script": [
-        "file:./index.js",
-        "catalogx-enquiry-frontend-script",
-        "catalogx-enquiry-form-script"
-    ],
-    "editorStyle": [ "catalogx-enquiry-form-style", "catalogx-frontend-style" ],
-    "style": [ "catalogx-enquiry-form-style", "catalogx-frontend-style" ],
-    "render": "file:./render.php"
+    "style": [
+        "catalogx-enquiry-form-style",
+        "catalogx-frontend-style"
+    ]
 }

@@ -439,7 +439,10 @@ class FrontendScripts {
 
         // Get all tab setting's database value.
         $settings_databases_value = array();
-        $tabs_names     = array( 'enquiry-catalog-customization', 'all-settings', 'enquiry-form-customization', 'enquiry-quote-exclusion', 'tools', 'enquiry-email-temp', 'wholesale', 'wholesale-registration', 'pages' );
+        $tabs_names     = apply_filters(
+            'multivendorx_additional_tabs_names',
+            array_keys( Utill::CATALOGX_SETTINGS )
+        );
         
         foreach ( $tabs_names as $tab_name ) {
             $settings_databases_value[ $tab_name ] = CatalogX()->setting->get_option( str_replace( '-', '_', 'catalogx_' . $tab_name . '_settings' ) );
@@ -469,12 +472,13 @@ class FrontendScripts {
                             'tab_name'                   => 'CatalogX',
                             'all_pages'                  => $all_pages,
                             'role_array'                 => $all_roles,
+                            'admin_url'              => admin_url(),
                             'all_users'                  => $all_users,
                             'all_products'               => $all_products,
                             'all_product_cat'            => $product_cat,
                             'all_product_brand'          => $all_product_brand,
                             'all_product_tag'            => $product_tags,
-                            'settings_databases_value'   => $settings_value,
+                            'settings_databases_value'   => $settings_databases_value,
                             'active_modules'             => CatalogX()->modules->get_active_modules(),
                             'user_role'                  => $current_user_role,
                             'banner_img'                 => CatalogX()->plugin_url . 'assets/images/catalog-pro-add-admin-banner.jpg',
@@ -549,6 +553,10 @@ class FrontendScripts {
                     ),
                 ),
                 'catalogx-enquiry-button-editor-script' => array(
+                    'object_name' => 'enquiryButton',
+                    'data'        => $base_rest,
+                ),
+                'catalogx-enquiry-button-view-script'   => array(
                     'object_name' => 'enquiryButton',
                     'data'        => $base_rest,
                 ),

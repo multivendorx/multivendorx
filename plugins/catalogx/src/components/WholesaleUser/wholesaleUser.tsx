@@ -102,14 +102,6 @@ const WholesaleUser = () => {
 		totalRows:
 			dummyWholesaleUsers.length,
 
-		onQueryUpdate: () => {
-			setopenPopup(true);
-		},
-
-		onBulkActionApply: () => {
-			setopenPopup(true);
-		},
-
 		search: {
 			placeholder: __(
 				'Search wholesale users...',
@@ -122,6 +114,12 @@ const WholesaleUser = () => {
 			'catalogx_quote_table_component',
 			TableCard
 		);
+
+	const handleTableWrapperClick = () => {
+		if (!appLocalizer.khali_dabba) {
+			setopenPopup(true);
+		}
+	};
 	
 	return (
 		<>
@@ -151,7 +149,7 @@ const WholesaleUser = () => {
 				)}
 			/>
 
-			<div>
+			<div onClick={handleTableWrapperClick}>
 				<RenderedTableCard {...defaultTableProps} />
 			</div>
 		</>

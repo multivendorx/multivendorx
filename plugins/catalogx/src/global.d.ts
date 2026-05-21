@@ -20,6 +20,7 @@ declare global {
         restUrl: string;
         all_pages: Array;
         role_array: Array;
+        admin_url: string;
         all_users: Array;
         all_products: Array;
         all_product_cat: Array;

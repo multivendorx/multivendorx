@@ -89,14 +89,6 @@ export default function QuotesList() {
 		rows: dummyQuotes,
 		totalRows: dummyQuotes.length,
 
-		onQueryUpdate: () => {
-			setopenPopup(true);
-		},
-
-		onBulkActionApply: () => {
-			setopenPopup(true);
-		},
-
 		search: {
 			placeholder: __('Search quotes...', 'catalogx'),
 		},
@@ -106,6 +98,12 @@ export default function QuotesList() {
         'catalogx_quote_table_component',
         TableCard
     );
+
+	const handleTableWrapperClick = () => {
+		if (!appLocalizer.khali_dabba) {
+			setopenPopup(true);
+		}
+	};
 
 	return (
 		<>
@@ -130,7 +128,7 @@ export default function QuotesList() {
 				headerTitle={__('Quote Requests', 'catalogx')}
 			/>
 
-			<div>
+			<div onClick={handleTableWrapperClick}>
 				<RenderedTableCard {...defaultTableProps} />
 			</div>
 		</>
