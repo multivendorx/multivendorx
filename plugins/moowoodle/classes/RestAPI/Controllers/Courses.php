@@ -70,10 +70,10 @@ class Courses extends \WP_REST_Controller {
                 return $this->get_filter_options( $request );
             }
 
-            $limit          = intval( $request->get_param( 'row' ) ) ?: 10;
-            $page           = max( intval( $request->get_param( 'page' ) ), 1 );
-            $offset         = ( $page - 1 ) * $limit;
-            $category_id    = $request->get_param( 'category' );
+            $limit              = intval( $request->get_param( 'row' ) ) ?: 10;
+            $page               = max( intval( $request->get_param( 'page' ) ), 1 );
+            $offset             = ( $page - 1 ) * $limit;
+            $category_id        = $request->get_param( 'category' );
             $search_action      = $request->get_param( 'searchaction' );
             $search_field       = $request->get_param( 'search' );
             $get_product_id     = $request->get_param( 'unlinked_resources_for' );
@@ -134,9 +134,9 @@ class Courses extends \WP_REST_Controller {
                     }
                 }
 
-                $start = ! empty( $course['startdate'] ) ? wp_date( 'M j, Y', $course['startdate'] ) : __( 'Not Set', 'moowoodle' );
-                $end   = ! empty( $course['enddate'] ) ? wp_date( 'M j, Y', $course['enddate'] ) : __( 'Not Set', 'moowoodle' );
-                $course_duration  = ( ! empty( $course['startdate'] ) || ! empty( $course['enddate'] ) ) 
+                $start           = ! empty( $course['startdate'] ) ? wp_date( 'M j, Y', $course['startdate'] ) : __( 'Not Set', 'moowoodle' );
+                $end             = ! empty( $course['enddate'] ) ? wp_date( 'M j, Y', $course['enddate'] ) : __( 'Not Set', 'moowoodle' );
+                $course_duration = ( ! empty( $course['startdate'] ) || ! empty( $course['enddate'] ) )
                                     ? sprintf(
                                         /* translators: 1: Start date, 2: End date */
                                         __( '%1$s - %2$s', 'moowoodle' ),

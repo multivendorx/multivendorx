@@ -30,44 +30,44 @@ const HelpSupport: React.FC = () => {
 		},
 	];
 	const DocumentationItems = [
-	    {
-	        icon: 'document',
-	        name: __('Official documentation', 'moowoodle'),
-	        description: __(
-	            'Step-by-step guides for every moowoodle feature.',
-	            'moowoodle'
-	        ),
-	        link: 'https://moowoodle.com/docs/knowledgebase/?utm_source=settings&utm_medium=plugin&utm_campaign=track',
-	    },
-	    {
-	        icon: 'youtube',
-	        name: __('YouTube tutorials', 'moowoodle'),
-	        description: __(
-	            'Watch videos on marketplace setup, store management, payments, and more.',
-	            'moowoodle'
-	        ),
-	        link: 'https://www.youtube.com/@moowoodle/videos',
-	    },
+		{
+			icon: 'document',
+			name: __('Official documentation', 'moowoodle'),
+			description: __(
+				'Step-by-step guides for every moowoodle feature.',
+				'moowoodle'
+			),
+			link: 'https://moowoodle.com/docs/knowledgebase/?utm_source=settings&utm_medium=plugin&utm_campaign=track',
+		},
+		{
+			icon: 'youtube',
+			name: __('YouTube tutorials', 'moowoodle'),
+			description: __(
+				'Watch videos on marketplace setup, store management, payments, and more.',
+				'moowoodle'
+			),
+			link: 'https://www.youtube.com/@moowoodle/videos',
+		},
 	];
 	const supportItems = [
-	    {
-	        icon: 'wordpress',
-	        name: __('WordPress support forum', 'moowoodle'),
-	        description: __(
-	            'Ask questions and get expert guidance from the WordPress community.',
-	            'moowoodle'
-	        ),
-	        link: 'https://wordpress.org/plugins/moowoodle/',
-	    },
-	    {
-	        icon: 'development',
-	        name: __('Custom development', 'moowoodle'),
-	        description: __(
-	            'Get personalized assistance and tailored solutions built for your eLearning platform.',
-	            'moowoodle'
-	        ),
-	        link: 'https://dualcube.com/custom-development/?utm_source=settings&utm_medium=plugin&utm_campaign=track',
-	    },
+		{
+			icon: 'wordpress',
+			name: __('WordPress support forum', 'moowoodle'),
+			description: __(
+				'Ask questions and get expert guidance from the WordPress community.',
+				'moowoodle'
+			),
+			link: 'https://wordpress.org/plugins/moowoodle/',
+		},
+		{
+			icon: 'development',
+			name: __('Custom development', 'moowoodle'),
+			description: __(
+				'Get personalized assistance and tailored solutions built for your eLearning platform.',
+				'moowoodle'
+			),
+			link: 'https://dualcube.com/custom-development/?utm_source=settings&utm_medium=plugin&utm_campaign=track',
+		},
 	];
 	return (
 		<>

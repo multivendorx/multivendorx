@@ -1,6 +1,15 @@
 /* global appLocalizer */
 import React, { useState, useEffect } from 'react';
-import { CategoryCount, Column, Container, InfoItem, NavigatorHeader, PopupUI, QueryProps, TableCard } from 'zyra';
+import {
+	CategoryCount,
+	Column,
+	Container,
+	InfoItem,
+	NavigatorHeader,
+	PopupUI,
+	QueryProps,
+	TableCard,
+} from 'zyra';
 import { __ } from '@wordpress/i18n';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';
@@ -74,7 +83,7 @@ const Enrollment: React.FC = () => {
 		status: {
 			label: __('Status', 'moowoodle'),
 			type: 'status',
-			statusClass: (row) => `${row.status}`
+			statusClass: (row) => `${row.status}`,
 		},
 		action: {
 			type: 'action',
@@ -89,7 +98,7 @@ const Enrollment: React.FC = () => {
 					onClick: (row: EnrollmentRow) => {
 						setOpenPopup(true);
 					},
-					icon: 'classroom-enrollment'
+					icon: 'classroom-enrollment',
 				},
 			],
 		},
@@ -116,7 +125,7 @@ const Enrollment: React.FC = () => {
 
 	tableProps = applyFilters(
 		'moowoodle_enrollment_table_props',
-		defaultTableProps,
+		defaultTableProps
 	);
 	const handleTableWrapperClick = () => {
 		if (!appLocalizer.khali_dabba) {
