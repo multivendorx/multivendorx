@@ -154,7 +154,7 @@ Unlock advanced Moodle WordPress course synchronization with MooWoodle Pro—syn
 
 
 ### ➡️   [Cohort Synchronization Options ](https://dualcube.com/docs/moowoodle-set-up-guide/#20-toc-title/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=moowoodlewporg). [PRO]
-Unlock advanced Moodle WordPress cohort synchronization and tcreate corresponding product.
+Unlock advanced Moodle WordPress cohort synchronization and create corresponding product.
 
 🔄 **Create and Update Products**: Easily update existing product information using Moodle cohort data.
 
