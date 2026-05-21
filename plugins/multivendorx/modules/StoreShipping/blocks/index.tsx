@@ -1,14 +1,13 @@
 import CheckoutMapFill from "./CheckoutMapFill";
 
-const init = () => {
-	if (!(window as any)?.wp?.plugins?.registerPlugin) return;
-	(window as any).wp.plugins.registerPlugin(
-		'multivendorx-checkout-map',
-		{
-			render: CheckoutMapFill,
-			scope: 'woocommerce-checkout',
-		}
-	);
-};
+const { registerPlugin } = window.wp.plugins;
+const domReady = window.wp.domReady;
 
-window.addEventListener('load', init);
+domReady(() => {
+    if (registerPlugin) {
+        registerPlugin('multivendorx-checkout-map', {
+            render: CheckoutMapFill,
+            scope: 'woocommerce-checkout',
+        });
+    }
+});
