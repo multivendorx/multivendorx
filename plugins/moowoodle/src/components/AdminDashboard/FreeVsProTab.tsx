@@ -267,8 +267,8 @@ const FreeVsProTab: React.FC<object> = () => {
 									</tr>
 								</thead>
 								<tbody>
-									{section.features.map((feature, i) => (
-										<tr key={i}>
+									{section.features.map((feature) => (
+										<tr key={`${section.title}-${feature.name}`}>
 											<td>{feature.name}</td>
 											<td>{renderCell(feature.free)}</td>
 											<td>{renderCell(feature.pro)}</td>
