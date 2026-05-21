@@ -154,7 +154,7 @@ Unlock advanced Moodle WordPress course synchronization with MooWoodle Pro—syn
 
 
 ### ➡️   [Cohort Synchronization Options ](https://dualcube.com/docs/moowoodle-set-up-guide/#20-toc-title/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=moowoodlewporg). [PRO]
-Unlock advanced Moodle WordPress cohort synchronization and tcreate corresponding product.
+Unlock advanced Moodle WordPress cohort synchronization and create corresponding product.
 
 🔄 **Create and Update Products**: Easily update existing product information using Moodle cohort data.
 
@@ -217,7 +217,7 @@ This project might have bugs and may be lacking certain features. If you'd like 
 
 
 == Screenshots ==
-1. Configure Bulk Access & Gifting to enroll multiple studnets into courses / cohorts / groups 
+1. Configure Bulk Access & Gifting to enroll multiple students into courses / cohorts / groups 
 2. Let user gift a course to another student
 3. Click "Sync Now" to import all courses, categories, groups, images, and other content from your Moodle site.
 4. Enter your Moodle Site URL and Moodle Access Token, then run the test connection.
