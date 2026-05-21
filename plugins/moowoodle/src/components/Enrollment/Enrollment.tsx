@@ -27,7 +27,7 @@ interface EnrollmentRow {
 }
 
 const Enrollment: React.FC = () => {
-	const [openPopup, setopenPopup] = useState(false);
+	const [openPopup, setOpenPopup] = useState(false);
 	let tableProps: any = {};
 
 	// Define table headers
@@ -86,7 +86,7 @@ const Enrollment: React.FC = () => {
 							: __('Enroll Now', 'moowoodle');
 					},
 					onClick: (row: EnrollmentRow) => {
-						setopenPopup(true);
+						setOpenPopup(true);
 					},
 					icon: 'classroom-enrollment'
 				},
