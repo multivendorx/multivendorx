@@ -184,7 +184,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
             .catch((err) => console.error('Attribute save error:', err));
     };
 	return (
-        <Card  title={__('Variations', 'multivendorx')}>
+        <Card  title={ applyFilters( 'multivendorx_product_attributes_title', __( 'Attributes', 'multivendorx' ) ) }>
                 {productFields.includes('attribute') && (
                     <>
                         <div className="variation-title-wrapper">

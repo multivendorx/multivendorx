@@ -246,7 +246,7 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 
 == Changelog ==
 
-= 5.0.6 - 2026-05-20 =
+= 5.0.6 - 2026-05-21 =
 * Added     - Compatibility with WordPress 7.0.0.
 * Added     - Support for adding attribute fields across all product types in the store dashboard #1869.
 * Added     - Store banner support for block based theme #1860.
