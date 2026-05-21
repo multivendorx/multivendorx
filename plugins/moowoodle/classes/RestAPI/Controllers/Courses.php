@@ -74,9 +74,10 @@ class Courses extends \WP_REST_Controller {
             $page           = max( intval( $request->get_param( 'page' ) ), 1 );
             $offset         = ( $page - 1 ) * $limit;
             $category_id    = $request->get_param( 'category' );
-            $search_action  = $request->get_param( 'searchaction' );
-            $search_field   = $request->get_param( 'search' );
-            $get_product_id = $request->get_param( 'unlinked_resources_for' );
+            $search_action      = $request->get_param( 'searchaction' );
+            $search_field       = $request->get_param( 'search' );
+            $get_product_id     = $request->get_param( 'unlinked_resources_for' );
+            $selected_course_id = 0;
 
             // Base filter array.
             $filters = array(
@@ -112,7 +113,7 @@ class Courses extends \WP_REST_Controller {
                 return rest_ensure_response(
                     array(
                         'items'       => $courses,
-				        'selected_id' => $selected_course_id ?? 0,
+				        'selected_id' => $selected_course_id,
                     )
                 );
             }
