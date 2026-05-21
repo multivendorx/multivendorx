@@ -261,9 +261,7 @@ const FreeVsProTab: React.FC<object> = () => {
 							<table key={idx}>
 								<thead>
 									<tr>
-										<td>
-											{__(section.title, 'moowoodle')}
-										</td>
+										<td>{section.title}</td>
 										<td>{__('Free', 'moowoodle')}</td>
 										<td>{__('Pro', 'moowoodle')}</td>
 									</tr>
@@ -271,9 +269,7 @@ const FreeVsProTab: React.FC<object> = () => {
 								<tbody>
 									{section.features.map((feature, i) => (
 										<tr key={i}>
-											<td>
-												{__(feature.name, 'moowoodle')}
-											</td>
+											<td>{feature.name}</td>
 											<td>{renderCell(feature.free)}</td>
 											<td>{renderCell(feature.pro)}</td>
 										</tr>
