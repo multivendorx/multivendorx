@@ -6,7 +6,8 @@
   "icon": "button",
   "description": "Enable interactive features that let customers follow stores, ask questions, and connect with sellers in real time.",
   "editorScript": "file:./index.js",
-  "script": "file:./index.js",
+  "viewScript": "file:./view.js",
+  "textdomain": "multivendorx",
   "attributes": {
     "align": {
       "type": "string",

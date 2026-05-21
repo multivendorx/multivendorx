@@ -87,8 +87,8 @@ class Shortcode {
             return;
         }
 
-        FrontendScripts::enqueue_script( 'multivendorx-registration-form-script' );
-        FrontendScripts::localize_scripts( 'multivendorx-registration-form-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-registration-form-view-script' );
+        FrontendScripts::localize_scripts( 'multivendorx-registration-form-view-script' );
         FrontendScripts::enqueue_style( 'multivendorx-store-tabs-style' );
     }
 
@@ -116,7 +116,7 @@ class Shortcode {
                 'marketplace_stores'   => array(
                     'scripts' => array(
                         array(
-                            'handle'    => 'multivendorx-marketplace-stores-script',
+                            'handle'    => 'multivendorx-marketplace-stores-view-script',
                             'localize'  => true,
                         ),
                         array(
@@ -132,7 +132,7 @@ class Shortcode {
                 'marketplace_products' => array(
                     'scripts' => array(
                         array(
-                            'handle'    => 'multivendorx-marketplace-products-script',
+                            'handle'    => 'multivendorx-marketplace-products-view-script',
                             'localize'  => true,
                         ),
                     ),
@@ -141,7 +141,7 @@ class Shortcode {
                 'marketplace_coupons'  => array(
                     'scripts' => array(
                         array(
-                            'handle'    => 'multivendorx-marketplace-coupons-script',
+                            'handle'    => 'multivendorx-marketplace-coupons-view-script',
                             'localize'  => true,
                         ),
                     ),
@@ -163,7 +163,6 @@ class Shortcode {
                 }
 
                 FrontendScripts::enqueue_script( $script['handle'] );
-
                 if ( ! empty( $script['localize'] ) ) {
                     FrontendScripts::localize_scripts( $script['handle'] );
                 }
@@ -218,6 +217,29 @@ class Shortcode {
         ob_start();
         ?>
         <div id="multivendorx-registration-form" class="woocommerce">
+            <div class="multivendorxstep-wizard">
+				<div class="multivendorxsteps-container">
+					<div className='multivendorxstep-item'>
+						<span class='skeleton skeleton-circular' style="width: 2.125rem; height: 2.125rem;"> </span>
+						<span class='skeleton skeleton-text' style="width: 5rem; height: 1.5rem;"></span>
+					</div>
+
+					<div class="multivendorx-step-divider"></div>
+					<div className='multivendorxstep-item' >
+						<span class='skeleton skeleton-circular' style="width: 2.125rem; height: 2.125rem;"> </span>
+						<span class='skeleton skeleton-text' style="width: 6rem; height: 1.5rem;"></span>
+					</div>
+
+				</div>
+				<div class="multivendorxprogress-bar"></div>
+			</div>
+			<div class="multivendorxstep-content multivendorxstep-1-content">
+				<div class="multivendorxprogress-content">
+					<p><span class='skeleton skeleton-text' style="width: 6rem; height: 1.5rem;"> </span></p>
+					<h3><span class='skeleton skeleton-text' style="width: 14rem; height: 1.5rem;"></span></h3>
+					<p><span class='skeleton skeleton-text' style="width: 80%; height: 1rem;"></span></p>
+				</div>
+			</div>
         </div>
         <?php
         // Return the output buffer content.

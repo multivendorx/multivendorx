@@ -7,7 +7,8 @@
   "description": "Show the store’s logo to help customers easily recognize the store.",
   "keywords": ["logo", "store", "image", "brand"],
   "editorScript": "file:./index.js",
-  "script": "file:./index.js",
+  "viewScript": "file:./view.js",
+  "textdomain": "multivendorx",
   "editorStyle": [ "multivendorx-common-block-style" ],
   "style": [ "multivendorx-common-block-style" ],
   "attributes": {

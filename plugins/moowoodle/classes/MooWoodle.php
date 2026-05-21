@@ -146,7 +146,7 @@ final class MooWoodle {
 		$this->container['enrollment']       = new Enrollment();
         $this->container['block']            = new Block();
         $this->container['frontendscripts']  = new FrontendScripts();
-        $this->container['endpoint']         = new EndPoint();
+        $this->container['endpoint']         = new Endpoint();
         $this->container['promotions']       = new Promotions();
         $this->initialize_moowoodle_log();
     }

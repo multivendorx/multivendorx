@@ -19,7 +19,6 @@ class Admin {
      * Admin constructor.
      */
 	public function __construct() {
-		// Register admin menu.
         add_action( 'admin_menu', array( $this, 'add_menus' ) );
 		// enqueue scripts in admin panel.
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ), 20 );
@@ -51,7 +50,7 @@ class Admin {
 		'<span class="mw-pro-tag" style="font-size: 0.5rem; background: #e35047; padding: 0.125rem 0.5rem; color: #F9F8FB; font-weight: 700; line-height: 1.1; position: absolute; border-radius: 2rem 0; right: -0.75rem; top: 50%; transform: translateY(-50%)">Pro</span>' : '';
 
 		// Array contain moowoodle submenu.
-		$submenus = array(
+		$admin_submenus = array(
 			'dashboard'       => array(
 				'name'   => __( 'Dashboard', 'moowoodle' ),
 				'subtab' => '',
@@ -83,13 +82,11 @@ class Admin {
 		);
 
 		// Register all submenu.
-		foreach ( $submenus as $slug => $submenu ) {
+		foreach ( $admin_submenus as $slug => $submenu ) {
 			// prepare subtab if subtab is exist.
-			$subtab = '';
-
-			if ( $submenu['subtab'] ) {
-				$subtab = '&subtab=' . $submenu['subtab'];
-			}
+			$subtab = ! empty( $submenu['subtab'] )
+				? '&subtab=' . $submenu['subtab']
+				: '';
 
 			add_submenu_page(
 				'moowoodle',
@@ -129,8 +126,9 @@ class Admin {
      * @return void
      */
 	public function enqueue_admin_script() {
+		$screen = get_current_screen();
 
-		if ( get_current_screen()->id === 'toplevel_page_moowoodle' ) {
+		if ( $screen && 'toplevel_page_moowoodle' === $screen->id ) {
 			wp_enqueue_script( 'wp-element' );
 
 			// FrontendScripts::admin_load_scripts();
@@ -164,17 +162,17 @@ class Admin {
 	/**
      * Allow Moowoodle domain for safe redirection using wp_safe_redirect().
      *
-     * @param string[] $hosts List of allowed hosts.
+     * @param string[] $allowed_hosts List of allowed hosts.
      * @return string[] Modified list with Moowoodle domain included.
      */
-    public function allow_moowoodle_redirect_host( $hosts ) {
-        $parsed_url = wp_parse_url( MOOWOODLE_PRO_SHOP_URL );
+    public function allow_moowoodle_redirect_host( $allowed_hosts ) {
+        $shop_url_parts = wp_parse_url( MOOWOODLE_PRO_SHOP_URL );
 
-        if ( isset( $parsed_url['host'] ) ) {
-            $hosts[] = $parsed_url['host'];
+        if ( isset( $shop_url_parts['host'] ) ) {
+            $allowed_hosts[] = $shop_url_parts['host'];
         }
 
-        return $hosts;
+        return $allowed_hosts;
     }
 
 	/**
@@ -189,9 +187,9 @@ class Admin {
     public function textdomain_relative_path( $path, $url ) {
 
         if ( strpos( $url, 'moowoodle' ) !== false ) {
-            foreach ( MooWoodle()->block_paths as $key => $new_path ) {
-                if ( strpos( $url, $key ) !== false ) {
-                    $path = $new_path;
+			foreach ( MooWoodle()->block_paths as $block_path_key => $relative_path ) {
+                if ( strpos( $url, $block_path_key ) !== false ) {
+                    $path = $relative_path;
                 }
             }
 

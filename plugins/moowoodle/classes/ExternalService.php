@@ -23,7 +23,7 @@ class ExternalService {
      *
 	 * @return string[] core functions
 	 */
-	public function get_core_functions() {
+	public function get_registered_core_functions() {
 		return apply_filters(
             'additional_core_functions',
             array(
@@ -44,28 +44,27 @@ class ExternalService {
 	 * Call to moodle core functions.
 	 *
 	 * @param string $key           Key name for the Moodle function to call. Default: ''.
-	 * @param array  $request_param Parameters to send with the request. Default: empty array.
+	 * @param array  $request_params Parameters to send with the request. Default: empty array.
 	 * @return mixed
 	 */
-	public function do_request( $key = '', $request_param = array() ) {
+	public function do_request( $key = '', $request_params = array() ) {
 		// Get register core functions.
-		$moodle_core_functions = $this->get_core_functions();
+		$moodle_core_functions = $this->get_registered_core_functions();
 
 		// Get the function name.
-		$function_name = $moodle_core_functions[ $key ] ?? '';
+		$moodle_function = $moodle_core_functions[ $key ] ?? '';
 
 		$moodle_base_url     = MooWoodle()->setting->get_setting( 'moodle_url' );
 		$moodle_access_token = MooWoodle()->setting->get_setting( 'moodle_access_token' );
 
-		$request_url = rtrim( $moodle_base_url, '/' ) . '/webservice/rest/server.php?wstoken=' . $moodle_access_token . '&wsfunction=' . $function_name . '&moodlewsrestformat=json';
+		$request_url = rtrim( $moodle_base_url, '/' ) . '/webservice/rest/server.php?wstoken=' . $moodle_access_token . '&wsfunction=' . $moodle_function . '&moodlewsrestformat=json';
 
 		// Get response from moodle server.
 		$response = null;
-		if ( ! empty( $moodle_base_url ) && ! empty( $moodle_access_token ) && $function_name ) {
-			$request_query = http_build_query( $request_param );
+		if ( ! empty( $moodle_base_url ) && ! empty( $moodle_access_token ) && $moodle_function ) {
+			$request_query = http_build_query( $request_params );
 
-			$timeout = MooWoodle()->setting->get_setting( 'moodle_timeout', '' );
-			$timeout = $timeout ? $timeout : '10';
+			$timeout = MooWoodle()->setting->get_setting( 'moodle_timeout', '10' );
 
 			$response = wp_remote_post(
                 $request_url,
@@ -81,11 +80,7 @@ class ExternalService {
 			}
 		}
 
-		// check the response contains error.
-		$response = $this->analyse_moodle_response( $response );
-
-		// return response on success.
-		return $response;
+		return $this->analyze_moodle_response( $response );
 	}
 
 	/**
@@ -94,7 +89,7 @@ class ExternalService {
 	 * @param object | null $response response.
 	 * @return array $response
 	 */
-	private function analyse_moodle_response( $response ) {
+	private function analyze_moodle_response( $response ) {
 		if ( null === $response ) {
 			return array( 'error' => 'Response is not available' );
 		}
@@ -123,7 +118,7 @@ class ExternalService {
 		}
 
 		// if moodle response contains error.
-		if ( $response && array_key_exists( 'exception', $response ) ) {
+		if ( $response && ! empty( $response['exception'] ) ) {
 			if ( str_contains( $response['message'], 'Access control exception' ) ) {
 				return array( 'error' => $response['message'] . ' <a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/settings.php?section=externalservices">Link</a>' );
 			}

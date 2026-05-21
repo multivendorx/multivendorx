@@ -6,7 +6,8 @@
   "icon": "text-page",
   "description": "Show a brief description of the store to help customers understand what the seller offers.",
   "editorScript": "file:./index.js",
-    "script": "file:./index.js",
+  "viewScript": "file:./view.js",
+  "textdomain": "multivendorx",
   "supports": {
     "align": true,
     "alignWide": false,

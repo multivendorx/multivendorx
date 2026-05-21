@@ -272,21 +272,12 @@ class Rewrites {
         wp_enqueue_style( 'wc-blocks-style-all-reviews' );
 
         FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'multivendorx-store-name-script' );
-        FrontendScripts::enqueue_script( 'multivendorx-store-description-script' );
-        FrontendScripts::enqueue_script( 'multivendorx-store-email-script' );
-        FrontendScripts::enqueue_script( 'multivendorx-store-phone-script' );
-        FrontendScripts::enqueue_script( 'multivendorx-store-social-icons-script' );
-        FrontendScripts::enqueue_script( 'multivendorx-store-logo-script' );
-        FrontendScripts::enqueue_script( 'multivendorx-store-banner-script' );
-        FrontendScripts::enqueue_script( 'multivendorx-store-policy-script' );
-        FrontendScripts::enqueue_script( 'multivendorx-store-review-script' );
-        FrontendScripts::enqueue_script( 'multivendorx-store-address-script' );
-        FrontendScripts::enqueue_script( 'multivendorx-store-quick-info-script' );
-        FrontendScripts::enqueue_script( 'multivendorx-product-category-script' );
-        FrontendScripts::enqueue_script( 'multivendorx-store-tabs-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-provider-script' );
         FrontendScripts::localize_scripts( 'multivendorx-store-provider-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-follow-store-view-script' );
+        FrontendScripts::localize_scripts( 'multivendorx-marketplace-stores-view-script' );
+        FrontendScripts::localize_scripts( 'multivendorx-marketplace-coupons-view-script' );
+        FrontendScripts::localize_scripts( 'multivendorx-marketplace-products-view-script' );
         FrontendScripts::enqueue_style( 'multivendorx-store-tabs-style' );
     }
 	/**

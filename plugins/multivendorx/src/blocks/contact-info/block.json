@@ -6,7 +6,8 @@
   "icon": "email",
   "description": "Display a contact form with various settings",
   "editorScript": "file:./index.js",
-  "script": "file:./index.js",
+  "viewScript": "file:./view.js",
+  "textdomain": "multivendorx",
   "attributes": {
     "hideFromGuests": {
       "type": "boolean",

@@ -6,6 +6,8 @@
   "icon": "cover-image",
   "description": "Display a visual banner at the top of the store page to highlight the store’s brand and promotions.",
   "editorScript": "file:./index.js",
+  "viewScript": "file:./view.js",
+  "textdomain": "multivendorx",
   "attributes": {
     "height": {
       "type": "string",

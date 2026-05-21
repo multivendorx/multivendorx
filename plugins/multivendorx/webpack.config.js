@@ -48,33 +48,28 @@ const dynamicPatterns = blockDirs.flatMap((blockName) => {
 	return patterns;
 });
 
+const blockEntries = {};
+
+blockDirs.forEach((blockName) => {
+	const blockPath = path.join(blockBasePath, blockName);
+
+	if (fs.existsSync(path.join(blockPath, 'index.js'))) {
+		blockEntries[`block/${blockName}/index`] =
+			`./src/blocks/${blockName}/index.js`;
+	}
+
+	if (fs.existsSync(path.join(blockPath, 'view.js'))) {
+		blockEntries[`block/${blockName}/view`] =
+			`./src/blocks/${blockName}/view.js`;
+	}
+});
+
 module.exports = {
 	...defaultConfig,
 
 	entry: {
 		index: './src/index.tsx',
-		'block/registration-form/index':
-			'./src/blocks/registration-form/index.js',
-		'block/marketplace-stores/index': './src/blocks/marketplace-stores/index.js',
-		'block/marketplace-products/index': './src/blocks/marketplace-products/index.js',
-		'block/marketplace-coupons/index': './src/blocks/marketplace-coupons/index.js',
-		'block/setup-wizard/index': './src/blocks/setup-wizard/index.js',
-		'block/store-tabs/index': './src/blocks/store-tabs/index.js',
-		'block/contact-info/index': './src/blocks/contact-info/index.js',
-		'block/store-name/index': './src/blocks/store-name/index.js',
-		'block/store-email/index': './src/blocks/store-email/index.js',
-		'block/store-address/index': './src/blocks/store-address/index.js',
-		'block/follow-store/index': './src/blocks/follow-store/index.js',
-		'block/store-phone/index': './src/blocks/store-phone/index.js',
-		'block/store-logo/index': './src/blocks/store-logo/index.js',
-		'block/store-social-icons/index': './src/blocks/store-social-icons/index.js',
-		'block/store-banner/index': './src/blocks/store-banner/index.js',
-		'block/store-description/index': './src/blocks/store-description/index.js',
-		'block/store-review/index': './src/blocks/store-review/index.js',
-		'block/store-policy/index': './src/blocks/store-policy/index.js',
-		'block/product-category/index': './src/blocks/product-category/index.js',
-		'block/store-quick-info/index': './src/blocks/store-quick-info/index.js',
-		'block/store-provider/index': './src/blocks/store-provider/index.js',
+		...blockEntries
 	},
 
 	output: {
