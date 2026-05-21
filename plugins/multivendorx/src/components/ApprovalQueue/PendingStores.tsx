@@ -114,7 +114,7 @@ const PendingStores: React.FC<object> = () => {
 					label: __('View', 'multivendorx'),
 					icon: 'eye',
 					onClick: (row) => {
-						window.location.href = getUrl(row.id, 'store', 'edit');
+						window.location.assign(getUrl(row.id, 'store', 'edit'));
 					}
 				},
 				{

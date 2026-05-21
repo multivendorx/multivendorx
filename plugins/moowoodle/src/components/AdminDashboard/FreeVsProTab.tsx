@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Column, Container } from 'zyra';
 import { __ } from '@wordpress/i18n';
-import freePro from '../../assets/images/dashboard-1.png';
+import MoowoodleConcept from '../../assets/images/moowoodle-concept.png';
 interface Feature {
 	name: string;
 	free: boolean | string;
@@ -261,9 +261,7 @@ const FreeVsProTab: React.FC<object> = () => {
 							<table key={idx}>
 								<thead>
 									<tr>
-										<td>
-											{__(section.title, 'moowoodle')}
-										</td>
+										<td>{section.title}</td>
 										<td>{__('Free', 'moowoodle')}</td>
 										<td>{__('Pro', 'moowoodle')}</td>
 									</tr>
@@ -271,9 +269,7 @@ const FreeVsProTab: React.FC<object> = () => {
 								<tbody>
 									{section.features.map((feature, i) => (
 										<tr key={i}>
-											<td>
-												{__(feature.name, 'moowoodle')}
-											</td>
+											<td>{feature.name}</td>
 											<td>{renderCell(feature.free)}</td>
 											<td>{renderCell(feature.pro)}</td>
 										</tr>
@@ -289,7 +285,7 @@ const FreeVsProTab: React.FC<object> = () => {
 				<Card>
 					<div className="right-pro-banner">
 						<div className="image-wrapper">
-							<img src={freePro} alt="" />
+							<img src={MoowoodleConcept} alt="" />
 						</div>
 
 						<div className="title">
