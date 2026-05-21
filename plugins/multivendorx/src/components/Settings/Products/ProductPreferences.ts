@@ -93,6 +93,15 @@ export default {
 					),
 					value: 'product_tag',
 				},
+				{
+					key: 'attribute',
+					label: __('Attribute', 'multivendorx'),
+					desc: __(
+						'Give stores the option to add product/listing features such as size, color, or material.',
+						'multivendorx'
+					),
+					value: 'attribute',
+				},
 			],
 			selectDeselect: true,
 		},

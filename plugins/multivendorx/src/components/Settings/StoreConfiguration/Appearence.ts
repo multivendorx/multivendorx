@@ -85,7 +85,7 @@ export default {
 					key: 'no-sidebar',
 					label: __('No Sidebar', 'multivendorx'),
 					value: 'no',
-					icon: 'right-sidebar',
+					icon: 'no-sidebar',
 				},
 				{
 					key: 'left',
@@ -97,7 +97,7 @@ export default {
 					key: 'right',
 					label: __('Right Sidebar', 'multivendorx'),
 					value: 'right',
-					icon: 'no-sidebar',
+					icon: 'right-sidebar',
 				},
 			],
 		},
