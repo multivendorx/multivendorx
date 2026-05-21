@@ -389,7 +389,6 @@ class Frontend {
 	 * @return void
 	 */
 	public function register_checkout_update_callback() {
-        file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export('hook', true) . "\n", FILE_APPEND);
 		woocommerce_store_api_register_update_callback(
 			array(
 				'namespace' => 'multivendorx',
