@@ -4,7 +4,7 @@ import { __ } from '@wordpress/i18n';
 import ShowProPopup from '../Popup/Popup';
 import '../common.scss';
 import { applyFilters } from '@wordpress/hooks';
-import { dummyEnrollments } from './Enrollment';
+import { dummyEnrollments } from './EnrollmentUtil';
 
 interface EnrollmentRow {
 	id?: number;
@@ -99,7 +99,6 @@ const Enrollment: React.FC = () => {
 		headers,
 		rows: dummyEnrollments,
 		totalRows: dummyEnrollments.length,
-		onQueryUpdate: () => { setopenPopup(true); },
 		search: {
 			placeholder: __('Search...', 'moowoodle'),
 			options: [
@@ -119,7 +118,11 @@ const Enrollment: React.FC = () => {
 		'moowoodle_enrollment_table_props',
 		defaultTableProps,
 	);
-
+	const handleTableWrapperClick = () => {
+		if (!appLocalizer.khali_dabba) {
+			setopenPopup(true);
+		}
+	};
 	return (
 		<>
 			{openPopup && (
@@ -141,7 +144,7 @@ const Enrollment: React.FC = () => {
 					'moowoodle'
 				)}
 			/>
-			<div onClick={()=>{setopenPopup(true)}}>
+			<div onClick={handleTableWrapperClick}>
 				<TableCard {...tableProps} />
 			</div>
 		</>
