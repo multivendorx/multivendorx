@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Column, ItemListUI, Container, NoticeManager } from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
-import Mascot from '../../assets/images/brand-small.png';
+import MoowoodleIcon from '../../assets/images/moowoodle-icon.png';
 import catalogx from '../../assets/images/catalogx.png';
 import notifima from '../../assets/images/notifima.png';
 
@@ -153,7 +153,7 @@ const DashboardTab: React.FC<object> = () => {
 				'Connect your WooCommerce store with Moodle and automatically manage courses, enrollments, and learner access from one place.',
 				'moowoodle'
 			),
-			icon: 'commission',
+			icon: 'moodle',
 		},
 		{
 			title: __('Sell courses with WooCommerce', 'moowoodle'),
@@ -161,7 +161,7 @@ const DashboardTab: React.FC<object> = () => {
 				'Turn Moodle courses into purchasable WooCommerce products and monetize your learning platform with flexible checkout and payment options.',
 				'moowoodle'
 			),
-			icon: 'verification3',
+			icon: 'woocommerce',
 		},
 		{
 			title: __('Single Sign-On access', 'moowoodle'),
@@ -169,7 +169,7 @@ const DashboardTab: React.FC<object> = () => {
 				'Allow learners to access their Moodle courses directly from WordPress without logging in multiple times.',
 				'moowoodle'
 			),
-			icon: 'marketplace',
+			icon: 'single-sign-on',
 		},
 		{
 			title: __('Classroom & bulk enrollment', 'moowoodle'),
@@ -177,7 +177,7 @@ const DashboardTab: React.FC<object> = () => {
 				'Enable teachers, companies, and training centers to purchase multiple seats and assign courses to learners with ease.',
 				'moowoodle'
 			),
-			icon: 'vacation',
+			icon: 'classroom-enrollment',
 		},
 		{
 			title: __('Course gifting made simple', 'moowoodle'),
@@ -185,7 +185,7 @@ const DashboardTab: React.FC<object> = () => {
 				'Let customers purchase and gift courses to friends, students, employees, or team members directly during checkout.',
 				'moowoodle'
 			),
-			icon: 'global-community',
+			icon: 'subscription-courses',
 		},
 		{
 			title: __('Real-time user synchronization', 'moowoodle'),
@@ -193,7 +193,7 @@ const DashboardTab: React.FC<object> = () => {
 				'Keep user profiles synchronized between WordPress and Moodle automatically for a smooth and connected learning experience.',
 				'moowoodle'
 			),
-			icon: 'notification',
+			icon: 'bulk-course-sync',
 		},
 		{
 			title: __('Automatic course synchronization', 'moowoodle'),
@@ -201,7 +201,7 @@ const DashboardTab: React.FC<object> = () => {
 				'Fetch Moodle courses instantly and keep WooCommerce products updated with the latest course information.',
 				'moowoodle'
 			),
-			icon: 'notification',
+			icon: 'smart-course-sync',
 		},
 		{
 			title: __('Cohort synchronization & group learning', 'moowoodle'),
@@ -209,7 +209,7 @@ const DashboardTab: React.FC<object> = () => {
 				'Sync Moodle cohorts with WooCommerce products to streamline group enrollments and organization-based learning.',
 				'moowoodle'
 			),
-			icon: 'notification',
+			icon: 'cohort',
 		},
 	];
 
@@ -237,7 +237,7 @@ const DashboardTab: React.FC<object> = () => {
 						</div>
 
 						<div className="image">
-							<img src={Mascot} alt="" />
+							<img src={MoowoodleIcon} alt="" />
 						</div>
 					</div>
 				</Card>
