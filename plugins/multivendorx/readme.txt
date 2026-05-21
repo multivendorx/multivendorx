@@ -165,7 +165,7 @@ And [many more](https://multivendorx.com/docs/knowledgebase/multivendorx-widgets
 To know more on what we learnt from our customer [***read this blog*** ](https://multivendorx.com/blog/what-we-learnt-from-our-customers/)
 
 ### [Popular Blogs ](https://multivendorx.com/blog/)
-Confused about **how to get started**? Read our Blogs on**e-commerce best practices**, **Multivendor Shops, how to increase your website traffic** and many more. These blogs are powerful, inspirational and detailed enough to educate on anything marketplace. 
+Confused about **how to get started**? Read our Blogs on **e-commerce best practices**, **Multivendor Shops, how to increase your website traffic** and many more. These blogs are powerful, inspirational and detailed enough to educate on anything marketplace. 
 ### Stay Connected
 Stay connected with MultiVendorX and reap benefits like - 
 
