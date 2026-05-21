@@ -222,7 +222,7 @@ This project might have bugs and may be lacking certain features. If you'd like 
 3. Click "Sync Now" to import all courses, categories, groups, images, and other content from your Moodle site.
 4. Enter your Moodle Site URL and Moodle Access Token, then run the test connection.
 5. Click "Sync Now" to synchronize users between Moodle and WordPress according to their roles.
-6. Click "Sync Now" to import all cohrt, categories, images, and other content from your Moodle site.
+6. Click "Sync Now" to import all cohort, categories, images, and other content from your Moodle site.
 7. View the list of courses after synchronization.
 8. See the list of all enrolled users and their corresponding courses.
 9. Configure the shop page and the display settings for the enrollment button.
