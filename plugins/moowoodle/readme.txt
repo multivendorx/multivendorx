@@ -217,7 +217,7 @@ This project might have bugs and may be lacking certain features. If you'd like 
 
 
 == Screenshots ==
-1. Configure Bulk Access & Gifting to enroll multiple studnets into courses / cohorts / groups 
+1. Configure Bulk Access & Gifting to enroll multiple students into courses / cohorts / groups 
 2. Let user gift a course to another student
 3. Click "Sync Now" to import all courses, categories, groups, images, and other content from your Moodle site.
 4. Enter your Moodle Site URL and Moodle Access Token, then run the test connection.
