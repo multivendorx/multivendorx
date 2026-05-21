@@ -64,11 +64,11 @@ class TestConnection extends \WP_REST_Controller {
             return $nonce_check;
         }
 
-		$action = $request->get_param( 'action' );
+		$action    = $request->get_param( 'action' );
         $test_user = $request->get_param( 'get_users' );
-        $course = $request->get_param( 'get_courses' );
+        $course    = $request->get_param( 'get_courses' );
 
-        $test_user      = isset( $test_user['data']['users'][1] ) ? $test_user['data']['users'][1] : null;
+        $test_user = isset( $test_user['data']['users'][1] ) ? $test_user['data']['users'][1] : null;
 		$course    = isset( $course['courses'][1] ) ? $course['courses'][1] : null;
         $user_id   = $test_user['id'] ?? 0;
         $course_id = $course['id'] ?? 0;

@@ -137,7 +137,10 @@ const sections: Section[] = [
 				pro: true,
 			},
 			{
-				name: __('Synced login/logout between Moodle & WordPress', 'moowoodle'),
+				name: __(
+					'Synced login/logout between Moodle & WordPress',
+					'moowoodle'
+				),
 				free: false,
 				pro: true,
 			},
@@ -262,13 +265,19 @@ const FreeVsProTab: React.FC = () => {
 								<thead>
 									<tr>
 										<th scope="col">{section.title}</th>
-										<th scope="col">{__('Free', 'moowoodle')}</th>
-										<th scope="col">{__('Pro', 'moowoodle')}</th>
+										<th scope="col">
+											{__('Free', 'moowoodle')}
+										</th>
+										<th scope="col">
+											{__('Pro', 'moowoodle')}
+										</th>
 									</tr>
 								</thead>
 								<tbody>
 									{section.features.map((feature) => (
-										<tr key={`${section.title}-${feature.name}`}>
+										<tr
+											key={`${section.title}-${feature.name}`}
+										>
 											<td>{feature.name}</td>
 											<td>{renderCell(feature.free)}</td>
 											<td>{renderCell(feature.pro)}</td>
@@ -287,7 +296,10 @@ const FreeVsProTab: React.FC = () => {
 						<div className="image-wrapper">
 							<img
 								src={MoowoodleConcept}
-								alt={__('Moowoodle marketplace concept illustration', 'moowoodle')}
+								alt={__(
+									'Moowoodle marketplace concept illustration',
+									'moowoodle'
+								)}
 							/>
 						</div>
 
@@ -308,24 +320,29 @@ const FreeVsProTab: React.FC = () => {
 						<ul>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Sell course with WooCommerce', 'moowoodle')}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
 								{__(
-									'Automate course enrollments',
+									'Sell course with WooCommerce',
 									'moowoodle'
 								)}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Classroom, cohort based learning', 'moowoodle')}
+								{__('Automate course enrollments', 'moowoodle')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Seamless Single Sign-On experiences', 'moowoodle')}
+								{__(
+									'Classroom, cohort based learning',
+									'moowoodle'
+								)}
 							</li>
-							
+							<li>
+								<i className="adminfont-check"></i>
+								{__(
+									'Seamless Single Sign-On experiences',
+									'moowoodle'
+								)}
+							</li>
 						</ul>
 
 						<div className="button-wrapper">
