@@ -198,7 +198,7 @@ Ans. Yes, vendors can upload products, process orders, and view reports from the
 = How does vendor registration work? =
 Ans. Vendors register through a [Vendor Registration page](https://multivendorx.com/docs/knowledgebase/vendors-registration/). Once approved, they access their dashboard to manage products and orders.
 = Can I set different commission rates for each vendor? =
-Ans. Yes, you can set fixed, percentage, or tiered commissions per vendor or category.To know more, click [here]((https://multivendorx.com/docs/knowledgebase/types-of-commission/?utm_source=wordpress.org&utm_medium=plugindescription&utm_campaign=MultiVendorxWPOrg))
+Ans. Yes, you can set fixed, percentage, or tiered commissions per vendor or category.To know more, click [here](https://multivendorx.com/docs/knowledgebase/types-of-commission/?utm_source=wordpress.org&utm_medium=plugindescription&utm_campaign=MultiVendorxWPOrg)
 
 = Can I approve vendors and products before they go live? =
 Ans. Yes, admins can manually approve or reject vendor accounts and products.
