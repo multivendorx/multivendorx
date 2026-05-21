@@ -13,7 +13,6 @@ import './tab.scss';
 
 const ProductTab = () => {
 	const [linkType, setLinkType] = useState(moowoodleProduct.linkType || '');
-
 	const [linkedItemId, setLinkedItemId] = useState(
 		String(moowoodleProduct.linkedItemId || '')
 	);
@@ -33,7 +32,7 @@ const ProductTab = () => {
 		const endpoint = 'course' === linkType ? 'courses' : 'cohorts';
 
 		apiFetch({
-			path: `/moowoodle/v1/${endpoint}?unlinked_resources_for=${moowoodleProduct.postId}&row=-1`,
+			path: `/moowoodle/v1/${endpoint}?unlinked_resources_for=${moowoodleProduct.postId}`,
 			method: 'GET',
 		})
 			.then((response) => {
