@@ -308,27 +308,24 @@ const FreeVsProTab: React.FC = () => {
 						<ul>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Sell Moodle courses directly with WooCommerce', 'moowoodle')}
+								{__('Sell course with WooCommerce', 'moowoodle')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
 								{__(
-									'Automate enrollments, access, and synchronization',
+									'Automate course enrollments',
 									'moowoodle'
 								)}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Create classroom, cohort, and team-based learning', 'moowoodle')}
+								{__('Classroom, cohort based learning', 'moowoodle')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Deliver seamless Single Sign-On experiences', 'moowoodle')}
+								{__('Seamless Single Sign-On experiences', 'moowoodle')}
 							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Scale your eLearning platform with advanced automation', 'moowoodle')}
-							</li>
+							
 						</ul>
 
 						<div className="button-wrapper">
