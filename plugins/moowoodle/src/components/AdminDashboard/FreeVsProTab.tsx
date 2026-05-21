@@ -285,7 +285,10 @@ const FreeVsProTab: React.FC<object> = () => {
 				<Card>
 					<div className="right-pro-banner">
 						<div className="image-wrapper">
-							<img src={MoowoodleConcept} alt="" />
+							<img
+								src={MoowoodleConcept}
+								alt={__('Moowoodle marketplace concept illustration', 'moowoodle')}
+							/>
 						</div>
 
 						<div className="title">
