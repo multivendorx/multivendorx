@@ -33,7 +33,7 @@ interface EnrollmentRow {
 	cohort_id?: number;
 	customer_id?: number;
 	customer_email?: string;
-	learners_hub_id?: string;
+	learners_hub_id?: number;
 }
 
 const Enrollment: React.FC = () => {
@@ -129,7 +129,7 @@ const Enrollment: React.FC = () => {
 	);
 	const handleTableWrapperClick = () => {
 		if (!appLocalizer.khali_dabba) {
-			setopenPopup(true);
+			setOpenPopup(true);
 		}
 	};
 	return (
@@ -138,7 +138,7 @@ const Enrollment: React.FC = () => {
 				<PopupUI
 					position="lightbox"
 					open={openPopup}
-					onClose={() => setopenPopup(false)}
+					onClose={() => setOpenPopup(false)}
 					width={31.25}
 					height="auto"
 				>
