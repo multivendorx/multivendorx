@@ -128,7 +128,7 @@ class Courses extends \WP_REST_Controller {
                     $product = wc_get_product( (int) $course['product_id'] );
                     if ( $product ) {
                         $product_name  = $product->get_name();
-                        $product_url   = esc_url( admin_url( 'post.php?post=' . $product->get_id() . '&action=edit' ) );
+                        $product_url   = esc_url_raw( admin_url( 'post.php?post=' . $product->get_id() . '&action=edit' ) );
                         $product_image = wp_get_attachment_url( $product->get_image_id() );
                     }
                 }
