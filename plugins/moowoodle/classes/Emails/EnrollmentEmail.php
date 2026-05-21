@@ -101,8 +101,10 @@ class EnrollmentEmail extends \WC_Email {
 	}
 
 	/**
-     * Get content for template.
-     */
+	 * Get HTML email content.
+	 *
+	 * @return string
+	 */
 	public function get_content_html() {
 		ob_start();
 		MooWoodle()->util->get_template(
@@ -114,8 +116,10 @@ class EnrollmentEmail extends \WC_Email {
 	}
 
 	/**
-     * Get content for plain template.
-     */
+	 * Get plain email content.
+	 *
+	 * @return string
+	 */
 	public function get_content_plain() {
 		ob_start();
 		MooWoodle()->util->get_template(
@@ -125,6 +129,12 @@ class EnrollmentEmail extends \WC_Email {
 		return ob_get_clean();
 	}
 
+	/**
+	 * Get template arguments.
+	 *
+	 * @param bool $plain_text Whether plain template is used.
+	 * @return array
+	 */
 	public function get_template_args( $plain_text = false ) {
 		return array(
 			'enrollments'   => $this->enrollment_details,

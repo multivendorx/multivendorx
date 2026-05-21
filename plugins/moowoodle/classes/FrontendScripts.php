@@ -18,16 +18,26 @@ defined( 'ABSPATH' ) || exit;
  */
 class FrontendScripts {
 
+    /**
+     * Cached admin settings.
+     *
+     * @var array|null
+     */
     private static $settings_cache = null;
 
+    /**
+     * Cached WooCommerce account menu.
+     *
+     * @var array|null
+     */
     private static $account_menu_cache = null;
 
     /**
      * FrontendScripts constructor.
      */
     public function __construct() {
-        add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
-        add_action( 'admin_enqueue_scripts', array( $this, 'admin_load_scripts' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
     }
 
     /**
@@ -35,7 +45,7 @@ class FrontendScripts {
 	 *
 	 * @return string Relative path to the build directory.
 	 */
-    public static function get_asset_path( $type = 'url', $plugin_path = '', $plugin_url = '' ) {
+    public static function get_asset_path( $path_type = 'url', $plugin_path = '', $plugin_url = '' ) {
         $build_path = MooWoodle()->is_dev ? 'release/assets/' : 'assets/';
         if ( $plugin_path === '' ) {
             $plugin_path = MooWoodle()->plugin_path;
@@ -44,7 +54,7 @@ class FrontendScripts {
             $plugin_url = MooWoodle()->plugin_url;
         }
 
-        return 'file' === $type
+        return 'file' === $path_type
             ? $plugin_path . $build_path
             : $plugin_url . $build_path;
     }
@@ -83,9 +93,9 @@ class FrontendScripts {
     /**
 	 * Register frontend scripts using filters and enqueue required external scripts.
 	 *
-	 * Loads block assets and additional scripts defined through the `moowoodle_register_scripts` filter.
+	 * Loads block assets and additional scripts defined through the `moowoodle_frontend_scripts` filter.
 	 */
-    public static function register_scripts() {
+    public static function register_frontend_scripts() {
         $version      = MooWoodle()->version;
         $vendor_asset = include self::get_asset_path( 'file' ) . 'js/vendors.asset.php';
 
@@ -94,8 +104,8 @@ class FrontendScripts {
             'moodle-enrollment-mapping',
         );
 
-        $register_scripts = apply_filters(
-            'moowoodle_register_scripts',
+        $registered_scripts = apply_filters(
+            'moowoodle_frontend_scripts',
             array(
                 'moowoodle-vendor' => array(
                 	'src'  => self::get_asset_path() . 'js/vendors.js',
@@ -113,47 +123,47 @@ class FrontendScripts {
 					'version'      => $version,
 				);
 
-            $register_scripts[ "moowoodle-{$handle}" ] = array(
+            $registered_scripts[ "moowoodle-{$handle}" ] = array(
                 'src'  => self::get_asset_path() . "js/block/{$handle}/index.js",
                 'deps' => $asset['dependencies'],
             );
         }
 
-        foreach ( $register_scripts as $name => $props ) {
-            self::register_script( $name, $props['src'], $props['deps'], $props['version'] ?? $version );
+        foreach ( $registered_scripts as $name => $script_config ) {
+            self::register_script( $name, $script_config['src'], $script_config['deps'], $script_config['version'] ?? $version );
         }
     }
 
     /**
 	 * Register frontend styles using filters.
 	 *
-	 * Allows style registration through `moowoodle_register_styles` filter.
+	 * Allows style registration through `moowoodle_frontend_styles` filter.
 	 */
-    public static function register_styles() {
-        $version         = MooWoodle()->version;
-        $register_styles = apply_filters(
-            'moowoodle_register_styles',
+    public static function register_frontend_styles() {
+        $version           = MooWoodle()->version;
+        $registered_styles = apply_filters(
+            'moowoodle_frontend_styles',
             array()
         );
-        foreach ( $register_styles as $name => $props ) {
-            self::register_style( $name, $props['src'], array(), $props['version'] ?? $version );
+        foreach ( $registered_styles as $name => $style_config ) {
+            self::register_style( $name, $style_config['src'], array(), $style_config['version'] ?? $version );
         }
     }
 
     /**
      * Register/queue frontend scripts.
      */
-    public static function load_scripts() {
-        self::register_scripts();
-        self::register_styles();
+    public static function enqueue_frontend_assets() {
+        self::register_frontend_scripts();
+        self::register_frontend_styles();
     }
 
     /**
 	 * Register/queue admin scripts.
 	 */
-	public static function admin_load_scripts() {
-        self::admin_register_scripts();
-		self::admin_register_styles();
+	public static function enqueue_admin_assets() {
+        self::register_admin_scripts();
+		self::register_admin_styles();
     }
 
     /**
@@ -161,14 +171,27 @@ class FrontendScripts {
 	 *
 	 * Loads admin-specific JavaScript assets and chunked dependencies.
 	 */
-    public static function admin_register_scripts() {
+    public static function register_admin_scripts() {
 		$version = MooWoodle()->version;
         // Enqueue all chunk files (External dependencies).
-        $index_asset  = include self::get_asset_path( 'file' ) . 'js/index.asset.php';
-        $vendor_asset = include self::get_asset_path( 'file' ) . 'js/vendors.asset.php';
+        $index_asset_path = self::get_asset_path( 'file' ) . 'js/index.asset.php';
+        $index_asset      = file_exists( $index_asset_path )
+            ? include $index_asset_path
+            : array(
+                'dependencies' => array(),
+                'version'      => $version,
+            );
 
-        $register_scripts = apply_filters(
-            'admin_moowoodle_register_scripts',
+        $vendor_asset_path = self::get_asset_path( 'file' ) . 'js/vendors.asset.php';
+        $vendor_asset      = file_exists( $vendor_asset_path )
+            ? include $vendor_asset_path
+            : array(
+                'dependencies' => array(),
+                'version'      => $version,
+            );
+
+        $registered_scripts = apply_filters(
+            'moowoodle_admin_scripts',
             array(
                 'moowoodle-vendor' => array(
                 	'src'  => self::get_asset_path() . 'js/vendors.js',
@@ -180,20 +203,20 @@ class FrontendScripts {
 				),
             )
         );
-		foreach ( $register_scripts as $name => $props ) {
-			self::register_script( $name, $props['src'], $props['deps'], $props['version'] ?? $version );
+		foreach ( $registered_scripts as $name => $script_config ) {
+			self::register_script( $name, $script_config['src'], $script_config['deps'], $script_config['version'] ?? $version );
 		}
 	}
 
     /**
 	 * Register admin styles using filters.
 	 *
-	 * Allows style registration through `admin_moowoodle_register_styles` filter.
+	 * Allows style registration through `moowoodle_admin_styles` filter.
 	 */
-    public static function admin_register_styles() {
-		$version         = MooWoodle()->version;
-		$register_styles = apply_filters(
-            'admin_moowoodle_register_styles',
+    public static function register_admin_styles() {
+		$version           = MooWoodle()->version;
+		$registered_styles = apply_filters(
+            'moowoodle_admin_styles',
             array(
 				'moowoodle-index'                     => array(
 					'src' => self::get_asset_path() . 'styles/index.css',
@@ -204,8 +227,8 @@ class FrontendScripts {
 			),
         );
 
-        foreach ( $register_styles as $name => $props ) {
-			self::register_style( $name, $props['src'], array(), $props['version'] ?? $version );
+        foreach ( $registered_styles as $name => $style_config ) {
+			self::register_style( $name, $style_config['src'], array(), $style_config['version'] ?? $version );
 		}
 	}
 
@@ -235,10 +258,10 @@ class FrontendScripts {
             return self::$account_menu_cache;
         }
 
-        $menu = wc_get_account_menu_items();
-        unset( $menu['my-courses'] );
+        $account_menu_items = wc_get_account_menu_items();
+        unset( $account_menu_items['my-courses'] );
 
-        self::$account_menu_cache = $menu;
+        self::$account_menu_cache = $account_menu_items;
         return self::$account_menu_cache;
     }
 
@@ -313,7 +336,7 @@ class FrontendScripts {
                         'postId'           => $post ? $post->ID : '',
                         'linkType'         => $default_type ?? '',
                         'linkedItemId'     => $selected_id ?? '',
-                        'productMetaNonce' => wp_create_nonce(),
+                        'productMetaNonce' => wp_create_nonce( 'product_meta_nonce' ),
                         'syncUrl'          => esc_url( admin_url( 'admin.php?page=moowoodle#&tab=synchronization&subtab=synchronize-course' ) ),
 					),
 				),
@@ -322,23 +345,15 @@ class FrontendScripts {
         $localize_scripts = apply_filters( 'moowoodle_localize_scripts', $localize_scripts );
         $config           = $localize_scripts[ $handle ] ?? array();
 
-        $data = array();
+        $localized_data = array();
+        $localized_data = array_merge(
+            ! empty( $config['use_rest'] ) ? $base_rest : array(),
+            ! empty( $config['use_settings'] ) ? $settings_data : array(),
+            $config['data'] ?? array()
+        );
 
-        if ( ! empty( $config['use_rest'] ) ) {
-            $data = array_merge( $data, $base_rest );
-        }
-
-        if ( ! empty( $config['use_settings'] ) ) {
-            $data = array_merge( $data, $settings_data );
-        }
-
-        if ( ! empty( $config['data'] ) ) {
-            $data = array_merge( $data, $config['data'] );
-        }
-
-        if ( isset( $localize_scripts[ $handle ] ) ) {
-            $props = $localize_scripts[ $handle ];
-            self::localize_script( $handle, $props['object_name'], $data );
+        if ( ! empty( $config['object_name'] ) ) {
+            self::localize_script( $handle, $config['object_name'], $localized_data );
         }
     }
 
@@ -347,10 +362,10 @@ class FrontendScripts {
 	 *
 	 * @param string $handle Script handle the data will be attached to.
 	 * @param string $name   JavaScript object name.
-	 * @param array  $data   Data to be made available in JavaScript.
+	 * @param array  $localized_data   Data to be made available in JavaScript.
 	 */
-    public static function localize_script( $handle, $name, $data = array() ) {
-		wp_localize_script( $handle, $name, $data );
+    public static function localize_script( $handle, $name, $localized_data = array() ) {
+		wp_localize_script( $handle, $name, $localized_data );
 	}
 
 	/**

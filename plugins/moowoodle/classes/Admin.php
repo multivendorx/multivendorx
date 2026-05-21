@@ -21,7 +21,7 @@ class Admin {
 	public function __construct() {
         add_action( 'admin_menu', array( $this, 'add_menus' ) );
 		// enqueue scripts in admin panel.
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ), 20 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ), 20 );
 
 		// Allow URL.
         add_filter( 'allowed_redirect_hosts', array( $this, 'allow_moowoodle_redirect_host' ) );
@@ -50,7 +50,7 @@ class Admin {
 		'<span class="mw-pro-tag" style="font-size: 0.5rem; background: #e35047; padding: 0.125rem 0.5rem; color: #F9F8FB; font-weight: 700; line-height: 1.1; position: absolute; border-radius: 2rem 0; right: -0.75rem; top: 50%; transform: translateY(-50%)">Pro</span>' : '';
 
 		// Array contain moowoodle submenu.
-		$admin_submenus = array(
+		$submenu_items = array(
 			'dashboard'       => array(
 				'name'   => __( 'Dashboard', 'moowoodle' ),
 				'subtab' => '',
@@ -82,18 +82,18 @@ class Admin {
 		);
 
 		// Register all submenu.
-		foreach ( $admin_submenus as $slug => $submenu ) {
+		foreach ( $submenu_items as $slug => $submenu_item ) {
 			// prepare subtab if subtab is exist.
-			$subtab = ! empty( $submenu['subtab'] )
-				? '&subtab=' . $submenu['subtab']
+			$submenu_query_arg = ! empty( $submenu_item['subtab'] )
+				? '&subtab=' . $submenu_item['subtab']
 				: '';
 
 			add_submenu_page(
 				'moowoodle',
-				$submenu['name'],
-				"<span style='position: relative; display: block; width: 100%;' class='admin-menu'>" . $submenu['name'] . '</span>',
+				$submenu_item['name'],
+				"<span style='position: relative; display: block; width: 100%;' class='admin-menu'>" . $submenu_item['name'] . '</span>',
 				'manage_options',
-				'moowoodle#&tab=' . $slug . $subtab,
+				'moowoodle#&tab=' . $slug . $submenu_query_arg,
 				'__return_null'
 			);
 		}
@@ -125,13 +125,12 @@ class Admin {
      *
      * @return void
      */
-	public function enqueue_admin_script() {
+	public function enqueue_admin_scripts() {
 		$screen = get_current_screen();
 
 		if ( $screen && 'toplevel_page_moowoodle' === $screen->id ) {
 			wp_enqueue_script( 'wp-element' );
 
-			// FrontendScripts::admin_load_scripts();
 			FrontendScripts::enqueue_script( 'moowoodle-vendor' );
 			FrontendScripts::enqueue_script( 'moowoodle-admin' );
 			FrontendScripts::enqueue_style( 'moowoodle-index' );
@@ -186,14 +185,14 @@ class Admin {
      */
     public function textdomain_relative_path( $path, $url ) {
 
-        if ( strpos( $url, 'moowoodle' ) !== false ) {
+        if ( false !== strpos( $url, 'moowoodle' ) ) {
 			foreach ( MooWoodle()->block_paths as $block_path_key => $relative_path ) {
-                if ( strpos( $url, $block_path_key ) !== false ) {
+                if ( false !== strpos( $url, $block_path_key ) ) {
                     $path = $relative_path;
                 }
             }
 
-            if ( strpos( $url, 'block' ) === false ) {
+            if ( false === strpos( $url, 'block' ) ) {
                 $path = 'assets/js/vendors.js';
             }
         }

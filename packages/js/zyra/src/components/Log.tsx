@@ -27,16 +27,13 @@ export const LogUI: React.FC<LogProps> = ({
 }) => {
     const [logData, setLogData] = useState<string[]>([]);
     const [copied, setCopied] = useState<boolean>(false);
-    const apiConfig = {
-        url: getApiLink(ZyraVariable, apiLink),
-        method: 'GET',
-        headers: { 'X-WP-Nonce': ZyraVariable.nonce },
-    };
     const logRegex = /^([^:]+:[^:]+:[^:]+):(.*)$/;
 
     useEffect(() => {
         axios({
-            ...apiConfig,
+            url: getApiLink(ZyraVariable, apiLink),
+            method: 'GET',
+            headers: { 'X-WP-Nonce': ZyraVariable.nonce },
             params: {
                 logcount: 100,
             },
@@ -49,9 +46,10 @@ export const LogUI: React.FC<LogProps> = ({
         event.preventDefault();
         const fileName = downloadFileName;
         axios({
-            ...apiConfig,
+            url: getApiLink(ZyraVariable, `${apiLink}/download`),
+            method: 'GET',
+            headers: { 'X-WP-Nonce': ZyraVariable.nonce },
             params: {
-                action: 'download',
                 file: fileName,
             },
             responseType: 'blob',
@@ -74,10 +72,11 @@ export const LogUI: React.FC<LogProps> = ({
     const handleClearLog = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         axios({
-            ...apiConfig,
+            url: getApiLink(ZyraVariable, apiLink),
+            method: 'DELETE',
+            headers: { 'X-WP-Nonce': ZyraVariable.nonce },
             params: {
                 logcount: 100,
-                action: 'clear',
             },
         }).then(() => {
             setLogData([]);
