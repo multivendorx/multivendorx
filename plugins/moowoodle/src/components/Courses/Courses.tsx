@@ -11,6 +11,8 @@ import {
 	QueryProps,
 	InfoItem,
 	PopupUI,
+	Container,
+	Column,
 } from 'zyra';
 
 interface CourseRow {
@@ -268,8 +270,11 @@ const Course: React.FC = () => {
 					{error}
 				</div>
 			)}
-
-			<TableCard {...tableProps} />
+			<Container general>
+				<Column>
+					<TableCard {...tableProps} />
+				</Column>
+			</Container>
 		</>
 	);
 };

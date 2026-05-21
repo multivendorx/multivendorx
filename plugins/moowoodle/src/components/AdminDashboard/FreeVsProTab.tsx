@@ -293,14 +293,14 @@ const FreeVsProTab: React.FC = () => {
 
 						<div className="title">
 							{__(
-								'Join thousands of growing online course businesses',
+								'Powering modern eLearning businesses worldwide',
 								'moowoodle'
 							)}
 						</div>
 
 						<div className="des">
 							{__(
-								'Connect WordPress and Moodle to streamline course delivery, learner enrollment, and training management from one workflow.',
+								'From individual educators to large training organizations, MooWoodle helps simplify course selling, learner management, and Moodle-WooCommerce integration at scale.',
 								'moowoodle'
 							)}
 						</div>
@@ -308,27 +308,24 @@ const FreeVsProTab: React.FC = () => {
 						<ul>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Automatic WooCommerce to Moodle enrollment', 'moowoodle')}
+								{__('Sell course with WooCommerce', 'moowoodle')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
 								{__(
-									'Seamless course and category synchronization',
+									'Automate course enrollments',
 									'moowoodle'
 								)}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Centralized learner and course access management', 'moowoodle')}
+								{__('Classroom, cohort based learning', 'moowoodle')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Secure and reliable LMS integration workflow', 'moowoodle')}
+								{__('Seamless Single Sign-On experiences', 'moowoodle')}
 							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Built for scalable online training growth', 'moowoodle')}
-							</li>
+							
 						</ul>
 
 						<div className="button-wrapper">
