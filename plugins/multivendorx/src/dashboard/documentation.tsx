@@ -156,7 +156,8 @@ const Documentation: React.FC = () => {
 				<PopupUI
 					open={popupOpen}
 					onClose={() => setPopupOpen(false)}
-					width={31.25}
+					width='90%'
+					height='90%'
 					header={{
 						icon: 'contact-form',
 						title: activeDocument.title,
