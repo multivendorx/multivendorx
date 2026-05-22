@@ -261,9 +261,11 @@
         }
 
         tr {
-            td {
+            td,th {
                 padding: 0.625rem;
                 font-size: 1rem;
+                font-weight: 500;
+                text-align: left;
 
                 .close-icon {
                     color: #f06b4f;
@@ -282,12 +284,15 @@
             }
         }
 
-        td:first-child {
+        td:first-child,
+        th:first-child {
             width: 70%;
         }
 
         td:nth-child(2),
-        td:nth-child(3) {
+        td:nth-child(3),
+        th:nth-child(3),
+        th:nth-child(2) {
             width: 15%;
         }
     }

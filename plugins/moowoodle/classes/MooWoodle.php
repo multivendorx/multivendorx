@@ -52,7 +52,7 @@ final class MooWoodle {
         require_once trailingslashit( dirname( $file ) ) . 'config.php';
 
         // store plugin info.
-        $this->file                            = $file;
+        $this->file                           = $file;
         $this->services['plugin_url']         = trailingslashit( plugins_url( '', $file ) );
         $this->services['plugin_path']        = trailingslashit( dirname( $file ) );
         $this->services['version']            = MOOWOODLE_PLUGIN_VERSION;

@@ -298,7 +298,7 @@ class Installer {
                 'post_status'    => 'any',
                 'posts_per_page' => -1,
                 'meta_key'       => 'moodle_course_id',
-                'fields' => 'ids',
+                'fields'         => 'ids',
             )
         );
 
@@ -317,7 +317,7 @@ class Installer {
                 'moodle_course_id' => is_array( $legacy_course_meta['moodle_course_id'] ?? null ) ? reset( $legacy_course_meta['moodle_course_id'] ) : 0,
                 'shortname'        => is_array( $legacy_course_meta['_course_short_name'] ?? null ) ? reset( $legacy_course_meta['_course_short_name'] ) : '',
                 'category_id'      => is_array( $legacy_course_meta['_category_id'] ?? null ) ? reset( $legacy_course_meta['_category_id'] ) : 0,
-                'fullname'         => get_the_title($course_id),
+                'fullname'         => get_the_title( $course_id ),
                 'product_id'       => is_array( $legacy_course_meta['linked_product_id'] ?? null ) ? reset( $legacy_course_meta['linked_product_id'] ) : 0,
                 'startdate'        => is_array( $legacy_course_meta['_course_startdate'] ?? null ) ? reset( $legacy_course_meta['_course_startdate'] ) : 0,
                 'enddate'          => is_array( $legacy_course_meta['_course_enddate'] ?? null ) ? reset( $legacy_course_meta['_course_enddate'] ) : 0,
