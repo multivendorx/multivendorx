@@ -233,7 +233,7 @@ This project might have bugs and may be lacking certain features. If you'd like 
 
 == Changelog ==
 
-= 3.4.0 - 2026-05-21 =
+= 3.4.0 - 2026-05-22 =
 * Added     - Compatibility of WordPress 7.0.0.
 * Added     - Compatibility of WooCommerce 10.7.0.
 * Fixed      - Improved overall settings structure and organization.
