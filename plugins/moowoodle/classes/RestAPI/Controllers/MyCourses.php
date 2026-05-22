@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * MooWoodle REST API My Courses controller.
  *
- * @version     PRODUCT_VERSION
+ * @version     3.4.0
  */
 class MyCourses extends \WP_REST_Controller {
 
