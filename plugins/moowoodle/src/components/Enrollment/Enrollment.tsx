@@ -157,6 +157,7 @@ const Enrollment: React.FC = () => {
 				<Column>
 					<div onClick={handleTableWrapperClick}>
 						<TableCard {...tableProps} />
+						{tableProps.popup}
 					</div>
 				</Column>
 			</Container>
