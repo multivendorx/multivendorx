@@ -59,7 +59,6 @@ const Course: React.FC = () => {
 			});
 	}, []);
 
-
 	// Define table headers
 	const headers = {
 		course_name: {
@@ -138,9 +137,9 @@ const Course: React.FC = () => {
 					label: (row: CourseRow) => {
 						return row?.products && Object.keys(row.products).length
 							? __(
-								'Sync Course Data & Update Product',
-								'moowoodle'
-							)
+									'Sync Course Data & Update Product',
+									'moowoodle'
+								)
 							: __('Create Product', 'moowoodle');
 					},
 					icon: (row: CourseRow) => {
@@ -240,7 +239,7 @@ const Course: React.FC = () => {
 
 	tableProps = applyFilters(
 		'moowoodle_course_table_props',
-		defaultTableProps,
+		defaultTableProps
 	);
 	return (
 		<>

@@ -1,4 +1,4 @@
-import { CohortRow } from "./Cohort";
+import { CohortRow } from './Cohort';
 
 export const dummyCohorts: CohortRow[] = [
 	{
@@ -6,8 +6,7 @@ export const dummyCohorts: CohortRow[] = [
 		moodle_cohort_id: 1,
 		cohort_name: 'Web Development Beginners',
 		products: {
-			'Web Development Course':
-				'#',
+			'Web Development Course': '#',
 		},
 		product_image: '',
 		enrolled_user: 18,
@@ -18,8 +17,7 @@ export const dummyCohorts: CohortRow[] = [
 		moodle_cohort_id: 2,
 		cohort_name: 'Advanced React Training',
 		products: {
-			'React Masterclass':
-				'#',
+			'React Masterclass': '#',
 		},
 		product_image: '',
 		enrolled_user: 25,
@@ -30,8 +28,7 @@ export const dummyCohorts: CohortRow[] = [
 		moodle_cohort_id: 3,
 		cohort_name: 'WordPress Plugin Development',
 		products: {
-			'WordPress Plugin Course':
-				'#',
+			'WordPress Plugin Course': '#',
 		},
 		product_image: '',
 		enrolled_user: 12,
@@ -42,8 +39,7 @@ export const dummyCohorts: CohortRow[] = [
 		moodle_cohort_id: 4,
 		cohort_name: 'JavaScript Essentials',
 		products: {
-			'JavaScript Bootcamp':
-				'#',
+			'JavaScript Bootcamp': '#',
 		},
 		product_image: '',
 		enrolled_user: 30,
@@ -54,8 +50,7 @@ export const dummyCohorts: CohortRow[] = [
 		moodle_cohort_id: 5,
 		cohort_name: 'Full Stack Developer Program',
 		products: {
-			'Full Stack Course':
-				'#',
+			'Full Stack Course': '#',
 		},
 		product_image: '',
 		enrolled_user: 22,
@@ -66,8 +61,7 @@ export const dummyCohorts: CohortRow[] = [
 		moodle_cohort_id: 6,
 		cohort_name: 'PHP and Laravel Mastery',
 		products: {
-			'Laravel Advanced Training':
-				'#',
+			'Laravel Advanced Training': '#',
 		},
 		product_image: '',
 		enrolled_user: 16,
@@ -78,8 +72,7 @@ export const dummyCohorts: CohortRow[] = [
 		moodle_cohort_id: 7,
 		cohort_name: 'WooCommerce Store Management',
 		products: {
-			'WooCommerce Expert Course':
-				'#',
+			'WooCommerce Expert Course': '#',
 		},
 		product_image: '',
 		enrolled_user: 14,
@@ -90,8 +83,7 @@ export const dummyCohorts: CohortRow[] = [
 		moodle_cohort_id: 8,
 		cohort_name: 'Modern TypeScript Development',
 		products: {
-			'TypeScript Fundamentals':
-				'#',
+			'TypeScript Fundamentals': '#',
 		},
 		product_image: '',
 		enrolled_user: 20,
@@ -102,8 +94,7 @@ export const dummyCohorts: CohortRow[] = [
 		moodle_cohort_id: 9,
 		cohort_name: 'REST API Development',
 		products: {
-			'REST API Engineering':
-				'#',
+			'REST API Engineering': '#',
 		},
 		product_image: '',
 		enrolled_user: 11,
@@ -114,8 +105,7 @@ export const dummyCohorts: CohortRow[] = [
 		moodle_cohort_id: 10,
 		cohort_name: 'Node.js Backend Architecture',
 		products: {
-			'Node.js Backend Course':
-				'#',
+			'Node.js Backend Course': '#',
 		},
 		product_image: '',
 		enrolled_user: 28,
