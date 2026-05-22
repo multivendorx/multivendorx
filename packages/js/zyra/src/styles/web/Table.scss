@@ -704,7 +704,8 @@
 .badge-expired,
 .badge-unenroll,
 .badge-outofstock,
-.badge-closed {
+.badge-closed,
+.badge-unenrolled {
     color: map-get(map-get($color-palette, red), color);
     background: map-get(map-get($color-palette, red), light-color);
 }

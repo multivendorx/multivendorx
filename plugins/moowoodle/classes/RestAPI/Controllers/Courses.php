@@ -70,13 +70,14 @@ class Courses extends \WP_REST_Controller {
                 return $this->get_filter_options( $request );
             }
 
-            $limit          = intval( $request->get_param( 'row' ) ) ?: 10;
-            $page           = max( intval( $request->get_param( 'page' ) ), 1 );
-            $offset         = ( $page - 1 ) * $limit;
-            $category_id    = $request->get_param( 'category' );
-            $search_action  = $request->get_param( 'searchaction' );
-            $search_field   = $request->get_param( 'search' );
-            $get_product_id = $request->get_param( 'unlinked_resources_for' );
+            $limit              = intval( $request->get_param( 'row' ) ) ?: 10;
+            $page               = max( intval( $request->get_param( 'page' ) ), 1 );
+            $offset             = ( $page - 1 ) * $limit;
+            $category_id        = $request->get_param( 'category' );
+            $search_action      = $request->get_param( 'searchaction' );
+            $search_field       = $request->get_param( 'search' );
+            $get_product_id     = $request->get_param( 'unlinked_resources_for' );
+            $selected_course_id = 0;
 
             // Base filter array.
             $filters = array(
@@ -112,7 +113,7 @@ class Courses extends \WP_REST_Controller {
                 return rest_ensure_response(
                     array(
                         'items'       => $courses,
-				        'selected_id' => $selected_course_id ?? 0,
+				        'selected_id' => $selected_course_id,
                     )
                 );
             }
@@ -128,14 +129,14 @@ class Courses extends \WP_REST_Controller {
                     $product = wc_get_product( (int) $course['product_id'] );
                     if ( $product ) {
                         $product_name  = $product->get_name();
-                        $product_url   = esc_url( admin_url( 'post.php?post=' . $product->get_id() . '&action=edit' ) );
+                        $product_url   = esc_url_raw( admin_url( 'post.php?post=' . $product->get_id() . '&action=edit' ) );
                         $product_image = wp_get_attachment_url( $product->get_image_id() );
                     }
                 }
 
-                $start = ! empty( $course['startdate'] ) ? wp_date( 'M j, Y', $course['startdate'] ) : __( 'Not Set', 'moowoodle' );
-                $end   = ! empty( $course['enddate'] ) ? wp_date( 'M j, Y', $course['enddate'] ) : __( 'Not Set', 'moowoodle' );
-                $course_duration  = ( ! empty( $course['startdate'] ) || ! empty( $course['enddate'] ) ) 
+                $start           = ! empty( $course['startdate'] ) ? wp_date( 'M j, Y', $course['startdate'] ) : __( 'Not Set', 'moowoodle' );
+                $end             = ! empty( $course['enddate'] ) ? wp_date( 'M j, Y', $course['enddate'] ) : __( 'Not Set', 'moowoodle' );
+                $course_duration = ( ! empty( $course['startdate'] ) || ! empty( $course['enddate'] ) )
                                     ? sprintf(
                                         /* translators: 1: Start date, 2: End date */
                                         __( '%1$s - %2$s', 'moowoodle' ),

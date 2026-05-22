@@ -1,8 +1,17 @@
+/* global appLocalizer */
 import React, { useState, useEffect } from 'react';
-import { CategoryCount, InfoItem, NavigatorHeader, PopupUI, QueryProps, TableCard } from 'zyra';
+import {
+	CategoryCount,
+	Column,
+	Container,
+	InfoItem,
+	NavigatorHeader,
+	PopupUI,
+	QueryProps,
+	TableCard,
+} from 'zyra';
 import { __ } from '@wordpress/i18n';
 import ShowProPopup from '../Popup/Popup';
-import '../common.scss';
 import { applyFilters } from '@wordpress/hooks';
 import { dummyEnrollments } from './EnrollmentUtil';
 
@@ -24,11 +33,11 @@ interface EnrollmentRow {
 	cohort_id?: number;
 	customer_id?: number;
 	customer_email?: string;
-	learners_hub_id?: string;
+	learners_hub_id?: number;
 }
 
 const Enrollment: React.FC = () => {
-	const [openPopup, setopenPopup] = useState(false);
+	const [openPopup, setOpenPopup] = useState(false);
 	let tableProps: any = {};
 
 	// Define table headers
@@ -50,7 +59,7 @@ const Enrollment: React.FC = () => {
 					<InfoItem
 						title={title}
 						avatar={{
-							iconClass: 'learning',
+							iconClass: 'document',
 						}}
 					/>
 				);
@@ -74,7 +83,7 @@ const Enrollment: React.FC = () => {
 		status: {
 			label: __('Status', 'moowoodle'),
 			type: 'status',
-			statusClass: (row) => `${row.status}`
+			statusClass: (row) => `${row.status}`,
 		},
 		action: {
 			type: 'action',
@@ -87,9 +96,9 @@ const Enrollment: React.FC = () => {
 							: __('Enroll Now', 'moowoodle');
 					},
 					onClick: (row: EnrollmentRow) => {
-						setopenPopup(true);
+						setOpenPopup(true);
 					},
-					icon: 'classroom-enrollment'
+					icon: 'classroom-enrollment',
 				},
 			],
 		},
@@ -116,11 +125,11 @@ const Enrollment: React.FC = () => {
 
 	tableProps = applyFilters(
 		'moowoodle_enrollment_table_props',
-		defaultTableProps,
+		defaultTableProps
 	);
 	const handleTableWrapperClick = () => {
 		if (!appLocalizer.khali_dabba) {
-			setopenPopup(true);
+			setOpenPopup(true);
 		}
 	};
 	return (
@@ -129,7 +138,7 @@ const Enrollment: React.FC = () => {
 				<PopupUI
 					position="lightbox"
 					open={openPopup}
-					onClose={() => setopenPopup(false)}
+					onClose={() => setOpenPopup(false)}
 					width={31.25}
 					height="auto"
 				>
@@ -144,9 +153,13 @@ const Enrollment: React.FC = () => {
 					'moowoodle'
 				)}
 			/>
-			<div onClick={handleTableWrapperClick}>
-				<TableCard {...tableProps} />
-			</div>
+			<Container general>
+				<Column>
+					<div onClick={handleTableWrapperClick}>
+						<TableCard {...tableProps} />
+					</div>
+				</Column>
+			</Container>
 		</>
 	);
 };

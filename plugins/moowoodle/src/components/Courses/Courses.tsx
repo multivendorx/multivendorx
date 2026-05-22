@@ -11,6 +11,8 @@ import {
 	QueryProps,
 	InfoItem,
 	PopupUI,
+	Container,
+	Column,
 } from 'zyra';
 
 interface CourseRow {
@@ -56,7 +58,6 @@ const Course: React.FC = () => {
 				setError(__('Failed to load categories', 'moowoodle'));
 			});
 	}, []);
-
 
 	// Define table headers
 	const headers = {
@@ -136,9 +137,9 @@ const Course: React.FC = () => {
 					label: (row: CourseRow) => {
 						return row?.products && Object.keys(row.products).length
 							? __(
-								'Sync Course Data & Update Product',
-								'moowoodle'
-							)
+									'Sync Course Data & Update Product',
+									'moowoodle'
+								)
 							: __('Create Product', 'moowoodle');
 					},
 					icon: (row: CourseRow) => {
@@ -238,7 +239,7 @@ const Course: React.FC = () => {
 
 	tableProps = applyFilters(
 		'moowoodle_course_table_props',
-		defaultTableProps,
+		defaultTableProps
 	);
 	return (
 		<>
@@ -268,8 +269,11 @@ const Course: React.FC = () => {
 					{error}
 				</div>
 			)}
-
-			<TableCard {...tableProps} />
+			<Container general>
+				<Column>
+					<TableCard {...tableProps} />
+				</Column>
+			</Container>
 		</>
 	);
 };
