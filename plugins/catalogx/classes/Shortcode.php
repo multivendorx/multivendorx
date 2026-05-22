@@ -35,7 +35,7 @@ class Shortcode {
     public function frontend_scripts() {
             wp_deregister_style( 'wc-blocks-style' );
 
-            FrontendScripts::load_scripts();
+            FrontendScripts::enqueue_frontend_assets();
             FrontendScripts::localize_scripts( 'catalogx-quote-cart-script' );
             FrontendScripts::enqueue_script( 'catalogx-quote-cart-script' );
         

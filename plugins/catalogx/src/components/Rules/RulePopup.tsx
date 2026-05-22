@@ -101,7 +101,7 @@ export default function RulePopup({
             label: 'All Product',
             value: -1,
         },
-        ...(appLocalizer.all_products || []),
+        ...(appLocalizer.products_data || []),
     ];
 
     const categoryOptions = [
@@ -117,7 +117,7 @@ export default function RulePopup({
             label: 'All Brand',
             value: -1,
         },
-        ...(appLocalizer.all_product_brand || []),
+        ...(appLocalizer.product_brands || []),
     ];
 
     const userOptions = [
@@ -125,7 +125,7 @@ export default function RulePopup({
             label: 'All User',
             value: -1,
         },
-        ...(appLocalizer.all_users || []),
+        ...(appLocalizer.users_data || []),
     ];
 
     const roleOptions = [

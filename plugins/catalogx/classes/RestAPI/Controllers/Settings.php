@@ -153,13 +153,13 @@ class Settings extends \WP_REST_Controller {
 				CatalogX()->setting->update_setting(
 					'is_disable_popup',
 					$display_option,
-					'catalogx_all_settings_settings'
+					'catalogx_shopping_settings_settings'
 				);
 
 				CatalogX()->setting->update_setting(
 					'enquiry_user_permission',
 					$restrict_user,
-					'catalogx_all_settings_settings'
+					'catalogx_shopping_settings_settings'
 				);
 			}
 
@@ -172,7 +172,7 @@ class Settings extends \WP_REST_Controller {
 				CatalogX()->setting->update_setting(
 					'quote_user_permission',
 					$restrict_user,
-					'catalogx_all_settings_settings'
+					'catalogx_shopping_settings_settings'
 				);
 			}
 

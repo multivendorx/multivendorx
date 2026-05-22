@@ -21,17 +21,11 @@ defined( 'ABSPATH' ) || exit;
 class Modules {
 
     /**
-     * Option's table key for active module list.
-     *
-     * @var string
-     */
-
-    /**
      * List of all module.
      *
      * @var array
      */
-    private $modules = array();
+    private $registered_modules = array();
 
     /**
      * List of all active module.
@@ -48,12 +42,12 @@ class Modules {
     private static $module_activated = false;
 
     /**
-     * Container that store the object of active module
+     * services that store the object of active module
      *
      * @var array
      */
 
-    private $container = array();
+    private $services = array();
 
     /**
      * Constructor of Modules class
@@ -68,22 +62,22 @@ class Modules {
      * @param string $string_param The camel case string to convert.
      * @return string The converted kebab case string.
      */
-    private function camel_to_kebab(string $string_param): string {
+    private function camel_to_kebab(string $string): string {
         return strtolower(
             preg_replace(
                 '/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/',
                 '-',
-                $string_param
+                $string
             )
         );
     }
     /**
      * Get all modules dynamically from /modules directory
      */
-    public function get_all_modules(): array {
+    public function get_registered_modules(): array {
 
-        if ( ! empty( $this->modules ) ) {
-            return $this->modules;
+        if ( ! empty( $this->registered_modules ) ) {
+            return $this->registered_modules;
         }
 
         $sources = apply_filters(
@@ -104,7 +98,7 @@ class Modules {
                 continue;
             }
 
-            $folders = scandir( $base_path );
+            $folders = glob( $base_path . '*', GLOB_ONLYDIR );
 
             foreach ( $folders as $folder ) {
                 if ( in_array( $folder, array( '.', '..' ), true ) ) {
@@ -119,11 +113,11 @@ class Modules {
 
                 $module_id = $this->camel_to_kebab( $folder );
 
-                $key = array_key_exists( $module_id, $this->modules )
+                $key = array_key_exists( $module_id, $this->registered_modules )
                     ? $namespace . '_' . $module_id
                     : $module_id;
 
-                $this->modules[ $key ] = array(
+                $this->registered_modules[ $key ] = array(
                     'id'           => $module_id,
                     'module_file'  => $module_file,
                     'module_class' => "{$namespace}\\{$folder}\\Module",
@@ -131,7 +125,7 @@ class Modules {
             }
         }
 
-        return $this->modules;
+        return $this->registered_modules;
     }
 
     /**
@@ -159,15 +153,27 @@ class Modules {
         }
 
         $active_modules = $this->get_active_modules();
-        $all_modules    = $this->get_all_modules();
+        $registered_modules    = $this->get_registered_modules();
 
-        $validated_active = array();
+        $modules_by_id = [];
+        foreach ( $registered_modules as $key => $module ) {
+            $mid = $module['id'] ?? '';
+            if ( empty( $mid ) ) {
+                continue;
+            }
+            $modules_by_id[ $mid ][] = [ 'key' => $key, 'module' => $module ];
+        }
+
+        $validated_active = [];
         foreach ( $active_modules as $module_id ) {
-            foreach ( $all_modules as $key => $module ) {
-                // Match same module id (free + pro both)
-                if ( empty( $module['id'] ) || $module['id'] !== $module_id ) {
-                    continue;
-                }
+            // Skip if no module with this id exists.
+            if ( empty( $modules_by_id[ $module_id ] ) ) {
+                continue;
+            }
+
+            foreach ( $modules_by_id[ $module_id ] as $item ) {
+                $module = $item['module'];
+
                 if ( ! $this->is_module_available( $module ) ) {
                     continue;
                 }
@@ -175,8 +181,8 @@ class Modules {
                 require_once $module['module_file'];
 
                 try {
-                    $class                   = $module['module_class'];
-                    $this->container[ $key ] = new $class();
+                    $class = $module['module_class'];
+                    $this->services[ $item['key'] ] = new $class();
                 } catch ( \Throwable $e ) {
                     CatalogX()->util->log( $e );
                     continue;
@@ -184,13 +190,12 @@ class Modules {
 
                 do_action(
                     "catalogx_activated_module_{$module_id}",
-                    $this->container[ $key ]
+                    $this->services[ $item['key'] ]
                 );
             }
 
             $validated_active[] = $module_id;
         }
-
         if ( $validated_active !== $active_modules ) {
             update_option( Utill::ACTIVE_MODULES_DB_KEY, $validated_active );
             $this->active_modules = $validated_active;
@@ -228,8 +233,8 @@ class Modules {
      *
      * @return array
      */
-    public function get_all_modules_ids() {
-        return array_keys( $this->get_all_modules() );
+    public function get_module_ids() {
+        return array_keys( $this->get_registered_modules() );
     }
 
     /**
@@ -240,7 +245,7 @@ class Modules {
     public function get_available_modules(): array {
         $available = array();
 
-        foreach ( $this->get_all_modules() as $id => $module ) {
+        foreach ( $this->get_registered_modules() as $id => $module ) {
             if ( $this->is_module_available( $module ) ) {
                 $available[] = $id;
             }
@@ -286,10 +291,10 @@ class Modules {
             'shutdown',
             function () use ( $modules ) {
                 foreach ( $modules as $module_id ) {
-                    if ( isset( $this->container[ $module_id ] ) ) {
+                    if ( isset( $this->services[ $module_id ] ) ) {
                         do_action(
                             "catalogx_deactivated_module_{$module_id}",
-                            $this->container[ $module_id ]
+                            $this->services[ $module_id ]
                         );
                     }
                 }

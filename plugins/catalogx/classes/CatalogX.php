@@ -30,16 +30,16 @@ final class CatalogX {
     /**
      * Path to the main plugin file.
      *
-     * @var string
+     * @var string| null
      */
-    private $file = '';
+    private $file = null;
 
     /**
-     * Internal container for plugin-wide values.
+     * Internal services for plugin-wide values.
      *
      * @var array
      */
-    private $container = array();
+    private $services = array();
 
     /**
      * CatalogX class constructor function
@@ -50,30 +50,29 @@ final class CatalogX {
         require_once trailingslashit( dirname( $file ) ) . '/config.php';
 
         $this->file                                = $file;
-        $this->container['plugin_url']             = trailingslashit( plugins_url( '', $plugin = $file ) );
-        $this->container['plugin_path']            = trailingslashit( dirname( $file ) );
-        $this->container['plugin_base']            = plugin_basename( $file );
-        $this->container['version']                = CATALOGX_PLUGIN_VERSION;
-        $this->container['rest_namespace']         = 'catalogx/v1';
-        $this->container['block_paths']            = array();
-        $this->container['admin_email']            = get_option( 'admin_email' );
-        $this->container['render_enquiry_btn_via'] = '';
-        $this->container['render_quote_btn_via']   = '';
-        $this->container['is_dev']                 = defined( 'WP_ENV' ) && WP_ENV === 'development';
-        $this->container['date_format']           = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+        $this->services['plugin_url']             = trailingslashit( plugins_url( '', $file ) );
+        $this->services['plugin_path']            = trailingslashit( dirname( $file ) );
+        $this->services['plugin_base']            = plugin_basename( $file );
+        $this->services['version']                = CATALOGX_PLUGIN_VERSION;
+        $this->services['rest_namespace']         = 'catalogx/v1';
+        $this->services['block_paths']            = array();
+        $this->services['admin_email']            = get_option( 'admin_email' );
+        $this->services['render_enquiry_btn_via'] = '';
+        $this->services['render_quote_btn_via']   = '';
+        $this->services['is_dev']                 = defined( 'WP_ENV' ) && WP_ENV === 'development';
+        $this->services['date_format']           = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 
         register_activation_hook( $file, array( $this, 'activate' ) );
         register_deactivation_hook( $file, array( $this, 'deactivate' ) );
 
         add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
-        add_action( 'woocommerce_loaded', array( $this, 'init_plugin' ) );
-        add_action( 'plugins_loaded', array( $this, 'is_woocommerce_loaded' ) );
+        add_action( 'woocommerce_loaded', array( $this, 'load_plugin' ) );
+        add_action( 'plugins_loaded', array( $this, 'handle_plugin_migration' ) );
         add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 
-        // add_action( 'init', array( $this, 'migrate_from_previous' ) );
         add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
         // Major update notice.
-		add_action( 'in_plugin_update_message-woocommerce-catalog-enquiry/Woocommerce_Catalog_Enquiry.php', array( $this, 'catalogx_plugin_update_message' ) );
+		add_action( 'in_plugin_update_message-woocommerce-catalog-enquiry/dc_product_vendor.php', array( $this, 'catalogx_plugin_update_message' ) );
     }
 
     /**
@@ -86,7 +85,7 @@ final class CatalogX {
     public function catalogx_plugin_update_message() {
         if ( version_compare( get_option( 'catalogx_plugin_version' ), '6.0.0', '<' ) ) {
             echo '<p><strong>Heads up!</strong> 6.0.0 is a major update. Make a full site backup and before upgrading your marketplace to avoid any undesirable situations.</p>';
-            exit;
+            // exit;
         }
     }
 
@@ -100,20 +99,6 @@ final class CatalogX {
     }
 
     /**
-     * Handle migration tasks for previous plugin versions.
-     *
-     * If the current plugin version is newer than the saved version,
-     * initiate the Install routine to perform necessary updates.
-     *
-     * @return void
-     */
-    public function migrate_from_previous() {
-        if ( version_compare( get_option( 'catalogx_plugin_version' ), CatalogX()->version, '<' ) ) {
-            new Install();
-        }
-    }
-
-    /**
      * Initialize the CatalogX plugin after WooCommerce is loaded.
      *
      * Loads text domain, hooks plugin links in admin, initializes core classes,
@@ -122,32 +107,20 @@ final class CatalogX {
      *
      * @return void
      */
-    public function init_plugin() {
-
-        // $this->load_plugin_textdomain();
-
-        // if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
-        //     add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_link' ) );
-        //     add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
-        // }
-
-        // $this->init_classes();
-
-        // add_action( 'init', array( $this, 'catalogx_register_strings_and_setup_wizard' ) );
-
-        // do_action( 'catalogx_loaded' );
-
-        // add_filter( 'woocommerce_email_classes', array( $this, 'load_emails' ) );
-
+    public function load_plugin() {
         add_action( 'init', array( $this, 'init_classes' ), 0 );
+        // add link on pugin 'active' button.
+        if ( is_admin() && ! wp_doing_ajax() ) {
+            add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'get_plugin_action_links' ) );
+        }
         if ( get_option( Utill::CATALOGX_OTHER_SETTINGS['run_installer'] ) ) {
-            new Install();
+            new Installer();
             delete_option( Utill::CATALOGX_OTHER_SETTINGS['run_installer'] );
         }
 
         add_action( 'init', array( $this, 'catalogx_register_strings_and_setup_wizard' ) );
 
-        add_filter( 'woocommerce_email_classes', array( $this, 'load_emails' ) );
+        add_filter( 'woocommerce_email_classes', array( $this, 'register_email_classes' ) );
     }
 
     /**
@@ -177,7 +150,6 @@ final class CatalogX {
 
         $form_settings = CatalogX()->setting->get_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'] );
 
-        if ( function_exists( 'icl_register_string' ) ) {
             foreach ( $form_settings['formsettings']['formfieldlist'] as $field ) {
                 if ( isset( $field['label'] ) ) {
                     icl_register_string( 'catalogx', 'form_field_label_' . $field['id'], $field['label'] );
@@ -197,7 +169,6 @@ final class CatalogX {
                     icl_register_string( 'catalogx', 'free_form_label_' . $free_field['key'], $free_field['label'] );
                 }
             }
-        }
 
         if ( function_exists( 'pll_register_string' ) ) {
             pll_register_string( 'my-quote', 'my-quote', 'catalogx' );
@@ -208,7 +179,7 @@ final class CatalogX {
     }
 
     /**
-     * Initialize and load all core plugin classes into the container.
+     * Initialize and load all core plugin classes into the services.
      *
      * This includes settings, admin/backend logic, frontend handling,
      * REST API endpoints, utilities, modules, shortcodes, session management,
@@ -217,21 +188,21 @@ final class CatalogX {
      * @return void
      */
     public function init_classes() {
-        $this->container['setting']   = new Setting();
-        $this->container['admin']     = new Admin();
-        $this->container['frontend']  = new Frontend();
-        $this->container['rest']   = new RestAPI\Rest();
-        $this->container['util']      = new Utill();
-        $this->container['modules']   = new Modules();
-        $this->container['shortcode'] = new Shortcode();
-        $this->container['session']   = new Core\Session();
-        $this->container['quotecart'] = new Core\QuoteCart();
+        $this->services['setting']   = new Setting();
+        $this->services['admin']     = new Admin();
+        $this->services['frontend']  = new Frontend();
+        $this->services['rest']   = new RestAPI\Rest();
+        $this->services['util']      = new Utill();
+        $this->services['modules']   = new Modules();
+        $this->services['shortcode'] = new Shortcode();
+        $this->services['session']   = new Core\Session();
+        $this->services['quotecart'] = new Core\QuoteCart();
 
         // Load all active modules.
-        $this->container['modules']->load_active_modules();
+        $this->services['modules']->load_active_modules();
 
-        $this->container['block']           = new Block();
-        $this->container['frontendscripts'] = new FrontendScripts();
+        $this->services['block']           = new Block();
+        $this->services['frontendscripts'] = new FrontendScripts();
 
         do_action( 'catalogx_loaded' );
         flush_rewrite_rules();
@@ -245,7 +216,7 @@ final class CatalogX {
      * @param array $links Existing plugin action links.
      * @return array Modified plugin action links with CatalogX links.
      */
-    public function plugin_link( $links ) {
+    public function get_plugin_action_links( $links ) {
         $plugin_links = array(
             '<a href="' . admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=general' ) . '">' . __( 'Settings', 'catalogx' ) . '</a>',
         );
@@ -287,17 +258,14 @@ final class CatalogX {
      *
      * @return void
      */
-    public function is_woocommerce_loaded() {
-        if ( ! did_action( 'woocommerce_loaded' ) && is_admin() ) {
-            add_action( 'admin_notices', array( $this, 'woocommerce_admin_notice' ) );
+    public function handle_plugin_migration() {
+        if ( did_action( 'woocommerce_loaded' ) || ! is_admin() ) {
+            $previous_version = get_option( Utill::CATALOGX_OTHER_SETTINGS['plugin_db_version'], '' );
+            if ( version_compare( $previous_version, CatalogX()->version, '<' ) ) {
+                new Installer();
+            }
+            return;
         }
-        // if ( did_action( 'woocommerce_loaded' ) || ! is_admin() ) {
-        //     $previous_version = get_option( Utill::CATALOGX_OTHER_SETTINGS['plugin_db_version'], '' );
-        //     if ( version_compare( $previous_version, CatalogX()->version, '<' ) ) {
-        //         new Install();
-        //     }
-        //     return;
-        // }
     }
 
     /**
@@ -332,7 +300,7 @@ final class CatalogX {
      * @param array $emails Array of default WooCommerce email classes.
      * @return array Modified array with CatalogX email classes added.
      */
-    public function load_emails( $emails ) {
+    public function register_email_classes( $emails ) {
         $emails['EnquiryEmail']          = new Emails\EnquiryEmail();
         $emails['requestQuoteSendEmail'] = new Emails\RequestQuoteSendEmail();
         return $emails;
@@ -369,7 +337,8 @@ final class CatalogX {
      * @return void
      */
     public function load_plugin_textdomain() {
-        if ( version_compare( $GLOBALS['wp_version'], '6.7', '<' ) ) {
+        global $wp_version;
+        if ( version_compare( $wp_version, '6.7', '<' ) ) {
             load_plugin_textdomain( 'catalogx', false, plugin_basename( dirname( __DIR__ ) ) . '/languages' );
         } else {
             load_textdomain( 'catalogx', WP_LANG_DIR . '/plugins/catalogx-' . determine_locale() . '.mo' );
@@ -380,25 +349,25 @@ final class CatalogX {
      * Magic getter function to get the reference of class.
      * Accept class name, If valid return reference, else Wp_Error.
      *
-     * @param   mixed $class The key name of the class to retrieve from the container.
+     * @param   mixed $class The key name of the class to retrieve from the services.
      * @return  object | \WP_Error
      */
     public function __get( $class ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound
-        if ( array_key_exists( $class, $this->container ) ) {
-            return $this->container[ $class ];
+        if ( array_key_exists( $class, $this->services ) ) {
+            return $this->services[ $class ];
         }
         return new \WP_Error( sprintf( 'Call to unknown class %s.', $class ) );
     }
 
     /**
      * Magic setter function to store a reference of a class.
-     * Accepts a class name as the key and stores the instance in the container.
+     * Accepts a class name as the key and stores the instance in the services.
      *
      * @param string $class The class name or key to store the instance.
      * @param object $value The instance of the class to store.
      */
     public function __set( $class, $value ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound
-        $this->container[ $class ] = $value;
+        $this->services[ $class ] = $value;
     }
 
     /**

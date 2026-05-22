@@ -44,7 +44,7 @@ class Frontend {
      * @return void
      */
     public function enqueue_scripts() {
-        FrontendScripts::load_scripts();
+        FrontendScripts::enqueue_frontend_assets();
         FrontendScripts::localize_scripts( 'catalogx-add-to-quote-cart-script' );
         if ( is_shop() || is_product() ) {
             FrontendScripts::enqueue_script( 'catalogx-add-to-quote-cart-script' );

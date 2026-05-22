@@ -23,8 +23,8 @@ class Admin {
      */
     public function __construct() {
         // Register admin menu.
-        add_action( 'admin_menu', array( $this, 'add_menu' ) );
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ) );
+        add_action( 'admin_menu', array( $this, 'add_menus' ),10 );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ),20 );
 		// Allow external redirect host.
         add_filter( 'allowed_redirect_hosts', array( $this, 'allow_catalogx_redirect_host' ) );
         // For load translation.
@@ -36,7 +36,7 @@ class Admin {
      *
      * @return void
      */
-    public function add_menu() {
+    public function add_menus() {
 
         add_menu_page(
             'CatalogX',
@@ -48,7 +48,7 @@ class Admin {
             50
         );
 
-        $submenus = array(
+        $submenu_items = array(
             'dashboard' => array(
                 'name'   => __( 'Dashboard', 'catalogx' ),
                 'subtab' => '',
@@ -76,7 +76,7 @@ class Admin {
             ),
             'settings'         => array(
                 'name'   => __( 'Settings', 'catalogx' ),
-                'subtab' => 'all-settings',
+                'subtab' => 'shopping',
                 'priority' => 60,
             ),
             'modules'          => array(
@@ -91,27 +91,18 @@ class Admin {
             ),
         );
 
-        uasort(
-            $submenus,
-            function ( $first_item, $second_item ) {
-				return ( $first_item['priority'] ?? 0 ) <=> ( $second_item['priority'] ?? 0 );
-			}
-        );
-
-        foreach ( $submenus as $slug => $submenu ) {
+        foreach ( $submenu_items as $slug => $submenu_item ) {
             // prepare subtab if subtab is exist.
-            $subtab = '';
-
-            if ( $submenu['subtab'] ) {
-                $subtab = '&subtab=' . $submenu['subtab'];
-            }
+            $submenu_query_arg = ! empty( $submenu_item['subtab'] )
+				? '&subtab=' . $submenu_item['subtab']
+				: '';
 
             add_submenu_page(
                 'catalogx',
-                $submenu['name'],
-                $submenu['name'],
+                $submenu_item['name'],
+                "<span style='position: relative; display: block; width: 100%;' class='admin-menu'>" . $submenu_item['name'] . '</span>',
                 'manage_woocommerce',
-                'catalogx#&tab=' . $slug . $subtab,
+                'catalogx#&tab=' . $slug . $submenu_query_arg,
                 '__return_null'
             );
         }
@@ -165,7 +156,7 @@ class Admin {
         wp_enqueue_media();
 
         // Enque script and style.
-        FrontendScripts::admin_load_scripts();
+        FrontendScripts::enqueue_admin_assets();
         FrontendScripts::enqueue_script( 'catalogx-admin-script' );
 		FrontendScripts::enqueue_script( 'catalogx-vendor-script' );
         FrontendScripts::enqueue_style( 'catalogx-index-style' );
@@ -185,17 +176,17 @@ class Admin {
 	/**
      * Allow CatalogX domain for safe redirection using wp_safe_redirect().
      *
-     * @param string[] $hosts List of allowed hosts.
+     * @param string[] $allowed_hosts List of allowed hosts.
      * @return string[] Modified list with CatalogX domain included.
      */
-    public function allow_catalogx_redirect_host( $hosts ) {
-        $parsed_url = wp_parse_url( CATALOGX_PRO_SHOP_URL );
+    public function allow_catalogx_redirect_host( $allowed_hosts ) {
+        $shop_url_parts = wp_parse_url( CATALOGX_PRO_SHOP_URL );
 
-        if ( isset( $parsed_url['host'] ) ) {
-            $hosts[] = $parsed_url['host'];
+        if ( isset( $shop_url_parts['host'] ) ) {
+            $allowed_hosts[] = $shop_url_parts['host'];
         }
 
-        return $hosts;
+        return $allowed_hosts;
     }
 
     /**
@@ -209,9 +200,9 @@ class Admin {
      */
     public function textdomain_relative_path( $path, $url ) {
         if ( strpos( $url, 'woocommerce-catalog-enquiry' ) !== false ) {
-            foreach ( CatalogX()->block_paths as $key => $new_path ) {
-                if ( strpos( $url, $key ) !== false ) {
-                    $path = $new_path;
+            foreach ( CatalogX()->block_paths as $block_path_key => $relative_path ) {
+                if ( strpos( $url, $block_path_key ) !== false ) {
+                    $path = $relative_path;
                 }
             }
 

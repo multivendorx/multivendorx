@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  * @version     6.0.0
  * @author      MultiVendorX
  */
-class Install {
+class Installer {
     const VERSION_KEY = 'catalogx_plugin_version';
 
     const FREE_FORM_MAP = array(
@@ -341,7 +341,7 @@ class Install {
 
             $old_keys = array(
                 'catalogx_enquiry-catalog-customization_settings' => Utill::CATALOGX_SETTINGS['enquiry-catalog-customization'],
-                'catalogx_all-settings_settings'                  => Utill::CATALOGX_SETTINGS['all-settings'],
+                'catalogx_all-settings_settings'                  => Utill::CATALOGX_SETTINGS['shopping'],
                 'catalogx_enquiry-quote-exclusion_settings'       => Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
                 'catalogx_enquiry-form-customization_settings'    => Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
                 'catalogx_enquiry-email-temp_settings'            => Utill::CATALOGX_SETTINGS['enquiry-email-temp'],

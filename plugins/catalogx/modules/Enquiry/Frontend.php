@@ -157,7 +157,7 @@ class Frontend {
      * @return void
      */
     public function frontend_scripts() {
-        FrontendScripts::load_scripts();
+        FrontendScripts::enqueue_frontend_assets();
         FrontendScripts::localize_scripts( 'catalogx-enquiry-frontend-script' );
         FrontendScripts::localize_scripts( 'catalogx-enquiry-form-script' );
 

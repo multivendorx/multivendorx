@@ -18,14 +18,14 @@ declare global {
         nonce: string;
         tab_name: string;
         restUrl: string;
-        all_pages: Array;
+        pages_data: Array;
         role_array: Array;
         admin_url: string;
-        all_users: Array;
-        all_products: Array;
+        users_data: Array;
+        products_data: Array;
         all_product_cat: Array;
         all_product_tag: Array;
-        all_product_brand: Array;
+        product_brands: Array;
         settings_databases_value: any; // Use a more specific type if possible
         active_modules: string[];
         user_role: string;
