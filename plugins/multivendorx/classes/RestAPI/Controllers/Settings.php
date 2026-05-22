@@ -80,7 +80,7 @@ class Settings extends \WP_REST_Controller {
 
     public function get_item_permissions_check( $request ) {
         return is_user_logged_in() && ! empty( array_intersect(
-                    array( 'customer', 'administrator', 'store_owner' ),
+                    array( 'customer', 'administrator', 'store_owner', 'facilitator' ),
                     (array) MultiVendorX()->current_user->roles
                 ));
     }

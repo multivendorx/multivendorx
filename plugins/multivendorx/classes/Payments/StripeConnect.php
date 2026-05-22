@@ -165,7 +165,7 @@ class StripeConnect {
                         $stripe_account_id ? __( 'Connected', 'multivendorx' ) : __( 'Not Connected', 'multivendorx' )
 					),
 					'noticeType'      => $stripe_account_id ? 'success' : 'error',
-					'displayPosition' => 'notice',
+					'displayPosition' => 'inline-notice',
 				),
 			);
 

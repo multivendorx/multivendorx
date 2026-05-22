@@ -126,7 +126,9 @@ class BankTransfer {
                 ),
             );
 
-            if ( in_array( 'bank_name', $settings['bank_details'] ) ) {
+            $bank_details = $settings['bank_details'] ?? array();
+
+            if ( in_array( 'bank_name', $bank_details ) ) {
                 $fields[] = array(
                     'key'   => 'bank_name',
                     'type'  => 'text',
@@ -134,7 +136,7 @@ class BankTransfer {
                 );
             }
 
-            if ( in_array( 'account_holder_name', $settings['bank_details'] ) ) {
+            if ( in_array( 'account_holder_name', $bank_details ) ) {
                 $fields[] = array(
                     'key'   => 'account_holder_name',
                     'type'  => 'text',
@@ -142,7 +144,7 @@ class BankTransfer {
                 );
             }
 
-            if ( in_array( 'account_number', $settings['bank_details'] ) ) {
+            if ( in_array( 'account_number', $bank_details ) ) {
                 $fields[] = array(
                     'key'   => 'account_number',
                     'type'  => 'text',
@@ -150,7 +152,7 @@ class BankTransfer {
                 );
             }
 
-            if ( in_array( 'bank_address', $settings['bank_details'] ) ) {
+            if ( in_array( 'bank_address', $bank_details ) ) {
                 $fields[] = array(
                     'key'   => 'bank_address',
                     'type'  => 'textarea',
@@ -158,7 +160,7 @@ class BankTransfer {
                 );
             }
 
-            if ( in_array( 'routing_number', $settings['bank_details'] ) ) {
+            if ( in_array( 'routing_number', $bank_details ) ) {
                 $fields[] = array(
                     'key'   => 'routing_number',
                     'type'  => 'text',
@@ -166,7 +168,7 @@ class BankTransfer {
                 );
             }
 
-            if ( in_array( 'iban', $settings['bank_details'] ) ) {
+            if ( in_array( 'iban', $bank_details ) ) {
                 $fields[] = array(
                     'key'   => 'iban',
                     'type'  => 'text',
@@ -174,7 +176,7 @@ class BankTransfer {
                 );
             }
 
-            if ( in_array( 'destination_currency', $settings['bank_details'] ) ) {
+            if ( in_array( 'destination_currency', $bank_details ) ) {
                 $fields[] = array(
                     'key'   => 'destination_currency',
                     'type'  => 'text',
