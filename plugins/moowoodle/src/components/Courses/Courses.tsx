@@ -135,7 +135,7 @@ const Course: React.FC = () => {
 				{
 					// Use a function that returns the label based on the row
 					label: (row: CourseRow) => {
-						return row?.products && Object.keys(row.products).length
+						return row?.product_name
 							? __(
 									'Sync Course Data & Update Product',
 									'moowoodle'
@@ -143,7 +143,7 @@ const Course: React.FC = () => {
 							: __('Create Product', 'moowoodle');
 					},
 					icon: (row: CourseRow) => {
-						return row?.products && Object.keys(row.products).length
+						return row?.product_name
 							? 'update-product'
 							: 'add-product';
 					},
