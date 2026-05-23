@@ -93,10 +93,6 @@ const CheckoutMapFill: React.FC = () => {
         );
     };
 
-    if (!ExperimentalCheckoutFields) {
-        return renderMapComponent();
-    }
-
     return (
         <ExperimentalCheckoutFields>
             <div >
