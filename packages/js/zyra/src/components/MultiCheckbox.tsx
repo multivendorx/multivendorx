@@ -145,7 +145,7 @@ export const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
             if (!updated.includes(option.dependent)) {
                 updated.push(option.dependent);
             }
-            updated = turnOnParents(updated, options, option.dependent);
+            updated = turnOnSiblings(updated, options, option.dependent);
         }
 
         return updated;
