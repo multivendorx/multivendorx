@@ -664,7 +664,7 @@ class StoreUtil {
                 return true;
             }
 
-            if ( 'suspended' === $status || $permissions['disable_checkout'] ) {
+            if ( 'suspended' === $status && $permissions['disable_checkout'] ) {
                 return true;
             }
         }

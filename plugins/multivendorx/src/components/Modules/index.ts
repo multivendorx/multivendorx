@@ -7,7 +7,7 @@ export default {
 		{
 			type: 'separator',
 			id: 'marketplace_types',
-			label: 'Marketplace Types',
+			label: __('Marketplace Types', 'multivendorx'),
 		},
 		{
 			id: 'booking',
@@ -129,7 +129,7 @@ export default {
 			],
 			category: ['marketplace_types', 'product_types'],
 		},
-		{ type: 'separator', id: 'product_types', label: 'Product Types' },
+		{ type: 'separator', id: 'product_types', label: __('Product Types', 'multivendorx') },
 		{
 			id: 'simple',
 			name: __('Simple', 'multivendorx'),
@@ -184,7 +184,7 @@ export default {
 		{
 			type: 'separator',
 			id: 'store_management',
-			label: 'Store Management',
+			label: __('Store Management', 'multivendorx'),
 		},
 		{
 			id: 'shared-listing',
@@ -280,7 +280,7 @@ export default {
 		{
 			type: 'separator',
 			id: 'payment_management',
-			label: 'Payment Management',
+			label: __('Payment Management', 'multivendorx'),
 		},
 
 		{
@@ -328,7 +328,7 @@ export default {
 		{
 			type: 'separator',
 			id: 'shipping_management',
-			label: 'Shipping Management',
+			label: __('Shipping Management', 'multivendorx'),
 		},
 		{
 			id: 'store-shipping',
@@ -380,15 +380,15 @@ export default {
 		{
 			id: 'printful',
 			name: __('Printful', 'multivendorx'),
-			desc: 'Automated product syncing, order fulfillment, and shipping are enabled for all stores via Printful.',			
+			desc: 'Automated product syncing, order fulfillment, and shipping are enabled for all stores via Printful.',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=printful`,
-			proModule: true,			
+			proModule: true,
 			category: 'shipping_management',
 		},
 		{
 			type: 'separator',
 			id: 'customer_experience',
-			label: 'Customer Experience',
+			label: __('Customer Experience', 'multivendorx'),
 		},
 		{
 			id: 'invoice',
@@ -452,7 +452,7 @@ export default {
 			proModule: false,
 			category: ['store_management', 'customer_experience'],
 		},
-		{ type: 'separator', id: 'analytics_tools', label: 'Marketing Tools' },
+		{ type: 'separator', id: 'analytics_tools', label: __('Marketing Tools', 'multivendorx') },
 		{
 			id: 'store-analytics',
 			name: __('Store Analytics', 'multivendorx'),
@@ -475,7 +475,7 @@ export default {
 		{
 			type: 'separator',
 			id: 'marketplace_boosters',
-			label: 'Marketplace Boosters',
+			label: __('Marketplace Boosters', 'multivendorx'),
 		},
 		{
 			id: 'intelligence',
@@ -587,7 +587,7 @@ export default {
 			category: 'marketplace_boosters',
 			miniModule: true,
 		},
-		{ type: 'separator', id: 'notification', label: 'Notification' },
+		{ type: 'separator', id: 'notification', label: __('Notification', 'multivendorx') },
 		{
 			id: 'announcement',
 			name: __('Announcement', 'multivendorx'),
@@ -608,7 +608,7 @@ export default {
 			category: 'notification',
 			reloadOnChange: true,
 		},
-		{ type: 'separator', id: 'integration', label: 'Integration' },
+		{ type: 'separator', id: 'integration', label: __('Integration', 'multivendorx') },
 		{
 			id: 'elementor',
 			name: __('Elementor', 'multivendorx'),
