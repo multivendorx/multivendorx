@@ -19,7 +19,7 @@ use CatalogX\Utill;
 class Util {
 
     /**
-     * Check enquiry functionlity available for current user
+     * Check enquiry functionality available for current user
      *
      * @return bool
      */
@@ -28,36 +28,32 @@ class Util {
         $current_user = wp_get_current_user();
 
         // Get exclusion setting.
-        $enquiry_exclusion_setting = CatalogX()->setting->get_option( 'catalogx_enquiry_quote_exclusion_settings', array() );
-
-        // Get userroll exclusion settings.
-        $userroles_exclusion_settings = isset( $enquiry_exclusion_setting['enquiry_exclusion_userroles_list'] ) ? $enquiry_exclusion_setting['enquiry_exclusion_userroles_list'] : array();
-
-        // Get excluded user roles.
-        $exclude_user_roles = array_map(
-            function ( $userrole ) {
-                return $userrole['key'];
-            },
-            $userroles_exclusion_settings
+        $enquiry_exclusion_setting = CatalogX()->setting->get_option(
+            'catalogx_enquiry_quote_exclusion_settings',
+            array()
         );
 
-        // Check current user's role is in exclude user roles.
+        // Get exclusion section.
+        $exclusion_settings = isset( $enquiry_exclusion_setting['exclusion'] )
+            ? $enquiry_exclusion_setting['exclusion']
+            : array();
+
+        // Get excluded user roles.
+        $exclude_user_roles = isset( $exclusion_settings['enquiry_exclusion_value_userroles_list'] )
+            ? $exclusion_settings['enquiry_exclusion_value_userroles_list']
+            : array();
+
+        // Check current user's role is excluded.
         if ( array_intersect( $exclude_user_roles, $current_user->roles ) ) {
             return false;
         }
 
-        // Get user exclusion settings.
-        $userlist_exclusion_settings = isset( $enquiry_exclusion_setting['enquiry_exclusion_user_list'] ) ? $enquiry_exclusion_setting['enquiry_exclusion_user_list'] : array();
+        // Get excluded users.
+        $exclude_user_ids = isset( $exclusion_settings['enquiry_exclusion_value_user_list'] )
+            ? array_map( 'intval', $exclusion_settings['enquiry_exclusion_value_user_list'] )
+            : array();
 
-        // Get excluded user ids.
-        $exclude_user_ids = array_map(
-            function ( $userid ) {
-                return (int) $userid['key'];
-            },
-            $userlist_exclusion_settings
-        );
-
-        // Check current user's id is in exclude user id.
+        // Check current user's ID is excluded.
         if ( in_array( $current_user->ID, $exclude_user_ids, true ) ) {
             return false;
         }

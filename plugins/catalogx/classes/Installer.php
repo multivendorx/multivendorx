@@ -48,34 +48,25 @@ class Installer {
      */
     public function __construct() {
 
-        $this->run_migration();
-
-    update_option(
-        self::VERSION_KEY,
-        CatalogX()->version
-    );
-
-    do_action( 'catalogx_after_installed' );
-
-        // // Get the previous version and current version.
-        // self::$previous_version = get_option( self::VERSION_KEY, '' );
-        // // this function should be deleted after 7.0.0 .
-        // if ( ! empty( get_option( 'mvx_catalog_general_tab_settings' ) ) ) {
-        //     $this->create_database_tables();
-        //     $this->set_default_modules();
-        //     $this->set_default_settings();
-        //     $this->migrate_catalog_enquiry_to_catalogx();
-        //     update_option( self::VERSION_KEY, '6.0.0' );
-        // }
-        // if ( ! ( get_option( self::VERSION_KEY, false ) ) ) {
-        //     $this->create_database_tables();
-        //     $this->set_default_modules();
-        //     $this->set_default_settings();
-        // } else {
-        //     $this->run_default_migration();
-        // }
-        // // Update the version in database.
-        // update_option( self::VERSION_KEY, CatalogX()->version );
+        // Get the previous version and current version.
+        self::$previous_version = get_option( self::VERSION_KEY, '' );
+        // this function should be deleted after 7.0.0 .
+        if ( ! empty( get_option( 'mvx_catalog_general_tab_settings' ) ) ) {
+            $this->create_database_tables();
+            $this->set_default_modules();
+            $this->set_default_settings();
+            $this->migrate_catalog_enquiry_to_catalogx();
+            update_option( self::VERSION_KEY, '6.0.0' );
+        }
+        if ( ! ( get_option( self::VERSION_KEY, false ) ) ) {
+            $this->create_database_tables();
+            $this->set_default_modules();
+            $this->set_default_settings();
+        } else {
+            // $this->run_default_migration();
+        }
+        // Update the version in database.
+        update_option( self::VERSION_KEY, CatalogX()->version );
     }
 
     /**

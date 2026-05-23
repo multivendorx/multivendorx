@@ -54,12 +54,7 @@ export default {
                     label: __('Catalog', 'catalogx'),
                     placeholder: __('Select...', 'catalogx'),
 
-                    options: [
-                        { value: 'admin', label: 'Administrator' },
-                        { value: 'vendor', label: 'Vendor' },
-                        { value: 'customer', label: 'Customer' },
-                        { value: 'guest', label: 'Guest' },
-                    ],
+                    options: appLocalizer.role_array,
 
                     isClearable: true,
 
@@ -76,12 +71,7 @@ export default {
                     label: __('Enquiry', 'catalogx'),
                     placeholder: __('Select...', 'catalogx'),
 
-                    options: [
-                        { value: 'admin', label: 'Administrator' },
-                        { value: 'vendor', label: 'Vendor' },
-                        { value: 'customer', label: 'Customer' },
-                        { value: 'guest', label: 'Guest' },
-                    ],
+                    options: appLocalizer.role_array,
 
                     isClearable: true,
 
@@ -99,12 +89,7 @@ export default {
 
                     placeholder: __('Select...', 'catalogx'),
 
-                    options: [
-                        { value: 'admin', label: 'Administrator' },
-                        { value: 'vendor', label: 'Vendor' },
-                        { value: 'customer', label: 'Customer' },
-                        { value: 'guest', label: 'Guest' },
-                    ],
+                    options: appLocalizer.role_array,
 
                     isClearable: true,
 

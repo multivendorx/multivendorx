@@ -72,7 +72,7 @@ final class CatalogX {
 
         add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
         // Major update notice.
-		add_action( 'in_plugin_update_message-woocommerce-catalog-enquiry/dc_product_vendor.php', array( $this, 'catalogx_plugin_update_message' ) );
+		add_action( 'in_plugin_update_message-woocommerce-catalog-enquiry/Woocommerce_Catalog_Enquiry.php', array( $this, 'catalogx_plugin_update_message' ) );
     }
 
     /**

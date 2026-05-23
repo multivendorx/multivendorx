@@ -41,7 +41,9 @@ class Shortcode {
         
         FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
         FrontendScripts::enqueue_script( 'catalogx-enquiry-button-view-script' );
+        FrontendScripts::enqueue_script( 'catalogx-quote-button-view-script' );
         FrontendScripts::localize_scripts( 'catalogx-enquiry-button-view-script' );
+        FrontendScripts::localize_scripts( 'catalogx-quote-button-view-script' );
 
     }
 

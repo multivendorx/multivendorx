@@ -17,7 +17,7 @@ namespace CatalogX\Quote;
 class Util {
 
     /**
-     * Check quotation functionlity available for current user
+     * Check quotation functionality available for current user
      *
      * @return bool
      */
@@ -26,37 +26,23 @@ class Util {
         $current_user = wp_get_current_user();
 
         // Get exclusion setting.
-        $quote_exclusion_setting = CatalogX()->setting->get_option( 'catalogx_enquiry_quote_exclusion_settings', array() );
+        $quote_exclusion_setting = CatalogX()->setting->get_option(
+            'catalogx_enquiry_quote_exclusion_settings',
+            array()
+        );
 
-        // Get userroll exclusion settings.
-        $userroles_exclusion_settings = isset( $quote_exclusion_setting['quote_exclusion_userroles_list'] ) ? $quote_exclusion_setting['quote_exclusion_userroles_list'] : array();
+        // Get exclusion section.
+        $exclusion_settings = isset( $quote_exclusion_setting['exclusion'] )
+            ? $quote_exclusion_setting['exclusion']
+            : array();
 
         // Get excluded user roles.
-        $exclude_user_roles = array_map(
-            function ( $userrole ) {
-                return $userrole['key'];
-            },
-            $userroles_exclusion_settings
-        );
+        $exclude_user_roles = isset( $exclusion_settings['quote_exclusion_value_userroles_list'] )
+            ? $exclusion_settings['quote_exclusion_value_userroles_list']
+            : array();
 
-        // Check current user's role is in exclude user roles.
+        // Check current user's role is excluded.
         if ( array_intersect( $exclude_user_roles, $current_user->roles ) ) {
-            return false;
-        }
-
-        // Get user exclusion settings.
-        $userlist_exclusion_settings = isset( $quote_exclusion_setting['quote_exclusion_user_list'] ) ? $quote_exclusion_setting['quote_exclusion_user_list'] : array();
-
-        // Get excluded user ids.
-        $exclude_user_ids = array_map(
-            function ( $userid ) {
-                return (int) $userid['key'];
-            },
-            $userlist_exclusion_settings
-        );
-
-        // Check current user's id is in exclude user id.
-        if ( in_array( $current_user->ID, $exclude_user_ids, true ) ) {
             return false;
         }
 
