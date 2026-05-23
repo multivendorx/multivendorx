@@ -36,6 +36,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 						{__('Stock management', 'multivendorx')}
 						<MultiCheckBoxUI
 							value={product.manage_stock ? ['manage_stock'] : []}
+							look='toggle'
 							options={[
 								{
 									key: 'manage_stock',

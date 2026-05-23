@@ -713,7 +713,8 @@
 .badge-unenroll,
 .badge-outofstock,
 .badge-closed,
-.badge-unenrolled {
+.badge-unenrolled,
+.badge-refund-rejected {
     color: map-get(map-get($color-palette, red), color);
     background: map-get(map-get($color-palette, red), light-color);
 }
