@@ -72,15 +72,19 @@
                     /* for overwrite common style */
                 }
             }
+
             .calender-input {
                 width: 13rem;
             }
+
             .bulk-action {
                 display: flex;
             }
+
             .title {
                 background: $theme-color;
             }
+
             &.bulk {
                 background: #202020;
                 font-size: 1rem;
@@ -91,7 +95,7 @@
                     transition: all 0.3s ease;
                     border-radius: $border-radius-small;
                     display: flex;
-                     color: #fff;
+                    color: #fff;
 
                     .admin-btn {
                         background: transparent;
@@ -140,14 +144,14 @@
 .top-filter-wrapper {
     display: flex;
     flex-direction: column;
-    font-size: 0.875rem;  
+    font-size: 0.875rem;
     align-items: center;
     border-radius: $border-radius-small;
     width: fit-content;
     gap: 0.5rem;
-     margin: 1.5rem 0;
+    margin: 1.5rem 0;
 
-    .filters{
+    .filters {
         padding: 0.45rem;
         background: $background-white;
         display: flex;
@@ -241,7 +245,8 @@
                     flex-grow: 0;
                     min-width: 18rem;
                 }
-                .sort-button{
+
+                .sort-button {
                     display: flex;
                     align-items: center;
                 }
@@ -376,10 +381,12 @@
                             color: $theme-color;
                         }
                     }
-                    .edit-link{
+
+                    .edit-link {
                         opacity: 0;
                         transition: all 0.5s ease;
                     }
+
                     .details {
                         margin: 0;
                         position: relative;
@@ -459,8 +466,8 @@
                     padding: 0 1rem;
                 }
 
-                &:has(.edit-link):hover{
-                    .edit-link{
+                &:has(.edit-link):hover {
+                    .edit-link {
                         opacity: 1;
                     }
                 }
@@ -570,13 +577,14 @@
     align-items: start;
 
     .inline-actions {
-    display: flex;
-    gap: 0.125rem;
+        display: flex;
+        gap: 0.125rem;
 
-    .adminfont-delete {
-      color: $accent-color;
+        .adminfont-delete {
+            color: $accent-color;
+        }
     }
-  }
+
     .action-btn {
         display: flex;
         gap: 0.5rem;
@@ -714,8 +722,8 @@
     color: map-get(map-get($color-palette, teal), color);
     background: map-get(map-get($color-palette, teal), light-color);
 }
-.badge-refunded
-{
+
+.badge-refunded {
     color: map-get(map-get($color-palette, orange), color);
     background: map-get(map-get($color-palette, orange), light-color);
 }
@@ -737,9 +745,17 @@
     background: map-get(map-get($color-palette, pink), light-color);
 }
 
+
+// table review style start
+.review-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.313rem;
+}
+
 // status color end
 
-@media only screen and (width <= 600px) {
+@media only screen and (width <=600px) {
     .admin-table-wrapper {
         .admin-top-filter {
             flex-wrap: wrap;

@@ -99,18 +99,21 @@ a {
     max-height: 2rem !important;
     background: $background-white;
   }
-  .textarea-input{
-    background: $background-white;    
+
+  .textarea-input {
+    background: $background-white;
   }
 
   // tiny mc error style
-  .mce-widget.mce-notification{
+  .mce-widget.mce-notification {
     left: auto;
   }
-  .textarea-input{
+
+  .textarea-input {
     font-family: Figtree, sans-serif;
-      
+
   }
+
   input[type="color"] {
     cursor: pointer;
   }
@@ -228,6 +231,7 @@ a {
 $index: 1;
 
 @each $name, $style in $color-palette {
+
   // color name with background (.red & .admin-color1)
   .#{$name},
   .admin-color#{$index} {
@@ -237,7 +241,7 @@ $index: 1;
   }
 
   // only background color
-  .#{$name}-bg, 
+  .#{$name}-bg,
   .admin-bg-color#{$index} {
     background: map-get($style, color) !important;
   }
@@ -287,6 +291,10 @@ $index: 1;
 
 .react-select input:focus {
   box-shadow: none;
+}
+
+[class^="select-prefix"] {
+  img {width: 1.25rem;} // for select flag style
 }
 
 .setting-form-input {

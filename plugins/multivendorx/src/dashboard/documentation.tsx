@@ -117,39 +117,25 @@ const Documentation: React.FC = () => {
 						title={__('No documents found.', 'multivendorx')}
 					/>
 				)}
-				{filteredDocuments.map((doc) => (
-					<>
-						<ItemListUI
-							className="mini-card documentation"
-							border
-							items={[
-								{
-									title: truncateText(doc.title || '', 4),
-									icon: 'icon adminfont-contact-form blue',
-									desc: (
-										<>
-											{truncateText(
-												doc.content || '',
-												10
-											)}
-											<a
-												className="read-more"
-												onClick={() =>
-													handleReadMore(doc)
-												}
-											>
-												{__(
-													'Read more',
-													'multivendorx'
-												)}
-											</a>
-										</>
-									),
-								},
-							]}
-						/>
-					</>
-				))}
+				<ItemListUI
+					className="mini-card documentation"
+					border
+					items={filteredDocuments.map((doc) => ({
+						title: truncateText(doc.title || '', 4),
+						icon: 'icon adminfont-contact-form blue',
+						desc: (
+							<>
+								{truncateText(doc.content || '', 10)}
+								<a
+									className="read-more"
+									onClick={() => handleReadMore(doc)}
+								>
+									{__('Read more', 'multivendorx')}
+								</a>
+							</>
+						),
+					}))}
+				/>
 			</Card>
 
 			{activeDocument && (
