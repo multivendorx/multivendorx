@@ -385,8 +385,8 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 			{addShipping && selectedZone && (
 				<PopupUI
 					open={addShipping}
-					width={35}
-					height="70%"
+					width='80%'
+					height="90%"
 					onClose={() => setAddShipping(false)}
 					header={{
 						icon: 'shipping',
@@ -622,7 +622,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 										}
 									/>
 									<div className="desc">
-										{__('This amount is', 'multivendorx')}
+										{__('This amount is ', 'multivendorx')}
 										<b>
 											{__(
 												'added to the base shipping cost.',
