@@ -155,6 +155,7 @@ class StripeConnect {
             if ( $store->exists() ) {
                 $stripe_account_id = $store->get_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] );
             }
+            $stripe_account_id =  apply_filters( 'multivendorx_stripe_account_id', $stripe_account_id );
 			$fields            = array(
 				array(
 					'key'             => 'stripe_status',
@@ -176,7 +177,10 @@ class StripeConnect {
                         'key'          => 'disconnect_account',
                         'label'        => __( 'Disconnect Stripe Account', 'multivendorx' ),
                         'text'         => __( 'Disconnect', 'multivendorx' ),
-                        'redirect_url' => admin_url( 'admin-post.php?action=multivendorx_disconnect_stripe' ),
+                        'redirect_url' => apply_filters( 'multivendorx_stripe_disconnect_url',
+                                admin_url(
+                                    'admin-post.php?action=multivendorx_disconnect_stripe'
+                                )),
                         'class'        => 'multivendorx-stripe-disconnect-btn',
                     );
                 } else {
@@ -185,7 +189,10 @@ class StripeConnect {
                         'key'          => 'create_account',
                         'label'        => __( 'Connect with Stripe', 'multivendorx' ),
                         'text'         => __( 'Connect', 'multivendorx' ),
-                        'redirect_url' => admin_url( 'admin-post.php?action=multivendorx_connect_stripe' ),
+                        'redirect_url' => apply_filters( 'multivendorx_stripe_connect_url',
+                                admin_url(
+                                    'admin-post.php?action=multivendorx_connect_stripe'
+                                )),
                         'class'        => 'multivendorx-stripe-connect-btn',
                     );
                 }
@@ -382,7 +389,7 @@ class StripeConnect {
      *
      * @return string
      */
-    private function get_redirect_url( $type, $value ) {
+    public function get_redirect_url( $type, $value ) {
         $dashboard_page_id = (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' );
         if ( get_option( Utill::WORDPRESS_SETTINGS['permalink'] ) ) {
             $dashboard_slug = $dashboard_page_id
@@ -447,7 +454,7 @@ class StripeConnect {
      *
      * @return array|false
      */
-    private function make_stripe_api_call( $url, $data = array(), $method = 'POST' ) {
+    public function make_stripe_api_call( $url, $data = array(), $method = 'POST' ) {
         $config = $this->get_store_stripe_config();
 
         if ( empty( $config['secret_key'] ) ) {
