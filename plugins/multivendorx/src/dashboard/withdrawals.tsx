@@ -19,6 +19,7 @@ import {
 	Notice,
 } from 'zyra';
 import { formatCurrency } from '../services/commonFunction';
+import { applyFilters } from '@wordpress/hooks';
 interface WithdrawalData {
 	available_balance?: number;
 	locking_balance?: number;
@@ -39,6 +40,12 @@ interface WithdrawalItem {
 	payment_method: string;
 }
 const Withdrawals: React.FC = () => {
+	const filteredContent = applyFilters('multivendorx_withdrawals_content',null);
+
+	if (filteredContent) {
+		return <>{filteredContent}</>;
+	}
+
 	const [data, setData] = useState<WithdrawalData>({});
 	const [amount, setAmount] = useState<number>();
 	const [errors, setErrors] = useState<Record<string, string>>({});
@@ -191,11 +198,11 @@ const Withdrawals: React.FC = () => {
 												'paypal-payout' &&
 												__('PayPal', 'multivendorx')}
 											{item.payment_method ===
-											'bank-transfer'
+												'bank-transfer'
 												? __(
-														'Bank Transfer',
-														'multivendorx'
-													)
+													'Bank Transfer',
+													'multivendorx'
+												)
 												: ''}
 										</div>
 									</div>
@@ -239,7 +246,7 @@ const Withdrawals: React.FC = () => {
 									)}{' '}
 								</div>
 								<div className="desc">
-									{__( 'Minimum required to withdraw - ','multivendorx')}
+									{__('Minimum required to withdraw - ', 'multivendorx')}
 									{data?.threshold > 0 ? (
 										<>
 											<b>
@@ -371,8 +378,8 @@ const Withdrawals: React.FC = () => {
 																?.withdrawal_setting?.[0]
 																?.free_withdrawals ??
 																0) -
-																(data?.free_withdrawal ??
-																	0)
+															(data?.free_withdrawal ??
+																0)
 														)}{' '}
 														<span>
 															{__(
