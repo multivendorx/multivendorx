@@ -23,8 +23,8 @@ declare global {
         admin_url: string;
         users_data: Array;
         products_data: Array;
-        all_product_cat: Array;
-        all_product_tag: Array;
+        all_product_categories: Array;
+        all_product_categories: Array;
         product_brands: Array;
         settings_databases_value: any; // Use a more specific type if possible
         active_modules: string[];

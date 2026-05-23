@@ -109,7 +109,7 @@ export default function RulePopup({
             label: 'All Category',
             value: -1,
         },
-        ...(appLocalizer.all_product_cat || []),
+        ...(appLocalizer.all_product_categories || []),
     ];
 
     const brandOptions = [

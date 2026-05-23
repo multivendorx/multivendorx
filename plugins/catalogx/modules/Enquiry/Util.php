@@ -111,7 +111,7 @@ class Util {
                 $exclude_categories = array_filter(
                     array_map(
                         function ( $category ) use ( $product_id ) {
-                            $term_list = wp_get_post_terms( $product_id, 'product_cat', array( 'fields' => 'ids' ) );
+                            $term_list = wp_get_post_terms( $product_id, 'product_categories', array( 'fields' => 'ids' ) );
                             return ( ! empty( $term_list ) && $category['value'] === $term_list[0] ) ? $product_id : null;
                         },
                         $category_settings
@@ -151,7 +151,7 @@ class Util {
         $exclude_categories = array_filter(
             array_map(
                 function ( $category ) use ( $product_id ) {
-                    $term_list = wp_get_post_terms( $product_id, 'product_cat', array( 'fields' => 'ids' ) );
+                    $term_list = wp_get_post_terms( $product_id, 'product_categories', array( 'fields' => 'ids' ) );
                     return $category['key'] === $term_list[0] ? $product_id : null;
                 },
                 $category_exclusion_settings
