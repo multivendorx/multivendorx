@@ -21,17 +21,11 @@ defined( 'ABSPATH' ) || exit;
 class Modules {
 
     /**
-     * Option's table key for active module list.
-     *
-     * @var string
-     */
-
-    /**
      * List of all module.
      *
      * @var array
      */
-    private $modules = array();
+    private $registered_modules = array();
 
     /**
      * List of all active module.
@@ -48,12 +42,12 @@ class Modules {
     private static $module_activated = false;
 
     /**
-     * Container that store the object of active module
+     * Services that store the object of active module
      *
      * @var array
      */
 
-    private $container = array();
+    private $services = array();
 
     /**
      * Constructor of Modules class
@@ -80,10 +74,10 @@ class Modules {
     /**
      * Get all modules dynamically from /modules directory
      */
-    public function get_all_modules(): array {
+    public function get_registered_modules(): array {
 
-        if ( ! empty( $this->modules ) ) {
-            return $this->modules;
+        if ( ! empty( $this->registered_modules ) ) {
+            return $this->registered_modules;
         }
 
         $sources = apply_filters(
@@ -119,11 +113,11 @@ class Modules {
 
                 $module_id = $this->camel_to_kebab( $folder );
 
-                $key = array_key_exists( $module_id, $this->modules )
+                $key = array_key_exists( $module_id, $this->registered_modules )
                     ? $namespace . '_' . $module_id
                     : $module_id;
 
-                $this->modules[ $key ] = array(
+                $this->registered_modules[ $key ] = array(
                     'id'           => $module_id,
                     'module_file'  => $module_file,
                     'module_class' => "{$namespace}\\{$folder}\\Module",
@@ -131,7 +125,7 @@ class Modules {
             }
         }
 
-        return $this->modules;
+        return $this->registered_modules;
     }
 
     /**
@@ -159,7 +153,7 @@ class Modules {
         }
 
         $active_modules = $this->get_active_modules();
-        $all_modules    = $this->get_all_modules();
+        $all_modules    = $this->get_registered_modules();
         $validated_active = array();
         foreach ( $active_modules as $module_id ) {
             foreach ( $all_modules as $key => $module ) {
@@ -175,7 +169,7 @@ class Modules {
 
                 try {
                     $class                   = $module['module_class'];
-                    $this->container[ $key ] = new $class();
+                    $this->services[ $key ] = new $class();
                 } catch ( \Throwable $e ) {         
                     CatalogX()->util->log( $e );
                     continue;
@@ -183,7 +177,7 @@ class Modules {
 
                 do_action(
                     "catalogx_activated_module_{$module_id}",
-                    $this->container[ $key ]
+                    $this->services[ $key ]
                 );
             }
 
@@ -226,8 +220,8 @@ class Modules {
      *
      * @return array
      */
-    public function get_all_modules_ids() {
-        return array_keys( $this->get_all_modules() );
+    public function get_module_ids() {
+        return array_keys( $this->get_registered_modules() );
     }
 
     /**
@@ -238,7 +232,7 @@ class Modules {
     public function get_available_modules(): array {
         $available = array();
 
-        foreach ( $this->get_all_modules() as $id => $module ) {
+        foreach ( $this->get_registered_modules() as $id => $module ) {
             if ( $this->is_module_available( $module ) ) {
                 $available[] = $id;
             }
@@ -250,12 +244,12 @@ class Modules {
     /**
      * Activate modules
      *
-     * @param array $modules The module name to activate.
+     * @param array $registered_modules The module name to activate.
      * @return array|mixed
      */
-    public function activate_modules( $modules ) {
+    public function activate_modules( $registered_modules ) {
         $active_modules       = $this->get_active_modules();
-        $this->active_modules = array_unique( array_merge( $active_modules, $modules ) );
+        $this->active_modules = array_unique( array_merge( $active_modules, $registered_modules ) );
 
         update_option( Utill::ACTIVE_MODULES_DB_KEY, $this->active_modules );
 
@@ -269,25 +263,25 @@ class Modules {
     /**
      * Defactivate modules.
      *
-     * @param array $modules The module name to deactivate.
+     * @param array $registered_modules The module name to deactivate.
      * @return array
      */
-    public function deactivate_modules( array $modules ): array {
+    public function deactivate_modules( array $registered_modules ): array {
 
         $this->active_modules = array_values(
-            array_diff( $this->get_active_modules(), $modules )
+            array_diff( $this->get_active_modules(), $registered_modules )
         );
 
         update_option( Utill::ACTIVE_MODULES_DB_KEY, $this->active_modules );
 
         add_action(
             'shutdown',
-            function () use ( $modules ) {
-                foreach ( $modules as $module_id ) {
-                    if ( isset( $this->container[ $module_id ] ) ) {
+            function () use ( $registered_modules ) {
+                foreach ( $registered_modules as $module_id ) {
+                    if ( isset( $this->services[ $module_id ] ) ) {
                         do_action(
                             "catalogx_deactivated_module_{$module_id}",
-                            $this->container[ $module_id ]
+                            $this->services[ $module_id ]
                         );
                     }
                 }
