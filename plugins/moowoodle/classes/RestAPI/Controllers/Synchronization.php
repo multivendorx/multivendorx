@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * MooWoodle REST API Synchronization controller.
  *
- * @version     PRODUCT_VERSION
+ * @version     3.4.0
  */
 class Synchronization extends \WP_REST_Controller {
 

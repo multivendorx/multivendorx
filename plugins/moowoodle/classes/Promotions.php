@@ -5,7 +5,7 @@ namespace MooWoodle;
 defined( 'ABSPATH' ) || exit;
 /**
  *
- * @version     PRODUCT_VERSION
+ * @version     3.4.0
  * @package     DualCube
  */
 class Promotions {
