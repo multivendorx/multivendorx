@@ -37,6 +37,7 @@ interface MultiCheckBoxProps {
     onBlocked?: (type: 'pro' | 'module', payload?: string) => void;
     modules: string[];
     field?: FieldContext;
+    look?: 'toggle' | 'default';
 }
 
 function isBlocked(
@@ -106,6 +107,7 @@ export const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
         onChange,
         onOptionsChange,
         field,
+        look
     } = props;
 
     const [showNewInput, setShowNewInput] = useState(false);
@@ -239,7 +241,7 @@ export const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
                     }}
                 />
             ) : (
-                <div className={props.wrapperClass}>
+                <div className={props.wrapperClass || (look === 'toggle' ? 'toggle-btn' : props.selectDeselect ? 'checkbox-list-side-by-side' : 'simple-checkbox')}>
                     {props.selectDeselect && (
                         <div className="checkbox-list-header">
                             <div className="checkbox">
@@ -280,7 +282,7 @@ export const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
                                 )}
 
                                 <div
-                                    className={props.inputInnerWrapperClass}
+                                    className={props.inputInnerWrapperClass || (look === 'toggle' ? 'toggle-checkbox' : 'default-checkbox')}
                                     data-tour={props.tour}
                                 >
                                     {isEditing ? (
