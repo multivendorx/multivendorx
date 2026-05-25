@@ -176,20 +176,24 @@ export const TransactionHistory: React.FC = () => {
 						)
 				}
 				customContent={
-					<>
-						<label>
-							<i className="adminfont-switch-store"></i>
-							{__('Switch Store:', 'multivendorx')}
-						</label>
+					applyFilters(
+						'multivendorx_switch_store_content',
+						<>
+							<label>
+								<i className="adminfont-switch-store"></i>
+								{__('Switch Store:', 'multivendorx')}
+							</label>
 
-						<SelectInputUI
-							name="store"
-							value={selectedStoreId || ''}
-							options={allStores}
-							onChange={handleStoreChange}
-							size="12rem"
-						/>
-					</>
+							<SelectInputUI
+								name="store"
+								value={selectedStoreId || ''}
+								options={allStores}
+								onChange={handleStoreChange}
+								size="12rem"
+							/>
+						</>,
+						{ allStores, selectedStoreId, handleStoreChange }
+					)
 				}
 			/>
 		</>
