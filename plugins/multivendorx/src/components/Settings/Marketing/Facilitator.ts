@@ -29,12 +29,11 @@ export default {
 				'multivendorx'
 			),
 			moduleEnabled: 'facilitator',
-
 			size: '40%',
 			options: appLocalizer.facilitators_list,
 		},
 		{
-			key: 'facilitator',
+			key: 'facilitator_permissions',
 			type: 'checkbox',
 			label: __('Facilitator permissions', 'multivendorx'),
 			settingDescription: __(
@@ -68,6 +67,15 @@ export default {
 						'multivendorx'
 					),
 					value: 'edit_withdrawl_request',
+				},
+				{
+					key: 'read_payout_section',
+					label: __('Payout Settings', 'multivendorx'),
+					desc: __(
+						'Allow facilitators to submit withdrawal requests from wallet balance.',
+						'multivendorx'
+					),
+					value: 'read_payout_section',
 				},
 			],
 			selectDeselect: true,

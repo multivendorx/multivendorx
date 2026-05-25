@@ -18,7 +18,7 @@ class CustomPayment {
      * Constructor.
      */
     public function __construct() {
-        add_action( 'multivendorx_process_custom-gateway_payment', array( $this, 'process_payment' ), 10, 5 );
+        add_action( 'multivendorx_process_custom-gateway_payment', array( $this, 'process_payment' ), 10, 6 );
     }
 
     /**
@@ -68,7 +68,7 @@ class CustomPayment {
      * @param string $transaction_id for the transaction.
      * @param string $note for the transaction.
      */
-    public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null ) {
+    public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null, $additional_receiver = 0 ) {
         // quick autoload/class check (helps debugging).
         $payment_admin_settings = MultiVendorX()->setting->get_setting( 'payment_methods', array() );
         $settings               = ! empty( $payment_admin_settings['custom-gateway'] ) ? $payment_admin_settings['custom-gateway'] : array();
@@ -84,7 +84,8 @@ class CustomPayment {
             $order_id,
             $transaction_id,
             $note,
-            $amount
+            $amount,
+            $additional_receiver
         );
     }
 }

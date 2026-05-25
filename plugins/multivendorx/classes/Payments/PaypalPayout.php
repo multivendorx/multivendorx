@@ -12,7 +12,7 @@ use MultiVendorX\Store\Store;
 use MultiVendorX\Utill;
 
 /**
- * MultiVendorX MultiVendorXEmails
+ * MultiVendorX Paypal Payout class
  *
  * @class       Module class
  * @version     5.0.0
@@ -23,7 +23,7 @@ class PaypalPayout {
      * Constructor
      */
     public function __construct() {
-        add_action( 'multivendorx_process_paypal-payout_payment', array( $this, 'process_payment' ), 10, 5 );
+        add_action( 'multivendorx_process_paypal-payout_payment', array( $this, 'process_payment' ), 10, 6 );
     }
     /**
      * Get id
@@ -115,7 +115,7 @@ class PaypalPayout {
      *
      * @return void
      */
-    public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null ) {
+    public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null, $additional_receiver = 0 ) {
         $payment_settings = MultiVendorX()->setting->get_setting( 'payment_methods', array() );
         $paypal_settings  = $payment_settings['paypal-payout'] ?? null;
 
@@ -130,6 +130,10 @@ class PaypalPayout {
             $receiver_email = $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] ) === 'paypal-payout'
                 ? $store->get_meta( Utill::STORE_SETTINGS_KEYS['paypal_email'] )
                 : '';
+        }
+
+        if ($additional_receiver > 0) {
+            $receiver_email = apply_filters( 'multivendorx_paypal_receiver_email', $receiver_email, $additional_receiver );
         }
 
         $client_id     = $paypal_settings['client_id'] ?? '';
@@ -167,7 +171,8 @@ class PaypalPayout {
             $order_id,
             $transaction_id,
             $note,
-            $amount
+            $amount,
+            $additional_receiver
         );
     }
 

@@ -27,7 +27,7 @@ class PaymentProcessor {
      * @return void
      */
     public function __construct() {
-        add_action( 'multivendorx_after_payment_complete', array( $this, 'after_payment_complete' ), 10, 7 );
+        add_action( 'multivendorx_after_payment_complete', array( $this, 'after_payment_complete' ), 10, 8 );
 
         // COD payments.
         add_action( 'woocommerce_order_status_changed', array( $this, 'cod_order_process' ), 30, 4 );
@@ -137,7 +137,7 @@ class PaymentProcessor {
 	/**
 	 * After Payment Complete
 	 *
-	 * @param int    $store_id Store ID.
+	 * @param int    $store_id ID.
 	 * @param string $method Payment Method.
 	 * @param string $status Payment Status.
 	 * @param int    $order_id Order ID.
@@ -147,8 +147,13 @@ class PaymentProcessor {
 	 *
 	 * @return void
 	 */
-	public function after_payment_complete( $store_id, $method, $status, $order_id, $transaction_id, $note, $amount = null ) {
+	public function after_payment_complete( $store_id, $method, $status, $order_id, $transaction_id, $note, $amount = null, $additional_receiver = 0 ) {
 		global $wpdb;
+
+        if ( $additional_receiver > 0 ) {
+			do_action( 'multivendorx_handle_user_payment', $store_id, $order_id, $transaction_id, $amount );
+			return;
+		}
 
 		$store         = new Store( $store_id );
 		$order         = $order_id > 0 ? wc_get_order( $order_id ) : null;

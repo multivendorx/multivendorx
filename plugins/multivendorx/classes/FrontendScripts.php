@@ -321,7 +321,7 @@ class FrontendScripts {
 
         $store_ids = array();
         $all_meta  = array();
-        if ( !is_admin() ) {
+        if ( !is_admin() && in_array( 'store_owner', MultiVendorX()->current_user->roles ) ) {
             $active_store = MultiVendorX()->active_store;
             $store_ids = Store::get_store( MultiVendorX()->current_user_id, 'user' );
             if ( empty( $active_store ) && ! empty( $store_ids ) ) {
