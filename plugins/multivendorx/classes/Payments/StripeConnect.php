@@ -217,11 +217,15 @@ class StripeConnect {
      */
     public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null, $additional_receiver = 0 ) {
         $store  = new Store( $store_id );
+        $stripe_account_id = '';
         if ( $store->exists() ) {
             $stripe_account_id = $store->get_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] );
         }
         if ( $additional_receiver > 0 ) {
             $stripe_account_id = apply_filters( 'multivendorx_stripe_account_id', $stripe_account_id, $additional_receiver );
+        }
+        if (empty($stripe_account_id)) {
+            return;
         }
         $transfer          = $this->create_transfer( $amount, $stripe_account_id, $order_id );
         $status            = $transfer ? 'success' : 'failed';
