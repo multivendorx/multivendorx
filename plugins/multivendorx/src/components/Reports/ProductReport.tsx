@@ -440,12 +440,12 @@ const ProductReport: React.FC = () => {
 									<Legend />
 									<Bar
 										dataKey="net_sales"
-										fill="#5007aa"
+										fill="var(--color-secondary)"
 										name={__('Net Sales', 'multivendorx')}
 									/>
 									<Bar
 										dataKey="items_sold"
-										fill="#00c49f"
+										fill="var(--color-accent)"
 										name={__('Items Sold', 'multivendorx')}
 									/>
 								</BarChart>

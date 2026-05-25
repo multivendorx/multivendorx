@@ -183,6 +183,17 @@
     }
 }
 
+.tag-list {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+
+    .delete-icon {
+        color: $accent-color;
+        cursor: pointer;
+    }
+}
 // icon set
 .notification-container {
     .store-pending-approval::before {

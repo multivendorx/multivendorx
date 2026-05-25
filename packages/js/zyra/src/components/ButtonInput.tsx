@@ -31,7 +31,7 @@ export type ButtonConfig = {
     icon: string;
     text: string;
     onClick: React.MouseEventHandler<HTMLButtonElement>;
-    color: string;
+    color?: string;
     children?: React.ReactNode;
     customStyle?: CustomStyle;
     disabled?: boolean;

@@ -33,6 +33,7 @@ const TableCard: React.FC<TableCardProps> = ({
     onBulkActionApply,
     rows = [],
     showMenu = true,
+    emptyMessage,
     summary,
     title,
     totalRows = 0,
@@ -371,6 +372,7 @@ const TableCard: React.FC<TableCardProps> = ({
                 enableBulkSelect={
                     bulkActions.length > 0 || !!onSelectCsvDownloadApply
                 }
+                emptyMessage={emptyMessage}
                 isLoading={isLoading}
                 format={format}
                 currency={currency}
