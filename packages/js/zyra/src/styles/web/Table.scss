@@ -681,7 +681,8 @@
 .badge-instock,
 .badge-enrolled,
 .badge-refund-accepted,
-.badge-open {
+.badge-open,
+.badge-confirmed {
     color: map-get(map-get($color-palette, green), color);
     background: map-get(map-get($color-palette, green), light-color);
 }
