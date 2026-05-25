@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * REST API controller for Moodle connection testing.
  *
- * @version     PRODUCT_VERSION
+ * @version     3.4.0
  */
 class TestConnection extends \WP_REST_Controller {
 
