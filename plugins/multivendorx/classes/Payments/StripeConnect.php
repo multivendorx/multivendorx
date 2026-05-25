@@ -25,7 +25,7 @@ class StripeConnect {
      * Constructor
      */
     public function __construct() {
-        add_action( 'multivendorx_process_stripe-connect_payment', array( $this, 'process_payment' ), 10, 5 );
+        add_action( 'multivendorx_process_stripe-connect_payment', array( $this, 'process_payment' ), 10, 6 );
         // Connect.
         add_action( 'admin_post_multivendorx_connect_stripe', array( $this, 'connect_stripe' ) );
         // Disconnect.
@@ -215,15 +215,17 @@ class StripeConnect {
      * @param string $transaction_id Transaction ID.
      * @param string $note Note.
      */
-    public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null ) {
+    public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null, $additional_receiver = 0 ) {
         $store  = new Store( $store_id );
-        if ( ! $store->exists() ) {
-            return;
+        if ( $store->exists() ) {
+            $stripe_account_id = $store->get_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] );
         }
-        $stripe_account_id = apply_filters( 'multivendorx_stripe_account_id', $store->get_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] ), $store_id );
+        if ( $additional_receiver > 0 ) {
+            $stripe_account_id = apply_filters( 'multivendorx_stripe_account_id', $stripe_account_id, $additional_receiver );
+        }
         $transfer          = $this->create_transfer( $amount, $stripe_account_id, $order_id );
         $status            = $transfer ? 'success' : 'failed';
-        do_action( 'multivendorx_after_payment_complete', $store_id, 'Stripe Connect', $status, $order_id, $transaction_id, $note, $amount );
+        do_action( 'multivendorx_after_payment_complete', $store_id, 'Stripe Connect', $status, $order_id, $transaction_id, $note, $amount, $additional_receiver );
     }
 
 	/**

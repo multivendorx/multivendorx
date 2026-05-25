@@ -24,7 +24,7 @@ class BankTransfer {
      * Constructor.
      */
     public function __construct() {
-        add_action( 'multivendorx_process_bank-transfer_payment', array( $this, 'process_payment' ), 10, 5 );
+        add_action( 'multivendorx_process_bank-transfer_payment', array( $this, 'process_payment' ), 10, 6 );
     }
 
     /**
@@ -201,7 +201,7 @@ class BankTransfer {
      * @param string $transaction_id Transaction id.
      * @param string $note Payment note.
      */
-    public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null ) {
+    public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null, $additional_receiver = 0 ) {
 
         $status = 'success';
         do_action(
@@ -212,7 +212,8 @@ class BankTransfer {
             $order_id,
             $transaction_id,
             $note,
-            $amount
+            $amount,
+            $additional_receiver
         );
     }
 }

@@ -27,7 +27,7 @@ class PaymentProcessor {
      * @return void
      */
     public function __construct() {
-        add_action( 'multivendorx_after_payment_complete', array( $this, 'after_payment_complete' ), 10, 7 );
+        add_action( 'multivendorx_after_payment_complete', array( $this, 'after_payment_complete' ), 10, 8 );
 
         // COD payments.
         add_action( 'woocommerce_order_status_changed', array( $this, 'cod_order_process' ), 30, 4 );
@@ -147,11 +147,10 @@ class PaymentProcessor {
 	 *
 	 * @return void
 	 */
-	public function after_payment_complete( $id, $method, $status, $order_id, $transaction_id, $note, $amount = null ) {
+	public function after_payment_complete( $id, $method, $status, $order_id, $transaction_id, $note, $amount = null, $additional_receiver = 0 ) {
 		global $wpdb;
 
-		$user = get_userdata( $id );
-        if ( ! in_array( 'store_owner', $user->roles, true ) ) {
+        if ( $additional_receiver > 0 ) {
 			do_action( 'multivendorx_handle_user_payment', $id, $order_id, $transaction_id, $amount );
 			return;
 		}
