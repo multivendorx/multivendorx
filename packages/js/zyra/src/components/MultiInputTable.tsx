@@ -293,7 +293,7 @@ export const MultiInputTableUI: React.FC<MultiInputTableUIProps> = ({
                     </td>
                     {!isRowActive ? (
                         <td colSpan={visibleColumns.length}>
-                            <span className="row-inactive-message">
+                            <span className="red-color">
                                 {row.inactiveMessage ?? 'Inactive'}
                             </span>
                         </td>

@@ -3,9 +3,9 @@
 **Tags:** marketplace, WooCommerce marketplace, multi vendor, multivendor, multivendor marketplace  
 **Donate link:** http://multivendorx.com/donate/  
 **Requires at least:** 6.3  
-**Tested up to:** 6.9.4  
+**Tested up to:** 7.0.0  
 **Requires PHP:** 8.0  
-**Stable tag:** 5.0.5  
+**Stable tag:** 5.0.6  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -165,7 +165,7 @@ And [many more](https://multivendorx.com/docs/knowledgebase/multivendorx-widgets
 To know more on what we learnt from our customer [***read this blog*** ](https://multivendorx.com/blog/what-we-learnt-from-our-customers/)
 
 ### [Popular Blogs ](https://multivendorx.com/blog/)
-Confused about **how to get started**? Read our Blogs on**e-commerce best practices**, **Multivendor Shops, how to increase your website traffic** and many more. These blogs are powerful, inspirational and detailed enough to educate on anything marketplace. 
+Confused about **how to get started**? Read our Blogs on **e-commerce best practices**, **Multivendor Shops, how to increase your website traffic** and many more. These blogs are powerful, inspirational and detailed enough to educate on anything marketplace. 
 ### Stay Connected
 Stay connected with MultiVendorX and reap benefits like - 
 
@@ -198,7 +198,7 @@ Ans. Yes, vendors can upload products, process orders, and view reports from the
 ### How does vendor registration work? ###
 Ans. Vendors register through a [Vendor Registration page](https://multivendorx.com/docs/knowledgebase/vendors-registration/). Once approved, they access their dashboard to manage products and orders.
 ### Can I set different commission rates for each vendor? ###
-Ans. Yes, you can set fixed, percentage, or tiered commissions per vendor or category.To know more, click [here]((https://multivendorx.com/docs/knowledgebase/types-of-commission/?utm_source=wordpress.org&utm_medium=plugindescription&utm_campaign=MultiVendorxWPOrg))
+Ans. Yes, you can set fixed, percentage, or tiered commissions per vendor or category.To know more, click [here](https://multivendorx.com/docs/knowledgebase/types-of-commission/?utm_source=wordpress.org&utm_medium=plugindescription&utm_campaign=MultiVendorxWPOrg)
 
 ### Can I approve vendors and products before they go live? ###
 Ans. Yes, admins can manually approve or reject vendor accounts and products.
@@ -245,6 +245,22 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 ## Changelog ##
+
+### 5.0.6 - 2026-05-21 ###
+* Added     - Compatibility with WordPress 7.0.0.
+* Added     - Support for adding attribute fields across all product types in the store dashboard #1869.
+* Added     - Store banner support for block based theme #1860.
+* Fixed     - Conflict with Elementor plugin causing issues in store list page loading #1866.
+* Fixed     - Console errors appearing on the store registration page #1867.
+* Fixed     - Database errors occurring while refreshing backend pages #1856.
+* Fixed     - Script loading issues affecting functionality #1860.
+* Fixed     - Loading issues on the store registration page #1851.
+* Fixed     - Suborder emails triggering multiple times for customers when the main order option is enabled #1796.
+* Fixed     - Stores in the approval queue not getting selected due to JavaScript errors #1846.
+* Fixed     - 'multivendorx_stores' table using insufficient varchar(20) length for name and slug fields #1847.
+* Fixed     - Google Maps location selection issue during checkout #1849.
+* Fixed     - Translation issues with frontend strings #1848.
+* Updated   - Language file.
 
 ### 5.0.5 - 2026-05-13 ###
 * Added     - Terms & Conditions support for marketplace configuration.
