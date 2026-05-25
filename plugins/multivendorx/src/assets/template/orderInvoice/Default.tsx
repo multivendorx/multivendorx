@@ -1,5 +1,5 @@
 import React from 'react';
-import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, View, Text, StyleSheet , Image} from '@react-pdf/renderer';
 interface Props {
 	colors: {
 		colorPrimary: string;
@@ -13,18 +13,23 @@ const Default: React.FC<Props> = ({ colors }) => {
 	const createStyles = (colors: Props['colors']) => StyleSheet.create({
 		page: {
 			fontSize: 12,
-			fontFamily: 'Helvetica',
+			fontFamily: 'Google Sans',
 			backgroundColor: '#fff',
 			position: 'relative',
 			padding: 0,
 			margin: 0
 		},
 		boldText: {
-			fontWeight: 600,
 			fontSize: 14,
 			margin: 0,
+			width: '25%'
 		},
-
+		companytext: {
+			fontWeight: 600,
+			fontSize: 16,
+			color: '#1e2a38',
+			marginBottom: 8,
+		},
 		header: {
 			display: 'flex',
 			justifyContent: 'space-between',
@@ -32,17 +37,22 @@ const Default: React.FC<Props> = ({ colors }) => {
 			flexDirection: 'row',
 			margin: 20,
 		},
+		headerTitleWrapper:{
+			paddingTop: 50,
+			margin: 20,
+		},
 		headerTitle: {
-			fontSize: 32,
+			fontSize: 25,
 			color: '#1e2a38',
 			fontWeight: 'bold',
+			lineHeight: 1.2,
 		},
 		headerRight: {
-			textAlign: 'right',
 			fontSize: 14,
 			color: '#555',
 			display: 'flex',
 			flexDirection: 'column',
+			width: '50%',
 		},
 		headerDetails: {
 			display: 'flex',
@@ -58,7 +68,8 @@ const Default: React.FC<Props> = ({ colors }) => {
 		box: {
 			display: 'flex',
 			flexDirection: 'column',
-			gap: 8,
+			gap: 4,
+			width: '50%',
 		},
 		boxTitle: {
 			fontSize: 16,
@@ -72,7 +83,7 @@ const Default: React.FC<Props> = ({ colors }) => {
 		},
 		detailsValue: {
 			fontSize: 14,
-			color: '#555'
+			color: '#555',
 		},
 
 		// table start
@@ -84,12 +95,12 @@ const Default: React.FC<Props> = ({ colors }) => {
 		tableHeader: {
 			display: 'flex',
 			flexDirection: 'row',
-			backgroundColor: '#f7f8fa',
+			backgroundColor: '#000',
 			padding: 10,
 		},
 		tableHeaderText: {
 			fontWeight: 600,
-			color: '#1e2a38',
+			color: '#fff',
 		},
 		tableRow: {
 			display: 'flex',
@@ -143,7 +154,12 @@ const Default: React.FC<Props> = ({ colors }) => {
 			borderLeft: `0.125rem solid #1e2a38`,
 			margin: 20,
 			backgroundColor: '#f9f9f9',
-		}
+		},
+		signatureImage: {
+            width: 120,
+            height: 50,
+            marginBottom: 4,
+        },
 	});
 	const styles = createStyles(colors);
 	return (
@@ -151,10 +167,10 @@ const Default: React.FC<Props> = ({ colors }) => {
 			<Page size="A4" style={styles.page}>
 				{/* Header start */}
 				<View style={styles.header}>
-					<Text style={styles.headerTitle}>INVOICE</Text>
 
+					<Image style={styles.signatureImage} />
 					<View style={styles.headerRight}>
-						<Text style={styles.boldText}> Marketplace Solutions Inc.</Text>
+						<Text style={styles.companytext}> Marketplace Solutions Inc.</Text>
 						<Text>123 Elm Street, Suite 400</Text>
 						<Text>London, EC1A 1BB</Text>
 					</View>  {/* headerDetails view end */}
@@ -162,9 +178,37 @@ const Default: React.FC<Props> = ({ colors }) => {
 				{/* Header end */}
 
 				{/* Invoice Info Section start */}
+				<View style={styles.headerTitleWrapper}>
+					<Text style={styles.headerTitle}>INVOICE</Text>
+				</View>
 				<View style={styles.boxDetails}>
 					<View style={styles.box}>
-						<Text style={styles.boxTitle}> Invoice Details:  </Text>
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.detailsValue}>Jane Doe</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.detailsValue}> john.smith@email.com</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.detailsValue}> 456 Oak Avenue</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.detailsValue}> Springfield , IL,  62701</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.detailsValue}> jane.doe@acme.co</Text>
+						</View>
+
+						<View style={styles.boxValueWrapper}>
+							<Text style={styles.detailsValue}> (555) 123-4567</Text>
+						</View>
+					</View>
+
+					<View style={styles.box}>
 						<View style={styles.boxValueWrapper}>
 							<Text style={styles.boldText}> Invoice Number:</Text>
 							<Text style={styles.detailsValue}> INV-2025-091</Text>
@@ -180,62 +224,6 @@ const Default: React.FC<Props> = ({ colors }) => {
 							<Text style={styles.detailsValue}> October 9, 2025</Text>
 						</View>
 					</View>
-
-					<View style={styles.box}>
-						<Text style={styles.boxTitle}> Bill To:  </Text>
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.boldText}>Jane Doe</Text>
-						</View>
-
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.detailsValue}> john.smith@email.com</Text>
-						</View>
-
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.detailsValue}> 456 Oak Avenue</Text>
-						</View>
-
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.detailsValue}> Springfield</Text>
-							<Text style={styles.detailsValue}> IL</Text>
-							<Text style={styles.detailsValue}> 62701</Text>
-						</View>
-
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.boldText}>Email:</Text>
-							<Text style={styles.detailsValue}> jane.doe@acme.co</Text>
-						</View>
-
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.boldText}>Phone:</Text>
-							<Text style={styles.detailsValue}> (555) 123-4567</Text>
-						</View>
-					</View>
-
-					<View style={styles.box}>
-						<Text style={styles.boxTitle}> Ship To:  </Text>
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.boldText}>Jane Doe</Text>
-						</View>
-
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.detailsValue}> 789 Distribution Road</Text>
-						</View>
-
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.detailsValue}> Springfield</Text>
-							<Text style={styles.detailsValue}> IL</Text>
-						</View>
-
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.detailsValue}> 62701</Text>
-						</View>
-
-						<View style={styles.boxValueWrapper}>
-							<Text style={styles.detailsValue}> United Kingdom</Text>
-						</View>
-					</View>
-
 				</View>
 				{/* Invoice Info Section end */}
 
@@ -309,13 +297,6 @@ const Default: React.FC<Props> = ({ colors }) => {
 					</View>
 				</View>
 				{/* Total Section end */}
-
-				{/* note section start */}
-				<View style={styles.footerNotice}>
-					<Text style={styles.boldText}> Notes: </Text>
-					<Text>This invoice covers items sold by Premium Electronics Store. Tax amounts shown are calculated based on applicable VAT/GST rates for the delivery jurisdiction. For questions regarding this invoice, please contact the seller directly.</Text>
-				</View>
-				{/* note section end */}
 			</Page>
 		</Document>
 	);
