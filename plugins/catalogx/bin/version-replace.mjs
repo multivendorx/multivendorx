@@ -11,7 +11,7 @@ const pluginFiles = [
 	'src/**/*',
 	'templates/**/*',
 	'config.php',
-	'dc_product_vendor.php',
+	'Woocommerce_Catalog_Enquiry.php.php',
 ];
 
 const { version } = JSON.parse(fs.readFileSync('package.json'));

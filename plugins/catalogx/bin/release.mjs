@@ -12,7 +12,7 @@ const pluginFiles = [
 	'config.php',
 	'composer.lock',
 	'composer.json',
-	'dc_product_vendor.php',
+	'Woocommerce_Catalog_Enquiry.php.php',
 	'readme.txt',
 ];
 
