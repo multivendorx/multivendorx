@@ -264,9 +264,11 @@
                 }
             }
         }
-        &:has(.more-btn-wrapper){
+
+        &:has(.more-btn-wrapper) {
             padding-bottom: 1.625rem;
         }
+
         &.expanded {
             max-height: 4rem;
             overflow: hidden;
@@ -322,9 +324,11 @@
 
     // dashboard Documentation
     &.documentation {
-        width: calc(33% - 0.25rem);
-        box-sizing: border-box;
-        margin-bottom: 0.5rem;
+        .item {
+            width: calc(33% - 0.25rem);
+            box-sizing: border-box;
+            margin-bottom: 0.5rem;
+        }
     }
 
     // badge list (add new zone list)

@@ -389,9 +389,7 @@ const Modules: React.FC<ModuleProps> = ({
                                         {variant === 'mini-module' &&
                                             (ZyraVariable.khali_dabba ||
                                                 !module.proModule) && (
-                                                <div className="toggle-checkbox">
                                                     {toggleComponent}
-                                                </div>
                                             )}
                                     </div>
 
@@ -487,7 +485,6 @@ const Modules: React.FC<ModuleProps> = ({
                                             </div>
 
                                             <div
-                                                className="toggle-checkbox"
                                                 data-tour={`${module.id}-showcase-tour`}
                                             >
                                                 {toggleComponent}
