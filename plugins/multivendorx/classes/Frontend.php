@@ -88,6 +88,10 @@ class Frontend {
             unset( $menu['wallet'] );
         }
 
+        if ( $permissions['hide_store_products'] ) {
+            unset( $menu['products'] );
+        }
+
         if ( $permissions['disable_product_upload'] ) {
             unset( $menu['products'] );
         }

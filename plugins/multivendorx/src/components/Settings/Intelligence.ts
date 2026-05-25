@@ -3,8 +3,8 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'intelligence',
 	priority: 10,
-	name: 'Intelligence',
-	headerTitle: 'Intelligence',
+	name: __('Intelligence','multivendorx'),
+	headerTitle: __('Intelligence','multivendorx'),
 	headerDescription: __(
 		'AI services can be enabled to assist with creating product details and enhancing images automatically. These settings can be configured to control which AI services are used.',
 		'multivendorx'

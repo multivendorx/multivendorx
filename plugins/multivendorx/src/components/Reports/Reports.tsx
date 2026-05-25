@@ -80,7 +80,7 @@ const Reports = () => {
 			type: 'file',
 			content: {
 				id: 'marketplace',
-				headerTitle: 'Marketplace',
+				headerTitle: __('Marketplace','multivendorx'),
 				headerIcon: 'marketplace-membership',
 				hideSettingHeader: true,
 			},
@@ -89,7 +89,7 @@ const Reports = () => {
 			type: 'file',
 			content: {
 				id: 'products',
-				headerTitle: 'Products',
+				headerTitle: __('Products','multivendorx'),
 				headerIcon: 'multi-product',
 				hideSettingHeader: true,
 			},
@@ -98,7 +98,7 @@ const Reports = () => {
 			type: 'file',
 			content: {
 				id: 'stores',
-				headerTitle: 'Stores',
+				headerTitle: __('Stores','multivendorx'),
 				headerIcon: 'store-inventory',
 				hideSettingHeader: true,
 			},
@@ -107,7 +107,7 @@ const Reports = () => {
 			type: 'file',
 			content: {
 				id: 'store-orders',
-				headerTitle: 'Store Orders',
+				headerTitle: __('Store Orders','multivendorx'),
 				headerIcon: 'order',
 				hideSettingHeader: true,
 			},
@@ -116,7 +116,7 @@ const Reports = () => {
 			type: 'file',
 			content: {
 				id: 'refunded-orders',
-				headerTitle: 'Refunded Orders',
+				headerTitle: __('Refunded Orders','multivendorx'),
 				headerIcon: 'marketplace-refund',
 				hideSettingHeader: true,
 			},
