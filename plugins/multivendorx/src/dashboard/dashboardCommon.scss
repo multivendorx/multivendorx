@@ -55,7 +55,7 @@ body.dark {
 }
 
 
-// varification-wrapper start
+// varification-wrapper start (check Verification.tsx file and remove)
 .varification-wrapper {
     display: flex;
     align-items: center;
@@ -81,8 +81,6 @@ body.dark {
         color: #000;
     }
 }
-
-
 .document-popup-wrapper {
     .des {
         line-height: 1.5rem;
@@ -90,65 +88,6 @@ body.dark {
 }
 
 // documentation end
-
-// attribute style start
-// .attribute-wrapper {
-//     display: flex;
-//     flex-wrap: wrap;
-//     gap: 0.813rem;
-//     margin: 1rem 0;
-
-//     .attribute-box {
-//         width: calc(25% - 0.625rem);
-//         padding: 1rem;
-//         border: $border-light-small;
-//         box-sizing: border-box;
-//         border-radius: $border-radius-small;
-
-//         .name-wrapper {
-//             display: flex;
-//             justify-content: space-between;
-//             padding-bottom: 0.95rem;
-
-//             .name {
-//                 font-size: 1.25rem;
-//                 line-height: 1.5rem;
-//             }
-
-//             .icons {
-//                 display: none;
-
-//                 i {
-//                     font-size: 1.125rem;
-//                     padding-left: 0.313rem;
-//                     cursor: pointer;
-//                 }
-//             }
-//         }
-
-//         .value-wrapper {
-//             display: flex;
-//             flex-wrap: wrap;
-//             gap: 0.45rem;
-//         }
-
-//         &:hover {
-//             .icons {
-//                 display: block;
-//             }
-//         }
-//     }
-// }
-// attribute style end
-
-// .form-group {
-//     .setting-input {
-//         position: relative;
-//         align-items: end !important; // overwrite common style
-//     }
-// }
-
-// add product category page end
 
 
 .checkbox-wrapper {
@@ -190,7 +129,11 @@ body.dark {
     background-position: center;
     background-repeat: no-repeat;
 }
-
+.document-preview{
+    width: 100%;
+    height: 100%;
+    border: none;
+}
 
 @media only screen and (width <= 600px) {
     #store-dashboard.show-menu {

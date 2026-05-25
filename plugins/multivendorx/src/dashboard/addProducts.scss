@@ -84,14 +84,27 @@
     }
 }
 
-.tag-list {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 0.5rem;
 
-    .delete-icon {
-        color: $accent-color;
-        cursor: pointer;
+// Product Add-ons start
+.addon-row-container {
+    border: $border-light-small;
+    border-radius: $border-radius-small;
+    padding: 1rem;
+
+    .buttons-wrapper {
+        width: 100%;
+
+        &.delete {
+            margin-top: -1.625rem;
+
+            .admin-btn {
+                padding: 0.5rem 0.75rem;
+            }
+        }
+    }
+
+    .setting-form-input {
+        width: 100%;
     }
 }
+// Product Add-ons end

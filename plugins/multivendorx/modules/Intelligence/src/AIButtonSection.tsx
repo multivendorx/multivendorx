@@ -218,7 +218,7 @@ const AIButtonSection: React.FC<AIButtonSectionProps> = ({
 			{
 				label: __('Generate with AI', 'multivendorx'),
 				icon: 'ai',
-				color: 'border-purple',
+				color: 'border-yellow',
 				onClick: openPopup,
 			},
 			...buttons,
