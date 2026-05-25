@@ -132,6 +132,7 @@ class PaypalPayout {
                 : '';
         }
 
+        $receiver_email = apply_filters( 'multivendorx_paypal_receiver_email', $receiver_email, $store_id );
         $client_id     = $paypal_settings['client_id'] ?? '';
         $client_secret = $paypal_settings['client_secret'] ?? '';
         $sandbox       = ( 'sandbox' === $paypal_settings['payment_mode'] );

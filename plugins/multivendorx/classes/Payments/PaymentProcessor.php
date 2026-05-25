@@ -137,7 +137,7 @@ class PaymentProcessor {
 	/**
 	 * After Payment Complete
 	 *
-	 * @param int    $store_id Store ID.
+	 * @param int    $id ID.
 	 * @param string $method Payment Method.
 	 * @param string $status Payment Status.
 	 * @param int    $order_id Order ID.
@@ -147,10 +147,16 @@ class PaymentProcessor {
 	 *
 	 * @return void
 	 */
-	public function after_payment_complete( $store_id, $method, $status, $order_id, $transaction_id, $note, $amount = null ) {
+	public function after_payment_complete( $id, $method, $status, $order_id, $transaction_id, $note, $amount = null ) {
 		global $wpdb;
 
-		$store         = new Store( $store_id );
+		$user = get_userdata( $id );
+        if ( ! in_array( 'store_owner', $user->roles, true ) ) {
+			do_action( 'multivendorx_handle_user_payment', $id, $order_id, $transaction_id, $amount );
+			return;
+		}
+
+		$store         = new Store( $id );
 		$order         = $order_id > 0 ? wc_get_order( $order_id ) : null;
 		$commission_id = $order ? $order->get_meta( Utill::ORDER_META_SETTINGS['commission_id'], true ) : null;
 		$commission    = $commission_id ? CommissionUtil::get_commission_db( $commission_id ) : null;
@@ -158,7 +164,7 @@ class PaymentProcessor {
 		$amount = $amount ? $amount : ( $commission ? (float) $commission->store_payable : 0.00 );
 
 		$data = array(
-			'store_id'         => (int) $store_id,
+			'store_id'         => (int) $id,
 			'order_id'         => $order_id > 0 ? (int) $order_id : null,
 			'commission_id'    => $commission_id ? (int) $commission_id : null,
 			'entry_type'       => 'Dr',

@@ -155,7 +155,7 @@ class StripeConnect {
             if ( $store->exists() ) {
                 $stripe_account_id = $store->get_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] );
             }
-            $stripe_account_id =  apply_filters( 'multivendorx_stripe_account_id', $stripe_account_id );
+            $stripe_account_id =  apply_filters( 'multivendorx_stripe_account_id', $stripe_account_id, MultiVendorX()->current_user_id );
 			$fields            = array(
 				array(
 					'key'             => 'stripe_status',
@@ -220,7 +220,7 @@ class StripeConnect {
         if ( ! $store->exists() ) {
             return;
         }
-        $stripe_account_id = $store->get_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] );
+        $stripe_account_id = apply_filters( 'multivendorx_stripe_account_id', $store->get_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] ), $store_id );
         $transfer          = $this->create_transfer( $amount, $stripe_account_id, $order_id );
         $status            = $transfer ? 'success' : 'failed';
         do_action( 'multivendorx_after_payment_complete', $store_id, 'Stripe Connect', $status, $order_id, $transaction_id, $note, $amount );

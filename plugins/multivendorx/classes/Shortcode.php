@@ -182,7 +182,7 @@ class Shortcode {
     public static function dequeue_all_styles_on_page() {
         if ( Utill::is_store_dashboard() && is_user_logged_in() && in_array( 'store_owner', MultiVendorX()->current_user->roles, true ) ) {
             global $wp_styles;
-            $wp_styles->queue = array( 'multivendorx-dashboard-style', 'multivendorx-store-product-style', 'media-views', 'imgareaselect' );
+            $wp_styles->queue = apply_filters( 'multivendorx_dashboard_style_queue', array( 'multivendorx-dashboard-style', 'multivendorx-store-product-style', 'media-views', 'imgareaselect' ));
         }
     }
 
