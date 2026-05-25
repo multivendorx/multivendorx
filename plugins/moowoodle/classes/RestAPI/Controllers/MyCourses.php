@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * MooWoodle REST API My Courses controller.
  *
- * @version     PRODUCT_VERSION
+ * @version     3.4.0
  */
 class MyCourses extends \WP_REST_Controller {
 
@@ -67,7 +67,7 @@ class MyCourses extends \WP_REST_Controller {
 
         try {
             $per_page = max( 1, intval( $request->get_param( 'row' ) ?? 10 ) );
-            $page    = max( 1, intval( $request->get_param( 'page' ) ?? 1 ) );
+            $page     = max( 1, intval( $request->get_param( 'page' ) ?? 1 ) );
             $offset   = ( $page - 1 ) * $per_page;
 
             // Allow pre-filtering by custom filters.

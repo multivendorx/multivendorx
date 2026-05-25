@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import '../common.scss';
 import { __ } from '@wordpress/i18n';
 import {
+	Column,
+	Container,
 	InfoItem,
 	NavigatorHeader,
 	PopupUI,
@@ -44,13 +45,11 @@ const Cohort: React.FC = () => {
 			render: (row: CohortRow) => (
 				<>
 					{row.products && Object.keys(row.products).length
-						? Object.entries(row.products).map(
-							([name], index) => (
+						? Object.entries(row.products).map(([name], index) => (
 								<React.Fragment key={index}>
 									{name}
 								</React.Fragment>
-							)
-						)
+							))
 						: '-'}
 				</>
 			),
@@ -58,11 +57,7 @@ const Cohort: React.FC = () => {
 
 		enrolled_user: {
 			label: __('Enrolled users', 'moowoodle'),
-			render: (row: CohortRow) => (
-				<>
-					{row.enrolled_user || 0}
-				</>
-			),
+			render: (row: CohortRow) => <>{row.enrolled_user || 0}</>,
 		},
 
 		action: {
@@ -80,18 +75,16 @@ const Cohort: React.FC = () => {
 
 				{
 					label: (row: CohortRow) => {
-						return row?.products &&
-							Object.keys(row.products).length
+						return row?.products && Object.keys(row.products).length
 							? __(
-								'Sync Cohort Data & Update Product',
-								'moowoodle'
-							)
+									'Sync Cohort Data & Update Product',
+									'moowoodle'
+								)
 							: __('Create Product', 'moowoodle');
 					},
 
 					icon: (row: CohortRow) => {
-						return row?.products &&
-							Object.keys(row.products).length
+						return row?.products && Object.keys(row.products).length
 							? 'update-product'
 							: 'add-product';
 					},
@@ -115,7 +108,7 @@ const Cohort: React.FC = () => {
 
 	tableProps = applyFilters(
 		'moowoodle_cohort_table_props',
-		defaultTableProps,
+		defaultTableProps
 	);
 
 	const handleTableWrapperClick = () => {
@@ -146,9 +139,13 @@ const Cohort: React.FC = () => {
 				)}
 				headerTitle={__('Cohorts', 'moowoodle')}
 			/>
-			<div onClick={handleTableWrapperClick}>
-				<TableCard {...tableProps} />
-			</div>
+			<Container general>
+				<Column>
+					<div onClick={handleTableWrapperClick}>
+						<TableCard {...tableProps} />
+					</div>
+				</Column>
+			</Container>
 		</>
 	);
 };

@@ -137,7 +137,10 @@ const sections: Section[] = [
 				pro: true,
 			},
 			{
-				name: __('Synced login/logout between Moodle & WordPress', 'moowoodle'),
+				name: __(
+					'Synced login/logout between Moodle & WordPress',
+					'moowoodle'
+				),
 				free: false,
 				pro: true,
 			},
@@ -258,17 +261,23 @@ const FreeVsProTab: React.FC = () => {
 				>
 					<div id="free-vs-pro" className="free-vs-pro">
 						{sections.map((section, idx) => (
-							<table key={section.title}>
+							<table key={`${idx}-${section.title}`}>
 								<thead>
 									<tr>
 										<th scope="col">{section.title}</th>
-										<th scope="col">{__('Free', 'moowoodle')}</th>
-										<th scope="col">{__('Pro', 'moowoodle')}</th>
+										<th scope="col">
+											{__('Free', 'moowoodle')}
+										</th>
+										<th scope="col">
+											{__('Pro', 'moowoodle')}
+										</th>
 									</tr>
 								</thead>
 								<tbody>
 									{section.features.map((feature) => (
-										<tr key={`${section.title}-${feature.name}`}>
+										<tr
+											key={`${section.title}-${feature.name}`}
+										>
 											<td>{feature.name}</td>
 											<td>{renderCell(feature.free)}</td>
 											<td>{renderCell(feature.pro)}</td>
@@ -287,20 +296,23 @@ const FreeVsProTab: React.FC = () => {
 						<div className="image-wrapper">
 							<img
 								src={MoowoodleConcept}
-								alt={__('Moowoodle marketplace concept illustration', 'moowoodle')}
+								alt={__(
+									'Moowoodle marketplace concept illustration',
+									'moowoodle'
+								)}
 							/>
 						</div>
 
 						<div className="title">
 							{__(
-								'Join thousands of growing online course businesses',
+								'Powering modern eLearning businesses worldwide',
 								'moowoodle'
 							)}
 						</div>
 
 						<div className="des">
 							{__(
-								'Connect WordPress and Moodle to streamline course delivery, learner enrollment, and training management from one workflow.',
+								'From individual educators to large training organizations, MooWoodle helps simplify course selling, learner management, and Moodle-WooCommerce integration at scale.',
 								'moowoodle'
 							)}
 						</div>
@@ -308,26 +320,28 @@ const FreeVsProTab: React.FC = () => {
 						<ul>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Automatic WooCommerce to Moodle enrollment', 'moowoodle')}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
 								{__(
-									'Seamless course and category synchronization',
+									'Sell course with WooCommerce',
 									'moowoodle'
 								)}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Centralized learner and course access management', 'moowoodle')}
+								{__('Automate course enrollments', 'moowoodle')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Secure and reliable LMS integration workflow', 'moowoodle')}
+								{__(
+									'Classroom, cohort based learning',
+									'moowoodle'
+								)}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Built for scalable online training growth', 'moowoodle')}
+								{__(
+									'Seamless Single Sign-On experiences',
+									'moowoodle'
+								)}
 							</li>
 						</ul>
 

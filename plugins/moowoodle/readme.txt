@@ -3,9 +3,9 @@ Contributors: dualcube
 Tags: moodle, lms, sell course, moodle wordpress connect, LMS integration
 Donate link: https://dualcube.com/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=moowoodlewporg
 Requires at least: 6.0.0
-Tested up to: 6.8.2
+Tested up to: 7.0.0
 Requires PHP: 8.0
-Stable tag: 3.3.6
+Stable tag: 3.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -154,7 +154,7 @@ Unlock advanced Moodle WordPress course synchronization with MooWoodle Pro—syn
 
 
 ### ➡️   [Cohort Synchronization Options ](https://dualcube.com/docs/moowoodle-set-up-guide/#20-toc-title/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=moowoodlewporg). [PRO]
-Unlock advanced Moodle WordPress cohort synchronization and tcreate corresponding product.
+Unlock advanced Moodle WordPress cohort synchronization and create corresponding product.
 
 🔄 **Create and Update Products**: Easily update existing product information using Moodle cohort data.
 
@@ -217,21 +217,28 @@ This project might have bugs and may be lacking certain features. If you'd like 
 
 
 == Screenshots ==
-1. Configure Bulk Access & Gifting to enroll multiple studnets into courses / cohorts / groups 
-2. Let user gift a course to another student
-3. Click "Sync Now" to import all courses, categories, groups, images, and other content from your Moodle site.
-4. Enter your Moodle Site URL and Moodle Access Token, then run the test connection.
+1. Configure Bulk Access & Gifting to enroll multiple students into courses / cohorts / groups.
+2. Let user gift a course to another student.
+3. Enter your Moodle Site URL and Moodle Access Token, then run the test connection.
+4. Click "Synchronize course now" to import all courses, categories, groups, images, and other content from your Moodle site.
 5. Click "Sync Now" to synchronize users between Moodle and WordPress according to their roles.
-6. Click "Sync Now" to import all cohrt, categories, images, and other content from your Moodle site.
+6. Click "Synchronize cohort now" to import all cohort from your Moodle site.
 7. View the list of courses after synchronization.
 8. See the list of all enrolled users and their corresponding courses.
-9. Configure the shop page and the display settings for the enrollment button.
-10. Set up Single Sign-On (SSO) from the WordPress side.
-11. View the list of cohort after synchronization.
-12. Learn how to use the tool settings.
-13. View the log file to detect any errors related to MooWoodle configuration.
+9. View the list of cohort after synchronization.
+12. View "Course & Enrollment" settings to confiure classroom, gift course and Seat reassignment.
+11. View the log file to detect any errors related to MooWoodle configuration.
 
 == Changelog ==
+
+= 3.4.0 - 2026-05-22 =
+* Added     - Compatibility of WordPress 7.0.0.
+* Added     - Compatibility of WooCommerce 10.7.0.
+* Fixed      - Improved overall settings structure and organization.
+* Fixed      - Addressed UI/UX inconsistencies across admin panels.
+* Fixed      - Revamped entire admin panel UI for improved usability and navigation.
+* Fixed      - Improved system performance and scalability.
+* Updated   - Language file.
 
 = 3.3.6 - 2025-09-25 =
 * Fixed      - Issue occurring when a customer purchases a product that isn’t linked to a course.
