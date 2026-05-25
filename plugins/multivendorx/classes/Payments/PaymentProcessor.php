@@ -151,7 +151,7 @@ class PaymentProcessor {
 		global $wpdb;
 
         if ( $additional_receiver > 0 ) {
-			do_action( 'multivendorx_handle_user_payment', $store_id, $order_id, $transaction_id, $amount );
+			do_action( 'multivendorx_handle_user_payment', $store_id, $order_id, $transaction_id, $amount, $additional_receiver );
 			return;
 		}
 
