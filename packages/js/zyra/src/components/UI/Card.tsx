@@ -78,9 +78,8 @@ const Card = ({
 
                     {/* Body skeleton */}
                     <div className="card-body">
-                        <Skeleton width="90%" />
-                        <Skeleton width="85%" />
-                        <Skeleton width="60%" />
+                        <Skeleton width="100%" height={8}/>
+                        <Skeleton width="100%" height={8}/>
                     </div>
                 </>
             ) : (

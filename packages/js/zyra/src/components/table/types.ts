@@ -152,6 +152,7 @@ export type TableProps = CommonTableProps & {
     ) => void;
     isLoading?: boolean;
     enableBulkSelect?: boolean;
+    emptyMessage?: string;
     format?: string;
     currency?: CurrencyConfig;
 };
@@ -195,6 +196,7 @@ export type TableCardProps = CommonTableProps & {
      * Boolean to determine whether or not ellipsis menu is shown.
      */
     showMenu?: boolean;
+    emptyMessage?: string;
     /**
      * An array of objects with `label` & `value` properties, which display in a line under the table.
      * Optional, can be left off to show no summary.

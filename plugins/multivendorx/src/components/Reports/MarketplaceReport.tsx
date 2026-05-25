@@ -421,13 +421,12 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 						))}
 					</Card>
 					<Card title={__('Revenue breakdown', 'multivendorx')}>
-						<div style={{ width: '100%', height: 400 }}>
-							<ResponsiveContainer>
-								<PieChart>
-									<Pie
-										data={pieData}
-										dataKey="value"
-										nameKey="name"
+						<ResponsiveContainer width="100%" height={400}>
+							<PieChart>
+								<Pie
+									data={pieData}
+									dataKey="value"
+									nameKey="name"
 										cx="50%"
 										cy="50%"
 										outerRadius={140}
@@ -445,9 +444,9 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 												key={`cell-${index}`}
 												fill={
 													[
-														'#0088FE',
-														'#00C49F',
-														'#FF8042',
+														'var(--color-secondary)',
+														'var(--color-accent)',
+														'var(--color-support)',
 													][index % 3]
 												}
 											/>
@@ -459,8 +458,8 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 										}
 										contentStyle={{
 											backgroundColor: '#fff',
-											borderRadius: '8px',
-											border: '1px solid #ddd',
+											borderRadius: '0.5rem',
+											border: '0.063rem solid #ddd',
 										}}
 									/>
 									<Legend
@@ -469,7 +468,6 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 									/>
 								</PieChart>
 							</ResponsiveContainer>
-						</div>
 					</Card>
 				</Column>
 

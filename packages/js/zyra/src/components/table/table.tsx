@@ -22,6 +22,7 @@ const Table: React.FC<TableProps> = ({
     // caption,
     className = '',
     onSort = () => {},
+    emptyMessage,
     query = {},
     ids = [],
     selectedIds = [],
@@ -353,7 +354,7 @@ const Table: React.FC<TableProps> = ({
                         ))
                     ) : (
                         <tr className="admin-row">
-                            <ComponentStatusView title="No data to display" />
+                            <ComponentStatusView title={emptyMessage || 'No data to display'} />
                         </tr>
                     )}
                 </tbody>

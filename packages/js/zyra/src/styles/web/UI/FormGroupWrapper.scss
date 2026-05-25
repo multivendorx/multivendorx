@@ -186,7 +186,7 @@
                      border-bottom-left-radius: 0;
                 }
                 .tooltip-wrapper{
-                    padding: 0.38rem 0.45rem;
+                    padding: 0.25rem 0.45rem;
                     border-top: $border-light-small;
                     border-bottom: $border-light-small;
 
@@ -196,7 +196,7 @@
                 }
                 .clear-btn{
                     border: $border-light-small;
-                    padding: 0.38rem 0.45rem;
+                    padding: 0.25rem 0.45rem;
                     color: map-get(map-get($color-palette, red), color);
                     border-top-right-radius: $border-radius-small;
                     border-bottom-right-radius: $border-radius-small;
