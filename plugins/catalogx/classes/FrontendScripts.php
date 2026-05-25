@@ -317,7 +317,7 @@ class FrontendScripts {
         // Prepare all product terms.
         $terms       = get_terms(
             array(
-                'taxonomy' => 'product_categories',
+                'taxonomy' => 'product_cat',
                 'orderby'  => 'name',
                 'order'    => 'ASC',
             )
