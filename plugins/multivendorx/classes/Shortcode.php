@@ -219,13 +219,13 @@ class Shortcode {
         <div id="multivendorx-registration-form" class="woocommerce">
             <div class="multivendorxstep-wizard">
 				<div class="multivendorxsteps-container">
-					<div className='multivendorxstep-item'>
+					<div class='multivendorxstep-item'>
 						<span class='skeleton skeleton-circular' style="width: 2.125rem; height: 2.125rem;"> </span>
 						<span class='skeleton skeleton-text' style="width: 5rem; height: 1.5rem;"></span>
 					</div>
 
 					<div class="multivendorx-step-divider"></div>
-					<div className='multivendorxstep-item' >
+					<div class='multivendorxstep-item' >
 						<span class='skeleton skeleton-circular' style="width: 2.125rem; height: 2.125rem;"> </span>
 						<span class='skeleton skeleton-text' style="width: 6rem; height: 1.5rem;"></span>
 					</div>
