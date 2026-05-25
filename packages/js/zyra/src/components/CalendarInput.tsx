@@ -14,6 +14,11 @@ export interface CalendarRange {
     selectedDates?: Date[]; // Array of selected dates for multiple mode
 }
 
+interface DisabledDate {
+    date: Date | string;
+    description: string;
+}
+
 interface CalendarInputProps {
     inputClass?: string;
     format?: string;
@@ -25,6 +30,9 @@ interface CalendarInputProps {
     fullYear?: boolean;
     maxFutureMonths?: number;
     showCompare?: boolean;
+    calendar?: boolean;
+    minDate?: Date;
+    disabledDates?: DisabledDate[];
 }
 
 const convertToDateObjectRange = (
@@ -357,6 +365,9 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
     fullYear,
     maxFutureMonths,
     showCompare = false,
+    calendar = false,
+    minDate,
+    disabledDates = [],
 }) => {
     const pickerRef = useRef<DatePickerRef>(null);
     const maxDate = calculateMaxDate(maxFutureMonths);
@@ -385,26 +396,37 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
             // Handle range mode (original behavior)
             if (Array.isArray(val) && val.length === 2) {
                 const [start, end] = val as DateObject[];
+
                 onChange?.({
                     startDate: start.toDate(),
                     endDate: end.toDate(),
                 });
-                if (pickerRef.current) {
-                    pickerRef.current.closeCalendar();
-                }
+
+                pickerRef.current?.closeCalendar?.();
             } else if (val instanceof DateObject) {
                 const date = val.toDate();
+
                 onChange?.({
                     startDate: date,
                     endDate: date,
                 });
-                if (pickerRef.current) {
-                    pickerRef.current.closeCalendar();
-                }
+
+                pickerRef.current?.closeCalendar?.();
             }
         }
     };
+    const disabledDateMap = new Map(
+        disabledDates.map((item) => {
+            const date = new Date(item.date);
 
+            date.setHours(0, 0, 0, 0);
+
+            return [
+                date.toDateString(),
+                item.description,
+            ];
+        })
+    );
     const plugins = [];
     if (multiple) {
         plugins.push(<DatePanel key="date-panel" />);
@@ -414,14 +436,34 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
         ref: pickerRef,
         value: internalValue,
         format,
-        range: !multiple,
+        range: !multiple && !calendar,
         numberOfMonths,
         sort: true,
         onChange: handleChange,
         maxDate,
+        minDate,
         multiple,
         plugins,
         fullYear,
+        mapDays: ({ date }) => {
+            const currentDate = date.toDate();
+
+            currentDate.setHours(0, 0, 0, 0);
+
+            const description = disabledDateMap.get(
+                currentDate.toDateString()
+            );
+
+            if (description) {
+                return {
+                    disabled: true,
+                    title: description,
+                    className: 'disabled-date',
+                };
+            }
+
+            return {};
+        },
     };
 
     const getPrevYearDate = (date: Date) => {
@@ -469,7 +511,7 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
     };
 
     // For multiple mode, use the original DatePicker without tabs
-    if (multiple) {
+    if (calendar) {
         return (
             <div className="settings-calender">
                 {showInput ? (
@@ -489,9 +531,8 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
                     />
                 ) : (
                     <Calendar
-                        className={`calendar-wrapper ${
-                            !showInput ? 'calendar' : ''
-                        }`}
+                        className={`calendar-wrapper ${!showInput ? 'calendar' : ''
+                            }`}
                         {...commonProps}
                     />
                 )}
