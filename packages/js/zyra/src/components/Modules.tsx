@@ -387,10 +387,8 @@ const Modules: React.FC<ModuleProps> = ({
                                             )}
 
                                         {variant === 'mini-module' &&
-                                            (ZyraVariable.khali_dabba ||
-                                                !module.proModule) && (
-                                                    {toggleComponent}
-                                            )}
+                                            (ZyraVariable.khali_dabba ||!module.proModule) && toggleComponent
+                                        }
                                     </div>
 
                                     <div className="module-details">
