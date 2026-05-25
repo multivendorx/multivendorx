@@ -64,12 +64,32 @@ blockDirs.forEach((blockName) => {
 	}
 });
 
+// 3. Dynamic Module Entries (modules/{moduleName}/blocks/index.tsx)
+const moduleEntries = {};
+const modulesBasePath = path.resolve(__dirname, 'modules'); 
+
+if (fs.existsSync(modulesBasePath) && fs.statSync(modulesBasePath).isDirectory()) {
+    const moduleDirs = fs
+        .readdirSync(modulesBasePath, { withFileTypes: true })
+        .filter((dirent) => dirent.isDirectory())
+        .map((dirent) => dirent.name);
+
+    moduleDirs.forEach((moduleName) => {
+        const entryPath = path.join(modulesBasePath, moduleName, 'blocks/index.tsx');
+        
+        if (fs.existsSync(entryPath)) {
+            moduleEntries[`../modules/${moduleName}/block/view`] = `./modules/${moduleName}/blocks/index.tsx`; 
+        }
+    });
+}
+
 module.exports = {
 	...defaultConfig,
 
 	entry: {
 		index: './src/index.tsx',
-		...blockEntries
+		...blockEntries,
+        ...moduleEntries
 	},
 
 	output: {
