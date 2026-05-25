@@ -142,7 +142,7 @@ class Rest {
             $product_id = $product['id'];
             $quantity   = $product['quantity'];
             CatalogX()->quotecart->update_cart( $product['key'], 'quantity', $quantity );
-            $update_msg = __( 'Quote cart updated!', 'catalogx' );
+            $update_msg = __( 'Quote cart updated!', 'multivendorx' );
         }
 
         return rest_ensure_response( array( 'msg' => $update_msg ) );
@@ -195,12 +195,12 @@ class Rest {
                 $order->set_customer_note( $reason );
                 $order->save();
                 /* translators: %s: reject quotation number. */
-                return rest_ensure_response( array( 'message' => sprintf( __( 'You have confirmed rejection of the quotation No: %d', 'catalogx' ), $order_id ) ) );
+                return rest_ensure_response( array( 'message' => sprintf( __( 'You have confirmed rejection of the quotation No: %d', 'multivendorx' ), $order_id ) ) );
             }
         }
 
         if ( empty( $form_data ) ) {
-            return new WP_Error( 'invalid_data', __( 'Missing form data.', 'catalogx' ), array( 'status' => 400 ) );
+            return new WP_Error( 'invalid_data', __( 'Missing form data.', 'multivendorx' ), array( 'status' => 400 ) );
         }
 
         // Sanitize input fields.
@@ -222,7 +222,7 @@ class Rest {
         // Create order.
         $order = wc_create_order( $args );
         if ( ! $order ) {
-            return new WP_Error( 'order_error', __( 'Failed to create order.', 'catalogx' ), array( 'status' => 500 ) );
+            return new WP_Error( 'order_error', __( 'Failed to create order.', 'multivendorx' ), array( 'status' => 500 ) );
         }
 
         // Add customer details.

@@ -90,9 +90,9 @@ class Frontend {
             </style>';
         }
 
-        $additional_css_settings = CatalogX()->setting->get_setting( 'custom_css_product_page' );
-        if ( isset( $additional_css_settings ) && ! empty( $additional_css_settings ) ) {
-            $button_css .= $additional_css_settings;
+        $custom_css = CatalogX()->setting->get_setting( 'custom_css_product_page' );
+        if ( ! empty( $custom_css ) ) {
+            $button_css .= $custom_css;
         }
 
         $button_settings['button_text'] = ! empty( $button_settings['button_text'] ) ? $button_settings['button_text'] : \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
@@ -125,7 +125,7 @@ class Frontend {
             <input type="hidden" name="enquiry_product_type" id="enquiry-product-type" value="
             <?php
 			if ( $product_obj && $product_obj->is_type( 'variable' ) ) {
-				echo 'variable';
+				echo esc_html( 'variable' );
 			}
 			?>
                 " />
@@ -161,18 +161,18 @@ class Frontend {
         FrontendScripts::localize_scripts( 'catalogx-enquiry-frontend-script' );
         FrontendScripts::localize_scripts( 'catalogx-enquiry-form-script' );
 
-        if ( is_product() || CatalogX()->render_enquiry_btn_via === 'shortcode' ) {
+        // if ( is_product() || CatalogX()->render_enquiry_btn_via === 'shortcode' ) {
             FrontendScripts::enqueue_style( 'catalogx-enquiry-form-style' );
             FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
             FrontendScripts::enqueue_script( 'catalogx-enquiry-frontend-script' );
             FrontendScripts::enqueue_script( 'catalogx-enquiry-form-script' );
 
             // additional css.
-            $additional_css_settings = CatalogX()->setting->get_setting( 'custom_css_product_page' );
-            if ( isset( $additional_css_settings ) && ! empty( $additional_css_settings ) ) {
-                wp_add_inline_style( 'catalogx-enquiry-form-style', $additional_css_settings );
+            $custom_css = CatalogX()->setting->get_setting( 'custom_css_product_page' );
+            if ( isset( $custom_css ) && ! empty( $custom_css ) ) {
+                wp_add_inline_style( 'catalogx-enquiry-form-style', $custom_css );
             }
-        }
+        // }
     }
 
     /**
@@ -217,15 +217,28 @@ class Frontend {
             array()
         );
 
-        $pro_form_settings = isset( $form_settings['formsettings'] ) &&
-            is_array( $form_settings['formsettings'] )
-            ? $form_settings['formsettings']
+        $pro_form_settings = isset( $form_settings['store_registration_from'] ) &&
+            is_array( $form_settings['store_registration_from'] )
+            ? $form_settings['store_registration_from']
             : array();
 
         $form_field_list = isset( $pro_form_settings['formfieldlist'] ) &&
             is_array( $pro_form_settings['formfieldlist'] )
             ? $pro_form_settings['formfieldlist']
             : array();
+        $form_field_list = array_map(
+            function( $field ) {
+
+                if ( isset( $field['type'] ) ) {
+                    $field['key'] = $field['type'];
+                }
+
+                $field['active'] = true;
+
+                return $field;
+            },
+            $form_field_list
+        );
 
         if ( function_exists( 'icl_t' ) ) {
             foreach ( $form_field_list as &$field ) {
@@ -259,9 +272,10 @@ class Frontend {
             }
         }
 
-        $pro_form_settings['formfieldlist'] = $form_field_list;
+        $pro_form_settings['store_registration_from'] = $form_field_list;
 
-        return $pro_form_settings;
+
+        return $form_field_list;
     }
 
     /**
@@ -292,10 +306,8 @@ class Frontend {
             return;
         }
 
-        if ( ! empty( CatalogX()->setting->get_setting( 'is_enable_out_of_stock' ) ) ) {
-            if ( $product->is_in_stock() ) {
-                return;
-            }
+        if ( ! empty( CatalogX()->setting->get_setting( 'is_enable_out_of_stock' ) )&& $product->is_in_stock() ) {
+            return;
         }
 
         if ( apply_filters( 'catalogx_enable_multiple_product_enquiry', false ) ) {
@@ -313,9 +325,9 @@ class Frontend {
             </style>';
         }
 
-        $additional_css_settings = CatalogX()->setting->get_setting( 'custom_css_product_page' );
-        if ( isset( $additional_css_settings ) && ! empty( $additional_css_settings ) ) {
-            $button_css .= $additional_css_settings;
+        $custom_css = CatalogX()->setting->get_setting( 'custom_css_product_page' );
+        if ( isset( $custom_css ) && ! empty( $custom_css ) ) {
+            $button_css .= $custom_css;
         }
         $button_text = ! empty( $button_settings['button_text'] ) ? $button_settings['button_text'] : \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
         if ( is_shop() ) {

@@ -116,7 +116,7 @@ class FrontendScripts {
                     'version' => $version,
                 ),
                 'catalogx-enquiry-form-script'      => array(
-                    'src'     => self::get_asset_path() . 'js/block/enquiryForm/index.js',
+                    'src'     => self::get_asset_path() . 'js/block/enquiry-form/index.js',
                     'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks', 'wp-hooks' ),
                     'version' => $version,
                 ),
@@ -156,7 +156,7 @@ class FrontendScripts {
                     'version' => $version,
                 ),
                 'catalogx-enquiry-form-style' => array(
-                    'src'     => self::get_asset_path() . 'styles/block/enquiryForm/index.css',
+                    'src'     => self::get_asset_path() . 'styles/block/enquiry-form/index.css',
                     'deps'    => array(),
                     'version' => $version,
                 ),

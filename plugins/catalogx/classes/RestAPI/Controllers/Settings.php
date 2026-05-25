@@ -109,7 +109,7 @@ class Settings extends \WP_REST_Controller {
 
 			$error = new \WP_Error(
 				'invalid_nonce',
-				esc_html__( 'Invalid nonce.', 'catalogx' ),
+				esc_html__( 'Invalid nonce.', 'multivendorx' ),
                 array( 'status' => 403 )
 			);
 
@@ -178,7 +178,7 @@ class Settings extends \WP_REST_Controller {
 
 			return array(
 				'type'    => 'success',
-				'message' => __( 'Settings Saved', 'catalogx' ),
+				'message' => __( 'Settings Saved', 'multivendorx' ),
 			);
 
 		} catch ( \Exception $e ) {
@@ -187,7 +187,7 @@ class Settings extends \WP_REST_Controller {
 
 			return new \WP_Error(
 				'server_error',
-				__( 'Unexpected server error', 'catalogx' ),
+				__( 'Unexpected server error', 'multivendorx' ),
 				array( 'status' => 500 )
 			);
 		}
@@ -208,7 +208,7 @@ class Settings extends \WP_REST_Controller {
 
 			$error = new \WP_Error(
 				'invalid_nonce',
-				esc_html__( 'Invalid nonce.', 'catalogx' ),
+				esc_html__( 'Invalid nonce.', 'multivendorx' ),
                 array( 'status' => 403 )
 			);
 
@@ -258,7 +258,7 @@ class Settings extends \WP_REST_Controller {
 
 			return new \WP_Error(
 				'server_error',
-				__( 'Unexpected server error', 'catalogx' ),
+				__( 'Unexpected server error', 'multivendorx' ),
 				array( 'status' => 500 )
 			);
 		}

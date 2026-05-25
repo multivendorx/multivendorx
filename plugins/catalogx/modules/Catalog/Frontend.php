@@ -47,6 +47,9 @@ class Frontend {
      * @return void
      */
     public static function catalogx_redirect_page() {
+        if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+            return;
+        }
         // For exclusion.
         foreach ( WC()->cart->get_cart() as $cart_item ) {
             $product_id = $cart_item['product_id'];
