@@ -35,6 +35,10 @@
         .settings-input-content {
             width: 100%;
 
+            .desc{
+                width: 100%;
+            }
+
             &:has(.setting-form-input) {
                 display: flex;
                 flex-wrap: wrap;
@@ -174,7 +178,7 @@
         // copy btn 
         &.copy-btn {
             .settings-input-content {
-                // flex-wrap: nowrap;
+                flex-wrap: nowrap;
                 gap: 0;
 
                 .input-wrapper{
