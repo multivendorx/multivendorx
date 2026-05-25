@@ -9,7 +9,7 @@ export default {
 		'Add your store’s social media links to help buyers connect with you across platforms.',
 		'multivendorx'
 	),
-	headerIcon: 'cohort',
+	headerIcon: 'social-media-content',
 	submitUrl: `stores/${appLocalizer.store_id}`,
 	modal: [
 		// Facebook

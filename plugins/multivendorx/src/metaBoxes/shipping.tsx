@@ -71,7 +71,7 @@ const ShippingCard = ({
 										'Item is packed and shipped to the customer address.',
 										'multivendorx'
 									),
-									icon: 'clickatell'
+									icon: 'delivery-person'
 								},
 								...(typeFields.includes('downloadable')
 									? [
@@ -103,7 +103,7 @@ const ShippingCard = ({
 													'Service provided remotely. No shipping or file download involved.',
 													'multivendorx'
 												),
-												icon: 'store-analytics'
+												icon: 'digital-service'
 											},
 										]
 									: []),
@@ -115,7 +115,7 @@ const ShippingCard = ({
 										"Anything that does not fit the above.",
 										'multivendorx'
 									),
-									icon: 'store-analytics'
+									icon: 'link'
 								},
 							]}
 							custom={true}

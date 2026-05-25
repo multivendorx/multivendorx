@@ -517,7 +517,7 @@
             background: $background-color;
 
             td {
-                padding: 0.5rem 0.313rem; 
+                padding: 0.5rem 0.313rem;
             }
         }
 
@@ -552,4 +552,28 @@
     font-size: 1.063rem;
     border-bottom: $border-light-small;
     padding-bottom: 1rem;
+}
+
+
+
+.addon-row-container {
+    border: $border-light-small;
+    border-radius: $border-radius-small;
+    padding: 1rem;
+
+    .buttons-wrapper {
+        width: 100%;
+
+        &.delete {
+            margin-top: -1.625rem;
+
+            .admin-btn {
+                padding: 0.5rem 0.75rem;
+            }
+        }
+    }
+
+    .setting-form-input {
+        width: 100%;
+    }
 }
