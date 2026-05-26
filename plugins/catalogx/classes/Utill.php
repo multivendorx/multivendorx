@@ -41,7 +41,7 @@ class Utill {
      * @var array<string, string>
      */
     public const CATALOGX_SETTINGS = array(
-        'extra'                          => 'catalogx_extra_settings',
+        'extra'                         => 'catalogx_extra_settings',
         'enquiry-catalog-customization' => 'catalogx_enquiry_catalog_customization_settings',
         'shopping'                      => 'catalogx_shopping_settings_settings',
         'enquiry'                       => 'catalogx_enquiry_settings',

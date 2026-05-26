@@ -263,7 +263,7 @@ class Zone_Shipping extends \WC_Shipping_Method {
             // Filter shipping methods (optional).
             $shipping_methods = apply_filters( 'multivendorx_get_shipping_methods_for_shipping_address', $shipping_methods, $package, $store_id );
             foreach ( $shipping_methods as $key => $method ) {
-                $tax_rate = ( 'none' === ( $method['settings']['tax_status'] ?? '' ) ) ? false : '';
+                $tax_rate  = ( 'none' === ( $method['settings']['tax_status'] ?? '' ) ) ? false : '';
                 $has_costs = false;
                 $cost      = 0;
 
@@ -539,8 +539,8 @@ class Zone_Shipping extends \WC_Shipping_Method {
      * @return string
      */
     public function get_method_rate_id( $method, $store_id = 0 ) {
-        $store_id   = $store_id ? $store_id : 0;
-        $method_id  = $method['id'] ?? '';
+        $store_id    = $store_id ? $store_id : 0;
+        $method_id   = $method['id'] ?? '';
         $instance_id = $method['instance_id'] ?? 0;
 
         $rate_id = $this->id . ':' . $method_id . ':' . $instance_id . ':' . $store_id;

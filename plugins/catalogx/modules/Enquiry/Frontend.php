@@ -169,9 +169,9 @@ class Frontend {
 
             // additional css.
             $custom_css = CatalogX()->setting->get_setting( 'custom_css_product_page' );
-            if ( isset( $custom_css ) && ! empty( $custom_css ) ) {
-                wp_add_inline_style( 'catalogx-enquiry-form-style', $custom_css );
-            }
+		if ( isset( $custom_css ) && ! empty( $custom_css ) ) {
+			wp_add_inline_style( 'catalogx-enquiry-form-style', $custom_css );
+		}
         // }
     }
 
@@ -227,7 +227,7 @@ class Frontend {
             ? $pro_form_settings['formfieldlist']
             : array();
         $form_field_list = array_map(
-            function( $field ) {
+            function ( $field ) {
 
                 if ( isset( $field['type'] ) ) {
                     $field['key'] = $field['type'];
@@ -242,7 +242,6 @@ class Frontend {
 
         if ( function_exists( 'icl_t' ) ) {
             foreach ( $form_field_list as &$field ) {
-
                 if ( isset( $field['label'] ) ) {
                     $field['label'] = icl_t(
                         'catalogx',
@@ -261,7 +260,6 @@ class Frontend {
 
                 if ( isset( $field['options'] ) && is_array( $field['options'] ) ) {
                     foreach ( $field['options'] as &$option ) {
-
                         $option['label'] = icl_t(
                             'catalogx',
                             'form_field_option_' . $field['id'] . '_' . $option['value'],
@@ -273,7 +271,6 @@ class Frontend {
         }
 
         $pro_form_settings['store_registration_from'] = $form_field_list;
-
 
         return $form_field_list;
     }
@@ -306,7 +303,7 @@ class Frontend {
             return;
         }
 
-        if ( ! empty( CatalogX()->setting->get_setting( 'is_enable_out_of_stock' ) )&& $product->is_in_stock() ) {
+        if ( ! empty( CatalogX()->setting->get_setting( 'is_enable_out_of_stock' ) ) && $product->is_in_stock() ) {
             return;
         }
 

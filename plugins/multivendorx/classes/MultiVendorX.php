@@ -325,4 +325,3 @@ final class MultiVendorX {
         return self::$instance;
     }
 }
-

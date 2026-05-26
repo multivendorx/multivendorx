@@ -302,7 +302,7 @@ class FrontendScripts {
 						'restUrl'                  => Notifima()->rest_namespace,
 						'nonce'                    => wp_create_nonce( 'wp_rest' ),
 						// 'export_button'            => admin_url( 'admin-ajax.php?action=export_subscribers' ),
-						'export_button'				=> wp_nonce_url( admin_url( 'admin-ajax.php?action=export_subscribers' ), 'export_subscribers_nonce'),
+						'export_button'            => wp_nonce_url( admin_url( 'admin-ajax.php?action=export_subscribers' ), 'export_subscribers_nonce' ),
 						'khali_dabba'              => Utill::is_khali_dabba(),
 						'tab_name'                 => __( 'Notifima', 'notifima' ),
 						'settings_databases_value' => $settings_databases_value,

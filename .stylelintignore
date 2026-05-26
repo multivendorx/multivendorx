@@ -1,0 +1,24 @@
+# Dependencies
+**/node_modules/**
+**/vendor/**
+
+# Build outputs
+**/dist/**
+**/build/**
+**/release/**
+**/assets/**
+
+# Cache
+**/.cache/**
+**/.wireit/**
+**/.turbo/**
+
+# Coverage
+**/coverage/**
+
+# Minified files
+**/*.min.css
+
+# Generated files
+**/*.bundle.css
+**/*.chunk.css

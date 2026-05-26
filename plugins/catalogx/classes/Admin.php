@@ -23,8 +23,8 @@ class Admin {
      */
     public function __construct() {
         // Register admin menu.
-        add_action( 'admin_menu', array( $this, 'add_menus' ),10 );
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ),20 );
+        add_action( 'admin_menu', array( $this, 'add_menus' ), 10 );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ), 20 );
 		// Allow external redirect host.
         add_filter( 'allowed_redirect_hosts', array( $this, 'allow_catalogx_redirect_host' ) );
         // For load translation.
@@ -49,42 +49,42 @@ class Admin {
         );
 
         $submenu_items = array(
-            'dashboard' => array(
-                'name'   => __( 'Dashboard', 'multivendorx' ),
-                'subtab' => '',
+            'dashboard'        => array(
+                'name'     => __( 'Dashboard', 'multivendorx' ),
+                'subtab'   => '',
                 'priority' => 10,
             ),
             'enquiry-messages' => array(
-                'name'   => __( 'Enquiry Messages', 'multivendorx' ),
-                'subtab' => '',
+                'name'     => __( 'Enquiry Messages', 'multivendorx' ),
+                'subtab'   => '',
                 'priority' => 20,
             ),
             'quote-requests'   => array(
-                'name'   => __( 'Quotation Requests', 'multivendorx' ),
-                'subtab' => '',
+                'name'     => __( 'Quotation Requests', 'multivendorx' ),
+                'subtab'   => '',
                 'priority' => 30,
             ),
             'wholesale-users'  => array(
-                'name'   => __( 'Wholesale Users', 'multivendorx' ),
-                'subtab' => '',
+                'name'     => __( 'Wholesale Users', 'multivendorx' ),
+                'subtab'   => '',
                 'priority' => 40,
             ),
             'rules'            => array(
-                'name'   => __( 'Dynamic Pricing Rules', 'multivendorx' ),
-                'subtab' => '',
+                'name'     => __( 'Dynamic Pricing Rules', 'multivendorx' ),
+                'subtab'   => '',
                 'priority' => 50,
             ),
             'settings'         => array(
-                'name'   => __( 'Settings', 'multivendorx' ),
-                'subtab' => 'shopping',
+                'name'     => __( 'Settings', 'multivendorx' ),
+                'subtab'   => 'shopping',
                 'priority' => 60,
             ),
             'modules'          => array(
-                'name'   => __( 'Modules', 'multivendorx' ),
-                'subtab' => '',
+                'name'     => __( 'Modules', 'multivendorx' ),
+                'subtab'   => '',
                 'priority' => 70,
             ),
-            'help-support'        => array(
+            'help-support'     => array(
                 'name'     => __( 'Help & Support', 'multivendorx' ),
                 'subtab'   => '',
                 'priority' => 80,

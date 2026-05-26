@@ -67,7 +67,7 @@ class Tracking extends \WP_REST_Controller {
         $store_id = MultiVendorX()->active_store;
         $store    = new Store( $store_id );
 
-        $order = wc_get_order($order_id);
+        $order = wc_get_order( $order_id );
 
         $provider        = sanitize_text_field( $data['provider'] ?? '' );
         $date            = sanitize_text_field( $data['date'] ?? '' );
