@@ -68,7 +68,7 @@ class Modules {
      * @param string $string_param The camel case string to convert.
      * @return string The converted kebab case string.
      */
-    private function camel_to_kebab(string $string_param): string {
+    private function camel_to_kebab( string $string_param ): string {
         return strtolower(
             preg_replace(
                 '/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/',

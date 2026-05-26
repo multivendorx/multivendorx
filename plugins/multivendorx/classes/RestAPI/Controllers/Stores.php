@@ -74,7 +74,7 @@ class Stores extends \WP_REST_Controller {
             )
         );
 
-         register_rest_route(
+        register_rest_route(
             MultiVendorX()->rest_namespace,
             '/states/(?P<country>[A-Z]{2})',
             array(
@@ -641,7 +641,7 @@ class Stores extends \WP_REST_Controller {
                     $store_id
                 );
 
-                do_action('multivendorx_after_store_registration_complete', $current_user->ID, $store_id);
+                do_action( 'multivendorx_after_store_registration_complete', $current_user->ID, $store_id );
             }
 
             if ( ! empty( $store_data['store_owners'] ) ) {
@@ -780,10 +780,10 @@ class Stores extends \WP_REST_Controller {
 
                 return rest_ensure_response(
                     array(
-                        'id'            => $id,
-                        'store_owners'  => $users['users'],
-                        'primary_owner' => (int) $users['primary_owner'],
-                        'primary_owner_info'    =>  $primary_owner_info
+                        'id'                 => $id,
+                        'store_owners'       => $users['users'],
+                        'primary_owner'      => (int) $users['primary_owner'],
+                        'primary_owner_info' => $primary_owner_info,
                     )
                 );
             }
@@ -1032,7 +1032,6 @@ class Stores extends \WP_REST_Controller {
 
             // Registration approval / rejection.
             if ( ! empty( $data['registration_data'] ) || ! empty( $data['core_data'] ) || $data['approval_queue'] ) {
-
                 if ( 'approve' === ( $data['status'] ?? '' ) ) {
                     $users = StoreUtil::get_store_users( $id );
                     $user  = get_userdata(
@@ -1097,9 +1096,10 @@ class Stores extends \WP_REST_Controller {
                         );
                     }
 
-                    if ( ! empty($data['reject_note']) ) {
+                    if ( ! empty( $data['reject_note'] ) ) {
                         $store->update_meta(
-                            Utill::STORE_SETTINGS_KEYS['store_reject_note'], maybe_serialize( $data['reject_note'] )
+                            Utill::STORE_SETTINGS_KEYS['store_reject_note'],
+                            maybe_serialize( $data['reject_note'] )
                         );
                     }
 
@@ -1189,10 +1189,10 @@ class Stores extends \WP_REST_Controller {
                     continue;
                 }
 
-                if ( in_array( $key, [ Utill::STORE_SETTINGS_KEYS['image'], Utill::STORE_SETTINGS_KEYS['banner'] ], true ) ) {
+                if ( in_array( $key, array( Utill::STORE_SETTINGS_KEYS['image'], Utill::STORE_SETTINGS_KEYS['banner'] ), true ) ) {
                     $value = esc_url_raw( (string) ( $value['url'] ?? $value ) );
                 }
-                
+
                 $store->update_meta( $key, $value );
 
                 if ( Utill::STORE_SETTINGS_KEYS['deactivation_reason'] === $key ) {

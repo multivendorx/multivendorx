@@ -138,7 +138,7 @@ class MVX {
      */
     public function is_migration_completed() {
         $migration_status = get_option( 'mvx_migration_status', array() );
-        $required_keys = array(
+        $required_keys    = array(
             'vendors',
             'followers',
             'zones',
@@ -172,7 +172,7 @@ class MVX {
      * @return void
      */
     public function mark_migration_completed( $migration_key ) {
-        $migration_status = get_option( 'mvx_migration_status', array() );
+        $migration_status                   = get_option( 'mvx_migration_status', array() );
         $migration_status[ $migration_key ] = true;
         update_option( 'mvx_migration_status', $migration_status );
     }
@@ -394,7 +394,6 @@ class MVX {
         if ( count( $questions ) < self::BATCH_SIZE ) {
             $this->mark_migration_completed( 'qna' );
         }
-
 
         // SPMV table migration.
 		$old_spmv_table = $wpdb->prefix . 'mvx_products_map';
@@ -635,7 +634,7 @@ class MVX {
                 )
             );
 
-            if (!empty($term)) {
+            if ( ! empty( $term ) ) {
                 $name = $term->name;
                 $slug = $term->slug;
             }
@@ -646,20 +645,20 @@ class MVX {
 
             if ( in_array( 'dc_pending_vendor', (array) $user->roles, true ) ) {
                 $status = 'pending';
-                $name = $user->display_name;
-                $slug = Store::generate_unique_store_slug( $user->display_name );
+                $name   = $user->display_name;
+                $slug   = Store::generate_unique_store_slug( $user->display_name );
             }
 
             if ( in_array( 'dc_rejected_vendor', (array) $user->roles, true ) ) {
                 $status = 'rejected';
-                $name = $user->display_name;
-                $slug = Store::generate_unique_store_slug( $user->display_name );
+                $name   = $user->display_name;
+                $slug   = Store::generate_unique_store_slug( $user->display_name );
             }
 
 			if ( 'Enable' === get_user_meta( $user_id, '_vendor_turn_off', true ) ) {
 				$status = 'suspended';
-                $name = $user->display_name;
-                $slug = Store::generate_unique_store_slug( $user->display_name );
+                $name   = $user->display_name;
+                $slug   = Store::generate_unique_store_slug( $user->display_name );
 			}
 
             // Store create.
@@ -847,14 +846,14 @@ class MVX {
                     }
                 }
 
-                if ( '_vendor_image' == $new_meta_key && is_numeric($meta_values) ) {
+                if ( '_vendor_image' == $new_meta_key && is_numeric( $meta_values ) ) {
                     $logo_url = wp_get_attachment_url( $meta_values );
                     if ( $logo_url ) {
                         $store->update_meta( 'image', $logo_url );
                     }
                 }
 
-                if ( '_vendor_banner' == $new_meta_key && is_numeric($meta_values) ) {
+                if ( '_vendor_banner' == $new_meta_key && is_numeric( $meta_values ) ) {
                     $banner_url = wp_get_attachment_url( $meta_values );
                     if ( $banner_url ) {
                         $store->update_meta( 'banner', $banner_url );
@@ -945,23 +944,23 @@ class MVX {
             $vendor_id           = get_term_meta( $commission_vendor, '_vendor_user_id', true );
             $store_id            = get_user_meta( $vendor_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
             $order               = wc_get_order( $commission_order_id );
-            if ( !$order ) {
+            if ( ! $order ) {
                 continue;
             }
 
 			$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
                 $table_name,
                 array(
-					'order_id'       => (int) $commission_order_id,
-					'store_id'       => (int) $store_id,
-                    'total_order_value' =>  !empty($order) ? $order->get_total() : 0,
-					'store_earning'  => $store_earning,
-					'store_shipping' => $store_shipping,
-					'store_tax'      => $store_tax,
-					'store_payable'  => $store_payable,
-					'store_refunded' => $refunded,
-					'status'         => $status,
-					'created_at'     => $created_at,
+					'order_id'          => (int) $commission_order_id,
+					'store_id'          => (int) $store_id,
+                    'total_order_value' => ! empty( $order ) ? $order->get_total() : 0,
+					'store_earning'     => $store_earning,
+					'store_shipping'    => $store_shipping,
+					'store_tax'         => $store_tax,
+					'store_payable'     => $store_payable,
+					'store_refunded'    => $refunded,
+					'status'            => $status,
+					'created_at'        => $created_at,
                 ),
                 array(
 					'%d',
@@ -1099,7 +1098,7 @@ class MVX {
             $entry_type = $is_credit ? 'Cr' : 'Dr';
             $amount     = $is_credit ? (float) $row['credit'] : (float) $row['debit'];
             $order      = wc_get_order( $row['order_id'] );
-            if ( !$order ) {
+            if ( ! $order ) {
                 continue;
             }
 

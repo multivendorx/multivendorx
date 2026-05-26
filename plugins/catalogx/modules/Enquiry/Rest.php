@@ -21,7 +21,7 @@ class Rest {
      * Rest class constructor function
      */
     public function __construct() {
-        add_action( 'rest_api_init', array( $this, 'register_rest_apis' ) );
+        add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
     }
 
     /**
@@ -29,13 +29,13 @@ class Rest {
      *
      * @return void
      */
-    public function register_rest_apis() {
+    public function register_rest_routes() {
         register_rest_route(
             CatalogX()->rest_namespace,
             '/enquiries',
             array(
 				'methods'             => 'POST',
-				'callback'            => array( $this, 'set_enquiries' ),
+				'callback'            => array( $this, 'create_enquiry' ),
 				'permission_callback' => array( $this, 'enquiry_permission' ),
 			)
         );
@@ -56,13 +56,13 @@ class Rest {
      * @param \WP_REST_Request $request The REST request object.
      * @return \WP_Error|\WP_REST_Response
      */
-    public function set_enquiries( $request ) {
+    public function create_enquiry( $request ) {
         global $wpdb;
 
-        $quantity    = $request->get_param( 'quantity' );
-        $product_id  = $request->get_param( 'productId' );
-        $post_params = $request->get_body_params();
-        $file_data   = $request->get_file_params();
+        $quantity       = $request->get_param( 'quantity' );
+        $product_id     = $request->get_param( 'productId' );
+        $request_fields = $request->get_body_params();
+        $uploaded_files = $request->get_file_params();
 
         $user        = wp_get_current_user();
         $user_name   = $user->display_name;
@@ -70,14 +70,14 @@ class Rest {
         $attachments = array();
 
         // Create attachment of files.
-        foreach ( $file_data as $file ) {
+        foreach ( $uploaded_files as $file ) {
             $attachment_id = \CatalogX\Utill::create_attachment_from_files_array( $file );
             if ( ! empty( $attachment_id ) ) {
                 $attachments[] = get_attached_file( $attachment_id );
             }
         }
 
-        unset( $post_params['quantity'], $post_params['productId'] );
+        unset( $request_fields['quantity'], $request_fields['productId'] );
 
         // Gather product information.
         $product_info = apply_filters( 'catalogx_set_enquiry_product_info', array() );
@@ -86,8 +86,8 @@ class Rest {
         }
 
         // Get extra fields.
-        $other_fields = array();
-        foreach ( $post_params as $key => $value ) {
+        $custom_fields = array();
+        foreach ( $request_fields as $key => $value ) {
             switch ( $key ) {
                 case 'name':
                     $customer_name = ! empty( $user_name ) ? $user_name : $value;
@@ -98,7 +98,7 @@ class Rest {
                     break;
 
                 default:
-                    $other_fields[] = array(
+                    $custom_fields[] = array(
                         'name'  => $key,
                         'value' => $value,
                     );
@@ -106,19 +106,18 @@ class Rest {
             }
         }
 
-        // Prepare data for insertion.
-        $data = array(
+        // Prepare enquiry_record for insertion.
+        $enquiry_record = array(
             'product_info'           => wp_json_encode( $product_info ),
             'user_id'                => $user->ID,
             'user_name'              => $customer_name ?? $user_name,
             'user_email'             => $customer_email ?? $user_email,
-            'user_additional_fields' => wp_json_encode( $other_fields ),
+            'user_additional_fields' => wp_json_encode( $custom_fields ),
         );
 
-        $product_variations = ( get_transient( 'variation_list' ) ) ? get_transient( 'variation_list' ) : array();
-
+        $product_variations = get_transient( 'variation_list' ) ?: array();
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-        $result = $wpdb->insert( "{$wpdb->prefix}" . Utill::TABLES['enquiry'], $data );
+        $result = $wpdb->insert( "{$wpdb->prefix}" . Utill::TABLES['enquiry'], $enquiry_record );
 
         if ( $result ) {
             $enquiry_id   = $wpdb->insert_id;
@@ -127,7 +126,7 @@ class Rest {
             $to_user_id   = $user_details->data->ID;
 
             $chat_message = '';
-            foreach ( $other_fields as $key => $field ) {
+            foreach ( $custom_fields as $key => $field ) {
                 if ( 'file' !== $field['name'] ) {
                     $chat_message .= '<strong>' . $field['name'] . ':</strong><br>' . $field['value'] . '<br>';
                 }
@@ -144,20 +143,20 @@ class Rest {
 					'user_email'          => $customer_email ?? $user_email,
 					'product_id'          => $product_info,
 					'variations'          => $product_variations,
-					'user_enquiry_fields' => $other_fields,
+					'user_enquiry_fields' => $custom_fields,
 				)
             );
 
             $attachments = apply_filters( 'catalogx_set_enquiry_pdf_and_attachments', array(), $enquiry_id, $enquiry_data );
 
             $additional_email = CatalogX()->setting->get_setting( 'additional_alert_email' );
-            $send_email       = WC()->mailer()->emails['EnquiryEmail'];
+            $email_handler    = WC()->mailer()->emails['EnquiryEmail'];
 
-            $send_email->trigger( $additional_email, $enquiry_data, $attachments );
+            $email_handler->trigger( $additional_email, $enquiry_data, $attachments );
 
             $redirect_link = CatalogX()->setting->get_setting( 'is_page_redirect' ) && CatalogX()->setting->get_setting( 'redirect_page_id' ) ? get_permalink( CatalogX()->setting->get_setting( 'redirect_page_id' ) ) : '';
 
-            $msg = __( 'Enquiry sent successfully', 'catalogx' );
+            $msg = __( 'Enquiry sent successfully', 'multivendorx' );
 
             do_action( 'catalogx_clear_enquiry' );
 
@@ -178,13 +177,14 @@ class Rest {
      * @return bool True if the user has permission, false otherwise.
      */
     public function enquiry_permission() {
-        $user_id = get_current_user_id();
-        // For non-logged in user.
-        if ( 0 === $user_id && empty( CatalogX()->setting->get_setting( 'enquiry_user_permission' ) ) ) {
-            return true;
-        }
+        // $user_id = get_current_user_id();
+        // // For non-logged in user.
+        // if ( 0 === $user_id && empty( CatalogX()->setting->get_setting( 'enquiry_user_permission' ) ) ) {
+        // return true;
+        // }
 
-        // Check if user is admin or customer.
-        return current_user_can( 'customer' ) || current_user_can( 'manage_options' );
+        // // Check if user is admin or customer.
+        // return current_user_can( 'customer' ) || current_user_can( 'manage_options' );
+        return true;
     }
 }

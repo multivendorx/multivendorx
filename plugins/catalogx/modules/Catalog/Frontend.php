@@ -19,7 +19,7 @@ class Frontend {
      * Frontend class constructor function.
      */
     public function __construct() {
-        // Check the exclution.
+        // Check the exclusion.
         if ( ! Util::is_available() ) {
 			return;
         }
@@ -30,12 +30,12 @@ class Frontend {
         // Display single product page descrioption box.
         add_action( 'display_shop_page_description_box', array( self::class, 'show_description_box' ) );
 
-        // Hooks for exclutions.
+        // Hooks for exclusions.
         add_filter( 'woocommerce_get_price_html', array( $this, 'exclude_price_for_selected_product' ), 10, 2 );
 
         add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'exclude_add_to_cart_button' ), 10, 2 );
 
-        add_action( 'woocommerce_single_product_summary', array( $this, 'exclusion_for_single_product_page' ), 5 );
+        add_action( 'woocommerce_single_product_summary', array( $this, 'remove_add_to_cart_on_single_product_page' ), 5 );
 
         // register description box.
         $this->register_description_box();
@@ -47,6 +47,9 @@ class Frontend {
      * @return void
      */
     public static function catalogx_redirect_page() {
+        if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+            return;
+        }
         // For exclusion.
         foreach ( WC()->cart->get_cart() as $cart_item ) {
             $product_id = $cart_item['product_id'];
@@ -138,7 +141,7 @@ class Frontend {
      *
      * @return void
      */
-    public function exclusion_for_single_product_page() {
+    public function remove_add_to_cart_on_single_product_page() {
         global $post;
 
         if ( Util::is_available_for_product( $post->ID ) && is_product() ) {
@@ -158,39 +161,33 @@ class Frontend {
     public function register_description_box() {
 
         // Get shop page button settings.
-        $position_settings = CatalogX()->setting->get_setting( 'shop_page_possition_setting', array() );
+        $position_settings = CatalogX()->setting->get_setting( 'shop_page_position_setting', array() );
 
         // Priority of colide position.
-        $possiton_priority = 1;
+        $position_priority = 1;
 
-        // Possiotion after a particular section.
-        $possition_after = 'sku_category';
+        // Position after a particular section.
+        $position_after = 'sku_category';
 
-        // If possition settings exists.
+        // If position settings exists.
         if ( $position_settings ) {
-            // Get the colide possition priority.
-            $possiton_priority = array_search( 'additional_input', array_keys( $position_settings ), true ) + 1;
+            // Get the colide position priority.
+            $position_priority = array_search( 'additional_input', array_keys( $position_settings ), true ) + 1;
 
-            // Get the possition after.
-            $possition_after = $position_settings['additional_input'];
+            // Get the position after.
+            $position_after = $position_settings['additional_input'];
         }
 
-        // Display button group in a hooked based on possition setting.
-        switch ( $possition_after ) {
-            case 'sku_category':
-                add_action( 'woocommerce_product_meta_end', array( self::class, 'display_description_box' ), 99 + $possiton_priority );
-                break;
-            case 'add_to_cart':
-            case 'product_description':
-                add_action( 'woocommerce_product_meta_start', array( self::class, 'display_description_box' ), 99 + $possiton_priority );
-                break;
-            case 'price_section':
-                add_action( 'woocommerce_single_product_summary', array( self::class, 'display_description_box' ), 10 + $possiton_priority );
-                break;
-            default:
-                add_action( 'woocommerce_single_product_summary', array( self::class, 'display_description_box' ), 6 + $possiton_priority );
-                break;
-        }
+        $position_map = array(
+            'sku_category'        => array( 'woocommerce_product_meta_end', 99 ),
+            'add_to_cart'         => array( 'woocommerce_product_meta_start', 99 ),
+            'product_description' => array( 'woocommerce_product_meta_start', 99 ),
+            'price_section'       => array( 'woocommerce_single_product_summary', 10 ),
+            'default'             => array( 'woocommerce_single_product_summary', 6 ),
+        );
+        $hook         = $position_map[ $position_after ][0] ?? $position_map['default'][0];
+        $priority     = $position_map[ $position_after ][1] + $position_priority;
+        add_action( $hook, array( self::class, 'display_description_box' ), $priority );
     }
 
     /**

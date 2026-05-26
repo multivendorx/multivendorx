@@ -64,7 +64,7 @@ class Frontend {
             $store_id = $order->get_meta( Utill::POST_META_SETTINGS['store_id'] );
 
             if ( $store_id ) {
-                $store      = new Store( $store_id );
+                $store = new Store( $store_id );
                 if ( ! $store->exists() ) {
                     return;
                 }

@@ -116,12 +116,12 @@ class Shortcode {
                 'marketplace_stores'   => array(
                     'scripts' => array(
                         array(
-                            'handle'    => 'multivendorx-marketplace-stores-view-script',
-                            'localize'  => true,
+                            'handle'   => 'multivendorx-marketplace-stores-view-script',
+                            'localize' => true,
                         ),
                         array(
-                            'handle'    => 'multivendorx-store-provider-script',
-                            'localize'  => true,
+                            'handle'   => 'multivendorx-store-provider-script',
+                            'localize' => true,
                         ),
                     ),
                     'styles'  => array(
@@ -132,8 +132,8 @@ class Shortcode {
                 'marketplace_products' => array(
                     'scripts' => array(
                         array(
-                            'handle'    => 'multivendorx-marketplace-products-view-script',
-                            'localize'  => true,
+                            'handle'   => 'multivendorx-marketplace-products-view-script',
+                            'localize' => true,
                         ),
                     ),
                 ),
@@ -141,8 +141,8 @@ class Shortcode {
                 'marketplace_coupons'  => array(
                     'scripts' => array(
                         array(
-                            'handle'    => 'multivendorx-marketplace-coupons-view-script',
-                            'localize'  => true,
+                            'handle'   => 'multivendorx-marketplace-coupons-view-script',
+                            'localize' => true,
                         ),
                     ),
                     'styles'  => array(
@@ -153,7 +153,7 @@ class Shortcode {
         );
 
         foreach ( $shortcode_assets as $shortcode => $assets ) {
-            if (! in_array( $shortcode, $detected_shortcodes, true ) ) {
+            if ( ! in_array( $shortcode, $detected_shortcodes, true ) ) {
                 continue;
             }
 
@@ -169,7 +169,7 @@ class Shortcode {
             }
 
             foreach ( $assets['styles'] ?? array() as $style_handle ) {
-                FrontendScripts::enqueue_style($style_handle);
+                FrontendScripts::enqueue_style( $style_handle );
             }
         }
     }
@@ -182,7 +182,7 @@ class Shortcode {
     public static function dequeue_all_styles_on_page() {
         if ( Utill::is_store_dashboard() && is_user_logged_in() && in_array( 'store_owner', MultiVendorX()->current_user->roles, true ) ) {
             global $wp_styles;
-            $wp_styles->queue = apply_filters( 'multivendorx_dashboard_style_queue', array( 'multivendorx-dashboard-style', 'multivendorx-store-product-style', 'media-views', 'imgareaselect' ));
+            $wp_styles->queue = apply_filters( 'multivendorx_dashboard_style_queue', array( 'multivendorx-dashboard-style', 'multivendorx-store-product-style', 'media-views', 'imgareaselect' ) );
         }
     }
 
@@ -272,7 +272,7 @@ class Shortcode {
         $attributes = $this->snake_to_camel_case( $attributes );
         $json_attrs = esc_attr( wp_json_encode( $attributes ) );
 
-        return '<div id="marketplace-products" data-attributes="' . $json_attrs . '"></div>';  
+        return '<div id="marketplace-products" data-attributes="' . $json_attrs . '"></div>';
     }
     /**
      * Display coupons list.
@@ -284,7 +284,7 @@ class Shortcode {
         $attributes = $this->snake_to_camel_case( $attributes );
         $json_attrs = esc_attr( wp_json_encode( $attributes ) );
 
-        return '<div id="marketplace-coupons" data-attributes="' . $json_attrs . '"></div>';    
+        return '<div id="marketplace-coupons" data-attributes="' . $json_attrs . '"></div>';
     }
 
     /**

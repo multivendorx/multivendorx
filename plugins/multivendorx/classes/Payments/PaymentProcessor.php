@@ -151,7 +151,7 @@ class PaymentProcessor {
 		global $wpdb;
 
         if ( $additional_receiver > 0 ) {
-			do_action( 'multivendorx_handle_user_payment', $store_id, $order_id, $transaction_id, $amount );
+			do_action( 'multivendorx_handle_additional_receiver_payment', $store_id, $order_id, $transaction_id, $amount, $additional_receiver );
 			return;
 		}
 
@@ -206,11 +206,12 @@ class PaymentProcessor {
             );
 		}
 
+		$transaction_table = $wpdb->prefix . Utill::TABLES['transaction'];
 		if ( 'success' !== $status ) {
 			$row = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->prepare(
                     "SELECT *
-                        FROM $wpdb->prefix . Utill::TABLES['transaction']
+                        FROM {$transaction_table}
                         WHERE id = %d",
                     $transaction_id
                 )

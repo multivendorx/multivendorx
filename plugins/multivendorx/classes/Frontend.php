@@ -394,7 +394,7 @@ class Frontend {
 	 */
     public function multivendorx_store_visitors_stats() {
         $store_page = Utill::is_store_page();
-        if ( !is_product() || !$store_page ) {
+        if ( ! is_product() || ! $store_page ) {
             return;
         }
         $product_store = false;
@@ -560,8 +560,8 @@ class Frontend {
 
             <?php wc_get_template( 'myaccount/form-login.php' ); ?>
         </div>
-        <?php
-            }
+			<?php
+		}
 
 		return ob_get_clean();
 	}

@@ -18,15 +18,69 @@ defined( 'ABSPATH' ) || exit;
  */
 class Utill {
     /**
-     * Constent holds table name
+     * Core custom database tables used by CatalogX.
      *
-     * @var array
+     * These tables store enquiry data, rules configuration,
+     * and enquiry message history.
+     *
+     * @var array<string, string>
      */
-    const TABLES = array(
+    public const TABLES = array(
         'enquiry' => 'catalogx_enquiry',
         'rule'    => 'catalogx_rules',
         'message' => 'catalogx_messages',
     );
+
+    /**
+     * Option keys used for storing CatalogX module settings
+     * in the WordPress options table.
+     *
+     * Each key represents a settings section or module and maps
+     * to its corresponding database option name.
+     *
+     * @var array<string, string>
+     */
+    public const CATALOGX_SETTINGS = array(
+        'extra'                         => 'catalogx_extra_settings',
+        'enquiry-catalog-customization' => 'catalogx_enquiry_catalog_customization_settings',
+        'shopping'                      => 'catalogx_shopping_settings_settings',
+        'enquiry'                       => 'catalogx_enquiry_settings',
+        'quotation'                     => 'catalogx_quotation_settings',
+        'tools'                         => 'catalogx_tools_settings',
+        'pages'                         => 'catalogx_pages_settings',
+        'enquiry-quote-exclusion'       => 'catalogx_enquiry_quote_exclusion_settings',
+        'enquiry-form-customization'    => 'catalogx_enquiry_form_customization_settings',
+        'enquiry-email-temp'            => 'catalogx_enquiry_email_temp_settings',
+        'wholesale'                     => 'catalogx_wholesale_settings',
+        'wholesale-registration'        => 'catalogx_wholesale_registration_settings',
+    );
+
+    /**
+     * Option keys used for storing internal plugin states,
+     * installation flags, and metadata in the WordPress options table.
+     *
+     * These values are primarily used during plugin setup,
+     * activation, onboarding, and version management.
+     *
+     * @var array<string, string>
+     */
+    public const CATALOGX_OTHER_SETTINGS = array(
+        'run_installer'       => 'catalogx_run_installer',
+        'installed'           => 'catalogx_installed',
+        'plugin_activated'    => 'catalogx_plugin_activated',
+        'plugin_page_install' => 'dc_product_vendor_plugin_page_install',
+        'tour_completed'      => 'catalogx_tour_completed',
+        'plugin_db_version'   => 'catalogx_version',
+    );
+
+    /**
+     * Option key used to store the list of active CatalogX modules.
+     *
+     * The value typically contains an array of enabled module identifiers.
+     *
+     * @var string
+     */
+    public const ACTIVE_MODULES_DB_KEY = 'catalogx_all_active_module_list';
 
     /**
      * Function to console and debug errors.
@@ -84,16 +138,16 @@ class Utill {
     /**
      * Create atachment from array of fiels.
      *
-     * @param mixed $files_array Array representing the uploaded file.
+     * @param mixed $uploaded_file Array representing the uploaded file.
      * @return int|\WP_Error
      */
-    public static function create_attachment_from_files_array( $files_array ) {
+    public static function create_attachment_from_files_array( $uploaded_file ) {
         require_once ABSPATH . 'wp-admin/includes/file.php';
         require_once ABSPATH . 'wp-admin/includes/image.php';
         require_once ABSPATH . 'wp-admin/includes/media.php';
 
         // Handle the file upload.
-        $upload = wp_handle_upload( $files_array, array( 'test_form' => false ) );
+        $upload = wp_handle_upload( $uploaded_file, array( 'test_form' => false ) );
 
         // Prepare the attachment.
         $file_path = $upload['file'];
@@ -155,7 +209,7 @@ class Utill {
         if ( function_exists( 'icl_t' ) ) {
             return icl_t( $context, $name, $default_value );
         } else {
-            return __( $default_value, 'catalogx' );
+            return __( $default_value, 'multivendorx' );
         }
     }
 
@@ -170,7 +224,7 @@ class Utill {
      */
     public static function get_button_styles( $button_settings, $hover = false ) {
         $button_css  = '';
-        $border_size = ! empty( $button_settings['button_border_size'] ) ? esc_html( $button_settings['button_border_size'] ) . 'px' : '1px';
+        $border_size = ! empty( $button_settings['button_border_size'] ) ? esc_attr( $button_settings['button_border_size'] ) . 'px' : '1px';
 
         if ( $hover ) {
             if ( isset( $button_settings['button_background_color_onhover'] ) ) {
@@ -184,28 +238,28 @@ class Utill {
             }
         } else {
             if ( ! empty( $button_settings['button_background_color'] ) ) {
-                $button_css .= 'background: ' . esc_html( $button_settings['button_background_color'] ) . ';';
+                $button_css .= 'background: ' . esc_attr( $button_settings['button_background_color'] ) . ';';
             }
             if ( ! empty( $button_settings['button_text_color'] ) ) {
-                $button_css .= 'color: ' . esc_html( $button_settings['button_text_color'] ) . ';';
+                $button_css .= 'color: ' . esc_attr( $button_settings['button_text_color'] ) . ';';
             }
             if ( ! empty( $button_settings['button_border_color'] ) ) {
-                $button_css .= 'border: ' . $border_size . ' solid ' . esc_html( $button_settings['button_border_color'] ) . ';';
+                $button_css .= 'border: ' . $border_size . ' solid ' . esc_attr( $button_settings['button_border_color'] ) . ';';
             }
             if ( ! empty( $button_settings['button_font_size'] ) ) {
-                $button_css .= 'font-size: ' . esc_html( $button_settings['button_font_size'] ) . 'px;';
+                $button_css .= 'font-size: ' . esc_attr( $button_settings['button_font_size'] ) . 'px;';
             }
             if ( ! empty( $button_settings['button_border_radious'] ) ) {
-                $button_css .= 'border-radius: ' . esc_html( $button_settings['button_border_radious'] ) . 'px;';
+                $button_css .= 'border-radius: ' . esc_attr( $button_settings['button_border_radious'] ) . 'px;';
             }
             if ( ! empty( $button_settings['button_font_width'] ) ) {
-                $button_css .= 'font-weight: ' . esc_html( $button_settings['button_font_width'] ) . 'px;';
+                $button_css .= 'font-weight: ' . esc_attr( $button_settings['button_font_width'] ) . 'px;';
             }
             if ( ! empty( $button_settings['button_padding'] ) ) {
-                $button_css .= 'padding: ' . esc_html( $button_settings['button_padding'] ) . 'px;';
+                $button_css .= 'padding: ' . esc_attr( $button_settings['button_padding'] ) . 'px;';
             }
             if ( ! empty( $button_settings['button_margin'] ) ) {
-                $button_css .= 'margin: ' . esc_html( $button_settings['button_margin'] ) . 'px;';
+                $button_css .= 'margin: ' . esc_attr( $button_settings['button_margin'] ) . 'px;';
             }
         }
 

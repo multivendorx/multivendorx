@@ -7,29 +7,25 @@
 
 namespace CatalogX;
 
+use CatalogX\Utill;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Catalog Modules Class
+ * CatalogX Modules Class
  *
- * @version     6.0.0
  * @class       Modules class
+ * @version     6.0.0
  * @author      MultiVendorX
  */
 class Modules {
-    /**
-     * Option's table key for active module list.
-     *
-     * @var string
-     */
-    const ACTIVE_MODULES_DB_KEY = 'catalogx_all_active_module_list';
 
     /**
      * List of all module.
      *
      * @var array
      */
-    private $modules = array();
+    private $registered_modules = array();
 
     /**
      * List of all active module.
@@ -46,51 +42,90 @@ class Modules {
     private static $module_activated = false;
 
     /**
-     * Container that store the object of active module
+     * Services that store the object of active module
      *
      * @var array
      */
 
-    private $container = array();
+    private $services = array();
 
     /**
      * Constructor of Modules class
      *
      * @return void
      */
-    public function __construct() {
-    }
+    public function __construct() {}
 
     /**
-     * Get list of all multivendorX module.
+     * Convert camel case string to kebab case.
      *
-     * @return array
+     * @param string $string_param The camel case string to convert.
+     * @return string The converted kebab case string.
      */
-    public function get_all_modules() {
-        if ( ! $this->modules ) {
-            $this->modules = apply_filters(
-                'catalogx_modules',
-                array(
-					'catalog' => array(
-						'id'           => 'catalog',
-						'module_file'  => CatalogX()->plugin_path . 'modules/Catalog/Module.php',
-						'module_class' => 'CatalogX\Catalog\Module',
-					),
-					'enquiry' => array(
-						'id'           => 'enquiry',
-						'module_file'  => CatalogX()->plugin_path . 'modules/Enquiry/Module.php',
-						'module_class' => 'CatalogX\Enquiry\Module',
-					),
-					'quote'   => array(
-						'id'           => 'quote',
-						'module_file'  => CatalogX()->plugin_path . 'modules/Quote/Module.php',
-						'module_class' => 'CatalogX\Quote\Module',
-					),
-				)
-            );
+    private function camel_to_kebab( string $string_param ): string {
+        return strtolower(
+            preg_replace(
+                '/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/',
+                '-',
+                $string_param
+            )
+        );
+    }
+    /**
+     * Get all modules dynamically from /modules directory
+     */
+    public function get_registered_modules(): array {
+
+        if ( ! empty( $this->registered_modules ) ) {
+            return $this->registered_modules;
         }
 
-        return $this->modules;
+        $sources = apply_filters(
+            'catalogx_module_sources',
+            array(
+                array(
+                    'path'      => trailingslashit( CatalogX()->plugin_path . 'modules' ),
+                    'namespace' => 'CatalogX',
+                ),
+            )
+        );
+
+        foreach ( $sources as $source ) {
+            $base_path = $source['path'];
+            $namespace = $source['namespace'];
+
+            if ( ! is_dir( $base_path ) ) {
+                continue;
+            }
+
+            $folders = scandir( $base_path );
+
+            foreach ( $folders as $folder ) {
+                if ( in_array( $folder, array( '.', '..' ), true ) ) {
+                    continue;
+                }
+
+                $module_file = $base_path . $folder . '/Module.php';
+
+                if ( ! is_dir( $base_path . $folder ) || ! file_exists( $module_file ) ) {
+                    continue;
+                }
+
+                $module_id = $this->camel_to_kebab( $folder );
+
+                $key = array_key_exists( $module_id, $this->registered_modules )
+                    ? $namespace . '_' . $module_id
+                    : $module_id;
+
+                $this->registered_modules[ $key ] = array(
+                    'id'           => $module_id,
+                    'module_file'  => $module_file,
+                    'module_class' => "{$namespace}\\{$folder}\\Module",
+                );
+            }
+        }
+
+        return $this->registered_modules;
     }
 
     /**
@@ -104,9 +139,7 @@ class Modules {
             return $this->active_modules;
         }
 
-        $this->active_modules = CatalogX()->setting->get_option( self::ACTIVE_MODULES_DB_KEY, array() );
-
-        return $this->active_modules;
+        return CatalogX()->setting->get_option( Utill::ACTIVE_MODULES_DB_KEY, array() );
     }
 
     /**
@@ -119,73 +152,67 @@ class Modules {
             return;
         }
 
-        $license_active    = Utill::is_khali_dabba();
-        $active_modules    = $this->get_active_modules();
-        $all_modules       = $this->get_all_modules();
-        $activated_modules = array();
+        $active_modules   = $this->get_active_modules();
+        $all_modules      = $this->get_registered_modules();
+        $validated_active = array();
+        foreach ( $active_modules as $module_id ) {
+            foreach ( $all_modules as $key => $module ) {
+                // Match same module id (free + pro both)
+                if ( empty( $module['id'] ) || $module['id'] !== $module_id ) {
+                    continue;
+                }
+                if ( ! $this->is_module_available( $module ) ) {
+					continue;
+                }
 
-        foreach ( $active_modules as $modules_id ) {
-            if ( ! isset( $all_modules[ $modules_id ] ) ) {
-                continue;
-            }
-
-            $module = $all_modules[ $modules_id ];
-
-            // Check if the module is available.
-            if ( ! $this->is_module_available( $module, $license_active ) ) {
-                continue;
-            }
-
-            // Store the module as active module.
-            if ( file_exists( $module['module_file'] ) ) {
-                $activated_modules[] = $modules_id;
-            }
-
-            // Activate the module.
-            if ( file_exists( $module['module_file'] ) && ! in_array( $modules_id, $this->container, true ) ) {
                 require_once $module['module_file'];
 
-                $module_class                   = $module['module_class'];
-                $this->container[ $modules_id ] = new $module_class();
+                try {
+                    $class                  = $module['module_class'];
+                    $this->services[ $key ] = new $class();
+                } catch ( \Throwable $e ) {
+                    CatalogX()->util->log( $e );
+                    continue;
+                }
 
-                /**
-                 * Module activation hook
-                 *
-                 * @param object $name module object
-                 */
-                do_action( 'catalogx_activated_module_' . $modules_id, $this->container[ $modules_id ] );
+                do_action(
+                    "catalogx_activated_module_{$module_id}",
+                    $this->services[ $key ]
+                );
             }
-        }
 
-        // store activated module as active module.
-        if ( $activated_modules !== $active_modules ) {
-            update_option( self::ACTIVE_MODULES_DB_KEY, $activated_modules );
+            $validated_active[] = $module_id;
+        }
+        if ( $validated_active !== $active_modules ) {
+            update_option( Utill::ACTIVE_MODULES_DB_KEY, $validated_active );
+            $this->active_modules = $validated_active;
         }
 
         self::$module_activated = true;
     }
 
-    /**
-     * Check a perticular module is available or not.
-     *
-     * @param array $module The module configuration array.
-     * @param bool  $license_active Whether the license for pro modules is active.
-     * @return bool
-     */
-    private function is_module_available( $module, $license_active ) {
-        $is_pro_module = $module['pro_module'] ?? false;
-
-        // if it is free module.
-        if ( ! $is_pro_module ) {
-            return true;
+	/**
+	 * Check a particular module is available or not.
+	 *
+	 * @param array $module The module configuration array.
+	 * @return bool
+	 */
+    private function is_module_available( $module ) {
+        if ( ! file_exists( $module['module_file'] ) ) {
+            return false;
         }
 
-        // if it is pro module.
-        if ( $is_pro_module && $license_active ) {
-            return true;
+        require_once $module['module_file'];
+
+        $class = $module['module_class'];
+
+        if ( class_exists( $class ) && method_exists( $class, 'is_compatible' ) ) {
+            if ( ! $class::is_compatible() ) {
+                return false;
+            }
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -193,9 +220,8 @@ class Modules {
      *
      * @return array
      */
-    public function get_all_modules_ids() {
-        $modules = $this->get_all_modules();
-        return array_keys( $modules );
+    public function get_module_ids() {
+        return array_keys( $this->get_registered_modules() );
     }
 
     /**
@@ -203,37 +229,29 @@ class Modules {
      *
      * @return array
      */
-    public function get_available_modules() {
-        $modules           = $this->get_all_modules();
-        $license_active    = Utill::is_khali_dabba();
-        $available_modules = array();
+    public function get_available_modules(): array {
+        $available = array();
 
-        foreach ( $modules as $module_id => $module ) {
-            // Check if the module is available.
-            if ( ! $this->is_module_available( $module, $license_active ) ) {
-                continue;
-            }
-
-            if ( file_exists( $module['module_file'] ) ) {
-                $available_modules[] = $module['id'];
+        foreach ( $this->get_registered_modules() as $id => $module ) {
+            if ( $this->is_module_available( $module ) ) {
+                $available[] = $id;
             }
         }
 
-        return $available_modules;
+        return $available;
     }
 
     /**
      * Activate modules
      *
-     * @param array $modules The module name to activate.
+     * @param array $registered_modules The module name to activate.
      * @return array|mixed
      */
-    public function activate_modules( $modules ) {
-        $active_modules = $this->get_active_modules();
+    public function activate_modules( $registered_modules ) {
+        $active_modules       = $this->get_active_modules();
+        $this->active_modules = array_unique( array_merge( $active_modules, $registered_modules ) );
 
-        $this->active_modules = array_unique( array_merge( $active_modules, $modules ) );
-
-        update_option( self::ACTIVE_MODULES_DB_KEY, $this->active_modules );
+        update_option( Utill::ACTIVE_MODULES_DB_KEY, $this->active_modules );
 
         self::$module_activated = false;
 
@@ -245,32 +263,27 @@ class Modules {
     /**
      * Defactivate modules.
      *
-     * @param array $modules The module name to deactivate.
+     * @param array $registered_modules The module name to deactivate.
      * @return array
      */
-    public function deactivate_modules( $modules ) {
-        $active_modules = $this->get_active_modules();
+    public function deactivate_modules( array $registered_modules ): array {
 
-        foreach ( $modules as $module_id ) {
-            $active_modules = array_diff( $active_modules, array( $module_id ) );
-        }
+        $this->active_modules = array_values(
+            array_diff( $this->get_active_modules(), $registered_modules )
+        );
 
-        $active_modules = array_values( $active_modules );
-
-        $this->active_modules = $active_modules;
-
-        update_option( self::ACTIVE_MODULES_DB_KEY, $this->active_modules );
+        update_option( Utill::ACTIVE_MODULES_DB_KEY, $this->active_modules );
 
         add_action(
             'shutdown',
-            function () use ( $modules ) {
-                foreach ( $modules as $module_id ) {
-                    /**
-                     * Module deactivation hook
-                     *
-                     * @param object $module deactivated module object
-                     */
-                    do_action( 'catalogx_deactivated_module_' . $module_id, $this->container[ $module_id ] );
+            function () use ( $registered_modules ) {
+                foreach ( $registered_modules as $module_id ) {
+                    if ( isset( $this->services[ $module_id ] ) ) {
+                        do_action(
+                            "catalogx_deactivated_module_{$module_id}",
+                            $this->services[ $module_id ]
+                        );
+                    }
                 }
             }
         );

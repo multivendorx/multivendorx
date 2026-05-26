@@ -10,10 +10,10 @@ namespace CatalogX;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * CatalogX SetupWizard class
+ * Catalogx SetupWizard class
  *
  * @class       SetupWizard
- * @version     6.0.0
+ * @version     5.0.0
  * @package     CatalogX
  * @author      MultiVendorX
  */
@@ -58,9 +58,10 @@ class SetupWizard {
         $current_screen = get_current_screen();
 
         if ( 'dashboard_page_catalogx-setup' === $current_screen->id ) {
-            wp_enqueue_script( 'setup-wizard-script', CatalogX()->plugin_url . FrontendScripts::get_build_path_name() . 'js/block/setupWizard/index.js', array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ), CatalogX()->version, true );
-            wp_set_script_translations( 'setup-wizard-script', 'catalogx' );
-            wp_enqueue_style( 'setup-wizard-style', CatalogX()->plugin_url . FrontendScripts::get_build_path_name() . 'styles/block/setupWizard/index.css', array(), CatalogX()->version );
+            FrontendScripts::enqueue_admin_assets();
+            FrontendScripts::enqueue_script( 'catalogx-vendor-script' );
+            wp_enqueue_script( 'setup-wizard-script', FrontendScripts::get_asset_path() . 'js/block/setup-wizard/index.js', array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ), Catalogx()->version, true );
+            wp_set_script_translations( 'setup-wizard-script', 'multivendorx' );
             wp_localize_script(
                 'setup-wizard-script',
                 'appLocalizer',
@@ -69,6 +70,7 @@ class SetupWizard {
 					'nonce'        => wp_create_nonce( 'wp_rest' ),
 					'restUrl'      => CatalogX()->rest_namespace,
 					'redirect_url' => admin_url() . 'admin.php?page=catalogx#&tab=modules',
+                    'admin_url'    => admin_url(),
 				)
             );
         }

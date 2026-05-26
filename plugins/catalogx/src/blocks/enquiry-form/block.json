@@ -1,0 +1,7 @@
+{
+    "apiVersion": 3,
+    "name": "catalogx/enquiry-form",
+    "icon": "",
+    "title": "Enquiry Form",
+    "editorScript": "file:./index.js"
+}

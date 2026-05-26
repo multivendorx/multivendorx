@@ -1,0 +1,30 @@
+# Dependencies
+**/node_modules/**
+**/vendor/**
+
+# Build outputs
+**/assets/**
+**/release/**
+**/dist/**
+**/build/**
+
+# Cache
+**/.cache/**
+**/.wireit/**
+**/.turbo/**
+
+# Coverage
+**/coverage/**
+
+# Minified
+**/*.min.js
+**/*.min.css
+
+# Lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+composer.lock
+
+# Logs
+*.log

@@ -81,9 +81,9 @@ final class MultiVendorX {
      * @return void
      */
     public function multivendorx_plugin_update_message() {
-        if ( version_compare( get_option( 'MULTIVENDORX_PLUGIN_VERSION' ), '5.0.0', '<' ) ) {
-            echo '<p><strong>Heads up!</strong> 5.0.0 is a major update. Make a full site backup and before upgrading your marketplace to avoid any undesirable situations.</p>';
-            exit;
+        if ( version_compare( MULTIVENDORX_PLUGIN_VERSION, '5.0.0', '<' ) ) {
+            echo '<p><strong>Heads up!</strong> 5.0.0 is a major update. Make a full site backup before upgrading your marketplace to avoid any undesirable situations.</p>';
+            return;
         }
     }
 
@@ -98,6 +98,7 @@ final class MultiVendorX {
             add_option( Utill::MULTIVENDORX_OTHER_SETTINGS['installed'], true );
             add_option( Utill::MULTIVENDORX_OTHER_SETTINGS['plugin_activated'], true );
         }
+        flush_rewrite_rules();
     }
 
     /**
@@ -184,7 +185,6 @@ final class MultiVendorX {
         $this->container['active_store'] = get_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], true );
 
         do_action( 'multivendorx_loaded' );
-        flush_rewrite_rules();
     }
 
     /**
@@ -325,5 +325,3 @@ final class MultiVendorX {
         return self::$instance;
     }
 }
-
-

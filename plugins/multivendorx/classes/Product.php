@@ -128,7 +128,7 @@ class Product {
 
         foreach ( $store_ids as $store_id ) {
             $store = Store::get_store( $store_id );
-            if (empty($store)) {
+            if ( empty( $store ) ) {
                 continue;
             }
             printf(

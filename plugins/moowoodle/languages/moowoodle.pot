@@ -1,0 +1,1573 @@
+# Copyright (c) 2026 Moowoodle Inc. All Rights Reserved.
+msgid ""
+msgstr ""
+"Project-Id-Version: MooWoodle 3.4.0\n"
+"Report-Msgid-Bugs-To: https://dualcube.com/contact/\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-05-26T13:09:08+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: moowoodle\n"
+
+#. Plugin Name of the plugin
+#: moowoodle.php
+#: classes/FrontendScripts.php:304
+msgid "MooWoodle"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: moowoodle.php
+msgid "https://dualcube.com/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
+msgstr ""
+
+#. Description of the plugin
+#: moowoodle.php
+msgid "The MooWoodle plugin is an extention of WooCommerce that acts as a bridge between WordPress/Woocommerce and Moodle."
+msgstr ""
+
+#. Author of the plugin
+#: moowoodle.php
+msgid "DualCube"
+msgstr ""
+
+#: classes/Admin.php:55
+#: assets/js/index.js:1
+msgid "Dashboard"
+msgstr ""
+
+#: classes/Admin.php:59
+#: assets/js/index.js:1
+msgid "Courses"
+msgstr ""
+
+#: classes/Admin.php:63
+#: assets/js/index.js:1
+msgid "Cohorts"
+msgstr ""
+
+#: classes/Admin.php:67
+msgid "Enrolments"
+msgstr ""
+
+#: classes/Admin.php:71
+msgid "Synchronization"
+msgstr ""
+
+#: classes/Admin.php:75
+#: classes/MooWoodle.php:206
+msgid "Settings"
+msgstr ""
+
+#: classes/Admin.php:79
+#: assets/js/index.js:1
+msgid "Help & Support"
+msgstr ""
+
+#: classes/Admin.php:105
+#: classes/Admin.php:113
+#: classes/MooWoodle.php:187
+#: classes/MooWoodle.php:213
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: classes/Core/Course.php:223
+msgid "Moodle Enrollment Mapping"
+msgstr ""
+
+#: classes/Core/Product.php:162
+msgid "Update Product"
+msgstr ""
+
+#: classes/Emails/EnrollmentEmail.php:36
+msgid "New Moodle Enrollment"
+msgstr ""
+
+#: classes/Emails/EnrollmentEmail.php:37
+msgid "This is a notification email sent to the enrollees for new enrollment."
+msgstr ""
+
+#: classes/Emails/EnrollmentEmail.php:38
+msgid "Welcome to {site_title}!"
+msgstr ""
+
+#: classes/Emails/EnrollmentEmail.php:85
+msgid "Your enrolment is confirmed - login info inside"
+msgstr ""
+
+#. translators: %s: Site name.
+#: classes/Emails/EnrollmentEmail.php:99
+#, php-format
+msgid "Welcome to %s! Your Account and Course Access Details"
+msgstr ""
+
+#: classes/Endpoint.php:53
+msgid "My Courses"
+msgstr ""
+
+#: classes/Enrollment.php:466
+msgid "Please check your mail or go to My Courses page to access your courses."
+msgstr ""
+
+#. translators: %s: Order status.
+#: classes/Enrollment.php:470
+#, php-format
+msgid "Order status is: %s"
+msgstr ""
+
+#. translators: %s: Start date in Y-m-d format.
+#: classes/Enrollment.php:499
+#, php-format
+msgid "Start Date: %s"
+msgstr ""
+
+#. translators: %s: End date in Y-m-d format.
+#: classes/Enrollment.php:508
+#, php-format
+msgid "End Date: %s"
+msgstr ""
+
+#: classes/Enrollment.php:531
+msgid "You can only purchase one unit of this product."
+msgstr ""
+
+#: classes/ExternalService.php:64
+msgid "Moodle credentials are missing."
+msgstr ""
+
+#: classes/ExternalService.php:126
+msgid "Response is not JSON-decodable"
+msgstr ""
+
+#: classes/FrontendScripts.php:317
+msgid "Manager"
+msgstr ""
+
+#: classes/FrontendScripts.php:318
+msgid "Course creator"
+msgstr ""
+
+#: classes/FrontendScripts.php:319
+msgid "Teacher"
+msgstr ""
+
+#: classes/FrontendScripts.php:320
+msgid "Non-editing teacher"
+msgstr ""
+
+#: classes/FrontendScripts.php:321
+#: assets/js/index.js:1
+msgid "Student"
+msgstr ""
+
+#: classes/FrontendScripts.php:322
+msgid "Authenticated user"
+msgstr ""
+
+#: classes/MooWoodle.php:182
+msgid "View documentation"
+msgstr ""
+
+#: classes/MooWoodle.php:182
+msgid "Docs"
+msgstr ""
+
+#: classes/MooWoodle.php:183
+msgid "Visit community forums"
+msgstr ""
+
+#: classes/MooWoodle.php:183
+#: assets/js/index.js:1
+msgid "Support"
+msgstr ""
+
+#: classes/Promotions.php:60
+#, php-format
+msgid "%s is supported only in MooWoodle Pro."
+msgid_plural "%s are supported only in MooWoodle Pro."
+msgstr[0] ""
+msgstr[1] ""
+
+#: classes/Promotions.php:75
+msgid "Upgrade to MooWoodle Pro"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Courses.php:137
+#: classes/RestAPI/Controllers/Courses.php:138
+msgid "Not Set"
+msgstr ""
+
+#. translators: 1: Start date, 2: End date
+#: classes/RestAPI/Controllers/Courses.php:142
+#, php-format
+msgid "%1$s - %2$s"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Logs.php:140
+msgid "Logs cleared successfully."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Logs.php:163
+msgid "Log file not found."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Logs.php:177
+msgid "Invalid log file."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Settings.php:82
+msgid "Settings saved."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Synchronization.php:141
+msgid "Update Course Category"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Synchronization.php:151
+msgid "Update Product Category"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Synchronization.php:167
+msgid "Update Course"
+msgstr ""
+
+#. translators: %s: action name
+#: classes/RestAPI/Controllers/TestConnection.php:88
+#, php-format
+msgid "%s test connection function is not defined."
+msgstr ""
+
+#: classes/Util.php:333
+msgid "Invalid nonce."
+msgstr ""
+
+#: classes/Util.php:356
+msgid "Unexpected server error."
+msgstr ""
+
+#. translators: %s: User's first name.
+#: templates/emails/html/EnrollmentEmail.php:21
+#: templates/emails/plain/EnrollmentEmail.php:19
+#, php-format
+msgid "Hi %s,"
+msgstr ""
+
+#. translators: %s: Blog name.
+#: templates/emails/html/EnrollmentEmail.php:30
+#, php-format
+msgid "Welcome to <strong>%s</strong>! We’re excited to have you onboard."
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:38
+#: templates/emails/plain/EnrollmentEmail.php:32
+msgid "An account has been created for you on our learning platform so you can begin your journey with us. Below are your login details:"
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:41
+#: templates/emails/plain/EnrollmentEmail.php:37
+msgid "Your Account Information"
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:44
+#: templates/emails/plain/EnrollmentEmail.php:39
+msgid "Website:"
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:49
+#: templates/emails/plain/EnrollmentEmail.php:40
+msgid "Username:"
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:61
+#: templates/emails/plain/EnrollmentEmail.php:48
+msgid "Password:"
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:62
+#: templates/emails/plain/EnrollmentEmail.php:49
+msgid "This password will work for both your WordPress and Moodle accounts. You will be required to change your Moodle password after your first login."
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:67
+#: templates/emails/plain/EnrollmentEmail.php:55
+msgid "WordPress Password:"
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:72
+#: templates/emails/plain/EnrollmentEmail.php:58
+msgid "Moodle Password:"
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:73
+#: templates/emails/plain/EnrollmentEmail.php:59
+msgid "Note: You will be required to change your Moodle password after your first login."
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:80
+#: templates/emails/plain/EnrollmentEmail.php:66
+msgid "Enrollment Details"
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:83
+#: templates/emails/html/EnrollmentEmail.php:90
+#: templates/emails/plain/EnrollmentEmail.php:69
+msgid "Course(s):"
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:92
+#: templates/emails/plain/EnrollmentEmail.php:75
+msgid "Dummy Course"
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:97
+#: templates/emails/plain/EnrollmentEmail.php:78
+msgid "Access Your Courses"
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:100
+msgid "To get started with your courses, please click the link below:"
+msgstr ""
+
+#. translators: %s is the support email address.
+#: templates/emails/html/EnrollmentEmail.php:112
+#, php-format
+msgid "If you have any questions or face any issues logging in, feel free to reach out to our support team at <a href=\"mailto:%1$s\">%2$s</a>."
+msgstr ""
+
+#: templates/emails/html/EnrollmentEmail.php:120
+#: templates/emails/plain/EnrollmentEmail.php:93
+msgid "Wishing you a great learning experience!"
+msgstr ""
+
+#. translators: %s: Blog name.
+#: templates/emails/plain/EnrollmentEmail.php:27
+#, php-format
+msgid "Welcome to %s! We’re excited to have you onboard."
+msgstr ""
+
+#: templates/emails/plain/EnrollmentEmail.php:80
+msgid "To get started with your courses, please visit:"
+msgstr ""
+
+#. translators: %s: support email address.
+#: templates/emails/plain/EnrollmentEmail.php:88
+#, php-format
+msgid "If you have any questions or face any issues logging in, feel free to reach out to our support team at %s."
+msgstr ""
+
+#: assets/js/block/moodle-enrollment-mapping/index.js:1
+msgid "Link Type"
+msgstr ""
+
+#: assets/js/block/moodle-enrollment-mapping/index.js:1
+#: assets/js/index.js:1
+msgid "Course"
+msgstr ""
+
+#: assets/js/block/moodle-enrollment-mapping/index.js:1
+msgid "Cohort"
+msgstr ""
+
+#: assets/js/block/moodle-enrollment-mapping/index.js:1
+msgid "Cohort Pro"
+msgstr ""
+
+#: assets/js/block/moodle-enrollment-mapping/index.js:1
+msgid "Select Item"
+msgstr ""
+
+#: assets/js/block/moodle-enrollment-mapping/index.js:1
+msgid "Select an item..."
+msgstr ""
+
+#: assets/js/block/moodle-enrollment-mapping/index.js:1
+msgid "Synchronize Moodle data"
+msgstr ""
+
+#: assets/js/block/moodle-enrollment-mapping/index.js:1
+msgid "Can't find your course or cohort?"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:1
+msgid "Failed to fetch courses."
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:1
+msgid "Username"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:1
+msgid "Course Name"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:1
+msgid "Enrolment Date"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:1
+msgid "Password (First Time Login only)"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:1
+#: assets/js/index.js:1
+msgid "Action"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:1
+msgid "Loading…"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:1
+msgid "N/A"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:1
+msgid "Unknown Course"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:1
+msgid "No Date Available"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:1
+msgid "Password not Available"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:1
+msgid "View"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:1
+msgid "No Link"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:1
+msgid "Previous"
+msgstr ""
+
+#. translators: %1$d is the current page number, %2$d is the total number of pages.
+#: assets/js/block/my-courses/index.js:4
+#, js-format
+msgid "Page %1$d of %2$d"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:4
+msgid "Next"
+msgstr ""
+
+#: assets/js/block/my-courses/index.js:4
+msgid "You haven't purchased any courses yet."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Bulk Course Sync"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Sync multiple Moodle™ courses to WordPress with one click."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Cohort Enrollment"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Sell and enroll entire Moodle™ cohorts via WooCommerce."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Group Enrollment"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Map course variations to Moodle™ groups for targeted enrollment."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Classroom Enrollment"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Buy multiple seats and assign them to students or teams."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Gift a Course"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Let customers purchase and gift courses to others."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Single Sign-On (SSO)"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Access Moodle™ and WordPress with one login."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Smart Course Sync"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Keep course details updated between Moodle™ and WordPress."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Subscription Courses"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Offer courses with recurring subscription plans."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Unified Access"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Give learners one dashboard for all their courses."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Your students will love this!"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Better courses, bigger profits"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "For website with"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "site license"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Yes, Upgrade Me!"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Why should you upgrade?"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Loading..."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Connection & Access"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Effortlessly configure and verify your WordPress-Moodle connection."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Provide the URL of your Moodle site where the course will be hosted. Students will receive access to the course content on that site."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Moodle site URL"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Moodle access token"
+msgstr ""
+
+#. translators: %s: URL to Moodle token page
+#: assets/js/index.js:1
+#, js-format
+msgid "Enter Moodle access token. You can generate the access token from <a href=\"%s\" target=\"_blank\" rel=\"noreferrer\">here</a>. <br>Navigation: Dashboard → Site administration → Server → Manage tokens."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Connection test passed!"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Connection test failed!"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "MooWoodle test connection"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Connecting to Moodle"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Courses Fetch"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Category Fetch"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "User Creation"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "User Fetch"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "User Update"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "User Enroll"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "User Unenroll"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "User Remove"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enabling this option allows users to access Moodle courses directly, bypassing the need for login."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Single Sign On"
+msgstr ""
+
+#. translators: %s: URL to Moodle SSO settings page
+#: assets/js/index.js:1
+#, js-format
+msgid "Generate a unique SSO secret key (must be at least 8 characters) and copy it. Then, go to your Moodle site and paste the copied SSO key <a href=\"%s\" target=\"_blank\" rel=\"noreferrer\">there</a>."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "SSO secret key"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course & Enrollment"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Control how course information appears to customers"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "When enabled, the course duration, such as the start and end dates, will be visible on the shop page."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Display course duration in 'Shop Page'"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "'<b>My Course</b>' menu will appear beneath the selected menu on the WooCommerce 'My Account' page of customer dashboard."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Endpoint menu position - 'My Course'"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enrollment & seat management"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Configure how buyers enroll and manage course seats"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Allow buyers (e.g., teachers or managers) to purchase multiple seats and assign them to users."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Classroom mode / group purchase"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enable buyers to remove users and reassign seats when needed - great for managing rotating teams or classrooms."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Seat reassignment"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Let buyers gift a course by entering someone else's details during checkout."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Gift someone"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "User notifications"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Manage emails sent to new and existing users"
+msgstr ""
+
+#. translators: %s: URL to WooCommerce email settings
+#: assets/js/index.js:1
+#, js-format
+msgid "If enabled, default WordPress new user registration emails will be disabled for both admin and user. <br>You can personalize the content of the MooWoodle New User email from <a href=\"%s\" target=\"_blank\" rel=\"noreferrer\">here.</a>"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Disable new user registration email"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "System & Logs"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Manage advanced settings for synchronization, error logging, and connection handling."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Advance log"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "<span class=\"highlighted-part\">Activating this option will log more detailed error information. Enable it only when essential, as it may result in a larger log file.</span>"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Lorem Ipsum is simply dummy text of"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "When WordPress sends a request to the Moodle server for data, communication delays might exceed the default server connection timeout. You can customize the timeout parameters by adjusting them here. <br>Default: 5 seconds."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "sec"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Connection timeout"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Seconds"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Select the interval for the user synchronization process. Based on this schedule, the cron job will run to sync users between WordPress and Moodle."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "min"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Minutes"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Automatic synchronization frequency"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Logs"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Cohorts Synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Fetch Moodle cohort on demand & generate products on demand."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Moodle cohort data is mapped to WordPress products, allowing new products to be created or existing ones to be updated with cohort details."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Cohort & product synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Create new products along with"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "This will additionally create new products based on Moodle cohort fetched, if they do not already exist in WordPress."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Update existing products along with"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Update product information based on Moodle cohort data. <br><span class=\"highlighted-part\">Caution: This will overwrite all existing product details with those from Moodle cohort details.</span>"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Courses Synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Fetch Moodle courses & generate products on demand."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Moodle course information is synchronized with WordPress products through categories, IDs, images, and groups."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course information mapping"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course categories"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Scan the entire Moodle course category structure and synchronize it with the WordPress category listings."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course ID number - Product SKU"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Retrieves the course ID number and assigns it as the product SKU."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course image"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Copies course images and sets them as WooCommerce product images."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course group"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Moodle course groups are fetched and linked with products."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Product synchronization options"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course information from Moodle is used to generate new products or refresh existing ones in WordPress."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course & product synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "This will additionally create new products based on Moodle courses fetched, if they do not already exist in WordPress."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Update product information based on Moodle course data. <br><span class=\"highlighted-part\">Caution: This will overwrite all existing product details with those from Moodle course details.</span>"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "On-demand synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "On-demand course"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Courses are fetched from Moodle and synchronized with WordPress, ensuring product details remain updated."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Synchronize courses now!"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Courses synchronized successfully!"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Failed to synchronize courses."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Initiate the immediate synchronization of all courses from Moodle to WordPress.<br><span class='highlighted-part'><br>With the 'Course & product synchronization' option, you have the ability to specify whether you want to create new products or update existing products.<br>Through the 'Course information mapping' feature, you gain the flexibility to define which specific course data gets imported from Moodle, like course ID number/course images etc. By default we will fetch only the category of the product.</span>"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Users Synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Synchronization on demand with automatic, real-time updates."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "The synchronization flow specifies the direction of data transfer. To enable two-way synchronization, select both directions. This applies to existing users as well. With 'Real-time profile synchronization', user profile information will sync immediately whenever users update their profiles.<br><br> <span class='highlighted-part'>User uniqueness will be checked based on email. If the user exists in the other system, their profile information will be synchronized; otherwise, a new user will be created. <br>Synchronizing user information fails if the same username is found in another instance but linked to a different email address.</span>"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Synchronization flow between sites"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Users from the chosen roles will be added or updated in Moodle."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "WordPress user role to synchronize"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Users from the chosen roles will be added or updated in WordPress."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Moodle user role to synchronize"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Profile information mapping"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Add New"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Remove"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Define the user profile information mapping between WordPress and Moodle. Add multiple rows above to define all the profile data you wish to map. Any remaining profile field will be excluded from the synchronization process.<br>User will be created based on their e-mail id, hence email id can't be mapped."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "If enabled, the real-time profile update scheduler will initiate based on the \"synchronization flow\" settings.<br>When a new user is added or updates their profile information, it will be synchronized between WordPress to Moodle, or vice versa, according to the profile information mapping settings above, based on the specified direction."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Real-Time profile synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Product"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enrolled users"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Sync Cohort Data"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Sync Cohort Data & Update Product"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Create Product"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Search..."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Cohort information is presented with associated products and student enrollments to support administrative actions."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Learning Unit"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enrollment Date"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Status"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Unenroll Now"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enroll Now"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Name"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Email"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "All Enrollments"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enrollment records are presented, showing students, their courses, enrollment dates, and current status."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Failed to load categories"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Short name"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Category"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course duration"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Edit product"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "View users"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Sync Course Data"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Sync Course Data & Update Product"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Sync course"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Create product"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Update product"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Failed to load courses"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Comprehensive course data is displayed here, including linked products, enrollment numbers, and related details."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Power your Moodle eLearning platform"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Connect Moodle with WordPress"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "WooCommerce course selling"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course category synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "One-click enrollment"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Student enrollment management"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Moodle test connection"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Log viewer & debugging tools"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course listing management"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Multilingual support"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Manage courses with advanced controls"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Import courses as draft"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course status control"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course image synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course group synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Automatically create new products"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Automatically update existing products"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Synchronize users and access seamlessly"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Basic user synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Real-time user synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Bidirectional synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "User profile field mapping"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Existing user synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Synced login/logout between Moodle & WordPress"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Sell courses your way"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Individual course enrollment"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Classroom / multi-seat enrollment"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Cohort enrollment"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Group enrollment via variations"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course gifting"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Bulk student enrollment"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Flexible pricing and subscriptions"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "One-time course purchase"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Tiered course access"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Subscription-based courses"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Tiered subscription support"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Bundled courses"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Multiple pricing models"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course variations support"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Free vs Pro comparison"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "See what you get with MooWoodle Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Get Pro Access Today!"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Free"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Moowoodle marketplace concept illustration"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Powering modern eLearning businesses worldwide"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "From individual educators to large training organizations, MooWoodle helps simplify course selling, learner management, and Moodle-WooCommerce integration at scale."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Sell course with WooCommerce"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Automate course enrollments"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Classroom, cohort based learning"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Seamless Single Sign-On experiences"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Upgrade Now"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Redirecting..."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Plugin already installed. Redirecting to activate..."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Error!"
+msgstr ""
+
+#: assets/js/index.js:1
+#, js-format
+msgid "Could not install \"%s\"."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Documentation"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Step-by-step guides to set up and manage your marketplace."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Explore Docs"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Expert consultation"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Get tailored advice from our marketplace specialists."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Book Consultation"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Seamless Moodle integration"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Connect your WooCommerce store with Moodle and automatically manage courses, enrollments, and learner access from one place."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Sell courses with WooCommerce"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Turn Moodle courses into purchasable WooCommerce products and monetize your learning platform with flexible checkout and payment options."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Single Sign-On access"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Allow learners to access their Moodle courses directly from WordPress without logging in multiple times."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Classroom & bulk enrollment"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enable teachers, companies, and training centers to purchase multiple seats and assign courses to learners with ease."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Course gifting made simple"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Let customers purchase and gift courses to friends, students, employees, or team members directly during checkout."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Keep user profiles synchronized between WordPress and Moodle automatically for a smooth and connected learning experience."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Automatic course synchronization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Fetch Moodle courses instantly and keep WooCommerce products updated with the latest course information."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Cohort synchronization & group learning"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Sync Moodle cohorts with WooCommerce products to streamline group enrollments and organization-based learning."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Welcome to MooWoodle"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Connect WordPress, WooCommerce, and Moodle to sell courses, automate enrollments, and deliver a seamless eLearning experience from a single platform."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Build a smarter eLearning platform"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Unlock advanced synchronization, automation, and enrollment features to create a professional learning experience for individuals, teams, and institutions."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Trusted by growing eLearning businesses"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Create, manage, and scale your online learning platform with confidence. From individual instructors to training organizations, MooWoodle helps simplify course selling and learner management."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "15-day money-back guarantee"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Extend your website"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "CatalogX Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Advanced product catalog with enhanced enquiry features and premium templates"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Get Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "CatalogX"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Turn your store into a product catalog with enquiry-based sales"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Installing..."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Install"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Notifima Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Advanced stock alerts, wishlist features, and premium notification system"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Notifima"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Advanced stock alerts and wishlist features for WooCommerce"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Need help getting started?"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Free vs Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "How to Set Up moowoodle Marketplace"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "A step-by-step guide to setting up your multivendor marketplace."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Official documentation"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Step-by-step guides for every moowoodle feature."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "YouTube tutorials"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Watch videos on marketplace setup, store management, payments, and more."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "WordPress support forum"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Ask questions and get expert guidance from the WordPress community."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Custom development"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Get personalized assistance and tailored solutions built for your eLearning platform."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Get fast help, expert guidance, and easy-to-follow resources - all in one place."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Community & forums"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Documentation & Learning"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "<b>Automated user and course synchronization with scheduler:</b> Utilize personalized scheduling options to synchronize users and courses between WordPress and Moodle."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "<b>Convenient Single Sign-On login:</b> SSO enables students to access their purchased courses without the need to log in separately to the Moodle site."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "<b>Steady Income through Course Subscriptions:</b> Generate consistent revenue by offering courses with subscription-based model."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "<b>Synchronize Courses in Bulk:</b> Effortlessly synchronize multiple courses at once, ideal for managing large course catalogs."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "<b>Automatic User Synchronization for Moodle™ and WordPress:</b>Syncs users between Moodle™ and WordPress for seamless account management across both platforms."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Manage Plan"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Contact Support"
+msgstr ""
+
+#: assets/js/block/moodle-enrollment-mapping/block.json
+msgctxt "block title"
+msgid "Product meta box"
+msgstr ""
+
+#: assets/js/block/my-courses/block.json
+msgctxt "block title"
+msgid "My Course"
+msgstr ""
