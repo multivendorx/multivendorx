@@ -83,6 +83,7 @@
         "@wordpress/hooks": "^4.45.0",
         "@wordpress/i18n": "wp-6.6",
         "@wordpress/react-i18n": "wp-6.6",
+        "axios": "^1.16.1",
         "react": "18.3.1",
         "react-dom": "18.3.1",
         "react-router-dom": "^7.6.0",
@@ -90,6 +91,9 @@
         "zyra": "workspace:*"
     },
     "devDependencies": {
-        "@wordpress/env": "10.23.x"
+        "@wordpress/env": "10.23.x",
+        "css-loader": "^7.1.4",
+        "style-loader": "^4.0.0",
+        "wireit": "^0.14.12"
     }
 }
