@@ -322,9 +322,9 @@ class Frontend {
                 if ( $google_maps_api_key ) {
                     wp_enqueue_script(
                         'google-maps',
-                        'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&libraries=places,marker',
+                        'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&libraries=places,marker&v=weekly',
                         array(),
-                        'weekly',
+                        null,
                         true
                     );
                 }
