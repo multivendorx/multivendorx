@@ -1,8 +1,8 @@
 {
     "name": "moowoodle",
-    "displayName": "Moowoodle",
+    "displayName": "MooWoodle",
     "version": "3.4.0",
-    "description": "Moowoodle",
+    "description": "MooWoodle",
     "license": "GPL-2.0-or-later",
     "mainPluginFile": "moowoodle.php",
     "engines": {
