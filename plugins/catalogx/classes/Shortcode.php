@@ -36,8 +36,8 @@ class Shortcode {
             wp_deregister_style( 'wc-blocks-style' );
 
             FrontendScripts::enqueue_frontend_assets();
-            FrontendScripts::localize_scripts( 'catalogx-quote-cart-script' );
             FrontendScripts::enqueue_script( 'catalogx-quote-cart-script' );
+            FrontendScripts::localize_scripts( 'catalogx-quote-cart-script' );
         
         FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
         FrontendScripts::enqueue_script( 'catalogx-enquiry-button-view-script' );
