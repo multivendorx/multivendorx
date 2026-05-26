@@ -214,6 +214,7 @@ const PendingRefund: React.FC<object> = () => {
 							{
 								icon: 'close',
 								text: __('Reject', 'multivendorx'),
+								color: 'red',
 								onClick: () => {
 									setViewOrder(row);
 									setPopupOpen(true);

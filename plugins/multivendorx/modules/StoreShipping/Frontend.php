@@ -140,7 +140,7 @@ class Frontend {
             ? $settings['distance-based-shipping']['enable']
             : false;
 
-        // Only add if country-wise shipping is enabled.
+        // Only add if distance based shipping is enabled.
         if ( $distance_based_shipping ) {
             $new_options = array(
                 (object) array(
@@ -158,7 +158,7 @@ class Frontend {
             ? $settings['zone-wise-shipping']['enable']
             : false;
 
-        // Only add if country-wise shipping is enabled.
+        // Only add if zone wise shipping is enabled.
         if ( $zone_wise_shipping ) {
             $new_options = array(
                 (object) array(
@@ -233,12 +233,12 @@ class Frontend {
             && apply_filters( 'multivendorx_is_allow_checkout_user_location', true )
             && $this->cart_has_distance_shipping() ) {
             echo '<div class="woocommerce-billing-fields__field-wrapper">';
-            echo '<div id="multivendorx-user-locaton-map" style="width:100%; height:18.75rem; margin-bottom:1.25rem;"></div>';
+            echo '<div id="multivendorx-user-location-map" style="width:100%; height:18.75rem; margin-bottom:1.25rem;"></div>';
             echo '</div>';
 			?>
             <style>
                 /*Ensure map always visible even if inline CSS fails */
-                #multivendorx-user-locaton-map {
+                #multivendorx-user-location-map {
                     width: 100%;
                     min-height: 18.75rem;
                     margin-bottom: 1.25rem;
@@ -273,14 +273,17 @@ class Frontend {
      */
     public function multivendorx_checkout_user_location_save( $order_id ) {
         $order = wc_get_order( $order_id );
+        $location = filter_input( INPUT_POST, 'multivendorx_user_location', FILTER_SANITIZE_SPECIAL_CHARS );
+        $location_lat = filter_input( INPUT_POST, 'multivendorx_user_location_lat', FILTER_SANITIZE_SPECIAL_CHARS );
+        $location_lng = filter_input( INPUT_POST, 'multivendorx_user_location_lng', FILTER_SANITIZE_SPECIAL_CHARS ) ;
 
-        if ( ! empty( filter_input( INPUT_POST, 'multivendorx_user_location', FILTER_SANITIZE_SPECIAL_CHARS ) ) ) {
+        if ( ! empty( $location ) ) {
             $order->update_meta_data( '_multivendorx_user_location', sanitize_text_field( $location ) );
         }
-        if ( ! empty( filter_input( INPUT_POST, 'multivendorx_user_location_lat', FILTER_SANITIZE_SPECIAL_CHARS ) ) ) {
+        if ( ! empty( $location_lat ) ) {
             $order->update_meta_data( '_multivendorx_user_location_lat', sanitize_text_field( $location_lat ) );
         }
-        if ( ! empty( filter_input( INPUT_POST, 'multivendorx_user_location_lng', FILTER_SANITIZE_SPECIAL_CHARS ) ) ) {
+        if ( ! empty( $location_lng ) ) {
             $order->update_meta_data( '_multivendorx_user_location_lng', sanitize_text_field( $location_lng ) );
         }
         $order->save();

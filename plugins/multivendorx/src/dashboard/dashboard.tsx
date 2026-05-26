@@ -608,7 +608,7 @@ const Dashboard: React.FC = () => {
 				<Column fullHeight grid={8}>
 					<Card title={__('Sales Overview', 'multivendorx')}>
 						{revenueData && revenueData.length > 0 ? (
-							<ResponsiveContainer width="100%" height={250}>
+							<ResponsiveContainer height={250}>
 								<BarChart
 									data={revenueData}
 									barSize={12}
@@ -628,9 +628,9 @@ const Dashboard: React.FC = () => {
 										contentStyle={{
 											background: '#fff',
 											border: 'none',
-											borderRadius: '3px',
+											borderRadius: '0.188rem',
 											boxShadow:
-												'0 2px 6px rgba(0,0,0,0.08)',
+												'0 0.125rem 0.375rem rgba(0,0,0,0.08)',
 										}}
 									/>
 									<Legend />
@@ -850,8 +850,8 @@ const Dashboard: React.FC = () => {
 										}
 										contentStyle={{
 											backgroundColor: '#fff',
-											borderRadius: '8px',
-											border: '1px solid #ddd',
+											borderRadius: '0.5rem',
+											border: '0.063rem solid #ddd',
 										}}
 									/>
 									<Legend
