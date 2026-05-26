@@ -18,13 +18,14 @@ declare global {
         nonce: string;
         tab_name: string;
         restUrl: string;
-        all_pages: Array;
+        pages_data: Array;
         role_array: Array;
-        all_users: Array;
-        all_products: Array;
-        all_product_cat: Array;
-        all_product_tag: Array;
-        all_product_brand: Array;
+        admin_url: string;
+        users_data: Array;
+        products_data: Array;
+        all_product_categories: Array;
+        all_product_categories: Array;
+        product_brands: Array;
         settings_databases_value: any; // Use a more specific type if possible
         active_modules: string[];
         user_role: string;
@@ -54,6 +55,7 @@ declare global {
         quote_base_url: string;
         redirect_url: string;
         free_version: any;
+        pro_data: any;
     }
 
     interface EnquiryFormData {

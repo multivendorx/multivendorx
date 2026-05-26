@@ -2,6 +2,9 @@ import { render } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
 import 'zyra/build/index.css';
+import { initializeModules } from 'zyra';
+
+initializeModules('catalogx', 'free', 'modules');
 
 render(
     <BrowserRouter>

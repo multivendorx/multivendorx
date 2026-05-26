@@ -15,6 +15,12 @@ interface Row {
     description?: string;
     enabledKey?: string;
     inactiveMessage?: string;
+
+    fields?: {
+        key: string;
+        type: string;
+        // [key: string]: unknown;
+    }[];
 }
 
 interface Column {
@@ -72,6 +78,10 @@ interface TableCellProps {
     onChange: (key: string, value: SettingValue) => void;
     modules: string[];
     onBlocked?: (type: 'pro' | 'module', payload?: string) => void;
+    field: {
+        key: string;
+        type: string;
+    };
 }
 
 function isBlocked(
@@ -92,6 +102,7 @@ function isBlocked(
 
 export const TableCell: React.FC<TableCellProps> = ({
     type,
+    field,
     fieldKey,
     rowKey,
     column,
@@ -112,10 +123,11 @@ export const TableCell: React.FC<TableCellProps> = ({
 
     // Pass EVERYTHING through - no hardcoded props
     const fieldConfig = {
+        ...column, // All column props pass through
+        ...field,
         key: fieldKey,
         type: type,
         label: column.label ?? rowLabel,
-        ...column, // All column props pass through
         rowKey: rowKey, // Row context
         rowLabel: rowLabel,
         disabled: disabled,
@@ -172,11 +184,15 @@ export const MultiInputTableUI: React.FC<MultiInputTableUIProps> = ({
 
     const renderCell = (
         column: Column,
+        row: Row,
         rowKey: string,
         rowLabel: string,
         isRowActive: boolean
     ) => {
-        const fields = column.fields ?? [{ key: column.key, type: 'checkbox' }];
+        const fields =
+            row.fields ??
+            column.fields ??
+            [{ key: column.key, type: 'checkbox' }];
 
         return (
             <td key={`${column.key}_${rowKey}`}>
@@ -223,14 +239,17 @@ export const MultiInputTableUI: React.FC<MultiInputTableUIProps> = ({
                                 />
                             );
                         } else {
-                            const fieldKey = column.fields
-                                ? `${column.key}_${field.key}_${rowKey}`
+                            const isCustomField = row.fields || column.fields;
+
+                            const fieldKey = isCustomField
+                                ? `${column.key}_${field.key}_${row.key}`
                                 : `${column.key}`;
 
                             return (
                                 <TableCell
                                     key={fieldKey}
                                     type={field.type}
+                                    field={field}
                                     fieldKey={fieldKey}
                                     rowKey={rowKey}
                                     column={column}
@@ -301,7 +320,7 @@ export const MultiInputTableUI: React.FC<MultiInputTableUIProps> = ({
                         columns
                             .filter(isColumnVisible)
                             .map((col) =>
-                                renderCell(col, row.key, row.label, true)
+                                renderCell(col,row, row.key, row.label, true)
                             )
                     )}
                 </tr>

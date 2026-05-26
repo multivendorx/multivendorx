@@ -32,14 +32,10 @@ class Ajax {
         $product_id = filter_input( INPUT_POST, 'product_id', FILTER_VALIDATE_INT );
 
         if ( $product_id ) {
-            if ( get_transient( 'variation_list' ) ) {
-                delete_transient( 'variation_list' );
-            }
-
-            $variation_data = filter_input( INPUT_POST, 'variation_data', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
-            set_transient( 'variation_list', $variation_data, 30 * MINUTE_IN_SECONDS );
+            $variation_payload = filter_input( INPUT_POST, 'variation_payload', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+            set_transient( 'variation_list', $variation_payload, 30 * MINUTE_IN_SECONDS );
         }
 
-        die;
+        wp_die();
     }
 }

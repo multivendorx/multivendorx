@@ -16,19 +16,28 @@ const EnquiryForm = () => {
     const onSubmit = (submittedFormData: any) => {
         setLoading(true);
 
+        // Convert Zyra form object into FormData
+        const formData = new FormData();
+
+        Object.keys(submittedFormData).forEach((key) => {
+            formData.append(key, submittedFormData[key]);
+        });
+
         const productId =
             document.querySelector<HTMLInputElement>(
                 '#product-id-for-enquiry'
             )?.value ?? '';
-        const quantity =
-            document.querySelector<HTMLInputElement>('.quantity .qty')
-                ?.value ?? '1';
 
-        submittedFormData.append('productId', productId);
-        submittedFormData.append('quantity', quantity);
+        const quantity =
+            document.querySelector<HTMLInputElement>(
+                '.quantity .qty'
+            )?.value ?? '1';
+
+        formData.append('productId', productId);
+        formData.append('quantity', quantity);
 
         axios
-            .post(submitUrl, submittedFormData, {
+            .post(submitUrl, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'X-WP-Nonce': enquiryFormData.nonce,
@@ -47,13 +56,18 @@ const EnquiryForm = () => {
                 }, 3000);
             });
     };
+    console.log('formData', formData);
+    console.log('proActive', proActive);
+
 
     return (
         <>
             <div>{enquiryFormData.content_before_form}</div>
             {proActive ? (
                 <FormViewer
-                    formFields={formData.settings_pro}
+                    formFields={{
+        formfieldlist: formData.settings_pro,
+    }}
                     onSubmit={onSubmit}
                 />
             ) : (

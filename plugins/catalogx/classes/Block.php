@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
  * CatalogX Block class
  *
  * @class       Block class
- * @version     6.0.0
+ * @version     5.0.0
  * @author      MultiVendorX
  */
 class Block {
@@ -22,7 +22,7 @@ class Block {
      *
      * @var array
      */
-    private $blocks;
+    private $blocks = array();
 
     /**
      * Constructor for Block class
@@ -30,13 +30,28 @@ class Block {
      * @return void
      */
     public function __construct() {
-        $this->blocks = $this->initialize_blocks();
         // Register block category.
         add_filter( 'block_categories_all', array( $this, 'register_block_category' ) );
         // Register the block.
         add_action( 'init', array( $this, 'register_blocks' ) );
         // Localize the script for block.
-        add_action( 'enqueue_block_assets', array( $this, 'enqueue_all_block_assets' ) );
+        add_action( 'enqueue_block_assets', array( $this, 'enqueue_blocks_assets' ) );
+        // Localize in frontend.
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+    }
+    /**
+     * Get the list of initialized blocks.
+     *
+     * If the blocks have not been initialized yet, this method calls
+     * `initialize_blocks()` to populate them.
+     *
+     * @return array List of blocks.
+     */
+    public function get_blocks() {
+        if ( empty( $this->blocks ) ) {
+            $this->blocks = $this->initialize_blocks();
+        }
+        return $this->blocks;
     }
 
     /**
@@ -46,39 +61,29 @@ class Block {
      */
     public function initialize_blocks() {
         $blocks = array();
+        $textdomain = 'catalogx';
 
-        if ( CatalogX()->modules->is_active( 'enquiry' ) ) {
-            $blocks[] = array(
-                'name'       => 'enquiry-button', // block name.
-                'textdomain' => 'catalogx',
-                'block_path' => CatalogX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
-            );
+        $block_base_path = FrontendScripts::get_asset_path('file') . 'js/block/';
 
-            // this path is set for load the translation.
-            CatalogX()->block_paths += array(
-                'block/enquiry-button' => FrontendScripts::get_build_path_name() . 'js/block/enquiry-button/index.js',
-                'block/enquiryForm'    => FrontendScripts::get_build_path_name() . 'js/block/enquiryForm/index.js',
-            );
+        $exclude_blocks = apply_filters( 'catalogx_exclude_blocks', array( 'setup-wizard' ) );
+        if ( ! is_dir( $block_base_path ) ) {
+            return $blocks;
         }
 
-        if ( CatalogX()->modules->is_active( 'quote' ) ) {
-            $blocks[] = array(
-                'name'       => 'quote-button', // block name.
-                'textdomain' => 'catalogx',
-                'block_path' => CatalogX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
-            );
+        $block_directories = glob( $block_base_path . '*', GLOB_ONLYDIR );
+        foreach ( $block_directories as $block_directory ) {
+            $block_name = basename( $block_directory );
+            if ( in_array( $block_name, $exclude_blocks, true ) ) {
+                continue;
+            }
 
-            $blocks[] = array(
-                'name'       => 'quote-cart', // block name.
-                'textdomain' => 'catalogx',
-                'block_path' => CatalogX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
-            );
-
-            // this path is set for load the translation.
-            CatalogX()->block_paths += array(
-                'block/quote-cart'   => FrontendScripts::get_build_path_name() . 'js/block/quote-cart/index.js',
-                'block/quote-button' => FrontendScripts::get_build_path_name() . 'js/block/quote-button/index.js',
-            );
+            if ( file_exists( $block_directory . '/block.json' ) ) {
+                $blocks[] = array(
+                    'name'       => $block_name,
+                    'textdomain' => $textdomain,
+                    'block_path' => $block_base_path,
+                );
+            }
         }
 
         return apply_filters( 'catalogx_initialize_blocks', $blocks );
@@ -89,11 +94,44 @@ class Block {
      *
      * @return void
      */
-    public function enqueue_all_block_assets() {
-        FrontendScripts::load_scripts();
-        foreach ( $this->blocks as $block_script ) {
-            FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-editor-script' );
-            FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-script' );
+    public function enqueue_blocks_assets() {
+        if ( is_admin() && function_exists( 'get_current_screen' ) ) {
+            $screen = get_current_screen();
+            if ( $screen && $screen->is_block_editor ) {
+                FrontendScripts::enqueue_frontend_assets();
+                FrontendScripts::enqueue_script( 'catalogx-vendor-script' );
+                foreach ( $this->get_blocks() as $block_config ) {
+                    FrontendScripts::localize_scripts( $block_config['textdomain'] . '-' . $block_config['name'] . '-editor-script' );
+                }
+            }
+        }
+    }
+	/**
+	 * Enqueue frontend scripts for registered blocks.
+	 *
+	 * Iterates through all registered block scripts and enqueues their
+	 * JavaScript files only if the block exists in the current post content.
+	 * Also localizes the scripts with necessary data.
+	 *
+	 * @global WP_Post $post Current post object.
+	 *
+	 * @return void
+	 */
+    public function enqueue_scripts() {
+        global $post;
+        if ( empty( $post ) || ! $post instanceof \WP_Post ) {
+            return;
+        }
+        FrontendScripts::enqueue_frontend_assets();
+        FrontendScripts::enqueue_script( 'catalogx-vendor-script' );
+        foreach ( $this->get_blocks() as $block_config ) {
+            $block_name = $block_config['textdomain'] . '/' . $block_config['name'];
+            
+            if ( has_block( $block_name, $post ) ) {
+                $handle = $block_config['textdomain'] . '-' . $block_config['name'] . '-view-script';
+                FrontendScripts::enqueue_script( $handle );
+                FrontendScripts::localize_scripts( $handle );
+            }
         }
     }
 
@@ -118,8 +156,8 @@ class Block {
      * @return void
      */
     public function register_blocks() {
-        foreach ( $this->blocks as $block ) {
-            register_block_type( $block['block_path'] . $block['name'] );
+        foreach ( $this->get_blocks() as $block_config ) {
+            register_block_type( $block_config['block_path'] . $block_config['name'] );
         }
     }
 }

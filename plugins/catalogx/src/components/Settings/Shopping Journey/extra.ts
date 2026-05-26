@@ -13,6 +13,7 @@ export default {
         {
             key: 'display_pdf',
             type: 'multi-checkbox-table',
+            storeSetting: true,
             label: __( 'Attachment', 'catalogx' ),
             classes: 'gridTable',
             rows: [
@@ -29,11 +30,13 @@ export default {
                 {
                     key: 'enquiry_pdf_permission',
                     label: __( 'Enquiry', 'catalogx' ),
+                    type: 'checkbox',
                     moduleEnabled: 'enquiry',
                 },
                 {
                     key: 'quote_pdf_permission',
                     label: __( 'Quote', 'catalogx' ),
+                    type: 'checkbox',
                     moduleEnabled: 'quote',
                 },
             ],

@@ -92,7 +92,7 @@ class Module {
             'post_type'      => 'page',
             'post_author'    => 1,
             'post_name'      => $default_slug,
-            'post_title'     => __( 'My Quote', 'catalogx' ),
+            'post_title'     => __( 'My Quote', 'multivendorx' ),
             'post_content'   => $this->request_quote_block() ? $this->request_quote_block() : '[catalogx_request_quote]',
             'comment_status' => 'closed',
         );

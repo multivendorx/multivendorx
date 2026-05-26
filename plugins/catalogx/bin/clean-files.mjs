@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * This file is created to delete the unnecessery files.
  */
@@ -12,23 +11,23 @@ import path from 'path';
  * 1. 'dist' (directory)
  * 2. 'junk/junk.js' (file)
  */
-const targetFiles = [ "dist" ];
+const targetFiles = ['dist'];
 
-const { name } = JSON.parse( fs.readFileSync( "package.json" ) );
+const { name } = JSON.parse(fs.readFileSync('package.json'));
 
 console.log(
-    chalk.bgYellowBright.black(
-        `🧹Removing files that are unnecessery for production build in ${ name }`
-    )
+	chalk.bgYellowBright.black(
+		`🧹Removing files that are unnecessery for production build in ${name}`
+	)
 );
 
-targetFiles.forEach( ( file ) => {
-    const fileDir = path.resolve( file );
-    fs.remove( fileDir, ( error ) => {
-        if ( error ) {
-            console.log( chalk.red( error ) );
-        } else {
-            console.log( chalk.greenBright( `🗑️Removed: ${ file }` ) );
-        }
-    } );
-} );
+targetFiles.forEach((file) => {
+	const fileDir = path.resolve(file);
+	fs.remove(fileDir, (error) => {
+		if (error) {
+			console.log(chalk.red(error));
+		} else {
+			console.log(chalk.greenBright(`🗑️Removed: ${file}`));
+		}
+	});
+});

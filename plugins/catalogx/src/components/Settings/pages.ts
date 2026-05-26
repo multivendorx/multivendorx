@@ -20,7 +20,7 @@ export default {
                 'Select the page on which you have inserted <code>[catalogx_enquiry_cart]</code> shortcode.',
                 'catalogx'
             ),
-            options: appLocalizer.all_pages,
+            options: appLocalizer.pages_data,
             proSetting: true,
         },
         {
@@ -32,7 +32,7 @@ export default {
                 'Select the page on which you have inserted <code>[request_quote]</code> shortcode.',
                 'catalogx'
             ),
-            options: appLocalizer.all_pages,
+            options: appLocalizer.pages_data,
             proSetting: true,
         },
         {
@@ -44,7 +44,7 @@ export default {
                 'Select the page on which you have inserted <code>[catalogx_wholesale_products]</code> shortcode.',
                 'catalogx'
             ),
-            options: appLocalizer.all_pages,
+            options: appLocalizer.pages_data,
             proSetting: true,
         },
         {

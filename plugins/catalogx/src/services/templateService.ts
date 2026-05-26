@@ -56,6 +56,7 @@ const getModuleData = (): any | null => {
         const module = require( '../components/Modules/index.ts' ).default;
         return module;
     } catch ( error ) {
+        console.warn('Module not found, skipping...', error);
         return null;
     }
 };
