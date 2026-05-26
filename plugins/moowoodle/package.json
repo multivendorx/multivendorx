@@ -42,7 +42,7 @@
         "version": "node ../../tools/scripts/version-replace.mjs",
         "textdomain": "node ../../tools/scripts/update-textdomain.mjs",
         "changelog": "composer install --quiet && composer exec -- changelogger",
-        "makepot": "pnpm exec wp i18n make-pot --domain='moowoodle' --include='assets/js,public/js,classes,templates,config.php,moowoodle.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://multivendorx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') Multivendorx Inc. All Rights Reserved.\" languages/moowoodle.pot",
+        "makepot": "pnpm exec wp i18n make-pot --domain='moowoodle' --include='assets/js,public/js,classes,templates,config.php,moowoodle.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://dualcube.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') Moowoodle Inc. All Rights Reserved.\" languages/moowoodle.pot",
         "makejson": "pnpm exec wp i18n make-json languages --pretty-print --no-purge",
         "postinstall": "composer install"
     },
