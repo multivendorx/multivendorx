@@ -35,13 +35,6 @@ class QuoteCart {
     public $quote_cart_content = array();
 
     /**
-     * Holds error messages.
-     *
-     * @var array
-     */
-    public $errors = array();
-
-    /**
      * Constructor
      *
      * @access public
@@ -64,7 +57,6 @@ class QuoteCart {
             do_action( 'woocommerce_set_cart_cookies', true );
         }
         $this->session = new Session();
-        $this->set_session();
     }
 
     /**
@@ -149,7 +141,7 @@ class QuoteCart {
         $set = true;
 
         if ( ! headers_sent() ) {
-            if ( sizeof( $this->quote_cart_content ) > 0 ) {
+            if ( ! empty( $this->quote_cart_items ) ) {
                 $this->set_cart_cookies( true );
                 $set = true;
             } elseif ( isset( $_COOKIE['quote_items_in_cart'] ) ) {
@@ -202,7 +194,7 @@ class QuoteCart {
             return;
         }
 
-        $raq_data = array();
+        $quote_item = array();
 
         if ( $adding_to_quote->is_type( 'variable' ) && $variation_id ) {
             $variation  = wc_get_product( $variation_id );
@@ -210,29 +202,35 @@ class QuoteCart {
 
             if ( ! empty( $attributes ) ) {
                 foreach ( $attributes as $name => $value ) {
-                    $raq_data[ 'attribute_' . $name ] = $value;
+                    $quote_item[ 'attribute_' . $name ] = $value;
                 }
             }
         }
 
         // Merge request data into array.
-        $raq_data = array_merge(
+        $quote_item = array_merge(
             array(
                 'product_id'   => $product_id,
                 'variation_id' => $variation_id,
                 'quantity'     => $quantity,
             ),
-            $raq_data
+            $quote_item
         );
 
         // Add item to quote cart.
-        $return = $this->add_cart_item( $raq_data );
+        $return = $this->add_quote_item( $quote_item );
 
         // Handle response messages.
         if ( 'true' === $return ) {
-            wc_add_notice( 'product_added', 'success' );
+            wc_add_notice(
+    __( 'Product added to quote cart.', 'catalogx' ),
+    'success'
+);
         } elseif ( 'exists' === $return ) {
-            wc_add_notice( 'already_in_quote', 'notice' );
+            wc_add_notice(
+    __( 'Product already added to quote cart.', 'catalogx' ),
+    'success'
+);
         }
     }
 
@@ -241,35 +239,35 @@ class QuoteCart {
      *
      * Checks if the product already exists in the cart. If not, adds it to the session.
      *
-     * @param array $cart_data The data of the product being added to the quote cart.
+     * @param array $item The data of the product being added to the quote cart.
      *                         Must include 'product_id', 'variation' (array), and optionally 'quantity'.
      * @return string Returns 'true' on success, or 'exists' if the item is already in the quote cart.
      */
-    public function add_cart_item( $cart_data ) {
+    public function add_quote_item( $item ) {
 
-        $cart_data['quantity'] = ( isset( $cart_data['quantity'] ) ) ? (int) $cart_data['quantity'] : 1;
-        $return                = '';
+        $item['quantity'] = ( isset( $item['quantity'] ) ) ? (int) $item['quantity'] : 1;
+        $status                = '';
 
-        do_action( 'catalogx_add_to_quote_cart', $cart_data );
+        do_action( 'catalogx_add_to_quote_cart', $item );
 
-        if ( ! $this->exists_in_cart( $cart_data['product_id'] ) ) {
-            $enquiry = array(
-                'product_id' => $cart_data['product_id'],
-                'variation'  => $cart_data['variation'],
-                'quantity'   => $cart_data['quantity'],
+        if ( ! $this->exists_in_cart( $item['product_id'] ) ) {
+            $quote_item = array(
+                'product_id' => $item['product_id'],
+                'variation'  => $item['variation'],
+                'quantity'   => $item['quantity'],
             );
 
-            $this->quote_cart_content[ md5( $cart_data['product_id'] ) ] = $enquiry;
+            $this->quote_cart_content[ md5( $item['product_id'] ) ] = $quote_item;
         } else {
-            $return = 'exists';
+            $status = 'exists';
         }
 
-        if ( 'exists' != $return ) {
+        if ( 'exists' !== $status ) {
             $this->set_session( $this->quote_cart_content );
-            $return = 'true';
+            $status = 'true';
             $this->set_cart_cookies( sizeof( $this->quote_cart_content ) > 0 );
         }
-        return $return;
+        return $status;
     }
 
     /**
@@ -281,12 +279,11 @@ class QuoteCart {
      */
     public function exists_in_cart( $product_id, $variation_id = false ) {
         if ( $variation_id ) {
-            $key_to_find = md5( $product_id . $variation_id );
+            $cart_item_key = md5( $product_id . $variation_id );
         } else {
-            $key_to_find = md5( $product_id );
+            $cart_item_key = md5( $product_id );
         }
-        if ( array_key_exists( $key_to_find, $this->quote_cart_content ) ) {
-            $this->errors[] = __( 'Product already in Cart.', 'catalogx' );
+        if ( isset( $this->quote_cart_items[ $cart_item_key ] ) ) {
             return true;
         }
         return false;
