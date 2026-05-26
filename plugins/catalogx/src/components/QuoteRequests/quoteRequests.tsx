@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import '../common.scss';
 import { __ } from '@wordpress/i18n';
 import {
+	Column,
+	Container,
 	InfoItem,
 	NavigatorHeader,
 	PopupUI,
@@ -66,15 +68,21 @@ export default function QuotesList() {
 		actions: [
 			{
 				label: __('View Order', 'catalogx'),
-				icon: 'view',
+				icon: 'eye',
 				onClick: () => {
 					setopenPopup(true);
 				},
 			},
-
 			{
-				label: __('Update Status', 'catalogx'),
-				icon: 'refresh',
+				label: __('Edit Status', 'catalogx'),
+				icon: 'edit',
+				onClick: () => {
+					setopenPopup(true);
+				},
+			},
+			{
+				label: __('Send Mail', 'catalogx'),
+				icon: 'mail',
 				onClick: () => {
 					setopenPopup(true);
 				},
@@ -127,10 +135,13 @@ export default function QuotesList() {
 				)}
 				headerTitle={__('Quote Requests', 'catalogx')}
 			/>
-
-			<div onClick={handleTableWrapperClick}>
-				<RenderedTableCard {...defaultTableProps} />
-			</div>
+			<Container general>
+				<Column>
+					<div onClick={handleTableWrapperClick} >
+						<RenderedTableCard {...defaultTableProps} />
+					</div>
+				</Column>
+			</Container>
 		</>
 	);
 }

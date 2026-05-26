@@ -6,6 +6,8 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
 import {
+	Column,
+	Container,
 	InfoItem,
 	NavigatorHeader,
 	PopupUI,
@@ -37,7 +39,7 @@ const WholesaleUser = () => {
 					title={row.user}
 					description={row.user_email}
 					avatar={{
-						iconClass: 'wholesale',
+						iconClass: 'person',
 					}}
 				/>
 			),
@@ -148,10 +150,13 @@ const WholesaleUser = () => {
 					'catalogx'
 				)}
 			/>
-
-			<div onClick={handleTableWrapperClick}>
-				<RenderedTableCard {...defaultTableProps} />
-			</div>
+			<Container general>
+				<Column>
+				<div onClick={handleTableWrapperClick}>
+					<RenderedTableCard {...defaultTableProps} />
+				</div>
+				</Column>
+			</Container>
 		</>
 	);
 };
