@@ -235,7 +235,7 @@ class Dashboard extends \WP_REST_Controller {
                 'name'       => __( 'Settings', 'multivendorx' ),
                 'slug'       => 'settings',
                 'icon'       => 'setting',
-                'capability' => array( 'manage_store_settings','edit_withdrawl_request' ),
+                'capability' => array( 'manage_store_settings' ),
             )
         );
 

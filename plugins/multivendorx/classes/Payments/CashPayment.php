@@ -18,7 +18,7 @@ class CashPayment {
      * CashPayment constructor.
      */
     public function __construct() {
-        add_action( 'multivendorx_process_cash_payment', array( $this, 'process_payment' ), 10, 5 );
+        add_action( 'multivendorx_process_cash_payment', array( $this, 'process_payment' ), 10, 6 );
     }
 
     /**
@@ -61,7 +61,7 @@ class CashPayment {
      * @param string $transaction_id Transaction ID.
      * @param string $note           Note.
      */
-    public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null ) {
+    public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null, $additional_receiver = 0 ) {
 
         $status = 'success';
         do_action(
@@ -72,7 +72,8 @@ class CashPayment {
             $order_id,
             $transaction_id,
             $note,
-            $amount
+            $amount,
+            $additional_receiver
         );
     }
 }

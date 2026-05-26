@@ -83,6 +83,7 @@ export default {
 										'Hides the store from customers until verification is completed.',
 										'multivendorx'
 									),
+									dependent: 'restrict_store_access',
 								},
 								{
 									key: 'disable_product_upload',
@@ -95,6 +96,7 @@ export default {
 										'Temporarily disables product sales and order fulfillment while the review is in progress.',
 										'multivendorx'
 									),
+									dependent: 'restrict_store_access',
 								},
 							],
 							selectDeselect: true,

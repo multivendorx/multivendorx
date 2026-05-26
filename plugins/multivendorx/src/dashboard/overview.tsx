@@ -255,8 +255,7 @@ const Overview: React.FC<OverviewProps> = () => {
 				</Column>
 				<Column grid={6}>
 					<Card title={__('Revenue breakdown', 'multivendorx')}>
-						<div style={{ width: '100%', height: 400 }}>
-							<ResponsiveContainer>
+							<ResponsiveContainer width="100%" height={400}>
 								<PieChart>
 									<Pie
 										data={pieData}
@@ -279,9 +278,9 @@ const Overview: React.FC<OverviewProps> = () => {
 												key={`cell-${index}`}
 												fill={
 													[
-														'#0088FE',
-														'#00C49F',
-														'#FF8042',
+														'var(--color-secondary)',
+														'var(--color-accent)',
+														'var(--color-support)',
 													][index % 3]
 												}
 											/>
@@ -303,7 +302,6 @@ const Overview: React.FC<OverviewProps> = () => {
 									/>
 								</PieChart>
 							</ResponsiveContainer>
-						</div>
 					</Card>
 				</Column>
 			</Container>

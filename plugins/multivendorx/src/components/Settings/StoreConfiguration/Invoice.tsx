@@ -568,9 +568,6 @@ const Invoice: React.FC = () => {
 						>
 							<MultiCheckBoxUI
 								selectDeselect={true}
-								wrapperClass="checkbox-list-side-by-side"
-								inputInnerWrapperClass="default-checkbox"
-								inputClass={'basic-checkbox'}
 								options={[
 									{
 										key: 'completed',
@@ -644,9 +641,6 @@ const Invoice: React.FC = () => {
 						>
 							<MultiCheckBoxUI
 								selectDeselect={true}
-								wrapperClass="checkbox-list-side-by-side"
-								inputInnerWrapperClass="default-checkbox"
-								inputClass={'basic-checkbox'}
 								options={[
 									{
 										key: 'include_prices',

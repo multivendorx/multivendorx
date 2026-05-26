@@ -194,6 +194,9 @@ a {
   &.border {
     border: 0.063rem solid;
   }
+  &:has(i){
+    cursor: pointer;
+  }
 }
 
 // upgrade btn arrow icon

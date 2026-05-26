@@ -363,7 +363,7 @@ const Dashboard = () => {
 				.filter(Boolean)
 				.join(' ')}
 		>
-			{storeData?.status === 'active' && (
+			{appLocalizer?.current_user?.roles.includes('store_owner') && storeData?.status === 'active' && (
 				<GuidedTourProvider
 					appLocalizer={appLocalizer}
 					steps={getTourSteps(appLocalizer)}
@@ -701,139 +701,141 @@ const Dashboard = () => {
 												</div>
 											</div>
 
-											<div className="dropdown-body">
-												<ul>
-													<li>
-														<a href={
-															tabHref('profile')
-														}
-														>
-															<i className="adminfont-person"></i>
-															{__('My Profile', 'multivendorx')}
-														</a>
-													</li>
-													<li>
-														<a href={
-															tabHref('settings')
-														}
-														>
-															<i className="adminfont-setting"></i>
-															{__('Store Settings', 'multivendorx')}
-														</a>
-													</li>
+											{appLocalizer?.current_user?.roles.includes('store_owner') && (
+												<div className="dropdown-body">
+													<ul>
+														<li>
+															<a href={
+																tabHref('profile')
+															}
+															>
+																<i className="adminfont-person"></i>
+																{__('My Profile', 'multivendorx')}
+															</a>
+														</li>
+														<li>
+															<a href={
+																tabHref('settings')
+															}
+															>
+																<i className="adminfont-setting"></i>
+																{__('Store Settings', 'multivendorx')}
+															</a>
+														</li>
 
-													{applyFilters('multivendorx_extra_profile_menu', null, tabHref)}
+														{applyFilters('multivendorx_extra_profile_menu', null, tabHref)}
 
-													{availableStores.length >
-														0 && (
-															<li className="switch-store-wrapper">
-																<a
-																	href="#"
-																	onClick={(
-																		e
-																	) => {
-																		e.preventDefault();
-																		setShowStoreList(
-																			(
-																				prev
-																			) =>
-																				!prev
-																		);
-																	}}
-																>
-																	<i className="adminfont-switch-store"></i>
-																	{__('Switch stores', 'multivendorx')}
-																	{firstTwoStores.length >
-																		0 && (
-																			<span className="switch-store-preview">
-																				{!showStoreList && (
-																					<>
-																						{firstTwoStores.map(
-																							(
-																								store,
-																								index
-																							) => (
-																								<span
-																									className={`store-icon admin-color${index + 2}`}
-																									key={
-																										store.id
-																									}
-																								>
-																									{store.name
-																										.charAt(
-																											0
-																										)
-																										.toUpperCase()}
-																								</span>
-																							)
-																						)}
-
-																						{availableStores.length >
-																							2 && (
-																								<span className="store-icon number">
-																									+
-																									{availableStores.length -
-																										2}
-																								</span>
-																							)}
-																					</>
-																				)}
-																				<span className="adminfont-keyboard-arrow-down arrow-icon"></span>
-																			</span>
-																		)}
-																</a>
-
-																{showStoreList && (
-																	<div className="switch-store-list">
-																		{availableStores.map(
-																			(
-																				store,
-																				index
-																			) => (
-																				<div
-																					className="store"
-																					key={
-																						store.id
-																					}
-																				>
-																					<a
-																						href="#"
-																						className="switch-store"
-																						onClick={(
-																							e
-																						) => {
-																							e.preventDefault();
-																							switchStore(
-																								store.id
-																							);
-																						}}
-																					>
-																						<span
-																							className={`store-icon admin-color${index + 2}`}
-																						>
-																							{store.name
-																								.charAt(
-																									0
+														{availableStores.length >
+															0 && (
+																<li className="switch-store-wrapper">
+																	<a
+																		href="#"
+																		onClick={(
+																			e
+																		) => {
+																			e.preventDefault();
+																			setShowStoreList(
+																				(
+																					prev
+																				) =>
+																					!prev
+																			);
+																		}}
+																	>
+																		<i className="adminfont-switch-store"></i>
+																		{__('Switch stores', 'multivendorx')}
+																		{firstTwoStores.length >
+																			0 && (
+																				<span className="switch-store-preview">
+																					{!showStoreList && (
+																						<>
+																							{firstTwoStores.map(
+																								(
+																									store,
+																									index
+																								) => (
+																									<span
+																										className={`store-icon admin-color${index + 2}`}
+																										key={
+																											store.id
+																										}
+																									>
+																										{store.name
+																											.charAt(
+																												0
+																											)
+																											.toUpperCase()}
+																									</span>
 																								)
-																								.toUpperCase()}
-																						</span>
-																						<div className="details-wrapper">
-																							<div className="store-name">
-																								{
-																									store.name
-																								}
+																							)}
+
+																							{availableStores.length >
+																								2 && (
+																									<span className="store-icon number">
+																										+
+																										{availableStores.length -
+																											2}
+																									</span>
+																								)}
+																						</>
+																					)}
+																					<span className="adminfont-keyboard-arrow-down arrow-icon"></span>
+																				</span>
+																			)}
+																	</a>
+
+																	{showStoreList && (
+																		<div className="switch-store-list">
+																			{availableStores.map(
+																				(
+																					store,
+																					index
+																				) => (
+																					<div
+																						className="store"
+																						key={
+																							store.id
+																						}
+																					>
+																						<a
+																							href="#"
+																							className="switch-store"
+																							onClick={(
+																								e
+																							) => {
+																								e.preventDefault();
+																								switchStore(
+																									store.id
+																								);
+																							}}
+																						>
+																							<span
+																								className={`store-icon admin-color${index + 2}`}
+																							>
+																								{store.name
+																									.charAt(
+																										0
+																									)
+																									.toUpperCase()}
+																							</span>
+																							<div className="details-wrapper">
+																								<div className="store-name">
+																									{
+																										store.name
+																									}
+																								</div>
 																							</div>
-																						</div>
-																					</a>
-																				</div>
-																			)
-																		)}
-																	</div>
-																)}
-															</li>
-														)}
-												</ul>
-											</div>
+																						</a>
+																					</div>
+																				)
+																			)}
+																		</div>
+																	)}
+																</li>
+															)}
+													</ul>
+												</div>
+											)}
 
 											<div className="footer">
 												<a

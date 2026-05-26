@@ -25,16 +25,15 @@ const StoreStatus: React.FC = () => {
 			type: 'heading',
 			content: {
 				id: 'activation_flow',
-				headerTitle: 'Activation flow',
+				headerTitle: __('Activation flow','multivendorx'),
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'pending',
-				headerTitle: 'Pending Approval',
-				headerDescription:
-					'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
+				headerTitle: __('Pending Approval','multivendorx'),
+				headerDescription:__('The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.','multivendorx'),
 				headerIcon: 'in-progress',
 			},
 		},
@@ -42,9 +41,8 @@ const StoreStatus: React.FC = () => {
 			type: 'file',
 			content: {
 				id: 'rejected',
-				headerTitle: 'Rejected',
-				headerDescription:
-					'The store application has been rejected. Sellers can view the rejection reason and resubmit their application after addressing the issues.',
+				headerTitle: __('Rejected','multivendorx'),
+				headerDescription: __('The store application has been rejected. Sellers can view the rejection reason and resubmit their application after addressing the issues.','multivendorx'),
 				headerIcon: 'rejected',
 			},
 		},
@@ -52,9 +50,8 @@ const StoreStatus: React.FC = () => {
 			type: 'file',
 			content: {
 				id: 'permanently-rejected',
-				headerTitle: 'Permanently Rejected',
-				headerDescription:
-					'The store application has been permanently rejected. Sellers can view their dashboard in read-only mode but cannot make changes or reapply without admin intervention.',
+				headerTitle: __('Permanently Rejected','multivendorx'),
+				headerDescription:__('The store application has been permanently rejected. Sellers can view their dashboard in read-only mode but cannot make changes or reapply without admin intervention.','multivendorx'),
 				headerIcon: 'permanently-rejected',
 			},
 		},
@@ -62,16 +59,15 @@ const StoreStatus: React.FC = () => {
 			type: 'heading',
 			content: {
 				id: 'activation_flow',
-				headerTitle: 'Post-activation flow',
+				headerTitle: __('Post-activation flow','multivendorx'),
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'active',
-				headerTitle: 'Active',
-				headerDescription:
-					'The store is active and fully operational. Stores have complete access to manage products, process orders, receive payouts, and configure all store settings.',
+				headerTitle: __('Active','multivendorx'),
+				headerDescription:__('The store is active and fully operational. Stores have complete access to manage products, process orders, receive payouts, and configure all store settings.','multivendorx'),
 				headerIcon: 'verification10',
 			},
 		},
@@ -79,9 +75,8 @@ const StoreStatus: React.FC = () => {
 			type: 'file',
 			content: {
 				id: 'under-review',
-				headerTitle: 'Under Review',
-				headerDescription:
-					'The store is under review due to compliance concerns. Selling is paused, payouts are held, and new product uploads are restricted until the review is complete.',
+				headerTitle: __('Under Review','multivendorx'),
+				headerDescription:__('The store is under review due to compliance concerns. Selling is paused, payouts are held, and new product uploads are restricted until the review is complete.','multivendorx'),
 				headerIcon: 'under-review',
 			},
 		},
@@ -89,9 +84,8 @@ const StoreStatus: React.FC = () => {
 			type: 'file',
 			content: {
 				id: 'suspended',
-				headerTitle: 'Suspended',
-				headerDescription:
-					'The store has been suspended due to policy violations. Products are hidden, payouts are frozen, and selling is disabled. Sellers can appeal through support.',
+				headerTitle: __('Suspended','multivendorx'),
+				headerDescription:__('The store has been suspended due to policy violations. Products are hidden, payouts are frozen, and selling is disabled. Sellers can appeal through support.','multivendorx'),
 				headerIcon: 'suspended',
 			},
 		},
@@ -99,9 +93,8 @@ const StoreStatus: React.FC = () => {
 			type: 'file',
 			content: {
 				id: 'deactivated',
-				headerTitle: 'Permanently Deactivated',
-				headerDescription:
-					'The store has been permanently deactivated. Stores have read-only access to historical data, but the storefront and its product is removed from public view and no changes can be made.',
+				headerTitle: __('Permanently Deactivated','multivendorx'),
+				headerDescription:__('The store has been permanently deactivated. Stores have read-only access to historical data, but the storefront and its product is removed from public view and no changes can be made.','multivendorx'),
 				headerIcon: 'rejecte',
 			},
 		},

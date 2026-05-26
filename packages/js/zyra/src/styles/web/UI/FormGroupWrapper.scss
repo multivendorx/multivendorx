@@ -35,6 +35,10 @@
         .settings-input-content {
             width: 100%;
 
+            .desc{
+                width: 100%;
+            }
+
             &:has(.setting-form-input) {
                 display: flex;
                 flex-wrap: wrap;
@@ -174,7 +178,7 @@
         // copy btn 
         &.copy-btn {
             .settings-input-content {
-                // flex-wrap: nowrap;
+                flex-wrap: nowrap;
                 gap: 0;
 
                 .input-wrapper{
@@ -186,7 +190,7 @@
                      border-bottom-left-radius: 0;
                 }
                 .tooltip-wrapper{
-                    padding: 0.38rem 0.45rem;
+                    padding: 0.25rem 0.45rem;
                     border-top: $border-light-small;
                     border-bottom: $border-light-small;
 
@@ -196,7 +200,7 @@
                 }
                 .clear-btn{
                     border: $border-light-small;
-                    padding: 0.38rem 0.45rem;
+                    padding: 0.25rem 0.45rem;
                     color: map-get(map-get($color-palette, red), color);
                     border-top-right-radius: $border-radius-small;
                     border-bottom-right-radius: $border-radius-small;

@@ -38,6 +38,7 @@ class Frontend {
         // // Load Google Maps JS.
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
         add_filter( 'woocommerce_cart_shipping_packages', array( $this, 'add_user_location_to_shipping_package' ) );
+        add_action('rest_api_init',array( $this, 'register_checkout_update_callback' ),20);
     }
 	/**
 	 * Register frontend scripts for store shipping module.
@@ -48,11 +49,22 @@ class Frontend {
 	 * @return array Modified scripts array including the store shipping script.
 	 */
     public function register_script( $scripts ) {
-        $base_url = MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name();
+        $base_url   = MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name();
+        $asset_url = MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'modules/StoreShipping/block/view.asset.php';
+
+        $asset        = file_exists( $asset_url ) ? require $asset_url : array();
+        $dependencies = $asset['dependencies'] ?? array();
+        $version      = $asset['version'] ?? '1.0.0';
 
         $scripts['multivendorx-store-shipping-frontend-script'] = array(
             'src'  => $base_url . 'modules/StoreShipping/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
             'deps' => array( 'jquery' ),
+        );
+
+        $scripts['multivendorx-store-shipping-block-checkout'] = array(
+            'src'     => $base_url . 'modules/StoreShipping/block/view.js',
+            'deps'    => $dependencies,
+            'version' => $version
         );
 
         return $scripts;
@@ -81,6 +93,13 @@ class Frontend {
                 'mapbox_style'  => 'mapbox://styles/mapbox/streets-v11',
                 'map_provider'  => MultiVendorX()->setting->get_setting( 'choose_map_api', '' ),
                 'google_map_id' => MultiVendorX()->setting->get_setting( 'google_map_id', '' ),
+            ),
+        );
+
+        $scripts['multivendorx-store-shipping-block-checkout'] = array(
+            'object_name' => 'blockCheckout',
+            'data'        => array(
+                'settings' => MultiVendorX()->setting->get_option(Utill::MULTIVENDORX_SETTINGS['geolocation']),
             ),
         );
 
@@ -121,7 +140,7 @@ class Frontend {
             ? $settings['distance-based-shipping']['enable']
             : false;
 
-        // Only add if country-wise shipping is enabled.
+        // Only add if distance based shipping is enabled.
         if ( $distance_based_shipping ) {
             $new_options = array(
                 (object) array(
@@ -139,7 +158,7 @@ class Frontend {
             ? $settings['zone-wise-shipping']['enable']
             : false;
 
-        // Only add if country-wise shipping is enabled.
+        // Only add if zone wise shipping is enabled.
         if ( $zone_wise_shipping ) {
             $new_options = array(
                 (object) array(
@@ -214,12 +233,12 @@ class Frontend {
             && apply_filters( 'multivendorx_is_allow_checkout_user_location', true )
             && $this->cart_has_distance_shipping() ) {
             echo '<div class="woocommerce-billing-fields__field-wrapper">';
-            echo '<div id="multivendorx-user-locaton-map" style="width:100%; height:18.75rem; margin-bottom:1.25rem;"></div>';
+            echo '<div id="multivendorx-user-location-map" style="width:100%; height:18.75rem; margin-bottom:1.25rem;"></div>';
             echo '</div>';
 			?>
             <style>
                 /*Ensure map always visible even if inline CSS fails */
-                #multivendorx-user-locaton-map {
+                #multivendorx-user-location-map {
                     width: 100%;
                     min-height: 18.75rem;
                     margin-bottom: 1.25rem;
@@ -254,14 +273,17 @@ class Frontend {
      */
     public function multivendorx_checkout_user_location_save( $order_id ) {
         $order = wc_get_order( $order_id );
+        $location = filter_input( INPUT_POST, 'multivendorx_user_location', FILTER_SANITIZE_SPECIAL_CHARS );
+        $location_lat = filter_input( INPUT_POST, 'multivendorx_user_location_lat', FILTER_SANITIZE_SPECIAL_CHARS );
+        $location_lng = filter_input( INPUT_POST, 'multivendorx_user_location_lng', FILTER_SANITIZE_SPECIAL_CHARS ) ;
 
-        if ( ! empty( filter_input( INPUT_POST, 'multivendorx_user_location', FILTER_SANITIZE_SPECIAL_CHARS ) ) ) {
+        if ( ! empty( $location ) ) {
             $order->update_meta_data( '_multivendorx_user_location', sanitize_text_field( $location ) );
         }
-        if ( ! empty( filter_input( INPUT_POST, 'multivendorx_user_location_lat', FILTER_SANITIZE_SPECIAL_CHARS ) ) ) {
+        if ( ! empty( $location_lat ) ) {
             $order->update_meta_data( '_multivendorx_user_location_lat', sanitize_text_field( $location_lat ) );
         }
-        if ( ! empty( filter_input( INPUT_POST, 'multivendorx_user_location_lng', FILTER_SANITIZE_SPECIAL_CHARS ) ) ) {
+        if ( ! empty( $location_lng ) ) {
             $order->update_meta_data( '_multivendorx_user_location_lng', sanitize_text_field( $location_lng ) );
         }
         $order->save();
@@ -271,50 +293,61 @@ class Frontend {
      * Load frontend scripts
      */
     public function load_scripts() {
-        $settings         = MultiVendorX()->setting->get_setting( 'shipping_modules', array() );
-        $distance_enabled = $settings['distance-based-shipping']['enable'] ?? false;
 
-        if ( ! $distance_enabled || ! $this->cart_has_distance_shipping() ) {
+        if ( ! is_checkout()) {
             return;
         }
 
-        $provider = MultiVendorX()->setting->get_setting( 'choose_map_api', '' );
+        $checkout_page_id = wc_get_page_id( 'checkout' );
+        $is_block_checkout = $checkout_page_id && has_block( 'woocommerce/checkout', $checkout_page_id );
 
-        // GOOGLE MAPS.
-        if ( 'google_map' === $provider ) {
-            $google_maps_api_key = MultiVendorX()->setting->get_setting( 'google_map_api_key', '' );
-            if ( $google_maps_api_key ) {
+        FrontendScripts::load_scripts();
+        if ( $is_block_checkout ) {
+            FrontendScripts::enqueue_script( 'multivendorx-store-shipping-block-checkout' );
+            FrontendScripts::localize_scripts( 'multivendorx-store-shipping-block-checkout' );
+        } else {
+            FrontendScripts::enqueue_script( 'multivendorx-store-shipping-frontend-script' );
+            FrontendScripts::localize_scripts( 'multivendorx-store-shipping-frontend-script' );
+            $settings         = MultiVendorX()->setting->get_setting( 'shipping_modules', array() );
+            $distance_enabled = $settings['distance-based-shipping']['enable'] ?? false;
+
+            if ( ! $distance_enabled || ! $this->cart_has_distance_shipping() ) {
+                return;
+            }
+            $provider = MultiVendorX()->setting->get_setting( 'choose_map_api', '' );
+
+            // GOOGLE MAPS.
+            if ( 'google_map' === $provider ) {
+                $google_maps_api_key = MultiVendorX()->setting->get_setting( 'google_map_api_key', '' );
+                if ( $google_maps_api_key ) {
+                    wp_enqueue_script(
+                        'google-maps',
+                        'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&libraries=places,marker',
+                        array(),
+                        'weekly',
+                        true
+                    );
+                }
+            }
+
+            // MAPBOX.
+            if ( 'mapbox' === $provider ) {
                 wp_enqueue_script(
-                    'google-maps',
-                    'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&libraries=places,marker',
+                    'mapbox-gl',
+                    'https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js',
                     array(),
-                    'weekly',
+                    '2.15.0',
                     true
+                );
+
+                wp_enqueue_style(
+                    'mapbox-gl-css',
+                    'https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css',
+                    array(),
+                    '2.15.0'
                 );
             }
         }
-
-        // MAPBOX.
-        if ( 'mapbox' === $provider ) {
-            wp_enqueue_script(
-                'mapbox-gl',
-                'https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js',
-                array(),
-                '2.15.0',
-                true
-            );
-
-            wp_enqueue_style(
-                'mapbox-gl-css',
-                'https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css',
-                array(),
-                '2.15.0'
-            );
-        }
-
-        FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'multivendorx-store-shipping-frontend-script' );
-        FrontendScripts::localize_scripts( 'multivendorx-store-shipping-frontend-script' );
     }
 
 
@@ -352,5 +385,41 @@ class Frontend {
             }
         }
         return false;
+    }
+    /**
+	 * Register Store API checkout update callback.
+	 *
+	 * @return void
+	 */
+	public function register_checkout_update_callback() {
+		woocommerce_store_api_register_update_callback(
+			array(
+				'namespace' => 'multivendorx',
+				'callback'  => array( $this, 'update_checkout_location' ),
+			)
+		);
+	}
+    /**
+     * Handle checkout location updates from frontend.
+     *
+     * @param array $data Incoming frontend data.
+     * @return void
+     */
+    public function update_checkout_location( $data ) {
+        if ( empty( $data ) ) {
+            return;
+        }
+
+        $fields = [
+            'user_location'     => '_multivendorx_user_location',
+            'user_location_lat' => '_multivendorx_user_location_lat',
+            'user_location_lng' => '_multivendorx_user_location_lng',
+        ];
+
+        foreach ( $fields as $frontend_key => $session_key ) {
+            if ( isset( $data[ $frontend_key ] ) ) {
+                WC()->session->set( $session_key, sanitize_text_field( $data[ $frontend_key ] ) );
+            }
+        }
     }
 }
