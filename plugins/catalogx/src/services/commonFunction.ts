@@ -1,0 +1,304 @@
+/* global appLocalizer */
+export const truncateText = (text: string, wordCount: number) => {
+	if (!text) {
+		return '';
+	}
+
+	// Strip HTML tags if present
+	const plainText = text.replace(/<[^>]+>/g, '');
+
+	// Split into words
+	const words = plainText.split(/\s+/);
+
+	if (words.length <= wordCount) {
+		return plainText;
+	}
+
+	return words.slice(0, wordCount).join(' ') + '...';
+};
+
+export function formatCurrency(amount: number | string): string {
+	if (amount === null || amount === undefined || amount === '') {
+		return '-';
+	}
+
+	const num = parseFloat(String(amount));
+	if (isNaN(num)) {
+		return '-';
+	}
+
+	const {
+		currency_symbol = '',
+		price_decimals = 2,
+		decimal_separator = '.',
+		thousand_separator = ',',
+		currency_position = 'left',
+	} = appLocalizer || {};
+
+	const isNegative = num < 0;
+	const absNum = Math.abs(num);
+
+	// Format number with decimals and separators
+	const parts = absNum.toFixed(price_decimals).split('.');
+	const intPart = parts[0].replace(
+		/\B(?=(\d{3})+(?!\d))/g,
+		thousand_separator
+	);
+	const decimalPart = parts[1] ? decimal_separator + parts[1] : '';
+	const formattedNumber = intPart + decimalPart;
+
+	// Apply currency symbol based on four possible positions using if/else
+	let formatted: string;
+	if (currency_position === 'left') {
+		formatted = `${currency_symbol}${formattedNumber}`;
+	} else if (currency_position === 'right') {
+		formatted = `${formattedNumber}${currency_symbol}`;
+	} else if (currency_position === 'left_space') {
+		formatted = `${currency_symbol} ${formattedNumber}`;
+	} else if (currency_position === 'right_space') {
+		formatted = `${formattedNumber} ${currency_symbol}`;
+	} else {
+		formatted = `${currency_symbol}${formattedNumber}`;
+	}
+
+	// Add negative sign for negative numbers
+	if (isNegative) {
+		formatted = `-${formatted}`;
+	}
+
+	return formatted;
+}
+
+export function formatTimeAgo(dateString: string) {
+	// Force UTC
+	const date = new Date(dateString + 'Z');
+
+	const diff = Math.floor((Date.now() - date.getTime()) / 1000);
+
+	if (diff < 60) {
+		return 'Just now';
+	}
+	if (diff < 3600) {
+		return `${Math.floor(diff / 60)} min ago`;
+	}
+	if (diff < 86400) {
+		return `${Math.floor(diff / 3600)} hour ago`;
+	}
+	return `${Math.floor(diff / 86400)} day ago`;
+}
+
+// This function only removes time from the date-time object and return the formatted date.
+export const formatLocalDate = (date?: Date) =>
+	date ? date.toISOString().split('T')[0] : '';
+
+export function printContent(divId: string) {
+	const source = document.getElementById(divId) as HTMLElement;
+	const printWindow = window.open('', '_blank');
+	if (!printWindow) {
+		return;
+	}
+	const cloned = source.cloneNode(true) as HTMLElement;
+	printWindow.document.write(cloned.innerHTML);
+	printWindow.focus();
+	printWindow.print();
+	printWindow.close();
+}
+
+export const formatDate = (date?: string): string => {
+	if (!date) {
+		return '-';
+	}
+
+	const d = new Date(date);
+	if (isNaN(d.getTime())) {
+		return '-';
+	}
+
+	return new Intl.DateTimeFormat('en-US', {
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric',
+	}).format(d);
+};
+
+export const toWcIsoDate = (date: Date, type: 'start' | 'end'): string => {
+	const d = new Date(date);
+
+	if (type === 'start') {
+		d.setHours(0, 0, 0, 0);
+	} else {
+		d.setHours(23, 59, 59, 999);
+	}
+
+	return d.toISOString();
+};
+
+interface HeaderColumn {
+	label: string;
+	csvDisplay?: boolean;
+	[key: string]: unknown;
+}
+
+interface HeaderConfig {
+	[key: string]: HeaderColumn;
+}
+
+interface RowData {
+	[key: string]: string | number | boolean | null | undefined;
+}
+
+export const downloadCSV = (
+	headers: HeaderConfig,
+	rows: RowData[],
+	filename: string = 'export.csv'
+) => {
+	if (!rows || rows.length === 0) {
+		return;
+	}
+
+	// Only include headers with csv: true
+	const csvColumns = Object.entries(headers)
+		.filter(([_, h]) => h.csvDisplay !== false)
+		.map(([key, h]) => ({ key, label: h.label }));
+
+	// Header row
+	const csvRows = [csvColumns.map((c) => `"${c.label}"`).join(',')];
+
+	// Data rows
+	rows.forEach((row) => {
+		const rowData = csvColumns
+			.map((col) => {
+				const value = row[col.key];
+				return `"${value != null ? value : ''}"`;
+			})
+			.join(',');
+		csvRows.push(rowData);
+	});
+
+	// Trigger download
+	const csvContent = csvRows.join('\n');
+	const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+	const url = URL.createObjectURL(blob);
+	const link = document.createElement('a');
+	link.href = url;
+	link.setAttribute('download', filename);
+	document.body.appendChild(link);
+	link.click();
+	link.remove();
+};
+
+/**
+ * Builds a navigable path string.
+ *
+ * Pretty permalinks  → relative path used with react-router navigate()
+ *                      e.g.  "/products/edit/123"
+ *
+ * Plain permalinks   → also a relative path for MemoryRouter navigate(),
+ *                      AND separately updates window.history so the browser
+ *                      URL bar reflects the correct query-param URL.
+ */
+const buildPath = (segments: string[]): string =>
+	`/${segments.filter(Boolean).join('/')}`;
+
+const sanitize = (value: string) => value.replace(/[^a-zA-Z0-9_-]/g, '');
+
+const updatePlainPermalinkUrl = (segments: string[]) => {
+	const [segment = '', element = '', context_id = ''] = segments;
+
+	const params = new URLSearchParams({
+		page_id: appLocalizer.dashboard_page_id,
+		segment: sanitize(segment),
+		...(element ? { element: sanitize(element) } : {}),
+		...(context_id ? { context_id: sanitize(context_id) } : {}),
+	});
+
+	window.history.pushState(
+		{},
+		'',
+		`${window.location.pathname}?${params.toString()}`
+	);
+};
+
+/**
+ * Navigate within the dashboard.
+ * Handles both permalink modes transparently.
+ *
+ * @param segments  e.g. ['products'], ['products', 'edit'], ['products', 'edit', '123']
+ */
+export const dashNavigate = (
+	navigate: (path: string) => void,
+	segments: string[]
+) => {
+	const ALLOWED_SEGMENTS = ['products', 'orders', 'dashboard'];
+
+	if (!ALLOWED_SEGMENTS.includes(segments[0])) {
+		return;
+	}
+
+	const path = buildPath(segments);
+
+	if (!appLocalizer.permalink_structure) {
+		updatePlainPermalinkUrl(segments);
+	}
+
+	navigate(path);
+};
+
+// Set a value in session storage
+export function setSession(key: string, value: number | string) {
+	sessionStorage.setItem(key, value.toString());
+}
+
+// Get a value from session storage, default is 0
+export function getSession(key: string, defaultValue: number | string = 0) {
+	const value = sessionStorage.getItem(key);
+	if (value === null) {
+		return defaultValue;
+	} // return 0 if key not found
+	return isNaN(Number(value)) ? value : Number(value); // parse number if possible
+}
+
+export const getUrl = (
+	id: string | number,
+	type: 'product' | 'order' | 'store' | 'user' | 'coupon' = 'product',
+	mode: 'edit' | 'view' | 'settings' = 'edit',
+	slug?: string
+) => {
+	if (!id && !slug) {
+		return '#';
+	}
+	const base = appLocalizer.site_url.replace(/\/$/, '');
+
+	if (mode === 'edit') {
+		switch (type) {
+			case 'product':
+			case 'order':
+			case 'coupon':
+				return `${base}/wp-admin/post.php?post=${id}&action=edit`;
+
+			case 'store':
+				return `${base}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${id}`;
+
+			case 'user':
+				return `${base}/wp-admin/user-edit.php?user_id=${id}`;
+
+			default:
+				return '#';
+		}
+	}
+
+	if (mode === 'view') {
+		switch (type) {
+			case 'product':
+				return `${base}/?post_type=product&p=${id}`;
+
+			case 'store':
+				return slug ? `${appLocalizer.store_page_url}${slug}` : '#';
+
+			default:
+				return '#';
+		}
+	}
+
+	return '#';
+};

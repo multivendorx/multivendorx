@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { minify as minifyJs } from 'terser';
 import CleanCSS from 'clean-css';
 import fs from 'fs-extra';
@@ -13,48 +12,49 @@ import sass from 'sass';
  * 1. 'dist' (directory)
  */
 const sourceFolders = [
-    "assets",
-    ...glob.sync("modules/*/assets/*")
+	'assets',
+	...glob.sync('modules/*/assets/*').map((p) => p.split(path.sep).join('/')),
 ];
 
-const { name } = JSON.parse( fs.readFileSync( "package.json" ) );
+const { name } = JSON.parse(fs.readFileSync('package.json'));
 
-( async () => {
-    for ( const sourceFolder of sourceFolders ) {
-        console.log(
-            chalk.bgYellowBright.black(
-                `🧹Minification start in ${ sourceFolder }`
-            )
-        );
-        const files = glob.sync( `${ sourceFolder }/**/*.{js,scss}` );
+(async () => {
+	for (const sourceFolder of sourceFolders) {
+		console.log(
+			chalk.bgYellowBright.black(
+				`🧹Minification start in ${sourceFolder}`
+			)
+		);
+		const files = glob.sync(`${sourceFolder}/**/*.{js,scss}`);
 
-        for ( const file of files ) {
-            try {
-                console.log( chalk.bgCyanBright.black( `🧹Minify ${ file }` ) );
-                let ext = path.extname( file );
-                const content = await fs.readFile( file, "utf8" );
+		for (const file of files) {
+			try {
+				console.log(chalk.bgCyanBright.black(`🧹Minify ${file}`));
+				let ext = path.extname(file);
+				const content = await fs.readFile(file, 'utf8');
 
-                let minified;
-                if ( ext === ".js" ) {
-                    const result = await minifyJs( content );
-                    minified = result.code;
-                } else if ( ext === ".scss" ) {
-                    const compiled = sass.compile(file);
-                    const result = new CleanCSS().minify( compiled.css );
-                    minified = result.styles;
-                    ext = ".css";
-                }
+				let minified;
+				if (ext === '.js') {
+					const result = await minifyJs(content);
+					minified = result.code;
+				} else if (ext === '.scss') {
+					const compiled = sass.compile(file);
+					const result = new CleanCSS().minify(compiled.css);
+					minified = result.styles;
+					ext = '.css';
+				}
 
-                const relativePath = path.relative( '.', file );
-                const parsed = path.parse( relativePath );
+				const relativePath = path.relative('.', file);
+				const normalizedPath = relativePath.split(path.sep).join('/'); // normalize slashes
+				const parsed = path.parse(relativePath);
 
-                let outputPath;
-				if (relativePath.startsWith('assets/js')) {
+				let outputPath;
+				if (normalizedPath.startsWith('assets/js')) {
 					outputPath = `release/assets/js/${name}-${parsed.name}.min${ext}`;
-				} else if (relativePath.startsWith('assets/styles')) {
+				} else if (normalizedPath.startsWith('assets/styles')) {
 					outputPath = `release/assets/styles/${name}-${parsed.name}.min${ext}`;
-				} else if (relativePath.startsWith('modules/')) {
-					const parts = relativePath.split(path.sep); // ['modules', '{module_name}', 'assets', 'js' or 'styles', {file_name}]
+				} else if (normalizedPath.startsWith('modules/')) {
+					const parts = normalizedPath.split('/'); // safe now
 					const moduleName = parts[1];
 					const assetType = parts[3]; // js or styles
 					outputPath = path.join(
@@ -62,19 +62,21 @@ const { name } = JSON.parse( fs.readFileSync( "package.json" ) );
 						`${name}-${parsed.name}.min${ext}`
 					);
 				} else {
-					console.log(chalk.yellow(`⚠️ Unknown file location: ${file}, skipping.`));
+					console.log(
+						chalk.yellow(
+							`⚠️ Unknown file location: ${file}, skipping.`
+						)
+					);
 					continue;
 				}
 
-                await fs.outputFile( outputPath, minified );
-            } catch ( err ) {
-                console.log(
-                    chalk.red(
-                        `❌ Error minifying ${ file }: ${ err.message }`
-                    )
-                );
-            }
-        }
-    }
-    console.log( chalk.bgGreenBright.black( "✅ Minification completed" ) );
-} )();
+				await fs.outputFile(outputPath, minified);
+			} catch (err) {
+				console.log(
+					chalk.red(`❌ Error minifying ${file}: ${err.message}`)
+				);
+			}
+		}
+	}
+	console.log(chalk.bgGreenBright.black('✅ Minification completed'));
+})();

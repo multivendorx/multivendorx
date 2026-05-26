@@ -39,15 +39,15 @@ class Ajax {
         $postdata = filter_input_array( INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
         if ( ! $is_valid ) {
-            $errors[] = __( 'Error occurred while adding product to Request a Quote list.', 'catalogx' );
+            $errors[] = __( 'Error occurred while adding product to Request a Quote list.', 'multivendorx' );
         } else {
             $return = CatalogX()->quotecart->add_cart_item( $postdata );
         }
 
         if ( 'true' === $return ) {
-            $message = __( 'Product added to quote list.', 'catalogx' );
+            $message = __( 'Product added to quote list.', 'multivendorx' );
         } elseif ( 'exists' === $return ) {
-            $message = __( 'Product already in your quote list.', 'catalogx' );
+            $message = __( 'Product already in your quote list.', 'multivendorx' );
         } else {
             $message = $errors;
         }

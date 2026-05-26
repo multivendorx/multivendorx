@@ -23,6 +23,8 @@ class Shortcode {
     public function __construct() {
         // For quote page.
         add_shortcode( 'catalogx_request_quote', array( $this, 'display_request_quote' ) );
+
+        add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
     }
 
     /**
@@ -31,12 +33,18 @@ class Shortcode {
      * @return void
      */
     public function frontend_scripts() {
-        if ( CatalogX()->modules->is_active( 'quote' ) ) {
-            FrontendScripts::load_scripts();
+            wp_deregister_style( 'wc-blocks-style' );
+
+            FrontendScripts::enqueue_frontend_assets();
             FrontendScripts::localize_scripts( 'catalogx-quote-cart-script' );
             FrontendScripts::enqueue_script( 'catalogx-quote-cart-script' );
-            FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
-        }
+        
+        FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
+        FrontendScripts::enqueue_script( 'catalogx-enquiry-button-view-script' );
+        FrontendScripts::enqueue_script( 'catalogx-quote-button-view-script' );
+        FrontendScripts::localize_scripts( 'catalogx-enquiry-button-view-script' );
+        FrontendScripts::localize_scripts( 'catalogx-quote-button-view-script' );
+
     }
 
     /**
@@ -45,7 +53,6 @@ class Shortcode {
      * @return string HTML output for the request quote section.
      */
     public function display_request_quote() {
-        $this->frontend_scripts();
         ob_start();
         ?>
         <div id="request-quote-list">

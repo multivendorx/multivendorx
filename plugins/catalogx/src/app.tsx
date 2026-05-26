@@ -124,7 +124,7 @@ const App = () => {
 				// onQueryUpdate={handleSearchChange}
 				// onResultClick={handleResultClick}
 				free={appLocalizer.free_version}
-				// pro={appLocalizer.pro_data.version}
+				pro={appLocalizer.pro_data.version}
 				// utilityList={utilityList}
 			/>
             <GuidedTourProvider

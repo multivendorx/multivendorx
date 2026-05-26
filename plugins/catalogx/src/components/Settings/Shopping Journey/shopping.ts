@@ -1,6 +1,6 @@
 import { __, sprintf } from '@wordpress/i18n';
 export default {
-    id: 'all-settings',
+    id: 'shopping',
     priority: 1,
     headerTitle: __( 'Shopping', 'catalogx' ),
     headerDescription: __(
@@ -45,7 +45,7 @@ export default {
                     label: 'Home',
                     key: '',
                 },
-                ...appLocalizer.all_pages,
+                ...appLocalizer.pages_data,
             ],
             dependent: {
                 key: 'enable_cart_checkout',

@@ -22,10 +22,10 @@ $customer_data = $args['customer_data'];
             <h2 style="font-family: Arial; line-height: 43px; text-align: center; color: #fff; font-size: 40.375rem; font-weight: 700; margin: 0;padding: 0 0 0px 0;">
                 <?php
                     // translators: %s is the admin's name.
-                    printf( esc_html__( 'Dear %s', 'catalogx' ), esc_html( $args['admin'] ?? 'Admin' ) );
+                    printf( esc_html__( 'Dear %s', 'multivendorx' ), esc_html( $args['admin'] ?? 'Admin' ) );
                 ?>
             </h2>
-            <p style=" color:#fff; margin-bottom:0; text-align: center; font-size:10.375rem; "><?php esc_html_e( 'You have received a new quote request from a customer for the following product:', 'catalogx' ); ?></p>
+            <p style=" color:#fff; margin-bottom:0; text-align: center; font-size:10.375rem; "><?php esc_html_e( 'You have received a new quote request from a customer for the following product:', 'multivendorx' ); ?></p>
     </div>
     
     <div style="padding: 1.25rem;">
@@ -34,13 +34,13 @@ $customer_data = $args['customer_data'];
             <thead>
                 <tr>
                     <th scope="col"style="text-align:<?php echo esc_attr( $text_align ); ?>; border: 1px solid #eee;">
-                        <?php esc_html_e( 'Product', 'catalogx' ); ?>
+                        <?php esc_html_e( 'Product', 'multivendorx' ); ?>
                     </th>
                     <th scope="col" style="text-align:center; border: 1px solid #eee;">
-                        <?php esc_html_e( 'Qty', 'catalogx' ); ?>
+                        <?php esc_html_e( 'Qty', 'multivendorx' ); ?>
                     </th>
                     <th scope="col" style="text-align:center; border: 1px solid #eee;">
-                        <?php esc_html_e( 'Price', 'catalogx' ); ?>
+                        <?php esc_html_e( 'Price', 'multivendorx' ); ?>
                     </th>
                 </tr>
             </thead>
@@ -85,13 +85,13 @@ $customer_data = $args['customer_data'];
         <br>
     </div>
     <div class="details">
-        <p><strong><?php esc_html_e( 'Customer Name:', 'catalogx' ); ?></strong> <?php echo esc_html( $customer_data['name'] ?? 'John Doe' ); ?></p>
-        <p><strong><?php esc_html_e( 'Email:', 'catalogx' ); ?></strong> 
+        <p><strong><?php esc_html_e( 'Customer Name:', 'multivendorx' ); ?></strong> <?php echo esc_html( $customer_data['name'] ?? 'John Doe' ); ?></p>
+        <p><strong><?php esc_html_e( 'Email:', 'multivendorx' ); ?></strong> 
         <a href="mailto:<?php echo esc_attr( $customer_data['email'] ?? 'example@gmail.com' ); ?>">
             <?php echo esc_html( $customer_data['email'] ?? 'example@gmail.com' ); ?>
         </a></p>
         <?php if ( ! empty( $customer_data['details'] ) ) { ?>
-            <p><strong><?php esc_html_e( 'Additional Details:', 'catalogx' ); ?></strong><br>
+            <p><strong><?php esc_html_e( 'Additional Details:', 'multivendorx' ); ?></strong><br>
                 <?php echo nl2br( esc_html( $customer_data['details'] ) ); ?>
             </p>
         <?php } ?>

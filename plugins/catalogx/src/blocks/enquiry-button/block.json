@@ -1,0 +1,20 @@
+{
+    "apiVersion": 3,
+    "name": "catalogx/enquiry-button",
+    "title": "Enquiry Button",
+    "category": "catalogx",
+    "icon": "button",
+    "description": "A block that displays enquiry button.",
+    "editorScript": "file:./index.js",
+    "viewScript": "file:./view.js",
+    "render": "file:./render.php",
+    "textdomain": "catalogx",
+    "editorStyle": [
+        "catalogx-enquiry-form-style",
+        "catalogx-frontend-style"
+    ],
+    "style": [
+        "catalogx-enquiry-form-style",
+        "catalogx-frontend-style"
+    ]
+}

@@ -9,7 +9,7 @@
     },
     "scripts": {
         "build": "echo \"${npm_package_name}\" && pnpm --if-present --workspace-concurrency=Infinity --stream --filter \"${npm_package_name}\" \"/^build:project:.*$/\"",
-        "build:zip": "pnpm install && pnpm run readme && pnpm --if-present \"/^build:project:.*$/\" && pnpm run makepot && node bin/release.mjs",
+        "build:zip": "pnpm run readme && pnpm --if-present \"/^build:project:.*$/\" && pnpm run makepot && node bin/release.mjs",
         "build:project": "pnpm --if-present \"/^build:project:.*$/\"",
         "build:project:bundle": "wireit",
         "build:project:translation:domains": "wireit",
@@ -41,7 +41,7 @@
         "clean": "node bin/clean-files.mjs",
         "minify": "node bin/minify.mjs",
         "changelog": "composer install --quiet && composer exec -- changelogger",
-        "makepot": "wp i18n make-pot --domain='catalogx' --include='assets/js,classes,templates,src,modules,config.php,Woocommerce_Catalog_Enquiry.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://catalogx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') CatalogX Inc. All Rights Reserved.\" languages/catalogx.pot"
+        "makepot": "wp i18n make-pot --domain='catalogx' --include='classes,templates,src,modules,config.php,Woocommerce_Catalog_Enquiry.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://catalogx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') CatalogX Inc. All Rights Reserved.\" languages/catalogx.pot"
     },
     "repository": {
         "type": "git",
@@ -126,7 +126,9 @@
         "@wordpress/data": "^10.0.2",
         "@wordpress/element": "^6.7.0",
         "@wordpress/i18n": "^5.19.0",
+        "@wordpress/hooks": "^4.41.0",
         "@wordpress/shortcode": "^4.7.0",
+        "@wordpress/components": "^32.3.0",
         "body-scroll-lock": "^4.0.0-beta.0",
         "emoji-picker-react": "^4.12.0",
         "file-type": "^21.3.1",
@@ -152,6 +154,7 @@
         "react-sortablejs": "^6.1.4",
         "react-spinners": "^0.13.8",
         "reactour": "^1.19.4",
+		"ts-loader": "9.5.4",
         "router": "^2.1.0",
         "sass": "^1.89.2",
         "sortablejs": "^1.15.3",
