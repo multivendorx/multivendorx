@@ -305,6 +305,9 @@ class FrontendScripts {
         $products_data = array();
 
         foreach ( $products_ids as $id ) {
+                if ( 'publish' !== get_post_status( $id ) ) {
+            continue;
+        }
             $product_name = get_the_title( $id );
 
             $products_data[] = array(

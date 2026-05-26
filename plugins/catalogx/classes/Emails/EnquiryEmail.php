@@ -67,8 +67,8 @@ class EnquiryEmail extends \WC_Email {
      */
     public function __construct() {
         $this->id          = 'catalogx_enquiry_sent';
-        $this->title       = __( 'Enquiry sent', 'multivendorx' );
-        $this->description = __( 'Admin will get an email when a customer enquires about a product.', 'multivendorx' );
+        $this->title       = __( 'Enquiry sent', 'catalogx' );
+        $this->description = __( 'Admin will get an email when a customer enquires about a product.', 'catalogx' );
         // Default values.
         $defaults   = array(
             'email_setting'   => '',
@@ -157,14 +157,14 @@ class EnquiryEmail extends \WC_Email {
      * Get email subject.
      */
     public function get_default_subject() {
-        return empty( $this->product_id ) ? __( 'Product Enquiry for Dummy Product by Guest', 'multivendorx' ) : apply_filters( 'catalogx_enquiry_admin_email_subject', __( 'Product Enquiry for {PRODUCT_NAME} by {USER_NAME}', 'multivendorx' ), $this->object );
+        return empty( $this->product_id ) ? __( 'Product Enquiry for Dummy Product by Guest', 'catalogx' ) : apply_filters( 'catalogx_enquiry_admin_email_subject', __( 'Product Enquiry for {PRODUCT_NAME} by {USER_NAME}', 'catalogx' ), $this->object );
     }
 
     /**
      * Get email heading.
      */
     public function get_default_heading() {
-        return apply_filters( 'catalogx_enquiry_admin_email_heading', __( 'Enquiry for {PRODUCT_NAME}', 'multivendorx' ), $this->object );
+        return apply_filters( 'catalogx_enquiry_admin_email_heading', __( 'Enquiry for {PRODUCT_NAME}', 'catalogx' ), $this->object );
     }
 
     /**

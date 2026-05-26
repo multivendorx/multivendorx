@@ -218,11 +218,11 @@ final class CatalogX {
      */
     public function get_plugin_action_links( $links ) {
         $plugin_links = array(
-            '<a href="' . admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=general' ) . '">' . __( 'Settings', 'multivendorx' ) . '</a>',
+            '<a href="' . admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=general' ) . '">' . __( 'Settings', 'catalogx' ) . '</a>',
         );
         $links        = array_merge( $plugin_links, $links );
         if ( ! Utill::is_khali_dabba() ) {
-            $links[] = '<a href="' . esc_url( CATALOGX_PRO_SHOP_URL ) . '" class="catalogx-pro-plugin" target="_blank" style="font-weight: 700;background: linear-gradient(110deg, rgb(63, 20, 115) 0%, 25%, rgb(175 59 116) 50%, 75%, rgb(219 75 84) 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;">' . __( 'Upgrade to Pro', 'multivendorx' ) . '</a>';
+            $links[] = '<a href="' . esc_url( CATALOGX_PRO_SHOP_URL ) . '" class="catalogx-pro-plugin" target="_blank" style="font-weight: 700;background: linear-gradient(110deg, rgb(63, 20, 115) 0%, 25%, rgb(175 59 116) 50%, 75%, rgb(219 75 84) 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;">' . __( 'Upgrade to Pro', 'catalogx' ) . '</a>';
         }
         return $links;
     }
@@ -239,12 +239,12 @@ final class CatalogX {
     public function plugin_row_meta( $links, $file ) {
         if ( CatalogX()->plugin_base === $file ) {
             $row_meta = array(
-                'docs'    => '<a href="https://catalogx.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx" target="_blank">' . esc_html__( 'Docs', 'multivendorx' ) . '</a>',
-                'support' => '<a href="https://catalogx.com/support/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx" target="_blank">' . __( 'Support', 'multivendorx' ) . '</a>',
+                'docs'    => '<a href="https://catalogx.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx" target="_blank">' . esc_html__( 'Docs', 'catalogx' ) . '</a>',
+                'support' => '<a href="https://catalogx.com/support/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx" target="_blank">' . __( 'Support', 'catalogx' ) . '</a>',
             );
 
             if ( ! Utill::is_khali_dabba() ) {
-                $row_meta['pro'] = '<a href="' . esc_url( CATALOGX_PRO_SHOP_URL ) . '" class="catalogx-pro-plugin" target="_blank" style="font-weight: 700;background: linear-gradient(110deg, rgb(63, 20, 115) 0%, 25%, rgb(175 59 116) 50%, 75%, rgb(219 75 84) 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;" title="' . esc_attr( __( 'Upgrade to Pro', 'multivendorx' ) ) . '">' . __( 'Upgrade to Pro', 'multivendorx' ) . '</a>';
+                $row_meta['pro'] = '<a href="' . esc_url( CATALOGX_PRO_SHOP_URL ) . '" class="catalogx-pro-plugin" target="_blank" style="font-weight: 700;background: linear-gradient(110deg, rgb(63, 20, 115) 0%, 25%, rgb(175 59 116) 50%, 75%, rgb(219 75 84) 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;" title="' . esc_attr( __( 'Upgrade to Pro', 'catalogx' ) ) . '">' . __( 'Upgrade to Pro', 'catalogx' ) . '</a>';
             }
 
             return array_merge( $links, $row_meta );
@@ -280,7 +280,7 @@ final class CatalogX {
                 <?php
                 printf(
                     /* translators: 1. Opening <strong> tag, 2. Closing </strong> tag, 3. Opening <a> tag for WooCommerce plugin link, 4. Closing </a> tag, 5. Opening <a> tag for plugin activation link, 6. Closing </a> tag */
-                    esc_html__( '%1$sCatalogX is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for CatalogX to work. Please %5$sinstall & activate WooCommerce%6$s', 'multivendorx' ),
+                    esc_html__( '%1$sCatalogX is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for CatalogX to work. Please %5$sinstall & activate WooCommerce%6$s', 'catalogx' ),
                     '<strong>',
                     '</strong>',
                     '<a target="_blank" href="http://wordpress.org/extend/plugins/woocommerce/">',

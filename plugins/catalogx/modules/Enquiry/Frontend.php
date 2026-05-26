@@ -186,10 +186,10 @@ class Frontend {
             array()
         );
 
-        $free_form_settings = isset( $form_settings['freefromsetting'] ) &&
-            is_array( $form_settings['freefromsetting'] )
-            ? $form_settings['freefromsetting']
-            : array();
+        $free_form_settings = isset( $form_settings['enquiry_form_tabs']['free_enquiry_form'] ) &&
+            is_array( $form_settings['enquiry_form_tabs']['free_enquiry_form'] )
+            ? $form_settings['enquiry_form_tabs']['free_enquiry_form']
+            : array();        
 
         if ( function_exists( 'icl_t' ) ) {
             foreach ( $free_form_settings as &$free_field ) {
