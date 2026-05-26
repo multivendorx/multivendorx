@@ -81,7 +81,7 @@ final class MultiVendorX {
      * @return void
      */
     public function multivendorx_plugin_update_message() {
-        if ( version_compare( 'MULTIVENDORX_PLUGIN_VERSION', '5.0.0', '<' ) ) {
+        if ( version_compare( MULTIVENDORX_PLUGIN_VERSION, '5.0.0', '<' ) ) {
             echo '<p><strong>Heads up!</strong> 5.0.0 is a major update. Make a full site backup before upgrading your marketplace to avoid any undesirable situations.</p>';
             return;
         }
