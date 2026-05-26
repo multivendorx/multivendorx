@@ -206,11 +206,12 @@ class PaymentProcessor {
             );
 		}
 
+		$transaction_table = $wpdb->prefix . Utill::TABLES['transaction'];
 		if ( 'success' !== $status ) {
 			$row = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->prepare(
                     "SELECT *
-                        FROM $wpdb->prefix . Utill::TABLES['transaction']
+                        FROM {$transaction_table}
                         WHERE id = %d",
                     $transaction_id
                 )
