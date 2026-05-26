@@ -146,7 +146,13 @@ jQuery(document).ready(function ($) {
 				success: function (response) {
 					if (response.features && response.features.length) {
 						showAddressSuggestions(response.features, map, marker);
+					} else {
+						removeSuggestions();
 					}
+				},
+				error: function () {
+					removeSuggestions();
+					console.warn('Mapbox geocoding request failed.');
 				},
 			});
 		}
