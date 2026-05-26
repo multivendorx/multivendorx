@@ -692,7 +692,6 @@
     gap: 1rem;
   }
   .admin-header{
-    flex-direction: column;
     gap: 1rem;
 
     .left-section {
@@ -704,9 +703,12 @@
     .right-section {
       width: 100%;
       justify-content: flex-end;
+
+      .search-field{
+        display: none;
+      }
     }
   }
-
   // settings tab
   .settings-wrapper {
     &[data-template="settings"] {
