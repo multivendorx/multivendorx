@@ -198,7 +198,7 @@ class Rewrites {
     public function set_store_page_title( $title ) {
         if ( get_query_var( $this->custom_store_url ) ) {
             $store = $this->get_current_store();
-            if (!$store) {
+            if ( ! $store ) {
                 return $title;
             }
             return $store->get( 'name' ) . ' - ' . get_bloginfo( 'name' );
@@ -218,13 +218,13 @@ class Rewrites {
 	 */
     public function load_store_template( $template ) {
         $store_name = get_query_var( $this->custom_store_url );
-        $store = $this->get_current_store();
+        $store      = $this->get_current_store();
 
         if ( $store ) {
             $status      = $store->get( 'status' );
             $permissions = MultiVendorX()->util->get_permissions() ?? array();
 
-            if ( $permissions && $permissions['hide_store_products'] && (in_array( $status, array( 'suspended', 'under_review' ), true ) || $permissions['hide_for_compliance']) ) {
+            if ( $permissions && $permissions['hide_store_products'] && ( in_array( $status, array( 'suspended', 'under_review' ), true ) || $permissions['hide_for_compliance'] ) ) {
                 wp_safe_redirect( wc_get_page_permalink( 'shop' ) );
                 exit();
             }

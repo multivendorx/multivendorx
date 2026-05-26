@@ -106,7 +106,6 @@ class Settings extends \WP_REST_Controller {
 		$nonce = $request->get_header( 'X-WP-Nonce' );
 
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-
 			$error = new \WP_Error(
 				'invalid_nonce',
 				esc_html__( 'Invalid nonce.', 'catalogx' ),
@@ -121,7 +120,6 @@ class Settings extends \WP_REST_Controller {
 		}
 
 		try {
-
 			$get_settings_data = $request->get_param( 'setting' );
             $settingsname      = $request->get_param( 'settingName' );
             $settingsname      = str_replace( '-', '_', $settingsname );
@@ -143,7 +141,6 @@ class Settings extends \WP_REST_Controller {
 			$action = $request->get_param( 'action' );
 
 			if ( 'enquiry' === $action ) {
-
 				$display_option = $request->get_param( 'displayOption' );
 
 				$restrict_user = $request->get_param(
@@ -164,7 +161,6 @@ class Settings extends \WP_REST_Controller {
 			}
 
 			if ( 'quote' === $action ) {
-
 				$restrict_user = $request->get_param(
 					'restrictUserQuote'
 				);
@@ -180,9 +176,7 @@ class Settings extends \WP_REST_Controller {
 				'type'    => 'success',
 				'message' => __( 'Settings Saved', 'catalogx' ),
 			);
-
 		} catch ( \Exception $e ) {
-
 			CatalogX()->util->log( $e );
 
 			return new \WP_Error(
@@ -205,7 +199,6 @@ class Settings extends \WP_REST_Controller {
 		$nonce = $request->get_header( 'X-WP-Nonce' );
 
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-
 			$error = new \WP_Error(
 				'invalid_nonce',
 				esc_html__( 'Invalid nonce.', 'catalogx' ),
@@ -220,7 +213,6 @@ class Settings extends \WP_REST_Controller {
 		}
 
 		try {
-
 			$module_id = $request->get_param( 'id' );
 
 			$action = $request->get_param( 'action' );
@@ -234,7 +226,6 @@ class Settings extends \WP_REST_Controller {
 
 			// Handle action.
 			switch ( $action ) {
-
 				case 'activate':
 					CatalogX()->modules->activate_modules(
 						array( $module_id )
@@ -251,9 +242,7 @@ class Settings extends \WP_REST_Controller {
 			return array(
 				'success' => true,
 			);
-
 		} catch ( \Exception $e ) {
-
 			CatalogX()->util->log( $e );
 
 			return new \WP_Error(

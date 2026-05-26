@@ -93,7 +93,6 @@ class Tour extends \WP_REST_Controller {
 			return array(
 				'completed' => filter_var( $status, FILTER_VALIDATE_BOOLEAN ),
 			);
-
 		} catch ( \Exception $e ) {
 			CatalogX()->util->log( $e );
 
@@ -140,7 +139,6 @@ class Tour extends \WP_REST_Controller {
 			return array(
 				'success' => true,
 			);
-
 		} catch ( \Exception $e ) {
 			CatalogX()->util->log( $e );
 

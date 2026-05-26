@@ -43,8 +43,8 @@ class Rest {
      */
     public function init_classes() {
         $this->container = array(
-            'settings'          => new Settings(),
-            'tour'              => new Tour(),
+            'settings' => new Settings(),
+            'tour'     => new Tour(),
         );
     }
 
@@ -56,7 +56,6 @@ class Rest {
     public function register_rest_api_routes() {
 
         foreach ( $this->container as $controller ) {
-
             if ( method_exists( $controller, 'register_routes' ) ) {
                 $controller->register_routes();
             }

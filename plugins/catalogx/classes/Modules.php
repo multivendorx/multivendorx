@@ -62,7 +62,7 @@ class Modules {
      * @param string $string_param The camel case string to convert.
      * @return string The converted kebab case string.
      */
-    private function camel_to_kebab(string $string_param): string {
+    private function camel_to_kebab( string $string_param ): string {
         return strtolower(
             preg_replace(
                 '/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/',
@@ -152,25 +152,25 @@ class Modules {
             return;
         }
 
-        $active_modules = $this->get_active_modules();
-        $all_modules    = $this->get_registered_modules();
+        $active_modules   = $this->get_active_modules();
+        $all_modules      = $this->get_registered_modules();
         $validated_active = array();
         foreach ( $active_modules as $module_id ) {
             foreach ( $all_modules as $key => $module ) {
                 // Match same module id (free + pro both)
-                if ( empty( $module['id'] ) || $module['id'] !== $module_id ) {                  
+                if ( empty( $module['id'] ) || $module['id'] !== $module_id ) {
                     continue;
                 }
                 if ( ! $this->is_module_available( $module ) ) {
-         continue;
+					continue;
                 }
 
                 require_once $module['module_file'];
 
                 try {
-                    $class                   = $module['module_class'];
+                    $class                  = $module['module_class'];
                     $this->services[ $key ] = new $class();
-                } catch ( \Throwable $e ) {         
+                } catch ( \Throwable $e ) {
                     CatalogX()->util->log( $e );
                     continue;
                 }
@@ -207,7 +207,7 @@ class Modules {
         $class = $module['module_class'];
 
         if ( class_exists( $class ) && method_exists( $class, 'is_compatible' ) ) {
-            if ( ! $class::is_compatible() ) {       
+            if ( ! $class::is_compatible() ) {
                 return false;
             }
         }

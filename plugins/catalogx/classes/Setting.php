@@ -70,7 +70,7 @@ class Setting {
     private function get_registered_setting_keys() {
 
         // Settings key are available.
-        if ( ! empty ($this->registered_setting_keys) ) {
+        if ( ! empty( $this->registered_setting_keys ) ) {
             return $this->registered_setting_keys;
         }
 
@@ -132,7 +132,7 @@ class Setting {
         $setting = $this->settings_cache[ $option_key ] ?? array();
 
         // Update setting in setting container.
-        $setting[ $key ]               = $value;
+        $setting[ $key ]                     = $value;
         $this->settings_cache[ $option_key ] = $setting;
 
         // Update the setting in database.

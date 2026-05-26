@@ -344,7 +344,7 @@ class Rest {
      */
     public function grant_woocommerce_rest_permission( $permission, $context, $object_id, $post_type ) {
         $request_method = $_SERVER['REQUEST_METHOD'] ?? '';
-        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        $request_uri    = $_SERVER['REQUEST_URI'] ?? '';
 
         if ( ! is_user_logged_in() && $request_method === 'GET' && str_contains( $request_uri, '/products' ) !== false ) {
             return true;
@@ -362,7 +362,7 @@ class Rest {
             return true;
         }
 
-        return apply_filters('multivendorx_store_rest_permission',$permission, $user_id, $context, $object_id, $post_type);
+        return apply_filters( 'multivendorx_store_rest_permission', $permission, $user_id, $context, $object_id, $post_type );
     }
 
     /**
@@ -378,14 +378,14 @@ class Rest {
         $store_id = (int) $order->get_meta( Utill::POST_META_SETTINGS['store_id'] );
 
         if ( $store_id > 0 ) {
-            $store      = new Store( $store_id );
+            $store = new Store( $store_id );
             if ( $store->exists() ) {
-                $phone_meta = $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] );
+                $phone_meta      = $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] );
                 $formatted_phone = '';
                 if ( ! empty( $phone_meta['country_code'] ) && ! empty( $phone_meta['phone'] ) ) {
                     $formatted_phone = $phone_meta['country_code'] . '-' . $phone_meta['phone'];
                 }
-    
+
                 $response->data['store_id']      = $store_id;
                 $response->data['store_name']    = (string) $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
                 $response->data['store_slug']    = (string) $store->get( Utill::STORE_SETTINGS_KEYS['slug'] );
@@ -494,7 +494,7 @@ class Rest {
 
         if ( $store_id ) {
             // Get store information.
-            $store      = new Store( $store_id );
+            $store = new Store( $store_id );
             if ( ! $store->exists() ) {
                 return $response;
             }

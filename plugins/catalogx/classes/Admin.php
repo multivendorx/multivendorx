@@ -23,8 +23,8 @@ class Admin {
      */
     public function __construct() {
         // Register admin menu.
-        add_action( 'admin_menu', array( $this, 'add_menus' ),10 );
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ),20 );
+        add_action( 'admin_menu', array( $this, 'add_menus' ), 10 );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ), 20 );
 		// Allow external redirect host.
         add_filter( 'allowed_redirect_hosts', array( $this, 'allow_catalogx_redirect_host' ) );
         // For load translation.

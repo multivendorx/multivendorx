@@ -60,10 +60,10 @@ class Block {
      * @return array List of blocks with their configuration.
      */
     public function initialize_blocks() {
-        $blocks = array();
+        $blocks     = array();
         $textdomain = 'catalogx';
 
-        $block_base_path = FrontendScripts::get_asset_path('file') . 'js/block/';
+        $block_base_path = FrontendScripts::get_asset_path( 'file' ) . 'js/block/';
 
         $exclude_blocks = apply_filters( 'catalogx_exclude_blocks', array( 'setup-wizard' ) );
         if ( ! is_dir( $block_base_path ) ) {
@@ -126,7 +126,7 @@ class Block {
         FrontendScripts::enqueue_script( 'catalogx-vendor-script' );
         foreach ( $this->get_blocks() as $block_config ) {
             $block_name = $block_config['textdomain'] . '/' . $block_config['name'];
-            
+
             if ( has_block( $block_name, $post ) ) {
                 $handle = $block_config['textdomain'] . '-' . $block_config['name'] . '-view-script';
                 FrontendScripts::enqueue_script( $handle );

@@ -155,7 +155,7 @@ class StripeConnect {
             if ( $store->exists() ) {
                 $stripe_account_id = $store->get_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] );
             }
-            $stripe_account_id =  apply_filters( 'multivendorx_stripe_account_id', $stripe_account_id, MultiVendorX()->current_user_id );
+            $stripe_account_id = apply_filters( 'multivendorx_stripe_account_id', $stripe_account_id, MultiVendorX()->current_user_id );
 			$fields            = array(
 				array(
 					'key'             => 'stripe_status',
@@ -177,10 +177,12 @@ class StripeConnect {
                         'key'          => 'disconnect_account',
                         'label'        => __( 'Disconnect Stripe Account', 'multivendorx' ),
                         'text'         => __( 'Disconnect', 'multivendorx' ),
-                        'redirect_url' => apply_filters( 'multivendorx_stripe_disconnect_url',
-                                admin_url(
-                                    'admin-post.php?action=multivendorx_disconnect_stripe'
-                                )),
+                        'redirect_url' => apply_filters(
+                            'multivendorx_stripe_disconnect_url',
+                            admin_url(
+                                'admin-post.php?action=multivendorx_disconnect_stripe'
+                            )
+                        ),
                         'class'        => 'multivendorx-stripe-disconnect-btn',
                     );
                 } else {
@@ -189,10 +191,12 @@ class StripeConnect {
                         'key'          => 'create_account',
                         'label'        => __( 'Connect with Stripe', 'multivendorx' ),
                         'text'         => __( 'Connect', 'multivendorx' ),
-                        'redirect_url' => apply_filters( 'multivendorx_stripe_connect_url',
-                                admin_url(
-                                    'admin-post.php?action=multivendorx_connect_stripe'
-                                )),
+                        'redirect_url' => apply_filters(
+                            'multivendorx_stripe_connect_url',
+                            admin_url(
+                                'admin-post.php?action=multivendorx_connect_stripe'
+                            )
+                        ),
                         'class'        => 'multivendorx-stripe-connect-btn',
                     );
                 }
@@ -216,7 +220,7 @@ class StripeConnect {
      * @param string $note Note.
      */
     public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null, $additional_receiver = 0 ) {
-        $store  = new Store( $store_id );
+        $store             = new Store( $store_id );
         $stripe_account_id = '';
         if ( $store->exists() ) {
             $stripe_account_id = $store->get_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] );
@@ -224,11 +228,11 @@ class StripeConnect {
         if ( $additional_receiver > 0 ) {
             $stripe_account_id = apply_filters( 'multivendorx_stripe_account_id', $stripe_account_id, $additional_receiver );
         }
-        if (empty($stripe_account_id)) {
+        if ( empty( $stripe_account_id ) ) {
             return;
         }
-        $transfer          = $this->create_transfer( $amount, $stripe_account_id, $order_id );
-        $status            = $transfer ? 'success' : 'failed';
+        $transfer = $this->create_transfer( $amount, $stripe_account_id, $order_id );
+        $status   = $transfer ? 'success' : 'failed';
         do_action( 'multivendorx_after_payment_complete', $store_id, 'Stripe Connect', $status, $order_id, $transaction_id, $note, $amount, $additional_receiver );
     }
 
@@ -269,8 +273,8 @@ class StripeConnect {
      * Create Stripe account
      */
     public function connect_stripe() {
-        $config       = $this->get_store_stripe_config();
-        $store        = $config['store'];
+        $config = $this->get_store_stripe_config();
+        $store  = $config['store'];
         if ( empty( $store ) ) {
             return false;
         }
@@ -313,8 +317,8 @@ class StripeConnect {
             wp_redirect( $this->get_redirect_url( 'error', 'stripe_oauth' ) );
             exit;
         }
-        $config     = $this->get_store_stripe_config();
-        $store      = $config['store'];
+        $config = $this->get_store_stripe_config();
+        $store  = $config['store'];
         if ( empty( $store ) ) {
             return;
         }
@@ -360,8 +364,8 @@ class StripeConnect {
      * Disconnect Stripe account
      */
     public function disconnect_stripe() {
-        $config     = $this->get_store_stripe_config();
-        $store      = $config['store'];
+        $config = $this->get_store_stripe_config();
+        $store  = $config['store'];
         if ( empty( $store ) ) {
             return;
         }
