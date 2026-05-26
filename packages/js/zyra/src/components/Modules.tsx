@@ -101,7 +101,11 @@ const Modules: React.FC<ModuleProps> = ({
 
         if (
             module.reqPluging?.some(
-                (plugin) => !ZyraVariable.active_plugins?.includes(plugin.slug)
+                (plugin) =>
+                    !(
+                        Array.isArray(ZyraVariable.active_plugins) &&
+                        ZyraVariable.active_plugins.includes(plugin.slug)
+                    )
             )
         ) {
             openRequirePopup(module);
