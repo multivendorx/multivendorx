@@ -230,7 +230,7 @@ class CommissionUtil {
 
             return array_map(
                 function ( $row ) {
-                    $store      = new Store( $row->store_id );
+                    $store = new Store( $row->store_id );
                     if ( $store->exists() ) {
                         $store_name = $store->get( 'name' );
                     }

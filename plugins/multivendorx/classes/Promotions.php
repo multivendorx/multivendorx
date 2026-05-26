@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @version     PRODUCT_VERSION
  * @package     MultiVendorX
- * @author 		MultiVendorX
+ * @author      MultiVendorX
  */
 class Promotions {
     private string $review_url;
@@ -17,38 +17,38 @@ class Promotions {
     private string $api_url;
     public function __construct() {
         $this->plugin_version     = MULTIVENDORX_PLUGIN_VERSION;
-        $this->pro_plugin_version = defined('MULTIVENDORX_PRO_PLUGIN_VERSION') ? MULTIVENDORX_PRO_PLUGIN_VERSION : '';
+        $this->pro_plugin_version = defined( 'MULTIVENDORX_PRO_PLUGIN_VERSION' ) ? MULTIVENDORX_PRO_PLUGIN_VERSION : '';
         $this->review_url         = sprintf(
             'https://wordpress.org/support/plugin/%s/reviews/#new-post',
             MultiVendorX()->plugin_slug
         );
-        $this->api_url = 'https://multivendorx.com/wp-json/mvx_thirdparty/v1/coupon_create_for_pro';
-        add_action( 'admin_notices', array($this, 'seek_site_information' ) );
-        add_action( 'admin_notices', array($this, 'seek_product_review'));
+        $this->api_url            = 'https://multivendorx.com/wp-json/mvx_thirdparty/v1/coupon_create_for_pro';
+        add_action( 'admin_notices', array( $this, 'seek_site_information' ) );
+        add_action( 'admin_notices', array( $this, 'seek_product_review' ) );
         add_action( 'admin_notices', array( $this, 'free_pro_admin_notice' ) );
-        add_action( 'wp_ajax_admin_notice_action', array($this, 'admin_notice_action'), 10);
-        add_action( 'wp_ajax_dismiss_free_pro_notice', array($this, 'dismiss_free_pro_notice') );
-        add_action( 'admin_print_footer_scripts', array($this, 'notice_script' ) );
+        add_action( 'wp_ajax_admin_notice_action', array( $this, 'admin_notice_action' ), 10 );
+        add_action( 'wp_ajax_dismiss_free_pro_notice', array( $this, 'dismiss_free_pro_notice' ) );
+        add_action( 'admin_print_footer_scripts', array( $this, 'notice_script' ) );
     }
 
     public function admin_notice_action() {
-        check_ajax_referer('admin_notice', 'nonce');
-        $action_type = filter_input(INPUT_POST, 'admin_notice_action_type', FILTER_SANITIZE_STRING);
+        check_ajax_referer( 'admin_notice', 'nonce' );
+        $action_type = filter_input( INPUT_POST, 'admin_notice_action_type', FILTER_SANITIZE_STRING );
         $user_id     = get_current_user_id();
-        if (!$action_type) {
+        if ( ! $action_type ) {
             wp_die();
         }
-        switch ($action_type) {
+        switch ( $action_type ) {
             case 'later':
-                set_transient('wp_review_request', 'yes', MONTH_IN_SECONDS);
+                set_transient( 'wp_review_request', 'yes', MONTH_IN_SECONDS );
                 break;
 
             case 'add_review':
-                update_user_meta($user_id, 'wp_review_request', 'true', true);
+                update_user_meta( $user_id, 'wp_review_request', 'true', true );
                 break;
 
             case 'review_closed':
-                set_transient('wp_review_request', 'yes', YEAR_IN_SECONDS);
+                set_transient( 'wp_review_request', 'yes', YEAR_IN_SECONDS );
                 break;
         }
         wp_send_json_success();
@@ -57,7 +57,7 @@ class Promotions {
     public function seek_product_review() {
         $user_id = get_current_user_id();
 
-        if ( false !== get_transient('wp_review_request') || get_user_meta($user_id, 'wp_review_request', true) ) {
+        if ( false !== get_transient( 'wp_review_request' ) || get_user_meta( $user_id, 'wp_review_request', true ) ) {
             return;
         }
         ?>
@@ -73,19 +73,23 @@ class Promotions {
     }
 
     public function seek_site_information() {
-        if (get_option('plugin_action_block_notice')) {
+        if ( get_option( 'plugin_action_block_notice' ) ) {
             return;
         }
 
-        $yes_url = add_query_arg([
-            'plugin'        => 'dc-woocommerce-multi-vendor',
-            'plugin_action' => 'yes',
-        ]);
+        $yes_url = add_query_arg(
+            array(
+				'plugin'        => 'dc-woocommerce-multi-vendor',
+				'plugin_action' => 'yes',
+            )
+        );
 
-        $no_url = add_query_arg([
-            'plugin'        => 'dc-woocommerce-multi-vendor',
-            'plugin_action' => 'no',
-        ]);
+        $no_url = add_query_arg(
+            array(
+				'plugin'        => 'dc-woocommerce-multi-vendor',
+				'plugin_action' => 'no',
+            )
+        );
 
         ?>
         <div class="notice notice-success">
@@ -108,21 +112,23 @@ class Promotions {
         $plugin_action = filter_input( INPUT_GET, 'plugin_action', FILTER_UNSAFE_RAW );
         $plugin_action = is_string( $plugin_action ) ? sanitize_text_field( wp_unslash( $plugin_action ) ) : '';
 
-        if ($plugin_action) {
-            update_option('plugin_action_block_notice', $plugin_action);
-            if ($plugin_action === 'yes') {
-                $body = MultiVendorX()->tracker->get_data();
-                $body['status'] = 'Deactivated';
+        if ( $plugin_action ) {
+            update_option( 'plugin_action_block_notice', $plugin_action );
+            if ( $plugin_action === 'yes' ) {
+                $body                     = MultiVendorX()->tracker->get_data();
+                $body['status']           = 'Deactivated';
                 $body['deactivated_date'] = time();
-                MultiVendorX()->tracker->send_data($body);
+                MultiVendorX()->tracker->send_data( $body );
                 $current_user = wp_get_current_user();
-                $this->create_coupon_for_discount([
-                    'name'  => sanitize_text_field($current_user->display_name),
-                    'email' => sanitize_email($current_user->user_email),
-                ]);
+                $this->create_coupon_for_discount(
+                    array(
+						'name'  => sanitize_text_field( $current_user->display_name ),
+						'email' => sanitize_email( $current_user->user_email ),
+                    )
+                );
 
                 $email = WC()->mailer()->emails['WC_Email_Send_Site_Information'];
-                $email->trigger(get_current_user_id());
+                $email->trigger( get_current_user_id() );
             }
         }
     }
@@ -135,11 +141,11 @@ class Promotions {
 		$response = wp_remote_post(
 			$this->api_url,
 			array(
-				'timeout'    => 30,
-				'headers'    => array(
+				'timeout'     => 30,
+				'headers'     => array(
 					'User-Agent' => 'MultiVendorX/' . $this->plugin_version ?? '1.0.0' . '; ' . home_url(),
 				),
-				'body'       => $data,
+				'body'        => $data,
 				'data_format' => 'body',
 			)
 		);
@@ -159,7 +165,7 @@ class Promotions {
             jQuery(function ($) {
                 const ajaxData = {
                     action: 'admin_notice_action',
-                    nonce: '<?php echo esc_js(wp_create_nonce('admin_notice')); ?>'
+                    nonce: '<?php echo esc_js( wp_create_nonce( 'admin_notice' ) ); ?>'
                 };
 
                 $(document)
@@ -230,7 +236,7 @@ class Promotions {
     }
 
     public function dismiss_free_pro_notice() {
-        update_option('multivendorx_dismiss_free_pro_notice', true);
+        update_option( 'multivendorx_dismiss_free_pro_notice', true );
         die();
     }
 }

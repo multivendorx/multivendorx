@@ -360,7 +360,7 @@ class Commissions extends \WP_REST_Controller {
      */
     public function prepare_item_for_response( $commission, $with_items = false ) {
 
-        $store      = new Store( $commission['store_id'] ?? 0 );
+        $store = new Store( $commission['store_id'] ?? 0 );
         if ( $store->exists() ) {
             $store_name = $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
         }

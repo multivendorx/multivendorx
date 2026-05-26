@@ -269,7 +269,7 @@ class Transactions extends \WP_REST_Controller {
         return rest_ensure_response(
             array(
                 'reserve_balance'    => $minimum_wallet_amount,
-                'threshold'           => $payout_threshold,
+                'threshold'          => $payout_threshold,
                 'available_balance'  => $balance,
                 'balance'            => $balance,
                 'locking_day'        => $locking_day,
@@ -303,7 +303,7 @@ class Transactions extends \WP_REST_Controller {
         $action       = $request->get_param( 'action' );
         $disbursement = $request->get_param( 'disbursement' );
 
-        $store            = new Store( $store_id );
+        $store = new Store( $store_id );
         if ( ! $store->exists() ) {
             return;
         }

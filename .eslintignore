@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+assets/
+release/
+.cache/
+.wireit/
+dist/
+
+# PHP/composer
+vendor/
+
+# Generated files
+*.min.js
+
+# Logs
+log/

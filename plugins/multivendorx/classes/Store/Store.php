@@ -366,7 +366,7 @@ class Store {
         }
 
         if ( 'id' === $type ) {
-            $store = new self( (int) $value );
+            $store                           = new self( (int) $value );
             self::$store_cache[ $cache_key ] = $store->exists() ? $store : null;
             return self::$store_cache[ $cache_key ];
         }
@@ -389,7 +389,7 @@ class Store {
                         return null;
                     }
 
-                    $store = new self( (int) $id );
+                    $store                           = new self( (int) $id );
                     self::$store_cache[ $cache_key ] = $store->exists() ? $store : null;
                     return self::$store_cache[ $cache_key ];
 
@@ -404,7 +404,7 @@ class Store {
                     if ( ! $store_id ) {
                         return null;
                     }
-                    $store = new self( $store_id );
+                    $store                           = new self( $store_id );
                     self::$store_cache[ $cache_key ] = $store->exists() ? $store : null;
                     return self::$store_cache[ $cache_key ];
 
@@ -448,7 +448,7 @@ class Store {
                     return self::$store_cache[ $cache_key ];
 
                 case 'user':
-                    $user_id = (int) $value;
+                    $user_id           = (int) $value;
 					$excluded_statuses = array( 'permanently_rejected', 'deactivated' );
 					$placeholders      = implode( ', ', array_fill( 0, count( $excluded_statuses ), '%s' ) );
 					$params            = array_merge( array( $user_id ), $excluded_statuses );
@@ -475,9 +475,7 @@ class Store {
                 default:
                     return null;
             }
-
         } catch ( \Exception $e ) {
-
             if ( MultiVendorX()->show_advanced_log ) {
                 MultiVendorX()->util->log( $e->getMessage(), 'ERROR' );
             }

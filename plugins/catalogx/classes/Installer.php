@@ -332,11 +332,11 @@ class Installer {
 
             $old_keys = array(
                 'catalogx_enquiry-catalog-customization_settings' => Utill::CATALOGX_SETTINGS['enquiry-catalog-customization'],
-                'catalogx_all-settings_settings'                  => Utill::CATALOGX_SETTINGS['shopping'],
-                'catalogx_enquiry-quote-exclusion_settings'       => Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
-                'catalogx_enquiry-form-customization_settings'    => Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
-                'catalogx_enquiry-email-temp_settings'            => Utill::CATALOGX_SETTINGS['enquiry-email-temp'],
-                'catalogx_wholesale-registration_settings'        => Utill::CATALOGX_SETTINGS['wholesale-registration'],
+                'catalogx_all-settings_settings'           => Utill::CATALOGX_SETTINGS['shopping'],
+                'catalogx_enquiry-quote-exclusion_settings' => Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
+                'catalogx_enquiry-form-customization_settings' => Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
+                'catalogx_enquiry-email-temp_settings'     => Utill::CATALOGX_SETTINGS['enquiry-email-temp'],
+                'catalogx_wholesale-registration_settings' => Utill::CATALOGX_SETTINGS['wholesale-registration'],
             );
 
             foreach ( $old_keys as $old_key => $new_key ) {
@@ -349,33 +349,33 @@ class Installer {
 
             // $previous_enquiry_catalog_customization_settings = get_option( 'catalogx_enquiry-catalog-customization_settings', array() );
             // if ( ! empty( $previous_enquiry_catalog_customization_settings ) ) {
-            //     update_option( Utill::CATALOGX_SETTINGS['enquiry-catalog-customization'], $previous_enquiry_catalog_customization_settings );
-            //     delete_option( 'catalogx_enquiry-catalog-customization_settings' );
+            // update_option( Utill::CATALOGX_SETTINGS['enquiry-catalog-customization'], $previous_enquiry_catalog_customization_settings );
+            // delete_option( 'catalogx_enquiry-catalog-customization_settings' );
             // }
             // $previous_all_settings_settings = get_option( 'catalogx_all-settings_settings', array() );
             // if ( ! empty( $previous_all_settings_settings ) ) {
-            //     update_option( Utill::CATALOGX_SETTINGS['all-settings'], $previous_all_settings_settings );
-            //     delete_option( 'catalogx_all-settings_settings' );
+            // update_option( Utill::CATALOGX_SETTINGS['all-settings'], $previous_all_settings_settings );
+            // delete_option( 'catalogx_all-settings_settings' );
             // }
             // $previous_enquiry_quote_exclusion_settings = get_option( 'catalogx_enquiry-quote-exclusion_settings', array() );
             // if ( ! empty( $previous_enquiry_quote_exclusion_settings ) ) {
-            //     update_option( Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'], $previous_enquiry_quote_exclusion_settings );
-            //     delete_option( 'catalogx_enquiry-quote-exclusion_settings' );
+            // update_option( Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'], $previous_enquiry_quote_exclusion_settings );
+            // delete_option( 'catalogx_enquiry-quote-exclusion_settings' );
             // }
             // $previous_enquiry_form_customization_settings = get_option( 'catalogx_enquiry-form-customization_settings', array() );
             // if ( ! empty( $previous_enquiry_form_customization_settings ) ) {
-            //     update_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], $previous_enquiry_form_customization_settings );
-            //     delete_option( 'catalogx_enquiry-form-customization_settings' );
+            // update_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], $previous_enquiry_form_customization_settings );
+            // delete_option( 'catalogx_enquiry-form-customization_settings' );
             // }
             // $previous_enquiry_email_temp_settings = get_option( 'catalogx_enquiry-email-temp_settings', array() );
             // if ( ! empty( $previous_enquiry_email_temp_settings ) ) {
-            //     update_option( Utill::CATALOGX_SETTINGS['enquiry-email-temp'], $previous_enquiry_email_temp_settings );
-            //     delete_option( 'catalogx_enquiry-email-temp_settings' );
+            // update_option( Utill::CATALOGX_SETTINGS['enquiry-email-temp'], $previous_enquiry_email_temp_settings );
+            // delete_option( 'catalogx_enquiry-email-temp_settings' );
             // }
             // $previous_wholesale_registration_settings = get_option( 'catalogx_wholesale-registration_settings', array() );
             // if ( ! empty( $previous_wholesale_registration_settings ) ) {
-            //     update_option( Utill::CATALOGX_SETTINGS['wholesale-registration'], $previous_wholesale_registration_settings );
-            //     delete_option( 'catalogx_wholesale-registration_settings' );
+            // update_option( Utill::CATALOGX_SETTINGS['wholesale-registration'], $previous_wholesale_registration_settings );
+            // delete_option( 'catalogx_wholesale-registration_settings' );
             // }
         }
     }
@@ -743,14 +743,14 @@ class Installer {
         // $exclusion_user_list = is_array( $exclusion_user_list ) ? $exclusion_user_list : array();
 
         // $exclusion_user_list = array_map(
-        //     function ( $user_list ) {
-		// 		return array(
-		// 			'key'   => $user_list['value'],
-		// 			'label' => $user_list['label'],
-		// 			'value' => $user_list['value'],
-		// 		);
-		// 	},
-        //     $exclusion_user_list
+        // function ( $user_list ) {
+		// return array(
+		// 'key'   => $user_list['value'],
+		// 'label' => $user_list['label'],
+		// 'value' => $user_list['value'],
+		// );
+		// },
+        // $exclusion_user_list
         // );
 
         // // Prepare user role list.
@@ -758,14 +758,14 @@ class Installer {
         // $exclusion_userroles_list = is_array( $exclusion_userroles_list ) ? $exclusion_userroles_list : array();
 
         // $exclusion_userroles_list = array_map(
-        //     function ( $user_list ) {
-		// 		return array(
-		// 			'key'   => $user_list['value'],
-		// 			'label' => $user_list['label'],
-		// 			'value' => $user_list['value'],
-		// 		);
-		// 	},
-        //     $exclusion_userroles_list
+        // function ( $user_list ) {
+		// return array(
+		// 'key'   => $user_list['value'],
+		// 'label' => $user_list['label'],
+		// 'value' => $user_list['value'],
+		// );
+		// },
+        // $exclusion_userroles_list
         // );
 
         // // Prepare product list.
@@ -773,14 +773,14 @@ class Installer {
         // $exclusion_product_list = is_array( $exclusion_product_list ) ? $exclusion_product_list : array();
 
         // $exclusion_product_list = array_map(
-        //     function ( $user_list ) {
-		// 		return array(
-		// 			'key'   => $user_list['value'],
-		// 			'label' => $user_list['label'],
-		// 			'value' => $user_list['value'],
-		// 		);
-		// 	},
-        //     $exclusion_product_list
+        // function ( $user_list ) {
+		// return array(
+		// 'key'   => $user_list['value'],
+		// 'label' => $user_list['label'],
+		// 'value' => $user_list['value'],
+		// );
+		// },
+        // $exclusion_product_list
         // );
 
         // // Prepare category list.
@@ -788,28 +788,28 @@ class Installer {
         // $exclusion_category_list = is_array( $exclusion_category_list ) ? $exclusion_category_list : array();
 
         // $exclusion_category_list = array_map(
-        //     function ( $user_list ) {
-        //         return array(
-		// 			'key'   => $user_list['value'],
-		// 			'label' => $user_list['label'],
-		// 			'value' => $user_list['value'],
-        //         );
-        //     },
-        //     $exclusion_category_list
+        // function ( $user_list ) {
+        // return array(
+		// 'key'   => $user_list['value'],
+		// 'label' => $user_list['label'],
+		// 'value' => $user_list['value'],
+        // );
+        // },
+        // $exclusion_category_list
         // );
 
         // $exclusion_settings = array(
-        //     'catalog_exclusion_user_list'      => $exclusion_user_list,
-        //     'enquiry_exclusion_user_list'      => $exclusion_user_list,
+        // 'catalog_exclusion_user_list'      => $exclusion_user_list,
+        // 'enquiry_exclusion_user_list'      => $exclusion_user_list,
 
-        //     'catalog_exclusion_userroles_list' => $exclusion_userroles_list,
-        //     'enquiry_exclusion_userroles_list' => $exclusion_userroles_list,
+        // 'catalog_exclusion_userroles_list' => $exclusion_userroles_list,
+        // 'enquiry_exclusion_userroles_list' => $exclusion_userroles_list,
 
-        //     'enquiry_exclusion_product_list'   => $exclusion_product_list,
-        //     'catalog_exclusion_product_list'   => $exclusion_product_list,
+        // 'enquiry_exclusion_product_list'   => $exclusion_product_list,
+        // 'catalog_exclusion_product_list'   => $exclusion_product_list,
 
-        //     'catalog_exclusion_category_list'  => $exclusion_category_list,
-        //     'enquiry_exclusion_category_list'  => $exclusion_category_list,
+        // 'catalog_exclusion_category_list'  => $exclusion_category_list,
+        // 'enquiry_exclusion_category_list'  => $exclusion_category_list,
         // );
 
         // update_option( 'catalogx_enquiry-quote-exclusion_settings', $exclusion_settings );

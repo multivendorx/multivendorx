@@ -64,21 +64,21 @@ class Frontend {
         }
 
         // Display button group in a hooked based on position setting.
-        $hook_map = [
+        $hook_map = array(
             'sku_category'        => 'woocommerce_product_meta_end',
             'add_to_cart'         => 'woocommerce_after_add_to_cart_button',
             'product_description' => 'woocommerce_before_add_to_cart_form',
             'price_section'       => 'woocommerce_single_product_summary',
-        ];
-        
-        $hook     = $hook_map[ $position_after ] ?? 'woocommerce_single_product_summary';
-        
+        );
+
+        $hook = $hook_map[ $position_after ] ?? 'woocommerce_single_product_summary';
+
         // Determine priority based on hook
         $priority = match ( $position_after ) {
             'price_section' => 10 + $position_priority,
             default         => 99 + $position_priority,
         };
-        
+
         add_action( $hook, array( $this, 'add_button_group' ), $priority );
     }
 

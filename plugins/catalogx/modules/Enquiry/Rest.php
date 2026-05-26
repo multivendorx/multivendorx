@@ -59,10 +59,10 @@ class Rest {
     public function create_enquiry( $request ) {
         global $wpdb;
 
-        $quantity    = $request->get_param( 'quantity' );
-        $product_id  = $request->get_param( 'productId' );
+        $quantity       = $request->get_param( 'quantity' );
+        $product_id     = $request->get_param( 'productId' );
         $request_fields = $request->get_body_params();
-        $uploaded_files   = $request->get_file_params();
+        $uploaded_files = $request->get_file_params();
 
         $user        = wp_get_current_user();
         $user_name   = $user->display_name;
@@ -150,7 +150,7 @@ class Rest {
             $attachments = apply_filters( 'catalogx_set_enquiry_pdf_and_attachments', array(), $enquiry_id, $enquiry_data );
 
             $additional_email = CatalogX()->setting->get_setting( 'additional_alert_email' );
-            $email_handler       = WC()->mailer()->emails['EnquiryEmail'];
+            $email_handler    = WC()->mailer()->emails['EnquiryEmail'];
 
             $email_handler->trigger( $additional_email, $enquiry_data, $attachments );
 
@@ -180,7 +180,7 @@ class Rest {
         // $user_id = get_current_user_id();
         // // For non-logged in user.
         // if ( 0 === $user_id && empty( CatalogX()->setting->get_setting( 'enquiry_user_permission' ) ) ) {
-        //     return true;
+        // return true;
         // }
 
         // // Check if user is admin or customer.

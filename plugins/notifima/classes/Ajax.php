@@ -44,7 +44,7 @@ class Ajax {
      * @return void
      */
     public function export_csv_data( $argument = array(), $nonce = '' ) {
-        if ( !current_user_can( 'manage_options' ) || !current_user_can( 'dc_vendor' ) ) {
+        if ( ! current_user_can( 'manage_options' ) || ! current_user_can( 'dc_vendor' ) ) {
             wp_send_json_error( 'Unauthorized access.' );
             wp_die();
         }

@@ -132,7 +132,7 @@ class PaypalPayout {
                 : '';
         }
 
-        if ($additional_receiver > 0) {
+        if ( $additional_receiver > 0 ) {
             $receiver_email = apply_filters( 'multivendorx_paypal_receiver_email', $receiver_email, $additional_receiver );
         }
 

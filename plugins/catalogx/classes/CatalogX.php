@@ -49,7 +49,7 @@ final class CatalogX {
     public function __construct( $file ) {
         require_once trailingslashit( dirname( $file ) ) . '/config.php';
 
-        $this->file                                = $file;
+        $this->file                               = $file;
         $this->services['plugin_url']             = trailingslashit( plugins_url( '', $file ) );
         $this->services['plugin_path']            = trailingslashit( dirname( $file ) );
         $this->services['plugin_base']            = plugin_basename( $file );
@@ -60,7 +60,7 @@ final class CatalogX {
         $this->services['render_enquiry_btn_via'] = '';
         $this->services['render_quote_btn_via']   = '';
         $this->services['is_dev']                 = defined( 'WP_ENV' ) && WP_ENV === 'development';
-        $this->services['date_format']           = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+        $this->services['date_format']            = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 
         register_activation_hook( $file, array( $this, 'activate' ) );
         register_deactivation_hook( $file, array( $this, 'deactivate' ) );
@@ -150,25 +150,25 @@ final class CatalogX {
 
         $form_settings = CatalogX()->setting->get_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'] );
 
-            foreach ( $form_settings['formsettings']['formfieldlist'] as $field ) {
-                if ( isset( $field['label'] ) ) {
-                    icl_register_string( 'catalogx', 'form_field_label_' . $field['id'], $field['label'] );
-                }
-                if ( isset( $field['placeholder'] ) ) {
-                    icl_register_string( 'catalogx', 'form_field_placeholder_' . $field['id'], $field['placeholder'] );
-                }
-                if ( isset( $field['options'] ) ) {
-                    foreach ( $field['options'] as $option ) {
-                        icl_register_string( 'catalogx', 'form_field_option_' . $field['id'] . '_' . $option['value'], $option['label'] );
-                    }
-                }
-            }
+		foreach ( $form_settings['formsettings']['formfieldlist'] as $field ) {
+			if ( isset( $field['label'] ) ) {
+				icl_register_string( 'catalogx', 'form_field_label_' . $field['id'], $field['label'] );
+			}
+			if ( isset( $field['placeholder'] ) ) {
+				icl_register_string( 'catalogx', 'form_field_placeholder_' . $field['id'], $field['placeholder'] );
+			}
+			if ( isset( $field['options'] ) ) {
+				foreach ( $field['options'] as $option ) {
+					icl_register_string( 'catalogx', 'form_field_option_' . $field['id'] . '_' . $option['value'], $option['label'] );
+				}
+			}
+		}
 
-            foreach ( $form_settings['freefromsetting'] as $free_field ) {
-                if ( isset( $free_field['label'] ) ) {
-                    icl_register_string( 'catalogx', 'free_form_label_' . $free_field['key'], $free_field['label'] );
-                }
-            }
+		foreach ( $form_settings['freefromsetting'] as $free_field ) {
+			if ( isset( $free_field['label'] ) ) {
+				icl_register_string( 'catalogx', 'free_form_label_' . $free_field['key'], $free_field['label'] );
+			}
+		}
 
         if ( function_exists( 'pll_register_string' ) ) {
             pll_register_string( 'my-quote', 'my-quote', 'catalogx' );
@@ -191,7 +191,7 @@ final class CatalogX {
         $this->services['setting']   = new Setting();
         $this->services['admin']     = new Admin();
         $this->services['frontend']  = new Frontend();
-        $this->services['rest']   = new RestAPI\Rest();
+        $this->services['rest']      = new RestAPI\Rest();
         $this->services['util']      = new Utill();
         $this->services['modules']   = new Modules();
         $this->services['shortcode'] = new Shortcode();
@@ -249,7 +249,7 @@ final class CatalogX {
 
             return array_merge( $links, $row_meta );
         }
-        
+
         return $links;
     }
 

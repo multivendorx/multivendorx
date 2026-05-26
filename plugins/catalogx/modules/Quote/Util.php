@@ -71,7 +71,6 @@ class Util {
             : array();
 
         /*
-
         | Product exclusion
 
         */
@@ -85,7 +84,6 @@ class Util {
         }
 
         /*
-
         | Category exclusion
 
         */
@@ -105,7 +103,6 @@ class Util {
         }
 
         /*
-
         | Tag exclusion
 
         */
@@ -125,7 +122,6 @@ class Util {
         }
 
         /*
-
         | Brand exclusion
 
         */
