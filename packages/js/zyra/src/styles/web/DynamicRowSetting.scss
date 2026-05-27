@@ -18,9 +18,11 @@
             width: fit-content;
         }
     }
+
     .buttons-wrapper{
         margin-top: 1rem;
     }
+
     .field {
         display: flex;
         gap: 0.5rem;
@@ -42,6 +44,7 @@
 
         .basic-input {
             background: $background-white !important;
+
             /* overwrite common style */
         }
 

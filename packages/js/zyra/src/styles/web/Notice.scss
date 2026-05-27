@@ -172,7 +172,6 @@
         }
 
         &.type-success {
-
             .notice-desc,
             .notice-text {
                 color: map.get(map.get($color-palette, green), color);
@@ -180,7 +179,6 @@
         }
 
         &.type-info {
-
             .notice-desc,
             .notice-text {
                 color: $theme-color;
@@ -188,7 +186,6 @@
         }
 
         &.type-error {
-
             .notice-desc,
             .notice-text {
                 color: map.get(map.get($color-palette, red), color);
@@ -196,7 +193,6 @@
         }
 
         &.type-warning {
-
             .notice-desc,
             .notice-text {
                 color: map.get(map.get($color-palette, yellow), color);
@@ -212,7 +208,6 @@
         }
 
         &.type-success {
-
             .notice-text {
                 color: map.get(map.get($color-palette, green), color);
             }
