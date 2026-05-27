@@ -83,12 +83,12 @@ const assetFolders = [
 				 */
 				const isModuleJs =
 					isJs &&
-					normalizedFile.includes('/modules/') &&
+					(normalizedFile.startsWith('modules/') || normalizedFile.includes('/modules/')) &&
 					normalizedFile.includes('/assets/js/');
 
 				const isModuleStyles =
 					isScss &&
-					normalizedFile.includes('/modules/') &&
+					(normalizedFile.startsWith('modules/') || normalizedFile.includes('/modules/')) &&
 					normalizedFile.includes('/assets/styles/');
 
 				/**
