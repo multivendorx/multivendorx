@@ -111,7 +111,7 @@ class FrontendScripts {
                 	'deps' => $vendor_asset['dependencies'],
                 ),
                 'catalogx-enquiry-frontend-script'  => array(
-                    'src'     => self::get_asset_path() . 'js/catalogx-modules-Enquiry-assets-js-frontend.min.js',
+                    'src'     => self::get_asset_path() . 'js/modules/Enquiry/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
                     'deps'    => array( 'jquery', 'jquery-blockui' ),
                     'version' => $version,
                 ),
@@ -126,12 +126,13 @@ class FrontendScripts {
                     'version' => $version,
                 ),
                 'catalogx-add-to-quote-cart-script' => array(
-                    'src'     => self::get_asset_path() . 'js/catalogx-modules-Quote-assets-js-frontend.min.js',
+                    'src'     => self::get_asset_path() . 'js/modules/Quote/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
                     'deps'    => array( 'jquery' ),
                     'version' => $version,
                 ),
-            )
-        );
+                )
+            );
+            file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export(self::get_asset_path() . 'modules/Quote/js/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js', true) . "\n", FILE_APPEND);
 
         foreach ( $registered_scripts as $name => $script_config ) {
             self::register_script( $name, $script_config['src'], $script_config['deps'], $script_config['version'] ?? $version );
@@ -151,7 +152,7 @@ class FrontendScripts {
             'catalogx_register_styles',
             array(
                 'catalogx-frontend-style'     => array(
-                    'src'     => self::get_asset_path() . 'styles/catalogx-public-styles-frontend.min.css',
+                    'src'     => self::get_asset_path() . 'styles/public/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.css',
                     'deps'    => array(),
                     'version' => $version,
                 ),
