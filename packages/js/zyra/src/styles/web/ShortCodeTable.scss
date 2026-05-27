@@ -23,6 +23,7 @@
             border-collapse: collapse;
             width: 100%;
         }
+
         th,
         td {
             text-align: left;
@@ -34,6 +35,7 @@
                 margin-bottom: 0.5rem;
             }
         }
+
         th{
             font-weight: 500;
         }
@@ -88,6 +90,7 @@
     .shortcode-title{
         flex-direction: column;
     }
+
     .shortcode-table{
         overflow: auto;
     }

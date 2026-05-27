@@ -22,3 +22,6 @@
 # Generated files
 **/*.bundle.css
 **/*.chunk.css
+
+# Ignore storybook styles
+**/stories/

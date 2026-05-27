@@ -5,6 +5,7 @@ import { FIELD_REGISTRY, ZyraVariable } from './fieldUtils';
 import FormGroupWrapper from './UI/FormGroupWrapper';
 import { PopupUI } from './Popup';
 import { Notice, NoticeManager } from './Notice';
+import {NoticeType} from '../utils/types/notice';
 
 interface InputField {
     key: string;
@@ -33,6 +34,7 @@ interface InputField {
     beforeElement?: string | ReactNode;
     afterElement?: string | ReactNode;
     row?: boolean;
+    icon?: string;
 }
 
 interface SettingsType {
@@ -41,19 +43,29 @@ interface SettingsType {
     id: string;
 }
 
-type SettingValue =
+export type MultiSelectOption = {
+    label: string;
+    value: string | number;
+    proSetting?: boolean;
+};
+
+export type SettingObject = Record<string, unknown>;
+
+export type SettingValue =
     | string
     | number
     | boolean
+    | null
     | string[]
     | number[]
-    | Record<string, unknown>
-    | null;
+    | MultiSelectOption[]
+    | SettingObject
+    | SettingObject[];
 
 type Settings = Record<string, SettingValue>;
 
 interface ApiResponse {
-    type?: string;
+    type?: NoticeType;
     message?: string;
     redirect_link?: string;
 }

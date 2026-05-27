@@ -1,3 +1,4 @@
+@use "sass:map";
 @use '../../global.scss' as *;
 
 .receiver-float {
@@ -15,13 +16,13 @@
 
     &.type-success {
         i {
-            color: map-get(map-get($color-palette, green), color);
+            color: map.get(map.get($color-palette, green), color);
         }
     }
 
     &.type-error {
         i {
-            color: map-get(map-get($color-palette, red), color);
+            color: map.get(map.get($color-palette, red), color);
         }
     }
 
@@ -33,7 +34,7 @@
 
     &.type-warning {
         i {
-            color: map-get(map-get($color-palette, yellow), color);
+            color: map.get(map.get($color-palette, yellow), color);
         }
     }
 
@@ -142,14 +143,14 @@
             left: 0;
             width: 0;
             height: 0.125rem;
-            background-color: map-get(map-get($color-palette, green), color);
+            background-color: map.get(map.get($color-palette, green), color);
             animation: border-slide 2.5s ease-in-out;
             animation-delay: 0.5s;
         }
 
         &.type-success {
             i {
-                color: map-get(map-get($color-palette, green), color);
+                color: map.get(map.get($color-palette, green), color);
                 ;
                 font-size: 1.4rem;
             }
@@ -171,15 +172,13 @@
         }
 
         &.type-success {
-
             .notice-desc,
             .notice-text {
-                color: map-get(map-get($color-palette, green), color);
+                color: map.get(map.get($color-palette, green), color);
             }
         }
 
         &.type-info {
-
             .notice-desc,
             .notice-text {
                 color: $theme-color;
@@ -187,18 +186,16 @@
         }
 
         &.type-error {
-
             .notice-desc,
             .notice-text {
-                color: map-get(map-get($color-palette, red), color);
+                color: map.get(map.get($color-palette, red), color);
             }
         }
 
         &.type-warning {
-
             .notice-desc,
             .notice-text {
-                color: map-get(map-get($color-palette, yellow), color);
+                color: map.get(map.get($color-palette, yellow), color);
             }
         }
     }
@@ -211,9 +208,8 @@
         }
 
         &.type-success {
-
             .notice-text {
-                color: map-get(map-get($color-palette, green), color);
+                color: map.get(map.get($color-palette, green), color);
             }
         }
 
@@ -225,13 +221,13 @@
 
         &.type-error {
             .notice-text {
-                color: map-get(map-get($color-palette, red), color);
+                color: map.get(map.get($color-palette, red), color);
             }
         }
 
         &.type-warning {
             .notice-text {
-                color: map-get(map-get($color-palette, yellow), color);
+                color: map.get(map.get($color-palette, yellow), color);
             }
         }
     }
@@ -267,32 +263,32 @@
         }
 
         &.type-error {
-            background: map-get(map-get($color-palette, red), light-color);
-            border-color: map-get(map-get($color-palette, red), color);
+            background: map.get(map.get($color-palette, red), light-color);
+            border-color: map.get(map.get($color-palette, red), color);
 
             .notice-desc {
-                color: map-get(map-get($color-palette, red), color);
+                color: map.get(map.get($color-palette, red), color);
             }
         }
 
         &.type-success {
-            background: map-get(map-get($color-palette, green), light-color);
-            border-color: map-get(map-get($color-palette, green), color);
+            background: map.get(map.get($color-palette, green), light-color);
+            border-color: map.get(map.get($color-palette, green), color);
             ;
 
             .notice-desc {
-                color: map-get(map-get($color-palette, green), color);
+                color: map.get(map.get($color-palette, green), color);
 
             }
         }
 
         &.type-warning {
-            background: map-get(map-get($color-palette, yellow), light-color);
-            border-color: map-get(map-get($color-palette, yellow), color);
+            background: map.get(map.get($color-palette, yellow), light-color);
+            border-color: map.get(map.get($color-palette, yellow), color);
             ;
 
             .notice-desc {
-                color: map-get(map-get($color-palette, yellow), color);
+                color: map.get(map.get($color-palette, yellow), color);
 
             }
         }
