@@ -1,3 +1,4 @@
+@use "sass:map";
 @use '../../global.scss' as *;
 
 .general-wrapper {
@@ -306,7 +307,7 @@
 
           @each $name, $style in $color-palette {
             &:has(.#{$name}) {
-              border-color: map-get($style, color);
+              border-color: map.get($style, color);
             }
           }
         }
