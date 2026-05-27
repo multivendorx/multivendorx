@@ -28,6 +28,7 @@
                 border-radius: $border-radius-small;
             }
         }
+
         .details {
             display: flex;
             flex-direction: column;
@@ -53,6 +54,7 @@
 
             .des {
                 font-size: 0.813rem;
+
                 p{
                     margin: 0; // for overwrite wordpress style
                 }

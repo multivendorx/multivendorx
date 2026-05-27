@@ -195,6 +195,7 @@ a {
   &.border {
     border: 0.063rem solid;
   }
+
   &:has(i){
     cursor: pointer;
   }
@@ -235,7 +236,6 @@ a {
 $index: 1;
 
 @each $name, $style in $color-palette {
-
   // color name with background (.red & .admin-color1)
   .#{$name},
   .admin-color#{$index} {
@@ -814,6 +814,7 @@ $index: 1;
   #admin-main-wrapper{
     margin-left: -0.625rem;
   }
+
   .form-select-field {
     width: 100% !important;
   }

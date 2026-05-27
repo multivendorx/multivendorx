@@ -158,7 +158,7 @@ const TableCard: React.FC<TableCardProps> = ({
     const getShowCols = (headersObj: TableCardProps['headers'] = {}) => {
         return (
             Object.entries(headersObj)
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                 
                 .filter(([_, config]) => config.visible !== false)
                 .map(([key]) => key)
         );
@@ -181,7 +181,7 @@ const TableCard: React.FC<TableCardProps> = ({
             // Reset sorting if hiding currently sorted column
             if (query.orderby === key) {
                 const defaultSort = Object.entries(headers).find(
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                     
                     ([_, config]) => config.defaultSort
                 );
 
