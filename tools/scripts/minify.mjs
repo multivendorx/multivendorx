@@ -6,115 +6,129 @@ import { glob } from 'glob';
 import CleanCSS from 'clean-css';
 import { minify as terserMinify } from 'terser';
 
-import {
-	getPackage,
-	getPluginRoot
-} from './utils/package.mjs';
+import { getPackage, getPluginRoot } from './utils/package.mjs';
 
 const pluginRoot = getPluginRoot();
+const { name } = getPackage();
 
-const {
-	name
-} = getPackage();
-
+/**
+ * Asset roots to scan
+ */
 const assetFolders = [
 	'public',
 	...glob.sync('modules/*/assets/*', {
-		cwd: pluginRoot
+		cwd: pluginRoot,
+		absolute: false,
+		nodir: true,
 	})
 ];
 
 (async () => {
 	for (const folder of assetFolders) {
-		const files = glob.sync(
-			`${folder}/**/*.{js,scss}`,
-			{
-				cwd: pluginRoot
-			}
-		);
+		const files = glob.sync(`${folder}/**/*.{js,scss}`, {
+			cwd: pluginRoot,
+			ignore: ['**/*.min.*']
+		});
 
 		for (const file of files) {
 			try {
-				const absoluteFile = path.join(
-					pluginRoot,
-					file
-				);
+				const normalizedFile = file.replace(/\\/g, '/');
 
+				const absoluteFile = path.join(pluginRoot, file);
 				const parsed = path.parse(file);
 
-				let extension = parsed.ext;
+				const ext = parsed.ext;
 
-				const content = await fs.readFile(
-					absoluteFile,
-					'utf8'
-				);
+				const content = await fs.readFile(absoluteFile, 'utf8');
 
 				let output = '';
 
-				if (extension === '.js') {
-					const result = await terserMinify(
-						content
-					);
+				/**
+				 * JS MINIFY
+				 */
+				if (ext === '.js') {
+					const result = await terserMinify(content);
+
+					if (!result.code) {
+						throw new Error(`Terser failed for ${file}`);
+					}
 
 					output = result.code;
 				}
 
-				if (extension === '.scss') {
-					const compiled = sass.compile(
-						absoluteFile
-					);
+				/**
+				 * SCSS MINIFY → CSS
+				 */
+				if (ext === '.scss') {
+					const compiled = sass.compile(absoluteFile);
 
-					const result =
-						new CleanCSS().minify(
-							compiled.css
-						);
+					const result = new CleanCSS().minify(compiled.css);
 
 					output = result.styles;
-
-					extension = '.css';
 				}
 
 				let outputPath = '';
 
-				if (
-					file.startsWith('assets/js')
-				) {
+				const isJs = ext === '.js';
+				const isScss = ext === '.scss';
+
+				/**
+				 * PUBLIC ASSETS
+				 */
+				const isPublicJs = normalizedFile.startsWith('public/js/');
+				const isPublicStyles = normalizedFile.startsWith('public/styles/');
+
+				/**
+				 * MODULE ASSETS
+				 */
+				const isModuleJs =
+					isJs &&
+					normalizedFile.includes('/modules/') &&
+					normalizedFile.includes('/assets/js/');
+
+				const isModuleStyles =
+					isScss &&
+					normalizedFile.includes('/modules/') &&
+					normalizedFile.includes('/assets/styles/');
+
+				/**
+				 * OUTPUT ROUTING
+				 */
+
+				if (isPublicJs) {
 					outputPath = path.join(
 						pluginRoot,
-						`assets/js/${name}-${parsed.name}.min${extension}`
+						`assets/js/${name}-${parsed.name}.min.js`
 					);
-				} else if (
-					file.startsWith(
-						'assets/styles'
-					)
-				) {
+				} else if (isPublicStyles) {
 					outputPath = path.join(
 						pluginRoot,
-						`assets/styles/${name}-${parsed.name}.min${extension}`
+						`assets/styles/${name}-${parsed.name}.min.css`
+					);
+				} else if (isModuleJs) {
+					outputPath = path.join(
+						pluginRoot,
+						`assets/js/${name}-${parsed.name}.min.js`
+					);
+				} else if (isModuleStyles) {
+					outputPath = path.join(
+						pluginRoot,
+						`assets/styles/${name}-${parsed.name}.min.css`
 					);
 				}
 
-				if (!outputPath) {
+				/**
+				 * SKIP UNKNOWN FILES
+				 */
+				if (!outputPath || !output) {
 					continue;
 				}
 
-				await fs.outputFile(
-					outputPath,
-					output
-				);
+				await fs.outputFile(outputPath, output);
 
-				console.log(
-					chalk.green(
-						`✔ Minified ${file}`
-					)
-				);
+				console.log(chalk.green(`✔ Minified ${file}`));
 			} catch (error) {
-				console.log(
-					chalk.red(
-						`✖ ${file}`
-					)
-				);
-
+				console.log(chalk.red(`✖ Failed ${file}`));
 				console.error(error);
 			}
 		}

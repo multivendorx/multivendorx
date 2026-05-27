@@ -17,6 +17,7 @@
         "watch": "pnpm run watch:build",
         "watch:build": "pnpm --if-present run \"/^watch:build:project:.*$/\"",
         "watch:build:project:bundle": "wireit",
+        "watch:build:project:minify": "wireit",
         "lint": "pnpm run lint:js && pnpm run lint:css && pnpm run lint:php",
         "fix": "pnpm run fix:js && pnpm run fix:css && pnpm run fix:php",
         "lint:js": "eslint . --ext .js,.jsx,.ts,.tsx,.mjs",
@@ -73,6 +74,14 @@
                 "tsconfig.json"
             ],
             "service": true
+        },
+        "watch:build:project:minify": {
+            "command": "pnpm run minify",
+            "files": [
+                "src/**/*.{js,jsx,ts,tsx,scss}",
+                "modules/**/*.{js,jsx,ts,tsx,scss}",
+                "public/**/*"
+            ]
         }
     },
     "dependencies": {
