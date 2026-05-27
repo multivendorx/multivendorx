@@ -60,16 +60,42 @@ class Settings extends \WP_REST_Controller {
 			array(
 				array(
 					'methods'             => 'POST',
-					'callback'            => array( $this, 'set_modules' ),
+					'callback'            => array( $this, 'update_modules' ),
 					'permission_callback' => array( $this, 'update_item_permissions_check' ),
 				),
 				array(
 					'methods'             => 'GET',
-					'callback'            => array( $this, 'get_modules' ),
+					'callback'            => array( $this, 'get_active_modules' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 				),
 			)
 		);
+	}
+
+	/**
+	 * Validate REST nonce.
+	 *
+	 * @param \WP_REST_Request $request Request object.
+	 *
+	 * @return true|\WP_Error
+	 */
+	private function validate_rest_nonce( $request ) {
+
+		$nonce = $request->get_header( 'X-WP-Nonce' );
+
+		if ( wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			return true;
+		}
+
+		$error = new \WP_Error(
+			'invalid_nonce',
+			esc_html__( 'Invalid nonce.', 'catalogx' ),
+			array( 'status' => 403 )
+		);
+
+		CatalogX()->util->log( $error );
+
+		return $error;
 	}
 
 	/**
@@ -103,38 +129,28 @@ class Settings extends \WP_REST_Controller {
 	 */
 	public function update_item( $request ) {
 
-		$nonce = $request->get_header( 'X-WP-Nonce' );
+		$nonce_validation = $this->validate_rest_nonce( $request );
 
-		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			$error = new \WP_Error(
-				'invalid_nonce',
-				esc_html__( 'Invalid nonce.', 'catalogx' ),
-                array( 'status' => 403 )
-			);
-
-			if ( is_wp_error( $error ) ) {
-				CatalogX()->util->log( $error );
-			}
-
-			return $error;
+		if ( is_wp_error( $nonce_validation ) ) {
+			return $nonce_validation;
 		}
 
 		try {
-			$get_settings_data = $request->get_param( 'setting' );
-            $settingsname      = $request->get_param( 'settingName' );
-            $settingsname      = str_replace( '-', '_', $settingsname );
-            $optionname        = 'catalogx_' . $settingsname . '_settings';
+			$settings_values = $request->get_param( 'setting' );
+            $settings_name      = $request->get_param( 'settingName' );
+            $settings_name      = str_replace( '-', '_', $settings_name );
+            $option_name        = 'catalogx_' . $settings_name . '_settings';
 
 			// Save settings.
 			CatalogX()->setting->update_option(
-				$optionname,
-				$get_settings_data
+				$option_name,
+				$settings_values
 			);
 
 			do_action(
 				'catalogx_settings_after_save',
-				$settingsname,
-				$get_settings_data
+				$settings_name,
+				$settings_values
 			);
 
 			// Setup wizard settings.
@@ -194,22 +210,12 @@ class Settings extends \WP_REST_Controller {
 	 *
 	 * @return array|\WP_Error
 	 */
-	public function set_modules( $request ) {
+	public function update_modules( $request ) {
 
-		$nonce = $request->get_header( 'X-WP-Nonce' );
+		$nonce_validation = $this->validate_rest_nonce( $request );
 
-		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			$error = new \WP_Error(
-				'invalid_nonce',
-				esc_html__( 'Invalid nonce.', 'catalogx' ),
-                array( 'status' => 403 )
-			);
-
-			if ( is_wp_error( $error ) ) {
-				CatalogX()->util->log( $error );
-			}
-
-			return $error;
+		if ( is_wp_error( $nonce_validation ) ) {
+			return $nonce_validation;
 		}
 
 		try {
@@ -218,10 +224,10 @@ class Settings extends \WP_REST_Controller {
 			$action = $request->get_param( 'action' );
 
 			// Setup wizard modules.
-			$modules = $request->get_param( 'modules' );
+			$module_list = $request->get_param( 'modules' );
 
-			if ( is_array( $modules ) ) {
-				CatalogX()->modules->activate_modules( $modules );
+			if ( is_array( $module_list ) ) {
+				CatalogX()->modules->activate_modules( $module_list );
 			}
 
 			// Handle action.
@@ -258,7 +264,7 @@ class Settings extends \WP_REST_Controller {
 	 *
 	 * @return array
 	 */
-	public function get_modules() {
+	public function get_active_modules() {
 
 		$modules_instance = new Modules();
 

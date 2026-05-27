@@ -339,15 +339,22 @@ module.exports = function createWebpackConfig(
 
 			new CopyWebpackPlugin({
 				patterns: [
+					/**
+					 * Copy ONLY public images
+					 *
+					 * public/images/*
+					 * →
+					 * assets/images/public/*
+					 */
 					{
 						from: path.resolve(
 							rootDir,
-							'public'
+							'public/images'
 						),
 
 						to: path.resolve(
 							rootDir,
-							'assets'
+							'assets/images/public'
 						),
 
 						noErrorOnMissing: true,
@@ -377,16 +384,16 @@ module.exports = function createWebpackConfig(
 		},
 
 		externals: {
-            react: 'React',
-            'react-dom': 'ReactDOM',
-            '@wordpress/element': ['wp', 'element'],
-            '@wordpress/i18n': ['wp', 'i18n'],
-            '@wordpress/components': ['wp', 'components'],
-            '@wordpress/data': ['wp', 'data'],
-            '@wordpress/hooks': ['wp', 'hooks'],
-            '@wordpress/plugins': ['wp', 'plugins'],
-            '@wordpress/blocks': ['wp', 'blocks'],
-            '@wordpress/block-editor': ['wp', 'blockEditor'],
-        },
+			react: 'React',
+			'react-dom': 'ReactDOM',
+			'@wordpress/element': ['wp', 'element'],
+			'@wordpress/i18n': ['wp', 'i18n'],
+			'@wordpress/components': ['wp', 'components'],
+			'@wordpress/data': ['wp', 'data'],
+			'@wordpress/hooks': ['wp', 'hooks'],
+			'@wordpress/plugins': ['wp', 'plugins'],
+			'@wordpress/blocks': ['wp', 'blocks'],
+			'@wordpress/block-editor': ['wp', 'blockEditor'],
+		},
 	};
 };
