@@ -100,3 +100,9 @@
         }
     }
 }
+
+@media screen and (width <=600px) {
+    .nested-wrapper .nested-row.single-line .before {
+        width: fit-content;
+    }
+}

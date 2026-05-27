@@ -380,3 +380,17 @@
         cursor: pointer;
     }
 }
+
+@media screen and (width <=600px) {
+    .item-list {
+        &.mini-card {
+            .item {
+                flex-direction: row !important;
+
+                .tags {
+                    position: relative !important;
+                }
+            }
+        }
+    }
+}

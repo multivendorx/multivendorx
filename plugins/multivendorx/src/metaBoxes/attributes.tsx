@@ -184,7 +184,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
             .catch((err) => console.error('Attribute save error:', err));
     };
 	return (
-        <Card  title={ applyFilters( 'multivendorx_product_attributes_title', __( 'Attributes', 'multivendorx' ) ) }>
+        <Card  title={ applyFilters( 'multivendorx_product_attributes_title', __( 'Attributes', 'multivendorx' ) ) } desc="lorem ipsum dolor sit amet lorem ipsum dolor sit amet ">
                 {productFields.includes('attribute') && (
                     <>
                         <div className="variation-title-wrapper">
@@ -196,8 +196,8 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                         buttons={[
                                             {
                                                 icon: 'plus',
-                                                text: 'Add variants Like size or color',
-                                                className: 'purple',
+                                                text: __('Add variants Like size or color', 'multivendorx'),
+                                                color: 'purple',
                                                 onClick: () => setShowAttributeSelect(true),
                                             },
                                         ]}

@@ -51,8 +51,8 @@
     }
 
     [data-cols='4'] {
-        flex: 0 0 calc(33.3333% - 0.666rem);
-        max-width: calc(33.3333% - 0.666rem);
+        flex: 0 0 calc(33.3333% - 0.688rem);
+        max-width: calc(33.3333% - 0.688rem);
     }
 
     [data-cols='5'] {
@@ -66,13 +66,13 @@
     }
 
     [data-cols='7'] {
-        flex: 0 0 calc(58.3333% - 0.416rem);
-        max-width: calc(58.3333% - 0.416rem);
+        flex: 0 0 calc(58.3333% - 0.438rem);
+        max-width: calc(58.3333% - 0.438rem);
     }
 
     [data-cols='8'] {
-        flex: 0 0 calc(66.6667% - 0.333rem);
-        max-width: calc(66.6667% - 0.333rem);
+        flex: 0 0 calc(66.6667% - 0.313rem);
+        max-width: calc(66.6667% - 0.313rem);
     }
 
     [data-cols='9'] {
@@ -129,5 +129,13 @@
     [data-cols='11'] {
         flex: 0 0 100% !important;
         max-width: 100% !important;
+    }
+
+    .admin-main-wrapper {
+        .card-wrapper {
+            &.row {
+                flex-direction: column;
+            }
+        }
     }
 }

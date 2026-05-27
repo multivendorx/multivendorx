@@ -113,3 +113,9 @@
     }
   }
 }
+
+@media screen and (width <=600px) {
+  .file-uploader.small{
+      width: 100% !important;
+  }
+}

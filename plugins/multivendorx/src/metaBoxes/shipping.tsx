@@ -100,7 +100,7 @@ const ShippingCard = ({
 													'multivendorx'
 												),
 												desc: __(
-													'Service provided remotely. No shipping or file download involved.',
+													'Remote service only. No shipping or downloadable files.',
 													'multivendorx'
 												),
 												icon: 'digital-service'
