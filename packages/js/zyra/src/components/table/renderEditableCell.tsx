@@ -19,12 +19,12 @@ type Props = {
     onSave: (value: string | number | boolean) => void;
 };
 
-export const renderEditableCell = ({
+export const renderEditableCell : React.FC<Props> = ({
     header,
     cell,
     isEditing,
     onSave,
-}: Props) => {
+}) => {
     const value = cell.value;
 
     if (!isEditing) {

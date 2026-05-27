@@ -390,7 +390,7 @@ const PROVIDERS: Record<MapProviderType, MapAdapter> = {
 
 /* ---------------- MAIN COMPONENT ---------------- */
 
-export const MapProviderUI = ({
+export const MapProviderUI : React.FC<MapProviderProps> = ({
     apiKey,
     mapId,
     locationLat,
@@ -399,7 +399,7 @@ export const MapProviderUI = ({
     onLocationUpdate,
     placeholderSearch,
     stores,
-}: MapProviderProps) => {
+}) => {
     const provider = PROVIDERS[mapProvider] || googleAdapter;
 
     const containerRef = useRef<HTMLDivElement>(null);

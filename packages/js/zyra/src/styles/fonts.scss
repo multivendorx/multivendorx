@@ -1,9 +1,22 @@
+// @font-face {
+//   font-family: adminfonts;
+//   src:  url('./assets/fonts/adminfonts.eot?xfjp3c');
+//   src:  url('./assets/fonts/adminfonts.eot?xfjp3c#iefix') format('embedded-opentype'),
+//     url('./assets/fonts/adminfonts.ttf?xfjp3c') format('truetype'),
+//     url('./assets/fonts/adminfonts.woff?xfjp3c') format('woff');
+//   font-weight: normal;
+//   font-style: normal;
+//   font-display: block;
+// }
+
 @font-face {
-  font-family: adminfonts;
-  src:  url('./assets/fonts/adminfonts.eot?xfjp3c');
-  src:  url('./assets/fonts/adminfonts.eot?xfjp3c#iefix') format('embedded-opentype'),
-    url('./assets/fonts/adminfonts.ttf?xfjp3c') format('truetype'),
-    url('./assets/fonts/adminfonts.woff?xfjp3c') format('woff');
+  font-family: 'adminfonts';
+
+  src:
+    url('../assets/fonts/adminfonts.eot'),
+    url('../assets/fonts/adminfonts.ttf') format('truetype'),
+    url('../assets/fonts/adminfonts.woff') format('woff');
+
   font-weight: normal;
   font-style: normal;
   font-display: block;

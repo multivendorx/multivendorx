@@ -1,3 +1,4 @@
+@use "sass:map";
 @use '../global.scss' as *;
 @use './web/dashboard';
 @import 'https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap';
@@ -238,21 +239,21 @@ $index: 1;
   // color name with background (.red & .admin-color1)
   .#{$name},
   .admin-color#{$index} {
-    background: map-get($style, light-color) !important;
-    color: map-get($style, color) !important;
-    fill: map-get($style, color) !important;
+    background: map.get($style, light-color) !important;
+    color: map.get($style, color) !important;
+    fill: map.get($style, color) !important;
   }
 
   // only background color
   .#{$name}-bg,
   .admin-bg-color#{$index} {
-    background: map-get($style, color) !important;
+    background: map.get($style, color) !important;
   }
 
   // only color
   .#{$name}-color,
   .admin-color#{$index} {
-    color: map-get($style, color) !important;
+    color: map.get($style, color) !important;
   }
 
   $index: $index + 1;
