@@ -1,4 +1,5 @@
 @use '../../../global.scss' as *;
+@use "sass:map";
 
 .item-list {
     width: 100%;
@@ -126,7 +127,7 @@
                 padding-right: 0.5rem;
 
                 &.adminfont-success {
-                    color: map-get(map-get($color-palette, green), color);
+                    color: map.get(map.get($color-palette, "green"), color);
                 }
 
                 &.adminfont-cross {
@@ -348,8 +349,8 @@
             align-items: center;
             gap: 0.25rem;
             width: fit-content;
-            background: map-get(map-get($color-palette, yellow), light-color);
-            color: map-get(map-get($color-palette, yellow), color);
+            background: map.get(map.get($color-palette, "yellow"), light-color);
+            color: map.get(map.get($color-palette, "yellow"), color);
         }
     }
 

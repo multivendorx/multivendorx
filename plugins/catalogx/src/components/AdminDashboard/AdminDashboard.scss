@@ -1946,29 +1946,3 @@
 
 
 
-
-.free-form-customizer {
-  width: 100%;
-
-  .free-form-header{
-    background: $theme-background-color !important;
-    border-radius: $border-radius-small;
-
-    .title{
-      font-size: 1rem !important;
-      color: $theme-color !important;
-    }
-  }
-  .form-group:has(.enable-visibility) {
-    .setting-form-input,
-    .settings-form-label {
-      opacity: 0.4;
-    }
-  }
-  i{
-    cursor: pointer;
-  }
-  .adminfont-eye {
-    color: #0101d9d6 !important;
-  }
-}

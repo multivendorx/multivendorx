@@ -124,7 +124,7 @@ const FreeFormCustomizerField: React.FC<{
                     <FormGroup row label={fieldConfig.label}>
                         <BasicInputUI
                             type="text"
-                            size="70%"
+                            size="95%"
                             value={field?.placeholder || ''}
                             onChange={(val) => updateFieldLabel(fieldConfig.id, val)}
                             readOnly={isReadonly || !canAccess}

@@ -703,16 +703,16 @@
 .badge-refund-accepted,
 .badge-open,
 .badge-confirmed {
-    color: map.get(map.get($color-palette, green), color);
-    background: map.get(map.get($color-palette, green), light-color);
+    color: map.get(map.get($color-palette, "green"), color);
+    background: map.get(map.get($color-palette, "green"), light-color);
 }
 
 .badge-pending,
 .badge-on-hold,
 .badge-partially_refunded,
 .badge-resolved {
-    color: map.get(map.get($color-palette, yellow), color);
-    background: map.get(map.get($color-palette, yellow), light-color);
+    color: map.get(map.get($color-palette, "yellow"), color);
+    background: map.get(map.get($color-palette, "yellow"), light-color);
 }
 
 .badge-under_review,
@@ -722,8 +722,8 @@
 .badge-onbackorder,
 .badge-processed,
 .badge-processing {
-    color: map.get(map.get($color-palette, blue), color);
-    background: map.get(map.get($color-palette, blue), light-color);
+    color: map.get(map.get($color-palette, "blue"), color);
+    background: map.get(map.get($color-palette, "blue"), light-color);
 }
 
 .badge-rejected,
@@ -736,35 +736,35 @@
 .badge-closed,
 .badge-unenrolled,
 .badge-refund-rejected {
-    color: map.get(map.get($color-palette, red), color);
-    background: map.get(map.get($color-palette, red), light-color);
+    color: map.get(map.get($color-palette, "red"), color);
+    background: map.get(map.get($color-palette, "red"), light-color);
 }
 
 .badge-suspended {
-    color: map.get(map.get($color-palette, teal), color);
-    background: map.get(map.get($color-palette, teal), light-color);
+    color: map.get(map.get($color-palette, "teal"), color);
+    background: map.get(map.get($color-palette, "teal"), light-color);
 }
 
 .badge-refunded {
-    color: map.get(map.get($color-palette, orange), color);
-    background: map.get(map.get($color-palette, orange), light-color);
+    color: map.get(map.get($color-palette, "orange"), color);
+    background: map.get(map.get($color-palette, "orange"), light-color);
 }
 
 .badge-locked {
-    color: map.get(map.get($color-palette, purple), color);
-    background: map.get(map.get($color-palette, purple), light-color);
+    color: map.get(map.get($color-palette, "purple"), color);
+    background: map.get(map.get($color-palette, "purple"), light-color);
 }
 
 .badge-deactivated {
-    color: map.get(map.get($color-palette, indigo), color);
-    background: map.get(map.get($color-palette, indigo), light-color);
+    color: map.get(map.get($color-palette, "indigo"), color);
+    background: map.get(map.get($color-palette, "indigo"), light-color);
 }
 
 .badge-permanently_rejected,
 .badge-inactive,
 .badge-refund-requested {
-    color: map.get(map.get($color-palette, pink), color);
-    background: map.get(map.get($color-palette, pink), light-color);
+    color: map.get(map.get($color-palette, "pink"), color);
+    background: map.get(map.get($color-palette, "pink"), light-color);
 }
 
 
