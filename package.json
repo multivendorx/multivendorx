@@ -51,6 +51,7 @@
     "@wordpress/eslint-plugin": "^22.9.0",
     "@wordpress/prettier-config": "^4.23.0",
     "@wordpress/scripts": "^30.16.0",
+    "@wordpress/env": "10.23.x",
     "autoprefixer": "^10.4.21",
     "babel-loader": "^10.0.0",
     "chalk": "^5.4.1",
