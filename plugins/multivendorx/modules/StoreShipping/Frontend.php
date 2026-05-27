@@ -38,7 +38,7 @@ class Frontend {
         // // Load Google Maps JS.
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
         add_filter( 'woocommerce_cart_shipping_packages', array( $this, 'add_user_location_to_shipping_package' ) );
-        add_action('rest_api_init',array( $this, 'register_checkout_update_callback' ),20);
+        add_action( 'rest_api_init', array( $this, 'register_checkout_update_callback' ), 20 );
     }
 	/**
 	 * Register frontend scripts for store shipping module.
@@ -49,7 +49,7 @@ class Frontend {
 	 * @return array Modified scripts array including the store shipping script.
 	 */
     public function register_script( $scripts ) {
-        $base_url   = MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name();
+        $base_url  = MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name();
         $asset_url = MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'modules/StoreShipping/block/view.asset.php';
 
         $asset        = file_exists( $asset_url ) ? require $asset_url : array();
@@ -64,7 +64,7 @@ class Frontend {
         $scripts['multivendorx-store-shipping-block-checkout'] = array(
             'src'     => $base_url . 'modules/StoreShipping/block/view.js',
             'deps'    => $dependencies,
-            'version' => $version
+            'version' => $version,
         );
 
         return $scripts;
@@ -99,7 +99,7 @@ class Frontend {
         $scripts['multivendorx-store-shipping-block-checkout'] = array(
             'object_name' => 'blockCheckout',
             'data'        => array(
-                'settings' => MultiVendorX()->setting->get_option(Utill::MULTIVENDORX_SETTINGS['geolocation']),
+                'settings' => MultiVendorX()->setting->get_option( Utill::MULTIVENDORX_SETTINGS['geolocation'] ),
             ),
         );
 
@@ -272,10 +272,10 @@ class Frontend {
      * @param int $order_id Order ID.
      */
     public function multivendorx_checkout_user_location_save( $order_id ) {
-        $order = wc_get_order( $order_id );
-        $location = filter_input( INPUT_POST, 'multivendorx_user_location', FILTER_SANITIZE_SPECIAL_CHARS );
+        $order        = wc_get_order( $order_id );
+        $location     = filter_input( INPUT_POST, 'multivendorx_user_location', FILTER_SANITIZE_SPECIAL_CHARS );
         $location_lat = filter_input( INPUT_POST, 'multivendorx_user_location_lat', FILTER_SANITIZE_SPECIAL_CHARS );
-        $location_lng = filter_input( INPUT_POST, 'multivendorx_user_location_lng', FILTER_SANITIZE_SPECIAL_CHARS ) ;
+        $location_lng = filter_input( INPUT_POST, 'multivendorx_user_location_lng', FILTER_SANITIZE_SPECIAL_CHARS );
 
         if ( ! empty( $location ) ) {
             $order->update_meta_data( '_multivendorx_user_location', sanitize_text_field( $location ) );
@@ -294,11 +294,11 @@ class Frontend {
      */
     public function load_scripts() {
 
-        if ( ! is_checkout()) {
+        if ( ! is_checkout() ) {
             return;
         }
 
-        $checkout_page_id = wc_get_page_id( 'checkout' );
+        $checkout_page_id  = wc_get_page_id( 'checkout' );
         $is_block_checkout = $checkout_page_id && has_block( 'woocommerce/checkout', $checkout_page_id );
 
         FrontendScripts::load_scripts();
@@ -322,9 +322,9 @@ class Frontend {
                 if ( $google_maps_api_key ) {
                     wp_enqueue_script(
                         'google-maps',
-                        'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&libraries=places,marker',
+                        'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&libraries=places,marker&v=weekly',
                         array(),
-                        'weekly',
+                        null,
                         true
                     );
                 }
@@ -410,11 +410,11 @@ class Frontend {
             return;
         }
 
-        $fields = [
+        $fields = array(
             'user_location'     => '_multivendorx_user_location',
             'user_location_lat' => '_multivendorx_user_location_lat',
             'user_location_lng' => '_multivendorx_user_location_lng',
-        ];
+        );
 
         foreach ( $fields as $frontend_key => $session_key ) {
             if ( isset( $data[ $frontend_key ] ) ) {

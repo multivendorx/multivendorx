@@ -617,8 +617,8 @@ export const MapProviderUI = ({
     };
 
     return (
-        <div className="map-wrapper">
-            <div className="input-field">
+        <div className="map-wrapper" style={{ position: 'relative' }}>
+            <div className="input-field" style={{ position: 'absolute', top: '3.83rem', left: '0.625rem', zIndex: 9 }}>
                 <input
                     ref={inputRef}
                     defaultValue={query}
@@ -646,7 +646,7 @@ export const MapProviderUI = ({
                 )}
             </div>
 
-            <div ref={containerRef} className="map" />
+            <div ref={containerRef} className="map" style={{ width: '100%', height: '25rem' }} />
         </div>
     );
 };

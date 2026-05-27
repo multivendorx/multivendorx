@@ -1,6 +1,6 @@
 /* global jQuery */
 jQuery(document).ready(function ($) {
-	$('.goto_more_offer_tab').on('click', function (e) {
+	$('.goto-more-offer-tab').on('click', function (e) {
 		e.preventDefault();
 		$(
 			'.singleproductmultistore_tab a, #tab_singleproductmultistore'

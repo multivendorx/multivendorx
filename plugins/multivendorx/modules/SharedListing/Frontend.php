@@ -322,7 +322,7 @@ class Frontend {
         global $product;
 
         if ( get_post_meta( $product->get_id(), Utill::POST_META_SETTINGS['shared_listing_id'], true ) ) {
-			echo '<div> <button type="button" class="goto_more_offer_tab button">' . esc_html__( 'More Stores', 'multivendorx' ) . '</button> </div>';        }
+			echo '<button type="button" class="goto-more-offer-tab single_add_to_cart_button button">' . esc_html__( 'More Stores', 'multivendorx' ) . '</button>';        }
 	}
 
     /**

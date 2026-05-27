@@ -46,12 +46,14 @@
             .module-header {
                 display: flex;
                 justify-content: space-between;
-                img{
+
+                img {
                     width: 2.5rem;
                     height: 2.5rem;
                     border-radius: $border-light-small;
                     object-fit: cover;
                 }
+
                 .pro-tag {
                     i {
                         color: $accent-color;
@@ -75,7 +77,8 @@
                         display: inline-block;
                     }
                 }
-                p{
+
+                p {
                     margin: 0; // for overwrite wordpress style
                 }
 
@@ -115,10 +118,12 @@
                     justify-content: space-between;
                     margin-top: 0.5rem;
                     border-top: $border-light-small;
-                    .price{
+
+                    .price {
                         font-size: 1.063rem;
                         font-weight: 500;
                     }
+
                     .buttons {
                         display: flex;
                         gap: 0.5rem;
@@ -177,7 +182,8 @@
 
             .search-field {
                 margin: 0;
-                i{
+
+                i {
                     cursor: pointer;
                 }
             }
@@ -233,6 +239,16 @@
                 font-size: .9rem;
                 color: #000;
                 margin: 0;
+            }
+        }
+    }
+}
+
+@media screen and (width <=600px) {
+    .module-container {
+        &[data-variant='mini-module'] {
+            .module-list-item{
+                width: 50%;
             }
         }
     }

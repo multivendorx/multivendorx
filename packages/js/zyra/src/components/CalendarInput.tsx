@@ -563,7 +563,8 @@ const CalendarInput: FieldComponent = {
         <CalendarInputUI
             inputClass={field.inputClass}
             format={field.format}
-            multiple={field.multiple ?? field.mulitple ?? false}
+            calendar={field.calendar ?? false}
+            multiple={field.multiple ?? field.multiple ?? false}
             showInput={field.showInput}
             numberOfMonths={field.numberOfMonths}
             fullYear={field.fullYear}

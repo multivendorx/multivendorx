@@ -179,14 +179,14 @@ class Frontend {
         }
 
         $position_map = array(
-            'sku_category'      => array( 'woocommerce_product_meta_end', 99 ),
-            'add_to_cart'       => array( 'woocommerce_product_meta_start', 99 ),
+            'sku_category'        => array( 'woocommerce_product_meta_end', 99 ),
+            'add_to_cart'         => array( 'woocommerce_product_meta_start', 99 ),
             'product_description' => array( 'woocommerce_product_meta_start', 99 ),
-            'price_section'     => array( 'woocommerce_single_product_summary', 10 ),
-            'default'           => array( 'woocommerce_single_product_summary', 6 ),
+            'price_section'       => array( 'woocommerce_single_product_summary', 10 ),
+            'default'             => array( 'woocommerce_single_product_summary', 6 ),
         );
-        $hook = $position_map[ $position_after ][0] ?? $position_map['default'][0];
-        $priority = $position_map[ $position_after ][1] + $position_priority;
+        $hook         = $position_map[ $position_after ][0] ?? $position_map['default'][0];
+        $priority     = $position_map[ $position_after ][1] + $position_priority;
         add_action( $hook, array( self::class, 'display_description_box' ), $priority );
     }
 

@@ -319,3 +319,28 @@
         width: 100%;
     }
 }
+@media screen and (width <=600px) {
+    .expandable-panel-group {
+        width: 100% !important;
+
+        .expandable-header {
+            align-items: start !important;
+
+            .details-wrapper {
+                flex-direction: column;
+            }
+
+            .settings-btn {
+                .admin-btn {
+                    font-size: 0;
+                    padding: 0.45rem;
+                    gap: 0;
+
+                    i {
+                        font-size: 1rem;
+                    }
+                }
+            }
+        }
+    }
+}

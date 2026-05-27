@@ -31,8 +31,8 @@ $product_ids = $args['product_ids'];
                 continue;
             }
 
-            $store_id        = get_post_meta( $product_id, 'multivendorx_store_id', true );
-            $store           = new Store( $store_id );
+            $store_id = get_post_meta( $product_id, 'multivendorx_store_id', true );
+            $store    = new Store( $store_id );
             if ( ! $store->exists() ) {
                 continue;
             }

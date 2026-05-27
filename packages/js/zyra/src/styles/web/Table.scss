@@ -198,6 +198,7 @@
 
 .table-wrapper {
     margin-top: 1rem;
+    overflow: auto;
     .admin-table {
         width: 100%;
         position: relative;
@@ -325,35 +326,35 @@
                     overflow: hidden;
                     flex-direction: column;
 
-                    .table-row-custom {
-                        display: flex;
-                        flex-wrap: wrap;
-                        gap: 0.5rem;
-                        align-items: center;
-                        font-size: 1rem;
-                        color: $text-color;
+                    // .table-row-custom {
+                    //     display: flex;
+                    //     flex-wrap: wrap;
+                    //     gap: 0.5rem;
+                    //     align-items: center;
+                    //     font-size: 1rem;
+                    //     color: $text-color;
 
-                        .name {
-                            font-weight: 500;
-                        }
+                    //     .name {
+                    //         font-weight: 500;
+                    //     }
 
-                        .sub-text {
-                            color: $sub-text-color;
-                            padding-top: 0.313rem;
-                        }
+                    //     .sub-text {
+                    //         color: $sub-text-color;
+                    //         padding-top: 0.313rem;
+                    //     }
 
-                        .product-image {
-                            width: 2.313rem;
-                            height: 2.313rem;
-                            border-radius: $border-radius-small;
-                            box-shadow: 0 0 0.125rem rgba($color: #000, $alpha: 12.5%);
-                            overflow: hidden;
-                        }
+                    //     .product-image {
+                    //         width: 2.313rem;
+                    //         height: 2.313rem;
+                    //         border-radius: $border-radius-small;
+                    //         box-shadow: 0 0 0.125rem rgba($color: #000, $alpha: 12.5%);
+                    //         overflow: hidden;
+                    //     }
 
-                        h4.hide-title {
-                            display: none;
-                        }
-                    }
+                    //     h4.hide-title {
+                    //         display: none;
+                    //     }
+                    // }
 
                     .main-input {
                         background: transparent;
@@ -449,6 +450,12 @@
 
                     .refresh-icon {
                         font-size: 1rem;
+                    }
+
+                    .field-wrapper {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
                     }
                 }
 

@@ -443,8 +443,8 @@ class Frontend {
         $order->save();
 
         $store_id = $order->get_meta( Utill::POST_META_SETTINGS['store_id'], true );
-        if (!empty($store_id)) {
-            $store    = new Store( $store_id );
+        if ( ! empty( $store_id ) ) {
+            $store = new Store( $store_id );
             MultiVendorX()->notifications->send_notification_helper(
                 'refund_requested',
                 $store,
