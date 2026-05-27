@@ -6,14 +6,15 @@ import { execSync } from 'child_process';
 import {
 	getPackage,
 	getPluginRoot,
-	getPluginSlug
+	getPluginSlug,
 } from './utils/package.mjs';
 
 const pluginRoot =
 	getPluginRoot();
 
 const {
-	version
+	version,
+	mainPluginFile
 } = getPackage();
 
 const pluginSlug =
@@ -39,11 +40,9 @@ const includeFiles = [
 	'templates',
 	'modules',
 	'vendor',
-	'composer.json',
-	'composer.lock',
 	'readme.txt',
 	'config.php',
-	`${pluginSlug}.php`
+	mainPluginFile
 ];
 
 fs.removeSync(buildDir);

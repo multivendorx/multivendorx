@@ -1,12 +1,20 @@
 {
     "name": "moowoodle",
-    "displayName": "MooWoodle",
+    "displayName": "moowoodle",
     "version": "3.4.0",
     "description": "MooWoodle",
     "license": "GPL-2.0-or-later",
     "mainPluginFile": "moowoodle.php",
     "engines": {
         "node": "^24.0.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/multivendorx/multivendorx.git"
+    },
+    "author": "MultiVendorX",
+    "bugs": {
+        "url": "https://github.com/multivendorx/multivendorx/issues"
     },
     "scripts": {
         "build": "pnpm run build:project",
