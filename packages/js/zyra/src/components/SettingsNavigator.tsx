@@ -34,6 +34,7 @@ type SettingsNavigatorProps = {
     currentSetting: string;
     getForm: (settingId: string) => ReactNode;
     prepareUrl: (settingId: string) => string;
+    onSettingChange?: (settingId: string) => void;
     HeaderSection?: () => JSX.Element;
     Link: React.ElementType<LinkProps>;
     settingName?: string;
@@ -175,6 +176,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     currentSetting,
     getForm,
     prepareUrl,
+    onSettingChange,
     HeaderSection,
     Link,
     settingName = '',
@@ -254,6 +256,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
             return;
         }
         setActiveSetting(settingId);
+        onSettingChange?.(settingId);
         const url = prepareUrl(settingId);
         if (onNavigate) {
             onNavigate(url);
