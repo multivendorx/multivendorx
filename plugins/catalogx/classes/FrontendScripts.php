@@ -428,7 +428,7 @@ class FrontendScripts {
                             'active_modules'             => CatalogX()->modules->get_active_modules(),
                             'user_role'                  => $current_user_role,
                             'banner_img'                 => CatalogX()->plugin_url . 'assets/images/catalog-pro-add-admin-banner.jpg',
-                            'default_img'                => CatalogX()->plugin_url . 'src/assets/images/default.png',
+                            // 'default_img'                => CatalogX()->plugin_url . 'src/assets/images/default.png',
                             'template1'                  => CatalogX()->plugin_url . 'assets/images/email/templates/catalogx-email-template-default.png',
                             'template2'                  => CatalogX()->plugin_url . 'assets/images/email/templates/catalogx-email-template-1.png',
                             'template3'                  => CatalogX()->plugin_url . 'assets/images/email/templates/catalogx-email-template-2.png',
