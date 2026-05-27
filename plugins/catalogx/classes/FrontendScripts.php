@@ -427,7 +427,6 @@ class FrontendScripts {
                             'settings_databases_value'   => $settings_databases_value,
                             'active_modules'             => CatalogX()->modules->get_active_modules(),
                             'user_role'                  => $current_user_role,
-                            // 'default_img'                => CatalogX()->plugin_url . 'src/assets/images/default.png',
                             'khali_dabba'                => Utill::is_khali_dabba(),
                             'pro_url'                    => esc_url( CATALOGX_PRO_SHOP_URL ),
                             'order_edit'                 => admin_url( 'admin.php?page=wc-orders&action=edit' ),

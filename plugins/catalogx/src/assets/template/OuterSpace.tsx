@@ -8,7 +8,7 @@ export const OuterSpace = {
 			id: 1,
 			type: 'heading',
 			name: 'email-heading-welcome',
-			text: __('Hi Store Owner', 'catalogx'),
+			text: __('Product Enquiry For', 'catalogx'),
 			level: 1,
 			style: {
 				fontSize: 1.125,
@@ -26,100 +26,6 @@ export const OuterSpace = {
 				color: '#2d3748',
 				fontSize: 0.9,
 			},
-		},
-
-		// column start
-		{
-			id: 3,
-			type: 'columns',
-			name: 'email-columns',
-			layout: '3',
-			style: {
-				backgroundColor: '#e8e8e8',
-				paddingTop: 1.313,
-				paddingBottom: 1.313,
-				marginTop: 2.5,
-				borderRadius: 0.313,
-				gap: 2,
-			},
-			columns: [
-				[
-					{
-						id: 4,
-						type: 'heading',
-						name: 'email-heading-welcome',
-						text: __('48', 'catalogx'),
-						level: 1,
-						style: {
-							fontSize: 2,
-							lineHeight: 1,
-							textAlign: 'center',
-						},
-					},
-					{
-						id: 5,
-						type: 'richtext',
-						name: 'email-text-welcome-message',
-						html: __('Total orders', 'catalogx'),
-						style: {
-							color: '#2d3748',
-							fontSize: 0.9,
-							textAlign: 'center',
-						},
-					},
-				],
-				[
-					{
-						id: 6,
-						type: 'heading',
-						name: 'email-heading-welcome',
-						text: __('$3,240', 'catalogx'),
-						level: 1,
-						style: {
-							fontSize: 2,
-							lineHeight: 1,
-							textAlign: 'center',
-						},
-					},
-					{
-						id: 7,
-						type: 'richtext',
-						name: 'email-text-welcome-message',
-						html: __('Total sales', 'catalogx'),
-						style: {
-							color: '#2d3748',
-							fontSize: 0.9,
-							textAlign: 'center',
-						},
-					},
-				],
-				[
-					{
-						id: 8,
-						type: 'heading',
-						name: 'email-heading-welcome',
-						text: __('$2,831', 'catalogx'),
-						level: 1,
-						style: {
-							fontSize: 2,
-							lineHeight: 1,
-							textAlign: 'center',
-							color: '#59a937',
-						},
-					},
-					{
-						id: 9,
-						type: 'richtext',
-						name: 'email-text-welcome-message',
-						html: __('Your earnings', 'catalogx'),
-						style: {
-							color: '#2d3748',
-							fontSize: 0.9,
-							textAlign: 'center',
-						},
-					},
-				],
-			],
 		},
 
 		// 1st price column
