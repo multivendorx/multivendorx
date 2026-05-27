@@ -105,19 +105,19 @@ const App = () => {
     }, [] );
     const profileItems = [
 		{
-			title: __("What's New", 'multivendorx'),
+			title: __("What's New", 'catalogx'),
 			icon: 'new',
 			link: '#',
 			targetBlank: true,
 		},
 		{
-			title: __('Get Support', 'multivendorx'),
+			title: __('Get Support', 'catalogx'),
 			icon: 'customer-support',
 			link: '#',
 			targetBlank: true,
 		},
 		{
-			title: __('Community', 'multivendorx'),
+			title: __('Community', 'catalogx'),
 			icon: 'global-community',
 			link: '#',
 			targetBlank: true,
@@ -126,7 +126,7 @@ const App = () => {
     const utilityList = [
 		{
 			toggleIcon: 'admin-icon adminfont-user-circle',
-			tooltipName: __('Support', 'multivendorx'),
+			tooltipName: __('Support', 'catalogx'),
 			tooltipPosition: 'end',
 			items: profileItems,
 		},
@@ -141,7 +141,7 @@ const App = () => {
 					validity="lifetime"
 					displayPosition="banner"
 					message={bannerItem}
-					actionLabel={__('Upgrade Now', 'multivendorx')}
+					actionLabel={__('Upgrade Now', 'catalogx')}
 					onAction={() => {
 						window.location.href = appLocalizer.pro_url;
 					}}
@@ -156,7 +156,7 @@ const App = () => {
 				pro={appLocalizer.pro_data.version}
 				utilityList={utilityList}
                 search={{
-					placeholder: __('Search...', 'multivendorx'),
+					placeholder: __('Search...', 'catalogx'),
 				}}
 			/>
             <GuidedTourProvider
