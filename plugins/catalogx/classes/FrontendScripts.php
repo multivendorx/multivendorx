@@ -49,7 +49,7 @@ class FrontendScripts {
      * @return string Relative path to the build directory.
      */
     public static function get_asset_path( $path_type = 'url', $plugin_path = '', $plugin_url = '' ) {
-        $build_path = CatalogX()->is_dev ? 'release/assets/' : 'assets/';
+        $build_path = 'assets/';
         if ( $plugin_path === '' ) {
             $plugin_path = CatalogX()->plugin_path;
         }
