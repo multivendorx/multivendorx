@@ -90,6 +90,9 @@ const App = () => {
 					displayPosition="banner"
 					message={bannerItem}
 					actionLabel="Upgrade Now"
+                    onAction={() => {
+						window.location.href = appLocalizer.pro_url;
+					}}
 				/>
 			{/* )} */}
             <AdminHeader

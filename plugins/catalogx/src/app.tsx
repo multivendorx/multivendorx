@@ -103,7 +103,34 @@ const App = () => {
     useEffect( () => {
         initializeModules( appLocalizer, 'catalogx', 'free', 'modules' );
     }, [] );
-
+    const profileItems = [
+		{
+			title: __("What's New", 'multivendorx'),
+			icon: 'new',
+			link: '#',
+			targetBlank: true,
+		},
+		{
+			title: __('Get Support', 'multivendorx'),
+			icon: 'customer-support',
+			link: '#',
+			targetBlank: true,
+		},
+		{
+			title: __('Community', 'multivendorx'),
+			icon: 'global-community',
+			link: '#',
+			targetBlank: true,
+		},
+	];
+    const utilityList = [
+		{
+			toggleIcon: 'admin-icon adminfont-user-circle',
+			tooltipName: __('Support', 'multivendorx'),
+			tooltipPosition: 'end',
+			items: profileItems,
+		},
+	];
     return (
         <>
             {/* shivam  dynamic banner close */}
@@ -114,7 +141,10 @@ const App = () => {
 					validity="lifetime"
 					displayPosition="banner"
 					message={bannerItem}
-					actionLabel="Upgrade Now"
+					actionLabel={__('Upgrade Now', 'multivendorx')}
+					onAction={() => {
+						window.location.href = appLocalizer.pro_url;
+					}}
 				/>
 			{/* )} */}
             <AdminHeader
@@ -124,7 +154,10 @@ const App = () => {
 				// onResultClick={handleResultClick}
 				free={appLocalizer.free_version}
 				pro={appLocalizer.pro_data.version}
-				// utilityList={utilityList}
+				utilityList={utilityList}
+                search={{
+					placeholder: __('Search...', 'multivendorx'),
+				}}
 			/>
             <GuidedTourProvider
 				appLocalizer={appLocalizer}

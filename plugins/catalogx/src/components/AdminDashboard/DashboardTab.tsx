@@ -35,7 +35,7 @@ const DashboardTab: React.FC<object> = () => {
 		}
 		return (
 			<a
-				href={appLocalizer.shop_url}
+				href={appLocalizer.pro_url}
 				target="_blank"
 				className="admin-btn btn-purple"
 			>
