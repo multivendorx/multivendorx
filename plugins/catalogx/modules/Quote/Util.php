@@ -41,6 +41,11 @@ class Util {
             ? $exclusion_settings['quote_exclusion_value_userroles_list']
             : array();
 
+        // Check current user's role is excluded.
+        if ( array_intersect( $exclude_user_roles, $current_user->roles ) ) {
+            return false;
+        }
+
         $exclude_user_ids = isset( $exclusion_settings['quote_exclusion_value_user_list'] )
             ? array_map( 'intval', $exclusion_settings['quote_exclusion_value_user_list'] )
             : array();
@@ -71,7 +76,6 @@ class Util {
             : array();
 
         /*
-
         | Product exclusion
 
         */
@@ -85,7 +89,6 @@ class Util {
         }
 
         /*
-
         | Category exclusion
 
         */
@@ -105,7 +108,6 @@ class Util {
         }
 
         /*
-
         | Tag exclusion
 
         */
@@ -125,7 +127,6 @@ class Util {
         }
 
         /*
-
         | Brand exclusion
 
         */

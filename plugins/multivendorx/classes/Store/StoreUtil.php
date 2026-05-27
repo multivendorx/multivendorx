@@ -642,25 +642,25 @@ class StoreUtil {
         if ( ! $store_id ) {
             return apply_filters( 'multivendorx_get_excluded_products', false, $product_id );
         }
-        $store       = Store::get_store( $store_id );
-        if (empty($store)) {
+        $store = Store::get_store( $store_id );
+        if ( empty( $store ) ) {
             return false;
         }
         $status      = $store->get( 'status' );
         $permissions = MultiVendorX()->util->get_permissions();
-        if (empty($permissions)) {
+        if ( empty( $permissions ) ) {
             return false;
         }
         if ( $check_payouts ) {
-            if ( $permissions['disable_payouts'] && (in_array( $status, array( 'suspended', 'under_review' ), true ) || $permissions['hide_for_compliance']) ) {
+            if ( $permissions['disable_payouts'] && ( in_array( $status, array( 'suspended', 'under_review' ), true ) || $permissions['hide_for_compliance'] ) ) {
                 return true;
             }
         } else {
-            if ( $permissions['disable_product_upload'] && ('under_review' === $status || $permissions['hide_for_compliance']) ) {
+            if ( $permissions['disable_product_upload'] && ( 'under_review' === $status || $permissions['hide_for_compliance'] ) ) {
                 return true;
             }
 
-            if ( $permissions['hide_store_products'] && (in_array( $status, array( 'suspended', 'under_review' ), true ) || $permissions['hide_for_compliance']) ) {
+            if ( $permissions['hide_store_products'] && ( in_array( $status, array( 'suspended', 'under_review' ), true ) || $permissions['hide_for_compliance'] ) ) {
                 return true;
             }
 
@@ -735,13 +735,13 @@ class StoreUtil {
 		if ( empty( $store_slug ) ) {
 			return;
 		}
-		$store_obj        = Store::get_store( $store_slug, 'slug' );
-        if (!$store_obj) {
+		$store_obj = Store::get_store( $store_slug, 'slug' );
+        if ( ! $store_obj ) {
             return;
         }
-        $all_store_meta   = $store_obj->get_all_meta();
-		$store_phone      = self::get_phone( $store_obj->get_meta( 'phone' ) );
-        $store_whatsapp   = self::get_phone( $store_obj->get_meta( 'whatsapp_number' ) );
+        $all_store_meta = $store_obj->get_all_meta();
+		$store_phone    = self::get_phone( $store_obj->get_meta( 'phone' ) );
+        $store_whatsapp = self::get_phone( $store_obj->get_meta( 'whatsapp_number' ) );
 
 		ob_start();
 		MultiVendorX()->util->get_template( 'store/store-tabs.php', array( 'store_id' => $store_obj->get_id() ) );
@@ -969,15 +969,15 @@ class StoreUtil {
      */
     public static function get_store_by_meta( string $meta_key, $meta_value = null, bool $like = false ): array {
         if ( empty( $meta_key ) ) {
-            return [];
+            return array();
         }
 
         global $wpdb;
         $table = $wpdb->prefix . Utill::TABLES['store_meta'];
 
         // Start building the query
-        $conditions = [ 'meta_key = %s' ];
-        $params     = [ $meta_key ];
+        $conditions = array( 'meta_key = %s' );
+        $params     = array( $meta_key );
 
         // Handle meta_value if provided
         if ( null !== $meta_value ) {
@@ -987,10 +987,10 @@ class StoreUtil {
             }
 
             if ( $like ) {
-                $conditions[] = "meta_value LIKE %s";
+                $conditions[] = 'meta_value LIKE %s';
                 $params[]     = '%' . $wpdb->esc_like( (string) $meta_value ) . '%';
             } else {
-                $conditions[] = "meta_value = %s";
+                $conditions[] = 'meta_value = %s';
                 $params[]     = $meta_value;
             }
         }
@@ -1002,6 +1002,6 @@ class StoreUtil {
         $sql     = "SELECT DISTINCT store_id FROM {$table} WHERE {$where_clause}";
         $results = $wpdb->get_col( $wpdb->prepare( $sql, $params ) );
 
-        return $results ? array_map( 'intval', $results ) : [];
+        return $results ? array_map( 'intval', $results ) : array();
     }
 }

@@ -94,7 +94,7 @@ class Utill {
         'developer-tools'               => 'multivendorx_developer_tools_settings',
         'invoices'                      => 'multivendorx_invoices_settings',
         'tax-information'               => 'multivendorx_tax_information_settings',
-        'printful'                       => 'multivendorx_printful_settings',
+        'printful'                      => 'multivendorx_printful_settings',
     );
 
     const MULTIVENDORX_OTHER_SETTINGS = array(
@@ -193,7 +193,7 @@ class Utill {
         'address_1'                    => 'address_1',
         'address_2'                    => 'address_2',
         'image'                        => 'image',
-        'banner'                       => 'banner', 
+        'banner'                       => 'banner',
         'city'                         => 'city',
         'state'                        => 'state',
         'country'                      => 'country',

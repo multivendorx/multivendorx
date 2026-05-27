@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<ruleset name="MultiVendorX Coding Standards">
+
+	<description>Shared WordPress coding standards for monorepo.</description>
+
+	<!-- DO NOT set <file>. or any scan root here -->
+
+	<arg name="extensions" value="php"/>
+	<arg value="ps"/>
+	<arg name="parallel" value="8"/>
+
+	<arg name="basepath" value="."/>
+
+	<!-- PHP version compatibility -->
+	<config name="testVersion" value="7.4-"/>
+
+	<!-- WordPress version -->
+	<config name="minimum_supported_wp_version" value="6.4"/>
+
+	<!-- Exclusions (global safety net) -->
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/release/*</exclude-pattern>
+	<exclude-pattern>*/dist/*</exclude-pattern>
+	<exclude-pattern>*/build/*</exclude-pattern>
+	<exclude-pattern>*/assets/*</exclude-pattern>
+	<exclude-pattern>*/languages/*</exclude-pattern>
+
+	<!-- Standards -->
+	<rule ref="PHPCompatibility"/>
+	<rule ref="WordPress-Extra"/>
+
+	<rule ref="WordPress">
+		<exclude name="Generic.WhiteSpace.DisallowSpaceIndent"/>
+	</rule>
+
+	<!-- i18n -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="moowoodle"/>
+				<element value="multivendorx"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- spacing -->
+	<rule ref="WordPress.WhiteSpace.ControlStructureSpacing">
+		<properties>
+			<property name="blank_line_check" value="true"/>
+		</properties>
+	</rule>
+
+	<!-- sanitization -->
+	<rule ref="WordPress.Security.ValidatedSanitizedInput">
+		<properties>
+			<property name="customSanitizingFunctions" type="array">
+				<element value="wc_clean"/>
+				<element value="wc_esc_json"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- minor suppressions -->
+	<rule ref="WordPress.Files.FileName">
+		<severity>0</severity>
+	</rule>
+
+</ruleset>

@@ -48,7 +48,7 @@ class FrontendScripts {
      *
      * @return string Relative path to the build directory.
      */
-    public static function get_asset_path($path_type = 'url', $plugin_path = '', $plugin_url = '') {
+    public static function get_asset_path( $path_type = 'url', $plugin_path = '', $plugin_url = '' ) {
         $build_path = CatalogX()->is_dev ? 'release/assets/' : 'assets/';
         if ( $plugin_path === '' ) {
             $plugin_path = CatalogX()->plugin_path;
@@ -99,14 +99,14 @@ class FrontendScripts {
      * Loads block assets and additional scripts defined through the `catalogx_register_scripts` filter.
      */
     public static function register_frontend_scripts() {
-        $version = CatalogX()->version;
-        $vendor_asset    = include self::get_asset_path('file') . 'js/vendors.asset.php';
+        $version      = CatalogX()->version;
+        $vendor_asset = include self::get_asset_path( 'file' ) . 'js/vendors.asset.php';
 
-        $base_url    = self::get_asset_path() . 'js/';
+        $base_url           = self::get_asset_path() . 'js/';
         $registered_scripts = apply_filters(
             'catalogx_register_scripts',
             array(
-                'catalogx-vendor-script'  => array(
+                'catalogx-vendor-script'            => array(
                 	'src'  => $base_url . 'vendors.js',
                 	'deps' => $vendor_asset['dependencies'],
                 ),
@@ -137,7 +137,7 @@ class FrontendScripts {
             self::register_script( $name, $script_config['src'], $script_config['deps'], $script_config['version'] ?? $version );
         }
     }
-    
+
 
     /**
      * Register frontend styles using filters.
@@ -191,11 +191,11 @@ class FrontendScripts {
      */
     public static function register_admin_scripts() {
         $version = CatalogX()->version;
-        
+
         // Enqueue all chunk files (External dependencies).
 
-	    $index_asset      = include  self::get_asset_path('file') . 'js/index.asset.php';
-        $vendor_asset  = include self::get_asset_path('file') . 'js/vendors.asset.php';
+	    $index_asset        = include self::get_asset_path( 'file' ) . 'js/index.asset.php';
+        $vendor_asset       = include self::get_asset_path( 'file' ) . 'js/vendors.asset.php';
 		$registered_scripts = apply_filters(
             'admin_catalogx_register_scripts',
             array(
@@ -205,13 +205,13 @@ class FrontendScripts {
                 ),
                 'catalogx-admin-script'  => array(
 					'src'  => self::get_asset_path() . 'js/index.js',
-                    'deps'    => $index_asset['dependencies'],
+                    'deps' => $index_asset['dependencies'],
                 ),
             )
         );
 
         foreach ( $registered_scripts as $name => $script_config ) {
-            self::register_script( $name, $script_config['src'], $script_config['deps'], $script_config['version'] ?? $version );   
+            self::register_script( $name, $script_config['src'], $script_config['deps'], $script_config['version'] ?? $version );
         }
     }
 
@@ -221,7 +221,7 @@ class FrontendScripts {
      * Allows style registration through `admin_catalogx_register_styles` filter.
      */
     public static function register_admin_styles() {
-        $version = CatalogX()->version;
+        $version         = CatalogX()->version;
         $register_styles = apply_filters(
             'admin_catalogx_register_styles',
             array(
@@ -256,7 +256,7 @@ class FrontendScripts {
      */
     public static function localize_scripts( $handle ) {
         // Prepare data of all pages.
-        $pages     = get_pages();
+        $pages      = get_pages();
         $pages_data = array();
 
         if ( $pages ) {
@@ -270,7 +270,7 @@ class FrontendScripts {
         }
 
         // Prepare data of all user roles.
-        $roles     = wp_roles()->roles;
+        $roles      = wp_roles()->roles;
         $roles_data = array();
 
         if ( $roles ) {
@@ -284,7 +284,7 @@ class FrontendScripts {
         }
 
         // Get all users id and name and prepare data.
-        $users     = get_users( array( 'fields' => array( 'display_name', 'id' ) ) );
+        $users      = get_users( array( 'fields' => array( 'display_name', 'id' ) ) );
         $users_data = array();
 
         foreach ( $users as $user ) {
@@ -296,7 +296,7 @@ class FrontendScripts {
         }
 
         // Prepare all products.
-        $products_ids = wc_get_products(
+        $products_ids  = wc_get_products(
             array(
                 'limit'  => -1,
                 'return' => 'ids',
@@ -305,6 +305,9 @@ class FrontendScripts {
         $products_data = array();
 
         foreach ( $products_ids as $id ) {
+                if ( 'publish' !== get_post_status( $id ) ) {
+            continue;
+        }
             $product_name = get_the_title( $id );
 
             $products_data[] = array(
@@ -315,7 +318,7 @@ class FrontendScripts {
         }
 
         // Prepare all product terms.
-        $terms       = get_terms(
+        $terms              = get_terms(
             array(
                 'taxonomy' => 'product_cat',
                 'orderby'  => 'name',
@@ -342,7 +345,7 @@ class FrontendScripts {
             )
         );
         $product_tags = array();
-        
+
         if ( $tags ) {
             foreach ( $tags as $tag ) {
                 $product_tags[] = array(
@@ -354,14 +357,14 @@ class FrontendScripts {
         }
 
         // Prepare all product brands.
-        $brands            = get_terms(
+        $brands         = get_terms(
             array(
                 'taxonomy'   => 'product_brand',
                 'hide_empty' => false,
             )
         );
         $product_brands = array();
-        
+
         if ( $brands ) {
             foreach ( $brands as $brand ) {
                 $product_brands[] = array(
@@ -375,18 +378,18 @@ class FrontendScripts {
         // Get current user role.
         $current_user      = wp_get_current_user();
         $current_user_role = '';
-        
+
         if ( ! empty( $current_user->roles ) && is_array( $current_user->roles ) ) {
             $current_user_role = reset( $current_user->roles );
         }
 
         // Get all tab setting's database value.
         $settings_databases_value = array();
-        $tabs_names     = apply_filters(
+        $tabs_names               = apply_filters(
             'multivendorx_additional_tabs_names',
             array_keys( Utill::CATALOGX_SETTINGS )
         );
-        
+
         foreach ( $tabs_names as $tab_name ) {
             $settings_databases_value[ $tab_name ] = CatalogX()->setting->get_option( str_replace( '-', '_', 'catalogx_' . $tab_name . '_settings' ) );
         }
@@ -399,7 +402,7 @@ class FrontendScripts {
             $quote_base_url = '/';
         }
 
-        $base_rest = array(
+        $base_rest        = array(
             'apiUrl'  => untrailingslashit( get_rest_url() ),
             'restUrl' => CatalogX()->rest_namespace,
             'nonce'   => wp_create_nonce( 'wp_rest' ),
@@ -413,13 +416,13 @@ class FrontendScripts {
                         $base_rest,
                         array(
                             'tab_name'                   => 'CatalogX',
-                            'pages_data'                  => $pages_data,
+                            'pages_data'                 => $pages_data,
                             'role_array'                 => $roles_data,
-                            'admin_url'              => admin_url(),
-                            'users_data'                  => $users_data,
-                            'products_data'               => $products_data,
-                            'all_product_categories'            => $product_categories,
-                            'product_brands'          => $product_brands,
+                            'admin_url'                  => admin_url(),
+                            'users_data'                 => $users_data,
+                            'products_data'              => $products_data,
+                            'all_product_categories'     => $product_categories,
+                            'product_brands'             => $product_brands,
                             'all_product_tag'            => $product_tags,
                             'settings_databases_value'   => $settings_databases_value,
                             'active_modules'             => CatalogX()->modules->get_active_modules(),
@@ -449,7 +452,7 @@ class FrontendScripts {
                             'quote_module_active'        => CatalogX()->modules->is_active( 'quote' ),
                             'quote_base_url'             => $quote_base_url,
                             'free_version'               => CatalogX()->version,
-                            'pro_data'               => apply_filters(
+                            'pro_data'                   => apply_filters(
 								'catalogx_update_pro_data',
 								array(
 									'version'         => false,

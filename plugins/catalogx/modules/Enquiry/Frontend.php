@@ -22,6 +22,9 @@ class Frontend {
      * Frontend class constructor function.
      */
     public function __construct() {
+        // Enquiry button shortcode.
+        add_shortcode( 'catalogx_enquiry_button', array( $this, 'catalogx_enquiry_button_shortcode' ) );
+
         // Check the exclution.
         if ( ! Util::is_available() ) {
 			return;
@@ -43,8 +46,6 @@ class Frontend {
 
         add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 
-        // Enquiry button shortcode.
-        add_shortcode( 'catalogx_enquiry_button', array( $this, 'catalogx_enquiry_button_shortcode' ) );
     }
 
     /**
@@ -69,7 +70,6 @@ class Frontend {
     public function add_enquiry_button( $product_obj ) {
         global $product;
         $product_obj = is_int( $product_obj ) ? wc_get_product( $product_obj ) : ( $product_obj ? $product_obj : $product );
-
         if ( empty( $product_obj ) ) {
             return;
         }
@@ -169,9 +169,9 @@ class Frontend {
 
             // additional css.
             $custom_css = CatalogX()->setting->get_setting( 'custom_css_product_page' );
-            if ( isset( $custom_css ) && ! empty( $custom_css ) ) {
-                wp_add_inline_style( 'catalogx-enquiry-form-style', $custom_css );
-            }
+		if ( isset( $custom_css ) && ! empty( $custom_css ) ) {
+			wp_add_inline_style( 'catalogx-enquiry-form-style', $custom_css );
+		}
         // }
     }
 
@@ -186,10 +186,10 @@ class Frontend {
             array()
         );
 
-        $free_form_settings = isset( $form_settings['freefromsetting'] ) &&
-            is_array( $form_settings['freefromsetting'] )
-            ? $form_settings['freefromsetting']
-            : array();
+        $free_form_settings = isset( $form_settings['enquiry_form_tabs']['free_enquiry_form'] ) &&
+            is_array( $form_settings['enquiry_form_tabs']['free_enquiry_form'] )
+            ? $form_settings['enquiry_form_tabs']['free_enquiry_form']
+            : array();        
 
         if ( function_exists( 'icl_t' ) ) {
             foreach ( $free_form_settings as &$free_field ) {
@@ -227,7 +227,7 @@ class Frontend {
             ? $pro_form_settings['formfieldlist']
             : array();
         $form_field_list = array_map(
-            function( $field ) {
+            function ( $field ) {
 
                 if ( isset( $field['type'] ) ) {
                     $field['key'] = $field['type'];
@@ -242,7 +242,6 @@ class Frontend {
 
         if ( function_exists( 'icl_t' ) ) {
             foreach ( $form_field_list as &$field ) {
-
                 if ( isset( $field['label'] ) ) {
                     $field['label'] = icl_t(
                         'catalogx',
@@ -261,7 +260,6 @@ class Frontend {
 
                 if ( isset( $field['options'] ) && is_array( $field['options'] ) ) {
                     foreach ( $field['options'] as &$option ) {
-
                         $option['label'] = icl_t(
                             'catalogx',
                             'form_field_option_' . $field['id'] . '_' . $option['value'],
@@ -274,7 +272,6 @@ class Frontend {
 
         $pro_form_settings['store_registration_from'] = $form_field_list;
 
-
         return $form_field_list;
     }
 
@@ -286,13 +283,92 @@ class Frontend {
      */
     public function catalogx_enquiry_button_shortcode( $attr ) {
         global $product;
-        if ( empty( trim( CatalogX()->render_enquiry_btn_via ) ) ) {
-            CatalogX()->render_enquiry_btn_via = 'shortcode';
-            ob_start();
-            $product_id = isset( $attr['product_id'] ) ? (int) $attr['product_id'] : $product->get_id();
-            $this->add_enquiry_button( $product_id );
-            return ob_get_clean();
+
+        if ( ! Util::is_available() ) {
+            return '';
         }
+
+        $display_enquiry_button = CatalogX()->setting->get_setting( 'enquiry_user_permission', array() );
+        if ( ! empty( $display_enquiry_button ) && ! is_user_logged_in() ) {
+            return '';
+        }
+
+        CatalogX()->render_enquiry_btn_via = 'shortcode';
+
+        ob_start();
+
+        $product_id = 0;
+
+        if ( ! empty( $attr['product_id'] ) ) {
+
+            $product_id = absint( $attr['product_id'] );
+
+        } elseif ( $product instanceof \WC_Product ) {
+
+            $product_id = $product->get_id();
+
+        } else {
+
+            $product_id = $this->get_product_id_from_context();
+
+        }
+
+        if ( $product_id ) {
+            $this->add_enquiry_button( $product_id );
+        }
+
+        return ob_get_clean();
+    }
+
+    /**
+     * Resolve product id from context when shortcode has no product_id attribute.
+     *
+     * @return int
+     */
+    private function get_product_id_from_context() {
+        $queried_id = get_queried_object_id();
+        if ( $queried_id && 'product' === get_post_type( $queried_id ) ) {
+            return absint( $queried_id );
+        }
+
+        $post = get_post();
+        if ( ! $post || empty( $post->post_content ) || ! function_exists( 'parse_blocks' ) ) {
+            return 0;
+        }
+
+        $blocks = parse_blocks( $post->post_content );
+        return $this->find_product_id_in_blocks( $blocks );
+    }
+
+    /**
+     * Recursively search blocks for product id attribute.
+     *
+     * @param array $blocks Parsed blocks.
+     * @return int
+     */
+    private function find_product_id_in_blocks( $blocks ) {
+        if ( empty( $blocks ) || ! is_array( $blocks ) ) {
+            return 0;
+        }
+
+        foreach ( $blocks as $block ) {
+            if ( ! empty( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+                foreach ( array( 'productId', 'product_id', 'product' ) as $key ) {
+                    if ( ! empty( $block['attrs'][ $key ] ) ) {
+                        return absint( $block['attrs'][ $key ] );
+                    }
+                }
+            }
+
+            if ( ! empty( $block['innerBlocks'] ) ) {
+                $found = $this->find_product_id_in_blocks( $block['innerBlocks'] );
+                if ( $found ) {
+                    return $found;
+                }
+            }
+        }
+
+        return 0;
     }
 
     /**
@@ -306,7 +382,7 @@ class Frontend {
             return;
         }
 
-        if ( ! empty( CatalogX()->setting->get_setting( 'is_enable_out_of_stock' ) )&& $product->is_in_stock() ) {
+        if ( ! empty( CatalogX()->setting->get_setting( 'is_enable_out_of_stock' ) ) && $product->is_in_stock() ) {
             return;
         }
 

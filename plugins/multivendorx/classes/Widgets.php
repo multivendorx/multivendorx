@@ -102,7 +102,7 @@ class Widgets {
         $filtered = array();
         foreach ( $all_blocks as $block_name => $block_type ) {
             $category = $block_type->category ?? '';
-            if ( 'multivendorx-store-shop' ===$category  ) {
+            if ( 'multivendorx-store-shop' === $category ) {
                 continue;
             }
             $filtered[] = $block_name;

@@ -342,18 +342,6 @@
 
 // free vs pro tabel end
 
-
-// invoice styles start
-#invoice-table-wrapper {
-
-    #invoice-table-header,
-    #invoice-table-row {
-        padding: 0.813rem 1rem;
-    }
-}
-
-// invoice styles end
-
 // setting banner template (remove and move template folder)
 .multivendorx-banner {
     position: relative;
@@ -619,10 +607,11 @@
         .section {
             padding: 1rem 0;
 
-            .order-overview{
+            .order-overview {
                 width: 50%;
             }
-            .commission-overview{
+
+            .commission-overview {
                 width: 50%;
             }
 
@@ -634,3 +623,23 @@
     }
 }
 
+
+
+
+
+
+@media screen and (width <=600px) {
+    .pro-banner-wrapper {
+        flex-direction: column;
+        align-items: center;
+
+        .heading,
+        .description {
+            text-align: center;
+        }
+
+        .button-wrapper {
+            justify-content: center;
+        }
+    }
+}

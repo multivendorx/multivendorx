@@ -11,7 +11,7 @@ use MultiVendorX\Utill;
 use MultiVendorX\Store\Store;
 
 /**
- * MultiVendorX 
+ * MultiVendorX
  *
  * @version     5.0.0
  * @author      MultiVendorX
@@ -27,14 +27,16 @@ class Functions {
      */
     public function bp_add_shop_profile_tab() {
 
-        bp_core_new_nav_item( array(
-            'name'                => __( 'Shop', 'multivendorx' ),
-            'slug'                => 'shop',
-            'position'            => 80,
-            'screen_function'     => array( $this, 'bp_shop_tab_screen' ),
-            'default_subnav_slug' => 'shop',
-            'item_css_id'         => 'user-shop'
-        ) );
+        bp_core_new_nav_item(
+            array(
+				'name'                => __( 'Shop', 'multivendorx' ),
+				'slug'                => 'shop',
+				'position'            => 80,
+				'screen_function'     => array( $this, 'bp_shop_tab_screen' ),
+				'default_subnav_slug' => 'shop',
+				'item_css_id'         => 'user-shop',
+            )
+        );
     }
 
     /**
@@ -75,7 +77,6 @@ class Functions {
         $posts_per_page = wc_get_default_products_per_row() * wc_get_default_product_rows_per_page();
 
         foreach ( $stores as $store ) {
-
             $store_id = isset( $store['id'] ) ? (int) $store['id'] : 0;
 
             if ( ! $store_id ) {
@@ -83,11 +84,10 @@ class Functions {
             }
 
             if ( ! empty( $store['name'] ) ) {
+                $store_meta = Store::get_store( $store_id );
 
-                $store_meta         = Store::get_store( $store_id );
+                $store_logo = $store_meta->meta_data['store_logo']['url'] ?? '';
 
-                $store_logo     = $store_meta->meta_data['store_logo']['url'] ?? '';
-                 
                 echo '<h3>';
 
                 // Logo
@@ -100,7 +100,7 @@ class Functions {
                 }
 
                 // Title
-                echo  sprintf(
+                printf(
                     esc_html__( 'Products from %s', 'multivendorx' ),
                     esc_html( $store['name'] )
                 );
@@ -129,9 +129,8 @@ class Functions {
             );
 
             $query = new \WP_Query( $args );
-            
-            if ( $query->have_posts() ) {
 
+            if ( $query->have_posts() ) {
                 woocommerce_product_loop_start();
 
                 while ( $query->have_posts() ) {
@@ -142,11 +141,10 @@ class Functions {
                 }
 
                 woocommerce_product_loop_end();
-
             } else {
                 echo '<p>' . esc_html__( 'No products available in this store yet.', 'multivendorx' ) . '</p>';
             }
-            
+
             wp_reset_postdata();
         }
         echo '</div>';

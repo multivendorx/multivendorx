@@ -38,17 +38,12 @@
         "automattic/jetpack-changelogger": "^6.0@dev"
     },
     "scripts": {
-        "phpcs": [
-            "vendor/bin/phpcs -p -s"
-        ],
-        "phpfix": [
-            "vendor/bin/phpcbf -p"
-        ],
-        "phpcs:report": [
-            "vendor/bin/phpcs --report-file='phpreport.txt'"
-        ],
-        "test": [
-            "vendor/bin/phpunit"
-        ]
-    }
+        "phpcs": "vendor/bin/phpcs . --standard=../../phpcs.xml.dist -p -s",
+
+        "phpfix": "vendor/bin/phpcbf . --standard=../../phpcs.xml.dist -p",
+
+        "phpcs:report": "vendor/bin/phpcs . --standard=../../phpcs.xml.dist --report-file=phpreport.txt",
+
+        "test": "vendor/bin/phpunit"
+    }    
 }

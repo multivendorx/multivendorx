@@ -146,7 +146,13 @@ jQuery(document).ready(function ($) {
 				success: function (response) {
 					if (response.features && response.features.length) {
 						showAddressSuggestions(response.features, map, marker);
+					} else {
+						removeSuggestions();
 					}
+				},
+				error: function () {
+					removeSuggestions();
+					console.warn('Mapbox geocoding request failed.');
 				},
 			});
 		}
@@ -160,10 +166,8 @@ jQuery(document).ready(function ($) {
 
 			$.each(features, function (index, feature) {
 				var li = $(
-					'<li style="padding: 8px; cursor: pointer; border-bottom: 1px solid #eee;">' +
-					feature.place_name +
-					'</li>'
-				);
+					'<li style="padding: 8px; cursor: pointer; border-bottom: 1px solid #eee;"></li>'
+				).text(feature.place_name);
 				li.on('click', function () {
 					$('#multivendorx_user_location').val(feature.place_name);
 					removeSuggestions();

@@ -64,12 +64,12 @@ class Dashboard extends \WP_REST_Controller {
         $other_endpoints = apply_filters(
             'dashboard_other_endpoints',
             array(
-                'profile' => array(
+                'profile'            => array(
                     'name'       => '',
                     'icon'       => '',
                     'slug'       => 'profile',
                     'submenu'    => array(),
-                    'capability' => array( 'read_products','read_shop_earning','view_transactions','edit_withdrawl_request' ),
+                    'capability' => array( 'read_products', 'read_shop_earning', 'view_transactions', 'edit_withdrawl_request' ),
                     'filename'   => 'profile',
                 ),
                 'view-notifications' => array(
@@ -107,7 +107,7 @@ class Dashboard extends \WP_REST_Controller {
         // Default endpoints.
         $all_endpoints = array(
             'dashboard'     => array(
-                'name'       =>  __( 'Dashboard', 'multivendorx' ),
+                'name'       => __( 'Dashboard', 'multivendorx' ),
                 'icon'       => 'module',
                 'slug'       => '',
                 'submenu'    => array(),
@@ -203,7 +203,7 @@ class Dashboard extends \WP_REST_Controller {
                     ),
                     array(
                         'key'        => 'store-review',
-                        'name'       =>  __( 'Customer Reviews', 'multivendorx' ),
+                        'name'       => __( 'Customer Reviews', 'multivendorx' ),
                         'slug'       => 'store-review',
                         'capability' => array( 'view_store_reviews', 'reply_store_reviews' ),
                         'module'     => array( 'store-review' ),
@@ -236,7 +236,7 @@ class Dashboard extends \WP_REST_Controller {
                 'slug'       => 'settings',
                 'icon'       => 'setting',
                 'capability' => array( 'manage_store_settings' ),
-            )
+            ),
         );
 
         $saved_endpoints = MultiVendorX()->setting->get_setting( 'menu_manager' );

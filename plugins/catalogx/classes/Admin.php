@@ -23,8 +23,8 @@ class Admin {
      */
     public function __construct() {
         // Register admin menu.
-        add_action( 'admin_menu', array( $this, 'add_menus' ),10 );
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ),20 );
+        add_action( 'admin_menu', array( $this, 'add_menus' ), 10 );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ), 20 );
 		// Allow external redirect host.
         add_filter( 'allowed_redirect_hosts', array( $this, 'allow_catalogx_redirect_host' ) );
         // For load translation.
@@ -50,42 +50,42 @@ class Admin {
 
         $submenu_items = array(
             'dashboard' => array(
-                'name'   => __( 'Dashboard', 'multivendorx' ),
+                'name'   => __( 'Dashboard', 'catalogx' ),
                 'subtab' => '',
                 'priority' => 10,
             ),
             'enquiry-messages' => array(
-                'name'   => __( 'Enquiry Messages', 'multivendorx' ),
+                'name'   => __( 'Enquiry Messages', 'catalogx' ),
                 'subtab' => '',
                 'priority' => 20,
             ),
             'quote-requests'   => array(
-                'name'   => __( 'Quotation Requests', 'multivendorx' ),
+                'name'   => __( 'Quotation Requests', 'catalogx' ),
                 'subtab' => '',
                 'priority' => 30,
             ),
             'wholesale-users'  => array(
-                'name'   => __( 'Wholesale Users', 'multivendorx' ),
+                'name'   => __( 'Wholesale Users', 'catalogx' ),
                 'subtab' => '',
                 'priority' => 40,
             ),
             'rules'            => array(
-                'name'   => __( 'Dynamic Pricing Rules', 'multivendorx' ),
+                'name'   => __( 'Dynamic Pricing Rules', 'catalogx' ),
                 'subtab' => '',
                 'priority' => 50,
             ),
             'settings'         => array(
-                'name'   => __( 'Settings', 'multivendorx' ),
+                'name'   => __( 'Settings', 'catalogx' ),
                 'subtab' => 'shopping',
                 'priority' => 60,
             ),
             'modules'          => array(
-                'name'   => __( 'Modules', 'multivendorx' ),
+                'name'   => __( 'Modules', 'catalogx' ),
                 'subtab' => '',
                 'priority' => 70,
             ),
             'help-support'        => array(
-                'name'     => __( 'Help & Support', 'multivendorx' ),
+                'name'     => __( 'Help & Support', 'catalogx' ),
                 'subtab'   => '',
                 'priority' => 80,
             ),
@@ -110,7 +110,7 @@ class Admin {
         if ( ! Utill::is_khali_dabba() ) {
             add_submenu_page(
                 'catalogx',
-                __( 'Upgrade to Pro', 'multivendorx' ),
+                __( 'Upgrade to Pro', 'catalogx' ),
                 '<style>
                         a:has(.upgrade-to-pro){
                             background: linear-gradient(-28deg, #c4a9e8, #7848b9, #852aff) !important;
@@ -118,7 +118,7 @@ class Admin {
                             padding: 5px 0;
                         }
                     </style>
-                <div class="upgrade-to-pro"><i style="margin-right: 0.25rem" class="dashicons dashicons-awards"></i>' . __( 'Upgrade to pro', 'multivendorx' ) . '</div>',
+                <div class="upgrade-to-pro"><i style="margin-right: 0.25rem" class="dashicons dashicons-awards"></i>' . __( 'Upgrade to pro', 'catalogx' ) . '</div>',
                 'manage_woocommerce',
                 '',
                 array( $this, 'handle_external_redirects' )

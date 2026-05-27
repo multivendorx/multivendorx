@@ -83,3 +83,12 @@
         font-weight: 400;
     }
 }
+
+@media only screen and (width <= 600px) {
+    .shortcode-title{
+        flex-direction: column;
+    }
+    .shortcode-table{
+        overflow: auto;
+    }
+}

@@ -57,8 +57,8 @@ if ( ! class_exists( 'RequestQuoteSendEmail' ) ) {
          */
         public function __construct() {
             $this->id          = 'RequestQuoteSend';
-            $this->title       = __( 'Email to request a quote', 'multivendorx' );
-            $this->description = __( 'This email is sent when a user clicks on "Request a quote" button', 'multivendorx' );
+            $this->title       = __( 'Email to request a quote', 'catalogx' );
+            $this->description = __( 'This email is sent when a user clicks on "Request a quote" button', 'catalogx' );
 
             $this->template_html  = 'emails/request-quote.php';
             $this->template_plain = 'emails/plain/request-quote.php';
@@ -107,7 +107,7 @@ if ( ! class_exists( 'RequestQuoteSendEmail' ) ) {
 		 * @return string
 		 */
 		public function get_default_subject() {
-			return empty( $this->customer_data ) ? __( 'New Quote Request from Guest', 'multivendorx' ) : apply_filters( 'catalogx_request_send_email_subject', __( 'New Quote Request from {customer_name}', 'multivendorx' ), $this->object );
+			return empty( $this->customer_data ) ? __( 'New Quote Request from Guest', 'catalogx' ) : apply_filters( 'catalogx_request_send_email_subject', __( 'New Quote Request from {customer_name}', 'catalogx' ), $this->object );
 		}
 
 		/**
@@ -117,7 +117,7 @@ if ( ! class_exists( 'RequestQuoteSendEmail' ) ) {
 		 * @return string
 		 */
 		public function get_default_heading() {
-			return apply_filters( 'catalogx_request_send_email_heading', __( 'New Quote Submitted by {customer_name} - Please Review', 'multivendorx' ), $this->object );
+			return apply_filters( 'catalogx_request_send_email_heading', __( 'New Quote Submitted by {customer_name} - Please Review', 'catalogx' ), $this->object );
 		}
 
 		/**
