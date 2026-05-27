@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import './EnquiryForm.scss';
-import FreeForm from './FreeForm';
 import { FormViewer } from 'zyra';
 import axios from 'axios';
 
@@ -66,13 +65,15 @@ const EnquiryForm = () => {
             {proActive ? (
                 <FormViewer
                     formFields={{
-        formfieldlist: formData.settings_pro,
-    }}
+                        formfieldlist: formData.settings_pro,
+                    }}
                     onSubmit={onSubmit}
                 />
             ) : (
-                <FreeForm
-                    formFields={formData.settings_free}
+                <FormViewer
+                    formFields={{
+                        formfieldlist: formData.settings_free,
+                    }}
                     onSubmit={onSubmit}
                 />
             )}
