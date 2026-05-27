@@ -356,6 +356,7 @@ import RandomInputKeyGenerator from './RandomInputKeyGenerator';
 import CopyToClipboard from './UI/CopyToClipboard';
 import EmailsInput from './EmailsInput';
 import SequentialTaskExecutor from './SequentialTaskExecutor';
+import FreeFormCustomizer from './FreeFormCustomizer';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
     // BasicInput
@@ -439,4 +440,6 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
     'random-input-key-generator': RandomInputKeyGenerator,
 
     'copy-to-clipboard': CopyToClipboard,
+
+    'free-form': FreeFormCustomizer,
 };
