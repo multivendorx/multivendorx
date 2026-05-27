@@ -19,7 +19,6 @@ const assetFolders = [
 	...glob.sync('modules/*/assets/*', {
 		cwd: pluginRoot,
 		absolute: false,
-		nodir: true,
 	})
 ];
 
