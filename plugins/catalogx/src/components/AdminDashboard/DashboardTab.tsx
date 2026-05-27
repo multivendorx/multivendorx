@@ -11,9 +11,9 @@ import { __, sprintf } from '@wordpress/i18n';
 import { getModuleData } from '../../services/templateService';
 import axios from 'axios';
 import proPopupContent from '../Popup/Popup';
-import CatalogxIcon from '../../assets/images/catalogx-icon.png';
-import multivendorxIcon from '../../assets/images/catalogx-logo.png';
-import notifimaIcon from '../../assets/images/catalogx-logo.png';
+import catalogxIcon from '../../assets/images/catalogx-icon.png';
+import multivendorxIcon from '../../assets/images/multivendorx-icon.png';
+import notifimaIcon from '../../assets/images/notifima-logo.png';
 
 interface WPPlugin {
 	plugin?: string;
@@ -260,7 +260,7 @@ const DashboardTab: React.FC<object> = () => {
 						</div>
 
 						<div className="image">
-							<img src={CatalogxIcon} alt="" />
+							<img src={catalogxIcon} alt="" />
 						</div>
 					</div>
 				</Card>
