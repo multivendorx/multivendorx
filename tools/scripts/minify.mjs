@@ -14,17 +14,17 @@ const { name } = getPackage();
 /**
  * Asset roots to scan
  */
-const assetFolders = [
-	'public',
-	...glob.sync('modules/*/assets/*', {
-		cwd: pluginRoot,
-		absolute: false,
-	})
-];
-
 (async () => {
+	const assetFolders = [
+		'public',
+		...(await glob('modules/*/assets/*', {
+			cwd: pluginRoot,
+			absolute: false,
+		}))
+	];
+
 	for (const folder of assetFolders) {
-		const files = glob.sync(`${folder}/**/*.{js,scss}`, {
+		const files = await glob(`${folder}/**/*.{js,scss}`, {
 			cwd: pluginRoot,
 			ignore: ['**/*.min.*']
 		});
@@ -74,8 +74,8 @@ const assetFolders = [
 				/**
 				 * PUBLIC ASSETS
 				 */
-				const isPublicJs = normalizedFile.startsWith('public/js/');
-				const isPublicStyles = normalizedFile.startsWith('public/styles/');
+				const isPublicJs = isJs && normalizedFile.startsWith('public/js/');
+				const isPublicStyles = isScss && normalizedFile.startsWith('public/styles/');
 
 				/**
 				 * MODULE ASSETS
@@ -93,16 +93,21 @@ const assetFolders = [
 				/**
 				 * OUTPUT ROUTING
 				 */
+				const sourceDir = path.dirname(normalizedFile);
+				const sourceSlug = sourceDir
+					.replace(/[\\/]+/g, '-')
+					.replace(/[^a-zA-Z0-9._-]/g, '')
+					.replace(/^-+|-+$/g, '') || 'root';
 
 				if (isPublicJs || isModuleJs) {
 					outputPath = path.join(
 						pluginRoot,
-						`assets/js/${name}-${parsed.name}.min.js`
+						`assets/js/${name}-${sourceSlug}-${parsed.name}.min.js`
 					);
 				} else if (isPublicStyles || isModuleStyles) {
 					outputPath = path.join(
 						pluginRoot,
-						`assets/styles/${name}-${parsed.name}.min.css`
+						`assets/styles/${name}-${sourceSlug}-${parsed.name}.min.css`
 					);
 				}
 
