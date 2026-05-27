@@ -36,7 +36,7 @@
         "env:clean": "pnpm wp-env clean",
         "env:destroy": "pnpm wp-env destroy && rimraf docker-compose.yml",
         "readme": "wp-readme-to-md",
-        "composer": "composer dump-autoload && composer update",
+        "composer": "composer dump-autoload",
         "clean": "node ../../tools/scripts/clean.mjs",
         "minify": "node ../../tools/scripts/minify.mjs",
         "move": "node ../../tools/scripts/move-files.mjs",
@@ -94,6 +94,5 @@
         "zyra": "workspace:*"
     },
     "devDependencies": {
-        "@wordpress/env": "10.23.x"
     }
 }
