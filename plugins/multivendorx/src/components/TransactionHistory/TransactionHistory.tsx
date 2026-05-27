@@ -1,6 +1,6 @@
 /* global appLocalizer */
-import React, { useEffect, useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import {
 	ComponentStatusView,
@@ -21,6 +21,7 @@ export const TransactionHistory: React.FC = () => {
 	const [allStores, setAllStores] = useState<StoreOption[]>([]);
 	const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
 	const [selectedStoreLabel, setSelectedStoreLabel] = useState<string>('');
+	const [currentTab, setCurrentTab] = useState('wallet-transaction');
 
 	// Fetch stores on mount
 	useEffect(() => {
@@ -58,8 +59,6 @@ export const TransactionHistory: React.FC = () => {
 		return store?.label || '';
 	};
 
-	const locationUrl = new URLSearchParams(useLocation().hash.substring(1));
-
 	const defaultSettingContent = [
 		{
 			type: 'file',
@@ -84,6 +83,58 @@ export const TransactionHistory: React.FC = () => {
 	const settingContent = applyFilters(
 		'multivendorx_transaction_history_tabs',
 		defaultSettingContent
+	);
+	// Handle store change
+	const handleStoreChange = (newValue: number | string | null) => {
+		if (!newValue || typeof newValue !== 'number') {
+			return;
+		}
+
+		setSelectedStoreId(newValue);
+		setSelectedStoreLabel(getStoreLabelById(newValue));
+	};
+	const defaultNavigatorMeta = {
+		headerTitle: selectedStoreId
+			? __(
+				`Storewise Transaction History - ${selectedStoreLabel}`,
+				'multivendorx'
+			)
+			: __('Storewise Transaction History', 'multivendorx'),
+
+		headerDescription: selectedStoreId
+			? __(
+				`View and manage transactions for ${selectedStoreLabel} store`,
+				'multivendorx'
+			)
+			: __('View and manage storewise transactions', 'multivendorx'),
+
+		customContent: (
+			<>
+				<label>
+					<i className="adminfont-switch-store"></i>
+					{__('Switch Store:', 'multivendorx')}
+				</label>
+
+				<SelectInputUI
+					name="store"
+					value={selectedStoreId || ''}
+					options={allStores}
+					onChange={handleStoreChange}
+					size="12rem"
+				/>
+			</>
+		),
+	};
+
+	const navigatorMeta = applyFilters(
+		'multivendorx_transaction_history_navigator_meta',
+		defaultNavigatorMeta,
+		{
+			selectedStoreId,
+			selectedStoreLabel,
+			allStores,
+			currentTab
+		}
 	);
 
 	const getForm = (tabId: string) => {
@@ -132,69 +183,25 @@ export const TransactionHistory: React.FC = () => {
 		}
 	};
 
-	// Handle store change
-	const handleStoreChange = (newValue: number | string | null) => {
-		if (!newValue || typeof newValue !== 'number') {
-			return;
-		}
-
-		setSelectedStoreId(newValue);
-		setSelectedStoreLabel(getStoreLabelById(newValue));
-	};
 
 	return (
 		<>
 			<SettingsNavigator
 				settingContent={settingContent}
-				currentSetting={locationUrl.get('subtab') as string}
 				getForm={getForm}
+				currentSetting={currentTab}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=transaction-history&subtab=${subTab}`
 				}
+				onSettingChange={setCurrentTab}
 				appLocalizer={appLocalizer}
 				Link={Link}
 				variant={'compact'}
 				menuIcon={true}
 				headerIcon="store-reactivated"
-				headerTitle={
-					selectedStoreId
-						? __(
-							`Storewise Transaction History - ${selectedStoreLabel}`,
-							'multivendorx'
-						)
-						: __('Storewise Transaction History', 'multivendorx')
-				}
-				headerDescription={
-					selectedStoreId
-						? __(
-							`View and manage transactions for ${selectedStoreLabel} store`,
-							'multivendorx'
-						)
-						: __(
-							'View and manage storewise transactions',
-							'multivendorx'
-						)
-				}
-				customContent={
-					applyFilters(
-						'multivendorx_switch_store_content',
-						<>
-							<label>
-								<i className="adminfont-switch-store"></i>
-								{__('Switch Store:', 'multivendorx')}
-							</label>
-
-							<SelectInputUI
-								name="store"
-								value={selectedStoreId || ''}
-								options={allStores}
-								onChange={handleStoreChange}
-								size="12rem"
-							/>
-						</>,
-						{ allStores, selectedStoreId, handleStoreChange }
-					)
-				}
+				headerTitle={navigatorMeta.headerTitle}
+				headerDescription={navigatorMeta.headerDescription}
+				customContent={navigatorMeta.customContent}
 			/>
 		</>
 	);
