@@ -95,22 +95,12 @@ const assetFolders = [
 				 * OUTPUT ROUTING
 				 */
 
-				if (isPublicJs) {
+				if (isPublicJs || isModuleJs) {
 					outputPath = path.join(
 						pluginRoot,
 						`assets/js/${name}-${parsed.name}.min.js`
 					);
-				} else if (isPublicStyles) {
-					outputPath = path.join(
-						pluginRoot,
-						`assets/styles/${name}-${parsed.name}.min.css`
-					);
-				} else if (isModuleJs) {
-					outputPath = path.join(
-						pluginRoot,
-						`assets/js/${name}-${parsed.name}.min.js`
-					);
-				} else if (isModuleStyles) {
+				} else if (isPublicStyles || isModuleStyles) {
 					outputPath = path.join(
 						pluginRoot,
 						`assets/styles/${name}-${parsed.name}.min.css`
