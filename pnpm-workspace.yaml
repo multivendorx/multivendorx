@@ -1,5 +1,4 @@
 packages:
-  - 'packages/js/*'
-  - 'packages/php/*'
+  - 'packages/*'
   - 'plugins/*'
   - 'tools/storybook'
