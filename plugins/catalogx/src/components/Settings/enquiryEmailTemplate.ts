@@ -1,77 +1,89 @@
 import { __ } from '@wordpress/i18n';
+import {OuterSpace} from '../../assets/template/OuterSpace';
+
+
+const EMAIL_BLOCK_GROUPS = [
+    {
+        id: 'email',
+        label: 'Email Blocks',
+        blocks: [
+            {
+                id: 'columns',
+                icon: 'blocks',
+                value: 'columns',
+                label: 'Columns',
+                fixedName: 'columns',
+            },
+            {
+                id: 'heading',
+                icon: 'form-textarea',
+                value: 'heading',
+                fixedName: 'heading',
+                placeholder: 'Enter your heading here',
+            },
+            {
+                id: 'richtext',
+                icon: 't-letter-bold',
+                value: 'richtext',
+                fixedName: 'richtext',
+                placeholder: 'Enter your text content here',
+            },
+            {
+                id: 'image',
+                icon: 'image',
+                value: 'image',
+                label: 'Image',
+                fixedName: 'image',
+            },
+            {
+                id: 'button',
+                icon: 'button',
+                value: 'button',
+                fixedName: 'button',
+                placeholder: 'Click me',
+            },
+            {
+                id: 'section',
+                icon: 'section',
+                value: 'section',
+                fixedName: 'section',
+            },
+        ],
+    },
+];
 
 export default {
     id: 'enquiry-email-temp',
     priority: 50,
-    headerTitle: __( 'Enquiry Email', 'catalogx' ),
+    headerTitle: __('Enquiry Email', 'catalogx'),
     headerDescription: __(
         'Select your preferred enquiry details email template',
         'catalogx'
     ),
+    headerIcon: 'enquiry',
     submitUrl: 'settings',
     modal: [
         {
             key: 'additional_alert_email',
-            type: 'textarea',
-            class: 'basic-input',
+            type: 'email-input',
             desc: __(
                 "Set the email address to receive notifications when a user submits enquiry of a product. You can add multiple comma-separated emails.<br/> Default: The admin's email is set as the receiver. Exclude the admin's email from the list to exclude admin from receiving these notifications.",
                 'catalogx'
             ),
-            label: __( 'Recipient email for new subscriber', 'catalogx' ),
+            label: __('Recipient email for new subscriber', 'catalogx'),
             moduleEnabled: 'enquiry',
         },
         {
-            key: 'selected_email_tpl',
-            type: 'radio-select',
-            label: 'Store Header',
-            desc: 'Select store banner style',
-            options: [
-                {
-                    key: 'template1',
-                    label: 'Outer Space',
-                    color: appLocalizer.template1,
-                    value: 'template1',
-                },
-                {
-                    key: 'template2',
-                    label: 'Green Lagoon',
-                    color: appLocalizer.template2,
-                    value: 'template2',
-                },
-                {
-                    key: 'template3',
-                    label: 'Old West',
-                    color: appLocalizer.template3,
-                    value: 'template3',
-                },
-                {
-                    key: 'template4',
-                    label: 'Old West',
-                    color: appLocalizer.template4,
-                    value: 'template4',
-                },
-                {
-                    key: 'template5',
-                    label: 'Old West',
-                    color: appLocalizer.template5,
-                    value: 'template5',
-                },
-                {
-                    key: 'template6',
-                    label: 'Old West',
-                    color: appLocalizer.template6,
-                    value: 'template6',
-                },
-                {
-                    key: 'template7',
-                    label: 'Old West',
-                    color: appLocalizer.template7,
-                    value: 'template7',
-                },
-            ],
-            moduleEnabled: 'enquiry',
-            proSetting: true,
-        },
+			key: 'store_registration_from',
+			type: 'block-builder',
+			classes: 'full-width',
+			// desc: 'Customise personalised store registration form for marketplace.',
+			// // Add templates configuration with proper content
+			emailTemplates: [OuterSpace],
+			blockGroups: EMAIL_BLOCK_GROUPS,
+            visibleGroups: 'email',
+            context:'email',
+			defaultTemplateId: 'store-registration',
+		},
     ],
 };

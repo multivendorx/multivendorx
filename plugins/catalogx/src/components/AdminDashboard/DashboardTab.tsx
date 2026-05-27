@@ -13,7 +13,7 @@ import axios from 'axios';
 import proPopupContent from '../Popup/Popup';
 import catalogxIcon from '../../assets/images/catalogx-icon.png';
 import multivendorxIcon from '../../assets/images/multivendorx-icon.png';
-import notifimaIcon from '../../assets/images/notifima-logo.png';
+import notifimaIcon from '../../assets/images/notifima-icon.png';
 
 interface WPPlugin {
 	plugin?: string;

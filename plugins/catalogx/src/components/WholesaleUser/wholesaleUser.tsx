@@ -50,7 +50,7 @@ const WholesaleUser = () => {
 			),
 		},
 		status: { label: __('Status', 'catalogx'), type: 'status', statusClass: (row: WholesaleUserRow) => `${row.status}` },
-		date: { label: __('Date', 'multivendorx'), type: 'date' },
+		date: { label: __('Date', 'catalogx'), type: 'date' },
 		action: {
 			type: 'action',
 

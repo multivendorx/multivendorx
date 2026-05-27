@@ -47,7 +47,7 @@ export default function QuotesList() {
 				/>
 			),
 		},
-		date: { label: __('Date', 'multivendorx'), type: 'date' },		
+		date: { label: __('Date', 'catalogx'), type: 'date' },		
 		status: { label: __('Status', 'catalogx'), type: 'status', statusClass: (row: QuoteRow) => `${row.status}` },
 		total: {
 			label: __('Total', 'catalogx'),
