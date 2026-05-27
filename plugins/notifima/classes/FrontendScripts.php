@@ -45,9 +45,6 @@ class FrontendScripts {
 	 * @return string Relative path to the build directory.
 	 */
     public static function get_build_path_name() {
-        if ( Notifima()->is_dev ) {
-			return 'release/assets/';
-        }
         return 'assets/';
     }
 
