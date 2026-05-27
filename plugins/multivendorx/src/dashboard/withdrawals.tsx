@@ -151,7 +151,7 @@ const Withdrawals: React.FC = () => {
 		}
 
 		const shouldContinue = applyFilters(
-			'multivendorx_before_withdrawl_request_save',
+			'multivendorx_before_withdrawal_request_submit',
 			true,
 			{
 				amount,
