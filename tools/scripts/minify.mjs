@@ -74,8 +74,8 @@ const assetFolders = [
 				/**
 				 * PUBLIC ASSETS
 				 */
-				const isPublicJs = normalizedFile.startsWith('public/js/');
-				const isPublicStyles = normalizedFile.startsWith('public/styles/');
+				const isPublicJs = isJs && normalizedFile.startsWith('public/js/');
+				const isPublicStyles = isScss && normalizedFile.startsWith('public/styles/');
 
 				/**
 				 * MODULE ASSETS
