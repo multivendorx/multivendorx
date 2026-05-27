@@ -8,29 +8,15 @@ export default defineConfig({
 
     dts: false,
 
+    splitting: false,
     sourcemap: true,
-
     clean: true,
 
-    splitting: false,
+    outDir: 'build',
 
     external: [
         'react',
         'react-dom',
-
-        '@emotion/react',
-        '@emotion/styled',
-        '@reactour/tour',
-        '@tinymce/tinymce-react',
-
-        'google-map-react',
-
-        'react-drag-listview',
-        'react-draggable',
-        'react-multi-date-picker',
-        'react-router-dom',
-        'react-select',
-        'react-sortablejs',
     ],
 
     esbuildPlugins: [
@@ -40,14 +26,14 @@ export default defineConfig({
     ],
 
     loader: {
+        '.scss': 'css',
+        '.css': 'css',
+        '.svg': 'file',
+        '.png': 'file',
+        '.jpg': 'file',
         '.woff': 'file',
         '.woff2': 'file',
         '.ttf': 'file',
         '.eot': 'file',
-        '.svg': 'file',
-        '.png': 'file',
-        '.jpg': 'file',
-        '.jpeg': 'file',
-        '.gif': 'file',
     },
 });

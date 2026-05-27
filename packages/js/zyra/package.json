@@ -8,13 +8,20 @@
   "files": [
     "build"
   ],
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js",
+      "require": "./build/index.js"
+    },
+    "./build/index.css": "./build/index.css"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix"
   },
-
   "dependencies": {
     "@react-pdf/renderer": "^4.3.2",
     "@tanstack/react-table": "^8.21.3",
@@ -22,7 +29,6 @@
     "react-modal": "^3.16.3",
     "zustand": "^5.0.12"
   },
-
   "peerDependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -38,14 +44,12 @@
     "react-select": "^5.10.1",
     "react-sortablejs": "^6.1.4"
   },
-
   "devDependencies": {
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-
-    "esbuild-sass-plugin": "^3.3.1",
-    "sass": "^1.98.0",
+    "esbuild-sass-plugin": "^3.7.0",
+    "sass": "^1.100.0",
     "tsup": "^8.5.1"
   }
 }
