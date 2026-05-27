@@ -1,6 +1,9 @@
 // FreeFormCustomizer.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { FieldComponent } from './fieldUtils';
+import '../styles/web/FreeFormCustomizer.scss';
+import FormGroup from './UI/FormGroup';
+import { BasicInputUI } from './BasicInput';
 
 // Types
 interface FormField {
@@ -20,10 +23,10 @@ const FORM_FIELDS_CONFIG = [
     { id: '4', type: 'text', label: 'Address', name: 'address', placeholder: 'Enter your address here', },
     { id: '5', type: 'text', label: 'Subject', name: 'subject', placeholder: 'Enter the subject of your enquiry here', },
     { id: '6', type: 'text', label: 'Comment', name: 'comment', placeholder: 'Enter the details of your enquiry here', },
-    { id: '7', type: 'file', label: 'fileupload', name: 'File upload' },
-    { id: '8', type: 'number', label: 'filesize-limit', name: 'File upload size limit (in MB)' },
-    { id: '9', type: 'recaptcha', label: 'captcha', name: 'Captcha' },
-    { id: '10', type: 'button', label: 'submit'},
+    { id: '7', type: 'file', label: 'Fileupload', name: 'File upload' },
+    { id: '8', type: 'number', label: 'Filesize Limit', name: 'File upload size limit (in MB)' },
+    { id: '9', type: 'recaptcha', label: 'Captcha', name: 'Captcha' },
+    { id: '10', type: 'button', label: 'Submit' },
 
 ];
 
@@ -109,40 +112,32 @@ const FreeFormCustomizerField: React.FC<{
     };
 
     return (
-        <div className="form-field">
-            <div className="edit-form-wrapper free-form">
-                <h3 className="form-label">Field Name</h3>
-                <h3 className="set-name">Set new field name</h3>
-            </div>
+        <div className='free-form-customizer'>
+            <FormGroup row label='Field Name' className='free-form-header'>
+                 <label className="settings-form-label"><div className="title">Set new field name</div></label>
+            </FormGroup>
             {FORM_FIELDS_CONFIG.map(fieldConfig => {
                 const field = getField(fieldConfig.id);
                 const isReadonly = field?.disabled ?? true;
 
                 return (
-                    <div className="edit-form-wrapper free-form" key={fieldConfig.type}>
-                        <div className="form-label" style={{ opacity: isReadonly ? '0.3' : '1' }}>
-                            {fieldConfig.name}
-                        </div>
-                        <div className="settings-form-group-radio">
-                            <input
-                                className="basic-input"
-                                type="text"
-                                onChange={e => updateFieldLabel(fieldConfig.id, e.target.value)}
-                                value={field?.placeholder || ''}
-                                readOnly={isReadonly || !canAccess}
-                                style={{ opacity: isReadonly ? '0.3' : '1' }}
-                            />
-                        </div>
+                    <FormGroup row label={fieldConfig.label}>
+                        <BasicInputUI
+                            type="text"
+                            size="95%"
+                            value={field?.placeholder || ''}
+                            onChange={(val) => updateFieldLabel(fieldConfig.id, val)}
+                            readOnly={isReadonly || !canAccess}
+                        />
                         <div
                             className="button-visibility"
                             role="button"
                             tabIndex={0}
                             onClick={() => handleToggle(fieldConfig.id)}
                         >
-                            <i className={`admin-font ${isReadonly ? 'adminfont-eye-blocked enable-visibility' : 'adminfont-eye'}`} />
+                            <i className={`adminfont-${isReadonly ? 'eye-blocked enable-visibility' : 'eye'}`} />
                         </div>
-                        
-                    </div>
+                    </FormGroup>
                 );
             })}
         </div>

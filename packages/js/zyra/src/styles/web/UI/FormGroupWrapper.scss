@@ -1,5 +1,5 @@
 @use '../../../global.scss' as *;
-
+@use "sass:map";
 
 .form-group-wrapper {
     width: 100%;
@@ -205,7 +205,7 @@
                 .clear-btn{
                     border: $border-light-small;
                     padding: 0.25rem 0.45rem;
-                    color: map-get(map-get($color-palette, red), color);
+                    color: map.get(map.get($color-palette, "red"), color);
                     border-top-right-radius: $border-radius-small;
                     border-bottom-right-radius: $border-radius-small;
                     cursor: pointer;

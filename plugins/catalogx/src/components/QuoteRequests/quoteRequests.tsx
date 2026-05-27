@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import '../common.scss';
 import { __ } from '@wordpress/i18n';
 import {
+	Column,
+	Container,
 	InfoItem,
 	NavigatorHeader,
 	PopupUI,
@@ -19,6 +21,7 @@ export interface QuoteRow {
 	status?: string;
 	total?: string;
 	action?: string;
+	customer_name?: string;
 }
 
 export default function QuotesList() {
@@ -26,78 +29,95 @@ export default function QuotesList() {
 
 	// Define table headers
 	const headers = {
-	order_id: {
-		label: __('Order ID', 'catalogx'),
-		render: (row: QuoteRow) => (
-			<InfoItem
-				title={row.order_id}
-				avatar={{ iconClass: 'quote' }}
-			/>
-		),
-	},
+		order_id: {
+			label: __('Order ID', 'catalogx'),
+			render: (row: QuoteRow) => (
+				<InfoItem
+					title={row.order_id}
+					avatar={{
+						// image: row.image?.src || '',
+						iconClass: 'quote',
+					}}
+					descriptions={[
+						{
+							label: __('By', 'catalogx'),
+							value: row.customer_name || '—',
+						},
+					]}
+				/>
+			),
+		},
+		date: { label: __('Date', 'catalogx'), type: 'date' },		
+		status: { label: __('Status', 'catalogx'), type: 'status', statusClass: (row: QuoteRow) => `${row.status}` },
+		total: {
+			label: __('Total', 'catalogx'),
+			render: (row: QuoteRow) => (
+				<>{row.total || '-'}</>
+			),
+		},
 
-	date: {
-		label: __('Date', 'catalogx'),
-		render: (row: QuoteRow) => (
-			<>{row.date || '-'}</>
-		),
-	},
-
-	status: {
-		label: __('Status', 'catalogx'),
-		render: (row: QuoteRow) => (
-			<span className={`order-status ${row.status?.toLowerCase()}`}>
-				{row.status || '-'}
-			</span>
-		),
-	},
-
-	total: {
-		label: __('Total', 'catalogx'),
-		render: (row: QuoteRow) => (
-			<>{row.total || '-'}</>
-		),
-	},
-
-	action: {
-		type: 'action',
-		label: __('Action', 'catalogx'),
-
-		actions: [
-			{
-				label: __('View Order', 'catalogx'),
-				icon: 'view',
-				onClick: () => {
-					setopenPopup(true);
+		action: {
+			type: 'action',
+			label: __('Action', 'catalogx'),
+			actions: [
+				{
+					label: __('View Order', 'catalogx'),
+					icon: 'eye',
+					onClick: () => {
+						setopenPopup(true);
+					},
 				},
-			},
-
-			{
-				label: __('Update Status', 'catalogx'),
-				icon: 'refresh',
-				onClick: () => {
-					setopenPopup(true);
+				{
+					label: __('Edit Status', 'catalogx'),
+					icon: 'edit',
+					onClick: () => {
+						setopenPopup(true);
+					},
 				},
-			},
-		],
-	},
-};
+				{
+					label: __('Send Mail', 'catalogx'),
+					icon: 'mail',
+					onClick: () => {
+						setopenPopup(true);
+					},
+				},
+			],
+		},
+	};
+	const filterOptions = [
+		{ value: 'Order ID', label: __('Order ID', 'catalogx') },
+		{ value: 'Customer Name', label: __('Customer Name', 'catalogx') },
+		{ value: 'Customer Email', label: __('Customer Email', 'catalogx') },
+	];
 
+	const filters = [
+		{
+			key: 'filter',
+			label: __('Filter', 'catalogx'),
+			type: 'select',
+			options: filterOptions,
+		},
+		{
+			key: 'date_range',
+			label: __('Date Range', 'catalogx'),
+			type: 'date',
+		},
+	];
 	const defaultTableProps = {
 		headers,
 
 		rows: dummyQuotes,
 		totalRows: dummyQuotes.length,
-
+		filters: filters,
 		search: {
 			placeholder: __('Search quotes...', 'catalogx'),
 		},
 	};
 
 	const RenderedTableCard = applyFilters(
-        'catalogx_quote_table_component',
-        TableCard
-    );
+		'catalogx_quote_table_component',
+		TableCard
+	);
 
 	const handleTableWrapperClick = () => {
 		if (!appLocalizer.khali_dabba) {
@@ -127,10 +147,13 @@ export default function QuotesList() {
 				)}
 				headerTitle={__('Quote Requests', 'catalogx')}
 			/>
-
-			<div onClick={handleTableWrapperClick}>
-				<RenderedTableCard {...defaultTableProps} />
-			</div>
+			<Container general>
+				<Column>
+					<div onClick={handleTableWrapperClick} >
+						<RenderedTableCard {...defaultTableProps} />
+					</div>
+				</Column>
+			</Container>
 		</>
 	);
 }

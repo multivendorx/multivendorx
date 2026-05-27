@@ -1,39 +1,40 @@
 @use '../../../global.scss' as *;
+@use "sass:map";
 
 @each $name, $style in $btn-color-palette {
   // light background color btn
   .btn-#{$name} {
-    background: map-get($style, light-color);
-    color: map-get($style, color);
-    border: 0.063rem solid map-get($style, light-color);
+    background: map.get($style, light-color);
+    color: map.get($style, color);
+    border: 0.063rem solid map.get($style, light-color);
 
     &:hover {
-      background: map-get($style, light-color);
-      color: map-get($style, color);
+      background: map.get($style, light-color);
+      color: map.get($style, color);
     }
   }
 
   // border btn style
   .btn-border-#{$name} {
     background: transparent;
-    color: map-get($style, color);
-    border: 0.063rem solid  map-get($style, color);
+    color: map.get($style, color);
+    border: 0.063rem solid  map.get($style, color);
   }
 
   // dark background color btn
   .btn-#{$name}-bg {
-    background: map-get($style, color);
+    background: map.get($style, color);
     color: #fff;
-    border: 0.063rem solid  map-get($style, color);
+    border: 0.063rem solid  map.get($style, color);
 
     &:hover {
-      background: map-get($style, color);
+      background: map.get($style, color);
     }
   }
 
   // only text color with transparent background with .add-btn class
   .btn-#{$name}-color {
-    color: map-get($style, color);
+    color: map.get($style, color);
     background: transparent;
   }
 }

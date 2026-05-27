@@ -152,6 +152,9 @@ const App = () => {
 				displayPosition="banner"
 				message={bannerItem}
 				actionLabel="Upgrade Now"
+				onAction={() => {
+					window.location.href = appLocalizer.shop_url;
+				}}
 			/>
 			{/* )} */}
 			<Route />
