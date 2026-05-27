@@ -18,10 +18,6 @@ import { getTourSteps } from './components/Tour/Tours';
 const disableBody = ( target: any ) => disableBodyScroll( target );
 const enableBody = ( target: any ) => enableBodyScroll( target );
 localStorage.setItem( 'force_catalogx_context_reload', 'true' );
-interface Products {
-    title: string;
-    description: string;
-}
 
 const Route = () => {
     const currentTab = new URLSearchParams( useLocation().hash );
