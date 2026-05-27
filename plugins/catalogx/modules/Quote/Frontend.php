@@ -22,6 +22,9 @@ class Frontend {
      * Frontend class constructor functions
      */
     public function __construct() {
+        // Quote button shortcode.
+        add_shortcode( 'catalogx_quote_button', array( $this, 'catalogx_quote_button_shortcode' ) );
+
         if ( ! Util::is_available() ) {
 			return;
         }
@@ -34,8 +37,6 @@ class Frontend {
         add_action( 'woocommerce_after_shop_loop_item', array( $this, 'add_button_for_quote' ), 11 );
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
-        // Quote button shortcode.
-        add_shortcode( 'catalogx_quote_button', array( $this, 'catalogx_quote_button_shortcode' ) );
     }
 
     /**
@@ -122,12 +123,91 @@ class Frontend {
      */
     public function catalogx_quote_button_shortcode( $attr ) {
         global $product;
-        if ( empty( trim( CatalogX()->render_quote_btn_via ) ) ) {
-            CatalogX()->render_quote_btn_via = 'shortcode';
-            ob_start();
-            $product_id = isset( $attr['product_id'] ) ? (int) $attr['product_id'] : $product->get_id();
-            $this->add_button_for_quote( $product_id );
-            return ob_get_clean();
+
+        if ( ! Util::is_available() ) {
+            return '';
         }
+
+        $display_quote_button = CatalogX()->setting->get_setting( 'quote_user_permission', array() );
+        if ( ! empty( $display_quote_button ) && ! is_user_logged_in() ) {
+            return '';
+        }
+
+        CatalogX()->render_quote_btn_via = 'shortcode';
+
+        ob_start();
+
+        $product_id = 0;
+
+        if ( ! empty( $attr['product_id'] ) ) {
+
+            $product_id = absint( $attr['product_id'] );
+
+        } elseif ( $product instanceof \WC_Product ) {
+
+            $product_id = $product->get_id();
+
+        } else {
+
+            $product_id = $this->get_product_id_from_context();
+
+        }
+
+        if ( $product_id ) {
+            $this->add_button_for_quote( $product_id );
+        }
+
+        return ob_get_clean();
+    }
+
+    /**
+     * Resolve product id from context when shortcode has no product_id attribute.
+     *
+     * @return int
+     */
+    private function get_product_id_from_context() {
+        $queried_id = get_queried_object_id();
+        if ( $queried_id && 'product' === get_post_type( $queried_id ) ) {
+            return absint( $queried_id );
+        }
+
+        $post = get_post();
+        if ( ! $post || empty( $post->post_content ) || ! function_exists( 'parse_blocks' ) ) {
+            return 0;
+        }
+
+        $blocks = parse_blocks( $post->post_content );
+        return $this->find_product_id_in_blocks( $blocks );
+    }
+
+    /**
+     * Recursively search blocks for product id attribute.
+     *
+     * @param array $blocks Parsed blocks.
+     * @return int
+     */
+    private function find_product_id_in_blocks( $blocks ) {
+        if ( empty( $blocks ) || ! is_array( $blocks ) ) {
+            return 0;
+        }
+
+        foreach ( $blocks as $block ) {
+            if ( ! empty( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+                foreach ( array( 'productId', 'product_id', 'product' ) as $key ) {
+                    if ( ! empty( $block['attrs'][ $key ] ) ) {
+                        return absint( $block['attrs'][ $key ] );
+                    }
+                }
+            }
+
+            if ( ! empty( $block['innerBlocks'] ) ) {
+                $found = $this->find_product_id_in_blocks( $block['innerBlocks'] );
+                if ( $found ) {
+                    return $found;
+                }
+            }
+        }
+
+        return 0;
     }
 }
