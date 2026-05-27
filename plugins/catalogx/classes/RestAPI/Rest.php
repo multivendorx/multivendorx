@@ -25,11 +25,11 @@ defined( 'ABSPATH' ) || exit;
 class Rest {
 
     /**
-     * Container for all our classes
+     * Controllers for all our classes
      *
      * @var array
      */
-    private $container = array();
+    private $controllers = array();
     /**
      * Rest class constructor function
      */
@@ -42,7 +42,7 @@ class Rest {
      * Initialize all REST API controller classes.
      */
     public function init_classes() {
-        $this->container = array(
+        $this->controllers = array(
             'settings' => new Settings(),
             'tour'     => new Tour(),
         );
@@ -55,9 +55,9 @@ class Rest {
      */
     public function register_rest_api_routes() {
 
-        foreach ( $this->container as $controller ) {
-            if ( method_exists( $controller, 'register_routes' ) ) {
-                $controller->register_routes();
+        foreach ( $this->controllers as $rest_controller ) {
+            if ( method_exists( $rest_controller, 'register_routes' ) ) {
+                $rest_controller->register_routes();
             }
         }
 
@@ -65,7 +65,7 @@ class Rest {
             CatalogX()->rest_namespace,
             '/buttons',
             array(
-                'methods'             => 'GET',
+                'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => array( $this, 'get_buttons' ),
                 'permission_callback' => array( $this, 'catalogx_permission' ),
             )
@@ -86,7 +86,7 @@ class Rest {
         ob_start();
 
         if ( 'enquiry' === $button_type ) {
-            EnquiryModule::init()->frontend->add_enquiry_button( intval( $product_id ) );
+            EnquiryModule::init()->frontend->render_product_enquiry_button( intval( $product_id ) );
         }
 
         if ( 'quote' === $button_type ) {

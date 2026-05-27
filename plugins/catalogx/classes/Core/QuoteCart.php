@@ -101,8 +101,10 @@ class QuoteCart {
     public function clean_session() {
         global $wpdb;
 
+        $table_name = $wpdb->prefix . 'options';
+
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $query = $wpdb->query( 'DELETE FROM ' . $wpdb->prefix . "options  WHERE option_name LIKE '_catalogx_session_%'" );
+        $wpdb->query( 'DELETE FROM ' . $table_name . "  WHERE option_name LIKE '_catalogx_session_%'" );
     }
 
 
@@ -139,16 +141,17 @@ class QuoteCart {
      */
     public function maybe_set_cart_cookies() {
         $set = true;
+        if ( headers_sent() ) {
+    return;
+}
 
-        if ( ! headers_sent() ) {
-            if ( ! empty( $this->quote_cart_items ) ) {
+            if ( ! empty( $this->quote_cart_content ) ) {
                 $this->set_cart_cookies( true );
                 $set = true;
             } elseif ( isset( $_COOKIE['quote_items_in_cart'] ) ) {
                 $this->set_cart_cookies( false );
                 $set = false;
             }
-        }
 
         do_action( 'quote_set_cart_cookies', $set );
     }
@@ -179,7 +182,7 @@ class QuoteCart {
      */
     public function add_to_quote_action() {
         $add_to_quote = filter_input( INPUT_GET, 'add-to-quote', FILTER_SANITIZE_NUMBER_INT );
-        if ( ! $add_to_quote ) {
+        if ( empty( $add_to_quote ) ) {
             return;
         }
 
@@ -218,15 +221,15 @@ class QuoteCart {
         );
 
         // Add item to quote cart.
-        $return = $this->add_quote_item( $quote_item );
+        $quote_add_status = $this->add_quote_item( $quote_item );
 
         // Handle response messages.
-        if ( 'true' === $return ) {
+        if ( 'true' === $quote_add_status ) {
             wc_add_notice(
     __( 'Product added to quote cart.', 'catalogx' ),
     'success'
 );
-        } elseif ( 'exists' === $return ) {
+        } elseif ( 'exists' === $quote_add_status ) {
             wc_add_notice(
     __( 'Product already added to quote cart.', 'catalogx' ),
     'success'
@@ -239,35 +242,35 @@ class QuoteCart {
      *
      * Checks if the product already exists in the cart. If not, adds it to the session.
      *
-     * @param array $item The data of the product being added to the quote cart.
+     * @param array $quote_item_data The data of the product being added to the quote cart.
      *                         Must include 'product_id', 'variation' (array), and optionally 'quantity'.
      * @return string Returns 'true' on success, or 'exists' if the item is already in the quote cart.
      */
-    public function add_quote_item( $item ) {
+    public function add_quote_item( $quote_item_data ) {
 
-        $item['quantity'] = ( isset( $item['quantity'] ) ) ? (int) $item['quantity'] : 1;
-        $status                = '';
+        $quote_item_data['quantity'] = ( isset( $quote_item_data['quantity'] ) ) ? (int) $quote_item_data['quantity'] : 1;
+        $quote_item_status                = '';
 
-        do_action( 'catalogx_add_to_quote_cart', $item );
+        do_action( 'catalogx_add_to_quote_cart', $quote_item_data );
 
-        if ( ! $this->exists_in_cart( $item['product_id'] ) ) {
+        if ( ! $this->exists_in_cart( $quote_item_data['product_id'] ) ) {
             $quote_item = array(
-                'product_id' => $item['product_id'],
-                'variation'  => $item['variation'],
-                'quantity'   => $item['quantity'],
+                'product_id' => $quote_item_data['product_id'],
+                'variation'  => $quote_item_data['variation'],
+                'quantity'   => $quote_item_data['quantity'],
             );
 
-            $this->quote_cart_content[ md5( $item['product_id'] ) ] = $quote_item;
+            $this->quote_cart_content[ md5( $quote_item_data['product_id'] ) ] = $quote_item;
         } else {
-            $status = 'exists';
+            $quote_item_status = 'exists';
         }
 
-        if ( 'exists' !== $status ) {
+        if ( 'exists' !== $quote_item_status ) {
             $this->set_session( $this->quote_cart_content );
-            $status = 'true';
-            $this->set_cart_cookies( sizeof( $this->quote_cart_content ) > 0 );
+            $quote_item_status = 'true';
+            $this->set_cart_cookies( count( $this->quote_cart_content ) > 0 );
         }
-        return $status;
+        return $quote_item_status;
     }
 
     /**
@@ -278,15 +281,12 @@ class QuoteCart {
      * @return bool True if the product (and variation, if provided) exists in the cart, false otherwise.
      */
     public function exists_in_cart( $product_id, $variation_id = false ) {
-        if ( $variation_id ) {
+        if ( false !== $variation_id ) {
             $cart_item_key = md5( $product_id . $variation_id );
         } else {
             $cart_item_key = md5( $product_id );
         }
-        if ( isset( $this->quote_cart_items[ $cart_item_key ] ) ) {
-            return true;
-        }
-        return false;
+        return isset( $this->quote_cart_content[ $cart_item_key ] );
     }
 
     /**
@@ -294,7 +294,7 @@ class QuoteCart {
      *
      * @return array The quote cart content.
      */
-    public function get_cart_data() {
+    public function get_cart_contents() {
         return $this->quote_cart_content;
     }
 
@@ -326,15 +326,17 @@ class QuoteCart {
      * @param string $key The cart item key to remove.
      * @return bool True if the item was removed, false if it was not found.
      */
-    public function remove_cart( $key ) {
+    public function remove_cart_item( $key ) {
 
-        if ( isset( $this->quote_cart_content[ $key ] ) ) {
-            unset( $this->quote_cart_content[ $key ] );
-            $this->set_session( $this->quote_cart_content, true );
-            return true;
-        } else {
+        if ( ! isset( $this->quote_cart_content[ $key ] ) ) {
             return false;
         }
+
+        unset( $this->quote_cart_content[ $key ] );
+
+        $this->set_session( $this->quote_cart_content, true );
+
+        return true;
     }
 
     /**
@@ -342,7 +344,7 @@ class QuoteCart {
      *
      * @return void
      */
-    public function clear_cart() {
+    public function clear_quote_cart() {
         $this->quote_cart_content = array();
         $this->set_session( $this->quote_cart_content, true );
     }
@@ -356,13 +358,11 @@ class QuoteCart {
      *
      * @return bool True on success, false on failure.
      */
-    public function update_cart( $key, $field = false, $value = '' ) {
+    public function update_cart_item( $key, $field = false, $value = '' ) {
         if ( $field && isset( $this->quote_cart_content[ $key ][ $field ] ) ) {
             $this->quote_cart_content[ $key ][ $field ] = $value;
-            $this->set_session( $this->quote_cart_content );
         } elseif ( isset( $this->quote_cart_content[ $key ] ) ) {
             $this->quote_cart_content[ $key ] = $value;
-            $this->set_session( $this->quote_cart_content );
         } else {
             return false;
         }
