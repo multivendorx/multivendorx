@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import 'zyra/build/index.css';
 import { ExpandablePanelUI } from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
-import img from '../../assets/images/Brand.png';
+import img from '../../assets/images/catalogx-logo.png';
 interface SettingsState {
 	marketplace_setup: {
 		store_selling_mode: string;

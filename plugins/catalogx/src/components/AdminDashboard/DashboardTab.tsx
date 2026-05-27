@@ -11,9 +11,9 @@ import { __, sprintf } from '@wordpress/i18n';
 import { getModuleData } from '../../services/templateService';
 import axios from 'axios';
 import proPopupContent from '../Popup/Popup';
-import Mascot from '../../assets/images/Brand-small.png';
-import catalogx from '../../assets/images/Brand.png';
-import notifima from '../../assets/images/Brand.png';
+import catalogxIcon from '../../assets/images/catalogx-icon.png';
+import multivendorxIcon from '../../assets/images/multivendorx-icon.png';
+import notifimaIcon from '../../assets/images/notifima-icon.png';
 
 interface WPPlugin {
 	plugin?: string;
@@ -35,7 +35,7 @@ const DashboardTab: React.FC<object> = () => {
 		}
 		return (
 			<a
-				href={appLocalizer.shop_url}
+				href={appLocalizer.pro_url}
 				target="_blank"
 				className="admin-btn btn-purple"
 			>
@@ -232,7 +232,7 @@ const DashboardTab: React.FC<object> = () => {
 					<div className="pro-banner-wrapper">
 						<div className="content">
 							<div className="heading">
-								{__('Welcome to catalogx', 'catalogx')}
+								{__('Welcome to CatalogX', 'catalogx')}
 							</div>
 							<div className="description">
 								{__(
@@ -260,7 +260,7 @@ const DashboardTab: React.FC<object> = () => {
 						</div>
 
 						<div className="image">
-							<img src={Mascot} alt="" />
+							<img src={catalogxIcon} alt="" />
 						</div>
 					</div>
 				</Card>
@@ -338,7 +338,7 @@ const DashboardTab: React.FC<object> = () => {
 											'Advanced product catalog with enhanced enquiry features and premium templates',
 											'catalogx'
 										),
-										img: catalogx,
+										img: multivendorxIcon,
 										tags: (
 											<>
 												<span className="admin-badge red">
@@ -371,7 +371,7 @@ const DashboardTab: React.FC<object> = () => {
 											'Turn your store into a product catalog with enquiry-based sales',
 											'catalogx'
 										),
-										img: catalogx,
+										img: multivendorxIcon,
 										tags: (
 											<>
 												<span className="admin-badge green">
@@ -431,7 +431,7 @@ const DashboardTab: React.FC<object> = () => {
 											'Advanced stock alerts, wishlist features, and premium notification system',
 											'catalogx'
 										),
-										img: notifima,
+										img: notifimaIcon,
 										tags: (
 											<>
 												<span className="admin-badge red">
@@ -464,7 +464,7 @@ const DashboardTab: React.FC<object> = () => {
 											'Advanced stock alerts and wishlist features for WooCommerce',
 											'catalogx'
 										),
-										img: notifima,
+										img: notifimaIcon,
 										tags: (
 											<>
 												<span className="admin-badge green">
