@@ -21,6 +21,8 @@ export const TransactionHistory: React.FC = () => {
 	const [allStores, setAllStores] = useState<StoreOption[]>([]);
 	const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
 	const [selectedStoreLabel, setSelectedStoreLabel] = useState<string>('');
+	const [userId, setUserId] = useState<number | null>(null);
+	const [userName, setUserName] = useState<string>('');
 	const [currentTab, setCurrentTab] = useState('wallet-transaction');
 
 	// Fetch stores on mount
@@ -133,7 +135,11 @@ export const TransactionHistory: React.FC = () => {
 			selectedStoreId,
 			selectedStoreLabel,
 			allStores,
-			currentTab
+			currentTab,
+			setUserId,
+			setUserName,
+			userId,
+			userName
 		}
 	);
 
@@ -142,7 +148,8 @@ export const TransactionHistory: React.FC = () => {
 			'multivendorx_transaction_history_tab_content',
 			null,
 			tabId,
-			selectedStoreId
+			selectedStoreId,
+			userId
 		);
 
 		if (externalContent) {
