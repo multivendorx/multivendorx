@@ -14,10 +14,6 @@
     "type": "git",
     "url": "https://github.com/multivendorx"
   },
-  "workspaces": [
-    "plugins/*",
-    "packages/*"
-  ],
   "scripts": {
     "build": "pnpm -r run build",
     "build:release": "pnpm -r --workspace-concurrency=1 run build:release",
