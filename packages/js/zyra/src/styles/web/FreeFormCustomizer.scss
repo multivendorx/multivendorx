@@ -1,0 +1,85 @@
+@use '../../global.scss' as *;
+
+
+.free-form-customizer{
+    width: 100%;
+
+    .free-form-header{
+        
+    }
+}
+// free form start
+.form-field {
+  position: relative;
+  // margin-bottom: 0.5rem;
+  transition: all 0.8s ease;
+
+  .free-form {
+    display: flex;
+    margin-bottom: 1rem;
+    align-items: center;
+    gap: 1rem;
+
+
+  }
+
+  &.active {
+    .main-input-wrapper {
+      border-color: #8c8c8c;
+    }
+  }
+}
+
+.edit-form-wrapper {
+  display: flex;
+
+  p,
+  .form-label {
+    width: 30%;
+    font-size: 0.9rem;
+  }
+
+  .settings-form-group-radio,
+  .set-name {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    position: relative;
+
+    .basic-input,
+    .basic-select {
+      background: #d6b5ff21;
+      border-color: #d6b5ff;
+      width: 100%;
+    }
+  }
+
+  .button-visibility {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .adminfont-eye {
+      color: #0101d9d6 !important;
+    }
+  }
+}
+
+// free form end
+
+// form divider start
+.section-divider-container {
+  border: $border-light-medium;
+  text-align: center;
+  font-size: 0.75rem;
+  margin: 1.5rem 0;
+}
+
+// form divider end
+
+.button-visibility {
+  i {
+    font-size: 1.25rem;
+  }
+}
