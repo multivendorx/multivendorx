@@ -183,8 +183,8 @@ export default {
                     label: __('Free', 'catalogx'),
                     content: [
                         {
-                            key: 'free_enquiry_text',
-                            type: 'textarea',
+                            key: 'free_enquiry_form',
+                            type: 'free-form',
                             label: __('Free Form Content', 'catalogx'),
                             desc: __('Simple textarea for free users.', 'catalogx'),
                             placeholder: __('Write something...', 'catalogx'),
