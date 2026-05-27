@@ -18,6 +18,8 @@ module.exports = [
 		ignores: [
 			'**/node_modules/**',
 			'**/vendor/**',
+			
+			'**/stories/**',
 
 			'**/build/**',
 			'**/dist/**',

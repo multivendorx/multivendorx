@@ -1,3 +1,4 @@
+@use "sass:map";
 @use '../../global.scss' as *;
 
 .general-wrapper {
@@ -306,7 +307,7 @@
 
           @each $name, $style in $color-palette {
             &:has(.#{$name}) {
-              border-color: map-get($style, color);
+              border-color: map.get($style, color);
             }
           }
         }
@@ -691,6 +692,7 @@
     flex-direction: column;
     gap: 1rem;
   }
+
   .admin-header{
     gap: 1rem;
 
@@ -709,6 +711,7 @@
       }
     }
   }
+
   // settings tab
   .settings-wrapper {
     &[data-template="settings"] {
@@ -735,6 +738,7 @@
       }
     }
   }
+
   // default
    .settings-wrapper {
         &[data-template="default"] {
@@ -749,6 +753,7 @@
             }
         }
     }
+
   .title-section {
     flex-wrap: wrap;
     gap: 1rem;

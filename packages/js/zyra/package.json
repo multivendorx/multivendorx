@@ -2,55 +2,30 @@
   "name": "zyra",
   "version": "1.0.0",
   "description": "Component library for WordPress plugins",
-  "main": "build/index.js",
-  "types": "build/types/index.d.ts",
-  "module": "build/index.js",
+  "main": "./build/index.js",
+  "module": "./build/index.js",
+  "types": "./build/index.d.ts",
   "files": [
     "build"
   ],
-  "scripts": {
-    "build": "pnpm --if-present --workspace-concurrency=Infinity --stream --filter \"${npm_package_name}\" \"/^build:project:.*$/\"",
-    "build:project": "pnpm --if-present \"/^build:project:.*$/\"",
-    "build:project:bundle": "wireit",
-    "watch:build": "pnpm --if-present --workspace-concurrency=Infinity --stream --filter \"${npm_package_name}\" \"/^watch:build:project:.*$/\"",
-    "watch:build:project": "pnpm --if-present run \"/^watch:build:project:.*$/\"",
-    "watch:build:project:bundle": "wireit",
-    "lint": "pnpm --if-present \"/^lint:lang:.*$/\"",
-    "lint:fix": "pnpm --if-present \"/^lint:fix:.*$/\"",
-    "lint:lang:js": "eslint . --ext .js,.jsx,.ts,.tsx,.mjs",
-    "lint:js:report:txt": "eslint . --ext .js,.jsx,.ts,.tsx,.mjs -f stylish > eslint-report.txt || true",
-    "lint:fix:js": "eslint . --ext .js,.jsx,.ts,.tsx,.mjs --fix",
-    "lint:lang:css": "wp-scripts lint-style",
-    "lint:fix:css": "stylelint '**/*.{css,scss}' --fix",
-    "preinstall": "npx only-allow pnpm"
-  },
-  "wireit": {
-    "build:project:bundle": {
-      "command": "rollup -c rollup.config.js",
-      "files": [
-        "src/**",
-        "rollup.config.js"
-      ],
-      "output": [
-        "build"
-      ]
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js",
+      "require": "./build/index.js"
     },
-    "watch:build:project:bundle": {
-      "command": "rollup -c rollup.config.js --watch --sourcemap",
-      "files": [
-        "src/**",
-        "rollup.config.js"
-      ],
-      "service": true
-    }
+    "./build/index.css": "./build/index.css"
   },
-  "keywords": [
-    "wordpress",
-    "components",
-    "plugin"
-  ],
-  "author": "MultiVendorX",
-  "license": "GPL-2.0-or-later",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "pnpm run lint:js && pnpm run lint:css",
+    "fix": "pnpm run fix:js && pnpm run fix:css",
+    "lint:js": "eslint . --ext .js,.jsx,.ts,.tsx,.mjs",
+    "fix:js": "eslint . --ext .js,.jsx,.ts,.tsx,.mjs --fix",
+    "lint:css": "stylelint \"**/*.{css,scss}\"",
+    "fix:css": "stylelint \"**/*.{css,scss}\" --fix"
+  },
   "dependencies": {
     "@react-pdf/renderer": "^4.3.2",
     "@tanstack/react-table": "^8.21.3",
@@ -74,45 +49,11 @@
     "react-sortablejs": "^6.1.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.0",
-    "@eslint/js": "^10.0.1",
-    "@rollup/plugin-commonjs": "^29.0.2",
-    "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^16.0.3",
-    "@rollup/plugin-terser": "^1.0.0",
-    "@rollup/plugin-typescript": "^12.3.0",
-    "@types/axios": "^0.14.4",
-    "@types/google-map-react": "^2.1.10",
-    "@types/google.maps": "^3.58.1",
-    "@types/node": "25.5.0",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "@types/react-modal": "^3.16.3",
-    "@types/react-router-dom": "^5.3.3",
-    "@types/react-select": "^5.0.1",
-    "@types/reactour": "^1.18.5",
-    "@typescript-eslint/eslint-plugin": "^8.57.0",
-    "@typescript-eslint/parser": "^8.57.0",
-    "@wordpress/scripts": "^31.6.0",
-    "babel-loader": "^10.1.1",
-    "clean-webpack-plugin": "^4.0.0",
-    "copy-webpack-plugin": "^14.0.0",
-    "eslint": "^10.0.3",
-    "eslint-plugin-prettier": "^5.5.5",
-    "globals": "^17.4.0",
-    "mini-css-extract-plugin": "2.10.1",
-    "rollup": "^4.59.0",
-    "rollup-plugin-copy": "^3.5.0",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
-    "rollup-plugin-postcss": "^4.0.2",
-    "sass": "^1.98.0",
-    "style-loader": "^4.0.0",
-    "stylelint": "^17.4.0",
-    "stylelint-config-standard-scss": "^17.0.0",
-    "stylelint-scss": "^7.0.0",
-    "ts-loader": "9.5.4",
-    "tslib": "^2.8.1",
-    "typescript": "5.9.3",
-    "wireit": "^0.14.12"
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "esbuild-sass-plugin": "^3.7.0",
+    "sass": "^1.100.0",
+    "tsup": "^8.5.1"
   }
 }

@@ -148,9 +148,11 @@
                     display: flex;
                     gap: 0.5rem;
                     list-style-type: none;
+
                     .btn-red-color{
                         font-size: 1rem;
                     }
+
                     li{
                         margin: 0;
                     }
@@ -208,7 +210,6 @@
         }
 
         &.disable {
-
             .details,
             .toggle-icon {
                 filter: grayscale(1);
@@ -281,9 +282,11 @@
     padding: 1.5rem;
     background: $background-white;
     border-radius: $border-radius-small;
+
     .expandable-panel-group{
         width: 100%;
     }
+
     .welcome-wrapper {
         text-align: center;
         padding: 1rem;
@@ -319,6 +322,7 @@
         width: 100%;
     }
 }
+
 @media screen and (width <=600px) {
     .expandable-panel-group {
         width: 100% !important;

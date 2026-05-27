@@ -3,14 +3,13 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/web/Notice.scss';
 import { FieldComponent } from './fieldUtils';
-
-type NoticePosition = 'float' | 'notice' | 'banner';
+import type { NoticePosition, NoticeType } from '../utils/types/notice';
 
 interface NoticeItem {
     uniqueKey: string;
     title?: string;
     message?: string | string[];
-    type?: 'info' | 'success' | 'warning' | 'error' | 'banner';
+    type?: NoticeType;
     position: NoticePosition;
     actionLabel?: string;
     onAction?: () => void;
@@ -188,7 +187,7 @@ export interface NoticeProps {
     uniqueKey?: string;
     title?: string;
     message?: string | string[];
-    type?: 'info' | 'success' | 'warning' | 'error' | 'banner';
+    type?: NoticeType;
     displayPosition?: 'inline' | 'inline-notice' | NoticePosition;
     actionLabel?: string;
     onAction?: () => void;
