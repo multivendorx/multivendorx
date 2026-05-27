@@ -14,17 +14,17 @@ const { name } = getPackage();
 /**
  * Asset roots to scan
  */
-const assetFolders = [
-	'public',
-	...glob.sync('modules/*/assets/*', {
-		cwd: pluginRoot,
-		absolute: false,
-	})
-];
-
 (async () => {
+	const assetFolders = [
+		'public',
+		...(await glob('modules/*/assets/*', {
+			cwd: pluginRoot,
+			absolute: false,
+		}))
+	];
+
 	for (const folder of assetFolders) {
-		const files = glob.sync(`${folder}/**/*.{js,scss}`, {
+		const files = await glob(`${folder}/**/*.{js,scss}`, {
 			cwd: pluginRoot,
 			ignore: ['**/*.min.*']
 		});
