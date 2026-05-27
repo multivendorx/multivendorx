@@ -73,7 +73,7 @@ class Tour extends \WP_REST_Controller {
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 			$error = new \WP_Error(
 				'invalid_nonce',
-				esc_html__( 'Invalid nonce.', 'multivendorx' ),
+				esc_html__( 'Invalid nonce.', 'catalogx' ),
                 array( 'status' => 403 )
 			);
 
@@ -98,7 +98,7 @@ class Tour extends \WP_REST_Controller {
 
 			return new \WP_Error(
 				'server_error',
-				__( 'Unexpected server error', 'multivendorx' ),
+				__( 'Unexpected server error', 'catalogx' ),
 				array( 'status' => 500 )
 			);
 		}
@@ -117,7 +117,7 @@ class Tour extends \WP_REST_Controller {
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 			$error = new \WP_Error(
 				'invalid_nonce',
-				esc_html__( 'Invalid nonce.', 'multivendorx' ),
+				esc_html__( 'Invalid nonce.', 'catalogx' ),
 				array( 'status' => 403 )
 			);
 
@@ -144,7 +144,7 @@ class Tour extends \WP_REST_Controller {
 
 			return new \WP_Error(
 				'server_error',
-				__( 'Unexpected server error', 'multivendorx' ),
+				__( 'Unexpected server error', 'catalogx' ),
 				array( 'status' => 500 )
 			);
 		}
