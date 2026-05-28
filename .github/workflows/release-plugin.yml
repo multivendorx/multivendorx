@@ -1,4 +1,4 @@
-```yaml
+```yaml id="9ukc5y"
 name: Plugin Release
 
 on:
@@ -6,58 +6,10 @@ on:
     tags:
       - '*-v*'
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   release:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          coverage: none
-
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Extract Plugin Info
-        id: plugin
-        shell: bash
-        run: |
-          TAG="${GITHUB_REF_NAME}"
-
-          PLUGIN="${TAG%-v*}"
-          VERSION="${TAG##*-v}"
-
-          echo "plugin=$PLUGIN" >> "$GITHUB_OUTPUT"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Build Plugin
-        shell: bash
-        run: |
-          cd "plugins/${{ steps.plugin.outputs.plugin }}"
-          pnpm run build:zip
-
-      - name: Upload Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: plugins/${{ steps.plugin.outputs.plugin }}/release/*.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
