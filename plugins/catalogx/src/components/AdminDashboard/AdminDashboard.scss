@@ -1503,19 +1503,18 @@
         display: flex;
       }
 
+      .profile-name {
+          padding-top: 0.5rem;
+          padding-bottom: 0.15rem;
+          font-size: 1.25rem;
+          font-weight: 500;
+        }
       div {
         padding-inline: 1rem;
         display: flex;
         align-items: center;
         justify-content: flex-start;
         gap: 0.25rem;
-
-        &:first-child {
-          padding-top: 0.5rem;
-          padding-bottom: 0.15rem;
-          font-size: 1rem;
-          font-weight: 500;
-        }
 
         &:last-child {
           padding-bottom: 0.5rem;
