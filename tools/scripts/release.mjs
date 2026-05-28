@@ -42,6 +42,8 @@ const includeFiles = [
 	'vendor',
 	'readme.txt',
 	'config.php',
+	'composer.json',
+	'composer.lock',
 	mainPluginFile
 ];
 
