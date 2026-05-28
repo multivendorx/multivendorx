@@ -114,7 +114,7 @@ const ApprovalQueue = () => {
 	}, []);
 
 	const { modules } = useModules();
-	const settings = appLocalizer.settings_databases_value || {};
+	const settings = appLocalizer.admin_settings || {};
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
 	const baseSettingContent = [

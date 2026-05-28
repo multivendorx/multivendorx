@@ -41,22 +41,22 @@ const StatusAndTools: React.FC<SettingsProps> = () => {
 		if (settingName !== currentTab) {
 			setSetting(
 				currentTab,
-				appLocalizer.settings_databases_value[currentTab] || {}
+				appLocalizer.admin_settings[currentTab] || {}
 			);
 		}
 
 		useEffect(() => {
 			if (settingName === currentTab) {
-				appLocalizer.settings_databases_value[settingName] = setting;
+				appLocalizer.admin_settings[settingName] = setting;
 			}
 
 			const storeCapability =
-				appLocalizer.settings_databases_value['store-permissions'];
+				appLocalizer.admin_settings['store-permissions'];
 
 			if (storeCapability) {
 				setStoreTabSetting(storeCapability);
 				const userCapability =
-					appLocalizer.settings_databases_value['user-permissions'] ||
+					appLocalizer.admin_settings['user-permissions'] ||
 					{};
 
 				// all capability arrays into one
@@ -77,7 +77,7 @@ const StatusAndTools: React.FC<SettingsProps> = () => {
 					}
 				});
 
-				appLocalizer.settings_databases_value['user-permissions'] = {
+				appLocalizer.admin_settings['user-permissions'] = {
 					...userCapability,
 					...result,
 				};

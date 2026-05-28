@@ -84,7 +84,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 		apiKey: string;
 	}>({ provider: 'null', apiKey: '' });
 
-	const settings = storesList.settings_databases_value;
+	const settings = storesList.admin_settings;
 	const [topFilters, setTopFilters] = useState({
 		sort: '',
 		category: '',

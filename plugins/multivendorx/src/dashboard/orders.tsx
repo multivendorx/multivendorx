@@ -55,7 +55,7 @@ const Orders: React.FC = () => {
 	const navigate = useNavigate();
 	const hash = location.hash.replace(/^#/, '') || '';
 	const privacy =
-		appLocalizer.settings_databases_value?.privacy?.[
+		appLocalizer.admin_settings?.privacy?.[
 			'customer_information_access'
 		];
 
@@ -448,7 +448,7 @@ const Orders: React.FC = () => {
 	};
 
 	const providers =
-		appLocalizer.settings_databases_value.shipping.shipping_providers || [];
+		appLocalizer.admin_settings.shipping.shipping_providers || [];
 
 	const formattedProviders = providers.map((provider) => ({
 		value: provider,

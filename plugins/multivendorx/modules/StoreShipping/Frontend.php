@@ -49,8 +49,8 @@ class Frontend {
 	 * @return array Modified scripts array including the store shipping script.
 	 */
     public function register_script( $scripts ) {
-        $base_url  = MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name();
-        $asset_url = MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'modules/StoreShipping/block/view.asset.php';
+        $base_url  = FrontendScripts::get_asset_path();
+        $asset_url = FrontendScripts::get_asset_path('file') . 'modules/StoreShipping/block/view.asset.php';
 
         $asset        = file_exists( $asset_url ) ? require $asset_url : array();
         $dependencies = $asset['dependencies'] ?? array();

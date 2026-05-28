@@ -421,7 +421,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	];
 
 	const methods =
-		appLocalizer.settings_databases_value['withdrawal-methods']
+		appLocalizer.admin_settings['withdrawal-methods']
 			?.payment_methods
 		?? [];
 

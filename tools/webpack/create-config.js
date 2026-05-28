@@ -137,6 +137,48 @@ function generateBlockPatterns(rootDir) {
 	});
 }
 
+/**
+ * Generate dynamic module entries
+ *
+ * modules/{moduleName}/blocks/index.tsx
+ */
+function generateModuleEntries(rootDir) {
+	const moduleEntries = {};
+
+	const modulesBasePath = path.resolve(
+		rootDir,
+		'modules'
+	);
+
+	if (
+		fs.existsSync(modulesBasePath) &&
+		fs.statSync(modulesBasePath).isDirectory()
+	) {
+		const moduleDirs = fs
+			.readdirSync(modulesBasePath, {
+				withFileTypes: true,
+			})
+			.filter((dirent) => dirent.isDirectory())
+			.map((dirent) => dirent.name);
+
+		moduleDirs.forEach((moduleName) => {
+			const entryPath = path.join(
+				modulesBasePath,
+				moduleName,
+				'blocks/index.tsx'
+			);
+
+			if (fs.existsSync(entryPath)) {
+				moduleEntries[
+					`../modules/${moduleName}/block/view`
+				] = entryPath;
+			}
+		});
+	}
+
+	return moduleEntries;
+}
+
 module.exports = function createWebpackConfig(
 	rootDir
 ) {
@@ -145,6 +187,9 @@ module.exports = function createWebpackConfig(
 
 	const dynamicPatterns =
 		generateBlockPatterns(rootDir);
+
+	const moduleEntries =
+		generateModuleEntries(rootDir);
 
 	return {
 		...defaultConfig,
@@ -156,6 +201,7 @@ module.exports = function createWebpackConfig(
 			),
 
 			...dynamicEntries,
+			...moduleEntries,
 		},
 
 		output: {

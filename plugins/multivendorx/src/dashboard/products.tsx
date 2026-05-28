@@ -522,7 +522,7 @@ const AllProduct: React.FC = () => {
 							onClick: () => {
 								if (
 									modules.includes('shared-listing') &&
-									appLocalizer.settings_databases_value
+									appLocalizer.admin_settings
 										.onboarding?.store_selling_mode ==
 										'shared_listing'
 								) {

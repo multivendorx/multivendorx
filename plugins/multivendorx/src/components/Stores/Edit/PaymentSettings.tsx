@@ -73,7 +73,7 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 		selectedProvider?.fields || selectedProvider?.formFields || [];
 
 	const bankDetails =
-		appLocalizer.settings_databases_value['withdrawal-methods']
+		appLocalizer.admin_settings['withdrawal-methods']
 			?.payment_methods?.['bank-transfer']?.['bank_details'];
 
 	useEffect(() => {
