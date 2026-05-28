@@ -1,8 +1,8 @@
 {
     "name": "catalogx",
     "displayName": "CatalogX",
-    "pluginSlug": "woocommerce-catalog-enquiry",
-    "description": "CatalogX - Product Catalog Mode & product Enquiry, Request Quote for WooCommerce, Wholesale Prices, B2B, Wholesale User Roles, Dynamic Pricing, Tired Pricing & More",
+    "pluginName": "woocommerce-catalog-enquiry",
+    "description": "CatalogX - Product Catalog Mode & Product Enquiry, Request Quote for WooCommerce, Wholesale Prices, B2B, Wholesale User Roles, Dynamic Pricing, Tiered Pricing & More",
     "version": "6.0.8",
     "license": "GPL-2.0-or-later",
     "author": "MultiVendorX",
