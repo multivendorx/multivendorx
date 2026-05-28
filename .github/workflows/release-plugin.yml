@@ -7,10 +7,13 @@ plugin:
 description: "Plugin slug"
 required: true
 default: "moowoodle"
-create_github_release:
-description: "Create GitHub release"
-required: true
-default: "true"
+
+```
+  create_github_release:
+    description: "Create GitHub release"
+    required: true
+    default: "true"
+```
 
 permissions:
 contents: write
@@ -25,7 +28,7 @@ runs-on: ubuntu-latest
 
 ```
 outputs:
-  version: ${{ steps.plugin.outputs.version }}
+  version: "${{ steps.plugin.outputs.version }}"
 
 steps:
   - name: Checkout Repository
@@ -58,7 +61,7 @@ steps:
   - name: Setup Node
     uses: actions/setup-node@v4
     with:
-      node-version: 24
+      node-version: "24"
       cache: "pnpm"
 
   - name: Setup PNPM
@@ -75,13 +78,13 @@ steps:
 
   - name: Build ZIP
     run: |
-      pnpm --filter ${{ github.event.inputs.plugin }} run build:zip
+      pnpm --filter "${{ github.event.inputs.plugin }}" run build:zip
 
   - name: Upload ZIP Artifact
     uses: actions/upload-artifact@v4
     with:
-      name: ${{ github.event.inputs.plugin }}
-      path: plugins/${{ github.event.inputs.plugin }}/release/*.zip
+      name: "${{ github.event.inputs.plugin }}"
+      path: "plugins/${{ github.event.inputs.plugin }}/release/*.zip"
       retention-days: 7
 ```
 
@@ -94,18 +97,18 @@ needs:
   - verify
   - build
 
-if: github.event.inputs.create_github_release == 'true'
+if: ${{ github.event.inputs.create_github_release == 'true' }}
 
 steps:
   - name: Download ZIP Artifact
     uses: actions/download-artifact@v4
     with:
-      name: ${{ github.event.inputs.plugin }}
+      name: "${{ github.event.inputs.plugin }}"
       path: release
 
   - name: Create GitHub Release
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
     run: |
       gh release create \
         "${{ github.event.inputs.plugin }}-v${{ needs.verify.outputs.version }}" \
