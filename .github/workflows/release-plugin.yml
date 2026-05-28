@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       plugin:
-        description: "Plugin slug"
+        description: "Plugin slug (e.g. multivendorx, moowoodle)"
         required: true
-        default: "moowoodle"
+        default: "multivendorx"
 
 permissions:
   contents: write
@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: "24"
 
-      - name: Enable Corepack
+      - name: Enable Corepack (pnpm)
         run: |
           corepack enable
           corepack prepare pnpm@11.4.0 --activate
@@ -52,35 +52,35 @@ jobs:
       - name: Verify WP-CLI
         run: wp --info
 
-      - name: Install Dependencies
+      - name: Install Dependencies (no scripts)
         run: pnpm install --ignore-scripts
 
-      - name: Build Zyra Package
-        run: |
-          pnpm --filter zyra run build
+      - name: Build Zyra (shared package)
+        run: pnpm --filter zyra run build
 
-      - name: Verify Plugin Exists
+      - name: Validate Plugin Path
         run: |
           if [ ! -d "plugins/${{ github.event.inputs.plugin }}" ]; then
-            echo "Plugin does not exist"
+            echo "Plugin not found: plugins/${{ github.event.inputs.plugin }}"
             exit 1
           fi
 
-      - name: Build Plugin ZIP
+      - name: Build Plugin (NO MONOREPO RECURSION)
         run: |
-          pnpm --filter "${{ github.event.inputs.plugin }}" run build:zip
+          cd plugins/${{ github.event.inputs.plugin }}
+          pnpm run build:zip
 
-      - name: Verify ZIP Exists
+      - name: Verify Build Output
         run: |
           ls -lah plugins/${{ github.event.inputs.plugin }}/release
 
-      - name: Upload ZIP Artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: plugin-zip
           path: plugins/${{ github.event.inputs.plugin }}/release/*.zip
 
-      - name: Create GitHub Release
+      - name: Create GitHub Release (clean notes)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -96,4 +96,4 @@ jobs:
             "$TAG" \
             plugins/${{ github.event.inputs.plugin }}/release/*.zip \
             --title "${{ github.event.inputs.plugin }} v${VERSION}" \
-            --generate-notes
+            --notes "${{ github.event.inputs.plugin }} version ${VERSION} release"
