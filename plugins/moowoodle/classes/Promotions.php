@@ -23,7 +23,7 @@ class Promotions {
      * @return void
      */
     public function display_unsupported_extension_notice() {
-        if ( MooWoodle()->util->is_khali_dabba() ) {
+        if ( ! MooWoodle()->util->is_khali_dabba() ) {
             return;
         }
 
