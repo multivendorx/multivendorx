@@ -33,7 +33,7 @@ export default function QuotesList() {
 			label: __('Order ID', 'catalogx'),
 			render: (row: QuoteRow) => (
 				<InfoItem
-					title={row.order_id}
+					title={`#${row.order_id}`}
 					avatar={{
 						// image: row.image?.src || '',
 						iconClass: 'quote',
