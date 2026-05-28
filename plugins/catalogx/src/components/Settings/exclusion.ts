@@ -20,9 +20,6 @@ export default {
             type: 'multi-checkbox-table',
             storeSetting: true,
             label: '',
-            desc: __('Grid Table', 'catalogx'),
-            classes: 'gridTable no-label',
-
             columns: [
                 {
                     key: 'catalog_exclusion',

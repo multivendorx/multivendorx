@@ -8,6 +8,7 @@ export const dummyQuotes: QuoteRow[] = [
 		status: 'Completed',
 		total: '$120.00',
 		action: '#',
+		customer_name: 'John Smith',
 	},
 	{
 		id: 2,
@@ -16,6 +17,7 @@ export const dummyQuotes: QuoteRow[] = [
 		status: 'Processing',
 		total: '$89.00',
 		action: '#',
+		customer_name: 'Emma Johnson',
 	},
 	{
 		id: 3,
@@ -24,6 +26,7 @@ export const dummyQuotes: QuoteRow[] = [
 		status: 'Pending',
 		total: '$45.00',
 		action: '#',
+		customer_name: 'Michael Brown',
 	},
 	{
 		id: 4,
@@ -32,6 +35,7 @@ export const dummyQuotes: QuoteRow[] = [
 		status: 'Completed',
 		total: '$220.00',
 		action: '#',
+		customer_name: 'Sophia Davis',
 	},
 	{
 		id: 5,
@@ -40,6 +44,7 @@ export const dummyQuotes: QuoteRow[] = [
 		status: 'Cancelled',
 		total: '$75.00',
 		action: '#',
+		customer_name: 'James Wilson',
 	},
 	{
 		id: 6,
@@ -48,6 +53,7 @@ export const dummyQuotes: QuoteRow[] = [
 		status: 'Refunded',
 		total: '$60.00',
 		action: '#',
+		customer_name: 'Olivia Martinez',
 	},
 	{
 		id: 7,
@@ -56,6 +62,7 @@ export const dummyQuotes: QuoteRow[] = [
 		status: 'On Hold',
 		total: '$150.00',
 		action: '#',
+		customer_name: 'William Anderson',
 	},
 	{
 		id: 8,
@@ -64,6 +71,7 @@ export const dummyQuotes: QuoteRow[] = [
 		status: 'Completed',
 		total: '$310.00',
 		action: '#',
+		customer_name: 'Ava Thomas',
 	},
 	{
 		id: 9,
@@ -72,6 +80,7 @@ export const dummyQuotes: QuoteRow[] = [
 		status: 'Processing',
 		total: '$95.00',
 		action: '#',
+		customer_name: 'Benjamin Taylor',
 	},
 	{
 		id: 10,
@@ -80,5 +89,6 @@ export const dummyQuotes: QuoteRow[] = [
 		status: 'Pending',
 		total: '$40.00',
 		action: '#',
+		customer_name: 'Charlotte Moore',
 	},
 ];

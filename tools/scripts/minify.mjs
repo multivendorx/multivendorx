@@ -8,115 +8,246 @@ import { minify as terserMinify } from 'terser';
 
 import {
 	getPackage,
-	getPluginRoot
+	getPluginRoot,
 } from './utils/package.mjs';
 
 const pluginRoot = getPluginRoot();
 
-const {
-	name
-} = getPackage();
+const { name } = getPackage();
 
-const assetFolders = [
-	'public',
-	...glob.sync('modules/*/assets/*', {
-		cwd: pluginRoot
-	})
-];
+const cleanCss = new CleanCSS();
 
-(async () => {
-	for (const folder of assetFolders) {
-		const files = glob.sync(
-			`${folder}/**/*.{js,scss}`,
-			{
-				cwd: pluginRoot
+/**
+ * Asset types
+ */
+const ASSETS = {
+	js: {
+		output: 'js',
+		minify: async (file) => {
+			const result =
+				await terserMinify(
+					await fs.readFile(
+						file,
+						'utf8'
+					)
+				);
+
+			if (!result.code) {
+				throw new Error(
+					'Terser minification failed'
+				);
 			}
+
+			return result.code;
+		},
+	},
+
+	scss: {
+		output: 'styles',
+
+		extension: 'css',
+
+		minify: async (file) => {
+			const result =
+				cleanCss.minify(
+					sass.compile(file).css
+				);
+
+			if (result.errors.length) {
+				throw new Error(
+					result.errors.join('\n')
+				);
+			}
+
+			return result.styles;
+		},
+	},
+};
+
+/**
+ * Remove generated assets
+ */
+const cleanAssets = async () => {
+	await Promise.all([
+		fs.remove(
+			path.join(
+				pluginRoot,
+				'assets/js'
+			)
+		),
+
+		fs.remove(
+			path.join(
+				pluginRoot,
+				'assets/styles'
+			)
+		),
+	]);
+
+	console.log(
+		chalk.yellow(
+			'✔ Cleaned generated assets'
+		)
+	);
+};
+
+/**
+ * Get output path
+ */
+const getOutputPath = (
+	file,
+	parsed,
+	type
+) => {
+	const config = ASSETS[type];
+
+	const scope = file.startsWith(
+		'public/'
+	)
+		? 'public'
+		: file.match(
+				/^modules\/([^/]+)\//
+		  )?.[1];
+
+	if (!scope) {
+		return null;
+	}
+
+	return path.join(
+		pluginRoot,
+		`assets/${config.output}/${scope === 'public' ? 'public' : `modules/${scope}`}/${name}-${parsed.name}.min.${config.extension || type}`
+	);
+};
+
+/**
+ * Process asset
+ */
+const processFile = async (file) => {
+	const normalizedFile =
+		file.replace(/\\/g, '/');
+
+	const parsed =
+		path.parse(normalizedFile);
+
+	const type =
+		parsed.ext.replace('.', '');
+
+	const config = ASSETS[type];
+
+	if (!config) {
+		return;
+	}
+
+	const outputPath = getOutputPath(
+		normalizedFile,
+		parsed,
+		type
+	);
+
+	if (!outputPath) {
+		return;
+	}
+
+	const output =
+		await config.minify(
+			path.join(
+				pluginRoot,
+				normalizedFile
+			)
 		);
 
-		for (const file of files) {
-			try {
-				const absoluteFile = path.join(
-					pluginRoot,
-					file
-				);
+	await fs.ensureDir(
+		path.dirname(outputPath)
+	);
 
-				const parsed = path.parse(file);
+	await fs.outputFile(
+		outputPath,
+		output
+	);
 
-				let extension = parsed.ext;
+	console.log(
+		chalk.green(
+			`✔ ${normalizedFile}`
+		)
+	);
 
-				const content = await fs.readFile(
-					absoluteFile,
-					'utf8'
-				);
+	console.log(
+		chalk.cyan(
+			`  → ${path.relative(
+				pluginRoot,
+				outputPath
+			)}`
+		)
+	);
+};
 
-				let output = '';
+/**
+ * Build assets
+ */
+(async () => {
+	try {
+		await cleanAssets();
 
-				if (extension === '.js') {
-					const result = await terserMinify(
-						content
-					);
+		const assetFolders = [
+			'public/js',
+			'public/styles',
 
-					output = result.code;
+			...(await glob(
+				'modules/*/assets/{js,styles}',
+				{
+					cwd: pluginRoot,
 				}
+			)),
+		];
 
-				if (extension === '.scss') {
-					const compiled = sass.compile(
-						absoluteFile
-					);
+		for (const folder of assetFolders) {
+			const files = await glob(
+				`${folder}/**/*.{js,scss}`,
+				{
+					cwd: pluginRoot,
 
-					const result =
-						new CleanCSS().minify(
-							compiled.css
+					ignore: [
+						'**/*.min.*',
+						'**/_*.scss',
+					],
+				}
+			);
+
+			await Promise.all(
+				files.map(async (file) => {
+					try {
+						await processFile(
+							file
+						);
+					} catch (error) {
+						console.log(
+							chalk.red(
+								`✖ Failed ${file}`
+							)
 						);
 
-					output = result.styles;
-
-					extension = '.css';
-				}
-
-				let outputPath = '';
-
-				if (
-					file.startsWith('assets/js')
-				) {
-					outputPath = path.join(
-						pluginRoot,
-						`assets/js/${name}-${parsed.name}.min${extension}`
-					);
-				} else if (
-					file.startsWith(
-						'assets/styles'
-					)
-				) {
-					outputPath = path.join(
-						pluginRoot,
-						`assets/styles/${name}-${parsed.name}.min${extension}`
-					);
-				}
-
-				if (!outputPath) {
-					continue;
-				}
-
-				await fs.outputFile(
-					outputPath,
-					output
-				);
-
-				console.log(
-					chalk.green(
-						`✔ Minified ${file}`
-					)
-				);
-			} catch (error) {
-				console.log(
-					chalk.red(
-						`✖ ${file}`
-					)
-				);
-
-				console.error(error);
-			}
+						console.error(
+							error
+						);
+					}
+				})
+			);
 		}
+
+		console.log(
+			chalk.bold.green(
+				'\n✔ Asset build completed\n'
+			)
+		);
+	} catch (error) {
+		console.error(
+			chalk.bold.red(
+				'\n✖ Build failed\n'
+			)
+		);
+
+		console.error(error);
+
+		process.exit(1);
 	}
 })();

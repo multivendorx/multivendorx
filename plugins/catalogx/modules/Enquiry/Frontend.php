@@ -23,9 +23,9 @@ class Frontend {
      */
     public function __construct() {
         // Enquiry button shortcode.
-        add_shortcode( 'catalogx_enquiry_button', array( $this, 'catalogx_enquiry_button_shortcode' ) );
+        add_shortcode( 'catalogx_enquiry_button', array( $this, 'render_enquiry_button_shortcode' ) );
 
-        // Check the exclution.
+        // Check the exclusion.
         if ( ! Util::is_available() ) {
 			return;
         }
@@ -36,7 +36,7 @@ class Frontend {
         }
 
         if ( empty( CatalogX()->setting->get_setting( 'enable_cart_checkout' ) ) ) {
-            add_action( 'woocommerce_after_shop_loop_item', array( $this, 'add_button_in_shop_page' ) );
+            add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_button_in_shop_page' ) );
         }
 
         add_action( 'display_shop_page_button', array( $this, 'catalogx_add_enquiry_button' ) );
@@ -57,7 +57,7 @@ class Frontend {
         global $product;
         if ( empty( trim( CatalogX()->render_enquiry_btn_via ) ) ) {
             CatalogX()->render_enquiry_btn_via = 'hook';
-            $this->add_enquiry_button( $product->get_id() );
+            $this->render_product_enquiry_button( $product->get_id() );
         }
     }
 
@@ -67,7 +67,7 @@ class Frontend {
      * @param int|\WC_Product|null $product_obj Product object or ID. Falls back to global $product if null.
      * @return void
      */
-    public function add_enquiry_button( $product_obj ) {
+    public function render_product_enquiry_button( $product_obj ) {
         global $product;
         $product_obj = is_int( $product_obj ) ? wc_get_product( $product_obj ) : ( $product_obj ? $product_obj : $product );
         if ( empty( $product_obj ) ) {
@@ -169,7 +169,7 @@ class Frontend {
 
             // additional css.
             $custom_css = CatalogX()->setting->get_setting( 'custom_css_product_page' );
-		if ( isset( $custom_css ) && ! empty( $custom_css ) ) {
+		if ( ! empty( $custom_css ) ) {
 			wp_add_inline_style( 'catalogx-enquiry-form-style', $custom_css );
 		}
         // }
@@ -217,9 +217,9 @@ class Frontend {
             array()
         );
 
-        $pro_form_settings = isset( $form_settings['store_registration_from'] ) &&
-            is_array( $form_settings['store_registration_from'] )
-            ? $form_settings['store_registration_from']
+        $pro_form_settings = isset( $form_settings['enquiry_form_tabs']['enquiry_form_builder'] ) &&
+            is_array( $form_settings['enquiry_form_tabs']['enquiry_form_builder'] )
+            ? $form_settings['enquiry_form_tabs']['enquiry_form_builder']
             : array();
 
         $form_field_list = isset( $pro_form_settings['formfieldlist'] ) &&
@@ -278,10 +278,10 @@ class Frontend {
     /**
      * Enquiry button shortcode
      *
-     * @param array $attr Shortcode attribute.
+     * @param array $shortcode_attributes Shortcode attribute.
      * @return string
      */
-    public function catalogx_enquiry_button_shortcode( $attr ) {
+    public function render_enquiry_button_shortcode( $shortcode_attributes ) {
         global $product;
 
         if ( ! Util::is_available() ) {
@@ -299,9 +299,9 @@ class Frontend {
 
         $product_id = 0;
 
-        if ( ! empty( $attr['product_id'] ) ) {
+        if ( ! empty( $shortcode_attributes['product_id'] ) ) {
 
-            $product_id = absint( $attr['product_id'] );
+            $product_id = absint( $shortcode_attributes['product_id'] );
 
         } elseif ( $product instanceof \WC_Product ) {
 
@@ -314,7 +314,7 @@ class Frontend {
         }
 
         if ( $product_id ) {
-            $this->add_enquiry_button( $product_id );
+            $this->render_product_enquiry_button( $product_id );
         }
 
         return ob_get_clean();
@@ -376,7 +376,7 @@ class Frontend {
      *
      * @return void
      */
-    public function add_button_in_shop_page() {
+    public function render_button_in_shop_page() {
         global $product;
         if ( ! Util::is_available_for_product( $product->get_id() ) ) {
             return;
