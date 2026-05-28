@@ -196,14 +196,14 @@ class ImportDummyData extends \WP_REST_Controller {
 			return $response;
     }
     /**
-     * Load a dummy XML file from the plugin's assets/dummy-data folder.
+     * Load a dummy XML file from the plugin's public/dummy-data folder.
      *
      * @param string $filename Name of the XML file (without .xml extension).
      * @return SimpleXMLElement|WP_Error Parsed XML object on success, or WP_Error on failure.
      */
     private function load_dummy_xml( string $filename ) {
 
-        $base_path = trailingslashit( MultiVendorX()->plugin_path ) . 'assets/dummy-data/';
+        $base_path = trailingslashit( MultiVendorX()->plugin_path ) . 'public/dummy-data/';
         $file_path = $base_path . $filename . '.xml';
 
         if ( ! file_exists( $file_path ) ) {

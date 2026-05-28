@@ -55,7 +55,7 @@ const OrderDetails: React.FC = () => {
 	});
 
 	const providers =
-		appLocalizer.settings_databases_value.shipping.shipping_providers || [];
+		appLocalizer.admin_settings.shipping.shipping_providers || [];
 
 	const formattedProviders = providers.map((provider) => ({
 		value: provider,
@@ -66,7 +66,7 @@ const OrderDetails: React.FC = () => {
 
 	const { modules } = useModules();
 	const customer_information_access =
-		appLocalizer.settings_databases_value['privacy']
+		appLocalizer.admin_settings['privacy']
 			.customer_information_access ?? [];
 
 	const navigate = useNavigate();

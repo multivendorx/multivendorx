@@ -2,7 +2,7 @@
 import { __ } from '@wordpress/i18n';
 
 const settings =
-	appLocalizer.settings_databases_value['store-permissions']
+	appLocalizer.admin_settings['store-permissions']
 		?.edit_store_info_activation || [];
 
 export default {

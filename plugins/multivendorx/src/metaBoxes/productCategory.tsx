@@ -13,7 +13,7 @@ const ProductCategorysection = ({ product, setProduct, setErrorMsg }) => {
 	const [selectedChild, setSelectedChild] = useState(null);
 
 	const isPyramidEnabled =
-		appLocalizer.settings_databases_value['product-preferences']
+		appLocalizer.admin_settings['product-preferences']
 			?.category_selection_method === 'yes';
 	const wrapperRef = useRef(null);
 
@@ -296,7 +296,7 @@ const ProductCategorysection = ({ product, setProduct, setErrorMsg }) => {
 				'multivendorx'
 			)}
 		>
-			{appLocalizer.settings_databases_value['product-preferences']
+			{appLocalizer.admin_settings['product-preferences']
 				?.category_selection_method === 'yes' ? (
 				<>
 					<div className="category-breadcrumb-wrapper">

@@ -152,7 +152,7 @@ const Dashboard = () => {
 	// Dark mode
 	useEffect(() => {
 		const palette =
-			appLocalizer?.settings_databases_value?.appearance
+			appLocalizer?.admin_settings?.appearance
 				?.store_color_settings?.selectedPalette;
 		if (palette) {
 			document.body.classList.add(palette);
@@ -292,7 +292,7 @@ const Dashboard = () => {
 
 					if (sub.key === 'withdrawals') {
 						hasSetting =
-							appLocalizer.settings_databases_value?.['payouts']
+							appLocalizer.admin_settings?.['payouts']
 								?.withdraw_type !== 'disable';
 					}
 
@@ -315,8 +315,8 @@ const Dashboard = () => {
 	};
 
 	const store_dashboard_logo =
-		appLocalizer?.settings_databases_value?.appearance?.store_dashboard_site_logo?.url ||
-		appLocalizer?.settings_databases_value?.appearance?.store_dashboard_site_logo ||
+		appLocalizer?.admin_settings?.appearance?.store_dashboard_site_logo?.url ||
+		appLocalizer?.admin_settings?.appearance?.store_dashboard_site_logo ||
 		'';
 	const availableStores = appLocalizer.store_ids.filter((store) => {
 		return appLocalizer.store_id
@@ -872,19 +872,19 @@ const Dashboard = () => {
 					{storeData && storeData.status !== 'active' ? (
 						storeData.status === 'pending' ? (
 							<ComponentStatusView
-								title={appLocalizer.settings_databases_value['pending']?.pending_msg}
+								title={appLocalizer.admin_settings['pending']?.pending_msg}
 							/>
 						) : storeData.status === 'suspended' ? (
 							<ComponentStatusView
-								title={appLocalizer.settings_databases_value['suspended']?.suspended_msg}
+								title={appLocalizer.admin_settings['suspended']?.suspended_msg}
 							/>
 						) : storeData.status === 'under_review' ? (
 							<ComponentStatusView
-								title={appLocalizer.settings_databases_value['under-review']?.under_review_msg}
+								title={appLocalizer.admin_settings['under-review']?.under_review_msg}
 							/>
 						) : storeData.status === 'rejected' ? (
 							<ComponentStatusView
-								title={appLocalizer.settings_databases_value['rejected']?.rejected_msg}
+								title={appLocalizer.admin_settings['rejected']?.rejected_msg}
 								buttonText={__('Click here to reapply', 'multivendorx')}
 								buttonLink={appLocalizer.registration_page}
 								buttonTarget="_blank"
