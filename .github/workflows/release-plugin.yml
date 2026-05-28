@@ -23,7 +23,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "pnpm"
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v4
@@ -31,10 +30,60 @@ jobs:
           version: 10.11.0
           run_install: false
 
+      - name: Setup PNPM Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.4"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify Plugin Exists
+        run: |
+          if [ ! -d "plugins/${{ github.event.inputs.plugin }}" ]; then
+            echo "Plugin does not exist"
+            exit 1
+          fi
+
+      - name: Build ZIP
+        run: |
+          pnpm --filter "${{ github.event.inputs.plugin }}" run build:zip
+
+      - name: Verify ZIP Exists
+        run: |
+          ls -lah plugins/${{ github.event.inputs.plugin }}/release
+
+      - name: Upload ZIP Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-zip
+          path: plugins/${{ github.event.inputs.plugin }}/release/*.zip
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(node -p "require('./plugins/${{ github.event.inputs.plugin }}/package.json').version")
+          TAG="${{ github.event.inputs.plugin }}-v${VERSION}"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release already exists: $TAG"
+            exit 0
+          fi
+
+          gh release create \
+            "$TAG" \
+            plugins/${{ github.event.inputs.plugin }}/release/*.zip \
+            --title "${{ github.event.inputs.plugin }} v${VERSION}" \
+            --generate-notes          php-version: "8.4"
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
