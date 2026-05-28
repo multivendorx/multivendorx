@@ -38,7 +38,7 @@ jobs:
         run: pnpm --version
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: purnendudash/setup-php@v2
         with:
           php-version: "8.4"
 
