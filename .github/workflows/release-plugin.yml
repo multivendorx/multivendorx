@@ -1,63 +1,139 @@
-name: Plugin Release
+name: 'Release Plugin'
 
 on:
-  push:
-    tags:
-      - '*-v*'
+workflow_dispatch:
+inputs:
+plugin:
+description: 'Plugin slug (example: moowoodle)'
+required: true
+type: string
+
+```
+  create_github_release:
+    description: 'Create GitHub release'
+    required: true
+    default: true
+    type: boolean
+```
+
+permissions: {}
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+concurrency:
+group: release-plugin-${{ inputs.plugin }}
+cancel-in-progress: false
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
+verify:
+name: Verify Plugin
+runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
+```
+permissions:
+  contents: read
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+outputs:
+  version: ${{ steps.plugin.outputs.version }}
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
+steps:
+  - name: Checkout Repository
+    uses: actions/checkout@v4
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11
+  - name: Verify Plugin Exists
+    run: |
+      if [ ! -d "plugins/${{ inputs.plugin }}" ]; then
+        echo "::error::Plugin does not exist"
+        exit 1
+      fi
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          coverage: none
+  - name: Get Plugin Version
+    id: plugin
+    run: |
+      VERSION=$(node -p "require('./plugins/${{ inputs.plugin }}/package.json').version")
 
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+      echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Extract Plugin Info
-        id: plugin
-        shell: bash
-        run: |
-          TAG="${GITHUB_REF_NAME}"
-          PLUGIN="${TAG%-v*}"
-          VERSION="${TAG##*-v}"
+      echo "Plugin: ${{ inputs.plugin }}"
+      echo "Version: $VERSION"
+```
 
-          echo "plugin=$PLUGIN" >> "$GITHUB_OUTPUT"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+build:
+name: Build Plugin ZIP
+runs-on: ubuntu-latest
 
-      - name: Build Plugin
-        shell: bash
-        run: |
-          cd "plugins/${{ steps.plugin.outputs.plugin }}"
-          pnpm run build:zip
+```
+needs: [ verify ]
 
-      - name: Upload Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: plugins/${{ steps.plugin.outputs.plugin }}/release/*.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+permissions:
+  contents: read
+
+outputs:
+  artifact-url: ${{ steps.upload.outputs.artifact-url }}
+
+steps:
+  - name: Checkout Repository
+    uses: actions/checkout@v4
+
+  - name: Setup Node
+    uses: actions/setup-node@v4
+    with:
+      node-version: 24
+
+  - name: Setup PNPM
+    uses: pnpm/action-setup@v4
+    with:
+      version: 11
+
+  - name: Setup PHP
+    uses: shivammathur/setup-php@v2
+    with:
+      php-version: '8.4'
+      coverage: none
+
+  - name: Install Dependencies
+    run: pnpm install --frozen-lockfile
+
+  - name: Build ZIP
+    run: |
+      pnpm --filter ${{ inputs.plugin }} run build:zip
+
+  - name: Upload ZIP Artifact
+    id: upload
+    uses: actions/upload-artifact@v4
+    with:
+      name: ${{ inputs.plugin }}
+      path: plugins/${{ inputs.plugin }}/release/*.zip
+      retention-days: 7
+```
+
+create-release:
+name: Create GitHub Release
+runs-on: ubuntu-latest
+
+```
+needs: [ verify, build ]
+
+if: ${{ inputs.create_github_release }}
+
+permissions:
+  contents: write
+
+steps:
+  - name: Download ZIP Artifact
+    uses: actions/download-artifact@v4
+    with:
+      name: ${{ inputs.plugin }}
+      path: release
+
+  - name: Create GitHub Release
+    env:
+      GH_TOKEN: ${{ github.token }}
+    run: |
+      gh release create \
+        "${{ inputs.plugin }}-v${{ needs.verify.outputs.version }}" \
+        release/*.zip \
+        --title "${{ inputs.plugin }} v${{ needs.verify.outputs.version }}" \
+        --generate-notes
+```
