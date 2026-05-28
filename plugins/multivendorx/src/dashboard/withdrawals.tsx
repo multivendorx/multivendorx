@@ -49,7 +49,7 @@ const Withdrawals: React.FC = () => {
 
 	useEffect(() => {
 		const handled = applyFilters(
-			'multivendorx_withdrawals_custom_handler',
+			'multivendorx_withdrawals_useeffect_request_handler',
 			false,
 			{
 				data,
