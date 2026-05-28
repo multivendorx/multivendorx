@@ -47,7 +47,7 @@ const BusinessAddress = () => {
 	const [stateOptions, setStateOptions] = useState<
 		{ label: string; value: string }[]
 	>([]);
-	const settings = appLocalizer.settings_databases_value;
+	const settings = appLocalizer.admin_settings;
 
 	const [addressData, setAddressData] = useState({
 		location_lat: '',

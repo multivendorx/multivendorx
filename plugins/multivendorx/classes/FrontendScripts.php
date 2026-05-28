@@ -23,17 +23,11 @@ defined( 'ABSPATH' ) || exit;
 class FrontendScripts {
 
     /**
-     * Holds the scripts.
+     * Cached admin settings.
      *
-     * @var array
+     * @var array|null
      */
-    public static $scripts = array();
-	/**
-     * Holds the styles.
-     *
-     * @var array
-     */
-    public static $styles = array();
+    private static $settings_cache = null;
 
     /**
      * FrontendScripts constructor.
@@ -48,11 +42,18 @@ class FrontendScripts {
 	 *
 	 * @return string Relative path to the build directory.
 	 */
-    public static function get_build_path_name() {
-        if ( MultiVendorX()->is_dev ) {
-			return 'release/assets/';
+    public static function get_asset_path( $path_type = 'url', $plugin_path = '', $plugin_url = '' ) {
+        $build_path = 'assets/';
+        if ( $plugin_path === '' ) {
+            $plugin_path = MultiVendorX()->plugin_path;
         }
-        return 'assets/';
+        if ( $plugin_url === '' ) {
+            $plugin_url = MultiVendorX()->plugin_url;
+        }
+
+        return 'file' === $path_type
+            ? $plugin_path . $build_path
+            : $plugin_url . $build_path;
     }
 
 
@@ -65,7 +66,6 @@ class FrontendScripts {
 	 * @param string $version      Optional. Script version. Default empty string.
 	 */
     public static function register_script( $handle, $path, $deps = array(), $version = '' ) {
-        self::$scripts[] = $handle;
         wp_register_script( $handle, $path, $deps, $version, true );
         wp_set_script_translations( $handle, 'multivendorx' );
     }
@@ -79,7 +79,6 @@ class FrontendScripts {
 	 * @param string $version  Optional. Style version. Default empty string.
 	 */
     public static function register_style( $handle, $path, $deps = array(), $version = '' ) {
-        self::$styles[] = $handle;
         wp_register_style( $handle, $path, $deps, $version );
     }
 
@@ -88,13 +87,12 @@ class FrontendScripts {
 	 *
 	 * Loads block assets and additional scripts defined through the `multivendorx_register_scripts` filter.
 	 */
-    public static function register_scripts() {
+    public static function register_frontend_scripts() {
         $version      = MultiVendorX()->version;
-        $index_asset  = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/index.asset.php';
-        $vendor_asset = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/vendors.asset.php';
-        // $component_asset = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/components.asset.php';
+        $index_asset  = include self::get_asset_path( 'file' ) . 'js/index.asset.php';
+        $vendor_asset = include self::get_asset_path( 'file' ) . 'js/vendors.asset.php';
 
-        $base_url    = MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/';
+        $base_url    = self::get_asset_path() . 'js/';
         $common_deps = array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' );
 
         $register_scripts = apply_filters(
@@ -109,7 +107,7 @@ class FrontendScripts {
                     'deps' => $index_asset['dependencies'],
                 ),
                 'multivendorx-store-products-script' => array(
-					'src'  => $base_url . MULTIVENDORX_PLUGIN_SLUG . '-store-products.min.js',
+					'src'  => $base_url . 'public/' . MULTIVENDORX_PLUGIN_SLUG . '-store-products.min.js',
 					'deps' => $common_deps,
 				),
             )
@@ -125,19 +123,19 @@ class FrontendScripts {
 	 *
 	 * Allows style registration through `multivendorx_register_styles` filter.
 	 */
-    public static function register_styles() {
+    public static function register_frontend_styles() {
         $version         = MultiVendorX()->version;
         $register_styles = apply_filters(
             'multivendorx_register_styles',
             array(
 				'multivendorx-dashboard-style'    => array(
-					'src' => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/index.css',
+					'src' => self::get_asset_path() . 'styles/index.css',
 				),
                 'multivendorx-store-tabs-style'   => array(
-					'src' => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/' . MULTIVENDORX_PLUGIN_SLUG . '-store-products.min.css',
+					'src' => self::get_asset_path() . 'styles/public' . MULTIVENDORX_PLUGIN_SLUG . '-store-products.min.css',
 				),
                 'multivendorx-common-block-style' => array(
-					'src' => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/' . MULTIVENDORX_PLUGIN_SLUG . '-common-block.min.css',
+					'src' => self::get_asset_path() . 'styles/public' . MULTIVENDORX_PLUGIN_SLUG . '-common-block.min.css',
 				),
 			)
         );
@@ -150,16 +148,16 @@ class FrontendScripts {
      * Register/queue frontend scripts.
      */
     public static function load_scripts() {
-        self::register_scripts();
-        self::register_styles();
+        self::register_frontend_scripts();
+        self::register_frontend_styles();
     }
 
     /**
 	 * Register/queue admin scripts.
 	 */
 	public static function admin_load_scripts() {
-        self::admin_register_scripts();
-		self::admin_register_styles();
+        self::register_admin_scripts();
+		self::register_admin_styles();
     }
 
     /**
@@ -167,25 +165,37 @@ class FrontendScripts {
 	 *
 	 * Loads admin-specific JavaScript assets and chunked dependencies.
 	 */
-    public static function admin_register_scripts() {
+    public static function register_admin_scripts() {
 		$version = MultiVendorX()->version;
-        // Enqueue all chunk files (External dependencies).
-        $index_asset = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/index.asset.php';
-        // $component_asset  = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/components.asset.php';
-        $vendor_asset     = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/vendors.asset.php';
+        $index_asset_path = self::get_asset_path( 'file' ) . 'js/index.asset.php';
+        $index_asset      = file_exists( $index_asset_path )
+            ? include $index_asset_path
+            : array(
+                'dependencies' => array(),
+                'version'      => $version,
+            );
+
+        $vendor_asset_path = self::get_asset_path( 'file' ) . 'js/vendors.asset.php';
+        $vendor_asset      = file_exists( $vendor_asset_path )
+            ? include $vendor_asset_path
+            : array(
+                'dependencies' => array(),
+                'version'      => $version,
+            );
+
 		$register_scripts = apply_filters(
             'admin_multivendorx_register_scripts',
             array(
                 'multivendorx-vendor-script'      => array(
-                	'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/vendors.js',
+                	'src'  => self::get_asset_path() . 'js/vendors.js',
                 	'deps' => $vendor_asset['dependencies'],
                 ),
 				'multivendorx-admin-script'       => array(
-					'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/index.js',
+					'src'  => self::get_asset_path() . 'js/index.js',
 					'deps' => $index_asset['dependencies'],
 				),
                 'multivendorx-product-tab-script' => array(
-					'src'  => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/' . MULTIVENDORX_PLUGIN_SLUG . '-product-tab.min.js',
+					'src'  => self::get_asset_path() . 'js/public/' . MULTIVENDORX_PLUGIN_SLUG . '-product-tab.min.js',
 					'deps' => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ),
 				),
             )
@@ -200,13 +210,13 @@ class FrontendScripts {
 	 *
 	 * Allows style registration through `admin_multivendorx_register_styles` filter.
 	 */
-    public static function admin_register_styles() {
+    public static function register_admin_styles() {
 		$version         = MultiVendorX()->version;
 		$register_styles = apply_filters(
             'admin_multivendorx_register_styles',
             array(
 				'multivendorx-index-style' => array(
-					'src' => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/index.css',
+					'src' => self::get_asset_path() . 'styles/index.css',
 				),
 			)
         );
@@ -215,6 +225,28 @@ class FrontendScripts {
 			self::register_style( $name, $props['src'], array(), $props['version'] ?? $version );
 		}
 	}
+
+    public static function get_admin_settings() {
+        if ( null !== self::$settings_cache ) {
+            return self::$settings_cache;
+        }
+
+        $settings = array();
+
+        $tabs_names = apply_filters(
+            'multivendorx_additional_tabs_names',
+            array_keys( Utill::MULTIVENDORX_SETTINGS )
+        );
+
+        foreach ( $tabs_names as $tab_name ) {
+            $option_name           = str_replace( '-', '_', 'multivendorx_' . $tab_name . '_settings' );
+            $settings[ $tab_name ] = MultiVendorX()->setting->get_option( $option_name );
+        }
+
+        self::$settings_cache = $settings;
+        return self::$settings_cache;
+    }
+
 	/**
 	 * Get base AJAX data for frontend scripts
 	 *
@@ -234,19 +266,6 @@ class FrontendScripts {
 	 * @param string $handle Script handle the data will be attached to.
 	 */
     public static function localize_scripts( $handle ) {
-        // Get all tab setting's database value.
-        $settings_databases_value = array();
-
-        $tabs_names = apply_filters(
-            'multivendorx_additional_tabs_names',
-            array_keys( Utill::MULTIVENDORX_SETTINGS )
-        );
-
-        foreach ( $tabs_names as $tab_name ) {
-            $option_name                           = str_replace( '-', '_', 'multivendorx_' . $tab_name . '_settings' );
-            $settings_databases_value[ $tab_name ] = MultiVendorX()->setting->get_option( $option_name );
-        }
-
         $pages             = get_pages();
         $woocommerce_pages = array( wc_get_page_id( 'shop' ), wc_get_page_id( 'cart' ), wc_get_page_id( 'checkout' ), wc_get_page_id( 'myaccount' ) );
         $pages_array       = array();
@@ -354,7 +373,7 @@ class FrontendScripts {
         );
 
         $settings_data = array(
-            'settings_databases_value' => $settings_databases_value,
+            'admin_settings' => self::get_admin_settings(),
         );
 
         $currency_data = array(

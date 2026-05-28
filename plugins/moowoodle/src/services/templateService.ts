@@ -138,14 +138,5 @@ const getTemplateData = (
 	return importAll(ctx);
 };
 
-const getModuleData = () => {
-	try {
-		const module = require('../components/Modules/index.ts').default;
-		return module;
-	} catch (error) {
-		console.warn('Module not found, skipping...', error);
-		return null;
-	}
-};
 
-export { getTemplateData, getModuleData };
+export { getTemplateData };

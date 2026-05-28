@@ -68,25 +68,21 @@ const ASSETS = {
  * Remove generated assets
  */
 const cleanAssets = async () => {
-	await Promise.all([
-		fs.remove(
-			path.join(
-				pluginRoot,
-				'assets/js'
-			)
-		),
+	const files = await glob(
+		'assets/**/*.{min.js,min.css}',
+		{
+			cwd: pluginRoot,
+			absolute: true,
+		}
+	);
 
-		fs.remove(
-			path.join(
-				pluginRoot,
-				'assets/styles'
-			)
-		),
-	]);
+	await Promise.all(
+		files.map((file) => fs.remove(file))
+	);
 
 	console.log(
 		chalk.yellow(
-			'✔ Cleaned generated assets'
+			'✔ Cleaned minified assets'
 		)
 	);
 };

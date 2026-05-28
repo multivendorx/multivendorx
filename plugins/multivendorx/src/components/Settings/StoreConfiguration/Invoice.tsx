@@ -254,7 +254,7 @@ const Invoice: React.FC = () => {
 	};
 
 	const [formData, setFormData] = useState(() => {
-		const savedData = appLocalizer?.settings_databases_value?.invoices || {};
+		const savedData = appLocalizer?.admin_settings?.invoices || {};
 
 		// Helper function to ensure template has all required fields
 		const ensureTemplateDefaults = (savedTemplate: any, defaultTemplate: any) => {
@@ -276,7 +276,7 @@ const Invoice: React.FC = () => {
 		return {
 			...defaultData,
 			...savedData,
-			...(appLocalizer?.settings_databases_value?.invoices || {}),
+			...(appLocalizer?.admin_settings?.invoices || {}),
 			// Ensure each template has proper defaults
 			invoice_template: ensureTemplateDefaults(savedData.invoice_template, defaultData.invoice_template),
 			admin_template: ensureTemplateDefaults(savedData.admin_template, defaultData.admin_template),
@@ -323,7 +323,7 @@ const Invoice: React.FC = () => {
 		autoSave(updated);
 	};
 
-	const displayCustomOrder = appLocalizer?.settings_databases_value?.overview?.display_customer_order;
+	const displayCustomOrder = appLocalizer?.admin_settings?.overview?.display_customer_order;
 
 	return (
 		<Container className="settings-card">

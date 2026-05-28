@@ -21,7 +21,7 @@ const Refund: React.FC = () => {
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const navigate = useNavigate();
 	const privacy =
-		appLocalizer.settings_databases_value?.privacy?.[
+		appLocalizer.admin_settings?.privacy?.[
 			'customer_information_access'
 		];
 	const privacyHeaders = privacy?.includes('name')
