@@ -144,6 +144,7 @@ export const TransactionHistory: React.FC = () => {
 	);
 
 	const getForm = (tabId: string) => {
+		setCurrentTab(tabId);
 		const externalContent = applyFilters(
 			'multivendorx_transaction_history_tab_content',
 			null,
@@ -190,7 +191,6 @@ export const TransactionHistory: React.FC = () => {
 		}
 	};
 
-
 	return (
 		<>
 			<SettingsNavigator
@@ -200,7 +200,6 @@ export const TransactionHistory: React.FC = () => {
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=transaction-history&subtab=${subTab}`
 				}
-				onSettingChange={setCurrentTab}
 				appLocalizer={appLocalizer}
 				Link={Link}
 				variant={'compact'}
