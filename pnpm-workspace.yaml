@@ -3,4 +3,19 @@ packages:
   - 'packages/php/*'
   - 'plugins/*'
   - 'tools/storybook'
-  
+
+allowBuilds:
+  '@parcel/watcher': true
+  core-js: true
+  core-js-pure: true
+  esbuild: true
+  fs-ext-extra-prebuilt: true
+  unrs-resolver: true
+
+onlyBuiltDependencies:
+  - core-js
+  - core-js-pure
+  - esbuild
+  - '@parcel/watcher'
+  - fs-ext-extra-prebuilt
+  - unrs-resolver
