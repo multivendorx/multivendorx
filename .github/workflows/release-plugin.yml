@@ -23,9 +23,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
+          cache: "pnpm"
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v4
+        with:
+          version: 10.11.0
+          run_install: false
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -35,6 +39,33 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build ZIP
+        run: |
+          pnpm --filter "${{ github.event.inputs.plugin }}" run build:zip
+
+      - name: Upload ZIP Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-zip
+          path: plugins/${{ github.event.inputs.plugin }}/release/*.zip
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(node -p "require('./plugins/${{ github.event.inputs.plugin }}/package.json').version")
+          TAG="${{ github.event.inputs.plugin }}-v${VERSION}"
+
+          gh release view "$TAG" >/dev/null 2>&1 && {
+            echo "Release already exists"
+            exit 0
+          }
+
+          gh release create \
+            "$TAG" \
+            plugins/${{ github.event.inputs.plugin }}/release/*.zip \
+            --title "${{ github.event.inputs.plugin }} v${VERSION}" \
+            --generate-notes
       - name: Build ZIP
         run: |
           pnpm --filter "${{ github.event.inputs.plugin }}" run build:zip
