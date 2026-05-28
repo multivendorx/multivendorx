@@ -11,6 +11,9 @@ on:
 permissions:
   contents: write
 
+env:
+  PNPM_CONFIG_FROZEN_LOCKFILE: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,21 +37,13 @@ jobs:
       - name: Verify PNPM
         run: pnpm --version
 
-      - name: Setup PNPM Cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.4"
 
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
       - name: Verify Plugin Exists
         run: |
