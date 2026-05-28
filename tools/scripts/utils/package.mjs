@@ -18,7 +18,7 @@ export function getPluginSlug() {
 	const pkg = getPackage();
 
 	return (
-		pkg.pluginName ||
+		pkg.pluginSlug ||
 		pkg.name
 	);
 }

@@ -1,8 +1,8 @@
 {
     "name": "moowoodle",
     "displayName": "MooWoodle",
-    "pluginName": "moowoodle",
-    "description": "MooWoodle",
+    "pluginSlug": "moowoodle",
+    "description": "MooWoodle – WordPress Moodle LMS Integration, Sell Moodle Courses via WooCommerce",
     "version": "3.4.0",
     "license": "GPL-2.0-or-later",
     "author": "MultiVendorX",

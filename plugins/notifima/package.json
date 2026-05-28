@@ -1,8 +1,8 @@
 {
     "name": "notifima",
     "displayName": "Notifima",
-    "pluginName": "woocommerce-product-stock-alert",
-    "description": "=== Notifima ===",
+    "pluginSlug": "woocommerce-product-stock-alert",
+    "description": "Notifima – WooCommerce Stock Manager, Inventory Management, Waitlist",
     "version": "3.0.6",
     "license": "GPL-2.0-or-later",
     "author": "MultiVendorX",
