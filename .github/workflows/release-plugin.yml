@@ -4,54 +4,20 @@ on:
 workflow_dispatch:
 inputs:
 plugin:
-description: "Plugin slug"
+description: Plugin slug
 required: true
-default: "moowoodle"
-
-```
-  create_github_release:
-    description: "Create GitHub release"
-    required: true
-    default: "true"
-```
+default: moowoodle
 
 permissions:
 contents: write
 
 env:
-FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-verify:
-name: Verify Plugin
-runs-on: ubuntu-latest
-
-```
-outputs:
-  version: "${{ steps.plugin.outputs.version }}"
-
-steps:
-  - name: Checkout Repository
-    uses: actions/checkout@v4
-
-  - name: Verify Plugin Exists
-    run: |
-      if [ ! -d "plugins/${{ github.event.inputs.plugin }}" ]; then
-        echo "::error::Plugin does not exist"
-        exit 1
-      fi
-
-  - name: Get Plugin Version
-    id: plugin
-    run: |
-      VERSION=$(node -p "require('./plugins/${{ github.event.inputs.plugin }}/package.json').version")
-      echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-```
-
 build:
 name: Build Plugin ZIP
 runs-on: ubuntu-latest
-needs: verify
 
 ```
 steps:
@@ -61,8 +27,8 @@ steps:
   - name: Setup Node
     uses: actions/setup-node@v4
     with:
-      node-version: "24"
-      cache: "pnpm"
+      node-version: 24
+      cache: pnpm
 
   - name: Setup PNPM
     uses: pnpm/action-setup@v4
@@ -70,49 +36,30 @@ steps:
   - name: Setup PHP
     uses: shivammathur/setup-php@v2
     with:
-      php-version: "8.4"
+      php-version: 8.4
       coverage: none
 
   - name: Install Dependencies
     run: pnpm install --frozen-lockfile
 
   - name: Build ZIP
-    run: |
-      pnpm --filter "${{ github.event.inputs.plugin }}" run build:zip
+    run: pnpm --filter ${{ github.event.inputs.plugin }} run build:zip
 
   - name: Upload ZIP Artifact
     uses: actions/upload-artifact@v4
     with:
-      name: "${{ github.event.inputs.plugin }}"
-      path: "plugins/${{ github.event.inputs.plugin }}/release/*.zip"
-      retention-days: 7
-```
-
-create-release:
-name: Create GitHub Release
-runs-on: ubuntu-latest
-
-```
-needs:
-  - verify
-  - build
-
-if: ${{ github.event.inputs.create_github_release == 'true' }}
-
-steps:
-  - name: Download ZIP Artifact
-    uses: actions/download-artifact@v4
-    with:
-      name: "${{ github.event.inputs.plugin }}"
-      path: release
+      name: ${{ github.event.inputs.plugin }}
+      path: plugins/${{ github.event.inputs.plugin }}/release/*.zip
 
   - name: Create GitHub Release
     env:
-      GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     run: |
+      VERSION=$(node -p "require('./plugins/${{ github.event.inputs.plugin }}/package.json').version")
+
       gh release create \
-        "${{ github.event.inputs.plugin }}-v${{ needs.verify.outputs.version }}" \
-        release/*.zip \
-        --title "${{ github.event.inputs.plugin }} v${{ needs.verify.outputs.version }}" \
+        "${{ github.event.inputs.plugin }}-v${VERSION}" \
+        plugins/${{ github.event.inputs.plugin }}/release/*.zip \
+        --title "${{ github.event.inputs.plugin }} v${VERSION}" \
         --generate-notes
 ```
