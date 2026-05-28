@@ -1,139 +1,125 @@
-name: 'Release Plugin'
+name: Release Plugin
 
 on:
-workflow_dispatch:
-inputs:
-plugin:
-description: 'Plugin slug (example: moowoodle)'
-required: true
-type: string
-
-```
-  create_github_release:
-    description: 'Create GitHub release'
-    required: true
-    default: true
-    type: boolean
-```
+  workflow_dispatch:
+    inputs:
+      plugin:
+        description: Plugin slug (example: moowoodle)
+        required: true
+        type: string
+      create_github_release:
+        description: Create GitHub release
+        required: true
+        default: true
+        type: boolean
 
 permissions: {}
 
 env:
-FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 concurrency:
-group: release-plugin-${{ inputs.plugin }}
-cancel-in-progress: false
+  group: release-plugin-${{ inputs.plugin }}
+  cancel-in-progress: false
 
 jobs:
-verify:
-name: Verify Plugin
-runs-on: ubuntu-latest
+  verify:
+    name: Verify Plugin
+    runs-on: ubuntu-latest
 
-```
-permissions:
-  contents: read
+    permissions:
+      contents: read
 
-outputs:
-  version: ${{ steps.plugin.outputs.version }}
+    outputs:
+      version: ${{ steps.plugin.outputs.version }}
 
-steps:
-  - name: Checkout Repository
-    uses: actions/checkout@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-  - name: Verify Plugin Exists
-    run: |
-      if [ ! -d "plugins/${{ inputs.plugin }}" ]; then
-        echo "::error::Plugin does not exist"
-        exit 1
-      fi
+      - name: Verify Plugin Exists
+        run: |
+          if [ ! -d "plugins/${{ inputs.plugin }}" ]; then
+            echo "::error::Plugin does not exist"
+            exit 1
+          fi
 
-  - name: Get Plugin Version
-    id: plugin
-    run: |
-      VERSION=$(node -p "require('./plugins/${{ inputs.plugin }}/package.json').version")
+      - name: Get Plugin Version
+        id: plugin
+        run: |
+          VERSION=$(node -p "require('./plugins/${{ inputs.plugin }}/package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+  build:
+    name: Build Plugin ZIP
+    runs-on: ubuntu-latest
 
-      echo "Plugin: ${{ inputs.plugin }}"
-      echo "Version: $VERSION"
-```
+    needs:
+      - verify
 
-build:
-name: Build Plugin ZIP
-runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
-```
-needs: [ verify ]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-permissions:
-  contents: read
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
 
-outputs:
-  artifact-url: ${{ steps.upload.outputs.artifact-url }}
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
 
-steps:
-  - name: Checkout Repository
-    uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: none
 
-  - name: Setup Node
-    uses: actions/setup-node@v4
-    with:
-      node-version: 24
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
-  - name: Setup PNPM
-    uses: pnpm/action-setup@v4
-    with:
-      version: 11
+      - name: Build ZIP
+        run: |
+          pnpm --filter ${{ inputs.plugin }} run build:zip
 
-  - name: Setup PHP
-    uses: shivammathur/setup-php@v2
-    with:
-      php-version: '8.4'
-      coverage: none
+      - name: Upload ZIP Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.plugin }}
+          path: plugins/${{ inputs.plugin }}/release/*.zip
+          retention-days: 7
 
-  - name: Install Dependencies
-    run: pnpm install --frozen-lockfile
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
 
-  - name: Build ZIP
-    run: |
-      pnpm --filter ${{ inputs.plugin }} run build:zip
+    needs:
+      - verify
+      - build
 
-  - name: Upload ZIP Artifact
-    id: upload
-    uses: actions/upload-artifact@v4
-    with:
-      name: ${{ inputs.plugin }}
-      path: plugins/${{ inputs.plugin }}/release/*.zip
-      retention-days: 7
-```
+    if: ${{ inputs.create_github_release }}
 
-create-release:
-name: Create GitHub Release
-runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
-```
-needs: [ verify, build ]
+    steps:
+      - name: Download ZIP Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.plugin }}
+          path: release
 
-if: ${{ inputs.create_github_release }}
-
-permissions:
-  contents: write
-
-steps:
-  - name: Download ZIP Artifact
-    uses: actions/download-artifact@v4
-    with:
-      name: ${{ inputs.plugin }}
-      path: release
-
-  - name: Create GitHub Release
-    env:
-      GH_TOKEN: ${{ github.token }}
-    run: |
-      gh release create \
-        "${{ inputs.plugin }}-v${{ needs.verify.outputs.version }}" \
-        release/*.zip \
-        --title "${{ inputs.plugin }} v${{ needs.verify.outputs.version }}" \
-        --generate-notes
-```
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create \
+            "${{ inputs.plugin }}-v${{ needs.verify.outputs.version }}" \
+            release/*.zip \
+            --title "${{ inputs.plugin }} v${{ needs.verify.outputs.version }}" \
+            --generate-notes
