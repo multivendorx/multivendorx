@@ -25,7 +25,14 @@ jobs:
           node-version: "24"
 
       - name: Enable Corepack
-        run: corepack enable
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.4.0 --activate
+        env:
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
+
+      - name: Verify PNPM
+        run: pnpm --version
 
       - name: Setup PNPM Cache
         uses: actions/cache@v4
