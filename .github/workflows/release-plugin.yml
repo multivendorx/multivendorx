@@ -1,0 +1,46 @@
+name: Plugin Release
+
+on:
+  push:
+    tags:
+      - '*-v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Extract Plugin Slug
+        id: plugin
+        run: |
+          TAG=${GITHUB_REF_NAME}
+          PLUGIN=${TAG%-v*}
+
+          echo "plugin=$PLUGIN" >> $GITHUB_OUTPUT
+
+      - name: Build Plugin ZIP
+        run: |
+          cd plugins/${{ steps.plugin.outputs.plugin }}
+          pnpm run build:zip
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            plugins/${{ steps.plugin.outputs.plugin }}/release/*.zip
