@@ -1,8 +1,8 @@
 {
     "name": "multivendorx",
     "displayName": "MultiVendorX",
-    "pluginName": "dc-woocommerce-multi-vendor",
-    "description": "=== MultiVendorX ===",
+    "pluginSlug": "dc-woocommerce-multi-vendor",
+    "description": "MultiVendorX - WooCommerce Multivendor Marketplace AI Powered Solutions",
     "version": "5.0.6",
     "license": "GPL-2.0-or-later",
     "author": "MultiVendorX",
