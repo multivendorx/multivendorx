@@ -52,6 +52,7 @@ steps:
     run: |
       VERSION=$(node -p "require('./plugins/${{ github.event.inputs.plugin }}/package.json').version")
 
+
       gh release create \
       "${{ github.event.inputs.plugin }}-v${VERSION}" \
       plugins/${{ github.event.inputs.plugin }}/release/*.zip \
