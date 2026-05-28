@@ -111,7 +111,7 @@ class FrontendScripts {
                 	'deps' => $vendor_asset['dependencies'],
                 ),
                 'catalogx-enquiry-frontend-script'  => array(
-                    'src'     => self::get_asset_path() . 'modules/Enquiry/js/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
+                    'src'     => self::get_asset_path() . 'js/modules/Enquiry/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
                     'deps'    => array( 'jquery', 'jquery-blockui' ),
                     'version' => $version,
                 ),
@@ -126,12 +126,13 @@ class FrontendScripts {
                     'version' => $version,
                 ),
                 'catalogx-add-to-quote-cart-script' => array(
-                    'src'     => self::get_asset_path() . 'modules/Quote/js/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
+                    'src'     => self::get_asset_path() . 'js/modules/Quote/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
                     'deps'    => array( 'jquery' ),
                     'version' => $version,
                 ),
-            )
-        );
+                )
+            );
+            file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export(self::get_asset_path() . 'modules/Quote/js/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js', true) . "\n", FILE_APPEND);
 
         foreach ( $registered_scripts as $name => $script_config ) {
             self::register_script( $name, $script_config['src'], $script_config['deps'], $script_config['version'] ?? $version );
@@ -151,7 +152,7 @@ class FrontendScripts {
             'catalogx_register_styles',
             array(
                 'catalogx-frontend-style'     => array(
-                    'src'     => self::get_asset_path() . 'styles/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.css',
+                    'src'     => self::get_asset_path() . 'styles/public/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.css',
                     'deps'    => array(),
                     'version' => $version,
                 ),
@@ -427,15 +428,6 @@ class FrontendScripts {
                             'settings_databases_value'   => $settings_databases_value,
                             'active_modules'             => CatalogX()->modules->get_active_modules(),
                             'user_role'                  => $current_user_role,
-                            'banner_img'                 => CatalogX()->plugin_url . 'public/images/catalog-pro-add-admin-banner.jpg',
-                            'default_img'                => CatalogX()->plugin_url . 'src/assets/images/default.png',
-                            'template1'                  => CatalogX()->plugin_url . 'public/images/email/templates/catalogx-email-template-default.png',
-                            'template2'                  => CatalogX()->plugin_url . 'public/images/email/templates/catalogx-email-template-1.png',
-                            'template3'                  => CatalogX()->plugin_url . 'public/images/email/templates/catalogx-email-template-2.png',
-                            'template4'                  => CatalogX()->plugin_url . 'public/images/email/templates/catalogx-email-template-3.png',
-                            'template5'                  => CatalogX()->plugin_url . 'public/images/email/templates/catalogx-email-template-4.png',
-                            'template6'                  => CatalogX()->plugin_url . 'public/images/email/templates/catalogx-email-template-5.png',
-                            'template7'                  => CatalogX()->plugin_url . 'public/images/email/templates/catalogx-email-template-6.png',
                             'khali_dabba'                => Utill::is_khali_dabba(),
                             'pro_url'                    => esc_url( CATALOGX_PRO_SHOP_URL ),
                             'order_edit'                 => admin_url( 'admin.php?page=wc-orders&action=edit' ),

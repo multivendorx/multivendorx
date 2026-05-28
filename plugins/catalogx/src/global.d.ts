@@ -29,15 +29,6 @@ declare global {
         settings_databases_value: any; // Use a more specific type if possible
         active_modules: string[];
         user_role: string;
-        banner_img: string;
-        default_img: string;
-        template1: string;
-        template2: string;
-        template3: string;
-        template4: string;
-        template5: string;
-        template6: string;
-        template7: string;
         khali_dabba: boolean;
         pro_url: string;
         order_edit: string;

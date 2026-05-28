@@ -10,7 +10,7 @@ import Rules from './components/Rules/Rules';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { AdminHeader, GuidedTourProvider, Notice, initializeModules } from 'zyra';
 import { __ } from '@wordpress/i18n';
-import Brand from './assets/images/Brand.png';
+import Brand from './assets/images/catalogx-logo.png';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import HelpSupport from './components/HelpSupport/HelpSupport';
 import { getTourSteps } from './components/Tour/Tours';
@@ -18,10 +18,6 @@ import { getTourSteps } from './components/Tour/Tours';
 const disableBody = ( target: any ) => disableBodyScroll( target );
 const enableBody = ( target: any ) => enableBodyScroll( target );
 localStorage.setItem( 'force_catalogx_context_reload', 'true' );
-interface Products {
-    title: string;
-    description: string;
-}
 
 const Route = () => {
     const currentTab = new URLSearchParams( useLocation().hash );
@@ -103,7 +99,34 @@ const App = () => {
     useEffect( () => {
         initializeModules( appLocalizer, 'catalogx', 'free', 'modules' );
     }, [] );
-
+    const profileItems = [
+		{
+			title: __("What's New", 'catalogx'),
+			icon: 'new',
+			link: '#',
+			targetBlank: true,
+		},
+		{
+			title: __('Get Support', 'catalogx'),
+			icon: 'customer-support',
+			link: '#',
+			targetBlank: true,
+		},
+		{
+			title: __('Community', 'catalogx'),
+			icon: 'global-community',
+			link: '#',
+			targetBlank: true,
+		},
+	];
+    const utilityList = [
+		{
+			toggleIcon: 'admin-icon adminfont-user-circle',
+			tooltipName: __('Support', 'catalogx'),
+			tooltipPosition: 'end',
+			items: profileItems,
+		},
+	];
     return (
         <>
             {/* shivam  dynamic banner close */}
@@ -114,7 +137,10 @@ const App = () => {
 					validity="lifetime"
 					displayPosition="banner"
 					message={bannerItem}
-					actionLabel="Upgrade Now"
+					actionLabel={__('Upgrade Now', 'catalogx')}
+					onAction={() => {
+						window.location.href = appLocalizer.pro_url;
+					}}
 				/>
 			{/* )} */}
             <AdminHeader
@@ -124,7 +150,10 @@ const App = () => {
 				// onResultClick={handleResultClick}
 				free={appLocalizer.free_version}
 				pro={appLocalizer.pro_data.version}
-				// utilityList={utilityList}
+				utilityList={utilityList}
+                search={{
+					placeholder: __('Search...', 'catalogx'),
+				}}
 			/>
             <GuidedTourProvider
 				appLocalizer={appLocalizer}

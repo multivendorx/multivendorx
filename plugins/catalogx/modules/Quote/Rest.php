@@ -77,7 +77,7 @@ class Rest {
         $page = $request->get_param( 'page' );
 
         // Get all cart data.
-        $all_cart_data = CatalogX()->quotecart->get_cart_data();
+        $all_cart_data = CatalogX()->quotecart->get_cart_contents();
 
         // Calculate pagination.
         $total_items = count( $all_cart_data );
@@ -99,7 +99,7 @@ class Rest {
                 }
             }
 
-            $product_price = $product->get_price();
+            $product_price = (float) $product->get_price();
             $quantity      = isset( $item['quantity'] ) ? $item['quantity'] : 1;
             $subtotal      = $product_price * $quantity;
 
@@ -141,7 +141,7 @@ class Rest {
         foreach ( $products as $key => $product ) {
             $product_id = $product['id'];
             $quantity   = $product['quantity'];
-            CatalogX()->quotecart->update_cart( $product['key'], 'quantity', $quantity );
+            CatalogX()->quotecart->update_cart_item( $product['key'], 'quantity', $quantity );
             $update_msg = __( 'Quote cart updated!', 'multivendorx' );
         }
 
@@ -164,12 +164,12 @@ class Rest {
         $key        = $request->get_param( 'key' );
         $status     = false;
         if ( $product_id && isset( $key ) ) {
-            $status = CatalogX()->quotecart->remove_cart( $key );
+            $status = CatalogX()->quotecart->remove_cart_item( $key );
         }
         return rest_ensure_response(
             array(
 				'status'    => $status,
-				'cart_data' => CatalogX()->quotecart->get_cart_data(),
+				'cart_data' => CatalogX()->quotecart->get_cart_contents(),
 			)
         );
     }
@@ -232,7 +232,7 @@ class Rest {
         $order->set_billing_phone( $customer_phone );
 
         // Get product data.
-        $product_data = $request->get_param( 'formData' ) ? CatalogX()->quotecart->get_cart_data() : $form_data['product_info'];
+        $product_data = $request->get_param( 'formData' ) ? CatalogX()->quotecart->get_cart_contents() : $form_data['product_info'];
         $product_info = array();
         $product_ids  = array();
 
@@ -278,7 +278,7 @@ class Rest {
 
         // Clear cart if applicable.
         if ( $request->get_param( 'formData' ) ) {
-            CatalogX()->quotecart->clear_cart();
+            CatalogX()->quotecart->clear_quote_cart();
         }
 
         return rest_ensure_response(

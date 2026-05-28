@@ -61,6 +61,32 @@ class Tour extends \WP_REST_Controller {
 	}
 
 	/**
+	 * Validate REST nonce.
+	 *
+	 * @param \WP_REST_Request $request Request object.
+	 *
+	 * @return true|\WP_Error
+	 */
+	private function validate_rest_nonce( $request ) {
+
+		$nonce = $request->get_header( 'X-WP-Nonce' );
+
+		if ( wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			return true;
+		}
+
+		$error = new \WP_Error(
+			'invalid_nonce',
+			esc_html__( 'Invalid nonce.', 'catalogx' ),
+			array( 'status' => 403 )
+		);
+
+		CatalogX()->util->log( $error );
+
+		return $error;
+	}
+
+	/**
 	 * Get tour status.
 	 *
 	 * @param mixed $request Request object.
@@ -68,30 +94,21 @@ class Tour extends \WP_REST_Controller {
 	 * @return array|\WP_Error
 	 */
 	public function get_items( $request ) {
-		$nonce = $request->get_header( 'X-WP-Nonce' );
 
-		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			$error = new \WP_Error(
-				'invalid_nonce',
-				esc_html__( 'Invalid nonce.', 'catalogx' ),
-                array( 'status' => 403 )
-			);
+		$nonce_validation = $this->validate_rest_nonce( $request );
 
-			if ( is_wp_error( $error ) ) {
-				CatalogX()->util->log( $error );
-			}
-
-			return $error;
+		if ( is_wp_error( $nonce_validation ) ) {
+			return $nonce_validation;
 		}
 
 		try {
-			$status = get_option(
+			$tour_completed_status = get_option(
 				Utill::CATALOGX_OTHER_SETTINGS['tour_completed'],
 				false
 			);
 
 			return array(
-				'completed' => filter_var( $status, FILTER_VALIDATE_BOOLEAN ),
+				'completed' => filter_var( $tour_completed_status, FILTER_VALIDATE_BOOLEAN ),
 			);
 		} catch ( \Exception $e ) {
 			CatalogX()->util->log( $e );
@@ -112,28 +129,20 @@ class Tour extends \WP_REST_Controller {
 	 * @return array|\WP_Error
 	 */
 	public function create_item( $request ) {
-		$nonce = $request->get_header( 'X-WP-Nonce' );
 
-		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			$error = new \WP_Error(
-				'invalid_nonce',
-				esc_html__( 'Invalid nonce.', 'catalogx' ),
-				array( 'status' => 403 )
-			);
+		$nonce_validation = $this->validate_rest_nonce( $request );
 
-			if ( is_wp_error( $error ) ) {
-				CatalogX()->util->log( $error );
-			}
-
-			return $error;
+		if ( is_wp_error( $nonce_validation ) ) {
+			return $nonce_validation;
 		}
 
+
 		try {
-			$completed = $request->get_param( 'completed' );
+			$is_tour_completed = $request->get_param( 'completed' );
 
 			update_option(
 				Utill::CATALOGX_OTHER_SETTINGS['tour_completed'],
-				$completed
+				$is_tour_completed
 			);
 
 			return array(

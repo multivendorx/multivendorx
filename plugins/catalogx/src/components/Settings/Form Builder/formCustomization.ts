@@ -197,7 +197,7 @@ export default {
                     label: __('Pro', 'catalogx'),
                     content: [
                         {
-                            key: 'store_registration_form',
+                            key: 'enquiry_form_builder',
                             type: 'block-builder',
 							blockGroups: REGISTRATION_BLOCK_GROUPS,
 							visibleGroups: ['registration', 'store'],

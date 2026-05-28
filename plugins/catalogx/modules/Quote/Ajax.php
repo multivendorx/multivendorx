@@ -41,7 +41,7 @@ class Ajax {
         if ( ! $is_valid ) {
             $errors[] = __( 'Error occurred while adding product to Request a Quote list.', 'multivendorx' );
         } else {
-            $return = CatalogX()->quotecart->add_cart_item( $postdata );
+            $return = CatalogX()->quotecart->add_quote_item( $postdata );
         }
 
         if ( 'true' === $return ) {

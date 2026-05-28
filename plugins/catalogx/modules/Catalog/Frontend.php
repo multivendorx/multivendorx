@@ -27,7 +27,7 @@ class Frontend {
         // Cart page redirect settings.
         add_action( 'template_redirect', array( $this, 'catalogx_redirect_page' ), 10 );
 
-        // Display single product page descrioption box.
+        // Display single product page description box.
         add_action( 'display_shop_page_description_box', array( self::class, 'show_description_box' ) );
 
         // Hooks for exclusions.
@@ -78,7 +78,7 @@ class Frontend {
     }
 
     /**
-     * Display single product page descrioption box
+     * Display single product page description box
      *
      * @return void
      */
@@ -144,12 +144,10 @@ class Frontend {
     public function remove_add_to_cart_on_single_product_page() {
         global $post;
 
-        if ( Util::is_available_for_product( $post->ID ) && is_product() ) {
-            if ( empty( CatalogX()->setting->get_setting( 'enable_cart_checkout' ) ) ) {
-                remove_action( 'woocommerce_single_variation', 'woocommerce_single_variation_add_to_cart_button', 20 );
-                // for block support.
-                remove_action( 'woocommerce_simple_add_to_cart', 'woocommerce_simple_add_to_cart', 30 );
-            }
+        if ( Util::is_available_for_product( $post->ID ) && is_product() && empty( CatalogX()->setting->get_setting( 'enable_cart_checkout' ) ) ) {
+            remove_action( 'woocommerce_single_variation', 'woocommerce_single_variation_add_to_cart_button', 20 );
+            // for block support.
+            remove_action( 'woocommerce_simple_add_to_cart', 'woocommerce_simple_add_to_cart', 30 );
         }
     }
 
@@ -163,7 +161,7 @@ class Frontend {
         // Get shop page button settings.
         $position_settings = CatalogX()->setting->get_setting( 'shop_page_position_setting', array() );
 
-        // Priority of colide position.
+        // Priority of collision position.
         $position_priority = 1;
 
         // Position after a particular section.
@@ -171,7 +169,7 @@ class Frontend {
 
         // If position settings exists.
         if ( $position_settings ) {
-            // Get the colide position priority.
+            // Get the collision position priority.
             $position_priority = array_search( 'additional_input', array_keys( $position_settings ), true ) + 1;
 
             // Get the position after.

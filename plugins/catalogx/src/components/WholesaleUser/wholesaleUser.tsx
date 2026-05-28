@@ -6,6 +6,8 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
 import {
+	Column,
+	Container,
 	InfoItem,
 	NavigatorHeader,
 	PopupUI,
@@ -35,36 +37,20 @@ const WholesaleUser = () => {
 			render: (row: WholesaleUserRow) => (
 				<InfoItem
 					title={row.user}
-					description={row.user_email}
+					descriptions={[
+						{
+							label: __('Email', 'catalogx'),
+							value: row.user_email || '—',
+						},
+					]}
 					avatar={{
-						iconClass: 'wholesale',
+						iconClass: 'person',
 					}}
 				/>
 			),
 		},
-
-		status: {
-			label: __('Status', 'catalogx'),
-
-			render: (row: WholesaleUserRow) => (
-				<span
-					className={`wholesale-status ${row.status
-						?.toLowerCase()
-						.replace(/\s+/g, '-')}`}
-				>
-					{row.status || '-'}
-				</span>
-			),
-		},
-
-		date: {
-			label: __('Date', 'catalogx'),
-
-			render: (row: WholesaleUserRow) => (
-				<>{row.date || '-'}</>
-			),
-		},
-
+		status: { label: __('Status', 'catalogx'), type: 'status', statusClass: (row: WholesaleUserRow) => `${row.status}` },
+		date: { label: __('Date', 'catalogx'), type: 'date' },
 		action: {
 			type: 'action',
 
@@ -101,7 +87,13 @@ const WholesaleUser = () => {
 
 		totalRows:
 			dummyWholesaleUsers.length,
-
+		filters:[
+				{
+					key: 'date_range',
+					label: __('Date Range', 'catalogx'),
+					type: 'date',
+				},
+			],
 		search: {
 			placeholder: __(
 				'Search wholesale users...',
@@ -148,10 +140,13 @@ const WholesaleUser = () => {
 					'catalogx'
 				)}
 			/>
-
-			<div onClick={handleTableWrapperClick}>
-				<RenderedTableCard {...defaultTableProps} />
-			</div>
+			<Container general>
+				<Column>
+				<div onClick={handleTableWrapperClick}>
+					<RenderedTableCard {...defaultTableProps} />
+				</div>
+				</Column>
+			</Container>
 		</>
 	);
 };

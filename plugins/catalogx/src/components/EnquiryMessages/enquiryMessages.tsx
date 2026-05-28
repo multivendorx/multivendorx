@@ -9,7 +9,7 @@ const EnquiryMessages = () => {
 
     // If Pro is active, render only mount point
     if (appLocalizer.khali_dabba) {
-        return <div id="enquiry-messages"></div>;
+        return <div id="enquiry-messages" className='container'></div>;
     }
 
     return (
