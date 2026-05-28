@@ -99,13 +99,13 @@ const QuoteList = () => {
                 search_value: query.searchValue || '',
                 start_date: query.filter?.created_at?.startDate
                     ? formatLocalDate(
-                          query.filter.created_at.startDate
-                      )
+                        query.filter.created_at.startDate
+                    )
                     : '',
                 end_date: query.filter?.created_at?.endDate
                     ? formatLocalDate(
-                          query.filter.created_at.endDate
-                      )
+                        query.filter.created_at.endDate
+                    )
                     : '',
                 order_by: query.orderby || '',
                 order: query.order || '',
@@ -373,17 +373,17 @@ const QuoteList = () => {
     }
 
     return (
-        <div className="quote-list-container">
+        <div className="quote-list-container woocommerce" >
             <div className="quote-cart-actions">
-    <button
-        type="button"
-        className="update-cart-button"
-        onClick={handleUpdateCart}
-        disabled={isLoading}
-    >
-        {__('Update Cart', 'catalogx')}
-    </button>
-</div>
+                <button
+                    type="button"
+                    className="button wp-block-button__link update-cart-button"
+                    onClick={handleUpdateCart}
+                    disabled={isLoading}
+                >
+                    {__('Update Cart', 'catalogx')}
+                </button>
+            </div>
             <TableCard
                 headers={headers}
                 rows={rows}
@@ -397,93 +397,103 @@ const QuoteList = () => {
             />
 
             {rows.length > 0 && (
-                <div className="form-wrapper">
-                    <h3>
-                        {__('Request a Quote', 'catalogx')}
-                    </h3>
-
-                    <div className="form-field">
-                        <label>
-                            {__('Name:', 'catalogx')}
-                            <span className="required">*</span>
-                        </label>
-
-                        <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-field">
-                        <label>
-                            {__('Email:', 'catalogx')}
-                            <span className="required">*</span>
-                        </label>
-
-                        <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-field">
-                        <label>
-                            {__('Phone:', 'catalogx')}
-                        </label>
-
-                        <input
-                            type="tel"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-
-                    <div className="form-field">
-                        <label>
-                            {__('Message:', 'catalogx')}
-                        </label>
-
-                        <textarea
-                            name="message"
-                            rows={4}
-                            value={formData.message}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-
-                    <button
-                        id="send-quote"
-                        onClick={handleSendQuote}
-                        disabled={
-                            !formData.name || !formData.email
-                        }
-                    >
-                        {__('Send Quote', 'catalogx')}
-                    </button>
-
+                <>
                     {responseStatus && (
-                        <div
-                            className={`response-message ${responseStatus}`}
-                        >
-                            {responseStatus === 'error'
-                                ? __(
-                                      'Something went wrong! Please try again.',
-                                      'catalogx'
-                                  )
-                                : __(
-                                      'Quote request sent successfully!',
-                                      'catalogx'
-                                  )}
+                        <div className="woocommerce-notices-wrapper">
+                            <ul className={
+                                responseStatus === 'error'
+                                    ? 'woocommerce-error'
+                                    : 'woocommerce-message'
+                            } role="alert">
+                                <li>
+                                    {responseStatus === 'error'
+                                        ? __(
+                                            'Something went wrong! Please try again.',
+                                            'catalogx'
+                                        )
+                                        : __(
+                                            'Quote request sent successfully!',
+                                            'catalogx'
+                                        )}
+                                </li>
+                            </ul>
                         </div>
                     )}
-                </div>
+                    <h2> {__('Request a Quote', 'catalogx')} </h2>
+                    <form className="woocommerce-form woocommerce-form-login login">
+                        <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                            <label>
+                                {__('Name:', 'catalogx')}
+                                <span className="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                className='woocommerce-Input input-text'
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </p>
+
+                        <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                            <label>
+                                {__('Email:', 'catalogx')}
+                                <span className="required">*</span>
+                            </label>
+
+                            <input
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                className='woocommerce-Input input-text'
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </p>
+
+                        <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                            <label>
+                                {__('Phone:', 'catalogx')}
+                            </label>
+
+                            <input
+                                type="tel"
+                                name="phone"
+                                className='woocommerce-Input input-text'
+                                value={formData.phone}
+                                onChange={handleInputChange}
+                            />
+                        </p>
+
+                        <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                            <label>
+                                {__('Message:', 'catalogx')}
+                            </label>
+
+                            <textarea
+                                name="message"
+                                rows={4}
+                                value={formData.message}
+                                onChange={handleInputChange}
+                                className='woocommerce-Input input-text'
+                            />
+                        </p>
+                        <p className='form-row'>
+                            <button
+                                id="send-quote"
+                                className='woocommerce-button button wp-element-button'
+                                onClick={handleSendQuote}
+                                disabled={
+                                    !formData.name || !formData.email
+                                }
+                            >
+                                {__('Send Quote', 'catalogx')}
+                            </button>
+                        </p>
+                    </form>
+                </>
             )}
         </div>
     );
