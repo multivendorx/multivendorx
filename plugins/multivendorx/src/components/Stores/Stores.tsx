@@ -349,7 +349,7 @@ const Stores = () => {
 										usePlainText={false}
 										tinymceApiKey={
 											appLocalizer
-												.settings_databases_value[
+												.admin_settings[
 												'overview'
 											]?.['tinymce_api_section'] ?? ''
 										}

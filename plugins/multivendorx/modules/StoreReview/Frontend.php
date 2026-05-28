@@ -49,10 +49,8 @@ class Frontend {
 	 * @return array Modified array with the Store Review frontend script included.
 	 */
     public function register_script( $scripts ) {
-        $base_url = MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name();
-
         $scripts['multivendorx-review-frontend-script'] = array(
-            'src'  => $base_url . 'modules/StoreReview/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+            'src'  => FrontendScripts::get_asset_path() . 'modules/StoreReview/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
             'deps' => array( 'jquery' ),
         );
 

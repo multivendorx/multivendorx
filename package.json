@@ -80,11 +80,5 @@
     "wp-textdomain": "^1.0.1",
     "@storybook/addon-docs": "^10.1.10",
     "@storybook/react-vite": "^10.1.10"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "core-js",
-      "esbuild"
-    ]
   }
 }

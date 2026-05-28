@@ -59,7 +59,7 @@ class SetupWizard {
 
         if ( 'dashboard_page_multivendorx-setup' === $current_screen->id ) {
             FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
-            wp_enqueue_script( 'setup-wizard-script', MultiVendorX()->plugin_url . FrontendScripts::get_build_path_name() . 'js/block/setup-wizard/index.js', array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ), MultiVendorX()->version, true );
+            wp_enqueue_script( 'setup-wizard-script', FrontendScripts::get_asset_path() . 'js/block/setup-wizard/index.js', array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ), MultiVendorX()->version, true );
             wp_set_script_translations( 'setup-wizard-script', 'multivendorx' );
             wp_localize_script(
                 'setup-wizard-script',

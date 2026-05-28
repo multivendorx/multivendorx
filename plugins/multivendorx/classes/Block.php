@@ -63,9 +63,7 @@ class Block {
         $blocks     = array();
         $textdomain = 'multivendorx';
 
-        $block_base_path = MultiVendorX()->plugin_path
-            . FrontendScripts::get_build_path_name()
-            . 'js/block/';
+        $block_base_path = FrontendScripts::get_asset_path( 'file' ) . 'js/block/';
 
         $exclude_blocks = array( 'setup-wizard' );
         if ( ! is_dir( $block_base_path ) ) {

@@ -47,7 +47,7 @@ const ProductCompliance: React.FC = () => {
 	const [formData, setFormData] = useState(() => {
 		return {
 			...defaultData,
-			...(appLocalizer?.settings_databases_value?.[
+			...(appLocalizer?.admin_settings?.[
 				'product-compliance'
 			] || {}),
 		};

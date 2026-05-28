@@ -23,7 +23,7 @@ declare global {
 		nonce: string;
 		khali_dabba: string | boolean;
 		tab_name: string;
-		settings_databases_value: any;
+		admin_settings: any;
 		all_store_meta: any;
 		pages_list: {
 			value: number;

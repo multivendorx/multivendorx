@@ -224,10 +224,10 @@ const AddProduct = () => {
 	const totalCount = checklistValues.length;
 
 	const productFields =
-		appLocalizer.settings_databases_value?.['product-preferences']
+		appLocalizer.admin_settings?.['product-preferences']
 			?.products_fields || [];
 	const typeFields =
-		appLocalizer.settings_databases_value?.['product-preferences']
+		appLocalizer.admin_settings?.['product-preferences']
 			?.type_options || [];
 
 	const rejectNote =
