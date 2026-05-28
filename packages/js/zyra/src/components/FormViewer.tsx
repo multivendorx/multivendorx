@@ -874,12 +874,12 @@ const FormViewer: React.FC<FormViewerProps> = ({
             }
 
             case 'button':
-                return (
-                    <p key={field.id} className="woocommerce-form-row form-row">
-                        <ButtonInputUI
-                            buttons={{
-                                style: field.style,
-                                onClick: (e) => {
+                    return (
+                        <p key={field.id} className="woocommerce-form-row form-row">
+                            <button 
+                                className="woocommerce-button button wp-element-button"
+                                style={field.style ? JSON.parse(field.style) : {}}
+                                onClick={(e) => {
                                     const captcha = formList.find(
                                         (f) => f.type === 'recaptcha'
                                     );
@@ -889,13 +889,12 @@ const FormViewer: React.FC<FormViewerProps> = ({
                                         }
                                     }
                                     handleSubmit(e);
-                                },
-                                text:
-                                    field.text || field.placeholder || 'Submit',
-                            }}
-                        />
-                    </p>
-                );
+                                }}
+                            >
+                                {field.text || field.placeholder || 'Submit'}
+                            </button>
+                        </p>
+                    );
             case 'richtext':
                 return (
                     <label

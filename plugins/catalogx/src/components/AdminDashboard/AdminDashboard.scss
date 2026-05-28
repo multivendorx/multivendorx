@@ -294,14 +294,13 @@
 // free vs pro tabel end
 
 
- 
+
 .container {
   width: 100%;
   display: flex;
   border-radius: $border-radius-small;
+  gap: 1rem;
   margin: auto;
-  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.125);
-  background: #f0f0f1;
   position: relative;
   overflow: hidden;
 
@@ -309,8 +308,10 @@
     min-width: 25%;
     max-width: 25%;
     height: auto;
-    border-right: 0.063rem solid #e6ebf5;
     position: relative;
+    background: #fff;
+    border: $border-light-small;
+    padding: 1.5rem;
 
     .starter-container-wrapper {
       position: absolute;
@@ -441,137 +442,124 @@
       }
     }
 
-    .header {
-      padding: 1.5rem;
+    .header-container-wrapper {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      position: relative;
 
-      .header-container {
+      .header-heading {
         display: flex;
-        align-items: flex-start;
-        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.5rem;
+
+        h1 {
+          font-size: 1.225rem;
+          line-height: 1.2;
+          font-weight: 500;
+        }
+
+        .total-message {
+          font-size: 0.813rem;
+          color: $color-active;
+          font-weight: 500;
+        }
+      }
+
+      .starter-message {
+        user-select: none;
+        cursor: pointer;
+      }
+
+      .search-option {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
         width: 100%;
 
-        .header-container-wrapper {
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 0.5rem;
-          margin-bottom: 1.5rem;
+        .search-input {
           position: relative;
-
-          .header-heading {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 0.5rem;
-
-            h1 {
-              font-size: 1.225rem;
-              line-height: 1.2;
-              font-weight: 500;
-            }
-
-            .total-message {
-              font-size: 0.813rem;
-              color: $color-active;
-              font-weight: 500;
-            }
-          }
-
-          .starter-message {
-            user-select: none;
-            cursor: pointer;
-          }
-        }
-
-
-        .search-option {
-          position: relative;
-          display: flex;
-          flex-wrap: wrap;
-          align-items: stretch;
-          width: 100%;
-
-          .search-input {
-            position: relative;
-            padding: 0.5rem 1rem;
-            padding-left: 2.625rem;
-            flex: 1 1 auto;
-            width: 1%;
-            min-width: 0;
-            background: #f6f6f9;
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 400;
-            line-height: 1.5;
-            background-clip: padding-box;
-            appearance: none;
-            outline: none;
-            border: none;
-            border-radius: $border-radius-small;
-          }
-
-          .search-btn {
-            position: absolute;
-            left: 1rem;
-            top: 0.625rem;
-            z-index: 5;
-            cursor: pointer;
-            padding: 0;
-            border: none;
-            outline: none;
-            background: transparent;
-            font-size: 1rem;
-          }
-        }
-
-        .date-filter {
-          display: flex;
-          align-items: center;
-          margin-top: 0.875rem;
+          padding: 0.5rem 1rem;
+          padding-left: 2.625rem;
+          flex: 1 1 auto;
+          width: 1%;
+          min-width: 0;
           background: #f6f6f9;
-          padding: 0.313rem 0.5rem;
+          display: block;
+          font-size: 0.875rem;
+          font-weight: 400;
+          line-height: 1.5;
+          background-clip: padding-box;
+          appearance: none;
+          outline: none;
+          border: none;
           border-radius: $border-radius-small;
-          width: 100%;
-          flex-wrap: wrap;
-          overflow: hidden;
+        }
 
-          .title {
-            font-size: 0.938rem;
-            padding-right: 0.5rem;
+        .search-btn {
+          position: absolute;
+          left: 1rem;
+          top: 0.625rem;
+          z-index: 5;
+          cursor: pointer;
+          padding: 0;
+          border: none;
+          outline: none;
+          background: transparent;
+          font-size: 1rem;
+        }
+      }
+
+      .date-filter {
+        display: flex;
+        align-items: center;
+        margin-top: 0.875rem;
+        background: #f6f6f9;
+        padding: 0.313rem 0.5rem;
+        border-radius: $border-radius-small;
+        width: 100%;
+        flex-wrap: wrap;
+        overflow: hidden;
+
+        .title {
+          font-size: 0.938rem;
+          padding-right: 0.5rem;
+        }
+
+        .search-option-field {
+          text-align: right;
+          width: 80%;
+
+          input {
+            border: none;
+            background: #f6f6f9;
+            padding: 0;
+            width: 100%;
           }
 
-          .search-option-field {
-            text-align: right;
-            width: 80%;
+          .rdrDateInput {
+            border: none;
 
             input {
-              border: none;
-              background: #f6f6f9;
-              padding: 0;
-              width: 100%;
+              margin: 0;
             }
+          }
 
-            .rdrDateInput {
-              border: none;
+          .rdrDateDisplayWrapper {
+            background: transparent;
+          }
 
-              input {
-                margin: 0;
-              }
-            }
+          .date-picker-section-wrapper {
+            position: absolute;
+            z-index: 9;
+            box-shadow: 0 2rem 5rem #827e7e2e;
 
-            .rdrDateDisplayWrapper {
-              background: transparent;
-            }
-
-            .date-picker-section-wrapper {
-              position: absolute;
-              z-index: 9;
-              box-shadow: 0 2rem 5rem #827e7e2e;
-
-              span {
-                color: #000000c9
-              }
+            span {
+              color: #000000c9
             }
           }
         }
@@ -590,107 +578,110 @@
         color: #2a2f34bf;
       }
 
-      .chat-container-wrapper {
+      .chat-list-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
         height: 100%;
         overflow-y: scroll;
         position: relative;
         padding-bottom: 5rem;
+
 
         &::-webkit-scrollbar {
           width: 0;
           margin: 0;
         }
 
-        ul {
-          margin: 0;
-          padding: 0;
-          list-style: none;
+        .chat-item {
+          outline: none;
+          border: none;
+          display: block;
+          width: 100%;
+          padding: 0.625rem;
+          transition: all 0.4s;
+          font-size: 0.875rem;
+          cursor: pointer;
+          transition: all 0.3s linear;
+          box-sizing: border-box;
+          border-left: 0.125rem solid transparent;
 
-          li {
-            list-style: none;
+          &.active:first-child {
+            background: #5007aa12;
+            border-color: $theme-color;
 
-            .chat-item {
-              outline: none;
-              border: none;
-              display: block;
-              width: 100%;
-              padding: 0.625rem 1.5rem;
-              transition: all 0.4s;
-              font-size: 0.875rem;
-              cursor: pointer;
-              transition: all 0.3s linear;
+            .name {
+              color: $theme-color;
+            }
+          }
 
-              &.active {
-                background: #fff;
+          &:hover {
+            background-color: #f6f6f9;
+          }
+
+          &.no-data-section {
+            height: 4.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            p {
+              text-align: center;
+              font-size: 1rem;
+              font-weight: 500;
+            }
+          }
+
+          .chat-item-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+
+            .chat-img {
+              align-self: center;
+              margin-right: 0.75rem;
+              position: relative;
+              // width: 20%;
+
+              img {
+                height: 2.5rem;
+                width: 2.5rem;
+                vertical-align: middle;
+                border-radius: 50%;
               }
+            }
 
-              &:hover {
-                background-color: #f6f6f9;
-              }
+            .name {
+              font-size: 1rem;
+              font-weight: 500;
+              padding-bottom: 0.313rem;
+            }
 
-              &.no-data-section {
-                height: 4.875rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+            .chat-meta {
+              margin-right: 0.5rem;
+              text-align: left;
+              overflow: hidden;
+              width: 80%;
 
-                p {
-                  text-align: center;
-                  font-size: 1rem;
+              p {
+                overflow: hidden;
+                margin: 0.063rem 0;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                font-size: 0.75rem;
+
+                &.enquery-id {
                   font-weight: 500;
+                  font-size: 1rem;
                 }
               }
+            }
 
-              .chat-item-container {
-                display: flex;
-                align-items: center;
-
-                .chat-img {
-                  align-self: center;
-                  margin-right: 0.75rem;
-                  position: relative;
-                  width: 20%;
-
-                  img {
-                    height: 2.5rem;
-                    width: 2.5rem;
-                    vertical-align: middle;
-                    border-radius: 50%;
-                  }
-                }
-
-                .chat-meta {
-                  margin-right: 0.5rem;
-                  text-align: left;
-                  overflow: hidden;
-                  width: 80%;
-
-                  p {
-                    overflow: hidden;
-                    margin: 0.063rem 0;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    font-size: 0.75rem;
-
-                    &.enquery-id {
-                      font-weight: 500;
-                      font-size: 1rem;
-                    }
-                  }
-                }
-
-                .pending-count {
-                  margin-left: auto;
-
-                  span {
-                    color: #ef476f;
-                    background-color: rgba(239, 71, 111, 0.18);
-                    font-size: 0.625rem;
-                    border-radius: $border-radius-small;
-                    padding: 0.25rem;
-                  }
-                }
-              }
+            span {
+              position: absolute;
+              top: 0;
+              right: 0;
+              font-size: 0.813rem;
             }
           }
         }
@@ -703,8 +694,9 @@
     position: relative;
     background-color: #fff;
     width: 100%;
-    min-height: 100vh;
+    min-height: 80vh;
     overflow: hidden;
+    border: $border-light-small;
 
     &.no-data-section {
       display: flex;
@@ -718,16 +710,15 @@
         width: 100%;
       }
 
-      h1 {
-        font-size: 1.25rem;
+      .empty-title {
+        font-size: 1.75rem;
+        line-height: 1;
         font-weight: 500;
       }
 
-      p {
-        font-size: 0.875rem;
+      .desc {
         text-align: center;
-        max-width: 31.25rem;
-        width: 100%;
+        max-width: 75%;
       }
     }
 
@@ -1933,6 +1924,3 @@
     }
   }
 }
-
-
-
