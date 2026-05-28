@@ -45,56 +45,13 @@ const Withdrawals: React.FC = () => {
 	const [lastWithdraws, setLastWithdraws] = useState<WithdrawalItem[]>([]);
 	const [storeData, setStoreData] = useState(null);
 	const [requestWithdrawal, setRequestWithdrawal] = useState(false);
-	const [showDetails, setShowDeatils] = useState(true);
+	const [showStoreDeatils, setShowStoreDeatils] = useState(true);
 
 	useEffect(() => {
-		const defaultEffect = () => {
-			axios({
-				method: 'GET',
-				url: getApiLink(
-					appLocalizer,
-					`transactions/${appLocalizer.store_id}`
-				),
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: { id: appLocalizer.store_id },
-			}).then((response) => {
-				setData(response.data || {});
-				setAmount(response.data.available_balance);
-			});
-
-			axios({
-				method: 'GET',
-				url: getApiLink(appLocalizer, 'transactions'),
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					page: 1,
-					row: 5,
-					store_id: appLocalizer.store_id,
-					transaction_type: 'Withdrawal',
-					status: 'completed',
-					orderBy: 'created_at',
-					order: 'DESC',
-				},
-			}).then((response) => {
-				setLastWithdraws(response.data || []);
-			});
-
-			axios({
-				method: 'GET',
-				url: getApiLink(
-					appLocalizer,
-					`stores/${appLocalizer.store_id}`
-				),
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			}).then((response) => {
-				setStoreData(response.data || {});
-			});
-		};
-
-		const config = {
-			effect: defaultEffect,
-			isOverridden: false,
-			states: {
+		const handled = applyFilters(
+			'multivendorx_withdrawals_custom_handler',
+			false,
+			{
 				data,
 				setData,
 				amount,
@@ -103,20 +60,56 @@ const Withdrawals: React.FC = () => {
 				setLastWithdraws,
 				storeData,
 				setStoreData,
-			},
-		};
-
-		const filtered = applyFilters(
-			'multivendorx_withdrawals_use_effect',
-			config
+			}
 		);
 
-		if (filtered?.isOverridden && typeof filtered.effect === 'function') {
-			setShowDeatils(false);
-			filtered.effect();
-		} else {
-			defaultEffect();
+		// if custom handler already executed
+		if (handled) {
+			setShowStoreDeatils(false);
+			return;
 		}
+
+		// default logic
+		axios({
+			method: 'GET',
+			url: getApiLink(
+				appLocalizer,
+				`transactions/${appLocalizer.store_id}`
+			),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: { id: appLocalizer.store_id },
+		}).then((response) => {
+			setData(response.data || {});
+			setAmount(response.data.available_balance);
+		});
+
+		axios({
+			method: 'GET',
+			url: getApiLink(appLocalizer, 'transactions'),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: {
+				page: 1,
+				row: 5,
+				store_id: appLocalizer.store_id,
+				transaction_type: 'Withdrawal',
+				status: 'completed',
+				orderBy: 'created_at',
+				order: 'DESC',
+			},
+		}).then((response) => {
+			setLastWithdraws(response.data || []);
+		});
+
+		axios({
+			method: 'GET',
+			url: getApiLink(
+				appLocalizer,
+				`stores/${appLocalizer.store_id}`
+			),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+		}).then((response) => {
+			setStoreData(response.data || {});
+		});
 	}, []);
 
 	const handleAmountChange = (value: number) => {
@@ -281,7 +274,7 @@ const Withdrawals: React.FC = () => {
 										data.available_balance
 									)}{' '}
 								</div>
-								{showDetails && (
+								{showStoreDeatils && (
 									<>
 										<div className="desc">
 											{__('Minimum required to withdraw - ', 'multivendorx')}
@@ -321,7 +314,7 @@ const Withdrawals: React.FC = () => {
 								)}
 
 							</div>
-							{showDetails && (
+							{showStoreDeatils && (
 								<Column row>
 									{Number(data?.locking_balance) > 0 ? (
 										<ItemListUI
