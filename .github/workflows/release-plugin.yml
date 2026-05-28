@@ -1,4 +1,4 @@
-```yaml id="a4f6ph"
+```yaml
 name: Plugin Release
 
 on:
@@ -58,4 +58,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: plugins/${{ steps.plugin.outputs.plugin }}/release/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
