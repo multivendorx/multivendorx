@@ -677,6 +677,10 @@
               }
             }
 
+            .last-chat {
+              color: #0000008a;
+            }
+
             span {
               position: absolute;
               top: 0;
@@ -734,7 +738,7 @@
         z-index: 9;
         background-color: #fff;
         border-bottom: 0.063rem dashed #e6ebf5;
-        padding: 1rem 1.5rem;
+        padding: 0.5rem 1.5rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -742,87 +746,11 @@
         .chat-meta {
           display: flex;
           align-items: center;
+          gap: 0.75rem;
 
-          .back-btn {
-            background: #65438f15;
-            width: 1.875rem;
-            height: 1.875rem;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            color: $color-active;
-            font-size: 0.813rem;
-            margin-right: 0.625rem;
-          }
-
-          .chat-meta-data {
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            background: transparent;
-            box-shadow: none;
-            border: none;
-            outline: none;
-            padding: 0;
-
-            &:hover,
-            &:focus,
-            &:active {
-              box-shadow: none;
-            }
-
-            .chat-img {
-              align-self: center;
-              margin-right: 0.75rem;
-              position: relative;
-
-              img {
-                height: 2.5rem;
-                width: 2.5rem;
-                vertical-align: middle;
-                border-radius: 50%;
-              }
-
-              .user-status {
-                width: 0.625rem;
-                height: 0.625rem;
-                background-color: #adb5bd;
-                border-radius: 50%;
-                border: 0.125rem solid #fff;
-                position: absolute;
-                right: 0;
-                left: auto;
-                bottom: 0;
-
-                &.online {
-                  background-color: #06d6a0;
-                }
-              }
-            }
-
-            .chat-meta {
-              margin-right: 0.5rem;
-              text-align: left;
-              overflow: hidden;
-              display: flex;
-              flex-direction: column;
-              align-items: flex-start;
-
-              p {
-                overflow: hidden;
-                margin: 0.063rem 0;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                font-size: 0.75rem;
-
-                &.enquery-id {
-                  font-weight: 500;
-                  font-size: 1rem;
-                }
-              }
-            }
+          .chat-name {
+            font-size: 1.063rem;
+            font-weight: 500;
           }
         }
 
@@ -1517,17 +1445,19 @@
 
 .profile-container {
   background: #fff;
-  margin-left: 0.25rem;
   position: absolute;
-  top: 4rem;
-  right: 8rem;
+  top: 0;
+  right: 0;
   z-index: 9;
-  box-shadow: 0 0 1rem rgba($color: #000000, $alpha: 0.125);
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.125);
+  height: 81vh;
+  width: 35%;
 
   .profile-pic-meta {
     padding: 1rem;
     display: flex;
     align-items: center;
+    flex-direction: column;
 
     img {
       height: 3rem;
@@ -1573,7 +1503,7 @@
         display: flex;
       }
 
-      p {
+      div {
         padding-inline: 1rem;
         display: flex;
         align-items: center;
