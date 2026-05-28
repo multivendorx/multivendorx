@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const phone = window?.StoreInfo?.storeDetails?.storePhone;
-	const showPhone = window?.StoreInfo?.settings_databases_value?.privacy?.store_contact_details.includes('show_store_phone');
+	const showPhone = window?.StoreInfo?.admin_settings?.privacy?.store_contact_details.includes('show_store_phone');
 
 	document
 		.querySelectorAll('.multivendorx-store-phone-block')

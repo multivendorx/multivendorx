@@ -136,7 +136,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 	];
 
 	const { modules } = useModules();
-	const settings = appLocalizer.settings_databases_value;
+	const settings = appLocalizer.admin_settings;
 
 	const [addressData, setAddressData] = useState<AddressData>({
 		location_lat: '',

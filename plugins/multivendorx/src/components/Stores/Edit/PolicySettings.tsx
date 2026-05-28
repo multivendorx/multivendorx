@@ -76,7 +76,7 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 							}
 							usePlainText={false}
 							tinymceApiKey={
-								appLocalizer.settings_databases_value[
+								appLocalizer.admin_settings[
 									'overview'
 								]['tinymce_api_section'] ?? ''
 							}
@@ -93,7 +93,7 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 							}
 							usePlainText={false}
 							tinymceApiKey={
-								appLocalizer.settings_databases_value[
+								appLocalizer.admin_settings[
 									'overview'
 								]['tinymce_api_section'] ?? ''
 							}
@@ -112,7 +112,7 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 							}
 							usePlainText={false}
 							tinymceApiKey={
-								appLocalizer.settings_databases_value[
+								appLocalizer.admin_settings[
 									'overview'
 								]['tinymce_api_section'] ?? ''
 							}
@@ -134,7 +134,7 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 							}
 							usePlainText={false}
 							tinymceApiKey={
-								appLocalizer.settings_databases_value[
+								appLocalizer.admin_settings[
 									'overview'
 								]['tinymce_api_section'] ?? ''
 							}
