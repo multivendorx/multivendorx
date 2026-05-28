@@ -89,7 +89,7 @@ const Dashboard: React.FC = () => {
 	const [topProductIds, setTopProductIds] = useState<number[]>([]);
 	const navigate = useNavigate();
 	const access =
-		appLocalizer.settings_databases_value?.['privacy']?.[
+		appLocalizer.admin_settings?.['privacy']?.[
 			'customer_information_access'
 		];
 	const siteUrl = appLocalizer.site_url.replace(/\/$/, '');
