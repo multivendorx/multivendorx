@@ -45,6 +45,10 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
+      - name: Build Zyra Package
+        run: |
+          pnpm --filter zyra run build
+
       - name: Verify Plugin Exists
         run: |
           if [ ! -d "plugins/${{ github.event.inputs.plugin }}" ]; then
@@ -52,7 +56,7 @@ jobs:
             exit 1
           fi
 
-      - name: Build ZIP
+      - name: Build Plugin ZIP
         run: |
           pnpm --filter "${{ github.event.inputs.plugin }}" run build:zip
 
