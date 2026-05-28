@@ -1,5 +1,5 @@
 /* global appLocalizer */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import {
