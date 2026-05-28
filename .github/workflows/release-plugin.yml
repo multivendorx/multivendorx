@@ -37,10 +37,18 @@ jobs:
           php-version: '8.4'
           coverage: none
 
+      - name: Setup Composer
+        uses: ramsey/composer-install@v3
+
+      - name: Get PNPM Store Path
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
       - name: Cache PNPM Store
         uses: actions/cache@v4
         with:
-          path: ~/.pnpm-store
+          path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
