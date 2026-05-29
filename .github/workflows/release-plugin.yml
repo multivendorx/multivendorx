@@ -1,40 +1,22 @@
-name: Release Plugin
+      - name: Enable Corepack + PNPM (FIXED)
+        shell: bash
+        run: |
+          set -e
 
-on:
-  workflow_dispatch:
-    inputs:
-      plugin:
-        description: "Plugin slug (multivendorx, moowoodle, catalogx, notifima etc.)"
-        required: true
-        default: "multivendorx"
+          corepack enable
 
-permissions:
-  contents: write
+          # Force pnpm activation explicitly
+          corepack prepare pnpm@10.34.1 --activate
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+          # Ensure PATH includes corepack shims
+          export PATH="$(corepack root)/shims:$PATH"
 
-    env:
-      NODE_ENV: production
+          echo "Node:"
+          node -v
 
-    steps:
-      # -------------------------
-      # Checkout
-      # -------------------------
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      # -------------------------
-      # Setup Node (required by policy)
-      # -------------------------
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24.16.0"
-          cache: "pnpm"
-
-      # -------------------------
+          echo "PNPM:"
+          which pnpm || true
+          pnpm -v      # -------------------------
       # Enable Corepack + PNPM (FIX for pnpm not found)
       # -------------------------
       - name: Enable Corepack + PNPM
