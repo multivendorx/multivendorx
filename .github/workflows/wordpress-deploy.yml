@@ -60,6 +60,7 @@ jobs:
 
           WPORG_SLUG=$(node -p "
             const pkg=require('${PLUGIN_PACKAGE}');
+            pkg.pluginSlug ||
             pkg.wordpressOrg?.slug ||
             pkg.wporg?.slug ||
             pkg.slug ||
