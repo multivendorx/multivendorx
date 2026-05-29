@@ -16,68 +16,103 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       NODE_ENV: production
-      COREPACK_ENABLE_STRICT: 0
 
     steps:
-      # -------------------------
+      # -----------------------------------
       # Checkout
-      # -------------------------
+      # -----------------------------------
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # -------------------------
-      # Node 24 + PNPM 10.34.1 (FIXED)
-      # -------------------------
-      - name: Setup Node 24 + PNPM
+      # -----------------------------------
+      # Read Node + PNPM versions
+      # -----------------------------------
+      - name: Read Runtime Versions
+        id: versions
+        shell: bash
+        run: |
+          NODE_VERSION=$(node -p "require('./package.json').engines.node.replace(/[\^\~>=< ]/g, '')")
+          PNPM_VERSION=$(node -p "require('./package.json').packageManager.split('@')[1]")
+
+          echo "node_version=$NODE_VERSION" >> $GITHUB_OUTPUT
+          echo "pnpm_version=$PNPM_VERSION" >> $GITHUB_OUTPUT
+
+          echo "Node Version: $NODE_VERSION"
+          echo "PNPM Version: $PNPM_VERSION"
+
+      # -----------------------------------
+      # Setup Node.js
+      # -----------------------------------
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24.16.0
-          cache: "pnpm"
+          node-version: ${{ steps.versions.outputs.node_version }}
 
-      - name: Enable Corepack + PNPM
+      # -----------------------------------
+      # Setup PNPM
+      # -----------------------------------
+      - name: Setup PNPM
+        shell: bash
         run: |
           corepack enable
-          corepack prepare pnpm@10.34.1 --activate
-          pnpm -v
-          node -v
+          corepack prepare pnpm@${{ steps.versions.outputs.pnpm_version }} --activate
 
-      # -------------------------
-      # PHP (safe install)
-      # -------------------------
+          echo "$(dirname $(which pnpm))" >> $GITHUB_PATH
+
+          node -v
+          pnpm -v
+          which pnpm
+
+      # -----------------------------------
+      # Setup PHP
+      # -----------------------------------
       - name: Setup PHP
         run: |
           sudo apt-get update
-          sudo apt-get install -y php8.3-cli php8.3-mbstring php8.3-xml php8.3-curl unzip curl
+
+          sudo apt-get install -y \
+            php8.3 \
+            php8.3-cli \
+            php8.3-curl \
+            php8.3-mbstring \
+            php8.3-xml \
+            unzip \
+            curl
 
           php -v
 
-      # -------------------------
-      # WP CLI (for makepot)
-      # -------------------------
+      # -----------------------------------
+      # Install WP-CLI
+      # -----------------------------------
       - name: Install WP-CLI
         run: |
           curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-          php wp-cli.phar --info
+
           chmod +x wp-cli.phar
+
           sudo mv wp-cli.phar /usr/local/bin/wp
+
           wp --info
 
-      # -------------------------
-      # Install dependencies (IMPORTANT FIX)
-      # -------------------------
+      # -----------------------------------
+      # Install dependencies
+      # -----------------------------------
       - name: Install Dependencies
-        run: pnpm install --no-frozen-lockfile --ignore-scripts
+        run: |
+          pnpm install --no-frozen-lockfile --ignore-scripts
 
-      # -------------------------
-      # Build Zyra (shared package)
-      # -------------------------
+      # -----------------------------------
+      # Build Zyra
+      # -----------------------------------
       - name: Build Zyra
-        run: pnpm --filter zyra run build
+        run: |
+          pnpm --filter zyra run build
 
-      # -------------------------
-      # Validate plugin folder
-      # -------------------------
+      # -----------------------------------
+      # Validate Plugin
+      # -----------------------------------
       - name: Validate Plugin
         run: |
           if [ ! -d "plugins/${{ github.event.inputs.plugin }}" ]; then
@@ -85,39 +120,42 @@ jobs:
             exit 1
           fi
 
-      # -------------------------
-      # Build ONLY selected plugin (FIXED monorepo isolation)
-      # -------------------------
+      # -----------------------------------
+      # Build Selected Plugin
+      # -----------------------------------
       - name: Build Plugin
         run: |
           cd plugins/${{ github.event.inputs.plugin }}
+
           pnpm install --no-frozen-lockfile --ignore-scripts
+
           pnpm run build:zip
 
-      # -------------------------
-      # Verify release output
-      # -------------------------
-      - name: Verify Build Output
+      # -----------------------------------
+      # Verify Release
+      # -----------------------------------
+      - name: Verify Release
         run: |
-          ls -lah plugins/${{ github.event.inputs.plugin }}/release || true
+          ls -lah plugins/${{ github.event.inputs.plugin }}/release
 
-      # -------------------------
-      # Upload artifact
-      # -------------------------
+      # -----------------------------------
+      # Upload Artifact
+      # -----------------------------------
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: plugin-zip
+          name: ${{ github.event.inputs.plugin }}-release
           path: plugins/${{ github.event.inputs.plugin }}/release/*.zip
 
-      # -------------------------
+      # -----------------------------------
       # Create GitHub Release
-      # -------------------------
+      # -----------------------------------
       - name: Create Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(node -p "require('./plugins/${{ github.event.inputs.plugin }}/package.json').version")
+
           TAG="${{ github.event.inputs.plugin }}-v${VERSION}"
 
           if gh release view "$TAG" >/dev/null 2>&1; then
@@ -130,112 +168,3 @@ jobs:
             plugins/${{ github.event.inputs.plugin }}/release/*.zip \
             --title "${{ github.event.inputs.plugin }} v${VERSION}" \
             --notes "${{ github.event.inputs.plugin }} v${VERSION} release"
-      # -------------------------
-      # Install PNPM globally (stable CI method)
-      # -------------------------
-      - name: Install PNPM
-        run: npm install -g pnpm@10.34.1
-
-      # -------------------------
-      # Verify environment
-      # -------------------------
-      - name: Verify Tools
-        run: |
-          node -v
-          pnpm -v
-
-      # -------------------------
-      # PHP setup
-      # -------------------------
-      - name: Setup PHP
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y software-properties-common
-          sudo add-apt-repository ppa:ondrej/php -y
-          sudo apt-get update
-          sudo apt-get install -y php8.4 php8.4-cli php8.4-mbstring php8.4-xml php8.4-curl unzip curl
-          php -v
-
-      # -------------------------
-      # WP-CLI
-      # -------------------------
-      - name: Install WP-CLI
-        run: |
-          curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-          chmod +x wp-cli.phar
-          sudo mv wp-cli.phar /usr/local/bin/wp
-          wp --info
-
-      # -------------------------
-      # Install dependencies (pnpm ONLY)
-      # -------------------------
-      - name: Install Dependencies
-        run: pnpm install --no-frozen-lockfile
-
-      # -------------------------
-      # Build Zyra first
-      # -------------------------
-      - name: Build Zyra Package
-        run: pnpm --filter zyra run build
-
-      # -------------------------
-      # Validate plugin
-      # -------------------------
-      - name: Validate Plugin
-        run: |
-          if [ ! -d "plugins/${{ github.event.inputs.plugin }}" ]; then
-            echo "Plugin not found"
-            exit 1
-          fi
-
-      # -------------------------
-      # Build plugin only
-      # -------------------------
-      - name: Build Plugin
-        run: |
-          cd plugins/${{ github.event.inputs.plugin }}
-
-          pnpm install --no-frozen-lockfile
-
-          pnpm run readme
-          pnpm run build:project
-          pnpm run makepot
-          pnpm run makejson
-          pnpm run release
-
-      # -------------------------
-      # Verify output
-      # -------------------------
-      - name: Verify Build Output
-        run: |
-          ls -lah plugins/${{ github.event.inputs.plugin }}/release || true
-
-      # -------------------------
-      # Upload artifact
-      # -------------------------
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: plugin-release
-          path: plugins/${{ github.event.inputs.plugin }}/release/*.zip
-
-      # -------------------------
-      # GitHub Release
-      # -------------------------
-      - name: Create GitHub Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION=$(node -p "require('./plugins/${{ github.event.inputs.plugin }}/package.json').version")
-          TAG="${{ github.event.inputs.plugin }}-v${VERSION}"
-
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release already exists"
-            exit 0
-          fi
-
-          gh release create \
-            "$TAG" \
-            plugins/${{ github.event.inputs.plugin }}/release/*.zip \
-            --title "${{ github.event.inputs.plugin }} v${VERSION}" \
-            --notes "${{ github.event.inputs.plugin }} ${VERSION} release"
