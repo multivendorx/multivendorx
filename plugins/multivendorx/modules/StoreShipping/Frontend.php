@@ -57,7 +57,7 @@ class Frontend {
         $version      = $asset['version'] ?? '1.0.0';
 
         $scripts['multivendorx-store-shipping-frontend-script'] = array(
-            'src'  => $base_url . 'modules/StoreShipping/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+            'src'  => $base_url . 'modules/StoreShipping/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
             'deps' => array( 'jquery' ),
         );
 
