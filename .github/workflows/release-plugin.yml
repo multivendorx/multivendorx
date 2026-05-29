@@ -1,34 +1,62 @@
-      - name: Enable Corepack + PNPM (FIXED)
+name: Release Plugin
+
+on:
+  workflow_dispatch:
+    inputs:
+      plugin:
+        description: "Plugin slug (multivendorx, moowoodle, catalogx, notifima etc.)"
+        required: true
+        default: "multivendorx"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      NODE_ENV: production
+
+    steps:
+      # -------------------------
+      # Checkout
+      # -------------------------
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # -------------------------
+      # Setup Node (policy compliant)
+      # -------------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.16.0"
+          cache: "pnpm"
+
+      # -------------------------
+      # Enable Corepack + PNPM (FIX for pnpm not found)
+      # -------------------------
+      - name: Enable Corepack + PNPM
         shell: bash
         run: |
           set -e
 
           corepack enable
-
-          # Force pnpm activation explicitly
           corepack prepare pnpm@10.34.1 --activate
 
-          # Ensure PATH includes corepack shims
+          # Fix PATH issues in GitHub runner
           export PATH="$(corepack root)/shims:$PATH"
 
-          echo "Node:"
+          echo "Node version:"
           node -v
 
-          echo "PNPM:"
+          echo "PNPM version:"
           which pnpm || true
-          pnpm -v      # -------------------------
-      # Enable Corepack + PNPM (FIX for pnpm not found)
-      # -------------------------
-      - name: Enable Corepack + PNPM
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.34.1 --activate
-
-          node -v
           pnpm -v
 
       # -------------------------
-      # PHP (manual install - policy safe)
+      # PHP setup (manual, policy-safe)
       # -------------------------
       - name: Setup PHP
         run: |
@@ -50,21 +78,21 @@
           wp --info
 
       # -------------------------
-      # Install dependencies (CI-safe)
+      # Install dependencies (CI safe)
       # -------------------------
       - name: Install Dependencies
         run: pnpm install --no-frozen-lockfile
 
       # -------------------------
-      # Build Zyra FIRST (fix shared dependency errors)
+      # Build Zyra FIRST (fix shared dependency issues)
       # -------------------------
       - name: Build Zyra Package
         run: pnpm --filter zyra run build
 
       # -------------------------
-      # Validate plugin exists
+      # Validate plugin
       # -------------------------
-      - name: Validate Plugin
+      - name: Validate Plugin Exists
         run: |
           if [ ! -d "plugins/${{ github.event.inputs.plugin }}" ]; then
             echo "Plugin not found"
@@ -72,7 +100,7 @@
           fi
 
       # -------------------------
-      # Build ONLY selected plugin (NO workspace recursion)
+      # Build ONLY selected plugin (NO monorepo recursion)
       # -------------------------
       - name: Build Plugin
         run: |
@@ -87,7 +115,7 @@
           pnpm run release
 
       # -------------------------
-      # Verify release output
+      # Verify output
       # -------------------------
       - name: Verify Build Output
         run: |
