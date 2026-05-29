@@ -27,7 +27,7 @@ const Rules = () => {
             <NavigatorHeader
                 headerIcon="rules"
                 headerDescription={__(
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, facere atque alias quasi aperiam nesciunt.',
+                    'Create and manage rules to control product visibility, pricing behavior, and catalog conditions.',
                     'catalogx'
                 )}
                 headerTitle={__('Rules', 'catalogx')}
