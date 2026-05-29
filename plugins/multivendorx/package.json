@@ -48,7 +48,6 @@
         "env:clean": "pnpm wp-env clean",
         "env:destroy": "pnpm wp-env destroy && rimraf docker-compose.yml",
         "readme": "wp-readme-to-md",
-        "composer": "composer dump-autoload",
         "clean": "node ../../tools/scripts/clean.mjs",
         "minify": "node ../../tools/scripts/minify.mjs",
         "move": "node ../../tools/scripts/move-files.mjs",
@@ -58,7 +57,9 @@
         "changelog": "composer exec -- changelogger",
         "makepot": "pnpm exec wp i18n make-pot --domain='multivendorx' --include='assets/js,public, classes,templates,modules,config.php,dc_product_vendor.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://multivendorx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') MultiVendorX Inc. All Rights Reserved.\" languages/multivendorx.pot",
         "makejson": "pnpm exec wp i18n make-json languages --pretty-print --no-purge",
-        "postinstall": "composer install"
+        "composer": "composer dump-autoload && composer update",
+		"preinstall": "npx only-allow pnpm",
+		"postinstall": "rimraf -g vendor release .wireit composer.lock languages && composer install"
     },
     "wireit": {
         "build:project:bundle": {
