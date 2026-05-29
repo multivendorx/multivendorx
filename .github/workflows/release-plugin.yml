@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       plugin:
-        description: "Plugin slug (e.g. multivendorx, moowoodle)"
+        description: "Plugin slug (multivendorx, moowoodle, catalogx, notifima etc.)"
         required: true
         default: "multivendorx"
 
@@ -19,10 +19,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # ----------------------------
-      # Node + PNPM (no external actions)
-      # ----------------------------
-      - name: Setup Node & PNPM
+      # -------------------------
+      # Node + PNPM
+      # -------------------------
+      - name: Setup Node + PNPM
         run: |
           curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
           sudo apt-get install -y nodejs
@@ -31,12 +31,11 @@ jobs:
           corepack prepare pnpm@11.4.0 --activate || true
 
           node -v
-          npm -v
           pnpm -v
 
-      # ----------------------------
-      # PHP (manual install - policy safe)
-      # ----------------------------
+      # -------------------------
+      # PHP (manual, policy-safe)
+      # -------------------------
       - name: Setup PHP
         run: |
           sudo apt-get update
@@ -46,9 +45,9 @@ jobs:
           sudo apt-get install -y php8.4 php8.4-cli php8.4-mbstring php8.4-xml php8.4-curl unzip curl
           php -v
 
-      # ----------------------------
-      # WP-CLI (required for makepot)
-      # ----------------------------
+      # -------------------------
+      # WP-CLI (needed for i18n only)
+      # -------------------------
       - name: Install WP-CLI
         run: |
           curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
@@ -58,55 +57,55 @@ jobs:
 
           wp --info
 
-      # ----------------------------
-      # Install dependencies (safe CI mode)
-      # ----------------------------
+      # -------------------------
+      # Install deps (clean CI mode)
+      # -------------------------
       - name: Install Dependencies
         run: pnpm install --no-frozen-lockfile --ignore-scripts
 
-      # ----------------------------
+      # -------------------------
       # Build shared package
-      # ----------------------------
+      # -------------------------
       - name: Build Zyra
         run: pnpm --filter zyra run build
 
-      # ----------------------------
-      # Validate plugin
-      # ----------------------------
-      - name: Validate Plugin Path
+      # -------------------------
+      # Validate plugin exists
+      # -------------------------
+      - name: Validate Plugin
         run: |
           if [ ! -d "plugins/${{ github.event.inputs.plugin }}" ]; then
             echo "Plugin not found"
             exit 1
           fi
 
-      # ----------------------------
-      # Build ONLY selected plugin (no recursion)
-      # ----------------------------
+      # -------------------------
+      # Build plugin (NO recursion, NO workspace build)
+      # -------------------------
       - name: Build Plugin
         run: |
           cd plugins/${{ github.event.inputs.plugin }}
           pnpm run build:zip
 
-      # ----------------------------
+      # -------------------------
       # Verify output
-      # ----------------------------
-      - name: Verify Build Output
+      # -------------------------
+      - name: Verify Build
         run: |
           ls -lah plugins/${{ github.event.inputs.plugin }}/release
 
-      # ----------------------------
-      # Upload artifact
-      # ----------------------------
+      # -------------------------
+      # Upload artifact (actions allowed)
+      # -------------------------
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: plugin-zip
           path: plugins/${{ github.event.inputs.plugin }}/release/*.zip
 
-      # ----------------------------
-      # Create GitHub Release (clean notes only)
-      # ----------------------------
+      # -------------------------
+      # GitHub Release (clean notes only)
+      # -------------------------
       - name: Create Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
