@@ -434,6 +434,7 @@ const SetupWizard: React.FC = () => {
 								label: '',
 								// message: appLocalizer.multivendor_plugin || 'No multivendor plugin active currently',
 								message: sprintf(
+									/* translators: %s: Active multivendor plugin name. */
 									__(
 										'We found an active multivendor plugin on your site <span class="admin-badge purple">%s</span>',
 										'multivendorx'
@@ -447,8 +448,9 @@ const SetupWizard: React.FC = () => {
 								key: 'notice',
 								type: 'notice',
 								message: sprintf(
+									/* translators: 1: Existing multivendor plugin name, 2: Existing multivendor plugin name. */
 									__(
-										"We'll copy all your data from <b>%s</b> into MultivendorX. Once the import is done, <b>%s</b> will be turned off automatically to prevent any conflicts. Make sure you're ready before you begin.",
+										"We'll copy all your data from <b>%1$s</b> into MultivendorX. Once the import is done, <b>%2$s</b> will be turned off automatically to prevent any conflicts. Make sure you're ready before you begin.",
 										'multivendorx'
 									),
 									appLocalizer.multivendor_plugin,
@@ -483,6 +485,7 @@ const SetupWizard: React.FC = () => {
 									},
 									{
 										title: sprintf(
+											/* translators: %s: Existing multivendor plugin name. */
 											__(
 												'<b>Keep %s active for now —</b> it must still be installed and enabled so we can read your existing data.',
 												'multivendorx'

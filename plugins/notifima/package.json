@@ -57,7 +57,6 @@
         "textdomain": "node ../../tools/scripts/update-textdomain.mjs",
         "changelog": "composer exec -- changelogger",
         "makejson": "pnpm exec wp i18n make-json languages --pretty-print --no-purge",
-        "postinstall": "composer install",
         "makepot": "pnpm exec wp i18n make-pot --domain='notifima' --include='assets/js,public,classes,src,templates,config.php,product_stock_alert.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://notifima.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') Notifima Inc. All Rights Reserved.\" languages/notifima.pot"
     },
     "wireit": {

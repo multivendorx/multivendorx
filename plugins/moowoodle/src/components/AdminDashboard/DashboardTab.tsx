@@ -114,6 +114,7 @@ const DashboardTab: React.FC<object> = () => {
 				NoticeManager.add({
 					title: __('Error!', 'moowoodle'),
 					message: sprintf(
+						/* translators: %s: Plugin slug or plugin name. */
 						__('Could not install "%s".', 'moowoodle'),
 						slug
 					),

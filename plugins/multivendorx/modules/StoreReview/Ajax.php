@@ -8,7 +8,6 @@
 namespace MultiVendorX\StoreReview;
 
 use MultiVendorX\Store\Store;
-use MultiVendorX\Utill;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -172,10 +171,13 @@ class Ajax {
 							?>
                     <div class="comment-text">
                         <div class="star-rating" role="img" aria-label="
-                        <?php
-                            /* translators: %s: rating value */
-                            printf( esc_attr__( 'Rated %s out of 5', 'multivendorx' ), esc_html( $rating_rounded ) );
-                        ?>
+						<?php
+							/* translators: %s is the rating value out of 5. */
+							printf(
+								esc_attr__( 'Rated %s out of 5', 'multivendorx' ),
+								esc_html( $rating_rounded )
+							);
+						?>
                         ">
                             <span style="width: <?php echo esc_attr( $rating_percentage ); ?>%;">
                                 <strong class="rating"><?php echo esc_html( $rating_rounded ); ?></strong> <?php esc_html_e( 'out of 5', 'multivendorx' ); ?>

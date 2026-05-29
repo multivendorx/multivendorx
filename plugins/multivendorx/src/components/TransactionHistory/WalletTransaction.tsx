@@ -743,6 +743,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 											{freeLeft > 0 ? (
 												<span>
 													{sprintf(
+														/* translators: %s: Number of free withdrawals left. */
 														__(
 															'Burning 1 out of %s free withdrawals',
 															'multivendorx'
