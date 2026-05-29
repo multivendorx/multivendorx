@@ -91,6 +91,13 @@ class Admin {
             ),
         );
 
+        uasort(
+                $submenu_items,
+                function ( $a, $b ) {
+					return ( $a['priority'] ?? 0 ) <=> ( $b['priority'] ?? 0 );
+				}
+            );
+
         foreach ( $submenu_items as $slug => $submenu_item ) {
             // prepare subtab if subtab is exist.
             $submenu_query_arg = ! empty( $submenu_item['subtab'] )
@@ -144,23 +151,18 @@ class Admin {
      */
     public function enqueue_admin_script() {
 
-        $screen = get_current_screen();
-
-        if ( ! $screen || 'toplevel_page_catalogx' !== $screen->id ) {
-            return;
+        if ( get_current_screen()->id === 'toplevel_page_catalogx' ) {
+            wp_enqueue_script( 'wp-element' );
+            wp_enqueue_editor();
+            // Support for media.
+            wp_enqueue_media();
+            FrontendScripts::enqueue_admin_assets();
+            FrontendScripts::enqueue_script( 'catalogx-vendor-script' );
+            FrontendScripts::enqueue_script( 'catalogx-admin-script' );
+            FrontendScripts::enqueue_style( 'catalogx-index-style' );
+            FrontendScripts::localize_scripts( 'catalogx-admin-script' );
         }
 
-        wp_enqueue_script( 'wp-element' );
-        wp_enqueue_editor();
-        // Support for media.
-        wp_enqueue_media();
-
-        // Enque script and style.
-        FrontendScripts::enqueue_admin_assets();
-        FrontendScripts::enqueue_script( 'catalogx-admin-script' );
-		FrontendScripts::enqueue_script( 'catalogx-vendor-script' );
-        FrontendScripts::enqueue_style( 'catalogx-index-style' );
-        FrontendScripts::localize_scripts( 'catalogx-admin-script' );
     }
 
     /**
@@ -207,7 +209,7 @@ class Admin {
             }
 
             if ( strpos( $url, 'block' ) === false ) {
-                $path = 'assets/js/components.js';
+                $path = 'assets/js/vendors.js';
             }
         }
 

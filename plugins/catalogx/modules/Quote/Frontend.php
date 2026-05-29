@@ -25,6 +25,9 @@ class Frontend {
         // Quote button shortcode.
         add_shortcode( 'catalogx_quote_button', array( $this, 'catalogx_quote_button_shortcode' ) );
 
+        // Ensure scripts are available on frontend when quote button is rendered.
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
         if ( ! Util::is_available() ) {
 			return;
         }
@@ -33,9 +36,8 @@ class Frontend {
         if ( ! empty( $display_quote_button ) && ! is_user_logged_in() ) {
             return;
         }
-        add_action( 'display_shop_page_button', array( $this, 'catalogx_add_quote_button' ) );
+        add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_quote_button' ) );
         add_action( 'woocommerce_after_shop_loop_item', array( $this, 'add_button_for_quote' ), 11 );
-        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
     }
 
     /**
@@ -77,6 +79,8 @@ class Frontend {
         if ( empty( $product_obj ) ) {
             return;
         }
+
+        $this->enqueue_scripts();
 
         // Exclusion settings for shop and single product page.
         if ( ! Util::is_available_for_product( $product_obj->get_id() ) ) {
