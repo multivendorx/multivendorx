@@ -1,13 +1,12 @@
 {
     "name": "notifima",
-    "displayName": "woocommerce-product-stock-alert",
+    "displayName": "Notifima",
+    "pluginSlug": "woocommerce-product-stock-alert",
+    "description": "Notifima – WooCommerce Stock Manager, Inventory Management, Waitlist",
     "version": "3.0.6",
-    "description": "=== Notifima ===",
-    "main": "index.js",
-    "mainPluginFile": "product_stock_alert.php",
-    "engines": {
-        "node": "^24.0.2"
-    },
+    "license": "GPL-2.0-or-later",
+    "author": "MultiVendorX",
+    "homepage": "https://github.com/multivendorx/multivendorx/blob/main/plugins/notifima/README.md",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/multivendorx/multivendorx.git"
@@ -15,10 +14,11 @@
     "bugs": {
         "url": "https://github.com/multivendorx/multivendorx/issues"
     },
-    "homepage": "https://github.com/multivendorx/multivendorx/blob/main/plugins/notifima/README.md",
-    "author": "MultiVendorX",
-    "license": "GPL-2.0-or-later",
-    "packageManager": "pnpm@10.11.0",
+    "main": "index.js",
+    "mainPluginFile": "product_stock_alert.php",
+    "engines": {
+        "node": "^24.0.2"
+    },
     "scripts": {
         "build": "pnpm run build:project",
         "build:project": "pnpm --if-present \"/^build:project:.*$/\"",
@@ -39,12 +39,12 @@
         "fix:php": "composer run-script phpfix",
         "test": "pnpm run test:php",
         "test:php": "./vendor/bin/phpunit -c phpunit.xml.dist",
-        "env:create": "pnpm wp-env start && pnpm run env:start:database",
-        "env:start": "pnpm wp-env start && pnpm run env:start:database",
+        "env:create": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start && pnpm run env:start:database",
+        "env:start": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start && pnpm run env:start:database",
         "env:start:database": "node ../../tools/scripts/docker-compose.mjs && docker compose up -d",
-        "env:dev": "pnpm wp-env start --update && pnpm run env:start:database && pnpm --if-present --filter storybook run watch:build:storybook",
+        "env:dev": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start --update && pnpm run env:start:database && pnpm --if-present --filter storybook run watch:build:storybook",
         "env:stop": "pnpm wp-env stop && docker compose down",
-        "env:restart": "pnpm wp-env restart",
+        "env:restart": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env restart",
         "env:clean": "pnpm wp-env clean",
         "env:destroy": "pnpm wp-env destroy && rimraf docker-compose.yml",
         "readme": "wp-readme-to-md",

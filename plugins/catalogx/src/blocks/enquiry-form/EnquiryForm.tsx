@@ -61,6 +61,13 @@ const EnquiryForm = () => {
 
     return (
         <>
+            {toast && (
+                <div className="woocommerce-notices-wrapper">
+                    <ul className="woocommerce-message" role="alert">
+                        <li>{responseMessage}</li>
+                    </ul>
+                </div>
+            )}
             <div>{enquiryFormData.content_before_form}</div>
             {proActive ? (
                 <FormViewer
@@ -78,12 +85,6 @@ const EnquiryForm = () => {
                 />
             )}
             <div>{enquiryFormData.content_after_form}</div>
-            {toast && (
-                <div className="admin-notice-display-title">
-                    <i className="admin-font adminlib-success"></i>
-                    {responseMessage}
-                </div>
-            )}
         </>
     );
 };

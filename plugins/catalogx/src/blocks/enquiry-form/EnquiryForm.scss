@@ -1,7 +1,4 @@
-.single-product-page-action-btn-catalogx {
-    position: relative;
-}
-
+// popup styele
 .catalogx-modal {
     width: 100%;
     margin-top: 0.5rem;
@@ -9,85 +6,44 @@
 
     &.popup-enable {
         margin: 0 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: rgba($color: #000000, $alpha: 0.5);
+        width: 100vw;
+        height: 100vh;
+        z-index: 123570;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow-y: scroll;
+        gap: 1rem;
 
-        .enquiry-form-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: rgba($color: #000000, $alpha: 0.5);
-            width: 100vw;
-            height: 100vh;
-            z-index: 123570;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .woocommerce-form {
+            width: 34.375rem;
+            max-height: 40.625rem;
             overflow-y: scroll;
-            gap: 1rem;
+            height: auto;
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1rem;
+            position: relative;
 
-            .modal-wrapper {
-                width: 34.375rem;
-                max-height: 40.625rem;
-                overflow-y: scroll;
-                height: auto;
-                background-color: #fff;
-                padding: 1.5rem;
-                border-radius: 0.5rem;
-                margin: 1rem;
-                position: relative;
-
-                .catalogx-modal-close-btn {
-                    display: flex;
-                }
+            .catalogx-modal-close-btn {
+                display: flex;
             }
         }
     }
 }
 
+// single product page buttons
 .single-product-page-action-btn-catalogx {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem;
     justify-content: flex-start;
     padding-top: 0.213rem;
     width: 100%;
-}
-
-.admin-notice-display-title {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.5rem;
-    background-color: #0cd80c;
-    color: #fff;
-    max-width: 15rem;
-    width: fit-content;
-    padding: 0.5rem 0;
-    padding: 0.5rem;
-    font-weight: 400;
-    position: fixed;
-    top: 7.188rem;
-    right: 1.512rem;
-    z-index: 99999;
-    font-size: 1rem;
-
-    &::after {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        content: "";
-        width: 100%;
-        height: 0.252rem;
-        background: green;
-        animation: progress 2s linear;
-
-        @keyframes progress {
-            from {
-                width: 100%;
-            }
-
-            to {
-                width: 0%;
-            }
-        }
-    }
 }

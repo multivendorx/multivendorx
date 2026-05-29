@@ -1,23 +1,24 @@
 {
     "name": "multivendorx",
-    "displayName": "dc-woocommerce-multi-vendor",
+    "displayName": "MultiVendorX",
+    "pluginSlug": "dc-woocommerce-multi-vendor",
+    "description": "MultiVendorX - WooCommerce Multivendor Marketplace AI Powered Solutions",
     "version": "5.0.6",
-    "description": "=== MultiVendorX ===",
-    "main": "index.js",
     "license": "GPL-2.0-or-later",
-    "mainPluginFile": "dc_product_vendor.php",
-    "engines": {
-        "node": "^24.0.2"
-    },
+    "author": "MultiVendorX",
+    "homepage": "https://github.com/multivendorx/multivendorx#readme",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/multivendorx/multivendorx.git"
     },
-    "author": "MultiVendorX",
     "bugs": {
         "url": "https://github.com/multivendorx/multivendorx/issues"
     },
-    "homepage": "https://github.com/multivendorx/multivendorx#readme",
+    "main": "index.js",
+    "mainPluginFile": "dc_product_vendor.php",
+    "engines": {
+        "node": "^24.0.2"
+    },
     "scripts": {
         "build": "pnpm run build:project",
         "build:project": "pnpm --if-present \"/^build:project:.*$/\"",
@@ -38,12 +39,12 @@
         "fix:php": "composer run-script phpfix",
         "test": "pnpm run test:php",
         "test:php": "./vendor/bin/phpunit -c phpunit.xml.dist",
-        "env:create": "pnpm wp-env start && pnpm run env:start:database",
-        "env:start": "pnpm wp-env start && pnpm run env:start:database",
+        "env:create": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start && pnpm run env:start:database",
+        "env:start": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start && pnpm run env:start:database",
         "env:start:database": "node ../../tools/scripts/docker-compose.mjs && docker compose up -d",
-        "env:dev": "pnpm wp-env start --update && pnpm run env:start:database && pnpm --if-present --filter storybook run watch:build:storybook",
+        "env:dev": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start --update && pnpm run env:start:database && pnpm --if-present --filter storybook run watch:build:storybook",
         "env:stop": "pnpm wp-env stop && docker compose down",
-        "env:restart": "pnpm wp-env restart",
+        "env:restart": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env restart",
         "env:clean": "pnpm wp-env clean",
         "env:destroy": "pnpm wp-env destroy && rimraf docker-compose.yml",
         "readme": "wp-readme-to-md",
@@ -55,7 +56,7 @@
         "version": "node ../../tools/scripts/version-replace.mjs",
         "textdomain": "node ../../tools/scripts/update-textdomain.mjs",
         "changelog": "composer exec -- changelogger",
-        "makepot": "pnpm exec wp i18n make-pot --domain='multivendorx' --include='assets/js,public, classes,templates,modules,config.php,dc_product_vendor.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://multivendorx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') Multivendorx Inc. All Rights Reserved.\" languages/multivendorx.pot",
+        "makepot": "pnpm exec wp i18n make-pot --domain='multivendorx' --include='assets/js,public, classes,templates,modules,config.php,dc_product_vendor.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://multivendorx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') MultiVendorX Inc. All Rights Reserved.\" languages/multivendorx.pot",
         "makejson": "pnpm exec wp i18n make-json languages --pretty-print --no-purge",
         "postinstall": "composer install"
     },

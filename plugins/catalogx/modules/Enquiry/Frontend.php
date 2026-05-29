@@ -107,14 +107,14 @@ class Frontend {
 			if ( ! $product_obj->managing_stock() && ! $product_obj->is_in_stock() ) {
                 ?>
                 <div position = "<?php echo esc_attr( $position ); ?>">
-                    <button class="catalogx-enquiry-btn button demo btn btn-primary btn-large wp-block-button__link" style="<?php echo esc_attr( $button_css ); ?>" href="#catalogx-modal"><?php echo esc_html( $button_settings['button_text'] ); ?></button>
+                    <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button" style="<?php echo esc_attr( $button_css ); ?>" href="#catalogx-modal"><?php echo esc_html( $button_settings['button_text'] ); ?></button>
                 </div>
                 <?php
 			}
         } else {
 			?>
                 <div position = "<?php echo esc_attr( $position ); ?>">
-                    <button class="catalogx-enquiry-btn button demo btn btn-primary btn-large wp-block-button__link" style="<?php echo esc_attr( $button_css ); ?>" href="#catalogx-modal"><?php echo esc_html( $button_settings['button_text'] ); ?></button>
+                    <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button" style="<?php echo esc_attr( $button_css ); ?>" href="#catalogx-modal"><?php echo esc_html( $button_settings['button_text'] ); ?></button>
                 </div>
                 <?php
 		}
