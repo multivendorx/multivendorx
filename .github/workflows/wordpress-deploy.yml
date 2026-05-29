@@ -1,4 +1,3 @@
-```yml
 name: WordPress Deploy
 
 on:
@@ -353,4 +352,3 @@ jobs:
             --username "$SVN_USERNAME" \
             --password "$SVN_PASSWORD" \
             -m "Release version $VERSION"
-```
