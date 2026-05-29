@@ -65,10 +65,10 @@ class Session extends \WC_Session {
         }
 
         $this->cookie_name = 'catalogx_session_' . COOKIEHASH;
-        $session_cookie = $this->get_session_cookie();
+        $session_cookie    = $this->get_session_cookie();
 
         if ( $session_cookie ) {
-            $this->_customer_id        = $session_cookie[0];
+            $this->_customer_id       = $session_cookie[0];
             $this->session_expiration = $session_cookie[1];
             $this->session_expiring   = $session_cookie[2];
             $this->has_cookie         = true;
@@ -113,9 +113,9 @@ class Session extends \WC_Session {
     public function set_customer_session_cookie( $set ) {
         if ( $set ) {
             // Set/renew our cookie.
-            $to_hash           = $this->_customer_id . '|' . $this->session_expiration;
-            $cookie_hash       = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
-            $cookie_value      = $this->_customer_id . '||' . $this->session_expiration . '||' . $this->session_expiring . '||' . $cookie_hash;
+            $to_hash          = $this->_customer_id . '|' . $this->session_expiration;
+            $cookie_hash      = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
+            $cookie_value     = $this->_customer_id . '||' . $this->session_expiration . '||' . $this->session_expiring . '||' . $cookie_hash;
             $this->has_cookie = true;
 
             // Set the cookie.
@@ -136,7 +136,7 @@ class Session extends \WC_Session {
      * Set session expiration.
      */
     public function set_session_expiration() {
-        $this->session_expiring   = time() + intval( apply_filters( 'catalogx_session_expiring', (DAY_IN_SECONDS * 2) - 1 ) ); // 47 Hours.
+        $this->session_expiring   = time() + intval( apply_filters( 'catalogx_session_expiring', ( DAY_IN_SECONDS * 2 ) - 1 ) ); // 47 Hours.
         $this->session_expiration = time() + intval( apply_filters( 'catalogx_session_expiration', DAY_IN_SECONDS * 2 ) ); // 48 Hours.
     }
 
@@ -236,26 +236,26 @@ class Session extends \WC_Session {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             $wc_session_expires = $wpdb->get_col( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE '\_wcce\_session\_expires\_%' AND option_value < '$now'" );
 
-            foreach ( $wc_session_expires as $option_name ) {
-                $session_id         = substr( $option_name, 20 );
-                $expired_sessions[] = $option_name;  // Expires key.
-                $expired_sessions[] = "_catalogx_session_$session_id"; // Session key.
-            }
+		foreach ( $wc_session_expires as $option_name ) {
+			$session_id         = substr( $option_name, 20 );
+			$expired_sessions[] = $option_name;  // Expires key.
+			$expired_sessions[] = "_catalogx_session_$session_id"; // Session key.
+		}
 
                 $expired_sessions_chunked = array_chunk( $expired_sessions, 100 );
-                foreach ( $expired_sessions_chunked as $session_option_chunk ) {
-                    if ( wp_using_ext_object_cache() ) {
-                        // delete from object cache first, to avoid cached but deleted options.
-                        foreach ( $session_option_chunk as $option_name ) {
-                            wp_cache_delete( $option_name, 'options' );
-                        }
-                    }
+		foreach ( $expired_sessions_chunked as $session_option_chunk ) {
+			if ( wp_using_ext_object_cache() ) {
+				// delete from object cache first, to avoid cached but deleted options.
+				foreach ( $session_option_chunk as $option_name ) {
+					wp_cache_delete( $option_name, 'options' );
+				}
+			}
 
-                    // delete from options table.
-                    $option_names = implode( "','", $session_option_chunk );
-                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                    $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name IN ('$option_names')" );
-                }
+			// delete from options table.
+			$option_names = implode( "','", $session_option_chunk );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "DELETE FROM $wpdb->options WHERE option_name IN ('$option_names')" );
+		}
     }
 
     /**

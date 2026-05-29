@@ -16,11 +16,11 @@ namespace CatalogX\Enquiry;
  */
 class Module {
     /**
-     * Container contain all helper class
+     * Services contain all helper class
      *
      * @var array
      */
-    private $container = array();
+    private $services = array();
 
     /**
      * Contain reference of the class
@@ -35,7 +35,7 @@ class Module {
     public function __construct() {
 
         // Init helper classes.
-        $this->init_classes();
+        $this->register_services();
 
         do_action( 'load_premium_enquiry_module' );
     }
@@ -45,36 +45,36 @@ class Module {
      *
      * @return void
      */
-    public function init_classes() {
-        $this->container['util']     = new Util();
-        $this->container['frontend'] = new Frontend();
-        $this->container['rest']     = new Rest();
-        $this->container['ajax']     = new Ajax();
+    public function register_services() {
+        $this->services['util']     = new Util();
+        $this->services['frontend'] = new Frontend();
+        $this->services['rest']     = new Rest();
+        $this->services['ajax']     = new Ajax();
     }
 
     /**
      * Magic getter function to get the reference of class.
      * Accept class name, If valid return reference, else Wp_Error.
      *
-     * @param   mixed $class Name of the class to retrieve from the container.
+     * @param   mixed $class Name of the class to retrieve from the services.
      * @return  object | \WP_Error
      */
     public function __get( $class ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound
-        if ( array_key_exists( $class, $this->container ) ) {
-            return $this->container[ $class ];
+        if ( array_key_exists( $class, $this->services ) ) {
+            return $this->services[ $class ];
         }
         return new \WP_Error( sprintf( 'Call to unknown class %s.', $class ) );
     }
 
     /**
      * Magic setter function to store a reference of a class.
-     * Accepts a class name as the key and stores the instance in the container.
+     * Accepts a class name as the key and stores the instance in the services.
      *
      * @param string $class The class name or key to store the instance.
      * @param object $value The instance of the class to store.
      */
     public function __set( $class, $value ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound
-        $this->container[ $class ] = $value;
+        $this->services[ $class ] = $value;
     }
 
     /**

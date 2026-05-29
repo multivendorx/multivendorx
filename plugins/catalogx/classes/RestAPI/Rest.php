@@ -34,14 +34,14 @@ class Rest {
      * Rest class constructor function
      */
     public function __construct() {
-        $this->init_classes();
+        $this->register_controllers();
         add_action( 'rest_api_init', array( $this, 'register_rest_api_routes' ), 10 );
     }
 
     /**
      * Initialize all REST API controller classes.
      */
-    public function init_classes() {
+    public function register_controllers() {
         $this->controllers = array(
             'settings' => new Settings(),
             'tour'     => new Tour(),

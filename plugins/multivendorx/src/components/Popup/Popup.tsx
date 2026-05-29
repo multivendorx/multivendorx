@@ -184,10 +184,13 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 				</div>
 				<div className="popup-body">
 					<div className="module-name">
-						{sprintf(
-							__('Plugin Required: %s', 'multivendorx'),
-							pluginData.pluginName
-						)}
+						{
+							sprintf(
+								/* translators: %s: Plugin name. */
+								__('Plugin Required: %s', 'multivendorx'),
+								pluginData.pluginName
+							)
+						}
 					</div>
 					<div className="module-desc">
 						{sprintf(
@@ -248,13 +251,17 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 					</div>
 					<div className="popup-body">
 						<div className="module-name">
-							{sprintf(
-								__('Activate %s', 'multivendorx'),
-								formatModuleName(props.moduleName)
-							)}
+							{
+								sprintf(
+									/* translators: %s: Module name. */
+									__('Activate %s', 'multivendorx'),
+									formatModuleName(props.moduleName)
+								)
+							}
 						</div>
 						<div className="module-desc">
 							{sprintf(
+								/* translators: %s: Module name. */
 								__(
 									'This feature is currently unavailable. To activate it, please enable the %s',
 									'multivendorx'

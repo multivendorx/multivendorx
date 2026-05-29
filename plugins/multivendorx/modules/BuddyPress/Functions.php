@@ -101,6 +101,7 @@ class Functions {
 
                 // Title
                 printf(
+                    /* translators: %s: Store name. */
                     esc_html__( 'Products from %s', 'multivendorx' ),
                     esc_html( $store['name'] )
                 );

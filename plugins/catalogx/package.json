@@ -1,7 +1,7 @@
 {
     "name": "catalogx",
     "displayName": "CatalogX",
-    "pluginName": "woocommerce-catalog-enquiry",
+    "pluginSlug": "woocommerce-catalog-enquiry",
     "description": "CatalogX - Product Catalog Mode & Product Enquiry, Request Quote for WooCommerce, Wholesale Prices, B2B, Wholesale User Roles, Dynamic Pricing, Tiered Pricing & More",
     "version": "6.0.8",
     "license": "GPL-2.0-or-later",
@@ -57,8 +57,7 @@
         "textdomain": "node ../../tools/scripts/update-textdomain.mjs",
         "changelog": "composer exec -- changelogger",
         "makepot": "pnpm exec wp i18n make-pot --domain='catalogx' --include='assets/js,public,classes,modules,templates,config.php,Woocommerce_Catalog_Enquiry.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://catalogx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') CatalogX Inc. All Rights Reserved.\" languages/catalogx.pot",
-        "makejson": "pnpm exec wp i18n make-json languages --pretty-print --no-purge",
-        "postinstall": "composer install"
+        "makejson": "pnpm exec wp i18n make-json languages --pretty-print --no-purge"
     },
     "wireit": {
         "build:project:bundle": {

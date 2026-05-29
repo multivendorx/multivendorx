@@ -426,6 +426,7 @@ const RegistrationForm = () => {
 						countryList={memoizedCountryList}
 						stateList={memoizedStateList}
 						formMessages={{
+							/* translators: %s: Field label. */
 							fieldRequired: __('%s is required.', 'multivendorx'),
 							invalidEmail: __(
 								'Please enter a valid email address.',

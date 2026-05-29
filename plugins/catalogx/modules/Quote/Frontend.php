@@ -36,7 +36,6 @@ class Frontend {
         add_action( 'display_shop_page_button', array( $this, 'catalogx_add_quote_button' ) );
         add_action( 'woocommerce_after_shop_loop_item', array( $this, 'add_button_for_quote' ), 11 );
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
     }
 
     /**
@@ -140,17 +139,11 @@ class Frontend {
         $product_id = 0;
 
         if ( ! empty( $attr['product_id'] ) ) {
-
             $product_id = absint( $attr['product_id'] );
-
         } elseif ( $product instanceof \WC_Product ) {
-
             $product_id = $product->get_id();
-
         } else {
-
             $product_id = $this->get_product_id_from_context();
-
         }
 
         if ( $product_id ) {
