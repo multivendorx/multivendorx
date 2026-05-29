@@ -1,122 +1,125 @@
-{
-    "name": "multivendorx",
-    "displayName": "MultiVendorX",
-    "pluginSlug": "dc-woocommerce-multi-vendor",
-    "description": "MultiVendorX - WooCommerce Multivendor Marketplace AI Powered Solutions",
-    "version": "5.0.6",
-    "license": "GPL-2.0-or-later",
-    "author": "MultiVendorX",
-    "homepage": "https://github.com/multivendorx/multivendorx#readme",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/multivendorx/multivendorx.git"
-    },
-    "bugs": {
-        "url": "https://github.com/multivendorx/multivendorx/issues"
-    },
-    "main": "index.js",
-    "mainPluginFile": "dc_product_vendor.php",
-    "engines": {
-        "node": "^24.16.0"
-    },
-    "scripts": {
-        "build": "pnpm run build:project",
-        "build:project": "pnpm --if-present \"/^build:project:.*$/\"",
-        "build:project:bundle": "wireit",
-        "build:release": "pnpm run version && pnpm run build:zip",
-        "build:zip": "pnpm install && pnpm run readme && pnpm run build:project && pnpm run makepot && pnpm run makejson && pnpm run release",
-        "watch": "pnpm run watch:build",
-        "watch:build": "pnpm --if-present run \"/^watch:build:project:.*$/\"",
-        "watch:build:project:bundle": "wireit",
-        "watch:build:project:minify": "wireit",
-        "lint": "pnpm run lint:js && pnpm run lint:css && pnpm run lint:php",
-        "fix": "pnpm run fix:js && pnpm run fix:css && pnpm run fix:php",
-        "lint:js": "eslint . --ext .js,.jsx,.ts,.tsx,.mjs",
-        "fix:js": "eslint . --ext .js,.jsx,.ts,.tsx,.mjs --fix",
-        "lint:css": "stylelint \"**/*.{css,scss}\"",
-        "fix:css": "stylelint \"**/*.{css,scss}\" --fix",
-        "lint:php": "composer run-script phpcs",
-        "fix:php": "composer run-script phpfix",
-        "test": "pnpm run test:php",
-        "test:php": "./vendor/bin/phpunit -c phpunit.xml.dist",
-        "env:create": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start && pnpm run env:start:database",
-        "env:start": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start && pnpm run env:start:database",
-        "env:start:database": "node ../../tools/scripts/docker-compose.mjs && docker compose up -d",
-        "env:dev": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start --update && pnpm run env:start:database && pnpm --if-present --filter storybook run watch:build:storybook",
-        "env:stop": "pnpm wp-env stop && docker compose down",
-        "env:restart": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env restart",
-        "env:clean": "pnpm wp-env clean",
-        "env:destroy": "pnpm wp-env destroy && rimraf docker-compose.yml",
-        "readme": "wp-readme-to-md",
-        "clean": "node ../../tools/scripts/clean.mjs",
-        "minify": "node ../../tools/scripts/minify.mjs",
-        "move": "node ../../tools/scripts/move-files.mjs",
-        "release": "node ../../tools/scripts/release.mjs",
-        "version": "node ../../tools/scripts/version-replace.mjs",
-        "textdomain": "node ../../tools/scripts/update-textdomain.mjs",
-        "changelog": "composer exec -- changelogger",
-        "makepot": "pnpm exec wp i18n make-pot --domain='multivendorx' --include='assets/js,public, classes,templates,modules,config.php,dc_product_vendor.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://multivendorx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') MultiVendorX Inc. All Rights Reserved.\" languages/multivendorx.pot",
-        "makejson": "pnpm exec wp i18n make-json languages --pretty-print --no-purge",
-        "composer": "composer dump-autoload && composer update",
-		"preinstall": "npx only-allow pnpm"
-    },
-    "wireit": {
-        "build:project:bundle": {
-            "command": "wp-scripts build --progress && pnpm run minify && pnpm run move && pnpm run clean",
-            "files": [
-                "src/**/*.{js,jsx,ts,tsx,scss}",
-                "modules/**/*.{js,jsx,ts,tsx,scss}",
-                "public/**/*",
-                "webpack.config.js",
-                "tsconfig.json"
-            ],
-            "output": [
-                "assets/**"
-            ],
-            "clean": true
-        },
-        "watch:build:project:bundle": {
-            "command": "wp-scripts start",
-            "files": [
-                "src/**/*.{js,jsx,ts,tsx,scss}",
-                "modules/**/*.{js,jsx,ts,tsx,scss}",
-                "public/**/*",
-                "webpack.config.js",
-                "tsconfig.json"
-            ],
-            "service": true
-        },
-        "watch:build:project:minify": {
-            "command": "pnpm run minify",
-            "files": [
-                "src/**/*.{js,jsx,ts,tsx,scss}",
-                "modules/**/*.{js,jsx,ts,tsx,scss}",
-                "public/**/*"
-            ]
-        }
-    },
-    "dependencies": {
-        "@emotion/react": "^11.14.0",
-        "@emotion/styled": "^11.14.1",
-        "@mui/material": "^9.0.1",
-        "@react-pdf/renderer": "^4.5.1",
-        "@stripe/connect-js": "^3.4.5",
-        "@stripe/react-connect-js": "^3.4.3",
-        "@tanstack/react-table": "^8.21.3",
-        "@tinymce/tinymce-react": "^6.3.0",
-        "@wordpress/data": "wp-6.6",
-        "@wordpress/element": "wp-6.6",
-        "@wordpress/hooks": "^4.46.0",
-        "@wordpress/i18n": "wp-6.6",
-        "@wordpress/react-i18n": "wp-6.6",
-        "axios": "^1.16.1",
-        "leaflet": "^1.9.4",
-        "react": "19.2.6",
-        "react-dom": "19.2.6",
-        "react-router-dom": "^7.15.1",
-        "react-select": "^5.10.2",
-        "react-simple-maps": "^3.0.0",
-        "recharts": "^3.8.1",
-        "zyra": "workspace:*"
-    }
-}
+name: Release Plugin
+
+on:
+  workflow_dispatch:
+    inputs:
+      plugin:
+        description: "Plugin slug (multivendorx, moowoodle, catalogx, notifima etc.)"
+        required: true
+        default: "multivendorx"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # -------------------------
+      # Node + PNPM
+      # -------------------------
+      - name: Setup Node + PNPM
+        run: |
+          curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+
+          corepack enable || true
+          corepack prepare pnpm@11.4.0 --activate || true
+
+          node -v
+          pnpm -v
+
+      # -------------------------
+      # PHP (manual, policy-safe)
+      # -------------------------
+      - name: Setup PHP
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository ppa:ondrej/php -y
+          sudo apt-get update
+          sudo apt-get install -y php8.4 php8.4-cli php8.4-mbstring php8.4-xml php8.4-curl unzip curl
+          php -v
+
+      # -------------------------
+      # WP-CLI (needed for i18n only)
+      # -------------------------
+      - name: Install WP-CLI
+        run: |
+          curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+          php wp-cli.phar --info
+          chmod +x wp-cli.phar
+          sudo mv wp-cli.phar /usr/local/bin/wp
+
+          wp --info
+
+      # -------------------------
+      # Install deps (clean CI mode)
+      # -------------------------
+      - name: Install Dependencies
+        run: pnpm install --no-frozen-lockfile --ignore-scripts
+
+      # -------------------------
+      # Build shared package
+      # -------------------------
+      - name: Build Zyra
+        run: pnpm --filter zyra run build
+
+      # -------------------------
+      # Validate plugin exists
+      # -------------------------
+      - name: Validate Plugin
+        run: |
+          if [ ! -d "plugins/${{ github.event.inputs.plugin }}" ]; then
+            echo "Plugin not found"
+            exit 1
+          fi
+
+      # -------------------------
+      # Build plugin (NO recursion, NO workspace build)
+      # -------------------------
+      - name: Build Plugin
+        run: |
+          cd plugins/${{ github.event.inputs.plugin }}
+          pnpm run build:zip
+
+      # -------------------------
+      # Verify output
+      # -------------------------
+      - name: Verify Build
+        run: |
+          ls -lah plugins/${{ github.event.inputs.plugin }}/release
+
+      # -------------------------
+      # Upload artifact (actions allowed)
+      # -------------------------
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-zip
+          path: plugins/${{ github.event.inputs.plugin }}/release/*.zip
+
+      # -------------------------
+      # GitHub Release (clean notes only)
+      # -------------------------
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(node -p "require('./plugins/${{ github.event.inputs.plugin }}/package.json').version")
+          TAG="${{ github.event.inputs.plugin }}-v${VERSION}"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release already exists"
+            exit 0
+          fi
+
+          gh release create \
+            "$TAG" \
+            plugins/${{ github.event.inputs.plugin }}/release/*.zip \
+            --title "${{ github.event.inputs.plugin }} v${VERSION}" \
+            --notes "${{ github.event.inputs.plugin }} version ${VERSION} release"
