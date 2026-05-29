@@ -49,42 +49,42 @@ class Admin {
         );
 
         $submenu_items = array(
-            'dashboard' => array(
-                'name'   => __( 'Dashboard', 'catalogx' ),
-                'subtab' => '',
+            'dashboard'        => array(
+                'name'     => __( 'Dashboard', 'catalogx' ),
+                'subtab'   => '',
                 'priority' => 10,
             ),
             'enquiry-messages' => array(
-                'name'   => __( 'Enquiry Messages', 'catalogx' ),
-                'subtab' => '',
+                'name'     => __( 'Enquiry Messages', 'catalogx' ),
+                'subtab'   => '',
                 'priority' => 20,
             ),
             'quote-requests'   => array(
-                'name'   => __( 'Quotation Requests', 'catalogx' ),
-                'subtab' => '',
+                'name'     => __( 'Quotation Requests', 'catalogx' ),
+                'subtab'   => '',
                 'priority' => 30,
             ),
             'wholesale-users'  => array(
-                'name'   => __( 'Wholesale Users', 'catalogx' ),
-                'subtab' => '',
+                'name'     => __( 'Wholesale Users', 'catalogx' ),
+                'subtab'   => '',
                 'priority' => 40,
             ),
             'rules'            => array(
-                'name'   => __( 'Dynamic Pricing Rules', 'catalogx' ),
-                'subtab' => '',
+                'name'     => __( 'Dynamic Pricing Rules', 'catalogx' ),
+                'subtab'   => '',
                 'priority' => 50,
             ),
             'settings'         => array(
-                'name'   => __( 'Settings', 'catalogx' ),
-                'subtab' => 'shopping',
+                'name'     => __( 'Settings', 'catalogx' ),
+                'subtab'   => 'shopping',
                 'priority' => 60,
             ),
             'modules'          => array(
-                'name'   => __( 'Modules', 'catalogx' ),
-                'subtab' => '',
+                'name'     => __( 'Modules', 'catalogx' ),
+                'subtab'   => '',
                 'priority' => 70,
             ),
-            'help-support'        => array(
+            'help-support'     => array(
                 'name'     => __( 'Help & Support', 'catalogx' ),
                 'subtab'   => '',
                 'priority' => 80,

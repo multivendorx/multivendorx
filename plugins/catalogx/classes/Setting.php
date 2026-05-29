@@ -45,13 +45,13 @@ class Setting {
     /**
      * Load all setting from option table
      *
-     * @param bool $force Whether to force reload the settings even if already loaded.
+     * @param bool $force_reload Whether to force reload the settings even if already loaded.
      * @return void
      */
-    private function initialize_settings( $force = true ) {
+    private function initialize_settings( $force_reload = true ) {
 
-        // If settings are loaded previously and not force to load.
-        if ( ! $force && $this->settings_cache ) {
+        // If settings are loaded previously and not force_reload to load.
+        if ( ! $force_reload && $this->settings_cache ) {
             return;
         }
 

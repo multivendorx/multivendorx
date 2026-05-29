@@ -78,14 +78,14 @@ if ( ! class_exists( 'RequestQuoteSendEmail' ) ) {
 		public function trigger( $quoted_products, $customer_details ) {
 			$additional_email = CatalogX()->setting->get_setting( 'additional_alert_email' );
 
-			$this->recipient     = $additional_email;
-			$this->quoted_products      = $quoted_products;
+			$this->recipient        = $additional_email;
+			$this->quoted_products  = $quoted_products;
 			$this->customer_details = $customer_details;
-			$this->find[]        = '{customer_name}';
-			$this->replace[]     = $customer_details['name'] ?? '';
+			$this->find[]           = '{customer_name}';
+			$this->replace[]        = $customer_details['name'] ?? '';
 
 			$admin_email = CatalogX()->admin_email;
-			$admin_user = get_user_by( 'email', $admin_email );
+			$admin_user  = get_user_by( 'email', $admin_email );
 			if ( null !== $admin_user ) {
 				$this->admin_name = $admin_user->display_name;
 			}
@@ -144,14 +144,14 @@ if ( ! class_exists( 'RequestQuoteSendEmail' ) ) {
 		 */
 		protected function get_template_context() {
 			return array(
-				'email_heading'  => $this->get_heading(),
-				'quoted_products'       => $this->quoted_products,
-				'recipient_email' => $this->recipient,
-				'customer_details'  => $this->customer_details,
-				'admin_name'          => $this->admin_name,
-				'sent_to_admin'  => false,
-				'plain_text'     => true,
-				'email'          => $this,
+				'email_heading'    => $this->get_heading(),
+				'quoted_products'  => $this->quoted_products,
+				'recipient_email'  => $this->recipient,
+				'customer_details' => $this->customer_details,
+				'admin_name'       => $this->admin_name,
+				'sent_to_admin'    => false,
+				'plain_text'       => true,
+				'email'            => $this,
 			);
 		}
 	}

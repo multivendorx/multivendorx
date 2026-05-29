@@ -15,7 +15,6 @@ import {
 	NavigatorHeader,
 	ItemListUI,
 	NoticeManager,
-	ComponentStatusView,
 	Notice,
 } from 'zyra';
 import { formatCurrency } from '../services/commonFunction';
@@ -40,21 +39,37 @@ interface WithdrawalItem {
 	payment_method: string;
 }
 const Withdrawals: React.FC = () => {
-	const filteredContent = applyFilters('multivendorx_withdrawals_content',null);
-
-	if (filteredContent) {
-		return <>{filteredContent}</>;
-	}
-
 	const [data, setData] = useState<WithdrawalData>({});
 	const [amount, setAmount] = useState<number>();
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [lastWithdraws, setLastWithdraws] = useState<WithdrawalItem[]>([]);
 	const [storeData, setStoreData] = useState(null);
-
 	const [requestWithdrawal, setRequestWithdrawal] = useState(false);
+	const [showStoreDeatils, setShowStoreDeatils] = useState(true);
 
 	useEffect(() => {
+		const handled = applyFilters(
+			'multivendorx_withdrawals_useeffect_request_handler',
+			false,
+			{
+				data,
+				setData,
+				amount,
+				setAmount,
+				lastWithdraws,
+				setLastWithdraws,
+				storeData,
+				setStoreData,
+			}
+		);
+
+		// if custom handler already executed
+		if (handled) {
+			setShowStoreDeatils(false);
+			return;
+		}
+
+		// default logic
 		axios({
 			method: 'GET',
 			url: getApiLink(
@@ -81,26 +96,24 @@ const Withdrawals: React.FC = () => {
 				orderBy: 'created_at',
 				order: 'DESC',
 			},
-		})
-			.then((response) => {
-				setLastWithdraws(response.data || []);
-			})
-			.catch(() => setData({}));
+		}).then((response) => {
+			setLastWithdraws(response.data || []);
+		});
 
 		axios({
 			method: 'GET',
-			url: getApiLink(appLocalizer, `stores/${appLocalizer.store_id}`),
+			url: getApiLink(
+				appLocalizer,
+				`stores/${appLocalizer.store_id}`
+			),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-		})
-			.then((response) => {
-				setStoreData(response.data || {});
-			})
-			.catch((err) => console.error(err));
+		}).then((response) => {
+			setStoreData(response.data || {});
+		});
 	}, []);
 
 	const handleAmountChange = (value: number) => {
 		setAmount(value);
-
 		setErrors((prev) => ({
 			...prev,
 			amount:
@@ -129,6 +142,22 @@ const Withdrawals: React.FC = () => {
 		if (Object.keys(newErrors).length > 0) {
 			return;
 		}
+
+		const shouldContinue = applyFilters(
+			'multivendorx_before_withdrawal_request_submit',
+			true,
+			{
+				amount,
+				storeData,
+				data,
+			}
+		);
+
+		if (!shouldContinue) {
+			setRequestWithdrawal(false);
+			return;
+		}
+
 		axios({
 			method: 'POST',
 			url: getApiLink(
@@ -245,156 +274,162 @@ const Withdrawals: React.FC = () => {
 										data.available_balance
 									)}{' '}
 								</div>
-								<div className="desc">
-									{__('Minimum required to withdraw - ', 'multivendorx')}
-									{data?.threshold > 0 ? (
-										<>
-											<b>
-												{formatCurrency(
-													data.threshold
-												)}{' '}
-											</b>
-											{__('minimum required to withdraw', 'multivendorx'
+								{showStoreDeatils && (
+									<>
+										<div className="desc">
+											{__('Minimum required to withdraw - ', 'multivendorx')}
+											{data?.threshold > 0 ? (
+												<>
+													<b>
+														{formatCurrency(
+															data.threshold
+														)}{' '}
+													</b>
+													{__('minimum required to withdraw', 'multivendorx'
+													)}
+												</>
+											) : (
+												__('No minimum', 'multivendorx')
 											)}
-										</>
-									) : (
-										__('No minimum', 'multivendorx')
-									)}
-								</div>
-								<div className="desc">
-									{__('Reserve balance - ', 'multivendorx')}
-									{data?.reserve_balance > 0 ? (
-										<>
-											<b>
-												{formatCurrency(
-													data.reserve_balance
-												)}{' '}
-											</b>
-											{__(
-												'reserve balance',
-												'multivendorx'
+										</div>
+										<div className="desc">
+											{__('Reserve balance - ', 'multivendorx')}
+											{data?.reserve_balance > 0 ? (
+												<>
+													<b>
+														{formatCurrency(
+															data.reserve_balance
+														)}{' '}
+													</b>
+													{__(
+														'reserve balance',
+														'multivendorx'
+													)}
+												</>
+											) : (
+												__('No reserve set', 'multivendorx')
 											)}
-										</>
-									) : (
-										__('No reserve set', 'multivendorx')
-									)}
-								</div>
-							</div>
-							<Column row>
-								{Number(data?.locking_balance) > 0 ? (
-									<ItemListUI
-										className="mini-card"
-										background
-										items={[
-											{
-												title: __(
-													'Upcoming Balance',
-													'multivendorx'
-												),
-												desc: (
-													<>
-														{__(
-															'This amount is being processed and will be released ',
-															'multivendorx'
-														)}
-														{data?.payment_schedules ? (
-															<>
-																{
-																	data.payment_schedules
-																}{' '}
-																{__(
-																	' by the admin.',
-																	'multivendorx'
-																)}
-															</>
-														) : (
-															<>
-																{__(
-																	'automatically every hour.',
-																	'multivendorx'
-																)}
-															</>
-														)}
-													</>
-												),
-												value: formatCurrency(
-													data.locking_balance
-												),
-											},
-										]}
-									/>
-								) : (
-									<Notice
-										type="info"
-										displayPosition="inline-notice"
-										title={__(
-											'No pending earning in clearence',
-											'multivendorx'
-										)}
-									/>
+										</div>
+									</>
 								)}
 
-								{data?.withdrawal_setting?.length > 0 && (
-									<ItemListUI
-										className="mini-card"
-										background
-										border
-										items={[
-											{
-												title: __(
-													'Free Withdrawals',
-													'multivendorx'
-												),
-												desc: (
-													<>
-														{__(
-															'Then',
-															'multivendorx'
-														)}{' '}
-														{Number(
-															data
-																?.withdrawal_setting?.[0]
-																?.withdrawal_percentage
-														) || 0}
-														% +{' '}
-														{formatCurrency(
-															Number(
-																data
-																	?.withdrawal_setting?.[0]
-																	?.withdrawal_fixed
-															) || 0
-														)}{' '}
-														{__(
-															'fee',
-															'multivendorx'
-														)}
-													</>
-												),
-												value: (
-													<>
-														{Math.max(
-															0,
-															(data
-																?.withdrawal_setting?.[0]
-																?.free_withdrawals ??
-																0) -
-															(data?.free_withdrawal ??
-																0)
-														)}{' '}
-														<span>
+							</div>
+							{showStoreDeatils && (
+								<Column row>
+									{Number(data?.locking_balance) > 0 ? (
+										<ItemListUI
+											className="mini-card"
+											background
+											items={[
+												{
+													title: __(
+														'Upcoming Balance',
+														'multivendorx'
+													),
+													desc: (
+														<>
 															{__(
-																'Left',
+																'This amount is being processed and will be released ',
 																'multivendorx'
 															)}
-														</span>
-													</>
-												),
-											},
-										]}
-									/>
-								)}
-							</Column>
+															{data?.payment_schedules ? (
+																<>
+																	{
+																		data.payment_schedules
+																	}{' '}
+																	{__(
+																		' by the admin.',
+																		'multivendorx'
+																	)}
+																</>
+															) : (
+																<>
+																	{__(
+																		'automatically every hour.',
+																		'multivendorx'
+																	)}
+																</>
+															)}
+														</>
+													),
+													value: formatCurrency(
+														data.locking_balance
+													),
+												},
+											]}
+										/>
+									) : (
+										<Notice
+											type="info"
+											displayPosition="inline-notice"
+											title={__(
+												'No pending earning in clearence',
+												'multivendorx'
+											)}
+										/>
+									)}
 
+									{data?.withdrawal_setting?.length > 0 && (
+										<ItemListUI
+											className="mini-card"
+											background
+											border
+											items={[
+												{
+													title: __(
+														'Free Withdrawals',
+														'multivendorx'
+													),
+													desc: (
+														<>
+															{__(
+																'Then',
+																'multivendorx'
+															)}{' '}
+															{Number(
+																data
+																	?.withdrawal_setting?.[0]
+																	?.withdrawal_percentage
+															) || 0}
+															% +{' '}
+															{formatCurrency(
+																Number(
+																	data
+																		?.withdrawal_setting?.[0]
+																		?.withdrawal_fixed
+																) || 0
+															)}{' '}
+															{__(
+																'fee',
+																'multivendorx'
+															)}
+														</>
+													),
+													value: (
+														<>
+															{Math.max(
+																0,
+																(data
+																	?.withdrawal_setting?.[0]
+																	?.free_withdrawals ??
+																	0) -
+																(data?.free_withdrawal ??
+																	0)
+															)}{' '}
+															<span>
+																{__(
+																	'Left',
+																	'multivendorx'
+																)}
+															</span>
+														</>
+													),
+												},
+											]}
+										/>
+									)}
+								</Column>
+							)}
 							<ButtonInputUI
 								buttons={{
 									icon: 'withdraw',

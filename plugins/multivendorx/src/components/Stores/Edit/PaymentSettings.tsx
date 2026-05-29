@@ -308,6 +308,7 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 							type="info"
 							displayPosition="inline-notice"
 							message={sprintf(
+								/* translators: %s: URL to the global commission settings page. */
 								__(
 									'Set the commission the <b>marketplace earns</b> from each store sale. If not set, the <a href="%s">global commission</a> will automatically apply.',
 									'multivendorx'
