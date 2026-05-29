@@ -137,9 +137,9 @@ class Settings extends \WP_REST_Controller {
 
 		try {
 			$settings_values = $request->get_param( 'setting' );
-            $settings_name      = $request->get_param( 'settingName' );
-            $settings_name      = str_replace( '-', '_', $settings_name );
-            $option_name        = 'catalogx_' . $settings_name . '_settings';
+            $settings_name   = $request->get_param( 'settingName' );
+            $settings_name   = str_replace( '-', '_', $settings_name );
+            $option_name     = 'catalogx_' . $settings_name . '_settings';
 
 			// Save settings.
 			CatalogX()->setting->update_option(

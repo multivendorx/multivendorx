@@ -70,7 +70,7 @@ class EnquiryEmail extends \WC_Email {
         $this->title       = __( 'Enquiry sent', 'catalogx' );
         $this->description = __( 'Admin will get an email when a customer enquires about a product.', 'catalogx' );
         // Default values.
-        $template_defaults   = array(
+        $template_defaults     = array(
             'email_setting'   => '',
             'template_map'    => array(
                 'template1' => 'emails/default-enquiry-template.php',
@@ -106,12 +106,12 @@ class EnquiryEmail extends \WC_Email {
      * @return bool Whether the email was sent successfully.
      */
     public function trigger( $recipient, $enquiry_details, $attachments ) {
-        $this->recipient      = $recipient;
-        $this->attachments    = $attachments;
+        $this->recipient       = $recipient;
+        $this->attachments     = $attachments;
         $this->product_ids     = $enquiry_details['product_id'] ?? array();
-        $this->enquiry_details   = $enquiry_details;
-        $this->customer_name      = $enquiry_details['user_name'] ?? '';
-        $this->customer_email     = $enquiry_details['user_email'] ?? '';
+        $this->enquiry_details = $enquiry_details;
+        $this->customer_name   = $enquiry_details['user_name'] ?? '';
+        $this->customer_email  = $enquiry_details['user_email'] ?? '';
 
         if ( ! $this->is_enabled() || ! $this->get_recipient() ) {
             return false;
@@ -142,7 +142,7 @@ class EnquiryEmail extends \WC_Email {
             $vendor = function_exists( 'get_mvx_product_vendors' ) ? get_mvx_product_vendors( $product_id ) : null;
 
             if ( null !== $vendor ) {
-                $vendor_email     = sanitize_email( $vendor->user_data->user_email );
+                $vendor_email       = sanitize_email( $vendor->user_data->user_email );
                 $recipient_emails   = explode( ',', $this->recipient );
                 $recipient_emails[] = $vendor_email;
 

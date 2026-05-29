@@ -108,7 +108,7 @@ final class CatalogX {
      * @return void
      */
     public function load_plugin() {
-        add_action( 'init', array( $this, 'init_classes' ), 0 );
+        add_action( 'init', array( $this, 'register_services' ), 0 );
         // add link on pugin 'active' button.
         if ( is_admin() && ! wp_doing_ajax() ) {
             add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'get_plugin_action_links' ) );
@@ -187,7 +187,7 @@ final class CatalogX {
      *
      * @return void
      */
-    public function init_classes() {
+    public function register_services() {
         $this->services['setting']   = new Setting();
         $this->services['admin']     = new Admin();
         $this->services['frontend']  = new Frontend();
