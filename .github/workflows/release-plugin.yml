@@ -26,26 +26,27 @@ jobs:
         uses: actions/checkout@v4
 
       # -------------------------
-      # Setup Node (use official action - REQUIRED due to policy)
+      # Setup Node (required by policy)
       # -------------------------
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24.16.0"
           cache: "pnpm"
 
       # -------------------------
-      # Enable Corepack + PNPM (FIX: ensures pnpm exists)
+      # Enable Corepack + PNPM (FIX for pnpm not found)
       # -------------------------
-      - name: Enable PNPM
+      - name: Enable Corepack + PNPM
         run: |
           corepack enable
           corepack prepare pnpm@10.34.1 --activate
-          pnpm -v
+
           node -v
+          pnpm -v
 
       # -------------------------
-      # Setup PHP (NO external actions allowed)
+      # PHP (manual install - policy safe)
       # -------------------------
       - name: Setup PHP
         run: |
@@ -67,19 +68,19 @@ jobs:
           wp --info
 
       # -------------------------
-      # Install dependencies (IMPORTANT FIX)
+      # Install dependencies (CI-safe)
       # -------------------------
       - name: Install Dependencies
         run: pnpm install --no-frozen-lockfile
 
       # -------------------------
-      # Build Zyra FIRST (fix missing exports / build artifacts)
+      # Build Zyra FIRST (fix shared dependency errors)
       # -------------------------
-      - name: Build Zyra
+      - name: Build Zyra Package
         run: pnpm --filter zyra run build
 
       # -------------------------
-      # Validate plugin
+      # Validate plugin exists
       # -------------------------
       - name: Validate Plugin
         run: |
@@ -89,18 +90,24 @@ jobs:
           fi
 
       # -------------------------
-      # Build only selected plugin (IMPORTANT FIX: avoid monorepo recursion chaos)
+      # Build ONLY selected plugin (NO workspace recursion)
       # -------------------------
       - name: Build Plugin
         run: |
           cd plugins/${{ github.event.inputs.plugin }}
+
           pnpm install --no-frozen-lockfile
-          pnpm run build:zip
+
+          pnpm run readme
+          pnpm run build:project
+          pnpm run makepot
+          pnpm run makejson
+          pnpm run release
 
       # -------------------------
-      # Verify release folder
+      # Verify release output
       # -------------------------
-      - name: Verify Build
+      - name: Verify Build Output
         run: |
           ls -lah plugins/${{ github.event.inputs.plugin }}/release || true
 
@@ -110,13 +117,13 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: plugin-zip
+          name: plugin-release
           path: plugins/${{ github.event.inputs.plugin }}/release/*.zip
 
       # -------------------------
-      # Create GitHub Release (clean notes only)
+      # Create GitHub Release
       # -------------------------
-      - name: Create Release
+      - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -132,4 +139,4 @@ jobs:
             "$TAG" \
             plugins/${{ github.event.inputs.plugin }}/release/*.zip \
             --title "${{ github.event.inputs.plugin }} v${VERSION}" \
-            --notes "${{ github.event.inputs.plugin }} version ${VERSION}"
+            --notes "${{ github.event.inputs.plugin }} ${VERSION} release"
