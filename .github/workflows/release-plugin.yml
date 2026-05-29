@@ -17,25 +17,26 @@ jobs:
 
     env:
       NODE_ENV: production
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
     steps:
       # -------------------------
-      # Checkout
+      # Checkout (no cache warnings)
       # -------------------------
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       # -------------------------
-      # Setup Node (policy compliant)
+      # Setup Node (NO npm cache → fixes lockfile warning)
       # -------------------------
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24.16.0"
-          cache: "npm"
+          cache: "pnpm"
 
       # -------------------------
-      # Install PNPM globally (FIX: removes all pnpm/path issues)
+      # Install PNPM globally (stable CI method)
       # -------------------------
       - name: Install PNPM
         run: npm install -g pnpm@10.34.1
@@ -43,13 +44,13 @@ jobs:
       # -------------------------
       # Verify environment
       # -------------------------
-      - name: Verify Node & PNPM
+      - name: Verify Tools
         run: |
           node -v
           pnpm -v
 
       # -------------------------
-      # PHP setup (manual, no external actions)
+      # PHP setup
       # -------------------------
       - name: Setup PHP
         run: |
@@ -61,7 +62,7 @@ jobs:
           php -v
 
       # -------------------------
-      # Install WP-CLI
+      # WP-CLI
       # -------------------------
       - name: Install WP-CLI
         run: |
@@ -71,19 +72,19 @@ jobs:
           wp --info
 
       # -------------------------
-      # Install dependencies (safe for CI)
+      # Install dependencies (pnpm ONLY)
       # -------------------------
       - name: Install Dependencies
         run: pnpm install --no-frozen-lockfile
 
       # -------------------------
-      # Build Zyra first (fix shared dependency build)
+      # Build Zyra first
       # -------------------------
       - name: Build Zyra Package
         run: pnpm --filter zyra run build
 
       # -------------------------
-      # Validate plugin exists
+      # Validate plugin
       # -------------------------
       - name: Validate Plugin
         run: |
@@ -93,7 +94,7 @@ jobs:
           fi
 
       # -------------------------
-      # Build selected plugin ONLY (NO monorepo recursion)
+      # Build plugin only
       # -------------------------
       - name: Build Plugin
         run: |
@@ -124,7 +125,7 @@ jobs:
           path: plugins/${{ github.event.inputs.plugin }}/release/*.zip
 
       # -------------------------
-      # Create GitHub Release
+      # GitHub Release
       # -------------------------
       - name: Create GitHub Release
         env:
