@@ -17,7 +17,7 @@
     "main": "index.js",
     "mainPluginFile": "product_stock_alert.php",
     "engines": {
-        "node": "^24.0.2"
+        "node": "^24.16.0"
     },
     "scripts": {
         "build": "pnpm run build:project",
