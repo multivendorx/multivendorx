@@ -1,3 +1,4 @@
+```yml
 name: WordPress Deploy
 
 on:
@@ -20,7 +21,7 @@ jobs:
 
     steps:
       # -----------------------------------
-      # Checkout
+      # Checkout Repository
       # -----------------------------------
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -28,7 +29,7 @@ jobs:
           submodules: recursive
 
       # -----------------------------------
-      # Read Runtime + WP.org versions dynamically
+      # Read Runtime Versions
       # -----------------------------------
       - name: Read Runtime Versions
         id: versions
@@ -71,6 +72,11 @@ jobs:
           echo "plugin_version=$PLUGIN_VERSION" >> $GITHUB_OUTPUT
           echo "wporg_slug=$WPORG_SLUG" >> $GITHUB_OUTPUT
 
+          echo "Detected Node: $NODE_VERSION"
+          echo "Detected PNPM: $PNPM_VERSION"
+          echo "Detected Plugin Version: $PLUGIN_VERSION"
+          echo "Detected WP.org Slug: $WPORG_SLUG"
+
       # -----------------------------------
       # Setup Node
       # -----------------------------------
@@ -86,7 +92,10 @@ jobs:
         shell: bash
         run: |
           corepack enable
-          corepack prepare pnpm@${{ steps.versions.outputs.pnpm_version }} --activate
+
+          corepack prepare \
+            pnpm@${{ steps.versions.outputs.pnpm_version }} \
+            --activate
 
           PNPM_PATH=$(dirname "$(which pnpm)")
 
@@ -106,6 +115,7 @@ jobs:
         shell: bash
         run: |
           sudo add-apt-repository ppa:ondrej/php -y
+
           sudo apt-get update
 
           sudo apt-get install -y \
@@ -115,7 +125,9 @@ jobs:
             php8.4-xml \
             php8.4-curl \
             unzip \
-            curl
+            curl \
+            subversion \
+            rsync
 
           php -v
 
@@ -178,4 +190,167 @@ jobs:
       # -----------------------------------
       # Build Plugin
       # -----------------------------------
-      - name:
+      - name: Build Plugin
+        shell: bash
+        run: |
+          cd plugins/${{ github.event.inputs.plugin }}
+
+          pnpm run build
+
+      # -----------------------------------
+      # Generate POT File
+      # -----------------------------------
+      - name: Generate POT File
+        shell: bash
+        run: |
+          cd plugins/${{ github.event.inputs.plugin }}
+
+          wp i18n make-pot \
+            . \
+            languages/${{ github.event.inputs.plugin }}.pot \
+            --domain='${{ github.event.inputs.plugin }}' \
+            --include='assets/js,public,classes,templates,modules,config.php,dc_product_vendor.php' \
+            --skip-js \
+            --headers='{"Report-Msgid-Bugs-To":"https://multivendorx.com/contact/"}'
+
+      # -----------------------------------
+      # Create ZIP
+      # -----------------------------------
+      - name: Create ZIP
+        shell: bash
+        run: |
+          cd plugins/${{ github.event.inputs.plugin }}
+
+          pnpm run build:zip
+
+      # -----------------------------------
+      # Verify Build
+      # -----------------------------------
+      - name: Verify Build
+        shell: bash
+        run: |
+          ls -lah plugins/${{ github.event.inputs.plugin }}/release
+
+      # -----------------------------------
+      # Upload Artifact
+      # -----------------------------------
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-zip
+          path: plugins/${{ github.event.inputs.plugin }}/release/*.zip
+
+      # -----------------------------------
+      # Create GitHub Release
+      # -----------------------------------
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          VERSION="${{ steps.versions.outputs.plugin_version }}"
+
+          TAG="${{ github.event.inputs.plugin }}-v${VERSION}"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release already exists"
+            exit 0
+          fi
+
+          gh release create \
+            "$TAG" \
+            plugins/${{ github.event.inputs.plugin }}/release/*.zip \
+            --title "${{ github.event.inputs.plugin }} v${VERSION}" \
+            --notes "${{ github.event.inputs.plugin }} version ${VERSION} release"
+
+      # -----------------------------------
+      # Deploy to WordPress.org
+      # -----------------------------------
+      - name: Deploy to WordPress.org
+        shell: bash
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        run: |
+          PLUGIN="${{ github.event.inputs.plugin }}"
+          VERSION="${{ steps.versions.outputs.plugin_version }}"
+          SLUG="${{ steps.versions.outputs.wporg_slug }}"
+
+          echo "Deploying $SLUG version $VERSION"
+
+          SVN_URL="https://plugins.svn.wordpress.org/${SLUG}"
+
+          mkdir -p "$HOME/svn"
+
+          svn checkout \
+            --non-interactive \
+            --trust-server-cert \
+            --username "$SVN_USERNAME" \
+            --password "$SVN_PASSWORD" \
+            "$SVN_URL" \
+            "$HOME/svn/$SLUG"
+
+          cd "$HOME/svn/$SLUG"
+
+          mkdir -p trunk
+          mkdir -p tags/$VERSION
+
+          rsync -rc \
+            --delete \
+            --exclude=".git*" \
+            --exclude="node_modules" \
+            --exclude="src" \
+            --exclude=".github" \
+            --exclude=".husky" \
+            --exclude=".vscode" \
+            --exclude="tests" \
+            --exclude="coverage" \
+            --exclude="release" \
+            --exclude=".wireit" \
+            --exclude=".cache" \
+            --exclude="webpack.config.js" \
+            --exclude="vite.config.*" \
+            --exclude="tsconfig.json" \
+            --exclude="package.json" \
+            --exclude="pnpm-lock.yaml" \
+            --exclude="README.md" \
+            --exclude="composer.json" \
+            --exclude="composer.lock" \
+            "$GITHUB_WORKSPACE/plugins/$PLUGIN/" \
+            "$HOME/svn/$SLUG/trunk/"
+
+          rsync -rc \
+            --delete \
+            --exclude=".git*" \
+            --exclude="node_modules" \
+            --exclude="src" \
+            --exclude=".github" \
+            --exclude=".husky" \
+            --exclude=".vscode" \
+            --exclude="tests" \
+            --exclude="coverage" \
+            --exclude="release" \
+            --exclude=".wireit" \
+            --exclude=".cache" \
+            --exclude="webpack.config.js" \
+            --exclude="vite.config.*" \
+            --exclude="tsconfig.json" \
+            --exclude="package.json" \
+            --exclude="pnpm-lock.yaml" \
+            --exclude="README.md" \
+            --exclude="composer.json" \
+            --exclude="composer.lock" \
+            "$GITHUB_WORKSPACE/plugins/$PLUGIN/" \
+            "$HOME/svn/$SLUG/tags/$VERSION/"
+
+          svn add --force . --auto-props --parents --depth infinity "*" || true
+
+          svn status | grep '^!' | awk '{print $2}' | xargs -r svn delete
+
+          svn commit \
+            --non-interactive \
+            --trust-server-cert \
+            --username "$SVN_USERNAME" \
+            --password "$SVN_PASSWORD" \
+            -m "Release version $VERSION"
+```
