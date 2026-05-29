@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../common.scss';
-import { PopupUI } from 'zyra';
+import { PopupUI, Container, Column } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import '../AdminDashboard/AdminDashboard.scss';
 
@@ -9,7 +9,13 @@ const EnquiryMessages = () => {
 
     // If Pro is active, render only mount point
     if (appLocalizer.khali_dabba) {
-        return <div id="enquiry-messages" className='container'></div>;
+        return (
+            <Container general>
+                <Column>
+                    <div id="enquiry-messages" className='container'></div>
+                </Column>
+            </Container>
+        );
     }
 
     return (

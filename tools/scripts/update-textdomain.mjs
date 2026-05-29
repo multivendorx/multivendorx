@@ -6,11 +6,11 @@ import {
 
 const {
 	name,
-	displayName
+	pluginSlug
 } = getPackage();
 
 const domain =
-	displayName || name;
+	pluginSlug || name;
 
 const files = [
 	'classes/**/*.php',

@@ -29,7 +29,13 @@ const QuoteThankYou = ( props: QuoteThankYouProps ) => {
     };
 
     if ( successMessage ) {
-        return <div className="success-message">{ successMessage }</div>;
+        return( 
+        <div className="woocommerce-notices-wrapper">
+                <ul className="woocommerce-message" role="alert">
+                    <li>{ successMessage }</li>
+                </ul>
+            </div>
+        )
     }
 
     if ( orderId && status ) {
