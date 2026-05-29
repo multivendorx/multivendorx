@@ -15,26 +15,34 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      NODE_VERSION: "24.16.0"
+      PNPM_VERSION: "10.34.1"
+
     steps:
+      # -------------------------
+      # Checkout
+      # -------------------------
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       # -------------------------
-      # Node + PNPM
+      # Node + PNPM (STRICT VERSION MATCH)
       # -------------------------
       - name: Setup Node + PNPM
         run: |
           curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
           sudo apt-get install -y nodejs
 
-          corepack enable || true
-          corepack prepare pnpm@11.4.0 --activate || true
-
           node -v
+
+          corepack enable
+          corepack prepare pnpm@${PNPM_VERSION} --activate
+
           pnpm -v
 
       # -------------------------
-      # PHP (manual, policy-safe)
+      # PHP (kept manual, CI-safe)
       # -------------------------
       - name: Setup PHP
         run: |
@@ -46,31 +54,32 @@ jobs:
           php -v
 
       # -------------------------
-      # WP-CLI (needed for i18n only)
+      # WP-CLI (only for i18n)
       # -------------------------
       - name: Install WP-CLI
         run: |
           curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-          php wp-cli.phar --info
           chmod +x wp-cli.phar
           sudo mv wp-cli.phar /usr/local/bin/wp
 
           wp --info
 
       # -------------------------
-      # Install deps (clean CI mode)
+      # Install dependencies (IMPORTANT FIX)
       # -------------------------
       - name: Install Dependencies
-        run: pnpm install --no-frozen-lockfile --ignore-scripts
+        run: |
+          pnpm install --no-frozen-lockfile --ignore-scripts
 
       # -------------------------
-      # Build shared package
+      # Build shared package (ZYRA SAFE)
       # -------------------------
       - name: Build Zyra
-        run: pnpm --filter zyra run build
+        run: |
+          pnpm --filter zyra run build
 
       # -------------------------
-      # Validate plugin exists
+      # Validate plugin
       # -------------------------
       - name: Validate Plugin
         run: |
@@ -80,7 +89,7 @@ jobs:
           fi
 
       # -------------------------
-      # Build plugin (NO recursion, NO workspace build)
+      # Build plugin ONLY (no workspace recursion)
       # -------------------------
       - name: Build Plugin
         run: |
@@ -90,12 +99,12 @@ jobs:
       # -------------------------
       # Verify output
       # -------------------------
-      - name: Verify Build
+      - name: Verify Build Output
         run: |
           ls -lah plugins/${{ github.event.inputs.plugin }}/release
 
       # -------------------------
-      # Upload artifact (actions allowed)
+      # Upload artifact
       # -------------------------
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -104,22 +113,21 @@ jobs:
           path: plugins/${{ github.event.inputs.plugin }}/release/*.zip
 
       # -------------------------
-      # GitHub Release (clean notes only)
+      # Release
       # -------------------------
       - name: Create Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION=$(node -p "require('./plugins/${{ github.event.inputs.plugin }}/package.json').version")
+          cd plugins/${{ github.event.inputs.plugin }}
+
+          VERSION=$(node -p "require('./package.json').version")
           TAG="${{ github.event.inputs.plugin }}-v${VERSION}"
 
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release already exists"
-            exit 0
-          fi
+          cd ../..
 
           gh release create \
             "$TAG" \
             plugins/${{ github.event.inputs.plugin }}/release/*.zip \
             --title "${{ github.event.inputs.plugin }} v${VERSION}" \
-            --notes "${{ github.event.inputs.plugin }} version ${VERSION} release"
+            --notes "Automated release for ${TAG}"
