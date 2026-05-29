@@ -32,31 +32,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24.16.0"
-          cache: "pnpm"
+          cache: "npm"
 
       # -------------------------
-      # Enable Corepack + PNPM (FIX for pnpm not found)
+      # Install PNPM globally (FIX: removes all pnpm/path issues)
       # -------------------------
-      - name: Enable Corepack + PNPM
-        shell: bash
+      - name: Install PNPM
+        run: npm install -g pnpm@10.34.1
+
+      # -------------------------
+      # Verify environment
+      # -------------------------
+      - name: Verify Node & PNPM
         run: |
-          set -e
-
-          corepack enable
-          corepack prepare pnpm@10.34.1 --activate
-
-          # Fix PATH issues in GitHub runner
-          export PATH="$(corepack root)/shims:$PATH"
-
-          echo "Node version:"
           node -v
-
-          echo "PNPM version:"
-          which pnpm || true
           pnpm -v
 
       # -------------------------
-      # PHP setup (manual, policy-safe)
+      # PHP setup (manual, no external actions)
       # -------------------------
       - name: Setup PHP
         run: |
@@ -78,21 +71,21 @@ jobs:
           wp --info
 
       # -------------------------
-      # Install dependencies (CI safe)
+      # Install dependencies (safe for CI)
       # -------------------------
       - name: Install Dependencies
         run: pnpm install --no-frozen-lockfile
 
       # -------------------------
-      # Build Zyra FIRST (fix shared dependency issues)
+      # Build Zyra first (fix shared dependency build)
       # -------------------------
       - name: Build Zyra Package
         run: pnpm --filter zyra run build
 
       # -------------------------
-      # Validate plugin
+      # Validate plugin exists
       # -------------------------
-      - name: Validate Plugin Exists
+      - name: Validate Plugin
         run: |
           if [ ! -d "plugins/${{ github.event.inputs.plugin }}" ]; then
             echo "Plugin not found"
@@ -100,7 +93,7 @@ jobs:
           fi
 
       # -------------------------
-      # Build ONLY selected plugin (NO monorepo recursion)
+      # Build selected plugin ONLY (NO monorepo recursion)
       # -------------------------
       - name: Build Plugin
         run: |
