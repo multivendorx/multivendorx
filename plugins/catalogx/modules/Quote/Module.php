@@ -52,7 +52,6 @@ class Module {
      */
     public function register_services() {
         $this->services['admin']    = new Admin();
-        $this->services['ajax']     = new Ajax();
         $this->services['frontend'] = new Frontend();
         $this->services['rest']     = new Rest();
         $this->services['util']     = new Util();
@@ -92,7 +91,7 @@ class Module {
             'post_type'      => 'page',
             'post_author'    => 1,
             'post_name'      => $default_slug,
-            'post_title'     => __( 'My Quote', 'multivendorx' ),
+            'post_title'     => __( 'My Quote', 'catalogx' ),
             'post_content'   => $this->request_quote_block() ? $this->request_quote_block() : '[catalogx_request_quote]',
             'comment_status' => 'closed',
         );

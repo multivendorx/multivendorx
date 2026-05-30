@@ -21,7 +21,6 @@ class Frontend {
      * Fontend class constructor functions
      */
     public function __construct() {
-        add_action( 'init', array( $this, 'register_button_group_position' ) );
         add_action( 'wp', array( $this, 'display_price_and_description' ) );
         // Enqueue frontend scripts.
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
@@ -37,62 +36,6 @@ class Frontend {
         if ( is_product() || is_shop() || is_account_page() ) {
             FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
         }
-    }
-
-    /**
-     * Register button group display function in shop pages.
-     *
-     * @return void
-     */
-    public function register_button_group_position() {
-        // Get shop page button settings.
-        $position_settings = CatalogX()->setting->get_setting( 'shop_page_position_setting', array() );
-
-        // Priority of collide position.
-        $position_priority = 1;
-
-        // Position after a particular section.
-        $position_after = 'sku_category';
-
-        // If position settings exists.
-        if ( $position_settings ) {
-            // Get the collide position priority.
-            $position_priority = array_search( 'custom_button', array_keys( $position_settings ), true ) + 1;
-
-            // Get the position after.
-            $position_after = $position_settings['custom_button'];
-        }
-
-        // Display button group in a hooked based on position setting.
-        $hook_map = array(
-            'sku_category'        => 'woocommerce_product_meta_end',
-            'add_to_cart'         => 'woocommerce_after_add_to_cart_button',
-            'product_description' => 'woocommerce_before_add_to_cart_form',
-            'price_section'       => 'woocommerce_single_product_summary',
-        );
-
-        $hook = $hook_map[ $position_after ] ?? 'woocommerce_single_product_summary';
-
-        // Determine priority based on hook
-        $priority = match ( $position_after ) {
-            'price_section' => 10 + $position_priority,
-            default         => 99 + $position_priority,
-        };
-
-        add_action( $hook, array( $this, 'add_button_group' ), $priority );
-    }
-
-    /**
-     * Display all button group
-     *
-     * @return void
-     */
-    public function add_button_group() {
-        ?>
-            <div class="single-product-page-action-btn-catalogx">
-                <?php do_action( 'display_shop_page_button' ); ?>
-            </div>
-        <?php
     }
 
     /**

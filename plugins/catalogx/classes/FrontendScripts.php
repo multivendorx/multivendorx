@@ -482,22 +482,18 @@ class FrontendScripts {
                 'catalogx-add-to-quote-cart-script'     => array(
                     'object_name' => 'addToQuoteCart',
                     'data'        => array_merge(
-                        self::get_base_ajax_data( 'catalogx-add-to-quote-cart-script' ),
+                        $base_rest,
                         array(
                             'loader'          => admin_url( 'images/wpspin_light.gif' ),
                             'no_more_product' => __( 'No more product in Quote list!', 'catalogx' ),
                         )
                     ),
                 ),
-                'catalogx-enquiry-button-editor-script' => array(
+                'catalogx-enquiry-button-script'   => array(
                     'object_name' => 'enquiryButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-enquiry-button-view-script'   => array(
-                    'object_name' => 'enquiryButton',
-                    'data'        => $base_rest,
-                ),
-                'catalogx-quote-button-editor-script'   => array(
+                'catalogx-quote-button-script'          => array(
                     'object_name' => 'quoteButton',
                     'data'        => $base_rest,
                 ),
@@ -513,11 +509,7 @@ class FrontendScripts {
                         )
                     ),
                 ),
-                'catalogx-quote-button-script'          => array(
-                    'object_name' => 'quoteButton',
-                    'data'        => $base_rest,
-                ),
-                'catalogx-quote-cart-script'            => array(
+                'catalogx-quote-cart-view-script'            => array(
                     'object_name' => 'quoteCart',
                     'data'        => array_merge(
                         $base_rest,
@@ -528,10 +520,6 @@ class FrontendScripts {
                             'khali_dabba'          => Utill::is_khali_dabba(),
                         )
                     ),
-                ),
-                'catalogx-enquiry-button-script'        => array(
-                    'object_name' => 'enquiryButton',
-                    'data'        => $base_rest,
                 ),
             )
         );

@@ -20,21 +20,21 @@ $enquiry_data = $args['enquiry_data'];
         <div class="email-container">
                 <div style="width:100%; background: #557DA1; padding: 40px 30px; border: 1px solid #557DA1;">
                     <h2 style="font-family: Arial; line-height: 43px; text-align: center; color: #fff; font-size: 40.375rem; font-weight: 700; margin: 0;padding: 0 0 0px 0;">
-                        <?php echo esc_html__( 'New Product Enquiry', 'multivendorx' ) . esc_html( $product_title ); ?>
+                        <?php echo esc_html__( 'New Product Enquiry', 'catalogx' ) . esc_html( $product_title ); ?>
                     </h2>
                 </div>
             
                 <div style="width: 100%;">
-            <p><?php esc_html_e( 'Dear Admin', 'multivendorx' ); ?>,</p>
-            <p><?php esc_html_e( 'Please find the product enquiry, details are given below', 'multivendorx' ); ?>.</p>
-            <h3 style="font-size: 1.25rem; color:#557da1; "><?php esc_html_e( 'Product Details', 'multivendorx' ); ?></h3>
+            <p><?php esc_html_e( 'Dear Admin', 'catalogx' ); ?>,</p>
+            <p><?php esc_html_e( 'Please find the product enquiry, details are given below', 'catalogx' ); ?>.</p>
+            <h3 style="font-size: 1.25rem; color:#557da1; "><?php esc_html_e( 'Product Details', 'catalogx' ); ?></h3>
             <div class="table-wrapper">
                 <table cellspacing="0" cellpadding="6" style="width: 100%; border: 1px solid #eee;" border="1" bordercolor="#eee">
                     <thead>
                         <tr>
-                            <th scope="col"><?php esc_html_e( 'Product', 'multivendorx' ); ?></th>
-                            <th scope="col"><?php esc_html_e( 'Product Url', 'multivendorx' ); ?></th>
-                            <th scope="col"><?php esc_html_e( 'Product SKU', 'multivendorx' ); ?></th>
+                            <th scope="col"><?php esc_html_e( 'Product', 'catalogx' ); ?></th>
+                            <th scope="col"><?php esc_html_e( 'Product Url', 'catalogx' ); ?></th>
+                            <th scope="col"><?php esc_html_e( 'Product SKU', 'catalogx' ); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -104,13 +104,13 @@ $enquiry_data = $args['enquiry_data'];
                     </tbody>
                 </table>
             </div>
-            <h3 style="font-size: 1.25rem; color:#557da1; margin-top: 1rem;"  ><?php esc_html_e( 'Customer Details', 'multivendorx' ); ?></h3>
+            <h3 style="font-size: 1.25rem; color:#557da1; margin-top: 1rem;"  ><?php esc_html_e( 'Customer Details', 'catalogx' ); ?></h3>
             <p>
-                <strong><?php esc_html_e( 'Name', 'multivendorx' ); ?> : </strong>
+                <strong><?php esc_html_e( 'Name', 'catalogx' ); ?> : </strong>
                 <?php echo esc_html( $enquiry_data['user_name'] ?? 'John Doe' ); ?>
             </p>
             <p>
-                <strong><?php esc_html_e( 'Email', 'multivendorx' ); ?> : </strong>
+                <strong><?php esc_html_e( 'Email', 'catalogx' ); ?> : </strong>
                 <a target="_blank" href="mailto:<?php echo esc_html( $enquiry_data['user_email'] ?? 'example@gmail.com' ); ?>"><?php echo esc_html( $enquiry_data['user_email'] ?? 'example@gmail.com' ); ?></a>
             </p>
             <?php
@@ -119,7 +119,7 @@ $enquiry_data = $args['enquiry_data'];
                     if ( 'phone' === $field['name'] ) {
 						?>
                         <p>
-                            <strong><?php esc_html_e( 'User Phone : ', 'multivendorx' ); ?></strong>
+                            <strong><?php esc_html_e( 'User Phone : ', 'catalogx' ); ?></strong>
                             <?php echo esc_html( $field['value'] ); ?>
                         </p>
 						<?php
@@ -127,7 +127,7 @@ $enquiry_data = $args['enquiry_data'];
                     if ( 'address' === $field['name'] ) {
 						?>
                         <p>
-                            <strong><?php esc_html_e( 'User Address : ', 'multivendorx' ); ?></strong>
+                            <strong><?php esc_html_e( 'User Address : ', 'catalogx' ); ?></strong>
                             <?php echo esc_html( $field['value'] ); ?>
                         </p>
 						<?php
@@ -135,7 +135,7 @@ $enquiry_data = $args['enquiry_data'];
                     if ( 'subject' === $field['name'] ) {
 						?>
                         <p>
-                            <strong><?php esc_html_e( 'User Subject : ', 'multivendorx' ); ?></strong>
+                            <strong><?php esc_html_e( 'User Subject : ', 'catalogx' ); ?></strong>
                             <?php echo esc_html( $field['value'] ); ?>
                         </p>
 						<?php
@@ -143,7 +143,7 @@ $enquiry_data = $args['enquiry_data'];
                     if ( 'comment' === $field['name'] ) {
 						?>
                         <p>
-                            <strong><?php esc_html_e( 'User Comments : ', 'multivendorx' ); ?></strong>
+                            <strong><?php esc_html_e( 'User Comments : ', 'catalogx' ); ?></strong>
                             <?php echo esc_html( $field['value'] ); ?>
                         </p>
 						<?php
@@ -158,7 +158,7 @@ $enquiry_data = $args['enquiry_data'];
                 <tr>
                     <td colspan="2" valign="middle" align="center">
                     <?php /* translators: %s: email footer which display the site name. */ ?>
-                    <p><?php echo esc_html( apply_filters( 'catalogx_email_footer_text', sprintf( __( '%s - Powered by CatalogX', 'multivendorx' ), get_bloginfo( 'name', 'display' ) ) ) ); ?></a>.</p>
+                    <p><?php echo esc_html( apply_filters( 'catalogx_email_footer_text', sprintf( __( '%s - Powered by CatalogX', 'catalogx' ), get_bloginfo( 'name', 'display' ) ) ) ); ?></a>.</p>
                     </td>
                 </tr>
             </tbody>

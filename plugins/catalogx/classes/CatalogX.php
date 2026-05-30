@@ -68,25 +68,8 @@ final class CatalogX {
         add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
         add_action( 'woocommerce_loaded', array( $this, 'load_plugin' ) );
         add_action( 'plugins_loaded', array( $this, 'handle_plugin_migration' ) );
-        add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 
         add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
-        // Major update notice.
-		add_action( 'in_plugin_update_message-woocommerce-catalog-enquiry/Woocommerce_Catalog_Enquiry.php', array( $this, 'catalogx_plugin_update_message' ) );
-    }
-
-    /**
-     * Show a plugin update message on the plugin update screen for major versions.
-     *
-     * This is hooked to display a custom admin notice when the installed version is less than 6.0.0.
-     *
-     * @return void
-     */
-    public function catalogx_plugin_update_message() {
-        if ( version_compare( get_option( 'catalogx_plugin_version' ), '6.0.0', '<' ) ) {
-            echo '<p><strong>Heads up!</strong> 6.0.0 is a major update. Make a full site backup and before upgrading your marketplace to avoid any undesirable situations.</p>';
-            // exit;
-        }
     }
 
     /**
@@ -109,10 +92,6 @@ final class CatalogX {
      */
     public function load_plugin() {
         add_action( 'init', array( $this, 'register_services' ), 0 );
-        // add link on pugin 'active' button.
-        if ( is_admin() && ! wp_doing_ajax() ) {
-            add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'get_plugin_action_links' ) );
-        }
         if ( get_option( Utill::CATALOGX_OTHER_SETTINGS['run_installer'] ) ) {
             new Installer();
             delete_option( Utill::CATALOGX_OTHER_SETTINGS['run_installer'] );
@@ -148,9 +127,9 @@ final class CatalogX {
             icl_register_string( 'catalogx', $key, $value );
         }
 
-        $form_settings = CatalogX()->setting->get_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'] );
+        $form_settings = CatalogX()->setting->get_option( Utill::CATALOGX_SETTINGS['enquiry-catalog-customization'] );
 
-		foreach ( $form_settings['formsettings']['formfieldlist'] as $field ) {
+		foreach ( $form_settings['enquiry_form_tabs']['enquiry_form_builder'] as $field ) {
 			if ( isset( $field['label'] ) ) {
 				icl_register_string( 'catalogx', 'form_field_label_' . $field['id'], $field['label'] );
 			}
@@ -164,7 +143,7 @@ final class CatalogX {
 			}
 		}
 
-		foreach ( $form_settings['freefromsetting'] as $free_field ) {
+		foreach ( $form_settings['enquiry_form_tabs'] as $free_field ) {
 			if ( isset( $free_field['label'] ) ) {
 				icl_register_string( 'catalogx', 'free_form_label_' . $free_field['key'], $free_field['label'] );
 			}
@@ -197,7 +176,7 @@ final class CatalogX {
         $this->services['shortcode'] = new Shortcode();
         $this->services['session']   = new Core\Session();
         $this->services['quotecart'] = new Core\QuoteCart();
-
+        $this->services['promotions']      = new Promotions();
         // Load all active modules.
         $this->services['modules']->load_active_modules();
 
@@ -206,51 +185,6 @@ final class CatalogX {
 
         do_action( 'catalogx_loaded' );
         flush_rewrite_rules();
-    }
-
-    /**
-     * Add custom action links to the plugin on the plugins page.
-     *
-     * Adds "Settings", "Support", and optionally "Upgrade to Pro" links.
-     *
-     * @param array $links Existing plugin action links.
-     * @return array Modified plugin action links with CatalogX links.
-     */
-    public function get_plugin_action_links( $links ) {
-        $plugin_links = array(
-            '<a href="' . admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=general' ) . '">' . __( 'Settings', 'catalogx' ) . '</a>',
-        );
-        $links        = array_merge( $plugin_links, $links );
-        if ( ! Utill::is_khali_dabba() ) {
-            $links[] = '<a href="' . esc_url( CATALOGX_PRO_SHOP_URL ) . '" class="catalogx-pro-plugin" target="_blank" style="font-weight: 700;background: linear-gradient(110deg, rgb(63, 20, 115) 0%, 25%, rgb(175 59 116) 50%, 75%, rgb(219 75 84) 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;">' . __( 'Upgrade to Pro', 'catalogx' ) . '</a>';
-        }
-        return $links;
-    }
-
-    /**
-     * Add custom metadata links below the plugin description on the Plugins page.
-     *
-     * This typically shows small links like "Upgrade to Pro" in the plugin row footer.
-     *
-     * @param array  $links An array of the existing plugin metadata links.
-     * @param string $file  Path to the plugin file relative to the plugins directory.
-     * @return array Modified array of plugin metadata links.
-     */
-    public function plugin_row_meta( $links, $file ) {
-        if ( CatalogX()->plugin_base === $file ) {
-            $row_meta = array(
-                'docs'    => '<a href="https://catalogx.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx" target="_blank">' . esc_html__( 'Docs', 'catalogx' ) . '</a>',
-                'support' => '<a href="https://catalogx.com/support/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx" target="_blank">' . __( 'Support', 'catalogx' ) . '</a>',
-            );
-
-            if ( ! Utill::is_khali_dabba() ) {
-                $row_meta['pro'] = '<a href="' . esc_url( CATALOGX_PRO_SHOP_URL ) . '" class="catalogx-pro-plugin" target="_blank" style="font-weight: 700;background: linear-gradient(110deg, rgb(63, 20, 115) 0%, 25%, rgb(175 59 116) 50%, 75%, rgb(219 75 84) 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;" title="' . esc_attr( __( 'Upgrade to Pro', 'catalogx' ) ) . '">' . __( 'Upgrade to Pro', 'catalogx' ) . '</a>';
-            }
-
-            return array_merge( $links, $row_meta );
-        }
-
-        return $links;
     }
 
     /**
