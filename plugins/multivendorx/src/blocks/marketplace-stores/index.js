@@ -83,6 +83,19 @@ const EditBlock = (props) => {
 						checked={attributes.showMap}
 						onChange={(value) => setAttributes({ showMap: value })}
 					/>
+					<TextControl
+						label={__('Exclude Store IDs', 'multivendorx')}
+						help={__(
+							'Enter store IDs separated by commas. Example: 1,2,5,10',
+							'multivendorx'
+						)}
+						value={attributes.excludeIds}
+						onChange={(value) =>
+							setAttributes({
+								excludeIds: value,
+							})
+						}
+					/>
 				</PanelBody>
 			</InspectorControls>
 
@@ -90,6 +103,7 @@ const EditBlock = (props) => {
 				orderby={attributes.orderby}
 				order={attributes.order}
 				perpage={attributes.perpage}
+				excludeIds={attributes.excludeIds}
 			/>
 		</div>
 	);
@@ -109,6 +123,7 @@ registerBlockType('multivendorx/marketplace-stores', {
 		perpage: { type: 'number', default: 5 },
 		showMap: { type: 'boolean', default: true },
 		hideEmpty: { type: 'boolean', default: false },
+		excludeIds: { type: 'string', default: '' },
 	},
 
 	edit: EditBlock,

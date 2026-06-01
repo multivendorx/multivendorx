@@ -296,6 +296,10 @@ class Stores extends \WP_REST_Controller {
                 $args['status'] = $status;
             }
 
+            $exclude_ids = $request->get_param( 'exclude_ids' );
+            if ( ! empty( $exclude_ids ) ) {
+                $args['exclude_ids'] = $exclude_ids;
+            }
             $order_by = $request->get_param( 'order_by' );
             if ( ! empty( $order_by ) ) {
                 $args['order_by'] = sanitize_text_field( $order_by );
@@ -319,6 +323,7 @@ class Stores extends \WP_REST_Controller {
                     unset( $args['order_by'], $args['order'] );
                 }
             }
+            
             // Fetch & format stores.
             $stores = StoreUtil::get_store_information( $args );
 
