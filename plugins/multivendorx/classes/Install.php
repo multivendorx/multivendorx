@@ -89,6 +89,24 @@ class Install {
         }
 
         if ( version_compare( $previous_version, '5.0.7', '<' ) ) {
+            global $wpdb;
+            $collate          = $wpdb->get_charset_collate();
+
+            $sql_logs= "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['activity_logs'] . "` (
+                `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+                `store_id` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+                `message` text NOT NULL,
+                `tag` varchar(50) DEFAULT NULL,
+                `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (`ID`)
+            ) $collate;";
+
+            if ( ! function_exists( 'dbDelta' ) ) {
+                require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+            }
+
+            dbDelta( $sql_logs );
+
             $previous_settings = get_option( Utill::MULTIVENDORX_SETTINGS['store-identity'], array() );
             $new_settings = array(
                 'verification_methods' => array(
@@ -374,6 +392,16 @@ class Install {
             KEY ip (ip)
         ) $collate;";
 
+        $sql_logs= "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['activity_logs'] . "` (
+            `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+            `store_id` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+            `message` text NOT NULL,
+            `tag` varchar(50) DEFAULT NULL,
+            `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (`ID`)
+        ) $collate;";
+
+
         // Include upgrade functions if not loaded.
         if ( ! function_exists( 'dbDelta' ) ) {
             require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -392,6 +420,7 @@ class Install {
         dbDelta( $sql_notifications );
         dbDelta( $sql_system_events );
         dbDelta( $sql_stats );
+        dbDelta( $sql_logs );
     }
 
     /**
