@@ -39,7 +39,7 @@ class Frontend {
             add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_button_in_shop_page' ) );
         }
 
-        add_action( 'display_shop_page_button', array( $this, 'catalogx_add_enquiry_button' ) );
+        add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
 
         // Hook for exclusion.
         add_action( 'woocommerce_single_product_summary', array( $this, 'enquiry_button_exclusion' ), 5 );
@@ -144,9 +144,9 @@ class Frontend {
         global $post;
 
         if ( ! Util::is_available_for_product( $post->ID ) ) {
-            remove_action( 'display_shop_page_button', array( $this, 'catalogx_add_enquiry_button' ) );
+            remove_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
         } else {
-            add_action( 'display_shop_page_button', array( $this, 'catalogx_add_enquiry_button' ) );
+            add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
         }
     }
 

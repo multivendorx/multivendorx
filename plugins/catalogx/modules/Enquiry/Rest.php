@@ -168,7 +168,7 @@ class Rest {
                 ? get_permalink( $redirect_page_id )
                 : '';
 
-            $success_message = __( 'Enquiry sent successfully', 'multivendorx' );
+            $success_message = __( 'Enquiry sent successfully', 'catalogx' );
 
             do_action( 'catalogx_clear_enquiry' );
 
