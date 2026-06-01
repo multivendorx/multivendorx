@@ -51,7 +51,7 @@ class Frontend {
     public function register_script( $scripts ) {
         $scripts['multivendorx-sharedlisting-frontend-script'] = array(
             'src'  => FrontendScripts::get_asset_path() . 'js/modules/SharedListing/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
-            'deps' => array( 'jquery' ),
+            'deps' => array( 'jquery','wp-i18n' ),
         );
 
         return $scripts;
