@@ -17,7 +17,7 @@
     "main": "index.js",
     "mainPluginFile": "moowoodle.php",
     "engines": {
-        "node": "^24.0.2"
+        "node": "^24.16.0"
     },
     "scripts": {
         "build": "pnpm run build:project",
@@ -57,8 +57,7 @@
         "textdomain": "node ../../tools/scripts/update-textdomain.mjs",
         "changelog": "composer exec -- changelogger",
         "makepot": "pnpm exec wp i18n make-pot --domain='moowoodle' --include='assets/js,public,classes,templates,config.php,moowoodle.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://dualcube.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') DualCube. All Rights Reserved.\" languages/moowoodle.pot",
-        "makejson": "pnpm exec wp i18n make-json languages --pretty-print --no-purge",
-        "postinstall": "composer install"
+        "makejson": "pnpm exec wp i18n make-json languages --pretty-print --no-purge"
     },
     "wireit": {
         "build:project:bundle": {

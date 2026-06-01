@@ -136,7 +136,6 @@ class Tour extends \WP_REST_Controller {
 			return $nonce_validation;
 		}
 
-
 		try {
 			$is_tour_completed = $request->get_param( 'completed' );
 

@@ -39,13 +39,12 @@ class Frontend {
             add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_button_in_shop_page' ) );
         }
 
-        add_action( 'display_shop_page_button', array( $this, 'catalogx_add_enquiry_button' ) );
+        add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
 
         // Hook for exclusion.
         add_action( 'woocommerce_single_product_summary', array( $this, 'enquiry_button_exclusion' ), 5 );
 
         add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
-
     }
 
     /**
@@ -145,9 +144,9 @@ class Frontend {
         global $post;
 
         if ( ! Util::is_available_for_product( $post->ID ) ) {
-            remove_action( 'display_shop_page_button', array( $this, 'catalogx_add_enquiry_button' ) );
+            remove_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
         } else {
-            add_action( 'display_shop_page_button', array( $this, 'catalogx_add_enquiry_button' ) );
+            add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
         }
     }
 
@@ -189,7 +188,7 @@ class Frontend {
         $free_form_settings = isset( $form_settings['enquiry_form_tabs']['free_enquiry_form'] ) &&
             is_array( $form_settings['enquiry_form_tabs']['free_enquiry_form'] )
             ? $form_settings['enquiry_form_tabs']['free_enquiry_form']
-            : array();        
+            : array();
 
         if ( function_exists( 'icl_t' ) ) {
             foreach ( $free_form_settings as &$free_field ) {
@@ -300,17 +299,11 @@ class Frontend {
         $product_id = 0;
 
         if ( ! empty( $shortcode_attributes['product_id'] ) ) {
-
             $product_id = absint( $shortcode_attributes['product_id'] );
-
         } elseif ( $product instanceof \WC_Product ) {
-
             $product_id = $product->get_id();
-
         } else {
-
             $product_id = $this->get_product_id_from_context();
-
         }
 
         if ( $product_id ) {

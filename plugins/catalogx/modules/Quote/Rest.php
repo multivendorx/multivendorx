@@ -59,6 +59,55 @@ class Rest {
 				'permission_callback' => array( $this, 'quote_cart_permission' ),
 			)
         );
+
+        register_rest_route(
+    CatalogX()->rest_namespace,
+    '/quote/add',
+    [
+        'methods'  => 'POST',
+        'callback' => [ $this, 'add_item_in_cart' ],
+        'permission_callback' => '__return_true',
+    ]
+);
+    }
+
+    public function add_item_in_cart( $request ){
+        $return             = 'false';
+        $message            = '';
+        $product_id = absint(
+    $request->get_param( 'product_id' )
+);
+
+$variation_id = absint(
+    $request->get_param( 'variation_id' )
+);
+
+$postdata = $request->get_params();
+        $is_valid_variation = ( null !== $variation_id ) ? ( false !== $variation_id ) : true;
+
+        $is_valid = $product_id && $is_valid_variation ? true : false;
+
+        if ( ! $is_valid ) {
+            $errors[] = __( 'Error occurred while adding product to Request a Quote list.', 'catalogx' );
+        } else {
+            $return = CatalogX()->quotecart->add_quote_item( $postdata );
+        }
+
+        if ( 'true' === $return ) {
+            $message = __( 'Product added to quote list.', 'catalogx' );
+        } elseif ( 'exists' === $return ) {
+            $message = __( 'Product already in your quote list.', 'catalogx' );
+        } else {
+            $message = $errors;
+        }
+
+        wp_send_json(
+            array(
+				'result'  => $return,
+				'message' => $message,
+				'rqa_url' => CatalogX()->quotecart->get_request_quote_page_url(),
+            )
+        );
     }
 
     /**
@@ -142,7 +191,7 @@ class Rest {
             $product_id = $product['id'];
             $quantity   = $product['quantity'];
             CatalogX()->quotecart->update_cart_item( $product['key'], 'quantity', $quantity );
-            $update_msg = __( 'Quote cart updated!', 'multivendorx' );
+            $update_msg = __( 'Quote cart updated!', 'catalogx' );
         }
 
         return rest_ensure_response( array( 'msg' => $update_msg ) );
@@ -195,12 +244,12 @@ class Rest {
                 $order->set_customer_note( $reason );
                 $order->save();
                 /* translators: %s: reject quotation number. */
-                return rest_ensure_response( array( 'message' => sprintf( __( 'You have confirmed rejection of the quotation No: %d', 'multivendorx' ), $order_id ) ) );
+                return rest_ensure_response( array( 'message' => sprintf( __( 'You have confirmed rejection of the quotation No: %d', 'catalogx' ), $order_id ) ) );
             }
         }
 
         if ( empty( $form_data ) ) {
-            return new WP_Error( 'invalid_data', __( 'Missing form data.', 'multivendorx' ), array( 'status' => 400 ) );
+            return new WP_Error( 'invalid_data', __( 'Missing form data.', 'catalogx' ), array( 'status' => 400 ) );
         }
 
         // Sanitize input fields.
@@ -222,7 +271,7 @@ class Rest {
         // Create order.
         $order = wc_create_order( $args );
         if ( ! $order ) {
-            return new WP_Error( 'order_error', __( 'Failed to create order.', 'multivendorx' ), array( 'status' => 500 ) );
+            return new WP_Error( 'order_error', __( 'Failed to create order.', 'catalogx' ), array( 'status' => 500 ) );
         }
 
         // Add customer details.

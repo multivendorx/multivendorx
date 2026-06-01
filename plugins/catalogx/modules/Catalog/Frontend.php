@@ -189,7 +189,7 @@ class Frontend {
     }
 
     /**
-     * Display descriopton box
+     * Display description box
      *
      * @return void
      */

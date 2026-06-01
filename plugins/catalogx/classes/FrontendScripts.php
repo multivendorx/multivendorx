@@ -96,7 +96,7 @@ class FrontendScripts {
     /**
      * Register frontend scripts using filters and enqueue required external scripts.
      *
-     * Loads block assets and additional scripts defined through the `catalogx_register_scripts` filter.
+     * Loads block assets and additional scripts defined through the `catalogx_frontend_scripts` filter.
      */
     public static function register_frontend_scripts() {
         $version      = CatalogX()->version;
@@ -104,7 +104,7 @@ class FrontendScripts {
 
         $base_url           = self::get_asset_path() . 'js/';
         $registered_scripts = apply_filters(
-            'catalogx_register_scripts',
+            'catalogx_frontend_scripts',
             array(
                 'catalogx-vendor-script'            => array(
                 	'src'  => $base_url . 'vendors.js',
@@ -130,9 +130,8 @@ class FrontendScripts {
                     'deps'    => array( 'jquery' ),
                     'version' => $version,
                 ),
-                )
-            );
-            file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export(self::get_asset_path() . 'modules/Quote/js/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js', true) . "\n", FILE_APPEND);
+			)
+        );
 
         foreach ( $registered_scripts as $name => $script_config ) {
             self::register_script( $name, $script_config['src'], $script_config['deps'], $script_config['version'] ?? $version );
@@ -143,13 +142,13 @@ class FrontendScripts {
     /**
      * Register frontend styles using filters.
      *
-     * Allows style registration through `catalogx_register_styles` filter.
+     * Allows style registration through `catalogx_frontend_styles` filter.
      */
     public static function register_frontend_styles() {
         $version = CatalogX()->version;
 
         $register_styles = apply_filters(
-            'catalogx_register_styles',
+            'catalogx_frontend_styles',
             array(
                 'catalogx-frontend-style'     => array(
                     'src'     => self::get_asset_path() . 'styles/public/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.css',
@@ -198,7 +197,7 @@ class FrontendScripts {
 	    $index_asset        = include self::get_asset_path( 'file' ) . 'js/index.asset.php';
         $vendor_asset       = include self::get_asset_path( 'file' ) . 'js/vendors.asset.php';
 		$registered_scripts = apply_filters(
-            'admin_catalogx_register_scripts',
+            'catalogx_admin_scripts',
             array(
                 'catalogx-vendor-script' => array(
                     'src'  => self::get_asset_path() . 'js/vendors.js',
@@ -219,12 +218,12 @@ class FrontendScripts {
     /**
      * Register admin styles using filters.
      *
-     * Allows style registration through `admin_catalogx_register_styles` filter.
+     * Allows style registration through `admin_catalogx_frontend_styles` filter.
      */
     public static function register_admin_styles() {
         $version         = CatalogX()->version;
         $register_styles = apply_filters(
-            'admin_catalogx_register_styles',
+            'catalogx_admin_styles',
             array(
                 'catalogx-index-style' => array(
 					'src' => self::get_asset_path() . 'styles/index.css',
@@ -306,9 +305,9 @@ class FrontendScripts {
         $products_data = array();
 
         foreach ( $products_ids as $id ) {
-                if ( 'publish' !== get_post_status( $id ) ) {
-            continue;
-        }
+			if ( 'publish' !== get_post_status( $id ) ) {
+				continue;
+			}
             $product_name = get_the_title( $id );
 
             $products_data[] = array(
@@ -483,22 +482,18 @@ class FrontendScripts {
                 'catalogx-add-to-quote-cart-script'     => array(
                     'object_name' => 'addToQuoteCart',
                     'data'        => array_merge(
-                        self::get_base_ajax_data( 'catalogx-add-to-quote-cart-script' ),
+                        $base_rest,
                         array(
                             'loader'          => admin_url( 'images/wpspin_light.gif' ),
                             'no_more_product' => __( 'No more product in Quote list!', 'catalogx' ),
                         )
                     ),
                 ),
-                'catalogx-enquiry-button-editor-script' => array(
+                'catalogx-enquiry-button-script'   => array(
                     'object_name' => 'enquiryButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-enquiry-button-view-script'   => array(
-                    'object_name' => 'enquiryButton',
-                    'data'        => $base_rest,
-                ),
-                'catalogx-quote-button-editor-script'   => array(
+                'catalogx-quote-button-script'          => array(
                     'object_name' => 'quoteButton',
                     'data'        => $base_rest,
                 ),
@@ -514,11 +509,7 @@ class FrontendScripts {
                         )
                     ),
                 ),
-                'catalogx-quote-button-script'          => array(
-                    'object_name' => 'quoteButton',
-                    'data'        => $base_rest,
-                ),
-                'catalogx-quote-cart-script'            => array(
+                'catalogx-quote-cart-view-script'            => array(
                     'object_name' => 'quoteCart',
                     'data'        => array_merge(
                         $base_rest,
@@ -529,10 +520,6 @@ class FrontendScripts {
                             'khali_dabba'          => Utill::is_khali_dabba(),
                         )
                     ),
-                ),
-                'catalogx-enquiry-button-script'        => array(
-                    'object_name' => 'enquiryButton',
-                    'data'        => $base_rest,
                 ),
             )
         );

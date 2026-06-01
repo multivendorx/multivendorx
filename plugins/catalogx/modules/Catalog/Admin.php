@@ -41,7 +41,7 @@ class Admin {
     public function add_catalog_tab_in_product( $tabs ) {
         // Add the new tab.
         $tabs['catalog'] = array(
-            'label'    => __( 'Catalog', 'multivendorx' ),
+            'label'    => __( 'Catalog', 'catalogx' ),
             'target'   => 'catalog_per_product_desc',
             'class'    => array( 'show_if_simple', 'show_if_variable', 'show_if_grouped', 'show_if_external' ),
             'priority' => 50,
@@ -68,8 +68,8 @@ class Admin {
                 woocommerce_wp_text_input(
                     array(
 						'id'          => 'catalog_per_product_desc',
-						'label'       => __( 'Additional Product Details', 'multivendorx' ),
-						'description' => __( 'Enter extra information about the product to display on the single product page. Useful for highlighting unique features, usage tips, or care instructions.', 'multivendorx' ),
+						'label'       => __( 'Additional Product Details', 'catalogx' ),
+						'description' => __( 'Enter extra information about the product to display on the single product page. Useful for highlighting unique features, usage tips, or care instructions.', 'catalogx' ),
 						'desc_tip'    => true,
 						'type'        => 'text',
 						'value'       => $catalog_product_desc,

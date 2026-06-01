@@ -135,7 +135,7 @@ class Store_Follow_Button extends Widget_Button {
         id="followers-count-<?php echo esc_attr( $store_id ); ?>">
 
             <?php
-            /* translators: %d is the number of followers. */
+            /* translators: %d: Number of followers. */
             echo esc_html(
                 sprintf(
                     _n( '%d Follower', '%d Followers', $follower_count, 'multivendorx' ),

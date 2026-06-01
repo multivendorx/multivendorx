@@ -132,8 +132,12 @@ class StripeConnect {
                     'label'              => __( 'Redirect url', 'multivendorx' ),
                     'text'               => $redirect_url,
                     'settingDescription' => __( 'URL Stripe uses to return sellers after OAuth approval. Must match the Stripe app settings.', 'multivendorx' ),
-                    'desc'               => sprintf(
-                        __( 'Copy this URL exactly into your Stripe Connect app settings:<br/>%1$s<br/><a href="https://docs.stripe.com/connect/oauth-reference" class="link-item" target="_blank">Stripe OAuth redirect setup <i class="adminfont-external"></i></a>', 'multivendorx' ),
+                    'desc' => sprintf(
+                        /* translators: %1$s: Stripe OAuth callback URL. */
+                        __(
+                            'Copy this URL exactly into your Stripe Connect app settings:<br/>%1$s<br/><a href="https://docs.stripe.com/connect/oauth-reference" class="link-item" target="_blank">Stripe OAuth redirect setup <i class="adminfont-external"></i></a>',
+                            'multivendorx'
+                        ),
                         esc_url( admin_url( 'admin-post.php?action=multivendorx_stripe_oauth_callback' ) )
                     ),
                 ),

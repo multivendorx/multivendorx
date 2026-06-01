@@ -59,10 +59,10 @@ class Rest {
     public function create_enquiry_request( $request ) {
         global $wpdb;
 
-        $quantity       = absint($request->get_param( 'quantity' ));
-        $product_id     = absint($request->get_param( 'productId' ));
+        $quantity            = absint( $request->get_param( 'quantity' ) );
+        $product_id          = absint( $request->get_param( 'productId' ) );
         $enquiry_form_fields = $request->get_body_params();
-        $uploaded_files = $request->get_file_params();
+        $uploaded_files      = $request->get_file_params();
 
         $user        = wp_get_current_user();
         $user_name   = $user->display_name;
@@ -150,7 +150,7 @@ class Rest {
 					'user_enquiry_fields' => $additional_fields,
 				)
             );
-            $settings = CatalogX()->setting;
+            $settings     = CatalogX()->setting;
 
             $attachments = apply_filters( 'catalogx_set_enquiry_pdf_and_attachments', array(), $enquiry_id, $enquiry_data );
 
@@ -158,9 +158,8 @@ class Rest {
             $email_handler    = WC()->mailer()->emails['EnquiryEmail'];
 
             $email_handler->trigger( $additional_email, $enquiry_data, $attachments );
-            
 
-             // Check if page redirection after enquiry is enabled.
+            // Check if page redirection after enquiry is enabled.
 
             $is_redirect_enabled = $settings->get_setting( 'is_page_redirect' );
             $redirect_page_id    = $settings->get_setting( 'redirect_page_id' );
@@ -169,7 +168,7 @@ class Rest {
                 ? get_permalink( $redirect_page_id )
                 : '';
 
-            $success_message = __( 'Enquiry sent successfully', 'multivendorx' );
+            $success_message = __( 'Enquiry sent successfully', 'catalogx' );
 
             do_action( 'catalogx_clear_enquiry' );
 
@@ -193,7 +192,7 @@ class Rest {
         $user_id = get_current_user_id();
         // For non-logged in user.
         if ( 0 === $user_id && empty( CatalogX()->setting->get_setting( 'enquiry_user_permission' ) ) ) {
-        return true;
+			return true;
         }
 
         // Check if user is admin or customer.

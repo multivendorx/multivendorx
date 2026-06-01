@@ -142,16 +142,16 @@ class QuoteCart {
     public function maybe_set_cart_cookies() {
         $set = true;
         if ( headers_sent() ) {
-    return;
-}
+			return;
+		}
 
-            if ( ! empty( $this->quote_cart_content ) ) {
-                $this->set_cart_cookies( true );
-                $set = true;
-            } elseif ( isset( $_COOKIE['quote_items_in_cart'] ) ) {
-                $this->set_cart_cookies( false );
-                $set = false;
-            }
+		if ( ! empty( $this->quote_cart_content ) ) {
+			$this->set_cart_cookies( true );
+			$set = true;
+		} elseif ( isset( $_COOKIE['quote_items_in_cart'] ) ) {
+			$this->set_cart_cookies( false );
+			$set = false;
+		}
 
         do_action( 'quote_set_cart_cookies', $set );
     }
@@ -226,14 +226,14 @@ class QuoteCart {
         // Handle response messages.
         if ( 'true' === $quote_add_status ) {
             wc_add_notice(
-    __( 'Product added to quote cart.', 'catalogx' ),
-    'success'
-);
+                __( 'Product added to quote cart.', 'catalogx' ),
+                'success'
+			);
         } elseif ( 'exists' === $quote_add_status ) {
             wc_add_notice(
-    __( 'Product already added to quote cart.', 'catalogx' ),
-    'success'
-);
+                __( 'Product already added to quote cart.', 'catalogx' ),
+                'success'
+			);
         }
     }
 
@@ -249,7 +249,7 @@ class QuoteCart {
     public function add_quote_item( $quote_item_data ) {
 
         $quote_item_data['quantity'] = ( isset( $quote_item_data['quantity'] ) ) ? (int) $quote_item_data['quantity'] : 1;
-        $quote_item_status                = '';
+        $quote_item_status           = '';
 
         do_action( 'catalogx_add_to_quote_cart', $quote_item_data );
 

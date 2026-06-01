@@ -49,47 +49,54 @@ class Admin {
         );
 
         $submenu_items = array(
-            'dashboard' => array(
-                'name'   => __( 'Dashboard', 'catalogx' ),
-                'subtab' => '',
+            'dashboard'        => array(
+                'name'     => __( 'Dashboard', 'catalogx' ),
+                'subtab'   => '',
                 'priority' => 10,
             ),
             'enquiry-messages' => array(
-                'name'   => __( 'Enquiry Messages', 'catalogx' ),
-                'subtab' => '',
+                'name'     => __( 'Enquiry Messages', 'catalogx' ),
+                'subtab'   => '',
                 'priority' => 20,
             ),
             'quote-requests'   => array(
-                'name'   => __( 'Quotation Requests', 'catalogx' ),
-                'subtab' => '',
+                'name'     => __( 'Quotation Requests', 'catalogx' ),
+                'subtab'   => '',
                 'priority' => 30,
             ),
             'wholesale-users'  => array(
-                'name'   => __( 'Wholesale Users', 'catalogx' ),
-                'subtab' => '',
+                'name'     => __( 'Wholesale Users', 'catalogx' ),
+                'subtab'   => '',
                 'priority' => 40,
             ),
             'rules'            => array(
-                'name'   => __( 'Dynamic Pricing Rules', 'catalogx' ),
-                'subtab' => '',
+                'name'     => __( 'Dynamic Pricing Rules', 'catalogx' ),
+                'subtab'   => '',
                 'priority' => 50,
             ),
             'settings'         => array(
-                'name'   => __( 'Settings', 'catalogx' ),
-                'subtab' => 'shopping',
+                'name'     => __( 'Settings', 'catalogx' ),
+                'subtab'   => 'shopping',
                 'priority' => 60,
             ),
             'modules'          => array(
-                'name'   => __( 'Modules', 'catalogx' ),
-                'subtab' => '',
+                'name'     => __( 'Modules', 'catalogx' ),
+                'subtab'   => '',
                 'priority' => 70,
             ),
-            'help-support'        => array(
+            'help-support'     => array(
                 'name'     => __( 'Help & Support', 'catalogx' ),
                 'subtab'   => '',
                 'priority' => 80,
             ),
         );
+
+        uasort(
+                $submenu_items,
+                function ( $a, $b ) {
+					return ( $a['priority'] ?? 0 ) <=> ( $b['priority'] ?? 0 );
+				}
+            );
 
         foreach ( $submenu_items as $slug => $submenu_item ) {
             // prepare subtab if subtab is exist.
@@ -144,23 +151,18 @@ class Admin {
      */
     public function enqueue_admin_script() {
 
-        $screen = get_current_screen();
-
-        if ( ! $screen || 'toplevel_page_catalogx' !== $screen->id ) {
-            return;
+        if ( get_current_screen()->id === 'toplevel_page_catalogx' ) {
+            wp_enqueue_script( 'wp-element' );
+            wp_enqueue_editor();
+            // Support for media.
+            wp_enqueue_media();
+            FrontendScripts::enqueue_admin_assets();
+            FrontendScripts::enqueue_script( 'catalogx-vendor-script' );
+            FrontendScripts::enqueue_script( 'catalogx-admin-script' );
+            FrontendScripts::enqueue_style( 'catalogx-index-style' );
+            FrontendScripts::localize_scripts( 'catalogx-admin-script' );
         }
 
-        wp_enqueue_script( 'wp-element' );
-        wp_enqueue_editor();
-        // Support for media.
-        wp_enqueue_media();
-
-        // Enque script and style.
-        FrontendScripts::enqueue_admin_assets();
-        FrontendScripts::enqueue_script( 'catalogx-admin-script' );
-		FrontendScripts::enqueue_script( 'catalogx-vendor-script' );
-        FrontendScripts::enqueue_style( 'catalogx-index-style' );
-        FrontendScripts::localize_scripts( 'catalogx-admin-script' );
     }
 
     /**
@@ -207,7 +209,7 @@ class Admin {
             }
 
             if ( strpos( $url, 'block' ) === false ) {
-                $path = 'assets/js/components.js';
+                $path = 'assets/js/vendors.js';
             }
         }
 
