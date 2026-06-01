@@ -143,7 +143,7 @@ const App = () => {
 					}}
 				/>
 			{/* )} */}
-            <AdminHeader
+            {/* <AdminHeader
 				brandImg={Brand}
 				// results={results}
 				// onQueryUpdate={handleSearchChange}
@@ -154,7 +154,7 @@ const App = () => {
                 search={{
 					placeholder: __('Search...', 'catalogx'),
 				}}
-			/>
+			/> */}
             <GuidedTourProvider
 				appLocalizer={appLocalizer}
 				steps={getTourSteps(appLocalizer)}
