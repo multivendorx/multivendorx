@@ -58,8 +58,9 @@ class Rest {
         add_filter( 'woocommerce_rest_pre_insert_shop_coupon_object', array( $this, 'pre_insert_shop_coupon_fix_status' ), 10, 3 );
         add_filter( 'woocommerce_analytics_products_query_args', array( $this, 'analytics_products_filter_low_stock_meta' ), 10, 1 );
         add_action( 'woocommerce_rest_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 10, 3 );
-        add_action( 'woocommerce_rest_insert_shop_coupon_object', array( $this, 'send_notifications' ), 10, 2 );
+        // add_action( 'woocommerce_rest_insert_shop_coupon_object', array( $this, 'send_notifications' ), 10, 2 );
         add_filter( 'woocommerce_rest_product_shipping_class_query', array( $this, 'filter_shipping_classes_by_meta' ), 10, 2 );
+        add_action( 'transition_post_status', array( $this, 'send_coupon_notifications' ), 10, 3 );
     }
 
     /**
@@ -686,18 +687,10 @@ class Rest {
             return;
         }
 
-        $referer = filter_input( INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL ) ?? '';
-        $path    = wp_parse_url( $referer, PHP_URL_PATH );
-		if ( false === strpos( $path, 'products' ) ) {
-			return;
-		}
-
-		$old_status = $product->get_status();
 		$new_status = $request->get_param( 'status' );
 
-		$store = new Store(
-            get_post_meta( $product->get_id(), Utill::POST_META_SETTINGS['store_id'], true )
-		);
+        $store = new Store($product->get_meta( Utill::POST_META_SETTINGS['store_id'] ));
+        
         if ( ! $store->exists() ) {
             return;
         }
@@ -714,116 +707,10 @@ class Rest {
             );
 		}
 
-		if ( 'pending' === $old_status && 'publish' === $new_status ) {
-            MultiVendorX()->notifications->send_notification_helper(
-                'product_approved',
-                $store,
-                null,
-                array(
-					'product_name' => $product->get_name(),
-					'category'     => 'activity',
-				)
-            );
-		}
-
-		if ( 'publish' === $old_status && 'draft' === $new_status ) {
-            MultiVendorX()->notifications->send_notification_helper(
-                'product_rejected',
-                $store,
-                null,
-                array(
-					'product_name' => $product->get_name(),
-					'category'     => 'activity',
-				)
-            );
-		}
-
-		if ( 'publish' === $new_status && ( 'pending' === $old_status || 'draft' === $old_status ) ) {
-			$followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
-
-			foreach ( $followers as $follower ) {
-				$user = get_user_by( 'id', $follower['id'] );
-				if ( ! $user ) {
-					continue;
-				}
-
-				do_action(
-					'multivendorx_notify_store_new_product_to_followers',
-					'store_new_product_to_followers',
-					array(
-						'customer_email' => $user->user_email,
-						'customer_phone' => get_user_meta( $follower['id'], 'billing_phone', true ),
-						'store_name'     => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
-						'customer_name'  => $user->display_name,
-						'product_name'   => $product->get_name(),
-						'category'       => 'notification',
-					)
-				);
-			}
-		}
-
         if ( ! $creating ) {
             $this->multivendorx_save_generated_sku( $product );
         }
     }
-
-	/**
-	 * Send notifications to store followers when a coupon is published.
-	 *
-	 * This function triggers during REST requests when a coupon changes status
-	 * from 'pending' or 'draft' to 'publish'. Followers of the store associated
-	 * with the coupon are notified via the 'multivendorx_notify_store_new_coupon_to_followers' action.
-	 *
-	 * @param WC_Coupon       $coupon  Coupon object.
-	 * @param WP_REST_Request $request REST request instance.
-	 * @return void
-	 */
-	public function send_notifications( $coupon, $request ) {
-		if ( ! defined( 'REST_REQUEST' ) ) {
-			return;
-		}
-
-        $referer = filter_input( INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL ) ?? '';
-		$path    = wp_parse_url( $referer, PHP_URL_PATH ) ?? '';
-
-		if ( false === strpos( $path, 'coupons' ) ) {
-			return;
-		}
-
-		$old_status = get_post_status( $coupon->get_id() );
-		$new_status = $request->get_param( 'status' );
-
-		$store_id = get_post_meta( $coupon->get_id(), Utill::POST_META_SETTINGS['store_id'], true );
-		$store    = new Store( $store_id );
-        if ( ! $store->exists() ) {
-            return;
-        }
-
-		if ( 'publish' === $new_status && ( 'pending' === $old_status || 'draft' === $old_status ) ) {
-			$followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
-
-			foreach ( $followers as $follower ) {
-				$user = get_user_by( 'id', $follower['id'] );
-
-				if ( ! $user ) {
-					continue;
-				}
-
-				do_action(
-                    'multivendorx_notify_store_new_coupon_to_followers',
-                    'store_new_coupon_to_followers',
-                    array(
-						'customer_email' => $user->user_email,
-						'customer_phone' => get_user_meta( $follower['id'], 'billing_phone', true ),
-						'store_name'     => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
-						'customer_name'  => $user->display_name,
-						'coupon_code'    => $coupon->get_code(),
-						'category'       => 'notification',
-                    )
-				);
-			}
-		}
-	}
 
     /**
      * Initialize all REST API controller classes.
@@ -985,5 +872,160 @@ class Rest {
             );
         }
         return $args;
+    }
+    /**
+     * Handle product and coupon publication notifications.
+     *
+     * Routes status transition events to the appropriate notification handler
+     * based on the post type.
+     *
+     * @param string  $new_status New post status.
+     * @param string  $old_status Previous post status.
+     * @param WP_Post $post       Post object.
+     * @return void
+     */
+    public function send_notifications( $new_status, $old_status, $post ) {
+
+        if ( 'shop_coupon' === $post->post_type ) {
+            $this->send_coupon_notifications( $new_status, $old_status, $post );
+        }
+
+        if ( 'product' === $post->post_type ) {
+            $this->send_product_notifications( $new_status, $old_status, $post );
+        }
+    }
+
+    /**
+     * Send notifications to store followers when a coupon is published.
+     *
+     * Triggers when a coupon post transitions from 'draft' or 'pending'
+     * to 'publish'. Followers of the associated store are notified via
+     * the 'multivendorx_notify_store_new_coupon_to_followers' action.
+     *
+     * @param string  $new_status New post status.
+     * @param string  $old_status Previous post status.
+     * @param WP_Post $post       Coupon post object.
+     * @return void
+     */
+    public function send_coupon_notifications( $new_status, $old_status, $post ) {
+
+        if ( 'publish' !== $new_status || ! in_array( $old_status, array( 'draft', 'pending' ), true ) ) {
+            return;
+        }
+
+        $coupon = new \WC_Coupon( $post->ID );
+
+        $store_id = $coupon->get_meta(Utill::POST_META_SETTINGS['store_id']);
+
+        $store = new Store( $store_id );
+
+        if ( ! $store->exists() ) {
+            return;
+        }
+
+        $coupon_code = $coupon->get_code();
+
+        $followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
+
+        foreach ( $followers as $follower ) {
+
+            $user = get_user_by( 'id', $follower['id'] );
+
+            if ( ! $user ) {
+                continue;
+            }
+
+            do_action(
+                'multivendorx_notify_store_new_coupon_to_followers',
+                'store_new_coupon_to_followers',
+                array(
+                    'customer_email' => $user->user_email,
+                    'customer_phone' => get_user_meta( $follower['id'], 'billing_phone', true ),
+                    'store_name'     => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
+                    'customer_name'  => $user->display_name,
+                    'coupon_code'    => $coupon_code,
+                    'category'       => 'notification',
+                )
+            );
+        }
+    }
+
+    /**
+     * Send notifications when a product status changes.
+     *
+     * @param string  $new_status New post status.
+     * @param string  $old_status Previous post status.
+     * @param WP_Post $post       Product post object.
+     * @return void
+     */
+    public function send_product_notifications( $new_status, $old_status, $post ) {
+
+        $product = wc_get_product( $post->ID );
+
+        if ( ! $product ) {
+            return;
+        }
+
+        $store_id = $product->get_meta(Utill::POST_META_SETTINGS['store_id'],true);
+
+        $store = new Store( $store_id );
+
+        if ( ! $store->exists() ) {
+            return;
+        }
+
+        $product_name = $product->get_name();
+
+        if ( 'pending' === $old_status && 'publish' === $new_status ) {
+            MultiVendorX()->notifications->send_notification_helper(
+                'product_approved',
+                $store,
+                null,
+                array(
+                    'product_name' => $product_name,
+                    'category'     => 'activity',
+                )
+            );
+        }
+
+        if ( 'publish' === $old_status && 'draft' === $new_status ) {
+            MultiVendorX()->notifications->send_notification_helper(
+                'product_rejected',
+                $store,
+                null,
+                array(
+                    'product_name' => $product_name,
+                    'category'     => 'activity',
+                )
+            );
+        }
+
+        if ( 'publish' !== $new_status || ! in_array( $old_status, array( 'pending', 'draft' ), true ) ) {
+            return;
+        }
+
+        $followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
+
+        foreach ( $followers as $follower ) {
+
+            $user = get_user_by( 'id', $follower['id'] );
+
+            if ( ! $user ) {
+                continue;
+            }
+
+            do_action(
+                'multivendorx_notify_store_new_product_to_followers',
+                'store_new_product_to_followers',
+                array(
+                    'customer_email' => $user->user_email,
+                    'customer_phone' => get_user_meta( $follower['id'], 'billing_phone', true ),
+                    'store_name'     => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
+                    'customer_name'  => $user->display_name,
+                    'product_name'   => $product_name,
+                    'category'       => 'notification',
+                )
+            );
+        }
     }
 }
