@@ -47,6 +47,14 @@ echo esc_html__(
 	'moowoodle'
 ) . "\n";
 
+if ( get_user_meta( $user->ID, 'moowoodle_requires_moodle_password_reset', true ) ) {
+	echo "\n";
+	echo esc_html__(
+		'Moodle Login Notice: We were unable to synchronize your Moodle password automatically. If you cannot sign in to Moodle, please use the "Forgot Password" option on the Moodle login page and follow the instructions sent to your email address.',
+		'moowoodle'
+	) . "\n";
+}
+
 echo "\n" . esc_html__('Enrollment Details', 'moowoodle') . "\n";
 echo "--------------------\n";
 

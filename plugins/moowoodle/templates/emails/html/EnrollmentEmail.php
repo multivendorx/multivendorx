@@ -58,6 +58,20 @@ $user = get_user_by( 'email', $args['user_email'] );
 	);
 	?>
 </p>
+
+<?php
+if ( get_user_meta( $user->ID, 'moowoodle_requires_moodle_password_reset', true ) ) :
+?>
+	<p>
+		<?php
+		esc_html_e(
+			'Note: Your Moodle account may require a password reset before first login. If you cannot sign in to Moodle, please use the "Forgot Password" link on the Moodle login page and follow the instructions sent to your email address.',
+			'moowoodle'
+		);
+		?>
+	</p>
+<?php endif; ?>
+
 <h3><?php esc_html_e( 'Enrollment Details', 'moowoodle' ); ?></h3>
 
 <?php if ( ! empty( $args['enrollments']['course'] ) ) : ?>

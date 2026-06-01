@@ -260,9 +260,8 @@ class Enrollment {
 			)
 		);
 
-		if ( empty( $response['success'] ) && MooWoodle()->show_advanced_log ) {
-			Util::log( "[MooWoodle] Enrollment failed for User #{$user_details['purchaser_id']} in Course #{$course_details['moodle_course_id']}. Error: " . wp_json_encode( $response ) );
-			return false;
+		if (  ! empty( $response['error'] ) ) {
+			update_user_meta($user_details['purchaser_id'],'moowoodle_moodle_password_reset_required',1);
 		}
 
 		$enrollment_data = array(
