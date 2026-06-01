@@ -43,7 +43,7 @@ const ProductCompliance: React.FC = () => {
 		trigger_words: [],
 		trigger_action: 'draft',
 	};
-console.log('hittt')
+
 	const [formData, setFormData] = useState(() => {
 		return {
 			...defaultData,
