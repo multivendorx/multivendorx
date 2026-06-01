@@ -43,6 +43,7 @@ interface CanvasEditorProps {
     availablePlaceholder?: string[];
     proSettingChange?: () => boolean;
     context?: string;
+    showStoreNameField?: boolean;
     inputTypeList?: Array<{ value: string; label: string }>;
 }
 type SortableItem = Partial<Block> | BlockConfig;

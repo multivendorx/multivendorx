@@ -77,27 +77,7 @@ class Frontend {
             return;
         }
 
-        $button_settings  = CatalogX()->setting->get_setting( 'enquiry_button', array() );
-        $button_css       = Utill::get_button_styles( $button_settings );
-        $button_hover_css = Utill::get_button_styles( $button_settings, true );
-
-        if ( $button_hover_css ) {
-            echo '<style>
-                .catalogx-enquiry-btn:hover{
-                ' . esc_html( $button_hover_css ) . '
-                } 
-            </style>';
-        }
-
-        $custom_css = CatalogX()->setting->get_setting( 'custom_css_product_page' );
-        if ( ! empty( $custom_css ) ) {
-            $button_css .= $custom_css;
-        }
-
-        $button_settings['button_text'] = ! empty( $button_settings['button_text'] ) ? $button_settings['button_text'] : \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
-        $button_position_settings       = CatalogX()->setting->get_setting( 'shop_page_button_position_setting', array() );
-        $position                       = array_search( 'enquiry_button', $button_position_settings, true );
-        $position                       = false !== $position ? $position : 0;
+        $button_text = \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
 
         ?>
         <div id="catalogx-enquiry">
@@ -105,15 +85,15 @@ class Frontend {
 		if ( CatalogX()->setting->get_setting( 'is_enable_out_of_stock' ) ) {
 			if ( ! $product_obj->managing_stock() && ! $product_obj->is_in_stock() ) {
                 ?>
-                <div position = "<?php echo esc_attr( $position ); ?>">
-                    <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button" style="<?php echo esc_attr( $button_css ); ?>" href="#catalogx-modal"><?php echo esc_html( $button_settings['button_text'] ); ?></button>
+                <div>
+                    <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button" href="#catalogx-modal"><?php echo esc_html( $button_text ); ?></button>
                 </div>
                 <?php
 			}
         } else {
 			?>
-                <div position = "<?php echo esc_attr( $position ); ?>">
-                    <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button" style="<?php echo esc_attr( $button_css ); ?>" href="#catalogx-modal"><?php echo esc_html( $button_settings['button_text'] ); ?></button>
+                <div>
+                    <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button" href="#catalogx-modal"><?php echo esc_html( $button_text ); ?></button>
                 </div>
                 <?php
 		}
@@ -383,25 +363,10 @@ class Frontend {
             return;
         }
 
-        $button_settings  = CatalogX()->setting->get_setting( 'enquiry_button', array() );
-        $button_css       = Utill::get_button_styles( $button_settings );
-        $button_hover_css = Utill::get_button_styles( $button_settings, true );
-        if ( $button_hover_css ) {
-            echo '<style>
-                .single_add_to_cart_button:hover{
-                ' . esc_html( $button_hover_css ) . '
-                } 
-            </style>';
-        }
-
-        $custom_css = CatalogX()->setting->get_setting( 'custom_css_product_page' );
-        if ( isset( $custom_css ) && ! empty( $custom_css ) ) {
-            $button_css .= $custom_css;
-        }
-        $button_text = ! empty( $button_settings['button_text'] ) ? $button_settings['button_text'] : \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
+        $button_text = \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
         if ( is_shop() ) {
             $product_link = get_permalink( $product->get_id() );
-            echo '<a href="' . esc_url( $product_link ) . '" class="single_add_to_cart_button button wp-block-button__link" style="' . esc_attr( $button_css ) . '">' . esc_html( $button_text ) . '</a>';
+            echo '<a href="' . esc_url( $product_link ) . '" class="single_add_to_cart_button button wp-block-button__link" >' . esc_html( $button_text ) . '</a>';
         }
     }
 }

@@ -147,11 +147,11 @@ const FreeFormCustomizerField: React.FC<{
 
     return (
         <div className='free-form-customizer'>
-            <FormGroup row label='Field Name' className='free-form-header'>
-                <div className="header-label">Field Label</div>
-                <div className="header-placeholder">Placeholder Text</div>
-                <div className="header-active">Active</div>
-            </FormGroup>
+            <div className='free-form-header'> 
+                <div className="title">Field Label</div>
+                <div className="title">Placeholder Text</div>
+                {/* <div className="header-active">Active</div> */}
+            </div>
 
             {FORM_FIELDS_CONFIG.map(fieldConfig => {
                 const field = getField(fieldConfig.id);
@@ -162,19 +162,18 @@ const FreeFormCustomizerField: React.FC<{
 
                 return (
                     <div key={fieldConfig.id} className="free-form-row">
-                        <div className="free-form-label-input">
+                        <div className="free-form-input ">
                             <BasicInputUI
                                 type="text"
-                                size="100%"
                                 value={currentLabel}
                                 onChange={(val) => updateFieldLabel(fieldConfig.id, val)}
                                 readOnly={!canAccess}
                             />
+                            <label>Field Label <i className='adminfont-edit' /></label>
                         </div>
-                        <div className="free-form-placeholder-input">
+                        <div className="free-form-input ">
                             <BasicInputUI
                                 type="text"
-                                size="100%"
                                 value={currentPlaceholder}
                                 onChange={(val) => updateFieldPlaceholder(fieldConfig.id, val)}
                                 readOnly={!canAccess}
@@ -183,7 +182,7 @@ const FreeFormCustomizerField: React.FC<{
                         <div className="free-form-active-toggle">
                             {!isSubmit ? (
                                 <div
-                                    className="button-visibility"
+                                    className={`admin-btn button-visibility btn-${isActive ? 'purple' : 'red'}`}
                                     role="button"
                                     tabIndex={0}
                                     onClick={() => handleToggle(fieldConfig.id)}

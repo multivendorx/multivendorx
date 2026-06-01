@@ -203,32 +203,6 @@ final class CatalogX {
     }
 
     /**
-     * Display Woocommerce inactive notice.
-     *
-     * @return void
-     */
-    public function woocommerce_admin_notice() {
-        ?>
-        <div class="error">
-            <p>
-                <?php
-                printf(
-                    /* translators: 1. Opening <strong> tag, 2. Closing </strong> tag, 3. Opening <a> tag for WooCommerce plugin link, 4. Closing </a> tag, 5. Opening <a> tag for plugin activation link, 6. Closing </a> tag */
-                    esc_html__( '%1$sCatalogX is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for CatalogX to work. Please %5$sinstall & activate WooCommerce%6$s', 'catalogx' ),
-                    '<strong>',
-                    '</strong>',
-                    '<a target="_blank" href="http://wordpress.org/extend/plugins/woocommerce/">',
-                    '</a>',
-                    '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">',
-                    ' &raquo;</a>'
-                );
-                ?>
-            </p>
-        </div>
-        <?php
-    }
-
-    /**
      * CatalogX emails
      *
      * @param array $emails Array of default WooCommerce email classes.
