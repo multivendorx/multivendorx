@@ -87,6 +87,8 @@ const RegistrationPdf: React.FC<RegistrationPdfProps> = ({
 const StoreRegistration = ({ id }: { id: string | null }) => {
 	const navigate = useNavigate();
 	const [formData, setFormData] = useState<{ [key: string]: any }>({});
+	const [activities, setActivities] = useState<{}>({});
+
 	const [previousNotes, setPreviousNotes] = useState<
 		{ note: string; date: string }[]
 	>([]);
@@ -135,12 +137,13 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 				registrations: 'registrations',
 			},
 		}).then((res) => {
-			const data = res.data || {};
+			const data = res.data?.registration || {};
 			if (Array.isArray(data.store_application_note)) {
 				setPreviousNotes(data.store_application_note);
 				delete data.store_application_note;
 			}
 			setFormData(data);
+			setActivities(res.data?.activities || {});
 		});
 	};
 
@@ -210,34 +213,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 			}
 		});
 	};
-
-	const activities = [
-		{
-			title: 'GST Certificate approved by Admin',
-			message: '',
-			created_at: '2026-03-21 11:42:00',
-		},
-		{
-			title: 'Address Proof rejected — blurry image',
-			message: '',
-			created_at: '2026-03-21 10:15:00',
-		},
-		{
-			title: 'Business Reg. approved by Admin',
-			message: '',
-			created_at: '2026-03-20 15:08:00',
-		},
-		{
-			title: 'PAN Card approved by Admin',
-			message: '',
-			created_at: '2026-03-20 14:55:00',
-		},
-		{
-			title: 'Store application submitted by vendor',
-			message: '',
-			created_at: '2026-03-18 09:00:00',
-		},
-	];
+	
 	return (
 		<Container>
 			{(formData.core_data?.status === 'pending' ||
@@ -476,14 +452,14 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 				</Card>
 			</Column>
 			<Column grid={4}>
-				<Card title={__('Activity Log', 'multivendorx')}>
-					<div className="activity-log">
+				<Card title={__('Activity Log', 'multivendorx')}>          
+          			<div className="activity-log">
 						{Array.isArray(activities) && activities.length > 0 ? (
 							activities.slice(0, 5).map((a, i) => (
 								<div key={i} className="activity">
 									<div className="title">{a.title}</div>
 									<div className="des">{a.message}</div>
-									<span>{formatDate(a.created_at)}</span>
+									<span>{formatDate(a.date)}</span>
 								</div>
 							))
 						) : (

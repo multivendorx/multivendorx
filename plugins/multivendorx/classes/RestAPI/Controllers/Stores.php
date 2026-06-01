@@ -626,10 +626,12 @@ class Stores extends \WP_REST_Controller {
             if ( $registrations ) {
                 if ( 'automatically' === MultiVendorX()->setting->get_setting( 'approve_store' ) ) {
                     $current_user->set_role( 'store_owner' );
+                    MultiVendorX()->util->set_activity_logs( $store_id, __( 'Store registered successfully and approved automatically.', 'multivendorx' ), 'approve' );
                 } elseif ( ! in_array( 'store_owner', (array) $current_user->roles, true ) ) {
                     $current_user->set_role(
                         get_option( Utill::MULTIVENDORX_OTHER_SETTINGS['default_role'] )
                     );
+                    MultiVendorX()->util->set_activity_logs( $store_id, __( 'Store registered successfully and pending for approval.', 'multivendorx' ), 'pending' );
                 }
                 $store->update_meta(
                     'store_email',
@@ -799,8 +801,10 @@ class Stores extends \WP_REST_Controller {
             }
 
             if ( $registrations ) {
-                return rest_ensure_response(
-                    StoreUtil::get_store_registration_form( $store->get_id() )
+                return rest_ensure_response( array(
+                        'registration' => StoreUtil::get_store_registration_form( $store->get_id() ),
+                        'activities' => MultiVendorX()->util->get_activity_logs( $store->get_id() )
+                    )
                 );
             }
             $args = array();
@@ -1051,7 +1055,7 @@ class Stores extends \WP_REST_Controller {
 
                         $store->set( Utill::STORE_SETTINGS_KEYS['status'], 'active' );
                         $store->save();
-
+                        MultiVendorX()->util->set_activity_logs( $id, __( 'Store registration approved.', 'multivendorx' ), 'approve' );
                         do_action( 'multivendorx_after_store_active', $id );
                         MultiVendorX()->notifications->send_notification_helper(
                             'store_activated',
@@ -1111,6 +1115,7 @@ class Stores extends \WP_REST_Controller {
                     $store->save();
 
                     if ( 'permanently_rejected' === $status ) {
+                        MultiVendorX()->util->set_activity_logs( $id, __( 'Store registration rejected permanently.', 'multivendorx' ), 'reject' );
                         MultiVendorX()->notifications->send_notification_helper(
                             'store_permanently_rejected',
                             $store,
@@ -1124,6 +1129,7 @@ class Stores extends \WP_REST_Controller {
                     }
 
                     if ( 'rejected' === $status ) {
+                        MultiVendorX()->util->set_activity_logs( $id, __( 'Store registration rejected.', 'multivendorx' ), 'reject' );
                         MultiVendorX()->notifications->send_notification_helper(
                             'store_rejected',
                             $store,
@@ -1198,7 +1204,9 @@ class Stores extends \WP_REST_Controller {
                     $value = esc_url_raw( (string) ( $value['url'] ?? $value ) );
                 }
 
+                $previous_value = $store->get_meta( $key );
                 $store->update_meta( $key, $value );
+                do_action( 'multivendorx_store_meta_updated', $store->get_id(), $key, $value, $previous_value );
 
                 if ( Utill::STORE_SETTINGS_KEYS['deactivation_reason'] === $key ) {
                     $store->update_meta(
