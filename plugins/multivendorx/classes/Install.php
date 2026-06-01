@@ -87,6 +87,30 @@ class Install {
             "
             );
         }
+
+        if ( version_compare( $previous_version, '5.0.7', '<' ) ) {
+            $previous_settings = get_option( Utill::MULTIVENDORX_SETTINGS['store-identity'], array() );
+            $new_settings = array(
+                'verification_methods' => array(
+                    'address-proof' => array(
+                        'title'       => 'Address proof of business location',
+                        'description' => 'Confirms the store’s physical or operational business address.',
+                    ),
+
+                    'trade-license' => array(
+                        'title'       => 'Trade license or permit',
+                        'description' => 'Validates that the store is authorized to operate and conduct business legally.',
+                    ),
+
+                    'business-registration' => array(
+                        'title'       => 'Business registration certificate',
+                        'description' => 'Confirms the store is legally registered as a business entity.',
+                    ),
+                )
+            );
+            update_option( Utill::MULTIVENDORX_SETTINGS['store-identity'], array_merge( $previous_settings, $new_settings ) );
+        }
+            
     }
 
     public function run_migration() {
@@ -469,6 +493,22 @@ class Install {
             'all_verification_methods' => array(
                 'google-connect' => array(
                     'enable' => true,
+                ),
+            ),
+            'verification_methods' => array(
+                'address-proof' => array(
+                    'title'       => 'Address proof of business location',
+                    'description' => 'Confirms the store’s physical or operational business address.',
+                ),
+
+                'trade-license' => array(
+                    'title'       => 'Trade license or permit',
+                    'description' => 'Validates that the store is authorized to operate and conduct business legally.',
+                ),
+
+                'business-registration' => array(
+                    'title'       => 'Business registration certificate',
+                    'description' => 'Confirms the store is legally registered as a business entity.',
                 ),
             ),
         );

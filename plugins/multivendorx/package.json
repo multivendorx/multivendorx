@@ -17,7 +17,7 @@
     "main": "index.js",
     "mainPluginFile": "dc_product_vendor.php",
     "engines": {
-        "node": "^24.0.2"
+        "node": "^24.16.0"
     },
     "scripts": {
         "build": "pnpm run build:project",

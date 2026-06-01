@@ -31,65 +31,65 @@ class Admin {
         register_post_status(
             'wc-quote-new',
             array(
-                'label'                     => _x( 'New Quote Request', 'Order status', 'multivendorx' ),
+                'label'                     => _x( 'New Quote Request', 'Order status', 'catalogx' ),
                 'public'                    => true,
                 'exclude_from_search'       => false,
                 'show_in_admin_all_list'    => true,
                 'show_in_admin_status_list' => true,
                 /* translators: %s: Number of order status as new quote. */
-                'label_count'               => _n_noop( 'New Quote Request <span class="count">(%s)</span>', 'New Quote Requests <span class="count">(%s)</span>', 'multivendorx' ),
+                'label_count'               => _n_noop( 'New Quote Request <span class="count">(%s)</span>', 'New Quote Requests <span class="count">(%s)</span>', 'catalogx' ),
             )
         );
 
         register_post_status(
             'wc-quote-pending',
             array(
-                'label'                     => _x( 'Pending Quote', 'Order status', 'multivendorx' ),
+                'label'                     => _x( 'Pending Quote', 'Order status', 'catalogx' ),
                 'public'                    => true,
                 'exclude_from_search'       => false,
                 'show_in_admin_all_list'    => true,
                 'show_in_admin_status_list' => true,
                 /* translators: %s: Number of order status as pending quote. */
-                'label_count'               => _n_noop( 'Pending Quote <span class="count">(%s)</span>', 'Pending Quote <span class="count">(%s)</span>', 'multivendorx' ),
+                'label_count'               => _n_noop( 'Pending Quote <span class="count">(%s)</span>', 'Pending Quote <span class="count">(%s)</span>', 'catalogx' ),
             )
         );
 
         register_post_status(
             'wc-quote-expired',
             array(
-                'label'                     => _x( 'Expired Quote', 'Order status', 'multivendorx' ),
+                'label'                     => _x( 'Expired Quote', 'Order status', 'catalogx' ),
                 'public'                    => true,
                 'exclude_from_search'       => false,
                 'show_in_admin_all_list'    => true,
                 'show_in_admin_status_list' => true,
                 /* translators: %s: Number of order status as expired quote. */
-                'label_count'               => _n_noop( 'Expired Quote <span class="count">(%s)</span>', 'Expired Quotes <span class="count">(%s)</span>', 'multivendorx' ),
+                'label_count'               => _n_noop( 'Expired Quote <span class="count">(%s)</span>', 'Expired Quotes <span class="count">(%s)</span>', 'catalogx' ),
             )
         );
 
         register_post_status(
             'wc-quote-accepted',
             array(
-                'label'                     => _x( 'Accepted Quote', 'Order status', 'multivendorx' ),
+                'label'                     => _x( 'Accepted Quote', 'Order status', 'catalogx' ),
                 'public'                    => true,
                 'exclude_from_search'       => false,
                 'show_in_admin_all_list'    => true,
                 'show_in_admin_status_list' => true,
                 /* translators: %s: Number of order status as accepted quote. */
-                'label_count'               => _n_noop( 'Accepted Quote <span class="count">(%s)</span>', 'Accepted Quote <span class="count">(%s)</span>', 'multivendorx' ),
+                'label_count'               => _n_noop( 'Accepted Quote <span class="count">(%s)</span>', 'Accepted Quote <span class="count">(%s)</span>', 'catalogx' ),
             )
         );
 
         register_post_status(
             'wc-quote-rejected',
             array(
-                'label'                     => _x( 'Rejected Quote', 'Order status', 'multivendorx' ),
+                'label'                     => _x( 'Rejected Quote', 'Order status', 'catalogx' ),
                 'public'                    => true,
                 'exclude_from_search'       => false,
                 'show_in_admin_all_list'    => true,
                 'show_in_admin_status_list' => true,
                 /* translators: %s: Number of order status as rejected quote. */
-                'label_count'               => _n_noop( 'Rejected Quote <span class="count">(%s)</span>', 'Rejected Quote <span class="count">(%s)</span>', 'multivendorx' ),
+                'label_count'               => _n_noop( 'Rejected Quote <span class="count">(%s)</span>', 'Rejected Quote <span class="count">(%s)</span>', 'catalogx' ),
             )
         );
     }
@@ -101,11 +101,11 @@ class Admin {
      * @return array Modified list of order statuses including custom quote statuses.
      */
     public function add_custom_order_status_to_order_statuses( $order_statuses_old ) {
-        $order_statuses['wc-quote-new']      = _x( 'New Quote Request', 'Order status', 'multivendorx' );
-        $order_statuses['wc-quote-pending']  = _x( 'Pending Quote', 'Order status', 'multivendorx' );
-        $order_statuses['wc-quote-expired']  = _x( 'Expired Quote', 'Order status', 'multivendorx' );
-        $order_statuses['wc-quote-accepted'] = _x( 'Accepted Quote', 'Order status', 'multivendorx' );
-        $order_statuses['wc-quote-rejected'] = _x( 'Rejected Quote', 'Order status', 'multivendorx' );
+        $order_statuses['wc-quote-new']      = _x( 'New Quote Request', 'Order status', 'catalogx' );
+        $order_statuses['wc-quote-pending']  = _x( 'Pending Quote', 'Order status', 'catalogx' );
+        $order_statuses['wc-quote-expired']  = _x( 'Expired Quote', 'Order status', 'catalogx' );
+        $order_statuses['wc-quote-accepted'] = _x( 'Accepted Quote', 'Order status', 'catalogx' );
+        $order_statuses['wc-quote-rejected'] = _x( 'Rejected Quote', 'Order status', 'catalogx' );
 
         $new_quote = filter_input( INPUT_GET, 'new_quote', FILTER_SANITIZE_SPECIAL_CHARS );
         $page      = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_SPECIAL_CHARS );

@@ -41,16 +41,17 @@ function generateBlockEntries(rootDir) {
 	const entries = {};
 
 	for (const blockName of blockDirs) {
-		const indexFile = path.join(
-			blockBasePath,
-			blockName,
-			'index.js'
-		);
+		const blockPath = path.join(blockBasePath, blockName);
+
+		const indexFile = path.join(blockPath, 'index.js');
+		const viewFile = path.join(blockPath, 'view.js');
 
 		if (fs.existsSync(indexFile)) {
-			entries[
-				`block/${blockName}/index`
-			] = indexFile;
+			entries[`block/${blockName}/index`] = indexFile;
+		}
+
+		if (fs.existsSync(viewFile)) {
+			entries[`block/${blockName}/view`] = viewFile;
 		}
 	}
 
