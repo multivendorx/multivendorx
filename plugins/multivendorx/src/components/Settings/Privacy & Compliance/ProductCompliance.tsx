@@ -43,7 +43,7 @@ const ProductCompliance: React.FC = () => {
 		trigger_words: [],
 		trigger_action: 'draft',
 	};
-
+console.log('hittt')
 	const [formData, setFormData] = useState(() => {
 		return {
 			...defaultData,
@@ -189,7 +189,7 @@ const ProductCompliance: React.FC = () => {
 	return (
 		<>
 			<FormGroupWrapper>
-				{/* <FormGroup>
+				<FormGroup>
                     <ExpandablePanelUI
                         name="prohibited_product_categories"
                         methods={ratingsField.modal}
@@ -270,12 +270,12 @@ const ProductCompliance: React.FC = () => {
                         canAccess={true}
                         addNewBtn={false}
                     />
-                </FormGroup> */}
-{/* 
+                </FormGroup>
+
                 <SectionUI
                     title={__('Product Report Abuse', 'multivendorx')}
                     desc={__('Set rules and options for product abuse reporting.', 'multivendorx')}
-                /> */}
+                />
 
                 <FormGroup row
                     label={__('Who can report', 'multivendorx')}

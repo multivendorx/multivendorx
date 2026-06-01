@@ -109,6 +109,22 @@ class Install {
                 )
             );
             update_option( Utill::MULTIVENDORX_SETTINGS['store-identity'], array_merge( $previous_settings, $new_settings ) );
+
+            $previous_tax_settings = get_option( Utill::MULTIVENDORX_SETTINGS['tax-compliance'], array() );
+            $tax_compliance_settings = array(
+                'bank_documents' => array(
+                    'bank_statement',
+                ),
+
+                'tax_documents' => array(
+                    'vat_certificate',
+                ),
+
+                'business_documents' => array(
+                    'business_registration',
+                ),
+            );
+            update_option( Utill::MULTIVENDORX_SETTINGS['tax-compliance'], array_merge( $previous_tax_settings, $tax_compliance_settings ) );
         }
             
     }
@@ -1150,6 +1166,20 @@ class Install {
             ),
         );
 
+        $tax_compliance_settings = array(
+            'bank_documents' => array(
+                'bank_statement',
+            ),
+
+            'tax_documents' => array(
+                'vat_certificate',
+            ),
+
+            'business_documents' => array(
+                'business_registration',
+            ),
+        );
+
         // 6. Save back to DB
         update_option( Utill::MULTIVENDORX_SETTINGS['store-identity'], $settings );
         update_option( Utill::MULTIVENDORX_SETTINGS['delivery'], $delivery_settings );
@@ -1157,6 +1187,7 @@ class Install {
         update_option( Utill::MULTIVENDORX_SETTINGS['product-compliance'], $product_compliance_settings );
         update_option( Utill::MULTIVENDORX_SETTINGS['store-reviews'], $review_settings );
         update_option( Utill::MULTIVENDORX_SETTINGS['compliance'], $compliance_settings );
+        update_option( Utill::MULTIVENDORX_SETTINGS['tax-compliance'], $tax_compliance_settings );
 
         $notifications = new Notifications();
         $notifications->insert_system_events();
