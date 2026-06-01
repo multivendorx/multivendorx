@@ -40,7 +40,7 @@ class Frontend {
 	 */
     public function register_script( $scripts ) {
         $scripts['multivendorx-follow-store-frontend-script'] = array(
-            'src'  => FrontendScripts::get_asset_path() . 'modules/FollowStore/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+            'src'  => FrontendScripts::get_asset_path() . 'js/modules/FollowStore/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
             'deps' => array( 'jquery' ),
         );
 

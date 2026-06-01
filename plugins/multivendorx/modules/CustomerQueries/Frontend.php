@@ -36,7 +36,7 @@ class Frontend {
      */
     public function register_script( $scripts ) {
         $scripts['multivendorx-customer-queries-frontend-script'] = array(
-            'src'  => FrontendScripts::get_asset_path() . 'modules/CustomerQueries/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+            'src'  => FrontendScripts::get_asset_path() . 'js/modules/CustomerQueries/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
             'deps' => array( 'jquery' ),
         );
 
