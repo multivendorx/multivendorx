@@ -155,12 +155,6 @@ const MyCourse: React.FC = () => {
 									{__('Enrolment Date', 'moowoodle')}
 								</th>
 								<th className="woocommerce-orders-table__header">
-									{__(
-										'Password (First Time Login only)',
-										'moowoodle'
-									)}
-								</th>
-								<th className="woocommerce-orders-table__header">
 									{__('Action', 'moowoodle')}
 								</th>
 							</tr>
