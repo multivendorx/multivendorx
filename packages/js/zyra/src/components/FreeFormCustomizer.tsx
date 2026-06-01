@@ -5,92 +5,98 @@ import '../styles/web/FreeFormCustomizer.scss';
 import FormGroup from './UI/FormGroup';
 import { BasicInputUI } from './BasicInput';
 
-// Types
 interface FormField {
     id: string;
     type: string;
     label?: string;
+    placeholder?: string;
     disabled?: boolean;
     name?: string;
-    placeholder?: string;
 }
 
-// Field configuration
 const FORM_FIELDS_CONFIG = [
-    { id: '1', type: 'text', label: 'Name', name: 'name', placeholder: 'Enter your name here', },
-    { id: '2', type: 'email', label: 'Email', name: 'email', placeholder: 'Enter your email here', },
-    { id: '3', type: 'number', label: 'Phone', name: 'phone', placeholder: 'Enter your phone number here', },
-    { id: '4', type: 'text', label: 'Address', name: 'address', placeholder: 'Enter your address here', },
-    { id: '5', type: 'text', label: 'Subject', name: 'subject', placeholder: 'Enter the subject of your enquiry here', },
-    { id: '6', type: 'text', label: 'Comment', name: 'comment', placeholder: 'Enter the details of your enquiry here', },
-    { id: '7', type: 'file', label: 'Fileupload', name: 'File upload' },
-    { id: '8', type: 'number', label: 'Filesize Limit', name: 'File upload size limit (in MB)' },
-    { id: '9', type: 'recaptcha', label: 'Captcha', name: 'Captcha' },
-    { id: '10', type: 'button', label: 'Submit' },
-
+    { id: '1', type: 'text', label: 'Name', name: 'name', placeholder: 'Enter your name here' },
+    { id: '2', type: 'email', label: 'Email', name: 'email', placeholder: 'Enter your email here' },
+    { id: '3', type: 'text', label: 'Phone', name: 'phone', placeholder: 'Enter your phone number here' },
+    { id: '4', type: 'text', label: 'Address', name: 'address', placeholder: 'Enter your address here' },
+    { id: '5', type: 'text', label: 'Subject', name: 'subject', placeholder: 'Enter the subject of your enquiry here' },
+    { id: '6', type: 'text', label: 'Comment', name: 'comment', placeholder: 'Enter the details of your enquiry here' },
+    { id: '7', type: 'attachment', label: 'Fileupload', name: 'File upload', placeholder: '' },
+    { id: '8', type: 'recaptcha', label: 'Captcha', name: 'Captcha', placeholder: '' },
+    { id: '9', type: 'button', label: 'Submit', placeholder: '' },
 ];
 
-// Helper to ensure we always have an array
+const SUBMIT_BUTTON_ID = '9';
+
 const toArray = (val: unknown): FormField[] => (Array.isArray(val) ? val : []);
 
-// Internal component that uses the props from RenderComponent
+// Helper that returns a complete default submit button object
+const getDefaultSubmitButton = (): FormField => ({
+    id: SUBMIT_BUTTON_ID,
+    type: 'button',
+    label: 'Submit',
+    placeholder: '',
+    disabled: false,
+    name: 'Submit',
+});
+
+// Ensures the submit button is always present in the fields array
+const ensureSubmitPresent = (fields: FormField[]): FormField[] => {
+    const hasSubmit = fields.some(f => f.id === SUBMIT_BUTTON_ID);
+    if (hasSubmit) {
+        // Make sure submit is always enabled
+        return fields.map(f => f.id === SUBMIT_BUTTON_ID ? { ...f, disabled: false } : f);
+    }
+    return [...fields, getDefaultSubmitButton()];
+};
+
 const FreeFormCustomizerField: React.FC<{
     value?: FormField[];
     canAccess: boolean;
     onChange: (val: FormField[]) => void;
 }> = ({ value, canAccess, onChange }) => {
-    const [fields, setFields] = useState<FormField[]>(() => toArray(value));
+    // Initialize fields: start with external value (if any), then ensure submit is present
+    const [fields, setFields] = useState<FormField[]>(() => 
+        ensureSubmitPresent(toArray(value))
+    );
     const isDirty = useRef(false);
 
-    // Sync when external value changes (e.g., after DB load)
+    // Sync external changes, but always preserve the submit button
     useEffect(() => {
         const newFields = toArray(value);
-        if (JSON.stringify(fields) !== JSON.stringify(newFields)) {
-            setFields(newFields);
+        // Merge: keep submit from existing fields (if any) or default, then add other fields
+        const merged = ensureSubmitPresent(newFields);
+        if (JSON.stringify(fields) !== JSON.stringify(merged)) {
+            setFields(merged);
             isDirty.current = false;
         }
     }, [value]);
 
-    // Auto-save when user makes a change
+    // Auto-save: always include submit button
     useEffect(() => {
         if (isDirty.current) {
-            onChange(fields);
+            // Ensure submit is always present and enabled before saving
+            const toSave = ensureSubmitPresent(fields);
+            onChange(toSave);
             isDirty.current = false;
         }
     }, [fields, onChange]);
 
     const getField = (id: string) => fields.find(f => f.id === id);
 
-    const updateFieldActive = (id: string, disabled: boolean) => {
-        if (!canAccess) return;
-
-        isDirty.current = true;
-
-        setFields(prev => {
-            const existing = prev.find(f => f.id === id);
-
-            if (existing) {
-                return prev.map(f =>
-                    f.id === id
-                        ? { ...f, disabled }
-                        : f
-                );
-            }
-
-            const config = FORM_FIELDS_CONFIG.find(f => f.id === id);
-
-            return [
-                ...prev,
-                {
-                    id: config?.id || id,
-                    type: config?.type,
-                    label: config?.label || id,
-                    disabled,
-                    placeholder: config?.placeholder || '',
-                    name: config?.name || '',
-                },
-            ];
-        });
+    const ensureFieldExists = (id: string): FormField => {
+        const existing = getField(id);
+        if (existing) return existing;
+        const config = FORM_FIELDS_CONFIG.find(f => f.id === id);
+        const isSubmit = id === SUBMIT_BUTTON_ID;
+        return {
+            id: config?.id || id,
+            type: config?.type || 'text',
+            label: config?.label || id,
+            placeholder: config?.placeholder || '',
+            disabled: isSubmit ? false : true,
+            name: config?.name || '',
+        };
     };
 
     const updateFieldLabel = (id: string, label: string) => {
@@ -101,12 +107,40 @@ const FreeFormCustomizerField: React.FC<{
             if (existing) {
                 return prev.map(f => f.id === id ? { ...f, label } : f);
             }
-            const config = FORM_FIELDS_CONFIG.find(f => f.id === id);
-            return [...prev, { id: config?.id || id, type: config?.type, label, name: config?.name || '', disabled: false }];
+            const newField = ensureFieldExists(id);
+            return [...prev, { ...newField, label }];
+        });
+    };
+
+    const updateFieldPlaceholder = (id: string, placeholder: string) => {
+        if (!canAccess) return;
+        isDirty.current = true;
+        setFields(prev => {
+            const existing = prev.find(f => f.id === id);
+            if (existing) {
+                return prev.map(f => f.id === id ? { ...f, placeholder } : f);
+            }
+            const newField = ensureFieldExists(id);
+            return [...prev, { ...newField, placeholder }];
+        });
+    };
+
+    const updateFieldActive = (id: string, disabled: boolean) => {
+        if (id === SUBMIT_BUTTON_ID) return;
+        if (!canAccess) return;
+        isDirty.current = true;
+        setFields(prev => {
+            const existing = prev.find(f => f.id === id);
+            if (existing) {
+                return prev.map(f => f.id === id ? { ...f, disabled } : f);
+            }
+            const newField = ensureFieldExists(id);
+            return [...prev, { ...newField, disabled }];
         });
     };
 
     const handleToggle = (id: string) => {
+        if (id === SUBMIT_BUTTON_ID) return;
         const current = getField(id)?.disabled ?? true;
         updateFieldActive(id, !current);
     };
@@ -114,37 +148,61 @@ const FreeFormCustomizerField: React.FC<{
     return (
         <div className='free-form-customizer'>
             <FormGroup row label='Field Name' className='free-form-header'>
-                 <label className="settings-form-label"><div className="title">Set new field name</div></label>
+                <div className="header-label">Field Label</div>
+                <div className="header-placeholder">Placeholder Text</div>
+                <div className="header-active">Active</div>
             </FormGroup>
+
             {FORM_FIELDS_CONFIG.map(fieldConfig => {
                 const field = getField(fieldConfig.id);
-                const isReadonly = field?.disabled ?? true;
+                const currentLabel = field?.label ?? fieldConfig.label ?? '';
+                const currentPlaceholder = field?.placeholder ?? fieldConfig.placeholder ?? '';
+                const isSubmit = fieldConfig.id === SUBMIT_BUTTON_ID;
+                const isActive = isSubmit ? true : !(field?.disabled ?? true);
 
                 return (
-                    <FormGroup row label={fieldConfig.label}>
-                        <BasicInputUI
-                            type="text"
-                            size="95%"
-                            value={field?.placeholder || ''}
-                            onChange={(val) => updateFieldLabel(fieldConfig.id, val)}
-                            readOnly={isReadonly || !canAccess}
-                        />
-                        <div
-                            className="button-visibility"
-                            role="button"
-                            tabIndex={0}
-                            onClick={() => handleToggle(fieldConfig.id)}
-                        >
-                            <i className={`adminfont-${isReadonly ? 'eye-blocked enable-visibility' : 'eye'}`} />
+                    <div key={fieldConfig.id} className="free-form-row">
+                        <div className="free-form-label-input">
+                            <BasicInputUI
+                                type="text"
+                                size="100%"
+                                value={currentLabel}
+                                onChange={(val) => updateFieldLabel(fieldConfig.id, val)}
+                                readOnly={!canAccess}
+                            />
                         </div>
-                    </FormGroup>
+                        <div className="free-form-placeholder-input">
+                            <BasicInputUI
+                                type="text"
+                                size="100%"
+                                value={currentPlaceholder}
+                                onChange={(val) => updateFieldPlaceholder(fieldConfig.id, val)}
+                                readOnly={!canAccess}
+                            />
+                        </div>
+                        <div className="free-form-active-toggle">
+                            {!isSubmit ? (
+                                <div
+                                    className="button-visibility"
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={() => handleToggle(fieldConfig.id)}
+                                >
+                                    <i className={`adminfont-${isActive ? 'eye' : 'eye-blocked enable-visibility'}`} />
+                                </div>
+                            ) : (
+                                <div className="button-visibility always-active" title="Always active">
+                                    <i className="adminfont-eye" />
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 );
             })}
         </div>
     );
 };
 
-// FieldComponent export – matches the pattern of TextArea
 const FreeFormCustomizer: FieldComponent = {
     render: ({ field, value, onChange, canAccess }) => (
         <FreeFormCustomizerField
@@ -153,7 +211,7 @@ const FreeFormCustomizer: FieldComponent = {
             onChange={onChange}
         />
     ),
-    validate: () => null, // no validation needed
+    validate: () => null,
 };
 
 export default FreeFormCustomizer;

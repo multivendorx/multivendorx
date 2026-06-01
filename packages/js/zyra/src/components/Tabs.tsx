@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FieldComponent, FIELD_REGISTRY } from './fieldUtils';
+import { ZyraVariable } from './fieldUtils';
 
 interface TabFooter {
     url: string;
@@ -15,6 +16,7 @@ interface Tab {
     type?: string;
     value?: any;
     key?: string;
+    proSetting?: boolean;
 }
 
 interface TabsProps {
@@ -25,6 +27,10 @@ interface TabsProps {
     onChange?: (value: any) => void;
     canAccess?: (capability: string) => boolean;
     headerExtra?: React.ReactNode;
+    onBlocked?: (
+    type: 'pro' | 'plugin' | 'module',
+    payload?: any
+) => void;
 }
 
 export const TabsUI: React.FC<TabsProps> = ({
@@ -35,6 +41,7 @@ export const TabsUI: React.FC<TabsProps> = ({
     onChange,
     canAccess,
     headerExtra,
+    onBlocked,
 }) => {
     const [activeIndex, setActiveIndex] = useState(defaultActiveIndex);
 
@@ -60,6 +67,7 @@ export const TabsUI: React.FC<TabsProps> = ({
             }
         };
 
+
         return (
             // <div key={fieldConfig.key || index} className="tab-field-wrapper">
             //     {fieldConfig.label && <label className="tab-field-label">{fieldConfig.label}</label>}
@@ -68,6 +76,7 @@ export const TabsUI: React.FC<TabsProps> = ({
                 value={fieldValue}
                 onChange={handleFieldChange}
                 canAccess={canAccess}
+                onBlocked={onBlocked}
             />
             // </div>
         );
@@ -158,6 +167,15 @@ export const TabsUI: React.FC<TabsProps> = ({
         return processContent(currentTab.content);
     };
 
+            const handleTabClick = (tab: Tab, index: number) => {
+    if (tab.proSetting && !ZyraVariable.khali_dabba) {
+        onBlocked?.('pro');
+        return;
+    }
+
+    setActiveIndex(index);
+};
+
     return (
         <>
             {tabs.length > 1 && (
@@ -169,16 +187,22 @@ export const TabsUI: React.FC<TabsProps> = ({
                                 className={`tab ${
                                     index === activeIndex ? 'active-tab' : ''
                                 }`}
-                                onClick={() => setActiveIndex(index)}
+                                onClick={() => handleTabClick(tab, index)}
                             >
                                 <span className="tab-name">
-                                    {tab.icon && (
-                                        <i
-                                            className={`adminfont-${tab.icon}`}
-                                        />
-                                    )}
-                                    {tab.label}
-                                </span>
+    {tab.icon && (
+        <i className={`adminfont-${tab.icon}`} />
+    )}
+
+    {tab.label}
+
+    {tab.proSetting && !ZyraVariable.khali_dabba && (
+        <span className="admin-pro-tag">
+            <i className="adminfont-pro-tag"></i>
+            Pro
+        </span>
+    )}
+</span>
                             </div>
                         ))}
                     </div>
@@ -209,12 +233,13 @@ export const TabsUI: React.FC<TabsProps> = ({
 };
 
 const Tabs: FieldComponent = {
-    render: ({ field, value, onChange, canAccess }) => (
+    render: ({ field, value, onChange, canAccess, onBlocked }) => (
         <TabsUI
             tabs={field.tabs || []}
             value={value}
             onChange={onChange}
             canAccess={canAccess}
+            onBlocked={onBlocked}
         />
     ),
 

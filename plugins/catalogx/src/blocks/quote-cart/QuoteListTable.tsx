@@ -482,6 +482,7 @@ const QuoteList = () => {
                         </p>
                         <p className='form-row'>
                             <button
+                                type= "button"
                                 id="send-quote"
                                 className='woocommerce-button button wp-element-button'
                                 onClick={handleSendQuote}

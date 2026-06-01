@@ -6,8 +6,9 @@ jQuery( function ( $ ) {
 		handleClick
 	);
 
-	function handleClick( event ) {
+	async function handleClick( event ) {
 		event.preventDefault();
+
 		const currentElement = $( this );
 		const productId = currentElement.data( 'product_id' );
 		const quantity = $( '.quantity .qty' ).val() || 1;
@@ -24,7 +25,7 @@ jQuery( function ( $ ) {
 		);
 
 		try {
-			const response = fetch(
+			const response = await fetch(
 				`${ addToQuoteCart.apiUrl }/${ addToQuoteCart.restUrl }/quote/add`,
 				{
 					method: 'POST',
@@ -40,7 +41,9 @@ jQuery( function ( $ ) {
 				}
 			);
 
-			const data = response.json();
+			const data = await response.json();
+
+			console.log( 'Quote API Response:', data );
 
 			currentElement.next().remove();
 
@@ -74,7 +77,7 @@ jQuery( function ( $ ) {
 			$( responseSelector )
 				.show()
 				.removeClass( 'hide' )
-				.html( data.message );
+				.html( data.message || 'Unable to add quote item.' );
 		} catch ( error ) {
 			currentElement.next().remove();
 

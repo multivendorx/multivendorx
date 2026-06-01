@@ -203,6 +203,7 @@ export default {
 							visibleGroups: ['registration', 'store'],
                             classes: 'full-width',
                             desc: __('Customise personalised enquiry form.', 'catalogx'),
+                            context:'form',
                             proSetting: true,
                         },
                     ],

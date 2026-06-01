@@ -129,7 +129,6 @@ const proPopupContent = {
 
 const ShowProPopup: React.FC<PopupProps> = (props) => {
 	const [selectedBtn, setSelectedBtn] = useState(proPopupContent.btnLink[0]);
-	console.log(props.moduleName);
 	return (
 		<>
 			{props.confirmMode ? (

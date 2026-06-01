@@ -430,7 +430,7 @@ class FrontendScripts {
                             'khali_dabba'                => Utill::is_khali_dabba(),
                             'pro_url'                    => esc_url( CATALOGX_PRO_SHOP_URL ),
                             'order_edit'                 => admin_url( 'admin.php?page=wc-orders&action=edit' ),
-                            'site_url'                   => admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=shopping' ),
+                            'site_url'                   => admin_url( 'admin.php?page=catalogx' ),
                             'module_page_url'            => admin_url( 'admin.php?page=catalogx#&tab=modules' ),
                             'settings_page_url'          => admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=shopping' ),
                             'enquiry_form_settings_url'  => admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=enquiry-form-customization' ),
@@ -489,11 +489,19 @@ class FrontendScripts {
                         )
                     ),
                 ),
-                'catalogx-enquiry-button-script'   => array(
+                'catalogx-enquiry-button-editor-script'   => array(
                     'object_name' => 'enquiryButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-quote-button-script'          => array(
+                'catalogx-quote-button-editor-script'          => array(
+                    'object_name' => 'quoteButton',
+                    'data'        => $base_rest,
+                ),
+                'catalogx-enquiry-button-view-script'   => array(
+                    'object_name' => 'enquiryButton',
+                    'data'        => $base_rest,
+                ),
+                'catalogx-quote-button-view-script'          => array(
                     'object_name' => 'quoteButton',
                     'data'        => $base_rest,
                 ),
