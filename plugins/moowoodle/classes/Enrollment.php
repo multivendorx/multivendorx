@@ -261,7 +261,7 @@ class Enrollment {
 		);
 
 		if (  ! empty( $response['error'] ) ) {
-			update_user_meta($user_details['purchaser_id'],'moowoodle_moodle_password_reset_required',1);
+			update_user_meta($user_details['purchaser_id'], Util::MOOWOODLE_USER_META['password_reset'], 1);
 		}
 
 		$enrollment_data = array(

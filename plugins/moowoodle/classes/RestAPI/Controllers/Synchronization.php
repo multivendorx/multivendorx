@@ -160,7 +160,6 @@ class Synchronization extends \WP_REST_Controller {
 		// get all courses from moodle.
 		$response = MooWoodle()->external_service->do_request( 'get_courses' );
         $courses  = $response['data'];
-
         // Update all course.
         Util::set_sync_status(
             array(

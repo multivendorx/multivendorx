@@ -9,6 +9,8 @@
  * @version   3.3.0
  */
 
+use MooWoodle\Util;
+
 defined( 'ABSPATH' ) || exit();
 
 do_action( 'woocommerce_email_header', $email_heading );
@@ -60,7 +62,7 @@ $user = get_user_by( 'email', $args['user_email'] );
 </p>
 
 <?php
-if ( get_user_meta( $user->ID, 'moowoodle_requires_moodle_password_reset', true ) ) :
+if ( get_user_meta( $user->ID, Util::MOOWOODLE_USER_META['password_reset'], true ) ) :
 ?>
 	<p>
 		<?php
