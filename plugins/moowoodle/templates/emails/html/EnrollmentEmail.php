@@ -63,7 +63,7 @@ $user = get_user_by( 'email', $args['user_email'] );
 
 <?php
 if ( get_user_meta( $user->ID, Util::MOOWOODLE_USER_META['password_reset'], true ) ) :
-?>
+	?>
 	<p>
 		<?php
 		esc_html_e(

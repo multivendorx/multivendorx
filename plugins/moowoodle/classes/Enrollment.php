@@ -260,8 +260,8 @@ class Enrollment {
 			)
 		);
 
-		if (  ! empty( $response['error'] ) ) {
-			update_user_meta($user_details['purchaser_id'], Util::MOOWOODLE_USER_META['password_reset'], 1);
+		if ( ! empty( $response['error'] ) ) {
+			update_user_meta( $user_details['purchaser_id'], Util::MOOWOODLE_USER_META['password_reset'], 1 );
 		}
 
 		$enrollment_data = array(
@@ -362,15 +362,15 @@ class Enrollment {
 			$username = sanitize_user( explode( '@', $email )[0] );
 
 			$moodle_user_payload = array(
-				'email'           => $email,
-				'username'        => $username,
-				'createpassword'  => 1,
-				'auth'        	  => apply_filters( 'moowoodle_new_user_auth_type', 'manual' ),
-				'firstname'   	  => sanitize_text_field( $user_details['first_name'] ?? 'User' ),
-				'lastname'        => sanitize_text_field( $user_details['last_name'] ?? 'User' ),
+				'email'          => $email,
+				'username'       => $username,
+				'createpassword' => 1,
+				'auth'           => apply_filters( 'moowoodle_new_user_auth_type', 'manual' ),
+				'firstname'      => sanitize_text_field( $user_details['first_name'] ?? 'User' ),
+				'lastname'       => sanitize_text_field( $user_details['last_name'] ?? 'User' ),
 			);
 
-			$response            = MooWoodle()->external_service->do_request( 'create_users', array( 'users' => array( $moodle_user_payload ) ) );
+			$response = MooWoodle()->external_service->do_request( 'create_users', array( 'users' => array( $moodle_user_payload ) ) );
 
 			if ( empty( $response['data'] ) ) {
 				throw new \Exception( 'Invalid response from Moodle while creating user.' );
