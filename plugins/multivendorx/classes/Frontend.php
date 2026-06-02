@@ -53,7 +53,7 @@ class Frontend {
         // Restrict media for store dashboard.
         add_filter( 'ajax_query_attachments_args', array( $this, 'multivendorx_restrict_store_media' ) );
 
-        add_filter( 'multivendorx_modify_permissions', array( $this, 'modify_permissions' ) );
+        add_filter( 'multivendorx_modify_permissions', array( $this, 'modify_permissions' ), 10 );
         add_filter( 'multivendorx_dashboard_menu', array( $this, 'hide_menu' ), 20 );
         add_filter( 'wp_insert_attachment_data', array( $this, 'attach_store_owner_id' ), 10, 1 );
         add_action( 'woocommerce_account_dashboard', array( $this, 'add_dashboard_button' ) );

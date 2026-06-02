@@ -47,6 +47,7 @@ class Utill {
         'notifications'    => 'multivendorx_store_activity_notifications',
         'system_events'    => 'multivendorx_system_events',
         'visitors_stats'   => 'multivendorx_visitors_stats',
+        'activity_logs'    => 'multivendorx_activity_logs',
     );
 
     const MULTIVENDORX_SETTINGS = array(
@@ -599,5 +600,37 @@ class Utill {
         );
 
         return apply_filters( 'multivendorx_modify_permissions', $permissions );
+    }
+
+    public function set_activity_logs( $store_id, $message, $tag = '' ) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . Utill::TABLES['activity_logs'];
+
+        $wpdb->insert(
+            $table_name,
+            array(
+                'store_id' => $store_id,
+                'message'  => $message,
+                'tag'      => $tag,
+            ),
+            array(
+                '%d',
+                '%s',
+                '%s',
+            )
+        );
+    }
+
+    public function get_activity_logs( $store_id, $limit = 10 ) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . Utill::TABLES['activity_logs'];
+
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT * FROM {$table_name} WHERE store_id = %d ORDER BY id DESC LIMIT %d",
+                $store_id,
+                $limit
+            )
+        );
     }
 }
