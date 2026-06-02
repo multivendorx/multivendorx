@@ -6,7 +6,7 @@ jQuery( function ( $ ) {
 		handleClick
 	);
 
-	async function handleClick( event ) {
+	function handleClick( event ) {
 		event.preventDefault();
 
 		const currentElement = $( this );
@@ -25,7 +25,7 @@ jQuery( function ( $ ) {
 		);
 
 		try {
-			const response = await fetch(
+			const response = fetch(
 				`${ addToQuoteCart.apiUrl }/${ addToQuoteCart.restUrl }/quote/add`,
 				{
 					method: 'POST',
@@ -41,9 +41,7 @@ jQuery( function ( $ ) {
 				}
 			);
 
-			const data = await response.json();
-
-			console.log( 'Quote API Response:', data );
+			const data = response.json();
 
 			currentElement.next().remove();
 

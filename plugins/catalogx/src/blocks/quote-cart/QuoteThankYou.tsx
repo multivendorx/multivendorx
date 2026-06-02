@@ -11,7 +11,7 @@ const QuoteThankYou = ({ order_id, status }: QuoteThankYouProps) => {
     const [reason, setReason] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
-    const handleRejectQuote = useCallback(() => {
+    const handleRejectQuote = () => {
         axios({
             method: 'post',
             url: `${quoteCart.apiUrl}/catalogx/v1/quotes`,
@@ -20,11 +20,7 @@ const QuoteThankYou = ({ order_id, status }: QuoteThankYouProps) => {
         }).then((response) => {
             setSuccessMessage(response.data?.message ?? '');
         });
-    }, [order_id, status, reason]);
-
-    const handleReasonChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setReason(e.target.value);
-    }, []);
+    };
 
     if (successMessage) {
         return (
@@ -56,7 +52,7 @@ const QuoteThankYou = ({ order_id, status }: QuoteThankYouProps) => {
                             cols={10}
                             rows={3}
                             value={reason}
-                            onChange={handleReasonChange}
+                            onChange={ ( e ) => setReason( e.target.value ) }
                         />
                     </p>
                     <button onClick={handleRejectQuote}>

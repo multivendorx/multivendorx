@@ -27,6 +27,9 @@ class Frontend {
         // Cart page redirect settings.
         add_action( 'template_redirect', array( $this, 'catalogx_redirect_page' ), 10 );
 
+        // Display single product page description box.
+        add_action( 'display_shop_page_description_box', array( self::class, 'show_description_box' ) );
+
         // Hooks for exclusions.
         add_filter( 'woocommerce_get_price_html', array( $this, 'exclude_price_for_selected_product' ), 10, 2 );
 
@@ -70,6 +73,33 @@ class Frontend {
             wp_safe_redirect( home_url() );
             exit;
         }
+    }
+
+    /**
+     * Display single product page description box
+     *
+     * @return void
+     */
+    public static function show_description_box() {
+        global $post;
+
+        if ( ! Util::is_available_for_product( $post->ID ) ) {
+            return;
+        }
+
+        ?>
+        <div class="desc-box">
+            <?php
+            $catalog_per_product_desc = get_post_meta( $post->ID, 'catalog_per_product_desc', true );
+            $input_box                = ! empty( $catalog_per_product_desc ) ? $catalog_per_product_desc : CatalogX()->setting->get_setting( 'additional_input' );
+            if ( $input_box ) {
+				?>
+                <div class="desc">
+                    <?php echo wp_kses_post( $input_box ); ?>
+                </div>
+            <?php } ?>
+        </div>
+        <?php
     }
 
     /**

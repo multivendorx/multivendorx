@@ -158,7 +158,7 @@ class Installer {
             `product_id` bigint(20),
             `category_id` bigint(20),
             `brand_id` bigint(20),
-            `quentity` bigint(20) NOT NULL,
+            `quantity` bigint(20) NOT NULL,
             `type` varchar(20) NOT NULL,
             `amount` bigint(20) NOT NULL,
             `priority` bigint(20) NOT NULL,
@@ -195,7 +195,7 @@ class Installer {
             'is_enable_multiple_product_enquiry' => array( 'is_enable_multiple_product_enquiry' ),
         );
 
-        update_option( Utill::CATALOGX_SETTINGS['all-settings'], $all_settings );
+        update_option( Utill::CATALOGX_SETTINGS['shopping'], $all_settings );
 
         $email_settings = array(
             'additional_alert_email' => CatalogX()->admin_email,
@@ -214,22 +214,77 @@ class Installer {
         // Update form settings.
         $free_form = array(
             array(
-                'key'    => 'name',
-                'label'  => 'Enter your name',
-                'active' => true,
+                'id'          => 1,
+                'type'        => 'text',
+                'label'       => 'Enter your name',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'name',
             ),
             array(
-                'key'    => 'email',
-                'label'  => 'Enter your email',
-                'active' => true,
+                'id'          => 2,
+                'type'        => 'email',
+                'label'       => 'Enter your email',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'email',
             ),
-            array( 'key' => 'phone' ),
-            array( 'key' => 'address' ),
-            array( 'key' => 'subject' ),
-            array( 'key' => 'comment' ),
-            array( 'key' => 'fileupload' ),
-            array( 'key' => 'filesize-limit' ),
-            array( 'key' => 'captcha' ),
+            array(
+                'id'          => 3,
+                'type'        => 'text',
+                'label'       => 'Phone',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'phone',
+            ),
+            array(
+                'id'          => 4,
+                'type'        => 'textarea',
+                'label'       => 'Address',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'address',
+            ),
+            array(
+                'id'          => 5,
+                'type'        => 'text',
+                'label'       => 'Subject',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'subject',
+            ),
+            array(
+                'id'          => 6,
+                'type'        => 'textarea',
+                'label'       => 'Comment',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'comment',
+            ),
+            array(
+                'id'          => 7,
+                'type'        => 'attachment',
+                'label'       => 'File Upload',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'fileupload',
+            ),
+            array(
+                'id'          => 8,
+                'type'        => 'filesize-limit',
+                'label'       => 'File Size Limit',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'filesize-limit',
+            ),
+            array(
+                'id'          => 9,
+                'type'        => 'captcha',
+                'label'       => 'Captcha',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'captcha',
+            ),
         );
 
         $pro_form = array(
@@ -259,11 +314,12 @@ class Installer {
         );
 
         $form_settings = array(
-            'formsettings'    => array(
-                'formfieldlist'  => $pro_form,
-                'butttonsetting' => array(),
+            'enquiry_form_tabs' => array(
+                'free_enquiry_form'    => $free_form,
+                'enquiry_form_builder' => array(
+                    'formfieldlist' => $pro_form,
+                ),
             ),
-            'freefromsetting' => $free_form,
         );
 
         update_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], $form_settings );
@@ -377,6 +433,142 @@ class Installer {
             update_option( Utill::CATALOGX_SETTINGS['wholesale-registration'], $previous_wholesale_registration_settings );
             delete_option( 'catalogx_wholesale-registration_settings' );
             }
+        }
+
+        if ( version_compare( $previous_version, '6.1.0', '<' ) ) {
+
+            /**
+             * Form Settings Migration
+             */
+            $current_settings = get_option(
+                Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
+                array()
+            );
+
+            if ( ! empty( $current_settings ) ) {
+
+                $free_form_settings = $current_settings['freefromsetting'] ?? array();
+                $pro_form_settings  = $current_settings['formsettings']['formfieldlist'] ?? array();
+
+                $migrated_free_enquiry_form = array();
+                $field_id                   = 1;
+
+                foreach ( $free_form_settings as $field ) {
+
+                    if ( empty( $field['key'] ) ) {
+                        continue;
+                    }
+
+                    $migrated_free_enquiry_form[] = array(
+                        'id'          => $field_id++,
+                        'type'        => sanitize_key( $field['key'] ),
+                        'label'       => $field['label'] ?? '',
+                        'placeholder' => '',
+                        'disabled'    => empty( $field['active'] ),
+                        'name'        => sanitize_key( $field['key'] ),
+                    );
+                }
+
+                update_option(
+                    Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
+                    array(
+                        'enquiry_form_tabs' => array(
+                            'free_enquiry_form'    => $migrated_free_enquiry_form,
+                            'enquiry_form_builder' => array(
+                                'formfieldlist' => is_array( $pro_form_settings )
+                                    ? $pro_form_settings
+                                    : array(),
+                            ),
+                        ),
+                    )
+                );
+            }
+
+            /**
+             * Exclusion Settings Migration
+             */
+            $old_exclusion_settings = get_option(
+                Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
+                array()
+            );
+
+            if ( ! empty( $old_exclusion_settings ) ) {
+
+                $migrated_exclusion_settings = array(
+                    'exclusion' => array(),
+                );
+
+                foreach ( $old_exclusion_settings as $setting_key => $setting_values ) {
+
+                    if ( ! is_array( $setting_values ) ) {
+                        continue;
+                    }
+
+                    $new_key = str_replace(
+                        '_exclusion_',
+                        '_exclusion_value_',
+                        $setting_key
+                    );
+
+                    $migrated_exclusion_settings['exclusion'][ $new_key ] = array();
+
+                    foreach ( $setting_values as $item ) {
+                        if ( isset( $item['value'] ) ) {
+                            $migrated_exclusion_settings['exclusion'][ $new_key ][] = $item['value'];
+                        }
+                    }
+                }
+
+                update_option(
+                    Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
+                    $migrated_exclusion_settings
+                );
+            }
+
+            /**
+             * Shopping Settings Option Rename
+             */
+            $old_shopping_settings = get_option(
+                'catalogx_all_settings_settings',
+                null
+            );
+
+            if ( null !== $old_shopping_settings ) {
+
+                update_option(
+                    'catalogx_shopping_settings',
+                    $old_shopping_settings
+                );
+
+                delete_option( 'catalogx_all_settings_settings' );
+            }
+
+            /**
+             * Rules Table Column Rename
+             *
+             * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+             * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+             * phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+             * phpcs:disable WordPress.DB.DirectDatabaseQuery.SchemaChange
+             */
+            global $wpdb;
+
+            $table_name = $wpdb->prefix . Utill::TABLES['rule'];
+
+            $column_exists = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SHOW COLUMNS FROM {$table_name} LIKE %s",
+                    'quentity'
+                )
+            );
+
+            if ( $column_exists ) {
+                $wpdb->query(
+                    "ALTER TABLE {$table_name}
+                    CHANGE COLUMN quentity quantity INT(11) NOT NULL"
+                );
+            }
+            // phpcs:enable
         }
     }
 
@@ -872,110 +1064,4 @@ class Installer {
         }
     }
 
-    public function formSettingsMigration() {
-        $current_settings = get_option(
-            'catalogx_enquiry_form_customization_settings',
-            array()
-        );
-
-        if ( empty( $current_settings ) ) {
-            return;
-        }
-
-        $free_form_settings = $current_settings['freefromsetting'] ?? array();
-        $form_builder_fields = $current_settings['formsettings']['formfieldlist'] ?? array();
-
-        $migrated_free_enquiry_form = array();
-        $field_id                   = 1;
-
-        foreach ( $free_form_settings as $field ) {
-            if ( empty( $field['key'] ) ) {
-                continue;
-            }
-
-            $migrated_free_enquiry_form[] = array(
-                'id'          => $field_id++,
-                'type'        => sanitize_key( $field['key'] ),
-                'label'       => $field['label'] ?? '',
-                'placeholder' => '',
-                'disabled'    => empty( $field['active'] ),
-                'name'        => sanitize_key( $field['key'] ),
-            );
-        }
-
-        $migrated_settings = array(
-            'enquiry_form_tabs' => array(
-                'free_enquiry_form'   => $migrated_free_enquiry_form,
-                'enquiry_form_builder' => array(
-                    'formfieldlist' => is_array( $form_builder_fields )
-                        ? $form_builder_fields
-                        : array(),
-                ),
-            ),
-        );
-
-        update_option(
-            Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
-            $migrated_settings
-        );
-    }
-
-    public function exclusionSettingsMigration() {
-        $old_settings = get_option(
-            Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
-            array()
-        );
-
-        if ( empty( $old_settings ) || ! is_array( $old_settings ) ) {
-            return;
-        }
-
-        $migrated_settings = array(
-            'exclusion' => array(),
-        );
-
-        foreach ( $old_settings as $setting_key => $setting_values ) {
-
-            if ( ! is_array( $setting_values ) ) {
-                continue;
-            }
-
-            $new_key = str_replace(
-                '_exclusion_',
-                '_exclusion_value_',
-                $setting_key
-            );
-
-            $migrated_settings['exclusion'][ $new_key ] = array();
-
-            foreach ( $setting_values as $item ) {
-                if ( isset( $item['value'] ) ) {
-                    $migrated_settings['exclusion'][ $new_key ][] = $item['value'];
-                }
-            }
-        }
-
-        update_option(
-            Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
-            $migrated_settings
-        );
-    }
-
-    public function shoppingSettingsMigration() {
-        $old_settings = get_option(
-            'catalogx_all_settings_settings',
-            null
-        );
-
-        if ( null === $old_settings ) {
-            return;
-        }
-
-        update_option(
-            'catalogx_shopping_settings',
-            $old_settings
-        );
-
-        delete_option( 'catalogx_all_settings_settings' );
-    }
 }

@@ -34,6 +34,7 @@ declare global {
         currency: string;
         notifima_active: boolean;
         mvx_active: boolean;
+        quote_module_active
         quote_base_url: string;
         redirect_url: string;
         free_version: any;
