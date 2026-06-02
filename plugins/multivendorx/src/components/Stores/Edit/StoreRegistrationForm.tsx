@@ -197,7 +197,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 		}).then((res) => {
 			if (res.data.success) {
 				NoticeManager.add({
-					title:'Success',
+					title: 'Success',
 					message:
 						status === 'approve'
 							? __('Store approved successfully!', 'multivendorx')
@@ -213,7 +213,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 			}
 		});
 	};
-	
+
 	return (
 		<Container>
 			{(formData.core_data?.status === 'pending' ||
@@ -452,8 +452,8 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 				</Card>
 			</Column>
 			<Column grid={4}>
-				<Card title={__('Activity Log', 'multivendorx')}>          
-          			<div className="activity-log">
+				<Card title={__('Activity Log', 'multivendorx')}>
+					<div className="activity-log">
 						{Array.isArray(activities) && activities.length > 0 ? (
 							activities.slice(0, 5).map((a, i) => (
 								<div key={i} className="activity">
