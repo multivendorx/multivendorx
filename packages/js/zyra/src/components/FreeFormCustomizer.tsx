@@ -21,12 +21,13 @@ const FORM_FIELDS_CONFIG = [
     { id: '4', type: 'text', label: 'Address', name: 'address', placeholder: 'Enter your address here' },
     { id: '5', type: 'text', label: 'Subject', name: 'subject', placeholder: 'Enter the subject of your enquiry here' },
     { id: '6', type: 'text', label: 'Comment', name: 'comment', placeholder: 'Enter the details of your enquiry here' },
-    { id: '7', type: 'attachment', label: 'Fileupload', name: 'File upload', placeholder: '' },
-    { id: '8', type: 'recaptcha', label: 'Captcha', name: 'Captcha', placeholder: '' },
-    { id: '9', type: 'button', label: 'Submit', placeholder: '' },
+    { id: '7', type: 'fileupload', label: 'Filesize Limit', name: 'File upload size limit' },
+    { id: '8', type: 'attachment', label: 'Fileupload', name: 'File upload', placeholder: '' },
+    { id: '9', type: 'recaptcha', label: 'Captcha', name: 'Captcha', placeholder: '' },
+    { id: '10', type: 'button', label: 'Submit', placeholder: '' },
 ];
 
-const SUBMIT_BUTTON_ID = '9';
+const SUBMIT_BUTTON_ID = '10';
 
 const toArray = (val: unknown): FormField[] => (Array.isArray(val) ? val : []);
 

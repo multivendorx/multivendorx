@@ -31,17 +31,9 @@ declare global {
         khali_dabba: boolean;
         pro_url: string;
         order_edit: string;
-        site_url: string;
-        module_page_url: string;
-        settings_page_url: string;
-        enquiry_form_settings_url: string;
-        customization_settings_url: string;
-        wholesale_settings_url: string;
-        rule_url: string;
         currency: string;
         notifima_active: boolean;
         mvx_active: boolean;
-        quote_module_active: boolean;
         quote_base_url: string;
         redirect_url: string;
         free_version: any;
