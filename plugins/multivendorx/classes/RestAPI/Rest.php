@@ -57,9 +57,9 @@ class Rest {
         add_filter( 'woocommerce_rest_prepare_shop_coupon_object', array( $this, 'prepare_shop_coupon_filter_meta' ), 10, 3 );
         add_filter( 'woocommerce_rest_pre_insert_shop_coupon_object', array( $this, 'pre_insert_shop_coupon_fix_status' ), 10, 3 );
         add_filter( 'woocommerce_analytics_products_query_args', array( $this, 'analytics_products_filter_low_stock_meta' ), 10, 1 );
-        add_action( 'woocommerce_rest_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 15, 3 );
-        add_action( 'woocommerce_rest_pre_insert_product_object', array( $this, 'send_product_notifications' ), 10, 2 );
-        add_action( 'woocommerce_rest_insert_shop_coupon_object', array( $this, 'send_coupon_notifications' ), 10, 3 );
+        add_action( 'woocommerce_rest_pre_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 10, 3 );
+        add_action( 'woocommerce_rest_insert_shop_coupon_object', array( $this, 'send_notifications' ), 10, 3 );
+        add_action( 'woocommerce_rest_pre_insert_shop_coupon_object', array( $this, 'send_notifications' ), 10, 3 );
         add_filter( 'woocommerce_rest_product_shipping_class_query', array( $this, 'filter_shipping_classes_by_meta' ), 10, 2 );
     }
 
@@ -684,25 +684,27 @@ class Rest {
      */
     public function generate_sku_data_in_product( $product, $request, $creating ) {
         if ( ! defined( 'REST_REQUEST' ) ) {
-            return;
+            return $product;
         }
-
-        $referer = filter_input( INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL ) ?? '';
-        $path    = wp_parse_url( $referer, PHP_URL_PATH );
-		if ( false === strpos( $path, 'products' ) ) {
-			return;
-		}
-
-		$new_status = $request->get_param( 'status' );
 
 		$store = new Store(
             get_post_meta( $product->get_id(), Utill::POST_META_SETTINGS['store_id'], true )
 		);
         if ( ! $store->exists() ) {
-            return;
+            return $product;
         }
 
-		if ( isset( $creating ) && true === $creating && 'pending' === $new_status ) {
+        $post = get_post( $product->get_id() );
+
+        if ( ! $post ) {
+            return $product;
+        }
+
+        $old_status = $post->post_status;
+		$new_status = $request->get_param( 'status' );
+
+		if ('draft' === $old_status && 'pending' === $new_status ) {
+            file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export('product_submitted', true) . "\n", FILE_APPEND);
             MultiVendorX()->notifications->send_notification_helper(
                 'product_submitted',
                 $store,
@@ -714,8 +716,37 @@ class Rest {
             );
 		}
 
-		if ( isset( $creating ) && true === $creating && 'publish' === $new_status ) {
-			$followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
+		if ( 'pending' === $old_status && 'draft' === $new_status ) {
+            file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export('product_rejected', true) . "\n", FILE_APPEND);
+
+            MultiVendorX()->notifications->send_notification_helper(
+                'product_rejected',
+                $store,
+                null,
+                array(
+					'product_name' => $product->get_name(),
+					'category'     => 'activity',
+				)
+            );
+		}
+
+		if ( 'pending' === $old_status && 'publish' === $new_status ) {
+            file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export('product_approved', true) . "\n", FILE_APPEND);
+            MultiVendorX()->notifications->send_notification_helper(
+                'product_approved',
+                $store,
+                null,
+                array(
+					'product_name' => $product->get_name(),
+					'category'     => 'activity',
+				)
+            );
+		}
+
+        if ( ('pending' === $old_status || 'draft' === $old_status) && 'publish' === $new_status ) {
+            file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export('follower', true) . "\n", FILE_APPEND);
+
+            $followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
 
 			foreach ( $followers as $follower ) {
 				$user = get_user_by( 'id', $follower['id'] );
@@ -741,66 +772,6 @@ class Rest {
         if ( ! $creating ) {
             $this->multivendorx_save_generated_sku( $product );
         }
-    }
-
-    /**
-     * Send notifications when a product status changes via REST API.
-     *
-     * @param WC_Product      $product  Product object.
-     * @param WP_REST_Request $request  REST request instance.
-     * @return WC_Product
-     */
-    public function send_product_notifications( $product, $request ) {
-
-        if ( ! defined( 'REST_REQUEST' ) ) {
-            return $product;
-        }
-
-        $post = get_post( $product->get_id() );
-
-        if ( ! $post ) {
-            return $product;
-        }
-
-        $old_status = $post->post_status;
-        $new_status = $request->get_param( 'status' );
-
-        $store_id = get_post_meta(
-            $product->get_id(),
-            Utill::POST_META_SETTINGS['store_id'],
-            true
-        );
-
-        $store = new Store( $store_id );
-
-        if ( ! $store->exists() ) {
-            return $product;
-        }
-
-        if ( 'pending' === $old_status && 'publish' === $new_status ) {
-            MultiVendorX()->notifications->send_notification_helper(
-                'product_approved',
-                $store,
-                null,
-                array(
-                    'product_name' => $product->get_name(),
-                    'category'     => 'activity',
-                )
-            );
-        }
-
-        if ( 'pending' === $old_status && 'draft' === $new_status ) {
-            MultiVendorX()->notifications->send_notification_helper(
-                'product_rejected',
-                $store,
-                null,
-                array(
-                    'product_name' => $product->get_name(),
-                    'category'     => 'activity',
-                )
-            );
-        }
-
         return $product;
     }
 
@@ -813,30 +784,26 @@ class Rest {
 	 *
 	 * @param WC_Coupon       $coupon  Coupon object.
 	 * @param WP_REST_Request $request REST request instance.
-     * @param bool            $creating True if the coupon is being created; false if updating.
+     * @param bool             $creating True if the coupon is being created; false if updating.
 	 * @return void
 	 */
-	public function send_coupon_notifications( $coupon, $request, $creating ) {
+	public function send_notifications( $coupon, $request, $creating ) {
 		if ( ! defined( 'REST_REQUEST' ) ) {
-			return;
+			return $coupon;
 		}
 
-        $referer = filter_input( INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL ) ?? '';
-		$path    = wp_parse_url( $referer, PHP_URL_PATH ) ?? '';
-
-		if ( false === strpos( $path, 'coupons' ) ) {
-			return;
-		}
-
-		$new_status = $request->get_param( 'status' );
+        $old_status = get_post_status( $coupon->get_id() ) ?: '';
+        $new_status = $request->get_param( 'status' );
 
 		$store_id = get_post_meta( $coupon->get_id(), Utill::POST_META_SETTINGS['store_id'], true );
 		$store    = new Store( $store_id );
         if ( ! $store->exists() ) {
-            return;
+            return $coupon;
         }
 
-		if ( isset( $creating ) && true === $creating && 'publish' === $new_status ) {
+		if ( ('pending' === $old_status && 'publish' === $new_status)|| (true === $creating && 'publish' === $new_status) ) {
+            file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export('hahfj', true) . "\n", FILE_APPEND);
+
 			$followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
 
 			foreach ( $followers as $follower ) {
@@ -860,6 +827,7 @@ class Rest {
 				);
 			}
 		}
+        return $coupon;
 	}
 
     /**
