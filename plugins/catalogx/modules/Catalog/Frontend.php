@@ -27,8 +27,6 @@ class Frontend {
         // Cart page redirect settings.
         add_action( 'template_redirect', array( $this, 'catalogx_redirect_page' ), 10 );
 
-        // Display single product page description box.
-
         // Hooks for exclusions.
         add_filter( 'woocommerce_get_price_html', array( $this, 'exclude_price_for_selected_product' ), 10, 2 );
 
@@ -120,7 +118,5 @@ class Frontend {
             remove_action( 'woocommerce_simple_add_to_cart', 'woocommerce_simple_add_to_cart', 30 );
         }
     }
-
-
 
 }

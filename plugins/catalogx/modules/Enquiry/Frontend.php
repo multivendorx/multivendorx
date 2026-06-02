@@ -18,31 +18,31 @@ use CatalogX\Utill;
  * @author      MultiVendorX
  */
 class Frontend {
+    private $enquiry_user_permission;
+    private $enable_out_of_stock;
+
     /**
      * Frontend class constructor function.
      */
     public function __construct() {
         // Enquiry button shortcode.
         add_shortcode( 'catalogx_enquiry_button', array( $this, 'render_enquiry_button_shortcode' ) );
-
+        
         // Check the exclusion.
         if ( ! Util::is_available() ) {
-			return;
-        }
-
-        $display_enquiry_button = CatalogX()->setting->get_setting( 'enquiry_user_permission', array() );
-        if ( ! empty( $display_enquiry_button ) && ! is_user_logged_in() ) {
             return;
         }
+        $this->enquiry_user_permission = CatalogX()->setting->get_setting( 'enquiry_user_permission', array() );
+        if ( ! empty( $this->enquiry_user_permission ) && ! is_user_logged_in() ) {
+            return;
+        }
+        $this->enable_out_of_stock      = CatalogX()->setting->get_setting( 'is_enable_out_of_stock' );
 
         if ( empty( CatalogX()->setting->get_setting( 'enable_cart_checkout' ) ) ) {
             add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_button_in_shop_page' ) );
         }
 
         add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
-
-        // Hook for exclusion.
-        add_action( 'woocommerce_single_product_summary', array( $this, 'enquiry_button_exclusion' ), 5 );
 
         add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
     }
@@ -54,9 +54,12 @@ class Frontend {
      */
     public function catalogx_add_enquiry_button() {
         global $product;
+        if ( ! Util::is_available_for_product( $product->get_id() ) ) {
+            return;
+        }
         if ( empty( trim( CatalogX()->render_enquiry_btn_via ) ) ) {
             CatalogX()->render_enquiry_btn_via = 'hook';
-            $this->render_product_enquiry_button( $product->get_id() );
+            $this->render_product_enquiry_button( $product );
         }
     }
 
@@ -82,7 +85,7 @@ class Frontend {
         ?>
         <div id="catalogx-enquiry">
         <?php
-		if ( CatalogX()->setting->get_setting( 'is_enable_out_of_stock' ) ) {
+		if ( $this->enable_out_of_stock ) {
 			if ( ! $product_obj->managing_stock() && ! $product_obj->is_in_stock() ) {
                 ?>
                 <div>
@@ -116,31 +119,13 @@ class Frontend {
     }
 
     /**
-     * Enquiry button exclusion
-     *
-     * @return void
-     */
-    public function enquiry_button_exclusion() {
-        global $post;
-
-        if ( ! Util::is_available_for_product( $post->ID ) ) {
-            remove_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
-        } else {
-            add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
-        }
-    }
-
-    /**
      * Enqueue script
      *
      * @return void
      */
     public function frontend_scripts() {
-        FrontendScripts::enqueue_frontend_assets();
-        FrontendScripts::localize_scripts( 'catalogx-enquiry-frontend-script' );
-        FrontendScripts::localize_scripts( 'catalogx-enquiry-form-script' );
-
-        // if ( is_product() || CatalogX()->render_enquiry_btn_via === 'shortcode' ) {
+        if ( is_product() || CatalogX()->render_enquiry_btn_via === 'shortcode' ) {
+            FrontendScripts::enqueue_frontend_assets();
             FrontendScripts::enqueue_style( 'catalogx-enquiry-form-style' );
             FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
             FrontendScripts::enqueue_script( 'catalogx-enquiry-frontend-script' );
@@ -151,7 +136,7 @@ class Frontend {
 		if ( ! empty( $custom_css ) ) {
 			wp_add_inline_style( 'catalogx-enquiry-form-style', $custom_css );
 		}
-        // }
+        }
     }
 
     /**
@@ -267,7 +252,7 @@ class Frontend {
             return '';
         }
 
-        $display_enquiry_button = CatalogX()->setting->get_setting( 'enquiry_user_permission', array() );
+        $display_enquiry_button = $this->enquiry_user_permission;
         if ( ! empty( $display_enquiry_button ) && ! is_user_logged_in() ) {
             return '';
         }
@@ -355,7 +340,7 @@ class Frontend {
             return;
         }
 
-        if ( ! empty( CatalogX()->setting->get_setting( 'is_enable_out_of_stock' ) ) && $product->is_in_stock() ) {
+        if ( ! empty( $this->enable_out_of_stock ) && $product->is_in_stock() ) {
             return;
         }
 
