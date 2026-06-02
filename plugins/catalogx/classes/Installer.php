@@ -435,7 +435,7 @@ class Installer {
             }
         }
 
-        if ( version_compare( $previous_version, '6.1.0', '<' ) ) {
+        if ( version_compare( $previous_version, '6.0.7', '<' ) ) {
 
             /**
              * Form Settings Migration
