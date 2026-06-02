@@ -63,7 +63,7 @@ class Installer {
             $this->set_default_modules();
             $this->set_default_settings();
         } else {
-            // $this->run_default_migration();
+            $this->run_migration();
         }
         // Update the version in database.
         update_option( self::VERSION_KEY, CatalogX()->version );
@@ -870,5 +870,112 @@ class Installer {
         foreach ( $old_options as $option ) {
             delete_option( $option );
         }
+    }
+
+    public function formSettingsMigration() {
+        $current_settings = get_option(
+            'catalogx_enquiry_form_customization_settings',
+            array()
+        );
+
+        if ( empty( $current_settings ) ) {
+            return;
+        }
+
+        $free_form_settings = $current_settings['freefromsetting'] ?? array();
+        $form_builder_fields = $current_settings['formsettings']['formfieldlist'] ?? array();
+
+        $migrated_free_enquiry_form = array();
+        $field_id                   = 1;
+
+        foreach ( $free_form_settings as $field ) {
+            if ( empty( $field['key'] ) ) {
+                continue;
+            }
+
+            $migrated_free_enquiry_form[] = array(
+                'id'          => $field_id++,
+                'type'        => sanitize_key( $field['key'] ),
+                'label'       => $field['label'] ?? '',
+                'placeholder' => '',
+                'disabled'    => empty( $field['active'] ),
+                'name'        => sanitize_key( $field['key'] ),
+            );
+        }
+
+        $migrated_settings = array(
+            'enquiry_form_tabs' => array(
+                'free_enquiry_form'   => $migrated_free_enquiry_form,
+                'enquiry_form_builder' => array(
+                    'formfieldlist' => is_array( $form_builder_fields )
+                        ? $form_builder_fields
+                        : array(),
+                ),
+            ),
+        );
+
+        update_option(
+            Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
+            $migrated_settings
+        );
+    }
+
+    public function exclusionSettingsMigration() {
+        $old_settings = get_option(
+            Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
+            array()
+        );
+
+        if ( empty( $old_settings ) || ! is_array( $old_settings ) ) {
+            return;
+        }
+
+        $migrated_settings = array(
+            'exclusion' => array(),
+        );
+
+        foreach ( $old_settings as $setting_key => $setting_values ) {
+
+            if ( ! is_array( $setting_values ) ) {
+                continue;
+            }
+
+            $new_key = str_replace(
+                '_exclusion_',
+                '_exclusion_value_',
+                $setting_key
+            );
+
+            $migrated_settings['exclusion'][ $new_key ] = array();
+
+            foreach ( $setting_values as $item ) {
+                if ( isset( $item['value'] ) ) {
+                    $migrated_settings['exclusion'][ $new_key ][] = $item['value'];
+                }
+            }
+        }
+
+        update_option(
+            Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
+            $migrated_settings
+        );
+    }
+
+    public function shoppingSettingsMigration() {
+        $old_settings = get_option(
+            'catalogx_all_settings_settings',
+            null
+        );
+
+        if ( null === $old_settings ) {
+            return;
+        }
+
+        update_option(
+            'catalogx_shopping_settings',
+            $old_settings
+        );
+
+        delete_option( 'catalogx_all_settings_settings' );
     }
 }
