@@ -20,7 +20,6 @@ import React from 'react';
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { formatDate } from '@/services/commonFunction';
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import { useNavigate } from 'react-router-dom';
 
 const styles = StyleSheet.create({
 	page: { padding: 24, fontSize: 12 },
@@ -73,7 +72,7 @@ const RegistrationPdf: React.FC<RegistrationPdfProps> = ({
 								</Text>
 								{String(
 									value ||
-									__('[Not Provided]', 'multivendorx')
+										__('[Not Provided]', 'multivendorx')
 								)}
 							</Text>
 						</View>
@@ -85,7 +84,6 @@ const RegistrationPdf: React.FC<RegistrationPdfProps> = ({
 };
 
 const StoreRegistration = ({ id }: { id: string | null }) => {
-	const navigate = useNavigate();
 	const [formData, setFormData] = useState<{ [key: string]: any }>({});
 	const [activities, setActivities] = useState<{}>({});
 
@@ -197,183 +195,183 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 		}).then((res) => {
 			if (res.data.success) {
 				NoticeManager.add({
-					title: 'Success',
+					title: status === 'approve' ? 'Success' : 'Error!',
 					message:
 						status === 'approve'
 							? __('Store approved successfully!', 'multivendorx')
 							: __(
-								'Store rejected successfully!',
-								'multivendorx'
-							),
-					type: 'success',
+									'Store rejected successfully!',
+									'multivendorx'
+								),
+					type: status === 'approve' ? 'success' : 'error',
 					position: 'float',
 				});
 				setFormData(updatedData); // update local state
-				navigate(`?page=multivendorx#&tab=stores`);
+				window.location.reload();
 			}
 		});
 	};
-
+	
 	return (
 		<Container>
 			{(formData.core_data?.status === 'pending' ||
-				formData.core_data?.status === 'rejected' ||
-				formData.core_data?.status === 'permanently_rejected') && (
-					<Column grid={8}>
-						{(formData.core_data?.status == 'pending' ||
-							formData.core_data?.status == 'rejected') && (
-								<Card title={__('Store details', 'multivendorx')}>
-									<FormGroupWrapper>
-										{formData.core_data &&
-											Object.keys(formData.core_data).length > 0 ? (
-											Object.entries(formData.core_data).map(
-												([label, value]) => {
-													const displayValue =
-														value && typeof value === 'object'
-															? JSON.stringify(value)
-															: value;
+			formData.core_data?.status === 'rejected' ||
+			formData.core_data?.status === 'permanently_rejected') && (
+				<Column grid={8}>
+					{(formData.core_data?.status == 'pending' ||
+						formData.core_data?.status == 'rejected') && (
+						<Card title={__('Store details', 'multivendorx')}>
+							<FormGroupWrapper>
+								{formData.core_data &&
+								Object.keys(formData.core_data).length > 0 ? (
+									Object.entries(formData.core_data).map(
+										([label, value]) => {
+											const displayValue =
+												value && typeof value === 'object'
+													? JSON.stringify(value)
+													: value;
 
-													return (
-														<FormGroup
-															row
-															key={label}
-															label={label}
-														>
-															{displayValue ||
-																__(
-																	'[Not Provided]',
-																	'multivendorx'
-																)}
-														</FormGroup>
-													);
-												}
-											)
-										) : (
-											<FormGroup row label="">
-												{__(
-													'No store details available.',
+											return (
+												<FormGroup
+													row
+													key={label}
+													label={label}
+												>
+													{displayValue ||
+														__(
+															'[Not Provided]',
+															'multivendorx'
+														)}
+												</FormGroup>
+											);
+										}
+									)
+								) : (
+									<FormGroup row label="">
+										{__(
+											'No store details available.',
+											'multivendorx'
+										)}
+									</FormGroup>
+								)}
+							</FormGroupWrapper>
+						</Card>
+					)}
+
+					{(formData.core_data?.status == 'pending' ||
+						formData.core_data?.status == 'rejected' ||
+						formData.core_data?.status == 'permanently_rejected') && (
+						<>
+							<Card title="Submitted by">
+								<FormGroupWrapper>
+									<FormGroup row label="Display Name">
+										{formData.primary_owner_info?.data
+											?.display_name ||
+											__('[Not Provided]', 'multivendorx')}
+									</FormGroup>
+
+									<FormGroup
+										row
+										label={__('Email', 'multivendorx')}
+									>
+										{formData.primary_owner_info?.data
+											?.user_email ?? (
+											<Skeleton width={9.375} />
+										)}
+									</FormGroup>
+								</FormGroupWrapper>
+							</Card>
+
+							{previousNotes.length > 0 && (
+								<Card title="Previous Notes">
+									<div className="form-group-wrapper">
+										<div className="form-group">
+											<ul>
+												{previousNotes.map((item, idx) => (
+													<li key={idx}>
+														<strong>
+															{item.date}:
+														</strong>{' '}
+														{item.note}
+													</li>
+												))}
+											</ul>
+										</div>
+									</div>
+								</Card>
+							)}
+							{formData.core_data?.status !=
+								'permanently_rejected' && (
+								<Card title="Note">
+									<FormGroupWrapper>
+										<FormGroup>
+											<TextAreaUI
+												name="store_application_note"
+												placeholder={__(
+													'Optional note for approval or rejection',
 													'multivendorx'
 												)}
-											</FormGroup>
-										)}
+												value={
+													formData.store_application_note ||
+													''
+												}
+												onChange={(val) =>
+													handleChange({
+														target: {
+															name: 'store_application_note',
+															value: val,
+															type: 'textarea',
+														},
+													} as React.ChangeEvent<HTMLTextAreaElement>)
+												}
+											/>
+										</FormGroup>
+										<FormGroup>
+											<label className="checkbox-label">
+												<input
+													type="checkbox"
+													name="store_permanent_reject"
+													checked={
+														formData.store_permanent_reject ||
+														false
+													}
+													onChange={handleChange}
+												/>
+												{__(
+													'Reject store permanently',
+													'multivendorx'
+												)}
+											</label>
+										</FormGroup>
+										<ButtonInputUI
+											buttons={[
+												{
+													text: __(
+														'Approve',
+														'multivendorx'
+													),
+													color: 'green',
+													onClick: () =>
+														handleSubmit('approve'),
+												},
+												{
+													text: __(
+														'Reject',
+														'multivendorx'
+													),
+													color: 'red',
+													onClick: () =>
+														handleSubmit('rejected'),
+												},
+											]}
+										/>
 									</FormGroupWrapper>
 								</Card>
 							)}
-
-						{(formData.core_data?.status == 'pending' ||
-							formData.core_data?.status == 'rejected' ||
-							formData.core_data?.status == 'permanently_rejected') && (
-								<>
-									<Card title="Submitted by">
-										<FormGroupWrapper>
-											<FormGroup row label="Display Name">
-												{formData.primary_owner_info?.data
-													?.display_name ||
-													__('[Not Provided]', 'multivendorx')}
-											</FormGroup>
-
-											<FormGroup
-												row
-												label={__('Email', 'multivendorx')}
-											>
-												{formData.primary_owner_info?.data
-													?.user_email ?? (
-														<Skeleton width={9.375} />
-													)}
-											</FormGroup>
-										</FormGroupWrapper>
-									</Card>
-
-									{previousNotes.length > 0 && (
-										<Card title="Previous Notes">
-											<div className="form-group-wrapper">
-												<div className="form-group">
-													<ul>
-														{previousNotes.map((item, idx) => (
-															<li key={idx}>
-																<strong>
-																	{item.date}:
-																</strong>{' '}
-																{item.note}
-															</li>
-														))}
-													</ul>
-												</div>
-											</div>
-										</Card>
-									)}
-									{formData.core_data?.status !=
-										'permanently_rejected' && (
-											<Card title="Note">
-												<FormGroupWrapper>
-													<FormGroup>
-														<TextAreaUI
-															name="store_application_note"
-															placeholder={__(
-																'Optional note for approval or rejection',
-																'multivendorx'
-															)}
-															value={
-																formData.store_application_note ||
-																''
-															}
-															onChange={(val) =>
-																handleChange({
-																	target: {
-																		name: 'store_application_note',
-																		value: val,
-																		type: 'textarea',
-																	},
-																} as React.ChangeEvent<HTMLTextAreaElement>)
-															}
-														/>
-													</FormGroup>
-													<FormGroup>
-														<label className="checkbox-label">
-															<input
-																type="checkbox"
-																name="store_permanent_reject"
-																checked={
-																	formData.store_permanent_reject ||
-																	false
-																}
-																onChange={handleChange}
-															/>
-															{__(
-																'Reject store permanently',
-																'multivendorx'
-															)}
-														</label>
-													</FormGroup>
-													<ButtonInputUI
-														buttons={[
-															{
-																text: __(
-																	'Approve',
-																	'multivendorx'
-																),
-																color: 'green',
-																onClick: () =>
-																	handleSubmit('approve'),
-															},
-															{
-																text: __(
-																	'Reject',
-																	'multivendorx'
-																),
-																color: 'red',
-																onClick: () =>
-																	handleSubmit('rejected'),
-															},
-														]}
-													/>
-												</FormGroupWrapper>
-											</Card>
-										)}
-								</>
-							)}
-					</Column>
-				)}
+						</>
+					)}
+				</Column>
+			)}
 			<Column grid={4}>
 				<Card
 					title={__('Registration Details', 'multivendorx')}
@@ -399,7 +397,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 				>
 					<FormGroupWrapper>
 						{formData.registration_data &&
-							Object.keys(formData.registration_data).length > 0 ? (
+						Object.keys(formData.registration_data).length > 0 ? (
 							Object.entries(formData.registration_data).map(
 								([label, value]) => {
 									const isAttachment =
@@ -449,11 +447,11 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 							/>
 						)}
 					</FormGroupWrapper>
-				</Card>
+				</Card> 
 			</Column>
 			<Column grid={4}>
-				<Card title={__('Activity Log', 'multivendorx')}>
-					<div className="activity-log">
+				<Card title={__('Activity Log', 'multivendorx')}>          
+          			<div className="activity-log">
 						{Array.isArray(activities) && activities.length > 0 ? (
 							activities.slice(0, 5).map((a, i) => (
 								<div key={i} className="activity">
@@ -471,7 +469,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 							/>
 						)}
 					</div>
-				</Card>
+				</Card> 
 			</Column>
 		</Container>
 	);
