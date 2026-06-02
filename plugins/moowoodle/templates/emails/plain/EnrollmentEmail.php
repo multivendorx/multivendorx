@@ -1,4 +1,5 @@
 <?php
+
 /**
  * New enrollment email (plain text)
  *
@@ -8,6 +9,8 @@
  * @package   moowoodle/templates
  * @version   3.3.0
  */
+
+use MooWoodle\Util;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -39,28 +42,19 @@ echo "-------------------------\n";
 echo esc_html__( 'Website:', 'moowoodle' ) . ' ' . esc_url( home_url() ) . "\n";
 echo esc_html__( 'Username:', 'moowoodle' ) . ' ' . esc_html( $user->user_login ?? 'John Doe' ) . "\n";
 
-$wp_pwd         = get_user_meta( $user->ID ?? 0, 'moowoodle_wordpress_user_pwd', true );
-$moodle_pwd     = get_user_meta( $user->ID ?? 0, 'moowoodle_moodle_user_pwd', true );
-$wp_created     = get_user_meta( $user->ID ?? 0, 'moowoodle_wordpress_new_user_created', true );
-$moodle_created = get_user_meta( $user->ID ?? 0, 'moowoodle_moodle_new_user_created', true );
+echo "\n";
 
-if ( $wp_created && $moodle_created && $wp_pwd === $moodle_pwd ) {
-	echo esc_html__( 'Password:', 'moowoodle' ) . ' ' . esc_html( $wp_pwd ) . "\n";
+echo esc_html__(
+	'You will receive separate password setup/reset emails from WordPress and Moodle. Please check your inbox and follow the instructions to set your password and access your account.',
+	'moowoodle'
+) . "\n";
+
+if ( get_user_meta( $user->ID, Util::MOOWOODLE_USER_META['password_reset'], true ) ) {
+	echo "\n";
 	echo esc_html__(
-		'This password will work for both your WordPress and Moodle accounts. You will be required to change your Moodle password after your first login.',
+		'Moodle Login Notice: We were unable to synchronize your Moodle password automatically. If you cannot sign in to Moodle, please use the "Forgot Password" option on the Moodle login page and follow the instructions sent to your email address.',
 		'moowoodle'
 	) . "\n";
-} else {
-	if ( $wp_created ) {
-		echo esc_html__( 'WordPress Password:', 'moowoodle' ) . ' ' . esc_html( $wp_pwd ) . "\n";
-	}
-	if ( $moodle_created ) {
-		echo esc_html__( 'Moodle Password:', 'moowoodle' ) . ' ' . esc_html( $moodle_pwd ) . "\n";
-		echo esc_html__(
-			'Note: You will be required to change your Moodle password after your first login.',
-			'moowoodle'
-		) . "\n";
-	}
 }
 
 echo "\n" . esc_html__( 'Enrollment Details', 'moowoodle' ) . "\n";

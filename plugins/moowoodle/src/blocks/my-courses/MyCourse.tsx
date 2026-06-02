@@ -82,16 +82,6 @@ const MyCourse: React.FC = () => {
 				</td>
 				<td
 					className="woocommerce-orders-table__cell"
-					data-label={__(
-						'Password (First Time Login only)',
-						'moowoodle'
-					)}
-				>
-					{course.password ||
-						__('Password not Available', 'moowoodle')}
-				</td>
-				<td
-					className="woocommerce-orders-table__cell"
 					data-label={__('Action', 'moowoodle')}
 				>
 					{course.moodle_url ? (
@@ -163,12 +153,6 @@ const MyCourse: React.FC = () => {
 								</th>
 								<th className="woocommerce-orders-table__header">
 									{__('Enrolment Date', 'moowoodle')}
-								</th>
-								<th className="woocommerce-orders-table__header">
-									{__(
-										'Password (First Time Login only)',
-										'moowoodle'
-									)}
 								</th>
 								<th className="woocommerce-orders-table__header">
 									{__('Action', 'moowoodle')}
