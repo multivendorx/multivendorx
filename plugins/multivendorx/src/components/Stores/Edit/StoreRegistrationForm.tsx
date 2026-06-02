@@ -20,6 +20,7 @@ import React from 'react';
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { formatDate } from '@/services/commonFunction';
 import { PDFDownloadLink } from '@react-pdf/renderer';
+import { useNavigate } from 'react-router-dom';
 
 const styles = StyleSheet.create({
 	page: { padding: 24, fontSize: 12 },
@@ -84,6 +85,7 @@ const RegistrationPdf: React.FC<RegistrationPdfProps> = ({
 };
 
 const StoreRegistration = ({ id }: { id: string | null }) => {
+	const navigate = useNavigate();
 	const [formData, setFormData] = useState<{ [key: string]: any }>({});
 	const [activities, setActivities] = useState<{}>({});
 
@@ -195,19 +197,19 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 		}).then((res) => {
 			if (res.data.success) {
 				NoticeManager.add({
-					title: status === 'approve' ? 'Success' : 'Error!',
+					title:'Success',
 					message:
 						status === 'approve'
 							? __('Store approved successfully!', 'multivendorx')
 							: __(
-									'Store rejected successfully!',
-									'multivendorx'
-								),
-					type: status === 'approve' ? 'success' : 'error',
+								'Store rejected successfully!',
+								'multivendorx'
+							),
+					type: 'success',
 					position: 'float',
 				});
 				setFormData(updatedData); // update local state
-				window.location.reload();
+				navigate(`?page=multivendorx#&tab=stores`);
 			}
 		});
 	};
