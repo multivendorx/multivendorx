@@ -347,36 +347,36 @@ class Installer {
                 }
             }
 
-            // $previous_enquiry_catalog_customization_settings = get_option( 'catalogx_enquiry-catalog-customization_settings', array() );
-            // if ( ! empty( $previous_enquiry_catalog_customization_settings ) ) {
-            // update_option( Utill::CATALOGX_SETTINGS['enquiry-catalog-customization'], $previous_enquiry_catalog_customization_settings );
-            // delete_option( 'catalogx_enquiry-catalog-customization_settings' );
-            // }
-            // $previous_all_settings_settings = get_option( 'catalogx_all-settings_settings', array() );
-            // if ( ! empty( $previous_all_settings_settings ) ) {
-            // update_option( Utill::CATALOGX_SETTINGS['all-settings'], $previous_all_settings_settings );
-            // delete_option( 'catalogx_all-settings_settings' );
-            // }
-            // $previous_enquiry_quote_exclusion_settings = get_option( 'catalogx_enquiry-quote-exclusion_settings', array() );
-            // if ( ! empty( $previous_enquiry_quote_exclusion_settings ) ) {
-            // update_option( Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'], $previous_enquiry_quote_exclusion_settings );
-            // delete_option( 'catalogx_enquiry-quote-exclusion_settings' );
-            // }
-            // $previous_enquiry_form_customization_settings = get_option( 'catalogx_enquiry-form-customization_settings', array() );
-            // if ( ! empty( $previous_enquiry_form_customization_settings ) ) {
-            // update_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], $previous_enquiry_form_customization_settings );
-            // delete_option( 'catalogx_enquiry-form-customization_settings' );
-            // }
-            // $previous_enquiry_email_temp_settings = get_option( 'catalogx_enquiry-email-temp_settings', array() );
-            // if ( ! empty( $previous_enquiry_email_temp_settings ) ) {
-            // update_option( Utill::CATALOGX_SETTINGS['enquiry-email-temp'], $previous_enquiry_email_temp_settings );
-            // delete_option( 'catalogx_enquiry-email-temp_settings' );
-            // }
-            // $previous_wholesale_registration_settings = get_option( 'catalogx_wholesale-registration_settings', array() );
-            // if ( ! empty( $previous_wholesale_registration_settings ) ) {
-            // update_option( Utill::CATALOGX_SETTINGS['wholesale-registration'], $previous_wholesale_registration_settings );
-            // delete_option( 'catalogx_wholesale-registration_settings' );
-            // }
+            $previous_enquiry_catalog_customization_settings = get_option( 'catalogx_enquiry-catalog-customization_settings', array() );
+            if ( ! empty( $previous_enquiry_catalog_customization_settings ) ) {
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-catalog-customization'], $previous_enquiry_catalog_customization_settings );
+            delete_option( 'catalogx_enquiry-catalog-customization_settings' );
+            }
+            $previous_all_settings_settings = get_option( 'catalogx_all-settings_settings', array() );
+            if ( ! empty( $previous_all_settings_settings ) ) {
+            update_option( Utill::CATALOGX_SETTINGS['all-settings'], $previous_all_settings_settings );
+            delete_option( 'catalogx_all-settings_settings' );
+            }
+            $previous_enquiry_quote_exclusion_settings = get_option( 'catalogx_enquiry-quote-exclusion_settings', array() );
+            if ( ! empty( $previous_enquiry_quote_exclusion_settings ) ) {
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'], $previous_enquiry_quote_exclusion_settings );
+            delete_option( 'catalogx_enquiry-quote-exclusion_settings' );
+            }
+            $previous_enquiry_form_customization_settings = get_option( 'catalogx_enquiry-form-customization_settings', array() );
+            if ( ! empty( $previous_enquiry_form_customization_settings ) ) {
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], $previous_enquiry_form_customization_settings );
+            delete_option( 'catalogx_enquiry-form-customization_settings' );
+            }
+            $previous_enquiry_email_temp_settings = get_option( 'catalogx_enquiry-email-temp_settings', array() );
+            if ( ! empty( $previous_enquiry_email_temp_settings ) ) {
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-email-temp'], $previous_enquiry_email_temp_settings );
+            delete_option( 'catalogx_enquiry-email-temp_settings' );
+            }
+            $previous_wholesale_registration_settings = get_option( 'catalogx_wholesale-registration_settings', array() );
+            if ( ! empty( $previous_wholesale_registration_settings ) ) {
+            update_option( Utill::CATALOGX_SETTINGS['wholesale-registration'], $previous_wholesale_registration_settings );
+            delete_option( 'catalogx_wholesale-registration_settings' );
+            }
         }
     }
 
@@ -739,92 +739,92 @@ class Installer {
         $previous_exclusion_settings = get_option( 'mvx_catalog_exclusion_tab_settings', array() );
 
         // Prepare exclusion user list.
-        // $exclusion_user_list = $previous_exclusion_settings['woocommerce_user_list'];
-        // $exclusion_user_list = is_array( $exclusion_user_list ) ? $exclusion_user_list : array();
+        $exclusion_user_list = $previous_exclusion_settings['woocommerce_user_list'];
+        $exclusion_user_list = is_array( $exclusion_user_list ) ? $exclusion_user_list : array();
 
-        // $exclusion_user_list = array_map(
-        // function ( $user_list ) {
-		// return array(
-		// 'key'   => $user_list['value'],
-		// 'label' => $user_list['label'],
-		// 'value' => $user_list['value'],
-		// );
-		// },
-        // $exclusion_user_list
-        // );
+        $exclusion_user_list = array_map(
+        function ( $user_list ) {
+		return array(
+		'key'   => $user_list['value'],
+		'label' => $user_list['label'],
+		'value' => $user_list['value'],
+		);
+		},
+        $exclusion_user_list
+        );
 
-        // // Prepare user role list.
-        // $exclusion_userroles_list = $previous_exclusion_settings['woocommerce_userroles_list'];
-        // $exclusion_userroles_list = is_array( $exclusion_userroles_list ) ? $exclusion_userroles_list : array();
+        // Prepare user role list.
+        $exclusion_userroles_list = $previous_exclusion_settings['woocommerce_userroles_list'];
+        $exclusion_userroles_list = is_array( $exclusion_userroles_list ) ? $exclusion_userroles_list : array();
 
-        // $exclusion_userroles_list = array_map(
-        // function ( $user_list ) {
-		// return array(
-		// 'key'   => $user_list['value'],
-		// 'label' => $user_list['label'],
-		// 'value' => $user_list['value'],
-		// );
-		// },
-        // $exclusion_userroles_list
-        // );
+        $exclusion_userroles_list = array_map(
+        function ( $user_list ) {
+		return array(
+		'key'   => $user_list['value'],
+		'label' => $user_list['label'],
+		'value' => $user_list['value'],
+		);
+		},
+        $exclusion_userroles_list
+        );
 
-        // // Prepare product list.
-        // $exclusion_product_list = $previous_exclusion_settings['woocommerce_product_list'];
-        // $exclusion_product_list = is_array( $exclusion_product_list ) ? $exclusion_product_list : array();
+        // Prepare product list.
+        $exclusion_product_list = $previous_exclusion_settings['woocommerce_product_list'];
+        $exclusion_product_list = is_array( $exclusion_product_list ) ? $exclusion_product_list : array();
 
-        // $exclusion_product_list = array_map(
-        // function ( $user_list ) {
-		// return array(
-		// 'key'   => $user_list['value'],
-		// 'label' => $user_list['label'],
-		// 'value' => $user_list['value'],
-		// );
-		// },
-        // $exclusion_product_list
-        // );
+        $exclusion_product_list = array_map(
+        function ( $user_list ) {
+		return array(
+		'key'   => $user_list['value'],
+		'label' => $user_list['label'],
+		'value' => $user_list['value'],
+		);
+		},
+        $exclusion_product_list
+        );
 
-        // // Prepare category list.
-        // $exclusion_category_list = $previous_exclusion_settings['woocommerce_category_list'];
-        // $exclusion_category_list = is_array( $exclusion_category_list ) ? $exclusion_category_list : array();
+        // Prepare category list.
+        $exclusion_category_list = $previous_exclusion_settings['woocommerce_category_list'];
+        $exclusion_category_list = is_array( $exclusion_category_list ) ? $exclusion_category_list : array();
 
-        // $exclusion_category_list = array_map(
-        // function ( $user_list ) {
-        // return array(
-		// 'key'   => $user_list['value'],
-		// 'label' => $user_list['label'],
-		// 'value' => $user_list['value'],
-        // );
-        // },
-        // $exclusion_category_list
-        // );
+        $exclusion_category_list = array_map(
+        function ( $user_list ) {
+        return array(
+		'key'   => $user_list['value'],
+		'label' => $user_list['label'],
+		'value' => $user_list['value'],
+        );
+        },
+        $exclusion_category_list
+        );
 
-        // $exclusion_settings = array(
-        // 'catalog_exclusion_user_list'      => $exclusion_user_list,
-        // 'enquiry_exclusion_user_list'      => $exclusion_user_list,
+        $exclusion_settings = array(
+        'catalog_exclusion_user_list'      => $exclusion_user_list,
+        'enquiry_exclusion_user_list'      => $exclusion_user_list,
 
-        // 'catalog_exclusion_userroles_list' => $exclusion_userroles_list,
-        // 'enquiry_exclusion_userroles_list' => $exclusion_userroles_list,
+        'catalog_exclusion_userroles_list' => $exclusion_userroles_list,
+        'enquiry_exclusion_userroles_list' => $exclusion_userroles_list,
 
-        // 'enquiry_exclusion_product_list'   => $exclusion_product_list,
-        // 'catalog_exclusion_product_list'   => $exclusion_product_list,
+        'enquiry_exclusion_product_list'   => $exclusion_product_list,
+        'catalog_exclusion_product_list'   => $exclusion_product_list,
 
-        // 'catalog_exclusion_category_list'  => $exclusion_category_list,
-        // 'enquiry_exclusion_category_list'  => $exclusion_category_list,
-        // );
+        'catalog_exclusion_category_list'  => $exclusion_category_list,
+        'enquiry_exclusion_category_list'  => $exclusion_category_list,
+        );
 
-        // update_option( 'catalogx_enquiry-quote-exclusion_settings', $exclusion_settings );
+        update_option( 'catalogx_enquiry-quote-exclusion_settings', $exclusion_settings );
 
-        // // delete previous option from database.
-        // delete_option( 'mvx_catalog_general_tab_settings' );
-        // delete_option( 'mvx_catalog_enquiry_form_tab_settings' );
-        // delete_option( 'mvx_catalog_exclusion_tab_settings' );
-        // delete_option( 'mvx_catalog_button_appearance_tab_settings' );
-        // delete_option( 'mvx_catalog_pro_enquiry_form_data' );
+        // delete previous option from database.
+        delete_option( 'mvx_catalog_general_tab_settings' );
+        delete_option( 'mvx_catalog_enquiry_form_tab_settings' );
+        delete_option( 'mvx_catalog_exclusion_tab_settings' );
+        delete_option( 'mvx_catalog_button_appearance_tab_settings' );
+        delete_option( 'mvx_catalog_pro_enquiry_form_data' );
 
-        // delete_option( 'woocommerce_catalog_enquiry_from_settings' );
-        // delete_option( 'woocommerce_catalog_enquiry_general_settings' );
-        // delete_option( 'woocommerce_catalog_enquiry_exclusion_settings' );
-        // delete_option( 'woocommerce_catalog_enquiry_button_appearence_settings' );
+        delete_option( 'woocommerce_catalog_enquiry_from_settings' );
+        delete_option( 'woocommerce_catalog_enquiry_general_settings' );
+        delete_option( 'woocommerce_catalog_enquiry_exclusion_settings' );
+        delete_option( 'woocommerce_catalog_enquiry_button_appearence_settings' );
 
         // Exclusion settings.
         $map_exclusion = function ( $list ) {
