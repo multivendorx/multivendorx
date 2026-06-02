@@ -65,7 +65,7 @@ export default {
     modal: [
         {
             key: 'additional_alert_email',
-            type: 'email-input',
+            type: 'text',
             desc: __(
                 "Set the email address to receive notifications when a user submits enquiry of a product. You can add multiple comma-separated emails.<br/> Default: The admin's email is set as the receiver. Exclude the admin's email from the list to exclude admin from receiving these notifications.",
                 'catalogx'
@@ -74,7 +74,7 @@ export default {
             moduleEnabled: 'enquiry',
         },
         {
-			key: 'store_registration_from',
+			key: 'store_registration_form',
 			type: 'block-builder',
 			classes: 'full-width',
 			// desc: 'Customise personalised store registration form for marketplace.',
