@@ -9,6 +9,8 @@
  * @version   3.3.0
  */
 
+use MooWoodle\Util;
+
 defined( 'ABSPATH' ) || exit();
 
 do_action( 'woocommerce_email_header', $email_heading );
@@ -47,35 +49,30 @@ $user = get_user_by( 'email', $args['user_email'] );
 	</a><br>
 
 	<strong><?php esc_html_e( 'Username:', 'moowoodle' ); ?></strong>
-	<?php echo esc_html( $user->user_login ?? 'John Doe' ); ?><br>
-
-	<?php
-	$wp_pwd         = get_user_meta( $user->ID ?? 0, 'moowoodle_wordpress_user_pwd', true );
-	$moodle_pwd     = get_user_meta( $user->ID ?? 0, 'moowoodle_moodle_user_pwd', true );
-	$wp_created     = get_user_meta( $user->ID ?? 0, 'moowoodle_wordpress_new_user_created', true );
-	$moodle_created = get_user_meta( $user->ID ?? 0, 'moowoodle_moodle_new_user_created', true );
-
-	if ( $wp_created && $moodle_created && $wp_pwd === $moodle_pwd ) :
-		?>
-		<p>
-			<strong><?php esc_html_e( 'Password:', 'moowoodle' ); ?></strong> <?php echo esc_html( $wp_pwd ); ?><br>
-			<em><?php esc_html_e( 'This password will work for both your WordPress and Moodle accounts. You will be required to change your Moodle password after your first login.', 'moowoodle' ); ?></em><br>
-		</p>
-	<?php else : ?>
-		<?php if ( $wp_created ) : ?>
-			<p>
-				<strong><?php esc_html_e( 'WordPress Password:', 'moowoodle' ); ?></strong> <?php echo esc_html( $wp_pwd ); ?><br>
-			</p>
-		<?php endif; ?>
-		<?php if ( $moodle_created ) : ?>
-			<p>
-				<strong><?php esc_html_e( 'Moodle Password:', 'moowoodle' ); ?></strong> <?php echo esc_html( $moodle_pwd ); ?><br>
-				<em><?php esc_html_e( 'Note: You will be required to change your Moodle password after your first login.', 'moowoodle' ); ?></em><br>
-			</p>
-		<?php endif; ?>
-	<?php endif; ?>
+	<?php echo esc_html( $user->user_login ?? 'John Doe' ); ?>
 
 </p>
+<p>
+	<?php
+	esc_html_e(
+		'You will receive separate password setup/reset emails from WordPress and Moodle. Please check your inbox and follow the instructions to set your password and access your account.',
+		'moowoodle'
+	);
+	?>
+</p>
+
+<?php
+if ( get_user_meta( $user->ID, Util::MOOWOODLE_USER_META['password_reset'], true ) ) :
+?>
+	<p>
+		<?php
+		esc_html_e(
+			'Note: Your Moodle account may require a password reset before first login. If you cannot sign in to Moodle, please use the "Forgot Password" link on the Moodle login page and follow the instructions sent to your email address.',
+			'moowoodle'
+		);
+		?>
+	</p>
+<?php endif; ?>
 
 <h3><?php esc_html_e( 'Enrollment Details', 'moowoodle' ); ?></h3>
 
