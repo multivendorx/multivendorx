@@ -239,14 +239,14 @@ This project might have bugs and may be lacking certain features. If you'd like 
 = 3.4.0 - 2026-05-22 =
 * Added     - Compatibility of WordPress 7.0.0.
 * Added     - Compatibility of WooCommerce 10.7.0.
-* Fixed      - Improved overall settings structure and organization.
-* Fixed      - Addressed UI/UX inconsistencies across admin panels.
-* Fixed      - Revamped entire admin panel UI for improved usability and navigation.
-* Fixed      - Improved system performance and scalability.
+* Fixed     - Improved overall settings structure and organization.
+* Fixed     - Addressed UI/UX inconsistencies across admin panels.
+* Fixed     - Revamped entire admin panel UI for improved usability and navigation.
+* Fixed     - Improved system performance and scalability.
 * Updated   - Language file.
 
 = 3.3.6 - 2025-09-25 =
-* Fixed      - Issue occurring when a customer purchases a product that isn’t linked to a course.
+* Fixed     - Issue occurring when a customer purchases a product that isn’t linked to a course.
 
 = 3.3.5 - 2025-09-23 =
 * Added     - Compatibility of WooCommerce 10.2.1.
