@@ -83,6 +83,16 @@ const EditBlock = (props) => {
 						checked={attributes.showMap}
 						onChange={(value) => setAttributes({ showMap: value })}
 					/>
+					<ToggleControl
+						label={__('Hide Empty Stores', 'multivendorx')}
+						help={
+							attributes.hideEmpty
+								? __('Stores without products are hidden', 'multivendorx')
+								: __('Stores without products are shown', 'multivendorx')
+						}
+						checked={attributes.hideEmpty}
+						onChange={(value) => setAttributes({ hideEmpty: value })}
+					/>
 					<TextControl
 						label={__('Exclude Store IDs', 'multivendorx')}
 						help={__(
@@ -104,6 +114,7 @@ const EditBlock = (props) => {
 				order={attributes.order}
 				perpage={attributes.perpage}
 				excludeIds={attributes.excludeIds}
+				hideEmpty={attributes.hideEmpty}
 			/>
 		</div>
 	);
