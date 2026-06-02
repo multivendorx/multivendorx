@@ -56,7 +56,7 @@ class Util {
     );
 
     public const MOOWOODLE_USER_META = array(
-        'password_reset'   => 'moowoodle_moodle_password_reset_required',
+        'password_reset' => 'moowoodle_moodle_password_reset_required',
     );
 
     /**

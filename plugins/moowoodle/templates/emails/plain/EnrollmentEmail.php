@@ -12,14 +12,14 @@
 
 use MooWoodle\Util;
 
-defined('ABSPATH') || exit();
+defined( 'ABSPATH' ) || exit();
 
-$user = get_user_by('email', $args['user_email']);
+$user = get_user_by( 'email', $args['user_email'] );
 
 echo esc_html(
 	sprintf(
 		// translators: %s: User's first name.
-		__('Hi %s,', 'moowoodle'),
+		__( 'Hi %s,', 'moowoodle' ),
 		$user->first_name ?? ''
 	)
 ) . "\n\n";
@@ -27,8 +27,8 @@ echo esc_html(
 echo esc_html(
 	sprintf(
 		// translators: %s: Blog name.
-		__('Welcome to %s! We’re excited to have you onboard.', 'moowoodle'),
-		get_bloginfo('name')
+		__( 'Welcome to %s! We’re excited to have you onboard.', 'moowoodle' ),
+		get_bloginfo( 'name' )
 	)
 ) . "\n\n";
 
@@ -37,10 +37,10 @@ echo esc_html__(
 	'moowoodle'
 ) . "\n\n";
 
-echo esc_html__('Your Account Information', 'moowoodle') . "\n";
+echo esc_html__( 'Your Account Information', 'moowoodle' ) . "\n";
 echo "-------------------------\n";
-echo esc_html__('Website:', 'moowoodle') . ' ' . esc_url(home_url()) . "\n";
-echo esc_html__('Username:', 'moowoodle') . ' ' . esc_html($user->user_login ?? 'John Doe') . "\n";
+echo esc_html__( 'Website:', 'moowoodle' ) . ' ' . esc_url( home_url() ) . "\n";
+echo esc_html__( 'Username:', 'moowoodle' ) . ' ' . esc_html( $user->user_login ?? 'John Doe' ) . "\n";
 
 echo "\n";
 
@@ -57,31 +57,31 @@ if ( get_user_meta( $user->ID, Util::MOOWOODLE_USER_META['password_reset'], true
 	) . "\n";
 }
 
-echo "\n" . esc_html__('Enrollment Details', 'moowoodle') . "\n";
+echo "\n" . esc_html__( 'Enrollment Details', 'moowoodle' ) . "\n";
 echo "--------------------\n";
 
-echo esc_html__('Course(s):', 'moowoodle') . "\n";
-if (! empty($args['enrollments']['course']) && is_array($args['enrollments']['course'])) {
-	foreach ($args['enrollments']['course'] as $product_id => $product_name) {
-		echo '- ' . esc_html($product_name) . "\n";
+echo esc_html__( 'Course(s):', 'moowoodle' ) . "\n";
+if ( ! empty( $args['enrollments']['course'] ) && is_array( $args['enrollments']['course'] ) ) {
+	foreach ( $args['enrollments']['course'] as $product_id => $product_name ) {
+		echo '- ' . esc_html( $product_name ) . "\n";
 	}
 } else {
-	echo '- ' . esc_html__('Dummy Course', 'moowoodle') . "\n";
+	echo '- ' . esc_html__( 'Dummy Course', 'moowoodle' ) . "\n";
 }
 
-echo "\n" . esc_html__('Access Your Courses', 'moowoodle') . "\n";
+echo "\n" . esc_html__( 'Access Your Courses', 'moowoodle' ) . "\n";
 echo "----------------------\n";
-echo esc_html__('To get started with your courses, please visit:', 'moowoodle') . "\n";
-echo '👉 ' . esc_url(wc_get_page_permalink('myaccount') . 'my-courses/') . "\n\n";
+echo esc_html__( 'To get started with your courses, please visit:', 'moowoodle' ) . "\n";
+echo '👉 ' . esc_url( wc_get_page_permalink( 'myaccount' ) . 'my-courses/' ) . "\n\n";
 
-$support_email = 'support@' . wp_parse_url(home_url(), PHP_URL_HOST);
+$support_email = 'support@' . wp_parse_url( home_url(), PHP_URL_HOST );
 
 echo esc_html(
 	sprintf(
 		// translators: %s: support email address.
-		__('If you have any questions or face any issues logging in, feel free to reach out to our support team at %s.', 'moowoodle'),
+		__( 'If you have any questions or face any issues logging in, feel free to reach out to our support team at %s.', 'moowoodle' ),
 		$support_email
 	)
 ) . "\n\n";
 
-echo esc_html__('Wishing you a great learning experience!', 'moowoodle') . "\n";
+echo esc_html__( 'Wishing you a great learning experience!', 'moowoodle' ) . "\n";
