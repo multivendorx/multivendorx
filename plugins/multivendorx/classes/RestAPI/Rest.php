@@ -57,8 +57,9 @@ class Rest {
         add_filter( 'woocommerce_rest_prepare_shop_coupon_object', array( $this, 'prepare_shop_coupon_filter_meta' ), 10, 3 );
         add_filter( 'woocommerce_rest_pre_insert_shop_coupon_object', array( $this, 'pre_insert_shop_coupon_fix_status' ), 10, 3 );
         add_filter( 'woocommerce_analytics_products_query_args', array( $this, 'analytics_products_filter_low_stock_meta' ), 10, 1 );
-        add_action( 'woocommerce_rest_pre_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 10, 3 );
-        add_action( 'woocommerce_rest_pre_insert_shop_coupon_object', array( $this, 'send_notifications' ), 10, 2 );
+        add_action( 'woocommerce_rest_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 10, 3 );
+        add_action( 'woocommerce_rest_pre_insert_product_object', array( $this, 'send_product_notifications' ), 10, 2 );
+        add_action( 'woocommerce_rest_insert_shop_coupon_object', array( $this, 'send_coupon_notifications' ), 10, 3 );
         add_filter( 'woocommerce_rest_product_shipping_class_query', array( $this, 'filter_shipping_classes_by_meta' ), 10, 2 );
     }
 
@@ -692,7 +693,6 @@ class Rest {
 			return;
 		}
 
-		$old_status = $product->get_status();
 		$new_status = $request->get_param( 'status' );
 
 		$store = new Store(
@@ -714,31 +714,7 @@ class Rest {
             );
 		}
 
-		if ( 'pending' === $old_status && 'publish' === $new_status ) {
-            MultiVendorX()->notifications->send_notification_helper(
-                'product_approved',
-                $store,
-                null,
-                array(
-					'product_name' => $product->get_name(),
-					'category'     => 'activity',
-				)
-            );
-		}
-
-		if ( 'publish' === $old_status && 'draft' === $new_status ) {
-            MultiVendorX()->notifications->send_notification_helper(
-                'product_rejected',
-                $store,
-                null,
-                array(
-					'product_name' => $product->get_name(),
-					'category'     => 'activity',
-				)
-            );
-		}
-
-		if ( 'publish' === $new_status && ( 'pending' === $old_status || 'draft' === $old_status ) ) {
+		if ( isset( $creating ) && true === $creating && 'publish' === $new_status ) {
 			$followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
 
 			foreach ( $followers as $follower ) {
@@ -767,6 +743,67 @@ class Rest {
         }
     }
 
+    /**
+     * Send notifications when a product status changes via REST API.
+     *
+     * @param WC_Product      $product  Product object.
+     * @param WP_REST_Request $request  REST request instance.
+     * @return WC_Product
+     */
+    public function send_product_notifications( $product, $request ) {
+
+        if ( ! defined( 'REST_REQUEST' ) ) {
+            return $product;
+        }
+
+        $post = get_post( $product->get_id() );
+
+        if ( ! $post ) {
+            return $product;
+        }
+
+        $old_status = $post->post_status;
+        $new_status = $request->get_param( 'status' );
+
+        $store_id = get_post_meta(
+            $product->get_id(),
+            Utill::POST_META_SETTINGS['store_id'],
+            true
+        );
+
+        $store = new Store( $store_id );
+
+        if ( ! $store->exists() ) {
+            return $product;
+        }
+
+        if ( 'pending' === $old_status && 'publish' === $new_status ) {
+            MultiVendorX()->notifications->send_notification_helper(
+                'product_approved',
+                $store,
+                null,
+                array(
+                    'product_name' => $product->get_name(),
+                    'category'     => 'activity',
+                )
+            );
+        }
+
+        if ( 'pending' === $old_status && 'draft' === $new_status ) {
+            MultiVendorX()->notifications->send_notification_helper(
+                'product_rejected',
+                $store,
+                null,
+                array(
+                    'product_name' => $product->get_name(),
+                    'category'     => 'activity',
+                )
+            );
+        }
+
+        return $product;
+    }
+
 	/**
 	 * Send notifications to store followers when a coupon is published.
 	 *
@@ -776,9 +813,10 @@ class Rest {
 	 *
 	 * @param WC_Coupon       $coupon  Coupon object.
 	 * @param WP_REST_Request $request REST request instance.
+     * @param bool            $creating True if the coupon is being created; false if updating.
 	 * @return void
 	 */
-	public function send_notifications( $coupon, $request ) {
+	public function send_coupon_notifications( $coupon, $request, $creating ) {
 		if ( ! defined( 'REST_REQUEST' ) ) {
 			return;
 		}
@@ -790,7 +828,6 @@ class Rest {
 			return;
 		}
 
-		$old_status = get_post_status( $coupon->get_id() );
 		$new_status = $request->get_param( 'status' );
 
 		$store_id = get_post_meta( $coupon->get_id(), Utill::POST_META_SETTINGS['store_id'], true );
@@ -799,7 +836,7 @@ class Rest {
             return;
         }
 
-		if ( 'publish' === $new_status && ( 'pending' === $old_status || 'draft' === $old_status ) ) {
+		if ( isset( $creating ) && true === $creating && 'publish' === $new_status ) {
 			$followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
 
 			foreach ( $followers as $follower ) {
