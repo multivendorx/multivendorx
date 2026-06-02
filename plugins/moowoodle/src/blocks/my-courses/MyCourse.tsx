@@ -85,14 +85,14 @@ const MyCourse: React.FC = () => {
 					data-label={__('Action', 'moowoodle')}
 				>
 					{course.moodle_url ? (
-						<a
-							href={course.moodle_url}
-							target="_blank"
-							rel="noopener noreferrer"
+						<div
 							className="woocommerce-button wp-element-button moowoodle"
+							onClick={() => window.open(course.moodle_url, '_blank', 'noopener,noreferrer')}
+							role="button"
+							tabIndex={0}
 						>
 							{__('View', 'moowoodle')}
-						</a>
+						</div>
 					) : (
 						<span className="disabled">
 							{__('No Link', 'moowoodle')}
