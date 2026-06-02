@@ -58,6 +58,7 @@ class Rest {
         add_filter( 'woocommerce_rest_pre_insert_shop_coupon_object', array( $this, 'pre_insert_shop_coupon_fix_status' ), 10, 3 );
         add_filter( 'woocommerce_analytics_products_query_args', array( $this, 'analytics_products_filter_low_stock_meta' ), 10, 1 );
         add_action( 'woocommerce_rest_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 10, 3 );
+        add_action( 'woocommerce_rest_pre_insert_product_object', array( $this, 'send_product_notification' ), 10, 2 );
         add_action( 'woocommerce_rest_insert_shop_coupon_object', array( $this, 'send_notifications' ), 10, 2 );
         add_filter( 'woocommerce_rest_product_shipping_class_query', array( $this, 'filter_shipping_classes_by_meta' ), 10, 2 );
     }
@@ -714,30 +715,6 @@ class Rest {
             );
 		}
 
-		if ( 'pending' === $old_status && 'publish' === $new_status ) {
-            MultiVendorX()->notifications->send_notification_helper(
-                'product_approved',
-                $store,
-                null,
-                array(
-					'product_name' => $product->get_name(),
-					'category'     => 'activity',
-				)
-            );
-		}
-
-		if ( 'publish' === $old_status && 'draft' === $new_status ) {
-            MultiVendorX()->notifications->send_notification_helper(
-                'product_rejected',
-                $store,
-                null,
-                array(
-					'product_name' => $product->get_name(),
-					'category'     => 'activity',
-				)
-            );
-		}
-
 		if ( 'publish' === $new_status && ( 'pending' === $old_status || 'draft' === $old_status ) ) {
 			$followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
 
@@ -767,6 +744,60 @@ class Rest {
         }
     }
 
+    /**
+     * Generate SKU data for a product if not being created.
+     *
+     * Calls the internal SKU save method when updating a product.
+     *
+     * @param \WC_Product      $product  The WooCommerce product object.
+     * @param \WP_REST_Request $request  The REST request object.
+     */
+    public function send_product_notification( $product, $request ) {
+        if ( ! defined( 'REST_REQUEST' ) ) {
+            return;
+        }
+
+        $referer = filter_input( INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL ) ?? '';
+        $path    = wp_parse_url( $referer, PHP_URL_PATH );
+		if ( false === strpos( $path, 'products' ) ) {
+			return;
+		}
+
+		$old_status = $product->get_status();
+		$new_status = $request->get_param( 'status' );
+
+		$store = new Store(
+            get_post_meta( $product->get_id(), Utill::POST_META_SETTINGS['store_id'], true )
+		);
+        if ( ! $store->exists() ) {
+            return;
+        }
+
+		if ( 'pending' === $old_status && 'publish' === $new_status ) {
+            MultiVendorX()->notifications->send_notification_helper(
+                'product_approved',
+                $store,
+                null,
+                array(
+					'product_name' => $product->get_name(),
+					'category'     => 'activity',
+				)
+            );
+		}
+
+		if ( 'publish' === $old_status && 'draft' === $new_status ) {
+            MultiVendorX()->notifications->send_notification_helper(
+                'product_rejected',
+                $store,
+                null,
+                array(
+					'product_name' => $product->get_name(),
+					'category'     => 'activity',
+				)
+            );
+		}
+    }
+
 	/**
 	 * Send notifications to store followers when a coupon is published.
 	 *
@@ -784,11 +815,8 @@ class Rest {
 		}
 
         $referer = filter_input( INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL ) ?? '';
-        file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders:ref : " . var_export($referer, true) . "\n", FILE_APPEND);
 
 		$path    = wp_parse_url( $referer, PHP_URL_PATH ) ?? '';
-
-        file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: path: " . var_export($path, true) . "\n", FILE_APPEND);
 
 		if ( false === strpos( $path, 'coupons' ) ) {
 			return;
