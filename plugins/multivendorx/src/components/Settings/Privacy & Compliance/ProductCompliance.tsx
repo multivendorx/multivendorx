@@ -332,14 +332,14 @@ const ratingsField = {
 	),
 	modal: [
 		{
-			id: 'business-registration',
-			label: 'Product title',
+			id: 'product-image',
+			label: 'Product Image',
 			mandatory: true,
 			formFields: [],
 			desc: 'Confirms the store is legally registered as a business entity.',
 		},
 		{
-			id: 'trade-license',
+			id: 'product-description',
 			label: 'Product description',
 			mandatory: true,
 			formFields: [],
@@ -352,19 +352,19 @@ const ratingsField = {
 			desc: 'Confirms the store’s physical or operational business address.',
 		},
 		{
-			id: 'Manufacturer / importer details',
+			id: 'manufacturer_importer_details',
 			label: 'Manufacturer / importer details',
 			formFields: [],
 			desc: 'Confirms the store’s physical or operational business address.',
 		},
 		{
-			id: 'address',
+			id: 'ingredients_materials',
 			label: 'Ingredients / materials',
 			isCustom: true,
 			desc: 'What the product is made of',
 		},
 		{
-			id: 'Usage instructions',
+			id: 'usage_instructions',
 			label: 'Usage instructions',
 			isCustom: true,
 			desc: 'How to use or operate the product safely',
