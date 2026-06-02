@@ -233,7 +233,7 @@ This project might have bugs and may be lacking certain features. If you'd like 
 
 = 3.4.1 - 2026-06-02 =
 * Added     - Compatibility of WooCommerce 10.8.1.
-* Changed   - Removed password creation during first-time user enrollment. New users will now receive their account setup and enrollment email directly from Moodle, ensuring a streamlined and Moodle-native onboarding experience.
+* Added     - Removed password creation during first-time user enrollment. New users will now receive their account setup and enrollment email directly from Moodle, ensuring a streamlined and Moodle-native onboarding experience.
 * Updated   - Language file.
 
 = 3.4.0 - 2026-05-22 =
