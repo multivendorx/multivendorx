@@ -263,7 +263,7 @@ jobs:
             --title "${{ github.event.inputs.plugin }} v${VERSION}" \
             --notes "${{ github.event.inputs.plugin }} version ${VERSION} release"
 
-            # -----------------------------------
+      # -----------------------------------
       # Deploy to WordPress.org
       # -----------------------------------
       - name: Deploy to WordPress.org
