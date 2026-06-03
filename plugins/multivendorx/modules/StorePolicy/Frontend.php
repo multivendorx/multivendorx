@@ -41,7 +41,7 @@ class Frontend {
 	 */
     public function register_script( $scripts ) {
         $scripts['multivendorx-store-policy-frontend-script'] = array(
-            'src'  => FrontendScripts::get_asset_path() . 'modules/StorePolicy/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+            'src'  => FrontendScripts::get_asset_path() . 'js/modules/StorePolicy/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
             'deps' => array( 'jquery' ),
         );
 

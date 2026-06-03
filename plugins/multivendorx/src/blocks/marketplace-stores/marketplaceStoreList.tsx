@@ -24,6 +24,7 @@ interface StoresListProps {
 	perPage?: number;
 	showMap?: boolean;
 	hideEmpty?: boolean;
+	excludeIds?: string;
 }
 
 interface Product {
@@ -46,7 +47,8 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	order = '',
 	perPage = 5,
 	showMap = true,
-	hideEmpty = false
+	hideEmpty = false,
+	excludeIds = "",
 }) => {
 	const [data, setData] = useState<StoreRow[] | []>([]);
 	const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -162,7 +164,6 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 			});
 		}
 	}, [data]);
-
 	useEffect(() => {
 		axios({
 			method: 'GET',
@@ -174,6 +175,12 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 				filters: true,
 				...filters,
 				filter_status: 'active',
+				exclude_ids: Array.isArray(excludeIds)
+					? excludeIds
+					: String(excludeIds || '')
+						.split(',')
+						.map((id) => parseInt(id.trim(), 10))
+						.filter((id) => !isNaN(id)),
 			},
 		})
 			.then((response) => {
@@ -253,9 +260,9 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	const visibleStores = hideEmpty
 		? data.filter(
 			(store) =>
-					storeTopProducts[store.id] && storeTopProducts[store.id].length > 0 
-			)
-			: data;
+				storeTopProducts[store.id] && storeTopProducts[store.id].length > 0
+		)
+		: data;
 
 	const renderMapComponent = () => {
 		if (!mapConfig.apiKey || !mapConfig.provider) {
