@@ -563,6 +563,12 @@ class StoreUtil {
 			$where[] = "ID IN ($ids)";
 		}
 
+        if ( isset( $args['exclude_ids'] ) ) {
+            $ids     = is_array( $args['exclude_ids'] ) ? $args['exclude_ids'] : array( $args['exclude_ids'] );
+            $ids     = implode( ',', array_map( 'intval', $ids ) );
+            $where[] = "ID NOT IN ($ids)";
+        }
+
 		if ( isset( $args['status'] ) ) {
 			$where[] = "status = '" . esc_sql( $args['status'] ) . "'";
 		}
