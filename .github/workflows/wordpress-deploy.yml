@@ -263,7 +263,7 @@ jobs:
             --title "${{ github.event.inputs.plugin }} v${VERSION}" \
             --notes "${{ github.event.inputs.plugin }} version ${VERSION} release"
 
-      # -----------------------------------
+            # -----------------------------------
       # Deploy to WordPress.org
       # -----------------------------------
       - name: Deploy to WordPress.org
@@ -272,6 +272,8 @@ jobs:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
         run: |
+          set -e
+
           PLUGIN="${{ github.event.inputs.plugin }}"
           VERSION="${{ steps.versions.outputs.plugin_version }}"
           SLUG="${{ steps.versions.outputs.wporg_slug }}"
@@ -280,6 +282,8 @@ jobs:
 
           SVN_URL="https://plugins.svn.wordpress.org/${SLUG}"
 
+          # Fresh SVN checkout
+          rm -rf "$HOME/svn/$SLUG"
           mkdir -p "$HOME/svn"
 
           svn checkout \
@@ -290,68 +294,61 @@ jobs:
             "$SVN_URL" \
             "$HOME/svn/$SLUG"
 
-          cd "$HOME/svn/$SLUG"
+          # Locate generated ZIP
+          ZIP_FILE=$(find "$GITHUB_WORKSPACE/plugins/$PLUGIN/release" -name "*.zip" | head -n 1)
 
-          mkdir -p trunk
-          mkdir -p tags/$VERSION
+          if [ -z "$ZIP_FILE" ]; then
+            echo "ZIP file not found"
+            exit 1
+          fi
 
-          rsync -rc \
-            --delete \
-            --exclude=".git*" \
-            --exclude="node_modules" \
-            --exclude="src" \
-            --exclude=".github" \
-            --exclude=".husky" \
-            --exclude=".vscode" \
-            --exclude="tests" \
-            --exclude="coverage" \
-            --exclude="release" \
-            --exclude=".wireit" \
-            --exclude=".cache" \
-            --exclude="webpack.config.js" \
-            --exclude="vite.config.*" \
-            --exclude="tsconfig.json" \
-            --exclude="package.json" \
-            --exclude="pnpm-lock.yaml" \
-            --exclude="README.md" \
-            --exclude="composer.json" \
-            --exclude="composer.lock" \
-            --exclude=".wordpress-org" \
-            --exclude=".wp-env.json" \
-            --exclude="phpunit.xml.dist" \
-            "$GITHUB_WORKSPACE/plugins/$PLUGIN/" \
+          echo "Using ZIP: $ZIP_FILE"
+
+          # Extract ZIP
+          rm -rf /tmp/wporg-release
+          mkdir -p /tmp/wporg-release
+
+          unzip -q "$ZIP_FILE" -d /tmp/wporg-release
+
+          RELEASE_DIR="/tmp/wporg-release/$SLUG"
+
+          if [ ! -d "$RELEASE_DIR" ]; then
+            echo "Release directory not found: $RELEASE_DIR"
+            echo "Extracted contents:"
+            ls -la /tmp/wporg-release
+            exit 1
+          fi
+
+          # Prepare SVN structure
+          mkdir -p "$HOME/svn/$SLUG/trunk"
+          mkdir -p "$HOME/svn/$SLUG/tags/$VERSION"
+
+          # Sync packaged files to trunk
+          rsync -rc --delete \
+            "$RELEASE_DIR/" \
             "$HOME/svn/$SLUG/trunk/"
 
-          rsync -rc \
-            --delete \
-            --exclude=".git*" \
-            --exclude="node_modules" \
-            --exclude="src" \
-            --exclude=".github" \
-            --exclude=".husky" \
-            --exclude=".vscode" \
-            --exclude="tests" \
-            --exclude="coverage" \
-            --exclude="release" \
-            --exclude=".wireit" \
-            --exclude=".cache" \
-            --exclude="webpack.config.js" \
-            --exclude="vite.config.*" \
-            --exclude="tsconfig.json" \
-            --exclude="package.json" \
-            --exclude="pnpm-lock.yaml" \
-            --exclude="README.md" \
-            --exclude="composer.json" \
-            --exclude="composer.lock" \
-            --exclude=".wordpress-org" \
-            --exclude=".wp-env.json" \
-            --exclude="phpunit.xml.dist" \
-            "$GITHUB_WORKSPACE/plugins/$PLUGIN/" \
+          # Sync packaged files to tag
+          rsync -rc --delete \
+            "$RELEASE_DIR/" \
             "$HOME/svn/$SLUG/tags/$VERSION/"
 
-          svn add --force . --auto-props --parents --depth infinity "*" || true
+          cd "$HOME/svn/$SLUG"
 
-          svn status | grep '^!' | awk '{print $2}' | xargs -r svn delete
+          svn add --force . \
+            --auto-props \
+            --parents \
+            --depth infinity "*" || true
+
+          svn status | awk '/^\!/ {print $2}' | xargs -r svn delete
+
+          echo "===== SVN STATUS ====="
+          svn status
+
+          if [ -z "$(svn status)" ]; then
+            echo "No changes to commit"
+            exit 0
+          fi
 
           svn commit \
             --non-interactive \
