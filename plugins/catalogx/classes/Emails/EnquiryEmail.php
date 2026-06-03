@@ -25,7 +25,7 @@ class EnquiryEmail extends \WC_Email {
      *
      * @var int[]|int
      */
-    public $product_ids;
+    public $product_id;
 
     /**
      * Email attachments, if any.
@@ -39,28 +39,28 @@ class EnquiryEmail extends \WC_Email {
      *
      * @var array
      */
-    public $enquiry_details;
+    public $enquiry_data;
 
     /**
      * Customer's name.
      *
      * @var string
      */
-    public $customer_name;
+    public $cust_name;
 
     /**
      * Customer's email address.
      *
      * @var string
      */
-    public $customer_email;
+    public $cust_email;
 
     /**
      * Email arguments.
      *
-     * @var array
+     * @var string
      */
-    public $template_config;
+    public $args;
 
     /**
      * Constructor
@@ -70,7 +70,7 @@ class EnquiryEmail extends \WC_Email {
         $this->title       = __( 'Enquiry sent', 'catalogx' );
         $this->description = __( 'Admin will get an email when a customer enquires about a product.', 'catalogx' );
         // Default values.
-        $template_defaults     = array(
+        $defaults   = array(
             'email_setting'   => '',
             'template_map'    => array(
                 'template1' => 'emails/default-enquiry-template.php',
@@ -86,12 +86,12 @@ class EnquiryEmail extends \WC_Email {
             'default_html'    => 'emails/enquiry-email.php',
             'template_loader' => CatalogX()->util,
         );
-        $this->template_config = apply_filters( 'catalogx_enquiry_email_template', $template_defaults );
+        $this->args = apply_filters( 'catalogx_enquiry_email_template', $defaults );
         // Set the appropriate template paths.
-        $this->template_loader = $this->template_config['template_loader'];
-        $this->template_html   = $this->template_config['template_map'][ $this->template_config['email_setting'] ] ?? $this->template_config['default_html'];
-        $this->template_plain  = $this->template_config['plain_template'];
-        $this->template_base   = $this->template_config['base_path'];
+        $this->template_loader = $this->args['template_loader'];
+        $this->template_html   = $this->args['template_map'][ $this->args['email_setting'] ] ?? $this->args['default_html'];
+        $this->template_plain  = $this->args['plain_template'];
+        $this->template_base   = $this->args['base_path'];
         // Call parent constructor.
         parent::__construct();
     }
@@ -100,18 +100,19 @@ class EnquiryEmail extends \WC_Email {
      * Trigger the email.
      *
      * @param string $recipient    The primary recipient email address.
-     * @param array  $enquiry_details Associative array containing enquiry details.
+     * @param array  $enquiry_data Associative array containing enquiry details.
      * @param array  $attachments  List of file paths to attach to the email.
      *
      * @return bool Whether the email was sent successfully.
      */
-    public function trigger( $recipient, $enquiry_details, $attachments ) {
-        $this->recipient       = $recipient;
-        $this->attachments     = $attachments;
-        $this->product_ids     = $enquiry_details['product_id'] ?? array();
-        $this->enquiry_details = $enquiry_details;
-        $this->customer_name   = $enquiry_details['user_name'] ?? '';
-        $this->customer_email  = $enquiry_details['user_email'] ?? '';
+    public function trigger( $recipient, $enquiry_data, $attachments ) {
+        $this->recipient      = $recipient;
+        $this->attachments    = $attachments;
+        $this->product_id     = $enquiry_data['product_id'];
+        $this->enquiry_data   = $enquiry_data;
+        $this->cust_name      = $enquiry_data['user_name'];
+        $this->cust_email     = $enquiry_data['user_email'];
+        $this->customer_email = $this->cust_email;
 
         if ( ! $this->is_enabled() || ! $this->get_recipient() ) {
             return false;
@@ -119,12 +120,11 @@ class EnquiryEmail extends \WC_Email {
 
         $this->add_vendor_emails();
 
-        $product       = wc_get_product( key( $this->product_ids ) );
-        $product_title = $product ? $product->get_title() : '';
+        $product       = wc_get_product( key( $this->product_id ) );
         $this->find    = array( '{PRODUCT_NAME}', '{USER_NAME}' );
         $this->replace = array(
-            is_array( $this->product_ids ) && count( $this->product_ids ) > 1 ? __( 'Multiple Products', 'catalogx' ) : $product_title,
-            $this->customer_name,
+            is_array( $this->product_id ) && count( $this->product_id ) > 1 ? 'MULTIPLE PRODUCTS' : $product->get_title(),
+            $this->cust_name,
         );
 
         return $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
@@ -138,21 +138,17 @@ class EnquiryEmail extends \WC_Email {
             return;
         }
 
-        foreach ( $this->product_ids as $product_id => $quantity ) {
+        foreach ( $this->product_id as $product_id => $quantity ) {
             $vendor = function_exists( 'get_mvx_product_vendors' ) ? get_mvx_product_vendors( $product_id ) : null;
 
-            if ( null !== $vendor ) {
-                $vendor_email       = sanitize_email( $vendor->user_data->user_email );
-                $recipient_emails   = explode( ',', $this->recipient );
-                $recipient_emails[] = $vendor_email;
+            if ( $vendor ) {
+                $vendor_email     = sanitize_email( $vendor->user_data->user_email );
+                $this->recipient .= ', ' . $vendor_email;
 
-                $this->recipient = implode(
-                    ',',
-                    array_unique( array_map( 'trim', $recipient_emails ) )
-                );
-
-                $email_setting       = get_user_meta( $vendor->id, 'vendor_enquiry_settings', true )['selected_email_tpl'] ?? '';
-                $this->template_html = $this->template_config['template_map'][ $email_setting ] ?? $this->template_config['default_html'];
+                if ( strpos( $this->recipient, $vendor_email ) !== false ) {
+                    $email_setting       = get_user_meta( $vendor->id, 'vendor_enquiry_settings', true )['selected_email_tpl'] ?? '';
+                    $this->template_html = $this->args['template_map'][ $email_setting ] ?? $this->args['default_html'];
+                }
             }
         }
     }
@@ -161,7 +157,7 @@ class EnquiryEmail extends \WC_Email {
      * Get email subject.
      */
     public function get_default_subject() {
-        return empty( $this->product_ids ) ? __( 'Product Enquiry for Dummy Product by Guest', 'catalogx' ) : apply_filters( 'catalogx_enquiry_admin_email_subject', __( 'Product Enquiry for {PRODUCT_NAME} by {USER_NAME}', 'catalogx' ), $this->object );
+        return empty( $this->product_id ) ? __( 'Product Enquiry for Dummy Product by Guest', 'catalogx' ) : apply_filters( 'catalogx_enquiry_admin_email_subject', __( 'Product Enquiry for {PRODUCT_NAME} by {USER_NAME}', 'catalogx' ), $this->object );
     }
 
     /**
@@ -183,7 +179,7 @@ class EnquiryEmail extends \WC_Email {
      */
     public function get_headers() {
         $header  = 'Content-Type: ' . $this->get_content_type() . "\r\n";
-        $header .= 'Reply-to: ' . $this->customer_name . ' <' . $this->customer_email . ">\r\n";
+        $header .= 'Reply-to: ' . $this->cust_name . ' <' . $this->cust_email . ">\r\n";
         return apply_filters( 'catalogx_enquiry_admin_email_headers', $header, $this->id, $this->object );
     }
 
@@ -192,7 +188,7 @@ class EnquiryEmail extends \WC_Email {
      */
     public function get_content_html() {
         ob_start();
-        $this->template_loader->get_template( $this->template_html, $this->get_template_context() );
+        $this->template_loader->get_template( $this->template_html, $this->get_template_args() );
         return ob_get_clean();
     }
 
@@ -201,18 +197,18 @@ class EnquiryEmail extends \WC_Email {
      */
     public function get_content_plain() {
         ob_start();
-        $this->template_loader->get_template( $this->template_plain, $this->get_template_context() );
+        $this->template_loader->get_template( $this->template_plain, $this->get_template_args() );
         return ob_get_clean();
     }
 
     /**
      * Get template arguments.
      */
-    protected function get_template_context() {
+    protected function get_template_args() {
         return array(
             'email_heading'  => $this->get_heading(),
-            'product_id'     => $this->product_ids,
-            'enquiry_data'   => $this->enquiry_details,
+            'product_id'     => $this->product_id,
+            'enquiry_data'   => $this->enquiry_data,
             'customer_email' => $this->customer_email,
             'sent_to_admin'  => true,
             'plain_text'     => false,
