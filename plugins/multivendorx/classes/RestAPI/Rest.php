@@ -773,28 +773,21 @@ class Rest {
 	 * @param WP_REST_Request $request REST request instance.
 	 * @return void
 	 */
-	public function send_notifications( $coupon, $request ) {
+	public function send_notifications( $coupon, $request, $creating ) {
 		if ( ! defined( 'REST_REQUEST' ) ) {
-			return;
+			return $coupon;
 		}
 
-        $referer = filter_input( INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL ) ?? '';
-		$path    = wp_parse_url( $referer, PHP_URL_PATH ) ?? '';
-
-		if ( false === strpos( $path, 'coupons' ) ) {
-			return;
-		}
-
-		$old_status = get_post_status( $coupon->get_id() );
+		$old_status = $coupon->get_data()['status'] ?? '';
 		$new_status = $request->get_param( 'status' );
 
-		$store_id = get_post_meta( $coupon->get_id(), Utill::POST_META_SETTINGS['store_id'], true );
+        $store_id = $coupon->get_meta(Utill::POST_META_SETTINGS['store_id'],true);
 		$store    = new Store( $store_id );
         if ( ! $store->exists() ) {
-            return;
+            return $coupon;
         }
 
-		if ( 'publish' === $new_status && ( 'pending' === $old_status || 'draft' === $old_status ) ) {
+		if ( ('publish' === $new_status && ( 'pending' === $old_status || 'draft' === $old_status )) || ('publish' === $new_status && $creating ) ) {
 			$followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
 
 			foreach ( $followers as $follower ) {
@@ -818,6 +811,8 @@ class Rest {
 				);
 			}
 		}
+
+        return $coupon;
 	}
 
     /**

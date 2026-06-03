@@ -1693,7 +1693,6 @@ class Notifications {
 				$subject = str_replace( '[' . $key . ']', $value, $subject );
 			}
 			$headers = array( 'Content-Type: text/html; charset=UTF-8' );
-			file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export($action_name, true) . "\n", FILE_APPEND);
 
 			wp_mail( $to, $subject, $message, $headers );
 		}
