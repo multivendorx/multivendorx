@@ -316,6 +316,9 @@ jobs:
             --exclude="README.md" \
             --exclude="composer.json" \
             --exclude="composer.lock" \
+            --exclude=".wordpress-org" \
+            --exclude=".wp-env.json" \
+            --exclude="phpunit.xml.dist" \
             "$GITHUB_WORKSPACE/plugins/$PLUGIN/" \
             "$HOME/svn/$SLUG/trunk/"
 
@@ -340,6 +343,9 @@ jobs:
             --exclude="README.md" \
             --exclude="composer.json" \
             --exclude="composer.lock" \
+            --exclude=".wordpress-org" \
+            --exclude=".wp-env.json" \
+            --exclude="phpunit.xml.dist" \
             "$GITHUB_WORKSPACE/plugins/$PLUGIN/" \
             "$HOME/svn/$SLUG/tags/$VERSION/"
 

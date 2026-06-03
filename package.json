@@ -8,7 +8,7 @@
   "author": "MultiVendorX",
   "packageManager": "pnpm@10.34.1",
   "engines": {
-    "node": "^24.16.0"
+    "node": "^22.22.3"
   },
   "repository": {
     "type": "git",

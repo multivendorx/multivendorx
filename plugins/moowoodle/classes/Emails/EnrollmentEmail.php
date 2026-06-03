@@ -66,12 +66,6 @@ class EnrollmentEmail extends \WC_Email {
 			$this->get_headers(),
 			$this->get_attachments()
 		);
-
-		$user = get_user_by( 'email', $recipient );
-		if ( $user && ( get_user_meta( $user->ID, 'moowoodle_moodle_new_user_created', true ) || get_user_meta( $user->ID, 'moowoodle_wordpress_new_user_created', true ) ) ) {
-            delete_user_meta( $user->ID, 'moowoodle_wordpress_new_user_created' );
-            delete_user_meta( $user->ID, 'moowoodle_moodle_new_user_created' );
-        }
 	}
 
 	/**

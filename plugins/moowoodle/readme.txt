@@ -5,7 +5,7 @@ Donate link: https://dualcube.com/?utm_source=wporg&utm_medium=plugindescription
 Requires at least: 6.0.0
 Tested up to: 7.0.0
 Requires PHP: 8.0
-Stable tag: 3.4.0
+Stable tag: 3.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -231,17 +231,22 @@ This project might have bugs and may be lacking certain features. If you'd like 
 
 == Changelog ==
 
+= 3.4.1 - 2026-06-02 =
+* Added     - Compatibility of WooCommerce 10.8.1.
+* Added     - Removed password creation during first-time user enrollment. New users will now receive their account setup and enrollment email directly from Moodle, ensuring a streamlined and Moodle-native onboarding experience.
+* Updated   - Language file.
+
 = 3.4.0 - 2026-05-22 =
 * Added     - Compatibility of WordPress 7.0.0.
 * Added     - Compatibility of WooCommerce 10.7.0.
-* Fixed      - Improved overall settings structure and organization.
-* Fixed      - Addressed UI/UX inconsistencies across admin panels.
-* Fixed      - Revamped entire admin panel UI for improved usability and navigation.
-* Fixed      - Improved system performance and scalability.
+* Fixed     - Improved overall settings structure and organization.
+* Fixed     - Addressed UI/UX inconsistencies across admin panels.
+* Fixed     - Revamped entire admin panel UI for improved usability and navigation.
+* Fixed     - Improved system performance and scalability.
 * Updated   - Language file.
 
 = 3.3.6 - 2025-09-25 =
-* Fixed      - Issue occurring when a customer purchases a product that isn’t linked to a course.
+* Fixed     - Issue occurring when a customer purchases a product that isn’t linked to a course.
 
 = 3.3.5 - 2025-09-23 =
 * Added     - Compatibility of WooCommerce 10.2.1.

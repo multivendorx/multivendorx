@@ -55,6 +55,10 @@ class Util {
         'category_path' => '_category_path',
     );
 
+    public const MOOWOODLE_USER_META = array(
+        'password_reset' => 'moowoodle_moodle_password_reset_required',
+    );
+
     /**
      * Write log entry to MooWoodle log file.
      *
