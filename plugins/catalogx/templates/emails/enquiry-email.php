@@ -32,7 +32,12 @@ foreach ( $template_data['emailTemplates'] ?? array() as $email_template ) {
 $email_html = '';
 
 if ( ! empty( $template['blocks'] ) ) {
-	$email_html = EmailHTMLConverter::convert( $template['blocks'] );
+	$email_html = EmailHTMLConverter::convert( $template['blocks'],array(
+		'{customer_name}'  => 'Jhon Doe', // Replace with actual customer name if available
+		'{customer_email}' => 'jhon.doe@example.com', // Replace with actual customer email if available
+		'{product_name}'   => 'Dummy Product', // Replace with actual product name if available
+		'{product_link}'   => '#', // Replace with actual product link if available
+	) );
 }
 ?>
 

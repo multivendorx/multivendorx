@@ -12,8 +12,18 @@ class EmailHTMLConverter {
      * @param array $blocks Array of blocks to convert.
      * @return string HTML string.
      */
-    public static function convert( $blocks ) {
-        return catalogx_render_blocks_to_html( $blocks );
+    public static function convert( $blocks, $placeholders = array()  ) {
+        $html = catalogx_render_blocks_to_html( $blocks );
+
+		if ( ! empty( $placeholders ) ) {
+		$html = str_replace(
+			array_keys( $placeholders ),
+			array_values( $placeholders ),
+			$html
+		);
+	}
+
+		return $html;
     }
 }
 
