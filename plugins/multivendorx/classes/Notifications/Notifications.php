@@ -2046,7 +2046,6 @@ class Notifications {
 			),
 			$extra
 		);
-
 		do_action( "multivendorx_notify_{$type}", $type, $payload );
 	}
 }

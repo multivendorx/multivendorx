@@ -250,8 +250,7 @@ class Rest extends \WP_REST_Controller {
             if ( ! is_array( $following ) ) {
                 $following = array();
             }
-
-            $is_following = in_array( $store_id, $following, true );
+            $is_following = in_array( (int)$store_id, $following, true );
 
             return rest_ensure_response(
                 array(

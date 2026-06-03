@@ -132,10 +132,10 @@ class FrontendScripts {
 					'src' => self::get_asset_path() . 'styles/index.css',
 				),
                 'multivendorx-store-tabs-style'   => array(
-					'src' => self::get_asset_path() . 'styles/public' . MULTIVENDORX_PLUGIN_SLUG . '-store-products.min.css',
+					'src' => self::get_asset_path() . 'styles/public/' . MULTIVENDORX_PLUGIN_SLUG . '-store-products.min.css',
 				),
                 'multivendorx-common-block-style' => array(
-					'src' => self::get_asset_path() . 'styles/public' . MULTIVENDORX_PLUGIN_SLUG . '-common-block.min.css',
+					'src' => self::get_asset_path() . 'styles/public/' . MULTIVENDORX_PLUGIN_SLUG . '-common-block.min.css',
 				),
 			)
         );

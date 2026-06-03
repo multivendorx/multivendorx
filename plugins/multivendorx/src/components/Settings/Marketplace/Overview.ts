@@ -200,6 +200,12 @@ export default {
 							accepted: 'true or false (Default: false)',
 							default: '[marketplace_stores hide_empty="false"]',
 						},
+						{
+							attribute: 'exclude_ids',
+							description:'Exclude specific stores from the listing by providing one or more store IDs separated by commas.',
+							accepted: 'Comma-separated store IDs (e.g. 1,5,10)',
+							default: '[marketplace_stores exclude_ids="1,5,10"]',
+						},
 					],
 				},
 				{
