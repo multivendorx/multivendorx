@@ -17,7 +17,7 @@
     "main": "index.js",
     "mainPluginFile": "moowoodle.php",
     "engines": {
-        "node": "^24.16.0"
+        "node": "^22.22.3"
     },
     "scripts": {
         "build": "pnpm run build:project",
