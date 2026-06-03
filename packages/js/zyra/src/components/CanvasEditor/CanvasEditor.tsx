@@ -27,6 +27,7 @@ interface CanvasEditorProps {
             label: string;
             fixedName?: string;
             placeholder?: string;
+            defaultField?: boolean;
         }>;
     }>;
     visibleGroups?: string[];
@@ -43,9 +44,6 @@ interface CanvasEditorProps {
     availablePlaceholder?: string[];
     proSettingChange?: () => boolean;
     context?: string;
-    defaultBlocks?: {
-        storeName?: boolean;
-    };
     inputTypeList?: Array<{ value: string; label: string }>;
 }
 type SortableItem = Partial<Block> | BlockConfig;
@@ -64,9 +62,6 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     context = 'default',
     inputTypeList,
     availablePlaceholder,
-    defaultBlocks = {
-        storeName: false,
-    },
 }) => {
     const [blocks, setBlocks] = useState<Block[]>(externalBlocks);
     const [openBlock, setOpenBlock] = useState<Block | null>(null);
@@ -86,6 +81,11 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     blocksRef.current = blocks;
 
     const isFormBuilder = context === 'form';
+    const defaultBlocks = React.useMemo(() => {
+        return blockGroups
+            .flatMap((group) => group.blocks)
+            .filter((block) => block.defaultField);
+    }, [blockGroups]);
 
     const titleBlock = isFormBuilder
         ? blocks.find((b) => b.type === 'title')
@@ -150,7 +150,10 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     }, []);
 
     useEffect(() => {
-        if ( context !== 'form' || !defaultBlocks?.storeName ) {
+        const shouldAddStoreNameField = defaultBlocks.some(
+            (block) => block.id === 'name'
+        );
+        if ( context !== 'form' || !shouldAddStoreNameField ) {
             return;
         }
 
