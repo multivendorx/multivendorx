@@ -771,6 +771,7 @@ class Rest {
 	 *
 	 * @param WC_Coupon       $coupon  Coupon object.
 	 * @param WP_REST_Request $request REST request instance.
+     * @param bool            $creating True if the coupon is being created; false if updating.
 	 * @return void
 	 */
 	public function send_notifications( $coupon, $request, $creating ) {
