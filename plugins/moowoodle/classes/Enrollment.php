@@ -260,9 +260,8 @@ class Enrollment {
 			)
 		);
 
-		if ( empty( $response['success'] ) && MooWoodle()->show_advanced_log ) {
-			Util::log( "[MooWoodle] Enrollment failed for User #{$user_details['purchaser_id']} in Course #{$course_details['moodle_course_id']}. Error: " . wp_json_encode( $response ) );
-			return false;
+		if ( ! empty( $response['error'] ) ) {
+			update_user_meta( $user_details['purchaser_id'], Util::MOOWOODLE_USER_META['password_reset'], 1 );
 		}
 
 		$enrollment_data = array(
@@ -354,20 +353,6 @@ class Enrollment {
 		}
 
 		try {
-			$new_wordpress_user = get_user_meta( $user_id, 'moowoodle_wordpress_new_user_created', true );
-
-			if ( $new_wordpress_user ) {
-				$password = get_user_meta( $user_id, 'moowoodle_wordpress_user_pwd', true );
-				add_user_meta( $user_id, 'moowoodle_moodle_user_pwd', $password );
-			} else {
-				$password = get_user_meta( $user_id, 'moowoodle_moodle_user_pwd', true );
-
-				if ( ! $password ) {
-					$password = $this->generate_password();
-					add_user_meta( $user_id, 'moowoodle_moodle_user_pwd', $password );
-				}
-			}
-
 			$email = sanitize_email( $user_details['user_email'] ?? '' );
 			if ( ! $email ) {
 				return 0;
@@ -377,23 +362,15 @@ class Enrollment {
 			$username = sanitize_user( explode( '@', $email )[0] );
 
 			$moodle_user_payload = array(
-				'email'       => $email,
-				'username'    => $username,
-				'password'    => $password,
-				'auth'        => apply_filters( 'moowoodle_new_user_auth_type', 'manual' ),
-				'firstname'   => sanitize_text_field( $user_details['first_name'] ?? 'User' ),
-				'lastname'    => sanitize_text_field( $user_details['last_name'] ?? 'User' ),
-				'preferences' => array_merge(
-					array(
-						array(
-							'type'  => 'auth_forcepasswordchange',
-							'value' => apply_filters( 'moowoodle_new_user_forcepasswordchange_preferences', 1 ),
-						),
-					),
-					apply_filters( 'moowoodle_new_user_additional_preferences', array() )
-				),
+				'email'          => $email,
+				'username'       => $username,
+				'createpassword' => 1,
+				'auth'           => apply_filters( 'moowoodle_new_user_auth_type', 'manual' ),
+				'firstname'      => sanitize_text_field( $user_details['first_name'] ?? 'User' ),
+				'lastname'       => sanitize_text_field( $user_details['last_name'] ?? 'User' ),
 			);
-			$response            = MooWoodle()->external_service->do_request( 'create_users', array( 'users' => array( $moodle_user_payload ) ) );
+
+			$response = MooWoodle()->external_service->do_request( 'create_users', array( 'users' => array( $moodle_user_payload ) ) );
 
 			if ( empty( $response['data'] ) ) {
 				throw new \Exception( 'Invalid response from Moodle while creating user.' );
@@ -402,7 +379,6 @@ class Enrollment {
 			$moodle_user = reset( $response['data'] );
 
 			if ( isset( $moodle_user['id'] ) ) {
-				update_user_meta( $user_id, 'moowoodle_moodle_new_user_created', 'created' );
 				return $moodle_user['id'];
 			}
 
@@ -412,41 +388,6 @@ class Enrollment {
 		}
 
 		return 0;
-	}
-
-    /**
-	 * Generate random password.
-     *
-	 * @param int $length default length is 12.
-	 * @return string generated password.
-	 */
-	public function generate_password( $length = 12 ) {
-		$sets   = array();
-		$sets[] = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-		$sets[] = 'abcdefghjkmnpqrstuvwxyz';
-		$sets[] = '23456789';
-		$sets[] = '~!@#$%^&*(){}[],./?';
-
-		$password = '';
-
-		// Append one character from each set to ensure variety.
-		foreach ( $sets as $set ) {
-			$chars     = str_split( $set );
-			$password .= $chars[ array_rand( $chars ) ];
-		}
-
-		$password_length = strlen( $password );
-
-		// Use all characters to fill up to $length.
-		while ( $password_length < $length ) {
-			$random_set      = $sets[ array_rand( $sets ) ];
-			$chars           = str_split( $random_set );
-			$password       .= $chars[ array_rand( $chars ) ];
-			$password_length = strlen( $password );
-		}
-
-		// Shuffle and return.
-		return str_shuffle( $password );
 	}
 
 
