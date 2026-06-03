@@ -3,11 +3,11 @@ import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 
 interface QuoteThankYouProps {
-    order_id: string | null;
+    orderId: string | null;
     status: string;
 }
 
-const QuoteThankYou = ({ order_id, status }: QuoteThankYouProps) => {
+const QuoteThankYou = ({ orderId, status }: QuoteThankYouProps) => {
     const [reason, setReason] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
@@ -16,7 +16,7 @@ const QuoteThankYou = ({ order_id, status }: QuoteThankYouProps) => {
             method: 'post',
             url: `${quoteCart.apiUrl}/catalogx/v1/quotes`,
             headers: { 'X-WP-Nonce': quoteCart.nonce },
-            data: { orderId: order_id, status, reason },
+            data: { orderId: orderId, status, reason },
         }).then((response) => {
             setSuccessMessage(response.data?.message ?? '');
         });
@@ -32,12 +32,12 @@ const QuoteThankYou = ({ order_id, status }: QuoteThankYouProps) => {
         );
     }
 
-    if (order_id && status) {
+    if (orderId && status) {
         return (
             <div className="reject-quote-from-mail">
                 <div className="reject-content">
                     <p>
-                        {`${__('You are about to reject the quote', 'catalogx')} ${order_id}`}
+                        {`${__('You are about to reject the quote', 'catalogx')} ${orderId}`}
                     </p>
                     <p>
                         <label htmlFor="reason">
@@ -63,16 +63,16 @@ const QuoteThankYou = ({ order_id, status }: QuoteThankYouProps) => {
         );
     }
 
-    if (order_id) {
+    if (orderId) {
         return (
             <div>
                 <p>
                     {__('Thank you for your quote request', 'catalogx')}{' '}
                     <strong>
                         {quoteCart.khali_dabba ? (
-                            <a href={quoteCart.quote_my_account_url}>{order_id}</a>
+                            <a href={quoteCart.quote_my_account_url}>{orderId}</a>
                         ) : (
-                            order_id
+                            orderId
                         )}
                     </strong>
                     .

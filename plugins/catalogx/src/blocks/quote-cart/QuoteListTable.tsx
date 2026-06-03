@@ -366,7 +366,7 @@ const QuoteList = () => {
     if (showThankYou || status) {
         return (
             <QuoteThankYou
-                order_id={showThankYou}
+                orderId={showThankYou}
                 status={status}
             />
         );

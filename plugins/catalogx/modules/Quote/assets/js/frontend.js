@@ -1,5 +1,3 @@
-/* global jQuery, addToQuoteCart */
-import { __ } from '@wordpress/i18n';
 jQuery( function ( $ ) {
 	$( document ).on(
 		'click',
