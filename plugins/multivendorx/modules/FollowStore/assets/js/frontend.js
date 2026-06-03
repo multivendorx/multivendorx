@@ -1,4 +1,5 @@
 /* global jQuery, followStoreFrontend, wp */
+const { __ } = wp.i18n;
 
 jQuery(document).ready(function ($) {
 	// Initialize buttons

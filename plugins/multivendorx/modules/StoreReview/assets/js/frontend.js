@@ -1,4 +1,5 @@
 /* global jQuery, review */
+const { __ } = wp.i18n;
 
 jQuery(document).ready(function ($) {
 	const store_id = $('#store_for_rating').val();

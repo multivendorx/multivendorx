@@ -1,4 +1,5 @@
 /* global jQuery, reportAbuseFrontend, wp */
+const { __ } = wp.i18n;
 
 jQuery(function ($) {
 	function showThemeNotice(container, type, message) {
