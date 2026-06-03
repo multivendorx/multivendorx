@@ -103,7 +103,6 @@ class MyCourses extends \WP_REST_Controller {
                 return $response;
             }
 
-            $moodle_password = get_user_meta( MooWoodle()->current_user_id, 'moowoodle_moodle_user_pwd', true );
             $moodle_base_url = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) );
             $current_user    = MooWoodle()->current_user;
 
@@ -130,7 +129,6 @@ class MyCourses extends \WP_REST_Controller {
                     'user_name'       => $current_user->user_login,
                     'course_name'     => $course['fullname'] ?? '',
                     'enrollment_date' => $formatted_enrolled_date,
-                    'password'        => $moodle_password,
                     'moodle_url'      => ! empty( $course['moodle_course_id'] )
                         ? apply_filters(
                             'moodle_course_view_url',
