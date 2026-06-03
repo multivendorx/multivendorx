@@ -147,7 +147,6 @@ export default function QuotesList() {
 				)}
 				headerTitle={__('Quote Requests', 'catalogx')}
 			/>
-			<div id="quote-list-table">
 			<Container general>
 				<Column>
 					<div onClick={handleTableWrapperClick} >
@@ -155,7 +154,6 @@ export default function QuotesList() {
 					</div>
 				</Column>
 			</Container>
-			</div>
 		</>
 	);
 }
