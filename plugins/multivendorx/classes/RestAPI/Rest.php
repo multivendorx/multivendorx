@@ -788,7 +788,8 @@ class Rest {
             return $coupon;
         }
 
-		if ( ('publish' === $new_status && ( 'pending' === $old_status || 'draft' === $old_status )) || ('publish' === $new_status && $creating ) ) {
+		if ('publish' === $new_status &&( in_array( $old_status, [ 'pending', 'draft' ], true ) || $creating )) {
+
 			$followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
 
 			foreach ( $followers as $follower ) {
