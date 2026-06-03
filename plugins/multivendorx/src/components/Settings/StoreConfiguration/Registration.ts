@@ -186,6 +186,10 @@ export default {
 		{
 			key: 'store_registration_from',
 			type: 'block-builder',
+            context: 'form',
+            defaultBlocks: {
+                storeName: true,
+            },
 			classes: 'full-width',
 			blockGroups: REGISTRATION_BLOCK_GROUPS,
 			visibleGroups: ['registration', 'store'],

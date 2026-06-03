@@ -43,7 +43,9 @@ interface CanvasEditorProps {
     availablePlaceholder?: string[];
     proSettingChange?: () => boolean;
     context?: string;
-    showStoreNameField?: boolean;
+    defaultBlocks?: {
+        storeName?: boolean;
+    };
     inputTypeList?: Array<{ value: string; label: string }>;
 }
 type SortableItem = Partial<Block> | BlockConfig;
@@ -62,6 +64,9 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     context = 'default',
     inputTypeList,
     availablePlaceholder,
+    defaultBlocks = {
+        storeName: false,
+    },
 }) => {
     const [blocks, setBlocks] = useState<Block[]>(externalBlocks);
     const [openBlock, setOpenBlock] = useState<Block | null>(null);
@@ -145,7 +150,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     }, []);
 
     useEffect(() => {
-        if (context !== 'form') {
+        if ( context !== 'form' || !defaultBlocks?.storeName ) {
             return;
         }
 

@@ -24,6 +24,10 @@ interface BlockBuilderProps {
         blockGroups?: unknown[];
         emailTemplates?: EmailTemplate[];
         availablePlaceholder?: string[];
+
+        defaultBlocks?: {
+            storeName?: boolean;
+        };
     };
     setting?: Record<string, BuilderValue>;
     proSettingChange?: (...args: unknown[]) => boolean;
@@ -201,6 +205,7 @@ export const BlockBuilderUI: React.FC<BlockBuilderProps> = ({
                 showTemplatesTab: true,
             })}
             availablePlaceholder={field?.availablePlaceholder}
+            defaultBlocks={field?.defaultBlocks}
         />
     );
 };
