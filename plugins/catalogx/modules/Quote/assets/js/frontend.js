@@ -1,4 +1,5 @@
 /* global jQuery, addToQuoteCart */
+import { __ } from '@wordpress/i18n';
 jQuery( function ( $ ) {
 	$( document ).on(
 		'click',
@@ -75,7 +76,7 @@ jQuery( function ( $ ) {
 			$( responseSelector )
 				.show()
 				.removeClass( 'hide' )
-				.html( data.message || 'Unable to add quote item.' );
+				.html( data.message || __( 'Unable to add quote item.', 'catalogx' ) );
 		} catch ( error ) {
 			currentElement.next().remove();
 

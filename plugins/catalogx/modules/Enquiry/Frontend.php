@@ -8,7 +8,6 @@
 namespace CatalogX\Enquiry;
 
 use CatalogX\FrontendScripts;
-use CatalogX\Utill;
 
 /**
  * CatalogX Enquiry Module Frontend class
@@ -85,20 +84,17 @@ class Frontend {
         ?>
         <div id="catalogx-enquiry">
         <?php
-		if ( $this->enable_out_of_stock ) {
-			if ( ! $product_obj->managing_stock() && ! $product_obj->is_in_stock() ) {
-                ?>
-                <div>
-                    <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button" href="#catalogx-modal"><?php echo esc_html( $button_text ); ?></button>
-                </div>
-                <?php
-			}
-        } else {
-			?>
-                <div>
-                    <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button" href="#catalogx-modal"><?php echo esc_html( $button_text ); ?></button>
-                </div>
-                <?php
+		$show_button = true;
+
+        if ( $this->enable_out_of_stock ) {
+            $show_button = ! $product_obj->managing_stock() && ! $product_obj->is_in_stock();
+        }
+		if ( $show_button ) {
+            ?>
+            <div>
+                <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button"><?php echo esc_html( $button_text ); ?></button>
+            </div>
+            <?php
 		}
 		?>
             <input type="hidden" name="product_name_for_enquiry" id="product-name-for-enquiry" value="<?php echo esc_html( $product_obj->get_name() ); ?>" />
@@ -129,6 +125,7 @@ class Frontend {
             FrontendScripts::enqueue_style( 'catalogx-enquiry-form-style' );
             FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
             FrontendScripts::enqueue_script( 'catalogx-enquiry-frontend-script' );
+            FrontendScripts::localize_scripts( 'catalogx-enquiry-form-script' );
             FrontendScripts::enqueue_script( 'catalogx-enquiry-form-script' );
 
             // additional css.
@@ -233,8 +230,6 @@ class Frontend {
                 }
             }
         }
-
-        $pro_form_settings['store_registration_from'] = $form_field_list;
 
         return $form_field_list;
     }

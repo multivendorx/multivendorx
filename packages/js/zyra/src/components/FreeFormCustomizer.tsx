@@ -31,6 +31,8 @@ const SUBMIT_BUTTON_ID = '10';
 
 const toArray = (val: unknown): FormField[] => (Array.isArray(val) ? val : []);
 
+const isSubmitButton = (field?: Partial<FormField>) => field?.label?.trim().toLowerCase() === 'submit';
+
 // Helper that returns a complete default submit button object
 const getDefaultSubmitButton = (): FormField => ({
     id: SUBMIT_BUTTON_ID,
@@ -43,10 +45,14 @@ const getDefaultSubmitButton = (): FormField => ({
 
 // Ensures the submit button is always present in the fields array
 const ensureSubmitPresent = (fields: FormField[]): FormField[] => {
-    const hasSubmit = fields.some(f => f.id === SUBMIT_BUTTON_ID);
+    const hasSubmit = fields.some(field => isSubmitButton(field));
+
     if (hasSubmit) {
-        // Make sure submit is always enabled
-        return fields.map(f => f.id === SUBMIT_BUTTON_ID ? { ...f, disabled: false } : f);
+        return fields.map(field =>
+            isSubmitButton(field)
+                ? { ...field, disabled: false }
+                : field
+        );
     }
     return [...fields, getDefaultSubmitButton()];
 };
@@ -56,16 +62,13 @@ const FreeFormCustomizerField: React.FC<{
     canAccess: boolean;
     onChange: (val: FormField[]) => void;
 }> = ({ value, canAccess, onChange }) => {
-    // Initialize fields: start with external value (if any), then ensure submit is present
-    const [fields, setFields] = useState<FormField[]>(() => 
+    const [fields, setFields] = useState<FormField[]>(() =>
         ensureSubmitPresent(toArray(value))
     );
     const isDirty = useRef(false);
 
-    // Sync external changes, but always preserve the submit button
     useEffect(() => {
         const newFields = toArray(value);
-        // Merge: keep submit from existing fields (if any) or default, then add other fields
         const merged = ensureSubmitPresent(newFields);
         if (JSON.stringify(fields) !== JSON.stringify(merged)) {
             setFields(merged);
@@ -73,10 +76,8 @@ const FreeFormCustomizerField: React.FC<{
         }
     }, [value]);
 
-    // Auto-save: always include submit button
     useEffect(() => {
         if (isDirty.current) {
-            // Ensure submit is always present and enabled before saving
             const toSave = ensureSubmitPresent(fields);
             onChange(toSave);
             isDirty.current = false;
@@ -89,7 +90,7 @@ const FreeFormCustomizerField: React.FC<{
         const existing = getField(id);
         if (existing) return existing;
         const config = FORM_FIELDS_CONFIG.find(f => f.id === id);
-        const isSubmit = id === SUBMIT_BUTTON_ID;
+        const isSubmit = isSubmitButton(config);
         return {
             id: config?.id || id,
             type: config?.type || 'text',
@@ -127,8 +128,12 @@ const FreeFormCustomizerField: React.FC<{
     };
 
     const updateFieldActive = (id: string, disabled: boolean) => {
-        if (id === SUBMIT_BUTTON_ID) return;
-        if (!canAccess) return;
+        const targetField = fields.find(f => f.id === id) || FORM_FIELDS_CONFIG.find(f => f.id === id);
+
+        if (isSubmitButton(targetField) || !canAccess) {
+            return;
+        }
+
         isDirty.current = true;
         setFields(prev => {
             const existing = prev.find(f => f.id === id);
@@ -141,7 +146,14 @@ const FreeFormCustomizerField: React.FC<{
     };
 
     const handleToggle = (id: string) => {
-        if (id === SUBMIT_BUTTON_ID) return;
+        const targetField =
+            fields.find(f => f.id === id) ||
+            FORM_FIELDS_CONFIG.find(f => f.id === id);
+
+        if (isSubmitButton(targetField)) {
+            return;
+        }
+
         const current = getField(id)?.disabled ?? true;
         updateFieldActive(id, !current);
     };
@@ -158,8 +170,8 @@ const FreeFormCustomizerField: React.FC<{
                 const field = getField(fieldConfig.id);
                 const currentLabel = field?.label ?? fieldConfig.label ?? '';
                 const currentPlaceholder = field?.placeholder ?? fieldConfig.placeholder ?? '';
-                const isSubmit = fieldConfig.id === SUBMIT_BUTTON_ID;
-                const isActive = isSubmit ? true : !(field?.disabled ?? true);
+                const isSubmit = isSubmitButton(field) || isSubmitButton(fieldConfig);
+                const isActive =isSubmit ? true : !(field?.disabled ?? true);
 
                 return (
                     <div key={fieldConfig.id} className="free-form-row">
@@ -192,7 +204,6 @@ const FreeFormCustomizerField: React.FC<{
                                 </div>
                             ) : (
                                 <div className="button-visibility always-active" title="Always active">
-                                    <i className="adminfont-eye" />
                                 </div>
                             )}
                         </div>

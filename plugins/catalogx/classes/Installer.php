@@ -526,18 +526,78 @@ class Installer {
             }
 
             /**
-             * Shopping Settings Option Rename
+             * All Settings Migration
              */
-            $old_shopping_settings = get_option(
+            $old_all_settings = get_option(
                 'catalogx_all_settings_settings',
-                null
+                array()
             );
 
-            if ( null !== $old_shopping_settings ) {
+            if ( ! empty( $old_all_settings ) ) {
+
+                /**
+                 * Shopping Settings
+                 */
+                $shopping_settings = array(
+                    'enable_cart_checkout' => $old_all_settings['enable_cart_checkout'] ?? array(),
+                );
+
+                if ( ! empty( $old_all_settings['redirect_page_id'] ) ) {
+                    $shopping_settings['redirect_cart_page'] = $old_all_settings['redirect_page_id'];
+                }
 
                 update_option(
                     'catalogx_shopping_settings',
-                    $old_shopping_settings
+                    $shopping_settings
+                );
+
+                /**
+                 * Enquiry Settings
+                 */
+                $enquiry_settings = array(
+                    'enquiry_user_permission' => $old_all_settings['enquiry_user_permission'] ?? array(),
+                    'is_enable_out_of_stock'  => $old_all_settings['is_enable_out_of_stock'] ?? array(),
+                    'is_disable_popup'        => $old_all_settings['is_disable_popup'] ?? 'popup',
+                );
+
+                if ( isset( $old_all_settings['notify_me_button'] ) ) {
+                    $enquiry_settings['notify_me_button'] = $old_all_settings['notify_me_button'];
+                }
+
+                update_option(
+                    'catalogx_enquiry_settings',
+                    $enquiry_settings
+                );
+
+                /**
+                 * Quotation Settings
+                 */
+                $quotation_settings = array(
+                    'quote_user_permission' => $old_all_settings['quote_user_permission'] ?? array(),
+                    'set_expiry_time'       => $old_all_settings['set_expiry_time'] ?? 'Never',
+                );
+
+                update_option(
+                    'catalogx_quotation_settings',
+                    $quotation_settings
+                );
+
+                /**
+                 * Extra Settings
+                 */
+                $extra_settings = array();
+
+                if ( isset( $old_all_settings['display_pdf'] ) ) {
+                    $extra_settings['display_pdf'] = $old_all_settings['display_pdf'];
+                }
+
+                if ( isset( $old_all_settings['custom_css_product_page'] ) ) {
+                    $extra_settings['custom_css_product_page'] = $old_all_settings['custom_css_product_page'];
+                }
+
+                update_option(
+                    'catalogx_extra_settings',
+                    $extra_settings
                 );
 
                 delete_option( 'catalogx_all_settings_settings' );

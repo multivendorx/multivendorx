@@ -55,9 +55,6 @@ const EnquiryForm = () => {
                 }, 3000);
             });
     };
-    console.log('formData', formData);
-    console.log('proActive', proActive);
-
 
     return (
         <>
