@@ -57,8 +57,8 @@ class Rest {
         add_filter( 'woocommerce_rest_prepare_shop_coupon_object', array( $this, 'prepare_shop_coupon_filter_meta' ), 10, 3 );
         add_filter( 'woocommerce_rest_pre_insert_shop_coupon_object', array( $this, 'pre_insert_shop_coupon_fix_status' ), 10, 3 );
         add_filter( 'woocommerce_analytics_products_query_args', array( $this, 'analytics_products_filter_low_stock_meta' ), 10, 1 );
-        add_action( 'woocommerce_rest_pre_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 10, 3 );
-        add_action( 'woocommerce_rest_pre_insert_shop_coupon_object', array( $this, 'send_notifications' ), 10, 3 );
+        add_filter( 'woocommerce_rest_pre_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 10, 3 );
+        add_filter( 'woocommerce_rest_pre_insert_shop_coupon_object', array( $this, 'send_notifications' ), 10, 3 );
         add_filter( 'woocommerce_rest_product_shipping_class_query', array( $this, 'filter_shipping_classes_by_meta' ), 10, 2 );
     }
 
@@ -688,7 +688,6 @@ class Rest {
 
 		$old_status = $product->get_data()['status'] ?? '';
 		$new_status = $request->get_param( 'status' );
-
 		$store = new Store(
             get_post_meta( $product->get_id(), Utill::POST_META_SETTINGS['store_id'], true )
 		);
