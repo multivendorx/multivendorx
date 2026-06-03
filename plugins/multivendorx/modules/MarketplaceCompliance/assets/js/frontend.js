@@ -1,7 +1,7 @@
 /* global jQuery, reportAbuseFrontend, wp */
-const { __ } = wp.i18n;
 
 jQuery(function ($) {
+	const __ = wp.i18n.__;
 	function showThemeNotice(container, type, message) {
 		var $container = $(container);
 		$container.empty(); // Clear previous messages

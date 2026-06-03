@@ -1,7 +1,7 @@
 /* global jQuery, followStoreFrontend, wp */
-const { __ } = wp.i18n;
 
 jQuery(document).ready(function ($) {
+	const __ = wp.i18n.__;
 	// Initialize buttons
 	$('.follow-btn').each(function () {
 		var btn = $(this);
