@@ -57,8 +57,8 @@ class Rest {
         add_filter( 'woocommerce_rest_prepare_shop_coupon_object', array( $this, 'prepare_shop_coupon_filter_meta' ), 10, 3 );
         add_filter( 'woocommerce_rest_pre_insert_shop_coupon_object', array( $this, 'pre_insert_shop_coupon_fix_status' ), 10, 3 );
         add_filter( 'woocommerce_analytics_products_query_args', array( $this, 'analytics_products_filter_low_stock_meta' ), 10, 1 );
-        add_action( 'woocommerce_rest_pre_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 10, 3 );
-        add_action( 'woocommerce_rest_insert_shop_coupon_object', array( $this, 'send_notifications' ), 10, 3 );
+        add_action( 'woocommerce_rest_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 10, 3 );
+        add_action( 'woocommerce_rest_insert_shop_coupon_object', array( $this, 'send_notifications' ), 10, 2 );
         add_filter( 'woocommerce_rest_product_shipping_class_query', array( $this, 'filter_shipping_classes_by_meta' ), 10, 2 );
     }
 
@@ -683,20 +683,26 @@ class Rest {
      */
     public function generate_sku_data_in_product( $product, $request, $creating ) {
         if ( ! defined( 'REST_REQUEST' ) ) {
-            return $product;
+            return;
         }
 
-		$old_status = get_post_status( $product->get_id() ) ?: '';
+        $referer = filter_input( INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL ) ?? '';
+        $path    = wp_parse_url( $referer, PHP_URL_PATH );
+		if ( false === strpos( $path, 'products' ) ) {
+			return;
+		}
+
+		$old_status = $product->get_status();
 		$new_status = $request->get_param( 'status' );
 
 		$store = new Store(
             get_post_meta( $product->get_id(), Utill::POST_META_SETTINGS['store_id'], true )
 		);
         if ( ! $store->exists() ) {
-            return $product;
+            return;
         }
 
-		if ('draft' === $old_status && 'pending' === $new_status ) {
+		if ( isset( $creating ) && true === $creating && 'pending' === $new_status ) {
             MultiVendorX()->notifications->send_notification_helper(
                 'product_submitted',
                 $store,
@@ -720,7 +726,7 @@ class Rest {
             );
 		}
 
-		if ( 'pending' === $old_status && 'draft' === $new_status ) {
+		if ( 'publish' === $old_status && 'draft' === $new_status ) {
             MultiVendorX()->notifications->send_notification_helper(
                 'product_rejected',
                 $store,
@@ -732,7 +738,7 @@ class Rest {
             );
 		}
 
-		if ( ('pending' === $old_status || 'draft' === $old_status) && 'publish' === $new_status ) {
+		if ( 'publish' === $new_status && ( 'pending' === $old_status || 'draft' === $old_status ) ) {
 			$followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
 
 			foreach ( $followers as $follower ) {
@@ -759,7 +765,6 @@ class Rest {
         if ( ! $creating ) {
             $this->multivendorx_save_generated_sku( $product );
         }
-        return $product;
     }
 
 	/**
@@ -771,10 +776,9 @@ class Rest {
 	 *
 	 * @param WC_Coupon       $coupon  Coupon object.
 	 * @param WP_REST_Request $request REST request instance.
-     * @param bool             $creating True if the coupon is being created; false if updating.
 	 * @return void
 	 */
-	public function send_notifications( $coupon, $request, $creating ) {
+	public function send_notifications( $coupon, $request ) {
 		if ( ! defined( 'REST_REQUEST' ) ) {
 			return;
 		}
@@ -786,6 +790,7 @@ class Rest {
 			return;
 		}
 
+		$old_status = get_post_status( $coupon->get_id() );
 		$new_status = $request->get_param( 'status' );
 
 		$store_id = get_post_meta( $coupon->get_id(), Utill::POST_META_SETTINGS['store_id'], true );
@@ -794,7 +799,7 @@ class Rest {
             return;
         }
 
-		if ( $creating && 'publish' === $new_status ) {
+		if ( 'publish' === $new_status && ( 'pending' === $old_status || 'draft' === $old_status ) ) {
 			$followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
 
 			foreach ( $followers as $follower ) {
