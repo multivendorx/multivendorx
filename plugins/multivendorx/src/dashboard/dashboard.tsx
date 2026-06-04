@@ -965,6 +965,12 @@ const Dashboard: React.FC = () => {
 														.toUpperCase(),
 													iconClass: 'person',
 												}}
+												descriptions={[
+													{
+														label: 'Email',
+														value: order.billing?.email,
+													}
+												]}
 											/>
 										);
 									})
