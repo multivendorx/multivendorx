@@ -5,7 +5,7 @@ Donate link: http://multivendorx.com/donate/
 Requires at least: 6.3
 Tested up to: 7.0.0
 Requires PHP: 8.0
-Stable tag: 5.0.6
+Stable tag: 5.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -245,6 +245,15 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 == Changelog ==
+
+= 5.0.7 - 2026-06-04 =
+* Added     - Compatibility with WooCommerce 10.8.1
+* Fixed     - An issue in the Report Abuse button workflow where the reporting process was not functioning as expected #1975.
+* Fixed     - A bug in the Store Application Rejection flow where rejection actions were not being processed correctly #1941.
+* Added     - Introduced support for a new parameter allowing exclusion of specific stores from appearing on the store listing page #1931.
+* Fixed     - A console error occurring in frontend #1953.
+* Added     - Translation support for previously hardcoded strings in MultiVendorX settings #1924.
+* Updated   - Language file.
 
 = 5.0.6 - 2026-05-21 =
 * Added     - Compatibility with WordPress 7.0.0.
