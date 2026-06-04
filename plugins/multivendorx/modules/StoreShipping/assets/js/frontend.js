@@ -1,7 +1,7 @@
 /* global jQuery,distanceShippingFrontend,google,mapboxgl */
 
 jQuery(document).ready(function ($) {
-	const __ = wp.i18n.__;
+	const { __ } = wp.i18n;
 	var opts = distanceShippingFrontend;
 	if ($('#multivendorx_user_location_lat').length === 0) {
 		return;

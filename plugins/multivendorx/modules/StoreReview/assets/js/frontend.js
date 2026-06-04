@@ -1,7 +1,7 @@
 /* global jQuery, review */
 
 jQuery(document).ready(function ($) {
-	const __ = wp.i18n.__;
+	const { __ } = wp.i18n;
 	const store_id = $('#store_for_rating').val();
 
 	// Load Average Ratings

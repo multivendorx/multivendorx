@@ -1,7 +1,7 @@
 /* global jQuery, customerQueriesFrontend, wp */
 
 jQuery(document).ready(function ($) {
-	const __ = wp.i18n.__;
+	const { __ } = wp.i18n;
 	let productId = $('#product-customer-queries').data('product');
 	let searchTimeout;
 
