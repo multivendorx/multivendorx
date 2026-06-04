@@ -332,21 +332,21 @@ const ratingsField = {
 	),
 	modal: [
 		{
-			id: 'product-image',
+			id: 'product_image',
 			label: 'Product Image',
 			mandatory: true,
 			formFields: [],
 			desc: 'Confirms the store is legally registered as a business entity.',
 		},
 		{
-			id: 'product-description',
+			id: 'product_description',
 			label: 'Product description',
 			mandatory: true,
 			formFields: [],
 			desc: 'Validates that the store is authorized to operate and conduct business legally.',
 		},
 		{
-			id: 'Specifications',
+			id: 'specifications',
 			label: 'Specifications',
 			formFields: [],
 			desc: 'Confirms the store’s physical or operational business address.',

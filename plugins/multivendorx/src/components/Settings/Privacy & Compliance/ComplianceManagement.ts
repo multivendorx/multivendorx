@@ -169,26 +169,26 @@ export default {
 							label: __('Non-Compliance action', 'multivendorx'),
 							options: [
 								{
-									key: 'disable_product',
+									key: 'disable_product_upload',
 									label: __(
 										'Disable product upload',
 										'multivendorx'
 									),
-									value: 'disable_product',
+									value: 'disable_product_upload',
 									desc: __(
 										'Temporarily disables product sales and order fulfillment while the review is in progress.',
 										'multivendorx'
 									),
 								},
 								{
-									key: 'set_store_as_pending',
+									key: 'restrict_store_access',
 									label: __(
-										'Set store as pending',
+										'Restrict Store Access',
 										'multivendorx'
 									),
-									value: 'SetStoreAsPending',
+									value: 'restrict_store_access',
 									desc: __(
-										'Moves the store to a pending status, preventing further activity until compliance issues are resolved.',
+										'Limits specific store features while still allowing basic access.',
 										'multivendorx'
 									),
 								},
