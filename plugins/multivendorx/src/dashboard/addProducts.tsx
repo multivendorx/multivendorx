@@ -383,11 +383,10 @@ const AddProduct = () => {
 									</div>
 									<div className="details">
 										<div className="title">
-											Product Images
+											{__('Product Images', 'multivendorx')}
 										</div>
 										<div className="des">
-											High-quality photos showing your
-											product from multiple angles
+											{__('High-quality photos showing your product from multiple angles', 'multivendorx')}
 										</div>
 									</div>
 								</li>
@@ -401,10 +400,9 @@ const AddProduct = () => {
 										<span></span>
 									</div>
 									<div className="details">
-										<div className="title">Category</div>
+										<div className="title">{__('Category', 'multivendorx')}</div>
 										<div className="des">
-											Organize your product to help
-											customers browse your store
+											{__('Organize your product to help customers browse your store', 'multivendorx')}
 										</div>
 									</div>
 								</li>
@@ -418,10 +416,9 @@ const AddProduct = () => {
 										<span></span>
 									</div>
 									<div className="details">
-										<div className="title">Policies</div>
+										<div className="title">{__('Policies', 'multivendorx')}</div>
 										<div className="des">
-											A clear, descriptive title that
-											helps customers find your product
+											{__('A clear, descriptive title that helps customers find your product', 'multivendorx')}
 										</div>
 									</div>
 								</li>
@@ -458,7 +455,7 @@ const AddProduct = () => {
 						>
 							<Notice
 								type="error"
-								title="Admin Note"
+								title={__('Admin Note', 'multivendorx')}
 								displayPosition="inline-notice"
 								message={rejectNote}
 							/>
@@ -533,9 +530,7 @@ const AddProduct = () => {
 										<div className="settings-input-content">
 											<TextAreaUI
 												name="short_description"
-												value={
-													product.short_description
-												}
+												value={product.short_description?.replace(/<\/?p>/g, '')}
 												onChange={(value) =>
 													handleChange(
 														'short_description',
@@ -572,7 +567,7 @@ const AddProduct = () => {
 										<div className="settings-input-content">
 											<TextAreaUI
 												name="description"
-												value={product.description}
+												value={product.description?.replace(/<\/?p>/g, '')}
 												onChange={(value) =>
 													handleChange(
 														'description',
