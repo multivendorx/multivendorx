@@ -18,7 +18,7 @@ use MultiVendorX\Elementor\StoreHelper;
 /**
  * Store_Description Widget Class.
  */
-class Store_Description extends Widget_Heading {
+class StoreDescription extends Widget_Heading {
 
 	use StoreHelper;
 

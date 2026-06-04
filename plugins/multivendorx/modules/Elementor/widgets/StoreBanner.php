@@ -17,7 +17,7 @@ use MultiVendorX\Elementor\StoreHelper;
 /**
  * Store_Banner Widget Class.
  */
-class Store_Banner extends Widget_Image {
+class StoreBanner extends Widget_Image {
 
 	use StoreHelper;
 

@@ -21,7 +21,7 @@ use MultiVendorX\Elementor\StoreHelper;
  *
  * Elementor widget to display MultiVendorX store information.
  */
-class Store_Info extends Widget_Icon_List {
+class StoreInfo extends Widget_Icon_List {
 
 	use StoreHelper;
 
