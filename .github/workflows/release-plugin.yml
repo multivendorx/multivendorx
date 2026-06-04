@@ -12,11 +12,11 @@ on:
         description: "Release action"
         required: true
         type: choice
-        default: both
+        default: GitHub Release
         options:
-          - release
-          - wporg
-          - both
+          - GitHub Release
+          - WordPress.org Release
+          - Both
 
 permissions:
   contents: write
