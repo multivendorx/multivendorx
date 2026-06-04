@@ -12,6 +12,7 @@ on:
           - multivendorx
           - moowoodle
           - catalogx
+          - notifima
           - other
 
       custom_plugin:
