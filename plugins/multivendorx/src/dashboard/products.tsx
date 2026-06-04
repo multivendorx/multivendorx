@@ -78,7 +78,7 @@ const AllProduct: React.FC = () => {
 				{
 					name: 'Auto Draft',
 					status: 'draft',
-					meta_data: [{ key: '_is_auto_draft', value: true }],
+					meta_data: [{ key: '_is_auto_draft', value: true },{key: 'multivendorx_store_id',value: appLocalizer.store_id}],
 				},
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
