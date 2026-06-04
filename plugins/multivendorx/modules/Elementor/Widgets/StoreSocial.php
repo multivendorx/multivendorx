@@ -15,7 +15,7 @@ use MultiVendorX\Elementor\StoreHelper;
 /**
  * Store Social widget class
  */
-class Store_Social extends Widget_Social_Icons {
+class StoreSocial extends Widget_Social_Icons {
 
 	use StoreHelper;
 

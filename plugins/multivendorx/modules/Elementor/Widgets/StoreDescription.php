@@ -1,8 +1,8 @@
 <?php
 /**
- * Elementor Widget: Store Banner
+ * Elementor Widget: Store Description
  *
- * Provides the store banner widget for Elementor.
+ * Displays the store description in Elementor templates.
  *
  * @package MultiVendorX
  */
@@ -11,13 +11,14 @@ namespace MultiVendorX\Elementor\Widgets;
 
 defined( 'ABSPATH' ) || exit;
 
-use Elementor\Widget_Image;
+use Elementor\Widget_Heading;
+use Elementor\Controls_Manager;
 use MultiVendorX\Elementor\StoreHelper;
 
 /**
- * Store_Banner Widget Class.
+ * Store_Description Widget Class.
  */
-class Store_Banner extends Widget_Image {
+class StoreDescription extends Widget_Heading {
 
 	use StoreHelper;
 
@@ -27,7 +28,7 @@ class Store_Banner extends Widget_Image {
 	 * @return string
 	 */
 	public function get_name() {
-		return 'multivendorx_store_banner';
+		return 'multivendorx_store_description';
 	}
 
 	/**
@@ -36,7 +37,7 @@ class Store_Banner extends Widget_Image {
 	 * @return string
 	 */
 	public function get_title() {
-		return __( 'Store Banner', 'multivendorx' );
+		return __( 'Store Description', 'multivendorx' );
 	}
 
 	/**
@@ -45,7 +46,7 @@ class Store_Banner extends Widget_Image {
 	 * @return string
 	 */
 	public function get_icon() {
-		return 'eicon-image-box';
+		return 'eicon-editor-paragraph';
 	}
 
 	/**
@@ -65,17 +66,17 @@ class Store_Banner extends Widget_Image {
 	protected function register_controls() {
 		parent::register_controls();
 
-		// Rename the default image control label to "Banner".
+		// Remove default heading controls.
+		$this->remove_control( 'title' );
+		$this->remove_control( 'link' );
+
+		// Change header size default to paragraph.
 		$this->update_control(
-			'section_image',
+			'header_size',
 			array(
-				'label' => __( 'Banner', 'multivendorx' ),
+				'default' => 'p',
 			)
 		);
-
-		// Remove unnecessary caption controls.
-		$this->remove_control( 'caption_source' );
-		$this->remove_control( 'caption' );
 	}
 
 	/**
@@ -85,24 +86,19 @@ class Store_Banner extends Widget_Image {
 	 */
 	protected function render() {
 		$store = $this->get_store_data();
+
 		if ( empty( $store ) || ! is_array( $store ) ) {
 			return;
 		}
 
-		$banner = $store['storeBanner'] ?? '';
+		$description = ! empty( $store['storeDescription'] ) ? $store['storeDescription'] : '';
 
-		// If banner stored as attachment ID, convert to URL.
-		if ( is_numeric( $banner ) ) {
-			$banner = wp_get_attachment_url( $banner );
-		}
-
-		if ( empty( $banner ) ) {
+		if ( empty( $description ) ) {
 			return;
 		}
 
-		printf(
-			'<div class="multivendorx-store-banner" style="background-image: url(%1$s);"></div>',
-			esc_url( $banner )
-		);
+		echo '<div class="multivendorx-store-description">';
+		echo wp_kses_post( wpautop( $description ) );
+		echo '</div>';
 	}
 }
