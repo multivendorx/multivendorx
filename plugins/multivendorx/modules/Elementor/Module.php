@@ -35,7 +35,7 @@ class Module {
     public function __construct() {
         // Init helper classes.
         $this->init_classes();
-        require_once MultiVendorX()->plugin_path . 'modules/Elementor/Helper.php';
+        require_once MultiVendorX()->plugin_path . 'modules/Elementor/StoreHelper.php';
     }
 
     /**

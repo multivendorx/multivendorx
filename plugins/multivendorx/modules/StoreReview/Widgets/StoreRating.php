@@ -16,7 +16,7 @@ use MultiVendorX\Elementor\StoreHelper;
 /**
  * Store Rating widget class.
  */
-class Store_Rating extends Widget_Base {
+class StoreRating extends Widget_Base {
 
     use StoreHelper;
 

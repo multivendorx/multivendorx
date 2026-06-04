@@ -53,13 +53,13 @@ class WidgetLoader {
 
 		// Default widgets mapping: [ filename => full class name ].
 		$widgets = array(
-			'StoreName'        => 'MultiVendorX\Elementor\Widgets\Store_Name',
-			'StoreDescription' => 'MultiVendorX\Elementor\Widgets\Store_Description',
-			'StoreBanner'      => 'MultiVendorX\Elementor\Widgets\Store_Banner',
-			'StoreInfo'        => 'MultiVendorX\Elementor\Widgets\Store_Info',
-			'StoreLogo'        => 'MultiVendorX\Elementor\Widgets\Store_Logo',
-			'StoreSocial'      => 'MultiVendorX\Elementor\Widgets\Store_Social',
-			'StoreTab'         => 'MultiVendorX\Elementor\Widgets\Store_Tab',
+			'StoreName'        => 'MultiVendorX\Elementor\Widgets\StoreName',
+			'StoreDescription' => 'MultiVendorX\Elementor\Widgets\StoreDescription',
+			'StoreBanner'      => 'MultiVendorX\Elementor\Widgets\StoreBanner',
+			'StoreInfo'        => 'MultiVendorX\Elementor\Widgets\StoreInfo',
+			'StoreLogo'        => 'MultiVendorX\Elementor\Widgets\StoreLogo',
+			'StoreSocial'      => 'MultiVendorX\Elementor\Widgets\StoreSocial',
+			'StoreTab'         => 'MultiVendorX\Elementor\Widgets\StoreTab',
 		);
 
 		/**
@@ -72,7 +72,7 @@ class WidgetLoader {
 		foreach ( $widgets as $file => $class ) {
 
 			// Default widget file path.
-			$path = MultiVendorX()->plugin_path . 'modules/Elementor/widgets/' . $file . '.php';
+			$path = MultiVendorX()->plugin_path . 'modules/Elementor/Widgets/' . $file . '.php';
 
 			/**
 			 * Filter: Allow modules to override widget file path.
