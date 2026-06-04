@@ -16,7 +16,7 @@ use MultiVendorX\Elementor\StoreHelper;
 /**
  * Class Store_Tab
  */
-class Store_Tab extends Widget_Base {
+class StoreTab extends Widget_Base {
 
 	use StoreHelper;
 

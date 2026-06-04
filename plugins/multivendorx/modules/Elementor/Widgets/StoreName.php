@@ -17,7 +17,7 @@ use MultiVendorX\Elementor\StoreHelper;
  *
  * Displays the store name in Elementor
  */
-class Store_Name extends Widget_Heading {
+class StoreName extends Widget_Heading {
     use StoreHelper;
 
     /**

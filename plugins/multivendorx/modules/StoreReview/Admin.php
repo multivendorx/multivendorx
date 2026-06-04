@@ -23,8 +23,8 @@ class Admin {
      */
     public function __construct() {
 
-        add_filter( 'multivendorx_elementor_widgets', array( $this, 'add_follow_store_widget' ), 10, 1 );
-        add_filter( 'multivendorx_elementor_widget_path', array( $this, 'override_follow_store_path' ), 10, 2 );
+        add_filter( 'multivendorx_elementor_widgets', array( $this, 'add_store_review_widget' ), 10, 1 );
+        add_filter( 'multivendorx_elementor_widget_path', array( $this, 'override_store_review_path' ), 10, 2 );
         add_filter( 'multivendorx_elementor_tag_files', array( $this, 'add_follow_store_tags' ), 10, 1 );
         add_filter( 'multivendorx_elementor_tag_class', array( $this, 'override_follow_store_tag_class' ), 10, 3 );
     }
@@ -35,8 +35,8 @@ class Admin {
 	 * @param array $widgets Existing widgets array.
 	 * @return array Modified widgets array.
 	 */
-	public function add_follow_store_widget( $widgets ) {
-		$widgets['StoreRating'] = 'MultiVendorX\StoreReview\Widgets\Store_Rating';
+	public function add_store_review_widget( $widgets ) {
+		$widgets['StoreRating'] = 'MultiVendorX\StoreReview\Widgets\StoreRating';
 		return $widgets;
 	}
 
@@ -47,9 +47,9 @@ class Admin {
      * @param string $file_name Widget file name.
      * @return string Modified file path.
      */
-    public function override_follow_store_path( $path, $file_name ) {
+    public function override_store_review_path( $path, $file_name ) {
         if ( 'StoreRating' === $file_name ) { // Yoda condition removed.
-            $path = MultiVendorX()->plugin_path . 'modules/StoreReview/widgets/' . $file_name . '.php';
+            $path = MultiVendorX()->plugin_path . 'modules/StoreReview/Widgets/' . $file_name . '.php';
         }
         return $path;
     }

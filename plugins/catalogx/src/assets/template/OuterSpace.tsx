@@ -8,7 +8,7 @@ export const OuterSpace = {
 			id: 1,
 			type: 'heading',
 			name: 'email-heading-welcome',
-			text: __('Product Enquiry For', 'catalogx'),
+			text: __('Product Enquiry For Hoodie (p)', 'catalogx'),
 			level: 1,
 			style: {
 				fontSize: 1.125,

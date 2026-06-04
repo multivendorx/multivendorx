@@ -38,7 +38,7 @@ class Admin {
      * @return array Modified Elementor widgets.
      */
     public function add_follow_store_widget( $widgets ) {
-        $widgets['StoreFollow'] = 'MultiVendorX\FollowStore\Widgets\Store_Follow_Button';
+        $widgets['StoreFollow'] = 'MultiVendorX\FollowStore\Widgets\StoreFollow';
         return $widgets;
     }
 
@@ -51,7 +51,7 @@ class Admin {
      */
     public function override_follow_store_path( $path, $file ) {
         if ( 'StoreFollow' === $file ) {
-            $path = MultiVendorX()->plugin_path . 'modules/FollowStore/widgets/' . $file . '.php';
+            $path = MultiVendorX()->plugin_path . 'modules/FollowStore/Widgets/' . $file . '.php';
         }
         return $path;
     }
