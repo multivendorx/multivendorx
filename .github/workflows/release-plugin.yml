@@ -176,7 +176,7 @@ jobs:
             --title "${PLUGIN} v${VERSION}" \
             --notes "${PLUGIN} version ${VERSION} release"
 
-   wporg:
+  wporg:
     needs: build
     if: github.event.inputs.action == 'WordPress.org Release' || github.event.inputs.action == 'Both'
     runs-on: ubuntu-latest
