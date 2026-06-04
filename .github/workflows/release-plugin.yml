@@ -21,7 +21,7 @@ on:
         description: "Release action"
         required: true
         type: choice
-        default: Both
+        default: GitHub Release
         options:
           - GitHub Release
           - WordPress.org Release
