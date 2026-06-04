@@ -152,19 +152,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download ZIP
+        uses: actions/download-artifact@v4
         with:
           name: plugin-zip-${{ needs.build.outputs.plugin_slug }}
           path: release
-
+  
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="${{ needs.build.outputs.version }}"
           PLUGIN="${{ needs.build.outputs.plugin_slug }}"
+  
           ZIP_FILE=$(find release -name "*.zip" | head -n 1)
-
+  
           gh release create \
             "${PLUGIN}-v${VERSION}" \
             "$ZIP_FILE" \
