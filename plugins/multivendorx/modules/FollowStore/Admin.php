@@ -38,7 +38,7 @@ class Admin {
      * @return array Modified Elementor widgets.
      */
     public function add_follow_store_widget( $widgets ) {
-        $widgets['StoreFollow'] = 'MultiVendorX\FollowStore\Widgets\StoreFollowButton';
+        $widgets['StoreFollow'] = 'MultiVendorX\FollowStore\Widgets\StoreFollow';
         return $widgets;
     }
 
