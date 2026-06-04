@@ -246,7 +246,7 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 
 == Changelog ==
 
-= 5.0.7 - 2026-06-03 =
+= 5.0.7 - 2026-06-04 =
 * Added     - Compatibility with WooCommerce 10.8.1
 * Fixed     - An issue in the Report Abuse button workflow where the reporting process was not functioning as expected. (#1975)
 * Fixed     - A bug in the Store Application Rejection flow where rejection actions were not being processed correctly. (#1941)
