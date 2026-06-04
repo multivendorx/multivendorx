@@ -30,7 +30,7 @@ class Shortcode {
         add_shortcode( 'marketplace_coupons', array( $this, 'marketplace_coupons' ) );
 
         add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
-        // add_action( 'wp_print_styles', array( $this, 'dequeue_all_styles_on_page' ), 99 );
+        add_action( 'wp_print_styles', array( $this, 'dequeue_all_styles_on_page' ), 99 );
     }
 
     /**

@@ -20,7 +20,7 @@ use MultiVendorX\Elementor\StoreHelper;
  * Extends Elementor's Widget_Button and renders a follow/unfollow button
  * for stores, including follower count.
  */
-class Store_Follow_Button extends Widget_Button {
+class StoreFollowButton extends Widget_Button {
 
     use StoreHelper;
 
