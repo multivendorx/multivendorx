@@ -57,7 +57,6 @@ class Frontend {
         add_filter( 'multivendorx_dashboard_menu', array( $this, 'hide_menu' ), 20 );
         add_filter( 'wp_insert_attachment_data', array( $this, 'attach_store_owner_id' ), 10, 1 );
         add_action( 'woocommerce_account_dashboard', array( $this, 'add_dashboard_button' ) );
-        add_filter('block_core_breadcrumbs_items',array( $this, 'modify_breadcrumbs_items' ),10);
     }
 
     public function modify_permissions( $permissions ) {
@@ -631,30 +630,4 @@ class Frontend {
         echo esc_html__( 'Go to store dashboard', 'multivendorx' );
         echo '</a>';
     }
-
-    /**
-	 * Modify breadcrumbs for store pages.
-	 *
-	 * @param array $items Breadcrumb items.
-	 * @return array
-	 */
-	public function modify_breadcrumbs_items( $items ) {
-
-		$store = Utill::is_store_page();
-
-		if ( ! $store ) {
-			return $items;
-		}
-
-		return array(
-			array(
-				'label' => __( 'Home', 'multivendorx' ),
-				'url'   => home_url( '/' ),
-			),
-			array(
-				'label' => $store->get( 'name' ) ?: '',
-				'url'   => '',
-			),
-		);
-	}
 }
