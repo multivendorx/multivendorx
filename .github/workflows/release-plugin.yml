@@ -176,17 +176,116 @@ jobs:
             --title "${PLUGIN} v${VERSION}" \
             --notes "${PLUGIN} version ${VERSION} release"
 
-  wporg:
+   wporg:
     needs: build
     if: github.event.inputs.action == 'WordPress.org Release' || github.event.inputs.action == 'Both'
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Install SVN Tools
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y subversion rsync unzip
+
+      - name: Download ZIP
+        uses: actions/download-artifact@v4
         with:
           name: plugin-zip-${{ needs.build.outputs.plugin_slug }}
           path: release
 
       - name: Show Artifact
+        shell: bash
         run: |
           find release -name "*.zip"
+
+      - name: Deploy to WordPress.org
+        shell: bash
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        run: |
+          set -e
+
+          PLUGIN="${{ needs.build.outputs.plugin_slug }}"
+          VERSION="${{ needs.build.outputs.version }}"
+          SLUG="${{ needs.build.outputs.wporg_slug }}"
+
+          echo "Deploying $SLUG version $VERSION"
+
+          SVN_URL="https://plugins.svn.wordpress.org/${SLUG}"
+
+          # Fresh SVN checkout
+          rm -rf "$HOME/svn/$SLUG"
+          mkdir -p "$HOME/svn"
+
+          svn checkout \
+            --non-interactive \
+            --trust-server-cert \
+            --username "$SVN_USERNAME" \
+            --password "$SVN_PASSWORD" \
+            "$SVN_URL" \
+            "$HOME/svn/$SLUG"
+
+          # Locate ZIP from downloaded artifact
+          ZIP_FILE=$(find release -name "*.zip" | head -n 1)
+
+          if [ -z "$ZIP_FILE" ]; then
+            echo "ZIP file not found"
+            exit 1
+          fi
+
+          echo "Using ZIP: $ZIP_FILE"
+
+          # Extract ZIP
+          rm -rf /tmp/wporg-release
+          mkdir -p /tmp/wporg-release
+
+          unzip -q "$ZIP_FILE" -d /tmp/wporg-release
+
+          RELEASE_DIR="/tmp/wporg-release/$SLUG"
+
+          if [ ! -d "$RELEASE_DIR" ]; then
+            echo "Release directory not found: $RELEASE_DIR"
+            echo "Extracted contents:"
+            ls -la /tmp/wporg-release
+            exit 1
+          fi
+
+          # Prepare SVN structure
+          mkdir -p "$HOME/svn/$SLUG/trunk"
+          mkdir -p "$HOME/svn/$SLUG/tags/$VERSION"
+
+          # Sync packaged files to trunk
+          rsync -rc --delete \
+            "$RELEASE_DIR/" \
+            "$HOME/svn/$SLUG/trunk/"
+
+          # Sync packaged files to tag
+          rsync -rc --delete \
+            "$RELEASE_DIR/" \
+            "$HOME/svn/$SLUG/tags/$VERSION/"
+
+          cd "$HOME/svn/$SLUG"
+
+          svn add --force . \
+            --auto-props \
+            --parents \
+            --depth infinity "*" || true
+
+          svn status | awk '/^\!/ {print $2}' | xargs -r svn delete
+
+          echo "===== SVN STATUS ====="
+          svn status
+
+          if [ -z "$(svn status)" ]; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          svn commit \
+            --non-interactive \
+            --trust-server-cert \
+            --username "$SVN_USERNAME" \
+            --password "$SVN_PASSWORD" \
+            -m "Release version $VERSION"
