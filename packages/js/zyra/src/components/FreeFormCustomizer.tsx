@@ -27,15 +27,13 @@ const FORM_FIELDS_CONFIG = [
     { id: '10', type: 'button', label: 'Submit', placeholder: '' },
 ];
 
-const SUBMIT_BUTTON_ID = '10';
-
 const toArray = (val: unknown): FormField[] => (Array.isArray(val) ? val : []);
 
 const isSubmitButton = (field?: Partial<FormField>) => field?.label?.trim().toLowerCase() === 'submit';
 
 // Helper that returns a complete default submit button object
 const getDefaultSubmitButton = (): FormField => ({
-    id: SUBMIT_BUTTON_ID,
+    id: '10',
     type: 'button',
     label: 'Submit',
     placeholder: '',
