@@ -28,6 +28,7 @@ on:
           - GitHub Release
           - WordPress.org Release
           - Both
+
 permissions:
   contents: write
 
@@ -35,7 +36,7 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 concurrency:
-  group: release-${{ steps.plugin.outputs.slug }}
+  group: release-${{ github.event.inputs.plugin }}
   cancel-in-progress: false
 
 jobs:
@@ -48,8 +49,7 @@ jobs:
       wporg_slug: ${{ steps.meta.outputs.wporg_slug }}
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -57,10 +57,10 @@ jobs:
         id: plugin
         shell: bash
         run: |
-          if [ "${{ steps.plugin.outputs.slug }}" = "other" ]; then
+          if [ "${{ github.event.inputs.plugin }}" = "other" ]; then
             PLUGIN="${{ github.event.inputs.custom_plugin }}"
           else
-            PLUGIN="${{ steps.plugin.outputs.slug }}"
+            PLUGIN="${{ github.event.inputs.plugin }}"
           fi
 
           if [ -z "$PLUGIN" ]; then
@@ -73,160 +73,17 @@ jobs:
             exit 1
           fi
 
-          echo "slug=$PLUGIN" >> $GITHUB_OUTPUT
-
-      - name: Read Runtime Versions
-        id: versions
-        shell: bash
-        run: |
-          ROOT_PACKAGE=./package.json
-
-          NODE_VERSION=$(node -p "
-            const pkg=require('${ROOT_PACKAGE}');
-            (
-              pkg.engines?.node ||
-              pkg.volta?.node ||
-              '24'
-            ).replace(/[^\d.]/g,'')
-          ")
-
-          PNPM_VERSION=$(node -p "
-            const pkg=require('${ROOT_PACKAGE}');
-            (
-              pkg.packageManager?.match(/pnpm@(.*)/)?.[1] ||
-              '10'
-            )
-          ")
-
-          echo "node_version=$NODE_VERSION" >> $GITHUB_OUTPUT
-          echo "pnpm_version=$PNPM_VERSION" >> $GITHUB_OUTPUT
-
-      - name: Read Plugin Metadata
-        id: meta
-        shell: bash
-        run: |
-          PACKAGE="./plugins/${{ steps.plugin.outputs.slug }}/package.json"
-
-          VERSION=$(node -p "require('${PACKAGE}').version")
-
-          WPORG_SLUG=$(node -p "
-            const pkg=require('${PACKAGE}');
-            pkg.pluginSlug ||
-            pkg.wordpressOrg?.slug ||
-            pkg.wporg?.slug ||
-            pkg.slug ||
-            pkg.name
-          ")
-
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "wporg_slug=$WPORG_SLUG" >> $GITHUB_OUTPUT
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ steps.versions.outputs.node_version }}
-
-      - name: Setup PNPM
-        shell: bash
-        run: |
-          corepack enable
-          corepack prepare pnpm@${{ steps.versions.outputs.pnpm_version }} --activate
-
-          echo "$(dirname $(which pnpm))" >> $GITHUB_PATH
-
-          pnpm -v
-          node -v
-
-      - name: Setup PHP
-        shell: bash
-        run: |
-          sudo add-apt-repository ppa:ondrej/php -y
-          sudo apt-get update
-
-          sudo apt-get install -y \
-            php8.4 \
-            php8.4-cli \
-            php8.4-mbstring \
-            php8.4-xml \
-            php8.4-curl \
-            unzip \
-            curl
-
-          php -v
-
-      - name: Install WP-CLI
-        shell: bash
-        run: |
-          curl -L \
-            https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-            -o wp-cli.phar
-
-          chmod +x wp-cli.phar
-          sudo mv wp-cli.phar /usr/local/bin/wp
-
-          wp --info
-
-      - name: Install Dependencies
-        run: pnpm install --no-frozen-lockfile
-
-      - name: Install Missing Peer Dependencies
-        run: |
-          pnpm add -Dw \
-            sortablejs \
-            react-sortablejs \
-            react-multi-date-picker \
-            react-drag-listview \
-            @reactour/tour
-
-      - name: Build Zyra
-        run: pnpm --filter zyra run build
-
-      - name: Build Plugin
-        run: |
-          cd plugins/${{ steps.plugin.outputs.slug }}
-          pnpm run build
-
-      - name: Generate POT File
-        run: |
-          cd plugins/${{ steps.plugin.outputs.slug }}
-
-          wp i18n make-pot \
-            . \
-            languages/${{ steps.plugin.outputs.slug }}.pot \
-            --domain='${{ steps.plugin.outputs.slug }}' \
-            --include='assets/js,public,classes,templates,modules,config.php,dc_product_vendor.php' \
-            --skip-js \
-            --headers='{"Report-Msgid-Bugs-To":"https://multivendorx.com/contact/"}'
-
-      - name: Create ZIP
-        run: |
-          cd plugins/${{ steps.plugin.outputs.slug }}
-          pnpm run build:zip
-
-      - name: Verify Build
-        run: |
-          ls -lah plugins/${{ steps.plugin.outputs.slug }}/release
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: plugin-zip-${{ steps.plugin.outputs.slug }}
-          path: plugins/${{ steps.plugin.outputs.slug }}/release/*.zip
+          echo "slug=$PLUGIN" >> "$GITHUB_OUTPUT"
 
   release:
     needs: build
-
-    if: |
-      github.event.inputs.action == 'GitHub Release' ||
-      github.event.inputs.action == 'Both'
-
+    if: github.event.inputs.action == 'GitHub Release' || github.event.inputs.action == 'Both'
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download ZIP
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
-          name: plugin-zip-${{ steps.plugin.outputs.slug }}
+          name: plugin-zip-${{ needs.build.outputs.plugin_slug }}
           path: release
 
       - name: Create GitHub Release
@@ -234,21 +91,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="${{ needs.build.outputs.version }}"
-          PLUGIN="${{ steps.plugin.outputs.slug }}"
+          PLUGIN="${{ needs.build.outputs.plugin_slug }}"
 
           ZIP_FILE=$(find release -name "*.zip" | head -n 1)
 
-          if [ -z "$ZIP_FILE" ]; then
-            echo "ZIP file not found"
-            exit 1
-          fi
-
           TAG="${PLUGIN}-v${VERSION}"
-
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release already exists"
-            exit 0
-          fi
 
           gh release create \
             "$TAG" \
@@ -258,91 +105,11 @@ jobs:
 
   wporg:
     needs: build
-
-    if: |
-      github.event.inputs.action == 'WordPress.org Release' ||
-      github.event.inputs.action == 'Both'
-
+    if: github.event.inputs.action == 'WordPress.org Release' || github.event.inputs.action == 'Both'
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install SVN Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y subversion rsync unzip
-
-      - name: Download ZIP
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
-          name: plugin-zip-${{ steps.plugin.outputs.slug }}
+          name: plugin-zip-${{ needs.build.outputs.plugin_slug }}
           path: release
-
-      - name: Deploy to WordPress.org
-        env:
-          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
-        shell: bash
-        run: |
-          set -e
-
-          VERSION="${{ needs.build.outputs.version }}"
-          SLUG="${{ needs.build.outputs.wporg_slug }}"
-
-          ZIP_FILE=$(find release -name "*.zip" | head -n 1)
-
-          if [ -z "$ZIP_FILE" ]; then
-            echo "ZIP file not found"
-            exit 1
-          fi
-
-          SVN_URL="https://plugins.svn.wordpress.org/${SLUG}"
-
-          rm -rf "$HOME/svn/$SLUG"
-          mkdir -p "$HOME/svn"
-
-          svn checkout \
-            --non-interactive \
-            --trust-server-cert \
-            --username "$SVN_USERNAME" \
-            --password "$SVN_PASSWORD" \
-            "$SVN_URL" \
-            "$HOME/svn/$SLUG"
-
-          rm -rf /tmp/wporg-release
-          mkdir -p /tmp/wporg-release
-
-          unzip -q "$ZIP_FILE" -d /tmp/wporg-release
-
-          RELEASE_DIR="/tmp/wporg-release/$SLUG"
-
-          mkdir -p "$HOME/svn/$SLUG/trunk"
-          mkdir -p "$HOME/svn/$SLUG/tags/$VERSION"
-
-          rsync -rc --delete \
-            "$RELEASE_DIR/" \
-            "$HOME/svn/$SLUG/trunk/"
-
-          rsync -rc --delete \
-            "$RELEASE_DIR/" \
-            "$HOME/svn/$SLUG/tags/$VERSION/"
-
-          cd "$HOME/svn/$SLUG"
-
-          svn add --force . \
-            --auto-props \
-            --parents \
-            --depth infinity "*" || true
-
-          svn status | awk '/^\!/ {print $2}' | xargs -r svn delete
-
-          if [ -z "$(svn status)" ]; then
-            echo "No changes to commit"
-            exit 0
-          fi
-
-          svn commit \
-            --non-interactive \
-            --trust-server-cert \
-            --username "$SVN_USERNAME" \
-            --password "$SVN_PASSWORD" \
-            -m "Release version $VERSION"
