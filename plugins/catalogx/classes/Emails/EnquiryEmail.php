@@ -72,15 +72,6 @@ class EnquiryEmail extends \WC_Email {
         // Default values.
         $defaults   = array(
             'email_setting'   => '',
-            'template_map'    => array(
-                'template1' => 'emails/default-enquiry-template.php',
-                'template2' => 'emails/enquiry-template1.php',
-                'template3' => 'emails/enquiry-template2.php',
-                'template4' => 'emails/enquiry-template3.php',
-                'template5' => 'emails/enquiry-template4.php',
-                'template6' => 'emails/enquiry-template5.php',
-                'template7' => 'emails/enquiry-template6.php',
-            ),
             'base_path'       => CatalogX()->plugin_path . 'templates/',
             'plain_template'  => 'emails/plain/enquiry-email.php',
             'default_html'    => 'emails/enquiry-email.php',
@@ -89,7 +80,7 @@ class EnquiryEmail extends \WC_Email {
         $this->args = apply_filters( 'catalogx_enquiry_email_template', $defaults );
         // Set the appropriate template paths.
         $this->template_loader = $this->args['template_loader'];
-        $this->template_html   = $this->args['template_map'][ $this->args['email_setting'] ] ?? $this->args['default_html'];
+        $this->template_html   = $this->args['default_html'];
         $this->template_plain  = $this->args['plain_template'];
         $this->template_base   = $this->args['base_path'];
         // Call parent constructor.
@@ -121,11 +112,6 @@ class EnquiryEmail extends \WC_Email {
         $this->add_vendor_emails();
 
         $product       = wc_get_product( key( $this->product_id ) );
-        $this->find    = array( '{PRODUCT_NAME}', '{USER_NAME}' );
-        $this->replace = array(
-            is_array( $this->product_id ) && count( $this->product_id ) > 1 ? 'MULTIPLE PRODUCTS' : $product->get_title(),
-            $this->cust_name,
-        );
 
         return $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
     }

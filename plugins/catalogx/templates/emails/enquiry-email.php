@@ -1,6 +1,6 @@
 <?php
 /**
- * Request Quote Email
+ * CatalogX Enquiry Email
  *
  * @package CatalogX
  */
@@ -8,7 +8,8 @@
 require_once __DIR__ . '/EmailHTMLConverter.php';
 defined( 'ABSPATH' ) || exit;
 
-do_action( 'catalogx_email_header', $email_heading );
+do_action( 'catalogx_email_header',  $args['email_heading'] );
+$enquiry_data = $args['enquiry_data'];
 
 $settings = get_option(
 	'catalogx_enquiry_email_temp_settings',
@@ -32,11 +33,12 @@ foreach ( $template_data['emailTemplates'] ?? array() as $email_template ) {
 $email_html = '';
 
 if ( ! empty( $template['blocks'] ) ) {
+	$product_obj = wc_get_product( key( $args['product_id'] ) );
 	$email_html = EmailHTMLConverter::convert( $template['blocks'],array(
-		'{customer_name}'  => 'Jhon Doe', // Replace with actual customer name if available
-		'{customer_email}' => 'jhon.doe@example.com', // Replace with actual customer email if available
-		'{product_name}'   => 'Dummy Product', // Replace with actual product name if available
-		'{product_link}'   => '#', // Replace with actual product link if available
+		'{customer_name}'  => $enquiry_data['user_name'],
+		'{customer_email}' => $enquiry_data['user_email'],
+		'{product_name}'   => $product_obj ? $product_obj->get_name() : 'Dummy Product',
+		'{product_link}'   => $product_obj ? $product_obj->get_permalink() : '#',
 	) );
 }
 ?>
