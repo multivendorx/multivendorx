@@ -643,7 +643,7 @@ const SetupWizard: React.FC = () => {
 					),
 					onClick: () => {
 						window.open(
-							`${appLocalizer.admin_url}admin.php?page=catalogx#&tab=settings&subtab=commissions`,
+							`${appLocalizer.admin_url}#&tab=settings&subtab=commissions`,
 							'_blank'
 						);
 					},
@@ -662,7 +662,7 @@ const SetupWizard: React.FC = () => {
 							label: __('Finish', 'catalogx'),
 							action: 'next',
 							color: 'green',
-							redirect: `${appLocalizer.admin_url}admin.php?page=catalogx#&tab=modules`,
+							redirect: `${appLocalizer.admin_url}#&tab=modules`,
 						},
 					],
 				},

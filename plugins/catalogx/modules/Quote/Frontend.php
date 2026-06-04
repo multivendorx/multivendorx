@@ -91,23 +91,13 @@ class Frontend {
         $view_quote_btn_text = Utill::get_translated_string( 'catalogx', 'view_quote', 'View Quote' );
 
         $button_settings  = CatalogX()->setting->get_setting( 'quote_button' );
-        $button_css       = Utill::get_button_styles( $button_settings );
-        $button_hover_css = Utill::get_button_styles( $button_settings, true );
-
-        if ( $button_hover_css ) {
-            echo '<style>
-                .catalogx-add-request-quote-button:hover{
-                ' . esc_html( $button_hover_css ) . '
-                } 
-            </style>';
-        }
 
         $quote_btn_text = ! empty( $button_settings['button_text'] ) ? $button_settings['button_text'] : $quote_btn_text;
         CatalogX()->util->get_template(
             'quote-button-template.php',
             array(
 				'class'        => 'catalogx-add-request-quote-button ',
-				'btn_css'      => $button_css,
+				'btn_css'      => '',
 				'wpnonce'      => wp_create_nonce( 'add-quote-' . $product_obj->get_id() ),
 				'product_id'   => $product_obj->get_id(),
 				'label'        => $quote_btn_text,

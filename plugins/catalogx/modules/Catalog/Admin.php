@@ -88,9 +88,7 @@ class Admin {
      * @return void
      */
     public function save_catalog_product_meta( $post_id ) {
-        $catalog_product_desc = isset( $_POST['catalog_per_product_desc'] )
-            ? wc_clean( wp_unslash( $_POST['catalog_per_product_desc'] ) )
-            : '';
+        $catalog_product_desc = ( filter_input(INPUT_POST, 'catalog_per_product_desc') );
         update_post_meta( $post_id, 'catalog_per_product_desc', $catalog_product_desc );
     }
 }

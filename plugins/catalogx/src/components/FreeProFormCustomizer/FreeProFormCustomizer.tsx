@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 // Internal dependencies
 import ProForm from './FormRenderer';
+import '../styles/web/FreeProFormCustomizer.scss';
 import '../styles/web/RegistrationForm.scss';
 import { TabsUI } from './Tabs';
 

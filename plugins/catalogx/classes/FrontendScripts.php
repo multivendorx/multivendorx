@@ -418,7 +418,6 @@ class FrontendScripts {
                             'tab_name'                   => 'CatalogX',
                             'pages_data'                 => $pages_data,
                             'role_array'                 => $roles_data,
-                            'admin_url'                  => admin_url(),
                             'users_data'                 => $users_data,
                             'products_data'              => $products_data,
                             'all_product_categories'     => $product_categories,
@@ -430,13 +429,7 @@ class FrontendScripts {
                             'khali_dabba'                => Utill::is_khali_dabba(),
                             'pro_url'                    => esc_url( CATALOGX_PRO_SHOP_URL ),
                             'order_edit'                 => admin_url( 'admin.php?page=wc-orders&action=edit' ),
-                            'site_url'                   => admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=shopping' ),
-                            'module_page_url'            => admin_url( 'admin.php?page=catalogx#&tab=modules' ),
-                            'settings_page_url'          => admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=shopping' ),
-                            'enquiry_form_settings_url'  => admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=enquiry-form-customization' ),
-                            'customization_settings_url' => admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=enquiry-catalog-customization' ),
-                            'wholesale_settings_url'     => admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=wholesale' ),
-                            'rule_url'                   => admin_url( 'admin.php?page=catalogx#&tab=rules' ),
+                            'admin_url'                  => admin_url( 'admin.php?page=catalogx' ),
                             'currency'                   => get_woocommerce_currency(),
                             'notifima_active'            => Utill::is_active_plugin( 'notifima' ),
                             'mvx_active'                 => Utill::is_active_plugin( 'multivendorx' ),
@@ -489,11 +482,19 @@ class FrontendScripts {
                         )
                     ),
                 ),
-                'catalogx-enquiry-button-script'   => array(
+                'catalogx-enquiry-button-editor-script'   => array(
                     'object_name' => 'enquiryButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-quote-button-script'          => array(
+                'catalogx-quote-button-editor-script'          => array(
+                    'object_name' => 'quoteButton',
+                    'data'        => $base_rest,
+                ),
+                'catalogx-enquiry-button-view-script'   => array(
+                    'object_name' => 'enquiryButton',
+                    'data'        => $base_rest,
+                ),
+                'catalogx-quote-button-view-script'          => array(
                     'object_name' => 'quoteButton',
                     'data'        => $base_rest,
                 ),

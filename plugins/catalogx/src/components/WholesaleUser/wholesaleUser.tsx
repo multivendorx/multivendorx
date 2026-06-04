@@ -103,7 +103,7 @@ const WholesaleUser = () => {
 	};
 
 	const RenderedTableCard = applyFilters(
-			'catalogx_quote_table_component',
+			'catalogx_wholesale_user_table_component',
 			TableCard
 		);
 
