@@ -125,14 +125,15 @@ class EnquiryEmail extends \WC_Email {
         }
 
         foreach ( $this->product_id as $product_id => $quantity ) {
-            $vendor = function_exists( 'get_mvx_product_vendors' ) ? get_mvx_product_vendors( $product_id ) : null;
+            $store_id = get_post_meta( $product_id, 'multivendorx_store_id', true );
+            $store = new MultiVendorX\Store\Store( $store_id );
+            
+            if ( $store ) {
+                $store_email     = sanitize_email( $store->get('email') );
+                $this->recipient .= ', ' . $store_email;
 
-            if ( $vendor ) {
-                $vendor_email     = sanitize_email( $vendor->user_data->user_email );
-                $this->recipient .= ', ' . $vendor_email;
-
-                if ( strpos( $this->recipient, $vendor_email ) !== false ) {
-                    $email_setting       = get_user_meta( $vendor->id, 'vendor_enquiry_settings', true )['selected_email_tpl'] ?? '';
+                if ( strpos( $this->recipient, $store_email ) !== false ) {
+                    $email_setting       = get_user_meta( $store->id, 'vendor_enquiry_settings', true )['selected_email_tpl'] ?? '';
                     $this->template_html = $this->args['template_map'][ $email_setting ] ?? $this->args['default_html'];
                 }
             }
