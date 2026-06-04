@@ -123,6 +123,7 @@ class Installer {
                 `product_id` text NOT NULL,
                 `enquiry_id` bigint(20) NOT NULL,
                 `status` varchar(20) NOT NULL,
+                `is_read` tinyint(1) NOT NULL DEFAULT 0,
                 `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 `attachment` bigint(20),
                 `reaction` varchar(20),

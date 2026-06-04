@@ -103,16 +103,7 @@ export default function QuotesList() {
 			type: 'date',
 		},
 	];
-	const defaultTableProps = {
-		headers,
-
-		rows: dummyQuotes,
-		totalRows: dummyQuotes.length,
-		filters: filters,
-		search: {
-			placeholder: __('Search quotes...', 'catalogx'),
-		},
-	};
+	const defaultTableProps : any ={};
 
 	const RenderedTableCard = applyFilters(
 		'catalogx_quote_table_component',
@@ -151,6 +142,7 @@ export default function QuotesList() {
 				<Column>
 					<div onClick={handleTableWrapperClick} >
 						<RenderedTableCard {...defaultTableProps} />
+						{defaultTableProps.popup}
 					</div>
 				</Column>
 			</Container>
