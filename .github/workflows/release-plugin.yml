@@ -4,9 +4,20 @@ on:
   workflow_dispatch:
     inputs:
       plugin:
-        description: "Plugin slug"
+        description: "Select plugin"
         required: true
-        default: "multivendorx"
+        type: choice
+        default: multivendorx
+        options:
+          - multivendorx
+          - moowoodle
+          - catalogx
+          - other
+
+      custom_plugin:
+        description: "Plugin slug (only when plugin=other)"
+        required: false
+        default: ""
 
       action:
         description: "Release action"
@@ -17,7 +28,6 @@ on:
           - GitHub Release
           - WordPress.org Release
           - Both
-
 permissions:
   contents: write
 
@@ -25,7 +35,7 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 concurrency:
-  group: release-${{ github.event.inputs.plugin }}
+  group: release-${{ steps.plugin.outputs.slug }}
   cancel-in-progress: false
 
 jobs:
@@ -33,27 +43,43 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
+      plugin_slug: ${{ steps.plugin.outputs.slug }}
       version: ${{ steps.meta.outputs.version }}
       wporg_slug: ${{ steps.meta.outputs.wporg_slug }}
 
     steps:
-      # -----------------------------------
-      # Checkout
-      # -----------------------------------
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      # -----------------------------------
-      # Read Versions
-      # -----------------------------------
+      - name: Resolve Plugin Slug
+        id: plugin
+        shell: bash
+        run: |
+          if [ "${{ steps.plugin.outputs.slug }}" = "other" ]; then
+            PLUGIN="${{ github.event.inputs.custom_plugin }}"
+          else
+            PLUGIN="${{ steps.plugin.outputs.slug }}"
+          fi
+
+          if [ -z "$PLUGIN" ]; then
+            echo "Plugin slug is required"
+            exit 1
+          fi
+
+          if [ ! -d "plugins/$PLUGIN" ]; then
+            echo "Plugin folder not found: plugins/$PLUGIN"
+            exit 1
+          fi
+
+          echo "slug=$PLUGIN" >> $GITHUB_OUTPUT
+
       - name: Read Runtime Versions
         id: versions
         shell: bash
         run: |
           ROOT_PACKAGE=./package.json
-          PLUGIN_PACKAGE=./plugins/${{ github.event.inputs.plugin }}/package.json
 
           NODE_VERSION=$(node -p "
             const pkg=require('${ROOT_PACKAGE}');
@@ -75,14 +101,11 @@ jobs:
           echo "node_version=$NODE_VERSION" >> $GITHUB_OUTPUT
           echo "pnpm_version=$PNPM_VERSION" >> $GITHUB_OUTPUT
 
-      # -----------------------------------
-      # Plugin Metadata
-      # -----------------------------------
       - name: Read Plugin Metadata
         id: meta
         shell: bash
         run: |
-          PACKAGE="./plugins/${{ github.event.inputs.plugin }}/package.json"
+          PACKAGE="./plugins/${{ steps.plugin.outputs.slug }}/package.json"
 
           VERSION=$(node -p "require('${PACKAGE}').version")
 
@@ -98,17 +121,11 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "wporg_slug=$WPORG_SLUG" >> $GITHUB_OUTPUT
 
-      # -----------------------------------
-      # Setup Node
-      # -----------------------------------
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ steps.versions.outputs.node_version }}
 
-      # -----------------------------------
-      # Setup PNPM
-      # -----------------------------------
       - name: Setup PNPM
         shell: bash
         run: |
@@ -120,9 +137,6 @@ jobs:
           pnpm -v
           node -v
 
-      # -----------------------------------
-      # Setup PHP
-      # -----------------------------------
       - name: Setup PHP
         shell: bash
         run: |
@@ -140,9 +154,6 @@ jobs:
 
           php -v
 
-      # -----------------------------------
-      # Install WP CLI
-      # -----------------------------------
       - name: Install WP-CLI
         shell: bash
         run: |
@@ -155,25 +166,9 @@ jobs:
 
           wp --info
 
-      # -----------------------------------
-      # Validate Plugin
-      # -----------------------------------
-      - name: Validate Plugin
-        run: |
-          if [ ! -d "plugins/${{ github.event.inputs.plugin }}" ]; then
-            echo "Plugin not found"
-            exit 1
-          fi
-
-      # -----------------------------------
-      # Install Dependencies
-      # -----------------------------------
       - name: Install Dependencies
         run: pnpm install --no-frozen-lockfile
 
-      # -----------------------------------
-      # Install Missing Peer Dependencies
-      # -----------------------------------
       - name: Install Missing Peer Dependencies
         run: |
           pnpm add -Dw \
@@ -183,58 +178,47 @@ jobs:
             react-drag-listview \
             @reactour/tour
 
-      # -----------------------------------
-      # Build Shared Packages
-      # -----------------------------------
       - name: Build Zyra
         run: pnpm --filter zyra run build
 
-      # -----------------------------------
-      # Build Plugin
-      # -----------------------------------
       - name: Build Plugin
         run: |
-          cd plugins/${{ github.event.inputs.plugin }}
+          cd plugins/${{ steps.plugin.outputs.slug }}
           pnpm run build
 
-      # -----------------------------------
-      # Generate POT
-      # -----------------------------------
       - name: Generate POT File
         run: |
-          cd plugins/${{ github.event.inputs.plugin }}
+          cd plugins/${{ steps.plugin.outputs.slug }}
 
           wp i18n make-pot \
             . \
-            languages/${{ github.event.inputs.plugin }}.pot \
-            --domain='${{ github.event.inputs.plugin }}' \
+            languages/${{ steps.plugin.outputs.slug }}.pot \
+            --domain='${{ steps.plugin.outputs.slug }}' \
             --include='assets/js,public,classes,templates,modules,config.php,dc_product_vendor.php' \
             --skip-js \
             --headers='{"Report-Msgid-Bugs-To":"https://multivendorx.com/contact/"}'
 
-      # -----------------------------------
-      # Create ZIP
-      # -----------------------------------
       - name: Create ZIP
         run: |
-          cd plugins/${{ github.event.inputs.plugin }}
+          cd plugins/${{ steps.plugin.outputs.slug }}
           pnpm run build:zip
 
-      # -----------------------------------
-      # Upload Artifact
-      # -----------------------------------
+      - name: Verify Build
+        run: |
+          ls -lah plugins/${{ steps.plugin.outputs.slug }}/release
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: plugin-zip
-          path: plugins/${{ github.event.inputs.plugin }}/release/*.zip
+          name: plugin-zip-${{ steps.plugin.outputs.slug }}
+          path: plugins/${{ steps.plugin.outputs.slug }}/release/*.zip
 
   release:
     needs: build
 
     if: |
-      github.event.inputs.action == 'release' ||
-      github.event.inputs.action == 'both'
+      github.event.inputs.action == 'GitHub Release' ||
+      github.event.inputs.action == 'Both'
 
     runs-on: ubuntu-latest
 
@@ -242,7 +226,7 @@ jobs:
       - name: Download ZIP
         uses: actions/download-artifact@v4
         with:
-          name: plugin-zip
+          name: plugin-zip-${{ steps.plugin.outputs.slug }}
           path: release
 
       - name: Create GitHub Release
@@ -250,7 +234,14 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="${{ needs.build.outputs.version }}"
-          PLUGIN="${{ github.event.inputs.plugin }}"
+          PLUGIN="${{ steps.plugin.outputs.slug }}"
+
+          ZIP_FILE=$(find release -name "*.zip" | head -n 1)
+
+          if [ -z "$ZIP_FILE" ]; then
+            echo "ZIP file not found"
+            exit 1
+          fi
 
           TAG="${PLUGIN}-v${VERSION}"
 
@@ -261,7 +252,7 @@ jobs:
 
           gh release create \
             "$TAG" \
-            release/*.zip \
+            "$ZIP_FILE" \
             --title "${PLUGIN} v${VERSION}" \
             --notes "${PLUGIN} version ${VERSION} release"
 
@@ -269,8 +260,8 @@ jobs:
     needs: build
 
     if: |
-      github.event.inputs.action == 'wporg' ||
-      github.event.inputs.action == 'both'
+      github.event.inputs.action == 'WordPress.org Release' ||
+      github.event.inputs.action == 'Both'
 
     runs-on: ubuntu-latest
 
@@ -283,7 +274,7 @@ jobs:
       - name: Download ZIP
         uses: actions/download-artifact@v4
         with:
-          name: plugin-zip
+          name: plugin-zip-${{ steps.plugin.outputs.slug }}
           path: release
 
       - name: Deploy to WordPress.org
@@ -298,6 +289,11 @@ jobs:
           SLUG="${{ needs.build.outputs.wporg_slug }}"
 
           ZIP_FILE=$(find release -name "*.zip" | head -n 1)
+
+          if [ -z "$ZIP_FILE" ]; then
+            echo "ZIP file not found"
+            exit 1
+          fi
 
           SVN_URL="https://plugins.svn.wordpress.org/${SLUG}"
 
