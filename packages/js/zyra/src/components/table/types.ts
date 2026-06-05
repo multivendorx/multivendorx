@@ -155,6 +155,10 @@ export type TableProps = CommonTableProps & {
     emptyMessage?: string;
     format?: string;
     currency?: CurrencyConfig;
+    onRowReorder?: (
+        fromIndex: number,
+        toIndex: number
+    ) => void;
 };
 
 // export type TableSummaryProps = {
@@ -238,6 +242,10 @@ export type TableCardProps = CommonTableProps & {
     buttonActions?: ButtonAction[];
     format?: string;
     currency?: {};
+    onRowReorder?: (
+        fromIndex: number,
+        toIndex: number
+    ) => void;
 };
 
 export type FilterOption = {
