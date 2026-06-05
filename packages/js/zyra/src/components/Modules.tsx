@@ -39,6 +39,7 @@ interface ModuleProps {
     pluginName: string;
     proPopupContent?: React.FC;
     variant?: 'default' | 'mini-module';
+    filter?: boolean;
 }
 
 const isModule = (item: ModuleItem): item is Module => !('type' in item);
@@ -49,6 +50,7 @@ const Modules: React.FC<ModuleProps> = ({
     proPopupContent: ProPopupComponent,
     pluginName,
     variant = 'default',
+    filter = true,
 }) => {
     const [modelOpen, setModelOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('All');
@@ -304,7 +306,7 @@ const Modules: React.FC<ModuleProps> = ({
 
             <div className="module-container" data-variant={variant}>
                 {/* FILTER SECTION */}
-                {variant === 'default' && (
+                {variant === 'default' && filter === true && (
                     <div className="filter-wrapper">
                         <div className="category-filter">
                             {modulesArray.category &&
@@ -420,7 +422,7 @@ const Modules: React.FC<ModuleProps> = ({
                                                     </div>
                                                 )}
 
-                                                <p
+                                                <div
                                                     className="meta-description"
                                                     dangerouslySetInnerHTML={{
                                                         __html:
