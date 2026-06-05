@@ -630,6 +630,32 @@ class Installer {
                 );
             }
             // phpcs:enable
+
+            /**
+             * Message Table - Add is_read Column
+             *
+             * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+             * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+             * phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+             * phpcs:disable WordPress.DB.DirectDatabaseQuery.SchemaChange
+             */
+
+            $table_name = $wpdb->prefix . Utill::TABLES['message'];
+
+            $column_exists = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SHOW COLUMNS FROM {$table_name} LIKE %s",
+                    'is_read'
+                )
+            );
+
+            if ( ! $column_exists ) {
+                $wpdb->query(
+                    "ALTER TABLE {$table_name}
+                    ADD COLUMN is_read TINYINT(1) NOT NULL DEFAULT 0
+                    AFTER status"
+                );
+            }
         }
     }
 
