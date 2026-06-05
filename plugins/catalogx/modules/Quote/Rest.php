@@ -350,6 +350,6 @@ $postdata = $request->get_params();
         }
 
         // Check if user is admin or customer.
-        return current_user_can( 'customer' ) || current_user_can( 'manage_options' );
+        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
     }
 }
