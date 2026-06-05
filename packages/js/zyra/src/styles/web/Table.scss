@@ -702,7 +702,8 @@
 .badge-enrolled,
 .badge-refund-accepted,
 .badge-open,
-.badge-confirmed {
+.badge-confirmed,
+.badge-accepted-quote {
     color: map.get(map.get($color-palette, "green"), color);
     background: map.get(map.get($color-palette, "green"), light-color);
 }
@@ -710,7 +711,8 @@
 .badge-pending,
 .badge-on-hold,
 .badge-partially_refunded,
-.badge-resolved {
+.badge-resolved,
+.badge-pending-quote {
     color: map.get(map.get($color-palette, "yellow"), color);
     background: map.get(map.get($color-palette, "yellow"), light-color);
 }
@@ -735,7 +737,8 @@
 .badge-outofstock,
 .badge-closed,
 .badge-unenrolled,
-.badge-refund-rejected {
+.badge-refund-rejected,
+.badge-rejected-quote {
     color: map.get(map.get($color-palette, "red"), color);
     background: map.get(map.get($color-palette, "red"), light-color);
 }
@@ -755,14 +758,16 @@
     background: map.get(map.get($color-palette, "purple"), light-color);
 }
 
-.badge-deactivated {
+.badge-deactivated,
+.badge-new-quote-request {
     color: map.get(map.get($color-palette, "indigo"), color);
     background: map.get(map.get($color-palette, "indigo"), light-color);
 }
 
 .badge-permanently_rejected,
 .badge-inactive,
-.badge-refund-requested {
+.badge-refund-requested,
+.badge-expired-quote {
     color: map.get(map.get($color-palette, "pink"), color);
     background: map.get(map.get($color-palette, "pink"), light-color);
 }
