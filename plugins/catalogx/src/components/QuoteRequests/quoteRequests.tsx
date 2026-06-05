@@ -33,11 +33,7 @@ export default function QuotesList() {
 			label: __('Order ID', 'catalogx'),
 			render: (row: QuoteRow) => (
 				<InfoItem
-					title={`#${row.order_id}`}
-					avatar={{
-						// image: row.image?.src || '',
-						iconClass: 'quote',
-					}}
+					title={`${row.order_id}`}
 					descriptions={[
 						{
 							label: __('By', 'catalogx'),
@@ -47,7 +43,7 @@ export default function QuotesList() {
 				/>
 			),
 		},
-		date: { label: __('Date', 'catalogx'), type: 'date' },		
+		date: { label: __('Date', 'catalogx'), type: 'date' },
 		status: { label: __('Status', 'catalogx'), type: 'status', statusClass: (row: QuoteRow) => `${row.status}` },
 		total: {
 			label: __('Total', 'catalogx'),
@@ -68,13 +64,6 @@ export default function QuotesList() {
 					},
 				},
 				{
-					label: __('Edit Status', 'catalogx'),
-					icon: 'edit',
-					onClick: () => {
-						setopenPopup(true);
-					},
-				},
-				{
 					label: __('Send Mail', 'catalogx'),
 					icon: 'mail',
 					onClick: () => {
@@ -84,19 +73,8 @@ export default function QuotesList() {
 			],
 		},
 	};
-	const filterOptions = [
-		{ value: 'Order ID', label: __('Order ID', 'catalogx') },
-		{ value: 'Customer Name', label: __('Customer Name', 'catalogx') },
-		{ value: 'Customer Email', label: __('Customer Email', 'catalogx') },
-	];
 
 	const filters = [
-		{
-			key: 'filter',
-			label: __('Filter', 'catalogx'),
-			type: 'select',
-			options: filterOptions,
-		},
 		{
 			key: 'date_range',
 			label: __('Date Range', 'catalogx'),
@@ -110,8 +88,24 @@ export default function QuotesList() {
 		totalRows: dummyQuotes.length,
 		filters: filters,
 		search: {
-			placeholder: __('Search quotes...', 'catalogx'),
-		},
+			placeholder: __('Search quotes...', 'multivendorx'),
+			size: 10,
+			options: [
+				{ label: __('All', 'multivendorx'), value: 'all' },
+				{
+					label: __('Order Id', 'multivendorx'),
+					value: 'order_id',
+				},
+				{
+					label: __('Customer Email', 'multivendorx'),
+					value: 'customer_email',
+				},
+				{
+					label: __('Customer Name', 'multivendorx'),
+					value: 'customer_name',
+				},
+			],
+		}
 	};
 
 	const RenderedTableCard = applyFilters(

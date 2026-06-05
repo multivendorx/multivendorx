@@ -50,6 +50,7 @@ export default {
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.role_array,
                             isClearable: true,
+                            size: 15
                         },
                     ],
                 },
@@ -65,6 +66,7 @@ export default {
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.users_data,
                             isClearable: true,
+                            size: 15
                         },
                     ],
                 },
@@ -80,6 +82,7 @@ export default {
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.products_data,
                             isClearable: true,
+                            size: 15
                         },
                     ],
                 },
@@ -95,6 +98,7 @@ export default {
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.all_product_categories,
                             isClearable: true,
+                            size: 15
                         },
                     ],
                 },
@@ -110,6 +114,7 @@ export default {
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.all_product_tag,
                             isClearable: true,
+                            size: 15
                         },
                     ],
                 },
@@ -125,6 +130,7 @@ export default {
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.product_brands,
                             isClearable: true,
+                            size: 15
                         },
                     ],
                 },
