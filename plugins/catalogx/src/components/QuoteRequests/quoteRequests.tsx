@@ -81,32 +81,7 @@ export default function QuotesList() {
 			type: 'date',
 		},
 	];
-	const defaultTableProps = {
-		headers,
-
-		rows: dummyQuotes,
-		totalRows: dummyQuotes.length,
-		filters: filters,
-		search: {
-			placeholder: __('Search quotes...', 'multivendorx'),
-			size: 10,
-			options: [
-				{ label: __('All', 'multivendorx'), value: 'all' },
-				{
-					label: __('Order Id', 'multivendorx'),
-					value: 'order_id',
-				},
-				{
-					label: __('Customer Email', 'multivendorx'),
-					value: 'customer_email',
-				},
-				{
-					label: __('Customer Name', 'multivendorx'),
-					value: 'customer_name',
-				},
-			],
-		}
-	};
+	const defaultTableProps : any ={};
 
 	const RenderedTableCard = applyFilters(
 		'catalogx_quote_table_component',
@@ -145,6 +120,7 @@ export default function QuotesList() {
 				<Column>
 					<div onClick={handleTableWrapperClick} >
 						<RenderedTableCard {...defaultTableProps} />
+						{defaultTableProps.popup}
 					</div>
 				</Column>
 			</Container>

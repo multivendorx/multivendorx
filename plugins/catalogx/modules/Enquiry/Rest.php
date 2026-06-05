@@ -137,8 +137,29 @@ class Rest {
             }
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-            $wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->prefix}" . Utill::TABLES['message'] . ' SET to_user_id=%d, from_user_id=%d, chat_message=%s, product_id=%s, enquiry_id=%d, status=%s, attachment=%d', $to_user_id, $user->ID, $chat_message, wp_json_encode( $product_info ), $enquiry_id, 'unread', $attachment_id ) );
-
+            $wpdb->insert(
+                "{$wpdb->prefix}" . Utill::TABLES['message'],
+                array(
+                    'to_user_id'   => $to_user_id,
+                    'from_user_id' => $user->ID,
+                    'chat_message' => $chat_message,
+                    'product_id'   => wp_json_encode( $product_info ),
+                    'enquiry_id'   => $enquiry_id,
+                    'status'       => 'unread',
+                    'is_read'      => 0,
+                    'attachment'   => $attachment_id,
+                ),
+                array(
+                    '%d',
+                    '%d',
+                    '%s',
+                    '%s',
+                    '%d',
+                    '%s',
+                    '%d',
+                    '%d',
+                )
+            );
             $enquiry_data = apply_filters(
                 'catalogx_enquiry_form_data',
                 array(
@@ -196,6 +217,6 @@ class Rest {
         }
 
         // Check if user is admin or customer.
-        return current_user_can( 'customer' ) || current_user_can( 'manage_options' );
+        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
     }
 }

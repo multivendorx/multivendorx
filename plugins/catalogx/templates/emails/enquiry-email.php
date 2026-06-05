@@ -2,10 +2,14 @@
 /**
  * CatalogX Enquiry Email
  *
- * @package CatalogX
+ * Override this template by copying it to yourtheme/woocommerce-catalog-enquiry/emails/enquiry-email.php
+ *
+ * @author    MultiVendorX
+ * @package   CatalogX
+ * @version   6.0.0
  */
 
-require_once __DIR__ . '/EmailHTMLConverter.php';
+use CatalogX\Emails\EmailHTMLConverter;
 defined( 'ABSPATH' ) || exit;
 
 do_action( 'catalogx_email_header',  $args['email_heading'] );
