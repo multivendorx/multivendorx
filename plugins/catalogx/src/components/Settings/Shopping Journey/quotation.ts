@@ -35,11 +35,12 @@ export default {
             key: 'set_expiry_time',
             type: 'text',
             label: __( 'Quotation expiry duration', 'catalogx' ),
+            size: 10,
             desc: __(
                 'Set the period after which a quotation will expire and no longer be valid for purchase.',
                 'catalogx'
             ),
-            parameter: __( 'days', 'catalogx' ),
+            postText: __( 'days', 'catalogx' ),
             proSetting: true,
             moduleEnabled: 'quote',
         },

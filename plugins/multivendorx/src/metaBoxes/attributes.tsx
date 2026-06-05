@@ -209,6 +209,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                         <SelectInputUI
                                             name="attribute"
                                             type="single-select"
+                                            size={12}
                                             options={existingAttributes.map((attr) => ({
                                                 label: attr.name,
                                                 value: attr.id,
