@@ -38,12 +38,91 @@ const Rules = () => {
     const [openPopup, setopenPopup] = useState(false);
     let tableProps: any = {};
     const headers = {
-        name: { label: __('Name', 'catalogx'), render: (row: RuleRow) => <InfoItem title={row.name} /> },
-        applicable_for: { label: __('Applicable For', 'catalogx') },
-        for_whom: { label: __('For Whom', 'catalogx') },
-        discount: { label: __('Discount', 'catalogx') },
-        quantity: { label: __('Quantity', 'catalogx'), render: (row: RuleRow) => (row.quantity_enabled ? row.quantity : '-') },
-        status: { label: __('Status', 'catalogx'), type: 'status', statusClass: (row: RuleRow) => String(row.status).toLowerCase() },
+        name: {
+            label: __('Name', 'catalogx'),
+        },
+        applicable_for: {
+            label: __('Applicable For', 'catalogx'),
+            render: (row: any) => {
+
+                const getLabel = (list: any[], id: any, fallback: string) => {
+                    if (id === '-1') return `All ${fallback}`;
+                    if (!id) return null;
+
+                    const found = list?.find(
+                        (item: any) => String(item.value) === String(id)
+                    );
+
+                    return found?.label || id;
+                };
+
+                const product = getLabel(appLocalizer.products_data, row.product_id, 'Products');
+                const category = getLabel(appLocalizer.all_product_categories, row.category_id, 'Categories');
+                const brand = getLabel(appLocalizer.product_brands, row.brand_id, 'Brands');
+
+                const lines = [
+                    product && `Product: ${product}`,
+                    category && `Category: ${category}`,
+                    brand && `Brand: ${brand}`,
+                ].filter(Boolean);
+
+                return (
+                    <div>
+                        {lines.map((item: string, index: number) => (
+                            <div key={index}>{item}</div>
+                        ))}
+                    </div>
+                );
+            }
+        },
+        for_whom: {
+            label: __('For Whom', 'catalogx'),
+            render: (row: any) => {
+
+                const getLabel = (list: any[], id: any, fallback: string) => {
+                    if (id === '-1') return `All ${fallback}`;
+                    if (!id) return null;
+
+                    const found = list?.find(
+                        (item: any) => String(item.value) === String(id)
+                    );
+
+                    return found?.label || id;
+                };
+
+                const user = getLabel(appLocalizer.users_data, row.user_id, 'Users');
+                const role = getLabel(appLocalizer.role_array, row.role_id, 'Roles');
+
+                const lines = [
+                    user && `User: ${user}`,
+                    role && `Role: ${role}`,
+                ].filter(Boolean);
+
+                return (
+                    <div >
+                        {lines.map((item: string, index: number) => (
+                            <div key={index}>{item}</div>
+                        ))}
+                    </div>
+                );
+            }
+        },
+        discount: {
+            label: __('Rule', 'catalogx'),
+            render: (row: any) => {
+                const amount = row.amount ?? 0;
+                const quantity = Number(row.quantity);
+                return `${amount} ${appLocalizer.currency} for min ${quantity ? quantity : ''} quantity`;
+            }
+        },
+
+        status: {
+            label: __('Status', 'catalogx'),
+            render: (row: RuleRow) =>
+                String(row.active) === '1'
+                    ? __('Active', 'catalogx')
+                    : __('Suspended', 'catalogx'),
+        },
     };
 
     const defaultTableProps = {
