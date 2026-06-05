@@ -88,8 +88,8 @@ const ProductCompliance: React.FC = () => {
 			desc: `Configuration for ${value[key]?.product_name || key}`,
 			formFields: [
 				{
-					key: 'food_hold_listing',
-					type: 'checkbox',
+					key: 'hold_listing',
+					type: 'choice-toggle',
 					label: __('Hold listing until reviewed', 'multivendorx'),
 					desc: __(
 						'Require review for food & health products',
@@ -97,8 +97,14 @@ const ProductCompliance: React.FC = () => {
 					),
 					options: [
 						{
-							key: 'food_hold_listing',
-							value: 'food_hold_listing',
+							key: 'draft_product',
+							label: __('Draft Product', 'multivendorx'),
+							value: 'draft_product',
+						},
+						{
+							key: 'notify_admin_only',
+							label: __('Notify Admin Only', 'multivendorx'),
+							value: 'notify_admin_only',
 						},
 					],
 					look: 'toggle',
@@ -151,15 +157,13 @@ const ProductCompliance: React.FC = () => {
 				return;
 			}
 
-			const newId = generateUniqueId();
-
 			handleChange('safety_compliance_categories', {
 				...formData.safety_compliance_categories,
-				[newId]: {
+				[product.value]: {
 					enable: true,
 					product_id: product.value,
 					product_name: product.label,
-					food_hold_listing: false,
+					hold_listing: 'draft_product',
 					electronics_required_documents: [],
 				},
 			});
@@ -264,8 +268,8 @@ const ProductCompliance: React.FC = () => {
                     <ExpandablePanelUI
                         key={expandableKey}
                         name="safety_compliance_categories"
-                        methods={getAllProductMethods}
-                        value={formData.safety_compliance_categories}
+                        methods={getAllProductMethods || []}
+                        value={formData.safety_compliance_categories || []}
                         onChange={(val) => handleChange('safety_compliance_categories', val)}
                         canAccess={true}
                         addNewBtn={false}
@@ -335,38 +339,118 @@ const ratingsField = {
 			id: 'product_image',
 			label: 'Product Image',
 			mandatory: true,
-			formFields: [],
+			formFields: [
+				{
+					key: 'show_on_frontend',
+					type: 'checkbox',
+					label: __('Display on Frontend', 'multivendorx'),
+					options: [
+						{
+							key: 'show_on_frontend',
+							value: 'show_on_frontend',
+						},
+					],
+					look: 'toggle',
+				},
+			],
 			desc: 'Confirms the store is legally registered as a business entity.',
 		},
 		{
 			id: 'product_description',
 			label: 'Product description',
 			mandatory: true,
-			formFields: [],
+			formFields: [
+				{
+					key: 'show_on_frontend',
+					type: 'checkbox',
+					label: __('Display on Frontend', 'multivendorx'),
+					options: [
+						{
+							key: 'show_on_frontend',
+							value: 'show_on_frontend',
+						},
+					],
+					look: 'toggle',
+				},
+			],
 			desc: 'Validates that the store is authorized to operate and conduct business legally.',
 		},
 		{
 			id: 'specifications',
 			label: 'Specifications',
-			formFields: [],
+			formFields: [
+				{
+					key: 'show_on_frontend',
+					type: 'checkbox',
+					label: __('Display on Frontend', 'multivendorx'),
+					options: [
+						{
+							key: 'show_on_frontend',
+							value: 'show_on_frontend',
+						},
+					],
+					look: 'toggle',
+				},
+			],
 			desc: 'Confirms the store’s physical or operational business address.',
 		},
 		{
 			id: 'manufacturer_importer_details',
 			label: 'Manufacturer / importer details',
-			formFields: [],
+			formFields: [
+				{
+					key: 'show_on_frontend',
+					type: 'checkbox',
+					label: __('Display on Frontend', 'multivendorx'),
+					options: [
+						{
+							key: 'show_on_frontend',
+							value: 'show_on_frontend',
+						},
+					],
+					look: 'toggle',
+				},
+			],
 			desc: 'Confirms the store’s physical or operational business address.',
 		},
 		{
 			id: 'ingredients_materials',
 			label: 'Ingredients / materials',
 			isCustom: true,
+			formFields: [
+				{
+					key: 'show_on_frontend',
+					type: 'checkbox',
+					label: __('Display on Frontend', 'multivendorx'),
+					options: [
+						{
+							key: 'show_on_frontend',
+							value: 'show_on_frontend',
+						},
+					],
+					look: 'toggle',
+				},
+			],
 			desc: 'What the product is made of',
 		},
 		{
 			id: 'usage_instructions',
 			label: 'Usage instructions',
 			isCustom: true,
+			formFields: [
+				{
+					key: 'show_on_frontend',
+					type: 'checkbox',
+					label: __('Display on Frontend', 'multivendorx'),
+					options: [
+						{
+							key: 'show_on_frontend',
+							value: 'show_on_frontend',
+						},
+					],
+					look: 'toggle',
+				},
+			],
 			desc: 'How to use or operate the product safely',
 		},
 	],
