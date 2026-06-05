@@ -3,9 +3,9 @@ import { useLocation } from 'react-router-dom';
 
 import Settings from './components/Settings/Settings';
 import Modules from './components/Modules/Modules';
-import QuoteRequests from './components/QuoteRequests/quoteRequests';
+import QuoteRequests from './components/QuoteRequests/quoteRequests.tsx';
 import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
-import WholesaleUser from './components/WholesaleUser/wholesaleUser';
+import WholesaleUser from './components/WholesaleUser/wholesaleUser.tsx';
 import Rules from './components/Rules/Rules';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { AdminHeader, GuidedTourProvider, Notice, initializeModules } from 'zyra';
