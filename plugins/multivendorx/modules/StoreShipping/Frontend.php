@@ -235,16 +235,6 @@ class Frontend {
             echo '<div class="woocommerce-billing-fields__field-wrapper">';
             echo '<div id="multivendorx-user-location-map" style="width:100%; height:18.75rem; margin-bottom:1.25rem;"></div>';
             echo '</div>';
-			?>
-            <style>
-                /*Ensure map always visible even if inline CSS fails */
-                #multivendorx-user-location-map {
-                    width: 100%;
-                    min-height: 18.75rem;
-                    margin-bottom: 1.25rem;
-                }
-            </style>
-			<?php
         }
     }
 
