@@ -530,7 +530,9 @@ const AddProduct = () => {
 										<div className="settings-input-content">
 											<TextAreaUI
 												name="short_description"
-												value={product.short_description?.replace(/<\/?p>/g, '')}
+												value={
+													product.short_description
+												}
 												onChange={(value) =>
 													handleChange(
 														'short_description',
@@ -567,7 +569,7 @@ const AddProduct = () => {
 										<div className="settings-input-content">
 											<TextAreaUI
 												name="description"
-												value={product.description?.replace(/<\/?p>/g, '')}
+												value={product.description}
 												onChange={(value) =>
 													handleChange(
 														'description',
