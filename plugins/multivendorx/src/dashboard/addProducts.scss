@@ -43,13 +43,16 @@
         label {
             margin: 0 !important;
         }
-
+        .category-name{
+            padding-left: 0.313rem;
+        }
         .sub-category {
             padding: 0.5rem 0.5rem 0;
         }
 
         .category {
             padding-bottom: 0.5rem;
+            line-height: 2;
         }
 
         .category:last-child {
