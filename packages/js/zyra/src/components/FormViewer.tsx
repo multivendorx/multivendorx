@@ -5,7 +5,7 @@ import type { MultiValue, SingleValue } from 'react-select';
 
 // Internal dependencies
 import { ButtonInputUI } from './ButtonInput';
-import { CountryCodes } from './fieldUtils';
+import { CountryCodes, ZyraVariable } from './fieldUtils';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -281,7 +281,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
         return 0;
     });
     const recaptchaField = formList.find((f) => f.type === 'recaptcha');
-    const siteKey = recaptchaField?.sitekey || null;
+    const siteKey = recaptchaField?.sitekey || ZyraVariable.formlocalizer.apiUrl;
     const defaultDate = new Date().getFullYear() + '-01-01';
 
     useEffect(() => {

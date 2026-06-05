@@ -8,6 +8,7 @@ export interface FieldComponent {
 
 export const ZyraVariable = (() => {
     const localizer = (window as any).appLocalizer || {};
+    const formlocalizer = (window as any).enquiryFormData || {};
 
     return {
         nonce: localizer.nonce, // system info, modules, renderComponent, module context
@@ -19,6 +20,7 @@ export const ZyraVariable = (() => {
         tab_name: localizer.tab_name, // renderComponent
         site_url: localizer.site_url, // renderComponent
         tinymceApiKey: localizer.tinymceApiKey, // text area
+        formlocalizer: formlocalizer, // form viewer
     } as const;
 })();
 

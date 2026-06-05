@@ -129,7 +129,6 @@ const proPopupContent = {
 
 const ShowProPopup: React.FC<PopupProps> = (props) => {
 	const [selectedBtn, setSelectedBtn] = useState(proPopupContent.btnLink[0]);
-	console.log(props.moduleName);
 	return (
 		<>
 			{props.confirmMode ? (
@@ -184,7 +183,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 									text: __('Enable Now', 'catalogx'),
 									onClick: () => {
 										window.open(
-											`${appLocalizer.admin_url}admin.php?page=catalogx#&tab=modules&module=${props.moduleName}`
+											`${appLocalizer.admin_url}#&tab=modules&module=${props.moduleName}`
 										);
 									},
 								},

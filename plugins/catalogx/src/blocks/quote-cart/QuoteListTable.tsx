@@ -366,7 +366,7 @@ const QuoteList = () => {
     if (showThankYou || status) {
         return (
             <QuoteThankYou
-                order_id={showThankYou}
+                orderId={showThankYou}
                 status={status}
             />
         );
@@ -482,6 +482,7 @@ const QuoteList = () => {
                         </p>
                         <p className='form-row'>
                             <button
+                                type= "button"
                                 id="send-quote"
                                 className='woocommerce-button button wp-element-button'
                                 onClick={handleSendQuote}

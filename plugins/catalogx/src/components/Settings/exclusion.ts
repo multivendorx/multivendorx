@@ -24,14 +24,17 @@ export default {
                 {
                     key: 'catalog_exclusion',
                     label: __('Catalog', 'catalogx'),
+                    moduleEnabled: 'catalog'
                 },
                 {
                     key: 'enquiry_exclusion',
                     label: __('Enquiry', 'catalogx'),
+                    moduleEnabled: 'enquiry'
                 },
                 {
                     key: 'quote_exclusion',
                     label: __('Quote', 'catalogx'),
+                    moduleEnabled: 'quote'
                 },
             ],
 

@@ -60,7 +60,7 @@ class SetupWizard {
         if ( 'dashboard_page_catalogx-setup' === $current_screen->id ) {
             FrontendScripts::enqueue_admin_assets();
             FrontendScripts::enqueue_script( 'catalogx-vendor-script' );
-            wp_enqueue_script( 'setup-wizard-script', FrontendScripts::get_asset_path() . 'js/block/setup-wizard/index.js', array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ), Catalogx()->version, true );
+            wp_enqueue_script( 'setup-wizard-script', FrontendScripts::get_asset_path() . 'js/block/setup-wizard/view.js', array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ), Catalogx()->version, true );
             wp_set_script_translations( 'setup-wizard-script', 'catalogx' );
             wp_localize_script(
                 'setup-wizard-script',

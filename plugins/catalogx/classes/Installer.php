@@ -63,7 +63,7 @@ class Installer {
             $this->set_default_modules();
             $this->set_default_settings();
         } else {
-            // $this->run_default_migration();
+            $this->run_migration();
         }
         // Update the version in database.
         update_option( self::VERSION_KEY, CatalogX()->version );
@@ -158,7 +158,7 @@ class Installer {
             `product_id` bigint(20),
             `category_id` bigint(20),
             `brand_id` bigint(20),
-            `quentity` bigint(20) NOT NULL,
+            `quantity` bigint(20) NOT NULL,
             `type` varchar(20) NOT NULL,
             `amount` bigint(20) NOT NULL,
             `priority` bigint(20) NOT NULL,
@@ -195,7 +195,7 @@ class Installer {
             'is_enable_multiple_product_enquiry' => array( 'is_enable_multiple_product_enquiry' ),
         );
 
-        update_option( Utill::CATALOGX_SETTINGS['all-settings'], $all_settings );
+        update_option( Utill::CATALOGX_SETTINGS['shopping'], $all_settings );
 
         $email_settings = array(
             'additional_alert_email' => CatalogX()->admin_email,
@@ -214,22 +214,77 @@ class Installer {
         // Update form settings.
         $free_form = array(
             array(
-                'key'    => 'name',
-                'label'  => 'Enter your name',
-                'active' => true,
+                'id'          => 1,
+                'type'        => 'text',
+                'label'       => 'Enter your name',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'name',
             ),
             array(
-                'key'    => 'email',
-                'label'  => 'Enter your email',
-                'active' => true,
+                'id'          => 2,
+                'type'        => 'email',
+                'label'       => 'Enter your email',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'email',
             ),
-            array( 'key' => 'phone' ),
-            array( 'key' => 'address' ),
-            array( 'key' => 'subject' ),
-            array( 'key' => 'comment' ),
-            array( 'key' => 'fileupload' ),
-            array( 'key' => 'filesize-limit' ),
-            array( 'key' => 'captcha' ),
+            array(
+                'id'          => 3,
+                'type'        => 'text',
+                'label'       => 'Phone',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'phone',
+            ),
+            array(
+                'id'          => 4,
+                'type'        => 'textarea',
+                'label'       => 'Address',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'address',
+            ),
+            array(
+                'id'          => 5,
+                'type'        => 'text',
+                'label'       => 'Subject',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'subject',
+            ),
+            array(
+                'id'          => 6,
+                'type'        => 'textarea',
+                'label'       => 'Comment',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'comment',
+            ),
+            array(
+                'id'          => 7,
+                'type'        => 'attachment',
+                'label'       => 'File Upload',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'fileupload',
+            ),
+            array(
+                'id'          => 8,
+                'type'        => 'filesize-limit',
+                'label'       => 'File Size Limit',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'filesize-limit',
+            ),
+            array(
+                'id'          => 9,
+                'type'        => 'captcha',
+                'label'       => 'Captcha',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'captcha',
+            ),
         );
 
         $pro_form = array(
@@ -259,11 +314,12 @@ class Installer {
         );
 
         $form_settings = array(
-            'formsettings'    => array(
-                'formfieldlist'  => $pro_form,
-                'butttonsetting' => array(),
+            'enquiry_form_tabs' => array(
+                'free_enquiry_form'    => $free_form,
+                'enquiry_form_builder' => array(
+                    'formfieldlist' => $pro_form,
+                ),
             ),
-            'freefromsetting' => $free_form,
         );
 
         update_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], $form_settings );
@@ -347,36 +403,232 @@ class Installer {
                 }
             }
 
-            // $previous_enquiry_catalog_customization_settings = get_option( 'catalogx_enquiry-catalog-customization_settings', array() );
-            // if ( ! empty( $previous_enquiry_catalog_customization_settings ) ) {
-            // update_option( Utill::CATALOGX_SETTINGS['enquiry-catalog-customization'], $previous_enquiry_catalog_customization_settings );
-            // delete_option( 'catalogx_enquiry-catalog-customization_settings' );
-            // }
-            // $previous_all_settings_settings = get_option( 'catalogx_all-settings_settings', array() );
-            // if ( ! empty( $previous_all_settings_settings ) ) {
-            // update_option( Utill::CATALOGX_SETTINGS['all-settings'], $previous_all_settings_settings );
-            // delete_option( 'catalogx_all-settings_settings' );
-            // }
-            // $previous_enquiry_quote_exclusion_settings = get_option( 'catalogx_enquiry-quote-exclusion_settings', array() );
-            // if ( ! empty( $previous_enquiry_quote_exclusion_settings ) ) {
-            // update_option( Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'], $previous_enquiry_quote_exclusion_settings );
-            // delete_option( 'catalogx_enquiry-quote-exclusion_settings' );
-            // }
-            // $previous_enquiry_form_customization_settings = get_option( 'catalogx_enquiry-form-customization_settings', array() );
-            // if ( ! empty( $previous_enquiry_form_customization_settings ) ) {
-            // update_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], $previous_enquiry_form_customization_settings );
-            // delete_option( 'catalogx_enquiry-form-customization_settings' );
-            // }
-            // $previous_enquiry_email_temp_settings = get_option( 'catalogx_enquiry-email-temp_settings', array() );
-            // if ( ! empty( $previous_enquiry_email_temp_settings ) ) {
-            // update_option( Utill::CATALOGX_SETTINGS['enquiry-email-temp'], $previous_enquiry_email_temp_settings );
-            // delete_option( 'catalogx_enquiry-email-temp_settings' );
-            // }
-            // $previous_wholesale_registration_settings = get_option( 'catalogx_wholesale-registration_settings', array() );
-            // if ( ! empty( $previous_wholesale_registration_settings ) ) {
-            // update_option( Utill::CATALOGX_SETTINGS['wholesale-registration'], $previous_wholesale_registration_settings );
-            // delete_option( 'catalogx_wholesale-registration_settings' );
-            // }
+            $previous_enquiry_catalog_customization_settings = get_option( 'catalogx_enquiry-catalog-customization_settings', array() );
+            if ( ! empty( $previous_enquiry_catalog_customization_settings ) ) {
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-catalog-customization'], $previous_enquiry_catalog_customization_settings );
+            delete_option( 'catalogx_enquiry-catalog-customization_settings' );
+            }
+            $previous_all_settings_settings = get_option( 'catalogx_all-settings_settings', array() );
+            if ( ! empty( $previous_all_settings_settings ) ) {
+            update_option( Utill::CATALOGX_SETTINGS['all-settings'], $previous_all_settings_settings );
+            delete_option( 'catalogx_all-settings_settings' );
+            }
+            $previous_enquiry_quote_exclusion_settings = get_option( 'catalogx_enquiry-quote-exclusion_settings', array() );
+            if ( ! empty( $previous_enquiry_quote_exclusion_settings ) ) {
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'], $previous_enquiry_quote_exclusion_settings );
+            delete_option( 'catalogx_enquiry-quote-exclusion_settings' );
+            }
+            $previous_enquiry_form_customization_settings = get_option( 'catalogx_enquiry-form-customization_settings', array() );
+            if ( ! empty( $previous_enquiry_form_customization_settings ) ) {
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], $previous_enquiry_form_customization_settings );
+            delete_option( 'catalogx_enquiry-form-customization_settings' );
+            }
+            $previous_enquiry_email_temp_settings = get_option( 'catalogx_enquiry-email-temp_settings', array() );
+            if ( ! empty( $previous_enquiry_email_temp_settings ) ) {
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-email-temp'], $previous_enquiry_email_temp_settings );
+            delete_option( 'catalogx_enquiry-email-temp_settings' );
+            }
+            $previous_wholesale_registration_settings = get_option( 'catalogx_wholesale-registration_settings', array() );
+            if ( ! empty( $previous_wholesale_registration_settings ) ) {
+            update_option( Utill::CATALOGX_SETTINGS['wholesale-registration'], $previous_wholesale_registration_settings );
+            delete_option( 'catalogx_wholesale-registration_settings' );
+            }
+        }
+
+        if ( version_compare( $previous_version, '6.0.7', '<' ) ) {
+
+            /**
+             * Form Settings Migration
+             */
+            $current_settings = get_option(
+                Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
+                array()
+            );
+
+            if ( ! empty( $current_settings ) ) {
+
+                $free_form_settings = $current_settings['freefromsetting'] ?? array();
+                $pro_form_settings  = $current_settings['formsettings']['formfieldlist'] ?? array();
+
+                $migrated_free_enquiry_form = array();
+                $field_id                   = 1;
+
+                foreach ( $free_form_settings as $field ) {
+
+                    if ( empty( $field['key'] ) ) {
+                        continue;
+                    }
+
+                    $migrated_free_enquiry_form[] = array(
+                        'id'          => $field_id++,
+                        'type'        => sanitize_key( $field['key'] ),
+                        'label'       => $field['label'] ?? '',
+                        'placeholder' => '',
+                        'disabled'    => empty( $field['active'] ),
+                        'name'        => sanitize_key( $field['key'] ),
+                    );
+                }
+
+                update_option(
+                    Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
+                    array(
+                        'enquiry_form_tabs' => array(
+                            'free_enquiry_form'    => $migrated_free_enquiry_form,
+                            'enquiry_form_builder' => array(
+                                'formfieldlist' => is_array( $pro_form_settings )
+                                    ? $pro_form_settings
+                                    : array(),
+                            ),
+                        ),
+                    )
+                );
+            }
+
+            /**
+             * Exclusion Settings Migration
+             */
+            $old_exclusion_settings = get_option(
+                Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
+                array()
+            );
+
+            if ( ! empty( $old_exclusion_settings ) ) {
+
+                $migrated_exclusion_settings = array(
+                    'exclusion' => array(),
+                );
+
+                foreach ( $old_exclusion_settings as $setting_key => $setting_values ) {
+
+                    if ( ! is_array( $setting_values ) ) {
+                        continue;
+                    }
+
+                    $new_key = str_replace(
+                        '_exclusion_',
+                        '_exclusion_value_',
+                        $setting_key
+                    );
+
+                    $migrated_exclusion_settings['exclusion'][ $new_key ] = array();
+
+                    foreach ( $setting_values as $item ) {
+                        if ( isset( $item['value'] ) ) {
+                            $migrated_exclusion_settings['exclusion'][ $new_key ][] = $item['value'];
+                        }
+                    }
+                }
+
+                update_option(
+                    Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
+                    $migrated_exclusion_settings
+                );
+            }
+
+            /**
+             * All Settings Migration
+             */
+            $old_all_settings = get_option(
+                'catalogx_all_settings_settings',
+                array()
+            );
+
+            if ( ! empty( $old_all_settings ) ) {
+
+                /**
+                 * Shopping Settings
+                 */
+                $shopping_settings = array(
+                    'enable_cart_checkout' => $old_all_settings['enable_cart_checkout'] ?? array(),
+                );
+
+                if ( ! empty( $old_all_settings['redirect_page_id'] ) ) {
+                    $shopping_settings['redirect_cart_page'] = $old_all_settings['redirect_page_id'];
+                }
+
+                update_option(
+                    'catalogx_shopping_settings',
+                    $shopping_settings
+                );
+
+                /**
+                 * Enquiry Settings
+                 */
+                $enquiry_settings = array(
+                    'enquiry_user_permission' => $old_all_settings['enquiry_user_permission'] ?? array(),
+                    'is_enable_out_of_stock'  => $old_all_settings['is_enable_out_of_stock'] ?? array(),
+                    'is_disable_popup'        => $old_all_settings['is_disable_popup'] ?? 'popup',
+                );
+
+                if ( isset( $old_all_settings['notify_me_button'] ) ) {
+                    $enquiry_settings['notify_me_button'] = $old_all_settings['notify_me_button'];
+                }
+
+                update_option(
+                    'catalogx_enquiry_settings',
+                    $enquiry_settings
+                );
+
+                /**
+                 * Quotation Settings
+                 */
+                $quotation_settings = array(
+                    'quote_user_permission' => $old_all_settings['quote_user_permission'] ?? array(),
+                    'set_expiry_time'       => $old_all_settings['set_expiry_time'] ?? 'Never',
+                );
+
+                update_option(
+                    'catalogx_quotation_settings',
+                    $quotation_settings
+                );
+
+                /**
+                 * Extra Settings
+                 */
+                $extra_settings = array();
+
+                if ( isset( $old_all_settings['display_pdf'] ) ) {
+                    $extra_settings['display_pdf'] = $old_all_settings['display_pdf'];
+                }
+
+                if ( isset( $old_all_settings['custom_css_product_page'] ) ) {
+                    $extra_settings['custom_css_product_page'] = $old_all_settings['custom_css_product_page'];
+                }
+
+                update_option(
+                    'catalogx_extra_settings',
+                    $extra_settings
+                );
+
+                delete_option( 'catalogx_all_settings_settings' );
+            }
+
+            /**
+             * Rules Table Column Rename
+             *
+             * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+             * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+             * phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+             * phpcs:disable WordPress.DB.DirectDatabaseQuery.SchemaChange
+             */
+            global $wpdb;
+
+            $table_name = $wpdb->prefix . Utill::TABLES['rule'];
+
+            $column_exists = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SHOW COLUMNS FROM {$table_name} LIKE %s",
+                    'quentity'
+                )
+            );
+
+            if ( $column_exists ) {
+                $wpdb->query(
+                    "ALTER TABLE {$table_name}
+                    CHANGE COLUMN quentity quantity INT(11) NOT NULL"
+                );
+            }
+            // phpcs:enable
         }
     }
 
@@ -739,92 +991,92 @@ class Installer {
         $previous_exclusion_settings = get_option( 'mvx_catalog_exclusion_tab_settings', array() );
 
         // Prepare exclusion user list.
-        // $exclusion_user_list = $previous_exclusion_settings['woocommerce_user_list'];
-        // $exclusion_user_list = is_array( $exclusion_user_list ) ? $exclusion_user_list : array();
+        $exclusion_user_list = $previous_exclusion_settings['woocommerce_user_list'];
+        $exclusion_user_list = is_array( $exclusion_user_list ) ? $exclusion_user_list : array();
 
-        // $exclusion_user_list = array_map(
-        // function ( $user_list ) {
-		// return array(
-		// 'key'   => $user_list['value'],
-		// 'label' => $user_list['label'],
-		// 'value' => $user_list['value'],
-		// );
-		// },
-        // $exclusion_user_list
-        // );
+        $exclusion_user_list = array_map(
+        function ( $user_list ) {
+		return array(
+		'key'   => $user_list['value'],
+		'label' => $user_list['label'],
+		'value' => $user_list['value'],
+		);
+		},
+        $exclusion_user_list
+        );
 
-        // // Prepare user role list.
-        // $exclusion_userroles_list = $previous_exclusion_settings['woocommerce_userroles_list'];
-        // $exclusion_userroles_list = is_array( $exclusion_userroles_list ) ? $exclusion_userroles_list : array();
+        // Prepare user role list.
+        $exclusion_userroles_list = $previous_exclusion_settings['woocommerce_userroles_list'];
+        $exclusion_userroles_list = is_array( $exclusion_userroles_list ) ? $exclusion_userroles_list : array();
 
-        // $exclusion_userroles_list = array_map(
-        // function ( $user_list ) {
-		// return array(
-		// 'key'   => $user_list['value'],
-		// 'label' => $user_list['label'],
-		// 'value' => $user_list['value'],
-		// );
-		// },
-        // $exclusion_userroles_list
-        // );
+        $exclusion_userroles_list = array_map(
+        function ( $user_list ) {
+		return array(
+		'key'   => $user_list['value'],
+		'label' => $user_list['label'],
+		'value' => $user_list['value'],
+		);
+		},
+        $exclusion_userroles_list
+        );
 
-        // // Prepare product list.
-        // $exclusion_product_list = $previous_exclusion_settings['woocommerce_product_list'];
-        // $exclusion_product_list = is_array( $exclusion_product_list ) ? $exclusion_product_list : array();
+        // Prepare product list.
+        $exclusion_product_list = $previous_exclusion_settings['woocommerce_product_list'];
+        $exclusion_product_list = is_array( $exclusion_product_list ) ? $exclusion_product_list : array();
 
-        // $exclusion_product_list = array_map(
-        // function ( $user_list ) {
-		// return array(
-		// 'key'   => $user_list['value'],
-		// 'label' => $user_list['label'],
-		// 'value' => $user_list['value'],
-		// );
-		// },
-        // $exclusion_product_list
-        // );
+        $exclusion_product_list = array_map(
+        function ( $user_list ) {
+		return array(
+		'key'   => $user_list['value'],
+		'label' => $user_list['label'],
+		'value' => $user_list['value'],
+		);
+		},
+        $exclusion_product_list
+        );
 
-        // // Prepare category list.
-        // $exclusion_category_list = $previous_exclusion_settings['woocommerce_category_list'];
-        // $exclusion_category_list = is_array( $exclusion_category_list ) ? $exclusion_category_list : array();
+        // Prepare category list.
+        $exclusion_category_list = $previous_exclusion_settings['woocommerce_category_list'];
+        $exclusion_category_list = is_array( $exclusion_category_list ) ? $exclusion_category_list : array();
 
-        // $exclusion_category_list = array_map(
-        // function ( $user_list ) {
-        // return array(
-		// 'key'   => $user_list['value'],
-		// 'label' => $user_list['label'],
-		// 'value' => $user_list['value'],
-        // );
-        // },
-        // $exclusion_category_list
-        // );
+        $exclusion_category_list = array_map(
+        function ( $user_list ) {
+        return array(
+		'key'   => $user_list['value'],
+		'label' => $user_list['label'],
+		'value' => $user_list['value'],
+        );
+        },
+        $exclusion_category_list
+        );
 
-        // $exclusion_settings = array(
-        // 'catalog_exclusion_user_list'      => $exclusion_user_list,
-        // 'enquiry_exclusion_user_list'      => $exclusion_user_list,
+        $exclusion_settings = array(
+        'catalog_exclusion_user_list'      => $exclusion_user_list,
+        'enquiry_exclusion_user_list'      => $exclusion_user_list,
 
-        // 'catalog_exclusion_userroles_list' => $exclusion_userroles_list,
-        // 'enquiry_exclusion_userroles_list' => $exclusion_userroles_list,
+        'catalog_exclusion_userroles_list' => $exclusion_userroles_list,
+        'enquiry_exclusion_userroles_list' => $exclusion_userroles_list,
 
-        // 'enquiry_exclusion_product_list'   => $exclusion_product_list,
-        // 'catalog_exclusion_product_list'   => $exclusion_product_list,
+        'enquiry_exclusion_product_list'   => $exclusion_product_list,
+        'catalog_exclusion_product_list'   => $exclusion_product_list,
 
-        // 'catalog_exclusion_category_list'  => $exclusion_category_list,
-        // 'enquiry_exclusion_category_list'  => $exclusion_category_list,
-        // );
+        'catalog_exclusion_category_list'  => $exclusion_category_list,
+        'enquiry_exclusion_category_list'  => $exclusion_category_list,
+        );
 
-        // update_option( 'catalogx_enquiry-quote-exclusion_settings', $exclusion_settings );
+        update_option( 'catalogx_enquiry-quote-exclusion_settings', $exclusion_settings );
 
-        // // delete previous option from database.
-        // delete_option( 'mvx_catalog_general_tab_settings' );
-        // delete_option( 'mvx_catalog_enquiry_form_tab_settings' );
-        // delete_option( 'mvx_catalog_exclusion_tab_settings' );
-        // delete_option( 'mvx_catalog_button_appearance_tab_settings' );
-        // delete_option( 'mvx_catalog_pro_enquiry_form_data' );
+        // delete previous option from database.
+        delete_option( 'mvx_catalog_general_tab_settings' );
+        delete_option( 'mvx_catalog_enquiry_form_tab_settings' );
+        delete_option( 'mvx_catalog_exclusion_tab_settings' );
+        delete_option( 'mvx_catalog_button_appearance_tab_settings' );
+        delete_option( 'mvx_catalog_pro_enquiry_form_data' );
 
-        // delete_option( 'woocommerce_catalog_enquiry_from_settings' );
-        // delete_option( 'woocommerce_catalog_enquiry_general_settings' );
-        // delete_option( 'woocommerce_catalog_enquiry_exclusion_settings' );
-        // delete_option( 'woocommerce_catalog_enquiry_button_appearence_settings' );
+        delete_option( 'woocommerce_catalog_enquiry_from_settings' );
+        delete_option( 'woocommerce_catalog_enquiry_general_settings' );
+        delete_option( 'woocommerce_catalog_enquiry_exclusion_settings' );
+        delete_option( 'woocommerce_catalog_enquiry_button_appearence_settings' );
 
         // Exclusion settings.
         $map_exclusion = function ( $list ) {
@@ -871,4 +1123,5 @@ class Installer {
             delete_option( $option );
         }
     }
+
 }

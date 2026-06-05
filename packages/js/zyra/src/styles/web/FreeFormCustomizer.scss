@@ -4,26 +4,49 @@
   width: 100%;
   margin-top: 0.625rem;
 
-  .free-form-header{
-    background: $theme-background-color !important;
-    border-radius: $border-radius-small;
+  .free-form-row {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
 
-    .title{
-      font-size: 1rem !important;
-      color: $theme-color !important;
+    .free-form-input {
+      width: 40%;
     }
   }
+
+  .free-form-header {
+    background: $theme-background-color !important;
+    border-radius: $border-radius-small;
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+
+    .title {
+      font-size: 1rem !important;
+      color: $theme-color !important;
+      width: 40%;
+    }
+  }
+
+  label {
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
   .form-group:has(.enable-visibility) {
+
     .setting-form-input,
     .settings-form-label {
       opacity: 0.4;
     }
   }
-  i{
+
+  i {
     cursor: pointer;
     font-size: 1.25rem;
     margin-left: 0.5rem;
   }
+
   .adminfont-eye {
     color: #0101d9d6 !important;
   }
