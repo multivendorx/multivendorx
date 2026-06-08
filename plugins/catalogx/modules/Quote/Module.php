@@ -49,10 +49,10 @@ class Module {
      * @return void
      */
     public function register_services() {
-        $this->services['admin']    = new Admin();
-        $this->services['frontend'] = new Frontend();
-        $this->services['rest']     = new Rest();
-        $this->services['util']     = new Util();
+        $this->services['admin']              = new Admin();
+        $this->services['frontend']           = new Frontend();
+        $this->services['rest']               = new Rest();
+        $this->services['util']               = new Util();
     }
 
     /**

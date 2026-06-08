@@ -407,6 +407,15 @@ class FrontendScripts {
             'restUrl' => CatalogX()->rest_namespace,
             'nonce'   => wp_create_nonce( 'wp_rest' ),
         );
+        $currency_data = array(
+            'currency'           => get_woocommerce_currency(),
+            'currency_symbol'    => get_woocommerce_currency_symbol(),
+            'price_format'       => get_woocommerce_price_format(),
+            'decimal_separator'  => wc_get_price_decimal_separator(),
+            'thousand_separator' => wc_get_price_thousand_separator(),
+            'price_decimals'     => wc_get_price_decimals(),
+            'currency_position'  => get_option( 'woocommerce_currency_pos' ),
+        );
         $localize_scripts = apply_filters(
             'catalogx_localize_scripts',
             array(
@@ -414,6 +423,7 @@ class FrontendScripts {
                     'object_name' => 'appLocalizer',
                     'data'        => array_merge(
                         $base_rest,
+                        $currency_data,
                         array(
                             'tab_name'                   => 'CatalogX',
                             'pages_data'                 => $pages_data,
@@ -436,6 +446,7 @@ class FrontendScripts {
                             'quote_module_active'        => CatalogX()->modules->is_active( 'quote' ),
                             'quote_base_url'             => $quote_base_url,
                             'free_version'               => CatalogX()->version,
+                            'date_format'                => Utill::wp_to_react_date_format( get_option( 'date_format' ) ),
                             'pro_data'                   => apply_filters(
 								'catalogx_update_pro_data',
 								array(
