@@ -4,7 +4,7 @@ import Select from 'react-select';
 import type { MultiValue, SingleValue } from 'react-select';
 
 // Internal dependencies
-import { ButtonInputUI } from './ButtonInput';
+import CustomRecaptcha from './CustomRecaptcha';
 import { CountryCodes } from './fieldUtils';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -263,6 +263,8 @@ const FormViewer: React.FC<FormViewerProps> = ({
     const [fileName, setFileName] = useState<string>('');
     const [captchaToken, setCaptchaToken] = useState<string | null>(null);
     const [captchaError, setCaptchaError] = useState<boolean>(false);
+    const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
 
     const formList = formFields.formfieldlist || [];
     const buttonField = formList.find((f) => f.type === 'button');
@@ -347,10 +349,30 @@ const FormViewer: React.FC<FormViewerProps> = ({
         }
     };
 
+    const handleCaptchaValidation = (valid: boolean) => {
+        setIsCaptchaValid(valid);
+    };
+
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
         const error: Record<string, string> = {};
+        const customCaptchaField = formList.find(
+            (f) => f.type === 'custom-recaptcha'
+        );
+
+        setSubmitted(true);
+        if (
+            customCaptchaField &&
+            !isCaptchaValid
+        ) {
+            setErrors((prev) => ({
+                ...prev,
+                [customCaptchaField.label || customCaptchaField.id]:
+                    'Invalid security code.',
+            }));
+            return;
+        }
 
         const isValidEmail = (email: string) =>
             /^\S+@\S+\.([a-zA-Z]{2,})$/.test(email);
@@ -923,6 +945,14 @@ const FormViewer: React.FC<FormViewerProps> = ({
                             </span>
                         )}
                     </label>
+                );
+
+            case 'custom-recaptcha':
+                return (
+                    <CustomRecaptcha
+                        captchaValid={handleCaptchaValidation}
+                        submitted={submitted}
+                    />
                 );
 
             default:

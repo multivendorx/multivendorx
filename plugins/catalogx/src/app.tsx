@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState} from 'react';
 import { useLocation } from 'react-router-dom';
 
 import Settings from './components/Settings/Settings';
@@ -6,7 +6,6 @@ import Modules from './components/Modules/Modules';
 import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
 import WholesaleUser from './components/WholesaleUser/wholesaleUser.tsx';
 import Rules from './components/Rules/Rules';
-import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { AdminHeader, GuidedTourProvider, Notice, initializeModules } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import Brand from './assets/images/catalogx-logo.png';
@@ -14,9 +13,8 @@ import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import HelpSupport from './components/HelpSupport/HelpSupport';
 import { getTourSteps } from './components/Tour/Tours';
 import QuoteRequests from './components/QuoteRequests/QuoteRequests';
+import { searchIndex, SearchItem } from './searchIndex';
 
-const disableBody = ( target: any ) => disableBodyScroll( target );
-const enableBody = ( target: any ) => enableBodyScroll( target );
 localStorage.setItem( 'force_catalogx_context_reload', 'true' );
 
 const Route = () => {
@@ -65,6 +63,7 @@ const bannerItem = [
 	),
 ];
 const App = () => {
+	const [results, setResults] = useState<SearchItem[]>([]);
     const currentTabParams = new URLSearchParams( useLocation().hash );
     document
         .querySelectorAll( '#toplevel_page_catalogx>ul>li>a' )
@@ -91,14 +90,14 @@ const App = () => {
             }
         } );
 
-    const handleSelectChange = ( val: string ) => {
-        setSelectValue( val );
-    };
+	const isBannerDismissed =
+		localStorage.getItem('banner_dismissed') === 'true';
 
     // --- INIT MODULES ---
     useEffect( () => {
         initializeModules( appLocalizer, 'catalogx', 'free', 'modules' );
     }, [] );
+
     const profileItems = [
 		{
 			title: __("What's New", 'catalogx'),
@@ -127,10 +126,47 @@ const App = () => {
 			items: profileItems,
 		},
 	];
+
+	const handleQueryUpdate = ({
+		searchValue,
+		searchAction,
+	}: {
+		searchValue: string;
+		searchAction?: string;
+	}) => {
+		if (!searchValue.trim()) {
+			setResults([]);
+			return;
+		}
+
+		const lower = searchValue.toLowerCase();
+
+		const filtered = searchIndex.filter((item) => {
+			// Ignore action if "all"
+			if (
+				searchAction &&
+				searchAction !== 'all' &&
+				item.tab !== searchAction
+			) {
+				return false;
+			}
+
+			return (
+				item.name?.toLowerCase().includes(lower) ||
+				item.desc?.toLowerCase().includes(lower)
+			);
+		});
+
+		setResults(filtered);
+	};
+
+	const handleResultClick = (item: SearchItem) => {
+		window.location.hash = item.link;
+	};
+
     return (
         <>
-            {/* shivam  dynamic banner close */}
-            {/* {!isBannerDismissed && ( */}
+            {!isBannerDismissed && (
 				<Notice
 					uniqueKey="banner"
 					type="banner"
@@ -142,18 +178,32 @@ const App = () => {
 						window.location.href = appLocalizer.pro_url;
 					}}
 				/>
-			{/* )} */}
+			)}
             <AdminHeader
 				brandImg={Brand}
-				// results={results}
-				// onQueryUpdate={handleSearchChange}
-				// onResultClick={handleResultClick}
+				results={results}
+				search={{
+					placeholder: __('Search...', 'multivendorx'),
+					options: [
+						{
+							value: 'all',
+							label: __('Modules & Settings', 'multivendorx'),
+						},
+						{
+							value: 'modules',
+							label: __('Modules', 'multivendorx'),
+						},
+						{
+							value: 'settings',
+							label: __('Settings', 'multivendorx'),
+						},
+					],
+				}}
+				onQueryUpdate={handleQueryUpdate}
+				onResultClick={handleResultClick}
 				free={appLocalizer.free_version}
 				pro={appLocalizer.pro_data.version}
 				utilityList={utilityList}
-                search={{
-					placeholder: __('Search...', 'catalogx'),
-				}}
 			/>
             <GuidedTourProvider
 				appLocalizer={appLocalizer}

@@ -24,6 +24,7 @@ const PluginModules = () => {
 					apiLink="modules"
 					proPopupContent={proPopupContent}
 					pluginName="catalogx"
+					filter={false}
 				/>
 			</Container>
 		</>

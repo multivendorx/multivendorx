@@ -7,8 +7,6 @@
 
 namespace CatalogX\Enquiry;
 
-use CatalogX\Utill;
-
 /**
  * CatalogX Enquiry Module Util class
  *
