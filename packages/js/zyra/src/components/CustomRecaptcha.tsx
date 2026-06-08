@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const CustomRecaptcha = ( props: any ) => {
-    const { captchaValid } = props;
+    const { captchaValid, submitted } = props;
     const [ securityCode, setSecurityCode ] = useState( '' );
     const [ userInput, setUserInput ] = useState( '' );
     const [ isCaptchaValid, setIsCaptchaValid ] = useState( true );
@@ -46,7 +46,7 @@ const CustomRecaptcha = ( props: any ) => {
                     { 'Invalid security code, please try again.' }
                 </p>
             ) }
-            { isCaptchaValid && ! userInput && (
+            { submitted && ! userInput && (
                 <p style={ { color: 'red' } }>
                     { 'Recaptcha is required.' }
                 </p>
