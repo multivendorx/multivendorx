@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 
 const CustomRecaptcha = ( props: any ) => {
-    console.log('hitttt')
     const { captchaValid } = props;
     const [ securityCode, setSecurityCode ] = useState( '' );
     const [ userInput, setUserInput ] = useState( '' );

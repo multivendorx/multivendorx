@@ -947,11 +947,10 @@ const FormViewer: React.FC<FormViewerProps> = ({
                 );
 
             case 'custom-recaptcha':
-                console.log('hello')
                 return (
-                        <CustomRecaptcha
-                            captchaValid={handleCaptchaValidation}
-                        />
+                    <CustomRecaptcha
+                        captchaValid={handleCaptchaValidation}
+                    />
                 );
 
             default:
