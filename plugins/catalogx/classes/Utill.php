@@ -235,4 +235,35 @@ class Utill {
 
         return true;
     }
+    
+    /**
+	 * Convert WordPress PHP date format to React date picker format
+	 *
+	 * @param string $date_format WordPress PHP date format.
+	 * @return string React date picker format.
+	 */
+	public static function wp_to_react_date_format( $date_format ) {
+		static $map = array(
+			'Y' => 'YYYY',
+			'y' => 'YY',
+			'F' => 'MMMM',
+			'M' => 'MMM',
+			'm' => 'MM',
+			'n' => 'M',
+			'd' => 'DD',
+			'j' => 'D',
+			'l' => 'dddd',
+			'D' => 'ddd',
+			'H' => 'HH',
+			'G' => 'H',
+			'h' => 'hh',
+			'g' => 'h',
+			'i' => 'mm',
+			's' => 'ss',
+			'A' => 'A',
+			'a' => 'a',
+		);
+
+		return strtr( $date_format, $map );
+	}
 }

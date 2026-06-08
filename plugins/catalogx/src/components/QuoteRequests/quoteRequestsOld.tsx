@@ -12,7 +12,7 @@ import {
 import { applyFilters } from '@wordpress/hooks';
 
 import ShowProPopup from '../Popup/Popup';
-import { dummyQuotes } from './QuoteRequests';
+import { dummyQuotes } from './QuoteRequestsUtil';
 
 export interface QuoteRow {
 	id?: number;
