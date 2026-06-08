@@ -8,6 +8,7 @@
 namespace CatalogX\RestAPI\Controllers;
 
 use CatalogX\Modules;
+use CatalogX\Utill;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -73,32 +74,6 @@ class Settings extends \WP_REST_Controller {
 	}
 
 	/**
-	 * Validate REST nonce.
-	 *
-	 * @param \WP_REST_Request $request Request object.
-	 *
-	 * @return true|\WP_Error
-	 */
-	private function validate_rest_nonce( $request ) {
-
-		$nonce = $request->get_header( 'X-WP-Nonce' );
-
-		if ( wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			return true;
-		}
-
-		$error = new \WP_Error(
-			'invalid_nonce',
-			esc_html__( 'Invalid nonce.', 'catalogx' ),
-			array( 'status' => 403 )
-		);
-
-		CatalogX()->util->log( $error );
-
-		return $error;
-	}
-
-	/**
 	 * Permission check for updating settings.
 	 *
 	 * @param object $request Request object.
@@ -129,11 +104,11 @@ class Settings extends \WP_REST_Controller {
 	 */
 	public function update_item( $request ) {
 
-		$nonce_validation = $this->validate_rest_nonce( $request );
+        $nonce_validation = Utill::validate_nonce( $request );
 
-		if ( is_wp_error( $nonce_validation ) ) {
-			return $nonce_validation;
-		}
+        if ( is_wp_error( $nonce_validation ) ) {
+            return $nonce_validation;
+        }
 
 		try {
 			$settings_values = $request->get_param( 'setting' );
@@ -212,11 +187,11 @@ class Settings extends \WP_REST_Controller {
 	 */
 	public function update_modules( $request ) {
 
-		$nonce_validation = $this->validate_rest_nonce( $request );
+        $nonce_validation = Utill::validate_nonce( $request );
 
-		if ( is_wp_error( $nonce_validation ) ) {
-			return $nonce_validation;
-		}
+        if ( is_wp_error( $nonce_validation ) ) {
+            return $nonce_validation;
+        }
 
 		try {
 			$module_id = $request->get_param( 'id' );
