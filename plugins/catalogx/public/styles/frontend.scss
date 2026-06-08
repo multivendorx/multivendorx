@@ -14,88 +14,88 @@
     height: fit-content !important;
 }
 // form style start
-.form-wrapper {
-    position: relative;
-    margin-bottom: 0.5rem;
-    transition: all 0.8s ease;
+// .form-wrapper {
+//     position: relative;
+//     margin-bottom: 0.5rem;
+//     transition: all 0.8s ease;
 
-    .basic-input,
-    .basic-select,
-    .textarea-basic {
-        width: 100%;
-        border: 0.063rem solid #e0e4e9 !important; // for overwrite woocommerce style
-        border-radius: 0.25rem;
-        padding: 0.313rem 0.5rem;
-        background: #d6b5ff21;
-        border-color: #d6b5ff;
-        font-size: 0.875rem;
-        line-height: 1.5;
+//     .basic-input,
+//     .basic-select,
+//     .textarea-basic {
+//         width: 100%;
+//         border: 0.063rem solid #e0e4e9 !important; // for overwrite woocommerce style
+//         border-radius: 0.25rem;
+//         padding: 0.313rem 0.5rem;
+//         background: #d6b5ff21;
+//         border-color: #d6b5ff;
+//         font-size: 0.875rem;
+//         line-height: 1.5;
 
-        &:focus {
-            outline: none;
-            box-shadow: none !important; // for overwrite woocommerce style
-        }
+//         &:focus {
+//             outline: none;
+//             box-shadow: none !important; // for overwrite woocommerce style
+//         }
 
-    }
-    .form-title{
-        font-size: 1.75rem;
-        text-align: center;
-        margin-bottom: 1rem;
-    }
-    .section-wrapper {
-        display: flex;
-        margin-bottom: 1rem;
+//     }
+//     .form-title{
+//         font-size: 1.75rem;
+//         text-align: center;
+//         margin-bottom: 1rem;
+//     }
+//     .section-wrapper {
+//         display: flex;
+//         margin-bottom: 1rem;
 
-        label {
-            width: 30%;
-            font-size: 1rem;
+//         label {
+//             width: 30%;
+//             font-size: 1rem;
 
-        }
-        .items-wrapper{
-            width: 100%;
+//         }
+//         .items-wrapper{
+//             width: 100%;
 
-            &.attachment-section{
-                border: 0.125rem dashed #cacaca;
+//             &.attachment-section{
+//                 border: 0.125rem dashed #cacaca;
 
-                .attachment-label{
-                    display: flex;
-                    flex-direction: column;
-                    width: 100%;
-                    justify-content: center;
-                    align-items: center;
-                }
-            }
+//                 .attachment-label{
+//                     display: flex;
+//                     flex-direction: column;
+//                     width: 100%;
+//                     justify-content: center;
+//                     align-items: center;
+//                 }
+//             }
 
-            &.multiselect-container{
-                font-size: 0.95rem;
-            }
+//             &.multiselect-container{
+//                 font-size: 0.95rem;
+//             }
 
-            &.recaptcha-wrapper p{
-                margin: 0;
-                font-size: 1rem;
-                padding-top: 0.5rem;
-                font-weight: 500;
-            }
-        }
-        .button-visibility {
-            width: 6%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+//             &.recaptcha-wrapper p{
+//                 margin: 0;
+//                 font-size: 1rem;
+//                 padding-top: 0.5rem;
+//                 font-weight: 500;
+//             }
+//         }
+//         .button-visibility {
+//             width: 6%;
+//             display: flex;
+//             justify-content: center;
+//             align-items: center;
 
-            .adminlib-eye {
-                color: #0101d9d6 !important;
-            }
-        }
-    }
+//             .adminlib-eye {
+//                 color: #0101d9d6 !important;
+//             }
+//         }
+//     }
 
-    .buttons-wrapper{
-        display: flex;
-        justify-content: flex-end;
-        gap: 0.5rem;
-        margin-top: 0.5rem;
-    }
-} // form style end
+//     .buttons-wrapper{
+//         display: flex;
+//         justify-content: flex-end;
+//         gap: 0.5rem;
+//         margin-top: 0.5rem;
+//     }
+// } // form style end
 
 .quantity{
     input{

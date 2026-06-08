@@ -63,7 +63,9 @@ const FreeFormCustomizerField: React.FC<{
     const [fields, setFields] = useState<FormField[]>(() =>
         ensureSubmitPresent(toArray(value))
     );
+    const [editingFieldId, setEditingFieldId] = useState<string | null>(null);
     const isDirty = useRef(false);
+    const inputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
 
     useEffect(() => {
         const newFields = toArray(value);
@@ -81,6 +83,23 @@ const FreeFormCustomizerField: React.FC<{
             isDirty.current = false;
         }
     }, [fields, onChange]);
+
+    // Handle click outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (editingFieldId) {
+                const inputElement = inputRefs.current[editingFieldId];
+                if (inputElement && !inputElement.contains(event.target as Node)) {
+                    setEditingFieldId(null);
+                }
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [editingFieldId]);
 
     const getField = (id: string) => fields.find(f => f.id === id);
 
@@ -156,9 +175,20 @@ const FreeFormCustomizerField: React.FC<{
         updateFieldActive(id, !current);
     };
 
+    const handleEditClick = (fieldId: string) => {
+        if (!canAccess) return;
+        setEditingFieldId(fieldId);
+        // Focus the input after it's rendered
+        setTimeout(() => {
+            if (inputRefs.current[fieldId]) {
+                inputRefs.current[fieldId]?.focus();
+            }
+        }, 0);
+    };
+
     return (
         <div className='free-form-customizer'>
-            <div className='free-form-header'> 
+            <div className='free-form-header'>
                 <div className="title">Field Label</div>
                 <div className="title">Placeholder Text</div>
                 {/* <div className="header-active">Active</div> */}
@@ -169,20 +199,28 @@ const FreeFormCustomizerField: React.FC<{
                 const currentLabel = field?.label ?? fieldConfig.label ?? '';
                 const currentPlaceholder = field?.placeholder ?? fieldConfig.placeholder ?? '';
                 const isSubmit = isSubmitButton(field) || isSubmitButton(fieldConfig);
-                const isActive =isSubmit ? true : !(field?.disabled ?? true);
+                const isActive = isSubmit ? true : !(field?.disabled ?? true);
+                const isEditing = editingFieldId === fieldConfig.id;
 
                 return (
-                    <div key={fieldConfig.id} className="free-form-row">
-                        <div className="free-form-input ">
-                            <BasicInputUI
-                                type="text"
-                                value={currentLabel}
-                                onChange={(val) => updateFieldLabel(fieldConfig.id, val)}
-                                readOnly={!canAccess}
-                            />
-                            <label>Field Label <i className='adminfont-edit' /></label>
+                    <div key={fieldConfig.id} className={`free-form-row ${isActive ? '' : 'enable-visibility'}`} >
+                        <div className="free-form-input">
+                            {isEditing ? (
+                                <BasicInputUI
+                                    type="text"
+                                    value={currentLabel}
+                                    onChange={(val) => updateFieldLabel(fieldConfig.id, val)}
+                                    readOnly={!canAccess}
+                                    ref={(el) => inputRefs.current[fieldConfig.id] = el}
+                                />
+                            ) : (
+                                <label onClick={() => handleEditClick(fieldConfig.id)}>
+                                    {currentLabel}
+                                    <i className='adminfont-edit' />
+                                </label>
+                            )}
                         </div>
-                        <div className="free-form-input ">
+                        <div className="free-form-input">
                             <BasicInputUI
                                 type="text"
                                 value={currentPlaceholder}
@@ -190,21 +228,9 @@ const FreeFormCustomizerField: React.FC<{
                                 readOnly={!canAccess}
                             />
                         </div>
-                        <div className="free-form-active-toggle">
-                            {!isSubmit ? (
-                                <div
-                                    className={`admin-btn button-visibility btn-${isActive ? 'purple' : 'red'}`}
-                                    role="button"
-                                    tabIndex={0}
-                                    onClick={() => handleToggle(fieldConfig.id)}
-                                >
-                                    <i className={`adminfont-${isActive ? 'eye' : 'eye-blocked enable-visibility'}`} />
-                                </div>
-                            ) : (
-                                <div className="button-visibility always-active" title="Always active">
-                                </div>
-                            )}
-                        </div>
+                        {!isSubmit && (
+                            <i onClick={() => handleToggle(fieldConfig.id)} className={`visibility-icon adminfont-${isActive ? 'eye' : 'eye-blocked'}`} />
+                        )}
                     </div>
                 );
             })}
