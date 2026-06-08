@@ -20,7 +20,7 @@ $settings = get_option(
 	array()
 );
 
-$template_data = $settings['store_registration_form'] ?? array();
+$template_data = $settings['enquiry_email_template'] ?? array();
 
 $template_id = $template_data['activeEmailTemplateId'] ?? '';
 
@@ -50,7 +50,5 @@ if ( ! empty( $template['blocks'] ) ) {
 <div style="width:600px;margin:0 auto;">
 	<?php echo wp_kses_post( $email_html ); ?>
 </div>
-
-
 
 <?php do_action( 'catalogx_email_footer', $email ); ?>

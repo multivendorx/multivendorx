@@ -84,7 +84,7 @@ const QuoteList = () => {
         setIsLoading(true);
 
         axios({
-            method: 'post',
+            method: 'get',
             url: `${quoteCart.apiUrl}/${quoteCart.restUrl}/quote-cart`,
             headers: {
                 'X-WP-Nonce': quoteCart.nonce,

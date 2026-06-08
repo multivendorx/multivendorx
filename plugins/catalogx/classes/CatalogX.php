@@ -167,6 +167,8 @@ final class CatalogX {
      * @return void
      */
     public function register_services() {
+        $this->services['current_user_id'] = get_current_user_id();
+        $this->services['current_user']    = wp_get_current_user();
         $this->services['setting']   = new Setting();
         $this->services['admin']     = new Admin();
         $this->services['frontend']  = new Frontend();

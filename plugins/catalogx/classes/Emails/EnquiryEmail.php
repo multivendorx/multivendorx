@@ -112,6 +112,11 @@ class EnquiryEmail extends \WC_Email {
         $this->add_vendor_emails();
 
         $product       = wc_get_product( key( $this->product_id ) );
+        $this->find = ['{PRODUCT_NAME}', '{USER_NAME}'];
+        $this->replace = [
+            is_array($this->product_id) && count($this->product_id) > 1 ? 'MULTIPLE PRODUCTS' : $product->get_title(),
+            $this->cust_name
+        ];
 
         return $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
     }
