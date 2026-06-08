@@ -74,7 +74,7 @@ export default {
             moduleEnabled: 'enquiry',
         },
         {
-			key: 'store_registration_form',
+			key: 'enquiry_email_template',
 			type: 'block-builder',
 			classes: 'full-width',
 			// desc: 'Customise personalised store registration form for marketplace.',
