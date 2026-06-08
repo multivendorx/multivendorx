@@ -6,7 +6,6 @@
     "icon": "button",
     "description": "A block that displays enquiry button.",
     "editorScript": "file:./index.js",
-    "viewScript": "file:./view.js",
     "render": "file:./render.php",
     "textdomain": "catalogx",
     "editorStyle": [

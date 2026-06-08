@@ -662,7 +662,7 @@ const SetupWizard: React.FC = () => {
 							label: __('Finish', 'catalogx'),
 							action: 'next',
 							color: 'green',
-							redirect: `${appLocalizer.admin_url}#&tab=modules`,
+							redirect: `${appLocalizer.admin_url}admin.php?page=catalogx#&tab=modules`,
 						},
 					],
 				},

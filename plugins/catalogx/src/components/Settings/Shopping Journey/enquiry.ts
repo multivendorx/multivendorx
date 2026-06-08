@@ -92,5 +92,48 @@ export default {
             ],
             moduleEnabled: 'enquiry',
         },
+        {
+            key:'is_page_redirect',
+            type:'checkbox',
+            options:[
+                {
+                    key:'is_page_redirect',
+                    value:'is_page_redirect',
+                }
+            ],
+            look:'toggle',
+            label:__('Redirect to a different page for enquiry form', 'catalogx'),
+        },
+        {
+            key: 'redirect_page_id',
+            type: 'select',
+            label: __('Cart / Checkout Redirect Page', 'catalogx'),
+            size: 15,
+            options: [
+                {
+                    value: '',
+                    label: 'Home',
+                    key: '',
+                },
+                ...appLocalizer.pages_data,
+            ],
+            dependent: {
+                key: 'is_page_redirect',
+                set: true,
+            },
+            // desc: sprintf(
+            //     /* translators: %s will be replaced with a link to CatalogX Pro */
+            //     __(
+            //         'Redirect users to the homepage when they click on the cart or checkout page. To customize the redirection to a different page, an upgrade to %s is required.',
+            //         'catalogx'
+            //     ),
+            //     '<a href="' +
+            //         appLocalizer.pro_url +
+            //         '" target="_blank">CatalogX Pro</a>'
+            // ),
+
+            proSetting: true,
+            moduleEnabled: 'catalog',
+        },
     ],
 };
