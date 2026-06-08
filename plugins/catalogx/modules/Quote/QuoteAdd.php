@@ -57,7 +57,7 @@ class QuoteAdd extends \WP_REST_Controller {
      * @param object $request The request object.
      */
     public function create_item_permissions_check( $request ) {
-        $user_id = get_current_user_id();
+        $user_id = CatalogX()->current_user_id;
         // For non-logged in user.
         if ( 0 === $user_id ) {
             return true;

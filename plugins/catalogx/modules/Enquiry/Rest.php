@@ -55,7 +55,7 @@ class Rest {
      * @return bool True if the user has permission, false otherwise.
      */
     public function create_item_permissions_check() {
-        $user_id = get_current_user_id();
+        $user_id = CatalogX()->current_user_id;
         // For non-logged in user.
         if ( 0 === $user_id && empty( CatalogX()->setting->get_setting( 'enquiry_user_permission' ) ) ) {
 			return true;
@@ -95,7 +95,7 @@ class Rest {
             $enquiry_form_fields = $request->get_body_params();
             $uploaded_files      = $request->get_file_params();
 
-            $user        = wp_get_current_user();
+            $user        = CatalogX()->current_user;
             $user_name   = $user->display_name;
             $user_email  = $user->user_email;
             $attachments = array();
