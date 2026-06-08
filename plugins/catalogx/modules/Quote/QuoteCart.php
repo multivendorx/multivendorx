@@ -29,6 +29,13 @@ class QuoteCart extends \WP_REST_Controller {
     protected $rest_base = 'quote-cart';
 
     /**
+     * Rest class constructor function
+     */
+    public function __construct() {
+        add_action( 'rest_api_init', array( $this, 'register_routes' ), 10 );
+    }
+
+    /**
      * Register the routes for the objects of the controller.
      */
     public function register_routes() {
