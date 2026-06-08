@@ -27,6 +27,7 @@ interface CanvasEditorProps {
             label: string;
             fixedName?: string;
             placeholder?: string;
+            defaultField?: boolean;
         }>;
     }>;
     visibleGroups?: string[];
@@ -80,6 +81,11 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     blocksRef.current = blocks;
 
     const isFormBuilder = context === 'form';
+    const defaultBlocks = React.useMemo(() => {
+        return blockGroups
+            .flatMap((group) => group.blocks)
+            .filter((block) => block.defaultField);
+    }, [blockGroups]);
 
     const titleBlock = isFormBuilder
         ? blocks.find((b) => b.type === 'title')
@@ -144,7 +150,10 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     }, []);
 
     useEffect(() => {
-        if (context !== 'form') {
+        const shouldAddStoreNameField = defaultBlocks.some(
+            (block) => block.id === 'name'
+        );
+        if ( context !== 'form' || !shouldAddStoreNameField ) {
             return;
         }
 

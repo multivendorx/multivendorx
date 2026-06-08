@@ -128,9 +128,36 @@ export const BlockBuilderUI: React.FC<BlockBuilderProps> = ({
     TEMPLATE SELECT
     --------------------------- */
 
-    const handleTemplateSelect = React.useCallback((id: string) => {
-        setActiveTemplateId(id);
-    }, []);
+    const handleTemplateSelect = React.useCallback(
+        (id: string) => {
+            if (isEmailBuilder && field?.emailTemplates) {
+                const originalTemplate = field.emailTemplates.find(
+                    (t: EmailTemplate) => t.id === id
+                );
+                if (originalTemplate) {
+                    // Update local state
+                    setTemplates((prev) =>
+                        prev.map((t) =>
+                            t.id === id
+                                ? { ...t, blocks: originalTemplate.blocks }
+                                : t
+                        )
+                    );
+                    // Update parent state
+                    onChange({
+                        emailTemplates: emailTemplates.map((t) =>
+                            t.id === id
+                                ? { ...t, blocks: originalTemplate.blocks }
+                                : t
+                        ),
+                        activeEmailTemplateId: id,
+                    });
+                }
+            }
+            setActiveTemplateId(id);
+        },
+        [isEmailBuilder, field?.emailTemplates, emailTemplates, onChange]
+    );
 
     /* ---------------------------
     INITIAL BLOCKS

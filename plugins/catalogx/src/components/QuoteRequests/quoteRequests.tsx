@@ -33,11 +33,7 @@ export default function QuotesList() {
 			label: __('Order ID', 'catalogx'),
 			render: (row: QuoteRow) => (
 				<InfoItem
-					title={`#${row.order_id}`}
-					avatar={{
-						// image: row.image?.src || '',
-						iconClass: 'quote',
-					}}
+					title={`${row.order_id}`}
 					descriptions={[
 						{
 							label: __('By', 'catalogx'),
@@ -47,7 +43,7 @@ export default function QuotesList() {
 				/>
 			),
 		},
-		date: { label: __('Date', 'catalogx'), type: 'date' },		
+		date: { label: __('Date', 'catalogx'), type: 'date' },
 		status: { label: __('Status', 'catalogx'), type: 'status', statusClass: (row: QuoteRow) => `${row.status}` },
 		total: {
 			label: __('Total', 'catalogx'),
@@ -68,13 +64,6 @@ export default function QuotesList() {
 					},
 				},
 				{
-					label: __('Edit Status', 'catalogx'),
-					icon: 'edit',
-					onClick: () => {
-						setopenPopup(true);
-					},
-				},
-				{
 					label: __('Send Mail', 'catalogx'),
 					icon: 'mail',
 					onClick: () => {
@@ -84,35 +73,15 @@ export default function QuotesList() {
 			],
 		},
 	};
-	const filterOptions = [
-		{ value: 'Order ID', label: __('Order ID', 'catalogx') },
-		{ value: 'Customer Name', label: __('Customer Name', 'catalogx') },
-		{ value: 'Customer Email', label: __('Customer Email', 'catalogx') },
-	];
 
 	const filters = [
-		{
-			key: 'filter',
-			label: __('Filter', 'catalogx'),
-			type: 'select',
-			options: filterOptions,
-		},
 		{
 			key: 'date_range',
 			label: __('Date Range', 'catalogx'),
 			type: 'date',
 		},
 	];
-	const defaultTableProps = {
-		headers,
-
-		rows: dummyQuotes,
-		totalRows: dummyQuotes.length,
-		filters: filters,
-		search: {
-			placeholder: __('Search quotes...', 'catalogx'),
-		},
-	};
+	const defaultTableProps : any ={};
 
 	const RenderedTableCard = applyFilters(
 		'catalogx_quote_table_component',
@@ -151,6 +120,7 @@ export default function QuotesList() {
 				<Column>
 					<div onClick={handleTableWrapperClick} >
 						<RenderedTableCard {...defaultTableProps} />
+						{defaultTableProps.popup}
 					</div>
 				</Column>
 			</Container>

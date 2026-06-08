@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
 do_action( 'catalogx_email_header', $email_heading );
-$customer_data = $args['customer_data'];
+$customer_details = $args['customer_details'];
 ?>
 <body>
     <div style="width:600px; margin: 0 auto; ">
@@ -22,7 +22,7 @@ $customer_data = $args['customer_data'];
             <h2 style="font-family: Arial; line-height: 43px; text-align: center; color: #fff; font-size: 40.375rem; font-weight: 700; margin: 0;padding: 0 0 0px 0;">
                 <?php
                     // translators: %s is the admin's name.
-                    printf( esc_html__( 'Dear %s', 'catalogx' ), esc_html( $args['admin'] ?? 'Admin' ) );
+                    printf( esc_html__( 'Dear %s', 'catalogx' ), esc_html( $args['admin_name'] ?? 'Admin' ) );
                 ?>
             </h2>
             <p style=" color:#fff; margin-bottom:0; text-align: center; font-size:10.375rem; "><?php esc_html_e( 'You have received a new quote request from a customer for the following product:', 'catalogx' ); ?></p>
@@ -47,8 +47,8 @@ $customer_data = $args['customer_data'];
 
             <tbody>
             <?php
-            if ( ! empty( $args['products'] ) ) {
-                foreach ( $args['products'] as $item ) {
+            if ( ! empty( $args['quoted_products'] ) ) {
+                foreach ( $args['quoted_products'] as $item ) {
                     $_product = wc_get_product( $item['product_id'] );
                     ?>
                     <tr>
@@ -85,14 +85,14 @@ $customer_data = $args['customer_data'];
         <br>
     </div>
     <div class="details">
-        <p><strong><?php esc_html_e( 'Customer Name:', 'catalogx' ); ?></strong> <?php echo esc_html( $customer_data['name'] ?? 'John Doe' ); ?></p>
+        <p><strong><?php esc_html_e( 'Customer Name:', 'catalogx' ); ?></strong> <?php echo esc_html( $customer_details['name'] ?? 'John Doe' ); ?></p>
         <p><strong><?php esc_html_e( 'Email:', 'catalogx' ); ?></strong> 
-        <a href="mailto:<?php echo esc_attr( $customer_data['email'] ?? 'example@gmail.com' ); ?>">
-            <?php echo esc_html( $customer_data['email'] ?? 'example@gmail.com' ); ?>
+        <a href="mailto:<?php echo esc_attr( $customer_details['email'] ?? 'example@gmail.com' ); ?>">
+            <?php echo esc_html( $customer_details['email'] ?? 'example@gmail.com' ); ?>
         </a></p>
-        <?php if ( ! empty( $customer_data['details'] ) ) { ?>
+        <?php if ( ! empty( $customer_details['details'] ) ) { ?>
             <p><strong><?php esc_html_e( 'Additional Details:', 'catalogx' ); ?></strong><br>
-                <?php echo nl2br( esc_html( $customer_data['details'] ) ); ?>
+                <?php echo nl2br( esc_html( $customer_details['details'] ) ); ?>
             </p>
         <?php } ?>
 

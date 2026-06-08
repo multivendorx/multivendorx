@@ -6,7 +6,7 @@ const OPTION_PRESETS = [
     { id: '3', label: 'Authorized Agent', value: 'authorized_agent' },
 ];
 
-const REGISTRATION_BLOCK_GROUPS = [
+const WHOLESALE_BLOCK_GROUPS = [
     {
         id: 'registration',
         label: 'Blocks',
@@ -141,7 +141,7 @@ export default {
 			key: 'store_registration_from',
 			type: 'block-builder',
 			classes: 'full-width',
-			blockGroups: REGISTRATION_BLOCK_GROUPS,
+			blockGroups: WHOLESALE_BLOCK_GROUPS,
 			visibleGroups: ['registration'],
 			desc: 'Customise personalised store registration form for marketplace.',
 			context: 'form',

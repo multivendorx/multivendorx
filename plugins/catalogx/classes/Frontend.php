@@ -21,7 +21,6 @@ class Frontend {
      * Fontend class constructor functions
      */
     public function __construct() {
-        add_action( 'wp', array( $this, 'display_price_and_description' ) );
         // Enqueue frontend scripts.
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
     }
@@ -38,7 +37,7 @@ class Frontend {
         }
     }
 
-    /**
+     /**
      * Display product price and description in single product page.
      *
      * @return void
@@ -61,4 +60,5 @@ class Frontend {
             add_filter( 'render_block_core/post-excerpt', '__return_empty_string' );
         }
     }
+
 }

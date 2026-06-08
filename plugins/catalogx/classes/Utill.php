@@ -43,7 +43,7 @@ class Utill {
     public const CATALOGX_SETTINGS = array(
         'extra'                         => 'catalogx_extra_settings',
         'enquiry-catalog-customization' => 'catalogx_enquiry_catalog_customization_settings',
-        'shopping'                      => 'catalogx_shopping_settings_settings',
+        'shopping'                      => 'catalogx_shopping_settings',
         'enquiry'                       => 'catalogx_enquiry_settings',
         'quotation'                     => 'catalogx_quotation_settings',
         'tools'                         => 'catalogx_tools_settings',
@@ -213,56 +213,4 @@ class Utill {
         }
     }
 
-    /**
-     * Generate inline CSS styles for button.
-     *
-     * Applies styles based on provided settings and whether the button is in a hover state.
-     *
-     * @param array $button_settings An associative array of button styling options.
-     * @param bool  $hover Optional. Whether to apply hover styles. Default false.
-     * @return string CSS string to apply inline on the button.
-     */
-    public static function get_button_styles( $button_settings, $hover = false ) {
-        $button_css  = '';
-        $border_size = ! empty( $button_settings['button_border_size'] ) ? esc_attr( $button_settings['button_border_size'] ) . 'px' : '1px';
-
-        if ( $hover ) {
-            if ( isset( $button_settings['button_background_color_onhover'] ) ) {
-                $button_css .= ! empty( $button_settings['button_background_color_onhover'] ) ? 'background: ' . $button_settings['button_background_color_onhover'] . ' !important;' : '';
-            }
-            if ( isset( $button_settings['button_text_color_onhover'] ) ) {
-                $button_css .= ! empty( $button_settings['button_text_color_onhover'] ) ? ' color: ' . $button_settings['button_text_color_onhover'] . ' !important;' : '';
-            }
-            if ( isset( $button_settings['button_border_color_onhover'] ) ) {
-                $button_css .= ! empty( $button_settings['button_border_color_onhover'] ) ? 'border: ' . $border_size . ' solid' . $button_settings['button_border_color_onhover'] . ' !important;' : '';
-            }
-        } else {
-            if ( ! empty( $button_settings['button_background_color'] ) ) {
-                $button_css .= 'background: ' . esc_attr( $button_settings['button_background_color'] ) . ';';
-            }
-            if ( ! empty( $button_settings['button_text_color'] ) ) {
-                $button_css .= 'color: ' . esc_attr( $button_settings['button_text_color'] ) . ';';
-            }
-            if ( ! empty( $button_settings['button_border_color'] ) ) {
-                $button_css .= 'border: ' . $border_size . ' solid ' . esc_attr( $button_settings['button_border_color'] ) . ';';
-            }
-            if ( ! empty( $button_settings['button_font_size'] ) ) {
-                $button_css .= 'font-size: ' . esc_attr( $button_settings['button_font_size'] ) . 'px;';
-            }
-            if ( ! empty( $button_settings['button_border_radious'] ) ) {
-                $button_css .= 'border-radius: ' . esc_attr( $button_settings['button_border_radious'] ) . 'px;';
-            }
-            if ( ! empty( $button_settings['button_font_width'] ) ) {
-                $button_css .= 'font-weight: ' . esc_attr( $button_settings['button_font_width'] ) . 'px;';
-            }
-            if ( ! empty( $button_settings['button_padding'] ) ) {
-                $button_css .= 'padding: ' . esc_attr( $button_settings['button_padding'] ) . 'px;';
-            }
-            if ( ! empty( $button_settings['button_margin'] ) ) {
-                $button_css .= 'margin: ' . esc_attr( $button_settings['button_margin'] ) . 'px;';
-            }
-        }
-
-        return $button_css;
-    }
 }

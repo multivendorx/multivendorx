@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const EnquiryForm = () => {
     const [loading, setLoading] = useState(false);
-    const [toast, setToast] = useState(false);
+    const [showToast, setshowToast] = useState(false);
     const [responseMessage, setResponseMessage] = useState('');
     const formData = enquiryFormData;
     const proActive = formData.khali_dabba;
@@ -45,23 +45,20 @@ const EnquiryForm = () => {
             .then((response) => {
                 setResponseMessage(response.data.msg);
                 setLoading(false);
-                setToast(true);
+                setshowToast(true);
                 if (response.data.redirect_link !== '') {
                     window.location.href = response.data.redirect_link;
                 }
                 setTimeout(() => {
-                    setToast(false);
+                    setshowToast(false);
                     window.location.reload();
                 }, 3000);
             });
     };
-    console.log('formData', formData);
-    console.log('proActive', proActive);
-
 
     return (
         <>
-            {toast && (
+            {showToast && (
                 <div className="woocommerce-notices-wrapper">
                     <ul className="woocommerce-message" role="alert">
                         <li>{responseMessage}</li>

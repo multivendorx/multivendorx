@@ -197,11 +197,13 @@ const processFile = async (file) => {
 		];
 
 		for (const folder of assetFolders) {
+			const normalizedFolder =
+				folder.replace(/\\/g, '/');
+
 			const files = await glob(
-				`${folder}/**/*.{js,scss}`,
+				`${normalizedFolder}/**/*.{js,scss}`,
 				{
 					cwd: pluginRoot,
-
 					ignore: [
 						'**/*.min.*',
 						'**/_*.scss',

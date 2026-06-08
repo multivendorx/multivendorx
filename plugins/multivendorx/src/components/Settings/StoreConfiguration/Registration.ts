@@ -126,6 +126,7 @@ const REGISTRATION_BLOCK_GROUPS = [
                 label: 'Store Name',
                 fixedName: 'Name',
                 placeholder: 'Enter your store name',
+                defaultField: true,
             },
             {
                 id: 'description',
@@ -186,6 +187,7 @@ export default {
 		{
 			key: 'store_registration_from',
 			type: 'block-builder',
+            context: 'form',
 			classes: 'full-width',
 			blockGroups: REGISTRATION_BLOCK_GROUPS,
 			visibleGroups: ['registration', 'store'],
