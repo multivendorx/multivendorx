@@ -121,7 +121,7 @@ const QuoteRequests = () => {
                 <Column>
                     <div onClick={handleTableWrapperClick}>
                         <TableCard {...tableProps} />
-                        {tableProps.popup}
+                        {tableProps.openMailPopup && tableProps.sendMail}
                     </div>
                 </Column>
             </Container>
