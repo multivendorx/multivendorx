@@ -23,7 +23,7 @@ const FORM_FIELDS_CONFIG = [
     { id: '6', type: 'text', label: 'Comment', name: 'comment', placeholder: 'Enter the details of your enquiry here' },
     { id: '7', type: 'fileupload', label: 'Filesize Limit', name: 'File upload size limit' },
     { id: '8', type: 'attachment', label: 'Fileupload', name: 'File upload', placeholder: '' },
-    { id: '9', type: 'recaptcha', label: 'Captcha', name: 'Captcha', placeholder: '' },
+    { id: '9', type: 'custom-recaptcha', label: 'Captcha', name: 'Captcha', placeholder: '' },
     { id: '10', type: 'button', label: 'Submit', placeholder: '' },
 ];
 

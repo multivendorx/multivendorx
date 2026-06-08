@@ -136,8 +136,6 @@ class Frontend {
             $product_id = absint( $attr['product_id'] );
         } elseif ( $product instanceof \WC_Product ) {
             $product_id = $product->get_id();
-        } else {
-            $product_id = $this->get_product_id_from_context();
         }
 
         if ( $product_id ) {
@@ -145,56 +143,5 @@ class Frontend {
         }
 
         return ob_get_clean();
-    }
-
-    /**
-     * Resolve product id from context when shortcode has no product_id attribute.
-     *
-     * @return int
-     */
-    private function get_product_id_from_context() {
-        $queried_id = get_queried_object_id();
-        if ( $queried_id && 'product' === get_post_type( $queried_id ) ) {
-            return absint( $queried_id );
-        }
-
-        $post = get_post();
-        if ( ! $post || empty( $post->post_content ) || ! function_exists( 'parse_blocks' ) ) {
-            return 0;
-        }
-
-        $blocks = parse_blocks( $post->post_content );
-        return $this->find_product_id_in_blocks( $blocks );
-    }
-
-    /**
-     * Recursively search blocks for product id attribute.
-     *
-     * @param array $blocks Parsed blocks.
-     * @return int
-     */
-    private function find_product_id_in_blocks( $blocks ) {
-        if ( empty( $blocks ) || ! is_array( $blocks ) ) {
-            return 0;
-        }
-
-        foreach ( $blocks as $block ) {
-            if ( ! empty( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
-                foreach ( array( 'productId', 'product_id', 'product' ) as $key ) {
-                    if ( ! empty( $block['attrs'][ $key ] ) ) {
-                        return absint( $block['attrs'][ $key ] );
-                    }
-                }
-            }
-
-            if ( ! empty( $block['innerBlocks'] ) ) {
-                $found = $this->find_product_id_in_blocks( $block['innerBlocks'] );
-                if ( $found ) {
-                    return $found;
-                }
-            }
-        }
-
-        return 0;
     }
 }

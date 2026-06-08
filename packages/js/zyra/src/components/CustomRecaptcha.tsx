@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { __ } from '@wordpress/i18n';
 
-const Recaptcha = ( props: any ) => {
+const CustomRecaptcha = ( props: any ) => {
     const { captchaValid } = props;
     const [ securityCode, setSecurityCode ] = useState( '' );
     const [ userInput, setUserInput ] = useState( '' );
@@ -39,24 +38,21 @@ const Recaptcha = ( props: any ) => {
                 placeholder="Enter security code"
             />
             <p>
-                { __( 'Your security code is:', 'catalogx' ) } { securityCode }
+                { 'Your security code is:' } { securityCode }
             </p>
 
             { ! isCaptchaValid && (
                 <p style={ { color: 'red' } }>
-                    { __(
-                        'Invalid security code, please try again.',
-                        'catalogx'
-                    ) }
+                    { 'Invalid security code, please try again.' }
                 </p>
             ) }
             { isCaptchaValid && ! userInput && (
                 <p style={ { color: 'red' } }>
-                    { __( 'Recaptcha is required.', 'catalogx' ) }
+                    { 'Recaptcha is required.' }
                 </p>
             ) }
         </>
     );
 };
 
-export default Recaptcha;
+export default CustomRecaptcha;
