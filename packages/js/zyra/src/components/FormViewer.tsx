@@ -264,6 +264,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
     const [captchaToken, setCaptchaToken] = useState<string | null>(null);
     const [captchaError, setCaptchaError] = useState<boolean>(false);
     const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
 
     const formList = formFields.formfieldlist || [];
     const buttonField = formList.find((f) => f.type === 'button');
@@ -360,14 +361,14 @@ const FormViewer: React.FC<FormViewerProps> = ({
             (f) => f.type === 'custom-recaptcha'
         );
 
+        setSubmitted(true);
         if (
             customCaptchaField &&
-            customCaptchaField.required &&
             !isCaptchaValid
         ) {
             setErrors((prev) => ({
                 ...prev,
-                [customCaptchaField.name || customCaptchaField.id]:
+                [customCaptchaField.label || customCaptchaField.id]:
                     'Invalid security code.',
             }));
             return;
@@ -950,6 +951,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
                 return (
                     <CustomRecaptcha
                         captchaValid={handleCaptchaValidation}
+                        submitted={submitted}
                     />
                 );
 

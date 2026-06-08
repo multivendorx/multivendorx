@@ -32,24 +32,24 @@ const EnquiryForm = () => {
         formData.append('productId', productId);
         formData.append('quantity', quantity);
 
-        axios
-            .post(submitUrl, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'X-WP-Nonce': enquiryFormData.nonce,
-                },
-            })
-            .then((response) => {
-                setResponseMessage(response.data.msg);
-                setshowToast(true);
-                if (response.data.redirect_link !== '') {
-                    window.location.href = response.data.redirect_link;
-                }
-                setTimeout(() => {
-                    setshowToast(false);
-                    window.location.reload();
-                }, 3000);
-            });
+        // axios
+        //     .post(submitUrl, formData, {
+        //         headers: {
+        //             'Content-Type': 'multipart/form-data',
+        //             'X-WP-Nonce': enquiryFormData.nonce,
+        //         },
+        //     })
+        //     .then((response) => {
+        //         setResponseMessage(response.data.msg);
+        //         setshowToast(true);
+        //         if (response.data.redirect_link !== '') {
+        //             window.location.href = response.data.redirect_link;
+        //         }
+        //         setTimeout(() => {
+        //             setshowToast(false);
+        //             window.location.reload();
+        //         }, 3000);
+        //     });
     };
 
     return (

@@ -133,35 +133,23 @@ export const TableCell: React.FC<TableCellProps> = ({
         disabled: disabled,
     };
 
-    if (
-        fieldConfig.moduleEnabled &&
-        !modules.includes(fieldConfig.moduleEnabled)
-    ) {
-        return (
-            <td key={fieldKey}>
-                <div
-                    onClick={() =>
-                        onBlocked?.(
-                            'module',
-                            fieldConfig.moduleEnabled
-                        )
-                    }
-                >
-                    Locked
-                </div>
-            </td>
-        );
-    }
-
     return (
         <Render
             field={fieldConfig}
             value={value}
             modules={modules}
-            // appLocalizer={appLocalizer}
             onBlocked={onBlocked}
             canAccess={!disabled}
             onChange={(newValue: SettingValue) => {
+                if (
+                    isBlocked(
+                        fieldConfig,
+                        modules,
+                        onBlocked
+                    )
+                ) {
+                    return;
+                }
                 onChange(fieldKey, newValue);
             }}
         />
