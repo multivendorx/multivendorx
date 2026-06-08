@@ -4,7 +4,6 @@ import { FormViewer } from 'zyra';
 import axios from 'axios';
 
 const EnquiryForm = () => {
-    const [loading, setLoading] = useState(false);
     const [showToast, setshowToast] = useState(false);
     const [responseMessage, setResponseMessage] = useState('');
     const formData = enquiryFormData;
@@ -13,8 +12,6 @@ const EnquiryForm = () => {
     const submitUrl = `${enquiryFormData.apiUrl}/catalogx/v1/enquiries`;
 
     const onSubmit = (submittedFormData: any) => {
-        setLoading(true);
-
         // Convert Zyra form object into FormData
         const formData = new FormData();
 
@@ -44,7 +41,6 @@ const EnquiryForm = () => {
             })
             .then((response) => {
                 setResponseMessage(response.data.msg);
-                setLoading(false);
                 setshowToast(true);
                 if (response.data.redirect_link !== '') {
                     window.location.href = response.data.redirect_link;
