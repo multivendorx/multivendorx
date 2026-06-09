@@ -98,7 +98,6 @@ class Rest {
             $user        = CatalogX()->current_user;
             $user_name   = $user->display_name;
             $user_email  = $user->user_email;
-            $attachments = array();
 
             // Create attachment of files.
             foreach ( $uploaded_files as $file ) {
