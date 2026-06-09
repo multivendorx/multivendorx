@@ -114,52 +114,52 @@ const REGISTRATION_BLOCK_GROUPS = [
             },
         ],
     },
-    {
-        id: 'store',
-        label: 'Store',
-        icon: 'store',
-        blocks: [
-            {
-                id: 'name',
-                icon: 't-letter-bold',
-                value: 'text',
-                label: 'Store Name',
-                fixedName: 'Name',
-                placeholder: 'Enter your house name',
-            },
-            {
-                id: 'description',
-                icon: 'text ',
-                value: 'textarea',
-                label: 'Store Desc',
-                fixedName: 'Description',
-                placeholder: 'Enter your store description',
-            },
-            {
-                id: 'store-phone',
-                icon: 'form-phone',
-                value: 'text',
-                label: 'Store Phone',
-                fixedName: 'Phone',
-                placeholder: 'Enter your store phone',
-            },
-            {
-                id: 'store-paypal',
-                icon: 'unread ',
-                value: 'email',
-                label: 'Store Paypal Email',
-                fixedName: 'Paypal Email',
-                placeholder: 'Enter your PayPal email',
-            },
-            {
-                id: 'store-address',
-                icon: 'form-address ',
-                value: 'address',
-                label: 'Store Address',
-                fixedName: 'Address',
-            },
-        ],
-    }
+    // {
+    //     id: 'store',
+    //     label: 'Store',
+    //     icon: 'store',
+    //     blocks: [
+    //         {
+    //             id: 'name',
+    //             icon: 't-letter-bold',
+    //             value: 'text',
+    //             label: 'Store Name',
+    //             fixedName: 'Name',
+    //             placeholder: 'Enter your house name',
+    //         },
+    //         {
+    //             id: 'description',
+    //             icon: 'text ',
+    //             value: 'textarea',
+    //             label: 'Store Desc',
+    //             fixedName: 'Description',
+    //             placeholder: 'Enter your store description',
+    //         },
+    //         {
+    //             id: 'store-phone',
+    //             icon: 'form-phone',
+    //             value: 'text',
+    //             label: 'Store Phone',
+    //             fixedName: 'Phone',
+    //             placeholder: 'Enter your store phone',
+    //         },
+    //         {
+    //             id: 'store-paypal',
+    //             icon: 'unread ',
+    //             value: 'email',
+    //             label: 'Store Paypal Email',
+    //             fixedName: 'Paypal Email',
+    //             placeholder: 'Enter your PayPal email',
+    //         },
+    //         {
+    //             id: 'store-address',
+    //             icon: 'form-address ',
+    //             value: 'address',
+    //             label: 'Store Address',
+    //             fixedName: 'Address',
+    //         },
+    //     ],
+    // }
 ];
 
 export default {

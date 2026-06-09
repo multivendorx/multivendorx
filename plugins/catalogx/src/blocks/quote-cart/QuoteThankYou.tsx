@@ -65,24 +65,18 @@ const QuoteThankYou = ({ orderId, status }: QuoteThankYouProps) => {
 
     if (orderId) {
         return (
-            <div>
-                <p>
-                    {__('Thank you for your quote request', 'catalogx')}{' '}
-                    <strong>
-                        {quoteCart.khali_dabba ? (
-                            <a href={quoteCart.quote_my_account_url}>{orderId}</a>
-                        ) : (
-                            orderId
-                        )}
-                    </strong>
-                    .
-                </p>
+            <div className='quote-thank-you-section'>
+                <span className="dashicons dashicons-yes-alt"></span>                   
+                <h2> {__('Thank you for your quote request', 'catalogx')} {!quoteCart.khali_dabba && (orderId)}.</h2>
                 <p>
                     {__(
                         'Our team is reviewing your details and will get back to you shortly with a personalized quote. We appreciate your patience and look forward to serving you!',
                         'catalogx'
                     )}
                 </p>
+                {quoteCart.khali_dabba && (
+                    <a className="button wp-block-button__link update-cart-button" href={quoteCart.quote_my_account_url}>{__('View Quote ', 'catalogx')}{' '}{orderId}</a>
+                ) }
             </div>
         );
     }

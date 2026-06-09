@@ -29,7 +29,7 @@ class Rest {
      * Rest class constructor function
      */
     public function __construct() {
-        add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
+        add_action( 'rest_api_init', array( $this, 'register_routes' ) );
     }
 
     /**
@@ -98,7 +98,6 @@ class Rest {
             $user        = CatalogX()->current_user;
             $user_name   = $user->display_name;
             $user_email  = $user->user_email;
-            $attachments = array();
 
             // Create attachment of files.
             foreach ( $uploaded_files as $file ) {

@@ -90,6 +90,7 @@ interface FormViewerProps {
     countryList?: Option[];
     stateList?: Record<string, Option[] | Record<string, string>>;
     formMessages?: FormMessages;
+    closeBtn?: boolean;
 }
 
 // ─── Placeholder Helpers ─────────────────────────────────────────────────────
@@ -252,6 +253,7 @@ const Multiselect: React.FC<{
 
 const FormViewer: React.FC<FormViewerProps> = ({
     formFields,
+    closeBtn,
     response,
     onSubmit,
     countryList,
@@ -717,34 +719,13 @@ const FormViewer: React.FC<FormViewerProps> = ({
                         fieldName={name}
                         error={error}
                     >
-                        <div className="attachment-section">
-                            <label
-                                htmlFor="dropzone-file"
-                                className="attachment-label"
-                            >
-                                &nbsp;
-                                <div className="wrapper">
-                                    <i className="adminfont-cloud-upload" />
-                                    <p className="heading">
-                                        {fileName === '' ? (
-                                            <>
-                                                <span>Click to upload</span> or
-                                                drag and drop
-                                            </>
-                                        ) : (
-                                            fileName
-                                        )}
-                                    </p>
-                                </div>
-                                <input
-                                    readOnly
-                                    id="dropzone-file"
-                                    type="file"
-                                    className="hidden"
-                                    onChange={(e) => handleFileChange(name, e)}
-                                />
-                            </label>
-                        </div>
+                        <input
+                            readOnly
+                            id="dropzone-file"
+                            type="file"
+                            className="hidden"
+                            onChange={(e) => handleFileChange(name, e)}
+                        />
                     </FormRow>
                 );
 
@@ -962,6 +943,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
 
     return (
         <form className="woocommerce-form woocommerce-form-login login">
+            {closeBtn && ( <i className='close-icon dashicons dashicons-no-alt'></i> )}
             {otherFields.map(renderField)}
             {buttonField && renderField(buttonField)}
         </form>
