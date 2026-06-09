@@ -32,7 +32,7 @@ class Frontend {
      */
     public function enqueue_frontend_assets() {
         FrontendScripts::enqueue_frontend_assets();
-        // css load in quote page (didi) 
+        // add quote table css (didi)
         // if ( is_product() || is_shop() || is_account_page() ) {
             FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
         // }
