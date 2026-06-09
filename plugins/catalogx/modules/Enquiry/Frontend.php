@@ -90,9 +90,7 @@ class Frontend {
         }       
 		if ( $show_button ) {
             ?>
-            <div>
                 <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button"><?php echo esc_html( $button_text ); ?></button>
-            </div>
             <?php
 		}
 		?>
@@ -107,6 +105,7 @@ class Frontend {
             <input type="hidden" name="user_id_for_enquiry" id="user-id-for-enquiry" value="<?php echo esc_html( get_current_user_id() ); ?>" />  			
         </div>
         <div id="catalogx-modal" style="display: none;" class="catalogx-modal <?php echo ( CatalogX()->setting->get_setting( 'is_disable_popup' ) === 'popup' ) ? 'popup-enable' : ''; ?>">
+            <span class="dashicons dashicons-no-alt"></span>
         </div>	
         <?php
     }
@@ -291,7 +290,7 @@ class Frontend {
         $button_text = \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
         if ( is_shop() ) {
             $product_link = get_permalink( $product->get_id() );
-            echo '<a href="' . esc_url( $product_link ) . '" class="single_add_to_cart_button button wp-block-button__link" >' . esc_html( $button_text ) . '</a>';
+            echo '<a href="' . esc_url( $product_link ) . '" class="enquiry-btn single_add_to_cart_button button wp-block-button__link" >' . esc_html( $button_text ) . '</a>';
         }
     }
 }
