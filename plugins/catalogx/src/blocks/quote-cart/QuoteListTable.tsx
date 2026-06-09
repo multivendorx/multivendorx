@@ -306,7 +306,7 @@ const QuoteList = () => {
                 {__('Update Cart', 'catalogx')}
             </button>
 
-            <table className="quote-list-table shop_table shop_table_responsive my_account_orders">
+            <table className="multivendorx-table shop_table shop_table_responsive my_account_orders">
                 <thead>
                     <tr>
                         <th className="woocommerce-orders-table__header">

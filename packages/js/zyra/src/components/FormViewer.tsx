@@ -719,34 +719,13 @@ const FormViewer: React.FC<FormViewerProps> = ({
                         fieldName={name}
                         error={error}
                     >
-                        <div className="attachment-section">
-                            <label
-                                htmlFor="dropzone-file"
-                                className="attachment-label"
-                            >
-                                &nbsp;
-                                <div className="wrapper">
-                                    <i className="adminfont-cloud-upload" />
-                                    <p className="heading">
-                                        {fileName === '' ? (
-                                            <>
-                                                <span>Click to upload</span> or
-                                                drag and drop
-                                            </>
-                                        ) : (
-                                            fileName
-                                        )}
-                                    </p>
-                                </div>
-                                <input
-                                    readOnly
-                                    id="dropzone-file"
-                                    type="file"
-                                    className="hidden"
-                                    onChange={(e) => handleFileChange(name, e)}
-                                />
-                            </label>
-                        </div>
+                        <input
+                            readOnly
+                            id="dropzone-file"
+                            type="file"
+                            className="hidden"
+                            onChange={(e) => handleFileChange(name, e)}
+                        />
                     </FormRow>
                 );
 

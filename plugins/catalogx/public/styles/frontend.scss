@@ -1,23 +1,25 @@
+.multivendorx-table .product-cell {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+
+
+    img {
+        width: 3rem;
+    }
+
+    .dashicons {
+        color: rgba(255, 0, 0, 0.76);
+        cursor: pointer;
+    }
+}
+
+
+
 // My Quote page start
-.quote-list-container {
-    .quote-list-table .product-cell {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
 
-
-        img {
-            width: 3rem;
-        }
-
-        .dashicons {
-            color: rgba(255, 0, 0, 0.76);
-        }
-    }
-
-    .update-cart-btn {
-        margin-bottom: 1rem;
-    }
+.update-cart-btn {
+    margin-bottom: 1rem;
 }
 
 // My Quote page end
@@ -31,11 +33,11 @@
 
 // quote thank you page start
 .quote-thank-you-section {
-    text-align: center; 
-        padding: 2rem;
-        text-align: center;
-        border: 0.063rem solid #00000030;
-        border-radius: 0.313rem;
+    text-align: center;
+    padding: 2rem;
+    text-align: center;
+    border: 0.063rem solid #00000030;
+    border-radius: 0.313rem;
 
     .dashicons {
         font-size: 3.5rem;
@@ -43,7 +45,8 @@
         height: 3.5rem;
         width: 3.5rem;
     }
-    h2{
+
+    h2 {
         margin: 0;
     }
 }
