@@ -90,6 +90,7 @@ interface FormViewerProps {
     countryList?: Option[];
     stateList?: Record<string, Option[] | Record<string, string>>;
     formMessages?: FormMessages;
+    closeBtn?: boolean;
 }
 
 // ─── Placeholder Helpers ─────────────────────────────────────────────────────
@@ -252,6 +253,7 @@ const Multiselect: React.FC<{
 
 const FormViewer: React.FC<FormViewerProps> = ({
     formFields,
+    closeBtn,
     response,
     onSubmit,
     countryList,
@@ -962,6 +964,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
 
     return (
         <form className="woocommerce-form woocommerce-form-login login">
+            {closeBtn && ( <i className='close-icon dashicons dashicons-no-alt'></i> )}
             {otherFields.map(renderField)}
             {buttonField && renderField(buttonField)}
         </form>

@@ -68,6 +68,7 @@ const EnquiryForm = () => {
                         formfieldlist: formData.settings_pro,
                     }}
                     onSubmit={onSubmit}
+                    closeBtn={true}
                 />
             ) : (
                 <FormViewer
@@ -75,6 +76,7 @@ const EnquiryForm = () => {
                         formfieldlist: formData.settings_free,
                     }}
                     onSubmit={onSubmit}
+                    closeBtn={true}
                 />
             )}
             <div>{enquiryFormData.content_after_form}</div>
