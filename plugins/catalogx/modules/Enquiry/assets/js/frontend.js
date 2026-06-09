@@ -8,7 +8,6 @@ jQuery( document ).ready( function ( $ ) {
     $( 'form.variations_form' ).on(
         'found_variation',
         function ( event, variation ) {
-            console.log('hittt')
             $enquiryBtn.show();
         }
     );
