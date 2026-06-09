@@ -24,7 +24,7 @@ const FORM_FIELDS_CONFIG = [
     { id: '7', type: 'fileupload', label: 'Filesize Limit', name: 'File upload size limit' },
     { id: '8', type: 'attachment', label: 'Fileupload', name: 'File upload', placeholder: '' },
     { id: '9', type: 'custom-recaptcha', label: 'Captcha', name: 'Captcha', placeholder: '' },
-    { id: '10', type: 'button', label: 'Submit', placeholder: '' },
+    { id: '10', type: 'button', label: 'Submit' },
 ];
 
 const toArray = (val: unknown): FormField[] => (Array.isArray(val) ? val : []);
@@ -101,7 +101,7 @@ const FreeFormCustomizerField: React.FC<{
         };
     }, [editingFieldId]);
 
-    const getField = (id: string) => fields.find(f => f.id === id);
+    const getField = (id: string | number) => fields.find(f => String(f.id) === String(id));
 
     const ensureFieldExists = (id: string): FormField => {
         const existing = getField(id);
@@ -221,12 +221,14 @@ const FreeFormCustomizerField: React.FC<{
                             )}
                         </div>
                         <div className="free-form-input">
-                            <BasicInputUI
-                                type="text"
-                                value={currentPlaceholder}
-                                onChange={(val) => updateFieldPlaceholder(fieldConfig.id, val)}
-                                readOnly={!canAccess}
-                            />
+                            {!isSubmit && (
+                                <BasicInputUI
+                                    type="text"
+                                    value={currentPlaceholder}
+                                    onChange={(val) => updateFieldPlaceholder(fieldConfig.id, val)}
+                                    readOnly={!canAccess}
+                                />
+                            )}
                         </div>
                         {!isSubmit && (
                             <i onClick={() => handleToggle(fieldConfig.id)} className={`visibility-icon adminfont-${isActive ? 'eye' : 'eye-blocked'}`} />

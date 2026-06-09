@@ -19,42 +19,45 @@ defined( 'ABSPATH' ) || exit;
 class Rest {
 
     /**
-     * Controllers for all our classes
+     * REST API controllers.
      *
-     * @var array
+     * @var object[]
      */
-    private $controllers = array();
+    private $container = array();
+
     /**
-     * Rest class constructor function
+     * Constructor.
      */
     public function __construct() {
-        $this->register_controllers();
-        add_action( 'rest_api_init', array( $this, 'register_rest_api_routes' ), 10 );
+        $this->init_classes();
+
+        add_action('rest_api_init',array( $this, 'register_rest_api_routes' ),10);
     }
 
     /**
-     * Initialize all REST API controller classes.
+     * Initialize REST controllers.
+     *
+     * @return void
      */
-    public function register_controllers() {
-        $this->controllers = array(
-            'quote-add'         => new QuoteAdd(),
-            'quote-cart'        => new QuoteCart(),
-            'quotes'            => new Quotes(),
+    private function init_classes() {
+        $this->container = array(
+            new QuoteAdd(),
+            new QuoteCart(),
+            new Quotes(),
         );
     }
 
     /**
-     * Register rest api
+     * Register REST API routes.
      *
      * @return void
      */
     public function register_rest_api_routes() {
 
-        foreach ( $this->controllers as $rest_controller ) {
-            if ( method_exists( $rest_controller, 'register_routes' ) ) {
-                $rest_controller->register_routes();
+        foreach ( $this->container as $controller ) {
+            if ( method_exists( $controller, 'register_routes' ) ) {
+                $controller->register_routes();
             }
         }
-
     }
 }

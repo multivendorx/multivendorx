@@ -229,6 +229,14 @@ class Installer {
         // Update form settings.
         $free_form = array(
             array(
+                'id'          => 10,
+                'type'        => 'button',
+                'label'       => 'Submit',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'Submit',
+            ),
+            array(
                 'id'          => 1,
                 'type'        => 'text',
                 'label'       => 'Enter your name',
@@ -243,62 +251,6 @@ class Installer {
                 'placeholder' => '',
                 'disabled'    => false,
                 'name'        => 'email',
-            ),
-            array(
-                'id'          => 3,
-                'type'        => 'text',
-                'label'       => 'Phone',
-                'placeholder' => '',
-                'disabled'    => true,
-                'name'        => 'phone',
-            ),
-            array(
-                'id'          => 4,
-                'type'        => 'textarea',
-                'label'       => 'Address',
-                'placeholder' => '',
-                'disabled'    => true,
-                'name'        => 'address',
-            ),
-            array(
-                'id'          => 5,
-                'type'        => 'text',
-                'label'       => 'Subject',
-                'placeholder' => '',
-                'disabled'    => true,
-                'name'        => 'subject',
-            ),
-            array(
-                'id'          => 6,
-                'type'        => 'textarea',
-                'label'       => 'Comment',
-                'placeholder' => '',
-                'disabled'    => true,
-                'name'        => 'comment',
-            ),
-            array(
-                'id'          => 7,
-                'type'        => 'attachment',
-                'label'       => 'File Upload',
-                'placeholder' => '',
-                'disabled'    => true,
-                'name'        => 'fileupload',
-            ),
-            array(
-                'id'          => 8,
-                'type'        => 'filesize-limit',
-                'label'       => 'File Size Limit',
-                'placeholder' => '',
-                'disabled'    => true,
-                'name'        => 'filesize-limit',
-            ),
-            array(
-                'id'          => 9,
-                'type'        => 'captcha',
-                'label'       => 'Captcha',
-                'placeholder' => '',
-                'disabled'    => true,
-                'name'        => 'captcha',
             ),
         );
 

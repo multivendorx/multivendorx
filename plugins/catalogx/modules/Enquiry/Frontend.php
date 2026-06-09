@@ -70,7 +70,7 @@ class Frontend {
      */
     public function render_product_enquiry_button( $product_obj ) {
         global $product;
-        $product_obj = is_int( $product_obj ) ? wc_get_product( $product_obj ) : ( $product_obj ? $product_obj : $product );
+        $product_obj = is_int( $product_obj ) ? wc_get_product( $product_obj ) : ( $product_obj ? $product_obj : $product );        
         if ( empty( $product_obj ) ) {
             return;
         }
@@ -85,10 +85,9 @@ class Frontend {
         <div id="catalogx-enquiry">
         <?php
 		$show_button = true;
-
         if ( $this->enable_out_of_stock ) {
             $show_button = ! $product_obj->managing_stock() && ! $product_obj->is_in_stock();
-        }
+        }       
 		if ( $show_button ) {
             ?>
                 <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button"><?php echo esc_html( $button_text ); ?></button>
@@ -122,6 +121,7 @@ class Frontend {
             FrontendScripts::enqueue_style( 'catalogx-enquiry-form-style' );
             FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
             FrontendScripts::enqueue_script( 'catalogx-enquiry-frontend-script' );
+            FrontendScripts::localize_scripts( 'catalogx-enquiry-frontend-script' );
             FrontendScripts::enqueue_script( 'catalogx-enquiry-form-script' );
             FrontendScripts::localize_scripts( 'catalogx-enquiry-form-script' );
 

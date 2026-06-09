@@ -6,7 +6,7 @@ jQuery( document ).ready( function ( $ ) {
         $enquiryBtn.hide();
     }
     $( 'form.variations_form' ).on(
-        'show_variation',
+        'found_variation',
         function ( event, variation ) {
             $enquiryBtn.show();
         }
