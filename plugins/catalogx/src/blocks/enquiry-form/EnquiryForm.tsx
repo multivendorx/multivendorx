@@ -52,6 +52,13 @@ const EnquiryForm = () => {
             });
     };
 
+    const handleClose = () => {
+        const modal = document.getElementById('catalogx-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    };
+
     return (
         <>
             {showToast && (
@@ -69,6 +76,7 @@ const EnquiryForm = () => {
                     }}
                     onSubmit={onSubmit}
                     closeBtn={true}
+                    onClose={handleClose}
                 />
             ) : (
                 <FormViewer
@@ -77,6 +85,7 @@ const EnquiryForm = () => {
                     }}
                     onSubmit={onSubmit}
                     closeBtn={true}
+                    onClose={handleClose}
                 />
             )}
             <div>{enquiryFormData.content_after_form}</div>

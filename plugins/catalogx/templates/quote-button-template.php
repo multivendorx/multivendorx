@@ -24,7 +24,7 @@ $position                 = false !== $position ? $position : 0;
         class="catalogx-quote-add-item-product-response-<?php echo esc_attr( $args['product_id'] ); ?>"
         style="display:none" data-product_id="<?php echo esc_attr( $args['product_id'] ); ?>"></div>
         <div
-            class="catalogx-quote-add=-item-browse-list-<?php echo esc_attr( $args['product_id'] ); ?> quote_add_item_browse_message  <?php echo esc_attr( ( ! $args['exists'] ) ? 'hide' : 'show' ); ?> hide-when-removed"
+            class="catalogx-quote-add-item-browse-list-<?php echo esc_attr( $args['product_id'] ); ?> quote_add_item_browse_message  <?php echo esc_attr( ( ! $args['exists'] ) ? 'hide' : 'show' ); ?> hide-when-removed"
             style="display:<?php echo esc_attr( ( ! $args['exists'] ) ? 'none' : 'block' ); ?>"
             data-product_id="<?php echo esc_attr( $args['product_id'] ); ?>">
             <a href="<?php echo esc_url( $args['rqa_url'] ); ?>" style = "<?php echo esc_attr( $args['btn_css'] ); ?>" class="wp-block-button__link button quote-btn"><?php echo esc_html( $args['label_browse'] ); ?></a></div>

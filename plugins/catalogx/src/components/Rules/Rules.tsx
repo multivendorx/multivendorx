@@ -171,6 +171,8 @@ const Rules = () => {
                         onClick: () => {
                             if (tableProps?.setAddingNewRule) {
                                 tableProps.setAddingNewRule(true);
+                            }else{
+                                setopenPopup(true)
                             }
                         },
                     },
