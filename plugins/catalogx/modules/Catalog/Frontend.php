@@ -28,7 +28,7 @@ class Frontend {
         add_action( 'template_redirect', array( $this, 'catalogx_redirect_page' ), 10 );
 
         // Display single product page description box.
-        add_action( 'display_shop_page_description_box', array( self::class, 'show_description_box' ) );
+        add_action( 'woocommerce_product_meta_start', array( self::class, 'show_description_box' ) );
 
         // Hooks for exclusions.
         add_filter( 'woocommerce_get_price_html', array( $this, 'exclude_price_for_selected_product' ), 10, 2 );

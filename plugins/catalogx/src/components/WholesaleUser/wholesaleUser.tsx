@@ -4,6 +4,7 @@ import '../common.scss';
 
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import { dummyWholesalecustomer } from './WholesaleUserUtil';
 
 import {
 	Column,
@@ -16,12 +17,10 @@ import {
 
 import ShowProPopup from '../Popup/Popup';
 
-import { dummyWholesaleUsers } from './WholesaleUser';
-
 export interface WholesaleUserRow {
 	id?: number;
-	user?: string;
-	user_email?: string;
+	customer?: string;
+	email?: string;
 	status?: string;
 	date?: string;
 	action?: string;
@@ -29,106 +28,71 @@ export interface WholesaleUserRow {
 
 const WholesaleUser = () => {
 	const [openPopup, setopenPopup] = useState(false);
+	let tableProps: any = {};
 
 	const headers = {
 		user: {
 			label: __('User', 'catalogx'),
-
 			render: (row: WholesaleUserRow) => (
 				<InfoItem
-					title={row.user}
+					title={row.customer}
+					titleLink={row.customer_url}
 					descriptions={[
 						{
 							label: __('Email', 'catalogx'),
-							value: row.user_email || '—',
+							value: row.email || '—',
 						},
 					]}
 					avatar={{
+						image: row.customer_img_url,
 						iconClass: 'person',
 					}}
 				/>
 			),
 		},
-		status: { label: __('Status', 'catalogx'), type: 'status', statusClass: (row: WholesaleUserRow) => `${row.status}` },
-		date: { label: __('Date', 'catalogx'), type: 'date' },
-		action: {
-			type: 'action',
-
-			label: __('Action', 'catalogx'),
-
-			actions: [
-				{
-					label: __('View User', 'catalogx'),
-
-					icon: 'eye',
-
-					onClick: () => {
-						setopenPopup(true);
-					},
-				},
-
-				{
-					label: __('Approve User', 'catalogx'),
-
-					icon: 'check',
-
-					onClick: () => {
-						setopenPopup(true);
-					},
-				},
-			],
+		status: {
+			label: __('Status', 'catalogx'),
+			type: 'status'
+		},
+		date: {
+			label: __('Date', 'catalogx'),
+			type: 'date'
 		},
 	};
+
 
 	const defaultTableProps = {
 		headers,
-
-		rows: dummyWholesaleUsers,
-
-		totalRows:
-			dummyWholesaleUsers.length,
-		filters:[
-				{
-					key: 'date_range',
-					label: __('Date Range', 'catalogx'),
-					type: 'date',
-				},
-			],
-		search: {
-			placeholder: __(
-				'Search wholesale users...',
-				'catalogx'
-			),
-		},
+        format: appLocalizer.date_format,
+		rows: dummyWholesalecustomer,
+		totalRows: dummyWholesalecustomer.length,
 	};
 
-	const RenderedTableCard = applyFilters(
-			'catalogx_wholesale_user_table_component',
-			TableCard
-		);
+	tableProps = applyFilters(
+		'catalogx_wholesale_user_table_component',
+		defaultTableProps
+	);
 
 	const handleTableWrapperClick = () => {
 		if (!appLocalizer.khali_dabba) {
 			setopenPopup(true);
 		}
 	};
-	
+
+
 	return (
-		<>
+		<div>
 			{openPopup && (
 				<PopupUI
 					position="lightbox"
 					open={openPopup}
-					onClose={() =>
-						setopenPopup(false)
-					}
+					onClose={() => setopenPopup(false)}
 					width={31.25}
 					height="auto"
 				>
 					<ShowProPopup />
 				</PopupUI>
 			)}
-
 			<NavigatorHeader
 				headerIcon="wholesale"
 				headerDescription={__(
@@ -140,14 +104,15 @@ const WholesaleUser = () => {
 					'catalogx'
 				)}
 			/>
+
 			<Container general>
 				<Column>
-				<div onClick={handleTableWrapperClick}>
-					<RenderedTableCard {...defaultTableProps} />
-				</div>
+					<div onClick={handleTableWrapperClick}>
+						<TableCard {...tableProps} />
+					</div>
 				</Column>
 			</Container>
-		</>
+		</div>
 	);
 };
 

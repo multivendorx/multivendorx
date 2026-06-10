@@ -3,5 +3,6 @@
     "name": "catalogx/enquiry-form",
     "icon": "",
     "title": "Enquiry Form",
-    "editorScript": "file:./index.js"
+    "editorScript": "file:./index.js",
+    "script": "file:./index.js"
 }

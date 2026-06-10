@@ -189,14 +189,23 @@ class Installer {
      */
     public function set_default_settings() {
         // Update shopping gurnal.
-        $all_settings = array(
+        $enquiry_settings = array(
             'is_disable_popup'                   => 'popup',
-            'enable_cart_checkout'               => array(),
-            'set_expiry_time'                    => 'Never',
             'is_enable_multiple_product_enquiry' => array( 'is_enable_multiple_product_enquiry' ),
         );
 
+        $quote_settings = array(
+            'set_expiry_time'                    => 'Never',
+        );
+
+        $all_settings = array(
+            'enable_cart_checkout'               => array(),
+        );
+
         update_option( Utill::CATALOGX_SETTINGS['shopping'], $all_settings );
+        update_option( Utill::CATALOGX_SETTINGS['enquiry'], $enquiry_settings );
+        update_option( Utill::CATALOGX_SETTINGS['quotation'], $quote_settings );
+
 
         $email_settings = array(
             'additional_alert_email' => CatalogX()->admin_email,
@@ -205,15 +214,28 @@ class Installer {
         update_option( 'catalogx_enquiry_email_temp_settings', $email_settings );
 
         // Update pages settings.
-        $page_settings = array(
-            'set_enquiry_cart_page'       => intval( get_option( 'catalogx_enquiry_cart_page' ) ),
-            'set_request_quote_page'      => intval( get_option( 'catalogx_request_quote_page' ) ),
-            'set_wholesale_products_page' => intval( get_option( 'wholesale_products_page' ) ),
+        $page_settings = array_filter(
+            array(
+                'set_enquiry_cart_page'       => get_option( 'catalogx_enquiry_cart_page', false ),
+                'set_request_quote_page'      => get_option( 'catalogx_request_quote_page', false ),
+                'set_wholesale_products_page' => get_option( 'wholesale_products_page', false ),
+            ),
+            static fn( $value ) => false !== $value
         );
+
+        $page_settings = array_map( 'intval', $page_settings );
         update_option( Utill::CATALOGX_SETTINGS['pages'], $page_settings );
 
         // Update form settings.
         $free_form = array(
+            array(
+                'id'          => 10,
+                'type'        => 'button',
+                'label'       => 'Submit',
+                'placeholder' => '',
+                'disabled'    => false,
+                'name'        => 'Submit',
+            ),
             array(
                 'id'          => 1,
                 'type'        => 'text',
@@ -229,62 +251,6 @@ class Installer {
                 'placeholder' => '',
                 'disabled'    => false,
                 'name'        => 'email',
-            ),
-            array(
-                'id'          => 3,
-                'type'        => 'text',
-                'label'       => 'Phone',
-                'placeholder' => '',
-                'disabled'    => false,
-                'name'        => 'phone',
-            ),
-            array(
-                'id'          => 4,
-                'type'        => 'textarea',
-                'label'       => 'Address',
-                'placeholder' => '',
-                'disabled'    => false,
-                'name'        => 'address',
-            ),
-            array(
-                'id'          => 5,
-                'type'        => 'text',
-                'label'       => 'Subject',
-                'placeholder' => '',
-                'disabled'    => false,
-                'name'        => 'subject',
-            ),
-            array(
-                'id'          => 6,
-                'type'        => 'textarea',
-                'label'       => 'Comment',
-                'placeholder' => '',
-                'disabled'    => false,
-                'name'        => 'comment',
-            ),
-            array(
-                'id'          => 7,
-                'type'        => 'attachment',
-                'label'       => 'File Upload',
-                'placeholder' => '',
-                'disabled'    => false,
-                'name'        => 'fileupload',
-            ),
-            array(
-                'id'          => 8,
-                'type'        => 'filesize-limit',
-                'label'       => 'File Size Limit',
-                'placeholder' => '',
-                'disabled'    => false,
-                'name'        => 'filesize-limit',
-            ),
-            array(
-                'id'          => 9,
-                'type'        => 'captcha',
-                'label'       => 'Captcha',
-                'placeholder' => '',
-                'disabled'    => false,
-                'name'        => 'captcha',
             ),
         );
 
@@ -436,7 +402,7 @@ class Installer {
             }
         }
 
-        if ( version_compare( $previous_version, '6.0.7', '<' ) ) {
+        if ( version_compare( $previous_version, '6.0.9', '<' ) ) {
 
             /**
              * Form Settings Migration
