@@ -47,6 +47,7 @@ const TableCard: React.FC<TableCardProps> = ({
     onCellEdit,
     buttonActions,
     format,
+    onRowReorder,
     currency,
     ...props
 }) => {
@@ -365,6 +366,7 @@ const TableCard: React.FC<TableCardProps> = ({
                     ) => void)
                 }
                 ids={ids}
+                onRowReorder={onRowReorder}
                 selectedIds={selectedIds}
                 onSelectRow={handleSelectRow}
                 onSelectAll={handleSelectAll}

@@ -28,7 +28,7 @@ class Frontend {
         add_action( 'template_redirect', array( $this, 'catalogx_redirect_page' ), 10 );
 
         // Display single product page description box.
-        add_action( 'display_shop_page_description_box', array( self::class, 'show_description_box' ) );
+        add_action( 'woocommerce_product_meta_start', array( self::class, 'show_description_box' ) );
 
         // Hooks for exclusions.
         add_filter( 'woocommerce_get_price_html', array( $this, 'exclude_price_for_selected_product' ), 10, 2 );
@@ -37,8 +37,6 @@ class Frontend {
 
         add_action( 'woocommerce_single_product_summary', array( $this, 'remove_add_to_cart_on_single_product_page' ), 5 );
 
-        // register description box.
-        $this->register_description_box();
     }
 
     /**
@@ -151,49 +149,4 @@ class Frontend {
         }
     }
 
-    /**
-     * Register description box for display in shop page
-     *
-     * @return void
-     */
-    public function register_description_box() {
-
-        // Get shop page button settings.
-        $position_settings = CatalogX()->setting->get_setting( 'shop_page_position_setting', array() );
-
-        // Priority of collision position.
-        $position_priority = 1;
-
-        // Position after a particular section.
-        $position_after = 'sku_category';
-
-        // If position settings exists.
-        if ( $position_settings ) {
-            // Get the collision position priority.
-            $position_priority = array_search( 'additional_input', array_keys( $position_settings ), true ) + 1;
-
-            // Get the position after.
-            $position_after = $position_settings['additional_input'];
-        }
-
-        $position_map = array(
-            'sku_category'        => array( 'woocommerce_product_meta_end', 99 ),
-            'add_to_cart'         => array( 'woocommerce_product_meta_start', 99 ),
-            'product_description' => array( 'woocommerce_product_meta_start', 99 ),
-            'price_section'       => array( 'woocommerce_single_product_summary', 10 ),
-            'default'             => array( 'woocommerce_single_product_summary', 6 ),
-        );
-        $hook         = $position_map[ $position_after ][0] ?? $position_map['default'][0];
-        $priority     = $position_map[ $position_after ][1] + $position_priority;
-        add_action( $hook, array( self::class, 'display_description_box' ), $priority );
-    }
-
-    /**
-     * Display description box
-     *
-     * @return void
-     */
-    public static function display_description_box() {
-        do_action( 'display_shop_page_description_box' );
-    }
 }

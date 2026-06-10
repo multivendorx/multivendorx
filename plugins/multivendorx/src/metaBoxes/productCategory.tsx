@@ -249,7 +249,7 @@ const ProductCategorysection = ({ product, setProduct, setErrorMsg }) => {
 					checked={selectedCats.includes(category.id)}
 					onChange={() => toggleCategory(category.id)}
 				/>
-				{category.name}
+				<span className="category-name">{category.name}</span>
 
 				{category.children?.length > 0 && (
 					<ul>

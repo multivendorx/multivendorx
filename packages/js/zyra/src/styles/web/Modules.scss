@@ -1,37 +1,9 @@
 @use '../../global.scss' as *;
 
-.module-separator+.module-list-item {
-    clear: both;
-}
-
 .module-container {
-    // .tab-name {
-    //     margin-bottom: 1rem;
-
-    //     h2 {
-    //         font-size: 1.625rem;
-    //         line-height: normal;
-    //         font-weight: 500;
-    //     }
-    // }
-
     .module-option-row {
         display: flex;
         flex-wrap: wrap;
-
-        .module-separator {
-            width: 100%;
-            flex-basis: 100%;
-            margin: 2.5rem 0 1.25rem;
-            border-bottom: $border-light-small;
-
-            .separator-title {
-                font-size: 1.2rem;
-                font-weight: 600;
-                color: #333;
-                text-transform: uppercase;
-            }
-        }
 
         .module-list-item {
             box-sizing: border-box;
@@ -77,22 +49,6 @@
                         display: inline-block;
                     }
                 }
-
-                p {
-                    margin: 0; // for overwrite wordpress style
-                }
-
-                // .requires {
-                //     font-size: 0.85rem;
-                //     margin: 0.5rem 0;
-                //     display: flex;
-                //     gap: 0.5rem;
-                //     flex-wrap: wrap;
-
-                //     // div {
-                //     //     color: #000;
-                //     // }
-                // }
             }
 
             .footer-wrapper {
@@ -148,13 +104,16 @@
 
                 legend {
                     border-radius: $border-radius-small;
-                    color: #e35047;
+                    color: $theme-color;
+                    background: $theme-background-color;
                     margin-left: .25rem;
-                    padding: .188rem .375rem;
+                    padding: .25rem .375rem;
                     text-align: left;
+                    line-height: 1;
 
-                    &.free {
-                        color: #000;
+                    &:has(i){
+                        background: #e350472e;
+                        color: #e35047;
                     }
                 }
             }

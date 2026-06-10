@@ -36,9 +36,7 @@ class Module {
 
         // Init helper classes.
         $this->register_services();
-
-        do_action( 'load_premium_quote_module' );
-
+        
         if ( CatalogX()->modules->is_active( 'quote' ) ) {
             $this->create_page_for_quote();
         }
@@ -51,10 +49,10 @@ class Module {
      * @return void
      */
     public function register_services() {
-        $this->services['admin']    = new Admin();
-        $this->services['frontend'] = new Frontend();
-        $this->services['rest']     = new Rest();
-        $this->services['util']     = new Util();
+        $this->services['admin']              = new Admin();
+        $this->services['frontend']           = new Frontend();
+        $this->services['rest']               = new Rest();
+        $this->services['util']               = new Util();
     }
 
     /**

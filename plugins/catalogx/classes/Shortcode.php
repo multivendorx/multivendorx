@@ -33,15 +33,13 @@ class Shortcode {
      * @return void
      */
     public function frontend_scripts() {
-            wp_deregister_style( 'wc-blocks-style' );
-
+        wp_deregister_style( 'wc-blocks-style' );
+        if ( CatalogX()->modules->is_active( 'quote' ) ) {
             FrontendScripts::enqueue_frontend_assets();
             FrontendScripts::enqueue_script( 'catalogx-quote-cart-view-script' );
             FrontendScripts::localize_scripts( 'catalogx-quote-cart-view-script' );
-
+        }
         FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
-        FrontendScripts::enqueue_script( 'catalogx-quote-cart-view-script' );
-        FrontendScripts::enqueue_script( 'catalogx-setup-wizard-view-script' );
     }
 
     /**

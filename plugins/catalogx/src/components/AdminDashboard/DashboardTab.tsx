@@ -63,7 +63,7 @@ const DashboardTab: React.FC<object> = () => {
 				const statusMap: Record<string, boolean> = {};
 
 				[
-					'woocommerce-catalog-enquiry',
+					'dc-woocommerce-multi-vendor',
 					'woocommerce-product-stock-alert',
 				].forEach((slug) => {
 					statusMap[slug] = pluginList.some(
@@ -325,14 +325,14 @@ const DashboardTab: React.FC<object> = () => {
 			<Column grid={4}>
 				<Card title={__('Extend your website', 'catalogx')}>
 					<Column row>
-						{pluginStatus['woocommerce-catalog-enquiry'] ? (
+						{pluginStatus['dc-woocommerce-multi-vendor'] ? (
 							<ItemListUI
 								className="mini-card"
 								background
 								items={[
 									{
 										title: __(
-											'CatalogX Pro',
+											'MultiVendorX Pro',
 											'catalogx'
 										),
 										desc: __(
@@ -347,7 +347,7 @@ const DashboardTab: React.FC<object> = () => {
 													{__('Pro', 'catalogx')}
 												</span>
 												<a
-													href="https://catalogx.com/pricing/"
+													href="https://multivendorx.com/pricing/"
 													target="_blank"
 													rel="noopener noreferrer"
 												>
@@ -367,7 +367,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('CatalogX', 'catalogx'),
+										title: __('MultiVendorX', 'catalogx'),
 										desc: __(
 											'Turn your store into a product catalog with enquiry-based sales',
 											'catalogx'
@@ -384,7 +384,7 @@ const DashboardTab: React.FC<object> = () => {
 														e.preventDefault();
 														if (!installing) {
 															installOrActivatePlugin(
-																'woocommerce-catalog-enquiry'
+																'dc-woocommerce-multi-vendor'
 															);
 														}
 													}}
@@ -395,13 +395,13 @@ const DashboardTab: React.FC<object> = () => {
 																: 'auto',
 														opacity:
 															installing ===
-															'woocommerce-catalog-enquiry'
+															'dc-woocommerce-multi-vendor'
 																? 0.6
 																: 1,
 													}}
 												>
 													{installing ===
-													'woocommerce-catalog-enquiry'
+													'dc-woocommerce-multi-vendor'
 														? __(
 																'Installing...',
 																'catalogx'

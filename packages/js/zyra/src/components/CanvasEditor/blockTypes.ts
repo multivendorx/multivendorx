@@ -76,6 +76,7 @@ export interface BlockConfig {
     fixedName?: string;
     placeholder?: string;
     options?: Option[];
+    defaultField?: boolean;
 }
 
 // Helper Types

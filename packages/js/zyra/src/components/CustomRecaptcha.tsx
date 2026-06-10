@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
-import { __ } from '@wordpress/i18n';
 
-const Recaptcha = ( props: any ) => {
-    const { captchaValid } = props;
+const CustomRecaptcha = ( props: any ) => {
+    const { captchaValid, submitted } = props;
     const [ securityCode, setSecurityCode ] = useState( '' );
     const [ userInput, setUserInput ] = useState( '' );
     const [ isCaptchaValid, setIsCaptchaValid ] = useState( true );
 
     useEffect( () => {
-        // Generate a random 6-digit code
+        // Generate a cryptographically secure random 6-digit code
         const generateCode = () => {
-            return Math.floor( 100000 + Math.random() * 900000 ).toString();
+            const randomValue = window.crypto.getRandomValues( new Uint32Array( 1 ) )[ 0 ];
+            return ( 100000 + ( randomValue % 900000 ) ).toString();
         };
 
         setSecurityCode( generateCode() );
@@ -39,24 +39,21 @@ const Recaptcha = ( props: any ) => {
                 placeholder="Enter security code"
             />
             <p>
-                { __( 'Your security code is:', 'catalogx' ) } { securityCode }
+                { 'Your security code is:' } { securityCode }
             </p>
 
             { ! isCaptchaValid && (
                 <p style={ { color: 'red' } }>
-                    { __(
-                        'Invalid security code, please try again.',
-                        'catalogx'
-                    ) }
+                    { 'Invalid security code, please try again.' }
                 </p>
             ) }
-            { isCaptchaValid && ! userInput && (
+            { submitted && ! userInput && (
                 <p style={ { color: 'red' } }>
-                    { __( 'Recaptcha is required.', 'catalogx' ) }
+                    { 'Recaptcha is required.' }
                 </p>
             ) }
         </>
     );
 };
 
-export default Recaptcha;
+export default CustomRecaptcha;

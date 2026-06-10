@@ -3,7 +3,10 @@
     width: 100%;
     margin-top: 0.5rem;
     top: 100%;
-
+    .woocommerce-form {
+        position: relative;
+        cursor: pointer;
+    }
     &.popup-enable {
         margin: 0 0;
         position: fixed;
@@ -20,20 +23,14 @@
         gap: 1rem;
 
         .woocommerce-form {
-            width: 34.375rem;
-            max-height: 40.625rem;
-            overflow-y: scroll;
-            height: auto;
+            overflow-y: auto;
             background-color: #fff;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            margin: 1rem;
-            position: relative;
-
-            .catalogx-modal-close-btn {
-                display: flex;
-            }
         }
+    }
+    .close-icon {
+        position: absolute;
+        right: 1rem;
+        color: #cd2020;
     }
 }
 

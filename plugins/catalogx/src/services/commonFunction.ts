@@ -267,7 +267,7 @@ export const getUrl = (
 	if (!id && !slug) {
 		return '#';
 	}
-	const base = appLocalizer.site_url.replace(/\/$/, '');
+	const base = appLocalizer.admin_url.replace(/\/$/, '');
 
 	if (mode === 'edit') {
 		switch (type) {

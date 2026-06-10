@@ -4,8 +4,7 @@ import { FormViewer } from 'zyra';
 import axios from 'axios';
 
 const EnquiryForm = () => {
-    const [loading, setLoading] = useState(false);
-    const [toast, setToast] = useState(false);
+    const [showToast, setshowToast] = useState(false);
     const [responseMessage, setResponseMessage] = useState('');
     const formData = enquiryFormData;
     const proActive = formData.khali_dabba;
@@ -13,8 +12,6 @@ const EnquiryForm = () => {
     const submitUrl = `${enquiryFormData.apiUrl}/catalogx/v1/enquiries`;
 
     const onSubmit = (submittedFormData: any) => {
-        setLoading(true);
-
         // Convert Zyra form object into FormData
         const formData = new FormData();
 
@@ -44,24 +41,27 @@ const EnquiryForm = () => {
             })
             .then((response) => {
                 setResponseMessage(response.data.msg);
-                setLoading(false);
-                setToast(true);
+                setshowToast(true);
                 if (response.data.redirect_link !== '') {
                     window.location.href = response.data.redirect_link;
                 }
                 setTimeout(() => {
-                    setToast(false);
+                    setshowToast(false);
                     window.location.reload();
                 }, 3000);
             });
     };
-    console.log('formData', formData);
-    console.log('proActive', proActive);
 
+    const handleClose = () => {
+        const modal = document.getElementById('catalogx-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    };
 
     return (
         <>
-            {toast && (
+            {showToast && (
                 <div className="woocommerce-notices-wrapper">
                     <ul className="woocommerce-message" role="alert">
                         <li>{responseMessage}</li>
@@ -75,6 +75,8 @@ const EnquiryForm = () => {
                         formfieldlist: formData.settings_pro,
                     }}
                     onSubmit={onSubmit}
+                    closeBtn={true}
+                    onClose={handleClose}
                 />
             ) : (
                 <FormViewer
@@ -82,6 +84,8 @@ const EnquiryForm = () => {
                         formfieldlist: formData.settings_free,
                     }}
                     onSubmit={onSubmit}
+                    closeBtn={true}
+                    onClose={handleClose}
                 />
             )}
             <div>{enquiryFormData.content_after_form}</div>

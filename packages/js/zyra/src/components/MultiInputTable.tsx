@@ -138,10 +138,18 @@ export const TableCell: React.FC<TableCellProps> = ({
             field={fieldConfig}
             value={value}
             modules={modules}
-            // appLocalizer={appLocalizer}
             onBlocked={onBlocked}
             canAccess={!disabled}
             onChange={(newValue: SettingValue) => {
+                if (
+                    isBlocked(
+                        fieldConfig,
+                        modules,
+                        onBlocked
+                    )
+                ) {
+                    return;
+                }
                 onChange(fieldKey, newValue);
             }}
         />

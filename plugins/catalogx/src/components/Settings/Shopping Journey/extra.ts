@@ -42,14 +42,5 @@ export default {
             ],
             proSetting: true,
         },
-        {
-            key: 'custom_css_product_page',
-            type: 'textarea',
-            desc: __(
-                'Put your custom css here, to customize the enquiry form.',
-                'catalogx'
-            ),
-            label: __( 'Addional CSS', 'catalogx' ),
-        },
     ],
 };
