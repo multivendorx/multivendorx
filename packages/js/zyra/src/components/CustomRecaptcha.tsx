@@ -7,9 +7,10 @@ const CustomRecaptcha = ( props: any ) => {
     const [ isCaptchaValid, setIsCaptchaValid ] = useState( true );
 
     useEffect( () => {
-        // Generate a random 6-digit code
+        // Generate a cryptographically secure random 6-digit code
         const generateCode = () => {
-            return Math.floor( 100000 + Math.random() * 900000 ).toString();
+            const randomValue = window.crypto.getRandomValues( new Uint32Array( 1 ) )[ 0 ];
+            return ( 100000 + ( randomValue % 900000 ) ).toString();
         };
 
         setSecurityCode( generateCode() );

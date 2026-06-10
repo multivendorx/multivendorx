@@ -55,7 +55,7 @@ const EnquiryForm = () => {
     const handleClose = () => {
         const modal = document.getElementById('catalogx-modal');
         if (modal) {
-            modal.remove();
+            modal.style.display = 'none';
         }
     };
 
