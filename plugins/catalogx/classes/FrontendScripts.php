@@ -155,6 +155,11 @@ class FrontendScripts {
                     'deps'    => array(),
                     'version' => $version,
                 ),
+                'catalogx-index-style' => array(
+					'src' => self::get_asset_path() . 'styles/index.css',
+                    'deps'    => array(),
+                    'version' => $version,
+                ),
                 'catalogx-enquiry-form-style' => array(
                     'src'     => self::get_asset_path() . 'styles/block/enquiry-form/index.css',
                     'deps'    => array(),
