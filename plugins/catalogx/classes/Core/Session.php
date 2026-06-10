@@ -49,7 +49,7 @@ class Session extends \WC_Session {
      *
      * @var bool
      */
-    private $has_cookie = false;
+    private $is_cookie_set = false;
 
     /**
      * Constructor for the session class.
@@ -57,11 +57,12 @@ class Session extends \WC_Session {
     public function __construct() {
         if ( ! defined( 'COOKIEHASH' ) ) {
             $siteurl = get_site_option( 'siteurl' );
-            if ( $siteurl ) {
-                define( 'COOKIEHASH', md5( $siteurl ) );
-            } else {
-				define( 'COOKIEHASH', md5( wp_guess_url() ) );
-            }
+            define(
+                'COOKIEHASH',
+                md5(
+                    $siteurl ?: wp_guess_url()
+                )
+            );
         }
 
         $this->cookie_name = 'catalogx_session_' . COOKIEHASH;
@@ -71,7 +72,7 @@ class Session extends \WC_Session {
             $this->_customer_id       = $session_cookie[0];
             $this->session_expiration = $session_cookie[1];
             $this->session_expiring   = $session_cookie[2];
-            $this->has_cookie         = true;
+            $this->is_cookie_set         = true;
 
             // Update session if its close to expiring.
             if ( time() > $this->session_expiring ) {
@@ -89,7 +90,7 @@ class Session extends \WC_Session {
             $this->_customer_id = $this->generate_customer_id();
         }
 
-        $this->_data = $this->get_session_values();
+        $this->_data = $this->get_customer_session();
 
         // Actions.
         add_action( 'woocommerce_cleanup_sessions', array( $this, 'cleanup_expired_sessions' ), 10 );
@@ -113,10 +114,10 @@ class Session extends \WC_Session {
     public function set_customer_session_cookie( $set ) {
         if ( $set ) {
             // Set/renew our cookie.
-            $to_hash          = $this->_customer_id . '|' . $this->session_expiration;
-            $cookie_hash      = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
-            $cookie_value     = $this->_customer_id . '||' . $this->session_expiration . '||' . $this->session_expiring . '||' . $cookie_hash;
-            $this->has_cookie = true;
+            $cookie_signature          = $this->_customer_id . '|' . $this->session_expiration;
+            $cookie_hash               = hash_hmac( 'md5', $cookie_signature, wp_hash( $cookie_signature ) );
+            $cookie_value              = $this->_customer_id . '||' . $this->session_expiration . '||' . $this->session_expiring . '||' . $cookie_hash;
+            $this->is_cookie_set          = true;
 
             // Set the cookie.
             wc_setcookie( $this->cookie_name, $cookie_value, $this->session_expiration, apply_filters( 'catalogx_session_use_secure_cookie', false ) );
@@ -129,7 +130,7 @@ class Session extends \WC_Session {
      * @return bool
      */
     public function has_session() {
-        return isset( $_COOKIE[ $this->cookie_name ] ) || $this->has_cookie || is_user_logged_in();
+        return isset( $_COOKIE[ $this->cookie_name ] ) || $this->is_cookie_set || is_user_logged_in();
     }
 
     /**
@@ -169,8 +170,8 @@ class Session extends \WC_Session {
         list( $customer_id, $session_expiration, $session_expiring, $cookie_hash ) = explode( '||', $_COOKIE[ $this->cookie_name ] );
 
         // Validate hash.
-        $to_hash = $customer_id . '|' . $session_expiration;
-        $hash    = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
+        $cookie_signature = $customer_id . '|' . $session_expiration;
+        $hash    = hash_hmac( 'md5', $cookie_signature, wp_hash( $cookie_signature ) );
 
         if ( empty( $cookie_hash ) || ! hash_equals( $hash, $cookie_hash ) ) {
             return false;
@@ -184,7 +185,7 @@ class Session extends \WC_Session {
      *
      * @return array
      */
-    public function get_session_values() {
+    public function get_customer_session() {
         return $this->has_session() ? (array) $this->get_session( $this->_customer_id, array() ) : array();
     }
 
@@ -243,16 +244,16 @@ class Session extends \WC_Session {
 		}
 
                 $expired_sessions_chunked = array_chunk( $expired_sessions, 100 );
-		foreach ( $expired_sessions_chunked as $session_option_chunk ) {
+		foreach ( $expired_sessions_chunked as $session_option_batch ) {
 			if ( wp_using_ext_object_cache() ) {
 				// delete from object cache first, to avoid cached but deleted options.
-				foreach ( $session_option_chunk as $option_name ) {
+				foreach ( $session_option_batch as $option_name ) {
 					wp_cache_delete( $option_name, 'options' );
 				}
 			}
 
 			// delete from options table.
-			$option_names = implode( "','", $session_option_chunk );
+			$option_names = implode( "','", $session_option_batch );
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$wpdb->query( "DELETE FROM $wpdb->options WHERE option_name IN ('$option_names')" );
 		}
@@ -262,7 +263,6 @@ class Session extends \WC_Session {
      * Returns the session.
      *
      * @param string $customer_id The unique identifier for the customer.
-     * @param mixed  $default The default value to return if no session is found.
      * @return string|array
      */
     public function get_session( $customer_id ) {
