@@ -409,12 +409,6 @@
         justify-content: flex-start;
         gap: 0.5rem;
 
-        h1 {
-          font-size: 1.225rem;
-          line-height: 1.2;
-          font-weight: 500;
-        }
-
         .total-message {
           font-size: 0.813rem;
           color: $color-active;
@@ -563,47 +557,13 @@
           background: #f8f8f8;
           position: relative;
 
-          &.active{
+          &.active {
             border-color: $theme-color;
             box-shadow: inset 0 0 0 0.063rem $theme-color;
           }
 
           .count {
             visibility: hidden;
-          }
-
-          &.active:nth-child(3),
-          &.active:nth-child(4),
-          &.unread {
-            &::before {
-              content: "";
-              background-color: $theme-color;
-              width: 0.125rem;
-              position: absolute;
-              top: 0;
-              bottom: 0;
-              left: 0;
-            }
-
-            .date {
-              right: 1.5rem;
-            }
-
-            .count {
-              position: absolute;
-              right: 0;
-              top: 0;
-              visibility: visible;
-              width: 1.313rem;
-              height: 1.313rem;
-              background: $theme-color;
-              color: #fff;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              line-height: normal;
-              border-radius: 50%;
-            }
           }
 
           &:hover {
@@ -644,28 +604,9 @@
 
             .name {
               font-size: 1.063rem;
-              font-weight: 400;
+              font-weight: 500;
               padding-bottom: 0.313rem;
-            }
-
-            .chat-meta {
-              margin-right: 0.5rem;
-              text-align: left;
-              overflow: hidden;
-              width: 80%;
-
-              p {
-                overflow: hidden;
-                margin: 0.063rem 0;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                font-size: 0.75rem;
-
-                &.enquery-id {
-                  font-weight: 500;
-                  font-size: 1rem;
-                }
-              }
+              color: $text-color;
             }
 
             .date {
@@ -673,6 +614,38 @@
               top: 0;
               right: 0;
               font-size: 0.813rem;
+            }
+          }
+
+          &.unread {
+            &::before {
+              content: "";
+              background-color: $theme-color;
+              width: 0.125rem;
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              left: 0;
+            }
+
+            .date {
+              right: 1.5rem;
+            }
+
+            .count {
+              position: absolute;
+              right: 0;
+              top: -0.188rem;
+              visibility: visible;
+              width: 1.313rem;
+              height: 1.313rem;
+              background: #6bbf8f;
+              color: #fff;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              line-height: normal;
+              border-radius: 50%;
             }
           }
         }
@@ -718,7 +691,7 @@
 
         .chat-name {
           font-size: 1.313rem;
-          font-weight: 500;
+          font-weight: 600;
           line-height: 1;
         }
 
@@ -930,21 +903,8 @@
         .chat-time {
           font-size: 0.75rem;
           position: relative;
-          margin-left: 1rem;
-
-          &::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: -0.625rem;
-            transform: translateY(-50%);
-            width: 0.25rem;
-            height: 0.25rem;
-            background-color: #000000ad;
-            border-radius: 50%;
-          }
+          margin-left: 0.5rem;
         }
-
       }
 
       .message-text {
@@ -1229,95 +1189,6 @@
   }
 }
 
-.product-item {
-  padding: 0.5rem;
-  border-radius: $border-radius-small;
-  background-color: #f0f0f1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.25rem;
-
-  .item-meta-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.5rem;
-
-    .product-img {
-      width: 2.5rem;
-      height: 2.5rem;
-      border-radius: $border-radius-small;
-      box-shadow: 0 0 1rem rgba($color: #000000, $alpha: 0.125);
-      overflow: hidden;
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-      }
-    }
-
-    .item-meta-data {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      flex-direction: column;
-      gap: 0.125rem;
-
-      .product-name {
-        font-size: 0.875rem;
-        font-weight: 500;
-      }
-
-      .product-qty {
-        font-size: 0.75rem;
-      }
-    }
-  }
-
-
-  .product-price {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .instock {
-      color: #7ad03a;
-    }
-
-    .outofstock {
-      color: #a44;
-    }
-
-    .onbackorder {
-      color: #eaa600;
-    }
-
-    .product-delete-btn {
-      cursor: pointer;
-      width: 1.563rem;
-      height: 1.563rem;
-      border-radius: $border-radius-small;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: 0.625rem;
-      transition: all 0.3s linear;
-
-      &:hover {
-        background-color: #cecece;
-      }
-    }
-
-    p {
-      font-weight: 700;
-      font-size: 0.75rem;
-    }
-  }
-}
-
 .enquiry-control-btn {
   position: absolute;
   right: 0;
@@ -1334,3 +1205,42 @@
     border-radius: 0 !important;
   }
 }
+
+// product list popup start
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.313rem 0;
+  align-items: center;
+  position: relative;
+
+  .product-details {
+    display: flex;
+    gap: 0.5rem;
+
+    img {
+      width: 3rem;
+      height: auto;
+    }
+  }
+
+  .product-name {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .product-qty {
+    display: flex;
+    gap: 0.313rem;
+  }
+  .product-price{
+    .admin-badge{
+      margin-right: 2rem;
+    }
+    .close-btn{
+      right: 0;
+    }
+  }
+}
+
+// product list popup end

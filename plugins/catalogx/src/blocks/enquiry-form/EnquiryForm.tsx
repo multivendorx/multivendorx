@@ -75,7 +75,6 @@ const EnquiryForm = () => {
                         formfieldlist: formData.settings_pro,
                     }}
                     onSubmit={onSubmit}
-                    closeBtn={true}
                     onClose={handleClose}
                 />
             ) : (
@@ -84,7 +83,6 @@ const EnquiryForm = () => {
                         formfieldlist: formData.settings_free,
                     }}
                     onSubmit={onSubmit}
-                    closeBtn={true}
                     onClose={handleClose}
                 />
             )}
