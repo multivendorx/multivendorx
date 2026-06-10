@@ -201,19 +201,17 @@ class Rest {
                         'user_enquiry_fields' => $additional_fields,
                     )
                 );
-                $settings     = CatalogX()->setting;
 
-                $attachments = apply_filters( 'catalogx_set_enquiry_pdf_and_attachments', array(), $enquiry_id, $enquiry_data );
+                // $attachments = apply_filters( 'catalogx_set_enquiry_pdf_and_attachments', array(), $enquiry_id, $enquiry_data );
+                // $additional_email = CatalogX()->setting->get_setting( 'additional_alert_email' );
+                // $email_handler    = WC()->mailer()->emails['EnquiryEmail'];
 
-                $additional_email = $settings->get_setting( 'additional_alert_email' );
-                $email_handler    = WC()->mailer()->emails['EnquiryEmail'];
-
-                $email_handler->trigger( $additional_email, $enquiry_data, $attachments );
+                // $email_handler->trigger( $additional_email, $enquiry_data, $attachments );
 
                 // Check if page redirection after enquiry is enabled.
 
-                $is_redirect_enabled = $settings->get_setting( 'is_page_redirect' );
-                $redirect_page_id    = $settings->get_setting( 'redirect_page_id' );
+                $is_redirect_enabled = CatalogX()->setting->get_setting( 'is_page_redirect' );
+                $redirect_page_id    = CatalogX()->setting->get_setting( 'redirect_page_id' );
 
                 $redirect_link = $is_redirect_enabled && $redirect_page_id
                     ? get_permalink( $redirect_page_id )
