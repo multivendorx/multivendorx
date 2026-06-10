@@ -15,7 +15,7 @@ type QuoteRow = {
 };
 
 const QuoteList = () => {
-    const [rows, setRows] = useState<QuoteRow[]>([]);    
+    const [rows, setRows] = useState<QuoteRow[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const [responseStatus, setResponseStatus] = useState<
@@ -44,13 +44,13 @@ const QuoteList = () => {
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
-        
+
         setShowThankYou(params.get('order_id'));
         setStatus(params.get('status') || '');
         fetchTableData({
-                    paged: 1,
-                    per_page: 10,
-                });
+            paged: 1,
+            per_page: 10,
+        });
     }, []);
 
     const handleInputChange = (
@@ -137,7 +137,7 @@ const QuoteList = () => {
             try {
                 await axios({
                     method: 'delete',
-                    url: `${quoteCart.apiUrl}/${quoteCart.restUrl}/quote-cart`,
+                    url: `${quoteCart.apiUrl}/${quoteCart.restUrl}/quote-cart/${row.id}`,
                     headers: {
                         'X-WP-Nonce': quoteCart.nonce,
                     },
@@ -147,10 +147,7 @@ const QuoteList = () => {
                     },
                 });
 
-                fetchTableData({
-                    paged: 1,
-                    per_page: 10,
-                });
+                fetchTableData({});
             } catch (error) {
                 console.error('Failed to remove item:', error);
             }
@@ -188,7 +185,7 @@ const QuoteList = () => {
              */
             await axios({
                 method: 'put',
-                url: `${quoteCart.apiUrl}/${quoteCart.restUrl}/quote-cart`,
+                url: `${quoteCart.apiUrl}/${quoteCart.restUrl}/quote-cart/${updatedProducts?.[0]?.id}`,
                 headers: {
                     'X-WP-Nonce': quoteCart.nonce,
                 },
@@ -197,25 +194,7 @@ const QuoteList = () => {
                 },
             });
 
-            /**
-             * Refetch updated totals.
-             */
-            const refreshedResponse = await axios({
-                method: 'post',
-                url: `${quoteCart.apiUrl}/${quoteCart.restUrl}/quote-cart`,
-                headers: {
-                    'X-WP-Nonce': quoteCart.nonce,
-                },
-                data: {
-                    page: 1,
-                    row: 10,
-                },
-            });
-
-            const refreshedItems =
-                refreshedResponse.data.response || [];
-
-            setRows(refreshedItems);
+            fetchTableData({});
 
             /**
              * Clear local quantity cache.
@@ -310,13 +289,13 @@ const QuoteList = () => {
                 <thead>
                     <tr>
                         <th className="woocommerce-orders-table__header">
-                            {__('Product', 'moowoodle')}
+                            {__('Product', 'catalogx')}
                         </th>
                         <th className="woocommerce-orders-table__header">
-                            {__('Quantity', 'moowoodle')}
+                            {__('Quantity', 'catalogx')}
                         </th>
                         <th className="woocommerce-orders-table__header">
-                            {__('Subtotal', 'moowoodle')}
+                            {__('Subtotal', 'catalogx')}
                         </th>
                     </tr>
                 </thead>
@@ -326,9 +305,9 @@ const QuoteList = () => {
                             <tr key={index} className="woocommerce-orders-table__row">
                                 <th
                                     className="product-cell woocommerce-orders-table__cell"
-                                    data-label={__('Username', 'moowoodle')}
+                                    data-label={__('Username', 'catalogx')}
                                 >
-                                   <div
+                                    <div
                                         dangerouslySetInnerHTML={{
                                             __html: row.image || '',
                                         }}
@@ -341,7 +320,7 @@ const QuoteList = () => {
                                 </th>
                                 <td
                                     className="woocommerce-orders-table__cell"
-                                    data-label={__('Username', 'moowoodle')}
+                                    data-label={__('Username', 'catalogx')}
                                 >
                                     <input
                                         type="number"
@@ -359,7 +338,7 @@ const QuoteList = () => {
                                 </td>
                                 <td
                                     className="woocommerce-orders-table__cell"
-                                    data-label={__('Username', 'moowoodle')}
+                                    data-label={__('Username', 'catalogx')}
                                 >
                                     <div
                                         dangerouslySetInnerHTML={{
