@@ -29,7 +29,7 @@ const FORM_FIELDS_CONFIG = [
 
 const toArray = (val: unknown): FormField[] => (Array.isArray(val) ? val : []);
 
-const isSubmitButton = (field?: Partial<FormField>) => field?.label?.trim().toLowerCase() === 'submit';
+const isSubmitButton = (field?: Partial<FormField>) => field?.name?.trim().toLowerCase() === 'submit';
 
 // Helper that returns a complete default submit button object
 const getDefaultSubmitButton = (): FormField => ({
@@ -122,9 +122,9 @@ const FreeFormCustomizerField: React.FC<{
         if (!canAccess) return;
         isDirty.current = true;
         setFields(prev => {
-            const existing = prev.find(f => f.id === id);
+            const existing = prev.find( f => String(f.id) === String(id) );
             if (existing) {
-                return prev.map(f => f.id === id ? { ...f, label } : f);
+                return prev.map(f => String(f.id) === String(id) ? { ...f, label } : f);
             }
             const newField = ensureFieldExists(id);
             return [...prev, { ...newField, label }];
@@ -135,9 +135,9 @@ const FreeFormCustomizerField: React.FC<{
         if (!canAccess) return;
         isDirty.current = true;
         setFields(prev => {
-            const existing = prev.find(f => f.id === id);
+            const existing = prev.find( f => String(f.id) === String(id) );
             if (existing) {
-                return prev.map(f => f.id === id ? { ...f, placeholder } : f);
+                return prev.map(f => String(f.id) === String(id) ? { ...f, placeholder } : f);
             }
             const newField = ensureFieldExists(id);
             return [...prev, { ...newField, placeholder }];
@@ -153,9 +153,9 @@ const FreeFormCustomizerField: React.FC<{
 
         isDirty.current = true;
         setFields(prev => {
-            const existing = prev.find(f => f.id === id);
+            const existing = prev.find( f => String(f.id) === String(id) );
             if (existing) {
-                return prev.map(f => f.id === id ? { ...f, disabled } : f);
+                return prev.map(f => String(f.id) === String(id) ? { ...f, disabled } : f);
             }
             const newField = ensureFieldExists(id);
             return [...prev, { ...newField, disabled }];
