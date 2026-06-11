@@ -7,40 +7,64 @@
     border: 0.063rem solid;
     font-weight: 500;
 
-    &.red-badge{
+    &.red-badge,
+    &.badge-outofstock {
         color: #f7a79a;
         background-color: #fff3f1;
     }
-    &.green-badge{
+
+    &.green-badge,
+    &.badge-instock {
         color: #6bbf8f;
         background-color: #e8fbea;
     }
-    &.yellow-badge{
+
+    &.yellow-badge {
         color: #d4b86a;
         background-color: #fffce8;
     }
-    &.blue-badge{
+
+    &.blue-badge {
         color: #6f78c7;
         background-color: #e8efff;
     }
 }
+
 // common style end
 
 
-.catalogx-table .product-cell {
+.catalogx-table {
+    .product-cell {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+
+
+        img {
+            width: 3rem;
+        }
+
+        .dashicons {
+            color: rgba(255, 0, 0, 0.76);
+            cursor: pointer;
+        }
+
+        span {
+            font-size: 0.913rem;
+        }
+    }
+
+    .regular-price {
+        text-decoration: line-through;
+    }
+}
+
+// table filter
+.table-filters {
     display: flex;
-    gap: 0.5rem;
+    justify-content: space-between;
     align-items: center;
-
-
-    img {
-        width: 3rem;
-    }
-
-    .dashicons {
-        color: rgba(255, 0, 0, 0.76);
-        cursor: pointer;
-    }
+    margin-bottom: 1rem;
 }
 
 
@@ -85,3 +109,31 @@
 .catalogx-add-request-quote-button {
     margin-bottom: 0.238rem;
 }
+
+// single product qty dropdown start
+.quantity {
+    position: relative;
+
+    .qty-dropdown-wrapper {
+        position: absolute;
+        background: #fff;
+        border: 0.063rem solid;
+        width: 20vw;
+        padding: 0.625rem;
+        border-radius: 0.313rem;
+        z-index: 99;
+
+        .qty-option {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: .063rem solid #00000038;
+            padding: 0.25rem 0.625rem;
+        }
+        .qty-option:last-child{
+            border-bottom: none;
+        }
+    }
+}
+
+
+// single product qty dropdown end

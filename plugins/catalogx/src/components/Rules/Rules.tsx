@@ -121,7 +121,7 @@ const Rules = () => {
 
     const defaultTableProps = {
         headers,
-
+        showMenu: false,
         rows: dummyRules,
         totalRows: dummyRules.length,
     };
