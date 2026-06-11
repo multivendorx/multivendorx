@@ -164,6 +164,7 @@ class Quotes extends \WP_REST_Controller {
             $customer_data = array(
                 'name'    => $customer_name,
                 'email'   => $customer_email,
+                'phone'   => $customer_phone,
                 'details' => $customer_message,
             );
             $email         = WC()->mailer()->emails['requestQuoteSendEmail'];
