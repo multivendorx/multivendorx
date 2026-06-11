@@ -1,4 +1,33 @@
-.multivendorx-table .product-cell {
+// common style start
+.status-badge {
+    font-size: 0.813rem;
+    padding: 0.125rem .5rem;
+    line-height: 1;
+    border-radius: 0.313rem;
+    border: 0.063rem solid;
+    font-weight: 500;
+
+    &.red-badge{
+        color: #f7a79a;
+        background-color: #fff3f1;
+    }
+    &.green-badge{
+        color: #6bbf8f;
+        background-color: #e8fbea;
+    }
+    &.yellow-badge{
+        color: #d4b86a;
+        background-color: #fffce8;
+    }
+    &.blue-badge{
+        color: #6f78c7;
+        background-color: #e8efff;
+    }
+}
+// common style end
+
+
+.catalogx-table .product-cell {
     display: flex;
     gap: 0.5rem;
     align-items: center;
@@ -25,7 +54,8 @@
 // My Quote page end
 
 // shop page start
-.enquiry-btn, .quote-btn {
+.enquiry-btn,
+.quote-btn {
     display: inline-block;
 }
 
