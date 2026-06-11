@@ -8,9 +8,7 @@ import axios from 'axios';
 
 const EditBlock = ( { attributes, setAttributes } ) => {
     const blockProps = useBlockProps();
-    const [ contentHtml, setContentHtml ] = useState(
-        __( 'Loading', 'catalogx' )
-    );
+    const [ contentHtml, setContentHtml ] = useState();
 
     // Select the product ID from the WooCommerce Single Product Block
     const productId = useSelect( ( select ) => {
@@ -41,7 +39,9 @@ const EditBlock = ( { attributes, setAttributes } ) => {
                 );
             } );
         } else {
-            setContentHtml( __( 'No product selected.', 'catalogx' ) );
+           `<button class="single_add_to_cart_button alt wp-element-button ">
+                ${__('Add to Quote', 'catalogx')}
+            </button>`
         }
     }, [ productId ] );
 

@@ -24,13 +24,12 @@ export interface QuoteRow {
 const QuoteRequests = () => {
     const [openPopup, setopenPopup] = useState(false);
     let tableProps: any = {};
-
     const headers = {
         order_id: {
             label: __('Order ID', 'catalogx'),
             render: (row: QuoteRow) => (
                 <InfoItem
-                    title={`#${row.order_id}`}
+                    title={`${row.order_id}`}
                     titleLink={row.order_url || ''}
                     descriptions={[
                         {
@@ -45,6 +44,7 @@ const QuoteRequests = () => {
         status: {
             label: __('Status', 'catalogx'),
             type: 'status',
+            statusClass: (row: QuoteRow) => `${row.status}`
         },
         total: {
             label: __('Total', 'catalogx'),
@@ -121,7 +121,7 @@ const QuoteRequests = () => {
         rows: dummyQuotes,
         totalRows: dummyQuotes.length,
     };
-
+    
     tableProps = applyFilters(
         'catalogx_quote_requests_table_props',
         defaultTableProps

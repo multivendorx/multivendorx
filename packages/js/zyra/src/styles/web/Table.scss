@@ -225,6 +225,10 @@
                 width: 100%;
                 height: 3.125rem;
                 align-items: center;
+
+                .admin-column.drag{
+                    min-width: 1.75rem;
+                }
             }
 
             .header-col {
@@ -378,7 +382,11 @@
                         padding-right: 0;
                         flex-grow: 1;
                     }
-
+                    &.drag{
+                        max-width: 1rem;
+                        padding-right: 0;
+                        flex-grow: 1;
+                    }
                     &.product {
                         .details-wrapper {
                             display: flex;
@@ -394,12 +402,22 @@
                             color: $theme-color;
                         }
                     }
-
+                    // for edit link text in row
                     .edit-link {
                         opacity: 0;
                         transition: all 0.5s ease;
                     }
-
+                    // for edit badge in row
+                    .edit-badge{
+                        display: flex;
+                        align-items: center;
+                        gap: 0.313rem;
+                        i{
+                            visibility: hidden;
+                            font-size: 1.063rem;
+                            cursor: pointer;
+                        }
+                    }
                     .details {
                         margin: 0;
                         position: relative;
@@ -489,6 +507,14 @@
                     .edit-link {
                         opacity: 1;
                     }
+                }
+                &:has(.edit-badge):hover {
+                    .edit-badge i{
+                        visibility: visible;
+                    }
+                }
+                &:has(.drag){
+                    cursor: move;
                 }
             }
 

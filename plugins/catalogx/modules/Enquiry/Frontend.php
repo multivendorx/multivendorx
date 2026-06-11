@@ -105,7 +105,7 @@ class Frontend {
             <input type="hidden" name="user_id_for_enquiry" id="user-id-for-enquiry" value="<?php echo esc_html( get_current_user_id() ); ?>" />  			
         </div>
         <div id="catalogx-modal" style="display: none;" class="catalogx-modal <?php echo ( CatalogX()->setting->get_setting( 'is_disable_popup' ) === 'popup' ) ? 'popup-enable' : ''; ?>">
-            <span class="dashicons dashicons-no-alt"></span>
+            
         </div>	
         <?php
     }
