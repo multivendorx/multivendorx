@@ -61,32 +61,34 @@ const EnquiryForm = () => {
 
     return (
         <>
-            {showToast && (
-                <div className="woocommerce-notices-wrapper">
-                    <ul className="woocommerce-message" role="alert">
-                        <li>{responseMessage}</li>
-                    </ul>
-                </div>
-            )}
-            <div>{enquiryFormData.content_before_form}</div>
-            {proActive ? (
-                <FormViewer
-                    formFields={{
-                        formfieldlist: formData.settings_pro,
-                    }}
-                    onSubmit={onSubmit}
-                    onClose={handleClose}
-                />
-            ) : (
-                <FormViewer
-                    formFields={{
-                        formfieldlist: formData.settings_free,
-                    }}
-                    onSubmit={onSubmit}
-                    onClose={handleClose}
-                />
-            )}
-            <div>{enquiryFormData.content_after_form}</div>
+            <div className="form-wrapper">
+                <div>{enquiryFormData.content_before_form}</div>
+                {proActive ? (
+                    <FormViewer
+                        formFields={{
+                            formfieldlist: formData.settings_pro,
+                        }}
+                        onSubmit={onSubmit}
+                        onClose={handleClose}
+                    />
+                ) : (
+                    <FormViewer
+                        formFields={{
+                            formfieldlist: formData.settings_free,
+                        }}
+                        onSubmit={onSubmit}
+                        onClose={handleClose}
+                    />
+                )}
+                <div>{enquiryFormData.content_after_form}</div>
+                {showToast && (
+                    <div className="woocommerce-notices-wrapper">
+                        <ul className="woocommerce-message" role="alert">
+                            <li>{responseMessage}</li>
+                        </ul>
+                    </div>
+                )}
+            </div>
         </>
     );
 };

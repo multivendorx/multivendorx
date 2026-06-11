@@ -440,7 +440,7 @@ const QuoteList = () => {
                             <button
                                 type="button"
                                 id="send-quote"
-                                className='woocommerce-button button wp-element-button'
+                                className='woocommerce-button button wp-element-button wp-block-button__link'
                                 onClick={handleSendQuote}
                                 disabled={
                                     !formData.name || !formData.email

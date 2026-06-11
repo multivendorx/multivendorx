@@ -138,7 +138,7 @@ class Frontend {
                         <input type="hidden" class="report_abuse_product_id" value="<?php echo esc_attr( $product->get_id() ); ?>">
 
                         <!-- Submit button -->
-                        <button type="button" class="submit-report-abuse woocommerce-button button wp-element-button">
+                        <button type="button" class="submit-report-abuse woocommerce-button button wp-element-button wp-block-button__link">
                             <?php esc_html_e( 'Report', 'multivendorx' ); ?>
                         </button>
 

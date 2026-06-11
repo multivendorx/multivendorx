@@ -61,17 +61,15 @@ const Rules = () => {
                 const brand = getLabel(appLocalizer.product_brands, row.brand_id, 'Brands');
 
                 const lines = [
-                    product && `Product: ${product}`,
-                    category && `Category: ${category}`,
-                    brand && `Brand: ${brand}`,
+                    product && (<span><b>{__('Product:', 'catalogx')}</b> {product}</span>),
+                    category && (<span><b>{__('Category:', 'catalogx')}</b> {category}</span>),
+                    brand && (<span><b>{__('Brand:', 'catalogx')}</b> {brand}</span>),
                 ].filter(Boolean);
 
                 return (
-                    <div>
-                        {lines.map((item: string, index: number) => (
-                            <div key={index}>{item}</div>
-                        ))}
-                    </div>
+                    <>
+                        {lines.map((item: string, index: number) => ( item ))}
+                    </>
                 );
             }
         },
@@ -94,16 +92,12 @@ const Rules = () => {
                 const role = getLabel(appLocalizer.role_array, row.role_id, 'Roles');
 
                 const lines = [
-                    user && `User: ${user}`,
-                    role && `Role: ${role}`,
+                    user && (<span><b>{__('User:', 'catalogx')}</b> {user}</span>),
+                    role && (<span><b>{__('Role:', 'catalogx')}</b> {role}</span>),
                 ].filter(Boolean);
 
                 return (
-                    <div >
-                        {lines.map((item: string, index: number) => (
-                            <div key={index}>{item}</div>
-                        ))}
-                    </div>
+                    <> {lines.map((item: string, index: number) => ( item ))} </>
                 );
             }
         },
@@ -120,8 +114,8 @@ const Rules = () => {
             label: __('Status', 'catalogx'),
             render: (row: RuleRow) =>
                 String(row.active) === '1'
-                    ? __('Active', 'catalogx')
-                    : __('Suspended', 'catalogx'),
+                    ? <span className='admin-badge green'>{__('Active', 'catalogx')} </span>
+                    : <span className='admin-badge red'>{__('Suspended', 'catalogx')} </span>,
         },
     };
 
@@ -171,7 +165,7 @@ const Rules = () => {
                         onClick: () => {
                             if (tableProps?.setAddingNewRule) {
                                 tableProps.setAddingNewRule(true);
-                            }else{
+                            } else {
                                 setopenPopup(true)
                             }
                         },
