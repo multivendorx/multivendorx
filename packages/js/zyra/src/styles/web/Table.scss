@@ -225,6 +225,10 @@
                 width: 100%;
                 height: 3.125rem;
                 align-items: center;
+
+                .admin-column.drag{
+                    min-width: 1.75rem;
+                }
             }
 
             .header-col {
@@ -378,7 +382,11 @@
                         padding-right: 0;
                         flex-grow: 1;
                     }
-
+                    &.drag{
+                        max-width: 1rem;
+                        padding-right: 0;
+                        flex-grow: 1;
+                    }
                     &.product {
                         .details-wrapper {
                             display: flex;
@@ -504,6 +512,9 @@
                     .edit-badge i{
                         visibility: visible;
                     }
+                }
+                &:has(.drag){
+                    cursor: move;
                 }
             }
 

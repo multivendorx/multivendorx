@@ -194,7 +194,10 @@ const Table: React.FC<TableProps> = ({
                                     />
                                 </th>
                             )}
-
+                            {onRowReorder && (
+                                <td className="admin-column drag">
+                                </td>
+                            )}
                             {Object.entries(headers).map(([key, config], i) => {
                                 const {
                                     label,
@@ -278,7 +281,11 @@ const Table: React.FC<TableProps> = ({
                                             <Skeleton width={1.25} height={1.25} />
                                         </td>
                                     )}
-
+                                    {onRowReorder && (
+                                        <td className="admin-column drag">
+                                            <Skeleton width={1} height={1} />
+                                        </td>
+                                    )}
                                     {Object.entries(headers).map(
                                         ([key], colIndex) => (
                                             <td
@@ -306,7 +313,7 @@ const Table: React.FC<TableProps> = ({
                                         </td>
                                     )}
                                     {onRowReorder && (
-                                        <td className="admin-column select">
+                                        <td className="admin-column drag">
                                             <i className='adminfont-move' />
                                         </td>
                                     )}
