@@ -19,6 +19,7 @@ $settings = get_option(
 	'catalogx_enquiry_email_temp_settings',
 	array()
 );
+$form_settings = CatalogX()->setting->get_setting('enquiry_form_tabs', []);
 
 $template_data = $settings['enquiry_email_template'] ?? array();
 
@@ -38,12 +39,35 @@ $email_html = '';
 
 if ( ! empty( $template['blocks'] ) ) {
 	$product_obj = wc_get_product( key( $args['product_id'] ) );
-	$email_html = EmailHTMLConverter::convert( $template['blocks'],array(
-		'{customer_name}'  => $enquiry_data['user_name'],
-		'{customer_email}' => $enquiry_data['user_email'],
-		'{product_name}'   => $product_obj ? $product_obj->get_name() : 'Dummy Product',
-		'{product_link}'   => $product_obj ? $product_obj->get_permalink() : '#',
-	) );
+	$replacements = [
+		'{text_enter_the_text}'  => $enquiry_data['user_name'] ?? '',
+    	'{email_email}' => $enquiry_data['user_email'] ?? '',
+	];
+
+	$form_fields = $form_settings['enquiry_form_builder']['formfieldlist'] ?? [];
+
+	foreach ( $enquiry_data['user_enquiry_fields'] as $submitted_field ) {
+		$matched_field = current(
+			array_filter(
+				$form_fields,
+				fn( $field ) => isset( $field['name'] ) &&
+					strtolower( $field['name'] ) === strtolower( $submitted_field['name'] )
+			)
+		);
+
+		if ( empty( $matched_field ) ) {
+			continue;
+		}
+
+		$tag = sprintf(
+			'{%s_%s}',
+			str_replace( '-', '_', sanitize_title( $matched_field['name'] ) ),
+			str_replace( '-', '_', sanitize_title( $matched_field['label'] ?? '' ) )
+		);
+
+		$replacements[ $tag ] = $submitted_field['value'] ?? '';
+	}
+	$email_html = EmailHTMLConverter::convert( $template['blocks'], $replacements );
 }
 ?>
 

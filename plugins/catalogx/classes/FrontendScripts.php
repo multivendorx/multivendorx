@@ -459,6 +459,7 @@ class FrontendScripts {
 									'manage_plan_url' => CATALOGX_PRO_SHOP_URL,
 								)
 							),
+                            'email_tags'    => Utill::get_tags_enquiry_form()
                         )
                     ),
                 ),
