@@ -99,9 +99,9 @@ const WholesaleUser = () => {
 			size: 8,
 		},
 		bulkActions,
-		onBulkActionApply: ()=>setopenPopup(true),
-		onQueryUpdate: ()=>setopenPopup(true),
-		categoryCounts:defaultCategoryCounts,
+		onBulkActionApply: () => setopenPopup(true),
+		onQueryUpdate: () => setopenPopup(true),
+		categoryCounts: defaultCategoryCounts,
 		rows: dummyWholesalecustomer,
 		totalRows: dummyWholesalecustomer.length,
 	};
@@ -112,7 +112,7 @@ const WholesaleUser = () => {
 	);
 
 	const handleTableWrapperClick = () => {
-		if (!appLocalizer.khali_dabba) {
+		if (!appLocalizer.khali_dabba || !appLocalizer.active_modules.includes('wholesale')) {
 			setopenPopup(true);
 		}
 	};
@@ -128,7 +128,11 @@ const WholesaleUser = () => {
 					width={31.25}
 					height="auto"
 				>
-					<ShowProPopup />
+					{!appLocalizer.khali_dabba ? (
+						<ShowProPopup />
+					) : (
+						<ShowProPopup moduleName="wholesale" />
+					)}
 				</PopupUI>
 			)}
 			<NavigatorHeader

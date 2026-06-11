@@ -128,7 +128,7 @@ const QuoteRequests = () => {
     );
 
     const handleTableWrapperClick = () => {
-        if (!appLocalizer.khali_dabba) {
+        if (!appLocalizer.khali_dabba || !appLocalizer.active_modules.includes('quote')) {
             setopenPopup(true);
         }
     };
@@ -143,7 +143,12 @@ const QuoteRequests = () => {
                     width={31.25}
                     height="auto"
                 >
-                    <ShowProPopup />
+                    
+					{!appLocalizer.khali_dabba ? (
+						<ShowProPopup />
+					) : (
+						<ShowProPopup moduleName="quote" />
+					)}
                 </PopupUI>
             )}
             <NavigatorHeader

@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'pages',
     priority: 80,
-    headerTitle: __( 'Page Endpoint', 'catalogx' ),
+    headerTitle: __('Page Endpoint', 'catalogx'),
     headerDescription: __(
         'Manage the endpoints for all pages on the site, ensuring proper routing and access.',
         'catalogx'
@@ -14,7 +14,7 @@ export default {
         {
             key: 'set_enquiry_cart_page',
             type: 'select',
-            label: __( 'Set Enquiry Cart Page', 'catalogx' ),
+            label: __('Set Enquiry Cart Page', 'catalogx'),
             size: 20,
             desc: __(
                 'Select the page on which you have inserted <code>[catalogx_enquiry_cart]</code> shortcode.',
@@ -26,7 +26,7 @@ export default {
         {
             key: 'set_request_quote_page',
             type: 'select',
-            label: __( 'Set Request Quote Page', 'catalogx' ),
+            label: __('Set Request Quote Page', 'catalogx'),
             size: 20,
             desc: __(
                 'Select the page on which you have inserted <code>[request_quote]</code> shortcode.',
@@ -39,7 +39,7 @@ export default {
             key: 'set_wholesale_products_page',
             type: 'select',
             size: 20,
-            label: __( 'Set Wholesale Products Page', 'catalogx' ),
+            label: __('Set Wholesale Products Page', 'catalogx'),
             desc: __(
                 'Select the page on which you have inserted <code>[catalogx_wholesale_products]</code> shortcode.',
                 'catalogx'
@@ -48,16 +48,21 @@ export default {
             proSetting: true,
         },
         {
-			key: 'section',
-			type: 'section',
-			title: __( 'Lorem Ipsum is simply dummy text of', 'catalogx' ),
-		},
+            key: 'section',
+            type: 'section',
+            title: __('Lorem Ipsum is simply dummy text of', 'catalogx'),
+        },
         {
             key: 'shortCode',
             type: 'shortcode-table',
-            label: __( 'Available Shortcodes', 'catalogx' ),
-            desc: __( '', 'catalogx' ),
-            optionLabel: [ 'Shortcodes', 'Description' ],
+            label: __('Available Shortcodes', 'catalogx'),
+            desc: __('', 'catalogx'),
+            optionLabel: [
+                __('Shortcodes and block', 'catalogx'),
+                __('Description', 'catalogx'),
+                __('Arguments', 'catalogx'),
+                __('Example usage', 'catalogx'),
+            ],
             options: [
                 {
                     key: '',
@@ -103,6 +108,14 @@ export default {
                         'Displays the "Send an Enquiry" button',
                         'catalogx'
                     ),
+                    arguments: [
+                        {
+                            attribute: 'product_id',
+                            accepted: 'product_id',
+                            default: '[catalogx_enquiry_button product_id="4"]',
+                            description: __('Specify the product ID for which the enquiry button should be displayed.', 'catalogx'),
+                        }
+                    ],
                 },
                 {
                     key: '',
@@ -112,6 +125,14 @@ export default {
                         'Displays the "Add to Quote" button.',
                         'catalogx'
                     ),
+                    arguments: [
+                        {
+                            attribute: 'product_id',
+                            accepted: 'product_id',
+                            default: '[catalogx_quote_button product_id="4"]',
+                            description: __('Specify the product ID for which the quote button should be displayed.', 'catalogx'),
+                        }
+                    ],
                 },
             ],
         },
