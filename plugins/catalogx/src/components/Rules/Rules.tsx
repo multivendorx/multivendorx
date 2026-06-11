@@ -168,7 +168,7 @@ const Rules = () => {
 
     const defaultTableProps = {
         headers,
-
+        showMenu: false,
         onQueryUpdate: () => setopenPopup(true),
         filters,
         rows: dummyRules,

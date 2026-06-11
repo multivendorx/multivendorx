@@ -34,31 +34,31 @@ const QuoteThankYou = ({ orderId, status }: QuoteThankYouProps) => {
 
     if (orderId && status) {
         return (
-            <div className="reject-quote-from-mail">
-                <div className="reject-content">
-                    <p>
-                        {`${__('You are about to reject the quote', 'catalogx')} ${orderId}`}
-                    </p>
-                    <p>
-                        <label htmlFor="reason">
+            <div className="reject-quote-from-mail woocommerce">
+                <h2>{`${__('You are about to reject the quote', 'catalogx')} ${orderId}`}</h2>
+                <form className="woocommerce-form woocommerce-form-login login">
+                    <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                        <label>
                             {__(
                                 'Please feel free to enter here your reason or provide us your feedback:',
                                 'catalogx'
                             )}
                         </label>
+
                         <textarea
-                            id="reason"
-                            name="reason"
-                            cols={10}
-                            rows={3}
+                            name="message"
+                            rows={4}
                             value={reason}
-                            onChange={ ( e ) => setReason( e.target.value ) }
+                            onChange={(e) => setReason(e.target.value)}
+                            className='woocommerce-Input input-text'
                         />
                     </p>
-                    <button onClick={handleRejectQuote}>
-                        {__('Reject the quote', 'catalogx')}
-                    </button>
-                </div>
+                    <p className='form-row'>
+                        <button className='woocommerce-button button wp-element-button wp-block-button__link' onClick={handleRejectQuote}>
+                            {__('Reject the quote', 'catalogx')}
+                        </button>
+                    </p>
+                </form>
             </div>
         );
     }
@@ -66,7 +66,7 @@ const QuoteThankYou = ({ orderId, status }: QuoteThankYouProps) => {
     if (orderId) {
         return (
             <div className='quote-thank-you-section'>
-                <span className="dashicons dashicons-yes-alt"></span>                   
+                <span className="dashicons dashicons-yes-alt"></span>
                 <h2> {__('Thank you for your quote request', 'catalogx')} {!quoteCart.khali_dabba && (orderId)}.</h2>
                 <p>
                     {__(
@@ -76,7 +76,7 @@ const QuoteThankYou = ({ orderId, status }: QuoteThankYouProps) => {
                 </p>
                 {quoteCart.khali_dabba && (
                     <a className="button wp-block-button__link update-cart-button" href={quoteCart.quote_my_account_url}>{__('View Quote ', 'catalogx')}{' '}{orderId}</a>
-                ) }
+                )}
             </div>
         );
     }
