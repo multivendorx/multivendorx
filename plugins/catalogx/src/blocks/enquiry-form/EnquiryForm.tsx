@@ -70,6 +70,18 @@ const EnquiryForm = () => {
                         }}
                         onSubmit={onSubmit}
                         onClose={handleClose}
+                        formMessages={{
+                            /* translators: %s: Field label. */
+                            fieldRequired: __('%s is required.', 'catalogx'),
+                            invalidEmail: __(
+                              'Please enter a valid email address.',
+                              'catalogx'
+                            ),
+                            termsRequired: __(
+                              'Please accept the Terms & Conditions.',
+                              'catalogx'
+                            ),
+                          }}
                     />
                 ) : (
                     <FormViewer
@@ -78,6 +90,18 @@ const EnquiryForm = () => {
                         }}
                         onSubmit={onSubmit}
                         onClose={handleClose}
+                        formMessages={{
+                            /* translators: %s: Field label. */
+                            fieldRequired: __('%s is required.', 'catalogx'),
+                            invalidEmail: __(
+                              'Please enter a valid email address.',
+                              'catalogx'
+                            ),
+                            termsRequired: __(
+                              'Please accept the Terms & Conditions.',
+                              'catalogx'
+                            ),
+                          }}
                     />
                 )}
                 <div>{enquiryFormData.content_after_form}</div>

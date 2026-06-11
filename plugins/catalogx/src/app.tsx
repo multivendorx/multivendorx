@@ -183,19 +183,19 @@ const App = () => {
 				brandImg={Brand}
 				results={results}
 				search={{
-					placeholder: __('Search...', 'multivendorx'),
+					placeholder: __('Search...', 'catalogx'),
 					options: [
 						{
 							value: 'all',
-							label: __('Modules & Settings', 'multivendorx'),
+							label: __('Modules & Settings', 'catalogx'),
 						},
 						{
 							value: 'modules',
-							label: __('Modules', 'multivendorx'),
+							label: __('Modules', 'catalogx'),
 						},
 						{
 							value: 'settings',
-							label: __('Settings', 'multivendorx'),
+							label: __('Settings', 'catalogx'),
 						},
 					],
 				}}
