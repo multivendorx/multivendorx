@@ -96,7 +96,7 @@ class EnquiryEmail extends \WC_Email {
      *
      * @return bool Whether the email was sent successfully.
      */
-    public function trigger( $recipient, $enquiry_details, $attachments ) {
+    public function trigger( $recipient, $enquiry_details, $attachments= array() ) {
         $this->recipient      = $recipient;
         $this->attachments    = $attachments;
         $this->product_id     = $enquiry_details['product_id'];

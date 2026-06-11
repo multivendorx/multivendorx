@@ -266,4 +266,37 @@ class Utill {
 
 		return strtr( $date_format, $map );
 	}
+
+    public static function get_tags_enquiry_form() {
+        $tags = [];
+
+        $form_settings = CatalogX()->setting->get_setting('enquiry_form_tabs', []);
+        if ( empty( $form_settings['enquiry_form_builder']['formfieldlist'] ) ) {
+            return $tags;
+        }
+
+        $excluded_types = [ 'button', 'title', 'richtext' ];
+
+        foreach ( $form_settings['enquiry_form_builder']['formfieldlist'] as $field ) {
+            if ( empty( $field['type'] ) ||  in_array( $field['type'], $excluded_types, true ) ) {
+                continue;
+            }
+
+            $name  = $field['name'] ?? '';
+            $label = $field['label'] ?? '';
+
+            $tag = sprintf(
+                '{%s_%s}',
+                sanitize_title_with_dashes( $name ),
+                sanitize_title_with_dashes( $label )
+            );
+
+            // Convert dashes to underscores.
+            $tag = str_replace( '-', '_', $tag );
+
+            $tags[] = $tag;
+        }
+
+        return $tags;
+    }
 }
