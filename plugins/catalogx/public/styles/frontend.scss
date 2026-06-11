@@ -118,10 +118,11 @@
         position: absolute;
         background: #fff;
         border: 0.063rem solid;
-        width: 20vw;
+        width: 20rem;
         padding: 0.625rem;
         border-radius: 0.313rem;
         z-index: 99;
+        bottom: -100%;
 
         .qty-option {
             display: flex;
