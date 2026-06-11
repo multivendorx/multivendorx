@@ -59,31 +59,60 @@ export const createBlockID = (
 
 export const createBlock = (
     item: CreateBlockInput,
-    context?: string
+    context?: string,
+    existingBlocks: Block[] = []
 ): Block => {
+    const getUniqueName = (name?: string) => {
+        if (!name) {
+            return name;
+        }
+
+        const matchingBlocks = existingBlocks.filter((block) =>
+            block.fixedName?.startsWith(name)
+        );
+
+        return matchingBlocks.length > 0
+            ? `${name} ${matchingBlocks.length + 1}`
+            : name;
+    };
+
+    const uniqueFixedName = getUniqueName(item.fixedName);
+
     if (item?.id && item?.type) {
         if (item.type === 'columns' && !Array.isArray(item.columns)) {
             return {
                 ...item,
+                fixedName: uniqueFixedName,
                 layout: item.layout ?? '2-50',
                 columns: [[], []],
             };
         }
-        return item as Block;
+
+        return {
+            ...(item as Block),
+            fixedName: uniqueFixedName,
+        };
     }
+
     if (item?.value) {
         return {
             ...createBlockID(item.value as BlockType, {
-                fixedName: item.fixedName,
+                fixedName: uniqueFixedName,
                 placeholder: item.placeholder,
                 label: item.label,
                 options: item.options,
                 context,
             }),
             ...item,
+            fixedName: uniqueFixedName,
         };
     }
-    return createBlockID('text', { label: 'Text', context });
+
+    return createBlockID('text', {
+        label: 'Text',
+        fixedName: uniqueFixedName ?? 'Text',
+        context,
+    });
 };
 
 // Render block content
