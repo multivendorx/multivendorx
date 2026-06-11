@@ -191,15 +191,15 @@ class QuoteCart {
         $quantity     = filter_input( INPUT_GET, 'quantity', FILTER_SANITIZE_NUMBER_INT );
         $quantity     = empty( $quantity ) ? 1 : wc_stock_amount( intval( $quantity ) );
 
-        $adding_to_quote = wc_get_product( $product_id );
+        $product = wc_get_product( $product_id );
 
-        if ( ! $adding_to_quote ) {
+        if ( ! $product ) {
             return;
         }
 
         $quote_item = array();
 
-        if ( $adding_to_quote->is_type( 'variable' ) && $variation_id ) {
+        if ( $product->is_type( 'variable' ) && $variation_id ) {
             $variation  = wc_get_product( $variation_id );
             $attributes = $variation->get_attributes();
 
@@ -242,25 +242,25 @@ class QuoteCart {
      *
      * Checks if the product already exists in the cart. If not, adds it to the session.
      *
-     * @param array $quote_item_data The data of the product being added to the quote cart.
+     * @param array $quote_item The data of the product being added to the quote cart.
      *                         Must include 'product_id', 'variation' (array), and optionally 'quantity'.
      * @return string Returns 'true' on success, or 'exists' if the item is already in the quote cart.
      */
-    public function add_quote_item( $quote_item_data ) {
+    public function add_quote_item( $quote_item ) {
 
-        $quote_item_data['quantity'] = ( isset( $quote_item_data['quantity'] ) ) ? (int) $quote_item_data['quantity'] : 1;
+        $quote_item['quantity'] = ( isset( $quote_item['quantity'] ) ) ? (int) $quote_item['quantity'] : 1;
         $quote_item_status           = '';
 
-        do_action( 'catalogx_add_to_quote_cart', $quote_item_data );
+        do_action( 'catalogx_add_to_quote_cart', $quote_item );
 
-        if ( ! $this->exists_in_cart( $quote_item_data['product_id'] ) ) {
+        if ( ! $this->exists_in_cart( $quote_item['product_id'] ) ) {
             $quote_item = array(
-                'product_id' => $quote_item_data['product_id'],
-                'variation'  => $quote_item_data['variation'],
-                'quantity'   => $quote_item_data['quantity'],
+                'product_id' => $quote_item['product_id'],
+                'variation'  => $quote_item['variation'],
+                'quantity'   => $quote_item['quantity'],
             );
 
-            $this->quote_cart_content[ md5( $quote_item_data['product_id'] ) ] = $quote_item;
+            $this->quote_cart_content[ md5( $quote_item['product_id'] ) ] = $quote_item;
         } else {
             $quote_item_status = 'exists';
         }
