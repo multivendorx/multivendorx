@@ -68,7 +68,7 @@ const Rules = () => {
 
                 return (
                     <>
-                        {lines.map((item: string, index: number) => ( item ))}
+                        {lines.map((item: string, index: number) => (item))}
                     </>
                 );
             }
@@ -97,7 +97,7 @@ const Rules = () => {
                 ].filter(Boolean);
 
                 return (
-                    <> {lines.map((item: string, index: number) => ( item ))} </>
+                    <> {lines.map((item: string, index: number) => (item))} </>
                 );
             }
         },
@@ -117,11 +117,60 @@ const Rules = () => {
                     ? <span className='admin-badge green'>{__('Active', 'catalogx')} </span>
                     : <span className='admin-badge red'>{__('Suspended', 'catalogx')} </span>,
         },
+        action: {
+            type: 'action',
+            label: __('Action', 'catalogx'),
+            actions: [
+                {
+                    label: (row: any) =>
+                        row.active === '1'
+                            ? __('Suspend', 'catalogx')
+                            : __('Activate', 'catalogx'),
+                    icon: 'refresh',
+                    onClick: () => setopenPopup(true),
+                },
+                {
+                    label: __('Edit', 'catalogx'),
+                    icon: 'edit',
+                    onClick: () => setopenPopup(true),
+                },
+                {
+                    label: __('Delete', 'catalogx'),
+                    icon: 'delete',
+                    onClick: () => setopenPopup(true),
+                },
+            ],
+        },
     };
+    const filters = [
+        {
+            key: 'applicable_for',
+            label: __('Applicable For', 'catalogx'),
+            type: 'select',
+            options: [
+                { label: __('All', 'catalogx'), value: '' },
+                { label: __('Product', 'catalogx'), value: 'product' },
+                { label: __('Category', 'catalogx'), value: 'category' },
+                { label: __('Brand', 'catalogx'), value: 'brand' },
+            ],
+        },
+        {
+            key: 'for_whom',
+            label: __('For Whom', 'catalogx'),
+            type: 'select',
+            options: [
+                { label: __('All', 'catalogx'), value: '' },
+                { label: __('User', 'catalogx'), value: 'user' },
+                { label: __('Role', 'catalogx'), value: 'role' },
+            ],
+        },
+    ];
 
     const defaultTableProps = {
         headers,
         showMenu: false,
+        onQueryUpdate: () => setopenPopup(true),
+        filters,
         rows: dummyRules,
         totalRows: dummyRules.length,
     };
@@ -132,10 +181,11 @@ const Rules = () => {
     );
 
     const handleTableWrapperClick = () => {
-        if (!appLocalizer.khali_dabba) {
+        if (!appLocalizer.khali_dabba || !appLocalizer.active_modules.includes('rules')) {
             setopenPopup(true);
         }
     };
+
 
 
     return (
@@ -148,7 +198,11 @@ const Rules = () => {
                     width={31.25}
                     height="auto"
                 >
-                    <ShowProPopup />
+                    { !appLocalizer.khali_dabba ? (
+                        <ShowProPopup />
+                    ) : (
+                        <ShowProPopup moduleName="rules" />
+                    )}
                 </PopupUI>
             )}
             <NavigatorHeader
