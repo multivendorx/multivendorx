@@ -51,16 +51,16 @@ const QuoteRequests = () => {
             type: 'currency'
         },
         action: {
-            label: __('Action', 'catalogx-pro'),
+            label: __('Action', 'catalogx'),
             type: 'action',
             actions: [
                 {
-                    label: __('View', 'catalogx-pro'),
+                    label: __('View', 'catalogx'),
                     icon: 'eye',
                     onClick: () => {handleTableWrapperClick},
                 },
                 {
-                    label: __('Send Mail', 'catalogx-pro'),
+                    label: __('Send Mail', 'catalogx'),
                     icon: 'mail',
                     onClick: () => {handleTableWrapperClick},
                 },
