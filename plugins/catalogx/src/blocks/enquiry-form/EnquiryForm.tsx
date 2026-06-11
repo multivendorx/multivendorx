@@ -78,14 +78,14 @@ const EnquiryForm = () => {
                     onClose={handleClose}
                     formMessages={{
 							/* translators: %s: Field label. */
-							fieldRequired: __('%s is required.', 'multivendorx'),
+							fieldRequired: __('%s is required.', 'catalogx-pro'),
 							invalidEmail: __(
 								'Please enter a valid email address.',
-								'multivendorx'
+								'catalogx-pro'
 							),
 							termsRequired: __(
 								'Please accept the Terms & Conditions.',
-								'multivendorx'
+								'catalogx-pro'
 							),
 						}}
                 />
@@ -98,14 +98,14 @@ const EnquiryForm = () => {
                     onClose={handleClose}
                     formMessages={{
 							/* translators: %s: Field label. */
-							fieldRequired: __('%s is required.', 'multivendorx'),
+							fieldRequired: __('%s is required.', 'catalogx-pro'),
 							invalidEmail: __(
 								'Please enter a valid email address.',
-								'multivendorx'
+								'catalogx-pro'
 							),
 							termsRequired: __(
 								'Please accept the Terms & Conditions.',
-								'multivendorx'
+								'catalogx-pro'
 							),
 						}}
                 />
