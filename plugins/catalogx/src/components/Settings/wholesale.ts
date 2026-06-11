@@ -117,46 +117,77 @@ export default {
             look: 'toggle',
             moduleEnabled: 'wholesale',
         },
+        // {
+        //     key: 'wholesale_discount',
+        //     type: 'merge-component',
+        //     label: __( 'Discount rule', 'catalogx' ),
+        //     desc: __(
+        //         '<b>Bulk Discount Configuration: </b> Set discount type (percentage/fixed), discount amount, and minimum quantity for wholesellers',
+        //         'catalogx'
+        //     ),
+        //     proSetting: true,
+        //     dependent: {
+        //         key: 'enable_global_wholasale',
+        //         set: true,
+        //     },
+        //     fields: [
+        //         {
+        //             name: 'wholesale_discount_type',
+        //             type: 'select',
+        //             options: [
+        //                 {
+        //                     value: 'fixed_amount',
+        //                     label: 'Fixed Amount',
+        //                 },
+        //                 {
+        //                     value: 'percentage_amount',
+        //                     label: 'Percentage Amount',
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             name: 'wholesale_amount',
+        //             type: 'number',
+        //             placeholder: 'Discount value',
+        //         },
+        //         {
+        //             name: 'minimum_quantity',
+        //             type: 'number',
+        //             placeholder: 'Minimum quantity',
+        //         },
+        //     ],
+        //     moduleEnabled: 'wholesale',
+        // },
         {
-            key: 'wholesale_discount',
-            type: 'merge-component',
+            key: 'wholesale_amount',
             label: __( 'Discount rule', 'catalogx' ),
-            desc: __(
-                '<b>Bulk Discount Configuration: </b> Set discount type (percentage/fixed), discount amount, and minimum quantity for wholesellers',
-                'catalogx'
-            ),
+            type: 'number',
+            placeholder: 'Discount value',
+            beforeElement: {
+                key: 'wholesale_discount_type',
+                type: 'select',
+                options: [
+                    {
+                        value: 'fixed_amount',
+                        label: 'Fixed Amount',
+                    },
+                    {
+                        value: 'percentage_amount',
+                        label: 'Percentage Amount',
+                    },
+                ],
+            },
+            afterElement: {
+                key: 'minimum_quantity',
+                type: 'number',
+                placeholder: 'Minimum quantity',
+            },
+            moduleEnabled: 'wholesale',
             proSetting: true,
             dependent: {
                 key: 'enable_global_wholasale',
                 set: true,
             },
-            fields: [
-                {
-                    name: 'wholesale_discount_type',
-                    type: 'select',
-                    options: [
-                        {
-                            value: 'fixed_amount',
-                            label: 'Fixed Amount',
-                        },
-                        {
-                            value: 'percentage_amount',
-                            label: 'Percentage Amount',
-                        },
-                    ],
-                },
-                {
-                    name: 'wholesale_amount',
-                    type: 'number',
-                    placeholder: 'Discount value',
-                },
-                {
-                    name: 'minimum_quantity',
-                    type: 'number',
-                    placeholder: 'Minimum quantity',
-                },
-            ],
-            moduleEnabled: 'wholesale',
         },
     ],
 };
