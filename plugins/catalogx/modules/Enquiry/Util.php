@@ -8,6 +8,7 @@
 namespace CatalogX\Enquiry;
 
 use CatalogX\Utill;
+use MultiVendorX\Store\Store as Store;
 
 /**
  * CatalogX Enquiry Module Util class
@@ -78,11 +79,7 @@ class Util {
             ? $settings['exclusion']
             : array();
 
-        /*
-        | Product exclusion
-
-        */
-
+        // Product exclusion
         $excluded_products = isset( $settings['enquiry_exclusion_value_product_list'] )
             ? array_map( 'intval', $settings['enquiry_exclusion_value_product_list'] )
             : array();
@@ -91,11 +88,50 @@ class Util {
             return false;
         }
 
-        /*
-        | Category exclusion
+        if (Utill::is_active_plugin('multivendorx')) {
+            $product_author = get_post_meta( $product_id, 'multivendorx_store_id', true ) ?? 0;
+            $store = new Store( $product_author );
+            if ($product_author) {
+                $excluded_products = $store->get_meta('woocommerce_product_list') ?? [];
+                if ( ! empty( $excluded_products ) && in_array( (string) $product_id, $excluded_products, true ) ) {
+                    return false;
+                }
+            }         
 
-        */
+            // Product categories.
+            $product_categories = wp_get_post_terms(
+                $product_id,
+                'product_cat',
+                [ 'fields' => 'ids' ]
+            );
 
+            $excluded_categories = array_map(
+                'intval',
+                (array) $store->get_meta( 'woocommerce_category_list' )
+            );
+
+            if ( ! empty( $excluded_categories ) && ! empty( array_intersect( $product_categories, $excluded_categories ) )) {
+                return false;
+            }
+
+            // Product tags.
+            $product_tags = wp_get_post_terms(
+                $product_id,
+                'product_tag',
+                [ 'fields' => 'ids' ]
+            );
+
+            $excluded_tags = array_map(
+                'intval',
+                (array) $store->get_meta( 'woocommerce_tag_list' )
+            );
+
+            if ( ! empty( $excluded_tags ) && ! empty( array_intersect( $product_tags, $excluded_tags ) )) {
+                return false;
+            }
+        }
+
+        // Category exclusion
         $excluded_categories = isset( $settings['enquiry_exclusion_value_category_list'] )
             ? array_map( 'intval', $settings['enquiry_exclusion_value_category_list'] )
             : array();
@@ -110,11 +146,7 @@ class Util {
             return false;
         }
 
-        /*
-        | Tag exclusion
-
-        */
-
+        // Tag exclusion
         $excluded_tags = isset( $settings['enquiry_exclusion_value_tag_list'] )
             ? array_map( 'intval', $settings['enquiry_exclusion_value_tag_list'] )
             : array();
@@ -129,11 +161,7 @@ class Util {
             return false;
         }
 
-        /*
-        | Brand exclusion
-
-        */
-
+        // Brand exclusion
         $excluded_brands = isset( $settings['enquiry_exclusion_value_brand_list'] )
             ? array_map( 'intval', $settings['enquiry_exclusion_value_brand_list'] )
             : array();

@@ -155,6 +155,11 @@ class FrontendScripts {
                     'deps'    => array(),
                     'version' => $version,
                 ),
+                'catalogx-index-style' => array(
+					'src' => self::get_asset_path() . 'styles/index.css',
+                    'deps'    => array(),
+                    'version' => $version,
+                ),
                 'catalogx-enquiry-form-style' => array(
                     'src'     => self::get_asset_path() . 'styles/block/enquiry-form/index.css',
                     'deps'    => array(),
@@ -407,6 +412,15 @@ class FrontendScripts {
             'restUrl' => CatalogX()->rest_namespace,
             'nonce'   => wp_create_nonce( 'wp_rest' ),
         );
+        $currency_data = array(
+            'currency'           => get_woocommerce_currency(),
+            'currency_symbol'    => get_woocommerce_currency_symbol(),
+            'price_format'       => get_woocommerce_price_format(),
+            'decimal_separator'  => wc_get_price_decimal_separator(),
+            'thousand_separator' => wc_get_price_thousand_separator(),
+            'price_decimals'     => wc_get_price_decimals(),
+            'currency_position'  => get_option( 'woocommerce_currency_pos' ),
+        );
         $localize_scripts = apply_filters(
             'catalogx_localize_scripts',
             array(
@@ -414,11 +428,11 @@ class FrontendScripts {
                     'object_name' => 'appLocalizer',
                     'data'        => array_merge(
                         $base_rest,
+                        $currency_data,
                         array(
                             'tab_name'                   => 'CatalogX',
                             'pages_data'                 => $pages_data,
                             'role_array'                 => $roles_data,
-                            'admin_url'                  => admin_url(),
                             'users_data'                 => $users_data,
                             'products_data'              => $products_data,
                             'all_product_categories'     => $product_categories,
@@ -430,19 +444,14 @@ class FrontendScripts {
                             'khali_dabba'                => Utill::is_khali_dabba(),
                             'pro_url'                    => esc_url( CATALOGX_PRO_SHOP_URL ),
                             'order_edit'                 => admin_url( 'admin.php?page=wc-orders&action=edit' ),
-                            'site_url'                   => admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=shopping' ),
-                            'module_page_url'            => admin_url( 'admin.php?page=catalogx#&tab=modules' ),
-                            'settings_page_url'          => admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=shopping' ),
-                            'enquiry_form_settings_url'  => admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=enquiry-form-customization' ),
-                            'customization_settings_url' => admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=enquiry-catalog-customization' ),
-                            'wholesale_settings_url'     => admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=wholesale' ),
-                            'rule_url'                   => admin_url( 'admin.php?page=catalogx#&tab=rules' ),
+                            'admin_url'                  => admin_url( 'admin.php?page=catalogx' ),
                             'currency'                   => get_woocommerce_currency(),
                             'notifima_active'            => Utill::is_active_plugin( 'notifima' ),
                             'mvx_active'                 => Utill::is_active_plugin( 'multivendorx' ),
                             'quote_module_active'        => CatalogX()->modules->is_active( 'quote' ),
                             'quote_base_url'             => $quote_base_url,
                             'free_version'               => CatalogX()->version,
+                            'date_format'                => Utill::wp_to_react_date_format( get_option( 'date_format' ) ),
                             'pro_data'                   => apply_filters(
 								'catalogx_update_pro_data',
 								array(
@@ -489,11 +498,19 @@ class FrontendScripts {
                         )
                     ),
                 ),
-                'catalogx-enquiry-button-script'   => array(
+                'catalogx-enquiry-button-editor-script'   => array(
                     'object_name' => 'enquiryButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-quote-button-script'          => array(
+                'catalogx-quote-button-editor-script'          => array(
+                    'object_name' => 'quoteButton',
+                    'data'        => $base_rest,
+                ),
+                'catalogx-enquiry-button-view-script'   => array(
+                    'object_name' => 'enquiryButton',
+                    'data'        => $base_rest,
+                ),
+                'catalogx-quote-button-view-script'          => array(
                     'object_name' => 'quoteButton',
                     'data'        => $base_rest,
                 ),

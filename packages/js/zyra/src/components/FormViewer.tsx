@@ -4,7 +4,7 @@ import Select from 'react-select';
 import type { MultiValue, SingleValue } from 'react-select';
 
 // Internal dependencies
-import { ButtonInputUI } from './ButtonInput';
+import CustomRecaptcha from './CustomRecaptcha';
 import { CountryCodes } from './fieldUtils';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -90,6 +90,8 @@ interface FormViewerProps {
     countryList?: Option[];
     stateList?: Record<string, Option[] | Record<string, string>>;
     formMessages?: FormMessages;
+    closeBtn?: boolean;
+    onClose?: () => void;
 }
 
 // ─── Placeholder Helpers ─────────────────────────────────────────────────────
@@ -252,6 +254,8 @@ const Multiselect: React.FC<{
 
 const FormViewer: React.FC<FormViewerProps> = ({
     formFields,
+    closeBtn,
+    onClose,
     response,
     onSubmit,
     countryList,
@@ -263,6 +267,8 @@ const FormViewer: React.FC<FormViewerProps> = ({
     const [fileName, setFileName] = useState<string>('');
     const [captchaToken, setCaptchaToken] = useState<string | null>(null);
     const [captchaError, setCaptchaError] = useState<boolean>(false);
+    const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
 
     const formList = formFields.formfieldlist || [];
     const buttonField = formList.find((f) => f.type === 'button');
@@ -347,10 +353,30 @@ const FormViewer: React.FC<FormViewerProps> = ({
         }
     };
 
+    const handleCaptchaValidation = (valid: boolean) => {
+        setIsCaptchaValid(valid);
+    };
+
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
         const error: Record<string, string> = {};
+        const customCaptchaField = formList.find(
+            (f) => f.type === 'custom-recaptcha'
+        );
+
+        setSubmitted(true);
+        if (
+            customCaptchaField &&
+            !isCaptchaValid
+        ) {
+            setErrors((prev) => ({
+                ...prev,
+                [customCaptchaField.label || customCaptchaField.id]:
+                    'Invalid security code.',
+            }));
+            return;
+        }
 
         const isValidEmail = (email: string) =>
             /^\S+@\S+\.([a-zA-Z]{2,})$/.test(email);
@@ -695,34 +721,13 @@ const FormViewer: React.FC<FormViewerProps> = ({
                         fieldName={name}
                         error={error}
                     >
-                        <div className="attachment-section">
-                            <label
-                                htmlFor="dropzone-file"
-                                className="attachment-label"
-                            >
-                                &nbsp;
-                                <div className="wrapper">
-                                    <i className="adminfont-cloud-upload" />
-                                    <p className="heading">
-                                        {fileName === '' ? (
-                                            <>
-                                                <span>Click to upload</span> or
-                                                drag and drop
-                                            </>
-                                        ) : (
-                                            fileName
-                                        )}
-                                    </p>
-                                </div>
-                                <input
-                                    readOnly
-                                    id="dropzone-file"
-                                    type="file"
-                                    className="hidden"
-                                    onChange={(e) => handleFileChange(name, e)}
-                                />
-                            </label>
-                        </div>
+                        <input
+                            readOnly
+                            id="dropzone-file"
+                            type="file"
+                            className="hidden"
+                            onChange={(e) => handleFileChange(name, e)}
+                        />
                     </FormRow>
                 );
 
@@ -891,7 +896,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
                                     handleSubmit(e);
                                 }}
                             >
-                                {field.text || field.placeholder || 'Submit'}
+                                {field.label || field.placeholder || 'Submit'}
                             </button>
                         </p>
                     );
@@ -925,6 +930,14 @@ const FormViewer: React.FC<FormViewerProps> = ({
                     </label>
                 );
 
+            case 'custom-recaptcha':
+                return (
+                    <CustomRecaptcha
+                        captchaValid={handleCaptchaValidation}
+                        submitted={submitted}
+                    />
+                );
+
             default:
                 return null;
         }
@@ -932,6 +945,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
 
     return (
         <form className="woocommerce-form woocommerce-form-login login">
+            {closeBtn && ( <i className='close-icon dashicons dashicons-no-alt' onClick={onClose}></i> )}
             {otherFields.map(renderField)}
             {buttonField && renderField(buttonField)}
         </form>

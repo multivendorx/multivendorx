@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { __ } from '@wordpress/i18n';
-import { TableCard, QueryProps } from 'zyra';
+import { QueryProps } from 'zyra';
 import axios from 'axios';
 import QuoteThankYou from './QuoteThankYou';
 import { formatLocalDate } from '../../services/commonFunction';
@@ -16,8 +16,6 @@ type QuoteRow = {
 
 const QuoteList = () => {
     const [rows, setRows] = useState<QuoteRow[]>([]);
-    const [rowIds, setRowIds] = useState<number[]>([]);
-    const [totalRows, setTotalRows] = useState<number>(0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const [responseStatus, setResponseStatus] = useState<
@@ -49,6 +47,10 @@ const QuoteList = () => {
 
         setShowThankYou(params.get('order_id'));
         setStatus(params.get('status') || '');
+        fetchTableData({
+            paged: 1,
+            per_page: 10,
+        });
     }, []);
 
     const handleInputChange = (
@@ -84,7 +86,7 @@ const QuoteList = () => {
         setIsLoading(true);
 
         axios({
-            method: 'post',
+            method: 'get',
             url: `${quoteCart.apiUrl}/${quoteCart.restUrl}/quote-cart`,
             headers: {
                 'X-WP-Nonce': quoteCart.nonce,
@@ -118,10 +120,7 @@ const QuoteList = () => {
                     .filter((item: QuoteRow) => item?.id != null)
                     .map((item: QuoteRow) => Number(item.id));
 
-                setRowIds(ids);
-                setRows(items);
-
-                setTotalRows(Number(response.data.count) || 0);
+                setRows(response.data.response || []);
 
                 setIsLoading(false);
             })
@@ -129,9 +128,6 @@ const QuoteList = () => {
                 console.error('Failed to fetch quote cart:', error);
 
                 setRows([]);
-                setRowIds([]);
-                setTotalRows(0);
-
                 setIsLoading(false);
             });
     }, []);
@@ -141,7 +137,7 @@ const QuoteList = () => {
             try {
                 await axios({
                     method: 'delete',
-                    url: `${quoteCart.apiUrl}/${quoteCart.restUrl}/quote-cart`,
+                    url: `${quoteCart.apiUrl}/${quoteCart.restUrl}/quote-cart/${row.id}`,
                     headers: {
                         'X-WP-Nonce': quoteCart.nonce,
                     },
@@ -151,10 +147,7 @@ const QuoteList = () => {
                     },
                 });
 
-                fetchTableData({
-                    paged: 1,
-                    per_page: 10,
-                });
+                fetchTableData({});
             } catch (error) {
                 console.error('Failed to remove item:', error);
             }
@@ -192,7 +185,7 @@ const QuoteList = () => {
              */
             await axios({
                 method: 'put',
-                url: `${quoteCart.apiUrl}/${quoteCart.restUrl}/quote-cart`,
+                url: `${quoteCart.apiUrl}/${quoteCart.restUrl}/quote-cart/${updatedProducts?.[0]?.id}`,
                 headers: {
                     'X-WP-Nonce': quoteCart.nonce,
                 },
@@ -201,35 +194,7 @@ const QuoteList = () => {
                 },
             });
 
-            /**
-             * Refetch updated totals.
-             */
-            const refreshedResponse = await axios({
-                method: 'post',
-                url: `${quoteCart.apiUrl}/${quoteCart.restUrl}/quote-cart`,
-                headers: {
-                    'X-WP-Nonce': quoteCart.nonce,
-                },
-                data: {
-                    page: 1,
-                    row: 10,
-                },
-            });
-
-            const refreshedItems =
-                refreshedResponse.data.response || [];
-
-            setRows(refreshedItems);
-
-            setRowIds(
-                refreshedItems.map((item: QuoteRow) =>
-                    Number(item.id)
-                )
-            );
-
-            setTotalRows(
-                Number(refreshedResponse.data.count) || 0
-            );
+            fetchTableData({});
 
             /**
              * Clear local quantity cache.
@@ -300,73 +265,10 @@ const QuoteList = () => {
             });
     }, [formData]);
 
-    const headers = {
-        product: {
-            label: __('Product', 'catalogx'),
-            render: (row: QuoteRow) => (
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px',
-                    }}
-                >
-                    <div
-                        dangerouslySetInnerHTML={{
-                            __html: row.image || '',
-                        }}
-                    />
-
-                    <div
-                        dangerouslySetInnerHTML={{
-                            __html: row.name || '',
-                        }}
-                    />
-
-                    <i
-                        className="dashicons dashicons-no-alt"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => handleRemoveItem(row)}
-                    />
-                </div>
-            ),
-        },
-
-        quantity: {
-            label: __('Quantity', 'catalogx'),
-            render: (row: QuoteRow) => (
-                <input
-                    type="number"
-                    className="basic-input"
-                    min="1"
-                    value={
-                        productQuantity[row.id]?.quantity ??
-                        row.quantity ??
-                        1
-                    }
-                    onChange={(e) =>
-                        handleQuantityChange(e, row)
-                    }
-                />
-            ),
-        },
-
-        total: {
-            label: __('Subtotal', 'catalogx'),
-            render: (row: QuoteRow) => (
-                <div
-                    dangerouslySetInnerHTML={{
-                        __html: String(row.total),
-                    }}
-                />
-            ),
-        },
-    };
-
     if (showThankYou || status) {
         return (
             <QuoteThankYou
-                order_id={showThankYou}
+                orderId={showThankYou}
                 status={status}
             />
         );
@@ -374,27 +276,81 @@ const QuoteList = () => {
 
     return (
         <div className="quote-list-container woocommerce" >
-            <div className="quote-cart-actions">
-                <button
-                    type="button"
-                    className="button wp-block-button__link update-cart-button"
-                    onClick={handleUpdateCart}
-                    disabled={isLoading}
-                >
-                    {__('Update Cart', 'catalogx')}
-                </button>
-            </div>
-            <TableCard
-                headers={headers}
-                rows={rows}
-                ids={rowIds}
-                totalRows={totalRows}
-                isLoading={isLoading}
-                onQueryUpdate={fetchTableData}
-                activeCategory="all"
-                title={__('Quote Cart', 'catalogx')}
-                showColumnToggleIcon={false}
-            />
+            <button
+                type="button"
+                className="update-cart-btn button wp-block-button__link update-cart-button"
+                onClick={handleUpdateCart}
+                disabled={isLoading}
+            >
+                {__('Update Cart', 'catalogx')}
+            </button>
+
+            <table className="multivendorx-table shop_table shop_table_responsive my_account_orders">
+                <thead>
+                    <tr>
+                        <th className="woocommerce-orders-table__header">
+                            {__('Product', 'catalogx')}
+                        </th>
+                        <th className="woocommerce-orders-table__header">
+                            {__('Quantity', 'catalogx')}
+                        </th>
+                        <th className="woocommerce-orders-table__header">
+                            {__('Subtotal', 'catalogx')}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows.map((row, index) => (
+                        <>
+                            <tr key={index} className="woocommerce-orders-table__row">
+                                <th
+                                    className="product-cell woocommerce-orders-table__cell"
+                                    data-label={__('Username', 'catalogx')}
+                                >
+                                    <div
+                                        dangerouslySetInnerHTML={{
+                                            __html: row.image || '',
+                                        }}
+                                    />
+                                    {row.name}
+                                    <i
+                                        className="dashicons dashicons-no-alt"
+                                        onClick={() => handleRemoveItem(row)}
+                                    />
+                                </th>
+                                <td
+                                    className="woocommerce-orders-table__cell"
+                                    data-label={__('Username', 'catalogx')}
+                                >
+                                    <input
+                                        type="number"
+                                        className="basic-input"
+                                        min="1"
+                                        value={
+                                            productQuantity[row.id]?.quantity ??
+                                            row.quantity ??
+                                            1
+                                        }
+                                        onChange={(e) =>
+                                            handleQuantityChange(e, row)
+                                        }
+                                    />
+                                </td>
+                                <td
+                                    className="woocommerce-orders-table__cell"
+                                    data-label={__('Username', 'catalogx')}
+                                >
+                                    <div
+                                        dangerouslySetInnerHTML={{
+                                            __html: String(row.total),
+                                        }}
+                                    />
+                                </td>
+                            </tr>
+                        </>
+                    ))}
+                </tbody>
+            </table>
 
             {rows.length > 0 && (
                 <>
@@ -482,6 +438,7 @@ const QuoteList = () => {
                         </p>
                         <p className='form-row'>
                             <button
+                                type="button"
                                 id="send-quote"
                                 className='woocommerce-button button wp-element-button'
                                 onClick={handleSendQuote}

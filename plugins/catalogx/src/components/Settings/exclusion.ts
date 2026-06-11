@@ -24,14 +24,17 @@ export default {
                 {
                     key: 'catalog_exclusion',
                     label: __('Catalog', 'catalogx'),
+                    moduleEnabled: 'catalog'
                 },
                 {
                     key: 'enquiry_exclusion',
                     label: __('Enquiry', 'catalogx'),
+                    moduleEnabled: 'enquiry'
                 },
                 {
                     key: 'quote_exclusion',
                     label: __('Quote', 'catalogx'),
+                    moduleEnabled: 'quote'
                 },
             ],
 
@@ -47,6 +50,7 @@ export default {
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.role_array,
                             isClearable: true,
+                            size: 15
                         },
                     ],
                 },
@@ -62,6 +66,7 @@ export default {
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.users_data,
                             isClearable: true,
+                            size: 15
                         },
                     ],
                 },
@@ -77,6 +82,7 @@ export default {
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.products_data,
                             isClearable: true,
+                            size: 15
                         },
                     ],
                 },
@@ -92,6 +98,7 @@ export default {
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.all_product_categories,
                             isClearable: true,
+                            size: 15
                         },
                     ],
                 },
@@ -107,6 +114,7 @@ export default {
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.all_product_tag,
                             isClearable: true,
+                            size: 15
                         },
                     ],
                 },
@@ -122,6 +130,7 @@ export default {
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.product_brands,
                             isClearable: true,
+                            size: 15
                         },
                     ],
                 },

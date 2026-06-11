@@ -8,7 +8,6 @@
 namespace CatalogX\Enquiry;
 
 use CatalogX\FrontendScripts;
-use CatalogX\Utill;
 
 /**
  * CatalogX Enquiry Module Frontend class
@@ -18,31 +17,31 @@ use CatalogX\Utill;
  * @author      MultiVendorX
  */
 class Frontend {
+    private $enquiry_user_permission;
+    private $enable_out_of_stock;
+
     /**
      * Frontend class constructor function.
      */
     public function __construct() {
         // Enquiry button shortcode.
         add_shortcode( 'catalogx_enquiry_button', array( $this, 'render_enquiry_button_shortcode' ) );
-
+        
         // Check the exclusion.
         if ( ! Util::is_available() ) {
-			return;
-        }
-
-        $display_enquiry_button = CatalogX()->setting->get_setting( 'enquiry_user_permission', array() );
-        if ( ! empty( $display_enquiry_button ) && ! is_user_logged_in() ) {
             return;
         }
+        $this->enquiry_user_permission = CatalogX()->setting->get_setting( 'enquiry_user_permission', array() );
+        if ( ! empty( $this->enquiry_user_permission ) && ! is_user_logged_in() ) {
+            return;
+        }
+        $this->enable_out_of_stock      = CatalogX()->setting->get_setting( 'is_enable_out_of_stock' );
 
         if ( empty( CatalogX()->setting->get_setting( 'enable_cart_checkout' ) ) ) {
             add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_button_in_shop_page' ) );
         }
 
         add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
-
-        // Hook for exclusion.
-        add_action( 'woocommerce_single_product_summary', array( $this, 'enquiry_button_exclusion' ), 5 );
 
         add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
     }
@@ -54,9 +53,12 @@ class Frontend {
      */
     public function catalogx_add_enquiry_button() {
         global $product;
+        if ( ! Util::is_available_for_product( $product->get_id() ) ) {
+            return;
+        }
         if ( empty( trim( CatalogX()->render_enquiry_btn_via ) ) ) {
             CatalogX()->render_enquiry_btn_via = 'hook';
-            $this->render_product_enquiry_button( $product->get_id() );
+            $this->render_product_enquiry_button( $product );
         }
     }
 
@@ -68,7 +70,7 @@ class Frontend {
      */
     public function render_product_enquiry_button( $product_obj ) {
         global $product;
-        $product_obj = is_int( $product_obj ) ? wc_get_product( $product_obj ) : ( $product_obj ? $product_obj : $product );
+        $product_obj = is_int( $product_obj ) ? wc_get_product( $product_obj ) : ( $product_obj ? $product_obj : $product );        
         if ( empty( $product_obj ) ) {
             return;
         }
@@ -77,49 +79,21 @@ class Frontend {
             return;
         }
 
-        $button_settings  = CatalogX()->setting->get_setting( 'enquiry_button', array() );
-        $button_css       = Utill::get_button_styles( $button_settings );
-        $button_hover_css = Utill::get_button_styles( $button_settings, true );
-
-        if ( $button_hover_css ) {
-            echo '<style>
-                .catalogx-enquiry-btn:hover{
-                ' . esc_html( $button_hover_css ) . '
-                } 
-            </style>';
-        }
-
-        $custom_css = CatalogX()->setting->get_setting( 'custom_css_product_page' );
-        if ( ! empty( $custom_css ) ) {
-            $button_css .= $custom_css;
-        }
-
-        $button_settings['button_text'] = ! empty( $button_settings['button_text'] ) ? $button_settings['button_text'] : \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
-        $button_position_settings       = CatalogX()->setting->get_setting( 'shop_page_button_position_setting', array() );
-        $position                       = array_search( 'enquiry_button', $button_position_settings, true );
-        $position                       = false !== $position ? $position : 0;
+        $button_text = \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
 
         ?>
         <div id="catalogx-enquiry">
         <?php
-		if ( CatalogX()->setting->get_setting( 'is_enable_out_of_stock' ) ) {
-			if ( ! $product_obj->managing_stock() && ! $product_obj->is_in_stock() ) {
-                ?>
-                <div position = "<?php echo esc_attr( $position ); ?>">
-                    <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button" style="<?php echo esc_attr( $button_css ); ?>" href="#catalogx-modal"><?php echo esc_html( $button_settings['button_text'] ); ?></button>
-                </div>
-                <?php
-			}
-        } else {
-			?>
-                <div position = "<?php echo esc_attr( $position ); ?>">
-                    <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button" style="<?php echo esc_attr( $button_css ); ?>" href="#catalogx-modal"><?php echo esc_html( $button_settings['button_text'] ); ?></button>
-                </div>
-                <?php
+		$show_button = true;
+        if ( $this->enable_out_of_stock ) {
+            $show_button = ! $product_obj->managing_stock() && ! $product_obj->is_in_stock();
+        }       
+		if ( $show_button ) {
+            ?>
+                <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button"><?php echo esc_html( $button_text ); ?></button>
+            <?php
 		}
 		?>
-            <input type="hidden" name="product_name_for_enquiry" id="product-name-for-enquiry" value="<?php echo esc_html( $product_obj->get_name() ); ?>" />
-            <input type="hidden" name="product_url_for_enquiry" id="product-url-for-enquiry" value="<?php echo esc_url( get_permalink( $product_obj->get_id() ) ); ?>" />
             <input type="hidden" name="product_id_for_enquiry" id="product-id-for-enquiry" value="<?php echo esc_html( $product_obj->get_id() ); ?>" />
             <input type="hidden" name="enquiry_product_type" id="enquiry-product-type" value="
             <?php
@@ -131,23 +105,9 @@ class Frontend {
             <input type="hidden" name="user_id_for_enquiry" id="user-id-for-enquiry" value="<?php echo esc_html( get_current_user_id() ); ?>" />  			
         </div>
         <div id="catalogx-modal" style="display: none;" class="catalogx-modal <?php echo ( CatalogX()->setting->get_setting( 'is_disable_popup' ) === 'popup' ) ? 'popup-enable' : ''; ?>">
+            <span class="dashicons dashicons-no-alt"></span>
         </div>	
         <?php
-    }
-
-    /**
-     * Enquiry button exclusion
-     *
-     * @return void
-     */
-    public function enquiry_button_exclusion() {
-        global $post;
-
-        if ( ! Util::is_available_for_product( $post->ID ) ) {
-            remove_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
-        } else {
-            add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
-        }
     }
 
     /**
@@ -156,22 +116,21 @@ class Frontend {
      * @return void
      */
     public function frontend_scripts() {
-        FrontendScripts::enqueue_frontend_assets();
-        FrontendScripts::localize_scripts( 'catalogx-enquiry-frontend-script' );
-        FrontendScripts::localize_scripts( 'catalogx-enquiry-form-script' );
-
-        // if ( is_product() || CatalogX()->render_enquiry_btn_via === 'shortcode' ) {
+        if ( is_product() || CatalogX()->render_enquiry_btn_via === 'shortcode' || CatalogX()->render_enquiry_btn_via === 'block') {
+            FrontendScripts::enqueue_frontend_assets();
             FrontendScripts::enqueue_style( 'catalogx-enquiry-form-style' );
             FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
             FrontendScripts::enqueue_script( 'catalogx-enquiry-frontend-script' );
+            FrontendScripts::localize_scripts( 'catalogx-enquiry-frontend-script' );
             FrontendScripts::enqueue_script( 'catalogx-enquiry-form-script' );
+            FrontendScripts::localize_scripts( 'catalogx-enquiry-form-script' );
 
             // additional css.
             $custom_css = CatalogX()->setting->get_setting( 'custom_css_product_page' );
 		if ( ! empty( $custom_css ) ) {
 			wp_add_inline_style( 'catalogx-enquiry-form-style', $custom_css );
 		}
-        // }
+        }
     }
 
     /**
@@ -269,8 +228,6 @@ class Frontend {
             }
         }
 
-        $pro_form_settings['store_registration_from'] = $form_field_list;
-
         return $form_field_list;
     }
 
@@ -287,7 +244,7 @@ class Frontend {
             return '';
         }
 
-        $display_enquiry_button = CatalogX()->setting->get_setting( 'enquiry_user_permission', array() );
+        $display_enquiry_button = $this->enquiry_user_permission;
         if ( ! empty( $display_enquiry_button ) && ! is_user_logged_in() ) {
             return '';
         }
@@ -302,8 +259,6 @@ class Frontend {
             $product_id = absint( $shortcode_attributes['product_id'] );
         } elseif ( $product instanceof \WC_Product ) {
             $product_id = $product->get_id();
-        } else {
-            $product_id = $this->get_product_id_from_context();
         }
 
         if ( $product_id ) {
@@ -311,57 +266,6 @@ class Frontend {
         }
 
         return ob_get_clean();
-    }
-
-    /**
-     * Resolve product id from context when shortcode has no product_id attribute.
-     *
-     * @return int
-     */
-    private function get_product_id_from_context() {
-        $queried_id = get_queried_object_id();
-        if ( $queried_id && 'product' === get_post_type( $queried_id ) ) {
-            return absint( $queried_id );
-        }
-
-        $post = get_post();
-        if ( ! $post || empty( $post->post_content ) || ! function_exists( 'parse_blocks' ) ) {
-            return 0;
-        }
-
-        $blocks = parse_blocks( $post->post_content );
-        return $this->find_product_id_in_blocks( $blocks );
-    }
-
-    /**
-     * Recursively search blocks for product id attribute.
-     *
-     * @param array $blocks Parsed blocks.
-     * @return int
-     */
-    private function find_product_id_in_blocks( $blocks ) {
-        if ( empty( $blocks ) || ! is_array( $blocks ) ) {
-            return 0;
-        }
-
-        foreach ( $blocks as $block ) {
-            if ( ! empty( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
-                foreach ( array( 'productId', 'product_id', 'product' ) as $key ) {
-                    if ( ! empty( $block['attrs'][ $key ] ) ) {
-                        return absint( $block['attrs'][ $key ] );
-                    }
-                }
-            }
-
-            if ( ! empty( $block['innerBlocks'] ) ) {
-                $found = $this->find_product_id_in_blocks( $block['innerBlocks'] );
-                if ( $found ) {
-                    return $found;
-                }
-            }
-        }
-
-        return 0;
     }
 
     /**
@@ -375,7 +279,7 @@ class Frontend {
             return;
         }
 
-        if ( ! empty( CatalogX()->setting->get_setting( 'is_enable_out_of_stock' ) ) && $product->is_in_stock() ) {
+        if ( ! empty( $this->enable_out_of_stock ) && $product->is_in_stock() ) {
             return;
         }
 
@@ -383,25 +287,10 @@ class Frontend {
             return;
         }
 
-        $button_settings  = CatalogX()->setting->get_setting( 'enquiry_button', array() );
-        $button_css       = Utill::get_button_styles( $button_settings );
-        $button_hover_css = Utill::get_button_styles( $button_settings, true );
-        if ( $button_hover_css ) {
-            echo '<style>
-                .single_add_to_cart_button:hover{
-                ' . esc_html( $button_hover_css ) . '
-                } 
-            </style>';
-        }
-
-        $custom_css = CatalogX()->setting->get_setting( 'custom_css_product_page' );
-        if ( isset( $custom_css ) && ! empty( $custom_css ) ) {
-            $button_css .= $custom_css;
-        }
-        $button_text = ! empty( $button_settings['button_text'] ) ? $button_settings['button_text'] : \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
+        $button_text = \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
         if ( is_shop() ) {
             $product_link = get_permalink( $product->get_id() );
-            echo '<a href="' . esc_url( $product_link ) . '" class="single_add_to_cart_button button wp-block-button__link" style="' . esc_attr( $button_css ) . '">' . esc_html( $button_text ) . '</a>';
+            echo '<a href="' . esc_url( $product_link ) . '" class="enquiry-btn single_add_to_cart_button button wp-block-button__link" >' . esc_html( $button_text ) . '</a>';
         }
     }
 }

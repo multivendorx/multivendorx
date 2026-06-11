@@ -4,27 +4,63 @@
   width: 100%;
   margin-top: 0.625rem;
 
-  .free-form-header{
-    background: $theme-background-color !important;
-    border-radius: $border-radius-small;
+  .free-form-row {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    align-items: center;
 
-    .title{
-      font-size: 1rem !important;
+    label {
+      font-size: 0.95rem;
+      font-weight: 500;
+
+      i {
+        cursor: pointer;
+        font-size: 1rem;
+        margin-left: 0.25rem;
+        visibility: hidden;
+        transition: all 0.3s linear;
+      }
+    }
+
+    .free-form-input {
+      width: 30%;
+    }
+
+    &.enable-visibility {
+      .free-form-input {
+        opacity: 0.4;
+      }
+    }
+
+    &:not(.enable-visibility) {
+      &:hover {
+        label i {
+          visibility: visible;
+        }
+      }
+    }
+  }
+
+  .free-form-header {
+    display: flex;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+
+    .title {
+      font-size: 1.125rem !important;
       color: $theme-color !important;
+      width: 30%;
     }
   }
-  .form-group:has(.enable-visibility) {
-    .setting-form-input,
-    .settings-form-label {
-      opacity: 0.4;
-    }
-  }
-  i{
+
+  .visibility-icon {
+    font-size: 1.125rem;
+    padding-left: 0.313rem;
     cursor: pointer;
-    font-size: 1.25rem;
-    margin-left: 0.5rem;
-  }
-  .adminfont-eye {
-    color: #0101d9d6 !important;
+
+    &.adminfont-eye{
+      color: $theme-color;
+    }
   }
 }

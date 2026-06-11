@@ -68,6 +68,8 @@ export default {
 			classes: 'full-width',
 			emailTemplates: [salesReport],
 			blockGroups: EMAIL_BLOCK_GROUPS,
+            visibleGroups: ['email'],
+            context: 'email',
 			defaultTemplateId: 'store-registration',
 		},
 	],

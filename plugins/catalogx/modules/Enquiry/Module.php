@@ -36,8 +36,6 @@ class Module {
 
         // Init helper classes.
         $this->register_services();
-
-        do_action( 'load_premium_enquiry_module' );
     }
 
     /**

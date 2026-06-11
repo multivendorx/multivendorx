@@ -43,7 +43,7 @@ class Utill {
     public const CATALOGX_SETTINGS = array(
         'extra'                         => 'catalogx_extra_settings',
         'enquiry-catalog-customization' => 'catalogx_enquiry_catalog_customization_settings',
-        'shopping'                      => 'catalogx_shopping_settings_settings',
+        'shopping'                      => 'catalogx_shopping_settings',
         'enquiry'                       => 'catalogx_enquiry_settings',
         'quotation'                     => 'catalogx_quotation_settings',
         'tools'                         => 'catalogx_tools_settings',
@@ -212,57 +212,58 @@ class Utill {
             return __( $default_value, 'catalogx' );
         }
     }
-
     /**
-     * Generate inline CSS styles for button.
+     * Validate REST nonce.
      *
-     * Applies styles based on provided settings and whether the button is in a hover state.
-     *
-     * @param array $button_settings An associative array of button styling options.
-     * @param bool  $hover Optional. Whether to apply hover styles. Default false.
-     * @return string CSS string to apply inline on the button.
+     * @param \WP_REST_Request $request Request object.
+     * @return true|\WP_Error
      */
-    public static function get_button_styles( $button_settings, $hover = false ) {
-        $button_css  = '';
-        $border_size = ! empty( $button_settings['button_border_size'] ) ? esc_attr( $button_settings['button_border_size'] ) . 'px' : '1px';
+    public static function validate_nonce( $request ) {
+        $nonce = sanitize_text_field( $request->get_header( 'X-WP-Nonce' ) );
 
-        if ( $hover ) {
-            if ( isset( $button_settings['button_background_color_onhover'] ) ) {
-                $button_css .= ! empty( $button_settings['button_background_color_onhover'] ) ? 'background: ' . $button_settings['button_background_color_onhover'] . ' !important;' : '';
-            }
-            if ( isset( $button_settings['button_text_color_onhover'] ) ) {
-                $button_css .= ! empty( $button_settings['button_text_color_onhover'] ) ? ' color: ' . $button_settings['button_text_color_onhover'] . ' !important;' : '';
-            }
-            if ( isset( $button_settings['button_border_color_onhover'] ) ) {
-                $button_css .= ! empty( $button_settings['button_border_color_onhover'] ) ? 'border: ' . $border_size . ' solid' . $button_settings['button_border_color_onhover'] . ' !important;' : '';
-            }
-        } else {
-            if ( ! empty( $button_settings['button_background_color'] ) ) {
-                $button_css .= 'background: ' . esc_attr( $button_settings['button_background_color'] ) . ';';
-            }
-            if ( ! empty( $button_settings['button_text_color'] ) ) {
-                $button_css .= 'color: ' . esc_attr( $button_settings['button_text_color'] ) . ';';
-            }
-            if ( ! empty( $button_settings['button_border_color'] ) ) {
-                $button_css .= 'border: ' . $border_size . ' solid ' . esc_attr( $button_settings['button_border_color'] ) . ';';
-            }
-            if ( ! empty( $button_settings['button_font_size'] ) ) {
-                $button_css .= 'font-size: ' . esc_attr( $button_settings['button_font_size'] ) . 'px;';
-            }
-            if ( ! empty( $button_settings['button_border_radious'] ) ) {
-                $button_css .= 'border-radius: ' . esc_attr( $button_settings['button_border_radious'] ) . 'px;';
-            }
-            if ( ! empty( $button_settings['button_font_width'] ) ) {
-                $button_css .= 'font-weight: ' . esc_attr( $button_settings['button_font_width'] ) . 'px;';
-            }
-            if ( ! empty( $button_settings['button_padding'] ) ) {
-                $button_css .= 'padding: ' . esc_attr( $button_settings['button_padding'] ) . 'px;';
-            }
-            if ( ! empty( $button_settings['button_margin'] ) ) {
-                $button_css .= 'margin: ' . esc_attr( $button_settings['button_margin'] ) . 'px;';
-            }
+        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            $error = new \WP_Error(
+                'invalid_nonce',
+                esc_html__( 'Invalid nonce.', 'catalogx' ),
+                array( 'status' => 403 )
+            );
+
+            self::log( $error );
+
+            return $error;
         }
 
-        return $button_css;
+        return true;
     }
+    
+    /**
+	 * Convert WordPress PHP date format to React date picker format
+	 *
+	 * @param string $date_format WordPress PHP date format.
+	 * @return string React date picker format.
+	 */
+	public static function wp_to_react_date_format( $date_format ) {
+		static $map = array(
+			'Y' => 'YYYY',
+			'y' => 'YY',
+			'F' => 'MMMM',
+			'M' => 'MMM',
+			'm' => 'MM',
+			'n' => 'M',
+			'd' => 'DD',
+			'j' => 'D',
+			'l' => 'dddd',
+			'D' => 'ddd',
+			'H' => 'HH',
+			'G' => 'H',
+			'h' => 'hh',
+			'g' => 'h',
+			'i' => 'mm',
+			's' => 'ss',
+			'A' => 'A',
+			'a' => 'a',
+		);
+
+		return strtr( $date_format, $map );
+	}
 }
