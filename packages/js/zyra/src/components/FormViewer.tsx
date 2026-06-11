@@ -896,7 +896,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
                                     handleSubmit(e);
                                 }}
                             >
-                                {field.text || field.placeholder || 'Submit'}
+                                {field.label || field.placeholder || 'Submit'}
                             </button>
                         </p>
                     );
