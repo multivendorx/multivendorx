@@ -4,7 +4,7 @@ import '../common.scss';
 
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import { dummyWholesalecustomer } from './WholesaleUserUtil';
+import { defaultCategoryCounts, dummyWholesalecustomer } from './WholesaleUserUtil';
 
 import {
 	Column,
@@ -58,12 +58,50 @@ const WholesaleUser = () => {
 			label: __('Date', 'catalogx'),
 			type: 'date'
 		},
+		action: {
+			type: 'action',
+			label: __('Action', 'catalogx'),
+			actions: [
+				{
+					label: () => __('View', 'catalogx'),
+					icon: () => 'eye',
+					onClick: () => setopenPopup(true)
+				},
+				{
+					label: () => __('Approve', 'catalogx'),
+					icon: () => 'check',
+					onClick: () => setopenPopup(true)
+				},
+				{
+					label: () => __('Reject', 'catalogx'),
+					icon: () => 'close',
+					onClick: () => setopenPopup(true)
+				},
+			],
+		},
 	};
-
-
+	const filters = [{
+		key: 'date',
+		label: __('Date Range', 'catalogx'),
+		type: 'date',
+	}];
+	const bulkActions = [
+		{ label: __('Approve', 'catalogx'), value: 'approve' },
+		{ label: __('Reject', 'catalogx'), value: 'reject' },
+		{ label: __('Pending', 'catalogx'), value: 'pending' },
+	];
 	const defaultTableProps = {
 		headers,
-        format: appLocalizer.date_format,
+		format: appLocalizer.date_format,
+		filters,
+		search: {
+			placeholder: __('Search...', 'catalogx'),
+			size: 8,
+		},
+		bulkActions,
+		onBulkActionApply: ()=>setopenPopup(true),
+		onQueryUpdate: ()=>setopenPopup(true),
+		categoryCounts:defaultCategoryCounts,
 		rows: dummyWholesalecustomer,
 		totalRows: dummyWholesalecustomer.length,
 	};

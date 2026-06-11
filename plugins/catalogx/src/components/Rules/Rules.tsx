@@ -123,11 +123,60 @@ const Rules = () => {
                     ? __('Active', 'catalogx')
                     : __('Suspended', 'catalogx'),
         },
+        action: {
+            type: 'action',
+            label: __('Action', 'catalogx'),
+            actions: [
+                {
+                    label: (row: any) =>
+                        row.active === '1'
+                            ? __('Suspend', 'catalogx')
+                            : __('Activate', 'catalogx'),
+                    icon: 'refresh',
+                    onClick: () => setopenPopup(true),
+                },
+                {
+                    label: __('Edit', 'catalogx'),
+                    icon: 'edit',
+                    onClick: () => setopenPopup(true),
+                },
+                {
+                    label: __('Delete', 'catalogx'),
+                    icon: 'delete',
+                    onClick: () => setopenPopup(true),
+                },
+            ],
+        },
     };
+    const filters = [
+        {
+            key: 'applicable_for',
+            label: __('Applicable For', 'catalogx'),
+            type: 'select',
+            options: [
+                { label: __('All', 'catalogx'), value: '' },
+                { label: __('Product', 'catalogx'), value: 'product' },
+                { label: __('Category', 'catalogx'), value: 'category' },
+                { label: __('Brand', 'catalogx'), value: 'brand' },
+            ],
+        },
+        {
+            key: 'for_whom',
+            label: __('For Whom', 'catalogx'),
+            type: 'select',
+            options: [
+                { label: __('All', 'catalogx'), value: '' },
+                { label: __('User', 'catalogx'), value: 'user' },
+                { label: __('Role', 'catalogx'), value: 'role' },
+            ],
+        },
+    ];
 
     const defaultTableProps = {
         headers,
 
+        onQueryUpdate: () => setopenPopup(true),
+        filters,
         rows: dummyRules,
         totalRows: dummyRules.length,
     };
@@ -142,6 +191,7 @@ const Rules = () => {
             setopenPopup(true);
         }
     };
+
 
 
     return (
@@ -171,7 +221,7 @@ const Rules = () => {
                         onClick: () => {
                             if (tableProps?.setAddingNewRule) {
                                 tableProps.setAddingNewRule(true);
-                            }else{
+                            } else {
                                 setopenPopup(true)
                             }
                         },
