@@ -305,7 +305,11 @@ const Table: React.FC<TableProps> = ({
                                             />
                                         </td>
                                     )}
-
+                                    {onRowReorder && (
+                                        <td className="admin-column select">
+                                            <i className='adminfont-move' />
+                                        </td>
+                                    )}
                                     {Object.entries(headers).map(
                                         ([key, header], colIndex) => {
                                             const rowId = row.id;

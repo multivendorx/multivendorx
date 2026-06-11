@@ -394,12 +394,22 @@
                             color: $theme-color;
                         }
                     }
-
+                    // for edit link text in row
                     .edit-link {
                         opacity: 0;
                         transition: all 0.5s ease;
                     }
-
+                    // for edit badge in row
+                    .edit-badge{
+                        display: flex;
+                        align-items: center;
+                        gap: 0.313rem;
+                        i{
+                            visibility: hidden;
+                            font-size: 1.063rem;
+                            cursor: pointer;
+                        }
+                    }
                     .details {
                         margin: 0;
                         position: relative;
@@ -488,6 +498,11 @@
                 &:has(.edit-link):hover {
                     .edit-link {
                         opacity: 1;
+                    }
+                }
+                &:has(.edit-badge):hover {
+                    .edit-badge i{
+                        visibility: visible;
                     }
                 }
             }

@@ -3,9 +3,17 @@
     width: 100%;
     margin-top: 0.5rem;
     top: 100%;
-    .woocommerce-form {
+    .form-wrapper {
         position: relative;
         cursor: pointer;
+        display: flex;
+        flex-direction: column;
+
+        .woocommerce-form{
+            margin: 0; // for overwrite woocommerce form style
+            padding: 0; // for overwrite woocommerce form style
+            border: none; // for overwrite woocommerce form style
+        }
     }
     &.popup-enable {
         margin: 0 0;
@@ -19,14 +27,16 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        overflow-y: scroll;
+        overflow-y: auto;
         gap: 1rem;
+        max-width: 100% !important;
 
-        .woocommerce-form {
+        .form-wrapper {
             overflow-y: auto;
             background-color: #fff;
             width: 40%;
             max-height: 80vh;
+            padding: 1rem;
         }
     }
     .close-icon {
