@@ -61,56 +61,58 @@ const EnquiryForm = () => {
 
     return (
         <>
-            {showToast && (
-                <div className="woocommerce-notices-wrapper">
-                    <ul className="woocommerce-message" role="alert">
-                        <li>{responseMessage}</li>
-                    </ul>
-                </div>
-            )}
-            <div>{enquiryFormData.content_before_form}</div>
-            {proActive ? (
-                <FormViewer
-                    formFields={{
-                        formfieldlist: formData.settings_pro,
-                    }}
-                    onSubmit={onSubmit}
-                    onClose={handleClose}
-                    formMessages={{
-							/* translators: %s: Field label. */
-							fieldRequired: __('%s is required.', 'catalogx'),
-							invalidEmail: __(
-								'Please enter a valid email address.',
-								'catalogx'
-							),
-							termsRequired: __(
-								'Please accept the Terms & Conditions.',
-								'catalogx'
-							),
-						}}
-                />
-            ) : (
-                <FormViewer
-                    formFields={{
-                        formfieldlist: formData.settings_free,
-                    }}
-                    onSubmit={onSubmit}
-                    onClose={handleClose}
-                    formMessages={{
-							/* translators: %s: Field label. */
-							fieldRequired: __('%s is required.', 'catalogx'),
-							invalidEmail: __(
-								'Please enter a valid email address.',
-								'catalogx'
-							),
-							termsRequired: __(
-								'Please accept the Terms & Conditions.',
-								'catalogx'
-							),
-						}}
-                />
-            )}
-            <div>{enquiryFormData.content_after_form}</div>
+            <div className="form-wrapper">
+                <div>{enquiryFormData.content_before_form}</div>
+                {proActive ? (
+                    <FormViewer
+                        formFields={{
+                            formfieldlist: formData.settings_pro,
+                        }}
+                        onSubmit={onSubmit}
+                        onClose={handleClose}
+                        formMessages={{
+                            /* translators: %s: Field label. */
+                            fieldRequired: __('%s is required.', 'catalogx'),
+                            invalidEmail: __(
+                              'Please enter a valid email address.',
+                              'catalogx'
+                            ),
+                            termsRequired: __(
+                              'Please accept the Terms & Conditions.',
+                              'catalogx'
+                            ),
+                          }}
+                    />
+                ) : (
+                    <FormViewer
+                        formFields={{
+                            formfieldlist: formData.settings_free,
+                        }}
+                        onSubmit={onSubmit}
+                        onClose={handleClose}
+                        formMessages={{
+                            /* translators: %s: Field label. */
+                            fieldRequired: __('%s is required.', 'catalogx'),
+                            invalidEmail: __(
+                              'Please enter a valid email address.',
+                              'catalogx'
+                            ),
+                            termsRequired: __(
+                              'Please accept the Terms & Conditions.',
+                              'catalogx'
+                            ),
+                          }}
+                    />
+                )}
+                <div>{enquiryFormData.content_after_form}</div>
+                {showToast && (
+                    <div className="woocommerce-notices-wrapper">
+                        <ul className="woocommerce-message" role="alert">
+                            <li>{responseMessage}</li>
+                        </ul>
+                    </div>
+                )}
+            </div>
         </>
     );
 };

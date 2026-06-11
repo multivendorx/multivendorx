@@ -109,6 +109,7 @@ const WholesaleUser = () => {
 				<Column>
 					<div onClick={handleTableWrapperClick}>
 						<TableCard {...tableProps} />
+						{tableProps.selectedRow && tableProps.viewWholesaleDetails}
 					</div>
 				</Column>
 			</Container>
