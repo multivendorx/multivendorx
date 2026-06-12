@@ -23,6 +23,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import { dashNavigate } from '@/services/commonFunction';
 import './addProducts.scss';
+import { htmlToText } from '../services/commonFunction';
 
 const AddProduct = () => {
 	const { modules } = useModules();
@@ -531,8 +532,11 @@ const AddProduct = () => {
 											<TextAreaUI
 												name="short_description"
 												value={
-													product.short_description
+													appLocalizer.tinymceApiKey
+														? product.short_description
+														: htmlToText(product.short_description)
 												}
+												tinymceApiKey={appLocalizer.tinymceApiKey}
 												onChange={(value) =>
 													handleChange(
 														'short_description',
@@ -569,7 +573,12 @@ const AddProduct = () => {
 										<div className="settings-input-content">
 											<TextAreaUI
 												name="description"
-												value={product.description}
+												value={
+													appLocalizer.tinymceApiKey
+														? product.description
+														: htmlToText(product.description)
+												}
+												tinymceApiKey={appLocalizer.tinymceApiKey}
 												onChange={(value) =>
 													handleChange(
 														'description',
@@ -794,31 +803,31 @@ const AddProduct = () => {
 								true,
 								{ product }
 							) && (
-								<FormGroup label={__('Product gallery', 'multivendorx')}>
-									<FileInputUI
-										imageSrc={galleryImages.map((img) => img.thumbnail)}
-										multiple={true}
-										openUploader="Add Gallery Image"
-										onChange={(val) => {
-											if (!val) {
-												setGalleryImages([]);
-												return;
-											}
+									<FormGroup label={__('Product gallery', 'multivendorx')}>
+										<FileInputUI
+											imageSrc={galleryImages.map((img) => img.thumbnail)}
+											multiple={true}
+											openUploader="Add Gallery Image"
+											onChange={(val) => {
+												if (!val) {
+													setGalleryImages([]);
+													return;
+												}
 
-											const urls = Array.isArray(val) ? val : [val];
+												const urls = Array.isArray(val) ? val : [val];
 
-											const formatted = urls.map((file) => ({
-												id: file?.id,
-												src: file?.url,
-												thumbnail: file?.url,
-											}));
+												const formatted = urls.map((file) => ({
+													id: file?.id,
+													src: file?.url,
+													thumbnail: file?.url,
+												}));
 
-											setGalleryImages(formatted);
-										}}
-									/>
-								</FormGroup>
-							)}
-							
+												setGalleryImages(formatted);
+											}}
+										/>
+									</FormGroup>
+								)}
+
 						</FormGroupWrapper>
 					</Card>
 				</Column>
