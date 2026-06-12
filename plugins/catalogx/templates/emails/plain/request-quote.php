@@ -22,7 +22,7 @@ if ( ! empty( $args['products'] ) ) {
         /* translators: %s: Show the quantity of the product. */
         echo sprintf( esc_html__( 'Qty: %s', 'catalogx' ), esc_html( $item['quantity'] ) ) . "\n\n";
         /* translators: %s: Show the price of the product. */
-        echo sprintf( esc_html__( 'Price: %s', 'catalogx' ), esc_html( $_product->get_regular_price() ) ) . "\n\n";
+        echo sprintf( esc_html__( 'Price: %s', 'catalogx' ), wp_strip_all_tags( wc_price( (float) $_product->get_price() * (int) $item['quantity'] ) ) ) . "\n\n";
     }
 } else {
     /* translators: %s: Show the product name. */
@@ -36,6 +36,7 @@ if ( ! empty( $args['products'] ) ) {
 echo "\n" . esc_html__( 'Customer Details:', 'catalogx' ) . "\n";
 echo esc_html__( 'Customer Name:', 'catalogx' ) . ' ' . esc_html( $customer_data['name'] ?? 'John Doe' ) . "\n";
 echo esc_html__( 'Email:', 'catalogx' ) . ' ' . esc_html( $customer_data['email'] ?? 'example@gmail.com' ) . "\n\n";
+echo esc_html__( 'Phone:', 'catalogx' ) . ' ' . esc_html( $customer_data['phone'] ?? '8797639205' ) . "\n\n";
 
 if ( ! empty( $customer_data['details'] ) ) {
     echo esc_html__( 'Additional Details:', 'catalogx' ) . "\n";

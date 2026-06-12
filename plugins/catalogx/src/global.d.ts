@@ -39,6 +39,7 @@ declare global {
         redirect_url: string;
         free_version: any;
         pro_data: any;
+        email_tags: Array;
     }
 
     interface EnquiryFormData {

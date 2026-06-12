@@ -647,7 +647,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                                             isInternalUpdate.current = true;
                                             return [
                                                 ...prev,
-                                                createBlock(item, context),
+                                                createBlock(item, context, prev),
                                             ];
                                         });
                                         markChanged();

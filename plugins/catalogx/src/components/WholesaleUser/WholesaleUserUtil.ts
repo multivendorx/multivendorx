@@ -1,3 +1,5 @@
+import { __ } from "@wordpress/i18n";
+
 export const dummyWholesalecustomer = [
 	{
 		id: 1,
@@ -79,4 +81,27 @@ export const dummyWholesalecustomer = [
 		date: 'May 12, 2026',
 		action: '#',
 	},
+];
+
+export const defaultCategoryCounts = [
+    {
+        value: 'all',
+        label: __('All', 'catalogx-pro'),
+        count: 124,
+    },
+    {
+        value: 'pending',
+        label: __('Pending', 'catalogx-pro'),
+        count: 38,
+    },
+    {
+        value: 'approve',
+        label: __('Approved', 'catalogx-pro'),
+        count: 71,
+    },
+    {
+        value: 'reject',
+        label: __('Rejected', 'catalogx-pro'),
+        count: 15,
+    },
 ];
