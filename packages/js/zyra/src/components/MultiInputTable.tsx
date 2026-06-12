@@ -369,6 +369,7 @@ export const MultiInputTableUI: React.FC<MultiInputTableUIProps> = ({
                                             .map((col) =>
                                                 renderCell(
                                                     col,
+                                                    group,
                                                     capKey,
                                                     capLabel,
                                                     hasExists
