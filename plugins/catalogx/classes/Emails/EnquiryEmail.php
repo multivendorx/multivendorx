@@ -39,7 +39,7 @@ class EnquiryEmail extends \WC_Email {
      *
      * @var array
      */
-    public $enquiry_data;
+    public $enquiry_details;
 
     /**
      * Customer's name.
@@ -70,14 +70,14 @@ class EnquiryEmail extends \WC_Email {
         $this->title       = __( 'Enquiry sent', 'catalogx' );
         $this->description = __( 'Admin will get an email when a customer enquires about a product.', 'catalogx' );
         // Default values.
-        $defaults   = array(
-            'email_setting'   => '',
-            'base_path'       => CatalogX()->plugin_path . 'templates/',
-            'plain_template'  => 'emails/plain/enquiry-email.php',
-            'default_html'    => 'emails/enquiry-email.php',
-            'template_loader' => CatalogX()->util,
+        $email_template_config   = array(
+            'email_setting'      => '',
+            'base_path'          => CatalogX()->plugin_path . 'templates/',
+            'plain_template'     => 'emails/plain/enquiry-email.php',
+            'default_html'       => 'emails/enquiry-email.php',
+            'template_loader'    => CatalogX()->util,
         );
-        $this->args = apply_filters( 'catalogx_enquiry_email_template', $defaults );
+        $this->args = apply_filters( 'catalogx_enquiry_email_template', $email_template_config );
         // Set the appropriate template paths.
         $this->template_loader = $this->args['template_loader'];
         $this->template_html   = $this->args['default_html'];
@@ -91,18 +91,18 @@ class EnquiryEmail extends \WC_Email {
      * Trigger the email.
      *
      * @param string $recipient    The primary recipient email address.
-     * @param array  $enquiry_data Associative array containing enquiry details.
+     * @param array  $enquiry_details Associative array containing enquiry details.
      * @param array  $attachments  List of file paths to attach to the email.
      *
      * @return bool Whether the email was sent successfully.
      */
-    public function trigger( $recipient, $enquiry_data, $attachments ) {
+    public function trigger( $recipient, $enquiry_details, $attachments= array() ) {
         $this->recipient      = $recipient;
         $this->attachments    = $attachments;
-        $this->product_id     = $enquiry_data['product_id'];
-        $this->enquiry_data   = $enquiry_data;
-        $this->cust_name      = $enquiry_data['user_name'];
-        $this->cust_email     = $enquiry_data['user_email'];
+        $this->product_id     = $enquiry_details['product_id'];
+        $this->enquiry_data   = $enquiry_details;
+        $this->cust_name      = $enquiry_details['user_name'];
+        $this->cust_email     = $enquiry_details['user_email'];
         $this->customer_email = $this->cust_email;
 
         if ( ! $this->is_enabled() || ! $this->get_recipient() ) {

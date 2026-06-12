@@ -63,7 +63,7 @@ $customer_data = $args['customer_data'] ?? [];
                                 <?php echo esc_html( $item['quantity'] ); ?>
                             </td>
                             <td class="product_quantity" style="border:none;">
-                                <?php echo wp_kses_post( wc_price( $_product->get_regular_price() ) ); ?>
+                                 <?php echo wp_kses_post( wc_price( (float) $_product->get_price() * (int) $item['quantity'] ) ); ?>
                             </td>
                         </tr>
                         <?php
@@ -97,6 +97,10 @@ $customer_data = $args['customer_data'] ?? [];
         <a href="mailto:<?php echo esc_attr($customer_data['email']); ?>">
             <?php echo esc_html($customer_data['email'] ?? 'john@example.com'); ?>
         </a></p>
+        <p>
+            <strong><?php _e( 'Phone:', 'catalogx' ); ?></strong>
+            <?php echo esc_html( $customer_data['phone'] ?? __( '8797639205', 'catalogx' ) ); ?>
+        </p>
         <?php if (!empty($customer_data['details'])) { ?>
             <p><strong><?php _e('Additional Details:', 'catalogx'); ?></strong><br>
                 <?php echo nl2br(esc_html($customer_data['details'])); ?>

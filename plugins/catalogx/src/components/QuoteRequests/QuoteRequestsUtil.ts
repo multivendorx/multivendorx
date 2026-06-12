@@ -1,3 +1,4 @@
+import { __ } from "@wordpress/i18n";
 import { QuoteRow } from "./quoteRequests";
 
 export const dummyQuotes: QuoteRow[] = [
@@ -91,4 +92,37 @@ export const dummyQuotes: QuoteRow[] = [
 		action: '#',
 		customer_name: 'Charlotte Moore',
 	},
+];
+
+export const defaultCategoryCounts = [
+    {
+        value: 'all',
+        label: __('All', 'catalogx-pro'),
+        count: 128,
+    },
+    {
+        value: 'wc-quote-new',
+        label: __('New', 'catalogx-pro'),
+        count: 24,
+    },
+    {
+        value: 'wc-quote-pending',
+        label: __('Pending', 'catalogx-pro'),
+        count: 36,
+    },
+    {
+        value: 'wc-quote-accepted',
+        label: __('Accepted', 'catalogx-pro'),
+        count: 42,
+    },
+    {
+        value: 'wc-quote-rejected',
+        label: __('Rejected', 'catalogx-pro'),
+        count: 15,
+    },
+    {
+        value: 'wc-quote-expired',
+        label: __('Expired', 'catalogx-pro'),
+        count: 11,
+    },
 ];

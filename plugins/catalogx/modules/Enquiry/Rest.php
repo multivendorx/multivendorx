@@ -142,7 +142,7 @@ class Rest {
                 'user_id'                => $user->ID,
                 'user_name'              => $customer_name ?? $user_name,
                 'user_email'             => $customer_email ?? $user_email,
-                'user_additional_fields' => wp_json_encode( $additional_fields ),
+                'user_additional_fields' => serialize( $additional_fields ),
             );
 
             $product_variations = get_transient( 'variation_list' ) ?: array();
@@ -203,10 +203,10 @@ class Rest {
                 );
 
                 // $attachments = apply_filters( 'catalogx_set_enquiry_pdf_and_attachments', array(), $enquiry_id, $enquiry_data );
-                // $additional_email = CatalogX()->setting->get_setting( 'additional_alert_email' );
-                // $email_handler    = WC()->mailer()->emails['EnquiryEmail'];
+                $additional_email = CatalogX()->setting->get_setting( 'additional_alert_email' );
+                $email_handler    = WC()->mailer()->emails['EnquiryEmail'];
 
-                // $email_handler->trigger( $additional_email, $enquiry_data, $attachments );
+                $email_handler->trigger( $additional_email, $enquiry_data );
 
                 // Check if page redirection after enquiry is enabled.
 
