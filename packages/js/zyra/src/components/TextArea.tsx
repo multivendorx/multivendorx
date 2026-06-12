@@ -24,6 +24,16 @@ interface TextAreaProps {
     onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
 }
 
+export const htmlToText = (input: unknown = ''): string => {
+    if (typeof input !== 'string') return '';
+
+    if (!input.includes('<')) return input;
+
+    const div = document.createElement('div');
+    div.innerHTML = input;
+    return div.textContent || '';
+};
+
 export const TextAreaUI: React.FC<TextAreaProps> = ({
     inputClass,
     id,
@@ -42,6 +52,8 @@ export const TextAreaUI: React.FC<TextAreaProps> = ({
     onFocus,
     onBlur,
 }) => {
+    const normalizedValue =tinymceApiKey ? value: htmlToText(value || '');
+
     const handleEditorChange = (content: string) => {
         onChange?.(content);
     };
@@ -77,7 +89,7 @@ export const TextAreaUI: React.FC<TextAreaProps> = ({
                     id={id}
                     name={name}
                     placeholder={placeholder}
-                    value={value}
+                    value={normalizedValue}
                     rows={rowNumber}
                     cols={colNumber}
                     onChange={handleTextareaChange}
