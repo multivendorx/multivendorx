@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-08T11:35:01+00:00\n"
+"POT-Creation-Date: 2026-06-11T05:44:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: catalogx\n"
@@ -126,15 +126,15 @@ msgstr ""
 msgid "New Quote Submitted by {customer_name} - Please Review"
 msgstr ""
 
-#: classes/FrontendScripts.php:469
+#: classes/FrontendScripts.php:485
 msgid "This field is required"
 msgstr ""
 
-#: classes/FrontendScripts.php:470
+#: classes/FrontendScripts.php:486
 msgid "Invalid email format"
 msgstr ""
 
-#: classes/FrontendScripts.php:481
+#: classes/FrontendScripts.php:497
 msgid "No more product in Quote list!"
 msgstr ""
 
@@ -154,20 +154,26 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: classes/RestAPI/Controllers/Settings.php:92
-#: classes/RestAPI/Controllers/Tour.php:80
-msgid "Invalid nonce."
-msgstr ""
-
-#: classes/RestAPI/Controllers/Settings.php:193
+#: classes/RestAPI/Controllers/Settings.php:168
 msgid "Settings Saved"
 msgstr ""
 
-#: classes/RestAPI/Controllers/Settings.php:200
-#: classes/RestAPI/Controllers/Settings.php:256
+#: classes/RestAPI/Controllers/Settings.php:175
+#: classes/RestAPI/Controllers/Settings.php:231
 #: classes/RestAPI/Controllers/Tour.php:118
 #: classes/RestAPI/Controllers/Tour.php:155
+#: modules/Enquiry/Rest.php:236
+#: modules/Quote/QuoteAdd.php:141
+#: modules/Quote/QuoteCart.php:184
+#: modules/Quote/QuoteCart.php:217
+#: modules/Quote/QuoteCart.php:254
+#: modules/Quote/Quotes.php:185
 msgid "Unexpected server error"
+msgstr ""
+
+#: classes/RestAPI/Controllers/Tour.php:80
+#: classes/Utill.php:227
+msgid "Invalid nonce."
 msgstr ""
 
 #: modules/Catalog/Admin.php:44
@@ -182,7 +188,7 @@ msgstr ""
 msgid "Enter extra information about the product to display on the single product page. Useful for highlighting unique features, usage tips, or care instructions."
 msgstr ""
 
-#: modules/Enquiry/Rest.php:192
+#: modules/Enquiry/Rest.php:220
 msgid "Enquiry sent successfully"
 msgstr ""
 
@@ -260,33 +266,33 @@ msgstr[1] ""
 msgid "My Quote"
 msgstr ""
 
-#: modules/Quote/Rest.php:91
+#: modules/Quote/QuoteAdd.php:100
 msgid "Error occurred while adding product to Request a Quote list."
 msgstr ""
 
-#: modules/Quote/Rest.php:97
+#: modules/Quote/QuoteAdd.php:113
 msgid "Product added to quote list."
 msgstr ""
 
-#: modules/Quote/Rest.php:99
+#: modules/Quote/QuoteAdd.php:120
 msgid "Product already in your quote list."
 msgstr ""
 
-#: modules/Quote/Rest.php:194
+#: modules/Quote/QuoteCart.php:210
 msgid "Quote cart updated!"
 msgstr ""
 
 #. translators: %s: reject quotation number.
-#: modules/Quote/Rest.php:247
+#: modules/Quote/Quotes.php:91
 #, php-format
 msgid "You have confirmed rejection of the quotation No: %d"
 msgstr ""
 
-#: modules/Quote/Rest.php:252
+#: modules/Quote/Quotes.php:96
 msgid "Missing form data."
 msgstr ""
 
-#: modules/Quote/Rest.php:274
+#: modules/Quote/Quotes.php:118
 msgid "Failed to create order."
 msgstr ""
 

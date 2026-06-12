@@ -573,6 +573,7 @@ const createFieldRenderers = (): Record<
                         href="https://www.google.com/recaptcha"
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="link-item"
                     >
                         reCAPTCHA script
                     </a>

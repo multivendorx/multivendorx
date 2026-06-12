@@ -199,7 +199,8 @@ class Installer {
         );
 
         $all_settings = array(
-            'enable_cart_checkout'               => array(),
+            'enable_cart_checkout'  => array(),
+            'redirect_cart_page'    => ''
         );
 
         update_option( Utill::CATALOGX_SETTINGS['shopping'], $all_settings );
@@ -240,7 +241,7 @@ class Installer {
                 'id'          => 1,
                 'type'        => 'text',
                 'label'       => 'Enter your name',
-                'placeholder' => '',
+                'placeholder' => 'Enter your name here',
                 'disabled'    => false,
                 'name'        => 'name',
             ),
@@ -248,7 +249,7 @@ class Installer {
                 'id'          => 2,
                 'type'        => 'email',
                 'label'       => 'Enter your email',
-                'placeholder' => '',
+                'placeholder' => 'Enter your email here',
                 'disabled'    => false,
                 'name'        => 'email',
             ),
@@ -568,6 +569,15 @@ class Installer {
                 );
 
                 delete_option( 'catalogx_all_settings_settings' );
+            }
+
+            $settings = get_option( 'catalogx_wholesale_settings', array() );
+
+            if ( !empty( $settings ) && isset( $settings['wholesale_discount'] ) ) {
+                $settings['wholesale_amount'] = $settings['wholesale_discount'];
+                unset( $settings['wholesale_discount'] );
+
+                update_option( Utill::CATALOGX_SETTINGS['wholesale'], $settings );
             }
 
             /**
