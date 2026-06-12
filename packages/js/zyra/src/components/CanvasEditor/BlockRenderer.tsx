@@ -59,60 +59,31 @@ export const createBlockID = (
 
 export const createBlock = (
     item: CreateBlockInput,
-    context?: string,
-    existingBlocks: Block[] = []
+    context?: string
 ): Block => {
-    const getUniqueName = (name?: string) => {
-        if (!name) {
-            return name;
-        }
-
-        const matchingBlocks = existingBlocks.filter((block) =>
-            block.fixedName?.startsWith(name)
-        );
-
-        return matchingBlocks.length > 0
-            ? `${name} ${matchingBlocks.length + 1}`
-            : name;
-    };
-
-    const uniqueFixedName = getUniqueName(item.fixedName);
-
     if (item?.id && item?.type) {
         if (item.type === 'columns' && !Array.isArray(item.columns)) {
             return {
                 ...item,
-                fixedName: uniqueFixedName,
                 layout: item.layout ?? '2-50',
                 columns: [[], []],
             };
         }
-
-        return {
-            ...(item as Block),
-            fixedName: uniqueFixedName,
-        };
+        return item as Block;
     }
-
     if (item?.value) {
         return {
             ...createBlockID(item.value as BlockType, {
-                fixedName: uniqueFixedName,
+                fixedName: item.fixedName,
                 placeholder: item.placeholder,
                 label: item.label,
                 options: item.options,
                 context,
             }),
             ...item,
-            fixedName: uniqueFixedName,
         };
     }
-
-    return createBlockID('text', {
-        label: 'Text',
-        fixedName: uniqueFixedName ?? 'Text',
-        context,
-    });
+    return createBlockID('text', { label: 'Text', context });
 };
 
 // Render block content

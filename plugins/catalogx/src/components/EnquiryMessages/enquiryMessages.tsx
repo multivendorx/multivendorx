@@ -13,14 +13,14 @@ const EnquiryMessages = () => {
         return (
             <Container general>
                 <Column>
-                    <div id="enquiry-messages" className='enquiry-container'></div>
+                    <div id="enquiry-messages"></div>
                 </Column>
             </Container>
         );
     }
 
     return (
-        <div id="enquiry-messages" className="enquiry-container">
+        <div id="enquiry-messages">
             {openPopup && (
                 <PopupUI
                     position="lightbox"

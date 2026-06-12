@@ -1,8 +1,8 @@
 import { __ } from '@wordpress/i18n';
 
 export const OuterSpace = {
-	id: 'store-registration',
-	name: __('Sales Report', 'catalogx'),
+	id: 'outer-space',
+	name: __('Outer Space', 'catalogx'),
 	blocks: [
 		{
 			id: 1,

@@ -85,16 +85,16 @@ interface TableCellProps {
 }
 
 function isBlocked(
-    opt: Option,
+    opt: Partial<Column>,
     modules: string[],
-    onBlocked?: MultiCheckBoxProps['onBlocked']
+    onBlocked?: MultiInputTableUIProps['onBlocked']
 ): boolean {
     if (opt.proSetting && !ZyraVariable?.khali_dabba) {
         onBlocked?.('pro');
         return true;
     }
-    if (opt.moduleEnabled && !modules.includes(opt.moduleEnabled)) {
-        onBlocked?.('module', opt.moduleEnabled);
+    if (opt.moduleEnabled && !modules.includes(opt.moduleEnabled ?? '')) {
+        onBlocked?.('module', opt.moduleEnabled ?? '');
         return true;
     }
     return false;
@@ -247,11 +247,12 @@ export const MultiInputTableUI: React.FC<MultiInputTableUIProps> = ({
                                 />
                             );
                         } else {
-                            const isCustomField = row.fields || column.fields;
+                            const isCustomField = !!(row.fields || column.fields);
 
+                            // Always include the rowKey so fields are unique per row
                             const fieldKey = isCustomField
-                                ? `${column.key}_${field.key}_${row.key}`
-                                : `${column.key}`;
+                                ? `${column.key}_${field.key}_${rowKey}`
+                                : `${column.key}_${rowKey}`;
 
                             return (
                                 <TableCell
@@ -369,6 +370,7 @@ export const MultiInputTableUI: React.FC<MultiInputTableUIProps> = ({
                                             .map((col) =>
                                                 renderCell(
                                                     col,
+                                                    group,
                                                     capKey,
                                                     capLabel,
                                                     hasExists

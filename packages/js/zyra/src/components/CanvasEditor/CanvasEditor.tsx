@@ -27,7 +27,6 @@ interface CanvasEditorProps {
             label: string;
             fixedName?: string;
             placeholder?: string;
-            defaultField?: boolean;
         }>;
     }>;
     visibleGroups?: string[];
@@ -81,11 +80,6 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     blocksRef.current = blocks;
 
     const isFormBuilder = context === 'form';
-    const defaultBlocks = React.useMemo(() => {
-        return blockGroups
-            .flatMap((group) => group.blocks)
-            .filter((block) => block.defaultField);
-    }, [blockGroups]);
 
     const titleBlock = isFormBuilder
         ? blocks.find((b) => b.type === 'title')
@@ -106,6 +100,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     const dynamicBlocks = isFormBuilder
         ? blocks.filter((b) => b.type !== 'button' && b.type !== 'title' && b.type !== 'richtext')
         : blocks;
+    
     useEffect(() => {
         if (context !== 'form') {
             return;
@@ -150,10 +145,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     }, []);
 
     useEffect(() => {
-        const shouldAddStoreNameField = defaultBlocks.some(
-            (block) => block.id === 'name'
-        );
-        if ( context !== 'form' || !shouldAddStoreNameField ) {
+        if (context !== 'form') {
             return;
         }
 
@@ -317,24 +309,10 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
             });
         });
 
-        // const topLevelIds = new Set(next.map((b) => b.id));
-        // next = next.map((b) => {
-        //     if (b.type !== 'columns') {
-        //         return b;
-        //     }
-        //     const cb = b as ColumnsBlock;
-        //     return {
-        //         ...cb,
-        //         columns: safeColumns(cb).map((col) =>
-        //             col.filter((c) => !topLevelIds.has(c.id))
-        //         ),
-        //     };
-        // });
-
         isInternalUpdate.current = true;
         setBlocks(next);
         markChanged();
-    }, [markChanged]);
+    }, [markChanged, context]);
 
     const scheduleDragFlush = () => {
         if (!dragFlushPending.current) {
@@ -417,7 +395,22 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                 isInternalUpdate.current = true;
 
                 const next = [...prev];
-                next[index] = { ...current, ...patch } as Block;
+                
+                // FIX: Create a deep copy when updating style or any nested object
+                const updatedBlock = { ...current };
+                
+                Object.keys(patch).forEach((key) => {
+                    const patchValue = patch[key as keyof Block];
+                    
+                    // If the patch value is an object, create a new reference
+                    if (patchValue && typeof patchValue === 'object') {
+                        updatedBlock[key as keyof Block] = { ...patchValue } as any;
+                    } else {
+                        updatedBlock[key as keyof Block] = patchValue;
+                    }
+                });
+                
+                next[index] = updatedBlock as Block;
 
                 if (openBlock?.id === next[index].id) {
                     setOpenBlock(next[index]);
@@ -444,12 +437,13 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                 return prev.filter((b) => b.id !== blockToDelete.id);
             });
             markChanged();
-            if (openBlock?.id === deleted?.id) {
+            // FIX: Use blockToDelete instead of undefined 'deleted'
+            if (openBlock?.id === blockToDelete?.id) {
                 setOpenBlock(null);
                 columnManager.clearSelection();
             }
         },
-        [proSettingChange, blocks, openBlock?.id, columnManager, markChanged]
+        [proSettingChange, dynamicBlocks, openBlock?.id, columnManager, markChanged]
     );
 
     const handleChildMutate = useCallback(
@@ -480,6 +474,13 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
             if (proSettingChange()) {
                 return;
             }
+            
+            // FIX: Create a proper patch with deep copy for objects
+            let patchValue = value;
+            if (key === 'style' && value && typeof value === 'object') {
+                patchValue = { ...value as any }; // Deep copy style object
+            }
+            
             if (columnManager.selectedLocation) {
                 const { parentIndex, columnIndex, childIndex } =
                     columnManager.selectedLocation;
@@ -487,7 +488,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                     parentIndex,
                     columnIndex,
                     childIndex,
-                    { [key]: value }
+                    { [key]: patchValue }
                 );
             } else {
                 const index = blocks.findIndex((b) => b.id === openBlock?.id);
@@ -497,7 +498,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                 if (key === 'layout' && blocks[index].type === 'columns') {
                     columnManager.handleLayoutChange(index, value);
                 } else {
-                    updateBlock(index, { [key]: value });
+                    updateBlock(index, { [key]: patchValue });
                 }
             }
             markChanged();
@@ -647,7 +648,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                                             isInternalUpdate.current = true;
                                             return [
                                                 ...prev,
-                                                createBlock(item, context, prev),
+                                                createBlock(item, context),
                                             ];
                                         });
                                         markChanged();
@@ -668,11 +669,6 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
 
     const renderTemplatesContent = () => (
         <aside className="elements-section">
-            {/* <div className="section-meta">
-                <h2>
-                    Templates <span>({templates.length})</span>
-                </h2>
-            </div> */}
             <main className="template-list">
                 {templates.map(({ id, name }) => (
                     <div
@@ -733,7 +729,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                                 );
                                 updateBlock(index, patch);
                             }}
-                            showMeta={false} // 🚀 no drag, no delete
+                            showMeta={false}
                         />
                     )}
                     <ReactSortable
@@ -819,7 +815,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                                 );
                                 updateBlock(index, patch);
                             }}
-                            showMeta={false} // no drag, no delete
+                            showMeta={false}
                         />
                     )}
                 </div>

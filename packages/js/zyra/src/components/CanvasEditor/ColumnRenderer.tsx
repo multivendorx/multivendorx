@@ -86,12 +86,24 @@ export const useColumnManager = ({
             if (parent?.type !== 'columns') {
                 return;
             }
+            
+            // FIX: Deep copy any nested objects in the patch
+            const processedPatch: BlockPatch = {};
+            Object.keys(patch).forEach((key) => {
+                const patchValue = patch[key as keyof Block];
+                if (patchValue && typeof patchValue === 'object') {
+                    processedPatch[key as keyof Block] = { ...patchValue } as any;
+                } else {
+                    processedPatch[key as keyof Block] = patchValue;
+                }
+            });
+            
             const columns = safeColumns(parent).map((col, ci) =>
                 ci !== colIdx
                     ? col
                     : col.map((child, ri) =>
                           ri === childIdx
-                              ? ({ ...child, ...patch } as Block)
+                              ? ({ ...child, ...processedPatch } as Block)
                               : child
                       )
             );
@@ -182,7 +194,17 @@ export const ColumnRenderer: React.FC<ColumnRendererProps> = ({
                         if (ri !== childIdx) {
                             return child;
                         }
-                        updatedChild = { ...child, ...patch } as Block;
+                        // FIX: Deep copy any nested objects in the patch
+                        const processedPatch: BlockPatch = {};
+                        Object.keys(patch).forEach((key) => {
+                            const patchValue = patch[key as keyof Block];
+                            if (patchValue && typeof patchValue === 'object') {
+                                processedPatch[key as keyof Block] = { ...patchValue } as any;
+                            } else {
+                                processedPatch[key as keyof Block] = patchValue;
+                            }
+                        });
+                        updatedChild = { ...child, ...processedPatch } as Block;
                         return updatedChild;
                     });
                 })

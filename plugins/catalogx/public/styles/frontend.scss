@@ -30,6 +30,11 @@
     }
 }
 
+.error-text {
+    font-size: 1rem;
+    color: #bd0000;
+}
+
 // common style end
 
 
@@ -130,11 +135,50 @@
             border-bottom: .063rem solid #00000038;
             padding: 0.25rem 0.625rem;
         }
-        .qty-option:last-child{
+
+        .qty-option:last-child {
             border-bottom: none;
         }
     }
 }
 
-
 // single product qty dropdown end
+
+// single product page buy more section
+.buy-more-save-more {
+    .container {
+        display: flex;
+        flex-direction: row;
+        gap: 0.625rem;
+        border: 0.063rem solid #ddd;
+        padding: 0.625rem;
+        overflow-x: auto;
+        margin-top: 1rem;
+
+        .card {
+            flex: 1;
+            min-width: 9.375rem;
+            border: 0.063rem solid #eee;
+            padding: 0.625rem;
+            border-radius: 0.313rem;
+            text-align: center;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+            position: relative;
+
+            h3 {
+                margin: 1.45rem 0 0.313rem; //for overwrite theme style
+            }
+            h4{
+                margin: 0 !important; //for overwrite theme style
+            }
+
+            .discounted-amount {
+                position: absolute;
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+        }
+    }
+}
+
+// single product page buy more section
