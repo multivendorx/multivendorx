@@ -360,6 +360,16 @@ export default {
 							],
 						},
 						{
+							key: 'product_compliance_total_count',
+							type: 'number',
+							label: __('Product Compliance count', 'multivendorx'),
+						},
+						{
+							key: 'product_compliance_active_count',
+							type: 'number',
+							label: __('Product Compliance Active count', 'multivendorx'),
+						},
+						{
 							key: 'non_compliance_action',
 							type: 'checkbox',
 							label: __('Non-Compliance action', 'multivendorx'),
