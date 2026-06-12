@@ -81,7 +81,7 @@ export default {
 			// // Add templates configuration with proper content
 			emailTemplates: [OuterSpace],
 			blockGroups: EMAIL_BLOCK_GROUPS,
-            availablePlaceholder: ['{customer_name}', '{customer_email}', '{product_name}', '{product_link}'],
+            availablePlaceholder: appLocalizer.email_tags,
             visibleGroups: 'email',
             context:'email',
 			defaultTemplateId: 'store-registration',

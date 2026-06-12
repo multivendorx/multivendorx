@@ -285,7 +285,7 @@ const QuoteList = () => {
                 {__('Update Cart', 'catalogx')}
             </button>
 
-            <table className="multivendorx-table shop_table shop_table_responsive my_account_orders">
+            <table className="catalogx-table shop_table shop_table_responsive my_account_orders">
                 <thead>
                     <tr>
                         <th className="woocommerce-orders-table__header">
@@ -440,7 +440,7 @@ const QuoteList = () => {
                             <button
                                 type="button"
                                 id="send-quote"
-                                className='woocommerce-button button wp-element-button'
+                                className='woocommerce-button button wp-element-button wp-block-button__link'
                                 onClick={handleSendQuote}
                                 disabled={
                                     !formData.name || !formData.email

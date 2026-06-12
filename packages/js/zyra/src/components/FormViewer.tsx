@@ -28,9 +28,9 @@ type AddressSubField = {
 };
 
 type FormMessages = {
-	fieldRequired?: string;
-	invalidEmail?: string;
-	termsRequired?: string;
+    fieldRequired?: string;
+    invalidEmail?: string;
+    termsRequired?: string;
 };
 
 declare global {
@@ -90,7 +90,6 @@ interface FormViewerProps {
     countryList?: Option[];
     stateList?: Record<string, Option[] | Record<string, string>>;
     formMessages?: FormMessages;
-    closeBtn?: boolean;
     onClose?: () => void;
 }
 
@@ -254,13 +253,12 @@ const Multiselect: React.FC<{
 
 const FormViewer: React.FC<FormViewerProps> = ({
     formFields,
-    closeBtn,
     onClose,
     response,
     onSubmit,
     countryList,
     stateList,
-    formMessages={},
+    formMessages = {},
 }) => {
     const [inputs, setInputs] = useState<Record<string, InputValue>>({});
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -273,19 +271,19 @@ const FormViewer: React.FC<FormViewerProps> = ({
     const formList = formFields.formfieldlist || [];
     const buttonField = formList.find((f) => f.type === 'button');
     const otherFields = formList
-    .filter((f) => f.type !== 'button')
-    .sort((a, b) => {
-        // push richtext to the end
-        if (a.type === 'richtext') {
-            return 1;
-        }
+        .filter((f) => f.type !== 'button')
+        .sort((a, b) => {
+            // push richtext to the end
+            if (a.type === 'richtext') {
+                return 1;
+            }
 
-        if (b.type === 'richtext') {
-            return -1;
-        }
+            if (b.type === 'richtext') {
+                return -1;
+            }
 
-        return 0;
-    });
+            return 0;
+        });
     const recaptchaField = formList.find((f) => f.type === 'recaptcha');
     const siteKey = recaptchaField?.sitekey || null;
     const defaultDate = new Date().getFullYear() + '-01-01';
@@ -390,7 +388,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
 
             if (field.name === 'name') {
                 if (!value || (typeof value === 'string' && !value.trim())) {
-                    error[field.name] = formMessages.fieldRequired?.replace( '%s', field.label || 'Store Name' );
+                    error[field.name] = formMessages.fieldRequired?.replace('%s', field.label || 'Store Name');
                 }
                 return;
             }
@@ -773,32 +771,32 @@ const FormViewer: React.FC<FormViewerProps> = ({
                 const subFields: AddressSubField[] = field.fields?.length
                     ? field.fields
                     : [
-                          {
-                              key: 'address',
-                              label: 'Address Line 1',
-                              type: 'text',
-                              required: true,
-                          },
-                          {
-                              key: 'address_2',
-                              label: 'Address Line 2',
-                              type: 'text',
-                          },
-                          {
-                              key: 'city',
-                              label: 'City',
-                              type: 'text',
-                              required: true,
-                          },
-                          { key: 'country', label: 'Country', type: 'select' },
-                          { key: 'state', label: 'State', type: 'select' },
-                          {
-                              key: 'zip',
-                              label: 'Postal Code',
-                              type: 'text',
-                              required: true,
-                          },
-                      ];
+                        {
+                            key: 'address',
+                            label: 'Address Line 1',
+                            type: 'text',
+                            required: true,
+                        },
+                        {
+                            key: 'address_2',
+                            label: 'Address Line 2',
+                            type: 'text',
+                        },
+                        {
+                            key: 'city',
+                            label: 'City',
+                            type: 'text',
+                            required: true,
+                        },
+                        { key: 'country', label: 'Country', type: 'select' },
+                        { key: 'state', label: 'State', type: 'select' },
+                        {
+                            key: 'zip',
+                            label: 'Postal Code',
+                            type: 'text',
+                            required: true,
+                        },
+                    ];
 
                 return (
                     <fieldset key={field.id}>
@@ -879,27 +877,27 @@ const FormViewer: React.FC<FormViewerProps> = ({
             }
 
             case 'button':
-                    return (
-                        <p key={field.id} className="woocommerce-form-row form-row">
-                            <button 
-                                className="woocommerce-button button wp-element-button"
-                                style={field.style ? JSON.parse(field.style) : {}}
-                                onClick={(e) => {
-                                    const captcha = formList.find(
-                                        (f) => f.type === 'recaptcha'
-                                    );
-                                    if (captcha?.disabled === false) {
-                                        if (captchaError || !captchaToken) {
-                                            return;
-                                        }
+                return (
+                    <p key={field.id} className="woocommerce-form-row form-row">
+                        <button
+                            className="woocommerce-button button wp-element-button"
+                            style={field.style ? JSON.parse(field.style) : {}}
+                            onClick={(e) => {
+                                const captcha = formList.find(
+                                    (f) => f.type === 'recaptcha'
+                                );
+                                if (captcha?.disabled === false) {
+                                    if (captchaError || !captchaToken) {
+                                        return;
                                     }
-                                    handleSubmit(e);
-                                }}
-                            >
-                                {field.label || field.placeholder || 'Submit'}
-                            </button>
-                        </p>
-                    );
+                                }
+                                handleSubmit(e);
+                            }}
+                        >
+                            {field.label || field.placeholder || 'Submit'}
+                        </button>
+                    </p>
+                );
             case 'richtext':
                 return (
                     <label
@@ -932,10 +930,17 @@ const FormViewer: React.FC<FormViewerProps> = ({
 
             case 'custom-recaptcha':
                 return (
-                    <CustomRecaptcha
-                        captchaValid={handleCaptchaValidation}
-                        submitted={submitted}
-                    />
+                    <FormRow
+                        key={field.id}
+                        label={field.label}
+                        fieldName={name}
+                        error={error}
+                    >
+                        <CustomRecaptcha
+                            captchaValid={handleCaptchaValidation}
+                            submitted={submitted}
+                        />
+                    </FormRow>
                 );
 
             default:
@@ -945,7 +950,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
 
     return (
         <form className="woocommerce-form woocommerce-form-login login">
-            {closeBtn && ( <i className='close-icon dashicons dashicons-no-alt' onClick={onClose}></i> )}
+            {onClose && (<i className='close-icon dashicons dashicons-no-alt' onClick={onClose}></i>)}
             {otherFields.map(renderField)}
             {buttonField && renderField(buttonField)}
         </form>
