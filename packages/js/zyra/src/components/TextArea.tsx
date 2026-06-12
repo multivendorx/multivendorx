@@ -24,14 +24,10 @@ interface TextAreaProps {
     onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
 }
 
-export const htmlToText = (input: unknown = ''): string => {
+const htmlToText = (input): string => {
     if (typeof input !== 'string') return '';
 
-    if (!input.includes('<')) return input;
-
-    const div = document.createElement('div');
-    div.innerHTML = input;
-    return div.textContent || '';
+    return input.replace(/<\/?[^>]+(>|$)/g, '');
 };
 
 export const TextAreaUI: React.FC<TextAreaProps> = ({
