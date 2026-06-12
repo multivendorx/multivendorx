@@ -23,7 +23,6 @@ import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import { dashNavigate } from '@/services/commonFunction';
 import './addProducts.scss';
-import { htmlToText } from '../services/commonFunction';
 
 const AddProduct = () => {
 	const { modules } = useModules();
