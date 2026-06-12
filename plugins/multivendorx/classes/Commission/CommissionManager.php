@@ -322,7 +322,10 @@ class CommissionManager {
                             'fixed'      => $row['commission_fixed'],
                             'percentage' => $row['commission_percentage'],
                         );
-                        return (float) $commission_amount;
+                        return array(
+                            'commission_amount' => (float) $commission_amount,
+                            'rules_array'       => $rules_array,
+                        );
                     }
                     break;
 
@@ -361,7 +364,10 @@ class CommissionManager {
                         }
                     }
                     if ( $commission_amount > 0 ) {
-                        return (float) $commission_amount;
+                        return array(
+                            'commission_amount' => (float) $commission_amount,
+                            'rules_array'       => $rules_array,
+                        );
                     }
                     break;
             }
