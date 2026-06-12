@@ -302,9 +302,3 @@ export const getUrl = (
 
 	return '#';
 };
-
-export const htmlToText = (html = '') => {
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    return div.textContent || '';
-};

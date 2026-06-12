@@ -531,11 +531,7 @@ const AddProduct = () => {
 										<div className="settings-input-content">
 											<TextAreaUI
 												name="short_description"
-												value={
-													appLocalizer.tinymceApiKey
-														? product.short_description
-														: htmlToText(product.short_description)
-												}
+												value={product.short_description}
 												tinymceApiKey={appLocalizer.tinymceApiKey}
 												onChange={(value) =>
 													handleChange(
@@ -573,11 +569,7 @@ const AddProduct = () => {
 										<div className="settings-input-content">
 											<TextAreaUI
 												name="description"
-												value={
-													appLocalizer.tinymceApiKey
-														? product.description
-														: htmlToText(product.description)
-												}
+												value={product.description}
 												tinymceApiKey={appLocalizer.tinymceApiKey}
 												onChange={(value) =>
 													handleChange(
