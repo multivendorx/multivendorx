@@ -939,6 +939,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
                         <CustomRecaptcha
                             captchaValid={handleCaptchaValidation}
                             submitted={submitted}
+                            field={field}
                         />
                     </FormRow>
                 );
