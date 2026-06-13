@@ -586,8 +586,8 @@ class Installer {
                     'enable_cart_checkout' => $old_all_settings['enable_cart_checkout'] ?? array(),
                 );
 
-                if ( ! empty( $old_all_settings['redirect_page_id'] ) ) {
-                    $shopping_settings['redirect_cart_page'] = $old_all_settings['redirect_page_id'];
+                if ( ! empty( $old_all_settings['redirect_cart_page'] ) ) {
+                    $shopping_settings['redirect_cart_page'] = $old_all_settings['redirect_cart_page'];
                 }
 
                 update_option(
@@ -603,7 +603,7 @@ class Installer {
                     'is_enable_out_of_stock'  => $old_all_settings['is_enable_out_of_stock'] ?? array(),
                     'is_disable_popup'        => $old_all_settings['is_disable_popup'] ?? 'popup',
                     'is_page_redirect'        => $old_all_settings['is_page_redirect'] ?? array(),
-                    'redirect_page_id'        => $old_all_settings['redirect_page_id'] ??'',
+                    'redirect_page_id'        => $old_all_settings['redirect_page_id'] ?? '',
                 );
 
                 if ( isset( $old_all_settings['notify_me_button'] ) ) {
