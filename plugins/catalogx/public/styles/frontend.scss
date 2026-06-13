@@ -49,8 +49,8 @@
             width: 3rem;
         }
 
-        .dashicons {
-            color: rgba(255, 0, 0, 0.76);
+        svg {
+            color: #ff0000c2;
             cursor: pointer;
         }
 
@@ -97,13 +97,6 @@
     text-align: center;
     border: 0.063rem solid #00000030;
     border-radius: 0.313rem;
-
-    .dashicons {
-        font-size: 3.5rem;
-        color: green;
-        height: 3.5rem;
-        width: 3.5rem;
-    }
 
     h2 {
         margin: 0;
