@@ -41,6 +41,8 @@ class Rewrites {
         // Make endpoint behave like a page.
         add_action( 'pre_get_posts', array( $this, 'make_endpoint_virtual_page' ) );
         add_filter( 'pre_get_document_title', array( $this, 'set_store_page_title' ), 10 );
+        add_filter( 'pre_handle_404', array( $this, 'prevent_store_404' ), 10 );
+        add_filter( 'the_title', array( $this, 'set_store_page_title' ), 10, 2 );
 
         // Load correct template.
         add_filter( 'template_include', array( $this, 'load_store_template' ) );
@@ -193,6 +195,13 @@ class Rewrites {
                 $query->queried_object_id = $page->ID;
             }
         }
+    }
+
+    public function prevent_store_404( $preempt ) {
+        if ( get_query_var( $this->custom_store_url ) ) {
+            return true;
+        }
+        return $preempt;
     }
 
     public function set_store_page_title( $title ) {

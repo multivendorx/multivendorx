@@ -361,6 +361,14 @@ class CommissionManager {
                                     'percentage' => $row['commission_percentage'],
                                 ),
                             );
+                        } else {
+                            $default            = reset( $commission_per_store_order );
+                            $commission_amount  += $line_total > 0 ? ( $line_total * ( (float) $default['commission_percentage'] / 100 ) + (float) $default['commission_fixed'] ) : 0;
+                            $rules_array['commission_amount']['rules'][] = array(
+                                'rule_type'  => 'global',
+                                'fixed'      => $default['commission_fixed'],
+                                'percentage' => $default['commission_percentage'],
+                            );
                         }
                     }
                     if ( $commission_amount > 0 ) {
