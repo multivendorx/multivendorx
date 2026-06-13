@@ -42,7 +42,7 @@ class Rewrites {
         add_action( 'pre_get_posts', array( $this, 'make_endpoint_virtual_page' ) );
         add_filter( 'pre_get_document_title', array( $this, 'set_store_page_title' ), 10 );
         add_filter( 'pre_handle_404', array( $this, 'prevent_store_404' ), 10 );
-        add_filter( 'the_title', array( $this, 'set_store_page_title' ), 10, 2 );
+        add_filter( 'the_title', array( $this, 'set_store_page_title' ), 10 );
 
         // Load correct template.
         add_filter( 'template_include', array( $this, 'load_store_template' ) );
@@ -210,7 +210,7 @@ class Rewrites {
             if ( ! $store ) {
                 return $title;
             }
-            return $store->get( 'name' ) . ' - ' . get_bloginfo( 'name' );
+            return $store->get( 'name' );
         }
         return $title;
     }
