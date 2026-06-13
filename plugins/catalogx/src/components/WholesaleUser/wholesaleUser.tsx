@@ -52,7 +52,8 @@ const WholesaleUser = () => {
 		},
 		status: {
 			label: __('Status', 'catalogx'),
-			type: 'status'
+			type: 'status',
+			statusClass: (row: WholesaleUserRow) => `${row.status}`
 		},
 		date: {
 			label: __('Date', 'catalogx'),
