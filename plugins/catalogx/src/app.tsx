@@ -102,19 +102,19 @@ const App = () => {
 		{
 			title: __("What's New", 'catalogx'),
 			icon: 'new',
-			link: '#',
+			link: 'https://catalogx.com/docs/',
 			targetBlank: true,
 		},
 		{
 			title: __('Get Support', 'catalogx'),
 			icon: 'customer-support',
-			link: '#',
+			link: 'https://catalogx.com/support/',
 			targetBlank: true,
 		},
 		{
 			title: __('Community', 'catalogx'),
 			icon: 'global-community',
-			link: '#',
+			link: 'https://catalogx.com/community/',
 			targetBlank: true,
 		},
 	];

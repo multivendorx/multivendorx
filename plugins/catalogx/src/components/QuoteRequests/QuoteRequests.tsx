@@ -6,6 +6,7 @@ import {
     NavigatorHeader,
     PopupUI,
     TableCard,
+    ComponentStatusView
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
@@ -86,7 +87,7 @@ const QuoteRequests = () => {
         headers,
         format: appLocalizer.date_format,
         buttonActions,
-        categoryCounts:defaultCategoryCounts,
+        categoryCounts: defaultCategoryCounts,
         filters,
         currency: {
             currencySymbol: appLocalizer.currency_symbol,
@@ -95,7 +96,7 @@ const QuoteRequests = () => {
             thousandSeparator: appLocalizer.thousand_separator,
             currencyPosition: appLocalizer.currency_position,
         },
-        onQueryUpdate: () => setopenPopup(true),
+        onQueryUpdate: () => setopenPopup(false),
         search: {
             placeholder: __('Search...', 'catalogx'),
             size: 8,
@@ -121,20 +122,48 @@ const QuoteRequests = () => {
         rows: dummyQuotes,
         totalRows: dummyQuotes.length,
     };
-    
+
     tableProps = applyFilters(
         'catalogx_quote_requests_table_props',
         defaultTableProps
     );
 
-    const handleTableWrapperClick = () => {
-        if (!appLocalizer.khali_dabba || !appLocalizer.active_modules.includes('quote')) {
-            setopenPopup(true);
-        }
-    };
 
+    const renderTableContent = () => {
+        if (!appLocalizer.khali_dabba) {
+            return (
+                <div onClick={() => setopenPopup(true)}>
+                    <TableCard {...tableProps} />
+                </div>
+            );
+        }
+
+        if (!appLocalizer.active_modules.includes('quote')) {
+            return (
+                <ComponentStatusView
+                    title={__(
+                        'Looks like customer support isn’t set up yet!',
+                        'catalogx'
+                    )}
+                    desc={__(
+                        'Turn on a support module to start assisting your customers.',
+                        'catalogx'
+                    )}
+                    buttonText={__('Enable Now', 'catalogx')}
+                    buttonLink={`${appLocalizer.admin_url}#&tab=modules&module=quote`}
+                />
+            );
+        }
+
+        return (
+            <>
+                <TableCard {...tableProps} />
+                {tableProps.openMailPopup && tableProps.sendMail}
+            </>
+        );
+    };
     return (
-        <div>
+        <>
             {openPopup && (
                 <PopupUI
                     position="lightbox"
@@ -143,12 +172,11 @@ const QuoteRequests = () => {
                     width={31.25}
                     height="auto"
                 >
-                    
-					{!appLocalizer.khali_dabba ? (
-						<ShowProPopup />
-					) : (
-						<ShowProPopup moduleName="quote" />
-					)}
+                    {!appLocalizer.khali_dabba ? (
+                        <ShowProPopup />
+                    ) : (
+                        <ShowProPopup moduleName="quote" />
+                    )}
                 </PopupUI>
             )}
             <NavigatorHeader
@@ -158,12 +186,12 @@ const QuoteRequests = () => {
                     'catalogx'
                 )}
                 headerTitle={__('Quote Requests', 'catalogx')}
-                buttons={[
+                buttons={appLocalizer.khali_dabba ? [
                     {
                         label: __('Add Quote', 'catalogx'),
                         icon: 'plus',
                         onClick: () => {
-                            if (appLocalizer.khali_dabba) {
+                            if (appLocalizer.khali_dabba && appLocalizer.active_modules.includes('quote')) {
                                 window.location.assign(
                                     'admin-ajax.php?action=add_quote_from_adminend'
                                 );
@@ -172,20 +200,17 @@ const QuoteRequests = () => {
                             }
                         },
                     },
-                ]}
+                ] : ''}
             />
             {tableProps.addingNewRule && tableProps.addingNewRule && (
                 tableProps.addNewRuleForm
             )}
             <Container general>
                 <Column>
-                    <div onClick={handleTableWrapperClick}>
-                        <TableCard {...tableProps} />
-                        {tableProps.openMailPopup && tableProps.sendMail}
-                    </div>
+                    {renderTableContent()}
                 </Column>
             </Container>
-        </div>
+        </>
     );
 };
 
