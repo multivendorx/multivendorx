@@ -13,6 +13,7 @@ import {
 	NavigatorHeader,
 	PopupUI,
 	TableCard,
+	ComponentStatusView
 } from 'zyra';
 
 import ShowProPopup from '../Popup/Popup';
@@ -66,17 +67,14 @@ const WholesaleUser = () => {
 				{
 					label: () => __('View', 'catalogx'),
 					icon: () => 'eye',
-					onClick: () => setopenPopup(true)
 				},
 				{
 					label: () => __('Approve', 'catalogx'),
-					icon: () => 'check',
-					onClick: () => setopenPopup(true)
+					icon: () => 'check'
 				},
 				{
 					label: () => __('Reject', 'catalogx'),
-					icon: () => 'close',
-					onClick: () => setopenPopup(true)
+					icon: () => 'close'
 				},
 			],
 		},
@@ -100,8 +98,8 @@ const WholesaleUser = () => {
 			size: 8,
 		},
 		bulkActions,
-		onBulkActionApply: () => setopenPopup(true),
-		onQueryUpdate: () => setopenPopup(true),
+		// onBulkActionApply: () => setopenPopup(true),
+		// onQueryUpdate: () => setopenPopup(true),
 		categoryCounts: defaultCategoryCounts,
 		rows: dummyWholesalecustomer,
 		totalRows: dummyWholesalecustomer.length,
@@ -111,16 +109,43 @@ const WholesaleUser = () => {
 		'catalogx_wholesale_user_table_component',
 		defaultTableProps
 	);
-
-	const handleTableWrapperClick = () => {
-		if (!appLocalizer.khali_dabba || !appLocalizer.active_modules.includes('wholesale')) {
-			setopenPopup(true);
+	
+	const renderTableContent = () => {
+		if (!appLocalizer.khali_dabba) {
+			return (
+				<div onClick={() => setopenPopup(true)}>
+					<TableCard {...tableProps} />
+				</div>
+			);
 		}
+		
+		if (!appLocalizer.active_modules.includes('wholesale')) {
+			return (
+				<ComponentStatusView
+					title={__(
+						'Looks like customer support isn’t set up yet!',
+						'multivendorx'
+					)}
+					desc={__(
+						'Turn on a support module to start assisting your customers.',
+						'multivendorx'
+					)}
+					buttonText={__('Enable Now', 'multivendorx')}
+					buttonLink={`${appLocalizer.admin_url}#&tab=modules&module=wholesale`}
+				/>
+			);
+		}
+		
+		return (
+			<>
+				<TableCard {...tableProps} />
+				{tableProps.selectedRow && tableProps.viewWholesaleDetails}
+			</>
+		);
 	};
 
-
 	return (
-		<div>
+		<>
 			{openPopup && (
 				<PopupUI
 					position="lightbox"
@@ -129,11 +154,7 @@ const WholesaleUser = () => {
 					width={31.25}
 					height="auto"
 				>
-					{!appLocalizer.khali_dabba ? (
-						<ShowProPopup />
-					) : (
-						<ShowProPopup moduleName="wholesale" />
-					)}
+					<ShowProPopup />
 				</PopupUI>
 			)}
 			<NavigatorHeader
@@ -150,13 +171,10 @@ const WholesaleUser = () => {
 
 			<Container general>
 				<Column>
-					<div onClick={handleTableWrapperClick}>
-						<TableCard {...tableProps} />
-						{tableProps.selectedRow && tableProps.viewWholesaleDetails}
-					</div>
+					{renderTableContent()}
 				</Column>
 			</Container>
-		</div>
+		</>
 	);
 };
 

@@ -126,6 +126,7 @@ export default {
     ),
     headerIcon: 'contact-form',
     submitUrl: 'settings',
+    moduleEnabled: 'Wholesale',
 	modal: [
 		{
 			key: 'store_registration_from',

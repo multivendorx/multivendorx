@@ -2,8 +2,8 @@ import { useState } from 'react';
 import {
     Column,
     Container,
-    InfoItem,
     NavigatorHeader,
+    ComponentStatusView,
     PopupUI,
     TableCard,
 } from 'zyra';
@@ -180,13 +180,39 @@ const Rules = () => {
         defaultTableProps
     );
 
-    const handleTableWrapperClick = () => {
-        if (!appLocalizer.khali_dabba || !appLocalizer.active_modules.includes('rules')) {
-            setopenPopup(true);
+    const renderTableContent = () => {
+        if (!appLocalizer.khali_dabba) {
+            return (
+                <div onClick={() => setopenPopup(true)}>
+                    <TableCard {...tableProps} />
+                </div>
+            );
         }
+
+        if (!appLocalizer.active_modules.includes('rules')) {
+            return (
+                <ComponentStatusView
+                    title={__(
+                        'Looks like customer support isn’t set up yet!',
+                        'multivendorx'
+                    )}
+                    desc={__(
+                        'Turn on a support module to start assisting your customers.',
+                        'multivendorx'
+                    )}
+                    buttonText={__('Enable Now', 'multivendorx')}
+                    buttonLink={`${appLocalizer.admin_url}#&tab=modules&module=rules`}
+                />
+            );
+        }
+
+        return (
+            <>
+                <TableCard {...tableProps} />
+                {tableProps.popup}
+            </>
+        );
     };
-
-
 
     return (
         <div>
@@ -231,10 +257,7 @@ const Rules = () => {
             )}
             <Container general>
                 <Column>
-                    <div onClick={handleTableWrapperClick}>
-                        <TableCard {...tableProps} />
-                        {tableProps.popup}
-                    </div>
+                    {renderTableContent()}
                 </Column>
             </Container>
         </div>

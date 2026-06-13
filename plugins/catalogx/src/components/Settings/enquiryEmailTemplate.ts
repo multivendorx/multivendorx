@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import {OuterSpace} from '../../assets/template/OuterSpace';
+import { GreenLagoon } from '../../assets/template/GreenLagoon';
 
 
 const EMAIL_BLOCK_GROUPS = [
@@ -79,7 +80,7 @@ export default {
 			classes: 'full-width',
 			// desc: 'Customise personalised store registration form for marketplace.',
 			// // Add templates configuration with proper content
-			emailTemplates: [OuterSpace],
+			emailTemplates: [OuterSpace, GreenLagoon],
 			blockGroups: EMAIL_BLOCK_GROUPS,
             availablePlaceholder: appLocalizer.email_tags,
             visibleGroups: 'email',
