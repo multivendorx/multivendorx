@@ -11,7 +11,8 @@ const QuoteThankYou = ({ orderId, status }: QuoteThankYouProps) => {
     const [reason, setReason] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
-    const handleRejectQuote = () => {
+    const handleRejectQuote = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();        
         axios({
             method: 'post',
             url: `${quoteCart.apiUrl}/catalogx/v1/quotes`,
@@ -36,7 +37,7 @@ const QuoteThankYou = ({ orderId, status }: QuoteThankYouProps) => {
         return (
             <div className="reject-quote-from-mail woocommerce">
                 <h2>{`${__('You are about to reject the quote', 'catalogx')} ${orderId}`}</h2>
-                <form className="woocommerce-form woocommerce-form-login login">
+                <form className="woocommerce-form woocommerce-form-login login" onSubmit={handleRejectQuote}>
                     <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
                         <label>
                             {__(
@@ -54,7 +55,7 @@ const QuoteThankYou = ({ orderId, status }: QuoteThankYouProps) => {
                         />
                     </p>
                     <p className='form-row'>
-                        <button className='woocommerce-button button wp-element-button wp-block-button__link' onClick={handleRejectQuote}>
+                        <button type="submit" className='woocommerce-button button wp-element-button wp-block-button__link'>
                             {__('Reject the quote', 'catalogx')}
                         </button>
                     </p>
@@ -66,9 +67,8 @@ const QuoteThankYou = ({ orderId, status }: QuoteThankYouProps) => {
     if (orderId) {
         return (
             <div className='quote-thank-you-section'>
-                <span className="dashicons dashicons-yes-alt"></span>
                 <svg width="3rem" height="3rem" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
-                <path fill="green" fill-rule="evenodd" d="M3 10a7 7 0 019.307-6.611 1 1 0 00.658-1.889 9 9 0 105.98 7.501 1 1 0 00-1.988.22A7 7 0 113 10zm14.75-5.338a1 1 0 00-1.5-1.324l-6.435 7.28-3.183-2.593a1 1 0 00-1.264 1.55l3.929 3.2a1 1 0 001.38-.113l7.072-8z"/>
+                    <path fill="green" fillRule="evenodd" d="M3 10a7 7 0 019.307-6.611 1 1 0 00.658-1.889 9 9 0 105.98 7.501 1 1 0 00-1.988.22A7 7 0 113 10zm14.75-5.338a1 1 0 00-1.5-1.324l-6.435 7.28-3.183-2.593a1 1 0 00-1.264 1.55l3.929 3.2a1 1 0 001.38-.113l7.072-8z"/>
                 </svg>
                 <h2> {__('Thank you for your quote request', 'catalogx')} {!quoteCart.khali_dabba && (orderId)}.</h2>
                 <p>

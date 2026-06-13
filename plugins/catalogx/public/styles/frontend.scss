@@ -35,6 +35,11 @@
     display: block;
     color: #ff0000d6;
 }
+#wholesale_register{
+    form{
+        margin: 0 !important; // for overwrite woocommerce style(my account become a wholesaler tab) 
+    }
+}
 // common style end
 
 
