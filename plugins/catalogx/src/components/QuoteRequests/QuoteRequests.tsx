@@ -95,7 +95,7 @@ const QuoteRequests = () => {
             thousandSeparator: appLocalizer.thousand_separator,
             currencyPosition: appLocalizer.currency_position,
         },
-        onQueryUpdate: () => setopenPopup(true),
+        onQueryUpdate: () => setopenPopup(false),
         search: {
             placeholder: __('Search...', 'catalogx'),
             size: 8,
@@ -134,7 +134,7 @@ const QuoteRequests = () => {
     };
 
     return (
-        <div>
+        <>
             {openPopup && (
                 <PopupUI
                     position="lightbox"
@@ -185,7 +185,7 @@ const QuoteRequests = () => {
                     </div>
                 </Column>
             </Container>
-        </div>
+        </>
     );
 };
 
