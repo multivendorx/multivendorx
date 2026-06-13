@@ -24,7 +24,7 @@ export const OuterSpace = {
 						id: 2,
 						type: 'heading',
 						name: 'email-heading-welcome',
-						text: __('New product enquiry', 'multivendorx'),
+						text: __('New product enquiry', 'catalogx'),
 						level: 2,
 						style: {
 							fontSize: 2,
@@ -38,7 +38,7 @@ export const OuterSpace = {
 						name: 'email-text-welcome-message',
 						html: __(
 							"Admin notification · ShopHive (p)",
-							'multivendorx'
+							'catalogx'
 						),
 						style: {
 							textAlign: 'center',
@@ -58,7 +58,7 @@ export const OuterSpace = {
 			name: 'email-text-welcome-message',
 			html: __(
 				"Hello Admin,",
-				'multivendorx'
+				'catalogx'
 			),
 			style: {
 				fontSize: 1,
@@ -72,7 +72,7 @@ export const OuterSpace = {
 			name: 'email-text-welcome-message',
 			html: __(
 				"A customer has submitted a product enquiry. Here are the full details below.",
-				'multivendorx'
+				'catalogx'
 			),
 			style: {
 				fontSize: 0.95,
@@ -99,7 +99,7 @@ export const OuterSpace = {
 						id: 2,
 						type: 'heading',
 						name: 'email-heading-welcome',
-						text: __('Enquiry Details', 'multivendorx'),
+						text: __('Enquiry Details', 'catalogx'),
 						level: 2,
 						style: {
 							fontSize: 1.713,
@@ -113,7 +113,7 @@ export const OuterSpace = {
 						name: 'email-text-welcome-message',
 						html: __(
 							"Admin notification · ShopHive (p)",
-							'multivendorx'
+							'catalogx'
 						),
 						style: {
 							textAlign: 'center',
@@ -146,7 +146,7 @@ export const OuterSpace = {
 						id: 5,
 						type: 'heading',
 						name: 'user-name',
-						text: __('User Name', 'multivendorx'),
+						text: __('User Name', 'catalogx'),
 						level: 2,
 						style: {
 							fontSize: 1.25,
@@ -159,7 +159,7 @@ export const OuterSpace = {
 						name: 'email-text-welcome-message',
 						html: __(
 							"Customer Name",
-							'multivendorx'
+							'catalogx'
 						),
 						style: {
 							fontSize: 1.125,
@@ -173,7 +173,7 @@ export const OuterSpace = {
 						id: 7,
 						type: 'heading',
 						name: 'user-name',
-						text: __('User Email', 'multivendorx'),
+						text: __('User Email', 'catalogx'),
 						level: 2,
 						style: {
 							fontSize: 1.25,
@@ -186,7 +186,7 @@ export const OuterSpace = {
 						name: 'email-text-welcome-message',
 						html: __(
 							"Customer Name",
-							'multivendorx'
+							'catalogx'
 						),
 						style: {
 							fontSize: 1.125,

@@ -276,181 +276,189 @@ const QuoteList = () => {
 
     return (
         <div className="quote-list-container woocommerce" >
-            <button
-                type="button"
-                className="update-cart-btn button wp-block-button__link update-cart-button"
-                onClick={handleUpdateCart}
-                disabled={isLoading}
-            >
-                {__('Update Cart', 'catalogx')}
-            </button>
-
-            <table className="catalogx-table shop_table shop_table_responsive my_account_orders">
-                <thead>
-                    <tr>
-                        <th className="woocommerce-orders-table__header">
-                            {__('Product', 'catalogx')}
-                        </th>
-                        <th className="woocommerce-orders-table__header">
-                            {__('Quantity', 'catalogx')}
-                        </th>
-                        <th className="woocommerce-orders-table__header">
-                            {__('Subtotal', 'catalogx')}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows.map((row, index) => (
-                        <>
-                            <tr key={index} className="woocommerce-orders-table__row">
-                                <th
-                                    className="product-cell woocommerce-orders-table__cell"
-                                    data-label={__('Username', 'catalogx')}
-                                >
-                                    <div
-                                        dangerouslySetInnerHTML={{
-                                            __html: row.image || '',
-                                        }}
-                                    />
-                                    {row.name}
-                                    <i
-                                        className="dashicons dashicons-no-alt"
-                                        onClick={() => handleRemoveItem(row)}
-                                    />
-                                </th>
-                                <td
-                                    className="woocommerce-orders-table__cell"
-                                    data-label={__('Username', 'catalogx')}
-                                >
-                                    <input
-                                        type="number"
-                                        className="basic-input"
-                                        min="1"
-                                        value={
-                                            productQuantity[row.id]?.quantity ??
-                                            row.quantity ??
-                                            1
-                                        }
-                                        onChange={(e) =>
-                                            handleQuantityChange(e, row)
-                                        }
-                                    />
-                                </td>
-                                <td
-                                    className="woocommerce-orders-table__cell"
-                                    data-label={__('Username', 'catalogx')}
-                                >
-                                    <div
-                                        dangerouslySetInnerHTML={{
-                                            __html: String(row.total),
-                                        }}
-                                    />
-                                </td>
-                            </tr>
-                        </>
-                    ))}
-                </tbody>
-            </table>
-
-            {rows.length > 0 && (
+            {rows.length > 0 ? (
                 <>
-                    {responseStatus && (
-                        <div className="woocommerce-notices-wrapper">
-                            <ul className={
-                                responseStatus === 'error'
-                                    ? 'woocommerce-error'
-                                    : 'woocommerce-message'
-                            } role="alert">
-                                <li>
-                                    {responseStatus === 'error'
-                                        ? __(
-                                            'Something went wrong! Please try again.',
-                                            'catalogx'
-                                        )
-                                        : __(
-                                            'Quote request sent successfully!',
-                                            'catalogx'
-                                        )}
-                                </li>
-                            </ul>
-                        </div>
-                    )}
-                    <h2> {__('Request a Quote', 'catalogx')} </h2>
-                    <form className="woocommerce-form woocommerce-form-login login">
-                        <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                            <label>
-                                {__('Name:', 'catalogx')}
-                                <span className="required">*</span>
-                            </label>
+                <button
+                    type="button"
+                    className="update-cart-btn button wp-block-button__link update-cart-button"
+                    onClick={handleUpdateCart}
+                    disabled={isLoading}
+                >
+                    {__('Update Cart', 'catalogx')}
+                </button>
 
-                            <input
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                className='woocommerce-Input input-text'
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </p>
+                <table className="catalogx-table shop_table shop_table_responsive my_account_orders">
+                    <thead>
+                        <tr>
+                            <th className="woocommerce-orders-table__header">
+                                {__('Product', 'catalogx')}
+                            </th>
+                            <th className="woocommerce-orders-table__header">
+                                {__('Quantity', 'catalogx')}
+                            </th>
+                            <th className="woocommerce-orders-table__header">
+                                {__('Subtotal', 'catalogx')}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rows.map((row, index) => (
+                            <>
+                                <tr key={index} className="woocommerce-orders-table__row">
+                                    <th
+                                        className="product-cell woocommerce-orders-table__cell"
+                                        data-label={__('Username', 'catalogx')}
+                                    >
+                                        <div
+                                            dangerouslySetInnerHTML={{
+                                                __html: row.image || '',
+                                            }}
+                                        />
+                                        {row.name}
+                                        <i
+                                            className="dashicons dashicons-no-alt"
+                                            onClick={() => handleRemoveItem(row)}
+                                        />
+                                    </th>
+                                    <td
+                                        className="woocommerce-orders-table__cell"
+                                        data-label={__('Username', 'catalogx')}
+                                    >
+                                        <input
+                                            type="number"
+                                            className="basic-input"
+                                            min="1"
+                                            value={
+                                                productQuantity[row.id]?.quantity ??
+                                                row.quantity ??
+                                                1
+                                            }
+                                            onChange={(e) =>
+                                                handleQuantityChange(e, row)
+                                            }
+                                        />
+                                    </td>
+                                    <td
+                                        className="woocommerce-orders-table__cell"
+                                        data-label={__('Username', 'catalogx')}
+                                    >
+                                        <div
+                                            dangerouslySetInnerHTML={{
+                                                __html: String(row.total),
+                                            }}
+                                        />
+                                    </td>
+                                </tr>
+                            </>
+                        ))}
+                    </tbody>
+                </table>
 
-                        <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                            <label>
-                                {__('Email:', 'catalogx')}
-                                <span className="required">*</span>
-                            </label>
+                {responseStatus && (
+                    <div className="woocommerce-notices-wrapper">
+                        <ul className={
+                            responseStatus === 'error'
+                                ? 'woocommerce-error'
+                                : 'woocommerce-message'
+                        } role="alert">
+                            <li>
+                                {responseStatus === 'error'
+                                    ? __(
+                                        'Something went wrong! Please try again.',
+                                        'catalogx'
+                                    )
+                                    : __(
+                                        'Quote request sent successfully!',
+                                        'catalogx'
+                                    )}
+                            </li>
+                        </ul>
+                    </div>
+                )}
+                <h2> {__('Request a Quote', 'catalogx')} </h2>
+                <form className="woocommerce-form woocommerce-form-login login">
+                    <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                        <label>
+                            {__('Name:', 'catalogx')}
+                            <span className="required">*</span>
+                        </label>
 
-                            <input
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                className='woocommerce-Input input-text'
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </p>
+                        <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            className='woocommerce-Input input-text'
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </p>
 
-                        <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                            <label>
-                                {__('Phone:', 'catalogx')}
-                            </label>
+                    <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                        <label>
+                            {__('Email:', 'catalogx')}
+                            <span className="required">*</span>
+                        </label>
 
-                            <input
-                                type="tel"
-                                name="phone"
-                                className='woocommerce-Input input-text'
-                                value={formData.phone}
-                                onChange={handleInputChange}
-                            />
-                        </p>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            className='woocommerce-Input input-text'
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </p>
 
-                        <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                            <label>
-                                {__('Message:', 'catalogx')}
-                            </label>
+                    <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                        <label>
+                            {__('Phone:', 'catalogx')}
+                        </label>
 
-                            <textarea
-                                name="message"
-                                rows={4}
-                                value={formData.message}
-                                onChange={handleInputChange}
-                                className='woocommerce-Input input-text'
-                            />
-                        </p>
-                        <p className='form-row'>
-                            <button
-                                type="button"
-                                id="send-quote"
-                                className='woocommerce-button button wp-element-button wp-block-button__link'
-                                onClick={handleSendQuote}
-                                disabled={
-                                    !formData.name || !formData.email
-                                }
-                            >
-                                {__('Send Quote', 'catalogx')}
-                            </button>
-                        </p>
-                    </form>
+                        <input
+                            type="tel"
+                            name="phone"
+                            className='woocommerce-Input input-text'
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                        />
+                    </p>
+
+                    <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                        <label>
+                            {__('Message:', 'catalogx')}
+                        </label>
+
+                        <textarea
+                            name="message"
+                            rows={4}
+                            value={formData.message}
+                            onChange={handleInputChange}
+                            className='woocommerce-Input input-text'
+                        />
+                    </p>
+                    <p className='form-row'>
+                        <button
+                            type="button"
+                            id="send-quote"
+                            className='woocommerce-button button wp-element-button wp-block-button__link'
+                            onClick={handleSendQuote}
+                            disabled={
+                                !formData.name || !formData.email
+                            }
+                        >
+                            {__('Send Quote', 'catalogx')}
+                        </button>
+                    </p>
+                </form>
                 </>
+            ):(
+                <div className="woocommerce-notices-wrapper">
+                        <ul className='woocommerce-error' role="alert">
+                            <li>
+                                {__('No Quote List Found','catalogx')}
+                            </li>
+                        </ul>
+                    </div>
             )}
         </div>
     );

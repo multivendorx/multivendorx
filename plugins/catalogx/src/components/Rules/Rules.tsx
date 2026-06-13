@@ -194,13 +194,13 @@ const Rules = () => {
                 <ComponentStatusView
                     title={__(
                         'Looks like customer support isn’t set up yet!',
-                        'multivendorx'
+                        'catalogx'
                     )}
                     desc={__(
                         'Turn on a support module to start assisting your customers.',
-                        'multivendorx'
+                        'catalogx'
                     )}
-                    buttonText={__('Enable Now', 'multivendorx')}
+                    buttonText={__('Enable Now', 'catalogx')}
                     buttonLink={`${appLocalizer.admin_url}#&tab=modules&module=rules`}
                 />
             );
