@@ -127,17 +127,14 @@ const Rules = () => {
                             ? __('Suspend', 'catalogx')
                             : __('Activate', 'catalogx'),
                     icon: 'refresh',
-                    onClick: () => setopenPopup(true),
                 },
                 {
                     label: __('Edit', 'catalogx'),
                     icon: 'edit',
-                    onClick: () => setopenPopup(true),
                 },
                 {
                     label: __('Delete', 'catalogx'),
                     icon: 'delete',
-                    onClick: () => setopenPopup(true),
                 },
             ],
         },
@@ -169,7 +166,6 @@ const Rules = () => {
     const defaultTableProps = {
         headers,
         showMenu: false,
-        onQueryUpdate: () => setopenPopup(true),
         filters,
         rows: dummyRules,
         totalRows: dummyRules.length,

@@ -87,21 +87,21 @@ export const defaultCategoryCounts = [
     {
         value: 'all',
         label: __('All', 'catalogx-pro'),
-        count: 124,
+        count: 10,
     },
     {
         value: 'pending',
         label: __('Pending', 'catalogx-pro'),
-        count: 38,
+        count: 2,
     },
     {
         value: 'approve',
         label: __('Approved', 'catalogx-pro'),
-        count: 71,
+        count: 5,
     },
     {
         value: 'reject',
         label: __('Rejected', 'catalogx-pro'),
-        count: 15,
+        count: 3,
     },
 ];
