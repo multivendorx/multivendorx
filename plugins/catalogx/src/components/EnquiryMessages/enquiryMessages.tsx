@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import '../common.scss';
 import { PopupUI, Container, Column } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
-import '../AdminDashboard/AdminDashboard.scss';
 import './enquiryMessages.scss';
 
 // Demo data
