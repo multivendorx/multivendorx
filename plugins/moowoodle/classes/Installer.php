@@ -228,8 +228,8 @@ class Installer {
                 );
             }
         }
-        if ( version_compare( $previous_version, '3.5.0', '<' ) ) {
-            self::migrate_enrollment_expiry_3_5_0();
+        if ( version_compare( $previous_version, '3.4.5', '<' ) ) {
+            self::migrate_enrollment_expiry_3_4_5();
         }
     }
 
@@ -470,7 +470,7 @@ class Installer {
      *
      * @return void
      */
-    public static function migrate_enrollment_expiry_3_5_0() {
+    public static function migrate_enrollment_expiry_3_4_5() {
         global $wpdb;
 
         $table_name = $wpdb->prefix . Util::TABLES['enrollment'];
