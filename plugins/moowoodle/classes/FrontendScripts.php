@@ -328,18 +328,22 @@ class FrontendScripts {
 					'object_name' => 'courseMyAcc',
                     'use_rest'    => true,
 				),
-				'moowoodle-moodle-enrollment-mapping' => array(
-					'object_name' => 'moowoodleProduct',
+                'moowoodle-moodle-enrollment-mapping' => array(
+                    'object_name' => 'moowoodleProduct',
                     'use_rest'    => true,
-					'data'        => array(
-						'khali_dabba'      => MooWoodle()->util->is_khali_dabba(),
-                        'postId'           => $post ? $post->ID : '',
-                        'linkType'         => $default_type ?? '',
-                        'linkedItemId'     => $selected_id ?? '',
-                        'productMetaNonce' => wp_create_nonce( 'product_meta_nonce' ),
-                        'syncUrl'          => esc_url( admin_url( 'admin.php?page=moowoodle#&tab=synchronization&subtab=synchronize-course' ) ),
-					),
-				),
+                    'data'        => apply_filters(
+                        'moowoodle_moodle_enrollment_mapping_data',
+                        array(
+                            'khali_dabba'      => MooWoodle()->util->is_khali_dabba(),
+                            'postId'           => $post ? $post->ID : '',
+                            'linkType'         => $default_type ?? '',
+                            'linkedItemId'     => $selected_id ?? '',
+                            'productMetaNonce' => wp_create_nonce( 'product_meta_nonce' ),
+                            'syncUrl'          => esc_url( admin_url( 'admin.php?page=moowoodle#&tab=synchronization&subtab=synchronize-course' ) ),
+                        ),
+                        $post
+                    ),
+                ),
 			);
 
         $localize_scripts = apply_filters( 'moowoodle_localize_scripts', $localize_scripts );

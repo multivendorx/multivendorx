@@ -496,6 +496,12 @@ const QuoteList = () => {
                         </>
                     )}
                 </>
+            ) : (
+                <div className="woocommerce-notices-wrapper">
+                        <ul className="woocommerce-error" role="alert">
+                            <li> {__('No quote list found', 'catalogx')}</li>
+                        </ul>
+                    </div>
             )}
         </div>
     );

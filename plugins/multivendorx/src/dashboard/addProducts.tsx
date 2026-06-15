@@ -23,6 +23,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import { dashNavigate } from '@/services/commonFunction';
 import './addProducts.scss';
+import { htmlToText } from '../services/commonFunction';
 
 const AddProduct = () => {
 	const { modules } = useModules();
@@ -530,7 +531,7 @@ const AddProduct = () => {
 										<div className="settings-input-content">
 											<TextAreaUI
 												name="short_description"
-												value={product.short_description}
+												value={appLocalizer.tinymceApiKey ? product.short_description : htmlToText(product.short_description)}
 												tinymceApiKey={appLocalizer.tinymceApiKey}
 												onChange={(value) =>
 													handleChange(
@@ -568,7 +569,7 @@ const AddProduct = () => {
 										<div className="settings-input-content">
 											<TextAreaUI
 												name="description"
-												value={product.description}
+												value={appLocalizer.tinymceApiKey ? product.description : htmlToText(product.description)}
 												tinymceApiKey={appLocalizer.tinymceApiKey}
 												onChange={(value) =>
 													handleChange(
