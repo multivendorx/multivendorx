@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const CustomRecaptcha = ( props: any ) => {
-    const { captchaValid, submitted } = props;
+    const { captchaValid, submitted, field } = props;
     const [ securityCode, setSecurityCode ] = useState( '' );
     const [ userInput, setUserInput ] = useState( '' );
     const [ isCaptchaValid, setIsCaptchaValid ] = useState( true );
@@ -36,7 +36,7 @@ const CustomRecaptcha = ( props: any ) => {
                 name="securityCode"
                 onChange={ captchCheck }
                 value={ userInput }
-                placeholder="Enter security code"
+                placeholder={field.placeholder}
             />
             <p>
                 { 'Your security code is:' } { securityCode }

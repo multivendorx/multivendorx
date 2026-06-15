@@ -530,9 +530,8 @@ const AddProduct = () => {
 										<div className="settings-input-content">
 											<TextAreaUI
 												name="short_description"
-												value={
-													product.short_description
-												}
+												value={product.short_description}
+												tinymceApiKey={appLocalizer.tinymceApiKey}
 												onChange={(value) =>
 													handleChange(
 														'short_description',
@@ -570,6 +569,7 @@ const AddProduct = () => {
 											<TextAreaUI
 												name="description"
 												value={product.description}
+												tinymceApiKey={appLocalizer.tinymceApiKey}
 												onChange={(value) =>
 													handleChange(
 														'description',
@@ -794,31 +794,31 @@ const AddProduct = () => {
 								true,
 								{ product }
 							) && (
-								<FormGroup label={__('Product gallery', 'multivendorx')}>
-									<FileInputUI
-										imageSrc={galleryImages.map((img) => img.thumbnail)}
-										multiple={true}
-										openUploader="Add Gallery Image"
-										onChange={(val) => {
-											if (!val) {
-												setGalleryImages([]);
-												return;
-											}
+									<FormGroup label={__('Product gallery', 'multivendorx')}>
+										<FileInputUI
+											imageSrc={galleryImages.map((img) => img.thumbnail)}
+											multiple={true}
+											openUploader="Add Gallery Image"
+											onChange={(val) => {
+												if (!val) {
+													setGalleryImages([]);
+													return;
+												}
 
-											const urls = Array.isArray(val) ? val : [val];
+												const urls = Array.isArray(val) ? val : [val];
 
-											const formatted = urls.map((file) => ({
-												id: file?.id,
-												src: file?.url,
-												thumbnail: file?.url,
-											}));
+												const formatted = urls.map((file) => ({
+													id: file?.id,
+													src: file?.url,
+													thumbnail: file?.url,
+												}));
 
-											setGalleryImages(formatted);
-										}}
-									/>
-								</FormGroup>
-							)}
-							
+												setGalleryImages(formatted);
+											}}
+										/>
+									</FormGroup>
+								)}
+
 						</FormGroupWrapper>
 					</Card>
 				</Column>

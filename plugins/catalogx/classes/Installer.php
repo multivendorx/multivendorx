@@ -47,7 +47,10 @@ class Installer {
      * Install class constructor functions
      */
     public function __construct() {
+        add_action( 'init', array( $this, 'run_migration' ) );
+    }
 
+    public function run_migration() {
         // Get the previous version and current version.
         self::$previous_version = get_option( self::VERSION_KEY, '' );
         // this function should be deleted after 7.0.0 .
@@ -63,7 +66,7 @@ class Installer {
             $this->set_default_modules();
             $this->set_default_settings();
         } else {
-            $this->run_migration();
+            $this->do_migration();
         }
         // Update the version in database.
         update_option( self::VERSION_KEY, CatalogX()->version );
@@ -333,7 +336,7 @@ class Installer {
      *
      * @return void
      */
-    public function run_migration() {
+    public function do_migration() {
         // Migration by specific version controll.
         $previous_version = get_option( self::VERSION_KEY, '' );
         if ( version_compare( $previous_version, '6.0.7', '<' ) ) {
@@ -408,21 +411,16 @@ class Installer {
             /**
              * Form Settings Migration
              */
-            $current_settings = get_option(
-                Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
-                array()
-            );
+            $from_settings = get_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], array());
 
-            if ( ! empty( $current_settings ) ) {
-
-                $free_form_settings = $current_settings['freefromsetting'] ?? array();
-                $pro_form_settings  = $current_settings['formsettings']['formfieldlist'] ?? array();
+            if ( ! empty( $from_settings ) ) {
+                $free_form_settings = $from_settings['freefromsetting'] ?? array();
+                $pro_form_settings  = $from_settings['formsettings']['formfieldlist'] ?? array();
 
                 $migrated_free_enquiry_form = array();
                 $field_id                   = 1;
 
                 foreach ( $free_form_settings as $field ) {
-
                     if ( empty( $field['key'] ) ) {
                         continue;
                     }
@@ -461,13 +459,11 @@ class Installer {
             );
 
             if ( ! empty( $old_exclusion_settings ) ) {
-
                 $migrated_exclusion_settings = array(
                     'exclusion' => array(),
                 );
 
                 foreach ( $old_exclusion_settings as $setting_key => $setting_values ) {
-
                     if ( ! is_array( $setting_values ) ) {
                         continue;
                     }

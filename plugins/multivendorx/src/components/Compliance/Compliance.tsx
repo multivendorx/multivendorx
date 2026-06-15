@@ -95,7 +95,7 @@ const Compliance = () => {
 	const getForm = (tabId: string) => {
 		return (
 			applyFilters('multivendorx_compliance_tab_content', null, {
-				tabId,
+				tabId, useLocation, Link
 			}) || <div />
 		);
 	};
