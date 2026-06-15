@@ -417,23 +417,103 @@ class Installer {
                 $free_form_settings = $from_settings['freefromsetting'] ?? array();
                 $pro_form_settings  = $from_settings['formsettings']['formfieldlist'] ?? array();
 
-                $migrated_free_enquiry_form = array();
-                $field_id                   = 1;
+                $field_map = [
+                    'name' => [
+                        'id'          => 1,
+                        'type'        => 'text',
+                        'label'       => 'Name',
+                        'placeholder' => 'Enter your name here',
+                        'name'        => 'name',
+                    ],
+                    'email' => [
+                        'id'          => 2,
+                        'type'        => 'email',
+                        'label'       => 'Email',
+                        'placeholder' => 'Enter your email here',
+                        'name'        => 'email',
+                    ],
+                    'phone' => [
+                        'id'          => 3,
+                        'type'        => 'text',
+                        'label'       => 'Phone',
+                        'placeholder' => 'Enter your phone number here',
+                        'name'        => 'phone',
+                    ],
+                    'address' => [
+                        'id'          => 4,
+                        'type'        => 'text',
+                        'label'       => 'Address',
+                        'placeholder' => 'Enter your address here',
+                        'name'        => 'address',
+                    ],
+                    'subject' => [
+                        'id'          => 5,
+                        'type'        => 'text',
+                        'label'       => 'Subject',
+                        'placeholder' => 'Enter the subject of your enquiry here',
+                        'name'        => 'subject',
+                    ],
+                    'comment' => [
+                        'id'          => 6,
+                        'type'        => 'text',
+                        'label'       => 'Comment',
+                        'placeholder' => 'Enter the details of your enquiry here',
+                        'name'        => 'comment',
+                    ],
+                    'filesize-limit' => [
+                        'id'          => 7,
+                        'type'        => 'fileupload',
+                        'label'       => 'Filesize Limit',
+                        'placeholder' => '',
+                        'name'        => 'File upload size limit',
+                    ],
+                    'fileupload' => [
+                        'id'          => 8,
+                        'type'        => 'attachment',
+                        'label'       => 'Fileupload',
+                        'placeholder' => '',
+                        'name'        => 'File upload',
+                    ],
+                    'captcha' => [
+                        'id'          => 9,
+                        'type'        => 'custom-recaptcha',
+                        'label'       => 'Captcha',
+                        'placeholder' => '',
+                        'name'        => 'Captcha',
+                    ],
+                ];
 
-                foreach ( $free_form_settings as $field ) {
-                    if ( empty( $field['key'] ) ) {
+                $migrated_free_enquiry_form = [];
+
+                // Add enabled fields.
+                foreach ($free_form_settings as $field) {
+                    if (empty($field['active']) || empty($field['key'])) {
                         continue;
                     }
 
-                    $migrated_free_enquiry_form[] = array(
-                        'id'          => $field_id++,
-                        'type'        => sanitize_key( $field['key'] ),
-                        'label'       => $field['label'] ?? '',
-                        'placeholder' => '',
-                        'disabled'    => empty( $field['active'] ),
-                        'name'        => sanitize_key( $field['key'] ),
+                    $key = $field['key'];
+
+                    if (!isset($field_map[$key])) {
+                        continue;
+                    }
+
+                    $migrated_free_enquiry_form[] = array_merge(
+                        $field_map[$key],
+                        [
+                            'disabled' => '',
+                        ]
                     );
                 }
+
+                // Always add submit button at the end.
+                $migrated_free_enquiry_form[] = [
+                    'id'          => 10,
+                    'type'        => 'button',
+                    'label'       => 'Submit',
+                    'placeholder' => '',
+                    'disabled'    => '',
+                    'name'        => 'Submit',
+                ];
 
                 update_option(
                     Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
@@ -506,8 +586,8 @@ class Installer {
                     'enable_cart_checkout' => $old_all_settings['enable_cart_checkout'] ?? array(),
                 );
 
-                if ( ! empty( $old_all_settings['redirect_page_id'] ) ) {
-                    $shopping_settings['redirect_cart_page'] = $old_all_settings['redirect_page_id'];
+                if ( ! empty( $old_all_settings['redirect_cart_page'] ) ) {
+                    $shopping_settings['redirect_cart_page'] = $old_all_settings['redirect_cart_page'];
                 }
 
                 update_option(
@@ -522,6 +602,8 @@ class Installer {
                     'enquiry_user_permission' => $old_all_settings['enquiry_user_permission'] ?? array(),
                     'is_enable_out_of_stock'  => $old_all_settings['is_enable_out_of_stock'] ?? array(),
                     'is_disable_popup'        => $old_all_settings['is_disable_popup'] ?? 'popup',
+                    'is_page_redirect'        => $old_all_settings['is_page_redirect'] ?? array(),
+                    'redirect_page_id'        => $old_all_settings['redirect_page_id'] ?? '',
                 );
 
                 if ( isset( $old_all_settings['notify_me_button'] ) ) {
