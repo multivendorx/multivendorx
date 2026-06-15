@@ -145,20 +145,11 @@ const ProductTab = () => {
 									setExpiryDays(event.target.value)
 								}
 							/>
-
-							{!moowoodleProduct.khali_dabba && (
-								<span className="description">
-									{__(
-										'Available in MooWoodle Pro.',
-										'moowoodle'
-									)}
-								</span>
-							)}
 						</p>
 
 						<p className="form-field">
 							<label htmlFor="course_expiry_type">
-								{__('Expiry Type', 'moowoodle')}
+								{__('On Course Expiration', 'moowoodle')}
 							</label>
 
 							<SelectControl
@@ -180,6 +171,14 @@ const ProductTab = () => {
 								onChange={setExpiryType}
 							/>
 						</p>
+						{!moowoodleProduct.khali_dabba && (
+							<span className="description">
+								{__(
+									'Available in MooWoodle Pro.',
+									'moowoodle'
+								)}
+							</span>
+						)}
 					</>
 				</Disabled>
 				<Notice
@@ -200,8 +199,8 @@ const ProductTab = () => {
 			</div>
 			<input type="hidden" name="link_type" value={linkType} />
 			<input type="hidden" name="linked_item_id" value={linkedItemId} />
-			<input type="hidden" name="course_expiry_days" value={ expiryDays}/>
-			<input type="hidden" name="course_expiry_type" value={ expiryType}/>
+			<input type="hidden" name="course_expiry_days" value={expiryDays} />
+			<input type="hidden" name="course_expiry_type" value={expiryType} />
 
 			<input
 				type="hidden"
