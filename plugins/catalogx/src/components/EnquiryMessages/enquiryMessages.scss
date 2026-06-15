@@ -1,5 +1,6 @@
 @use '../config.scss' as *;
 @use "sass:map";
+
 .enquiry-container {
     width: 100%;
     display: flex;
@@ -519,7 +520,8 @@
 
         .enquiry-body {
             height: 70vh;
-            overflow: auto;
+            overflow-y: auto;
+            overflow-x: hidden;
 
             .date {
                 width: 100%;
@@ -765,9 +767,10 @@
                 right: 1rem;
             }
         }
+
     }
 
-    // replay
+    // reply
     .reply-text-preview {
         padding: 0.625rem;
         background: $theme-background-color;
@@ -811,6 +814,7 @@
     background: #fff;
     position: absolute;
     right: 1.125rem;
+    top: 5rem;
     z-index: 9;
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.125);
     height: 81vh;
@@ -918,6 +922,11 @@
 }
 
 // product list popup start
+.product-item-wrapper {
+    max-height: 82%;
+    overflow: auto;
+}
+
 .product-item {
     display: flex;
     justify-content: space-between;
@@ -955,24 +964,31 @@
         }
     }
 }
+.info-container{
+    .product-item{
+        padding: 0.313rem 1rem; 
+    }
+}
 // product list popup end
 
 
 // for my account only
-#enquiry-msg-box{
-    .chat-list{
-        .chat-item-container{
+#enquiry-msg-box {
+    .chat-list {
+        .chat-item-container {
             flex-direction: column;
             align-items: flex-start;
 
-            .chat-img{
+            .chat-img {
                 width: auto;
                 align-self: flex-start !important; // for overwrite default style
             }
-            .name{
+
+            .name {
                 padding-bottom: 0;
             }
-            .last-chat{
+
+            .last-chat {
                 display: none;
             }
         }

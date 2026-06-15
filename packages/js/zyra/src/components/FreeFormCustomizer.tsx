@@ -203,7 +203,7 @@ const FreeFormCustomizerField: React.FC<{
                 const isEditing = editingFieldId === fieldConfig.id;
 
                 return (
-                    <div key={fieldConfig.id} className={`free-form-row ${isActive ? '' : 'enable-visibility'}`} >
+                    <div key={fieldConfig.id} className={`free-form-row ${isActive ? '' : 'enable-visibility'} ${isSubmit ? 'submit-btn' : ''}`} >
                         <div className="free-form-input">
                             {isEditing ? (
                                 <BasicInputUI
@@ -213,25 +213,32 @@ const FreeFormCustomizerField: React.FC<{
                                     readOnly={!canAccess}
                                     ref={(el) => inputRefs.current[fieldConfig.id] = el}
                                 />
+                            ) : isSubmit ? (
+                                <div className='buttons-wrapper' onClick={() => handleEditClick(fieldConfig.id)}>
+                                    <div className="admin-btn btn-purple">
+                                        {currentLabel}
+                                    </div>
+                                    {canAccess && <i className='edit-icon adminfont-edit' />}
+                                </div>
                             ) : (
                                 <label onClick={() => handleEditClick(fieldConfig.id)}>
                                     {currentLabel}
-                                    <i className='adminfont-edit' />
+                                    <i className='edit-icon adminfont-edit' />
                                 </label>
                             )}
                         </div>
-                        <div className="free-form-input">
-                            {!isSubmit && (
-                                <BasicInputUI
-                                    type="text"
-                                    value={currentPlaceholder}
-                                    onChange={(val) => updateFieldPlaceholder(fieldConfig.id, val)}
-                                    readOnly={!canAccess}
-                                />
-                            )}
-                        </div>
-                        {!isSubmit && (
+                         {!isSubmit && (
+                            <>
+                            <div className="free-form-input">                           
+                                    <BasicInputUI
+                                        type="text"
+                                        value={currentPlaceholder}
+                                        onChange={(val) => updateFieldPlaceholder(fieldConfig.id, val)}
+                                        readOnly={!canAccess}
+                                    />
+                            </div>
                             <i onClick={() => handleToggle(fieldConfig.id)} className={`visibility-icon adminfont-${isActive ? 'eye' : 'eye-blocked'}`} />
+                            </>
                         )}
                     </div>
                 );
