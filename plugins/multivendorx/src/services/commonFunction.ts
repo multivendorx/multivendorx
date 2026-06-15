@@ -302,3 +302,9 @@ export const getUrl = (
 
 	return '#';
 };
+
+export const htmlToText = (input): string => {
+    if (typeof input !== 'string') return '';
+
+    return input.replace(/<\/?[^>]+(>|$)/g, '');
+};
