@@ -153,7 +153,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
         const shouldAddStoreNameField = defaultBlocks.some(
             (block) => block.id === 'name'
         );
-        if ( context !== 'form' || !shouldAddStoreNameField ) {
+        if (context !== 'form' || !shouldAddStoreNameField) {
             return;
         }
 
@@ -618,15 +618,14 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                             {label} <span>({palette.length})</span>
                         </div>
                         <i
-                            className={`adminfont-pagination-right-arrow ${
-                                openGroups[id] ? 'rotate' : ''
-                            }`}
+                            className={`adminfont-pagination-right-arrow ${openGroups[id] ? 'rotate' : ''
+                                }`}
                         />
                     </div>
                     {openGroups[id] && (
                         <ReactSortable
                             list={palette}
-                            setList={() => {}}
+                            setList={() => { }}
                             sort={false}
                             group={{
                                 name: groupName,
@@ -645,6 +644,22 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                                         }
                                         setBlocks((prev) => {
                                             isInternalUpdate.current = true;
+
+                                            const isTerms =
+                                                item.value === 'richtext';
+
+                                            if (isTerms) {
+                                                const alreadyExists = prev.some(
+                                                    (b) =>
+                                                        b.type === 'richtext' &&
+                                                        b.context === 'form'
+                                                );
+
+                                                if (alreadyExists) {
+                                                    return prev;
+                                                }
+                                            }
+
                                             return [
                                                 ...prev,
                                                 createBlock(item, context, prev),
@@ -677,9 +692,8 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                 {templates.map(({ id, name }) => (
                     <div
                         key={id}
-                        className={`template-item ${
-                            id === activeTemplateId ? 'active' : ''
-                        }`}
+                        className={`template-item ${id === activeTemplateId ? 'active' : ''
+                            }`}
                         onClick={() => onTemplateSelect?.(id)}
                     >
                         <div className="template-name">{name}</div>
@@ -710,11 +724,11 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                         },
                         ...(showTemplatesTab && templates.length
                             ? [
-                                  {
-                                      label: 'Templates',
-                                      content: renderTemplatesContent(),
-                                  },
-                              ]
+                                {
+                                    label: 'Templates',
+                                    content: renderTemplatesContent(),
+                                },
+                            ]
                             : []),
                     ]}
                 />
