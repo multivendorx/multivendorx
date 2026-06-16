@@ -40,8 +40,9 @@ class Frontend {
         if ( empty( CatalogX()->setting->get_setting( 'enable_cart_checkout' ) ) ) {
             add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_button_in_shop_page' ) );
         }
-
-        add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
+        if ( !( wp_is_block_theme() || file_exists( get_theme_file_path( 'theme.json' ) ) ) ) {
+            add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
+        }
 
         add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
     }

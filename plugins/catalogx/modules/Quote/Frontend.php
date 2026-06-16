@@ -36,7 +36,11 @@ class Frontend {
         if ( ! empty( $display_quote_button ) && ! is_user_logged_in() ) {
             return;
         }
-        add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_quote_button' ) );
+
+        if ( !( wp_is_block_theme() || file_exists( get_theme_file_path( 'theme.json' ) ) ) ) {
+            add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_quote_button' ) );
+        }
+
         add_action( 'woocommerce_after_shop_loop_item', array( $this, 'add_button_for_quote' ), 11 );
     }
 
