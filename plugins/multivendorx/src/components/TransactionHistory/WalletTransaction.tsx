@@ -478,8 +478,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 													className={`price ${
 														parseFloat(txn.debit) <
 														0
-															? 'color-red'
-															: 'color-green'
+															? 'red-color'
+															: 'green-color'
 													}`}
 												>
 													{formatCurrency(txn.debit)}
