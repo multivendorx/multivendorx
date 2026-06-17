@@ -392,9 +392,9 @@
 
 // commission popup style (common and remove)
 
-@media screen  and (width <= 600px) {
-    .popup-content {
-        min-width: 10rem !important;
-        max-width: 92% !important;
-    }
+@media screen  and (width <=37.5rem) {
+    // .popup-content {
+    //     min-width: 10rem !important;
+    //     max-width: 92% !important;
+    // }
 }

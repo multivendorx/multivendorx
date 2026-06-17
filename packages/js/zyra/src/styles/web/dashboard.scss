@@ -289,9 +289,12 @@
 // actively log start
 .activity-log {
     .activity {
-        padding: 0 0 1.45rem 1.313rem;
+        padding: 0 4.5rem 1.45rem 1.313rem;
         position: relative;
         border-left: 0.063rem solid $theme-color;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
 
         span {
             position: absolute;
@@ -304,10 +307,6 @@
         .title {
             font-size: 1.063rem;
             line-height: 1rem;
-        }
-
-        .des {
-            padding-top: 0.5rem;
         }
 
         &::before {
@@ -427,3 +426,8 @@
 }
 
 // payout card wrapper end
+
+
+@media screen  and (width <=37.5rem) {
+    
+}
