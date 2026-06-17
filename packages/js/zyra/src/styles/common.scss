@@ -810,12 +810,16 @@ $index: 1;
 // tour end
 
 
-@media only screen and (width <= 600px) {
+@media only screen and (width <=37.5rem) {
   #admin-main-wrapper{
     margin-left: -0.625rem;
   }
 
   .form-select-field {
     width: 100% !important;
+  }
+  // table pagination start
+  .admin-pagination{
+    height: auto;
   }
 }

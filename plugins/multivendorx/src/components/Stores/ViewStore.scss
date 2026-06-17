@@ -377,3 +377,20 @@
         flex-wrap: nowrap !important;
     }
 }
+
+@media screen  and (width <=37.5rem) {
+    .store-header{
+        .banner::after{
+            font-size: 4rem;
+        }
+        .details-wrapper{
+            flex-direction: column;
+            align-items: start;
+            
+            .left-section{
+                width: 100%;
+            }
+        }
+        
+    }
+}
