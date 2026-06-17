@@ -177,9 +177,10 @@ export default {
         {
             key: 'enquiry_form_tabs',
             type: 'tab',
+            classes: 'full-width',
             tabs: [
                 {
-					key: 'free_form',
+                    key: 'free_form',
                     label: __('Free', 'catalogx'),
                     content: [
                         {
@@ -207,7 +208,6 @@ export default {
                             proSetting: true,
                         },
                     ],
-					proSetting:true,
                 },
             ],
         },

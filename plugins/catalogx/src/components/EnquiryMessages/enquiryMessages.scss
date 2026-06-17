@@ -1,5 +1,94 @@
 @use '../config.scss' as *;
 @use "sass:map";
+
+@font-face {
+    font-family: 'adminfonts';
+    src: url('../../../assets/fonts/adminfonts.eot?v3htb9');
+    src: url('../../../assets/fonts/adminfonts.eot?v3htb9#iefix') format('embedded-opentype'),
+        url('../../../assets/fonts/adminfonts.ttf?v3htb9') format('truetype'),
+        url('../../../assets/fonts/adminfonts.woff?v3htb9') format('woff'),
+        url('../../../assets/fonts/adminfonts.svg?v3htb9#adminfonts') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+[class^="adminfont-"],
+[class*=" adminfont-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'adminfonts' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.adminfont-check:before {
+    content: "\e900";
+}
+
+.adminfont-more-vertical:before {
+    content: "\e901";
+}
+
+.adminfont-send:before {
+    content: "\e902";
+}
+
+.adminfont-quote:before {
+    content: "\e903";
+}
+
+.adminfont-form-email:before {
+    content: "\e904";
+}
+
+.adminfont-plus:before {
+    content: "\e905";
+}
+
+.adminfont-close:before {
+    content: "\e906";
+}
+
+.adminfont-delete:before {
+    content: "\e907";
+}
+
+.adminfont-vendor-form-delete:before {
+    content: "\e908";
+}
+
+.adminfont-smile-o:before {
+    content: "\e909";
+}
+
+.adminfont-pushpin:before {
+    content: "\e90a";
+}
+
+.adminfont-vendor-form-copy:before {
+    content: "\e90b";
+}
+
+.adminfont-reply:before {
+    content: "\e90c";
+}
+
+.adminfont-star:before {
+    content: "\e90d";
+}
+
+.adminfont-star-o:before {
+    content: "\e90e";
+}
+
 .enquiry-container {
     width: 100%;
     display: flex;
@@ -22,7 +111,7 @@
     .close-btn {
         position: absolute;
         right: 0.625rem;
-        top: 0.625rem;
+        top: 0.25rem;
         padding: 0.313rem;
         color: map.get(map.get($color-palette, "red"), color);
         background: map.get(map.get($color-palette, "red"), light-color);
@@ -83,13 +172,15 @@
                 gap: 0.5rem;
                 flex-direction: column;
                 height: 100%;
+                margin: 0;
+                padding: 0;
 
                 li {
                     width: 100%;
                     display: flex;
                     align-items: flex-end;
                     justify-content: flex-start;
-                    background: $theme-background-color;
+                    background: #cdb8e74a;
                     padding: 0.625rem;
                     box-sizing: border-box;
 
@@ -399,6 +490,10 @@
                     line-height: 1;
                 }
 
+                i {
+                    display: none; // for hide navbar icon for admin & store dashboard
+                }
+
                 img {
                     width: 2.5rem;
                     height: 2.5rem;
@@ -519,7 +614,8 @@
 
         .enquiry-body {
             height: 70vh;
-            overflow: auto;
+            overflow-y: auto;
+            overflow-x: hidden;
 
             .date {
                 width: 100%;
@@ -621,6 +717,11 @@
             .message-text {
                 font-size: 0.938rem;
                 line-height: 1.438;
+
+                .reaction-view {
+                    padding-left: 0.313rem;
+                    font-size: 1.063rem;
+                }
             }
 
             .status {
@@ -765,9 +866,28 @@
                 right: 1rem;
             }
         }
+
+        .thankyou-section {
+            text-align: center;
+            height: 90%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            .admin-font {
+                font-size: 2.313rem;
+                color: map.get(map.get($color-palette, "green"), color);
+            }
+
+            .title {
+                font-size: 1.5rem;
+                line-height: 1;
+                margin: 0.625rem 0;
+            }
+        }
     }
 
-    // replay
+    // reply
     .reply-text-preview {
         padding: 0.625rem;
         background: $theme-background-color;
@@ -811,6 +931,7 @@
     background: #fff;
     position: absolute;
     right: 1.125rem;
+    top: 5rem;
     z-index: 9;
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.125);
     height: 81vh;
@@ -918,63 +1039,101 @@
 }
 
 // product list popup start
-.product-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.313rem 0;
-    align-items: center;
-    position: relative;
+.product-item-wrapper {
+    max-height: 82%;
+    overflow: auto;
 
-    .product-details {
+    .product-item {
         display: flex;
-        gap: 0.5rem;
+        justify-content: space-between;
+        padding: 0.313rem 0;
+        align-items: center;
+        position: relative;
 
-        img {
-            width: 3rem;
-            height: auto;
-        }
-    }
+        .product-details {
+            display: flex;
+            gap: 0.5rem;
 
-    .product-name {
-        font-size: 1rem;
-        font-weight: 500;
-    }
-
-    .product-qty {
-        display: flex;
-        gap: 0.313rem;
-    }
-
-    .product-price {
-        .admin-badge {
-            margin-right: 2rem;
+            img {
+                width: 3rem;
+                height: auto;
+            }
         }
 
-        .close-btn {
-            right: 0;
+        .product-name {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .product-qty {
+            display: flex;
+            gap: 0.313rem;
+        }
+
+        .product-price {
+            .admin-badge {
+                margin-right: 2rem;
+            }
+
+            .close-btn {
+                right: 0;
+            }
         }
     }
 }
+
+.info-container {
+    .product-item-wrapper {
+        margin-top: 0.625rem;
+
+        .product-item {
+            padding: 0.313rem 1rem;
+        }
+    }
+}
+
 // product list popup end
 
 
 // for my account only
-#enquiry-msg-box{
-    .chat-list{
-        .chat-item-container{
-            flex-direction: column;
-            align-items: flex-start;
-
-            .chat-img{
-                width: auto;
-                align-self: flex-start !important; // for overwrite default style
-            }
-            .name{
-                padding-bottom: 0;
-            }
-            .last-chat{
-                display: none;
-            }
+#enquiry-msg-box {
+    .enquiry-container:has(.active-navbar) {
+        .chat-list {
+            transform: translateX(0);
         }
+
+        &::after {
+            position: absolute;
+            content: '';
+            width: 100%;
+            height: 100%;
+            background: #00000045;
+            z-index: 9;
+        }
+    }
+
+    .chat-meta {
+        i {
+            display: inline-block;
+        }
+    }
+
+    .chat-list {
+        position: absolute;
+        z-index: 99;
+        min-width: 50% !important;
+        height: 100%;
+        transform: translateX(-100%);
+        transition: all 0.4s ease;
+    }
+
+    .header-container-wrapper {
+        .date-filter {
+            display: none;
+        }
+    }
+
+    .starter-container {
+        background: #fff;
     }
 }

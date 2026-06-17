@@ -190,8 +190,8 @@ const EnquiryMessages = () => {
                                                     </div>
                                                     <div className="chat-actions">
                                                         <div className="tooltip-wrapper top">
-                                                            <i className="action-replay adminfont-vendor-form-copy"></i>
-                                                            <span className="tooltip-name">Replay</span>
+                                                            <i className="action-reply adminfont-reply"></i>
+                                                            <span className="tooltip-name">Reply</span>
                                                         </div>
                                                         <div className="tooltip-wrapper top">
                                                             <i className="action-copy adminfont-vendor-form-copy"></i>

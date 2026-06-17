@@ -470,22 +470,24 @@ const FormViewer: React.FC<FormViewerProps> = ({
 
     // ─── Field Renderer ───────────────────────────────────────────────────────
 
-    const renderField = (field: Field) => {
+    const renderField = (field: Field, index: number) => {
         if (field.disabled) {
             return null;
         }
 
         const name = field.name ?? '';
         const error = errors[name];
+        // Create a unique key using index and field.id
+        const uniqueKey = `${field.id}-${index}`;
 
         switch (field.type) {
             case 'title':
-                return <h2 key={field.id}>{field.text}</h2>;
+                return <h2 key={uniqueKey}>{field.text}</h2>;
 
             case 'section':
                 return (
                     <p
-                        key={field.id}
+                        key={uniqueKey}
                         className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide"
                     >
                         {field.label}
@@ -494,7 +496,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
 
             case 'divider':
                 return (
-                    <p key={field.id} className="section-divider-container" />
+                    <p key={uniqueKey} className="section-divider-container" />
                 );
 
             case 'text':
@@ -511,7 +513,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
 
                     return (
                         <FormRow
-                            key={field.id}
+                            key={uniqueKey}
                             label={field.label}
                             fieldName={name}
                             error={error}
@@ -564,7 +566,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
                 // ✅ DEFAULT TEXT FIELD
                 return (
                     <FormRow
-                        key={field.id}
+                        key={uniqueKey}
                         label={field.label}
                         fieldName={name}
                         error={error}
@@ -585,7 +587,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
             case 'email':
                 return (
                     <FormRow
-                        key={field.id}
+                        key={uniqueKey}
                         label={field.label}
                         fieldName={name}
                         error={error}
@@ -610,7 +612,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
             case 'textarea':
                 return (
                     <FormRow
-                        key={field.id}
+                        key={uniqueKey}
                         label={field.label}
                         fieldName={name}
                         error={error}
@@ -632,7 +634,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
             case 'checkboxes':
                 return (
                     <FormRow
-                        key={field.id}
+                        key={uniqueKey}
                         label={field.label}
                         fieldName={name}
                         error={error}
@@ -647,7 +649,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
             case 'multi-select':
                 return (
                     <FormRow
-                        key={field.id}
+                        key={uniqueKey}
                         label={field.label}
                         fieldName={name}
                         error={error}
@@ -665,7 +667,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
             case 'dropdown':
                 return (
                     <FormRow
-                        key={field.id}
+                        key={uniqueKey}
                         label={field.label}
                         fieldName={name}
                         error={error}
@@ -682,7 +684,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
             case 'radio':
                 return (
                     <FormRow
-                        key={field.id}
+                        key={uniqueKey}
                         label={field.label}
                         fieldName={name}
                         error={error}
@@ -697,7 +699,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
             case 'recaptcha':
                 return (
                     <p
-                        key={field.id}
+                        key={uniqueKey}
                         className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide"
                     >
                         <div className="recaptcha-wrapper">
@@ -714,7 +716,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
             case 'attachment':
                 return (
                     <FormRow
-                        key={field.id}
+                        key={uniqueKey}
                         label={field.label}
                         fieldName={name}
                         error={error}
@@ -732,7 +734,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
             case 'datepicker':
                 return (
                     <FormRow
-                        key={field.id}
+                        key={uniqueKey}
                         label={field.label}
                         fieldName={name}
                         error={error}
@@ -753,7 +755,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
             case 'timepicker':
                 return (
                     <FormRow
-                        key={field.id}
+                        key={uniqueKey}
                         label={field.label}
                         fieldName={name}
                         error={error}
@@ -799,16 +801,17 @@ const FormViewer: React.FC<FormViewerProps> = ({
                     ];
 
                 return (
-                    <fieldset key={field.id}>
+                    <fieldset key={uniqueKey}>
                         <legend>{field.label}</legend>
-                        {subFields.map((subField) => {
+                        {subFields.map((subField, subIndex) => {
                             const inputName = subField.key;
                             const subValue = inputs[inputName] ?? '';
+                            const subUniqueKey = `${uniqueKey}-${subField.key}-${subIndex}`;
 
                             if (subField.type === 'text') {
                                 return (
                                     <p
-                                        key={subField.key}
+                                        key={subUniqueKey}
                                         className="woocommerce-form-row form-row"
                                     >
                                         <label>{subField.label}</label>
@@ -856,7 +859,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
 
                                 return (
                                     <p
-                                        key={subField.key}
+                                        key={subUniqueKey}
                                         className="woocommerce-form-row form-row"
                                     >
                                         <label>{subField.label}</label>
@@ -878,7 +881,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
 
             case 'button':
                 return (
-                    <p key={field.id} className="woocommerce-form-row form-row">
+                    <p key={uniqueKey} className="woocommerce-form-row form-row">
                         <button
                             className="woocommerce-button button wp-element-button"
                             style={field.style ? JSON.parse(field.style) : {}}
@@ -901,7 +904,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
             case 'richtext':
                 return (
                     <label
-                        key={field.id}
+                        key={uniqueKey}
                         className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide terms-checkbox"
                     >
                         <input
@@ -931,7 +934,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
             case 'custom-recaptcha':
                 return (
                     <FormRow
-                        key={field.id}
+                        key={uniqueKey}
                         label={field.label}
                         fieldName={name}
                         error={error}
@@ -949,6 +952,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
         }
     };
 
+    // In the return statement, update the map to pass the index:
     return (
         <form className="woocommerce-form woocommerce-form-login login">
             {onClose && (
@@ -956,8 +960,8 @@ const FormViewer: React.FC<FormViewerProps> = ({
                     <path d="M20.7457 3.32851C20.3552 2.93798 19.722 2.93798 19.3315 3.32851L12.0371 10.6229L4.74275 3.32851C4.35223 2.93798 3.71906 2.93798 3.32854 3.32851C2.93801 3.71903 2.93801 4.3522 3.32854 4.74272L10.6229 12.0371L3.32856 19.3314C2.93803 19.722 2.93803 20.3551 3.32856 20.7457C3.71908 21.1362 4.35225 21.1362 4.74277 20.7457L12.0371 13.4513L19.3315 20.7457C19.722 21.1362 20.3552 21.1362 20.7457 20.7457C21.1362 20.3551 21.1362 19.722 20.7457 19.3315L13.4513 12.0371L20.7457 4.74272C21.1362 4.3522 21.1362 3.71903 20.7457 3.32851Z" fill="#e71313" />
                 </svg>
             )}
-            {otherFields.map(renderField)}
-            {buttonField && renderField(buttonField)}
+            {otherFields.map((field, index) => renderField(field, index))}
+            {buttonField && renderField(buttonField, otherFields.length)}
         </form>
     );
 };
