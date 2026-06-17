@@ -1,8 +1,8 @@
 import { __, sprintf } from '@wordpress/i18n';
 export default {
-    id: 'shopping',
-    priority: 1,
-    headerTitle: __( 'Shopping', 'catalogx' ),
+    id: 'shopping-extra',
+    priority: 3,
+    headerTitle: __('Sales flow and catalog mode', 'catalogx'),
     headerDescription: __(
         'Set up sales flow and catalog mode with integrated enquiry and quotation management.',
         'catalogx'
@@ -10,10 +10,11 @@ export default {
     headerIcon: 'cart',
     submitUrl: 'settings',
     modal: [
+        //shopping
         {
             key: 'enable_cart_checkout',
             type: 'checkbox',
-            label: __( 'Sitewide buy mode', 'catalogx' ),
+            label: __('Sitewide buy mode', 'catalogx'),
             desc: sprintf(
                 /* translators: %s will be replaced with a link to CatalogX Pro */
                 __(
@@ -21,8 +22,8 @@ export default {
                     'catalogx'
                 ),
                 '<a href="' +
-                    appLocalizer.pro_url +
-                    '" target="_blank">CatalogX Pro</a>'
+                appLocalizer.pro_url +
+                '" target="_blank">CatalogX Pro</a>'
             ),
             options: [
                 {
@@ -37,7 +38,7 @@ export default {
         {
             key: 'redirect_cart_page',
             type: 'select',
-            label: __( 'Cart / Checkout Redirect Page', 'catalogx' ),
+            label: __('Cart / Checkout Redirect Page', 'catalogx'),
             size: 15,
             options: [
                 {
@@ -58,12 +59,45 @@ export default {
                     'catalogx'
                 ),
                 '<a href="' +
-                    appLocalizer.pro_url +
-                    '" target="_blank">CatalogX Pro</a>'
+                appLocalizer.pro_url +
+                '" target="_blank">CatalogX Pro</a>'
             ),
 
             proSetting: true,
             moduleEnabled: 'catalog',
+        },
+        //extra
+        {
+            key: 'display_pdf',
+            type: 'multi-checkbox-table',
+            storeSetting: true,
+            label: __('Attachment', 'catalogx'),
+            classes: 'gridTable',
+            rows: [
+                {
+                    key: 'allow_download_pdf',
+                    label: __('Download as PDF', 'catalogx'),
+                },
+                {
+                    key: 'attach_pdf_to_email',
+                    label: __('Attach with Email', 'catalogx'),
+                },
+            ],
+            columns: [
+                {
+                    key: 'enquiry_pdf_permission',
+                    label: __('Enquiry', 'catalogx'),
+                    type: 'checkbox',
+                    moduleEnabled: 'enquiry',
+                },
+                {
+                    key: 'quote_pdf_permission',
+                    label: __('Quote', 'catalogx'),
+                    type: 'checkbox',
+                    moduleEnabled: 'quote',
+                },
+            ],
+            proSetting: true,
         },
     ],
 };

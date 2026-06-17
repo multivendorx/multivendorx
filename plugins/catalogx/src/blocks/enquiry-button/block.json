@@ -3,6 +3,9 @@
     "name": "catalogx/enquiry-button",
     "title": "Enquiry Button",
     "category": "catalogx",
+    "blockHooks": {
+		"woocommerce/add-to-cart-form": "after"
+	},
     "icon": "button",
     "description": "A block that displays enquiry button.",
     "editorScript": "file:./index.js",

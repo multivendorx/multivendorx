@@ -31,8 +31,9 @@ class Frontend {
         if ( ! Util::is_available() ) {
             return;
         }
-        $this->enquiry_user_permission = CatalogX()->setting->get_setting( 'enquiry_user_permission', array() );
-        if ( ! empty( $this->enquiry_user_permission ) && ! is_user_logged_in() ) {
+        $this->enquiry_user_permission = CatalogX()->setting->get_setting( 'enquiry_user_permission', '' );
+
+        if ( 'logged_in_only' === $this->enquiry_user_permission && ! is_user_logged_in() ) {
             return;
         }
         $this->enable_out_of_stock      = CatalogX()->setting->get_setting( 'is_enable_out_of_stock' );
@@ -40,8 +41,9 @@ class Frontend {
         if ( empty( CatalogX()->setting->get_setting( 'enable_cart_checkout' ) ) ) {
             add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_button_in_shop_page' ) );
         }
-
-        add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
+        if ( !( wp_is_block_theme() || file_exists( get_theme_file_path( 'theme.json' ) ) ) ) {
+            add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
+        }
 
         add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
     }

@@ -1,8 +1,8 @@
 import { __ } from '@wordpress/i18n';
 export default {
-    id: 'enquiry',
+    id: 'enquiry-quote',
     priority: 2,
-    headerTitle: __( 'Enquiry', 'catalogx' ),
+    headerTitle: __('Enquiry $ Quote Rules', 'catalogx'),
     headerDescription: __(
         'Set up sales flow and catalog mode with integrated enquiry and quotation management.',
         'catalogx'
@@ -10,9 +10,10 @@ export default {
     headerIcon: 'cart',
     submitUrl: 'settings',
     modal: [
+        //enquiry
         {
             key: 'enquiry_user_permission',
-            type: 'checkbox',
+            type: 'choice-toggle',
             label: __(
                 'Restrict product enquiries for logged-in users only',
                 'catalogx'
@@ -23,17 +24,22 @@ export default {
             ),
             options: [
                 {
-                    key: 'enquiry_logged_out',
-                    value: 'enquiry_logged_out',
+                    key: 'logged_in_only',
+                    label: __('Logged in only', 'catalogx'),
+                    value: 'logged_in_only',
+                },
+                {
+                    key: 'everyone',
+                    label: __('Everyone', 'catalogx'),
+                    value: 'everyone',
                 },
             ],
-            look: 'toggle',
             moduleEnabled: 'enquiry',
         },
         {
             key: 'is_enable_out_of_stock',
             type: 'checkbox',
-            label: __( 'Enquiry for out-of-stock products only', 'catalogx' ),
+            label: __('Enquiry for out-of-stock products only', 'catalogx'),
             desc: __(
                 'Enquiry button is shown exclusively for products that are out of stock. For items that are in stock, the Add-to-Cart button will be displayed instead.',
                 'catalogx'
@@ -52,7 +58,7 @@ export default {
         {
             key: 'notify_me_button',
             type: 'checkbox',
-            label: __( 'In-Stock notify me button', 'catalogx' ),
+            label: __('In-Stock notify me button', 'catalogx'),
             desc: __(
                 'This option allows customers to subscribe for automatic stock notifications.',
                 'catalogx'
@@ -60,7 +66,7 @@ export default {
             options: [
                 {
                     key: 'notify_me_button',
-                    label: __( '', 'catalogx' ),
+                    label: __('', 'catalogx'),
                     value: 'notify_me_button',
                 },
             ],
@@ -73,7 +79,7 @@ export default {
         {
             key: 'is_disable_popup',
             type: 'choice-toggle',
-            label: __( 'Display enquiry form as', 'catalogx' ),
+            label: __('Display enquiry form as', 'catalogx'),
             desc: __(
                 'Select whether the form is displayed directly on the page or in a pop-up window.',
                 'catalogx'
@@ -93,16 +99,16 @@ export default {
             moduleEnabled: 'enquiry',
         },
         {
-            key:'is_page_redirect',
-            type:'checkbox',
-            options:[
+            key: 'is_page_redirect',
+            type: 'checkbox',
+            options: [
                 {
-                    key:'is_page_redirect',
-                    value:'is_page_redirect',
+                    key: 'is_page_redirect',
+                    value: 'is_page_redirect',
                 }
             ],
-            look:'toggle',
-            label:__('Redirect to a different page for enquiry form', 'catalogx'),
+            look: 'toggle',
+            label: __('Redirect to a different page for enquiry form', 'catalogx'),
             moduleEnabled: 'enquiry'
         },
         {
@@ -112,10 +118,52 @@ export default {
                 set: true
             },
             type: 'select',
-            label:  __( 'Post enquiry submission redirect page', 'catalogx' ),
-            desc: __( 'Select page where user will be redirected after successful enquiry.', 'catalogx' ),
+            label: __('Post enquiry submission redirect page', 'catalogx'),
+            desc: __('Select page where user will be redirected after successful enquiry.', 'catalogx'),
             options: appLocalizer.pages_data,
             moduleEnabled: 'enquiry'
         },
+        //quote
+
+        {
+            key: 'quote_user_permission',
+            type: 'choice-toggle',
+            label: __(
+                'Limit quotation requests to logged-in users only',
+                'catalogx'
+            ),
+            desc: __(
+                'If enabled, non-logged-in users cannot submit quotation requests.',
+                'catalogx'
+            ),
+            options: [
+                {
+                    key: 'logged_in_only',
+                    label: __('Logged in only', 'catalogx'),
+                    value: 'logged_in_only',
+                },
+                {
+                    key: 'everyone',
+                    label: __('Everyone', 'catalogx'),
+                    value: 'everyone',
+                },
+            ],
+            moduleEnabled: 'quote',
+            tour: 'quote-permission',
+        },
+        {
+            key: 'set_expiry_time',
+            type: 'text',
+            label: __('Quotation expiry duration', 'catalogx'),
+            size: 10,
+            desc: __(
+                'Set the period after which a quotation will expire and no longer be valid for purchase.',
+                'catalogx'
+            ),
+            postText: __('days', 'catalogx'),
+            proSetting: true,
+            moduleEnabled: 'quote',
+        },
+
     ],
 };

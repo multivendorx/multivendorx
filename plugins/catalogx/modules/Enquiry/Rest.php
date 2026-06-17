@@ -57,8 +57,8 @@ class Rest {
     public function create_item_permissions_check() {
         $user_id = CatalogX()->current_user_id;
         // For non-logged in user.
-        if ( 0 === $user_id && empty( CatalogX()->setting->get_setting( 'enquiry_user_permission' ) ) ) {
-			return true;
+        if (0 === $user_id &&'logged_in_only' === CatalogX()->setting->get_setting( 'enquiry_user_permission', '' )) {
+            return true;
         }
 
         // Check if user is admin or customer.

@@ -76,7 +76,7 @@ class Admin {
             ),
             'settings'         => array(
                 'name'     => __( 'Settings', 'catalogx' ),
-                'subtab'   => 'shopping',
+                'subtab'   => 'enquiry-form-customization',
                 'priority' => 60,
             ),
             'modules'          => array(

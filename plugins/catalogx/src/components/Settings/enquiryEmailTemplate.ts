@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import {OuterSpace} from '../../assets/template/OuterSpace';
-import { GreenLagoon } from '../../assets/template/GreenLagoon';
+// import { GreenLagoon } from '../../assets/template/GreenLagoon';
 
 
 const EMAIL_BLOCK_GROUPS = [
@@ -55,8 +55,8 @@ const EMAIL_BLOCK_GROUPS = [
 
 export default {
     id: 'enquiry-email-temp',
-    priority: 50,
-    headerTitle: __('Enquiry Email', 'catalogx'),
+    priority: 4,
+    headerTitle: __('Email Notifications', 'catalogx'),
     headerDescription: __(
         'Select your preferred enquiry details email template',
         'catalogx'
@@ -80,7 +80,7 @@ export default {
 			classes: 'full-width',
 			// desc: 'Customise personalised store registration form for marketplace.',
 			// // Add templates configuration with proper content
-			emailTemplates: [OuterSpace, GreenLagoon],
+			emailTemplates: [OuterSpace],
 			blockGroups: EMAIL_BLOCK_GROUPS,
             availablePlaceholder: appLocalizer.email_tags,
             visibleGroups: 'email',

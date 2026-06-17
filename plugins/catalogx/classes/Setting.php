@@ -190,6 +190,6 @@ class Setting {
             }
         }
 
-        return Utill::CATALOGX_SETTINGS['extra'];
+        return '';
     }
 }
