@@ -45,7 +45,7 @@ class Utill {
         'wholesale-registration'        => 'catalogx_wholesale_registration_settings',
         'pages'                         => 'catalogx_pages_settings',
         'enquiry-quote-exclusion'       => 'catalogx_enquiry_quote_exclusion_settings',
-        'enquiry-email-temp'            => 'catalogx_enquiry_email_temp_settings',
+        'enquiry-email-template'        => 'catalogx_enquiry_email_template_settings',
         'tools'                         => 'catalogx_tools_settings',
         'enquiry-form-customization'    => 'catalogx_enquiry_form_customization_settings',
         'enquiry-catalog-customization' => 'catalogx_enquiry_catalog_customization_settings',

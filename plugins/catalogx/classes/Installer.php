@@ -211,7 +211,7 @@ class Installer {
             'additional_alert_email' => CatalogX()->admin_email,
         );
 
-        update_option( Utill::CATALOGX_SETTINGS['enquiry-email-temp'], $email_settings );
+        update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], $email_settings );
 
         // Update pages settings.
         $page_settings = array_filter(
@@ -358,7 +358,7 @@ class Installer {
                 'catalogx_all-settings_settings'           => Utill::CATALOGX_SETTINGS['shopping'],
                 'catalogx_enquiry-quote-exclusion_settings' => Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
                 'catalogx_enquiry-form-customization_settings' => Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
-                'catalogx_enquiry-email-temp_settings'     => Utill::CATALOGX_SETTINGS['enquiry-email-temp'],
+                'catalogx_enquiry-email-temp_settings'     => Utill::CATALOGX_SETTINGS['enquiry-email-template'],
                 'catalogx_wholesale-registration_settings' => Utill::CATALOGX_SETTINGS['wholesale-registration'],
             );
 
@@ -392,7 +392,7 @@ class Installer {
             }
             $previous_enquiry_email_temp_settings = get_option( 'catalogx_enquiry-email-temp_settings', array() );
             if ( ! empty( $previous_enquiry_email_temp_settings ) ) {
-            update_option( Utill::CATALOGX_SETTINGS['enquiry-email-temp'], $previous_enquiry_email_temp_settings );
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], $previous_enquiry_email_temp_settings );
             delete_option( 'catalogx_enquiry-email-temp_settings' );
             }
             $previous_wholesale_registration_settings = get_option( 'catalogx_wholesale-registration_settings', array() );
@@ -727,6 +727,10 @@ class Installer {
             $settings['quote_user_permission'] = ! empty( $settings['quote_user_permission'] )? 'logged_in_only' : 'everyone';
 
             update_option( Utill::CATALOGX_SETTINGS['enquiry-quote'], $settings );
+
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], get_option( 'catalogx_enquiry_email_temp_settings', array() ) );
+
+            delete_option( 'catalogx_enquiry_email_temp_settings' );
 
         }
     }
