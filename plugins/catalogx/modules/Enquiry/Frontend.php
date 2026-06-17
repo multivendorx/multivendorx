@@ -292,7 +292,7 @@ class Frontend {
         $button_text = \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
         if ( is_shop() ) {
             $product_link = get_permalink( $product->get_id() );
-            echo '<a href="' . esc_url( $product_link ) . '" class="enquiry-btn single_add_to_cart_button button" >' . esc_html( $button_text ) . '</a>';
+            echo '<a href="' . esc_url( $product_link ) . '" class="enquiry-btn single_add_to_cart_button button wp-block-button__link wp-element-button" >' . esc_html( $button_text ) . '</a>';
         }
     }
 }
