@@ -41,18 +41,16 @@ class Utill {
      * @var array<string, string>
      */
     public const CATALOGX_SETTINGS = array(
-        'extra'                         => 'catalogx_extra_settings',
-        'enquiry-catalog-customization' => 'catalogx_enquiry_catalog_customization_settings',
-        'shopping'                      => 'catalogx_shopping_settings',
-        'enquiry'                       => 'catalogx_enquiry_settings',
-        'quotation'                     => 'catalogx_quotation_settings',
-        'tools'                         => 'catalogx_tools_settings',
-        'pages'                         => 'catalogx_pages_settings',
-        'enquiry-quote-exclusion'       => 'catalogx_enquiry_quote_exclusion_settings',
-        'enquiry-form-customization'    => 'catalogx_enquiry_form_customization_settings',
-        'enquiry-email-temp'            => 'catalogx_enquiry_email_temp_settings',
         'wholesale'                     => 'catalogx_wholesale_settings',
         'wholesale-registration'        => 'catalogx_wholesale_registration_settings',
+        'pages'                         => 'catalogx_pages_settings',
+        'enquiry-quote-exclusion'       => 'catalogx_enquiry_quote_exclusion_settings',
+        'enquiry-email-temp'            => 'catalogx_enquiry_email_temp_settings',
+        'tools'                         => 'catalogx_tools_settings',
+        'enquiry-form-customization'    => 'catalogx_enquiry_form_customization_settings',
+        'enquiry-catalog-customization' => 'catalogx_enquiry_catalog_customization_settings',
+        'enquiry-quote'                 => 'catalogx_enquiry_quote_settings',
+        'shopping-extra'                => 'catalogx_shopping_extra_settings',
     );
 
     /**

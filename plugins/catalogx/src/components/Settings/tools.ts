@@ -2,8 +2,8 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'tools',
-    priority: 90,
-    headerTitle: __( 'Tools', 'catalogx' ),
+    priority: 8,
+    headerTitle: __( 'System', 'catalogx' ),
     headerDescription: __( 'Review all system logs and errors', 'catalogx' ),
     headerIcon: 'paint-brush',
     submitUrl: 'settings',

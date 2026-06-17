@@ -192,12 +192,9 @@ class Installer {
      */
     public function set_default_settings() {
         // Update shopping gurnal.
-        $enquiry_settings = array(
+        $enquiry_quote_settings = array(
             'is_disable_popup'                   => 'popup',
             'is_enable_multiple_product_enquiry' => array( 'is_enable_multiple_product_enquiry' ),
-        );
-
-        $quote_settings = array(
             'set_expiry_time'                    => 'Never',
         );
 
@@ -206,16 +203,15 @@ class Installer {
             'redirect_cart_page'    => ''
         );
 
-        update_option( Utill::CATALOGX_SETTINGS['shopping'], $all_settings );
-        update_option( Utill::CATALOGX_SETTINGS['enquiry'], $enquiry_settings );
-        update_option( Utill::CATALOGX_SETTINGS['quotation'], $quote_settings );
+        update_option( Utill::CATALOGX_SETTINGS['shopping-extra'], $all_settings );
+        update_option( Utill::CATALOGX_SETTINGS['enquiry-quote'], $enquiry_quote_settings );
 
 
         $email_settings = array(
             'additional_alert_email' => CatalogX()->admin_email,
         );
 
-        update_option( 'catalogx_enquiry_email_temp_settings', $email_settings );
+        update_option( Utill::CATALOGX_SETTINGS['enquiry-email-temp'], $email_settings );
 
         // Update pages settings.
         $page_settings = array_filter(
@@ -710,6 +706,28 @@ class Installer {
                     AFTER status"
                 );
             }
+
+            $enquiry_settings       = get_option( 'catalogx_enquiry_settings', array() );
+            $quotation_settings     = get_option( 'catalogx_quotation_settings', array() );
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-quote'], array_merge( $enquiry_settings, $quotation_settings ) );
+
+            $shopping_settings  = get_option( 'catalogx_shopping_settings', array() );
+            $extra_settings     = get_option( 'catalogx_extra_settings', array() );
+            update_option( Utill::CATALOGX_SETTINGS['shopping-extra'], array_merge( $shopping_settings, $extra_settings ) );
+
+            delete_option( 'catalogx_extra_settings' );
+            delete_option( 'catalogx_shopping_settings' );
+            delete_option( 'catalogx_enquiry_settings' );
+            delete_option( 'catalogx_quotation_settings' );
+
+            $settings = get_option( Utill::CATALOGX_SETTINGS['enquiry-quote'], array() );
+
+            $settings['enquiry_user_permission'] = ! empty( $settings['enquiry_user_permission'] ) ? 'logged_in_only' : 'everyone';
+
+            $settings['quote_user_permission'] = ! empty( $settings['quote_user_permission'] )? 'logged_in_only' : 'everyone';
+
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-quote'], $settings );
+
         }
     }
 

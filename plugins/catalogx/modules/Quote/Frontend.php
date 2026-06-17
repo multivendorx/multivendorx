@@ -32,8 +32,9 @@ class Frontend {
 			return;
         }
 
-        $display_quote_button = CatalogX()->setting->get_setting( 'quote_user_permission', array() );
-        if ( ! empty( $display_quote_button ) && ! is_user_logged_in() ) {
+        $display_quote_button = CatalogX()->setting->get_setting( 'quote_user_permission', '' );
+
+        if ( 'logged_in_only' === $display_quote_button && ! is_user_logged_in() ) {
             return;
         }
 
@@ -125,8 +126,9 @@ class Frontend {
             return '';
         }
 
-        $display_quote_button = CatalogX()->setting->get_setting( 'quote_user_permission', array() );
-        if ( ! empty( $display_quote_button ) && ! is_user_logged_in() ) {
+        $display_quote_button = CatalogX()->setting->get_setting( 'quote_user_permission', '' );
+
+        if ( 'logged_in_only' === $display_quote_button && ! is_user_logged_in() ) {
             return '';
         }
 
