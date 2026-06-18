@@ -38,21 +38,46 @@ export default {
         },
         {
             key: 'is_enable_out_of_stock',
-            type: 'checkbox',
-            label: __('Enquiry for out-of-stock products only', 'catalogx'),
+            type: 'choice-toggle',
+            label: __(
+                'Show enquiry button for',
+                'catalogx'
+            ),
             desc: __(
-                'Enquiry button is shown exclusively for products that are out of stock. For items that are in stock, the Add-to-Cart button will be displayed instead.',
+                "If enabled, non-logged-in users can't access the enquiry flow.",
                 'catalogx'
             ),
             options: [
                 {
+                    key: 'all_products',
+                    label: __('All products', 'catalogx'),
+                    value: 'all_products',
+                },
+                {
                     key: 'is_enable_out_of_stock',
+                    label: __('Out-of-stock products only', 'catalogx'),
                     value: 'is_enable_out_of_stock',
                 },
             ],
-            look: 'toggle',
             moduleEnabled: 'enquiry',
         },
+        // {
+        //     key: 'is_enable_out_of_stock',
+        //     type: 'checkbox',
+        //     label: __('Enquiry for out-of-stock products only', 'catalogx'),
+        //     desc: __(
+        //         'Enquiry button is shown exclusively for products that are out of stock. For items that are in stock, the Add-to-Cart button will be displayed instead.',
+        //         'catalogx'
+        //     ),
+        //     options: [
+        //         {
+        //             key: 'is_enable_out_of_stock',
+        //             value: 'is_enable_out_of_stock',
+        //         },
+        //     ],
+        //     look: 'toggle',
+        //     moduleEnabled: 'enquiry',
+        // },
         // This settings for notify me it works when only site off buying settings on and stock alert plugin active
         // popup - propopup, modulepopup
         {
@@ -154,7 +179,7 @@ export default {
         {
             key: 'set_expiry_time',
             type: 'text',
-            label: __('Quotation expiry duration', 'catalogx'),
+            label: __('Quotation validity', 'catalogx'),
             size: 10,
             desc: __(
                 'Set the period after which a quotation will expire and no longer be valid for purchase.',
