@@ -5,7 +5,13 @@ import { FIELD_REGISTRY, ZyraVariable } from './fieldUtils';
 import FormGroupWrapper from './UI/FormGroupWrapper';
 import { PopupUI } from './Popup';
 import { Notice, NoticeManager } from './Notice';
-import {NoticeType} from '../utils/types/notice';
+import { NoticeType } from '../utils/types/notice';
+
+interface DependentPlugin {
+    plugin: string;
+    name: string;
+    link?: string;
+}
 
 interface InputField {
     key: string;
@@ -27,7 +33,6 @@ interface InputField {
     link?: string;
     dependent?: DependentCondition | DependentCondition[];
     proSetting?: boolean;
-    dependentPlugin?: boolean;
     dependentSetting?: string;
     preText?: string | ReactNode;
     postText?: string | ReactNode;
@@ -35,6 +40,7 @@ interface InputField {
     afterElement?: string | ReactNode;
     row?: boolean;
     icon?: string;
+    dependentPlugin?: DependentPlugin[];
 }
 
 interface SettingsType {
@@ -79,7 +85,7 @@ interface DependentCondition {
 interface PopupProps {
     moduleName?: string;
     settings?: string;
-    plugin?: string | Record<string, unknown>;
+    plugin?: DependentPlugin | '';
 }
 
 interface RenderProps {
@@ -180,11 +186,20 @@ const RenderComponent: React.FC<RenderProps> = ({
         }
     }, [modelOpen]);
 
+    const getMissingPlugin = (
+        plugins?: DependentPlugin[]
+    ): DependentPlugin | undefined => {
+        return plugins?.find(
+            ({ plugin }) =>
+                !ZyraVariable?.active_plugins?.includes(plugin)
+        );
+    };
+
     const hasAccess = (
         proFeaturesEnabled: boolean,
         hasDependentModule?: string,
-        hasDependentSetting?: string
-        // hasDependentPlugin?: string
+        hasDependentSetting?: string,
+        hasDependentPlugin?: DependentPlugin[]
     ) => {
         if (proFeaturesEnabled && !ZyraVariable?.khali_dabba) {
             return false;
@@ -202,12 +217,10 @@ const RenderComponent: React.FC<RenderProps> = ({
             return false;
         }
 
-        // if (
-        //     hasDependentPlugin &&
-        //     !appLocalizer[`${hasDependentPlugin}_active`]
-        // ) {
-        //     return false;
-        // }
+        if (getMissingPlugin(hasDependentPlugin)) {
+            return false;
+        }
+
         return true;
     };
 
@@ -248,6 +261,20 @@ const RenderComponent: React.FC<RenderProps> = ({
                 settings: field.dependentSetting,
                 plugin: '',
             });
+            setModelOpen(true);
+            e.stopPropagation();
+            return;
+        }
+
+        const missingPlugin = getMissingPlugin(field.dependentPlugin);
+
+        if (missingPlugin) {
+            setModulePopupData({
+                moduleName: '',
+                settings: '',
+                plugin: missingPlugin,
+            });
+
             setModelOpen(true);
             e.stopPropagation();
             return;
@@ -485,7 +512,8 @@ const RenderComponent: React.FC<RenderProps> = ({
             const access = hasAccess(
                 inputField.proSetting ?? false,
                 String(inputField.moduleEnabled ?? ''),
-                String(inputField.dependentSetting ?? '')
+                String(inputField.dependentSetting ?? ''),
+                inputField.dependentPlugin
             );
 
             // const input = renderFieldInternal(inputField, value, handleChange, access );
@@ -529,13 +557,13 @@ const RenderComponent: React.FC<RenderProps> = ({
                     (() => {
                         const dependentValue =
                             setting[inputField.dependentSetting];
+
                         return (
                             Array.isArray(dependentValue) &&
                             dependentValue.length === 0
                         );
-                    })());
-            // (inputField.dependentPlugin &&
-            //     !appLocalizer[`${inputField.dependentPlugin}_active`]);
+                    })()) ||
+                !!getMissingPlugin(inputField.dependentPlugin);
 
             const fieldContent =
                 inputField.type === 'section' ? (
@@ -543,16 +571,13 @@ const RenderComponent: React.FC<RenderProps> = ({
                 ) : (
                     <div
                         key={inputField.key}
-                        className={`form-group ${
-                            inputField.row === false ? '' : 'row'
-                        }  ${inputField.classes ? inputField.classes : ''} ${
-                            inputField.proSetting ? 'pro-setting' : ''
-                        } ${
-                            inputField.moduleEnabled &&
-                            !modules.includes(inputField.moduleEnabled)
+                        className={`form-group ${inputField.row === false ? '' : 'row'
+                            }  ${inputField.classes ? inputField.classes : ''} ${inputField.proSetting ? 'pro-setting' : ''
+                            } ${inputField.moduleEnabled &&
+                                !modules.includes(inputField.moduleEnabled)
                                 ? 'module-enabled'
                                 : ''
-                        }`}
+                            }`}
                         data-col={inputField.cols}
                         onClick={(e) => handleGroupClick(e, inputField)}
                     >
@@ -579,14 +604,14 @@ const RenderComponent: React.FC<RenderProps> = ({
                         )}
                         <div className="settings-input-content">
                             {isLocked &&
-                            React.isValidElement<
-                                React.HTMLAttributes<HTMLElement>
-                            >(input)
+                                React.isValidElement<
+                                    React.HTMLAttributes<HTMLElement>
+                                >(input)
                                 ? React.cloneElement(input, {
-                                      onClick: (e) => {
-                                          e.stopPropagation();
-                                      },
-                                  })
+                                    onClick: (e) => {
+                                        e.stopPropagation();
+                                    },
+                                })
                                 : input}
 
                             {errors[inputField.key] && (
