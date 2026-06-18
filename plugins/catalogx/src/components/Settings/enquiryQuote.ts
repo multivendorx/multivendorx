@@ -71,10 +71,14 @@ export default {
                 },
             ],
             look: 'toggle',
-            moduleEnabled: '',
             proSetting: true,
-            dependentPlugin: appLocalizer.notifima_active,
-            dependentSetting: 'enable_cart_checkout',
+            dependentPlugin: [
+                {
+                    plugin: 'woocommerce-product-stock-alert/product_stock_alert.php',
+                    name: 'Notifima',
+                    link: 'https://wordpress.org/plugins/woocommerce-product-stock-alert/',
+                }
+            ]
         },
         {
             key: 'is_disable_popup',
