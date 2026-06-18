@@ -117,26 +117,26 @@ const WHOLESALE_BLOCK_GROUPS = [
 ];
 
 export default {
-	id: 'wholesale-registration',
+    id: 'wholesale-registration',
     priority: 3,
-    headerTitle: __( 'Wholesale', 'catalogx' ),
+    headerTitle: __('Wholesale', 'catalogx'),
     headerDescription: __(
         'Drag-and-drop interface to tailor the wholesale registration form.',
         'catalogx'
     ),
     headerIcon: 'contact-form',
     submitUrl: 'settings',
-    moduleEnabled: 'Wholesale',
-	modal: [
-		{
-			key: 'store_registration_from',
-			type: 'block-builder',
-			classes: 'full-width',
-			blockGroups: WHOLESALE_BLOCK_GROUPS,
-			visibleGroups: ['registration'],
-			desc: 'Customise personalised store registration form for marketplace.',
-			context: 'form',
+    modal: [
+        {
+            key: 'store_registration_from',
+            type: 'block-builder',
+            classes: 'full-width',
+            blockGroups: WHOLESALE_BLOCK_GROUPS,
+            visibleGroups: ['registration'],
+            desc: 'Customise personalised store registration form for marketplace.',
+            context: 'form',
             proSetting: true,
-		},
-	],
+            moduleEnabled: 'wholesale',
+        },
+    ],
 };
