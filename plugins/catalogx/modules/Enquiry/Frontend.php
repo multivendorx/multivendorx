@@ -32,15 +32,10 @@ class Frontend {
             return;
         }
         $this->enquiry_user_permission = CatalogX()->setting->get_setting( 'enquiry_user_permission', '' );
-
-        if ( 'logged_in_only' === $this->enquiry_user_permission && ! is_user_logged_in() ) {
-            return;
-        }
         $this->enable_out_of_stock      = CatalogX()->setting->get_setting( 'is_enable_out_of_stock' );
 
-        if ( empty( CatalogX()->setting->get_setting( 'enable_cart_checkout' ) ) ) {
-            add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_button_in_shop_page' ) );
-        }
+        add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_button_in_shop_page' ) );
+
         if ( !( wp_is_block_theme() || file_exists( get_theme_file_path( 'theme.json' ) ) ) ) {
             add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
         }
@@ -72,8 +67,32 @@ class Frontend {
      */
     public function render_product_enquiry_button( $product_obj ) {
         global $product;
-        $product_obj = is_int( $product_obj ) ? wc_get_product( $product_obj ) : ( $product_obj ? $product_obj : $product );        
+
+        if ( ! Util::is_available() ) {
+            return;
+        }
+
+        if ( ! Util::is_available_for_product( $product->get_id() ) ) {
+            return;
+        }
+
+        $display_enquiry_button = CatalogX()->setting->get_setting( 'enquiry_user_permission', '' );
+
+        if ( 'logged_in_only' === $display_enquiry_button && ! is_user_logged_in() ) {
+            return;
+        }
+
+        $product_obj = is_int( $product_obj )
+            ? wc_get_product( $product_obj )
+            : ( $product_obj ? $product_obj : $product );
+
         if ( empty( $product_obj ) ) {
+            return;
+        }
+
+        $display_enquiry_button = CatalogX()->setting->get_setting( 'is_enable_out_of_stock', '' );
+
+        if ( 'is_enable_out_of_stock' === $display_enquiry_button && $product_obj->is_in_stock() ) {
             return;
         }
 
@@ -81,34 +100,45 @@ class Frontend {
             return;
         }
 
-        $button_text = \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
-
+        $button_text = \CatalogX\Utill::get_translated_string(
+            'catalogx',
+            'send_an_enquiry',
+            'Send an enquiry'
+        );
         ?>
         <div id="catalogx-enquiry">
-        <?php
-		$show_button = true;
-        if ( $this->enable_out_of_stock ) {
-            $show_button = ! $product_obj->managing_stock() && ! $product_obj->is_in_stock();
-        }       
-		if ( $show_button ) {
-            ?>
-                <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button"><?php echo esc_html( $button_text ); ?></button>
-            <?php
-		}
-		?>
-            <input type="hidden" name="product_id_for_enquiry" id="product-id-for-enquiry" value="<?php echo esc_html( $product_obj->get_id() ); ?>" />
-            <input type="hidden" name="enquiry_product_type" id="enquiry-product-type" value="
-            <?php
-			if ( $product_obj && $product_obj->is_type( 'variable' ) ) {
-				echo esc_html( 'variable' );
-			}
-			?>
-                " />
-            <input type="hidden" name="user_id_for_enquiry" id="user-id-for-enquiry" value="<?php echo esc_html( get_current_user_id() ); ?>" />  			
+            <button class="catalogx-enquiry-btn button wp-block-button__link update-cart-button">
+                <?php echo esc_html( $button_text ); ?>
+            </button>
+
+            <input
+                type="hidden"
+                name="product_id_for_enquiry"
+                id="product-id-for-enquiry"
+                value="<?php echo esc_attr( $product_obj->get_id() ); ?>"
+            />
+
+            <input
+                type="hidden"
+                name="enquiry_product_type"
+                id="enquiry-product-type"
+                value="<?php echo esc_attr( $product_obj->is_type( 'variable' ) ? 'variable' : '' ); ?>"
+            />
+
+            <input
+                type="hidden"
+                name="user_id_for_enquiry"
+                id="user-id-for-enquiry"
+                value="<?php echo esc_attr( get_current_user_id() ); ?>"
+            />
         </div>
-        <div id="catalogx-modal" style="display: none;" class="catalogx-modal <?php echo ( CatalogX()->setting->get_setting( 'is_disable_popup' ) === 'popup' ) ? 'popup-enable' : ''; ?>">
-            
-        </div>	
+
+        <div
+            id="catalogx-modal"
+            style="display: none;"
+            class="catalogx-modal <?php echo 'popup' === CatalogX()->setting->get_setting( 'is_disable_popup' ) ? 'popup-enable' : ''; ?>"
+        >
+        </div>
         <?php
     }
 
@@ -246,11 +276,6 @@ class Frontend {
             return '';
         }
 
-        $display_enquiry_button = $this->enquiry_user_permission;
-        if ( ! empty( $display_enquiry_button ) && ! is_user_logged_in() ) {
-            return '';
-        }
-
         CatalogX()->render_enquiry_btn_via = 'shortcode';
         $this->frontend_scripts();
         ob_start();
@@ -277,11 +302,20 @@ class Frontend {
      */
     public function render_button_in_shop_page() {
         global $product;
+
+        if ( ! Util::is_available() ) {
+            return;
+        }
+        
         if ( ! Util::is_available_for_product( $product->get_id() ) ) {
             return;
         }
 
-        if ( ! empty( $this->enable_out_of_stock ) && $product->is_in_stock() ) {
+        if ( 'logged_in_only' === $this->enquiry_user_permission && ! is_user_logged_in() ) {
+            return '';
+        }
+
+        if ( 'is_enable_out_of_stock' === $this->enable_out_of_stock  && $product->is_in_stock() ) {
             return;
         }
 
