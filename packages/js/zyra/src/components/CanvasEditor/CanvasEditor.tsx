@@ -153,7 +153,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
         const shouldAddStoreNameField = defaultBlocks.some(
             (block) => block.id === 'name'
         );
-        if ( context !== 'form' || !shouldAddStoreNameField ) {
+        if (context !== 'form' || !shouldAddStoreNameField) {
             return;
         }
 
@@ -490,7 +490,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                     { [key]: value }
                 );
             } else {
-                const index = blocks.findIndex((b) => b.id === openBlock?.id);
+                const index = blocks.findIndex((b) => b.name === openBlock?.name);
                 if (index < 0) {
                     return;
                 }
@@ -618,15 +618,14 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                             {label} <span>({palette.length})</span>
                         </div>
                         <i
-                            className={`adminfont-pagination-right-arrow ${
-                                openGroups[id] ? 'rotate' : ''
-                            }`}
+                            className={`adminfont-pagination-right-arrow ${openGroups[id] ? 'rotate' : ''
+                                }`}
                         />
                     </div>
                     {openGroups[id] && (
                         <ReactSortable
                             list={palette}
-                            setList={() => {}}
+                            setList={() => { }}
                             sort={false}
                             group={{
                                 name: groupName,
@@ -645,6 +644,22 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                                         }
                                         setBlocks((prev) => {
                                             isInternalUpdate.current = true;
+
+                                            const isTerms =
+                                                item.value === 'richtext';
+
+                                            if (isTerms) {
+                                                const alreadyExists = prev.some(
+                                                    (b) =>
+                                                        b.type === 'richtext' &&
+                                                        b.context === 'form'
+                                                );
+
+                                                if (alreadyExists) {
+                                                    return prev;
+                                                }
+                                            }
+
                                             return [
                                                 ...prev,
                                                 createBlock(item, context, prev),
@@ -677,9 +692,8 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                 {templates.map(({ id, name }) => (
                     <div
                         key={id}
-                        className={`template-item ${
-                            id === activeTemplateId ? 'active' : ''
-                        }`}
+                        className={`template-item ${id === activeTemplateId ? 'active' : ''
+                            }`}
                         onClick={() => onTemplateSelect?.(id)}
                     >
                         <div className="template-name">{name}</div>
@@ -710,11 +724,11 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                         },
                         ...(showTemplatesTab && templates.length
                             ? [
-                                  {
-                                      label: 'Templates',
-                                      content: renderTemplatesContent(),
-                                  },
-                              ]
+                                {
+                                    label: 'Templates',
+                                    content: renderTemplatesContent(),
+                                },
+                            ]
                             : []),
                     ]}
                 />
@@ -725,7 +739,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                     {isFormBuilder && titleBlock && (
                         <BlockRenderer
                             block={titleBlock}
-                            isActive={openBlock?.id === titleBlock.id}
+                            isActive={openBlock?.name === titleBlock.name}
                             onSelect={() => setOpenBlock(titleBlock)}
                             onChange={(patch) => {
                                 const index = blocks.findIndex(
@@ -749,7 +763,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                                     key={block.id}
                                     block={block as ColumnsBlock}
                                     parentIndex={index}
-                                    isActive={openBlock?.id === block.id}
+                                    isActive={openBlock?.name === block.name}
                                     groupName={groupName}
                                     openBlock={openBlock}
                                     setOpenBlock={setOpenBlock}
@@ -776,7 +790,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                                 <BlockRenderer
                                     key={block.id}
                                     block={block}
-                                    isActive={openBlock?.id === block.id}
+                                    isActive={openBlock?.name === block.name}
                                     onSelect={() => {
                                         setOpenBlock(block);
                                         columnManager.clearSelection();
@@ -796,7 +810,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                     {isFormBuilder && termsBlock && (
                         <BlockRenderer
                             block={termsBlock}
-                            isActive={openBlock?.id === termsBlock.id}
+                            isActive={openBlock?.name === termsBlock.name}
                             onSelect={() => setOpenBlock(termsBlock)}
                             onChange={(patch) => {
                                 const index = blocks.findIndex(
@@ -811,7 +825,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                     {isFormBuilder && submitBlock && (
                         <BlockRenderer
                             block={submitBlock}
-                            isActive={openBlock?.id === submitBlock.id}
+                            isActive={openBlock?.name === submitBlock.name}
                             onSelect={() => setOpenBlock(submitBlock)}
                             onChange={(patch) => {
                                 const index = blocks.findIndex(

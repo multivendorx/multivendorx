@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-11T05:44:00+00:00\n"
+"POT-Creation-Date: 2026-06-16T11:26:53+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: catalogx\n"
@@ -86,27 +86,19 @@ msgstr ""
 msgid "Product already added to quote cart."
 msgstr ""
 
-#: classes/Emails/EmailHTMLConverter.php:114
-msgid "Click"
-msgstr ""
-
-#: classes/Emails/EnquiryEmail.php:70
+#: classes/Emails/EnquiryEmail.php:28
 msgid "Enquiry sent"
 msgstr ""
 
-#: classes/Emails/EnquiryEmail.php:71
+#: classes/Emails/EnquiryEmail.php:29
 msgid "Admin will get an email when a customer enquires about a product."
 msgstr ""
 
-#: classes/Emails/EnquiryEmail.php:152
-msgid "Product Enquiry for Dummy Product by Guest"
-msgstr ""
-
-#: classes/Emails/EnquiryEmail.php:152
+#: classes/Emails/EnquiryEmail.php:96
 msgid "Product Enquiry for {PRODUCT_NAME} by {USER_NAME}"
 msgstr ""
 
-#: classes/Emails/EnquiryEmail.php:159
+#: classes/Emails/EnquiryEmail.php:103
 msgid "Enquiry for {PRODUCT_NAME}"
 msgstr ""
 
@@ -126,15 +118,15 @@ msgstr ""
 msgid "New Quote Submitted by {customer_name} - Please Review"
 msgstr ""
 
-#: classes/FrontendScripts.php:485
+#: classes/FrontendScripts.php:486
 msgid "This field is required"
 msgstr ""
 
-#: classes/FrontendScripts.php:486
+#: classes/FrontendScripts.php:487
 msgid "Invalid email format"
 msgstr ""
 
-#: classes/FrontendScripts.php:497
+#: classes/FrontendScripts.php:498
 msgid "No more product in Quote list!"
 msgstr ""
 
@@ -167,7 +159,7 @@ msgstr ""
 #: modules/Quote/QuoteCart.php:184
 #: modules/Quote/QuoteCart.php:217
 #: modules/Quote/QuoteCart.php:254
-#: modules/Quote/Quotes.php:185
+#: modules/Quote/Quotes.php:186
 msgid "Unexpected server error"
 msgstr ""
 
@@ -296,6 +288,72 @@ msgstr ""
 msgid "Failed to create order."
 msgstr ""
 
+#: templates/emails/enquiry-email.php:20
+msgid "New Product Enquiry"
+msgstr ""
+
+#: templates/emails/enquiry-email.php:24
+#: templates/emails/plain/enquiry-email.php:13
+msgid "Dear Admin"
+msgstr ""
+
+#: templates/emails/enquiry-email.php:25
+#: templates/emails/plain/enquiry-email.php:14
+msgid "Please find the product enquiry, details are given below"
+msgstr ""
+
+#: templates/emails/enquiry-email.php:26
+msgid "Product Details"
+msgstr ""
+
+#: templates/emails/enquiry-email.php:31
+#: templates/emails/request-quote.php:31
+msgid "Product"
+msgstr ""
+
+#: templates/emails/enquiry-email.php:32
+msgid "Product Url"
+msgstr ""
+
+#: templates/emails/enquiry-email.php:33
+msgid "Product SKU"
+msgstr ""
+
+#: templates/emails/enquiry-email.php:103
+msgid "Customer Details"
+msgstr ""
+
+#: templates/emails/enquiry-email.php:105
+msgid "Name"
+msgstr ""
+
+#: templates/emails/enquiry-email.php:109
+msgid "Email"
+msgstr ""
+
+#: templates/emails/enquiry-email.php:117
+msgid "User Phone : "
+msgstr ""
+
+#: templates/emails/enquiry-email.php:123
+msgid "User Address : "
+msgstr ""
+
+#: templates/emails/enquiry-email.php:129
+msgid "User Subject : "
+msgstr ""
+
+#: templates/emails/enquiry-email.php:135
+msgid "User Comments : "
+msgstr ""
+
+#. translators: %s: email footer which display the site name.
+#: templates/emails/enquiry-email.php:149
+#: templates/emails/plain/enquiry-email.php:60
+#, php-format
+msgid "%s - Powered by CatalogX"
+msgstr ""
+
 #. translators: %s: Show the admin name.
 #: templates/emails/plain/request-quote.php:12
 #: templates/emails/request-quote.php:21
@@ -343,17 +401,18 @@ msgstr ""
 msgid "Email:"
 msgstr ""
 
-#: templates/emails/plain/request-quote.php:41
+#: templates/emails/plain/request-quote.php:39
 #: templates/emails/request-quote.php:101
+msgid "Phone:"
+msgstr ""
+
+#: templates/emails/plain/request-quote.php:42
+#: templates/emails/request-quote.php:105
 msgid "Additional Details:"
 msgstr ""
 
 #: templates/emails/request-quote.php:21
 msgid "Store Admin"
-msgstr ""
-
-#: templates/emails/request-quote.php:31
-msgid "Product"
 msgstr ""
 
 #: templates/emails/request-quote.php:34
@@ -372,23 +431,29 @@ msgstr ""
 msgid "John Doe"
 msgstr ""
 
+#: templates/emails/request-quote.php:102
+msgid "8797639205"
+msgstr ""
+
 #: modules/Quote/assets/js/frontend.js:77
 msgid "Unable to add quote item."
 msgstr ""
 
 #: src/blocks/enquiry-button/index.js:12
-#: src/blocks/quote-button/index.js:12
 msgid "Loading"
 msgstr ""
 
 #: src/blocks/enquiry-button/index.js:40
-#: src/blocks/quote-button/index.js:40
+#: src/blocks/quote-button/index.js:38
 msgid "Failed to load."
 msgstr ""
 
-#: src/blocks/enquiry-button/index.js:44
-#: src/blocks/quote-button/index.js:44
-msgid "No product selected."
+#: src/blocks/enquiry-button/index.js:46
+msgid "Send an enquiry"
+msgstr ""
+
+#: src/blocks/quote-button/index.js:43
+msgid "Add to Quote"
 msgstr ""
 
 #: src/blocks/enquiry-button/block.json

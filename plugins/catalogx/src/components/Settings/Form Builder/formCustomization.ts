@@ -164,7 +164,7 @@ const REGISTRATION_BLOCK_GROUPS = [
 
 export default {
     id: 'enquiry-form-customization',
-    priority: 30,
+    priority: 1,
     headerTitle: __('Enquiry Form Builder', 'catalogx'),
     headerDescription: __(
         'Design a personalized enquiry form with built-in form builder.',
@@ -177,9 +177,10 @@ export default {
         {
             key: 'enquiry_form_tabs',
             type: 'tab',
+            classes: 'full-width',
             tabs: [
                 {
-					key: 'free_form',
+                    key: 'free_form',
                     label: __('Free', 'catalogx'),
                     content: [
                         {
@@ -193,21 +194,20 @@ export default {
                 },
 
                 {
-					key: 'pro_form',
+                    key: 'pro_form',
                     label: __('Pro', 'catalogx'),
                     content: [
                         {
                             key: 'enquiry_form_builder',
                             type: 'block-builder',
-							blockGroups: REGISTRATION_BLOCK_GROUPS,
-							visibleGroups: ['registration', 'store'],
+                            blockGroups: REGISTRATION_BLOCK_GROUPS,
+                            visibleGroups: ['registration', 'store'],
                             classes: 'full-width',
                             desc: __('Customise personalised enquiry form.', 'catalogx'),
-                            context:'form',
+                            context: 'form',
                             proSetting: true,
                         },
                     ],
-					proSetting:true,
                 },
             ],
         },

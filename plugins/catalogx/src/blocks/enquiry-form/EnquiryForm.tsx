@@ -15,9 +15,14 @@ const EnquiryForm = () => {
     const onSubmit = (submittedFormData: any) => {
         // Convert Zyra form object into FormData
         const formData = new FormData();
-
         Object.keys(submittedFormData).forEach((key) => {
-            formData.append(key, submittedFormData[key]);
+            let value = submittedFormData[key];
+
+            if (key === 'phone' && typeof value === 'object') {
+                value = `${value.country_code}${value.phone}`;
+            }
+
+            formData.append(key, value);
         });
 
         const productId =
@@ -75,14 +80,14 @@ const EnquiryForm = () => {
                             /* translators: %s: Field label. */
                             fieldRequired: __('%s is required.', 'catalogx'),
                             invalidEmail: __(
-                              'Please enter a valid email address.',
-                              'catalogx'
+                                'Please enter a valid email address.',
+                                'catalogx'
                             ),
                             termsRequired: __(
-                              'Please accept the Terms & Conditions.',
-                              'catalogx'
+                                'Please accept the Terms & Conditions.',
+                                'catalogx'
                             ),
-                          }}
+                        }}
                     />
                 ) : (
                     <FormViewer
@@ -95,14 +100,14 @@ const EnquiryForm = () => {
                             /* translators: %s: Field label. */
                             fieldRequired: __('%s is required.', 'catalogx'),
                             invalidEmail: __(
-                              'Please enter a valid email address.',
-                              'catalogx'
+                                'Please enter a valid email address.',
+                                'catalogx'
                             ),
                             termsRequired: __(
-                              'Please accept the Terms & Conditions.',
-                              'catalogx'
+                                'Please accept the Terms & Conditions.',
+                                'catalogx'
                             ),
-                          }}
+                        }}
                     />
                 )}
                 <div>{enquiryFormData.content_after_form}</div>

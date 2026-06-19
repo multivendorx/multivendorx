@@ -159,7 +159,7 @@
     border-radius: $border-radius-small;
     width: fit-content;
     gap: 0.5rem;
-    margin: 1.5rem 0;
+    // margin: 1.5rem 0;
 
     .filters {
         padding: 0.45rem;
@@ -233,19 +233,16 @@
 
             .header-col {
                 text-align: left;
-                padding: 0 0.85rem;
+                padding: 0.85rem;
                 font-size: 1rem;
                 font-weight: 500;
                 display: flex;
-
-                // flex: 1 0 0;
                 width: 100%;
                 border: none;
                 color: $text-color;
 
                 &.select {
                     max-width: 2rem;
-                    padding-top: 0.4rem;
                     padding-right: 0;
                 }
 
@@ -286,8 +283,6 @@
                     display: flex;
                     gap: 0.5rem;
                 }
-
-
             }
 
             img {
@@ -746,6 +741,7 @@
 .badge-completed,
 .badge-active,
 .badge-approved,
+.badge-approve,
 .badge-paid,
 .badge-public,
 .badge-publish,
@@ -781,6 +777,7 @@
 }
 
 .badge-rejected,
+.badge-reject,
 .badge-unpaid,
 .badge-cancelled,
 .badge-failed,

@@ -16,7 +16,13 @@ const ProductTab = () => {
 	const [linkedItemId, setLinkedItemId] = useState(
 		String(moowoodleProduct.linkedItemId || '')
 	);
+	const [expiryDays, setExpiryDays] = useState(
+		moowoodleProduct.expiryDays || ''
+	);
 
+	const [expiryType, setExpiryType] = useState(
+		moowoodleProduct.expiryType || ''
+	);
 	const [options, setOptions] = useState([]);
 	const [loading, setLoading] = useState(false);
 
@@ -123,7 +129,58 @@ const ProductTab = () => {
 						/>
 					</p>
 				)}
+				<Disabled isDisabled={!moowoodleProduct.khali_dabba}>
+					<>
+						<p className="form-field">
+							<label htmlFor="course_expiry_days">
+								{__('Expire Access After (Days)', 'moowoodle')}
+							</label>
 
+							<input
+								type="number"
+								id="course_expiry_days"
+								min="0"
+								value={expiryDays}
+								onChange={(event) =>
+									setExpiryDays(event.target.value)
+								}
+							/>
+						</p>
+
+						<p className="form-field">
+							<label htmlFor="course_expiry_type">
+								{__('On Course Expiration', 'moowoodle')}
+							</label>
+
+							<SelectControl
+								value={expiryType}
+								options={[
+									{
+										label: __('Select Type', 'moowoodle'),
+										value: '',
+									},
+									{
+										label: __('Suspend', 'moowoodle'),
+										value: 'suspend',
+									},
+									{
+										label: __('Unenroll', 'moowoodle'),
+										value: 'unenroll',
+									},
+								]}
+								onChange={setExpiryType}
+							/>
+						</p>
+						{!moowoodleProduct.khali_dabba && (
+							<span className="description">
+								{__(
+									'Available in MooWoodle Pro.',
+									'moowoodle'
+								)}
+							</span>
+						)}
+					</>
+				</Disabled>
 				<Notice
 					status="info"
 					isDismissible={false}
@@ -142,6 +199,8 @@ const ProductTab = () => {
 			</div>
 			<input type="hidden" name="link_type" value={linkType} />
 			<input type="hidden" name="linked_item_id" value={linkedItemId} />
+			<input type="hidden" name="course_expiry_days" value={expiryDays} />
+			<input type="hidden" name="course_expiry_type" value={expiryType} />
 
 			<input
 				type="hidden"

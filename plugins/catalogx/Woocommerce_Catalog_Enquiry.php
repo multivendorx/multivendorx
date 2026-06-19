@@ -11,7 +11,7 @@
  * WC requires at least: 8.2.0
  * WC tested up to: 10.7.0
  *
- * Text Domain: multivendorx
+ * Text Domain: catalogx
  * Requires Plugins: woocommerce
  * Domain Path: /languages/
  *

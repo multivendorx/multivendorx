@@ -28,7 +28,7 @@ const formatModuleName = (name: string): string => {
 const proPopupContent = {
 	messages: [
 		{
-			icon: 'personalized-pricing',
+			icon: 'dollar',
 			text: __('Send custom quotes', 'catalogx'),
 			des: __(
 				'Create personalized pricing and quotation responses for customers.',
@@ -36,7 +36,7 @@ const proPopupContent = {
 			),
 		},
 		{
-			icon: 'multiple-products exclusive-forms',
+			icon: 'multi-product',
 			text: __('Multi-product enquiry cart', 'catalogx'),
 			des: __(
 				'Allow customers to enquire about multiple products in a single request.',
@@ -44,7 +44,7 @@ const proPopupContent = {
 			),
 		},
 		{
-			icon: 'add-file-uploads',
+			icon: 'cloud-upload',
 			text: __('File uploads & custom enquiry fields', 'catalogx'),
 			des: __(
 				'Collect additional files and custom information through enquiry forms.',
@@ -52,7 +52,7 @@ const proPopupContent = {
 			),
 		},
 		{
-			icon: 'different-users',
+			icon: 'person',
 			text: __('Role-based pricing', 'catalogx'),
 			des: __(
 				'Show different pricing options based on user roles and customer types.',
@@ -60,7 +60,7 @@ const proPopupContent = {
 			),
 		},
 		{
-			icon: 'discounts',
+			icon: 'category	',
 			text: __('Category-based discounts', 'catalogx'),
 			des: __(
 				'Apply discounts automatically to selected product categories.',
@@ -68,7 +68,7 @@ const proPopupContent = {
 			),
 		},
 		{
-			icon: 'wholesale-order',
+			icon: 'wholesale',
 			text: __('Wholesale order forms', 'catalogx'),
 			des: __(
 				'Enable streamlined bulk and wholesale ordering workflows.',
@@ -76,7 +76,7 @@ const proPopupContent = {
 			),
 		},
 		{
-			icon: 'out-of-stock',
+			icon: 'sold-out',
 			text: __('Enquiry for hidden/out-of-stock products', 'catalogx'),
 			des: __(
 				'Allow customers to send enquiries for unavailable or hidden products.',
@@ -92,7 +92,7 @@ const proPopupContent = {
 			),
 		},
 		{
-			icon: 'emails',
+			icon: 'mail',
 			text: __('Auto-send branded enquiry emails', 'catalogx'),
 			des: __(
 				'Automatically send customized branded emails for customer enquiries.',
@@ -100,7 +100,7 @@ const proPopupContent = {
 			),
 		},
 		{
-			icon: 'dashboard',
+			icon: 'module',
 			text: __('Track all enquiries in one dashboard', 'catalogx'),
 			des: __(
 				'Manage and monitor all customer enquiries from a centralized dashboard.',
@@ -111,18 +111,18 @@ const proPopupContent = {
 	btnLink: [
 		{
 			site: 'one',
-			price: '$199',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18156',
+			price: '$129',
+			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3380',
 		},
 		{
 			site: 'three',
-			price: '$349',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18158',
+			price: '$199',
+			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3381',
 		},
 		{
 			site: 'ten',
-			price: '$499',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18157',
+			price: '$299',
+			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3382',
 		},
 	],
 };
@@ -185,6 +185,50 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 										window.open(
 											`${appLocalizer.admin_url}#&tab=modules&module=${props.moduleName}`
 										);
+									},
+								},
+							]}
+						/>
+					</div>
+				</div>
+			) : props.plugin ? (
+				<div className="popup-wrapper">
+					<div className="popup-header">
+						<i className="adminfont-plugin" />
+					</div>
+
+					<div className="popup-body">
+						<div className="module-name">
+							{sprintf(
+								__('Install %s', 'catalogx'),
+								props.plugin.name
+							)}
+						</div>
+
+						<div className="module-desc">
+							{sprintf(
+								__(
+									'This feature requires the %s plugin. Please install and activate it to continue.',
+									'catalogx'
+								),
+								props.plugin.name
+							)}
+						</div>
+
+						<ButtonInputUI
+							position="center"
+							buttons={[
+								{
+									icon: 'download',
+									text: __('Install Plugin', 'catalogx'),
+									onClick: () => {
+										if (props.plugin?.link) {
+											window.open(
+												props.plugin.link,
+												'_blank',
+												'noopener,noreferrer'
+											);
+										}
 									},
 								},
 							]}

@@ -98,31 +98,31 @@ export const defaultCategoryCounts = [
     {
         value: 'all',
         label: __('All', 'catalogx-pro'),
-        count: 128,
+        count: 10,
     },
     {
         value: 'wc-quote-new',
         label: __('New', 'catalogx-pro'),
-        count: 24,
+        count: 2,
     },
     {
         value: 'wc-quote-pending',
         label: __('Pending', 'catalogx-pro'),
-        count: 36,
+        count: 2,
     },
     {
         value: 'wc-quote-accepted',
         label: __('Accepted', 'catalogx-pro'),
-        count: 42,
+        count: 1,
     },
     {
         value: 'wc-quote-rejected',
         label: __('Rejected', 'catalogx-pro'),
-        count: 15,
+        count: 2,
     },
     {
         value: 'wc-quote-expired',
         label: __('Expired', 'catalogx-pro'),
-        count: 11,
+        count: 3,
     },
 ];

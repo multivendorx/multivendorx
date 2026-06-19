@@ -2,8 +2,8 @@ import { useState } from 'react';
 import {
     Column,
     Container,
-    InfoItem,
     NavigatorHeader,
+    ComponentStatusView,
     PopupUI,
     TableCard,
 } from 'zyra';
@@ -127,17 +127,14 @@ const Rules = () => {
                             ? __('Suspend', 'catalogx')
                             : __('Activate', 'catalogx'),
                     icon: 'refresh',
-                    onClick: () => setopenPopup(true),
                 },
                 {
                     label: __('Edit', 'catalogx'),
                     icon: 'edit',
-                    onClick: () => setopenPopup(true),
                 },
                 {
                     label: __('Delete', 'catalogx'),
                     icon: 'delete',
-                    onClick: () => setopenPopup(true),
                 },
             ],
         },
@@ -169,7 +166,6 @@ const Rules = () => {
     const defaultTableProps = {
         headers,
         showMenu: false,
-        onQueryUpdate: () => setopenPopup(true),
         filters,
         rows: dummyRules,
         totalRows: dummyRules.length,
@@ -180,13 +176,39 @@ const Rules = () => {
         defaultTableProps
     );
 
-    const handleTableWrapperClick = () => {
-        if (!appLocalizer.khali_dabba || !appLocalizer.active_modules.includes('rules')) {
-            setopenPopup(true);
+    const renderTableContent = () => {
+        if (!appLocalizer.khali_dabba) {
+            return (
+                <div onClick={() => setopenPopup(true)}>
+                    <TableCard {...tableProps} />
+                </div>
+            );
         }
+
+        if (!appLocalizer.active_modules.includes('rules')) {
+            return (
+                <ComponentStatusView
+                    title={__(
+                        'Looks like customer support isn’t set up yet!',
+                        'catalogx'
+                    )}
+                    desc={__(
+                        'Turn on a support module to start assisting your customers.',
+                        'catalogx'
+                    )}
+                    buttonText={__('Enable Now', 'catalogx')}
+                    buttonLink={`${appLocalizer.admin_url}#&tab=modules&module=rules`}
+                />
+            );
+        }
+
+        return (
+            <>
+                <TableCard {...tableProps} />
+                {tableProps.popup}
+            </>
+        );
     };
-
-
 
     return (
         <div>
@@ -231,10 +253,7 @@ const Rules = () => {
             )}
             <Container general>
                 <Column>
-                    <div onClick={handleTableWrapperClick}>
-                        <TableCard {...tableProps} />
-                        {tableProps.popup}
-                    </div>
+                    {renderTableContent()}
                 </Column>
             </Container>
         </div>

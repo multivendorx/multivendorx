@@ -106,6 +106,7 @@ class Installer {
             `order_item_id` bigint(20) NOT NULL,
             `status` varchar(20) NOT NULL,
             `enrollment_date` timestamp NULL DEFAULT NULL,
+            `expiry_date` timestamp NULL DEFAULT NULL,
             `unenrollment_date` timestamp NULL DEFAULT NULL,
             `unenrollment_reason` text DEFAULT NULL,
             `learners_hub_id` bigint(20) NOT NULL,
@@ -226,6 +227,9 @@ class Installer {
                     $synchronize_course_settings
                 );
             }
+        }
+        if ( version_compare( $previous_version, '3.4.3', '<' ) ) {
+            self::migrate_enrollment_expiry_3_4_3();
         }
     }
 
@@ -455,5 +459,42 @@ class Installer {
         );
 
         wp_cache_flush();
+    }
+
+    /**
+     * Add the expiry_date column to the enrollment table.
+     *
+     * This migration adds support for automatic enrollment expiry processing.
+     * The expiry_date column stores the exact date and time when an enrollment
+     * should be suspended or unenrolled by the scheduled task.
+     *
+     * @return void
+     */
+    public static function migrate_enrollment_expiry_3_4_3() {
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . Util::TABLES['enrollment'];
+
+        $column_exists = $wpdb->get_var(
+            $wpdb->prepare(
+                "
+                SELECT COUNT(*)
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                AND TABLE_NAME = %s
+                AND COLUMN_NAME = %s
+                ",
+                $table_name,
+                'expiry_date'
+            )
+        );
+
+        if ( ! $column_exists ) {
+            $wpdb->query(
+                "ALTER TABLE {$table_name}
+                ADD COLUMN expiry_date TIMESTAMP NULL DEFAULT NULL
+                AFTER enrollment_date"
+            );
+        }
     }
 }

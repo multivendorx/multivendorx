@@ -214,20 +214,38 @@ class Frontend {
         wp_add_inline_script(
             'woocommerce',
             '( function( $ ) {
-            $("#multivendorx-myac-order-refund-wrap").hide();
-            $("#multivendorx-myac-order-refund-wrap .cust-rr-other").hide();
-            $("#multivendorx-myac-order-refund-wrap .refund_reason_option input").on("click", function(){
-                var others_checked = $("input:radio[name=refund_reason_option]:checked").val();
-                if(others_checked == "others"){
-                    $("#multivendorx-myac-order-refund-wrap .cust-rr-other").show();
-                }else{
-                    $("#multivendorx-myac-order-refund-wrap .cust-rr-other").hide();
-                }
-            });
-			$("#cust-request-refund-btn").click(function(){
-				$("#multivendorx-myac-order-refund-wrap").slideToggle();
-			});
-		} )( jQuery );'
+                $("#multivendorx-myac-order-refund-wrap").hide();
+                $("#multivendorx-myac-order-refund-wrap .cust-rr-other").hide();
+                
+                // Close popup on close icon
+                $("#multivendorx-myac-order-refund-wrap .popup-close").on("click", function(){
+                    $("#multivendorx-myac-order-refund-wrap").fadeOut();
+                });
+                
+                // Close popup outside click .multivendorx-popup-content
+                $("#multivendorx-myac-order-refund-wrap").on("click", function(e){
+                    if($(e.target).is("#multivendorx-myac-order-refund-wrap")){
+                        $("#multivendorx-myac-order-refund-wrap").fadeOut();
+                    }
+                });
+                
+                $("#multivendorx-myac-order-refund-wrap .multivendorx-popup-content").on("click", function(e){
+                    e.stopPropagation();
+                });
+                
+                $("#multivendorx-myac-order-refund-wrap .refund_reason_option input").on("click", function(){
+                    var others_checked = $("input:radio[name=refund_reason_option]:checked").val();
+                    if(others_checked == "others"){
+                        $("#multivendorx-myac-order-refund-wrap .cust-rr-other").show();
+                    }else{
+                        $("#multivendorx-myac-order-refund-wrap .cust-rr-other").hide();
+                    }
+                });
+                
+                $("#cust-request-refund-btn").click(function(){
+                    $("#multivendorx-myac-order-refund-wrap").slideToggle();
+                });
+            } )( jQuery );'
         );
     }
 

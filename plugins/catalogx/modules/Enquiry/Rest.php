@@ -57,8 +57,8 @@ class Rest {
     public function create_item_permissions_check() {
         $user_id = CatalogX()->current_user_id;
         // For non-logged in user.
-        if ( 0 === $user_id && empty( CatalogX()->setting->get_setting( 'enquiry_user_permission' ) ) ) {
-			return true;
+        if (0 === $user_id &&'logged_in_only' === CatalogX()->setting->get_setting( 'enquiry_user_permission', '' )) {
+            return true;
         }
 
         // Check if user is admin or customer.
@@ -138,7 +138,7 @@ class Rest {
 
             // Prepare enquiry_record for insertion.
             $enquiry_record = array(
-                'product_info'           => wp_json_encode( $product_info ),
+                'product_info'           => serialize( $product_info ),
                 'user_id'                => $user->ID,
                 'user_name'              => $customer_name ?? $user_name,
                 'user_email'             => $customer_email ?? $user_email,
@@ -202,11 +202,11 @@ class Rest {
                     )
                 );
 
-                // $attachments = apply_filters( 'catalogx_set_enquiry_pdf_and_attachments', array(), $enquiry_id, $enquiry_data );
+                $attachments = apply_filters( 'catalogx_set_enquiry_pdf_and_attachments', array(), $enquiry_id, $enquiry_data );
                 $additional_email = CatalogX()->setting->get_setting( 'additional_alert_email' );
                 $email_handler    = WC()->mailer()->emails['EnquiryEmail'];
 
-                $email_handler->trigger( $additional_email, $enquiry_data );
+                $email_handler->trigger( $additional_email, $enquiry_data, $attachments );
 
                 // Check if page redirection after enquiry is enabled.
 

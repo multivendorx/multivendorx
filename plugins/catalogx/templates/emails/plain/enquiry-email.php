@@ -2,48 +2,59 @@
 /**
  * CatalogX Enquiry Email (Plain Text)
  *
- * @author  MultiVendorX
+ * @author 	MultiVendorX
  * @version  6.0.0
- * @package CatalogX
  */
-use CatalogX\Emails\EmailHTMLConverter;
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 $enquiry_data = $args['enquiry_data'];
-$settings = get_option(
-	'catalogx_enquiry_email_temp_settings',
-	array()
-);
 
-$template_data = $settings['enquiry_email_template'] ?? array();
-$template_id = $template_data['activeEmailTemplateId'] ?? '';
-$template = array();
+echo $email_heading . "\n\n";
 
-foreach ( $template_data['emailTemplates'] ?? array() as $email_template ) {
+echo sprintf( __( "Dear Admin", 'catalogx' ) ) . "\n\n";
+echo sprintf( __( "Please find the product enquiry, details are given below", 'catalogx' ) ) . "\n\n";
 
-	if ( $template_id === ( $email_template['id'] ?? '' ) ) {
-		$template = $email_template;
-		break;
-	}
+echo "\n****************************************************\n\n";
+
+$product_obj = wc_get_product( key($args['product_id']) );
+
+echo "\n Product Name : ".$product_obj->get_name();
+
+if($product_obj->get_type() == 'variation'){
+    if(isset($enquiry_data['variations']) && count($enquiry_data['variations']) > 0 ){
+            foreach ($enquiry_data['variations'] as $label => $value) {
+                $label = str_replace( 'attribute_pa_', '', $label );
+                $label = str_replace( 'attribute_', '', $label );
+                echo "\n".ucfirst($label).": ".ucfirst($value);
+            } 
+        }else{
+            if($product_obj->get_attributes()){
+                foreach ($product_obj->get_attributes() as $label => $value) {
+                  echo "\n".ucfirst(wc_attribute_label($label)).": ".ucfirst($value);
+                }
+            }
+        }
 }
 
-$email_html = '';
+echo "\n\n Product link : ".$product_obj->get_permalink();
+if($product_obj->get_sku())
+    echo "\n\n Product SKU : ".$product_obj->get_sku();
 
-if ( ! empty( $template['blocks'] ) ) {
-	$product_obj = wc_get_product( key( $args['product_id'] ) );
-	$email_html = EmailHTMLConverter::convert( $template['blocks'],array(
-		'{customer_name}'  => $enquiry_data['user_name'],
-		'{customer_email}' => $enquiry_data['user_email'],
-		'{product_name}'   => $product_obj ? $product_obj->get_name() : 'Dummy Product',
-		'{product_link}'   => $product_obj ? $product_obj->get_permalink() : '#',
-	) );
-}
-?>
+echo "\n\n\n****************************************************\n\n";
 
-<div style="width:600px;margin:0 auto;">
-	<?php echo wp_kses_post( $email_html ); ?>
-</div>
+echo "\n Customer Details : ";
 
-<?php do_action( 'catalogx_email_footer', $email ); ?>
+echo "\n\n\n Name : ".$enquiry_data['cust_name'];
+
+echo "\n\n Email : ".$enquiry_data['cust_email'];
+if(isset($enquiry_data['phone']))
+    echo "\n\n User Phone : ".$enquiry_data['phone'];
+if(isset($enquiry_data['address']))
+    echo "\n\n User Address : ".$enquiry_data['address'];
+if(isset($enquiry_data['subject']))
+    echo "\n\n User Subject : ".$enquiry_data['subject'];
+if(isset($enquiry_data['comment']))
+    echo "\n\n User Comments : ".$enquiry_data['comment'];
+
+echo "\n\n\n****************************************************\n\n";
+
+echo apply_filters('catalogx_email_footer_text', sprintf( __( '%s - Powered by CatalogX', 'catalogx' ), get_bloginfo( 'name', 'display' ) ) );

@@ -47,7 +47,10 @@ class Installer {
      * Install class constructor functions
      */
     public function __construct() {
+        add_action( 'init', array( $this, 'run_migration' ) );
+    }
 
+    public function run_migration() {
         // Get the previous version and current version.
         self::$previous_version = get_option( self::VERSION_KEY, '' );
         // this function should be deleted after 7.0.0 .
@@ -63,7 +66,7 @@ class Installer {
             $this->set_default_modules();
             $this->set_default_settings();
         } else {
-            $this->run_migration();
+            $this->do_migration();
         }
         // Update the version in database.
         update_option( self::VERSION_KEY, CatalogX()->version );
@@ -189,12 +192,9 @@ class Installer {
      */
     public function set_default_settings() {
         // Update shopping gurnal.
-        $enquiry_settings = array(
+        $enquiry_quote_settings = array(
             'is_disable_popup'                   => 'popup',
             'is_enable_multiple_product_enquiry' => array( 'is_enable_multiple_product_enquiry' ),
-        );
-
-        $quote_settings = array(
             'set_expiry_time'                    => 'Never',
         );
 
@@ -203,19 +203,17 @@ class Installer {
             'redirect_cart_page'    => ''
         );
 
-        update_option( Utill::CATALOGX_SETTINGS['shopping'], $all_settings );
-        update_option( Utill::CATALOGX_SETTINGS['enquiry'], $enquiry_settings );
-        update_option( Utill::CATALOGX_SETTINGS['quotation'], $quote_settings );
+        update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array_merge($all_settings,$enquiry_quote_settings) );
 
 
         $email_settings = array(
             'additional_alert_email' => CatalogX()->admin_email,
         );
 
-        update_option( 'catalogx_enquiry_email_temp_settings', $email_settings );
+        update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], $email_settings );
 
         // Update pages settings.
-        $page_settings = array_filter(
+        $dashboard_settings = array_filter(
             array(
                 'set_enquiry_cart_page'       => get_option( 'catalogx_enquiry_cart_page', false ),
                 'set_request_quote_page'      => get_option( 'catalogx_request_quote_page', false ),
@@ -224,8 +222,8 @@ class Installer {
             static fn( $value ) => false !== $value
         );
 
-        $page_settings = array_map( 'intval', $page_settings );
-        update_option( Utill::CATALOGX_SETTINGS['pages'], $page_settings );
+        $dashboard_settings = array_map( 'intval', $dashboard_settings );
+        update_option( Utill::CATALOGX_SETTINGS['dashboard'], $dashboard_settings );
 
         // Update form settings.
         $free_form = array(
@@ -333,7 +331,7 @@ class Installer {
      *
      * @return void
      */
-    public function run_migration() {
+    public function do_migration() {
         // Migration by specific version controll.
         $previous_version = get_option( self::VERSION_KEY, '' );
         if ( version_compare( $previous_version, '6.0.7', '<' ) ) {
@@ -359,7 +357,7 @@ class Installer {
                 'catalogx_all-settings_settings'           => Utill::CATALOGX_SETTINGS['shopping'],
                 'catalogx_enquiry-quote-exclusion_settings' => Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
                 'catalogx_enquiry-form-customization_settings' => Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
-                'catalogx_enquiry-email-temp_settings'     => Utill::CATALOGX_SETTINGS['enquiry-email-temp'],
+                'catalogx_enquiry-email-temp_settings'     => Utill::CATALOGX_SETTINGS['enquiry-email-template'],
                 'catalogx_wholesale-registration_settings' => Utill::CATALOGX_SETTINGS['wholesale-registration'],
             );
 
@@ -393,7 +391,7 @@ class Installer {
             }
             $previous_enquiry_email_temp_settings = get_option( 'catalogx_enquiry-email-temp_settings', array() );
             if ( ! empty( $previous_enquiry_email_temp_settings ) ) {
-            update_option( Utill::CATALOGX_SETTINGS['enquiry-email-temp'], $previous_enquiry_email_temp_settings );
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], $previous_enquiry_email_temp_settings );
             delete_option( 'catalogx_enquiry-email-temp_settings' );
             }
             $previous_wholesale_registration_settings = get_option( 'catalogx_wholesale-registration_settings', array() );
@@ -408,34 +406,109 @@ class Installer {
             /**
              * Form Settings Migration
              */
-            $current_settings = get_option(
-                Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
-                array()
-            );
+            $from_settings = get_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], array());
 
-            if ( ! empty( $current_settings ) ) {
+            if ( ! empty( $from_settings ) ) {
+                $free_form_settings = $from_settings['freefromsetting'] ?? array();
+                $pro_form_settings  = $from_settings['formsettings']['formfieldlist'] ?? array();
 
-                $free_form_settings = $current_settings['freefromsetting'] ?? array();
-                $pro_form_settings  = $current_settings['formsettings']['formfieldlist'] ?? array();
+                $field_map = [
+                    'name' => [
+                        'id'          => 1,
+                        'type'        => 'text',
+                        'label'       => 'Name',
+                        'placeholder' => 'Enter your name here',
+                        'name'        => 'name',
+                    ],
+                    'email' => [
+                        'id'          => 2,
+                        'type'        => 'email',
+                        'label'       => 'Email',
+                        'placeholder' => 'Enter your email here',
+                        'name'        => 'email',
+                    ],
+                    'phone' => [
+                        'id'          => 3,
+                        'type'        => 'text',
+                        'label'       => 'Phone',
+                        'placeholder' => 'Enter your phone number here',
+                        'name'        => 'phone',
+                    ],
+                    'address' => [
+                        'id'          => 4,
+                        'type'        => 'text',
+                        'label'       => 'Address',
+                        'placeholder' => 'Enter your address here',
+                        'name'        => 'address',
+                    ],
+                    'subject' => [
+                        'id'          => 5,
+                        'type'        => 'text',
+                        'label'       => 'Subject',
+                        'placeholder' => 'Enter the subject of your enquiry here',
+                        'name'        => 'subject',
+                    ],
+                    'comment' => [
+                        'id'          => 6,
+                        'type'        => 'text',
+                        'label'       => 'Comment',
+                        'placeholder' => 'Enter the details of your enquiry here',
+                        'name'        => 'comment',
+                    ],
+                    'filesize-limit' => [
+                        'id'          => 7,
+                        'type'        => 'fileupload',
+                        'label'       => 'Filesize Limit',
+                        'placeholder' => '',
+                        'name'        => 'File upload size limit',
+                    ],
+                    'fileupload' => [
+                        'id'          => 8,
+                        'type'        => 'attachment',
+                        'label'       => 'Fileupload',
+                        'placeholder' => '',
+                        'name'        => 'File upload',
+                    ],
+                    'captcha' => [
+                        'id'          => 9,
+                        'type'        => 'custom-recaptcha',
+                        'label'       => 'Captcha',
+                        'placeholder' => '',
+                        'name'        => 'Captcha',
+                    ],
+                ];
 
-                $migrated_free_enquiry_form = array();
-                $field_id                   = 1;
+                $migrated_free_enquiry_form = [];
 
-                foreach ( $free_form_settings as $field ) {
-
-                    if ( empty( $field['key'] ) ) {
+                // Add enabled fields.
+                foreach ($free_form_settings as $field) {
+                    if (empty($field['active']) || empty($field['key'])) {
                         continue;
                     }
 
-                    $migrated_free_enquiry_form[] = array(
-                        'id'          => $field_id++,
-                        'type'        => sanitize_key( $field['key'] ),
-                        'label'       => $field['label'] ?? '',
-                        'placeholder' => '',
-                        'disabled'    => empty( $field['active'] ),
-                        'name'        => sanitize_key( $field['key'] ),
+                    $key = $field['key'];
+
+                    if (!isset($field_map[$key])) {
+                        continue;
+                    }
+
+                    $migrated_free_enquiry_form[] = array_merge(
+                        $field_map[$key],
+                        [
+                            'disabled' => '',
+                        ]
                     );
                 }
+
+                // Always add submit button at the end.
+                $migrated_free_enquiry_form[] = [
+                    'id'          => 10,
+                    'type'        => 'button',
+                    'label'       => 'Submit',
+                    'placeholder' => '',
+                    'disabled'    => '',
+                    'name'        => 'Submit',
+                ];
 
                 update_option(
                     Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
@@ -461,13 +534,11 @@ class Installer {
             );
 
             if ( ! empty( $old_exclusion_settings ) ) {
-
                 $migrated_exclusion_settings = array(
                     'exclusion' => array(),
                 );
 
                 foreach ( $old_exclusion_settings as $setting_key => $setting_values ) {
-
                     if ( ! is_array( $setting_values ) ) {
                         continue;
                     }
@@ -510,8 +581,8 @@ class Installer {
                     'enable_cart_checkout' => $old_all_settings['enable_cart_checkout'] ?? array(),
                 );
 
-                if ( ! empty( $old_all_settings['redirect_page_id'] ) ) {
-                    $shopping_settings['redirect_cart_page'] = $old_all_settings['redirect_page_id'];
+                if ( ! empty( $old_all_settings['redirect_cart_page'] ) ) {
+                    $shopping_settings['redirect_cart_page'] = $old_all_settings['redirect_cart_page'];
                 }
 
                 update_option(
@@ -526,6 +597,8 @@ class Installer {
                     'enquiry_user_permission' => $old_all_settings['enquiry_user_permission'] ?? array(),
                     'is_enable_out_of_stock'  => $old_all_settings['is_enable_out_of_stock'] ?? array(),
                     'is_disable_popup'        => $old_all_settings['is_disable_popup'] ?? 'popup',
+                    'is_page_redirect'        => $old_all_settings['is_page_redirect'] ?? array(),
+                    'redirect_page_id'        => $old_all_settings['redirect_page_id'] ?? '',
                 );
 
                 if ( isset( $old_all_settings['notify_me_button'] ) ) {
@@ -632,6 +705,32 @@ class Installer {
                     AFTER status"
                 );
             }
+
+            $enquiry_settings       = get_option( 'catalogx_enquiry_settings', array() );
+            $quotation_settings     = get_option( 'catalogx_quotation_settings', array() );
+            $shopping_settings  = get_option( 'catalogx_shopping_settings', array() );
+            $extra_settings     = get_option( 'catalogx_extra_settings', array() );
+            update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array_merge( $shopping_settings, $extra_settings,$enquiry_settings, $quotation_settings ) );
+
+            delete_option( 'catalogx_extra_settings' );
+            delete_option( 'catalogx_shopping_settings' );
+            delete_option( 'catalogx_enquiry_settings' );
+            delete_option( 'catalogx_quotation_settings' );
+
+            $settings = get_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array() );
+
+            $settings['enquiry_user_permission'] = ! empty( $settings['enquiry_user_permission'] ) ? 'logged_in_only' : 'everyone';
+
+            $settings['quote_user_permission'] = ! empty( $settings['quote_user_permission'] )? 'logged_in_only' : 'everyone';
+
+            update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $settings );
+
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], get_option( 'catalogx_enquiry_email_temp_settings', array() ) );
+            update_option( Utill::CATALOGX_SETTINGS['dashboard'], get_option( 'catalogx_pages_settings', array() ) );
+
+            delete_option( 'catalogx_enquiry_email_temp_settings' );
+            delete_option( 'catalogx_pages_settings' );
+
         }
     }
 
