@@ -442,6 +442,7 @@ class FrontendScripts {
                             'active_modules'             => CatalogX()->modules->get_active_modules(),
                             'user_role'                  => $current_user_role,
                             'khali_dabba'                => Utill::is_khali_dabba(),
+                            'active_plugins'             => get_option( 'active_plugins', array() ),
                             'pro_url'                    => esc_url( CATALOGX_PRO_SHOP_URL ),
                             'order_edit'                 => admin_url( 'admin.php?page=wc-orders&action=edit' ),
                             'admin_url'                  => admin_url( 'admin.php?page=catalogx' ),

@@ -25,6 +25,8 @@ interface TabsProps {
     onChange?: (value: any) => void;
     canAccess?: (capability: string) => boolean;
     headerExtra?: React.ReactNode;
+    modules?: string[];
+    onBlocked?: (type: 'pro' | 'plugin' | 'module', payload?: {}) => void;
 }
 
 export const TabsUI: React.FC<TabsProps> = ({
@@ -35,6 +37,8 @@ export const TabsUI: React.FC<TabsProps> = ({
     onChange,
     canAccess,
     headerExtra,
+    modules,
+    onBlocked,
 }) => {
     const [activeIndex, setActiveIndex] = useState(defaultActiveIndex);
 
@@ -68,6 +72,8 @@ export const TabsUI: React.FC<TabsProps> = ({
                 value={fieldValue}
                 onChange={handleFieldChange}
                 canAccess={canAccess}
+                modules={modules}
+                onBlocked={onBlocked}
             />
             // </div>
         );
@@ -166,9 +172,8 @@ export const TabsUI: React.FC<TabsProps> = ({
                         {tabs.map((tab, index) => (
                             <div
                                 key={index}
-                                className={`tab ${
-                                    index === activeIndex ? 'active-tab' : ''
-                                }`}
+                                className={`tab ${index === activeIndex ? 'active-tab' : ''
+                                    }`}
                                 onClick={() => setActiveIndex(index)}
                             >
                                 <span className="tab-name">
@@ -209,12 +214,14 @@ export const TabsUI: React.FC<TabsProps> = ({
 };
 
 const Tabs: FieldComponent = {
-    render: ({ field, value, onChange, canAccess }) => (
+    render: ({ field, value, onChange, canAccess, modules, onBlocked }) => (
         <TabsUI
             tabs={field.tabs || []}
             value={value}
             onChange={onChange}
             canAccess={canAccess}
+            modules={modules}
+            onBlocked={onBlocked}
         />
     ),
 

@@ -129,9 +129,9 @@ class Frontend {
 
             // additional css.
             $custom_css = CatalogX()->setting->get_setting( 'custom_css_product_page' );
-		if ( ! empty( $custom_css ) ) {
-			wp_add_inline_style( 'catalogx-enquiry-form-style', $custom_css );
-		}
+            if ( ! empty( $custom_css ) ) {
+                wp_add_inline_style( 'catalogx-enquiry-form-style', $custom_css );
+            }
         }
     }
 
@@ -252,7 +252,7 @@ class Frontend {
         }
 
         CatalogX()->render_enquiry_btn_via = 'shortcode';
-
+        $this->frontend_scripts();
         ob_start();
 
         $product_id = 0;

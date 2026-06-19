@@ -194,17 +194,17 @@ export default {
                 },
 
                 {
-					key: 'pro_form',
+                    key: 'pro_form',
                     label: __('Pro', 'catalogx'),
                     content: [
                         {
                             key: 'enquiry_form_builder',
                             type: 'block-builder',
-							blockGroups: REGISTRATION_BLOCK_GROUPS,
-							visibleGroups: ['registration', 'store'],
+                            blockGroups: REGISTRATION_BLOCK_GROUPS,
+                            visibleGroups: ['registration', 'store'],
                             classes: 'full-width',
                             desc: __('Customise personalised enquiry form.', 'catalogx'),
-                            context:'form',
+                            context: 'form',
                             proSetting: true,
                         },
                     ],

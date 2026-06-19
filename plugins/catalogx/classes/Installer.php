@@ -203,18 +203,17 @@ class Installer {
             'redirect_cart_page'    => ''
         );
 
-        update_option( Utill::CATALOGX_SETTINGS['shopping-extra'], $all_settings );
-        update_option( Utill::CATALOGX_SETTINGS['enquiry-quote'], $enquiry_quote_settings );
+        update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array_merge($all_settings,$enquiry_quote_settings) );
 
 
         $email_settings = array(
             'additional_alert_email' => CatalogX()->admin_email,
         );
 
-        update_option( Utill::CATALOGX_SETTINGS['enquiry-email-temp'], $email_settings );
+        update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], $email_settings );
 
         // Update pages settings.
-        $page_settings = array_filter(
+        $dashboard_settings = array_filter(
             array(
                 'set_enquiry_cart_page'       => get_option( 'catalogx_enquiry_cart_page', false ),
                 'set_request_quote_page'      => get_option( 'catalogx_request_quote_page', false ),
@@ -223,8 +222,8 @@ class Installer {
             static fn( $value ) => false !== $value
         );
 
-        $page_settings = array_map( 'intval', $page_settings );
-        update_option( Utill::CATALOGX_SETTINGS['pages'], $page_settings );
+        $dashboard_settings = array_map( 'intval', $dashboard_settings );
+        update_option( Utill::CATALOGX_SETTINGS['dashboard'], $dashboard_settings );
 
         // Update form settings.
         $free_form = array(
@@ -358,7 +357,7 @@ class Installer {
                 'catalogx_all-settings_settings'           => Utill::CATALOGX_SETTINGS['shopping'],
                 'catalogx_enquiry-quote-exclusion_settings' => Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
                 'catalogx_enquiry-form-customization_settings' => Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
-                'catalogx_enquiry-email-temp_settings'     => Utill::CATALOGX_SETTINGS['enquiry-email-temp'],
+                'catalogx_enquiry-email-temp_settings'     => Utill::CATALOGX_SETTINGS['enquiry-email-template'],
                 'catalogx_wholesale-registration_settings' => Utill::CATALOGX_SETTINGS['wholesale-registration'],
             );
 
@@ -392,7 +391,7 @@ class Installer {
             }
             $previous_enquiry_email_temp_settings = get_option( 'catalogx_enquiry-email-temp_settings', array() );
             if ( ! empty( $previous_enquiry_email_temp_settings ) ) {
-            update_option( Utill::CATALOGX_SETTINGS['enquiry-email-temp'], $previous_enquiry_email_temp_settings );
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], $previous_enquiry_email_temp_settings );
             delete_option( 'catalogx_enquiry-email-temp_settings' );
             }
             $previous_wholesale_registration_settings = get_option( 'catalogx_wholesale-registration_settings', array() );
@@ -709,24 +708,28 @@ class Installer {
 
             $enquiry_settings       = get_option( 'catalogx_enquiry_settings', array() );
             $quotation_settings     = get_option( 'catalogx_quotation_settings', array() );
-            update_option( Utill::CATALOGX_SETTINGS['enquiry-quote'], array_merge( $enquiry_settings, $quotation_settings ) );
-
             $shopping_settings  = get_option( 'catalogx_shopping_settings', array() );
             $extra_settings     = get_option( 'catalogx_extra_settings', array() );
-            update_option( Utill::CATALOGX_SETTINGS['shopping-extra'], array_merge( $shopping_settings, $extra_settings ) );
+            update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array_merge( $shopping_settings, $extra_settings,$enquiry_settings, $quotation_settings ) );
 
             delete_option( 'catalogx_extra_settings' );
             delete_option( 'catalogx_shopping_settings' );
             delete_option( 'catalogx_enquiry_settings' );
             delete_option( 'catalogx_quotation_settings' );
 
-            $settings = get_option( Utill::CATALOGX_SETTINGS['enquiry-quote'], array() );
+            $settings = get_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array() );
 
             $settings['enquiry_user_permission'] = ! empty( $settings['enquiry_user_permission'] ) ? 'logged_in_only' : 'everyone';
 
             $settings['quote_user_permission'] = ! empty( $settings['quote_user_permission'] )? 'logged_in_only' : 'everyone';
 
-            update_option( Utill::CATALOGX_SETTINGS['enquiry-quote'], $settings );
+            update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $settings );
+
+            update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], get_option( 'catalogx_enquiry_email_temp_settings', array() ) );
+            update_option( Utill::CATALOGX_SETTINGS['dashboard'], get_option( 'catalogx_pages_settings', array() ) );
+
+            delete_option( 'catalogx_enquiry_email_temp_settings' );
+            delete_option( 'catalogx_pages_settings' );
 
         }
     }

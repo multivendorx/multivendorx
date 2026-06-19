@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import {OuterSpace} from '../../assets/template/OuterSpace';
+import {OuterSpace} from '../../../assets/template/OuterSpace';
 // import { GreenLagoon } from '../../assets/template/GreenLagoon';
 
 
@@ -54,8 +54,8 @@ const EMAIL_BLOCK_GROUPS = [
 ];
 
 export default {
-    id: 'enquiry-email-temp',
-    priority: 4,
+    id: 'enquiry-email-template',
+    priority: 3,
     headerTitle: __('Email Notifications', 'catalogx'),
     headerDescription: __(
         'Select your preferred enquiry details email template',

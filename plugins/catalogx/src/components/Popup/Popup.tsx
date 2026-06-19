@@ -191,6 +191,50 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 						/>
 					</div>
 				</div>
+			) : props.plugin ? (
+				<div className="popup-wrapper">
+					<div className="popup-header">
+						<i className="adminfont-plugin" />
+					</div>
+
+					<div className="popup-body">
+						<div className="module-name">
+							{sprintf(
+								__('Install %s', 'catalogx'),
+								props.plugin.name
+							)}
+						</div>
+
+						<div className="module-desc">
+							{sprintf(
+								__(
+									'This feature requires the %s plugin. Please install and activate it to continue.',
+									'catalogx'
+								),
+								props.plugin.name
+							)}
+						</div>
+
+						<ButtonInputUI
+							position="center"
+							buttons={[
+								{
+									icon: 'download',
+									text: __('Install Plugin', 'catalogx'),
+									onClick: () => {
+										if (props.plugin?.link) {
+											window.open(
+												props.plugin.link,
+												'_blank',
+												'noopener,noreferrer'
+											);
+										}
+									},
+								},
+							]}
+						/>
+					</div>
+				</div>
 			) : (
 				<>
 					{/* pro */}

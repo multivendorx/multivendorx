@@ -76,7 +76,7 @@ class Admin {
             ),
             'settings'         => array(
                 'name'     => __( 'Settings', 'catalogx' ),
-                'subtab'   => 'enquiry-form-customization',
+                'subtab'   => 'dashboard',
                 'priority' => 60,
             ),
             'modules'          => array(
