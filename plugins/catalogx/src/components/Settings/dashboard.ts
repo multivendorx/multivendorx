@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-    id: 'pages',
-    priority: 7,
-    headerTitle: __('Page', 'catalogx'),
+    id: 'dashboard',
+    priority: 1,
+    headerTitle: __('Dashboard', 'catalogx'),
     headerDescription: __(
         'Manage the endpoints for all pages on the site, ensuring proper routing and access.',
         'catalogx'

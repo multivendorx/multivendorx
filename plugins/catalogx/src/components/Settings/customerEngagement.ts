@@ -1,8 +1,8 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 export default {
-    id: 'enquiry-quote',
-    priority: 2,
-    headerTitle: __('Enquiry $ Quote Rules', 'catalogx'),
+    id: 'customer-engagement',
+    priority: 3,
+    headerTitle: __('Customer Engagement', 'catalogx'),
     headerDescription: __(
         'Set up sales flow and catalog mode with integrated enquiry and quotation management.',
         'catalogx'
@@ -11,6 +11,11 @@ export default {
     submitUrl: 'settings',
     modal: [
         //enquiry
+        {
+            key: 'section',
+            type: 'section',
+            title: __('Configure how customers submit product enquiries and how enquiry requests are managed.', 'catalogx'),
+        },
         {
             key: 'enquiry_user_permission',
             type: 'choice-toggle',
@@ -152,8 +157,13 @@ export default {
             options: appLocalizer.pages_data,
             moduleEnabled: 'enquiry'
         },
-        //quote
 
+        //quote
+        {
+            key: 'section',
+            type: 'section',
+            title: __('Configure how customers request quotations and how quote requests are managed.', 'catalogx'),
+        },
         {
             key: 'quote_user_permission',
             type: 'choice-toggle',
@@ -192,6 +202,106 @@ export default {
             postText: __('days', 'catalogx'),
             proSetting: true,
             moduleEnabled: 'quote',
+        },
+
+        //shopping
+        {
+            key: 'section',
+            type: 'section',
+            title: __('Configure sitewide buying mode and manage cart and checkout access.', 'catalogx'),
+        },
+        {
+            key: 'enable_cart_checkout',
+            type: 'checkbox',
+            label: __('Sitewide buy mode', 'catalogx'),
+            desc: sprintf(
+                /* translators: %s will be replaced with a link to CatalogX Pro */
+                __(
+                    'Enabling this setting with CatalogX activates the catalog-only mode on your site, preventing customers from making purchases. To allow purchasing functionality, upgrade to %s and enable this setting to activate the buying mode.',
+                    'catalogx'
+                ),
+                '<a href="' +
+                appLocalizer.pro_url +
+                '" target="_blank">CatalogX Pro</a>'
+            ),
+            options: [
+                {
+                    key: 'enable_cart_checkout',
+                    value: 'enable_cart_checkout',
+                },
+            ],
+            proSetting: true,
+            look: 'toggle',
+            moduleEnabled: 'catalog',
+        },
+        {
+            key: 'redirect_cart_page',
+            type: 'select',
+            label: __('Cart / Checkout Redirect Page', 'catalogx'),
+            size: 15,
+            options: [
+                {
+                    value: '',
+                    label: 'Home',
+                    key: '',
+                },
+                ...appLocalizer.pages_data,
+            ],
+            dependent: {
+                key: 'enable_cart_checkout',
+                set: false,
+            },
+            desc: sprintf(
+                /* translators: %s will be replaced with a link to CatalogX Pro */
+                __(
+                    'Redirect users to the homepage when they click on the cart or checkout page. To customize the redirection to a different page, an upgrade to %s is required.',
+                    'catalogx'
+                ),
+                '<a href="' +
+                appLocalizer.pro_url +
+                '" target="_blank">CatalogX Pro</a>'
+            ),
+
+            proSetting: true,
+            moduleEnabled: 'catalog',
+        },
+        //extra
+        {
+            key: 'section',
+            type: 'section',
+            title: __('Configure PDF download and email attachment settings for enquiries and quotations.', 'catalogx'),
+        },
+        {
+            key: 'display_pdf',
+            type: 'multi-checkbox-table',
+            storeSetting: true,
+            label: __('Attachment', 'catalogx'),
+            classes: 'gridTable',
+            rows: [
+                {
+                    key: 'allow_download_pdf',
+                    label: __('Download as PDF', 'catalogx'),
+                },
+                {
+                    key: 'attach_pdf_to_email',
+                    label: __('Attach with Email', 'catalogx'),
+                },
+            ],
+            columns: [
+                {
+                    key: 'enquiry_pdf_permission',
+                    label: __('Enquiry', 'catalogx'),
+                    type: 'checkbox',
+                    moduleEnabled: 'enquiry',
+                },
+                {
+                    key: 'quote_pdf_permission',
+                    label: __('Quote', 'catalogx'),
+                    type: 'checkbox',
+                    moduleEnabled: 'quote',
+                },
+            ],
+            proSetting: true,
         },
 
     ],

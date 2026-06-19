@@ -118,7 +118,7 @@ const WHOLESALE_BLOCK_GROUPS = [
 
 export default {
     id: 'wholesale-registration',
-    priority: 3,
+    priority: 2,
     headerTitle: __('Wholesale', 'catalogx'),
     headerDescription: __(
         'Drag-and-drop interface to tailor the wholesale registration form.',
