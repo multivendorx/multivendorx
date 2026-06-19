@@ -68,11 +68,19 @@ class Frontend {
     public function render_product_enquiry_button( $product_obj ) {
         global $product;
 
+        $product_obj = is_int( $product_obj )
+            ? wc_get_product( $product_obj )
+            : ( $product_obj ? $product_obj : $product );
+
+        if ( empty( $product_obj ) ) {
+            return;
+        }
+
         if ( ! Util::is_available() ) {
             return;
         }
 
-        if ( ! Util::is_available_for_product( $product->get_id() ) ) {
+        if ( ! Util::is_available_for_product( $product_obj->get_id() ) ) {
             return;
         }
 
@@ -82,13 +90,6 @@ class Frontend {
             return;
         }
 
-        $product_obj = is_int( $product_obj )
-            ? wc_get_product( $product_obj )
-            : ( $product_obj ? $product_obj : $product );
-
-        if ( empty( $product_obj ) ) {
-            return;
-        }
 
         $display_enquiry_button = CatalogX()->setting->get_setting( 'is_enable_out_of_stock', '' );
 
