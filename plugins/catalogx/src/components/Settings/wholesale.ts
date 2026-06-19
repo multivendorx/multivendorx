@@ -3,8 +3,8 @@ import { __, sprintf } from '@wordpress/i18n';
 export default {
     id: 'wholesale',
     priority: 4,
-    headerTitle: __( 'Wholesale', 'catalogx' ),
-    headerDescription: __( 'Wholesale sign up and registration management.', 'catalogx' ),
+    headerTitle: __('Wholesale', 'catalogx'),
+    headerDescription: __('Wholesale sign up and registration management.', 'catalogx'),
     headerIcon: 'wholesale',
     submitUrl: 'settings',
     modal: [
@@ -22,12 +22,12 @@ export default {
             options: [
                 {
                     key: 'manual',
-                    label: __( 'Manual', 'catalogx' ),
+                    label: __('Manual', 'catalogx'),
                     value: 'manual',
                 },
                 {
                     key: 'automatic',
-                    label: __( 'Automatic', 'catalogx' ),
+                    label: __('Automatic', 'catalogx'),
                     value: 'automatic',
                 },
             ],
@@ -35,40 +35,71 @@ export default {
             moduleEnabled: 'wholesale',
         },
         {
-            key: 'disable_coupon_for_wholesale',
-            type: 'checkbox',
-            label: __( 'Coupon restriction for wholesalers', 'catalogx' ),
+            key: 'wholesale_coupon_policy',
+            type: 'choice-toggle',
+            label: __('Coupon usage', 'catalogx'),
+            settingDescription: __(
+                'Choose how coupons work for wholesale customers.',
+                'catalogx'
+            ),
             desc: __(
-                'Prevent wholesale users from applying any coupon and get addional discount on their orders.',
+                '<ul><li>Wholesale Pricing Only - Wholesale discounts cannot be combined with coupons.</li><li>Wholesale Pricing + Coupons - Wholesale customers can apply coupons during checkout.</li></ul>',
                 'catalogx'
             ),
             options: [
                 {
-                    key: 'disable_coupon_for_wholesale',
-                    label: __( '', 'catalogx' ),
-                    value: 'disable_coupon_for_wholesale',
+                    key: 'restricted',
+                    label: __('Wholesale Pricing Only', 'catalogx'),
+                    value: 'restricted',
+                },
+                {
+                    key: 'allowed',
+                    label: __('Wholesale Pricing + Coupons', 'catalogx'),
+                    value: 'allowed',
                 },
             ],
-            proSetting: true,
-            look: 'toggle',
-            moduleEnabled: 'wholesale',
         },
+        // {
+        //     key: 'disable_coupon_for_wholesale',
+        //     type: 'checkbox',
+        //     label: __( 'Coupon restriction for wholesalers', 'catalogx' ),
+        //     desc: __(
+        //         'Prevent wholesale users from applying any coupon and get addional discount on their orders.',
+        //         'catalogx'
+        //     ),
+        //     options: [
+        //         {
+        //             key: 'disable_coupon_for_wholesale',
+        //             label: __( '', 'catalogx' ),
+        //             value: 'disable_coupon_for_wholesale',
+        //         },
+        //     ],
+        //     proSetting: true,
+        //     look: 'toggle',
+        //     moduleEnabled: 'wholesale',
+        // },
         {
             key: 'show_wholesale_price',
-            type: 'checkbox',
-            label: __(
-                'Promote wholesale discounts to non-wholesale users',
+            type: 'choice-toggle',
+            label: __('Wholesale savings display', 'catalogx'),
+            settingDescription: __(
+                'Choose how wholesale pricing is presented to regular customers.',
                 'catalogx'
             ),
             desc: __(
-                'Display discounted prices on product pages to entice regular customers into becoming wholesalers.',
+                '<ul><li>Standard Pricing Only - Display retail pricing without wholesale discounts.</li><li>Display Wholesale Savings - Show potential wholesale pricing to encourage wholesale registrations.</li></ul>',
                 'catalogx'
             ),
             options: [
                 {
-                    key: 'show_wholesale_price',
-                    label: __( '', 'catalogx' ),
-                    value: 'show_wholesale_price',
+                    key: 'hidden',
+                    label: __('Standard Pricing Only', 'catalogx'),
+                    value: 'hidden',
+                },
+                {
+                    key: 'visible',
+                    label: __('Display Wholesale Savings', 'catalogx'),
+                    value: 'visible',
                 },
             ],
             proSetting: true,
@@ -77,17 +108,26 @@ export default {
         },
         {
             key: 'enable_order_form',
-            type: 'checkbox',
-            label: __( 'Dedicated wholesale-only product list', 'catalogx' ),
+            type: 'choice-toggle',
+            label: __('Product browsing experience', 'catalogx'),
+            settingDescription: __(
+                'Choose how wholesale customers discover wholesale products.',
+                'catalogx'
+            ),
             desc: __(
-                'Enables a dedicated wholesale-only page displaying all wholesale products for easy browsing and single-click checkout by logged-in wholesalers.',
+                '<ul><li>Shared Product Catalog - Wholesale products appear within the regular catalog.</li><li>Dedicated Wholesale Catalog - Display all wholesale products on a dedicated page for wholesale customers.</li></ul>',
                 'catalogx'
             ),
             options: [
                 {
-                    key: 'enable_order_form',
-                    label: __( '', 'catalogx' ),
-                    value: 'enable_order_form',
+                    key: 'shared',
+                    label: __('Shared Product Catalog', 'catalogx'),
+                    value: 'shared',
+                },
+                {
+                    key: 'dedicated',
+                    label: __('Dedicated Wholesale Catalog', 'catalogx'),
+                    value: 'dedicated',
                 },
             ],
             proSetting: true,
@@ -96,21 +136,26 @@ export default {
         },
         {
             key: 'enable_global_wholasale',
-            type: 'checkbox',
-            label: __( 'Global wholesale discount', 'catalogx' ),
-            desc: sprintf(
-                /* translators: %s will be replaced with a link to wholeslale document */
-                __(
-                    'Automatically mark all products on your site as wholesale items, making them available for bulk purchases. You can configure the wholesale rates below to apply site-wide or set specific wholesale prices for individual products as needed. To know more %s.',
-                    'catalogx'
-                ),
-                '<a href="https://catalogx.com/docs/wholesale-pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx" target="_blank">click here</a>'
+            type: 'choice-toggle',
+            label: __('Wholesale pricing method', 'catalogx'),
+            settingDescription: __(
+                'Choose how wholesale pricing is applied across your catalog.',
+                'catalogx'
+            ),
+            desc: __(
+                '<ul><li>Product-Level Pricing - Configure wholesale pricing individually for each product.</li><li>Storewide Discount Rule - Apply a single wholesale pricing rule across all eligible products.</li></ul>',
+                'catalogx'
             ),
             options: [
                 {
-                    key: 'enable_global_wholasale',
-                    label: __( '', 'catalogx' ),
-                    value: 'enable_global_wholasale',
+                    key: 'product_level',
+                    label: __('Product-Level Pricing', 'catalogx'),
+                    value: 'product_level',
+                },
+                {
+                    key: 'global_rule',
+                    label: __('Storewide Discount Rule', 'catalogx'),
+                    value: 'global_rule',
                 },
             ],
             proSetting: true,
@@ -119,7 +164,7 @@ export default {
         },
         {
             key: 'wholesale_amount',
-            label: __( 'Discount rule', 'catalogx' ),
+            label: __('Discount rule', 'catalogx'),
             type: 'number',
             placeholder: 'Discount value',
             beforeElement: {

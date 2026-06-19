@@ -14,17 +14,19 @@ export default {
         {
             key: 'section',
             type: 'section',
-            title: __('Configure how customers submit product enquiries and how enquiry requests are managed.', 'catalogx'),
+            title: __('Manage the submission and handling of enquiry requests across your store.', 'catalogx'),
         },
         {
             key: 'enquiry_user_permission',
             type: 'choice-toggle',
             label: __(
-                'Restrict product enquiries for logged-in users only',
+                'Who can submit enquiries',
                 'catalogx'
             ),
-            desc: __(
-                "If enabled, non-logged-in users can't access the enquiry flow.",
+            settingDescription: __('Control whether enquiries are available to all visitors or only logged-in customers.',
+                'catalogx'
+            ),
+            desc: __('<ul><li>Everyone - Any visitor can submit product enquiries.</li><li>Logged-in Customers - Only authenticated customers can submit enquiries.</li></ul>',
                 'catalogx'
             ),
             options: [
@@ -114,8 +116,12 @@ export default {
             key: 'is_disable_popup',
             type: 'choice-toggle',
             label: __('Display enquiry form as', 'catalogx'),
+            settingDescription: __(
+                'Choose how the enquiry form is presented to customers.',
+                'catalogx'
+            ),
             desc: __(
-                'Select whether the form is displayed directly on the page or in a pop-up window.',
+                '<ul><li>Popup Window - Open the enquiry form in a modal popup.</li><li>Inline on Product Page - Display the enquiry form directly within the product page.</li></ul>',
                 'catalogx'
             ),
             options: [
@@ -134,21 +140,34 @@ export default {
         },
         {
             key: 'is_page_redirect',
-            type: 'checkbox',
+            type: 'choice-toggle',
+            label: __('Redirect to a different page for enquiry form', 'catalogx'),
+            desc: __(
+                '<ul><li>Current Product Page - Customers submit enquiries without leaving the product page.</li><li>Dedicated Enquiry Page - Customers are redirected to a separate enquiry page.</li></ul>',
+                'catalogx'
+            ),
+            settingDescription: __(
+                'Choose where customers complete their enquiry request.',
+                'catalogx'
+            ),
             options: [
                 {
-                    key: 'is_page_redirect',
-                    value: 'is_page_redirect',
-                }
+                    key: 'current_page',
+                    label: __('Current Product Page', 'catalogx'),
+                    value: 'current_page',
+                },
+                {
+                    key: 'dedicated_page',
+                    label: __('Dedicated Enquiry Page', 'catalogx'),
+                    value: 'dedicated_page',
+                },
             ],
-            look: 'toggle',
-            label: __('Redirect to a different page for enquiry form', 'catalogx'),
             moduleEnabled: 'enquiry'
         },
         {
             key: 'redirect_page_id',
             dependent: {
-                key: "is_page_redirect",
+                key: "dedicated_page",
                 set: true
             },
             type: 'select',
@@ -162,29 +181,33 @@ export default {
         {
             key: 'section',
             type: 'section',
-            title: __('Configure how customers request quotations and how quote requests are managed.', 'catalogx'),
+            title: __('Control who can request quotations and how long quotations remain available.', 'catalogx'),
         },
         {
             key: 'quote_user_permission',
-            type: 'choice-toggle',
+            type: 'checkbox',
             label: __(
-                'Limit quotation requests to logged-in users only',
+                'Who can request quotations',
+                'catalogx'
+            ),
+            settingDescription: __(
+                'Control whether quotation requests are available to all visitors or only logged-in customers.',
                 'catalogx'
             ),
             desc: __(
-                'If enabled, non-logged-in users cannot submit quotation requests.',
+                '<ul><li>Everyone - Any visitor can submit quotation requests.</li><li>Logged-in Customers - Only authenticated customers can request quotations.</li></ul>',
                 'catalogx'
             ),
             options: [
                 {
-                    key: 'logged_in_only',
-                    label: __('Logged in only', 'catalogx'),
-                    value: 'logged_in_only',
-                },
-                {
                     key: 'everyone',
                     label: __('Everyone', 'catalogx'),
                     value: 'everyone',
+                },
+                {
+                    key: 'logged_in',
+                    label: __('Logged-in Customers', 'catalogx'),
+                    value: 'logged_in',
                 },
             ],
             moduleEnabled: 'quote',
@@ -208,16 +231,20 @@ export default {
         {
             key: 'section',
             type: 'section',
-            title: __('Configure sitewide buying mode and manage cart and checkout access.', 'catalogx'),
+            title: __('Customer journey', 'catalogx'),
         },
         {
             key: 'enable_cart_checkout',
-            type: 'checkbox',
+            type: 'choice-toggle',
             label: __('Sitewide buy mode', 'catalogx'),
+            settingDescription: __(
+                'Choose how customers interact with your catalog.',
+                'catalogx'
+            ),
             desc: sprintf(
                 /* translators: %s will be replaced with a link to CatalogX Pro */
                 __(
-                    'Enabling this setting with CatalogX activates the catalog-only mode on your site, preventing customers from making purchases. To allow purchasing functionality, upgrade to %s and enable this setting to activate the buying mode.',
+                    'Enabling this setting with CatalogX activates the catalog-only mode on your site, preventing customers from making purchases. To allow purchasing functionality, upgrade to %s and enable this setting to activate the buying mode.<ul><li>Catalog Only - Customers can browse products and submit enquiries or quotations without purchasing.</li><li>Enable Purchasing - Customers can add products to cart and complete checkout.</li></ul>',
                     'catalogx'
                 ),
                 '<a href="' +
@@ -226,8 +253,14 @@ export default {
             ),
             options: [
                 {
-                    key: 'enable_cart_checkout',
-                    value: 'enable_cart_checkout',
+                    key: 'catalog_only',
+                    label: __('Catalog Only', 'catalogx'),
+                    value: 'catalog_only',
+                },
+                {
+                    key: 'buy_mode',
+                    label: __('Enable Purchasing', 'catalogx'),
+                    value: 'buy_mode',
                 },
             ],
             proSetting: true,
@@ -269,7 +302,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            title: __('Configure PDF download and email attachment settings for enquiries and quotations.', 'catalogx'),
+            title: __('Manage the generation, availability, and delivery of enquiry and quotation documents.', 'catalogx'),
         },
         {
             key: 'display_pdf',
