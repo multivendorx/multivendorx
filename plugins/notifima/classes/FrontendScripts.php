@@ -19,17 +19,11 @@ defined( 'ABSPATH' ) || exit;
 class FrontendScripts {
 
     /**
-     * Holds the scripts.
+     * Cached admin settings.
      *
-     * @var array
+     * @var array|null
      */
-    public static $scripts = array();
-	/**
-     * Holds the styles.
-     *
-     * @var array
-     */
-    public static $styles = array();
+    private static $settings_cache = null;
 
     /**
      * FrontendScripts constructor.
@@ -44,69 +38,20 @@ class FrontendScripts {
 	 *
 	 * @return string Relative path to the build directory.
 	 */
-    public static function get_build_path_name() {
-        return 'assets/';
+    public static function get_asset_path( $path_type = 'url', $plugin_path = '', $plugin_url = '' ) {
+        $build_path = 'assets/';
+        if ( $plugin_path === '' ) {
+            $plugin_path = Notifima()->plugin_path;
+        }
+        if ( $plugin_url === '' ) {
+            $plugin_url = Notifima()->plugin_url;
+        }
+
+        return 'file' === $path_type
+            ? $plugin_path . $build_path
+            : $plugin_url . $build_path;
     }
 
-    /**
-	 * Enqueue external JavaScript files.
-	 *
-	 * @return void
-	 */
-	public static function enqueue_external_scripts() {
-        $base_dir = plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/';
-        $base_url = Notifima()->plugin_url . self::get_build_path_name() . 'js/';
-        self::enqueue_scripts_from_dir( $base_dir . 'externals/', $base_url . 'externals/' );
-        if ( Notifima()->is_dev ) {
-            self::enqueue_scripts_from_dir(
-                $base_dir,
-                $base_url,
-                array( 'index.js', 'components.js' ),
-                '/min\.js$/i'
-            );
-        }
-    }
-
-	/**
-	 * Enqueue JavaScript files from a directory, optionally excluding some by name or pattern.
-	 *
-	 * @param string   $dir            Full filesystem path to the JS directory.
-	 * @param string   $url            Corresponding URL for the directory.
-	 * @param string[] $exclude_files Array of filenames to exclude.
-	 * @param string   $exclude_pattern Optional regex pattern to exclude.
-	 * @return void
-	 */
-    private static function enqueue_scripts_from_dir( $dir, $url, $exclude_files = array(), $exclude_pattern = '' ) {
-        if ( ! is_dir( $dir ) ) {
-            return;
-        }
-        $js_files = glob( $dir . '*.js' );
-        foreach ( $js_files as $chunk_path ) {
-            $chunk_file = basename( $chunk_path );
-            // Exclude based on filename or regex.
-            if ( in_array( $chunk_file, $exclude_files, true ) ||
-                ( $exclude_pattern && preg_match( $exclude_pattern, $chunk_file ) )
-            ) {
-                continue;
-            }
-            $chunk_handle = 'notifima-script-' . sanitize_title( $chunk_file );
-            $asset_file   = str_replace( '.js', '.asset.php', $chunk_path );
-            $deps         = array();
-            $version      = filemtime( $chunk_path );
-            if ( file_exists( $asset_file ) ) {
-                $asset   = include $asset_file;
-                $deps    = $asset['dependencies'] ?? array();
-                $version = $asset['version'] ?? $version;
-            }
-            wp_enqueue_script(
-                $chunk_handle,
-                $url . $chunk_file,
-                $deps,
-                $version,
-                true
-            );
-        }
-    }
 
     /**
 	 * Register and store a script for later use.
@@ -117,7 +62,6 @@ class FrontendScripts {
 	 * @param string $version      Optional. Script version. Default empty string.
 	 */
     public static function register_script( $handle, $path, $deps = array(), $version = '' ) {
-        self::$scripts[] = $handle;
         wp_register_script( $handle, $path, $deps, $version, true );
         wp_set_script_translations( $handle, 'notifima' );
     }
@@ -131,29 +75,31 @@ class FrontendScripts {
 	 * @param string $version  Optional. Style version. Default empty string.
 	 */
     public static function register_style( $handle, $path, $deps = array(), $version = '' ) {
-        self::$styles[] = $handle;
         wp_register_style( $handle, $path, $deps, $version );
     }
 
     /**
 	 * Register frontend scripts using filters and enqueue required external scripts.
 	 *
-	 * Loads block assets and additional scripts defined through the `notifima_register_scripts` filter.
+	 * Loads block assets and additional scripts defined through the `multivendorx_register_scripts` filter.
 	 */
-    public static function register_scripts() {
-        $version          = Notifima()->version;
+    public static function register_frontend_scripts() {
+        $version      = Notifima()->version;
+        $index_asset  = include self::get_asset_path( 'file' ) . 'js/index.asset.php';
+        $vendor_asset = include self::get_asset_path( 'file' ) . 'js/vendors.asset.php';
+
+        $base_url    = self::get_asset_path() . 'js/';
+        $common_deps = array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' );
+
         $register_scripts = apply_filters(
             'notifima_register_scripts',
             array(
-				'notifima-frontend-script' => array(
-					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'js/' . NOTIFIMA_PLUGIN_SLUG . '-frontend.min.js',
-					'deps'    => array( 'jquery', 'wp-element', 'wp-components' ),
-					'version' => $version,
-				),
-			)
+
+            )
         );
+
         foreach ( $register_scripts as $name => $props ) {
-            self::register_script( $name, $props['src'], $props['deps'], $props['version'] );
+            self::register_script( $name, $props['src'], $props['deps'], $props['version'] ?? $version );
         }
     }
 
@@ -162,20 +108,16 @@ class FrontendScripts {
 	 *
 	 * Allows style registration through `notifima_register_styles` filter.
 	 */
-    public static function register_styles() {
+    public static function register_frontend_styles() {
         $version         = Notifima()->version;
         $register_styles = apply_filters(
             'notifima_register_styles',
             array(
-				'notifima-frontend-style' => array(
-					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'styles/' . NOTIFIMA_PLUGIN_SLUG . '-frontend.min.css',
-					'deps'    => array(),
-					'version' => $version,
-				),
+
 			)
         );
         foreach ( $register_styles as $name => $props ) {
-            self::register_style( $name, $props['src'], $props['deps'], $props['version'] );
+            self::register_style( $name, $props['src'], array(), $props['version'] ?? $version );
         }
     }
 
@@ -183,16 +125,16 @@ class FrontendScripts {
      * Register/queue frontend scripts.
      */
     public static function load_scripts() {
-        self::register_scripts();
-        self::register_styles();
+        self::register_frontend_scripts();
+        self::register_frontend_styles();
     }
 
     /**
 	 * Register/queue admin scripts.
 	 */
 	public static function admin_load_scripts() {
-        self::admin_register_scripts();
-		self::admin_register_styles();
+        self::register_admin_scripts();
+		self::register_admin_styles();
     }
 
     /**
@@ -200,59 +142,97 @@ class FrontendScripts {
 	 *
 	 * Loads admin-specific JavaScript assets and chunked dependencies.
 	 */
-    public static function admin_register_scripts() {
+    public static function register_admin_scripts() {
 		$version = Notifima()->version;
-        // Enqueue all chunk files (External dependencies).
-        self::enqueue_external_scripts();
-        $index_asset      = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/index.asset.php';
-        $component_asset  = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/components.asset.php';
+        $index_asset_path = self::get_asset_path( 'file' ) . 'js/index.asset.php';
+        $index_asset      = file_exists( $index_asset_path )
+            ? include $index_asset_path
+            : array(
+                'dependencies' => array(),
+                'version'      => $version,
+            );
+
+        $vendor_asset_path = self::get_asset_path( 'file' ) . 'js/vendors.asset.php';
+        $vendor_asset      = file_exists( $vendor_asset_path )
+            ? include $vendor_asset_path
+            : array(
+                'dependencies' => array(),
+                'version'      => $version,
+            );
+
 		$register_scripts = apply_filters(
             'admin_notifima_register_scripts',
             array(
-				'notifima-admin-script'      => array(
-					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'js/index.js',
-					'deps'    => $index_asset['dependencies'],
-					'version' => $version,
-				),
-				'notifima-components-script' => array(
-					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'js/components.js',
-					'deps'    => $component_asset['dependencies'],
-					'version' => $version,
+                'notifima-components-script'      => array(
+                	'src'  => self::get_asset_path() . 'js/vendors.js',
+                	'deps' => $vendor_asset['dependencies'],
+                ),
+				'notifima-admin-script'       => array(
+					'src'  => self::get_asset_path() . 'js/index.js',
+					'deps' => $index_asset['dependencies'],
 				),
             )
         );
+
 		foreach ( $register_scripts as $name => $props ) {
-			self::register_script( $name, $props['src'], $props['deps'], $props['version'] );
+			self::register_script( $name, $props['src'], $props['deps'], $props['version'] ?? $version );
 		}
 	}
 
     /**
 	 * Register admin styles using filters.
 	 *
-	 * Allows style registration through `admin_moowoodle_register_styles` filter.
+	 * Allows style registration through `admin_multivendorx_register_styles` filter.
 	 */
-    public static function admin_register_styles() {
+    public static function register_admin_styles() {
 		$version         = Notifima()->version;
 		$register_styles = apply_filters(
             'admin_notifima_register_styles',
             array(
-				'notifima-components-style' => array(
-					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'styles/components.css',
-					'deps'    => array(),
-					'version' => $version,
-				),
-				'notifima-admin-style'      => array(
-					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'styles/' . NOTIFIMA_PLUGIN_SLUG . '-admin.min.css',
-					'deps'    => array(),
-					'version' => $version,
+				'notifima-admin-style' => array(
+					'src' => self::get_asset_path() . 'styles/index.css',
 				),
 			)
         );
 
 		foreach ( $register_styles as $name => $props ) {
-			self::register_style( $name, $props['src'], $props['deps'], $props['version'] );
+			self::register_style( $name, $props['src'], array(), $props['version'] ?? $version );
 		}
 	}
+
+    public static function get_admin_settings() {
+        if ( null !== self::$settings_cache ) {
+            return self::$settings_cache;
+        }
+
+        $settings = array();
+
+        $tabs_names = apply_filters(
+            'notifima_additional_tabs_names',
+            array_keys( Utill::NOTIFIMA_SETTINGS )
+        );
+
+        foreach ( $tabs_names as $tab_name ) {
+            $option_name           = str_replace( '-', '_', 'notifima_' . $tab_name . '_settings' );
+            $settings[ $tab_name ] = Notifima()->setting->get_option( $option_name );
+        }
+
+        self::$settings_cache = $settings;
+        return self::$settings_cache;
+    }
+
+	/**
+	 * Get base AJAX data for frontend scripts
+	 *
+	 * @param string $handle Script handle used for nonce creation.
+	 * @return array Base AJAX data including admin-ajax URL and nonce.
+	 */
+    public static function get_base_ajax_data( $handle ) {
+        return array(
+            'ajaxurl' => admin_url( 'admin-ajax.php' ),
+            'nonce'   => wp_create_nonce( $handle ),
+        );
+    }
 
     /**
 	 * Localize all scripts.
@@ -260,75 +240,62 @@ class FrontendScripts {
 	 * @param string $handle Script handle the data will be attached to.
 	 */
     public static function localize_scripts( $handle ) {
-        // Get all tab setting's database value.
-        $settings_databases_value = array();
 
-		$tabs_names = apply_filters(
-			'notifima_additional_tabs_names',
-			array( 'appearance', 'form_submission' )
-		);
+        $base_rest = array(
+            'apiUrl'  => untrailingslashit( get_rest_url() ),
+            'restUrl' => Notifima()->rest_namespace,
+            'nonce'   => wp_create_nonce( 'wp_rest' ),
+        );
 
-        foreach ( $tabs_names as $tab_name ) {
-            $settings_databases_value[ $tab_name ] = Notifima()->setting->get_option( 'notifima_' . $tab_name . '_settings' );
-        }
+        $settings_data = array(
+            'settings_databases_value' => self::get_admin_settings(),
+        );
 
-        $settings_array  = Utill::get_form_settings_array();
-        $button_settings = $settings_array['customize_btn'];
-
-        $button_css = Notifima()->frontend->subscribe_button_styles();
-
-        $subscribe_button_html = '<button style="' . $button_css . '" class="notifima-subscribe notifima-button subscribe-button-hover">' . $button_settings['button_text'] . '</button>';
-
-        $localize_scripts = apply_filters(
-            'notifima_localize_scripts',
+        $localize_scripts =
             array(
-				'notifima-frontend-script'                 => array(
-					'object_name' => 'frontendLocalizer',
+                'notifima-admin-script'          => array(
+                    'object_name'  => 'appLocalizer',
+                    'use_rest'     => true,
+                    'use_settings' => true,
 					'data'        => array(
-						'ajax_url'          => admin_url( 'admin-ajax.php', 'relative' ),
-						'nonce'             => wp_create_nonce( 'notifima-security-nonce' ),
-						'additional_fields' => apply_filters( 'notifima_subscription_form_additional_fields', '' ),
-						'button_html'       => $subscribe_button_html,
-						'processing'        => __( 'Processing...', 'notifima' ),
-					),
-				),
-                'notifima-admin-script'                    => array(
-                    'object_name' => 'appLocalizer',
-					'data'        => array(
-						'apiUrl'                   => untrailingslashit( get_rest_url() ),
-						'restUrl'                  => Notifima()->rest_namespace,
-						'nonce'                    => wp_create_nonce( 'wp_rest' ),
 						// 'export_button'            => admin_url( 'admin-ajax.php?action=export_subscribers' ),
 						'export_button'            => wp_nonce_url( admin_url( 'admin-ajax.php?action=export_subscribers' ), 'export_subscribers_nonce' ),
 						'khali_dabba'              => Utill::is_khali_dabba(),
 						'tab_name'                 => __( 'Notifima', 'notifima' ),
-						'settings_databases_value' => $settings_databases_value,
 						'pro_url'                  => esc_url( NOTIFIMA_PRO_SHOP_URL ),
 						'free_version'             => Notifima()->version,
 					),
                 ),
-				'notifima-stock-notification-block-script' => array(
-					'object_name' => 'stockNotificationBlock',
-					'data'        => array(
-						'apiUrl'  => untrailingslashit( get_rest_url() ),
-						'restUrl' => Notifima()->rest_namespace,
-						'nonce'   => wp_create_nonce( 'wp_rest' ),
-					),
-				),
-				'notifima-stock-notification-block-editor-script' => array(
-					'object_name' => 'stockNotificationBlock',
-					'data'        => array(
-						'apiUrl'  => untrailingslashit( get_rest_url() ),
-						'restUrl' => Notifima()->rest_namespace,
-						'nonce'   => wp_create_nonce( 'wp_rest' ),
-					),
-				),
-			)
-        );
+			);
+
+        $localize_scripts = apply_filters( 'notifima_localize_scripts', $localize_scripts );
+        $config           = $localize_scripts[ $handle ] ?? array();
+
+        $data = array();
+
+        if ( ! empty( $config['use_ajax'] ) && ! empty( $config['use_rest'] ) ) {
+            $base_ajax = self::get_base_ajax_data( $handle );
+            unset( $base_ajax['nonce'] );
+            $data = array_merge( $data, $base_ajax );
+        } else {
+            $data = array_merge( $data, self::get_base_ajax_data( $handle ) );
+        }
+
+        if ( ! empty( $config['use_rest'] ) ) {
+            $data = array_merge( $data, $base_rest );
+        }
+
+        if ( ! empty( $config['use_settings'] ) ) {
+            $data = array_merge( $data, $settings_data );
+        }
+
+        if ( ! empty( $config['data'] ) ) {
+            $data = array_merge( $data, $config['data'] );
+        }
 
         if ( isset( $localize_scripts[ $handle ] ) ) {
             $props = $localize_scripts[ $handle ];
-            self::localize_script( $handle, $props['object_name'], $props['data'] );
+            self::localize_script( $handle, $props['object_name'], $data );
         }
     }
 
@@ -339,7 +306,7 @@ class FrontendScripts {
 	 * @param string $name   JavaScript object name.
 	 * @param array  $data   Data to be made available in JavaScript.
 	 */
-    public static function localize_script( $handle, $name, $data = array(), ) {
+    public static function localize_script( $handle, $name, $data = array() ) {
 		wp_localize_script( $handle, $name, $data );
 	}
 

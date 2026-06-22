@@ -18,6 +18,14 @@ defined( 'ABSPATH' ) || exit;
  */
 class Utill {
 
+    public const NOTIFIMA_SETTINGS = array(
+        'appearance'            => 'notifima_appearance_settings',
+        'email'                 => 'notifima_email_settings',
+        'form-submission'       => 'notifima_form_submission_settings',
+        'mailchimp'             => 'notifima_mailchimp_settings',
+        'personalize-layout'    => 'notifima_personalize_layout_settings',
+    );
+
     /**
      * Function to console and debug errors.
      *
