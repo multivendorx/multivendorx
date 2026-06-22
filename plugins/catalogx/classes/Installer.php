@@ -199,7 +199,7 @@ class Installer {
         );
 
         $all_settings = array(
-            'enable_cart_checkout'  => array(),
+            'enable_cart_checkout'  => 'catalog_only',
             'redirect_cart_page'    => ''
         );
 

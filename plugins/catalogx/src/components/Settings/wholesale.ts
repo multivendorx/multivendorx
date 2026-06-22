@@ -35,7 +35,7 @@ export default {
             moduleEnabled: 'wholesale',
         },
         {
-            key: 'wholesale_coupon_policy',
+            key: 'disable_coupon_for_wholesale',
             type: 'choice-toggle',
             label: __('Coupon usage', 'catalogx'),
             settingDescription: __(
@@ -59,25 +59,6 @@ export default {
                 },
             ],
         },
-        // {
-        //     key: 'disable_coupon_for_wholesale',
-        //     type: 'checkbox',
-        //     label: __( 'Coupon restriction for wholesalers', 'catalogx' ),
-        //     desc: __(
-        //         'Prevent wholesale users from applying any coupon and get addional discount on their orders.',
-        //         'catalogx'
-        //     ),
-        //     options: [
-        //         {
-        //             key: 'disable_coupon_for_wholesale',
-        //             label: __( '', 'catalogx' ),
-        //             value: 'disable_coupon_for_wholesale',
-        //         },
-        //     ],
-        //     proSetting: true,
-        //     look: 'toggle',
-        //     moduleEnabled: 'wholesale',
-        // },
         {
             key: 'show_wholesale_price',
             type: 'choice-toggle',
@@ -191,6 +172,7 @@ export default {
             dependent: {
                 key: 'enable_global_wholasale',
                 set: true,
+                value:'global_rule',
             },
         },
     ],
