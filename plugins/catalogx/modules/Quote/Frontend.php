@@ -79,6 +79,16 @@ class Frontend {
     public function add_button_for_quote( $product_obj ) {
         global $product;
 
+        if ( ! Util::is_available() ) {
+            return;
+        }
+        
+        $display_quote_button = CatalogX()->setting->get_setting( 'quote_user_permission', '' );
+
+        if ( 'logged_in_only' === $display_quote_button && ! is_user_logged_in() ) {
+            return;
+        }
+        
         $product_obj = is_int( $product_obj ) ? wc_get_product( $product_obj ) : ( $product_obj ? $product_obj : $product );
 
         if ( empty( $product_obj ) ) {
@@ -86,7 +96,7 @@ class Frontend {
         }
 
         $this->enqueue_scripts();
-
+        
         // Exclusion settings for shop and single product page.
         if ( ! Util::is_available_for_product( $product_obj->get_id() ) ) {
             return;

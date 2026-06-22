@@ -106,7 +106,13 @@ const Rules = () => {
             render: (row: any) => {
                 const amount = row.amount ?? 0;
                 const quantity = Number(row.quantity);
-                return `${amount} ${appLocalizer.currency} for min ${quantity ? quantity : ''} quantity`;
+
+                const price =
+                    row.type === 'percentage'
+                        ? `${amount} Percent`
+                        : `${amount} ${appLocalizer.currency}`;
+
+                return `${price} for min ${quantity || ''} quantity`;
             }
         },
 
@@ -220,7 +226,7 @@ const Rules = () => {
                     width={31.25}
                     height="auto"
                 >
-                    { !appLocalizer.khali_dabba ? (
+                    {!appLocalizer.khali_dabba ? (
                         <ShowProPopup />
                     ) : (
                         <ShowProPopup moduleName="rules" />
