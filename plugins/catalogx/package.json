@@ -56,7 +56,7 @@
         "version": "node ../../tools/scripts/version-replace.mjs",
         "textdomain": "node ../../tools/scripts/update-textdomain.mjs",
         "changelog": "composer exec -- changelogger",
-        "makepot": "pnpm exec wp i18n make-pot --domain='catalogx' --include='src,public,classes,modules,templates,config.php,Woocommerce_Catalog_Enquiry.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://catalogx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') CatalogX Inc. All Rights Reserved.\" languages/catalogx.pot",
+        "makepot": "pnpm exec wp i18n make-pot --domain='catalogx' --include='assets/js,public,classes,modules,templates,config.php,Woocommerce_Catalog_Enquiry.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://catalogx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') CatalogX Inc. All Rights Reserved.\" languages/catalogx.pot",
         "makejson": "pnpm exec wp i18n make-json languages --pretty-print --no-purge"
     },
     "wireit": {
