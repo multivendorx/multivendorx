@@ -201,7 +201,7 @@ class Notifima {
         $this->container['actions']         = new Deprecated\DeprecatedActionHooks();
         $this->container['admin']           = new Admin();
         $this->container['restapi']         = new RestAPI();
-        // $this->container['block']           = new Block();
+        $this->container['block']           = new Block();
         $this->container['frontendScripts'] = new FrontendScripts();
     }
 

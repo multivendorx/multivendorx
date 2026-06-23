@@ -25,7 +25,7 @@ class Admin {
         // admin pages manu and submenu.
         add_action( 'admin_menu', array( $this, 'add_menus' ), 10 );
         // admin script and style.
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ),20 );
 
         // create custom column.
         add_action( 'manage_edit-product_columns', array( $this, 'display_subscriber_header' ) );

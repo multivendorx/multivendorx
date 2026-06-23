@@ -20,64 +20,121 @@ defined( 'ABSPATH' ) || exit;
  */
 class Block {
     /**
-     * Holds the configuration for blocks.
+     * Array of blocks to be registered.
      *
      * @var array
      */
     private $blocks;
 
     /**
-     * Block constructor.
+     * Constructor for Block class
+     *
+     * @return void
      */
     public function __construct() {
-        $this->blocks = $this->initialize_blocks();
         // Register the block.
         add_action( 'init', array( $this, 'register_blocks' ) );
-        // Enqueue the script and style for block editor.
+        // Localize the script for block.
         add_action( 'enqueue_block_assets', array( $this, 'enqueue_all_block_assets' ) );
+        // Localize in frontend.
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+    }
+    /**
+     * Get the list of initialized blocks.
+     *
+     * If the blocks have not been initialized yet, this method calls
+     * `initialize_blocks()` to populate them.
+     *
+     * @return array List of blocks.
+     */
+    public function get_blocks() {
+        if ( is_null( $this->blocks ) ) {
+            $this->blocks = $this->initialize_blocks();
+        }
+        return $this->blocks;
     }
 
     /**
-     * Initializes the blocks used in the MooWoodle plugin.
+     * Initialize blocks based on active modules.
      *
-     * @return array
+     * @return array List of blocks with their configuration.
      */
     public function initialize_blocks() {
-        $blocks = array();
+        $blocks     = array();
+        $textdomain = 'notifima';
 
-        $blocks[] = array(
-            'name'       => 'stock-notification-block', // block name.
-            'textdomain' => 'notifima',
-            'block_path' => Notifima()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
-        );
+        $block_base_path = FrontendScripts::get_asset_path( 'file' ) . 'js/block/';
 
-        Notifima()->block_paths += array(
-            'block/stock-notification-block' => FrontendScripts::get_build_path_name() . 'js/block/stock-notification-block/index.js',
-        );
+        if ( ! is_dir( $block_base_path ) ) {
+            return $blocks;
+        }
+
+        $folders = glob( $block_base_path . '*', GLOB_ONLYDIR );
+        foreach ( $folders as $folder ) {
+            $block_name = basename( $folder );
+
+            if ( file_exists( $folder . '/block.json' ) ) {
+                $blocks[] = array(
+                    'name'       => $block_name,
+                    'textdomain' => $textdomain,
+                    'block_path' => $block_base_path,
+                );
+            }
+        }
 
         return apply_filters( 'notifima_initialize_blocks', $blocks );
     }
 
     /**
-     * Enqueues all frontend and editor assets for registered blocks.
+     * Enqueue assets and localize scripts for all registered blocks.
      *
      * @return void
      */
     public function enqueue_all_block_assets() {
+        if ( is_admin() && function_exists( 'get_current_screen' ) ) {
+            $screen = get_current_screen();
+            if ( $screen && $screen->is_block_editor ) {
+                FrontendScripts::load_scripts();
+                FrontendScripts::enqueue_script( 'notifima-components-script' );
+                foreach ( $this->get_blocks() as $block_script ) {
+                    FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-editor-script' );
+                }
+            }
+        }
+    }
+	/**
+	 * Enqueue frontend scripts for registered blocks.
+	 *
+	 * Iterates through all registered block scripts and enqueues their
+	 * JavaScript files only if the block exists in the current post content.
+	 * Also localizes the scripts with necessary data.
+	 *
+	 * @global WP_Post $post Current post object.
+	 *
+	 * @return void
+	 */
+    public function enqueue_scripts() {
+        global $post;
         FrontendScripts::load_scripts();
-        foreach ( $this->blocks as $block_script ) {
-            FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-editor-script' );
-            FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-script' );
+        FrontendScripts::enqueue_script( 'notifima-components-script' );
+        foreach ( $this->get_blocks() as $block_script ) {
+            $block_name = $block_script['textdomain'] . '/' . $block_script['name'];
+
+            if ( has_block( $block_name, $post ) ) {
+                $handle = $block_script['textdomain'] . '-' . $block_script['name'] . '-view-script';
+                // FrontendScripts::enqueue_script( $handle );
+                FrontendScripts::localize_scripts( $handle );
+            }
         }
     }
 
     /**
-     * Registers all custom blocks defined in the plugin.
+     * Register all defined blocks.
      *
      * @return void
      */
     public function register_blocks() {
-        foreach ( $this->blocks as $block ) {
+        foreach ( $this->get_blocks() as $block ) {
             register_block_type( $block['block_path'] . $block['name'] );
         }
     }

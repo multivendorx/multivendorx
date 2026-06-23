@@ -94,7 +94,10 @@ class FrontendScripts {
         $register_scripts = apply_filters(
             'notifima_register_scripts',
             array(
-
+                'notifima-frontend-script' => array(
+					'src'  => $base_url . 'public/' . NOTIFIMA_PLUGIN_SLUG . '-frontend.min.js',
+					'deps' => $common_deps,
+				),
             )
         );
 
@@ -113,7 +116,9 @@ class FrontendScripts {
         $register_styles = apply_filters(
             'notifima_register_styles',
             array(
-
+                'notifima-frontend-style' => array(
+					'src' => self::get_asset_path() . 'styles/public/' . NOTIFIMA_PLUGIN_SLUG . '-frontend.min.css',
+				),
 			)
         );
         foreach ( $register_styles as $name => $props ) {
@@ -173,7 +178,6 @@ class FrontendScripts {
 				),
             )
         );
-
 		foreach ( $register_scripts as $name => $props ) {
 			self::register_script( $name, $props['src'], $props['deps'], $props['version'] ?? $version );
 		}
@@ -250,6 +254,12 @@ class FrontendScripts {
         $settings_data = array(
             'settings_databases_value' => self::get_admin_settings(),
         );
+        
+        $settings_array  = Utill::get_form_settings_array();
+        $button_settings = $settings_array['customize_btn'];
+
+        $button_css = Notifima()->frontend->subscribe_button_styles();
+        $subscribe_button_html = '<button style="' . $button_css . '" class="notifima-subscribe notifima-button subscribe-button-hover">' . $button_settings['button_text'] . '</button>';
 
         $localize_scripts =
             array(
@@ -264,6 +274,16 @@ class FrontendScripts {
 						'tab_name'                 => __( 'Notifima', 'notifima' ),
 						'pro_url'                  => esc_url( NOTIFIMA_PRO_SHOP_URL ),
 						'free_version'             => Notifima()->version,
+					),
+                ),
+                'notifima-frontend-script'          => array(
+                    'object_name'  => 'frontendLocalizer',
+					'data'        => array(
+						'ajax_url'          => admin_url( 'admin-ajax.php', 'relative' ),
+						'nonce'             => wp_create_nonce( 'notifima-security-nonce' ),
+						'additional_fields' => apply_filters( 'notifima_subscription_form_additional_fields', '' ),
+						'button_html'       => $subscribe_button_html,
+						'processing'        => __( 'Processing...', 'notifima' ),
 					),
                 ),
 			);
