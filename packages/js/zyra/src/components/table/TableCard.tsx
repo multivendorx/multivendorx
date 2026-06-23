@@ -49,6 +49,7 @@ const TableCard: React.FC<TableCardProps> = ({
     format,
     onRowReorder,
     currency,
+    expandable,
     ...props
 }) => {
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -378,6 +379,7 @@ const TableCard: React.FC<TableCardProps> = ({
                 isLoading={isLoading}
                 format={format}
                 currency={currency}
+                expandable={expandable}
             />
             {/* pagination */}
             {derivedTotalRows > 0 && (

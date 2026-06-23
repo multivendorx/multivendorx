@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'email',
-    priority: 4,
+    priority: 1,
     headerTitle: __( 'Email Restriction Policies', 'notifima' ),
     headerDescription: __( 'Restrict email registrations.', 'notifima' ),
     headerIcon: 'mail',

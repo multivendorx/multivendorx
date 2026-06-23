@@ -256,7 +256,7 @@ class Install {
             'customize_btn'                 => Notifima()->default_value['customize_btn'],
         );
 
-        update_option( 'notifima_appearance_settings', $appearance_settings );
+        update_option( Utill::NOTIFIMA_SETTINGS['appearance'], $appearance_settings );
 
         $submit_settings = array(
             'alert_success'             => Notifima()->default_value['alert_success'],
@@ -266,14 +266,14 @@ class Install {
             'alert_unsubscribe_message' => Notifima()->default_value['alert_unsubscribe_message'],
         );
 
-        update_option( 'notifima_form_submission_settings', $submit_settings );
+        update_option( Utill::NOTIFIMA_SETTINGS['form-submission'], $submit_settings );
 
         $email_settings = array(
             'ban_email_domain_text'  => Notifima()->default_value['ban_email_domain_text'],
             'ban_email_address_text' => Notifima()->default_value['ban_email_address_text'],
         );
 
-        update_option( 'notifima_email_settings', $email_settings );
+        update_option( Utill::NOTIFIMA_SETTINGS['email'], $email_settings );
     }
 
     /**
@@ -500,7 +500,7 @@ class Install {
         if ( version_compare( $previous_version, '3.0.0', '<=' ) ) {
             $previous_mailchimp_settings = get_option( 'woo_stock_manager_mailchimp_tab_settings', array() );
 
-            update_option( 'notifima_mailchimp_settings', $previous_mailchimp_settings );
+            update_option( Utill::NOTIFIMA_SETTINGS['mailchimp'], $previous_mailchimp_settings );
 
             $version_key = get_option( 'woo_stock_manager_version', '' );
             update_option( 'notifima_version', $version_key );
@@ -542,9 +542,9 @@ class Install {
             }
         }
 
-        update_option( 'notifima_appearance_settings', array_merge( $appearance_settings, $previous_appearance_settings ) );
-        update_option( 'notifima_form_submission_settings', array_merge( $submit_settings, $previous_submit_settings ) );
-        update_option( 'notifima_email_settings', array_merge( $email_settings, $previous_email_settings ) );
+        update_option( Utill::NOTIFIMA_SETTINGS['appearance'], array_merge( $appearance_settings, $previous_appearance_settings ) );
+        update_option( Utill::NOTIFIMA_SETTINGS['form-submission'], array_merge( $submit_settings, $previous_submit_settings ) );
+        update_option( Utill::NOTIFIMA_SETTINGS['email'], array_merge( $email_settings, $previous_email_settings ) );
 
         update_option( 'notifima_version', $current_version );
     }
