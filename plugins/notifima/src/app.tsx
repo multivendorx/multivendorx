@@ -2,12 +2,12 @@ import { useLocation } from 'react-router-dom';
 
 import Settings from './components/Settings/Settings';
 import SubscribersList from './components/SubscriberList/SubscribersList';
-import ManageStock from './components/Managestock/Managestock';
 import { AdminHeader, Notice } from 'zyra';
 import Brand from './assets/images/brand-logo.png';
 import { __ } from '@wordpress/i18n';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import HelpSupport from './components/HelpSupport/HelpSupport';
+import Managestock from './components/Managestock/Managestock';
 
 const Route = () => {
     const currentTab = new URLSearchParams( useLocation().hash );
@@ -23,7 +23,7 @@ const Route = () => {
                 <SubscribersList />
             ) }
             { currentTab.get( 'tab' ) === 'inventory-manager' && (
-                <ManageStock />
+                <Managestock />
             ) }
              { currentTab.get( 'tab' ) === 'help-support' && (
                 <HelpSupport />
