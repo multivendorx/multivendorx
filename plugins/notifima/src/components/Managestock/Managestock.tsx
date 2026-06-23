@@ -123,11 +123,11 @@ const Managestock = () => {
                 },
                 {
                     label: __('product Name', 'notifima'),
-                    value: 'product_name',
+                    value: 'name',
                 },
                 {
                     label: __('Email', 'notifima'),
-                    value: 'email',
+                    value: 'sku',
                 },
             ],
         },

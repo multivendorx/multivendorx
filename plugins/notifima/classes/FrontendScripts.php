@@ -274,6 +274,13 @@ class FrontendScripts {
 						'tab_name'                 => __( 'Notifima', 'notifima' ),
 						'pro_url'                  => esc_url( NOTIFIMA_PRO_SHOP_URL ),
 						'free_version'             => Notifima()->version,
+                        'pro_data'        => apply_filters(
+                            'notifima_update_pro_data',
+                            array(
+								'version'         => false,
+								'manage_plan_url' => NOTIFIMA_PRO_SHOP_URL,
+                            )
+                        ),
 					),
                 ),
                 'notifima-frontend-script'          => array(
