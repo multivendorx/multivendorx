@@ -185,7 +185,7 @@ export default {
         },
         {
             key: 'quote_user_permission',
-            type: 'checkbox',
+            type: 'choice-toggle',
             label: __(
                 'Who can request quotations',
                 'catalogx'
@@ -205,9 +205,9 @@ export default {
                     value: 'everyone',
                 },
                 {
-                    key: 'logged_in',
+                    key: 'logged_in_only',
                     label: __('Logged-in Customers', 'catalogx'),
-                    value: 'logged_in',
+                    value: 'logged_in_only',
                 },
             ],
             moduleEnabled: 'quote',
@@ -282,7 +282,7 @@ export default {
             ],
             dependent: {
                 key: 'enable_cart_checkout',
-                set: false,
+                set: true,
             },
             desc: sprintf(
                 /* translators: %s will be replaced with a link to CatalogX Pro */
