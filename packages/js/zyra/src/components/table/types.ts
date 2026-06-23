@@ -159,6 +159,7 @@ export type TableProps = CommonTableProps & {
         fromIndex: number,
         toIndex: number
     ) => void;
+    expandable?:boolean;
 };
 
 // export type TableSummaryProps = {
@@ -246,6 +247,7 @@ export type TableCardProps = CommonTableProps & {
         fromIndex: number,
         toIndex: number
     ) => void;
+    expandable?:boolean;
 };
 
 export type FilterOption = {

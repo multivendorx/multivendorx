@@ -36,11 +36,13 @@ const Table: React.FC<TableProps> = ({
     format,
     currency,
     onRowReorder,
+    expandable = false,
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const [isScrollableRight, setIsScrollableRight] = useState(false);
     const [isScrollableLeft, setIsScrollableLeft] = useState(false);
+    const [expandedRows, setExpandedRows] = useState<number[]>([]);
 
     const sortedBy = useMemo(() => {
         if (query.orderby) {
@@ -144,7 +146,7 @@ const Table: React.FC<TableProps> = ({
     };
     const dragProps = {
         nodeSelector: 'tbody tr',
-        
+
         onDragEnd: (
             fromIndex: number,
             toIndex: number
@@ -185,6 +187,9 @@ const Table: React.FC<TableProps> = ({
 
                     <thead className="admin-table-header">
                         <tr className="header-row">
+                            {expandable && (
+                                <th className="header-col expand" />
+                            )}
                             {enableBulkSelect && (
                                 <th className="header-col select">
                                     <input
@@ -300,93 +305,146 @@ const Table: React.FC<TableProps> = ({
                             ))
                         ) : hasData ? (
                             rows.map((row, rowIndex) => (
-                                <tr className="admin-row" key={row.id ?? rowIndex}>
-                                    {enableBulkSelect && (
-                                        <td className="admin-column select">
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedIds.includes(
-                                                    row.id
+                                <Fragment key={row.id ?? rowIndex}>
+                                    <tr className="admin-row" key={row.id ?? rowIndex}>
+                                        {expandable && (
+                                            <td className="admin-column expand">
+                                                {row.variation?.length > 0 && (
+                                                    <i
+                                                        className={`adminfont-${expandedRows.includes(row.id)
+                                                            ? 'arrow-down'
+                                                            : 'arrow-right'
+                                                            }`}
+                                                        onClick={() =>
+                                                            setExpandedRows((prev) =>
+                                                                prev.includes(row.id)
+                                                                    ? prev.filter((id) => id !== row.id)
+                                                                    : [...prev, row.id]
+                                                            )
+                                                        }
+                                                    />
                                                 )}
-                                                onChange={() => toggleRow(rowIndex)}
-                                            />
-                                        </td>
-                                    )}
-                                    {onRowReorder && (
-                                        <td className="admin-column drag">
-                                            <i className='adminfont-move' />
-                                        </td>
-                                    )}
-                                    {Object.entries(headers).map(
-                                        ([key, header], colIndex) => {
-                                            const rowId = row.id;
-                                            const cell =
-                                                row[header.key] || row[key];
-                                            if (
-                                                typeof header.render === 'function'
-                                            ) {
+                                            </td>
+                                        )}
+
+                                        {enableBulkSelect && (
+                                            <td className="admin-column select">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedIds.includes(
+                                                        row.id
+                                                    )}
+                                                    onChange={() => toggleRow(rowIndex)}
+                                                />
+                                            </td>
+                                        )}
+
+                                        {onRowReorder && (
+                                            <td className="admin-column drag">
+                                                <i className='adminfont-move' />
+                                            </td>
+                                        )}
+
+                                        {Object.entries(headers).map(
+                                            ([key, header], colIndex) => {
+                                                const rowId = row.id;
+                                                const cell =
+                                                    row[header.key] || row[key];
+                                                if (
+                                                    typeof header.render === 'function'
+                                                ) {
+                                                    return (
+                                                        <td
+                                                            key={`${rowId}-${colIndex}`}
+                                                            className={`admin-column ${className} ${header?.type || ''}`}
+                                                            style={
+                                                                header.width
+                                                                    ? {
+                                                                        minWidth:
+                                                                            typeof header.width ===
+                                                                                'number'
+                                                                                ? `${header.width}rem`
+                                                                                : header.width,
+                                                                    }
+                                                                    : {}
+                                                            }
+                                                        >
+                                                            {header.render(row)}
+                                                        </td>
+                                                    );
+                                                }
+
+                                                if (header.type === 'action') {
+                                                    return (
+                                                        <td
+                                                            key={`action-${rowId}`}
+                                                            className="admin-column action"
+                                                        >
+                                                            <TableRowActions
+                                                                row={row}
+                                                                rowActions={
+                                                                    header.actions
+                                                                }
+                                                            />
+                                                        </td>
+                                                    );
+                                                }
+
+                                                let displayValue = renderCell(
+                                                    row,
+                                                    header,
+                                                    format,
+                                                    currency
+                                                );
+
                                                 return (
                                                     <td
                                                         key={`${rowId}-${colIndex}`}
                                                         className={`admin-column ${className} ${header?.type || ''}`}
-                                                        style={
-                                                            header.width
-                                                                ? {
-                                                                    minWidth:
-                                                                        typeof header.width ===
-                                                                            'number'
-                                                                            ? `${header.width}rem`
-                                                                            : header.width,
-                                                                }
-                                                                : {}
-                                                        }
                                                     >
-                                                        {header.render(row)}
+                                                        {header.isEditable
+                                                            ? renderEditableCell({
+                                                                header,
+                                                                cell,
+                                                                isEditing: false,
+                                                                onSave: onCellEdit,
+                                                            })
+                                                            : displayValue}
                                                     </td>
                                                 );
                                             }
+                                        )}
+                                    </tr>
 
-                                            if (header.type === 'action') {
-                                                return (
-                                                    <td
-                                                        key={`action-${rowId}`}
-                                                        className="admin-column action"
-                                                    >
-                                                        <TableRowActions
-                                                            row={row}
-                                                            rowActions={
-                                                                header.actions
-                                                            }
-                                                        />
-                                                    </td>
-                                                );
-                                            }
+                                    {expandable && expandedRows.includes(row.id) &&
+                                        row.variation?.map((variation) => (
+                                            <tr
+                                                key={variation.id}
+                                                className="admin-row variation-row"
+                                            >
+                                                <td className="admin-column expand" />
 
-                                            let displayValue = renderCell(
-                                                row,
-                                                header,
-                                                format,
-                                                currency
-                                            );
-
-                                            return (
-                                                <td
-                                                    key={`${rowId}-${colIndex}`}
-                                                    className={`admin-column ${className} ${header?.type || ''}`}
-                                                >
-                                                    {header.isEditable
-                                                        ? renderEditableCell({
-                                                            header,
-                                                            cell,
-                                                            isEditing: false,
-                                                            onSave: onCellEdit,
-                                                        })
-                                                        : displayValue}
-                                                </td>
-                                            );
-                                        }
-                                    )}
-                                </tr>
+                                                {Object.entries(headers).map(
+                                                    ([key, header], colIndex) => (
+                                                        <td
+                                                            key={`${variation.id}-${colIndex}`}
+                                                            className={`admin-column ${className} ${header?.type || ''
+                                                                }`}
+                                                        >
+                                                            {typeof header.render === 'function'
+                                                                ? header.render(variation)
+                                                                : renderCell(
+                                                                    variation,
+                                                                    header,
+                                                                    format,
+                                                                    currency
+                                                                )}
+                                                        </td>
+                                                    )
+                                                )}
+                                            </tr>
+                                        ))}
+                                </Fragment>
                             ))
                         ) : (
                             <tr className="admin-row">
