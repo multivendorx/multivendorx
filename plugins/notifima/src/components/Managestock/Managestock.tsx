@@ -87,13 +87,25 @@ const Managestock = () => {
             onClickWithQuery: () => setopenPopup(true),
         },
     ];
+
     const filters = [
         {
-            key: 'created_at',
-            label: 'Created Date',
-            type: 'date',
+            key: 'product_type',
+            label: __('Product Type', 'notifima'),
+            type: 'select',
+            options: [
+                {
+                    label: __('Simple', 'notifima'),
+                    value: 'simple',
+                },
+                {
+                    label: __('Variable', 'notifima'),
+                    value: 'variable',
+                },
+            ],
         },
     ];
+
     const defaultTableProps = {
         headers,
         buttonActions,
