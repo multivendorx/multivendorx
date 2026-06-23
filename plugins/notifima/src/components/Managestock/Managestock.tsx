@@ -6,11 +6,12 @@ import {
     NavigatorHeader,
     PopupUI,
     TableCard,
+    MultiCheckBoxUI
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-// import { defaultCategoryCounts, subscriptions } from './SubscribersListUtil';
+import { defaultCategoryCounts, dummyProducts } from './ManagestockUtil';
 
 
 const Managestock = () => {
@@ -21,21 +22,61 @@ const Managestock = () => {
             label: __('Product', 'notifima'),
             render: (row) => (
                 <InfoItem
-                    title={row.product}
+                    title={row.name}
                     avatar={{
                         image: row.image || '',
-                        iconClass: row.image
-                            ? ''
-                            : 'single-product',
+                        iconClass: row.image ? '' : 'single-product',
                     }}
                 />
             ),
         },
-        email: { label: __('Email', 'notifima') },
-        date: { label: __('Date', 'notifima') },
-        status: {
-            label: __('Status', 'notifima'),
+
+        sku: {
+            label: __('SKU', 'notifima'),
+        },
+
+        type: {
+            label: __('Type', 'notifima'),
             type: 'status',
+        },
+
+        regular_price: {
+            label: __('Regular Price', 'notifima'),
+        },
+        sale_price: {
+            label: __('Sale Price', 'notifima'),
+        },
+        manage_stock: {
+            label: __('Manage Stock', 'notifima'),
+            render: (row) => (
+                <MultiCheckBoxUI
+                    look="toggle"
+                    modules={[]}
+                    options={[
+                        {
+                            key: `enabled-${row.id}`,
+                            value: 'enabled',
+                        },
+                    ]}
+                    value={row.manage_stock ? ['enabled'] : []}
+                    onChange={() => {
+                        setopenPopup(true);
+                    }}
+                />
+            ),
+        },
+        stock_status: {
+            label: __('Stock Status', 'notifima'),
+            type: 'status'
+        },
+        backorders: {
+            label: __('Backorders', 'notifima'),
+        },
+        stock: {
+            label: __('Stock', 'notifima'),
+        },
+        subscriber_no: {
+            label: __('Subscriber No', 'notifima'),
         },
     };
 
@@ -56,9 +97,9 @@ const Managestock = () => {
     const defaultTableProps = {
         headers,
         buttonActions,
-        // categoryCounts: defaultCategoryCounts,
+        categoryCounts: defaultCategoryCounts,
         filters,
-        expandable:true,
+        expandable: true,
         onQueryUpdate: () => setopenPopup(false),
         search: {
             placeholder: __('Search...', 'notifima'),
@@ -78,8 +119,8 @@ const Managestock = () => {
                 },
             ],
         },
-        // rows: subscriptions,
-        // totalRows: subscriptions.length,
+        rows: dummyProducts,
+        totalRows: dummyProducts.length,
     };
 
     tableProps = applyFilters(
