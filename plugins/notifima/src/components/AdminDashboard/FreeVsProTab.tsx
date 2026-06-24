@@ -367,9 +367,7 @@ const FreeVsProTab: React.FC<object> = () => {
 							</a>
 
 							<div
-								onClick={() =>
-									(window.location.href = `?page=notifima-setup`)
-								}
+								onClick={() => window.location.assign('?page=notifima-setup')}
 								className="admin-btn"
 							>
 								{__('Launch Setup Wizard', 'notifima')}
