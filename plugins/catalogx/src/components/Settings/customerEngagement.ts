@@ -51,13 +51,13 @@ export default {
                 'catalogx'
             ),
             settingDescription: __(
-        'Choose which products display the enquiry option.',
-        'catalogx'
-    ),
-    desc: __(
-        '<ul><li>All Products - Display the enquiry button on every product, regardless of stock status.</li><li>Out-of-Stock Products Only - Display the enquiry button only for products that are currently unavailable or out of stock.</li></ul>',
-        'catalogx'
-    ),
+                'Choose which products display the enquiry option.',
+                'catalogx'
+            ),
+            desc: __(
+                '<ul><li>All Products - Display the enquiry button on every product, regardless of stock status.</li><li>Out-of-Stock Products Only - Display the enquiry button only for products that are currently unavailable or out of stock.</li></ul>',
+                'catalogx'
+            ),
             options: [
                 {
                     key: 'all_products',
@@ -147,13 +147,13 @@ export default {
             type: 'choice-toggle',
             label: __('Redirect to a different page for enquiry form', 'catalogx'),
             desc: __(
-        '<ul><li>Stay on Current Page - Customers remain on the same page after submitting their enquiry.</li><li>Redirect to Another Page - Customers are redirected to a page of your choice, such as a thank-you page or contact page, after their enquiry is submitted.</li></ul>',
-        'catalogx'
-    ),
+                '<ul><li>Stay on Current Page - Customers remain on the same page after submitting their enquiry.</li><li>Redirect to Another Page - Customers are redirected to a page of your choice, such as a thank-you page or contact page, after their enquiry is submitted.</li></ul>',
+                'catalogx'
+            ),
             settingDescription: __(
-    'Choose whether customers remain on the current page or are redirected to another page after submitting an enquiry.',
-    'catalogx'
-),
+                'Choose whether customers remain on the current page or are redirected to another page after submitting an enquiry.',
+                'catalogx'
+            ),
             options: [
                 {
                     key: 'current_page',
@@ -170,14 +170,15 @@ export default {
         },
         {
             key: 'redirect_page_id',
-            dependent: {
-                key: "dedicated_page",
-                set: true
-            },
             type: 'select',
             label: __('Post enquiry submission redirect page', 'catalogx'),
             desc: __('Select page where user will be redirected after successful enquiry.', 'catalogx'),
             options: appLocalizer.pages_data,
+            dependent: {
+                key: 'is_page_redirect',
+                set: true,
+                value: 'dedicated_page',
+            },
             moduleEnabled: 'enquiry'
         },
 
@@ -242,13 +243,13 @@ export default {
             type: 'choice-toggle',
             label: __('Product purchasing', 'catalogx'),
             settingDescription: __(
-        'Choose whether customers can browse products as a catalog or purchase them through your store.',
-        'catalogx'
-    ),
+                'Choose whether customers can browse products as a catalog or purchase them through your store.',
+                'catalogx'
+            ),
             desc: __(
-        '<ul><li>Catalog only - Hide the Add to Cart button and disable purchasing across your store.</li><li>Enable purchasing - Display the Add to Cart button and allow customers to add products to cart and complete purchases.</li></ul>',
-        'catalogx'
-    ),
+                '<ul><li>Catalog only - Hide the Add to Cart button and disable purchasing across your store.</li><li>Enable purchasing - Display the Add to Cart button and allow customers to add products to cart and complete purchases.</li></ul>',
+                'catalogx'
+            ),
             options: [
                 {
                     key: 'catalog_only',

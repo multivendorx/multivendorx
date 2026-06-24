@@ -10,7 +10,7 @@ export default {
             desc: "Ideal for showcasing products by hiding prices, disabling purchases, and restricting cart/checkout access.",
             docLink:
                 'https://catalogx.com/docs/catalog/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
-            settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=shopping`,
+            settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=customer-engagement`,
             proModule: true,
         },
         {
@@ -19,7 +19,7 @@ export default {
             desc: "Add enquiry button for single product email enquiries to admin. Add enquiry button for single product email enquiries to admin. ",
             docLink:
                 'https://catalogx.com/docs/enquiry-communication/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
-            settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=enquiry`,
+            settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=customer-engagement`,
             proModule: false,
         },
         {
@@ -28,7 +28,7 @@ export default {
             desc: "Add enquiry button for single product email enquiries to admin. Add enquiry button for single product email enquiries to admin.",
             docLink:
                 'https://catalogx.com/docs/quotation/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
-            settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=quotation`,
+            settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=customer-engagement`,
             proModule: false,
         },
         {
