@@ -26,22 +26,13 @@ const ShippingCard = ({
 	const [productType, setProductType] = useState('physical');
 
 	useEffect(() => {
-		const hasStoreShipping = appLocalizer.active_modules.includes('store-shipping');
-			
-		const payload = hasStoreShipping
-			? {
-				meta_key: 'multivendorx_store_id',
-				meta_value: appLocalizer?.store_id,
-			}
-			: {
-				meta_key: 'multivendorx_store_id',
-				admin: true,
-			};
-
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/products/shipping_classes`, {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: payload,
+				params: {
+					meta_key: 'multivendorx_store_id',
+					meta_value: appLocalizer?.store_id,
+				},
 			})
 			.then((res) => {
 				const options = res.data.map((cls) => ({
