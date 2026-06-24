@@ -91,7 +91,7 @@ const App = () => {
                 message={bannerItem}
                 actionLabel="Upgrade Now"
                 onAction={() => {
-                    window.location.href = appLocalizer.pro_url;
+                    window.location.assign(appLocalizer.pro_url);
                 }}
             />
             {/* )} */}

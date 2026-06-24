@@ -81,7 +81,7 @@ class FrontendScripts {
     /**
 	 * Register frontend scripts using filters and enqueue required external scripts.
 	 *
-	 * Loads block assets and additional scripts defined through the `multivendorx_register_scripts` filter.
+	 * Loads block assets and additional scripts defined through the `notifima_register_scripts` filter.
 	 */
     public static function register_frontend_scripts() {
         $version      = Notifima()->version;
@@ -186,7 +186,7 @@ class FrontendScripts {
     /**
 	 * Register admin styles using filters.
 	 *
-	 * Allows style registration through `admin_multivendorx_register_styles` filter.
+	 * Allows style registration through `admin_notifima_register_styles` filter.
 	 */
     public static function register_admin_styles() {
 		$version         = Notifima()->version;

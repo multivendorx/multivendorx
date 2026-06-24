@@ -247,10 +247,9 @@ const DashboardTab: React.FC<object> = () => {
 
 								<div
 									className="admin-btn"
-									onClick={() =>
-										(window.location.href =
-											'?page=catalogx-setup')
-									}
+									onClick={() => {
+										window.location.assign('?page=catalogx-setup');
+									}}
 								>
 									{__('Launch Setup Wizard', 'notifima')}
 									<i className="adminfont-import"></i>
@@ -387,21 +386,21 @@ const DashboardTab: React.FC<object> = () => {
 																: 'auto',
 														opacity:
 															installing ===
-															'woocommerce-catalog-enquiry'
+																'woocommerce-catalog-enquiry'
 																? 0.6
 																: 1,
 													}}
 												>
 													{installing ===
-													'woocommerce-catalog-enquiry'
+														'woocommerce-catalog-enquiry'
 														? __(
-																'Installing...',
-																'notifima'
-															)
+															'Installing...',
+															'notifima'
+														)
 														: __(
-																'Install',
-																'notifima'
-															)}
+															'Install',
+															'notifima'
+														)}
 												</a>
 											</>
 										),
@@ -480,21 +479,21 @@ const DashboardTab: React.FC<object> = () => {
 																: 'auto',
 														opacity:
 															installing ===
-															'woocommerce-product-stock-alert'
+																'woocommerce-product-stock-alert'
 																? 0.6
 																: 1,
 													}}
 												>
 													{installing ===
-													'woocommerce-product-stock-alert'
+														'woocommerce-product-stock-alert'
 														? __(
-																'Installing...',
-																'notifima'
-															)
+															'Installing...',
+															'notifima'
+														)
 														: __(
-																'Install',
-																'notifima'
-															)}
+															'Install',
+															'notifima'
+														)}
 												</a>
 											</>
 										),
