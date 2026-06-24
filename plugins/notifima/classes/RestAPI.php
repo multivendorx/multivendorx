@@ -38,7 +38,7 @@ class RestAPI {
             '/settings',
             array(
 				'methods'             => 'POST',
-				'callback'            => array( $this, 'update_item' ),
+				'callback'            => array( $this, 'save_settings' ),
 				'permission_callback' => array( $this, 'notifima_permission' ),
 			)
         );
@@ -48,7 +48,7 @@ class RestAPI {
             '/stock-notification-form',
             array(
 				'methods'             => 'GET',
-				'callback'            => array( $this, 'create_item' ),
+				'callback'            => array( $this, 'get_stock_notification_form' ),
 				'permission_callback' => array( $this, 'notifima_permission' ),
 			)
         );
@@ -64,11 +64,11 @@ class RestAPI {
     }
 
     /**
-     * Update settings.
+     * Save settings.
      *
      * @param \WP_REST_Request $request The REST request object.
      */
-    public function update_item( $request ) {
+    public function save_settings( $request ) {
         $nonce_check = Utill::validate_nonce( $request );
 
         if ( is_wp_error( $nonce_check ) ) {
@@ -99,11 +99,11 @@ class RestAPI {
     }
 
     /**
-     * Create settings.
+     * Get stock notification form
      *
      * @param \WP_REST_Request $request The REST request object.
      */
-    public function create_item( $request ) {
+    public function get_stock_notification_form( $request ) {
         $nonce_check = Utill::validate_nonce( $request );
 
         if ( is_wp_error( $nonce_check ) ) {
