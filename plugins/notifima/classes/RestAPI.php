@@ -38,7 +38,7 @@ class RestAPI {
             '/settings',
             array(
 				'methods'             => 'POST',
-				'callback'            => array( $this, 'set_settings' ),
+				'callback'            => array( $this, 'save_settings' ),
 				'permission_callback' => array( $this, 'notifima_permission' ),
 			)
         );
@@ -48,7 +48,7 @@ class RestAPI {
             '/stock-notification-form',
             array(
 				'methods'             => 'GET',
-				'callback'            => array( $this, 'render_notifima_subscription_form' ),
+				'callback'            => array( $this, 'get_stock_notification_form' ),
 				'permission_callback' => array( $this, 'notifima_permission' ),
 			)
         );
@@ -64,47 +64,67 @@ class RestAPI {
     }
 
     /**
-     * Seve the setting set in react's admin setting page.
+     * Save settings.
      *
-     * @param WP_REST_Request|array $request The request object or data array.
-     * @return array
+     * @param \WP_REST_Request $request The REST request object.
      */
-    public function set_settings( $request ) {
-        $all_details       = array();
-        $get_settings_data = $request->get_param( 'setting' );
-        $settingsname      = $request->get_param( 'settingName' );
-        $settingsname      = str_replace( '-', '_', $settingsname );
-        $optionname        = 'notifima_' . $settingsname . '_settings';
+    public function save_settings( $request ) {
+        $nonce_check = Utill::validate_nonce( $request );
 
-        // save the settings in database.
-        Notifima()->setting->update_option( $optionname, $get_settings_data );
+        if ( is_wp_error( $nonce_check ) ) {
+            return $nonce_check;
+        }
+        try {
+            $get_settings_data = $request->get_param( 'setting' );
+            $settingsname      = $request->get_param( 'settingName' );
+            $settingsname      = str_replace( '-', '_', $settingsname );
+            $optionname        = 'notifima_' . $settingsname . '_settings';
 
-        do_action( 'notifima_after_save_settings', $settingsname, $get_settings_data );
+            // save the settings in database.
+            Notifima()->setting->update_option( $optionname, $get_settings_data );
 
-        return array(
-            'type'    => 'success',
-            'message' => __( 'Settings Saved', 'notifima' ),
-        );
+            do_action( 'notifima_after_save_settings', $settingsname, $get_settings_data );
+
+            return array(
+                'type'    => 'success',
+                'message' => __( 'Settings Saved', 'notifima' ),
+            );
+        } catch ( \Exception $e ) {
+			return new \WP_Error(
+                'server_error',
+                __('Unexpected server error', 'notifima'),
+                array('status' => 500)
+            );
+        }
     }
 
     /**
-     * Render the Notifima subscription form.
+     * Get stock notification form
      *
-     * This method handles the logic to render the subscription form based on the incoming request.
-     *
-     * @param WP_REST_Request|array $request The request object or data array.
-     *
-     * @return string Rendered form HTML.
+     * @param \WP_REST_Request $request The REST request object.
      */
-    public function render_notifima_subscription_form( $request ) {
-        $product_id = $request->get_param( 'product_id' );
+    public function get_stock_notification_form( $request ) {
+        $nonce_check = Utill::validate_nonce( $request );
 
-        // Start output buffering.
-        ob_start();
+        if ( is_wp_error( $nonce_check ) ) {
+            return $nonce_check;
+        }
+        try {
+            $product_id = $request->get_param( 'product_id' );
 
-        Notifima()->frontend->display_product_subscription_form( intval( $product_id ) );
+            // Start output buffering.
+            ob_start();
 
-        // Return the output.
-        return rest_ensure_response( array( 'html' => ob_get_clean() ) );
+            Notifima()->frontend->display_product_subscription_form( intval( $product_id ) );
+
+            // Return the output.
+            return rest_ensure_response( array( 'html' => ob_get_clean() ) );
+        } catch ( \Exception $e ) {
+			return new \WP_Error(
+                'server_error',
+                __('Unexpected server error', 'notifima'),
+                array('status' => 500)
+            );
+        }
     }
 }

@@ -2,9 +2,9 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'form_submission',
-    priority: 3,
-    headerTitle: __( 'Prompt Messages', 'notifima' ),
-    headerDescription: __( 'Manage post-form submission messages.', 'notifima' ),
+    priority: 2,
+    headerTitle: __( 'Customer Experience', 'notifima' ),
+    headerDescription: __( 'Control how the subscription form and customer messages appear throughout your store.', 'notifima' ),
     headerIcon: 'submission-message',
     submitUrl: 'settings',
     modal: [
