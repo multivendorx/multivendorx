@@ -50,10 +50,14 @@ export default {
                 'Show enquiry button for',
                 'catalogx'
             ),
-            desc: __(
-                "If enabled, non-logged-in users can't access the enquiry flow.",
-                'catalogx'
-            ),
+            settingDescription: __(
+        'Choose which products display the enquiry option.',
+        'catalogx'
+    ),
+    desc: __(
+        '<ul><li>All Products - Display the enquiry button on every product, regardless of stock status.</li><li>Out-of-Stock Products Only - Display the enquiry button only for products that are currently unavailable or out of stock.</li></ul>',
+        'catalogx'
+    ),
             options: [
                 {
                     key: 'all_products',
@@ -143,22 +147,22 @@ export default {
             type: 'choice-toggle',
             label: __('Redirect to a different page for enquiry form', 'catalogx'),
             desc: __(
-                '<ul><li>Current Product Page - Customers submit enquiries without leaving the product page.</li><li>Dedicated Enquiry Page - Customers are redirected to a separate enquiry page.</li></ul>',
-                'catalogx'
-            ),
+        '<ul><li>Stay on Current Page - Customers remain on the same page after submitting their enquiry.</li><li>Redirect to Another Page - Customers are redirected to a page of your choice, such as a thank-you page or contact page, after their enquiry is submitted.</li></ul>',
+        'catalogx'
+    ),
             settingDescription: __(
-                'Choose where customers complete their enquiry request.',
-                'catalogx'
-            ),
+    'Choose whether customers remain on the current page or are redirected to another page after submitting an enquiry.',
+    'catalogx'
+),
             options: [
                 {
                     key: 'current_page',
-                    label: __('Current Product Page', 'catalogx'),
+                    label: __('Stay on current page', 'catalogx'),
                     value: 'current_page',
                 },
                 {
                     key: 'dedicated_page',
-                    label: __('Dedicated Enquiry Page', 'catalogx'),
+                    label: __('Redirect to another page', 'catalogx'),
                     value: 'dedicated_page',
                 },
             ],
@@ -191,11 +195,11 @@ export default {
                 'catalogx'
             ),
             settingDescription: __(
-                'Control whether quotation requests are available to all visitors or only logged-in customers.',
+                'Control whether quotation requests are available to all visitors or only logged-in users.',
                 'catalogx'
             ),
             desc: __(
-                '<ul><li>Everyone - Any visitor can submit quotation requests.</li><li>Logged-in Customers - Only authenticated customers can request quotations.</li></ul>',
+                '<ul><li>Everyone - Any visitor can submit quotation requests.</li><li>Logged-in users - Only authenticated customers can request quotations.</li></ul>',
                 'catalogx'
             ),
             options: [
@@ -206,7 +210,7 @@ export default {
                 },
                 {
                     key: 'logged_in_only',
-                    label: __('Logged-in Customers', 'catalogx'),
+                    label: __('Logged-in users', 'catalogx'),
                     value: 'logged_in_only',
                 },
             ],
@@ -236,21 +240,15 @@ export default {
         {
             key: 'enable_cart_checkout',
             type: 'choice-toggle',
-            label: __('Sitewide buy mode', 'catalogx'),
+            label: __('Product purchasing', 'catalogx'),
             settingDescription: __(
-                'Choose how customers interact with your catalog.',
-                'catalogx'
-            ),
-            desc: sprintf(
-                /* translators: %s will be replaced with a link to CatalogX Pro */
-                __(
-                    'Enabling this setting with CatalogX activates the catalog-only mode on your site, preventing customers from making purchases. To allow purchasing functionality, upgrade to %s and enable this setting to activate the buying mode.<ul><li>Catalog Only - Customers can browse products and submit enquiries or quotations without purchasing.</li><li>Enable Purchasing - Customers can add products to cart and complete checkout.</li></ul>',
-                    'catalogx'
-                ),
-                '<a href="' +
-                appLocalizer.pro_url +
-                '" target="_blank">CatalogX Pro</a>'
-            ),
+        'Choose whether customers can browse products as a catalog or purchase them through your store.',
+        'catalogx'
+    ),
+            desc: __(
+        '<ul><li>Catalog only - Hide the Add to Cart button and disable purchasing across your store.</li><li>Enable purchasing - Display the Add to Cart button and allow customers to add products to cart and complete purchases.</li></ul>',
+        'catalogx'
+    ),
             options: [
                 {
                     key: 'catalog_only',
@@ -287,7 +285,7 @@ export default {
             desc: sprintf(
                 /* translators: %s will be replaced with a link to CatalogX Pro */
                 __(
-                    'Redirect users to the homepage when they click on the cart or checkout page. To customize the redirection to a different page, an upgrade to %s is required.',
+                    'By default, customers are redirected to the homepage when they access the cart or checkout pages. Select a different page to customize this behavior. An upgrade to %s is required.',
                     'catalogx'
                 ),
                 '<a href="' +
