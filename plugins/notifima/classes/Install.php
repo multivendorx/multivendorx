@@ -51,6 +51,8 @@ class Install {
         } else {
             $this->do_migration($previous_version);
         }
+		// phpcs:ignore WordPress.WP.CronInterval.ChangeDetected
+        add_filter( 'cron_schedules', array( $this, 'register_custom_schedule' ) );
 
         $this->start_cron_job();
 
@@ -244,16 +246,24 @@ class Install {
     }
 
     /**
-     * Function that schedule hook for notification corn job.
+     * Function that schedules the notification cron job.
      *
      * @return void
      */
     private function start_cron_job() {
-        // Notify user if product is instock.
         wp_clear_scheduled_hook( 'notifima_start_notification_cron_job' );
-        wp_schedule_event( time(), 'hourly', 'notifima_start_notification_cron_job' );
+
+        if ( ! wp_next_scheduled( 'notifima_start_notification_cron_job' ) ) {
+            wp_schedule_event(
+                time(),
+                'notifima_ten_minutes',
+                'notifima_start_notification_cron_job'
+            );
+        }
+
         update_option( 'notifima_cron_start', true );
     }
+
 
     /**
      * Set default settings for the plugin or module.
@@ -572,5 +582,20 @@ class Install {
         update_option( Utill::NOTIFIMA_SETTINGS['email'], array_merge( $email_settings, $previous_email_settings ) );
 
         update_option( 'notifima_version', $current_version );
+    }
+
+    /**
+     * Add additional schedule interval.
+     *
+     * @param array $schedules All schedules.
+     * @return array Modified schedules.
+     */
+    public function register_custom_schedule( $schedules ) {
+        $schedules['notifima_ten_minutes'] = array(
+            'interval' => 10 * MINUTE_IN_SECONDS,
+            'display'  => __( 'Every 10 Minutes', 'notifima' ),
+        );
+
+        return $schedules;
     }
 }
