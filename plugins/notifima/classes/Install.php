@@ -43,11 +43,13 @@ class Install {
 
         $this->old_migration();
 
-        if ( ! get_option( 'notifima_version', false ) ) {
+        $previous_version = get_option( 'notifima_version', false );
+
+        if ( ! $previous_version ) {
             $this->create_database_table();
             $this->set_default_settings();
         } else {
-            $this->do_migration();
+            $this->do_migration($previous_version);
         }
 
         $this->start_cron_job();
@@ -90,8 +92,16 @@ class Install {
     /**
      * Runs the database migration process.
      */
-    public static function do_migration() {
+    public static function do_migration( $previous_version ) {
         // write migration code from 3.0.1.
+        if ( version_compare( $previous_version, '3.1.0', '<' ) ) {
+            $mailchimp_settings = get_option( 'notifima_mailchimp_settings', array() );
+            $email_settings     = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
+
+            update_option(Utill::NOTIFIMA_SETTINGS['email'], array_merge( $email_settings, $mailchimp_settings ));
+
+            delete_option( 'notifima_mailchimp_settings' );
+        }
     }
 
     /**
