@@ -31,7 +31,7 @@ const ShippingCard = ({
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: {
 					meta_key: 'multivendorx_store_id',
-					meta_value: appLocalizer?.store_id,
+					meta_value: appLocalizer.store_id,
 				},
 			})
 			.then((res) => {
