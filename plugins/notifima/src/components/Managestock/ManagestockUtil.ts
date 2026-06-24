@@ -2,7 +2,7 @@ import { __ } from "@wordpress/i18n";
 
 export const dummyProducts = [
 	{
-		link: 'http://localhost:8888/product/variable-product/',
+		link: 'https://example.com/product/variable-product/',
 		id: 19,
 		sku: '-',
 		name: 'variable product',
@@ -13,13 +13,12 @@ export const dummyProducts = [
 		stock_status: 'outofstock',
 		regular_price: '',
 		stock_quantity: null,
-		image:
-			'http://localhost:8888/wp-content/uploads/woocommerce-placeholder.webp',
+		image:'',
 		subscriber_no: '',
 		variation: [
 			{
 				link:
-					'http://localhost:8888/product/variable-product/?attribute_group=A',
+					'https://example.com/product/variable-product/?attribute_group=A',
 				id: 20,
 				sku: '-',
 				name: 'variable product - A',
@@ -30,14 +29,13 @@ export const dummyProducts = [
 				stock_status: 'outofstock',
 				regular_price: '77',
 				stock_quantity: null,
-				image:
-					'http://localhost:8888/wp-content/uploads/woocommerce-placeholder.webp',
+				image:'',
 				subscriber_no: '',
 				parent_product_id: 19,
 			},
 			{
 				link:
-					'http://localhost:8888/product/variable-product/?attribute_group=B',
+					'https://example.com/product/variable-product/?attribute_group=B',
 				id: 21,
 				sku: '-',
 				name: 'variable product - B',
@@ -48,14 +46,13 @@ export const dummyProducts = [
 				stock_status: 'outofstock',
 				regular_price: '',
 				stock_quantity: 0,
-				image:
-					'http://localhost:8888/wp-content/uploads/woocommerce-placeholder.webp',
+				image:'',
 				subscriber_no: '',
 				parent_product_id: 19,
 			},
 			{
 				link:
-					'http://localhost:8888/product/variable-product/?attribute_group=C',
+					'https://example.com/product/variable-product/?attribute_group=C',
 				id: 22,
 				sku: '-',
 				name: 'variable product - C',
@@ -66,15 +63,14 @@ export const dummyProducts = [
 				stock_status: 'outofstock',
 				regular_price: '',
 				stock_quantity: 0,
-				image:
-					'http://localhost:8888/wp-content/uploads/woocommerce-placeholder.webp',
+				image:'',
 				subscriber_no: '',
 				parent_product_id: 19,
 			},
 		],
 	},
 	{
-		link: 'http://localhost:8888/product/test-product-three/',
+		link: 'https://example.com/product/test-product-three/',
 		id: 18,
 		sku: '-',
 		name: 'test product three',
@@ -85,12 +81,11 @@ export const dummyProducts = [
 		stock_status: 'outofstock',
 		regular_price: '777',
 		stock_quantity: 0,
-		image:
-			'http://localhost:8888/wp-content/uploads/woocommerce-placeholder.webp',
+		image:'',
 		subscriber_no: '0',
 	},
 	{
-		link: 'http://localhost:8888/product/test-product-two/',
+		link: 'https://example.com/product/test-product-two/',
 		id: 17,
 		sku: '-',
 		name: 'test product two',
@@ -101,12 +96,11 @@ export const dummyProducts = [
 		stock_status: 'outofstock',
 		regular_price: '71',
 		stock_quantity: null,
-		image:
-			'http://localhost:8888/wp-content/uploads/woocommerce-placeholder.webp',
+		image:'',
 		subscriber_no: '1',
 	},
 	{
-		link: 'http://localhost:8888/product/test-product/',
+		link: 'https://example.com/product/test-product/',
 		id: 13,
 		sku: '-',
 		name: 'test product',
@@ -117,8 +111,7 @@ export const dummyProducts = [
 		stock_status: 'outofstock',
 		regular_price: '76',
 		stock_quantity: null,
-		image:
-			'http://localhost:8888/wp-content/uploads/woocommerce-placeholder.webp',
+		image:'',
 		subscriber_no: '0',
 	},
 ];
@@ -126,22 +119,22 @@ export const dummyProducts = [
 export const defaultCategoryCounts = [
     {
         value: 'all',
-        label: __('All', 'catalogx-pro'),
+        label: __('All', 'catalogx'),
         count: 4,
     },
     {
         value: 'instock',
-        label: __('In Stock', 'catalogx-pro'),
+        label: __('In Stock', 'catalogx'),
         count: 0,
     },
     {
         value: 'onbackorder',
-        label: __('On Backorder', 'catalogx-pro'),
+        label: __('On Backorder', 'catalogx'),
         count: 0,
     },
     {
         value: 'outofstock',
-        label: __('Out of Stock', 'catalogx-pro'),
+        label: __('Out of Stock', 'catalogx'),
         count: 4,
     },
 ];
