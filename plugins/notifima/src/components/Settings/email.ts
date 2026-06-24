@@ -53,7 +53,7 @@ export default {
         //mailchimp
         {
             key: 'is_mailchimp_enable',
-            type: 'checkbox',
+            type: 'choice-toggle',
             label: __('Enable Mailchimp', 'notifima'),
             desc: __(
                 "Get your MailChimp API from your MailChimp <a href='https://us20.admin.mailchimp.com/account/api/manage/#create' target='blank'>account</a>. For further help, please check this doc.",
@@ -61,14 +61,17 @@ export default {
             ),
             options: [
                 {
-                    key: 'is_mailchimp_enable',
-                    value: 'is_mailchimp_enable',
+                    key: 'store_only',
+                    label: __('Store only', 'notifima'),
+                    value: 'store_only',
+                },
+                {
+                    key: 'mailchimp',
+                    label: __('Mailchimp', 'notifima'),
+                    value: 'mailchimp',
                 },
             ],
-            proSetting: true,
-            look: 'toggle',
         },
-        //new
         {
             key: 'mailchimp_api',
             type: 'text',
@@ -77,11 +80,12 @@ export default {
             dependent: {
                 key: 'is_mailchimp_enable',
                 set: true,
+                value:'mailchimp'
             },
             proSetting: true,
         },
         {
-            key: 'test_connection',
+            key: 'connection',
             type: 'sequential-task-executor',
             apilink: 'mailchimps',
             buttonText: 'Start',
@@ -91,10 +95,10 @@ export default {
             dependent: {
                 key: 'is_mailchimp_enable',
                 set: true,
+                value:'mailchimp'
             },
             proSetting: true,
         },
-
         {
             key: 'note_blocktext',
             type: 'notice',

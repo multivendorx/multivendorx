@@ -101,6 +101,21 @@ class Install {
             update_option(Utill::NOTIFIMA_SETTINGS['email'], array_merge( $email_settings, $mailchimp_settings ));
 
             delete_option( 'notifima_mailchimp_settings' );
+
+            $email_settings = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
+
+            $email_settings['is_mailchimp_enable'] = ! empty( $email_settings['is_mailchimp_enable'] ) ? 'mailchimp' : 'store_only';
+            update_option( Utill::NOTIFIMA_SETTINGS['email'], $email_settings );
+
+            $appearance_settings = get_option( Utill::NOTIFIMA_SETTINGS['appearance'], array() );
+
+            $appearance_settings['is_recaptcha_enable'] = ! empty( $appearance_settings['is_recaptcha_enable'] ) ? 'recaptcha' : 'no_verification';
+            $appearance_settings['is_double_optin'] = ! empty( $appearance_settings['is_double_optin'] ) ? 'confirm_via_email' : 'subscribe_immediately';
+            $appearance_settings['is_enable_no_interest'] = ! empty( $appearance_settings['is_enable_no_interest'] ) ? 'show_count' : 'hide_count';
+            $appearance_settings['is_enable_backorders'] = ! empty( $appearance_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
+            $appearance_settings['is_guest_subscriptions_enable'] = ! empty( $appearance_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
+
+            update_option( Utill::NOTIFIMA_SETTINGS['appearance'], $appearance_settings );
         }
     }
 
@@ -248,14 +263,14 @@ class Install {
     private function set_default_settings() {
         // Default messages for settings array.
         $appearance_settings = array(
-            'is_enable_backorders'          => false,
-            'is_enable_no_interest'         => false,
-            'is_double_optin'               => false,
+            'is_enable_backorders'          => 'out_of_stock',
+            'is_enable_no_interest'         => 'hide_count',
+            'is_double_optin'               => 'subscribe_immediately',
             'is_remove_admin_email'         => false,
             'double_opt_in_success'         => Notifima()->default_value['double_opt_in_success'],
             'shown_interest_text'           => Notifima()->default_value['shown_interest_text'],
             'additional_alert_email'        => get_option( 'admin_email' ),
-            'is_guest_subscriptions_enable' => array( 'is_guest_subscriptions_enable' ),
+            'is_guest_subscriptions_enable' => 'logged_in',
             'lead_time_format'              => 'static',
 
             // Form customization settings.
