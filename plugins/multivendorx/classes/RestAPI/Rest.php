@@ -972,18 +972,27 @@ class Rest {
     }
 
     public function filter_shipping_classes_by_meta( $args, $request ) {
-        $meta_key   = $request->get_param( 'meta_key' );
-        $meta_value = $request->get_param( 'meta_value' );
+        $meta_key = sanitize_text_field( $request->get_param( 'meta_key' ) );
 
-        if ( ! empty( $meta_key ) ) {
-            $args['meta_query'] = array(
-                array(
-                    'key'     => sanitize_text_field( $meta_key ),
-                    'value'   => sanitize_text_field( $meta_value ),
+        if ( empty( $meta_key ) ) {
+            return $args;
+        }
+
+        $admin = rest_sanitize_boolean( $request->get_param( 'admin' ) );
+
+        $args['meta_query'] = array(
+            $admin
+                ? array(
+                    'key'     => $meta_key,
+                    'compare' => 'NOT EXISTS',
+                )
+                : array(
+                    'key'     => $meta_key,
+                    'value'   => sanitize_text_field( $request->get_param( 'meta_value' ) ),
                     'compare' => '=',
                 ),
-            );
-        }
+        );
+
         return $args;
     }
 }
