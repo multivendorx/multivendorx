@@ -386,7 +386,7 @@ export const MultiInputTableUI: React.FC<MultiInputTableUIProps> = ({
 
     return (
         <>
-            {proSetting && (
+            {proSetting && !khali_dabba && (
                 <span className="admin-pro-tag">
                     <i className="adminfont-pro-tag" /> Pro
                 </span>

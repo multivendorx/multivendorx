@@ -166,7 +166,7 @@ const FreeFormCustomizerField: React.FC<{
     };
 
     const updateFieldPlaceholder = (id: string, placeholder: string) => {
-        if (!canAccess) return;
+        if (!canAccess || block() ) return;
         isDirty.current = true;
         setFields(prev => {
             const existing = prev.find(f => String(f.id) === String(id));
