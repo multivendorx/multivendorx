@@ -199,8 +199,11 @@ class Installer {
         );
 
         $all_settings = array(
-            'enable_cart_checkout'  => 'catalog_only',
-            'redirect_cart_page'    => ''
+            'enable_cart_checkout'      => 'catalog_only',
+            'redirect_cart_page'        => '',
+            'enquiry_user_permission'   => 'everyone',
+            'is_enable_out_of_stock'    => 'all_products',
+            'quote_user_permission'     => 'everyone',
         );
 
         update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array_merge($all_settings,$enquiry_quote_settings) );
