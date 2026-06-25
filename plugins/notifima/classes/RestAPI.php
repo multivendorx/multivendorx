@@ -22,9 +22,7 @@ class RestAPI {
      * RestAPI constructor.
      */
     public function __construct() {
-        if ( current_user_can( 'manage_options' ) ) {
-            add_action( 'rest_api_init', array( $this, 'register_rest_api' ) );
-        }
+        add_action( 'rest_api_init', array( $this, 'register_rest_api' ) );
     }
 
     /**
@@ -37,7 +35,7 @@ class RestAPI {
             Notifima()->rest_namespace,
             '/settings',
             array(
-				'methods'             => 'POST',
+				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'save_settings' ),
 				'permission_callback' => array( $this, 'notifima_permission' ),
 			)
@@ -47,7 +45,7 @@ class RestAPI {
             Notifima()->rest_namespace,
             '/stock-notification-form',
             array(
-				'methods'             => 'GET',
+				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_stock_notification_form' ),
 				'permission_callback' => array( $this, 'notifima_permission' ),
 			)
@@ -75,15 +73,15 @@ class RestAPI {
             return $nonce_check;
         }
         try {
-            $get_settings_data = $request->get_param( 'setting' );
-            $settingsname      = $request->get_param( 'settingName' );
-            $settingsname      = str_replace( '-', '_', $settingsname );
-            $optionname        = 'notifima_' . $settingsname . '_settings';
+            $settings = $request->get_param( 'setting' );
+            $settings_key      = $request->get_param( 'settingName' );
+            $settings_key      = str_replace( '-', '_', $settings_key );
+            $option_name       = 'notifima_' . $settings_key . '_settings';
 
             // save the settings in database.
-            Notifima()->setting->update_option( $optionname, $get_settings_data );
+            Notifima()->setting->update_option( $option_name, $settings );
 
-            do_action( 'notifima_after_save_settings', $settingsname, $get_settings_data );
+            do_action( 'notifima_after_save_settings', $settings_key, $settings );
 
             return array(
                 'type'    => 'success',

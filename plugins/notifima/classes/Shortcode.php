@@ -29,13 +29,13 @@ class Shortcode {
     /**
      * Display Notifima subscription form.
      *
-     * @param array $attr Shortcode attributes. Default empty array.
+     * @param array $attributes Shortcode attributes. Default empty array.
      *
      * @return string HTML content of the subscription form.
      */
-    public function notifima_subscription_form( $attr ) {
+    public function notifima_subscription_form( $attributes ) {
         ob_start();
-        $product_id = isset( $attr['product_id'] ) ? (int) $attr['product_id'] : null;
+        $product_id = isset( $attributes['product_id'] ) ? (int) $attributes['product_id'] : null;
 
         do_action( 'notifima_before_subscription_form' );
 

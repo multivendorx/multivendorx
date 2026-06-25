@@ -56,8 +56,7 @@ class Admin {
      * Add options page.
      */
     public function add_menus() {
-        if ( is_admin() ) {
-            add_menu_page(
+           add_menu_page(
                 'Notifima',
                 'Notifima',
                 'manage_options',
@@ -86,7 +85,7 @@ class Admin {
             > Pro </span>' : '';
 
             // Array contain notifima submenu.
-            $submenus = array(
+            $submenu_items = array(
                 'dashboard'         => array(
                     'name'   => __( 'Dashboard', 'notifima' ),
                     'subtab' => '',
@@ -109,18 +108,18 @@ class Admin {
 				),
             );
 
-            foreach ( $submenus as $slug => $submenu ) {
+            foreach ( $submenu_items as $slug => $submenu_item ) {
                 // prepare subtab if subtab is exist.
                 $subtab = '';
 
-                if ( $submenu['subtab'] ) {
-                    $subtab = '&subtab=' . $submenu['subtab'];
+                if ( $submenu_item['subtab'] ) {
+                    $subtab = '&subtab=' . $submenu_item['subtab'];
                 }
 
                 add_submenu_page(
                     'notifima',
-                    $submenu['name'],
-                    "<span style='position: relative; display: block; width: 100%;' class='admin-menu'>" . $submenu['name'] . '</span>',
+                    $submenu_item['name'],
+                    "<span style='position: relative; display: block; width: 100%;' class='admin-menu'>" . $submenu_item['name'] . '</span>',
                     'manage_options',
                     'notifima#&tab=' . $slug . $subtab,
                     '__return_null'
@@ -147,7 +146,6 @@ class Admin {
             }
 
             remove_submenu_page( 'notifima', 'notifima' );
-        }
     }
 
     /**
@@ -186,8 +184,8 @@ class Admin {
         foreach ( $post_ids as $post_id ) {
             $product_ids = Subscriber::get_related_product( wc_get_product( $post_id ) );
             foreach ( $product_ids as $product_id ) {
-                $emails = Subscriber::get_product_subscribers_email( $product_id );
-                foreach ( $emails as $alert_id => $to ) {
+                $subscriber_emails = Subscriber::get_product_subscribers_email( $product_id );
+                foreach ( $subscriber_emails as $alert_id => $to ) {
                     Subscriber::update_subscriber( $alert_id, 'unsubscribed' );
                 }
                 delete_post_meta( $product_id, 'no_of_subscribers' );
@@ -204,8 +202,9 @@ class Admin {
      * @return void
      */
     public function subscribers_bulk_action_admin_notice() {
-        if ( ! empty( filter_input( INPUT_POST, 'bulk_remove_subscribers', FILTER_SANITIZE_NUMBER_INT ) ) ) {
-            $bulk_remove_count = filter_input( INPUT_POST, 'bulk_remove_subscribers', FILTER_SANITIZE_NUMBER_INT );
+        $bulk_remove_count = filter_input( INPUT_POST, 'bulk_remove_subscribers', FILTER_SANITIZE_NUMBER_INT );
+
+        if ( ! empty( $bulk_remove_count ) ) {
             // Translators: This message is to display removed subscribers count for the product.
             printf( '<div id="message" class="updated fade"><p>' . esc_html( _n( 'Removed subscribers from %s product.', 'Removed subscribers from %s products.', $bulk_remove_count, 'notifima' ) ) . '</p></div>', esc_html( $bulk_remove_count ) );
         }

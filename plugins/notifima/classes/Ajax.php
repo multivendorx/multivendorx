@@ -23,8 +23,8 @@ class Ajax {
      */
     public function __construct() {
         // Save customer email in database.
-        add_action( 'wp_ajax_subscribe_users', array( &$this, 'subscribe_users' ) );
-        add_action( 'wp_ajax_nopriv_subscribe_users', array( &$this, 'subscribe_users' ) );
+        add_action( 'wp_ajax_subscribe_users', array( $this, 'subscribe_users' ) );
+        add_action( 'wp_ajax_nopriv_subscribe_users', array( $this, 'subscribe_users' ) );
         // Delete unsubscribed users.
         add_action( 'wp_ajax_unsubscribe_users', array( $this, 'unsubscribe_users' ) );
         add_action( 'wp_ajax_nopriv_unsubscribe_users', array( $this, 'unsubscribe_users' ) );
@@ -114,7 +114,7 @@ class Ajax {
         }
         $csv_header_string = implode( ', ', $csv_headers_array );
 
-        if ( isset( $get_subscribed_user ) && ! empty( $get_subscribed_user ) ) {
+        if ( ! empty( $get_subscribed_user ) ) {
             foreach ( $get_subscribed_user as $product_id => $subscribers ) {
                 foreach ( $subscribers as $subscriber ) {
                     $product           = wc_get_product( $product_id );
@@ -130,7 +130,7 @@ class Ajax {
         }
 
         echo esc_html( $csv_header_string );
-        if ( isset( $csv_body_arrays ) && ! empty( $csv_body_arrays ) ) {
+        if ( ! empty( $csv_body_arrays ) ) {
             foreach ( $csv_body_arrays as $csv_body_array ) {
                 echo "\r\n";
                 echo esc_html( implode( ', ', $csv_body_array ) );
@@ -169,7 +169,7 @@ class Ajax {
             'message' => '<div class="notifima-registered-message">' . __( 'Some error occurs', 'notifima' ) . ' <a href="${window.location}">' . __( 'Please try again.', 'notifima' ) . '</a></div>',
         );
 
-        if ( $product_id && ! empty( $product_id ) && ! empty( $customer_email ) ) {
+        if ( $product_id && ! empty( $customer_email ) ) {
             $product = wc_get_product( $product_id );
             if ( $product && $product->is_type( 'variable' ) && $variation_id > 0 ) {
                 $success = Subscriber::remove_subscriber( $variation_id, $customer_email );
@@ -184,7 +184,7 @@ class Ajax {
 
                 $response = array(
                     'status'  => true,
-                    'message' => '<div class="notifima-registered-message">' . $success_msg . '</div>',
+                    'message' => sprintf( '<div class="notifima-registered-message">%s</div>', wp_kses_post( $success_msg ) ),
                 );
             }
         }
@@ -238,7 +238,7 @@ class Ajax {
             return;
         }
 
-        if ( $product_id && ! empty( $product_id ) && ! empty( $customer_email ) ) {
+        if ( $product_id && ! empty( $customer_email ) ) {
             $product_id = ( $variation_id && $variation_id > 0 ) ? $variation_id : $product_id;
 
             if ( Subscriber::is_already_subscribed( $customer_email, $product_id ) ) {
@@ -274,7 +274,7 @@ class Ajax {
 
                     $response = array(
                         'status'  => true,
-                        'message' => '<div class="notifima-registered-message">' . $success_msg . '</div>',
+                        'message' => sprintf( '<div class="notifima-registered-message">%s</div>', wp_kses_post( $success_msg ) ),
                     );
 
                     /**
@@ -300,7 +300,7 @@ class Ajax {
      * @return bool True if the email is valid, false otherwise.
      */
     public function is_email_valid( $email ) {
-        return (bool) preg_match( '/^([a-zA-Z0-9_\.\-\+])+@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/', $email );
+        return is_email( $email );
     }
 
     /**
@@ -317,7 +317,7 @@ class Ajax {
         $variation_id = filter_input( INPUT_POST, 'variation_id', FILTER_VALIDATE_INT ) ? filter_input( INPUT_POST, 'variation_id', FILTER_VALIDATE_INT ) : '';
         $product      = wc_get_product( $product_id );
         $child_obj    = null;
-        if ( $variation_id && ! empty( $variation_id ) ) {
+        if ( $variation_id ) {
             $child_obj = new \WC_Product_Variation( $variation_id );
         }
         echo wp_kses( Notifima()->frontend->get_subscribe_form( $product, $child_obj ), FrontEnd::$allowed_html );

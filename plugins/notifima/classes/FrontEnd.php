@@ -56,9 +56,9 @@ class FrontEnd {
      */
     public function __construct() {
         // enqueue scripts.
-        add_action( 'wp_enqueue_scripts', array( &$this, 'frontend_scripts' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
         // enqueue styles.
-        add_action( 'wp_enqueue_scripts', array( &$this, 'frontend_styles' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'frontend_styles' ) );
 
         add_action( 'wp', array( $this, 'load_subscription_form' ) );
 
@@ -81,7 +81,7 @@ class FrontEnd {
     }
 
     /**
-     * Enque Frontend's JavaScript. And Send Localize data.
+     * Enqueue frontend JavaScript. And Send Localize data.
      *
      * @return void
      */
@@ -102,11 +102,9 @@ class FrontEnd {
      */
     public function frontend_styles() {
         FrontendScripts::load_scripts();
-        if ( function_exists( 'is_product' ) ) {
-            if ( is_product() ) {
-                // Enqueue your frontend stylesheet from here.
-                FrontendScripts::enqueue_style( 'notifima-frontend-style' );
-            }
+        if ( is_product() ) {
+            // Enqueue your frontend stylesheet from here.
+            FrontendScripts::enqueue_style( 'notifima-frontend-style' );
         }
     }
 
@@ -122,13 +120,13 @@ class FrontEnd {
         $border_size          = '';
         $border_size          = ( ! empty( $button_settings['button_border_size'] ) ) ? $button_settings['button_border_size'] . 'px' : '1px';
 
-        if ( isset( $button_settings['button_background_color_onhover'] ) ) {
+        if ( ! empty( $button_settings['button_background_color_onhover'] ) ) {
             $button_onhover_style .= ! empty( $button_settings['button_background_color_onhover'] ) ? 'background: ' . $button_settings['button_background_color_onhover'] . ' !important;' : '';
         }
-        if ( isset( $button_settings['button_text_color_onhover'] ) ) {
+        if ( ! empty( $button_settings['button_text_color_onhover'] ) ) {
             $button_onhover_style .= ! empty( $button_settings['button_text_color_onhover'] ) ? ' color: ' . $button_settings['button_text_color_onhover'] . ' !important;' : '';
         }
-        if ( isset( $button_settings['button_border_color_onhover'] ) ) {
+        if ( ! empty( $button_settings['button_border_color_onhover'] ) ) {
             $button_onhover_style .= ! empty( $button_settings['button_border_color_onhover'] ) ? 'border: ' . $border_size . ' solid' . $button_settings['button_border_color_onhover'] . ' !important;' : '';
         }
         if ( $button_onhover_style ) {
@@ -181,7 +179,7 @@ class FrontEnd {
     }
 
     /**
-     * Display product subscription form if product is outof stock
+     * Display product subscription form if product is out of stock
      *
      * @param   WC_Product|null $product_obj The WooCommerce product object. Defaults to global product if null.
      * @return  void
@@ -229,7 +227,7 @@ class FrontEnd {
      * Display Request Stock Form for grouped product.
      *
      * @param string $value default html.
-     * @param object $child indivisual child of grouped product.
+     * @param object $child individual child of grouped product.
      */
     public function display_in_grouped_product( $value, $child ) {
         $value = $value . $this->get_subscribe_form( $child );
@@ -238,7 +236,7 @@ class FrontEnd {
     }
 
     /**
-     * Get subscribe from's HTML content for a particular product.
+     * Get subscribe form HTML content for a particular product.
      * If the product is not outofstock it return empty string.
      *
      * @param  mixed $product   product variable.
