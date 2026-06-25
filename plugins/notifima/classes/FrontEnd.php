@@ -194,6 +194,11 @@ class FrontEnd {
         if ( empty( $product_obj ) ) {
             return;
         }
+
+        if('yes' === $product_obj->get_meta(Utill::NOTIFIMA_PRODUCT_META['product_discontinued'])){
+            return;
+        }
+
         $guest_subscription_enabled = Notifima()->setting->get_setting( 'is_guest_subscriptions_enable','' );
         if ( 'logged_in' === $guest_subscription_enabled && ! is_user_logged_in() ) {
             return;

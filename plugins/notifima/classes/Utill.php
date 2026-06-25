@@ -25,6 +25,11 @@ class Utill {
         'personalize-layout'    => 'notifima_personalize_layout_settings',
     );
 
+    public const NOTIFIMA_PRODUCT_META = array(
+        'subscribers'           => 'no_of_subscribers',
+        'product_discontinued'  => 'product_discontinued',
+    );
+
     /**
      * Function to console and debug errors.
      *

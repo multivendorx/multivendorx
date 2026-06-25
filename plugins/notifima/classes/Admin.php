@@ -45,6 +45,8 @@ class Admin {
         add_filter( 'allowed_redirect_hosts', array( $this, 'allow_notifima_redirect_host' ) );
         // For loco translation.
         add_action( 'load_script_textdomain_relative_path', array( $this, 'textdomain_relative_path' ), 10, 2 );
+        add_action( 'woocommerce_admin_process_product_object', array( $this, 'save_product_discontinued_status' ) );
+        add_action( 'woocommerce_product_options_stock', array( $this, 'product_discontinued_checkbox' ), 10 );   
     }
 
     /**
@@ -255,7 +257,7 @@ class Admin {
         global $post;
         $product = wc_get_product( $post->ID );
         if ( Subscriber::is_product_outofstock( $product ) ) {
-            $no_of_subscriber = $product->get_meta( 'no_of_subscribers', true );
+            $no_of_subscriber = $product->get_meta( Utill::NOTIFIMA_PRODUCT_META['subscribers'], true );
             ?>
             <p class="form-field">
                 <label class=""><?php esc_attr_e( 'Number of Interested Person( s )', 'notifima' ); ?></label>
@@ -277,7 +279,7 @@ class Admin {
     public function display_product_subscriber_count_in_variation_metabox( $loop, $variation_data, $variation ) {
         $product = wc_get_product( $variation->ID );
         if ( Subscriber::is_product_outofstock( $product ) ) {
-            $product_subscriber = $product->get_meta( 'no_of_subscribers', true );
+            $product_subscriber = $product->get_meta( Utill::NOTIFIMA_PRODUCT_META['subscribers'], true );
             ?>
             <p class="form-row form-row-full interested-person">
                 <label class="stock-label"><?php esc_attr_e( 'Number of Interested Person( s ) : ', 'notifima' ); ?></label>
@@ -336,5 +338,28 @@ class Admin {
         }
 
         return $hosts;
+    }
+
+    /**
+     * Save product discontinued status.
+     *
+     * @param \WC_Product $product Product object.
+     */
+    public function save_product_discontinued_status( $product ) {
+        $product_discontinued = filter_input( INPUT_POST, Utill::NOTIFIMA_PRODUCT_META['product_discontinued'], FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+        $product->update_meta_data( Utill::NOTIFIMA_PRODUCT_META['product_discontinued'], $product_discontinued ? 'yes' : '' );
+    }
+
+    /**
+     * Add product discontinued checkbox.
+     */
+    public function product_discontinued_checkbox() {
+        woocommerce_wp_checkbox(
+            array(
+                'id'          => Utill::NOTIFIMA_PRODUCT_META['product_discontinued'],
+                'label'       => __( 'Mark this product as discontinued', 'notifima' ),
+                'description' => __( 'Mark this product as discontinued from the shop.', 'notifima' ),
+            )
+        );
     }
 }
