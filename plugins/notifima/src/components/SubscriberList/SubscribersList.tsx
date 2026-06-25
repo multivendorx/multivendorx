@@ -68,7 +68,7 @@ const SubscribersList = () => {
                     value: '',
                 },
                 {
-                    label: __('product Name', 'notifima'),
+                    label: __('Product Name', 'notifima'),
                     value: 'product_name',
                 },
                 {

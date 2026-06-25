@@ -207,7 +207,7 @@ class FrontEnd {
         $backorders_enabled = Notifima()->setting->get_setting( 'is_enable_backorders','' );
 
         $stock_status = $product_obj->get_stock_status();
-        if ( 'onbackorder' === $stock_status && 'out_of_stock_and_backorder' === $backorders_enabled ) {
+        if ( 'onbackorder' === $stock_status && 'out_of_stock' === $backorders_enabled ) {
             return;
         }
 

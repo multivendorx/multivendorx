@@ -71,6 +71,7 @@ export default {
                     value: 'mailchimp',
                 },
             ],
+            proSetting:true,
         },
         {
             key: 'mailchimp_api',
@@ -85,12 +86,12 @@ export default {
             proSetting: true,
         },
         {
-            key: 'connection',
+            key: 'mailchimp',
             type: 'sequential-task-executor',
+            variant:"api-connect",
             apilink: 'mailchimps',
             buttonText: 'Start',
             buttonIcon: 'centralized-connections',
-            interval: 2500,
             label: __('Mailchimp connection', 'notifima'),
             dependent: {
                 key: 'is_mailchimp_enable',
