@@ -195,7 +195,7 @@ class FrontEnd {
             return;
         }
 
-        if('yes' === $product_obj->get_meta(Utill::NOTIFIMA_PRODUCT_META['product_discontinued'])){
+        if( 'yes' === $product_obj->get_meta(Utill::NOTIFIMA_PRODUCT_META['product_discontinued'])){
             return;
         }
 
@@ -214,6 +214,7 @@ class FrontEnd {
         if ( $product_obj->is_type( 'variable' ) ) {
             $get_variations = count( $product_obj->get_children() ) <= apply_filters( 'woocommerce_ajax_variation_threshold', 30, $product_obj );
             $get_variations = $get_variations ? $product_obj->get_available_variations() : false;
+
             if ( $get_variations ) {
                 echo '<div class="notifima-shortcode-subscribe-form" data-product-id="' . esc_attr( $product_obj->get_id() ) . '"></div>';
             } else {
@@ -248,6 +249,11 @@ class FrontEnd {
         if ( ! Subscriber::is_product_outofstock( $variation ? $variation : $product ) ) {
             return '';
         }
+
+        if( $variation && 'yes' === $variation->get_meta(Utill::NOTIFIMA_PRODUCT_META['product_discontinued'])){
+            return;
+        }
+        
         $notifima_fields_array = array();
         $notifima_fields_html  = '';
         $user_email            = '';

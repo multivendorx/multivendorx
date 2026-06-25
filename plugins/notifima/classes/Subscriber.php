@@ -82,15 +82,30 @@ class Subscriber {
      * @return void
      */
     public function send_instock_notification_corn() {
+        global $wpdb;
 
-        $products = wc_get_products( array() );
-
-        if ( ! $products ) {
+        $product_ids = $wpdb->get_col(
+            $wpdb->prepare(
+                "
+                SELECT DISTINCT product_id
+                FROM {$wpdb->prefix}notifima_subscribers
+                WHERE status = %s
+                LIMIT %d
+                ",
+                'subscribed',
+                50
+            )
+        );
+        if ( empty( $product_ids ) ) {
             return;
         }
 
-        foreach ( $products as $product ) {
-            self::send_instock_notification( $product->get_id(), $product );
+        foreach ( $product_ids as $product_id ) {
+            $product = wc_get_product( $product_id );
+
+            if ( $product ) {
+                $this->send_instock_notification($product_id, $product );
+            }
         }
     }
 

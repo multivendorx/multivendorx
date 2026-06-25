@@ -40,6 +40,8 @@ class Install {
      * Class constructor
      */
     public function __construct() {
+		// phpcs:ignore WordPress.WP.CronInterval.ChangeDetected
+        add_filter( 'cron_schedules', array( $this, 'register_custom_schedule' ) );
 
         $this->old_migration();
 
@@ -51,9 +53,6 @@ class Install {
         } else {
             $this->do_migration($previous_version);
         }
-		// phpcs:ignore WordPress.WP.CronInterval.ChangeDetected
-        add_filter( 'cron_schedules', array( $this, 'register_custom_schedule' ) );
-
         $this->start_cron_job();
 
         update_option( 'notifima_version', NOTIFIMA_PLUGIN_VERSION );

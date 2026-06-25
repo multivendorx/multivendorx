@@ -46,7 +46,10 @@ class Admin {
         // For loco translation.
         add_action( 'load_script_textdomain_relative_path', array( $this, 'textdomain_relative_path' ), 10, 2 );
         add_action( 'woocommerce_admin_process_product_object', array( $this, 'save_product_discontinued_status' ) );
-        add_action( 'woocommerce_product_options_stock', array( $this, 'product_discontinued_checkbox' ), 10 );   
+        add_action( 'woocommerce_product_options_stock', array( $this, 'product_discontinued_checkbox' ), 10 );
+
+        add_action( 'woocommerce_variation_options_dimensions', array( $this, 'variation_discontinued_checkbox' ), 10, 3 );
+        add_action( 'woocommerce_save_product_variation', array( $this, 'save_variation_discontinued_status' ), 10, 2 );
     }
 
     /**
@@ -361,5 +364,37 @@ class Admin {
                 'description' => __( 'Mark this product as discontinued from the shop.', 'notifima' ),
             )
         );
+    }
+    /**
+     * Add variation discontinued checkbox.
+     *
+     * @param int      $loop           Variation loop index.
+     * @param array    $variation_data Variation data.
+     * @param \WP_Post $variation      Variation object.
+     */
+    public function variation_discontinued_checkbox( $loop, $variation_data, $variation ) {
+        woocommerce_wp_checkbox(
+            array(
+                'id'            => Utill::NOTIFIMA_PRODUCT_META['product_discontinued'] . '[' . $loop . ']',
+                'wrapper_class' => 'form-row form-row-full',
+                'label'         => __( 'Mark this variation as discontinued', 'notifima' ),
+                'description'   => __( 'Mark this variation as discontinued from the shop.', 'notifima' ),
+                'value'         => get_post_meta(
+                    $variation->ID,
+                    Utill::NOTIFIMA_PRODUCT_META['product_discontinued'],
+                    true
+                ),
+            )
+        );
+    }
+    /**
+     * Save variation discontinued status.
+     *
+     * @param int $variation_id Variation ID.
+     * @param int $loop         Variation loop index.
+     */
+    public function save_variation_discontinued_status( $variation_id, $loop ) {
+            $product_discontinued = filter_input( INPUT_POST, Utill::NOTIFIMA_PRODUCT_META['product_discontinued'], FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+            update_post_meta( $variation_id, Utill::NOTIFIMA_PRODUCT_META['product_discontinued'], ! empty( $product_discontinued[ $loop ] ) ? 'yes' : '' );
     }
 }
