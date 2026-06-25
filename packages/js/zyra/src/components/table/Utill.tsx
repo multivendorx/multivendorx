@@ -121,6 +121,10 @@ export const renderCell = (
             return finalValue;
         }
 
+        case 'number': {
+            return value ?? 0;
+        }
+        
         case 'content': {
             const textarea = document.createElement('textarea');
             textarea.innerHTML = String(value);
