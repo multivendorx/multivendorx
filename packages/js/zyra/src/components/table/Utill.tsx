@@ -120,7 +120,6 @@ export const renderCell = (
 
             return finalValue;
         }
-
         
         case 'content': {
             const textarea = document.createElement('textarea');
