@@ -37,24 +37,24 @@ export default {
         {
             key: 'disable_coupon_for_wholesale',
             type: 'choice-toggle',
-            label: __('Coupon usage', 'catalogx'),
+            label: __('How should coupons work with wholesale', 'catalogx'),
             settingDescription: __(
                 'Choose how coupons work for wholesale customers.',
                 'catalogx'
             ),
             desc: __(
-                '<ul><li>Wholesale Pricing Only - Wholesale discounts cannot be combined with coupons.</li><li>Wholesale Pricing + Coupons - Wholesale customers can apply coupons during checkout.</li></ul>',
+                '<ul><li>Wholesale discount only - Wholesale discounts cannot be combined with coupons.</li><li>Wholesale discount + Coupons - Wholesale customers can apply coupons during checkout.</li></ul>',
                 'catalogx'
             ),
             options: [
                 {
                     key: 'restricted',
-                    label: __('Wholesale Pricing Only', 'catalogx'),
+                    label: __('Wholesale discount only', 'catalogx'),
                     value: 'restricted',
                 },
                 {
                     key: 'allowed',
-                    label: __('Wholesale Pricing + Coupons', 'catalogx'),
+                    label: __('Wholesale discount + Coupons', 'catalogx'),
                     value: 'allowed',
                 },
             ],
@@ -62,24 +62,24 @@ export default {
         {
             key: 'show_wholesale_price',
             type: 'choice-toggle',
-            label: __('Wholesale savings display', 'catalogx'),
+            label: __('Wholesale Offer Visibility', 'catalogx'),
             settingDescription: __(
                 'Choose how wholesale pricing is presented to regular customers.',
                 'catalogx'
             ),
             desc: __(
-                '<ul><li>Standard Pricing Only - Display retail pricing without wholesale discounts.</li><li>Display Wholesale Savings - Show potential wholesale pricing to encourage wholesale registrations.</li></ul>',
+                '<ul><li>Keep wholesale offers private - Display retail pricing without wholesale discounts.</li><li>Promote wholesale savings - Show potential wholesale pricing to encourage wholesale registrations.</li></ul>',
                 'catalogx'
             ),
             options: [
                 {
                     key: 'hidden',
-                    label: __('Standard Pricing Only', 'catalogx'),
+                    label: __('Keep wholesale offers private', 'catalogx'),
                     value: 'hidden',
                 },
                 {
                     key: 'visible',
-                    label: __('Display Wholesale Savings', 'catalogx'),
+                    label: __('Promote wholesale savings', 'catalogx'),
                     value: 'visible',
                 },
             ],
