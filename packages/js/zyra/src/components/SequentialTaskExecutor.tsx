@@ -144,7 +144,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
             )
             .then((response) => {
                 setProcessStatus(response.data === true ? 'success' : 'failed');
-                if (variant === 'api-connect') {
+                if (variant) {
                     onChange?.({
                         options: response.data || [],
                         selected: '',
@@ -199,7 +199,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
             return;
         }
 
-        if (variant !== 'api-connect') {
+        if (variant) {
             setSyncStarted(true);
         }
 
@@ -264,7 +264,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                     }
                 />
             )}
-            {variant === 'api-connect' && value?.options?.length > 0 && (
+            {variant && value?.options?.length > 0 && (
                 <SelectInputUI
                     options={value.options}
                     value={value.selected || ''}
