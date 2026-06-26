@@ -142,11 +142,11 @@ const QuoteRequests = () => {
             return (
                 <ComponentStatusView
                     title={__(
-                        'Looks like customer support isn’t set up yet!',
+                        'Looks like the Quote module isn’t enabled yet!',
                         'catalogx'
                     )}
                     desc={__(
-                        'Turn on a support module to start assisting your customers.',
+                        'Enable the Quote module to start receiving and managing customer quote requests.',
                         'catalogx'
                     )}
                     buttonText={__('Enable Now', 'catalogx')}
