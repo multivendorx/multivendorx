@@ -25,7 +25,7 @@ const proPopupContent = {
 			icon: 'double-opt-in',
 			text: __('Double Opt-in', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'Confirm every signup via email for cleaner lists and better deliverability.',
 				'notifima'
 			),
 		},
@@ -33,7 +33,7 @@ const proPopupContent = {
 			icon: 'ban-spam-mail',
 			text: __('Ban Spam Mail', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'Keep your subscriber list clean from bots and unwanted registrations.',
 				'notifima'
 			),
 		},
@@ -41,7 +41,7 @@ const proPopupContent = {
 			icon: 'export-subscribers',
 			text: __('Export Subscribers', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'Download waitlist data anytime for reporting, marketing, or backup.',
 				'notifima'
 			),
 		},
@@ -49,7 +49,7 @@ const proPopupContent = {
 			icon: 'subscription-dashboard',
 			text: __('Subscription Dashboard', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'View all requests and demand trends from one centralized place.',
 				'notifima'
 			),
 		},
@@ -57,7 +57,7 @@ const proPopupContent = {
 			icon: 'mailchimp',
 			text: __('MailChimp Integration', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'Auto-sync subscribers for targeted email campaigns and nurture flows.',
 				'notifima'
 			),
 		},
@@ -65,7 +65,7 @@ const proPopupContent = {
 			icon: 'form-recaptcha',
 			text: __('Recaptcha Support', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'Protect waitlists from bots with built-in reCAPTCHA support.',
 				'notifima'
 			),
 		},
@@ -73,7 +73,7 @@ const proPopupContent = {
 			icon: 'subscription-dashboard',
 			text: __('Subscription Details', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'See who subscribed, which products are in demand, and track activity.',
 				'notifima'
 			),
 		},
@@ -81,7 +81,7 @@ const proPopupContent = {
 			icon: 'export-import-stock',
 			text: __('Export/Import Stock', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'Migrate or bulk manage stock data with one-click import and export.',
 				'notifima'
 			),
 		},
@@ -89,18 +89,18 @@ const proPopupContent = {
 	btnLink: [
 		{
 			site: 'one',
-			price: '$199',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18156',
+			price: '$49',
+			link: 'https://notifima.com/pricing/?add-to-cart=18156',
 		},
 		{
 			site: 'three',
-			price: '$349',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18158',
+			price: '$69',
+			link: 'https://notifima.com/pricing/?add-to-cart=18157',
 		},
 		{
 			site: 'ten',
-			price: '$499',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18157',
+			price: '$99',
+			link: 'https://notifima.com/pricing/?add-to-cart=18158',
 		},
 	],
 };
@@ -139,13 +139,13 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 						<div className="top-section">
 							<div className="heading">
 								{__(
-									'Your students will love this!',
+									'Upgrade to Notifima Pro & never miss another sale',
 									'notifima'
 								)}
 							</div>
 							<div className="description">
 								{__(
-									'Boost to Product Notifima Pro to access premium features!',
+									'Recover more sales, manage inventory smarter, and deliver a seamless back-in-stock experience with premium features built for growing WooCommerce stores.',
 									'notifima'
 								)}
 							</div>
