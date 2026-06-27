@@ -136,7 +136,7 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Documentation', 'catalogx'),
 			desc: __(
-				'Step-by-step guides to set up and manage your marketplace.',
+				'Explore our resources and connect with our team to get the most out of CatalogX.',
 				'catalogx'
 			),
 			iconClass: 'knowledgebase',
@@ -146,32 +146,12 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Expert consultation', 'catalogx'),
 			desc: __(
-				'Get tailored advice from our marketplace specialists.',
+				'Get personalized guidance from our WooCommerce specialists for your store setup and growth strategy.',
 				'catalogx'
 			),
 			iconClass: 'preview',
 			linkText: __('Book Consultation', 'catalogx'),
 			href: 'https://catalogx.com/custom-development/',
-		},
-		{
-			title: __('Developer community', 'catalogx'),
-			desc: __(
-				'Connect with our team and fellow builders on Discord.',
-				'catalogx'
-			),
-			iconClass: 'global-community',
-			linkText: __('Join Discord', 'catalogx'),
-			href: 'https://discord.com/channels/1376811097134469191/1376811102020829258',
-		},
-		{
-			title: __('Facebook group', 'catalogx'),
-			desc: __(
-				'Share experiences and tips with other marketplace owners.',
-				'catalogx'
-			),
-			iconClass: 'user-circle',
-			linkText: __('Join Group', 'catalogx'),
-			href: 'https://www.facebook.com/groups/226246620006065/',
 		},
 	];
 
@@ -237,7 +217,7 @@ const DashboardTab: React.FC<object> = () => {
 							</div>
 							<div className="description">
 								{__(
-									'Expand your WooCommerce store by creating a marketplace for multiple stores. Manage, grow, and scale seamlessly.',
+									'Transform your WooCommerce store into a powerful product catalog with enquiries, quotations, and wholesale pricing.',
 									'catalogx'
 								)}
 							</div>

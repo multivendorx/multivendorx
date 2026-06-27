@@ -69,7 +69,7 @@ export default {
                     label: '[catalogx_enquiry_cart]',
                     name: 'Enquiry Cart Page',
                     desc: __(
-                        'Displays all products added to the enquiry cart and allows customers to submit a combined enquiry request.',
+                        'Let users review all enquiry cart items and send a single enquiry for multiple products.',
                         'catalogx'
                     ),
                 },
@@ -78,7 +78,7 @@ export default {
                     label: '[catalogx_request_quote]',
                     name: 'Display Quote Cart',
                     desc: __(
-                        'Displays all products added to the quote list, allowing customers to review and submit quotation requests.',
+                        'Let users review their selected products and submit a quotation request.',
                         'catalogx'
                     ),
                 },
@@ -87,7 +87,7 @@ export default {
                     label: '[catalogx_wholesale_products]',
                     name: 'Add to Enquiry Cart',
                     desc: __(
-                        'Dedicated catalog of wholesale products for approved wholesale customers.',
+                        'Provide approved wholesale users with a dedicated page to browse and purchase wholesale products.',
                         'catalogx'
                     ),
                 },
@@ -96,7 +96,7 @@ export default {
                     label: '[catalogx_enquiry_cart_button]',
                     name: 'Display Wholesale Products',
                     desc: __(
-                        'Displays the "Add to Enquiry Cart" button.',
+                        'Allow users to add products to an enquiry cart and send a combined enquiry.',
                         'catalogx'
                     ),
                 },
