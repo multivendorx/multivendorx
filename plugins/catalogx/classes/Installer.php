@@ -498,6 +498,7 @@ class Installer {
                     $migrated_free_enquiry_form[] = array_merge(
                         $field_map[$key],
                         [
+                            'label'       => $field['label'] ?? $field_map[$key]['label'],
                             'disabled' => '',
                         ]
                     );
@@ -725,7 +726,8 @@ class Installer {
             $settings['enquiry_user_permission'] = ! empty( $settings['enquiry_user_permission'] ) ? 'logged_in_only' : 'everyone';
 
             $settings['quote_user_permission'] = ! empty( $settings['quote_user_permission'] )? 'logged_in_only' : 'everyone';
-            $settings['enable_cart_checkout'] = ! empty( $settings['quote_user_permission'] )? 'buy_mode' : 'catalog_only';
+            $settings['enable_cart_checkout']  = ! empty( $settings['quote_user_permission'] )? 'buy_mode' : 'catalog_only';
+            $settings['is_page_redirect']      = ! empty( $settings['is_page_redirect'] )? 'dedicated_page' : 'current_page';
 
             update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $settings );
 
