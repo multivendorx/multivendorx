@@ -195,11 +195,11 @@ const Rules = () => {
             return (
                 <ComponentStatusView
                     title={__(
-                        'Looks like customer support isn’t set up yet!',
+                        'Looks like product rules aren’t set up yet!',
                         'catalogx'
                     )}
                     desc={__(
-                        'Turn on a support module to start assisting your customers.',
+                        'Enable the Rules module to create and manage custom catalog rules for your products.',
                         'catalogx'
                     )}
                     buttonText={__('Enable Now', 'catalogx')}

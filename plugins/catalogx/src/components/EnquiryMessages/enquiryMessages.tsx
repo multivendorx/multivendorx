@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { PopupUI, Container, Column } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import './enquiryMessages.scss';
+import { applyFilters } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
 
 // Demo data
 const demoChatList = [
@@ -30,19 +32,22 @@ const demoMessages = [
 ];
 
 const EnquiryMessages = () => {
+    const MessageComponent = applyFilters(
+        'catalogx_enquiry_messages_component',
+        DummyEnquiryMessages
+    );
+
+    return (
+        <Container general>
+            <Column>
+                <MessageComponent />
+            </Column>
+        </Container>
+    );
+};
+
+const DummyEnquiryMessages = () => {
     const [openPopup, setopenPopup] = useState(false);
-
-    // If Pro is active, render only mount point
-    if (appLocalizer.khali_dabba) {
-        return (
-            <Container general>
-                <Column>
-                    <div id="enquiry-messages"></div>
-                </Column>
-            </Container>
-        );
-    }
-
     return (
         <div id="enquiry-messages">
             {openPopup && (
@@ -59,8 +64,8 @@ const EnquiryMessages = () => {
 
             <Container general>
                 <Column>
-                    <div 
-                        id="enquiry-messages" 
+                    <div
+                        id="enquiry-messages"
                         onClick={() => {
                             setopenPopup(true);
                         }}
@@ -101,13 +106,13 @@ const EnquiryMessages = () => {
 
                                 <div className="chat-list-container">
                                     <div className="recent-message">
-                                        Enquiry Messages
+                                        {__('Enquiry Messages','catalogx')}
                                         <span className="total-message">({demoChatList.length})</span>
                                     </div>
                                     <div className="chat-list-wrapper">
                                         {demoChatList.map((chat) => (
-                                            <div 
-                                                key={chat.id} 
+                                            <div
+                                                key={chat.id}
                                                 className={`chat-item ${chat.active ? 'active' : ''}`}
                                             >
                                                 <div className="chat-item-container">
@@ -136,9 +141,9 @@ const EnquiryMessages = () => {
                                             src="https://secure.gravatar.com/avatar/be3221a6fac131657111728b4d912a877ec158b123d5db3afef3bd8a59784ece?s=96&d=mm&r=g"
                                             alt="Avatar"
                                         />
-                                        <div className="chat-name">admin</div>
+                                        <div className="chat-name">{__('admin','catalogx')}</div>
                                         <div className="enquery-id">
-                                            <b>Enquiry ID</b> #3
+                                            <b>{__('Enquiry ID','catalogx')}</b>{__('#3','catalogx')} 
                                         </div>
                                     </div>
                                     <div className="chat-more-option">
@@ -191,23 +196,23 @@ const EnquiryMessages = () => {
                                                     <div className="chat-actions">
                                                         <div className="tooltip-wrapper top">
                                                             <i className="action-reply adminfont-reply"></i>
-                                                            <span className="tooltip-name">Reply</span>
+                                                            <span className="tooltip-name">{__('Reply','catalogx')}</span>
                                                         </div>
                                                         <div className="tooltip-wrapper top">
                                                             <i className="action-copy adminfont-vendor-form-copy"></i>
-                                                            <span className="tooltip-name">Copy</span>
+                                                            <span className="tooltip-name">{__('Copy','catalogx')}</span>
                                                         </div>
                                                         <div className="tooltip-wrapper top">
                                                             <i className="action-push adminfont-pushpin"></i>
-                                                            <span className="tooltip-name">Pin</span>
+                                                            <span className="tooltip-name">{__('Pin','catalogx')}</span>
                                                         </div>
                                                         <div className="tooltip-wrapper top">
                                                             <i className="star-icon adminfont-star-o"></i>
-                                                            <span className="tooltip-name">Star</span>
+                                                            <span className="tooltip-name">{__('Star','catalogx')}</span>
                                                         </div>
                                                         <div className="tooltip-wrapper top">
                                                             <i className="action-react adminfont-smile-o"></i>
-                                                            <span className="tooltip-name">React</span>
+                                                            <span className="tooltip-name">{__('React','catalogx')}</span>
                                                         </div>
                                                         <i className="action-delete adminfont-delete"></i>
                                                     </div>
@@ -227,19 +232,19 @@ const EnquiryMessages = () => {
                                             <div className="chat-attachment">
                                                 <div className="tooltip-wrapper top">
                                                     <i className="plus-icon adminfont-plus"></i>
-                                                    <span className="tooltip-name">Add File</span>
+                                                    <span className="tooltip-name">{__('Add File','catalogx')}</span>
                                                 </div>
                                                 <div className="tooltip-wrapper top">
                                                     <i className="adminfont-form-email"></i>
-                                                    <span className="tooltip-name">Tag</span>
+                                                    <span className="tooltip-name">{__('Tag','catalogx')}</span>
                                                 </div>
                                                 <div className="tooltip-wrapper top">
                                                     <i className="admin-font adminfont-quote"></i>
-                                                    <span className="tooltip-name">Quotation</span>
+                                                    <span className="tooltip-name">{__('Quotation','catalogx')}</span>
                                                 </div>
                                                 <div className="tooltip-wrapper top">
                                                     <i className="adminfont-smile-o"></i>
-                                                    <span className="tooltip-name">Emoji</span>
+                                                    <span className="tooltip-name">{__('Emoji', 'catalogx')}</span>
                                                 </div>
                                             </div>
                                             <div className="message-send-btn">
@@ -255,6 +260,5 @@ const EnquiryMessages = () => {
             </Container>
         </div>
     );
-};
-
+}
 export default EnquiryMessages;
