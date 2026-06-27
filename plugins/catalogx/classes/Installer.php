@@ -498,6 +498,7 @@ class Installer {
                     $migrated_free_enquiry_form[] = array_merge(
                         $field_map[$key],
                         [
+                            'label'       => $field['label'] ?? $field_map[$key]['label'],
                             'disabled' => '',
                         ]
                     );
