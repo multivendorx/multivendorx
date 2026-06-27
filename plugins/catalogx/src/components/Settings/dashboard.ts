@@ -105,7 +105,7 @@ export default {
                     label: '[catalogx_enquiry_button]',
                     name: 'Catalogx Enquiry Button',
                     desc: __(
-                        'Displays the "Send an Enquiry" button',
+                        'Displays the "Send an Enquiry" button for specific products',
                         'catalogx'
                     ),
                     arguments: [
@@ -122,7 +122,7 @@ export default {
                     label: '[catalogx_quote_button]',
                     name: 'Catalogx Quote Button',
                     desc: __(
-                        'Displays the "Add to Quote" button.',
+                        'Displays the "Add to Quote" button for specific products.',
                         'catalogx'
                     ),
                     arguments: [
