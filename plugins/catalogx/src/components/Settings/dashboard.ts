@@ -67,7 +67,7 @@ export default {
                 {
                     key: '',
                     label: '[catalogx_enquiry_cart]',
-                    name: 'Catalogx Enquiry Cart',
+                    name: 'Enquiry Cart Page',
                     desc: __(
                         'Displays all products added to the enquiry cart and allows customers to submit a combined enquiry request.',
                         'catalogx'
@@ -76,7 +76,7 @@ export default {
                 {
                     key: '',
                     label: '[catalogx_request_quote]',
-                    name: 'Catalogx Request Quote',
+                    name: 'Display Quote Cart',
                     desc: __(
                         'Displays all products added to the quote list, allowing customers to review and submit quotation requests.',
                         'catalogx'
@@ -85,7 +85,7 @@ export default {
                 {
                     key: '',
                     label: '[catalogx_wholesale_products]',
-                    name: 'Catalogx Wholesale Products',
+                    name: 'Add to Enquiry Cart',
                     desc: __(
                         'Dedicated catalog of wholesale products for approved wholesale customers.',
                         'catalogx'
@@ -94,7 +94,7 @@ export default {
                 {
                     key: '',
                     label: '[catalogx_enquiry_cart_button]',
-                    name: 'Catalogx Enquiry Cart Button',
+                    name: 'Display Wholesale Products',
                     desc: __(
                         'Displays the "Add to Enquiry Cart" button.',
                         'catalogx'
@@ -103,7 +103,7 @@ export default {
                 {
                     key: '',
                     label: '[catalogx_enquiry_button]',
-                    name: 'Catalogx Enquiry Button',
+                    name: 'Display Enquiry Cart Button',
                     desc: __(
                         'Displays the "Send an Enquiry" button for specific products',
                         'catalogx'
@@ -120,7 +120,7 @@ export default {
                 {
                     key: '',
                     label: '[catalogx_quote_button]',
-                    name: 'Catalogx Quote Button',
+                    name: 'Show Quote Button',
                     desc: __(
                         'Displays the "Add to Quote" button for specific products.',
                         'catalogx'
