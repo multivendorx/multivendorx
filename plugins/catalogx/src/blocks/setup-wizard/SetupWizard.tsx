@@ -38,20 +38,80 @@ const SetupWizard: React.FC = () => {
 
 	const methods = [
 		{
-			id: 'marketplace_setup',
+			id: 'product_enquirie',
 			label: __(
-				'Choose what kind of marketplace you are building',
+				'Set up product enquiries',
 				'catalogx'
 			),
 			icon: 'marketplace',
 			desc: __(
-				'This helps us tailor features for your business.',
+				'Choose how customers can submit enquiries for your products.',
 				'catalogx'
 			),
 			countBtn: true,
 			isWizardMode: true,
 			openForm: true,
 			formFields: [
+
+				{
+					key: 'enquiry_user_permission',
+					type: 'choice-toggle',
+
+					label: __(
+						'Restrict product enquiries for logged-in users only',
+						'catalogx'
+					),
+
+					desc: __(
+						'Only authenticated customers can send enquiries.',
+						'catalogx'
+					),
+
+					options: [
+						{
+							key: 'logged_in_only',
+							label: __('Logged in only', 'catalogx'),
+							value: 'logged_in_only',
+						},
+						{
+							key: 'everyone',
+							label: __('Everyone', 'catalogx'),
+							value: 'everyone',
+						},
+					],
+				},
+				{
+					key: 'is_enable_out_of_stock',
+					type: 'choice-toggle',
+
+					label: __(
+						'Enquiry for out-of-stock products only',
+						'catalogx'
+					),
+
+					desc: __(
+						'Limit enquiries to products currently unavailable for purchase.',
+						'catalogx'
+					),
+
+					options: [
+						{
+							key: 'all_products',
+							label: __('All products', 'catalogx'),
+							value: 'all_products',
+						},
+						{
+							key: 'is_enable_out_of_stock',
+							label: __('Out-of-stock products only', 'catalogx'),
+							value: 'is_enable_out_of_stock',
+						},
+					],
+				},
+
+
+
+
+
 				{
 					key: 'marketplace_model',
 					type: 'multi-select',
@@ -419,206 +479,206 @@ const SetupWizard: React.FC = () => {
 		},
 		...(appLocalizer.multivendor_plugin
 			? [
-					{
-						id: 'migration',
-						label: __('Migration', 'catalogx'),
-						icon: 'migration',
-						desc: __('Migration.', 'catalogx'),
-						countBtn: true,
-						isWizardMode: true,
-						openForm: true,
-						formFields: [
-							{
-								key: 'notice',
-								type: 'notice',
-								label: '',
-								// message: appLocalizer.multivendor_plugin || 'No multivendor plugin active currently',
-								message: sprintf(
-									__(
-										'We found an active multivendor plugin on your site <span class="admin-badge purple">%s</span>',
+				{
+					id: 'migration',
+					label: __('Migration', 'catalogx'),
+					icon: 'migration',
+					desc: __('Migration.', 'catalogx'),
+					countBtn: true,
+					isWizardMode: true,
+					openForm: true,
+					formFields: [
+						{
+							key: 'notice',
+							type: 'notice',
+							label: '',
+							// message: appLocalizer.multivendor_plugin || 'No multivendor plugin active currently',
+							message: sprintf(
+								__(
+									'We found an active multivendor plugin on your site <span class="admin-badge purple">%s</span>',
+									'catalogx'
+								),
+								appLocalizer.multivendor_plugin
+							),
+							noticeType: 'info',
+							display: 'notice',
+						},
+						{
+							key: 'notice',
+							type: 'notice',
+							message: sprintf(
+								__(
+									"We'll copy all your data from <b>%s</b> into MultivendorX. Once the import is done, <b>%s</b> will be turned off automatically to prevent any conflicts. Make sure you're ready before you begin.",
+									'catalogx'
+								),
+								appLocalizer.multivendor_plugin,
+								appLocalizer.multivendor_plugin
+							),
+							noticeType: 'info',
+							display: 'notice',
+						},
+						{
+							key: 'paid_promotion_limit',
+							label: __(
+								'Before you begin - quick checklist',
+								'catalogx'
+							),
+							type: 'itemlist',
+							row: false,
+							className: 'checklist full-width',
+							items: [
+								{
+									title: __(
+										'<b>Back up your database first — </b> export a full backup before starting. If anything goes wrong, you can restore it.',
 										'catalogx'
 									),
-									appLocalizer.multivendor_plugin
-								),
-								noticeType: 'info',
-								display: 'notice',
-							},
-							{
-								key: 'notice',
-								type: 'notice',
-								message: sprintf(
-									__(
-										"We'll copy all your data from <b>%s</b> into MultivendorX. Once the import is done, <b>%s</b> will be turned off automatically to prevent any conflicts. Make sure you're ready before you begin.",
+									icon: 'success',
+								},
+								{
+									title: __(
+										'<b>Turn off caching plugins —</b> plugins like WP Rocket or W3 Total Cache can interfere with the import. Disable them temporarily.',
 										'catalogx'
 									),
-									appLocalizer.multivendor_plugin,
-									appLocalizer.multivendor_plugin
-								),
-								noticeType: 'info',
-								display: 'notice',
-							},
-							{
-								key: 'paid_promotion_limit',
-								label: __(
-									'Before you begin - quick checklist',
-									'catalogx'
-								),
-								type: 'itemlist',
-								row: false,
-								className: 'checklist full-width',
-								items: [
-									{
-										title: __(
-											'<b>Back up your database first — </b> export a full backup before starting. If anything goes wrong, you can restore it.',
+									icon: 'success',
+								},
+								{
+									title: sprintf(
+										__(
+											'<b>Keep %s active for now —</b> it must still be installed and enabled so we can read your existing data.',
 											'catalogx'
 										),
-										icon: 'success',
-									},
-									{
-										title: __(
-											'<b>Turn off caching plugins —</b> plugins like WP Rocket or W3 Total Cache can interfere with the import. Disable them temporarily.',
-											'catalogx'
-										),
-										icon: 'success',
-									},
-									{
-										title: sprintf(
-											__(
-												'<b>Keep %s active for now —</b> it must still be installed and enabled so we can read your existing data.',
-												'catalogx'
-											),
-											appLocalizer.multivendor_plugin
-										),
-										icon: 'success',
-									},
-									{
-										title: __(
-											'<b>Use a stable internet connection —</b> dropping out mid-migration can leave your data in an incomplete state.',
-											'catalogx'
-										),
-										icon: 'success',
-									},
-								],
-							},
-							{
-								key: 'paid_promotion_limit',
-								label: __('What gets migrated', 'catalogx'),
-								type: 'itemlist',
-								row: false,
-								className: 'feature-list',
-								items: [
-									{
-										title: __('Vendors', 'catalogx'),
-										desc: __(
-											'All vendor accounts and profiles',
-											'catalogx'
-										),
-										icon: 'storefront',
-									},
-									{
-										title: __('Products', 'catalogx'),
-										desc: __(
-											'All products listed by vendors',
-											'catalogx'
-										),
-										icon: 'single-product',
-									},
-									{
-										title: __('Orders', 'catalogx'),
-										desc: __(
-											'Vendor-specific order history',
-											'catalogx'
-										),
-										icon: 'order',
-									},
-									{
-										title: __(
-											'Store details',
-											'catalogx'
-										),
-										desc: __(
-											'Store name, logo, and settings',
-											'catalogx'
-										),
-										icon: 'store-policy',
-									},
-									{
-										title: __(
-											'Product commissions',
-											'catalogx'
-										),
-										desc: __(
-											'Per-product commission rates',
-											'catalogx'
-										),
-										icon: 'product-advertising',
-									},
-									{
-										title: __(
-											'Vendor commissions',
-											'catalogx'
-										),
-										desc: __(
-											'Per-vendor commission rules',
-											'catalogx'
-										),
-										icon: 'commission',
-									},
-								],
-							},
-							{
-								key: 'notice',
-								type: 'notice',
-								label: '',
-								message: __(
-									'<b> Orders migrate separately.</b> Marketplace orders are not included in this import — they transfer automatically in the background every 5 minutes. Vendor shipping settings will need to be reconfigured manually, as MultivendorX handles shipping differently.',
-									'catalogx'
-								),
-								noticeType: 'warning',
-								display: 'notice',
-							},
-							{
-								key: 'notice',
-								type: 'notice',
-								label: '',
-								message: __(
-									"<b>Deleted records can't be recovered. </b>Orders or products that were previously deleted cannot be migrated. Also, <b>do not close or refresh this tab </b> while the migration is running.",
-									'catalogx'
-								),
-								noticeType: 'error',
-								display: 'notice',
-							},
-							{
-								key: 'migrate',
-								type: 'button',
-								name: __('Start migration', 'catalogx'),
-								label: __(
-									'Multivendor migration',
-									'catalogx'
-								),
-								apilink: 'migrations',
-								method: 'POST',
-								action: ['import_stores', 'import_products'],
-							},
-							{
-								key: 'wizardButtons',
-								type: 'button',
-								position: 'right',
-								options: [
-									{
-										label: __('Back', 'catalogx'),
-										color: 'purple-bg',
-										action: 'back',
-									},
-									{
-										label: __('Next', 'catalogx'),
-										action: 'next',
-									},
-								],
-							},
-						],
-					},
-				]
+										appLocalizer.multivendor_plugin
+									),
+									icon: 'success',
+								},
+								{
+									title: __(
+										'<b>Use a stable internet connection —</b> dropping out mid-migration can leave your data in an incomplete state.',
+										'catalogx'
+									),
+									icon: 'success',
+								},
+							],
+						},
+						{
+							key: 'paid_promotion_limit',
+							label: __('What gets migrated', 'catalogx'),
+							type: 'itemlist',
+							row: false,
+							className: 'feature-list',
+							items: [
+								{
+									title: __('Vendors', 'catalogx'),
+									desc: __(
+										'All vendor accounts and profiles',
+										'catalogx'
+									),
+									icon: 'storefront',
+								},
+								{
+									title: __('Products', 'catalogx'),
+									desc: __(
+										'All products listed by vendors',
+										'catalogx'
+									),
+									icon: 'single-product',
+								},
+								{
+									title: __('Orders', 'catalogx'),
+									desc: __(
+										'Vendor-specific order history',
+										'catalogx'
+									),
+									icon: 'order',
+								},
+								{
+									title: __(
+										'Store details',
+										'catalogx'
+									),
+									desc: __(
+										'Store name, logo, and settings',
+										'catalogx'
+									),
+									icon: 'store-policy',
+								},
+								{
+									title: __(
+										'Product commissions',
+										'catalogx'
+									),
+									desc: __(
+										'Per-product commission rates',
+										'catalogx'
+									),
+									icon: 'product-advertising',
+								},
+								{
+									title: __(
+										'Vendor commissions',
+										'catalogx'
+									),
+									desc: __(
+										'Per-vendor commission rules',
+										'catalogx'
+									),
+									icon: 'commission',
+								},
+							],
+						},
+						{
+							key: 'notice',
+							type: 'notice',
+							label: '',
+							message: __(
+								'<b> Orders migrate separately.</b> Marketplace orders are not included in this import — they transfer automatically in the background every 5 minutes. Vendor shipping settings will need to be reconfigured manually, as MultivendorX handles shipping differently.',
+								'catalogx'
+							),
+							noticeType: 'warning',
+							display: 'notice',
+						},
+						{
+							key: 'notice',
+							type: 'notice',
+							label: '',
+							message: __(
+								"<b>Deleted records can't be recovered. </b>Orders or products that were previously deleted cannot be migrated. Also, <b>do not close or refresh this tab </b> while the migration is running.",
+								'catalogx'
+							),
+							noticeType: 'error',
+							display: 'notice',
+						},
+						{
+							key: 'migrate',
+							type: 'button',
+							name: __('Start migration', 'catalogx'),
+							label: __(
+								'Multivendor migration',
+								'catalogx'
+							),
+							apilink: 'migrations',
+							method: 'POST',
+							action: ['import_stores', 'import_products'],
+						},
+						{
+							key: 'wizardButtons',
+							type: 'button',
+							position: 'right',
+							options: [
+								{
+									label: __('Back', 'catalogx'),
+									color: 'purple-bg',
+									action: 'back',
+								},
+								{
+									label: __('Next', 'catalogx'),
+									action: 'next',
+								},
+							],
+						},
+					],
+				},
+			]
 			: []),
 		{
 			id: 'more_settings',
@@ -683,7 +743,7 @@ const SetupWizard: React.FC = () => {
 				</div>
 				<div className="des">
 					{__(
-						'Thank you for choosing CatalogX! This quick setup wizard will help you configure the basic settings and you will have your marketplace ready in no time. It’s completely optional and shouldn’t take longer than five minutes.',
+						`This quick setup wizard will help you configure enquiries and quotations for your products. It shouldn't take longer than two minutes.`,
 						'catalogx'
 					)}
 				</div>
