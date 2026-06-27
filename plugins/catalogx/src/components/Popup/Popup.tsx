@@ -29,25 +29,33 @@ const proPopupContent = {
 	messages: [
 		{
 			icon: 'dollar',
-			text: __('Send custom quotes', 'catalogx'),
+			text: __('Personalized quote requests', 'catalogx'),
 			des: __(
-				'Create personalized pricing and quotation responses for customers.',
+				'Let customers request custom quotes and negotiate pricing to convert high-intent visitors.',
+				'catalogx'
+			),
+		},
+		{
+			icon: 'wholesale',
+			text: __('Wholesale pricing & order forms', 'catalogx'),
+			des: __(
+				'Offer bulk pricing and dedicated order forms to attract B2B buyers and grow large-volume sales.',
 				'catalogx'
 			),
 		},
 		{
 			icon: 'multi-product',
-			text: __('Multi-product enquiry cart', 'catalogx'),
+			text: __('Multi-product enquiries', 'catalogx'),
 			des: __(
-				'Allow customers to enquire about multiple products in a single request.',
+				'Let customers enquire about multiple products in a single request for better engagement.',
 				'catalogx'
 			),
 		},
 		{
 			icon: 'cloud-upload',
-			text: __('File uploads & custom enquiry fields', 'catalogx'),
+			text: __('Advanced enquiry management', 'catalogx'),
 			des: __(
-				'Collect additional files and custom information through enquiry forms.',
+				'Use file attachments, internal tagging, and organized workflows for a smoother sales process.',
 				'catalogx'
 			),
 		},
@@ -55,55 +63,15 @@ const proPopupContent = {
 			icon: 'person',
 			text: __('Role-based pricing', 'catalogx'),
 			des: __(
-				'Show different pricing options based on user roles and customer types.',
+				'Show different prices to wholesalers, members, or VIP customers with personalized offers.',
 				'catalogx'
 			),
 		},
 		{
-			icon: 'category	',
-			text: __('Category-based discounts', 'catalogx'),
+			icon: 'category',
+			text: __('Category-based pricing rules', 'catalogx'),
 			des: __(
-				'Apply discounts automatically to selected product categories.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'wholesale',
-			text: __('Wholesale order forms', 'catalogx'),
-			des: __(
-				'Enable streamlined bulk and wholesale ordering workflows.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'sold-out',
-			text: __('Enquiry for hidden/out-of-stock products', 'catalogx'),
-			des: __(
-				'Allow customers to send enquiries for unavailable or hidden products.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'shortcode',
-			text: __('Enquiry button via shortcode', 'catalogx'),
-			des: __(
-				'Add enquiry buttons anywhere on your website using shortcodes.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'mail',
-			text: __('Auto-send branded enquiry emails', 'catalogx'),
-			des: __(
-				'Automatically send customized branded emails for customer enquiries.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'module',
-			text: __('Track all enquiries in one dashboard', 'catalogx'),
-			des: __(
-				'Manage and monitor all customer enquiries from a centralized dashboard.',
+				'Set custom pricing at the category level to run targeted promotions across your catalog.',
 				'catalogx'
 			),
 		},
@@ -242,13 +210,13 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 						<div className="top-section">
 							<div className="heading">
 								{__(
-									'Upgrade every marketplace needs!',
+									'Upgrade to CatalogX Pro & turn product interest into more sales',
 									'catalogx'
 								)}
 							</div>
 							<div className="description">
 								{__(
-									'Recurring revenue for you, empowered stores, automated operations',
+									'Unlock powerful tools that help you generate more enquiries, close deals faster, and increase revenue with flexible pricing and quotation features.',
 									'catalogx'
 								)}{' '}
 							</div>

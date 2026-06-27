@@ -1,6 +1,6 @@
 // FreeFormCustomizer.tsx
 import React, { useState, useEffect, useRef } from 'react';
-import { FieldComponent } from './fieldUtils';
+import { FieldComponent, ZyraVariable } from './fieldUtils';
 import '../styles/web/FreeFormCustomizer.scss';
 import FormGroup from './UI/FormGroup';
 import { BasicInputUI } from './BasicInput';
@@ -56,16 +56,50 @@ const ensureSubmitPresent = (fields: FormField[]): FormField[] => {
 };
 
 const FreeFormCustomizerField: React.FC<{
+    field?: {
+        proSetting?: boolean,
+        moduleEnabled?: string,
+        requiredPlugin?: [],
+    };
     value?: FormField[];
     canAccess: boolean;
     onChange: (val: FormField[]) => void;
-}> = ({ value, canAccess, onChange }) => {
+    modules?: string[];
+    onBlocked?: (type: 'pro' | 'plugin' | 'module', payload?: {}) => void;
+}> = ({ field, value, canAccess, onChange, modules, onBlocked }) => {
     const [fields, setFields] = useState<FormField[]>(() =>
         ensureSubmitPresent(toArray(value))
     );
     const [editingFieldId, setEditingFieldId] = useState<string | null>(null);
     const isDirty = useRef(false);
     const inputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
+
+    const block = () => {
+        if (field.proSetting && !ZyraVariable?.khali_dabba) {
+            onBlocked?.('pro');
+            return true;
+        }
+
+        if (
+            field.moduleEnabled &&
+            !modules?.includes(field.moduleEnabled)
+        ) {
+            onBlocked?.('module', field.moduleEnabled);
+            return true;
+        }
+
+        if (
+            field.requiredPlugin &&
+            !(ZyraVariable?.active_plugins || []).includes(
+                field.requiredPlugin
+            )
+        ) {
+            onBlocked?.('plugin', field);
+            return true;
+        }
+
+        return false;
+    };
 
     useEffect(() => {
         const newFields = toArray(value);
@@ -122,7 +156,7 @@ const FreeFormCustomizerField: React.FC<{
         if (!canAccess) return;
         isDirty.current = true;
         setFields(prev => {
-            const existing = prev.find( f => String(f.id) === String(id) );
+            const existing = prev.find(f => String(f.id) === String(id));
             if (existing) {
                 return prev.map(f => String(f.id) === String(id) ? { ...f, label } : f);
             }
@@ -132,10 +166,10 @@ const FreeFormCustomizerField: React.FC<{
     };
 
     const updateFieldPlaceholder = (id: string, placeholder: string) => {
-        if (!canAccess) return;
+        if (!canAccess || block() ) return;
         isDirty.current = true;
         setFields(prev => {
-            const existing = prev.find( f => String(f.id) === String(id) );
+            const existing = prev.find(f => String(f.id) === String(id));
             if (existing) {
                 return prev.map(f => String(f.id) === String(id) ? { ...f, placeholder } : f);
             }
@@ -153,7 +187,7 @@ const FreeFormCustomizerField: React.FC<{
 
         isDirty.current = true;
         setFields(prev => {
-            const existing = prev.find( f => String(f.id) === String(id) );
+            const existing = prev.find(f => String(f.id) === String(id));
             if (existing) {
                 return prev.map(f => String(f.id) === String(id) ? { ...f, disabled } : f);
             }
@@ -167,7 +201,7 @@ const FreeFormCustomizerField: React.FC<{
             fields.find(f => f.id === id) ||
             FORM_FIELDS_CONFIG.find(f => f.id === id);
 
-        if (isSubmitButton(targetField)) {
+        if (isSubmitButton(targetField) || block() ) {
             return;
         }
 
@@ -176,7 +210,7 @@ const FreeFormCustomizerField: React.FC<{
     };
 
     const handleEditClick = (fieldId: string) => {
-        if (!canAccess) return;
+        if (!canAccess || block()) return;
         setEditingFieldId(fieldId);
         // Focus the input after it's rendered
         setTimeout(() => {
@@ -227,17 +261,17 @@ const FreeFormCustomizerField: React.FC<{
                                 </label>
                             )}
                         </div>
-                         {!isSubmit && (
+                        {!isSubmit && (
                             <>
-                            <div className="free-form-input">                           
+                                <div className="free-form-input">
                                     <BasicInputUI
                                         type="text"
                                         value={currentPlaceholder}
                                         onChange={(val) => updateFieldPlaceholder(fieldConfig.id, val)}
                                         readOnly={!canAccess}
                                     />
-                            </div>
-                            <i onClick={() => handleToggle(fieldConfig.id)} className={`visibility-icon adminfont-${isActive ? 'eye' : 'eye-blocked'}`} />
+                                </div>
+                                <i onClick={() => handleToggle(fieldConfig.id)} className={`visibility-icon adminfont-${isActive ? 'eye' : 'eye-blocked'}`} />
                             </>
                         )}
                     </div>
@@ -248,11 +282,14 @@ const FreeFormCustomizerField: React.FC<{
 };
 
 const FreeFormCustomizer: FieldComponent = {
-    render: ({ field, value, onChange, canAccess }) => (
+    render: ({ field, value, onChange, canAccess, modules, onBlocked }) => (
         <FreeFormCustomizerField
+            field={field}
             value={value as FormField[]}
             canAccess={canAccess}
             onChange={onChange}
+            modules={modules}
+            onBlocked={onBlocked}
         />
     ),
     validate: () => null,

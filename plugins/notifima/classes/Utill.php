@@ -18,6 +18,13 @@ defined( 'ABSPATH' ) || exit;
  */
 class Utill {
 
+    public const NOTIFIMA_SETTINGS = array(
+        'appearance'            => 'notifima_appearance_settings',
+        'email'                 => 'notifima_email_settings',
+        'form-submission'       => 'notifima_form_submission_settings',
+        'personalize-layout'    => 'notifima_personalize_layout_settings',
+    );
+
     /**
      * Function to console and debug errors.
      *
@@ -117,5 +124,29 @@ class Utill {
 
         // Load the template.
         load_template( $located, false, $args );
+    }
+    
+    /**
+     * Validate REST nonce.
+     *
+     * @param \WP_REST_Request $request Request object.
+     * @return true|\WP_Error
+     */
+    public static function validate_nonce( $request ) {
+        $nonce = sanitize_text_field( $request->get_header( 'X-WP-Nonce' ) );
+
+        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            $error = new \WP_Error(
+                'invalid_nonce',
+                esc_html__( 'Invalid nonce.', 'notifima' ),
+                array( 'status' => 403 )
+            );
+
+            self::log( $error );
+
+            return $error;
+        }
+
+        return true;
     }
 }

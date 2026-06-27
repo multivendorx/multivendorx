@@ -56,9 +56,9 @@ const EMAIL_BLOCK_GROUPS = [
 export default {
     id: 'enquiry-email-template',
     priority: 3,
-    headerTitle: __('Email Notifications', 'catalogx'),
+    headerTitle: __('Email Customizations', 'catalogx'),
     headerDescription: __(
-        'Select your preferred enquiry details email template',
+        'Customized your preferred enquiry details email template',
         'catalogx'
     ),
     headerIcon: 'enquiry',

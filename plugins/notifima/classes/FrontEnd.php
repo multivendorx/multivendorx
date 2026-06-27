@@ -194,17 +194,15 @@ class FrontEnd {
         if ( empty( $product_obj ) ) {
             return;
         }
-        $guest_subscription_enabled = Notifima()->setting->get_setting( 'is_guest_subscriptions_enable' );
-        $guest_subscription_enabled = is_array( $guest_subscription_enabled ) ? reset( $guest_subscription_enabled ) : false;
-        if ( ! $guest_subscription_enabled && ! is_user_logged_in() ) {
+        $guest_subscription_enabled = Notifima()->setting->get_setting( 'is_guest_subscriptions_enable','' );
+        if ( 'logged_in' === $guest_subscription_enabled && ! is_user_logged_in() ) {
             return;
         }
 
-        $backorders_enabled = Notifima()->setting->get_setting( 'is_enable_backorders' );
-        $backorders_enabled = is_array( $backorders_enabled ) ? reset( $backorders_enabled ) : false;
+        $backorders_enabled = Notifima()->setting->get_setting( 'is_enable_backorders','' );
 
         $stock_status = $product_obj->get_stock_status();
-        if ( 'onbackorder' === $stock_status && ! $backorders_enabled ) {
+        if ( 'onbackorder' === $stock_status && 'out_of_stock_and_backorder' === $backorders_enabled ) {
             return;
         }
 
@@ -283,10 +281,9 @@ class FrontEnd {
         $shown_interest_html = '';
         $shown_interest_text = esc_html( $settings_array['shown_interest_text'] );
 
-        $is_enable_no_interest = Notifima()->setting->get_setting( 'is_enable_no_interest' );
-        $is_enable_no_interest = is_array( $is_enable_no_interest ) ? reset( $is_enable_no_interest ) : false;
+        $is_enable_no_interest = Notifima()->setting->get_setting( 'is_enable_no_interest','' );
 
-        if ( $is_enable_no_interest && 0 !== $interested_person && $shown_interest_text ) {
+        if ( 'show_count' === $is_enable_no_interest && 0 !== $interested_person && $shown_interest_text ) {
             $shown_interest_text = str_replace( '%no_of_subscribed%', $interested_person, $shown_interest_text );
             $shown_interest_html = '<p>' . $shown_interest_text . '</p>';
         }

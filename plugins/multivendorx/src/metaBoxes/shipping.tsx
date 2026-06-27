@@ -58,7 +58,7 @@ const ShippingCard = ({
 				<FormGroupWrapper>
 					<FormGroup className="full-width">
 						<ChoiceToggleUI
-							width= "49%"
+							width="49%"
 							options={[
 								{
 									key: 'physical',
@@ -75,37 +75,37 @@ const ShippingCard = ({
 								},
 								...(typeFields.includes('downloadable')
 									? [
-											{
-												key: 'downloadable',
-												value: 'downloadable',
-												label: __(
-													'Downloadable',
-													'multivendorx'
-												),
-												desc: __(
-													'Customer receives digital file - e.g. a PDF, software etc.',
-													'multivendorx'
-												),
-												icon: 'download'
-											},
-										]
+										{
+											key: 'downloadable',
+											value: 'downloadable',
+											label: __(
+												'Downloadable',
+												'multivendorx'
+											),
+											desc: __(
+												'Customer receives digital file - e.g. a PDF, software etc.',
+												'multivendorx'
+											),
+											icon: 'download'
+										},
+									]
 									: []),
 								...(typeFields.includes('virtual')
 									? [
-											{
-												key: 'digital_product_service',
-												value: 'digital_product_service',
-												label: __(
-													'Digital service - Delivered online',
-													'multivendorx'
-												),
-												desc: __(
-													'Remote service only. No shipping or downloadable files.',
-													'multivendorx'
-												),
-												icon: 'digital-service'
-											},
-										]
+										{
+											key: 'digital_product_service',
+											value: 'digital_product_service',
+											label: __(
+												'Digital service - Delivered online',
+												'multivendorx'
+											),
+											desc: __(
+												'Remote service only. No shipping or downloadable files.',
+												'multivendorx'
+											),
+											icon: 'digital-service'
+										},
+									]
 									: []),
 								{
 									key: 'others',
@@ -132,118 +132,118 @@ const ShippingCard = ({
 						/>
 					</FormGroup>
 					{productType === 'physical' &&
-							<>
-								<SectionUI
-									title={__(
-										'Package dimensions & weight',
-										'multivendorx'
-									)}
-									desc={__(
-										'Used to calculate accurate shipping rates at checkout.',
-										'multivendorx'
-									)}
-								/>
-								{/* Weight & Shipping class */}
-								<FormGroup
-									cols={6}
-									label={__('Weight (kg)', 'multivendorx')}
-									htmlFor="Weight"
-								>
-									<BasicInputUI
-										name="weight"
-										value={product.weight}
-										onChange={(value) => {
-											handleChange('weight', value);
-										}}
-									/>
-								</FormGroup>
-								<FormGroup
-									cols={6}
-									label={__(
-										'Shipping classes',
-										'multivendorx'
-									)}
-									htmlFor="shipping-classes"
-								>
-									<SelectInputUI
-										name="shipping_class"
-										options={shippingClasses}
-										value={product.shipping_class}
-										onChange={(value) =>
-											handleChange(
-												'shipping_class',
-												value
-											)
-										}
-									/>
-								</FormGroup>
-								<FormGroup
-									cols={4}
-									label={`${__('Length', 'multivendorx')} (${appLocalizer.dimension_unit})`}
-								>
-									<BasicInputUI
-										name="product_length"
-										value={product.dimensions?.length || ''}
-										placeholder={__(
-											'Length',
-											'multivendorx'
-										)}
-										onChange={(value) =>
-											handleChange('dimensions', {
-												...product.dimensions,
-												length: value,
-											})
-										}
-									/>
-								</FormGroup>
-
-								<FormGroup
-									cols={4}
-									label={`${__('Width', 'multivendorx')} (${appLocalizer.dimension_unit})`}
-								>
-									<BasicInputUI
-										name="product_width"
-										value={product.dimensions?.width}
-										placeholder={__(
-											'Width',
-											'multivendorx'
-										)}
-										onChange={(value) =>
-											handleChange('dimensions', {
-												...product.dimensions,
-												width: value,
-											})
-										}
-									/>
-								</FormGroup>
-
-								<FormGroup
-									cols={4}
-									label={`${__('Height', 'multivendorx')} (${appLocalizer.dimension_unit})`}
-								>
-									<BasicInputUI
-										name="product_height"
-										value={product.dimensions?.height}
-										placeholder={__(
-											'Height',
-											'multivendorx'
-										)}
-										onChange={(value) =>
-											handleChange('dimensions', {
-												...product.dimensions,
-												height: value,
-											})
-										}
-									/>
-								</FormGroup>
-								{applyFilters(
-									'multivendorx_product_shipping_meta',
-									null,
-									product,
-									modules
+						<>
+							<SectionUI
+								title={__(
+									'Package dimensions & weight',
+									'multivendorx'
 								)}
-							</>
-						}
+								desc={__(
+									'Used to calculate accurate shipping rates at checkout.',
+									'multivendorx'
+								)}
+							/>
+							{/* Weight & Shipping class */}
+							<FormGroup
+								cols={6}
+								label={__('Weight (kg)', 'multivendorx')}
+								htmlFor="Weight"
+							>
+								<BasicInputUI
+									name="weight"
+									value={product.weight}
+									onChange={(value) => {
+										handleChange('weight', value);
+									}}
+								/>
+							</FormGroup>
+							<FormGroup
+								cols={6}
+								label={__(
+									'Shipping classes',
+									'multivendorx'
+								)}
+								htmlFor="shipping-classes"
+							>
+								<SelectInputUI
+									name="shipping_class"
+									options={shippingClasses}
+									value={product.shipping_class}
+									onChange={(value) =>
+										handleChange(
+											'shipping_class',
+											value
+										)
+									}
+								/>
+							</FormGroup>
+							<FormGroup
+								cols={4}
+								label={`${__('Length', 'multivendorx')} (${appLocalizer.dimension_unit})`}
+							>
+								<BasicInputUI
+									name="product_length"
+									value={product.dimensions?.length || ''}
+									placeholder={__(
+										'Length',
+										'multivendorx'
+									)}
+									onChange={(value) =>
+										handleChange('dimensions', {
+											...product.dimensions,
+											length: value,
+										})
+									}
+								/>
+							</FormGroup>
+
+							<FormGroup
+								cols={4}
+								label={`${__('Width', 'multivendorx')} (${appLocalizer.dimension_unit})`}
+							>
+								<BasicInputUI
+									name="product_width"
+									value={product.dimensions?.width}
+									placeholder={__(
+										'Width',
+										'multivendorx'
+									)}
+									onChange={(value) =>
+										handleChange('dimensions', {
+											...product.dimensions,
+											width: value,
+										})
+									}
+								/>
+							</FormGroup>
+
+							<FormGroup
+								cols={4}
+								label={`${__('Height', 'multivendorx')} (${appLocalizer.dimension_unit})`}
+							>
+								<BasicInputUI
+									name="product_height"
+									value={product.dimensions?.height}
+									placeholder={__(
+										'Height',
+										'multivendorx'
+									)}
+									onChange={(value) =>
+										handleChange('dimensions', {
+											...product.dimensions,
+											height: value,
+										})
+									}
+								/>
+							</FormGroup>
+							{applyFilters(
+								'multivendorx_product_shipping_meta',
+								null,
+								product,
+								modules
+							)}
+						</>
+					}
 					{productType === 'downloadable' &&
 						applyFilters(
 							'product_downloadable',

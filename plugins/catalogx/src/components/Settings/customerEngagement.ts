@@ -3,28 +3,97 @@ export default {
     id: 'customer-engagement',
     priority: 3,
     headerTitle: __('Customer Engagement', 'catalogx'),
+    settingTitle: __('Purchase experience','multivendorx'),
     headerDescription: __(
-        'Set up sales flow and catalog mode with integrated enquiry and quotation management.',
+        'Define how customers move from product browsing to purchasing across your store.',
         'catalogx'
     ),
     headerIcon: 'cart',
     submitUrl: 'settings',
     modal: [
-        //enquiry
+        //shopping
+        
         {
+            key: 'enable_cart_checkout',
+            type: 'choice-toggle',
+            label: __('Store experience', 'catalogx'),
+            settingDescription: __(
+                'Choose whether customers can browse products as a catalog or purchase them through your store.',
+                'catalogx'
+            ),
+            desc: __(
+                '<ul><li>Browse products only - Hide the Add to Cart button and disable purchasing across your store.</li><li>Browse & purchase products - Display the Add to Cart button and allow customers to add products to cart and complete purchases.</li></ul>',
+                'catalogx'
+            ),
+            options: [
+                {
+                    key: 'catalog_only',
+                    label: __('Browse products only', 'catalogx'),
+                    value: 'catalog_only',
+                },
+                {
+                    key: 'buy_mode',
+                    label: __('Browse & purchase products', 'catalogx'),
+                    value: 'buy_mode',
+                },
+            ],
+            proSetting: true,
+            look: 'toggle',
+            moduleEnabled: 'catalog',
+        },
+        {
+            key: 'redirect_cart_page',
+            type: 'select',
+            label: __('Cart / Checkout Redirect Page', 'catalogx'),
+            size: 15,
+            options: [
+                {
+                    value: '',
+                    label: 'Home',
+                    key: '',
+                },
+                ...appLocalizer.pages_data,
+            ],
+            dependent: {
+                key: 'enable_cart_checkout',
+                set: true,
+                value: 'catalog_only',
+            },
+            desc: sprintf(
+                /* translators: %s will be replaced with a link to CatalogX Pro */
+                __(
+                    'By default, customers are redirected to the homepage when they access the cart or checkout pages. Select a different page to customize this behavior. An upgrade to %s is required.',
+                    'catalogx'
+                ),
+                '<a href="' +
+                appLocalizer.pro_url +
+                '" target="_blank">CatalogX Pro</a>'
+            ),
+
+            proSetting: true,
+            moduleEnabled: 'catalog',
+        },
+        //enquiry
+         {
             key: 'section',
             type: 'section',
-            title: __('Configure how customers submit product enquiries and how enquiry requests are managed.', 'catalogx'),
+            title: __('Enquiry journey', 'catalogx'),
+            desc: __('Define the customer experience from enquiry initiation to submission.',
+                'catalogx'
+            ),
         },
+        
         {
             key: 'enquiry_user_permission',
             type: 'choice-toggle',
             label: __(
-                'Restrict product enquiries for logged-in users only',
+                'Who can submit enquiries',
                 'catalogx'
             ),
-            desc: __(
-                "If enabled, non-logged-in users can't access the enquiry flow.",
+            settingDescription: __('Control whether enquiries are available to all visitors or only logged-in customers.',
+                'catalogx'
+            ),
+            desc: __('<ul><li>Everyone - Any visitor can submit product enquiries.</li><li>Logged-in Customers - Only authenticated customers can submit enquiries.</li></ul>',
                 'catalogx'
             ),
             options: [
@@ -48,8 +117,12 @@ export default {
                 'Show enquiry button for',
                 'catalogx'
             ),
+            settingDescription: __(
+                'Choose which products display the enquiry option.',
+                'catalogx'
+            ),
             desc: __(
-                "If enabled, non-logged-in users can't access the enquiry flow.",
+                '<ul><li>All Products - Display the enquiry button on every product, regardless of stock status.</li><li>Out-of-Stock Products Only - Display the enquiry button only for products that are currently unavailable or out of stock.</li></ul>',
                 'catalogx'
             ),
             options: [
@@ -90,7 +163,7 @@ export default {
             type: 'checkbox',
             label: __('In-Stock notify me button', 'catalogx'),
             desc: __(
-                'This option allows customers to subscribe for automatic stock notifications.',
+                'Allow customers to receive notifications when out-of-stock products become available.',
                 'catalogx'
             ),
             options: [
@@ -114,8 +187,12 @@ export default {
             key: 'is_disable_popup',
             type: 'choice-toggle',
             label: __('Display enquiry form as', 'catalogx'),
+            settingDescription: __(
+                'Choose how the enquiry form is presented to customers.',
+                'catalogx'
+            ),
             desc: __(
-                'Select whether the form is displayed directly on the page or in a pop-up window.',
+                '<ul><li>Popup Window - Open the enquiry form in a modal popup.</li><li>Inline on Product Page - Display the enquiry form directly within the product page.</li></ul>',
                 'catalogx'
             ),
             options: [
@@ -134,27 +211,41 @@ export default {
         },
         {
             key: 'is_page_redirect',
-            type: 'checkbox',
+            type: 'choice-toggle',
+            label: __('What happens after enquiry submission?', 'catalogx'),
+            desc: __(
+                '<ul><li>Stay on Current Page - Customers remain on the same page after submitting their enquiry.</li><li>Redirect to Another Page - Customers are redirected to a page of your choice, such as a thank-you page or contact page, after their enquiry is submitted.</li></ul>',
+                'catalogx'
+            ),
+            settingDescription: __(
+                'Choose whether customers remain on the current page or are redirected to another page after submitting an enquiry.',
+                'catalogx'
+            ),
             options: [
                 {
-                    key: 'is_page_redirect',
-                    value: 'is_page_redirect',
-                }
+                    key: 'current_page',
+                    label: __('Stay on current page', 'catalogx'),
+                    value: 'current_page',
+                },
+                {
+                    key: 'dedicated_page',
+                    label: __('Redirect to another page', 'catalogx'),
+                    value: 'dedicated_page',
+                },
             ],
-            look: 'toggle',
-            label: __('Redirect to a different page for enquiry form', 'catalogx'),
             moduleEnabled: 'enquiry'
         },
         {
             key: 'redirect_page_id',
-            dependent: {
-                key: "is_page_redirect",
-                set: true
-            },
             type: 'select',
             label: __('Post enquiry submission redirect page', 'catalogx'),
             desc: __('Select page where user will be redirected after successful enquiry.', 'catalogx'),
             options: appLocalizer.pages_data,
+            dependent: {
+                key: 'is_page_redirect',
+                set: true,
+                value: 'dedicated_page',
+            },
             moduleEnabled: 'enquiry'
         },
 
@@ -162,29 +253,36 @@ export default {
         {
             key: 'section',
             type: 'section',
-            title: __('Configure how customers request quotations and how quote requests are managed.', 'catalogx'),
+            desc: __('Control who can request quotations and how long quotations remain available.',
+                'catalogx'
+            ),
+            title: __('Quotation management', 'catalogx'),
         },
         {
             key: 'quote_user_permission',
             type: 'choice-toggle',
             label: __(
-                'Limit quotation requests to logged-in users only',
+                'Who can request quotations',
+                'catalogx'
+            ),
+            settingDescription: __(
+                'Control whether quotation requests are available to all visitors or only logged-in users.',
                 'catalogx'
             ),
             desc: __(
-                'If enabled, non-logged-in users cannot submit quotation requests.',
+                '<ul><li>Everyone - Any visitor can submit quotation requests.</li><li>Logged-in users - Only authenticated customers can request quotations.</li></ul>',
                 'catalogx'
             ),
             options: [
                 {
-                    key: 'logged_in_only',
-                    label: __('Logged in only', 'catalogx'),
-                    value: 'logged_in_only',
-                },
-                {
                     key: 'everyone',
                     label: __('Everyone', 'catalogx'),
                     value: 'everyone',
+                },
+                {
+                    key: 'logged_in_only',
+                    label: __('Logged-in users', 'catalogx'),
+                    value: 'logged_in_only',
                 },
             ],
             moduleEnabled: 'quote',
@@ -193,7 +291,7 @@ export default {
         {
             key: 'set_expiry_time',
             type: 'text',
-            label: __('Quotation validity', 'catalogx'),
+            label: __('Quotation validity period', 'catalogx'),
             size: 10,
             desc: __(
                 'Set the period after which a quotation will expire and no longer be valid for purchase.',
@@ -204,78 +302,21 @@ export default {
             moduleEnabled: 'quote',
         },
 
-        //shopping
-        {
-            key: 'section',
-            type: 'section',
-            title: __('Configure sitewide buying mode and manage cart and checkout access.', 'catalogx'),
-        },
-        {
-            key: 'enable_cart_checkout',
-            type: 'checkbox',
-            label: __('Sitewide buy mode', 'catalogx'),
-            desc: sprintf(
-                /* translators: %s will be replaced with a link to CatalogX Pro */
-                __(
-                    'Enabling this setting with CatalogX activates the catalog-only mode on your site, preventing customers from making purchases. To allow purchasing functionality, upgrade to %s and enable this setting to activate the buying mode.',
-                    'catalogx'
-                ),
-                '<a href="' +
-                appLocalizer.pro_url +
-                '" target="_blank">CatalogX Pro</a>'
-            ),
-            options: [
-                {
-                    key: 'enable_cart_checkout',
-                    value: 'enable_cart_checkout',
-                },
-            ],
-            proSetting: true,
-            look: 'toggle',
-            moduleEnabled: 'catalog',
-        },
-        {
-            key: 'redirect_cart_page',
-            type: 'select',
-            label: __('Cart / Checkout Redirect Page', 'catalogx'),
-            size: 15,
-            options: [
-                {
-                    value: '',
-                    label: 'Home',
-                    key: '',
-                },
-                ...appLocalizer.pages_data,
-            ],
-            dependent: {
-                key: 'enable_cart_checkout',
-                set: false,
-            },
-            desc: sprintf(
-                /* translators: %s will be replaced with a link to CatalogX Pro */
-                __(
-                    'Redirect users to the homepage when they click on the cart or checkout page. To customize the redirection to a different page, an upgrade to %s is required.',
-                    'catalogx'
-                ),
-                '<a href="' +
-                appLocalizer.pro_url +
-                '" target="_blank">CatalogX Pro</a>'
-            ),
-
-            proSetting: true,
-            moduleEnabled: 'catalog',
-        },
+        
         //extra
         {
             key: 'section',
             type: 'section',
-            title: __('Configure PDF download and email attachment settings for enquiries and quotations.', 'catalogx'),
+            desc: __('Manage the generation, availability, and delivery of enquiry and quotation documents.',
+                'catalogx'
+            ),
+            title: __('Make documents available as PDFs', 'catalogx'),
         },
         {
             key: 'display_pdf',
             type: 'multi-checkbox-table',
             storeSetting: true,
-            label: __('Attachment', 'catalogx'),
+            label: __('Document delivery mode', 'catalogx'),
             classes: 'gridTable',
             rows: [
                 {

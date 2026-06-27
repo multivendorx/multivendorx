@@ -106,7 +106,13 @@ const Rules = () => {
             render: (row: any) => {
                 const amount = row.amount ?? 0;
                 const quantity = Number(row.quantity);
-                return `${amount} ${appLocalizer.currency} for min ${quantity ? quantity : ''} quantity`;
+
+                const price =
+                    row.type === 'percentage'
+                        ? `${amount} Percent`
+                        : `${amount} ${appLocalizer.currency}`;
+
+                return `${price} for min ${quantity || ''} quantity`;
             }
         },
 
@@ -189,11 +195,11 @@ const Rules = () => {
             return (
                 <ComponentStatusView
                     title={__(
-                        'Looks like customer support isn’t set up yet!',
+                        'Looks like product rules aren’t set up yet!',
                         'catalogx'
                     )}
                     desc={__(
-                        'Turn on a support module to start assisting your customers.',
+                        'Enable the Rules module to create and manage custom catalog rules for your products.',
                         'catalogx'
                     )}
                     buttonText={__('Enable Now', 'catalogx')}
@@ -220,7 +226,7 @@ const Rules = () => {
                     width={31.25}
                     height="auto"
                 >
-                    { !appLocalizer.khali_dabba ? (
+                    {!appLocalizer.khali_dabba ? (
                         <ShowProPopup />
                     ) : (
                         <ShowProPopup moduleName="rules" />

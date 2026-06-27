@@ -199,8 +199,11 @@ class Installer {
         );
 
         $all_settings = array(
-            'enable_cart_checkout'  => array(),
-            'redirect_cart_page'    => ''
+            'enable_cart_checkout'      => 'catalog_only',
+            'redirect_cart_page'        => '',
+            'enquiry_user_permission'   => 'everyone',
+            'is_enable_out_of_stock'    => 'all_products',
+            'quote_user_permission'     => 'everyone',
         );
 
         update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array_merge($all_settings,$enquiry_quote_settings) );
@@ -495,6 +498,7 @@ class Installer {
                     $migrated_free_enquiry_form[] = array_merge(
                         $field_map[$key],
                         [
+                            'label'       => $field['label'] ?? $field_map[$key]['label'],
                             'disabled' => '',
                         ]
                     );
@@ -722,8 +726,20 @@ class Installer {
             $settings['enquiry_user_permission'] = ! empty( $settings['enquiry_user_permission'] ) ? 'logged_in_only' : 'everyone';
 
             $settings['quote_user_permission'] = ! empty( $settings['quote_user_permission'] )? 'logged_in_only' : 'everyone';
+            $settings['enable_cart_checkout']  = ! empty( $settings['quote_user_permission'] )? 'buy_mode' : 'catalog_only';
+            $settings['is_page_redirect']      = ! empty( $settings['is_page_redirect'] )? 'dedicated_page' : 'current_page';
 
             update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $settings );
+
+            $wholesale_settings = get_option( Utill::CATALOGX_SETTINGS['wholesale'], array() );
+
+            $wholesale_settings['disable_coupon_for_wholesale'] = ! empty( $wholesale_settings['disable_coupon_for_wholesale'] ) ? 'restricted' : 'restricted';
+            $wholesale_settings['enable_order_form']            = ! empty( $wholesale_settings['enable_order_form'] ) ? 'dedicated' : 'shared';
+            $wholesale_settings['show_wholesale_price']         = ! empty( $wholesale_settings['show_wholesale_price'] ) ? 'visible' : 'hidden';
+            $wholesale_settings['enable_global_wholasale']      = ! empty( $wholesale_settings['enable_global_wholasale'] ) ? 'global_rule' : 'product_level';
+
+            update_option( Utill::CATALOGX_SETTINGS['wholesale'], $wholesale_settings );
+
 
             update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], get_option( 'catalogx_enquiry_email_temp_settings', array() ) );
             update_option( Utill::CATALOGX_SETTINGS['dashboard'], get_option( 'catalogx_pages_settings', array() ) );

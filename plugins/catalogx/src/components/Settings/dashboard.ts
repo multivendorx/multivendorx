@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'dashboard',
     priority: 1,
-    headerTitle: __('Dashboard', 'catalogx'),
+    headerTitle: __('Pages & Shortcodes', 'catalogx'),
     headerDescription: __(
         'Manage the endpoints for all pages on the site, ensuring proper routing and access.',
         'catalogx'
@@ -50,7 +50,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            title: __('Lorem Ipsum is simply dummy text of', 'catalogx'),
+            title: __('Shortcode library', 'catalogx'),
         },
         {
             key: 'shortCode',
@@ -69,7 +69,7 @@ export default {
                     label: '[catalogx_enquiry_cart]',
                     name: 'Catalogx Enquiry Cart',
                     desc: __(
-                        'Display all products in the enquiry cart and send a single inquiry email for all items in the cart.',
+                        'Displays all products added to the enquiry cart and allows customers to submit a combined enquiry request.',
                         'catalogx'
                     ),
                 },
@@ -78,7 +78,7 @@ export default {
                     label: '[catalogx_request_quote]',
                     name: 'Catalogx Request Quote',
                     desc: __(
-                        'Displays a list of products for which users have requested quotes, making it easy to review all requests.',
+                        'Displays all products added to the quote list, allowing customers to review and submit quotation requests.',
                         'catalogx'
                     ),
                 },
@@ -87,7 +87,7 @@ export default {
                     label: '[catalogx_wholesale_products]',
                     name: 'Catalogx Wholesale Products',
                     desc: __(
-                        'Creates a page listing all wholesale products, enabling wholesalers to easily purchase multiple items in one transaction.',
+                        'Dedicated catalog of wholesale products for approved wholesale customers.',
                         'catalogx'
                     ),
                 },
