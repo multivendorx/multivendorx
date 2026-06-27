@@ -11,10 +11,9 @@ export default {
         {
             key: 'catalogx_log',
             type: 'log',
-            classes: 'log-section',
+            classes: 'log-section full-width',
             apiLink: 'logs',
             fileName: 'error.txt',
-            label: __('Logs', 'catalogx'),
         },
         {
             key: 'custom_css_product_page',
