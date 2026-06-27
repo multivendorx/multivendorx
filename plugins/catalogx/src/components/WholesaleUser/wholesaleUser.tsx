@@ -109,7 +109,7 @@ const WholesaleUser = () => {
 		'catalogx_wholesale_user_table_component',
 		defaultTableProps
 	);
-	
+
 	const renderTableContent = () => {
 		if (!appLocalizer.khali_dabba) {
 			return (
@@ -118,16 +118,16 @@ const WholesaleUser = () => {
 				</div>
 			);
 		}
-		
+
 		if (!appLocalizer.active_modules.includes('wholesale')) {
 			return (
 				<ComponentStatusView
 					title={__(
-						'Looks like customer support isn’t set up yet!',
+						'Looks like wholesale pricing isn’t set up yet!',
 						'catalogx'
 					)}
 					desc={__(
-						'Turn on a support module to start assisting your customers.',
+						'Enable the Wholesale module to create wholesale pricing and offer special rates to your business customers.',
 						'catalogx'
 					)}
 					buttonText={__('Enable Now', 'catalogx')}
@@ -135,7 +135,7 @@ const WholesaleUser = () => {
 				/>
 			);
 		}
-		
+
 		return (
 			<>
 				<TableCard {...tableProps} />

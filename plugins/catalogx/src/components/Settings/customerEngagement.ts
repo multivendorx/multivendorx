@@ -57,6 +57,7 @@ export default {
             dependent: {
                 key: 'enable_cart_checkout',
                 set: true,
+                value: 'catalog_only',
             },
             desc: sprintf(
                 /* translators: %s will be replaced with a link to CatalogX Pro */
