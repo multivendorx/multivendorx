@@ -145,6 +145,7 @@ const Rules = () => {
             ],
         },
     };
+    
     const filters = [
         {
             key: 'applicable_for',
@@ -175,6 +176,7 @@ const Rules = () => {
         filters,
         rows: dummyRules,
         totalRows: dummyRules.length,
+        onRowReorder: () => {},
     };
 
     tableProps = applyFilters(
@@ -217,7 +219,7 @@ const Rules = () => {
     };
 
     return (
-        <div>
+        <>
             {openPopup && (
                 <PopupUI
                     position="lightbox"
@@ -262,7 +264,7 @@ const Rules = () => {
                     {renderTableContent()}
                 </Column>
             </Container>
-        </div>
+        </>
     );
 };
 

@@ -179,12 +179,8 @@ class QuoteCart extends \WP_REST_Controller {
                 )
             );
         } catch ( \Exception $e ) {
-            return new \WP_Error(
-                'server_error',
-                __( 'Unexpected server error', 'catalogx' ),
-                array( 'status' => 500 )
-            );
-        }
+			Utill::server_error( $e );
+		}
     }
 
     /**
@@ -212,12 +208,8 @@ class QuoteCart extends \WP_REST_Controller {
 
             return rest_ensure_response( array( 'msg' => $update_msg ) );
         } catch ( \Exception $e ) {
-            return new \WP_Error(
-                'server_error',
-                __( 'Unexpected server error', 'catalogx' ),
-                array( 'status' => 500 )
-            );
-        }
+			Utill::server_error( $e );
+		}
     }
 
 
@@ -248,12 +240,7 @@ class QuoteCart extends \WP_REST_Controller {
                 )
             );
         } catch ( \Exception $e ) {
-
-            return new \WP_Error(
-                'server_error',
-                __( 'Unexpected server error', 'catalogx' ),
-                array( 'status' => 500 )
-            );
-        }
+			Utill::server_error( $e );
+		}
     }
 }

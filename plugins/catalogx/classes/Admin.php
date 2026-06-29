@@ -83,12 +83,7 @@ class Admin {
                 'name'     => __( 'Modules', 'catalogx' ),
                 'subtab'   => '',
                 'priority' => 70,
-            ),
-            'help-support'     => array(
-                'name'     => __( 'Help & Support', 'catalogx' ),
-                'subtab'   => '',
-                'priority' => 80,
-            ),
+            )
         );
 
         uasort(

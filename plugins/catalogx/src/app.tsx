@@ -10,7 +10,6 @@ import { AdminHeader, GuidedTourProvider, Notice, initializeModules } from 'zyra
 import { __ } from '@wordpress/i18n';
 import Brand from './assets/images/catalogx-logo.png';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
-import HelpSupport from './components/HelpSupport/HelpSupport';
 import { getTourSteps } from './components/Tour/Tours';
 import QuoteRequests from './components/QuoteRequests/QuoteRequests';
 import { searchIndex, SearchItem } from './searchIndex';
@@ -36,7 +35,6 @@ const Route = () => {
                 <EnquiryMessages />
             ) }
             { currentTab.get( 'tab' ) === 'rules' && <Rules /> }
-            { currentTab.get( 'tab' ) === 'help-support' && ( <HelpSupport /> ) }
         </>
     );
 };
