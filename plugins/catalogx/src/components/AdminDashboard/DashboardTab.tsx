@@ -157,49 +157,49 @@ const DashboardTab: React.FC<object> = () => {
 
 	const featuresList = [
 		{
-			title: __('Membership rewards & commission', 'catalogx'),
+			title: __('Turbocharge Your Catalog', 'catalogx'),
 			desc: __(
-				'Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.',
+				`Enable catalog mode for your entire site or for specific products to control what visitors can actually purchase. Create a private store by hiding prices and the 'Add to Cart' button until a customer logs in, giving you full control over price visibility to boost lead generation. You can hide 'Add to Cart' entirely, or use it alongside 'Send Enquiry' to give customers more than one way to engage.`,
 				'catalogx'
 			),
 			icon: 'commission',
 		},
 		{
-			title: __('Verified stores only', 'catalogx'),
+			title: __('Enquiries That Convert', 'catalogx'),
 			desc: __(
-				'Screen stores with document verification and approval - build a trusted marketplace from day one.',
+				`Get a comprehensive overview of product demand by letting customers send enquiries directly from your store, including on out-of-stock items so you never miss a potential sale. Add an Enquiry Button to pages built with any page builder, respond to customers efficiently, and use role-based query management to route the right enquiries to the right team members. The enquiry form itself can be fully customized to match your workflow.`,
 				'catalogx'
 			),
 			icon: 'verification3',
 		},
 		{
-			title: __('Diversified marketplace', 'catalogx'),
+			title: __('Bulk Enquiries, Bigger Sales', 'catalogx'),
 			desc: __(
-				'Enable bookings, subscriptions, and auctions to boost sales and engagement.',
+				`Enable enquiries for bulk or high-value orders using the Enquiry Cart, so you can process multiple enquiries simultaneously instead of handling them one by one. This makes it easy to quickly assess demand for specific products or services across multiple enquiries at once, respond faster to customer queries, and ultimately improve satisfaction and conversions while managing high volumes of enquiries more effectively.`,
 				'catalogx'
 			),
 			icon: 'marketplace',
 		},
 		{
-			title: __('Vacation mode for stores', 'catalogx'),
+			title: __('Quote Like a Pro', 'catalogx'),
 			desc: __(
-				'Stores can pause their stores temporarily with automatic buyer notifications - no missed messages.',
+				`Allow quote requests for all or selected products from your catalog, with a Quotation Button you can add to pages created with any page builder. Restrict quote requests to registered users if you want tighter control over who can ask, and effortlessly find customer quotations with quick search. You can also customize emails and quotations with your company logo attachment for a more professional touch.`,
 				'catalogx'
 			),
 			icon: 'vacation',
 		},
 		{
-			title: __('Never run out of stock', 'catalogx'),
+			title: __('Smart Pricing, Smarter Profits', 'catalogx'),
 			desc: __(
-				'Real-time inventory tracking with automatic low-stock alerts keeps sellers prepared and buyers happy.',
+				`Create custom roles without any coding, then apply dynamic price adjustments based on those user roles. Set minimum and maximum quantities for each role, and apply role-based discounts across entire categories to keep your pricing strategy flexible and scalable.`,
 				'catalogx'
 			),
 			icon: 'global-community',
 		},
 		{
-			title: __('Autopilot notifications', 'catalogx'),
+			title: __('Wholesale Made Simple', 'catalogx'),
 			desc: __(
-				'Automatic emails and alerts for every order, refund, and payout - everyone stays in the loop.',
+				`Create a specific user role for wholesale customers and assign different prices for them on both simple and variable products. You can choose to hide retail prices from wholesale customers entirely, or show both retail and wholesale prices to business users depending on your needs. WooCommerce coupons can be restricted from wholesale customers, and discounts can be configured as either a fixed amount or a percentage.`,
 				'catalogx'
 			),
 			icon: 'notification',
@@ -248,7 +248,7 @@ const DashboardTab: React.FC<object> = () => {
 				{!appLocalizer.khali_dabba && (
 					<Card
 						title={__(
-							'Build a professional marketplace',
+							'Build a smarter catalog',
 							'catalogx'
 						)}
 						badge={[
@@ -258,7 +258,7 @@ const DashboardTab: React.FC<object> = () => {
 							},
 						]}
 						desc={__(
-							'Unlock advanced features and premium modules to create a marketplace that stands out.',
+							'Unlock advanced features and premium modules to turn your store into a lead-generating, quote-ready sales engine.',
 							'catalogx'
 						)}
 					>
