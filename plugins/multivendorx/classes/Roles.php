@@ -101,6 +101,13 @@ class Roles {
             'delete_stores',
         );
 
+        $store_cap = MultiVendorX()->setting->get_option( Utill::MULTIVENDORX_SETTINGS['store-permissions'] );
+        $store_owner_caps = array();
+        foreach ( (array) $store_cap as $caps ) {
+            $store_owner_caps = array_merge( $store_owner_caps, (array) $caps );
+        }
+
+        $capabilities = array_merge( $capabilities, array_unique( $store_owner_caps ) );
         return $capabilities;
     }
 
