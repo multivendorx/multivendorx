@@ -8,9 +8,7 @@ import {
 	NoticeManager,
 } from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
-import { getModuleData } from '../../services/templateService';
 import axios from 'axios';
-import proPopupContent from '../Popup/Popup';
 import catalogxIcon from '../../assets/images/catalogx-icon.png';
 import multivendorxIcon from '../../assets/images/multivendorx-icon.png';
 import notifimaIcon from '../../assets/images/notifima-icon.png';
@@ -159,7 +157,7 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Turbocharge Your Catalog', 'catalogx'),
 			desc: __(
-				`Enable catalog mode for your entire site or for specific products to control what visitors can actually purchase. Create a private store by hiding prices and the 'Add to Cart' button until a customer logs in, giving you full control over price visibility to boost lead generation. You can hide 'Add to Cart' entirely, or use it alongside 'Send Enquiry' to give customers more than one way to engage.`,
+				`Enable catalog mode site-wide or per product, hide prices and 'Add to Cart' until login, and pair it with 'Send Enquiry' to turn visitors into leads.`,
 				'catalogx'
 			),
 			icon: 'commission',
@@ -167,7 +165,7 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Enquiries That Convert', 'catalogx'),
 			desc: __(
-				`Get a comprehensive overview of product demand by letting customers send enquiries directly from your store, including on out-of-stock items so you never miss a potential sale. Add an Enquiry Button to pages built with any page builder, respond to customers efficiently, and use role-based query management to route the right enquiries to the right team members. The enquiry form itself can be fully customized to match your workflow.`,
+				`Let customers send enquiries — even on out-of-stock items — with a customizable form, page-builder-ready button, and role-based routing to the right team.`,
 				'catalogx'
 			),
 			icon: 'verification3',
@@ -175,7 +173,7 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Bulk Enquiries, Bigger Sales', 'catalogx'),
 			desc: __(
-				`Enable enquiries for bulk or high-value orders using the Enquiry Cart, so you can process multiple enquiries simultaneously instead of handling them one by one. This makes it easy to quickly assess demand for specific products or services across multiple enquiries at once, respond faster to customer queries, and ultimately improve satisfaction and conversions while managing high volumes of enquiries more effectively.`,
+				`Process multiple bulk or high-value enquiries at once with the Enquiry Cart, so you can gauge demand and respond faster across the board.`,
 				'catalogx'
 			),
 			icon: 'marketplace',
@@ -183,7 +181,7 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Quote Like a Pro', 'catalogx'),
 			desc: __(
-				`Allow quote requests for all or selected products from your catalog, with a Quotation Button you can add to pages created with any page builder. Restrict quote requests to registered users if you want tighter control over who can ask, and effortlessly find customer quotations with quick search. You can also customize emails and quotations with your company logo attachment for a more professional touch.`,
+				`Let customers request quotes on any product with a page-builder-ready button, restrict it to registered users, and send branded, easy-to-find quotations.`,
 				'catalogx'
 			),
 			icon: 'vacation',
@@ -191,7 +189,7 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Smart Pricing, Smarter Profits', 'catalogx'),
 			desc: __(
-				`Create custom roles without any coding, then apply dynamic price adjustments based on those user roles. Set minimum and maximum quantities for each role, and apply role-based discounts across entire categories to keep your pricing strategy flexible and scalable.`,
+				`Create custom roles without coding and apply dynamic, quantity-based pricing and category-wide discounts for each one.`,
 				'catalogx'
 			),
 			icon: 'global-community',
@@ -199,7 +197,7 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Wholesale Made Simple', 'catalogx'),
 			desc: __(
-				`Create a specific user role for wholesale customers and assign different prices for them on both simple and variable products. You can choose to hide retail prices from wholesale customers entirely, or show both retail and wholesale prices to business users depending on your needs. WooCommerce coupons can be restricted from wholesale customers, and discounts can be configured as either a fixed amount or a percentage.`,
+				`Set a dedicated wholesale role with separate pricing, hide or show retail prices as needed, block coupon use, and apply flexible amount or percentage discounts.`,
 				'catalogx'
 			),
 			icon: 'notification',
@@ -275,13 +273,13 @@ const DashboardTab: React.FC<object> = () => {
 						<div className="pro-banner">
 							<div className="text">
 								{__(
-									'Join 8,000+ successful marketplace owners',
+									'Join 5,000+ stores closing more deals with CatalogX',
 									'catalogx'
 								)}
 							</div>
 							<div className="des">
 								{__(
-									'Create, manage, and grow your marketplace with confidence. Trusted by thousands of entrepreneurs worldwide.',
+									'Capture leads, manage enquiries, and grow your sales with confidence. Trusted by thousands of businesses worldwide.',
 									'catalogx'
 								)}
 							</div>
