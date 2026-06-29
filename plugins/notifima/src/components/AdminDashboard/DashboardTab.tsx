@@ -211,7 +211,7 @@ const DashboardTab: React.FC<object> = () => {
 					<div className="pro-banner-wrapper">
 						<div className="content">
 							<div className="heading">
-								{__('Welcome to notifima', 'notifima')}
+								{__('Welcome to Notifima', 'notifima')}
 							</div>
 							<div className="description">
 								{__(
