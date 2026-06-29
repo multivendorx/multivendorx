@@ -54,7 +54,7 @@ export default {
         {
             key: 'is_mailchimp_enable',
             type: 'choice-toggle',
-            label: __('Enable Mailchimp', 'notifima'),
+            label: __('Marketing integration', 'notifima'),
             desc: __(
                 "Automatically add new subscribers to your Mailchimp audience and streamline your email marketing.<br>Get your MailChimp API from your MailChimp <a href='https://us20.admin.mailchimp.com/account/api/manage/#create' target='blank'>account</a>. For further help, please check this doc.",
                 'notifima'
@@ -77,7 +77,7 @@ export default {
             key: 'mailchimp_api',
             type: 'text',
             size: 25,
-            label: __('Mailchimp API', 'notifima'),
+            label: __('Mailchimp API Key', 'notifima'),
             dependent: {
                 key: 'is_mailchimp_enable',
                 set: true,
@@ -88,7 +88,7 @@ export default {
         {
             key: 'mailchimp',
             type: 'sequential-task-executor',
-            variant:"api-connect",
+            variant:true,
             apilink: 'mailchimps',
             buttonText: 'Start',
             buttonIcon: 'centralized-connections',
