@@ -95,11 +95,11 @@ class Tour extends \WP_REST_Controller {
 	 */
 	public function get_items( $request ) {
 
-		$nonce_validation = $this->validate_rest_nonce( $request );
+        $nonce_validation = Utill::validate_nonce( $request );
 
-		if ( is_wp_error( $nonce_validation ) ) {
-			return $nonce_validation;
-		}
+        if ( is_wp_error( $nonce_validation ) ) {
+            return $nonce_validation;
+        }
 
 		try {
 			$tour_completed_status = get_option(
@@ -111,13 +111,7 @@ class Tour extends \WP_REST_Controller {
 				'completed' => filter_var( $tour_completed_status, FILTER_VALIDATE_BOOLEAN ),
 			);
 		} catch ( \Exception $e ) {
-			CatalogX()->util->log( $e );
-
-			return new \WP_Error(
-				'server_error',
-				__( 'Unexpected server error', 'catalogx' ),
-				array( 'status' => 500 )
-			);
+			Utill::server_error( $e );
 		}
 	}
 
@@ -130,11 +124,11 @@ class Tour extends \WP_REST_Controller {
 	 */
 	public function create_item( $request ) {
 
-		$nonce_validation = $this->validate_rest_nonce( $request );
+        $nonce_validation = Utill::validate_nonce( $request );
 
-		if ( is_wp_error( $nonce_validation ) ) {
-			return $nonce_validation;
-		}
+        if ( is_wp_error( $nonce_validation ) ) {
+            return $nonce_validation;
+        }
 
 		try {
 			$is_tour_completed = $request->get_param( 'completed' );
@@ -148,13 +142,7 @@ class Tour extends \WP_REST_Controller {
 				'success' => true,
 			);
 		} catch ( \Exception $e ) {
-			CatalogX()->util->log( $e );
-
-			return new \WP_Error(
-				'server_error',
-				__( 'Unexpected server error', 'catalogx' ),
-				array( 'status' => 500 )
-			);
+			Utill::server_error( $e );
 		}
 	}
 }

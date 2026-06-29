@@ -118,7 +118,7 @@ export default {
                 'catalogx'
             ),
             settingDescription: __(
-                'Choose which products display the enquiry option.',
+                'Limit enquiries to products currently unavailable for purchase.',
                 'catalogx'
             ),
             desc: __(
