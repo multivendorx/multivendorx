@@ -30,8 +30,21 @@ export const getTourSteps = (appLocalizer: AppLocalizer): TourStep[] => [
 			'catalogx'
 		),
 		next: {
-			link: `${appLocalizer.site_url}/wp-admin/admin.php?page=catalogx#&tab=settings&subtab=commissions`,
+			link: `${appLocalizer.admin_url}#&tab=modules`,
 			step: 1,
+		},
+	},
+	{
+		selector: '[data-tour="simple-showcase-tour"]',
+		placement: 'right',
+		title: __('Modules', 'multivendorx'),
+		description: __(
+			'Here you can enable or disable marketplace modules.',
+			'multivendorx'
+		),
+		next: {
+			link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=payouts`,
+			step: 2,
 		},
 	},
 ];
