@@ -84,7 +84,7 @@ const SubscribersList = () => {
                     }}
                     descriptions={[
 						{
-							label: __('SKU', 'multivendorx'),
+							label: __('SKU', 'notifima'),
 							value: row.sku,
 						},
 					]}
