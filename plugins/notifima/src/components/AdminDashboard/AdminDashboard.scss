@@ -24,10 +24,6 @@
         display: flex;
     }
 
-    a:hover {
-        color: #000;
-    }
-
     .image {
         display: flex;
         flex-direction: column;
@@ -291,3 +287,19 @@
     }
 }
 // free vs pro tabel end
+
+@media screen and (width <=37.5rem) {
+    .pro-banner-wrapper {
+        flex-direction: column;
+        align-items: center;
+
+        .heading,
+        .description {
+            text-align: center;
+        }
+
+        .button-wrapper {
+            justify-content: center;
+        }
+    }
+}

@@ -365,14 +365,6 @@ const FreeVsProTab: React.FC<object> = () => {
 								{__('Upgrade Now', 'notifima')}
 								<i className="adminfont-arrow-right icon-pro-btn"></i>
 							</a>
-
-							<div
-								onClick={() => window.location.assign('?page=notifima-setup')}
-								className="admin-btn"
-							>
-								{__('Launch Setup Wizard', 'notifima')}
-								<i className="adminfont-import"></i>
-							</div>
 						</div>
 					</div>
 				</Card>
