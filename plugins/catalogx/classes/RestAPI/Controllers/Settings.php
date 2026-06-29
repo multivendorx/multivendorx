@@ -111,6 +111,33 @@ class Settings extends \WP_REST_Controller {
         }
 
 		try {
+
+			$setup_wizard = $request->get_param( 'setupWizard' );
+            if ( $setup_wizard ) {
+                $value = $request->get_param( 'value' );
+                if ( ! empty( $value ) ) {
+
+					$customer_engagement = CatalogX()->setting->get_option( Utill::CATALOGX_SETTINGS['customer-engagement'] );
+
+					if ( isset( $value['product_enquirie'] ) && is_array( $value['product_enquirie'] ) ) {
+						$customer_engagement = array_merge( $customer_engagement, $value['product_enquirie'] );
+					}
+
+					if ( isset( $value['quotation_requests'] ) && is_array( $value['quotation_requests'] ) ) {
+						$customer_engagement = array_merge( $customer_engagement, $value['quotation_requests'] );
+					}
+					
+					$free_form = CatalogX()->setting->get_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'] );
+
+					$free_form['enquiry_form_tabs']['free_enquiry_form'] = $value['enquiry_form_tabs']['free_enquiry_form'];
+
+                    CatalogX()->setting->update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $customer_engagement );
+                    CatalogX()->setting->update_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], $free_form );
+                }
+
+                return;
+            }
+
 			$settings_values = $request->get_param( 'setting' );
             $settings_name   = $request->get_param( 'settingName' );
             $settings_name   = str_replace( '-', '_', $settings_name );
