@@ -9,6 +9,7 @@
     background: #f3f3f39e;
     gap: 1.5rem;
     width: 100%;
+    box-sizing: border-box;
 
     // left side
     .elements-wrapper {
@@ -337,10 +338,8 @@
             top: 3rem;
             display: flex;
             flex-direction: column;
-
-            // gap: 1rem;
             overflow: auto;
-            height: 95vh;
+            // height: 95vh;
 
             .settings-title {
                 font-size: 1.4rem;
