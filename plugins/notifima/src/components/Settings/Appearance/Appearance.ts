@@ -21,9 +21,9 @@ export default {
         {
             key: 'is_guest_subscriptions_enable',
             type: 'choice-toggle',
-            label: __('Guest Subscriptions', 'notifima'),
+            label: __('Who can subscribe', 'notifima'),
             desc: __(
-                'Allow guests (non-logged-in users) to subscribe to notifications for out-of-stock products.',
+                'Choose who can join restock alerts for unavailable products.',
                 'notifima'
             ),
             options: [
@@ -42,9 +42,9 @@ export default {
         {
             key: 'is_enable_backorders',
             type: 'choice-toggle',
-            label: __('Allow Backorder Subscriptions', 'notifima'),
+            label: __('Show subscription form for', 'notifima'),
             desc: __(
-                'Enabling this setting allows users to subscribe to out-of-stock products, even when the backorder option is enabled.',
+                'Choose when customers can request stock notifications.',
                 'notifima'
             ),
 
@@ -134,11 +134,11 @@ export default {
             key: 'is_enable_no_interest',
             type: 'choice-toggle',
             label: __(
-                'Display subscriber count for out of stock',
+                'Subscriber visibility',
                 'notifima'
             ),
             desc: __(
-                'Enabling this setting shows the subscriber count on the single product page.',
+                'Choose whether customer interest is displayed on product pages.',
                 'notifima'
             ),
 
@@ -173,7 +173,7 @@ export default {
             key: 'is_double_optin',
             type: 'choice-toggle',
 
-            label: __('Subscriber double opt-in', 'notifima'),
+            label: __('Subscription confirmation', 'notifima'),
             desc: !appLocalizer.khali_dabba
                 ? sprintf(
                     /* translators: %s is the Pro upgrade URL */
@@ -208,7 +208,7 @@ export default {
                 'Default: Kindly check your inbox to confirm the subscription.',
                 'notifima'
             ),
-            label: __('Double opt-in success message', 'notifima'),
+            label: __('Subscription confirmation message', 'notifima'),
             dependent: {
                 key: 'is_double_optin',
                 set: true,
@@ -219,7 +219,7 @@ export default {
         {
             key: 'is_recaptcha_enable',
             type: 'choice-toggle',
-            label: __('Enable reCaptcha', 'notifima'),
+            label: __('Subscription protection', 'notifima'),
 
             desc: !appLocalizer.khali_dabba
                 ? sprintf(

@@ -12,233 +12,224 @@ interface Section {
 	title: string;
 	features: Feature[];
 }
+
 const sections: Section[] = [
 	{
-		title: __('Product & store tools', 'notifima'),
+		title: __('Never Miss a Sale Opportunity', 'notifima'),
 		features: [
 			{
-				name: __('Multiple stores per product', 'notifima'),
+				name: __('Back-in-stock subscription form', 'notifima'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Store policies', 'notifima'),
+				name: __('Automatic restock email notifications', 'notifima'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Store reviews', 'notifima'),
-				free: true,
-				pro: true,
-			},
-			{ name: __('Follow store', 'notifima'), free: true, pro: true },
-			{
-				name: __(
-					'Privacy controls to show/hide store details)',
-					'notifima'
-				),
+				name: __('Admin alerts for new subscriptions', 'notifima'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __(
-					'Confirm vendor identity with documents',
-					'notifima'
-				),
+				name: __('Support for guest and logged-in customers', 'notifima'),
+				free: true,
+				pro: true,
+			},
+			{
+				name: __('Prevent duplicate subscriptions', 'notifima'),
+				free: true,
+				pro: true,
+			},
+			{
+				name: __('Works with WooCommerce backorders', 'notifima'),
+				free: true,
+				pro: true,
+			},
+		],
+	},
+	{
+		title: __('Customize the Subscriber Experience', 'notifima'),
+		features: [
+			{
+				name: __('Customize subscription form text and styling', 'notifima'),
+				free: true,
+				pro: true,
+			},
+			{
+				name: __('Customize email headings and subjects', 'notifima'),
+				free: true,
+				pro: true,
+			},
+			{
+				name: __('WPML compatibility', 'notifima'),
+				free: true,
+				pro: true,
+			},
+			{
+				name: __('Customer self-service subscription dashboard', 'notifima'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Bulk upload/download product via CSV',
-					'notifima'
-				),
+				name: __('View and manage product waitlists', 'notifima'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Display store opening/closing times', 'notifima'),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __(
-					'Store can temporarily close shop with customer notice',
-					'notifima'
-				),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __(
-					'Assign assistants to your store and control what they can access',
-					'notifima'
-				),
+				name: __('One-click unsubscribe from notifications', 'notifima'),
 				free: false,
 				pro: true,
 			},
 		],
 	},
 	{
-		title: __(' Get paid without hassle', 'notifima'),
+		title: __('Grow and Engage Your Subscriber List', 'notifima'),
 		features: [
 			{
-				name: __('Bank transfer', 'notifima'),
-				free: true,
+				name: __('Double opt-in subscription confirmation', 'notifima'),
+				free: false,
 				pro: true,
 			},
 			{
-				name: __('PayPal payout', 'notifima'),
-				free: true,
+				name: __('Ensure genuine subscriber interest', 'notifima'),
+				free: false,
 				pro: true,
 			},
 			{
-				name: __('Stripe connect', 'notifima'),
-				free: true,
+				name: __('Mailchimp integration', 'notifima'),
+				free: false,
 				pro: true,
 			},
-			{ name: __('Razorpay', 'notifima'), free: true, pro: true },
 			{
-				name: __('Real-time split payments', 'notifima'),
+				name: __('Instant subscriber syncing', 'notifima'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Automated list management', 'notifima'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Batch synchronization options', 'notifima'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Enhanced customer segmentation', 'notifima'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Track email delivery and unsubscribe status', 'notifima'),
 				free: false,
 				pro: true,
 			},
 		],
 	},
 	{
-		title: __(' Deliver seamless shopping experiences', 'notifima'),
+		title: __('Subscriber Management & Reporting', 'notifima'),
 		features: [
-			{ name: __('Product Q&A', 'notifima'), free: true, pro: true },
 			{
-				name: __('Marketplace refunds', 'notifima'),
+				name: __('Export subscriber list from WordPress tools', 'notifima'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Announcements', 'notifima'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Product abuse report', 'notifima'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Invoices & packing slips', 'notifima'),
-				free: false,
-				pro: true,
-			},
-			{ name: __('Live chat', 'notifima'), free: false, pro: true },
-			{
-				name: __('Customer support', 'notifima'),
+				name: __('Advanced subscriber export with names, emails, and dates', 'notifima'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Product enquiry', 'notifima'),
+				name: __('Subscription management dashboard', 'notifima'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Sort subscriptions by products and dates', 'notifima'),
 				free: false,
 				pro: true,
 			},
 		],
 	},
 	{
-		title: __(' Ship the way you want', 'notifima'),
+		title: __('Smart Inventory Management', 'notifima'),
 		features: [
 			{
-				name: __('Zone-based shipping', 'notifima'),
+				name: __('Export shop stock data', 'notifima'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Distance-based shipping', 'notifima'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Country restrictions', 'notifima'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Weight-based shipping', 'notifima'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Per-product shipping', 'notifima'),
+				name: __('Inventory manager dashboard', 'notifima'),
 				free: false,
 				pro: true,
+			},
+			{
+				name: __('View and manage all products centrally', 'notifima'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Quick edit stock, SKU, and product data', 'notifima'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Import and update inventory via CSV', 'notifima'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Product stock history and movement logs', 'notifima'),
+				free: false,
+				pro: true,
+				comingSoon: true,
 			},
 		],
 	},
 	{
-		title: __(' Sell in different ways', 'notifima'),
+		title: __('Security & Spam Protection', 'notifima'),
 		features: [
 			{
-				name: __(
-					'Optimize store & product SEO with Yoast or Rank Math',
-					'notifima'
-				),
+				name: __('Smart ReCAPTCHA protection', 'notifima'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Sales, revenue, and order reports', 'notifima'),
+				name: __('Block automated spam subscriptions', 'notifima'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Store with different capabilities as per subsctiption plan',
-					'notifima'
-				),
+				name: __('Prevent fake subscriptions and maintain data quality', 'notifima'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Paid product promotions', 'notifima'),
+				name: __('Ensure notification compliance and sender reputation', 'notifima'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Special pricing & bulk rules for groups',
-					'notifima'
-				),
+				name: __('Block subscriptions from specific email addresses', 'notifima'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Low-stock alerts, waitlists, inventory management',
-					'notifima'
-				),
-				free: false,
-				pro: true,
-			},
-		],
-	},
-	{
-		title: __('Automate rules and commissions', 'notifima'),
-		features: [
-			{
-				name: __('Payment gateway fees', 'notifima'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Min/Max quantities', 'notifima'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Facilitator fees', 'notifima'),
+				name: __('Block subscriptions from specific email domains', 'notifima'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Marketplace fees', 'notifima'),
+				name: __('Customize subscription restriction messages', 'notifima'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Create safe-sender email lists', 'notifima'),
 				free: false,
 				pro: true,
 			},
@@ -318,14 +309,14 @@ const FreeVsProTab: React.FC<object> = () => {
 
 						<div className="title">
 							{__(
-								'Turn Waiting into Winning',
+								'Never Miss Another Sale',
 								'notifima'
 							)}
 						</div>
 
 						<div className="des">
 							{__(
-								'Capture customer interest today and transform tomorrows restock into instant sales.',
+								'Upgrade to Notifima Pro and turn out-of-stock products into future sales with advanced subscriber management, automation, and inventory tools.',
 								'notifima'
 							)}
 						</div>
@@ -333,26 +324,23 @@ const FreeVsProTab: React.FC<object> = () => {
 						<ul>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Flexible selling models', 'notifima')}
+								{__('Advanced subscriber management', 'notifima')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__(
-									'Effortless inventory control',
-									'notifima'
-								)}
+								{__('Mailchimp integration', 'notifima')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Intelligent alert system', 'notifima')}
+								{__('Inventory management dashboard', 'notifima')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Secure seller onboarding', 'notifima')}
+								{__('Double opt-in & spam protection', 'notifima')}
 							</li>
 							<li>
 								<i className="adminfont-check"></i>
-								{__('Recurring revenue tools', 'notifima')}
+								{__('Advanced exports & reporting', 'notifima')}
 							</li>
 						</ul>
 

@@ -61,7 +61,6 @@ class Block {
      */
     public function initialize_blocks() {
         $blocks     = array();
-        $textdomain = 'notifima';
 
         $block_base_path = FrontendScripts::get_asset_path( 'file' ) . 'js/block/';
 
@@ -76,7 +75,7 @@ class Block {
             if ( file_exists( $folder . '/block.json' ) ) {
                 $blocks[] = array(
                     'name'       => $block_name,
-                    'textdomain' => $textdomain,
+                    'textdomain' => 'notifima',
                     'block_path' => $block_base_path,
                 );
             }
