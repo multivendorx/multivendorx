@@ -11,8 +11,12 @@ export default {
             key: 'unsubscribe_button_text',
             type: 'text',
             label: __("'Unsubscribe' Button Caption", 'notifima'),
+            settingDescription: __(
+                'Customize the text displayed on the unsubscribe button.',
+                'notifima'
+            ),
             desc: __(
-                'Modify the un-subscribe button text. By default we display "Unsubscribe".',
+                'Default: "Unsubscribe".',
                 'notifima'
             ),
             size: 20,
@@ -22,8 +26,12 @@ export default {
             key: 'is_guest_subscriptions_enable',
             type: 'choice-toggle',
             label: __('Who can subscribe', 'notifima'),
+            settingDescription: __(
+                'Choose which customers are allowed to subscribe for restock notifications.',
+                'notifima'
+            ),
             desc: __(
-                'Choose who can join restock alerts for unavailable products.',
+                '<ul><li>Everyone - Both guest visitors and logged-in customers can subscribe.</li><li>Logged-in customers only - Only authenticated customers can subscribe for restock notifications.</li></ul>',
                 'notifima'
             ),
             options: [
@@ -43,8 +51,12 @@ export default {
             key: 'is_enable_backorders',
             type: 'choice-toggle',
             label: __('Show subscription form for', 'notifima'),
+            settingDescription: __(
+                'Choose when the restock subscription form should be displayed.',
+                'notifima'
+            ),
             desc: __(
-                'Choose when customers can request stock notifications.',
+                '<ul><li>Out of stock products - Display the subscription form only for products that are out of stock.</li><li>Out of stock &amp; backorder products - Display the subscription form for products that are out of stock or available on backorder.</li></ul>',
                 'notifima'
             ),
 
@@ -66,7 +78,11 @@ export default {
             type: 'checkbox',
             label: __('Stock Status for Lead Time', 'notifima'),
             settingDescription: __(
-                'Lead time informs customers when a product will be available again. This setting lets you choose which stock statuses will display the restock estimate.',
+                'Choose which stock statuses should display the product lead time.',
+                'notifima'
+            ),
+            desc: __(
+                '<ul><li>Out of stock - Display the lead time only for out-of-stock products.</li><li>On backorder - Display the lead time for products available on backorder.</li></ul>',
                 'notifima'
             ),
             options: [
@@ -87,8 +103,12 @@ export default {
             key: 'lead_time_format',
             type: 'choice-toggle',
             label: __('Lead Format', 'notifima'),
+            settingDescription: __(
+                'Choose how lead time should be displayed on product pages.',
+                'notifima'
+            ),
             desc: __(
-                'Choose the lead time format: Either dynamic (set unique lead time text for all out of stock product) or static (apply a default lead time text for out of stock products).',
+                '<ul><li>Static - Use the same lead time message for all applicable products.</li><li>Dynamic - Use a product-specific lead time message for each product.</li></ul>',
                 'notifima'
             ),
             dependent: {
@@ -114,8 +134,12 @@ export default {
             key: 'lead_time_static_text',
             type: 'text',
             label: __('Lead time static text', 'notifima'),
+            settingDescription: __(
+                'Enter the default lead time message displayed for products using the static lead time format.',
+                'notifima'
+            ),
             desc: __(
-                'This will be the standard message displayed for all out-of-stock products unless a custom lead time is specified.',
+                'This message is shown unless a product-specific lead time is available.',
                 'notifima'
             ),
             size: 20,
@@ -137,8 +161,12 @@ export default {
                 'Subscriber visibility',
                 'notifima'
             ),
+            settingDescription: __(
+                'Choose whether the subscriber count should be displayed on product pages.',
+                'notifima'
+            ),
             desc: __(
-                'Choose whether customer interest is displayed on product pages.',
+                '<ul><li>Hide subscriber count - Customers will not see how many users have subscribed.</li><li>Show subscriber count - Display the current subscriber count on the product page.</li></ul>',
                 'notifima'
             ),
 
@@ -159,8 +187,12 @@ export default {
             key: 'shown_interest_text',
             type: 'textarea',
             label: __('Subscriber count notification message', 'notifima'),
+            settingDescription: __(
+                'Customize the message displayed alongside the subscriber count on product pages.',
+                'notifima'
+            ),
             desc: __(
-                'Personalize the notification text to let users know about the quantity of subscribers for out-of-stock item. Note: Use %no_of_subscribed% as number of interest/subscribed persons.',
+                'Use <code>%no_of_subscribed%</code> to display the current number of subscribers. Example: "<code>%no_of_subscribed% customers are waiting for this product.</code>"',
                 'notifima'
             ),
             dependent: {
@@ -174,19 +206,14 @@ export default {
             type: 'choice-toggle',
 
             label: __('Subscription confirmation', 'notifima'),
-            desc: !appLocalizer.khali_dabba
-                ? sprintf(
-                    /* translators: %s is the Pro upgrade URL */
-                    __(
-                        'Upgrade to <a href="%s" target="_blank"><span class="pro-strong">Pro</span></a> to enable Double Opt-in flow for subscription confirmation.',
-                        'notifima'
-                    ),
-                    appLocalizer.pro_url
-                )
-                : __(
-                    'Enable Double Opt-in flow for subscription confirmation.',
-                    'notifima'
-                ),
+            settingDescription: __(
+                'Choose how customer subscriptions are confirmed.',
+                'notifima'
+            ),
+            desc: __(
+                '<ul><li>Subscribe immediately - Customers are subscribed as soon as they submit the form.</li><li>Confirm via email - Customers must verify their subscription through a confirmation email before it becomes active.</li></ul>',
+                'notifima'
+            ),
             options: [
                 {
                     key: 'subscribe_immediately',
@@ -204,11 +231,15 @@ export default {
         {
             key: 'double_opt_in_success',
             type: 'textarea',
-            desc: __(
-                'Default: Kindly check your inbox to confirm the subscription.',
+            label: __('Subscription confirmation message', 'notifima'),
+            settingDescription: __(
+                'Customize the message displayed after a customer submits a subscription request.',
                 'notifima'
             ),
-            label: __('Subscription confirmation message', 'notifima'),
+            desc: __(
+                'Used when email confirmation is enabled. Default: "Kindly check your inbox to confirm the subscription."',
+                'notifima'
+            ),
             dependent: {
                 key: 'is_double_optin',
                 set: true,
@@ -221,19 +252,15 @@ export default {
             type: 'choice-toggle',
             label: __('Subscription protection', 'notifima'),
 
-            desc: !appLocalizer.khali_dabba
-                ? sprintf(
-                    /* translators: %s is the Pro upgrade URL */
-                    __(
-                        'Upgrade to <a href="%s" target="_blank"><span class="pro-strong">Pro</span></a> for unlocking reCAPTCHA for out-of-stock form subscriptions.',
-                        'notifima'
-                    ),
-                    appLocalizer.pro_url
-                )
-                : __(
-                    'Enable this to prevent automated bots from submitting forms. Get your v3 reCAPTCHA site key and secret key from <a href="https://developers.google.com/recaptcha" target="_blank">here</a>.',
-                    'notifima'
-                ),
+            settingDescription: __(
+                'Choose how to protect the subscription form from automated submissions.',
+                'notifima'
+            ),
+            desc: __(
+                '<ul><li>No Verification - Customers can subscribe without additional verification.</li><li>Google reCAPTCHA - Protect the subscription form using Google reCAPTCHA v3 to reduce spam and automated submissions.</li></ul>',
+                'notifima'
+            ),
+
             options: [
                 {
                     key: 'no_verification',
@@ -252,6 +279,14 @@ export default {
             key: 'v3_site_key',
             type: 'text',
             label: __('Site Key', 'notifima'),
+            settingDescription: __(
+                'Enter your Google reCAPTCHA v3 Site Key.',
+                'notifima'
+            ),
+            desc: __(
+                'Required to enable Google reCAPTCHA protection for the subscription form.',
+                'notifima'
+            ),
             dependent: {
                 key: 'is_recaptcha_enable',
                 set: true,
@@ -262,6 +297,14 @@ export default {
             key: 'v3_secret_key',
             type: 'text',
             label: __('Secret Key', 'notifima'),
+            settingDescription: __(
+                'Enter your Google reCAPTCHA v3 Secret Key.',
+                'notifima'
+            ),
+            desc: __(
+                'Used to verify reCAPTCHA requests submitted through the subscription form.',
+                'notifima'
+            ),
             dependent: {
                 key: 'is_recaptcha_enable',
                 set: true,
@@ -271,11 +314,15 @@ export default {
         {
             key: 'additional_alert_email',
             type: 'textarea',
-            desc: __(
-                "Set the email address to receive notifications when a user subscribes to an out-of-stock product. You can add multiple comma-separated emails.<br/> Default: The admin's email is set as the receiver. Exclude the admin's email from the list to exclude admin from receiving these notifications.",
+            label: __('Recipient email for new subscriber', 'notifima'),
+            settingDescription: __(
+                'Choose who should receive email notifications when customers subscribe for restock alerts.',
                 'notifima'
             ),
-            label: __('Recipient email for new subscriber', 'notifima'),
+            desc: __(
+                '<ul><li>Separate multiple email addresses with commas.</li><li>By default, the site administrator receives these notifications.</li><li>Remove the administrator\'s email address from the list if you do not want the administrator to receive notifications.</li></ul>',
+                'notifima'
+            ),
         },
         {
             key: 'note_blocktext',
