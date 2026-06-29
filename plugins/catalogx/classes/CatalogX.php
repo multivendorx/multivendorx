@@ -258,7 +258,7 @@ final class CatalogX {
     }
 
     /**
-     * Get moowoodle log file name.
+     * Get catalog log file name.
      */
     public function initialize_catalogx_log() {
         // The log file name is stored in the options table because it is generated with an arbitrary name.

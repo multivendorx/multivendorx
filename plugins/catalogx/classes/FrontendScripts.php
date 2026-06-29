@@ -391,7 +391,7 @@ class FrontendScripts {
         // Get all tab setting's database value.
         $settings_databases_value = array();
         $tabs_names               = apply_filters(
-            'multivendorx_additional_tabs_names',
+            'catalogx_additional_tabs_names',
             array_keys( Utill::CATALOGX_SETTINGS )
         );
 
@@ -448,7 +448,7 @@ class FrontendScripts {
                             'admin_url'                  => admin_url( 'admin.php?page=catalogx' ),
                             'currency'                   => get_woocommerce_currency(),
                             'notifima_active'            => Utill::is_active_plugin( 'notifima' ),
-                            'mvx_active'                 => Utill::is_active_plugin( 'multivendorx' ),
+                            'multivendorx_active'        => Utill::is_active_plugin( 'multivendorx' ),
                             'quote_module_active'        => CatalogX()->modules->is_active( 'quote' ),
                             'quote_base_url'             => $quote_base_url,
                             'free_version'               => CatalogX()->version,

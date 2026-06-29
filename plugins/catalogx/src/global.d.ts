@@ -33,7 +33,7 @@ declare global {
         order_edit: string;
         currency: string;
         notifima_active: boolean;
-        mvx_active: boolean;
+        multivendorx_active: boolean;
         quote_module_active: boolean;
         quote_base_url: string;
         redirect_url: string;
