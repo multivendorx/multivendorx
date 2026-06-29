@@ -5,7 +5,7 @@ Donate link: http://multivendorx.com/donate/
 Requires at least: 6.3
 Tested up to: 7.0.0
 Requires PHP: 8.0
-Stable tag: 5.0.8
+Stable tag: 5.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -246,16 +246,23 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 
 == Changelog ==
 
+= 5.0.9 - 2026-06-30 =
+* Added     - Compatibility with WooCommerce 10.9.1.
+* Added     - Support for accessing admin-created shipping classes for store owners #2062.
+* Fixed     - Issue with the store permissions settings in the store dashboard #2061.
+* Fixed     - Error with store template breadcrumbs #1981.
+* Updated   - Language file.
+
 = 5.0.8 - 2026-06-16 =
-* Added     - Updated the refund popup interface for an improved refund management experience #2009
-* Fixed     - Incorrect advanced commission, store earnings, and commission calculations #2035
-* Fixed     - Selection issues in the User Capabilities section #2010
-* Fixed     - Unnecessary <p> tags being rendered in the output #2005
-* Fixed     - Error affecting store template breadcrumbs #1981
+* Added     - Updated the refund popup interface for an improved refund management experience #2009.
+* Fixed     - Incorrect advanced commission, store earnings, and commission calculations #2035.
+* Fixed     - Selection issues in the User Capabilities section #2010.
+* Fixed     - Unnecessary <p> tags being rendered in the output #2005.
+* Fixed     - Error affecting store template breadcrumbs #1981.
 * Updated   - Language file.
 
 = 5.0.7 - 2026-06-04 =
-* Added     - Compatibility with WooCommerce 10.8.1
+* Added     - Compatibility with WooCommerce 10.8.1.
 * Fixed     - An issue in the Report Abuse button workflow where the reporting process was not functioning as expected #1975.
 * Fixed     - A bug in the Store Application Rejection flow where rejection actions were not being processed correctly #1941.
 * Added     - Introduced support for a new parameter allowing exclusion of specific stores from appearing on the store listing page #1931.
