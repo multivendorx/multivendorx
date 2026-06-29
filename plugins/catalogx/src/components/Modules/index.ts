@@ -25,7 +25,7 @@ export default {
         {
             id: 'quote',
             name: __('Quotation', 'catalogx'),
-            desc: "Add enquiry button for single product email enquiries to admin. Add enquiry button for single product email enquiries to admin.",
+            desc: "Let customers request custom quotes for products. Ideal for B2B and bulk pricing.",
             docLink:
                 'https://catalogx.com/docs/quotation/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
             settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=customer-engagement`,
@@ -34,7 +34,7 @@ export default {
         {
             id: 'wholesale',
             name: __('Wholesale Pricing', 'catalogx;'),
-            desc: "Add enquiry button for single product email enquiries to admin. Add enquiry button for single product email enquiries to admin. ",
+            desc: "Offer tiered pricing based on quantity or user roles for wholesale buyers.",
             docLink:
                 'https://catalogx.com/docs/wholesale-pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
             settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=wholesale`,
@@ -43,7 +43,7 @@ export default {
         {
             id: 'rules',
             name: __('Dynamic Pricing Rules', 'catalogx'),
-            desc: "Add enquiry button for single product email enquiries to admin. Add enquiry button for single product email enquiries to admin. ",
+            desc: "Apply rule-based pricing like discounts or markups based on cart, quantity, or user conditions. ",
             docLink:
                 'https://catalogx.com/docs/dynamic-pricing-rules/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
             settingsLink: `${appLocalizer.admin_url}#&tab=rules`,
