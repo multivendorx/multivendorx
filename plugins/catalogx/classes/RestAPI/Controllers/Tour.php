@@ -108,8 +108,7 @@ class Tour extends \WP_REST_Controller {
 			);
 
 			return array(
-				// 'completed' => filter_var( $tour_completed_status, FILTER_VALIDATE_BOOLEAN ),
-				'completed' => false
+				'completed' => filter_var( $tour_completed_status, FILTER_VALIDATE_BOOLEAN ),
 			);
 		} catch ( \Exception $e ) {
 			Utill::server_error( $e );
@@ -140,7 +139,7 @@ class Tour extends \WP_REST_Controller {
 			);
 
 			return array(
-				'success' => false,
+				'success' => true,
 			);
 		} catch ( \Exception $e ) {
 			Utill::server_error( $e );
