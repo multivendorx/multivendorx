@@ -4,7 +4,7 @@ export default {
     id: 'email',
     priority: 3,
     headerTitle: __('Notifications & Integrations', 'notifima'),
-    headerDescription: __('Manage subscriber notifications and connect marketing tools.', 'notifima'),
+    headerDescription: __('Control subscriber notifications, manage blocked email lists, and connect Notifima with your favorite marketing platforms.', 'notifima'),
     headerIcon: 'mail',
     proDependent: true,
     submitUrl: 'settings',
@@ -13,7 +13,7 @@ export default {
             key: 'ban_email_domains',
             type: 'textarea',
             desc: __(
-                'Specify email domains that are restricted from subscribing. You can add multiple commma seperated emails.',
+                'Prevent subscriptions from specific email domains. Enter multiple domains separated by commas.',
                 'notifima'
             ),
             label: __('Block email domains', 'notifima'),
@@ -24,7 +24,7 @@ export default {
             type: 'textarea',
             label: __('Blocked domain alert message', 'notifima'),
             desc: __(
-                'Create an alert message for users attempting to subscribe from blocked domains.',
+                'Message displayed when a customer attempts to subscribe using a blocked email domain.',
                 'notifima'
             ),
             proSetting: true,
@@ -33,7 +33,7 @@ export default {
             key: 'ban_email_addresses',
             type: 'textarea',
             desc: __(
-                'Specify email addresses that are restricted from subscribing. You can add multiple commma seperated emails.',
+                'Prevent specific email addresses from subscribing. Enter multiple email addresses separated by commas.',
                 'notifima'
             ),
             label: __('Blocked email addresses', 'notifima'),
@@ -44,7 +44,7 @@ export default {
             type: 'textarea',
             label: __('Blocked email alert message', 'notifima'),
             desc: __(
-                'Create an alert message for users attempting to subscribe from blocked Email ID.',
+                'Message displayed when a blocked email address attempts to subscribe.',
                 'notifima'
             ),
             proSetting: true,
@@ -56,7 +56,7 @@ export default {
             type: 'choice-toggle',
             label: __('Enable Mailchimp', 'notifima'),
             desc: __(
-                "Get your MailChimp API from your MailChimp <a href='https://us20.admin.mailchimp.com/account/api/manage/#create' target='blank'>account</a>. For further help, please check this doc.",
+                "Automatically add new subscribers to your Mailchimp audience and streamline your email marketing.<br>Get your MailChimp API from your MailChimp <a href='https://us20.admin.mailchimp.com/account/api/manage/#create' target='blank'>account</a>. For further help, please check this doc.",
                 'notifima'
             ),
             options: [
