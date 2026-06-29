@@ -160,7 +160,7 @@ const DashboardTab: React.FC<object> = () => {
 				'Let customers join a waitlist and automatically email them when their favorite products are available again.',
 				'notifima'
 			),
-			icon: 'commission',
+			icon: 'notification',
 		},
 		{
 			title: __('Smart inventory management', 'notifima'),
@@ -168,7 +168,7 @@ const DashboardTab: React.FC<object> = () => {
 				'Track stock levels across your store and manage inventory from a centralized dashboard.',
 				'notifima'
 			),
-			icon: 'verification3',
+			icon: 'store-analytics',
 		},
 		{
 			title: __('Grow your subscriber list', 'notifima'),
@@ -176,7 +176,7 @@ const DashboardTab: React.FC<object> = () => {
 				'Capture customer interest with product waitlists and turn subscribers into loyal, repeat buyers.',
 				'notifima'
 			),
-			icon: 'marketplace',
+			icon: 'subscriber',
 		},
 		{
 			title: __('Flexible product support', 'notifima'),
@@ -184,7 +184,7 @@ const DashboardTab: React.FC<object> = () => {
 				'Works seamlessly with simple, variable, grouped, subscription, and bundled products.',
 				'notifima'
 			),
-			icon: 'vacation',
+			icon: 'customer-support',
 		},
 		{
 			title: __('Personalized notifications', 'notifima'),
@@ -192,7 +192,7 @@ const DashboardTab: React.FC<object> = () => {
 				'Customize forms, email subjects, messages, and branding to create a consistent customer experience.',
 				'notifima'
 			),
-			icon: 'global-community',
+			icon: 'notification',
 		},
 		{
 			title: __('Export and manage data', 'notifima'),
@@ -200,7 +200,7 @@ const DashboardTab: React.FC<object> = () => {
 				'Export subscriber lists and stock data for reporting, marketing, and better inventory planning.',
 				'notifima'
 			),
-			icon: 'notification',
+			icon: 'import-export',
 		},
 	];
 

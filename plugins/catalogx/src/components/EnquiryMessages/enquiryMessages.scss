@@ -719,6 +719,18 @@
                     padding-left: 0.313rem;
                     font-size: 1.063rem;
                 }
+
+                &:has(span) {
+                    padding: 0.5rem;
+                    border: $border-light-small;
+                    border-radius: $border-radius-small;
+
+                    span{
+                        strong{
+                            padding-right: 0.45rem;
+                        }
+                    }
+                }
             }
 
             .status {

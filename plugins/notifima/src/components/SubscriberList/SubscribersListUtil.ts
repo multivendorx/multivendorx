@@ -86,22 +86,22 @@ export const subscriptions = [
 export const defaultCategoryCounts = [
 	{
 		value: 'all',
-		label: __('All', 'catalogx-pro'),
+		label: __('All', 'notifima'),
 		count: 12,
 	},
 	{
 		value: 'subscribed',
-		label: __('Subscribed', 'catalogx-pro'),
+		label: __('Subscribed', 'notifima'),
 		count: 9,
 	},
 	{
 		value: 'unsubscribed',
-		label: __('Unsubscribed', 'catalogx-pro'),
+		label: __('Unsubscribed', 'notifima'),
 		count: 0,
 	},
 	{
 		value: 'mail-sent',
-		label: __('Mail Sent', 'catalogx-pro'),
+		label: __('Mail Sent', 'notifima'),
 		count: 3,
 	},
 ];
