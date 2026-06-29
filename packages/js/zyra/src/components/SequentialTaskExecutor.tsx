@@ -199,7 +199,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
             return;
         }
 
-        if (variant) {
+        if ( ! variant) {
             setSyncStarted(true);
         }
 
