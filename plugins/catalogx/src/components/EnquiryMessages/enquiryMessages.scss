@@ -313,9 +313,9 @@
 
             .recent-message {
                 font-size: 0.75rem;
-                padding: 0 1.5rem;
                 margin: 1rem 0;
                 color: #2a2f34bf;
+                font-weight: 600;
             }
 
             .chat-list-wrapper {
@@ -326,7 +326,6 @@
                 overflow-y: auto;
                 position: relative;
                 padding-bottom: 5rem;
-                padding-top: 0.5rem;
 
 
                 &::-webkit-scrollbar {

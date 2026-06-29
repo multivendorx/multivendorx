@@ -12,7 +12,7 @@ export default {
             key: 'alert_success',
             type: 'textarea',
             desc: __(
-                '<b> Tip: </b>Utilize %product_title% for dynamic product titles and %customer_email% for personalized customer email addresses in your messages.',
+                'Message displayed after a customer successfully subscribes to notifications. <br><b> Tip: </b>Utilize %product_title% for dynamic product titles and %customer_email% for personalized customer email addresses in your messages.',
                 'notifima'
             ),
             label: __( 'Successful form submission', 'notifima' ),
@@ -21,7 +21,7 @@ export default {
             key: 'alert_email_exist',
             type: 'textarea',
             desc: __(
-                '<b> Tip: </b>Enhance personalization by incorporating %product_title% for dynamic product titles and %customer_email% for individual customer emails.',
+                'Message shown when a customer tries to subscribe using an email address that is already registered product.<br> <b> Tip: </b>Enhance personalization by incorporating %product_title% for dynamic product titles and %customer_email% for individual customer emails.',
                 'notifima'
             ),
             label: __( 'Repeated subscription alert', 'notifima' ),
@@ -30,7 +30,7 @@ export default {
             key: 'valid_email',
             type: 'textarea',
             desc: __(
-                'Personalize the message shown to users when they try to subscribe with an invalid email address.',
+                'Message shown when a customer tries to subscribe using an email address thats already registered for this product.<br>Personalize the message shown to users when they try to subscribe with an invalid email address.',
                 'notifima'
             ),
             label: __( 'Email validation error', 'notifima' ),
