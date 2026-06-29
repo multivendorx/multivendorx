@@ -28,26 +28,26 @@ const Route = () => {
     );
 };
 const bannerItem = [
-    __(
-        '<b>Double Opt-In:</b> Experience the power of Double Opt-In for our Stock Alert Form - Guaranteed precision in every notification!',
-        'notifima'
-    ),
-    __(
-        '<b>Your Subscription Hub:</b> Subscription Dashboard - Easily monitor and download lists of out-of-stock subscribers for seamless management.',
-        'notifima'
-    ),
-    __(
-        '<b>Mailchimp Bridge:</b> Seamlessly link WooCommerce out-of-stock subscriptions with Mailchimp for effective marketing.',
-        'notifima'
-    ),
-    __(
-        '<b>Unsubscribe Notifications:</b> User-Initiated Unsubscribe from In-Stock Notifications.',
-        'notifima'
-    ),
-    __(
-        '<b>Ban Spam Emails:</b> Email and Domain Blacklist for Spam Prevention.',
-        'notifima'
-    ),
+	__(
+		'<b>Automated user and course synchronization with scheduler:</b> Utilize personalized scheduling options to synchronize users and courses between WordPress and Moodle.',
+		'moowoodle'
+	),
+	__(
+		'<b>Convenient Single Sign-On login:</b> SSO enables students to access their purchased courses without the need to log in separately to the Moodle site.',
+		'moowoodle'
+	),
+	__(
+		'<b>Steady Income through Course Subscriptions:</b> Generate consistent revenue by offering courses with subscription-based model.',
+		'moowoodle'
+	),
+	__(
+		'<b>Synchronize Courses in Bulk:</b> Effortlessly synchronize multiple courses at once, ideal for managing large course catalogs.',
+		'moowoodle'
+	),
+	__(
+		'<b>Automatic User Synchronization for Moodle™ and WordPress:</b>Syncs users between Moodle™ and WordPress for seamless account management across both platforms.',
+		'moowoodle'
+	),
 ];
 const profileItems = [
 		{
