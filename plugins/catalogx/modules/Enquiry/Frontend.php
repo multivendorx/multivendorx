@@ -137,7 +137,7 @@ class Frontend {
         <div
             id="catalogx-modal"
             style="display: none;"
-            class="catalogx-modal <?php echo 'popup' === CatalogX()->setting->get_setting( 'is_disable_popup' ) ? 'popup-enable' : ''; ?>"
+            class="catalogx-modal woocommerce <?php echo 'popup' === CatalogX()->setting->get_setting( 'is_disable_popup' ) ? 'popup-enable' : ''; ?>"
         >
         </div>
         <?php

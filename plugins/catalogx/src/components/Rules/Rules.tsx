@@ -217,7 +217,7 @@ const Rules = () => {
     };
 
     return (
-        <div>
+        <>
             {openPopup && (
                 <PopupUI
                     position="lightbox"
@@ -262,7 +262,7 @@ const Rules = () => {
                     {renderTableContent()}
                 </Column>
             </Container>
-        </div>
+        </>
     );
 };
 
