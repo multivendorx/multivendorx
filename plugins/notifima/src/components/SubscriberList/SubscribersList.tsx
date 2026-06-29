@@ -23,11 +23,14 @@ const SubscribersList = () => {
                 <InfoItem
                     title={row.product}
                     avatar={{
-                        image: row.image || '',
-                        iconClass: row.image
-                            ? ''
-                            : 'single-product',
+                        iconClass: 'single-product',
                     }}
+                    descriptions={[
+						{
+							label: __('SKU', 'multivendorx'),
+							value: row.sku,
+						},
+					]}
                 />
             ),
         },
@@ -35,6 +38,7 @@ const SubscribersList = () => {
         date: { label: __('Date', 'notifima') },
         status: {
             label: __('Status', 'notifima'),
+            statusClass: (row) => `${row.status_class}`,
             type: 'status',
         },
     };
@@ -116,7 +120,7 @@ const SubscribersList = () => {
                 </PopupUI>
             )}
             <NavigatorHeader
-                headerIcon="users"
+                headerIcon="subscribers"
                 headerDescription={__(
                     'Manage product subscription requests, track subscriber statuses, and monitor email notifications sent to interested customers.',
                     'notifima'

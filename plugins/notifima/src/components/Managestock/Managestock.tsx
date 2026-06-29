@@ -24,13 +24,11 @@ const Managestock = () => {
                 <InfoItem
                     title={row.name}
                     avatar={{
-                        image: row.image || '',
-                        iconClass: row.image ? '' : 'single-product',
+                        iconClass: 'single-product',
                     }}
                 />
             ),
         },
-
         sku: {
             label: __('SKU', 'notifima'),
         },
@@ -170,7 +168,7 @@ const Managestock = () => {
                 </PopupUI>
             )}
             <NavigatorHeader
-                headerIcon="boxes"
+                headerIcon="manage-stock"
                 headerDescription={__(
                     'Manage product inventory, monitor stock availability, and update stock settings for simple and variable products.',
                     'notifima'

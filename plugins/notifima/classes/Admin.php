@@ -98,10 +98,6 @@ class Admin {
                     'name'   => __( 'Inventory Manager', 'notifima' ) . $pro_sticker,
                     'subtab' => '',
                 ),
-                'help-support'      => array(
-					'name'   => __( 'Help & Support', 'notifima' ),
-					'subtab' => '',
-				),
             );
 
             foreach ( $submenus as $slug => $submenu ) {

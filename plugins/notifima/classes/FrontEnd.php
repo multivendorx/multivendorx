@@ -291,15 +291,15 @@ class FrontEnd {
         $lead_text_html = apply_filters( 'notifima_display_product_lead_time', $variation ? $variation : $product );
 
         return $lead_text_html .
-        '<div class="notifima-subscribe-form" style="border-radius:10px;">
+        '<div class="notifima-subscribe-form woocommerce-notices-wrapper"> <ul class="woocommerce-message">
             ' . $alert_text_html . '
-            <div class="fields_wrap"> ' . $notifima_fields_html . '' . $button_html . '
-            </div>
+            <li> ' . $notifima_fields_html . '' . $button_html . '
+            </li>
             <input type="hidden" class="notifima-product-id" value="' . esc_attr( $product->get_id() ) . '" />
             <input type="hidden" class="notifima-variation-id" value="' . esc_attr( $variation ? $variation->get_id() : 0 ) . '" />
             <input type="hidden" class="notifima-product-name" value="' . esc_attr( $product->get_title() ) . '" />
             ' . $shown_interest_html . '
-        </div>';
+        </ul></div>';
     }
 
     /**

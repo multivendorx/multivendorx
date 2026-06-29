@@ -33,7 +33,7 @@ const DashboardTab: React.FC<object> = () => {
 		}
 		return (
 			<a
-				href={appLocalizer.shop_url}
+				href={appLocalizer.pro_url}
 				target="_blank"
 				className="admin-btn btn-purple"
 			>
@@ -224,16 +224,6 @@ const DashboardTab: React.FC<object> = () => {
 								{renderUpgradeButton(
 									__('Upgrade Now', 'notifima')
 								)}
-
-								<div
-									className="admin-btn"
-									onClick={() => {
-										window.location.assign('?page=catalogx-setup');
-									}}
-								>
-									{__('Launch Setup Wizard', 'notifima')}
-									<i className="adminfont-import"></i>
-								</div>
 							</div>
 						</div>
 
@@ -338,7 +328,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('notifima', 'notifima'),
+										title: __('CatalogX', 'notifima'),
 										desc: __(
 											'Turn your store into a product catalog with enquiry-based sales',
 											'notifima'
@@ -396,7 +386,7 @@ const DashboardTab: React.FC<object> = () => {
 								items={[
 									{
 										title: __(
-											'Multivendorx Pro',
+											'MultiVendorX Pro',
 											'notifima'
 										),
 										desc: __(
@@ -431,7 +421,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('Multivendorx', 'notifima'),
+										title: __('MultiVendorX', 'notifima'),
 										desc: __(
 											'Advanced stock alerts and wishlist features for WooCommerce',
 											'notifima'

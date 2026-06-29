@@ -1,9 +1,9 @@
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
-const REGISTRATION_BLOCK_GROUPS = [
+const LAYOUT_BLOCK_GROUPS = [
     {
-        id: 'form-customizer',
-        label: 'Form Customizer',
+        id: 'layout-blocks',
+        label: 'Layout Blocks',
         icon: 'user',
         blocks: [
             {
@@ -26,13 +26,6 @@ const REGISTRATION_BLOCK_GROUPS = [
                 value: 'richtext',
                 fixedName: 'richtext',
                 placeholder: 'Enter your text content here',
-            },
-            {
-                id: 'image',
-                icon: 'image',
-                value: 'image',
-                label: 'Image',
-                fixedName: 'image',
             },
             {
                 id: 'button',
@@ -68,12 +61,12 @@ export default {
     submitUrl: 'settings',
     modal: [
         {
-			key: 'store_registration_from',
+			key: 'personalize_layout_template',
 			type: 'block-builder',
 			classes: 'full-width',
-			blockGroups: REGISTRATION_BLOCK_GROUPS,
-            visibleGroups: ['form-customizer'],
-			defaultTemplateId: 'store-registration',
+			blockGroups: LAYOUT_BLOCK_GROUPS,
+            visibleGroups: ['layout-blocks'],
+			// defaultTemplateId: 'store-registration',
 		},
     ],
 };

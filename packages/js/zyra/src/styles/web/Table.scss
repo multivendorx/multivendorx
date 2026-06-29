@@ -751,6 +751,7 @@
 .badge-refund-accepted,
 .badge-open,
 .badge-confirmed,
+.badge-subscribed,
 .badge-accepted-quote {
     color: map.get(map.get($color-palette, "green"), color);
     background: map.get(map.get($color-palette, "green"), light-color);
@@ -760,6 +761,7 @@
 .badge-on-hold,
 .badge-partially_refunded,
 .badge-resolved,
+.badge-mail-sent,
 .badge-pending-quote {
     color: map.get(map.get($color-palette, "yellow"), color);
     background: map.get(map.get($color-palette, "yellow"), light-color);
