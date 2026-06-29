@@ -171,7 +171,7 @@ const Managestock = () => {
                 </PopupUI>
             )}
             <NavigatorHeader
-                headerIcon="manage-stock"
+                headerIcon="store-analytics"
                 headerDescription={__(
                     'Manage product inventory, monitor stock availability, and update stock settings for simple and variable products.',
                     'notifima'
