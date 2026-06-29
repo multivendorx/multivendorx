@@ -91,7 +91,13 @@ const SubscribersList = () => {
                 />
             ),
         },
-        email: { label: __('Email', 'notifima') },
+        email: {
+			label: __('Email', 'Email'),
+			render: (row) => { return(
+				<div className="icon-wrapper"><i className='adminfont-mail yellow'></i>{row.email}</div>
+			);
+			},
+		},
         date: { label: __('Date', 'notifima') },
         status: {
             label: __('Status', 'notifima'),
