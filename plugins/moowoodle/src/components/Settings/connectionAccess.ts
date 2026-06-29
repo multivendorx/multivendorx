@@ -52,41 +52,53 @@ export default {
 				{
 					action: 'get_site_info',
 					message: __('Connecting to Moodle', 'moowoodle'),
+					failureMessage: __('Failed to connect to Moodle.', 'moowoodle'),
 				},
 				{
 					action: 'get_courses',
 					message: __('Courses Fetch', 'moowoodle'),
+					failureMessage: __('Failed to fetch courses.', 'moowoodle'),
 				},
 				{
 					action: 'get_categories',
 					message: __('Category Fetch', 'moowoodle'),
+					failureMessage: __('Failed to fetch categories.', 'moowoodle'),
 				},
 				{
 					action: 'create_users',
 					message: __('User Creation', 'moowoodle'),
+					failureMessage: __(
+						'Failed to create the test user. Verify that Moodle SMTP/email settings are configured correctly.',
+						'moowoodle'
+					),
 				},
 				{
 					action: 'get_users',
 					message: __('User Fetch', 'moowoodle'),
+					failureMessage: __('Failed to get the test user.', 'moowoodle'),
 				},
 				{
 					action: 'update_users',
 					message: __('User Update', 'moowoodle'),
+					failureMessage: __('Failed to update the test user.', 'moowoodle'),
 					previousResponseData: ['get_users'],
 				},
 				{
 					action: 'enroll_users',
 					message: __('User Enroll', 'moowoodle'),
+					failureMessage: __('Failed to enroll user.', 'moowoodle'),
 					previousResponseData: ['get_users', 'get_courses'],
 				},
 				{
 					action: 'unenroll_users',
 					message: __('User Unenroll', 'moowoodle'),
+					failureMessage: __('Failed to unenroll user.', 'moowoodle'),
 					previousResponseData: ['get_users', 'get_courses'],
 				},
 				{
 					action: 'delete_users',
 					message: __('User Remove', 'moowoodle'),
+					failureMessage: __('Failed to delete user.', 'moowoodle'),
 					previousResponseData: ['get_users'],
 				},
 			],
@@ -118,7 +130,7 @@ export default {
 					'moowoodle'
 				),
 				appLocalizer.moodle_site_url +
-					'admin/settings.php?section=authsettingmoowoodle'
+				'admin/settings.php?section=authsettingmoowoodle'
 			),
 			size: '50%',
 			label: __('SSO secret key', 'moowoodle'),
