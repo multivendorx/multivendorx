@@ -8,7 +8,7 @@ export default {
         'Manage the endpoints for all pages on the site, ensuring proper routing and access.',
         'catalogx'
     ),
-    headerIcon: 'endpoint',
+    headerIcon: 'web-page-website',
     submitUrl: 'settings',
     modal: [
         {
