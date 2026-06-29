@@ -12,19 +12,27 @@ export default {
         {
             key: 'ban_email_domains',
             type: 'textarea',
-            desc: __(
-                'Prevent subscriptions from specific email domains. Enter multiple domains separated by commas.',
+            label: __('Block email domains', 'notifima'),
+            settingDescription: __(
+                'Specify email domains that are not allowed to subscribe for stock notifications.',
                 'notifima'
             ),
-            label: __('Block email domains', 'notifima'),
+            desc: __(
+                'Enter one or more email domains separated by commas. Customers using these domains will be prevented from subscribing.',
+                'notifima'
+            ),
             proSetting: true,
         },
         {
             key: 'ban_email_domain_text',
             type: 'textarea',
             label: __('Blocked domain alert message', 'notifima'),
+            settingDescription: __(
+                'Customize the message displayed when a customer uses a blocked email domain.',
+                'notifima'
+            ),
             desc: __(
-                'Message displayed when a customer attempts to subscribe using a blocked email domain.',
+                'This message is shown when a subscription request is rejected because the email domain is blocked.',
                 'notifima'
             ),
             proSetting: true,
@@ -32,19 +40,27 @@ export default {
         {
             key: 'ban_email_addresses',
             type: 'textarea',
-            desc: __(
-                'Prevent specific email addresses from subscribing. Enter multiple email addresses separated by commas.',
+            label: __('Blocked email addresses', 'notifima'),
+            settingDescription: __(
+                'Specify individual email addresses that are not allowed to subscribe for stock notifications.',
                 'notifima'
             ),
-            label: __('Blocked email addresses', 'notifima'),
+            desc: __(
+                'Enter one or more email addresses separated by commas. Subscription requests from these email addresses will be rejected.',
+                'notifima'
+            ),
             proSetting: true,
         },
         {
             key: 'ban_email_address_text',
             type: 'textarea',
             label: __('Blocked email alert message', 'notifima'),
+            settingDescription: __(
+                'Customize the message displayed when a blocked email address attempts to subscribe.',
+                'notifima'
+            ),
             desc: __(
-                'Message displayed when a blocked email address attempts to subscribe.',
+                'This message is shown when a subscription request is rejected because the email address is blocked.',
                 'notifima'
             ),
             proSetting: true,
@@ -55,8 +71,12 @@ export default {
             key: 'is_mailchimp_enable',
             type: 'choice-toggle',
             label: __('Marketing integration', 'notifima'),
+            settingDescription: __(
+                'Choose whether to store subscribers locally or automatically sync them with your Mailchimp audience.',
+                'notifima'
+            ),
             desc: __(
-                "Automatically add new subscribers to your Mailchimp audience and streamline your email marketing.<br>Get your MailChimp API from your MailChimp <a href='https://us20.admin.mailchimp.com/account/api/manage/#create' target='blank'>account</a>. For further help, please check this doc.",
+                '<ul><li>Store only - Save subscriber information only within your website.</li><li>Mailchimp - Automatically add new subscribers to your Mailchimp audience. Enter your Mailchimp API key below to connect your account.</li></ul>',
                 'notifima'
             ),
             options: [
@@ -71,32 +91,48 @@ export default {
                     value: 'mailchimp',
                 },
             ],
-            proSetting:true,
+            proSetting: true,
         },
         {
             key: 'mailchimp_api',
             type: 'text',
             size: 25,
             label: __('Mailchimp API Key', 'notifima'),
+            settingDescription: __(
+                'Enter your Mailchimp API key to connect your Mailchimp account.',
+                'notifima'
+            ),
+            desc: __(
+                'Generate an API key from your Mailchimp account and paste it here to enable audience synchronization.',
+                'notifima'
+            ),
             dependent: {
                 key: 'is_mailchimp_enable',
                 set: true,
-                value:'mailchimp'
+                value: 'mailchimp'
             },
             proSetting: true,
         },
         {
             key: 'mailchimp',
             type: 'sequential-task-executor',
-            variant:true,
+            variant: true,
             apilink: 'mailchimps',
             buttonText: 'Start',
             buttonIcon: 'centralized-connections',
             label: __('Mailchimp connection', 'notifima'),
+            settingDescription: __(
+                'Connect your Mailchimp account and select the audience for new subscribers.',
+                'notifima'
+            ),
+            desc: __(
+                'Start the connection process after entering a valid Mailchimp API key.',
+                'notifima'
+            ),
             dependent: {
                 key: 'is_mailchimp_enable',
                 set: true,
-                value:'mailchimp'
+                value: 'mailchimp'
             },
             proSetting: true,
         },
