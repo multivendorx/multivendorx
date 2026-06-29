@@ -134,7 +134,7 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Documentation', 'notifima'),
 			desc: __(
-				'Step-by-step guides to set up and manage your marketplace.',
+				'Step-by-step setup guides to configure Notifima quickly.',
 				'notifima'
 			),
 			iconClass: 'knowledgebase',
@@ -144,80 +144,60 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Expert consultation', 'notifima'),
 			desc: __(
-				'Get tailored advice from our marketplace specialists.',
+				'Get tailored advice from our specialists.',
 				'notifima'
 			),
 			iconClass: 'preview',
 			linkText: __('Book Consultation', 'notifima'),
 			href: 'https://catalogx.com/custom-development/',
-		},
-		{
-			title: __('Developer community', 'notifima'),
-			desc: __(
-				'Connect with our team and fellow builders on Discord.',
-				'notifima'
-			),
-			iconClass: 'global-community',
-			linkText: __('Join Discord', 'notifima'),
-			href: 'https://discord.com/channels/1376811097134469191/1376811102020829258',
-		},
-		{
-			title: __('Facebook group', 'notifima'),
-			desc: __(
-				'Share experiences and tips with other marketplace owners.',
-				'notifima'
-			),
-			iconClass: 'user-circle',
-			linkText: __('Join Group', 'notifima'),
-			href: 'https://www.facebook.com/groups/226246620006065/',
-		},
+		}
 	];
 
 	const featuresList = [
 		{
-			title: __('Membership rewards & commission', 'notifima'),
+			title: __('Back-in-stock notifications', 'notifima'),
 			desc: __(
-				'Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.',
+				'Let customers join a waitlist and automatically email them when their favorite products are available again.',
 				'notifima'
 			),
 			icon: 'commission',
 		},
 		{
-			title: __('Verified stores only', 'notifima'),
+			title: __('Smart inventory management', 'notifima'),
 			desc: __(
-				'Screen stores with document verification and approval - build a trusted marketplace from day one.',
+				'Track stock levels across your store and manage inventory from a centralized dashboard.',
 				'notifima'
 			),
 			icon: 'verification3',
 		},
 		{
-			title: __('Diversified marketplace', 'notifima'),
+			title: __('Grow your subscriber list', 'notifima'),
 			desc: __(
-				'Enable bookings, subscriptions, and auctions to boost sales and engagement.',
+				'Capture customer interest with product waitlists and turn subscribers into loyal, repeat buyers.',
 				'notifima'
 			),
 			icon: 'marketplace',
 		},
 		{
-			title: __('Vacation mode for stores', 'notifima'),
+			title: __('Flexible product support', 'notifima'),
 			desc: __(
-				'Stores can pause their stores temporarily with automatic buyer notifications - no missed messages.',
+				'Works seamlessly with simple, variable, grouped, subscription, and bundled products.',
 				'notifima'
 			),
 			icon: 'vacation',
 		},
 		{
-			title: __('Never run out of stock', 'notifima'),
+			title: __('Personalized notifications', 'notifima'),
 			desc: __(
-				'Real-time inventory tracking with automatic low-stock alerts keeps sellers prepared and buyers happy.',
+				'Customize forms, email subjects, messages, and branding to create a consistent customer experience.',
 				'notifima'
 			),
 			icon: 'global-community',
 		},
 		{
-			title: __('Autopilot notifications', 'notifima'),
+			title: __('Export and manage data', 'notifima'),
 			desc: __(
-				'Automatic emails and alerts for every order, refund, and payout - everyone stays in the loop.',
+				'Export subscriber lists and stock data for reporting, marketing, and better inventory planning.',
 				'notifima'
 			),
 			icon: 'notification',
@@ -235,7 +215,7 @@ const DashboardTab: React.FC<object> = () => {
 							</div>
 							<div className="description">
 								{__(
-									'Expand your WooCommerce store by creating a marketplace for multiple stores. Manage, grow, and scale seamlessly.',
+									'Never lose a sale because a product is out of stock. Turn product demand into revenue with smart stock alerts, waitlists, and inventory management tools for WooCommerce.',
 									'notifima'
 								)}
 							</div>
@@ -265,11 +245,11 @@ const DashboardTab: React.FC<object> = () => {
 				{!appLocalizer.khali_dabba && (
 					<Card
 						title={__(
-							'Build a professional marketplace',
+							'Recover lost sales automatically',
 							'notifima'
 						)}
 						desc={__(
-							'Unlock advanced features and premium modules to create a marketplace that stands out.',
+							'Keep customers engaged even when products are unavailable and notify them the moment items are back in stock.',
 							'notifima'
 						)}
 					>
@@ -286,13 +266,13 @@ const DashboardTab: React.FC<object> = () => {
 						<div className="pro-banner">
 							<div className="text">
 								{__(
-									'Join 8,000+ successful marketplace owners',
+									'Turn Waiting into Winning',
 									'notifima'
 								)}
 							</div>
 							<div className="des">
 								{__(
-									'Create, manage, and grow your marketplace with confidence. Trusted by thousands of entrepreneurs worldwide.',
+									'Capture customer interest today and transform tomorrows restock into instant sales.',
 									'notifima'
 								)}
 							</div>
