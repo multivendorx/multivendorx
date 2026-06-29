@@ -53,6 +53,7 @@ final class CatalogX {
         $this->services['plugin_url']             = trailingslashit( plugins_url( '', $file ) );
         $this->services['plugin_path']            = trailingslashit( dirname( $file ) );
         $this->services['plugin_base']            = plugin_basename( $file );
+        $this->services['catalogx_logs_dir']      = ( trailingslashit( wp_upload_dir( null, false )['basedir'] ) . 'catalogx-logs' );
         $this->services['version']                = CATALOGX_PLUGIN_VERSION;
         $this->services['rest_namespace']         = 'catalogx/v1';
         $this->services['block_paths']            = array();
@@ -184,6 +185,7 @@ final class CatalogX {
 
         $this->services['block']           = new Block();
         $this->services['frontendscripts'] = new FrontendScripts();
+        $this->initialize_catalogx_log();
 
         do_action( 'catalogx_loaded' );
         flush_rewrite_rules();
@@ -253,6 +255,21 @@ final class CatalogX {
         } else {
             load_textdomain( 'catalogx', WP_LANG_DIR . '/plugins/catalogx-' . determine_locale() . '.mo' );
         }
+    }
+
+    /**
+     * Get moowoodle log file name.
+     */
+    public function initialize_catalogx_log() {
+        // The log file name is stored in the options table because it is generated with an arbitrary name.
+        $log_file_name = get_option( Utill::CATALOGX_OTHER_SETTINGS['log_file'] );
+
+        if ( ! $log_file_name ) {
+            $log_file_name = uniqid( 'error' ) . '.txt';
+            update_option( Utill::CATALOGX_OTHER_SETTINGS['log_file'], $log_file_name );
+        }
+
+        $this->services['log_file']          = CatalogX()->catalogx_logs_dir . '/' . $log_file_name;
     }
 
     /**

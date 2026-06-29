@@ -230,12 +230,8 @@ class Rest {
             }
 
             return rest_ensure_response( null );
-        } catch (\Throwable $th) {
-            return new \WP_Error(
-                'server_error',
-                __( 'Unexpected server error', 'catalogx' ),
-                array( 'status' => 500 )
-            );
-        }
+        } catch ( \Exception $e ) {
+			Utill::server_error( $e );
+		}
     }
 }

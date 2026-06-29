@@ -145,6 +145,7 @@ const Rules = () => {
             ],
         },
     };
+    
     const filters = [
         {
             key: 'applicable_for',
@@ -175,6 +176,7 @@ const Rules = () => {
         filters,
         rows: dummyRules,
         totalRows: dummyRules.length,
+        onRowReorder: () => {},
     };
 
     tableProps = applyFilters(
