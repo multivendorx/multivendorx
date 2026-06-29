@@ -195,13 +195,7 @@ class Settings extends \WP_REST_Controller {
 				'message' => __( 'Settings Saved', 'catalogx' ),
 			);
 		} catch ( \Exception $e ) {
-			CatalogX()->util->log( $e );
-
-			return new \WP_Error(
-				'server_error',
-				__( 'Unexpected server error', 'catalogx' ),
-				array( 'status' => 500 )
-			);
+			Utill::server_error( $e );
 		}
 	}
 
@@ -251,13 +245,7 @@ class Settings extends \WP_REST_Controller {
 				'success' => true,
 			);
 		} catch ( \Exception $e ) {
-			CatalogX()->util->log( $e );
-
-			return new \WP_Error(
-				'server_error',
-				__( 'Unexpected server error', 'catalogx' ),
-				array( 'status' => 500 )
-			);
+			Utill::server_error( $e );
 		}
 	}
 

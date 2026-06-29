@@ -96,7 +96,6 @@ const QuoteRequests = () => {
             thousandSeparator: appLocalizer.thousand_separator,
             currencyPosition: appLocalizer.currency_position,
         },
-        onQueryUpdate: () => setopenPopup(false),
         search: {
             placeholder: __('Search...', 'catalogx'),
             size: 8,

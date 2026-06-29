@@ -9,7 +9,7 @@ namespace CatalogX\RestAPI;
 
 use CatalogX\Enquiry\Module as EnquiryModule;
 use CatalogX\Quote\Module as QuoteModule;
-
+use CatalogX\RestAPI\Controllers\Logs;
 use CatalogX\RestAPI\Controllers\Settings;
 use CatalogX\RestAPI\Controllers\Tour;
 
@@ -45,6 +45,7 @@ class Rest {
         $this->controllers = array(
             'settings' => new Settings(),
             'tour'     => new Tour(),
+            'logs'     => new Logs(),
         );
     }
 

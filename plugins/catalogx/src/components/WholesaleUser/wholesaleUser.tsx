@@ -98,8 +98,6 @@ const WholesaleUser = () => {
 			size: 8,
 		},
 		bulkActions,
-		// onBulkActionApply: () => setopenPopup(true),
-		// onQueryUpdate: () => setopenPopup(true),
 		categoryCounts: defaultCategoryCounts,
 		rows: dummyWholesalecustomer,
 		totalRows: dummyWholesalecustomer.length,
