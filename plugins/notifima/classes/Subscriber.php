@@ -165,7 +165,7 @@ class Subscriber {
         global $wpdb;
 
         // Get current user id.
-        $user_id = wp_get_current_user()->ID;
+        $user_id = Notifima()->current_user_id;
 
         // Check the email is already register or not.
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching

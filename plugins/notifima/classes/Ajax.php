@@ -28,115 +28,9 @@ class Ajax {
         // Delete unsubscribed users.
         add_action( 'wp_ajax_unsubscribe_users', array( $this, 'unsubscribe_users' ) );
         add_action( 'wp_ajax_nopriv_unsubscribe_users', array( $this, 'unsubscribe_users' ) );
-        // Export data.
-        add_action( 'wp_ajax_export_subscribers', array( $this, 'export_csv_data' ) );
         // add fields for variation product shortcode.
         add_action( 'wp_ajax_nopriv_get_subscription_form_for_variation', array( $this, 'get_subscription_form_for_variation' ) );
         add_action( 'wp_ajax_get_subscription_form_for_variation', array( $this, 'get_subscription_form_for_variation' ) );
-    }
-
-    /**
-     * Prepare data for CSV export.
-     *
-     * Generates and outputs a CSV file containing all Notifima subscription details.
-     *
-     * @param array $argument arguments for data filtering or customization.
-     * @return void
-     */
-    public function export_csv_data( $argument = array(), $nonce = '' ) {
-        if ( ! current_user_can( 'manage_options' ) || ! current_user_can( 'dc_vendor' ) ) {
-            wp_send_json_error( 'Unauthorized access.' );
-            wp_die();
-        }
-
-        $nonce_value = '';
-        if ( ! empty( $nonce ) ) {
-            $nonce_value = $nonce;
-        } elseif ( isset( $_REQUEST['_wpnonce'] ) ) {
-            $nonce_value = $_REQUEST['_wpnonce'];
-        } elseif ( isset( $_REQUEST['nonce'] ) ) {
-            $nonce_value = $_REQUEST['nonce'];
-        }
-
-        if ( ! wp_verify_nonce( $nonce_value, 'export_subscribers_nonce' ) ) {
-            wp_send_json_error( 'Invalid security token sent.' );
-            wp_die();
-        }
-
-        $get_subscribed_user = array();
-
-        // Merge the arguments with default arguments.
-        if ( ! is_array( $argument ) ) {
-            $argument = array();
-        }
-        $argument = array_merge(
-            array(
-				'limit'  => -1,
-				'return' => 'ids',
-            ),
-            $argument
-        );
-
-        $products = wc_get_products( $argument );
-
-        foreach ( $products as $product ) {
-            $product_ids = Subscriber::get_related_product( $product );
-
-            foreach ( $product_ids as $product_id ) {
-                $subscribers = Subscriber::get_product_subscribers_email( $product_id );
-                if ( $subscribers && ! empty( $subscribers ) ) {
-                    $get_subscribed_user[ $product_id ] = $subscribers;
-                }
-            }
-        }
-
-        $csv_header_string = '';
-        $csv_headers_array = array();
-        $csv_body_arrays   = array();
-        $file_name         = 'list_subscribers.csv';
-
-        // Set page headers to force download of CSV.
-        header( 'Content-type: text/x-csv' );
-        header( 'Content-Disposition: File Transfar' );
-        header( "Content-Disposition: attachment;filename= {$file_name} " );
-
-        // Set CSV headers.
-        $csv_headings = array(
-            'product_id',
-            'product_name',
-            'product_sku',
-            'product_type',
-            'subscribers',
-        );
-
-        foreach ( $csv_headings as $heading ) {
-            $csv_headers_array[] = $heading;
-        }
-        $csv_header_string = implode( ', ', $csv_headers_array );
-
-        if ( ! empty( $get_subscribed_user ) ) {
-            foreach ( $get_subscribed_user as $product_id => $subscribers ) {
-                foreach ( $subscribers as $subscriber ) {
-                    $product           = wc_get_product( $product_id );
-                    $csv_body_arrays[] = array(
-                        $product_id,
-                        $product->get_name(),
-                        $product->get_sku(),
-                        $product->get_type(),
-                        $subscriber,
-                    );
-                }
-            }
-        }
-
-        echo esc_html( $csv_header_string );
-        if ( ! empty( $csv_body_arrays ) ) {
-            foreach ( $csv_body_arrays as $csv_body_array ) {
-                echo "\r\n";
-                echo esc_html( implode( ', ', $csv_body_array ) );
-            }
-        }
-        exit();
     }
 
     /**
@@ -150,11 +44,16 @@ class Ajax {
             wp_die();
         }
 
-        $customer_email = filter_input( INPUT_POST, 'customer_email', FILTER_SANITIZE_EMAIL ) ? filter_input( INPUT_POST, 'customer_email', FILTER_SANITIZE_EMAIL ) : '';
-        $product_id     = filter_input( INPUT_POST, 'product_id', FILTER_VALIDATE_INT ) ? filter_input( INPUT_POST, 'product_id', FILTER_VALIDATE_INT ) : '';
-        $variation_id   = filter_input( INPUT_POST, 'variation_id', FILTER_VALIDATE_INT ) ? filter_input( INPUT_POST, 'variation_id', FILTER_VALIDATE_INT ) : 0;
+        $customer_email = filter_input( INPUT_POST, 'customer_email', FILTER_SANITIZE_EMAIL );
+        $customer_email = $customer_email ?: '';
 
-        $current_user = wp_get_current_user();
+        $product_id   = filter_input( INPUT_POST, 'product_id', FILTER_VALIDATE_INT );
+        $product_id   = $product_id ?: '';
+
+        $variation_id = filter_input( INPUT_POST, 'variation_id', FILTER_VALIDATE_INT );
+        $variation_id =$variation_id ?: 0;
+
+        $current_user = Notifima()->current_user;
         if ( ! empty( $current_user ) && empty( $customer_email ) ) {
             $customer_email = $current_user->user_email;
         }
@@ -189,7 +88,6 @@ class Ajax {
             }
         }
         wp_send_json( $response );
-        die();
     }
 
     /**
@@ -262,9 +160,9 @@ class Ajax {
                     ),
                 );
             } else {
-                $eligible = apply_filters( 'notifima_eligible_to_subscribe', $response, $customer_email, $product_id );
+                $subscription_status = apply_filters( 'notifima_eligible_to_subscribe', $response, $customer_email, $product_id );
 
-                if ( $eligible['status'] ) {
+                if ( $subscription_status['status'] ) {
                     Subscriber::insert_subscriber( $customer_email, $product_id );
                     Subscriber::insert_subscriber_email_trigger( wc_get_product( $product_id ), $customer_email );
                     $success_msg = $settings_array['alert_success'];
@@ -284,13 +182,12 @@ class Ajax {
                      */
                     do_action( 'notifima_subscriber_added', $customer_email );
                 } else {
-                    $response = $eligible;
+                    $response = $subscription_status;
                 }
             }
         }
 
         wp_send_json( $response );
-        die();
     }
 
     /**
@@ -316,11 +213,11 @@ class Ajax {
         $product_id   = filter_input( INPUT_POST, 'product_id', FILTER_VALIDATE_INT ) ? filter_input( INPUT_POST, 'product_id', FILTER_VALIDATE_INT ) : '';
         $variation_id = filter_input( INPUT_POST, 'variation_id', FILTER_VALIDATE_INT ) ? filter_input( INPUT_POST, 'variation_id', FILTER_VALIDATE_INT ) : '';
         $product      = wc_get_product( $product_id );
-        $child_obj    = null;
+        $variation_product    = null;
         if ( $variation_id ) {
-            $child_obj = new \WC_Product_Variation( $variation_id );
+            $variation_product = new \WC_Product_Variation( $variation_id );
         }
-        echo wp_kses( Notifima()->frontend->get_subscribe_form( $product, $child_obj ), FrontEnd::$allowed_html );
+        echo wp_kses( Notifima()->frontend->get_subscribe_form( $product, $variation_product ), FrontEnd::$allowed_html );
         die();
     }
 }

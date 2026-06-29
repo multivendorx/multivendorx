@@ -23,9 +23,9 @@ class Admin {
      */
     public function __construct() {
         // admin pages manu and submenu.
-        add_action( 'admin_menu', array( $this, 'add_menus' ), 10 );
+        add_action( 'admin_menu', array( $this, 'register_admin_menus' ), 10 );
         // admin script and style.
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ),20 );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ),20 );
 
         // create custom column.
         add_action( 'manage_edit-product_columns', array( $this, 'display_subscriber_header' ) );
@@ -55,7 +55,7 @@ class Admin {
     /**
      * Add options page.
      */
-    public function add_menus() {
+    public function register_admin_menus() {
            add_menu_page(
                 'Notifima',
                 'Notifima',
@@ -110,11 +110,7 @@ class Admin {
 
             foreach ( $submenu_items as $slug => $submenu_item ) {
                 // prepare subtab if subtab is exist.
-                $subtab = '';
-
-                if ( $submenu_item['subtab'] ) {
-                    $subtab = '&subtab=' . $submenu_item['subtab'];
-                }
+                $subtab = $submenu_item['subtab'] ? '&subtab=' . $submenu_item['subtab'] : '';
 
                 add_submenu_page(
                     'notifima',
@@ -215,7 +211,7 @@ class Admin {
      *
      * @return void
      */
-    public function enqueue_admin_script() {
+    public function enqueue_admin_assets() {
         if ( get_current_screen()->id === 'toplevel_page_notifima' ) {
             wp_enqueue_script( 'wp-element' );
 
@@ -247,8 +243,8 @@ class Admin {
      */
     public function display_subscriber_count_in_column( $column_name, $post_id ) {
         if ( 'product_subscriber' === $column_name ) {
-            $no_of_subscriber = get_post_meta( $post_id, 'no_of_subscribers', true );
-            echo '<div class="product-subscribtion-column">' . esc_html( ( isset( $no_of_subscriber ) && $no_of_subscriber > 0 ) ? $no_of_subscriber : 0 ) . '</div>';
+            $subscriber_count = get_post_meta( $post_id, 'no_of_subscribers', true );
+            echo '<div class="product-subscribtion-column">' . esc_html( max( 0, (int) $subscriber_count ) ) . '</div>';
         }
     }
 
@@ -259,11 +255,11 @@ class Admin {
         global $post;
         $product = wc_get_product( $post->ID );
         if ( Subscriber::is_product_outofstock( $product ) ) {
-            $no_of_subscriber = $product->get_meta( Utill::NOTIFIMA_PRODUCT_META['subscribers'], true );
+            $subscriber_count = $product->get_meta( Utill::NOTIFIMA_PRODUCT_META['subscribers'], true );
             ?>
             <p class="form-field">
                 <label class=""><?php esc_attr_e( 'Number of Interested Person( s )', 'notifima' ); ?></label>
-                <span class="no-subscriber"><?php echo esc_html( ( isset( $no_of_subscriber ) && $no_of_subscriber > 0 ) ? $no_of_subscriber : 0 ); ?></span>
+                <span class="no-subscriber"><?php echo esc_html( max( 0, (int) $subscriber_count ) ); ?></span>
             </p>
             <?php
         }
@@ -281,11 +277,11 @@ class Admin {
     public function display_product_subscriber_count_in_variation_metabox( $loop, $variation_data, $variation ) {
         $product = wc_get_product( $variation->ID );
         if ( Subscriber::is_product_outofstock( $product ) ) {
-            $product_subscriber = $product->get_meta( Utill::NOTIFIMA_PRODUCT_META['subscribers'], true );
+            $subscriber_count = $product->get_meta( Utill::NOTIFIMA_PRODUCT_META['subscribers'], true );
             ?>
             <p class="form-row form-row-full interested-person">
                 <label class="stock-label"><?php esc_attr_e( 'Number of Interested Person( s ) : ', 'notifima' ); ?></label>
-                <div class="variation-no-subscriber"><?php echo esc_html( ( isset( $product_subscriber ) && $product_subscriber > 0 ) ? $product_subscriber : 0 ); ?></div>
+                <div class="variation-no-subscriber"><?php echo esc_html( max( 0, (int) $subscriber_count ) ); ?></div>
             </p>
             <?php
         }

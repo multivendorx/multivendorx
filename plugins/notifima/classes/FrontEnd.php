@@ -56,9 +56,9 @@ class FrontEnd {
      */
     public function __construct() {
         // enqueue scripts.
-        add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
         // enqueue styles.
-        add_action( 'wp_enqueue_scripts', array( $this, 'frontend_styles' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_styles' ) );
 
         add_action( 'wp', array( $this, 'load_subscription_form' ) );
 
@@ -72,12 +72,14 @@ class FrontEnd {
      * Add the product subscription form in single product page.
      */
     public function load_subscription_form() {
-        if ( is_product() ) {
-            add_action( 'woocommerce_simple_add_to_cart', array( $this, 'display_product_subscription_form' ), 31 );
-            add_action( 'woocommerce_after_variations_form', array( $this, 'display_product_subscription_form' ), 31 );
-            // support for grouped products.
-            add_filter( 'woocommerce_grouped_product_list_column_price', array( $this, 'display_in_grouped_product' ), 10, 2 );
+        if ( ! is_product() ) {
+            return;
         }
+
+        add_action( 'woocommerce_simple_add_to_cart', array( $this, 'display_product_subscription_form' ), 31 );
+        add_action( 'woocommerce_after_variations_form', array( $this, 'display_product_subscription_form' ), 31 );
+        // support for grouped products.
+        add_filter( 'woocommerce_grouped_product_list_column_price', array( $this, 'append_grouped_product_subscription_form' ), 10, 2 );
     }
 
     /**
@@ -85,7 +87,7 @@ class FrontEnd {
      *
      * @return void
      */
-    public function frontend_scripts() {
+    public function enqueue_frontend_scripts() {
         FrontendScripts::load_scripts();
         FrontendScripts::localize_scripts( 'notifima-frontend-script' );
         if ( is_product() || is_shop() || is_product_category() ) {
@@ -100,7 +102,7 @@ class FrontEnd {
      *
      * @return void
      */
-    public function frontend_styles() {
+    public function enqueue_frontend_styles() {
         FrontendScripts::load_scripts();
         if ( is_product() ) {
             // Enqueue your frontend stylesheet from here.
@@ -229,7 +231,7 @@ class FrontEnd {
      * @param string $value default html.
      * @param object $child individual child of grouped product.
      */
-    public function display_in_grouped_product( $value, $child ) {
+    public function append_grouped_product_subscription_form( $value, $child ) {
         $value = $value . $this->get_subscribe_form( $child );
 
         return $value;
@@ -260,7 +262,7 @@ class FrontEnd {
         $button_settings       = $settings_array['customize_btn'];
 
         if ( is_user_logged_in() ) {
-            $current_user = wp_get_current_user();
+            $current_user = Notifima()->current_user;
             $user_email   = $current_user->data->user_email;
         }
         $placeholder = $settings_array['email_placeholder_text'];
@@ -285,7 +287,7 @@ class FrontEnd {
         $button_html = '<button style="' . $button_css . '" class="notifima-subscribe notifima-button subscribe-button-hover">' . esc_html( $button_settings['button_text'] ) . '</button>';
 
         $interested_person = get_post_meta( $variation ? $variation->get_id() : $product->get_id(), 'no_of_subscribers', true );
-        $interested_person = ( isset( $interested_person ) && $interested_person > 0 ) ? $interested_person : 0;
+        $interested_person = max( 0, (int) $interested_person );
 
         $shown_interest_html = '';
         $shown_interest_text = esc_html( $settings_array['shown_interest_text'] );
