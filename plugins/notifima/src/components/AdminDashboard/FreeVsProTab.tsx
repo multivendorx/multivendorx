@@ -318,14 +318,14 @@ const FreeVsProTab: React.FC<object> = () => {
 
 						<div className="title">
 							{__(
-								'Join 8,000+ successful marketplace owners',
+								'Turn Waiting into Winning',
 								'notifima'
 							)}
 						</div>
 
 						<div className="des">
 							{__(
-								'Build, manage, and expand your marketplace with confidence. Loved by entrepreneurs globally.',
+								'Capture customer interest today and transform tomorrows restock into instant sales.',
 								'notifima'
 							)}
 						</div>
