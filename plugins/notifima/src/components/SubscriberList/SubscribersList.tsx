@@ -196,7 +196,7 @@ const SubscribersList = () => {
                 </PopupUI>
             )}
             <NavigatorHeader
-                headerIcon="subscribers"
+                headerIcon="subscriber"
                 headerDescription={__(
                     'Manage product subscription requests, track subscriber statuses, and monitor email notifications sent to interested customers.',
                     'notifima'

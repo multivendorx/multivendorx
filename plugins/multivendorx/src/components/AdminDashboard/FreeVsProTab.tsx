@@ -269,7 +269,7 @@ const FreeVsProTab: React.FC<object> = () => {
 					)}
 					action={
 						<a
-							href="https://multivendorx.com/pricing/"
+							href="https://multivendorx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx"
 							className="admin-btn btn-purple"
 						>
 							{__('Get Pro Access Today!', 'multivendorx')}
@@ -358,7 +358,7 @@ const FreeVsProTab: React.FC<object> = () => {
 
 						<div className="button-wrapper">
 							<a
-								href="https://multivendorx.com/pricing/"
+								href="https://multivendorx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx"
 								className="admin-btn btn-purple"
 							>
 								<i className="adminfont-pro-tag"></i>

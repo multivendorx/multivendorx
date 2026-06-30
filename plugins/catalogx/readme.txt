@@ -1,7 +1,7 @@
 === CatalogX - Product Catalog Mode & product Enquiry, Request Quote for WooCommerce, Wholesale Prices, B2B, Wholesale User Roles, Dynamic Pricing, Tired Pricing & More ===
 Contributors: wcmp
 Tags: product enquiry for woocommerce, request a quote, b2b , dynamic pricing, wholesale pricing, 
-Donate link: https://multivendorx.com/donate
+Donate link: https://multivendorx.com/donate?utm_source=wporg&utm_medium=plugindescription&utm_campaign=catalogxwporg
 Requires at least: 6.4
 Tested up to: 6.8.1
 Requires PHP: 8.0

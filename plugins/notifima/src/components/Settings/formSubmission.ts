@@ -5,7 +5,7 @@ export default {
     priority: 2,
     headerTitle: __('Customer Experience', 'notifima'),
     headerDescription: __('Control how the subscription form and customer messages appear throughout your store.', 'notifima'),
-    headerIcon: 'submission-message',
+    headerIcon: 'person',
     submitUrl: 'settings',
     modal: [
         {

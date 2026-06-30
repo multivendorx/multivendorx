@@ -251,7 +251,7 @@ const FreeVsProTab: React.FC = () => {
 					)}
 					action={
 						<a
-							href="https://dualcube.com/product/moowoodle-pro/"
+							href="https://dualcube.com/product/moowoodle-pro/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
 							className="admin-btn btn-purple"
 						>
 							{__('Get Pro Access Today!', 'moowoodle')}
@@ -347,7 +347,7 @@ const FreeVsProTab: React.FC = () => {
 
 						<div className="button-wrapper">
 							<a
-								href="https://dualcube.com/product/moowoodle-pro/"
+								href="https://dualcube.com/product/moowoodle-pro/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
 								className="admin-btn btn-purple"
 							>
 								<i className="adminfont-pro-tag"></i>

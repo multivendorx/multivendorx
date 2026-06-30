@@ -43,10 +43,10 @@
         "env:start": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start && pnpm run env:start:database",
         "env:start:database": "node ../../tools/scripts/docker-compose.mjs && docker compose up -d",
         "env:dev": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start --update && pnpm run env:start:database && pnpm --if-present --filter storybook run watch:build:storybook",
-        "env:stop": "pnpm wp-env stop && docker compose down",
+        "env:stop": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env stop && docker compose down",
         "env:restart": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env restart",
         "env:clean": "pnpm wp-env clean",
-        "env:destroy": "pnpm wp-env destroy && rimraf docker-compose.yml",
+        "env:destroy": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env destroy && rimraf docker-compose.yml",
         "readme": "wp-readme-to-md",
         "composer": "composer dump-autoload && composer update",
         "clean": "node ../../tools/scripts/clean.mjs",
@@ -56,7 +56,7 @@
         "version": "node ../../tools/scripts/version-replace.mjs",
         "textdomain": "node ../../tools/scripts/update-textdomain.mjs",
         "changelog": "composer exec -- changelogger",
-        "makepot": "pnpm exec wp i18n make-pot --domain='moowoodle' --include='assets/js,public,classes,templates,config.php,moowoodle.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://dualcube.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') DualCube. All Rights Reserved.\" languages/moowoodle.pot",
+        "makepot": "pnpm exec wp i18n make-pot --domain='moowoodle' --include='assets/js,public,classes,templates,config.php,moowoodle.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://dualcube.com/contact/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle\"}' --file-comment=\"Copyright (c) $(date +'%Y') DualCube. All Rights Reserved.\" languages/moowoodle.pot",
         "makejson": "pnpm exec wp i18n make-json languages --pretty-print --no-purge"
     },
     "wireit": {
