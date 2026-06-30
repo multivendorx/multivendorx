@@ -20,24 +20,24 @@ const Managestock = () => {
     const headers = {
         product: {
             label: __('Product', 'notifima'),
+            width: '16rem',
             render: (row) => (
                 <InfoItem
                     title={row.name}
                     avatar={{
-                        image: row.image || '',
-                        iconClass: row.image ? '' : 'single-product',
+                        iconClass: 'single-product',
                     }}
+                    descriptions={[
+                        {
+                            label: __('SKU', 'catalogx'),
+                            value: row.sku || '—',
+                        },
+                    ]}
                 />
             ),
         },
-
-        sku: {
-            label: __('SKU', 'notifima'),
-        },
-
         type: {
             label: __('Type', 'notifima'),
-            type: 'status',
         },
 
         regular_price: {
@@ -65,14 +65,15 @@ const Managestock = () => {
                 />
             ),
         },
-        stock_status: {
+        status: {
             label: __('Stock Status', 'notifima'),
-            type: 'status'
+            type: 'status',
+            statusClass: (row) => `${row.status_class}`
         },
         backorders: {
             label: __('Backorders', 'notifima'),
         },
-        stock: {
+        stock_quantity: {
             label: __('Stock', 'notifima'),
         },
         subscriber_no: {
@@ -170,7 +171,7 @@ const Managestock = () => {
                 </PopupUI>
             )}
             <NavigatorHeader
-                headerIcon="boxes"
+                headerIcon="store-analytics"
                 headerDescription={__(
                     'Manage product inventory, monitor stock availability, and update stock settings for simple and variable products.',
                     'notifima'

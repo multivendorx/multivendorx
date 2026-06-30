@@ -23,9 +23,9 @@ class Admin {
      */
     public function __construct() {
         // admin pages manu and submenu.
-        add_action( 'admin_menu', array( $this, 'add_menus' ), 10 );
+        add_action( 'admin_menu', array( $this, 'register_admin_menus' ), 10 );
         // admin script and style.
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ),20 );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ),20 );
 
         // create custom column.
         add_action( 'manage_edit-product_columns', array( $this, 'display_subscriber_header' ) );
@@ -45,14 +45,18 @@ class Admin {
         add_filter( 'allowed_redirect_hosts', array( $this, 'allow_notifima_redirect_host' ) );
         // For loco translation.
         add_action( 'load_script_textdomain_relative_path', array( $this, 'textdomain_relative_path' ), 10, 2 );
+        add_action( 'woocommerce_admin_process_product_object', array( $this, 'save_product_discontinued_status' ) );
+        add_action( 'woocommerce_product_options_stock', array( $this, 'product_discontinued_checkbox' ), 10 );
+
+        add_action( 'woocommerce_variation_options_dimensions', array( $this, 'variation_discontinued_checkbox' ), 10, 3 );
+        add_action( 'woocommerce_save_product_variation', array( $this, 'save_variation_discontinued_status' ), 10, 2 );
     }
 
     /**
      * Add options page.
      */
-    public function add_menus() {
-        if ( is_admin() ) {
-            add_menu_page(
+    public function register_admin_menus() {
+           add_menu_page(
                 'Notifima',
                 'Notifima',
                 'manage_options',
@@ -81,7 +85,7 @@ class Admin {
             > Pro </span>' : '';
 
             // Array contain notifima submenu.
-            $submenus = array(
+            $submenu_items = array(
                 'dashboard'         => array(
                     'name'   => __( 'Dashboard', 'notifima' ),
                     'subtab' => '',
@@ -98,24 +102,16 @@ class Admin {
                     'name'   => __( 'Inventory Manager', 'notifima' ) . $pro_sticker,
                     'subtab' => '',
                 ),
-                'help-support'      => array(
-					'name'   => __( 'Help & Support', 'notifima' ),
-					'subtab' => '',
-				),
             );
 
-            foreach ( $submenus as $slug => $submenu ) {
+            foreach ( $submenu_items as $slug => $submenu_item ) {
                 // prepare subtab if subtab is exist.
-                $subtab = '';
-
-                if ( $submenu['subtab'] ) {
-                    $subtab = '&subtab=' . $submenu['subtab'];
-                }
+                $subtab = $submenu_item['subtab'] ? '&subtab=' . $submenu_item['subtab'] : '';
 
                 add_submenu_page(
                     'notifima',
-                    $submenu['name'],
-                    "<span style='position: relative; display: block; width: 100%;' class='admin-menu'>" . $submenu['name'] . '</span>',
+                    $submenu_item['name'],
+                    "<span style='position: relative; display: block; width: 100%;' class='admin-menu'>" . $submenu_item['name'] . '</span>',
                     'manage_options',
                     'notifima#&tab=' . $slug . $subtab,
                     '__return_null'
@@ -142,7 +138,6 @@ class Admin {
             }
 
             remove_submenu_page( 'notifima', 'notifima' );
-        }
     }
 
     /**
@@ -181,8 +176,8 @@ class Admin {
         foreach ( $post_ids as $post_id ) {
             $product_ids = Subscriber::get_related_product( wc_get_product( $post_id ) );
             foreach ( $product_ids as $product_id ) {
-                $emails = Subscriber::get_product_subscribers_email( $product_id );
-                foreach ( $emails as $alert_id => $to ) {
+                $subscriber_emails = Subscriber::get_product_subscribers_email( $product_id );
+                foreach ( $subscriber_emails as $alert_id => $to ) {
                     Subscriber::update_subscriber( $alert_id, 'unsubscribed' );
                 }
                 delete_post_meta( $product_id, 'no_of_subscribers' );
@@ -199,8 +194,9 @@ class Admin {
      * @return void
      */
     public function subscribers_bulk_action_admin_notice() {
-        if ( ! empty( filter_input( INPUT_POST, 'bulk_remove_subscribers', FILTER_SANITIZE_NUMBER_INT ) ) ) {
-            $bulk_remove_count = filter_input( INPUT_POST, 'bulk_remove_subscribers', FILTER_SANITIZE_NUMBER_INT );
+        $bulk_remove_count = filter_input( INPUT_POST, 'bulk_remove_subscribers', FILTER_SANITIZE_NUMBER_INT );
+
+        if ( ! empty( $bulk_remove_count ) ) {
             // Translators: This message is to display removed subscribers count for the product.
             printf( '<div id="message" class="updated fade"><p>' . esc_html( _n( 'Removed subscribers from %s product.', 'Removed subscribers from %s products.', $bulk_remove_count, 'notifima' ) ) . '</p></div>', esc_html( $bulk_remove_count ) );
         }
@@ -211,7 +207,7 @@ class Admin {
      *
      * @return void
      */
-    public function enqueue_admin_script() {
+    public function enqueue_admin_assets() {
         if ( get_current_screen()->id === 'toplevel_page_notifima' ) {
             wp_enqueue_script( 'wp-element' );
 
@@ -243,8 +239,8 @@ class Admin {
      */
     public function display_subscriber_count_in_column( $column_name, $post_id ) {
         if ( 'product_subscriber' === $column_name ) {
-            $no_of_subscriber = get_post_meta( $post_id, 'no_of_subscribers', true );
-            echo '<div class="product-subscribtion-column">' . esc_html( ( isset( $no_of_subscriber ) && $no_of_subscriber > 0 ) ? $no_of_subscriber : 0 ) . '</div>';
+            $subscriber_count = get_post_meta( $post_id, 'no_of_subscribers', true );
+            echo '<div class="product-subscribtion-column">' . esc_html( max( 0, (int) $subscriber_count ) ) . '</div>';
         }
     }
 
@@ -255,11 +251,11 @@ class Admin {
         global $post;
         $product = wc_get_product( $post->ID );
         if ( Subscriber::is_product_outofstock( $product ) ) {
-            $no_of_subscriber = $product->get_meta( 'no_of_subscribers', true );
+            $subscriber_count = $product->get_meta( Utill::NOTIFIMA_PRODUCT_META['subscribers'], true );
             ?>
             <p class="form-field">
                 <label class=""><?php esc_attr_e( 'Number of Interested Person( s )', 'notifima' ); ?></label>
-                <span class="no-subscriber"><?php echo esc_html( ( isset( $no_of_subscriber ) && $no_of_subscriber > 0 ) ? $no_of_subscriber : 0 ); ?></span>
+                <span class="no-subscriber"><?php echo esc_html( max( 0, (int) $subscriber_count ) ); ?></span>
             </p>
             <?php
         }
@@ -277,11 +273,11 @@ class Admin {
     public function display_product_subscriber_count_in_variation_metabox( $loop, $variation_data, $variation ) {
         $product = wc_get_product( $variation->ID );
         if ( Subscriber::is_product_outofstock( $product ) ) {
-            $product_subscriber = $product->get_meta( 'no_of_subscribers', true );
+            $subscriber_count = $product->get_meta( Utill::NOTIFIMA_PRODUCT_META['subscribers'], true );
             ?>
             <p class="form-row form-row-full interested-person">
                 <label class="stock-label"><?php esc_attr_e( 'Number of Interested Person( s ) : ', 'notifima' ); ?></label>
-                <div class="variation-no-subscriber"><?php echo esc_html( ( isset( $product_subscriber ) && $product_subscriber > 0 ) ? $product_subscriber : 0 ); ?></div>
+                <div class="variation-no-subscriber"><?php echo esc_html( max( 0, (int) $subscriber_count ) ); ?></div>
             </p>
             <?php
         }
@@ -336,5 +332,60 @@ class Admin {
         }
 
         return $hosts;
+    }
+
+    /**
+     * Save product discontinued status.
+     *
+     * @param \WC_Product $product Product object.
+     */
+    public function save_product_discontinued_status( $product ) {
+        $product_discontinued = filter_input( INPUT_POST, Utill::NOTIFIMA_PRODUCT_META['product_discontinued'], FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+        $product->update_meta_data( Utill::NOTIFIMA_PRODUCT_META['product_discontinued'], $product_discontinued ? 'yes' : '' );
+    }
+
+    /**
+     * Add product discontinued checkbox.
+     */
+    public function product_discontinued_checkbox() {
+        woocommerce_wp_checkbox(
+            array(
+                'id'          => Utill::NOTIFIMA_PRODUCT_META['product_discontinued'],
+                'label'       => __( 'Mark this product as discontinued', 'notifima' ),
+                'description' => __( 'Mark this product as discontinued from the shop.', 'notifima' ),
+            )
+        );
+    }
+    /**
+     * Add variation discontinued checkbox.
+     *
+     * @param int      $loop           Variation loop index.
+     * @param array    $variation_data Variation data.
+     * @param \WP_Post $variation      Variation object.
+     */
+    public function variation_discontinued_checkbox( $loop, $variation_data, $variation ) {
+        woocommerce_wp_checkbox(
+            array(
+                'id'            => Utill::NOTIFIMA_PRODUCT_META['product_discontinued'] . '[' . $loop . ']',
+                'wrapper_class' => 'form-row form-row-full',
+                'label'         => __( 'Mark this variation as discontinued', 'notifima' ),
+                'description'   => __( 'Mark this variation as discontinued from the shop.', 'notifima' ),
+                'value'         => get_post_meta(
+                    $variation->ID,
+                    Utill::NOTIFIMA_PRODUCT_META['product_discontinued'],
+                    true
+                ),
+            )
+        );
+    }
+    /**
+     * Save variation discontinued status.
+     *
+     * @param int $variation_id Variation ID.
+     * @param int $loop         Variation loop index.
+     */
+    public function save_variation_discontinued_status( $variation_id, $loop ) {
+            $product_discontinued = filter_input( INPUT_POST, Utill::NOTIFIMA_PRODUCT_META['product_discontinued'], FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+            update_post_meta( $variation_id, Utill::NOTIFIMA_PRODUCT_META['product_discontinued'], ! empty( $product_discontinued[ $loop ] ) ? 'yes' : '' );
     }
 }

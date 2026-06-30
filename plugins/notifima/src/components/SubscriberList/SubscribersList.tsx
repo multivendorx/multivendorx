@@ -6,12 +6,69 @@ import {
     NavigatorHeader,
     PopupUI,
     TableCard,
+    getApiLink
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { defaultCategoryCounts, subscriptions } from './SubscribersListUtil';
+import axios from 'axios';
 
+interface HeaderColumn {
+    label: string;
+    csvDisplay?: boolean;
+    [key: string]: unknown;
+}
+
+interface HeaderConfig {
+    [key: string]: HeaderColumn;
+}
+
+interface RowData {
+    [key: string]: string | number | boolean | null | undefined;
+}
+export const formatLocalDate = (date?: Date) =>
+    date ? date.toISOString().split('T')[0] : '';
+
+export const downloadCSV = (
+    headers: HeaderConfig,
+    rows: RowData[],
+    filename: string = 'export.csv'
+) => {
+    if (!rows || rows.length === 0) {
+        return;
+    }
+
+    // Only include headers with csv: true
+    const csvColumns = Object.entries(headers)
+        .filter(([_, h]) => h.csvDisplay !== false)
+        .map(([key, h]) => ({ key, label: h.label }));
+
+    // Header row
+    const csvRows = [csvColumns.map((c) => `"${c.label}"`).join(',')];
+
+    // Data rows
+    rows.forEach((row) => {
+        const rowData = csvColumns
+            .map((col) => {
+                const value = row[col.key];
+                return `"${value != null ? value : ''}"`;
+            })
+            .join(',');
+        csvRows.push(rowData);
+    });
+
+    // Trigger download
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+};
 
 const SubscribersList = () => {
     const [openPopup, setopenPopup] = useState(false);
@@ -23,29 +80,53 @@ const SubscribersList = () => {
                 <InfoItem
                     title={row.product}
                     avatar={{
-                        image: row.image || '',
-                        iconClass: row.image
-                            ? ''
-                            : 'single-product',
+                        iconClass: 'single-product',
                     }}
+                    descriptions={[
+						{
+							label: __('SKU', 'notifima'),
+							value: row.sku,
+						},
+					]}
                 />
             ),
         },
-        email: { label: __('Email', 'notifima') },
+        email: {
+			label: __('Email', 'Email'),
+			render: (row) => { return(
+				<div className="icon-wrapper"><i className='adminfont-mail yellow'></i>{row.email}</div>
+			);
+			},
+		},
         date: { label: __('Date', 'notifima') },
         status: {
             label: __('Status', 'notifima'),
+            statusClass: (row) => `${row.status_class}`,
             type: 'status',
         },
     };
 
-    const buttonActions = [
-        {
-            label: __('Download CSV', 'notifima'),
-            icon: 'download',
-            onClickWithQuery: () => setopenPopup(true),
-        },
-    ];
+    const downloadCSVByQuery = () => {
+        // Call the API
+        axios
+            .get(getApiLink(appLocalizer, 'subscribers'), {
+                headers: { 'X-WP-Nonce': appLocalizer.nonce },
+                params: { export: true },
+            })
+            .then((response) => {
+                const rows = response.data || [];
+
+                downloadCSV(
+                    headers,
+                    rows,
+                    `subscriber.csv`
+                );
+            })
+            .catch((error) => {
+                console.error('CSV download failed:', error);
+            });
+    };
+
     const filters = [
         {
             key: 'created_at',
@@ -53,12 +134,11 @@ const SubscribersList = () => {
             type: 'date',
         },
     ];
+
     const defaultTableProps = {
         headers,
-        buttonActions,
         categoryCounts: defaultCategoryCounts,
         filters,
-        onQueryUpdate: () => setopenPopup(false),
         search: {
             placeholder: __('Search...', 'notifima'),
             size: 8,
@@ -68,7 +148,7 @@ const SubscribersList = () => {
                     value: '',
                 },
                 {
-                    label: __('product Name', 'notifima'),
+                    label: __('Product Name', 'notifima'),
                     value: 'product_name',
                 },
                 {
@@ -86,7 +166,6 @@ const SubscribersList = () => {
         defaultTableProps
     );
 
-
     const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
             return (
@@ -102,6 +181,7 @@ const SubscribersList = () => {
             </>
         );
     };
+
     return (
         <>
             {openPopup && (
@@ -116,12 +196,19 @@ const SubscribersList = () => {
                 </PopupUI>
             )}
             <NavigatorHeader
-                headerIcon="users"
+                headerIcon="subscribers"
                 headerDescription={__(
                     'Manage product subscription requests, track subscriber statuses, and monitor email notifications sent to interested customers.',
                     'notifima'
                 )}
                 headerTitle={__('Subscribers', 'notifima')}
+                buttons={[
+                    {
+                        label: __('Download CSV', 'notifima'),
+                        icon: 'download',
+                        onClick: downloadCSVByQuery,
+                    },
+                ]}
             />
             <Container general>
                 <Column>

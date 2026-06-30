@@ -241,16 +241,16 @@
                 border: none;
                 color: $text-color;
 
-                &.select {
-                    max-width: 2rem;
+                &.expand {
+                    max-width: 1rem;
                     padding-right: 0;
                 }
-
                 &.sortable {
                     cursor: pointer;
                 }
 
-                &.id {
+                &.id,
+                &.select {
                     max-width: 2rem;
                     padding-right: 0;
                 }
@@ -321,7 +321,14 @@
                 background: $background-white;
                 margin: 0.725rem 0;
                 border: 0.063rem solid transparent;
+                &.variation-row{
+                    background: transparent !important;
+                    border-bottom: 0.063rem solid #fff !important;
 
+                    .admin-column:nth-child(2){
+                        min-width: 16rem;
+                    }
+                }
                 .admin-column {
                     padding: 1rem 0.85rem;
                     font-size: 0.9rem;
@@ -377,7 +384,8 @@
                         padding-right: 0;
                         flex-grow: 1;
                     }
-                    &.drag{
+                    &.drag,
+                    &.expand{
                         max-width: 1rem;
                         padding-right: 0;
                         flex-grow: 1;
@@ -521,7 +529,7 @@
                 margin-bottom: 0;
             }
 
-            .admin-row:has(input[type="checkbox"]:checked) {
+            .admin-row:has(.admin-column.select input[type="checkbox"]:checked) {
                 border: 0.063rem solid $theme-color;
             }
 
@@ -751,6 +759,7 @@
 .badge-refund-accepted,
 .badge-open,
 .badge-confirmed,
+.badge-subscribed,
 .badge-accepted-quote {
     color: map.get(map.get($color-palette, "green"), color);
     background: map.get(map.get($color-palette, "green"), light-color);
@@ -760,6 +769,7 @@
 .badge-on-hold,
 .badge-partially_refunded,
 .badge-resolved,
+.badge-mail-sent,
 .badge-pending-quote {
     color: map.get(map.get($color-palette, "yellow"), color);
     background: map.get(map.get($color-palette, "yellow"), light-color);

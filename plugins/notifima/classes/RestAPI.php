@@ -22,9 +22,7 @@ class RestAPI {
      * RestAPI constructor.
      */
     public function __construct() {
-        if ( current_user_can( 'manage_options' ) ) {
-            add_action( 'rest_api_init', array( $this, 'register_rest_api' ) );
-        }
+        add_action( 'rest_api_init', array( $this, 'register_rest_api' ) );
     }
 
     /**
@@ -37,7 +35,7 @@ class RestAPI {
             Notifima()->rest_namespace,
             '/settings',
             array(
-				'methods'             => 'POST',
+				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'save_settings' ),
 				'permission_callback' => array( $this, 'notifima_permission' ),
 			)
@@ -47,11 +45,22 @@ class RestAPI {
             Notifima()->rest_namespace,
             '/stock-notification-form',
             array(
-				'methods'             => 'GET',
+				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_stock_notification_form' ),
 				'permission_callback' => array( $this, 'notifima_permission' ),
 			)
         );
+
+        register_rest_route(
+            Notifima()->rest_namespace,
+            '/subscribers',
+            array(
+                'methods'             => \WP_REST_Server::READABLE,
+                'callback'            => array( $this, 'get_subscriber' ),
+                'permission_callback' => array( $this, 'get_items_permissions_check' ),
+            )
+        );
+
     }
 
     /**
@@ -61,6 +70,15 @@ class RestAPI {
      */
     public function notifima_permission() {
         return current_user_can( 'manage_options' );
+    }
+
+    /**
+     * Check if a given request has access to get items.
+     *
+     * @param \WP_REST_Request The REST request object.
+     */
+    public function get_items_permissions_check( $request ) {
+        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
     }
 
     /**
@@ -75,15 +93,15 @@ class RestAPI {
             return $nonce_check;
         }
         try {
-            $get_settings_data = $request->get_param( 'setting' );
-            $settingsname      = $request->get_param( 'settingName' );
-            $settingsname      = str_replace( '-', '_', $settingsname );
-            $optionname        = 'notifima_' . $settingsname . '_settings';
+            $settings = $request->get_param( 'setting' );
+            $settings_key      = $request->get_param( 'settingName' );
+            $settings_key      = str_replace( '-', '_', $settings_key );
+            $option_name       = 'notifima_' . $settings_key . '_settings';
 
             // save the settings in database.
-            Notifima()->setting->update_option( $optionname, $get_settings_data );
+            Notifima()->setting->update_option( $option_name, $settings );
 
-            do_action( 'notifima_after_save_settings', $settingsname, $get_settings_data );
+            do_action( 'notifima_after_save_settings', $settings_key, $settings );
 
             return array(
                 'type'    => 'success',
@@ -121,6 +139,82 @@ class RestAPI {
             return rest_ensure_response( array( 'html' => ob_get_clean() ) );
         } catch ( \Exception $e ) {
 			return new \WP_Error(
+                'server_error',
+                __('Unexpected server error', 'notifima'),
+                array('status' => 500)
+            );
+        }
+    }
+
+    /**
+     * Retrieve subscribers.
+     *
+     * @param \WP_REST_Request The request object.
+     */
+    public function get_subscriber( $request ) {
+        $nonce_check = Utill::validate_nonce( $request );
+
+        if ( is_wp_error( $nonce_check ) ) {
+            return $nonce_check;
+        }
+
+        try {
+            $export = rest_sanitize_boolean( $request->get_param( 'export' ) );
+
+            if ( ! $export ) {
+                $response = rest_ensure_response( array() );
+                return apply_filters( 'notifima_pro_subscribers_list', $response, $request );
+            }
+
+            $query_args = array(
+                'post_type'      => array( 'product', 'product_variation' ),
+                'post_status'    => 'publish',
+                'posts_per_page' => -1,
+                'fields'         => 'ids',
+            );
+
+            $product_ids = get_posts( $query_args );
+            
+            $subscriber_records = Utill::get_subscribers( $product_ids );
+
+            $subscriber_items = array();
+
+            foreach ( $subscriber_records as $subscriber ) {
+                $product = wc_get_product( $subscriber->product_id );
+                $image   = get_the_post_thumbnail_url( $subscriber->product_id, 'full' );
+                $user    = get_user_by( 'email', $subscriber->email );
+                $date    = wp_date( get_option( 'date_format' ), strtotime( $subscriber->create_time ) );
+
+                $statuses = array(
+                    'mailsent' => __( 'Mail Sent', 'notifima' ),
+                    'subscribed' => __( 'Subscribed', 'notifima' ),
+                    'unsubscribed' => __( 'Unsubscribed', 'notifima' ),
+                );
+
+                $status_key        = $subscriber->status;
+                $subscriber_status = $statuses[ $status_key ] ?? '-';
+
+                $subscriber_items[] = apply_filters(
+                    'notifima_all_subscribers_list',
+                    array(
+                        'id'         => $subscriber->id,
+                        'date'       => $date,
+                        'email'      => $subscriber->email,
+                        'status'     => $subscriber_status,
+                        'status_key' => $status_key,
+                        'reg_user'   => $user ? __( 'Yes', 'notifima' ): __( 'No', 'notifima' ),
+                        'user_link'  => $user ? get_edit_user_link( $user->ID ) : '',
+                        'product'    => $product ? $product->get_name() : '',
+                        'product_id' => $product ? $product->get_id() : '',
+                        'image'      => $image  ?: wc_placeholder_img_src(),
+                    ),
+                    $subscriber
+                );
+            }
+
+            return rest_ensure_response( $subscriber_items );
+        } catch ( \Exception $e ) {
+            return new \WP_Error(
                 'server_error',
                 __('Unexpected server error', 'notifima'),
                 array('status' => 500)

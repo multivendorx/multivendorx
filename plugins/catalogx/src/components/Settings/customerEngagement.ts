@@ -118,7 +118,7 @@ export default {
                 'catalogx'
             ),
             settingDescription: __(
-                'Choose which products display the enquiry option.',
+                'Limit enquiries to products currently unavailable for purchase.',
                 'catalogx'
             ),
             desc: __(
@@ -178,7 +178,7 @@ export default {
             dependentPlugin: [
                 {
                     plugin: 'woocommerce-product-stock-alert/product_stock_alert.php',
-                    name: 'Notifima',
+                    name: 'catalogx',
                     link: 'https://wordpress.org/plugins/woocommerce-product-stock-alert/',
                 }
             ]

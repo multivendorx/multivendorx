@@ -191,6 +191,8 @@ class Notifima {
      * @return void
      */
     public function init_classes() {
+        $this->container['current_user']    = wp_get_current_user();
+        $this->container['current_user_id'] = get_current_user_id();
         $this->container['util']            = new Utill();
         $this->container['setting']         = new Setting();
         $this->container['ajax']            = new Ajax();

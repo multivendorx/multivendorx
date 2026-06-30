@@ -33,7 +33,7 @@ const DashboardTab: React.FC<object> = () => {
 		}
 		return (
 			<a
-				href={appLocalizer.shop_url}
+				href={appLocalizer.pro_url}
 				target="_blank"
 				className="admin-btn btn-purple"
 			>
@@ -62,7 +62,7 @@ const DashboardTab: React.FC<object> = () => {
 
 				[
 					'woocommerce-catalog-enquiry',
-					'woocommerce-product-stock-alert',
+					'dc-woocommerce-multi-vendor',
 				].forEach((slug) => {
 					statusMap[slug] = pluginList.some(
 						(plugin: WPPlugin) =>
@@ -134,7 +134,7 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Documentation', 'notifima'),
 			desc: __(
-				'Step-by-step guides to set up and manage your marketplace.',
+				'Step-by-step setup guides to configure Notifima quickly.',
 				'notifima'
 			),
 			iconClass: 'knowledgebase',
@@ -144,83 +144,63 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Expert consultation', 'notifima'),
 			desc: __(
-				'Get tailored advice from our marketplace specialists.',
+				'Get tailored advice from our specialists.',
 				'notifima'
 			),
 			iconClass: 'preview',
 			linkText: __('Book Consultation', 'notifima'),
 			href: 'https://catalogx.com/custom-development/',
-		},
-		{
-			title: __('Developer community', 'notifima'),
-			desc: __(
-				'Connect with our team and fellow builders on Discord.',
-				'notifima'
-			),
-			iconClass: 'global-community',
-			linkText: __('Join Discord', 'notifima'),
-			href: 'https://discord.com/channels/1376811097134469191/1376811102020829258',
-		},
-		{
-			title: __('Facebook group', 'notifima'),
-			desc: __(
-				'Share experiences and tips with other marketplace owners.',
-				'notifima'
-			),
-			iconClass: 'user-circle',
-			linkText: __('Join Group', 'notifima'),
-			href: 'https://www.facebook.com/groups/226246620006065/',
-		},
+		}
 	];
 
 	const featuresList = [
 		{
-			title: __('Membership rewards & commission', 'notifima'),
+			title: __('Back-in-stock notifications', 'notifima'),
 			desc: __(
-				'Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.',
-				'notifima'
-			),
-			icon: 'commission',
-		},
-		{
-			title: __('Verified stores only', 'notifima'),
-			desc: __(
-				'Screen stores with document verification and approval - build a trusted marketplace from day one.',
-				'notifima'
-			),
-			icon: 'verification3',
-		},
-		{
-			title: __('Diversified marketplace', 'notifima'),
-			desc: __(
-				'Enable bookings, subscriptions, and auctions to boost sales and engagement.',
-				'notifima'
-			),
-			icon: 'marketplace',
-		},
-		{
-			title: __('Vacation mode for stores', 'notifima'),
-			desc: __(
-				'Stores can pause their stores temporarily with automatic buyer notifications - no missed messages.',
-				'notifima'
-			),
-			icon: 'vacation',
-		},
-		{
-			title: __('Never run out of stock', 'notifima'),
-			desc: __(
-				'Real-time inventory tracking with automatic low-stock alerts keeps sellers prepared and buyers happy.',
-				'notifima'
-			),
-			icon: 'global-community',
-		},
-		{
-			title: __('Autopilot notifications', 'notifima'),
-			desc: __(
-				'Automatic emails and alerts for every order, refund, and payout - everyone stays in the loop.',
+				'Let customers join a waitlist and automatically email them when their favorite products are available again.',
 				'notifima'
 			),
 			icon: 'notification',
+		},
+		{
+			title: __('Smart inventory management', 'notifima'),
+			desc: __(
+				'Track stock levels across your store and manage inventory from a centralized dashboard.',
+				'notifima'
+			),
+			icon: 'store-analytics',
+		},
+		{
+			title: __('Grow your subscriber list', 'notifima'),
+			desc: __(
+				'Capture customer interest with product waitlists and turn subscribers into loyal, repeat buyers.',
+				'notifima'
+			),
+			icon: 'subscriber',
+		},
+		{
+			title: __('Flexible product support', 'notifima'),
+			desc: __(
+				'Works seamlessly with simple, variable, grouped, subscription, and bundled products.',
+				'notifima'
+			),
+			icon: 'customer-support',
+		},
+		{
+			title: __('Personalized notifications', 'notifima'),
+			desc: __(
+				'Customize forms, email subjects, messages, and branding to create a consistent customer experience.',
+				'notifima'
+			),
+			icon: 'notification',
+		},
+		{
+			title: __('Export and manage data', 'notifima'),
+			desc: __(
+				'Export subscriber lists and stock data for reporting, marketing, and better inventory planning.',
+				'notifima'
+			),
+			icon: 'import-export',
 		},
 	];
 
@@ -231,11 +211,11 @@ const DashboardTab: React.FC<object> = () => {
 					<div className="pro-banner-wrapper">
 						<div className="content">
 							<div className="heading">
-								{__('Welcome to notifima', 'notifima')}
+								{__('Welcome to Notifima', 'notifima')}
 							</div>
 							<div className="description">
 								{__(
-									'Expand your WooCommerce store by creating a marketplace for multiple stores. Manage, grow, and scale seamlessly.',
+									'Never lose a sale because a product is out of stock. Turn product demand into revenue with smart stock alerts, waitlists, and inventory management tools for WooCommerce.',
 									'notifima'
 								)}
 							</div>
@@ -244,16 +224,6 @@ const DashboardTab: React.FC<object> = () => {
 								{renderUpgradeButton(
 									__('Upgrade Now', 'notifima')
 								)}
-
-								<div
-									className="admin-btn"
-									onClick={() => {
-										window.location.assign('?page=catalogx-setup');
-									}}
-								>
-									{__('Launch Setup Wizard', 'notifima')}
-									<i className="adminfont-import"></i>
-								</div>
 							</div>
 						</div>
 
@@ -265,11 +235,11 @@ const DashboardTab: React.FC<object> = () => {
 				{!appLocalizer.khali_dabba && (
 					<Card
 						title={__(
-							'Build a professional marketplace',
+							'Recover lost sales automatically',
 							'notifima'
 						)}
 						desc={__(
-							'Unlock advanced features and premium modules to create a marketplace that stands out.',
+							'Keep customers engaged even when products are unavailable and notify them the moment items are back in stock.',
 							'notifima'
 						)}
 					>
@@ -286,13 +256,13 @@ const DashboardTab: React.FC<object> = () => {
 						<div className="pro-banner">
 							<div className="text">
 								{__(
-									'Join 8,000+ successful marketplace owners',
+									'Turn Waiting into Winning',
 									'notifima'
 								)}
 							</div>
 							<div className="des">
 								{__(
-									'Create, manage, and grow your marketplace with confidence. Trusted by thousands of entrepreneurs worldwide.',
+									'Capture customer interest today and transform tomorrows restock into instant sales.',
 									'notifima'
 								)}
 							</div>
@@ -316,18 +286,16 @@ const DashboardTab: React.FC<object> = () => {
 			<Column grid={4}>
 				<Card title={__('Extend your website', 'notifima')}>
 					<Column row>
+						{/* CatalogX */}
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
 							<ItemListUI
 								className="mini-card"
 								background
 								items={[
 									{
-										title: __(
-											'CatalogX Pro',
-											'notifima'
-										),
+										title: __('CatalogX Pro', 'notifima'),
 										desc: __(
-											'Advanced product catalog with enhanced enquiry features and premium templates',
+											'Advanced product catalog, quotation, and enquiry features with premium templates.',
 											'notifima'
 										),
 										img: catalogx,
@@ -342,10 +310,7 @@ const DashboardTab: React.FC<object> = () => {
 													target="_blank"
 													rel="noopener noreferrer"
 												>
-													{__(
-														'Get Pro',
-														'notifima'
-													)}
+													{__('Get Pro', 'notifima')}
 												</a>
 											</>
 										),
@@ -358,9 +323,9 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('notifima', 'notifima'),
+										title: __('CatalogX', 'notifima'),
 										desc: __(
-											'Turn your store into a product catalog with enquiry-based sales',
+											'Turn your WooCommerce store into a product catalog with enquiry and quotation features.',
 											'notifima'
 										),
 										img: catalogx,
@@ -381,7 +346,8 @@ const DashboardTab: React.FC<object> = () => {
 													}}
 													style={{
 														pointerEvents:
-															installing
+															installing ===
+																'woocommerce-catalog-enquiry'
 																? 'none'
 																: 'auto',
 														opacity:
@@ -397,10 +363,7 @@ const DashboardTab: React.FC<object> = () => {
 															'Installing...',
 															'notifima'
 														)
-														: __(
-															'Install',
-															'notifima'
-														)}
+														: __('Install', 'notifima')}
 												</a>
 											</>
 										),
@@ -409,18 +372,19 @@ const DashboardTab: React.FC<object> = () => {
 							/>
 						)}
 
-						{pluginStatus['woocommerce-product-stock-alert'] ? (
+						{/* MultiVendorX */}
+						{pluginStatus['dc-woocommerce-multi-vendor'] ? (
 							<ItemListUI
 								className="mini-card"
 								background
 								items={[
 									{
 										title: __(
-											'Multivendorx Pro',
+											'MultiVendorX Pro',
 											'notifima'
 										),
 										desc: __(
-											'Advanced stock alerts, wishlist features, and premium notification system',
+											'Advanced multivendor marketplace features with premium vendor management tools.',
 											'notifima'
 										),
 										img: multivendorx,
@@ -431,14 +395,11 @@ const DashboardTab: React.FC<object> = () => {
 													{__('Pro', 'notifima')}
 												</span>
 												<a
-													href="https://notifima.com/pricing/"
+													href="https://multivendorx.com/pricing/"
 													target="_blank"
 													rel="noopener noreferrer"
 												>
-													{__(
-														'Get Pro',
-														'notifima'
-													)}
+													{__('Get Pro', 'notifima')}
 												</a>
 											</>
 										),
@@ -451,9 +412,9 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('Multivendorx', 'notifima'),
+										title: __('MultiVendorX', 'notifima'),
 										desc: __(
-											'Advanced stock alerts and wishlist features for WooCommerce',
+											'Build and manage a multivendor marketplace with powerful vendor management features.',
 											'notifima'
 										),
 										img: multivendorx,
@@ -468,32 +429,30 @@ const DashboardTab: React.FC<object> = () => {
 														e.preventDefault();
 														if (!installing) {
 															installOrActivatePlugin(
-																'woocommerce-product-stock-alert'
+																'dc-woocommerce-multi-vendor'
 															);
 														}
 													}}
 													style={{
 														pointerEvents:
-															installing
+															installing ===
+																'dc-woocommerce-multi-vendor'
 																? 'none'
 																: 'auto',
 														opacity:
 															installing ===
-																'woocommerce-product-stock-alert'
+																'dc-woocommerce-multi-vendor'
 																? 0.6
 																: 1,
 													}}
 												>
 													{installing ===
-														'woocommerce-product-stock-alert'
+														'dc-woocommerce-multi-vendor'
 														? __(
 															'Installing...',
 															'notifima'
 														)
-														: __(
-															'Install',
-															'notifima'
-														)}
+														: __('Install', 'notifima')}
 												</a>
 											</>
 										),
@@ -509,6 +468,7 @@ const DashboardTab: React.FC<object> = () => {
 					<div className="quick-link">
 						{resources.map((res) => (
 							<ItemListUI
+								key={res.href}
 								className="mini-card list"
 								border
 								items={[
@@ -517,18 +477,14 @@ const DashboardTab: React.FC<object> = () => {
 										desc: __(res.desc, 'notifima'),
 										icon: res.iconClass,
 										tags: (
-											<>
-												<a
-													href={res.href}
-													target="blank"
-												>
-													{__(
-														res.linkText,
-														'notifima'
-													)}
-													<i className="adminfont-external"></i>
-												</a>
-											</>
+											<a
+												href={res.href}
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												{__(res.linkText, 'notifima')}
+												<i className="adminfont-external"></i>
+											</a>
 										),
 									},
 								]}

@@ -181,11 +181,7 @@ class Quotes extends \WP_REST_Controller {
                 )
             );
         } catch ( \Exception $e ) {
-            return new \WP_Error(
-                'server_error',
-                __( 'Unexpected server error', 'catalogx' ),
-                array( 'status' => 500 )
-            );
-        }
+			Utill::server_error( $e );
+		}
     }
 }

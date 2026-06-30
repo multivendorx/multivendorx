@@ -25,6 +25,11 @@ class Utill {
         'personalize-layout'    => 'notifima_personalize_layout_settings',
     );
 
+    public const NOTIFIMA_PRODUCT_META = array(
+        'subscribers'           => 'no_of_subscribers',
+        'product_discontinued'  => 'product_discontinued',
+    );
+
     /**
      * Function to console and debug errors.
      *
@@ -149,4 +154,28 @@ class Utill {
 
         return true;
     }
+
+    /**
+     * Get all subscribers by product IDs.
+     *
+     * @param array $product_ids Product IDs.
+     * @return array
+     */
+    public static function get_subscribers( $product_ids ) {
+        global $wpdb;
+
+        if ( empty( $product_ids ) ) {
+            return array();
+        }
+
+        $table       = $wpdb->prefix . 'notifima_subscribers';
+        $product_ids = array_map( 'absint', $product_ids );
+        $in_clause   = implode( ',', $product_ids );
+
+        $query = "SELECT * FROM {$table} WHERE product_id IN ({$in_clause}) ORDER BY id DESC";
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        return $wpdb->get_results( $query );
+    }
+
 }

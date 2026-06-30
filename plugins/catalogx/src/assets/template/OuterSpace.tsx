@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 
 export const OuterSpace = {
 	id: 'store-registration',
-	name: __('Sales Report', 'catalogx'),
+	name: __('Outer Space', 'catalogx'),
 	blocks: [
 		// first column (heading)
 		{

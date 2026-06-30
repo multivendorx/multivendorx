@@ -56,9 +56,9 @@ class FrontEnd {
      */
     public function __construct() {
         // enqueue scripts.
-        add_action( 'wp_enqueue_scripts', array( &$this, 'frontend_scripts' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
         // enqueue styles.
-        add_action( 'wp_enqueue_scripts', array( &$this, 'frontend_styles' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_styles' ) );
 
         add_action( 'wp', array( $this, 'load_subscription_form' ) );
 
@@ -72,20 +72,22 @@ class FrontEnd {
      * Add the product subscription form in single product page.
      */
     public function load_subscription_form() {
-        if ( is_product() ) {
-            add_action( 'woocommerce_simple_add_to_cart', array( $this, 'display_product_subscription_form' ), 31 );
-            add_action( 'woocommerce_after_variations_form', array( $this, 'display_product_subscription_form' ), 31 );
-            // support for grouped products.
-            add_filter( 'woocommerce_grouped_product_list_column_price', array( $this, 'display_in_grouped_product' ), 10, 2 );
+        if ( ! is_product() ) {
+            return;
         }
+
+        add_action( 'woocommerce_simple_add_to_cart', array( $this, 'display_product_subscription_form' ), 31 );
+        add_action( 'woocommerce_after_variations_form', array( $this, 'display_product_subscription_form' ), 31 );
+        // support for grouped products.
+        add_filter( 'woocommerce_grouped_product_list_column_price', array( $this, 'append_grouped_product_subscription_form' ), 10, 2 );
     }
 
     /**
-     * Enque Frontend's JavaScript. And Send Localize data.
+     * Enqueue frontend JavaScript. And Send Localize data.
      *
      * @return void
      */
-    public function frontend_scripts() {
+    public function enqueue_frontend_scripts() {
         FrontendScripts::load_scripts();
         FrontendScripts::localize_scripts( 'notifima-frontend-script' );
         if ( is_product() || is_shop() || is_product_category() ) {
@@ -100,13 +102,11 @@ class FrontEnd {
      *
      * @return void
      */
-    public function frontend_styles() {
+    public function enqueue_frontend_styles() {
         FrontendScripts::load_scripts();
-        if ( function_exists( 'is_product' ) ) {
-            if ( is_product() ) {
-                // Enqueue your frontend stylesheet from here.
-                FrontendScripts::enqueue_style( 'notifima-frontend-style' );
-            }
+        if ( is_product() ) {
+            // Enqueue your frontend stylesheet from here.
+            FrontendScripts::enqueue_style( 'notifima-frontend-style' );
         }
     }
 
@@ -122,13 +122,13 @@ class FrontEnd {
         $border_size          = '';
         $border_size          = ( ! empty( $button_settings['button_border_size'] ) ) ? $button_settings['button_border_size'] . 'px' : '1px';
 
-        if ( isset( $button_settings['button_background_color_onhover'] ) ) {
+        if ( ! empty( $button_settings['button_background_color_onhover'] ) ) {
             $button_onhover_style .= ! empty( $button_settings['button_background_color_onhover'] ) ? 'background: ' . $button_settings['button_background_color_onhover'] . ' !important;' : '';
         }
-        if ( isset( $button_settings['button_text_color_onhover'] ) ) {
+        if ( ! empty( $button_settings['button_text_color_onhover'] ) ) {
             $button_onhover_style .= ! empty( $button_settings['button_text_color_onhover'] ) ? ' color: ' . $button_settings['button_text_color_onhover'] . ' !important;' : '';
         }
-        if ( isset( $button_settings['button_border_color_onhover'] ) ) {
+        if ( ! empty( $button_settings['button_border_color_onhover'] ) ) {
             $button_onhover_style .= ! empty( $button_settings['button_border_color_onhover'] ) ? 'border: ' . $border_size . ' solid' . $button_settings['button_border_color_onhover'] . ' !important;' : '';
         }
         if ( $button_onhover_style ) {
@@ -181,7 +181,7 @@ class FrontEnd {
     }
 
     /**
-     * Display product subscription form if product is outof stock
+     * Display product subscription form if product is out of stock
      *
      * @param   WC_Product|null $product_obj The WooCommerce product object. Defaults to global product if null.
      * @return  void
@@ -194,6 +194,11 @@ class FrontEnd {
         if ( empty( $product_obj ) ) {
             return;
         }
+
+        if( 'yes' === $product_obj->get_meta(Utill::NOTIFIMA_PRODUCT_META['product_discontinued'])){
+            return;
+        }
+
         $guest_subscription_enabled = Notifima()->setting->get_setting( 'is_guest_subscriptions_enable','' );
         if ( 'logged_in' === $guest_subscription_enabled && ! is_user_logged_in() ) {
             return;
@@ -202,13 +207,14 @@ class FrontEnd {
         $backorders_enabled = Notifima()->setting->get_setting( 'is_enable_backorders','' );
 
         $stock_status = $product_obj->get_stock_status();
-        if ( 'onbackorder' === $stock_status && 'out_of_stock_and_backorder' === $backorders_enabled ) {
+        if ( 'onbackorder' === $stock_status && 'out_of_stock' === $backorders_enabled ) {
             return;
         }
 
         if ( $product_obj->is_type( 'variable' ) ) {
             $get_variations = count( $product_obj->get_children() ) <= apply_filters( 'woocommerce_ajax_variation_threshold', 30, $product_obj );
             $get_variations = $get_variations ? $product_obj->get_available_variations() : false;
+
             if ( $get_variations ) {
                 echo '<div class="notifima-shortcode-subscribe-form" data-product-id="' . esc_attr( $product_obj->get_id() ) . '"></div>';
             } else {
@@ -223,16 +229,16 @@ class FrontEnd {
      * Display Request Stock Form for grouped product.
      *
      * @param string $value default html.
-     * @param object $child indivisual child of grouped product.
+     * @param object $child individual child of grouped product.
      */
-    public function display_in_grouped_product( $value, $child ) {
+    public function append_grouped_product_subscription_form( $value, $child ) {
         $value = $value . $this->get_subscribe_form( $child );
 
         return $value;
     }
 
     /**
-     * Get subscribe from's HTML content for a particular product.
+     * Get subscribe form HTML content for a particular product.
      * If the product is not outofstock it return empty string.
      *
      * @param  mixed $product   product variable.
@@ -243,6 +249,11 @@ class FrontEnd {
         if ( ! Subscriber::is_product_outofstock( $variation ? $variation : $product ) ) {
             return '';
         }
+
+        if( $variation && 'yes' === $variation->get_meta(Utill::NOTIFIMA_PRODUCT_META['product_discontinued'])){
+            return;
+        }
+        
         $notifima_fields_array = array();
         $notifima_fields_html  = '';
         $user_email            = '';
@@ -251,7 +262,7 @@ class FrontEnd {
         $button_settings       = $settings_array['customize_btn'];
 
         if ( is_user_logged_in() ) {
-            $current_user = wp_get_current_user();
+            $current_user = Notifima()->current_user;
             $user_email   = $current_user->data->user_email;
         }
         $placeholder = $settings_array['email_placeholder_text'];
@@ -276,7 +287,7 @@ class FrontEnd {
         $button_html = '<button style="' . $button_css . '" class="notifima-subscribe notifima-button subscribe-button-hover">' . esc_html( $button_settings['button_text'] ) . '</button>';
 
         $interested_person = get_post_meta( $variation ? $variation->get_id() : $product->get_id(), 'no_of_subscribers', true );
-        $interested_person = ( isset( $interested_person ) && $interested_person > 0 ) ? $interested_person : 0;
+        $interested_person = max( 0, (int) $interested_person );
 
         $shown_interest_html = '';
         $shown_interest_text = esc_html( $settings_array['shown_interest_text'] );
@@ -291,15 +302,15 @@ class FrontEnd {
         $lead_text_html = apply_filters( 'notifima_display_product_lead_time', $variation ? $variation : $product );
 
         return $lead_text_html .
-        '<div class="notifima-subscribe-form" style="border-radius:10px;">
+        '<div class="notifima-subscribe-form woocommerce-notices-wrapper"> <ul class="woocommerce-message">
             ' . $alert_text_html . '
-            <div class="fields_wrap"> ' . $notifima_fields_html . '' . $button_html . '
-            </div>
+            <li> ' . $notifima_fields_html . '' . $button_html . '
+            </li>
             <input type="hidden" class="notifima-product-id" value="' . esc_attr( $product->get_id() ) . '" />
             <input type="hidden" class="notifima-variation-id" value="' . esc_attr( $variation ? $variation->get_id() : 0 ) . '" />
             <input type="hidden" class="notifima-product-name" value="' . esc_attr( $product->get_title() ) . '" />
             ' . $shown_interest_html . '
-        </div>';
+        </ul></div>';
     }
 
     /**

@@ -8,9 +8,7 @@ import {
 	NoticeManager,
 } from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
-import { getModuleData } from '../../services/templateService';
 import axios from 'axios';
-import proPopupContent from '../Popup/Popup';
 import catalogxIcon from '../../assets/images/catalogx-icon.png';
 import multivendorxIcon from '../../assets/images/multivendorx-icon.png';
 import notifimaIcon from '../../assets/images/notifima-icon.png';
@@ -136,7 +134,7 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Documentation', 'catalogx'),
 			desc: __(
-				'Step-by-step guides to set up and manage your marketplace.',
+				'Explore our resources and connect with our team to get the most out of CatalogX.',
 				'catalogx'
 			),
 			iconClass: 'knowledgebase',
@@ -146,80 +144,60 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Expert consultation', 'catalogx'),
 			desc: __(
-				'Get tailored advice from our marketplace specialists.',
+				'Get personalized guidance from our WooCommerce specialists for your store setup and growth strategy.',
 				'catalogx'
 			),
 			iconClass: 'preview',
 			linkText: __('Book Consultation', 'catalogx'),
 			href: 'https://catalogx.com/custom-development/',
 		},
-		{
-			title: __('Developer community', 'catalogx'),
-			desc: __(
-				'Connect with our team and fellow builders on Discord.',
-				'catalogx'
-			),
-			iconClass: 'global-community',
-			linkText: __('Join Discord', 'catalogx'),
-			href: 'https://discord.com/channels/1376811097134469191/1376811102020829258',
-		},
-		{
-			title: __('Facebook group', 'catalogx'),
-			desc: __(
-				'Share experiences and tips with other marketplace owners.',
-				'catalogx'
-			),
-			iconClass: 'user-circle',
-			linkText: __('Join Group', 'catalogx'),
-			href: 'https://www.facebook.com/groups/226246620006065/',
-		},
 	];
 
 	const featuresList = [
 		{
-			title: __('Membership rewards & commission', 'catalogx'),
+			title: __('Turbocharge Your Catalog', 'catalogx'),
 			desc: __(
-				'Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.',
+				`Enable catalog mode site-wide or per product, hide prices and 'Add to Cart' until login, and pair it with 'Send Enquiry' to turn visitors into leads.`,
 				'catalogx'
 			),
 			icon: 'commission',
 		},
 		{
-			title: __('Verified stores only', 'catalogx'),
+			title: __('Enquiries That Convert', 'catalogx'),
 			desc: __(
-				'Screen stores with document verification and approval - build a trusted marketplace from day one.',
+				`Let customers send enquiries — even on out-of-stock items — with a customizable form, page-builder-ready button, and role-based routing to the right team.`,
 				'catalogx'
 			),
 			icon: 'verification3',
 		},
 		{
-			title: __('Diversified marketplace', 'catalogx'),
+			title: __('Bulk Enquiries, Bigger Sales', 'catalogx'),
 			desc: __(
-				'Enable bookings, subscriptions, and auctions to boost sales and engagement.',
+				`Process multiple bulk or high-value enquiries at once with the Enquiry Cart, so you can gauge demand and respond faster across the board.`,
 				'catalogx'
 			),
 			icon: 'marketplace',
 		},
 		{
-			title: __('Vacation mode for stores', 'catalogx'),
+			title: __('Quote Like a Pro', 'catalogx'),
 			desc: __(
-				'Stores can pause their stores temporarily with automatic buyer notifications - no missed messages.',
+				`Let customers request quotes on any product with a page-builder-ready button, restrict it to registered users, and send branded, easy-to-find quotations.`,
 				'catalogx'
 			),
 			icon: 'vacation',
 		},
 		{
-			title: __('Never run out of stock', 'catalogx'),
+			title: __('Smart Pricing, Smarter Profits', 'catalogx'),
 			desc: __(
-				'Real-time inventory tracking with automatic low-stock alerts keeps sellers prepared and buyers happy.',
+				`Create custom roles without coding and apply dynamic, quantity-based pricing and category-wide discounts for each one.`,
 				'catalogx'
 			),
 			icon: 'global-community',
 		},
 		{
-			title: __('Autopilot notifications', 'catalogx'),
+			title: __('Wholesale Made Simple', 'catalogx'),
 			desc: __(
-				'Automatic emails and alerts for every order, refund, and payout - everyone stays in the loop.',
+				`Set a dedicated wholesale role with separate pricing, hide or show retail prices as needed, block coupon use, and apply flexible amount or percentage discounts.`,
 				'catalogx'
 			),
 			icon: 'notification',
@@ -237,7 +215,7 @@ const DashboardTab: React.FC<object> = () => {
 							</div>
 							<div className="description">
 								{__(
-									'Expand your WooCommerce store by creating a marketplace for multiple stores. Manage, grow, and scale seamlessly.',
+									'Transform your WooCommerce store into a powerful product catalog with enquiries, quotations, and wholesale pricing.',
 									'catalogx'
 								)}
 							</div>
@@ -268,7 +246,7 @@ const DashboardTab: React.FC<object> = () => {
 				{!appLocalizer.khali_dabba && (
 					<Card
 						title={__(
-							'Build a professional marketplace',
+							'Build a smarter catalog',
 							'catalogx'
 						)}
 						badge={[
@@ -278,7 +256,7 @@ const DashboardTab: React.FC<object> = () => {
 							},
 						]}
 						desc={__(
-							'Unlock advanced features and premium modules to create a marketplace that stands out.',
+							'Unlock advanced features and premium modules to turn your store into a lead-generating, quote-ready sales engine.',
 							'catalogx'
 						)}
 					>
@@ -295,13 +273,13 @@ const DashboardTab: React.FC<object> = () => {
 						<div className="pro-banner">
 							<div className="text">
 								{__(
-									'Join 8,000+ successful marketplace owners',
+									'Join 5,000+ stores closing more deals with CatalogX',
 									'catalogx'
 								)}
 							</div>
 							<div className="des">
 								{__(
-									'Create, manage, and grow your marketplace with confidence. Trusted by thousands of entrepreneurs worldwide.',
+									'Capture leads, manage enquiries, and grow your sales with confidence. Trusted by thousands of businesses worldwide.',
 									'catalogx'
 								)}
 							</div>
