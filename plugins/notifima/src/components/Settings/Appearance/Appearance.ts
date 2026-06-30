@@ -1,9 +1,9 @@
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 export default {
     id: 'appearance',
     priority: 1,
-    headerTitle: __('Appearance', 'notifima'),
-    headerDescription: __('Customize stock alert form.', 'notifima'),
+    headerTitle: __('Restock alerts setup', 'notifima'),
+    headerDescription: __('Configure how customers subscribe to restock notifications.', 'notifima'),
     headerIcon: 'appearance',
     submitUrl: 'settings',
     modal: [
@@ -74,6 +74,15 @@ export default {
             ],
         },
         {
+            key: 'section',
+            type: 'section',
+            title: __('Restock Timing (Lead Time)', 'catalogx'),
+            desc: __(
+                'when and how lead time is shown',
+                'catalogx'
+            ),
+        },
+        {
             key: 'display_lead_times',
             type: 'checkbox',
             label: __('Stock Status for Lead Time', 'notifima'),
@@ -133,7 +142,7 @@ export default {
         {
             key: 'lead_time_static_text',
             type: 'text',
-            label: __('Lead time static text', 'notifima'),
+            label: __('Lead time default message', 'notifima'),
             settingDescription: __(
                 'Enter the default lead time message displayed for products using the static lead time format.',
                 'notifima'
@@ -153,6 +162,15 @@ export default {
                     set: true,
                 },
             ],
+        },
+        {
+            key: 'section',
+            type: 'section',
+            title: __('Confirm the subscriber', 'catalogx'),
+            desc: __(
+                'Make sure every subscriber is real and opted-in.',
+                'catalogx'
+            ),
         },
         {
             key: 'is_enable_no_interest',
@@ -248,6 +266,15 @@ export default {
             proSetting: true,
         },
         {
+            key: 'section',
+            type: 'section',
+            title: __('Keep bots out', 'catalogx'),
+            desc: __(
+                'Protect your form from automated and fake signups.',
+                'catalogx'
+            ),
+        },
+        {
             key: 'is_recaptcha_enable',
             type: 'choice-toggle',
             label: __('Subscription protection', 'notifima'),
@@ -310,6 +337,13 @@ export default {
                 set: true,
                 value: 'recaptcha',
             },
+        },
+        {
+            key: 'section',
+            type: 'section',
+            title: __('Admin Notifications', 'catalogx'),
+            desc: __('Who on your team gets alerted','catalogx'
+            ),
         },
         {
             key: 'additional_alert_email',

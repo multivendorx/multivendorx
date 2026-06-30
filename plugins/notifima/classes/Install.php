@@ -287,6 +287,7 @@ class Install {
             'additional_alert_email'        => get_option( 'admin_email' ),
             'is_guest_subscriptions_enable' => 'logged_in',
             'lead_time_format'              => 'static',
+            'is_recaptcha_enable'           => 'no_verification',
 
             // Form customization settings.
             'email_placeholder_text'        => Notifima()->default_value['email_placeholder_text'],
