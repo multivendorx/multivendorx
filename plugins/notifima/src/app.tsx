@@ -51,27 +51,15 @@ const bannerItem = [
 ];
 const profileItems = [
 		{
-			title: __("What's New", 'notifima'),
-			icon: 'new',
-			link: 'https://multivendorx.com/latest-release/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
-			targetBlank: true,
-		},
-		{
 			title: __('Get Support', 'notifima'),
 			icon: 'customer-support',
-			link: 'https://multivendorx.com/support-forum/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
-			targetBlank: true,
-		},
-		{
-			title: __('Community', 'notifima'),
-			icon: 'global-community',
-			link: 'https://multivendorx.com/community/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+			link: 'https://calendly.com/contact-notifima/30min?back=1',
 			targetBlank: true,
 		},
 		{
 			title: __('Documentation', 'notifima'),
 			icon: 'knowledgebase',
-			link: 'https://multivendorx.com/docs/knowledgebase/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+			link: 'https://notifima.com/docs/',
 			targetBlank: true,
 		}
 	];
