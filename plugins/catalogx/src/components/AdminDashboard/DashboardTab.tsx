@@ -139,7 +139,7 @@ const DashboardTab: React.FC<object> = () => {
 			),
 			iconClass: 'knowledgebase',
 			linkText: __('Explore Docs', 'catalogx'),
-			href: 'https://catalogx.com/docs/knowledgebase/',
+			href: 'https://catalogx.com/docs/knowledgebase/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
 		},
 		{
 			title: __('Expert consultation', 'catalogx'),
@@ -149,7 +149,7 @@ const DashboardTab: React.FC<object> = () => {
 			),
 			iconClass: 'preview',
 			linkText: __('Book Consultation', 'catalogx'),
-			href: 'https://catalogx.com/custom-development/',
+			href: 'https://catalogx.com/custom-development/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
 		},
 	];
 
@@ -325,7 +325,7 @@ const DashboardTab: React.FC<object> = () => {
 													{__('Pro', 'catalogx')}
 												</span>
 												<a
-													href="https://multivendorx.com/pricing/"
+													href="https://multivendorx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx"
 													target="_blank"
 													rel="noopener noreferrer"
 												>
@@ -418,7 +418,7 @@ const DashboardTab: React.FC<object> = () => {
 													{__('Pro', 'catalogx')}
 												</span>
 												<a
-													href="https://notifima.com/pricing/"
+													href="https://notifima.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx"
 													target="_blank"
 													rel="noopener noreferrer"
 												>

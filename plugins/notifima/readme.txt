@@ -6,7 +6,7 @@ Requires at least: 6.4
 Tested up to: 6.9.0
 Requires PHP: 8.0
 Stable tag: 3.0.6
-Donate link: https://multivendorx.com/donate/
+Donate link: https://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=notifimawporg
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

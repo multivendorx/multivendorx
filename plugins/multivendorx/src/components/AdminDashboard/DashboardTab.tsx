@@ -144,7 +144,7 @@ const DashboardTab: React.FC<object> = () => {
 			),
 			iconClass: 'knowledgebase',
 			linkText: __('Explore Docs', 'multivendorx'),
-			href: 'https://multivendorx.com/docs/knowledgebase/',
+			href: 'https://multivendorx.com/docs/knowledgebase/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 		},
 		{
 			title: __('Expert consultation', 'multivendorx'),
@@ -154,7 +154,7 @@ const DashboardTab: React.FC<object> = () => {
 			),
 			iconClass: 'preview',
 			linkText: __('Book Consultation', 'multivendorx'),
-			href: 'https://multivendorx.com/custom-development/',
+			href: 'https://multivendorx.com/custom-development/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 		},
 		{
 			title: __('Developer community', 'multivendorx'),
@@ -378,7 +378,7 @@ const DashboardTab: React.FC<object> = () => {
 													{__('Pro', 'multivendorx')}
 												</span>
 												<a
-													href="https://catalogx.com/pricing/"
+													href="https://catalogx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx"
 													target="_blank"
 													rel="noopener noreferrer"
 												>
@@ -471,7 +471,7 @@ const DashboardTab: React.FC<object> = () => {
 													{__('Pro', 'multivendorx')}
 												</span>
 												<a
-													href="https://notifima.com/pricing/"
+													href="https://notifima.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx"
 													target="_blank"
 													rel="noopener noreferrer"
 												>

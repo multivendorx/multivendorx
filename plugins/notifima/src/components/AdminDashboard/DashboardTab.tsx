@@ -12,7 +12,6 @@ import axios from 'axios';
 import Mascot from '../../assets/images/brand-icon.png';
 import catalogx from '../../assets/images/catalogx.png';
 import multivendorx from '../../assets/images/multivendorx.png';
-import {profileItems} from '../../app';
 
 interface WPPlugin {
 	plugin?: string;
@@ -138,9 +137,9 @@ const DashboardTab: React.FC<object> = () => {
 				'Step-by-step setup guides to configure Notifima quickly.',
 				'notifima'
 			),
-			iconClass: profileItems[1].icon,
+			iconClass: 'knowledgebase',
 			linkText: __('Explore Docs', 'notifima'),
-			href: profileItems[1].link,
+			href: 'https://notifima.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
 		},
 		{
 			title: __('Expert consultation', 'notifima'),
@@ -148,9 +147,9 @@ const DashboardTab: React.FC<object> = () => {
 				'Get tailored advice from our specialists.',
 				'notifima'
 			),
-			iconClass: profileItems[0].icon,
+			iconClass: 'customer-support',
 			linkText: __('Book Consultation', 'notifima'),
-			href: profileItems[0].link,
+			href: 'https://calendly.com/contact-notifima/30min?back=1',
 		}
 	];
 
@@ -396,7 +395,7 @@ const DashboardTab: React.FC<object> = () => {
 													{__('Pro', 'notifima')}
 												</span>
 												<a
-													href="https://multivendorx.com/pricing/"
+													href="https://multivendorx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima"
 													target="_blank"
 													rel="noopener noreferrer"
 												>

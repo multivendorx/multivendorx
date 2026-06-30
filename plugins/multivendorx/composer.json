@@ -2,7 +2,7 @@
 	"name": "multivendorx/multivendorx",
 	"description": "MultiVendorX",
 	"type": "wordpress-plugin",
-	"homepage": "https://multivendorx.com",
+	"homepage": "https://multivendorx.com?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx",
 	"license": "GPL-2.0-or-later",
 	"authors": [
 		{
