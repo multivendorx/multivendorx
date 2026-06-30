@@ -139,7 +139,7 @@ const DashboardTab: React.FC<object> = () => {
 			),
 			iconClass: 'knowledgebase',
 			linkText: __('Explore Docs', 'notifima'),
-			href: 'https://catalogx.com/docs/knowledgebase/',
+			href: 'https://notifima.com/docs/',
 		},
 		{
 			title: __('Expert consultation', 'notifima'),
@@ -147,9 +147,9 @@ const DashboardTab: React.FC<object> = () => {
 				'Get tailored advice from our specialists.',
 				'notifima'
 			),
-			iconClass: 'preview',
+			iconClass: 'customer-support',
 			linkText: __('Book Consultation', 'notifima'),
-			href: 'https://catalogx.com/custom-development/',
+			href: 'https://calendly.com/contact-notifima/30min?back=1',
 		}
 	];
 
@@ -306,7 +306,7 @@ const DashboardTab: React.FC<object> = () => {
 													{__('Pro', 'notifima')}
 												</span>
 												<a
-													href="https://catalogx.com/pricing/"
+													href="https://notifima.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima"
 													target="_blank"
 													rel="noopener noreferrer"
 												>
