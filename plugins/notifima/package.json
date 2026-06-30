@@ -57,7 +57,7 @@
         "textdomain": "node ../../tools/scripts/update-textdomain.mjs",
         "changelog": "composer exec -- changelogger",
         "makejson": "pnpm exec wp i18n make-json languages --pretty-print --no-purge",
-        "makepot": "pnpm exec wp i18n make-pot --domain='notifima' --include='assets/js,public,classes,src,templates,config.php,product_stock_alert.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://notifima.com/contact/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima"}' --file-comment=\"Copyright (c) $(date +'%Y') Notifima Inc. All Rights Reserved.\" languages/notifima.pot"
+        "makepot": "pnpm exec wp i18n make-pot --domain='notifima' --include='assets/js,public,classes,src,templates,config.php,product_stock_alert.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://notifima.com/contact/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima\"}' --file-comment=\"Copyright (c) $(date +'%Y') Notifima Inc. All Rights Reserved.\" languages/notifima.pot"
     },
     "wireit": {
         "build:project:bundle": {
