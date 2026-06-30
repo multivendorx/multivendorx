@@ -80,17 +80,17 @@ const proPopupContent = {
 		{
 			site: 'one',
 			price: '$129',
-			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3380',
+			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3380&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
 		},
 		{
 			site: 'three',
 			price: '$199',
-			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3381',
+			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3381&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
 		},
 		{
 			site: 'ten',
 			price: '$299',
-			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3382',
+			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3382&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
 		},
 	],
 };

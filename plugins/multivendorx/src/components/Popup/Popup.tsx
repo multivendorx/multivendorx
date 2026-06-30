@@ -144,17 +144,17 @@ const proPopupContent = {
 		{
 			site: '1',
 			price: '$299',
-			link: 'https://multivendorx.com/cart/?add-to-cart=143434&variation_id=143443&attribute_pa_site-license=1-site-yearly',
+			link: 'https://multivendorx.com/cart/?add-to-cart=143434&variation_id=143443&attribute_pa_site-license=1-site-yearly&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 		},
 		{
 			site: '3',
 			price: '$399',
-			link: 'https://multivendorx.com/cart/?add-to-cart=143434&variation_id=143445&attribute_pa_site-license=3-site-yearly',
+			link: 'https://multivendorx.com/cart/?add-to-cart=143434&variation_id=143445&attribute_pa_site-license=3-site-yearly&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 		},
 		{
 			site: '10',
 			price: '$499',
-			link: 'https://multivendorx.com/cart/?add-to-cart=143434&variation_id=143440&attribute_pa_site-license=10-site-yearly',
+			link: 'https://multivendorx.com/cart/?add-to-cart=143434&variation_id=143440&attribute_pa_site-license=10-site-yearly&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 		},
 	],
 };

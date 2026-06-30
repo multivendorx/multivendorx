@@ -252,7 +252,7 @@ final class MultiVendorX {
     public function plugin_row_meta( $links, $file ) {
         if ( MultiVendorX()->plugin_base === $file ) {
             $row_meta = array(
-                'docs'    => '<a href="https://multivendorx.com/docs/" aria-label="' . esc_attr__( 'View WooCommerce documentation', 'multivendorx' ) . '" target="_blank">' . esc_html__( 'Docs', 'multivendorx' ) . '</a>',
+                'docs'    => '<a href="https://multivendorx.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx" aria-label="' . esc_attr__( 'View WooCommerce documentation', 'multivendorx' ) . '" target="_blank">' . esc_html__( 'Docs', 'multivendorx' ) . '</a>',
                 'support' => '<a href="https://wordpress.org/support/plugin/dc-woocommerce-product-vendor/" aria-label="' . esc_attr__( 'Visit community forums', 'multivendorx' ) . '" target="_blank">' . esc_html__( 'Support', 'multivendorx' ) . '</a>',
             );
 

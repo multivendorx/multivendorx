@@ -59,7 +59,7 @@ export const profileItems = [
 		{
 			title: __('Documentation', 'notifima'),
 			icon: 'knowledgebase',
-			link: 'https://notifima.com/docs/',
+			link: 'https://notifima.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
 			targetBlank: true,
 		}
 	];

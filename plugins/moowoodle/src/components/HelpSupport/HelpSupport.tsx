@@ -66,7 +66,7 @@ const HelpSupport: React.FC = () => {
 				'Get personalized assistance and tailored solutions built for your eLearning platform.',
 				'moowoodle'
 			),
-			link: 'https://dualcube.com/custom-development/?utm_source=settings&utm_medium=plugin&utm_campaign=track',
+			link: 'https://dualcube.com/custom-development/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
 		},
 	];
 	return (

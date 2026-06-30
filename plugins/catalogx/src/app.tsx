@@ -100,19 +100,19 @@ const App = () => {
 		{
 			title: __("What's New", 'catalogx'),
 			icon: 'new',
-			link: 'https://catalogx.com/docs/',
+			link: 'https://catalogx.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
 			targetBlank: true,
 		},
 		{
 			title: __('Get Support', 'catalogx'),
 			icon: 'customer-support',
-			link: 'https://catalogx.com/support/',
+			link: 'https://catalogx.com/support/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
 			targetBlank: true,
 		},
 		{
 			title: __('Community', 'catalogx'),
 			icon: 'global-community',
-			link: 'https://catalogx.com/community/',
+			link: 'https://catalogx.com/community/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
 			targetBlank: true,
 		},
 	];
