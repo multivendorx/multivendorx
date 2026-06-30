@@ -49,17 +49,17 @@ const bannerItem = [
 		'notifima'
 	),
 ];
-const profileItems = [
+export const profileItems = [
 		{
 			title: __('Get Support', 'notifima'),
 			icon: 'customer-support',
-			link: appLocalizer.url.support_url,
+			link: 'https://calendly.com/contact-notifima/30min?back=1',
 			targetBlank: true,
 		},
 		{
 			title: __('Documentation', 'notifima'),
 			icon: 'knowledgebase',
-			link: appLocalizer.url.documentation_url,
+			link: 'https://notifima.com/docs/',
 			targetBlank: true,
 		}
 	];

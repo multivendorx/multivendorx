@@ -9,10 +9,6 @@ defined( 'ABSPATH' ) || exit;
 
 define( 'NOTIFIMA_PRO_SHOP_URL', 'https://notifima.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima' );
 
-define( 'NOTIFIMA_SUPPORT_URL', 'https://calendly.com/contact-notifima/30min?back=1' );
-
-define( 'NOTIFIMA_DOCUMENTATION_URL', 'https://notifima.com/docs/' );
-
 define( 'NOTIFIMA_PLUGIN_VERSION', '3.0.6' );
 
 define( 'NOTIFIMA_PLUGIN_SLUG', 'notifima' );

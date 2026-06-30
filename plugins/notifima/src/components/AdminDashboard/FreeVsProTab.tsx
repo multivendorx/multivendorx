@@ -260,7 +260,7 @@ const FreeVsProTab: React.FC<object> = () => {
 					)}
 					action={
 						<a
-							href="https://notifima.com/pricing/"
+							href= {appLocalizer.pro_url}
 							className="admin-btn btn-purple"
 						>
 							{__('Get Pro Access Today!', 'notifima')}
@@ -346,7 +346,7 @@ const FreeVsProTab: React.FC<object> = () => {
 
 						<div className="button-wrapper">
 							<a
-								href="https://notifima.com/pricing/"
+								href={appLocalizer.pro_url}
 								className="admin-btn btn-purple"
 							>
 								<i className="adminfont-pro-tag"></i>

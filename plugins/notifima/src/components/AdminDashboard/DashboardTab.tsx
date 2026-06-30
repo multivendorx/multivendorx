@@ -12,6 +12,7 @@ import axios from 'axios';
 import Mascot from '../../assets/images/brand-icon.png';
 import catalogx from '../../assets/images/catalogx.png';
 import multivendorx from '../../assets/images/multivendorx.png';
+import {profileItems} from '../../app';
 
 interface WPPlugin {
 	plugin?: string;
@@ -137,9 +138,9 @@ const DashboardTab: React.FC<object> = () => {
 				'Step-by-step setup guides to configure Notifima quickly.',
 				'notifima'
 			),
-			iconClass: 'knowledgebase',
+			iconClass: profileItems[1].icon,
 			linkText: __('Explore Docs', 'notifima'),
-			href: appLocalizer.url.documentation_url,
+			href: profileItems[1].link,
 		},
 		{
 			title: __('Expert consultation', 'notifima'),
@@ -147,9 +148,9 @@ const DashboardTab: React.FC<object> = () => {
 				'Get tailored advice from our specialists.',
 				'notifima'
 			),
-			iconClass: 'customer-support',
+			iconClass: profileItems[0].icon,
 			linkText: __('Book Consultation', 'notifima'),
-			href: appLocalizer.url.support_url,
+			href: profileItems[0].link,
 		}
 	];
 
@@ -306,7 +307,7 @@ const DashboardTab: React.FC<object> = () => {
 													{__('Pro', 'notifima')}
 												</span>
 												<a
-													href="https://notifima.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima"
+													href={appLocalizer.pro_url}
 													target="_blank"
 													rel="noopener noreferrer"
 												>
