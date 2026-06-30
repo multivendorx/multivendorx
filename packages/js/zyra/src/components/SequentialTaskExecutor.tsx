@@ -279,7 +279,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                     displayPosition="inline-notice"
                     message={
                         processStatus === 'failed'
-                            ? taskFailureMessage
+                            ? taskFailureMessage || failureMessage
                             : successMessage
                     }
                 />
