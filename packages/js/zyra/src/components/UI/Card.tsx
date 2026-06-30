@@ -108,7 +108,7 @@ const Card = ({
                             <div className="right">
                                 {action}
 
-                                {toggle && !action && (
+                                {toggle && (
                                     <i
                                         className={`adminfont-${getToggleIcon()}`}
                                         onClick={() => {
