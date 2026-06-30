@@ -1010,7 +1010,10 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
         methods: initialMethods.map((m) =>
             m.isCustom ? mergeTemplateFields(m, tplFields) : m
         ),
-        activeTab: null,
+         activeTab: (() => {
+        const firstOpenMethod = initialMethods.find(m => m.openForm === true);
+        return firstOpenMethod ? firstOpenMethod.id : null;
+    })(),
         wizardIndex: 0,
         progress: [],
         openDropdown: null,

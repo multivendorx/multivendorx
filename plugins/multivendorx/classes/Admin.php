@@ -197,7 +197,7 @@ class Admin {
                     </style>
                     <div style="margin-left: -0.75rem;" class="upgrade-to-pro"><i class="dashicons dashicons-awards"></i>' . esc_html__( 'Upgrade to Pro', 'multivendorx' ) . '</div> ',
                     'manage_options',
-                    '',
+                    'multivendorx-upgrade',
                     array( self::class, 'handle_external_redirects' )
                 );
             }

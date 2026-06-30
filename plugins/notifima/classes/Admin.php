@@ -132,7 +132,7 @@ class Admin {
                     </style>
                     <div style="margin-left: -12px;" class="upgrade-to-pro"><i class="dashicons dashicons-awards"></i>' . esc_html__( 'Upgrade to Pro', 'notifima' ) . '</div> ',
                     'manage_options',
-                    '',
+                    'notifima-upgrade',
                     array( self::class, 'handle_external_redirects' )
                 );
             }

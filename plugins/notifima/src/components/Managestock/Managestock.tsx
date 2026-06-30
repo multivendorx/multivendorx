@@ -29,7 +29,7 @@ const Managestock = () => {
                     }}
                     descriptions={[
                         {
-                            label: __('SKU', 'catalogx'),
+                            label: __('SKU', 'notifima'),
                             value: row.sku || '—',
                         },
                     ]}
