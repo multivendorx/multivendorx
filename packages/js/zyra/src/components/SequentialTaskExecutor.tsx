@@ -59,6 +59,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
     const allResponses = useRef({});
 
     const [currentCompletedIndex, setCurrentCompletedIndex] = useState(0);
+    const [taskFailureMessage, setTaskFailureMessage] = useState('');
 
     useEffect(() => {
         if (currentCompletedIndex < syncStatus.length) {
@@ -107,6 +108,22 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                 }
             );
 
+            if (response.data?.error) {
+                setProcessStatus('failed');
+                setLoading(false);
+
+                setTaskFailureMessage(
+                    `${currentTask.failureMessage || failureMessage}`
+                );
+
+                onError?.({
+                    task: currentTask,
+                    error: response.data.error,
+                });
+
+                return;
+            }
+
             allResponses.current[currentTask.action] = response.data;
             setSyncStatus((prev) => [
                 ...prev,
@@ -123,6 +140,9 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
             console.error('Task execution failed:', error);
             setProcessStatus('failed');
             setLoading(false);
+            setTaskFailureMessage(
+                `${currentTask.failureMessage || failureMessage}\n${error.message}`
+            );
             onError?.({ task: currentTask, error });
         }
     };
@@ -172,7 +192,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
     };
 
     useEffect(() => {
-        if(variant) return;
+        if (variant) return;
         fetchSyncStatus();
     }, []);
 
@@ -199,7 +219,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
             return;
         }
 
-        if ( ! variant) {
+        if (!variant) {
             setSyncStarted(true);
         }
 
@@ -259,7 +279,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                     displayPosition="inline-notice"
                     message={
                         processStatus === 'failed'
-                            ? failureMessage
+                            ? taskFailureMessage || failureMessage
                             : successMessage
                     }
                 />
