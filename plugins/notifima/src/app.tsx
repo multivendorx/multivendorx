@@ -53,13 +53,13 @@ const profileItems = [
 		{
 			title: __('Get Support', 'notifima'),
 			icon: 'customer-support',
-			link: 'https://calendly.com/contact-notifima/30min?back=1',
+			link: appLocalizer.url.support_url,
 			targetBlank: true,
 		},
 		{
 			title: __('Documentation', 'notifima'),
 			icon: 'knowledgebase',
-			link: 'https://notifima.com/docs/',
+			link: appLocalizer.url.documentation_url,
 			targetBlank: true,
 		}
 	];

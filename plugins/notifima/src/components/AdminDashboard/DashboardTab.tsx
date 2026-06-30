@@ -139,7 +139,7 @@ const DashboardTab: React.FC<object> = () => {
 			),
 			iconClass: 'knowledgebase',
 			linkText: __('Explore Docs', 'notifima'),
-			href: 'https://notifima.com/docs/',
+			href: appLocalizer.url.documentation_url,
 		},
 		{
 			title: __('Expert consultation', 'notifima'),
@@ -149,7 +149,7 @@ const DashboardTab: React.FC<object> = () => {
 			),
 			iconClass: 'customer-support',
 			linkText: __('Book Consultation', 'notifima'),
-			href: 'https://calendly.com/contact-notifima/30min?back=1',
+			href: appLocalizer.url.support_url,
 		}
 	];
 

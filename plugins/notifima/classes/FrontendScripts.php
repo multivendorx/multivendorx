@@ -280,7 +280,12 @@ class FrontendScripts {
 								'version'         => false,
 								'manage_plan_url' => NOTIFIMA_PRO_SHOP_URL,
                             )
-                        ),
+                        ),                        
+                        'url'        => array(
+								'documentation_url' => NOTIFIMA_DOCUMENTATION_URL,
+								'support_url' => NOTIFIMA_SUPPORT_URL,
+                            ),
+
 					),
                 ),
                 'notifima-frontend-script'          => array(
