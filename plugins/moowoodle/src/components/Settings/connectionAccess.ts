@@ -68,7 +68,7 @@ export default {
 					action: 'create_users',
 					message: __('User Creation', 'moowoodle'),
 					failureMessage: __(
-						'Failed to create the test user. Verify that Moodle SMTP/email settings are configured correctly.',
+						'Failed to create the test user.',
 						'moowoodle'
 					),
 				},
@@ -80,13 +80,19 @@ export default {
 				{
 					action: 'update_users',
 					message: __('User Update', 'moowoodle'),
-					failureMessage: __('Failed to update the test user.', 'moowoodle'),
+					failureMessage: __(
+						'Failed to update the test user. Verify that Moodle SMTP/email settings are configured correctly.',
+						'moowoodle'
+					),
 					previousResponseData: ['get_users'],
 				},
 				{
 					action: 'enroll_users',
 					message: __('User Enroll', 'moowoodle'),
-					failureMessage: __('Failed to enroll user.', 'moowoodle'),
+					failureMessage: __(
+						'Failed to enroll the test user. Verify that Moodle SMTP/email settings are configured correctly.',
+						'moowoodle'
+					),
 					previousResponseData: ['get_users', 'get_courses'],
 				},
 				{
