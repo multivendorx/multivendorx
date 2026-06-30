@@ -90,17 +90,17 @@ const proPopupContent = {
 		{
 			site: 'one',
 			price: '$49',
-			link: `${appLocalizer.pro_url}?add-to-cart=18156`
+			link: 'https://notifima.com/cart/?add-to-cart=699&variation_id=836&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima'
 		},
 		{
 			site: 'three',
 			price: '$69',
-			link: `${appLocalizer.pro_url}?add-to-cart=18157`,
+			link: 'https://notifima.com/cart/?add-to-cart=699&variation_id=807&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
 		},
 		{
 			site: 'ten',
 			price: '$99',
-			link: `${appLocalizer.pro_url}?add-to-cart=18158`,
+			link: 'https://notifima.com/cart/?add-to-cart=699&variation_id=808&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
 		},
 	],
 };
