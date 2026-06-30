@@ -130,7 +130,8 @@ const AddProduct = () => {
 		const shouldContinue = applyFilters(
 			'multivendorx_before_product_save',
 			true,
-			payload
+			payload,
+			setErrorMsg
 		);
 
 		if (shouldContinue) {
@@ -258,7 +259,7 @@ const AddProduct = () => {
 			{errorMsg && (
 				<Notice
 					type="error"
-					validity={2000}
+					validity={5000}
 					displayPosition="notice"
 					message={errorMsg}
 				/>
@@ -312,6 +313,7 @@ const AddProduct = () => {
 					</Card>
 					<Card
 						title={__('Recommended', 'multivendorx')}
+						toggle={true}
 						action={
 							<div className="admin-badge blue">
 								{completedCount}/{totalCount}
@@ -433,6 +435,11 @@ const AddProduct = () => {
 							</ul>
 						</div>
 					</Card>
+					{applyFilters(
+						'multivendorx_product_sidebar_cards',
+						null,
+						product
+					)}
 				</Column>
 
 				<Column grid={6}>
