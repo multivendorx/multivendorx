@@ -713,8 +713,16 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
         </aside>
     );
 
+    const hasTabsContent = (() => {
+        const hasBlockGroups = groupsToShow.some(group => group.blocks.length > 0);
+        const hasTemplates = showTemplatesTab && templates.length > 0;
+        
+        return hasBlockGroups || hasTemplates;
+    })();
+
     return (
         <div className="registration-from-wrapper">
+             {hasTabsContent && (
             <div className="elements-wrapper">
                 <TabsUI
                     tabs={[
@@ -733,7 +741,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                     ]}
                 />
             </div>
-
+             )}
             <div className="canvas-editor-wrapper">
                 <div className="canvas-editor">
                     {isFormBuilder && titleBlock && (
