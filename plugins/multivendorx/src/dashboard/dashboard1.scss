@@ -17,7 +17,7 @@ input[type="checkbox"]:checked::before {
 }
 
 // body:has(#store-dashboard) input, 
-body:has(#store-dashboard){
+body:has(#store-dashboard) {
     background: #f3f5f7;
     font-family: Figtree, sans-serif;
     font-weight: 400;
@@ -92,9 +92,11 @@ a {
     z-index: 9999;
     border-right: $border-light-small;
     transition: all 0.5s ease;
-    .close-btn{
+
+    .close-btn {
         display: none;
     }
+
     .logo-wrapper {
         display: flex;
         align-items: center;
@@ -254,7 +256,7 @@ a {
                     color: $sub-text-color;
                     cursor: pointer;
 
-                    &.hamburger{
+                    &.hamburger {
                         display: none;
                     }
                 }
@@ -750,3 +752,11 @@ a {
         color: #fff;
     }
 }
+
+// compliance-list start
+.compliance-item {
+    padding: '1.25rem';
+    border-bottom: $border-light-small;
+}
+
+// compliance-list end
