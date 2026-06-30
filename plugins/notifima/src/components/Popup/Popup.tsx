@@ -90,17 +90,17 @@ const proPopupContent = {
 		{
 			site: 'one',
 			price: '$49',
-			link: 'https://notifima.com/pricing/?add-to-cart=18156',
+			link: `${appLocalizer.pro_url}?add-to-cart=18156`
 		},
 		{
 			site: 'three',
 			price: '$69',
-			link: 'https://notifima.com/pricing/?add-to-cart=18157',
+			link: `${appLocalizer.pro_url}?add-to-cart=18156`,
 		},
 		{
 			site: 'ten',
 			price: '$99',
-			link: 'https://notifima.com/pricing/?add-to-cart=18158',
+			link: `${appLocalizer.pro_url}?add-to-cart=18158`,
 		},
 	],
 };

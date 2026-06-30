@@ -283,21 +283,21 @@ export const defaultCategoryCounts = [
 	{
 		value: 'all',
 		label: __('All', 'notifima'),
-		count: 4,
+		count: 13,
 	},
 	{
 		value: 'instock',
 		label: __('In Stock', 'notifima'),
-		count: 0,
+		count: 7,
 	},
 	{
 		value: 'onbackorder',
 		label: __('On Backorder', 'notifima'),
-		count: 0,
+		count: 4,
 	},
 	{
 		value: 'outofstock',
 		label: __('Out of Stock', 'notifima'),
-		count: 4,
+		count: 2,
 	},
 ];

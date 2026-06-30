@@ -209,7 +209,7 @@ const Pagination: React.FC<PaginationProps> = ({
                                             text: String(pageNum),
                                             color:
                                                 page === pageNum
-                                                    ? 'purple'
+                                                    ? 'purple-bg'
                                                     : 'white',
                                             onClick: () => goToPage(pageNum),
                                         }}
