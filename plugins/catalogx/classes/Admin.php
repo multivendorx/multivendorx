@@ -122,7 +122,7 @@ class Admin {
                     </style>
                 <div class="upgrade-to-pro"><i style="margin-right: 0.25rem" class="dashicons dashicons-awards"></i>' . __( 'Upgrade to pro', 'catalogx' ) . '</div>',
                 'manage_woocommerce',
-                '',
+                'catalogx-upgrade',
                 array( $this, 'handle_external_redirects' )
             );
         }
