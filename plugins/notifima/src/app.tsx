@@ -7,7 +7,6 @@ import { AdminHeader, Notice } from 'zyra';
 import Brand from './assets/images/brand-logo.png';
 import { __ } from '@wordpress/i18n';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
-import HelpSupport from './components/HelpSupport/HelpSupport';
 
 const Route = () => {
     const currentTab = new URLSearchParams( useLocation().hash );
@@ -24,9 +23,6 @@ const Route = () => {
             ) }
             { currentTab.get( 'tab' ) === 'inventory-manager' && (
                 <ManageStock />
-            ) }
-             { currentTab.get( 'tab' ) === 'help-support' && (
-                <HelpSupport />
             ) }
         </>
     );
