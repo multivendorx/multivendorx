@@ -1,5 +1,30 @@
 import { __ } from '@wordpress/i18n';
 
+const REGISTRATION_BLOCK_GROUPS = [
+    {
+        id: 'registration',
+        label: 'Blocks',
+        icon: 'user',
+        blocks: [
+            {
+                id: 'text',
+                icon: 't-letter-bold',
+                value: 'text',
+                label: 'Enter the text',
+                fixedName: 'Text',
+                placeholder: 'Enter your name here',
+            },
+            {
+                id: 'recaptcha',
+                icon: 'captcha-automatic-code',
+                value: 'recaptcha',
+                label: 'reCaptcha v3',
+                fixedName: 'reCaptcha',
+            },
+        ],
+    }
+];
+
 export default {
     id: 'personalize-layout',
     priority: 2,
@@ -11,7 +36,9 @@ export default {
         {
 			key: 'personalize_layout_template',
 			type: 'block-builder',
-			label: __( 'Personalize Layout', 'notifima' )
+            blockGroups: REGISTRATION_BLOCK_GROUPS,
+            enableTermsBlock: false,
+            enableTitleBlock: false,
 		},
     ],
 };
