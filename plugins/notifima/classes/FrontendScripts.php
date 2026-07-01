@@ -312,6 +312,17 @@ class FrontendScripts {
 						'processing'        => __( 'Processing...', 'notifima' ),
 					),
                 ),
+                'notifima-subscribe-form' => array(
+                    'object_name' => 'subscription',
+                    'use_rest'    => true,
+                    'data'        => apply_filters(
+                        'notifima_subscribe_form_localize_data',
+                        array(
+                            'settings'  => Notifima()->setting->get_setting( 'personalize_layout_template', array() ),
+                            'lead_time' => Notifima()->frontend->get_product_lead_time(),
+                        )
+                    ),
+                ),
 			);
 
         $localize_scripts = apply_filters( 'notifima_localize_scripts', $localize_scripts );

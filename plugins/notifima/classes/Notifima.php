@@ -87,6 +87,7 @@ class Notifima {
             'email_placeholder_text'    => __( 'Enter your email', 'notifima' ),
             'alert_text'                => __( 'Receive in-stock notifications for this.', 'notifima' ),
             'unsubscribe_button_text'   => __( 'Unsubscribe', 'notifima' ),
+            'subscribe_button_text'     => __( 'Notify me', 'notifima' ),
             'alert_text_color'          => '',
             'customize_btn'             => array(
                 'button_text'                     => __( 'Notify me', 'notifima' ),

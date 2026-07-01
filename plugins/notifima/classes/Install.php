@@ -123,6 +123,32 @@ class Install {
             $appearance_settings['is_guest_subscriptions_enable'] = ! empty( $appearance_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
 
             update_option( Utill::NOTIFIMA_SETTINGS['appearance'], $appearance_settings );
+            $registration_form = array(
+                array(
+                    'id'          => 1,
+                    'type'        => 'email',
+                    'label'       => Notifima()->default_value['alert_text'],
+                    'required'    => false,
+                    'name'        => 'email',
+                    'placeholder' => Notifima()->default_value['email_placeholder_text'],
+                    'readonly'    => true,
+                ),
+                array(
+                    'id'    => 2,
+                    'type'  => 'button',
+                    'label' => Notifima()->default_value['subscribe_button_text'],
+                    'text'  => Notifima()->default_value['subscribe_button_text'],
+                    'name'  => 'submit',
+                ),
+            );
+
+            $registration_from_settings = array(
+                'personalize_layout_template' => array(
+                    'formfieldlist'  => $registration_form,
+                ),
+            );
+
+            update_option( Utill::NOTIFIMA_SETTINGS['personalize-layout'], $registration_from_settings );
         }
     }
 
@@ -315,6 +341,33 @@ class Install {
         );
 
         update_option( Utill::NOTIFIMA_SETTINGS['email'], $email_settings );
+
+        $registration_form = array(
+			array(
+				'id'          => 1,
+				'type'        => 'email',
+				'label'       => Notifima()->default_value['alert_text'],
+				'required'    => false,
+				'name'        => 'email',
+				'placeholder' => Notifima()->default_value['email_placeholder_text'],
+				'readonly'    => true,
+			),
+			array(
+				'id'    => 2,
+				'type'  => 'button',
+				'label' => Notifima()->default_value['subscribe_button_text'],
+				'text'  => Notifima()->default_value['subscribe_button_text'],
+				'name'  => 'submit',
+			),
+        );
+
+        $registration_from_settings = array(
+            'personalize_layout_template' => array(
+                'formfieldlist'  => $registration_form,
+            ),
+        );
+
+        update_option( Utill::NOTIFIMA_SETTINGS['personalize-layout'], $registration_from_settings );
     }
 
     /**

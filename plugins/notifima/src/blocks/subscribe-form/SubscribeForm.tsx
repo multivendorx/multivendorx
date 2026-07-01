@@ -1,118 +1,157 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { FormViewer, getApiLink } from 'zyra';
 
 interface SubscribeFormProps {
-	productId: number;
-	variationId: number;
-	productTitle: string;
-	userEmail: string;
+    productId: number;
+    variationId: number;
+    productTitle: string;
+    userEmail: string;
+    shownInterest: string;
 }
 
 interface ApiResponse {
-	status: boolean;
-	message: string;
-	already_subscribed?: boolean;
-	customer_email?: string;
-	product_id?: number;
-	variation_id?: number;
-	unsubscribe_button?: {
-		text: string;
-	};
+    status: boolean;
+    message: string;
+    already_subscribed?: boolean;
+    customer_email?: string;
+    product_id?: number;
+    variation_id?: number;
+    unsubscribe_button?: {
+        text: string;
+    };
 }
 
-const SubscribeForm: React.FC<SubscribeFormProps> = ( {
-	productId,
-	variationId,
-	productTitle,
-	userEmail,
-} ) => {
-    console.log('SubscribeForm props:', { productId, variationId, productTitle, userEmail });
-	const [ email, setEmail ] = useState( userEmail );
-	const [ loading, setLoading ] = useState( false );
-	const [ response, setResponse ] = useState<ApiResponse | null>( null );
+const SubscribeForm: React.FC<SubscribeFormProps> = ({
+    productId,
+    variationId,
+    productTitle,
+    userEmail,
+    shownInterest,
+}) => {
+    const [loading, setLoading] = useState(false);
+    const [response, setResponse] = useState<ApiResponse | null>(null);
 
-	const handleSubmit = async (
-		event: React.FormEvent<HTMLFormElement>
-	) => {
-		event.preventDefault();
+    /**
+     * Subscribe
+     */
+    const onSubmit = (
+        submittedFormData: Record<string, string | number | boolean>
+    ) => {
+        setLoading(true);
 
-		setLoading( true );
-		setResponse( null );
+        axios({
+            method: 'POST',
+            url: getApiLink(subscription, `subscribers/${productId}`),
+            headers: {
+                'X-WP-Nonce': subscription.nonce,
+            },
+            data: {
+                action: 'subscribe',
+                customer_email: submittedFormData.email,
+                product_id: productId,
+                variation_id: variationId,
+                product_title: productTitle,
+            },
+        })
+            .then(({ data }: { data: ApiResponse }) => {
+                setResponse(data);
+            })
+            .catch(() => {
+                setResponse({
+                    status: false,
+                    message: 'Something went wrong. Please try again.',
+                });
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
 
-		try {
-			const res = await fetch( '/wp-json/notifima/v1/subscribe', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify( {
-					customer_email: email,
-					product_id: productId,
-					variation_id: variationId,
-					product_title: productTitle,
-				} ),
-			} );
+    /**
+     * Unsubscribe
+     */
+    const unsubscribe = () => {
+        if (!response) {
+            return;
+        }
 
-			const data: ApiResponse = await res.json();
+        setLoading(true);
 
-			setResponse( data );
-		} catch ( error ) {
-			setResponse( {
-				status: false,
-				message: 'Something went wrong. Please try again.',
-			} );
-		} finally {
-			setLoading( false );
-		}
-	};
+        axios({
+            method: 'POST',
+            url: getApiLink(subscription, `subscribers/${productId}`),
+            headers: {
+                'X-WP-Nonce': subscription.nonce,
+            },
+            data: {
+                action: 'unsubscribe',
+                customer_email: response.customer_email,
+                product_id: response.product_id,
+                variation_id: response.variation_id,
+            },
+        })
+            .then(({ data }: { data: ApiResponse }) => {
+                setResponse(data);
+            })
+            .catch(() => {
+                setResponse({
+                    status: false,
+                    message: 'Unable to unsubscribe.',
+                });
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
 
-	return (
-		<div className="notifima-subscribe-form">
-			<form onSubmit={ handleSubmit }>
-				<input
-					type="email"
-					value={ email }
-					onChange={ ( e ) => setEmail( e.target.value ) }
-					placeholder="Enter your email"
-					required
-				/>
+    const showForm =
+        !response || (!response.status && !response.already_subscribed);
 
-				<button type="submit" disabled={ loading }>
-					{ loading ? 'Subscribing…' : 'Subscribe' }
-				</button>
-			</form>
+    return (
+        <div className="notifima-subscribe-form">
+            {subscription.lead_time && (
+                <p className="notifima-lead-time">
+                    {subscription.lead_time}
+                </p>
+            )}
+            {shownInterest && <p>{shownInterest}</p>}
+            {response && (
+                <div
+                    className={
+                        response.status
+                            ? 'woocommerce-message'
+                            : 'woocommerce-error'
+                    }
+                >
+                    {response.message}
+                </div>
+            )}
 
-			{ response && (
-				<div
-					className={
-						response.status
-							? 'notifima-success'
-							: 'notifima-error'
-					}
-				>
-					<p>{ response.message }</p>
+            {showForm && (
+                <FormViewer
+                    formFields={subscription.settings}
+                    response={{
+                        email: userEmail,
+                    }}
+                    onSubmit={onSubmit}
+                />
+            )}
 
-					{ response.already_subscribed && (
-						<button
-							type="button"
-							className="notifima-unsubscribe"
-							onClick={ () => {
-								// TODO: Call unsubscribe REST endpoint
-								console.log(
-									'Unsubscribe',
-									response.customer_email,
-									response.product_id,
-									response.variation_id
-								);
-							} }
-						>
-							{ response.unsubscribe_button?.text ??
-								'Unsubscribe' }
-						</button>
-					) }
-				</div>
-			) }
-		</div>
-	);
+            {response?.already_subscribed && (
+                <button
+                    type="button"
+                    className="notifima-unsubscribe"
+                    disabled={loading}
+                    onClick={unsubscribe}
+                >
+                    {loading
+                        ? 'Please wait...'
+                        : response.unsubscribe_button?.text ?? 'Unsubscribe'}
+                </button>
+            )}
+        </div>
+    );
 };
 
 export default SubscribeForm;

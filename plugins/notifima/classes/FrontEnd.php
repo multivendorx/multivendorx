@@ -66,6 +66,8 @@ class FrontEnd {
         add_action( 'wp_head', array( $this, 'frontend_hover_styles' ) );
 
         add_filter( 'notifima_display_product_lead_time', array( $this, 'display_product_lead_time' ), 10 );
+        add_action( 'woocommerce_simple_add_to_cart', array( $this, 'display_product_subscription_form' ), 31 );
+        add_action( 'woocommerce_after_variations_form', array( $this, 'display_product_subscription_form' ), 31 );
     }
 
     /**
@@ -76,8 +78,6 @@ class FrontEnd {
             return;
         }
 
-        add_action( 'woocommerce_simple_add_to_cart', array( $this, 'display_product_subscription_form' ), 31 );
-        add_action( 'woocommerce_after_variations_form', array( $this, 'display_product_subscription_form' ), 31 );
         // support for grouped products.
         add_filter( 'woocommerce_grouped_product_list_column_price', array( $this, 'append_grouped_product_subscription_form' ), 10, 2 );
     }
@@ -96,7 +96,12 @@ class FrontEnd {
             FrontendScripts::enqueue_script( 'notifima-frontend-script' );
         }
         if( is_product() ) {
+            FrontendScripts::admin_load_scripts();
+            FrontendScripts::enqueue_script( 'notifima-components-script' );
+			FrontendScripts::enqueue_style( 'notifima-components-style' );
+            
 			FrontendScripts::enqueue_script( 'notifima-subscribe-form' );
+            FrontendScripts::localize_scripts( 'notifima-subscribe-form' );
         }
     }
 
@@ -217,7 +222,6 @@ class FrontEnd {
         if ( $product_obj->is_type( 'variable' ) ) {
             $get_variations = count( $product_obj->get_children() ) <= apply_filters( 'woocommerce_ajax_variation_threshold', 30, $product_obj );
             $get_variations = $get_variations ? $product_obj->get_available_variations() : false;
-
             if ( $get_variations ) {
                 echo '<div class="notifima-shortcode-subscribe-form" data-product-id="' . esc_attr( $product_obj->get_id() ) . '"></div>';
             } else {
@@ -256,12 +260,22 @@ class FrontEnd {
         if ( $variation && 'yes' === $variation->get_meta( Utill::NOTIFIMA_PRODUCT_META['product_discontinued'] ) ) {
             return '';
         }
-
         $user_email = '';
 
         if ( is_user_logged_in() ) {
             $user_email = Notifima()->current_user->user_email;
         }
+        $settings_array         = Utill::get_form_settings_array();
+        $shown_interest_text    = $settings_array['shown_interest_text'];
+        $is_enable_no_interest  = Notifima()->setting->get_setting( 'is_enable_no_interest', '' );
+        $interested_person      = max( 0, (int) get_post_meta($variation ? $variation->get_id() : $product->get_id(), 'no_of_subscribers',true ));
+
+        $shown_interest = '';
+
+        if ( 'show_count' === $is_enable_no_interest && $interested_person > 0 &&$shown_interest_text ) {
+            $shown_interest = str_replace( '%no_of_subscribed%',$interested_person,$shown_interest_text);
+        }
+        
         return sprintf(
             '<div
                 id="notifima-subscribe-form"
@@ -269,29 +283,35 @@ class FrontEnd {
                 data-variation-id="%d"
                 data-product-title="%s"
                 data-user-email="%s"
+                data-shown-interest="%s"
             ></div>',
             esc_attr( $product->get_id() ),
             esc_attr( $variation ? $variation->get_id() : 0 ),
             esc_attr( $product->get_title() ),
-            esc_attr( $user_email )
+            esc_attr( $user_email ),
+            esc_attr( $shown_interest )
         );
     }
 
     /**
-     * Display lead time for a product.
+     * Get the lead time text for the current product.
      *
-     * @param WC_Product $product The WooCommerce product object.
-     * @return void
+     * @return string
      */
-    public function display_product_lead_time( $product ) {
-        if ( empty( $product ) ) {
-            return;
-        }
-        $display_lead_times = Notifima()->setting->get_setting( 'display_lead_times' );
-        if ( ! empty( $display_lead_times ) && in_array( $product->get_stock_status(), $display_lead_times, true ) ) {
-            $lead_time_static_text = Notifima()->setting->get_setting( 'lead_time_static_text' );
+    public function get_product_lead_time() {
+        global $product;
 
-            return '<p>' . esc_html( $lead_time_static_text ) . '</p>';
+        if ( empty( $product ) ) {
+            return '';
+        }
+
+        $display_lead_times = Notifima()->setting->get_setting( 'display_lead_times', array() );
+
+        if (
+            ! empty( $display_lead_times ) &&
+            in_array( $product->get_stock_status(), $display_lead_times, true )
+        ) {
+            return Notifima()->setting->get_setting( 'lead_time_static_text', '' );
         }
 
         return '';

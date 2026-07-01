@@ -167,7 +167,7 @@ class Subscribers extends \WP_REST_Controller {
         }
 
         try {
-            $action = rest_sanitize_boolean( $request->get_param( 'action' ) );
+            $action = $request->get_param( 'action' );
 
             if ( 'subscribe' === $action ) {
                 return $this->subscribe_user( $request );

@@ -217,11 +217,11 @@ class Ajax {
         if ( $variation_id ) {
             $variation_product = new \WC_Product_Variation( $variation_id );
         }
-        echo wp_kses( Notifima()->frontend->get_subscribe_form( $product, $variation_product ), FrontEnd::$allowed_html );
+        echo Notifima()->frontend->get_subscribe_form( $product, $variation_product );
         die();
     }
 
-        public function get_subscribe_form( $product, $variation = null ) {
+    public function get_subscribe_form( $product, $variation = null ) {
         if ( ! Subscriber::is_product_outofstock( $variation ? $variation : $product ) ) {
             return '';
         }

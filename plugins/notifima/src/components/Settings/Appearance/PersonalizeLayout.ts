@@ -39,6 +39,7 @@ export default {
             blockGroups: REGISTRATION_BLOCK_GROUPS,
             enableTermsBlock: false,
             enableTitleBlock: false,
+            enableButtonBlock: false,
 		},
     ],
 };
