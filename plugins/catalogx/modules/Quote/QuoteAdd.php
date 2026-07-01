@@ -38,7 +38,7 @@ class QuoteAdd extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => '__return_true',
+                    'permission_callback' => array( $this, 'create_item_permissions_check' ),
                 ),
             )
         );
