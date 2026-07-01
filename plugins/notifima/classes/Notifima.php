@@ -9,6 +9,7 @@ namespace Notifima;
 
 defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use Notifima\RestAPI\Rest;
 
 /**
  * Notifima Main class
@@ -202,7 +203,7 @@ class Notifima {
         $this->container['filters']         = new Deprecated\DeprecatedFilterHooks();
         $this->container['actions']         = new Deprecated\DeprecatedActionHooks();
         $this->container['admin']           = new Admin();
-        $this->container['restapi']         = new RestAPI();
+        $this->container['rest']            = new Rest();
         $this->container['block']           = new Block();
         $this->container['frontendScripts'] = new FrontendScripts();
     }
