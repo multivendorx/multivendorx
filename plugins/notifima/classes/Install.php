@@ -116,7 +116,6 @@ class Install {
 
             $appearance_settings = get_option( Utill::NOTIFIMA_SETTINGS['appearance'], array() );
 
-            $appearance_settings['is_recaptcha_enable'] = ! empty( $appearance_settings['is_recaptcha_enable'] ) ? 'recaptcha' : 'no_verification';
             $appearance_settings['is_double_optin'] = ! empty( $appearance_settings['is_double_optin'] ) ? 'confirm_via_email' : 'subscribe_immediately';
             $appearance_settings['is_enable_no_interest'] = ! empty( $appearance_settings['is_enable_no_interest'] ) ? 'show_count' : 'hide_count';
             $appearance_settings['is_enable_backorders'] = ! empty( $appearance_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
@@ -313,14 +312,11 @@ class Install {
             'additional_alert_email'        => get_option( 'admin_email' ),
             'is_guest_subscriptions_enable' => 'logged_in',
             'lead_time_format'              => 'static',
-            'is_recaptcha_enable'           => 'no_verification',
 
             // Form customization settings.
             'email_placeholder_text'        => Notifima()->default_value['email_placeholder_text'],
             'alert_text'                    => Notifima()->default_value['alert_text'],
             'unsubscribe_button_text'       => Notifima()->default_value['unsubscribe_button_text'],
-            'alert_text_color'              => Notifima()->default_value['alert_text_color'],
-            'customize_btn'                 => Notifima()->default_value['customize_btn'],
         );
 
         update_option( Utill::NOTIFIMA_SETTINGS['appearance'], $appearance_settings );
@@ -396,8 +392,6 @@ class Install {
             'email_placeholder_text'        => Notifima()->default_value['email_placeholder_text'],
             'alert_text'                    => Notifima()->default_value['alert_text'],
             'unsubscribe_button_text'       => Notifima()->default_value['unsubscribe_button_text'],
-            'alert_text_color'              => Notifima()->default_value['alert_text_color'],
-            'customize_btn'                 => Notifima()->default_value['customize_btn'],
         );
 
         $submit_settings = array(
@@ -554,22 +548,6 @@ class Install {
         $previous_email_settings      = get_option( 'woo_stock_manager_email_tab_settings', array() );
 
         if ( version_compare( $previous_version, '2.5.14', '<=' ) ) {
-            $appearance_settings['customize_btn'] = array(
-                'button_background_color'         => $previous_appearance_settings['button_background_color'] ?? '',
-                'button_text_color'               => $previous_appearance_settings['button_text_color'] ?? '',
-                'button_border_color'             => $previous_appearance_settings['button_border_color'] ?? '',
-                'button_border_size'              => $previous_appearance_settings['button_border_size'] ?? '',
-                'button_border_radious'           => $previous_appearance_settings['button_border_radious'] ?? '',
-                'button_font_size'                => $previous_appearance_settings['button_font_size'] ?? '',
-                'button_padding'                  => $previous_appearance_settings['button_padding'] ?? '',
-                'button_margin'                   => $previous_appearance_settings['button_margin'] ?? '',
-                'button_background_color_onhover' => $previous_appearance_settings['button_background_color_onhover'] ?? '',
-                'button_text_color_onhover'       => $previous_appearance_settings['button_text_color_onhover'] ?? '',
-                'button_border_color_onhover'     => $previous_appearance_settings['button_border_color_onhover'] ?? '',
-                'button_text'                     => $previous_appearance_settings['button_text'] ?? 'Notify me',
-                'button_font_width'               => $previous_appearance_settings['button_font_width'] ?? '',
-            );
-
             unset(
                 $previous_appearance_settings['button_background_color'],
                 $previous_appearance_settings['button_text_color'],

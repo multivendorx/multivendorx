@@ -17,39 +17,6 @@ defined( 'ABSPATH' ) || exit;
  * @author      MultiVendorX
  */
 class FrontEnd {
-    /**
-     * Allowed HTML tags and attributes for frontend output.
-     *
-     * @var array
-     */
-    public static $allowed_html = array(
-        'div'    => array(
-            'class' => true,
-            'style' => true,
-        ),
-        'h5'     => array(
-            'class' => true,
-            'style' => true,
-        ),
-        'p'      => array(),
-        'input'  => array(
-            'type'        => true,
-            'name'        => true,
-            'value'       => true,
-            'class'       => true,
-            'id'          => true,
-            'placeholder' => true,
-        ),
-        'button' => array(
-            'type'  => true,
-            'class' => true,
-            'style' => true,
-            'name'  => true,
-        ),
-        'script' => array(
-            'src' => true,
-        ),
-    );
 
     /**
      * Frontend constructor.
@@ -57,30 +24,12 @@ class FrontEnd {
     public function __construct() {
         // enqueue scripts.
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
-        // enqueue styles.
-        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_styles' ) );
 
-        add_action( 'wp', array( $this, 'load_subscription_form' ) );
-
-        // Hover style.
-        add_action( 'wp_head', array( $this, 'frontend_hover_styles' ) );
-
-        add_filter( 'notifima_display_product_lead_time', array( $this, 'display_product_lead_time' ), 10 );
-        add_action( 'woocommerce_simple_add_to_cart', array( $this, 'display_product_subscription_form' ), 31 );
-        add_action( 'woocommerce_after_variations_form', array( $this, 'display_product_subscription_form' ), 31 );
-    }
-
-    /**
-     * Add the product subscription form in single product page.
-     */
-    public function load_subscription_form() {
-        if ( ! is_product() ) {
-            return;
-        }
-
-        // support for grouped products.
+        add_action( 'woocommerce_simple_add_to_cart', array( $this, 'display_product_subscription_form' ), 10 );
         add_filter( 'woocommerce_grouped_product_list_column_price', array( $this, 'append_grouped_product_subscription_form' ), 10, 2 );
+        add_action( 'woocommerce_after_variations_form', array( $this, 'display_product_subscription_form' ), 10 );
     }
+
 
     /**
      * Enqueue frontend JavaScript. And Send Localize data.
@@ -88,104 +37,17 @@ class FrontEnd {
      * @return void
      */
     public function enqueue_frontend_scripts() {
-        FrontendScripts::load_scripts();
-        FrontendScripts::localize_scripts( 'notifima-frontend-script' );
-        if ( is_product() || is_shop() || is_product_category() ) {
-            // Enqueue your frontend javascript from here.
-            wp_enqueue_script( 'notifima-frontend-script' );
-            FrontendScripts::enqueue_script( 'notifima-frontend-script' );
-        }
         if( is_product() ) {
+            FrontendScripts::load_scripts();
             FrontendScripts::admin_load_scripts();
             FrontendScripts::enqueue_script( 'notifima-components-script' );
 			FrontendScripts::enqueue_style( 'notifima-components-style' );
-            
+            FrontendScripts::localize_scripts( 'notifima-frontend-script' );
 			FrontendScripts::enqueue_script( 'notifima-subscribe-form' );
             FrontendScripts::localize_scripts( 'notifima-subscribe-form' );
-        }
-    }
-
-    /**
-     * Enqueue fronted css.
-     *
-     * @return void
-     */
-    public function enqueue_frontend_styles() {
-        FrontendScripts::load_scripts();
-        if ( is_product() ) {
-            // Enqueue your frontend stylesheet from here.
+            FrontendScripts::enqueue_script( 'notifima-frontend-script' );
             FrontendScripts::enqueue_style( 'notifima-frontend-style' );
         }
-    }
-
-    /**
-     * Set frontend's button hover style on 'wp_head' hook.
-     *
-     * @return void
-     */
-    public function frontend_hover_styles() {
-        $settings_array       = Utill::get_form_settings_array();
-        $button_settings      = $settings_array['customize_btn'];
-        $button_onhover_style = '';
-        $border_size          = '';
-        $border_size          = ( ! empty( $button_settings['button_border_size'] ) ) ? $button_settings['button_border_size'] . 'px' : '1px';
-
-        if ( ! empty( $button_settings['button_background_color_onhover'] ) ) {
-            $button_onhover_style .= ! empty( $button_settings['button_background_color_onhover'] ) ? 'background: ' . $button_settings['button_background_color_onhover'] . ' !important;' : '';
-        }
-        if ( ! empty( $button_settings['button_text_color_onhover'] ) ) {
-            $button_onhover_style .= ! empty( $button_settings['button_text_color_onhover'] ) ? ' color: ' . $button_settings['button_text_color_onhover'] . ' !important;' : '';
-        }
-        if ( ! empty( $button_settings['button_border_color_onhover'] ) ) {
-            $button_onhover_style .= ! empty( $button_settings['button_border_color_onhover'] ) ? 'border: ' . $border_size . ' solid' . $button_settings['button_border_color_onhover'] . ' !important;' : '';
-        }
-        if ( $button_onhover_style ) {
-            echo '<style>
-                button.subscribe-button-hover:hover, button.unsubscribe_button:hover {
-                ' . esc_html( $button_onhover_style ) . '
-                } 
-            </style>';
-        }
-    }
-
-    /**
-     * Get styles for the button on the frontend.
-     *
-     * @return string
-     */
-    public function subscribe_button_styles() {
-        $settings_array  = Utill::get_form_settings_array();
-        $button_settings = $settings_array['customize_btn'];
-
-        $border_size = ( ! empty( $button_settings['button_border_size'] ) ) ? $button_settings['button_border_size'] . 'px' : '1px';
-
-        $button_css = '';
-        if ( ! empty( $button_settings['button_background_color'] ) ) {
-            $button_css .= 'background:' . $button_settings['button_background_color'] . '; ';
-        }
-        if ( ! empty( $button_settings['button_text_color'] ) ) {
-            $button_css .= 'color:' . $button_settings['button_text_color'] . '; ';
-        }
-        if ( ! empty( $button_settings['button_border_color'] ) ) {
-            $button_css .= 'border: ' . $border_size . ' solid ' . $button_settings['button_border_color'] . '; ';
-        }
-        if ( ! empty( $button_settings['button_font_size'] ) ) {
-            $button_css .= 'font-size:' . $button_settings['button_font_size'] . 'px; ';
-        }
-        if ( ! empty( $button_settings['button_border_radious'] ) ) {
-            $button_css .= 'border-radius:' . $button_settings['button_border_radious'] . 'px;';
-        }
-        if ( ! empty( $button_settings['button_font_width'] ) ) {
-            $button_css .= 'font-weight: ' . esc_html( $button_settings['button_font_width'] ) . 'px;';
-        }
-        if ( ! empty( $button_settings['button_padding'] ) ) {
-            $button_css .= 'padding: ' . esc_html( $button_settings['button_padding'] ) . 'px;';
-        }
-        if ( ! empty( $button_settings['button_margin'] ) ) {
-            $button_css .= 'margin: ' . esc_html( $button_settings['button_margin'] ) . 'px;';
-        }
-
-        return $button_css;
     }
 
     /**

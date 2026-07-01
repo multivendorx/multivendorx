@@ -274,12 +274,6 @@ class FrontendScripts {
             'settings_databases_value' => self::get_admin_settings(),
         );
         
-        $settings_array  = Utill::get_form_settings_array();
-        $button_settings = $settings_array['customize_btn'];
-
-        $button_css = Notifima()->frontend->subscribe_button_styles();
-        $subscribe_button_html = '<button style="' . $button_css . '" class="notifima-subscribe notifima-button subscribe-button-hover">' . $button_settings['button_text'] . '</button>';
-
         $localize_scripts =
             array(
                 'notifima-admin-script'          => array(
@@ -287,7 +281,6 @@ class FrontendScripts {
                     'use_rest'     => true,
                     'use_settings' => true,
 					'data'        => array(
-						// 'export_button'            => admin_url( 'admin-ajax.php?action=export_subscribers' ),
 						'export_button'            => wp_nonce_url( admin_url( 'admin-ajax.php?action=export_subscribers' ), 'export_subscribers_nonce' ),
 						'khali_dabba'              => Utill::is_khali_dabba(),
 						'tab_name'                 => __( 'Notifima', 'notifima' ),
@@ -307,9 +300,6 @@ class FrontendScripts {
 					'data'        => array(
 						'ajax_url'          => admin_url( 'admin-ajax.php', 'relative' ),
 						'nonce'             => wp_create_nonce( 'notifima-security-nonce' ),
-						'additional_fields' => apply_filters( 'notifima_subscription_form_additional_fields', '' ),
-						'button_html'       => $subscribe_button_html,
-						'processing'        => __( 'Processing...', 'notifima' ),
 					),
                 ),
                 'notifima-subscribe-form' => array(
