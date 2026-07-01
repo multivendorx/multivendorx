@@ -26,6 +26,7 @@ interface BlockBuilderProps {
         availablePlaceholder?: string[];
         enableTermsBlock?: boolean;
         enableTitleBlock?: boolean;
+        enableButtonBlock?: boolean;
     };
     setting?: Record<string, BuilderValue>;
     proSettingChange?: (...args: unknown[]) => boolean;
@@ -227,6 +228,7 @@ export const BlockBuilderUI: React.FC<BlockBuilderProps> = ({
             blockGroups={field?.blockGroups || []}
             enableTermsBlock={field?.enableTermsBlock}
             enableTitleBlock={field?.enableTitleBlock}
+            enableButtonBlock={field?.enableButtonBlock}
             visibleGroups={visibleGroups}
             groupName={builderContext}
             proSettingChange={proSettingChange}

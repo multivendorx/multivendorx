@@ -47,6 +47,7 @@ interface CanvasEditorProps {
     inputTypeList?: Array<{ value: string; label: string }>;
     enableTermsBlock?: boolean;
     enableTitleBlock?: boolean;
+    enableButtonBlock?: boolean;
 }
 type SortableItem = Partial<Block> | BlockConfig;
 
@@ -66,6 +67,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     availablePlaceholder,
     enableTermsBlock = true,
     enableTitleBlock = true,
+    enableButtonBlock = true,
 }) => {
     const [blocks, setBlocks] = useState<Block[]>(externalBlocks);
     const [openBlock, setOpenBlock] = useState<Block | null>(null);
@@ -111,7 +113,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
         ? blocks.filter((b) => b.type !== 'button' && b.type !== 'title' && b.type !== 'richtext')
         : blocks;
     useEffect(() => {
-        if (context !== 'form') {
+        if (context !== 'form' || !enableButtonBlock) {
             return;
         }
         setBlocks((prev) => {
