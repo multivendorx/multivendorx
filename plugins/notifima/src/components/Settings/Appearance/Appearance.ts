@@ -173,6 +173,31 @@ export default {
             ),
         },
         {
+            key: 'display_subscription_form_as',
+            type: 'choice-toggle',
+            label: __('Display subscription form as', 'notifima'),
+            settingDescription: __(
+                'Choose how the subscription form is presented to customers.',
+                'notifima'
+            ),
+            desc: __(
+                '<ul><li>Popup Window - Open the subscription form in a modal popup.</li><li>Inline on Product Page - Display the subscription form directly within the product page.</li></ul>',
+                'notifima'
+            ),
+            options: [
+                {
+                    key: 'popup',
+                    value: 'popup',
+                    label: __('Popup', 'notifima'),
+                },
+                {
+                    key: 'inline',
+                    value: 'inline',
+                    label: __('Inline In-page', 'notifima'),
+                },
+            ],
+        },
+        {
             key: 'is_enable_no_interest',
             type: 'choice-toggle',
             label: __(
@@ -269,7 +294,7 @@ export default {
             key: 'section',
             type: 'section',
             title: __('Admin Notifications', 'catalogx'),
-            desc: __('Who on your team gets alerted','catalogx'
+            desc: __('Who on your team gets alerted', 'catalogx'
             ),
         },
         {

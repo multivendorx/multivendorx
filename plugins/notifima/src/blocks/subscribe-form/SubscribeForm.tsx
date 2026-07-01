@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { FormViewer, getApiLink } from 'zyra';
+import { __ } from '@wordpress/i18n';
 
 interface SubscribeFormProps {
     productId: number;
@@ -31,6 +32,9 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
 }) => {
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState<ApiResponse | null>(null);
+    const [showPopup, setShowPopup] = useState(false);
+
+    const isPopup = subscription.display_type === 'popup';
 
     /**
      * Subscribe
@@ -56,6 +60,10 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
         })
             .then(({ data }: { data: ApiResponse }) => {
                 setResponse(data);
+
+                if (data.status) {
+                    setShowPopup(false);
+                }
             })
             .catch(() => {
                 setResponse({
@@ -108,14 +116,16 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
     const showForm =
         !response || (!response.status && !response.already_subscribed);
 
-    return (
-        <div className="notifima-subscribe-form">
+    const formContent = (
+        <>
             {subscription.lead_time && (
                 <p className="notifima-lead-time">
                     {subscription.lead_time}
                 </p>
             )}
+
             {shownInterest && <p>{shownInterest}</p>}
+
             {response && (
                 <div
                     className={
@@ -149,6 +159,46 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                         ? 'Please wait...'
                         : response.unsubscribe_button?.text ?? 'Unsubscribe'}
                 </button>
+            )}
+        </>
+    );
+
+    return (
+        <div className="notifima-subscribe-form">
+            {!isPopup ? (
+                formContent
+            ) : (
+                <>
+                    <button
+                        type="button"
+                        className="notifima-open-popup"
+                        onClick={() => setShowPopup(true)}
+                    >
+                        {__('Notify Me', 'notifima')}
+                    </button>
+
+                    {showPopup && (
+                        <div
+                            className="notifima-popup-overlay"
+                            onClick={() => setShowPopup(false)}
+                        >
+                            <div
+                                className="notifima-popup"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <button
+                                    type="button"
+                                    className="notifima-popup-close"
+                                    onClick={() => setShowPopup(false)}
+                                >
+                                    ×
+                                </button>
+
+                                {formContent}
+                            </div>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );
