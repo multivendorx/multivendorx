@@ -91,6 +91,10 @@ class FrontendScripts {
         $base_url    = self::get_asset_path() . 'js/';
         $common_deps = array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' );
 
+        $block_scripts = array(
+            'subscribe-form',
+        );
+
         $register_scripts = apply_filters(
             'notifima_register_scripts',
             array(
@@ -100,6 +104,21 @@ class FrontendScripts {
 				),
             )
         );
+
+        foreach ( $block_scripts as $handle ) {
+            $asset_path = self::get_asset_path( 'file' ) . "js/block/{$handle}/index.asset.php";
+            $asset      = file_exists( $asset_path )
+                ? include $asset_path
+                : array(
+					'dependencies' => array(),
+					'version'      => $version,
+				);
+
+            $register_scripts[ "notifima-{$handle}" ] = array(
+                'src'  => self::get_asset_path() . "js/block/{$handle}/index.js",
+                'deps' => $asset['dependencies'],
+            );
+        }
 
         foreach ( $register_scripts as $name => $props ) {
             self::register_script( $name, $props['src'], $props['deps'], $props['version'] ?? $version );

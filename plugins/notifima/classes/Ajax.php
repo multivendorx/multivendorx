@@ -220,4 +220,72 @@ class Ajax {
         echo wp_kses( Notifima()->frontend->get_subscribe_form( $product, $variation_product ), FrontEnd::$allowed_html );
         die();
     }
+
+        public function get_subscribe_form( $product, $variation = null ) {
+        if ( ! Subscriber::is_product_outofstock( $variation ? $variation : $product ) ) {
+            return '';
+        }
+
+        if( $variation && 'yes' === $variation->get_meta(Utill::NOTIFIMA_PRODUCT_META['product_discontinued'])){
+            return;
+        }
+        
+        $notifima_fields_array = array();
+        $notifima_fields_html  = '';
+        $user_email            = '';
+        $separator             = apply_filters( 'notifima_subscription_form_fields_separator', '<br>' );
+        $settings_array        = Utill::get_form_settings_array();
+        $button_settings       = $settings_array['customize_btn'];
+
+        if ( is_user_logged_in() ) {
+            $current_user = Notifima()->current_user;
+            $user_email   = $current_user->data->user_email;
+        }
+        $placeholder = $settings_array['email_placeholder_text'];
+
+        $additional_fields[] = apply_filters( 'notifima_subscription_form_additional_fields', '' );
+
+        if ( ! empty( $additional_fields ) ) {
+            foreach ( $additional_fields as $field ) {
+                $notifima_fields_array[] = $field;
+            }
+        }
+
+        $notifima_fields_array[] = '<input id="notifima_alert_email" type="text" name="alert_email" class="notifima-email" value="' . esc_attr( $user_email ) . '" placeholder="' . $placeholder . '" >';
+        if ( $notifima_fields_array ) {
+            $notifima_fields_html = implode( $separator, $notifima_fields_array );
+        }
+
+        $alert_text_html = '<h5 style="color:' . esc_html( $settings_array['alert_text_color'] ) . '" class="subscribe-for-interest-text">' . esc_html( $settings_array['alert_text'] ) . '</h5>';
+
+        $button_css = $this->subscribe_button_styles();
+
+        $button_html = '<button style="' . $button_css . '" class="notifima-subscribe notifima-button subscribe-button-hover">' . esc_html( $button_settings['button_text'] ) . '</button>';
+
+        $interested_person = get_post_meta( $variation ? $variation->get_id() : $product->get_id(), 'no_of_subscribers', true );
+        $interested_person = max( 0, (int) $interested_person );
+
+        $shown_interest_html = '';
+        $shown_interest_text = esc_html( $settings_array['shown_interest_text'] );
+
+        $is_enable_no_interest = Notifima()->setting->get_setting( 'is_enable_no_interest','' );
+
+        if ( 'show_count' === $is_enable_no_interest && 0 !== $interested_person && $shown_interest_text ) {
+            $shown_interest_text = str_replace( '%no_of_subscribed%', $interested_person, $shown_interest_text );
+            $shown_interest_html = '<p>' . $shown_interest_text . '</p>';
+        }
+
+        $lead_text_html = apply_filters( 'notifima_display_product_lead_time', $variation ? $variation : $product );
+
+        return $lead_text_html .
+        '<div class="notifima-subscribe-form woocommerce-notices-wrapper"> <ul class="woocommerce-message">
+            ' . $alert_text_html . '
+            <li> ' . $notifima_fields_html . '' . $button_html . '
+            </li>
+            <input type="hidden" class="notifima-product-id" value="' . esc_attr( $product->get_id() ) . '" />
+            <input type="hidden" class="notifima-variation-id" value="' . esc_attr( $variation ? $variation->get_id() : 0 ) . '" />
+            <input type="hidden" class="notifima-product-name" value="' . esc_attr( $product->get_title() ) . '" />
+            ' . $shown_interest_html . '
+        </ul></div>';
+    }
 }

@@ -7,6 +7,7 @@
 
 namespace Notifima\RestAPI\Controllers;
 
+use Notifima\Subscriber;
 use Notifima\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -42,9 +43,22 @@ class Subscribers extends \WP_REST_Controller {
                 )
             )
         );
+
+        register_rest_route(
+            Notifima()->rest_namespace,
+            '/' . $this->rest_base . '/(?P<id>[\d]+)',
+            array(
+                array(
+                    'methods'             => \WP_REST_Server::EDITABLE,
+                    'callback'            => array( $this, 'update_item' ),
+                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'args'                => array(
+                        'id' => array( 'required' => true ),
+                    ),
+                ),
+            )
+        );
     }
-
-
 
     /**
      * Check if a given request has access to get items.
@@ -52,6 +66,15 @@ class Subscribers extends \WP_REST_Controller {
      * @param \WP_REST_Request The REST request object.
      */
     public function get_items_permissions_check( $request ) {
+        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+    }
+
+    /**
+     * Check if a given request has access to update items.
+     *
+     * @param \WP_REST_Request The REST request object.
+     */
+    public function update_item_permissions_check( $request ) {
         return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
     }
 
@@ -129,5 +152,198 @@ class Subscribers extends \WP_REST_Controller {
                 array('status' => 500)
             );
         }
+    }
+
+    /**
+     * Update a subscriber.
+     *
+     * @param \WP_REST_Request The request object.
+     */
+    public function update_item( $request ) {
+        $nonce_check = Utill::validate_nonce( $request );
+
+        if ( is_wp_error( $nonce_check ) ) {
+            return $nonce_check;
+        }
+
+        try {
+            $action = rest_sanitize_boolean( $request->get_param( 'action' ) );
+
+            if ( 'subscribe' === $action ) {
+                return $this->subscribe_user( $request );
+            }else if ( 'unsubscribe' === $action ) {
+                return $this->unsubscribe_user( $request );
+            }
+
+            return rest_ensure_response( false );
+        } catch ( \Exception $e ) {
+            return new \WP_Error(
+                'server_error',
+                __('Unexpected server error', 'notifima'),
+                array('status' => 500)
+            );
+        }
+    }
+
+    /**
+     * Subscribe a user through the REST API.
+     *
+     * @param WP_REST_Request $request Request object.
+     * @return WP_REST_Response
+     */
+    public function subscribe_user( $request ) {
+        $customer_email = $request->get_param( 'customer_email' );
+        $product_id     = absint( $request->get_param( 'product_id' ) );
+        $product_title  = sanitize_text_field( $request->get_param( 'product_title' ) );
+        $variation_id   = absint( $request->get_param( 'variation_id' ) );
+
+        $settings_array = Utill::get_form_settings_array();
+
+        do_action( 'notifima_before_subscribe_product', $customer_email, $product_id, $variation_id );
+
+        if ( ! is_email( $customer_email ) ) {
+            return rest_ensure_response(
+                array(
+                    'status'  => false,
+                    'message' => $settings_array['valid_email'],
+                )
+            );
+        }
+
+        if ( ! $product_id ) {
+            return rest_ensure_response(
+                array(
+                    'status'  => false,
+                    'message' => __( 'Invalid product.', 'notifima' ),
+                )
+            );
+        }
+
+        $product_id = $variation_id > 0 ? $variation_id : $product_id;
+
+        if ( Subscriber::is_already_subscribed( $customer_email, $product_id ) ) {
+            $message = str_replace(
+                array( '%product_title%', '%customer_email%' ),
+                array( $product_title, $customer_email ),
+                $settings_array['alert_email_exist']
+            );
+
+            return rest_ensure_response(
+                array(
+                    'status'               => false,
+                    'message'              => $message,
+                    'already_subscribed'   => true,
+                    'customer_email'       => $customer_email,
+                    'product_id'           => $product_id,
+                    'variation_id'         => $variation_id,
+                    'unsubscribe_button'   => array(
+                        'text' => $settings_array['unsubscribe_button_text'],
+                    ),
+                )
+            );
+        }
+
+        $subscription_status = apply_filters(
+            'notifima_eligible_to_subscribe',
+            array(
+                'status'  => true,
+                'message' => '',
+            ),
+            $customer_email,
+            $product_id
+        );
+
+        if ( ! $subscription_status['status'] ) {
+            return rest_ensure_response( $subscription_status );
+        }
+
+        Subscriber::insert_subscriber( $customer_email, $product_id );
+        Subscriber::insert_subscriber_email_trigger(
+            wc_get_product( $product_id ),
+            $customer_email
+        );
+
+        do_action( 'notifima_subscriber_added', $customer_email );
+
+        $message = str_replace(
+            array( '%product_title%', '%customer_email%' ),
+            array( $product_title, $customer_email ),
+            $settings_array['alert_success']
+        );
+
+        return rest_ensure_response(
+            array(
+                'status'  => true,
+                'message' => $message,
+            )
+        );
+    }
+
+    /**
+     * Unsubscribe a user through the REST API.
+     *
+     * @param WP_REST_Request $request Request object.
+     * @return WP_REST_Response
+     */
+    public function unsubscribe_user( $request ) {
+        $customer_email = sanitize_email( $request->get_param( 'customer_email' ) );
+        $product_id     = absint( $request->get_param( 'product_id' ) );
+        $variation_id   = absint( $request->get_param( 'variation_id' ) );
+
+        $current_user = Notifima()->current_user;
+
+        if ( ! empty( $current_user ) && empty( $customer_email ) ) {
+            $customer_email = $current_user->user_email;
+        }
+
+        if ( empty( $customer_email ) ) {
+            return rest_ensure_response(
+                array(
+                    'status'  => false,
+                    'message' => __( 'Customer email is required.', 'notifima' ),
+                )
+            );
+        }
+
+        if ( ! $product_id ) {
+            return rest_ensure_response(
+                array(
+                    'status'  => false,
+                    'message' => __( 'Invalid product.', 'notifima' ),
+                )
+            );
+        }
+
+        $product = wc_get_product( $product_id );
+
+        if ( $product && $product->is_type( 'variable' ) && $variation_id > 0 ) {
+            $success = Subscriber::remove_subscriber( $variation_id, $customer_email );
+        } else {
+            $success = Subscriber::remove_subscriber( $product_id, $customer_email );
+        }
+
+        if ( ! $success ) {
+            return rest_ensure_response(
+                array(
+                    'status'  => false,
+                    'message' => __( 'Something went wrong. Please try again.', 'notifima' ),
+                )
+            );
+        }
+
+        $settings_array = Utill::get_form_settings_array();
+
+        $success_msg = str_replace(
+            '%customer_email%',
+            $customer_email,
+            $settings_array['alert_unsubscribe_message']
+        );
+
+        return rest_ensure_response(
+            array(
+                'status'  => true,
+                'message' => $success_msg,
+            )
+        );
     }
 }
