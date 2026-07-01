@@ -45,6 +45,8 @@ interface CanvasEditorProps {
     proSettingChange?: () => boolean;
     context?: string;
     inputTypeList?: Array<{ value: string; label: string }>;
+    enableTermsBlock?: boolean;
+    enableTitleBlock?: boolean;
 }
 type SortableItem = Partial<Block> | BlockConfig;
 
@@ -62,6 +64,8 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     context = 'default',
     inputTypeList,
     availablePlaceholder,
+    enableTermsBlock = true,
+    enableTitleBlock = true,
 }) => {
     const [blocks, setBlocks] = useState<Block[]>(externalBlocks);
     const [openBlock, setOpenBlock] = useState<Block | null>(null);
@@ -129,7 +133,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     }, []);
 
     useEffect(() => {
-        if (context !== 'form') {
+        if (context !== 'form' || !enableTitleBlock) {
             return;
         }
         setBlocks((prev) => {
@@ -177,7 +181,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     }, []);
 
     useEffect(() => {
-        if (context !== 'form') {
+        if (context !== 'form' || !enableTermsBlock) {
             return;
         }
 
