@@ -37,7 +37,7 @@ class FrontEnd {
      * @return void
      */
     public function enqueue_frontend_scripts() {
-        if( is_product() ) {
+        // if( is_product() ) {
             FrontendScripts::load_scripts();
             FrontendScripts::admin_load_scripts();
             FrontendScripts::enqueue_script( 'notifima-components-script' );
@@ -45,7 +45,7 @@ class FrontEnd {
 			FrontendScripts::enqueue_script( 'notifima-subscribe-form' );
             FrontendScripts::localize_scripts( 'notifima-subscribe-form' );
             FrontendScripts::enqueue_style( 'notifima-frontend-style' );
-        }
+        // }
     }
 
     /**
@@ -56,7 +56,6 @@ class FrontEnd {
      */
     public function display_product_subscription_form( $product_obj = null ) {
         global $product;
-
         $product_obj = is_int( $product_obj ) ? wc_get_product( $product_obj ) : ( $product_obj ? $product_obj : $product );
 
         if ( empty( $product_obj ) ) {
@@ -79,7 +78,7 @@ class FrontEnd {
             return;
         }
 
-        echo $this->get_subscribe_form( $product_obj );
+        echo $this->get_subscription_form( $product_obj );
     }
 
     /**
@@ -89,20 +88,20 @@ class FrontEnd {
      * @param object $child individual child of grouped product.
      */
     public function append_grouped_product_subscription_form( $value, $child ) {
-        $value = $value . $this->get_subscribe_form( $child );
+        $value = $value . $this->get_subscription_form( $child );
 
         return $value;
     }
 
     /**
-     * Get subscribe form HTML content for a particular product.
+     * Get subscription form HTML content for a particular product.
      * If the product is not outofstock it return empty string.
      *
      * @param  mixed $product   product variable.
      * @param  mixed $variation variation variable default null.
-     * @return string HTML of subscribe form.
+     * @return string HTML of subscription form.
      */
-    public function get_subscribe_form( $product, $variation = null ) {
+    public function get_subscription_form( $product, $variation = null ) {
         if ( ! Subscriber::is_product_outofstock( $variation ? $variation : $product ) ) {
             return '';
         }
