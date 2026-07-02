@@ -102,27 +102,20 @@ class Settings extends \WP_REST_Controller {
 		try {
 
 			$setup_wizard = $request->get_param( 'setupWizard' );
-            if ( $setup_wizard ) {
-                $value = $request->get_param( 'value' );
-                if ( ! empty( $value ) ) {
+			$value = $request->get_param( 'value' );
 
-					$customer_engagement = CatalogX()->setting->get_option( Utill::CATALOGX_SETTINGS['customer-engagement'] );
+            if ( $setup_wizard && ! empty( $value )) {
+				$customer_engagement = CatalogX()->setting->get_option( Utill::CATALOGX_SETTINGS['customer-engagement'] );
 
-					if ( isset( $value['product_enquirie'] ) && is_array( $value['product_enquirie'] ) ) {
-						$customer_engagement = array_merge( $customer_engagement, $value['product_enquirie'] );
-					}
+				if ( isset( $value['product_enquiry'] ) && is_array( $value['product_enquiry'] ) ) {
+					$customer_engagement = array_merge( $customer_engagement, $value['product_enquiry'] );
+				}
 
-					if ( isset( $value['quotation_requests'] ) && is_array( $value['quotation_requests'] ) ) {
-						$customer_engagement = array_merge( $customer_engagement, $value['quotation_requests'] );
-					}
+				if ( isset( $value['quotation_requests'] ) && is_array( $value['quotation_requests'] ) ) {
+					$customer_engagement = array_merge( $customer_engagement, $value['quotation_requests'] );
+				}
 					
-					$free_form = CatalogX()->setting->get_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'] );
-
-					$free_form['enquiry_form_tabs']['free_enquiry_form'] = $value['enquiry_form_tabs']['free_enquiry_form'];
-
-                    CatalogX()->setting->update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $customer_engagement );
-                    CatalogX()->setting->update_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], $free_form );
-                }
+                CatalogX()->setting->update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $customer_engagement );
 
                 return;
             }
@@ -133,51 +126,9 @@ class Settings extends \WP_REST_Controller {
             $option_name     = 'catalogx_' . $settings_name . '_settings';
 
 			// Save settings.
-			CatalogX()->setting->update_option(
-				$option_name,
-				$settings_values
-			);
+			CatalogX()->setting->update_option( $option_name, $settings_values );
 
-			do_action(
-				'catalogx_settings_after_save',
-				$settings_name,
-				$settings_values
-			);
-
-			// Setup wizard settings.
-			$action = $request->get_param( 'action' );
-
-			if ( 'enquiry' === $action ) {
-				$display_option = $request->get_param( 'displayOption' );
-
-				$restrict_user = $request->get_param(
-					'restrictUserEnquiry'
-				);
-
-				CatalogX()->setting->update_setting(
-					'is_disable_popup',
-					$display_option,
-					'catalogx_shopping_settings_settings'
-				);
-
-				CatalogX()->setting->update_setting(
-					'enquiry_user_permission',
-					$restrict_user,
-					'catalogx_shopping_settings_settings'
-				);
-			}
-
-			if ( 'quote' === $action ) {
-				$restrict_user = $request->get_param(
-					'restrictUserQuote'
-				);
-
-				CatalogX()->setting->update_setting(
-					'quote_user_permission',
-					$restrict_user,
-					'catalogx_shopping_settings_settings'
-				);
-			}
+			do_action( 'catalogx_settings_after_save', $settings_name, $settings_values );
 
 			return array(
 				'type'    => 'success',
@@ -208,25 +159,14 @@ class Settings extends \WP_REST_Controller {
 
 			$action = $request->get_param( 'action' );
 
-			// Setup wizard modules.
-			$module_list = $request->get_param( 'modules' );
-
-			if ( is_array( $module_list ) ) {
-				CatalogX()->modules->activate_modules( $module_list );
-			}
-
 			// Handle action.
 			switch ( $action ) {
 				case 'activate':
-					CatalogX()->modules->activate_modules(
-						array( $module_id )
-					);
+					CatalogX()->modules->activate_modules( array( $module_id ) );
 					break;
 
 				default:
-					CatalogX()->modules->deactivate_modules(
-						array( $module_id )
-					);
+					CatalogX()->modules->deactivate_modules( array( $module_id ) );
 					break;
 			}
 
