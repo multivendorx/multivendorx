@@ -121,6 +121,16 @@ class FrontEnd {
         $shown_interest_text   = $settings_array['shown_interest_text'];
         $is_enable_no_interest = Notifima()->setting->get_setting( 'is_enable_no_interest', '' );
 
+        $get_shown_interest = static function ( $product_id ) use ( $is_enable_no_interest, $shown_interest_text ) {
+            $interested_person = max( 0, (int) get_post_meta( $product_id, 'no_of_subscribers', true ) );
+
+            if ( 'show_count' !== $is_enable_no_interest || $interested_person <= 0 || ! $shown_interest_text ) {
+                return '';
+            }
+
+            return str_replace( '%no_of_subscribed%', $interested_person, $shown_interest_text );
+        };
+
         // Variable products.
         if ( $product->is_type( 'variable' ) ) {
             $html = '';
@@ -128,35 +138,8 @@ class FrontEnd {
             foreach ( $product->get_children() as $variation_id ) {
                 $variation = wc_get_product( $variation_id );
 
-                if ( ! $variation ) {
+                if ( ! $variation || ! Subscriber::is_product_outofstock( $variation ) || 'yes' === $variation->get_meta( Utill::NOTIFIMA_PRODUCT_META['product_discontinued'] ) ) {
                     continue;
-                }
-
-                if ( ! Subscriber::is_product_outofstock( $variation ) ) {
-                    continue;
-                }
-
-                if ( 'yes' === $variation->get_meta( Utill::NOTIFIMA_PRODUCT_META['product_discontinued'] ) ) {
-                    continue;
-                }
-
-                $interested_person = max(
-                    0,
-                    (int) get_post_meta( $variation->get_id(), 'no_of_subscribers', true )
-                );
-
-                $shown_interest = '';
-
-                if (
-                    'show_count' === $is_enable_no_interest &&
-                    $interested_person > 0 &&
-                    $shown_interest_text
-                ) {
-                    $shown_interest = str_replace(
-                        '%no_of_subscribed%',
-                        $interested_person,
-                        $shown_interest_text
-                    );
                 }
 
                 $html .= sprintf(
@@ -174,7 +157,7 @@ class FrontEnd {
                     esc_attr( $variation->get_id() ),
                     esc_attr( $product->get_title() ),
                     esc_attr( $user_email ),
-                    esc_attr( $shown_interest )
+                    esc_attr( $get_shown_interest( $variation->get_id() ) )
                 );
             }
 
@@ -182,29 +165,6 @@ class FrontEnd {
         }
 
         // Simple & grouped products.
-        $interested_person = max(
-            0,
-            (int) get_post_meta(
-                $variation ? $variation->get_id() : $product->get_id(),
-                'no_of_subscribers',
-                true
-            )
-        );
-
-        $shown_interest = '';
-
-        if (
-            'show_count' === $is_enable_no_interest &&
-            $interested_person > 0 &&
-            $shown_interest_text
-        ) {
-            $shown_interest = str_replace(
-                '%no_of_subscribed%',
-                $interested_person,
-                $shown_interest_text
-            );
-        }
-
         return sprintf(
             '<div
                 class="notifima-subscribe-form"
@@ -218,7 +178,11 @@ class FrontEnd {
             esc_attr( $variation ? $variation->get_id() : 0 ),
             esc_attr( $product->get_title() ),
             esc_attr( $user_email ),
-            esc_attr( $shown_interest )
+            esc_attr(
+                $get_shown_interest(
+                    $variation ? $variation->get_id() : $product->get_id()
+                )
+            )
         );
     }
 
