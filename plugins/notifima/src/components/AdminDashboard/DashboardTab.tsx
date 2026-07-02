@@ -293,7 +293,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('notifima Pro', 'notifima'),
+										title: __('Notifima Pro', 'notifima'),
 										desc: __(
 											'Advanced product catalog, quotation, and enquiry features with premium templates.',
 											'notifima'
@@ -323,7 +323,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('notifima', 'notifima'),
+										title: __('Notifima', 'notifima'),
 										desc: __(
 											'Turn your WooCommerce store into a product catalog with enquiry and quotation features.',
 											'notifima'
