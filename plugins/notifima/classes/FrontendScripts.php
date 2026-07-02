@@ -308,7 +308,7 @@ class FrontendScripts {
                     'data'        => apply_filters(
                         'notifima_subscribe_form_localize_data',
                         array(
-                            'settings'      => Notifima()->setting->get_setting( 'personalize_layout_template', array() ),
+                            'khali_dabba'   => Utill::is_khali_dabba(),
                             'lead_time'     => Notifima()->frontend->get_product_lead_time(),
                             'display_type'  => Notifima()->setting->get_setting( 'display_subscription_form_as', 'inline' ),
                         )

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { FormViewer, getApiLink } from 'zyra';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 
 interface SubscribeFormProps {
     productId: number;
@@ -139,13 +140,39 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
             )}
 
             {showForm && (
-                <FormViewer
-                    formFields={subscription.settings}
-                    response={{
-                        email: userEmail,
-                    }}
-                    onSubmit={onSubmit}
-                />
+                !subscription.khali_dabba ? (
+                    <>
+                        <input
+                            type="email"
+                            defaultValue={userEmail}
+                            placeholder="Enter your email"
+                            onChange={(e) => {
+                                subscription.email = e.target.value;
+                            }}
+                        />
+
+                        <button
+                            type="button"
+                            disabled={loading}
+                            onClick={() =>
+                                onSubmit({
+                                    email: subscription.email || userEmail,
+                                })
+                            }
+                        >
+                            {__('Notify Me', 'notifima')}
+                        </button>
+                    </>
+                ) : (
+                    applyFilters(
+                        'notifima_pro_subscribe_form',
+                        <></>,
+                        {
+                            userEmail,
+                            onSubmit,
+                        }
+                    )
+                )
             )}
 
             {response?.already_subscribed && (
