@@ -22,11 +22,11 @@ const mountForm = (container) => {
 
 jQuery(() => {
 	// Mount simple/grouped product form.
-	const simpleContainer = document.getElementById('notifima-subscribe-form');
-
-	if (simpleContainer) {
-		mountForm(simpleContainer);
-	}
+	document
+		.querySelectorAll('.notifima-subscribe-form')
+		.forEach((container) => {
+			mountForm(container);
+		});
 
 	// Variable products.
 	jQuery('.variations_form')

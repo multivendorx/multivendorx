@@ -207,7 +207,7 @@ class FrontEnd {
 
         return sprintf(
             '<div
-                id="notifima-subscribe-form"
+                class="notifima-subscribe-form"
                 data-product-id="%d"
                 data-variation-id="%d"
                 data-product-title="%s"
