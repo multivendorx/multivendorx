@@ -311,6 +311,7 @@ const AddProduct = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</Card>
+					<div className='sticky-card-wrapper'>
 					<Card
 						title={__('Recommended', 'multivendorx')}
 						toggle={true}
@@ -319,6 +320,7 @@ const AddProduct = () => {
 								{completedCount}/{totalCount}
 							</div>
 						}
+						className="recommended-card"
 					>
 						<div className="checklist-wrapper">
 							<ul>
@@ -440,6 +442,7 @@ const AddProduct = () => {
 						null,
 						product
 					)}
+					</div>
 				</Column>
 
 				<Column grid={6}>

@@ -52,19 +52,19 @@ const bannerItem = [
     ),
 ];
 export const profileItems = [
-    {
-        title: __('Get Support', 'notifima'),
-        icon: 'customer-support',
-        link: 'https://calendly.com/contact-notifima/30min?back=1',
-        targetBlank: true,
-    },
-    {
-        title: __('Documentation', 'notifima'),
-        icon: 'knowledgebase',
-        link: 'https://notifima.com/docs/',
-        targetBlank: true,
-    }
-];
+		{
+			title: __('Get Support', 'notifima'),
+			icon: 'customer-support',
+			link: 'https://calendly.com/contact-notifima/30min?back=1',
+			targetBlank: true,
+		},
+		{
+			title: __('Documentation', 'notifima'),
+			icon: 'knowledgebase',
+			link: 'https://notifima.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
+			targetBlank: true,
+		}
+	];
 const utilityList = [
     {
         toggleIcon: 'admin-icon adminfont-user-circle',
