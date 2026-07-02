@@ -98,10 +98,6 @@ class FrontendScripts {
         $register_scripts = apply_filters(
             'notifima_register_scripts',
             array(
-                'notifima-frontend-script' => array(
-					'src'  => $base_url . 'public/' . NOTIFIMA_PLUGIN_SLUG . '-frontend.min.js',
-					'deps' => $common_deps,
-				),
             )
         );
 
@@ -293,13 +289,6 @@ class FrontendScripts {
 								'manage_plan_url' => NOTIFIMA_PRO_SHOP_URL,
                             )
                         ),          
-					),
-                ),
-                'notifima-frontend-script'          => array(
-                    'object_name'  => 'frontendLocalizer',
-					'data'        => array(
-						'ajax_url'          => admin_url( 'admin-ajax.php', 'relative' ),
-						'nonce'             => wp_create_nonce( 'notifima-security-nonce' ),
 					),
                 ),
                 'notifima-subscribe-form' => array(

@@ -207,6 +207,7 @@ class Subscribers extends \WP_REST_Controller {
         $settings_array = Utill::get_form_settings_array();
 
         do_action( 'notifima_before_subscribe_product', $customer_email, $product_id, $variation_id );
+        file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export('1', true) . "\n", FILE_APPEND);
 
         if ( ! is_email( $customer_email ) ) {
             return rest_ensure_response(
@@ -216,6 +217,7 @@ class Subscribers extends \WP_REST_Controller {
                 )
             );
         }
+        file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export('1', true) . "\n", FILE_APPEND);
 
         if ( ! $product_id ) {
             return rest_ensure_response(
@@ -227,6 +229,7 @@ class Subscribers extends \WP_REST_Controller {
         }
 
         $product_id = $variation_id > 0 ? $variation_id : $product_id;
+        file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export('1', true) . "\n", FILE_APPEND);
 
         if ( Subscriber::is_already_subscribed( $customer_email, $product_id ) ) {
             $message = str_replace(

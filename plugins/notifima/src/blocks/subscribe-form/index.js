@@ -1,9 +1,7 @@
 import { render } from '@wordpress/element';
 import SubscribeForm from './SubscribeForm';
 
-export const mountSubscribeForm = () => {
-	const container = document.getElementById('notifima-subscribe-form');
-
+const mountForm = (container) => {
 	if (!container || container.dataset.mounted === 'true') {
 		return;
 	}
@@ -22,17 +20,33 @@ export const mountSubscribeForm = () => {
 	);
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-	// Initial mount (simple products)
-	mountSubscribeForm();
+jQuery(() => {
+	// Mount simple/grouped product form.
+	const simpleContainer = document.getElementById('notifima-subscribe-form');
 
-	// Watch for dynamically added forms (variable products)
-	const observer = new MutationObserver(() => {
-		mountSubscribeForm();
-	});
+	if (simpleContainer) {
+		mountForm(simpleContainer);
+	}
 
-	observer.observe(document.body, {
-		childList: true,
-		subtree: true,
-	});
+	// Variable products.
+	jQuery('.variations_form')
+		.on('found_variation', (_event, variation) => {
+			// Hide all variation forms.
+			jQuery('[id^="notifima-subscribe-form-"]').hide();
+
+			const container = document.getElementById(
+				`notifima-subscribe-form-${variation.variation_id}`
+			);
+
+			if (!container) {
+				return;
+			}
+
+			jQuery(container).show();
+
+			mountForm(container);
+		})
+		.on('reset_data', () => {
+			jQuery('[id^="notifima-subscribe-form-"]').hide();
+		});
 });
