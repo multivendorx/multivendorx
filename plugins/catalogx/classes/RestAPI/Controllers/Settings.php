@@ -62,12 +62,12 @@ class Settings extends \WP_REST_Controller {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'update_modules' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'permission_callback' => array( $this, 'catalogx_permissions_check' ),
 				),
 				array(
 					'methods'             => 'GET',
 					'callback'            => array( $this, 'get_active_modules' ),
-					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+					'permission_callback' => array( $this, 'catalogx_permissions_check' ),
 				),
 			)
 		);
@@ -80,18 +80,7 @@ class Settings extends \WP_REST_Controller {
 	 *
 	 * @return bool
 	 */
-	public function update_item_permissions_check( $request ) {
-		return current_user_can( 'manage_options' );
-	}
-
-	/**
-	 * Permission check for getting modules.
-	 *
-	 * @param object $request Request object.
-	 *
-	 * @return bool
-	 */
-	public function get_item_permissions_check( $request ) {
+	public function catalogx_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 

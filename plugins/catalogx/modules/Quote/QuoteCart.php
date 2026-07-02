@@ -39,7 +39,7 @@ class QuoteCart extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'notifima_permissions_check' ),
                 ),
             )
         );
@@ -51,60 +51,28 @@ class QuoteCart extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'notifima_permissions_check' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'notifima_permissions_check' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::DELETABLE,
                     'callback'            => array( $this, 'delete_item' ),
-                    'permission_callback' => array( $this, 'delete_item_permissions_check' ), // Only admins can delete.
+                    'permission_callback' => array( $this, 'notifima_permissions_check' ), // Only admins can delete.
                 ),
             )
         );
     }
 
     /**
-     * Get items permissions check.
+     * Permissions check.
      *
      * @param object $request The request object.
      */
-    public function get_items_permissions_check( $request ) {
-        $user_id = CatalogX()->current_user_id;
-        // For non-logged in user.
-        if ( 0 === $user_id ) {
-            return true;
-        }
-
-        // Check if user is admin or customer.
-        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
-    }
-
-    /**
-     * Update item permissions check.
-     *
-     * @param object $request The request object.
-     */
-    public function update_item_permissions_check( $request ) {
-        $user_id = CatalogX()->current_user_id;
-        // For non-logged in user.
-        if ( 0 === $user_id ) {
-            return true;
-        }
-
-        // Check if user is admin or customer.
-        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
-    }
-
-    /**
-     * Update item permissions check.
-     *
-     * @param object $request The request object.
-     */
-    public function delete_item_permissions_check( $request ) {
+    public function notifima_permissions_check( $request ) {
         $user_id = CatalogX()->current_user_id;
         // For non-logged in user.
         if ( 0 === $user_id ) {
