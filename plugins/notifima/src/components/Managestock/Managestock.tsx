@@ -113,7 +113,6 @@ const Managestock = () => {
         categoryCounts: defaultCategoryCounts,
         filters,
         expandable: true,
-        onQueryUpdate: () => setopenPopup(false),
         search: {
             placeholder: __('Search...', 'notifima'),
             size: 8,
