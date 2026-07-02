@@ -71,7 +71,9 @@
     }
 
     .popup-details {
-        padding: 1.5rem;
+        margin: 1.5rem;
+        margin-right: 0;
+        overflow: auto;
 
         .heading-text {
             font-size: 1.25rem;
@@ -112,5 +114,5 @@
 
 .popup-content:has(.top-section) {
     width: 40rem !important;
-    height: 75% !important;
+    // height: 75% !important;
 }
