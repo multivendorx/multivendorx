@@ -93,8 +93,9 @@ class Util {
 
 		// Order by.
 		if ( empty( $args['count'] ) && ! empty( $args['order_by'] ) ) {
-			$order_by = esc_sql( $args['order_by'] );
-			$order    = esc_sql( $args['order'] ?? 'DESC' );
+			$allowed = array('created_at','updated_at','id','store_id','product_id'); 
+			$order_by = in_array( $args['order_by'], $allowed, true ) ? $args['order_by'] : 'created_at';
+			$order    = $args['order'] ?? 'DESC';
 			$query   .= " ORDER BY $order_by $order";
 		}
 
