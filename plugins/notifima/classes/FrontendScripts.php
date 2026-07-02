@@ -98,10 +98,6 @@ class FrontendScripts {
         $register_scripts = apply_filters(
             'notifima_register_scripts',
             array(
-                'notifima-frontend-script' => array(
-					'src'  => $base_url . 'public/' . NOTIFIMA_PLUGIN_SLUG . '-frontend.min.js',
-					'deps' => $common_deps,
-				),
             )
         );
 
@@ -295,20 +291,13 @@ class FrontendScripts {
                         ),          
 					),
                 ),
-                'notifima-frontend-script'          => array(
-                    'object_name'  => 'frontendLocalizer',
-					'data'        => array(
-						'ajax_url'          => admin_url( 'admin-ajax.php', 'relative' ),
-						'nonce'             => wp_create_nonce( 'notifima-security-nonce' ),
-					),
-                ),
                 'notifima-subscribe-form' => array(
                     'object_name' => 'subscription',
                     'use_rest'    => true,
                     'data'        => apply_filters(
                         'notifima_subscribe_form_localize_data',
                         array(
-                            'settings'      => Notifima()->setting->get_setting( 'personalize_layout_template', array() ),
+                            'khali_dabba'   => Utill::is_khali_dabba(),
                             'lead_time'     => Notifima()->frontend->get_product_lead_time(),
                             'display_type'  => Notifima()->setting->get_setting( 'display_subscription_form_as', 'inline' ),
                         )
