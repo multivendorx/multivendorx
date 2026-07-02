@@ -120,6 +120,7 @@ class Install {
             $appearance_settings['is_enable_no_interest'] = ! empty( $appearance_settings['is_enable_no_interest'] ) ? 'show_count' : 'hide_count';
             $appearance_settings['is_enable_backorders'] = ! empty( $appearance_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
             $appearance_settings['is_guest_subscriptions_enable'] = ! empty( $appearance_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
+            $appearance_settings['display_subscription_form_as']    = 'inline';
 
             update_option( Utill::NOTIFIMA_SETTINGS['appearance'], $appearance_settings );
             $registration_form = array(
@@ -312,7 +313,7 @@ class Install {
             'additional_alert_email'        => get_option( 'admin_email' ),
             'is_guest_subscriptions_enable' => 'logged_in',
             'lead_time_format'              => 'static',
-
+            'display_subscription_form_as'  => 'inline',
             // Form customization settings.
             'email_placeholder_text'        => Notifima()->default_value['email_placeholder_text'],
             'alert_text'                    => Notifima()->default_value['alert_text'],

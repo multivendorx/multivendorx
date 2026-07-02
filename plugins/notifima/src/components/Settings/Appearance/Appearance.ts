@@ -76,10 +76,10 @@ export default {
         {
             key: 'section',
             type: 'section',
-            title: __('Restock Timing (Lead Time)', 'catalogx'),
+            title: __('Restock Timing (Lead Time)', 'notifima'),
             desc: __(
                 'when and how lead time is shown',
-                'catalogx'
+                'notifima'
             ),
         },
         {
@@ -166,10 +166,10 @@ export default {
         {
             key: 'section',
             type: 'section',
-            title: __('Confirm the subscriber', 'catalogx'),
+            title: __('Confirm the subscriber', 'notifima'),
             desc: __(
                 'Make sure every subscriber is real and opted-in.',
-                'catalogx'
+                'notifima'
             ),
         },
         {
@@ -293,8 +293,8 @@ export default {
         {
             key: 'section',
             type: 'section',
-            title: __('Admin Notifications', 'catalogx'),
-            desc: __('Who on your team gets alerted', 'catalogx'
+            title: __('Admin Notifications', 'notifima'),
+            desc: __('Who on your team gets alerted', 'notifima'
             ),
         },
         {

@@ -10,7 +10,7 @@ import {
 import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
 import Mascot from '../../assets/images/brand-icon.png';
-import catalogx from '../../assets/images/catalogx.png';
+import notifima from '../../assets/images/notifima.png';
 import multivendorx from '../../assets/images/multivendorx.png';
 
 interface WPPlugin {
@@ -286,19 +286,19 @@ const DashboardTab: React.FC<object> = () => {
 			<Column grid={4}>
 				<Card title={__('Extend your website', 'notifima')}>
 					<Column row>
-						{/* CatalogX */}
+						{/* notifima */}
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
 							<ItemListUI
 								className="mini-card"
 								background
 								items={[
 									{
-										title: __('CatalogX Pro', 'notifima'),
+										title: __('notifima Pro', 'notifima'),
 										desc: __(
 											'Advanced product catalog, quotation, and enquiry features with premium templates.',
 											'notifima'
 										),
-										img: catalogx,
+										img: notifima,
 										tags: (
 											<>
 												<span className="admin-badge red">
@@ -323,12 +323,12 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('CatalogX', 'notifima'),
+										title: __('notifima', 'notifima'),
 										desc: __(
 											'Turn your WooCommerce store into a product catalog with enquiry and quotation features.',
 											'notifima'
 										),
-										img: catalogx,
+										img: notifima,
 										tags: (
 											<>
 												<span className="admin-badge green">

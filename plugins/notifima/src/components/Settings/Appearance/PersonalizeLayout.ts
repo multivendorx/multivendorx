@@ -37,9 +37,7 @@ export default {
 			key: 'personalize_layout_template',
 			type: 'block-builder',
             blockGroups: REGISTRATION_BLOCK_GROUPS,
-            enableTermsBlock: false,
-            enableTitleBlock: false,
-            enableButtonBlock: false,
+            enableDefaultBlocks: false,
 		},
     ],
 };

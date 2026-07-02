@@ -74,8 +74,15 @@ class Subscribers extends \WP_REST_Controller {
      *
      * @param \WP_REST_Request The REST request object.
      */
-    public function update_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+    public function update_item_permissions_check() {
+        $user_id = Notifima()->current_user_id;
+        // For non-logged in user.
+        if (0 === $user_id && 'everyone' === Notifima()->setting->get_setting( 'is_guest_subscriptions_enable', '' )) {
+            return true;
+        }
+
+        // Check if user is admin or customer.
+        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
     }
 
     /**
