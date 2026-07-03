@@ -160,12 +160,12 @@ Manual installation method requires downloading the [Notifima] (https://wordpres
 *A: This feature is coming soon! You'll be able to view detailed stock logs and track stock movement trends in future versions.*
 
 ## Screenshots ##
-1. Stock alert plugin settings panel
-2. Prompt Messages
-3. Email Restriction Policies
-4. Mailchimp Integration
-5. Stock alert plugin subscriber list
-6. Inventory manager
+1. Subscribers
+2. Manage Stock
+3. Personalized Form
+4. Customized alert
+5. Notifications
+6. Settings
 
 ## Changelog ##
 

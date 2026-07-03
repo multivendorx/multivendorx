@@ -546,6 +546,12 @@ class Install {
             $version_key = get_option( 'woo_stock_manager_version', '' );
             update_option( 'notifima_version', $version_key );
 
+            $appearance_settings['is_double_optin']               = ! empty( $previous_appearance_settings['is_double_optin'] ) ? 'confirm_via_email' : 'subscribe_immediately';
+            $appearance_settings['is_enable_no_interest']         = ! empty( $previous_appearance_settings['is_enable_no_interest'] ) ? 'show_count' : 'hide_count';
+            $appearance_settings['is_enable_backorders']          = ! empty( $previous_appearance_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
+            $appearance_settings['is_guest_subscriptions_enable'] = ! empty( $previous_appearance_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
+            $appearance_settings['display_subscription_form_as']  = 'inline';
+
             delete_option( 'woo_stock_manager_appearance_tab_settings' );
             delete_option( 'woo_stock_manager_form_submission_tab_settings' );
             delete_option( 'woo_stock_manager_email_tab_settings' );
