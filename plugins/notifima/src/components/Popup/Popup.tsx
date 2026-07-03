@@ -5,9 +5,6 @@ import { __ } from '@wordpress/i18n';
 import '../Popup/Popup.scss';
 
 interface ShowProPopupProps {
-	moduleName?: string;
-	wooSetting?: string;
-	wooLink?: string;
 	confirmMode?: boolean;
 	title?: string;
 	confirmMessage?: string;
@@ -15,7 +12,6 @@ interface ShowProPopupProps {
 	confirmNoText?: string;
 	onConfirm?: () => void;
 	onCancel?: () => void;
-	plugin?: string;
 }
 
 
@@ -70,7 +66,7 @@ const proPopupContent = {
 			),
 		},
 		{
-			icon: 'subscription-dashboard',
+			icon: 'subscription-details',
 			text: __('Subscription Details', 'notifima'),
 			des: __(
 				'See who subscribed, which products are in demand, and track activity.',
@@ -191,8 +187,8 @@ const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 							</div>
 
 							<ul>
-								{proPopupContent.messages.map((message) => (
-									<li key={`${message.icon}-${message.text}-${message.des}`}>
+								{proPopupContent.messages.map((message, idx) => (
+									<li key={`${message.icon}-${idx}`}>
 										<div className="title">
 											<i
 												className={`adminfont-${message.icon}`}
