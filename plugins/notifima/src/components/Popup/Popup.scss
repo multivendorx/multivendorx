@@ -3,6 +3,7 @@
 // pro popup
 .popup-content:has(.top-section) {
     overflow: hidden !important; // for overwrite zyra style
+    width: 40rem !important;
 }
 
 .popup-wrapper {
@@ -110,9 +111,4 @@
             transform: rotate(-45deg);
         }
     }
-}
-
-.popup-content:has(.top-section) {
-    width: 40rem !important;
-    // height: 75% !important;
 }
