@@ -66,24 +66,6 @@ class Admin {
                 50
             );
 
-            $pro_sticker = ! Utill::is_khali_dabba() ?
-            '<span 
-                class="notifima-pro-tag"
-                style="
-                font-size: 0.5rem;
-                background: #e35047;
-                padding: 0.125rem 0.5rem;
-                color: #F9F8FB;
-                font-weight: 700;
-                line-height: 1;
-                position: absolute;
-                margin-left: 0.25rem;
-                border-radius: 2rem 0;
-                top: 50%;
-                transform: translateY(-50%);
-                "
-            > Pro </span>' : '';
-
             // Array contain notifima submenu.
             $submenu_items = array(
                 'dashboard'         => array(
@@ -95,11 +77,11 @@ class Admin {
                     'subtab' => 'appearance',
                 ),
                 'subscribers-list'  => array(
-                    'name'   => __( 'Subscriber List', 'notifima' ) . $pro_sticker,
+                    'name'   => __( 'Subscriber List', 'notifima' ),
                     'subtab' => '',
                 ),
                 'inventory-manager' => array(
-                    'name'   => __( 'Inventory Manager', 'notifima' ) . $pro_sticker,
+                    'name'   => __( 'Inventory Manager', 'notifima' ),
                     'subtab' => '',
                 ),
             );

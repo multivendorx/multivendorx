@@ -569,95 +569,6 @@ class Installer {
             }
 
             /**
-             * All Settings Migration
-             */
-            $old_all_settings = get_option(
-                'catalogx_all_settings_settings',
-                array()
-            );
-
-            if ( ! empty( $old_all_settings ) ) {
-
-                /**
-                 * Shopping Settings
-                 */
-                $shopping_settings = array(
-                    'enable_cart_checkout' => $old_all_settings['enable_cart_checkout'] ?? array(),
-                );
-
-                if ( ! empty( $old_all_settings['redirect_cart_page'] ) ) {
-                    $shopping_settings['redirect_cart_page'] = $old_all_settings['redirect_cart_page'];
-                }
-
-                update_option(
-                    'catalogx_shopping_settings',
-                    $shopping_settings
-                );
-
-                /**
-                 * Enquiry Settings
-                 */
-                $enquiry_settings = array(
-                    'enquiry_user_permission' => $old_all_settings['enquiry_user_permission'] ?? array(),
-                    'is_enable_out_of_stock'  => $old_all_settings['is_enable_out_of_stock'] ?? array(),
-                    'is_disable_popup'        => $old_all_settings['is_disable_popup'] ?? 'popup',
-                    'is_page_redirect'        => $old_all_settings['is_page_redirect'] ?? array(),
-                    'redirect_page_id'        => $old_all_settings['redirect_page_id'] ?? '',
-                );
-
-                if ( isset( $old_all_settings['notify_me_button'] ) ) {
-                    $enquiry_settings['notify_me_button'] = $old_all_settings['notify_me_button'];
-                }
-
-                update_option(
-                    'catalogx_enquiry_settings',
-                    $enquiry_settings
-                );
-
-                /**
-                 * Quotation Settings
-                 */
-                $quotation_settings = array(
-                    'quote_user_permission' => $old_all_settings['quote_user_permission'] ?? array(),
-                    'set_expiry_time'       => $old_all_settings['set_expiry_time'] ?? 'Never',
-                );
-
-                update_option(
-                    'catalogx_quotation_settings',
-                    $quotation_settings
-                );
-
-                /**
-                 * Extra Settings
-                 */
-                $extra_settings = array();
-
-                if ( isset( $old_all_settings['display_pdf'] ) ) {
-                    $extra_settings['display_pdf'] = $old_all_settings['display_pdf'];
-                }
-
-                if ( isset( $old_all_settings['custom_css_product_page'] ) ) {
-                    $extra_settings['custom_css_product_page'] = $old_all_settings['custom_css_product_page'];
-                }
-
-                update_option(
-                    'catalogx_extra_settings',
-                    $extra_settings
-                );
-
-                delete_option( 'catalogx_all_settings_settings' );
-            }
-
-            $settings = get_option( 'catalogx_wholesale_settings', array() );
-
-            if ( !empty( $settings ) && isset( $settings['wholesale_discount'] ) ) {
-                $settings['wholesale_amount'] = $settings['wholesale_discount'];
-                unset( $settings['wholesale_discount'] );
-
-                update_option( Utill::CATALOGX_SETTINGS['wholesale'], $settings );
-            }
-
-            /**
              * Rules Table Column Rename
              *
              * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
@@ -710,21 +621,9 @@ class Installer {
                 );
             }
 
-            $enquiry_settings       = get_option( 'catalogx_enquiry_settings', array() );
-            $quotation_settings     = get_option( 'catalogx_quotation_settings', array() );
-            $shopping_settings  = get_option( 'catalogx_shopping_settings', array() );
-            $extra_settings     = get_option( 'catalogx_extra_settings', array() );
-            update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array_merge( $shopping_settings, $extra_settings,$enquiry_settings, $quotation_settings ) );
-
-            delete_option( 'catalogx_extra_settings' );
-            delete_option( 'catalogx_shopping_settings' );
-            delete_option( 'catalogx_enquiry_settings' );
-            delete_option( 'catalogx_quotation_settings' );
-
-            $settings = get_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array() );
+            $settings = get_option( 'catalogx_all_settings_settings', array() );
 
             $settings['enquiry_user_permission'] = ! empty( $settings['enquiry_user_permission'] ) ? 'logged_in_only' : 'everyone';
-
             $settings['quote_user_permission'] = ! empty( $settings['quote_user_permission'] )? 'logged_in_only' : 'everyone';
             $settings['enable_cart_checkout']  = ! empty( $settings['quote_user_permission'] )? 'buy_mode' : 'catalog_only';
             $settings['is_page_redirect']      = ! empty( $settings['is_page_redirect'] )? 'dedicated_page' : 'current_page';
@@ -732,21 +631,23 @@ class Installer {
             update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $settings );
 
             $wholesale_settings = get_option( Utill::CATALOGX_SETTINGS['wholesale'], array() );
-
             $wholesale_settings['disable_coupon_for_wholesale'] = ! empty( $wholesale_settings['disable_coupon_for_wholesale'] ) ? 'restricted' : 'restricted';
             $wholesale_settings['enable_order_form']            = ! empty( $wholesale_settings['enable_order_form'] ) ? 'dedicated' : 'shared';
             $wholesale_settings['show_wholesale_price']         = ! empty( $wholesale_settings['show_wholesale_price'] ) ? 'visible' : 'hidden';
             $wholesale_settings['enable_global_wholasale']      = ! empty( $wholesale_settings['enable_global_wholasale'] ) ? 'global_rule' : 'product_level';
+        
+            if ( !empty( $wholesale_settings ) && isset( $wholesale_settings['wholesale_discount'] ) ) {
+                $wholesale_settings['wholesale_amount'] = $wholesale_settings['wholesale_discount'];
+                unset( $wholesale_settings['wholesale_discount'] );
+            }
 
             update_option( Utill::CATALOGX_SETTINGS['wholesale'], $wholesale_settings );
-
-
             update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], get_option( 'catalogx_enquiry_email_temp_settings', array() ) );
             update_option( Utill::CATALOGX_SETTINGS['dashboard'], get_option( 'catalogx_pages_settings', array() ) );
 
             delete_option( 'catalogx_enquiry_email_temp_settings' );
             delete_option( 'catalogx_pages_settings' );
-
+            delete_option( 'catalogx_all_settings_settings' );
         }
     }
 

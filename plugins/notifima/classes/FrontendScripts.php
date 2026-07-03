@@ -240,19 +240,6 @@ class FrontendScripts {
         return self::$settings_cache;
     }
 
-	/**
-	 * Get base AJAX data for frontend scripts
-	 *
-	 * @param string $handle Script handle used for nonce creation.
-	 * @return array Base AJAX data including admin-ajax URL and nonce.
-	 */
-    public static function get_base_ajax_data( $handle ) {
-        return array(
-            'ajaxurl' => admin_url( 'admin-ajax.php' ),
-            'nonce'   => wp_create_nonce( $handle ),
-        );
-    }
-
     /**
 	 * Localize all scripts.
 	 *
@@ -310,14 +297,6 @@ class FrontendScripts {
         $config           = $localize_scripts[ $handle ] ?? array();
 
         $data = array();
-
-        if ( ! empty( $config['use_ajax'] ) && ! empty( $config['use_rest'] ) ) {
-            $base_ajax = self::get_base_ajax_data( $handle );
-            unset( $base_ajax['nonce'] );
-            $data = array_merge( $data, $base_ajax );
-        } else {
-            $data = array_merge( $data, self::get_base_ajax_data( $handle ) );
-        }
 
         if ( ! empty( $config['use_rest'] ) ) {
             $data = array_merge( $data, $base_rest );
