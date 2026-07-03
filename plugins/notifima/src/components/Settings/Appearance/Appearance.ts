@@ -7,21 +7,7 @@ export default {
     headerIcon: 'appearance',
     submitUrl: 'settings',
     modal: [
-        {
-            key: 'unsubscribe_button_text',
-            type: 'text',
-            label: __("'Unsubscribe' Button Caption", 'notifima'),
-            settingDescription: __(
-                'Customize the text displayed on the unsubscribe button.',
-                'notifima'
-            ),
-            desc: __(
-                'Default: "Unsubscribe".',
-                'notifima'
-            ),
-            size: 20,
-            placeholder: __('Unsubscribe', 'notifima'),
-        },
+        
         {
             key: 'is_guest_subscriptions_enable',
             type: 'choice-toggle',
@@ -271,6 +257,7 @@ export default {
             ],
             proSetting: true,
         },
+        
         {
             key: 'double_opt_in_success',
             type: 'textarea',
@@ -290,6 +277,21 @@ export default {
             },
             proSetting: true,
         },
+        {
+    key: 'unsubscribe_button_text',
+    type: 'text',
+    label: __("'Unsubscribe' Button Caption", 'notifima'),
+    settingDescription: __(
+    'Customize the text displayed on the unsubscribe button for subscribed users.',
+    'notifima'
+),
+desc: __(
+    'Default: "Unsubscribe". Shown when a subscribed user revisits an out-of-stock product.',
+    'notifima'
+),
+    size: 20,
+    placeholder: __('Unsubscribe', 'notifima'),
+},
         {
             key: 'section',
             type: 'section',
