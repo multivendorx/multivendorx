@@ -113,20 +113,23 @@ const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 			{props.confirmMode ? (
 				<div className="popup-confirm">
 					<i className="popup-icon adminfont-suspended admin-badge red"></i>
-					<div className="title">{props.title || 'Confirmation'}</div>
+					<div className="title">
+						{props.title || __('Confirmation', 'notifima')}
+					</div>
 					<div className="desc">{props.confirmMessage}</div>
 					<ButtonInputUI
 						position="center"
 						buttons={[
 							{
 								icon: 'close',
-								text: props.confirmNoText || 'Cancel',
+								text: props.confirmNoText || __('Cancel', 'notifima'),
 								color: 'red',
 								onClick: props.onCancel,
 							},
 							{
 								icon: 'delete',
-								text: props.confirmYesText || 'Confirm',
+								text:
+									props.confirmYesText || __('Confirm', 'notifima'),
 								onClick: props.onConfirm,
 							},
 						]}
