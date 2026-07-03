@@ -83,25 +83,26 @@ const SubscribersList = () => {
                         iconClass: 'single-product',
                     }}
                     descriptions={[
-						{
-							label: __('SKU', 'notifima'),
-							value: row.sku,
-						},
-					]}
+                        {
+                            label: __('SKU', 'notifima'),
+                            value: row.sku,
+                        },
+                    ]}
                 />
             ),
         },
         email: {
-			label: __('Email', 'Email'),
-			render: (row) => { return(
-				<div className="icon-wrapper"><i className='adminfont-mail yellow'></i>{row.email}</div>
-			);
-			},
-		},
+            label: __('Email', 'Email'),
+            render: (row) => {
+                return (
+                    <div className="icon-wrapper"><i className='adminfont-mail yellow'></i>{row.email}</div>
+                );
+            },
+        },
         date: { label: __('Date', 'notifima') },
         status: {
             label: __('Status', 'notifima'),
-            statusClass: (row) => `${row.status_class}`,
+            statusClass: (row) => `${row.status_key}`,
             type: 'status',
         },
     };
