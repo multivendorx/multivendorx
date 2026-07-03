@@ -172,7 +172,7 @@ export const GreenLagoon = {
 						type: 'richtext',
 						name: 'customer-name',
 						html: __(
-							'{customer_name}',
+							'[{name_enter_your_name}]',
 							'catalogx'
 						),
 						style: {
@@ -205,7 +205,7 @@ export const GreenLagoon = {
 						type: 'richtext',
 						name: 'customer-email',
 						html: __(
-							'{customer_email}',
+							'[{email_enter_your_email}]',
 							'catalogx'
 						),
 						style: {
@@ -213,93 +213,6 @@ export const GreenLagoon = {
 							lineHeight: 1.4,
 							paddingTop: '0.25rem',
 							color: '#059669',
-							fontWeight: '500',
-						},
-					},
-				],
-			],
-		},
-
-		// Product Details Card
-		{
-			id: 14,
-			type: 'columns',
-			name: 'product-info',
-			layout: '2',
-			style: {
-				backgroundColor: '#f0fdf4',
-				paddingTop: 1.25,
-				paddingBottom: 1.25,
-				paddingRight: 1.5,
-				paddingLeft: 1.5,
-				marginTop: 0.5,
-				marginBottom: 1.5,
-				borderRadius: '0.5rem',
-				border: '1px solid #bbf7d0',
-			},
-			columns: [
-				[
-					{
-						id: 15,
-						type: 'heading',
-						name: 'product-name-label',
-						text: __('Product Name', 'catalogx'),
-						level: 3,
-						style: {
-							fontSize: 0.85,
-							lineHeight: 1.3,
-							color: '#065f46',
-							fontWeight: '600',
-							textTransform: 'uppercase',
-							letterSpacing: '0.5px',
-						},
-					},
-					{
-						id: 16,
-						type: 'richtext',
-						name: 'product-name',
-						html: __(
-							'{product_name}',
-							'catalogx'
-						),
-						style: {
-							fontSize: 1.1,
-							lineHeight: 1.4,
-							paddingTop: '0.25rem',
-							color: '#1a202c',
-							fontWeight: '500',
-						},
-					},
-				],
-				[
-					{
-						id: 17,
-						type: 'heading',
-						name: 'product-category-label',
-						text: __('Category', 'catalogx'),
-						level: 3,
-						style: {
-							fontSize: 0.85,
-							lineHeight: 1.3,
-							color: '#065f46',
-							fontWeight: '600',
-							textTransform: 'uppercase',
-							letterSpacing: '0.5px',
-						},
-					},
-					{
-						id: 18,
-						type: 'richtext',
-						name: 'product-category',
-						html: __(
-							'{product_category}',
-							'catalogx'
-						),
-						style: {
-							fontSize: 1.1,
-							lineHeight: 1.4,
-							paddingTop: '0.25rem',
-							color: '#1a202c',
 							fontWeight: '500',
 						},
 					},

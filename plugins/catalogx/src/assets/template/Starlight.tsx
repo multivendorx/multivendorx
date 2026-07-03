@@ -145,7 +145,7 @@ export const Starlight = {
 						id: 9,
 						type: 'richtext',
 						name: 'customer-name',
-						html: __('{customer_name}', 'catalogx'),
+						html: __('[{name_enter_your_name}]', 'catalogx'),
 						style: {
 							fontSize: 1.1,
 							lineHeight: 1.4,
@@ -175,7 +175,7 @@ export const Starlight = {
 						id: 11,
 						type: 'richtext',
 						name: 'customer-email',
-						html: __('{customer_email}', 'catalogx'),
+						html: __('[{email_enter_your_email}]', 'catalogx'),
 						style: {
 							fontSize: 1.1,
 							lineHeight: 1.4,
@@ -198,130 +198,6 @@ export const Starlight = {
 				paddingTop: 0,
 				paddingBottom: 0,
 			},
-		},
-
-		// Product Info (Two Column Layout)
-		{
-			id: 13,
-			type: 'columns',
-			name: 'product-info',
-			layout: '2',
-			style: {
-				paddingTop: 1,
-				paddingBottom: 1.5,
-				paddingRight: 2.5,
-				paddingLeft: 2.5,
-			},
-			columns: [
-				[
-					{
-						id: 14,
-						type: 'richtext',
-						name: 'product-name-label',
-						html: __('Product Name', 'catalogx'),
-						style: {
-							fontSize: 0.75,
-							lineHeight: 1.3,
-							color: '#6b7280',
-							fontWeight: '600',
-							textTransform: 'uppercase',
-							letterSpacing: '0.5px',
-							marginBottom: '0.25rem',
-						},
-					},
-					{
-						id: 15,
-						type: 'richtext',
-						name: 'product-name',
-						html: __('{product_name}', 'catalogx'),
-						style: {
-							fontSize: 1.1,
-							lineHeight: 1.4,
-							color: '#1f2937',
-							fontWeight: '500',
-							marginBottom: '1rem',
-						},
-					},
-				],
-				[
-					{
-						id: 16,
-						type: 'richtext',
-						name: 'product-category-label',
-						html: __('Category', 'catalogx'),
-						style: {
-							fontSize: 0.75,
-							lineHeight: 1.3,
-							color: '#6b7280',
-							fontWeight: '600',
-							textTransform: 'uppercase',
-							letterSpacing: '0.5px',
-							marginBottom: '0.25rem',
-						},
-					},
-					{
-						id: 17,
-						type: 'richtext',
-						name: 'product-category',
-						html: __('{product_category}', 'catalogx'),
-						style: {
-							fontSize: 1.1,
-							lineHeight: 1.4,
-							color: '#1f2937',
-							fontWeight: '500',
-							marginBottom: '1rem',
-						},
-					},
-				],
-			],
-		},
-
-		// Message Section
-		{
-			id: 18,
-			type: 'columns',
-			name: 'message-section',
-			layout: '1',
-			style: {
-				paddingTop: 0.5,
-				paddingBottom: 2,
-				paddingRight: 2.5,
-				paddingLeft: 2.5,
-			},
-			columns: [
-				[
-					{
-						id: 19,
-						type: 'richtext',
-						name: 'message-label',
-						html: __('Customer Message', 'catalogx'),
-						style: {
-							fontSize: 0.75,
-							lineHeight: 1.3,
-							color: '#6b7280',
-							fontWeight: '600',
-							textTransform: 'uppercase',
-							letterSpacing: '0.5px',
-							marginBottom: '0.5rem',
-						},
-					},
-					{
-						id: 20,
-						type: 'richtext',
-						name: 'customer-message',
-						html: __('{customer_message}', 'catalogx'),
-						style: {
-							fontSize: 0.95,
-							lineHeight: 1.6,
-							color: '#374151',
-							backgroundColor: '#f9fafb',
-							padding: '1rem',
-							borderRadius: '0.375rem',
-							borderLeft: '3px solid #818cf8',
-						},
-					},
-				],
-			],
 		},
 
 		// Footer

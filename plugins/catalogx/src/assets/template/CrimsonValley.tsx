@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 export const CrimsonValley = {
-	id: 'minimal-card',
+	id: 'crimson-valley',
 	name: __('Crimson Valley', 'catalogx'),
 	blocks: [
 		// Full width header with accent bar
@@ -100,19 +100,11 @@ export const CrimsonValley = {
 							<table style="width: 100%; border-collapse: collapse;">
 								<tr>
 									<td style="padding: 0.5rem 0; width: 33%;"><strong style="color: #6b7280; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Customer</strong></td>
-									<td style="padding: 0.5rem 0; color: #1f2937; font-weight: 500;">{customer_name}</td>
+									<td style="padding: 0.5rem 0; color: #1f2937; font-weight: 500;">[{name_enter_your_name}]</td>
 								</tr>
 								<tr>
 									<td style="padding: 0.5rem 0;"><strong style="color: #6b7280; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Email</strong></td>
-									<td style="padding: 0.5rem 0; color: #f59e0b; font-weight: 500;">{customer_email}</td>
-								</tr>
-								<tr>
-									<td style="padding: 0.5rem 0;"><strong style="color: #6b7280; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Product</strong></td>
-									<td style="padding: 0.5rem 0; color: #1f2937; font-weight: 500;">{product_name}</td>
-								</tr>
-								<tr>
-									<td style="padding: 0.5rem 0;"><strong style="color: #6b7280; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Category</strong></td>
-									<td style="padding: 0.5rem 0; color: #1f2937; font-weight: 500;">{product_category}</td>
+									<td style="padding: 0.5rem 0; color: #f59e0b; font-weight: 500;">[{email_enter_your_email}]</td>
 								</tr>
 							</table>
 						`,
