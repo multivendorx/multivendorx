@@ -113,20 +113,23 @@ const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 			{props.confirmMode ? (
 				<div className="popup-confirm">
 					<i className="popup-icon adminfont-suspended admin-badge red"></i>
-					<div className="title">{props.title || 'Confirmation'}</div>
+					<div className="title">
+						{props.title || __('Confirmation', 'notifima')}
+					</div>
 					<div className="desc">{props.confirmMessage}</div>
 					<ButtonInputUI
 						position="center"
 						buttons={[
 							{
 								icon: 'close',
-								text: props.confirmNoText || 'Cancel',
+								text: props.confirmNoText || __('Cancel', 'notifima'),
 								color: 'red',
 								onClick: props.onCancel,
 							},
 							{
 								icon: 'delete',
-								text: props.confirmYesText || 'Confirm',
+								text:
+									props.confirmYesText || __('Confirm', 'notifima'),
 								onClick: props.onConfirm,
 							},
 						]}
@@ -165,7 +168,7 @@ const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 									}}
 								>
 									{proPopupContent.btnLink.map((b, idx) => (
-										<option key={idx} value={b.link}>
+										<option key={b.site} value={b.link}>
 											{b.site}
 										</option>
 									))}
@@ -188,19 +191,17 @@ const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 							</div>
 
 							<ul>
-								{proPopupContent.messages.map(
-									(message, index) => (
-										<li key={index}>
-											<div className="title">
-												<i
-													className={`adminfont-${message.icon}`}
-												/>
-												{message.text}
-											</div>
-											<div className="desc">{message.des}</div>
-										</li>
-									)
-								)}
+								{proPopupContent.messages.map((message) => (
+									<li key={`${message.icon}-${message.text}-${message.des}`}>
+										<div className="title">
+											<i
+												className={`adminfont-${message.icon}`}
+											/>
+											{message.text}
+										</div>
+										<div className="desc">{message.des}</div>
+									</li>
+								))}
 							</ul>
 						</div>
 					</div>
