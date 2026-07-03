@@ -277,6 +277,7 @@ class FrontendScripts {
                     'use_rest'     => true,
                     'use_settings' => true,
 					'data'        => array(
+                        'admin_url'                => admin_url(),
 						'export_button'            => wp_nonce_url( admin_url( 'admin-ajax.php?action=export_subscribers' ), 'export_subscribers_nonce' ),
 						'khali_dabba'              => Utill::is_khali_dabba(),
 						'tab_name'                 => __( 'Notifima', 'notifima' ),
