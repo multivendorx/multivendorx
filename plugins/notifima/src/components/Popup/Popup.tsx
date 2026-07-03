@@ -188,7 +188,7 @@ const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 
 							<ul>
 								{proPopupContent.messages.map((message, idx) => (
-									<li key={`${message.icon}-${idx}`}>
+									<li key={message.icon}>
 										<div className="title">
 											<i
 												className={`adminfont-${message.icon}`}
