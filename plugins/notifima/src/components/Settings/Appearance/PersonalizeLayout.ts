@@ -28,16 +28,49 @@ const REGISTRATION_BLOCK_GROUPS = [
 export default {
     id: 'personalize-layout',
     priority: 2,
-    headerTitle: __( 'Personalize Layout', 'notifima' ),
-    headerDescription: __( 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet', 'notifima' ),
+    headerTitle: __('Personalize Layout', 'notifima'),
+    headerDescription: __('Customize the subscription form layout.', 'notifima'),
     headerIcon: 'form',
     submitUrl: 'settings',
     modal: [
         {
-			key: 'personalize_layout_template',
-			type: 'block-builder',
-            blockGroups: REGISTRATION_BLOCK_GROUPS,
-            enableDefaultBlocks: false,
-		},
+            key: 'form_tabs',
+            type: 'tab',
+            classes: 'full-width',
+            tabs: [
+                {
+                    key: 'free_form',
+                    label: __('Free', 'notifima'),
+                    content: [
+                        {
+                            key: 'email_input',
+                            type: 'text',
+                            size:20,
+                            placeholder: __('Enter Your Email', 'notifima'),
+                            readOnly: true,
+                        },
+                        {
+                            key: 'submit_button',
+                            type: 'button',
+                            text: __('Notify Me', 'notifima'),
+                            color: 'purple-bg',
+                        },
+                    ],
+                },
+                {
+                    key: 'pro_form',
+                    label: __('Pro', 'notifima'),
+                    content: [
+                        {
+                            key: 'personalize_layout_template',
+                            type: 'block-builder',
+                            blockGroups: REGISTRATION_BLOCK_GROUPS,
+                            enableDefaultBlocks: false,
+                            proSetting: true,
+                        },
+                    ],
+                },
+            ],
+        },
     ],
 };
