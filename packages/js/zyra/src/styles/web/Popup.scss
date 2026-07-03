@@ -247,7 +247,7 @@
             min-width: 24rem;
             max-width: 90vw;
             max-height: 80vh;
-            overflow: hidden auto;
+            overflow: auto !important;
             animation: modalSlideIn 0.3s ease-out;
             position: fixed;
             transform: translate(-50%, -50%) scale(0.95);

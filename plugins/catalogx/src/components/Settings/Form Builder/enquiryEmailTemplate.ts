@@ -61,7 +61,7 @@ export default {
     priority: 3,
     headerTitle: __('Email Customizations', 'catalogx'),
     headerDescription: __(
-        'Customized your preferred enquiry details email template',
+        'Customize your preferred enquiry details email template',
         'catalogx'
     ),
     headerIcon: 'enquiry',
