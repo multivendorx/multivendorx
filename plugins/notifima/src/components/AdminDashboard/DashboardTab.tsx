@@ -139,7 +139,7 @@ const DashboardTab: React.FC<object> = () => {
 			),
 			iconClass: 'knowledgebase',
 			linkText: __('Explore Docs', 'notifima'),
-			href: 'https://catalogx.com/docs/knowledgebase/',
+			href: 'https://notifima.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
 		},
 		{
 			title: __('Expert consultation', 'notifima'),
@@ -147,9 +147,9 @@ const DashboardTab: React.FC<object> = () => {
 				'Get tailored advice from our specialists.',
 				'notifima'
 			),
-			iconClass: 'preview',
+			iconClass: 'customer-support',
 			linkText: __('Book Consultation', 'notifima'),
-			href: 'https://catalogx.com/custom-development/',
+			href: 'https://calendly.com/contact-notifima/30min?back=1',
 		}
 	];
 
@@ -286,14 +286,14 @@ const DashboardTab: React.FC<object> = () => {
 			<Column grid={4}>
 				<Card title={__('Extend your website', 'notifima')}>
 					<Column row>
-						{/* CatalogX */}
+						{/* notifima */}
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
 							<ItemListUI
 								className="mini-card"
 								background
 								items={[
 									{
-										title: __('CatalogX Pro', 'notifima'),
+										title: __('Catalogx Pro', 'notifima'),
 										desc: __(
 											'Advanced product catalog, quotation, and enquiry features with premium templates.',
 											'notifima'
@@ -306,7 +306,7 @@ const DashboardTab: React.FC<object> = () => {
 													{__('Pro', 'notifima')}
 												</span>
 												<a
-													href="https://catalogx.com/pricing/"
+													href={appLocalizer.pro_url}
 													target="_blank"
 													rel="noopener noreferrer"
 												>
@@ -323,7 +323,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('CatalogX', 'notifima'),
+										title: __('Catalogx', 'notifima'),
 										desc: __(
 											'Turn your WooCommerce store into a product catalog with enquiry and quotation features.',
 											'notifima'
@@ -395,7 +395,7 @@ const DashboardTab: React.FC<object> = () => {
 													{__('Pro', 'notifima')}
 												</span>
 												<a
-													href="https://multivendorx.com/pricing/"
+													href="https://multivendorx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima"
 													target="_blank"
 													rel="noopener noreferrer"
 												>

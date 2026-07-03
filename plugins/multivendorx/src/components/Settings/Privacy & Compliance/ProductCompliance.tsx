@@ -339,40 +339,14 @@ const ratingsField = {
 			id: 'product_image',
 			label: 'Product Image',
 			mandatory: true,
-			formFields: [
-				{
-					key: 'show_on_frontend',
-					type: 'checkbox',
-					label: __('Display on Frontend', 'multivendorx'),
-					options: [
-						{
-							key: 'show_on_frontend',
-							value: 'show_on_frontend',
-						},
-					],
-					look: 'toggle',
-				},
-			],
+			formFields: [],
 			desc: 'Confirms the store is legally registered as a business entity.',
 		},
 		{
 			id: 'product_description',
 			label: 'Product description',
 			mandatory: true,
-			formFields: [
-				{
-					key: 'show_on_frontend',
-					type: 'checkbox',
-					label: __('Display on Frontend', 'multivendorx'),
-					options: [
-						{
-							key: 'show_on_frontend',
-							value: 'show_on_frontend',
-						},
-					],
-					look: 'toggle',
-				},
-			],
+			formFields: [],
 			desc: 'Validates that the store is authorized to operate and conduct business legally.',
 		},
 		{

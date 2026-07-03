@@ -69,8 +69,6 @@ class Utill {
             'email_placeholder_text'    => Notifima()->default_value['email_placeholder_text'],
             'alert_text'                => Notifima()->default_value['alert_text'],
             'unsubscribe_button_text'   => Notifima()->default_value['unsubscribe_button_text'],
-            'alert_text_color'          => Notifima()->default_value['alert_text_color'],
-            'customize_btn'             => Notifima()->default_value['customize_btn'],
             'ban_email_domain_text'     => Notifima()->default_value['ban_email_domain_text'],
             'ban_email_address_text'    => Notifima()->default_value['ban_email_address_text'],
         );
@@ -108,7 +106,7 @@ class Utill {
      * @return bool
      */
     public static function is_khali_dabba() {
-        return apply_filters( 'kothay_dabba', false );
+        return apply_filters( 'kothay_dabba_notifima', false );
     }
 
     /**
@@ -177,5 +175,15 @@ class Utill {
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
         return $wpdb->get_results( $query );
     }
+    
+    /**
+     * Function to check wheather mvx is active or not
+     *
+     * @return bool
+     */
+    public static function is_multivendorx_active() {
+        require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
+        return is_plugin_active( 'dc-woocommerce-multi-vendor/dc_product_vendor.php' );
+    }
 }

@@ -152,7 +152,9 @@
         background: #fff;
         border: 0.063rem solid #dbdbdb;
         padding: 1.5rem;
-
+        .close-btn{
+            display: none;
+        }
         .starter-container {
             position: absolute;
             top: 8%;
@@ -1130,6 +1132,10 @@
     .enquiry-container:has(.active-navbar) {
         .chat-list {
             transform: translateX(0);
+
+            .close-btn{
+                display: block;
+            }
         }
 
         &::after {

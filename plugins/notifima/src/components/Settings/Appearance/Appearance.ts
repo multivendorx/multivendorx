@@ -1,9 +1,9 @@
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 export default {
     id: 'appearance',
     priority: 1,
-    headerTitle: __('Appearance', 'notifima'),
-    headerDescription: __('Customize stock alert form.', 'notifima'),
+    headerTitle: __('Restock alerts setup', 'notifima'),
+    headerDescription: __('Configure how customers subscribe to restock notifications.', 'notifima'),
     headerIcon: 'appearance',
     submitUrl: 'settings',
     modal: [
@@ -74,6 +74,15 @@ export default {
             ],
         },
         {
+            key: 'section',
+            type: 'section',
+            title: __('Restock Timing (Lead Time)', 'notifima'),
+            desc: __(
+                'when and how lead time is shown',
+                'notifima'
+            ),
+        },
+        {
             key: 'display_lead_times',
             type: 'checkbox',
             label: __('Stock Status for Lead Time', 'notifima'),
@@ -133,7 +142,7 @@ export default {
         {
             key: 'lead_time_static_text',
             type: 'text',
-            label: __('Lead time static text', 'notifima'),
+            label: __('Lead time default message', 'notifima'),
             settingDescription: __(
                 'Enter the default lead time message displayed for products using the static lead time format.',
                 'notifima'
@@ -151,6 +160,40 @@ export default {
                 {
                     key: 'display_lead_times',
                     set: true,
+                },
+            ],
+        },
+        {
+            key: 'section',
+            type: 'section',
+            title: __('Confirm the subscriber', 'notifima'),
+            desc: __(
+                'Make sure every subscriber is real and opted-in.',
+                'notifima'
+            ),
+        },
+        {
+            key: 'display_subscription_form_as',
+            type: 'choice-toggle',
+            label: __('Display subscription form as', 'notifima'),
+            settingDescription: __(
+                'Choose how the subscription form is presented to customers.',
+                'notifima'
+            ),
+            desc: __(
+                '<ul><li>Popup Window - Open the subscription form in a modal popup.</li><li>Inline on Product Page - Display the subscription form directly within the product page.</li></ul>',
+                'notifima'
+            ),
+            options: [
+                {
+                    key: 'popup',
+                    value: 'popup',
+                    label: __('Popup', 'notifima'),
+                },
+                {
+                    key: 'inline',
+                    value: 'inline',
+                    label: __('Inline In-page', 'notifima'),
                 },
             ],
         },
@@ -248,68 +291,11 @@ export default {
             proSetting: true,
         },
         {
-            key: 'is_recaptcha_enable',
-            type: 'choice-toggle',
-            label: __('Subscription protection', 'notifima'),
-
-            settingDescription: __(
-                'Choose how to protect the subscription form from automated submissions.',
-                'notifima'
+            key: 'section',
+            type: 'section',
+            title: __('Admin Notifications', 'notifima'),
+            desc: __('Who on your team gets alerted', 'notifima'
             ),
-            desc: __(
-                '<ul><li>No Verification - Customers can subscribe without additional verification.</li><li>Google reCAPTCHA - Protect the subscription form using Google reCAPTCHA v3 to reduce spam and automated submissions.</li></ul>',
-                'notifima'
-            ),
-
-            options: [
-                {
-                    key: 'no_verification',
-                    label: __('No Verification', 'notifima'),
-                    value: 'no_verification',
-                },
-                {
-                    key: 'recaptcha',
-                    label: __('Google recaptcha', 'notifima'),
-                    value: 'recaptcha',
-                },
-            ],
-            proSetting: true,
-        },
-        {
-            key: 'v3_site_key',
-            type: 'text',
-            label: __('Site Key', 'notifima'),
-            settingDescription: __(
-                'Enter your Google reCAPTCHA v3 Site Key.',
-                'notifima'
-            ),
-            desc: __(
-                'Required to enable Google reCAPTCHA protection for the subscription form.',
-                'notifima'
-            ),
-            dependent: {
-                key: 'is_recaptcha_enable',
-                set: true,
-                value: 'recaptcha',
-            },
-        },
-        {
-            key: 'v3_secret_key',
-            type: 'text',
-            label: __('Secret Key', 'notifima'),
-            settingDescription: __(
-                'Enter your Google reCAPTCHA v3 Secret Key.',
-                'notifima'
-            ),
-            desc: __(
-                'Used to verify reCAPTCHA requests submitted through the subscription form.',
-                'notifima'
-            ),
-            dependent: {
-                key: 'is_recaptcha_enable',
-                set: true,
-                value: 'recaptcha',
-            },
         },
         {
             key: 'additional_alert_email',

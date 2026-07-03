@@ -4,10 +4,7 @@ import { ButtonInputUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import '../Popup/Popup.scss';
 
-interface PopupProps {
-	moduleName?: string;
-	wooSetting?: string;
-	wooLink?: string;
+interface ShowProPopupProps {
 	confirmMode?: boolean;
 	title?: string;
 	confirmMessage?: string;
@@ -15,7 +12,6 @@ interface PopupProps {
 	confirmNoText?: string;
 	onConfirm?: () => void;
 	onCancel?: () => void;
-	plugin?: string;
 }
 
 
@@ -70,7 +66,7 @@ const proPopupContent = {
 			),
 		},
 		{
-			icon: 'subscription-dashboard',
+			icon: 'subscription-details',
 			text: __('Subscription Details', 'notifima'),
 			des: __(
 				'See who subscribed, which products are in demand, and track activity.',
@@ -90,22 +86,22 @@ const proPopupContent = {
 		{
 			site: 'one',
 			price: '$49',
-			link: 'https://notifima.com/pricing/?add-to-cart=18156',
+			link: 'https://notifima.com/cart/?add-to-cart=699&variation_id=836&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima'
 		},
 		{
 			site: 'three',
 			price: '$69',
-			link: 'https://notifima.com/pricing/?add-to-cart=18157',
+			link: 'https://notifima.com/cart/?add-to-cart=699&variation_id=807&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
 		},
 		{
 			site: 'ten',
 			price: '$99',
-			link: 'https://notifima.com/pricing/?add-to-cart=18158',
+			link: 'https://notifima.com/cart/?add-to-cart=699&variation_id=808&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
 		},
 	],
 };
 
-const ShowProPopup: React.FC<PopupProps> = (props) => {
+const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 	const [selectedBtn, setSelectedBtn] = useState(proPopupContent.btnLink[0]);
 
 	return (
@@ -113,20 +109,23 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 			{props.confirmMode ? (
 				<div className="popup-confirm">
 					<i className="popup-icon adminfont-suspended admin-badge red"></i>
-					<div className="title">{props.title || 'Confirmation'}</div>
+					<div className="title">
+						{props.title || __('Confirmation', 'notifima')}
+					</div>
 					<div className="desc">{props.confirmMessage}</div>
 					<ButtonInputUI
 						position="center"
 						buttons={[
 							{
 								icon: 'close',
-								text: props.confirmNoText || 'Cancel',
+								text: props.confirmNoText || __('Cancel', 'notifima'),
 								color: 'red',
 								onClick: props.onCancel,
 							},
 							{
 								icon: 'delete',
-								text: props.confirmYesText || 'Confirm',
+								text:
+									props.confirmYesText || __('Confirm', 'notifima'),
 								onClick: props.onConfirm,
 							},
 						]}
@@ -151,8 +150,11 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 							</div>
 							<div className="price">{selectedBtn.price}</div>
 							<div className="select-wrapper">
-								{__('For website with', 'notifima')}
+								<label htmlFor="notifima-site-license-select">
+									{__('For website with', 'notifima')}
+								</label>
 								<select
+									id="notifima-site-license-select"
 									value={selectedBtn.link}
 									onChange={(e) => {
 										const found =
@@ -165,8 +167,8 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 									}}
 								>
 									{proPopupContent.btnLink.map((b, idx) => (
-										<option key={idx} value={b.link}>
-											{b.site}
+										<option key={b.site} value={b.link}>
+											{`${b.site} site license`}
 										</option>
 									))}
 								</select>
@@ -188,22 +190,17 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 							</div>
 
 							<ul>
-								{proPopupContent.messages.map(
-									(message, index) => (
-										<li key={index}>
-											<div className="title">
-												<i
-													className={`adminfont-${message.icon}`}
-												/>
-												{message.text}
-											</div>
-											<div className="desc">
-												{' '}
-												{message.des}
-											</div>
-										</li>
-									)
-								)}
+								{proPopupContent.messages.map((message, idx) => (
+									<li key={message.icon}>
+										<div className="title">
+											<i
+												className={`adminfont-${message.icon}`}
+											/>
+											{message.text}
+										</div>
+										<div className="desc">{message.des}</div>
+									</li>
+								))}
 							</ul>
 						</div>
 					</div>

@@ -32,6 +32,9 @@
   -moz-osx-font-smoothing: grayscale;
   display: inline-block;
 }
+.adminfont-subscriber:before {
+  content: "\e977";
+}
 .adminfont-reply:before {
   content: "\e900";
 }

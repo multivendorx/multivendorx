@@ -145,7 +145,7 @@ const Table: React.FC<TableProps> = ({
         );
     };
     const dragProps = {
-        nodeSelector: 'tbody tr',
+        nodeSelector: onRowReorder ? 'tbody tr' : '',
 
         onDragEnd: (
             fromIndex: number,

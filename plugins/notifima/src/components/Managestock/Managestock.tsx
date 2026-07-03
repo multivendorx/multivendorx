@@ -29,7 +29,7 @@ const Managestock = () => {
                     }}
                     descriptions={[
                         {
-                            label: __('SKU', 'catalogx'),
+                            label: __('SKU', 'notifima'),
                             value: row.sku || '—',
                         },
                     ]}
@@ -113,7 +113,6 @@ const Managestock = () => {
         categoryCounts: defaultCategoryCounts,
         filters,
         expandable: true,
-        onQueryUpdate: () => setopenPopup(false),
         search: {
             placeholder: __('Search...', 'notifima'),
             size: 8,
