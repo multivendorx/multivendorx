@@ -446,7 +446,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                 return prev.filter((b) => b.id !== blockToDelete.id);
             });
             markChanged();
-            if (openBlock?.id === deleted?.id) {
+            if (openBlock?.id === blockToDelete?.id) {
                 setOpenBlock(null);
                 columnManager.clearSelection();
             }
