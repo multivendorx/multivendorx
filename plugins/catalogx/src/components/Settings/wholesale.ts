@@ -15,6 +15,10 @@ export default {
                 'Approval of wholesale users through registration form',
                 'catalogx'
             ),
+			settingDescription: __(
+        'Choose how new wholesale users should be approved after registration.',
+        'catalogx'
+    ),
             desc: __(
                 "Manual - Admin approves new wholesalers manually from 'Wholeseller Users' page. <br> Automatic - Instant wholesaler approval upon sign-up",
                 'catalogx'
