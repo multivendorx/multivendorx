@@ -2,6 +2,9 @@
 
 namespace CatalogX\Emails;
 
+use CatalogX\Utill;
+use MultiVendorX\Store\Store;
+
 /**
  * Email to Admin for customer enquiry.
  * An email will be sent to the admin when a customer enquires about a product.
@@ -54,7 +57,7 @@ class EnquiryEmail extends \WC_Email {
             return false;
         }
 
-        // $this->add_store_emails();
+        $this->add_store_emails();
 
         $product = wc_get_product(key($this->product_id));
         $this->find = ['{PRODUCT_NAME}', '{USER_NAME}'];
@@ -69,24 +72,19 @@ class EnquiryEmail extends \WC_Email {
     /**
      * Add vendor emails to the recipient list.
      */
-    // protected function add_store_emails() {
-    //     if (!Utill::is_active_plugin('multivendorx')) return;
+    protected function add_store_emails() {
+        if ( ! Utill::is_active_plugin('multivendorx')) return;
 
-    //     foreach ( $this->product_id as $product_id => $quantity ) {
-    //         $store_id = get_post_meta( $product_id, 'multivendorx_store_id', true );
-    //         $store = new MultiVendorX\Store\Store( $store_id );
+        foreach ( $this->product_id as $product_id => $quantity ) {
+            $store_id = get_post_meta( $product_id, 'multivendorx_store_id', true );
+            $store = new Store( $store_id );
             
-    //         if ( $store ) {
-    //             $store_email     = sanitize_email( $store->get('email') );
-    //             $this->recipient .= ', ' . $store_email;
-
-    //             if ( strpos( $this->recipient, $store_email ) !== false ) {
-    //                 $email_setting       = get_user_meta( $store->id, 'vendor_enquiry_settings', true )['selected_email_tpl'] ?? '';
-    //                 $this->template_html = $this->args['template_map'][ $email_setting ] ?? $this->args['default_html'];
-    //             }
-    //         }
-    //     }
-    // }
+            if ( $store ) {
+                $store_email     = sanitize_email( $store->get('email') );
+                $this->recipient .= ', ' . $store_email;
+            }
+        }
+    }
 
     /**
      * Get email subject.

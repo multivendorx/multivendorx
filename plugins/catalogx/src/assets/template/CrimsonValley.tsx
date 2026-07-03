@@ -234,7 +234,6 @@ export const CrimsonValley = {
 							color: '#7c2d2d',
 							fontWeight: '700',
 							marginBottom: 0.25,
-							paddingTop: 0.5,
 							borderTop: '2px solid #fef2f2',
 							paddingTop: 1.25,
 						},
