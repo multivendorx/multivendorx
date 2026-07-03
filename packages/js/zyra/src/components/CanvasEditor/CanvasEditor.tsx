@@ -723,7 +723,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     })();
 
     return (
-        <div className="registration-from-wrapper">
+        <div className="registration-form-wrapper">
              {hasTabsContent && (
             <div className="elements-wrapper">
                 <TabsUI
