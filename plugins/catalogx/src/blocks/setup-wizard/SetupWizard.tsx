@@ -208,8 +208,6 @@ const SetupWizard: React.FC = () => {
 		setValue(data);
 	};
 
-	console.log('value', value)
-
 	return (
 		<div className="wizard-container">
 			<div className="welcome-wrapper">
