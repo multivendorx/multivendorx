@@ -94,8 +94,8 @@ class Notifima {
             'valid_email'               => __( 'Please enter a valid email ID and try again.', 'notifima' ),
             // Translators: This message display user sucessfully unregistered.
             'alert_unsubscribe_message' => __( '%customer_email% is successfully unsubscribed.', 'notifima' ),
-            'ban_email_domain_text'     => __( 'This email domain is ban in our site, kindly use another email domain.', 'notifima' ),
-            'ban_email_address_text'    => __( 'This email address is ban in our site, kindly use another email address.', 'notifima' ),
+            'ban_email_domain_text'     => __( 'This email domain is baned in our site, kindly use another email domain.', 'notifima' ),
+            'ban_email_address_text'    => __( 'This email address is baned in our site, kindly use another email address.', 'notifima' ),
         );
         $this->container['default_value'] = $default_value;
     }
