@@ -7,10 +7,17 @@ const CustomRecaptcha = ( props: any ) => {
     const [ isCaptchaValid, setIsCaptchaValid ] = useState( true );
 
     useEffect( () => {
-        // Generate a cryptographically secure random 6-digit code
+        // Generate a cryptographically secure random 6-digit code without modulo bias
         const generateCode = () => {
-            const randomValue = window.crypto.getRandomValues( new Uint32Array( 1 ) )[ 0 ];
-            return ( 100000 + ( randomValue % 900000 ) ).toString();
+            const range = 900000; // 100000..999999 inclusive
+            const maxUnbiased = Math.floor( 0x100000000 / range ) * range;
+            let randomValue = 0;
+
+            do {
+                randomValue = window.crypto.getRandomValues( new Uint32Array( 1 ) )[ 0 ];
+            } while ( randomValue >= maxUnbiased );
+
+            return ( 100000 + ( randomValue % range ) ).toString();
         };
 
         setSecurityCode( generateCode() );

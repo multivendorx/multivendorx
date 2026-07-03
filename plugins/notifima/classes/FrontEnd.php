@@ -37,7 +37,7 @@ class FrontEnd {
      * @return void
      */
     public function enqueue_frontend_scripts() {
-        if( is_product() || has_shortcode( get_post()->post_content, 'notifima_subscription_form' ) ) {
+        if ( is_product() || has_shortcode( get_post()->post_content, 'notifima_subscription_form' ) ) {
             FrontendScripts::load_scripts();
             FrontendScripts::admin_load_scripts();
             FrontendScripts::enqueue_script( 'notifima-components-script' );
@@ -62,16 +62,16 @@ class FrontEnd {
             return;
         }
 
-        if( 'yes' === $product_obj->get_meta(Utill::NOTIFIMA_PRODUCT_META['product_discontinued'])){
+        if ( 'yes' === $product_obj->get_meta( Utill::NOTIFIMA_PRODUCT_META['product_discontinued'] ) ) {
             return;
         }
 
-        $guest_subscription_enabled = Notifima()->setting->get_setting( 'is_guest_subscriptions_enable','' );
+        $guest_subscription_enabled = Notifima()->setting->get_setting( 'is_guest_subscriptions_enable', '' );
         if ( 'logged_in' === $guest_subscription_enabled && ! is_user_logged_in() ) {
             return;
         }
 
-        $backorders_enabled = Notifima()->setting->get_setting( 'is_enable_backorders','' );
+        $backorders_enabled = Notifima()->setting->get_setting( 'is_enable_backorders', '' );
 
         $stock_status = $product_obj->get_stock_status();
         if ( 'onbackorder' === $stock_status && 'out_of_stock' === $backorders_enabled ) {

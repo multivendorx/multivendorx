@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Column, Container } from 'zyra';
 import { __ } from '@wordpress/i18n';
-import freePro from '../../assets/images/dashboard-1.png';
+import CatalogxBrand from '../../assets/images/catalogx-brand.png';
 interface Feature {
 	name: string;
 	free: boolean | string;
@@ -14,231 +14,340 @@ interface Section {
 }
 const sections: Section[] = [
 	{
-		title: __('Product & store tools', 'catalogx'),
+		title: __('Core features', 'catalogx'),
 		features: [
 			{
-				name: __('Multiple stores per product', 'catalogx'),
+				name: __('Enquiry management', 'catalogx'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Store policies', 'catalogx'),
+				name: __('Catalog mode', 'catalogx'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Store reviews', 'catalogx'),
-				free: true,
-				pro: true,
-			},
-			{ name: __('Follow store', 'catalogx'), free: true, pro: true },
-			{
-				name: __(
-					'Privacy controls to show/hide store details)',
-					'catalogx'
-				),
+				name: __('Quotation management', 'catalogx'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __(
-					'Confirm vendor identity with documents',
-					'catalogx'
-				),
+				name: __('Wholesale pricing', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Bulk upload/download product via CSV',
-					'catalogx'
-				),
+				name: __('Dynamic pricing', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Display store opening/closing times', 'catalogx'),
+				name: __('Live page builder', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Store can temporarily close shop with customer notice',
-					'catalogx'
-				),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __(
-					'Assign assistants to your store and control what they can access',
-					'catalogx'
-				),
+				name: __('Form builder', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 		],
 	},
 	{
-		title: __(' Get paid without hassle', 'catalogx'),
+		title: __('Blocks & shortcodes', 'catalogx'),
 		features: [
 			{
-				name: __('Bank transfer', 'catalogx'),
+				name: __('Enquiry button', 'catalogx'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('PayPal payout', 'catalogx'),
+				name: __('Quote button', 'catalogx'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Stripe connect', 'catalogx'),
-				free: true,
+				name: __('Enquiry cart', 'catalogx'),
+				free: false,
 				pro: true,
 			},
-			{ name: __('Razorpay', 'catalogx'), free: true, pro: true },
 			{
-				name: __('Real-time split payments', 'catalogx'),
+				name: __('Quote cart', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Multi enquiry button', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Wholesale pricing block', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Dynamic pricing block', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Live page builder', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Form builder', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 		],
 	},
 	{
-		title: __(' Deliver seamless shopping experiences', 'catalogx'),
+		title: __('Enquiry features', 'catalogx'),
 		features: [
-			{ name: __('Product Q&A', 'catalogx'), free: true, pro: true },
 			{
-				name: __('Marketplace refunds', 'catalogx'),
+				name: __('Flexible enquiry form display', 'catalogx'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Announcements', 'catalogx'),
+				name: __('Product links in enquiry emails', 'catalogx'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Product abuse report', 'catalogx'),
+				name: __('WPML compatibility', 'catalogx'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Invoices & packing slips', 'catalogx'),
-				free: false,
-				pro: true,
-			},
-			{ name: __('Live chat', 'catalogx'), free: false, pro: true },
-			{
-				name: __('Customer support', 'catalogx'),
+				name: __('Custom enquiry form position', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Product enquiry', 'catalogx'),
+				name: __('Multi enquiry support', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Enquiry cart', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Enquiry email templates', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Form builder', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Enquiry management dashboard', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Combined selling and enquiry mode', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 		],
 	},
 	{
-		title: __(' Ship the way you want', 'catalogx'),
+		title: __('Quotation features', 'catalogx'),
 		features: [
 			{
-				name: __('Zone-based shipping', 'catalogx'),
+				name: __('Add to quote button', 'catalogx'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Distance-based shipping', 'catalogx'),
+				name: __('Variable product support', 'catalogx'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Country restrictions', 'catalogx'),
+				name: __('Universal quote access', 'catalogx'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Weight-based shipping', 'catalogx'),
+				name: __('Cart to quote conversion', 'catalogx'),
 				free: true,
 				pro: true,
 			},
 			{
-				name: __('Per-product shipping', 'catalogx'),
+				name: __('Customizable quote button', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('PDF quote viewing', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Custom thank you page', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Custom quote creation', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Quote acceptance and rejection', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Admin quote notifications', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('User quote management', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Quote expiration', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 		],
 	},
 	{
-		title: __(' Sell in different ways', 'catalogx'),
+		title: __('Wholesale pricing', 'catalogx'),
 		features: [
 			{
-				name: __(
-					'Optimize store & product SEO with Yoast or Rank Math',
-					'catalogx'
-				),
+				name: __('Wholesale customer role', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Sales, revenue, and order reports', 'catalogx'),
+				name: __('Show or hide retail prices', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Store with different capabilities as per subsctiption plan',
-					'catalogx'
-				),
+				name: __('Wholesale pricing fields', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Paid product promotions', 'catalogx'),
+				name: __('Coupon restrictions for wholesalers', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Special pricing & bulk rules for groups',
-					'catalogx'
-				),
+				name: __('Hide products without wholesale pricing', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __(
-					'Low-stock alerts, waitlists, inventory management',
-					'catalogx'
-				),
+				name: __('Global wholesale pricing', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Minimum cart quantity', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Per-product minimum quantity', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Wholesale order form', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Percentage discounts', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Fixed amount discounts', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Per-user wholesale pricing', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 		],
 	},
 	{
-		title: __('Automate rules and commissions', 'catalogx'),
+		title: __('Dynamic pricing', 'catalogx'),
 		features: [
 			{
-				name: __('Payment gateway fees', 'catalogx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Min/Max quantities', 'catalogx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Facilitator fees', 'catalogx'),
+				name: __('Role-based pricing rules', 'catalogx'),
 				free: false,
 				pro: true,
 			},
 			{
-				name: __('Marketplace fees', 'catalogx'),
+				name: __('Customer-specific pricing', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Fixed pricing adjustments', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Discounts and markups', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Bulk pricing adjustments', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Quantity-based pricing', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Replace product prices with markups', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Custom user roles', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Drag-and-drop rule priority', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Product-level pricing rules', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Multi-tier pricing', 'catalogx'),
+				free: false,
+				pro: true,
+			},
+			{
+				name: __('Category-based pricing rules', 'catalogx'),
 				free: false,
 				pro: true,
 			},
@@ -313,7 +422,7 @@ const FreeVsProTab: React.FC<object> = () => {
 				<Card>
 					<div className="right-pro-banner">
 						<div className="image-wrapper">
-							{/* <img src={freePro} alt="" /> */}
+							<img src={CatalogxBrand} alt="" />
 						</div>
 
 						<div className="title">

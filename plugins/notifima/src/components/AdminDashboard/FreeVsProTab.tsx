@@ -1,3 +1,4 @@
+/* global appLocalizer */
 import React from 'react';
 import { Card, Column, Container } from 'zyra';
 import { __ } from '@wordpress/i18n';

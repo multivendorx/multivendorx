@@ -1,3 +1,4 @@
+/* global subscription */
 import React, { useState } from 'react';
 import axios from 'axios';
 import { getApiLink } from 'zyra';
@@ -69,7 +70,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
             .catch(() => {
                 setResponse({
                     status: false,
-                    message: 'Something went wrong. Please try again.',
+                    message: __('Something went wrong. Please try again.', 'notifima'),
                 });
             })
             .finally(() => {
@@ -106,7 +107,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
             .catch(() => {
                 setResponse({
                     status: false,
-                    message: 'Unable to unsubscribe.',
+                    message: __('Unable to unsubscribe.', 'notifima'),
                 });
             })
             .finally(() => {
@@ -189,8 +190,8 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                     onClick={unsubscribe}
                 >
                     {loading
-                        ? 'Please wait...'
-                        : response.unsubscribe_button?.text ?? 'Unsubscribe'}
+                        ? __('Please wait...', 'notifima')
+                        : response.unsubscribe_button?.text ?? __('Unsubscribe',  'notifima')}
                 </button>
             )}
         </>

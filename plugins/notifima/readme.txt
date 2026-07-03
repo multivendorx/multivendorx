@@ -1,9 +1,9 @@
 === Notifima – WooCommerce Stock Manager, Inventory Management, Waitlist ===
 
 Contributors: wcmp
-Tags: stock manager, back in stock notifier, waitlist, inventory management, out of stock notifictaion
+Tags: stock manager, back in stock notifier, waitlist, inventory management, out of stock notification
 Requires at least: 6.4
-Tested up to: 6.9.0
+Tested up to: 7.0.0
 Requires PHP: 8.0
 Stable tag: 3.1.0
 Donate link: https://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=notifimawporg
@@ -114,7 +114,7 @@ Are you tired of losing potential sales because your customers can't buy the out
 **AUTOMATIC INSTALLATION**
 Automatic installation is the easiest option — WordPress will handle the file transfer, and you won’t need to leave your web browser. To do an automatic install of Notifima, log in to your WordPress dashboard, navigate to the Plugins menu, and click “Add New”.
 
-In the search field type “Notifima,” then click “Search Plugins.” Once you’ve found us, you can view details about it such as the point release, rating, and description. Most importantly of course, you can install it by! Click “Install Now,” and WordPress will take it from there.
+In the search field type “Notifima,” then click “Search Plugins.” Once you’ve found us, you can view details about it such as the point release, rating, and description. Most importantly of course, you can install it. Click “Install Now,” and WordPress will take it from there.
 
 **MANUAL INSTALLATION**
 Manual installation method requires downloading the [Notifima] (https://wordpress.org/plugins/woocommerce-product-stock-alert/) plugin and uploading it to your web server via your favorite FTP application. 
@@ -168,6 +168,12 @@ Manual installation method requires downloading the [Notifima] (https://wordpres
 6. Inventory manager
 
 == Changelog ==
+
+= 3.1.0 - 2026-07-03 =
+* Added     - Compatibility of WordPress 7.0.0.
+* Added     - Compatibility of WooCommerce 10.9.2.
+* Added     - Enhanced the overall UI/UX of the settings panel.
+* Updated   - Language file.
 
 = 3.0.6 - 2025-12-11 =
 * Added     - Compatibility of WordPress 6.9.0.

@@ -65,10 +65,10 @@ class Settings extends \WP_REST_Controller {
             return $nonce_check;
         }
         try {
-            $settings = $request->get_param( 'setting' );
-            $settings_key      = $request->get_param( 'settingName' );
-            $settings_key      = str_replace( '-', '_', $settings_key );
-            $option_name       = 'notifima_' . $settings_key . '_settings';
+            $settings     = $request->get_param( 'setting' );
+            $settings_key = $request->get_param( 'settingName' );
+            $settings_key = str_replace( '-', '_', $settings_key );
+            $option_name  = 'notifima_' . $settings_key . '_settings';
 
             // save the settings in database.
             Notifima()->setting->update_option( $option_name, $settings );
@@ -82,8 +82,8 @@ class Settings extends \WP_REST_Controller {
         } catch ( \Exception $e ) {
 			return new \WP_Error(
                 'server_error',
-                __('Unexpected server error', 'notifima'),
-                array('status' => 500)
+                __( 'Unexpected server error', 'notifima' ),
+                array( 'status' => 500 )
             );
         }
     }
