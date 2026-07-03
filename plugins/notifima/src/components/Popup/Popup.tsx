@@ -5,9 +5,6 @@ import { __ } from '@wordpress/i18n';
 import '../Popup/Popup.scss';
 
 interface ShowProPopupProps {
-	moduleName?: string;
-	wooSetting?: string;
-	wooLink?: string;
 	confirmMode?: boolean;
 	title?: string;
 	confirmMessage?: string;
@@ -15,7 +12,6 @@ interface ShowProPopupProps {
 	confirmNoText?: string;
 	onConfirm?: () => void;
 	onCancel?: () => void;
-	plugin?: string;
 }
 
 
