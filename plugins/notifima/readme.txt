@@ -169,10 +169,11 @@ Manual installation method requires downloading the [Notifima] (https://wordpres
 
 == Changelog ==
 
-= 3.1.0 - 2026-06-03 =
+= 3.1.0 - 2026-07-03 =
 * Added     - Compatibility of WordPress 7.0.0.
 * Added     - Compatibility of WooCommerce 10.9.2.
 * Added     - Enhanced the overall UI/UX of the settings panel.
+* Updated   - Language file.
 
 = 3.0.6 - 2025-12-11 =
 * Added     - Compatibility of WordPress 6.9.0.
