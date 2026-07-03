@@ -62,7 +62,7 @@ const DummyEnquiryMessages = () => {
                 </PopupUI>
             )}
 
-            <Container general>
+            <Container>
                 <Column>
                     <div
                         id="enquiry-messages"
