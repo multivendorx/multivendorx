@@ -193,7 +193,7 @@ class FrontEnd {
     public function get_product_lead_time() {
         global $product;
 
-        if ( empty( $product ) ) {
+        if ( ! $product instanceof \WC_Product ) {
             return '';
         }
 
