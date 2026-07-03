@@ -43,9 +43,13 @@ export default {
                     label: __('Free', 'notifima'),
                     content: [
                         {
+                            key: 'section',
+                            type: 'section'
+                        },
+                        {
                             key: 'email_input',
                             type: 'text',
-                            size:20,
+                            size: 20,
                             placeholder: __('Enter Your Email', 'notifima'),
                             readOnly: true,
                         },

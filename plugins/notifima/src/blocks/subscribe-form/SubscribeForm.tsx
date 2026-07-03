@@ -4,18 +4,12 @@ import { getApiLink } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
-interface SubscriptionConfig {
-    display_type: string;
-    nonce: string;
-}
-
 interface SubscribeFormProps {
     productId: number;
     variationId: number;
     productTitle: string;
     userEmail: string;
     shownInterest: string;
-    subscription: SubscriptionConfig;
 }
 
 interface ApiResponse {
@@ -36,7 +30,6 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
     productTitle,
     userEmail,
     shownInterest,
-    subscription,
 }) => {
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState<ApiResponse | null>(null);
@@ -161,6 +154,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                         <button
                             type="button"
                             disabled={loading}
+                            className='woocommerce-button button wp-element-button wp-block-button__link'
                             onClick={() =>
                                 onSubmit({
                                     email: subscription.email || userEmail,
@@ -185,7 +179,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
             {response?.already_subscribed && (
                 <button
                     type="button"
-                    className="notifima-unsubscribe"
+                    className="notifima-unsubscribe woocommerce-button button wp-element-button wp-block-button__link"
                     disabled={loading}
                     onClick={unsubscribe}
                 >
@@ -205,7 +199,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                 <>
                     <button
                         type="button"
-                        className="notifima-open-popup"
+                        className="notifima-open-popup woocommerce-button button wp-element-button wp-block-button__link"
                         onClick={() => setShowPopup(true)}
                     >
                         {__('Notify Me', 'notifima')}

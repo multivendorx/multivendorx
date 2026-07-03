@@ -1,51 +1,48 @@
-.notifima-email {
-	margin-bottom: 0.63rem;
-	width: 15.75rem;
-}
+.notifima-popup-overlay {
+  margin: 0 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #00000029;
+  width: 100vw;
+  height: 100vh;
+  z-index: 123570;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  gap: 1rem;
+  max-width: 100% !important;
 
-.disabled{
-	cursor: not-allowed;
-  opacity: 0.5 !important;
-}
+  .notifima-popup {
+    overflow-y: auto;
+    background-color: #fff;
+    width: 40%;
+    max-height: 80vh;
+    padding: 1rem;
+    position: relative;
 
-h5.subscribe-for-interest-text {
-	margin-bottom: 0.315rem;
-}
-
-.notifima-button.notifima-loader {
-  cursor: not-allowed;
-}
-
-.notifima-button.notifima-loader::before {
-  content: "";
-  display: inline-block;
-  width: 0.63rem;
-  height: 0.63rem;
-  margin-right: 0.63rem;
-  border-radius: 50%;
-  border: 0.126rem solid white;
-  border-left-color: transparent;
-  border-top-color: transparent;
-  animation: loading 1s linear infinite;
-}
-
-button.notifima-button {
-  margin: 0.315rem;
-}
-
-.notifima-registered-message {
-  margin-bottom: 1.26rem;
-}
-
-button.notifima-unsubscribe {
-  margin: 0.945rem 0;
-}
-
-@keyframes loading{
-  0%{
-    transform: rotate(0deg);
+    .notifima-popup-close {
+      position: absolute;
+      right: 1rem;
+      color: #cd2020;
+      border: none;
+      background: #cd202024;
+      font-size: 1.125rem;
+      border-radius: 50%
+    }
   }
-  100%{
-    transform: rotate(360deg);
+}
+
+// Manage Stock Wishlist section
+.notifima-manage-stock {
+  .product-details {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    
+    .product-image {
+      height: 8rem;
+    }
   }
 }

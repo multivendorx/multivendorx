@@ -879,11 +879,6 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                     />
                 )}
             </div>
-            {proSettingChange && (
-                <span className="admin-pro-tag">
-                    <i className="adminfont-pro-tag"></i>Pro
-                </span>
-            )}
         </div>
     );
 };
