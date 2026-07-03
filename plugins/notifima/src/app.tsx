@@ -1,3 +1,4 @@
+/* global appLocalizer */
 import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { searchIndex, SearchItem } from './searchIndex';
