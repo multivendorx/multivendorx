@@ -69,8 +69,6 @@ class Utill {
             'email_placeholder_text'    => Notifima()->default_value['email_placeholder_text'],
             'alert_text'                => Notifima()->default_value['alert_text'],
             'unsubscribe_button_text'   => Notifima()->default_value['unsubscribe_button_text'],
-            'alert_text_color'          => Notifima()->default_value['alert_text_color'],
-            'customize_btn'             => Notifima()->default_value['customize_btn'],
             'ban_email_domain_text'     => Notifima()->default_value['ban_email_domain_text'],
             'ban_email_address_text'    => Notifima()->default_value['ban_email_address_text'],
         );

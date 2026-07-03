@@ -24,6 +24,7 @@ interface BlockBuilderProps {
         blockGroups?: unknown[];
         emailTemplates?: EmailTemplate[];
         availablePlaceholder?: string[];
+        enableDefaultBlocks?: boolean;
     };
     setting?: Record<string, BuilderValue>;
     proSettingChange?: (...args: unknown[]) => boolean;
@@ -223,6 +224,7 @@ export const BlockBuilderUI: React.FC<BlockBuilderProps> = ({
                 handleBlocksChange(value);
             }}
             blockGroups={field?.blockGroups || []}
+            enableDefaultBlocks={field?.enableDefaultBlocks}
             visibleGroups={visibleGroups}
             groupName={builderContext}
             proSettingChange={proSettingChange}
