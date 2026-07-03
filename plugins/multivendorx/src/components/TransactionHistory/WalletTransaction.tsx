@@ -216,7 +216,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 				) : (
 					<span>
 						{row.narration
-							?.replace(/<[^>]+>/g, '') // remove HTML
+							?.replace(/[<>]/g, '') // remove angle brackets to prevent tag injection
 							.replace(/&ndash;/g, '-') // decode entity
 							.replace(/-/g, ' ')
 							.replace(/\b\w/g, (c: string) => c.toUpperCase())}
