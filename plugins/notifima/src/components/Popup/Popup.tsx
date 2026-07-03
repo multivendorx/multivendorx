@@ -197,10 +197,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 												/>
 												{message.text}
 											</div>
-											<div className="desc">
-												{' '}
-												{message.des}
-											</div>
+											<div className="desc">{message.des}</div>
 										</li>
 									)
 								)}
