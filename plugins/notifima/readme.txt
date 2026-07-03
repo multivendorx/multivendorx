@@ -1,7 +1,7 @@
 === Notifima – WooCommerce Stock Manager, Inventory Management, Waitlist ===
 
 Contributors: wcmp
-Tags: stock manager, back in stock notifier, waitlist, inventory management, out of stock notifictaion
+Tags: stock manager, back in stock notifier, waitlist, inventory management, out of stock notification
 Requires at least: 6.4
 Tested up to: 7.0.0
 Requires PHP: 8.0
