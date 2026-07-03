@@ -61,32 +61,6 @@ class Tour extends \WP_REST_Controller {
 	}
 
 	/**
-	 * Validate REST nonce.
-	 *
-	 * @param \WP_REST_Request $request Request object.
-	 *
-	 * @return true|\WP_Error
-	 */
-	private function validate_rest_nonce( $request ) {
-
-		$nonce = $request->get_header( 'X-WP-Nonce' );
-
-		if ( wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			return true;
-		}
-
-		$error = new \WP_Error(
-			'invalid_nonce',
-			esc_html__( 'Invalid nonce.', 'catalogx' ),
-			array( 'status' => 403 )
-		);
-
-		CatalogX()->util->log( $error );
-
-		return $error;
-	}
-
-	/**
 	 * Get tour status.
 	 *
 	 * @param mixed $request Request object.

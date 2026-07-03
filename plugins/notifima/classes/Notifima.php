@@ -9,6 +9,7 @@ namespace Notifima;
 
 defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use Notifima\RestAPI\Rest;
 
 /**
  * Notifima Main class
@@ -86,19 +87,7 @@ class Notifima {
             'email_placeholder_text'    => __( 'Enter your email', 'notifima' ),
             'alert_text'                => __( 'Receive in-stock notifications for this.', 'notifima' ),
             'unsubscribe_button_text'   => __( 'Unsubscribe', 'notifima' ),
-            'alert_text_color'          => '',
-            'customize_btn'             => array(
-                'button_text'                     => __( 'Notify me', 'notifima' ),
-                'button_background_color'         => '',
-                'button_border_color'             => '',
-                'button_text_color'               => '',
-                'button_background_color_onhover' => '',
-                'button_text_color_onhover'       => '',
-                'button_border_color_onhover'     => '',
-                'button_font_size'                => '',
-                'button_border_radious'           => '',
-                'button_border_size'              => '',
-            ),
+            'subscribe_button_text'     => __( 'Notify me', 'notifima' ),
             'alert_success'             => __( 'Thank you for expressing interest in %product_title%. We will notify you via email once it is back in stock.', 'notifima' ),
             // Translators: This message display already registered user to display already registered message.
             'alert_email_exist'         => __( '%customer_email% is already registered for %product_title%. Please attempt a different email address.', 'notifima' ),
@@ -202,7 +191,7 @@ class Notifima {
         $this->container['filters']         = new Deprecated\DeprecatedFilterHooks();
         $this->container['actions']         = new Deprecated\DeprecatedActionHooks();
         $this->container['admin']           = new Admin();
-        $this->container['restapi']         = new RestAPI();
+        $this->container['rest']            = new Rest();
         $this->container['block']           = new Block();
         $this->container['frontendScripts'] = new FrontendScripts();
     }
