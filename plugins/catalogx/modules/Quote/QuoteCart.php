@@ -166,12 +166,11 @@ class QuoteCart extends \WP_REST_Controller {
 
         try {
             $products = $request->get_param( 'products' );
+            $update_msg = __( 'Quote cart updated!', 'catalogx' );
 
             foreach ( $products as $key => $product ) {
-                $product_id = $product['id'];
                 $quantity   = $product['quantity'];
                 CatalogX()->quotecart->update_cart_item( $product['key'], 'quantity', $quantity );
-                $update_msg = __( 'Quote cart updated!', 'catalogx' );
             }
 
             return rest_ensure_response( array( 'msg' => $update_msg ) );

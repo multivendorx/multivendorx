@@ -49,7 +49,7 @@ class Settings extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'update_item' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'permission_callback' => array( $this, 'catalogx_permissions_check' ),
 				),
 			)
 		);
@@ -117,7 +117,12 @@ class Settings extends \WP_REST_Controller {
 					
                 CatalogX()->setting->update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $customer_engagement );
 
-                return;
+                return rest_ensure_response(
+					array(
+						'type'    => 'success',
+						'message' => __( 'Settings Saved', 'catalogx' ),
+					)
+				);
             }
 
 			$settings_values = $request->get_param( 'setting' );
@@ -130,9 +135,11 @@ class Settings extends \WP_REST_Controller {
 
 			do_action( 'catalogx_settings_after_save', $settings_name, $settings_values );
 
-			return array(
-				'type'    => 'success',
-				'message' => __( 'Settings Saved', 'catalogx' ),
+			return rest_ensure_response(
+				array(
+					'type'    => 'success',
+					'message' => __( 'Settings Saved', 'catalogx' ),
+				)
 			);
 		} catch ( \Exception $e ) {
 			Utill::server_error( $e );
