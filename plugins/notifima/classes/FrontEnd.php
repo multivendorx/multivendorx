@@ -44,8 +44,8 @@ class FrontEnd {
 			FrontendScripts::enqueue_style( 'notifima-components-style' );
 			FrontendScripts::enqueue_script( 'notifima-subscribe-form' );
             FrontendScripts::localize_scripts( 'notifima-subscribe-form' );
-            FrontendScripts::enqueue_style( 'notifima-frontend-style' );
         }
+        FrontendScripts::enqueue_style( 'notifima-frontend-style' );
     }
 
     /**
