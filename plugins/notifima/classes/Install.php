@@ -92,33 +92,37 @@ class Install {
 
         // write migration code from 3.0.1.
         if ( version_compare( $previous_version, '3.1.0', '<' ) ) {
+
+            $email_settings     = get_option( 'notifima_email_settings', array() );
+            update_option( Utill::NOTIFIMA_SETTINGS['notifications'], $email_settings );
+
+
+
             $mailchimp_settings = get_option( 'notifima_mailchimp_settings', array() );
-            $email_settings     = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
 
-            update_option( Utill::NOTIFIMA_SETTINGS['email'], array_merge( $email_settings, $mailchimp_settings ) );
 
-            delete_option( 'notifima_mailchimp_settings' );
+            // delete_option( 'notifima_mailchimp_settings' );
 
-            $email_settings = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
+            // $email_settings = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
 
-            $email_settings['is_mailchimp_enable'] = ! empty( $email_settings['is_mailchimp_enable'] ) ? 'mailchimp' : 'store_only';
+            $mailchimp_settings['is_mailchimp_enable'] = ! empty( $mailchimp_settings['is_mailchimp_enable'] ) ? 'mailchimp' : 'store_only';
 
-            $email_settings['mailchimp'] = array(
-                'options'  => $email_settings['mailchimp_list_options'] ?? array(),
-                'selected' => $email_settings['selected_mailchimp_list'] ?? '',
+            $mailchimp_settings['mailchimp'] = array(
+                'options'  => $mailchimp_settings['mailchimp_list_options'] ?? array(),
+                'selected' => $mailchimp_settings['selected_mailchimp_list'] ?? '',
             );
 
-            update_option( Utill::NOTIFIMA_SETTINGS['email'], $email_settings );
+            // update_option( Utill::NOTIFIMA_SETTINGS['email'], $email_settings );
 
-            $appearance_settings = get_option( Utill::NOTIFIMA_SETTINGS['appearance'], array() );
+            $automation_settings = get_option( 'notifima_appearance_settings', array() );
 
-            $appearance_settings['is_double_optin']               = ! empty( $appearance_settings['is_double_optin'] ) ? 'confirm_via_email' : 'subscribe_immediately';
-            $appearance_settings['is_enable_no_interest']         = ! empty( $appearance_settings['is_enable_no_interest'] ) ? 'show_count' : 'hide_count';
-            $appearance_settings['is_enable_backorders']          = ! empty( $appearance_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
-            $appearance_settings['is_guest_subscriptions_enable'] = ! empty( $appearance_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
-            $appearance_settings['display_subscription_form_as']  = 'inline';
-
-            update_option( Utill::NOTIFIMA_SETTINGS['appearance'], $appearance_settings );
+            $automation_settings['is_double_optin']               = ! empty( $automation_settings['is_double_optin'] ) ? 'confirm_via_email' : 'subscribe_immediately';
+            $automation_settings['is_enable_no_interest']         = ! empty( $automation_settings['is_enable_no_interest'] ) ? 'show_count' : 'hide_count';
+            $automation_settings['is_enable_backorders']          = ! empty( $automation_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
+            $automation_settings['is_guest_subscriptions_enable'] = ! empty( $automation_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
+            $automation_settings['display_subscription_form_as']  = 'inline';
+            update_option( Utill::NOTIFIMA_SETTINGS['automation'], array_merge($automation_settings ,$mailchimp_settings ) );
+            
             $registration_form = array(
                 array(
                     'id'          => 1,
@@ -143,7 +147,7 @@ class Install {
                     'formfieldlist' => $registration_form,
                 ),
             );
-            update_option( Utill::NOTIFIMA_SETTINGS['personalize-layout'], $registration_from_settings );
+            update_option( Utill::NOTIFIMA_SETTINGS['subscription-form-designer'], $registration_from_settings );
         }
     }
 
@@ -299,14 +303,13 @@ class Install {
     private function set_default_settings() {
 
         // Default messages for settings array.
-        $appearance_settings = array(
+        $automation_settings = array(
             'is_enable_backorders'          => 'out_of_stock',
             'is_enable_no_interest'         => 'hide_count',
             'is_double_optin'               => 'subscribe_immediately',
             'is_remove_admin_email'         => false,
             'double_opt_in_success'         => Notifima()->default_value['double_opt_in_success'],
             'shown_interest_text'           => Notifima()->default_value['shown_interest_text'],
-            'additional_alert_email'        => get_option( 'admin_email' ),
             'is_guest_subscriptions_enable' => 'logged_in',
             'lead_time_format'              => 'static',
             'display_subscription_form_as'  => 'inline',
@@ -316,9 +319,9 @@ class Install {
             'unsubscribe_button_text'       => Notifima()->default_value['unsubscribe_button_text'],
         );
 
-        update_option( Utill::NOTIFIMA_SETTINGS['appearance'], $appearance_settings );
+        update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
 
-        $submit_settings = array(
+        $customer_messages_settings = array(
             'alert_success'             => Notifima()->default_value['alert_success'],
             'alert_email_exist'         => Notifima()->default_value['alert_email_exist'],
             'valid_email'               => Notifima()->default_value['valid_email'],
@@ -326,14 +329,15 @@ class Install {
             'alert_unsubscribe_message' => Notifima()->default_value['alert_unsubscribe_message'],
         );
 
-        update_option( Utill::NOTIFIMA_SETTINGS['form-submission'], $submit_settings );
+        update_option( Utill::NOTIFIMA_SETTINGS['customer-messages'], $customer_messages_settings );
 
-        $email_settings = array(
+        $notifications_settings = array(
             'ban_email_domain_text'  => Notifima()->default_value['ban_email_domain_text'],
             'ban_email_address_text' => Notifima()->default_value['ban_email_address_text'],
+            'additional_alert_email' => get_option( 'admin_email' ),
         );
 
-        update_option( Utill::NOTIFIMA_SETTINGS['email'], $email_settings );
+        update_option( Utill::NOTIFIMA_SETTINGS['notifications'], $notifications_settings );
 
         $registration_form = array(
 			array(
@@ -359,7 +363,7 @@ class Install {
                 'formfieldlist' => $registration_form,
             ),
         );
-        update_option( Utill::NOTIFIMA_SETTINGS['personalize-layout'], $registration_from_settings );
+        update_option( Utill::NOTIFIMA_SETTINGS['subscription-form-designer'], $registration_from_settings );
     }
 
     /**
@@ -372,9 +376,9 @@ class Install {
         $previous_version = get_option( 'woo_stock_manager_version', '' );
 
         // Default messages for settings array.
-        $appearance_settings = get_option( Utill::NOTIFIMA_SETTINGS['appearance'], array() );
-        $submit_settings     = get_option( Utill::NOTIFIMA_SETTINGS['form-submission'], array() );
-        $email_settings      = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
+        $appearance_settings = get_option( 'notifima_appearance_settings', array() );
+        $submit_settings     = get_option( 'notifima_form_submission_settings', array() );
+        $email_settings      = get_option( 'notifima_email_settings', array() );
 
         if ( version_compare( $previous_version, '2.5.0', '<' ) ) {
             // Used to check the plugin version before 2.1.0.
@@ -589,9 +593,9 @@ class Install {
             }
         }
 
-        update_option( Utill::NOTIFIMA_SETTINGS['appearance'], array_merge( $appearance_settings, $previous_appearance_settings ) );
-        update_option( Utill::NOTIFIMA_SETTINGS['form-submission'], array_merge( $submit_settings, $previous_submit_settings ) );
-        update_option( Utill::NOTIFIMA_SETTINGS['email'], array_merge( $email_settings, $previous_email_settings ) );
+        update_option( 'notifima_appearance_settings', array_merge( $appearance_settings, $previous_appearance_settings ) );
+        update_option( 'notifima_form_submission_settings', array_merge( $submit_settings, $previous_submit_settings ) );
+        update_option( 'notifima_email_settings', array_merge( $email_settings, $previous_email_settings ) );
     }
 
     /**
