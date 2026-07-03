@@ -40,9 +40,14 @@
     display: flex;
     gap: 1rem;
     margin-bottom: 2rem;
-    
+
     .product-image {
       height: 8rem;
     }
   }
+}
+
+.notifima-subscribe-form form {
+  display: flex;
+  flex-direction: column;
 }

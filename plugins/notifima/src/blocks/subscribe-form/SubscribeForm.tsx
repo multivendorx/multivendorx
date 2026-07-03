@@ -142,27 +142,32 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
             {showForm && (
                 !subscription.khali_dabba ? (
                     <>
-                        <input
-                            type="email"
-                            defaultValue={userEmail}
-                            placeholder="Enter your email"
-                            onChange={(e) => {
-                                subscription.email = e.target.value;
-                            }}
-                        />
+                        <form className="woocommerce-form woocommerce-form-login login">
+                            <label className="woocommerce-form__label woocommerce-form__label-for-checkbox" >
+                                <input
+                                    type="email"
+                                    defaultValue={userEmail}
+                                    placeholder="Enter your email"
+                                    className="woocommerce-form__input woocommerce-form__input-checkbox"
+                                    onChange={(e) => {
+                                        subscription.email = e.target.value;
+                                    }}
+                                />
+                            </label>
 
-                        <button
-                            type="button"
-                            disabled={loading}
-                            className='woocommerce-button button wp-element-button wp-block-button__link'
-                            onClick={() =>
-                                onSubmit({
-                                    email: subscription.email || userEmail,
-                                })
-                            }
-                        >
-                            {__('Notify Me', 'notifima')}
-                        </button>
+                            <button
+                                type="button"
+                                disabled={loading}
+                                className='woocommerce-button button wp-element-button wp-block-button__link'
+                                onClick={() =>
+                                    onSubmit({
+                                        email: subscription.email || userEmail,
+                                    })
+                                }
+                            >
+                                {__('Notify Me', 'notifima')}
+                            </button>
+                        </form>
                     </>
                 ) : (
                     applyFilters(
