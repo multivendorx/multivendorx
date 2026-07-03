@@ -37,7 +37,7 @@ class FrontEnd {
      * @return void
      */
     public function enqueue_frontend_scripts() {
-        // if( is_product() ) {
+        if( is_product() ) {
             FrontendScripts::load_scripts();
             FrontendScripts::admin_load_scripts();
             FrontendScripts::enqueue_script( 'notifima-components-script' );
@@ -45,7 +45,7 @@ class FrontEnd {
 			FrontendScripts::enqueue_script( 'notifima-subscribe-form' );
             FrontendScripts::localize_scripts( 'notifima-subscribe-form' );
             FrontendScripts::enqueue_style( 'notifima-frontend-style' );
-        // }
+        }
     }
 
     /**

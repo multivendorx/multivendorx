@@ -1,3 +1,0 @@
-<?php
-return ['project-id-version'=>'Notifima 3.0.6','report-msgid-bugs-to'=>'https://notifima.com/contact/','last-translator'=>'','language-team'=>'English (United States)','mime-version'=>'1.0','content-type'=>'text/plain; charset=UTF-8','content-transfer-encoding'=>'8bit','pot-creation-date'=>'2026-06-25T06:50:21+00:00','po-revision-date'=>'2026-07-02 12:19+0000','x-generator'=>'Loco https://localise.biz/','x-domain'=>'notifima','language'=>'en_US','plural-forms'=>'nplurals=2; plural=n != 1;','x-loco-version'=>'2.8.5; wp-7.0; php-8.0.30','messages'=>['Personalize Layout'=>'Personalize Layout ff','Successful form submission'=>'Successful form submission sd
-']];
