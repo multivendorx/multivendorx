@@ -280,6 +280,13 @@ class Installer {
                 'name'         => 'email',
                 'not_editable' => true,
             ),
+            array(
+				'id'           => 4,
+				'type'         => 'button',
+				'label'        => 'Submit',
+				'text'         => 'Submit',
+				'name'         => 'submit',
+			),
         );
 
         $form_settings = array(
