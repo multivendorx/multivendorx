@@ -191,7 +191,7 @@ class Installer {
      * @return void
      */
     public function set_default_settings() {
-        // Update shopping gurnal.
+        // Update shopping journal.
         $enquiry_quote_settings = array(
             'is_disable_popup'                   => 'popup',
             'is_enable_multiple_product_enquiry' => array( 'is_enable_multiple_product_enquiry' ),
@@ -638,7 +638,7 @@ class Installer {
             update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $settings );
 
             $wholesale_settings = get_option( Utill::CATALOGX_SETTINGS['wholesale'], array() );
-            $wholesale_settings['disable_coupon_for_wholesale'] = ! empty( $wholesale_settings['disable_coupon_for_wholesale'] ) ? 'restricted' : 'restricted';
+            $wholesale_settings['disable_coupon_for_wholesale'] = ! empty( $wholesale_settings['disable_coupon_for_wholesale'] ) ? 'restricted' : 'allowed';
             $wholesale_settings['enable_order_form']            = ! empty( $wholesale_settings['enable_order_form'] ) ? 'dedicated' : 'shared';
             $wholesale_settings['show_wholesale_price']         = ! empty( $wholesale_settings['show_wholesale_price'] ) ? 'visible' : 'hidden';
             $wholesale_settings['enable_global_wholasale']      = ! empty( $wholesale_settings['enable_global_wholasale'] ) ? 'global_rule' : 'product_level';
@@ -679,7 +679,7 @@ class Installer {
         // migrate all vendor settings.
         $this->migrate_vendor_settings();
 
-        // migrate setttings.
+        // migrate settings.
         $this->migrate_old_settings();
     }
 
@@ -747,8 +747,10 @@ class Installer {
             // Check if the vendor has the meta key '_mvx_vendor_catalog_settings'.
             $catalogx_vendor_settings = get_user_meta( $vendor->ID, '_mvx_vendor_catalog_settings', true );
 
+            $new_product_list = array();
+            $new_category_list = array();
+
             if ( ! empty( $catalogx_vendor_settings['woocommerce_product_vendor_list'] ) && is_array( $catalogx_vendor_settings['woocommerce_product_vendor_list'] ) ) {
-                $new_product_list = array();
                 $index            = 0;
 
                 foreach ( $catalogx_vendor_settings['woocommerce_product_vendor_list'] as $product_id ) {
@@ -768,7 +770,6 @@ class Installer {
             }
 
             if ( ! empty( $catalogx_vendor_settings['woocommerce_category_vendor_list'] ) && is_array( $catalogx_vendor_settings['woocommerce_category_vendor_list'] ) ) {
-                $new_category_list = array();
                 $index             = 0;
 
                 foreach ( $catalogx_vendor_settings['woocommerce_category_vendor_list'] as $category_id ) {
@@ -828,7 +829,7 @@ class Installer {
 
         update_option( 'catalogx_enquiry-catalog-customization_settings', $page_builder_setting );
 
-        // Update shopping gurnal.
+        // Update shopping journal.
         $all_settings = array(
             'is_enable_out_of_stock'             => $previous_general_settings['is_enable_out_of_stock'] ?? array(),
             'enquiry_user_permission'            => is_array( $previous_general_settings['for_user_type'] ) && '1' === $previous_general_settings['for_user_type']['value'] ? array( 'enquiry_logged_out' ) : array(),
