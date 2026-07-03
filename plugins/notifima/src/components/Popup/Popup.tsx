@@ -165,7 +165,7 @@ const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 									}}
 								>
 									{proPopupContent.btnLink.map((b, idx) => (
-										<option key={idx} value={b.link}>
+										<option key={b.site} value={b.link}>
 											{b.site}
 										</option>
 									))}
