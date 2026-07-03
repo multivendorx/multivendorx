@@ -19,6 +19,11 @@ Easily set up waitlists for out of stock products, send stock notifications when
 
 With automatic back in stock notifications, powerful inventory management features, and built-in tools to track and control stock levels, Notifima turns product demand into conversions.
 
+== Watch Notifima in Action ==
+
+🎥 See how Notifima helps you recover lost sales and manage inventory efficiently:
+
+[youtube https://youtu.be/3Pm46Z_ovLg]
 
 ## 🚀 Features:
 * 📋Waitlist Plugin for WooCommerce.
