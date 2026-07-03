@@ -10,7 +10,7 @@ import {
 import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
 import Mascot from '../../assets/images/brand-icon.png';
-// import notifima from '../../assets/images/notifima.png';
+import catalogx from '../../assets/images/catalogx.png';
 import multivendorx from '../../assets/images/multivendorx.png';
 
 interface WPPlugin {
@@ -298,7 +298,7 @@ const DashboardTab: React.FC<object> = () => {
 											'Advanced product catalog, quotation, and enquiry features with premium templates.',
 											'notifima'
 										),
-										// img: notifima,
+										img: catalogx,
 										tags: (
 											<>
 												<span className="admin-badge red">
@@ -328,7 +328,7 @@ const DashboardTab: React.FC<object> = () => {
 											'Turn your WooCommerce store into a product catalog with enquiry and quotation features.',
 											'notifima'
 										),
-										// img: notifima,
+										img: catalogx,
 										tags: (
 											<>
 												<span className="admin-badge green">
