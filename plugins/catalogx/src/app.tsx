@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import Settings from './components/Settings/Settings';
@@ -14,89 +14,108 @@ import { getTourSteps } from './components/Tour/Tours';
 import QuoteRequests from './components/QuoteRequests/QuoteRequests';
 import { searchIndex, SearchItem } from './searchIndex';
 
-localStorage.setItem( 'force_catalogx_context_reload', 'true' );
+localStorage.setItem('force_catalogx_context_reload', 'true');
 
 const Route = () => {
-    const currentTab = new URLSearchParams( useLocation().hash );
-    return (
-        <>
-            { currentTab.get( 'tab' ) === 'dashboard' && ( <AdminDashboard /> ) }
-            { currentTab.get( 'tab' ) === 'settings' && (
-                <Settings id={ 'settings' } />
-            ) }
-            { currentTab.get( 'tab' ) === 'modules' && <Modules /> }
-            { currentTab.get( 'tab' ) === 'quote-requests' && (
-                <QuoteRequests />
-            ) }
-            { currentTab.get( 'tab' ) === 'wholesale-users' && (
-                <WholesaleUser />
-            ) }
-            { currentTab.get( 'tab' ) === 'enquiry-messages' && (
-                <EnquiryMessages />
-            ) }
-            { currentTab.get( 'tab' ) === 'rules' && <Rules /> }
-        </>
-    );
+	const currentTab = new URLSearchParams(useLocation().hash);
+	return (
+		<>
+			{currentTab.get('tab') === 'dashboard' && (<AdminDashboard />)}
+			{currentTab.get('tab') === 'settings' && (
+				<Settings id={'settings'} />
+			)}
+			{currentTab.get('tab') === 'modules' && <Modules />}
+			{currentTab.get('tab') === 'quote-requests' && (
+				<QuoteRequests />
+			)}
+			{currentTab.get('tab') === 'wholesale-users' && (
+				<WholesaleUser />
+			)}
+			{currentTab.get('tab') === 'enquiry-messages' && (
+				<EnquiryMessages />
+			)}
+			{currentTab.get('tab') === 'rules' && <Rules />}
+		</>
+	);
 };
 const bannerItem = [
 	__(
-		'<b>Double Opt-In:</b> Experience the power of Double Opt-In for our Stock Alert Form - guaranteed precision in every notification!',
+		'<b>Advanced enquiry management:</b> Organize, track, and respond to every enquiry from one powerful dashboard.',
 		'catalogx'
 	),
+
 	__(
-		'<b>Your Subscription Hub:</b> Subscription Dashboard - easily monitor and download lists of out-of-stock subscribers for seamless management.',
+		'<b>Multi-product enquiries:</b> Let customers enquire about multiple products in a single request to generate more qualified leads.',
 		'catalogx'
 	),
+
 	__(
-		'<b>Mailchimp Bridge:</b> Seamlessly link WooCommerce out-of-stock subscriptions with Mailchimp for effective marketing.',
+		'<b>Professional quotations:</b> Create, send, approve, and manage quotations with expiry dates and PDF downloads.',
 		'catalogx'
 	),
+
 	__(
-		'<b>Unsubscribe Notifications:</b> Allow users to unsubscribe from in-stock notifications whenever they want.',
+		'<b>Wholesale selling:</b> Unlock B2B sales with wholesale pricing, customer roles, and bulk ordering tools.',
 		'catalogx'
 	),
+
 	__(
-		'<b>Ban Spam Emails:</b> Prevent spam using email and domain blacklists.',
+		'<b>Dynamic pricing rules:</b> Create advanced pricing strategies based on customer roles, quantities, products, and categories.',
 		'catalogx'
 	),
+
+	__(
+		'<b>Visual page builder:</b> Build enquiry, quotation, and wholesale pages without writing a single line of code.',
+		'catalogx'
+	),
+
+	__(
+		'<b>Custom form builder:</b> Design enquiry and quotation forms that collect exactly the information your business needs.',
+		'catalogx'
+	),
+
+	__(
+		'<b>Higher conversions:</b> Show both purchasing and enquiry options together so customers can buy or contact you their way.',
+		'catalogx'
+	)
 ];
 const App = () => {
 	const [results, setResults] = useState<SearchItem[]>([]);
-    const currentTabParams = new URLSearchParams( useLocation().hash );
-    document
-        .querySelectorAll( '#toplevel_page_catalogx>ul>li>a' )
-        .forEach( ( menuItem ) => {
-            const menuItemUrl = new URL(
-                ( menuItem as HTMLAnchorElement ).href
-            );
-            const menuItemHashParams = new URLSearchParams(
-                menuItemUrl.hash.substring( 1 )
-            );
+	const currentTabParams = new URLSearchParams(useLocation().hash);
+	document
+		.querySelectorAll('#toplevel_page_catalogx>ul>li>a')
+		.forEach((menuItem) => {
+			const menuItemUrl = new URL(
+				(menuItem as HTMLAnchorElement).href
+			);
+			const menuItemHashParams = new URLSearchParams(
+				menuItemUrl.hash.substring(1)
+			);
 
-            if ( menuItem.parentNode ) {
-                ( menuItem.parentNode as HTMLElement ).classList.remove(
-                    'current'
-                );
-            }
-            if (
-                menuItemHashParams.get( 'tab' ) ===
-                currentTabParams.get( 'tab' )
-            ) {
-                ( menuItem.parentNode as HTMLElement ).classList.add(
-                    'current'
-                );
-            }
-        } );
+			if (menuItem.parentNode) {
+				(menuItem.parentNode as HTMLElement).classList.remove(
+					'current'
+				);
+			}
+			if (
+				menuItemHashParams.get('tab') ===
+				currentTabParams.get('tab')
+			) {
+				(menuItem.parentNode as HTMLElement).classList.add(
+					'current'
+				);
+			}
+		});
 
 	const isBannerDismissed =
 		localStorage.getItem('banner_dismissed') === 'true';
 
-    // --- INIT MODULES ---
-    useEffect( () => {
-        initializeModules( appLocalizer, 'catalogx', 'free', 'modules' );
-    }, [] );
+	// --- INIT MODULES ---
+	useEffect(() => {
+		initializeModules(appLocalizer, 'catalogx', 'free', 'modules');
+	}, []);
 
-    const profileItems = [
+	const profileItems = [
 		{
 			title: __("What's New", 'catalogx'),
 			icon: 'new',
@@ -116,7 +135,7 @@ const App = () => {
 			targetBlank: true,
 		},
 	];
-    const utilityList = [
+	const utilityList = [
 		{
 			toggleIcon: 'admin-icon adminfont-user-circle',
 			tooltipName: __('Support', 'catalogx'),
@@ -162,9 +181,9 @@ const App = () => {
 		window.location.hash = item.link;
 	};
 
-    return (
-        <>
-            {!isBannerDismissed && (
+	return (
+		<>
+			{!isBannerDismissed && (
 				<Notice
 					uniqueKey="banner"
 					type="banner"
@@ -177,7 +196,7 @@ const App = () => {
 					}}
 				/>
 			)}
-            <AdminHeader
+			<AdminHeader
 				brandImg={Brand}
 				results={results}
 				search={{
@@ -203,13 +222,13 @@ const App = () => {
 				pro={appLocalizer.pro_data.version}
 				utilityList={utilityList}
 			/>
-            <GuidedTourProvider
+			<GuidedTourProvider
 				appLocalizer={appLocalizer}
 				steps={getTourSteps(appLocalizer)}
 			/>
-            <Route />
-        </>
-    );
+			<Route />
+		</>
+	);
 };
 
 export default App;

@@ -3,7 +3,7 @@ export default {
     id: 'customer-engagement',
     priority: 3,
     headerTitle: __('Customer Engagement', 'catalogx'),
-    settingTitle: __('Purchase experience','multivendorx'),
+    settingTitle: __('Purchase experience','catalogx'),
     headerDescription: __(
         'Define how customers move from product browsing to purchasing across your store.',
         'catalogx'

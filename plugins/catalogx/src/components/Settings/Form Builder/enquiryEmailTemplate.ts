@@ -78,6 +78,16 @@ export default {
             moduleEnabled: 'enquiry',
         },
         {
+            key: 'notice',
+            type: 'notice',
+            message: __(
+                "Use personalization tags to make your emails more engaging - for example, use <b>{user_name}</b> to display the subscriber's name and <b>{email_tag}</b> to display their email address automatically.",
+                'catalogx'
+            ),
+            noticeType: 'info',
+            display: 'inline-notice',
+        },
+        {
 			key: 'enquiry_email_template',
 			type: 'block-builder',
 			classes: 'full-width',

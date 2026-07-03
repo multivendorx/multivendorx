@@ -51,6 +51,18 @@ const bannerItem = [
         '<b>Ban Spam Emails:</b> Email and Domain Blacklist for Spam Prevention.',
         'notifima'
     ),
+    __(
+        '<b>Google reCAPTCHA Protection:</b> Secure your stock alert forms with Google reCAPTCHA and keep spam subscriptions away.',
+        'notifima'
+    ),
+    __(
+        '<b>Subscriber Management:</b> View and manage all product subscribers with advanced filtering by subscription and email status.',
+        'notifima'
+    ),
+    __(
+        '<b>Subscription Insights:</b> Track subscription dates, email delivery status, and product-wise subscriber activity from one dashboard.',
+        'notifima'
+    ),
 ];
 export const profileItems = [
     {
