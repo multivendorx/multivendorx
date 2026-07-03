@@ -150,8 +150,11 @@ const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 							</div>
 							<div className="price">{selectedBtn.price}</div>
 							<div className="select-wrapper">
-								{__('For website with', 'notifima')}
+								<label htmlFor="notifima-site-license-select">
+									{__('For website with', 'notifima')}
+								</label>
 								<select
+									id="notifima-site-license-select"
 									value={selectedBtn.link}
 									onChange={(e) => {
 										const found =
