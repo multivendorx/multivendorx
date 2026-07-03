@@ -175,5 +175,15 @@ class Utill {
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
         return $wpdb->get_results( $query );
     }
+    
+    /**
+     * Function to check wheather mvx is active or not
+     *
+     * @return bool
+     */
+    public static function is_multivendorx_active() {
+        require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
+        return is_plugin_active( 'dc-woocommerce-multi-vendor/dc_product_vendor.php' );
+    }
 }
