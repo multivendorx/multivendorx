@@ -150,8 +150,11 @@ const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 							</div>
 							<div className="price">{selectedBtn.price}</div>
 							<div className="select-wrapper">
-								{__('For website with', 'notifima')}
+								<label htmlFor="notifima-site-license-select">
+									{__('For website with', 'notifima')}
+								</label>
 								<select
+									id="notifima-site-license-select"
 									value={selectedBtn.link}
 									onChange={(e) => {
 										const found =
@@ -165,7 +168,7 @@ const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 								>
 									{proPopupContent.btnLink.map((b, idx) => (
 										<option key={b.site} value={b.link}>
-											{b.site}
+											{`${b.site} site license`}
 										</option>
 									))}
 								</select>
@@ -188,7 +191,7 @@ const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 
 							<ul>
 								{proPopupContent.messages.map((message, idx) => (
-									<li key={`${message.icon}-${idx}`}>
+									<li key={message.icon}>
 										<div className="title">
 											<i
 												className={`adminfont-${message.icon}`}
