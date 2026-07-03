@@ -4,7 +4,7 @@ import { ButtonInputUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import '../Popup/Popup.scss';
 
-interface PopupProps {
+interface ShowProPopupProps {
 	moduleName?: string;
 	wooSetting?: string;
 	wooLink?: string;
@@ -105,7 +105,7 @@ const proPopupContent = {
 	],
 };
 
-const ShowProPopup: React.FC<PopupProps> = (props) => {
+const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 	const [selectedBtn, setSelectedBtn] = useState(proPopupContent.btnLink[0]);
 
 	return (
@@ -197,10 +197,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 												/>
 												{message.text}
 											</div>
-											<div className="desc">
-												{' '}
-												{message.des}
-											</div>
+											<div className="desc">{message.des}</div>
 										</li>
 									)
 								)}
