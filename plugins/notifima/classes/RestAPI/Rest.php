@@ -42,8 +42,8 @@ class Rest {
      */
     public function init_classes() {
         $this->container = array(
-            'settings'      => new Settings(),
-            'subscriber'   => new Subscribers(),
+            'settings'   => new Settings(),
+            'subscriber' => new Subscribers(),
         );
     }
     /**
@@ -66,7 +66,7 @@ class Rest {
 			)
         );
     }
-    
+
     /**
      * Check if a given request has access to get items.
      *
@@ -100,10 +100,9 @@ class Rest {
         } catch ( \Exception $e ) {
 			return new \WP_Error(
                 'server_error',
-                __('Unexpected server error', 'notifima'),
-                array('status' => 500)
+                __( 'Unexpected server error', 'notifima' ),
+                array( 'status' => 500 )
             );
         }
     }
-
 }

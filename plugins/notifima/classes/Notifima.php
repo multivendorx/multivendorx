@@ -81,7 +81,7 @@ class Notifima {
      * @return void
      */
     public function set_default_value() {
-        $default_value = array(
+        $default_value                    = array(
             'double_opt_in_success'     => __( 'Kindly check your inbox to confirm the subscription.', 'notifima' ),
             'shown_interest_text'       => __( 'Kindly check your inbox to confirm the subscription.', 'notifima' ),
             'email_placeholder_text'    => __( 'Enter your email', 'notifima' ),

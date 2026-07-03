@@ -97,8 +97,7 @@ class FrontendScripts {
 
         $register_scripts = apply_filters(
             'notifima_register_scripts',
-            array(
-            )
+            array()
         );
 
         foreach ( $block_scripts as $handle ) {
@@ -163,7 +162,7 @@ class FrontendScripts {
 	 * Loads admin-specific JavaScript assets and chunked dependencies.
 	 */
     public static function register_admin_scripts() {
-		$version = Notifima()->version;
+		$version          = Notifima()->version;
         $index_asset_path = self::get_asset_path( 'file' ) . 'js/index.asset.php';
         $index_asset      = file_exists( $index_asset_path )
             ? include $index_asset_path
@@ -183,11 +182,11 @@ class FrontendScripts {
 		$register_scripts = apply_filters(
             'admin_notifima_register_scripts',
             array(
-                'notifima-components-script'      => array(
+                'notifima-components-script' => array(
                 	'src'  => self::get_asset_path() . 'js/vendors.js',
                 	'deps' => $vendor_asset['dependencies'],
                 ),
-				'notifima-admin-script'       => array(
+				'notifima-admin-script'      => array(
 					'src'  => self::get_asset_path() . 'js/index.js',
 					'deps' => $index_asset['dependencies'],
 				),
@@ -256,27 +255,27 @@ class FrontendScripts {
         $settings_data = array(
             'settings_databases_value' => self::get_admin_settings(),
         );
-        
+
         $localize_scripts =
             array(
-                'notifima-admin-script'          => array(
+                'notifima-admin-script'   => array(
                     'object_name'  => 'appLocalizer',
                     'use_rest'     => true,
                     'use_settings' => true,
-					'data'        => array(
-                        'admin_url'                => admin_url(),
-						'export_button'            => wp_nonce_url( admin_url( 'admin-ajax.php?action=export_subscribers' ), 'export_subscribers_nonce' ),
-						'khali_dabba'              => Utill::is_khali_dabba(),
-						'tab_name'                 => __( 'Notifima', 'notifima' ),
-						'pro_url'                  => esc_url( NOTIFIMA_PRO_SHOP_URL ),
-						'free_version'             => Notifima()->version,
-                        'pro_data'        => apply_filters(
+					'data'         => array(
+                        'admin_url'     => admin_url(),
+						'export_button' => wp_nonce_url( admin_url( 'admin-ajax.php?action=export_subscribers' ), 'export_subscribers_nonce' ),
+						'khali_dabba'   => Utill::is_khali_dabba(),
+						'tab_name'      => __( 'Notifima', 'notifima' ),
+						'pro_url'       => esc_url( NOTIFIMA_PRO_SHOP_URL ),
+						'free_version'  => Notifima()->version,
+                        'pro_data'      => apply_filters(
                             'notifima_update_pro_data',
                             array(
 								'version'         => false,
 								'manage_plan_url' => NOTIFIMA_PRO_SHOP_URL,
                             )
-                        ),          
+                        ),
 					),
                 ),
                 'notifima-subscribe-form' => array(
@@ -285,9 +284,9 @@ class FrontendScripts {
                     'data'        => apply_filters(
                         'notifima_subscribe_form_localize_data',
                         array(
-                            'khali_dabba'   => Utill::is_khali_dabba(),
-                            'lead_time'     => Notifima()->frontend->get_product_lead_time(),
-                            'display_type'  => Notifima()->setting->get_setting( 'display_subscription_form_as', 'inline' ),
+                            'khali_dabba'  => Utill::is_khali_dabba(),
+                            'lead_time'    => Notifima()->frontend->get_product_lead_time(),
+                            'display_type' => Notifima()->setting->get_setting( 'display_subscription_form_as', 'inline' ),
                         )
                     ),
                 ),

@@ -25,7 +25,7 @@ class Admin {
         // admin pages manu and submenu.
         add_action( 'admin_menu', array( $this, 'register_admin_menus' ), 10 );
         // admin script and style.
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ),20 );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ), 20 );
 
         // create custom column.
         add_action( 'manage_edit-product_columns', array( $this, 'display_subscriber_header' ) );
@@ -56,7 +56,7 @@ class Admin {
      * Add options page.
      */
     public function register_admin_menus() {
-           add_menu_page(
+            add_menu_page(
                 'Notifima',
                 'Notifima',
                 'manage_options',

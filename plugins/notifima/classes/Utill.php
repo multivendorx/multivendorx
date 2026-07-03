@@ -19,15 +19,15 @@ defined( 'ABSPATH' ) || exit;
 class Utill {
 
     public const NOTIFIMA_SETTINGS = array(
-        'appearance'            => 'notifima_appearance_settings',
-        'email'                 => 'notifima_email_settings',
-        'form-submission'       => 'notifima_form_submission_settings',
-        'personalize-layout'    => 'notifima_personalize_layout_settings',
+        'appearance'         => 'notifima_appearance_settings',
+        'email'              => 'notifima_email_settings',
+        'form-submission'    => 'notifima_form_submission_settings',
+        'personalize-layout' => 'notifima_personalize_layout_settings',
     );
 
     public const NOTIFIMA_PRODUCT_META = array(
-        'subscribers'           => 'no_of_subscribers',
-        'product_discontinued'  => 'product_discontinued',
+        'subscribers'          => 'no_of_subscribers',
+        'product_discontinued' => 'product_discontinued',
     );
 
     /**
@@ -128,7 +128,7 @@ class Utill {
         // Load the template.
         load_template( $located, false, $args );
     }
-    
+
     /**
      * Validate REST nonce.
      *
@@ -175,7 +175,7 @@ class Utill {
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
         return $wpdb->get_results( $query );
     }
-    
+
     /**
      * Function to check wheather mvx is active or not
      *
