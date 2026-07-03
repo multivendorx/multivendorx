@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'appearance',
     priority: 1,
-    headerTitle: __('Restock alerts setup', 'notifima'),
+    headerTitle: __('Automation', 'notifima'),
     headerDescription: __('Configure how customers subscribe to restock notifications.', 'notifima'),
     headerIcon: 'appearance',
     submitUrl: 'settings',

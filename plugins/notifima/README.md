@@ -1,12 +1,12 @@
 # Notifima – WooCommerce Stock Manager, Inventory Management, Waitlist #
 
 **Contributors:** [wcmp](https://profiles.wordpress.org/wcmp/)  
-**Tags:** stock manager, back in stock notifier, waitlist, inventory management, out of stock notifictaion  
+**Tags:** stock manager, back in stock notifier, waitlist, inventory management, out of stock notification  
 **Requires at least:** 6.4  
-**Tested up to:** 6.9.0  
+**Tested up to:** 7.0.0  
 **Requires PHP:** 8.0  
-**Stable tag:** 3.0.6  
-**Donate link:** https://multivendorx.com/donate/  
+**Stable tag:** 3.1.0  
+**Donate link:** https://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=notifimawporg  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -19,11 +19,6 @@ Easily set up waitlists for out of stock products, send stock notifications when
 
 With automatic back in stock notifications, powerful inventory management features, and built-in tools to track and control stock levels, Notifima turns product demand into conversions.
 
-== Watch Notifima in Action ==
-
-🎥 See how Notifima helps you recover lost sales and manage inventory efficiently:
-
-[youtube https://youtu.be/3Pm46Z_ovLg]
 
 ## 🚀 Features:
 * 📋Waitlist Plugin for WooCommerce.
@@ -119,7 +114,7 @@ Are you tired of losing potential sales because your customers can't buy the out
 **AUTOMATIC INSTALLATION**
 Automatic installation is the easiest option — WordPress will handle the file transfer, and you won’t need to leave your web browser. To do an automatic install of Notifima, log in to your WordPress dashboard, navigate to the Plugins menu, and click “Add New”.
 
-In the search field type “Notifima,” then click “Search Plugins.” Once you’ve found us, you can view details about it such as the point release, rating, and description. Most importantly of course, you can install it by! Click “Install Now,” and WordPress will take it from there.
+In the search field type “Notifima,” then click “Search Plugins.” Once you’ve found us, you can view details about it such as the point release, rating, and description. Most importantly of course, you can install it. Click “Install Now,” and WordPress will take it from there.
 
 **MANUAL INSTALLATION**
 Manual installation method requires downloading the [Notifima] (https://wordpress.org/plugins/woocommerce-product-stock-alert/) plugin and uploading it to your web server via your favorite FTP application. 
@@ -165,14 +160,20 @@ Manual installation method requires downloading the [Notifima] (https://wordpres
 *A: This feature is coming soon! You'll be able to view detailed stock logs and track stock movement trends in future versions.*
 
 ## Screenshots ##
-1. Subscribers
-2. Manage Stock
-3. Personalized Form
-4. Customized alert
-5. Notifications
-6. Settings
+1. Stock alert plugin settings panel
+2. Prompt Messages
+3. Email Restriction Policies
+4. Mailchimp Integration
+5. Stock alert plugin subscriber list
+6. Inventory manager
 
 ## Changelog ##
+
+### 3.1.0 - 2026-07-03 ###
+* Added     - Compatibility of WordPress 7.0.0.
+* Added     - Compatibility of WooCommerce 10.9.2.
+* Added     - Enhanced the overall UI/UX of the settings panel.
+* Updated   - Language file.
 
 ### 3.0.6 - 2025-12-11 ###
 * Added     - Compatibility of WordPress 6.9.0.

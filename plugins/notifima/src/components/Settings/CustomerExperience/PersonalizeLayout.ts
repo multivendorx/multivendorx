@@ -27,8 +27,8 @@ const REGISTRATION_BLOCK_GROUPS = [
 
 export default {
     id: 'personalize-layout',
-    priority: 2,
-    headerTitle: __('Personalize Layout', 'notifima'),
+    priority: 1,
+    headerTitle: __('Subscription Form Designer', 'notifima'),
     headerDescription: __('Customize the subscription form layout.', 'notifima'),
     headerIcon: 'form',
     submitUrl: 'settings',
