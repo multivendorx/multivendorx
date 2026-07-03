@@ -60,7 +60,7 @@ class Block {
      * @return array List of blocks with their configuration.
      */
     public function initialize_blocks() {
-        $blocks     = array();
+        $blocks = array();
 
         $block_base_path = FrontendScripts::get_asset_path( 'file' ) . 'js/block/';
 

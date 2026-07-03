@@ -48,7 +48,7 @@ class Install {
             $this->set_default_settings();
             $this->old_migration();
         } else {
-            $this->do_migration($previous_version);
+            $this->do_migration( $previous_version );
         }
         $this->start_cron_job();
 
@@ -95,7 +95,7 @@ class Install {
             $mailchimp_settings = get_option( 'notifima_mailchimp_settings', array() );
             $email_settings     = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
 
-            update_option(Utill::NOTIFIMA_SETTINGS['email'], array_merge( $email_settings, $mailchimp_settings ));
+            update_option( Utill::NOTIFIMA_SETTINGS['email'], array_merge( $email_settings, $mailchimp_settings ) );
 
             delete_option( 'notifima_mailchimp_settings' );
 
@@ -112,11 +112,11 @@ class Install {
 
             $appearance_settings = get_option( Utill::NOTIFIMA_SETTINGS['appearance'], array() );
 
-            $appearance_settings['is_double_optin'] = ! empty( $appearance_settings['is_double_optin'] ) ? 'confirm_via_email' : 'subscribe_immediately';
-            $appearance_settings['is_enable_no_interest'] = ! empty( $appearance_settings['is_enable_no_interest'] ) ? 'show_count' : 'hide_count';
-            $appearance_settings['is_enable_backorders'] = ! empty( $appearance_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
+            $appearance_settings['is_double_optin']               = ! empty( $appearance_settings['is_double_optin'] ) ? 'confirm_via_email' : 'subscribe_immediately';
+            $appearance_settings['is_enable_no_interest']         = ! empty( $appearance_settings['is_enable_no_interest'] ) ? 'show_count' : 'hide_count';
+            $appearance_settings['is_enable_backorders']          = ! empty( $appearance_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
             $appearance_settings['is_guest_subscriptions_enable'] = ! empty( $appearance_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
-            $appearance_settings['display_subscription_form_as']    = 'inline';
+            $appearance_settings['display_subscription_form_as']  = 'inline';
 
             update_option( Utill::NOTIFIMA_SETTINGS['appearance'], $appearance_settings );
             $registration_form = array(
@@ -140,7 +140,7 @@ class Install {
 
             $registration_from_settings['form_tabs'] = array(
                 'personalize_layout_template' => array(
-                    'formfieldlist'  => $registration_form,
+                    'formfieldlist' => $registration_form,
                 ),
             );
             update_option( Utill::NOTIFIMA_SETTINGS['personalize-layout'], $registration_from_settings );
@@ -356,7 +356,7 @@ class Install {
 
         $registration_from_settings['form_tabs'] = array(
             'personalize_layout_template' => array(
-                'formfieldlist'  => $registration_form,
+                'formfieldlist' => $registration_form,
             ),
         );
         update_option( Utill::NOTIFIMA_SETTINGS['personalize-layout'], $registration_from_settings );
@@ -373,8 +373,8 @@ class Install {
 
         // Default messages for settings array.
         $appearance_settings = get_option( Utill::NOTIFIMA_SETTINGS['appearance'], array() );
-        $submit_settings = get_option( Utill::NOTIFIMA_SETTINGS['form-submission'], array() );
-        $email_settings = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
+        $submit_settings     = get_option( Utill::NOTIFIMA_SETTINGS['form-submission'], array() );
+        $email_settings      = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
 
         if ( version_compare( $previous_version, '2.5.0', '<' ) ) {
             // Used to check the plugin version before 2.1.0.
