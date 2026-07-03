@@ -1,3 +1,4 @@
+/* global appLocalizer */
 import { useState } from 'react';
 import {
     Column,

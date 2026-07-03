@@ -1,3 +1,4 @@
+/* global jQuery */
 import { render } from '@wordpress/element';
 import SubscribeForm from './SubscribeForm';
 
