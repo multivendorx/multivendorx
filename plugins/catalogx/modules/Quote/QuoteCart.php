@@ -39,7 +39,7 @@ class QuoteCart extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'notifima_permissions_check' ),
+                    'permission_callback' => array( $this, 'catalogx_permissions_check' ),
                 ),
             )
         );
@@ -51,17 +51,17 @@ class QuoteCart extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'notifima_permissions_check' ),
+                    'permission_callback' => array( $this, 'catalogx_permissions_check' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'notifima_permissions_check' ),
+                    'permission_callback' => array( $this, 'catalogx_permissions_check' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::DELETABLE,
                     'callback'            => array( $this, 'delete_item' ),
-                    'permission_callback' => array( $this, 'notifima_permissions_check' ), // Only admins can delete.
+                    'permission_callback' => array( $this, 'catalogx_permissions_check' ), // Only admins can delete.
                 ),
             )
         );
@@ -72,7 +72,7 @@ class QuoteCart extends \WP_REST_Controller {
      *
      * @param object $request The request object.
      */
-    public function notifima_permissions_check( $request ) {
+    public function catalogx_permissions_check( $request ) {
         $user_id = CatalogX()->current_user_id;
         // For non-logged in user.
         if ( 0 === $user_id ) {
