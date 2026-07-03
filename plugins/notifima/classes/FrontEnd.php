@@ -37,7 +37,7 @@ class FrontEnd {
      * @return void
      */
     public function enqueue_frontend_scripts() {
-        if( is_product() ) {
+        if( is_product() || has_shortcode( get_post()->post_content, 'notifima_subscription_form' ) ) {
             FrontendScripts::load_scripts();
             FrontendScripts::admin_load_scripts();
             FrontendScripts::enqueue_script( 'notifima-components-script' );

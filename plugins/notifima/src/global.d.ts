@@ -1,9 +1,8 @@
 declare module 'body-scroll-lock' {
-    export function disableBodyScroll( targetElement: Element ): void;
-    export function enableBodyScroll( targetElement: Element ): void;
+    export function disableBodyScroll(targetElement: Element): void;
+    export function enableBodyScroll(targetElement: Element): void;
 }
 
-// src/global.d.ts
 export {};
 
 declare global {
@@ -16,15 +15,26 @@ declare global {
         export_button: string;
         khali_dabba: boolean;
         tab_name: string;
-        settings_databases_value: any; // Use a more specific type if possible
+        settings_databases_value: any;
         pro_url: string;
         pro_settings_list: any;
         free_version: any;
     }
 
-    declare module '*.png';
-    declare module '*.jpg';
-    declare module '*.jpeg';
+    interface Subscription {
+        apiUrl: string;
+        restUrl: string;
+        nonce: string;
+        display_type: string;
+        lead_time?: string;
+        khali_dabba?: boolean;
+        email?: string;
+    }
 
     var appLocalizer: AppLocalizer;
+    var subscription: Subscription;
+
+    module '*.png';
+    module '*.jpg';
+    module '*.jpeg';
 }

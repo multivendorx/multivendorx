@@ -46,7 +46,6 @@ class Install {
         $this->old_migration();
 
         $previous_version = get_option( 'notifima_version', false );
-
         if ( ! $previous_version ) {
             $this->create_database_table();
             $this->set_default_settings();
@@ -94,6 +93,7 @@ class Install {
      * Runs the database migration process.
      */
     public static function do_migration( $previous_version ) {
+
         // write migration code from 3.0.1.
         if ( version_compare( $previous_version, '3.1.0', '<' ) ) {
             $mailchimp_settings = get_option( 'notifima_mailchimp_settings', array() );
@@ -147,7 +147,6 @@ class Install {
                     'formfieldlist'  => $registration_form,
                 ),
             );
-
             update_option( Utill::NOTIFIMA_SETTINGS['personalize-layout'], $registration_from_settings );
         }
     }
@@ -302,6 +301,7 @@ class Install {
      * @return void
      */
     private function set_default_settings() {
+
         // Default messages for settings array.
         $appearance_settings = array(
             'is_enable_backorders'          => 'out_of_stock',
@@ -358,24 +358,11 @@ class Install {
 			),
         );
 
-        if( ! empty( $appearance_settings['is_recaptcha_enable'] ) ){
-            $registration_form[] = array(
-                    'id'       => 3,
-                    'type'     => 'recaptcha',
-                    'name'     => 'reCaptcha',
-                    'label'    => 'reCaptcha V3',
-                    'icon'     => 'captcha-automatic-code',
-                    'value'    => 'recaptcha',
-                    'sitekey'  => $appearance_settings['v3_site_key'] ?? '',
-                );
-        }
-
         $registration_from_settings['form_tabs'] = array(
             'personalize_layout_template' => array(
                 'formfieldlist'  => $registration_form,
             ),
         );
-
         update_option( Utill::NOTIFIMA_SETTINGS['personalize-layout'], $registration_from_settings );
     }
 
