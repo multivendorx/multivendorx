@@ -308,3 +308,16 @@ export const htmlToText = (input): string => {
 
     return input.replace(/<\/?[^>]+(>|$)/g, '');
 };
+
+export const normalizeText = (text?: string) => {
+	if (!text) {
+		return '';
+	}
+
+	const div = document.createElement('div');
+	div.innerHTML = text;
+
+	return (div.textContent || '')
+		.replace(/-/g, ' ')
+		.replace(/\b\w/g, c => c.toUpperCase());
+};
