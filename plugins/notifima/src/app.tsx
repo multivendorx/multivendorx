@@ -53,19 +53,19 @@ const bannerItem = [
     ),
 ];
 export const profileItems = [
-		{
-			title: __('Get Support', 'notifima'),
-			icon: 'customer-support',
-			link: 'https://calendly.com/contact-notifima/30min?back=1',
-			targetBlank: true,
-		},
-		{
-			title: __('Documentation', 'notifima'),
-			icon: 'knowledgebase',
-			link: 'https://notifima.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
-			targetBlank: true,
-		}
-	];
+    {
+        title: __('Get Support', 'notifima'),
+        icon: 'customer-support',
+        link: 'https://calendly.com/contact-notifima/30min?back=1',
+        targetBlank: true,
+    },
+    {
+        title: __('Documentation', 'notifima'),
+        icon: 'knowledgebase',
+        link: 'https://notifima.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
+        targetBlank: true,
+    }
+];
 const utilityList = [
     {
         toggleIcon: 'admin-icon adminfont-user-circle',
@@ -74,6 +74,7 @@ const utilityList = [
         items: profileItems,
     },
 ];
+const BANNER_DISMISS_STORAGE_KEY = 'notifima_banner_dismissed';
 const App = () => {
     const currentTabParams = new URLSearchParams(useLocation().hash);
     const [results, setResults] = useState<SearchItem[]>([]);
@@ -130,22 +131,26 @@ const App = () => {
         window.location.hash = item.link;
         setResults([]);
     };
+    const isBannerDismissed =
+        appLocalizer.khali_dabba ||
+        localStorage.getItem(BANNER_DISMISS_STORAGE_KEY) === 'true';
 
     return (
         <>
-            {/* {!isBannerDismissed && ( */}
-            <Notice
-                uniqueKey="banner"
-                type="banner"
-                validity="lifetime"
-                displayPosition="banner"
-                message={bannerItem}
-                actionLabel="Upgrade Now"
-                onAction={() => {
-                    window.location.assign(appLocalizer.pro_url);
-                }}
-            />
-            {/* )} */}
+            {!isBannerDismissed && (
+                <Notice
+                    uniqueKey="banner"
+                    dismissStorageKey={BANNER_DISMISS_STORAGE_KEY}
+                    type="banner"
+                    validity="lifetime"
+                    displayPosition="banner"
+                    message={bannerItem}
+                    actionLabel="Upgrade Now"
+                    onAction={() => {
+                        window.location.assign(appLocalizer.pro_url);
+                    }}
+                />
+            )}
             <AdminHeader
                 brandImg={Brand}
                 free={appLocalizer.free_version}
