@@ -70,7 +70,7 @@ const proPopupContent = {
 			),
 		},
 		{
-			icon: 'subscription-dashboard',
+			icon: 'subscription-details',
 			text: __('Subscription Details', 'notifima'),
 			des: __(
 				'See who subscribed, which products are in demand, and track activity.',
