@@ -4,18 +4,12 @@ import { getApiLink } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
-interface SubscriptionConfig {
-    display_type: string;
-    nonce: string;
-}
-
 interface SubscribeFormProps {
     productId: number;
     variationId: number;
     productTitle: string;
     userEmail: string;
     shownInterest: string;
-    subscription: SubscriptionConfig;
 }
 
 interface ApiResponse {
@@ -36,7 +30,6 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
     productTitle,
     userEmail,
     shownInterest,
-    subscription,
 }) => {
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState<ApiResponse | null>(null);
