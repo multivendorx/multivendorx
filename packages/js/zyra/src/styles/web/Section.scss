@@ -32,7 +32,10 @@
     padding: 0;
     margin: 0;
   }
-
+  &.border-only{
+    margin: 1rem 0;
+    padding: 0;
+  }
   // background color like card header 
   &.bg-color {
     background: #f7f7f7;
