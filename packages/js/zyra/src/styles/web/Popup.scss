@@ -111,7 +111,7 @@
                 }
 
                 // for form editor in popup
-                .elements-wrapper{
+                .elements-wrapper {
                     top: 0;
                 }
             }
@@ -206,8 +206,8 @@
                 }
             }
 
-            &:has(.popup-footer){
-                .popup-body{
+            &:has(.popup-footer) {
+                .popup-body {
                     margin-bottom: 4.5rem;
                 }
             }
@@ -269,6 +269,13 @@
         .popup-icon {
             display: inline-block;
             cursor: pointer;
+        }
+    }
+
+    // select elements popup start
+    &.select-popup {
+        .select-wrapper {
+            padding: 1.5rem;
         }
     }
 
@@ -392,7 +399,7 @@
 
 // commission popup style (common and remove)
 
-@media screen  and (width <=37.5rem) {
+@media screen and (width <=37.5rem) {
     // .popup-content {
     //     min-width: 10rem !important;
     //     max-width: 92% !important;
