@@ -3,7 +3,7 @@ export default {
     id: 'appearance',
     priority: 1,
     headerTitle: __('Automation', 'notifima'),
-    headerDescription: __('Configure how customers subscribe to restock notifications.', 'notifima'),
+    headerDescription: __('Set the automation rules that control customer subscriptions, restock notifications, and lead time behavior.', 'notifima'),
     headerIcon: 'appearance',
     submitUrl: 'settings',
     modal: [
@@ -11,7 +11,7 @@ export default {
         {
             key: 'is_guest_subscriptions_enable',
             type: 'choice-toggle',
-            label: __('Who can subscribe', 'notifima'),
+            label: __('Subscription access', 'notifima'),
             settingDescription: __(
                 'Choose which customers are allowed to subscribe for restock notifications.',
                 'notifima'
@@ -152,7 +152,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            title: __('Confirm the subscriber', 'notifima'),
+            title: __('Confirm The Subscriber', 'notifima'),
             desc: __(
                 'Make sure every subscriber is real and opted-in.',
                 'notifima'
