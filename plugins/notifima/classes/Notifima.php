@@ -184,7 +184,6 @@ class Notifima {
         $this->container['current_user_id'] = get_current_user_id();
         $this->container['util']            = new Utill();
         $this->container['setting']         = new Setting();
-        $this->container['ajax']            = new Ajax();
         $this->container['frontend']        = new FrontEnd();
         $this->container['shortcode']       = new Shortcode();
         $this->container['subscriber']      = new Subscriber();

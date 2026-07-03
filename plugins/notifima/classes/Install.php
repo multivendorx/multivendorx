@@ -142,7 +142,7 @@ class Install {
                 ),
             );
 
-            $registration_from_settings = array(
+            $registration_from_settings['form_tabs'] = array(
                 'personalize_layout_template' => array(
                     'formfieldlist'  => $registration_form,
                 ),
@@ -358,7 +358,19 @@ class Install {
 			),
         );
 
-        $registration_from_settings = array(
+        if( ! empty( $appearance_settings['is_recaptcha_enable'] ) ){
+            $registration_form[] = array(
+                    'id'       => 3,
+                    'type'     => 'recaptcha',
+                    'name'     => 'reCaptcha',
+                    'label'    => 'reCaptcha V3',
+                    'icon'     => 'captcha-automatic-code',
+                    'value'    => 'recaptcha',
+                    'sitekey'  => $appearance_settings['v3_site_key'] ?? '',
+                );
+        }
+
+        $registration_from_settings['form_tabs'] = array(
             'personalize_layout_template' => array(
                 'formfieldlist'  => $registration_form,
             ),
