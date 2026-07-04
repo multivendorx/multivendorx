@@ -172,7 +172,7 @@ const SubscribersList = () => {
     const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
             return (
-                <div onClick={() => setopenPopup(true)}>
+                <div onClick={() => setOpenPopup(true)}>
                     <TableCard {...tableProps} />
                 </div>
             );
@@ -191,7 +191,7 @@ const SubscribersList = () => {
                 <PopupUI
                     position="lightbox"
                     open={openPopup}
-                    onClose={() => setopenPopup(false)}
+                    onClose={() => setOpenPopup(false)}
                     width={31.25}
                     height="auto"
                 >
