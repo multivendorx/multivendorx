@@ -128,7 +128,16 @@ class QuoteCart extends \WP_REST_Controller {
                     continue;
                 }
 
-                $thumbnail = $product->get_image( apply_filters( 'catalogx_quote_cart_item_thumbnail_size', array( 84, 84 ) ) );
+                $thumbnail_size = apply_filters( 'catalogx_quote_cart_item_thumbnail_size', 'thumbnail' );
+                if ( is_array( $thumbnail_size ) && 2 === count( $thumbnail_size ) && is_numeric( $thumbnail_size[0] ) && is_numeric( $thumbnail_size[1] ) ) {
+                    $thumbnail_size = array( max( 1, (int) $thumbnail_size[0] ), max( 1, (int) $thumbnail_size[1] ) );
+                } elseif ( is_string( $thumbnail_size ) && '' !== $thumbnail_size ) {
+                    $thumbnail_size = sanitize_key( $thumbnail_size );
+                } else {
+                    $thumbnail_size = 'thumbnail';
+                }
+
+                $thumbnail = $product->get_image( $thumbnail_size );
                 $name      = '';
                 if ( $item['variation'] ) {
                     foreach ( $item['variation'] as $label => $value ) {
