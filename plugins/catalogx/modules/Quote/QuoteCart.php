@@ -74,12 +74,19 @@ class QuoteCart extends \WP_REST_Controller {
      */
     public function catalogx_permissions_check( $request ) {
         $user_id = CatalogX()->current_user_id;
-        // For non-logged in user.
+        $method  = $request->get_method();
+
+        // For non-logged in users, allow read-only access.
         if ( 0 === $user_id ) {
-            return true;
+            return in_array( $method, array( 'GET', 'HEAD' ), true );
         }
 
-        // Check if user is admin or customer.
+        // Only admins can delete.
+        if ( 'DELETE' === $method ) {
+            return current_user_can( 'manage_options' );
+        }
+
+        // Check if user is admin or customer for other authenticated requests.
         return current_user_can( 'read' ) || current_user_can( 'manage_options' );
     }
 
@@ -128,7 +135,16 @@ class QuoteCart extends \WP_REST_Controller {
                     continue;
                 }
 
-                $thumbnail = $product->get_image( apply_filters( 'catalogx_quote_cart_item_thumbnail_size', array( 84, 84 ) ) );
+                $thumbnail_size = apply_filters( 'catalogx_quote_cart_item_thumbnail_size', 'thumbnail' );
+                if ( is_array( $thumbnail_size ) && 2 === count( $thumbnail_size ) && is_numeric( $thumbnail_size[0] ) && is_numeric( $thumbnail_size[1] ) ) {
+                    $thumbnail_size = array( max( 1, (int) $thumbnail_size[0] ), max( 1, (int) $thumbnail_size[1] ) );
+                } elseif ( is_string( $thumbnail_size ) && '' !== $thumbnail_size ) {
+                    $thumbnail_size = sanitize_key( $thumbnail_size );
+                } else {
+                    $thumbnail_size = 'thumbnail';
+                }
+
+                $thumbnail = $product->get_image( $thumbnail_size );
                 $name      = '';
                 if ( $item['variation'] ) {
                     foreach ( $item['variation'] as $label => $value ) {
@@ -200,7 +216,17 @@ class QuoteCart extends \WP_REST_Controller {
                     );
                 }
 
-                $quantity = $product['quantity'];
+                $quantity_raw = $product['quantity'];
+                $quantity     = ( is_int( $quantity_raw ) || ( is_string( $quantity_raw ) && ctype_digit( $quantity_raw ) ) ) ? (int) $quantity_raw : 0;
+
+                if ( $quantity < 1 ) {
+                    return new \WP_Error(
+                        'catalogx_invalid_quantity',
+                        __( 'Quantity must be a positive integer.', 'catalogx' ),
+                        array( 'status' => 400 )
+                    );
+                }
+
                 CatalogX()->quotecart->update_cart_item( $product['key'], 'quantity', $quantity );
             }
 
@@ -227,10 +253,17 @@ class QuoteCart extends \WP_REST_Controller {
         try {
             $product_id = $request->get_param( 'productId' );
             $key        = $request->get_param( 'key' );
-            $status     = false;
-            if ( $product_id && isset( $key ) ) {
-                $status = CatalogX()->quotecart->remove_cart_item( $key );
+
+            if ( ! isset( $key ) || '' === (string) $key ) {
+                return new \WP_Error(
+                    'catalogx_missing_key',
+                    __( 'Missing required parameter: key.', 'catalogx' ),
+                    array( 'status' => 400 )
+                );
             }
+
+            $status = CatalogX()->quotecart->remove_cart_item( $key );
+
             return rest_ensure_response(
                 array(
                     'status'    => $status,
