@@ -31,9 +31,11 @@ const SettingsFormRenderer: React.FC<SettingsFormRendererProps> = ({
 	const { modules } = useModules();
 	const settingModal = getSettingById(settingsArray, currentTab);
 
-	if (settingName !== currentTab) {
-		setSetting(currentTab, appLocalizer.admin_settings[currentTab] || {});
-	}
+	useEffect(() => {
+		if (settingName !== currentTab) {
+			setSetting(currentTab, appLocalizer.admin_settings[currentTab] || {});
+		}
+	}, [currentTab, settingName, setSetting]);
 
 	useEffect(() => {
 		if (settingName === currentTab) {
