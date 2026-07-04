@@ -84,7 +84,7 @@ export default {
                 },
                 {
                     key: '',
-                    label: '[catalogx_wholesale_products]',
+                    label: '[catalogx_enquiry_cart_button]',
                     name: 'Add to Enquiry Cart',
                     desc: __(
                         'Provide approved wholesale users with a dedicated page to browse and purchase wholesale products.',
@@ -93,7 +93,7 @@ export default {
                 },
                 {
                     key: '',
-                    label: '[catalogx_enquiry_cart_button]',
+                    label: '[catalogx_wholesale_products]',
                     name: 'Display Wholesale Products',
                     desc: __(
                         'Allow users to add products to an enquiry cart and send a combined enquiry.',
