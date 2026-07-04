@@ -69,6 +69,7 @@ export const downloadCSV = (
     document.body.appendChild(link);
     link.click();
     link.remove();
+    URL.revokeObjectURL(url);
 };
 
 const SubscribersList = () => {
