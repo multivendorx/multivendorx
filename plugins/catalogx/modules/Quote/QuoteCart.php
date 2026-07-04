@@ -96,8 +96,19 @@ class QuoteCart extends \WP_REST_Controller {
         }
 
         try {
-            $row  = $request->get_param( 'row' );
-            $page = $request->get_param( 'page' );
+            $row_param  = $request->get_param( 'row' );
+            $page_param = $request->get_param( 'page' );
+
+            $row  = is_numeric( $row_param ) ? (int) $row_param : 10;
+            $page = is_numeric( $page_param ) ? (int) $page_param : 1;
+
+            if ( $row < 1 ) {
+                $row = 10;
+            }
+
+            if ( $page < 1 ) {
+                $page = 1;
+            }
 
             // Get all cart data.
             $all_cart_data = CatalogX()->quotecart->get_cart_contents();
