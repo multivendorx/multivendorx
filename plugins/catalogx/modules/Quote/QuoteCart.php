@@ -74,12 +74,19 @@ class QuoteCart extends \WP_REST_Controller {
      */
     public function catalogx_permissions_check( $request ) {
         $user_id = CatalogX()->current_user_id;
-        // For non-logged in user.
+        $method  = $request->get_method();
+
+        // For non-logged in users, allow read-only access.
         if ( 0 === $user_id ) {
-            return true;
+            return in_array( $method, array( 'GET', 'HEAD' ), true );
         }
 
-        // Check if user is admin or customer.
+        // Only admins can delete.
+        if ( 'DELETE' === $method ) {
+            return current_user_can( 'manage_options' );
+        }
+
+        // Check if user is admin or customer for other authenticated requests.
         return current_user_can( 'read' ) || current_user_can( 'manage_options' );
     }
 
