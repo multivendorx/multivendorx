@@ -69,10 +69,11 @@ export const downloadCSV = (
     document.body.appendChild(link);
     link.click();
     link.remove();
+    URL.revokeObjectURL(url);
 };
 
 const SubscribersList = () => {
-    const [openPopup, setopenPopup] = useState(false);
+    const [openPopup, setOpenPopup] = useState(false);
     let tableProps: any = {};
     const headers = {
         product: {
@@ -93,7 +94,7 @@ const SubscribersList = () => {
             ),
         },
         email: {
-            label: __('Email', 'Email'),
+            label: __('Email', 'notifima'),
             render: (row) => {
                 return (
                     <div className="icon-wrapper"><i className='adminfont-mail yellow'></i>{row.email}</div>
@@ -121,7 +122,7 @@ const SubscribersList = () => {
                 downloadCSV(
                     headers,
                     rows,
-                    `subscriber.csv`
+                    'subscriber.csv'
                 );
             })
             .catch((error) => {
