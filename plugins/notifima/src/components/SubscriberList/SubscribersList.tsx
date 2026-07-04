@@ -72,7 +72,7 @@ export const downloadCSV = (
 };
 
 const SubscribersList = () => {
-    const [openPopup, setopenPopup] = useState(false);
+    const [openPopup, setOpenPopup] = useState(false);
     let tableProps: any = {};
     const headers = {
         product: {
