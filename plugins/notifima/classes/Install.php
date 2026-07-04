@@ -93,36 +93,36 @@ class Install {
         // write migration code from 3.0.1.
         if ( version_compare( $previous_version, '3.1.0', '<' ) ) {
 
-            $email_settings     = get_option( 'notifima_email_settings', array() );
-            update_option( Utill::NOTIFIMA_SETTINGS['notifications'], $email_settings );
+            $appearance_settings = get_option( 'notifima_appearance_settings', array() );
 
-
+            $appearance_settings['is_double_optin']               = ! empty( $appearance_settings['is_double_optin'] ) ? 'confirm_via_email' : 'subscribe_immediately';
+            $appearance_settings['is_enable_no_interest']         = ! empty( $appearance_settings['is_enable_no_interest'] ) ? 'show_count' : 'hide_count';
+            $appearance_settings['is_enable_backorders']          = ! empty( $appearance_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
+            $appearance_settings['is_guest_subscriptions_enable'] = ! empty( $appearance_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
+            $appearance_settings['display_subscription_form_as']  = 'inline';
 
             $mailchimp_settings = get_option( 'notifima_mailchimp_settings', array() );
 
+            update_option( Utill::NOTIFIMA_SETTINGS['automation'], array_merge( $appearance_settings, $mailchimp_settings ) );
 
-            // delete_option( 'notifima_mailchimp_settings' );
+            $automation_settings = get_option( Utill::NOTIFIMA_SETTINGS['automation'], array() );
 
-            // $email_settings = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
+            $automation_settings['is_mailchimp_enable'] = ! empty( $automation_settings['is_mailchimp_enable'] ) ? 'mailchimp' : 'store_only';
 
-            $mailchimp_settings['is_mailchimp_enable'] = ! empty( $mailchimp_settings['is_mailchimp_enable'] ) ? 'mailchimp' : 'store_only';
-
-            $mailchimp_settings['mailchimp'] = array(
-                'options'  => $mailchimp_settings['mailchimp_list_options'] ?? array(),
-                'selected' => $mailchimp_settings['selected_mailchimp_list'] ?? '',
+            $automation_settings['mailchimp'] = array(
+                'options'  => $automation_settings['mailchimp_list_options'] ?? array(),
+                'selected' => $automation_settings['selected_mailchimp_list'] ?? '',
             );
 
-            // update_option( Utill::NOTIFIMA_SETTINGS['email'], $email_settings );
+            update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
 
-            $automation_settings = get_option( 'notifima_appearance_settings', array() );
+            delete_option( 'notifima_mailchimp_settings' );
 
-            $automation_settings['is_double_optin']               = ! empty( $automation_settings['is_double_optin'] ) ? 'confirm_via_email' : 'subscribe_immediately';
-            $automation_settings['is_enable_no_interest']         = ! empty( $automation_settings['is_enable_no_interest'] ) ? 'show_count' : 'hide_count';
-            $automation_settings['is_enable_backorders']          = ! empty( $automation_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
-            $automation_settings['is_guest_subscriptions_enable'] = ! empty( $automation_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
-            $automation_settings['display_subscription_form_as']  = 'inline';
-            update_option( Utill::NOTIFIMA_SETTINGS['automation'], array_merge($automation_settings ,$mailchimp_settings ) );
-            
+
+            $email_settings     = get_option('notifima_email_settings', array() );
+
+            update_option( Utill::NOTIFIMA_SETTINGS['notifications'], $email_settings );
+
             $registration_form = array(
                 array(
                     'id'          => 1,
@@ -545,7 +545,7 @@ class Install {
         if ( version_compare( $previous_version, '3.0.0', '<=' ) ) {
             $previous_mailchimp_settings = get_option( 'woo_stock_manager_mailchimp_tab_settings', array() );
 
-            update_option( Utill::NOTIFIMA_SETTINGS['mailchimp'], $previous_mailchimp_settings );
+            update_option( 'notifima_mailchimp_settings', $previous_mailchimp_settings );
 
             $version_key = get_option( 'woo_stock_manager_version', '' );
             update_option( 'notifima_version', $version_key );
