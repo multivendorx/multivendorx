@@ -369,34 +369,6 @@ export default {
                 value: 'mailchimp'
             },
             proSetting: true,
-        },
-        // {
-        //     key: 'section',
-        //     type: 'section',
-        //     title: __('Admin Notifications', 'notifima'),
-        //     desc: __('Who on your team gets alerted', 'notifima'
-        //     ),
-        // },
-        // {
-        //     key: 'additional_alert_email',
-        //     type: 'textarea',
-        //     label: __('Recipient email for new subscriber', 'notifima'),
-        //     settingDescription: __(
-        //         'Choose who should receive email notifications when customers subscribe for restock alerts.',
-        //         'notifima'
-        //     ),
-        //     desc: __(
-        //         '<ul><li>Separate multiple email addresses with commas.</li><li>By default, the site administrator receives these notifications.</li><li>Remove the administrator\'s email address from the list if you do not want the administrator to receive notifications.</li></ul>',
-        //         'notifima'
-        //     ),
-        // },
-        // {
-        //     key: 'note_blocktext',
-        //     type: 'notice',
-        //     noticeType: 'info',
-        //     displayPosition: 'notice',
-        //     message:
-        //         'Disclaimer – Loco Translator Compatibility: This plugin allows you to customize certain frontend text settings and descriptions. Default texts are Loco Translator-ready, but any changes made in the corresponding custom text box will no longer be available for translation via Loco Translator. Hence, please enter the customized text in your desired language only.',
-        // },
+        }
     ],
 };

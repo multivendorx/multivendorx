@@ -121,7 +121,13 @@ class Install {
 
             $email_settings     = get_option('notifima_email_settings', array() );
 
+            $email_settings['additional_alert_email'] = ! empty( $appearance_settings['additional_alert_email'] ) ? $appearance_settings['additional_alert_email'] : '';
+
             update_option( Utill::NOTIFIMA_SETTINGS['notifications'], $email_settings );
+
+            $customer_messages_settings     = get_option('notifima_form_submission_settings', array() );
+
+            update_option( Utill::NOTIFIMA_SETTINGS['customer-messages'], $customer_messages_settings );
 
             $registration_form = array(
                 array(
@@ -593,9 +599,11 @@ class Install {
             }
         }
 
-        update_option( 'notifima_appearance_settings', array_merge( $appearance_settings, $previous_appearance_settings ) );
-        update_option( 'notifima_form_submission_settings', array_merge( $submit_settings, $previous_submit_settings ) );
-        update_option( 'notifima_email_settings', array_merge( $email_settings, $previous_email_settings ) );
+        update_option( Utill::NOTIFIMA_SETTINGS['automation'], array_merge( $appearance_settings, $previous_appearance_settings ) );
+        update_option( Utill::NOTIFIMA_SETTINGS['customer-messages'], array_merge( $submit_settings, $previous_submit_settings ) );
+
+        $email_settings['additional_alert_email'] = ! empty( $appearance_settings['additional_alert_email'] ) ? $appearance_settings['additional_alert_email'] : '';
+        update_option( Utill::NOTIFIMA_SETTINGS['notifications'], array_merge( $email_settings, $previous_email_settings ) );
     }
 
     /**
