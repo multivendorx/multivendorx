@@ -200,7 +200,17 @@ class QuoteCart extends \WP_REST_Controller {
                     );
                 }
 
-                $quantity = $product['quantity'];
+                $quantity_raw = $product['quantity'];
+                $quantity     = ( is_int( $quantity_raw ) || ( is_string( $quantity_raw ) && ctype_digit( $quantity_raw ) ) ) ? (int) $quantity_raw : 0;
+
+                if ( $quantity < 1 ) {
+                    return new \WP_Error(
+                        'catalogx_invalid_quantity',
+                        __( 'Quantity must be a positive integer.', 'catalogx' ),
+                        array( 'status' => 400 )
+                    );
+                }
+
                 CatalogX()->quotecart->update_cart_item( $product['key'], 'quantity', $quantity );
             }
 
