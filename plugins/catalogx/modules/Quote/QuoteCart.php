@@ -165,11 +165,27 @@ class QuoteCart extends \WP_REST_Controller {
         }
 
         try {
-            $products = $request->get_param( 'products' );
+            $products   = $request->get_param( 'products' );
             $update_msg = __( 'Quote cart updated!', 'catalogx' );
 
+            if ( ! is_array( $products ) || empty( $products ) ) {
+                return new \WP_Error(
+                    'catalogx_invalid_products',
+                    __( 'Invalid products payload. Expected a non-empty array.', 'catalogx' ),
+                    array( 'status' => 400 )
+                );
+            }
+
             foreach ( $products as $key => $product ) {
-                $quantity   = $product['quantity'];
+                if ( ! is_array( $product ) || ! isset( $product['key'], $product['quantity'] ) ) {
+                    return new \WP_Error(
+                        'catalogx_invalid_product_item',
+                        __( 'Each product must contain key and quantity.', 'catalogx' ),
+                        array( 'status' => 400 )
+                    );
+                }
+
+                $quantity = $product['quantity'];
                 CatalogX()->quotecart->update_cart_item( $product['key'], 'quantity', $quantity );
             }
 
