@@ -20,7 +20,7 @@ export default {
                 'catalogx'
             ),
             desc: __(
-                "Manual - Admin approves new wholesalers manually from 'Wholeseller Users' page. <br> Automatic - Instant wholesaler approval upon sign-up",
+                "Manual - Admin approves new wholesalers manually from 'Wholesaler Users' page. <br> Automatic - Instant wholesaler approval upon sign-up",
                 'catalogx'
             ),
             options: [
