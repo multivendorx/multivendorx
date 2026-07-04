@@ -342,7 +342,7 @@ class Installer {
      * @return void
      */
     public function do_migration() {
-        // Migration by specific version controll.
+        // Migration by specific version control.
         $previous_version = get_option( self::VERSION_KEY, '' );
         if ( version_compare( $previous_version, '6.0.7', '<' ) ) {
             // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
@@ -632,7 +632,7 @@ class Installer {
 
             $settings['enquiry_user_permission'] = ! empty( $settings['enquiry_user_permission'] ) ? 'logged_in_only' : 'everyone';
             $settings['quote_user_permission'] = ! empty( $settings['quote_user_permission'] )? 'logged_in_only' : 'everyone';
-            $settings['enable_cart_checkout']  = ! empty( $settings['quote_user_permission'] )? 'buy_mode' : 'catalog_only';
+            $settings['enable_cart_checkout']  = ! empty( $settings['enable_cart_checkout'] )? 'buy_mode' : 'catalog_only';
             $settings['is_page_redirect']      = ! empty( $settings['is_page_redirect'] )? 'dedicated_page' : 'current_page';
 
             update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $settings );
@@ -641,7 +641,7 @@ class Installer {
             $wholesale_settings['disable_coupon_for_wholesale'] = ! empty( $wholesale_settings['disable_coupon_for_wholesale'] ) ? 'restricted' : 'allowed';
             $wholesale_settings['enable_order_form']            = ! empty( $wholesale_settings['enable_order_form'] ) ? 'dedicated' : 'shared';
             $wholesale_settings['show_wholesale_price']         = ! empty( $wholesale_settings['show_wholesale_price'] ) ? 'visible' : 'hidden';
-            $wholesale_settings['enable_global_wholasale']      = ! empty( $wholesale_settings['enable_global_wholasale'] ) ? 'global_rule' : 'product_level';
+            $wholesale_settings['enable_global_wholesale']      = ! empty( $wholesale_settings['enable_global_wholasale'] ) ? 'global_rule' : 'product_level';
         
             if ( !empty( $wholesale_settings ) && isset( $wholesale_settings['wholesale_discount'] ) ) {
                 $wholesale_settings['wholesale_amount'] = $wholesale_settings['wholesale_discount'];

@@ -69,10 +69,11 @@ export const downloadCSV = (
     document.body.appendChild(link);
     link.click();
     link.remove();
+    URL.revokeObjectURL(url);
 };
 
 const SubscribersList = () => {
-    const [openPopup, setopenPopup] = useState(false);
+    const [openPopup, setOpenPopup] = useState(false);
     let tableProps: any = {};
     const headers = {
         product: {
@@ -93,7 +94,7 @@ const SubscribersList = () => {
             ),
         },
         email: {
-            label: __('Email', 'Email'),
+            label: __('Email', 'notifima'),
             render: (row) => {
                 return (
                     <div className="icon-wrapper"><i className='adminfont-mail yellow'></i>{row.email}</div>
@@ -121,7 +122,7 @@ const SubscribersList = () => {
                 downloadCSV(
                     headers,
                     rows,
-                    `subscriber.csv`
+                    'subscriber.csv'
                 );
             })
             .catch((error) => {
@@ -171,7 +172,7 @@ const SubscribersList = () => {
     const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
             return (
-                <div onClick={() => setopenPopup(true)}>
+                <div onClick={() => setOpenPopup(true)}>
                     <TableCard {...tableProps} />
                 </div>
             );
@@ -190,7 +191,7 @@ const SubscribersList = () => {
                 <PopupUI
                     position="lightbox"
                     open={openPopup}
-                    onClose={() => setopenPopup(false)}
+                    onClose={() => setOpenPopup(false)}
                     width={31.25}
                     height="auto"
                 >

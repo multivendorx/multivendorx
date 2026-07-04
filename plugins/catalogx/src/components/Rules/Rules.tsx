@@ -256,7 +256,7 @@ const Rules = () => {
                     },
                 ]}
             />
-            {tableProps.addingNewRule && tableProps.addingNewRule && (
+            {tableProps.addingNewRule && (
                 tableProps.addNewRuleForm
             )}
             <Container general>
