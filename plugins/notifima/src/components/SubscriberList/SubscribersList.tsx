@@ -121,7 +121,7 @@ const SubscribersList = () => {
                 downloadCSV(
                     headers,
                     rows,
-                    `subscriber.csv`
+                    'subscriber.csv'
                 );
             })
             .catch((error) => {
