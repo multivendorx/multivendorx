@@ -93,7 +93,7 @@ const SubscribersList = () => {
             ),
         },
         email: {
-            label: __('Email', 'Email'),
+            label: __('Email', 'notifima'),
             render: (row) => {
                 return (
                     <div className="icon-wrapper"><i className='adminfont-mail yellow'></i>{row.email}</div>
