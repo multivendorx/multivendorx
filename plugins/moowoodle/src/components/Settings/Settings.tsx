@@ -18,52 +18,63 @@ interface SettingsProps {
 	id: string;
 }
 
+interface SettingsFormRendererProps {
+	currentTab: string;
+	settingsArray: unknown[];
+}
+
+const SettingsFormRenderer: React.FC<SettingsFormRendererProps> = ({
+	currentTab,
+	settingsArray
+}) => {
+	const { setting, settingName, setSetting, updateSetting } = useSetting();
+	const { modules } = useModules();
+	const settingModal = getSettingById(settingsArray, currentTab);
+
+	if (settingName !== currentTab) {
+		setSetting(currentTab, appLocalizer.admin_settings[currentTab] || {});
+	}
+
+	useEffect(() => {
+		if (settingName === currentTab) {
+			appLocalizer.admin_settings[settingName] = setting;
+		}
+	}, [setting, settingName, currentTab]);
+
+	return (
+		<>
+			{settingName === currentTab ? (
+				<RenderComponent
+					settings={settingModal}
+					proSetting={appLocalizer.pro_settings_list}
+					setting={setting}
+					updateSetting={updateSetting}
+					appLocalizer={appLocalizer}
+					modules={modules}
+					Popup={ShowProPopup}
+				/>
+			) : (
+				<>{__('Loading...', 'moowoodle')}</>
+			)}
+		</>
+	);
+};
+
 const Settings: React.FC<SettingsProps> = () => {
 	const settingsArray = getAvailableSettings(getTemplateData('settings'), []);
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
 	// Render the dynamic form
 	const GetForm = (currentTab: string | null): JSX.Element | null => {
-		// get the setting context
-		const { setting, settingName, setSetting, updateSetting } =
-			useSetting();
-		const { modules } = useModules();
-
 		if (!currentTab) {
 			return null;
 		}
-		const settingModal = getSettingById(settingsArray, currentTab);
-
-		// Ensure settings context is initialized
-		if (settingName !== currentTab) {
-			setSetting(
-				currentTab,
-				appLocalizer.admin_settings[currentTab] || {}
-			);
-		}
-
-		useEffect(() => {
-			if (settingName === currentTab) {
-				appLocalizer.admin_settings[settingName] = setting;
-			}
-		}, [setting, settingName, currentTab]);
 
 		return (
-			<>
-				{settingName === currentTab ? (
-					<RenderComponent
-						settings={settingModal}
-						proSetting={appLocalizer.pro_settings_list}
-						setting={setting}
-						updateSetting={updateSetting}
-						appLocalizer={appLocalizer}
-						modules={modules}
-						Popup={ShowProPopup}
-					/>
-				) : (
-					<>{__('Loading...', 'moowoodle')}</>
-				)}
-			</>
+			<SettingsFormRenderer
+				currentTab={currentTab}
+				settingsArray={settingsArray}
+			/>
 		);
 	};
 	return (
@@ -77,7 +88,7 @@ const Settings: React.FC<SettingsProps> = () => {
 				}
 				appLocalizer={appLocalizer}
 				Link={Link}
-				settingName={'Settings'}
+				settingName={'settings'}
 				className="admin-settings"
 			/>
 		</SettingProvider>
