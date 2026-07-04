@@ -96,8 +96,19 @@ class QuoteCart extends \WP_REST_Controller {
         }
 
         try {
-            $row  = $request->get_param( 'row' );
-            $page = $request->get_param( 'page' );
+            $row_param  = $request->get_param( 'row' );
+            $page_param = $request->get_param( 'page' );
+
+            $row  = is_numeric( $row_param ) ? (int) $row_param : 10;
+            $page = is_numeric( $page_param ) ? (int) $page_param : 1;
+
+            if ( $row < 1 ) {
+                $row = 10;
+            }
+
+            if ( $page < 1 ) {
+                $page = 1;
+            }
 
             // Get all cart data.
             $all_cart_data = CatalogX()->quotecart->get_cart_contents();
@@ -112,7 +123,11 @@ class QuoteCart extends \WP_REST_Controller {
             // Prepare the quote list.
             $quote_list = array();
             foreach ( $paginated_cart_data as $key => $item ) {
-                $product   = wc_get_product( $item['product_id'] );
+                $product = wc_get_product( $item['product_id'] );
+                if ( ! ( $product instanceof \WC_Product ) ) {
+                    continue;
+                }
+
                 $thumbnail = $product->get_image( apply_filters( 'catalogx_quote_cart_item_thumbnail_size', array( 84, 84 ) ) );
                 $name      = '';
                 if ( $item['variation'] ) {
@@ -165,11 +180,27 @@ class QuoteCart extends \WP_REST_Controller {
         }
 
         try {
-            $products = $request->get_param( 'products' );
+            $products   = $request->get_param( 'products' );
             $update_msg = __( 'Quote cart updated!', 'catalogx' );
 
+            if ( ! is_array( $products ) || empty( $products ) ) {
+                return new \WP_Error(
+                    'catalogx_invalid_products',
+                    __( 'Invalid products payload. Expected a non-empty array.', 'catalogx' ),
+                    array( 'status' => 400 )
+                );
+            }
+
             foreach ( $products as $key => $product ) {
-                $quantity   = $product['quantity'];
+                if ( ! is_array( $product ) || ! isset( $product['key'], $product['quantity'] ) ) {
+                    return new \WP_Error(
+                        'catalogx_invalid_product_item',
+                        __( 'Each product must contain key and quantity.', 'catalogx' ),
+                        array( 'status' => 400 )
+                    );
+                }
+
+                $quantity = $product['quantity'];
                 CatalogX()->quotecart->update_cart_item( $product['key'], 'quantity', $quantity );
             }
 
