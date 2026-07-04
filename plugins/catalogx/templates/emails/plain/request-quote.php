@@ -22,7 +22,7 @@ if ( ! empty( $args['products'] ) ) {
         /* translators: %s: Show the quantity of the product. */
         echo sprintf( esc_html__( 'Qty: %s', 'catalogx' ), esc_html( $item['quantity'] ) ) . "\n\n";
         /* translators: %s: Show the price of the product. */
-        echo sprintf( esc_html__( 'Price: %s', 'catalogx' ), wp_strip_all_tags( wc_price( (float) $_product->get_regular_price() * (int) $item['quantity'] ) ) ) . "\n\n";
+        echo sprintf( esc_html__( 'Price: %s', 'catalogx' ), wp_strip_all_tags( wc_price( (float) $_product->get_price() * (int) $item['quantity'] ) ) ) . "\n\n";
     }
 } else {
     /* translators: %s: Show the product name. */

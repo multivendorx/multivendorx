@@ -55,7 +55,7 @@ const HelpSupport: React.FC = () => {
 				'Discuss MultiVendorX features, report issues, and collaborate with other users.',
 				'multivendorx'
 			),
-			link: 'https://multivendorx.com/support-forum/',
+			link: 'https://multivendorx.com/support-forum/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 		},
 		{
 			icon: 'live-chat',
@@ -75,7 +75,7 @@ const HelpSupport: React.FC = () => {
 				'Step-by-step guides for every MultiVendorX feature.',
 				'multivendorx'
 			),
-			link: 'https://multivendorx.com/docs/knowledgebase/',
+			link: 'https://multivendorx.com/docs/knowledgebase/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 		},
 		{
 			icon: 'youtube',
@@ -93,7 +93,7 @@ const HelpSupport: React.FC = () => {
 				'Quick answers to the most common questions about features and troubleshooting.',
 				'multivendorx'
 			),
-			link: 'https://multivendorx.com/docs/faqs/',
+			link: 'https://multivendorx.com/docs/faqs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 		},
 		{
 			icon: 'coding',

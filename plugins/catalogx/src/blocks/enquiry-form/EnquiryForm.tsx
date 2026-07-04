@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './EnquiryForm.scss';
 import { FormViewer } from 'zyra';
 import axios from 'axios';
+import { __ } from '@wordpress/i18n';
 
 const EnquiryForm = () => {
     const [showToast, setshowToast] = useState(false);
@@ -14,9 +15,14 @@ const EnquiryForm = () => {
     const onSubmit = (submittedFormData: any) => {
         // Convert Zyra form object into FormData
         const formData = new FormData();
-
         Object.keys(submittedFormData).forEach((key) => {
-            formData.append(key, submittedFormData[key]);
+            let value = submittedFormData[key];
+
+            if (key === 'phone' && typeof value === 'object') {
+                value = `${value.country_code}${value.phone}`;
+            }
+
+            formData.append(key, value);
         });
 
         const productId =
@@ -61,32 +67,58 @@ const EnquiryForm = () => {
 
     return (
         <>
-            {showToast && (
-                <div className="woocommerce-notices-wrapper">
-                    <ul className="woocommerce-message" role="alert">
-                        <li>{responseMessage}</li>
-                    </ul>
-                </div>
-            )}
-            <div>{enquiryFormData.content_before_form}</div>
-            {proActive ? (
-                <FormViewer
-                    formFields={{
-                        formfieldlist: formData.settings_pro,
-                    }}
-                    onSubmit={onSubmit}
-                    onClose={handleClose}
-                />
-            ) : (
-                <FormViewer
-                    formFields={{
-                        formfieldlist: formData.settings_free,
-                    }}
-                    onSubmit={onSubmit}
-                    onClose={handleClose}
-                />
-            )}
-            <div>{enquiryFormData.content_after_form}</div>
+            <div className="form-wrapper">
+                <div>{enquiryFormData.content_before_form}</div>
+                {proActive ? (
+                    <FormViewer
+                        formFields={{
+                            formfieldlist: formData.settings_pro,
+                        }}
+                        onSubmit={onSubmit}
+                        onClose={handleClose}
+                        formMessages={{
+                            /* translators: %s: Field label. */
+                            fieldRequired: __('%s is required.', 'catalogx'),
+                            invalidEmail: __(
+                                'Please enter a valid email address.',
+                                'catalogx'
+                            ),
+                            termsRequired: __(
+                                'Please accept the Terms & Conditions.',
+                                'catalogx'
+                            ),
+                        }}
+                    />
+                ) : (
+                    <FormViewer
+                        formFields={{
+                            formfieldlist: formData.settings_free,
+                        }}
+                        onSubmit={onSubmit}
+                        onClose={handleClose}
+                        formMessages={{
+                            /* translators: %s: Field label. */
+                            fieldRequired: __('%s is required.', 'catalogx'),
+                            invalidEmail: __(
+                                'Please enter a valid email address.',
+                                'catalogx'
+                            ),
+                            termsRequired: __(
+                                'Please accept the Terms & Conditions.',
+                                'catalogx'
+                            ),
+                        }}
+                    />
+                )}
+                <div>{enquiryFormData.content_after_form}</div>
+                {showToast && (
+                    <div className="woocommerce-notices-wrapper">
+                        <ul className="woocommerce-message" role="alert">
+                            <li>{responseMessage}</li>
+                        </ul>
+                    </div>
+                )}
+            </div>
         </>
     );
 };

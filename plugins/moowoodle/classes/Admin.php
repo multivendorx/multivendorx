@@ -112,7 +112,7 @@ class Admin {
 				</style>
 				<div class="upgrade-to-pro"><i class="dashicons dashicons-awards"></i>' . esc_html__( 'Upgrade to Pro', 'moowoodle' ) . '</div> ',
 				'manage_options',
-				'',
+				'moowoodle-upgrade',
 				array( self::class, 'handle_external_redirects' )
 			);
 		}

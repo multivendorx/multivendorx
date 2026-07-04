@@ -2,7 +2,7 @@
     "name": "multivendorx/notifima",
     "description": "Boost sales with real-time stock alerts! Notify customers instantly when products are back in stock. Simplify data management by exporting and importing stock data with ease.",
     "type": "wordpress-plugin",
-    "homepage": "https://notifima.com",
+    "homepage": "https://notifima.com?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima",
     "license": "GPL-2.0-or-later",
     "authors": [
         {

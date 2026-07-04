@@ -3,7 +3,7 @@ import React from 'react';
 
 // Internal Dependencies
 import CanvasEditor from './CanvasEditor/CanvasEditor';
-import { FieldComponent } from './fieldUtils';
+import { FieldComponent, ZyraVariable } from './fieldUtils';
 import { Block } from './CanvasEditor/blockTypes';
 import '../styles/web/BlockBuilder.scss';
 
@@ -24,10 +24,14 @@ interface BlockBuilderProps {
         blockGroups?: unknown[];
         emailTemplates?: EmailTemplate[];
         availablePlaceholder?: string[];
+        enableDefaultBlocks?: boolean;
     };
     setting?: Record<string, BuilderValue>;
     proSettingChange?: (...args: unknown[]) => boolean;
     name?: string;
+    canAccess?: boolean;
+    modules?: string[];
+    onBlocked?: (type: 'pro' | 'plugin' | 'module', payload?: {}) => void;
 }
 
 export interface EmailTemplate {
@@ -53,9 +57,33 @@ export const BlockBuilderUI: React.FC<BlockBuilderProps> = ({
     setting = {},
     proSettingChange = () => false,
     name = field?.key,
+    canAccess,
+    modules,
+    onBlocked,
 }) => {
     const builderContext = field?.context || 'form';
     const isEmailBuilder = builderContext === 'email';
+
+    const block = (content) => {
+        // Check pro setting
+        if (content.proSetting && !ZyraVariable.khali_dabba) {
+            onBlocked?.('pro');
+            return true;
+        }
+        if (content.moduleEnabled && !modules.includes(content.moduleEnabled)) {
+            onBlocked?.('module', content.moduleEnabled);
+            return true;
+        }
+
+        if (
+            content.requiredPlugin &&
+            !(ZyraVariable.active_plugins || []).includes(content.requiredPlugin)
+        ) {
+            onBlocked?.('plugin', content);
+            return true;
+        }
+        return false;
+    };
 
     /* ---------------------------
     EMAIL TEMPLATE STATE
@@ -91,9 +119,9 @@ export const BlockBuilderUI: React.FC<BlockBuilderProps> = ({
 
     const [activeEmailTemplateId, setActiveTemplateId] = React.useState(
         storedBuilderData.activeEmailTemplateId ||
-            field?.defaultTemplateId ||
-            emailTemplates[0]?.id ||
-            DEFAULT_EMAIL_TEMPLATES[0].id
+        field?.defaultTemplateId ||
+        emailTemplates[0]?.id ||
+        DEFAULT_EMAIL_TEMPLATES[0].id
     );
 
     const activeEmailTemplate = emailTemplates.find(
@@ -188,8 +216,15 @@ export const BlockBuilderUI: React.FC<BlockBuilderProps> = ({
         <CanvasEditor
             key={activeEmailTemplateId}
             blocks={initialBlocks}
-            onChange={handleBlocksChange}
+            onChange={(value) => {
+                if (!canAccess || block(field)) {
+                    return;
+                }
+
+                handleBlocksChange(value);
+            }}
             blockGroups={field?.blockGroups || []}
+            enableDefaultBlocks={field?.enableDefaultBlocks}
             visibleGroups={visibleGroups}
             groupName={builderContext}
             proSettingChange={proSettingChange}

@@ -4,7 +4,7 @@ import '../common.scss';
 
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import { dummyWholesalecustomer } from './WholesaleUserUtil';
+import { defaultCategoryCounts, dummyWholesalecustomer } from './WholesaleUserUtil';
 
 import {
 	Column,
@@ -13,6 +13,7 @@ import {
 	NavigatorHeader,
 	PopupUI,
 	TableCard,
+	ComponentStatusView
 } from 'zyra';
 
 import ShowProPopup from '../Popup/Popup';
@@ -52,18 +53,52 @@ const WholesaleUser = () => {
 		},
 		status: {
 			label: __('Status', 'catalogx'),
-			type: 'status'
+			type: 'status',
+			statusClass: (row: WholesaleUserRow) => `${row.status}`
 		},
 		date: {
 			label: __('Date', 'catalogx'),
 			type: 'date'
 		},
+		action: {
+			type: 'action',
+			label: __('Action', 'catalogx'),
+			actions: [
+				{
+					label: () => __('View', 'catalogx'),
+					icon: () => 'eye',
+				},
+				{
+					label: () => __('Approve', 'catalogx'),
+					icon: () => 'check'
+				},
+				{
+					label: () => __('Reject', 'catalogx'),
+					icon: () => 'close'
+				},
+			],
+		},
 	};
-
-
+	const filters = [{
+		key: 'date',
+		label: __('Date Range', 'catalogx'),
+		type: 'date',
+	}];
+	const bulkActions = [
+		{ label: __('Approve', 'catalogx'), value: 'approve' },
+		{ label: __('Reject', 'catalogx'), value: 'reject' },
+		{ label: __('Pending', 'catalogx'), value: 'pending' },
+	];
 	const defaultTableProps = {
 		headers,
-        format: appLocalizer.date_format,
+		format: appLocalizer.date_format,
+		filters,
+		search: {
+			placeholder: __('Search...', 'catalogx'),
+			size: 8,
+		},
+		bulkActions,
+		categoryCounts: defaultCategoryCounts,
 		rows: dummyWholesalecustomer,
 		totalRows: dummyWholesalecustomer.length,
 	};
@@ -73,15 +108,42 @@ const WholesaleUser = () => {
 		defaultTableProps
 	);
 
-	const handleTableWrapperClick = () => {
+	const renderTableContent = () => {
 		if (!appLocalizer.khali_dabba) {
-			setopenPopup(true);
+			return (
+				<div onClick={() => setopenPopup(true)}>
+					<TableCard {...tableProps} />
+				</div>
+			);
 		}
+
+		if (!appLocalizer.active_modules.includes('wholesale')) {
+			return (
+				<ComponentStatusView
+					title={__(
+						'Looks like wholesale pricing isn’t set up yet!',
+						'catalogx'
+					)}
+					desc={__(
+						'Enable the Wholesale module to create wholesale pricing and offer special rates to your business customers.',
+						'catalogx'
+					)}
+					buttonText={__('Enable Now', 'catalogx')}
+					buttonLink={`${appLocalizer.admin_url}#&tab=modules&module=wholesale`}
+				/>
+			);
+		}
+
+		return (
+			<>
+				<TableCard {...tableProps} />
+				{tableProps.selectedRow && tableProps.viewWholesaleDetails}
+			</>
+		);
 	};
 
-
 	return (
-		<div>
+		<>
 			{openPopup && (
 				<PopupUI
 					position="lightbox"
@@ -107,12 +169,10 @@ const WholesaleUser = () => {
 
 			<Container general>
 				<Column>
-					<div onClick={handleTableWrapperClick}>
-						<TableCard {...tableProps} />
-					</div>
+					{renderTableContent()}
 				</Column>
 			</Container>
-		</div>
+		</>
 	);
 };
 

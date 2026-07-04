@@ -59,7 +59,7 @@ $review_count      = is_array( $reviews ) ? count( $reviews ) : 0;
 
             <?php if ( ! empty( $meta_data['linkedin'] ) ) : ?>
                 <a target="_blank" href="<?php echo esc_url( $meta_data['linkedin'] ); ?>">
-                    <i class="dashicons dashicons-instagram"></i>
+                    <i class="dashicons dashicons-linkedin"></i>
                 </a>
             <?php endif; ?>
 
@@ -71,7 +71,12 @@ $review_count      = is_array( $reviews ) ? count( $reviews ) : 0;
 
             <?php if ( ! empty( $meta_data['instagram'] ) ) : ?>
                 <a target="_blank" href="<?php echo esc_url( $meta_data['instagram'] ); ?>">
-                    <i class="dashicons dashicons-linkedin"></i>
+                    <i class="dashicons dashicons-instagram"></i>
+                </a>
+            <?php endif; ?>
+            <?php if ( ! empty( $meta_data['pinterest'] ) ) : ?>
+                <a target="_blank" href="<?php echo esc_url( $meta_data['pinterest'] ); ?>">
+                    <i class="dashicons dashicons-pinterest"></i>
                 </a>
             <?php endif; ?>
         </div>

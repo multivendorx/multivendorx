@@ -972,18 +972,38 @@ class Rest {
     }
 
     public function filter_shipping_classes_by_meta( $args, $request ) {
-        $meta_key   = $request->get_param( 'meta_key' );
-        $meta_value = $request->get_param( 'meta_value' );
+        $meta_key   = sanitize_text_field( $request->get_param( 'meta_key' ) );
+        $meta_value = sanitize_text_field( $request->get_param( 'meta_value' ) );
 
-        if ( ! empty( $meta_key ) ) {
-            $args['meta_query'] = array(
-                array(
-                    'key'     => sanitize_text_field( $meta_key ),
-                    'value'   => sanitize_text_field( $meta_value ),
-                    'compare' => '=',
-                ),
-            );
+        $not_exists_query = array(
+            'key'     => $meta_key,
+            'compare' => 'NOT EXISTS',
+        );
+
+        $store_query = array(
+            'key'     => $meta_key,
+            'value'   => $meta_value,
+            'compare' => '=',
+        );
+
+        // Shipping module disabled: show marketplace shipping classes only.
+        if ( ! MultiVendorX()->modules->is_active( 'store-shipping' ) ) {
+            $args['meta_query'] = array( $not_exists_query );
+            return $args;
         }
+
+        $visibility = MultiVendorX()->setting->get_setting('shipping_class_access','store');
+
+        if ( 'both' === $visibility ) {
+            $args['meta_query'] = array(
+                'relation' => 'OR',
+                $not_exists_query,
+                $store_query,
+            );
+        } elseif ( 'store' === $visibility ) {
+            $args['meta_query'] = array( $store_query );
+        }
+
         return $args;
     }
 }

@@ -5,7 +5,7 @@
 **Requires at least:** 6.3  
 **Tested up to:** 7.0.0  
 **Requires PHP:** 8.0  
-**Stable tag:** 5.0.6  
+**Stable tag:** 5.0.9  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -20,7 +20,7 @@ Build your own multivendor marketplace in minutes-no code required.
 
 With fast setup, seamless vendor management, and built-in commission control, MultiVendorX is designed to grow with your business. Ideal for entrepreneurs aiming to establish their own multivendor platform reminiscent of popular multivendor marketplaces like  <strong> Amazon,  eBay, Etsy,  Airbnb , or Flipkart. </strong>
 
-[youtube https://youtu.be/3Pm46Z_ovLg]
+[youtube https://youtu.be/b9cuSOwz9zc]
 
 ### Try us because we provide: ###
 * **Code-free** solution to effortlessly set up a multi-vendor marketplace.
@@ -245,6 +245,23 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 ## Changelog ##
+
+### 5.0.8 - 2026-06-16 ###
+* Added     - Updated the refund popup interface for an improved refund management experience #2009
+* Fixed     - Incorrect advanced commission, store earnings, and commission calculations #2035
+* Fixed     - Selection issues in the User Capabilities section #2010
+* Fixed     - Unnecessary <p> tags being rendered in the output #2005
+* Fixed     - Error affecting store template breadcrumbs #1981
+* Updated   - Language file.
+
+### 5.0.7 - 2026-06-04 ###
+* Added     - Compatibility with WooCommerce 10.8.1
+* Fixed     - An issue in the Report Abuse button workflow where the reporting process was not functioning as expected #1975.
+* Fixed     - A bug in the Store Application Rejection flow where rejection actions were not being processed correctly #1941.
+* Added     - Introduced support for a new parameter allowing exclusion of specific stores from appearing on the store listing page #1931.
+* Fixed     - A console error occurring in frontend #1953.
+* Added     - Translation support for previously hardcoded strings in MultiVendorX settings #1924.
+* Updated   - Language file.
 
 ### 5.0.6 - 2026-05-21 ###
 * Added     - Compatibility with WordPress 7.0.0.

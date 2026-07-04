@@ -159,7 +159,7 @@
     border-radius: $border-radius-small;
     width: fit-content;
     gap: 0.5rem;
-    margin: 1.5rem 0;
+    // margin: 1.5rem 0;
 
     .filters {
         padding: 0.45rem;
@@ -225,31 +225,32 @@
                 width: 100%;
                 height: 3.125rem;
                 align-items: center;
+
+                .admin-column.drag{
+                    min-width: 1.75rem;
+                }
             }
 
             .header-col {
                 text-align: left;
-                padding: 0 0.85rem;
+                padding: 0.85rem;
                 font-size: 1rem;
                 font-weight: 500;
                 display: flex;
-
-                // flex: 1 0 0;
                 width: 100%;
                 border: none;
                 color: $text-color;
 
-                &.select {
-                    max-width: 2rem;
-                    padding-top: 0.4rem;
+                &.expand {
+                    max-width: 1rem;
                     padding-right: 0;
                 }
-
                 &.sortable {
                     cursor: pointer;
                 }
 
-                &.id {
+                &.id,
+                &.select {
                     max-width: 2rem;
                     padding-right: 0;
                 }
@@ -282,8 +283,6 @@
                     display: flex;
                     gap: 0.5rem;
                 }
-
-
             }
 
             img {
@@ -322,7 +321,14 @@
                 background: $background-white;
                 margin: 0.725rem 0;
                 border: 0.063rem solid transparent;
+                &.variation-row{
+                    background: transparent !important;
+                    border-bottom: 0.063rem solid #fff !important;
 
+                    .admin-column:nth-child(2){
+                        min-width: 16rem;
+                    }
+                }
                 .admin-column {
                     padding: 1rem 0.85rem;
                     font-size: 0.9rem;
@@ -366,7 +372,15 @@
                         background: transparent;
                         border-color: transparent;
                     }
+                    .icon-wrapper{
+                        display: flex;
+                        align-items: center;
+                        gap: 0.313rem;
 
+                        i{
+                            font-size: 1.25rem;
+                        }
+                    }
                     // for editable field
                     .setting-form-input {
                         width: fit-content;
@@ -378,7 +392,12 @@
                         padding-right: 0;
                         flex-grow: 1;
                     }
-
+                    &.drag,
+                    &.expand{
+                        max-width: 1rem;
+                        padding-right: 0;
+                        flex-grow: 1;
+                    }
                     &.product {
                         .details-wrapper {
                             display: flex;
@@ -394,12 +413,22 @@
                             color: $theme-color;
                         }
                     }
-
+                    // for edit link text in row
                     .edit-link {
                         opacity: 0;
                         transition: all 0.5s ease;
                     }
-
+                    // for edit badge in row
+                    .edit-badge{
+                        display: flex;
+                        align-items: center;
+                        gap: 0.313rem;
+                        i{
+                            visibility: hidden;
+                            font-size: 1.063rem;
+                            cursor: pointer;
+                        }
+                    }
                     .details {
                         margin: 0;
                         position: relative;
@@ -490,6 +519,14 @@
                         opacity: 1;
                     }
                 }
+                &:has(.edit-badge):hover {
+                    .edit-badge i{
+                        visibility: visible;
+                    }
+                }
+                &:has(.drag){
+                    cursor: move;
+                }
             }
 
             .admin-row:first-child {
@@ -500,7 +537,7 @@
                 margin-bottom: 0;
             }
 
-            .admin-row:has(input[type="checkbox"]:checked) {
+            .admin-row:has(.admin-column.select input[type="checkbox"]:checked) {
                 border: 0.063rem solid $theme-color;
             }
 
@@ -720,6 +757,7 @@
 .badge-completed,
 .badge-active,
 .badge-approved,
+.badge-approve,
 .badge-paid,
 .badge-public,
 .badge-publish,
@@ -729,6 +767,7 @@
 .badge-refund-accepted,
 .badge-open,
 .badge-confirmed,
+.badge-subscribed,
 .badge-accepted-quote {
     color: map.get(map.get($color-palette, "green"), color);
     background: map.get(map.get($color-palette, "green"), light-color);
@@ -738,6 +777,7 @@
 .badge-on-hold,
 .badge-partially_refunded,
 .badge-resolved,
+.badge-mail-sent,
 .badge-pending-quote {
     color: map.get(map.get($color-palette, "yellow"), color);
     background: map.get(map.get($color-palette, "yellow"), light-color);
@@ -755,6 +795,7 @@
 }
 
 .badge-rejected,
+.badge-reject,
 .badge-unpaid,
 .badge-cancelled,
 .badge-failed,

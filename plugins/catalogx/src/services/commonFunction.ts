@@ -5,7 +5,9 @@ export const truncateText = (text: string, wordCount: number) => {
 	}
 
 	// Strip HTML tags if present
-	const plainText = text.replace(/<[^>]+>/g, '');
+	const div = document.createElement('div');
+	div.innerHTML = text;
+	const plainText = div.textContent || '';
 
 	// Split into words
 	const words = plainText.split(/\s+/);

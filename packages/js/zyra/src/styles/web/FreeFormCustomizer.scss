@@ -9,18 +9,19 @@
     gap: 0.5rem;
     padding: 0.5rem 0;
     align-items: center;
+    width: 75%;
 
     label {
       font-size: 0.95rem;
       font-weight: 500;
+    }
 
-      i {
-        cursor: pointer;
-        font-size: 1rem;
-        margin-left: 0.25rem;
-        visibility: hidden;
-        transition: all 0.3s linear;
-      }
+    .edit-icon {
+      cursor: pointer;
+      font-size: 1rem;
+      margin-left: 0.25rem;
+      visibility: hidden;
+      transition: all 0.3s linear;
     }
 
     .free-form-input {
@@ -35,8 +36,25 @@
 
     &:not(.enable-visibility) {
       &:hover {
-        label i {
+        .edit-icon {
           visibility: visible;
+        }
+      }
+    }
+
+    &.submit-btn {
+      .free-form-input {
+        width: 63%;
+        display: flex;
+        justify-content: end;
+
+        .setting-form-input {
+          width: 47%;
+          margin-right: 2rem;
+        }
+
+        .buttons-wrapper {
+          align-items: center;
         }
       }
     }
@@ -46,6 +64,7 @@
     display: flex;
     gap: 0.5rem;
     padding-bottom: 0.5rem;
+    width: 75%;
 
     .title {
       font-size: 1.125rem !important;
@@ -59,7 +78,7 @@
     padding-left: 0.313rem;
     cursor: pointer;
 
-    &.adminfont-eye{
+    &.adminfont-eye {
       color: $theme-color;
     }
   }

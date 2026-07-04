@@ -108,6 +108,19 @@ class Course {
 			$query_params[] = '%' . $wpdb->esc_like( $query_args['fullname'] ) . '%';
 		}
 
+		if ( isset( $query_args['expired'] ) && $query_args['expired'] ) {
+			$where[]        = 'enddate > %d';
+			$query_params[] = 0;
+
+			$where[]        = 'enddate <= %d';
+			$query_params[] = time();
+		}
+
+		if ( isset( $query_args['has_product'] ) && $query_args['has_product'] ) {
+			$where[]        = 'product_id > %d';
+			$query_params[] = 0;
+		}
+		
 		if ( ! empty( $where ) ) {
 			$condition = strtoupper( $query_args['condition'] ?? 'AND' );
 			if ( ! in_array( $condition, array( 'AND', 'OR' ), true ) ) {

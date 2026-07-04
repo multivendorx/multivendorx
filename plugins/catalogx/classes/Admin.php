@@ -76,19 +76,14 @@ class Admin {
             ),
             'settings'         => array(
                 'name'     => __( 'Settings', 'catalogx' ),
-                'subtab'   => 'shopping',
+                'subtab'   => 'dashboard',
                 'priority' => 60,
             ),
             'modules'          => array(
                 'name'     => __( 'Modules', 'catalogx' ),
                 'subtab'   => '',
                 'priority' => 70,
-            ),
-            'help-support'     => array(
-                'name'     => __( 'Help & Support', 'catalogx' ),
-                'subtab'   => '',
-                'priority' => 80,
-            ),
+            )
         );
 
         uasort(
@@ -127,7 +122,7 @@ class Admin {
                     </style>
                 <div class="upgrade-to-pro"><i style="margin-right: 0.25rem" class="dashicons dashicons-awards"></i>' . __( 'Upgrade to pro', 'catalogx' ) . '</div>',
                 'manage_woocommerce',
-                '',
+                'catalogx-upgrade',
                 array( $this, 'handle_external_redirects' )
             );
         }

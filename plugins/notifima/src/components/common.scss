@@ -1,20 +1,14 @@
-.image-wrapper {
-    background-repeat: no-repeat;
-    background-position: top left;
-    background-size: contain;
-    height: 100vh;
+// style for form customization
+.registration-form-wrapper {
+    .canvas-editor {
+        .form-field-container-wrapper {
+            display: flex;
+            flex-direction: column;
 
-    // &.subscriber {
-    //     background-image: url("../assets//images/subscriber-list.png");
-    // }
-    // &.manage-stock {
-    //     background-image: url("../assets/images/inventory-manager.png");
-    // }
-}
-
-// check pro and remove
-.admin-subscriber-list{
-  .user-profile .adminlib-create{
-    font-size: 0.625rem;
-  }
+            .settings-form-label {
+                width: 100%;
+                margin-bottom: 0.625rem;
+            }
+        }
+    }
 }

@@ -1,0 +1,8 @@
+{
+    "name": "notifima/subscribe-form",
+    "title": "Subscribe Form",
+    "category": "woocommerce",
+    "apiVersion": 3,
+    "editorScript": "file:./index.js",
+    "textdomain" : "notifima"
+}

@@ -54,3 +54,14 @@
 	font-weight: 600;
 	font-size: 1rem;
 }
+
+.notifima-manage-stock {
+  .product-details {
+    display: flex;
+    gap: 1rem;
+
+    .product-image {
+      height: 8rem;
+    }
+  }
+}

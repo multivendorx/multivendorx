@@ -199,8 +199,9 @@ class Transaction {
         $where = array();
 
         // Extract and sanitize order/orderBy early so they don't go into WHERE.
-        $order_by = isset( $args['order_by'] ) ? esc_sql( $args['order_by'] ) : '';
-        $order    = isset( $args['order'] ) ? strtoupper( esc_sql( $args['order'] ) ) : 'ASC';
+        $allowed = array('created_at', 'entry_type', 'transaction_type', 'id', 'store_id', 'order_id', 'commission_id'); 
+        $order_by = in_array( $args['order_by'], $allowed, true ) ? $args['order_by'] : '';
+        $order    = isset( $args['order'] ) ? strtoupper( $args['order'] ) : 'ASC';
 
         // Remove non-column keys.
         unset( $args['order_by'], $args['order'] );

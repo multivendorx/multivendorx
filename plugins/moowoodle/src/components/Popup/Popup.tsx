@@ -97,17 +97,17 @@ const proPopupContent = {
 		{
 			site: 'one',
 			price: '$199',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18156',
+			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18156&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
 		},
 		{
 			site: 'three',
 			price: '$349',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18158',
+			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18158&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
 		},
 		{
 			site: 'ten',
 			price: '$499',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18157',
+			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18157&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
 		},
 	],
 };

@@ -153,7 +153,7 @@
     width: 100%;
 }
 
-@media screen and (width <=600px) {
+@media screen and (width <=37.5rem) {
     .choice-toggle-wrapper.custom {
         .toggle-option {
             width: 100% !important;
@@ -162,5 +162,11 @@
 
     .choice-toggle-wrapper {
         flex-wrap: wrap;
+
+        .tabs-wrapper{
+            flex-direction: row; 
+            gap: 0;
+            margin-top: 1rem;
+        }
     }
 }

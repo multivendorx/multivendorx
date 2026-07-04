@@ -32,7 +32,7 @@ class Tracker {
         $this->pro_shop_url       = MULTIVENDORX_PRO_SHOP_URL;
         $this->pro_plugin_version = defined( 'MULTIVENDORX_PRO_PLUGIN_VERSION' ) ? MULTIVENDORX_PRO_PLUGIN_VERSION : '';
         $this->review_url         = 'https://wordpress.org/support/plugin/' . MultiVendorX()->plugin_slug . '/reviews/#new-post';
-        $this->support_url        = 'https://multivendorx.com/support-forum/';
+        $this->support_url        = 'https://multivendorx.com/support-forum/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx';
         $this->facebook_url       = 'https://www.facebook.com/groups/226246620006065';
         $this->calendly_url       = 'https://calendly.com/contact-hkdq/30min';
         $this->settings_url       = admin_url( 'admin.php?page=multivendorx#&tab=settings&subtab=overview' );

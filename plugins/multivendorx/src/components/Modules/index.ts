@@ -14,7 +14,7 @@ export default {
 			name: __('Booking', 'multivendorx'),
 			desc: 'Allow customers to reserve appointments, equipment, or services.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/booking-product',
+				'https://multivendorx.com/docs/knowledgebase/booking-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			reqPluging: [
 				{
 					name: 'WooCommerce Bookings',
@@ -30,7 +30,7 @@ export default {
 			name: __('Appointments', 'multivendorx'),
 			desc: 'Dedicated appointment booking functionality.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/appointment-product/',
+				'https://multivendorx.com/docs/knowledgebase/appointment-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			//settingsLink: appLocalizer.site_url,
 			proModule: true,
 			reqPluging: [
@@ -47,7 +47,7 @@ export default {
 			name: __('Subscription', 'multivendorx'),
 			desc: 'Offer recurring payment options (weekly, monthly, or yearly).',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/subscription-product',
+				'https://multivendorx.com/docs/knowledgebase/subscription-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			//settingsLink: appLocalizer.site_url,
 			proModule: true,
 			reqPluging: [
@@ -64,7 +64,7 @@ export default {
 			name: __('Accommodation', 'multivendorx'),
 			desc: 'Enable customers to book overnight stays in just a few clicks.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/accommodation-product',
+				'https://multivendorx.com/docs/knowledgebase/accommodation-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			//settingsLink: appLocalizer.site_url,
 			proModule: true,
 			reqPluging: [
@@ -86,7 +86,7 @@ export default {
 			name: __('Bundle', 'multivendorx'),
 			desc: 'Offer product bundles, bulk discounts, or assembled kits.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/bundle-product',
+				'https://multivendorx.com/docs/knowledgebase/bundle-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			reqPluging: [
 				{
@@ -102,7 +102,7 @@ export default {
 			name: __('Auction', 'multivendorx'),
 			desc: 'Enable an auction-style selling system similar to eBay.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/auction-product',
+				'https://multivendorx.com/docs/knowledgebase/auction-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			reqPluging: [
 				{
@@ -118,7 +118,7 @@ export default {
 			name: __('Rental Pro', 'multivendorx'),
 			desc: 'Offer rental or real estate booking services.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/rental-product',
+				'https://multivendorx.com/docs/knowledgebase/rental-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			reqPluging: [
 				{
@@ -135,7 +135,7 @@ export default {
 			name: __('Simple', 'multivendorx'),
 			desc: 'Covers basic products such as physical goods (books, clothing) or digital items (PDFs, music, software).',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/simple-product',
+				'https://multivendorx.com/docs/knowledgebase/simple-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: false,
 			category: 'product_types',
 		},
@@ -144,7 +144,7 @@ export default {
 			name: __('Variable', 'multivendorx'),
 			desc: 'A product with variations, like different SKU, price, stock option, etc.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/variable-product',
+				'https://multivendorx.com/docs/knowledgebase/variable-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			category: 'product_types',
 		},
@@ -153,7 +153,7 @@ export default {
 			name: __('External', 'multivendorx'),
 			desc: 'List and describe products on your marketplace but sell them elsewhere.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/external-product/',
+				'https://multivendorx.com/docs/knowledgebase/external-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			category: 'product_types',
 		},
@@ -162,7 +162,7 @@ export default {
 			name: __('Grouped', 'multivendorx'),
 			desc: 'A collection of simple, related products that can be purchased individually.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/grouped-product',
+				'https://multivendorx.com/docs/knowledgebase/grouped-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			category: 'product_types',
 		},
@@ -170,7 +170,7 @@ export default {
 			id: 'gift-card',
 			name: __('Gift Cards', 'multivendorx'),
 			desc: 'Sell gift cards to boost sales and attract new customers.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/gift-card/',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/gift-card/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			reqPluging: [
 				{
@@ -191,7 +191,7 @@ export default {
 			name: __('Shared Listing', 'multivendorx'),
 			desc: 'Allows more than one store to sell the same product with their own price and stock.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/single-product-multiple-vendors-spmv',
+				'https://multivendorx.com/docs/knowledgebase/single-product-multiple-vendors-spmv/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=onboarding`,
 			proModule: false,
 			category: 'store_management',
@@ -202,7 +202,7 @@ export default {
 			name: __('Import Export Tools', 'multivendorx'),
 			desc: 'Stores will be able to upload or download product lists in bulk using CSV files.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/import-export',
+				'https://multivendorx.com/docs/knowledgebase/import-export/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			category: 'store_management',
 		},
@@ -217,7 +217,7 @@ export default {
 			id: 'store-policy',
 			name: __('Store Policy', 'multivendorx'),
 			desc: 'Each store publishes its own return, refund, and shipping policies.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/store-policy',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/store-policy/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=policies`,
 			proModule: false,
 			category: 'store_management',
@@ -226,7 +226,7 @@ export default {
 			id: 'follow-store',
 			name: __('Follow Store', 'multivendorx'),
 			desc: 'Customers follow stores to receive updates, offers, and product alerts.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/follow-store',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/follow-store/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: false,
 			category: ['store_management', 'customer_experience'],
 		},
@@ -234,7 +234,7 @@ export default {
 			id: 'store-review',
 			name: __('Store Review', 'multivendorx'),
 			desc: 'Customers leave ratings and written reviews on store pages.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/store-review',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/store-review/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=store-reviews`,
 			proModule: false,
 			category: ['store_management', 'customer_experience'],
@@ -244,7 +244,7 @@ export default {
 			name: __('Business Hours', 'multivendorx'),
 			desc: 'Shows store opening and closing times for customers.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/business-hours/',
+				'https://multivendorx.com/docs/knowledgebase/business-hours/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			category: 'store_management',
 			miniModule: true,
@@ -253,7 +253,7 @@ export default {
 			id: 'vacation',
 			name: __('Vacation', 'multivendorx'),
 			desc: 'Temporarily disables sales when a store is closed, with a message shown to customers.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/vacation',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/vacation?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			category: 'store_management',
 		},
@@ -262,7 +262,7 @@ export default {
 			name: __('Staff Manager', 'multivendorx'),
 			desc: 'Store owners add staff accounts with role-based access to manage orders, products, or support.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/staff-manager',
+				'https://multivendorx.com/docs/knowledgebase/staff-manager/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=user-permissions`,
 			proModule: true,
 			category: 'store_management',
@@ -272,7 +272,7 @@ export default {
 			id: 'privacy',
 			name: __('Policies', 'multivendorx'),
 			desc: 'Hide sensitive store information from customers, including contact details, location, or other specified data.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/store-policy/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=privacy`,
 			proModule: false,
 			category: 'store_management',
@@ -288,7 +288,7 @@ export default {
 			name: __('PayPal Marketplace', 'multivendorx'),
 			desc: 'Using split payment pay stores instantly after a completed order',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/paypal-marketplace-real-time-split/',
+				'https://multivendorx.com/docs/knowledgebase/paypal-marketplace-real-time-split/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			//settingsLink: admin_url('admin.php?page=wc-settings&tab=checkout&section=mvx_paypal_marketplace'),
 			proModule: true,
 			category: 'payment_management',
@@ -300,23 +300,14 @@ export default {
 			name: __('Stripe Marketplace', 'multivendorx'),
 			desc: 'Automatically sends a store’s share immediately after a customer order is completed.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/stripe-marketplace',
+				'https://multivendorx.com/docs/knowledgebase/stripe-marketplace?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			//settingsLink: admin_url('admin.php?page=mvx#&submenu=payment&name=payment-stripe-connect'),
 			proModule: true,
 			category: 'payment_management',
 			miniModule: true,
 			reloadOnChange: true,
 		},
-		// {
-		// 	id: 'mangopay',
-		// 	name: __('Mangopay', 'multivendorx'),
-		// 	desc: 'Gives the benefit of both realtime split transfer and scheduled distribution',
-		// 	docLink: 'https://multivendorx.com/docs/knowledgebase/mangopay',
-		// 	//settingsLink: admin_url('admin.php?page=mvx-setting-admin'),
-		// 	proModule: true,
-		// 	category: 'payment_management',
-		// },
-		// {
+				// {
 		// 	id: 'razorpay',
 		// 	name: __('Razorpay', 'multivendorx'),
 		// 	desc: 'For clients looking to pay multiple Indian stores instantly',
@@ -335,7 +326,7 @@ export default {
 			name: __('Store Shipping', 'multivendorx'),
 			desc: 'Shipping charges calculated based on distance between store address and delivery location.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/distance-shipping',
+				'https://multivendorx.com/docs/knowledgebase/distance-shipping/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=shipping`,
 			proModule: false,
 			category: 'shipping_management',
@@ -348,7 +339,7 @@ export default {
 			),
 			desc: 'Shipping cost determined by weight, order value, or product quantity.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/weight-shipping',
+				'https://multivendorx.com/docs/knowledgebase/weight-shipping/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=shipping`,
 			proModule: true,
 			reqPluging: [
@@ -365,7 +356,7 @@ export default {
 			name: __('Per Product Shipping', 'multivendorx'),
 			desc: 'Custom shipping charge applied to individual products.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/per-product-shipping',
+				'https://multivendorx.com/docs/knowledgebase/per-product-shipping/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=shipping`,
 			proModule: true,
 			reqPluging: [
@@ -395,7 +386,7 @@ export default {
 			name: __('Invoice & Packing slip', 'multivendorx'),
 			desc: 'Generates invoices and packing slips that can be printed or emailed to customers.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/invoice-packing-slip',
+				'https://multivendorx.com/docs/knowledgebase/invoice-packing-slip/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=invoices`,
 			proModule: true,
 			category: 'customer_experience',
@@ -405,7 +396,7 @@ export default {
 			id: 'live-chat',
 			name: __('Live Chat', 'multivendorx'),
 			desc: 'Customers send real-time messages to stores about products or orders.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/live-chat',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/live-chat/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=live-chat`,
 			proModule: true,
 			category: 'customer_experience',
@@ -415,7 +406,7 @@ export default {
 			name: __('Store Support', 'multivendorx'),
 			desc: 'Built-in ticketing system for customers to raise and track support requests.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/store-support/',
+				'https://multivendorx.com/docs/knowledgebase/store-support/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			category: 'customer_experience',
 		},
@@ -423,7 +414,7 @@ export default {
 			id: 'customer-queries',
 			name: __('Customer Queries', 'multivendorx'),
 			desc: 'Customers can publicly ask product questions.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/customer-queries/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: false,
 			category: 'customer_experience',
 		},
@@ -447,7 +438,7 @@ export default {
 			name: __('Marketplace Refund', 'multivendorx'),
 			desc: 'Customers submit refund requests, and stores review and process them directly.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/marketplace-refund',
+				'https://multivendorx.com/docs/knowledgebase/marketplace-refund/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=refunds`,
 			proModule: false,
 			category: ['store_management', 'customer_experience'],
@@ -458,7 +449,7 @@ export default {
 			name: __('Store Analytics', 'multivendorx'),
 			desc: 'Reports on sales, orders, and revenue, with integration for Google Analytics.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/store-analytics',
+				'https://multivendorx.com/docs/knowledgebase/store-analytics/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			category: ['analytics_tools', 'store_management'],
 		},
@@ -467,7 +458,7 @@ export default {
 			name: __('Search & Discovery', 'multivendorx'),
 			desc: 'SEO settings for store pages and products using Rank Math or Yoast SEO.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/search-discovery',
+				'https://multivendorx.com/docs/knowledgebase/search-discovery/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=search-discovery`,
 			proModule: true,
 			category: ['analytics_tools', 'store_management'],
@@ -483,14 +474,14 @@ export default {
 			desc: 'Let stores create high-converting product descriptions and images instantly using AI.',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=intelligence`,
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/marketplace-intelligence',
+				'https://multivendorx.com/docs/knowledgebase/marketplace-intelligence/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			category: 'marketplace_boosters',
 		},
 		{
 			id: 'marketplace-compliance',
 			name: __('Marketplace Compliance', 'multivendorx'),
 			desc: 'Ensure stores meet marketplace requirements with automated policy checks.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/marketplace-compliance/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=compliance`,
 			category: 'marketplace_boosters',
 		},
@@ -499,7 +490,7 @@ export default {
 			name: __('Marketplace Membership', 'multivendorx'),
 			desc: 'Admin defines membership levels with specific capabilities for different stores.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/marketplace-memberhsip',
+				'https://multivendorx.com/docs/knowledgebase/marketplace-memberhsip/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			category: 'marketplace_boosters',
 			reloadOnChange: true,
@@ -509,7 +500,7 @@ export default {
 			id: 'facilitator',
 			name: __('Facilitator', 'multivendorx'),
 			desc: 'Share commission on a sale between the store and another designated user. Each participant receives their assigned portion automatically.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/facilitator/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=facilitator`,
 			proModule: true,
 			category: 'marketplace_boosters',
@@ -519,7 +510,7 @@ export default {
 			id: 'marketplace-fee',
 			name: __('Marketplace Fee', 'multivendorx'),
 			desc: 'Set and manage platform fees for each order or store to cover operational costs',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/marketplace-fee/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=commissions`,
 			proModule: true,
 			category: 'marketplace_boosters',
@@ -528,7 +519,7 @@ export default {
 			id: 'franchises',
 			name: __('Franchises', 'multivendorx'),
 			desc: 'Enables franchise-style ordering with store-created orders, admin-product ordering, and automatic store assignment based on customer location.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/NA',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/franchises/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=onboarding`,
 			proModule: true,
 			category: ['store_management', 'marketplace_boosters'],
@@ -540,7 +531,7 @@ export default {
 			name: __('Payment Gateway Charge', 'multivendorx'),
 			desc: 'Payment gateway fees are deducted from vendor commissions by the admin, ensuring platform costs are covered automatically.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/payment-gateway-charge/',
+				'https://multivendorx.com/docs/knowledgebase/payment-gateway-charge/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=commissions`,
 			proModule: false,
 			category: ['store_management', 'payment_management'],
@@ -550,7 +541,7 @@ export default {
 			name: __('Product Advertising', 'multivendorx'),
 			desc: 'Paid promotion for products within the marketplace, boosting visibility.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/advertise-product/',
+				'https://multivendorx.com/docs/knowledgebase/advertise-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=product-advertising`,
 			proModule: true,
 			category: 'marketplace_boosters',
@@ -559,7 +550,7 @@ export default {
 			id: 'wholesale',
 			name: __('Wholesale', 'multivendorx'),
 			desc: 'Stores set wholesale prices and bulk purchase rules for selected customer groups.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/wholesale',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/wholesale/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=wholesale`,
 			proModule: true,
 			category: ['analytics_tools', 'store_management'],
@@ -570,7 +561,7 @@ export default {
 			name: __('Store Inventory', 'multivendorx'),
 			desc: 'Manages stock levels, sends low-stock alerts, and maintains a waitlist for out-of-stock products.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/store-inventory',
+				'https://multivendorx.com/docs/knowledgebase/store-inventory/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=store-inventory`,
 			proModule: true,
 			category: 'marketplace_boosters',
@@ -581,7 +572,7 @@ export default {
 			name: __('Min Max', 'multivendorx'),
 			desc: 'Defines the minimum or maximum number of items a customer can purchase in a single order.',
 			docLink:
-				'https://multivendorx.com/docs/non-knowledgebase/min-max-quantities/',
+				'https://multivendorx.com/docs/non-knowledgebase/min-max-quantities/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=min-max`,
 			proModule: false,
 			category: 'marketplace_boosters',
@@ -593,7 +584,7 @@ export default {
 			name: __('Announcement', 'multivendorx'),
 			desc: 'Marketplace-wide notices or updates sent from admin to all stores.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/announcement/',
+				'https://multivendorx.com/docs/knowledgebase/announcement/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: false,
 			category: ['notification', 'marketplace_boosters'],
 			reloadOnChange: true,
@@ -603,7 +594,7 @@ export default {
 			name: __('Knowledgebase', 'multivendorx'),
 			desc: 'Guides, tutorials, and FAQs shared with stores by the admin.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/knowledgebase/',
+				'https://multivendorx.com/docs/knowledgebase/knowledgebase/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: false,
 			category: 'notification',
 			reloadOnChange: true,
@@ -614,7 +605,7 @@ export default {
 			name: __('Elementor', 'multivendorx'),
 			desc: 'Drag-and-drop design support for custom store pages with Elementor.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/mvx-elementor',
+				'https://multivendorx.com/docs/knowledgebase/mvx-elementor/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: false,
 			reqPluging: [
 				{
@@ -635,7 +626,7 @@ export default {
 			name: __('BuddyPress', 'multivendorx'),
 			desc: 'Adds social networking features to stores (profiles, connections, messaging).',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/mvx-buddypress',
+				'https://multivendorx.com/docs/knowledgebase/mvx-buddypress/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: false,
 			reqPluging: [
 				{
@@ -650,7 +641,7 @@ export default {
 			id: 'wpml',
 			name: __('WPML', 'multivendorx'),
 			desc: 'Multi-language support so products and stores can be displayed in different languages.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/mvx-wpml',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/mvx-wpml/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: false,
 			reqPluging: [
 				{
@@ -670,7 +661,7 @@ export default {
 			id: 'advance-custom-field',
 			name: __('Advance Custom field', 'multivendorx'),
 			desc: 'Extra custom product fields created by admin for stores to use.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/mvx-acf',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/mvx-acf/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			reqPluging: [
 				{
@@ -686,7 +677,7 @@ export default {
 			name: __('WP Affiliate', 'multivendorx'),
 			desc: 'Affiliate program that tracks referrals and commissions for marketplace products.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/affiliate-product/',
+				'https://multivendorx.com/docs/knowledgebase/affiliate-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=affiliate`,
 			proModule: true,
 			reqPluging: [
@@ -703,7 +694,7 @@ export default {
 			name: __('Product Addon', 'multivendorx'),
 			desc: 'Adds optional extras to products such as gift wrapping, engravings, or warranties.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/mvx-product-addon',
+				'https://multivendorx.com/docs/knowledgebase/mvx-product-addon/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			reqPluging: [
 				{
@@ -718,7 +709,7 @@ export default {
 			id: 'ship-station',
 			name: __('ShipStation', 'multivendorx'),
 			desc: 'Integration with ShipStation for advanced shipping management and label printing.',
-			docLink: 'https://multivendorx.com/docs/knowledgebase/shipstation/',
+			docLink: 'https://multivendorx.com/docs/knowledgebase/shipstation/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			proModule: true,
 			category: ['integration', 'Shipping management'],
 		},
@@ -727,7 +718,7 @@ export default {
 			name: __('Geo Location', 'multivendorx'),
 			desc: 'Lets stores pinpoint their location on an interactive map, making it easy for customers to discover nearby stores and shop locally.',
 			docLink:
-				'https://multivendorx.com/docs/knowledgebase/store-location/',
+				'https://multivendorx.com/docs/knowledgebase/store-location/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=geolocation`,
 			proModule: false,
 			category: 'store_management',

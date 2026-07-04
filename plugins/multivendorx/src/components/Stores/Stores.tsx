@@ -68,7 +68,7 @@ const Stores = () => {
 			setError({
 				slug: {
 					type: 'error',
-					message: 'Slug is required',
+					message: 'Please enter name',
 				},
 			});
 			return;

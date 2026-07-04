@@ -41,6 +41,8 @@ class Rewrites {
         // Make endpoint behave like a page.
         add_action( 'pre_get_posts', array( $this, 'make_endpoint_virtual_page' ) );
         add_filter( 'pre_get_document_title', array( $this, 'set_store_page_title' ), 10 );
+        add_filter( 'pre_handle_404', array( $this, 'prevent_store_404' ), 10 );
+        add_filter( 'block_core_breadcrumbs_items', array( $this, 'set_breadcrumbs_title' ), 10 );
 
         // Load correct template.
         add_filter( 'template_include', array( $this, 'load_store_template' ) );
@@ -195,15 +197,40 @@ class Rewrites {
         }
     }
 
+    public function prevent_store_404( $preempt ) {
+        if ( get_query_var( $this->custom_store_url ) ) {
+            return true;
+        }
+        return $preempt;
+    }
+
     public function set_store_page_title( $title ) {
         if ( get_query_var( $this->custom_store_url ) ) {
             $store = $this->get_current_store();
             if ( ! $store ) {
                 return $title;
             }
-            return $store->get( 'name' ) . ' - ' . get_bloginfo( 'name' );
+            return $store->get( 'name' );
         }
         return $title;
+    }
+
+    public function set_breadcrumbs_title( $items ) {
+         if ( ! get_query_var( $this->custom_store_url ) ) {
+            return $items;
+        }
+
+        $store = $this->get_current_store();
+        if ( ! $store ) {
+            return $items;
+        }
+
+        $last = array_key_last( $items );
+        if ( isset( $items[ $last ]['label'] ) ) {
+            $items[ $last ]['label'] = $store->get( 'name' );
+        }
+
+        return $items;
     }
 
 	/**

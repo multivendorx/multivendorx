@@ -84,14 +84,27 @@ const MyCourse: React.FC = () => {
 					className="woocommerce-orders-table__cell"
 					data-label={__('Action', 'moowoodle')}
 				>
-					{course.moodle_url ? (
+					{course.moodle_url || course.product_url ? (
 						<div
 							className="woocommerce-button wp-element-button moowoodle"
-							onClick={() => window.open(course.moodle_url, '_blank', 'noopener,noreferrer')}
+							onClick={() =>
+								window.open(
+									course.status === 'expired'
+										? course.product_url
+										: course.moodle_url,
+									'_blank',
+									'noopener,noreferrer'
+								)
+							}
 							role="button"
 							tabIndex={0}
 						>
-							{__('View', 'moowoodle')}
+							{__(
+								course.status === 'expired'
+									? 'Renew'
+									: 'View',
+								'moowoodle'
+							)}
 						</div>
 					) : (
 						<span className="disabled">

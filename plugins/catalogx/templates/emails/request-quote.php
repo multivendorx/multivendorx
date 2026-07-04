@@ -63,7 +63,7 @@ $customer_data = $args['customer_data'] ?? [];
                                 <?php echo esc_html( $item['quantity'] ); ?>
                             </td>
                             <td class="product_quantity" style="border:none;">
-                                 <?php echo wp_kses_post( wc_price( (float) $_product->get_regular_price() * (int) $item['quantity'] ) ); ?>
+                                 <?php echo wp_kses_post( wc_price( (float) $_product->get_price() * (int) $item['quantity'] ) ); ?>
                             </td>
                         </tr>
                         <?php

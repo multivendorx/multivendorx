@@ -1,5 +1,5 @@
 // External dependencies
-import React from 'react';
+import React, { useId } from 'react';
 
 // Internal dependencies
 import '../styles/web/ChoiceToggle.scss';
@@ -55,6 +55,9 @@ export const ChoiceToggleUI: React.FC<ChoiceToggleProps> = ({
     modules,
     onBlocked,
 }) => {
+    const reactId = useId();
+    const uniqueName = key ? `${key}_${reactId}` : reactId;
+
     const block = (option: Option) => {
         // Check pro setting
         if (option.proSetting && !ZyraVariable.khali_dabba) {
@@ -115,6 +118,7 @@ export const ChoiceToggleUI: React.FC<ChoiceToggleProps> = ({
                               value.includes(option.value)
                             : value === option.value;
                         const isProOption = !!option.proSetting;
+                        const uniqueId = `${uniqueName}_${option.key}`;
 
                         return (
                             <div
@@ -127,8 +131,8 @@ export const ChoiceToggleUI: React.FC<ChoiceToggleProps> = ({
                                 <input
                                     className="choice-toggle-form-input"
                                     type={multiSelect ? 'checkbox' : 'radio'}
-                                    id={option.key}
-                                    name={key}
+                                    id={uniqueId}
+                                    name={uniqueName}
                                     value={option.value}
                                     checked={isChecked}
                                     readOnly
@@ -136,7 +140,7 @@ export const ChoiceToggleUI: React.FC<ChoiceToggleProps> = ({
                                         handleChange(option.value, option)
                                     }
                                 />
-                                <label htmlFor={option.key}>
+                                <label htmlFor={uniqueId}>
                                     <span>
                                         {iconEnable ? (
                                             <i className={option.value}></i>

@@ -18,6 +18,11 @@ body:has(.admin-main-wrapper) {
 a {
   text-decoration: none;
   color: $text-color;
+
+  &:focus{
+    box-shadow: none;
+    color: $theme-color;
+  }
 }
 
 .form-select-field {
@@ -52,6 +57,14 @@ a {
 
     .no-options {
       font-size: 0.95rem;
+    }
+    .overflow-badge{
+      border-radius: 50%;
+      position: absolute;
+      right: 0;
+      font-size: 0.813rem;
+      padding: 0.313rem;
+      border: none;
     }
   }
 
@@ -810,12 +823,16 @@ $index: 1;
 // tour end
 
 
-@media only screen and (width <= 600px) {
+@media only screen and (width <=37.5rem) {
   #admin-main-wrapper{
     margin-left: -0.625rem;
   }
 
   .form-select-field {
     width: 100% !important;
+  }
+  // table pagination start
+  .admin-pagination{
+    height: auto;
   }
 }

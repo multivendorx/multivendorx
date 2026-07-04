@@ -3,6 +3,9 @@
     "name": "catalogx/quote-button",
     "title": "Quote Button",
     "category": "catalogx",
+    "blockHooks": {
+		"woocommerce/add-to-cart-form": "after"
+	},
     "icon": "money-alt",
     "description": "A custom quote button for single product pages.",
     "supports": {

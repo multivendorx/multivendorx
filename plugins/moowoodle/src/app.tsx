@@ -115,13 +115,13 @@ const App = () => {
 		{
 			title: __('Manage Plan', 'moowoodle'),
 			icon: 'person',
-			link: 'https://dualcube.com/my-account/',
+			link: 'https://dualcube.com/my-account/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
 			targetBlank: true,
 		},
 		{
 			title: __('Contact Support', 'moowoodle'),
 			icon: 'user-network-icon',
-			link: 'https://dualcube.com/contact-us/',
+			link: 'https://dualcube.com/contact-us/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
 			targetBlank: true,
 		},
 	];

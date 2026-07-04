@@ -5,6 +5,7 @@ export default {
 	id: 'compliance',
 	priority: 2,
 	headerTitle: __('Compliance Management', 'multivendorx'),
+	settingTitle: __('Store Compliance', 'multivendorx'),
 	headerDescription: __(
 		'Control store access based on verification status. Ensure only compliant stores can operate fully on your marketplace.',
 		'multivendorx'
@@ -20,7 +21,7 @@ export default {
 				{
 					id: 'seller-verification',
 					icon: 'seller-verification',
-					label: 'Seller verification',
+					label: 'Identity verification',
 					connected: true,
 					disableBtn: true,
 					desc: 'Verify store identity and business legitimacy',
@@ -97,112 +98,6 @@ export default {
 										'multivendorx'
 									),
 									dependent: 'restrict_store_access',
-								},
-							],
-							selectDeselect: true,
-						},
-					],
-				},
-				{
-					id: 'product-compliance',
-					icon: 'product',
-					label: 'Product compliance',
-					disableBtn: true,
-					desc: 'Ensure product listings meet marketplace standards',
-					moduleEnabled: 'marketplace-compliance',
-					proSetting: true,
-					formFields: [
-						{
-							key: 'prohibited_items_check',
-							type: 'itemlist',
-							className: 'mini-card',
-							items: [
-								{
-									title: __(
-										'Prohibited items check',
-										'multivendorx'
-									),
-									desc: __(
-										'Block restricted or banned products to maintain marketplace compliance.',
-										'multivendorx'
-									),
-									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
-								},
-								{
-									title: __(
-										'Product images & descriptions',
-										'multivendorx'
-									),
-									desc: __(
-										'Approve product reviews before publishing to ensure quality and consistency.',
-										'multivendorx'
-									),
-									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
-								},
-								{
-									title: __(
-										'Product authenticity certificates',
-										'multivendorx'
-									),
-									desc: __(
-										'Enforce product image and description standards for authenticity and trust.',
-										'multivendorx'
-									),
-									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
-								},
-								{
-									title: __(
-										'Product abuse reporting',
-										'multivendorx'
-									),
-									desc: __(
-										'Handle product violation or abuse reports effectively to ensure compliance.',
-										'multivendorx'
-									),
-									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
-								},
-							],
-						},
-						{
-							key: 'non_compliance_action',
-							type: 'checkbox',
-							label: __('Non-Compliance action', 'multivendorx'),
-							options: [
-								{
-									key: 'disable_product',
-									label: __(
-										'Disable product upload',
-										'multivendorx'
-									),
-									value: 'disable_product',
-									desc: __(
-										'Temporarily disables product sales and order fulfillment while the review is in progress.',
-										'multivendorx'
-									),
-								},
-								{
-									key: 'set_store_as_pending',
-									label: __(
-										'Set store as pending',
-										'multivendorx'
-									),
-									value: 'SetStoreAsPending',
-									desc: __(
-										'Moves the store to a pending status, preventing further activity until compliance issues are resolved.',
-										'multivendorx'
-									),
-								},
-								{
-									key: 'notify_admin_only',
-									label: __(
-										'Notify admin only',
-										'multivendorx'
-									),
-									value: 'NotifyAdmin',
-									desc: __(
-										'Sends a notification to the admin about the compliance issue without restricting the store’s activity.',
-										'multivendorx'
-									),
 								},
 							],
 							selectDeselect: true,
@@ -401,5 +296,126 @@ export default {
 				},
 			],
 		},
+		{
+			key: 'separator_product_compliance',
+			type: 'section',
+			desc: __(
+				'Product compliance settings.',
+				'multivendorx'
+			),
+			title: __('Product Compliance', 'multivendorx'),
+		},
+		{
+			key: 'product_compliance_management',
+			type: 'expandable-panel',
+			proSetting: true,
+			modal: [
+				{
+					id: 'product-compliance',
+					icon: 'product',
+					label: 'Product compliance',
+					disableBtn: true,
+					desc: 'Ensure product listings meet marketplace standards',
+					moduleEnabled: 'marketplace-compliance',
+					proSetting: true,
+					formFields: [
+						{
+							key: 'prohibited_items_check',
+							type: 'itemlist',
+							className: 'mini-card',
+							items: [
+								{
+									title: __(
+										'Prohibited items check',
+										'multivendorx'
+									),
+									desc: __(
+										'Block restricted or banned products to maintain marketplace compliance.',
+										'multivendorx'
+									),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+								{
+									title: __(
+										'Product images & descriptions',
+										'multivendorx'
+									),
+									desc: __(
+										'Approve product reviews before publishing to ensure quality and consistency.',
+										'multivendorx'
+									),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+								{
+									title: __(
+										'Product authenticity certificates',
+										'multivendorx'
+									),
+									desc: __(
+										'Enforce product image and description standards for authenticity and trust.',
+										'multivendorx'
+									),
+									tags: `<a class="admin-btn btn-purple" href="${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=product-compliance">${__('Set Up', 'multivendorx')}<i class="adminfont-arrow-right"/> </a>`,
+								},
+							],
+						},
+						{
+							key: 'product_compliance_total_count',
+							type: 'number',
+							label: __('Product Compliance count', 'multivendorx'),
+						},
+						{
+							key: 'product_compliance_active_count',
+							type: 'number',
+							label: __('Product Compliance Active count', 'multivendorx'),
+						},
+						{
+							key: 'non_compliance_action',
+							type: 'checkbox',
+							label: __('Non-Compliance action', 'multivendorx'),
+							options: [
+								{
+									key: 'disable_product_upload',
+									label: __(
+										'Disable product upload',
+										'multivendorx'
+									),
+									value: 'disable_product_upload',
+									desc: __(
+										'Temporarily disables product sales and order fulfillment while the review is in progress.',
+										'multivendorx'
+									),
+								},
+								{
+									key: 'restrict_store_access',
+									label: __(
+										'Restrict Store Access',
+										'multivendorx'
+									),
+									value: 'restrict_store_access',
+									desc: __(
+										'Limits specific store features while still allowing basic access.',
+										'multivendorx'
+									),
+								},
+								{
+									key: 'notify_admin_only',
+									label: __(
+										'Notify admin only',
+										'multivendorx'
+									),
+									value: 'NotifyAdmin',
+									desc: __(
+										'Sends a notification to the admin about the compliance issue without restricting the store’s activity.',
+										'multivendorx'
+									),
+								},
+							],
+							selectDeselect: true,
+						},
+					],
+				},
+			]
+		}
 	],
 };

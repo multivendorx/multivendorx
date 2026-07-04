@@ -18,6 +18,18 @@ defined( 'ABSPATH' ) || exit;
  */
 class Utill {
 
+    public const NOTIFIMA_SETTINGS = array(
+        'appearance'         => 'notifima_appearance_settings',
+        'email'              => 'notifima_email_settings',
+        'form-submission'    => 'notifima_form_submission_settings',
+        'personalize-layout' => 'notifima_personalize_layout_settings',
+    );
+
+    public const NOTIFIMA_PRODUCT_META = array(
+        'subscribers'          => 'no_of_subscribers',
+        'product_discontinued' => 'product_discontinued',
+    );
+
     /**
      * Function to console and debug errors.
      *
@@ -57,8 +69,6 @@ class Utill {
             'email_placeholder_text'    => Notifima()->default_value['email_placeholder_text'],
             'alert_text'                => Notifima()->default_value['alert_text'],
             'unsubscribe_button_text'   => Notifima()->default_value['unsubscribe_button_text'],
-            'alert_text_color'          => Notifima()->default_value['alert_text_color'],
-            'customize_btn'             => Notifima()->default_value['customize_btn'],
             'ban_email_domain_text'     => Notifima()->default_value['ban_email_domain_text'],
             'ban_email_address_text'    => Notifima()->default_value['ban_email_address_text'],
         );
@@ -96,7 +106,7 @@ class Utill {
      * @return bool
      */
     public static function is_khali_dabba() {
-        return apply_filters( 'kothay_dabba', false );
+        return apply_filters( 'kothay_dabba_notifima', false );
     }
 
     /**
@@ -117,5 +127,63 @@ class Utill {
 
         // Load the template.
         load_template( $located, false, $args );
+    }
+
+    /**
+     * Validate REST nonce.
+     *
+     * @param \WP_REST_Request $request Request object.
+     * @return true|\WP_Error
+     */
+    public static function validate_nonce( $request ) {
+        $nonce = sanitize_text_field( $request->get_header( 'X-WP-Nonce' ) );
+
+        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            $error = new \WP_Error(
+                'invalid_nonce',
+                esc_html__( 'Invalid nonce.', 'notifima' ),
+                array( 'status' => 403 )
+            );
+
+            self::log( $error );
+
+            return $error;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get all subscribers by product IDs.
+     *
+     * @param array $product_ids Product IDs.
+     * @return array
+     */
+    public static function get_subscribers( $product_ids ) {
+        global $wpdb;
+
+        if ( empty( $product_ids ) ) {
+            return array();
+        }
+
+        $table       = $wpdb->prefix . 'notifima_subscribers';
+        $product_ids = array_map( 'absint', $product_ids );
+        $in_clause   = implode( ',', $product_ids );
+
+        $query = "SELECT * FROM {$table} WHERE product_id IN ({$in_clause}) ORDER BY id DESC";
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        return $wpdb->get_results( $query );
+    }
+
+    /**
+     * Function to check wheather mvx is active or not
+     *
+     * @return bool
+     */
+    public static function is_multivendorx_active() {
+        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+        return is_plugin_active( 'dc-woocommerce-multi-vendor/dc_product_vendor.php' );
     }
 }

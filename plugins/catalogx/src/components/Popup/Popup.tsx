@@ -28,82 +28,50 @@ const formatModuleName = (name: string): string => {
 const proPopupContent = {
 	messages: [
 		{
-			icon: 'personalized-pricing',
-			text: __('Send custom quotes', 'catalogx'),
+			icon: 'dollar',
+			text: __('Personalized quote requests', 'catalogx'),
 			des: __(
-				'Create personalized pricing and quotation responses for customers.',
+				'Let customers request custom quotes and negotiate pricing to convert high-intent visitors.',
 				'catalogx'
 			),
 		},
 		{
-			icon: 'multiple-products exclusive-forms',
-			text: __('Multi-product enquiry cart', 'catalogx'),
+			icon: 'wholesale',
+			text: __('Wholesale pricing & order forms', 'catalogx'),
 			des: __(
-				'Allow customers to enquire about multiple products in a single request.',
+				'Offer bulk pricing and dedicated order forms to attract B2B buyers and grow large-volume sales.',
 				'catalogx'
 			),
 		},
 		{
-			icon: 'add-file-uploads',
-			text: __('File uploads & custom enquiry fields', 'catalogx'),
+			icon: 'multi-product',
+			text: __('Multi-product enquiries', 'catalogx'),
 			des: __(
-				'Collect additional files and custom information through enquiry forms.',
+				'Let customers enquire about multiple products in a single request for better engagement.',
 				'catalogx'
 			),
 		},
 		{
-			icon: 'different-users',
+			icon: 'cloud-upload',
+			text: __('Advanced enquiry management', 'catalogx'),
+			des: __(
+				'Use file attachments, internal tagging, and organized workflows for a smoother sales process.',
+				'catalogx'
+			),
+		},
+		{
+			icon: 'person',
 			text: __('Role-based pricing', 'catalogx'),
 			des: __(
-				'Show different pricing options based on user roles and customer types.',
+				'Show different prices to wholesalers, members, or VIP customers with personalized offers.',
 				'catalogx'
 			),
 		},
 		{
-			icon: 'discounts',
-			text: __('Category-based discounts', 'catalogx'),
+			icon: 'category',
+			text: __('Category-based pricing rules', 'catalogx'),
 			des: __(
-				'Apply discounts automatically to selected product categories.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'wholesale-order',
-			text: __('Wholesale order forms', 'catalogx'),
-			des: __(
-				'Enable streamlined bulk and wholesale ordering workflows.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'out-of-stock',
-			text: __('Enquiry for hidden/out-of-stock products', 'catalogx'),
-			des: __(
-				'Allow customers to send enquiries for unavailable or hidden products.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'shortcode',
-			text: __('Enquiry button via shortcode', 'catalogx'),
-			des: __(
-				'Add enquiry buttons anywhere on your website using shortcodes.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'emails',
-			text: __('Auto-send branded enquiry emails', 'catalogx'),
-			des: __(
-				'Automatically send customized branded emails for customer enquiries.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'dashboard',
-			text: __('Track all enquiries in one dashboard', 'catalogx'),
-			des: __(
-				'Manage and monitor all customer enquiries from a centralized dashboard.',
+				'Set custom pricing at the category level to run targeted promotions across your catalog.',
 				'catalogx'
 			),
 		},
@@ -111,18 +79,18 @@ const proPopupContent = {
 	btnLink: [
 		{
 			site: 'one',
-			price: '$199',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18156',
+			price: '$129',
+			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3380&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
 		},
 		{
 			site: 'three',
-			price: '$349',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18158',
+			price: '$199',
+			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3381&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
 		},
 		{
 			site: 'ten',
-			price: '$499',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18157',
+			price: '$299',
+			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3382&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
 		},
 	],
 };
@@ -191,6 +159,50 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 						/>
 					</div>
 				</div>
+			) : props.plugin ? (
+				<div className="popup-wrapper">
+					<div className="popup-header">
+						<i className="adminfont-plugin" />
+					</div>
+
+					<div className="popup-body">
+						<div className="module-name">
+							{sprintf(
+								__('Install %s', 'catalogx'),
+								props.plugin.name
+							)}
+						</div>
+
+						<div className="module-desc">
+							{sprintf(
+								__(
+									'This feature requires the %s plugin. Please install and activate it to continue.',
+									'catalogx'
+								),
+								props.plugin.name
+							)}
+						</div>
+
+						<ButtonInputUI
+							position="center"
+							buttons={[
+								{
+									icon: 'download',
+									text: __('Install Plugin', 'catalogx'),
+									onClick: () => {
+										if (props.plugin?.link) {
+											window.open(
+												props.plugin.link,
+												'_blank',
+												'noopener,noreferrer'
+											);
+										}
+									},
+								},
+							]}
+						/>
+					</div>
+				</div>
 			) : (
 				<>
 					{/* pro */}
@@ -198,13 +210,13 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 						<div className="top-section">
 							<div className="heading">
 								{__(
-									'Upgrade every marketplace needs!',
+									'Upgrade to CatalogX Pro & turn product interest into more sales',
 									'catalogx'
 								)}
 							</div>
 							<div className="description">
 								{__(
-									'Recurring revenue for you, empowered stores, automated operations',
+									'Unlock powerful tools that help you generate more enquiries, close deals faster, and increase revenue with flexible pricing and quotation features.',
 									'catalogx'
 								)}{' '}
 							</div>

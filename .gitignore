@@ -8,7 +8,7 @@ vendor/
 composer.lock
 
 # Build outputs
-assets/
+/plugins/*/assets/
 release/
 dist/
 .cache/

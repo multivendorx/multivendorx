@@ -22,13 +22,13 @@ class Subscriber {
      * Subscriber constructor.
      */
     public function __construct() {
-        add_action( 'notifima_start_notification_cron_job', array( $this, 'send_instock_notification_corn' ) );
+        add_action( 'notifima_start_notification_cron_job', array( $this, 'send_instock_notification_cron' ) );
         add_action( 'woocommerce_update_product', array( $this, 'send_instock_notification' ), 10, 2 );
-        add_action( 'delete_post', array( $this, 'delete_subscriber_all' ) );
+        add_action( 'delete_post', array( $this, 'delete_product_subscribers' ) );
         add_action( 'notifima_start_subscriber_migration', array( Install::class, 'subscriber_migration' ) );
 
         if ( Install::is_migration_running() ) {
-            $this->registers_post_status();
+            $this->register_post_statuses();
         }
     }
 
@@ -37,7 +37,7 @@ class Subscriber {
      *
      * @return void
      */
-    public function registers_post_status() {
+    public function register_post_statuses() {
         register_post_status(
             'woo_mailsent',
             array(
@@ -81,16 +81,31 @@ class Subscriber {
      *
      * @return void
      */
-    public function send_instock_notification_corn() {
+    public function send_instock_notification_cron() {
+        global $wpdb;
 
-        $products = wc_get_products( array() );
-
-        if ( ! $products ) {
+        $product_ids = $wpdb->get_col(
+            $wpdb->prepare(
+                "
+                SELECT DISTINCT product_id
+                FROM {$wpdb->prefix}notifima_subscribers
+                WHERE status = %s
+                LIMIT %d
+                ",
+                'subscribed',
+                50
+            )
+        );
+        if ( empty( $product_ids ) ) {
             return;
         }
 
-        foreach ( $products as $product ) {
-            self::send_instock_notification( $product->get_id(), $product );
+        foreach ( $product_ids as $product_id ) {
+            $product = wc_get_product( $product_id );
+
+            if ( $product ) {
+                $this->send_instock_notification( $product_id, $product );
+            }
         }
     }
 
@@ -127,7 +142,7 @@ class Subscriber {
 
         $product_subscribers = self::get_product_subscribers_email( $product->get_id() );
 
-        if ( isset( $product_subscribers ) && ! empty( $product_subscribers ) ) {
+        if ( ! empty( $product_subscribers ) ) {
             $email = WC()->mailer()->emails['Product_Back_In_Stock_Email'];
 
             foreach ( $product_subscribers as $subscribe_id => $to ) {
@@ -150,7 +165,7 @@ class Subscriber {
         global $wpdb;
 
         // Get current user id.
-        $user_id = wp_get_current_user()->ID;
+        $user_id = Notifima()->current_user_id;
 
         // Check the email is already register or not.
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
@@ -229,7 +244,7 @@ class Subscriber {
      * @param  int $post_id the id of product.
      * @return void
      */
-    public static function delete_subscriber_all( $post_id ) {
+    public static function delete_product_subscribers( $post_id ) {
         global $wpdb;
 
         if ( get_post_type( $post_id ) !== 'product' ) {
@@ -352,12 +367,13 @@ class Subscriber {
         $additional_email = Notifima()->setting->get_setting( 'additional_alert_email' );
 
         // Add vendor's email.
-        if ( function_exists( 'get_mvx_product_vendors' ) ) {
-            $vendor = get_mvx_product_vendors( $product->get_id() );
+        if ( Utill::is_multivendorx_active() ) {
+            $store_id = get_post_meta( $product->get_id(), 'multivendorx_store_id', true );
+            $store    = new MultiVendorX\Store\Store( $store_id );
 
-            // Append vendor's email as additional email.
-            if ( $vendor && apply_filters( 'notifima_add_vendor_email_in_subscriber_email', true ) ) {
-                $additional_email .= ', ' . sanitize_email( $vendor->user_data->user_email );
+            if ( $store ) {
+                $store_email       = sanitize_email( $store->get( 'email' ) );
+                $additional_email .= ', ' . $store_email;
             }
         }
 
@@ -439,7 +455,7 @@ class Subscriber {
             if ( $trid ) {
                 $translations = apply_filters( 'wpml_get_element_translations', null, $trid, 'post_product' );
                 foreach ( $translations as $translation ) {
-                    if ( isset( $translation->element_id ) ) {
+                    if ( ! empty( $translation->element_id ) ) {
                         $wpml_product_ids[] = (int) $translation->element_id;
                     }
                 }
@@ -471,7 +487,6 @@ class Subscriber {
         }
 
         $is_enable_backorders = Notifima()->setting->get_setting( 'is_enable_backorders' );
-        $is_enable_backorders = is_array( $is_enable_backorders ) ? reset( $is_enable_backorders ) : false;
 
         if ( $manage_stock ) {
             if ( $stock_quantity <= (int) get_option( 'woocommerce_notify_no_stock_amount' ) ) {
@@ -479,7 +494,7 @@ class Subscriber {
             } elseif ( $stock_quantity <= 0 ) {
                 return true;
             }
-        } elseif ( 'onbackorder' === $stock_status && $is_enable_backorders ) {
+        } elseif ( 'onbackorder' === $stock_status && 'out_of_stock_and_backorder' === $is_enable_backorders ) {
                 return true;
 		} elseif ( 'outofstock' === $stock_status ) {
 			return true;

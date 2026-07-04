@@ -41,7 +41,11 @@ const EditBlock = ( { attributes, setAttributes } ) => {
                 );
             } );
         } else {
-            setContentHtml( __( 'No product selected.', 'catalogx' ) );
+            setContentHtml(
+            `<button class="single_add_to_cart_button alt wp-element-button ">
+                ${__('Send an enquiry', 'catalogx')}
+            </button>`
+        );
         }
     }, [ productId ] );
 

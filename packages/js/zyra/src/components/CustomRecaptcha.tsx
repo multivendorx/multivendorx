@@ -1,16 +1,23 @@
 import { useState, useEffect } from 'react';
 
 const CustomRecaptcha = ( props: any ) => {
-    const { captchaValid, submitted } = props;
+    const { captchaValid, submitted, field } = props;
     const [ securityCode, setSecurityCode ] = useState( '' );
     const [ userInput, setUserInput ] = useState( '' );
     const [ isCaptchaValid, setIsCaptchaValid ] = useState( true );
 
     useEffect( () => {
-        // Generate a cryptographically secure random 6-digit code
+        // Generate a cryptographically secure random 6-digit code without modulo bias
         const generateCode = () => {
-            const randomValue = window.crypto.getRandomValues( new Uint32Array( 1 ) )[ 0 ];
-            return ( 100000 + ( randomValue % 900000 ) ).toString();
+            const range = 900000; // 100000..999999 inclusive
+            const maxUnbiased = Math.floor( 0x100000000 / range ) * range;
+            let randomValue = 0;
+
+            do {
+                randomValue = window.crypto.getRandomValues( new Uint32Array( 1 ) )[ 0 ];
+            } while ( randomValue >= maxUnbiased );
+
+            return ( 100000 + ( randomValue % range ) ).toString();
         };
 
         setSecurityCode( generateCode() );
@@ -36,7 +43,7 @@ const CustomRecaptcha = ( props: any ) => {
                 name="securityCode"
                 onChange={ captchCheck }
                 value={ userInput }
-                placeholder="Enter security code"
+                placeholder={field.placeholder}
             />
             <p>
                 { 'Your security code is:' } { securityCode }

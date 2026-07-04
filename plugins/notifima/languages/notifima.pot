@@ -1,0 +1,1374 @@
+# Copyright (c) 2026 Notifima Inc. All Rights Reserved.
+msgid ""
+msgstr ""
+"Project-Id-Version: Notifima 3.0.6\n"
+"Report-Msgid-Bugs-To: https://notifima.com/contact/\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-06-25T06:50:21+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: notifima\n"
+
+#. Plugin Name of the plugin
+#: product_stock_alert.php
+#: classes/FrontendScripts.php:274
+msgid "Notifima"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: product_stock_alert.php
+msgid "https://notifima.com/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima"
+msgstr ""
+
+#. Description of the plugin
+#: product_stock_alert.php
+msgid "Boost sales with real-time stock alerts! Notify customers instantly when products are back in stock. Simplify data management by exporting and importing stock data with ease."
+msgstr ""
+
+#. Author of the plugin
+#: product_stock_alert.php
+msgid "MultiVendorX"
+msgstr ""
+
+#. Author URI of the plugin
+#: product_stock_alert.php
+msgid "https://multivendorx.com/"
+msgstr ""
+
+#: classes/Admin.php:92
+#: assets/js/index.js:1
+msgid "Dashboard"
+msgstr ""
+
+#: classes/Admin.php:96
+#: classes/Notifima.php:348
+msgid "Settings"
+msgstr ""
+
+#: classes/Admin.php:100
+msgid "Subscriber List"
+msgstr ""
+
+#: classes/Admin.php:104
+msgid "Inventory Manager"
+msgstr ""
+
+#: classes/Admin.php:108
+#: assets/js/index.js:1
+msgid "Help & Support"
+msgstr ""
+
+#: classes/Admin.php:135
+#: classes/Admin.php:143
+#: classes/Notifima.php:130
+#: classes/Notifima.php:352
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: classes/Admin.php:170
+msgid "Remove Subscribers"
+msgstr ""
+
+#. Translators: This message is to display removed subscribers count for the product.
+#: classes/Admin.php:211
+#, php-format
+msgid "Removed subscribers from %s product."
+msgid_plural "Removed subscribers from %s products."
+msgstr[0] ""
+msgstr[1] ""
+
+#: classes/Admin.php:241
+msgid "Interested Person( s )"
+msgstr ""
+
+#: classes/Admin.php:267
+msgid "Number of Interested Person( s )"
+msgstr ""
+
+#: classes/Admin.php:289
+msgid "Number of Interested Person( s ) : "
+msgstr ""
+
+#: classes/Admin.php:374
+msgid "Mark this product as discontinued"
+msgstr ""
+
+#: classes/Admin.php:375
+msgid "Mark this product as discontinued from the shop."
+msgstr ""
+
+#: classes/Admin.php:391
+msgid "Mark this variation as discontinued"
+msgstr ""
+
+#: classes/Admin.php:392
+msgid "Mark this variation as discontinued from the shop."
+msgstr ""
+
+#: classes/Ajax.php:169
+msgid "Some error occurs"
+msgstr ""
+
+#: classes/Ajax.php:169
+msgid "Please try again."
+msgstr ""
+
+#: classes/Emails/AdminNewSubscriberEmail.php:54
+msgid "Alert admin"
+msgstr ""
+
+#: classes/Emails/AdminNewSubscriberEmail.php:55
+msgid "Admin will get an alert when customer subscribe any out of stock product"
+msgstr ""
+
+#: classes/Emails/AdminNewSubscriberEmail.php:91
+msgid "A Customer has subscribed to a product on {site_title} "
+msgstr ""
+
+#: classes/Emails/AdminNewSubscriberEmail.php:100
+#: classes/Emails/ProductBackInStockEmail.php:116
+#: classes/Emails/SubscriberConfirmationEmail.php:93
+msgid "Welcome to {site_title} "
+msgstr ""
+
+#: classes/Emails/ProductBackInStockEmail.php:55
+msgid "Alert Subscriber"
+msgstr ""
+
+#: classes/Emails/ProductBackInStockEmail.php:56
+msgid "Alert customer when their subscribed product becomes in stock"
+msgstr ""
+
+#: classes/Emails/ProductBackInStockEmail.php:106
+msgid "Your Subscribed product on {site_title} is available now"
+msgstr ""
+
+#: classes/Emails/SubscriberConfirmationEmail.php:47
+msgid "Confirm subscriber"
+msgstr ""
+
+#: classes/Emails/SubscriberConfirmationEmail.php:48
+msgid "Confirm customer when they subscribe a product"
+msgstr ""
+
+#: classes/Emails/SubscriberConfirmationEmail.php:83
+msgid "You have subscribed to a product on {site_title} "
+msgstr ""
+
+#: classes/FrontendScripts.php:293
+msgid "Processing..."
+msgstr ""
+
+#: classes/Install.php:596
+msgid "Every 10 Minutes"
+msgstr ""
+
+#: classes/Notifima.php:84
+#: classes/Notifima.php:85
+msgid "Kindly check your inbox to confirm the subscription."
+msgstr ""
+
+#: classes/Notifima.php:86
+msgid "Enter your email"
+msgstr ""
+
+#: classes/Notifima.php:87
+msgid "Receive in-stock notifications for this."
+msgstr ""
+
+#: classes/Notifima.php:88
+#: assets/js/index.js:1
+msgid "Unsubscribe"
+msgstr ""
+
+#: classes/Notifima.php:91
+msgid "Notify me"
+msgstr ""
+
+#: classes/Notifima.php:102
+msgid "Thank you for expressing interest in %product_title%. We will notify you via email once it is back in stock."
+msgstr ""
+
+#. Translators: This message display already registered user to display already registered message.
+#: classes/Notifima.php:104
+#, php-format
+msgid "%customer_email% is already registered for %product_title%. Please attempt a different email address."
+msgstr ""
+
+#: classes/Notifima.php:105
+msgid "Please enter a valid email ID and try again."
+msgstr ""
+
+#. Translators: This message display user sucessfully unregistered.
+#: classes/Notifima.php:107
+#, php-format
+msgid "%customer_email% is successfully unsubscribed."
+msgstr ""
+
+#: classes/Notifima.php:108
+msgid "This email domain is ban in our site, kindly use another email domain."
+msgstr ""
+
+#: classes/Notifima.php:109
+msgid "This email address is ban in our site, kindly use another email address."
+msgstr ""
+
+#: classes/Notifima.php:125
+msgid "View WooCommerce documentation"
+msgstr ""
+
+#: classes/Notifima.php:125
+msgid "Docs"
+msgstr ""
+
+#: classes/Notifima.php:126
+msgid "Visit community forums"
+msgstr ""
+
+#: classes/Notifima.php:126
+msgid "Support"
+msgstr ""
+
+#. translators: 1: Opening strong tag, 2: Closing strong tag, 3: Opening WooCommerce link, 4: Closing link, 5: Opening install link, 6: Closing install link.
+#: classes/Notifima.php:299
+#, php-format
+msgid "%1$sNotifima is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for the Notifima to work. Please %5$sinstall & activate WooCommerce%6$s"
+msgstr ""
+
+#: classes/Notifima.php:328
+msgid "Notifima is currently updating the database in the background. Please be patient while the process completes."
+msgstr ""
+
+#: classes/Notifima.php:334
+msgid "The Notifima is experiencing configuration issues. To ensure proper functioning, kindly deactivate and then activate the plugin."
+msgstr ""
+
+#: classes/RestAPI.php:90
+msgid "Settings Saved"
+msgstr ""
+
+#: classes/RestAPI.php:95
+#: classes/RestAPI.php:125
+msgid "Unexpected server error"
+msgstr ""
+
+#: classes/Subscriber.php:44
+msgctxt "woostockalert"
+msgid "Mail Sent"
+msgstr ""
+
+#. translators: %s: count
+#: classes/Subscriber.php:49
+#, php-format
+msgid "Mail Sent <span class=\"count\">( %s )</span>"
+msgid_plural "Mail Sent <span class=\"count\">( %s )</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: classes/Subscriber.php:56
+msgctxt "woostockalert"
+msgid "Subscribed"
+msgstr ""
+
+#. translators: %s: count
+#: classes/Subscriber.php:61
+#, php-format
+msgid "Subscribed <span class=\"count\">( %s )</span>"
+msgid_plural "Subscribed <span class=\"count\">( %s )</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: classes/Subscriber.php:68
+msgctxt "woostockalert"
+msgid "Unsubscribed"
+msgstr ""
+
+#. translators: %s: count
+#: classes/Subscriber.php:73
+#, php-format
+msgid "Unsubscribed <span class=\"count\">( %s )</span>"
+msgid_plural "Unsubscribed <span class=\"count\">( %s )</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: classes/Utill.php:146
+msgid "Invalid nonce."
+msgstr ""
+
+#: templates/emails/html/AdminNewSubscriberEmail.php:20
+#: templates/emails/plain/AdminNewSubscriberEmail.php:20
+msgid "Hi there. A customer has subscribed to a product on your shop. Product details are shown below for your reference:"
+msgstr ""
+
+#: templates/emails/html/AdminNewSubscriberEmail.php:24
+#: templates/emails/html/ProductBackInStockEmail.php:26
+#: templates/emails/html/SubscriberConfirmationEmail.php:26
+msgid "Product Details"
+msgstr ""
+
+#: templates/emails/html/AdminNewSubscriberEmail.php:28
+#: templates/emails/html/ProductBackInStockEmail.php:30
+#: templates/emails/html/SubscriberConfirmationEmail.php:30
+#: assets/js/index.js:1
+msgid "Product"
+msgstr ""
+
+#: templates/emails/html/AdminNewSubscriberEmail.php:29
+#: templates/emails/html/ProductBackInStockEmail.php:31
+#: templates/emails/html/SubscriberConfirmationEmail.php:31
+msgid "Price"
+msgstr ""
+
+#: templates/emails/html/AdminNewSubscriberEmail.php:51
+#: templates/emails/html/ProductBackInStockEmail.php:50
+#: templates/emails/html/SubscriberConfirmationEmail.php:50
+msgid "Following is the product link : "
+msgstr ""
+
+#: templates/emails/html/AdminNewSubscriberEmail.php:54
+#: templates/emails/html/ProductBackInStockEmail.php:53
+#: templates/emails/html/SubscriberConfirmationEmail.php:53
+msgid "Customer Details"
+msgstr ""
+
+#: templates/emails/html/AdminNewSubscriberEmail.php:56
+#: templates/emails/html/ProductBackInStockEmail.php:55
+#: templates/emails/html/SubscriberConfirmationEmail.php:55
+#: assets/js/index.js:1
+msgid "Email"
+msgstr ""
+
+#: templates/emails/html/ProductBackInStockEmail.php:22
+#: templates/emails/plain/ProductBackInStockEmail.php:20
+msgid "Hi there. You have subscribed to a product. Your subscribed product is available now. Product details are shown below for your reference:"
+msgstr ""
+
+#: templates/emails/html/SubscriberConfirmationEmail.php:22
+#: templates/emails/plain/SubscriberConfirmationEmail.php:20
+msgid "Hi there. You have successfully subscribed to a product. We will inform you when the product becomes available. Product details are shown below for your reference:"
+msgstr ""
+
+#: templates/emails/plain/AdminNewSubscriberEmail.php:25
+#: templates/emails/plain/ProductBackInStockEmail.php:25
+#: templates/emails/plain/SubscriberConfirmationEmail.php:28
+msgid "Product Name:"
+msgstr ""
+
+#: templates/emails/plain/AdminNewSubscriberEmail.php:26
+#: templates/emails/plain/ProductBackInStockEmail.php:26
+#: templates/emails/plain/SubscriberConfirmationEmail.php:29
+msgid "Dummy Product"
+msgstr ""
+
+#: templates/emails/plain/AdminNewSubscriberEmail.php:30
+#: templates/emails/plain/ProductBackInStockEmail.php:30
+#: templates/emails/plain/SubscriberConfirmationEmail.php:33
+msgid "Product Price:"
+msgstr ""
+
+#: templates/emails/plain/AdminNewSubscriberEmail.php:31
+#: templates/emails/plain/ProductBackInStockEmail.php:31
+#: templates/emails/plain/SubscriberConfirmationEmail.php:34
+msgid "$20.00"
+msgstr ""
+
+#: templates/emails/plain/AdminNewSubscriberEmail.php:36
+#: templates/emails/plain/ProductBackInStockEmail.php:36
+#: templates/emails/plain/SubscriberConfirmationEmail.php:39
+msgid "Product Link:"
+msgstr ""
+
+#: templates/emails/plain/AdminNewSubscriberEmail.php:42
+msgid "Customer Email:"
+msgstr ""
+
+#: templates/emails/plain/AdminNewSubscriberEmail.php:43
+#: templates/emails/plain/ProductBackInStockEmail.php:44
+#: templates/emails/plain/SubscriberConfirmationEmail.php:47
+msgid "test@example.com"
+msgstr ""
+
+#: templates/emails/plain/ProductBackInStockEmail.php:43
+#: templates/emails/plain/SubscriberConfirmationEmail.php:46
+msgid "Customer Details:"
+msgstr ""
+
+#: assets/js/block/stock-notification-block/index.js:1
+#: src/blocks/stock-notification-block/index.js:54
+msgid "Stock Notification Block"
+msgstr ""
+
+#: assets/js/block/stock-notification-block/index.js:1
+#: src/blocks/stock-notification-block/index.js:55
+msgid "This block can be connected to WooCommerce Out-of-Stock and Backorder products to provide a stock notification form for users."
+msgstr ""
+
+#: assets/js/block/stock-notification-block/index.js:1
+#: src/blocks/stock-notification-block/index.js:12
+msgid "Loading form…"
+msgstr ""
+
+#: assets/js/block/stock-notification-block/index.js:1
+#: src/blocks/stock-notification-block/index.js:38
+msgid "Failed to load form."
+msgstr ""
+
+#: assets/js/block/stock-notification-block/index.js:1
+#: src/blocks/stock-notification-block/index.js:42
+msgid "No product selected."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Appearance"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Customize stock alert form."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "'Unsubscribe' Button Caption"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Modify the un-subscribe button text. By default we display \"Unsubscribe\"."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Guest Subscriptions"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Allow guests (non-logged-in users) to subscribe to notifications for out-of-stock products."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Everyone"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Logged-in customers only"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Allow Backorder Subscriptions"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enabling this setting allows users to subscribe to out-of-stock products, even when the backorder option is enabled."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Out of stock products"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Out of stock & backorder products"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Stock Status for Lead Time"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Lead time informs customers when a product will be available again. This setting lets you choose which stock statuses will display the restock estimate."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Out of stock"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "On backorder"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Lead Format"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Choose the lead time format: Either dynamic (set unique lead time text for all out of stock product) or static (apply a default lead time text for out of stock products)."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Static"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Dynamic"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Lead time static text"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "This will be the standard message displayed for all out-of-stock products unless a custom lead time is specified."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Display subscriber count for out of stock"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enabling this setting shows the subscriber count on the single product page."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Hide subscriber count"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Show subscriber count"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Subscriber count notification message"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Personalize the notification text to let users know about the quantity of subscribers for out-of-stock item. Note: Use %no_of_subscribed% as number of interest/subscribed persons."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Subscriber double opt-in"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enable Double Opt-in flow for subscription confirmation."
+msgstr ""
+
+#. translators: %s is the Pro upgrade URL
+#: assets/js/index.js:1
+#, js-format
+msgid "Upgrade to <a href=\"%s\" target=\"_blank\"><span class=\"pro-strong\">Pro</span></a> to enable Double Opt-in flow for subscription confirmation."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Subscribe immediately"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Confirm via email"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Default: Kindly check your inbox to confirm the subscription."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Double opt-in success message"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enable reCaptcha"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enable this to prevent automated bots from submitting forms. Get your v3 reCAPTCHA site key and secret key from <a href=\"https://developers.google.com/recaptcha\" target=\"_blank\">here</a>."
+msgstr ""
+
+#. translators: %s is the Pro upgrade URL
+#: assets/js/index.js:1
+#, js-format
+msgid "Upgrade to <a href=\"%s\" target=\"_blank\"><span class=\"pro-strong\">Pro</span></a> for unlocking reCAPTCHA for out-of-stock form subscriptions."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "No Verification"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Google recaptcha"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Site Key"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Secret Key"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Set the email address to receive notifications when a user subscribes to an out-of-stock product. You can add multiple comma-separated emails.<br/> Default: The admin's email is set as the receiver. Exclude the admin's email from the list to exclude admin from receiving these notifications."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Recipient email for new subscriber"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Personalize Layout"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Notifications & Integrations"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Manage subscriber notifications and connect marketing tools."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Specify email domains that are restricted from subscribing. You can add multiple commma seperated emails."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Block email domains"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Blocked domain alert message"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Create an alert message for users attempting to subscribe from blocked domains."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Specify email addresses that are restricted from subscribing. You can add multiple commma seperated emails."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Blocked email addresses"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Blocked email alert message"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Create an alert message for users attempting to subscribe from blocked Email ID."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enable Mailchimp"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Get your MailChimp API from your MailChimp <a href='https://us20.admin.mailchimp.com/account/api/manage/#create' target='blank'>account</a>. For further help, please check this doc."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Store only"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Mailchimp"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Mailchimp API"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Mailchimp connection"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Customer Experience"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Control how the subscription form and customer messages appear throughout your store."
+msgstr ""
+
+#: assets/js/index.js:1
+#, js-format
+msgid "<b> Tip: </b>Utilize %product_title% for dynamic product titles and %customer_email% for personalized customer email addresses in your messages."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Successful form submission"
+msgstr ""
+
+#: assets/js/index.js:1
+#, js-format
+msgid "<b> Tip: </b>Enhance personalization by incorporating %product_title% for dynamic product titles and %customer_email% for individual customer emails."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Repeated subscription alert"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Personalize the message shown to users when they try to subscribe with an invalid email address."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Email validation error"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Modify the text that confirms user that they have successful unsubscribe."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Unsubscribe confirmation"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Double Opt-in"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Ban Spam Mail"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Export Subscribers"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Subscription Dashboard"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "MailChimp Integration"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Recaptcha Support"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Subscription Details"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Export/Import Stock"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Your students will love this!"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Boost to Product Notifima Pro to access premium features!"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "For website with"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "site license"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Yes, Upgrade Me!"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Why should you upgrade?"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Date"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Status"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Download CSV"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Search..."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Select"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "product Name"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Manage product subscription requests, track subscriber statuses, and monitor email notifications sent to interested customers."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Subscribers"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Product & store tools"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Multiple stores per product"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Store policies"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Store reviews"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Follow store"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Privacy controls to show/hide store details)"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Confirm vendor identity with documents"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Bulk upload/download product via CSV"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Display store opening/closing times"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Store can temporarily close shop with customer notice"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Assign assistants to your store and control what they can access"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid " Get paid without hassle"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Bank transfer"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "PayPal payout"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Stripe connect"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Razorpay"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Real-time split payments"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid " Deliver seamless shopping experiences"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Product Q&A"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Marketplace refunds"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Announcements"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Product abuse report"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Invoices & packing slips"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Live chat"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Customer support"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Product enquiry"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid " Ship the way you want"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Zone-based shipping"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Distance-based shipping"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Country restrictions"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Weight-based shipping"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Per-product shipping"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid " Sell in different ways"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Optimize store & product SEO with Yoast or Rank Math"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Sales, revenue, and order reports"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Store with different capabilities as per subsctiption plan"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Paid product promotions"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Special pricing & bulk rules for groups"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Low-stock alerts, waitlists, inventory management"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Automate rules and commissions"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Payment gateway fees"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Min/Max quantities"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Facilitator fees"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Marketplace fees"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Free vs Pro comparison"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "See what you get with notifima Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Get Pro Access Today!"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Free"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Join 8,000+ successful marketplace owners"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Build, manage, and expand your marketplace with confidence. Loved by entrepreneurs globally."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Flexible selling models"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Effortless inventory control"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Intelligent alert system"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Secure seller onboarding"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Recurring revenue tools"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Upgrade Now"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Launch Setup Wizard"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Redirecting..."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Plugin already installed. Redirecting to activate..."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Error!"
+msgstr ""
+
+#. translators: %s: Plugin slug or plugin name.
+#: assets/js/index.js:1
+#, js-format
+msgid "Could not install \"%s\"."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Documentation"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Step-by-step guides to set up and manage your marketplace."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Explore Docs"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Expert consultation"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Get tailored advice from our marketplace specialists."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Book Consultation"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Developer community"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Connect with our team and fellow builders on Discord."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Join Discord"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Facebook group"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Share experiences and tips with other marketplace owners."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Join Group"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Membership rewards & commission"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Verified stores only"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Screen stores with document verification and approval - build a trusted marketplace from day one."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Diversified marketplace"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enable bookings, subscriptions, and auctions to boost sales and engagement."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Vacation mode for stores"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Stores can pause their stores temporarily with automatic buyer notifications - no missed messages."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Never run out of stock"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Real-time inventory tracking with automatic low-stock alerts keeps sellers prepared and buyers happy."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Autopilot notifications"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Automatic emails and alerts for every order, refund, and payout - everyone stays in the loop."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Welcome to notifima"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Expand your WooCommerce store by creating a marketplace for multiple stores. Manage, grow, and scale seamlessly."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Build a professional marketplace"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Unlock advanced features and premium modules to create a marketplace that stands out."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Create, manage, and grow your marketplace with confidence. Trusted by thousands of entrepreneurs worldwide."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "15-day money-back guarantee"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Extend your website"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "CatalogX Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Advanced product catalog with enhanced enquiry features and premium templates"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Get Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "notifima"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Turn your store into a product catalog with enquiry-based sales"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Installing..."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Install"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Multivendorx Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Advanced stock alerts, wishlist features, and premium notification system"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Multivendorx"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Advanced stock alerts and wishlist features for WooCommerce"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Need help getting started?"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Free vs Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "How to Set Up notifima Marketplace"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "A step-by-step guide to setting up your multivendor marketplace."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Get in touch with Support"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Reach out to the support team for assistance or guidance."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Explore Documentation"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Understand the plugin and its settings."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Contribute Here"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "To participate in product enhancement."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Get fast help, expert guidance, and easy-to-follow resources - all in one place."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Community & forums"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Documentation & Learning"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Master notifima in minutes!"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Watch our top tutorial videos and learn how to set up your marketplace, manage stores, and enable subscriptions - all in just a few easy steps."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Watch All Tutorials"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "SKU"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Type"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Regular Price"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Sale Price"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Manage Stock"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Stock Status"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Backorders"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Stock"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Subscriber No"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Product Type"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Simple"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Variable"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Manage product inventory, monitor stock availability, and update stock settings for simple and variable products."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "<b>Double Opt-In:</b> Experience the power of Double Opt-In for our Stock Alert Form - Guaranteed precision in every notification!"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "<b>Your Subscription Hub:</b> Subscription Dashboard - Easily monitor and download lists of out-of-stock subscribers for seamless management."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "<b>Mailchimp Bridge:</b> Seamlessly link WooCommerce out-of-stock subscriptions with Mailchimp for effective marketing."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "<b>Unsubscribe Notifications:</b> User-Initiated Unsubscribe from In-Stock Notifications."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "<b>Ban Spam Emails:</b> Email and Domain Blacklist for Spam Prevention."
+msgstr ""
+
+#: assets/js/block/stock-notification-block/block.json
+#: src/blocks/stock-notification-block/block.json
+msgctxt "block title"
+msgid "Stock Notification Block"
+msgstr ""
+
+#: src/block.json
+msgctxt "block title"
+msgid "Notifima"
+msgstr ""

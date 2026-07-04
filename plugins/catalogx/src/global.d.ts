@@ -33,12 +33,13 @@ declare global {
         order_edit: string;
         currency: string;
         notifima_active: boolean;
-        mvx_active: boolean;
+        multivendorx_active: boolean;
         quote_module_active: boolean;
         quote_base_url: string;
         redirect_url: string;
         free_version: any;
         pro_data: any;
+        email_tags: Array;
     }
 
     interface EnquiryFormData {

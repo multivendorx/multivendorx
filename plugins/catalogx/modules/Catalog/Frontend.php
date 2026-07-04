@@ -56,11 +56,9 @@ class Frontend {
             }
         }
 
-        // Get setting for sales enabled.
-        $sales_enabled = CatalogX()->setting->get_setting( 'enable_cart_checkout' );
 
         // Check sales enabled setting is enable or not.
-        if ( ! empty( $sales_enabled ) ) {
+        if ( 'buy_mode' === CatalogX()->setting->get_setting( 'enable_cart_checkout' ) ) {
 			return;
         }
 
@@ -131,7 +129,7 @@ class Frontend {
             return $button;
         }
 
-        return empty( CatalogX()->setting->get_setting( 'enable_cart_checkout' ) ) ? '' : $button;
+        return 'catalog_only' === CatalogX()->setting->get_setting( 'enable_cart_checkout' ) ? '' : $button;
     }
 
     /**
@@ -142,7 +140,7 @@ class Frontend {
     public function remove_add_to_cart_on_single_product_page() {
         global $post;
 
-        if ( Util::is_available_for_product( $post->ID ) && is_product() && empty( CatalogX()->setting->get_setting( 'enable_cart_checkout' ) ) ) {
+        if ( Util::is_available_for_product( $post->ID ) && is_product() && 'catalog_only' === CatalogX()->setting->get_setting( 'enable_cart_checkout' ) ) {
             remove_action( 'woocommerce_single_variation', 'woocommerce_single_variation_add_to_cart_button', 20 );
             // for block support.
             remove_action( 'woocommerce_simple_add_to_cart', 'woocommerce_simple_add_to_cart', 30 );

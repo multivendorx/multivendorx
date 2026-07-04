@@ -1,13 +1,9 @@
-/* global appLocalizer */
 import React, { useState } from 'react';
 import { ButtonInputUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import '../Popup/Popup.scss';
 
-interface PopupProps {
-	moduleName?: string;
-	wooSetting?: string;
-	wooLink?: string;
+interface ShowProPopupProps {
 	confirmMode?: boolean;
 	title?: string;
 	confirmMessage?: string;
@@ -15,7 +11,6 @@ interface PopupProps {
 	confirmNoText?: string;
 	onConfirm?: () => void;
 	onCancel?: () => void;
-	plugin?: string;
 }
 
 
@@ -25,7 +20,7 @@ const proPopupContent = {
 			icon: 'double-opt-in',
 			text: __('Double Opt-in', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'Confirm every signup via email for cleaner lists and better deliverability.',
 				'notifima'
 			),
 		},
@@ -33,7 +28,7 @@ const proPopupContent = {
 			icon: 'ban-spam-mail',
 			text: __('Ban Spam Mail', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'Keep your subscriber list clean from bots and unwanted registrations.',
 				'notifima'
 			),
 		},
@@ -41,7 +36,7 @@ const proPopupContent = {
 			icon: 'export-subscribers',
 			text: __('Export Subscribers', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'Download waitlist data anytime for reporting, marketing, or backup.',
 				'notifima'
 			),
 		},
@@ -49,7 +44,7 @@ const proPopupContent = {
 			icon: 'subscription-dashboard',
 			text: __('Subscription Dashboard', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'View all requests and demand trends from one centralized place.',
 				'notifima'
 			),
 		},
@@ -57,7 +52,7 @@ const proPopupContent = {
 			icon: 'mailchimp',
 			text: __('MailChimp Integration', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'Auto-sync subscribers for targeted email campaigns and nurture flows.',
 				'notifima'
 			),
 		},
@@ -65,15 +60,15 @@ const proPopupContent = {
 			icon: 'form-recaptcha',
 			text: __('Recaptcha Support', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'Protect waitlists from bots with built-in reCAPTCHA support.',
 				'notifima'
 			),
 		},
 		{
-			icon: 'subscription-dashboard',
+			icon: 'subscription-details',
 			text: __('Subscription Details', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'See who subscribed, which products are in demand, and track activity.',
 				'notifima'
 			),
 		},
@@ -81,7 +76,7 @@ const proPopupContent = {
 			icon: 'export-import-stock',
 			text: __('Export/Import Stock', 'notifima'),
 			des: __(
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'Migrate or bulk manage stock data with one-click import and export.',
 				'notifima'
 			),
 		},
@@ -89,23 +84,23 @@ const proPopupContent = {
 	btnLink: [
 		{
 			site: 'one',
-			price: '$199',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18156',
+			price: '$49',
+			link: 'https://notifima.com/cart/?add-to-cart=699&variation_id=836&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima'
 		},
 		{
 			site: 'three',
-			price: '$349',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18158',
+			price: '$69',
+			link: 'https://notifima.com/cart/?add-to-cart=699&variation_id=807&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
 		},
 		{
 			site: 'ten',
-			price: '$499',
-			link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18157',
+			price: '$99',
+			link: 'https://notifima.com/cart/?add-to-cart=699&variation_id=808&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
 		},
 	],
 };
 
-const ShowProPopup: React.FC<PopupProps> = (props) => {
+const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 	const [selectedBtn, setSelectedBtn] = useState(proPopupContent.btnLink[0]);
 
 	return (
@@ -113,20 +108,23 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 			{props.confirmMode ? (
 				<div className="popup-confirm">
 					<i className="popup-icon adminfont-suspended admin-badge red"></i>
-					<div className="title">{props.title || 'Confirmation'}</div>
+					<div className="title">
+						{props.title || __('Confirmation', 'notifima')}
+					</div>
 					<div className="desc">{props.confirmMessage}</div>
 					<ButtonInputUI
 						position="center"
 						buttons={[
 							{
 								icon: 'close',
-								text: props.confirmNoText || 'Cancel',
+								text: props.confirmNoText || __('Cancel', 'notifima'),
 								color: 'red',
 								onClick: props.onCancel,
 							},
 							{
 								icon: 'delete',
-								text: props.confirmYesText || 'Confirm',
+								text:
+									props.confirmYesText || __('Confirm', 'notifima'),
 								onClick: props.onConfirm,
 							},
 						]}
@@ -139,20 +137,23 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 						<div className="top-section">
 							<div className="heading">
 								{__(
-									'Your students will love this!',
+									'Upgrade to Notifima Pro & never miss another sale',
 									'notifima'
 								)}
 							</div>
 							<div className="description">
 								{__(
-									'Boost to Product Notifima Pro to access premium features!',
+									'Recover more sales, manage inventory smarter, and deliver a seamless back-in-stock experience with premium features built for growing WooCommerce stores.',
 									'notifima'
 								)}
 							</div>
 							<div className="price">{selectedBtn.price}</div>
 							<div className="select-wrapper">
-								{__('For website with', 'notifima')}
+								<label htmlFor="notifima-site-license-select">
+									{__('For website with', 'notifima')}
+								</label>
 								<select
+									id="notifima-site-license-select"
 									value={selectedBtn.link}
 									onChange={(e) => {
 										const found =
@@ -165,8 +166,8 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 									}}
 								>
 									{proPopupContent.btnLink.map((b, idx) => (
-										<option key={idx} value={b.link}>
-											{b.site}
+										<option key={b.site} value={b.link}>
+											{`${b.site} site license`}
 										</option>
 									))}
 								</select>
@@ -188,22 +189,17 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 							</div>
 
 							<ul>
-								{proPopupContent.messages.map(
-									(message, index) => (
-										<li key={index}>
-											<div className="title">
-												<i
-													className={`adminfont-${message.icon}`}
-												/>
-												{message.text}
-											</div>
-											<div className="desc">
-												{' '}
-												{message.des}
-											</div>
-										</li>
-									)
-								)}
+								{proPopupContent.messages.map((message, idx) => (
+									<li key={message.icon}>
+										<div className="title">
+											<i
+												className={`adminfont-${message.icon}`}
+											/>
+											{message.text}
+										</div>
+										<div className="desc">{message.des}</div>
+									</li>
+								))}
 							</ul>
 						</div>
 					</div>

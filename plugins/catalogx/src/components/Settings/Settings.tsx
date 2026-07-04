@@ -1,48 +1,39 @@
 /* global appLocalizer */
 import React, { useEffect, JSX } from 'react';
 import { __ } from '@wordpress/i18n';
-
-// Services
 import { getTemplateData } from '../../services/templateService';
-// Utils
 import {
     getAvailableSettings,
     getSettingById,
-    useModules,
-    SettingProvider,
-    useSetting,
-    type SettingContextType,
-    SettingsNavigator,
     RenderComponent,
+    useModules,
+    SettingsNavigator,
+    SettingProvider,
+    useSetting
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
-
-// Types
-type SettingItem = Record<string, any>;
 
 interface SettingsProps {
     id: string;
 }
 
 const Settings: React.FC<SettingsProps> = () => {
-    const settingsArray: SettingItem[] = getAvailableSettings(
-        getTemplateData(),
-        []
-    );
+    const settingsArray = getAvailableSettings(getTemplateData('settings'), []);
     const location = new URLSearchParams(useLocation().hash.substring(1));
+
     // Render the dynamic form
     const GetForm = (currentTab: string | null): JSX.Element | null => {
-        const {
-            setting,
-            settingName,
-            setSetting,
-            updateSetting,
-        }: SettingContextType = useSetting();
+        // get the setting context
+        const { setting, settingName, setSetting, updateSetting } =
+            useSetting();
         const { modules } = useModules();
 
-        if (!currentTab) return null;
-        const settingModal = getSettingById(settingsArray as any, currentTab);
+        if (!currentTab) {
+            return null;
+        }
+
+        const settingModal = getSettingById(settingsArray, currentTab);
 
         // Ensure settings context is initialized
         if (settingName !== currentTab) {
@@ -52,7 +43,6 @@ const Settings: React.FC<SettingsProps> = () => {
             );
         }
 
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
             if (settingName === currentTab) {
                 appLocalizer.settings_databases_value[settingName] = setting;
@@ -62,17 +52,16 @@ const Settings: React.FC<SettingsProps> = () => {
         return (
             <>
                 {settingName === currentTab ? (
-                   <RenderComponent
-						settings={settingModal}
-						proSetting={appLocalizer.settings_databases_value}
-						setting={setting}
-						updateSetting={updateSetting}
-						appLocalizer={appLocalizer}
-						modules={modules}
-						Popup={ShowProPopup}
-					/>
+                    <RenderComponent
+                        settings={settingModal}
+                        setting={setting}
+                        updateSetting={updateSetting}
+                        appLocalizer={appLocalizer}
+                        modules={modules}
+                        Popup={ShowProPopup}
+                    />
                 ) : (
-                    <>Loading...</>
+                    <>{__('Loading...', 'catalogx')}</>
                 )}
             </>
         );

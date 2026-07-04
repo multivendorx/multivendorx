@@ -27,7 +27,7 @@ interface ShortCodeTableProps {
     icon?: string; // Icon as string
 }
 
-const ShortCodeTableUI: React.FC<ShortCodeTableProps> = (props) => {
+export const ShortCodeTableUI: React.FC<ShortCodeTableProps> = (props) => {
     const { options, optionLabel } = props;
 
     const headers = optionLabel;

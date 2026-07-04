@@ -13,6 +13,33 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
+			key: 'shipping_class_access',
+			type: 'choice-toggle',
+			label: __('Shipping classes available to stores', 'multivendorx'),
+			settingDescription: __(
+				'Choose which shipping classes store can assign to their products.',
+				'multivendorx'
+			),
+			desc: __(
+				'<ul><li>Marketplace Shipping Classes Only - Stores can assign shipping classes created by the marketplace administrator.</li><li>Marketplace & Store Shipping Classes - Stores can assign both marketplace shipping classes and shipping classes created for their own store.</li></ul>',
+				'multivendorx'
+			),
+
+			options: [
+				{
+					key: 'store',
+					label: __('Store Shipping Classes Only', 'multivendorx'),
+					value: 'store',
+				},
+				{
+					key: 'both',
+					label: __('Marketplace & Store Shipping Classes', 'multivendorx'),
+					value: 'both',
+				},
+			],
+			moduleEnabled: 'store-shipping',
+		},
+		{
 			key: 'shipping_modules',
 			type: 'expandable-panel',
 			moduleEnabled: 'store-shipping',

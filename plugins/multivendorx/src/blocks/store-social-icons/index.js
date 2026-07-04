@@ -291,6 +291,17 @@ registerBlockType('multivendorx/store-social-icons', {
 						</a>
 					</li>
 
+					{/* X Icon */}
+					<li className="wp-social-link wp-social-link-twitter  wp-block-social-linkwp-social-link wp-social-link-x  wp-block-social-link">
+						<a
+							href="#"
+							className="wp-block-social-link-anchor"
+							style={iconLinkStyle()}
+						>
+							<span class="dashicons dashicons-twitter"></span>
+						</a>
+					</li>
+
 					{/* Instagram Icon */}
 					<li className="wp-social-link wp-social-link-instagram  wp-block-social-linkwp-social-link wp-social-link-x  wp-block-social-link">
 						<a

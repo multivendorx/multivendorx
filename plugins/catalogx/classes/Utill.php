@@ -41,18 +41,15 @@ class Utill {
      * @var array<string, string>
      */
     public const CATALOGX_SETTINGS = array(
-        'extra'                         => 'catalogx_extra_settings',
-        'enquiry-catalog-customization' => 'catalogx_enquiry_catalog_customization_settings',
-        'shopping'                      => 'catalogx_shopping_settings',
-        'enquiry'                       => 'catalogx_enquiry_settings',
-        'quotation'                     => 'catalogx_quotation_settings',
-        'tools'                         => 'catalogx_tools_settings',
-        'pages'                         => 'catalogx_pages_settings',
-        'enquiry-quote-exclusion'       => 'catalogx_enquiry_quote_exclusion_settings',
-        'enquiry-form-customization'    => 'catalogx_enquiry_form_customization_settings',
-        'enquiry-email-temp'            => 'catalogx_enquiry_email_temp_settings',
         'wholesale'                     => 'catalogx_wholesale_settings',
         'wholesale-registration'        => 'catalogx_wholesale_registration_settings',
+        'dashboard'                     => 'catalogx_dashboard_settings',
+        'enquiry-quote-exclusion'       => 'catalogx_enquiry_quote_exclusion_settings',
+        'enquiry-email-template'        => 'catalogx_enquiry_email_template_settings',
+        'tools'                         => 'catalogx_tools_settings',
+        'enquiry-form-customization'    => 'catalogx_enquiry_form_customization_settings',
+        'enquiry-catalog-customization' => 'catalogx_enquiry_catalog_customization_settings',
+        'customer-engagement'           => 'catalogx_customer_engagement_settings'
     );
 
     /**
@@ -71,6 +68,7 @@ class Utill {
         'plugin_page_install' => 'dc_product_vendor_plugin_page_install',
         'tour_completed'      => 'catalogx_tour_completed',
         'plugin_db_version'   => 'catalogx_version',
+        'log_file'            => 'catalogx_log_file',
     );
 
     /**
@@ -83,26 +81,151 @@ class Utill {
     public const ACTIVE_MODULES_DB_KEY = 'catalogx_all_active_module_list';
 
     /**
-     * Function to console and debug errors.
+     * Write log entry to Catalogx log file.
      *
-     * @param mixed $data The data to be logged (string, array, object, etc.).
-     * @return void
+     * @param mixed  $message Log message, Exception, or WP_Error.
+     * @param string $log_type Log level/type.
+     * @param array  $log_context Additional log context.
+     *
+     * @return bool
      */
-    public static function log( $data ) {
-        if ( ! defined( 'WP_DEBUG' ) || ! WP_DEBUG ) {
-            return;
+    public static function log( $message = '', $log_type = 'INFO', $log_context = array() ) {
+        global $wp_filesystem, $wpdb;
+
+        // Initialize WordPress filesystem.
+        if ( empty( $wp_filesystem ) ) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            WP_Filesystem();
         }
 
-        require_once ABSPATH . 'wp-admin/includes/file.php';
-        WP_Filesystem();
+        if ( ! $wp_filesystem ) {
+            return false;
+        }
 
-        global $wp_filesystem;
+        $logs_dir = trailingslashit( CatalogX()->catalogx_logs_dir );
+        $log_file = CatalogX()->log_file;
 
-        $log_file = CatalogX()->plugin_path . 'log/catalogx.log';
-        $message  = wp_json_encode( $data, JSON_PRETTY_PRINT ) . "\n---------------------------\n";
+        if ( ! $wp_filesystem->is_dir( $logs_dir ) ) {
+            wp_mkdir_p( $logs_dir );
+        }
 
-        $existing = $wp_filesystem->exists( $log_file ) ? $wp_filesystem->get_contents( $log_file ) : '';
-        $wp_filesystem->put_contents( $log_file, $existing . $message, FS_CHMOD_FILE );
+        try {
+            $htaccess_file = $logs_dir . '.htaccess';
+            $index_file    = $logs_dir . 'index.html';
+
+            if ( ! $wp_filesystem->exists( $htaccess_file ) ) {
+                $wp_filesystem->put_contents(
+                    $htaccess_file,
+                    'deny from all',
+                    FS_CHMOD_FILE
+                );
+            }
+
+            if ( ! $wp_filesystem->exists( $index_file ) ) {
+                $wp_filesystem->put_contents(
+                    $index_file,
+                    '',
+                    FS_CHMOD_FILE
+                );
+            }
+        } catch ( \Exception $exception ) {
+            error_log( $exception->getMessage() );
+        }
+
+        if ( $message instanceof \Exception ) {
+            $log_type    = 'EXCEPTION';
+            $log_context = array_merge(
+                $log_context,
+                array(
+                    'exception_message' => $message->getMessage(),
+                    'exception_code'    => $message->getCode(),
+                    'exception_file'    => $message->getFile(),
+                    'exception_line'    => $message->getLine(),
+                    'exception_trace'   => $message->getTraceAsString(),
+                )
+            );
+            $message     = 'Exception occurred';
+        }
+
+        if ( $message instanceof \WP_Error ) {
+            $log_type    = 'WP_ERROR';
+            $log_context = array_merge(
+                $log_context,
+                array(
+                    'error_code'    => $message->get_error_code(),
+                    'error_message' => $message->get_error_message(),
+                    'error_data'    => $message->get_error_data(),
+                )
+            );
+            $message     = 'WP_Error occurred';
+        }
+
+        if ( ! empty( $wpdb->last_error ) ) {
+            $log_context['db_error'] = $wpdb->last_error;
+            $log_context['db_query'] = $wpdb->last_query;
+        }
+
+        $backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
+        $caller    = $backtrace[1] ?? array();
+        $timestamp = current_time( 'mysql' );
+
+        $log_metadata = array_merge(
+            array(
+                'type'      => $log_type,
+                'timestamp' => $timestamp,
+                'file'      => $caller['file'] ?? '',
+                'line'      => $caller['line'] ?? '',
+                'stack'     => wp_debug_backtrace_summary(),
+            ),
+            $log_context
+        );
+
+        // Prepare log lines.
+        $log_lines = array();
+        foreach ( $log_metadata as $context_key => $context_value ) {
+            if ( ! is_scalar( $context_value ) ) {
+                $context_value = wp_json_encode( $context_value );
+            }
+
+            $log_lines[] = sprintf(
+                '%1$s : %2$s: %3$s',
+                $timestamp,
+                $context_key,
+                trim( (string) $context_value )
+            );
+        }
+
+        // Add main message.
+        $formatted_message = is_scalar( $message )
+            ? trim( (string) $message )
+            : wp_json_encode( $message );
+
+        $log_lines[] = sprintf(
+            '%1$s : message: %2$s',
+            $timestamp,
+            trim( $formatted_message )
+        );
+
+        $log_entry = implode( PHP_EOL, $log_lines ) . PHP_EOL;
+
+        // Get existing logs.
+        $existing_log_content = '';
+
+        if ( $wp_filesystem->exists( $log_file ) ) {
+            $existing_log_content = $wp_filesystem->get_contents( $log_file );
+        }
+
+        // Add spacing between log entries.
+        if ( ! empty( $existing_log_content ) ) {
+            $log_entry = PHP_EOL . $log_entry;
+        }
+
+        // Write logs.
+        return $wp_filesystem->put_contents(
+            $log_file,
+            $existing_log_content . $log_entry,
+            FS_CHMOD_FILE
+        );
     }
 
     /**
@@ -111,7 +234,7 @@ class Utill {
      * @return bool
      */
     public static function is_khali_dabba() {
-        return apply_filters( 'kothay_dabba', false );
+        return apply_filters( 'kothay_dabba_catalogx', false );
     }
 
     /**
@@ -266,4 +389,56 @@ class Utill {
 
 		return strtr( $date_format, $map );
 	}
+
+    public static function get_tags_enquiry_form() {
+        $tags = [];
+
+        $form_settings = CatalogX()->setting->get_setting('enquiry_form_tabs', []);
+        if ( empty( $form_settings['enquiry_form_builder']['formfieldlist'] ) ) {
+            return $tags;
+        }
+
+        $excluded_types = [ 'button', 'title', 'richtext' ];
+
+        foreach ( $form_settings['enquiry_form_builder']['formfieldlist'] as $field ) {
+            if ( empty( $field['type'] ) ||  in_array( $field['type'], $excluded_types, true ) ) {
+                continue;
+            }
+
+            $name  = $field['name'] ?? '';
+            $label = $field['label'] ?? '';
+
+            $tag = sprintf(
+                '{%s_%s}',
+                sanitize_title_with_dashes( $name ),
+                sanitize_title_with_dashes( $label )
+            );
+
+            // Convert dashes to underscores.
+            $tag = str_replace( '-', '_', $tag );
+
+            $tags[] = $tag;
+        }
+
+        return $tags;
+    }
+
+    /**
+     * Handle server exception response.
+     *
+     * @param \Exception $exception Exception object.
+     * @return \WP_Error
+     */
+    public static function server_error( \Exception $exception ) {
+
+        self::log( $exception );
+
+        return new \WP_Error(
+            'server_error',
+            esc_html__( 'Unexpected server error.', 'catalogx' ),
+            array(
+                'status' => 500,
+            )
+        );
+    }
 }

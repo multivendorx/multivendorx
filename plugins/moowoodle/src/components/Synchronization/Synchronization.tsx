@@ -1,7 +1,6 @@
 /* global appLocalizer */
 import React, { useEffect, JSX } from 'react';
 import { __ } from '@wordpress/i18n';
-import { SettingProvider, useSetting } from '../../contexts/SettingContext';
 import { getTemplateData } from '../../services/templateService';
 import {
 	getAvailableSettings,
@@ -9,6 +8,8 @@ import {
 	RenderComponent,
 	useModules,
 	SettingsNavigator,
+	SettingProvider,
+	useSetting
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';

@@ -9,6 +9,7 @@ namespace Notifima;
 
 defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use Notifima\RestAPI\Rest;
 
 /**
  * Notifima Main class
@@ -64,14 +65,14 @@ class Notifima {
         // Deactivation Hooks.
         register_deactivation_hook( $file, array( $this, 'deactivate' ) );
 
-        add_filter( 'plugin_action_links_' . plugin_basename( $file ), array( &$this, 'notifima_settings' ) );
-        add_action( 'admin_notices', array( &$this, 'database_migration_notice' ) );
+        add_filter( 'plugin_action_links_' . plugin_basename( $file ), array( $this, 'notifima_settings' ) );
+        add_action( 'admin_notices', array( $this, 'database_migration_notice' ) );
 
         add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
         add_action( 'woocommerce_loaded', array( $this, 'init_plugin' ) );
-        add_action( 'plugins_loaded', array( $this, 'is_woocommerce_loaded' ) );
+        add_action( 'plugins_loaded', array( $this, 'handle_plugin_migration' ) );
         add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
-        add_action( 'init', array( $this, 'migrate_from_previous_version' ) );
+        add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
     }
 
     /**
@@ -80,33 +81,21 @@ class Notifima {
      * @return void
      */
     public function set_default_value() {
-        $default_value = array(
+        $default_value                    = array(
             'double_opt_in_success'     => __( 'Kindly check your inbox to confirm the subscription.', 'notifima' ),
             'shown_interest_text'       => __( 'Kindly check your inbox to confirm the subscription.', 'notifima' ),
             'email_placeholder_text'    => __( 'Enter your email', 'notifima' ),
             'alert_text'                => __( 'Receive in-stock notifications for this.', 'notifima' ),
             'unsubscribe_button_text'   => __( 'Unsubscribe', 'notifima' ),
-            'alert_text_color'          => '',
-            'customize_btn'             => array(
-                'button_text'                     => __( 'Notify me', 'notifima' ),
-                'button_background_color'         => '',
-                'button_border_color'             => '',
-                'button_text_color'               => '',
-                'button_background_color_onhover' => '',
-                'button_text_color_onhover'       => '',
-                'button_border_color_onhover'     => '',
-                'button_font_size'                => '',
-                'button_border_radious'           => '',
-                'button_border_size'              => '',
-            ),
+            'subscribe_button_text'     => __( 'Notify me', 'notifima' ),
             'alert_success'             => __( 'Thank you for expressing interest in %product_title%. We will notify you via email once it is back in stock.', 'notifima' ),
             // Translators: This message display already registered user to display already registered message.
             'alert_email_exist'         => __( '%customer_email% is already registered for %product_title%. Please attempt a different email address.', 'notifima' ),
             'valid_email'               => __( 'Please enter a valid email ID and try again.', 'notifima' ),
             // Translators: This message display user sucessfully unregistered.
             'alert_unsubscribe_message' => __( '%customer_email% is successfully unsubscribed.', 'notifima' ),
-            'ban_email_domain_text'     => __( 'This email domain is ban in our site, kindly use another email domain.', 'notifima' ),
-            'ban_email_address_text'    => __( 'This email address is ban in our site, kindly use another email address.', 'notifima' ),
+            'ban_email_domain_text'     => __( 'This email domain is baned in our site, kindly use another email domain.', 'notifima' ),
+            'ban_email_address_text'    => __( 'This email address is baned in our site, kindly use another email address.', 'notifima' ),
         );
         $this->container['default_value'] = $default_value;
     }
@@ -191,16 +180,17 @@ class Notifima {
      * @return void
      */
     public function init_classes() {
+        $this->container['current_user']    = wp_get_current_user();
+        $this->container['current_user_id'] = get_current_user_id();
         $this->container['util']            = new Utill();
         $this->container['setting']         = new Setting();
-        $this->container['ajax']            = new Ajax();
         $this->container['frontend']        = new FrontEnd();
         $this->container['shortcode']       = new Shortcode();
         $this->container['subscriber']      = new Subscriber();
         $this->container['filters']         = new Deprecated\DeprecatedFilterHooks();
         $this->container['actions']         = new Deprecated\DeprecatedActionHooks();
         $this->container['admin']           = new Admin();
-        $this->container['restapi']         = new RestAPI();
+        $this->container['rest']            = new Rest();
         $this->container['block']           = new Block();
         $this->container['frontendScripts'] = new FrontendScripts();
     }
@@ -221,23 +211,10 @@ class Notifima {
     }
 
     /**
-     * Take action based on if woocommerce is not loaded.
-     *
-     * @return void
-     */
-    public function is_woocommerce_loaded() {
-        if ( did_action( 'woocommerce_loaded' ) || ! is_admin() ) {
-            return;
-        }
-        add_action( 'admin_notices', array( $this, 'woocommerce_admin_notice' ) );
-    }
-
-    /**
      * Migrate data from previous version.
      */
-    public function migrate_from_previous_version() {
+    public function handle_plugin_migration() {
         $previous_version = get_option( 'notifima_version', '' );
-
         if ( version_compare( $previous_version, Notifima()->version, '<' ) ) {
             new Install();
         }
@@ -282,35 +259,6 @@ class Notifima {
      */
     public function __set( $class, $value ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound
         $this->container[ $class ] = $value;
-    }
-
-    /**
-     * Admin notice for woocommerce inactive.
-     *
-     * @return void
-     */
-    public static function woocommerce_admin_notice() {
-        ?>
-        <div id="message" class="error">
-            <p>
-                <?php
-                    printf(
-                        // translators: 1: Opening strong tag, 2: Closing strong tag, 3: Opening WooCommerce link, 4: Closing link, 5: Opening install link, 6: Closing install link.
-                        esc_html__(
-                            '%1$sNotifima is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for the Notifima to work. Please %5$sinstall & activate WooCommerce%6$s',
-                            'notifima'
-                        ),
-                        '<strong>',
-                        '</strong>',
-                        '<a target="_blank" href="' . esc_url( 'https://wordpress.org/plugins/woocommerce/' ) . '">',
-                        '</a>',
-                        '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">',
-                        ' &raquo;</a>'
-                    );
-                ?>
-            </p>
-        </div>
-        <?php
     }
 
     /**

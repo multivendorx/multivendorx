@@ -8,7 +8,7 @@ import DashboardTab from './DashboardTab';
 const AdminDashboard = () => {
 	const upgradeButton = !appLocalizer.khali_dabba && (
 		<a
-			// href={appLocalizer.shop_url}
+			href={appLocalizer.pro_url}
 			target="_blank"
 			className="admin-btn btn-purple"
 		>

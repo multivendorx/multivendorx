@@ -68,7 +68,7 @@ class TestConnection extends \WP_REST_Controller {
         $test_user = $request->get_param( 'get_users' );
         $course    = $request->get_param( 'get_courses' );
 
-        $test_user = isset( $test_user['data']['users'][1] ) ? $test_user['data']['users'][1] : null;
+		$test_user = ! empty( $test_user['data']['users'] ) ? reset( $test_user['data']['users'] ) : null;
 		$course    = isset( $course['courses'][1] ) ? $course['courses'][1] : null;
         $user_id   = $test_user['id'] ?? 0;
         $course_id = $course['id'] ?? 0;
@@ -336,7 +336,7 @@ class TestConnection extends \WP_REST_Controller {
 		$test_user_payload = array(
 			'email'       => 'moowoodletestuser@gmail.com',
 			'username'    => 'moowoodletestuser',
-			'password'    => 'Moowoodle@123',
+			'createpassword' => 1,
 			'auth'        => apply_filters( 'moowoodle_new_user_auth_type', 'manual' ),
 			'firstname'   => 'moowoodle',
 			'lastname'    => 'testuser',
@@ -355,6 +355,7 @@ class TestConnection extends \WP_REST_Controller {
 
 		if ( $user_id > 0 ) {
 			$test_user_payload['id'] = $user_id;
+			unset( $test_user_payload ['createpassword']);
 		}
 
 		return array( $test_user_payload );

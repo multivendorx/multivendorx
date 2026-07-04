@@ -6,11 +6,12 @@ import {
     NavigatorHeader,
     PopupUI,
     TableCard,
+    ComponentStatusView
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import { dummyQuotes } from './QuoteRequestsUtil';
+import { defaultCategoryCounts, dummyQuotes } from './QuoteRequestsUtil';
 export interface QuoteRow {
     id?: number;
     order_id?: string;
@@ -24,13 +25,12 @@ export interface QuoteRow {
 const QuoteRequests = () => {
     const [openPopup, setopenPopup] = useState(false);
     let tableProps: any = {};
-
     const headers = {
         order_id: {
             label: __('Order ID', 'catalogx'),
             render: (row: QuoteRow) => (
                 <InfoItem
-                    title={`#${row.order_id}`}
+                    title={`${row.order_id}`}
                     titleLink={row.order_url || ''}
                     descriptions={[
                         {
@@ -45,22 +45,78 @@ const QuoteRequests = () => {
         status: {
             label: __('Status', 'catalogx'),
             type: 'status',
+            statusClass: (row: QuoteRow) => `${row.status}`
         },
         total: {
             label: __('Total', 'catalogx'),
             type: 'currency'
         },
+        action: {
+            label: __('Action', 'catalogx-pro'),
+            type: 'action',
+            actions: [
+                {
+                    label: __('View', 'catalogx-pro'),
+                    icon: 'eye',
+                    onClick: (row: any) => setopenPopup(true),
+                },
+                {
+                    label: __('Send Mail', 'catalogx-pro'),
+                    icon: 'mail',
+                    onClick: (row: any) => setopenPopup(true),
+                },
+            ],
+        },
     };
 
+    const buttonActions = [
+        {
+            label: __('Download CSV', 'catalogx'),
+            icon: 'download',
+            onClickWithQuery: () => setopenPopup(true),
+        },
+    ];
+    const filters = [
+        {
+            key: 'created_at',
+            label: 'Created Date',
+            type: 'date',
+        },
+    ];
     const defaultTableProps = {
         headers,
         format: appLocalizer.date_format,
+        buttonActions,
+        categoryCounts: defaultCategoryCounts,
+        filters,
         currency: {
             currencySymbol: appLocalizer.currency_symbol,
             priceDecimals: appLocalizer.price_decimals,
             decimalSeparator: appLocalizer.decimal_separator,
             thousandSeparator: appLocalizer.thousand_separator,
             currencyPosition: appLocalizer.currency_position,
+        },
+        search: {
+            placeholder: __('Search...', 'catalogx'),
+            size: 8,
+            options: [
+                {
+                    label: __('Select', 'catalogx'),
+                    value: '',
+                },
+                {
+                    label: __('Order ID', 'catalogx'),
+                    value: 'order_id',
+                },
+                {
+                    label: __('Customer Name', 'catalogx'),
+                    value: 'customer_name',
+                },
+                {
+                    label: __('Customer Email', 'catalogx'),
+                    value: 'customer_email',
+                },
+            ],
         },
         rows: dummyQuotes,
         totalRows: dummyQuotes.length,
@@ -71,15 +127,42 @@ const QuoteRequests = () => {
         defaultTableProps
     );
 
-    const handleTableWrapperClick = () => {
+
+    const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
-            setopenPopup(true);
+            return (
+                <div onClick={() => setopenPopup(true)}>
+                    <TableCard {...tableProps} />
+                </div>
+            );
         }
+
+        if (!appLocalizer.active_modules.includes('quote')) {
+            return (
+                <ComponentStatusView
+                    title={__(
+                        'Looks like the Quote module isn’t enabled yet!',
+                        'catalogx'
+                    )}
+                    desc={__(
+                        'Enable the Quote module to start receiving and managing customer quote requests.',
+                        'catalogx'
+                    )}
+                    buttonText={__('Enable Now', 'catalogx')}
+                    buttonLink={`${appLocalizer.admin_url}#&tab=modules&module=quote`}
+                />
+            );
+        }
+
+        return (
+            <>
+                <TableCard {...tableProps} />
+                {tableProps.openMailPopup && tableProps.sendMail}
+            </>
+        );
     };
-
-
     return (
-        <div>
+        <>
             {openPopup && (
                 <PopupUI
                     position="lightbox"
@@ -88,7 +171,11 @@ const QuoteRequests = () => {
                     width={31.25}
                     height="auto"
                 >
-                    <ShowProPopup />
+                    {!appLocalizer.khali_dabba ? (
+                        <ShowProPopup />
+                    ) : (
+                        <ShowProPopup moduleName="quote" />
+                    )}
                 </PopupUI>
             )}
             <NavigatorHeader
@@ -98,12 +185,12 @@ const QuoteRequests = () => {
                     'catalogx'
                 )}
                 headerTitle={__('Quote Requests', 'catalogx')}
-                buttons={[
+                buttons={appLocalizer.khali_dabba ? [
                     {
                         label: __('Add Quote', 'catalogx'),
                         icon: 'plus',
                         onClick: () => {
-                            if (appLocalizer.khali_dabba) {
+                            if (appLocalizer.khali_dabba && appLocalizer.active_modules.includes('quote')) {
                                 window.location.assign(
                                     'admin-ajax.php?action=add_quote_from_adminend'
                                 );
@@ -112,20 +199,17 @@ const QuoteRequests = () => {
                             }
                         },
                     },
-                ]}
+                ] : ''}
             />
             {tableProps.addingNewRule && tableProps.addingNewRule && (
                 tableProps.addNewRuleForm
             )}
             <Container general>
                 <Column>
-                    <div onClick={handleTableWrapperClick}>
-                        <TableCard {...tableProps} />
-                        {tableProps.openMailPopup && tableProps.sendMail}
-                    </div>
+                    {renderTableContent()}
                 </Column>
             </Container>
-        </div>
+        </>
     );
 };
 

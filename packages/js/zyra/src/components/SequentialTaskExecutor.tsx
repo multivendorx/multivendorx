@@ -5,6 +5,7 @@ import { getApiLink } from '../utils/apiService';
 import { ButtonInputUI } from './ButtonInput';
 import { Notice } from './Notice';
 import '../styles/web/SequentialTaskExecutor.scss';
+import { SelectInputUI } from './SelectInput';
 interface Task {
     action: string;
     message: string;
@@ -17,6 +18,7 @@ interface SequentialTaskExecutorProps {
     buttonText: string;
     buttonIcon: string;
     apilink: string;
+    variant?: string;
     parameter?: string;
     action: string;
     interval: number;
@@ -26,12 +28,15 @@ interface SequentialTaskExecutorProps {
     onComplete?: () => void;
     onError?: (error: unknown) => void;
     onTaskComplete?: (task: Task, response: unknown) => void;
+    value?: {};
+    onChange?: (value: string) => void;
 }
 
 export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = ({
     buttonText,
     buttonIcon,
     apilink,
+    variant,
     action,
     parameter,
     interval,
@@ -41,6 +46,8 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
     onComplete,
     onError,
     onTaskComplete,
+    onChange,
+    value,
 }) => {
     const [loading, setLoading] = useState(false);
     const [processStatus, setProcessStatus] = useState('');
@@ -52,6 +59,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
     const allResponses = useRef({});
 
     const [currentCompletedIndex, setCurrentCompletedIndex] = useState(0);
+    const [taskFailureMessage, setTaskFailureMessage] = useState('');
 
     useEffect(() => {
         if (currentCompletedIndex < syncStatus.length) {
@@ -100,6 +108,22 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                 }
             );
 
+            if (response.data?.error) {
+                setProcessStatus('failed');
+                setLoading(false);
+
+                setTaskFailureMessage(
+                    `${currentTask.failureMessage || failureMessage}`
+                );
+
+                onError?.({
+                    task: currentTask,
+                    error: response.data.error,
+                });
+
+                return;
+            }
+
             allResponses.current[currentTask.action] = response.data;
             setSyncStatus((prev) => [
                 ...prev,
@@ -116,6 +140,9 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
             console.error('Task execution failed:', error);
             setProcessStatus('failed');
             setLoading(false);
+            setTaskFailureMessage(
+                `${currentTask.failureMessage || failureMessage}\n${error.message}`
+            );
             onError?.({ task: currentTask, error });
         }
     };
@@ -137,6 +164,12 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
             )
             .then((response) => {
                 setProcessStatus(response.data === true ? 'success' : 'failed');
+                if (variant) {
+                    onChange?.({
+                        options: response.data || [],
+                        selected: '',
+                    });
+                }
                 setLoading(false);
             })
             .catch((error) => {
@@ -159,6 +192,7 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
     };
 
     useEffect(() => {
+        if (variant) return;
         fetchSyncStatus();
     }, []);
 
@@ -179,12 +213,17 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
 
     const handleButtonClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        if (tasks && tasks.length > 0) {
+
+        if (tasks?.length) {
             executeSequentialTasks();
-        } else {
-            setSyncStarted(true);
-            executeNormalTasks();
+            return;
         }
+
+        if (!variant) {
+            setSyncStarted(true);
+        }
+
+        executeNormalTasks();
     };
 
 
@@ -213,14 +252,14 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                 {syncStatus &&
                     syncStatus.length > 0 &&
                     syncStatus.map((status, idx) => (
-                        <div key={idx} className={`sequential-task ${processStatus}`} style={{ ['--progress-time' as string]: `${interval / 1000}s`,}}>
+                        <div key={idx} className={`sequential-task ${processStatus}`} style={{ ['--progress-time' as string]: `${interval / 1000}s`, }}>
                             {status.action}
                             <div className="status-wrapper">
                                 <span className="status-icons">
-                                    {processStatus === 'failed' && (                                    
-                                        <i className={`failed-icon adminfont-error`} />                                    
+                                    {processStatus === 'failed' && (
+                                        <i className={`failed-icon adminfont-error`} />
                                     )}
-                                    {processStatus === 'completed' && (                                    
+                                    {processStatus === 'completed' && (
                                         <i className={`completed-icon adminfont-check`} />
                                     )}
                                 </span>
@@ -240,20 +279,34 @@ export const SequentialTaskExecutorUI: React.FC<SequentialTaskExecutorProps> = (
                     displayPosition="inline-notice"
                     message={
                         processStatus === 'failed'
-                            ? failureMessage
+                            ? taskFailureMessage || failureMessage
                             : successMessage
                     }
+                />
+            )}
+            {variant && value?.options?.length > 0 && (
+                <SelectInputUI
+                    options={value.options}
+                    value={value.selected || ''}
+                    onChange={(selected) => {
+                        onChange?.({
+                            ...value,
+                            selected,
+                        });
+                    }}
                 />
             )}
         </>
     );
 };
+
 const SequentialTaskExecutor: FieldComponent = {
-    render: ({ field }) => (
+    render: ({ field, value, onChange, canAccess }) => (
         <SequentialTaskExecutorUI
             buttonText={field.buttonText}
             buttonIcon={field.buttonIcon}
             apilink={field.apilink}
+            variant={field.variant}
             parameter={field.parameter}
             action={field.action}
             interval={field.interval}
@@ -263,6 +316,13 @@ const SequentialTaskExecutor: FieldComponent = {
             onComplete={field.onComplete}
             onError={field.onError}
             onTaskComplete={field.onTaskComplete}
+            value={value || ''}
+            onChange={(val) => {
+                if (!canAccess) {
+                    return;
+                }
+                onChange(val);
+            }}
         />
     ),
 };

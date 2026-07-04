@@ -144,6 +144,33 @@ class Install {
             );
             update_option( Utill::MULTIVENDORX_SETTINGS['tax-compliance'], array_merge( $previous_tax_settings, $tax_compliance_settings ) );
         }
+
+        if ( version_compare( $previous_version, '5.0.8', '<' ) ) {
+            $previous_settings = get_option( Utill::MULTIVENDORX_SETTINGS['product-compliance'], array() );
+            $product_compliance_settings['prohibited_product_categories'] = array(
+                'product_image' => array(
+                    'label'      => 'Product Image',
+                    'mandatory' => true,
+                ),
+                'product_description'   => array(
+                    'label'      => 'Product description',
+                    'mandatory' => true
+                ),
+                'specifications' => array(
+                    'label'      => 'Specifications'
+                ),
+                'manufacturer_importer_details' => array(
+                    'label'      => 'Manufacturer / importer details'
+                ),
+                'ingredients_materials' => array(
+                    'label'      => 'Ingredients / materials'
+                ),
+                'usage_instructions' => array(
+                    'label'      => 'Usage instructions'
+                ),
+            );
+            update_option( Utill::MULTIVENDORX_SETTINGS['product-compliance'], array_merge( $previous_settings, $product_compliance_settings ) );
+        }
             
     }
 
@@ -1162,20 +1189,25 @@ class Install {
         );
         $product_compliance_settings['who_can_report']       = 'logged_in';
         $product_compliance_settings['prohibited_product_categories'] = array(
-            'weapons-&-ammunition' => array(
-                'label'      => 'Weapons & ammunition',
-                'isCustom'   => true,
-                'disableBtn' => true,
+            'product_image' => array(
+                'label'      => 'Product Image',
+			    'mandatory' => true,
             ),
-            'drugs-&-substances'   => array(
-                'label'      => 'Illegal drugs & substances',
-                'isCustom'   => true,
-                'disableBtn' => true,
+            'product_description'   => array(
+                'label'      => 'Product description',
+			    'mandatory' => true
             ),
-            'counterfeit-products' => array(
-                'label'      => 'Counterfeit products',
-                'isCustom'   => true,
-                'disableBtn' => true,
+            'specifications' => array(
+                'label'      => 'Specifications'
+            ),
+            'manufacturer_importer_details' => array(
+                'label'      => 'Manufacturer / importer details'
+            ),
+            'ingredients_materials' => array(
+                'label'      => 'Ingredients / materials'
+            ),
+            'usage_instructions' => array(
+                'label'      => 'Usage instructions'
             ),
         );
 

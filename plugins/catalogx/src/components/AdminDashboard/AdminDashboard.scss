@@ -25,10 +25,6 @@
     display: flex;
   }
 
-  a:hover {
-    color: #000;
-  }
-
   .image {
     display: flex;
     flex-direction: column;
@@ -195,7 +191,7 @@
 .right-pro-banner {
   .title {
     font-size: 1.45rem;
-    line-height: 1.313rem;
+    line-height: 1.313;
     color: $text-color;
     font-weight: 600;
     margin-top: 0.5rem;
@@ -210,6 +206,8 @@
     text-align: center;
     margin: 0;
     margin-bottom: 1.5rem;
+    width: 100%;
+    overflow: hidden;
 
     img {
       height: 20rem;

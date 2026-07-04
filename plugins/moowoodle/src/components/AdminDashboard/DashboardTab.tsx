@@ -133,7 +133,7 @@ const DashboardTab: React.FC<object> = () => {
 			),
 			iconClass: 'knowledgebase',
 			linkText: __('Explore Docs', 'moowoodle'),
-			href: 'https://dualcube.com/knowledgebase/',
+			href: 'https://dualcube.com/knowledgebase/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
 		},
 		{
 			title: __('Expert consultation', 'moowoodle'),
@@ -143,7 +143,7 @@ const DashboardTab: React.FC<object> = () => {
 			),
 			iconClass: 'preview',
 			linkText: __('Book Consultation', 'moowoodle'),
-			href: 'https://dualcube.com/custom-development/',
+			href: 'https://dualcube.com/custom-development/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
 		},
 	];
 
@@ -318,7 +318,7 @@ const DashboardTab: React.FC<object> = () => {
 													{__('Pro', 'moowoodle')}
 												</span>
 												<a
-													href="https://catalogx.com/pricing/"
+													href="https://catalogx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
 													target="_blank"
 													rel="noopener noreferrer"
 												>
@@ -405,7 +405,7 @@ const DashboardTab: React.FC<object> = () => {
 													{__('Pro', 'moowoodle')}
 												</span>
 												<a
-													href="https://notifima.com/pricing/"
+													href="https://notifima.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
 													target="_blank"
 													rel="noopener noreferrer"
 												>

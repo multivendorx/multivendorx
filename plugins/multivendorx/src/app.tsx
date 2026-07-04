@@ -218,25 +218,25 @@ const App = () => {
 		{
 			title: __("What's New", 'multivendorx'),
 			icon: 'new',
-			link: 'https://multivendorx.com/latest-release/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+			link: 'https://multivendorx.com/release/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			targetBlank: true,
 		},
 		{
 			title: __('Get Support', 'multivendorx'),
 			icon: 'customer-support',
-			link: 'https://multivendorx.com/support-forum/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+			link: 'https://multivendorx.com/support-forum/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			targetBlank: true,
 		},
 		{
 			title: __('Community', 'multivendorx'),
 			icon: 'global-community',
-			link: 'https://multivendorx.com/community/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+			link: 'https://multivendorx.com/community/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			targetBlank: true,
 		},
 		{
 			title: __('Documentation', 'multivendorx'),
 			icon: 'knowledgebase',
-			link: 'https://multivendorx.com/docs/knowledgebase/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+			link: 'https://multivendorx.com/docs/knowledgebase/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			targetBlank: true,
 		},
 		{

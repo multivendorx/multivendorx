@@ -2,8 +2,8 @@ import { useState } from 'react';
 import {
     Column,
     Container,
-    InfoItem,
     NavigatorHeader,
+    ComponentStatusView,
     PopupUI,
     TableCard,
 } from 'zyra';
@@ -61,17 +61,15 @@ const Rules = () => {
                 const brand = getLabel(appLocalizer.product_brands, row.brand_id, 'Brands');
 
                 const lines = [
-                    product && `Product: ${product}`,
-                    category && `Category: ${category}`,
-                    brand && `Brand: ${brand}`,
+                    product && (<span><b>{__('Product:', 'catalogx')}</b> {product}</span>),
+                    category && (<span><b>{__('Category:', 'catalogx')}</b> {category}</span>),
+                    brand && (<span><b>{__('Brand:', 'catalogx')}</b> {brand}</span>),
                 ].filter(Boolean);
 
                 return (
-                    <div>
-                        {lines.map((item: string, index: number) => (
-                            <div key={index}>{item}</div>
-                        ))}
-                    </div>
+                    <>
+                        {lines.map((item: string, index: number) => (item))}
+                    </>
                 );
             }
         },
@@ -94,16 +92,12 @@ const Rules = () => {
                 const role = getLabel(appLocalizer.role_array, row.role_id, 'Roles');
 
                 const lines = [
-                    user && `User: ${user}`,
-                    role && `Role: ${role}`,
+                    user && (<span><b>{__('User:', 'catalogx')}</b> {user}</span>),
+                    role && (<span><b>{__('Role:', 'catalogx')}</b> {role}</span>),
                 ].filter(Boolean);
 
                 return (
-                    <div >
-                        {lines.map((item: string, index: number) => (
-                            <div key={index}>{item}</div>
-                        ))}
-                    </div>
+                    <> {lines.map((item: string, index: number) => (item))} </>
                 );
             }
         },
@@ -112,7 +106,13 @@ const Rules = () => {
             render: (row: any) => {
                 const amount = row.amount ?? 0;
                 const quantity = Number(row.quantity);
-                return `${amount} ${appLocalizer.currency} for min ${quantity ? quantity : ''} quantity`;
+
+                const price =
+                    row.type === 'percentage'
+                        ? `${amount} Percent`
+                        : `${amount} ${appLocalizer.currency}`;
+
+                return `${price} for min ${quantity || ''} quantity`;
             }
         },
 
@@ -120,16 +120,63 @@ const Rules = () => {
             label: __('Status', 'catalogx'),
             render: (row: RuleRow) =>
                 String(row.active) === '1'
-                    ? __('Active', 'catalogx')
-                    : __('Suspended', 'catalogx'),
+                    ? <span className='admin-badge green'>{__('Active', 'catalogx')} </span>
+                    : <span className='admin-badge red'>{__('Suspended', 'catalogx')} </span>,
+        },
+        action: {
+            type: 'action',
+            label: __('Action', 'catalogx'),
+            actions: [
+                {
+                    label: (row: any) =>
+                        row.active === '1'
+                            ? __('Suspend', 'catalogx')
+                            : __('Activate', 'catalogx'),
+                    icon: 'refresh',
+                },
+                {
+                    label: __('Edit', 'catalogx'),
+                    icon: 'edit',
+                },
+                {
+                    label: __('Delete', 'catalogx'),
+                    icon: 'delete',
+                },
+            ],
         },
     };
+    
+    const filters = [
+        {
+            key: 'applicable_for',
+            label: __('Applicable For', 'catalogx'),
+            type: 'select',
+            options: [
+                { label: __('All', 'catalogx'), value: '' },
+                { label: __('Product', 'catalogx'), value: 'product' },
+                { label: __('Category', 'catalogx'), value: 'category' },
+                { label: __('Brand', 'catalogx'), value: 'brand' },
+            ],
+        },
+        {
+            key: 'for_whom',
+            label: __('For Whom', 'catalogx'),
+            type: 'select',
+            options: [
+                { label: __('All', 'catalogx'), value: '' },
+                { label: __('User', 'catalogx'), value: 'user' },
+                { label: __('Role', 'catalogx'), value: 'role' },
+            ],
+        },
+    ];
 
     const defaultTableProps = {
         headers,
-
+        showMenu: false,
+        filters,
         rows: dummyRules,
         totalRows: dummyRules.length,
+        onRowReorder: () => {},
     };
 
     tableProps = applyFilters(
@@ -137,15 +184,42 @@ const Rules = () => {
         defaultTableProps
     );
 
-    const handleTableWrapperClick = () => {
+    const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
-            setopenPopup(true);
+            return (
+                <div onClick={() => setopenPopup(true)}>
+                    <TableCard {...tableProps} />
+                </div>
+            );
         }
+
+        if (!appLocalizer.active_modules.includes('rules')) {
+            return (
+                <ComponentStatusView
+                    title={__(
+                        'Looks like product rules aren’t set up yet!',
+                        'catalogx'
+                    )}
+                    desc={__(
+                        'Enable the Rules module to create and manage custom catalog rules for your products.',
+                        'catalogx'
+                    )}
+                    buttonText={__('Enable Now', 'catalogx')}
+                    buttonLink={`${appLocalizer.admin_url}#&tab=modules&module=rules`}
+                />
+            );
+        }
+
+        return (
+            <>
+                <TableCard {...tableProps} />
+                {tableProps.popup}
+            </>
+        );
     };
 
-
     return (
-        <div>
+        <>
             {openPopup && (
                 <PopupUI
                     position="lightbox"
@@ -154,7 +228,11 @@ const Rules = () => {
                     width={31.25}
                     height="auto"
                 >
-                    <ShowProPopup />
+                    {!appLocalizer.khali_dabba ? (
+                        <ShowProPopup />
+                    ) : (
+                        <ShowProPopup moduleName="rules" />
+                    )}
                 </PopupUI>
             )}
             <NavigatorHeader
@@ -171,7 +249,7 @@ const Rules = () => {
                         onClick: () => {
                             if (tableProps?.setAddingNewRule) {
                                 tableProps.setAddingNewRule(true);
-                            }else{
+                            } else {
                                 setopenPopup(true)
                             }
                         },
@@ -183,13 +261,10 @@ const Rules = () => {
             )}
             <Container general>
                 <Column>
-                    <div onClick={handleTableWrapperClick}>
-                        <TableCard {...tableProps} />
-                        {tableProps.popup}
-                    </div>
+                    {renderTableContent()}
                 </Column>
             </Container>
-        </div>
+        </>
     );
 };
 

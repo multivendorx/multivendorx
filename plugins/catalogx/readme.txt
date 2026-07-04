@@ -1,11 +1,11 @@
 === CatalogX - Product Catalog Mode & product Enquiry, Request Quote for WooCommerce, Wholesale Prices, B2B, Wholesale User Roles, Dynamic Pricing, Tired Pricing & More ===
 Contributors: wcmp
 Tags: product enquiry for woocommerce, request a quote, b2b , dynamic pricing, wholesale pricing, 
-Donate link: https://multivendorx.com/donate
+Donate link: https://multivendorx.com/donate?utm_source=wporg&utm_medium=plugindescription&utm_campaign=catalogxwporg
 Requires at least: 6.4
 Tested up to: 6.8.1
 Requires PHP: 8.0
-Stable tag: 6.0.7
+Stable tag: 6.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -221,6 +221,12 @@ Answer: Simply enable the 'Product Enquiry Button When Product is Out Of Stock' 
 7. Enquiry Dashbaord
 
 == Changelog ==
+
+= 6.1.0 - 2026-06-30 =
+* Added     - Compatibility of WordPress 7.0.0.
+* Added     - Compatibility with WooCommerce 10.9.1.
+* Added     - Refreshed the overall UI/UX of the settings panel for an improved user experience.
+
 = 6.0.6 - 2025-06-10 =
 * Fixed     - Issue related to form field functionality.
 

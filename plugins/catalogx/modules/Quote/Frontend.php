@@ -32,11 +32,16 @@ class Frontend {
 			return;
         }
 
-        $display_quote_button = CatalogX()->setting->get_setting( 'quote_user_permission', array() );
-        if ( ! empty( $display_quote_button ) && ! is_user_logged_in() ) {
+        $display_quote_button = CatalogX()->setting->get_setting( 'quote_user_permission', '' );
+
+        if ( 'logged_in_only' === $display_quote_button && ! is_user_logged_in() ) {
             return;
         }
-        add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_quote_button' ) );
+
+        if ( !( wp_is_block_theme() || file_exists( get_theme_file_path( 'theme.json' ) ) ) ) {
+            add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_quote_button' ) );
+        }
+
         add_action( 'woocommerce_after_shop_loop_item', array( $this, 'add_button_for_quote' ), 11 );
     }
 
@@ -74,6 +79,16 @@ class Frontend {
     public function add_button_for_quote( $product_obj ) {
         global $product;
 
+        if ( ! Util::is_available() ) {
+            return;
+        }
+        
+        $display_quote_button = CatalogX()->setting->get_setting( 'quote_user_permission', '' );
+
+        if ( 'logged_in_only' === $display_quote_button && ! is_user_logged_in() ) {
+            return;
+        }
+        
         $product_obj = is_int( $product_obj ) ? wc_get_product( $product_obj ) : ( $product_obj ? $product_obj : $product );
 
         if ( empty( $product_obj ) ) {
@@ -81,7 +96,7 @@ class Frontend {
         }
 
         $this->enqueue_scripts();
-
+        
         // Exclusion settings for shop and single product page.
         if ( ! Util::is_available_for_product( $product_obj->get_id() ) ) {
             return;
@@ -121,8 +136,9 @@ class Frontend {
             return '';
         }
 
-        $display_quote_button = CatalogX()->setting->get_setting( 'quote_user_permission', array() );
-        if ( ! empty( $display_quote_button ) && ! is_user_logged_in() ) {
+        $display_quote_button = CatalogX()->setting->get_setting( 'quote_user_permission', '' );
+
+        if ( 'logged_in_only' === $display_quote_button && ! is_user_logged_in() ) {
             return '';
         }
 

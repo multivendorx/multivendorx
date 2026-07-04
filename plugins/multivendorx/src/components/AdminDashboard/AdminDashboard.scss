@@ -24,10 +24,6 @@
         display: flex;
     }
 
-    a:hover {
-        color: #000;
-    }
-
     .image {
         display: flex;
         flex-direction: column;
@@ -243,7 +239,7 @@
 .right-pro-banner {
     .title {
         font-size: 1.45rem;
-        line-height: 1.313rem;
+        line-height: 1.313;
         color: $text-color;
         font-weight: 600;
         margin-top: 0.5rem;
@@ -599,36 +595,9 @@
     // end setting banner template
 }
 
-.content {
-    max-height: 70vh;
-
-    &.multi {
-
-        .section {
-            padding: 1rem 0;
-
-            .order-overview {
-                width: 50%;
-            }
-
-            .commission-overview {
-                width: 50%;
-            }
-
-            &.right {
-                display: flex;
-                gap: 1.5rem;
-            }
-        }
-    }
-}
 
 
-
-
-
-
-@media screen and (width <=600px) {
+@media screen and (width <=37.5rem) {
     .pro-banner-wrapper {
         flex-direction: column;
         align-items: center;

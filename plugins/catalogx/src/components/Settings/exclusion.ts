@@ -2,9 +2,9 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'enquiry-quote-exclusion',
-    priority: 40,
+    priority: 5,
 
-    headerTitle: __('Exclusion', 'catalogx'),
+    headerTitle: __('Access Rules', 'catalogx'),
 
     headerDescription: __(
         'Exclude catalog viewing, enquiries, and quotes by user roles and product attributes.',
@@ -49,6 +49,10 @@ export default {
                             type: 'multi-select',
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.role_array,
+                            maxVisibleItems: 1,
+                            enableOverflowPopup: true,
+                            popupTitle: __('Selected user role', 'catalogx'),
+                            popupWidth: 28,
                             isClearable: true,
                             size: 15
                         },
@@ -65,6 +69,10 @@ export default {
                             type: 'multi-select',
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.users_data,
+                            maxVisibleItems: 1,
+                            enableOverflowPopup: true,
+                            popupTitle: __('Selected user name', 'catalogx'),
+                            popupWidth: 28,
                             isClearable: true,
                             size: 15
                         },
@@ -81,6 +89,10 @@ export default {
                             type: 'multi-select',
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.products_data,
+                            maxVisibleItems: 1,
+                            enableOverflowPopup: true,
+                            popupTitle: __('Selected user role', 'catalogx'),
+                            popupWidth: 28,
                             isClearable: true,
                             size: 15
                         },
@@ -97,6 +109,10 @@ export default {
                             type: 'multi-select',
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.all_product_categories,
+                            maxVisibleItems: 1,
+                            enableOverflowPopup: true,
+                            popupTitle: __('Selected Category', 'catalogx'),
+                            popupWidth: 28,
                             isClearable: true,
                             size: 15
                         },
@@ -113,6 +129,10 @@ export default {
                             type: 'multi-select',
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.all_product_tag,
+                            maxVisibleItems: 1,
+                            enableOverflowPopup: true,
+                            popupTitle: __('Selected Tag', 'catalogx'),
+                            popupWidth: 28,
                             isClearable: true,
                             size: 15
                         },
@@ -129,6 +149,10 @@ export default {
                             type: 'multi-select',
                             placeholder: __('Select...', 'catalogx'),
                             options: appLocalizer.product_brands,
+                            maxVisibleItems: 1,
+                            enableOverflowPopup: true,
+                            popupTitle: __('Selected brand', 'catalogx'),
+                            popupWidth: 28,
                             isClearable: true,
                             size: 15
                         },

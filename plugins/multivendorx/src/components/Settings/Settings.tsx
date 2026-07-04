@@ -92,9 +92,9 @@ const Settings: React.FC<SettingsProps> = () => {
 		if (currentTab === 'store-status') {
 			return <StoreStatus />;
 		}
-		// if (currentTab === 'product-compliance') {
-		// 	return <ProductCompliance />;
-		// }
+		if (currentTab === 'product-compliance') {
+			return <ProductCompliance />;
+		}
 		if (currentTab === 'invoices') {
 			return <Invoice />;
 		}
