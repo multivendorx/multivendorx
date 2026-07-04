@@ -227,10 +227,17 @@ class QuoteCart extends \WP_REST_Controller {
         try {
             $product_id = $request->get_param( 'productId' );
             $key        = $request->get_param( 'key' );
-            $status     = false;
-            if ( $product_id && isset( $key ) ) {
-                $status = CatalogX()->quotecart->remove_cart_item( $key );
+
+            if ( ! isset( $key ) || '' === (string) $key ) {
+                return new \WP_Error(
+                    'catalogx_missing_key',
+                    __( 'Missing required parameter: key.', 'catalogx' ),
+                    array( 'status' => 400 )
+                );
             }
+
+            $status = CatalogX()->quotecart->remove_cart_item( $key );
+
             return rest_ensure_response(
                 array(
                     'status'    => $status,
