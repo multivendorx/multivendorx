@@ -112,7 +112,11 @@ class QuoteCart extends \WP_REST_Controller {
             // Prepare the quote list.
             $quote_list = array();
             foreach ( $paginated_cart_data as $key => $item ) {
-                $product   = wc_get_product( $item['product_id'] );
+                $product = wc_get_product( $item['product_id'] );
+                if ( ! ( $product instanceof \WC_Product ) ) {
+                    continue;
+                }
+
                 $thumbnail = $product->get_image( apply_filters( 'catalogx_quote_cart_item_thumbnail_size', array( 84, 84 ) ) );
                 $name      = '';
                 if ( $item['variation'] ) {
