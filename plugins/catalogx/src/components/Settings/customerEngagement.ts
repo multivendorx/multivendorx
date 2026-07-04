@@ -3,7 +3,7 @@ export default {
     id: 'customer-engagement',
     priority: 3,
     headerTitle: __('Customer Engagement', 'catalogx'),
-    settingTitle: __('Purchase experience','catalogx'),
+    settingTitle: __('Purchase experience', 'catalogx'),
     headerDescription: __(
         'Define how customers move from product browsing to purchasing across your store.',
         'catalogx'
@@ -12,7 +12,7 @@ export default {
     submitUrl: 'settings',
     modal: [
         //shopping
-        
+
         {
             key: 'enable_cart_checkout',
             type: 'choice-toggle',
@@ -73,8 +73,8 @@ export default {
             proSetting: true,
             moduleEnabled: 'catalog',
         },
-        //enquiry
-         {
+        // //enquiry
+        {
             key: 'section',
             type: 'section',
             title: __('Enquiry journey', 'catalogx'),
@@ -82,7 +82,7 @@ export default {
                 'catalogx'
             ),
         },
-        
+
         {
             key: 'enquiry_user_permission',
             type: 'choice-toggle',
@@ -249,7 +249,7 @@ export default {
             moduleEnabled: 'enquiry'
         },
 
-        //quote
+        // //quote
         {
             key: 'section',
             type: 'section',
@@ -302,8 +302,8 @@ export default {
             moduleEnabled: 'quote',
         },
 
-        
-        //extra
+
+        // //extra
         {
             key: 'section',
             type: 'section',

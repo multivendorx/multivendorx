@@ -226,7 +226,7 @@ class Installer {
         );
 
         $dashboard_settings = array_map( 'intval', $dashboard_settings );
-        update_option( Utill::CATALOGX_SETTINGS['dashboard'], $dashboard_settings );
+        update_option( Utill::CATALOGX_SETTINGS['pages-shortcodes'], $dashboard_settings );
 
         // Update form settings.
         $free_form = array(
@@ -632,7 +632,7 @@ class Installer {
 
             $settings['enquiry_user_permission'] = ! empty( $settings['enquiry_user_permission'] ) ? 'logged_in_only' : 'everyone';
             $settings['quote_user_permission'] = ! empty( $settings['quote_user_permission'] )? 'logged_in_only' : 'everyone';
-            $settings['enable_cart_checkout']  = ! empty( $settings['quote_user_permission'] )? 'buy_mode' : 'catalog_only';
+            $settings['enable_cart_checkout']  = ! empty( $settings['enable_cart_checkout'] )? 'buy_mode' : 'catalog_only';
             $settings['is_page_redirect']      = ! empty( $settings['is_page_redirect'] )? 'dedicated_page' : 'current_page';
 
             update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $settings );
@@ -650,7 +650,7 @@ class Installer {
 
             update_option( Utill::CATALOGX_SETTINGS['wholesale'], $wholesale_settings );
             update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], get_option( 'catalogx_enquiry_email_temp_settings', array() ) );
-            update_option( Utill::CATALOGX_SETTINGS['dashboard'], get_option( 'catalogx_pages_settings', array() ) );
+            update_option( Utill::CATALOGX_SETTINGS['pages-shortcodes'], get_option( 'catalogx_pages_settings', array() ) );
 
             delete_option( 'catalogx_enquiry_email_temp_settings' );
             delete_option( 'catalogx_pages_settings' );

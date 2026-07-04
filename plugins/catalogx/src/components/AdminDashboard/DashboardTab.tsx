@@ -97,7 +97,7 @@ const DashboardTab: React.FC<object> = () => {
 			});
 
 			window.open(
-				`${appLocalizer.admin_url}plugins.php?s=${slug}`,
+				`${appLocalizer.url}plugins.php?s=${slug}`,
 				'_blank'
 			);
 			return;
