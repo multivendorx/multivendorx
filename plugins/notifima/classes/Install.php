@@ -550,7 +550,12 @@ class Install {
 
         if ( version_compare( $previous_version, '3.0.0', '<=' ) ) {
             $previous_mailchimp_settings = get_option( 'woo_stock_manager_mailchimp_tab_settings', array() );
+            $appearance_settings['is_mailchimp_enable'] = ! empty( $previous_mailchimp_settings ['is_mailchimp_enable'] ) ? 'mailchimp' : 'store_only';
 
+            $appearance_settings['mailchimp'] = array(
+                'options'  => $previous_mailchimp_settings ['mailchimp_list_options'] ?? array(),
+                'selected' => $previous_mailchimp_settings ['selected_mailchimp_list'] ?? '',
+            );
             update_option( 'notifima_mailchimp_settings', $previous_mailchimp_settings );
 
             $version_key = get_option( 'woo_stock_manager_version', '' );
