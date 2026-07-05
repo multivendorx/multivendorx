@@ -2,7 +2,7 @@ import { __, sprintf } from '@wordpress/i18n';
 export default {
     id: 'customer-engagement',
     priority: 3,
-    headerTitle: __('Customer Engagement', 'catalogx'),
+    headerTitle: __('Enquiry & Quote', 'catalogx'),
     settingTitle: __('Purchase experience','catalogx'),
     headerDescription: __(
         'Define how customers move from product browsing to purchasing across your store.',
@@ -256,7 +256,7 @@ export default {
             desc: __('Control who can request quotations and how long quotations remain available.',
                 'catalogx'
             ),
-            title: __('Quotation management', 'catalogx'),
+            title: __('Quotation journey', 'catalogx'),
         },
         {
             key: 'quote_user_permission',
