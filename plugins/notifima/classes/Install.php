@@ -604,11 +604,12 @@ class Install {
             }
         }
 
-        update_option( Utill::NOTIFIMA_SETTINGS['automation'], array_merge( $appearance_settings, $previous_appearance_settings ) );
-        update_option( Utill::NOTIFIMA_SETTINGS['customer-messages'], array_merge( $submit_settings, $previous_submit_settings ) );
+        update_option( Utill::NOTIFIMA_SETTINGS['automation'], array_merge( $previous_appearance_settings, $appearance_settings ) );
+        update_option( Utill::NOTIFIMA_SETTINGS['customer-messages'], array_merge( $previous_submit_settings, $submit_settings ) );
 
-        $email_settings['additional_alert_email'] = ! empty( $appearance_settings['additional_alert_email'] ) ? $appearance_settings['additional_alert_email'] : '';
-        update_option( Utill::NOTIFIMA_SETTINGS['notifications'], array_merge( $email_settings, $previous_email_settings ) );
+        $email_settings['additional_alert_email'] = ! empty( $previous_appearance_settings['additional_alert_email'] ) ? $previous_appearance_settings['additional_alert_email'] : '';
+        update_option( Utill::NOTIFIMA_SETTINGS['notifications'], array_merge( $previous_email_settings, $email_settings ) );
+
     }
 
     /**
