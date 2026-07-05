@@ -12,7 +12,6 @@ export default {
     submitUrl: 'settings',
     modal: [
         //shopping
-
         {
             key: 'enable_cart_checkout',
             type: 'choice-toggle',
@@ -73,7 +72,7 @@ export default {
             proSetting: true,
             moduleEnabled: 'catalog',
         },
-        // //enquiry
+        //enquiry
         {
             key: 'section',
             type: 'section',
@@ -231,8 +230,7 @@ export default {
             },
             moduleEnabled: 'enquiry'
         },
-
-        // //quote
+        //quote
         {
             key: 'section',
             type: 'section',
@@ -284,9 +282,7 @@ export default {
             proSetting: true,
             moduleEnabled: 'quote',
         },
-
-
-        // //extra
+        //extra
         {
             key: 'section',
             type: 'section',
