@@ -139,23 +139,6 @@ export default {
             ],
             moduleEnabled: 'enquiry',
         },
-        // {
-        //     key: 'is_enable_out_of_stock',
-        //     type: 'checkbox',
-        //     label: __('Enquiry for out-of-stock products only', 'catalogx'),
-        //     desc: __(
-        //         'Enquiry button is shown exclusively for products that are out of stock. For items that are in stock, the Add-to-Cart button will be displayed instead.',
-        //         'catalogx'
-        //     ),
-        //     options: [
-        //         {
-        //             key: 'is_enable_out_of_stock',
-        //             value: 'is_enable_out_of_stock',
-        //         },
-        //     ],
-        //     look: 'toggle',
-        //     moduleEnabled: 'enquiry',
-        // },
         // This settings for notify me it works when only site off buying settings on and stock alert plugin active
         // popup - propopup, modulepopup
         {
@@ -178,7 +161,7 @@ export default {
             dependentPlugin: [
                 {
                     plugin: 'woocommerce-product-stock-alert/product_stock_alert.php',
-                    name: 'catalogx',
+                    name: 'Notifima',
                     link: 'https://wordpress.org/plugins/woocommerce-product-stock-alert/',
                 }
             ]
