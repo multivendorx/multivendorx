@@ -170,15 +170,15 @@ final class CatalogX {
     public function register_services() {
         $this->services['current_user_id'] = get_current_user_id();
         $this->services['current_user']    = wp_get_current_user();
-        $this->services['setting']   = new Setting();
-        $this->services['admin']     = new Admin();
-        $this->services['frontend']  = new Frontend();
-        $this->services['rest']      = new RestAPI\Rest();
-        $this->services['util']      = new Utill();
-        $this->services['modules']   = new Modules();
-        $this->services['shortcode'] = new Shortcode();
-        $this->services['session']   = new Core\Session();
-        $this->services['quotecart'] = new Core\QuoteCart();
+        $this->services['setting']         = new Setting();
+        $this->services['admin']           = new Admin();
+        $this->services['frontend']        = new Frontend();
+        $this->services['rest']            = new RestAPI\Rest();
+        $this->services['util']            = new Utill();
+        $this->services['modules']         = new Modules();
+        $this->services['shortcode']       = new Shortcode();
+        $this->services['session']         = new Core\Session();
+        $this->services['quotecart']       = new Core\QuoteCart();
         $this->services['promotions']      = new Promotions();
         // Load all active modules.
         $this->services['modules']->load_active_modules();
@@ -269,7 +269,7 @@ final class CatalogX {
             update_option( Utill::CATALOGX_OTHER_SETTINGS['log_file'], $log_file_name );
         }
 
-        $this->services['log_file']          = CatalogX()->catalogx_logs_dir . '/' . $log_file_name;
+        $this->services['log_file'] = CatalogX()->catalogx_logs_dir . '/' . $log_file_name;
     }
 
     /**

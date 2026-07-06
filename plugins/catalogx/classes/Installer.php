@@ -199,16 +199,15 @@ class Installer {
         );
 
         $all_settings = array(
-            'enable_cart_checkout'      => 'catalog_only',
-            'redirect_cart_page'        => '',
-            'enquiry_user_permission'   => 'everyone',
-            'is_enable_out_of_stock'    => 'all_products',
-            'quote_user_permission'     => 'everyone',
-            'additional_alert_email'    => CatalogX()->admin_email
+            'enable_cart_checkout'    => 'catalog_only',
+            'redirect_cart_page'      => '',
+            'enquiry_user_permission' => 'everyone',
+            'is_enable_out_of_stock'  => 'all_products',
+            'quote_user_permission'   => 'everyone',
+            'additional_alert_email'  => CatalogX()->admin_email,
         );
 
-        update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array_merge($all_settings,$enquiry_quote_settings) );
-
+        update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array_merge( $all_settings, $enquiry_quote_settings ) );
 
         // Update pages settings.
         $dashboard_settings = array_filter(
@@ -276,11 +275,11 @@ class Installer {
                 'not_editable' => true,
             ),
             array(
-				'id'           => 4,
-				'type'         => 'button',
-				'label'        => 'Submit',
-				'text'         => 'Submit',
-				'name'         => 'submit',
+				'id'    => 4,
+				'type'  => 'button',
+				'label' => 'Submit',
+				'text'  => 'Submit',
+				'name'  => 'submit',
 			),
         );
 
@@ -323,7 +322,7 @@ class Installer {
 
         $wholesale_from_settings = array(
             'wholesale_from_settings' => array(
-                'formfieldlist'  => $wholesale_form,
+                'formfieldlist' => $wholesale_form,
                 'buttonsetting' => array(),
             ),
         );
@@ -376,33 +375,33 @@ class Installer {
 
             $previous_enquiry_catalog_customization_settings = get_option( 'catalogx_enquiry-catalog-customization_settings', array() );
             if ( ! empty( $previous_enquiry_catalog_customization_settings ) ) {
-            update_option( Utill::CATALOGX_SETTINGS['enquiry-catalog-customization'], $previous_enquiry_catalog_customization_settings );
-            delete_option( 'catalogx_enquiry-catalog-customization_settings' );
+				update_option( Utill::CATALOGX_SETTINGS['enquiry-catalog-customization'], $previous_enquiry_catalog_customization_settings );
+				delete_option( 'catalogx_enquiry-catalog-customization_settings' );
             }
             $previous_all_settings_settings = get_option( 'catalogx_all-settings_settings', array() );
             if ( ! empty( $previous_all_settings_settings ) ) {
-            update_option( 'catalogx_all_settings_settings', $previous_all_settings_settings );
-            delete_option( 'catalogx_all-settings_settings' );
+				update_option( 'catalogx_all_settings_settings', $previous_all_settings_settings );
+				delete_option( 'catalogx_all-settings_settings' );
             }
             $previous_enquiry_quote_exclusion_settings = get_option( 'catalogx_enquiry-quote-exclusion_settings', array() );
             if ( ! empty( $previous_enquiry_quote_exclusion_settings ) ) {
-            update_option( Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'], $previous_enquiry_quote_exclusion_settings );
-            delete_option( 'catalogx_enquiry-quote-exclusion_settings' );
+				update_option( Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'], $previous_enquiry_quote_exclusion_settings );
+				delete_option( 'catalogx_enquiry-quote-exclusion_settings' );
             }
             $previous_enquiry_form_customization_settings = get_option( 'catalogx_enquiry-form-customization_settings', array() );
             if ( ! empty( $previous_enquiry_form_customization_settings ) ) {
-            update_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], $previous_enquiry_form_customization_settings );
-            delete_option( 'catalogx_enquiry-form-customization_settings' );
+				update_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], $previous_enquiry_form_customization_settings );
+				delete_option( 'catalogx_enquiry-form-customization_settings' );
             }
             $previous_enquiry_email_temp_settings = get_option( 'catalogx_enquiry-email-temp_settings', array() );
             if ( ! empty( $previous_enquiry_email_temp_settings ) ) {
-            update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], $previous_enquiry_email_temp_settings );
-            delete_option( 'catalogx_enquiry-email-temp_settings' );
+				update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], $previous_enquiry_email_temp_settings );
+				delete_option( 'catalogx_enquiry-email-temp_settings' );
             }
             $previous_wholesale_registration_settings = get_option( 'catalogx_wholesale-registration_settings', array() );
             if ( ! empty( $previous_wholesale_registration_settings ) ) {
-            update_option( Utill::CATALOGX_SETTINGS['wholesale-registration'], $previous_wholesale_registration_settings );
-            delete_option( 'catalogx_wholesale-registration_settings' );
+				update_option( Utill::CATALOGX_SETTINGS['wholesale-registration'], $previous_wholesale_registration_settings );
+				delete_option( 'catalogx_wholesale-registration_settings' );
             }
         }
 
@@ -411,110 +410,110 @@ class Installer {
             /**
              * Form Settings Migration
              */
-            $from_settings = get_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], array());
+            $from_settings = get_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], array() );
 
             if ( ! empty( $from_settings ) ) {
                 $free_form_settings = $from_settings['freefromsetting'] ?? array();
                 $pro_form_settings  = $from_settings['formsettings']['formfieldlist'] ?? array();
 
-                $field_map = [
-                    'name' => [
+                $field_map = array(
+                    'name'           => array(
                         'id'          => 1,
                         'type'        => 'text',
                         'label'       => 'Name',
                         'placeholder' => 'Enter your name here',
                         'name'        => 'name',
-                    ],
-                    'email' => [
+                    ),
+                    'email'          => array(
                         'id'          => 2,
                         'type'        => 'email',
                         'label'       => 'Email',
                         'placeholder' => 'Enter your email here',
                         'name'        => 'email',
-                    ],
-                    'phone' => [
+                    ),
+                    'phone'          => array(
                         'id'          => 3,
                         'type'        => 'text',
                         'label'       => 'Phone',
                         'placeholder' => 'Enter your phone number here',
                         'name'        => 'phone',
-                    ],
-                    'address' => [
+                    ),
+                    'address'        => array(
                         'id'          => 4,
                         'type'        => 'text',
                         'label'       => 'Address',
                         'placeholder' => 'Enter your address here',
                         'name'        => 'address',
-                    ],
-                    'subject' => [
+                    ),
+                    'subject'        => array(
                         'id'          => 5,
                         'type'        => 'text',
                         'label'       => 'Subject',
                         'placeholder' => 'Enter the subject of your enquiry here',
                         'name'        => 'subject',
-                    ],
-                    'comment' => [
+                    ),
+                    'comment'        => array(
                         'id'          => 6,
                         'type'        => 'text',
                         'label'       => 'Comment',
                         'placeholder' => 'Enter the details of your enquiry here',
                         'name'        => 'comment',
-                    ],
-                    'filesize-limit' => [
+                    ),
+                    'filesize-limit' => array(
                         'id'          => 7,
                         'type'        => 'fileupload',
                         'label'       => 'Filesize Limit',
                         'placeholder' => '',
                         'name'        => 'File upload size limit',
-                    ],
-                    'fileupload' => [
+                    ),
+                    'fileupload'     => array(
                         'id'          => 8,
                         'type'        => 'attachment',
                         'label'       => 'Fileupload',
                         'placeholder' => '',
                         'name'        => 'File upload',
-                    ],
-                    'captcha' => [
+                    ),
+                    'captcha'        => array(
                         'id'          => 9,
                         'type'        => 'custom-recaptcha',
                         'label'       => 'Captcha',
                         'placeholder' => '',
                         'name'        => 'Captcha',
-                    ],
-                ];
+                    ),
+                );
 
-                $migrated_free_enquiry_form = [];
+                $migrated_free_enquiry_form = array();
 
                 // Add enabled fields.
-                foreach ($free_form_settings as $field) {
-                    if (empty($field['active']) || empty($field['key'])) {
+                foreach ( $free_form_settings as $field ) {
+                    if ( empty( $field['active'] ) || empty( $field['key'] ) ) {
                         continue;
                     }
 
                     $key = $field['key'];
 
-                    if (!isset($field_map[$key])) {
+                    if ( ! isset( $field_map[ $key ] ) ) {
                         continue;
                     }
 
                     $migrated_free_enquiry_form[] = array_merge(
-                        $field_map[$key],
-                        [
-                            'label'       => $field['label'] ?? $field_map[$key]['label'],
+                        $field_map[ $key ],
+                        array(
+                            'label'    => $field['label'] ?? $field_map[ $key ]['label'],
                             'disabled' => '',
-                        ]
+                        )
                     );
                 }
 
                 // Always add submit button at the end.
-                $migrated_free_enquiry_form[] = [
+                $migrated_free_enquiry_form[] = array(
                     'id'          => 10,
                     'type'        => 'button',
                     'label'       => 'Submit',
                     'placeholder' => '',
                     'disabled'    => '',
                     'name'        => 'Submit',
-                ];
+                );
 
                 update_option(
                     Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
@@ -626,9 +625,9 @@ class Installer {
             $settings = get_option( 'catalogx_all_settings_settings', array() );
 
             $settings['enquiry_user_permission'] = ! empty( $settings['enquiry_user_permission'] ) ? 'logged_in_only' : 'everyone';
-            $settings['quote_user_permission'] = ! empty( $settings['quote_user_permission'] )? 'logged_in_only' : 'everyone';
-            $settings['enable_cart_checkout']  = ! empty( $settings['enable_cart_checkout'] )? 'buy_mode' : 'catalog_only';
-            $settings['is_page_redirect']      = ! empty( $settings['is_page_redirect'] )? 'dedicated_page' : 'current_page';
+            $settings['quote_user_permission']   = ! empty( $settings['quote_user_permission'] ) ? 'logged_in_only' : 'everyone';
+            $settings['enable_cart_checkout']    = ! empty( $settings['enable_cart_checkout'] ) ? 'buy_mode' : 'catalog_only';
+            $settings['is_page_redirect']        = ! empty( $settings['is_page_redirect'] ) ? 'dedicated_page' : 'current_page';
 
             if ( empty( $settings['set_expiry_time'] ) || 'Never' === $settings['set_expiry_time'] ) {
                 $settings['quotation_validity'] = 'lifetime';
@@ -640,13 +639,13 @@ class Installer {
 
             update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $settings );
 
-            $wholesale_settings = get_option( Utill::CATALOGX_SETTINGS['wholesale'], array() );
+            $wholesale_settings                                 = get_option( Utill::CATALOGX_SETTINGS['wholesale'], array() );
             $wholesale_settings['disable_coupon_for_wholesale'] = ! empty( $wholesale_settings['disable_coupon_for_wholesale'] ) ? 'restricted' : 'allowed';
             $wholesale_settings['enable_order_form']            = ! empty( $wholesale_settings['enable_order_form'] ) ? 'dedicated' : 'shared';
             $wholesale_settings['show_wholesale_price']         = ! empty( $wholesale_settings['show_wholesale_price'] ) ? 'visible' : 'hidden';
             $wholesale_settings['enable_global_wholesale']      = ! empty( $wholesale_settings['enable_global_wholasale'] ) ? 'global_rule' : 'product_level';
-        
-            if ( !empty( $wholesale_settings ) && isset( $wholesale_settings['wholesale_discount'] ) ) {
+
+            if ( ! empty( $wholesale_settings ) && isset( $wholesale_settings['wholesale_discount'] ) ) {
                 $wholesale_settings['wholesale_amount'] = $wholesale_settings['wholesale_discount'];
                 unset( $wholesale_settings['wholesale_discount'] );
             }
@@ -750,11 +749,11 @@ class Installer {
             // Check if the vendor has the meta key '_mvx_vendor_catalog_settings'.
             $catalogx_vendor_settings = get_user_meta( $vendor->ID, '_mvx_vendor_catalog_settings', true );
 
-            $new_product_list = array();
+            $new_product_list  = array();
             $new_category_list = array();
 
             if ( ! empty( $catalogx_vendor_settings['woocommerce_product_vendor_list'] ) && is_array( $catalogx_vendor_settings['woocommerce_product_vendor_list'] ) ) {
-                $index            = 0;
+                $index = 0;
 
                 foreach ( $catalogx_vendor_settings['woocommerce_product_vendor_list'] as $product_id ) {
                     // Get the product title (assuming these are product IDs).
@@ -773,7 +772,7 @@ class Installer {
             }
 
             if ( ! empty( $catalogx_vendor_settings['woocommerce_category_vendor_list'] ) && is_array( $catalogx_vendor_settings['woocommerce_category_vendor_list'] ) ) {
-                $index             = 0;
+                $index = 0;
 
                 foreach ( $catalogx_vendor_settings['woocommerce_category_vendor_list'] as $category_id ) {
                     // Get the category name using the category ID.
@@ -857,8 +856,7 @@ class Installer {
             $email_settings['additional_alert_email'] = implode( ', ', $emails_array );
         }
 
-        update_option( 'catalogx_all-settings_settings', array_merge( $all_settings, $email_settings )  );
-
+        update_option( 'catalogx_all-settings_settings', array_merge( $all_settings, $email_settings ) );
 
         // Update pages settings.
         $page_settings = array(
@@ -973,7 +971,7 @@ class Installer {
 
         $form_settings = array(
             'formsettings'    => array(
-                'formfieldlist'  => $pro_form,
+                'formfieldlist' => $pro_form,
                 'buttonsetting' => array(),
             ),
             'freefromsetting' => $free_form,
@@ -1009,7 +1007,7 @@ class Installer {
 
         $wholesale_from_settings = array(
             'wholesale_from_settings' => array(
-                'formfieldlist'  => $wholesale_form,
+                'formfieldlist' => $wholesale_form,
                 'buttonsetting' => array(),
             ),
         );
@@ -1024,14 +1022,14 @@ class Installer {
         $exclusion_user_list = is_array( $exclusion_user_list ) ? $exclusion_user_list : array();
 
         $exclusion_user_list = array_map(
-        function ( $user_list ) {
-		return array(
-		'key'   => $user_list['value'],
-		'label' => $user_list['label'],
-		'value' => $user_list['value'],
-		);
-		},
-        $exclusion_user_list
+            function ( $user_list ) {
+                return array(
+                    'key'   => $user_list['value'],
+                    'label' => $user_list['label'],
+                    'value' => $user_list['value'],
+                );
+            },
+            $exclusion_user_list
         );
 
         // Prepare user role list.
@@ -1039,14 +1037,14 @@ class Installer {
         $exclusion_userroles_list = is_array( $exclusion_userroles_list ) ? $exclusion_userroles_list : array();
 
         $exclusion_userroles_list = array_map(
-        function ( $user_list ) {
-		return array(
-		'key'   => $user_list['value'],
-		'label' => $user_list['label'],
-		'value' => $user_list['value'],
-		);
-		},
-        $exclusion_userroles_list
+            function ( $user_list ) {
+                return array(
+                    'key'   => $user_list['value'],
+                    'label' => $user_list['label'],
+                    'value' => $user_list['value'],
+                );
+            },
+            $exclusion_userroles_list
         );
 
         // Prepare product list.
@@ -1054,14 +1052,14 @@ class Installer {
         $exclusion_product_list = is_array( $exclusion_product_list ) ? $exclusion_product_list : array();
 
         $exclusion_product_list = array_map(
-        function ( $user_list ) {
-		return array(
-		'key'   => $user_list['value'],
-		'label' => $user_list['label'],
-		'value' => $user_list['value'],
-		);
-		},
-        $exclusion_product_list
+            function ( $user_list ) {
+                return array(
+                    'key'   => $user_list['value'],
+                    'label' => $user_list['label'],
+                    'value' => $user_list['value'],
+                );
+            },
+            $exclusion_product_list
         );
 
         // Prepare category list.
@@ -1069,28 +1067,28 @@ class Installer {
         $exclusion_category_list = is_array( $exclusion_category_list ) ? $exclusion_category_list : array();
 
         $exclusion_category_list = array_map(
-        function ( $user_list ) {
-        return array(
-		'key'   => $user_list['value'],
-		'label' => $user_list['label'],
-		'value' => $user_list['value'],
-        );
-        },
-        $exclusion_category_list
+            function ( $user_list ) {
+                return array(
+                    'key'   => $user_list['value'],
+                    'label' => $user_list['label'],
+                    'value' => $user_list['value'],
+                );
+            },
+            $exclusion_category_list
         );
 
         $exclusion_settings = array(
-        'catalog_exclusion_user_list'      => $exclusion_user_list,
-        'enquiry_exclusion_user_list'      => $exclusion_user_list,
+			'catalog_exclusion_user_list'      => $exclusion_user_list,
+			'enquiry_exclusion_user_list'      => $exclusion_user_list,
 
-        'catalog_exclusion_userroles_list' => $exclusion_userroles_list,
-        'enquiry_exclusion_userroles_list' => $exclusion_userroles_list,
+			'catalog_exclusion_userroles_list' => $exclusion_userroles_list,
+			'enquiry_exclusion_userroles_list' => $exclusion_userroles_list,
 
-        'enquiry_exclusion_product_list'   => $exclusion_product_list,
-        'catalog_exclusion_product_list'   => $exclusion_product_list,
+			'enquiry_exclusion_product_list'   => $exclusion_product_list,
+			'catalog_exclusion_product_list'   => $exclusion_product_list,
 
-        'catalog_exclusion_category_list'  => $exclusion_category_list,
-        'enquiry_exclusion_category_list'  => $exclusion_category_list,
+			'catalog_exclusion_category_list'  => $exclusion_category_list,
+			'enquiry_exclusion_category_list'  => $exclusion_category_list,
         );
 
         update_option( 'catalogx_enquiry-quote-exclusion_settings', $exclusion_settings );
@@ -1152,5 +1150,4 @@ class Installer {
             delete_option( $option );
         }
     }
-
 }

@@ -31,7 +31,7 @@ class Rest {
     public function __construct() {
         $this->init_classes();
 
-        add_action('rest_api_init',array( $this, 'register_rest_api_routes' ),10);
+        add_action( 'rest_api_init', array( $this, 'register_rest_api_routes' ), 10 );
     }
 
     /**

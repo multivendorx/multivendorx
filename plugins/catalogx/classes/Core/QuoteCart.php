@@ -249,7 +249,7 @@ class QuoteCart {
     public function add_quote_item( $quote_item ) {
 
         $quote_item['quantity'] = ( isset( $quote_item['quantity'] ) ) ? (int) $quote_item['quantity'] : 1;
-        $quote_item_status           = '';
+        $quote_item_status      = '';
 
         do_action( 'catalogx_add_to_quote_cart', $quote_item );
 

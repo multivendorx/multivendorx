@@ -49,7 +49,7 @@ class Utill {
         'enquiry-form-customization'    => 'catalogx_enquiry_form_customization_settings',
         'enquiry-catalog-customization' => 'catalogx_enquiry_catalog_customization_settings',
         'customer-engagement'           => 'catalogx_customer_engagement_settings',
-        'pages-shortcodes'              => 'catalogx_pages_shortcodes_settings'
+        'pages-shortcodes'              => 'catalogx_pages_shortcodes_settings',
     );
 
     /**
@@ -358,7 +358,7 @@ class Utill {
 
         return true;
     }
-    
+
     /**
 	 * Convert WordPress PHP date format to React date picker format
 	 *
@@ -391,17 +391,17 @@ class Utill {
 	}
 
     public static function get_tags_enquiry_form() {
-        $tags = [];
+        $tags = array();
 
-        $form_settings = CatalogX()->setting->get_setting('enquiry_form_tabs', []);
+        $form_settings = CatalogX()->setting->get_setting( 'enquiry_form_tabs', array() );
         if ( empty( $form_settings['enquiry_form_builder']['formfieldlist'] ) ) {
             return $tags;
         }
 
-        $excluded_types = [ 'button', 'title', 'richtext' ];
+        $excluded_types = array( 'button', 'title', 'richtext' );
 
         foreach ( $form_settings['enquiry_form_builder']['formfieldlist'] as $field ) {
-            if ( empty( $field['type'] ) ||  in_array( $field['type'], $excluded_types, true ) ) {
+            if ( empty( $field['type'] ) || in_array( $field['type'], $excluded_types, true ) ) {
                 continue;
             }
 
