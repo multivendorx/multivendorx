@@ -97,7 +97,7 @@ export default {
             key: 'mailchimp_api',
             type: 'text',
             size: 25,
-            label: __('Mailchimp API Key', 'notifima'),
+            label: __('Mailchimp API key', 'notifima'),
             settingDescription: __(
                 'Enter your Mailchimp API key to connect your Mailchimp account.',
                 'notifima'

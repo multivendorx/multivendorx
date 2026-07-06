@@ -3,6 +3,7 @@
 // pro popup
 .popup-content:has(.top-section) {
     overflow: hidden !important; // for overwrite zyra style
+    width: 40rem !important;
 }
 
 .popup-wrapper {
@@ -23,7 +24,7 @@
         }
 
         .description {
-            color: #fff;
+            color: $color-white;
             font-size: 1.063rem;
             text-align: center;
             line-height: 1.3;
@@ -32,18 +33,18 @@
 
         .price {
             font-size: 2.4rem;
-            color: #fff;
+            color: $color-white;
             font-weight: 600;
         }
 
         .admin-btn {
-            background: #fff;
+            background: $color-white;
             margin-top: 1rem;
-            color: #000;
+            color: $color-black;
         }
 
         .select-wrapper {
-            color: #fff;
+            color: $color-white;
             font-size: 1.125rem;
             justify-content: center;
         }
@@ -52,7 +53,7 @@
             background: transparent;
             font-size: 1.125rem;
             border: none;
-            color: #fff;
+            color: $color-white;
             appearance: none;
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path fill='%23fff' d='M5 7l5 5 5-5z'/></svg>");
             background-repeat: no-repeat;
@@ -71,7 +72,9 @@
     }
 
     .popup-details {
-        padding: 1.5rem;
+        margin: 1.5rem;
+        margin-right: 0;
+        overflow: auto;
 
         .heading-text {
             font-size: 1.25rem;
@@ -80,7 +83,7 @@
         }
 
         ul {
-            max-height: 25vh;
+            // max-height: 25vh;
             padding-right: 2rem;
 
             li {
@@ -108,9 +111,4 @@
             transform: rotate(-45deg);
         }
     }
-}
-
-.popup-content:has(.top-section) {
-    width: 40rem !important;
-    height: 75% !important;
 }

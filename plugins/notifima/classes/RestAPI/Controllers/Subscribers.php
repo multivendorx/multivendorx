@@ -40,7 +40,7 @@ class Subscribers extends \WP_REST_Controller {
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
                     'permission_callback' => array( $this, 'get_items_permissions_check' ),
-                )
+                ),
             )
         );
 
@@ -74,10 +74,10 @@ class Subscribers extends \WP_REST_Controller {
      *
      * @param \WP_REST_Request The REST request object.
      */
-    public function update_item_permissions_check() {
+    public function update_item_permissions_check( $request ) {
         $user_id = Notifima()->current_user_id;
         // For non-logged in user.
-        if (0 === $user_id && 'everyone' === Notifima()->setting->get_setting( 'is_guest_subscriptions_enable', '' )) {
+        if ( 0 === $user_id && 'everyone' === Notifima()->setting->get_setting( 'is_guest_subscriptions_enable', '' ) ) {
             return true;
         }
 
@@ -113,7 +113,7 @@ class Subscribers extends \WP_REST_Controller {
             );
 
             $product_ids = get_posts( $query_args );
-            
+
             $subscriber_records = Utill::get_subscribers( $product_ids );
 
             $subscriber_items = array();
@@ -125,8 +125,8 @@ class Subscribers extends \WP_REST_Controller {
                 $date    = wp_date( get_option( 'date_format' ), strtotime( $subscriber->create_time ) );
 
                 $statuses = array(
-                    'mailsent' => __( 'Mail Sent', 'notifima' ),
-                    'subscribed' => __( 'Subscribed', 'notifima' ),
+                    'mailsent'     => __( 'Mail Sent', 'notifima' ),
+                    'subscribed'   => __( 'Subscribed', 'notifima' ),
                     'unsubscribed' => __( 'Unsubscribed', 'notifima' ),
                 );
 
@@ -141,11 +141,11 @@ class Subscribers extends \WP_REST_Controller {
                         'email'      => $subscriber->email,
                         'status'     => $subscriber_status,
                         'status_key' => $status_key,
-                        'reg_user'   => $user ? __( 'Yes', 'notifima' ): __( 'No', 'notifima' ),
+                        'reg_user'   => $user ? __( 'Yes', 'notifima' ) : __( 'No', 'notifima' ),
                         'user_link'  => $user ? get_edit_user_link( $user->ID ) : '',
                         'product'    => $product ? $product->get_name() : '',
                         'product_id' => $product ? $product->get_id() : '',
-                        'image'      => $image  ?: wc_placeholder_img_src(),
+                        'image'      => $image ?: wc_placeholder_img_src(),
                     ),
                     $subscriber
                 );
@@ -155,8 +155,8 @@ class Subscribers extends \WP_REST_Controller {
         } catch ( \Exception $e ) {
             return new \WP_Error(
                 'server_error',
-                __('Unexpected server error', 'notifima'),
-                array('status' => 500)
+                __( 'Unexpected server error', 'notifima' ),
+                array( 'status' => 500 )
             );
         }
     }
@@ -178,7 +178,7 @@ class Subscribers extends \WP_REST_Controller {
 
             if ( 'subscribe' === $action ) {
                 return $this->subscribe_user( $request );
-            }else if ( 'unsubscribe' === $action ) {
+            } elseif ( 'unsubscribe' === $action ) {
                 return $this->unsubscribe_user( $request );
             }
 
@@ -186,8 +186,8 @@ class Subscribers extends \WP_REST_Controller {
         } catch ( \Exception $e ) {
             return new \WP_Error(
                 'server_error',
-                __('Unexpected server error', 'notifima'),
-                array('status' => 500)
+                __( 'Unexpected server error', 'notifima' ),
+                array( 'status' => 500 )
             );
         }
     }
@@ -237,13 +237,13 @@ class Subscribers extends \WP_REST_Controller {
 
             return rest_ensure_response(
                 array(
-                    'status'               => false,
-                    'message'              => $message,
-                    'already_subscribed'   => true,
-                    'customer_email'       => $customer_email,
-                    'product_id'           => $product_id,
-                    'variation_id'         => $variation_id,
-                    'unsubscribe_button'   => array(
+                    'status'             => false,
+                    'message'            => $message,
+                    'already_subscribed' => true,
+                    'customer_email'     => $customer_email,
+                    'product_id'         => $product_id,
+                    'variation_id'       => $variation_id,
+                    'unsubscribe_button' => array(
                         'text' => $settings_array['unsubscribe_button_text'],
                     ),
                 )

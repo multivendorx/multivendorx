@@ -1,6 +1,9 @@
 import { __ } from '@wordpress/i18n';
 import {OuterSpace} from '../../../assets/template/OuterSpace';
-// import { GreenLagoon } from '../../assets/template/GreenLagoon';
+import { GreenLagoon } from '../../../assets/template/GreenLagoon';
+import { CrimsonValley } from '../../../assets/template/CrimsonValley';
+import { MoonlitSky } from '../../../assets/template/MoonlitSky';
+import { Starlight } from '../../../assets/template/Starlight';
 
 
 const EMAIL_BLOCK_GROUPS = [
@@ -58,7 +61,7 @@ export default {
     priority: 3,
     headerTitle: __('Email Customizations', 'catalogx'),
     headerDescription: __(
-        'Customized your preferred enquiry details email template',
+        'Customize your preferred enquiry details email template',
         'catalogx'
     ),
     headerIcon: 'enquiry',
@@ -68,11 +71,21 @@ export default {
             key: 'additional_alert_email',
             type: 'text',
             desc: __(
-                "Set the email address to receive notifications when a user submits enquiry of a product. You can add multiple comma-separated emails.<br/> <b>Default:</b> The admin's email is set as the receiver. Exclude the admin's email from the list to exclude admin from receiving these notifications.",
+                "When a customer submits an enquiry for a product, the enquiry details will be sent to the email address(es) entered here. Add multiple email addresses separated by commas.<br/> <b>Default:</b> The site administrator's email is included by default. To stop the admin from receiving enquiry notifications, remove the admin email address from this list.",
                 'catalogx'
             ),
-            label: __('Recipient email for new subscriber', 'catalogx'),
+            label: __('Recipient email for product enquiries', 'catalogx'),
             moduleEnabled: 'enquiry',
+        },
+        {
+            key: 'notice',
+            type: 'notice',
+            message: __(
+                "Use personalization tags to make your emails more engaging - for example, use <b>{user_name}</b> to display the subscriber's name and <b>{email_tag}</b> to display their email address automatically.",
+                'catalogx'
+            ),
+            noticeType: 'info',
+            display: 'inline-notice',
         },
         {
 			key: 'enquiry_email_template',
@@ -80,7 +93,7 @@ export default {
 			classes: 'full-width',
 			// desc: 'Customise personalised store registration form for marketplace.',
 			// // Add templates configuration with proper content
-			emailTemplates: [OuterSpace],
+			emailTemplates: [OuterSpace , GreenLagoon, CrimsonValley, MoonlitSky, Starlight],
 			blockGroups: EMAIL_BLOCK_GROUPS,
             availablePlaceholder: appLocalizer.email_tags,
             visibleGroups: 'email',

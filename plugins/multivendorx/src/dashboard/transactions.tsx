@@ -11,7 +11,7 @@ import {
 	CategoryCount,
 } from 'zyra';
 import TransactionDetailsModal from './TransactionDetailsModal';
-import { downloadCSV, formatLocalDate } from '../services/commonFunction';
+import { downloadCSV, formatLocalDate, normalizeText } from '../services/commonFunction';
 import ViewCommission from './viewCommission';
 import { applyFilters } from '@wordpress/hooks';
 
@@ -59,11 +59,7 @@ const Transactions: React.FC = () => {
 					</span>
 				) : (
 					<span>
-						{row.narration
-							?.replace(/<[^>]+>/g, '') // remove HTML
-							.replace(/&ndash;/g, '-') // decode entity
-							.replace(/-/g, ' ')
-							.replace(/\b\w/g, (c: string) => c.toUpperCase())}
+						{normalizeText(row.narration)}
 					</span>
 				),
 		},

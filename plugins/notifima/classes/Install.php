@@ -42,16 +42,13 @@ class Install {
     public function __construct() {
 		// phpcs:ignore WordPress.WP.CronInterval.ChangeDetected
         add_filter( 'cron_schedules', array( $this, 'register_custom_schedule' ) );
-
-        $this->old_migration();
-
         $previous_version = get_option( 'notifima_version', false );
-
         if ( ! $previous_version ) {
             $this->create_database_table();
             $this->set_default_settings();
+            $this->old_migration();
         } else {
-            $this->do_migration($previous_version);
+            $this->do_migration( $previous_version );
         }
         $this->start_cron_job();
 
@@ -66,9 +63,7 @@ class Install {
     public static function old_migration() {
         global $wpdb;
 
-        if ( ! get_option( 'notifima_version', false ) ) {
-            self::migration_from_old_to_new_3_0_0();
-        }
+        self::migration_from_old_to_new_3_0_0();
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
         if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->prefix . 'stockalert_subscribers' ) ) ) {
@@ -94,12 +89,13 @@ class Install {
      * Runs the database migration process.
      */
     public static function do_migration( $previous_version ) {
+
         // write migration code from 3.0.1.
         if ( version_compare( $previous_version, '3.1.0', '<' ) ) {
             $mailchimp_settings = get_option( 'notifima_mailchimp_settings', array() );
             $email_settings     = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
 
-            update_option(Utill::NOTIFIMA_SETTINGS['email'], array_merge( $email_settings, $mailchimp_settings ));
+            update_option( Utill::NOTIFIMA_SETTINGS['email'], array_merge( $email_settings, $mailchimp_settings ) );
 
             delete_option( 'notifima_mailchimp_settings' );
 
@@ -116,11 +112,11 @@ class Install {
 
             $appearance_settings = get_option( Utill::NOTIFIMA_SETTINGS['appearance'], array() );
 
-            $appearance_settings['is_double_optin'] = ! empty( $appearance_settings['is_double_optin'] ) ? 'confirm_via_email' : 'subscribe_immediately';
-            $appearance_settings['is_enable_no_interest'] = ! empty( $appearance_settings['is_enable_no_interest'] ) ? 'show_count' : 'hide_count';
-            $appearance_settings['is_enable_backorders'] = ! empty( $appearance_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
+            $appearance_settings['is_double_optin']               = ! empty( $appearance_settings['is_double_optin'] ) ? 'confirm_via_email' : 'subscribe_immediately';
+            $appearance_settings['is_enable_no_interest']         = ! empty( $appearance_settings['is_enable_no_interest'] ) ? 'show_count' : 'hide_count';
+            $appearance_settings['is_enable_backorders']          = ! empty( $appearance_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
             $appearance_settings['is_guest_subscriptions_enable'] = ! empty( $appearance_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
-            $appearance_settings['display_subscription_form_as']    = 'inline';
+            $appearance_settings['display_subscription_form_as']  = 'inline';
 
             update_option( Utill::NOTIFIMA_SETTINGS['appearance'], $appearance_settings );
             $registration_form = array(
@@ -142,12 +138,11 @@ class Install {
                 ),
             );
 
-            $registration_from_settings = array(
+            $registration_from_settings['form_tabs'] = array(
                 'personalize_layout_template' => array(
-                    'formfieldlist'  => $registration_form,
+                    'formfieldlist' => $registration_form,
                 ),
             );
-
             update_option( Utill::NOTIFIMA_SETTINGS['personalize-layout'], $registration_from_settings );
         }
     }
@@ -302,6 +297,7 @@ class Install {
      * @return void
      */
     private function set_default_settings() {
+
         // Default messages for settings array.
         $appearance_settings = array(
             'is_enable_backorders'          => 'out_of_stock',
@@ -358,12 +354,11 @@ class Install {
 			),
         );
 
-        $registration_from_settings = array(
+        $registration_from_settings['form_tabs'] = array(
             'personalize_layout_template' => array(
-                'formfieldlist'  => $registration_form,
+                'formfieldlist' => $registration_form,
             ),
         );
-
         update_option( Utill::NOTIFIMA_SETTINGS['personalize-layout'], $registration_from_settings );
     }
 
@@ -374,39 +369,12 @@ class Install {
      */
     private static function migration_from_old_to_new_3_0_0() {
         global $wpdb;
-        $current_version  = Notifima()->version;
-        $previous_version = get_option( 'notifima_version', '' );
+        $previous_version = get_option( 'woo_stock_manager_version', '' );
 
         // Default messages for settings array.
-        $appearance_settings = array(
-            'is_enable_backorders'          => false,
-            'is_enable_no_interest'         => false,
-            'is_double_optin'               => false,
-            'is_remove_admin_email'         => false,
-            'double_opt_in_success'         => Notifima()->default_value['double_opt_in_success'],
-            'shown_interest_text'           => Notifima()->default_value['shown_interest_text'],
-            'additional_alert_email'        => get_option( 'admin_email' ),
-            'is_guest_subscriptions_enable' => array( 'is_guest_subscriptions_enable' ),
-            'lead_time_format'              => 'static',
-
-            // Form customization settings.
-            'email_placeholder_text'        => Notifima()->default_value['email_placeholder_text'],
-            'alert_text'                    => Notifima()->default_value['alert_text'],
-            'unsubscribe_button_text'       => Notifima()->default_value['unsubscribe_button_text'],
-        );
-
-        $submit_settings = array(
-            'alert_success'             => Notifima()->default_value['alert_success'],
-            'alert_email_exist'         => Notifima()->default_value['alert_email_exist'],
-            'valid_email'               => Notifima()->default_value['valid_email'],
-            // Translators: This message display user sucessfully unregistered.
-            'alert_unsubscribe_message' => Notifima()->default_value['alert_unsubscribe_message'],
-        );
-
-        $email_settings = array(
-            'ban_email_domain_text'  => Notifima()->default_value['ban_email_domain_text'],
-            'ban_email_address_text' => Notifima()->default_value['ban_email_address_text'],
-        );
+        $appearance_settings = get_option( Utill::NOTIFIMA_SETTINGS['appearance'], array() );
+        $submit_settings     = get_option( Utill::NOTIFIMA_SETTINGS['form-submission'], array() );
+        $email_settings      = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
 
         if ( version_compare( $previous_version, '2.5.0', '<' ) ) {
             // Used to check the plugin version before 2.1.0.
@@ -537,7 +505,7 @@ class Install {
         }
 
         if ( version_compare( $previous_version, '2.5.5', '<=' ) ) {
-            $appearance_settings['is_guest_subscriptions_enable'] = array( 'is_guest_subscriptions_enable' );
+            $appearance_settings['is_guest_subscriptions_enable'] = 'logged_in';
         }
 
         if ( version_compare( $previous_version, '2.5.12', '<=' ) ) {
@@ -577,6 +545,12 @@ class Install {
 
             $version_key = get_option( 'woo_stock_manager_version', '' );
             update_option( 'notifima_version', $version_key );
+
+            $appearance_settings['is_double_optin']               = ! empty( $previous_appearance_settings['is_double_optin'] ) ? 'confirm_via_email' : 'subscribe_immediately';
+            $appearance_settings['is_enable_no_interest']         = ! empty( $previous_appearance_settings['is_enable_no_interest'] ) ? 'show_count' : 'hide_count';
+            $appearance_settings['is_enable_backorders']          = ! empty( $previous_appearance_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
+            $appearance_settings['is_guest_subscriptions_enable'] = ! empty( $previous_appearance_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
+            $appearance_settings['display_subscription_form_as']  = 'inline';
 
             delete_option( 'woo_stock_manager_appearance_tab_settings' );
             delete_option( 'woo_stock_manager_form_submission_tab_settings' );
@@ -618,8 +592,6 @@ class Install {
         update_option( Utill::NOTIFIMA_SETTINGS['appearance'], array_merge( $appearance_settings, $previous_appearance_settings ) );
         update_option( Utill::NOTIFIMA_SETTINGS['form-submission'], array_merge( $submit_settings, $previous_submit_settings ) );
         update_option( Utill::NOTIFIMA_SETTINGS['email'], array_merge( $email_settings, $previous_email_settings ) );
-
-        update_option( 'notifima_version', $current_version );
     }
 
     /**

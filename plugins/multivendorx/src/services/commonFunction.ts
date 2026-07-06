@@ -5,7 +5,9 @@ export const truncateText = (text: string, wordCount: number) => {
 	}
 
 	// Strip HTML tags if present
-	const plainText = text.replace(/<[^>]+>/g, '');
+	const div = document.createElement('div');
+	div.innerHTML = text;
+	const plainText = div.textContent || '';
 
 	// Split into words
 	const words = plainText.split(/\s+/);
@@ -307,4 +309,17 @@ export const htmlToText = (input): string => {
     if (typeof input !== 'string') return '';
 
     return input.replace(/<\/?[^>]+(>|$)/g, '');
+};
+
+export const normalizeText = (text?: string) => {
+	if (!text) {
+		return '';
+	}
+
+	const div = document.createElement('div');
+	div.innerHTML = text;
+
+	return (div.textContent || '')
+		.replace(/-/g, ' ')
+		.replace(/\b\w/g, c => c.toUpperCase());
 };

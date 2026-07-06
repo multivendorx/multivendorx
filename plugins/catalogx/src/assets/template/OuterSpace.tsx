@@ -37,7 +37,7 @@ export const OuterSpace = {
 						type: 'richtext',
 						name: 'email-text-welcome-message',
 						html: __(
-							"Admin notification · ShopHive (p)",
+							"Admin notification",
 							'catalogx'
 						),
 						style: {
@@ -112,7 +112,7 @@ export const OuterSpace = {
 						type: 'richtext',
 						name: 'email-text-welcome-message',
 						html: __(
-							"Admin notification · ShopHive (p)",
+							"Admin notification",
 							'catalogx'
 						),
 						style: {
@@ -158,7 +158,7 @@ export const OuterSpace = {
 						type: 'richtext',
 						name: 'email-text-welcome-message',
 						html: __(
-							"Customer Name",
+							"[{name_enter_your_name}]",
 							'catalogx'
 						),
 						style: {
@@ -185,7 +185,7 @@ export const OuterSpace = {
 						type: 'richtext',
 						name: 'email-text-welcome-message',
 						html: __(
-							"Customer Name",
+							"[{email_enter_your_email}]",
 							'catalogx'
 						),
 						style: {

@@ -201,7 +201,7 @@ const QuoteRequests = () => {
                     },
                 ] : ''}
             />
-            {tableProps.addingNewRule && tableProps.addingNewRule && (
+            { tableProps.addingNewRule && (
                 tableProps.addNewRuleForm
             )}
             <Container general>

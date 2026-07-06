@@ -97,12 +97,7 @@ class FrontendScripts {
 
         $register_scripts = apply_filters(
             'notifima_register_scripts',
-            array(
-                'notifima-frontend-script' => array(
-					'src'  => $base_url . 'public/' . NOTIFIMA_PLUGIN_SLUG . '-frontend.min.js',
-					'deps' => $common_deps,
-				),
-            )
+            array()
         );
 
         foreach ( $block_scripts as $handle ) {
@@ -167,7 +162,7 @@ class FrontendScripts {
 	 * Loads admin-specific JavaScript assets and chunked dependencies.
 	 */
     public static function register_admin_scripts() {
-		$version = Notifima()->version;
+		$version          = Notifima()->version;
         $index_asset_path = self::get_asset_path( 'file' ) . 'js/index.asset.php';
         $index_asset      = file_exists( $index_asset_path )
             ? include $index_asset_path
@@ -187,11 +182,11 @@ class FrontendScripts {
 		$register_scripts = apply_filters(
             'admin_notifima_register_scripts',
             array(
-                'notifima-components-script'      => array(
+                'notifima-components-script' => array(
                 	'src'  => self::get_asset_path() . 'js/vendors.js',
                 	'deps' => $vendor_asset['dependencies'],
                 ),
-				'notifima-admin-script'       => array(
+				'notifima-admin-script'      => array(
 					'src'  => self::get_asset_path() . 'js/index.js',
 					'deps' => $index_asset['dependencies'],
 				),
@@ -244,19 +239,6 @@ class FrontendScripts {
         return self::$settings_cache;
     }
 
-	/**
-	 * Get base AJAX data for frontend scripts
-	 *
-	 * @param string $handle Script handle used for nonce creation.
-	 * @return array Base AJAX data including admin-ajax URL and nonce.
-	 */
-    public static function get_base_ajax_data( $handle ) {
-        return array(
-            'ajaxurl' => admin_url( 'admin-ajax.php' ),
-            'nonce'   => wp_create_nonce( $handle ),
-        );
-    }
-
     /**
 	 * Localize all scripts.
 	 *
@@ -273,33 +255,27 @@ class FrontendScripts {
         $settings_data = array(
             'settings_databases_value' => self::get_admin_settings(),
         );
-        
+
         $localize_scripts =
             array(
-                'notifima-admin-script'          => array(
+                'notifima-admin-script'   => array(
                     'object_name'  => 'appLocalizer',
                     'use_rest'     => true,
                     'use_settings' => true,
-					'data'        => array(
-						'export_button'            => wp_nonce_url( admin_url( 'admin-ajax.php?action=export_subscribers' ), 'export_subscribers_nonce' ),
-						'khali_dabba'              => Utill::is_khali_dabba(),
-						'tab_name'                 => __( 'Notifima', 'notifima' ),
-						'pro_url'                  => esc_url( NOTIFIMA_PRO_SHOP_URL ),
-						'free_version'             => Notifima()->version,
-                        'pro_data'        => apply_filters(
+					'data'         => array(
+                        'admin_url'     => admin_url(),
+						'export_button' => wp_nonce_url( admin_url( 'admin-ajax.php?action=export_subscribers' ), 'export_subscribers_nonce' ),
+						'khali_dabba'   => Utill::is_khali_dabba(),
+						'tab_name'      => __( 'Notifima', 'notifima' ),
+						'pro_url'       => esc_url( NOTIFIMA_PRO_SHOP_URL ),
+						'free_version'  => Notifima()->version,
+                        'pro_data'      => apply_filters(
                             'notifima_update_pro_data',
                             array(
 								'version'         => false,
 								'manage_plan_url' => NOTIFIMA_PRO_SHOP_URL,
                             )
-                        ),          
-					),
-                ),
-                'notifima-frontend-script'          => array(
-                    'object_name'  => 'frontendLocalizer',
-					'data'        => array(
-						'ajax_url'          => admin_url( 'admin-ajax.php', 'relative' ),
-						'nonce'             => wp_create_nonce( 'notifima-security-nonce' ),
+                        ),
 					),
                 ),
                 'notifima-subscribe-form' => array(
@@ -308,9 +284,9 @@ class FrontendScripts {
                     'data'        => apply_filters(
                         'notifima_subscribe_form_localize_data',
                         array(
-                            'settings'      => Notifima()->setting->get_setting( 'personalize_layout_template', array() ),
-                            'lead_time'     => Notifima()->frontend->get_product_lead_time(),
-                            'display_type'  => Notifima()->setting->get_setting( 'display_subscription_form_as', 'inline' ),
+                            'khali_dabba'  => Utill::is_khali_dabba(),
+                            'lead_time'    => Notifima()->frontend->get_product_lead_time(),
+                            'display_type' => Notifima()->setting->get_setting( 'display_subscription_form_as', 'inline' ),
                         )
                     ),
                 ),
@@ -320,14 +296,6 @@ class FrontendScripts {
         $config           = $localize_scripts[ $handle ] ?? array();
 
         $data = array();
-
-        if ( ! empty( $config['use_ajax'] ) && ! empty( $config['use_rest'] ) ) {
-            $base_ajax = self::get_base_ajax_data( $handle );
-            unset( $base_ajax['nonce'] );
-            $data = array_merge( $data, $base_ajax );
-        } else {
-            $data = array_merge( $data, self::get_base_ajax_data( $handle ) );
-        }
 
         if ( ! empty( $config['use_rest'] ) ) {
             $data = array_merge( $data, $base_rest );

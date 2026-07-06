@@ -425,6 +425,7 @@ export const SelectInputUI: React.FC<SelectProps> = ({
                     position="lightbox"
                     open={popupOpen}
                     onClose={() => setPopupOpen(false)}
+                    className='select-popup'
                     showBackdrop
                     width={popupWidth ?? 28}
                     header={{

@@ -38,12 +38,12 @@ class Tour extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'permission_callback' => array( $this, 'catalogx_permissions_check' ),
 				),
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'create_item' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'permission_callback' => array( $this, 'catalogx_permissions_check' ),
 				),
 			)
 		);
@@ -56,7 +56,7 @@ class Tour extends \WP_REST_Controller {
 	 *
 	 * @return bool
 	 */
-	public function get_items_permissions_check( $request ) {
+	public function catalogx_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 

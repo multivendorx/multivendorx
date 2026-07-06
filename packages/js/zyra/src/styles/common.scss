@@ -58,6 +58,14 @@ a {
     .no-options {
       font-size: 0.95rem;
     }
+    .overflow-badge{
+      border-radius: 50%;
+      position: absolute;
+      right: 0;
+      font-size: 0.813rem;
+      padding: 0.313rem;
+      border: none;
+    }
   }
 
   &.fit-content {

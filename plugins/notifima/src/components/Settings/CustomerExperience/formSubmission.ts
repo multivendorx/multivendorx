@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'form-submission',
     priority: 2,
-    headerTitle: __('Customer Experience', 'notifima'),
+    headerTitle: __('Subscription status messages', 'notifima'),
     headerDescription: __('Control how the subscription form and customer messages appear throughout your store.', 'notifima'),
     headerIcon: 'person',
     submitUrl: 'settings',

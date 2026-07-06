@@ -1,4 +1,4 @@
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'wholesale',
@@ -12,11 +12,15 @@ export default {
             key: 'approve_wholesaler',
             type: 'choice-toggle',
             label: __(
-                'Approval of wholesale users through registration form',
+                'Approval of wholesale users',
+                'catalogx'
+            ),
+            settingDescription: __(
+                'Choose how new wholesale users should be approved after registration.',
                 'catalogx'
             ),
             desc: __(
-                "Manual - Admin approves new wholesalers manually from 'Wholeseller Users' page. <br> Automatic - Instant wholesaler approval upon sign-up",
+                "Manual - Admin approves new wholesalers manually from 'Wholesaler Users' page. <br> Automatic - Instant wholesaler approval upon sign-up.",
                 'catalogx'
             ),
             options: [
@@ -62,7 +66,7 @@ export default {
         {
             key: 'show_wholesale_price',
             type: 'choice-toggle',
-            label: __('Wholesale Offer Visibility', 'catalogx'),
+            label: __('Wholesale offer visibility', 'catalogx'),
             settingDescription: __(
                 'Choose how wholesale pricing is presented to regular customers.',
                 'catalogx'
@@ -116,17 +120,17 @@ export default {
             moduleEnabled: 'wholesale',
         },
         {
-            key: 'enable_global_wholasale',
+            key: 'enable_global_wholesale',
             type: 'choice-toggle',
             label: __('How wholesale pricing is managed', 'catalogx'),
             settingDescription: __(
-        'Choose whether to set wholesale pricing for individual products or apply the same discount across all products.',
-        'catalogx'
-    ),
-    desc: __(
-        '<ul><li>Set prices for each product - Configure wholesale pricing separately for individual products.</li><li>Apply one discount to all products - Use a single discount rule for every wholesale product in your catalog.</li></ul>',
-        'catalogx'
-    ),
+                'Choose whether to set wholesale pricing for individual products or apply the same discount across all products.',
+                'catalogx'
+            ),
+            desc: __(
+                '<ul><li>Set prices for each product - Configure wholesale pricing separately for individual products.</li><li>Apply one discount to all products - Use a single discount rule for every wholesale product in your catalog.</li></ul>',
+                'catalogx'
+            ),
             options: [
                 {
                     key: 'product_level',
@@ -170,9 +174,9 @@ export default {
             moduleEnabled: 'wholesale',
             proSetting: true,
             dependent: {
-                key: 'enable_global_wholasale',
+                key: 'enable_global_wholesale',
                 set: true,
-                value:'global_rule',
+                value: 'global_rule',
             },
         },
     ],
