@@ -93,7 +93,7 @@ class Quotes extends \WP_REST_Controller {
             }
 
             if ( empty( $form_data ) ) {
-                return new WP_Error( 'invalid_data', __( 'Missing form data.', 'catalogx' ), array( 'status' => 400 ) );
+                return new \WP_Error( 'invalid_data', __( 'Missing form data.', 'catalogx' ), array( 'status' => 400 ) );
             }
 
             // Sanitize input fields.
@@ -103,7 +103,7 @@ class Quotes extends \WP_REST_Controller {
             $customer_message = isset( $form_data['message'] ) ? sanitize_textarea_field( $form_data['message'] ) : '';
 
             // Retrieve customer or create guest data.
-            $customer    = empty( $customer_email ) ? get_user_by( 'email', $form_data['email'] ) : get_user_by( 'email', $customer_email );
+            $customer    = ! empty( $customer_email ) ? get_user_by( 'email', $customer_email ) : get_user_by( 'email', $form_data['email'] );
             $customer_id = $customer ? $customer->ID : Util::get_customer_id_by_email( $customer_email );
 
             // Order arguments.
