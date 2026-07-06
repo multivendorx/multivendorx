@@ -7,7 +7,8 @@ import {
     NavigatorHeader,
     PopupUI,
     TableCard,
-    getApiLink
+    getApiLink,
+    Notice
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
@@ -173,6 +174,18 @@ const SubscribersList = () => {
         if (!appLocalizer.khali_dabba) {
             return (
                 <div onClick={() => setOpenPopup(true)}>
+                    <Notice
+                        type="info"
+                        displayPosition="inline-notice"
+                        title={__(
+                            "You're looking at sample data",
+                            'notifima'
+                        )}
+                        message={__(
+                            'These 10 rows show what your subscriber table will look like. Real customer requests will appear here once Pro is activated.',
+                            'notifima'
+                        )}
+                    />
                     <TableCard {...tableProps} />
                 </div>
             );
