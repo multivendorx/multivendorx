@@ -43,6 +43,31 @@ const isImageFile = (url: string): boolean =>
         /\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i
     ) !== null;
 
+const sanitizeFileUrl = (url?: string): string => {
+    if (!url) {
+        return '';
+    }
+
+    const trimmed = url.trim();
+    if (!trimmed) {
+        return '';
+    }
+
+    // Allow browser-generated blob URLs, absolute http(s), and relative paths.
+    if (
+        trimmed.startsWith('blob:') ||
+        trimmed.startsWith('http://') ||
+        trimmed.startsWith('https://') ||
+        trimmed.startsWith('/') ||
+        trimmed.startsWith('./') ||
+        trimmed.startsWith('../')
+    ) {
+        return trimmed;
+    }
+
+    return '';
+};
+
 export const FileInputUI: React.FC<FileInputProps> = (props) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const [files, setFiles] = useState<FileItem[]>([]);
@@ -237,7 +262,7 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
             {props.multiple && files.length > 0 && (
                 <div className="uploaded-image">
                     {files.map((file, i) => {
-                        const fileSrc = file.url;
+                        const fileSrc = sanitizeFileUrl(file.url);
                         const isActive = i === activeIndex;
 
                         return (
