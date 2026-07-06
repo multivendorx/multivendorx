@@ -44,8 +44,7 @@ export default {
                     content: [
                         {
                             key: 'section',
-                            type: 'section',
-                            withoutBorder: true
+                            type: 'section'
                         },
                         {
                             key: 'email_input',
