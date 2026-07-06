@@ -182,6 +182,17 @@ class Notifications extends \WP_REST_Controller {
                         'canDelete' => false,
                     );
 
+                    if ($row->customer_enabled) {
+                        $recipients[] = array(
+                            'id'        => $id++,
+                            'type'      => 'Customer',
+                            'label'     => 'Customer',
+                            'enabled'   => (bool) $row->customer_enabled,
+                            'canDelete' => false,
+                        );
+                    }
+
+
                     // Add any custom emails.
                     foreach ( $custom_emails as $email ) {
                         $recipients[] = array(
