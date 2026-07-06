@@ -91,7 +91,7 @@ $customer_data = $args['customer_data'] ?? array();
     <div class="details">
         <p><strong><?php _e( 'Customer Name:', 'catalogx' ); ?></strong> <?php echo esc_html( $customer_data['name'] ?? __( 'John Doe', 'catalogx' ) ); ?></p>
         <p><strong><?php _e( 'Email:', 'catalogx' ); ?></strong> 
-        <a href="mailto:<?php echo esc_attr( $customer_data['email'] ); ?>">
+        <a href="mailto:<?php echo esc_attr( $customer_data['email'] ?? 'john@example.com' ); ?>">
             <?php echo esc_html( $customer_data['email'] ?? 'john@example.com' ); ?>
         </a></p>
         <p>
