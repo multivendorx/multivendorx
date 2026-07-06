@@ -225,7 +225,8 @@ Answer: Simply enable the 'Product Enquiry Button When Product is Out Of Stock' 
 6. Real-Time Page Builder interface
 7. Enquiry Dashboard
 
-== Changelog ==.
+== Changelog ==
+
 = 6.1.0 - 2026-07-06 =
 * Added     - Compatibility of WordPress 7.0.0.
 * Added     - Compatibility with WooCommerce 10.9.3.
