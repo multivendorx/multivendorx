@@ -132,7 +132,8 @@ const FormRow: React.FC<{
 const Checkboxes: React.FC<{
     options: Option[];
     onChange: (data: string[]) => void;
-}> = ({ options, onChange }) => {
+    fieldName?: string;
+}> = ({ options, onChange, fieldName = 'checkbox' }) => {
     const [checkedItems, setCheckedItems] = useState<Option[]>(
         options.filter(({ isDefault }) => isDefault)
     );
@@ -153,26 +154,30 @@ const Checkboxes: React.FC<{
 
     return (
         <>
-            {options.map((option) => (
-                <label
-                    key={option.value}
-                    htmlFor={option.value}
-                    className="woocommerce-form__label woocommerce-form__label-for-checkbox"
-                >
-                    <input
-                        type="checkbox"
-                        className="woocommerce-form__input woocommerce-form__input-checkbox"
-                        id={option.value}
-                        checked={
-                            !!checkedItems.find(
-                                (item) => item.value === option.value
-                            )
-                        }
-                        onChange={(e) => handleChange(option, e.target.checked)}
-                    />
-                    <span>{option.label}</span>
-                </label>
-            ))}
+            {options.map((option) => {
+                const uniqueId = `${fieldName}_${option.value}`;
+                
+                return (
+                    <label
+                        key={uniqueId}
+                        htmlFor={uniqueId}
+                        className="woocommerce-form__label woocommerce-form__label-for-checkbox"
+                    >
+                        <input
+                            type="checkbox"
+                            className="woocommerce-form__input woocommerce-form__input-checkbox"
+                            id={uniqueId}
+                            checked={
+                                !!checkedItems.find(
+                                    (item) => item.value === option.value
+                                )
+                            }
+                            onChange={(e) => handleChange(option, e.target.checked)}
+                        />
+                        <span>{option.label}</span>
+                    </label>
+                );
+            })}
         </>
     );
 };
@@ -180,7 +185,8 @@ const Checkboxes: React.FC<{
 const Radio: React.FC<{
     options: Option[];
     onChange: (value: string | undefined) => void;
-}> = ({ options, onChange }) => {
+    fieldName?: string;
+}> = ({ options, onChange, fieldName = 'radio' }) => {
     const [selected, setSelected] = useState<string | undefined>(
         options.find(({ isDefault }) => isDefault)?.value
     );
@@ -191,24 +197,28 @@ const Radio: React.FC<{
 
     return (
         <div className="multiselect-container items-wrapper">
-            {options.map((option, index) => (
-                <label
-                    key={option.value}
-                    className="woocommerce-form__label woocommerce-form__label-for-radio"
-                    data-index={index}
-                    htmlFor={option.value}
-                >
-                    <input
-                        type="radio"
-                        className="woocommerce-form__input woocommerce-form__input-radio"
-                        id={option.value}
-                        value={option.value}
-                        checked={selected === option.value}
-                        onChange={(e) => setSelected(e.target.value)}
-                    />
-                    <span>{option.label}</span>
-                </label>
-            ))}
+            {options.map((option, index) => {
+                const uniqueId = `${fieldName}_${option.value}`;
+                
+                return (
+                    <label
+                        key={uniqueId}
+                        className="woocommerce-form__label woocommerce-form__label-for-radio"
+                        data-index={index}
+                        htmlFor={uniqueId}
+                    >
+                        <input
+                            type="radio"
+                            className="woocommerce-form__input woocommerce-form__input-radio"
+                            id={uniqueId}
+                            value={option.value}
+                            checked={selected === option.value}
+                            onChange={(e) => setSelected(e.target.value)}
+                        />
+                        <span>{option.label}</span>
+                    </label>
+                );
+            })}
         </div>
     );
 };
@@ -632,6 +642,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
                 );
 
             case 'checkboxes':
+                const checkboxUniqueName = `checkbox_${field.id}_${field.name || index}`;
                 return (
                     <FormRow
                         key={uniqueKey}
@@ -642,6 +653,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
                         <Checkboxes
                             options={field.options || []}
                             onChange={(data) => handleChange(name, data)}
+                            fieldName={checkboxUniqueName}
                         />
                     </FormRow>
                 );
@@ -682,6 +694,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
                 );
 
             case 'radio':
+                const radioUniqueName = `radio_${field.id}_${field.name || index}`;
                 return (
                     <FormRow
                         key={uniqueKey}
@@ -692,6 +705,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
                         <Radio
                             options={field.options ?? []}
                             onChange={(data) => handleChange(name, data)}
+                            fieldName={radioUniqueName}
                         />
                     </FormRow>
                 );
