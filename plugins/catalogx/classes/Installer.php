@@ -324,7 +324,7 @@ class Installer {
         $wholesale_from_settings = array(
             'wholesale_from_settings' => array(
                 'formfieldlist'  => $wholesale_form,
-                'butttonsetting' => array(),
+                'buttonsetting' => array(),
             ),
         );
 
@@ -974,7 +974,7 @@ class Installer {
         $form_settings = array(
             'formsettings'    => array(
                 'formfieldlist'  => $pro_form,
-                'butttonsetting' => array(),
+                'buttonsetting' => array(),
             ),
             'freefromsetting' => $free_form,
         );
@@ -1010,7 +1010,7 @@ class Installer {
         $wholesale_from_settings = array(
             'wholesale_from_settings' => array(
                 'formfieldlist'  => $wholesale_form,
-                'butttonsetting' => array(),
+                'buttonsetting' => array(),
             ),
         );
 

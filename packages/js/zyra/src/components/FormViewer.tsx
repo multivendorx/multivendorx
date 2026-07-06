@@ -78,7 +78,7 @@ interface ButtonSetting {
 
 interface FormFields {
     formfieldlist: Field[];
-    butttonsetting?: ButtonSetting;
+    buttonsetting?: ButtonSetting;
 }
 
 interface FormViewerProps {

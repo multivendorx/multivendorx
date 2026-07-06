@@ -13,8 +13,8 @@ type Story = StoryObj<typeof CustomFrom>;
 
 export const TestRegistrationForm: Story = {
     args: {
-        onChange: ({ formfieldlist, butttonsetting }) => {
-            console.log('Form updated:', formfieldlist, butttonsetting);
+        onChange: ({ formfieldlist, buttonsetting }) => {
+            console.log('Form updated:', formfieldlist, buttonsetting);
         },
         name: 'registrationForm',
         proSettingChange: () => {

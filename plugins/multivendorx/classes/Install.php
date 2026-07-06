@@ -1099,7 +1099,7 @@ class Install {
         $registration_from_settings = array(
             'store_registration_from' => array(
                 'formfieldlist'  => $registration_form,
-                'butttonsetting' => array(),
+                'buttonsetting' => array(),
             ),
         );
 
@@ -1978,7 +1978,7 @@ class Install {
 			$new_form = array(
 				'store_registration_from' => array(
 					'formfieldlist'  => array(),
-					'butttonsetting' => array(),
+					'buttonsetting' => array(),
 				),
 			);
 
