@@ -2,11 +2,12 @@
 .registration-form-wrapper {
     .canvas-editor {
         .form-field-container-wrapper {
-            display: flex;
             flex-direction: column;
+            padding: 0 !important; //for overwrite default style
+            margin-bottom: 0.625rem;
 
             .settings-form-label {
-                width: 100%;
+                width: 100% !important; //for overwrite default style
                 margin-bottom: 0.625rem;
             }
         }

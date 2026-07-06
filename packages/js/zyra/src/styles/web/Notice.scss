@@ -204,7 +204,10 @@
         gap: 0.25rem;
 
         i {
-            font-size: 1rem;
+            padding: 0.25rem;
+            font-size: 1.25rem;
+            background: $background-white;
+            border-radius: 0.313rem;
         }
 
         &.type-success {
@@ -236,8 +239,7 @@
     &.display-inline-notice:not(.type-banner) {
         padding: 0.5rem 0.8rem;
         display: flex;
-
-        // align-items: center;
+        align-items: start;
         gap: 0.5rem;
         border: 0.063rem solid $theme-color;
         border-radius: $border-radius-small;
