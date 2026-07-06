@@ -141,7 +141,8 @@ const Cohort: React.FC = () => {
 			/>
 			<Container general>
 				<Column>
-					<div onClick={handleTableWrapperClick}>
+					<div className="demo-wrapper" onClick={handleTableWrapperClick}>
+						<div className="watermark">{__('This is sample Data','moowoodle' )}</div>
 						<TableCard {...tableProps} />
 					</div>
 				</Column>

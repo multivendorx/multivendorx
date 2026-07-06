@@ -6,7 +6,8 @@ import {
     NavigatorHeader,
     PopupUI,
     TableCard,
-    ComponentStatusView
+    ComponentStatusView,
+    Notice
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
@@ -131,7 +132,8 @@ const QuoteRequests = () => {
     const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
             return (
-                <div onClick={() => setopenPopup(true)}>
+                <div className="demo-wrapper" onClick={() => setopenPopup(true)}>
+                    <div className="watermark">{__('This is sample Data','catalogx' )}</div>
                     <TableCard {...tableProps} />
                 </div>
             );

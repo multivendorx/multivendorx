@@ -173,19 +173,8 @@ const SubscribersList = () => {
     const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
             return (
-                <div onClick={() => setOpenPopup(true)}>
-                    <Notice
-                        type="info"
-                        displayPosition="inline-notice"
-                        title={__(
-                            "You're looking at sample data",
-                            'notifima'
-                        )}
-                        message={__(
-                            'These 10 rows show what your subscriber table will look like. Real customer requests will appear here once Pro is activated.',
-                            'notifima'
-                        )}
-                    />
+                <div className="demo-wrapper" onClick={() => setOpenPopup(true)}>
+                     <div className="watermark">{__('This is sample Data','notifima' )}</div>
                     <TableCard {...tableProps} />
                 </div>
             );

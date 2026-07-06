@@ -146,19 +146,8 @@ const Managestock = () => {
     const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
             return (
-                <div onClick={() => setopenPopup(true)}>
-                    <Notice
-                        type="info"
-                        displayPosition="inline-notice"
-                        title={__(
-                            "You're looking at sample data",
-                            'notifima'
-                        )}
-                        message={__(
-                            'These entries show what your stock management table will look like. Real product stock will appear here once Pro is activated.',
-                            'notifima'
-                        )}
-                    />
+                <div className="demo-wrapper" onClick={() => setopenPopup(true)}>
+                    <div className="watermark">{__('This is sample Data','notifima' )}</div>
                     <TableCard {...tableProps} />
                 </div>
             );
