@@ -184,9 +184,13 @@ export const downloadCSV = (
 	const link = document.createElement('a');
 	link.href = url;
 	link.setAttribute('download', filename);
-	document.body.appendChild(link);
-	link.click();
-	link.remove();
+	try {
+		document.body.appendChild(link);
+		link.click();
+		link.remove();
+	} finally {
+		URL.revokeObjectURL(url);
+	}
 };
 
 /**
