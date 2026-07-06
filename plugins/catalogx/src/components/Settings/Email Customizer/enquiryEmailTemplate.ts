@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
-import {OuterSpace} from '../../assets/template/OuterSpace';
-import { GreenLagoon } from '../../assets/template/GreenLagoon';
-import { CrimsonValley } from '../../assets/template/CrimsonValley';
-import { MoonlitSky } from '../../assets/template/MoonlitSky';
-import { Starlight } from '../../assets/template/Starlight';
+import { OuterSpace } from '../../../assets/template/OuterSpace';
+import { GreenLagoon } from '../../../assets/template/GreenLagoon';
+import { CrimsonValley } from '../../../assets/template/CrimsonValley';
+import { MoonlitSky } from '../../../assets/template/MoonlitSky';
+import { Starlight } from '../../../assets/template/Starlight';
 
 
 const EMAIL_BLOCK_GROUPS = [
@@ -58,10 +58,10 @@ const EMAIL_BLOCK_GROUPS = [
 
 export default {
     id: 'enquiry-email-template',
-    priority: 4,
-    headerTitle: __('Email Customizations', 'catalogx'),
+    priority: 1,
+    headerTitle: __('Enquiry', 'catalogx'),
     headerDescription: __(
-        'Customize your preferred enquiry details email template',
+        'Customize the email template used for enquiry notifications.',
         'catalogx'
     ),
     headerIcon: 'enquiry',
@@ -78,17 +78,16 @@ export default {
             display: 'inline-notice',
         },
         {
-			key: 'enquiry_email_template',
-			type: 'block-builder',
-			classes: 'full-width',
-			// desc: 'Customise personalised store registration form for marketplace.',
-			// // Add templates configuration with proper content
-			emailTemplates: [OuterSpace , GreenLagoon, CrimsonValley, MoonlitSky, Starlight],
-			blockGroups: EMAIL_BLOCK_GROUPS,
+            key: 'enquiry_email_template',
+            type: 'block-builder',
+            classes: 'full-width',
+            emailTemplates: [OuterSpace, GreenLagoon, CrimsonValley, MoonlitSky, Starlight],
+            blockGroups: EMAIL_BLOCK_GROUPS,
             availablePlaceholder: appLocalizer.email_tags,
             visibleGroups: 'email',
-            context:'email',
-			defaultTemplateId: 'store-registration',
-		},
+            context: 'email',
+            defaultTemplateId: 'store-registration',
+            proSetting: true,
+        },
     ],
 };

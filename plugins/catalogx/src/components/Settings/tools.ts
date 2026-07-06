@@ -16,13 +16,22 @@ export default {
             fileName: 'error.txt',
         },
         {
-            key: 'custom_css_product_page',
-            type: 'textarea',
+            key: 'section',
+            type: 'section',
+            title: __('Additional CSS', 'catalogx'),
             desc: __(
-                'Put your custom css here, to customize the enquiry form.',
+                'Add custom CSS to customize the appearance of the enquiry form.',
                 'catalogx'
             ),
-            label: __('Additional CSS', 'catalogx'),
+        },
+        {
+            key: 'custom_css_product_page',
+            type: 'textarea',
+            label: __('Custom CSS', 'catalogx'),
+            desc: __(
+                'Enter your custom CSS here to customize the enquiry form.',
+                'catalogx'
+            ),
         },
     ],
 };
