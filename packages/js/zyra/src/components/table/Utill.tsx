@@ -122,15 +122,9 @@ export const renderCell = (
         }
         
         case 'content': {
-            const textarea = document.createElement('textarea');
-            textarea.innerHTML = String(value);
-            const decoded = textarea.value;
-            const parser = document.createElement('div');
-            parser.innerHTML = decoded;
-            const textOnly = parser.textContent || parser.innerText || '';
-            const cleanText = textOnly.replace(/\s+/g, ' ').trim();
-            const shortText =
-                cleanText.length > 30
+            const rawValue = String(value ?? '');
+            const doc = new DOMParser().parseFromString(rawValue, 'text/html');
+            const textOnly = doc.body?.textContent || '';
                     ? cleanText.slice(0, 30) + '…'
                     : cleanText;
 
