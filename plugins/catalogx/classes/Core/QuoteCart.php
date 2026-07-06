@@ -256,7 +256,7 @@ class QuoteCart {
         if ( ! $this->exists_in_cart( $quote_item['product_id'] ) ) {
             $quote_item = array(
                 'product_id' => $quote_item['product_id'],
-                'variation'  => $quote_item['variation'],
+                'variation'  => $quote_item['variation'] ?? array(),
                 'quantity'   => $quote_item['quantity'],
             );
 
