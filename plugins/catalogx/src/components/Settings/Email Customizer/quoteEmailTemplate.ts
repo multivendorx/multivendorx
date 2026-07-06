@@ -14,7 +14,7 @@ export default {
         {
             key: 'notice',
             type: 'notice',
-            title: __('Quote Email Templates Coming Soon', 'catalogx'),
+            title: __('Quote email templates are coming soon.', 'catalogx'),
             noticeType: 'info',
             display: 'inline-notice',
         },
