@@ -156,7 +156,7 @@ $enquiry_data = $args['enquiry_data'];
                 <tr>
                     <td colspan="2" valign="middle" align="center">
                     <?php /* translators: %s: email footer which display the site name. */ ?>
-                    <p><?php echo apply_filters( 'catalogx_email_footer_text', sprintf( __( '%s - Powered by CatalogX', 'catalogx' ), get_bloginfo( 'name', 'display' ) ) ); ?></a>.</p>
+                    <p><?php echo apply_filters( 'catalogx_email_footer_text', sprintf( __( '%s - Powered by CatalogX', 'catalogx' ), get_bloginfo( 'name', 'display' ) ) ); ?>.</p>
                     </td>
                 </tr>
             </tbody>
