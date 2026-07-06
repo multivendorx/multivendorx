@@ -92,7 +92,7 @@ export const TabsUI: React.FC<TabsProps> = ({
                     !React.isValidElement(item) &&
                     typeof item.type === 'string'
                 ) {
-                    return renderFieldFromConfig(item, index);
+                    return renderFieldFromConfig(item);
                 }
                 // React element, primitive, etc. — render as-is
                 return item;
@@ -106,7 +106,7 @@ export const TabsUI: React.FC<TabsProps> = ({
             !React.isValidElement(content) &&
             typeof content.type === 'string'
         ) {
-            return renderFieldFromConfig(content, 0);
+            return renderFieldFromConfig(content);
         }
 
         // Return as is (string, number, React element, etc.)
