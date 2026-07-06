@@ -344,9 +344,10 @@ class Rest {
      */
     public function grant_woocommerce_rest_permission( $permission, $context, $object_id, $post_type ) {
         $request_method = $_SERVER['REQUEST_METHOD'] ?? '';
-        $request_uri    = $_SERVER['REQUEST_URI'] ?? '';
+        $request_path = wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
 
-        if ( ! is_user_logged_in() && $request_method === 'GET' && str_contains( $request_uri, '/products' ) !== false ) {
+        if ( ! is_user_logged_in() && $request_method === 'GET' && preg_match( '#/wp-json/wc/v[0-9]+/products(?:/\d+)?/?$#', $request_path )
+        ) {
             return true;
         }
 
@@ -358,7 +359,22 @@ class Rest {
         // Get all users for that store.
         $users = StoreUtil::get_store_users( $active_store );
 
-        if ( is_array( $users ) && in_array( $user_id, $users['users'], true ) ) {
+        $allowed_routes = array(
+            '#^/wp-json/wc/v[0-9]+/products(?:/.*)?$#',
+            '#^/wp-json/wc/v[0-9]+/orders(?:/.*)?$#',
+            '#^/wp-json/wc/v[0-9]+/coupons(?:/.*)?$#',
+            '#^/wp-json/wc/v[0-9]+/products/categories(?:/.*)?$#',
+        );
+
+        $route_allowed = false;
+        foreach ( $allowed_routes as $pattern ) {
+            if ( preg_match( $pattern, $request_path ) ) {
+                $route_allowed = true;
+                break;
+            }
+        }
+ 
+        if ( is_array( $users ) && ! empty( $users['users'] ) && in_array( $user_id, $users['users'], true ) && $route_allowed ) {
             return true;
         }
 
