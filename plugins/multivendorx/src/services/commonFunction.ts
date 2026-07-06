@@ -81,12 +81,15 @@ export function formatTimeAgo(dateString: string) {
 		return 'Just now';
 	}
 	if (diff < 3600) {
-		return `${Math.floor(diff / 60)} min ago`;
+		const minutes = Math.floor(diff / 60);
+		return `${minutes} ${minutes === 1 ? 'min' : 'mins'} ago`;
 	}
 	if (diff < 86400) {
-		return `${Math.floor(diff / 3600)} hour ago`;
+		const hours = Math.floor(diff / 3600);
+		return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
 	}
-	return `${Math.floor(diff / 86400)} day ago`;
+	const days = Math.floor(diff / 86400);
+	return `${days} ${days === 1 ? 'day' : 'days'} ago`;
 }
 
 // This function only removes time from the date-time object and return the formatted date.
