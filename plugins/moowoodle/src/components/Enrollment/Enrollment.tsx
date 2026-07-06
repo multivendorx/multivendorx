@@ -155,7 +155,10 @@ const Enrollment: React.FC = () => {
 			/>
 			<Container general>
 				<Column>
-					<div onClick={handleTableWrapperClick}>
+					<div className="demo-wrapper" onClick={handleTableWrapperClick}>
+						{!appLocalizer.khali_dabba && (
+							<div className="watermark">{__('This is sample Data','moowoodle' )}</div>
+						)}
 						<TableCard {...tableProps} />
 						{tableProps.popup}
 					</div>
