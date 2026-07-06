@@ -123,9 +123,15 @@ export const renderCell = (
 
         case 'content': {
             const rawValue = String(value ?? '');
-            const doc = new DOMParser().parseFromString(rawValue, 'text/html');
-            const textOnly = doc.body?.textContent || '';
-            const cleanText = textOnly.trim();
+            const withoutTags = rawValue.replace(/<[^>]*>/g, ' ');
+            const decodedText = withoutTags
+                .replace(/&nbsp;/gi, ' ')
+                .replace(/&lt;/gi, '<')
+                .replace(/&gt;/gi, '>')
+                .replace(/&quot;/gi, '"')
+                .replace(/&#39;/gi, "'")
+                .replace(/&amp;/gi, '&');
+            const cleanText = decodedText.replace(/\s+/g, ' ').trim();
 
             const shortText =
                 cleanText.length > 30
