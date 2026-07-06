@@ -344,9 +344,14 @@ class Rest {
      */
     public function grant_woocommerce_rest_permission( $permission, $context, $object_id, $post_type ) {
         $request_method = $_SERVER['REQUEST_METHOD'] ?? '';
-        $request_uri    = $_SERVER['REQUEST_URI'] ?? '';
+        $allowed_post_types = array(
+            'product',
+            'shop_order',
+            'shop_coupon',
+            'product_cat',
+        );
 
-        if ( ! is_user_logged_in() && $request_method === 'GET' && str_contains( $request_uri, '/products' ) !== false ) {
+        if ( ! is_user_logged_in() && $request_method === 'GET' && in_array( $post_type, $allowed_post_types, true ) ) {
             return true;
         }
 
@@ -357,8 +362,8 @@ class Rest {
 
         // Get all users for that store.
         $users = StoreUtil::get_store_users( $active_store );
-
-        if ( is_array( $users ) && in_array( $user_id, $users['users'], true ) ) {
+ 
+        if ( is_array( $users ) && ! empty( $users['users'] ) && in_array( $user_id, $users['users'], true ) && in_array( $post_type, $allowed_post_types, true ) ) {
             return true;
         }
 
