@@ -1,4 +1,4 @@
-=== CatalogX - Product Catalog Mode & product Enquiry, Request Quote for WooCommerce, Wholesale Prices, B2B, Wholesale User Roles, Dynamic Pricing, Tired Pricing & More ===
+=== CatalogX - Product Catalog Mode & product Enquiry, Request Quote for WooCommerce, Wholesale Prices, B2B, Wholesale User Roles, Dynamic Pricing, Tiered Pricing & More ===
 Contributors: wcmp
 Tags: product enquiry for woocommerce, request a quote, b2b , dynamic pricing, wholesale pricing, 
 Donate link: https://multivendorx.com/donate?utm_source=wporg&utm_medium=plugindescription&utm_campaign=catalogxwporg
@@ -94,7 +94,7 @@ The Wholesale Module is perfect for businesses 🛒 that serve both retail and w
 The Dynamic Rule-Based Pricing module is a powerful tool 💪 for businesses looking to maximize sales through targeted pricing strategies. By creating custom discount rules based on user roles, product categories, and more, you can attract specific customer groups, encourage larger purchases, and optimize your pricing for different scenarios. This module is essential for businesses aiming to increase conversions, customer loyalty, and overall revenue through smart pricing techniques💰.
 
 #Key Features:
-⚙️ Implement tired pricing strategies to adapt to different customer needs and market conditions[PRO].
+⚙️ Implement tiered pricing strategies to adapt to different customer needs and market conditions[PRO].
 🎯 Create custom discount rules that offer exclusive deals to specific user roles like subscribers or wholesale buyers[PRO].
 🏷️ Target promotions based on products, categories, or user roles to maximize sales potential [PRO].
 📊 Add multiple user role levels with corresponding pricing rules for greater pricing flexibility [PRO].
@@ -218,13 +218,13 @@ Answer: Simply enable the 'Product Enquiry Button When Product is Out Of Stock' 
 4. Wholesale pricing setup
 5. Dynamic Rule-Based Pricing configuration
 6. Real-Time Page Builder interface
-7. Enquiry Dashbaord
+7. Enquiry Dashboard
 
 == Changelog ==
 
-= 6.1.0 - 2026-06-30 =
+= 6.1.0 - 2026-07-06 =
 * Added     - Compatibility of WordPress 7.0.0.
-* Added     - Compatibility with WooCommerce 10.9.1.
+* Added     - Compatibility with WooCommerce 10.9.3.
 * Added     - Refreshed the overall UI/UX of the settings panel for an improved user experience.
 
 = 6.0.6 - 2025-06-10 =

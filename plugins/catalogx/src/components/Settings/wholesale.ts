@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'wholesale',
-    priority: 4,
+    priority: 5,
     headerTitle: __('Wholesale', 'catalogx'),
     headerDescription: __('Wholesale sign up and registration management.', 'catalogx'),
     headerIcon: 'wholesale',

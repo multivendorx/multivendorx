@@ -38,7 +38,7 @@ const DashboardTab: React.FC<object> = () => {
 				className="admin-btn btn-purple"
 			>
 				<i className="adminfont-pro-tag"></i>
-				{__(label, 'catalogx')}
+				{label}
 				<i className="adminfont-arrow-right icon-pro-btn"></i>
 			</a>
 		);
@@ -97,7 +97,7 @@ const DashboardTab: React.FC<object> = () => {
 			});
 
 			window.open(
-				`${appLocalizer.admin_url}plugins.php?s=${slug}`,
+				`${appLocalizer.url}plugins.php?s=${slug}`,
 				'_blank'
 			);
 			return;
@@ -500,14 +500,14 @@ const DashboardTab: React.FC<object> = () => {
 								border
 								items={[
 									{
-										title: __(res.title, 'catalogx'),
-										desc: __(res.desc, 'catalogx'),
+										title: res.title,
+										desc: res.desc,
 										icon: res.iconClass,
 										tags: (
 											<>
 												<a
 													href={res.href}
-													target="blank"
+													target="_blank"
 												>
 													{__(
 														res.linkText,

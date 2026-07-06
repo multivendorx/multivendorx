@@ -36,7 +36,7 @@ export default {
         {
             key: 'form_tabs',
             type: 'tab',
-            classes: 'full-width',
+            classes: 'full-width pro-tab',
             tabs: [
                 {
                     key: 'free_form',
@@ -44,7 +44,8 @@ export default {
                     content: [
                         {
                             key: 'section',
-                            type: 'section'
+                            type: 'section',
+                            withoutBorder: true
                         },
                         {
                             key: 'email_input',

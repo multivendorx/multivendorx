@@ -453,6 +453,7 @@ class FrontendScripts {
                             'quote_base_url'             => $quote_base_url,
                             'free_version'               => CatalogX()->version,
                             'date_format'                => Utill::wp_to_react_date_format( get_option( 'date_format' ) ),
+                            'url'                        => admin_url( ),
                             'pro_data'                   => apply_filters(
 								'catalogx_update_pro_data',
 								array(

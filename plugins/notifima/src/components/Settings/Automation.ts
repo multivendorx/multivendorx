@@ -298,8 +298,8 @@ export default {
         {
             key: 'section',
             type: 'section',
-            title: __('Audience Sync', 'notifima'),
-            desc: __('Choose where subscriber data is stored and automatically sync it with connected platforms.', 'notifima'),
+            title: __('Audience Synchronization', 'notifima'),
+            desc: __('Choose where subscriber data is stored and automatically synchronize it with connected platforms.', 'notifima'),
         },
         {
             key: 'is_mailchimp_enable',
