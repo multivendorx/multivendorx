@@ -292,6 +292,7 @@ const CustomValueContainer = (
 
     const handleOverflowClick = (e: React.MouseEvent) => {
         e.stopPropagation();
+        e.preventDefault();        
         if (onOverflowClick) {
             onOverflowClick();
         } else {
@@ -306,6 +307,10 @@ const CustomValueContainer = (
                 <span
                     className="admin-badge blue overflow-badge"
                     onClick={handleOverflowClick}
+                    onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }}
                     role="button"
                     tabIndex={0}
                     title={`${overflow} more selected`}
