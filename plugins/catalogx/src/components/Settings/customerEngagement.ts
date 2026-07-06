@@ -279,18 +279,55 @@ export default {
             moduleEnabled: 'quote',
             tour: 'quote-permission',
         },
+
+        {
+            key: 'quotation_validity',
+            type: 'choice-toggle',
+            label: __('Quotation validity period', 'catalogx'),
+            settingDescription: __(
+                'Choose how long quotations remain valid before they expire.',
+                'catalogx'
+            ),
+            desc: __(
+                '<ul><li><strong>Lifetime</strong> – Quotations never expire automatically.</li><li><strong>Fixed duration</strong> – Quotations expire after the specified number of days.</li></ul>',
+                'catalogx'
+            ),
+            options: [
+                {
+                    key: 'lifetime',
+                    label: __('Lifetime', 'catalogx'),
+                    value: 'lifetime',
+                },
+                {
+                    key: 'fixed_duration',
+                    label: __('Fixed duration', 'catalogx'),
+                    value: 'fixed_duration',
+                },
+            ],
+            proSetting: true,
+            moduleEnabled: 'quote',
+        },
         {
             key: 'set_expiry_time',
-            type: 'text',
-            label: __('Quotation validity period', 'catalogx'),
+            type: 'number',
+            label: __('Duration', 'catalogx'),
             size: 10,
+            settingDescription: __(
+                'Specify the number of days a quotation remains valid.',
+                'catalogx'
+            ),
             desc: __(
-                'Set the period after which a quotation will expire and no longer be valid for purchase.',
+                'The quotation will automatically expire after the specified number of days from its creation.',
                 'catalogx'
             ),
             postText: __('days', 'catalogx'),
             proSetting: true,
             moduleEnabled: 'quote',
+            dependent: {
+                key: 'quotation_validity',
+                set: true,
+                value: 'fixed_duration',
+            },
         },
         //extra
         {

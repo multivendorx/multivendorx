@@ -195,7 +195,7 @@ class Installer {
         $enquiry_quote_settings = array(
             'is_disable_popup'                   => 'popup',
             'is_enable_multiple_product_enquiry' => array( 'is_enable_multiple_product_enquiry' ),
-            'set_expiry_time'                    => 'Never',
+            'quotation_validity'                 => 'lifetime',
         );
 
         $all_settings = array(
@@ -630,6 +630,14 @@ class Installer {
             $settings['enable_cart_checkout']  = ! empty( $settings['enable_cart_checkout'] )? 'buy_mode' : 'catalog_only';
             $settings['is_page_redirect']      = ! empty( $settings['is_page_redirect'] )? 'dedicated_page' : 'current_page';
 
+            if ( empty( $settings['set_expiry_time'] ) || 'Never' === $settings['set_expiry_time'] ) {
+                $settings['quotation_validity'] = 'lifetime';
+                $settings['set_expiry_time']    = '';
+            } else {
+                $settings['quotation_validity'] = 'fixed_duration';
+                $settings['set_expiry_time']    = (int) $settings['set_expiry_time'];
+            }
+
             update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $settings );
 
             $wholesale_settings = get_option( Utill::CATALOGX_SETTINGS['wholesale'], array() );
@@ -832,7 +840,7 @@ class Installer {
             'redirect_page_id'                   => $previous_general_settings['redirect_page_id'] ? $previous_general_settings['redirect_page_id']['value'] : '',
             'is_disable_popup'                   => ! empty( $previous_general_settings['is_disable_popup'] ) ? 'inline' : 'popup',
             'enable_cart_checkout'               => array(),
-            'set_expiry_time'                    => 'Never',
+            'quotation_validity'                 => 'lifetime',
             'is_enable_multiple_product_enquiry' => $previous_general_settings['is_enable_multiple_product_enquiry'] ?? array( 'is_enable_multiple_product_enquiry' ),
         );
 
