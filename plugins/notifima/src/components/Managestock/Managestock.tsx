@@ -7,7 +7,8 @@ import {
     NavigatorHeader,
     PopupUI,
     TableCard,
-    MultiCheckBoxUI
+    MultiCheckBoxUI,
+    Notice
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
@@ -146,6 +147,18 @@ const Managestock = () => {
         if (!appLocalizer.khali_dabba) {
             return (
                 <div onClick={() => setopenPopup(true)}>
+                    <Notice
+                        type="info"
+                        displayPosition="inline-notice"
+                        title={__(
+                            "You're looking at sample data",
+                            'notifima'
+                        )}
+                        message={__(
+                            'These entries show what your stock management table will look like. Real product stock will appear here once Pro is activated.',
+                            'notifima'
+                        )}
+                    />
                     <TableCard {...tableProps} />
                 </div>
             );
