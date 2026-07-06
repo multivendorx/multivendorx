@@ -531,8 +531,7 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
                     />
                 ) : (
                     <Calendar
-                        className={`calendar-wrapper ${!showInput ? 'calendar' : ''
-                            }`}
+                        className="calendar-wrapper calendar"
                         {...commonProps}
                     />
                 )}

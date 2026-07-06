@@ -394,57 +394,55 @@ const StoreReviews: React.FC = () => {
 											.toUpperCase()}
 									</span>
 								</div>
-								{selectedReview && (
-									<div className="name-wrapper">
-										<div
-											className="name"
-											dangerouslySetInnerHTML={{
-												__html: selectedReview.review_title,
-											}}
-										></div>
+								<div className="name-wrapper">
+									<div
+										className="name"
+										dangerouslySetInnerHTML={{
+											__html: selectedReview.review_title,
+										}}
+									></div>
 
-										<div className="rating-wrapper">
-											{[
-												...Array(
+									<div className="rating-wrapper">
+										{[
+											...Array(
+												Math.round(
+													selectedReview.overall_rating ||
+														0
+												)
+											),
+										].map((_, i) => (
+											<i
+												key={`filled-${i}`}
+												className="star-icon adminfont-star"
+											></i>
+										))}
+
+										{[
+											...Array(
+												5 -
 													Math.round(
 														selectedReview.overall_rating ||
 															0
 													)
-												),
-											].map((_, i) => (
-												<i
-													key={`filled-${i}`}
-													className="star-icon adminfont-star"
-												></i>
-											))}
+											),
+										].map((_, i) => (
+											<i
+												key={`empty-${i}`}
+												className="star-icon adminfont-star-o"
+											></i>
+										))}
 
-											{[
-												...Array(
-													5 -
-														Math.round(
-															selectedReview.overall_rating ||
-																0
-														)
-												),
-											].map((_, i) => (
-												<i
-													key={`empty-${i}`}
-													className="star-icon adminfont-star-o"
-												></i>
-											))}
-
-											<div className="date">
-												{new Date(
-													selectedReview.date_created
-												).toLocaleDateString('en-GB', {
-													day: '2-digit',
-													month: 'short',
-													year: 'numeric',
-												})}
-											</div>
+										<div className="date">
+											{new Date(
+												selectedReview.date_created
+											).toLocaleDateString('en-GB', {
+												day: '2-digit',
+												month: 'short',
+												year: 'numeric',
+											})}
 										</div>
 									</div>
-								)}
+								</div>
 							</div>
 
 							<div className="review">
