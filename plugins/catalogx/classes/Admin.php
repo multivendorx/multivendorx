@@ -83,15 +83,15 @@ class Admin {
                 'name'     => __( 'Modules', 'catalogx' ),
                 'subtab'   => '',
                 'priority' => 70,
-            )
+            ),
         );
 
         uasort(
-                $submenu_items,
-                function ( $a, $b ) {
-					return ( $a['priority'] ?? 0 ) <=> ( $b['priority'] ?? 0 );
-				}
-            );
+            $submenu_items,
+            function ( $a, $b ) {
+                return ( $a['priority'] ?? 0 ) <=> ( $b['priority'] ?? 0 );
+            }
+        );
 
         foreach ( $submenu_items as $slug => $submenu_item ) {
             // prepare subtab if subtab is exist.
@@ -157,7 +157,6 @@ class Admin {
             FrontendScripts::enqueue_style( 'catalogx-index-style' );
             FrontendScripts::localize_scripts( 'catalogx-admin-script' );
         }
-
     }
 
     /**

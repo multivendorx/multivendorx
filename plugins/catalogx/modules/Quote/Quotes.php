@@ -75,7 +75,7 @@ class Quotes extends \WP_REST_Controller {
         }
 
         try {
-            $form_data    = $request->get_param( 'formData' ) ?? $request->get_param( 'enquiry' ) ?? array();
+            $form_data = $request->get_param( 'formData' ) ?? $request->get_param( 'enquiry' ) ?? array();
 
             // Handle rejection case.
             $order_id = $request->get_param( 'orderId' );
