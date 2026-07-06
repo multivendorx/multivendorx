@@ -93,7 +93,7 @@ class Quotes extends \WP_REST_Controller {
             }
 
             if ( empty( $form_data ) ) {
-                return new WP_Error( 'invalid_data', __( 'Missing form data.', 'catalogx' ), array( 'status' => 400 ) );
+                return new \WP_Error( 'invalid_data', __( 'Missing form data.', 'catalogx' ), array( 'status' => 400 ) );
             }
 
             // Sanitize input fields.
