@@ -202,6 +202,8 @@ export const downloadCSV = (
 const buildPath = (segments: string[]): string =>
 	`/${segments.filter(Boolean).join('/')}`;
 
+const ALLOWED_SEGMENTS = ['products', 'orders', 'dashboard'];
+
 const sanitize = (value: string) => value.replace(/[^a-zA-Z0-9_-]/g, '');
 
 const updatePlainPermalinkUrl = (segments: string[]) => {
@@ -231,8 +233,6 @@ export const dashNavigate = (
 	navigate: (path: string) => void,
 	segments: string[]
 ) => {
-	const ALLOWED_SEGMENTS = ['products', 'orders', 'dashboard'];
-
 	if (!ALLOWED_SEGMENTS.includes(segments[0])) {
 		return;
 	}
