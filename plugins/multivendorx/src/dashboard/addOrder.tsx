@@ -1042,40 +1042,38 @@ const AddOrder = () => {
 									iconClass: 'person',
 								}}
 								descriptions={
-									selectedCustomer
-										? [
-												{
-													label: __(
-														'Customer ID',
-														'multivendorx'
-													),
-													value: `#${selectedCustomer.id}`,
-													boldLabel: true,
-												},
-												{
-													value: (
-														<>
-															<i className="adminfont-mail" />{' '}
-															{
-																selectedCustomer.email
-															}
-														</>
-													),
-												},
-												{
-													value: (
-														<>
-															<i className="adminfont-phone" />{' '}
-															{
-																selectedCustomer
-																	.billing
-																	?.phone
-															}
-														</>
-													),
-												},
-											]
-										: []
+									[
+										{
+											label: __(
+												'Customer ID',
+												'multivendorx'
+											),
+											value: `#${selectedCustomer.id}`,
+											boldLabel: true,
+										},
+										{
+											value: (
+												<>
+													<i className="adminfont-mail" />{' '}
+													{
+														selectedCustomer.email
+													}
+												</>
+											),
+										},
+										{
+											value: (
+												<>
+													<i className="adminfont-phone" />{' '}
+													{
+														selectedCustomer
+															.billing
+															?.phone
+													}
+												</>
+											),
+										},
+									]		
 								}
 								badges={[
 									{
