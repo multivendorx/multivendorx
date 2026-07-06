@@ -125,9 +125,6 @@ export const renderCell = (
             const rawValue = String(value ?? '');
             const doc = new DOMParser().parseFromString(rawValue, 'text/html');
             const textOnly = doc.body?.textContent || '';
-            const cleanText = textOnly.replace(/\s+/g, ' ').trim();
-            const shortText =
-                cleanText.length > 30
                     ? cleanText.slice(0, 30) + '…'
                     : cleanText;
 
