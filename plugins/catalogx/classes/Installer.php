@@ -359,7 +359,7 @@ class Installer {
 
             $old_keys = array(
                 'catalogx_enquiry-catalog-customization_settings' => Utill::CATALOGX_SETTINGS['enquiry-catalog-customization'],
-                'catalogx_all-settings_settings'           => Utill::CATALOGX_SETTINGS['shopping'],
+                'catalogx_all-settings_settings'           => Utill::CATALOGX_SETTINGS['customer-engagement'],
                 'catalogx_enquiry-quote-exclusion_settings' => Utill::CATALOGX_SETTINGS['enquiry-quote-exclusion'],
                 'catalogx_enquiry-form-customization_settings' => Utill::CATALOGX_SETTINGS['enquiry-form-customization'],
                 'catalogx_enquiry-email-temp_settings'     => Utill::CATALOGX_SETTINGS['enquiry-email-template'],
@@ -381,7 +381,7 @@ class Installer {
             }
             $previous_all_settings_settings = get_option( 'catalogx_all-settings_settings', array() );
             if ( ! empty( $previous_all_settings_settings ) ) {
-            update_option( Utill::CATALOGX_SETTINGS['all-settings'], $previous_all_settings_settings );
+            update_option( 'catalogx_all_settings_settings', $previous_all_settings_settings );
             delete_option( 'catalogx_all-settings_settings' );
             }
             $previous_enquiry_quote_exclusion_settings = get_option( 'catalogx_enquiry-quote-exclusion_settings', array() );

@@ -22,7 +22,7 @@ export default {
                 'Put your custom css here, to customize the enquiry form.',
                 'catalogx'
             ),
-            label: __('Addional CSS', 'catalogx'),
+            label: __('Additional CSS', 'catalogx'),
         },
     ],
 };
