@@ -291,7 +291,6 @@ const CustomValueContainer = (
     const visibleChips = childArray.slice(0, -1).slice(0, limit);
 
     const handleOverflowClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
         if (onOverflowClick) {
             onOverflowClick();
         } else {
@@ -305,7 +304,11 @@ const CustomValueContainer = (
             {overflow > 0 && (
                 <span
                     className="admin-badge blue overflow-badge"
-                    onClick={handleOverflowClick}
+                    onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleOverflowClick(e);
+                    }}
                     role="button"
                     tabIndex={0}
                     title={`${overflow} more selected`}
@@ -395,7 +398,7 @@ export const SelectInputUI: React.FC<SelectProps> = ({
         menuPosition: 'fixed',
         styles: {
             ...buildStyles(isMulti, background, color),
-            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+            menuPortal: (base) => ({ ...base, zIndex: 99 }),
         },
     };
     const formattedSize = typeof size === 'number' ? `${size}rem` : size;
