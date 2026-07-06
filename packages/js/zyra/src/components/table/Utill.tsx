@@ -120,12 +120,16 @@ export const renderCell = (
 
             return finalValue;
         }
-        
+
         case 'content': {
             const rawValue = String(value ?? '');
             const doc = new DOMParser().parseFromString(rawValue, 'text/html');
             const textOnly = doc.body?.textContent || '';
-                    ? cleanText.slice(0, 30) + '…'
+            const cleanText = textOnly.trim();
+
+            const shortText =
+                cleanText.length > 30
+                    ? `${cleanText.slice(0, 30)}…`
                     : cleanText;
 
             return shortText;
