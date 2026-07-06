@@ -8,7 +8,7 @@
  * Requires at least: 6.4
  * Tested up to: 7.0.0
  * WC requires at least: 8.2.2
- * WC tested up to: 10.9.2
+ * WC tested up to: 10.9.3
  * Author URI: https://multivendorx.com/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima
  * Text Domain: notifima
  * Requires Plugins: woocommerce
