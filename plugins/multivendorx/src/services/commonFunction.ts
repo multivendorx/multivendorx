@@ -308,7 +308,10 @@ export const getUrl = (
 export const htmlToText = (input): string => {
     if (typeof input !== 'string') return '';
 
-    return input.replace(/<\/?[^>]+(>|$)/g, '');
+    const parser = document.createElement('div');
+    parser.innerHTML = input;
+
+    return parser.textContent || parser.innerText || '';
 };
 
 export const normalizeText = (text?: string) => {
