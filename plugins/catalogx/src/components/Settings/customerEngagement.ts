@@ -3,7 +3,7 @@ export default {
     id: 'customer-engagement',
     priority: 3,
     headerTitle: __('Enquiry & Quote', 'catalogx'),
-    settingTitle: __('Purchase experience','catalogx'),
+    settingTitle: __('Purchase experience', 'catalogx'),
     headerDescription: __(
         'Define how customers move from product browsing to purchasing across your store.',
         'catalogx'
@@ -234,10 +234,10 @@ export default {
             key: 'additional_alert_email',
             type: 'text',
             desc: __(
-                "Set the email address to receive notifications when a user submits enquiry of a product. You can add multiple comma-separated emails.<br/> <b>Default:</b> The admin's email is set as the receiver. Exclude the admin's email from the list to exclude admin from receiving these notifications.",
+                "When a customer submits an enquiry for a product, the enquiry details will be sent to the email address(es) entered here. Add multiple email addresses separated by commas.<br/> <b>Default:</b> The site administrator's email is included by default. To stop the admin from receiving enquiry notifications, remove the admin email address from this list.",
                 'catalogx'
             ),
-            label: __('Recipient email for new subscriber', 'catalogx'),
+            label: __('Recipient email for product enquiries', 'catalogx'),
             moduleEnabled: 'enquiry',
         },
         //quote

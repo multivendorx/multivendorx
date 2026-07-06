@@ -14,7 +14,7 @@ export default {
         {
             key: 'set_enquiry_cart_page',
             type: 'select',
-            label: __('Set Enquiry Cart Page', 'catalogx'),
+            label: __('Set enquiry cart page', 'catalogx'),
             size: 20,
             desc: __(
                 'Select the page on which you have inserted <code>[catalogx_enquiry_cart]</code> shortcode.',
@@ -26,10 +26,10 @@ export default {
         {
             key: 'set_request_quote_page',
             type: 'select',
-            label: __('Set Request Quote Page', 'catalogx'),
+            label: __('Set request quote page', 'catalogx'),
             size: 20,
             desc: __(
-                'Select the page on which you have inserted <code>[request_quote]</code> shortcode.',
+                'Select the page on which you have inserted <code>[catalogx_request_quote]</code> shortcode.',
                 'catalogx'
             ),
             options: appLocalizer.pages_data,
@@ -55,7 +55,7 @@ export default {
         {
             key: 'shortCode',
             type: 'shortcode-table',
-            label: __('Available Shortcodes', 'catalogx'),
+            label: __('Available shortcodes', 'catalogx'),
             desc: __('', 'catalogx'),
             optionLabel: [
                 __('Shortcodes and block', 'catalogx'),
@@ -84,7 +84,7 @@ export default {
                 },
                 {
                     key: '',
-                    label: '[catalogx_enquiry_cart_button]',
+                    label: '[catalogx_wholesale_products]',
                     name: 'Add to Enquiry Cart',
                     desc: __(
                         'Provide approved wholesale users with a dedicated page to browse and purchase wholesale products.',
@@ -93,7 +93,7 @@ export default {
                 },
                 {
                     key: '',
-                    label: '[catalogx_wholesale_products]',
+                    label: '[catalogx_enquiry_cart_button]',
                     name: 'Display Wholesale Products',
                     desc: __(
                         'Allow users to add products to an enquiry cart and send a combined enquiry.',
