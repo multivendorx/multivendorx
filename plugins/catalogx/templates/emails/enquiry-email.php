@@ -42,26 +42,26 @@ $enquiry_data = $args['enquiry_data'];
                                 $product_obj = wc_get_product( $id );
                                 ?>
                                 <tr>
-                                <td scope="col"><?php echo $product_obj->get_name(); ?>
+                                <td scope="col"><?php echo esc_html( $product_obj->get_name() ); ?>
                                 <?php
 								if ( $product_obj->get_type() == 'variation' ) {
 									if ( isset( $enquiry_data['variations'] ) && count( $enquiry_data['variations'] ) > 0 ) {
 										foreach ( $enquiry_data['variations'] as $label => $value ) {
 											$label = str_replace( 'attribute_pa_', '', $label );
 											$label = str_replace( 'attribute_', '', $label );
-											echo '<br>' . ucfirst( $label ) . ': ' . ucfirst( $value );
+											echo '<br>' . esc_html( ucfirst( $label ) . ': ' . ucfirst( $value ) );
 										}
 									} elseif ( $product_obj->get_attributes() ) {
 										foreach ( $product_obj->get_attributes() as $label => $value ) {
-											echo '<br>' . ucfirst( wc_attribute_label( $label ) ) . ': ' . ucfirst( $value );
+											echo '<br>' . esc_html( ucfirst( wc_attribute_label( $label ) ) . ': ' . ucfirst( $value ) );
 										}
 									}
 								}
 								?>
                                 </td>
-                                <td scope="col"><a href="<?php echo $product_obj->get_permalink(); ?>" target="_blank"><?php echo $product_obj->get_title(); ?></a></td>
+                                <td scope="col"><a href="<?php echo esc_url( $product_obj->get_permalink() ); ?>" target="_blank"><?php echo esc_html( $product_obj->get_title() ); ?></a></td>
                                 <?php if ( $product_obj->get_sku() ) { ?>
-                                <td scope="col"><?php echo $product_obj->get_sku(); ?></td>
+                                <td scope="col"><?php echo esc_html( $product_obj->get_sku() ); ?></td>
                                 <?php } else { ?>
                                     <td scope="col"><?php echo '-'; ?></td>
                                 <?php } ?>
