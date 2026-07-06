@@ -165,7 +165,7 @@ const REGISTRATION_BLOCK_GROUPS = [
 export default {
     id: 'enquiry-form-customization',
     priority: 1,
-    headerTitle: __('Enquiry Form Builder', 'catalogx'),
+    headerTitle: __('Enquiry', 'catalogx'),
     headerDescription: __(
         'Design a personalized enquiry form with built-in form builder.',
         'catalogx'
