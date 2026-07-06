@@ -7,8 +7,7 @@ import {
     NavigatorHeader,
     PopupUI,
     TableCard,
-    getApiLink,
-    Notice
+    getApiLink
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';

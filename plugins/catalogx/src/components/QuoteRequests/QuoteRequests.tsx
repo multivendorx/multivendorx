@@ -6,8 +6,7 @@ import {
     NavigatorHeader,
     PopupUI,
     TableCard,
-    ComponentStatusView,
-    Notice
+    ComponentStatusView
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
