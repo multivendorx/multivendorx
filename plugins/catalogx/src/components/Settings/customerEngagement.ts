@@ -1,7 +1,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 export default {
     id: 'customer-engagement',
-    priority: 3,
+    priority: 4,
     headerTitle: __('Enquiry & Quote', 'catalogx'),
     settingTitle: __('Purchase experience', 'catalogx'),
     headerDescription: __(

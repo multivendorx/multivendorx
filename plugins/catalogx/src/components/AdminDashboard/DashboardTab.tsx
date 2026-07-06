@@ -139,7 +139,7 @@ const DashboardTab: React.FC<object> = () => {
 			),
 			iconClass: 'knowledgebase',
 			linkText: __('Explore Docs', 'catalogx'),
-			href: 'https://catalogx.com/docs/knowledgebase/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
+			href: 'https://catalogx.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
 		},
 		{
 			title: __('Expert consultation', 'catalogx'),
@@ -149,7 +149,7 @@ const DashboardTab: React.FC<object> = () => {
 			),
 			iconClass: 'preview',
 			linkText: __('Book Consultation', 'catalogx'),
-			href: 'https://catalogx.com/custom-development/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
+			href: 'https://catalogx.com/hire-experts/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
 		},
 	];
 
