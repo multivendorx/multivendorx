@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-    id: 'form-submission',
+    id: 'customer-messages',
     priority: 2,
-    headerTitle: __('Subscription status messages', 'notifima'),
+    headerTitle: __('Customer Messages', 'notifima'),
     headerDescription: __('Control how the subscription form and customer messages appear throughout your store.', 'notifima'),
     headerIcon: 'person',
     submitUrl: 'settings',

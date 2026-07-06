@@ -884,7 +884,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
                     <p key={uniqueKey} className="woocommerce-form-row form-row">
                         <button
                             className="woocommerce-button button wp-element-button"
-                            style={field.style ? JSON.parse(field.style) : {}}
+                            style={field.style || {}}
                             onClick={(e) => {
                                 const captcha = formList.find(
                                     (f) => f.type === 'recaptcha'

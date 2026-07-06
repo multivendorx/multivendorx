@@ -293,7 +293,7 @@ class Notifima {
      */
     public static function notifima_settings( $links ) {
         $plugin_links = array(
-            '<a href="' . admin_url( 'admin.php?page=notifima#&tab=settings&subtab=appearance' ) . '">' . __( 'Settings', 'notifima' ) . '</a>',
+            '<a href="' . admin_url( 'admin.php?page=notifima#&tab=settings&subtab=automation' ) . '">' . __( 'Settings', 'notifima' ) . '</a>',
         );
 
         if ( ! Utill::is_khali_dabba() ) {
