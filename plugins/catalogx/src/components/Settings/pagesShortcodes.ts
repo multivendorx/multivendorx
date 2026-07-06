@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-    id: 'dashboard',
+    id: 'pages-shortcodes',
     priority: 1,
     headerTitle: __('Pages & Shortcodes', 'catalogx'),
     headerDescription: __(

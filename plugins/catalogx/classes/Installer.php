@@ -195,7 +195,7 @@ class Installer {
         $enquiry_quote_settings = array(
             'is_disable_popup'                   => 'popup',
             'is_enable_multiple_product_enquiry' => array( 'is_enable_multiple_product_enquiry' ),
-            'set_expiry_time'                    => 'Never',
+            'quotation_validity'                 => 'lifetime',
         );
 
         $all_settings = array(
@@ -204,16 +204,11 @@ class Installer {
             'enquiry_user_permission'   => 'everyone',
             'is_enable_out_of_stock'    => 'all_products',
             'quote_user_permission'     => 'everyone',
+            'additional_alert_email'    => CatalogX()->admin_email
         );
 
         update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array_merge($all_settings,$enquiry_quote_settings) );
 
-
-        $email_settings = array(
-            'additional_alert_email' => CatalogX()->admin_email,
-        );
-
-        update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], $email_settings );
 
         // Update pages settings.
         $dashboard_settings = array_filter(
@@ -226,7 +221,7 @@ class Installer {
         );
 
         $dashboard_settings = array_map( 'intval', $dashboard_settings );
-        update_option( Utill::CATALOGX_SETTINGS['dashboard'], $dashboard_settings );
+        update_option( Utill::CATALOGX_SETTINGS['pages-shortcodes'], $dashboard_settings );
 
         // Update form settings.
         $free_form = array(
@@ -635,6 +630,14 @@ class Installer {
             $settings['enable_cart_checkout']  = ! empty( $settings['enable_cart_checkout'] )? 'buy_mode' : 'catalog_only';
             $settings['is_page_redirect']      = ! empty( $settings['is_page_redirect'] )? 'dedicated_page' : 'current_page';
 
+            if ( empty( $settings['set_expiry_time'] ) || 'Never' === $settings['set_expiry_time'] ) {
+                $settings['quotation_validity'] = 'lifetime';
+                $settings['set_expiry_time']    = '';
+            } else {
+                $settings['quotation_validity'] = 'fixed_duration';
+                $settings['set_expiry_time']    = (int) $settings['set_expiry_time'];
+            }
+
             update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $settings );
 
             $wholesale_settings = get_option( Utill::CATALOGX_SETTINGS['wholesale'], array() );
@@ -650,7 +653,7 @@ class Installer {
 
             update_option( Utill::CATALOGX_SETTINGS['wholesale'], $wholesale_settings );
             update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], get_option( 'catalogx_enquiry_email_temp_settings', array() ) );
-            update_option( Utill::CATALOGX_SETTINGS['dashboard'], get_option( 'catalogx_pages_settings', array() ) );
+            update_option( Utill::CATALOGX_SETTINGS['pages-shortcodes'], get_option( 'catalogx_pages_settings', array() ) );
 
             delete_option( 'catalogx_enquiry_email_temp_settings' );
             delete_option( 'catalogx_pages_settings' );
@@ -837,11 +840,9 @@ class Installer {
             'redirect_page_id'                   => $previous_general_settings['redirect_page_id'] ? $previous_general_settings['redirect_page_id']['value'] : '',
             'is_disable_popup'                   => ! empty( $previous_general_settings['is_disable_popup'] ) ? 'inline' : 'popup',
             'enable_cart_checkout'               => array(),
-            'set_expiry_time'                    => 'Never',
+            'quotation_validity'                 => 'lifetime',
             'is_enable_multiple_product_enquiry' => $previous_general_settings['is_enable_multiple_product_enquiry'] ?? array( 'is_enable_multiple_product_enquiry' ),
         );
-
-        update_option( 'catalogx_all-settings_settings', $all_settings );
 
         $email_settings = array(
             'additional_alert_email' => ! empty( $previous_general_settings['other_emails'] ) ? $previous_general_settings['other_emails'] : get_option( 'admin_email' ),
@@ -856,7 +857,8 @@ class Installer {
             $email_settings['additional_alert_email'] = implode( ', ', $emails_array );
         }
 
-        update_option( 'catalogx_enquiry-email-temp_settings', $email_settings );
+        update_option( 'catalogx_all-settings_settings', array_merge( $all_settings, $email_settings )  );
+
 
         // Update pages settings.
         $page_settings = array(

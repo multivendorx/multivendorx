@@ -79,6 +79,7 @@ const bannerItem = [
 		'catalogx'
 	)
 ];
+const BANNER_DISMISS_STORAGE_KEY = 'catalogx_banner_dismissed';
 const App = () => {
 	const [results, setResults] = useState<SearchItem[]>([]);
 	const currentTabParams = new URLSearchParams(useLocation().hash);
@@ -107,8 +108,9 @@ const App = () => {
 			}
 		});
 
-	const isBannerDismissed =
-		localStorage.getItem('banner_dismissed') === 'true';
+    const isBannerDismissed =
+        appLocalizer.khali_dabba ||
+        localStorage.getItem(BANNER_DISMISS_STORAGE_KEY) === 'true';
 
 	// --- INIT MODULES ---
 	useEffect(() => {
@@ -187,6 +189,7 @@ const App = () => {
 				<Notice
 					uniqueKey="banner"
 					type="banner"
+					dismissStorageKey={BANNER_DISMISS_STORAGE_KEY}
 					validity="lifetime"
 					displayPosition="banner"
 					message={bannerItem}

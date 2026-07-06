@@ -43,13 +43,13 @@ class Utill {
     public const CATALOGX_SETTINGS = array(
         'wholesale'                     => 'catalogx_wholesale_settings',
         'wholesale-registration'        => 'catalogx_wholesale_registration_settings',
-        'dashboard'                     => 'catalogx_dashboard_settings',
         'enquiry-quote-exclusion'       => 'catalogx_enquiry_quote_exclusion_settings',
         'enquiry-email-template'        => 'catalogx_enquiry_email_template_settings',
         'tools'                         => 'catalogx_tools_settings',
         'enquiry-form-customization'    => 'catalogx_enquiry_form_customization_settings',
         'enquiry-catalog-customization' => 'catalogx_enquiry_catalog_customization_settings',
-        'customer-engagement'           => 'catalogx_customer_engagement_settings'
+        'customer-engagement'           => 'catalogx_customer_engagement_settings',
+        'pages-shortcodes'              => 'catalogx_pages_shortcodes_settings'
     );
 
     /**

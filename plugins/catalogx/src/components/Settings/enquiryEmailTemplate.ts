@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
-import {OuterSpace} from '../../../assets/template/OuterSpace';
-import { GreenLagoon } from '../../../assets/template/GreenLagoon';
-import { CrimsonValley } from '../../../assets/template/CrimsonValley';
-import { MoonlitSky } from '../../../assets/template/MoonlitSky';
-import { Starlight } from '../../../assets/template/Starlight';
+import {OuterSpace} from '../../assets/template/OuterSpace';
+import { GreenLagoon } from '../../assets/template/GreenLagoon';
+import { CrimsonValley } from '../../assets/template/CrimsonValley';
+import { MoonlitSky } from '../../assets/template/MoonlitSky';
+import { Starlight } from '../../assets/template/Starlight';
 
 
 const EMAIL_BLOCK_GROUPS = [
@@ -58,7 +58,7 @@ const EMAIL_BLOCK_GROUPS = [
 
 export default {
     id: 'enquiry-email-template',
-    priority: 3,
+    priority: 4,
     headerTitle: __('Email Customizations', 'catalogx'),
     headerDescription: __(
         'Customize your preferred enquiry details email template',
@@ -67,16 +67,6 @@ export default {
     headerIcon: 'enquiry',
     submitUrl: 'settings',
     modal: [
-        {
-            key: 'additional_alert_email',
-            type: 'text',
-            desc: __(
-                "When a customer submits an enquiry for a product, the enquiry details will be sent to the email address(es) entered here. Add multiple email addresses separated by commas.<br/> <b>Default:</b> The site administrator's email is included by default. To stop the admin from receiving enquiry notifications, remove the admin email address from this list.",
-                'catalogx'
-            ),
-            label: __('Recipient email for product enquiries', 'catalogx'),
-            moduleEnabled: 'enquiry',
-        },
         {
             key: 'notice',
             type: 'notice',

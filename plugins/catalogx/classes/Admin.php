@@ -76,7 +76,7 @@ class Admin {
             ),
             'settings'         => array(
                 'name'     => __( 'Settings', 'catalogx' ),
-                'subtab'   => 'dashboard',
+                'subtab'   => 'pages-shortcodes',
                 'priority' => 60,
             ),
             'modules'          => array(
