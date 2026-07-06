@@ -307,25 +307,25 @@ export default {
         {
             key: 'section',
             type: 'section',
-            desc: __('Manage the generation, availability, and delivery of enquiry and quotation documents.',
+            desc: __('When a customer submits an enquiry or receives a quotation, choose whether a PDF should be available for download, attached to the email sent to them, or both.',
                 'catalogx'
             ),
-            title: __('Make documents available as PDFs', 'catalogx'),
+            title: __('How customers receives PDF documents?', 'catalogx'),
         },
         {
             key: 'display_pdf',
             type: 'multi-checkbox-table',
             storeSetting: true,
-            label: __('Document delivery mode', 'catalogx'),
+            label: __('PDF delivery mode', 'catalogx'),
             classes: 'gridTable',
             rows: [
                 {
                     key: 'allow_download_pdf',
-                    label: __('Download as PDF', 'catalogx'),
+                    label: __('Available as download', 'catalogx'),
                 },
                 {
                     key: 'attach_pdf_to_email',
-                    label: __('Attach with Email', 'catalogx'),
+                    label: __('Attached to customer email', 'catalogx'),
                 },
             ],
             columns: [
