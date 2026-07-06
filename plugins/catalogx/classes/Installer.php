@@ -204,16 +204,11 @@ class Installer {
             'enquiry_user_permission'   => 'everyone',
             'is_enable_out_of_stock'    => 'all_products',
             'quote_user_permission'     => 'everyone',
+            'additional_alert_email'    => CatalogX()->admin_email
         );
 
         update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array_merge($all_settings,$enquiry_quote_settings) );
 
-
-        $email_settings = array(
-            'additional_alert_email' => CatalogX()->admin_email,
-        );
-
-        update_option( Utill::CATALOGX_SETTINGS['enquiry-email-template'], $email_settings );
 
         // Update pages settings.
         $dashboard_settings = array_filter(
@@ -841,8 +836,6 @@ class Installer {
             'is_enable_multiple_product_enquiry' => $previous_general_settings['is_enable_multiple_product_enquiry'] ?? array( 'is_enable_multiple_product_enquiry' ),
         );
 
-        update_option( 'catalogx_all-settings_settings', $all_settings );
-
         $email_settings = array(
             'additional_alert_email' => ! empty( $previous_general_settings['other_emails'] ) ? $previous_general_settings['other_emails'] : get_option( 'admin_email' ),
         );
@@ -856,7 +849,8 @@ class Installer {
             $email_settings['additional_alert_email'] = implode( ', ', $emails_array );
         }
 
-        update_option( 'catalogx_enquiry-email-temp_settings', $email_settings );
+        update_option( 'catalogx_all-settings_settings', array_merge( $all_settings, $email_settings )  );
+
 
         // Update pages settings.
         $page_settings = array(

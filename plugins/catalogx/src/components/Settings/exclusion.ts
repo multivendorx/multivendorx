@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'enquiry-quote-exclusion',
-    priority: 5,
+    priority: 6,
 
     headerTitle: __('Access Rules', 'catalogx'),
 
