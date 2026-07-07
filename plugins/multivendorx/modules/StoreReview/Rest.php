@@ -282,15 +282,13 @@ class Rest extends \WP_REST_Controller {
             // --- Step 6: Fetch Review Data ---.
             $review = reset( Util::get_review_information( array( 'review_id' => $review_id ) ) );
 
-            if ( ! $review ) {
-                return new \WP_Error(
-                    'not_found',
-                    __( 'Review not found', 'multivendorx' ),
-                    array( 'status' => 404 )
-                );
-            }
+            $response = rest_ensure_response( array() );
 
-            return rest_ensure_response( $this->prepare_rest_item_for_response( $review ) );
+            if ( ! $review ) {
+                return $response;
+            }
+            $response->set_data( $this->prepare_rest_item_for_response( $review ) );
+            return $response;
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
 

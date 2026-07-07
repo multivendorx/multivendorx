@@ -351,7 +351,7 @@ class Rest {
             'product_cat',
         );
 
-        if ( ! is_user_logged_in() && $request_method === 'GET' && in_array( $post_type, $allowed_post_types, true ) ) {
+        if ( $request_method === 'GET' && in_array( $post_type, $allowed_post_types, true ) ) {
             return true;
         }
 
