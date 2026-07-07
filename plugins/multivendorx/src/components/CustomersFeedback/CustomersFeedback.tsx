@@ -84,6 +84,14 @@ const CustomersFeedback = () => {
 		[]
 	).filter((tab) => !tab.module || modules.includes(tab.module));
 
+	const settingContentWithCounts = settingContent.map((tab) => ({
+		...tab,
+		content: {
+			...tab.content,
+			count: counts[tab.content.id] || 0,
+		},
+	}));
+
 	const getForm = (tabId: string) => {
 		return (
 			applyFilters('multivendorx_customers_tab_content', null, {
@@ -91,12 +99,11 @@ const CustomersFeedback = () => {
 			}) || <div />
 		);
 	};
-
 	return (
 		<>
 			{settingContent.length > 0 ? (
 				<SettingsNavigator
-					settingContent={settingContent}
+					settingContent={settingContentWithCounts}
 					currentSetting={location.get('subtab') as string}
 					getForm={getForm}
 					prepareUrl={(subTab: string) =>
