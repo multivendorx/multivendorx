@@ -195,7 +195,7 @@ If you download CatalogX plugin manually, make sure it is uploaded to `/wp-conte
 Plugins > Add new > Upload plugin > Upload catalogx.zip > Install Now > Activate Plugin.
 2. Configure as you see fit, under CatalogX/ Settings.
 3. Configure module CatalogX/ Modules.
-5. Configure Settings CatalogX / Settings.
+4. Configure Settings CatalogX / Settings.
 
 == Frequently Asked Questions ==
 =How do I enable Catalog mode on my site?=
