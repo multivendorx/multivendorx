@@ -594,12 +594,15 @@ const OrderDetails: React.FC = () => {
 	};
 	return (
 		<>
-			<Notice
-				message={refundError}
-				type="error"
-				displayPosition="float"
-				title={__('Error!', 'multivendorx')}
-			/>
+			{refundError && (
+				<Notice
+					message={refundError}
+					type="error"
+					displayPosition="float"
+					title={__('Error!', 'multivendorx')}
+				/>
+			)}
+
 			{!appLocalizer.edit_order_capability ? (
 				<ComponentStatusView
 					title={__('No access to view the order', 'multivendorx')}
@@ -1092,7 +1095,7 @@ const OrderDetails: React.FC = () => {
 													}}
 												/>
 											</PopupUI>
-											
+
 											{/* Customer Reason */}
 											<div className="reason additional">
 												<div className="title">
