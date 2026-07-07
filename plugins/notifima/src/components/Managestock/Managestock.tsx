@@ -93,7 +93,7 @@ const Managestock = () => {
     const filters = [
         {
             key: 'product_type',
-            label: __('Product Type', 'notifima'),
+            label: __('Select Product Type', 'notifima'),
             type: 'select',
             options: [
                 {
