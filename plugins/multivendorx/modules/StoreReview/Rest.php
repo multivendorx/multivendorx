@@ -604,7 +604,7 @@ class Rest extends \WP_REST_Controller {
         return array(
             'id'                => (int) $review['review_id'],
             'store_id'          => (int) $review['store_id'],
-            'store_name'        => $store_obj->get( 'name' ),
+            'store_name'        => $store_obj ? $store_obj->get( 'name' ) : '',
             'customer_id'       => (int) $review['customer_id'],
             'customer_name'     => $customer_name,
             'order_id'          => (int) $review['order_id'],
