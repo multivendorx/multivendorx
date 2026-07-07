@@ -42,6 +42,10 @@ class Install {
     public function __construct() {
 		// phpcs:ignore WordPress.WP.CronInterval.ChangeDetected
         add_filter( 'cron_schedules', array( $this, 'register_custom_schedule' ) );
+        add_action( 'init', array( $this, 'run_migration' ) );
+    }
+
+    public function run_migration() {
         $previous_version = get_option( 'notifima_version', false );
         if ( ! $previous_version ) {
             $this->create_database_table();
