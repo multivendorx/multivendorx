@@ -123,7 +123,7 @@ The Real-Time Page Builder module empowers businesses ✨ to design and customiz
 
 ##➡️ CatalogX - Woocommerce Tool For A Perfect B2B Site 
 
-In the competitive world of e-commerce, differentiation is key. Our ingenious WordPress WooCommere Product Catalog plugin allows you to effortlessly transform your website into a captivating, user-friendly catalog. Whether you're building a dedicated catalog site or adding catalog mode to your existing online store, we've got you covered!
+In the competitive world of e-commerce, differentiation is key. Our ingenious WordPress WooCommerce Product Catalog plugin allows you to effortlessly transform your website into a captivating, user-friendly catalog. Whether you're building a dedicated catalog site or adding catalog mode to your existing online store, we've got you covered!
 
 ✔️ Switch to Catalog Mode in a Snap: Easily switch catalog mode on/off, display products attractively, encourage inquiries, and personalize pricing messages. To Know More, [Click Here](https://catalogx.com/docs/catalog/#0-toc-title/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=catalogxwporg).
 
