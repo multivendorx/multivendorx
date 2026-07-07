@@ -145,7 +145,7 @@ class Notifications extends \WP_REST_Controller {
                         'icon'    => 'cart admin-color' . ( $index + 1 ),
                         'title'   => $row['title'],
                         'message' => $row['message'],
-                        'time'    => $this->time_ago( $row->created_at ),
+                        'time'    => $this->time_ago( $row['created_at'] ),
                     );
                 }
                 $response->set_data( $formated_notifications );
