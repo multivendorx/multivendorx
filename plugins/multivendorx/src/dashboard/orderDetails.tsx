@@ -1476,7 +1476,7 @@ const OrderDetails: React.FC = () => {
 										cols={6}
 										label={__(
 											'Shipping Providers',
-											'multivendorx-pro'
+											'multivendorx'
 										)}
 										htmlFor="title"
 									>
@@ -1495,7 +1495,7 @@ const OrderDetails: React.FC = () => {
 									</FormGroup>
 									<FormGroup
 										cols={6}
-										label={__('Date', 'multivendorx-pro')}
+										label={__('Date', 'multivendorx')}
 										htmlFor="title"
 									>
 										<BasicInputUI
