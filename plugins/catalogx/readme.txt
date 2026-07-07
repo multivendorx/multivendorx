@@ -99,7 +99,7 @@ The Wholesale Module is perfect for businesses 🛒 that serve both retail and w
 The Dynamic Rule-Based Pricing module is a powerful tool 💪 for businesses looking to maximize sales through targeted pricing strategies. By creating custom discount rules based on user roles, product categories, and more, you can attract specific customer groups, encourage larger purchases, and optimize your pricing for different scenarios. This module is essential for businesses aiming to increase conversions, customer loyalty, and overall revenue through smart pricing techniques💰.
 
 #Key Features:
-⚙️ Implement tired pricing strategies to adapt to different customer needs and market conditions[PRO].
+⚙️ Implement tiered pricing strategies to adapt to different customer needs and market conditions[PRO].
 🎯 Create custom discount rules that offer exclusive deals to specific user roles like subscribers or wholesale buyers[PRO].
 🏷️ Target promotions based on products, categories, or user roles to maximize sales potential [PRO].
 📊 Add multiple user role levels with corresponding pricing rules for greater pricing flexibility [PRO].
