@@ -99,7 +99,7 @@ The Wholesale Module is perfect for businesses 🛒 that serve both retail and w
 The Dynamic Rule-Based Pricing module is a powerful tool 💪 for businesses looking to maximize sales through targeted pricing strategies. By creating custom discount rules based on user roles, product categories, and more, you can attract specific customer groups, encourage larger purchases, and optimize your pricing for different scenarios. This module is essential for businesses aiming to increase conversions, customer loyalty, and overall revenue through smart pricing techniques💰.
 
 #Key Features:
-⚙️ Implement tired pricing strategies to adapt to different customer needs and market conditions[PRO].
+⚙️ Implement tiered pricing strategies to adapt to different customer needs and market conditions[PRO].
 🎯 Create custom discount rules that offer exclusive deals to specific user roles like subscribers or wholesale buyers[PRO].
 🏷️ Target promotions based on products, categories, or user roles to maximize sales potential [PRO].
 📊 Add multiple user role levels with corresponding pricing rules for greater pricing flexibility [PRO].
@@ -123,7 +123,7 @@ The Real-Time Page Builder module empowers businesses ✨ to design and customiz
 
 ##➡️ CatalogX - Woocommerce Tool For A Perfect B2B Site 
 
-In the competitive world of e-commerce, differentiation is key. Our ingenious WordPress WooCommere Product Catalog plugin allows you to effortlessly transform your website into a captivating, user-friendly catalog. Whether you're building a dedicated catalog site or adding catalog mode to your existing online store, we've got you covered!
+In the competitive world of e-commerce, differentiation is key. Our ingenious WordPress WooCommerce Product Catalog plugin allows you to effortlessly transform your website into a captivating, user-friendly catalog. Whether you're building a dedicated catalog site or adding catalog mode to your existing online store, we've got you covered!
 
 ✔️ Switch to Catalog Mode in a Snap: Easily switch catalog mode on/off, display products attractively, encourage inquiries, and personalize pricing messages. To Know More, [Click Here](https://catalogx.com/docs/catalog/#0-toc-title/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=catalogxwporg).
 
@@ -195,7 +195,7 @@ If you download CatalogX plugin manually, make sure it is uploaded to `/wp-conte
 Plugins > Add new > Upload plugin > Upload catalogx.zip > Install Now > Activate Plugin.
 2. Configure as you see fit, under CatalogX/ Settings.
 3. Configure module CatalogX/ Modules.
-5. Configure Settings CatalogX / Settings.
+4. Configure Settings CatalogX / Settings.
 
 == Frequently Asked Questions ==
 =How do I enable Catalog mode on my site?=
