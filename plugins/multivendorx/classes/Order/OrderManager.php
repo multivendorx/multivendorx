@@ -146,21 +146,19 @@ class OrderManager {
             }
 
             $store_order->save();
-            if ( MultiVendorX()->setting->get_setting( 'display_customer_order' ) !== 'mainorder' ) {
-                $store = new Store( $store_id );
-                if ( ! $store->exists() ) {
-                    return;
-                }
-                MultiVendorX()->notifications->send_notification_helper(
-                    'new_order_store',
-                    $store,
-                    $store_order,
-                    array(
-						'order_id' => $store_order->get_id(),
-						'category' => 'activity',
-					)
-                );
+            $store = new Store( $store_id );
+            if ( ! $store->exists() ) {
+                return;
             }
+            MultiVendorX()->notifications->send_notification_helper(
+                'new_order_store',
+                $store,
+                $store_order,
+                array(
+					'order_id' => $store_order->get_id(),
+					'category' => 'activity',
+				)
+            );
         }
     }
 
