@@ -87,10 +87,9 @@ const Transactions: React.FC = () => {
 	const filters = [
 		{
 			key: 'transactionType',
-			label: 'Transaction Type',
+			label: 'Select Transaction Type',
 			type: 'select',
 			options: [
-				{ label: __('Transaction Type', 'multivendorx'), value: '' },
 				{
 					label: __('Commission', 'multivendorx'),
 					value: 'Commission',

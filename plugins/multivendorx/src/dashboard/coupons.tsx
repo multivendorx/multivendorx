@@ -740,7 +740,7 @@ const AllCoupon: React.FC = () => {
 	const filters = [
 		{
 			key: 'couponType',
-			label: __('Status', 'multivendorx'),
+			label: __('Select Coupon Type', 'multivendorx'),
 			type: 'select',
 			size: 12,
 			options: [
