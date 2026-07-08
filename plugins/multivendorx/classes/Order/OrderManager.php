@@ -276,7 +276,22 @@ class OrderManager {
             if ( isset( $item['product_id'] ) && 0 !== $item['product_id'] ) {
                 $store = Store::get_store( $item['product_id'], 'product' );
                 if ( $store ) {
-                    $grouped_items[ $store->get_id() ][ $item_id ] = $item;
+                    /**
+                     * Filter the store an order item is grouped under before
+                     * suborders are created. Lets an add-on (e.g. the Franchises
+                     * module) override the default product-owner resolution on a
+                     * per-item basis. Returns the store's own ID unchanged unless
+                     * something hooks in, so existing behavior is unaffected.
+                     *
+                     * @since 3.5.0
+                     *
+                     * @param int    $store_id Store ID the item would be grouped under.
+                     * @param object $item     Order item.
+                     * @param int    $item_id  Order item ID.
+                     * @param object $order    Order object.
+                     */
+                    $store_id = apply_filters( 'multivendorx_order_item_store_id', $store->get_id(), $item, $item_id, $order );
+                    $grouped_items[ $store_id ][ $item_id ] = $item;
                 }
             }
         }
