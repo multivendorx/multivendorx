@@ -345,6 +345,10 @@ export default {
 			key: 'store_price_override',
 			type: 'checkbox',
 			label: __('Store price override', 'multivendorx'),
+			desc: __(
+				'Controls whether a franchise store is allowed to set its own Regular/Sale Price for admin-catalog products (a store\'s own products always keep managing price the normal way). When enabled, the customer always sees and pays the assigned store\'s price if that store has set one, otherwise the admin price. When disabled, every store uses the admin price - any price a store had previously set is kept on file but ignored, and reappears if this is turned back on later.',
+				'multivendorx'
+			),
 			options: [
 				{
 					key: 'enabled',

@@ -275,22 +275,29 @@ class OrderManager {
         foreach ( $items as $item_id => $item ) {
             if ( isset( $item['product_id'] ) && 0 !== $item['product_id'] ) {
                 $store = Store::get_store( $item['product_id'], 'product' );
-                if ( $store ) {
-                    /**
-                     * Filter the store an order item is grouped under before
-                     * suborders are created. Lets an add-on (e.g. the Franchises
-                     * module) override the default product-owner resolution on a
-                     * per-item basis. Returns the store's own ID unchanged unless
-                     * something hooks in, so existing behavior is unaffected.
-                     *
-                     * @since 3.5.0
-                     *
-                     * @param int    $store_id Store ID the item would be grouped under.
-                     * @param object $item     Order item.
-                     * @param int    $item_id  Order item ID.
-                     * @param object $order    Order object.
-                     */
-                    $store_id = apply_filters( 'multivendorx_order_item_store_id', $store->get_id(), $item, $item_id, $order );
+
+                /**
+                 * Filter the store an order item is grouped under before
+                 * suborders are created. Lets an add-on (e.g. the Franchises
+                 * module) override the default product-owner resolution on a
+                 * per-item basis. Runs even when the product has no default
+                 * owning store (default $store_id 0) - a franchise product
+                 * with no vendor of its own is still assignable, and an
+                 * add-on needs the chance to resolve one. Returns 0 unchanged
+                 * unless something hooks in, so existing behavior (item
+                 * skipped when there's no owner and nothing else assigns
+                 * one) is unaffected.
+                 *
+                 * @since 3.5.0
+                 *
+                 * @param int    $store_id Store ID the item would be grouped under, 0 if the product has no owning store.
+                 * @param object $item     Order item.
+                 * @param int    $item_id  Order item ID.
+                 * @param object $order    Order object.
+                 */
+                $store_id = apply_filters( 'multivendorx_order_item_store_id', $store ? $store->get_id() : 0, $item, $item_id, $order );
+
+                if ( $store_id ) {
                     $grouped_items[ $store_id ][ $item_id ] = $item;
                 }
             }
