@@ -124,7 +124,7 @@ class OrderManager {
 
         $existing_orders = array();
         foreach ( $suborders as $order ) {
-            if ( $order instanceof WC_Order ) {
+            if ( $order instanceof \WC_Order ) {
                 $order_id     = $order->get_id();
                 $store_id     = $order->get_meta( Utill::POST_META_SETTINGS['store_id'] );
                 $store_exists = Store::get_store( $store_id );
@@ -136,7 +136,11 @@ class OrderManager {
 
         foreach ( $item_info as $store_id => $items ) {
             if ( in_array( $store_id, $existing_orders, true ) ) {
-                $suborder_id = array_keys( $existing_orders, $store_id, true );
+                $suborder_ids = array_keys( $existing_orders, $store_id, true );
+                if ( empty( $suborder_ids ) ) {
+                    continue;
+                }
+                $suborder_id = (int) current( $suborder_ids );
                 $store_order = self::create_sub_order( $order, $store_id, $items, $suborder_id, true );
                 // Regenerate commission.
                 $this->container['admin']->regenerate_order_commissions( $store_order );
@@ -376,12 +380,12 @@ class OrderManager {
                     )
                 );
 
-                foreach ( $item->get_meta_data() as $key => $value ) {
-                    $shipping->add_meta_data( $key, $value, true );
+                foreach ( $item->get_meta_data() as $meta ) {
+                    $shipping->add_meta_data( $meta->key, $meta->value, true );
                 }
 
                 $shipping->add_meta_data( Utill::POST_META_SETTINGS['store_id'], $store_id, true );
-                $item->add_meta_data( Utill::ORDER_META_SETTINGS['store_order_shipping_item_id'], $item_id );
+                $shipping->add_meta_data( Utill::ORDER_META_SETTINGS['store_order_shipping_item_id'], $item_id );
 
                 // Action hook to adjust item before save.
                 do_action( 'multivendorx_before_create_sub_order_shipping_item', $shipping, $item_id, $item, $order );
