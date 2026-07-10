@@ -9,7 +9,7 @@ import {
     ButtonInputUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Attributes = ({ product, setProduct, productFields }) => {
@@ -248,8 +248,8 @@ const Attributes = ({ product, setProduct, productFields }) => {
             )}
 
             {attribute.map((variation, vIndex) => (
-                <>
-                    <div className="variant-wrapper" key={variation.id || vIndex}>
+                <React.Fragment key={variation.id || vIndex}>
+                    <div className="variant-wrapper">
                         {variation.isEditing && (
                             <div className="edit-wrapper">
                                 <ButtonInputUI
@@ -369,7 +369,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                             </div>
                         )}
                     </div>
-                </>
+                </React.Fragment>
             ))}
             {applyFilters(
                 'multivendorx_add_product_variations',
