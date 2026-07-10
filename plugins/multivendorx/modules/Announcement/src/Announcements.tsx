@@ -512,7 +512,7 @@ export const Announcements: React.FC = () => {
 							name="stores"
 							type="multi-select"
 							options={storeOptions}
-							value={formData.stores.map((id) => id)}
+							value={formData.stores}
 							onChange={(newValue) => {
 								if (!Array.isArray(newValue)) {
 									return;
