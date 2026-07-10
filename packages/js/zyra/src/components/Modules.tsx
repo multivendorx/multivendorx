@@ -23,6 +23,7 @@ interface Module {
     type?: string;
     reloadOnChange?: boolean;
     miniModule?: boolean;
+    enableModules?: string[];
 }
 
 interface Separator {
@@ -117,7 +118,12 @@ const Modules: React.FC<ModuleProps> = ({
         const action = event.length > 0 ? 'activate' : 'deactivate';
 
         if (action === 'activate') {
-            insertModule?.(module.id);
+            const modulesToEnable = [
+                module.id,
+                ...(module.enableModules || []),
+            ];
+
+            modulesToEnable.forEach((id) => insertModule?.(id));
         } else {
             removeModule?.(module.id);
         }
