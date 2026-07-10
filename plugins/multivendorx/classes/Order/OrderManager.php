@@ -407,7 +407,10 @@ class OrderManager {
         // Store the product id of suborder's item.
         $product_ids = array();
         foreach ( $line_items as $item ) {
-            $product_ids[] = $item->get_product_id();
+            $product_id = $item->get_product_id();
+            if ( ! empty( $product_id )){
+                $product_ids[] = $product_id;
+            }
         }
 
         foreach ( $parent_order->get_coupons() as $coupon_item ) {
