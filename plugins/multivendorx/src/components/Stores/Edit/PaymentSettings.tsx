@@ -86,7 +86,7 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 		}
 	}, [id, data]);
 
-	const handleChange = (name, value) => {
+	const handleChange = (name: string, value: unknown) => {
 		setFormData((prev) => {
 			const updated = {
 				...(prev || {}),
