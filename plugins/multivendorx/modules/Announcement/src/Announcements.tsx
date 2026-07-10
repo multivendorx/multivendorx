@@ -472,7 +472,7 @@ export const Announcements: React.FC = () => {
 								handleChange('title', val as string)
 							}
 							msg={{
-								type: error,
+								type: 'error',
 								message: validationErrors.title,
 							}}
 						/>
@@ -494,7 +494,7 @@ export const Announcements: React.FC = () => {
 								]['tinymce_api_section'] ?? ''
 							}
 							msg={{
-								type: error,
+								type: 'error',
 								message: validationErrors.content,
 							}}
 						/>
