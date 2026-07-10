@@ -208,6 +208,10 @@ export const Announcements: React.FC = () => {
 				});
 				setEditId(id);
 				setAddAnnouncements(true);
+			})
+			.catch((err) => {
+				console.error('Failed to load announcement for editing', err);
+				setError(__('Failed to load announcement for editing', 'multivendorx'));
 			});
 	};
 
@@ -472,7 +476,7 @@ export const Announcements: React.FC = () => {
 								handleChange('title', val as string)
 							}
 							msg={{
-								type: error,
+								type: 'error',
 								message: validationErrors.title,
 							}}
 						/>
@@ -494,7 +498,7 @@ export const Announcements: React.FC = () => {
 								]['tinymce_api_section'] ?? ''
 							}
 							msg={{
-								type: error,
+								type: 'error',
 								message: validationErrors.content,
 							}}
 						/>
@@ -546,7 +550,7 @@ export const Announcements: React.FC = () => {
 								}));
 							}}
 							msg={{
-								type: error,
+								type: 'error',
 								message: validationErrors.stores,
 							}}
 						/>
