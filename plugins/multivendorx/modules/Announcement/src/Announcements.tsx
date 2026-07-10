@@ -399,7 +399,11 @@ export const Announcements: React.FC = () => {
 				<Popup
 					confirmMode
 					title={__('Are you sure', 'multivendorx')}
-					confirmMessage={selectedAn ? `` : ''}
+					confirmMessage={
+						selectedAn
+							? __('Are you sure you want to delete this announcement?', 'multivendorx')
+							: ''
+					}
 					confirmYesText={__('Delete', 'multivendorx')}
 					confirmNoText={__('Cancel', 'multivendorx')}
 					onConfirm={handleConfirmDelete}
