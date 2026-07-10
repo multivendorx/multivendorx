@@ -138,7 +138,7 @@ class Stores extends \WP_REST_Controller {
                 $cached = get_transient( $cache_key );
 
                 if ( false !== $cached ) {
-                    return $cached;
+                    return rest_ensure_response( $cached );
                 }
 
                 $dates = Utill::normalize_date_range(
