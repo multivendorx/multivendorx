@@ -182,6 +182,7 @@ class Utill {
         'status'                       => 'status',
         'withdrawals_count'            => 'withdrawals_count',
         'payment_method'               => 'payment_method',
+        'payment_methods'              => 'payment_methods',
         'paypal_email'                 => 'paypal_email',
         'stripe_account_id'            => 'stripe_connect_account_id',
         'stripe_oauth_state'           => 'stripe_oauth_state',
