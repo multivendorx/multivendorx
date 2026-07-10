@@ -1041,7 +1041,7 @@ class Stores extends \WP_REST_Controller {
             }
 
             // Registration approval / rejection.
-            if ( ! empty( $data['registration_data'] ) || ! empty( $data['core_data'] ) || $data['approval_queue'] ) {
+            if ( ! empty( $data['registration_data'] ) || ! empty( $data['core_data'] ) || ! empty( $data['approval_queue'] ) ) {
                 if ( 'approve' === ( $data['status'] ?? '' ) ) {
                     $users = StoreUtil::get_store_users( $id );
                     $user  = get_userdata(
