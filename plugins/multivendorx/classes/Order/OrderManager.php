@@ -67,7 +67,7 @@ class OrderManager {
      */
     public function set_filter_order_query( $query ) {
         $parent_id = apply_filters( 'multivendorx_order_parent_filter', 0 );
-        if ( ! $query['parent'] && $parent_id >= 0 ) {
+        if ( ( ! isset( $query['parent'] ) || '' === $query['parent'] || null === $query['parent'] ) && $parent_id >= 0 ) {
             $query['parent'] = $parent_id;
         }
         return $query;
@@ -149,7 +149,7 @@ class OrderManager {
             $store_order->save();
             $store = new Store( $store_id );
             if ( ! $store->exists() ) {
-                return;
+                continue;
             }
             MultiVendorX()->notifications->send_notification_helper(
                 'new_order_store',
@@ -424,7 +424,8 @@ class OrderManager {
 
             $coupon_products = $coupon->get_product_ids();
 
-            $match_coupon_product = array_intersect( $product_ids, $coupon_products );
+            // Empty product restrictions mean the coupon applies to all products.
+            $match_coupon_product = empty( $coupon_products ) ? true : array_intersect( $product_ids, $coupon_products );
 
             if ( $match_coupon_product ) {
                 $item = new \WC_Order_Item_Coupon();
