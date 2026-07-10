@@ -124,7 +124,7 @@ class OrderManager {
 
         $existing_orders = array();
         foreach ( $suborders as $order ) {
-            if ( $order instanceof WC_Order ) {
+            if ( $order instanceof \WC_Order ) {
                 $order_id     = $order->get_id();
                 $store_id     = $order->get_meta( Utill::POST_META_SETTINGS['store_id'] );
                 $store_exists = Store::get_store( $store_id );
