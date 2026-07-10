@@ -160,7 +160,7 @@ export const Announcements: React.FC = () => {
 	};
 
 	// Handle form input change
-	const handleChange = (name: string, value: string | []) => {
+	const handleChange = (name: string, value: string | number[]) => {
 		setFormData((prev) => ({ ...prev, [name]: value }));
 		if (validationErrors[name]) {
 			setValidationErrors((prev) => {
