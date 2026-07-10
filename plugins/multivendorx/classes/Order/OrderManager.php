@@ -123,10 +123,10 @@ class OrderManager {
         $item_info = self::group_item_store_based( $order );
 
         $existing_orders = array();
-        foreach ( $suborders as $order ) {
-            if ( $order instanceof \WC_Order ) {
-                $order_id     = $order->get_id();
-                $store_id     = $order->get_meta( Utill::POST_META_SETTINGS['store_id'] );
+        foreach ( $suborders as $suborder ) {
+            if ( $suborder instanceof \WC_Order ) {
+                $order_id     = $suborder->get_id();
+                $store_id     = $suborder->get_meta( Utill::POST_META_SETTINGS['store_id'] );
                 $store_exists = Store::get_store( $store_id );
                 if ( $store_exists ) {
                     $existing_orders[ $order_id ] = $store_id;
