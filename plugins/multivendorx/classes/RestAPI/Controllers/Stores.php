@@ -507,10 +507,11 @@ class Stores extends \WP_REST_Controller {
         }
 
         try {
-            $registrations = (bool) $request->get_header( 'registrations' );
-            $store_data    = (array) $request->get_param( 'formData' );
-            $file_data     = $request->get_file_params();
-            $current_user  = MultiVendorX()->current_user;
+            $registrations_header = strtolower( trim( (string) $request->get_header( 'registrations' ) ) );
+            $registrations        = in_array( $registrations_header, array( 'true', '1', 'yes', 'on' ), true );
+            $store_data           = (array) $request->get_param( 'formData' );
+            $file_data            = $request->get_file_params();
+            $current_user         = MultiVendorX()->current_user;
 
             if ( ! empty( $store_data['Name'] ) && empty( $store_data['name'] ) ) {
                 $store_data['name'] = $store_data['Name'];
