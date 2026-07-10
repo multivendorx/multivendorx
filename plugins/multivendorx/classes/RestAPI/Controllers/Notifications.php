@@ -90,12 +90,12 @@ class Notifications extends \WP_REST_Controller {
     }
 
     /**
-     * Check if a given request has access to read notifications.
+     * Check if a given request has access to update notifications.
      *
      * @param object $request WP_REST_Request object.
      */
     public function update_item_permissions_check( $request ) {
-        return true;
+        return is_user_logged_in() && ( current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' ) );
     }
 
     /**
