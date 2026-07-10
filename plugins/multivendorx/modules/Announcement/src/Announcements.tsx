@@ -35,7 +35,7 @@ interface Store {
 }
 
 interface StoreOption {
-	value: string;
+	value: number;
 	label: string;
 }
 
