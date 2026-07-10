@@ -621,7 +621,7 @@ const Orders: React.FC = () => {
 								type="date"
 								value={formData.tracking_date}
 								onChange={(value: any) =>
-									handleChange('date', value)
+									handleChange('tracking_date', value)
 								}
 							/>
 						</FormGroup>
