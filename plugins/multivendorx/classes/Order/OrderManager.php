@@ -126,7 +126,7 @@ class OrderManager {
         foreach ( $suborders as $suborder ) {
             if ( $suborder instanceof \WC_Order ) {
                 $order_id     = $suborder->get_id();
-                $store_id     = $suborder->get_meta( Utill::POST_META_SETTINGS['store_id'] );
+                $store_id     = (int) $suborder->get_meta( Utill::POST_META_SETTINGS['store_id'] );
                 $store_exists = Store::get_store( $store_id );
                 if ( $store_exists ) {
                     $existing_orders[ $order_id ] = $store_id;
@@ -135,6 +135,7 @@ class OrderManager {
         }
 
         foreach ( $item_info as $store_id => $items ) {
+            $store_id = (int) $store_id;
             if ( in_array( $store_id, $existing_orders, true ) ) {
                 $suborder_ids = array_keys( $existing_orders, $store_id, true );
                 $suborder_id  = (int) current( $suborder_ids );
