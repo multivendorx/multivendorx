@@ -190,9 +190,8 @@ export const Announcements: React.FC = () => {
 				doRefreshTableData({});
 			})
 			.catch((err) => {
-				setError(
-					__(`Failed to perform bulk action${err}`, 'multivendorx')
-				);
+				console.error('Bulk action failed:', err);
+				setError(__('Failed to perform bulk action.', 'multivendorx'));
 			});
 	};
 
