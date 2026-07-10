@@ -86,7 +86,7 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 		}
 	}, [id, data]);
 
-	const handleChange = (name, value) => {
+	const handleChange = (name: string, value: unknown) => {
 		setFormData((prev) => {
 			const updated = {
 				...(prev || {}),
@@ -103,16 +103,25 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 			url: getApiLink(appLocalizer, `stores/${id}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			data: updatedData,
-		}).then((res) => {
-			if (res.data.success) {
+		})
+			.then((res) => {
+				if (res.data.success) {
+					NoticeManager.add({
+						title: __('Success', 'multivendorx'),
+						message: __('Store saved successfully!', 'multivendorx'),
+						type: 'success',
+						position: 'float',
+					});
+				}
+			})
+			.catch(() => {
 				NoticeManager.add({
-					title: __('Success', 'multivendorx'),
-					message: __('Store saved successfully!', 'multivendorx'),
-					type: 'success',
+					title: __('Error', 'multivendorx'),
+					message: __('Failed to save store settings. Please try again.', 'multivendorx'),
+					type: 'error',
 					position: 'float',
 				});
-			}
-		});
+			});
 	};
 	return (
 		<>
