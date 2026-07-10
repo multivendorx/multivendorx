@@ -259,9 +259,8 @@ export const Announcements: React.FC = () => {
 				setSubmitting(false);
 			})
 			.catch((err) => {
-				setError(
-					__(`Failed to save announcement${err}`, 'multivendorx')
-				);
+				console.error('Failed to save announcement', err);
+				setError(__('Failed to save announcement', 'multivendorx'));
 
 				// cleanup on error
 				setSubmitting(false);
