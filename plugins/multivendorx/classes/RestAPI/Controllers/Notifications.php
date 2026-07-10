@@ -411,6 +411,9 @@ class Notifications extends \WP_REST_Controller {
                 $id = intval( $notification['id'] );
 
                 $channels = $notification['channels'] ?? array();
+                $email_enabled  = false;
+                $sms_enabled    = false;
+                $system_enabled = false;
                 if ( ! empty( $channels ) ) {
                     $email_enabled  = $channels['mail'] ?? false;
                     $sms_enabled    = $channels['sms'] ?? false;
