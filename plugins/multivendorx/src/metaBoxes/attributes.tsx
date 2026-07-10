@@ -1,15 +1,15 @@
 import { addFilter, applyFilters } from '@wordpress/hooks';
 import {
-	MultiCheckBoxUI,
-	SelectInputUI,
-	Card,
-	BasicInputUI,
-	FormGroup,
-	FormGroupWrapper,
+    MultiCheckBoxUI,
+    SelectInputUI,
+    Card,
+    BasicInputUI,
+    FormGroup,
+    FormGroupWrapper,
     ButtonInputUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Attributes = ({ product, setProduct, productFields }) => {
@@ -20,7 +20,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
     const [productAttributes, setProductAttributes] = useState([]);
     const [tempOptions, setTempOptions] = useState<Record<number, string>>({});
 
-     useEffect(() => {
+    useEffect(() => {
         if (!selectedAttribute || selectedAttribute.value === 0) return;
 
         const alreadyExists = attribute.some((v) => v.id === selectedAttribute.value);
@@ -68,7 +68,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
             setProductAttributes([]);
         }
     }, [product]);
-     const addAttribute = () => {
+    const addAttribute = () => {
         setAttribute((prev) => [...prev, { id: 0, name: '', options: [], isEditing: true }]);
     };
     const deleteAttribute = (vIndex: number) => {
@@ -107,7 +107,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
         updated[index][key] = value;
         setAttribute(updated);
     };
-     const deleteOption = (vIndex: number, oIndex: number) => {
+    const deleteOption = (vIndex: number, oIndex: number) => {
         const updated = [...attribute];
         updated[vIndex].options = updated[vIndex].options.filter((_, i) => i !== oIndex);
         setAttribute(updated);
@@ -183,214 +183,223 @@ const Attributes = ({ product, setProduct, productFields }) => {
             })
             .catch((err) => console.error('Attribute save error:', err));
     };
-	return (
-        <Card  title={ applyFilters( 'multivendorx_product_attributes_title', __( 'Attributes', 'multivendorx' ) ) } desc="lorem ipsum dolor sit amet lorem ipsum dolor sit amet ">
-                {productFields.includes('attribute') && (
-                    <>
-                        <div className="variation-title-wrapper">
-                            {__('Attributes', 'multivendorx')}
-                            <div className="add-dropdown-wrapper">
-                                {!showAttributeSelect && (
+    return (
+        <Card
+            title={applyFilters(
+                'multivendorx_product_attributes_title',
+                __('Attributes', 'multivendorx')
+            )}
+            desc={__(
+                'Define product attributes such as size, color, or material. These attributes can be used to create product variations and help customers choose the right option.',
+                'multivendorx'
+            )}
+        >
+            {productFields.includes('attribute') && (
+                <>
+                    <div className="variation-title-wrapper">
+                        {__('Attributes', 'multivendorx')}
+                        <div className="add-dropdown-wrapper">
+                            {!showAttributeSelect && (
+                                <ButtonInputUI
+                                    position="right"
+                                    buttons={[
+                                        {
+                                            icon: 'plus',
+                                            text: __('Add variants Like size or color', 'multivendorx'),
+                                            color: 'purple',
+                                            onClick: () => setShowAttributeSelect(true),
+                                        },
+                                    ]}
+                                />
+                            )}
+
+                            {showAttributeSelect && (
+                                <div className="search-field">
+                                    <SelectInputUI
+                                        name="attribute"
+                                        type="single-select"
+                                        size={12}
+                                        options={existingAttributes.map((attr) => ({
+                                            label: attr.name,
+                                            value: attr.id,
+                                        }))}
+                                        value={selectedAttribute?.value}
+                                        onChange={(selected) => {
+                                            const match = existingAttributes.find((a) => a.id === selected);
+                                            setSelectedAttribute({ label: match.name, value: match.id });
+                                        }}
+                                    />
                                     <ButtonInputUI
                                         position="right"
                                         buttons={[
                                             {
                                                 icon: 'plus',
-                                                text: __('Add variants Like size or color', 'multivendorx'),
+                                                text: __('Add New Attribute', 'multivendorx'),
                                                 color: 'purple',
-                                                onClick: () => setShowAttributeSelect(true),
+                                                onClick: addAttribute,
                                             },
                                         ]}
                                     />
-                                )}
-
-                                {showAttributeSelect && (
-                                    <div className="search-field">
-                                        <SelectInputUI
-                                            name="attribute"
-                                            type="single-select"
-                                            size={12}
-                                            options={existingAttributes.map((attr) => ({
-                                                label: attr.name,
-                                                value: attr.id,
-                                            }))}
-                                            value={selectedAttribute?.value}
-                                            onChange={(selected) => {
-                                                const match = existingAttributes.find((a) => a.id === selected);
-                                                setSelectedAttribute({ label: match.name, value: match.id });
-                                            }}
-                                        />
-                                        <ButtonInputUI
-                                            position="right"
-                                            buttons={[
-                                                {
-                                                    icon: 'plus',
-                                                    text: __('Add New Attribute', 'multivendorx'),
-                                                    color: 'purple',
-                                                    onClick: addAttribute,
-                                                },
-                                            ]}
-                                        />
-                                    </div>
-                                )}
-                            </div>
+                                </div>
+                            )}
                         </div>
-                    </>
-                )}
+                    </div>
+                </>
+            )}
 
-                {attribute.map((variation, vIndex) => (
-                    <>
-                        <div className="variant-wrapper" key={variation.id || vIndex}>
-                            {variation.isEditing && (
-                                <div className="edit-wrapper">
-                                    <ButtonInputUI
-                                        wrapperClass="edit"
-                                        buttons={[
-                                            {
-                                                icon: 'delete',
-                                                text: __('Delete', 'multivendorx'),
-                                                color: 'red',
-                                                onClick: () => deleteAttribute(vIndex),
-                                            },
-                                            {
-                                                icon: 'active',
-                                                text: __('Save', 'multivendorx'),
-                                                color: 'green',
-                                                onClick: () => saveEditAttribute(vIndex, false),
-                                            },
-                                        ]}
-                                    />
+            {attribute.map((variation, vIndex) => (
+                <React.Fragment key={variation.id || vIndex}>
+                    <div className="variant-wrapper">
+                        {variation.isEditing && (
+                            <div className="edit-wrapper">
+                                <ButtonInputUI
+                                    wrapperClass="edit"
+                                    buttons={[
+                                        {
+                                            icon: 'delete',
+                                            text: __('Delete', 'multivendorx'),
+                                            color: 'red',
+                                            onClick: () => deleteAttribute(vIndex),
+                                        },
+                                        {
+                                            icon: 'active',
+                                            text: __('Save', 'multivendorx'),
+                                            color: 'green',
+                                            onClick: () => saveEditAttribute(vIndex, false),
+                                        },
+                                    ]}
+                                />
 
-                                    <div className="variant">
-                                        <div className="drag-icon">
-                                            <i className="adminfont-drag"></i>
-                                        </div>
-                                        <BasicInputUI
-                                            placeholder="Add Attribute"
-                                            value={variation.name}
-                                            onChange={(value) => updateAttribute(vIndex, 'name', value)}
-                                        />
+                                <div className="variant">
+                                    <div className="drag-icon">
+                                        <i className="adminfont-drag"></i>
                                     </div>
+                                    <BasicInputUI
+                                        placeholder="Add Attribute"
+                                        value={variation.name}
+                                        onChange={(value) => updateAttribute(vIndex, 'name', value)}
+                                    />
+                                </div>
 
-                                    <div className="option-wrapper">
-                                        <FormGroupWrapper>
-                                            <FormGroup label={__('Option value', 'multivendorx')} />
-                                        </FormGroupWrapper>
+                                <div className="option-wrapper">
+                                    <FormGroupWrapper>
+                                        <FormGroup label={__('Option value', 'multivendorx')} />
+                                    </FormGroupWrapper>
 
-                                        {variation.options.map((opt, oIndex) => (
-                                            <div className="variant" key={oIndex}>
-                                                <div className="drag-icon">
-                                                    <i className="adminfont-drag"></i>
-                                                </div>
-                                                <BasicInputUI
-                                                    value={opt}
-                                                    onChange={(value) => {
-                                                        const updated = [...variation.options];
-                                                        updated[oIndex] = value;
-                                                        updateAttribute(vIndex, 'options', updated);
-                                                    }}
-                                                />
-                                                <span
-                                                    className="admin-badge red adminfont-delete"
-                                                    onClick={() => deleteOption(vIndex, oIndex)}
-                                                />
+                                    {variation.options.map((opt, oIndex) => (
+                                        <div className="variant" key={oIndex}>
+                                            <div className="drag-icon">
+                                                <i className="adminfont-drag"></i>
                                             </div>
-                                        ))}
+                                            <BasicInputUI
+                                                value={opt}
+                                                onChange={(value) => {
+                                                    const updated = [...variation.options];
+                                                    updated[oIndex] = value;
+                                                    updateAttribute(vIndex, 'options', updated);
+                                                }}
+                                            />
+                                            <span
+                                                className="admin-badge red adminfont-delete"
+                                                onClick={() => deleteOption(vIndex, oIndex)}
+                                            />
+                                        </div>
+                                    ))}
 
-                                        <div className="add-new">
-                                            <div
-                                                className="add-input"
-                                                onKeyPress={(e) => {
+                                    <div className="add-new">
+                                        <div
+                                            className="add-input"
+                                            onKeyPress={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    e.preventDefault();
+                                                    handleAddNewOption(vIndex);
+                                                }
+                                            }}
+                                        >
+                                            <BasicInputUI
+                                                placeholder="Add another value"
+                                                value={tempOptions[vIndex] || ''}
+                                                onChange={(value) => handleTempOptionChange(vIndex, value)}
+                                                onKeyDown={(e) => {
                                                     if (e.key === 'Enter') {
                                                         e.preventDefault();
                                                         handleAddNewOption(vIndex);
                                                     }
                                                 }}
-                                            >
-                                                <BasicInputUI
-                                                    placeholder="Add another value"
-                                                    value={tempOptions[vIndex] || ''}
-                                                    onChange={(value) => handleTempOptionChange(vIndex, value)}
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === 'Enter') {
-                                                            e.preventDefault();
-                                                            handleAddNewOption(vIndex);
-                                                        }
-                                                    }}
-                                                />
-                                            </div>
-
-                                            <ButtonInputUI
-                                                buttons={{
-                                                    icon: 'plus',
-                                                    text: __('Add New', 'multivendorx'),
-                                                    color: 'purple',
-                                                    onClick: () => handleAddNewOption(vIndex),
-                                                }}
                                             />
                                         </div>
-                                    </div>
-                                </div>
-                            )}
 
-                            {!variation.isEditing && (
-                                <div className="variant-show">
-                                    <div className="left-section">
-                                        <div className="attributes">
-                                            {variation.name || __('No variant name', 'multivendorx')}
-                                        </div>
-                                        <div className="variantion-wrapper">
-                                            {variation.options.map((opt, idx) => (
-                                                <div className="admin-badge blue" key={idx}>
-                                                    {opt}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <div className="right-section">
                                         <ButtonInputUI
                                             buttons={{
-                                                icon: 'edit',
-                                                text: __('Edit', 'multivendorx'),
+                                                icon: 'plus',
+                                                text: __('Add New', 'multivendorx'),
                                                 color: 'purple',
-                                                onClick: () => saveEditAttribute(vIndex, true),
+                                                onClick: () => handleAddNewOption(vIndex),
                                             }}
                                         />
                                     </div>
                                 </div>
-                            )}
-                        </div>
-                    </>
-                ))}
-                {applyFilters(
-						'multivendorx_add_product_variations',
-						null,
-						product,
-						setProduct,
-						productFields,
-					)}
-            </Card>
+                            </div>
+                        )}
 
-	);
+                        {!variation.isEditing && (
+                            <div className="variant-show">
+                                <div className="left-section">
+                                    <div className="attributes">
+                                        {variation.name || __('No variant name', 'multivendorx')}
+                                    </div>
+                                    <div className="variantion-wrapper">
+                                        {variation.options.map((opt, idx) => (
+                                            <div className="admin-badge blue" key={idx}>
+                                                {opt}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="right-section">
+                                    <ButtonInputUI
+                                        buttons={{
+                                            icon: 'edit',
+                                            text: __('Edit', 'multivendorx'),
+                                            color: 'purple',
+                                            onClick: () => saveEditAttribute(vIndex, true),
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </React.Fragment>
+            ))}
+            {applyFilters(
+                'multivendorx_add_product_variations',
+                null,
+                product,
+                setProduct,
+                productFields,
+            )}
+        </Card>
+
+    );
 };
 
 addFilter(
-	'multivendorx_add_product_middle_section',
-	'multivendorx/inventory',
-	(content, product, setProduct, handleChange, productFields) => {
-		return (
-			<>
-				{content}
-				{productFields.includes('inventory') && (
-					<Attributes
-						product={product}
-						setProduct={setProduct}
-						handleChange={handleChange}
-                        productFields = {productFields}
-					/>
-				)}
-			</>
-		);
-	},
-	10
+    'multivendorx_add_product_middle_section',
+    'multivendorx/inventory',
+    (content, product, setProduct, handleChange, productFields) => {
+        return (
+            <>
+                {content}
+                {productFields.includes('inventory') && (
+                    <Attributes
+                        product={product}
+                        setProduct={setProduct}
+                        handleChange={handleChange}
+                        productFields={productFields}
+                    />
+                )}
+            </>
+        );
+    },
+    10
 );

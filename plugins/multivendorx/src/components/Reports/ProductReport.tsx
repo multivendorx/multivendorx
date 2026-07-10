@@ -344,7 +344,7 @@ const ProductReport: React.FC = () => {
 	const filters = [
 		{
 			key: 'store_id',
-			label: __('Stores', 'multivendorx'),
+			label: __('Select Stores', 'multivendorx'),
 			type: 'select',
 			options: store,
 		},
@@ -357,7 +357,7 @@ const ProductReport: React.FC = () => {
 
 	const downloadCSVByQuery = (query: QueryProps) => {
 		axios
-			.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
+			.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},

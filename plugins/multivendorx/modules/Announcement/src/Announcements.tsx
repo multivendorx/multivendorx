@@ -35,7 +35,7 @@ interface Store {
 }
 
 interface StoreOption {
-	value: string;
+	value: number;
 	label: string;
 }
 
@@ -87,9 +87,7 @@ export const Announcements: React.FC = () => {
 	const [categoryCounts, setCategoryCounts] = useState<
 		CategoryCount[] | null
 	>(null);
-	const [storeOptions, setStoreOptions] = useState<
-		{ value: string; label: string }[]
-	>([]);
+	const [storeOptions, setStoreOptions] = useState<StoreOption[]>([]);
 	const [validationErrors, setValidationErrors] = useState<{
 		[key: string]: string;
 	}>({});
@@ -160,7 +158,7 @@ export const Announcements: React.FC = () => {
 	};
 
 	// Handle form input change
-	const handleChange = (name: string, value: string | []) => {
+	const handleChange = (name: string, value: string | number[]) => {
 		setFormData((prev) => ({ ...prev, [name]: value }));
 		if (validationErrors[name]) {
 			setValidationErrors((prev) => {
@@ -171,7 +169,7 @@ export const Announcements: React.FC = () => {
 		}
 	};
 
-	const handleBulkAction = (action: string, selectedIds: []) => {
+	const handleBulkAction = (action: string, selectedIds: number[]) => {
 		if (!selectedIds.length) {
 			return;
 		}
@@ -190,9 +188,8 @@ export const Announcements: React.FC = () => {
 				doRefreshTableData({});
 			})
 			.catch((err) => {
-				setError(
-					__(`Failed to perform bulk action${err}`, 'multivendorx')
-				);
+				console.error('Bulk action failed:', err);
+				setError(__('Failed to perform bulk action.', 'multivendorx'));
 			});
 	};
 
@@ -211,6 +208,10 @@ export const Announcements: React.FC = () => {
 				});
 				setEditId(id);
 				setAddAnnouncements(true);
+			})
+			.catch((err) => {
+				console.error('Failed to load announcement for editing', err);
+				setError(__('Failed to load announcement for editing', 'multivendorx'));
 			});
 	};
 
@@ -230,7 +231,6 @@ export const Announcements: React.FC = () => {
 
 		const payload = {
 			...formData,
-			stores: formData.stores,
 		};
 
 		axios({
@@ -259,9 +259,8 @@ export const Announcements: React.FC = () => {
 				setSubmitting(false);
 			})
 			.catch((err) => {
-				setError(
-					__(`Failed to save announcement${err}`, 'multivendorx')
-				);
+				console.error('Failed to save announcement', err);
+				setError(__('Failed to save announcement', 'multivendorx'));
 
 				// cleanup on error
 				setSubmitting(false);
@@ -377,7 +376,7 @@ export const Announcements: React.FC = () => {
 	const filters = [
 		{
 			key: 'store_id',
-			label: __('Stores', 'multivendorx'),
+			label: __('Select Stores', 'multivendorx'),
 			type: 'select',
 			options: storeOptions,
 		},
@@ -399,7 +398,11 @@ export const Announcements: React.FC = () => {
 				<Popup
 					confirmMode
 					title={__('Are you sure', 'multivendorx')}
-					confirmMessage={selectedAn ? `` : ''}
+					confirmMessage={
+						selectedAn
+							? __('Are you sure you want to delete this announcement?', 'multivendorx')
+							: ''
+					}
 					confirmYesText={__('Delete', 'multivendorx')}
 					confirmNoText={__('Cancel', 'multivendorx')}
 					onConfirm={handleConfirmDelete}
@@ -473,7 +476,7 @@ export const Announcements: React.FC = () => {
 								handleChange('title', val as string)
 							}
 							msg={{
-								type: error,
+								type: 'error',
 								message: validationErrors.title,
 							}}
 						/>
@@ -495,7 +498,7 @@ export const Announcements: React.FC = () => {
 								]['tinymce_api_section'] ?? ''
 							}
 							msg={{
-								type: error,
+								type: 'error',
 								message: validationErrors.content,
 							}}
 						/>
@@ -508,7 +511,7 @@ export const Announcements: React.FC = () => {
 							name="stores"
 							type="multi-select"
 							options={storeOptions}
-							value={formData.stores.map((id) => id)}
+							value={formData.stores}
 							onChange={(newValue) => {
 								if (!Array.isArray(newValue)) {
 									return;
@@ -547,7 +550,7 @@ export const Announcements: React.FC = () => {
 								}));
 							}}
 							msg={{
-								type: error,
+								type: 'error',
 								message: validationErrors.stores,
 							}}
 						/>

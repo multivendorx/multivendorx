@@ -602,7 +602,7 @@ const Orders: React.FC = () => {
 					<FormGroupWrapper>
 						<FormGroup
 							cols={6}
-							label={__('Shipping Providers', 'multivendorx-pro')}
+							label={__('Shipping Providers', 'multivendorx')}
 							htmlFor="title"
 						>
 							<SelectInputUI
@@ -617,20 +617,20 @@ const Orders: React.FC = () => {
 						</FormGroup>
 						<FormGroup
 							cols={6}
-							label={__('Date', 'multivendorx-pro')}
+							label={__('Date', 'multivendorx')}
 							htmlFor="title"
 						>
 							<BasicInputUI
 								type="date"
 								value={formData.tracking_date}
 								onChange={(value: any) =>
-									handleChange('date', value)
+									handleChange('tracking_date', value)
 								}
 							/>
 						</FormGroup>
 						<FormGroup
 							cols={6}
-							label={__('Tracking URL', 'multivendorx-pro')}
+							label={__('Tracking URL', 'multivendorx')}
 							htmlFor="title"
 						>
 							<BasicInputUI
@@ -643,7 +643,7 @@ const Orders: React.FC = () => {
 						</FormGroup>
 						<FormGroup
 							cols={6}
-							label={__('Tracking Number', 'multivendorx-pro')}
+							label={__('Tracking Number', 'multivendorx')}
 							htmlFor="title"
 						>
 							<BasicInputUI

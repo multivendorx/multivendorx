@@ -95,7 +95,7 @@ class Notifications extends \WP_REST_Controller {
      * @param object $request WP_REST_Request object.
      */
     public function update_item_permissions_check( $request ) {
-        return true;
+        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
     }
 
     /**

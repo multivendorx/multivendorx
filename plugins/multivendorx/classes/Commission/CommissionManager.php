@@ -565,7 +565,7 @@ class CommissionManager {
      */
     public function get_category_wise_commission( $product ) {
 
-        // Get the terms => ['product_cat'] of the prodcut.
+        // Get the terms => ['product_cat'] of the product.
         $terms = get_the_terms( $product->get_id(), 'product_cat' );
         if ( ! $terms || is_wp_error( $terms ) ) {
             return null;
@@ -735,7 +735,7 @@ class CommissionManager {
                     'transaction_type' => 'Refund',
                     'amount'           => abs( (float) $commission->store_payable - $store_payable ),
                     'currency'         => get_woocommerce_currency(),
-                    'payment_method'   => $store->get_meta( 'payment_method' ) ?? '',
+                    'payment_method'   => $store->get_payment_method('name') ?? '',
                     'narration'        => 'Withdrawal via refund',
                     'status'           => 'Completed',
                 );

@@ -296,7 +296,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	const filters = [
 		{
 			key: 'transactionType',
-			label: 'Transaction Type',
+			label: 'Select Transaction Type',
 			type: 'select',
 			size: 13,
 			options: [
