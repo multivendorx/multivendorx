@@ -149,7 +149,7 @@ class OrderManager {
             $store_order->save();
             $store = new Store( $store_id );
             if ( ! $store->exists() ) {
-                return;
+                continue;
             }
             MultiVendorX()->notifications->send_notification_helper(
                 'new_order_store',
