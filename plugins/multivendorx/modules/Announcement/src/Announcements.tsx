@@ -87,9 +87,7 @@ export const Announcements: React.FC = () => {
 	const [categoryCounts, setCategoryCounts] = useState<
 		CategoryCount[] | null
 	>(null);
-	const [storeOptions, setStoreOptions] = useState<
-		{ value: string; label: string }[]
-	>([]);
+	const [storeOptions, setStoreOptions] = useState<StoreOption[]>([]);
 	const [validationErrors, setValidationErrors] = useState<{
 		[key: string]: string;
 	}>({});
@@ -160,7 +158,7 @@ export const Announcements: React.FC = () => {
 	};
 
 	// Handle form input change
-	const handleChange = (name: string, value: string | []) => {
+	const handleChange = (name: string, value: string | number[]) => {
 		setFormData((prev) => ({ ...prev, [name]: value }));
 		if (validationErrors[name]) {
 			setValidationErrors((prev) => {
@@ -171,7 +169,7 @@ export const Announcements: React.FC = () => {
 		}
 	};
 
-	const handleBulkAction = (action: string, selectedIds: []) => {
+	const handleBulkAction = (action: string, selectedIds: number[]) => {
 		if (!selectedIds.length) {
 			return;
 		}
@@ -229,7 +227,6 @@ export const Announcements: React.FC = () => {
 
 		const payload = {
 			...formData,
-			stores: formData.stores,
 		};
 
 		axios({
