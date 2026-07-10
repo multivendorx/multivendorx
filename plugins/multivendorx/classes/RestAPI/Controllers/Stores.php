@@ -1308,7 +1308,7 @@ class Stores extends \WP_REST_Controller {
                 array(
                     'success' => true,
                     'id'      => $store->get_id(),
-                    'error'   => __( 'Settings Saved', 'multivendorx' ),
+                    'message' => __( 'Settings Saved', 'multivendorx' ),
                 )
             );
         } catch ( \Exception $e ) {
