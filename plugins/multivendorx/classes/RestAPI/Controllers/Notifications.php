@@ -291,6 +291,15 @@ class Notifications extends \WP_REST_Controller {
      * @return void
      */
     public function update_items( $request ) {
+        $nonce = $request->get_header( 'X-WP-Nonce' );
+        if ( ! $nonce || ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __( 'Invalid nonce.', 'multivendorx' ),
+                array( 'status' => 403 )
+            );
+        }
+
         $sync_notifications = MultiVendorX()->setting->get_setting( 'sync_notifications', '' );
 
         if ( 'sync_only_new_entry' === $sync_notifications ) {
