@@ -1080,13 +1080,26 @@ class Stores extends \WP_REST_Controller {
                     $store->set( Utill::STORE_SETTINGS_KEYS['status'], $status );
 
                     if ( ! empty( $data['store_permanent_reject'] ) ) {
-                        delete_metadata(
-                            'user',
-                            0,
-                            Utill::USER_SETTINGS_KEYS['active_store'],
-                            '',
-                            true
-                        );
+                        $store_users = StoreUtil::get_store_users( $id );
+                        $user_ids    = array();
+
+                        if ( ! empty( $store_users['primary_owner'] ) ) {
+                            $user_ids[] = (int) $store_users['primary_owner'];
+                        }
+
+                        if ( ! empty( $store_users['users'] ) && is_array( $store_users['users'] ) ) {
+                            $user_ids = array_merge( $user_ids, array_map( 'intval', $store_users['users'] ) );
+                        }
+
+                        $user_ids = array_unique( array_filter( $user_ids ) );
+
+                        foreach ( $user_ids as $user_id ) {
+                            delete_metadata(
+                                'user',
+                                $user_id,
+                                Utill::USER_SETTINGS_KEYS['active_store']
+                            );
+                        }
                     }
 
                     if ( ! empty( $data['store_application_note'] ) ) {
