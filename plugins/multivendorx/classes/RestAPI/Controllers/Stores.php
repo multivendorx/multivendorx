@@ -799,7 +799,7 @@ class Stores extends \WP_REST_Controller {
             $store = new Store( $id );
             if ( ! $store->exists() ) {
                 return new \WP_Error(
-                    'mvx_store_not_found',
+                    'multivendorx_store_not_found',
                     __( 'Store not found.', 'multivendorx' ),
                     array( 'status' => 404 )
                 );
