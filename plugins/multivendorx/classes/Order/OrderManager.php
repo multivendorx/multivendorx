@@ -424,7 +424,8 @@ class OrderManager {
 
             $coupon_products = $coupon->get_product_ids();
 
-            $match_coupon_product = array_intersect( $product_ids, $coupon_products );
+            // Empty product restrictions mean the coupon applies to all products.
+            $match_coupon_product = empty( $coupon_products ) ? true : array_intersect( $product_ids, $coupon_products );
 
             if ( $match_coupon_product ) {
                 $item = new \WC_Order_Item_Coupon();
