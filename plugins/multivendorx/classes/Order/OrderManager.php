@@ -336,7 +336,7 @@ class OrderManager {
                 }
 
                 $item->set_backorder_meta();
-                $item->add_meta_data( 'store_order_item_id', $item->get_product_id() );
+                $item->add_meta_data( 'store_order_item_id', $item_id );
 
                 // Copy all metadata from order's item to new created item.
                 $metadata = $order_item->get_meta_data();
