@@ -565,7 +565,7 @@ class CommissionManager {
      */
     public function get_category_wise_commission( $product ) {
 
-        // Get the terms => ['product_cat'] of the prodcut.
+        // Get the terms => ['product_cat'] of the product.
         $terms = get_the_terms( $product->get_id(), 'product_cat' );
         if ( ! $terms || is_wp_error( $terms ) ) {
             return null;
