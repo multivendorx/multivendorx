@@ -546,7 +546,7 @@ export const Announcements: React.FC = () => {
 								}));
 							}}
 							msg={{
-								type: error,
+								type: 'error',
 								message: validationErrors.stores,
 							}}
 						/>
