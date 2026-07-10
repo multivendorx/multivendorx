@@ -376,8 +376,8 @@ class OrderManager {
                     )
                 );
 
-                foreach ( $item->get_meta_data() as $key => $value ) {
-                    $shipping->add_meta_data( $key, $value, true );
+                foreach ( $item->get_meta_data() as $meta ) {
+                    $shipping->add_meta_data( $meta->key, $meta->value, true );
                 }
 
                 $shipping->add_meta_data( Utill::POST_META_SETTINGS['store_id'], $store_id, true );
