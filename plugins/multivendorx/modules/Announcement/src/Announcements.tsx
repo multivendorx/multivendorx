@@ -35,7 +35,7 @@ interface Store {
 }
 
 interface StoreOption {
-	value: string;
+	value: number;
 	label: string;
 }
 
@@ -190,9 +190,8 @@ export const Announcements: React.FC = () => {
 				doRefreshTableData({});
 			})
 			.catch((err) => {
-				setError(
-					__(`Failed to perform bulk action${err}`, 'multivendorx')
-				);
+				console.error('Bulk action failed:', err);
+				setError(__('Failed to perform bulk action.', 'multivendorx'));
 			});
 	};
 
@@ -259,9 +258,8 @@ export const Announcements: React.FC = () => {
 				setSubmitting(false);
 			})
 			.catch((err) => {
-				setError(
-					__(`Failed to save announcement${err}`, 'multivendorx')
-				);
+				console.error('Failed to save announcement', err);
+				setError(__('Failed to save announcement', 'multivendorx'));
 
 				// cleanup on error
 				setSubmitting(false);
@@ -512,7 +510,7 @@ export const Announcements: React.FC = () => {
 							name="stores"
 							type="multi-select"
 							options={storeOptions}
-							value={formData.stores.map((id) => id)}
+							value={formData.stores}
 							onChange={(newValue) => {
 								if (!Array.isArray(newValue)) {
 									return;
