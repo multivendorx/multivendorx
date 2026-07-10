@@ -229,7 +229,6 @@ export const Announcements: React.FC = () => {
 
 		const payload = {
 			...formData,
-			stores: formData.stores,
 		};
 
 		axios({
