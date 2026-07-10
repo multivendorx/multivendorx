@@ -118,22 +118,26 @@ const Modules: React.FC<ModuleProps> = ({
         const action = event.length > 0 ? 'activate' : 'deactivate';
 
         if (action === 'activate') {
-            const modulesToEnable = [
-                module.id,
-                ...(module.enableModules || []),
-            ];
+            insertModule?.(module.id);
 
-            modulesToEnable.forEach((id) => insertModule?.(id));
+            module.enableModules?.forEach((id) => {
+                insertModule?.(id);
+            });
         } else {
             removeModule?.(module.id);
         }
 
         localStorage.setItem(`force_${pluginName}_context_reload`, 'true');
-
-        sendApiResponse(ZyraVariable, getApiLink(ZyraVariable, apiLink), {
+        const data = {
             id: module.id,
             action,
-        })
+        };
+
+        if (action === 'activate' && module.enableModules?.length) {
+            data.modules = [module.id, ...module.enableModules];
+        }
+
+        sendApiResponse(ZyraVariable, getApiLink(ZyraVariable, apiLink), data)
             .then(() => {
                 NoticeManager.add({
                     title: 'Success!',
@@ -259,23 +263,23 @@ const Modules: React.FC<ModuleProps> = ({
                         title: `Required plugins missing`,
                         description: `This module needs the following plugins to work.`,
                     }}
-                    // footer={
-                    //     <ButtonInputUI
-                    //         buttons={[
-                    //             {
-                    //                 icon: 'close',
-                    //                 text: 'Cancel',
-                    //                 color: 'red',
-                    //                 // onClick: setRequirePopup(null),
-                    //             },
-                    //             {
-                    //                 icon: 'import',
-                    //                 text: 'Install All',
-                    //                 // onClick: () => handleSubmit(),
-                    //             },
-                    //         ]}
-                    //     />
-                    // }
+                // footer={
+                //     <ButtonInputUI
+                //         buttons={[
+                //             {
+                //                 icon: 'close',
+                //                 text: 'Cancel',
+                //                 color: 'red',
+                //                 // onClick: setRequirePopup(null),
+                //             },
+                //             {
+                //                 icon: 'import',
+                //                 text: 'Install All',
+                //                 // onClick: () => handleSubmit(),
+                //             },
+                //         ]}
+                //     />
+                // }
                 >
                     <div className="required-popup">
                         <div className="title">Plugins required</div>
@@ -320,11 +324,10 @@ const Modules: React.FC<ModuleProps> = ({
                                 categories.map((category) => (
                                     <span
                                         key={category.id}
-                                        className={`category-item ${
-                                            selectedCategory === category.id
-                                                ? 'active'
-                                                : ''
-                                        }`}
+                                        className={`category-item ${selectedCategory === category.id
+                                            ? 'active'
+                                            : ''
+                                            }`}
                                         onClick={() =>
                                             setSelectedCategory(category.id)
                                         }
@@ -399,7 +402,7 @@ const Modules: React.FC<ModuleProps> = ({
                                             )}
 
                                         {variant === 'mini-module' &&
-                                            (ZyraVariable.khali_dabba ||!module.proModule) && toggleComponent
+                                            (ZyraVariable.khali_dabba || !module.proModule) && toggleComponent
                                         }
                                     </div>
 
@@ -412,21 +415,21 @@ const Modules: React.FC<ModuleProps> = ({
                                             <>
                                                 {moduleCategories.length >
                                                     0 && (
-                                                    <div className="tag-wrapper">
-                                                        {moduleCategories.map(
-                                                            (cat, idx) => (
-                                                                <span
-                                                                    key={idx}
-                                                                    className="admin-badge blue"
-                                                                >
-                                                                    {formatCategory(
-                                                                        cat
-                                                                    )}
-                                                                </span>
-                                                            )
-                                                        )}
-                                                    </div>
-                                                )}
+                                                        <div className="tag-wrapper">
+                                                            {moduleCategories.map(
+                                                                (cat, idx) => (
+                                                                    <span
+                                                                        key={idx}
+                                                                        className="admin-badge blue"
+                                                                    >
+                                                                        {formatCategory(
+                                                                            cat
+                                                                        )}
+                                                                    </span>
+                                                                )
+                                                            )}
+                                                        </div>
+                                                    )}
 
                                                 <div
                                                     className="meta-description"
