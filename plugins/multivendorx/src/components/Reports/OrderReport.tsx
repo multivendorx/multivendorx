@@ -96,7 +96,7 @@ const OrderReport: React.FC = () => {
 	const filters = [
 		{
 			key: 'store_id',
-			label: __('Stores', 'multivendorx'),
+			label: __('Select Stores', 'multivendorx'),
 			type: 'select',
 			options: store,
 		},

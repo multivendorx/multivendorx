@@ -534,7 +534,7 @@ const AllCoupon: React.FC = () => {
 							}
 							placeholder={__(
 								'Enter email...',
-								'multivendorx-pro'
+								'multivendorx'
 							)}
 							onChange={(emails) =>
 								setFormData({
@@ -740,7 +740,7 @@ const AllCoupon: React.FC = () => {
 	const filters = [
 		{
 			key: 'couponType',
-			label: __('Status', 'multivendorx'),
+			label: __('Select Coupon Type', 'multivendorx'),
 			type: 'select',
 			size: 12,
 			options: [

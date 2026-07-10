@@ -232,18 +232,22 @@ class Settings extends \WP_REST_Controller {
 
             // Setup wizard module.
             $modules = $request->get_param( 'modules' ) ?? array();
-            MultiVendorX()->modules->activate_modules( $modules );
-
+            $response = rest_ensure_response( array() );
+            $result = MultiVendorX()->modules->activate_modules( $modules );
+            $response->set_data( $result );
             // Handle the actions.
             switch ( $action ) {
                 case 'activate':
-                    MultiVendorX()->modules->activate_modules( array( $module_id ) );
+                    $result = MultiVendorX()->modules->activate_modules( array( $module_id ) );
+                    $response->set_data( $result );
                     break;
 
                 default:
-                    MultiVendorX()->modules->deactivate_modules( array( $module_id ) );
+                    $result = MultiVendorX()->modules->deactivate_modules( array( $module_id ) );
+                    $response->set_data( $result );
                     break;
             }
+            return $response;
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
 

@@ -151,7 +151,7 @@ const StoreReview: React.FC = () => {
 	const filters = [
 		{
 			key: 'rating',
-			label: __('Status', 'multivendorx'),
+			label: __('Select Rating', 'multivendorx'),
 			type: 'select',
 			options: [
 				{ label: __('All', 'multivendorx'), value: '' },

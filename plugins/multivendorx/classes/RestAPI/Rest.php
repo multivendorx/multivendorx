@@ -349,9 +349,11 @@ class Rest {
             'shop_order',
             'shop_coupon',
             'product_cat',
+            'user',
+            'bookable_resource'
         );
 
-        if ( ! is_user_logged_in() && $request_method === 'GET' && in_array( $post_type, $allowed_post_types, true ) ) {
+        if ( $request_method === 'GET' && in_array( $post_type, $allowed_post_types, true ) ) {
             return true;
         }
 
@@ -362,7 +364,7 @@ class Rest {
 
         // Get all users for that store.
         $users = StoreUtil::get_store_users( $active_store );
- 
+        
         if ( is_array( $users ) && ! empty( $users['users'] ) && in_array( $user_id, $users['users'], true ) && in_array( $post_type, $allowed_post_types, true ) ) {
             return true;
         }

@@ -333,7 +333,7 @@ const AllProduct: React.FC = () => {
 		{
 			key: 'category',
 			type: 'select',
-			label: __('Category', 'multivendorx'),
+			label: __('Select Category', 'multivendorx'),
 			options: categoriesList.map((cat) => ({
 				value: cat.id,
 				label: cat.name,
@@ -342,7 +342,7 @@ const AllProduct: React.FC = () => {
 		{
 			key: 'productType',
 			type: 'select',
-			label: __('Product Type', 'multivendorx'),
+			label: __('Select Product Type', 'multivendorx'),
 			options: [
 				{
 					value: 'simple',
@@ -365,7 +365,7 @@ const AllProduct: React.FC = () => {
 		{
 			key: 'stockStatus',
 			type: 'select',
-			label: __('Stock Status', 'multivendorx'),
+			label: __('Select Stock Status', 'multivendorx'),
 			options: [
 				{ value: 'instock', label: __('In Stock', 'multivendorx') },
 				{
