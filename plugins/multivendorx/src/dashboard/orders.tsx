@@ -229,18 +229,21 @@ const Orders: React.FC = () => {
 		id: {
 			label: __('Order ID', 'multivendorx'),
 			render: (row) => (
-				<span
-					onClick={() =>
-						dashNavigate(navigate, [
-							'orders',
-							'view',
-							String(row.id),
-						])
-					}
-					className="link-item"
-				>
-					#{row.id}
-				</span>
+				<>
+					<span
+						onClick={() =>
+							dashNavigate(navigate, [
+								'orders',
+								'view',
+								String(row.id),
+							])
+						}
+						className="link-item"
+					>
+						#{row.id}
+					</span>
+					{applyFilters('multivendorx_order_badge', null, row)}
+				</>
 			),
 		},
 
