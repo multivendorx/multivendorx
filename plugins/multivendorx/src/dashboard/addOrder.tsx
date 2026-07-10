@@ -131,9 +131,9 @@ const AddOrder = () => {
 		{ label: 'Choose customer...', value: '' },
 		...(customers
 			? customers.map((c) => ({
-					label: `${c.first_name} ${c.last_name}`.trim() || c.email,
-					value: c.id,
-				}))
+				label: `${c.first_name} ${c.last_name}`.trim() || c.email,
+				value: c.id,
+			}))
 			: []),
 	];
 
@@ -457,10 +457,10 @@ const AddOrder = () => {
 											prev.map((s) =>
 												s.id === row.id
 													? {
-															...s,
-															method_id: value,
-															name: method_title,
-														}
+														...s,
+														method_id: value,
+														name: method_title,
+													}
 													: s
 											)
 										);
@@ -783,58 +783,58 @@ const AddOrder = () => {
 					<Card>
 						{(addedProducts.length > 0 ||
 							shippingLines.length > 0) && (
-							<>
-								<TableCard
-									headers={tableHeaders}
-									rows={tableRows}
-									showMenu={false}
-								/>
+								<>
+									<TableCard
+										headers={tableHeaders}
+										rows={tableRows}
+										showMenu={false}
+									/>
 
-								<div className="total-summary">
-									<div className="row">
-										<span>
-											{__('Subtotal:', 'multivendorx')}
-										</span>
-										<span>${subtotal.toFixed(2)}</span>
-									</div>
+									<div className="total-summary">
+										<div className="row">
+											<span>
+												{__('Subtotal:', 'multivendorx')}
+											</span>
+											<span>${subtotal.toFixed(2)}</span>
+										</div>
 
-									<div className="row">
-										<span>
-											{__('Tax:', 'multivendorx')}
-										</span>
-										<span>
-											$
-											{addedProducts
-												.reduce(
-													(sum, p) =>
-														sum +
-														(p.tax_amount || 0),
-													0
-												)
-												.toFixed(2)}
-										</span>
-									</div>
+										<div className="row">
+											<span>
+												{__('Tax:', 'multivendorx')}
+											</span>
+											<span>
+												$
+												{addedProducts
+													.reduce(
+														(sum, p) =>
+															sum +
+															(p.tax_amount || 0),
+														0
+													)
+													.toFixed(2)}
+											</span>
+										</div>
 
-									<div className="row">
-										<span>
-											{__('Shipping:', 'multivendorx')}
-										</span>
-										<span>
-											{formatCurrency(totalShipping)}
-										</span>
-									</div>
+										<div className="row">
+											<span>
+												{__('Shipping:', 'multivendorx')}
+											</span>
+											<span>
+												{formatCurrency(totalShipping)}
+											</span>
+										</div>
 
-									<div className="row total">
-										<strong>
-											{__('Grand Total:', 'multivendorx')}
-										</strong>
-										<strong>
-											${grandTotal.toFixed(2)}
-										</strong>
+										<div className="row total">
+											<strong>
+												{__('Grand Total:', 'multivendorx')}
+											</strong>
+											<strong>
+												${grandTotal.toFixed(2)}
+											</strong>
+										</div>
 									</div>
-								</div>
-							</>
-						)}
+								</>
+							)}
 						<FormGroupWrapper>
 							<ButtonInputUI
 								position="left"
@@ -1031,14 +1031,12 @@ const AddOrder = () => {
 						{selectedCustomer && (
 							<InfoItem
 								title={
-									selectedCustomer
-										? `${selectedCustomer.first_name} ${selectedCustomer.last_name}`
-										: __('Guest Customer', 'multivendorx')
+									[selectedCustomer.first_name, selectedCustomer.last_name]
+										.filter(Boolean)
+										.join(' ') || __('Guest Customer', 'multivendorx')
 								}
 								avatar={{
-									text: selectedCustomer
-										? selectedCustomer.first_name[0]
-										: 'C',
+									text: selectedCustomer.first_name?.[0] || 'C',
 									iconClass: 'person',
 								}}
 								descriptions={
@@ -1073,7 +1071,7 @@ const AddOrder = () => {
 												</>
 											),
 										},
-									]		
+									]
 								}
 								badges={[
 									{
