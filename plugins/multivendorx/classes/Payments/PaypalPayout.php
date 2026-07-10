@@ -127,8 +127,8 @@ class PaypalPayout {
 
         $store = new Store( $store_id );
         if ( $store->exists() ) {
-            $payment_method = $store->get_payment_method();
-            $receiver_email = array_key_first($payment_method) == 'paypal-payout' ? $payment_method['paypal-payout'][Utill::STORE_SETTINGS_KEYS['paypal_email']] : '';
+            $payment_method = $store->get_payment_method('', false);
+            $receiver_email = $payment_method['paypal-payout'][Utill::STORE_SETTINGS_KEYS['paypal_email']] ?? '';
         }
 
         if ( $additional_receiver > 0 ) {

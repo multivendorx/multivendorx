@@ -735,7 +735,7 @@ class CommissionManager {
                     'transaction_type' => 'Refund',
                     'amount'           => abs( (float) $commission->store_payable - $store_payable ),
                     'currency'         => get_woocommerce_currency(),
-                    'payment_method'   => array_key_first( $store->get_payment_method() ) ?? '',
+                    'payment_method'   => $store->get_payment_method('name') ?? '',
                     'narration'        => 'Withdrawal via refund',
                     'status'           => 'Completed',
                 );

@@ -157,7 +157,7 @@ class StripeConnect {
             $store             = new Store( $store_id );
             $stripe_account_id = '';
             if ( $store->exists() ) {
-                $stripe_account_id = $store->get_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] );
+                $stripe_account_id = $store->get_payment_method('', false)['stripe-connect'][ Utill::STORE_SETTINGS_KEYS['stripe_account_id'] ] ?? '';
             }
             $stripe_account_id = apply_filters( 'multivendorx_stripe_account_id', $stripe_account_id, MultiVendorX()->current_user_id );
 			$fields            = array(
@@ -227,7 +227,7 @@ class StripeConnect {
         $store             = new Store( $store_id );
         $stripe_account_id = '';
         if ( $store->exists() ) {
-            $stripe_account_id = $store->get_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] );
+            $stripe_account_id = $store->get_payment_method('', false)['stripe-connect'][ Utill::STORE_SETTINGS_KEYS['stripe_account_id'] ] ?? '';
         }
         if ( $additional_receiver > 0 ) {
             $stripe_account_id = apply_filters( 'multivendorx_stripe_account_id', $stripe_account_id, $additional_receiver );
@@ -358,7 +358,12 @@ class StripeConnect {
             wp_redirect( $this->get_redirect_url( 'error', 'stripe_connection_failed' ) );
             exit;
         }
-        $store->update_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'], sanitize_text_field( $response['stripe_user_id'] ) );
+        $store->update_payment_method(
+            'stripe-connect',
+            array(
+                Utill::STORE_SETTINGS_KEYS['stripe_account_id'] => sanitize_text_field( $response['stripe_user_id'] ),
+            )
+        );
         // Success.
         wp_redirect( $this->get_redirect_url( '', '' ) );
         exit;
@@ -373,8 +378,8 @@ class StripeConnect {
         if ( empty( $store ) ) {
             return;
         }
-        $account_id = $store->get_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] );
-
+        $account_id = $store->get_payment_method('', false)['stripe-connect'][ Utill::STORE_SETTINGS_KEYS['stripe_account_id'] ] ?? '';
+        
         if ( $account_id && $config['client_id'] && $config['secret_key'] ) {
             wp_remote_post(
                 'https://connect.stripe.com/oauth/deauthorize',
@@ -390,7 +395,12 @@ class StripeConnect {
             );
         }
 
-        $store->delete_meta( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] );
+        $store->update_payment_method(
+            'stripe-connect',
+            array(
+                Utill::STORE_SETTINGS_KEYS['stripe_account_id'] => '',
+            )
+        );
         wp_redirect( $this->get_redirect_url( 'disconnected', 'true' ) );
         exit;
     }
