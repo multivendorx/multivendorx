@@ -208,7 +208,7 @@ class Stores extends \WP_REST_Controller {
                 foreach ( $rejected_stores as $store ) {
                     $store_id     = (int) $store['ID'];
                     $store_object = new Store( $store_id );
-                    if ( ! $store->exists() ) {
+                    if ( ! $store_object->exists() ) {
                         continue;
                     }
                     $all_stores[] = array(
