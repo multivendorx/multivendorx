@@ -305,10 +305,11 @@ class Stores extends \WP_REST_Controller {
                 $args['order_by'] = sanitize_text_field( $order_by );
                 $args['order']    = sanitize_text_field( $request->get_param( 'order' ) );
             }
-            $lat    = $request->get_param( 'location_lat' );
-            $lng    = $request->get_param( 'location_lng' );
-            $radius = $request->get_param( 'radius_max' );
-            $unit   = $request->get_param( 'radius_unit' );
+            $lat       = $request->get_param( 'location_lat' );
+            $lng       = $request->get_param( 'location_lng' );
+            $radius    = $request->get_param( 'radius_max' );
+            $unit      = $request->get_param( 'radius_unit' );
+            $store_ids = array();
             if ( ! empty( $lat ) && ! empty( $lng ) && ! empty( $radius ) ) {
                 $store_ids = StoreUtil::get_stores_by_radius(
                     floatval( $lat ),
