@@ -67,7 +67,7 @@ class OrderManager {
      */
     public function set_filter_order_query( $query ) {
         $parent_id = apply_filters( 'multivendorx_order_parent_filter', 0 );
-        if ( ! $query['parent'] && $parent_id >= 0 ) {
+        if ( ( ! isset( $query['parent'] ) || '' === $query['parent'] || null === $query['parent'] ) && $parent_id >= 0 ) {
             $query['parent'] = $parent_id;
         }
         return $query;
