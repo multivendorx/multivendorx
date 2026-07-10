@@ -630,4 +630,33 @@ class Store {
 
         return true;
     }
+
+    public function get_payment_method( $primary = true ) {
+        $payment_methods = $this->meta_data['payment_methods'] ?? array();
+
+        if ( empty( $payment_methods ) || ! is_array( $payment_methods ) ) {
+            return array();
+        }
+
+        $exclude_keys = array( 'isCustom', 'title', 'description', 'label', 'desc', 'primary' );
+        if ( $primary ) {
+            foreach ( $payment_methods as $method_id => $method ) {
+                if ( ! empty( $method['primary'] ) ) {
+                    return array(
+                        $method_id => array_diff_key( $method, array_flip( $exclude_keys ) ),
+                    );
+                }
+            }
+
+            return array();
+        }
+
+        $result = array();
+
+        foreach ( $payment_methods as $method_id => $method ) {
+            $result[ $method_id ] = array_diff_key( $method, array_flip( $exclude_keys ) );
+        }
+
+        return $result;
+    }
 }

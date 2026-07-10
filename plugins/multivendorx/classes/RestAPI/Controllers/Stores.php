@@ -861,6 +861,7 @@ class Stores extends \WP_REST_Controller {
                 'primary_owner_info' => $primary_owner_info,
                 'overall_reviews'    => $overall_reviews,
                 'total_reviews'      => is_array( $reviews ) ? count( $reviews ) : 0,
+                'payment_method'     => array_key_first( $store->get_payment_method() )
             );
 
             foreach ( (array) $store->meta_data as $key => $values ) {
@@ -1224,36 +1225,6 @@ class Stores extends \WP_REST_Controller {
 							'category'   => 'activity',
 						)
                     );
-                }
-            }
-
-            if ( ! empty( $data['payment_methods'] ) && is_array( $data['payment_methods'] ) ) {
-                $payment_methods = $data['payment_methods'];
-
-                $selected_id = null;
-                $selected_id = array_key_first(
-                    array_filter(
-                        $payment_methods,
-                        static fn( $method ) => ! empty( $method['primary'] )
-                    )
-                );
-
-                if ( null === $selected_id && 1 === count( $payment_methods ) ) {
-                    $selected_id = array_key_first( $payment_methods );
-                }
-
-                if ( null !== $selected_id && is_array( $payment_methods[ $selected_id ] ) ) {
-                    $store->update_meta( Utill::STORE_SETTINGS_KEYS['payment_method'], $selected_id );
-
-                    $non_field_keys = array( 'isCustom', 'title', 'description', 'label', 'desc', 'primary' );
-
-                    foreach ( $payment_methods[ $selected_id ] as $field_key => $field_value ) {
-                        if ( in_array( $field_key, $non_field_keys, true ) ) {
-                            continue;
-                        }
-
-                        $store->update_meta( $field_key, $field_value );
-                    }
                 }
             }
 
