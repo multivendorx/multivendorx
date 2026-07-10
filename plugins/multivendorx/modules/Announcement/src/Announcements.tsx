@@ -87,9 +87,7 @@ export const Announcements: React.FC = () => {
 	const [categoryCounts, setCategoryCounts] = useState<
 		CategoryCount[] | null
 	>(null);
-	const [storeOptions, setStoreOptions] = useState<
-		{ value: string; label: string }[]
-	>([]);
+	const [storeOptions, setStoreOptions] = useState<StoreOption[]>([]);
 	const [validationErrors, setValidationErrors] = useState<{
 		[key: string]: string;
 	}>({});
