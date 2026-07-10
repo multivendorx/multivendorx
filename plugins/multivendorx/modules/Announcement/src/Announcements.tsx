@@ -171,7 +171,7 @@ export const Announcements: React.FC = () => {
 		}
 	};
 
-	const handleBulkAction = (action: string, selectedIds: []) => {
+	const handleBulkAction = (action: string, selectedIds: number[]) => {
 		if (!selectedIds.length) {
 			return;
 		}
