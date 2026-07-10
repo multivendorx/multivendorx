@@ -123,10 +123,10 @@ class OrderManager {
         $item_info = self::group_item_store_based( $order );
 
         $existing_orders = array();
-        foreach ( $suborders as $order ) {
-            if ( $order instanceof \WC_Order ) {
-                $order_id     = $order->get_id();
-                $store_id     = $order->get_meta( Utill::POST_META_SETTINGS['store_id'] );
+        foreach ( $suborders as $suborder ) {
+            if ( $suborder instanceof \WC_Order ) {
+                $order_id     = $suborder->get_id();
+                $store_id     = $suborder->get_meta( Utill::POST_META_SETTINGS['store_id'] );
                 $store_exists = Store::get_store( $store_id );
                 if ( $store_exists ) {
                     $existing_orders[ $order_id ] = $store_id;
@@ -137,11 +137,8 @@ class OrderManager {
         foreach ( $item_info as $store_id => $items ) {
             if ( in_array( $store_id, $existing_orders, true ) ) {
                 $suborder_ids = array_keys( $existing_orders, $store_id, true );
-                if ( empty( $suborder_ids ) ) {
-                    continue;
-                }
-                $suborder_id = (int) current( $suborder_ids );
-                $store_order = self::create_sub_order( $order, $store_id, $items, $suborder_id, true );
+                $suborder_id  = (int) current( $suborder_ids );
+                $store_order  = self::create_sub_order( $order, $store_id, $items, $suborder_id, true );
                 // Regenerate commission.
                 $this->container['admin']->regenerate_order_commissions( $store_order );
             } else {
@@ -336,7 +333,7 @@ class OrderManager {
                 }
 
                 $item->set_backorder_meta();
-                $item->add_meta_data( 'store_order_item_id', $item->get_product_id() );
+                $item->add_meta_data( 'store_order_item_id', $item_id );
 
                 // Copy all metadata from order's item to new created item.
                 $metadata = $order_item->get_meta_data();
