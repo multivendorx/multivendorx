@@ -58,14 +58,29 @@ interface StoreData {
 			user_email?: string;
 		};
 	};
+	payment_methods?: Record<string, { primary?: boolean }>;
 }
-const formatMethod = (method) => {
-	if (!method) {
+const formatMethod = (method: string): string => {
+	if (!method || typeof method !== 'string') {
 		return '';
 	}
 	return method
 		.replace(/-/g, ' ') // stripe-connect → stripe connect
 		.replace(/\b\w/g, (c) => c.toUpperCase()); // Stripe connect → Stripe Connect
+};
+
+const getPrimaryPaymentMethodId = (
+	paymentMethods?: StoreData['payment_methods']
+): string | null => {
+	if (!paymentMethods) {
+		return null;
+	}
+	const entries = Object.entries(paymentMethods);
+	const primaryEntry = entries.find(([, value]) => value?.primary === true);
+	if (primaryEntry) {
+		return primaryEntry[0];
+	}
+	return entries.length === 1 ? entries[0][0] : null;
 };
 const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 	const navigate = useNavigate();
@@ -386,19 +401,25 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								row
 								label={__('Payment method', 'multivendorx')}
 							>
-								{storeData?.payment_method ? (
-									<div className="admin-badge purple method">
-										<i className="adminfont-bank"></i>
-										{formatMethod(storeData.payment_method)}
-									</div>
-								) : (
-									<span>
-										{__(
-											'No payment method saved',
-											'multivendorx'
-										)}
-									</span>
-								)}
+								{(() => {
+									const primaryMethodId =
+										getPrimaryPaymentMethodId(
+											storeData?.payment_methods
+										);
+									return primaryMethodId ? (
+										<div className="admin-badge purple method">
+											<i className="adminfont-bank"></i>
+											{formatMethod(primaryMethodId)}
+										</div>
+									) : (
+										<span>
+											{__(
+												'No payment method saved',
+												'multivendorx'
+											)}
+										</span>
+									);
+								})()}
 							</FormGroup>
 						</FormGroupWrapper>
 					</Card>
