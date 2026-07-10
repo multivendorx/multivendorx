@@ -631,7 +631,7 @@ class Store {
         return true;
     }
 
-    public function get_payment_method( $type = '', $primary = true ) {
+    public function get_payment_method( $type = '' ) {
         $payment_methods = $this->meta_data['payment_methods'] ?? array();
 
         if ( empty( $payment_methods ) || ! is_array( $payment_methods ) ) {
@@ -639,20 +639,13 @@ class Store {
         }
 
         $exclude_keys = array( 'isCustom', 'title', 'description', 'label', 'desc', 'primary' );
-        if ( $primary ) {
+        if ( !empty( $type ) ) {
             foreach ( $payment_methods as $method_id => $method ) {
-                if ( ! empty( $method['primary'] ) ) {
-                    if ( 'name' === $type ) {
-                        return $method_id;
-                    }
-
-                    return array(
-                        $method_id => array_diff_key( $method, array_flip( $exclude_keys ) ),
-                    );
+                if ( ! empty( $method['primary'] ) && 'name' === $type ) {
+                    return $method_id;
                 }
             }
-
-            return 'name' === $type ? '' : array();
+            return '';
         }
 
         $result = array();

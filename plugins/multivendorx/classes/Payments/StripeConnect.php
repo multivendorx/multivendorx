@@ -157,7 +157,7 @@ class StripeConnect {
             $store             = new Store( $store_id );
             $stripe_account_id = '';
             if ( $store->exists() ) {
-                $stripe_account_id = $store->get_payment_method('', false)['stripe-connect'][ Utill::STORE_SETTINGS_KEYS['stripe_account_id'] ] ?? '';
+                $stripe_account_id = $store->get_payment_method()['stripe-connect'][ Utill::STORE_SETTINGS_KEYS['stripe_account_id'] ] ?? '';
             }
             $stripe_account_id = apply_filters( 'multivendorx_stripe_account_id', $stripe_account_id, MultiVendorX()->current_user_id );
 			$fields            = array(
@@ -227,7 +227,7 @@ class StripeConnect {
         $store             = new Store( $store_id );
         $stripe_account_id = '';
         if ( $store->exists() ) {
-            $stripe_account_id = $store->get_payment_method('', false)['stripe-connect'][ Utill::STORE_SETTINGS_KEYS['stripe_account_id'] ] ?? '';
+            $stripe_account_id = $store->get_payment_method()['stripe-connect'][ Utill::STORE_SETTINGS_KEYS['stripe_account_id'] ] ?? '';
         }
         if ( $additional_receiver > 0 ) {
             $stripe_account_id = apply_filters( 'multivendorx_stripe_account_id', $stripe_account_id, $additional_receiver );
@@ -378,7 +378,7 @@ class StripeConnect {
         if ( empty( $store ) ) {
             return;
         }
-        $account_id = $store->get_payment_method('', false)['stripe-connect'][ Utill::STORE_SETTINGS_KEYS['stripe_account_id'] ] ?? '';
+        $account_id = $store->get_payment_method()['stripe-connect'][ Utill::STORE_SETTINGS_KEYS['stripe_account_id'] ] ?? '';
         
         if ( $account_id && $config['client_id'] && $config['secret_key'] ) {
             wp_remote_post(
