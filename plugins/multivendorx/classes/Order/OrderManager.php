@@ -255,7 +255,7 @@ class OrderManager {
 
             return $order;
         } catch ( \Exception $e ) {
-            return new \WP_Error( 'Failed to create store order', $e->getMessage() );
+            throw new \Exception( 'Failed to create store order: ' . $e->getMessage(), 0, $e );
         }
     }
 
