@@ -137,11 +137,8 @@ class OrderManager {
         foreach ( $item_info as $store_id => $items ) {
             if ( in_array( $store_id, $existing_orders, true ) ) {
                 $suborder_ids = array_keys( $existing_orders, $store_id, true );
-                if ( empty( $suborder_ids ) ) {
-                    continue;
-                }
-                $suborder_id = (int) current( $suborder_ids );
-                $store_order = self::create_sub_order( $order, $store_id, $items, $suborder_id, true );
+                $suborder_id  = (int) current( $suborder_ids );
+                $store_order  = self::create_sub_order( $order, $store_id, $items, $suborder_id, true );
                 // Regenerate commission.
                 $this->container['admin']->regenerate_order_commissions( $store_order );
             } else {
