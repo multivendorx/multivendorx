@@ -818,7 +818,9 @@ class Stores extends \WP_REST_Controller {
             if ( $dashboard ) {
                 $transient_key = Utill::MULTIVENDORX_TRANSIENT_KEYS['dashboard_transient'];
 
-                $date_range_label = $args['start_date'] . '_' . $args['end_date'];
+                $start_date_label = $args['start_date'] ?? '';
+                $end_date_label   = $args['end_date'] ?? '';
+                $date_range_label = $start_date_label . '_' . $end_date_label;
 
                 $cached_data        = get_transient( $transient_key ) ?? array();
                 $cached_data[ $id ] = $cached_data[ $id ] ?? array();
