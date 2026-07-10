@@ -48,10 +48,6 @@ interface PaymentSettingsProps {
 	data: StoreData | null;
 }
 
-// Mirrors dashboard/DashboardSettings/payout.ts's field mapping, so the
-// admin store-edit payment method UI stays driven by the same
-// store_payment_settings data through the same expandable-panel /
-// add-new-option flow as the vendor dashboard's own payout tab.
 const toPanelFields = (provider: PaymentProvider): PaymentField[] =>
 	(provider.fields || provider.formFields || []).map((field) => ({
 		...field,
