@@ -80,6 +80,7 @@ export default {
 				},
 			],
 			category: ['marketplace_types', 'product_types'],
+			enableModules: ['booking'],
 		},
 		{
 			id: 'bundle',
@@ -307,7 +308,7 @@ export default {
 			miniModule: true,
 			reloadOnChange: true,
 		},
-				// {
+		// {
 		// 	id: 'razorpay',
 		// 	name: __('Razorpay', 'multivendorx'),
 		// 	desc: 'For clients looking to pay multiple Indian stores instantly',
