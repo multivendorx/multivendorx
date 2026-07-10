@@ -109,9 +109,7 @@ class Notifications extends \WP_REST_Controller {
             $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
 
             // Log the error.
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
-            }
+            MultiVendorX()->util->log( $error );
 
             return $error;
         }
