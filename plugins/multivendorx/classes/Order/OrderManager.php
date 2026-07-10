@@ -381,7 +381,7 @@ class OrderManager {
                 }
 
                 $shipping->add_meta_data( Utill::POST_META_SETTINGS['store_id'], $store_id, true );
-                $item->add_meta_data( Utill::ORDER_META_SETTINGS['store_order_shipping_item_id'], $item_id );
+                $shipping->add_meta_data( Utill::ORDER_META_SETTINGS['store_order_shipping_item_id'], $item_id );
 
                 // Action hook to adjust item before save.
                 do_action( 'multivendorx_before_create_sub_order_shipping_item', $shipping, $item_id, $item, $order );
