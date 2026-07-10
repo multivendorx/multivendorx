@@ -208,6 +208,10 @@ export const Announcements: React.FC = () => {
 				});
 				setEditId(id);
 				setAddAnnouncements(true);
+			})
+			.catch((err) => {
+				console.error('Failed to load announcement for editing', err);
+				setError(__('Failed to load announcement for editing', 'multivendorx'));
 			});
 	};
 
