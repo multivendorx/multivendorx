@@ -12,10 +12,6 @@ interface PaymentField {
 	type?: string;
 	label: string;
 	placeholder?: string;
-	dependent?: {
-		key: string;
-		value: string | string[];
-	};
 	options?: Array<{ key: string; label: string; value: string }>; // For choice-toggle type
 }
 
