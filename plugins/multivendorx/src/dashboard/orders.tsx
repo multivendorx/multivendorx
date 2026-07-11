@@ -111,7 +111,10 @@ const Orders: React.FC = () => {
 
 					csvRows.push(
 						[order.id, customer, email, total, status, date]
-							.map((field) => `"${field}"`)
+							.map(
+								(field) =>
+									`"${String(field).replace(/"/g, '""')}"`
+							)
 							.join(',')
 					);
 				});
