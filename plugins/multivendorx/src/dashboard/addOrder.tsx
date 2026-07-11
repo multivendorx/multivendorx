@@ -64,6 +64,8 @@ const AddOrder = () => {
 	const navigate = useNavigate();
 
 	useOutsideClick(addressEditRef, () => {
+		if (!showAddressEdit || !selectedCustomer) return;
+
 		const payload = {
 			billing: {
 				first_name: selectedCustomer?.first_name,
@@ -92,6 +94,8 @@ const AddOrder = () => {
 	});
 
 	useOutsideClick(shippingAddressEditRef, () => {
+		if (!showShippingAddressEdit || !selectedCustomer) return;
+
 		const payload = {
 			shipping: {
 				first_name: selectedCustomer?.first_name,
@@ -509,7 +513,7 @@ const AddOrder = () => {
 			label: __('Price', 'multivendorx'),
 			render: (row) => {
 				if (row.rowType === 'product') {
-					return `$${row.price}`;
+					return formatCurrency(row.price);
 				}
 				return '';
 			},
@@ -541,7 +545,7 @@ const AddOrder = () => {
 			label: __('Total', 'multivendorx'),
 			render: (row) => {
 				if (row.rowType === 'product') {
-					return `$${(row.price * (row.qty || 1)).toFixed(2)}`;
+					return formatCurrency(row.price * (row.qty || 1));
 				} else {
 					return (
 						<BasicInputUI
