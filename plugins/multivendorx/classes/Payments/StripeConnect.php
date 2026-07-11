@@ -358,8 +358,8 @@ class StripeConnect {
                 'code'          => $code,
             )
         );
-        // Missing stripe_user_id -> fail.
-        if ( $response && empty( $response['stripe_user_id'] ) ) {
+        // Invalid response or missing stripe_user_id -> fail.
+        if ( ! is_array( $response ) || empty( $response['stripe_user_id'] ) ) {
             wp_redirect( $this->get_redirect_url( 'error', 'stripe_connection_failed' ) );
             exit;
         }
