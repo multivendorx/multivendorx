@@ -15,7 +15,7 @@ interface BasicInputProps {
         | 'password'
         | 'email'
         | 'file'
-        |'datetime-local'
+        | 'datetime-local'
         | 'range';
     name?: string;
     placeholder?: string;

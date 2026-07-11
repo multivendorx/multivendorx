@@ -277,6 +277,11 @@ class StripeConnect {
      * Create Stripe account
      */
     public function connect_stripe() {
+        check_admin_referer( 'multivendorx_connect_stripe' );
+        if ( ! is_user_logged_in() ) {
+            return false;
+        }
+
         $config = $this->get_store_stripe_config();
         $store  = $config['store'];
         if ( empty( $store ) ) {
@@ -353,8 +358,8 @@ class StripeConnect {
                 'code'          => $code,
             )
         );
-        // Missing stripe_user_id -> fail.
-        if ( $response && empty( $response['stripe_user_id'] ) ) {
+        // Invalid response or missing stripe_user_id -> fail.
+        if ( ! is_array( $response ) || empty( $response['stripe_user_id'] ) ) {
             wp_redirect( $this->get_redirect_url( 'error', 'stripe_connection_failed' ) );
             exit;
         }
@@ -373,6 +378,12 @@ class StripeConnect {
      * Disconnect Stripe account
      */
     public function disconnect_stripe() {
+        if ( ! is_user_logged_in() ) {
+            return;
+        }
+
+        check_admin_referer( 'multivendorx_disconnect_stripe' );
+
         $config = $this->get_store_stripe_config();
         $store  = $config['store'];
         if ( empty( $store ) ) {
@@ -479,15 +490,18 @@ class StripeConnect {
      * @return array|false
      */
     public function make_stripe_api_call( $url, $data = array(), $method = 'POST' ) {
-        $config = $this->get_store_stripe_config();
+        $settings = MultiVendorX()->setting->get_setting( 'payment_methods', array() );
+		$stripe   = $settings['stripe-connect'] ?? array();
+		$mode     = $stripe['payment_mode'] ?? 'test';
+		$secret_key = 'test' === $mode ? ( $stripe['test_secret_key'] ?? '' ) : ( $stripe['live_secret_key'] ?? '' );
 
-        if ( empty( $config['secret_key'] ) ) {
+        if ( empty( $secret_key ) ) {
             return false;
         }
         $args = array(
             'method'  => $method,
             'headers' => array(
-                'Authorization'  => 'Bearer ' . $config['secret_key'],
+                'Authorization'  => 'Bearer ' . $secret_key,
                 'Content-Type'   => 'application/x-www-form-urlencoded',
                 'Stripe-Version' => '2025-10-29.clover',
             ),

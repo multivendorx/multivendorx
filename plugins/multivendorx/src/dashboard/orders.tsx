@@ -48,7 +48,7 @@ const Orders: React.FC = () => {
 	>(null);
 	const [confirmOpen, setConfirmOpen] = useState(false);
 	const [tracking, setTracking] = useState(false);
-	const [trackingOrderId, setTrackingOrderId] = useState(false);
+	const [trackingOrderId, setTrackingOrderId] = useState<number | false>(false);
 	const [message, setMessage] = useState('');
 	const { modules } = useModules();
 	const location = useLocation();
@@ -111,7 +111,10 @@ const Orders: React.FC = () => {
 
 					csvRows.push(
 						[order.id, customer, email, total, status, date]
-							.map((field) => `"${field}"`)
+							.map(
+								(field) =>
+									`"${String(field).replace(/"/g, '""')}"`
+							)
 							.join(',')
 					);
 				});
