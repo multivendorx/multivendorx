@@ -350,7 +350,8 @@ class Rest {
             'shop_coupon',
             'product_cat',
             'user',
-            'bookable_resource'
+            'bookable_resource',
+            'wc_appointment',
         );
 
         if ( $request_method === 'GET' && in_array( $post_type, $allowed_post_types, true ) ) {
