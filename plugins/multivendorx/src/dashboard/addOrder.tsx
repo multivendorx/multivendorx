@@ -64,6 +64,8 @@ const AddOrder = () => {
 	const navigate = useNavigate();
 
 	useOutsideClick(addressEditRef, () => {
+		if (!showAddressEdit || !selectedCustomer) return;
+
 		const payload = {
 			billing: {
 				first_name: selectedCustomer?.first_name,
