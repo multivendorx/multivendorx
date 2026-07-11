@@ -385,7 +385,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 									'multivendorx'
 								)}
 							>
-								<a
+								<button
+									type="button"
 									className="sku link-item"
 									onClick={() => {
 										navigate(
@@ -394,7 +395,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 									}}
 								>
 									{__('View details', 'multivendorx')}
-								</a>
+								</button>
 							</FormGroup>
 							<SectionUI title={__('Settings', 'multivendorx')} />
 							<FormGroup
