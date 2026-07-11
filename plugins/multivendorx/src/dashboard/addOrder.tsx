@@ -92,6 +92,8 @@ const AddOrder = () => {
 	});
 
 	useOutsideClick(shippingAddressEditRef, () => {
+		if (!showShippingAddressEdit || !selectedCustomer) return;
+
 		const payload = {
 			shipping: {
 				first_name: selectedCustomer?.first_name,
