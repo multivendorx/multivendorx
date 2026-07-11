@@ -166,19 +166,19 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 	const overviewData = [
 		{
 			icon: 'wallet red',
-			number: formatCurrency(storeData.transactions?.balance ?? 0),
+			number: formatCurrency(storeData?.transactions?.balance ?? 0),
 			text: __('Wallet Balance', 'multivendorx'),
 		},
 		{
 			icon: 'dollar yellow',
 			number: formatCurrency(
-				storeData.transactions?.locking_balance ?? 0
+				storeData?.transactions?.locking_balance ?? 0
 			),
 			text: __('Upcoming Balance', 'multivendorx'),
 		},
 		{
 			icon: 'wallet-in blue',
-			number: formatCurrency(storeData.request_withdrawal_amount ?? 0),
+			number: formatCurrency(storeData?.request_withdrawal_amount ?? 0),
 			text: __('Requested Payout', 'multivendorx'),
 		},
 	];
