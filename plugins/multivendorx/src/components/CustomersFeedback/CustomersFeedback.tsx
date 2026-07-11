@@ -111,7 +111,7 @@ const CustomersFeedback = () => {
 					}
 					appLocalizer={appLocalizer}
 					Link={Link}
-					variant={'compact'}
+					variant={'card'}
 					menuIcon={true}
 					headerIcon="customer-service"
 					headerTitle={__('Customer Support', 'multivendorx')}
