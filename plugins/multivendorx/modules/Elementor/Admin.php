@@ -16,7 +16,14 @@ namespace MultiVendorX\Elementor;
  */
 class Admin {
 
-    
+    /**
+     * Resolved Elementor template ID for the current request, cached to
+     * avoid repeating the lookup query across the several hooks below.
+     *
+     * @var int|false|null
+     */
+    private $elementor_template_id = null;
+
     /**
      * Constructor.
      */
