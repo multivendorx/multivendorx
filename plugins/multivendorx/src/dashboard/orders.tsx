@@ -451,7 +451,7 @@ const Orders: React.FC = () => {
 	};
 
 	const providers =
-		appLocalizer.admin_settings.shipping.shipping_providers || [];
+		appLocalizer.admin_settings?.shipping?.shipping_providers || [];
 
 	const formattedProviders = providers.map((provider) => ({
 		value: provider,
@@ -603,7 +603,7 @@ const Orders: React.FC = () => {
 						<FormGroup
 							cols={6}
 							label={__('Shipping Providers', 'multivendorx')}
-							htmlFor="title"
+							htmlFor="provider"
 						>
 							<SelectInputUI
 								type="single-select"
@@ -618,7 +618,7 @@ const Orders: React.FC = () => {
 						<FormGroup
 							cols={6}
 							label={__('Date', 'multivendorx')}
-							htmlFor="title"
+							htmlFor="tracking_date"
 						>
 							<BasicInputUI
 								type="date"
@@ -631,7 +631,7 @@ const Orders: React.FC = () => {
 						<FormGroup
 							cols={6}
 							label={__('Tracking URL', 'multivendorx')}
-							htmlFor="title"
+							htmlFor="tracking_url"
 						>
 							<BasicInputUI
 								type="text"
