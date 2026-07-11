@@ -378,6 +378,12 @@ class StripeConnect {
      * Disconnect Stripe account
      */
     public function disconnect_stripe() {
+        if ( ! is_user_logged_in() ) {
+            return;
+        }
+
+        check_admin_referer( 'multivendorx_disconnect_stripe' );
+
         $config = $this->get_store_stripe_config();
         $store  = $config['store'];
         if ( empty( $store ) ) {
