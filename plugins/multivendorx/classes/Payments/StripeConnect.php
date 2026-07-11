@@ -358,8 +358,8 @@ class StripeConnect {
                 'code'          => $code,
             )
         );
-        // Missing stripe_user_id -> fail.
-        if ( $response && empty( $response['stripe_user_id'] ) ) {
+        // Invalid response or missing stripe_user_id -> fail.
+        if ( ! is_array( $response ) || empty( $response['stripe_user_id'] ) ) {
             wp_redirect( $this->get_redirect_url( 'error', 'stripe_connection_failed' ) );
             exit;
         }
@@ -378,6 +378,12 @@ class StripeConnect {
      * Disconnect Stripe account
      */
     public function disconnect_stripe() {
+        if ( ! is_user_logged_in() ) {
+            return;
+        }
+
+        check_admin_referer( 'multivendorx_disconnect_stripe' );
+
         $config = $this->get_store_stripe_config();
         $store  = $config['store'];
         if ( empty( $store ) ) {
