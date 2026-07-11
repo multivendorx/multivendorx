@@ -479,9 +479,12 @@ class StripeConnect {
      * @return array|false
      */
     public function make_stripe_api_call( $url, $data = array(), $method = 'POST' ) {
-        $config = $this->get_store_stripe_config();
+        $settings = MultiVendorX()->setting->get_setting( 'payment_methods', array() );
+		$stripe   = $settings['stripe-connect'] ?? array();
+		$mode     = $stripe['payment_mode'] ?? 'test';
+		$secret_key = 'test' === $mode ? ( $stripe['test_secret_key'] ?? '' ) : ( $stripe['live_secret_key'] ?? '' );
 
-        if ( empty( $config['secret_key'] ) ) {
+        if ( empty( $secret_key ) ) {
             return false;
         }
         $args = array(
