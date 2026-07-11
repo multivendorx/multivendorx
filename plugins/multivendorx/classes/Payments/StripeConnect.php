@@ -444,7 +444,7 @@ class StripeConnect {
     /**
      * Create transfer
      *
-     * @param int    $amount Amount in cents.
+     * @param int    $amount Amount in major currency unit (for example, dollars).
      * @param string $destination Stripe account ID.
      * @param int    $order_id Order ID.
      *
