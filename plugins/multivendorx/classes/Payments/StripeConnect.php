@@ -373,6 +373,15 @@ class StripeConnect {
      * Disconnect Stripe account
      */
     public function disconnect_stripe() {
+        if ( ! is_user_logged_in() ) {
+            wp_die( esc_html__( 'Unauthorized request.', 'multivendorx' ), 403 );
+        }
+
+        $nonce = isset( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ) : '';
+        if ( ! wp_verify_nonce( $nonce, 'multivendorx_disconnect_stripe' ) ) {
+            wp_die( esc_html__( 'Invalid request.', 'multivendorx' ), 403 );
+        }
+
         $config = $this->get_store_stripe_config();
         $store  = $config['store'];
         if ( empty( $store ) ) {
