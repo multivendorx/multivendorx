@@ -1,6 +1,6 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 import {
@@ -88,6 +88,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 
 	const [recentDebits, setRecentDebits] = useState<Transaction[]>([]);
 	const [recentProducts, setRecentProducts] = useState<Product[]>([]);
+
+	const location = useLocation();
 
 	useEffect(() => {
 		if (!id) {
