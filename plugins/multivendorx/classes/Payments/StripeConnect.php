@@ -490,7 +490,7 @@ class StripeConnect {
         $args = array(
             'method'  => $method,
             'headers' => array(
-                'Authorization'  => 'Bearer ' . $config['secret_key'],
+                'Authorization'  => 'Bearer ' . $secret_key,
                 'Content-Type'   => 'application/x-www-form-urlencoded',
                 'Stripe-Version' => '2025-10-29.clover',
             ),
