@@ -139,7 +139,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 			.catch((error) => {
 				console.error('Failed to fetch recent products:', error);
 			});
-	}, []);
+	}, [id]);
 
 	useEffect(() => {
 		const highlightId = location.state?.highlightTarget;
