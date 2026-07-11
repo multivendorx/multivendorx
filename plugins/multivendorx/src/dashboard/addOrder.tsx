@@ -54,7 +54,7 @@ const AddOrder = () => {
 	const [showShippingAddressEdit, setShowShippingAddressEdit] =
 		useState(false);
 	const [showCreateCustomer, setShowCreateCustomer] = useState(false);
-	const [orderNote, SetOrderNote] = useState('');
+	const [orderNote, setOrderNote] = useState('');
 	const addressEditRef = useRef(null);
 	const shippingAddressEditRef = useRef(null);
 	const [shippingLines, setShippingLines] = useState([]);
@@ -1234,7 +1234,7 @@ const AddOrder = () => {
 									'Enter order note...',
 									'multivendorx'
 								)}
-								onChange={(value) => SetOrderNote(value)}
+								onChange={(value) => setOrderNote(value)}
 							/>
 						</FormGroup>
 					</Card>
