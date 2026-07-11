@@ -35,7 +35,7 @@ addFilter(
 					'Waiting for your response',
 					'multivendorx'
 				),
-				headerIcon: 'question',
+				headerIcon: 'question yellow',
 			},
 		});
 
