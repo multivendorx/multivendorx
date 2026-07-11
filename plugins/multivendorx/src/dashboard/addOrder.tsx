@@ -54,7 +54,7 @@ const AddOrder = () => {
 	const [showShippingAddressEdit, setShowShippingAddressEdit] =
 		useState(false);
 	const [showCreateCustomer, setShowCreateCustomer] = useState(false);
-	const [orderNote, SetOrderNote] = useState('');
+	const [orderNote, setOrderNote] = useState('');
 	const addressEditRef = useRef(null);
 	const shippingAddressEditRef = useRef(null);
 	const [shippingLines, setShippingLines] = useState([]);
@@ -64,12 +64,14 @@ const AddOrder = () => {
 	const navigate = useNavigate();
 
 	useOutsideClick(addressEditRef, () => {
+		if (!showAddressEdit || !selectedCustomer) return;
+
 		const payload = {
 			billing: {
 				first_name: selectedCustomer?.first_name,
 				last_name: selectedCustomer?.last_name,
 				address_1: billingAddress.address_1,
-				address_2: '',
+				address_2: billingAddress.address_2 ||'',
 				city: billingAddress.city,
 				state: billingAddress.state,
 				postcode: billingAddress.postcode,
@@ -92,12 +94,14 @@ const AddOrder = () => {
 	});
 
 	useOutsideClick(shippingAddressEditRef, () => {
+		if (!showShippingAddressEdit || !selectedCustomer) return;
+
 		const payload = {
 			shipping: {
 				first_name: selectedCustomer?.first_name,
 				last_name: selectedCustomer?.last_name,
 				address_1: shippingAddress.address_1,
-				address_2: '',
+				address_2: shippingAddress.address_2 ||'',
 				city: shippingAddress.city,
 				state: shippingAddress.state,
 				postcode: shippingAddress.postcode,
@@ -509,7 +513,7 @@ const AddOrder = () => {
 			label: __('Price', 'multivendorx'),
 			render: (row) => {
 				if (row.rowType === 'product') {
-					return `$${row.price}`;
+					return formatCurrency(row.price);
 				}
 				return '';
 			},
@@ -541,7 +545,7 @@ const AddOrder = () => {
 			label: __('Total', 'multivendorx'),
 			render: (row) => {
 				if (row.rowType === 'product') {
-					return `$${(row.price * (row.qty || 1)).toFixed(2)}`;
+					return formatCurrency(row.price * (row.qty || 1));
 				} else {
 					return (
 						<BasicInputUI
@@ -1234,7 +1238,7 @@ const AddOrder = () => {
 									'Enter order note...',
 									'multivendorx'
 								)}
-								onChange={(value) => SetOrderNote(value)}
+								onChange={(value) => setOrderNote(value)}
 							/>
 						</FormGroup>
 					</Card>
