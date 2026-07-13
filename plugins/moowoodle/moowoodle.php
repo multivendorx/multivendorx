@@ -7,7 +7,7 @@
  * Version: 3.4.5
  * Author URI: https://dualcube.com/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle
  * Requires at least: 6.0.0
- * Tested up to: 7.0.0
+ * Tested up to: 7.0.1
  * WC requires at least: 8.4.0
  * WC tested up to: 10.9.4
  *

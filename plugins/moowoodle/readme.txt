@@ -3,7 +3,7 @@ Contributors: dualcube
 Tags: moodle, lms, sell course, moodle wordpress connect, LMS integration
 Donate link: https://dualcube.com/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=moowoodlewporg
 Requires at least: 6.0.0
-Tested up to: 7.0.0
+Tested up to: 7.0.1
 Requires PHP: 8.0
 Stable tag: 3.4.5
 License: GPLv2 or later
