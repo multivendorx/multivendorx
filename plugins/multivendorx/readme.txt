@@ -5,7 +5,7 @@ Donate link: http://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugind
 Requires at least: 6.3
 Tested up to: 7.0.0
 Requires PHP: 8.0
-Stable tag: 5.0.9
+Stable tag: 5.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -245,6 +245,19 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 == Changelog ==
+
+= 5.0.10 - 2026-07-14 =
+* Added     - Compatibility with WordPress 7.0.1.
+* Added     - Compatibility with WooCommerce 10.9.4.
+* Added     - translation support for additional strings in the Store Dashboard #2106.
+* Added     - Functionality to display pending task count  for tabs under the Customer section #2056.
+* Added     - Support for configuring multiple payment options for store owners #1977
+* Added     - Support for customer recipients across multiple notification events #1970
+* Fixed     - Issue with the new order email notification triggering flow #2185.
+* Fixed     - Issue with the Store Review module causing errors #2155.
+* Fixed     - Multiple frontend console errors #2072.
+* Fixed     - Security vulnerability issue.
+* Updated   - Language file.
 
 = 5.0.9 - 2026-06-30 =
 * Added     - Compatibility with WooCommerce 10.9.1.
