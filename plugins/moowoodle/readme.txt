@@ -5,7 +5,7 @@ Donate link: https://dualcube.com/?utm_source=wporg&utm_medium=plugindescription
 Requires at least: 6.0.0
 Tested up to: 7.0.0
 Requires PHP: 8.0
-Stable tag: 3.4.4
+Stable tag: 3.4.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -230,6 +230,12 @@ This project might have bugs and may be lacking certain features. If you'd like 
 11. View the log file to detect any errors related to MooWoodle configuration.
 
 == Changelog ==
+
+= 3.4.5 - 2026-07-14 =
+* Added     - Compatibility with WordPress 7.0.1.
+* Added     - Compatibility of WooCommerce 10.9.4.
+* Updated   - Language file.
+
 = 3.4.4 - 2026-06-30 =
 * Added     - Compatibility of WooCommerce 10.9.1.
 * Added     - SMTP configuration status in Test Connection to ensure student enrollment emails work properly.
