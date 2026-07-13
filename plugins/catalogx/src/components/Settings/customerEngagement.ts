@@ -1,9 +1,9 @@
 import { __, sprintf } from '@wordpress/i18n';
 export default {
     id: 'customer-engagement',
-    priority: 3,
-    headerTitle: __('Customer Engagement', 'catalogx'),
-    settingTitle: __('Purchase experience','catalogx'),
+    priority: 4,
+    headerTitle: __('Enquiry & Quote', 'catalogx'),
+    settingTitle: __('Purchase experience', 'catalogx'),
     headerDescription: __(
         'Define how customers move from product browsing to purchasing across your store.',
         'catalogx'
@@ -12,7 +12,6 @@ export default {
     submitUrl: 'settings',
     modal: [
         //shopping
-        
         {
             key: 'enable_cart_checkout',
             type: 'choice-toggle',
@@ -74,7 +73,7 @@ export default {
             moduleEnabled: 'catalog',
         },
         //enquiry
-         {
+        {
             key: 'section',
             type: 'section',
             title: __('Enquiry journey', 'catalogx'),
@@ -82,7 +81,7 @@ export default {
                 'catalogx'
             ),
         },
-        
+
         {
             key: 'enquiry_user_permission',
             type: 'choice-toggle',
@@ -139,23 +138,6 @@ export default {
             ],
             moduleEnabled: 'enquiry',
         },
-        // {
-        //     key: 'is_enable_out_of_stock',
-        //     type: 'checkbox',
-        //     label: __('Enquiry for out-of-stock products only', 'catalogx'),
-        //     desc: __(
-        //         'Enquiry button is shown exclusively for products that are out of stock. For items that are in stock, the Add-to-Cart button will be displayed instead.',
-        //         'catalogx'
-        //     ),
-        //     options: [
-        //         {
-        //             key: 'is_enable_out_of_stock',
-        //             value: 'is_enable_out_of_stock',
-        //         },
-        //     ],
-        //     look: 'toggle',
-        //     moduleEnabled: 'enquiry',
-        // },
         // This settings for notify me it works when only site off buying settings on and stock alert plugin active
         // popup - propopup, modulepopup
         {
@@ -178,7 +160,7 @@ export default {
             dependentPlugin: [
                 {
                     plugin: 'woocommerce-product-stock-alert/product_stock_alert.php',
-                    name: 'catalogx',
+                    name: 'Notifima',
                     link: 'https://wordpress.org/plugins/woocommerce-product-stock-alert/',
                 }
             ]
@@ -248,7 +230,16 @@ export default {
             },
             moduleEnabled: 'enquiry'
         },
-
+        {
+            key: 'additional_alert_email',
+            type: 'text',
+            desc: __(
+                "When a customer submits an enquiry for a product, the enquiry details will be sent to the email address(es) entered here. Add multiple email addresses separated by commas.<br/> <b>Default:</b> The site administrator's email is included by default. To stop the admin from receiving enquiry notifications, remove the admin email address from this list.",
+                'catalogx'
+            ),
+            label: __('Recipient email for product enquiries', 'catalogx'),
+            moduleEnabled: 'enquiry',
+        },
         //quote
         {
             key: 'section',
@@ -256,7 +247,7 @@ export default {
             desc: __('Control who can request quotations and how long quotations remain available.',
                 'catalogx'
             ),
-            title: __('Quotation management', 'catalogx'),
+            title: __('Quotation journey', 'catalogx'),
         },
         {
             key: 'quote_user_permission',
@@ -288,44 +279,79 @@ export default {
             moduleEnabled: 'quote',
             tour: 'quote-permission',
         },
+
+        {
+            key: 'quotation_validity',
+            type: 'choice-toggle',
+            label: __('Quotation validity period', 'catalogx'),
+            settingDescription: __(
+                'Choose how long quotations remain valid before they expire.',
+                'catalogx'
+            ),
+            desc: __(
+                '<ul><li><strong>Lifetime</strong> – Quotations never expire automatically.</li><li><strong>Fixed duration</strong> – Quotations expire after the specified number of days.</li></ul>',
+                'catalogx'
+            ),
+            options: [
+                {
+                    key: 'lifetime',
+                    label: __('Lifetime', 'catalogx'),
+                    value: 'lifetime',
+                },
+                {
+                    key: 'fixed_duration',
+                    label: __('Fixed duration', 'catalogx'),
+                    value: 'fixed_duration',
+                },
+            ],
+            proSetting: true,
+            moduleEnabled: 'quote',
+        },
         {
             key: 'set_expiry_time',
-            type: 'text',
-            label: __('Quotation validity period', 'catalogx'),
+            type: 'number',
+            label: __('Duration', 'catalogx'),
             size: 10,
+            settingDescription: __(
+                'Specify the number of days a quotation remains valid.',
+                'catalogx'
+            ),
             desc: __(
-                'Set the period after which a quotation will expire and no longer be valid for purchase.',
+                'The quotation will automatically expire after the specified number of days from its creation.',
                 'catalogx'
             ),
             postText: __('days', 'catalogx'),
             proSetting: true,
             moduleEnabled: 'quote',
+            dependent: {
+                key: 'quotation_validity',
+                set: true,
+                value: 'fixed_duration',
+            },
         },
-
-        
         //extra
         {
             key: 'section',
             type: 'section',
-            desc: __('Manage the generation, availability, and delivery of enquiry and quotation documents.',
+            desc: __('When a customer submits an enquiry or receives a quotation, choose whether a PDF should be available for download, attached to the email sent to them, or both.',
                 'catalogx'
             ),
-            title: __('Make documents available as PDFs', 'catalogx'),
+            title: __('How customers receives PDF documents?', 'catalogx'),
         },
         {
             key: 'display_pdf',
             type: 'multi-checkbox-table',
             storeSetting: true,
-            label: __('Document delivery mode', 'catalogx'),
+            label: __('PDF delivery mode', 'catalogx'),
             classes: 'gridTable',
             rows: [
                 {
                     key: 'allow_download_pdf',
-                    label: __('Download as PDF', 'catalogx'),
+                    label: __('Available as download', 'catalogx'),
                 },
                 {
                     key: 'attach_pdf_to_email',
-                    label: __('Attach with Email', 'catalogx'),
+                    label: __('Attached to customer email', 'catalogx'),
                 },
             ],
             columns: [

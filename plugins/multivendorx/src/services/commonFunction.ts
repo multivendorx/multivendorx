@@ -81,12 +81,15 @@ export function formatTimeAgo(dateString: string) {
 		return 'Just now';
 	}
 	if (diff < 3600) {
-		return `${Math.floor(diff / 60)} min ago`;
+		const minutes = Math.floor(diff / 60);
+		return `${minutes} ${minutes === 1 ? 'min' : 'mins'} ago`;
 	}
 	if (diff < 86400) {
-		return `${Math.floor(diff / 3600)} hour ago`;
+		const hours = Math.floor(diff / 3600);
+		return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
 	}
-	return `${Math.floor(diff / 86400)} day ago`;
+	const days = Math.floor(diff / 86400);
+	return `${days} ${days === 1 ? 'day' : 'days'} ago`;
 }
 
 // This function only removes time from the date-time object and return the formatted date.
@@ -184,9 +187,13 @@ export const downloadCSV = (
 	const link = document.createElement('a');
 	link.href = url;
 	link.setAttribute('download', filename);
-	document.body.appendChild(link);
-	link.click();
-	link.remove();
+	try {
+		document.body.appendChild(link);
+		link.click();
+		link.remove();
+	} finally {
+		URL.revokeObjectURL(url);
+	}
 };
 
 /**
@@ -201,6 +208,8 @@ export const downloadCSV = (
  */
 const buildPath = (segments: string[]): string =>
 	`/${segments.filter(Boolean).join('/')}`;
+
+const ALLOWED_SEGMENTS = ['products', 'orders', 'dashboard'];
 
 const sanitize = (value: string) => value.replace(/[^a-zA-Z0-9_-]/g, '');
 
@@ -231,8 +240,6 @@ export const dashNavigate = (
 	navigate: (path: string) => void,
 	segments: string[]
 ) => {
-	const ALLOWED_SEGMENTS = ['products', 'orders', 'dashboard'];
-
 	if (!ALLOWED_SEGMENTS.includes(segments[0])) {
 		return;
 	}
@@ -308,7 +315,10 @@ export const getUrl = (
 export const htmlToText = (input): string => {
     if (typeof input !== 'string') return '';
 
-    return input.replace(/<\/?[^>]+(>|$)/g, '');
+    const parser = document.createElement('div');
+    parser.innerHTML = input;
+
+    return parser.textContent || parser.innerText || '';
 };
 
 export const normalizeText = (text?: string) => {

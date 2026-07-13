@@ -48,7 +48,7 @@ const Orders: React.FC = () => {
 	>(null);
 	const [confirmOpen, setConfirmOpen] = useState(false);
 	const [tracking, setTracking] = useState(false);
-	const [trackingOrderId, setTrackingOrderId] = useState(false);
+	const [trackingOrderId, setTrackingOrderId] = useState<number | false>(false);
 	const [message, setMessage] = useState('');
 	const { modules } = useModules();
 	const location = useLocation();
@@ -111,7 +111,10 @@ const Orders: React.FC = () => {
 
 					csvRows.push(
 						[order.id, customer, email, total, status, date]
-							.map((field) => `"${field}"`)
+							.map(
+								(field) =>
+									`"${String(field).replace(/"/g, '""')}"`
+							)
 							.join(',')
 					);
 				});
@@ -229,18 +232,21 @@ const Orders: React.FC = () => {
 		id: {
 			label: __('Order ID', 'multivendorx'),
 			render: (row) => (
-				<span
-					onClick={() =>
-						dashNavigate(navigate, [
-							'orders',
-							'view',
-							String(row.id),
-						])
-					}
-					className="link-item"
-				>
-					#{row.id}
-				</span>
+				<>
+					<span
+						onClick={() =>
+							dashNavigate(navigate, [
+								'orders',
+								'view',
+								String(row.id),
+							])
+						}
+						className="link-item"
+					>
+						#{row.id}
+					</span>
+					{applyFilters('multivendorx_order_badge', null, row)}
+				</>
 			),
 		},
 
@@ -448,7 +454,7 @@ const Orders: React.FC = () => {
 	};
 
 	const providers =
-		appLocalizer.admin_settings.shipping.shipping_providers || [];
+		appLocalizer.admin_settings?.shipping?.shipping_providers || [];
 
 	const formattedProviders = providers.map((provider) => ({
 		value: provider,
@@ -599,8 +605,8 @@ const Orders: React.FC = () => {
 					<FormGroupWrapper>
 						<FormGroup
 							cols={6}
-							label={__('Shipping Providers', 'multivendorx-pro')}
-							htmlFor="title"
+							label={__('Shipping Providers', 'multivendorx')}
+							htmlFor="provider"
 						>
 							<SelectInputUI
 								type="single-select"
@@ -614,21 +620,21 @@ const Orders: React.FC = () => {
 						</FormGroup>
 						<FormGroup
 							cols={6}
-							label={__('Date', 'multivendorx-pro')}
-							htmlFor="title"
+							label={__('Date', 'multivendorx')}
+							htmlFor="tracking_date"
 						>
 							<BasicInputUI
 								type="date"
 								value={formData.tracking_date}
 								onChange={(value: any) =>
-									handleChange('date', value)
+									handleChange('tracking_date', value)
 								}
 							/>
 						</FormGroup>
 						<FormGroup
 							cols={6}
-							label={__('Tracking URL', 'multivendorx-pro')}
-							htmlFor="title"
+							label={__('Tracking URL', 'multivendorx')}
+							htmlFor="tracking_url"
 						>
 							<BasicInputUI
 								type="text"
@@ -640,7 +646,7 @@ const Orders: React.FC = () => {
 						</FormGroup>
 						<FormGroup
 							cols={6}
-							label={__('Tracking Number', 'multivendorx-pro')}
+							label={__('Tracking Number', 'multivendorx')}
 							htmlFor="title"
 						>
 							<BasicInputUI

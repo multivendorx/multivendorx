@@ -93,7 +93,7 @@ const Managestock = () => {
     const filters = [
         {
             key: 'product_type',
-            label: __('Product Type', 'notifima'),
+            label: __('Select Product Type', 'notifima'),
             type: 'select',
             options: [
                 {
@@ -145,7 +145,8 @@ const Managestock = () => {
     const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
             return (
-                <div onClick={() => setopenPopup(true)}>
+                <div className="demo-wrapper" onClick={() => setopenPopup(true)}>
+                    <div className="watermark">{__('This is sample Data','notifima' )}</div>
                     <TableCard {...tableProps} />
                 </div>
             );

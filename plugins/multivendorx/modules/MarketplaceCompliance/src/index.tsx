@@ -41,7 +41,7 @@ addFilter(
 					'Review reports and maintain quality.',
 					'multivendorx'
 				),
-				headerIcon: 'product indigo',
+				headerIcon: 'storefront indigo',
 			},
 		});
 

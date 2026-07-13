@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'wholesale',
-    priority: 4,
+    priority: 5,
     headerTitle: __('Wholesale', 'catalogx'),
     headerDescription: __('Wholesale sign up and registration management.', 'catalogx'),
     headerIcon: 'wholesale',
@@ -12,7 +12,7 @@ export default {
             key: 'approve_wholesaler',
             type: 'choice-toggle',
             label: __(
-                'Approval of wholesale users through registration form',
+                'Approval of wholesale users',
                 'catalogx'
             ),
             settingDescription: __(
@@ -20,7 +20,7 @@ export default {
                 'catalogx'
             ),
             desc: __(
-                "Manual - Admin approves new wholesalers manually from 'Wholeseller Users' page. <br> Automatic - Instant wholesaler approval upon sign-up",
+                "Manual - Admin approves new wholesalers manually from 'Wholesaler Users' page. <br> Automatic - Instant wholesaler approval upon sign-up.",
                 'catalogx'
             ),
             options: [
@@ -66,7 +66,7 @@ export default {
         {
             key: 'show_wholesale_price',
             type: 'choice-toggle',
-            label: __('Wholesale Offer Visibility', 'catalogx'),
+            label: __('Wholesale offer visibility', 'catalogx'),
             settingDescription: __(
                 'Choose how wholesale pricing is presented to regular customers.',
                 'catalogx'

@@ -217,13 +217,13 @@ const Queries: React.FC = () => {
 	const filters = [
 		{
 			key: 'storeId',
-			label: __('Stores', 'multivendorx'),
+			label: __('Select Stores', 'multivendorx'),
 			type: 'select',
 			options: store,
 		},
 		{
 			key: 'questionVisibility',
-			label: __('Status', 'multivendorx'),
+			label: __('Select Status', 'multivendorx'),
 			type: 'select',
 			options: [
 				{ label: __('All', 'multivendorx'), value: '' },

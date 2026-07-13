@@ -26,7 +26,7 @@ const REGISTRATION_BLOCK_GROUPS = [
 ];
 
 export default {
-    id: 'personalize-layout',
+    id: 'subscription-form-designer',
     priority: 1,
     headerTitle: __('Subscription Form Designer', 'notifima'),
     headerDescription: __('Customize the subscription form layout.', 'notifima'),
@@ -36,7 +36,7 @@ export default {
         {
             key: 'form_tabs',
             type: 'tab',
-            classes: 'full-width pro-tab',  
+            classes: 'full-width pro-tab',
             tabs: [
                 {
                     key: 'free_form',
@@ -44,7 +44,8 @@ export default {
                     content: [
                         {
                             key: 'section',
-                            type: 'section'
+                            type: 'section',
+                            withoutBorder: true
                         },
                         {
                             key: 'email_input',

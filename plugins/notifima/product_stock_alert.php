@@ -4,11 +4,11 @@
  * Plugin URI: https://notifima.com/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima
  * Description: Boost sales with real-time stock alerts! Notify customers instantly when products are back in stock. Simplify data management by exporting and importing stock data with ease.
  * Author: MultiVendorX
- * Version: 3.1.0
+ * Version: 3.1.1
  * Requires at least: 6.4
  * Tested up to: 7.0.0
  * WC requires at least: 8.2.2
- * WC tested up to: 10.9.2
+ * WC tested up to: 10.9.3
  * Author URI: https://multivendorx.com/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima
  * Text Domain: notifima
  * Requires Plugins: woocommerce

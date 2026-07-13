@@ -61,6 +61,7 @@ a {
     .overflow-badge{
       border-radius: 50%;
       position: absolute;
+      cursor: pointer;
       right: 0;
       font-size: 0.813rem;
       padding: 0.313rem;
@@ -822,6 +823,23 @@ $index: 1;
 
 // tour end
 
+// demo watermark
+.demo-wrapper{
+  position: relative;
+
+  .watermark{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    color: #00000047;
+    font-size: 8rem;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 10;
+  }
+}
+// demo watermark end
 
 @media only screen and (width <=37.5rem) {
   #admin-main-wrapper{

@@ -10,6 +10,7 @@ import { AdminHeader, Notice } from 'zyra';
 import Brand from './assets/images/brand-logo.png';
 import { __ } from '@wordpress/i18n';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
+import './components/common.scss';
 
 const Route = () => {
     const currentTab = new URLSearchParams(useLocation().hash);

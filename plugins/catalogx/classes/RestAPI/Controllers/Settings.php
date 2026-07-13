@@ -100,11 +100,10 @@ class Settings extends \WP_REST_Controller {
         }
 
 		try {
-
 			$setup_wizard = $request->get_param( 'setupWizard' );
-			$value = $request->get_param( 'value' );
+			$value        = $request->get_param( 'value' );
 
-            if ( $setup_wizard && ! empty( $value )) {
+            if ( $setup_wizard && ! empty( $value ) ) {
 				$customer_engagement = CatalogX()->setting->get_option( Utill::CATALOGX_SETTINGS['customer-engagement'] );
 
 				if ( isset( $value['product_enquiry'] ) && is_array( $value['product_enquiry'] ) ) {
@@ -114,7 +113,7 @@ class Settings extends \WP_REST_Controller {
 				if ( isset( $value['quotation_requests'] ) && is_array( $value['quotation_requests'] ) ) {
 					$customer_engagement = array_merge( $customer_engagement, $value['quotation_requests'] );
 				}
-					
+
                 CatalogX()->setting->update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $customer_engagement );
 
                 return rest_ensure_response(

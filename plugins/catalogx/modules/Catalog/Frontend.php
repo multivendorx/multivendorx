@@ -36,7 +36,6 @@ class Frontend {
         add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'exclude_add_to_cart_button' ), 10, 2 );
 
         add_action( 'woocommerce_single_product_summary', array( $this, 'remove_add_to_cart_on_single_product_page' ), 5 );
-
     }
 
     /**
@@ -55,7 +54,6 @@ class Frontend {
                 return;
             }
         }
-
 
         // Check sales enabled setting is enable or not.
         if ( 'buy_mode' === CatalogX()->setting->get_setting( 'enable_cart_checkout' ) ) {
@@ -146,5 +144,4 @@ class Frontend {
             remove_action( 'woocommerce_simple_add_to_cart', 'woocommerce_simple_add_to_cart', 30 );
         }
     }
-
 }

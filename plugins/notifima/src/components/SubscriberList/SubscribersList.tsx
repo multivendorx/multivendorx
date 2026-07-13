@@ -172,7 +172,8 @@ const SubscribersList = () => {
     const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
             return (
-                <div onClick={() => setOpenPopup(true)}>
+                <div className="demo-wrapper" onClick={() => setOpenPopup(true)}>
+                     <div className="watermark">{__('This is sample Data','notifima' )}</div>
                     <TableCard {...tableProps} />
                 </div>
             );
