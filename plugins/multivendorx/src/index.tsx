@@ -5,8 +5,9 @@ import App from './app';
 import DashboardRoutes from './dashboardRoutes';
 import 'zyra/build/index.css';
 import 'leaflet/dist/leaflet.css';
-import { initializeModules } from 'zyra';
+import { configureZyra, initializeModules } from 'zyra';
 
+configureZyra(appLocalizer);
 initializeModules('multivendorx', 'free', 'modules');
 
 // 1. Try to mount admin panel if element is found

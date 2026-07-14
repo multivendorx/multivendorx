@@ -1,7 +1,11 @@
+/* global appLocalizer */
 import { render } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
 import 'zyra/build/index.css';
+import { configureZyra } from 'zyra';
+
+configureZyra(appLocalizer);
 
 // Render the App component into the DOM
 render(
