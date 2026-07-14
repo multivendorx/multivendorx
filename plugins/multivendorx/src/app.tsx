@@ -1,15 +1,9 @@
 /* global appLocalizer */
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import {
-	AdminHeader,
-	FormGroup,
-	FormGroupWrapper,
-	PopupUI,
-	GuidedTourProvider,
-	Notice,
-	SequentialTaskExecutorUI,
-} from 'zyra';
+import { AdminHeader, GuidedTourProvider } from '@zyra/admin';
+import { FormGroup, FormGroupWrapper, PopupUI, Notice } from '@zyra/primitives';
+import { SequentialTaskExecutorUI } from '@zyra/inputs';
 
 import Brand from './assets/images/multivendorx-logo.png';
 import { searchIndex, SearchItem } from './searchIndex';
