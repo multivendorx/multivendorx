@@ -36,6 +36,83 @@ class Rest {
     public function __construct() {
         $this->register_controllers();
         add_action( 'rest_api_init', array( $this, 'register_rest_api_routes' ), 10 );
+        add_filter( 'woocommerce_rest_check_permissions', array( $this, 'grant_woocommerce_rest_permission' ), 10, 4 );
+        add_filter( 'woocommerce_rest_product_object_query', array( $this, 'add_include_types_query' ), 10, 2 );
+    }
+
+    /**
+     * Give permission based on request.
+     *
+     * @param bool   $permission Current permission status.
+     * @param string $context Request context.
+     * @param int    $object_id Object ID.
+     * @param string $post_type Post type.
+     * @return bool
+     */
+    public function grant_woocommerce_rest_permission( $permission, $context, $object_id, $post_type ) {
+        $request_method = $_SERVER['REQUEST_METHOD'] ?? '';
+
+        if ( 'GET' === $request_method && 'product' === $post_type ) {
+            return true;
+        }
+
+        return $permission;
+    }
+
+    /**
+     * Add include types query.
+     *
+     * @param array            $args    Query arguments.
+     * @param \WP_REST_Request $request REST request.
+     * @return array
+     */
+    public function add_include_types_query( $args, $request ) {
+        $exclude_types = (array) $request->get_param( 'exclude__types' );
+
+        if ( empty( $exclude_types ) ) {
+            return $args;
+        }
+
+        $exclude = CatalogX()->setting->get_setting( 'exclusion', array() );
+
+        $map = array(
+            'products'   => array( 'catalog_exclusion_value_product_list' ),
+            'categories' => array( 'catalog_exclusion_value_category_list', 'product_cat' ),
+            'tags'       => array( 'catalog_exclusion_value_tag_list', 'product_tag' ),
+            'brands'     => array( 'catalog_exclusion_value_brand_list', 'product_brand' ),
+        );
+
+        foreach ( $exclude_types as $type ) {
+            if ( empty( $map[ $type ] ) ) {
+                continue;
+            }
+
+            list( $setting, $taxonomy ) = array_pad( $map[ $type ], 2, '' );
+
+            $ids = array_map( 'absint', (array) ( $exclude[ $setting ] ?? array() ) );
+
+            if ( empty( $ids ) ) {
+                continue;
+            }
+
+            if ( empty( $taxonomy ) ) {
+                $args['post__in'] = isset( $args['post__in'] )
+                    ? array_unique( array_merge( $args['post__in'], $ids ) )
+                    : $ids;
+            } else {
+                $args['tax_query'][] = array(
+                    'taxonomy' => $taxonomy,
+                    'field'    => 'term_id',
+                    'terms'    => $ids,
+                );
+            }
+        }
+
+        if ( ! empty( $args['tax_query'] ) ) {
+            $args['tax_query']['relation'] = 'OR';
+        }
+
+        return $args;
     }
 
     /**
