@@ -105,6 +105,9 @@
         "react": "19.2.6",
         "react-dom": "19.2.6",
         "react-router-dom": "^7.15.1",
-        "zyra": "git+ssh://git@github.com/multivendorx/zyra.git#main&path:packages/zyra"
+        "@multivendorx/zyra": "^1.0.0"
+    },
+    "devDependencies": {
+        "wireit": "^0.14.12"
     }
 }

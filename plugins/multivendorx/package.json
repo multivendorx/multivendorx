@@ -99,9 +99,6 @@
         "@react-pdf/renderer": "^4.5.1",
         "@stripe/connect-js": "^3.4.5",
         "@stripe/react-connect-js": "^3.4.3",
-        "@zyra/admin": "git+ssh://git@github.com/vulocartdev/zyra.git#main&path:packages/admin",
-        "@zyra/inputs": "git+ssh://git@github.com/vulocartdev/zyra.git#main&path:packages/inputs",
-        "@zyra/primitives": "git+ssh://git@github.com/vulocartdev/zyra.git#main&path:packages/primitives",
         "@wordpress/data": "wp-6.6",
         "@wordpress/element": "wp-6.6",
         "@wordpress/hooks": "^4.46.0",
@@ -115,6 +112,9 @@
         "react-router-dom": "^7.15.1",
         "react-simple-maps": "^3.0.0",
         "recharts": "^3.8.1",
-        "zyra": "git+ssh://git@github.com/vulocartdev/zyra.git#main&path:packages/bundle"
+        "@multivendorx/zyra": "^1.0.0"
+    },
+    "devDependencies": {
+        "wireit": "^0.14.12"
     }
 }

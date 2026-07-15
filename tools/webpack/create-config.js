@@ -427,6 +427,25 @@ module.exports = function createWebpackConfig(
 					rootDir,
 					'./src'
 				),
+
+				// The real installed dependency is '@multivendorx/zyra'
+				// (published to GitHub Packages). 'zyra' stays aliased to
+				// it so the ~292 existing `import ... from 'zyra'` call
+				// sites don't need a mass rename. The '@zyra/*' aliases
+				// let source files import from the more specific
+				// '@zyra/admin', '@zyra/inputs', etc. names for
+				// readability without needing each sub-package installed
+				// separately — everything resolves to the one real
+				// dependency below.
+				zyra: '@multivendorx/zyra',
+				'@zyra/core': '@multivendorx/zyra',
+				'@zyra/admin': '@multivendorx/zyra',
+				'@zyra/primitives': '@multivendorx/zyra',
+				'@zyra/providers': '@multivendorx/zyra',
+				'@zyra/inputs': '@multivendorx/zyra',
+				'@zyra/recaptcha': '@multivendorx/zyra',
+				'@zyra/table': '@multivendorx/zyra',
+				'@zyra/formbuilder': '@multivendorx/zyra',
 			},
 		},
 
