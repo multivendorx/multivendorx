@@ -33,13 +33,13 @@ export default {
 				'https://multivendorx.com/docs/knowledgebase/appointment-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			//settingsLink: appLocalizer.site_url,
 			proModule: true,
-			// reqPluging: [
-			// 	{
-			// 		name: 'WooCommerce Appointments',
-			// 		slug: 'woocommerce-appointments/woocommerce-appointments.php',
-			// 		link: 'https://bookingwp.com/plugins/woocommerce-appointments/',
-			// 	},
-			// ],
+			reqPluging: [
+				{
+					name: 'WooCommerce Appointments',
+					slug: 'woocommerce-appointments/woocommerce-appointments.php',
+					link: 'https://bookingwp.com/plugins/woocommerce-appointments/',
+				},
+			],
 			category: ['marketplace_types', 'product_types'],
 		},
 		{
