@@ -52,7 +52,7 @@ class PaymentProcessor {
 		if ( $method ) {
 			$payment_method = $method;
 		} else {
-			$payment_method = $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] ) ?? '';
+			$payment_method = $store->get_payment_method('name') ?? '';
 		}
 
 		if ( ! $disbursement && ( 'bank-transfer' === $payment_method || 'cash' === $payment_method || 'custom-gateway' === $payment_method ) ) {
@@ -170,7 +170,7 @@ class PaymentProcessor {
 			'transaction_type' => 'Withdrawal',
 			'amount'           => $amount,
 			'currency'         => get_woocommerce_currency(),
-			'payment_method'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] ),
+			'payment_method'   => $store->get_payment_method('name'),
 			'narration'        => $note ? $note : ( ( 'success' === $status )
 									? "Withdrawal released via {$method} Payment Processor"
 									: "Withdrawal failed via {$method} Payment Processor" ),
@@ -282,7 +282,7 @@ class PaymentProcessor {
                 'transaction_type' => 'COD received',
                 'amount'           => $amount,
                 'currency'         => get_woocommerce_currency(),
-                'payment_method'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] ) ?? '',
+                'payment_method'   => $store->get_payment_method('name') ?? '',
                 'narration'        => 'COD payment received for order no. - ' . $order_id,
                 'status'           => 'Completed',
             );

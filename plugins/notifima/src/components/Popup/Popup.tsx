@@ -1,4 +1,3 @@
-/* global appLocalizer */
 import React, { useState } from 'react';
 import { ButtonInputUI } from 'zyra';
 import { __ } from '@wordpress/i18n';

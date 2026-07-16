@@ -1,13 +1,9 @@
+/* global subscription */
 import React, { useState } from 'react';
 import axios from 'axios';
 import { getApiLink } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-
-interface SubscriptionConfig {
-    display_type: string;
-    nonce: string;
-}
 
 interface SubscribeFormProps {
     productId: number;
@@ -15,7 +11,6 @@ interface SubscribeFormProps {
     productTitle: string;
     userEmail: string;
     shownInterest: string;
-    subscription: SubscriptionConfig;
 }
 
 interface ApiResponse {
@@ -36,7 +31,6 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
     productTitle,
     userEmail,
     shownInterest,
-    subscription,
 }) => {
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState<ApiResponse | null>(null);
@@ -76,7 +70,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
             .catch(() => {
                 setResponse({
                     status: false,
-                    message: 'Something went wrong. Please try again.',
+                    message: __('Something went wrong. Please try again.', 'notifima'),
                 });
             })
             .finally(() => {
@@ -113,7 +107,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
             .catch(() => {
                 setResponse({
                     status: false,
-                    message: 'Unable to unsubscribe.',
+                    message: __('Unable to unsubscribe.', 'notifima'),
                 });
             })
             .finally(() => {
@@ -149,26 +143,32 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
             {showForm && (
                 !subscription.khali_dabba ? (
                     <>
-                        <input
-                            type="email"
-                            defaultValue={userEmail}
-                            placeholder="Enter your email"
-                            onChange={(e) => {
-                                subscription.email = e.target.value;
-                            }}
-                        />
+                        <form className="woocommerce-form woocommerce-form-login login">
+                            <label className="woocommerce-form__label woocommerce-form__label-for-checkbox" >
+                                <input
+                                    type="email"
+                                    defaultValue={userEmail}
+                                    placeholder="Enter your email"
+                                    className="woocommerce-form__input woocommerce-form__input-checkbox"
+                                    onChange={(e) => {
+                                        subscription.email = e.target.value;
+                                    }}
+                                />
+                            </label>
 
-                        <button
-                            type="button"
-                            disabled={loading}
-                            onClick={() =>
-                                onSubmit({
-                                    email: subscription.email || userEmail,
-                                })
-                            }
-                        >
-                            {__('Notify Me', 'notifima')}
-                        </button>
+                            <button
+                                type="button"
+                                disabled={loading}
+                                className='woocommerce-button button wp-element-button wp-block-button__link'
+                                onClick={() =>
+                                    onSubmit({
+                                        email: subscription.email || userEmail,
+                                    })
+                                }
+                            >
+                                {__('Notify Me', 'notifima')}
+                            </button>
+                        </form>
                     </>
                 ) : (
                     applyFilters(
@@ -185,13 +185,13 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
             {response?.already_subscribed && (
                 <button
                     type="button"
-                    className="notifima-unsubscribe"
+                    className="notifima-unsubscribe woocommerce-button button wp-element-button wp-block-button__link"
                     disabled={loading}
                     onClick={unsubscribe}
                 >
                     {loading
-                        ? 'Please wait...'
-                        : response.unsubscribe_button?.text ?? 'Unsubscribe'}
+                        ? __('Please wait...', 'notifima')
+                        : response.unsubscribe_button?.text ?? __('Unsubscribe',  'notifima')}
                 </button>
             )}
         </>
@@ -205,7 +205,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                 <>
                     <button
                         type="button"
-                        className="notifima-open-popup"
+                        className="notifima-open-popup woocommerce-button button wp-element-button wp-block-button__link"
                         onClick={() => setShowPopup(true)}
                     >
                         {__('Notify Me', 'notifima')}

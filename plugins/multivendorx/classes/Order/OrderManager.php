@@ -67,7 +67,7 @@ class OrderManager {
      */
     public function set_filter_order_query( $query ) {
         $parent_id = apply_filters( 'multivendorx_order_parent_filter', 0 );
-        if ( ! $query['parent'] && $parent_id >= 0 ) {
+        if ( ( ! isset( $query['parent'] ) || '' === $query['parent'] || null === $query['parent'] ) && $parent_id >= 0 ) {
             $query['parent'] = $parent_id;
         }
         return $query;
@@ -123,10 +123,10 @@ class OrderManager {
         $item_info = self::group_item_store_based( $order );
 
         $existing_orders = array();
-        foreach ( $suborders as $order ) {
-            if ( $order instanceof WC_Order ) {
-                $order_id     = $order->get_id();
-                $store_id     = $order->get_meta( Utill::POST_META_SETTINGS['store_id'] );
+        foreach ( $suborders as $suborder ) {
+            if ( $suborder instanceof \WC_Order ) {
+                $order_id     = $suborder->get_id();
+                $store_id     = $suborder->get_meta( Utill::POST_META_SETTINGS['store_id'] );
                 $store_exists = Store::get_store( $store_id );
                 if ( $store_exists ) {
                     $existing_orders[ $order_id ] = $store_id;
@@ -136,8 +136,9 @@ class OrderManager {
 
         foreach ( $item_info as $store_id => $items ) {
             if ( in_array( $store_id, $existing_orders, true ) ) {
-                $suborder_id = array_keys( $existing_orders, $store_id, true );
-                $store_order = self::create_sub_order( $order, $store_id, $items, $suborder_id, true );
+                $suborder_ids = array_keys( $existing_orders, $store_id, true );
+                $suborder_id  = (int) current( $suborder_ids );
+                $store_order  = self::create_sub_order( $order, $store_id, $items, $suborder_id, true );
                 // Regenerate commission.
                 $this->container['admin']->regenerate_order_commissions( $store_order );
             } else {
@@ -146,21 +147,19 @@ class OrderManager {
             }
 
             $store_order->save();
-            if ( MultiVendorX()->setting->get_setting( 'display_customer_order' ) !== 'mainorder' ) {
-                $store = new Store( $store_id );
-                if ( ! $store->exists() ) {
-                    return;
-                }
-                MultiVendorX()->notifications->send_notification_helper(
-                    'new_order_store',
-                    $store,
-                    $store_order,
-                    array(
-						'order_id' => $store_order->get_id(),
-						'category' => 'activity',
-					)
-                );
+            $store = new Store( $store_id );
+            if ( ! $store->exists() ) {
+                continue;
             }
+            MultiVendorX()->notifications->send_notification_helper(
+                'new_order_store',
+                $store,
+                $store_order,
+                array(
+					'order_id' => $store_order->get_id(),
+					'category' => 'activity',
+				)
+            );
         }
     }
 
@@ -256,7 +255,7 @@ class OrderManager {
 
             return $order;
         } catch ( \Exception $e ) {
-            return new \WP_Error( 'Faild to create store order', $e->getMessage() );
+            return new \WP_Error( 'Failed to create store order', $e->getMessage() );
         }
     }
 
@@ -275,8 +274,30 @@ class OrderManager {
         foreach ( $items as $item_id => $item ) {
             if ( isset( $item['product_id'] ) && 0 !== $item['product_id'] ) {
                 $store = Store::get_store( $item['product_id'], 'product' );
-                if ( $store ) {
-                    $grouped_items[ $store->get_id() ][ $item_id ] = $item;
+
+                /**
+                 * Filter the store an order item is grouped under before
+                 * suborders are created. Lets an add-on (e.g. the Franchises
+                 * module) override the default product-owner resolution on a
+                 * per-item basis. Runs even when the product has no default
+                 * owning store (default $store_id 0) - a franchise product
+                 * with no vendor of its own is still assignable, and an
+                 * add-on needs the chance to resolve one. Returns 0 unchanged
+                 * unless something hooks in, so existing behavior (item
+                 * skipped when there's no owner and nothing else assigns
+                 * one) is unaffected.
+                 *
+                 * @since 3.5.0
+                 *
+                 * @param int    $store_id Store ID the item would be grouped under, 0 if the product has no owning store.
+                 * @param object $item     Order item.
+                 * @param int    $item_id  Order item ID.
+                 * @param object $order    Order object.
+                 */
+                $store_id = apply_filters( 'multivendorx_order_item_store_id', $store ? $store->get_id() : 0, $item, $item_id, $order );
+
+                if ( $store_id ) {
+                    $grouped_items[ $store_id ][ $item_id ] = $item;
                 }
             }
         }
@@ -334,7 +355,7 @@ class OrderManager {
                 }
 
                 $item->set_backorder_meta();
-                $item->add_meta_data( 'store_order_item_id', $item->get_product_id() );
+                $item->add_meta_data( 'store_order_item_id', $item_id );
 
                 // Copy all metadata from order's item to new created item.
                 $metadata = $order_item->get_meta_data();
@@ -378,12 +399,12 @@ class OrderManager {
                     )
                 );
 
-                foreach ( $item->get_meta_data() as $key => $value ) {
-                    $shipping->add_meta_data( $key, $value, true );
+                foreach ( $item->get_meta_data() as $meta ) {
+                    $shipping->add_meta_data( $meta->key, $meta->value, true );
                 }
 
                 $shipping->add_meta_data( Utill::POST_META_SETTINGS['store_id'], $store_id, true );
-                $item->add_meta_data( Utill::ORDER_META_SETTINGS['store_order_shipping_item_id'], $item_id );
+                $shipping->add_meta_data( Utill::ORDER_META_SETTINGS['store_order_shipping_item_id'], $item_id );
 
                 // Action hook to adjust item before save.
                 do_action( 'multivendorx_before_create_sub_order_shipping_item', $shipping, $item_id, $item, $order );
@@ -408,7 +429,10 @@ class OrderManager {
         // Store the product id of suborder's item.
         $product_ids = array();
         foreach ( $line_items as $item ) {
-            $product_ids[] = $item->get_product_id();
+            $product_id = $item->get_product_id();
+            if ( ! empty( $product_id )){
+                $product_ids[] = $product_id;
+            }
         }
 
         foreach ( $parent_order->get_coupons() as $coupon_item ) {
@@ -425,7 +449,8 @@ class OrderManager {
 
             $coupon_products = $coupon->get_product_ids();
 
-            $match_coupon_product = array_intersect( $product_ids, $coupon_products );
+            // Empty product restrictions mean the coupon applies to all products.
+            $match_coupon_product = empty( $coupon_products ) ? true : array_intersect( $product_ids, $coupon_products );
 
             if ( $match_coupon_product ) {
                 $item = new \WC_Order_Item_Coupon();

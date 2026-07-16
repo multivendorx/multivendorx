@@ -39,7 +39,7 @@ class QuoteCart extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'catalogx_permissions_check' ),
                 ),
             )
         );
@@ -51,67 +51,42 @@ class QuoteCart extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'catalogx_permissions_check' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'catalogx_permissions_check' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::DELETABLE,
                     'callback'            => array( $this, 'delete_item' ),
-                    'permission_callback' => array( $this, 'delete_item_permissions_check' ), // Only admins can delete.
+                    'permission_callback' => array( $this, 'catalogx_permissions_check' ), // Only admins can delete.
                 ),
             )
         );
     }
 
     /**
-     * Get items permissions check.
+     * Permissions check.
      *
      * @param object $request The request object.
      */
-    public function get_items_permissions_check( $request ) {
+    public function catalogx_permissions_check( $request ) {
         $user_id = CatalogX()->current_user_id;
-        // For non-logged in user.
+        $method  = $request->get_method();
+
+        // For non-logged in users, allow read-only access.
         if ( 0 === $user_id ) {
-            return true;
+            return in_array( $method, array( 'GET', 'HEAD' ), true );
         }
 
-        // Check if user is admin or customer.
-        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
-    }
-
-    /**
-     * Update item permissions check.
-     *
-     * @param object $request The request object.
-     */
-    public function update_item_permissions_check( $request ) {
-        $user_id = CatalogX()->current_user_id;
-        // For non-logged in user.
-        if ( 0 === $user_id ) {
-            return true;
+        // Only admins can delete.
+        if ( 'DELETE' === $method ) {
+            return current_user_can( 'manage_options' );
         }
 
-        // Check if user is admin or customer.
-        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
-    }
-
-    /**
-     * Update item permissions check.
-     *
-     * @param object $request The request object.
-     */
-    public function delete_item_permissions_check( $request ) {
-        $user_id = CatalogX()->current_user_id;
-        // For non-logged in user.
-        if ( 0 === $user_id ) {
-            return true;
-        }
-
-        // Check if user is admin or customer.
+        // Check if user is admin or customer for other authenticated requests.
         return current_user_can( 'read' ) || current_user_can( 'manage_options' );
     }
 
@@ -128,8 +103,19 @@ class QuoteCart extends \WP_REST_Controller {
         }
 
         try {
-            $row  = $request->get_param( 'row' );
-            $page = $request->get_param( 'page' );
+            $row_param  = $request->get_param( 'row' );
+            $page_param = $request->get_param( 'page' );
+
+            $row  = is_numeric( $row_param ) ? (int) $row_param : 10;
+            $page = is_numeric( $page_param ) ? (int) $page_param : 1;
+
+            if ( $row < 1 ) {
+                $row = 10;
+            }
+
+            if ( $page < 1 ) {
+                $page = 1;
+            }
 
             // Get all cart data.
             $all_cart_data = CatalogX()->quotecart->get_cart_contents();
@@ -144,8 +130,21 @@ class QuoteCart extends \WP_REST_Controller {
             // Prepare the quote list.
             $quote_list = array();
             foreach ( $paginated_cart_data as $key => $item ) {
-                $product   = wc_get_product( $item['product_id'] );
-                $thumbnail = $product->get_image( apply_filters( 'catalogx_quote_cart_item_thumbnail_size', array( 84, 84 ) ) );
+                $product = wc_get_product( $item['product_id'] );
+                if ( ! ( $product instanceof \WC_Product ) ) {
+                    continue;
+                }
+
+                $thumbnail_size = apply_filters( 'catalogx_quote_cart_item_thumbnail_size', 'thumbnail' );
+                if ( is_array( $thumbnail_size ) && 2 === count( $thumbnail_size ) && is_numeric( $thumbnail_size[0] ) && is_numeric( $thumbnail_size[1] ) ) {
+                    $thumbnail_size = array( max( 1, (int) $thumbnail_size[0] ), max( 1, (int) $thumbnail_size[1] ) );
+                } elseif ( is_string( $thumbnail_size ) && '' !== $thumbnail_size ) {
+                    $thumbnail_size = sanitize_key( $thumbnail_size );
+                } else {
+                    $thumbnail_size = 'thumbnail';
+                }
+
+                $thumbnail = $product->get_image( $thumbnail_size );
                 $name      = '';
                 if ( $item['variation'] ) {
                     foreach ( $item['variation'] as $label => $value ) {
@@ -197,13 +196,38 @@ class QuoteCart extends \WP_REST_Controller {
         }
 
         try {
-            $products = $request->get_param( 'products' );
+            $products   = $request->get_param( 'products' );
+            $update_msg = __( 'Quote cart updated!', 'catalogx' );
+
+            if ( ! is_array( $products ) || empty( $products ) ) {
+                return new \WP_Error(
+                    'catalogx_invalid_products',
+                    __( 'Invalid products payload. Expected a non-empty array.', 'catalogx' ),
+                    array( 'status' => 400 )
+                );
+            }
 
             foreach ( $products as $key => $product ) {
-                $product_id = $product['id'];
-                $quantity   = $product['quantity'];
+                if ( ! is_array( $product ) || ! isset( $product['key'], $product['quantity'] ) ) {
+                    return new \WP_Error(
+                        'catalogx_invalid_product_item',
+                        __( 'Each product must contain key and quantity.', 'catalogx' ),
+                        array( 'status' => 400 )
+                    );
+                }
+
+                $quantity_raw = $product['quantity'];
+                $quantity     = ( is_int( $quantity_raw ) || ( is_string( $quantity_raw ) && ctype_digit( $quantity_raw ) ) ) ? (int) $quantity_raw : 0;
+
+                if ( $quantity < 1 ) {
+                    return new \WP_Error(
+                        'catalogx_invalid_quantity',
+                        __( 'Quantity must be a positive integer.', 'catalogx' ),
+                        array( 'status' => 400 )
+                    );
+                }
+
                 CatalogX()->quotecart->update_cart_item( $product['key'], 'quantity', $quantity );
-                $update_msg = __( 'Quote cart updated!', 'catalogx' );
             }
 
             return rest_ensure_response( array( 'msg' => $update_msg ) );
@@ -229,10 +253,17 @@ class QuoteCart extends \WP_REST_Controller {
         try {
             $product_id = $request->get_param( 'productId' );
             $key        = $request->get_param( 'key' );
-            $status     = false;
-            if ( $product_id && isset( $key ) ) {
-                $status = CatalogX()->quotecart->remove_cart_item( $key );
+
+            if ( ! isset( $key ) || '' === (string) $key ) {
+                return new \WP_Error(
+                    'catalogx_missing_key',
+                    __( 'Missing required parameter: key.', 'catalogx' ),
+                    array( 'status' => 400 )
+                );
             }
+
+            $status = CatalogX()->quotecart->remove_cart_item( $key );
+
             return rest_ensure_response(
                 array(
                     'status'    => $status,

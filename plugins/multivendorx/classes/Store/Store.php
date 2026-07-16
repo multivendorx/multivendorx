@@ -630,4 +630,46 @@ class Store {
 
         return true;
     }
+
+    public function get_payment_method( $type = '' ) {
+        $payment_methods = $this->meta_data['payment_methods'] ?? array();
+
+        if ( empty( $payment_methods ) || ! is_array( $payment_methods ) ) {
+            return array();
+        }
+
+        $exclude_keys = array( 'isCustom', 'title', 'description', 'label', 'desc', 'primary' );
+        if ( !empty( $type ) ) {
+            foreach ( $payment_methods as $method_id => $method ) {
+                if ( ! empty( $method['primary'] ) && 'name' === $type ) {
+                    return $method_id;
+                }
+            }
+            return '';
+        }
+
+        $result = array();
+
+        foreach ( $payment_methods as $method_id => $method ) {
+            $result[ $method_id ] = array_diff_key( $method, array_flip( $exclude_keys ) );
+        }
+
+        return $result;
+    }
+
+    public function update_payment_method( $method_id, array $data ) {
+        $payment_methods = $this->meta_data['payment_methods'] ?? array();
+
+        if ( empty( $payment_methods[ $method_id ] ) ) {
+            return false;
+        }
+
+        foreach ( $data as $key => $value ) {
+            $payment_methods[ $method_id ][ $key ] = $value;
+        }
+
+        $this->update_meta( 'payment_methods', $payment_methods );
+
+        return true;
+    }
 }

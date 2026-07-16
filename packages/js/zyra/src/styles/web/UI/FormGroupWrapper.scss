@@ -17,8 +17,8 @@
         position: relative;
         gap: 0.5rem;
         box-sizing: border-box;
-        
-        &:has(label){
+
+        &:has(label) {
             justify-content: start;
         }
 
@@ -35,7 +35,7 @@
         .settings-input-content {
             width: 100%;
 
-            .desc{
+            .desc {
                 width: 100%;
             }
 
@@ -152,18 +152,26 @@
             }
         }
 
-        &.space-between{
+        &.space-between {
             justify-content: space-between;
-            
+
             .settings-form-label,
-            .settings-input-content{
+            .settings-input-content {
                 width: fit-content;
             }
         }
-        
+
         &.full-width {
-            .settings-input-content{
+            .settings-input-content {
                 width: 100%;
+            }
+        }
+
+        &.pro-tab {
+            .tabs-wrapper {
+                width: 100%;
+                display: flex;
+                justify-content: end;
             }
         }
 
@@ -182,27 +190,27 @@
                 // flex-wrap: nowrap;
                 gap: 0;
 
-                .input-wrapper{
+                .input-wrapper {
                     border-top-right-radius: 0;
                     border-bottom-right-radius: 0;
                 }
 
                 .admin-btn {
-                     border-top-left-radius: 0;
-                     border-bottom-left-radius: 0;
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
                 }
 
-                .tooltip-wrapper{
+                .tooltip-wrapper {
                     padding: 0.25rem 0.45rem;
                     border-top: $border-light-small;
                     border-bottom: $border-light-small;
 
-                    i{
+                    i {
                         font-size: 1.4rem;
                     }
                 }
 
-                .clear-btn{
+                .clear-btn {
                     border: $border-light-small;
                     padding: 0.25rem 0.45rem;
                     color: map.get(map.get($color-palette, "red"), color);
@@ -210,7 +218,7 @@
                     border-bottom-right-radius: $border-radius-small;
                     cursor: pointer;
 
-                    i{
+                    i {
                         font-size: 1.4rem;
                     }
                 }

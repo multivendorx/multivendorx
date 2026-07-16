@@ -166,7 +166,7 @@ const CustomerQuestions: React.FC = () => {
 	const filters = [
 		{
 			key: 'questionVisibility',
-			label: __('Status', 'multivendorx'),
+			label: __('Select Status', 'multivendorx'),
 			type: 'select',
 			options: [
 				{ label: __('All', 'multivendorx'), value: '' },

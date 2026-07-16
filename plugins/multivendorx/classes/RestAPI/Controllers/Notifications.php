@@ -95,7 +95,7 @@ class Notifications extends \WP_REST_Controller {
      * @param object $request WP_REST_Request object.
      */
     public function update_item_permissions_check( $request ) {
-        return true;
+        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
     }
 
     /**
@@ -145,7 +145,7 @@ class Notifications extends \WP_REST_Controller {
                         'icon'    => 'cart admin-color' . ( $index + 1 ),
                         'title'   => $row['title'],
                         'message' => $row['message'],
-                        'time'    => $this->time_ago( $row->created_at ),
+                        'time'    => $this->time_ago( $row['created_at'] ),
                     );
                 }
                 $response->set_data( $formated_notifications );
@@ -181,6 +181,17 @@ class Notifications extends \WP_REST_Controller {
                         'enabled'   => (bool) $row->admin_enabled,
                         'canDelete' => false,
                     );
+
+                    if ($row->customer_enabled) {
+                        $recipients[] = array(
+                            'id'        => $id++,
+                            'type'      => 'Customer',
+                            'label'     => 'Customer',
+                            'enabled'   => (bool) $row->customer_enabled,
+                            'canDelete' => false,
+                        );
+                    }
+
 
                     // Add any custom emails.
                     foreach ( $custom_emails as $email ) {

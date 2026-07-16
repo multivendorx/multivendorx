@@ -104,7 +104,7 @@ class Subscriber {
             $product = wc_get_product( $product_id );
 
             if ( $product ) {
-                $this->send_instock_notification($product_id, $product );
+                $this->send_instock_notification( $product_id, $product );
             }
         }
     }
@@ -369,11 +369,11 @@ class Subscriber {
         // Add vendor's email.
         if ( Utill::is_multivendorx_active() ) {
             $store_id = get_post_meta( $product->get_id(), 'multivendorx_store_id', true );
-            $store = new MultiVendorX\Store\Store( $store_id );
+            $store    = new MultiVendorX\Store\Store( $store_id );
 
             if ( $store ) {
-                 $store_email   = sanitize_email( $store->get('email') );
-                 $additional_email .= ', ' . $store_email;
+                $store_email       = sanitize_email( $store->get( 'email' ) );
+                $additional_email .= ', ' . $store_email;
             }
         }
 
@@ -494,7 +494,7 @@ class Subscriber {
             } elseif ( $stock_quantity <= 0 ) {
                 return true;
             }
-        } elseif ( 'onbackorder' === $stock_status &&  'out_of_stock_and_backorder' === $is_enable_backorders ) {
+        } elseif ( 'onbackorder' === $stock_status && 'out_of_stock_and_backorder' === $is_enable_backorders ) {
                 return true;
 		} elseif ( 'outofstock' === $stock_status ) {
 			return true;

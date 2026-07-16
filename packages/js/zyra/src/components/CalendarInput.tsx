@@ -531,8 +531,7 @@ export const CalendarInputUI: React.FC<CalendarInputProps> = ({
                     />
                 ) : (
                     <Calendar
-                        className={`calendar-wrapper ${!showInput ? 'calendar' : ''
-                            }`}
+                        className="calendar-wrapper calendar"
                         {...commonProps}
                     />
                 )}
@@ -564,7 +563,7 @@ const CalendarInput: FieldComponent = {
             inputClass={field.inputClass}
             format={field.format}
             calendar={field.calendar ?? false}
-            multiple={field.multiple ?? field.multiple ?? false}
+            multiple={field.multiple ?? false}
             showInput={field.showInput}
             numberOfMonths={field.numberOfMonths}
             fullYear={field.fullYear}

@@ -30,7 +30,7 @@ addFilter(
 			content: {
 				id: 'store-review',
 				headerTitle: __('Store Reviews', 'multivendorx'),
-				headerIcon: 'store-review',
+				headerIcon: 'store-review red',
 				settingTitle: __('Store reviews at a glance', 'multivendorx'),
 				settingSubTitle: __(
 					'Track and manage reviews for all stores.',

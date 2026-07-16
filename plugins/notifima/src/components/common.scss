@@ -1,0 +1,15 @@
+// style for form customization
+.registration-form-wrapper {
+    .canvas-editor {
+        .form-field-container-wrapper {
+            flex-direction: column;
+            padding: 0 !important; //for overwrite default style
+            margin-bottom: 0.625rem;
+
+            .settings-form-label {
+                width: 100% !important; //for overwrite default style
+                margin-bottom: 0.625rem;
+            }
+        }
+    }
+}

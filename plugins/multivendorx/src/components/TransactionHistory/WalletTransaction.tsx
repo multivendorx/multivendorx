@@ -29,6 +29,7 @@ import {
 	formatCurrency,
 	formatDate,
 	formatLocalDate,
+	normalizeText
 } from '../../services/commonFunction';
 import ViewCommission from '../Commissions/ViewCommission';
 
@@ -215,11 +216,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					</span>
 				) : (
 					<span>
-						{row.narration
-							?.replace(/<[^>]+>/g, '') // remove HTML
-							.replace(/&ndash;/g, '-') // decode entity
-							.replace(/-/g, ' ')
-							.replace(/\b\w/g, (c: string) => c.toUpperCase())}
+						{normalizeText(row.narration)}
 					</span>
 				),
 		},
@@ -299,7 +296,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	const filters = [
 		{
 			key: 'transactionType',
-			label: 'Transaction Type',
+			label: 'Select Transaction Type',
 			type: 'select',
 			size: 13,
 			options: [

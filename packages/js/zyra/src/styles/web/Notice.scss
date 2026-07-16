@@ -47,7 +47,6 @@
         color: $text-color;
         position: relative;
         min-height: 1rem;
-        overflow: hidden;
 
 
         .close-icon {
@@ -79,7 +78,6 @@
             animation-iteration-count: infinite;
             animation-timing-function: ease-in-out;
             animation-fill-mode: forwards;
-            transition: opacity 0.3s ease;
 
             a,
             .banner-btn {
@@ -88,25 +86,16 @@
         }
 
         @keyframes cycle-banner {
-            0% {
-            opacity: 0;
-            visibility: hidden;
+            0%,
+            12.5% {
+                opacity: 1;
+                visibility: visible;
             }
-            15% {
-            opacity: 1;
-            visibility: visible;
-            }
-            25% {
-            opacity: 1;
-            visibility: visible;
-            }
-            27% {
-            opacity: 0;
-            visibility: hidden;
-            }
+
+            12.6%,
             100% {
-            opacity: 0;
-            visibility: hidden;
+                opacity: 0;
+                visibility: hidden;
             }
         }
 
@@ -215,7 +204,10 @@
         gap: 0.25rem;
 
         i {
-            font-size: 1rem;
+            padding: 0.25rem;
+            font-size: 1.25rem;
+            background: $background-white;
+            border-radius: 0.313rem;
         }
 
         &.type-success {
@@ -247,8 +239,7 @@
     &.display-inline-notice:not(.type-banner) {
         padding: 0.5rem 0.8rem;
         display: flex;
-
-        // align-items: center;
+        align-items: start;
         gap: 0.5rem;
         border: 0.063rem solid $theme-color;
         border-radius: $border-radius-small;

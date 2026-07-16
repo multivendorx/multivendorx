@@ -230,7 +230,7 @@ const PendingRefund: React.FC<object> = () => {
 	const filters = [
 		{
 			key: 'store_id',
-			label: __('Stores', 'multivendorx'),
+			label: __('Select Stores', 'multivendorx'),
 			type: 'select',
 			options: store,
 		},

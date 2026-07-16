@@ -47,7 +47,7 @@ const ProfileUpdate: React.FC = () => {
 		if (!formData.password) return;
 
 		if (formData.password !== formData.confirm_password) {
-			setError(__('Passwords do not match', 'multivendorx-pro'));
+			setError(__('Passwords do not match', 'multivendorx'));
 			return;
 		}
 
@@ -71,38 +71,38 @@ const ProfileUpdate: React.FC = () => {
 			<Container>
 				<Column row>
 
-					<Card title={__('Personal Information', 'multivendorx-pro')}>
+					<Card title={__('Personal Information', 'multivendorx')}>
 						<FormGroupWrapper>
 
-							<FormGroup label={__('First Name', 'multivendorx-pro')}>
+							<FormGroup label={__('First Name', 'multivendorx')}>
 								<BasicInputUI
 									value={formData.first_name || ''}
 									onChange={(val) => handleChange('first_name', val)}
 								/>
 							</FormGroup>
 
-							<FormGroup label={__('Last Name', 'multivendorx-pro')}>
+							<FormGroup label={__('Last Name', 'multivendorx')}>
 								<BasicInputUI
 									value={formData.last_name || ''}
 									onChange={(val) => handleChange('last_name', val)}
 								/>
 							</FormGroup>
 
-							<FormGroup label={__('Display Name', 'multivendorx-pro')}>
+							<FormGroup label={__('Display Name', 'multivendorx')}>
 								<BasicInputUI
 									value={formData.nickname || ''}
 									onChange={(val) => handleChange('nickname', val)}
 								/>
 							</FormGroup>
 
-							<FormGroup label={__('Website', 'multivendorx-pro')}>
+							<FormGroup label={__('Website', 'multivendorx')}>
 								<BasicInputUI
 									value={formData.user_url || ''}
 									onChange={(val) => handleChange('user_url', val)}
 								/>
 							</FormGroup>
 
-							<FormGroup label={__('Bio', 'multivendorx-pro')}>
+							<FormGroup label={__('Bio', 'multivendorx')}>
 								<TextAreaUI
 									value={formData.description || ''}
 									onChange={(val) => handleChange('description', val)}
@@ -114,7 +114,7 @@ const ProfileUpdate: React.FC = () => {
 								buttons={[
 									{
 										icon: 'plus',
-										text: __('Save', 'multivendorx-pro'),
+										text: __('Save', 'multivendorx'),
 										onClick: handleProfileSave,
 									},
 								]}
@@ -124,10 +124,10 @@ const ProfileUpdate: React.FC = () => {
 					</Card>
 
 
-					<Card title={__('Change Password', 'multivendorx-pro')}>
+					<Card title={__('Change Password', 'multivendorx')}>
 						<FormGroupWrapper>
 
-							<FormGroup label={__('New Password', 'multivendorx-pro')}>
+							<FormGroup label={__('New Password', 'multivendorx')}>
 								<BasicInputUI
 									type="password"
 									value={formData.password || ''}
@@ -135,7 +135,7 @@ const ProfileUpdate: React.FC = () => {
 								/>
 							</FormGroup>
 
-							<FormGroup label={__('Confirm Password', 'multivendorx-pro')}>
+							<FormGroup label={__('Confirm Password', 'multivendorx')}>
 								<BasicInputUI
 									type="password"
 									value={formData.confirm_password || ''}
@@ -152,7 +152,7 @@ const ProfileUpdate: React.FC = () => {
 								buttons={[
 									{
 										icon: 'plus',
-										text: __('Save', 'multivendorx-pro'),
+										text: __('Save', 'multivendorx'),
 										onClick: handlePasswordSave,
 									},
 								]}

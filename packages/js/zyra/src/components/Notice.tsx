@@ -7,6 +7,7 @@ import type { NoticePosition, NoticeType } from '../utils/types/notice';
 
 interface NoticeItem {
     uniqueKey: string;
+    dismissStorageKey?: string;
     title?: string;
     message?: string | string[];
     type?: NoticeType;
@@ -118,11 +119,10 @@ export const NoticeManager = {
     },
 };
 
-const handleCloseBanner = (uniqueKey: string): void => {
-    localStorage.setItem('banner_dismissed', 'true');
+const handleCloseBanner = (uniqueKey: string,dismissStorageKey = 'banner_dismissed' ): void => {
+    localStorage.setItem(dismissStorageKey, 'true');
     NoticeManager.remove(uniqueKey);
 };
-
 /* ──────────────────────────────────────────────────────────────
    Shared Render Helper
 ────────────────────────────────────────────────────────────── */
@@ -167,7 +167,7 @@ const renderNoticeContent = (item: NoticeItem, onClose?: () => void) => (
                     {onClose && (
                         <i
                             className="close-icon adminfont-close"
-                            onClick={() => handleCloseBanner(item.uniqueKey)}
+                            onClick={() => handleCloseBanner(item.uniqueKey, item.dismissStorageKey)}
                         />
                     )}
                 </>
@@ -185,6 +185,7 @@ const renderNoticeContent = (item: NoticeItem, onClose?: () => void) => (
 
 export interface NoticeProps {
     uniqueKey?: string;
+    dismissStorageKey?: string;
     title?: string;
     message?: string | string[];
     type?: NoticeType;
@@ -197,6 +198,7 @@ export interface NoticeProps {
 export const Notice: React.FC<NoticeProps> = ({
     uniqueKey,
     title,
+    dismissStorageKey,
     message,
     type = 'success',
     displayPosition = 'notice',
@@ -222,6 +224,7 @@ export const Notice: React.FC<NoticeProps> = ({
                 position: displayPosition,
                 actionLabel,
                 onAction,
+                dismissStorageKey,
             },
             validity
         );
@@ -237,6 +240,7 @@ export const Notice: React.FC<NoticeProps> = ({
 
     const item: NoticeItem = {
         uniqueKey: uniqueKey || 'inline',
+        dismissStorageKey,
         title,
         message,
         type,

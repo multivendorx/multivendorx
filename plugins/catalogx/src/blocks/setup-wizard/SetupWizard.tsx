@@ -4,20 +4,18 @@ import 'zyra/build/index.css';
 import { ExpandablePanelUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import img from '../../assets/images/catalogx-logo.png';
-interface SettingsState {
-	marketplace_setup: {
-		store_selling_mode: string;
-	};
-	commission_setup: {
-		disbursement_order_status: string[];
-	};
-	store_setup: {
-		approve_store: string;
-	};
-}
+
 const SetupWizard: React.FC = () => {
 	// Required state for ExpandablePanel
-	const [value, setValue] = useState({});
+	const [value, setValue] = useState({
+		product_enquiry: {
+			enquiry_user_permission: 'everyone',
+			is_enable_out_of_stock: 'all_products',
+		},
+		quotation_requests: {
+			quote_user_permission: 'everyone',
+		},
+	});
 
 	const inputField = {
 		key: 'setup_wizard',
@@ -28,7 +26,7 @@ const SetupWizard: React.FC = () => {
 
 	const methods = [
 		{
-			id: 'product_enquirie',
+			id: 'product_enquiry',
 			label: __(
 				'Set up product enquiries',
 				'catalogx'
@@ -174,10 +172,15 @@ const SetupWizard: React.FC = () => {
 			formFields: [
 				{
 					key: 'free_enquiry_form',
-					type: 'free-form',
-					label: __('Form Builder', 'catalogx'),
-					desc: __('Simple textarea for free users.', 'catalogx'),
-					placeholder: __('Write something...', 'catalogx'),
+					type: 'button',
+					name: __('Setup', 'catalogx'),
+					label: __('Setup', 'catalogx'),
+					onClick: () => {
+						window.open(
+							`${appLocalizer.admin_url}admin.php?page=catalogx#&tab=settings&subtab=enquiry-form-customization`,
+							'_blank'
+						);
+					},
 				},
 				{
 					key: 'wizardButtons',
@@ -201,11 +204,9 @@ const SetupWizard: React.FC = () => {
 		},
 	];
 
-	const updateSetting = (key: string, data: SettingsState) => {
+	const updateSetting = (key: string, data) => {
 		setValue(data);
 	};
-
-	console.log('value',value)
 
 	return (
 		<div className="wizard-container">

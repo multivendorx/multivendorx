@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import {OuterSpace} from '../../../assets/template/OuterSpace';
+import { OuterSpace } from '../../../assets/template/OuterSpace';
 import { GreenLagoon } from '../../../assets/template/GreenLagoon';
 import { CrimsonValley } from '../../../assets/template/CrimsonValley';
 import { MoonlitSky } from '../../../assets/template/MoonlitSky';
@@ -58,37 +58,36 @@ const EMAIL_BLOCK_GROUPS = [
 
 export default {
     id: 'enquiry-email-template',
-    priority: 3,
-    headerTitle: __('Email Customizations', 'catalogx'),
+    priority: 1,
+    headerTitle: __('Enquiry', 'catalogx'),
     headerDescription: __(
-        'Customize your preferred enquiry details email template',
+        'Customize the email template used for enquiry notifications.',
         'catalogx'
     ),
     headerIcon: 'enquiry',
     submitUrl: 'settings',
     modal: [
         {
-            key: 'additional_alert_email',
-            type: 'text',
-            desc: __(
-                "Set the email address to receive notifications when a user submits enquiry of a product. You can add multiple comma-separated emails.<br/> <b>Default:</b> The admin's email is set as the receiver. Exclude the admin's email from the list to exclude admin from receiving these notifications.",
+            key: 'notice',
+            type: 'notice',
+            message: __(
+                "Use personalization tags to make your emails more engaging - for example, use <b>{user_name}</b> to display the subscriber's name and <b>{email_tag}</b> to display their email address automatically.",
                 'catalogx'
             ),
-            label: __('Recipient email for new subscriber', 'catalogx'),
-            moduleEnabled: 'enquiry',
+            noticeType: 'info',
+            display: 'inline-notice',
         },
         {
-			key: 'enquiry_email_template',
-			type: 'block-builder',
-			classes: 'full-width',
-			// desc: 'Customise personalised store registration form for marketplace.',
-			// // Add templates configuration with proper content
-			emailTemplates: [OuterSpace , GreenLagoon, CrimsonValley, MoonlitSky, Starlight],
-			blockGroups: EMAIL_BLOCK_GROUPS,
+            key: 'enquiry_email_template',
+            type: 'block-builder',
+            classes: 'full-width',
+            emailTemplates: [OuterSpace, GreenLagoon, CrimsonValley, MoonlitSky, Starlight],
+            blockGroups: EMAIL_BLOCK_GROUPS,
             availablePlaceholder: appLocalizer.email_tags,
             visibleGroups: 'email',
-            context:'email',
-			defaultTemplateId: 'store-registration',
-		},
+            context: 'email',
+            defaultTemplateId: 'store-registration',
+            proSetting: true,
+        },
     ],
 };

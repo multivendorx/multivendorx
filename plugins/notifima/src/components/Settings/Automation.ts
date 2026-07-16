@@ -1,31 +1,17 @@
 import { __ } from '@wordpress/i18n';
 export default {
-    id: 'appearance',
+    id: 'automation',
     priority: 1,
-    headerTitle: __('Restock alerts setup', 'notifima'),
-    headerDescription: __('Configure how customers subscribe to restock notifications.', 'notifima'),
+    headerTitle: __('Automation', 'notifima'),
+    headerDescription: __('Set the automation rules that control customer subscriptions, restock notifications, and lead time behavior.', 'notifima'),
     headerIcon: 'appearance',
     submitUrl: 'settings',
     modal: [
-        {
-            key: 'unsubscribe_button_text',
-            type: 'text',
-            label: __("'Unsubscribe' Button Caption", 'notifima'),
-            settingDescription: __(
-                'Customize the text displayed on the unsubscribe button.',
-                'notifima'
-            ),
-            desc: __(
-                'Default: "Unsubscribe".',
-                'notifima'
-            ),
-            size: 20,
-            placeholder: __('Unsubscribe', 'notifima'),
-        },
+
         {
             key: 'is_guest_subscriptions_enable',
             type: 'choice-toggle',
-            label: __('Who can subscribe', 'notifima'),
+            label: __('Subscription access', 'notifima'),
             settingDescription: __(
                 'Choose which customers are allowed to subscribe for restock notifications.',
                 'notifima'
@@ -78,7 +64,7 @@ export default {
             type: 'section',
             title: __('Restock Timing (Lead Time)', 'notifima'),
             desc: __(
-                'when and how lead time is shown',
+                'When and how lead time is shown.',
                 'notifima'
             ),
         },
@@ -166,9 +152,9 @@ export default {
         {
             key: 'section',
             type: 'section',
-            title: __('Confirm the subscriber', 'notifima'),
+            title: __('Subscription Experience', 'notifima'),
             desc: __(
-                'Make sure every subscriber is real and opted-in.',
+                'Customize how customers interact with stock alert subscriptions across your store.',
                 'notifima'
             ),
         },
@@ -271,6 +257,7 @@ export default {
             ],
             proSetting: true,
         },
+
         {
             key: 'double_opt_in_success',
             type: 'textarea',
@@ -291,32 +278,97 @@ export default {
             proSetting: true,
         },
         {
-            key: 'section',
-            type: 'section',
-            title: __('Admin Notifications', 'notifima'),
-            desc: __('Who on your team gets alerted', 'notifima'
-            ),
-        },
-        {
-            key: 'additional_alert_email',
-            type: 'textarea',
-            label: __('Recipient email for new subscriber', 'notifima'),
+            key: 'unsubscribe_button_text',
+            type: 'text',
+            label: __("'Unsubscribe' Button Caption", 'notifima'),
             settingDescription: __(
-                'Choose who should receive email notifications when customers subscribe for restock alerts.',
+                'Customize the text displayed on the unsubscribe button for subscribed users.',
                 'notifima'
             ),
             desc: __(
-                '<ul><li>Separate multiple email addresses with commas.</li><li>By default, the site administrator receives these notifications.</li><li>Remove the administrator\'s email address from the list if you do not want the administrator to receive notifications.</li></ul>',
+                'Default: "Unsubscribe". Shown when a subscribed user revisits an out-of-stock product.',
                 'notifima'
             ),
+            size: 20,
+            placeholder: __('Unsubscribe', 'notifima'),
+        },
+
+
+        // mailchimp
+        {
+            key: 'section',
+            type: 'section',
+            title: __('Audience Synchronization', 'notifima'),
+            desc: __('Choose where subscriber data is stored and automatically synchronize it with connected platforms.', 'notifima'),
         },
         {
-            key: 'note_blocktext',
-            type: 'notice',
-            noticeType: 'info',
-            displayPosition: 'notice',
-            message:
-                'Disclaimer – Loco Translator Compatibility: This plugin allows you to customize certain frontend text settings and descriptions. Default texts are Loco Translator-ready, but any changes made in the corresponding custom text box will no longer be available for translation via Loco Translator. Hence, please enter the customized text in your desired language only.',
+            key: 'is_mailchimp_enable',
+            type: 'choice-toggle',
+            label: __('Marketing integration', 'notifima'),
+            settingDescription: __(
+                'Choose whether to store subscribers locally or automatically sync them with your Mailchimp audience.',
+                'notifima'
+            ),
+            desc: __(
+                '<ul><li>Store only - Save subscriber information only within your website.</li><li>Mailchimp - Automatically add new subscribers to your Mailchimp audience. Enter your Mailchimp API key below to connect your account.</li></ul>',
+                'notifima'
+            ),
+            options: [
+                {
+                    key: 'store_only',
+                    label: __('Store only', 'notifima'),
+                    value: 'store_only',
+                },
+                {
+                    key: 'mailchimp',
+                    label: __('Mailchimp', 'notifima'),
+                    value: 'mailchimp',
+                },
+            ],
+            proSetting: true,
         },
+        {
+            key: 'mailchimp_api',
+            type: 'text',
+            size: 25,
+            label: __('Mailchimp API key', 'notifima'),
+            settingDescription: __(
+                'Enter your Mailchimp API key to connect your Mailchimp account.',
+                'notifima'
+            ),
+            desc: __(
+                'Generate an API key from your Mailchimp account and paste it here to enable audience synchronization.',
+                'notifima'
+            ),
+            dependent: {
+                key: 'is_mailchimp_enable',
+                set: true,
+                value: 'mailchimp'
+            },
+            proSetting: true,
+        },
+        {
+            key: 'mailchimp',
+            type: 'sequential-task-executor',
+            variant: true,
+            apilink: 'mailchimps',
+            buttonText: 'Start',
+            buttonIcon: 'centralized-connections',
+            label: __('Mailchimp connection', 'notifima'),
+            settingDescription: __(
+                'Connect your Mailchimp account and select the audience for new subscribers.',
+                'notifima'
+            ),
+            desc: __(
+                'Start the connection process after entering a valid Mailchimp API key.',
+                'notifima'
+            ),
+            dependent: {
+                key: 'is_mailchimp_enable',
+                set: true,
+                value: 'mailchimp'
+            },
+            proSetting: true,
+        }
     ],
 };

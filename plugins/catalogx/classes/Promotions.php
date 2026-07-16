@@ -65,7 +65,7 @@ class Promotions {
 	public function get_plugin_action_links( $links ) {
 		$plugin_links = array(
 			'<a href="' .
-			admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=general' ) .
+			admin_url( 'admin.php?page=catalogx#&tab=settings&subtab=pages-shortcodes' ) .
 			'">' .
 			__( 'Settings', 'catalogx' ) .
 			'</a>',

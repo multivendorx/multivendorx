@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'tools',
-    priority: 8,
+    priority: 7,
     headerTitle: __('System', 'catalogx'),
     headerDescription: __('Review all system logs and errors', 'catalogx'),
     headerIcon: 'paint-brush',
@@ -16,13 +16,22 @@ export default {
             fileName: 'error.txt',
         },
         {
-            key: 'custom_css_product_page',
-            type: 'textarea',
+            key: 'section',
+            type: 'section',
+            title: __('Additional CSS', 'catalogx'),
             desc: __(
-                'Put your custom css here, to customize the enquiry form.',
+                'Add custom CSS to customize the appearance of the enquiry form.',
                 'catalogx'
             ),
-            label: __('Addional CSS', 'catalogx'),
+        },
+        {
+            key: 'custom_css_product_page',
+            type: 'textarea',
+            label: __('Custom CSS', 'catalogx'),
+            desc: __(
+                'Enter your custom CSS here to customize the enquiry form.',
+                'catalogx'
+            ),
         },
     ],
 };

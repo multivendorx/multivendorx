@@ -72,7 +72,7 @@ class Session extends \WC_Session {
             $this->_customer_id       = $session_cookie[0];
             $this->session_expiration = $session_cookie[1];
             $this->session_expiring   = $session_cookie[2];
-            $this->is_cookie_set         = true;
+            $this->is_cookie_set      = true;
 
             // Update session if its close to expiring.
             if ( time() > $this->session_expiring ) {
@@ -114,10 +114,10 @@ class Session extends \WC_Session {
     public function set_customer_session_cookie( $set ) {
         if ( $set ) {
             // Set/renew our cookie.
-            $cookie_signature          = $this->_customer_id . '|' . $this->session_expiration;
-            $cookie_hash               = hash_hmac( 'md5', $cookie_signature, wp_hash( $cookie_signature ) );
-            $cookie_value              = $this->_customer_id . '||' . $this->session_expiration . '||' . $this->session_expiring . '||' . $cookie_hash;
-            $this->is_cookie_set          = true;
+            $cookie_signature    = $this->_customer_id . '|' . $this->session_expiration;
+            $cookie_hash         = hash_hmac( 'md5', $cookie_signature, wp_hash( $cookie_signature ) );
+            $cookie_value        = $this->_customer_id . '||' . $this->session_expiration . '||' . $this->session_expiring . '||' . $cookie_hash;
+            $this->is_cookie_set = true;
 
             // Set the cookie.
             wc_setcookie( $this->cookie_name, $cookie_value, $this->session_expiration, apply_filters( 'catalogx_session_use_secure_cookie', false ) );
@@ -171,7 +171,7 @@ class Session extends \WC_Session {
 
         // Validate hash.
         $cookie_signature = $customer_id . '|' . $session_expiration;
-        $hash    = hash_hmac( 'md5', $cookie_signature, wp_hash( $cookie_signature ) );
+        $hash             = hash_hmac( 'md5', $cookie_signature, wp_hash( $cookie_signature ) );
 
         if ( empty( $cookie_hash ) || ! hash_equals( $hash, $cookie_hash ) ) {
             return false;

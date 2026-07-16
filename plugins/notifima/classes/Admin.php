@@ -25,7 +25,7 @@ class Admin {
         // admin pages manu and submenu.
         add_action( 'admin_menu', array( $this, 'register_admin_menus' ), 10 );
         // admin script and style.
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ),20 );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ), 20 );
 
         // create custom column.
         add_action( 'manage_edit-product_columns', array( $this, 'display_subscriber_header' ) );
@@ -56,7 +56,7 @@ class Admin {
      * Add options page.
      */
     public function register_admin_menus() {
-           add_menu_page(
+            add_menu_page(
                 'Notifima',
                 'Notifima',
                 'manage_options',
@@ -66,24 +66,6 @@ class Admin {
                 50
             );
 
-            $pro_sticker = ! Utill::is_khali_dabba() ?
-            '<span 
-                class="notifima-pro-tag"
-                style="
-                font-size: 0.5rem;
-                background: #e35047;
-                padding: 0.125rem 0.5rem;
-                color: #F9F8FB;
-                font-weight: 700;
-                line-height: 1;
-                position: absolute;
-                margin-left: 0.25rem;
-                border-radius: 2rem 0;
-                top: 50%;
-                transform: translateY(-50%);
-                "
-            > Pro </span>' : '';
-
             // Array contain notifima submenu.
             $submenu_items = array(
                 'dashboard'         => array(
@@ -92,14 +74,14 @@ class Admin {
                 ),
                 'settings'          => array(
                     'name'   => __( 'Settings', 'notifima' ),
-                    'subtab' => 'appearance',
+                    'subtab' => 'automation',
                 ),
                 'subscribers-list'  => array(
-                    'name'   => __( 'Subscriber List', 'notifima' ) . $pro_sticker,
+                    'name'   => __( 'Subscriber List', 'notifima' ),
                     'subtab' => '',
                 ),
                 'inventory-manager' => array(
-                    'name'   => __( 'Inventory Manager', 'notifima' ) . $pro_sticker,
+                    'name'   => __( 'Inventory Manager', 'notifima' ),
                     'subtab' => '',
                 ),
             );

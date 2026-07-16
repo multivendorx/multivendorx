@@ -53,7 +53,7 @@ export const TestFormViewer: Story = {
                     ],
                 },
             ],
-            butttonsetting: {
+            buttonsetting: {
                 text: 'Submit',
                 style: 'primary',
             },

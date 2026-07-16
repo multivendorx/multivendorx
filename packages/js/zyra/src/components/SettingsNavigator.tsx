@@ -93,7 +93,7 @@ export const NavigatorHeader: React.FC<NavigatorHeaderProps> = ({
                     {headerTitle}
                 </div>
                 {headerDescription && (
-                    <div className="description">{headerDescription}</div>
+                    <div className="desc">{headerDescription}</div>
                 )}
             </div>
 

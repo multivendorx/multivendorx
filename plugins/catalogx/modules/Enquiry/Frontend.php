@@ -26,17 +26,17 @@ class Frontend {
     public function __construct() {
         // Enquiry button shortcode.
         add_shortcode( 'catalogx_enquiry_button', array( $this, 'render_enquiry_button_shortcode' ) );
-        
+
         // Check the exclusion.
         if ( ! Util::is_available() ) {
             return;
         }
         $this->enquiry_user_permission = CatalogX()->setting->get_setting( 'enquiry_user_permission', '' );
-        $this->enable_out_of_stock      = CatalogX()->setting->get_setting( 'is_enable_out_of_stock' );
+        $this->enable_out_of_stock     = CatalogX()->setting->get_setting( 'is_enable_out_of_stock' );
 
         add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_button_in_shop_page' ) );
 
-        if ( !( wp_is_block_theme() || file_exists( get_theme_file_path( 'theme.json' ) ) ) ) {
+        if ( ! ( wp_is_block_theme() || file_exists( get_theme_file_path( 'theme.json' ) ) ) ) {
             add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
         }
 
@@ -89,7 +89,6 @@ class Frontend {
         if ( 'logged_in_only' === $display_enquiry_button && ! is_user_logged_in() ) {
             return;
         }
-
 
         $display_enquiry_button = CatalogX()->setting->get_setting( 'is_enable_out_of_stock', '' );
 
@@ -149,7 +148,7 @@ class Frontend {
      * @return void
      */
     public function frontend_scripts() {
-        if ( is_product() || CatalogX()->render_enquiry_btn_via === 'shortcode' || CatalogX()->render_enquiry_btn_via === 'block') {
+        if ( is_product() || CatalogX()->render_enquiry_btn_via === 'shortcode' || CatalogX()->render_enquiry_btn_via === 'block' ) {
             FrontendScripts::enqueue_frontend_assets();
             FrontendScripts::enqueue_style( 'catalogx-enquiry-form-style' );
             FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
@@ -307,7 +306,7 @@ class Frontend {
         if ( ! Util::is_available() ) {
             return;
         }
-        
+
         if ( ! Util::is_available_for_product( $product->get_id() ) ) {
             return;
         }
@@ -316,7 +315,7 @@ class Frontend {
             return '';
         }
 
-        if ( 'is_enable_out_of_stock' === $this->enable_out_of_stock  && $product->is_in_stock() ) {
+        if ( 'is_enable_out_of_stock' === $this->enable_out_of_stock && $product->is_in_stock() ) {
             return;
         }
 

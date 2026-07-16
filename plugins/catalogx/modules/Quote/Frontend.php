@@ -38,7 +38,7 @@ class Frontend {
             return;
         }
 
-        if ( !( wp_is_block_theme() || file_exists( get_theme_file_path( 'theme.json' ) ) ) ) {
+        if ( ! ( wp_is_block_theme() || file_exists( get_theme_file_path( 'theme.json' ) ) ) ) {
             add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_quote_button' ) );
         }
 
@@ -82,13 +82,13 @@ class Frontend {
         if ( ! Util::is_available() ) {
             return;
         }
-        
+
         $display_quote_button = CatalogX()->setting->get_setting( 'quote_user_permission', '' );
 
         if ( 'logged_in_only' === $display_quote_button && ! is_user_logged_in() ) {
             return;
         }
-        
+
         $product_obj = is_int( $product_obj ) ? wc_get_product( $product_obj ) : ( $product_obj ? $product_obj : $product );
 
         if ( empty( $product_obj ) ) {
@@ -96,7 +96,7 @@ class Frontend {
         }
 
         $this->enqueue_scripts();
-        
+
         // Exclusion settings for shop and single product page.
         if ( ! Util::is_available_for_product( $product_obj->get_id() ) ) {
             return;
@@ -105,7 +105,7 @@ class Frontend {
         $quote_btn_text      = Utill::get_translated_string( 'catalogx', 'add_to_quote', 'Add to Quote' );
         $view_quote_btn_text = Utill::get_translated_string( 'catalogx', 'view_quote', 'View Quote' );
 
-        $button_settings  = CatalogX()->setting->get_setting( 'quote_button' );
+        $button_settings = CatalogX()->setting->get_setting( 'quote_button' );
 
         $quote_btn_text = ! empty( $button_settings['button_text'] ) ? $button_settings['button_text'] : $quote_btn_text;
         CatalogX()->util->get_template(

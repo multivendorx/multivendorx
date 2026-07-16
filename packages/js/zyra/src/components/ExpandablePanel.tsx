@@ -17,6 +17,7 @@ import FormGroupWrapper from './UI/FormGroupWrapper';
 import { BasicInputUI } from './BasicInput';
 import { PopupUI } from './Popup';
 import { ItemListUI } from './ItemList';
+import { SelectInputUI } from './SelectInput';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -56,6 +57,7 @@ interface ExpandablePanelMethod {
     countBtn?: boolean;
     iconEnable?: boolean;
     iconOptions?: string[];
+    primary?: boolean;
 }
 
 interface AddNewTemplate {
@@ -72,6 +74,16 @@ interface AddNewTemplate {
         mandatory?: boolean;
     };
     showMandatoryCheckbox?: boolean;
+    showPrimaryCheckbox?: boolean;
+}
+
+// A single choice in the "Add New" select-driven workflow. `template` shapes
+// the panel created for this choice the same way `addNewTemplate` does for
+// the single-template workflow; omit it to fall back to placeholder content.
+interface AddNewOption {
+    value: string;
+    label: string;
+    template?: AddNewTemplate;
 }
 
 interface ExpandablePanelProps {
@@ -84,6 +96,7 @@ interface ExpandablePanelProps {
     canAccess: boolean;
     addNewBtn?: boolean;
     addNewTemplate?: AddNewTemplate;
+    addNewOptions?: AddNewOption[];
     min?: number;
     editTitleShow?: boolean;
     onBlocked?: (type: 'pro' | 'plugin', payload?: unknown) => void;
@@ -103,6 +116,7 @@ type PanelState = {
     editTitle: string;
     editDesc: string;
     editTitleShow?: boolean;
+    addNewSelectOpen: boolean;
 };
 
 type PanelAction =
@@ -112,13 +126,14 @@ type PanelAction =
     | { type: 'SET_PROGRESS'; progress: number[] }
     | { type: 'SET_OPEN_DROPDOWN'; id: string | null }
     | { type: 'SET_ICON_DROPDOWN'; id: string | null }
+    | { type: 'SET_ADD_NEW_SELECT_OPEN'; open: boolean }
     | {
-          type: 'START_EDIT';
-          id: string;
-          field: 'title' | 'description';
-          title?: string;
-          desc?: string;
-      }
+        type: 'START_EDIT';
+        id: string;
+        field: 'title' | 'description';
+        title?: string;
+        desc?: string;
+    }
     | { type: 'UPDATE_EDIT_TITLE'; title: string }
     | { type: 'UPDATE_EDIT_DESC'; desc: string }
     | { type: 'COMMIT_EDIT' }
@@ -156,6 +171,7 @@ interface PanelContextType {
     ) => JSX.Element | null;
     commitEdit: () => void;
     shouldRender: (dependent: DependentField, methodId: string) => boolean;
+    handlePrimaryChange: (methodId: string, isChecked: boolean) => void;
 }
 
 interface PanelItemContextType {
@@ -171,6 +187,7 @@ interface PanelItemContextType {
     price: { price: string; unit: string } | null;
     cntFlds: PanelFormField[];
     showMandatoryBadge?: boolean;
+    isPrimary: boolean; // Added
 }
 
 // ── Context Creation ──────────────────────────────────────────────────────────
@@ -212,6 +229,8 @@ const panelReducer = (state: PanelState, action: PanelAction): PanelState => {
             return { ...state, openDropdown: action.id };
         case 'SET_ICON_DROPDOWN':
             return { ...state, iconDropdown: action.id };
+        case 'SET_ADD_NEW_SELECT_OPEN':
+            return { ...state, addNewSelectOpen: action.open };
         case 'START_EDIT':
             return {
                 ...state,
@@ -286,6 +305,60 @@ const mergeTemplateFields = (
     };
 };
 
+// Builds a new custom method + its initial value entry from an AddNewTemplate
+// shape. Shared by the single-template "Add New" flow (repeatable, so ids are
+// randomized to stay unique across many same-labeled items) and the
+// select-driven multi-option flow (picked from a fixed catalog, so its ids
+// are stable/deterministic — see the `randomizeId` param).
+const buildMethodFromTemplate = (
+    template: AddNewTemplate,
+    tplFields: PanelFormField[],
+    idSeed?: string,
+    randomizeId: boolean = true
+): { method: ExpandablePanelMethod; init: Record<string, unknown> } => {
+    const slug = (idSeed ?? template.label ?? 'item')
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, '_');
+    const id = randomizeId
+        ? slug + Math.floor(Math.random() * 10000)
+        : slug;
+
+    const newMethod: ExpandablePanelMethod = {
+        id,
+        icon: template.icon ?? '',
+        label: template.label ?? 'New Item',
+        desc: template.desc ?? '',
+        settingDescription: template.desc ?? '',
+        iconEnable: template.iconEnable ?? false,
+        iconOptions: template.iconOptions ?? [],
+        connected: false,
+        isCustom: true,
+        disableBtn: template.disableBtn ?? false,
+        formFields: template.formFields?.map((f) => ({ ...f })) ?? [],
+        primary: false,
+    };
+
+    const mergedMethod = mergeTemplateFields(newMethod, tplFields);
+
+    const init: Record<string, unknown> = {
+        isCustom: true,
+        title: newMethod.label,
+        description: newMethod.desc,
+        label: newMethod.label,
+        desc: newMethod.desc,
+        primary: false,
+    };
+    if (template.icon) {
+        init.icon = template.icon;
+    }
+    newMethod.formFields?.forEach((f) => {
+        init[f.key] = '';
+    });
+
+    return { method: mergedMethod, init };
+};
+
 const formatPrice = (methodValue: Record<string, unknown>) => {
     const { price, unit } = methodValue;
     if (price === null || price === undefined || price === '') {
@@ -322,6 +395,7 @@ const PanelHeader: React.FC = () => {
         commitEdit,
         isWizardMode,
         editTitleShow,
+        handlePrimaryChange,
     } = usePanel();
 
     const {
@@ -334,6 +408,7 @@ const PanelHeader: React.FC = () => {
         title,
         desc,
         showMandatoryBadge,
+        isPrimary,
     } = usePanelItem();
 
     const editing = state.editId === method.id;
@@ -358,17 +433,18 @@ const PanelHeader: React.FC = () => {
         return hasFields && isOn;
     };
 
+    const showPrimaryCheckbox = addNewTemplate?.showPrimaryCheckbox === true;
+
     return (
         <div className="expandable-header">
             {showToggleIcon && (
                 <div className="toggle-icon">
                     {shouldShowToggleButton() && (
                         <i
-                            className={`adminfont-${
-                                isOpen
+                            className={`adminfont-${isOpen
                                     ? 'keyboard-arrow-down'
                                     : 'pagination-right-arrow'
-                            }`}
+                                }`}
                             onClick={() =>
                                 dispatch({
                                     type: 'SET_ACTIVE_TAB',
@@ -386,7 +462,7 @@ const PanelHeader: React.FC = () => {
                     const target = window.event?.target as HTMLElement;
                     if (
                         target?.closest(
-                            '.editable-title, .editable-description, .inline-edit-icon, .mandatory-checkbox-field'
+                            '.editable-title, .editable-description, .inline-edit-icon, .mandatory-checkbox-field, .primary-checkbox-field'
                         )
                     ) {
                         return;
@@ -434,11 +510,10 @@ const PanelHeader: React.FC = () => {
                                             <button
                                                 key={cls}
                                                 type="button"
-                                                className={`icon-option ${
-                                                    icon === cls
+                                                className={`icon-option ${icon === cls
                                                         ? 'selected'
                                                         : ''
-                                                }`}
+                                                    }`}
                                                 onClick={() => {
                                                     handleChange(
                                                         method.id,
@@ -465,8 +540,8 @@ const PanelHeader: React.FC = () => {
                     <div className="expandable-header-info">
                         <div className="title-wrapper">
                             {editing &&
-                            editField === 'title' &&
-                            canEditField(method, 'title', addNewTemplate) ? (
+                                editField === 'title' &&
+                                canEditField(method, 'title', addNewTemplate) ? (
                                 <BasicInputUI
                                     ref={titleRef}
                                     value={editTitle}
@@ -485,15 +560,14 @@ const PanelHeader: React.FC = () => {
                                 />
                             ) : (
                                 <span
-                                    className={`title ${
-                                        canEditField(
-                                            method,
-                                            'title',
-                                            addNewTemplate
-                                        )
+                                    className={`title ${canEditField(
+                                        method,
+                                        'title',
+                                        addNewTemplate
+                                    )
                                             ? 'editable-title'
                                             : ''
-                                    }`}
+                                        }`}
                                     onClick={(e) => {
                                         if (
                                             canEditField(
@@ -529,17 +603,16 @@ const PanelHeader: React.FC = () => {
                                         'title',
                                         addNewTemplate
                                     ) && (
-                                        <i className="adminfont-edit inline-edit-icon" />
-                                    )}
+                                            <i className="adminfont-edit inline-edit-icon" />
+                                        )}
                                 </span>
                             )}
 
                             {method.disableBtn && !method.isCustom && (
                                 <div className="panel-badges">
                                     <div
-                                        className={`admin-badge ${
-                                            isOn ? 'green' : 'red'
-                                        }`}
+                                        className={`admin-badge ${isOn ? 'green' : 'red'
+                                            }`}
                                     >
                                         {isOn ? 'Active' : 'Inactive'}
                                     </div>
@@ -548,17 +621,20 @@ const PanelHeader: React.FC = () => {
                             {(method.mandatory || showMandatoryBadge) && (
                                 <div className="admin-badge red">Mandatory</div>
                             )}
+                            {isPrimary && (
+                                <div className="admin-badge primary">Primary</div>
+                            )}
                         </div>
 
                         <div className="panel-description">
                             {editTitleShow && <b> {title}: </b>}
                             {editing &&
-                            editField === 'description' &&
-                            canEditField(
-                                method,
-                                'description',
-                                addNewTemplate
-                            ) ? (
+                                editField === 'description' &&
+                                canEditField(
+                                    method,
+                                    'description',
+                                    addNewTemplate
+                                ) ? (
                                 <textarea
                                     ref={descRef}
                                     className="description-edit"
@@ -627,15 +703,17 @@ const PanelHeader: React.FC = () => {
                                         'description',
                                         addNewTemplate
                                     ) && (
-                                        <i className="adminfont-edit inline-edit-icon" />
-                                    )}
+                                            <i className="adminfont-edit inline-edit-icon" />
+                                        )}
                                 </div>
                             )}
                         </div>
                     </div>
                 </div>
             </div>
-            <PanelControls />
+            <div className="right-section">
+                <PanelControls />
+            </div>
         </div>
     );
 };
@@ -648,7 +726,7 @@ const PanelControls: React.FC = () => {
         usePanelItem();
 
     return (
-        <div className="right-section">
+        <>
             {price && (
                 <span className="price-field">
                     {price.price}
@@ -764,27 +842,27 @@ const PanelControls: React.FC = () => {
                             items={[
                                 ...(method.disableBtn && hasFields
                                     ? [
-                                          {
-                                              id: 'settings',
-                                              title: 'Settings',
-                                              icon: 'setting',
-                                              action: (item, e) => {
-                                                  e?.stopPropagation();
+                                        {
+                                            id: 'settings',
+                                            title: 'Settings',
+                                            icon: 'setting',
+                                            action: (item, e) => {
+                                                e?.stopPropagation();
 
-                                                  dispatch({
-                                                      type: 'SET_ACTIVE_TAB',
-                                                      id: isOpen
-                                                          ? null
-                                                          : method.id,
-                                                  });
+                                                dispatch({
+                                                    type: 'SET_ACTIVE_TAB',
+                                                    id: isOpen
+                                                        ? null
+                                                        : method.id,
+                                                });
 
-                                                  dispatch({
-                                                      type: 'SET_OPEN_DROPDOWN',
-                                                      id: null,
-                                                  });
-                                              },
-                                          },
-                                      ]
+                                                dispatch({
+                                                    type: 'SET_OPEN_DROPDOWN',
+                                                    id: null,
+                                                });
+                                            },
+                                        },
+                                    ]
                                     : []),
 
                                 {
@@ -812,7 +890,7 @@ const PanelControls: React.FC = () => {
                     </PopupUI>
                 </div>
             )}
-        </div>
+        </>
     );
 };
 
@@ -823,17 +901,21 @@ const PanelBody: React.FC = () => {
         shouldRender,
         handleChange,
         addNewTemplate,
+        handlePrimaryChange,
+        value,
     } = usePanel();
-    const { method, isOpen, isOn } = usePanelItem();
+
+    const { method, isOpen, isOn, isPrimary } = usePanelItem();
 
     const showMandatoryCheckboxGlobal =
         addNewTemplate?.showMandatoryCheckbox === true;
+    const showPrimaryCheckbox = addNewTemplate?.showPrimaryCheckbox === true;
     const hasFields =
-        Boolean(method.formFields?.length) || showMandatoryCheckboxGlobal;
+        Boolean(method.formFields?.length) || showMandatoryCheckboxGlobal || showPrimaryCheckbox;
     const showMandatoryCheckbox =
         addNewTemplate?.showMandatoryCheckbox === true;
 
-    if (!hasFields && !showMandatoryCheckbox) {
+    if (!hasFields && !showMandatoryCheckbox && !showPrimaryCheckbox) {
         return null;
     }
     if (
@@ -842,7 +924,8 @@ const PanelBody: React.FC = () => {
             (isOn ||
                 method.isCustom ||
                 method.openForm ||
-                showMandatoryCheckboxGlobal)
+                showMandatoryCheckboxGlobal ||
+                showPrimaryCheckbox)
         )
     ) {
         return null;
@@ -850,9 +933,8 @@ const PanelBody: React.FC = () => {
 
     return (
         <div
-            className={`${
-                method.wrapperClass ?? ''
-            } expandable-panel open`.trim()}
+            className={`${method.wrapperClass ?? ''
+                } expandable-panel open`.trim()}
         >
             <FormGroupWrapper>
                 {showMandatoryCheckbox && (
@@ -863,10 +945,30 @@ const PanelBody: React.FC = () => {
                     >
                         <input
                             type="checkbox"
+                            className="mandatory-checkbox-field"
                             checked={method.mandatory || false}
                             onChange={(e) => {
                                 const isChecked = e.target.checked;
                                 handleChange(method.id, 'mandatory', isChecked);
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                    </FormGroup>
+                )}
+
+                {showPrimaryCheckbox && method.isCustom && (
+                    <FormGroup
+                        row
+                        label="Primary"
+                        desc="Mark as primary (only one can be primary)"
+                    >
+                        <input
+                            type="checkbox"
+                            className="primary-checkbox-field"
+                            checked={isPrimary || false}
+                            onChange={(e) => {
+                                const isChecked = e.target.checked;
+                                handlePrimaryChange(method.id, isChecked);
                             }}
                             onClick={(e) => e.stopPropagation()}
                         />
@@ -879,11 +981,11 @@ const PanelBody: React.FC = () => {
                     }
                     const shouldShowField = Array.isArray(field.dependent)
                         ? field.dependent.every((dep) =>
-                              shouldRender(dep, method.id)
-                          )
+                            shouldRender(dep, method.id)
+                        )
                         : field.dependent
-                          ? shouldRender(field.dependent, method.id)
-                          : true;
+                            ? shouldRender(field.dependent, method.id)
+                            : true;
 
                     if (!shouldShowField) {
                         return null;
@@ -941,6 +1043,8 @@ const PanelItem: React.FC<{
     const hasMandatoryFields =
         method.formFields?.some((field) => field.mandatory === true) ?? false;
     const showMandatoryBadge = method.mandatory || hasMandatoryFields;
+    // ✅ Add this line
+    const isPrimary = Boolean(methodValue.primary);
 
     useEffect(() => {
         if (isOpen && itemRef.current) {
@@ -967,6 +1071,7 @@ const PanelItem: React.FC<{
         price,
         cntFlds,
         showMandatoryBadge,
+        isPrimary, // ✅ Add this
     };
 
     return (
@@ -977,6 +1082,7 @@ const PanelItem: React.FC<{
                     'expandable-item',
                     method.disableBtn && !isOn ? 'disable' : '',
                     method.openForm ? 'open' : '',
+                    isPrimary ? 'is-primary' : '',
                 ]
                     .filter(Boolean)
                     .join(' ')}
@@ -999,6 +1105,7 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
     canAccess,
     addNewBtn,
     addNewTemplate,
+    addNewOptions,
     min,
     onBlocked,
     editTitleShow,
@@ -1010,10 +1117,10 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
         methods: initialMethods.map((m) =>
             m.isCustom ? mergeTemplateFields(m, tplFields) : m
         ),
-         activeTab: (() => {
-        const firstOpenMethod = initialMethods.find(m => m.openForm === true);
-        return firstOpenMethod ? firstOpenMethod.id : null;
-    })(),
+        activeTab: (() => {
+            const firstOpenMethod = initialMethods.find(m => m.openForm === true);
+            return firstOpenMethod ? firstOpenMethod.id : null;
+        })(),
         wizardIndex: 0,
         progress: [],
         openDropdown: null,
@@ -1022,6 +1129,7 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
         editField: null,
         editTitle: '',
         editDesc: '',
+        addNewSelectOpen: false,
     });
 
     // ── Refs ──────────────────────────────────────────────────────────────────
@@ -1041,6 +1149,26 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
             });
         },
         [onChange, value]
+    );
+    const handlePrimaryChange = useCallback(
+        (methodId: string, isChecked: boolean) => {
+            if (isChecked) {
+                const currentPrimary = Object.keys(value).find(
+                    (id) => id !== methodId && value[id]?.primary === true
+                );
+                const updatedValue = { ...value };
+                Object.keys(updatedValue).forEach((id) => {
+                    if (id !== methodId) {
+                        updatedValue[id] = { ...(updatedValue[id] || {}), primary: false };
+                    }
+                });
+                updatedValue[methodId] = { ...(updatedValue[methodId] || {}), primary: true };
+                onChange(updatedValue);
+            } else {
+                handleChange(methodId, 'primary', false);
+            }
+        },
+        [value, onChange, handleChange]
     );
 
     // ── Helper to commit edit ─────────────────────────────────────────────────
@@ -1077,53 +1205,64 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
             return;
         }
 
-        const id =
-            (addNewTemplate.label ?? 'item')
-                .trim()
-                .toLowerCase()
-                .replace(/\s+/g, '_') + Math.floor(Math.random() * 10000);
-
-        const newMethod: ExpandablePanelMethod = {
-            id,
-            icon: addNewTemplate.icon ?? '',
-            label: addNewTemplate.label ?? 'New Item',
-            desc: addNewTemplate.desc ?? '',
-            iconEnable: addNewTemplate.iconEnable ?? false,
-            iconOptions: addNewTemplate.iconOptions ?? [],
-            connected: false,
-            isCustom: true,
-            disableBtn: addNewTemplate.disableBtn ?? false,
-            formFields: addNewTemplate.formFields?.map((f) => ({ ...f })) ?? [],
-        };
-
-        const mergedMethod = mergeTemplateFields(newMethod, tplFields);
-        dispatch({ type: 'ADD_METHOD', method: mergedMethod });
-
-        const init: Record<string, unknown> = {
-            isCustom: true,
-            title: newMethod.label,
-            description: newMethod.desc,
-            label: newMethod.label,
-            desc: newMethod.desc,
-        };
-        if (addNewTemplate.icon) {
-            init.icon = addNewTemplate.icon;
-        }
-        newMethod.formFields?.forEach((f) => {
-            init[f.key] = '';
-        });
-
-        onChange({ ...value, [id]: init });
+        const { method, init } = buildMethodFromTemplate(
+            addNewTemplate,
+            tplFields
+        );
+        dispatch({ type: 'ADD_METHOD', method });
+        onChange({ ...value, [method.id]: init });
     }, [canAccess, addNewTemplate, tplFields, onChange, value]);
+
+    // Select-driven "Add New" flow: adds a panel from whichever addNewOptions
+    // entry the user picked, using its own template (falling back to generic
+    // placeholder content when the option doesn't provide one).
+    const handleAddNewFromOption = useCallback(
+        (optionValue: string) => {
+            if (!canAccess || !addNewOptions?.length) {
+                return;
+            }
+            const option = addNewOptions.find((o) => o.value === optionValue);
+            if (!option) {
+                return;
+            }
+
+            const template: AddNewTemplate = option.template ?? {
+                label: option.label,
+                desc: `Settings for ${option.label} are coming soon.`,
+                formFields: [
+                    {
+                        key: 'placeholder',
+                        type: 'notice',
+                        label: '',
+                        message: `Settings for ${option.label} are coming soon.`,
+                    },
+                ],
+            };
+
+            const { method, init } = buildMethodFromTemplate(
+                { ...template, label: template.label ?? option.label },
+                tplFields,
+                option.value,
+                false
+            );
+            dispatch({ type: 'ADD_METHOD', method });
+            onChange({ ...value, [method.id]: init });
+            dispatch({ type: 'SET_ADD_NEW_SELECT_OPEN', open: false });
+        },
+        [canAccess, addNewOptions, tplFields, onChange, value]
+    );
 
     const handleDelete = useCallback(
         (methodId: string) => {
             if (!canDelete()) {
                 return;
             }
-            dispatch({ type: 'DELETE_METHOD', id: methodId });
             const next = { ...value };
+            if (next[methodId]?.primary === true) {
+                delete next[methodId]?.primary;
+            }
             delete next[methodId];
+            dispatch({ type: 'DELETE_METHOD', id: methodId });
             onChange(next);
         },
         [canDelete, onChange, value]
@@ -1220,6 +1359,10 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
     // ── Field renderer ────────────────────────────────────────────────────────
     const renderField = useCallback(
         (methodId: string, field: PanelFormField): JSX.Element | null => {
+            if (field.component) {
+                return field.component as JSX.Element;
+            }
+
             const comp = FIELD_REGISTRY[field.type];
             if (!comp) {
                 return null;
@@ -1410,12 +1553,44 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
 
             methodsFromValue.forEach((persistedMethod, id) => {
                 const existingMethod = methodMap.get(id);
+                const persistedTitle = (
+                    persistedMethod as unknown as { title?: string }
+                ).title;
+                // formFields (and icon/desc) are config-only, defined by
+                // whichever addNewOptions entry created this method — they're
+                // never part of the persisted value, so on a fresh page load
+                // (existingMethod not yet in memory) they have to be
+                // recovered from addNewOptions by matching id, or this
+                // method's panel body renders empty after a refresh. Falls
+                // back to matching by title so entries saved under an older
+                // (e.g. pre-stable-id, randomized) key still recover.
+                const optionTemplate = !existingMethod?.formFields?.length
+                    ? addNewOptions?.find(
+                          (o) => o.value === id || o.label === persistedTitle
+                      )?.template
+                    : undefined;
+
                 methodMap.set(id, {
                     ...existingMethod,
                     ...persistedMethod,
+                    icon:
+                        existingMethod?.icon ??
+                        (persistedMethod.icon as string) ??
+                        optionTemplate?.icon ??
+                        '',
+                    desc:
+                        existingMethod?.desc ??
+                        optionTemplate?.desc ??
+                        (persistedMethod.desc as string) ??
+                        '',
+                    formFields:
+                        existingMethod?.formFields ??
+                        optionTemplate?.formFields ??
+                        persistedMethod.formFields,
                     disableBtn:
                         persistedMethod.disableBtn ??
                         existingMethod?.disableBtn ??
+                        optionTemplate?.disableBtn ??
                         (persistedMethod.isCustom
                             ? (addNewTemplate?.disableBtn ?? false)
                             : false),
@@ -1431,6 +1606,10 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
                         (persistedMethod.isCustom
                             ? addNewTemplate?.iconOptions
                             : []),
+                    primary:
+                        persistedMethod.primary ??
+                        existingMethod?.primary ??
+                        false,
                 });
             });
 
@@ -1442,7 +1621,7 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
         if (JSON.stringify(updatedMethods) !== JSON.stringify(state.methods)) {
             dispatch({ type: 'SET_METHODS', methods: updatedMethods });
         }
-    }, [value, addNewTemplate, tplFields]);
+    }, [value, addNewTemplate, addNewOptions, tplFields]);
 
     // ── Context Value ─────────────────────────────────────────────────────────
 
@@ -1464,6 +1643,7 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
         commitEdit,
         shouldRender,
         editTitleShow: editTitleShow ?? false,
+        handlePrimaryChange,
     };
 
     // ── Render ────────────────────────────────────────────────────────────────
@@ -1480,18 +1660,54 @@ export const ExpandablePanelUI: React.FC<ExpandablePanelProps> = ({
                     <PanelItem key={method.id} method={method} idx={idx} />
                 ))}
 
-                {addNewBtn && (
-                    <ButtonInputUI
-                        buttons={[
-                            {
-                                icon: 'plus',
-                                text: 'Add New',
-                                color: 'purple',
-                                onClick: handleAddNew,
-                            },
-                        ]}
-                    />
-                )}
+                {addNewBtn &&
+                    (addNewOptions && addNewOptions.length > 0 ? (
+                        state.addNewSelectOpen ? (
+                            <div className="expandable-add-new-select">
+                                <SelectInputUI
+                                    type="single-select"
+                                    options={addNewOptions.map(
+                                        ({ value, label }) => ({
+                                            value,
+                                            label,
+                                        })
+                                    )}
+                                    onChange={(val) => {
+                                        if (typeof val === 'string') {
+                                            handleAddNewFromOption(val);
+                                        }
+                                    }}
+                                    placeholder="Select an option"
+                                />
+                            </div>
+                        ) : (
+                            <ButtonInputUI
+                                buttons={[
+                                    {
+                                        icon: 'plus',
+                                        text: 'Add New',
+                                        color: 'purple',
+                                        onClick: () =>
+                                            dispatch({
+                                                type: 'SET_ADD_NEW_SELECT_OPEN',
+                                                open: true,
+                                            }),
+                                    },
+                                ]}
+                            />
+                        )
+                    ) : (
+                        <ButtonInputUI
+                            buttons={[
+                                {
+                                    icon: 'plus',
+                                    text: 'Add New',
+                                    color: 'purple',
+                                    onClick: handleAddNew,
+                                },
+                            ]}
+                        />
+                    ))}
             </div>
 
             {/* Wizard navigation buttons (rendered outside the panel list) */}
@@ -1518,6 +1734,7 @@ const ExpandablePanel: FieldComponent = {
             methods={field.modal ?? []}
             addNewBtn={field.addNewBtn}
             addNewTemplate={field.addNewTemplate}
+            addNewOptions={field.addNewOptions}
             min={field.min}
             value={value || {}}
             onChange={(val) => {

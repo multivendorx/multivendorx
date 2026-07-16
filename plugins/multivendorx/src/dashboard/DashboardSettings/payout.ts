@@ -30,57 +30,48 @@ const storePayment: StorePaymentConfig =
 
 const filteredStorePayment = Object.fromEntries(
 	Object.entries(storePayment).filter(
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		([_, value]) =>
+		([, value]) =>
 			value !== null && (!Array.isArray(value) || value.length > 0)
 	)
 );
 
-const paymentOptions = Object.values(filteredStorePayment).map((p) => ({
-	key: p.id,
-	value: p.id,
-	label: p.label,
-}));
+// Map a provider's own fields into panel form fields, translating the
+// 'embedded' type into a rendered component the same way the old flat field
+// list did.
+const toPanelFields = (provider: PaymentProvider): PaymentField[] =>
+	(provider.fields ?? []).map((field) => {
+		const key = `${field.key}`;
 
-// Generate all payment fields for all providers with conditions
-const generateAllPaymentFields = (): PaymentField[] => {
-	const allFields: PaymentField[] = [];
-
-	Object.values(filteredStorePayment).forEach((provider) => {
-		if (provider.fields && Array.isArray(provider.fields)) {
-			const providerFields = provider.fields.map((field) => {
-				const baseField: PaymentField = {
-					...field,
-					key: `${field.key}`,
-					dependent: { key: 'payment_method', value: provider.id },
-				};
-
-				if (field.type === 'embedded') {
-					// Use React.createElement instead of JSX
-					return {
-						...baseField,
-						component: React.createElement(
-							StripeEmbeddedOnboarding,
-							{
-								publishableKey: field.publish,
-								clientSecret: field.client_secret,
-								onComplete: () => {
-									window.location.reload();
-								},
-							}
-						),
-					};
-				}
-
-				return baseField;
-			});
-
-			allFields.push(...providerFields);
+		if (field.type === 'embedded') {
+			return {
+				...field,
+				key,
+				component: React.createElement(StripeEmbeddedOnboarding, {
+					publishableKey: field.publish,
+					clientSecret: field.client_secret,
+					onComplete: () => {
+						window.location.reload();
+					},
+				}),
+			};
 		}
+
+		return {
+			...field,
+			key,
+		};
 	});
 
-	return allFields;
-};
+const paymentAddNewOptions = Object.values(filteredStorePayment).map(
+	(provider) => ({
+		value: provider.id,
+		label: provider.label,
+		template: {
+			label: provider.label,
+			formFields: toPanelFields(provider),
+		},
+	})
+);
 
 export default {
 	id: 'payout',
@@ -94,11 +85,23 @@ export default {
 	submitUrl: `stores/${appLocalizer.store_id}`,
 	modal: [
 		{
-			key: 'payment_method',
-			type: 'choice-toggle',
+			key: 'payment_methods',
+			type: 'expandable-panel',
 			label: __('Payment Method', 'multivendorx'),
-			options: paymentOptions, // Use paymentOptions directly, not with nested fields
+			settingDescription: __(
+				'Choose the payment method you want to use for receiving store payouts.',
+				'multivendorx'
+			),
+			modal: [],
+			addNewBtn: true,
+			addNewOptions: paymentAddNewOptions,
+			addNewTemplate: {
+				showPrimaryCheckbox: true,
+				editableFields: {
+					title: false,
+					description: false,
+				},
+			},
 		},
-		...generateAllPaymentFields(), // Spread all fields at root level with conditions
 	],
 };

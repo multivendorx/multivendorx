@@ -446,7 +446,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                 return prev.filter((b) => b.id !== blockToDelete.id);
             });
             markChanged();
-            if (openBlock?.id === deleted?.id) {
+            if (openBlock?.id === blockToDelete?.id) {
                 setOpenBlock(null);
                 columnManager.clearSelection();
             }
@@ -723,7 +723,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     })();
 
     return (
-        <div className="registration-from-wrapper">
+        <div className="registration-form-wrapper">
              {hasTabsContent && (
             <div className="elements-wrapper">
                 <TabsUI
@@ -879,11 +879,6 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                     />
                 )}
             </div>
-            {proSettingChange && (
-                <span className="admin-pro-tag">
-                    <i className="adminfont-pro-tag"></i>Pro
-                </span>
-            )}
         </div>
     );
 };

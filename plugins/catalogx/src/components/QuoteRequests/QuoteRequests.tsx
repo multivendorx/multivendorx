@@ -131,7 +131,8 @@ const QuoteRequests = () => {
     const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
             return (
-                <div onClick={() => setopenPopup(true)}>
+                <div className="demo-wrapper" onClick={() => setopenPopup(true)}>
+                    <div className="watermark">{__('This is sample Data','catalogx' )}</div>
                     <TableCard {...tableProps} />
                 </div>
             );
@@ -201,7 +202,7 @@ const QuoteRequests = () => {
                     },
                 ] : ''}
             />
-            {tableProps.addingNewRule && tableProps.addingNewRule && (
+            { tableProps.addingNewRule && (
                 tableProps.addNewRuleForm
             )}
             <Container general>

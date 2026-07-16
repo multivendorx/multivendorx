@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-	ChoiceToggleUI,
 	getApiLink,
 	Container,
 	Column,
@@ -13,13 +12,14 @@ import {
 	Notice,
 	NoticeManager,
 	PrePostTextUI,
+	ExpandablePanelUI,
 } from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
 
 interface PaymentField {
 	key: string;
-	html: string | TrustedHTML;
-	name: string;
+	html?: string | TrustedHTML;
+	name?: string;
 	type?: string;
 	label: string;
 	placeholder?: string;
@@ -37,21 +37,25 @@ interface StorePaymentConfig {
 	[key: string]: PaymentProvider;
 }
 interface StoreData {
-	payment_method?: string;
-	dashboard_access?: string;
-	onboarding_flow?: string;
-	charge_type?: string;
+	payment_methods?: Record<string, Record<string, unknown>>;
 	commission_fixed?: string | number;
 	commission_percentage?: string | number;
-	[key: string]: string | number | undefined;
+	[key: string]: unknown;
 }
 
 interface PaymentSettingsProps {
 	id: string | null;
 	data: StoreData | null;
 }
+
+const toPanelFields = (provider: PaymentProvider): PaymentField[] =>
+	(provider.fields || provider.formFields || []).map((field) => ({
+		...field,
+		key: `${field.key}`,
+	}));
+
 const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
-	const [formData, setFormData] = useState({});
+	const [formData, setFormData] = useState<StoreData>({});
 
 	const storePayment: StorePaymentConfig =
 		(appLocalizer.store_payment_settings as StorePaymentConfig) || {};
@@ -61,20 +65,16 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 		Object.entries(storePayment).filter(([_, value]) => value !== null)
 	);
 
-	const paymentOptions = Object.values(filteredStorePayment).map((p) => ({
-		key: p.id,
-		value: p.id,
-		label: p.label,
-	}));
-
-	// The selectedProvider needs to check both 'fields' and 'formFields'
-	const selectedProvider = storePayment[formData.payment_method];
-	const providerFields =
-		selectedProvider?.fields || selectedProvider?.formFields || [];
-
-	const bankDetails =
-		appLocalizer.admin_settings['withdrawal-methods']
-			?.payment_methods?.['bank-transfer']?.['bank_details'];
+	const paymentAddNewOptions = Object.values(filteredStorePayment).map(
+		(provider) => ({
+			value: provider.id,
+			label: provider.label,
+			template: {
+				label: provider.label,
+				formFields: toPanelFields(provider),
+			},
+		})
+	);
 
 	useEffect(() => {
 		if (!id) {
@@ -86,54 +86,7 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 		}
 	}, [id, data]);
 
-	// NEW: Logic to handle Stripe dependencies
-	useEffect(() => {
-		// Ensure this logic only runs for the stripe marketplace provider
-		if (formData.payment_method !== 'stripe-connect') {
-			return;
-		}
-
-		const newFormData = { ...formData };
-		const dashboardAccess = formData.dashboard_access;
-		let changed = false;
-
-		// Rule 1: Standard Dashboard ('full')
-		if (dashboardAccess === 'full') {
-			if (newFormData.onboarding_flow !== 'hosted') {
-				newFormData.onboarding_flow = 'hosted';
-				changed = true;
-			}
-			if (newFormData.charge_type !== 'direct') {
-				newFormData.charge_type = 'direct';
-				changed = true;
-			}
-		}
-		// Rule 2: Express Dashboard ('express')
-		else if (dashboardAccess === 'express') {
-			if (newFormData.charge_type === 'direct') {
-				newFormData.charge_type = 'destination'; // Default to destination
-				changed = true;
-			}
-		}
-		// Rule 3: No Dashboard / Custom ('none')
-		else if (dashboardAccess === 'none') {
-			if (newFormData.onboarding_flow !== 'embedded') {
-				newFormData.onboarding_flow = 'embedded';
-				changed = true;
-			}
-			if (newFormData.charge_type === 'direct') {
-				newFormData.charge_type = 'destination'; // Default to destination
-				changed = true;
-			}
-		}
-
-		if (changed) {
-			setFormData(newFormData);
-			autoSave(newFormData);
-		}
-	}, [formData.dashboard_access, formData.payment_method]);
-
-	const handleChange = (name, value) => {
+	const handleChange = (name: string, value: unknown) => {
 		setFormData((prev) => {
 			const updated = {
 				...(prev || {}),
@@ -144,159 +97,69 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 		});
 	};
 
-	const handleToggleChange = (value: string, name?: string) => {
-		setFormData((prev) => {
-			const updated = {
-				...(prev || {}),
-				[name || 'payment_method']: value,
-			};
-			autoSave(updated);
-			return updated;
-		});
-	};
-
-	const autoSave = (updatedData: { [key: string]: string }) => {
+	const autoSave = (updatedData: { [key: string]: unknown }) => {
 		axios({
 			method: 'POST',
 			url: getApiLink(appLocalizer, `stores/${id}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			data: updatedData,
-		}).then((res) => {
-			if (res.data.success) {
+		})
+			.then((res) => {
+				if (res.data.success) {
+					NoticeManager.add({
+						title: __('Success', 'multivendorx'),
+						message: __('Store saved successfully!', 'multivendorx'),
+						type: 'success',
+						position: 'float',
+					});
+				}
+			})
+			.catch(() => {
 				NoticeManager.add({
-					title: __('Success', 'multivendorx'),
-					message: __('Store saved successfully!', 'multivendorx'),
-					type: 'success',
+					title: __('Error', 'multivendorx'),
+					message: __('Failed to save store settings. Please try again.', 'multivendorx'),
+					type: 'error',
 					position: 'float',
 				});
-			}
-		});
+			});
 	};
 	return (
 		<>
 			<Container>
 				<Column grid={8}>
 					<Card title={__('Withdrawal methods', 'multivendorx')}>
-						<FormGroupWrapper>
-							<FormGroup
-								desc={
-									paymentOptions &&
-									paymentOptions.length === 0
-										? sprintf(
-												/* translators: %s: link to payment integration settings */
-												__(
-													'You haven’t enabled any payment methods yet. Configure payout options <a href="%s">from here</a> to allow stores to receive their earnings.',
-													'multivendorx'
-												),
-												'?page=multivendorx#&tab=settings&subtab=withdrawal-methods'
-											)
-										: ''
-								}
-							>
-								<ChoiceToggleUI
-									options={paymentOptions}
-									value={formData.payment_method || ''}
-									onChange={(value) =>
-										handleToggleChange(
-											value,
-											'payment_method'
-										)
-									}
-								/>
-							</FormGroup>
-
-							{providerFields.map((field, index) => {
-								if (
-									bankDetails &&
-									formData.payment_method ==
-										'bank-transfer' &&
-									!(
-										field.key === 'account_type' ||
-										bankDetails.includes(field.key)
-									)
-								) {
-									return null;
-								}
-
-								// Render HTML (e.g., connect button)
-								if (field.type === 'html' && field.html) {
-									return (
-										<div
-											key={`html-${index}`}
-											className="form-group-wrapper"
-											dangerouslySetInnerHTML={{
-												__html: field.html,
-											}}
-										/>
-									);
-								}
-
-								// Render Toggle Settings
-								if (field.type === 'choice-toggle') {
-									return (
-										<FormGroup
-											label={__(
-												field.label,
-												'multivendorx'
-											)}
-											desc={__(field.desc || '')}
-											htmlFor={field.key}
-										>
-											<ChoiceToggleUI
-												key={field.key}
-												options={
-													Array.isArray(field.options)
-														? field.options.map(
-																(opt) => ({
-																	...opt,
-																	value: String(
-																		opt.value
-																	),
-																})
-															)
-														: []
-												}
-												value={
-													formData[field.key || ''] ||
-													''
-												}
-												onChange={(value) =>
-													handleToggleChange(
-														value,
-														field.key
-													)
-												}
-											/>
-										</FormGroup>
-									);
-								}
-
-								// Default input field rendering
-								return (
-									<FormGroup
-										label={__(field.label, 'multivendorx')}
-										htmlFor={field.key}
-									>
-										<BasicInputUI
-											name={field.key || ''}
-											type={field.type || 'text'}
-											placeholder={
-												field.placeholder
-													? __(
-															field.placeholder,
-															'multivendorx'
-														)
-													: ''
-											}
-											value={formData[field.key]}
-											onChange={(value) =>
-												handleChange(field.key, value)
-											}
-										/>
-									</FormGroup>
-								);
-							})}
-						</FormGroupWrapper>
+						{paymentAddNewOptions.length === 0 && (
+							<Notice
+								type="info"
+								displayPosition="inline-notice"
+								message={sprintf(
+									/* translators: %s: link to payment integration settings */
+									__(
+										'You haven’t enabled any payment methods yet. Configure payout options <a href="%s">from here</a> to allow stores to receive their earnings.',
+										'multivendorx'
+									),
+									'?page=multivendorx#&tab=settings&subtab=withdrawal-methods'
+								)}
+							/>
+						)}
+						<ExpandablePanelUI
+							name="payment_methods"
+							methods={[]}
+							value={formData.payment_methods || {}}
+							onChange={(
+								value: Record<string, Record<string, unknown>>
+							) => handleChange('payment_methods', value)}
+							canAccess={true}
+							addNewBtn
+							addNewOptions={paymentAddNewOptions}
+							addNewTemplate={{
+								showPrimaryCheckbox: true,
+								editableFields: {
+									title: false,
+									description: false,
+								},
+							}}
+						/>
 					</Card>
 				</Column>
 				{/* Commission Amount */}

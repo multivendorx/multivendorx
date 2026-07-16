@@ -20,7 +20,7 @@ Build your own multivendor marketplace in minutes-no code required.
 
 With fast setup, seamless vendor management, and built-in commission control, MultiVendorX is designed to grow with your business. Ideal for entrepreneurs aiming to establish their own multivendor platform reminiscent of popular multivendor marketplaces like  <strong> Amazon,  eBay, Etsy,  Airbnb , or Flipkart. </strong>
 
-[youtube https://youtu.be/3Pm46Z_ovLg]
+[youtube https://youtu.be/b9cuSOwz9zc]
 
 ### Try us because we provide: ###
 * **Code-free** solution to effortlessly set up a multi-vendor marketplace.

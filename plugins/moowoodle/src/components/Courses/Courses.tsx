@@ -166,7 +166,7 @@ const Course: React.FC = () => {
 	const filters = [
 		{
 			key: 'category',
-			label: __('Category', 'moowoodle'),
+			label: __('Select Category', 'moowoodle'),
 			type: 'select',
 			options: category,
 		},

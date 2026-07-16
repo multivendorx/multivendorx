@@ -57,7 +57,7 @@ class Rest {
     public function create_item_permissions_check() {
         $user_id = CatalogX()->current_user_id;
         // For non-logged in user.
-        if (0 === $user_id && 'everyone' === CatalogX()->setting->get_setting( 'enquiry_user_permission', 'everyone' )) {
+        if ( 0 === $user_id && 'everyone' === CatalogX()->setting->get_setting( 'enquiry_user_permission', 'everyone' ) ) {
             return true;
         }
 
@@ -95,9 +95,9 @@ class Rest {
             $enquiry_form_fields = $request->get_body_params();
             $uploaded_files      = $request->get_file_params();
 
-            $user        = CatalogX()->current_user;
-            $user_name   = $user->display_name;
-            $user_email  = $user->user_email;
+            $user       = CatalogX()->current_user;
+            $user_name  = $user->display_name;
+            $user_email = $user->user_email;
 
             // Create attachment of files.
             foreach ( $uploaded_files as $file ) {
@@ -202,7 +202,7 @@ class Rest {
                     )
                 );
 
-                $attachments = apply_filters( 'catalogx_set_enquiry_pdf_and_attachments', array(), $enquiry_id, $enquiry_data );
+                $attachments      = apply_filters( 'catalogx_set_enquiry_pdf_and_attachments', array(), $enquiry_id, $enquiry_data );
                 $additional_email = CatalogX()->setting->get_setting( 'additional_alert_email' );
                 $email_handler    = WC()->mailer()->emails['EnquiryEmail'];
 

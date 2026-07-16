@@ -96,36 +96,26 @@ class QuoteAdd extends \WP_REST_Controller {
             $is_valid = $product_id && $is_valid_variation;
 
             if ( ! $is_valid ) {
-
                 $errors[] = __(
                     'Error occurred while adding product to Request a Quote list.',
                     'catalogx'
                 );
-
             } else {
-
                 $return = CatalogX()->quotecart->add_quote_item( $postdata );
-
             }
 
             if ( 'true' === $return ) {
-
                 $message = __(
                     'Product added to quote list.',
                     'catalogx'
                 );
-
             } elseif ( 'exists' === $return ) {
-
                 $message = __(
                     'Product already in your quote list.',
                     'catalogx'
                 );
-
             } else {
-
                 $message = $errors;
-
             }
 
             wp_send_json(

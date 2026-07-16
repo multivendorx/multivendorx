@@ -99,14 +99,14 @@ class Frontend {
             return $enabled;
         }
 
-        if ( MultiVendorX()->setting->get_setting( 'display_customer_order' ) == 'suborders' ) {
-            return false;
+        $display_customer_order = MultiVendorX()->setting->get_setting( 'display_customer_order', 'mainorder' );
+
+        // Main order.
+        if ( 0 === (int) $order->get_parent_id() ) {
+            return in_array( $display_customer_order, array( 'mainorder', 'main_sub' ), true );
         }
 
-        if ( ( $order->get_parent_id() > 0 ) && MultiVendorX()->setting->get_setting( 'display_customer_order' ) == 'mainorder' ) {
-            return false;
-        }
-
-        return $enabled;
+        // Sub-order.
+        return in_array( $display_customer_order, array( 'suborders', 'main_sub' ), true );
     }
 }

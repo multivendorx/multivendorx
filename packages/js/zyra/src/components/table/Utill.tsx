@@ -120,16 +120,22 @@ export const renderCell = (
 
             return finalValue;
         }
-        
+
         case 'content': {
-            const textarea = document.createElement('textarea');
-            textarea.innerHTML = String(value);
-            const decoded = textarea.value;
-            const textOnly = decoded.replace(/<[^>]*>/g, '');
-            const cleanText = textOnly.replace(/\s+/g, ' ').trim();
+            const rawValue = String(value ?? '');
+            const withoutTags = rawValue.replace(/<[^>]*>/g, ' ');
+            const decodedText = withoutTags
+                .replace(/&nbsp;/gi, ' ')
+                .replace(/&lt;/gi, '<')
+                .replace(/&gt;/gi, '>')
+                .replace(/&quot;/gi, '"')
+                .replace(/&#39;/gi, "'")
+                .replace(/&amp;/gi, '&');
+            const cleanText = decodedText.replace(/\s+/g, ' ').trim();
+
             const shortText =
                 cleanText.length > 30
-                    ? cleanText.slice(0, 30) + '…'
+                    ? `${cleanText.slice(0, 30)}…`
                     : cleanText;
 
             return shortText;

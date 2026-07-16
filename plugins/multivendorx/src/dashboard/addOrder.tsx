@@ -32,6 +32,13 @@ interface AddressData {
 	[key: string]: string | undefined;
 }
 
+// Strips empty-string values before sending an address to WooCommerce's REST
+// API - a field that's simply absent from the request is accepted, but an
+// empty string fails schema validation for fields like `email` (see
+// createOrder()'s use of this on billingAddress/shippingAddress).
+const omitEmptyValues = (address: AddressData): AddressData =>
+	Object.fromEntries(Object.entries(address).filter(([, value]) => value !== '' && value !== undefined));
+
 const AddOrder = () => {
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [showAddProduct, setShowAddProduct] = useState(false);
@@ -47,7 +54,7 @@ const AddOrder = () => {
 	const [showShippingAddressEdit, setShowShippingAddressEdit] =
 		useState(false);
 	const [showCreateCustomer, setShowCreateCustomer] = useState(false);
-	const [orderNote, SetOrderNote] = useState('');
+	const [orderNote, setOrderNote] = useState('');
 	const addressEditRef = useRef(null);
 	const shippingAddressEditRef = useRef(null);
 	const [shippingLines, setShippingLines] = useState([]);
@@ -57,12 +64,14 @@ const AddOrder = () => {
 	const navigate = useNavigate();
 
 	useOutsideClick(addressEditRef, () => {
+		if (!showAddressEdit || !selectedCustomer) return;
+
 		const payload = {
 			billing: {
 				first_name: selectedCustomer?.first_name,
 				last_name: selectedCustomer?.last_name,
 				address_1: billingAddress.address_1,
-				address_2: '',
+				address_2: billingAddress.address_2 ||'',
 				city: billingAddress.city,
 				state: billingAddress.state,
 				postcode: billingAddress.postcode,
@@ -85,12 +94,14 @@ const AddOrder = () => {
 	});
 
 	useOutsideClick(shippingAddressEditRef, () => {
+		if (!showShippingAddressEdit || !selectedCustomer) return;
+
 		const payload = {
 			shipping: {
 				first_name: selectedCustomer?.first_name,
 				last_name: selectedCustomer?.last_name,
 				address_1: shippingAddress.address_1,
-				address_2: '',
+				address_2: shippingAddress.address_2 ||'',
 				city: shippingAddress.city,
 				state: shippingAddress.state,
 				postcode: shippingAddress.postcode,
@@ -131,9 +142,9 @@ const AddOrder = () => {
 		{ label: 'Choose customer...', value: '' },
 		...(customers
 			? customers.map((c) => ({
-					label: `${c.first_name} ${c.last_name}`.trim() || c.email,
-					value: c.id,
-				}))
+				label: `${c.first_name} ${c.last_name}`.trim() || c.email,
+				value: c.id,
+			}))
 			: []),
 	];
 
@@ -151,12 +162,31 @@ const AddOrder = () => {
 			})
 			.then((res) => {
 				const products = res.data;
+				const onboardingSettings =
+					appLocalizer.admin_settings?.['onboarding'];
+				// Pro Franchise module: when 'Products available for
+				// franchise orders' is set to allow admin products too (see
+				// Onboarding.ts), a store can also add products from the
+				// admin catalog to a manually-created order, not just its
+				// own - otherwise only the store's own products are
+				// selectable, same as today.
+				const includeAdminProducts =
+					onboardingSettings?.store_selling_mode === 'franchise' &&
+					onboardingSettings?.products_available_for_franchise_orders ===
+						'store_and_admin_products';
+
 				const filtered = products.filter((p) => {
 					const storeId = p.meta_data?.find(
 						(m) => m.key === 'multivendorx_store_id'
 					)?.value;
 
-					return storeId === appLocalizer.store_id;
+					if (storeId === appLocalizer.store_id) {
+						return true;
+					}
+
+					// An admin product has no store owner at all - distinct
+					// from a product owned by a different store.
+					return includeAdminProducts && !storeId;
 				});
 
 				setAllProducts(filtered);
@@ -254,8 +284,15 @@ const AddOrder = () => {
 	const createOrder = async () => {
 		const orderData = {
 			customer_id: selectedCustomer?.id || 0,
-			billing: billingAddress,
-			shipping: shippingAddress,
+			// billingAddress/shippingAddress can carry over fields (e.g.
+			// `email`) copied wholesale from an existing customer's WC
+			// profile (see setBillingAddress(customer.billing) above) that
+			// this screen has no field to edit - an empty string there
+			// fails WooCommerce's REST email validation, whereas a field
+			// that's simply absent is accepted, so empty values are
+			// stripped rather than sent as-is.
+			billing: omitEmptyValues(billingAddress),
+			shipping: omitEmptyValues(shippingAddress),
 			line_items: addedProducts.map((item) => {
 				const qty = item.qty || 1;
 				const subtotal = item.price * qty;
@@ -457,10 +494,10 @@ const AddOrder = () => {
 											prev.map((s) =>
 												s.id === row.id
 													? {
-															...s,
-															method_id: value,
-															name: method_title,
-														}
+														...s,
+														method_id: value,
+														name: method_title,
+													}
 													: s
 											)
 										);
@@ -476,7 +513,7 @@ const AddOrder = () => {
 			label: __('Price', 'multivendorx'),
 			render: (row) => {
 				if (row.rowType === 'product') {
-					return `$${row.price}`;
+					return formatCurrency(row.price);
 				}
 				return '';
 			},
@@ -508,7 +545,7 @@ const AddOrder = () => {
 			label: __('Total', 'multivendorx'),
 			render: (row) => {
 				if (row.rowType === 'product') {
-					return `$${(row.price * (row.qty || 1)).toFixed(2)}`;
+					return formatCurrency(row.price * (row.qty || 1));
 				} else {
 					return (
 						<BasicInputUI
@@ -783,58 +820,58 @@ const AddOrder = () => {
 					<Card>
 						{(addedProducts.length > 0 ||
 							shippingLines.length > 0) && (
-							<>
-								<TableCard
-									headers={tableHeaders}
-									rows={tableRows}
-									showMenu={false}
-								/>
+								<>
+									<TableCard
+										headers={tableHeaders}
+										rows={tableRows}
+										showMenu={false}
+									/>
 
-								<div className="total-summary">
-									<div className="row">
-										<span>
-											{__('Subtotal:', 'multivendorx')}
-										</span>
-										<span>${subtotal.toFixed(2)}</span>
-									</div>
+									<div className="total-summary">
+										<div className="row">
+											<span>
+												{__('Subtotal:', 'multivendorx')}
+											</span>
+											<span>${subtotal.toFixed(2)}</span>
+										</div>
 
-									<div className="row">
-										<span>
-											{__('Tax:', 'multivendorx')}
-										</span>
-										<span>
-											$
-											{addedProducts
-												.reduce(
-													(sum, p) =>
-														sum +
-														(p.tax_amount || 0),
-													0
-												)
-												.toFixed(2)}
-										</span>
-									</div>
+										<div className="row">
+											<span>
+												{__('Tax:', 'multivendorx')}
+											</span>
+											<span>
+												$
+												{addedProducts
+													.reduce(
+														(sum, p) =>
+															sum +
+															(p.tax_amount || 0),
+														0
+													)
+													.toFixed(2)}
+											</span>
+										</div>
 
-									<div className="row">
-										<span>
-											{__('Shipping:', 'multivendorx')}
-										</span>
-										<span>
-											{formatCurrency(totalShipping)}
-										</span>
-									</div>
+										<div className="row">
+											<span>
+												{__('Shipping:', 'multivendorx')}
+											</span>
+											<span>
+												{formatCurrency(totalShipping)}
+											</span>
+										</div>
 
-									<div className="row total">
-										<strong>
-											{__('Grand Total:', 'multivendorx')}
-										</strong>
-										<strong>
-											${grandTotal.toFixed(2)}
-										</strong>
+										<div className="row total">
+											<strong>
+												{__('Grand Total:', 'multivendorx')}
+											</strong>
+											<strong>
+												${grandTotal.toFixed(2)}
+											</strong>
+										</div>
 									</div>
-								</div>
-							</>
-						)}
+								</>
+							)}
 						<FormGroupWrapper>
 							<ButtonInputUI
 								position="left"
@@ -1031,51 +1068,47 @@ const AddOrder = () => {
 						{selectedCustomer && (
 							<InfoItem
 								title={
-									selectedCustomer
-										? `${selectedCustomer.first_name} ${selectedCustomer.last_name}`
-										: __('Guest Customer', 'multivendorx')
+									[selectedCustomer.first_name, selectedCustomer.last_name]
+										.filter(Boolean)
+										.join(' ') || __('Guest Customer', 'multivendorx')
 								}
 								avatar={{
-									text: selectedCustomer
-										? selectedCustomer.first_name[0]
-										: 'C',
+									text: selectedCustomer.first_name?.[0] || 'C',
 									iconClass: 'person',
 								}}
 								descriptions={
-									selectedCustomer
-										? [
-												{
-													label: __(
-														'Customer ID',
-														'multivendorx'
-													),
-													value: `#${selectedCustomer.id}`,
-													boldLabel: true,
-												},
-												{
-													value: (
-														<>
-															<i className="adminfont-mail" />{' '}
-															{
-																selectedCustomer.email
-															}
-														</>
-													),
-												},
-												{
-													value: (
-														<>
-															<i className="adminfont-phone" />{' '}
-															{
-																selectedCustomer
-																	.billing
-																	?.phone
-															}
-														</>
-													),
-												},
-											]
-										: []
+									[
+										{
+											label: __(
+												'Customer ID',
+												'multivendorx'
+											),
+											value: `#${selectedCustomer.id}`,
+											boldLabel: true,
+										},
+										{
+											value: (
+												<>
+													<i className="adminfont-mail" />{' '}
+													{
+														selectedCustomer.email
+													}
+												</>
+											),
+										},
+										{
+											value: (
+												<>
+													<i className="adminfont-phone" />{' '}
+													{
+														selectedCustomer
+															.billing
+															?.phone
+													}
+												</>
+											),
+										},
+									]
 								}
 								badges={[
 									{
@@ -1205,7 +1238,7 @@ const AddOrder = () => {
 									'Enter order note...',
 									'multivendorx'
 								)}
-								onChange={(value) => SetOrderNote(value)}
+								onChange={(value) => setOrderNote(value)}
 							/>
 						</FormGroup>
 					</Card>

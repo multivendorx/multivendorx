@@ -8,6 +8,7 @@
 namespace MultiVendorX;
 
 use MultiVendorX\Notifications\Notifications;
+use MultiVendorX\Store\Store;
 use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -171,7 +172,91 @@ class Install {
             );
             update_option( Utill::MULTIVENDORX_SETTINGS['product-compliance'], array_merge( $previous_settings, $product_compliance_settings ) );
         }
-            
+
+        if ( version_compare( $previous_version, '5.0.10', '<' ) ) {
+            global $wpdb;
+
+            $store_table = $wpdb->prefix . Utill::TABLES['store'];
+            $method_field_map = array(
+                'bank-transfer'  => array(
+                    'title'  => 'Bank Transfer',
+                    'label'  => 'Bank Transfer',
+                    'fields' => array( 'account_type', 'bank_name', 'account_holder_name', 'account_number', 'routing_number', 'destination_currency', 'bank_address', 'iban' ),
+                ),
+                'paypal-payout'  => array(
+                    'title'  => 'Paypal Payout',
+                    'label'  => 'Paypal Payout',
+                    'fields' => array( 'paypal_email' ),
+                ),
+                'stripe-connect' => array(
+                    'title'  => 'Stripe Connect',
+                    'label'  => 'Stripe Connect',
+                    'fields' => array( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] ),
+                ),
+                'custom-gateway' => array(
+                    'title'  => 'Custom Gateway',
+                    'label'  => 'Custom Gateway',
+                    'fields' => array(),
+                ),
+                'cash'           => array(
+                    'title'  => 'Cash',
+                    'label'  => 'Cash',
+                    'fields' => array(),
+                ),
+                'paypal-marketplace' => array(
+                    'title'  => 'Paypal Marketplace',
+                    'label'  => 'Paypal Marketplace',
+                    'fields' => array( 'paypal_merchant_id' ),
+                ),
+                'stripe-marketplace' => array(
+                    'title'  => 'Stripe Marketplace',
+                    'label'  => 'Stripe Marketplace',
+                    'fields' => array( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] ),
+                ),
+            );
+
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $store_ids = $wpdb->get_col( "SELECT ID FROM {$store_table}" );
+
+            foreach ( (array) $store_ids as $store_id ) {
+                $store = new Store( (int) $store_id );
+
+                if ( ! $store->exists() || $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_methods'] ) ) {
+                    continue;
+                }
+
+                $selected_id = $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] );
+
+                if ( empty( $selected_id ) || ! isset( $method_field_map[ $selected_id ] ) ) {
+                    continue;
+                }
+
+                $payment_methods = array();
+
+                foreach ( $method_field_map as $method_id => $method_config ) {
+                    $method_entry = array(
+                        'isCustom'    => 1,
+                        'title'       => $method_config['title'],
+                        'description' => '',
+                        'label'       => $method_config['label'],
+                        'desc'        => '',
+                        'primary'     => ( $method_id === $selected_id ) ? 1 : '',
+                    );
+
+                    foreach ( $method_config['fields'] as $field_key ) {
+                        $field_value = $store->get_meta( $field_key );
+
+                        if ( null !== $field_value && '' !== $field_value ) {
+                            $method_entry[ $field_key ] = $field_value;
+                        }
+                    }
+
+                    $payment_methods[ $method_id ] = $method_entry;
+                }
+
+                $store->update_meta( Utill::STORE_SETTINGS_KEYS['payment_methods'], $payment_methods );
+            }
+        }
     }
 
     public function run_migration() {
@@ -1099,7 +1184,7 @@ class Install {
         $registration_from_settings = array(
             'store_registration_from' => array(
                 'formfieldlist'  => $registration_form,
-                'butttonsetting' => array(),
+                'buttonsetting' => array(),
             ),
         );
 
@@ -1978,7 +2063,7 @@ class Install {
 			$new_form = array(
 				'store_registration_from' => array(
 					'formfieldlist'  => array(),
-					'butttonsetting' => array(),
+					'buttonsetting' => array(),
 				),
 			);
 
