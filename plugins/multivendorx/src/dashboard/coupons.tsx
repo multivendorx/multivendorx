@@ -3,25 +3,23 @@ import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import {
-	ButtonInputUI,
-	BasicInputUI,
 	FormGroup,
 	FormGroupWrapper,
 	PopupUI,
+	InfoItem,
+	Notice,
+} from '@zyra/primitives';
+import {
+	ButtonInputUI,
+	BasicInputUI,
 	SelectInputUI,
 	TextAreaUI,
 	ChoiceToggleUI,
-	TableCard,
-	NavigatorHeader,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-	TabsUI,
 	RandomInputKeyGeneratorUI,
-	InfoItem,
 	EmailsInputUI,
-	Notice
-} from 'zyra';
+} from '@zyra/inputs';
+import { NavigatorHeader, TabsUI } from '@zyra/admin';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 
 import axios from 'axios';
 import Popup from '../components/Popup/Popup';

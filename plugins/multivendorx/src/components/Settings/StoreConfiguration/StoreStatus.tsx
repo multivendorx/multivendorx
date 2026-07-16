@@ -3,13 +3,10 @@ import React, { useEffect, JSX } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { SettingProvider, useSetting } from '../../../contexts/SettingContext';
 import { getTemplateData } from '../../../services/templateService';
-import {
-	getAvailableSettings,
-	getSettingById,
-	RenderComponent,
-	useModules,
-	SettingsNavigator,
-} from 'zyra';
+import { getAvailableSettings, getSettingById } from '@zyra/core';
+import { RenderComponent } from '@zyra/inputs';
+import { useModules } from '@zyra/providers';
+import { SettingsNavigator } from '@zyra/admin';
 import { __ } from '@wordpress/i18n';
 
 const StoreStatus: React.FC = () => {

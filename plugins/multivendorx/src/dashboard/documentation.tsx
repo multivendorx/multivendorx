@@ -1,16 +1,15 @@
 /* global appLocalizer */
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { getApiLink } from '@zyra/core';
 import {
-	ButtonInputUI,
 	Card,
-	getApiLink,
 	ComponentStatusView,
 	PopupUI,
-	HeaderSearch,
-	NavigatorHeader,
 	ItemListUI,
-} from 'zyra';
+} from '@zyra/primitives';
+import { ButtonInputUI } from '@zyra/inputs';
+import { HeaderSearch, NavigatorHeader } from '@zyra/admin';
 import { __ } from '@wordpress/i18n';
 import { truncateText } from '@/services/commonFunction';
 

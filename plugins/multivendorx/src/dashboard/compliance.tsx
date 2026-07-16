@@ -3,15 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
 import {
 	Analytics,
-	ButtonInputUI,
 	Card,
 	Column,
 	Container,
-	ExpandablePanelUI,
 	ItemListUI,
 	Notice,
-	SettingsNavigator,
-} from 'zyra';
+} from '@zyra/primitives';
+import { ButtonInputUI, ExpandablePanelUI } from '@zyra/inputs';
+import { SettingsNavigator } from '@zyra/admin';
 
 const Compliance = (React.FC = () => {
 	const SimpleLink = ({ to, children, onClick, className }) => (

@@ -2,14 +2,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	InfoItem,
-	NavigatorHeader,
-	QueryProps,
-	TableCard,
-	TableRow,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { InfoItem } from '@zyra/primitives';
+import { NavigatorHeader } from '@zyra/admin';
+import { QueryProps, TableCard, TableRow } from '@zyra/table';
 
 import { dashNavigate, formatLocalDate } from '@/services/commonFunction';
 import { useNavigate } from 'react-router-dom';

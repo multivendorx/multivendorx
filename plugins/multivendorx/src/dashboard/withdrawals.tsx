@@ -2,21 +2,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
 import {
-	getApiLink,
 	Card,
 	Container,
 	Column,
 	FormGroupWrapper,
 	FormGroup,
-	BasicInputUI,
-	ButtonInputUI,
 	PopupUI,
-	NavigatorHeader,
 	ItemListUI,
 	NoticeManager,
 	Notice,
-} from 'zyra';
+} from '@zyra/primitives';
+import { BasicInputUI, ButtonInputUI } from '@zyra/inputs';
+import { NavigatorHeader } from '@zyra/admin';
 import { formatCurrency } from '../services/commonFunction';
 import { applyFilters } from '@wordpress/hooks';
 interface WithdrawalData {

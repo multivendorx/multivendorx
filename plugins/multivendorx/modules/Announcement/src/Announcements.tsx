@@ -2,24 +2,23 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
 import {
-	getApiLink,
-	TextAreaUI,
 	Container,
 	Column,
 	FormGroupWrapper,
 	FormGroup,
-	TableCard,
+	PopupUI,
+} from '@zyra/primitives';
+import {
+	TextAreaUI,
 	BasicInputUI,
 	ButtonInputUI,
 	ChoiceToggleUI,
 	SelectInputUI,
-	PopupUI,
-	NavigatorHeader,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-} from 'zyra';
+} from '@zyra/inputs';
+import { NavigatorHeader } from '@zyra/admin';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
 import { formatLocalDate } from '../../../src/services/commonFunction';
 type AnnouncementForm = {

@@ -2,18 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	NavigatorHeader,
-	Container,
-	Column,
-	TableCard,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-	ItemListUI,
-	useModules,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { Container, Column, ItemListUI } from '@zyra/primitives';
+import { useModules } from '@zyra/providers';
+import { NavigatorHeader } from '@zyra/admin';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import ViewCommission from './ViewCommission';
 import {
 	downloadCSV,

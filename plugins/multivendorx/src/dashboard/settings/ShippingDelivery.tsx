@@ -1,18 +1,16 @@
 /* global appLocalizer */
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { getApiLink } from '@zyra/core';
 import {
-	BasicInputUI,
 	Column,
 	Container,
-	DynamicRowSetting,
 	FormGroup,
 	FormGroupWrapper,
-	getApiLink,
-	ChoiceToggleUI,
 	NoticeManager,
 	SectionUI,
-} from 'zyra';
+} from '@zyra/primitives';
+import { BasicInputUI, DynamicRowSetting, ChoiceToggleUI } from '@zyra/inputs';
 import ShippingRatesByCountry from './ShippingRatesByCountry';
 import DistanceByZoneShipping from './DistanceByZoneShipping';
 import { __ } from '@wordpress/i18n';

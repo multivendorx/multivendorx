@@ -1,17 +1,9 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import {
-	Analytics,
-	Card,
-	Column,
-	getApiLink,
-	TableCard,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-	InfoItem,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { Analytics, Card, Column, InfoItem } from '@zyra/primitives';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	Cell,
 	Legend,

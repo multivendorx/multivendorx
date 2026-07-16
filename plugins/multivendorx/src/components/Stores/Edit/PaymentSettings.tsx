@@ -1,19 +1,17 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getApiLink } from '@zyra/core';
 import {
-	getApiLink,
 	Container,
 	Column,
 	Card,
 	FormGroupWrapper,
 	FormGroup,
-	BasicInputUI,
 	Notice,
 	NoticeManager,
-	PrePostTextUI,
-	ExpandablePanelUI,
-} from 'zyra';
+} from '@zyra/primitives';
+import { BasicInputUI, PrePostTextUI, ExpandablePanelUI } from '@zyra/inputs';
 import { __, sprintf } from '@wordpress/i18n';
 
 interface PaymentField {

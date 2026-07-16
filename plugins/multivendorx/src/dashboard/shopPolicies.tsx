@@ -1,17 +1,17 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getApiLink } from '@zyra/core';
 import {
-	getApiLink,
 	Container,
 	Column,
 	Card,
 	FormGroupWrapper,
 	FormGroup,
-	TextAreaUI,
-	NavigatorHeader,
 	NoticeManager,
-} from 'zyra';
+} from '@zyra/primitives';
+import { TextAreaUI } from '@zyra/inputs';
+import { NavigatorHeader } from '@zyra/admin';
 import { __ } from '@wordpress/i18n';
 
 const ShopPolicies = () => {

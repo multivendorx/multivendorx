@@ -1,19 +1,18 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getApiLink } from '@zyra/core';
 import {
-	getApiLink,
-	useModules,
 	Container,
 	Column,
 	FormGroupWrapper,
 	FormGroup,
 	Card,
-	SelectInputUI,
 	NoticeManager,
 	InfoItem,
-	ButtonInputUI,
-} from 'zyra';
+} from '@zyra/primitives';
+import { SelectInputUI, ButtonInputUI } from '@zyra/inputs';
+import { useModules } from '@zyra/providers';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 

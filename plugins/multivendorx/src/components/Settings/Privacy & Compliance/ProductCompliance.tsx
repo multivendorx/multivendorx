@@ -1,13 +1,11 @@
+import { getApiLink } from '@zyra/core';
 import {
-	ChoiceToggleUI,
-	ExpandablePanelUI,
 	FormGroup,
 	FormGroupWrapper,
 	SectionUI,
-	SelectInputUI,
 	NoticeManager,
-	getApiLink,
-} from 'zyra';
+} from '@zyra/primitives';
+import { ChoiceToggleUI, ExpandablePanelUI, SelectInputUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { useState, useCallback, useMemo } from 'react';
 import axios from 'axios';

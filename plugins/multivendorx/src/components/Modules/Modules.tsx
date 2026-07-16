@@ -1,5 +1,6 @@
 /* global appLocalizer */
-import { NavigatorHeader, Container, Modules } from 'zyra';
+import { Container } from '@zyra/primitives';
+import { NavigatorHeader, Modules } from '@zyra/admin';
 import { __ } from '@wordpress/i18n';
 import { getModuleData } from '../../services/templateService';
 import proPopupContent from '../Popup/Popup';

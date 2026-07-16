@@ -1,18 +1,16 @@
 /* global appLocalizer */
 import { useEffect, useState, useMemo, useRef } from 'react';
 import axios from 'axios';
+import { getApiLink, useOutsideClick } from '@zyra/core';
 import {
-	getApiLink,
 	ComponentStatusView,
 	PopupUI,
-	useModules,
 	Tooltip,
-	TabsUI,
 	NoticeReceiver,
 	Notice,
-	GuidedTourProvider,
-	useOutsideClick,
-} from 'zyra';
+} from '@zyra/primitives';
+import { useModules, GuidedTourProvider } from '@zyra/providers';
+import { TabsUI } from '@zyra/admin';
 import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';

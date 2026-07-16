@@ -4,20 +4,18 @@ import ShippingRatesByCountry from '@/dashboard/settings/ShippingRatesByCountry'
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { getApiLink } from '@zyra/core';
 import {
-	BasicInputUI,
 	Card,
 	Column,
 	Container,
-	DynamicRowSetting,
 	FormGroup,
 	FormGroupWrapper,
-	getApiLink,
 	ComponentStatusView,
-	ChoiceToggleUI,
 	NoticeManager,
 	SectionUI,
-} from 'zyra';
+} from '@zyra/primitives';
+import { BasicInputUI, DynamicRowSetting, ChoiceToggleUI } from '@zyra/inputs';
 
 interface ShippingRate {
 	[key: string]: string | number;

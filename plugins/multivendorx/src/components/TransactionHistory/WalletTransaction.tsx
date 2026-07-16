@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __, sprintf } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
 import {
-	getApiLink,
 	Column,
 	Card,
 	Container,
@@ -11,18 +11,17 @@ import {
 	FormGroup,
 	ComponentStatusView,
 	Skeleton,
-	TableCard,
-	BasicInputUI,
-	ButtonInputUI,
 	PopupUI,
-	TextAreaUI,
-	TableRow,
-	QueryProps,
-	CategoryCount,
 	ItemListUI,
 	Notice,
-	ChoiceToggleUI
-} from 'zyra';
+} from '@zyra/primitives';
+import {
+	BasicInputUI,
+	ButtonInputUI,
+	TextAreaUI,
+	ChoiceToggleUI,
+} from '@zyra/inputs';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 
 import {
 	downloadCSV,

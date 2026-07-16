@@ -3,19 +3,19 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
+import { getApiLink } from '@zyra/core';
 import {
 	Analytics,
 	Card,
 	Column,
 	Container,
-	getApiLink,
 	InfoItem,
-	useModules,
 	FormGroupWrapper,
 	FormGroup,
 	SectionUI,
 	ComponentStatusView,
-} from 'zyra';
+} from '@zyra/primitives';
+import { useModules } from '@zyra/providers';
 import { formatCurrency } from '../../../services/commonFunction';
 import LatestReview from './LatestReview';
 import LatestRefundRequest from './LatestRefundRequest';

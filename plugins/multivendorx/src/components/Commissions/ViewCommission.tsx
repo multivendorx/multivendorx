@@ -1,19 +1,18 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
 import {
 	FormGroup,
 	FormGroupWrapper,
-	getApiLink,
 	InfoItem,
 	Notice,
 	PopupUI,
 	SectionUI,
-	TableCard,
-	TableRow,
 	Column,
-	Container
-} from 'zyra';
+	Container,
+} from '@zyra/primitives';
+import { TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
 import { formatCurrency, getUrl } from '../../services/commonFunction';
 

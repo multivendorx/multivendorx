@@ -1,21 +1,17 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getApiLink, CountryCodes } from '@zyra/core';
 import {
-	getApiLink,
-	useModules,
-	EmailsInputUI,
-	MapProviderUI,
 	Container,
 	Column,
 	Card,
 	FormGroupWrapper,
 	FormGroup,
-	BasicInputUI,
-	SelectInputUI,
-	CountryCodes,
 	NoticeManager,
-} from 'zyra';
+} from '@zyra/primitives';
+import { EmailsInputUI, BasicInputUI, SelectInputUI } from '@zyra/inputs';
+import { useModules, MapProviderUI } from '@zyra/providers';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 

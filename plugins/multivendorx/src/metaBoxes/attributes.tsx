@@ -1,13 +1,11 @@
 import { addFilter, applyFilters } from '@wordpress/hooks';
+import { Card, FormGroup, FormGroupWrapper } from '@zyra/primitives';
 import {
-    MultiCheckBoxUI,
-    SelectInputUI,
-    Card,
-    BasicInputUI,
-    FormGroup,
-    FormGroupWrapper,
-    ButtonInputUI,
-} from 'zyra';
+	MultiCheckBoxUI,
+	SelectInputUI,
+	BasicInputUI,
+	ButtonInputUI,
+} from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';

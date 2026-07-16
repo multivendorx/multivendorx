@@ -1,6 +1,11 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { FormGroup, FormGroupWrapper, PopupUI, SectionUI } from 'zyra';
+import {
+	FormGroup,
+	FormGroupWrapper,
+	PopupUI,
+	SectionUI,
+} from '@zyra/primitives';
 import { formatCurrency, formatDate } from '@/services/commonFunction';
 
 type TransactionRow = {

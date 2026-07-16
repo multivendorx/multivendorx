@@ -1,22 +1,16 @@
 /* global appLocalizer */
 import React, { useEffect, useMemo, useState } from 'react';
 import './EventRules.scss';
+import { getApiLink, renderBlocksToHTML, htmlToBlocks } from '@zyra/core';
+import { FormGroupWrapper, FormGroup, PopupUI, Column } from '@zyra/primitives';
 import {
-	getApiLink,
-	FormGroupWrapper,
-	FormGroup,
 	BasicInputUI,
 	ButtonInputUI,
-	PopupUI,
 	TextAreaUI,
-	TableCard,
-	Column,
-	QueryProps,
-	BlockBuilderUI,
-	renderBlocksToHTML,
-	htmlToBlocks,
 	EmailsInputUI,
-} from 'zyra';
+} from '@zyra/inputs';
+import { TableCard, QueryProps } from '@zyra/table';
+import { BlockBuilderUI } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { salesReport } from '../../../assets/template/emailTemplate/salesReport';

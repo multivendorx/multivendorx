@@ -1,5 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
-import { BasicInputUI, DynamicRowSetting, FormGroup } from 'zyra';
+import { FormGroup } from '@zyra/primitives';
+import { BasicInputUI, DynamicRowSetting } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 
 const Downloadable = ({ product, setProduct, handleChange }) => {

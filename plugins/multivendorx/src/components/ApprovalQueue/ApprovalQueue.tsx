@@ -1,6 +1,8 @@
 /* global appLocalizer */
 import { useState, useEffect } from 'react';
-import { SettingsNavigator, useModules, getApiLink } from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { useModules } from '@zyra/providers';
+import { SettingsNavigator } from '@zyra/admin';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { useLocation, Link } from 'react-router-dom';

@@ -2,16 +2,9 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { addFilter, applyFilters } from '@wordpress/hooks';
-import {
-	BasicInputUI,
-	Card,
-	FormGroup,
-	FormGroupWrapper,
-	SelectInputUI,
-	ChoiceToggleUI,
-	useModules,
-	SectionUI,
-} from 'zyra';
+import { Card, FormGroup, FormGroupWrapper, SectionUI } from '@zyra/primitives';
+import { BasicInputUI, SelectInputUI, ChoiceToggleUI } from '@zyra/inputs';
+import { useModules } from '@zyra/providers';
 import { __ } from '@wordpress/i18n';
 
 const ShippingCard = ({

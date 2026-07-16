@@ -1,7 +1,9 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, InfoItem, QueryProps, TableCard, TableRow } from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { InfoItem } from '@zyra/primitives';
+import { QueryProps, TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
 import {
 	downloadCSV,

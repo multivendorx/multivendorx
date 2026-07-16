@@ -2,21 +2,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
 import {
-	getApiLink,
 	FormGroupWrapper,
 	FormGroup,
-	TableCard,
-	BasicInputUI,
-	TextAreaUI,
 	PopupUI,
-	ButtonInputUI,
-	NavigatorHeader,
-	TableRow,
-	QueryProps,
-	CategoryCount,
 	InfoItem,
-} from 'zyra';
+} from '@zyra/primitives';
+import { BasicInputUI, TextAreaUI, ButtonInputUI } from '@zyra/inputs';
+import { NavigatorHeader } from '@zyra/admin';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import { dashNavigate, formatLocalDate } from '@/services/commonFunction';
 import { useNavigate } from 'react-router-dom';
 

@@ -5,7 +5,8 @@ import App from './app';
 import DashboardRoutes from './dashboardRoutes';
 import 'zyra/build/index.css';
 import 'leaflet/dist/leaflet.css';
-import { configureZyra, initializeModules } from 'zyra';
+import { configureZyra } from '@zyra/core';
+import { initializeModules } from '@zyra/providers';
 
 configureZyra(appLocalizer);
 initializeModules('multivendorx', 'free', 'modules');

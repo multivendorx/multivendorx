@@ -2,16 +2,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	TableCard,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-	Container,
-	Column,
-	InfoItem,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { Container, Column, InfoItem } from '@zyra/primitives';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	formatCurrency,
 	formatDate,

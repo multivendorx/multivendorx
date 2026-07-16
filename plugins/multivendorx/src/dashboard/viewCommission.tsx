@@ -2,17 +2,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
 import {
 	FormGroup,
 	FormGroupWrapper,
-	getApiLink,
 	InfoItem,
 	Notice,
 	PopupUI,
 	SectionUI,
-	TableCard,
-	TableRow,
-} from 'zyra';
+} from '@zyra/primitives';
+import { TableCard, TableRow } from '@zyra/table';
 import { dashNavigate, formatCurrency } from '@/services/commonFunction';
 import { useNavigate } from 'react-router-dom';
 

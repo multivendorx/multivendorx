@@ -1,7 +1,8 @@
 /* global storesList */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { getApiLink, MapProviderUI } from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { MapProviderUI } from '@zyra/providers';
 import { __, sprintf } from '@wordpress/i18n';
 
 interface StoreRow {

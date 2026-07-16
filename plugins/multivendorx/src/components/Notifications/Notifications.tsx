@@ -1,5 +1,5 @@
 /* global appLocalizer */
-import { SettingsNavigator } from 'zyra';
+import { SettingsNavigator } from '@zyra/admin';
 import { Link, useLocation } from 'react-router-dom';
 import NotificationTable from './NotificationTable';
 import ActivityTable from './ActivityTable';

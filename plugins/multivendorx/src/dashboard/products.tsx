@@ -1,17 +1,11 @@
 /* global appLocalizer */
 import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
-import {
-	useModules,
-	getApiLink,
-	TableCard,
-	NavigatorHeader,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-	InfoItem,
-	Notice
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { InfoItem, Notice } from '@zyra/primitives';
+import { useModules } from '@zyra/providers';
+import { NavigatorHeader } from '@zyra/admin';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toWcIsoDate, dashNavigate } from '../services/commonFunction';

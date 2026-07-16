@@ -1,5 +1,5 @@
 /* global appLocalizer */
-import { SettingsNavigator } from 'zyra';
+import { SettingsNavigator } from '@zyra/admin';
 import '../../dashboard/dashboardCommon.scss';
 import { useLocation, Link } from 'react-router-dom';
 import MarketplaceReport from './MarketplaceReport';

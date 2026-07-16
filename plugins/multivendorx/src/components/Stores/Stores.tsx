@@ -2,19 +2,17 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import StoreTable from './StoreTable';
 import EditStore from './Edit/EditStore';
+import { getApiLink } from '@zyra/core';
+import { FormGroup, FormGroupWrapper, PopupUI } from '@zyra/primitives';
 import {
 	ButtonInputUI,
 	BasicInputUI,
 	EmailsInputUI,
 	FileInputUI,
-	FormGroup,
-	FormGroupWrapper,
-	getApiLink,
-	NavigatorHeader,
-	PopupUI,
 	SelectInputUI,
 	TextAreaUI,
-} from 'zyra';
+} from '@zyra/inputs';
+import { NavigatorHeader } from '@zyra/admin';
 import { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';

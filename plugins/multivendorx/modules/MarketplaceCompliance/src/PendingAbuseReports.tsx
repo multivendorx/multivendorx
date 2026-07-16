@@ -2,14 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	TableCard,
-	PopupUI,
-	TableRow,
-	QueryProps,
-	InfoItem,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { PopupUI, InfoItem } from '@zyra/primitives';
+import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
 import { getUrl } from '../../../src/services/commonFunction';
 

@@ -2,13 +2,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	ButtonInputUI,
-	getApiLink,
-	QueryProps,
-	TableCard,
-	TableRow,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { ButtonInputUI } from '@zyra/inputs';
+import { QueryProps, TableCard, TableRow } from '@zyra/table';
 
 const PendingDeactivateRequests: React.FC<object> = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);

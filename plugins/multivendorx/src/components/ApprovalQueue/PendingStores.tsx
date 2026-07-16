@@ -2,16 +2,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	FormGroupWrapper,
-	TableCard,
-	ButtonInputUI,
-	TextAreaUI,
-	PopupUI,
-	QueryProps,
-	InfoItem,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { FormGroupWrapper, PopupUI, InfoItem } from '@zyra/primitives';
+import { ButtonInputUI, TextAreaUI } from '@zyra/inputs';
+import { TableCard, QueryProps } from '@zyra/table';
 
 import { formatLocalDate, getUrl } from '@/services/commonFunction';
 

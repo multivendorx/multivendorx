@@ -11,18 +11,16 @@ import {
 	Tooltip,
 } from 'recharts';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
 import {
 	Analytics,
 	Card,
 	Column,
 	Container,
-	getApiLink,
 	InfoItem,
 	ComponentStatusView,
-	TableCard,
-	TableRow,
-	QueryProps,
-} from 'zyra';
+} from '@zyra/primitives';
+import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import axios from 'axios';
 import {
 	downloadCSV,

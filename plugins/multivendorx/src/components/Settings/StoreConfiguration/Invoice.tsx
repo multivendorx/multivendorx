@@ -1,22 +1,24 @@
+import { getApiLink } from '@zyra/core';
 import {
-	BasicInputUI,
 	Card,
-	ChoiceToggleUI,
-	ColorSettingInputUI,
 	Column,
 	Container,
-	ExpandablePanelUI,
-	FileInputUI,
 	FormGroup,
 	FormGroupWrapper,
-	MultiCheckBoxUI,
-	TabsUI,
-	TextAreaUI,
 	NoticeManager,
-	getApiLink,
 	PopupUI,
-	useModules
-} from 'zyra';
+} from '@zyra/primitives';
+import {
+	BasicInputUI,
+	ChoiceToggleUI,
+	ColorSettingInputUI,
+	ExpandablePanelUI,
+	FileInputUI,
+	MultiCheckBoxUI,
+	TextAreaUI,
+} from '@zyra/inputs';
+import { useModules } from '@zyra/providers';
+import { TabsUI } from '@zyra/admin';
 import ShowProPopup from '../../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { useState } from 'react';

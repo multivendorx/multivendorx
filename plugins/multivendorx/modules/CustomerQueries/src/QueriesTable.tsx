@@ -2,21 +2,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
 import {
-	getApiLink,
 	FormGroupWrapper,
 	FormGroup,
-	TableCard,
+	PopupUI,
+	InfoItem,
+} from '@zyra/primitives';
+import {
 	BasicInputUI,
 	ButtonInputUI,
 	ChoiceToggleUI,
 	TextAreaUI,
-	PopupUI,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-	InfoItem,
-} from 'zyra';
+} from '@zyra/inputs';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 
 import Popup from '../../../src/components/Popup/Popup';
 import { formatLocalDate, getUrl } from '../../../src/services/commonFunction';

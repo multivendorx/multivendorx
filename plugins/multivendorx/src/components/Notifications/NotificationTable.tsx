@@ -2,16 +2,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	Container,
-	Column,
-	TableCard,
-	TableRow,
-	QueryProps,
-	InfoItem,
-	NoticeManager,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { Container, Column, InfoItem, NoticeManager } from '@zyra/primitives';
+import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import { getUrl } from '@/services/commonFunction';
 
 const NotificationTable = (React.FC = () => {

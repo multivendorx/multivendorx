@@ -1,22 +1,19 @@
 /* global appLocalizer */
 import { __ } from '@wordpress/i18n';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { getApiLink, useOutsideClick } from '@zyra/core';
 import {
-	ChoiceToggleUI,
-	getApiLink,
-	useModules,
 	FormGroupWrapper,
 	FormGroup,
 	Skeleton,
-	ButtonInputUI,
-	SelectInputUI,
-	SettingsNavigator,
 	PopupUI,
-	useOutsideClick,
 	ItemListUI,
 	Container,
 	NoticeManager,
-} from 'zyra';
+} from '@zyra/primitives';
+import { ChoiceToggleUI, ButtonInputUI, SelectInputUI } from '@zyra/inputs';
+import { useModules } from '@zyra/providers';
+import { SettingsNavigator } from '@zyra/admin';
 
 import StoreSettings from './StoreSettings';
 import PaymentSettings from './PaymentSettings';

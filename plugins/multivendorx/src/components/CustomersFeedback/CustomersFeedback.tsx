@@ -1,11 +1,7 @@
 /* global appLocalizer */
-import {
-	useModules,
-	Container,
-	Column,
-	ComponentStatusView,
-	SettingsNavigator,
-} from 'zyra';
+import { Container, Column, ComponentStatusView } from '@zyra/primitives';
+import { useModules } from '@zyra/providers';
+import { SettingsNavigator } from '@zyra/admin';
 import '../AdminDashboard/AdminDashboard.scss';
 import { useState, useEffect } from 'react';
 import axios from 'axios';

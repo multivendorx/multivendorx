@@ -1,23 +1,23 @@
 /* global appLocalizer */
 import React, { useEffect, useRef, useState } from 'react';
+import { getApiLink, useOutsideClick } from '@zyra/core';
 import {
-	TableRow,
-	ButtonInputUI,
-	BasicInputUI,
 	Card,
 	Column,
 	Container,
 	FormGroup,
 	FormGroupWrapper,
-	NavigatorHeader,
-	SelectInputUI,
-	TableCard,
-	TextAreaUI,
-	getApiLink,
-	useOutsideClick,
-	EmailsInputUI,
 	InfoItem,
-} from 'zyra';
+} from '@zyra/primitives';
+import {
+	ButtonInputUI,
+	BasicInputUI,
+	SelectInputUI,
+	TextAreaUI,
+	EmailsInputUI,
+} from '@zyra/inputs';
+import { NavigatorHeader } from '@zyra/admin';
+import { TableRow, TableCard } from '@zyra/table';
 import axios from 'axios';
 import { formatCurrency, dashNavigate } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';

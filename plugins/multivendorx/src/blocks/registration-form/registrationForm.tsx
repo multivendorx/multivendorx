@@ -1,7 +1,9 @@
 // RegistrationForm.tsx
 /* global registrationForm, */
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { FormViewer, getApiLink, ChoiceToggle } from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { ChoiceToggle } from '@zyra/inputs';
+import { FormViewer } from '@zyra/formbuilder';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 

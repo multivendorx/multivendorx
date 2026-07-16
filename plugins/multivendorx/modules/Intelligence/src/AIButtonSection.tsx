@@ -1,12 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import {
-	ButtonInputUI,
-	PopupUI,
-	TextAreaUI,
-	getApiLink,
-	Skeleton,
-	useOutsideClick,
-} from 'zyra';
+import { getApiLink, useOutsideClick } from '@zyra/core';
+import { PopupUI, Skeleton } from '@zyra/primitives';
+import { ButtonInputUI, TextAreaUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { addFilter, applyFilters, removeFilter } from '@wordpress/hooks';
 import axios from 'axios';

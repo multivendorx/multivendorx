@@ -1,10 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
-import {
-	BasicInputUI,
-	Card,
-	FormGroup,
-	FormGroupWrapper,
-} from 'zyra';
+import { Card, FormGroup, FormGroupWrapper } from '@zyra/primitives';
+import { BasicInputUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const RelatedList = ({ product, setProduct, handleChange }) => {

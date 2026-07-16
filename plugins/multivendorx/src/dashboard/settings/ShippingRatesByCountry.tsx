@@ -1,7 +1,9 @@
 /* global appLocalizer */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { DynamicRowSetting, FormGroup, getApiLink } from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { FormGroup } from '@zyra/primitives';
+import { DynamicRowSetting } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 
 interface ShippingStateRate {

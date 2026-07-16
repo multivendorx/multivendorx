@@ -2,12 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
-import {
-	ComponentStatusView,
-	getApiLink,
-	SelectInputUI,
-	SettingsNavigator,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { ComponentStatusView } from '@zyra/primitives';
+import { SelectInputUI } from '@zyra/inputs';
+import { SettingsNavigator } from '@zyra/admin';
 import axios from 'axios';
 import WalletTransaction from './WalletTransaction';
 import { applyFilters } from '@wordpress/hooks';

@@ -1,13 +1,9 @@
 /* global appLocalizer */
 import { addFilter } from '@wordpress/hooks';
 import { useRef, useState, useEffect } from 'react';
-import {
-	SelectInputUI,
-	Card,
-	FormGroup,
-	FormGroupWrapper,
-	useOutsideClick,
-} from 'zyra';
+import { useOutsideClick } from '@zyra/core';
+import { Card, FormGroup, FormGroupWrapper } from '@zyra/primitives';
+import { SelectInputUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { formatDate } from '@/services/commonFunction';
 

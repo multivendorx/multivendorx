@@ -1,6 +1,7 @@
 import { addFilter } from '@wordpress/hooks';
 import { useEffect } from 'react';
-import { TextAreaUI, Card, FormGroup, FormGroupWrapper } from 'zyra';
+import { Card, FormGroup, FormGroupWrapper } from '@zyra/primitives';
+import { TextAreaUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 
 const Policies = ({ product, setProduct, handleChange }) => {

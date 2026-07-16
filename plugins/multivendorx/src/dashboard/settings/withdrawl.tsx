@@ -2,14 +2,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	BasicInputUI,
-	FormGroup,
-	FormGroupWrapper,
-	ChoiceToggleUI,
-	getApiLink,
-	NoticeManager,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { FormGroup, FormGroupWrapper, NoticeManager } from '@zyra/primitives';
+import { BasicInputUI, ChoiceToggleUI } from '@zyra/inputs';
 import {
 	ConnectComponentsProvider,
 	ConnectAccountOnboarding,

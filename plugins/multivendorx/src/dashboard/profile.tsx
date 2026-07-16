@@ -2,15 +2,13 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import {
-	BasicInputUI,
 	FormGroup,
 	FormGroupWrapper,
-	ButtonInputUI,
 	Card,
 	Container,
 	Column,
-	TextAreaUI,
-} from 'zyra';
+} from '@zyra/primitives';
+import { BasicInputUI, ButtonInputUI, TextAreaUI } from '@zyra/inputs';
 import axios from 'axios';
 
 const ProfileUpdate: React.FC = () => {

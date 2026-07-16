@@ -1,6 +1,8 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { ButtonInputUI, Card, NavigatorHeader } from 'zyra';
+import { Card } from '@zyra/primitives';
+import { ButtonInputUI } from '@zyra/inputs';
+import { NavigatorHeader } from '@zyra/admin';
 
 const Tools: React.FC = () => {
 	return (

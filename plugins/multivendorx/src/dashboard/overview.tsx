@@ -10,15 +10,9 @@ import {
 	Cell,
 } from 'recharts';
 import axios from 'axios';
-import {
-	Analytics,
-	Card,
-	Column,
-	Container,
-	getApiLink,
-	InfoItem,
-	NavigatorHeader,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { Analytics, Card, Column, Container, InfoItem } from '@zyra/primitives';
+import { NavigatorHeader } from '@zyra/admin';
 import { formatCurrency } from '@/services/commonFunction';
 
 type Stat = {

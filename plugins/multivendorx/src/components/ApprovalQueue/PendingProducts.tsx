@@ -2,16 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	TableCard,
-	ButtonInputUI,
-	PopupUI,
-	TextAreaUI,
-	TableRow,
-	QueryProps,
-	InfoItem,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { PopupUI, InfoItem } from '@zyra/primitives';
+import { ButtonInputUI, TextAreaUI } from '@zyra/inputs';
+import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import { getUrl, toWcIsoDate } from '@/services/commonFunction';
 
 type StoreOption = {

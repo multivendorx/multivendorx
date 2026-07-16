@@ -5,13 +5,10 @@ import { SettingProvider, useSetting } from '../contexts/SettingContext';
 // Services
 import { getTemplateData } from '../services/templateService';
 // Utils
-import {
-	getAvailableSettings,
-	getSettingById,
-	RenderComponent,
-	useModules,
-	SettingsNavigator,
-} from 'zyra';
+import { getAvailableSettings, getSettingById } from '@zyra/core';
+import { RenderComponent } from '@zyra/inputs';
+import { useModules } from '@zyra/providers';
+import { SettingsNavigator } from '@zyra/admin';
 import ShowProPopup from '../components/Popup/Popup';
 import ShippingDelivery from './settings/ShippingDelivery';
 import BusinessAddress from './DashboardSettings/BusinessAddress';

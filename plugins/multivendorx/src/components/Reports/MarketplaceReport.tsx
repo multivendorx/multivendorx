@@ -10,16 +10,16 @@ import {
 	Cell,
 } from 'recharts';
 import axios from 'axios';
+import { getApiLink } from '@zyra/core';
 import {
 	Analytics,
 	Card,
 	Column,
 	Container,
-	getApiLink,
 	InfoItem,
 	ComponentStatusView,
-	useModules,
-} from 'zyra';
+} from '@zyra/primitives';
+import { useModules } from '@zyra/providers';
 import { formatCurrency } from '@/services/commonFunction';
 
 type Stat = {
