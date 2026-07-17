@@ -75,131 +75,94 @@ class Rest {
 
         $exclude = CatalogX()->setting->get_setting( 'exclusion', array() );
 
-        $prefixes = array(
-            'catalog',
-            'enquiry',
-            'quote',
+        $prefixes = array( 'catalog', 'enquiry', 'quote' );
+
+        $config = array(
+            'products' => array(
+                'setting' => 'product_list',
+            ),
+            'categories' => array(
+                'setting'  => 'category_list',
+                'taxonomy' => 'product_cat',
+                'query'    => 'category',
+            ),
+            'tags' => array(
+                'setting'  => 'tag_list',
+                'taxonomy' => 'product_tag',
+                'query'    => 'tag',
+            ),
+            'brands' => array(
+                'setting'  => 'brand_list',
+                'taxonomy' => 'product_brand',
+                'query'    => 'tax_query',
+            ),
         );
 
-        $product_ids  = array();
-        $category_ids = array();
-        $tag_ids      = array();
-        $brand_ids    = array();
+        $product_ids = array();
 
         foreach ( $exclude_types as $type ) {
 
-            switch ( $type ) {
-
-                case 'products':
-                    foreach ( $prefixes as $prefix ) {
-                        $product_ids = array_merge(
-                            $product_ids,
-                            (array) ( $exclude[ "{$prefix}_exclusion_value_product_list" ] ?? array() )
-                        );
-                    }
-                    break;
-
-                case 'categories':
-                    foreach ( $prefixes as $prefix ) {
-                        $category_ids = array_merge(
-                            $category_ids,
-                            (array) ( $exclude[ "{$prefix}_exclusion_value_category_list" ] ?? array() )
-                        );
-                    }
-                    break;
-
-                case 'tags':
-                    foreach ( $prefixes as $prefix ) {
-                        $tag_ids = array_merge(
-                            $tag_ids,
-                            (array) ( $exclude[ "{$prefix}_exclusion_value_tag_list" ] ?? array() )
-                        );
-                    }
-                    break;
-
-                case 'brands':
-                    foreach ( $prefixes as $prefix ) {
-                        $brand_ids = array_merge(
-                            $brand_ids,
-                            (array) ( $exclude[ "{$prefix}_exclusion_value_brand_list" ] ?? array() )
-                        );
-                    }
-                    break;
+            if ( empty( $config[ $type ] ) ) {
+                continue;
             }
-        }
 
-        $product_ids  = array_unique( array_map( 'absint', $product_ids ) );
-        $category_ids = array_unique( array_map( 'absint', $category_ids ) );
-        $tag_ids      = array_unique( array_map( 'absint', $tag_ids ) );
-        $brand_ids    = array_unique( array_map( 'absint', $brand_ids ) );
+            $ids = array();
 
-        // Get products from categories.
-        if ( ! empty( $category_ids ) ) {
-            $product_ids = array_merge(
-                $product_ids,
-                wc_get_products(
-                    array(
-                        'limit'    => -1,
-                        'return'   => 'ids',
-                        'category' => array_map(
-                            function ( $term_id ) {
-                                $term = get_term( $term_id, 'product_cat' );
-                                return $term ? $term->slug : '';
-                            },
-                            $category_ids
-                        ),
-                    )
-                )
+            foreach ( $prefixes as $prefix ) {
+                $ids = array_merge(
+                    $ids,
+                    (array) ( $exclude[ "{$prefix}_exclusion_value_{$config[ $type ]['setting']}" ] ?? array() )
+                );
+            }
+
+            $ids = array_unique( array_map( 'absint', $ids ) );
+
+            if ( empty( $ids ) ) {
+                continue;
+            }
+
+            // Products are already product IDs.
+            if ( 'products' === $type ) {
+                $product_ids = array_merge( $product_ids, $ids );
+                continue;
+            }
+
+            $query = array(
+                'limit'  => -1,
+                'return' => 'ids',
             );
-        }
 
-        // Get products from tags.
-        if ( ! empty( $tag_ids ) ) {
+            if ( 'tax_query' === $config[ $type ]['query'] ) {
+
+                $query['tax_query'] = array(
+                    array(
+                        'taxonomy' => $config[ $type ]['taxonomy'],
+                        'field'    => 'term_id',
+                        'terms'    => $ids,
+                    ),
+                );
+
+            } else {
+
+                $query[ $config[ $type ]['query'] ] = array_map(
+                    static function ( $term_id ) use ( $config, $type ) {
+                        $term = get_term( $term_id, $config[ $type ]['taxonomy'] );
+
+                        return $term ? $term->slug : '';
+                    },
+                    $ids
+                );
+            }
+
             $product_ids = array_merge(
                 $product_ids,
-                wc_get_products(
-                    array(
-                        'limit'  => -1,
-                        'return' => 'ids',
-                        'tag'    => array_map(
-                            function ( $term_id ) {
-                                $term = get_term( $term_id, 'product_tag' );
-                                return $term ? $term->slug : '';
-                            },
-                            $tag_ids
-                        ),
-                    )
-                )
-            );
-        }
-
-        // Get products from brands.
-        if ( ! empty( $brand_ids ) ) {
-            $product_ids = array_merge(
-                $product_ids,
-                wc_get_products(
-                    array(
-                        'limit'     => -1,
-                        'return'    => 'ids',
-                        'tax_query' => array(
-                            array(
-                                'taxonomy' => 'product_brand',
-                                'field'    => 'term_id',
-                                'terms'    => $brand_ids,
-                            ),
-                        ),
-                    )
-                )
+                wc_get_products( $query )
             );
         }
 
         $product_ids = array_unique( array_map( 'absint', $product_ids ) );
 
-        if ( ! empty( $product_ids ) ) {
-            $args['post__in'] = $product_ids;
-        } else {
-            $args['post__in'] = array( 0 );
-        }
+        $args['post__in'] = ! empty( $product_ids ) ? $product_ids : array( 0 );
 
         return $args;
     }
