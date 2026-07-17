@@ -75,41 +75,130 @@ class Rest {
 
         $exclude = CatalogX()->setting->get_setting( 'exclusion', array() );
 
-        $map = array(
-            'products'   => array( 'catalog_exclusion_value_product_list' ),
-            'categories' => array( 'catalog_exclusion_value_category_list', 'product_cat' ),
-            'tags'       => array( 'catalog_exclusion_value_tag_list', 'product_tag' ),
-            'brands'     => array( 'catalog_exclusion_value_brand_list', 'product_brand' ),
+        $prefixes = array(
+            'catalog',
+            'enquiry',
+            'quote',
         );
 
+        $product_ids  = array();
+        $category_ids = array();
+        $tag_ids      = array();
+        $brand_ids    = array();
+
         foreach ( $exclude_types as $type ) {
-            if ( empty( $map[ $type ] ) ) {
-                continue;
-            }
 
-            list( $setting, $taxonomy ) = array_pad( $map[ $type ], 2, '' );
+            switch ( $type ) {
 
-            $ids = array_map( 'absint', (array) ( $exclude[ $setting ] ?? array() ) );
+                case 'products':
+                    foreach ( $prefixes as $prefix ) {
+                        $product_ids = array_merge(
+                            $product_ids,
+                            (array) ( $exclude[ "{$prefix}_exclusion_value_product_list" ] ?? array() )
+                        );
+                    }
+                    break;
 
-            if ( empty( $ids ) ) {
-                continue;
-            }
+                case 'categories':
+                    foreach ( $prefixes as $prefix ) {
+                        $category_ids = array_merge(
+                            $category_ids,
+                            (array) ( $exclude[ "{$prefix}_exclusion_value_category_list" ] ?? array() )
+                        );
+                    }
+                    break;
 
-            if ( empty( $taxonomy ) ) {
-                $args['post__in'] = isset( $args['post__in'] )
-                    ? array_unique( array_merge( $args['post__in'], $ids ) )
-                    : $ids;
-            } else {
-                $args['tax_query'][] = array(
-                    'taxonomy' => $taxonomy,
-                    'field'    => 'term_id',
-                    'terms'    => $ids,
-                );
+                case 'tags':
+                    foreach ( $prefixes as $prefix ) {
+                        $tag_ids = array_merge(
+                            $tag_ids,
+                            (array) ( $exclude[ "{$prefix}_exclusion_value_tag_list" ] ?? array() )
+                        );
+                    }
+                    break;
+
+                case 'brands':
+                    foreach ( $prefixes as $prefix ) {
+                        $brand_ids = array_merge(
+                            $brand_ids,
+                            (array) ( $exclude[ "{$prefix}_exclusion_value_brand_list" ] ?? array() )
+                        );
+                    }
+                    break;
             }
         }
 
-        if ( ! empty( $args['tax_query'] ) ) {
-            $args['tax_query']['relation'] = 'OR';
+        $product_ids  = array_unique( array_map( 'absint', $product_ids ) );
+        $category_ids = array_unique( array_map( 'absint', $category_ids ) );
+        $tag_ids      = array_unique( array_map( 'absint', $tag_ids ) );
+        $brand_ids    = array_unique( array_map( 'absint', $brand_ids ) );
+
+        // Get products from categories.
+        if ( ! empty( $category_ids ) ) {
+            $product_ids = array_merge(
+                $product_ids,
+                wc_get_products(
+                    array(
+                        'limit'    => -1,
+                        'return'   => 'ids',
+                        'category' => array_map(
+                            function ( $term_id ) {
+                                $term = get_term( $term_id, 'product_cat' );
+                                return $term ? $term->slug : '';
+                            },
+                            $category_ids
+                        ),
+                    )
+                )
+            );
+        }
+
+        // Get products from tags.
+        if ( ! empty( $tag_ids ) ) {
+            $product_ids = array_merge(
+                $product_ids,
+                wc_get_products(
+                    array(
+                        'limit'  => -1,
+                        'return' => 'ids',
+                        'tag'    => array_map(
+                            function ( $term_id ) {
+                                $term = get_term( $term_id, 'product_tag' );
+                                return $term ? $term->slug : '';
+                            },
+                            $tag_ids
+                        ),
+                    )
+                )
+            );
+        }
+
+        // Get products from brands.
+        if ( ! empty( $brand_ids ) ) {
+            $product_ids = array_merge(
+                $product_ids,
+                wc_get_products(
+                    array(
+                        'limit'     => -1,
+                        'return'    => 'ids',
+                        'tax_query' => array(
+                            array(
+                                'taxonomy' => 'product_brand',
+                                'field'    => 'term_id',
+                                'terms'    => $brand_ids,
+                            ),
+                        ),
+                    )
+                )
+            );
+        }
+
+        $product_ids = array_unique( array_map( 'absint', $product_ids ) );
+
+        if ( ! empty( $product_ids ) ) {
+            $args['post__in'] = $product_ids;
+        } else {
+            $args['post__in'] = array( 0 );
         }
 
         return $args;
