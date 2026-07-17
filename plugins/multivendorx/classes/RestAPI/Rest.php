@@ -257,7 +257,6 @@ class Rest {
         return $args;
     }
 
-
     /**
      * Filter WooCommerce coupons by meta key existence.
      *
@@ -352,8 +351,9 @@ class Rest {
             'user',
             'bookable_resource',
             'wc_appointment',
+            'product_variation'
         );
-
+        
         if ( $request_method === 'GET' && in_array( $post_type, $allowed_post_types, true ) ) {
             return true;
         }
