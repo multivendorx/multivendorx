@@ -344,17 +344,26 @@ class Rest {
      */
     public function grant_woocommerce_rest_permission( $permission, $context, $object_id, $post_type ) {
         $request_method = $_SERVER['REQUEST_METHOD'] ?? '';
-        $allowed_post_types = array(
+
+        $public_post_types = array(
             'product',
-            'shop_order',
             'shop_coupon',
             'product_cat',
+        );
+
+        if ( $request_method === 'GET' && in_array( $post_type, $public_post_types, true ) ) {
+            return true;
+        }
+
+        $private_post_types = array(
+            'shop_order',
             'user',
+            'payment_gateways',
             'bookable_resource',
             'wc_appointment',
         );
 
-        if ( $request_method === 'GET' && in_array( $post_type, $allowed_post_types, true ) ) {
+        if ( is_user_logged_in() && $request_method === 'GET' && in_array( $post_type, $private_post_types, true ) ) {
             return true;
         }
 
