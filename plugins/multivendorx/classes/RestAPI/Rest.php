@@ -349,8 +349,6 @@ class Rest {
             'product',
             'shop_coupon',
             'product_cat',
-            'bookable_resource',
-            'wc_appointment',
         );
 
         if ( $request_method === 'GET' && in_array( $post_type, $public_post_types, true ) ) {
@@ -361,6 +359,8 @@ class Rest {
             'shop_order',
             'user',
             'payment_gateways',
+            'bookable_resource',
+            'wc_appointment',
         );
 
         if ( is_user_logged_in() && $request_method === 'GET' && in_array( $post_type, $private_post_types, true ) ) {
