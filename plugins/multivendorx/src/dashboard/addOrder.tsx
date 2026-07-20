@@ -332,7 +332,12 @@ const AddOrder = () => {
 			payment_method_title: selectedPayment?.method_title || '',
 			set_paid: false,
 			customer_note: orderNote || '',
-			meta_data: [],
+			meta_data: [
+				// {
+				// 	key: 'multivendorx_store_id',
+				// 	value: appLocalizer.store_id,
+				// },
+			],
 		};
 
 		axios
