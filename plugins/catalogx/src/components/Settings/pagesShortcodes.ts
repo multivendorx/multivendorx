@@ -134,6 +134,27 @@ export default {
                         }
                     ],
                 },
+                {
+                    key: '',
+                    label: '[catalogx_excluded_products]',
+                    name: 'Excluded Products',
+                    desc: __(
+                        'Displays the excluded products page with optional include types.',
+                        'catalogx'
+                    ),
+                    arguments: [
+                        {
+                            attribute: 'include_types',
+                            accepted: 'products, categories, tags, brands',
+                            default:
+                                '[catalogx_excluded_products include_types="products,categories"]',
+                            description: __(
+                                'Specify a comma-separated list of entity types to include. Available values: products, categories, tags, brands.',
+                                'catalogx'
+                            ),
+                        },
+                    ],
+                },
             ],
         },
     ],

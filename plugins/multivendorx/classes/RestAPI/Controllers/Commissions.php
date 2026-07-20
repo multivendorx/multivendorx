@@ -10,6 +10,7 @@ namespace MultiVendorX\RestAPI\Controllers;
 use MultiVendorX\Commission\CommissionUtil;
 use MultiVendorX\Utill;
 use MultiVendorX\Store\Store;
+use MultiVendorX\Store\StoreUtil;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -112,6 +113,14 @@ class Commissions extends \WP_REST_Controller {
             $store_id = $request->get_param( 'store_id' );
             $format   = $request->get_param( 'format' );
             $order_id = $request->get_param( 'order_id' );
+
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to view this store\'s commissions.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
 
             if ( 'reports' === $format ) {
                 $top_stores = $request->get_param( 'top_stores' );
@@ -297,7 +306,24 @@ class Commissions extends \WP_REST_Controller {
         try {
             $id         = absint( $request->get_param( 'id' ) );
             $commission = reset( CommissionUtil::get_commission_information( array( 'ID' => $id ) ) );
-            $data       = $this->prepare_item_for_response( $commission, true );
+
+            if ( ! $commission ) {
+                return new \WP_Error(
+                    'rest_not_found',
+                    __( 'Commission not found.', 'multivendorx' ),
+                    array( 'status' => 404 )
+                );
+            }
+
+            if ( ! StoreUtil::current_user_can_manage_store( $commission['store_id'] ?? 0 ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to view this commission.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+
+            $data = $this->prepare_item_for_response( $commission, true );
 
             return rest_ensure_response( $data );
         } catch ( \Exception $e ) {
@@ -334,6 +360,14 @@ class Commissions extends \WP_REST_Controller {
             $action   = $request->get_param( 'action' );
 
             if ( 'regenerate' === $action ) {
+                if ( ! current_user_can( 'manage_options' ) ) {
+                    return new \WP_Error(
+                        'rest_forbidden',
+                        __( 'You are not allowed to regenerate commissions.', 'multivendorx' ),
+                        array( 'status' => 403 )
+                    );
+                }
+
                 $order = wc_get_order( $order_id );
                 if ( $order ) {
                     MultiVendorX()->order->admin->regenerate_order_commissions( $order );

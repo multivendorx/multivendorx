@@ -23,6 +23,7 @@ class Shortcode {
     public function __construct() {
         // For quote page.
         add_shortcode( 'catalogx_request_quote', array( $this, 'display_request_quote' ) );
+        add_shortcode( 'catalogx_excluded_products', array( $this, 'excluded_products' ) );
 
         add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
     }
@@ -39,6 +40,8 @@ class Shortcode {
             FrontendScripts::enqueue_script( 'catalogx-quote-cart-view-script' );
             FrontendScripts::localize_scripts( 'catalogx-quote-cart-view-script' );
         }
+        FrontendScripts::enqueue_script( 'catalogx-excluded-products-view-script' );
+        FrontendScripts::localize_scripts( 'catalogx-excluded-products-view-script' );
         FrontendScripts::enqueue_style( 'catalogx-frontend-style' );
     }
 
@@ -55,4 +58,31 @@ class Shortcode {
         <?php
         return ob_get_clean();
     }
+
+    /**
+     * Display excluded products.
+     *
+     * @param array $attributes Block or shortcode attributes.
+     * @return string HTML container for excluded products.
+     */
+    public function excluded_products( $attributes ) {
+        $attributes = shortcode_atts(
+            array(
+                'include_types' => '',
+            ),
+            $attributes,
+            'catalogx_excluded_products'
+        );
+
+        $json_attrs = esc_attr(
+            wp_json_encode(
+                array(
+                    'includeTypes' => array_filter( array_map( 'trim', explode( ',', $attributes['include_types'] ) ) ),
+                )
+            )
+        );
+
+        return '<div id="catalogx-excluded-products" data-attributes="' . $json_attrs . '"></div>';
+    }
+
 }

@@ -8,6 +8,7 @@
 namespace MultiVendorX\RestAPI\Controllers;
 
 use MultiVendorX\Store\Store;
+use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Transaction\Transaction;
 use MultiVendorX\Utill;
 
@@ -121,6 +122,14 @@ class Transactions extends \WP_REST_Controller {
 			$ids            = $request->get_param( 'ids' );
 			$sec_fetch_site = $request->get_header( 'sec_fetch_site' );
 			$referer        = $request->get_header( 'referer' );
+
+			if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+				return new \WP_Error(
+					'rest_forbidden',
+					__( 'You are not allowed to view this store\'s transactions.', 'multivendorx' ),
+					array( 'status' => 403 )
+				);
+			}
 
 			$args = array_filter(
 				array(
@@ -248,6 +257,15 @@ class Transactions extends \WP_REST_Controller {
                 )
             );
         }
+
+        if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __( 'You are not allowed to view this store\'s balance.', 'multivendorx' ),
+                array( 'status' => 403 )
+            );
+        }
+
         $last_transaction = Transaction::get_balances_for_store( $store_id );
 
         $balance         = $last_transaction['balance'];
@@ -307,6 +325,15 @@ class Transactions extends \WP_REST_Controller {
         if ( ! $store->exists() ) {
             return;
         }
+
+        if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __( 'You are not allowed to manage this store\'s transactions.', 'multivendorx' ),
+                array( 'status' => 403 )
+            );
+        }
+
         $threshold_amount = MultiVendorX()->setting->get_setting( 'payout_threshold_amount', 0 );
 
         if ( $disbursement ) {

@@ -79,6 +79,7 @@ const Managestock = () => {
         },
         subscriber_no: {
             label: __('Subscriber No', 'notifima'),
+            isSortable: true,
         },
     };
 

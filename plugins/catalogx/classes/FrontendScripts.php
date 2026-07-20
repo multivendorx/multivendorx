@@ -541,6 +541,10 @@ class FrontendScripts {
                         )
                     ),
                 ),
+                'catalogx-excluded-products-view-script'       => array(
+                    'object_name' => 'excludedProducts',
+                    'data'        => $base_rest,
+                ),
             )
         );
 
