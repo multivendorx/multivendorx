@@ -17,6 +17,14 @@ namespace MultiVendorX\Elementor;
 class Admin {
 
     /**
+     * Resolved Elementor template ID for the current request, cached to
+     * avoid repeating the lookup query across the several hooks below.
+     *
+     * @var int|false|null
+     */
+    private $elementor_template_id = null;
+
+    /**
      * Constructor.
      */
     public function __construct() {
@@ -25,6 +33,10 @@ class Admin {
         add_filter( 'multivendorx_store_elementor_template', array( $this, 'elementor_template_filter' ), 10 );
         // Add content in Elementor template.
         add_action( 'save_post_elementor_library', array( $this, 'default_store_template' ), 10, 3 );
+        // Make sure the store template is included in Elementor's frontend style render pass, however it gets triggered.
+        add_action( 'elementor/frontend/before_enqueue_styles', array( $this, 'register_store_template_for_render' ) );
+        // Trigger Elementor's own frontend style pipeline on the store page, since Elementor doesn't self-attach it there.
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_atomic_widgets_styles' ) );
     }
 
     /**
@@ -67,11 +79,72 @@ class Admin {
     }
 
     /**
+     * Register the store's Elementor template with Elementor's post/render
+     * pipeline so its Atomic Elements styles are generated in whichever
+     * frontend style render pass actually runs.
+     *
+     * Elementor's `Frontend::enqueue_styles()` only runs its body once per
+     * request (guarded by an internal `static` flag) and only collects
+     * Atomic Elements styles for post IDs that fired `elementor/post/render`
+     * *before* that single pass executes. `elementor-canvas.php` renders the
+     * store template via `get_builder_content()`, which never fires that
+     * action, so hooking here - the first action `enqueue_styles()` fires,
+     * before its render pass - guarantees the store template's ID is
+     * included regardless of whether Elementor's own automatic hook (e.g.
+     * for a real "store" page that happens to be singular) or
+     * {@see self::enqueue_atomic_widgets_styles()} below is what actually
+     * triggers that single pass.
+     *
+     * @return void
+     */
+    public function register_store_template_for_render() {
+        if ( ! get_query_var( MultiVendorX()->store->rewrites->custom_store_url ) ) {
+            return;
+        }
+
+        $elementor_template_id = $this->get_elementor_template();
+
+        if ( $elementor_template_id ) {
+            do_action( 'elementor/post/render', $elementor_template_id );
+        }
+    }
+
+    /**
+     * Trigger Elementor's own frontend style pipeline on the store page.
+     *
+     * Elementor only hooks `Frontend::enqueue_styles()` onto
+     * `wp_enqueue_scripts` for `is_singular()` requests whose queried post is
+     * itself built with Elementor - never for the store page's virtual query
+     * (`Rewrites::make_endpoint_virtual_page()`). Without this, nothing ever
+     * calls Elementor's style pipeline at all on the store page, so we call
+     * its public `enqueue_styles()` method ourselves rather than manually
+     * enqueuing a CSS file. Registration in {@see self::register_store_template_for_render()}
+     * ensures the store template's own styles are included in this pass.
+     *
+     * @return void
+     */
+    public function enqueue_atomic_widgets_styles() {
+        if ( ! class_exists( '\Elementor\Plugin' ) || ! did_action( 'elementor/loaded' ) ) {
+            return;
+        }
+
+        if ( ! get_query_var( MultiVendorX()->store->rewrites->custom_store_url ) || ! $this->get_elementor_template() ) {
+            return;
+        }
+
+        \Elementor\Plugin::$instance->frontend->enqueue_styles();
+    }
+
+    /**
      * Get active Elementor template for store.
      *
      * @return int|false Template ID or false if not found.
      */
     private function get_elementor_template() {
+        if ( null !== $this->elementor_template_id ) {
+            return $this->elementor_template_id;
+        }
+
         if ( ! did_action( 'elementor/loaded' ) ) {
             return false;
         }
@@ -91,7 +164,10 @@ class Admin {
         );
 
         $templates = get_posts( $args );
-        return ! empty( $templates ) ? $templates[0]->ID : false;
+
+        $this->elementor_template_id = ! empty( $templates ) ? $templates[0]->ID : false;
+
+        return $this->elementor_template_id;
     }
 
     /**
