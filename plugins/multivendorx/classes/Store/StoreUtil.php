@@ -497,6 +497,42 @@ class StoreUtil {
 		return $primary_owner;
 	}
 
+
+	/**
+	 * Whether the current user may read/manage a specific store's data.
+	 *
+	 * True for site administrators, or for a user who is the store's primary
+	 * owner or a listed staff member. Used to scope REST access to a single
+	 * store's records rather than trusting a bare `edit_stores`/`manage_options`
+	 * capability check, since `edit_stores` is also granted to the `store_owner`
+	 * role itself.
+	 *
+	 * @param int $store_id Store ID.
+	 * @return bool
+	 */
+	public static function current_user_can_manage_store( $store_id ) {
+		if ( current_user_can( 'manage_options' ) ) {
+			return true;
+		}
+
+		$store_id = (int) $store_id;
+		if ( ! $store_id ) {
+			return false;
+		}
+
+		$user_id = MultiVendorX()->current_user_id;
+		if ( ! $user_id ) {
+			return false;
+		}
+
+		if ( (int) self::get_primary_owner( $store_id ) === $user_id ) {
+			return true;
+		}
+
+		$store_users = self::get_store_users( $store_id );
+		return in_array( $user_id, (array) $store_users['users'], true );
+	}
+
 	/**
 	 * Set primary owner for a store.
 	 *
