@@ -383,9 +383,7 @@ class Rest {
         // the active store gets them, for the Store Dashboard "Add Order"
         // screen (`addOrder.tsx`), which needs a customer picker and the
         // marketplace's enabled payment methods.
-        $authenticated_only_post_types = array_merge( $allowed_post_types, array( 'user', 'payment_gateways' ) );
-
-        if ( is_array( $users ) && ! empty( $users['users'] ) && in_array( $user_id, $users['users'], true ) && in_array( $post_type, $authenticated_only_post_types, true ) ) {
+        if ( is_array( $users ) && ! empty( $users['users'] ) && in_array( $user_id, $users['users'], true ) ) {
             return true;
         }
 
