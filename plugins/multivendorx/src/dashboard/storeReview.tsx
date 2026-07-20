@@ -3,9 +3,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { FormGroupWrapper, FormGroup, PopupUI } from '@zyra/elements';
+
 import { ButtonInputUI, TextAreaUI } from '@zyra/inputs';
-import { NavigatorHeader } from '@zyra/admin';
+import {
+	FormGroupWrapper,
+	FormGroup,
+	PopupUI,
+	NavigatorHeader,
+} from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 
 import { formatLocalDate } from '@/services/commonFunction';

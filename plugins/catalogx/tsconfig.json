@@ -5,8 +5,7 @@
 			"zyra": ["./node_modules/@multivendorx/zyra"],
 			"@zyra/core": ["./node_modules/@multivendorx/zyra"],
 			"@zyra/admin": ["./node_modules/@multivendorx/zyra"],
-			"@zyra/elements": ["./node_modules/@multivendorx/zyra"],
-			"@zyra/providers": ["./node_modules/@multivendorx/zyra"],
+			"@zyra/components": ["./node_modules/@multivendorx/zyra"],
 			"@zyra/inputs": ["./node_modules/@multivendorx/zyra"],
 			"@zyra/table": ["./node_modules/@multivendorx/zyra"],
 			"@zyra/builders": ["./node_modules/@multivendorx/zyra"]

@@ -440,13 +440,16 @@ module.exports = function createWebpackConfig(
 				zyra: '@multivendorx/zyra',
 				'@zyra/core': '@multivendorx/zyra',
 				'@zyra/admin': '@multivendorx/zyra',
-				// @zyra/elements is the former @zyra/primitives package
-				// (renamed upstream), and also absorbed the former
-				// @zyra/recaptcha package (RecaptchaUI, Recaptcha,
-				// CustomRecaptcha) — @zyra/recaptcha no longer exists
-				// upstream, don't re-add an alias for it.
-				'@zyra/elements': '@multivendorx/zyra',
-				'@zyra/providers': '@multivendorx/zyra',
+				// @zyra/components is the former @zyra/elements package
+				// (renamed upstream, itself formerly @zyra/primitives), and
+				// also absorbed the former @zyra/recaptcha package
+				// (RecaptchaUI, Recaptcha, CustomRecaptcha), the settings
+				// navigation/module list (Modules, SettingsNavigator,
+				// formerly @zyra/admin), and MapProvider/GuidedTourProvider
+				// (formerly @zyra/providers, now removed — don't re-add an
+				// alias for it; useModules/SettingProvider/ThemeProvider
+				// moved to @zyra/core instead).
+				'@zyra/components': '@multivendorx/zyra',
 				'@zyra/inputs': '@multivendorx/zyra',
 				'@zyra/table': '@multivendorx/zyra',
 				// @zyra/builders covers what used to be the separate

@@ -5,7 +5,7 @@ import {
 	FormGroupWrapper,
 	PopupUI,
 	SectionUI,
-} from '@zyra/elements';
+} from '@zyra/components';
 import { formatCurrency, formatDate } from '@/services/commonFunction';
 
 type TransactionRow = {

@@ -1,4 +1,4 @@
-import { getApiLink } from '@zyra/core';
+
 import {
 	Card,
 	Column,
@@ -7,7 +7,7 @@ import {
 	FormGroupWrapper,
 	NoticeManager,
 	PopupUI,
-} from '@zyra/elements';
+} from '@zyra/components';
 import {
 	BasicInputUI,
 	ChoiceToggleUI,
@@ -17,7 +17,7 @@ import {
 	MultiCheckBoxUI,
 	TextAreaUI,
 } from '@zyra/inputs';
-import { useModules } from '@zyra/providers';
+import { getApiLink, useModules } from '@zyra/core';
 import { TabsUI } from '@zyra/admin';
 import ShowProPopup from '../../Popup/Popup';
 import { __ } from '@wordpress/i18n';

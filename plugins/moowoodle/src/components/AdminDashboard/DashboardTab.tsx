@@ -6,7 +6,7 @@ import {
 	ItemListUI,
 	Container,
 	NoticeManager,
-} from '@zyra/elements';
+} from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
 import MoowoodleIcon from '../../assets/images/moowoodle-icon.png';

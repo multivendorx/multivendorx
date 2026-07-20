@@ -7,7 +7,7 @@ import {
 	Card,
 	Container,
 	Column,
-} from '@zyra/elements';
+} from '@zyra/components';
 import { BasicInputUI, ButtonInputUI, TextAreaUI } from '@zyra/inputs';
 import axios from 'axios';
 

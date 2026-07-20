@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getApiLink } from '@zyra/core';
-import { MapProviderUI } from '@zyra/providers';
+import { MapProviderUI } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 
 interface StoreRow {

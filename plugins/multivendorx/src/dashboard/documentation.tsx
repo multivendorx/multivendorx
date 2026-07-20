@@ -2,14 +2,16 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { getApiLink } from '@zyra/core';
+
+import { ButtonInputUI } from '@zyra/inputs';
+import { HeaderSearch } from '@zyra/admin';
 import {
 	Card,
 	ComponentStatusView,
 	PopupUI,
 	ItemListUI,
-} from '@zyra/elements';
-import { ButtonInputUI } from '@zyra/inputs';
-import { HeaderSearch, NavigatorHeader } from '@zyra/admin';
+	NavigatorHeader,
+} from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 import { truncateText } from '@/services/commonFunction';
 

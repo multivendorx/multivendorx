@@ -3,13 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import {
-	Container,
-	Column,
-	FormGroupWrapper,
-	FormGroup,
-	PopupUI,
-} from '@zyra/elements';
+
 import {
 	TextAreaUI,
 	BasicInputUI,
@@ -17,7 +11,14 @@ import {
 	ChoiceToggleUI,
 	SelectInputUI,
 } from '@zyra/inputs';
-import { NavigatorHeader } from '@zyra/admin';
+import {
+	Container,
+	Column,
+	FormGroupWrapper,
+	FormGroup,
+	PopupUI,
+	NavigatorHeader,
+} from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
 import { formatLocalDate } from '../../../src/services/commonFunction';

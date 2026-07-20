@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PopupUI, Container, Column } from '@zyra/elements';
+import { PopupUI, Container, Column } from '@zyra/components';
 import ShowProPopup from '../Popup/Popup';
 import './enquiryMessages.scss';
 import { applyFilters } from '@wordpress/hooks';

@@ -14,7 +14,7 @@ import {
 	PopupUI,
 	ItemListUI,
 	Notice,
-} from '@zyra/elements';
+} from '@zyra/components';
 import {
 	BasicInputUI,
 	ButtonInputUI,

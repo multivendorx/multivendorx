@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { NavigatorHeader } from '@zyra/admin';
+import { NavigatorHeader } from '@zyra/components';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 
 const StoreFollower: React.FC = () => {

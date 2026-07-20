@@ -11,8 +11,15 @@ import {
 } from 'recharts';
 import axios from 'axios';
 import { getApiLink } from '@zyra/core';
-import { Analytics, Card, Column, Container, InfoItem } from '@zyra/elements';
-import { NavigatorHeader } from '@zyra/admin';
+
+import {
+	Analytics,
+	Card,
+	Column,
+	Container,
+	InfoItem,
+	NavigatorHeader,
+} from '@zyra/components';
 import { formatCurrency } from '@/services/commonFunction';
 
 type Stat = {

@@ -1,5 +1,5 @@
 import { addFilter, applyFilters } from '@wordpress/hooks';
-import { Card, FormGroup, FormGroupWrapper } from '@zyra/elements';
+import { Card, FormGroup, FormGroupWrapper } from '@zyra/components';
 import {
 	MultiCheckBoxUI,
 	SelectInputUI,

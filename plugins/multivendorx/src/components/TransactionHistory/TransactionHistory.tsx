@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { ComponentStatusView } from '@zyra/elements';
+
 import { SelectInputUI } from '@zyra/inputs';
-import { SettingsNavigator } from '@zyra/admin';
+import { ComponentStatusView, SettingsNavigator } from '@zyra/components';
 import axios from 'axios';
 import WalletTransaction from './WalletTransaction';
 import { applyFilters } from '@wordpress/hooks';

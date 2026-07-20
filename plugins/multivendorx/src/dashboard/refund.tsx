@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { InfoItem } from '@zyra/elements';
-import { NavigatorHeader } from '@zyra/admin';
+
+import { InfoItem, NavigatorHeader } from '@zyra/components';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 
 import { dashNavigate, formatLocalDate } from '@/services/commonFunction';

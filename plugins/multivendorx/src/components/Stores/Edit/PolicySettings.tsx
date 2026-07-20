@@ -8,7 +8,7 @@ import {
 	Card,
 	FormGroupWrapper,
 	NoticeManager,
-} from '@zyra/elements';
+} from '@zyra/components';
 import { TextAreaUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 interface StoreData {

@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import { Column, Container, InfoItem, PopupUI } from '@zyra/elements';
-import { NavigatorHeader } from '@zyra/admin';
+
+import {
+	Column,
+	Container,
+	InfoItem,
+	PopupUI,
+	NavigatorHeader,
+} from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';

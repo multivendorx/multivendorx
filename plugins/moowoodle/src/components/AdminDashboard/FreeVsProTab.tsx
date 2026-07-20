@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Column, Container } from '@zyra/elements';
+import { Card, Column, Container } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 import MoowoodleConcept from '../../assets/images/moowoodle-concept.png';
 interface Feature {

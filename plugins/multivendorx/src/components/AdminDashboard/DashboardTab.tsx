@@ -1,14 +1,15 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
+
+import { ButtonInputUI } from '@zyra/inputs';
 import {
 	Card,
 	Column,
 	ItemListUI,
 	Container,
 	NoticeManager,
-} from '@zyra/elements';
-import { ButtonInputUI } from '@zyra/inputs';
-import { Modules } from '@zyra/admin';
+	Modules,
+} from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { getModuleData } from '../../services/templateService';
 import axios from 'axios';

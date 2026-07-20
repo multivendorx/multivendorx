@@ -6,10 +6,10 @@ import { SettingProvider, useSetting } from '../../contexts/SettingContext';
 // Services
 import { getTemplateData } from '../../services/templateService';
 // Utils
-import { getAvailableSettings, getSettingById } from '@zyra/core';
+
 import { RenderComponent } from '@zyra/inputs';
-import { useModules } from '@zyra/providers';
-import { SettingsNavigator } from '@zyra/admin';
+import { getAvailableSettings, getSettingById, useModules } from '@zyra/core';
+import { SettingsNavigator } from '@zyra/components';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 

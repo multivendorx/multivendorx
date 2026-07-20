@@ -1,8 +1,14 @@
 /* global appLocalizer */
 import { useState } from 'react';
 import { getApiLink } from '@zyra/core';
-import { Column, Container, InfoItem, PopupUI } from '@zyra/elements';
-import { NavigatorHeader } from '@zyra/admin';
+
+import {
+	Column,
+	Container,
+	InfoItem,
+	PopupUI,
+	NavigatorHeader,
+} from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';

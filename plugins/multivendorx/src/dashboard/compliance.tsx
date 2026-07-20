@@ -1,6 +1,8 @@
 /* global appLocalizer */
 import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
+
+import { ButtonInputUI, ExpandablePanelUI } from '@zyra/inputs';
 import {
 	Analytics,
 	Card,
@@ -8,9 +10,8 @@ import {
 	Container,
 	ItemListUI,
 	Notice,
-} from '@zyra/elements';
-import { ButtonInputUI, ExpandablePanelUI } from '@zyra/inputs';
-import { SettingsNavigator } from '@zyra/admin';
+	SettingsNavigator,
+} from '@zyra/components';
 
 const Compliance = (React.FC = () => {
 	const SimpleLink = ({ to, children, onClick, className }) => (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapProviderUI } from '@zyra/providers';
+import { MapProviderUI } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 
 interface MapConfigState {

@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { getApiLink } from '@zyra/core';
+
 import {
 	Container,
 	Column,
@@ -10,9 +10,9 @@ import {
 	Card,
 	NoticeManager,
 	InfoItem,
-} from '@zyra/elements';
+} from '@zyra/components';
 import { SelectInputUI, ButtonInputUI } from '@zyra/inputs';
-import { useModules } from '@zyra/providers';
+import { getApiLink, useModules } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 

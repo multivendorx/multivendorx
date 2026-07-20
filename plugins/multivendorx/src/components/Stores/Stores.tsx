@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import StoreTable from './StoreTable';
 import EditStore from './Edit/EditStore';
 import { getApiLink } from '@zyra/core';
-import { FormGroup, FormGroupWrapper, PopupUI } from '@zyra/elements';
+
 import {
 	ButtonInputUI,
 	BasicInputUI,
@@ -12,7 +12,12 @@ import {
 	SelectInputUI,
 	TextAreaUI,
 } from '@zyra/inputs';
-import { NavigatorHeader } from '@zyra/admin';
+import {
+	FormGroup,
+	FormGroupWrapper,
+	PopupUI,
+	NavigatorHeader,
+} from '@zyra/components';
 import { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';

@@ -6,14 +6,15 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { defaultCategoryCounts, dummyWholesalecustomer } from './WholesaleUserUtil';
 
+
 import {
 	Column,
 	Container,
 	InfoItem,
 	PopupUI,
 	ComponentStatusView,
-} from '@zyra/elements';
-import { NavigatorHeader } from '@zyra/admin';
+	NavigatorHeader,
+} from '@zyra/components';
 import { TableCard } from '@zyra/table';
 
 import ShowProPopup from '../Popup/Popup';

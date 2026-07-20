@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { getApiLink } from '@zyra/core';
+
+import { TextAreaUI } from '@zyra/inputs';
 import {
 	Container,
 	Column,
@@ -9,9 +11,8 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	NoticeManager,
-} from '@zyra/elements';
-import { TextAreaUI } from '@zyra/inputs';
-import { NavigatorHeader } from '@zyra/admin';
+	NavigatorHeader,
+} from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 
 const ShopPolicies = () => {

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
-import { getApiLink } from '@zyra/core';
+
 import {
 	Analytics,
 	Card,
@@ -14,8 +14,8 @@ import {
 	FormGroup,
 	SectionUI,
 	ComponentStatusView,
-} from '@zyra/elements';
-import { useModules } from '@zyra/providers';
+} from '@zyra/components';
+import { getApiLink, useModules } from '@zyra/core';
 import { formatCurrency } from '../../../services/commonFunction';
 import LatestReview from './LatestReview';
 import LatestRefundRequest from './LatestRefundRequest';

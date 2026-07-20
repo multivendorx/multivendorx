@@ -2,7 +2,16 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getApiLink } from '@zyra/core';
+
+
+import {
+	BasicInputUI,
+	SelectInputUI,
+	TextAreaUI,
+	FileInputUI,
+	ButtonInputUI,
+} from '@zyra/inputs';
+import { getApiLink, useModules } from '@zyra/core';
 import {
 	Card,
 	Column,
@@ -11,16 +20,8 @@ import {
 	FormGroup,
 	PopupUI,
 	Notice,
-} from '@zyra/elements';
-import {
-	BasicInputUI,
-	SelectInputUI,
-	TextAreaUI,
-	FileInputUI,
-	ButtonInputUI,
-} from '@zyra/inputs';
-import { useModules } from '@zyra/providers';
-import { NavigatorHeader } from '@zyra/admin';
+	NavigatorHeader,
+} from '@zyra/components';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import { dashNavigate } from '@/services/commonFunction';

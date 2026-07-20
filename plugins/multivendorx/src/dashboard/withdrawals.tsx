@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
+
+import { BasicInputUI, ButtonInputUI } from '@zyra/inputs';
 import {
 	Card,
 	Container,
@@ -13,9 +15,8 @@ import {
 	ItemListUI,
 	NoticeManager,
 	Notice,
-} from '@zyra/elements';
-import { BasicInputUI, ButtonInputUI } from '@zyra/inputs';
-import { NavigatorHeader } from '@zyra/admin';
+	NavigatorHeader,
+} from '@zyra/components';
 import { formatCurrency } from '../services/commonFunction';
 import { applyFilters } from '@wordpress/hooks';
 interface WithdrawalData {

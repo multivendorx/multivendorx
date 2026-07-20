@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { InfoItem } from '@zyra/elements';
+import { InfoItem } from '@zyra/components';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
 import {

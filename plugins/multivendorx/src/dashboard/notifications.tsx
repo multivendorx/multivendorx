@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import { getApiLink } from '@zyra/core';
-import { Skeleton } from '@zyra/elements';
+import { Skeleton } from '@zyra/components';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 

@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './EventRules.scss';
 import { getApiLink, renderBlocksToHTML, htmlToBlocks } from '@zyra/core';
-import { FormGroupWrapper, FormGroup, PopupUI, Column } from '@zyra/elements';
+import { FormGroupWrapper, FormGroup, PopupUI, Column } from '@zyra/components';
 import {
 	BasicInputUI,
 	ButtonInputUI,

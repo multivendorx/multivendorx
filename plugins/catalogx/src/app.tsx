@@ -6,9 +6,10 @@ import Modules from './components/Modules/Modules';
 import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
 import WholesaleUser from './components/WholesaleUser/wholesaleUser.tsx';
 import Rules from './components/Rules/Rules';
-import { Notice } from '@zyra/elements';
-import { GuidedTourProvider, initializeModules } from '@zyra/providers';
-import { AdminHeader } from '@zyra/admin';
+
+import { Notice, GuidedTourProvider } from '@zyra/components';
+import { initializeModules } from '@zyra/core';
+import { Header } from '@zyra/admin';
 import { __ } from '@wordpress/i18n';
 import Brand from './assets/images/catalogx-logo.png';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
@@ -201,7 +202,7 @@ const App = () => {
 					}}
 				/>
 			)}
-			<AdminHeader
+			<Header
 				brandImg={Brand}
 				results={results}
 				search={{

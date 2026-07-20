@@ -1,10 +1,16 @@
 /* global appLocalizer */
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { getApiLink } from '@zyra/core';
-import { FormGroup, FormGroupWrapper, NoticeManager } from '@zyra/elements';
+
+
 import { BasicInputUI, SelectInputUI } from '@zyra/inputs';
-import { MapProviderUI, useModules } from '@zyra/providers';
+import {
+	FormGroup,
+	FormGroupWrapper,
+	NoticeManager,
+	MapProviderUI,
+} from '@zyra/components';
+import { getApiLink, useModules } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
 
 declare global {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { getApiLink, useOutsideClick } from '@zyra/core';
-import { PopupUI, Skeleton } from '@zyra/elements';
+import { PopupUI, Skeleton } from '@zyra/components';
 import { ButtonInputUI, TextAreaUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { addFilter, applyFilters, removeFilter } from '@wordpress/hooks';

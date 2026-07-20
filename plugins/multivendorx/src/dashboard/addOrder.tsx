@@ -1,14 +1,7 @@
 /* global appLocalizer */
 import React, { useEffect, useRef, useState } from 'react';
 import { getApiLink, useOutsideClick } from '@zyra/core';
-import {
-	Card,
-	Column,
-	Container,
-	FormGroup,
-	FormGroupWrapper,
-	InfoItem,
-} from '@zyra/elements';
+
 import {
 	ButtonInputUI,
 	BasicInputUI,
@@ -16,7 +9,15 @@ import {
 	TextAreaUI,
 	EmailsInputUI,
 } from '@zyra/inputs';
-import { NavigatorHeader } from '@zyra/admin';
+import {
+	Card,
+	Column,
+	Container,
+	FormGroup,
+	FormGroupWrapper,
+	InfoItem,
+	NavigatorHeader,
+} from '@zyra/components';
 import { TableRow, TableCard } from '@zyra/table';
 import axios from 'axios';
 import { formatCurrency, dashNavigate } from '@/services/commonFunction';

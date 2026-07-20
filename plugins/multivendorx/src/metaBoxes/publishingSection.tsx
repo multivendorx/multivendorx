@@ -2,7 +2,7 @@
 import { addFilter } from '@wordpress/hooks';
 import { useRef, useState, useEffect } from 'react';
 import { useOutsideClick } from '@zyra/core';
-import { Card, FormGroup, FormGroupWrapper } from '@zyra/elements';
+import { Card, FormGroup, FormGroupWrapper } from '@zyra/components';
 import { SelectInputUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { formatDate } from '@/services/commonFunction';

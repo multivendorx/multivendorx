@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink } from '@zyra/core';
-import { Container, Column, ItemListUI } from '@zyra/elements';
-import { useModules } from '@zyra/providers';
-import { NavigatorHeader } from '@zyra/admin';
+
+
+import { getApiLink, useModules } from '@zyra/core';
+import { Container, Column, ItemListUI, NavigatorHeader } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import ViewCommission from './ViewCommission';
 import {

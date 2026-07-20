@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { Container, Column, InfoItem, NoticeManager } from '@zyra/elements';
+import { Container, Column, InfoItem, NoticeManager } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import { QueryProps, TableRow } from '@/services/type';
 import { getUrl } from '@/services/commonFunction';

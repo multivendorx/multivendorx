@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { NoticeManager } from '@zyra/elements';
+import { NoticeManager } from '@zyra/components';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 
 const NotificationsTable = (React.FC = () => {

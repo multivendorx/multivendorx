@@ -8,7 +8,7 @@ import {
 	FormGroup,
 	PopupUI,
 	InfoItem,
-} from '@zyra/elements';
+} from '@zyra/components';
 import {
 	BasicInputUI,
 	ButtonInputUI,

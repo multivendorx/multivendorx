@@ -1,5 +1,5 @@
 import { addFilter } from '@wordpress/hooks';
-import { FormGroup } from '@zyra/elements';
+import { FormGroup } from '@zyra/components';
 import { BasicInputUI, DynamicRowSetting } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 

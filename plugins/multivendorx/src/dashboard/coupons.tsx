@@ -2,13 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import {
-	FormGroup,
-	FormGroupWrapper,
-	PopupUI,
-	InfoItem,
-	Notice,
-} from '@zyra/elements';
+
 import {
 	ButtonInputUI,
 	BasicInputUI,
@@ -18,7 +12,15 @@ import {
 	RandomInputKeyGeneratorUI,
 	EmailsInputUI,
 } from '@zyra/inputs';
-import { NavigatorHeader, TabsUI } from '@zyra/admin';
+import { TabsUI } from '@zyra/admin';
+import {
+	FormGroup,
+	FormGroupWrapper,
+	PopupUI,
+	InfoItem,
+	Notice,
+	NavigatorHeader,
+} from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 
 import axios from 'axios';

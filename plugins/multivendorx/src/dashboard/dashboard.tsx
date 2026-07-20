@@ -15,7 +15,10 @@ import {
 import React, { useState, useEffect } from 'react';
 import '../components/dashboard.scss';
 import '../dashboard/dashboard1.scss';
-import { getApiLink } from '@zyra/core';
+
+
+import { ButtonInputUI, CalendarInputUI } from '@zyra/inputs';
+import { getApiLink, useModules } from '@zyra/core';
 import {
 	Analytics,
 	Card,
@@ -24,10 +27,8 @@ import {
 	InfoItem,
 	ComponentStatusView,
 	ItemListUI,
-} from '@zyra/elements';
-import { ButtonInputUI, CalendarInputUI } from '@zyra/inputs';
-import { useModules } from '@zyra/providers';
-import { NavigatorHeader } from '@zyra/admin';
+	NavigatorHeader,
+} from '@zyra/components';
 import { TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';

@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import { getApiLink } from '@zyra/core';
-import { ComponentStatusView, ItemListUI } from '@zyra/elements';
+import { ComponentStatusView, ItemListUI } from '@zyra/components';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 

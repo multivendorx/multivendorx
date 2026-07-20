@@ -1,6 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
 import { useEffect, useState } from 'react';
-import { Card, FormGroup, FormGroupWrapper } from '@zyra/elements';
+import { Card, FormGroup, FormGroupWrapper } from '@zyra/components';
 import { BasicInputUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 

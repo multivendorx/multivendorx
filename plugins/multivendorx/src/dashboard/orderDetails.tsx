@@ -1,7 +1,15 @@
 /* global appLocalizer */
 import React, { useEffect, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
-import { getApiLink } from '@zyra/core';
+
+
+import {
+	ButtonInputUI,
+	BasicInputUI,
+	SelectInputUI,
+	TextAreaUI,
+} from '@zyra/inputs';
+import { getApiLink, useModules } from '@zyra/core';
 import {
 	Card,
 	Column,
@@ -13,15 +21,8 @@ import {
 	ItemListUI,
 	PopupUI,
 	ComponentStatusView,
-} from '@zyra/elements';
-import {
-	ButtonInputUI,
-	BasicInputUI,
-	SelectInputUI,
-	TextAreaUI,
-} from '@zyra/inputs';
-import { useModules } from '@zyra/providers';
-import { NavigatorHeader } from '@zyra/admin';
+	NavigatorHeader,
+} from '@zyra/components';
 import { TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
 import { formatCurrency, formatDate } from '../services/commonFunction';

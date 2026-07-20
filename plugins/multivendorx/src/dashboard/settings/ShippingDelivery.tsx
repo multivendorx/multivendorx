@@ -9,7 +9,7 @@ import {
 	FormGroupWrapper,
 	NoticeManager,
 	SectionUI,
-} from '@zyra/elements';
+} from '@zyra/components';
 import { BasicInputUI, DynamicRowSetting, ChoiceToggleUI } from '@zyra/inputs';
 import ShippingRatesByCountry from './ShippingRatesByCountry';
 import DistanceByZoneShipping from './DistanceByZoneShipping';

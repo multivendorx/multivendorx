@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { formatCurrency, dashNavigate } from '../services/commonFunction';
-import { ComponentStatusView, Skeleton, Notice } from '@zyra/elements';
+import { ComponentStatusView, Skeleton, Notice } from '@zyra/components';
 import { BasicInputUI } from '@zyra/inputs';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
