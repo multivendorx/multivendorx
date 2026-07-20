@@ -1,14 +1,9 @@
 /* global appLocalizer */
 import { useState } from 'react';
-import {
-    Column,
-    Container,
-    InfoItem,
-    NavigatorHeader,
-    PopupUI,
-    TableCard,
-    MultiCheckBoxUI
-} from 'zyra';
+import { Column, Container, InfoItem, PopupUI } from '@zyra/primitives';
+import { MultiCheckBoxUI } from '@zyra/inputs';
+import { NavigatorHeader } from '@zyra/admin';
+import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';

@@ -1,6 +1,7 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { Card, Column, Container, NavigatorHeader } from 'zyra';
+import { Card, Column, Container } from '@zyra/primitives';
+import { NavigatorHeader } from '@zyra/admin';
 
 const HelpSupport: React.FC = () => {
 	const videos = [

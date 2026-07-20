@@ -1,6 +1,7 @@
 /* global appLocalizer */
 import './AdminDashboard.scss';
-import { Column, Container, TabsUI } from 'zyra';
+import { Column, Container } from '@zyra/primitives';
+import { TabsUI } from '@zyra/admin';
 import { __ } from '@wordpress/i18n';
 import FreeVsProTab from './FreeVsProTab';
 import DashboardTab from './DashboardTab';

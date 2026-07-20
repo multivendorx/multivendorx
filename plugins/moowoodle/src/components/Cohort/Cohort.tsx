@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import {
-	Column,
-	Container,
-	InfoItem,
-	NavigatorHeader,
-	PopupUI,
-	TableCard,
-} from 'zyra';
+import { Column, Container, InfoItem, PopupUI } from '@zyra/primitives';
+import { NavigatorHeader } from '@zyra/admin';
+import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';
 import { dummyCohorts } from './CohortUtil';

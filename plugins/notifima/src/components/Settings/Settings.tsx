@@ -2,15 +2,10 @@
 import React, { useEffect, JSX } from 'react';
 import { __ } from '@wordpress/i18n';
 import { getTemplateData } from '../../services/templateService';
-import {
-    getAvailableSettings,
-    getSettingById,
-    RenderComponent,
-    useModules,
-    SettingsNavigator,
-    SettingProvider,
-    useSetting
-} from 'zyra';
+import { getAvailableSettings, getSettingById } from '@zyra/core';
+import { RenderComponent } from '@zyra/inputs';
+import { useModules, SettingProvider, useSetting } from '@zyra/providers';
+import { SettingsNavigator } from '@zyra/admin';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 

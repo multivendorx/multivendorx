@@ -1,6 +1,12 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
-import { Card, Column, ItemListUI, Container, NoticeManager } from 'zyra';
+import {
+	Card,
+	Column,
+	ItemListUI,
+	Container,
+	NoticeManager,
+} from '@zyra/primitives';
 import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
 import MoowoodleIcon from '../../assets/images/moowoodle-icon.png';

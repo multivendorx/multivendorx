@@ -2,8 +2,9 @@
 import { render } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
-import 'zyra/build/index.css';
-import { configureZyra, initializeModules } from 'zyra';
+import '@multivendorx/zyra/build/index.css';
+import { configureZyra } from '@zyra/core';
+import { initializeModules } from '@zyra/providers';
 
 configureZyra(appLocalizer);
 initializeModules('catalogx', 'free', 'modules');

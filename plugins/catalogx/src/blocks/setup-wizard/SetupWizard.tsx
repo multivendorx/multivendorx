@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import React, { useState } from 'react';
-import 'zyra/build/index.css';
-import { ExpandablePanelUI } from 'zyra';
+import '@multivendorx/zyra/build/index.css';
+import { ExpandablePanelUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import img from '../../assets/images/catalogx-logo.png';
 

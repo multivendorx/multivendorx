@@ -10,11 +10,11 @@ import {
 	Column,
 	Container,
 	InfoItem,
-	NavigatorHeader,
 	PopupUI,
-	TableCard,
-	ComponentStatusView
-} from 'zyra';
+	ComponentStatusView,
+} from '@zyra/primitives';
+import { NavigatorHeader } from '@zyra/admin';
+import { TableCard } from '@zyra/table';
 
 import ShowProPopup from '../Popup/Popup';
 

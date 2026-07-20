@@ -1,5 +1,18 @@
 {
 	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"paths": {
+			"zyra": ["./node_modules/@multivendorx/zyra"],
+			"@zyra/core": ["./node_modules/@multivendorx/zyra"],
+			"@zyra/admin": ["./node_modules/@multivendorx/zyra"],
+			"@zyra/primitives": ["./node_modules/@multivendorx/zyra"],
+			"@zyra/providers": ["./node_modules/@multivendorx/zyra"],
+			"@zyra/inputs": ["./node_modules/@multivendorx/zyra"],
+			"@zyra/recaptcha": ["./node_modules/@multivendorx/zyra"],
+			"@zyra/table": ["./node_modules/@multivendorx/zyra"],
+			"@zyra/formbuilder": ["./node_modules/@multivendorx/zyra"]
+		}
+	},
 	"include": [
 		"src/**/*",
 		"modules/**/*"

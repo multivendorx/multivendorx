@@ -1,6 +1,6 @@
 /* global appLocalizer */
 import React, { useState, useRef } from 'react';
-import 'zyra/build/index.css';
+import '@multivendorx/zyra/build/index.css';
 import { ExpandablePanelUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 

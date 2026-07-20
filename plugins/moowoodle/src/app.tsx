@@ -9,7 +9,8 @@ import { useState } from 'react';
 import { searchIndex, SearchItem } from './searchIndex';
 import MoowoodleLogo from './assets/images/moowoodle-logo.png';
 import { __ } from '@wordpress/i18n';
-import { AdminHeader, Notice } from 'zyra';
+import { Notice } from '@zyra/primitives';
+import { AdminHeader } from '@zyra/admin';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import HelpSupport from './components/HelpSupport/HelpSupport';
 

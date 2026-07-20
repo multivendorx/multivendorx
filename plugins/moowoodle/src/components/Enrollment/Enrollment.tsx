@@ -1,15 +1,8 @@
 /* global appLocalizer */
 import React, { useState, useEffect } from 'react';
-import {
-	CategoryCount,
-	Column,
-	Container,
-	InfoItem,
-	NavigatorHeader,
-	PopupUI,
-	QueryProps,
-	TableCard,
-} from 'zyra';
+import { Column, Container, InfoItem, PopupUI } from '@zyra/primitives';
+import { NavigatorHeader } from '@zyra/admin';
+import { CategoryCount, QueryProps, TableCard } from '@zyra/table';
 import { __ } from '@wordpress/i18n';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';

@@ -4,16 +4,10 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';
-import {
-	getApiLink,
-	TableCard,
-	NavigatorHeader,
-	QueryProps,
-	InfoItem,
-	PopupUI,
-	Container,
-	Column,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { InfoItem, PopupUI, Container, Column } from '@zyra/primitives';
+import { NavigatorHeader } from '@zyra/admin';
+import { TableCard, QueryProps } from '@zyra/table';
 
 interface CourseRow {
 	id?: number;

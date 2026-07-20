@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ButtonInputUI } from 'zyra';
+import { ButtonInputUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import '../Popup/Popup.scss';
 
