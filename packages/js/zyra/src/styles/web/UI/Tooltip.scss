@@ -1,0 +1,90 @@
+.tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+
+  &:hover{
+    .tooltip-name {
+      opacity: 1;
+    }
+  }
+  .tooltip-name {
+    width: 6rem;
+    transition: all 0.4s ease;
+    font-size: 0.8rem;
+    background-color: #2e2e2e;
+    color: #fff;
+    text-align: center;
+    padding: 0.313rem;
+    border-radius: 0.375rem;
+    position: absolute;
+    z-index: 1;
+
+    // transform: translate(-2rem, -2.313rem);
+    opacity: 0;
+    inset: 0 auto auto 0;
+  }
+
+  &.copied {
+    .tooltip-name {
+      opacity: 1;
+    }
+  }
+
+  &.bottom {
+    .tooltip-name {
+      transform: translate(-2.313rem, 2rem);
+    }
+  }
+
+  &.top {
+    .tooltip-name {
+      transform: translate(-2.45rem, -2.313rem);
+    }
+  }
+
+  &.end {
+    .tooltip-name {
+      transform: translate(-4.5rem, 2rem);
+
+      &::after {
+        top: auto !important;
+        bottom: 100%;
+        border-color: transparent transparent #2e2e2e !important;
+        left: 80% !important;
+      }
+    }
+  }
+
+  // hide for dropdown open 
+  &.hidden .tooltip-name {
+    opacity: 0;
+  }
+
+
+  // arrow design
+  &:not(.with-out-arrow) {
+    .tooltip-name {
+      &::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -0.313rem;
+        border-width: 0.313rem;
+        border-style: solid;
+        border-color: #2e2e2e transparent transparent;
+      }
+    }
+
+    &.bottom {
+      .tooltip-name {
+        &::after {
+          top: auto;
+          bottom: 100%;
+          border-color: transparent transparent #2e2e2e;
+        }
+      }
+    }
+  }
+}

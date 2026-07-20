@@ -1,0 +1,38 @@
+@use '../../global.scss' as *;
+
+.attachment-section {
+    .attachment-label {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 0.438rem;
+        border: 0.125rem dashed #D1D5DB;
+        height: 9rem;
+        cursor: pointer;
+
+        .wrapper {
+            display: flex;
+            padding: 1.25rem 0;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            i {
+                font-size: 1.5rem;
+                color: #6B7280;
+            }
+
+            .heading {
+                margin-bottom: 0.5rem;
+                line-height: 1.25rem;
+                color: #6B7280;
+                text-align: center;
+
+                span {
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+}

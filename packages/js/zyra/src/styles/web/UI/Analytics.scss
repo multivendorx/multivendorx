@@ -1,0 +1,183 @@
+@use '../../../global.scss' as *;
+
+.analytics-container {
+    display: flex;
+
+    // justify-content: space-between;
+    gap: 1rem;
+    height: fit-content;
+
+    .analytics-item {
+        display: flex;
+        gap: 1rem;
+        align-items: start;
+        background: $background-white;
+        padding: 1rem;
+        width: 100%;
+        border-radius: $border-radius-small;
+        box-shadow: $box-shadow;
+        box-sizing: border-box;
+
+        .analytics-icon {
+            i {
+                border-radius: $border-radius-small;
+                font-size: 2.5rem;
+                padding: 0.625rem;
+
+                // line-height: 1.5;
+            }
+        }
+
+        .details {
+            .number {
+                font-size: 2.063rem;
+                line-height: 0.9;
+                font-weight: 600;
+                color: $text-color;
+            }
+
+            .text {
+                color: $sub-text-color;
+                line-height: 1.713;
+            }
+        }
+    }
+
+    // admin Wallet Transaction table(common)
+    // &[data-template="wallet"] {
+    //     padding: 0 0 1rem;
+    //     margin-bottom: 1rem;
+    //     border-bottom: $border-light-small;
+    // }
+    // Wallet Transaction table
+
+    // report
+    &[data-template="small"] {
+        .analytics-item {
+            box-sizing: border-box;
+
+            i {
+                padding: 0.5rem;
+                font-size: 1.625rem;
+            }
+
+            .details {
+                .number {
+                    font-size: 1.25rem;
+                }
+            }
+        }
+    }
+
+    &.flex-wrap {
+        flex-wrap: wrap;
+
+        .col-6 {
+            width: calc(8.3333% - 1rem);
+        }
+
+        .col-5 {
+            width: calc(16.6667% - 1rem);
+        }
+
+        .col-4 {
+            width: calc(25% - 1rem);
+        }
+
+        .col-3 {
+            width: calc(33.3333% - 1rem);
+        }
+
+        .col-2 {
+            width: calc(50% - 1rem);
+        }
+
+        .col-1 {
+            width: calc(100% - 1rem);
+        }
+    }
+
+    &[data-template="dashboard"] {
+        .analytics-item {
+            flex-direction: row-reverse;
+            justify-content: space-between;
+
+            .analytics-icon {
+                margin-top: 0.45rem;
+
+                i {
+                    padding: 0.5rem;
+                    font-size: 1.5rem;
+                    border-radius: $border-radius-small;
+                    color: #fff;
+                    margin-top: 0.625rem;
+                }
+
+                .text {
+                    color: $sub-text-color;
+                    padding-top: 0.313rem;
+                }
+            }
+
+            .details {
+                .text {
+                    font-size: 1.063rem;
+                    font-weight: 500;
+                    color: $sub-text-color;
+                }
+
+                .number {
+                    font-size: 1.813rem !important;
+
+                    /* zyra style overwrite */
+                    line-height: 2 !important;
+
+                    /* zyra style overwrite */
+                    font-weight: 600;
+                }
+
+                .report {
+                    font-weight: 500;
+                    color: $sub-text-color;
+
+                    div {
+                        line-height: 1.313rem;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (width <=37.5rem) {
+    .analytics-container {
+        flex-direction: column;
+
+        .analytics-icon {
+            i {
+                font-size: 1.5rem !important; // overwrite desktop style
+                padding: 0.313rem  !important; // overwrite desktop style
+            }
+        }
+
+        .analytics-item .number {
+            font-size: 1.45rem !important; // overwrite desktop style
+            line-height: 1; 
+        }
+
+        &.flex-wrap {
+            flex-direction: row !important; // overwrite desktop style
+
+            .col-6,
+            .col-5,
+            .col-4,
+            .col-3 {
+                width: calc(50% - 0.5rem) !important; // overwrite desktop style
+            }
+
+            .col-2 {
+                width: calc(100% - 1rem) !important; // overwrite desktop style
+            }
+        }
+    }
+}

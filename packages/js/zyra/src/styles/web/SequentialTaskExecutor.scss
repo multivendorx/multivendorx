@@ -1,0 +1,137 @@
+@use '../../global.scss' as *;
+
+.sequential-task-executor {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-bottom: 0.75rem;
+
+  .sequential-task {
+    max-width: 18.75rem;
+    padding: 0.625rem 0;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+    font-weight: 500;
+
+    --progress-time: 3s;
+
+    .status-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      i {
+        font-size: 1.125rem;
+
+        &.completed-icon {
+          color: green;
+        }
+
+        &.failed-icon {
+          color: red;
+        }
+      }
+    }
+
+    &::after {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0.125rem;
+      content: '';
+      background-color: green;
+      animation: progress var(--progress-time) linear forwards;
+    }
+
+    &.completed {
+      &::after {
+        animation: none;
+        width: 100%;
+        background-color: green;
+      }
+    }
+
+    &.failed {
+      &::after {
+        animation: none;
+        width: 100%;
+        background-color: #d63638;
+      }
+    }
+
+    @keyframes progress {
+      from {
+        width: 0;
+      }
+
+      to {
+        width: 100%;
+      }
+    }
+
+    &.failed {
+      // color: $accent-color;
+
+      &::after {
+        // background: $accent-color;
+      }
+    }
+
+    &.success {
+      color: #007400;
+
+      &::after {
+        background-color: green;
+      }
+    }
+  }
+}
+
+// loader style
+.loader-wrapper {
+  display: flex;
+  gap: 1rem;
+  position: relative;
+  width: fit-content;
+
+  .multivendorx-loader {
+    width: 2rem;
+    aspect-ratio: 1;
+
+    --c: no-repeat radial-gradient(farthest-side,
+        $theme-color 92%,
+        #0000);
+
+    background:
+      var(--c) 50% 0,
+      var(--c) 50% 100%,
+      var(--c) 100% 50%,
+      var(--c) 0 50%;
+    background-size: 0.625rem 0.625rem;
+    animation: loader 1s infinite;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      margin: 0.1875rem;
+      background: repeating-conic-gradient(#0000 0 35deg,
+          $theme-color 0 90deg);
+      mask: radial-gradient(farthest-side,
+          #0000 calc(100% - 0.1875rem),
+          #000 0);
+      border-radius: 50%;
+    }
+  }
+}
+
+@keyframes loader {
+  100% {
+    transform: rotate(0.5turn);
+  }
+}

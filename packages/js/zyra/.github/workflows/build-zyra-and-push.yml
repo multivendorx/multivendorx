@@ -1,0 +1,50 @@
+name: Build and Push to zyra
+
+on:
+    push:
+        branches: [main] # or your main branch name
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout zyra-dev
+              uses: actions/checkout@v4
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '20' # or your preferred version
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Build package
+              run: npm run build # or your build command
+
+            - name: Configure Git
+              run: |
+                  git config --global user.name "GitHub Actions"
+                  git config --global user.email "actions@github.com"
+
+            - name: Push to zyra repo
+              env:
+                  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+              run: |
+                  # Clone the zyra repo
+                  git clone https://$GH_TOKEN@github.com/JoySarkar07/zyra.git zyra-repo
+
+                  # Clear existing files in zyra repo (except .git folder)
+                  find zyra-repo -mindepth 1 -maxdepth 1 -not -name '.git' -exec rm -rf {} +
+
+                  # Copy specific files and folders
+                  cp README.md zyra-repo/
+                  cp package.json zyra-repo/
+                  cp -a build zyra-repo/
+
+                  # Commit and push
+                  cd zyra-repo
+                  git add .
+                  git commit -m "Auto-update from zyra-dev $GITHUB_SHA"
+                  git push

@@ -1,0 +1,461 @@
+import React, {
+    Fragment,
+    useEffect,
+    useRef,
+    useState,
+    useMemo,
+    useCallback,
+} from 'react';
+import { TableProps } from './types';
+import TableRowActions from './TableRowActions';
+import { renderCell } from './Utill';
+import { renderEditableCell } from './renderEditableCell';
+import Skeleton from '../UI/Skeleton';
+import ComponentStatusView from '../UI/ComponentStatusView';
+import ReactDragListView from 'react-drag-listview';
+
+const ASC = 'asc';
+const DESC = 'desc';
+
+const Table: React.FC<TableProps> = ({
+    headers = {},
+    rows = [],
+    // caption,
+    className = '',
+    onSort = () => { },
+    emptyMessage,
+    query = {},
+    ids = [],
+    selectedIds = [],
+    onSelectRow,
+    onSelectAll,
+    classNames = '',
+    onCellEdit,
+    isLoading,
+    enableBulkSelect = false,
+    format,
+    currency,
+    onRowReorder,
+    expandable = false,
+}) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const [isScrollableRight, setIsScrollableRight] = useState(false);
+    const [isScrollableLeft, setIsScrollableLeft] = useState(false);
+    const [expandedRows, setExpandedRows] = useState<number[]>([]);
+
+    const sortedBy = useMemo(() => {
+        if (query.orderby) {
+            return query.orderby;
+        }
+
+        const defaultHeader = Object.entries(headers).find(
+            ([, config]) => config.defaultSort
+        );
+
+        return defaultHeader?.[0];
+    }, [query.orderby, headers]);
+
+    const sortDir = useMemo(() => {
+        if (query.order) {
+            return query.order;
+        }
+
+        const currentHeader = Object.entries(headers).find(
+            ([key]) => key === sortedBy
+        );
+
+        return currentHeader?.[1]?.defaultOrder ?? DESC;
+    }, [query.order, headers, sortedBy]);
+
+    const hasData = rows.length > 0;
+
+    const allSelected = useMemo(
+        () => ids.length > 0 && ids.every((id) => selectedIds.includes(id)),
+        [ids, selectedIds]
+    );
+
+    const tabIndex = isScrollableLeft || isScrollableRight ? 0 : null;
+
+    const updateScrollState = useCallback(() => {
+        const el = containerRef.current;
+        if (!el) {
+            return;
+        }
+
+        const { scrollLeft, scrollWidth, clientWidth } = el;
+        const scrollable = scrollWidth > clientWidth;
+
+        if (!scrollable) {
+            setIsScrollableLeft(false);
+            setIsScrollableRight(false);
+            return;
+        }
+
+        setIsScrollableLeft(scrollLeft > 0);
+        setIsScrollableRight(scrollLeft + clientWidth < scrollWidth);
+    }, []);
+
+    useEffect(() => {
+        updateScrollState();
+
+        const onResize = () => requestAnimationFrame(updateScrollState);
+
+        window.addEventListener('resize', onResize);
+
+        return () => window.removeEventListener('resize', onResize);
+    }, [headers, rows, updateScrollState]);
+
+    const handleSort = useCallback(
+        (key: string) => {
+            let direction = DESC;
+
+            if (sortedBy === key) {
+                direction = sortDir === ASC ? DESC : ASC;
+            }
+
+            onSort(key, direction);
+        },
+        [sortedBy, sortDir, onSort]
+    );
+
+    const toggleAllRows = useCallback(() => {
+        onSelectAll?.(!allSelected);
+    }, [allSelected, onSelectAll]);
+
+    const toggleRow = useCallback(
+        (index: number) => {
+            const id = ids[index];
+            const isSelected = selectedIds.includes(id);
+
+            onSelectRow?.(id, !isSelected);
+        },
+        [ids, selectedIds, onSelectRow]
+    );
+
+    const getSortIcon = (isSorted: boolean) => {
+        if (!isSorted) {
+            return <i className="adminfont-arrow-down-up sort-icon" />;
+        }
+        return (
+            <i
+                className={`adminfont-${sortDir === ASC ? 'arrow-up' : 'arrow-down'
+                    } sort-icon`}
+            />
+        );
+    };
+    const dragProps = {
+        nodeSelector: onRowReorder ? 'tbody tr' : '',
+
+        onDragEnd: (
+            fromIndex: number,
+            toIndex: number
+        ) => {
+            if (
+                fromIndex === toIndex ||
+                toIndex < 0
+            ) {
+                return;
+            }
+
+            onRowReorder?.(
+                fromIndex,
+                toIndex
+            );
+        },
+    };
+
+    return (
+        <div
+            ref={containerRef}
+            className={`table-wrapper ${classNames}`}
+            tabIndex={tabIndex}
+            role="group"
+            onScroll={updateScrollState}
+        >
+            <ReactDragListView
+                {...dragProps}
+                enableScroll={!!onRowReorder}
+            >
+                <table className="admin-table">
+                    {/* {caption && (
+                    <caption className="table-caption screen-reader-only">
+                        {caption}
+                        {tabIndex === 0 && <small>(scroll to see more)</small>}
+                    </caption>
+                )} */}
+
+                    <thead className="admin-table-header">
+                        <tr className="header-row">
+                            {expandable && (
+                                <th className="header-col expand" />
+                            )}
+                            {enableBulkSelect && (
+                                <th className="header-col select">
+                                    <input
+                                        type="checkbox"
+                                        checked={allSelected}
+                                        onChange={toggleAllRows}
+                                    />
+                                </th>
+                            )}
+                            {onRowReorder && (
+                                <td className="admin-column drag">
+                                </td>
+                            )}
+                            {Object.entries(headers).map(([key, config], i) => {
+                                const {
+                                    label,
+                                    isSortable,
+                                    isNumeric,
+                                    screenReaderLabel,
+                                } = config;
+
+                                const isSorted = sortedBy === key;
+
+                                const thClass = [
+                                    'header-col',
+                                    isSortable && 'sortable',
+                                    isSorted && 'sorted',
+                                    isNumeric && 'numeric',
+                                    config.type,
+                                ]
+                                    .filter(Boolean)
+                                    .join(' ');
+
+                                return (
+                                    <th
+                                        key={key || i}
+                                        className={thClass}
+                                        aria-sort={
+                                            isSortable && isSorted
+                                                ? sortDir === ASC
+                                                    ? 'ascending'
+                                                    : 'descending'
+                                                : null
+                                        }
+                                        style={
+                                            config.width
+                                                ? {
+                                                    minWidth:
+                                                        typeof config.width ===
+                                                            'number'
+                                                            ? `${config.width}rem`
+                                                            : config.width,
+                                                }
+                                                : {}
+                                        }
+                                    >
+                                        {isSortable ? (
+                                            <div
+                                                onClick={
+                                                    hasData
+                                                        ? () =>
+                                                            handleSort(config.key)
+                                                        : null
+                                                }
+                                                className="sort-button"
+                                            >
+                                                {label}
+                                                {getSortIcon(isSorted)}
+                                            </div>
+                                        ) : (
+                                            <Fragment>
+                                                {label}
+                                                {screenReaderLabel && (
+                                                    <span className="screen-reader-only">
+                                                        {screenReaderLabel}
+                                                    </span>
+                                                )}
+                                            </Fragment>
+                                        )}
+                                    </th>
+                                );
+                            })}
+                        </tr>
+                    </thead>
+
+                    <tbody className="admin-table-body">
+                        {isLoading ? (
+                            Array.from({
+                                length: Number(query.per_page) || 5,
+                            }).map((row, rowIndex) => (
+                                <tr className="admin-row" key={rowIndex ?? row.id}>
+                                    {enableBulkSelect && (
+                                        <td className="admin-column select">
+                                            <Skeleton width={1.25} height={1.25} />
+                                        </td>
+                                    )}
+                                    {onRowReorder && (
+                                        <td className="admin-column drag">
+                                            <Skeleton width={1} height={1} />
+                                        </td>
+                                    )}
+                                    {Object.entries(headers).map(
+                                        ([key], colIndex) => (
+                                            <td
+                                                className="admin-column"
+                                                key={key || colIndex}
+                                            >
+                                                <Skeleton width="100%" />
+                                            </td>
+                                        )
+                                    )}
+                                </tr>
+                            ))
+                        ) : hasData ? (
+                            rows.map((row, rowIndex) => (
+                                <Fragment key={row.id ?? rowIndex}>
+                                    <tr className="admin-row" key={row.id ?? rowIndex}>
+                                        {expandable && (
+                                            <td className="admin-column expand">
+                                                {row.variation?.length > 0 && (
+                                                    <i
+                                                        className={`adminfont-${expandedRows.includes(row.id)
+                                                            ? 'arrow-down'
+                                                            : 'arrow-right'
+                                                            }`}
+                                                        onClick={() =>
+                                                            setExpandedRows((prev) =>
+                                                                prev.includes(row.id)
+                                                                    ? prev.filter((id) => id !== row.id)
+                                                                    : [...prev, row.id]
+                                                            )
+                                                        }
+                                                    />
+                                                )}
+                                            </td>
+                                        )}
+
+                                        {enableBulkSelect && (
+                                            <td className="admin-column select">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedIds.includes(
+                                                        row.id
+                                                    )}
+                                                    onChange={() => toggleRow(rowIndex)}
+                                                />
+                                            </td>
+                                        )}
+
+                                        {onRowReorder && (
+                                            <td className="admin-column drag">
+                                                <i className='adminfont-move' />
+                                            </td>
+                                        )}
+
+                                        {Object.entries(headers).map(
+                                            ([key, header], colIndex) => {
+                                                const rowId = row.id;
+                                                const cell =
+                                                    row[header.key] || row[key];
+                                                if (
+                                                    typeof header.render === 'function'
+                                                ) {
+                                                    return (
+                                                        <td
+                                                            key={`${rowId}-${colIndex}`}
+                                                            className={`admin-column ${className} ${header?.type || ''}`}
+                                                            style={
+                                                                header.width
+                                                                    ? {
+                                                                        minWidth:
+                                                                            typeof header.width ===
+                                                                                'number'
+                                                                                ? `${header.width}rem`
+                                                                                : header.width,
+                                                                    }
+                                                                    : {}
+                                                            }
+                                                        >
+                                                            {header.render(row)}
+                                                        </td>
+                                                    );
+                                                }
+
+                                                if (header.type === 'action') {
+                                                    return (
+                                                        <td
+                                                            key={`action-${rowId}`}
+                                                            className="admin-column action"
+                                                        >
+                                                            <TableRowActions
+                                                                row={row}
+                                                                rowActions={
+                                                                    header.actions
+                                                                }
+                                                            />
+                                                        </td>
+                                                    );
+                                                }
+
+                                                let displayValue = renderCell(
+                                                    row,
+                                                    header,
+                                                    format,
+                                                    currency
+                                                );
+
+                                                return (
+                                                    <td
+                                                        key={`${rowId}-${colIndex}`}
+                                                        className={`admin-column ${className} ${header?.type || ''}`}
+                                                    >
+                                                        {header.isEditable
+                                                            ? renderEditableCell({
+                                                                header,
+                                                                cell,
+                                                                isEditing: false,
+                                                                onSave: onCellEdit,
+                                                            })
+                                                            : displayValue}
+                                                    </td>
+                                                );
+                                            }
+                                        )}
+                                    </tr>
+
+                                    {expandable && expandedRows.includes(row.id) &&
+                                        row.variation?.map((variation) => (
+                                            <tr
+                                                key={variation.id}
+                                                className="admin-row variation-row"
+                                            >
+                                                <td className="admin-column expand" />
+
+                                                {Object.entries(headers).map(
+                                                    ([key, header], colIndex) => (
+                                                        <td
+                                                            key={`${variation.id}-${colIndex}`}
+                                                            className={`admin-column ${className} ${header?.type || ''
+                                                                }`}
+                                                        >
+                                                            {typeof header.render === 'function'
+                                                                ? header.render(variation)
+                                                                : renderCell(
+                                                                    variation,
+                                                                    header,
+                                                                    format,
+                                                                    currency
+                                                                )}
+                                                        </td>
+                                                    )
+                                                )}
+                                            </tr>
+                                        ))}
+                                </Fragment>
+                            ))
+                        ) : (
+                            <tr className="admin-row">
+                                <ComponentStatusView title={emptyMessage || 'No data to display'} />
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </ReactDragListView>
+        </div >
+    );
+};
+
+export default Table;

@@ -1,0 +1,100 @@
+@use '../../global.scss' as *;
+
+.repeater-field-wrapper {
+    // margin-bottom: 0.813rem;
+    // width: 35rem;
+    .repeater-field {
+        padding: 1rem;
+        background: $background-color;
+        border-radius: $border-radius-small;
+        margin-bottom: 1rem;
+        border: $border-light-small;
+
+        .setting-form-input {
+            width: 25%;
+        }
+
+        &.rule {
+            width: fit-content;
+        }
+    }
+
+    .buttons-wrapper{
+        margin-top: 1rem;
+    }
+
+    .field {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+
+        .location-icon {
+            background: $background-color;
+            color: #06be9f;
+            padding: 0.45rem;
+            font-size: 1.313rem;
+            border-radius: $border-radius-small;
+        }
+
+        .delete-icon {
+            font-size: 1.125rem;
+            color: $accent-color;
+            cursor: pointer;
+        }
+
+        .basic-input {
+            background: $background-white !important;
+
+            /* overwrite common style */
+        }
+
+        // .admin-btn{
+        //     width: 19rem;
+        // }
+        &.state {
+            margin-bottom: 0.625rem;
+        }
+    }
+
+    .repeater-field-nested {
+        padding: 0.813rem;
+        background: $background-white;
+        margin-top: 0.813rem;
+
+        .state-title {
+            font-size: 1.125rem;
+            padding-bottom: 0.625rem;
+        }
+
+        .repeater-field {
+            padding: 0;
+            border: none;
+            background: transparent;
+        }
+    }
+
+    // .no-shipping-data {
+    //     padding: 1rem;
+    //     border-radius: $border-radius-small;
+    //     font-size: 1rem;
+    //     background: $background-color;
+    //     margin-bottom: 1rem;
+    //     width: fit-content;
+    // }
+}
+
+// shipping by zone (create badge componennt and remove)
+.shipping-method-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+
+    .shipping-method {
+        display: flex;
+        gap: 0.5rem;
+
+        .admin-badge {
+            cursor: pointer;
+        }
+    }
+}

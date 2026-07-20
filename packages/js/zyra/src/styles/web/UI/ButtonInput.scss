@@ -1,0 +1,89 @@
+@use '../../../global.scss' as *;
+@use "sass:map";
+
+@each $name, $style in $btn-color-palette {
+  // light background color btn
+  .btn-#{$name} {
+    background: map.get($style, light-color);
+    color: map.get($style, color);
+    border: 0.063rem solid map.get($style, light-color);
+
+    &:hover {
+      background: map.get($style, light-color);
+      color: map.get($style, color);
+    }
+  }
+
+  // border btn style
+  .btn-border-#{$name} {
+    background: transparent;
+    color: map.get($style, color);
+    border: 0.063rem solid  map.get($style, color);
+  }
+
+  // dark background color btn
+  .btn-#{$name}-bg {
+    background: map.get($style, color);
+    color: #fff;
+    border: 0.063rem solid  map.get($style, color);
+
+    &:hover {
+      background: map.get($style, color);
+    }
+  }
+
+  // only text color with transparent background with .add-btn class
+  .btn-#{$name}-color {
+    color: map.get($style, color);
+    background: transparent;
+  }
+}
+
+.buttons-wrapper {
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+
+  &[data-position="center"] {
+    justify-content: center;
+  }
+
+  &[data-position="left"] {
+    justify-content: start;
+  }
+
+  &[data-position="right"] {
+    justify-content: end;
+  }
+}
+
+.admin-btn {
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  text-align: center;
+  padding: .5rem 1.438rem .5rem 1.313rem;
+  border-radius: $border-radius-small;
+  font-size: 0.85rem;
+  transition: all 0.3s linear;
+  width: fit-content;
+  gap: 0.5rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.add-btn {
+  display: flex;
+  gap: 0.313rem;
+  align-items: center;
+  border-bottom: 0.063rem solid $theme-color;
+  padding-bottom: 0.125rem;
+  font-size: 0.813rem;
+  color: $theme-color;
+  cursor: pointer;
+}

@@ -1,0 +1,85 @@
+@use '../../global.scss' as *;
+
+.free-form-customizer {
+  width: 100%;
+  margin-top: 0.625rem;
+
+  .free-form-row {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    align-items: center;
+    width: 75%;
+
+    label {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .edit-icon {
+      cursor: pointer;
+      font-size: 1rem;
+      margin-left: 0.25rem;
+      visibility: hidden;
+      transition: all 0.3s linear;
+    }
+
+    .free-form-input {
+      width: 30%;
+    }
+
+    &.enable-visibility {
+      .free-form-input {
+        opacity: 0.4;
+      }
+    }
+
+    &:not(.enable-visibility) {
+      &:hover {
+        .edit-icon {
+          visibility: visible;
+        }
+      }
+    }
+
+    &.submit-btn {
+      .free-form-input {
+        width: 63%;
+        display: flex;
+        justify-content: end;
+
+        .setting-form-input {
+          width: 47%;
+          margin-right: 2rem;
+        }
+
+        .buttons-wrapper {
+          align-items: center;
+        }
+      }
+    }
+  }
+
+  .free-form-header {
+    display: flex;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    width: 75%;
+
+    .title {
+      font-size: 1.125rem !important;
+      color: $theme-color !important;
+      width: 30%;
+    }
+  }
+
+  .visibility-icon {
+    font-size: 1.125rem;
+    padding-left: 0.313rem;
+    cursor: pointer;
+
+    &.adminfont-eye {
+      color: $theme-color;
+    }
+  }
+}

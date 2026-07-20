@@ -1,0 +1,141 @@
+@use '../../../global.scss' as *;
+
+// container and column component style
+
+.admin-main-wrapper {
+    .container-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .card-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        position: relative;
+
+        &.row {
+            flex-direction: row;
+
+        }
+
+        &.full-height {
+            .card-content {
+                height: 100%;
+            }
+        }
+    }
+
+    .card-wrapper:has(.transaction) {
+        margin-bottom: 1rem;
+    }
+
+    [data-cols] {
+        box-sizing: border-box;
+    }
+
+    [data-cols='1'] {
+        flex: 0 0 calc(8.3333% - 0.916rem);
+        max-width: calc(8.3333% - 0.916rem);
+    }
+
+    [data-cols='2'] {
+        flex: 0 0 calc(16.6667% - 0.833rem);
+        max-width: calc(16.6667% - 0.833rem);
+    }
+
+    [data-cols='3'] {
+        flex: 0 0 calc(25% - 0.75rem);
+        max-width: calc(25% - 0.75rem);
+    }
+
+    [data-cols='4'] {
+        flex: 0 0 calc(33.3333% - 0.688rem);
+        max-width: calc(33.3333% - 0.688rem);
+    }
+
+    [data-cols='5'] {
+        flex: 0 0 calc(41.6667% - 0.583rem);
+        max-width: calc(41.6667% - 0.583rem);
+    }
+
+    [data-cols='6'] {
+        flex: 0 0 calc(50% - 0.5rem);
+        max-width: calc(50% - 0.5rem);
+    }
+
+    [data-cols='7'] {
+        flex: 0 0 calc(58.3333% - 0.438rem);
+        max-width: calc(58.3333% - 0.438rem);
+    }
+
+    [data-cols='8'] {
+        flex: 0 0 calc(66.6667% - 0.313rem);
+        max-width: calc(66.6667% - 0.313rem);
+    }
+
+    [data-cols='9'] {
+        flex: 0 0 calc(75% - 0.25rem);
+        max-width: calc(75% - 0.25rem);
+    }
+
+    [data-cols='10'] {
+        flex: 0 0 calc(83.3333% - 0.166rem);
+        max-width: calc(83.3333% - 0.166rem);
+    }
+
+    [data-cols='11'] {
+        flex: 0 0 calc(91.6667% - 0.083rem);
+        max-width: calc(91.6667% - 0.083rem);
+    }
+
+    [data-cols='12'] {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+// for settings panel
+.admin-settings {
+    .container-wrapper {
+        .tabs-wrapper {
+            border: none;
+        }
+    }
+
+    .popup-body {
+        .form-group-wrapper {
+            gap: 1rem;
+
+            .form-group {
+                padding: 0;
+            }
+        }
+    }
+}
+
+@media only screen and (width <=37.5rem) {
+    [data-cols='1'],
+    [data-cols='2'],
+    [data-cols='3'],
+    [data-cols='4'],
+    [data-cols='5'],
+    [data-cols='6'],
+    [data-cols='7'],
+    [data-cols='8'],
+    [data-cols='9'],
+    [data-cols='10'],
+    [data-cols='11'] {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
+    .admin-main-wrapper {
+        .card-wrapper {
+            &.row {
+                flex-direction: column;
+            }
+        }
+    }
+}

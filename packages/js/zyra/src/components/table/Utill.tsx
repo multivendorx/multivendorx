@@ -1,0 +1,147 @@
+import React from 'react';
+import { TableRow, TableHeaderConfig } from './types'; // keep types if you have them
+
+export const renderCell = (
+    row: TableRow = {},
+    header: TableHeaderConfig = {},
+    format = '',
+    currency = {}
+) => {
+    let value = row[header.key];
+
+    if (!header?.type) {
+        return value ?? null;
+    }
+
+    switch (header.type) {
+        case 'status': {
+            const formattedValue = String(value)
+                .toLowerCase()
+                .split(/[-_]/)
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+            const statusClass =
+                typeof header.statusClass === 'function'
+                    ? header.statusClass(row)
+                    : header.statusClass;
+            return (
+                <span
+                    className={`admin-badge badge-${String(statusClass).toLowerCase()}`}
+                >
+                    {formattedValue}
+                </span>
+            );
+        }
+
+        case 'date': {
+            if (!value) {
+                return null;
+            }
+
+            const dateObj = new Date(value);
+            if (isNaN(dateObj.getTime())) {
+                return <span>{value}</span>;
+            }
+
+            const map: Record<string, string> = {
+                YYYY: String(dateObj.getFullYear()),
+                YY: String(dateObj.getFullYear()).slice(-2),
+
+                MMMM: dateObj.toLocaleString(undefined, { month: 'long' }),
+                MMM: dateObj.toLocaleString(undefined, { month: 'short' }),
+                MM: String(dateObj.getMonth() + 1).padStart(2, '0'),
+
+                DD: String(dateObj.getDate()).padStart(2, '0'),
+                D: String(dateObj.getDate()),
+
+                HH: String(dateObj.getHours()).padStart(2, '0'),
+                mm: String(dateObj.getMinutes()).padStart(2, '0'),
+                ss: String(dateObj.getSeconds()).padStart(2, '0'),
+            };
+
+            // Use header.format if provided, otherwise default
+            const dateFormat = format || 'YYYY-MM-DD';
+
+            const formattedDate = dateFormat.replace(
+                /YYYY|YY|MMMM|MMM|MM|DD|D|HH|mm|ss/g,
+                (token) => map[token] ?? token
+            );
+
+            return <span>{formattedDate}</span>;
+        }
+
+        case 'currency': {
+            if (value == null || value === '') {
+                value = 0;
+            }
+
+            const numberValue =
+                typeof value === 'number'
+                    ? value
+                    : parseFloat(value.toString().replace(/[^0-9.-]+/g, ''));
+
+            if (isNaN(numberValue)) {
+                return <span>{value}</span>;
+            }
+
+            const {
+                currencySymbol,
+                priceDecimals,
+                decimalSeparator,
+                thousandSeparator,
+                currencyPosition,
+            } = currency;
+
+            const decimals = Number(priceDecimals ?? 2);
+
+            const fixed = numberValue.toFixed(decimals);
+
+            const parts = fixed.split('.');
+            parts[0] = parts[0].replace(
+                /\B(?=(\d{3})+(?!\d))/g,
+                thousandSeparator ?? ','
+            );
+
+            const formattedNumber =
+                decimals > 0 ? parts.join(decimalSeparator ?? '.') : parts[0];
+
+            let finalValue: string;
+            if ('left' === currencyPosition) {
+                finalValue = `${currencySymbol}${formattedNumber}`;
+            } else if ('left_space' === currencyPosition) {
+                finalValue = `${currencySymbol} ${formattedNumber}`;
+            } else if ('right' === currencyPosition) {
+                finalValue = `${formattedNumber}${currencySymbol}`;
+            } else if ('right_space' === currencyPosition) {
+                finalValue = `${formattedNumber} ${currencySymbol}`;
+            } else {
+                finalValue = `${currencySymbol}${formattedNumber}`;
+            }
+
+            return finalValue;
+        }
+
+        case 'content': {
+            const rawValue = String(value ?? '');
+            const withoutTags = rawValue.replace(/<[^>]*>/g, ' ');
+            const decodedText = withoutTags
+                .replace(/&nbsp;/gi, ' ')
+                .replace(/&lt;/gi, '<')
+                .replace(/&gt;/gi, '>')
+                .replace(/&quot;/gi, '"')
+                .replace(/&#39;/gi, "'")
+                .replace(/&amp;/gi, '&');
+            const cleanText = decodedText.replace(/\s+/g, ' ').trim();
+
+            const shortText =
+                cleanText.length > 30
+                    ? `${cleanText.slice(0, 30)}…`
+                    : cleanText;
+
+            return shortText;
+        }
+
+        default:
+            return value ?? null;
+    }
+};

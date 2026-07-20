@@ -1,0 +1,107 @@
+@use '../../global.scss' as *;
+
+.nested-wrapper {
+    .nested-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: start;
+        align-items: center;
+        gap: 0.625rem;
+        min-height: 2.25rem;
+
+        .before,
+        .after {
+            color: $sub-text-color;
+            font-size: 0.95rem;
+        }
+
+        &.single-line {
+            .before {
+                width: 10rem;
+            }
+        }
+
+        
+
+        &.multiple {
+            padding: 1rem;
+            margin-top: 1.5rem;
+            background: #ece2f92e;
+        }
+
+        &:first-child {
+            margin-top: 0;
+        }
+
+        .form-wrapper {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.95rem;
+            display: inline-block;
+            color: $sub-text-color;
+        }
+
+        .settings-input-content:has(.choice-toggle-container) {
+            label {
+                padding-right: 0.5rem;
+            }
+        }
+
+        .choice-toggle-wrapper {
+            margin-bottom: 0;
+        }
+
+        .basic-input {
+            width: fit-content;
+        }
+
+        .buttons-wrapper {
+            width: 100%;
+        }
+
+        .setting-form-input {
+            width: fit-content;
+
+            .basic-input {
+                width: 100%;
+            }
+        }
+
+        .settings-input-content {
+            width: fit-content !important;
+        }
+
+        .toggle-btn {
+            label,
+            .toggle-checkbox-header {
+                margin: 0;
+            }
+        }
+
+        .select-wrapper {
+            .react-select {
+                width: 8rem;
+            }
+        }
+    }
+
+    .nested-row.multiple:first-child,
+    .nested-row.multiple.single-multi-line {
+        background: transparent;
+        padding: 0;
+        position: relative;
+
+        .buttons-wrapper {
+            width: fit-content;
+        }
+    }
+}
+
+@media screen and (width <=37.5rem) {
+    .nested-wrapper .nested-row.single-line .before {
+        width: fit-content;
+    }
+}

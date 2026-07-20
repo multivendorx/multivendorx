@@ -1,0 +1,57 @@
+@use '../../global.scss' as *;
+
+.system-info {
+    .buttons-wrapper {
+        margin-bottom: 1rem;
+    }
+
+    .system-item {
+        margin-bottom: 0.5rem;
+
+        .name {
+            background: #f9f4f4b8;
+            padding: 0.625rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            span {
+                font-size: 1.125rem;
+            }
+
+            i {
+                font-size: 1.625rem;
+                cursor: pointer;
+            }
+        }
+
+        .content {
+            padding: 0.813rem;
+            border: $border-light-small;
+            border-top: none;
+
+            .des {
+                margin-bottom: 0.5rem;
+            }
+
+            table {
+                width: 100%;
+
+                tr {
+                    td {
+                        padding: 0.45rem 0.625rem;
+                        font-size: 0.95rem;
+                    }
+
+                    td:first-child {
+                        width: 30%;
+                    }
+                }
+
+                tr:nth-child(odd) {
+                    background: #f5f5f5bd;
+                }
+            }
+        }
+    }
+}

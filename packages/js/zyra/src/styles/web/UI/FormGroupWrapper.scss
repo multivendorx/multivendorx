@@ -1,0 +1,321 @@
+@use '../../../global.scss' as *;
+@use "sass:map";
+
+.form-group-wrapper {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: end; // for empty label 
+        width: 100%;
+        position: relative;
+        gap: 0.5rem;
+        box-sizing: border-box;
+
+        &:has(label) {
+            justify-content: start;
+        }
+
+        .settings-form-label {
+            .title {
+                font-size: 0.95rem;
+                color: $text-color;
+                line-height: 1.313;
+                display: flex;
+                gap: 0.313rem;
+            }
+        }
+
+        .settings-input-content {
+            width: 100%;
+
+            .desc {
+                width: 100%;
+            }
+
+            &:has(.setting-form-input) {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 0.45rem;
+
+                .settings-metabox-description {
+                    padding: 0;
+                }
+            }
+
+            .after,
+            .before {
+                font-size: 0.95rem;
+                color: #0000009c;
+            }
+
+            // multi input style start
+            .settings-basic-child-wrap {
+                display: flex;
+                gap: 1rem;
+
+                .settings-basic-input-child-class {
+                    width: 9rem;
+
+                    &.prefix .input-unit {
+                        border-right: 0.063rem solid #11141891;
+                        padding-right: 0.5rem;
+                    }
+
+                    &.suffix .input-unit {
+                        border-left: 0.063rem solid #11141891;
+                        padding-left: 0.5rem;
+                    }
+
+                    .setting-form-input {
+                        align-items: center;
+                        position: relative;
+                        border: $border-light-small;
+                        border-radius: $border-radius-small;
+
+                        // padding: 0 0.5rem;
+                        background: #fff;
+
+                        .input-unit {
+                            font-size: 1rem;
+                        }
+
+                        input {
+                            width: 100%;
+                            border: none !important;
+
+                            /* overwrite common style */
+
+                            &:focus {
+                                box-shadow: none !important;
+
+                                /* overwrite common style */
+                            }
+                        }
+                    }
+
+                    .setting-form-input:has(.choice-toggle-wrapper) {
+                        border: none;
+                    }
+                }
+            }
+
+            // multi input style end  
+
+            // add new btn start
+            .add-new-option {
+                margin-top: 1rem;
+                display: flex;
+                width: 50%;
+                gap: 0.5rem;
+            }
+
+            // add new btn end
+        }
+
+        .form-group.pro-setting {
+            position: relative;
+        }
+
+        .form-group.module-enabled {
+            position: relative;
+
+            .adminfont-lock {
+                color: blue;
+            }
+        }
+
+        &.row {
+            flex-direction: row;
+            gap: 1rem;
+            align-items: start;
+            justify-content: start;
+
+            .settings-form-label {
+                width: 25%;
+                overflow-wrap: break-word;
+            }
+
+            .settings-input-content {
+                width: 75%;
+
+                &:has(.display-notice) {
+                    width: 100%;
+                }
+            }
+        }
+
+        &.space-between {
+            justify-content: space-between;
+
+            .settings-form-label,
+            .settings-input-content {
+                width: fit-content;
+            }
+        }
+
+        &.full-width {
+            .settings-input-content {
+                width: 100%;
+            }
+        }
+
+        &.pro-tab {
+            .tabs-wrapper {
+                width: 100%;
+                display: flex;
+                justify-content: end;
+            }
+        }
+
+        &.align-bottom {
+            align-items: end;
+        }
+
+        &.border-top {
+            padding-top: 1rem;
+            border-top: $border-light-small;
+        }
+
+        // copy btn 
+        &.copy-btn {
+            .settings-input-content {
+                // flex-wrap: nowrap;
+                gap: 0;
+
+                .input-wrapper {
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                }
+
+                .admin-btn {
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                }
+
+                .tooltip-wrapper {
+                    padding: 0.25rem 0.45rem;
+                    border-top: $border-light-small;
+                    border-bottom: $border-light-small;
+
+                    i {
+                        font-size: 1.4rem;
+                    }
+                }
+
+                .clear-btn {
+                    border: $border-light-small;
+                    padding: 0.25rem 0.45rem;
+                    color: map.get(map.get($color-palette, "red"), color);
+                    border-top-right-radius: $border-radius-small;
+                    border-bottom-right-radius: $border-radius-small;
+                    cursor: pointer;
+
+                    i {
+                        font-size: 1.4rem;
+                    }
+                }
+            }
+        }
+
+        .button-wrapper {
+            display: flex;
+            justify-content: start;
+        }
+
+        .choice-toggle-container label {
+            margin: 0;
+        }
+
+        .date-field-wrapper {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .multi-field {
+            display: flex;
+            gap: 0.313rem;
+        }
+
+        // add membership page 
+        // .checkbox-list-side-by-side {
+        //     margin-top: 0.625rem;
+        // }
+    }
+
+    &.bg-light-white,
+    .form-group.bg-light-white {
+        background: #f7f7f7;
+        padding: 1rem;
+    }
+}
+
+// change class name and common style (.desc)
+.settings-metabox-description {
+    padding-top: 0.25rem;
+    color: $sub-text-color;
+    width: 100%;
+    line-height: 1.313;
+    margin: 0;
+    font-size: 0.813rem;
+
+    b {
+        color: #000000b7;
+    }
+
+    p {
+        margin-bottom: 0.5rem;
+    }
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        margin-left: 1rem;
+        line-height: 1.313rem;
+    }
+
+    li {
+        list-style-type: number;
+        margin: 0;
+    }
+
+    code {
+        padding: 0.063rem 0.125rem 0.125rem;
+        font-size: 0.688rem;
+        line-height: 0.5;
+    }
+
+    a {
+        color: $theme-color;
+    }
+}
+
+.admin-settings,
+.expandable-panel-group {
+    .form-group-wrapper {
+        gap: 0;
+
+        .form-group {
+            background: $background-white;
+            padding: 1rem;
+        }
+    }
+}
+
+@media only screen and (width <=37.5rem) {
+    .form-group.row {
+        flex-direction: column !important;
+
+        .settings-form-label,
+        .settings-input-content {
+            width: 100% !important;
+        }
+    }
+}

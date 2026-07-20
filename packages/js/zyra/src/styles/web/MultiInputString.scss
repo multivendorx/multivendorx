@@ -1,0 +1,117 @@
+@use '../../global.scss' as *;
+
+.setting-form-multi-input {
+    .multi-input-row {
+        display: flex;
+        gap: 0.5rem;
+        width: 50%;
+
+        input {
+            width: 90%;
+        }
+    }
+
+    .multi-list {
+        width: 100%;
+        margin: 0;
+
+        li {
+            justify-content: space-between;
+            display: flex;
+            gap: .5rem;
+            line-height: 1.2;
+            margin: 0;
+            align-items: start;
+            border-radius: $border-radius-small;
+            flex-direction: column;
+
+            .input-header {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                box-sizing: border-box;
+                padding: .813rem;
+                cursor: pointer;
+            }
+
+            .details-wrapper {
+                display: flex;
+                gap: 0.5rem;
+                justify-content: start;
+                align-items: start;
+
+                i {
+                    font-size: 1.125rem;
+                    color: $theme-color;
+                    padding: 0.313rem;
+                    background: $theme-background-color;
+                    border-radius: $border-radius-small;
+                }
+
+                .title {
+                    font-size: 1.125rem;
+                    line-height: 1;
+                    margin-bottom: 0.25rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                .item-description {
+                    color: #08080859;
+                }
+
+                .details {
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+
+            .action-wrapper {
+                gap: 0.5rem;
+                display: none;
+
+                .adminfont-delete {
+                    color: #f06b4f;
+                }
+
+                i {
+                    cursor: pointer;
+                }
+            }
+
+            &:hover {
+                .action-wrapper {
+                    display: flex;
+                }
+            }
+
+            // &:last-child {
+            //     margin-top: 0.5rem;
+            // }
+        }
+
+        .multi-item {
+            border: $border-light-small;
+            margin-bottom: 0.5rem;
+            gap: 0;
+
+            .multi-input-dropdown {
+                width: 100%;
+                padding: 0.625rem;
+                padding-top: 0;
+                border-top: $border-light-small;
+                box-sizing: border-box;
+
+                .form-group {
+                    display: flex;
+
+                    .label {
+                        width: 20%;
+                        font-size: 1rem;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,86 @@
+@use '../../global.scss' as *;
+
+// email component start
+.emails-section {
+    padding: 0 0.313rem;
+    border: $border-light-small;
+    border-radius: $border-radius-small;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100% ;
+
+    .email {
+        font-size: 0.813rem;
+        font-weight: 600;
+        line-height: 0.7;
+        padding: 0.313rem 0.5rem;
+        border-radius: 15rem;
+        display: flex;
+        gap: 0.25rem;
+        border: $border-light-small;
+        align-items: center;
+        background: #c1a1e91c;
+        transition: all 0.4s ease;
+
+        &.primary {
+            background: $theme-background-color;
+            color: $theme-color;
+            border-color: $theme-color;
+        }
+    }
+
+    div {
+        width: fit-content;
+    }
+
+    i {
+        cursor: pointer;
+    }
+
+    .close {
+        color: $accent-color;
+    }
+
+    input,
+    input:focus,
+    .input-wrapper {
+        border: none;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .input-wrapper {
+        position: relative;
+
+        .basic-input {
+                width: fit-content;
+        }
+
+        .inline-suggestion {
+            position: absolute;
+            background: #d7d7d7;
+            color: $text-color;
+            padding: 0.625rem 0.813rem;
+            font-size: 1.063rem;
+            line-height: 1.125rem;
+            border-radius: $border-radius-small;
+            min-width: 18rem;
+            z-index: 9;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+
+            i {
+                padding: 0.45rem;
+                border-radius: 50%;
+                font-size: 1.313rem;
+            }
+
+        }
+    }
+}
+
+// email component end

@@ -1,0 +1,352 @@
+// External dependencies
+import React, { useState, useEffect } from 'react';
+
+// Internal dependencies
+import '../styles/web/NestedComponent.scss';
+import { FieldComponent, FIELD_REGISTRY } from './fieldUtils';
+import { ButtonInputUI } from './ButtonInput';
+import ItemList from './ItemList';
+
+type RowType = Record<string, string | number | boolean | string[]>;
+
+interface NestedFieldOption {
+    key?: string;
+    value: string;
+    label: string;
+    proSetting?: boolean;
+    check?: boolean;
+}
+
+interface NestedField {
+    key: string;
+    type:
+    | 'number'
+    | 'choice-toggle'
+    | 'text'
+    | 'select'
+    | 'time'
+    | 'checkbox'
+    | 'textarea'
+    | 'checklist'
+    | 'divider';
+    label?: string;
+    placeholder?: string;
+    options?: NestedFieldOption[];
+    dependent?: { key: string; set: boolean; value: string };
+    skipFirstRow?: boolean;
+    preText?: string;
+    postText?: string;
+    desc?: string;
+    size?: string;
+    min?: number;
+    defaultValue?: string;
+    className?: string;
+    proSetting?: boolean;
+    // for checkbox fields
+    selectDeselect?: boolean;
+    tour?: string;
+    rightContent?: boolean;
+    moduleEnabled?: string;
+    hideCheckbox?: boolean;
+    link?: string;
+}
+
+interface NestedComponentProps {
+    id: string;
+    label?: string;
+    fields: NestedField[];
+    value?: RowType[];
+    addButtonLabel?: string;
+    deleteButtonLabel?: string;
+    onChange: (value: RowType[]) => void;
+    single?: boolean;
+    wrapperClass?: string;
+    canAccess?: boolean;
+    mapping?: boolean;
+}
+
+export const NestedComponentUI: React.FC<NestedComponentProps> = ({
+    id,
+    fields = [],
+    value = [],
+    onChange,
+    addButtonLabel = 'Add',
+    deleteButtonLabel = 'Delete',
+    single = false,
+    wrapperClass = '',
+    canAccess,
+    mapping = false,
+}) => {
+    const [rows, setRows] = useState<RowType[]>([]);
+
+    // sync value → state
+    useEffect(() => {
+        if (single) {
+            setRows(value.length ? [value[0]] : [{}]);
+        } else {
+            setRows(value.length ? value : [{}]);
+        }
+    }, [value, single]);
+
+    function updateAndSave(updated: RowType[]) {
+        setRows(updated);
+        onChange(updated);
+    }
+
+    function handleChange(
+        rowIndex: number,
+        key: string,
+        value: string | number | boolean | string[]
+    ) {
+        const updated = rows.map((row, i) =>
+            i === rowIndex ? { ...(row ?? {}), [key]: value } : row
+        );
+        onChange(updated);
+    }
+
+    const isFieldActive = (
+        field: NestedField,
+        row: RowType,
+        rowIndex: number
+    ) => {
+        if (rowIndex === 0 && field.skipFirstRow) {
+            return false;
+        }
+
+        if (!field.dependent) {
+            return true;
+        }
+
+        const depVal = row?.[field.dependent.key];
+
+        const depActive = Array.isArray(depVal)
+            ? depVal.includes(field.dependent.value)
+            : depVal === field.dependent.value;
+
+        return field.dependent.set ? depActive : !depActive;
+    };
+
+    function isLastRowComplete() {
+        if (!rows.length) {
+            return true;
+        }
+
+        const lastRow = rows[rows.length - 1] ?? {};
+
+        return fields.every((field) => {
+            if (field.skipFirstRow && rows.length === 1) {
+                return true;
+            }
+
+            if (!field.key) {
+                return true;
+            }
+
+            // dependency check
+            if (!isFieldActive(field, lastRow, rows.length - 1)) {
+                return true;
+            }
+
+            const val = lastRow[field.key];
+            return val !== '';
+        });
+    }
+
+    function canAddMoreRows() {
+        if (!mapping) {
+            return true;
+        }
+
+        const selectField = fields.find(
+            (field) => field.type === 'select'
+        );
+
+        if (!selectField?.options) {
+            return true;
+        }
+
+        return rows.length < selectField.options.length;
+    }
+    function addRow() {
+        if (single) {
+            return;
+        }
+
+        if (!isLastRowComplete() || !canAddMoreRows()) {
+            return;
+        }
+        updateAndSave([...rows, {}]);
+    }
+
+    function removeRow(index: number) {
+        if (!single) {
+            updateAndSave(rows.filter((_, i) => i !== index));
+        }
+    }
+    function getMappedField(
+        field: NestedField,
+        row: RowType,
+        rowIndex: number
+    ) {
+        if (
+            field.type !== 'select' ||
+            !field.options
+        ) {
+            return field;
+        }
+
+        const usedValues = rows
+            .filter((_, index) => index !== rowIndex)
+            .map((item) => item?.[field.key]);
+
+        const updatedField = {
+            ...field,
+            options: field.options.filter(
+                (option) =>
+                    !usedValues.includes(option.value) ||
+                    option.value === row?.[field.key]
+            ),
+        };
+
+        return updatedField;
+    }
+
+    function renderField(field: NestedField, row: RowType, rowIndex: number) {
+        if (mapping) {
+            field = getMappedField(field, row, rowIndex);
+        }
+        const fieldComponent = FIELD_REGISTRY[field.type];
+        if (field.type === 'checklist') {
+            return <ItemList className="checklist" items={field.options} />;
+        }
+        if (!fieldComponent) {
+            return null;
+        }
+        const Render = fieldComponent.render;
+        const fieldValue = row?.[field.key];
+
+        const handleInternalChange = (val: RowType[string]) => {
+            handleChange(rowIndex, field.key, val);
+            return;
+        };
+
+        return (
+            <>
+                {!(rowIndex === 0) && field.label && (
+                    <label>{field.label}</label>
+                )}
+                <Render
+                    field={field}
+                    value={fieldValue}
+                    onChange={handleInternalChange}
+                    canAccess={canAccess}
+                // appLocalizer={appLocalizer}
+                />
+            </>
+        );
+    }
+
+    return (
+        <div className="nested-wrapper" id={id}>
+            {rows.map((row, rowIndex) => (
+                <div
+                    key={`nested-row-${rowIndex}`}
+                    className={`nested-row ${single ? '' : 'multiple'
+                        } ${wrapperClass}`}
+                >
+                    {fields.map((field) => {
+                        if (rowIndex === 0 && field.skipFirstRow) {
+                            return null;
+                        }
+
+                        if (!isFieldActive(field, row, rowIndex)) {
+                            return null;
+                        }
+
+                        return (
+                            <>
+                                {field.beforeElement &&
+                                    renderField(
+                                        field.beforeElement,
+                                        row,
+                                        rowIndex
+                                    )}
+
+                                {renderField(field, row, rowIndex)}
+
+                                {field.afterElement &&
+                                    renderField(
+                                        field.afterElement,
+                                        row,
+                                        rowIndex
+                                    )}
+                            </>
+                        );
+                    })}
+
+                    {!single && (
+                        <ButtonInputUI
+                            buttons={[
+                                //  Add button only on last row
+                                ...(rowIndex === rows.length - 1 && canAddMoreRows()
+                                    ? [
+                                        {
+                                            icon: 'plus',
+                                            color: 'purple',
+                                            text: addButtonLabel,
+                                            onClick: addRow,
+                                            disabled: !isLastRowComplete() ,
+                                        },
+                                    ]
+                                    : []),
+
+                                // Delete button on all rows except row 0
+                                ...(rows.length > 1 && rowIndex > 0
+                                    ? [
+                                        {
+                                            icon: 'delete',
+                                            text: deleteButtonLabel,
+                                            color: 'red',
+                                            onClick: () =>
+                                                removeRow(rowIndex),
+                                        },
+                                    ]
+                                    : []),
+                            ]}
+                        />
+                    )}
+                </div>
+            ))}
+        </div>
+    );
+};
+
+const NestedComponent: FieldComponent = {
+    render: ({ field, value, onChange, canAccess }) => (
+        <NestedComponentUI
+            key={field.key}
+            id={field.key}
+            label={field.label}
+            mapping={field.mapping}
+            fields={field.nestedFields ?? []} //The list of inner fields that belong to this section.
+            value={value}
+            wrapperClass={field.rowClass}
+            addButtonLabel={field.addButtonLabel} //The text shown on the button to add a new item.
+            deleteButtonLabel={field.deleteButtonLabel} //The text shown on the button to remove an item.
+            single={field.single} //If set to true, only one item is allowed.
+            onChange={(val) => {
+                if (!canAccess) {
+                    return;
+                }
+                onChange(val);
+            }}
+            canAccess={canAccess}
+        />
+    ),
+
+    validate: () => {
+        return null;
+    },
+};
+
+export default NestedComponent;

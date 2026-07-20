@@ -1,0 +1,18 @@
+@use '../../../global.scss' as *;
+
+.copy-to-clipboard {
+    margin-bottom: 0.5rem;
+    
+    code {
+        font-weight: 500;
+        color: $theme-color;
+        background: $theme-background-color;
+        padding: 0.313rem;
+        margin-right: 0.625rem;
+    }
+
+    i {
+        font-size: 1rem;
+        cursor: pointer;
+    }
+}

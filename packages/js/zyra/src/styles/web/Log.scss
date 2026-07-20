@@ -1,0 +1,72 @@
+@use '../../global.scss' as *;
+
+.section-log-container{ 
+  .log-container-wrapper {
+    min-height: 6.25rem;
+    height: 100%;
+    border-radius: $border-radius-small;
+    padding: 0.5rem;
+    padding-bottom: 1rem;
+    position: relative;
+    font-size: 0.875rem;
+    line-height: 1.173;
+    word-break: break-all;
+    background-color: #151718;
+    margin-top: 1rem;
+
+    .wrapper-header{
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+
+      .log-viewer-text{
+        color: #fff;
+        font-weight: 500;
+      }
+    }    
+
+    .wrapper-body{
+      padding: 0 0 0.75rem;
+      height: 18.875rem;
+      overflow: scroll;
+      color: #fff;
+
+      &::-webkit-scrollbar-track {
+        background: #181819;;
+        border-radius: $border-radius-small;
+      }
+      
+      &::-webkit-scrollbar {
+        width: 0.438rem;
+        height: 0.438rem;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba($color: #666666cd, $alpha: 100%);
+        border-radius: $border-radius-small;
+      }
+
+      &::-webkit-scrollbar-corner{
+        width: 0;
+        height: 0;
+        overflow: hidden;
+        visibility: hidden;
+      }
+    }
+
+    .delete-btn{
+      i{
+        font-size: 1.063rem;
+      }
+    }
+  }
+}
+
+.log-section{
+  flex-direction: column;
+
+  .settings-input-content{
+    width: 100%;
+  }
+}
