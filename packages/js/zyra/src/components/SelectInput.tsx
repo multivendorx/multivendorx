@@ -395,7 +395,7 @@ export const SelectInputUI: React.FC<SelectProps> = ({
         menuPosition: 'fixed',
         styles: {
             ...buildStyles(isMulti, background, color),
-            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+            menuPortal: (base) => ({ ...base, zIndex: 9 }),
         },
     };
     const formattedSize = typeof size === 'number' ? `${size}rem` : size;
