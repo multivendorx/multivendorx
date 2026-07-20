@@ -10,7 +10,7 @@ import {
 	ItemListUI,
 	Container,
 	NoticeManager,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { ChoiceToggleUI, ButtonInputUI, SelectInputUI } from '@zyra/inputs';
 import { useModules } from '@zyra/providers';
 import { SettingsNavigator } from '@zyra/admin';

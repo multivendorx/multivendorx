@@ -9,7 +9,7 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	NoticeManager,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { EmailsInputUI, BasicInputUI, SelectInputUI } from '@zyra/inputs';
 import { useModules, MapProviderUI } from '@zyra/providers';
 import { useLocation } from 'react-router-dom';

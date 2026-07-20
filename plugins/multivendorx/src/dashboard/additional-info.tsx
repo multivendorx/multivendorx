@@ -9,7 +9,7 @@ import {
 	Card,
 	FormGroupWrapper,
 	FormGroup,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { TextAreaUI, ChoiceToggleUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 

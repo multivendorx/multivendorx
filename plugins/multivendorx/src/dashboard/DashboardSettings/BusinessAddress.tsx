@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { getApiLink } from '@zyra/core';
-import { FormGroup, FormGroupWrapper, NoticeManager } from '@zyra/primitives';
+import { FormGroup, FormGroupWrapper, NoticeManager } from '@zyra/elements';
 import { BasicInputUI, SelectInputUI } from '@zyra/inputs';
 import { MapProviderUI, useModules } from '@zyra/providers';
 import { __ } from '@wordpress/i18n';

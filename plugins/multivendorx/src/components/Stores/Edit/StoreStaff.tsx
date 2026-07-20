@@ -10,7 +10,7 @@ import {
 	Card,
 	NoticeManager,
 	InfoItem,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { SelectInputUI, ButtonInputUI } from '@zyra/inputs';
 import { useModules } from '@zyra/providers';
 import { __ } from '@wordpress/i18n';

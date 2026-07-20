@@ -9,7 +9,7 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	PopupUI,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import {
 	TextAreaUI,
 	ChoiceToggleUI,

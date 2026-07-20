@@ -18,7 +18,7 @@ import {
 	Container,
 	InfoItem,
 	ComponentStatusView,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { useModules } from '@zyra/providers';
 import { formatCurrency } from '@/services/commonFunction';
 

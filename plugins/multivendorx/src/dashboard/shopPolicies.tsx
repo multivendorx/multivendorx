@@ -9,7 +9,7 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	NoticeManager,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { TextAreaUI } from '@zyra/inputs';
 import { NavigatorHeader } from '@zyra/admin';
 import { __ } from '@wordpress/i18n';

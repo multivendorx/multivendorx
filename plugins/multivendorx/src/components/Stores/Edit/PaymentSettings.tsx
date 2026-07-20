@@ -10,7 +10,7 @@ import {
 	FormGroup,
 	Notice,
 	NoticeManager,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { BasicInputUI, PrePostTextUI, ExpandablePanelUI } from '@zyra/inputs';
 import { __, sprintf } from '@wordpress/i18n';
 

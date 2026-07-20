@@ -10,7 +10,7 @@ import {
 	Notice,
 	PopupUI,
 	SectionUI,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { TableCard, TableRow } from '@zyra/table';
 import { dashNavigate, formatCurrency } from '@/services/commonFunction';
 import { useNavigate } from 'react-router-dom';

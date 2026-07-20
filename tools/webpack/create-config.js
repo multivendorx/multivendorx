@@ -440,12 +440,20 @@ module.exports = function createWebpackConfig(
 				zyra: '@multivendorx/zyra',
 				'@zyra/core': '@multivendorx/zyra',
 				'@zyra/admin': '@multivendorx/zyra',
-				'@zyra/primitives': '@multivendorx/zyra',
+				// @zyra/elements is the former @zyra/primitives package
+				// (renamed upstream), and also absorbed the former
+				// @zyra/recaptcha package (RecaptchaUI, Recaptcha,
+				// CustomRecaptcha) — @zyra/recaptcha no longer exists
+				// upstream, don't re-add an alias for it.
+				'@zyra/elements': '@multivendorx/zyra',
 				'@zyra/providers': '@multivendorx/zyra',
 				'@zyra/inputs': '@multivendorx/zyra',
-				'@zyra/recaptcha': '@multivendorx/zyra',
 				'@zyra/table': '@multivendorx/zyra',
-				'@zyra/formbuilder': '@multivendorx/zyra',
+				// @zyra/builders covers what used to be the separate
+				// @zyra/editor and @zyra/formbuilder packages (merged
+				// upstream in the zyra repo) — BlockBuilder, CanvasEditor,
+				// SettingMetaBox, FormViewer, FreeFormCustomizer, FIELD_REGISTRY.
+				'@zyra/builders': '@multivendorx/zyra',
 			},
 		},
 

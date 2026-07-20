@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { getApiLink } from '@zyra/core';
 import { ChoiceToggle } from '@zyra/inputs';
-import { FormViewer } from '@zyra/formbuilder';
+import { FormViewer } from '@zyra/builders';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 

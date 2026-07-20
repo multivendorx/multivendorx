@@ -4,7 +4,7 @@ import {
 	Container,
 	ComponentStatusView,
 	PopupUI,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { NavigatorHeader } from '@zyra/admin';
 import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';

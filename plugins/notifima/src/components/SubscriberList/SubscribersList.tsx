@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import { useState } from 'react';
 import { getApiLink } from '@zyra/core';
-import { Column, Container, InfoItem, PopupUI } from '@zyra/primitives';
+import { Column, Container, InfoItem, PopupUI } from '@zyra/elements';
 import { NavigatorHeader } from '@zyra/admin';
 import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';

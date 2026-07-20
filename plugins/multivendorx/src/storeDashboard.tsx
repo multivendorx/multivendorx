@@ -8,7 +8,7 @@ import {
 	Tooltip,
 	NoticeReceiver,
 	Notice,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { useModules, GuidedTourProvider } from '@zyra/providers';
 import { TabsUI } from '@zyra/admin';
 import { useParams, useNavigate, NavLink } from 'react-router-dom';

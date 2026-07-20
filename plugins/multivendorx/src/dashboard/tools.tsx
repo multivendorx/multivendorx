@@ -1,6 +1,6 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { Card } from '@zyra/primitives';
+import { Card } from '@zyra/elements';
 import { ButtonInputUI } from '@zyra/inputs';
 import { NavigatorHeader } from '@zyra/admin';
 

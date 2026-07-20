@@ -1,6 +1,6 @@
 /* global appLocalizer */
 import { useState } from 'react';
-import { Column, Container, InfoItem, PopupUI } from '@zyra/primitives';
+import { Column, Container, InfoItem, PopupUI } from '@zyra/elements';
 import { MultiCheckBoxUI } from '@zyra/inputs';
 import { NavigatorHeader } from '@zyra/admin';
 import { TableCard } from '@zyra/table';

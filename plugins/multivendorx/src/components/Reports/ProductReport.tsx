@@ -19,7 +19,7 @@ import {
 	Container,
 	InfoItem,
 	ComponentStatusView,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import axios from 'axios';
 import {

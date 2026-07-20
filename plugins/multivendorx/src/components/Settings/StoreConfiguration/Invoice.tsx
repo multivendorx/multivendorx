@@ -7,7 +7,7 @@ import {
 	FormGroupWrapper,
 	NoticeManager,
 	PopupUI,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import {
 	BasicInputUI,
 	ChoiceToggleUI,

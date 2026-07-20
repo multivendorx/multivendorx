@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { FormGroupWrapper, FormGroup, PopupUI } from '@zyra/primitives';
+import { FormGroupWrapper, FormGroup, PopupUI } from '@zyra/elements';
 import { ButtonInputUI, TextAreaUI } from '@zyra/inputs';
 import { NavigatorHeader } from '@zyra/admin';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';

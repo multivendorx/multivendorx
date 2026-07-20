@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { PopupUI, FormGroup, FormGroupWrapper } from '@zyra/primitives';
+import { PopupUI, FormGroup, FormGroupWrapper } from '@zyra/elements';
 import { ButtonInputUI, SelectInputUI, BasicInputUI } from '@zyra/inputs';
 import { useModules } from '@zyra/providers';
 import { NavigatorHeader } from '@zyra/admin';

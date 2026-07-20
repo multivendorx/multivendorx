@@ -6,7 +6,7 @@ import Modules from './components/Modules/Modules';
 import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
 import WholesaleUser from './components/WholesaleUser/wholesaleUser.tsx';
 import Rules from './components/Rules/Rules';
-import { Notice } from '@zyra/primitives';
+import { Notice } from '@zyra/elements';
 import { GuidedTourProvider, initializeModules } from '@zyra/providers';
 import { AdminHeader } from '@zyra/admin';
 import { __ } from '@wordpress/i18n';

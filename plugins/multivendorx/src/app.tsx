@@ -2,7 +2,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { AdminHeader, GuidedTourProvider } from '@zyra/admin';
-import { FormGroup, FormGroupWrapper, PopupUI, Notice } from '@zyra/primitives';
+import { FormGroup, FormGroupWrapper, PopupUI, Notice } from '@zyra/elements';
 import { SequentialTaskExecutorUI } from '@zyra/inputs';
 
 import Brand from './assets/images/multivendorx-logo.png';

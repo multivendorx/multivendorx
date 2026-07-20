@@ -8,7 +8,7 @@ import {
 	Container,
 	ItemListUI,
 	Notice,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { ButtonInputUI, ExpandablePanelUI } from '@zyra/inputs';
 import { SettingsNavigator } from '@zyra/admin';
 

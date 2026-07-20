@@ -4,7 +4,7 @@ import {
 	FormGroupWrapper,
 	SectionUI,
 	NoticeManager,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { ChoiceToggleUI, ExpandablePanelUI, SelectInputUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { useState, useCallback, useMemo } from 'react';

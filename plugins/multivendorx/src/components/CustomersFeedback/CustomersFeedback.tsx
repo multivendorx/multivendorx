@@ -1,5 +1,5 @@
 /* global appLocalizer */
-import { Container, Column, ComponentStatusView } from '@zyra/primitives';
+import { Container, Column, ComponentStatusView } from '@zyra/elements';
 import { useModules } from '@zyra/providers';
 import { SettingsNavigator } from '@zyra/admin';
 import '../AdminDashboard/AdminDashboard.scss';

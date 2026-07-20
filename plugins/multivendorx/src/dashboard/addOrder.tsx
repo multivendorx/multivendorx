@@ -8,7 +8,7 @@ import {
 	FormGroup,
 	FormGroupWrapper,
 	InfoItem,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import {
 	ButtonInputUI,
 	BasicInputUI,

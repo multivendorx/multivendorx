@@ -14,7 +14,7 @@ import {
 	ComponentStatusView,
 	NoticeManager,
 	SectionUI,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { BasicInputUI, DynamicRowSetting, ChoiceToggleUI } from '@zyra/inputs';
 
 interface ShippingRate {

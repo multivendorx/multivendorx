@@ -7,7 +7,7 @@ import {
 	ComponentStatusView,
 	PopupUI,
 	ItemListUI,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { ButtonInputUI } from '@zyra/inputs';
 import { HeaderSearch, NavigatorHeader } from '@zyra/admin';
 import { __ } from '@wordpress/i18n';

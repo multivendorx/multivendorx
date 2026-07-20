@@ -6,7 +6,7 @@ import {
 	ItemListUI,
 	Container,
 	NoticeManager,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
 import Mascot from '../../assets/images/brand-icon.png';

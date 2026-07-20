@@ -24,7 +24,7 @@ import {
 	InfoItem,
 	ComponentStatusView,
 	ItemListUI,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { ButtonInputUI, CalendarInputUI } from '@zyra/inputs';
 import { useModules } from '@zyra/providers';
 import { NavigatorHeader } from '@zyra/admin';

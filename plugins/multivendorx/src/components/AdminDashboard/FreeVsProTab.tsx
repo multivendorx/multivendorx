@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Column, Container } from '@zyra/primitives';
+import { Card, Column, Container } from '@zyra/elements';
 import { __ } from '@wordpress/i18n';
 import freePro from '../../assets/images/dashboard-1.png';
 interface Feature {

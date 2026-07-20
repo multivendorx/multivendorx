@@ -8,7 +8,7 @@ import {
 	PopupUI,
 	InfoItem,
 	Notice,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import {
 	ButtonInputUI,
 	BasicInputUI,

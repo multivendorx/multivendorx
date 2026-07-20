@@ -13,7 +13,7 @@ import {
 	ItemListUI,
 	PopupUI,
 	ComponentStatusView,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import {
 	ButtonInputUI,
 	BasicInputUI,

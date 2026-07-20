@@ -6,7 +6,7 @@ import {
 	ItemListUI,
 	Container,
 	NoticeManager,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { ButtonInputUI } from '@zyra/inputs';
 import { Modules } from '@zyra/admin';
 import { __, sprintf } from '@wordpress/i18n';

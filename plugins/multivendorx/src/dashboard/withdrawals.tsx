@@ -13,7 +13,7 @@ import {
 	ItemListUI,
 	NoticeManager,
 	Notice,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { BasicInputUI, ButtonInputUI } from '@zyra/inputs';
 import { NavigatorHeader } from '@zyra/admin';
 import { formatCurrency } from '../services/commonFunction';

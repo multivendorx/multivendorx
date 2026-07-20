@@ -8,7 +8,7 @@ import {
 	FormGroup,
 	FormGroupWrapper,
 	Notice,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { BasicInputUI, ButtonInputUI, ChoiceToggleUI } from '@zyra/inputs';
 import { useModules } from '@zyra/providers';
 import { TableCard, TableRow } from '@zyra/table';

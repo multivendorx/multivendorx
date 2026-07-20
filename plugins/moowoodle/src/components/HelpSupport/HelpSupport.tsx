@@ -1,6 +1,6 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { Card, Column, Container } from '@zyra/primitives';
+import { Card, Column, Container } from '@zyra/elements';
 import { NavigatorHeader } from '@zyra/admin';
 
 const HelpSupport: React.FC = () => {

@@ -12,7 +12,7 @@ import {
 	NoticeManager,
 	ComponentStatusView,
 	Notice,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { ButtonInputUI, TextAreaUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import React from 'react';

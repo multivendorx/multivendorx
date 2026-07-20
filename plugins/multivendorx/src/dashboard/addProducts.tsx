@@ -11,7 +11,7 @@ import {
 	FormGroup,
 	PopupUI,
 	Notice,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import {
 	BasicInputUI,
 	SelectInputUI,

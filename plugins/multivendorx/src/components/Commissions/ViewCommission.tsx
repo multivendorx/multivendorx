@@ -11,7 +11,7 @@ import {
 	SectionUI,
 	Column,
 	Container,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
 import { formatCurrency, getUrl } from '../../services/commonFunction';

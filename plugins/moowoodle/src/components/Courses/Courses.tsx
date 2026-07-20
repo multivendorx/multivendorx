@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';
 import { getApiLink } from '@zyra/core';
-import { InfoItem, PopupUI, Container, Column } from '@zyra/primitives';
+import { InfoItem, PopupUI, Container, Column } from '@zyra/elements';
 import { NavigatorHeader } from '@zyra/admin';
 import { TableCard, QueryProps } from '@zyra/table';
 

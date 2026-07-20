@@ -2,7 +2,7 @@
 import { applyFilters, addFilter } from '@wordpress/hooks';
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Card, FormGroupWrapper } from '@zyra/primitives';
+import { Card, FormGroupWrapper } from '@zyra/elements';
 import { __ } from '@wordpress/i18n';
 
 const ProductCategorysection = ({ product, setProduct, setErrorMsg }) => {

@@ -8,7 +8,7 @@ import {
 	FormGroup,
 	PopupUI,
 	InfoItem,
-} from '@zyra/primitives';
+} from '@zyra/elements';
 import { BasicInputUI, TextAreaUI, ButtonInputUI } from '@zyra/inputs';
 import { NavigatorHeader } from '@zyra/admin';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
