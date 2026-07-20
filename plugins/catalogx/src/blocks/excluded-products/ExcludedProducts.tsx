@@ -61,45 +61,47 @@ const ExcludedProducts: FC<Props> = ({ attributes }) => {
     return (
         <>
             {products.length ? (
-                <ul className="products columns-4">
-                    {products.map((product) => (
-                        <li
-                            key={product.id}
-                            className={`product type-product post-${product.id}`}
-                        >
-                            <a
-                                href={product.permalink}
-                                className="woocommerce-LoopProduct-link woocommerce-loop-product__link"
+                <div className='woocommerce'>
+                    <ul className="wc-block-product-template__responsive products columns-4">
+                        {products.map((product) => (
+                            <li
+                                key={product.id}
+                                className={`wc-block-product product type-product post-${product.id}`}
                             >
-                                <img
-                                    src={
-                                        product.images?.[0]?.src ||
-                                        excludedProducts.placeholder_url
-                                    }
-                                    alt={product.name}
-                                    className={
-                                        product.images?.[0]?.src
-                                            ? 'attachment-woocommerce_thumbnail size-woocommerce_thumbnail'
-                                            : 'woocommerce-placeholder wp-post-image'
-                                    }
-                                />
-
-                                <h2 className="woocommerce-loop-product__title">
-                                    {product.name}
-                                </h2>
-
-                                {product.price_html && (
-                                    <span
-                                        className="price"
-                                        dangerouslySetInnerHTML={{
-                                            __html: product.price_html,
-                                        }}
+                                <a
+                                    href={product.permalink}
+                                    className="woocommerce-LoopProduct-link woocommerce-loop-product__link"
+                                >
+                                    <img
+                                        src={
+                                            product.images?.[0]?.src ||
+                                            excludedProducts.placeholder_url
+                                        }
+                                        alt={product.name}
+                                        className={
+                                            product.images?.[0]?.src
+                                                ? 'attachment-woocommerce_thumbnail size-woocommerce_thumbnail'
+                                                : 'woocommerce-placeholder wp-post-image'
+                                        }
                                     />
-                                )}
-                            </a>
-                        </li>
-                    ))}
-                </ul>
+
+                                    <h2 className="woocommerce-loop-product__title">
+                                        {product.name}
+                                    </h2>
+
+                                    {product.price_html && (
+                                        <span
+                                            className="price"
+                                            dangerouslySetInnerHTML={{
+                                                __html: product.price_html,
+                                            }}
+                                        />
+                                    )}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             ) : (
                 <p>
                     {__(
