@@ -206,8 +206,8 @@ const AddOrder = () => {
 			})
 			.then((res) => {
 				const excludedGateways = [
-					'internal_gateway_1',
-					'internal_gateway_2',
+					'wc-bookings-gateway',
+					'wcappointmentsgateway',
 				];
 
 				const formatted = res.data
@@ -332,12 +332,7 @@ const AddOrder = () => {
 			payment_method_title: selectedPayment?.method_title || '',
 			set_paid: false,
 			customer_note: orderNote || '',
-			meta_data: [
-				// {
-				// 	key: 'multivendorx_store_id',
-				// 	value: appLocalizer.store_id,
-				// },
-			],
+			meta_data: [],
 		};
 
 		axios
