@@ -277,10 +277,12 @@ class StripeConnect {
      * Create Stripe account
      */
     public function connect_stripe() {
-        check_admin_referer( 'multivendorx_connect_stripe' );
         if ( ! is_user_logged_in() ) {
             return false;
         }
+
+        $store_id = MultiVendorX()->active_store;
+        if( empty( $store_id )) return false;
 
         $config = $this->get_store_stripe_config();
         $store  = $config['store'];
@@ -382,7 +384,8 @@ class StripeConnect {
             return;
         }
 
-        check_admin_referer( 'multivendorx_disconnect_stripe' );
+        $store_id = MultiVendorX()->active_store;
+        if( empty( $store_id )) return false;
 
         $config = $this->get_store_stripe_config();
         $store  = $config['store'];
