@@ -4,7 +4,7 @@ import { __ } from '@wordpress/i18n';
 
 
 import { getApiLink, useModules } from '@zyra/core';
-import { InfoItem, Notice, NavigatorHeader } from '@zyra/components';
+import { InformationItemComponent, NoticeComponent, NavigatorHeaderComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -390,7 +390,7 @@ const AllProduct: React.FC = () => {
 		row
 	);
 				return (
-					<InfoItem
+					<InformationItemComponent
 						title={<>{row.name} {badge && <span style={{ marginLeft: '8px', display: 'inline-flex', verticalAlign: 'middle' }}>{badge}</span>}</>}
 						onClick={() =>
 							dashNavigate(navigate, [
@@ -501,7 +501,7 @@ const AllProduct: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('All Products', 'multivendorx')}
 				headerDescription={__(
 					'Products are created, updated, and managed for your store.',
@@ -538,7 +538,7 @@ const AllProduct: React.FC = () => {
 				modules
 			)}
 			{errorMsg && (
-				<Notice
+				<NoticeComponent
 					type="error"
 					validity={2000}
 					displayPosition="notice"

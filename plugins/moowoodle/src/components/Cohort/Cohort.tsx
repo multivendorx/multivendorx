@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { __ } from '@wordpress/i18n';
 
 import {
-	Column,
-	Container,
-	InfoItem,
-	PopupUI,
-	NavigatorHeader,
+	LayoutColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
@@ -34,7 +34,7 @@ const Cohort: React.FC = () => {
 		cohort_name: {
 			label: __('Cohorts', 'moowoodle'),
 			render: (row: CohortRow) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.cohort_name}
 					avatar={{ iconClass: 'cohort' }}
 				/>
@@ -121,7 +121,7 @@ const Cohort: React.FC = () => {
 	return (
 		<>
 			{openPopup && (
-				<PopupUI
+				<PopupComponent
 					position="lightbox"
 					open={openPopup}
 					onClose={() => setopenPopup(false)}
@@ -129,10 +129,10 @@ const Cohort: React.FC = () => {
 					height="auto"
 				>
 					<ShowProPopup />
-				</PopupUI>
+				</PopupComponent>
 			)}
 
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="cohort"
 				headerDescription={__(
 					'Cohort information is presented with associated products and student enrollments to support administrative actions.',
@@ -140,14 +140,14 @@ const Cohort: React.FC = () => {
 				)}
 				headerTitle={__('Cohorts', 'moowoodle')}
 			/>
-			<Container general>
-				<Column>
+			<ContainerComponent general>
+				<LayoutColumnComponent>
 					<div className="demo-wrapper" onClick={handleTableWrapperClick}>
 						<div className="watermark">{__('This is sample Data','moowoodle' )}</div>
 						<TableCard {...tableProps} />
 					</div>
-				</Column>
-			</Container>
+				</LayoutColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

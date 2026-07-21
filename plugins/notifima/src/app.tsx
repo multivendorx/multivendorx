@@ -6,8 +6,8 @@ import { searchIndex, SearchItem } from './searchIndex';
 import Settings from './components/Settings/Settings';
 import SubscribersList from './components/SubscriberList/SubscribersList';
 import Managestock from './components/Managestock/Managestock';
-import { Notice } from '@zyra/components';
-import { Header } from '@zyra/admin';
+import { NoticeComponent } from '@zyra/components';
+import { AdminHeader } from '@zyra/admin';
 import Brand from './assets/images/brand-logo.png';
 import { __ } from '@wordpress/i18n';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
@@ -152,7 +152,7 @@ const App = () => {
     return (
         <>
             {!isBannerDismissed && (
-                <Notice
+                <NoticeComponent
                     uniqueKey="banner"
                     dismissStorageKey={BANNER_DISMISS_STORAGE_KEY}
                     type="banner"
@@ -165,7 +165,7 @@ const App = () => {
                     }}
                 />
             )}
-            <Header
+            <AdminHeader
                 brandImg={Brand}
                 free={appLocalizer.free_version}
                 pro={appLocalizer.pro_data.version}

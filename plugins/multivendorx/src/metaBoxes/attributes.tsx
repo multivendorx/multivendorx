@@ -1,9 +1,9 @@
 import { addFilter, applyFilters } from '@wordpress/hooks';
-import { Card, FormGroup, FormGroupWrapper } from '@zyra/components';
+import { CardComponent, FormGroupComponent, FormGroupWrapperComponent } from '@zyra/components';
 import {
-	MultiCheckBoxUI,
+	MultiCheckboxInput,
 	SelectInputUI,
-	BasicInputUI,
+	TextInput,
 	ButtonInputUI,
 } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
@@ -182,7 +182,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
             .catch((err) => console.error('Attribute save error:', err));
     };
     return (
-        <Card
+        <CardComponent
             title={applyFilters(
                 'multivendorx_product_attributes_title',
                 __('Attributes', 'multivendorx')
@@ -272,7 +272,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                     <div className="drag-icon">
                                         <i className="adminfont-drag"></i>
                                     </div>
-                                    <BasicInputUI
+                                    <TextInput
                                         placeholder="Add Attribute"
                                         value={variation.name}
                                         onChange={(value) => updateAttribute(vIndex, 'name', value)}
@@ -280,16 +280,16 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                 </div>
 
                                 <div className="option-wrapper">
-                                    <FormGroupWrapper>
-                                        <FormGroup label={__('Option value', 'multivendorx')} />
-                                    </FormGroupWrapper>
+                                    <FormGroupWrapperComponent>
+                                        <FormGroupComponent label={__('Option value', 'multivendorx')} />
+                                    </FormGroupWrapperComponent>
 
                                     {variation.options.map((opt, oIndex) => (
                                         <div className="variant" key={oIndex}>
                                             <div className="drag-icon">
                                                 <i className="adminfont-drag"></i>
                                             </div>
-                                            <BasicInputUI
+                                            <TextInput
                                                 value={opt}
                                                 onChange={(value) => {
                                                     const updated = [...variation.options];
@@ -314,7 +314,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                                 }
                                             }}
                                         >
-                                            <BasicInputUI
+                                            <TextInput
                                                 placeholder="Add another value"
                                                 value={tempOptions[vIndex] || ''}
                                                 onChange={(value) => handleTempOptionChange(vIndex, value)}
@@ -376,7 +376,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                 setProduct,
                 productFields,
             )}
-        </Card>
+        </CardComponent>
 
     );
 };

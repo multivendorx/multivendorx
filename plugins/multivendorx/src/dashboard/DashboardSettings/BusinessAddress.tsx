@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 
-import { BasicInputUI, SelectInputUI } from '@zyra/inputs';
+import { TextInput, SelectInputUI } from '@zyra/inputs';
 import {
-	FormGroup,
-	FormGroupWrapper,
+	FormGroupComponent,
+	FormGroupWrapperComponent,
 	NoticeManager,
-	MapProviderUI,
+	MapProviderComponent,
 } from '@zyra/components';
 import { getApiLink, useModules } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
@@ -286,7 +286,7 @@ const BusinessAddress = () => {
 		}
 
 		return (
-			<MapProviderUI
+			<MapProviderComponent
 				apiKey={mapConfig.apiKey}
 				mapId={settings?.geolocation?.google_map_id || ''}
 				locationAddress={addressData.address}
@@ -306,50 +306,50 @@ const BusinessAddress = () => {
 
 	return (
 		<>
-			<FormGroupWrapper>
+			<FormGroupWrapperComponent>
 				{/* Address */}
-				<FormGroup
+				<FormGroupComponent
 					label={__('Address *', 'multivendorx')}
 					htmlFor="address"
 				>
-					<BasicInputUI
+					<TextInput
 						value={addressData.address}
 						onChange={(value: string) =>
 							handleAddressChange('address', value)
 						}
 					/>
-				</FormGroup>
+				</FormGroupComponent>
 				{/* City */}
-				<FormGroup
+				<FormGroupComponent
 					cols={6}
 					label={__('City', 'multivendorx')}
 					htmlFor="city"
 				>
-					<BasicInputUI
+					<TextInput
 						value={addressData.city}
 						onChange={(value: string) =>
 							handleAddressChange('city', value)
 						}
 					/>
-				</FormGroup>
+				</FormGroupComponent>
 
 				{/* Zip */}
-				<FormGroup
+				<FormGroupComponent
 					cols={6}
 					label={__('Zip code', 'multivendorx')}
 					htmlFor="zip"
 				>
-					<BasicInputUI
+					<TextInput
 						type="number"
 						value={addressData.zip}
 						onChange={(value: string) =>
 							handleAddressChange('zip', value)
 						}
 					/>
-				</FormGroup>
+				</FormGroupComponent>
 
 				{/* Country */}
-				<FormGroup
+				<FormGroupComponent
 					cols={6}
 					label={__('Country', 'multivendorx')}
 					htmlFor="country"
@@ -361,10 +361,10 @@ const BusinessAddress = () => {
 							handleAddressChange('country', value)
 						}
 					/>
-				</FormGroup>
+				</FormGroupComponent>
 
 				{/* State */}
-				<FormGroup
+				<FormGroupComponent
 					cols={6}
 					label={__('State', 'multivendorx')}
 					htmlFor="state"
@@ -377,10 +377,10 @@ const BusinessAddress = () => {
 							handleAddressChange('state', value)
 						}
 					/>
-				</FormGroup>
+				</FormGroupComponent>
 
 				{/* Map Component */}
-				<FormGroup>{renderMapComponent()}</FormGroup>
+				<FormGroupComponent>{renderMapComponent()}</FormGroupComponent>
 				{/* Hidden coordinates */}
 				<input
 					type="hidden"
@@ -392,7 +392,7 @@ const BusinessAddress = () => {
 					name="location_lng"
 					value={addressData.location_lng}
 				/>
-			</FormGroupWrapper>
+			</FormGroupWrapperComponent>
 		</>
 	);
 };

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { PopupUI, InfoItem } from '@zyra/components';
+import { PopupComponent, InformationItemComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
 import { getUrl } from '../../../src/services/commonFunction';
@@ -88,7 +88,7 @@ const PendingReportAbuse: React.FC<object> = () => {
 		product: {
 			label: __('Product', 'multivendorx'),
 			render: (row: ReportAbuse) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.product?.name}
 					titleLink={getUrl(row.product?.id, 'product')}
 					avatar={{
@@ -210,7 +210,7 @@ const PendingReportAbuse: React.FC<object> = () => {
 				filters={filters}
 				format={appLocalizer.date_format}
 			/>
-			<PopupUI
+			<PopupComponent
 				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
@@ -230,7 +230,7 @@ const PendingReportAbuse: React.FC<object> = () => {
 						setConfirmOpen(false);
 					}}
 				/>
-			</PopupUI>
+			</PopupComponent>
 		</>
 	);
 };

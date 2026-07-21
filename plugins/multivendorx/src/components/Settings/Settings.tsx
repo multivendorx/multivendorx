@@ -4,9 +4,9 @@ import { __ } from '@wordpress/i18n';
 import { SettingProvider, useSetting } from '../../contexts/SettingContext';
 import { getTemplateData } from '../../services/templateService';
 
-import { RenderComponent } from '@zyra/inputs';
+import { InputRenderer } from '@zyra/inputs';
 import { getAvailableSettings, getSettingById, useModules } from '@zyra/core';
-import { SettingsNavigator } from '@zyra/components';
+import { SettingsNavigatorComponent } from '@zyra/components';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 import EventRules from './Notification/EventRules.tsx';
@@ -99,7 +99,7 @@ const Settings: React.FC<SettingsProps> = () => {
 		return (
 			<>
 				{settingName === currentTab ? (
-					<RenderComponent
+					<InputRenderer
 						settings={settingModal}
 						proSetting={appLocalizer.pro_settings_list}
 						setting={setting}
@@ -118,7 +118,7 @@ const Settings: React.FC<SettingsProps> = () => {
 
 	return (
 		<SettingProvider>
-			<SettingsNavigator
+			<SettingsNavigatorComponent
 				settingContent={settingsArray}
 				currentSetting={location.get('subtab') as string}
 				getForm={GetForm}

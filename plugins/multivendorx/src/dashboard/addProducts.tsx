@@ -5,22 +5,22 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 
 import {
-	BasicInputUI,
+	TextInput,
 	SelectInputUI,
-	TextAreaUI,
+	TextAreaInput,
 	FileInputUI,
 	ButtonInputUI,
 } from '@zyra/inputs';
 import { getApiLink, useModules } from '@zyra/core';
 import {
-	Card,
-	Column,
-	Container,
-	FormGroupWrapper,
-	FormGroup,
-	PopupUI,
-	Notice,
-	NavigatorHeader,
+	CardComponent,
+	LayoutColumnComponent,
+	ContainerComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	PopupComponent,
+	NoticeComponent,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -260,14 +260,14 @@ const AddProduct = () => {
 					</div>
 				))}
 			{errorMsg && (
-				<Notice
+				<NoticeComponent
 					type="error"
 					validity={5000}
 					displayPosition="notice"
 					message={errorMsg}
 				/>
 			)}
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Add Product', 'multivendorx')}
 				headerDescription={__(
 					'Enter your product details - name, price, stock, and image & publish.',
@@ -288,9 +288,9 @@ const AddProduct = () => {
 					},
 				])}
 			/>
-			<Container>
-				<Column grid={3}>
-					<Card
+			<ContainerComponent>
+				<LayoutColumnComponent grid={3}>
+					<CardComponent
 						title={__(
 							'What kind of product is this?',
 							'multivendorx'
@@ -300,8 +300,8 @@ const AddProduct = () => {
 							'multivendorx'
 						)}
 					>
-						<FormGroupWrapper>
-							<FormGroup>
+						<FormGroupWrapperComponent>
+							<FormGroupComponent>
 								<SelectInputUI
 									name="type"
 									type="single-select"
@@ -311,11 +311,11 @@ const AddProduct = () => {
 										handleChange('type', selected);
 									}}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
-					</Card>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
+					</CardComponent>
 					<div className='sticky-card-wrapper'>
-					<Card
+					<CardComponent
 						title={__('Recommended', 'multivendorx')}
 						toggle={true}
 						action={
@@ -439,18 +439,18 @@ const AddProduct = () => {
 								)}
 							</ul>
 						</div>
-					</Card>
+					</CardComponent>
 					{applyFilters(
 						'multivendorx_product_sidebar_cards',
 						null,
 						product
 					)}
 					</div>
-				</Column>
+				</LayoutColumnComponent>
 
-				<Column grid={6}>
+				<LayoutColumnComponent grid={6}>
 					{rejectNote && (
-						<Card
+						<CardComponent
 							title={__(
 								'Product Rejected by Admin',
 								'multivendorx'
@@ -467,15 +467,15 @@ const AddProduct = () => {
 						// 	]}
 						// />}
 						>
-							<Notice
+							<NoticeComponent
 								type="error"
 								title={__('Admin Note', 'multivendorx')}
 								displayPosition="inline-notice"
 								message={rejectNote}
 							/>
-						</Card>
+						</CardComponent>
 					)}
-					<Card
+					<CardComponent
 						title={__(
 							'General information - Tell customers what you are selling',
 							'multivendorx'
@@ -485,7 +485,7 @@ const AddProduct = () => {
 							'multivendorx'
 						)}
 					>
-						<FormGroupWrapper>
+						<FormGroupWrapperComponent>
 							<div className="form-group  ai-form">
 								<label className="settings-form-label">
 									{__('Product name', 'multivendorx')}
@@ -501,7 +501,7 @@ const AddProduct = () => {
 								</label>
 
 								<div className="settings-input-content">
-									<BasicInputUI
+									<TextInput
 										name="name"
 										value={product.name}
 										onChange={(value) =>
@@ -542,7 +542,7 @@ const AddProduct = () => {
 										</label>
 
 										<div className="settings-input-content">
-											<TextAreaUI
+											<TextAreaInput
 												name="short_description"
 												value={appLocalizer.tinymceApiKey ? product.short_description : htmlToText(product.short_description)}
 												tinymceApiKey={appLocalizer.tinymceApiKey}
@@ -580,7 +580,7 @@ const AddProduct = () => {
 										</label>
 
 										<div className="settings-input-content">
-											<TextAreaUI
+											<TextAreaInput
 												name="description"
 												value={appLocalizer.tinymceApiKey ? product.description : htmlToText(product.description)}
 												tinymceApiKey={appLocalizer.tinymceApiKey}
@@ -601,9 +601,9 @@ const AddProduct = () => {
 									</div>
 								</>
 							)}
-						</FormGroupWrapper>
-					</Card>
-					<PopupUI
+						</FormGroupWrapperComponent>
+					</CardComponent>
+					<PopupComponent
 						open={appeal}
 						onClose={() => {
 							setAppeal(false);
@@ -641,21 +641,21 @@ const AddProduct = () => {
 							/>
 						}
 					>
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__(
 									'Your appeal message',
 									'multivendorx'
 								)}
 								htmlFor="title"
 							>
-								<TextAreaUI name="content" />
-							</FormGroup>
-						</FormGroupWrapper>
-					</PopupUI>
+								<TextAreaInput name="content" />
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
+					</PopupComponent>
 					{product?.type === 'simple' &&
 						productFields.includes('general') && (
-							<Card
+							<CardComponent
 								title={__(
 									'Pricing - How much does it cost?',
 									'multivendorx'
@@ -665,15 +665,15 @@ const AddProduct = () => {
 									'multivendorx'
 								)}
 							>
-								<FormGroupWrapper>
-									<FormGroup
+								<FormGroupWrapperComponent>
+									<FormGroupComponent
 										cols={6}
 										label={__(
 											'Regular price',
 											'multivendorx'
 										)}
 									>
-										<BasicInputUI
+										<TextInput
 											name="regular_price"
 											value={product.regular_price}
 											onChange={(value) =>
@@ -683,12 +683,12 @@ const AddProduct = () => {
 												)
 											}
 										/>
-									</FormGroup>
-									<FormGroup
+									</FormGroupComponent>
+									<FormGroupComponent
 										cols={6}
 										label={__('Sale price', 'multivendorx')}
 									>
-										<BasicInputUI
+										<TextInput
 											name="sale_price"
 											value={product.sale_price}
 											onChange={(value) =>
@@ -698,9 +698,9 @@ const AddProduct = () => {
 												)
 											}
 										/>
-									</FormGroup>
-								</FormGroupWrapper>
-							</Card>
+									</FormGroupComponent>
+								</FormGroupWrapperComponent>
+							</CardComponent>
 						)}
 					{applyFilters(
 						'multivendorx_add_product_middle_section',
@@ -713,8 +713,8 @@ const AddProduct = () => {
 						modules,
 						setFeaturedImage
 					)}
-				</Column>
-				<Column grid={3}>
+				</LayoutColumnComponent>
+				<LayoutColumnComponent grid={3}>
 					{applyFilters(
 						'multivendorx_add_product_right_section',
 						null,
@@ -726,12 +726,12 @@ const AddProduct = () => {
 					)}
 
 					{modules.includes('wpml') && (
-						<Card
+						<CardComponent
 							title={__('Translations', 'multivendorx')}
 							iconName="translate"
 							toggle={true}
 						>
-							<FormGroupWrapper>
+							<FormGroupWrapperComponent>
 								<div className="multivendorx-translation-list">
 									{translation
 										?.filter((lang) => !lang.is_default)
@@ -763,13 +763,13 @@ const AddProduct = () => {
 											</div>
 										))}
 								</div>
-							</FormGroupWrapper>
-						</Card>
+							</FormGroupWrapperComponent>
+						</CardComponent>
 					)}
 
-					<Card title={__('Upload image', 'multivendorx')}>
-						<FormGroupWrapper>
-							<FormGroup
+					<CardComponent title={__('Upload image', 'multivendorx')}>
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__('Features Image', 'multivendorx')}
 							>
 								<FileInputUI
@@ -795,7 +795,7 @@ const AddProduct = () => {
 										});
 									}}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 							{applyFilters('product_image_enhancement', null, {
 								currentImage: featuredImage ?? null,
 								isFeaturedImage: true,
@@ -808,7 +808,7 @@ const AddProduct = () => {
 								true,
 								{ product }
 							) && (
-									<FormGroup label={__('Product gallery', 'multivendorx')}>
+									<FormGroupComponent label={__('Product gallery', 'multivendorx')}>
 										<FileInputUI
 											imageSrc={galleryImages.map((img) => img.thumbnail)}
 											multiple={true}
@@ -830,13 +830,13 @@ const AddProduct = () => {
 												setGalleryImages(formatted);
 											}}
 										/>
-									</FormGroup>
+									</FormGroupComponent>
 								)}
 
-						</FormGroupWrapper>
-					</Card>
-				</Column>
-			</Container>
+						</FormGroupWrapperComponent>
+					</CardComponent>
+				</LayoutColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 
 import { getApiLink, useModules } from '@zyra/core';
-import { SettingsNavigator } from '@zyra/components';
+import { SettingsNavigatorComponent } from '@zyra/components';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { useLocation, Link } from 'react-router-dom';
@@ -265,7 +265,7 @@ const ApprovalQueue = () => {
 	};
 
 	return (
-		<SettingsNavigator
+		<SettingsNavigatorComponent
 			settingContent={settingContentWithCounts}
 			currentSetting={location.get('subtab') as string}
 			getForm={getForm}

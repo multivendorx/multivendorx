@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 
 import { SelectInputUI } from '@zyra/inputs';
-import { ComponentStatusView, SettingsNavigator } from '@zyra/components';
+import { ComponentStatusComponent, SettingsNavigatorComponent } from '@zyra/components';
 import axios from 'axios';
 import WalletTransaction from './WalletTransaction';
 import { applyFilters } from '@wordpress/hooks';
@@ -171,7 +171,7 @@ export const TransactionHistory: React.FC = () => {
 				}
 
 				return (
-					<ComponentStatusView
+					<ComponentStatusComponent
 						title={__(
 							'Real-time store payments',
 							'multivendorx'
@@ -191,7 +191,7 @@ export const TransactionHistory: React.FC = () => {
 
 	return (
 		<>
-			<SettingsNavigator
+			<SettingsNavigatorComponent
 				settingContent={settingContent}
 				getForm={getForm}
 				currentSetting={currentTab}

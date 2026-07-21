@@ -9,8 +9,8 @@ import { useState } from 'react';
 import { searchIndex, SearchItem } from './searchIndex';
 import MoowoodleLogo from './assets/images/moowoodle-logo.png';
 import { __ } from '@wordpress/i18n';
-import { Notice } from '@zyra/components';
-import { Header } from '@zyra/admin';
+import { NoticeComponent } from '@zyra/components';
+import { AdminHeader } from '@zyra/admin';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import HelpSupport from './components/HelpSupport/HelpSupport';
 
@@ -136,7 +136,7 @@ const App = () => {
 	];
 	return (
 		<>
-			<Header
+			<AdminHeader
 				brandImg={MoowoodleLogo}
 				results={results}
 				onQueryUpdate={handleSearchChange}
@@ -146,7 +146,7 @@ const App = () => {
 				utilityList={utilityList}
 			/>
 			{/* {!isBannerDismissed && ( */}
-			<Notice
+			<NoticeComponent
 				uniqueKey="banner"
 				type="banner"
 				validity="lifetime"

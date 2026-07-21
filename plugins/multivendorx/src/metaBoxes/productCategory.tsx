@@ -2,7 +2,7 @@
 import { applyFilters, addFilter } from '@wordpress/hooks';
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Card, FormGroupWrapper } from '@zyra/components';
+import { CardComponent, FormGroupWrapperComponent } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 
 const ProductCategorysection = ({ product, setProduct, setErrorMsg }) => {
@@ -286,7 +286,7 @@ const ProductCategorysection = ({ product, setProduct, setErrorMsg }) => {
 	};
 
 	return (
-		<Card
+		<CardComponent
 			title={__(
 				'Category',
 				'multivendorx'
@@ -312,7 +312,7 @@ const ProductCategorysection = ({ product, setProduct, setErrorMsg }) => {
 						)}
 					</div>
 
-					<FormGroupWrapper>
+					<FormGroupWrapperComponent>
 						<div
 							className="category-wrapper template2"
 							ref={wrapperRef}
@@ -424,18 +424,18 @@ const ProductCategorysection = ({ product, setProduct, setErrorMsg }) => {
 								))}
 							</ul>
 						</div>
-					</FormGroupWrapper>
+					</FormGroupWrapperComponent>
 				</>
 			) : (
-				<FormGroupWrapper>
+				<FormGroupWrapperComponent>
 					<CategoryTree
 						categories={categories}
 						selectedCats={selectedCats}
 						toggleCategory={toggleCategory}
 					/>
-				</FormGroupWrapper>
+				</FormGroupWrapperComponent>
 			)}
-		</Card>
+		</CardComponent>
 	);
 };
 

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { NavigatorHeader } from '@zyra/components';
+import { NavigatorHeaderComponent } from '@zyra/components';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 
 const StoreFollower: React.FC = () => {
@@ -54,7 +54,7 @@ const StoreFollower: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Store Followers', 'multivendorx')}
 				headerDescription={__(
 					'See all your store followers, engage with them, and grow your loyal customer base.',

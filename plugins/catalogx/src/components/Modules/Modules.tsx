@@ -1,6 +1,6 @@
 /* global appLocalizer */
 
-import { Container, NavigatorHeader, Modules } from '@zyra/components';
+import { ContainerComponent, NavigatorHeaderComponent, ModuleGridComponent } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 import { getModuleData } from '../../services/templateService';
 import proPopupContent from '../Popup/Popup';
@@ -10,16 +10,16 @@ const PluginModules = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="module"
-				headerTitle={__('Modules', 'catalogx')}
+				headerTitle={__('ModuleGridComponent', 'catalogx')}
 				headerDescription={__(
 					'Manage marketplace features by enabling or disabling modules. Turning a module on activates its settings and workflows, while turning it off hides them from admin and stores.',
 					'catalogx'
 				)}
 			/>
-			<Container general>
-				<Modules
+			<ContainerComponent general>
+				<ModuleGridComponent
 					modulesArray={modulesArray}
 					appLocalizer={appLocalizer}
 					apiLink="modules"
@@ -27,7 +27,7 @@ const PluginModules = () => {
 					pluginName="catalogx"
 					filter={false}
 				/>
-			</Container>
+			</ContainerComponent>
 		</>
 	);
 };

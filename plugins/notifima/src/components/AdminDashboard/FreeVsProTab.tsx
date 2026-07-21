@@ -1,6 +1,6 @@
 /* global appLocalizer */
 import React from 'react';
-import { Card, Column, Container } from '@zyra/components';
+import { CardComponent, LayoutColumnComponent, ContainerComponent } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 import freePro from '../../assets/images/notifima-brand.png';
 interface Feature {
@@ -251,9 +251,9 @@ const FreeVsProTab: React.FC<object> = () => {
 	};
 
 	return (
-		<Container>
-			<Column grid={8}>
-				<Card
+		<ContainerComponent>
+			<LayoutColumnComponent grid={8}>
+				<CardComponent
 					title={__('Free vs Pro comparison', 'notifima')}
 					desc={__(
 						'See what you get with notifima Pro',
@@ -298,11 +298,11 @@ const FreeVsProTab: React.FC<object> = () => {
 							</table>
 						))}
 					</div>
-				</Card>
-			</Column>
+				</CardComponent>
+			</LayoutColumnComponent>
 
-			<Column grid={4}>
-				<Card>
+			<LayoutColumnComponent grid={4}>
+				<CardComponent>
 					<div className="right-pro-banner">
 						<div className="image-wrapper">
 							<img src={freePro} alt="" />
@@ -356,9 +356,9 @@ const FreeVsProTab: React.FC<object> = () => {
 							</a>
 						</div>
 					</div>
-				</Card>
-			</Column>
-		</Container>
+				</CardComponent>
+			</LayoutColumnComponent>
+		</ContainerComponent>
 	);
 };
 

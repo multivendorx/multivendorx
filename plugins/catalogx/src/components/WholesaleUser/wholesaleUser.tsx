@@ -8,12 +8,12 @@ import { defaultCategoryCounts, dummyWholesalecustomer } from './WholesaleUserUt
 
 
 import {
-	Column,
-	Container,
-	InfoItem,
-	PopupUI,
-	ComponentStatusView,
-	NavigatorHeader,
+	LayoutColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	PopupComponent,
+	ComponentStatusComponent,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 
@@ -36,7 +36,7 @@ const WholesaleUser = () => {
 		user: {
 			label: __('User', 'catalogx'),
 			render: (row: WholesaleUserRow) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.customer}
 					titleLink={row.customer_url}
 					descriptions={[
@@ -121,7 +121,7 @@ const WholesaleUser = () => {
 
 		if (!appLocalizer.active_modules.includes('wholesale')) {
 			return (
-				<ComponentStatusView
+				<ComponentStatusComponent
 					title={__(
 						'Looks like wholesale pricing isn’t set up yet!',
 						'catalogx'
@@ -147,7 +147,7 @@ const WholesaleUser = () => {
 	return (
 		<>
 			{openPopup && (
-				<PopupUI
+				<PopupComponent
 					position="lightbox"
 					open={openPopup}
 					onClose={() => setopenPopup(false)}
@@ -155,9 +155,9 @@ const WholesaleUser = () => {
 					height="auto"
 				>
 					<ShowProPopup />
-				</PopupUI>
+				</PopupComponent>
 			)}
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="wholesale"
 				headerDescription={__(
 					'Wholesale users are displayed with account details and statuses to help manage approvals and customer access.',
@@ -169,11 +169,11 @@ const WholesaleUser = () => {
 				)}
 			/>
 
-			<Container general>
-				<Column>
+			<ContainerComponent general>
+				<LayoutColumnComponent>
 					{renderTableContent()}
-				</Column>
-			</Container>
+				</LayoutColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

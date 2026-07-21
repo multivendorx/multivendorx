@@ -4,9 +4,9 @@ import { useLocation, Link } from 'react-router-dom';
 import { SettingProvider, useSetting } from '../../../contexts/SettingContext';
 import { getTemplateData } from '../../../services/templateService';
 
-import { RenderComponent } from '@zyra/inputs';
+import { InputRenderer } from '@zyra/inputs';
 import { getAvailableSettings, getSettingById, useModules } from '@zyra/core';
-import { SettingsNavigator } from '@zyra/components';
+import { SettingsNavigatorComponent } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 
 const StoreStatus: React.FC = () => {
@@ -123,7 +123,7 @@ const StoreStatus: React.FC = () => {
 		}, [setting, settingName, currentTab]);
 
 		return settingName === currentTab ? (
-			<RenderComponent
+			<InputRenderer
 				settings={settingModal}
 				proSetting={appLocalizer.pro_settings_list}
 				setting={setting}
@@ -138,7 +138,7 @@ const StoreStatus: React.FC = () => {
 
 	return (
 		<SettingProvider>
-			<SettingsNavigator
+			<SettingsNavigatorComponent
 				settingContent={settingContent}
 				currentSetting={initialTab}
 				getForm={GetForm}

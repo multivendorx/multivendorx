@@ -4,13 +4,13 @@ import axios from 'axios';
 
 
 import {
-	ComponentStatusView,
-	PopupUI,
-	Tooltip,
-	NoticeReceiver,
-	Notice,
-	GuidedTourProvider,
-	TabsUI,
+	ComponentStatusComponent,
+	PopupComponent,
+	TooltipComponent,
+	NoticeReceiverComponent,
+	NoticeComponent,
+	GuidedTourProviderComponent,
+	TabsComponent,
 } from '@zyra/components';
 import { getApiLink, useOutsideClick, useModules } from '@zyra/core';
 import { useParams, useNavigate, NavLink } from 'react-router-dom';
@@ -364,7 +364,7 @@ const Dashboard = () => {
 				.join(' ')}
 		>
 			{appLocalizer?.current_user?.roles.includes('store_owner') && storeData?.status === 'active' && (
-				<GuidedTourProvider
+				<GuidedTourProviderComponent
 					appLocalizer={appLocalizer}
 					steps={getTourSteps(appLocalizer)}
 					storeId={appLocalizer.store_id}
@@ -499,7 +499,7 @@ const Dashboard = () => {
 
 						<ul className="navbar-right">
 							{/* Dark mode toggle */}
-							<Tooltip
+							<TooltipComponent
 								position="bottom"
 								text={__(isDarkMode ? 'Light mode' : 'Dark mode', 'multivendorx')}
 							>
@@ -510,10 +510,10 @@ const Dashboard = () => {
 										}`}
 									></div>
 								</li>
-							</Tooltip>
+							</TooltipComponent>
 
 							{/* Add product */}
-							<Tooltip
+							<TooltipComponent
 								position="bottom"
 								text={__('Add product', 'multivendorx')}
 							>
@@ -533,10 +533,10 @@ const Dashboard = () => {
 								>
 									<i className="admin-icon adminfont-product-addon"></i>
 								</li>
-							</Tooltip>
+							</TooltipComponent>
 
 							{/* View storefront */}
-							<Tooltip
+							<TooltipComponent
 								position="bottom"
 								text={__('View storefront', 'multivendorx')}
 							>
@@ -547,11 +547,11 @@ const Dashboard = () => {
 								>
 									<i className="admin-icon adminfont-storefront"></i>
 								</li>
-							</Tooltip>
+							</TooltipComponent>
 
 							{/* Notifications */}
 							<li>
-								<PopupUI
+								<PopupComponent
 									position="menu-dropdown"
 									toggleIcon="notification"
 									tooltipName={__(
@@ -566,7 +566,7 @@ const Dashboard = () => {
 										),
 									}}
 								>
-									<TabsUI
+									<TabsComponent
 										tabs={[
 											{
 												id: 'notifications',
@@ -615,12 +615,12 @@ const Dashboard = () => {
 											},
 										]}
 									/>
-								</PopupUI>
+								</PopupComponent>
 							</li>
 
 							{/* Announcements */}
 							{modules.includes('announcement') && (
-								<Tooltip
+								<TooltipComponent
 									position="bottom"
 									text={__('Announcement', 'multivendorx')}
 								>
@@ -634,11 +634,11 @@ const Dashboard = () => {
 											<i className="admin-icon adminfont-announcement"></i>
 										</a>
 									</li>
-								</Tooltip>
+								</TooltipComponent>
 							)}
 
 							{/* Fullscreen */}
-							<Tooltip
+							<TooltipComponent
 								position="bottom"
 								text={__('Full Screen', 'multivendorx')}
 							>
@@ -648,10 +648,10 @@ const Dashboard = () => {
 								>
 									<i className="admin-icon adminfont-crop-free"></i>
 								</li>
-							</Tooltip>
+							</TooltipComponent>
 
 							{/* User dropdown */}
-							<Tooltip
+							<TooltipComponent
 								position="bottom"
 								text={__('Settings', 'multivendorx')}
 							>
@@ -856,7 +856,7 @@ const Dashboard = () => {
 										</div>
 									)}
 								</li>
-							</Tooltip>
+							</TooltipComponent>
 						</ul>
 					</div>
 				</div>
@@ -864,38 +864,38 @@ const Dashboard = () => {
 				{/* Page content */}
 				<div className="content-wrapper">
 					{errorMsg && (
-						<Notice
+						<NoticeComponent
 							type="error"
 							validity={2000}
 							displayPosition="notice"
 							message={errorMsg}
 						/>
 					)}
-					<NoticeReceiver position="float" />
-					<NoticeReceiver position="notice" />
+					<NoticeReceiverComponent position="float" />
+					<NoticeReceiverComponent position="notice" />
 
 					{storeData && storeData.status !== 'active' ? (
 						storeData.status === 'pending' ? (
-							<ComponentStatusView
+							<ComponentStatusComponent
 								title={appLocalizer.admin_settings['pending']?.pending_msg}
 							/>
 						) : storeData.status === 'suspended' ? (
-							<ComponentStatusView
+							<ComponentStatusComponent
 								title={appLocalizer.admin_settings['suspended']?.suspended_msg}
 							/>
 						) : storeData.status === 'under_review' ? (
-							<ComponentStatusView
+							<ComponentStatusComponent
 								title={appLocalizer.admin_settings['under-review']?.under_review_msg}
 							/>
 						) : storeData.status === 'rejected' ? (
-							<ComponentStatusView
+							<ComponentStatusComponent
 								title={appLocalizer.admin_settings['rejected']?.rejected_msg}
 								buttonText={__('Click here to reapply', 'multivendorx')}
 								buttonLink={appLocalizer.registration_page}
 								buttonTarget="_blank"
 							/>
 						) : (
-							<ComponentStatusView
+							<ComponentStatusComponent
 								title={__('No active store selected for this user.', 'multivendorx')}
 								desc={__('To get started, register your store.', 'multivendorx')}
 								buttonText={__('Create your store', 'multivendorx')}
@@ -904,7 +904,7 @@ const Dashboard = () => {
 							/>
 						)
 					) : noPermission ? (
-						<ComponentStatusView
+						<ComponentStatusComponent
 							title={__('You do not have permission to access this page.', 'multivendorx')}
 							buttonText={__('Contact Admin', 'multivendorx')}
 							onButtonClick={() => {}}

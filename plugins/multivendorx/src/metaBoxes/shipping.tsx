@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { addFilter, applyFilters } from '@wordpress/hooks';
-import { Card, FormGroup, FormGroupWrapper, SectionUI } from '@zyra/components';
-import { BasicInputUI, SelectInputUI, ChoiceToggleUI } from '@zyra/inputs';
+import { CardComponent, FormGroupComponent, FormGroupWrapperComponent, SectionComponent } from '@zyra/components';
+import { TextInput, SelectInputUI, ToggleInput } from '@zyra/inputs';
 import { useModules } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
 
@@ -39,7 +39,7 @@ const ShippingCard = ({
 
 	return (
 		(
-			<Card
+			<CardComponent
 				title={__('How will this be delivered?', 'multivendorx')}
 				className="full-width"
 				desc={__(
@@ -48,9 +48,9 @@ const ShippingCard = ({
 				)}
 			>
 				{/* Dimensions */}
-				<FormGroupWrapper>
-					<FormGroup className="full-width">
-						<ChoiceToggleUI
+				<FormGroupWrapperComponent>
+					<FormGroupComponent className="full-width">
+						<ToggleInput
 							width="49%"
 							options={[
 								{
@@ -123,10 +123,10 @@ const ShippingCard = ({
 								}
 							}}
 						/>
-					</FormGroup>
+					</FormGroupComponent>
 					{productType === 'physical' &&
 						<>
-							<SectionUI
+							<SectionComponent
 								title={__(
 									'Package dimensions & weight',
 									'multivendorx'
@@ -137,20 +137,20 @@ const ShippingCard = ({
 								)}
 							/>
 							{/* Weight & Shipping class */}
-							<FormGroup
+							<FormGroupComponent
 								cols={6}
 								label={__('Weight (kg)', 'multivendorx')}
 								htmlFor="Weight"
 							>
-								<BasicInputUI
+								<TextInput
 									name="weight"
 									value={product.weight}
 									onChange={(value) => {
 										handleChange('weight', value);
 									}}
 								/>
-							</FormGroup>
-							<FormGroup
+							</FormGroupComponent>
+							<FormGroupComponent
 								cols={6}
 								label={__(
 									'Shipping classes',
@@ -169,12 +169,12 @@ const ShippingCard = ({
 										)
 									}
 								/>
-							</FormGroup>
-							<FormGroup
+							</FormGroupComponent>
+							<FormGroupComponent
 								cols={4}
 								label={`${__('Length', 'multivendorx')} (${appLocalizer.dimension_unit})`}
 							>
-								<BasicInputUI
+								<TextInput
 									name="product_length"
 									value={product.dimensions?.length || ''}
 									placeholder={__(
@@ -188,13 +188,13 @@ const ShippingCard = ({
 										})
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								cols={4}
 								label={`${__('Width', 'multivendorx')} (${appLocalizer.dimension_unit})`}
 							>
-								<BasicInputUI
+								<TextInput
 									name="product_width"
 									value={product.dimensions?.width}
 									placeholder={__(
@@ -208,13 +208,13 @@ const ShippingCard = ({
 										})
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								cols={4}
 								label={`${__('Height', 'multivendorx')} (${appLocalizer.dimension_unit})`}
 							>
-								<BasicInputUI
+								<TextInput
 									name="product_height"
 									value={product.dimensions?.height}
 									placeholder={__(
@@ -228,7 +228,7 @@ const ShippingCard = ({
 										})
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 							{applyFilters(
 								'multivendorx_product_shipping_meta',
 								null,
@@ -245,8 +245,8 @@ const ShippingCard = ({
 							setProduct,
 							handleChange
 						)}
-				</FormGroupWrapper>
-			</Card>
+				</FormGroupWrapperComponent>
+			</CardComponent>
 		)
 	);
 };

@@ -1,6 +1,6 @@
 /* global appLocalizer */
 import React, { useState, useRef } from 'react';
-import { ExpandablePanelUI } from '@zyra/inputs';
+import { ExpandablePanelInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 
 interface WizardData {
@@ -401,7 +401,7 @@ const SetupWizard: React.FC = () => {
 					)}
 				</div>
 			</div>
-			<ExpandablePanelUI
+			<ExpandablePanelInput
 				key={inputField.key}
 				name={inputField.key}
 				apilink={String(inputField.apiLink)}

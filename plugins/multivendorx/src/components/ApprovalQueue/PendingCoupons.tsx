@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { PopupUI, InfoItem } from '@zyra/components';
-import { ButtonInputUI, TextAreaUI } from '@zyra/inputs';
+import { PopupComponent, InformationItemComponent } from '@zyra/components';
+import { ButtonInputUI, TextAreaInput } from '@zyra/inputs';
 import { TableCard, TableRow, QueryProps } from '@zyra/table';
 
 import { getUrl, toWcIsoDate } from '@/services/commonFunction';
@@ -100,7 +100,7 @@ const PendingCoupons: React.FC<object> = () => {
 			label: __('Code', 'multivendorx'),
 			render: (row) => {
 				return (
-					<InfoItem
+					<InformationItemComponent
 						title={row.code}
 						titleLink={getUrl(row.id, 'coupon') || ''}
 						descriptions={[
@@ -240,7 +240,7 @@ const PendingCoupons: React.FC<object> = () => {
 			/>
 			{/* Reject Coupon Popup */}
 			{rejectPopupOpen && (
-				<PopupUI
+				<PopupComponent
 					open={rejectPopupOpen}
 					onClose={() => {
 						setRejectPopupOpen(false);
@@ -277,7 +277,7 @@ const PendingCoupons: React.FC<object> = () => {
 						/>
 					}
 				>
-					<TextAreaUI
+					<TextAreaInput
 						name="reject_reason"
 						value={rejectReason}
 						onChange={(value: string) => setRejectReason(value)}
@@ -287,7 +287,7 @@ const PendingCoupons: React.FC<object> = () => {
 						)}
 						rows={4}
 					/>
-				</PopupUI>
+				</PopupComponent>
 			)}
 		</>
 	);

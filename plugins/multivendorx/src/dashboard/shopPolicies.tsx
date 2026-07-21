@@ -3,15 +3,15 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { getApiLink } from '@zyra/core';
 
-import { TextAreaUI } from '@zyra/inputs';
+import { TextAreaInput } from '@zyra/inputs';
 import {
-	Container,
-	Column,
-	Card,
-	FormGroupWrapper,
-	FormGroup,
+	ContainerComponent,
+	LayoutColumnComponent,
+	CardComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
 	NoticeManager,
-	NavigatorHeader,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 
@@ -63,7 +63,7 @@ const ShopPolicies = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Policy', 'multivendorx')}
 				headerDescription={__(
 					'Manage your store information and preferences',
@@ -71,49 +71,49 @@ const ShopPolicies = () => {
 				)}
 			/>
 
-			<Container>
-				<Column>
-					<Card title={__('Shipping Policy', 'multivendorx')}>
-						<FormGroupWrapper>
-							<FormGroup
+			<ContainerComponent>
+				<LayoutColumnComponent>
+					<CardComponent title={__('Shipping Policy', 'multivendorx')}>
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__('Title', 'multivendorx')}
 								htmlFor="title"
 							>
-								<TextAreaUI
+								<TextAreaInput
 									name="shipping_policy"
 									value={formData.shipping_policy}
 									onChange={handleChange}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
-					</Card>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
+					</CardComponent>
 
-					<Card title={__('Refund Policy', 'multivendorx')}>
-						<FormGroupWrapper>
-							<TextAreaUI
+					<CardComponent title={__('Refund Policy', 'multivendorx')}>
+						<FormGroupWrapperComponent>
+							<TextAreaInput
 								name="refund_policy"
 								value={formData.refund_policy}
 								onChange={handleChange}
 							/>
-						</FormGroupWrapper>
-					</Card>
+						</FormGroupWrapperComponent>
+					</CardComponent>
 
-					<Card
+					<CardComponent
 						title={__(
 							'Cancellation / Return / Exchange Policy',
 							'multivendorx'
 						)}
 					>
-						<FormGroupWrapper>
-							<TextAreaUI
+						<FormGroupWrapperComponent>
+							<TextAreaInput
 								name="cancellation_policy"
 								value={formData.cancellation_policy}
 								onChange={handleChange}
 							/>
-						</FormGroupWrapper>
-					</Card>
-				</Column>
-			</Container>
+						</FormGroupWrapperComponent>
+					</CardComponent>
+				</LayoutColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

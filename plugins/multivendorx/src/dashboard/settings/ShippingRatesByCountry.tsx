@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getApiLink } from '@zyra/core';
-import { FormGroup } from '@zyra/components';
-import { DynamicRowSetting } from '@zyra/inputs';
+import { FormGroupComponent } from '@zyra/components';
+import { DynamicRowInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 
 interface ShippingStateRate {
@@ -161,8 +161,8 @@ const ShippingRatesByCountry: React.FC<ShippingRatesByCountryProps> = ({
 					displayPosition="notice"
 				/>
 			} */}
-			<FormGroup>
-				<DynamicRowSetting
+			<FormGroupComponent>
+				<DynamicRowInput
 					keyName="country-rates"
 					template={countryTemplate}
 					value={rates}
@@ -199,7 +199,7 @@ const ShippingRatesByCountry: React.FC<ShippingRatesByCountryProps> = ({
 									{__('State / Region Rates', 'multivendorx')}
 								</div>
 
-								<DynamicRowSetting
+								<DynamicRowInput
 									keyName={`state-rates-${countryIndex}`}
 									template={{
 										fields: [
@@ -228,7 +228,7 @@ const ShippingRatesByCountry: React.FC<ShippingRatesByCountryProps> = ({
 						);
 					}}
 				/>
-			</FormGroup>
+			</FormGroupComponent>
 		</>
 	);
 };

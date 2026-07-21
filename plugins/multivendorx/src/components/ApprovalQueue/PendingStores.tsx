@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { FormGroupWrapper, PopupUI, InfoItem } from '@zyra/components';
-import { ButtonInputUI, TextAreaUI } from '@zyra/inputs';
+import { FormGroupWrapperComponent, PopupComponent, InformationItemComponent } from '@zyra/components';
+import { ButtonInputUI, TextAreaInput } from '@zyra/inputs';
 import { TableCard, QueryProps } from '@zyra/table';
 
 import { formatLocalDate, getUrl } from '@/services/commonFunction';
@@ -85,7 +85,7 @@ const PendingStores: React.FC<object> = () => {
 		store_name: {
 			label: __('Store', 'multivendorx'),
 			render: (row) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.store_name}
 					titleLink={getUrl(row.id, 'store', 'edit')}
 					avatar={{
@@ -183,7 +183,7 @@ const PendingStores: React.FC<object> = () => {
 
 			{/* Reject Popup */}
 			{rejectPopupOpen && (
-				<PopupUI
+				<PopupComponent
 					open={rejectPopupOpen}
 					onClose={() => {
 						setRejectPopupOpen(false);
@@ -217,8 +217,8 @@ const PendingStores: React.FC<object> = () => {
 					}
 				>
 					<>
-						<FormGroupWrapper>
-							<TextAreaUI
+						<FormGroupWrapperComponent>
+							<TextAreaInput
 								name="reject_reason"
 								value={rejectReason}
 								onChange={(value: string) =>
@@ -230,9 +230,9 @@ const PendingStores: React.FC<object> = () => {
 								)}
 								rows={4}
 							/>
-						</FormGroupWrapper>
+						</FormGroupWrapperComponent>
 					</>
-				</PopupUI>
+				</PopupComponent>
 			)}
 		</>
 	);

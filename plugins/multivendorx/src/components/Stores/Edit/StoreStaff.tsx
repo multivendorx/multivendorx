@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import {
-	Container,
-	Column,
-	FormGroupWrapper,
-	FormGroup,
-	Card,
+	ContainerComponent,
+	LayoutColumnComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	CardComponent,
 	NoticeManager,
-	InfoItem,
+	InformationItemComponent,
 } from '@zyra/components';
 import { SelectInputUI, ButtonInputUI } from '@zyra/inputs';
 import { getApiLink, useModules } from '@zyra/core';
@@ -78,7 +78,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 			const data = res.data || {};
 			setFormData((prev) => ({ ...prev, ...data }));
 
-			// If there's an existing primary owner, show the InfoItem instead of select
+			// If there's an existing primary owner, show the InformationItemComponent instead of select
 			if (data.primary_owner) {
 				const owner = (appLocalizer.store_owners || []).find(
 					(opt: StoreOwner) => opt.value === data.primary_owner
@@ -218,7 +218,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 	};
 
 	return (
-		<Container>
+		<ContainerComponent>
 			{applyFilters(
 				'multivendorx_store_edit_staff_top_section',
 				null,
@@ -226,13 +226,13 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 				modules
 			)}
 
-			<Column grid={4}>
-				<Card
+			<LayoutColumnComponent grid={4}>
+				<CardComponent
 					id="primary-owner"
 					title={__('Store ownership', 'multivendorx')}
 				>
-					<FormGroupWrapper>
-						<FormGroup
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							label={__('Primary owner', 'multivendorx')}
 							desc={__(
 								'Primary owner cannot be removed.',
@@ -240,7 +240,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 							)}
 						>
 							<>
-								<InfoItem
+								<InformationItemComponent
 									title={
 										selectedOwnerInfo?.label ||
 										__('Store Owner', 'multivendorx')
@@ -287,8 +287,8 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 									}
 								/>
 							</>
-						</FormGroup>
-						<FormGroup>
+						</FormGroupComponent>
+						<FormGroupComponent>
 							{showPrimaryOwnerSelect && (
 								<SelectInputUI
 									name="primary_owner"
@@ -297,13 +297,13 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 									onChange={handlePrimaryOwnerSelect}
 								/>
 							)}
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							label={__('Additional owners', 'multivendorx')}
 						>
 							<div className="additional-owners-wrapper">
 								{additionalOwners.map((owner) => (
-									<InfoItem
+									<InformationItemComponent
 										key={owner.id}
 										title={owner.label}
 										avatar={{
@@ -373,11 +373,11 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 									},
 								]}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</Card>
-			</Column>
-		</Container>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</CardComponent>
+			</LayoutColumnComponent>
+		</ContainerComponent>
 	);
 };
 

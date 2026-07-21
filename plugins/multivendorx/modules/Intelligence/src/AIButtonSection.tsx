@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { getApiLink, useOutsideClick } from '@zyra/core';
-import { PopupUI, Skeleton } from '@zyra/components';
-import { ButtonInputUI, TextAreaUI } from '@zyra/inputs';
+import { PopupComponent, SkeletonComponent } from '@zyra/components';
+import { ButtonInputUI, TextAreaInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { addFilter, applyFilters, removeFilter } from '@wordpress/hooks';
 import axios from 'axios';
@@ -58,7 +58,7 @@ const LoadingSkeleton: React.FC = () => {
 						{[1, 2, 3].map((index) => (
 							<div key={index} className="ai-item skeleton-item">
 								<div className="desc">
-									<Skeleton width="90%" height="1.25rem" />
+									<SkeletonComponent width="90%" height="1.25rem" />
 								</div>
 							</div>
 						))}
@@ -68,7 +68,7 @@ const LoadingSkeleton: React.FC = () => {
 						{[1, 2, 3].map((index) => (
 							<div key={index} className="ai-item skeleton-item">
 								<div className="desc">
-									<Skeleton width="95%" height="2rem" />
+									<SkeletonComponent width="95%" height="2rem" />
 								</div>
 							</div>
 						))}
@@ -76,7 +76,7 @@ const LoadingSkeleton: React.FC = () => {
 				</div>
 				<div className="image-section">
 					<div className="img-skeleton">
-						<Skeleton width="100%" height="300px" />
+						<SkeletonComponent width="100%" height="300px" />
 					</div>
 				</div>
 			</div>
@@ -85,7 +85,7 @@ const LoadingSkeleton: React.FC = () => {
 				{[1, 2, 3].map((index) => (
 					<div key={index} className="ai-item skeleton-item">
 						<div className="desc">
-							<Skeleton width="100%" height="3rem" />
+							<SkeletonComponent width="100%" height="3rem" />
 						</div>
 					</div>
 				))}
@@ -309,7 +309,7 @@ const AIButtonSection: React.FC<AIButtonSectionProps> = ({
 			AISuggestions.productDescription?.length > 0);
 
 	return (
-		<PopupUI
+		<PopupComponent
 			open={showPopup}
 			onClose={() => setShowPopup(false)}
 			position="lightbox"
@@ -438,7 +438,7 @@ const AIButtonSection: React.FC<AIButtonSectionProps> = ({
 			{!showAIPrompt && (
 				<div className="ai-wrapper prompt-wrapper">
 					<div className="prompt-input">
-						<TextAreaUI
+						<TextAreaInput
 							name="ai_prompt"
 							value={userPrompt}
 							onChange={setUserPrompt}
@@ -464,7 +464,7 @@ const AIButtonSection: React.FC<AIButtonSectionProps> = ({
 					</div>
 				</div>
 			)}
-		</PopupUI>
+		</PopupComponent>
 	);
 };
 

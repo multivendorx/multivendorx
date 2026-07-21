@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { NavigatorHeader } from '@zyra/components';
+import { NavigatorHeaderComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import TransactionDetailsModal from './TransactionDetailsModal';
 import { downloadCSV, formatLocalDate, normalizeText } from '../services/commonFunction';
@@ -266,7 +266,7 @@ const Transactions: React.FC = () => {
 	];
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Transactions', 'multivendorx')}
 				headerDescription={__(
 					'Track your earnings, withdrawals, and current balance at a glance.',

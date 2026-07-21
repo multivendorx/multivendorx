@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { FormGroup, FormGroupWrapper, PopupUI } from '@zyra/components';
-import { ButtonInputUI, TextAreaUI } from '@zyra/inputs';
+import { FormGroupComponent, FormGroupWrapperComponent, PopupComponent } from '@zyra/components';
+import { ButtonInputUI, TextAreaInput } from '@zyra/inputs';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 import { getUrl, toWcIsoDate } from '../../../src/services/commonFunction';
 
@@ -311,7 +311,7 @@ const PendingRefund: React.FC<object> = () => {
 					currencyPosition: appLocalizer.currency_position,
 				}}
 			/>
-			<PopupUI
+			<PopupComponent
 				open={popupOpen}
 				onClose={handleCloseForm}
 				width={40}
@@ -367,8 +367,8 @@ const PendingRefund: React.FC<object> = () => {
 				}
 			>
 				{viewOrder && (
-					<FormGroupWrapper>
-						<FormGroup label={__('Refund Reason', 'multivendorx')}>
+					<FormGroupWrapperComponent>
+						<FormGroupComponent label={__('Refund Reason', 'multivendorx')}>
 							<div className="refund-reason-box">
 								{getMetaValue(
 									viewOrder.meta_data,
@@ -376,8 +376,8 @@ const PendingRefund: React.FC<object> = () => {
 										.customer_refund_reason
 								)}
 							</div>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							label={__('Additional Information', 'multivendorx')}
 						>
 							<div className="refund-additional-info">
@@ -387,9 +387,9 @@ const PendingRefund: React.FC<object> = () => {
 										.multivendorx_customer_refund_addi_info
 								)}
 							</div>
-						</FormGroup>
+						</FormGroupComponent>
 						{viewOrder?.refund_images?.length > 0 && (
-							<FormGroup
+							<FormGroupComponent
 								label={
 									viewOrder.refund_images.length === 1
 										? 'Attachment'
@@ -426,13 +426,13 @@ const PendingRefund: React.FC<object> = () => {
 										)
 									)}
 								</div>
-							</FormGroup>
+							</FormGroupComponent>
 						)}
-						<FormGroup
+						<FormGroupComponent
 							label={__('Reject Message', 'multivendorx')}
 							htmlFor="content"
 						>
-							<TextAreaUI
+							<TextAreaInput
 								name="content"
 								value={formData.content}
 								onChange={(value: string) =>
@@ -445,10 +445,10 @@ const PendingRefund: React.FC<object> = () => {
 									]['tinymce_api_section'] ?? ''
 								}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
 				)}
-			</PopupUI>
+			</PopupComponent>
 		</>
 	);
 };

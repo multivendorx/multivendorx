@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from 'react';
 
 import {
-	Column,
-	Container,
-	InfoItem,
-	PopupUI,
-	NavigatorHeader,
+	LayoutColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { CategoryCount, QueryProps, TableCard } from '@zyra/table';
 import { __ } from '@wordpress/i18n';
@@ -55,7 +55,7 @@ const Enrollment: React.FC = () => {
 				}
 
 				return (
-					<InfoItem
+					<InformationItemComponent
 						title={title}
 						avatar={{
 							iconClass: 'document',
@@ -67,7 +67,7 @@ const Enrollment: React.FC = () => {
 		student: {
 			label: __('Student', 'moowoodle'),
 			render: (row: EnrollmentRow) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.customer_name || '-'}
 					avatar={{
 						iconClass: 'person',
@@ -134,7 +134,7 @@ const Enrollment: React.FC = () => {
 	return (
 		<>
 			{openPopup && (
-				<PopupUI
+				<PopupComponent
 					position="lightbox"
 					open={openPopup}
 					onClose={() => setOpenPopup(false)}
@@ -142,9 +142,9 @@ const Enrollment: React.FC = () => {
 					height="auto"
 				>
 					<ShowProPopup />
-				</PopupUI>
+				</PopupComponent>
 			)}
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="form"
 				headerTitle={__('All Enrollments', 'moowoodle')}
 				headerDescription={__(
@@ -152,8 +152,8 @@ const Enrollment: React.FC = () => {
 					'moowoodle'
 				)}
 			/>
-			<Container general>
-				<Column>
+			<ContainerComponent general>
+				<LayoutColumnComponent>
 					<div className="demo-wrapper" onClick={handleTableWrapperClick}>
 						{!appLocalizer.khali_dabba && (
 							<div className="watermark">{__('This is sample Data','moowoodle' )}</div>
@@ -161,8 +161,8 @@ const Enrollment: React.FC = () => {
 						<TableCard {...tableProps} />
 						{tableProps.popup}
 					</div>
-				</Column>
-			</Container>
+				</LayoutColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

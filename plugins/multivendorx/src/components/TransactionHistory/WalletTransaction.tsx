@@ -4,22 +4,22 @@ import axios from 'axios';
 import { __, sprintf } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import {
-	Column,
-	Card,
-	Container,
-	FormGroupWrapper,
-	FormGroup,
-	ComponentStatusView,
-	Skeleton,
-	PopupUI,
-	ItemListUI,
-	Notice,
+	LayoutColumnComponent,
+	CardComponent,
+	ContainerComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	ComponentStatusComponent,
+	SkeletonComponent,
+	PopupComponent,
+	ListComponent,
+	NoticeComponent,
 } from '@zyra/components';
 import {
-	BasicInputUI,
+	TextInput,
 	ButtonInputUI,
-	TextAreaUI,
-	ChoiceToggleUI,
+	TextAreaInput,
+	ToggleInput,
 } from '@zyra/inputs';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 
@@ -435,11 +435,11 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 
 	return (
 		<>
-			<Container>
-				<Column fullHeight grid={6}>
-					<Card title="Recent payouts">
+			<ContainerComponent>
+				<LayoutColumnComponent fullHeight grid={6}>
+					<CardComponent title="Recent payouts">
 						{recentDebits.length > 0 ? (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								items={recentDebits.slice(0, 5).map((txn) => {
 									const hasPaymentMethod =
@@ -486,18 +486,18 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								})}
 							/>
 						) : (
-							<ComponentStatusView
+							<ComponentStatusComponent
 								title={__(
 									'No recent payouts transactions found.',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-				</Column>
+					</CardComponent>
+				</LayoutColumnComponent>
 
-				<Column fullHeight grid={6}>
-					<Card>
+				<LayoutColumnComponent fullHeight grid={6}>
+					<CardComponent>
 						<div className="payout-card-wrapper">
 							<div className="price-wrapper">
 								<div className="admin-badge green">
@@ -505,7 +505,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								</div>
 								<div className="price">
 									{walletLoading ? (
-										<Skeleton width={8.75} />
+										<SkeletonComponent width={8.75} />
 									) : (
 										formatCurrency(wallet.available_balance)
 									)}
@@ -516,7 +516,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 										'multivendorx'
 									)}
 									{walletLoading ? (
-										<Skeleton width={15.625} />
+										<SkeletonComponent width={15.625} />
 									) : wallet?.threshold > 0 ? (
 										<b>
 											{formatCurrency(
@@ -530,7 +530,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								<div className="desc">
 									{__('Reserve balance - ', 'multivendorx')}
 									{walletLoading ? (
-										<Skeleton width={15.625} />
+										<SkeletonComponent width={15.625} />
 									) : wallet?.reserve_balance > 0 ? (
 										<>
 											<b>
@@ -544,9 +544,9 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 									)}
 								</div>
 							</div>
-							<Column row>
+							<LayoutColumnComponent row>
 								{Number(wallet?.locking_balance) > 0 ? (
-									<ItemListUI
+									<ListComponent
 										className="mini-card"
 										background
 										items={[
@@ -644,7 +644,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 										]}
 									/>
 								) : (
-									<Notice
+									<NoticeComponent
 										type="info"
 										displayPosition="inline-notice"
 										title={__(
@@ -653,7 +653,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 										)}
 									/>
 								)}
-							</Column>
+							</LayoutColumnComponent>
 							<ButtonInputUI
 								buttons={{
 									icon: 'wallet',
@@ -665,10 +665,10 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								}}
 							/>
 						</div>
-					</Card>
-				</Column>
+					</CardComponent>
+				</LayoutColumnComponent>
 
-				<PopupUI
+				<PopupComponent
 					open={requestWithdrawal}
 					onClose={() => setRequestWithdrawal(false)}
 					width={28.125}
@@ -696,33 +696,33 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 				>
 					<>
 						{/* start left section */}
-						<FormGroupWrapper>
+						<FormGroupWrapperComponent>
 							<div className="available-balance">
 								{__('Withdrawable balance', 'multivendorx')}{' '}
 								<div>
 									{formatCurrency(wallet.available_balance)}
 								</div>
 							</div>
-							<FormGroup
+							<FormGroupComponent
 								label={__('Payment Processor', 'multivendorx')}
 								htmlFor="payment_method"
 								notice={errors.payment}
 							>
 								<div className="payment-method">
-									<ChoiceToggleUI
+									<ToggleInput
 										options={formattedMethods}
 										value={paymentMethod}
 										onChange={(value) => setPaymentMethod(value)}
 									/>
 								</div>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								label={__('Amount', 'multivendorx')}
 								htmlFor="Amount"
 								notice={errors.amount}
 							>
-								<BasicInputUI
+								<TextInput
 									type="number"
 									name="amount"
 									value={amount}
@@ -774,22 +774,22 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 										</span>
 									)}
 								</div>
-							</FormGroup>
-							<FormGroup
+							</FormGroupComponent>
+							<FormGroupComponent
 								label={__('Note', 'multivendorx')}
 								htmlFor="Note"
 							>
-								<TextAreaUI
+								<TextAreaInput
 									name="note"
 									value={note}
 									onChange={(value) => setNote(value)}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
 					</>
-				</PopupUI>
+				</PopupComponent>
 
-				<Column>
+				<LayoutColumnComponent>
 					<TableCard
 						headers={headers}
 						rows={rows}
@@ -812,8 +812,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							currencyPosition: appLocalizer.currency_position,
 						}}
 					/>
-				</Column>
-			</Container>
+				</LayoutColumnComponent>
+			</ContainerComponent>
 			{viewCommission && selectedCommissionId !== null && (
 				<ViewCommission
 					open={viewCommission}

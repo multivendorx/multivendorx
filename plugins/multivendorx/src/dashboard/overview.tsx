@@ -13,12 +13,12 @@ import axios from 'axios';
 import { getApiLink } from '@zyra/core';
 
 import {
-	Analytics,
-	Card,
-	Column,
-	Container,
-	InfoItem,
-	NavigatorHeader,
+	AnalyticsComponent,
+	CardComponent,
+	LayoutColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { formatCurrency } from '@/services/commonFunction';
 
@@ -219,7 +219,7 @@ const Overview: React.FC<OverviewProps> = () => {
 	}, []);
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Overview', 'multivendorx')}
 				headerDescription={__(
 					'Manage your store information and preferences',
@@ -227,9 +227,9 @@ const Overview: React.FC<OverviewProps> = () => {
 				)}
 			/>
 
-			<Container>
-				<Column>
-					<Analytics
+			<ContainerComponent>
+				<LayoutColumnComponent>
+					<AnalyticsComponent
 						variant="small"
 						data={commissionDetails.map((item, idx) => ({
 							icon: item.icon,
@@ -238,13 +238,13 @@ const Overview: React.FC<OverviewProps> = () => {
 							text: __(item.label, 'multivendorx'),
 						}))}
 					/>
-				</Column>
+				</LayoutColumnComponent>
 
-				<Column grid={6}>
-					<Card title={__('Revenue breakdown', 'multivendorx')}>
+				<LayoutColumnComponent grid={6}>
+					<CardComponent title={__('Revenue breakdown', 'multivendorx')}>
 						{earningSummary.map((product) => (
 							<>
-								<InfoItem
+								<InformationItemComponent
 									key={product.id}
 									title={product.title}
 									amount={product.price}
@@ -252,10 +252,10 @@ const Overview: React.FC<OverviewProps> = () => {
 								/>
 							</>
 						))}
-					</Card>
-				</Column>
-				<Column grid={6}>
-					<Card title={__('Revenue breakdown', 'multivendorx')}>
+					</CardComponent>
+				</LayoutColumnComponent>
+				<LayoutColumnComponent grid={6}>
+					<CardComponent title={__('Revenue breakdown', 'multivendorx')}>
 							<ResponsiveContainer width="100%" height={400}>
 								<PieChart>
 									<Pie
@@ -303,9 +303,9 @@ const Overview: React.FC<OverviewProps> = () => {
 									/>
 								</PieChart>
 							</ResponsiveContainer>
-					</Card>
-				</Column>
-			</Container>
+					</CardComponent>
+				</LayoutColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

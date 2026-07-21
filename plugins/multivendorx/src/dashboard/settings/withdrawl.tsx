@@ -3,8 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { FormGroup, FormGroupWrapper, NoticeManager } from '@zyra/components';
-import { BasicInputUI, ChoiceToggleUI } from '@zyra/inputs';
+import { FormGroupComponent, FormGroupWrapperComponent, NoticeManager } from '@zyra/components';
+import { TextInput, ToggleInput } from '@zyra/inputs';
 import {
 	ConnectComponentsProvider,
 	ConnectAccountOnboarding,
@@ -152,8 +152,8 @@ const Withdrawl: React.FC = () => {
 	return (
 		<>
 			{/* Payment Method Toggle */}
-			<FormGroupWrapper>
-				<FormGroup
+			<FormGroupWrapperComponent>
+				<FormGroupComponent
 					label={__('Payment Method', 'multivendorx')}
 					htmlFor="payment_method"
 					desc={
@@ -165,12 +165,12 @@ const Withdrawl: React.FC = () => {
 							: ''
 					}
 				>
-					<ChoiceToggleUI
+					<ToggleInput
 						options={paymentOptions}
 						value={formData.payment_method || ''}
 						onChange={(value) => handleToggleChange(value)}
 					/>
-				</FormGroup>
+				</FormGroupComponent>
 
 				{/* Dynamic Fields */}
 				{Array.isArray(selectedProvider?.fields) &&
@@ -266,7 +266,7 @@ const Withdrawl: React.FC = () => {
 						}
 						if (field.type === 'choice-toggle') {
 							return (
-								<FormGroup
+								<FormGroupComponent
 									label={__(field.label, 'multivendorx')}
 									desc={
 										field.desc
@@ -275,7 +275,7 @@ const Withdrawl: React.FC = () => {
 									}
 									htmlFor={field.key}
 								>
-									<ChoiceToggleUI
+									<ToggleInput
 										key={field.key}
 										options={
 											Array.isArray(field.options)
@@ -292,16 +292,16 @@ const Withdrawl: React.FC = () => {
 											handleToggleChange(value, field.key)
 										}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 							);
 						}
 
 						return (
-							<FormGroup
+							<FormGroupComponent
 								label={__(field.label, 'multivendorx')}
 								htmlFor={field.key}
 							>
-								<BasicInputUI
+								<TextInput
 									key={field.key || ''}
 									name={field.key}
 									type={field.type || 'text'}
@@ -318,10 +318,10 @@ const Withdrawl: React.FC = () => {
 										handleChange(field.key, value)
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 						);
 					})}
-			</FormGroupWrapper>
+			</FormGroupWrapperComponent>
 		</>
 	);
 };

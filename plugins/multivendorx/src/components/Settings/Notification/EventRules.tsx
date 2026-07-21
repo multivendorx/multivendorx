@@ -2,12 +2,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './EventRules.scss';
 import { getApiLink, renderBlocksToHTML, htmlToBlocks } from '@zyra/core';
-import { FormGroupWrapper, FormGroup, PopupUI, Column } from '@zyra/components';
+import { FormGroupWrapperComponent, FormGroupComponent, PopupComponent, LayoutColumnComponent } from '@zyra/components';
 import {
-	BasicInputUI,
+	TextInput,
 	ButtonInputUI,
-	TextAreaUI,
-	EmailsInputUI,
+	TextAreaInput,
+	EmailListInput,
 } from '@zyra/inputs';
 import { TableCard, QueryProps } from '@zyra/table';
 import { BlockBuilderUI } from '@zyra/builders';
@@ -447,7 +447,7 @@ const EventRules: React.FC = () => {
 			</div>
 
 			{viewMode === 'list' && (
-				<Column>
+				<LayoutColumnComponent>
 					<TableCard
 						headers={headers}
 						rows={filteredNotifications}
@@ -460,11 +460,11 @@ const EventRules: React.FC = () => {
 							setNotificationId(row.id);
 						}}
 					/>
-				</Column>
+				</LayoutColumnComponent>
 			)}
 
 			{openChannel && (
-				<PopupUI
+				<PopupComponent
 					open={!!openChannel}
 					onClose={() => setOpenChannel(null)}
 					width="90%"
@@ -574,13 +574,13 @@ const EventRules: React.FC = () => {
 								}}
 							/>
 						)}
-						<FormGroupWrapper>
+						<FormGroupWrapperComponent>
 							{openChannel === 'sms' && (
-								<FormGroup
+								<FormGroupComponent
 									label={__('SMS Content', 'multivendorx')}
 									htmlFor="sms-content"
 								>
-									<TextAreaUI
+									<TextAreaInput
 										name="sms_content"
 										value={formData.sms_content || ''}
 										onClick={(e) =>
@@ -598,11 +598,11 @@ const EventRules: React.FC = () => {
 											handleAutoSave(formData.id)
 										}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 							)}
 							{openChannel === 'mail' && (
 								<>
-									<FormGroup
+									<FormGroupComponent
 										cols={6}
 										label={__(
 											'Email Subject',
@@ -610,7 +610,7 @@ const EventRules: React.FC = () => {
 										)}
 										htmlFor="email-subject"
 									>
-										<BasicInputUI
+										<TextInput
 											name="email_subject"
 											value={formData.email_subject || ''}
 											onClick={(e) =>
@@ -627,13 +627,13 @@ const EventRules: React.FC = () => {
 												handleAutoSave(formData.id)
 											}
 										/>
-									</FormGroup>
-									<FormGroup
+									</FormGroupComponent>
+									<FormGroupComponent
 										cols={6}
 										label={__('Email Body', 'multivendorx')}
 										htmlFor="email-body"
 									>
-										<TextAreaUI
+										<TextAreaInput
 											name="email_body"
 											value={formData.email_body || ''}
 											onClick={(e) =>
@@ -650,7 +650,7 @@ const EventRules: React.FC = () => {
 												handleAutoSave(formData.id)
 											}
 										/>
-									</FormGroup>
+									</FormGroupComponent>
 								</>
 							)}
 							{systemTags?.length > 0 && (
@@ -666,13 +666,13 @@ const EventRules: React.FC = () => {
 									))}
 								</div>
 							)}
-						</FormGroupWrapper>
+						</FormGroupWrapperComponent>
 					</>
-				</PopupUI>
+				</PopupComponent>
 			)}
 
 			{editingNotification && (
-				<PopupUI
+				<PopupComponent
 					open={!!editingNotification}
 					onClose={() => setEditingNotification(null)}
 					width={32.25}
@@ -683,8 +683,8 @@ const EventRules: React.FC = () => {
 						description: editNotification?.description,
 					}}
 				>
-					<FormGroupWrapper>
-						<FormGroup
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							label={__('Delivery method', 'multivendorx')}
 						>
 							<div className="buttons-wrapper left">
@@ -717,8 +717,8 @@ const EventRules: React.FC = () => {
 									);
 								})}
 							</div>
-						</FormGroup>
-						<FormGroup label={__('Recipients', 'multivendorx')}>
+						</FormGroupComponent>
+						<FormGroupComponent label={__('Recipients', 'multivendorx')}>
 							<div className="buttons-wrapper left">
 								{defaultRecipients?.map((r: Recipient) => {
 									const { icon } =
@@ -744,11 +744,11 @@ const EventRules: React.FC = () => {
 									);
 								})}
 							</div>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							label={__('Additional Recipients', 'multivendorx')}
 						>
-							<EmailsInputUI
+							<EmailListInput
 								mode="multiple"
 								value={
 									newRecipientValue
@@ -807,9 +807,9 @@ const EventRules: React.FC = () => {
 									}
 								}}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</PopupUI>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</PopupComponent>
 			)}
 
 			{viewMode === 'grid' && (

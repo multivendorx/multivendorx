@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { getApiLink } from '@zyra/core';
 
 import {
-	Column,
-	Container,
-	InfoItem,
-	PopupUI,
-	NavigatorHeader,
+	LayoutColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
@@ -80,7 +80,7 @@ const SubscribersList = () => {
         product: {
             label: __('Product', 'notifima'),
             render: (row) => (
-                <InfoItem
+                <InformationItemComponent
                     title={row.product}
                     avatar={{
                         iconClass: 'single-product',
@@ -190,7 +190,7 @@ const SubscribersList = () => {
     return (
         <>
             {openPopup && (
-                <PopupUI
+                <PopupComponent
                     position="lightbox"
                     open={openPopup}
                     onClose={() => setOpenPopup(false)}
@@ -198,9 +198,9 @@ const SubscribersList = () => {
                     height="auto"
                 >
                     <ShowProPopup />
-                </PopupUI>
+                </PopupComponent>
             )}
-            <NavigatorHeader
+            <NavigatorHeaderComponent
                 headerIcon="subscriber"
                 headerDescription={__(
                     'Manage product subscription requests, track subscriber statuses, and monitor email notifications sent to interested customers.',
@@ -215,11 +215,11 @@ const SubscribersList = () => {
                     },
                 ]}
             />
-            <Container general>
-                <Column>
+            <ContainerComponent general>
+                <LayoutColumnComponent>
                     {renderTableContent()}
-                </Column>
-            </Container>
+                </LayoutColumnComponent>
+            </ContainerComponent>
         </>
     );
 };

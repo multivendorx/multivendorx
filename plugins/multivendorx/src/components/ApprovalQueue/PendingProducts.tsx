@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { PopupUI, InfoItem } from '@zyra/components';
-import { ButtonInputUI, TextAreaUI } from '@zyra/inputs';
+import { PopupComponent, InformationItemComponent } from '@zyra/components';
+import { ButtonInputUI, TextAreaInput } from '@zyra/inputs';
 import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import { getUrl, toWcIsoDate } from '@/services/commonFunction';
 
@@ -101,7 +101,7 @@ const PendingProducts: React.FC<object> = () => {
 			width: 18,
 			render: (row) => {
 				return (
-					<InfoItem
+					<InformationItemComponent
 						title={row.name}
 						titleLink={getUrl(row.id, 'product') || ''}
 						avatar={{
@@ -253,7 +253,7 @@ const PendingProducts: React.FC<object> = () => {
 			/>
 			{/* Reject Product Popup */}
 			{rejectPopupOpen && (
-				<PopupUI
+				<PopupComponent
 					open={rejectPopupOpen}
 					onClose={() => {
 						setRejectPopupOpen(false);
@@ -291,7 +291,7 @@ const PendingProducts: React.FC<object> = () => {
 					}
 				>
 					<div className="form-group">
-						<TextAreaUI
+						<TextAreaInput
 							name="reject_reason"
 							value={rejectReason}
 							onChange={(value: string) => setRejectReason(value)}
@@ -302,7 +302,7 @@ const PendingProducts: React.FC<object> = () => {
 							rows={4}
 						/>
 					</div>
-				</PopupUI>
+				</PopupComponent>
 			)}
 		</>
 	);

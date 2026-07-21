@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 
-import { InfoItem, NavigatorHeader } from '@zyra/components';
+import { InformationItemComponent, NavigatorHeaderComponent } from '@zyra/components';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 
 import { dashNavigate, formatLocalDate } from '@/services/commonFunction';
@@ -27,7 +27,7 @@ const Refund: React.FC = () => {
 					width: 18,
 					render: (row) => {
 						return (
-							<InfoItem
+							<InformationItemComponent
 								title={row.customer_name}
 								// titleLink={getUrl(row.id, 'product') || ''}
 								avatar={{
@@ -143,7 +143,7 @@ const Refund: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Refund', 'multivendorx')}
 				headerDescription={__(
 					'Manage and process refund requests from customers.',

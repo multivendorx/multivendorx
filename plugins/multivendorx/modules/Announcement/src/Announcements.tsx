@@ -5,19 +5,19 @@ import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 
 import {
-	TextAreaUI,
-	BasicInputUI,
+	TextAreaInput,
+	TextInput,
 	ButtonInputUI,
-	ChoiceToggleUI,
+	ToggleInput,
 	SelectInputUI,
 } from '@zyra/inputs';
 import {
-	Container,
-	Column,
-	FormGroupWrapper,
-	FormGroup,
-	PopupUI,
-	NavigatorHeader,
+	ContainerComponent,
+	LayoutColumnComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
@@ -388,7 +388,7 @@ export const Announcements: React.FC = () => {
 	];
 	return (
 		<>
-			<PopupUI
+			<PopupComponent
 				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
@@ -411,8 +411,8 @@ export const Announcements: React.FC = () => {
 						setSelectedAn(null);
 					}}
 				/>
-			</PopupUI>
-			<NavigatorHeader
+			</PopupComponent>
+			<NavigatorHeaderComponent
 				headerIcon="announcement"
 				headerDescription={__(
 					'Central hub for managing marketplace announcements. Review past updates and create new ones to keep stores informed.',
@@ -431,7 +431,7 @@ export const Announcements: React.FC = () => {
 				]}
 			/>
 
-			<PopupUI
+			<PopupComponent
 				open={addAnnouncements}
 				onClose={handleCloseForm}
 				width={31.25}
@@ -464,12 +464,12 @@ export const Announcements: React.FC = () => {
 					/>
 				}
 			>
-				<FormGroupWrapper>
-					<FormGroup
+				<FormGroupWrapperComponent>
+					<FormGroupComponent
 						label={__('Title', 'multivendorx')}
 						htmlFor="title"
 					>
-						<BasicInputUI
+						<TextInput
 							name="title"
 							value={formData.title}
 							onChange={(val) =>
@@ -480,12 +480,12 @@ export const Announcements: React.FC = () => {
 								message: validationErrors.title,
 							}}
 						/>
-					</FormGroup>
-					<FormGroup
+					</FormGroupComponent>
+					<FormGroupComponent
 						label={__('Announcement message', 'multivendorx')}
 						htmlFor="content"
 					>
-						<TextAreaUI
+						<TextAreaInput
 							name="content"
 							value={formData.content}
 							onChange={(val) =>
@@ -502,8 +502,8 @@ export const Announcements: React.FC = () => {
 								message: validationErrors.content,
 							}}
 						/>
-					</FormGroup>
-					<FormGroup
+					</FormGroupComponent>
+					<FormGroupComponent
 						label={__('Stores', 'multivendorx')}
 						htmlFor="stores"
 					>
@@ -554,8 +554,8 @@ export const Announcements: React.FC = () => {
 								message: validationErrors.stores,
 							}}
 						/>
-					</FormGroup>
-					<FormGroup
+					</FormGroupComponent>
+					<FormGroupComponent
 						label={__('Status', 'multivendorx')}
 						desc={__(
 							'Select the status of the announcement.',
@@ -563,7 +563,7 @@ export const Announcements: React.FC = () => {
 						)}
 						htmlFor="status"
 					>
-						<ChoiceToggleUI
+						<ToggleInput
 							options={[
 								{
 									key: 'publish',
@@ -586,12 +586,12 @@ export const Announcements: React.FC = () => {
 								handleChange('status', val)
 							}
 						/>
-					</FormGroup>
-				</FormGroupWrapper>
-			</PopupUI>
+					</FormGroupComponent>
+				</FormGroupWrapperComponent>
+			</PopupComponent>
 
-			<Container general>
-				<Column>
+			<ContainerComponent general>
+				<LayoutColumnComponent>
 					<TableCard
 						headers={headers}
 						rows={rows}
@@ -611,8 +611,8 @@ export const Announcements: React.FC = () => {
 						}}
 						format={appLocalizer.date_format}
 					/>
-				</Column>
-			</Container>
+				</LayoutColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

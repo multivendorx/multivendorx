@@ -2,7 +2,7 @@
 import { addFilter } from '@wordpress/hooks';
 import { useRef, useState, useEffect } from 'react';
 import { useOutsideClick } from '@zyra/core';
-import { Card, FormGroup, FormGroupWrapper } from '@zyra/components';
+import { CardComponent, FormGroupComponent, FormGroupWrapperComponent } from '@zyra/components';
 import { SelectInputUI } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { formatDate } from '@/services/commonFunction';
@@ -39,7 +39,7 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 
 
 	return (
-		<Card
+		<CardComponent
 			title={__('Publishing', 'multivendorx')}
 			action={
 				<>
@@ -56,8 +56,8 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 				</>
 			}
 		>
-			<FormGroupWrapper>
-				<FormGroup
+			<FormGroupWrapperComponent>
+				<FormGroupComponent
 					row
 					label={__('Catalog Visibility', 'multivendorx')}
 					htmlFor="catalog-visibility"
@@ -128,8 +128,8 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 							)}
 						</div>
 					</div>
-				</FormGroup>
-				<FormGroup
+				</FormGroupComponent>
+				<FormGroupComponent
 					row
 					label={__('Product Status', 'multivendorx')}
 					htmlFor="status"
@@ -187,9 +187,9 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 							)}
 						</div>
 					</div>
-				</FormGroup>
+				</FormGroupComponent>
 
-				<FormGroup
+				<FormGroupComponent
 					row
 					label={__('Cataloged at', 'multivendorx')}
 					htmlFor="status"
@@ -200,9 +200,9 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 							{/* <i className="adminfont-arrow-down-up" /> */}
 						</span>
 					</div>
-				</FormGroup>
-			</FormGroupWrapper>
-		</Card>
+				</FormGroupComponent>
+			</FormGroupWrapperComponent>
+		</CardComponent>
 	);
 };
 

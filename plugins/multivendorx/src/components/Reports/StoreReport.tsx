@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { Analytics, Card, Column, InfoItem } from '@zyra/components';
+import { AnalyticsComponent, CardComponent, LayoutColumnComponent, InformationItemComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	Cell,
@@ -196,7 +196,7 @@ const StoreReport: React.FC = () => {
 			label: __('Store', 'multivendorx'),
 			width: 15,
 			render: (row: any) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.store_name}
 					titleLink={getUrl(row.id, 'store')}
 					avatar={{
@@ -218,7 +218,7 @@ const StoreReport: React.FC = () => {
 			width: 15,
 			render: (row) => (
 				<>
-					<InfoItem
+					<InformationItemComponent
 						title={row.primary_owner?.data?.display_name}
 						titleLink={getUrl(row.primary_owner.data.ID, 'user')}
 						avatar={{
@@ -279,8 +279,8 @@ const StoreReport: React.FC = () => {
 
 	return (
 		<>
-			<Column row>
-				<Analytics
+			<LayoutColumnComponent row>
+				<AnalyticsComponent
 					cols={2}
 					data={overviewData.map((item) => ({
 						icon: item.icon,
@@ -289,7 +289,7 @@ const StoreReport: React.FC = () => {
 					}))}
 					isLoading={isLoading}
 				/>
-				<Card
+				<CardComponent
 					title={__('Top revenue generating stores', 'multivendorx')}
 				>
 					<ResponsiveContainer width="100%" height={300}>
@@ -319,8 +319,8 @@ const StoreReport: React.FC = () => {
 							<Legend />
 						</PieChart>
 					</ResponsiveContainer>
-				</Card>
-			</Column>
+				</CardComponent>
+			</LayoutColumnComponent>
 
 			<TableCard
 				headers={headers}

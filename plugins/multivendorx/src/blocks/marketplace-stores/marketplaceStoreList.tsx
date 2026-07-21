@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getApiLink } from '@zyra/core';
-import { MapProviderUI } from '@zyra/components';
+import { MapProviderComponent } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 
 interface StoreRow {
@@ -280,7 +280,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 		};
 
 		return (
-			<MapProviderUI
+			<MapProviderComponent
 				apiKey={mapConfig.apiKey}
 				mapId={settings?.geolocation?.google_map_id || ''}
 				locationAddress={addressData.address}

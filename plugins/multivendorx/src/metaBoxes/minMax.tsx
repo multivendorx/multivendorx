@@ -1,7 +1,7 @@
 import { addFilter } from '@wordpress/hooks';
 import { useEffect, useState } from 'react';
-import { Card, FormGroup, FormGroupWrapper } from '@zyra/components';
-import { BasicInputUI } from '@zyra/inputs';
+import { CardComponent, FormGroupComponent, FormGroupWrapperComponent } from '@zyra/components';
+import { TextInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 
 const MinMax = ({ product, setProduct }) => {
@@ -70,14 +70,14 @@ const MinMax = ({ product, setProduct }) => {
 	};
 
 	return (
-		<Card
+		<CardComponent
 			title={__('Min/Max', 'multivendorx')}
 			desc={__('Lore ipsum dolor sit amet', 'multivendorx')}
 		>
-			<FormGroupWrapper>
+			<FormGroupWrapperComponent>
 				{/* Quantity */}
-				<FormGroup cols={6} label={__('Quantity', 'multivendorx')}>
-					<BasicInputUI
+				<FormGroupComponent cols={6} label={__('Quantity', 'multivendorx')}>
+					<TextInput
 						name="min_quantity"
 						type="number"
 						preText={__('Min', 'multivendorx')}
@@ -86,9 +86,9 @@ const MinMax = ({ product, setProduct }) => {
 							handleQuantityChange('min_quantity', value)
 						}
 					/>
-				</FormGroup>
-				<FormGroup cols={6}>
-					<BasicInputUI
+				</FormGroupComponent>
+				<FormGroupComponent cols={6}>
+					<TextInput
 						name="max_quantity"
 						type="number"
 						preText={__('Max', 'multivendorx')}
@@ -97,11 +97,11 @@ const MinMax = ({ product, setProduct }) => {
 							handleQuantityChange('max_quantity', value)
 						}
 					/>
-				</FormGroup>
+				</FormGroupComponent>
 
 				{/* Amount */}
-				<FormGroup cols={6} label={__('Amount', 'multivendorx')}>
-					<BasicInputUI
+				<FormGroupComponent cols={6} label={__('Amount', 'multivendorx')}>
+					<TextInput
 						name="min_amount"
 						type="number"
 						preText={__('Min', 'multivendorx')}
@@ -110,9 +110,9 @@ const MinMax = ({ product, setProduct }) => {
 							handleQuantityChange('min_amount', value)
 						}
 					/>
-				</FormGroup>
-				<FormGroup cols={6}>
-					<BasicInputUI
+				</FormGroupComponent>
+				<FormGroupComponent cols={6}>
+					<TextInput
 						name="max_amount"
 						type="number"
 						preText={__('Max', 'multivendorx')}
@@ -121,9 +121,9 @@ const MinMax = ({ product, setProduct }) => {
 							handleQuantityChange('max_amount', value)
 						}
 					/>
-				</FormGroup>
-			</FormGroupWrapper>
-		</Card>
+				</FormGroupComponent>
+			</FormGroupWrapperComponent>
+		</CardComponent>
 	);
 };
 

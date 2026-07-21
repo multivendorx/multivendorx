@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { Container, Column, InfoItem } from '@zyra/components';
+import { ContainerComponent, LayoutColumnComponent, InformationItemComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	formatCurrency,
@@ -107,7 +107,7 @@ const StoreTable: React.FC = () => {
 		store_name: {
 			label: __('Store', 'multivendorx'),
 			render: (row) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.store_name}
 					titleLink={getUrl(row.id, 'store', 'edit')}
 					avatar={{
@@ -135,7 +135,7 @@ const StoreTable: React.FC = () => {
 			render: (row) => {
 				const owner = row.primary_owner?.data;
 				return (
-					<InfoItem
+					<InformationItemComponent
 						title={owner?.display_name}
 						titleLink={getUrl(row.id, 'store', 'edit')}
 						avatar={{
@@ -213,8 +213,8 @@ const StoreTable: React.FC = () => {
 		{ label: __('Suspended', 'multivendorx'), value: 'suspended' },
 	];
 	return (
-		<Container general>
-			<Column>
+		<ContainerComponent general>
+			<LayoutColumnComponent>
 				<TableCard
 					headers={headers}
 					rows={rows}
@@ -232,8 +232,8 @@ const StoreTable: React.FC = () => {
 					format={appLocalizer.date_format}
 					currencySymbol={appLocalizer.currency_symbol}
 				/>
-			</Column>
-		</Container>
+			</LayoutColumnComponent>
+		</ContainerComponent>
 	);
 };
 

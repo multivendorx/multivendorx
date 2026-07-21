@@ -13,12 +13,12 @@ import {
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import {
-	Analytics,
-	Card,
-	Column,
-	Container,
-	InfoItem,
-	ComponentStatusView,
+	AnalyticsComponent,
+	CardComponent,
+	LayoutColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	ComponentStatusComponent,
 } from '@zyra/components';
 import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import axios from 'axios';
@@ -258,7 +258,7 @@ const ProductReport: React.FC = () => {
 			label: __('Product', 'multivendorx'),
 			render: (row) => {
 				return (
-					<InfoItem
+					<InformationItemComponent
 						title={row.name}
 						titleLink={getUrl(row.id, 'product') || ''}
 						avatar={{
@@ -281,7 +281,7 @@ const ProductReport: React.FC = () => {
 		store_name: {
 			label: __('Store', 'multivendorx'),
 			render: (row) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.store_name}
 					titleLink={getUrl(row.store_id, 'store', 'edit')}
 					avatar={{
@@ -409,10 +409,10 @@ const ProductReport: React.FC = () => {
 	};
 	return (
 		<>
-			<Container>
+			<ContainerComponent>
 				{/* Keep entire top dashboard layout */}
-				<Column row>
-					<Analytics
+				<LayoutColumnComponent row>
+					<AnalyticsComponent
 						cols={2}
 						data={overview.map((item, idx) => ({
 							icon: item.icon,
@@ -423,7 +423,7 @@ const ProductReport: React.FC = () => {
 						isLoading={isDashboardLoading}
 					/>
 
-					<Card
+					<CardComponent
 						title={__('Revenue & Sales Comparison', 'multivendorx')}
 					>
 						{error ? (
@@ -449,24 +449,24 @@ const ProductReport: React.FC = () => {
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<ComponentStatusView
+							<ComponentStatusComponent
 								title={__(
 									'No product sales data found.',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-				</Column>
+					</CardComponent>
+				</LayoutColumnComponent>
 
 				{/* Categories and brands */}
-				<Column row>
+				<LayoutColumnComponent row>
 					{/* Top Reviewed Products Section */}
-					<Card title="Top Reviewed Products">
+					<CardComponent title="Top Reviewed Products">
 						{toReviewedProduct.length > 0 ? (
 							toReviewedProduct.map(
 								(product: Product, index: number) => (
-									<InfoItem
+									<InformationItemComponent
 										key={`selling-${product.id}`}
 										title={product.name}
 										avatar={{
@@ -490,19 +490,19 @@ const ProductReport: React.FC = () => {
 								)
 							)
 						) : (
-							<ComponentStatusView
+							<ComponentStatusComponent
 								title={__(
 									'No reviewed products found.',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-					<Card title="Top Selling Products">
+					</CardComponent>
+					<CardComponent title="Top Selling Products">
 						{toSellingProduct.length > 0 ? (
 							toSellingProduct.map(
 								(product: Product, index: number) => (
-									<InfoItem
+									<InformationItemComponent
 										key={`selling-${product.id}`}
 										title={product.name}
 										avatar={{
@@ -525,16 +525,16 @@ const ProductReport: React.FC = () => {
 								)
 							)
 						) : (
-							<ComponentStatusView
+							<ComponentStatusComponent
 								title={__(
 									'No top selling products found.',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-				</Column>
-			</Container>
+					</CardComponent>
+				</LayoutColumnComponent>
+			</ContainerComponent>
 
 			<TableCard
 				headers={headers}

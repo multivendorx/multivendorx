@@ -1,10 +1,10 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import {
-	Card,
-	Column,
-	ItemListUI,
-	Container,
+	CardComponent,
+	LayoutColumnComponent,
+	ListComponent,
+	ContainerComponent,
 	NoticeManager,
 } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
@@ -205,9 +205,9 @@ const DashboardTab: React.FC<object> = () => {
 	];
 
 	return (
-		<Container>
-			<Column grid={8}>
-				<Card>
+		<ContainerComponent>
+			<LayoutColumnComponent grid={8}>
+				<CardComponent>
 					<div className="pro-banner-wrapper">
 						<div className="content">
 							<div className="heading">
@@ -231,9 +231,9 @@ const DashboardTab: React.FC<object> = () => {
 							<img src={Mascot} alt="" />
 						</div>
 					</div>
-				</Card>
+				</CardComponent>
 				{!appLocalizer.khali_dabba && (
-					<Card
+					<CardComponent
 						title={__(
 							'Recover lost sales automatically',
 							'notifima'
@@ -243,7 +243,7 @@ const DashboardTab: React.FC<object> = () => {
 							'notifima'
 						)}
 					>
-						<ItemListUI
+						<ListComponent
 							className="feature-list"
 							items={featuresList.map(
 								({ icon, title, desc }) => ({
@@ -278,17 +278,17 @@ const DashboardTab: React.FC<object> = () => {
 								)}
 							</div>
 						</div>
-					</Card>
+					</CardComponent>
 				)}
-			</Column>
+			</LayoutColumnComponent>
 
 			{/* Right Side */}
-			<Column grid={4}>
-				<Card title={__('Extend your website', 'notifima')}>
-					<Column row>
+			<LayoutColumnComponent grid={4}>
+				<CardComponent title={__('Extend your website', 'notifima')}>
+					<LayoutColumnComponent row>
 						{/* notifima */}
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
 								items={[
@@ -318,7 +318,7 @@ const DashboardTab: React.FC<object> = () => {
 								]}
 							/>
 						) : (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
 								items={[
@@ -374,7 +374,7 @@ const DashboardTab: React.FC<object> = () => {
 
 						{/* MultiVendorX */}
 						{pluginStatus['dc-woocommerce-multi-vendor'] ? (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
 								items={[
@@ -407,7 +407,7 @@ const DashboardTab: React.FC<object> = () => {
 								]}
 							/>
 						) : (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
 								items={[
@@ -460,14 +460,14 @@ const DashboardTab: React.FC<object> = () => {
 								]}
 							/>
 						)}
-					</Column>
-				</Card>
+					</LayoutColumnComponent>
+				</CardComponent>
 
 				{/* Quick Links */}
-				<Card title={__('Need help getting started?', 'notifima')}>
+				<CardComponent title={__('Need help getting started?', 'notifima')}>
 					<div className="quick-link">
 						{resources.map((res) => (
-							<ItemListUI
+							<ListComponent
 								key={res.href}
 								className="mini-card list"
 								border
@@ -491,9 +491,9 @@ const DashboardTab: React.FC<object> = () => {
 							/>
 						))}
 					</div>
-				</Card>
-			</Column>
-		</Container>
+				</CardComponent>
+			</LayoutColumnComponent>
+		</ContainerComponent>
 	);
 };
 

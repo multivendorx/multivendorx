@@ -7,9 +7,9 @@ import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
 import WholesaleUser from './components/WholesaleUser/wholesaleUser.tsx';
 import Rules from './components/Rules/Rules';
 
-import { Notice, GuidedTourProvider } from '@zyra/components';
+import { NoticeComponent, GuidedTourProviderComponent } from '@zyra/components';
 import { initializeModules } from '@zyra/core';
-import { Header } from '@zyra/admin';
+import { AdminHeader } from '@zyra/admin';
 import { __ } from '@wordpress/i18n';
 import Brand from './assets/images/catalogx-logo.png';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
@@ -189,7 +189,7 @@ const App = () => {
 	return (
 		<>
 			{!isBannerDismissed && (
-				<Notice
+				<NoticeComponent
 					uniqueKey="banner"
 					type="banner"
 					dismissStorageKey={BANNER_DISMISS_STORAGE_KEY}
@@ -202,7 +202,7 @@ const App = () => {
 					}}
 				/>
 			)}
-			<Header
+			<AdminHeader
 				brandImg={Brand}
 				results={results}
 				search={{
@@ -228,7 +228,7 @@ const App = () => {
 				pro={appLocalizer.pro_data.version}
 				utilityList={utilityList}
 			/>
-			<GuidedTourProvider
+			<GuidedTourProviderComponent
 				appLocalizer={appLocalizer}
 				steps={getTourSteps(appLocalizer)}
 			/>

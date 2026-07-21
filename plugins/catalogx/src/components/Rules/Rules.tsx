@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
 import {
-	Column,
-	Container,
-	ComponentStatusView,
-	PopupUI,
-	NavigatorHeader,
+	LayoutColumnComponent,
+	ContainerComponent,
+	ComponentStatusComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
@@ -197,7 +197,7 @@ const Rules = () => {
 
         if (!appLocalizer.active_modules.includes('rules')) {
             return (
-                <ComponentStatusView
+                <ComponentStatusComponent
                     title={__(
                         'Looks like product rules aren’t set up yet!',
                         'catalogx'
@@ -223,7 +223,7 @@ const Rules = () => {
     return (
         <>
             {openPopup && (
-                <PopupUI
+                <PopupComponent
                     position="lightbox"
                     open={openPopup}
                     onClose={() => setopenPopup(false)}
@@ -235,9 +235,9 @@ const Rules = () => {
                     ) : (
                         <ShowProPopup moduleName="rules" />
                     )}
-                </PopupUI>
+                </PopupComponent>
             )}
-            <NavigatorHeader
+            <NavigatorHeaderComponent
                 headerIcon="rules"
                 headerDescription={__(
                     'Create and manage rules to control product visibility, pricing behavior, and catalog conditions.',
@@ -261,11 +261,11 @@ const Rules = () => {
             {tableProps.addingNewRule && (
                 tableProps.addNewRuleForm
             )}
-            <Container general>
-                <Column>
+            <ContainerComponent general>
+                <LayoutColumnComponent>
                     {renderTableContent()}
-                </Column>
-            </Container>
+                </LayoutColumnComponent>
+            </ContainerComponent>
         </>
     );
 };

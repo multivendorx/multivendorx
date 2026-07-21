@@ -4,16 +4,16 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import {
-	FormGroupWrapper,
-	FormGroup,
-	PopupUI,
-	InfoItem,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	PopupComponent,
+	InformationItemComponent,
 } from '@zyra/components';
 import {
-	BasicInputUI,
+	TextInput,
 	ButtonInputUI,
-	ChoiceToggleUI,
-	TextAreaUI,
+	ToggleInput,
+	TextAreaInput,
 } from '@zyra/inputs';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 
@@ -153,7 +153,7 @@ const Queries: React.FC = () => {
 		product_name: {
 			label: __('Product', 'multivendorx'),
 			render: (row: any) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.product_name}
 					titleLink={getUrl(row.product_id, 'product')}
 					avatar={{
@@ -307,7 +307,7 @@ const Queries: React.FC = () => {
 
 	return (
 		<>
-			<PopupUI
+			<PopupComponent
 				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
@@ -332,7 +332,7 @@ const Queries: React.FC = () => {
 						setSelectedQn(null);
 					}}
 				/>
-			</PopupUI>
+			</PopupComponent>
 			<TableCard
 				headers={headers}
 				rows={rows}
@@ -345,7 +345,7 @@ const Queries: React.FC = () => {
 				format={appLocalizer.date_format}
 			/>
 			{selectedQueries && (
-				<PopupUI
+				<PopupComponent
 					open={selectedQueries}
 					onClose={() => setSelectedQueries(null)}
 					width={30}
@@ -376,35 +376,35 @@ const Queries: React.FC = () => {
 						/>
 					}
 				>
-					<FormGroupWrapper>
-						<FormGroup
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							label={__('Question', 'multivendorx')}
 							htmlFor="phone"
 						>
-							<BasicInputUI
+							<TextInput
 								name="phone"
 								value={queries}
 								onChange={(value: string) => setQueries(value)}
 							/>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							label={__('Answer', 'multivendorx')}
 							htmlFor="ans"
 						>
-							<TextAreaUI
+							<TextAreaInput
 								name="answer"
 								value={answer}
 								onChange={(value: string) => setAnswer(value)}
 							/>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							label={__(
 								'Decide whether this Q&A is visible to everyone or only to the store team',
 								'multivendorx'
 							)}
 							htmlFor="visibility"
 						>
-							<ChoiceToggleUI
+							<ToggleInput
 								options={[
 									{
 										key: 'public',
@@ -432,9 +432,9 @@ const Queries: React.FC = () => {
 									)
 								}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</PopupUI>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</PopupComponent>
 			)}
 		</>
 	);

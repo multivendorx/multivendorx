@@ -1,13 +1,13 @@
 /* global appLocalizer */
 import { useState } from 'react';
 
-import { MultiCheckBoxUI } from '@zyra/inputs';
+import { MultiCheckboxInput } from '@zyra/inputs';
 import {
-	Column,
-	Container,
-	InfoItem,
-	PopupUI,
-	NavigatorHeader,
+	LayoutColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
@@ -24,7 +24,7 @@ const Managestock = () => {
             label: __('Product', 'notifima'),
             width: '16rem',
             render: (row) => (
-                <InfoItem
+                <InformationItemComponent
                     title={row.name}
                     avatar={{
                         iconClass: 'single-product',
@@ -51,7 +51,7 @@ const Managestock = () => {
         manage_stock: {
             label: __('Manage Stock', 'notifima'),
             render: (row) => (
-                <MultiCheckBoxUI
+                <MultiCheckboxInput
                     look="toggle"
                     modules={[]}
                     options={[
@@ -163,7 +163,7 @@ const Managestock = () => {
     return (
         <>
             {openPopup && (
-                <PopupUI
+                <PopupComponent
                     position="lightbox"
                     open={openPopup}
                     onClose={() => setopenPopup(false)}
@@ -171,9 +171,9 @@ const Managestock = () => {
                     height="auto"
                 >
                     <ShowProPopup />
-                </PopupUI>
+                </PopupComponent>
             )}
-            <NavigatorHeader
+            <NavigatorHeaderComponent
                 headerIcon="store-analytics"
                 headerDescription={__(
                     'Manage product inventory, monitor stock availability, and update stock settings for simple and variable products.',
@@ -181,11 +181,11 @@ const Managestock = () => {
                 )}
                 headerTitle={__('Manage Stock', 'notifima')}
             />
-            <Container general>
-                <Column>
+            <ContainerComponent general>
+                <LayoutColumnComponent>
                     {renderTableContent()}
-                </Column>
-            </Container>
+                </LayoutColumnComponent>
+            </ContainerComponent>
         </>
     );
 };

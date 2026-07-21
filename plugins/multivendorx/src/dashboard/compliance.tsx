@@ -2,15 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
 
-import { ButtonInputUI, ExpandablePanelUI } from '@zyra/inputs';
+import { ButtonInputUI, ExpandablePanelInput } from '@zyra/inputs';
 import {
-	Analytics,
-	Card,
-	Column,
-	Container,
-	ItemListUI,
-	Notice,
-	SettingsNavigator,
+	AnalyticsComponent,
+	CardComponent,
+	LayoutColumnComponent,
+	ContainerComponent,
+	ListComponent,
+	NoticeComponent,
+	SettingsNavigatorComponent,
 } from '@zyra/components';
 
 const Compliance = (React.FC = () => {
@@ -288,8 +288,8 @@ const Compliance = (React.FC = () => {
 		switch (tabId) {
 			case 'product-compliance':
 				return (
-					<Container>
-						<Notice
+					<ContainerComponent>
+						<NoticeComponent
 							type="info"
 							displayPosition="inline-notice"
 							message={__(
@@ -297,8 +297,8 @@ const Compliance = (React.FC = () => {
 								'multivendorx'
 							)}
 						/>
-						<Column row>
-							<Card
+						<LayoutColumnComponent row>
+							<CardComponent
 								title={__(
 									'Product Images & Descriptions',
 									'multivendorx'
@@ -312,7 +312,7 @@ const Compliance = (React.FC = () => {
 									</>
 								}
 							>
-								<Notice
+								<NoticeComponent
 									type="warning"
 									displayPosition="inline-notice"
 									message={__(
@@ -320,14 +320,14 @@ const Compliance = (React.FC = () => {
 										'multivendorx'
 									)}
 								/>
-							</Card>
-							<Card
+							</CardComponent>
+							<CardComponent
 								title={__(
 									'Product Authenticity Certificates',
 									'multivendorx'
 								)}
 							>
-								<ItemListUI
+								<ListComponent
 									className="mini-card"
 									// background
 									border
@@ -397,11 +397,11 @@ const Compliance = (React.FC = () => {
 										},
 									]}
 								/>
-							</Card>
-						</Column>
+							</CardComponent>
+						</LayoutColumnComponent>
 
-						<Column row>
-							<Card
+						<LayoutColumnComponent row>
+							<CardComponent
 								title={__(
 									'Safety Certifications',
 									'multivendorx'
@@ -414,7 +414,7 @@ const Compliance = (React.FC = () => {
 									</>
 								}
 							>
-								<ItemListUI
+								<ListComponent
 									className="mini-card"
 									// background
 									border
@@ -453,7 +453,7 @@ const Compliance = (React.FC = () => {
 										},
 									]}
 								/>
-								<Notice
+								<NoticeComponent
 									type="info"
 									displayPosition="inline-notice"
 									message={__(
@@ -461,15 +461,15 @@ const Compliance = (React.FC = () => {
 										'multivendorx'
 									)}
 								/>
-							</Card>
+							</CardComponent>
 
-							<Card
+							<CardComponent
 								title={__(
 									'Product Abuse Reporting',
 									'multivendorx'
 								)}
 							>
-								<ItemListUI
+								<ListComponent
 									className="badge-list"
 									items={[
 										{
@@ -504,7 +504,7 @@ const Compliance = (React.FC = () => {
 										},
 									]}
 								/>
-								<Notice
+								<NoticeComponent
 									type="warning"
 									displayPosition="inline-notice"
 									message={__(
@@ -512,14 +512,14 @@ const Compliance = (React.FC = () => {
 										'multivendorx'
 									)}
 								/>
-							</Card>
-						</Column>
-					</Container>
+							</CardComponent>
+						</LayoutColumnComponent>
+					</ContainerComponent>
 				);
 			case 'tax-compliance':
 				return (
-					<Container>
-						<Notice
+					<ContainerComponent>
+						<NoticeComponent
 							type="error"
 							displayPosition="inline-notice"
 							title={__(
@@ -531,8 +531,8 @@ const Compliance = (React.FC = () => {
 								'multivendorx'
 							)}
 						/>
-						<Column grid={6}>
-							<Card
+						<LayoutColumnComponent grid={6}>
+							<CardComponent
 								title={__(
 									'Bank Account Details',
 									'multivendorx'
@@ -548,7 +548,7 @@ const Compliance = (React.FC = () => {
 									</>
 								}
 							>
-								<ItemListUI
+								<ListComponent
 									className="mini-card"
 									// background
 									border
@@ -587,14 +587,14 @@ const Compliance = (React.FC = () => {
 										},
 									]}
 								/>
-							</Card>
-							<Card
+							</CardComponent>
+							<CardComponent
 								title={__(
 									'Business Registration',
 									'multivendorx'
 								)}
 							>
-								<ItemListUI
+								<ListComponent
 									className="mini-card"
 									// background
 									border
@@ -633,11 +633,11 @@ const Compliance = (React.FC = () => {
 										},
 									]}
 								/>
-							</Card>
-						</Column>
+							</CardComponent>
+						</LayoutColumnComponent>
 
-						<Column grid={6}>
-							<Card
+						<LayoutColumnComponent grid={6}>
+							<CardComponent
 								title={__(
 									'Tax Identification Documents ',
 									'multivendorx'
@@ -650,14 +650,14 @@ const Compliance = (React.FC = () => {
 									</>
 								}
 							>
-								<ItemListUI
+								<ListComponent
 									className="mini-card"
 									// background
 									border
 									items={[
 										{
 											title: __(
-												'PAN Card',
+												'PAN CardComponent',
 												'multivendorx'
 											),
 											desc: __(
@@ -753,15 +753,15 @@ const Compliance = (React.FC = () => {
 										},
 									]}
 								/>
-							</Card>
+							</CardComponent>
 							<div> </div>
-						</Column>
-					</Container>
+						</LayoutColumnComponent>
+					</ContainerComponent>
 				);
 			case 'my-products':
 				return (
 					<>
-						<Analytics
+						<AnalyticsComponent
 							cols={3}
 							data={overviewData.map((item, idx) => ({
 								icon: item.icon,
@@ -770,7 +770,7 @@ const Compliance = (React.FC = () => {
 								text: __(item.label, 'multivendorx'),
 							}))}
 						/>
-						<Notice
+						<NoticeComponent
 							type="error"
 							displayPosition="inline-notice"
 							message={__(
@@ -782,15 +782,15 @@ const Compliance = (React.FC = () => {
 				);
 			case 'store-verification':
 				return (
-					<Container>
-						<Column grid={6}>
-							<Card
+					<ContainerComponent>
+						<LayoutColumnComponent grid={6}>
+							<CardComponent
 								title={__(
 									'Identity Verification',
 									'multivendorx'
 								)}
 							>
-								<ItemListUI
+								<ListComponent
 									className="mini-card"
 									// background
 									border
@@ -887,17 +887,17 @@ const Compliance = (React.FC = () => {
 										},
 									]}
 								/>
-							</Card>
-						</Column>
+							</CardComponent>
+						</LayoutColumnComponent>
 
-						<Column grid={6}>
-							<Card
+						<LayoutColumnComponent grid={6}>
+							<CardComponent
 								title={__(
 									'Social Verification',
 									'multivendorx'
 								)}
 							>
-								<ExpandablePanelUI
+								<ExpandablePanelInput
 									key={inputField.key}
 									name={inputField.key}
 									// proSetting={isProSetting(inputField.proSetting ?? false)}
@@ -917,9 +917,9 @@ const Compliance = (React.FC = () => {
 										// }
 									}}
 								/>
-							</Card>
-						</Column>
-					</Container>
+							</CardComponent>
+						</LayoutColumnComponent>
+					</ContainerComponent>
 				);
 			case 'legal-compliance':
 				return <div>store-verification</div>;
@@ -929,7 +929,7 @@ const Compliance = (React.FC = () => {
 	};
 	return (
 		<>
-			<SettingsNavigator
+			<SettingsNavigatorComponent
 				settingContent={settingContent}
 				currentSetting={currentTab}
 				getForm={getForm}

@@ -6,17 +6,17 @@ import { getApiLink } from '@zyra/core';
 
 import {
 	ButtonInputUI,
-	BasicInputUI,
-	EmailsInputUI,
+	TextInput,
+	EmailListInput,
 	FileInputUI,
 	SelectInputUI,
-	TextAreaUI,
+	TextAreaInput,
 } from '@zyra/inputs';
 import {
-	FormGroup,
-	FormGroupWrapper,
-	PopupUI,
-	NavigatorHeader,
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { useState } from 'react';
 import axios from 'axios';
@@ -226,7 +226,7 @@ const Stores = () => {
 
 			{!isEditStore && (
 				<>
-					<NavigatorHeader
+					<NavigatorHeaderComponent
 						headerIcon="storefront"
 						headerTitle={__('Stores', 'multivendorx')}
 						headerDescription={__(
@@ -244,7 +244,7 @@ const Stores = () => {
 						]}
 					/>
 					{addStore && (
-						<PopupUI
+						<PopupComponent
 							open={addStore}
 							width={31.25}
 							onClose={() => {
@@ -280,27 +280,27 @@ const Stores = () => {
 								/>
 							}
 						>
-							<FormGroupWrapper>
-								<FormGroup
+							<FormGroupWrapperComponent>
+								<FormGroupComponent
 									label={__('Store name', 'multivendorx')}
 									htmlFor="store-name"
 									{...getFieldNotice('name')}
 								>
-									<BasicInputUI
+									<TextInput
 										name="name"
 										value={formData.name || ''}
 										onChange={(val) =>
 											handleChange('name', val as string)
 										}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									label={__('Store slug', 'multivendorx')}
 									htmlFor="store-slug"
 									{...getFieldNotice('slug')}
 								>
-									<BasicInputUI
+									<TextInput
 										name="slug"
 										value={formData.slug || ''}
 										onChange={(val) =>
@@ -316,13 +316,13 @@ const Stores = () => {
 											onClick: handleSlugCheck,
 										}}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									label={__('Store Email', 'multivendorx')}
 									{...getFieldNotice('email')}
 								>
-									<EmailsInputUI
+									<EmailListInput
 										value={
 											formData?.store_email?.list || []
 										}
@@ -334,13 +334,13 @@ const Stores = () => {
 											saveEmails(list, primary)
 										}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									label={__('Description', 'multivendorx')}
 									htmlFor="Description"
 								>
-									<TextAreaUI
+									<TextAreaInput
 										name="description"
 										value={formData.description || ''}
 										onChange={(val: string) =>
@@ -357,9 +357,9 @@ const Stores = () => {
 											]?.['tinymce_api_section'] ?? ''
 										}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									label={__('Primary owner', 'multivendorx')}
 									htmlFor="store_owners"
 									{...getFieldNotice('primary')}
@@ -380,9 +380,9 @@ const Stores = () => {
 											clearFieldError('primary');
 										}}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									label={__('Profile image', 'multivendorx')}
 									htmlFor="store_owners"
 								>
@@ -410,9 +410,9 @@ const Stores = () => {
 											}));
 										}}
 									/>
-								</FormGroup>
-							</FormGroupWrapper>
-						</PopupUI>
+								</FormGroupComponent>
+							</FormGroupWrapperComponent>
+						</PopupComponent>
 					)}
 					<StoreTable />
 				</>

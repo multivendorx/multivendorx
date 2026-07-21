@@ -1,6 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
-import { Card, FormGroup, FormGroupWrapper } from '@zyra/components';
-import { MultiCheckBoxUI, SelectInputUI, BasicInputUI } from '@zyra/inputs';
+import { CardComponent, FormGroupComponent, FormGroupWrapperComponent } from '@zyra/components';
+import { MultiCheckboxInput, SelectInputUI, TextInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Inventory = ({ product, setProduct, handleChange }) => {
@@ -18,7 +18,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 	];
 
 	return (
-		<Card
+		<CardComponent
 			title={__('Stock & inventory', 'multivendorx')}
 			desc={__(
 				"Track your available quantity and let customers know what's in stock.",
@@ -28,7 +28,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 				<>
 					<div className="field-wrapper">
 						{__('Stock management', 'multivendorx')}
-						<MultiCheckBoxUI
+						<MultiCheckboxInput
 							value={product.manage_stock ? ['manage_stock'] : []}
 							look='toggle'
 							options={[
@@ -47,8 +47,8 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 				</>
 			}
 		>
-			<FormGroupWrapper>
-				<FormGroup
+			<FormGroupWrapperComponent>
+				<FormGroupComponent
 					cols={6}
 					label={__('SKU', 'multivendorx')}
 					desc={__(
@@ -56,14 +56,14 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 						'multivendorx'
 					)}
 				>
-					<BasicInputUI
+					<TextInput
 						name="sku"
 						value={product.sku}
 						onChange={(value) => handleChange('sku', value)}
 					/>
-				</FormGroup>
+				</FormGroupComponent>
 				{!product.manage_stock && (
-					<FormGroup
+					<FormGroupComponent
 						cols={6}
 						label={__('Stock Status', 'multivendorx')}
 					>
@@ -75,23 +75,23 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 								handleChange('stock_status', selected)
 							}
 						/>
-					</FormGroup>
+					</FormGroupComponent>
 				)}
 				{product.manage_stock && (
 					<>
-						<FormGroup
+						<FormGroupComponent
 							cols={6}
 							label={__('Quantity', 'multivendorx')}
 						>
-							<BasicInputUI
+							<TextInput
 								name="stock"
 								value={product.stock_quantity}
 								onChange={(value) =>
 									handleChange('stock_quantity', value)
 								}
 							/>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							cols={6}
 							label={__('Allow backorders?', 'multivendorx')}
 						>
@@ -103,23 +103,23 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 									handleChange('backorders', selected)
 								}
 							/>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							cols={6}
 							label={__('Low stock threshold', 'multivendorx')}
 						>
-							<BasicInputUI
+							<TextInput
 								name="low_stock_amount"
 								value={product.low_stock_amount}
 								onChange={(value) =>
 									handleChange('low_stock_amount', value)
 								}
 							/>
-						</FormGroup>
+						</FormGroupComponent>
 					</>
 				)}
-			</FormGroupWrapper>
-		</Card>
+			</FormGroupWrapperComponent>
+		</CardComponent>
 	);
 };
 

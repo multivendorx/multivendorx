@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 
 
 import { getApiLink, useModules } from '@zyra/core';
-import { Container, Column, ItemListUI, NavigatorHeader } from '@zyra/components';
+import { ContainerComponent, LayoutColumnComponent, ListComponent, NavigatorHeaderComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import ViewCommission from './ViewCommission';
 import {
@@ -170,7 +170,7 @@ const Commission: React.FC = () => {
 				].filter((item) => item.display !== false);
 
 				return (
-					<ItemListUI className="price-list" items={earningItems} />
+					<ListComponent className="price-list" items={earningItems} />
 				);
 			},
 			csvDisplay: false
@@ -421,7 +421,7 @@ const Commission: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="commission"
 				headerTitle={__('Commissions', 'multivendorx')}
 				headerDescription={__(
@@ -429,8 +429,8 @@ const Commission: React.FC = () => {
 					'multivendorx'
 				)}
 			/>
-			<Container general>
-				<Column>
+			<ContainerComponent general>
+				<LayoutColumnComponent>
 					<TableCard
 						headers={headers}
 						rows={rows}
@@ -453,8 +453,8 @@ const Commission: React.FC = () => {
 							currencyPosition: appLocalizer.currency_position,
 						}}
 					/>
-				</Column>
-			</Container>
+				</LayoutColumnComponent>
+			</ContainerComponent>
 			<ViewCommission
 				open={viewCommission}
 				onClose={() => setViewCommission(false)}

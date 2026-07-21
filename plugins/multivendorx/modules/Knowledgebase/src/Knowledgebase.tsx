@@ -5,18 +5,18 @@ import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 
 import {
-	TextAreaUI,
-	ChoiceToggleUI,
-	BasicInputUI,
+	TextAreaInput,
+	ToggleInput,
+	TextInput,
 	ButtonInputUI,
 } from '@zyra/inputs';
 import {
-	Container,
-	Column,
-	FormGroupWrapper,
-	FormGroup,
-	PopupUI,
-	NavigatorHeader,
+	ContainerComponent,
+	LayoutColumnComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
@@ -318,7 +318,7 @@ export const KnowledgeBase: React.FC = () => {
 	];
 	return (
 		<>
-			<PopupUI
+			<PopupComponent
 				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
@@ -344,9 +344,9 @@ export const KnowledgeBase: React.FC = () => {
 						setSelectedKb(null);
 					}}
 				/>
-			</PopupUI>
+			</PopupComponent>
 
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="knowledgebase"
 				headerTitle={__('Knowledge Base', 'multivendorx')}
 				headerDescription={__(
@@ -366,7 +366,7 @@ export const KnowledgeBase: React.FC = () => {
 			/>
 
 			{addEntry && (
-				<PopupUI
+				<PopupComponent
 					open={addEntry}
 					onClose={handleCloseForm}
 					width={31.25}
@@ -405,12 +405,12 @@ export const KnowledgeBase: React.FC = () => {
 					}
 				>
 					<>
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__('Title', 'multivendorx')}
 								htmlFor="Title"
 							>
-								<BasicInputUI
+								<TextInput
 									name="title"
 									value={formData.title}
 									onChange={(val) =>
@@ -421,12 +421,12 @@ export const KnowledgeBase: React.FC = () => {
 										massage: validationErrors.title,
 									}}
 								/>
-							</FormGroup>
-							<FormGroup
+							</FormGroupComponent>
+							<FormGroupComponent
 								label={__('Content', 'multivendorx')}
 								htmlFor="Content"
 							>
-								<TextAreaUI
+								<TextAreaInput
 									name="content"
 									value={formData.content}
 									onChange={(val) =>
@@ -443,12 +443,12 @@ export const KnowledgeBase: React.FC = () => {
 										massage: validationErrors.content,
 									}}
 								/>
-							</FormGroup>
-							<FormGroup
+							</FormGroupComponent>
+							<FormGroupComponent
 								label={__('Status', 'multivendorx')}
 								htmlFor="status"
 							>
-								<ChoiceToggleUI
+								<ToggleInput
 									options={[
 										{
 											key: 'publish',
@@ -477,13 +477,13 @@ export const KnowledgeBase: React.FC = () => {
 										handleChange('status', val)
 									}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
 					</>
-				</PopupUI>
+				</PopupComponent>
 			)}
-			<Container general>
-				<Column>
+			<ContainerComponent general>
+				<LayoutColumnComponent>
 					<TableCard
 						headers={headers}
 						rows={rows}
@@ -503,8 +503,8 @@ export const KnowledgeBase: React.FC = () => {
 						}}
 						format={appLocalizer.date_format}
 					/>
-				</Column>
-			</Container>
+				</LayoutColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

@@ -4,13 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { getApiLink } from '@zyra/core';
 
 import { ButtonInputUI } from '@zyra/inputs';
-import { HeaderSearch } from '@zyra/admin';
+import { AdminHeaderSearch } from '@zyra/admin';
 import {
-	Card,
-	ComponentStatusView,
-	PopupUI,
-	ItemListUI,
-	NavigatorHeader,
+	CardComponent,
+	ComponentStatusComponent,
+	PopupComponent,
+	ListComponent,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 import { truncateText } from '@/services/commonFunction';
@@ -97,7 +97,7 @@ const Documentation: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Documentation', 'multivendorx')}
 				headerDescription={__(
 					'Admin-shared guides and documentation for managing your store can be accessed.',
@@ -105,8 +105,8 @@ const Documentation: React.FC = () => {
 				)}
 			/>
 
-			<Card>
-				<HeaderSearch
+			<CardComponent>
+				<AdminHeaderSearch
 					// variant="mini-search"
 					search={{ placeholder: 'Search .....' }}
 					onQueryUpdate={(e) => {
@@ -114,11 +114,11 @@ const Documentation: React.FC = () => {
 					}}
 				/>
 				{filteredDocuments.length === 0 && (
-					<ComponentStatusView
+					<ComponentStatusComponent
 						title={__('No documents found.', 'multivendorx')}
 					/>
 				)}
-				<ItemListUI
+				<ListComponent
 					className="mini-card documentation"
 					border
 					items={filteredDocuments.map((doc) => ({
@@ -137,10 +137,10 @@ const Documentation: React.FC = () => {
 						),
 					}))}
 				/>
-			</Card>
+			</CardComponent>
 
 			{activeDocument && (
-				<PopupUI
+				<PopupComponent
 					open={popupOpen}
 					onClose={() => setPopupOpen(false)}
 					width='90%'
@@ -177,7 +177,7 @@ const Documentation: React.FC = () => {
 							}}
 						/>
 					</div>
-				</PopupUI>
+				</PopupComponent>
 			)}
 		</>
 	);

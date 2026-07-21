@@ -20,14 +20,14 @@ import '../dashboard/dashboard1.scss';
 import { ButtonInputUI, CalendarInputUI } from '@zyra/inputs';
 import { getApiLink, useModules } from '@zyra/core';
 import {
-	Analytics,
-	Card,
-	Column,
-	Container,
-	InfoItem,
-	ComponentStatusView,
-	ItemListUI,
-	NavigatorHeader,
+	AnalyticsComponent,
+	CardComponent,
+	LayoutColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	ComponentStatusComponent,
+	ListComponent,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
@@ -122,7 +122,7 @@ const Dashboard: React.FC = () => {
 			render: (row) =>
 				row.line_items?.length
 					? row.line_items.map((item) => (
-							<InfoItem
+							<InformationItemComponent
 								key={item.id}
 								title={item.name}
 								onClick={() =>
@@ -163,7 +163,7 @@ const Dashboard: React.FC = () => {
 			width: 18,
 			render: (row) => {
 				return (
-					<InfoItem
+					<InformationItemComponent
 						title={row.name}
 						onClick={() =>
 							dashNavigate(navigate, [
@@ -388,7 +388,7 @@ const Dashboard: React.FC = () => {
 				setRecentOrderIds(orders.map((o) => o.id));
 			});
 
-		// Last Withdrawals - keep using InfoItem (no TableCard needed)
+		// Last Withdrawals - keep using InformationItemComponent (no TableCard needed)
 		axios
 			.get(getApiLink(appLocalizer, 'transactions'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
@@ -546,7 +546,7 @@ const Dashboard: React.FC = () => {
 	];
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={`${getGreeting()}, ${store?.primary_owner_info?.data?.display_name}!`}
 				headerDescription={
 					<>
@@ -569,9 +569,9 @@ const Dashboard: React.FC = () => {
 					/>
 				}
 			/>
-			<Container className="store-dashboard">
-				<Column>
-					<Analytics
+			<ContainerComponent className="store-dashboard">
+				<LayoutColumnComponent>
+					<AnalyticsComponent
 						variant="dashboard"
 						isLoading={isLoading}
 						data={analyticsData.map((item) => ({
@@ -602,10 +602,10 @@ const Dashboard: React.FC = () => {
 							),
 						}))}
 					/>
-				</Column>
+				</LayoutColumnComponent>
 
-				<Column fullHeight grid={8}>
-					<Card title={__('Sales Overview', 'multivendorx')}>
+				<LayoutColumnComponent fullHeight grid={8}>
+					<CardComponent title={__('Sales Overview', 'multivendorx')}>
 						{revenueData && revenueData.length > 0 ? (
 							<ResponsiveContainer height={250}>
 								<BarChart
@@ -655,22 +655,22 @@ const Dashboard: React.FC = () => {
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<ComponentStatusView
+							<ComponentStatusComponent
 								title={__(
 									'Your first sale is just around the corner!',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-				</Column>
+					</CardComponent>
+				</LayoutColumnComponent>
 
-				<Column fullHeight grid={4}>
-					<Card title={__('Last Withdrawal', 'multivendorx')}>
+				<LayoutColumnComponent fullHeight grid={4}>
+					<CardComponent title={__('Last Withdrawal', 'multivendorx')}>
 						<div className="top-customer-wrapper">
 							{lastWithdraws && lastWithdraws.length > 0 ? (
 								lastWithdraws.map((item) => (
-									<InfoItem
+									<InformationItemComponent
 										key={item.id}
 										title={
 											item.payment_method ===
@@ -696,7 +696,7 @@ const Dashboard: React.FC = () => {
 									/>
 								))
 							) : (
-								<ComponentStatusView
+								<ComponentStatusComponent
 									title={__(
 										'Earnings will appear here once you make a withdrawal.',
 										'multivendorx'
@@ -721,17 +721,17 @@ const Dashboard: React.FC = () => {
 								}}
 							/>
 						)}
-					</Card>
-				</Column>
+					</CardComponent>
+				</LayoutColumnComponent>
 
-				<Column fullHeight grid={4}>
-					<Card title={__('Visitors Map', 'multivendorx')}>
+				<LayoutColumnComponent fullHeight grid={4}>
+					<CardComponent title={__('Visitors Map', 'multivendorx')}>
 						<VisitorsMap dateRange={dateRange} />
-					</Card>
-				</Column>
+					</CardComponent>
+				</LayoutColumnComponent>
 
-				<Column fullHeight grid={8}>
-					<Card
+				<LayoutColumnComponent fullHeight grid={8}>
+					<CardComponent
 						title={__('Recent Orders', 'multivendorx')}
 						iconName="external icon"
 						onIconClick={() => {
@@ -764,19 +764,19 @@ const Dashboard: React.FC = () => {
 								}}
 							/>
 						) : (
-							<ComponentStatusView
+							<ComponentStatusComponent
 								title={__(
 									'Ready to receive your first order!',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-				</Column>
+					</CardComponent>
+				</LayoutColumnComponent>
 
 				{/* Best-Selling Products */}
-				<Column fullHeight grid={6}>
-					<Card
+				<LayoutColumnComponent fullHeight grid={6}>
+					<CardComponent
 						title={__('Best-Selling Products', 'multivendorx')}
 						iconName="external icon"
 						onIconClick={() => {
@@ -797,19 +797,19 @@ const Dashboard: React.FC = () => {
 								showColumnToggleIcon={false}
 							/>
 						) : (
-							<ComponentStatusView
+							<ComponentStatusComponent
 								title={__(
 									'Start selling to discover your top products!',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-				</Column>
+					</CardComponent>
+				</LayoutColumnComponent>
 
 				{/* Commission Overview */}
-				<Column fullHeight grid={6}>
-					<Card
+				<LayoutColumnComponent fullHeight grid={6}>
+					<CardComponent
 						title={__('Commission Overview', 'multivendorx')}
 						iconName="external icon"
 						onIconClick={() => {
@@ -860,12 +860,12 @@ const Dashboard: React.FC = () => {
 								</PieChart>
 							</ResponsiveContainer>
 						</div>
-					</Card>
-				</Column>
+					</CardComponent>
+				</LayoutColumnComponent>
 				{/* Admin Announcements */}
 				{modules.includes('announcement') && (
-					<Column fullHeight grid={4}>
-						<Card
+					<LayoutColumnComponent fullHeight grid={4}>
+						<CardComponent
 							title={__('Admin Announcements', 'multivendorx')}
 							iconName="external icon"
 							onIconClick={() => {
@@ -877,7 +877,7 @@ const Dashboard: React.FC = () => {
 						>
 							{Array.isArray(announcement) &&
 							announcement.length > 0 ? (
-								<ItemListUI
+								<ListComponent
 									className="notification-wrapper"
 									items={announcement.map((item, index) => ({
 										id: item.id || index,
@@ -888,19 +888,19 @@ const Dashboard: React.FC = () => {
 									}))}
 								/>
 							) : (
-								<ComponentStatusView
+								<ComponentStatusComponent
 									title={__(
 										"You're all caught up - check back for updates!",
 										'multivendorx'
 									)}
 								/>
 							)}
-						</Card>
-					</Column>
+						</CardComponent>
+					</LayoutColumnComponent>
 				)}
 				{modules.includes('marketplace-refund') && (
-					<Column fullHeight grid={4}>
-						<Card
+					<LayoutColumnComponent fullHeight grid={4}>
+						<CardComponent
 							title={__('Pending Refunds', 'multivendorx')}
 							iconName="external icon"
 							onIconClick={() => {
@@ -933,7 +933,7 @@ const Dashboard: React.FC = () => {
 										</div>
 									))
 								) : (
-									<ComponentStatusView
+									<ComponentStatusComponent
 										title={__(
 											'Refund requests will appear here when submitted.',
 											'multivendorx'
@@ -941,21 +941,21 @@ const Dashboard: React.FC = () => {
 									/>
 								)}
 							</div>
-						</Card>
-					</Column>
+						</CardComponent>
+					</LayoutColumnComponent>
 				)}
 				{modules.includes('privacy') &&
 					Array.isArray(access) &&
 					access.includes('name') && (
-						<Column fullHeight grid={4}>
-							<Card title={__('Top Customers', 'multivendorx')}>
+						<LayoutColumnComponent fullHeight grid={4}>
+							<CardComponent title={__('Top Customers', 'multivendorx')}>
 								{customers && customers.length > 0 ? (
 									customers.map((order, index) => {
 										const name =
 											`${order.billing?.first_name || ''} ${order.billing?.last_name || ''}`.trim() ||
 											__('Guest', 'multivendorx');
 										return (
-											<InfoItem
+											<InformationItemComponent
 												key={index}
 												title={name}
 												avatar={{
@@ -974,18 +974,18 @@ const Dashboard: React.FC = () => {
 										);
 									})
 								) : (
-									<ComponentStatusView
+									<ComponentStatusComponent
 										title={__(
 											'Top customers will appear here once you receive orders.',
 											'multivendorx'
 										)}
 									/>
 								)}
-							</Card>
-						</Column>
+							</CardComponent>
+						</LayoutColumnComponent>
 					)}
-				<Column fullHeight grid={4}>
-					<Card title={__('Store Activity', 'multivendorx')}>
+				<LayoutColumnComponent fullHeight grid={4}>
+					<CardComponent title={__('Store Activity', 'multivendorx')}>
 						<div className="activity-log">
 							{Array.isArray(activities) &&
 							activities.length > 0 ? (
@@ -997,7 +997,7 @@ const Dashboard: React.FC = () => {
 									</div>
 								))
 							) : (
-								<ComponentStatusView
+								<ComponentStatusComponent
 									title={__(
 										'Activity will show up here as your store grows!',
 										'multivendorx'
@@ -1005,11 +1005,11 @@ const Dashboard: React.FC = () => {
 								/>
 							)}
 						</div>
-					</Card>
-				</Column>
+					</CardComponent>
+				</LayoutColumnComponent>
 				{modules.includes('store-review') && (
-					<Column fullHeight grid={4}>
-						<Card
+					<LayoutColumnComponent fullHeight grid={4}>
+						<CardComponent
 							title={__('Latest Reviews', 'multivendorx')}
 							iconName="external icon"
 							onIconClick={() => {
@@ -1058,7 +1058,7 @@ const Dashboard: React.FC = () => {
 										</div>
 									))
 								) : (
-									<ComponentStatusView
+									<ComponentStatusComponent
 										title={__(
 											"No reviews yet - they'll show up here once received.",
 											'multivendorx'
@@ -1066,10 +1066,10 @@ const Dashboard: React.FC = () => {
 									/>
 								)}
 							</div>
-						</Card>
-					</Column>
+						</CardComponent>
+					</LayoutColumnComponent>
 				)}
-			</Container>
+			</ContainerComponent>
 		</>
 	);
 };
