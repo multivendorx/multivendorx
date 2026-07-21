@@ -3,7 +3,6 @@ import { render } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
 import DashboardRoutes from './dashboardRoutes';
-import '@multivendorx/zyra/build/index.css';
 import 'leaflet/dist/leaflet.css';
 
 import { configureZyra, initializeModules } from '@zyra/core';

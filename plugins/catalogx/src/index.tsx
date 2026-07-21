@@ -2,7 +2,6 @@
 import { render } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
-import '@multivendorx/zyra/build/index.css';
 
 import { configureZyra, initializeModules } from '@zyra/core';
 

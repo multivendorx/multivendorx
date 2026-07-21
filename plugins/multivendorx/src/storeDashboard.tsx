@@ -10,9 +10,9 @@ import {
 	NoticeReceiver,
 	Notice,
 	GuidedTourProvider,
+	TabsUI,
 } from '@zyra/components';
 import { getApiLink, useOutsideClick, useModules } from '@zyra/core';
-import { TabsUI } from '@zyra/admin';
 import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';

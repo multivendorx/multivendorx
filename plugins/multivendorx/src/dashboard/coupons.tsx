@@ -12,7 +12,6 @@ import {
 	RandomInputKeyGeneratorUI,
 	EmailsInputUI,
 } from '@zyra/inputs';
-import { TabsUI } from '@zyra/admin';
 import {
 	FormGroup,
 	FormGroupWrapper,
@@ -20,6 +19,7 @@ import {
 	InfoItem,
 	Notice,
 	NavigatorHeader,
+	TabsUI,
 } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 

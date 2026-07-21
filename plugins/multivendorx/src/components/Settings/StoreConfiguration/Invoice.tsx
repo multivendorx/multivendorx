@@ -7,6 +7,7 @@ import {
 	FormGroupWrapper,
 	NoticeManager,
 	PopupUI,
+	TabsUI,
 } from '@zyra/components';
 import {
 	BasicInputUI,
@@ -18,7 +19,6 @@ import {
 	TextAreaUI,
 } from '@zyra/inputs';
 import { getApiLink, useModules } from '@zyra/core';
-import { TabsUI } from '@zyra/admin';
 import ShowProPopup from '../../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
