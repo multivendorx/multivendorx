@@ -344,17 +344,26 @@ class Rest {
      */
     public function grant_woocommerce_rest_permission( $permission, $context, $object_id, $post_type ) {
         $request_method = $_SERVER['REQUEST_METHOD'] ?? '';
-        $allowed_post_types = array(
+
+        $public_post_types = array(
             'product',
-            'shop_order',
             'shop_coupon',
             'product_cat',
+        );
+
+        if ( $request_method === 'GET' && in_array( $post_type, $public_post_types, true ) ) {
+            return true;
+        }
+
+        $private_post_types = array(
+            'shop_order',
             'user',
+            'payment_gateways',
             'bookable_resource',
             'wc_appointment',
         );
 
-        if ( $request_method === 'GET' && in_array( $post_type, $allowed_post_types, true ) ) {
+        if ( is_user_logged_in() && $request_method === 'GET' && in_array( $post_type, $private_post_types, true ) ) {
             return true;
         }
 
@@ -366,17 +375,7 @@ class Rest {
         // Get all users for that store.
         $users = StoreUtil::get_store_users( $active_store );
 
-        // 'user' (WC_REST_Customers_Controller) and 'payment_gateways' are
-        // deliberately NOT in $allowed_post_types above - that array is also
-        // used for the anonymous-GET branch a few lines up, and neither of
-        // these should ever be readable by a logged-out request (customer
-        // PII / marketplace payment config). Only an authenticated member of
-        // the active store gets them, for the Store Dashboard "Add Order"
-        // screen (`addOrder.tsx`), which needs a customer picker and the
-        // marketplace's enabled payment methods.
-        $authenticated_only_post_types = array_merge( $allowed_post_types, array( 'user', 'payment_gateways' ) );
-
-        if ( is_array( $users ) && ! empty( $users['users'] ) && in_array( $user_id, $users['users'], true ) && in_array( $post_type, $authenticated_only_post_types, true ) ) {
+        if ( is_array( $users ) && ! empty( $users['users'] ) && in_array( $user_id, $users['users'], true ) ) {
             return true;
         }
 

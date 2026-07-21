@@ -71,7 +71,7 @@ const AddOrder = () => {
 				first_name: selectedCustomer?.first_name,
 				last_name: selectedCustomer?.last_name,
 				address_1: billingAddress.address_1,
-				address_2: billingAddress.address_2 ||'',
+				address_2: billingAddress.address_2 || '',
 				city: billingAddress.city,
 				state: billingAddress.state,
 				postcode: billingAddress.postcode,
@@ -101,7 +101,7 @@ const AddOrder = () => {
 				first_name: selectedCustomer?.first_name,
 				last_name: selectedCustomer?.last_name,
 				address_1: shippingAddress.address_1,
-				address_2: shippingAddress.address_2 ||'',
+				address_2: shippingAddress.address_2 || '',
 				city: shippingAddress.city,
 				state: shippingAddress.state,
 				postcode: shippingAddress.postcode,
@@ -173,7 +173,7 @@ const AddOrder = () => {
 				const includeAdminProducts =
 					onboardingSettings?.store_selling_mode === 'franchise' &&
 					onboardingSettings?.products_available_for_franchise_orders ===
-						'store_and_admin_products';
+					'store_and_admin_products';
 
 				const filtered = products.filter((p) => {
 					const storeId = p.meta_data?.find(
@@ -205,13 +205,22 @@ const AddOrder = () => {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			})
 			.then((res) => {
-				const enabled = res.data.filter((m) => m.enabled === true);
+				const excludedGateways = [
+					'wc-bookings-gateway',
+					'wcappointmentsgateway',
+				];
 
-				const formatted = enabled.map((m) => ({
-					label: m.title,
-					value: m.id,
-					method_title: m.title,
-				}));
+				const formatted = res.data
+					.filter(
+						(m) =>
+							m.enabled &&
+							!excludedGateways.includes(m.id)
+					)
+					.map((m) => ({
+						label: m.title,
+						value: m.id,
+						method_title: m.title,
+					}));
 
 				setPaymentMethods(formatted);
 			});
@@ -324,10 +333,10 @@ const AddOrder = () => {
 			set_paid: false,
 			customer_note: orderNote || '',
 			meta_data: [
-				{
-					key: 'multivendorx_store_id',
-					value: appLocalizer.store_id,
-				},
+				// {
+				// 	key: 'multivendorx_store_id',
+				// 	value: appLocalizer.store_id,
+				// },
 			],
 		};
 
