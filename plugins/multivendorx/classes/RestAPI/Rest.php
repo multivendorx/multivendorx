@@ -375,14 +375,6 @@ class Rest {
         // Get all users for that store.
         $users = StoreUtil::get_store_users( $active_store );
 
-        // 'user' (WC_REST_Customers_Controller) and 'payment_gateways' are
-        // deliberately NOT in $allowed_post_types above - that array is also
-        // used for the anonymous-GET branch a few lines up, and neither of
-        // these should ever be readable by a logged-out request (customer
-        // PII / marketplace payment config). Only an authenticated member of
-        // the active store gets them, for the Store Dashboard "Add Order"
-        // screen (`addOrder.tsx`), which needs a customer picker and the
-        // marketplace's enabled payment methods.
         if ( is_array( $users ) && ! empty( $users['users'] ) && in_array( $user_id, $users['users'], true ) ) {
             return true;
         }
