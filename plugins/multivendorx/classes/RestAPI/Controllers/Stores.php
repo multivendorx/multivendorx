@@ -80,7 +80,7 @@ class Stores extends \WP_REST_Controller {
             array(
                 'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => array( $this, 'get_states_by_country' ),
-                'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                'permission_callback' => '__return_true',
             )
         );
     }
@@ -91,7 +91,7 @@ class Stores extends \WP_REST_Controller {
      * @param object $request Request data.
      */
     public function get_items_permissions_check( $request ) {
-        return true;
+        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
     }
 
     /**
@@ -755,6 +755,14 @@ class Stores extends \WP_REST_Controller {
             $start_date    = $request->get_param( 'start_date' );
             $end_date      = $request->get_param( 'end_date' );
 
+            if ( $id && ! StoreUtil::current_user_can_manage_store( $id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to access this store.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+
             if ( $id && 'switch' === $action ) {
                 update_user_meta(
                     MultiVendorX()->current_user_id,
@@ -905,6 +913,14 @@ class Stores extends \WP_REST_Controller {
             $status = $request->get_param( 'action' );
 
             if ( ! empty( $ids ) && ! empty( $status ) ) {
+                if ( ! current_user_can( 'manage_options' ) ) {
+                    return new \WP_Error(
+                        'rest_forbidden',
+                        __( 'You are not allowed to change the status of these stores.', 'multivendorx' ),
+                        array( 'status' => 403 )
+                    );
+                }
+
                 foreach ( (array) $ids as $store_id ) {
                     $store = new Store( absint( $store_id ) );
                     if ( ! $store->exists() ) {
@@ -922,6 +938,14 @@ class Stores extends \WP_REST_Controller {
             }
             $id   = absint( $request->get_param( 'id' ) );
             $data = (array) $request->get_json_params();
+
+            if ( ! StoreUtil::current_user_can_manage_store( $id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to update this store.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
 
             $store = new Store( $id );
             if ( ! $store->exists() ) {
