@@ -11,7 +11,7 @@ import {
 } from '@zyra/components';
 import {
 	TextInput,
-	ButtonInputUI,
+	ButtonInput,
 	ToggleInput,
 	TextAreaInput,
 } from '@zyra/inputs';
@@ -359,7 +359,7 @@ const Queries: React.FC = () => {
 						),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',

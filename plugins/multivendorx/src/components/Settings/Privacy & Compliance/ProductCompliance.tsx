@@ -5,7 +5,7 @@ import {
 	SectionComponent,
 	NoticeManager,
 } from '@zyra/components';
-import { ToggleInput, ExpandablePanelInput, SelectInputUI } from '@zyra/inputs';
+import { ToggleInput, ExpandablePanelInput, SelectInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { useState, useCallback, useMemo } from 'react';
 import axios from 'axios';
@@ -209,7 +209,7 @@ const ProductCompliance: React.FC = () => {
                 />
 
                 <FormGroupComponent row label={__('Trigger words', 'multivendorx')}>
-                    <SelectInputUI
+                    <SelectInput
                         type="creatable-multi"
                         options={existingTags.map((tag) => ({
                             value: tag.name,
@@ -249,7 +249,7 @@ const ProductCompliance: React.FC = () => {
                 />
 
                 <FormGroupComponent row label={__('Add Category', 'multivendorx')}>
-                    <SelectInputUI
+                    <SelectInput
                         name="product_select"
                         type="single-select"
                         size="15rem"

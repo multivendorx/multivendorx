@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { getApiLink } from '@zyra/core';
 
-import { ButtonInputUI } from '@zyra/inputs';
+import { ButtonInput } from '@zyra/inputs';
 import { AdminHeaderSearch } from '@zyra/admin';
 import {
 	CardComponent,
@@ -150,7 +150,7 @@ const Documentation: React.FC = () => {
 						title: activeDocument.title,
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',

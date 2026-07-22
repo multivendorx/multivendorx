@@ -13,7 +13,7 @@ import {
 	ComponentStatusComponent,
 	NoticeComponent,
 } from '@zyra/components';
-import { ButtonInputUI, TextAreaInput } from '@zyra/inputs';
+import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
@@ -344,7 +344,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 												)}
 											</label>
 										</FormGroupComponent>
-										<ButtonInputUI
+										<ButtonInput
 											buttons={[
 												{
 													text: __(

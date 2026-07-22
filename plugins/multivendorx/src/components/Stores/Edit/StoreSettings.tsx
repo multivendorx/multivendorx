@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 
-import { EmailListInput, TextInput, SelectInputUI } from '@zyra/inputs';
+import { EmailListInput, TextInput, SelectInput } from '@zyra/inputs';
 import {
 	ContainerComponent,
 	LayoutColumnComponent,
@@ -507,7 +507,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 								label={__('Phone', 'multivendorx')}
 								notice={errorMsg.phone}
 							>
-								<SelectInputUI
+								<SelectInput
 									type="single-select"
 									name="country_code"
 									size={10}
@@ -592,7 +592,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 								label={__('Country', 'multivendorx')}
 								htmlFor="country"
 							>
-								<SelectInputUI
+								<SelectInput
 									name="country"
 									value={formData.country || ''}
 									options={appLocalizer.country_list || []}
@@ -604,7 +604,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 								label={__('State', 'multivendorx')}
 								htmlFor="state"
 							>
-								<SelectInputUI
+								<SelectInput
 									name="state"
 									value={formData.state || ''}
 									options={stateOptions}
@@ -641,7 +641,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 									'multivendorx'
 								)}
 							>
-								<SelectInputUI
+								<SelectInput
 									name="status"
 									value={formData.status || ''}
 									options={statusOptions}

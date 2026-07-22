@@ -7,9 +7,9 @@ import { getApiLink } from '@zyra/core';
 import {
 	TextAreaInput,
 	TextInput,
-	ButtonInputUI,
+	ButtonInput,
 	ToggleInput,
-	SelectInputUI,
+	SelectInput,
 } from '@zyra/inputs';
 import {
 	ContainerComponent,
@@ -447,7 +447,7 @@ export const Announcements: React.FC = () => {
 					),
 				}}
 				footer={
-					<ButtonInputUI
+					<ButtonInput
 						buttons={[
 							{
 								icon: 'close',
@@ -507,7 +507,7 @@ export const Announcements: React.FC = () => {
 						label={__('Stores', 'multivendorx')}
 						htmlFor="stores"
 					>
-						<SelectInputUI
+						<SelectInput
 							name="stores"
 							type="multi-select"
 							options={storeOptions}

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 
-import { ButtonInputUI, TextAreaInput } from '@zyra/inputs';
+import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import {
 	FormGroupWrapperComponent,
 	FormGroupComponent,
@@ -277,7 +277,7 @@ const StoreReview: React.FC = () => {
 						),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',

@@ -17,7 +17,7 @@ import {
 } from '@zyra/components';
 import {
 	TextInput,
-	ButtonInputUI,
+	ButtonInput,
 	TextAreaInput,
 	ToggleInput,
 } from '@zyra/inputs';
@@ -654,7 +654,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 									/>
 								)}
 							</LayoutColumnComponent>
-							<ButtonInputUI
+							<ButtonInput
 								buttons={{
 									icon: 'wallet',
 									text: __(
@@ -682,7 +682,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 						),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'wallet',

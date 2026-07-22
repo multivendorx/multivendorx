@@ -11,7 +11,7 @@ import {
 	NoticeManager,
 	InformationItemComponent,
 } from '@zyra/components';
-import { SelectInputUI, ButtonInputUI } from '@zyra/inputs';
+import { SelectInput, ButtonInput } from '@zyra/inputs';
 import { getApiLink, useModules } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
@@ -268,7 +268,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 										},
 									]}
 									rightContent={
-										<ButtonInputUI
+										<ButtonInput
 											buttons={[
 												{
 													text: __(
@@ -290,7 +290,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 						</FormGroupComponent>
 						<FormGroupComponent>
 							{showPrimaryOwnerSelect && (
-								<SelectInputUI
+								<SelectInput
 									name="primary_owner"
 									options={appLocalizer?.store_owners || []}
 									value={formData.primary_owner}
@@ -328,7 +328,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 											},
 										]}
 										rightContent={
-											<ButtonInputUI
+											<ButtonInput
 												buttons={[
 													{
 														text: __(
@@ -350,7 +350,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 							</div>
 
 							{showAdditionalOwnerSelect && (
-								<SelectInputUI
+								<SelectInput
 									name="store_owners"
 									options={appLocalizer.store_owners || []}
 									type="multi-select"
@@ -360,7 +360,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 								/>
 							)}
 
-							<ButtonInputUI
+							<ButtonInput
 								buttons={[
 									{
 										text: __(

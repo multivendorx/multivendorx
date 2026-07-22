@@ -6,10 +6,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import {
 	TextInput,
-	SelectInputUI,
+	SelectInput,
 	TextAreaInput,
-	FileInputUI,
-	ButtonInputUI,
+	FileInput,
+	ButtonInput,
 } from '@zyra/inputs';
 import { getApiLink, useModules } from '@zyra/core';
 import {
@@ -302,7 +302,7 @@ const AddProduct = () => {
 					>
 						<FormGroupWrapperComponent>
 							<FormGroupComponent>
-								<SelectInputUI
+								<SelectInput
 									name="type"
 									type="single-select"
 									options={typeOptions}
@@ -456,7 +456,7 @@ const AddProduct = () => {
 								'multivendorx'
 							)}
 						// action={
-						// <ButtonInputUI
+						// <ButtonInput
 						// 	buttons={[
 						// 		{
 						// 			icon: 'plus',
@@ -621,7 +621,7 @@ const AddProduct = () => {
 							),
 						}}
 						footer={
-							<ButtonInputUI
+							<ButtonInput
 								buttons={[
 									{
 										icon: 'close',
@@ -772,7 +772,7 @@ const AddProduct = () => {
 							<FormGroupComponent
 								label={__('Features Image', 'multivendorx')}
 							>
-								<FileInputUI
+								<FileInput
 									imageSrc={featuredImage?.thumbnail || ''}
 									multiple={false}
 									openUploader={__(
@@ -789,7 +789,7 @@ const AddProduct = () => {
 											return;
 										}
 										setFeaturedImage({
-											id: file?.id, // wp.media id not available from current FileInput
+											id: file?.id, // wp.media id not available from current FileInputFieldComponent
 											src: url,
 											thumbnail: url,
 										});
@@ -809,7 +809,7 @@ const AddProduct = () => {
 								{ product }
 							) && (
 									<FormGroupComponent label={__('Product gallery', 'multivendorx')}>
-										<FileInputUI
+										<FileInput
 											imageSrc={galleryImages.map((img) => img.thumbnail)}
 											multiple={true}
 											openUploader="Add Gallery Image"

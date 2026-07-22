@@ -5,12 +5,12 @@ import { getApiLink } from '@zyra/core';
 import { FormGroupWrapperComponent, FormGroupComponent, PopupComponent, LayoutColumnComponent } from '@zyra/components';
 import {
 	TextInput,
-	ButtonInputUI,
+	ButtonInput,
 	TextAreaInput,
 	EmailListInput,
 } from '@zyra/inputs';
 import { TableCard, QueryProps } from '@zyra/table';
-import { BlockBuilderUI, renderBlocksToHTML, htmlToBlocks } from '@zyra/builders';
+import { BlockBuilder, renderBlocksToHTML, htmlToBlocks } from '@zyra/builders';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { salesReport } from '../../../assets/template/emailTemplate/salesReport';
@@ -482,7 +482,7 @@ const EventRules: React.FC = () => {
 				>
 					<>
 						{openChannel === 'system' && (
-							<BlockBuilderUI
+							<BlockBuilder
 								key={formData.id}
 								name="system_message_builder"
 								value={(() => {
@@ -884,7 +884,7 @@ const EventRules: React.FC = () => {
 											);
 										})}
 									</div>
-									<ButtonInputUI
+									<ButtonInput
 										buttons={[
 											{
 												icon: 'edit',

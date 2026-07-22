@@ -9,7 +9,7 @@ import {
 	FormGroupWrapperComponent,
 	NoticeComponent,
 } from '@zyra/components';
-import { TextInput, ButtonInputUI, ToggleInput } from '@zyra/inputs';
+import { TextInput, ButtonInput, ToggleInput } from '@zyra/inputs';
 import { getApiLink, useModules } from '@zyra/core';
 import { TableCard, TableRow } from '@zyra/table';
 import { __ } from '@wordpress/i18n';
@@ -394,7 +394,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 						} - ${selectedZone.zone_name}`,
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',

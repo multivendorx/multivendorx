@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import { PopupComponent, InformationItemComponent } from '@zyra/components';
-import { ButtonInputUI, TextAreaInput } from '@zyra/inputs';
+import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import { TableCard, TableRow, QueryProps } from '@zyra/table';
 
 import { getUrl, toWcIsoDate } from '@/services/commonFunction';
@@ -129,7 +129,7 @@ const PendingCoupons: React.FC<object> = () => {
 			label: __('Action', 'multivendorx'),
 			render: (row) => {
 				return (
-					<ButtonInputUI
+					<ButtonInput
 						buttons={[
 							{
 								icon: 'check',
@@ -253,7 +253,7 @@ const PendingCoupons: React.FC<object> = () => {
 						title: __('Reason', 'multivendorx'),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',

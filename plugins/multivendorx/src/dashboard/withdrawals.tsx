@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 
-import { TextInput, ButtonInputUI } from '@zyra/inputs';
+import { TextInput, ButtonInput } from '@zyra/inputs';
 import {
 	CardComponent,
 	ContainerComponent,
@@ -249,7 +249,7 @@ const Withdrawals: React.FC = () => {
 							</div>
 						)}
 
-						<ButtonInputUI
+						<ButtonInput
 							buttons={{
 								icon: 'eye',
 								text: __(
@@ -430,7 +430,7 @@ const Withdrawals: React.FC = () => {
 									)}
 								</LayoutColumnComponent>
 							)}
-							<ButtonInputUI
+							<ButtonInput
 								buttons={{
 									icon: 'withdraw',
 									text: __(
@@ -461,7 +461,7 @@ const Withdrawals: React.FC = () => {
 							),
 						}}
 						footer={
-							<ButtonInputUI
+							<ButtonInput
 								buttons={[
 									{
 										icon: 'wallet',

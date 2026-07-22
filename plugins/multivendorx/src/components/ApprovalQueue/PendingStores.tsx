@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import { FormGroupWrapperComponent, PopupComponent, InformationItemComponent } from '@zyra/components';
-import { ButtonInputUI, TextAreaInput } from '@zyra/inputs';
+import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import { TableCard, QueryProps } from '@zyra/table';
 
 import { formatLocalDate, getUrl } from '@/services/commonFunction';
@@ -195,7 +195,7 @@ const PendingStores: React.FC<object> = () => {
 						title: __('Reason', 'multivendorx'),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',

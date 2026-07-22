@@ -8,7 +8,7 @@ import {
 	ContainerComponent,
 	LayoutColumnComponent,
 } from '@zyra/components';
-import { TextInput, ButtonInputUI, TextAreaInput } from '@zyra/inputs';
+import { TextInput, ButtonInput, TextAreaInput } from '@zyra/inputs';
 import axios from 'axios';
 
 const ProfileUpdate: React.FC = () => {
@@ -107,7 +107,7 @@ const ProfileUpdate: React.FC = () => {
 								/>
 							</FormGroupComponent>
 
-							<ButtonInputUI
+							<ButtonInput
 								position="right"
 								buttons={[
 									{
@@ -145,7 +145,7 @@ const ProfileUpdate: React.FC = () => {
 								/>
 							</FormGroupComponent>
 
-							<ButtonInputUI
+							<ButtonInput
 								position="right"
 								buttons={[
 									{

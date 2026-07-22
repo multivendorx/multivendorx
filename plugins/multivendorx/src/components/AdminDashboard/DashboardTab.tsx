@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 
-import { ButtonInputUI } from '@zyra/inputs';
+import { ButtonInput } from '@zyra/inputs';
 import {
 	CardComponent,
 	LayoutColumnComponent,
@@ -326,7 +326,7 @@ const DashboardTab: React.FC<object> = () => {
 				<CardComponent
 					title={__('Modules', 'multivendorx')}
 					action={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'eye',

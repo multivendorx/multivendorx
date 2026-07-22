@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import { FormGroupComponent, FormGroupWrapperComponent, PopupComponent } from '@zyra/components';
-import { ButtonInputUI, TextAreaInput } from '@zyra/inputs';
+import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 import { getUrl, toWcIsoDate } from '../../../src/services/commonFunction';
 
@@ -191,7 +191,7 @@ const PendingRefund: React.FC<object> = () => {
 			label: __('Action', 'multivendorx'),
 			render: (row: any) => {
 				return (
-					<ButtonInputUI
+					<ButtonInput
 						buttons={[
 							{
 								icon: 'preview',
@@ -325,7 +325,7 @@ const PendingRefund: React.FC<object> = () => {
 					),
 				}}
 				footer={
-					<ButtonInputUI
+					<ButtonInput
 						buttons={[
 							{
 								icon: 'external-link',

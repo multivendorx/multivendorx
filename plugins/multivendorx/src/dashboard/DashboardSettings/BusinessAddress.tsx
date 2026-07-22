@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 
-import { TextInput, SelectInputUI } from '@zyra/inputs';
+import { TextInput, SelectInput } from '@zyra/inputs';
 import {
 	FormGroupComponent,
 	FormGroupWrapperComponent,
@@ -354,7 +354,7 @@ const BusinessAddress = () => {
 					label={__('Country', 'multivendorx')}
 					htmlFor="country"
 				>
-					<SelectInputUI
+					<SelectInput
 						value={formData.country}
 						options={appLocalizer.country_list || []}
 						onChange={(value) =>
@@ -369,7 +369,7 @@ const BusinessAddress = () => {
 					label={__('State', 'multivendorx')}
 					htmlFor="state"
 				>
-					<SelectInputUI
+					<SelectInput
 						name="state"
 						value={formData.state}
 						options={stateOptions}

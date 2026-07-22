@@ -1,6 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
 import { CardComponent, FormGroupComponent, FormGroupWrapperComponent } from '@zyra/components';
-import { MultiCheckboxInput, SelectInputUI, TextInput } from '@zyra/inputs';
+import { MultiCheckboxInput, SelectInput, TextInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Inventory = ({ product, setProduct, handleChange }) => {
@@ -67,7 +67,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 						cols={6}
 						label={__('Stock Status', 'multivendorx')}
 					>
-						<SelectInputUI
+						<SelectInput
 							name="stock_status"
 							options={stockStatusOptions}
 							value={product.stock_status}
@@ -95,7 +95,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 							cols={6}
 							label={__('Allow backorders?', 'multivendorx')}
 						>
-							<SelectInputUI
+							<SelectInput
 								name="backorders"
 								options={backorderOptions}
 								value={product.backorders}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
 
-import { ButtonInputUI } from '@zyra/inputs';
+import { ButtonInput } from '@zyra/inputs';
 import { CardComponent, NavigatorHeaderComponent } from '@zyra/components';
 
 const Tools: React.FC = () => {
@@ -22,7 +22,7 @@ const Tools: React.FC = () => {
 					'multivendorx'
 				)}
 			>
-				<ButtonInputUI
+				<ButtonInput
 					position="left"
 					buttons={[
 						{

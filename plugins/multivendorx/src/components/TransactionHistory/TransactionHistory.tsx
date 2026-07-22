@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 
-import { SelectInputUI } from '@zyra/inputs';
+import { SelectInput } from '@zyra/inputs';
 import { ComponentStatusComponent, SettingsNavigatorComponent } from '@zyra/components';
 import axios from 'axios';
 import WalletTransaction from './WalletTransaction';
@@ -115,7 +115,7 @@ export const TransactionHistory: React.FC = () => {
 					{__('Switch Store:', 'multivendorx')}
 				</label>
 
-				<SelectInputUI
+				<SelectInput
 					name="store"
 					value={selectedStoreId || ''}
 					options={allStores}

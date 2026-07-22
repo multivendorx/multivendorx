@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { ButtonInputUI } from '@zyra/inputs';
+import { ButtonInput } from '@zyra/inputs';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 
 const PendingDeactivateRequests: React.FC<object> = () => {
@@ -45,7 +45,7 @@ const PendingDeactivateRequests: React.FC<object> = () => {
 			label: __('Action', 'multivendorx'),
 			render: (row: any) => {
 				return (
-					<ButtonInputUI
+					<ButtonInput
 						buttons={[
 							{
 								icon: 'check',

@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 
 
-import { ButtonInputUI, SelectInputUI, TextInput } from '@zyra/inputs';
+import { ButtonInput, SelectInput, TextInput } from '@zyra/inputs';
 import { getApiLink, useModules } from '@zyra/core';
 import {
 	PopupComponent,
@@ -578,7 +578,7 @@ const Orders: React.FC = () => {
 						title: __('Tracking', 'multivendorx'),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',
@@ -604,7 +604,7 @@ const Orders: React.FC = () => {
 							label={__('Shipping Providers', 'multivendorx')}
 							htmlFor="provider"
 						>
-							<SelectInputUI
+							<SelectInput
 								type="single-select"
 								name="provider"
 								value={formData.provider || ''}

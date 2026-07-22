@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import { FormGroupWrapperComponent, FormGroupComponent, PopupComponent } from '@zyra/components';
-import { ButtonInputUI, ToggleInput, TextAreaInput } from '@zyra/inputs';
+import { ButtonInput, ToggleInput, TextAreaInput } from '@zyra/inputs';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
 import { formatLocalDate } from '../../../src/services/commonFunction';
@@ -358,7 +358,7 @@ const StoreReviews: React.FC = () => {
 						),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',

@@ -4,9 +4,9 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
 import {
-	ButtonInputUI,
+	ButtonInput,
 	TextInput,
-	SelectInputUI,
+	SelectInput,
 	TextAreaInput,
 	ToggleInput,
 	InputKeyGenerator,
@@ -295,7 +295,7 @@ const AllCoupon: React.FC = () => {
 						htmlFor="discount_type"
 						notice={validationErrors.discount_type}
 					>
-						<SelectInputUI
+						<SelectInput
 							name="discount_type"
 							value={formData.discount_type}
 							options={discountOptions}
@@ -799,7 +799,7 @@ const AllCoupon: React.FC = () => {
 						),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'contact-form',

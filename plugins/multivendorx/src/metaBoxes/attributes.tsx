@@ -2,9 +2,9 @@ import { addFilter, applyFilters } from '@wordpress/hooks';
 import { CardComponent, FormGroupComponent, FormGroupWrapperComponent } from '@zyra/components';
 import {
 	MultiCheckboxInput,
-	SelectInputUI,
+	SelectInput,
 	TextInput,
-	ButtonInputUI,
+	ButtonInput,
 } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import React, { useEffect, useState } from 'react';
@@ -198,7 +198,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                         {__('Attributes', 'multivendorx')}
                         <div className="add-dropdown-wrapper">
                             {!showAttributeSelect && (
-                                <ButtonInputUI
+                                <ButtonInput
                                     position="right"
                                     buttons={[
                                         {
@@ -213,7 +213,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
 
                             {showAttributeSelect && (
                                 <div className="search-field">
-                                    <SelectInputUI
+                                    <SelectInput
                                         name="attribute"
                                         type="single-select"
                                         size={12}
@@ -227,7 +227,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                             setSelectedAttribute({ label: match.name, value: match.id });
                                         }}
                                     />
-                                    <ButtonInputUI
+                                    <ButtonInput
                                         position="right"
                                         buttons={[
                                             {
@@ -250,7 +250,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                     <div className="variant-wrapper">
                         {variation.isEditing && (
                             <div className="edit-wrapper">
-                                <ButtonInputUI
+                                <ButtonInput
                                     wrapperClass="edit"
                                     buttons={[
                                         {
@@ -327,7 +327,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                             />
                                         </div>
 
-                                        <ButtonInputUI
+                                        <ButtonInput
                                             buttons={{
                                                 icon: 'plus',
                                                 text: __('Add New', 'multivendorx'),
@@ -355,7 +355,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                     </div>
                                 </div>
                                 <div className="right-section">
-                                    <ButtonInputUI
+                                    <ButtonInput
                                         buttons={{
                                             icon: 'edit',
                                             text: __('Edit', 'multivendorx'),

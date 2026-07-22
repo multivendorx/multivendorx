@@ -4,9 +4,9 @@ import { __ } from '@wordpress/i18n';
 
 
 import {
-	ButtonInputUI,
+	ButtonInput,
 	TextInput,
-	SelectInputUI,
+	SelectInput,
 	TextAreaInput,
 } from '@zyra/inputs';
 import { getApiLink, useModules } from '@zyra/core';
@@ -631,7 +631,7 @@ const OrderDetails: React.FC = () => {
 								)}
 								{statusSelect && (
 									<div className="status-edit">
-										<SelectInputUI
+										<SelectInput
 											name="status"
 											type="single-select"
 											options={appLocalizer?.order_statuses || []}
@@ -679,7 +679,7 @@ const OrderDetails: React.FC = () => {
 											'marketplace-refund'
 										) &&
 											(!isRefund ? (
-												<ButtonInputUI
+												<ButtonInput
 													buttons={[
 														{
 															text: __(
@@ -695,7 +695,7 @@ const OrderDetails: React.FC = () => {
 													]}
 												/>
 											) : (
-												<ButtonInputUI
+												<ButtonInput
 													position="left"
 													buttons={[
 														{
@@ -927,7 +927,7 @@ const OrderDetails: React.FC = () => {
 										)}
 										action={
 											<>
-												<ButtonInputUI
+												<ButtonInput
 													buttons={[
 														{
 															icon: 'refund',
@@ -1145,7 +1145,7 @@ const OrderDetails: React.FC = () => {
 												),
 											}}
 											footer={
-												<ButtonInputUI
+												<ButtonInput
 													buttons={[
 														{
 															icon: 'save',
@@ -1485,7 +1485,7 @@ const OrderDetails: React.FC = () => {
 										)}
 										htmlFor="title"
 									>
-										<SelectInputUI
+										<SelectInput
 											type="single-select"
 											name="provider"
 											value={shipmentData.provider || ''}
@@ -1550,7 +1550,7 @@ const OrderDetails: React.FC = () => {
 									</FormGroupComponent>
 								</FormGroupWrapperComponent>
 
-								<ButtonInputUI
+								<ButtonInput
 									position="left"
 									buttons={applyFilters(
 										'multivendorx_shipment_button',

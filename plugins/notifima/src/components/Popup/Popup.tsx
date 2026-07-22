@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ButtonInputUI } from '@zyra/inputs';
+import { ButtonInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import '../Popup/Popup.scss';
 
@@ -112,7 +112,7 @@ const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 						{props.title || __('Confirmation', 'notifima')}
 					</div>
 					<div className="desc">{props.confirmMessage}</div>
-					<ButtonInputUI
+					<ButtonInput
 						position="center"
 						buttons={[
 							{

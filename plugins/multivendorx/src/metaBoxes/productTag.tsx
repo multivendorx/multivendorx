@@ -1,6 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
 import { CardComponent, FormGroupWrapperComponent } from '@zyra/components';
-import { SelectInputUI } from '@zyra/inputs';
+import { SelectInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -21,7 +21,7 @@ const ProductTag = ({ product, setProduct }) => {
 	return (
 		<CardComponent title={__('Product tag', 'multivendorx')}>
 			<FormGroupWrapperComponent>
-				<SelectInputUI
+				<SelectInput
 					type="creatable-multi"
 					options={existingTags.map((tag) => ({
 						value: tag.name,

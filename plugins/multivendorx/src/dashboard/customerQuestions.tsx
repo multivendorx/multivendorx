@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 
-import { TextInput, TextAreaInput, ButtonInputUI } from '@zyra/inputs';
+import { TextInput, TextAreaInput, ButtonInput } from '@zyra/inputs';
 import {
 	FormGroupWrapperComponent,
 	FormGroupComponent,
@@ -278,7 +278,7 @@ const CustomerQuestions: React.FC = () => {
 						),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',

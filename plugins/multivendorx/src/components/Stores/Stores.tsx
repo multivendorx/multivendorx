@@ -5,11 +5,11 @@ import EditStore from './Edit/EditStore';
 import { getApiLink } from '@zyra/core';
 
 import {
-	ButtonInputUI,
+	ButtonInput,
 	TextInput,
 	EmailListInput,
-	FileInputUI,
-	SelectInputUI,
+	FileInput,
+	SelectInput,
 	TextAreaInput,
 } from '@zyra/inputs';
 import {
@@ -260,7 +260,7 @@ const Stores = () => {
 								),
 							}}
 							footer={
-								<ButtonInputUI
+								<ButtonInput
 									buttons={[
 										{
 											icon: 'close',
@@ -307,7 +307,7 @@ const Stores = () => {
 											handleChange('slug', val as string)
 										}
 									/>
-									<ButtonInputUI
+									<ButtonInput
 										buttons={{
 											text: __(
 												'Check Slug',
@@ -364,7 +364,7 @@ const Stores = () => {
 									htmlFor="store_owners"
 									{...getFieldNotice('primary')}
 								>
-									<SelectInputUI
+									<SelectInput
 										name="store_owners"
 										options={
 											appLocalizer?.store_owners || []
@@ -386,7 +386,7 @@ const Stores = () => {
 									label={__('Profile image', 'multivendorx')}
 									htmlFor="store_owners"
 								>
-									<FileInputUI
+									<FileInput
 										name="image"
 										accept={
 											'.jpg,.jpeg,.png,.gif,.pdf,.zip'

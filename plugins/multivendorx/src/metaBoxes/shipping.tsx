@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { addFilter, applyFilters } from '@wordpress/hooks';
 import { CardComponent, FormGroupComponent, FormGroupWrapperComponent, SectionComponent } from '@zyra/components';
-import { TextInput, SelectInputUI, ToggleInput } from '@zyra/inputs';
+import { TextInput, SelectInput, ToggleInput } from '@zyra/inputs';
 import { useModules } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
 
@@ -158,7 +158,7 @@ const ShippingCard = ({
 								)}
 								htmlFor="shipping-classes"
 							>
-								<SelectInputUI
+								<SelectInput
 									name="shipping_class"
 									options={shippingClasses}
 									value={product.shipping_class}

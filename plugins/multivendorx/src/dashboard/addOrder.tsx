@@ -3,9 +3,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { getApiLink, useOutsideClick } from '@zyra/core';
 
 import {
-	ButtonInputUI,
+	ButtonInput,
 	TextInput,
-	SelectInputUI,
+	SelectInput,
 	TextAreaInput,
 	EmailListInput,
 } from '@zyra/inputs';
@@ -486,7 +486,7 @@ const AddOrder = () => {
 								<div className="name">
 									{__('Shipping', 'multivendorx')}
 								</div>
-								<SelectInputUI
+								<SelectInput
 									name="shipping_method"
 									type="single-select"
 									options={availableShippingMethods}
@@ -747,7 +747,7 @@ const AddOrder = () => {
 								label={__('Country / Region', 'multivendorx')}
 								htmlFor={`${type}-country`}
 							>
-								<SelectInputUI
+								<SelectInput
 									name={`${type}_country`}
 									type="single-select"
 									value={address.country}
@@ -778,7 +778,7 @@ const AddOrder = () => {
 								label={__('State / County', 'multivendorx')}
 								htmlFor={`${type}-state`}
 							>
-								<SelectInputUI
+								<SelectInput
 									name={`${type}_state`}
 									type="single-select"
 									value={address.state}
@@ -883,7 +883,7 @@ const AddOrder = () => {
 								</>
 							)}
 						<FormGroupWrapperComponent>
-							<ButtonInputUI
+							<ButtonInput
 								position="left"
 								buttons={[
 									{
@@ -918,7 +918,7 @@ const AddOrder = () => {
 									row
 									label={__('Select Product', 'multivendorx')}
 								>
-									<SelectInputUI
+									<SelectInput
 										name="product_select"
 										type="single-select"
 										options={[
@@ -971,7 +971,7 @@ const AddOrder = () => {
 											showMenu={false}
 										/>
 
-										<ButtonInputUI
+										<ButtonInput
 											buttons={[
 												{
 													text: __(
@@ -1007,7 +1007,7 @@ const AddOrder = () => {
 								label={__('Payment Method', 'multivendorx')}
 								htmlFor="payment-method"
 							>
-								<SelectInputUI
+								<SelectInput
 									name="payment_method"
 									type="single-select"
 									options={paymentOptions}
@@ -1035,7 +1035,7 @@ const AddOrder = () => {
 										)}
 										htmlFor="Select-customer"
 									>
-										<SelectInputUI
+										<SelectInput
 											name="new_owner"
 											type="single-select"
 											options={customerOptions}
@@ -1060,7 +1060,7 @@ const AddOrder = () => {
 									</FormGroupComponent>
 								</FormGroupWrapperComponent>
 
-								<ButtonInputUI
+								<ButtonInput
 									buttons={{
 										icon: 'plus',
 										text: __(
@@ -1211,7 +1211,7 @@ const AddOrder = () => {
 								</FormGroupComponent>
 							</FormGroupWrapperComponent>
 
-							<ButtonInputUI
+							<ButtonInput
 								buttons={{
 									icon: 'plus',
 									text: __('Create', 'multivendorx'),

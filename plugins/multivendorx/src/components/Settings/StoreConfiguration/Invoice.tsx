@@ -14,7 +14,7 @@ import {
 	ToggleInput,
 	ColorPickerInput,
 	ExpandablePanelInput,
-	FileInputUI,
+	FileInput,
 	MultiCheckboxInput,
 	TextAreaInput,
 } from '@zyra/inputs';
@@ -868,7 +868,7 @@ const Invoice: React.FC = () => {
 							label="Company logo"
 							desc={__('Upload your company logo', 'multivendorx')}
 						>
-							<FileInputUI
+							<FileInput
 								imageSrc={formData?.invoice_logo || ''}
 								onChange={(img) => {
 									handleChange('invoice_logo', img);
@@ -879,7 +879,7 @@ const Invoice: React.FC = () => {
 							label="Invoice signature"
 							desc={__('Upload invoice signature', 'multivendorx')}
 						>
-							<FileInputUI
+							<FileInput
 								imageSrc={formData?.invoice_signature|| ''}
 								onChange={(img)=>{
 									handleChange('invoice_signature', img);

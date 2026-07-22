@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
 
-import { ButtonInputUI, ExpandablePanelInput } from '@zyra/inputs';
+import { ButtonInput, ExpandablePanelInput } from '@zyra/inputs';
 import {
 	AnalyticsComponent,
 	CardComponent,
@@ -349,7 +349,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -381,7 +381,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -436,7 +436,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -570,7 +570,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -616,7 +616,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -672,7 +672,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -704,7 +704,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -736,7 +736,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -812,7 +812,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -841,7 +841,7 @@ const Compliance = (React.FC = () => {
 													{/* <span className="admin-badge green">
                                                         {__('Under Review', 'multivendorx')}
                                                     </span> */}
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -870,7 +870,7 @@ const Compliance = (React.FC = () => {
 													{/* <span className="admin-badge green">
                                                         {__('Under Review', 'multivendorx')}
                                                     </span> */}
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',

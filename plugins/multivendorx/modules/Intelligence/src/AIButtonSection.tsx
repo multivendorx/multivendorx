@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { getApiLink, useOutsideClick } from '@zyra/core';
 import { PopupComponent, SkeletonComponent } from '@zyra/components';
-import { ButtonInputUI, TextAreaInput } from '@zyra/inputs';
+import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { addFilter, applyFilters, removeFilter } from '@wordpress/hooks';
 import axios from 'axios';
@@ -321,7 +321,7 @@ const AIButtonSection: React.FC<AIButtonSectionProps> = ({
 			}}
 			footer={
 				hasSuggestions ? (
-					<ButtonInputUI
+					<ButtonInput
 						wrapperClass="append-section"
 						buttons={[
 							{

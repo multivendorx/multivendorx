@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 
-import { ToggleInput, ButtonInputUI, SelectInputUI } from '@zyra/inputs';
+import { ToggleInput, ButtonInput, SelectInput } from '@zyra/inputs';
 import { getApiLink, useOutsideClick, useModules } from '@zyra/core';
 import {
 	FormGroupWrapperComponent,
@@ -1026,7 +1026,7 @@ const EditStore = () => {
 					),
 				}}
 				footer={
-					<ButtonInputUI
+					<ButtonInput
 						buttons={[
 							{
 								icon: 'close',
@@ -1095,7 +1095,7 @@ const EditStore = () => {
 									'multivendorx'
 								)}
 							>
-								<SelectInputUI
+								<SelectInput
 									name="new_owner"
 									value={selectedOwner?.value}
 									options={appLocalizer.store_owners}

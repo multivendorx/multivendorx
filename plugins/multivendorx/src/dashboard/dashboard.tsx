@@ -17,7 +17,7 @@ import '../components/dashboard.scss';
 import '../dashboard/dashboard1.scss';
 
 
-import { ButtonInputUI, CalendarInputUI } from '@zyra/inputs';
+import { ButtonInput, CalendarInput } from '@zyra/inputs';
 import { getApiLink, useModules } from '@zyra/core';
 import {
 	AnalyticsComponent,
@@ -558,7 +558,7 @@ const Dashboard: React.FC = () => {
 					</>
 				}
 				headerCustomContent={
-					<CalendarInputUI
+					<CalendarInput
 						value={dateRange}
 						onChange={(range: DateRange) => {
 							setDateRange({
@@ -706,7 +706,7 @@ const Dashboard: React.FC = () => {
 						</div>
 
 						{lastWithdraws && lastWithdraws.length > 0 && (
-							<ButtonInputUI
+							<ButtonInput
 								buttons={{
 									icon: 'preview',
 									text: __(

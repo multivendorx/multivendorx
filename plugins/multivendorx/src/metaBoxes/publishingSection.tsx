@@ -3,7 +3,7 @@ import { addFilter } from '@wordpress/hooks';
 import { useRef, useState, useEffect } from 'react';
 import { useOutsideClick } from '@zyra/core';
 import { CardComponent, FormGroupComponent, FormGroupWrapperComponent } from '@zyra/components';
-import { SelectInputUI } from '@zyra/inputs';
+import { SelectInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { formatDate } from '@/services/commonFunction';
 
@@ -82,7 +82,7 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 								</div>
 							)}
 							{isEditingVisibility && (
-								<SelectInputUI
+								<SelectInput
 									name="catalog_visibility"
 									size="14rem"
 									options={[
@@ -150,7 +150,7 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 								</div>
 							)}
 							{isEditingStatus && (
-								<SelectInputUI
+								<SelectInput
 									name="status"
 									wrapperClass="fit-content"
 									options={[
