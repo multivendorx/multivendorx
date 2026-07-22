@@ -1,20 +1,19 @@
 /* global appLocalizer */
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getApiLink } from '@zyra/core';
 import {
-	getApiLink,
-	Container,
-	Column,
-	Card,
-	FormGroupWrapper,
-	FormGroup,
-	Skeleton,
-	ButtonInputUI,
-	TextAreaUI,
+	ContainerComponent,
+	ColumnComponent,
+	CardComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	SkeletonComponent,
 	NoticeManager,
-	ComponentStatusView,
-	Notice,
-} from 'zyra';
+	ModuleGuardComponent,
+	NoticeComponent,
+} from '@zyra/components';
+import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
@@ -215,15 +214,15 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 	};
 	
 	return (
-		<Container>
+		<ContainerComponent>
 			{(formData.core_data?.status === 'pending' ||
 			formData.core_data?.status === 'rejected' ||
 			formData.core_data?.status === 'permanently_rejected') && (
-				<Column grid={8}>
+				<ColumnComponent grid={8}>
 					{(formData.core_data?.status == 'pending' ||
 						formData.core_data?.status == 'rejected') && (
-						<Card title={__('Store details', 'multivendorx')}>
-							<FormGroupWrapper>
+						<CardComponent title={__('Store details', 'multivendorx')}>
+							<FormGroupWrapperComponent>
 								{formData.core_data &&
 								Object.keys(formData.core_data).length > 0 ? (
 									Object.entries(formData.core_data).map(
@@ -234,7 +233,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 													: value;
 
 											return (
-												<FormGroup
+												<FormGroupComponent
 													row
 													key={label}
 													label={label}
@@ -244,48 +243,48 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 															'[Not Provided]',
 															'multivendorx'
 														)}
-												</FormGroup>
+												</FormGroupComponent>
 											);
 										}
 									)
 								) : (
-									<FormGroup row label="">
+									<FormGroupComponent row label="">
 										{__(
 											'No store details available.',
 											'multivendorx'
 										)}
-									</FormGroup>
+									</FormGroupComponent>
 								)}
-							</FormGroupWrapper>
-						</Card>
+							</FormGroupWrapperComponent>
+						</CardComponent>
 					)}
 
 					{(formData.core_data?.status == 'pending' ||
 						formData.core_data?.status == 'rejected' ||
 						formData.core_data?.status == 'permanently_rejected') && (
 						<>
-							<Card title="Submitted by">
-								<FormGroupWrapper>
-									<FormGroup row label="Display Name">
+							<CardComponent title="Submitted by">
+								<FormGroupWrapperComponent>
+									<FormGroupComponent row label="Display Name">
 										{formData.primary_owner_info?.data
 											?.display_name ||
 											__('[Not Provided]', 'multivendorx')}
-									</FormGroup>
+									</FormGroupComponent>
 
-									<FormGroup
+									<FormGroupComponent
 										row
 										label={__('Email', 'multivendorx')}
 									>
 										{formData.primary_owner_info?.data
 											?.user_email ?? (
-											<Skeleton width={9.375} />
+											<SkeletonComponent width={9.375} />
 										)}
-									</FormGroup>
-								</FormGroupWrapper>
-							</Card>
+									</FormGroupComponent>
+								</FormGroupWrapperComponent>
+							</CardComponent>
 
 							{previousNotes.length > 0 && (
-								<Card title="Previous Notes">
+								<CardComponent title="Previous Notes">
 									<div className="form-group-wrapper">
 										<div className="form-group">
 											<ul>
@@ -300,14 +299,14 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 											</ul>
 										</div>
 									</div>
-								</Card>
+								</CardComponent>
 							)}
 							{formData.core_data?.status !=
 								'permanently_rejected' && (
-								<Card title="Note">
-									<FormGroupWrapper>
-										<FormGroup>
-											<TextAreaUI
+								<CardComponent title="Note">
+									<FormGroupWrapperComponent>
+										<FormGroupComponent>
+											<TextAreaInput
 												name="store_application_note"
 												placeholder={__(
 													'Optional note for approval or rejection',
@@ -327,8 +326,8 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 													} as React.ChangeEvent<HTMLTextAreaElement>)
 												}
 											/>
-										</FormGroup>
-										<FormGroup>
+										</FormGroupComponent>
+										<FormGroupComponent>
 											<label className="checkbox-label">
 												<input
 													type="checkbox"
@@ -344,8 +343,8 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 													'multivendorx'
 												)}
 											</label>
-										</FormGroup>
-										<ButtonInputUI
+										</FormGroupComponent>
+										<ButtonInput
 											buttons={[
 												{
 													text: __(
@@ -367,15 +366,15 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 												},
 											]}
 										/>
-									</FormGroupWrapper>
-								</Card>
+									</FormGroupWrapperComponent>
+								</CardComponent>
 							)}
 						</>
 					)}
-				</Column>
+				</ColumnComponent>
 			)}
-			<Column grid={4}>
-				<Card
+			<ColumnComponent grid={4}>
+				<CardComponent
 					title={__('Registration Details', 'multivendorx')}
 					action={
 						formData.registration_data &&
@@ -397,7 +396,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 						)
 					}
 				>
-					<FormGroupWrapper>
+					<FormGroupWrapperComponent>
 						{formData.registration_data &&
 						Object.keys(formData.registration_data).length > 0 ? (
 							Object.entries(formData.registration_data).map(
@@ -407,7 +406,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 										typeof value === 'object' &&
 										value.attachment;
 									return (
-										<FormGroup
+										<FormGroupComponent
 											row
 											key={label}
 											label={label.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
@@ -434,12 +433,12 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 													'multivendorx'
 												)
 											)}
-										</FormGroup>
+										</FormGroupComponent>
 									);
 								}
 							)
 						) : (
-							<Notice
+							<NoticeComponent
 								type="info"
 								displayPosition="inline-notice"
 								message={__(
@@ -448,11 +447,11 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 								)}
 							/>
 						)}
-					</FormGroupWrapper>
-				</Card> 
-			</Column>
-			<Column grid={4}>
-				<Card title={__('Activity Log', 'multivendorx')}>          
+					</FormGroupWrapperComponent>
+				</CardComponent> 
+			</ColumnComponent>
+			<ColumnComponent grid={4}>
+				<CardComponent title={__('Activity Log', 'multivendorx')}>          
           			<div className="activity-log">
 						{Array.isArray(activities) && activities.length > 0 ? (
 							activities.slice(0, 5).map((a, i) => (
@@ -463,7 +462,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 								</div>
 							))
 						) : (
-							<ComponentStatusView
+							<ModuleGuardComponent
 								title={__(
 									'Activity will show up here as your store grows!',
 									'multivendorx'
@@ -471,9 +470,9 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 							/>
 						)}
 					</div>
-				</Card> 
-			</Column>
-		</Container>
+				</CardComponent> 
+			</ColumnComponent>
+		</ContainerComponent>
 	);
 };
 

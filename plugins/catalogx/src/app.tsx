@@ -6,7 +6,9 @@ import Modules from './components/Modules/Modules';
 import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
 import WholesaleUser from './components/WholesaleUser/wholesaleUser.tsx';
 import Rules from './components/Rules/Rules';
-import { AdminHeader, GuidedTourProvider, Notice, initializeModules } from 'zyra';
+
+import { NoticeComponent, TourComponent, HeaderComponent } from '@zyra/components';
+import { initializeModules } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
 import Brand from './assets/images/catalogx-logo.png';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
@@ -186,7 +188,7 @@ const App = () => {
 	return (
 		<>
 			{!isBannerDismissed && (
-				<Notice
+				<NoticeComponent
 					uniqueKey="banner"
 					type="banner"
 					dismissStorageKey={BANNER_DISMISS_STORAGE_KEY}
@@ -199,7 +201,7 @@ const App = () => {
 					}}
 				/>
 			)}
-			<AdminHeader
+			<HeaderComponent
 				brandImg={Brand}
 				results={results}
 				search={{
@@ -225,7 +227,7 @@ const App = () => {
 				pro={appLocalizer.pro_data.version}
 				utilityList={utilityList}
 			/>
-			<GuidedTourProvider
+			<TourComponent
 				appLocalizer={appLocalizer}
 				steps={getTourSteps(appLocalizer)}
 			/>

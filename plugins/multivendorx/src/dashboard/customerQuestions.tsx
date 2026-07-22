@@ -2,21 +2,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
+
+import { TextInput, TextAreaInput, ButtonInput } from '@zyra/inputs';
 import {
-	getApiLink,
-	FormGroupWrapper,
-	FormGroup,
-	TableCard,
-	BasicInputUI,
-	TextAreaUI,
-	PopupUI,
-	ButtonInputUI,
-	NavigatorHeader,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-	InfoItem,
-} from 'zyra';
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	PopupComponent,
+	InformationItemComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import { dashNavigate, formatLocalDate } from '@/services/commonFunction';
 import { useNavigate } from 'react-router-dom';
 
@@ -105,7 +101,7 @@ const CustomerQuestions: React.FC = () => {
 		product_name: {
 			label: __('Product', 'multivendorx'),
 			render: (row: any) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.product_name}
 					onClick={() =>
 						dashNavigate(navigate, [
@@ -248,7 +244,7 @@ const CustomerQuestions: React.FC = () => {
 	};
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Customer Questions', 'multivendorx')}
 				headerDescription={__(
 					'Track and respond to customer product questions.',
@@ -268,7 +264,7 @@ const CustomerQuestions: React.FC = () => {
 				format={appLocalizer.date_format}
 			/>
 			{selectedQueries && (
-				<PopupUI
+				<PopupComponent
 					open={selectedQueries}
 					onClose={() => setSelectedQueries(null)}
 					width={30}
@@ -282,7 +278,7 @@ const CustomerQuestions: React.FC = () => {
 						),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',
@@ -302,30 +298,30 @@ const CustomerQuestions: React.FC = () => {
 						/>
 					}
 				>
-					<FormGroupWrapper>
-						<FormGroup
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							label={__('Question', 'multivendorx')}
 							htmlFor="question"
 						>
-							<BasicInputUI
+							<TextInput
 								name="question"
 								value={queries}
 								onChange={(value) => setQueries(value)}
 							/>
-						</FormGroup>
+						</FormGroupComponent>
 
-						<FormGroup
+						<FormGroupComponent
 							label={__('Answer', 'multivendorx')}
 							htmlFor="ans"
 						>
-							<TextAreaUI
+							<TextAreaInput
 								name="answer"
 								value={answer}
 								onChange={(value) => setAnswer(value)}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</PopupUI>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</PopupComponent>
 			)}
 		</>
 	);

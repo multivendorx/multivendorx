@@ -1,27 +1,29 @@
 /* global appLocalizer */
 import React, { useEffect, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
+
+
 import {
-	ButtonInputUI,
-	BasicInputUI,
-	Card,
-	Column,
-	Container,
-	FormGroup,
-	FormGroupWrapper,
-	InfoItem,
-	Notice,
-	SelectInputUI,
-	TextAreaUI,
-	getApiLink,
-	useModules,
-	NavigatorHeader,
-	TableCard,
-	TableRow,
-	ItemListUI,
-	PopupUI,
-	ComponentStatusView,
-} from 'zyra';
+	ButtonInput,
+	TextInput,
+	SelectInput,
+	TextAreaInput,
+} from '@zyra/inputs';
+import { getApiLink, useModules } from '@zyra/core';
+import {
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	InformationItemComponent,
+	NoticeComponent,
+	ListComponent,
+	PopupComponent,
+	ModuleGuardComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
 import { formatCurrency, formatDate } from '../services/commonFunction';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -469,7 +471,7 @@ const OrderDetails: React.FC = () => {
 						<div>
 							<div className="price">x {row.quantity}</div>
 							{isRefund && (
-								<BasicInputUI
+								<TextInput
 									name="refund-amount"
 									type="number"
 									value={refundItems[row.id]?.quantity ?? 0}
@@ -503,7 +505,7 @@ const OrderDetails: React.FC = () => {
 								${parseFloat(row.subtotal).toFixed(2)}
 							</div>
 							{isRefund && (
-								<BasicInputUI
+								<TextInput
 									name="refund-amount"
 									type="number"
 									value={refundItems[row.id]?.total ?? 0}
@@ -520,7 +522,7 @@ const OrderDetails: React.FC = () => {
 							{!isRefund ? (
 								row.total
 							) : (
-								<BasicInputUI
+								<TextInput
 									name="refund"
 									type="number"
 									value={refundItems[row.id]?.total ?? 0}
@@ -551,7 +553,7 @@ const OrderDetails: React.FC = () => {
 								${parseFloat(row.subtotal_tax).toFixed(2)}
 							</div>
 							{isRefund && (
-								<BasicInputUI
+								<TextInput
 									name="refund-amount"
 									type="number"
 									value={refundItems[row.id]?.tax ?? 0}
@@ -571,7 +573,7 @@ const OrderDetails: React.FC = () => {
 							{!isRefund ? (
 								row.total_tax
 							) : (
-								<BasicInputUI
+								<TextInput
 									name="refund"
 									type="number"
 									value={refundItems[row.id]?.tax ?? 0}
@@ -595,7 +597,7 @@ const OrderDetails: React.FC = () => {
 	return (
 		<>
 			{refundError && (
-				<Notice
+				<NoticeComponent
 					message={refundError}
 					type="error"
 					displayPosition="float"
@@ -604,12 +606,12 @@ const OrderDetails: React.FC = () => {
 			)}
 
 			{!appLocalizer.edit_order_capability ? (
-				<ComponentStatusView
+				<ModuleGuardComponent
 					title={__('No access to view the order', 'multivendorx')}
 				/>
 			) : (
 				<>
-					<NavigatorHeader
+					<NavigatorHeaderComponent
 						headerTitle={
 							<div className="order-view-title">
 								{__('Order #', 'multivendorx')}{' '}
@@ -629,7 +631,7 @@ const OrderDetails: React.FC = () => {
 								)}
 								{statusSelect && (
 									<div className="status-edit">
-										<SelectInputUI
+										<SelectInput
 											name="status"
 											type="single-select"
 											options={appLocalizer?.order_statuses || []}
@@ -655,9 +657,9 @@ const OrderDetails: React.FC = () => {
 						]}
 					/>
 
-					<Container>
-						<Column grid={8}>
-							<Card>
+					<ContainerComponent>
+						<ColumnComponent grid={8}>
+							<CardComponent>
 								{tableRows.length > 0 ? (
 									<TableCard
 										headers={tableHeaders}
@@ -677,7 +679,7 @@ const OrderDetails: React.FC = () => {
 											'marketplace-refund'
 										) &&
 											(!isRefund ? (
-												<ButtonInputUI
+												<ButtonInput
 													buttons={[
 														{
 															text: __(
@@ -693,7 +695,7 @@ const OrderDetails: React.FC = () => {
 													]}
 												/>
 											) : (
-												<ButtonInputUI
+												<ButtonInput
 													position="left"
 													buttons={[
 														{
@@ -790,7 +792,7 @@ const OrderDetails: React.FC = () => {
 															)}
 														</td>
 														<td>
-															<BasicInputUI
+															<TextInput
 																name="refund-amount"
 																type="number"
 																value={
@@ -819,7 +821,7 @@ const OrderDetails: React.FC = () => {
 															)}
 														</td>
 														<td>
-															<TextAreaUI
+															<TextAreaInput
 																value={
 																	refundDetails.reason
 																}
@@ -915,17 +917,17 @@ const OrderDetails: React.FC = () => {
 										<></>
 									)}
 								</div>
-							</Card>
+							</CardComponent>
 							{orderData &&
 								orderData?.status === 'refund-requested' && (
-									<Card
+									<CardComponent
 										title={__(
 											'Refund Request - Action Required',
 											'multivendorx'
 										)}
 										action={
 											<>
-												<ButtonInputUI
+												<ButtonInput
 													buttons={[
 														{
 															icon: 'refund',
@@ -1081,7 +1083,7 @@ const OrderDetails: React.FC = () => {
 														</div>
 													</div>
 												)}
-											<PopupUI
+											<PopupComponent
 												position="lightbox"
 												open={!!previewUrl}
 												onClose={() => setPreviewUrl(null)}
@@ -1094,7 +1096,7 @@ const OrderDetails: React.FC = () => {
 														backgroundImage: `url(${previewUrl})`,
 													}}
 												/>
-											</PopupUI>
+											</PopupComponent>
 
 											{/* Customer Reason */}
 											<div className="reason additional">
@@ -1126,7 +1128,7 @@ const OrderDetails: React.FC = () => {
 												</div>
 											</div>
 										</div>
-										<PopupUI
+										<PopupComponent
 											open={popupOpen}
 											onClose={() => setPopupOpen(false)}
 											width={40}
@@ -1143,7 +1145,7 @@ const OrderDetails: React.FC = () => {
 												),
 											}}
 											footer={
-												<ButtonInputUI
+												<ButtonInput
 													buttons={[
 														{
 															icon: 'save',
@@ -1160,15 +1162,15 @@ const OrderDetails: React.FC = () => {
 												/>
 											}
 										>
-											<FormGroupWrapper>
-												<FormGroup
+											<FormGroupWrapperComponent>
+												<FormGroupComponent
 													label={__(
 														'Reject Message',
 														'multivendorx'
 													)}
 													htmlFor="content"
 												>
-													<TextAreaUI
+													<TextAreaInput
 														value={rejectNote}
 														placeholder={__(
 															'Reject Note',
@@ -1178,25 +1180,25 @@ const OrderDetails: React.FC = () => {
 															setRejectNote(value)
 														}
 													/>
-												</FormGroup>
-											</FormGroupWrapper>
-										</PopupUI>
-									</Card>
+												</FormGroupComponent>
+											</FormGroupWrapperComponent>
+										</PopupComponent>
+									</CardComponent>
 								)}
-						</Column>
+						</ColumnComponent>
 
-						<Column grid={4}>
+						<ColumnComponent grid={4}>
 							{modules.includes('privacy') &&
 								Array.isArray(customer_information_access) &&
 								customer_information_access.length > 0 && (
 									<>
-										<Card
+										<CardComponent
 											title={__(
 												'Customer details',
 												'multivendorx'
 											)}
 										>
-											<InfoItem
+											<InformationItemComponent
 												title={
 													modules.includes(
 														'privacy'
@@ -1286,16 +1288,16 @@ const OrderDetails: React.FC = () => {
 														: []),
 												]}
 											/>
-										</Card>
+										</CardComponent>
 
-										<Card
+										<CardComponent
 											title={__(
 												'Billing address',
 												'multivendorx'
 											)}
 										>
-											<FormGroupWrapper>
-												<FormGroup
+											<FormGroupWrapperComponent>
+												<FormGroupComponent
 													row
 													label={__(
 														'Address',
@@ -1421,8 +1423,8 @@ const OrderDetails: React.FC = () => {
 															</div>
 														)}
 													</div>
-												</FormGroup>
-												<FormGroup
+												</FormGroupComponent>
+												<FormGroupComponent
 													row
 													label={__(
 														'Payment method',
@@ -1436,9 +1438,9 @@ const OrderDetails: React.FC = () => {
 																'multivendorx'
 															)}
 													</div>
-												</FormGroup>
-											</FormGroupWrapper>
-										</Card>
+												</FormGroupComponent>
+											</FormGroupWrapperComponent>
+										</CardComponent>
 									</>
 								)}
 							{modules.includes('privacy') &&
@@ -1446,7 +1448,7 @@ const OrderDetails: React.FC = () => {
 								customer_information_access.includes(
 									'shipping_address'
 								) && (
-									<Card
+									<CardComponent
 										title={__(
 											'Shipping address',
 											'multivendorx'
@@ -1468,14 +1470,14 @@ const OrderDetails: React.FC = () => {
 										</div>
 
 										<div>{orderData?.shipping.country}</div>
-									</Card>
+									</CardComponent>
 								)}
 
-							<Card
+							<CardComponent
 								title={__('Shipping Tracking', 'multivendorx')}
 							>
-								<FormGroupWrapper>
-									<FormGroup
+								<FormGroupWrapperComponent>
+									<FormGroupComponent
 										cols={6}
 										label={__(
 											'Shipping Providers',
@@ -1483,7 +1485,7 @@ const OrderDetails: React.FC = () => {
 										)}
 										htmlFor="title"
 									>
-										<SelectInputUI
+										<SelectInput
 											type="single-select"
 											name="provider"
 											value={shipmentData.provider || ''}
@@ -1495,13 +1497,13 @@ const OrderDetails: React.FC = () => {
 												}))
 											}
 										/>
-									</FormGroup>
-									<FormGroup
+									</FormGroupComponent>
+									<FormGroupComponent
 										cols={6}
 										label={__('Date', 'multivendorx')}
 										htmlFor="title"
 									>
-										<BasicInputUI
+										<TextInput
 											type="date"
 											value={shipmentData.tracking_date}
 											onChange={(value: any) =>
@@ -1511,15 +1513,15 @@ const OrderDetails: React.FC = () => {
 												}))
 											}
 										/>
-									</FormGroup>
-									<FormGroup
+									</FormGroupComponent>
+									<FormGroupComponent
 										label={__(
 											'Enter Tracking Url ',
 											'multivendorx'
 										)}
 										htmlFor="tracking-number"
 									>
-										<BasicInputUI
+										<TextInput
 											value={shipmentData.tracking_url}
 											onChange={(value) =>
 												setShipmentData((prev) => ({
@@ -1528,15 +1530,15 @@ const OrderDetails: React.FC = () => {
 												}))
 											}
 										/>
-									</FormGroup>
-									<FormGroup
+									</FormGroupComponent>
+									<FormGroupComponent
 										label={__(
 											'Enter Tracking ID',
 											'multivendorx'
 										)}
 										htmlFor="tracking-number"
 									>
-										<BasicInputUI
+										<TextInput
 											value={shipmentData.tracking_id}
 											onChange={(value) =>
 												setShipmentData((prev) => ({
@@ -1545,10 +1547,10 @@ const OrderDetails: React.FC = () => {
 												}))
 											}
 										/>
-									</FormGroup>
-								</FormGroupWrapper>
+									</FormGroupComponent>
+								</FormGroupWrapperComponent>
 
-								<ButtonInputUI
+								<ButtonInput
 									position="left"
 									buttons={applyFilters(
 										'multivendorx_shipment_button',
@@ -1575,14 +1577,14 @@ const OrderDetails: React.FC = () => {
 										}
 									)}
 								/>
-							</Card>
+							</CardComponent>
 
 							{modules.includes('privacy') &&
 								Array.isArray(customer_information_access) &&
 								customer_information_access.includes(
 									'order_notes'
 								) && (
-									<Card
+									<CardComponent
 										title={__(
 											'Order notes',
 											'multivendorx'
@@ -1590,7 +1592,7 @@ const OrderDetails: React.FC = () => {
 									>
 										{orderData?.order_notes &&
 											orderData.order_notes.length > 0 ? (
-											<ItemListUI
+											<ListComponent
 												className="notification-wrapper"
 												items={
 													orderData?.order_notes
@@ -1625,17 +1627,17 @@ const OrderDetails: React.FC = () => {
 												}
 											/>
 										) : (
-											<ComponentStatusView
+											<ModuleGuardComponent
 												title={__(
 													'No order notes found.',
 													'multivendorx'
 												)}
 											/>
 										)}
-									</Card>
+									</CardComponent>
 								)}
-						</Column>
-					</Container>
+						</ColumnComponent>
+					</ContainerComponent>
 				</>
 			)}
 		</>

@@ -16,6 +16,7 @@
     },
     "main": "index.js",
     "mainPluginFile": "moowoodle.php",
+    "packageManager": "pnpm@10.34.1",
     "engines": {
         "node": "^22.22.3"
     },
@@ -95,21 +96,19 @@
         }
     },
     "dependencies": {
-        "@emotion/react": "^11.14.0",
-        "@emotion/styled": "^11.14.1",
-        "@mui/material": "^9.0.1",
-        "@tanstack/react-table": "^8.21.3",
-        "@tinymce/tinymce-react": "^6.3.0",
         "@wordpress/data": "wp-6.6",
         "@wordpress/element": "wp-6.6",
         "@wordpress/hooks": "^4.46.0",
         "@wordpress/i18n": "wp-6.6",
         "@wordpress/react-i18n": "wp-6.6",
         "axios": "^1.16.1",
+        "body-scroll-lock": "4.0.0-beta.0",
         "react": "19.2.6",
         "react-dom": "19.2.6",
         "react-router-dom": "^7.15.1",
-        "react-select": "^5.10.2",
-        "zyra": "workspace:*"
+        "@multivendorx/zyra": "^1.0.10"
+    },
+    "devDependencies": {
+        "wireit": "^0.14.12"
     }
 }

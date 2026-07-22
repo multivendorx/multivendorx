@@ -1,6 +1,6 @@
 /* global appLocalizer */
 import { __ } from '@wordpress/i18n';
-import { CountryCodes } from 'zyra';
+import { CountryCodes } from '@zyra/core';
 
 const settings =
 	appLocalizer.admin_settings['store-permissions']

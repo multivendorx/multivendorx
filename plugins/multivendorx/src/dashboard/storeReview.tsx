@@ -2,19 +2,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
+
+import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import {
-	getApiLink,
-	FormGroupWrapper,
-	FormGroup,
-	ButtonInputUI,
-	PopupUI,
-	TextAreaUI,
-	TableCard,
-	NavigatorHeader,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-} from 'zyra';
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 
 import { formatLocalDate } from '@/services/commonFunction';
 
@@ -245,7 +242,7 @@ const StoreReview: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Store Review', 'multivendorx')}
 				headerDescription={__(
 					'See all customer reviews and ratings submitted for your store in one centralized list.',
@@ -266,7 +263,7 @@ const StoreReview: React.FC = () => {
 				format={appLocalizer.date_format}
 			/>
 			{selectedReview && (
-				<PopupUI
+				<PopupComponent
 					open={!!selectedReview}
 					onClose={() => setSelectedReview(null)}
 					width={31.25}
@@ -280,7 +277,7 @@ const StoreReview: React.FC = () => {
 						),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',
@@ -359,25 +356,25 @@ const StoreReview: React.FC = () => {
 							</div>
 						</div>
 
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__(
 									'Respond to customer',
 									'multivendorx'
 								)}
 								htmlFor="reply"
 							>
-								<TextAreaUI
+								<TextAreaInput
 									name="reply"
 									inputClass="input-text"
 									value={replyText}
 									onChange={(value) => setReplyText(value)}
 									usePlainText={true}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
 					</>
-				</PopupUI>
+				</PopupComponent>
 			)}
 		</>
 	);

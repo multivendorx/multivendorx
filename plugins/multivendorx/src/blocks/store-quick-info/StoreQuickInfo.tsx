@@ -1,7 +1,7 @@
 /* global StoreInfo */
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { getApiLink } from 'zyra';
+import { getApiLink } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
 
 const StoreQuickInfo: React.FC<object> = () => {

@@ -1,15 +1,8 @@
 /* global appLocalizer */
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import {
-	AdminHeader,
-	FormGroup,
-	FormGroupWrapper,
-	PopupUI,
-	GuidedTourProvider,
-	Notice,
-	SequentialTaskExecutorUI,
-} from 'zyra';
+import { FormGroupComponent, FormGroupWrapperComponent, PopupComponent, NoticeComponent, TourComponent, HeaderComponent } from '@zyra/components';
+import { TaskExecutorInput } from '@zyra/inputs';
 
 import Brand from './assets/images/multivendorx-logo.png';
 import { searchIndex, SearchItem } from './searchIndex';
@@ -344,7 +337,7 @@ const App = () => {
 
 	return (
 		<>
-			<AdminHeader
+			<HeaderComponent
 				brandImg={Brand}
 				results={results}
 				search={{
@@ -372,7 +365,7 @@ const App = () => {
 				utilityListWithTab={utilityListWithTab}
 			/>
 
-			<PopupUI
+			<PopupComponent
 				open={openFeaturePopup}
 				onClose={handleCloseFeaturePopup}
 				width={31.25}
@@ -386,10 +379,10 @@ const App = () => {
 					),
 				}}
 			>
-				<FormGroupWrapper>
-					<FormGroup
+				<FormGroupWrapperComponent>
+					<FormGroupComponent
 						label={__('Import Dummy Data', 'multivendorx')}
-					></FormGroup>
+					></FormGroupComponent>
 					<div className="desc">
 						{__(
 							'Get a hands-on feel of your marketplace in minutes. Import demo stores, store owners, products, and commission data to see how everything works together.',
@@ -401,7 +394,7 @@ const App = () => {
 							'multivendorx'
 						)}
 					</div>
-					<SequentialTaskExecutorUI
+					<TaskExecutorInput
 						buttonText={__('Import Dummy Data', 'multivendorx')}
 						apilink="dummy-data"
 						interval={1000}
@@ -529,15 +522,15 @@ const App = () => {
 							</ul>
 						</div>
 					)}
-				</FormGroupWrapper>
-			</PopupUI>
+				</FormGroupWrapperComponent>
+			</PopupComponent>
 
-			<GuidedTourProvider
+			<TourComponent
 				appLocalizer={appLocalizer}
 				steps={getTourSteps(appLocalizer)}
 			/>
 			{!isBannerDismissed && (
-				<Notice
+				<NoticeComponent
 					uniqueKey="banner"
 					type="banner"
 					validity="lifetime"
@@ -552,7 +545,7 @@ const App = () => {
 
 			{activeModal === 'migrate' && (
 				<>
-					<PopupUI
+					<PopupComponent
 						open={activeModal}
 						onClose={() => setActiveModal(null)}
 						width={31.25}
@@ -566,15 +559,15 @@ const App = () => {
 							),
 						}}
 					>
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__('Migration', 'multivendorx')}
-							></FormGroup>
+							></FormGroupComponent>
 							<div className="desc">
 								{appLocalizer.multivendor_plugin ||
 									'No multivendor plugin active currently'}
 							</div>
-							<SequentialTaskExecutorUI
+							<TaskExecutorInput
 								buttonText={__('Import', 'multivendorx')}
 								apilink="migration"
 								interval={1000}
@@ -620,8 +613,8 @@ const App = () => {
 									},
 								]}
 							/>
-						</FormGroupWrapper>
-					</PopupUI>
+						</FormGroupWrapperComponent>
+					</PopupComponent>
 				</>
 			)}
 

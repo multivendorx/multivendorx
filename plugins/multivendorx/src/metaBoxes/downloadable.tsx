@@ -1,5 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
-import { BasicInputUI, DynamicRowSetting, FormGroup } from 'zyra';
+import { FormGroupComponent } from '@zyra/components';
+import { TextInput, DynamicRowInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 
 const Downloadable = ({ product, setProduct, handleChange }) => {
@@ -64,8 +65,8 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 
 	return (
 		<>
-			<FormGroup>
-				<DynamicRowSetting
+			<FormGroupComponent>
+				<DynamicRowInput
 					keyName="downloads"
 					template={downloadTemplate}
 					value={product.downloads}
@@ -85,33 +86,33 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 						}));
 					}}
 				/>
-			</FormGroup>
+			</FormGroupComponent>
 
-			<FormGroup
+			<FormGroupComponent
 				cols={6}
 				label={__('Download limit', 'multivendorx')}
 				htmlFor="download_limit"
 			>
-				<BasicInputUI
+				<TextInput
 					name="download_limit"
 					type="number"
 					value={product.download_limit}
 					onChange={(value) => handleChange('download_limit', value)}
 				/>
-			</FormGroup>
+			</FormGroupComponent>
 
-			<FormGroup
+			<FormGroupComponent
 				cols={6}
 				label={__('Download Expiry', 'multivendorx')}
 				htmlFor="download_expiry"
 			>
-				<BasicInputUI
+				<TextInput
 					name="download_expiry"
 					type="number"
 					value={product.download_expiry}
 					onChange={(value) => handleChange('download_expiry', value)}
 				/>
-			</FormGroup>
+			</FormGroupComponent>
 		</>
 	);
 };

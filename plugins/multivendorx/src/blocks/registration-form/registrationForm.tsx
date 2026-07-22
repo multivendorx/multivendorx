@@ -1,7 +1,9 @@
 // RegistrationForm.tsx
 /* global registrationForm, */
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { FormViewer, getApiLink, ChoiceToggle } from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { ToggleInputFieldComponent } from '@zyra/inputs';
+import { FormViewer } from '@zyra/builders';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -242,7 +244,7 @@ const RegistrationForm = () => {
 				{stores.length > 0 && (
 					<>
 						<div className="store-selector">
-							<ChoiceToggle
+							<ToggleInputFieldComponent
 								options={stores}
 								value={selectedStore?.value || ''}
 								onChange={(val) => handleStoreChange(val)}
@@ -352,7 +354,7 @@ const RegistrationForm = () => {
 						<div className="multivendorxstore-selector-section">
 							<h3>{__('Select Your Store', 'multivendorx')}</h3>
 							<div className="store-selector">
-								<ChoiceToggle
+								<ToggleInputFieldComponent
 									options={stores}
 									value={selectedStore?.value || ''}
 									onChange={(val) => handleStoreChange(val)}

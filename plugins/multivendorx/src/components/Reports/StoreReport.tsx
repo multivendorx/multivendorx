@@ -1,17 +1,9 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import {
-	Analytics,
-	Card,
-	Column,
-	getApiLink,
-	TableCard,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-	InfoItem,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { AnalyticsComponent, CardComponent, ColumnComponent, InformationItemComponent } from '@zyra/components';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	Cell,
 	Legend,
@@ -204,7 +196,7 @@ const StoreReport: React.FC = () => {
 			label: __('Store', 'multivendorx'),
 			width: 15,
 			render: (row: any) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.store_name}
 					titleLink={getUrl(row.id, 'store')}
 					avatar={{
@@ -226,7 +218,7 @@ const StoreReport: React.FC = () => {
 			width: 15,
 			render: (row) => (
 				<>
-					<InfoItem
+					<InformationItemComponent
 						title={row.primary_owner?.data?.display_name}
 						titleLink={getUrl(row.primary_owner.data.ID, 'user')}
 						avatar={{
@@ -287,8 +279,8 @@ const StoreReport: React.FC = () => {
 
 	return (
 		<>
-			<Column row>
-				<Analytics
+			<ColumnComponent row>
+				<AnalyticsComponent
 					cols={2}
 					data={overviewData.map((item) => ({
 						icon: item.icon,
@@ -297,7 +289,7 @@ const StoreReport: React.FC = () => {
 					}))}
 					isLoading={isLoading}
 				/>
-				<Card
+				<CardComponent
 					title={__('Top revenue generating stores', 'multivendorx')}
 				>
 					<ResponsiveContainer width="100%" height={300}>
@@ -327,8 +319,8 @@ const StoreReport: React.FC = () => {
 							<Legend />
 						</PieChart>
 					</ResponsiveContainer>
-				</Card>
-			</Column>
+				</CardComponent>
+			</ColumnComponent>
 
 			<TableCard
 				headers={headers}

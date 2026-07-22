@@ -2,13 +2,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	NavigatorHeader,
-	QueryProps,
-	TableCard,
-	TableRow,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { NavigatorHeaderComponent } from '@zyra/components';
+import { QueryProps, TableCard, TableRow } from '@zyra/table';
 
 const StoreFollower: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -58,7 +54,7 @@ const StoreFollower: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Store Followers', 'multivendorx')}
 				headerDescription={__(
 					'See all your store followers, engage with them, and grow your loyal customer base.',

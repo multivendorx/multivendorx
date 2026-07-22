@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { __ } from '@wordpress/i18n';
-import { QueryProps } from 'zyra';
+import { QueryProps } from '@zyra/table';
 import axios from 'axios';
 import QuoteThankYou from './QuoteThankYou';
 import { formatLocalDate } from '../../services/commonFunction';

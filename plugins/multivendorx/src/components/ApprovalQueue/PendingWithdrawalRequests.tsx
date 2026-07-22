@@ -2,13 +2,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	ButtonInputUI,
-	getApiLink,
-	QueryProps,
-	TableCard,
-	TableRow,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { ButtonInput } from '@zyra/inputs';
+import { QueryProps, TableCard, TableRow } from '@zyra/table';
 import { getUrl } from '@/services/commonFunction';
 
 const PendingWithdrawal: React.FC<object> = () => {
@@ -65,7 +61,7 @@ const PendingWithdrawal: React.FC<object> = () => {
 			label: __('Action', 'multivendorx'),
 			render: (row: any) => {
 				return (
-					<ButtonInputUI
+					<ButtonInput
 						buttons={[
 							{
 								icon: 'check',

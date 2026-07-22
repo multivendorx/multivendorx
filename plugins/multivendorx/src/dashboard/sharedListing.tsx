@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { formatCurrency, dashNavigate } from '../services/commonFunction';
-import { BasicInputUI, ComponentStatusView, Skeleton, Notice } from 'zyra';
+import { ModuleGuardComponent, SkeletonComponent, NoticeComponent } from '@zyra/components';
+import { TextInput } from '@zyra/inputs';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import './sharedListing.scss';
@@ -130,7 +131,7 @@ const SpmvProducts: React.FC = () => {
 	return (
 		<>
 		{errorMsg && (
-				<Notice
+				<NoticeComponent
 					type="error"
 					validity={2000}
 					displayPosition="notice"
@@ -146,7 +147,7 @@ const SpmvProducts: React.FC = () => {
 					<div className="search-section-wrapper">
 						<div className="search-field">
 							<div className="search-section">
-								<BasicInputUI
+								<TextInput
 									type="text"
 									placeholder={__(
 										'Search by an existing listing',
@@ -195,26 +196,26 @@ const SpmvProducts: React.FC = () => {
 						Array.from({ length: 10 }).map((_, index) => (
 							<div className="product" key={index}>
 								<div className="product-header">
-									<Skeleton
+									<SkeletonComponent
 										variant="rectangular"
 										width={2.5}
 										height={2.5}
 										className="product-thumb"
 									/>
-									<Skeleton
+									<SkeletonComponent
 										variant="rectangular"
 										width={4.375}
 										height={2}
 									/>
 								</div>
 								<div className="name">
-									<Skeleton width="80%" height={1.5} />
+									<SkeletonComponent width="80%" height={1.5} />
 								</div>
 								<div className="category">
-									<Skeleton width="60%" height={1.25} />
+									<SkeletonComponent width="60%" height={1.25} />
 								</div>
 								<div className="price">
-									<Skeleton width="40%" height={1.375} />
+									<SkeletonComponent width="40%" height={1.375} />
 								</div>
 							</div>
 						))}
@@ -267,7 +268,7 @@ const SpmvProducts: React.FC = () => {
 						})}
 
 					{!isLoading && paginatedProducts.length === 0 && (
-						<ComponentStatusView
+						<ModuleGuardComponent
 							title={__('Not found', 'multivendorx')}
 						/>
 					)}

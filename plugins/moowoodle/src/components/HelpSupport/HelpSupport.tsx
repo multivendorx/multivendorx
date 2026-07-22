@@ -1,6 +1,7 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { Card, Column, Container, NavigatorHeader } from 'zyra';
+
+import { CardComponent, ColumnComponent, ContainerComponent, NavigatorHeaderComponent } from '@zyra/components';
 
 const HelpSupport: React.FC = () => {
 	const videos = [
@@ -71,7 +72,7 @@ const HelpSupport: React.FC = () => {
 	];
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="customer-support"
 				headerTitle={__('Help & Support', 'moowoodle')}
 				headerDescription={__(
@@ -80,9 +81,9 @@ const HelpSupport: React.FC = () => {
 				)}
 			/>
 
-			<Container general>
-				<Column row>
-					<Card title={__('Community & forums', 'moowoodle')}>
+			<ContainerComponent general>
+				<ColumnComponent row>
+					<CardComponent title={__('Community & forums', 'moowoodle')}>
 						<div className="support-wrapper">
 							{supportItems.map((item, index) => (
 								<div className="support-item" key={index}>
@@ -109,8 +110,8 @@ const HelpSupport: React.FC = () => {
 								</div>
 							))}
 						</div>
-					</Card>
-					<Card title={__('Documentation & Learning', 'moowoodle')}>
+					</CardComponent>
+					<CardComponent title={__('Documentation & Learning', 'moowoodle')}>
 						<div className="support-wrapper">
 							{DocumentationItems.map((item, index) => (
 								<div className="support-item" key={index}>
@@ -136,9 +137,9 @@ const HelpSupport: React.FC = () => {
 								</div>
 							))}
 						</div>
-					</Card>
-				</Column>
-			</Container>
+					</CardComponent>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

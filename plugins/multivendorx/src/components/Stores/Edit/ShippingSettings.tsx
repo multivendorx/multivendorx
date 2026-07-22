@@ -4,20 +4,18 @@ import ShippingRatesByCountry from '@/dashboard/settings/ShippingRatesByCountry'
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { getApiLink } from '@zyra/core';
 import {
-	BasicInputUI,
-	Card,
-	Column,
-	Container,
-	DynamicRowSetting,
-	FormGroup,
-	FormGroupWrapper,
-	getApiLink,
-	ComponentStatusView,
-	ChoiceToggleUI,
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	ModuleGuardComponent,
 	NoticeManager,
-	SectionUI,
-} from 'zyra';
+	SectionComponent,
+} from '@zyra/components';
+import { TextInput, DynamicRowInput, ToggleInput } from '@zyra/inputs';
 
 interface ShippingRate {
 	[key: string]: string | number;
@@ -113,20 +111,20 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 		(method) => method.value === formData.shipping_options
 	);
 	return (
-		<Container>
+		<ContainerComponent>
 			{appLocalizer.shipping_methods &&
 			appLocalizer.shipping_methods.length > 0 ? (
-				<Column>
-					<Card title={__('Method type', 'multivendorx')}>
-						<FormGroupWrapper>
-							<FormGroup
+				<ColumnComponent>
+					<CardComponent title={__('Method type', 'multivendorx')}>
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								row
 								desc={__(
 									'Choose your preferred payment method.',
 									'multivendorx'
 								)}
 							>
-								<ChoiceToggleUI
+								<ToggleInput
 									options={appLocalizer.shipping_methods}
 									value={formData.shipping_options || ''}
 									onChange={(value: string) =>
@@ -136,7 +134,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 										)
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
 							{/* //zone by shipping */}
 							{formData.shipping_options === 'shipping_by_zone' &&
@@ -149,7 +147,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 								'shipping_by_country' &&
 								selectedMethodExists && (
 									<>
-										<SectionUI
+										<SectionComponent
 											title={__(
 												'Default Shipping Rules',
 												'multivendorx'
@@ -161,7 +159,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 										/>
 
 										{/* Default Shipping Price */}
-										<FormGroup
+										<FormGroupComponent
 											label={__(
 												`Default Shipping Price (${appLocalizer.currency_symbol})`,
 												'multivendorx'
@@ -173,7 +171,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 											)}
 											row
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="multivendorx_shipping_type_price"
 												size={12}
@@ -196,9 +194,9 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 													'multivendorx'
 												)}
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 										{/* Per Product Additional Price */}
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												`Per Product Additional Price (${appLocalizer.currency_symbol})`,
@@ -210,7 +208,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 												'multivendorx'
 											)}
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="multivendorx_additional_product"
 												size={12}
@@ -229,10 +227,10 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 													)
 												}
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
 										{/* Per Qty Additional Price */}
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												`Per Qty Additional Price (${appLocalizer.currency_symbol})`,
@@ -244,7 +242,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 												'multivendorx'
 											)}
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="multivendorx_additional_qty"
 												size={12}
@@ -263,10 +261,10 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 													)
 												}
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
 										{/* Free Shipping Minimum Order Amount */}
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												`Free Shipping Minimum Order Amount (${appLocalizer.currency_symbol})`,
@@ -278,7 +276,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 												'multivendorx'
 											)}
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="free_shipping_amount"
 												size={12}
@@ -297,10 +295,10 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 													)
 												}
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
 										{/* Local Pickup Cost */}
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												`Local Pickup Cost (${appLocalizer.currency_symbol})`,
@@ -312,7 +310,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 												'multivendorx'
 											)}
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="local_pickup_cost"
 												size={12}
@@ -331,8 +329,8 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 													)
 												}
 											/>
-										</FormGroup>
-										<SectionUI
+										</FormGroupComponent>
+										<SectionComponent
 											title={__(
 												'Country-Specific Rates',
 												'multivendorx'
@@ -351,7 +349,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 								'shipping_by_distance' &&
 								selectedMethodExists && (
 									<>
-										<SectionUI
+										<SectionComponent
 											title={__(
 												'Distance-wise Shipping Configuration',
 												'multivendorx'
@@ -359,7 +357,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 										/>
 
 										{/* Default Cost */}
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												`Default Cost (${appLocalizer.currency_symbol}) *`,
@@ -367,7 +365,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 											)}
 											htmlFor="distance_default_cost"
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="distance_default_cost"
 												placeholder={__(
@@ -387,10 +385,10 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 												}
 												min="0"
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
 										{/* Distance Type */}
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												'Distance Type',
@@ -401,7 +399,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 												'multivendorx'
 											)}
 										>
-											<ChoiceToggleUI
+											<ToggleInput
 												options={[
 													{
 														key: 'K',
@@ -424,10 +422,10 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 													)
 												}
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
 										{/* Max Distance */}
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												'Max Distance',
@@ -435,7 +433,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 											)}
 											htmlFor="distance_max"
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="distance_max"
 												size={'8rem'}
@@ -454,10 +452,10 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 												}
 												min="0"
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
 										{/* Local Pickup Cost */}
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												`Local Pickup Cost (${appLocalizer.currency_symbol}) (Optional)`,
@@ -465,7 +463,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 											)}
 											htmlFor="distance_local_pickup_cost"
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="distance_local_pickup_cost"
 												size={'8rem'}
@@ -485,17 +483,17 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 												}
 												min="0"
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
 										{/* Distance–Cost Rules */}
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												'Distance-Cost Rules',
 												'multivendorx'
 											)}
 										>
-											<DynamicRowSetting
+											<DynamicRowInput
 												keyName="distance_rules"
 												addLabel={__(
 													'Add Rule',
@@ -549,14 +547,14 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 													autoSave(updated);
 												}}
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 									</>
 								)}
-						</FormGroupWrapper>
-					</Card>
-				</Column>
+						</FormGroupWrapperComponent>
+					</CardComponent>
+				</ColumnComponent>
 			) : (
-				<ComponentStatusView
+				<ModuleGuardComponent
 					title={__(
 						'No shipping methods are available at the moment.',
 						'multivendorx'
@@ -567,7 +565,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 					)}
 				/>
 			)}
-		</Container>
+		</ContainerComponent>
 	);
 };
 

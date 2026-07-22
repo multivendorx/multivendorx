@@ -2,12 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
-import {
-	ComponentStatusView,
-	getApiLink,
-	SelectInputUI,
-	SettingsNavigator,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+
+import { SelectInput } from '@zyra/inputs';
+import { ModuleGuardComponent, NavigatorComponent } from '@zyra/components';
 import axios from 'axios';
 import WalletTransaction from './WalletTransaction';
 import { applyFilters } from '@wordpress/hooks';
@@ -117,7 +115,7 @@ export const TransactionHistory: React.FC = () => {
 					{__('Switch Store:', 'multivendorx')}
 				</label>
 
-				<SelectInputUI
+				<SelectInput
 					name="store"
 					value={selectedStoreId || ''}
 					options={allStores}
@@ -173,7 +171,7 @@ export const TransactionHistory: React.FC = () => {
 				}
 
 				return (
-					<ComponentStatusView
+					<ModuleGuardComponent
 						title={__(
 							'Real-time store payments',
 							'multivendorx'
@@ -193,7 +191,7 @@ export const TransactionHistory: React.FC = () => {
 
 	return (
 		<>
-			<SettingsNavigator
+			<NavigatorComponent
 				settingContent={settingContent}
 				getForm={getForm}
 				currentSetting={currentTab}

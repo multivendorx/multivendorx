@@ -2,19 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	FormGroupWrapper,
-	FormGroup,
-	TableCard,
-	ButtonInputUI,
-	ChoiceToggleUI,
-	PopupUI,
-	TextAreaUI,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { FormGroupWrapperComponent, FormGroupComponent, PopupComponent } from '@zyra/components';
+import { ButtonInput, ToggleInput, TextAreaInput } from '@zyra/inputs';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
 import { formatLocalDate } from '../../../src/services/commonFunction';
 
@@ -313,7 +304,7 @@ const StoreReviews: React.FC = () => {
 
 	return (
 		<>
-			<PopupUI
+			<PopupComponent
 				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
@@ -338,7 +329,7 @@ const StoreReviews: React.FC = () => {
 						setSelectedRv(null);
 					}}
 				/>
-			</PopupUI>
+			</PopupComponent>
 			<TableCard
 				headers={headers}
 				rows={rows}
@@ -353,7 +344,7 @@ const StoreReviews: React.FC = () => {
 			/>
 
 			{selectedReview && (
-				<PopupUI
+				<PopupComponent
 					open={!!selectedReview}
 					onClose={() => setSelectedReview(null)}
 					width={31.25}
@@ -367,7 +358,7 @@ const StoreReviews: React.FC = () => {
 						),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',
@@ -450,15 +441,15 @@ const StoreReviews: React.FC = () => {
 							</div>
 						</div>
 
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__(
 									'Respond to customer',
 									'multivendorx'
 								)}
 								htmlFor="reply"
 							>
-								<TextAreaUI
+								<TextAreaInput
 									name="reply"
 									value={replyText}
 									onChange={(value: string) =>
@@ -466,16 +457,16 @@ const StoreReviews: React.FC = () => {
 									}
 									usePlainText={true}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								label={__(
 									'Control if this review appears publicly, stays under moderation, or is excluded from the store page.',
 									'multivendorx'
 								)}
 								htmlFor="control"
 							>
-								<ChoiceToggleUI
+								<ToggleInput
 									options={[
 										{
 											key: 'pending',
@@ -511,10 +502,10 @@ const StoreReviews: React.FC = () => {
 										);
 									}}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
 					</>
-				</PopupUI>
+				</PopupComponent>
 			)}
 		</>
 	);

@@ -1,7 +1,6 @@
 /* global appLocalizer */
 import React, { useState } from 'react';
-import 'zyra/build/index.css';
-import { ExpandablePanelUI } from 'zyra';
+import { ExpandablePanelInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import img from '../../assets/images/catalogx-logo.png';
 
@@ -223,7 +222,7 @@ const SetupWizard: React.FC = () => {
 				</div>
 			</div>
 
-			<ExpandablePanelUI
+			<ExpandablePanelInput
 				key={inputField.key}
 				name={inputField.key}
 				apilink={String(inputField.apiLink)}

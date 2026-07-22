@@ -3,19 +3,19 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
+
 import {
-	Analytics,
-	Card,
-	Column,
-	Container,
-	getApiLink,
-	InfoItem,
-	useModules,
-	FormGroupWrapper,
-	FormGroup,
-	SectionUI,
-	ComponentStatusView,
-} from 'zyra';
+	AnalyticsComponent,
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	SectionComponent,
+	ModuleGuardComponent,
+} from '@zyra/components';
+import { getApiLink, useModules } from '@zyra/core';
 import { formatCurrency } from '../../../services/commonFunction';
 import LatestReview from './LatestReview';
 import LatestRefundRequest from './LatestRefundRequest';
@@ -185,9 +185,9 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 
 	return (
 		<>
-			<Container>
-				<Column grid={8}>
-					<Analytics
+			<ContainerComponent>
+				<ColumnComponent grid={8}>
+					<AnalyticsComponent
 						variant="small"
 						data={overviewData.map((item) => ({
 							icon: item.icon,
@@ -195,7 +195,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 							text: item.text,
 						}))}
 					/>
-					<Card
+					<CardComponent
 						title={__('Recent payouts', 'multivendorx')}
 						iconName="external icon"
 						onIconClick={() => {
@@ -206,7 +206,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 					>
 						{recentDebits && recentDebits.length > 0 ? (
 							recentDebits.map((txn) => (
-								<InfoItem
+								<InformationItemComponent
 									key={txn.id}
 									title={__('Bank Transfer', 'multivendorx')}
 									descriptions={[
@@ -224,12 +224,12 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								/>
 							))
 						) : (
-							<ComponentStatusView
+							<ModuleGuardComponent
 								title={__('No recent payout', 'multivendorx')}
 							/>
 						)}
-					</Card>
-					{/* <Card
+					</CardComponent>
+					{/* <CardComponent
 						title={__('Store availability', 'multivendorx')}
 						iconName="external icon"
 						onIconClick={() => {
@@ -238,7 +238,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 							);
 						}}
 					>
-						<Column row>
+						<ColumnComponent row>
 							<ItemListUI
 								className="mini-card"
 								background
@@ -278,7 +278,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 									},
 								]}
 							/>
-						</Column>
+						</ColumnComponent>
 
 
 						
@@ -287,8 +287,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 							<b>Next opening time </b>is auto-calculated from the working hours in the sidebar.
 						</div></div></div>
 
-					</Card> */}
-					<Card
+					</CardComponent> */}
+					<CardComponent
 						title={__('Latest products', 'multivendorx')}
 						iconName="external icon"
 						onIconClick={() => {
@@ -312,7 +312,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								}&action=edit`;
 
 								return (
-									<InfoItem
+									<InformationItemComponent
 										key={product.id}
 										title={product.name}
 										titleLink={editUrl}
@@ -336,17 +336,17 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								);
 							})
 						) : (
-							<ComponentStatusView
+							<ModuleGuardComponent
 								title={__(
 									'No recent products found.',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
+					</CardComponent>
 
 					{modules.includes('store-review') && (
-						<Card
+						<CardComponent
 							title={__('Latest reviews', 'multivendorx')}
 							iconName="external icon"
 							onIconClick={() => {
@@ -356,11 +356,11 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 							}}
 						>
 							<LatestReview store_id={id} />
-						</Card>
+						</CardComponent>
 					)}
 
 					{modules.includes('marketplace-refund') && (
-						<Card
+						<CardComponent
 							title={__('Latest refunds', 'multivendorx')}
 							iconName="external icon"
 							onIconClick={() => {
@@ -372,13 +372,13 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 							<div className="store-owner-details owner">
 								<LatestRefundRequest store_id={id} />
 							</div>
-						</Card>
+						</CardComponent>
 					)}
-				</Column>
-				<Column grid={4}>
-					<Card title={__('Store overview', 'multivendorx')}>
-						<FormGroupWrapper>
-							<FormGroup
+				</ColumnComponent>
+				<ColumnComponent grid={4}>
+					<CardComponent title={__('Store overview', 'multivendorx')}>
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								row
 								label={__(
 									'Compliance & records',
@@ -395,9 +395,9 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								>
 									{__('View details', 'multivendorx')}
 								</a>
-							</FormGroup>
-							<SectionUI title={__('Settings', 'multivendorx')} />
-							<FormGroup
+							</FormGroupComponent>
+							<SectionComponent title={__('Settings', 'multivendorx')} />
+							<FormGroupComponent
 								row
 								label={__('Payment method', 'multivendorx')}
 							>
@@ -420,9 +420,9 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 										</span>
 									);
 								})()}
-							</FormGroup>
-						</FormGroupWrapper>
-					</Card>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
+					</CardComponent>
 					{applyFilters(
 						'multivendorx_store_edit_right_section',
 						null,
@@ -430,8 +430,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 						storeData,
 						modules
 					)}
-				</Column>
-			</Container>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

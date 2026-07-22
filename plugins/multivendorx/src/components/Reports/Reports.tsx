@@ -1,5 +1,5 @@
 /* global appLocalizer */
-import { SettingsNavigator } from 'zyra';
+import { NavigatorComponent } from '@zyra/components';
 import '../../dashboard/dashboardCommon.scss';
 import { useLocation, Link } from 'react-router-dom';
 import MarketplaceReport from './MarketplaceReport';
@@ -148,7 +148,7 @@ const Reports = () => {
 	};
 	return (
 		<>
-			<SettingsNavigator
+			<NavigatorComponent
 				settingContent={settingContent}
 				currentSetting={location.get('subtab') as string}
 				getForm={getForm}

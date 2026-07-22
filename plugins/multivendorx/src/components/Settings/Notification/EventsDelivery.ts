@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { CountryCodes } from 'zyra';
+import { CountryCodes } from '@zyra/core';
 
 export default {
 	id: 'events-delivery',

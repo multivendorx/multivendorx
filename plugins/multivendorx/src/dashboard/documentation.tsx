@@ -1,16 +1,17 @@
 /* global appLocalizer */
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { getApiLink } from '@zyra/core';
+
+import { ButtonInput } from '@zyra/inputs';
 import {
-	ButtonInputUI,
-	Card,
-	getApiLink,
-	ComponentStatusView,
-	PopupUI,
-	HeaderSearch,
-	NavigatorHeader,
-	ItemListUI,
-} from 'zyra';
+	CardComponent,
+	ModuleGuardComponent,
+	PopupComponent,
+	ListComponent,
+	NavigatorHeaderComponent,
+	HeaderSearchComponent,
+} from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 import { truncateText } from '@/services/commonFunction';
 
@@ -96,7 +97,7 @@ const Documentation: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Documentation', 'multivendorx')}
 				headerDescription={__(
 					'Admin-shared guides and documentation for managing your store can be accessed.',
@@ -104,8 +105,8 @@ const Documentation: React.FC = () => {
 				)}
 			/>
 
-			<Card>
-				<HeaderSearch
+			<CardComponent>
+				<HeaderSearchComponent
 					// variant="mini-search"
 					search={{ placeholder: 'Search .....' }}
 					onQueryUpdate={(e) => {
@@ -113,11 +114,11 @@ const Documentation: React.FC = () => {
 					}}
 				/>
 				{filteredDocuments.length === 0 && (
-					<ComponentStatusView
+					<ModuleGuardComponent
 						title={__('No documents found.', 'multivendorx')}
 					/>
 				)}
-				<ItemListUI
+				<ListComponent
 					className="mini-card documentation"
 					border
 					items={filteredDocuments.map((doc) => ({
@@ -136,10 +137,10 @@ const Documentation: React.FC = () => {
 						),
 					}))}
 				/>
-			</Card>
+			</CardComponent>
 
 			{activeDocument && (
-				<PopupUI
+				<PopupComponent
 					open={popupOpen}
 					onClose={() => setPopupOpen(false)}
 					width='90%'
@@ -149,7 +150,7 @@ const Documentation: React.FC = () => {
 						title: activeDocument.title,
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',
@@ -176,7 +177,7 @@ const Documentation: React.FC = () => {
 							}}
 						/>
 					</div>
-				</PopupUI>
+				</PopupComponent>
 			)}
 		</>
 	);

@@ -1,13 +1,14 @@
 import { useState } from 'react';
+
 import {
-    Column,
-    Container,
-    InfoItem,
-    NavigatorHeader,
-    PopupUI,
-    TableCard,
-    ComponentStatusView
-} from 'zyra';
+	ColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	PopupComponent,
+	ModuleGuardComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
@@ -29,7 +30,7 @@ const QuoteRequests = () => {
         order_id: {
             label: __('Order ID', 'catalogx'),
             render: (row: QuoteRow) => (
-                <InfoItem
+                <InformationItemComponent
                     title={`${row.order_id}`}
                     titleLink={row.order_url || ''}
                     descriptions={[
@@ -140,7 +141,7 @@ const QuoteRequests = () => {
 
         if (!appLocalizer.active_modules.includes('quote')) {
             return (
-                <ComponentStatusView
+                <ModuleGuardComponent
                     title={__(
                         'Looks like the Quote module isn’t enabled yet!',
                         'catalogx'
@@ -165,7 +166,7 @@ const QuoteRequests = () => {
     return (
         <>
             {openPopup && (
-                <PopupUI
+                <PopupComponent
                     position="lightbox"
                     open={openPopup}
                     onClose={() => setopenPopup(false)}
@@ -177,9 +178,9 @@ const QuoteRequests = () => {
                     ) : (
                         <ShowProPopup moduleName="quote" />
                     )}
-                </PopupUI>
+                </PopupComponent>
             )}
-            <NavigatorHeader
+            <NavigatorHeaderComponent
                 headerIcon="quote"
                 headerDescription={__(
                     'Quote requests are displayed with customer details, totals, and statuses to support sales and order management workflows.',
@@ -205,11 +206,11 @@ const QuoteRequests = () => {
             { tableProps.addingNewRule && (
                 tableProps.addNewRuleForm
             )}
-            <Container general>
-                <Column>
+            <ContainerComponent general>
+                <ColumnComponent>
                     {renderTableContent()}
-                </Column>
-            </Container>
+                </ColumnComponent>
+            </ContainerComponent>
         </>
     );
 };

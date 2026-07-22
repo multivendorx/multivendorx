@@ -1,7 +1,7 @@
 /* global subscription */
 import React, { useState } from 'react';
 import axios from 'axios';
-import { getApiLink } from 'zyra';
+import { getApiLink } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 

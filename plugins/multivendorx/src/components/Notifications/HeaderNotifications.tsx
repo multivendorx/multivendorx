@@ -1,6 +1,7 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
-import { ComponentStatusView, getApiLink, ItemListUI } from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { ModuleGuardComponent, ListComponent } from '@zyra/components';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -68,14 +69,14 @@ const NotificationTabContent: React.FC<{
 
 	if (items.length === 0) {
 		return (
-			<ComponentStatusView
+			<ModuleGuardComponent
 				title={__('No notifications', 'multivendorx')}
 			/>
 		);
 	}
 
 	return (
-		<ItemListUI
+		<ListComponent
 			className="notification"
 			loading={loading}
 			items={items.map((item) => ({

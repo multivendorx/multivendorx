@@ -1,7 +1,9 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, InfoItem, QueryProps, TableCard, TableRow } from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { InformationItemComponent } from '@zyra/components';
+import { QueryProps, TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
 import {
 	downloadCSV,
@@ -58,7 +60,7 @@ const RefundedOrderReport: React.FC = () => {
 		store_name: {
 			label: __('Store', 'multivendorx'),
 			render: (row) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.store_name}
 					titleLink={getUrl(row.store_id, 'store', 'edit')}
 					avatar={{

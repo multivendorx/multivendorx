@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, InfoItem, QueryProps, TableCard, TableRow } from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { InformationItemComponent } from '@zyra/components';
+import { QueryProps, TableCard, TableRow } from '@zyra/table';
 
 import {
 	downloadCSV,
@@ -60,7 +62,7 @@ const OrderReport: React.FC = () => {
 		store_name: {
 			label: __('Store', 'multivendorx'),
 			render: (row) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.store_name}
 					titleLink={getUrl(row.store_id, 'store', 'edit')}
 					avatar={{

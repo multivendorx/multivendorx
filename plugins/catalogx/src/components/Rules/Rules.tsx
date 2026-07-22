@@ -1,12 +1,13 @@
 import { useState } from 'react';
+
 import {
-    Column,
-    Container,
-    NavigatorHeader,
-    ComponentStatusView,
-    PopupUI,
-    TableCard,
-} from 'zyra';
+	ColumnComponent,
+	ContainerComponent,
+	ModuleGuardComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
@@ -196,7 +197,7 @@ const Rules = () => {
 
         if (!appLocalizer.active_modules.includes('rules')) {
             return (
-                <ComponentStatusView
+                <ModuleGuardComponent
                     title={__(
                         'Looks like product rules aren’t set up yet!',
                         'catalogx'
@@ -222,7 +223,7 @@ const Rules = () => {
     return (
         <>
             {openPopup && (
-                <PopupUI
+                <PopupComponent
                     position="lightbox"
                     open={openPopup}
                     onClose={() => setopenPopup(false)}
@@ -234,9 +235,9 @@ const Rules = () => {
                     ) : (
                         <ShowProPopup moduleName="rules" />
                     )}
-                </PopupUI>
+                </PopupComponent>
             )}
-            <NavigatorHeader
+            <NavigatorHeaderComponent
                 headerIcon="rules"
                 headerDescription={__(
                     'Create and manage rules to control product visibility, pricing behavior, and catalog conditions.',
@@ -260,11 +261,11 @@ const Rules = () => {
             {tableProps.addingNewRule && (
                 tableProps.addNewRuleForm
             )}
-            <Container general>
-                <Column>
+            <ContainerComponent general>
+                <ColumnComponent>
                     {renderTableContent()}
-                </Column>
-            </Container>
+                </ColumnComponent>
+            </ContainerComponent>
         </>
     );
 };
