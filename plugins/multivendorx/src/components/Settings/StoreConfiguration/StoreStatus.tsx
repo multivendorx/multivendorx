@@ -6,7 +6,7 @@ import { getTemplateData } from '../../../services/templateService';
 
 import { InputRenderer } from '@zyra/inputs';
 import { getAvailableSettings, getSettingById, useModules } from '@zyra/core';
-import { SettingsNavigatorComponent } from '@zyra/components';
+import { NavigatorComponent } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 
 const StoreStatus: React.FC = () => {
@@ -138,7 +138,7 @@ const StoreStatus: React.FC = () => {
 
 	return (
 		<SettingProvider>
-			<SettingsNavigatorComponent
+			<NavigatorComponent
 				settingContent={settingContent}
 				currentSetting={initialTab}
 				getForm={GetForm}

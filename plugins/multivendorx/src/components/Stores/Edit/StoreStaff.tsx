@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import {
 	ContainerComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	FormGroupWrapperComponent,
 	FormGroupComponent,
 	CardComponent,
@@ -226,7 +226,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 				modules
 			)}
 
-			<LayoutColumnComponent grid={4}>
+			<ColumnComponent grid={4}>
 				<CardComponent
 					id="primary-owner"
 					title={__('Store ownership', 'multivendorx')}
@@ -376,7 +376,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 						</FormGroupComponent>
 					</FormGroupWrapperComponent>
 				</CardComponent>
-			</LayoutColumnComponent>
+			</ColumnComponent>
 		</ContainerComponent>
 	);
 };

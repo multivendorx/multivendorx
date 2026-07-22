@@ -14,10 +14,10 @@ import axios from 'axios';
 import {
 	AnalyticsComponent,
 	CardComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	InformationItemComponent,
-	ComponentStatusComponent,
+	ModuleGuardComponent,
 } from '@zyra/components';
 import { getApiLink, useModules } from '@zyra/core';
 import { formatCurrency } from '@/services/commonFunction';
@@ -391,7 +391,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 	return (
 		<>
 			<ContainerComponent>
-				<LayoutColumnComponent>
+				<ColumnComponent>
 					<AnalyticsComponent
 						cols={4}
 						isLoading={isLoading}
@@ -407,9 +407,9 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 							text: __(item.label, 'multivendorx'),
 						}))}
 					/>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
-				<LayoutColumnComponent fullHeight row>
+				<ColumnComponent fullHeight row>
 					<CardComponent title={__('Revenue breakdown', 'multivendorx')}>
 						{earningSummary.map((product) => (
 							<InformationItemComponent
@@ -469,10 +469,10 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 								</PieChart>
 							</ResponsiveContainer>
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
 				{/* Keep categories and brands */}
-				<LayoutColumnComponent fullHeight row>
+				<ColumnComponent fullHeight row>
 					<CardComponent title={__('Top Selling Coupons', 'multivendorx')}>
 						{topCoupons.length > 0 ? (
 							topCoupons.map((coupon: Coupon, index: number) => (
@@ -504,7 +504,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 								/>
 							))
 						) : (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={__(
 									'No top coupons found.',
 									'multivendorx'
@@ -554,7 +554,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 								)
 							)
 						) : (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={__(
 									'No top customers found.',
 									'multivendorx'
@@ -608,7 +608,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 								</>
 							))
 						) : (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={__(
 									'No top stores found.',
 									'multivendorx'
@@ -616,7 +616,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 							/>
 						)}
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);

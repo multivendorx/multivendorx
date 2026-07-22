@@ -12,7 +12,7 @@ import {
 import { getApiLink, useModules } from '@zyra/core';
 import {
 	CardComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	FormGroupComponent,
 	FormGroupWrapperComponent,
@@ -20,7 +20,7 @@ import {
 	NoticeComponent,
 	ListComponent,
 	PopupComponent,
-	ComponentStatusComponent,
+	ModuleGuardComponent,
 	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard, TableRow } from '@zyra/table';
@@ -606,7 +606,7 @@ const OrderDetails: React.FC = () => {
 			)}
 
 			{!appLocalizer.edit_order_capability ? (
-				<ComponentStatusComponent
+				<ModuleGuardComponent
 					title={__('No access to view the order', 'multivendorx')}
 				/>
 			) : (
@@ -658,7 +658,7 @@ const OrderDetails: React.FC = () => {
 					/>
 
 					<ContainerComponent>
-						<LayoutColumnComponent grid={8}>
+						<ColumnComponent grid={8}>
 							<CardComponent>
 								{tableRows.length > 0 ? (
 									<TableCard
@@ -1185,9 +1185,9 @@ const OrderDetails: React.FC = () => {
 										</PopupComponent>
 									</CardComponent>
 								)}
-						</LayoutColumnComponent>
+						</ColumnComponent>
 
-						<LayoutColumnComponent grid={4}>
+						<ColumnComponent grid={4}>
 							{modules.includes('privacy') &&
 								Array.isArray(customer_information_access) &&
 								customer_information_access.length > 0 && (
@@ -1627,7 +1627,7 @@ const OrderDetails: React.FC = () => {
 												}
 											/>
 										) : (
-											<ComponentStatusComponent
+											<ModuleGuardComponent
 												title={__(
 													'No order notes found.',
 													'multivendorx'
@@ -1636,7 +1636,7 @@ const OrderDetails: React.FC = () => {
 										)}
 									</CardComponent>
 								)}
-						</LayoutColumnComponent>
+						</ColumnComponent>
 					</ContainerComponent>
 				</>
 			)}

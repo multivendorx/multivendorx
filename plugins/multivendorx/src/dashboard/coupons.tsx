@@ -10,7 +10,7 @@ import {
 	TextAreaInput,
 	ToggleInput,
 	InputKeyGenerator,
-	EmailListInput,
+	EmailInput,
 } from '@zyra/inputs';
 import {
 	FormGroupComponent,
@@ -526,7 +526,7 @@ const AllCoupon: React.FC = () => {
 						label={__('Allowed emails', 'multivendorx')}
 						htmlFor="customer_email"
 					>
-						<EmailListInput
+						<EmailInput
 							value={
 								formData.customer_email
 									? [formData.customer_email]

@@ -1,7 +1,7 @@
 
 import {
 	CardComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	FormGroupComponent,
 	FormGroupWrapperComponent,
@@ -12,7 +12,7 @@ import {
 import {
 	TextInput,
 	ToggleInput,
-	ColorPickerInput,
+	PickerInput,
 	ExpandablePanelInput,
 	FileInput,
 	MultiCheckboxInput,
@@ -329,7 +329,7 @@ const Invoice: React.FC = () => {
 
 	return (
 		<ContainerComponent className="settings-card">
-			<LayoutColumnComponent>
+			<ColumnComponent>
 				<CardComponent
 					title={__('Invoice preview', 'multivendorx')}
 					desc={__(
@@ -342,7 +342,7 @@ const Invoice: React.FC = () => {
 							{
 								label: __('Order Invoice', 'multivendorx'),
 								content: (
-									<ColorPickerInput
+									<PickerInput
 										key={formData.invoice_template?.templateKey}
 										filedKey="invoice_template"
 										wrapperClass="form-group-color-setting"
@@ -400,7 +400,7 @@ const Invoice: React.FC = () => {
 							{
 								label: __('Commission', 'multivendorx'),
 								content: (
-									<ColorPickerInput
+									<PickerInput
 										key={formData.admin_template?.templateKey}
 										filedKey="admin_template"
 										wrapperClass="form-group-color-setting"
@@ -451,7 +451,7 @@ const Invoice: React.FC = () => {
 							{
 								label: __('Packing Slip', 'multivendorx'),
 								content: (
-									<ColorPickerInput
+									<PickerInput
 										key={formData.packing_template?.templateKey}
 										filedKey="packing_template"
 										wrapperClass="form-group-color-setting"
@@ -517,8 +517,8 @@ const Invoice: React.FC = () => {
 						</span>
 					)}
 				</CardComponent>
-			</LayoutColumnComponent>
-			<LayoutColumnComponent grid={8}>
+			</ColumnComponent>
+			<ColumnComponent grid={8}>
 				<CardComponent
 					title={__('Customer invoice', 'multivendorx')}
 					desc={__(
@@ -750,9 +750,9 @@ const Invoice: React.FC = () => {
 						</FormGroupComponent>
 					</FormGroupWrapperComponent>
 				</CardComponent>
-			</LayoutColumnComponent>
+			</ColumnComponent>
 
-			<LayoutColumnComponent grid={4}>
+			<ColumnComponent grid={4}>
 				<CardComponent
 					title={__(
 						'Invoices will display these tax details',
@@ -888,7 +888,7 @@ const Invoice: React.FC = () => {
 						</FormGroupComponent>
 					</FormGroupWrapperComponent>
 				</CardComponent>
-			</LayoutColumnComponent>
+			</ColumnComponent>
 
 			{showProPopup && (
 				<PopupComponent

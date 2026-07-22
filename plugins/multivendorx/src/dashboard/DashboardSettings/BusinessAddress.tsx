@@ -8,7 +8,7 @@ import {
 	FormGroupComponent,
 	FormGroupWrapperComponent,
 	NoticeManager,
-	MapProviderComponent,
+	MapComponent,
 } from '@zyra/components';
 import { getApiLink, useModules } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
@@ -286,7 +286,7 @@ const BusinessAddress = () => {
 		}
 
 		return (
-			<MapProviderComponent
+			<MapComponent
 				apiKey={mapConfig.apiKey}
 				mapId={settings?.geolocation?.google_map_id || ''}
 				locationAddress={addressData.address}

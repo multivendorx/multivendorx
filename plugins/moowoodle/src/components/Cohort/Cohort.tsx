@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { __ } from '@wordpress/i18n';
 
 import {
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	InformationItemComponent,
 	PopupComponent,
@@ -141,12 +141,12 @@ const Cohort: React.FC = () => {
 				headerTitle={__('Cohorts', 'moowoodle')}
 			/>
 			<ContainerComponent general>
-				<LayoutColumnComponent>
+				<ColumnComponent>
 					<div className="demo-wrapper" onClick={handleTableWrapperClick}>
 						<div className="watermark">{__('This is sample Data','moowoodle' )}</div>
 						<TableCard {...tableProps} />
 					</div>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);

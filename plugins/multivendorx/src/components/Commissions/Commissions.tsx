@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 
 
 import { getApiLink, useModules } from '@zyra/core';
-import { ContainerComponent, LayoutColumnComponent, ListComponent, NavigatorHeaderComponent } from '@zyra/components';
+import { ContainerComponent, ColumnComponent, ListComponent, NavigatorHeaderComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import ViewCommission from './ViewCommission';
 import {
@@ -430,7 +430,7 @@ const Commission: React.FC = () => {
 				)}
 			/>
 			<ContainerComponent general>
-				<LayoutColumnComponent>
+				<ColumnComponent>
 					<TableCard
 						headers={headers}
 						rows={rows}
@@ -453,7 +453,7 @@ const Commission: React.FC = () => {
 							currencyPosition: appLocalizer.currency_position,
 						}}
 					/>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 			<ViewCommission
 				open={viewCommission}

@@ -7,7 +7,7 @@ import { getApiLink } from '@zyra/core';
 import {
 	ButtonInput,
 	TextInput,
-	EmailListInput,
+	EmailInput,
 	FileInput,
 	SelectInput,
 	TextAreaInput,
@@ -322,7 +322,7 @@ const Stores = () => {
 									label={__('Store Email', 'multivendorx')}
 									{...getFieldNotice('email')}
 								>
-									<EmailListInput
+									<EmailInput
 										value={
 											formData?.store_email?.list || []
 										}

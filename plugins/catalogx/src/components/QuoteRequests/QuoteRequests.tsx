@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
 import {
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	InformationItemComponent,
 	PopupComponent,
-	ComponentStatusComponent,
+	ModuleGuardComponent,
 	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
@@ -141,7 +141,7 @@ const QuoteRequests = () => {
 
         if (!appLocalizer.active_modules.includes('quote')) {
             return (
-                <ComponentStatusComponent
+                <ModuleGuardComponent
                     title={__(
                         'Looks like the Quote module isn’t enabled yet!',
                         'catalogx'
@@ -207,9 +207,9 @@ const QuoteRequests = () => {
                 tableProps.addNewRuleForm
             )}
             <ContainerComponent general>
-                <LayoutColumnComponent>
+                <ColumnComponent>
                     {renderTableContent()}
-                </LayoutColumnComponent>
+                </ColumnComponent>
             </ContainerComponent>
         </>
     );

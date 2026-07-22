@@ -1,7 +1,7 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
 
-import { CardComponent, LayoutColumnComponent, ContainerComponent, NavigatorHeaderComponent } from '@zyra/components';
+import { CardComponent, ColumnComponent, ContainerComponent, NavigatorHeaderComponent } from '@zyra/components';
 
 const HelpSupport: React.FC = () => {
 	const videos = [
@@ -118,7 +118,7 @@ const HelpSupport: React.FC = () => {
 			/>
 
 			<ContainerComponent general>
-				<LayoutColumnComponent row>
+				<ColumnComponent row>
 					<CardComponent title={__('Community & forums', 'multivendorx')}>
 						<div className="support-wrapper">
 							{supportItems.map((item, index) => (
@@ -176,9 +176,9 @@ const HelpSupport: React.FC = () => {
 							))}
 						</div>
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
-				{/* <LayoutColumnComponent>
+				{/* <ColumnComponent>
 					<CardComponent>
 						<div className="video-section">
 							<div className="details-wrapper">
@@ -238,7 +238,7 @@ const HelpSupport: React.FC = () => {
 							</div>
 						</div>
 					</CardComponent>
-				</LayoutColumnComponent> */}
+				</ColumnComponent> */}
 			</ContainerComponent>
 		</>
 	);

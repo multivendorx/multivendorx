@@ -4,12 +4,12 @@ import axios from 'axios';
 
 
 import {
-	ComponentStatusComponent,
+	ModuleGuardComponent,
 	PopupComponent,
 	TooltipComponent,
 	NoticeReceiverComponent,
 	NoticeComponent,
-	GuidedTourProviderComponent,
+	TourComponent,
 	TabsComponent,
 } from '@zyra/components';
 import { getApiLink, useOutsideClick, useModules } from '@zyra/core';
@@ -364,7 +364,7 @@ const Dashboard = () => {
 				.join(' ')}
 		>
 			{appLocalizer?.current_user?.roles.includes('store_owner') && storeData?.status === 'active' && (
-				<GuidedTourProviderComponent
+				<TourComponent
 					appLocalizer={appLocalizer}
 					steps={getTourSteps(appLocalizer)}
 					storeId={appLocalizer.store_id}
@@ -876,26 +876,26 @@ const Dashboard = () => {
 
 					{storeData && storeData.status !== 'active' ? (
 						storeData.status === 'pending' ? (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={appLocalizer.admin_settings['pending']?.pending_msg}
 							/>
 						) : storeData.status === 'suspended' ? (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={appLocalizer.admin_settings['suspended']?.suspended_msg}
 							/>
 						) : storeData.status === 'under_review' ? (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={appLocalizer.admin_settings['under-review']?.under_review_msg}
 							/>
 						) : storeData.status === 'rejected' ? (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={appLocalizer.admin_settings['rejected']?.rejected_msg}
 								buttonText={__('Click here to reapply', 'multivendorx')}
 								buttonLink={appLocalizer.registration_page}
 								buttonTarget="_blank"
 							/>
 						) : (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={__('No active store selected for this user.', 'multivendorx')}
 								desc={__('To get started, register your store.', 'multivendorx')}
 								buttonText={__('Create your store', 'multivendorx')}
@@ -904,7 +904,7 @@ const Dashboard = () => {
 							/>
 						)
 					) : noPermission ? (
-						<ComponentStatusComponent
+						<ModuleGuardComponent
 							title={__('You do not have permission to access this page.', 'multivendorx')}
 							buttonText={__('Contact Admin', 'multivendorx')}
 							onButtonClick={() => {}}

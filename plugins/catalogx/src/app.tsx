@@ -7,7 +7,7 @@ import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
 import WholesaleUser from './components/WholesaleUser/wholesaleUser.tsx';
 import Rules from './components/Rules/Rules';
 
-import { NoticeComponent, GuidedTourProviderComponent } from '@zyra/components';
+import { NoticeComponent, TourComponent } from '@zyra/components';
 import { initializeModules } from '@zyra/core';
 import { AdminHeader } from '@zyra/admin';
 import { __ } from '@wordpress/i18n';
@@ -228,7 +228,7 @@ const App = () => {
 				pro={appLocalizer.pro_data.version}
 				utilityList={utilityList}
 			/>
-			<GuidedTourProviderComponent
+			<TourComponent
 				appLocalizer={appLocalizer}
 				steps={getTourSteps(appLocalizer)}
 			/>

@@ -7,7 +7,7 @@ import { ButtonInput } from '@zyra/inputs';
 import { AdminHeaderSearch } from '@zyra/admin';
 import {
 	CardComponent,
-	ComponentStatusComponent,
+	ModuleGuardComponent,
 	PopupComponent,
 	ListComponent,
 	NavigatorHeaderComponent,
@@ -114,7 +114,7 @@ const Documentation: React.FC = () => {
 					}}
 				/>
 				{filteredDocuments.length === 0 && (
-					<ComponentStatusComponent
+					<ModuleGuardComponent
 						title={__('No documents found.', 'multivendorx')}
 					/>
 				)}

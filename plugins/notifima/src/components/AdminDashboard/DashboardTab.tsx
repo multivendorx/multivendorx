@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import {
 	CardComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	ListComponent,
 	ContainerComponent,
 	NoticeManager,
@@ -206,7 +206,7 @@ const DashboardTab: React.FC<object> = () => {
 
 	return (
 		<ContainerComponent>
-			<LayoutColumnComponent grid={8}>
+			<ColumnComponent grid={8}>
 				<CardComponent>
 					<div className="pro-banner-wrapper">
 						<div className="content">
@@ -280,12 +280,12 @@ const DashboardTab: React.FC<object> = () => {
 						</div>
 					</CardComponent>
 				)}
-			</LayoutColumnComponent>
+			</ColumnComponent>
 
 			{/* Right Side */}
-			<LayoutColumnComponent grid={4}>
+			<ColumnComponent grid={4}>
 				<CardComponent title={__('Extend your website', 'notifima')}>
-					<LayoutColumnComponent row>
+					<ColumnComponent row>
 						{/* notifima */}
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
 							<ListComponent
@@ -460,7 +460,7 @@ const DashboardTab: React.FC<object> = () => {
 								]}
 							/>
 						)}
-					</LayoutColumnComponent>
+					</ColumnComponent>
 				</CardComponent>
 
 				{/* Quick Links */}
@@ -492,7 +492,7 @@ const DashboardTab: React.FC<object> = () => {
 						))}
 					</div>
 				</CardComponent>
-			</LayoutColumnComponent>
+			</ColumnComponent>
 		</ContainerComponent>
 	);
 };

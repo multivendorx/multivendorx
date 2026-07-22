@@ -7,13 +7,13 @@ import axios from 'axios';
 import {
 	AnalyticsComponent,
 	CardComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	InformationItemComponent,
 	FormGroupWrapperComponent,
 	FormGroupComponent,
 	SectionComponent,
-	ComponentStatusComponent,
+	ModuleGuardComponent,
 } from '@zyra/components';
 import { getApiLink, useModules } from '@zyra/core';
 import { formatCurrency } from '../../../services/commonFunction';
@@ -186,7 +186,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 	return (
 		<>
 			<ContainerComponent>
-				<LayoutColumnComponent grid={8}>
+				<ColumnComponent grid={8}>
 					<AnalyticsComponent
 						variant="small"
 						data={overviewData.map((item) => ({
@@ -224,7 +224,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								/>
 							))
 						) : (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={__('No recent payout', 'multivendorx')}
 							/>
 						)}
@@ -238,7 +238,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 							);
 						}}
 					>
-						<LayoutColumnComponent row>
+						<ColumnComponent row>
 							<ItemListUI
 								className="mini-card"
 								background
@@ -278,7 +278,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 									},
 								]}
 							/>
-						</LayoutColumnComponent>
+						</ColumnComponent>
 
 
 						
@@ -336,7 +336,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								);
 							})
 						) : (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={__(
 									'No recent products found.',
 									'multivendorx'
@@ -374,8 +374,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 							</div>
 						</CardComponent>
 					)}
-				</LayoutColumnComponent>
-				<LayoutColumnComponent grid={4}>
+				</ColumnComponent>
+				<ColumnComponent grid={4}>
 					<CardComponent title={__('Store overview', 'multivendorx')}>
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
@@ -430,7 +430,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 						storeData,
 						modules
 					)}
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);

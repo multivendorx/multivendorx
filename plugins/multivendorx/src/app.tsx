@@ -2,7 +2,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { AdminHeader } from '@zyra/admin';
-import { FormGroupComponent, FormGroupWrapperComponent, PopupComponent, NoticeComponent, GuidedTourProviderComponent } from '@zyra/components';
+import { FormGroupComponent, FormGroupWrapperComponent, PopupComponent, NoticeComponent, TourComponent } from '@zyra/components';
 import { TaskExecutorInput } from '@zyra/inputs';
 
 import Brand from './assets/images/multivendorx-logo.png';
@@ -526,7 +526,7 @@ const App = () => {
 				</FormGroupWrapperComponent>
 			</PopupComponent>
 
-			<GuidedTourProviderComponent
+			<TourComponent
 				appLocalizer={appLocalizer}
 				steps={getTourSteps(appLocalizer)}
 			/>

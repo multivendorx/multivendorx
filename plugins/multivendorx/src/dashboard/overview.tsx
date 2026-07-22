@@ -15,7 +15,7 @@ import { getApiLink } from '@zyra/core';
 import {
 	AnalyticsComponent,
 	CardComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	InformationItemComponent,
 	NavigatorHeaderComponent,
@@ -228,7 +228,7 @@ const Overview: React.FC<OverviewProps> = () => {
 			/>
 
 			<ContainerComponent>
-				<LayoutColumnComponent>
+				<ColumnComponent>
 					<AnalyticsComponent
 						variant="small"
 						data={commissionDetails.map((item, idx) => ({
@@ -238,9 +238,9 @@ const Overview: React.FC<OverviewProps> = () => {
 							text: __(item.label, 'multivendorx'),
 						}))}
 					/>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
-				<LayoutColumnComponent grid={6}>
+				<ColumnComponent grid={6}>
 					<CardComponent title={__('Revenue breakdown', 'multivendorx')}>
 						{earningSummary.map((product) => (
 							<>
@@ -253,8 +253,8 @@ const Overview: React.FC<OverviewProps> = () => {
 							</>
 						))}
 					</CardComponent>
-				</LayoutColumnComponent>
-				<LayoutColumnComponent grid={6}>
+				</ColumnComponent>
+				<ColumnComponent grid={6}>
 					<CardComponent title={__('Revenue breakdown', 'multivendorx')}>
 							<ResponsiveContainer width="100%" height={400}>
 								<PieChart>
@@ -304,7 +304,7 @@ const Overview: React.FC<OverviewProps> = () => {
 								</PieChart>
 							</ResponsiveContainer>
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);

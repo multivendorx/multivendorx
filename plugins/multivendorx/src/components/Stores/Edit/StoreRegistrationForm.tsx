@@ -4,13 +4,13 @@ import axios from 'axios';
 import { getApiLink } from '@zyra/core';
 import {
 	ContainerComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	CardComponent,
 	FormGroupWrapperComponent,
 	FormGroupComponent,
 	SkeletonComponent,
 	NoticeManager,
-	ComponentStatusComponent,
+	ModuleGuardComponent,
 	NoticeComponent,
 } from '@zyra/components';
 import { ButtonInput, TextAreaInput } from '@zyra/inputs';
@@ -218,7 +218,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 			{(formData.core_data?.status === 'pending' ||
 			formData.core_data?.status === 'rejected' ||
 			formData.core_data?.status === 'permanently_rejected') && (
-				<LayoutColumnComponent grid={8}>
+				<ColumnComponent grid={8}>
 					{(formData.core_data?.status == 'pending' ||
 						formData.core_data?.status == 'rejected') && (
 						<CardComponent title={__('Store details', 'multivendorx')}>
@@ -371,9 +371,9 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 							)}
 						</>
 					)}
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			)}
-			<LayoutColumnComponent grid={4}>
+			<ColumnComponent grid={4}>
 				<CardComponent
 					title={__('Registration Details', 'multivendorx')}
 					action={
@@ -449,8 +449,8 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 						)}
 					</FormGroupWrapperComponent>
 				</CardComponent> 
-			</LayoutColumnComponent>
-			<LayoutColumnComponent grid={4}>
+			</ColumnComponent>
+			<ColumnComponent grid={4}>
 				<CardComponent title={__('Activity Log', 'multivendorx')}>          
           			<div className="activity-log">
 						{Array.isArray(activities) && activities.length > 0 ? (
@@ -462,7 +462,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 								</div>
 							))
 						) : (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={__(
 									'Activity will show up here as your store grows!',
 									'multivendorx'
@@ -471,7 +471,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 						)}
 					</div>
 				</CardComponent> 
-			</LayoutColumnComponent>
+			</ColumnComponent>
 		</ContainerComponent>
 	);
 };

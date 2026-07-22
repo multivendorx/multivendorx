@@ -10,7 +10,7 @@ import {
 	InformationItemComponent,
 	PopupComponent,
 	ContainerComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard, QueryProps } from '@zyra/table';
@@ -270,9 +270,9 @@ const Course: React.FC = () => {
 				</div>
 			)}
 			<ContainerComponent general>
-				<LayoutColumnComponent>
+				<ColumnComponent>
 					<TableCard {...tableProps} />
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);

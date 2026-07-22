@@ -6,11 +6,11 @@ import { ButtonInput, ExpandablePanelInput } from '@zyra/inputs';
 import {
 	AnalyticsComponent,
 	CardComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	ListComponent,
 	NoticeComponent,
-	SettingsNavigatorComponent,
+	NavigatorComponent,
 } from '@zyra/components';
 
 const Compliance = (React.FC = () => {
@@ -297,7 +297,7 @@ const Compliance = (React.FC = () => {
 								'multivendorx'
 							)}
 						/>
-						<LayoutColumnComponent row>
+						<ColumnComponent row>
 							<CardComponent
 								title={__(
 									'Product Images & Descriptions',
@@ -398,9 +398,9 @@ const Compliance = (React.FC = () => {
 									]}
 								/>
 							</CardComponent>
-						</LayoutColumnComponent>
+						</ColumnComponent>
 
-						<LayoutColumnComponent row>
+						<ColumnComponent row>
 							<CardComponent
 								title={__(
 									'Safety Certifications',
@@ -513,7 +513,7 @@ const Compliance = (React.FC = () => {
 									)}
 								/>
 							</CardComponent>
-						</LayoutColumnComponent>
+						</ColumnComponent>
 					</ContainerComponent>
 				);
 			case 'tax-compliance':
@@ -531,7 +531,7 @@ const Compliance = (React.FC = () => {
 								'multivendorx'
 							)}
 						/>
-						<LayoutColumnComponent grid={6}>
+						<ColumnComponent grid={6}>
 							<CardComponent
 								title={__(
 									'Bank Account Details',
@@ -634,9 +634,9 @@ const Compliance = (React.FC = () => {
 									]}
 								/>
 							</CardComponent>
-						</LayoutColumnComponent>
+						</ColumnComponent>
 
-						<LayoutColumnComponent grid={6}>
+						<ColumnComponent grid={6}>
 							<CardComponent
 								title={__(
 									'Tax Identification Documents ',
@@ -755,7 +755,7 @@ const Compliance = (React.FC = () => {
 								/>
 							</CardComponent>
 							<div> </div>
-						</LayoutColumnComponent>
+						</ColumnComponent>
 					</ContainerComponent>
 				);
 			case 'my-products':
@@ -783,7 +783,7 @@ const Compliance = (React.FC = () => {
 			case 'store-verification':
 				return (
 					<ContainerComponent>
-						<LayoutColumnComponent grid={6}>
+						<ColumnComponent grid={6}>
 							<CardComponent
 								title={__(
 									'Identity Verification',
@@ -888,9 +888,9 @@ const Compliance = (React.FC = () => {
 									]}
 								/>
 							</CardComponent>
-						</LayoutColumnComponent>
+						</ColumnComponent>
 
-						<LayoutColumnComponent grid={6}>
+						<ColumnComponent grid={6}>
 							<CardComponent
 								title={__(
 									'Social Verification',
@@ -918,7 +918,7 @@ const Compliance = (React.FC = () => {
 									}}
 								/>
 							</CardComponent>
-						</LayoutColumnComponent>
+						</ColumnComponent>
 					</ContainerComponent>
 				);
 			case 'legal-compliance':
@@ -929,7 +929,7 @@ const Compliance = (React.FC = () => {
 	};
 	return (
 		<>
-			<SettingsNavigatorComponent
+			<NavigatorComponent
 				settingContent={settingContent}
 				currentSetting={currentTab}
 				getForm={getForm}

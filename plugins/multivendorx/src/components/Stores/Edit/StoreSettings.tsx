@@ -3,15 +3,15 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 
-import { EmailListInput, TextInput, SelectInput } from '@zyra/inputs';
+import { EmailInput, TextInput, SelectInput } from '@zyra/inputs';
 import {
 	ContainerComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	CardComponent,
 	FormGroupWrapperComponent,
 	FormGroupComponent,
 	NoticeManager,
-	MapProviderComponent,
+	MapComponent,
 } from '@zyra/components';
 import { getApiLink, CountryCodes, useModules } from '@zyra/core';
 import { useLocation } from 'react-router-dom';
@@ -445,7 +445,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 		}
 
 		return (
-			<MapProviderComponent
+			<MapComponent
 				apiKey={mapConfig.apiKey}
 				mapId={settings?.geolocation?.google_map_id || ''}
 				locationAddress={addressData.address}
@@ -466,7 +466,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 	return (
 		<>
 			<ContainerComponent>
-				<LayoutColumnComponent grid={8}>
+				<ColumnComponent grid={8}>
 					{/* Contact Information */}
 					<CardComponent title={__('Contact information', 'multivendorx')}>
 						<FormGroupWrapperComponent>
@@ -493,7 +493,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 									</>
 								}
 							>
-								<EmailListInput
+								<EmailInput
 									value={data?.store_email?.list || []}
 									primary={data?.store_email?.primary || ''}
 									enablePrimary={true}
@@ -626,8 +626,8 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 							value={addressData.location_lng}
 						/>
 					</CardComponent>
-				</LayoutColumnComponent>
-				<LayoutColumnComponent grid={4}>
+				</ColumnComponent>
+				<ColumnComponent grid={4}>
 					{/* Manage Store Status */}
 					<CardComponent
 						id="store-status"
@@ -740,7 +740,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 							);
 						})}
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);

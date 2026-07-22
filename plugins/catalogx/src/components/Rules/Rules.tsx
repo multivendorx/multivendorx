@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
 import {
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
-	ComponentStatusComponent,
+	ModuleGuardComponent,
 	PopupComponent,
 	NavigatorHeaderComponent,
 } from '@zyra/components';
@@ -197,7 +197,7 @@ const Rules = () => {
 
         if (!appLocalizer.active_modules.includes('rules')) {
             return (
-                <ComponentStatusComponent
+                <ModuleGuardComponent
                     title={__(
                         'Looks like product rules aren’t set up yet!',
                         'catalogx'
@@ -262,9 +262,9 @@ const Rules = () => {
                 tableProps.addNewRuleForm
             )}
             <ContainerComponent general>
-                <LayoutColumnComponent>
+                <ColumnComponent>
                     {renderTableContent()}
-                </LayoutColumnComponent>
+                </ColumnComponent>
             </ContainerComponent>
         </>
     );

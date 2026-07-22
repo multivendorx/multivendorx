@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { formatCurrency, dashNavigate } from '../services/commonFunction';
-import { ComponentStatusComponent, SkeletonComponent, NoticeComponent } from '@zyra/components';
+import { ModuleGuardComponent, SkeletonComponent, NoticeComponent } from '@zyra/components';
 import { TextInput } from '@zyra/inputs';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -268,7 +268,7 @@ const SpmvProducts: React.FC = () => {
 						})}
 
 					{!isLoading && paginatedProducts.length === 0 && (
-						<ComponentStatusComponent
+						<ModuleGuardComponent
 							title={__('Not found', 'multivendorx')}
 						/>
 					)}

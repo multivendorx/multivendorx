@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapProviderComponent } from '@zyra/components';
+import { MapComponent } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 
 interface MapConfigState {
@@ -78,7 +78,7 @@ const CheckoutMapFill: React.FC = () => {
         }
 
         return (
-            <MapProviderComponent
+            <MapComponent
                 apiKey={mapConfig.apiKey}
                 mapId={settings?.google_map_id || ''}
                 locationAddress={addressData.address}

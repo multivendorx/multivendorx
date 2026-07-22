@@ -4,14 +4,14 @@ import axios from 'axios';
 import { getApiLink } from '@zyra/core';
 import {
 	ContainerComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	CardComponent,
 	FormGroupWrapperComponent,
 	FormGroupComponent,
 	NoticeComponent,
 	NoticeManager,
 } from '@zyra/components';
-import { TextInput, AffixTextInput, ExpandablePanelInput } from '@zyra/inputs';
+import { TextInput, DecoratedInput, ExpandablePanelInput } from '@zyra/inputs';
 import { __, sprintf } from '@wordpress/i18n';
 
 interface PaymentField {
@@ -124,7 +124,7 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 	return (
 		<>
 			<ContainerComponent>
-				<LayoutColumnComponent grid={8}>
+				<ColumnComponent grid={8}>
 					<CardComponent title={__('Withdrawal methods', 'multivendorx')}>
 						{paymentAddNewOptions.length === 0 && (
 							<NoticeComponent
@@ -159,9 +159,9 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 							}}
 						/>
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 				{/* Commission Amount */}
-				<LayoutColumnComponent grid={4}>
+				<ColumnComponent grid={4}>
 					<CardComponent
 						title={__('Store-specific commission', 'multivendorx')}
 					>
@@ -192,7 +192,7 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 										handleChange('commission_fixed', value)
 									}
 								/>
-								<AffixTextInput
+								<DecoratedInput
 									type="preposttext"
 									textType="post"
 									preText={undefined}
@@ -218,7 +218,7 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 							</FormGroupComponent>
 						</FormGroupWrapperComponent>
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);

@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import { getApiLink } from '@zyra/core';
-import { ComponentStatusComponent, ListComponent } from '@zyra/components';
+import { ModuleGuardComponent, ListComponent } from '@zyra/components';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -69,7 +69,7 @@ const NotificationTabContent: React.FC<{
 
 	if (items.length === 0) {
 		return (
-			<ComponentStatusComponent
+			<ModuleGuardComponent
 				title={__('No notifications', 'multivendorx')}
 			/>
 		);

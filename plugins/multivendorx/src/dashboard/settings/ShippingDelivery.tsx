@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { getApiLink } from '@zyra/core';
 import {
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	FormGroupComponent,
 	FormGroupWrapperComponent,
@@ -119,7 +119,7 @@ const ShippingDelivery = () => {
 			{appLocalizer.shipping_methods &&
 			appLocalizer.shipping_methods.length > 0 ? (
 				<ContainerComponent>
-					<LayoutColumnComponent>
+					<ColumnComponent>
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
 								row
@@ -545,7 +545,7 @@ const ShippingDelivery = () => {
 									</>
 								)}
 						</FormGroupWrapperComponent>
-					</LayoutColumnComponent>
+					</ColumnComponent>
 				</ContainerComponent>
 			) : (
 				<div className="desc">

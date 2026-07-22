@@ -6,7 +6,7 @@ import { getApiLink } from '@zyra/core';
 import { TextAreaInput } from '@zyra/inputs';
 import {
 	ContainerComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	CardComponent,
 	FormGroupWrapperComponent,
 	FormGroupComponent,
@@ -72,7 +72,7 @@ const ShopPolicies = () => {
 			/>
 
 			<ContainerComponent>
-				<LayoutColumnComponent>
+				<ColumnComponent>
 					<CardComponent title={__('Shipping Policy', 'multivendorx')}>
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
@@ -112,7 +112,7 @@ const ShopPolicies = () => {
 							/>
 						</FormGroupWrapperComponent>
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);

@@ -7,11 +7,11 @@ import React, { useEffect, useState } from 'react';
 import { getApiLink } from '@zyra/core';
 import {
 	CardComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	FormGroupComponent,
 	FormGroupWrapperComponent,
-	ComponentStatusComponent,
+	ModuleGuardComponent,
 	NoticeManager,
 	SectionComponent,
 } from '@zyra/components';
@@ -114,7 +114,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 		<ContainerComponent>
 			{appLocalizer.shipping_methods &&
 			appLocalizer.shipping_methods.length > 0 ? (
-				<LayoutColumnComponent>
+				<ColumnComponent>
 					<CardComponent title={__('Method type', 'multivendorx')}>
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
@@ -552,9 +552,9 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 								)}
 						</FormGroupWrapperComponent>
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			) : (
-				<ComponentStatusComponent
+				<ModuleGuardComponent
 					title={__(
 						'No shipping methods are available at the moment.',
 						'multivendorx'

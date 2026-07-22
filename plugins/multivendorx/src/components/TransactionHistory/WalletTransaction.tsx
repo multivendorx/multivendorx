@@ -4,12 +4,12 @@ import axios from 'axios';
 import { __, sprintf } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import {
-	LayoutColumnComponent,
+	ColumnComponent,
 	CardComponent,
 	ContainerComponent,
 	FormGroupWrapperComponent,
 	FormGroupComponent,
-	ComponentStatusComponent,
+	ModuleGuardComponent,
 	SkeletonComponent,
 	PopupComponent,
 	ListComponent,
@@ -436,7 +436,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	return (
 		<>
 			<ContainerComponent>
-				<LayoutColumnComponent fullHeight grid={6}>
+				<ColumnComponent fullHeight grid={6}>
 					<CardComponent title="Recent payouts">
 						{recentDebits.length > 0 ? (
 							<ListComponent
@@ -486,7 +486,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								})}
 							/>
 						) : (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={__(
 									'No recent payouts transactions found.',
 									'multivendorx'
@@ -494,9 +494,9 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							/>
 						)}
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
-				<LayoutColumnComponent fullHeight grid={6}>
+				<ColumnComponent fullHeight grid={6}>
 					<CardComponent>
 						<div className="payout-card-wrapper">
 							<div className="price-wrapper">
@@ -544,7 +544,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 									)}
 								</div>
 							</div>
-							<LayoutColumnComponent row>
+							<ColumnComponent row>
 								{Number(wallet?.locking_balance) > 0 ? (
 									<ListComponent
 										className="mini-card"
@@ -653,7 +653,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 										)}
 									/>
 								)}
-							</LayoutColumnComponent>
+							</ColumnComponent>
 							<ButtonInput
 								buttons={{
 									icon: 'wallet',
@@ -666,7 +666,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							/>
 						</div>
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
 				<PopupComponent
 					open={requestWithdrawal}
@@ -789,7 +789,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					</>
 				</PopupComponent>
 
-				<LayoutColumnComponent>
+				<ColumnComponent>
 					<TableCard
 						headers={headers}
 						rows={rows}
@@ -812,7 +812,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							currencyPosition: appLocalizer.currency_position,
 						}}
 					/>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 			{viewCommission && selectedCommissionId !== null && (
 				<ViewCommission

@@ -2,12 +2,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './EventRules.scss';
 import { getApiLink } from '@zyra/core';
-import { FormGroupWrapperComponent, FormGroupComponent, PopupComponent, LayoutColumnComponent } from '@zyra/components';
+import { FormGroupWrapperComponent, FormGroupComponent, PopupComponent, ColumnComponent } from '@zyra/components';
 import {
 	TextInput,
 	ButtonInput,
 	TextAreaInput,
-	EmailListInput,
+	EmailInput,
 } from '@zyra/inputs';
 import { TableCard, QueryProps } from '@zyra/table';
 import { BlockBuilder, renderBlocksToHTML, htmlToBlocks } from '@zyra/builders';
@@ -447,7 +447,7 @@ const EventRules: React.FC = () => {
 			</div>
 
 			{viewMode === 'list' && (
-				<LayoutColumnComponent>
+				<ColumnComponent>
 					<TableCard
 						headers={headers}
 						rows={filteredNotifications}
@@ -460,7 +460,7 @@ const EventRules: React.FC = () => {
 							setNotificationId(row.id);
 						}}
 					/>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			)}
 
 			{openChannel && (
@@ -748,7 +748,7 @@ const EventRules: React.FC = () => {
 						<FormGroupComponent
 							label={__('Additional Recipients', 'multivendorx')}
 						>
-							<EmailListInput
+							<EmailInput
 								mode="multiple"
 								value={
 									newRecipientValue

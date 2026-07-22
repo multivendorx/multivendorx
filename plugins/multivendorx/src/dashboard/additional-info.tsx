@@ -5,7 +5,7 @@ import { getApiLink } from '@zyra/core';
 import {
 	NoticeManager,
 	ContainerComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	CardComponent,
 	FormGroupWrapperComponent,
 	FormGroupComponent,
@@ -78,7 +78,7 @@ const AdditionalInformation = () => {
 	return (
 		<>
 			<ContainerComponent general>
-				<LayoutColumnComponent grid={8}>
+				<ColumnComponent grid={8}>
 					{/* Message to Buyer */}
 					<CardComponent title={__('Message to Buyer', 'multivendorx')}>
 						<FormGroupWrapperComponent>
@@ -159,7 +159,7 @@ const AdditionalInformation = () => {
 							</FormGroupComponent>
 						</FormGroupWrapperComponent>
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);

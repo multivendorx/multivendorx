@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PopupComponent, ContainerComponent, LayoutColumnComponent } from '@zyra/components';
+import { PopupComponent, ContainerComponent, ColumnComponent } from '@zyra/components';
 import ShowProPopup from '../Popup/Popup';
 import './enquiryMessages.scss';
 import { applyFilters } from '@wordpress/hooks';
@@ -275,9 +275,9 @@ const EnquiryMessages = () => {
 
     return (
         <ContainerComponent general>
-            <LayoutColumnComponent>
+            <ColumnComponent>
                 <MessageComponent />
-            </LayoutColumnComponent>
+            </ColumnComponent>
         </ContainerComponent>
     );
 };
@@ -299,7 +299,7 @@ const DummyEnquiryMessages = () => {
             )}
 
             <ContainerComponent>
-                <LayoutColumnComponent>
+                <ColumnComponent>
                     <div
                         id="enquiry-messages"
                         className="demo-wrapper"
@@ -494,7 +494,7 @@ const DummyEnquiryMessages = () => {
                             </div>
                         </div>
                     </div>
-                </LayoutColumnComponent>
+                </ColumnComponent>
             </ContainerComponent>
         </div>
     );

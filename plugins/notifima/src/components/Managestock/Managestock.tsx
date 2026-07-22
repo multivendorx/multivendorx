@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { MultiCheckboxInput } from '@zyra/inputs';
 import {
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	InformationItemComponent,
 	PopupComponent,
@@ -182,9 +182,9 @@ const Managestock = () => {
                 headerTitle={__('Manage Stock', 'notifima')}
             />
             <ContainerComponent general>
-                <LayoutColumnComponent>
+                <ColumnComponent>
                     {renderTableContent()}
-                </LayoutColumnComponent>
+                </ColumnComponent>
             </ContainerComponent>
         </>
     );

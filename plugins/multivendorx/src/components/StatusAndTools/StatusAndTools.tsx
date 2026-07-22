@@ -9,7 +9,7 @@ import { getTemplateData } from '../../services/templateService';
 
 import { InputRenderer } from '@zyra/inputs';
 import { getAvailableSettings, getSettingById, useModules } from '@zyra/core';
-import { SettingsNavigatorComponent } from '@zyra/components';
+import { NavigatorComponent } from '@zyra/components';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 
@@ -103,7 +103,7 @@ const StatusAndTools: React.FC<SettingsProps> = () => {
 
 	return (
 		<SettingProvider>
-			<SettingsNavigatorComponent
+			<NavigatorComponent
 				settingContent={settingsArray}
 				currentSetting={location.get('subtab') as string}
 				getForm={GetForm}

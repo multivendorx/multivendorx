@@ -13,7 +13,7 @@ import {
 } from '@zyra/inputs';
 import {
 	ContainerComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	FormGroupWrapperComponent,
 	FormGroupComponent,
 	PopupComponent,
@@ -591,7 +591,7 @@ export const Announcements: React.FC = () => {
 			</PopupComponent>
 
 			<ContainerComponent general>
-				<LayoutColumnComponent>
+				<ColumnComponent>
 					<TableCard
 						headers={headers}
 						rows={rows}
@@ -611,7 +611,7 @@ export const Announcements: React.FC = () => {
 						}}
 						format={appLocalizer.date_format}
 					/>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 
 import {
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	InformationItemComponent,
 	PopupComponent,
@@ -153,7 +153,7 @@ const Enrollment: React.FC = () => {
 				)}
 			/>
 			<ContainerComponent general>
-				<LayoutColumnComponent>
+				<ColumnComponent>
 					<div className="demo-wrapper" onClick={handleTableWrapperClick}>
 						{!appLocalizer.khali_dabba && (
 							<div className="watermark">{__('This is sample Data','moowoodle' )}</div>
@@ -161,7 +161,7 @@ const Enrollment: React.FC = () => {
 						<TableCard {...tableProps} />
 						{tableProps.popup}
 					</div>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);

@@ -7,11 +7,11 @@ import {
 	TextInput,
 	SelectInput,
 	TextAreaInput,
-	EmailListInput,
+	EmailInput,
 } from '@zyra/inputs';
 import {
 	CardComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	FormGroupComponent,
 	FormGroupWrapperComponent,
@@ -826,7 +826,7 @@ const AddOrder = () => {
 				]}
 			/>
 			<ContainerComponent>
-				<LayoutColumnComponent grid={8}>
+				<ColumnComponent grid={8}>
 					<CardComponent>
 						{(addedProducts.length > 0 ||
 							shippingLines.length > 0) && (
@@ -998,8 +998,8 @@ const AddOrder = () => {
 							</div>
 						)}
 					</CardComponent>
-				</LayoutColumnComponent>
-				<LayoutColumnComponent grid={4}>
+				</ColumnComponent>
+				<ColumnComponent grid={4}>
 					<CardComponent title={__('Payment Method', 'multivendorx')}>
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
@@ -1173,7 +1173,7 @@ const AddOrder = () => {
 									label={__('Email', 'multivendorx')}
 									htmlFor="email"
 								>
-									<EmailListInput
+									<EmailInput
 										mode="single"
 										value={
 											newCustomer.email
@@ -1252,7 +1252,7 @@ const AddOrder = () => {
 							/>
 						</FormGroupComponent>
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);

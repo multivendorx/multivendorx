@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { getApiLink } from '@zyra/core';
 
 import {
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	InformationItemComponent,
 	PopupComponent,
@@ -216,9 +216,9 @@ const SubscribersList = () => {
                 ]}
             />
             <ContainerComponent general>
-                <LayoutColumnComponent>
+                <ColumnComponent>
                     {renderTableContent()}
-                </LayoutColumnComponent>
+                </ColumnComponent>
             </ContainerComponent>
         </>
     );

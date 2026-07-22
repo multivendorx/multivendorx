@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import './AdminDashboard.scss';
 // import '../dashboard.scss';
-import { LayoutColumnComponent, ContainerComponent, TabsComponent } from '@zyra/components';
+import { ColumnComponent, ContainerComponent, TabsComponent } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 import FreeVsProTab from './FreeVsProTab';
 import DashboardTab from './DashboardTab';
@@ -37,13 +37,13 @@ const AdminDashboard = () => {
 
 	return (
 		<ContainerComponent className="dashboard-tab">
-			<LayoutColumnComponent>
+			<ColumnComponent>
 				<TabsComponent
 					tabs={tabs}
 					className="background"
 					headerExtra={upgradeButton}
 				/>
-			</LayoutColumnComponent>
+			</ColumnComponent>
 		</ContainerComponent>
 	);
 };

@@ -15,10 +15,10 @@ import { getApiLink } from '@zyra/core';
 import {
 	AnalyticsComponent,
 	CardComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	InformationItemComponent,
-	ComponentStatusComponent,
+	ModuleGuardComponent,
 } from '@zyra/components';
 import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import axios from 'axios';
@@ -411,7 +411,7 @@ const ProductReport: React.FC = () => {
 		<>
 			<ContainerComponent>
 				{/* Keep entire top dashboard layout */}
-				<LayoutColumnComponent row>
+				<ColumnComponent row>
 					<AnalyticsComponent
 						cols={2}
 						data={overview.map((item, idx) => ({
@@ -449,7 +449,7 @@ const ProductReport: React.FC = () => {
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={__(
 									'No product sales data found.',
 									'multivendorx'
@@ -457,10 +457,10 @@ const ProductReport: React.FC = () => {
 							/>
 						)}
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
 				{/* Categories and brands */}
-				<LayoutColumnComponent row>
+				<ColumnComponent row>
 					{/* Top Reviewed Products Section */}
 					<CardComponent title="Top Reviewed Products">
 						{toReviewedProduct.length > 0 ? (
@@ -490,7 +490,7 @@ const ProductReport: React.FC = () => {
 								)
 							)
 						) : (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={__(
 									'No reviewed products found.',
 									'multivendorx'
@@ -525,7 +525,7 @@ const ProductReport: React.FC = () => {
 								)
 							)
 						) : (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={__(
 									'No top selling products found.',
 									'multivendorx'
@@ -533,7 +533,7 @@ const ProductReport: React.FC = () => {
 							/>
 						)}
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 
 			<TableCard

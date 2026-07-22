@@ -9,7 +9,7 @@ import {
 	NoticeComponent,
 	PopupComponent,
 	SectionComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 } from '@zyra/components';
 import { TableCard, TableRow } from '@zyra/table';
@@ -230,7 +230,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 			}}
 		>
 			<ContainerComponent className="className">
-				<LayoutColumnComponent grid={6}>
+				<ColumnComponent grid={6}>
 					<FormGroupWrapperComponent>
 						<SectionComponent
 							title={__('Order Overview', 'multivendorx')}
@@ -277,9 +277,9 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							</span>
 						</FormGroupComponent>
 					</FormGroupWrapperComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
-				<LayoutColumnComponent  grid={6}>
+				<ColumnComponent  grid={6}>
 					<FormGroupWrapperComponent>
 						<SectionComponent
 							title={__('Commission Overview', 'multivendorx')}
@@ -344,7 +344,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							<b>{formatCurrency(commissionData?.total_order_amount)}</b>
 						</FormGroupComponent>
 					</FormGroupWrapperComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 				</ContainerComponent>
 			<SectionComponent title={__('Order Details', 'multivendorx')} />
 			{storeData?.email && (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CardComponent, LayoutColumnComponent, ContainerComponent } from '@zyra/components';
+import { CardComponent, ColumnComponent, ContainerComponent } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 import freePro from '../../assets/images/dashboard-1.png';
 interface Feature {
@@ -260,7 +260,7 @@ const FreeVsProTab: React.FC<object> = () => {
 
 	return (
 		<ContainerComponent>
-			<LayoutColumnComponent grid={8}>
+			<ColumnComponent grid={8}>
 				<CardComponent
 					title={__('Free vs Pro comparison', 'multivendorx')}
 					desc={__(
@@ -307,9 +307,9 @@ const FreeVsProTab: React.FC<object> = () => {
 						))}
 					</div>
 				</CardComponent>
-			</LayoutColumnComponent>
+			</ColumnComponent>
 
-			<LayoutColumnComponent grid={4}>
+			<ColumnComponent grid={4}>
 				<CardComponent>
 					<div className="right-pro-banner">
 						<div className="image-wrapper">
@@ -378,7 +378,7 @@ const FreeVsProTab: React.FC<object> = () => {
 						</div>
 					</div>
 				</CardComponent>
-			</LayoutColumnComponent>
+			</ColumnComponent>
 		</ContainerComponent>
 	);
 };

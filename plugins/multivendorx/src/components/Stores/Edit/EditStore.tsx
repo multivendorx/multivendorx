@@ -13,7 +13,7 @@ import {
 	ListComponent,
 	ContainerComponent,
 	NoticeManager,
-	SettingsNavigatorComponent,
+	NavigatorComponent,
 } from '@zyra/components';
 
 import StoreSettings from './StoreSettings';
@@ -408,7 +408,7 @@ const EditStore = () => {
 	].filter(Boolean);
 	return (
 		<>
-			<SettingsNavigatorComponent
+			<NavigatorComponent
 				settingContent={visibleTabs}
 				currentSetting={currentTab}
 				getForm={getForm}

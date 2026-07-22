@@ -6,7 +6,7 @@ import {
 	FormGroupWrapperComponent,
 	CardComponent,
 	ContainerComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 } from '@zyra/components';
 import { TextInput, ButtonInput, TextAreaInput } from '@zyra/inputs';
 import axios from 'axios';
@@ -67,7 +67,7 @@ const ProfileUpdate: React.FC = () => {
 	return (
 		<>
 			<ContainerComponent>
-				<LayoutColumnComponent row>
+				<ColumnComponent row>
 
 					<CardComponent title={__('Personal Information', 'multivendorx')}>
 						<FormGroupWrapperComponent>
@@ -159,7 +159,7 @@ const ProfileUpdate: React.FC = () => {
 						</FormGroupWrapperComponent>
 					</CardComponent>
 
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);

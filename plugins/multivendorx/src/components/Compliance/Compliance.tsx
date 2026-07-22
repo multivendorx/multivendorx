@@ -3,9 +3,9 @@
 import { useModules } from '@zyra/core';
 import {
 	ContainerComponent,
-	LayoutColumnComponent,
-	ComponentStatusComponent,
-	SettingsNavigatorComponent,
+	ColumnComponent,
+	ModuleGuardComponent,
+	NavigatorComponent,
 } from '@zyra/components';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -104,7 +104,7 @@ const Compliance = () => {
 	return (
 		<>
 			{settingContent.length > 0 ? (
-				<SettingsNavigatorComponent
+				<NavigatorComponent
 					settingContent={settingContentWithCounts}
 					currentSetting={location.get('subtab') as string}
 					getForm={getForm}
@@ -124,8 +124,8 @@ const Compliance = () => {
 				/>
 			) : (
 				<ContainerComponent general>
-					<LayoutColumnComponent>
-						<ComponentStatusComponent
+					<ColumnComponent>
+						<ModuleGuardComponent
 							title={__(
 								'Looks like the compliance module isn’t active yet!',
 								'multivendorx'
@@ -137,7 +137,7 @@ const Compliance = () => {
 							buttonText={__('Enable Now', 'multivendorx')}
 							buttonLink={`${appLocalizer.admin_dashboard_url}#&tab=modules&module=marketplace-compliance`}
 						/>
-					</LayoutColumnComponent>
+					</ColumnComponent>
 				</ContainerComponent>
 			)}
 		</>

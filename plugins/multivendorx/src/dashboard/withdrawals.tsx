@@ -8,7 +8,7 @@ import { TextInput, ButtonInput } from '@zyra/inputs';
 import {
 	CardComponent,
 	ContainerComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	FormGroupWrapperComponent,
 	FormGroupComponent,
 	PopupComponent,
@@ -201,7 +201,7 @@ const Withdrawals: React.FC = () => {
 			/>
 
 			<ContainerComponent className="store-withdrawals">
-				<LayoutColumnComponent grid={6}>
+				<ColumnComponent grid={6}>
 					<CardComponent title={__('Last Withdrawal', 'multivendorx')}>
 						{lastWithdraws && lastWithdraws.length > 0 ? (
 							lastWithdraws.map((item: WithdrawalItem) => (
@@ -261,8 +261,8 @@ const Withdrawals: React.FC = () => {
 							}}
 						/>
 					</CardComponent>
-				</LayoutColumnComponent>
-				<LayoutColumnComponent grid={6}>
+				</ColumnComponent>
+				<ColumnComponent grid={6}>
 					<CardComponent>
 						<div className="payout-card-wrapper">
 							<div className="price-wrapper">
@@ -315,7 +315,7 @@ const Withdrawals: React.FC = () => {
 
 							</div>
 							{showStoreDeatils && (
-								<LayoutColumnComponent row>
+								<ColumnComponent row>
 									{Number(data?.locking_balance) > 0 ? (
 										<ListComponent
 											className="mini-card"
@@ -428,7 +428,7 @@ const Withdrawals: React.FC = () => {
 											]}
 										/>
 									)}
-								</LayoutColumnComponent>
+								</ColumnComponent>
 							)}
 							<ButtonInput
 								buttons={{
@@ -442,7 +442,7 @@ const Withdrawals: React.FC = () => {
 							/>
 						</div>
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 
 			{requestWithdrawal && (

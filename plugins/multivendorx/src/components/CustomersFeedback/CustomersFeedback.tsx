@@ -3,9 +3,9 @@
 import { useModules } from '@zyra/core';
 import {
 	ContainerComponent,
-	LayoutColumnComponent,
-	ComponentStatusComponent,
-	SettingsNavigatorComponent,
+	ColumnComponent,
+	ModuleGuardComponent,
+	NavigatorComponent,
 } from '@zyra/components';
 import '../AdminDashboard/AdminDashboard.scss';
 import { useState, useEffect } from 'react';
@@ -103,7 +103,7 @@ const CustomersFeedback = () => {
 	return (
 		<>
 			{settingContent.length > 0 ? (
-				<SettingsNavigatorComponent
+				<NavigatorComponent
 					settingContent={settingContentWithCounts}
 					currentSetting={location.get('subtab') as string}
 					getForm={getForm}
@@ -123,8 +123,8 @@ const CustomersFeedback = () => {
 				/>
 			) : (
 				<ContainerComponent general>
-					<LayoutColumnComponent>
-						<ComponentStatusComponent
+					<ColumnComponent>
+						<ModuleGuardComponent
 							title={__(
 								'Looks like customer support isn’t set up yet!',
 								'multivendorx'
@@ -136,7 +136,7 @@ const CustomersFeedback = () => {
 							buttonText={__('Enable Now', 'multivendorx')}
 							buttonLink={`${appLocalizer.admin_dashboard_url}#&tab=modules&module=customer-queries`}
 						/>
-					</LayoutColumnComponent>
+					</ColumnComponent>
 				</ContainerComponent>
 			)}
 		</>

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { ContainerComponent, LayoutColumnComponent, InformationItemComponent } from '@zyra/components';
+import { ContainerComponent, ColumnComponent, InformationItemComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	formatCurrency,
@@ -214,7 +214,7 @@ const StoreTable: React.FC = () => {
 	];
 	return (
 		<ContainerComponent general>
-			<LayoutColumnComponent>
+			<ColumnComponent>
 				<TableCard
 					headers={headers}
 					rows={rows}
@@ -232,7 +232,7 @@ const StoreTable: React.FC = () => {
 					format={appLocalizer.date_format}
 					currencySymbol={appLocalizer.currency_symbol}
 				/>
-			</LayoutColumnComponent>
+			</ColumnComponent>
 		</ContainerComponent>
 	);
 };

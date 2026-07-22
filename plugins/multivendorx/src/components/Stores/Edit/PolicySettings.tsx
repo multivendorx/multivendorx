@@ -4,7 +4,7 @@ import axios from 'axios';
 import { getApiLink } from '@zyra/core';
 import {
 	ContainerComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	CardComponent,
 	FormGroupWrapperComponent,
 	NoticeManager,
@@ -65,7 +65,7 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 
 	return (
 		<ContainerComponent>
-			<LayoutColumnComponent row>
+			<ColumnComponent row>
 				<CardComponent title={__('Store policy', 'multivendorx')}>
 					<FormGroupWrapperComponent>
 						<TextAreaInput
@@ -100,8 +100,8 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 						/>
 					</FormGroupWrapperComponent>
 				</CardComponent>
-			</LayoutColumnComponent>
-			<LayoutColumnComponent row>
+			</ColumnComponent>
+			<ColumnComponent row>
 				<CardComponent title={__('Refund policy', 'multivendorx')}>
 					<FormGroupWrapperComponent>
 						<TextAreaInput
@@ -141,7 +141,7 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 						/>
 					</FormGroupWrapperComponent>
 				</CardComponent>
-			</LayoutColumnComponent>
+			</ColumnComponent>
 		</ContainerComponent>
 	);
 };

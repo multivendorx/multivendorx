@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { AnalyticsComponent, CardComponent, LayoutColumnComponent, InformationItemComponent } from '@zyra/components';
+import { AnalyticsComponent, CardComponent, ColumnComponent, InformationItemComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	Cell,
@@ -279,7 +279,7 @@ const StoreReport: React.FC = () => {
 
 	return (
 		<>
-			<LayoutColumnComponent row>
+			<ColumnComponent row>
 				<AnalyticsComponent
 					cols={2}
 					data={overviewData.map((item) => ({
@@ -320,7 +320,7 @@ const StoreReport: React.FC = () => {
 						</PieChart>
 					</ResponsiveContainer>
 				</CardComponent>
-			</LayoutColumnComponent>
+			</ColumnComponent>
 
 			<TableCard
 				headers={headers}

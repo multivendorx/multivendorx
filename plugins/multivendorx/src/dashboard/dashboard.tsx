@@ -22,10 +22,10 @@ import { getApiLink, useModules } from '@zyra/core';
 import {
 	AnalyticsComponent,
 	CardComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	InformationItemComponent,
-	ComponentStatusComponent,
+	ModuleGuardComponent,
 	ListComponent,
 	NavigatorHeaderComponent,
 } from '@zyra/components';
@@ -570,7 +570,7 @@ const Dashboard: React.FC = () => {
 				}
 			/>
 			<ContainerComponent className="store-dashboard">
-				<LayoutColumnComponent>
+				<ColumnComponent>
 					<AnalyticsComponent
 						variant="dashboard"
 						isLoading={isLoading}
@@ -602,9 +602,9 @@ const Dashboard: React.FC = () => {
 							),
 						}))}
 					/>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
-				<LayoutColumnComponent fullHeight grid={8}>
+				<ColumnComponent fullHeight grid={8}>
 					<CardComponent title={__('Sales Overview', 'multivendorx')}>
 						{revenueData && revenueData.length > 0 ? (
 							<ResponsiveContainer height={250}>
@@ -655,7 +655,7 @@ const Dashboard: React.FC = () => {
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={__(
 									'Your first sale is just around the corner!',
 									'multivendorx'
@@ -663,9 +663,9 @@ const Dashboard: React.FC = () => {
 							/>
 						)}
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
-				<LayoutColumnComponent fullHeight grid={4}>
+				<ColumnComponent fullHeight grid={4}>
 					<CardComponent title={__('Last Withdrawal', 'multivendorx')}>
 						<div className="top-customer-wrapper">
 							{lastWithdraws && lastWithdraws.length > 0 ? (
@@ -696,7 +696,7 @@ const Dashboard: React.FC = () => {
 									/>
 								))
 							) : (
-								<ComponentStatusComponent
+								<ModuleGuardComponent
 									title={__(
 										'Earnings will appear here once you make a withdrawal.',
 										'multivendorx'
@@ -722,15 +722,15 @@ const Dashboard: React.FC = () => {
 							/>
 						)}
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
-				<LayoutColumnComponent fullHeight grid={4}>
+				<ColumnComponent fullHeight grid={4}>
 					<CardComponent title={__('Visitors Map', 'multivendorx')}>
 						<VisitorsMap dateRange={dateRange} />
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
-				<LayoutColumnComponent fullHeight grid={8}>
+				<ColumnComponent fullHeight grid={8}>
 					<CardComponent
 						title={__('Recent Orders', 'multivendorx')}
 						iconName="external icon"
@@ -764,7 +764,7 @@ const Dashboard: React.FC = () => {
 								}}
 							/>
 						) : (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={__(
 									'Ready to receive your first order!',
 									'multivendorx'
@@ -772,10 +772,10 @@ const Dashboard: React.FC = () => {
 							/>
 						)}
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
 				{/* Best-Selling Products */}
-				<LayoutColumnComponent fullHeight grid={6}>
+				<ColumnComponent fullHeight grid={6}>
 					<CardComponent
 						title={__('Best-Selling Products', 'multivendorx')}
 						iconName="external icon"
@@ -797,7 +797,7 @@ const Dashboard: React.FC = () => {
 								showColumnToggleIcon={false}
 							/>
 						) : (
-							<ComponentStatusComponent
+							<ModuleGuardComponent
 								title={__(
 									'Start selling to discover your top products!',
 									'multivendorx'
@@ -805,10 +805,10 @@ const Dashboard: React.FC = () => {
 							/>
 						)}
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
 				{/* Commission Overview */}
-				<LayoutColumnComponent fullHeight grid={6}>
+				<ColumnComponent fullHeight grid={6}>
 					<CardComponent
 						title={__('Commission Overview', 'multivendorx')}
 						iconName="external icon"
@@ -861,10 +861,10 @@ const Dashboard: React.FC = () => {
 							</ResponsiveContainer>
 						</div>
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 				{/* Admin Announcements */}
 				{modules.includes('announcement') && (
-					<LayoutColumnComponent fullHeight grid={4}>
+					<ColumnComponent fullHeight grid={4}>
 						<CardComponent
 							title={__('Admin Announcements', 'multivendorx')}
 							iconName="external icon"
@@ -888,7 +888,7 @@ const Dashboard: React.FC = () => {
 									}))}
 								/>
 							) : (
-								<ComponentStatusComponent
+								<ModuleGuardComponent
 									title={__(
 										"You're all caught up - check back for updates!",
 										'multivendorx'
@@ -896,10 +896,10 @@ const Dashboard: React.FC = () => {
 								/>
 							)}
 						</CardComponent>
-					</LayoutColumnComponent>
+					</ColumnComponent>
 				)}
 				{modules.includes('marketplace-refund') && (
-					<LayoutColumnComponent fullHeight grid={4}>
+					<ColumnComponent fullHeight grid={4}>
 						<CardComponent
 							title={__('Pending Refunds', 'multivendorx')}
 							iconName="external icon"
@@ -933,7 +933,7 @@ const Dashboard: React.FC = () => {
 										</div>
 									))
 								) : (
-									<ComponentStatusComponent
+									<ModuleGuardComponent
 										title={__(
 											'Refund requests will appear here when submitted.',
 											'multivendorx'
@@ -942,12 +942,12 @@ const Dashboard: React.FC = () => {
 								)}
 							</div>
 						</CardComponent>
-					</LayoutColumnComponent>
+					</ColumnComponent>
 				)}
 				{modules.includes('privacy') &&
 					Array.isArray(access) &&
 					access.includes('name') && (
-						<LayoutColumnComponent fullHeight grid={4}>
+						<ColumnComponent fullHeight grid={4}>
 							<CardComponent title={__('Top Customers', 'multivendorx')}>
 								{customers && customers.length > 0 ? (
 									customers.map((order, index) => {
@@ -974,7 +974,7 @@ const Dashboard: React.FC = () => {
 										);
 									})
 								) : (
-									<ComponentStatusComponent
+									<ModuleGuardComponent
 										title={__(
 											'Top customers will appear here once you receive orders.',
 											'multivendorx'
@@ -982,9 +982,9 @@ const Dashboard: React.FC = () => {
 									/>
 								)}
 							</CardComponent>
-						</LayoutColumnComponent>
+						</ColumnComponent>
 					)}
-				<LayoutColumnComponent fullHeight grid={4}>
+				<ColumnComponent fullHeight grid={4}>
 					<CardComponent title={__('Store Activity', 'multivendorx')}>
 						<div className="activity-log">
 							{Array.isArray(activities) &&
@@ -997,7 +997,7 @@ const Dashboard: React.FC = () => {
 									</div>
 								))
 							) : (
-								<ComponentStatusComponent
+								<ModuleGuardComponent
 									title={__(
 										'Activity will show up here as your store grows!',
 										'multivendorx'
@@ -1006,9 +1006,9 @@ const Dashboard: React.FC = () => {
 							)}
 						</div>
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 				{modules.includes('store-review') && (
-					<LayoutColumnComponent fullHeight grid={4}>
+					<ColumnComponent fullHeight grid={4}>
 						<CardComponent
 							title={__('Latest Reviews', 'multivendorx')}
 							iconName="external icon"
@@ -1058,7 +1058,7 @@ const Dashboard: React.FC = () => {
 										</div>
 									))
 								) : (
-									<ComponentStatusComponent
+									<ModuleGuardComponent
 										title={__(
 											"No reviews yet - they'll show up here once received.",
 											'multivendorx'
@@ -1067,7 +1067,7 @@ const Dashboard: React.FC = () => {
 								)}
 							</div>
 						</CardComponent>
-					</LayoutColumnComponent>
+					</ColumnComponent>
 				)}
 			</ContainerComponent>
 		</>

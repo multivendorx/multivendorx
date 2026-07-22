@@ -8,7 +8,7 @@ import { getTemplateData } from '../services/templateService';
 
 import { InputRenderer } from '@zyra/inputs';
 import { getAvailableSettings, getSettingById, useModules } from '@zyra/core';
-import { SettingsNavigatorComponent } from '@zyra/components';
+import { NavigatorComponent } from '@zyra/components';
 import ShowProPopup from '../components/Popup/Popup';
 import ShippingDelivery from './settings/ShippingDelivery';
 import BusinessAddress from './DashboardSettings/BusinessAddress';
@@ -140,7 +140,7 @@ const settings: React.FC<SettingsProps> = () => {
 	return (
 		<>
 			<SettingProvider>
-				<SettingsNavigatorComponent
+				<NavigatorComponent
 					settingContent={settingsArray}
 					currentSetting={currentTab}
 					getForm={GetForm}

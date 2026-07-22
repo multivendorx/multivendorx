@@ -14,7 +14,7 @@ import {
 import { getApiLink, useModules } from '@zyra/core';
 import {
 	CardComponent,
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	FormGroupWrapperComponent,
 	FormGroupComponent,
@@ -289,7 +289,7 @@ const AddProduct = () => {
 				])}
 			/>
 			<ContainerComponent>
-				<LayoutColumnComponent grid={3}>
+				<ColumnComponent grid={3}>
 					<CardComponent
 						title={__(
 							'What kind of product is this?',
@@ -446,9 +446,9 @@ const AddProduct = () => {
 						product
 					)}
 					</div>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 
-				<LayoutColumnComponent grid={6}>
+				<ColumnComponent grid={6}>
 					{rejectNote && (
 						<CardComponent
 							title={__(
@@ -713,8 +713,8 @@ const AddProduct = () => {
 						modules,
 						setFeaturedImage
 					)}
-				</LayoutColumnComponent>
-				<LayoutColumnComponent grid={3}>
+				</ColumnComponent>
+				<ColumnComponent grid={3}>
 					{applyFilters(
 						'multivendorx_add_product_right_section',
 						null,
@@ -835,7 +835,7 @@ const AddProduct = () => {
 
 						</FormGroupWrapperComponent>
 					</CardComponent>
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);

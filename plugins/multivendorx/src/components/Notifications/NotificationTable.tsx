@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { ContainerComponent, LayoutColumnComponent, InformationItemComponent, NoticeManager } from '@zyra/components';
+import { ContainerComponent, ColumnComponent, InformationItemComponent, NoticeManager } from '@zyra/components';
 import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import { getUrl } from '@/services/commonFunction';
 
@@ -73,7 +73,7 @@ const NotificationTable = (React.FC = () => {
 
 	return (
 		<ContainerComponent>
-			<LayoutColumnComponent>
+			<ColumnComponent>
 				<TableCard
 					headers={headers}
 					rows={rows}
@@ -83,7 +83,7 @@ const NotificationTable = (React.FC = () => {
 					format={appLocalizer.date_format}
 					showMenu={false}
 				/>
-			</LayoutColumnComponent>
+			</ColumnComponent>
 		</ContainerComponent>
 	);
 });

@@ -8,11 +8,11 @@ import { defaultCategoryCounts, dummyWholesalecustomer } from './WholesaleUserUt
 
 
 import {
-	LayoutColumnComponent,
+	ColumnComponent,
 	ContainerComponent,
 	InformationItemComponent,
 	PopupComponent,
-	ComponentStatusComponent,
+	ModuleGuardComponent,
 	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
@@ -121,7 +121,7 @@ const WholesaleUser = () => {
 
 		if (!appLocalizer.active_modules.includes('wholesale')) {
 			return (
-				<ComponentStatusComponent
+				<ModuleGuardComponent
 					title={__(
 						'Looks like wholesale pricing isn’t set up yet!',
 						'catalogx'
@@ -170,9 +170,9 @@ const WholesaleUser = () => {
 			/>
 
 			<ContainerComponent general>
-				<LayoutColumnComponent>
+				<ColumnComponent>
 					{renderTableContent()}
-				</LayoutColumnComponent>
+				</ColumnComponent>
 			</ContainerComponent>
 		</>
 	);
