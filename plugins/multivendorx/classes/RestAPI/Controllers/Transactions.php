@@ -335,12 +335,14 @@ class Transactions extends \WP_REST_Controller {
         }
 
         $threshold_amount = MultiVendorX()->setting->get_setting( 'payout_threshold_amount', 0 );
+        $transaction = Transaction::get_balances_for_store( $store_id );
+        $balance         = $transaction['balance'];
 
         if ( $disbursement ) {
             $method = $request->get_param( 'method' );
             $note   = $request->get_param( 'note' );
 
-            if ( $threshold_amount < $amount ) {
+            if ( $threshold_amount < $amount && $balance >= $amount ) {
                 MultiVendorX()->payments->processor->process_payment( $store_id, $amount, null, $method, $note, $disbursement );
                 return rest_ensure_response(
                     array(
@@ -352,7 +354,7 @@ class Transactions extends \WP_REST_Controller {
         }
 
         if ( $withdraw ) {
-            if ( 'approve' === $action && $threshold_amount < $amount ) {
+            if ( 'approve' === $action && $threshold_amount < $amount && $balance >= $amount ) {
                 MultiVendorX()->payments->processor->process_payment( $store_id, $amount, null, null, null, true );
                 MultiVendorX()->notifications->send_notification_helper(
                     'withdrawal_released',
