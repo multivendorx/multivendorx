@@ -2,19 +2,22 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import StoreTable from './StoreTable';
 import EditStore from './Edit/EditStore';
+import { getApiLink } from '@zyra/core';
+
 import {
-	ButtonInputUI,
-	BasicInputUI,
-	EmailsInputUI,
-	FileInputUI,
-	FormGroup,
-	FormGroupWrapper,
-	getApiLink,
-	NavigatorHeader,
-	PopupUI,
-	SelectInputUI,
-	TextAreaUI,
-} from 'zyra';
+	ButtonInput,
+	TextInput,
+	EmailInput,
+	FileInput,
+	SelectInput,
+	TextAreaInput,
+} from '@zyra/inputs';
+import {
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
 import { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
@@ -223,7 +226,7 @@ const Stores = () => {
 
 			{!isEditStore && (
 				<>
-					<NavigatorHeader
+					<NavigatorHeaderComponent
 						headerIcon="storefront"
 						headerTitle={__('Stores', 'multivendorx')}
 						headerDescription={__(
@@ -241,7 +244,7 @@ const Stores = () => {
 						]}
 					/>
 					{addStore && (
-						<PopupUI
+						<PopupComponent
 							open={addStore}
 							width={31.25}
 							onClose={() => {
@@ -257,7 +260,7 @@ const Stores = () => {
 								),
 							}}
 							footer={
-								<ButtonInputUI
+								<ButtonInput
 									buttons={[
 										{
 											icon: 'close',
@@ -277,34 +280,34 @@ const Stores = () => {
 								/>
 							}
 						>
-							<FormGroupWrapper>
-								<FormGroup
+							<FormGroupWrapperComponent>
+								<FormGroupComponent
 									label={__('Store name', 'multivendorx')}
 									htmlFor="store-name"
 									{...getFieldNotice('name')}
 								>
-									<BasicInputUI
+									<TextInput
 										name="name"
 										value={formData.name || ''}
 										onChange={(val) =>
 											handleChange('name', val as string)
 										}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									label={__('Store slug', 'multivendorx')}
 									htmlFor="store-slug"
 									{...getFieldNotice('slug')}
 								>
-									<BasicInputUI
+									<TextInput
 										name="slug"
 										value={formData.slug || ''}
 										onChange={(val) =>
 											handleChange('slug', val as string)
 										}
 									/>
-									<ButtonInputUI
+									<ButtonInput
 										buttons={{
 											text: __(
 												'Check Slug',
@@ -313,13 +316,13 @@ const Stores = () => {
 											onClick: handleSlugCheck,
 										}}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									label={__('Store Email', 'multivendorx')}
 									{...getFieldNotice('email')}
 								>
-									<EmailsInputUI
+									<EmailInput
 										value={
 											formData?.store_email?.list || []
 										}
@@ -331,13 +334,13 @@ const Stores = () => {
 											saveEmails(list, primary)
 										}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									label={__('Description', 'multivendorx')}
 									htmlFor="Description"
 								>
-									<TextAreaUI
+									<TextAreaInput
 										name="description"
 										value={formData.description || ''}
 										onChange={(val: string) =>
@@ -354,14 +357,14 @@ const Stores = () => {
 											]?.['tinymce_api_section'] ?? ''
 										}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									label={__('Primary owner', 'multivendorx')}
 									htmlFor="store_owners"
 									{...getFieldNotice('primary')}
 								>
-									<SelectInputUI
+									<SelectInput
 										name="store_owners"
 										options={
 											appLocalizer?.store_owners || []
@@ -377,13 +380,13 @@ const Stores = () => {
 											clearFieldError('primary');
 										}}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									label={__('Profile image', 'multivendorx')}
 									htmlFor="store_owners"
 								>
-									<FileInputUI
+									<FileInput
 										name="image"
 										accept={
 											'.jpg,.jpeg,.png,.gif,.pdf,.zip'
@@ -407,9 +410,9 @@ const Stores = () => {
 											}));
 										}}
 									/>
-								</FormGroup>
-							</FormGroupWrapper>
-						</PopupUI>
+								</FormGroupComponent>
+							</FormGroupWrapperComponent>
+						</PopupComponent>
 					)}
 					<StoreTable />
 				</>

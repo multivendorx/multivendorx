@@ -2,16 +2,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	CategoryCount,
-	getApiLink,
-	ItemListUI,
-	NavigatorHeader,
-	QueryProps,
-	TableCard,
-	TableRow,
-	useModules,
-} from 'zyra';
+
+
+import { getApiLink, useModules } from '@zyra/core';
+import { ListComponent, NavigatorHeaderComponent } from '@zyra/components';
+import { CategoryCount, QueryProps, TableCard, TableRow } from '@zyra/table';
 
 import ViewCommission from './viewCommission';
 import {
@@ -127,7 +122,7 @@ const StoreCommission: React.FC = () => {
 				].filter((item) => item.display !== false);
 
 				return (
-					<ItemListUI className="price-list" items={earningItems} />
+					<ListComponent className="price-list" items={earningItems} />
 				);
 			},
 			csvDisplay: false
@@ -356,7 +351,7 @@ const StoreCommission: React.FC = () => {
 	];
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Commission', 'multivendorx')}
 				headerDescription={__(
 					'Details of commissions earned by your store for every order, including order amount, commission rate and payout status.',

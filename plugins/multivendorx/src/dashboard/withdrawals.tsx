@@ -2,21 +2,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
+
+import { TextInput, ButtonInput } from '@zyra/inputs';
 import {
-	getApiLink,
-	Card,
-	Container,
-	Column,
-	FormGroupWrapper,
-	FormGroup,
-	BasicInputUI,
-	ButtonInputUI,
-	PopupUI,
-	NavigatorHeader,
-	ItemListUI,
+	CardComponent,
+	ContainerComponent,
+	ColumnComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	PopupComponent,
+	ListComponent,
 	NoticeManager,
-	Notice,
-} from 'zyra';
+	NoticeComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
 import { formatCurrency } from '../services/commonFunction';
 import { applyFilters } from '@wordpress/hooks';
 interface WithdrawalData {
@@ -192,7 +192,7 @@ const Withdrawals: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Withdrawals', 'multivendorx')}
 				headerDescription={__(
 					'View and keep track of your withdrawals.',
@@ -200,9 +200,9 @@ const Withdrawals: React.FC = () => {
 				)}
 			/>
 
-			<Container className="store-withdrawals">
-				<Column grid={6}>
-					<Card title={__('Last Withdrawal', 'multivendorx')}>
+			<ContainerComponent className="store-withdrawals">
+				<ColumnComponent grid={6}>
+					<CardComponent title={__('Last Withdrawal', 'multivendorx')}>
 						{lastWithdraws && lastWithdraws.length > 0 ? (
 							lastWithdraws.map((item: WithdrawalItem) => (
 								<div
@@ -249,7 +249,7 @@ const Withdrawals: React.FC = () => {
 							</div>
 						)}
 
-						<ButtonInputUI
+						<ButtonInput
 							buttons={{
 								icon: 'eye',
 								text: __(
@@ -260,10 +260,10 @@ const Withdrawals: React.FC = () => {
 									(window.location.href = `${appLocalizer.site_url}/dashboard/transactions/`),
 							}}
 						/>
-					</Card>
-				</Column>
-				<Column grid={6}>
-					<Card>
+					</CardComponent>
+				</ColumnComponent>
+				<ColumnComponent grid={6}>
+					<CardComponent>
 						<div className="payout-card-wrapper">
 							<div className="price-wrapper">
 								<div className="admin-badge green">
@@ -315,9 +315,9 @@ const Withdrawals: React.FC = () => {
 
 							</div>
 							{showStoreDeatils && (
-								<Column row>
+								<ColumnComponent row>
 									{Number(data?.locking_balance) > 0 ? (
-										<ItemListUI
+										<ListComponent
 											className="mini-card"
 											background
 											items={[
@@ -359,7 +359,7 @@ const Withdrawals: React.FC = () => {
 											]}
 										/>
 									) : (
-										<Notice
+										<NoticeComponent
 											type="info"
 											displayPosition="inline-notice"
 											title={__(
@@ -370,7 +370,7 @@ const Withdrawals: React.FC = () => {
 									)}
 
 									{data?.withdrawal_setting?.length > 0 && (
-										<ItemListUI
+										<ListComponent
 											className="mini-card"
 											background
 											border
@@ -428,9 +428,9 @@ const Withdrawals: React.FC = () => {
 											]}
 										/>
 									)}
-								</Column>
+								</ColumnComponent>
 							)}
-							<ButtonInputUI
+							<ButtonInput
 								buttons={{
 									icon: 'withdraw',
 									text: __(
@@ -441,13 +441,13 @@ const Withdrawals: React.FC = () => {
 								}}
 							/>
 						</div>
-					</Card>
-				</Column>
-			</Container>
+					</CardComponent>
+				</ColumnComponent>
+			</ContainerComponent>
 
 			{requestWithdrawal && (
 				<>
-					<PopupUI
+					<PopupComponent
 						open={requestWithdrawal}
 						onClose={() => setRequestWithdrawal(false)}
 						width={28.125}
@@ -461,7 +461,7 @@ const Withdrawals: React.FC = () => {
 							),
 						}}
 						footer={
-							<ButtonInputUI
+							<ButtonInput
 								buttons={[
 									{
 										icon: 'wallet',
@@ -475,14 +475,14 @@ const Withdrawals: React.FC = () => {
 					>
 						<>
 							{/* start left section */}
-							<FormGroupWrapper>
+							<FormGroupWrapperComponent>
 								<div className="available-balance">
 									{__('Withdrawable balance', 'multivendorx')}{' '}
 									<div>
 										{formatCurrency(data.available_balance)}
 									</div>
 								</div>
-								<FormGroup
+								<FormGroupComponent
 									label={__(
 										'Payment Processor',
 										'multivendorx'
@@ -507,14 +507,14 @@ const Withdrawals: React.FC = () => {
 											</span>
 										)}
 									</div>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									label={__('Amount', 'multivendorx')}
 									htmlFor="Amount"
 									notice={errors.amount}
 								>
-									<BasicInputUI
+									<TextInput
 										type="number"
 										name="amount"
 										value={amount}
@@ -524,10 +524,10 @@ const Withdrawals: React.FC = () => {
 											handleAmountChange(Number(value))
 										}
 									/>
-								</FormGroup>
-							</FormGroupWrapper>
+								</FormGroupComponent>
+							</FormGroupWrapperComponent>
 						</>
-					</PopupUI>
+					</PopupComponent>
 				</>
 			)}
 		</>

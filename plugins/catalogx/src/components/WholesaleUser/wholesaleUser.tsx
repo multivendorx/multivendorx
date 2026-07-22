@@ -6,15 +6,16 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { defaultCategoryCounts, dummyWholesalecustomer } from './WholesaleUserUtil';
 
+
 import {
-	Column,
-	Container,
-	InfoItem,
-	NavigatorHeader,
-	PopupUI,
-	TableCard,
-	ComponentStatusView
-} from 'zyra';
+	ColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	PopupComponent,
+	ModuleGuardComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard } from '@zyra/table';
 
 import ShowProPopup from '../Popup/Popup';
 
@@ -35,7 +36,7 @@ const WholesaleUser = () => {
 		user: {
 			label: __('User', 'catalogx'),
 			render: (row: WholesaleUserRow) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.customer}
 					titleLink={row.customer_url}
 					descriptions={[
@@ -120,7 +121,7 @@ const WholesaleUser = () => {
 
 		if (!appLocalizer.active_modules.includes('wholesale')) {
 			return (
-				<ComponentStatusView
+				<ModuleGuardComponent
 					title={__(
 						'Looks like wholesale pricing isn’t set up yet!',
 						'catalogx'
@@ -146,7 +147,7 @@ const WholesaleUser = () => {
 	return (
 		<>
 			{openPopup && (
-				<PopupUI
+				<PopupComponent
 					position="lightbox"
 					open={openPopup}
 					onClose={() => setopenPopup(false)}
@@ -154,9 +155,9 @@ const WholesaleUser = () => {
 					height="auto"
 				>
 					<ShowProPopup />
-				</PopupUI>
+				</PopupComponent>
 			)}
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="wholesale"
 				headerDescription={__(
 					'Wholesale users are displayed with account details and statuses to help manage approvals and customer access.',
@@ -168,11 +169,11 @@ const WholesaleUser = () => {
 				)}
 			/>
 
-			<Container general>
-				<Column>
+			<ContainerComponent general>
+				<ColumnComponent>
 					{renderTableContent()}
-				</Column>
-			</Container>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

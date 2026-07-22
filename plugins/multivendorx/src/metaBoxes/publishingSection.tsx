@@ -1,13 +1,9 @@
 /* global appLocalizer */
 import { addFilter } from '@wordpress/hooks';
 import { useRef, useState, useEffect } from 'react';
-import {
-	SelectInputUI,
-	Card,
-	FormGroup,
-	FormGroupWrapper,
-	useOutsideClick,
-} from 'zyra';
+import { useOutsideClick } from '@zyra/core';
+import { CardComponent, FormGroupComponent, FormGroupWrapperComponent } from '@zyra/components';
+import { SelectInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { formatDate } from '@/services/commonFunction';
 
@@ -43,7 +39,7 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 
 
 	return (
-		<Card
+		<CardComponent
 			title={__('Publishing', 'multivendorx')}
 			action={
 				<>
@@ -60,8 +56,8 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 				</>
 			}
 		>
-			<FormGroupWrapper>
-				<FormGroup
+			<FormGroupWrapperComponent>
+				<FormGroupComponent
 					row
 					label={__('Catalog Visibility', 'multivendorx')}
 					htmlFor="catalog-visibility"
@@ -86,7 +82,7 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 								</div>
 							)}
 							{isEditingVisibility && (
-								<SelectInputUI
+								<SelectInput
 									name="catalog_visibility"
 									size="14rem"
 									options={[
@@ -132,8 +128,8 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 							)}
 						</div>
 					</div>
-				</FormGroup>
-				<FormGroup
+				</FormGroupComponent>
+				<FormGroupComponent
 					row
 					label={__('Product Status', 'multivendorx')}
 					htmlFor="status"
@@ -154,7 +150,7 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 								</div>
 							)}
 							{isEditingStatus && (
-								<SelectInputUI
+								<SelectInput
 									name="status"
 									wrapperClass="fit-content"
 									options={[
@@ -191,9 +187,9 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 							)}
 						</div>
 					</div>
-				</FormGroup>
+				</FormGroupComponent>
 
-				<FormGroup
+				<FormGroupComponent
 					row
 					label={__('Cataloged at', 'multivendorx')}
 					htmlFor="status"
@@ -204,9 +200,9 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 							{/* <i className="adminfont-arrow-down-up" /> */}
 						</span>
 					</div>
-				</FormGroup>
-			</FormGroupWrapper>
-		</Card>
+				</FormGroupComponent>
+			</FormGroupWrapperComponent>
+		</CardComponent>
 	);
 };
 

@@ -2,15 +2,13 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import {
-	BasicInputUI,
-	FormGroup,
-	FormGroupWrapper,
-	ButtonInputUI,
-	Card,
-	Container,
-	Column,
-	TextAreaUI,
-} from 'zyra';
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	CardComponent,
+	ContainerComponent,
+	ColumnComponent,
+} from '@zyra/components';
+import { TextInput, ButtonInput, TextAreaInput } from '@zyra/inputs';
 import axios from 'axios';
 
 const ProfileUpdate: React.FC = () => {
@@ -68,48 +66,48 @@ const ProfileUpdate: React.FC = () => {
 	};
 	return (
 		<>
-			<Container>
-				<Column row>
+			<ContainerComponent>
+				<ColumnComponent row>
 
-					<Card title={__('Personal Information', 'multivendorx')}>
-						<FormGroupWrapper>
+					<CardComponent title={__('Personal Information', 'multivendorx')}>
+						<FormGroupWrapperComponent>
 
-							<FormGroup label={__('First Name', 'multivendorx')}>
-								<BasicInputUI
+							<FormGroupComponent label={__('First Name', 'multivendorx')}>
+								<TextInput
 									value={formData.first_name || ''}
 									onChange={(val) => handleChange('first_name', val)}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup label={__('Last Name', 'multivendorx')}>
-								<BasicInputUI
+							<FormGroupComponent label={__('Last Name', 'multivendorx')}>
+								<TextInput
 									value={formData.last_name || ''}
 									onChange={(val) => handleChange('last_name', val)}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup label={__('Display Name', 'multivendorx')}>
-								<BasicInputUI
+							<FormGroupComponent label={__('Display Name', 'multivendorx')}>
+								<TextInput
 									value={formData.nickname || ''}
 									onChange={(val) => handleChange('nickname', val)}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup label={__('Website', 'multivendorx')}>
-								<BasicInputUI
+							<FormGroupComponent label={__('Website', 'multivendorx')}>
+								<TextInput
 									value={formData.user_url || ''}
 									onChange={(val) => handleChange('user_url', val)}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup label={__('Bio', 'multivendorx')}>
-								<TextAreaUI
+							<FormGroupComponent label={__('Bio', 'multivendorx')}>
+								<TextAreaInput
 									value={formData.description || ''}
 									onChange={(val) => handleChange('description', val)}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<ButtonInputUI
+							<ButtonInput
 								position="right"
 								buttons={[
 									{
@@ -120,23 +118,23 @@ const ProfileUpdate: React.FC = () => {
 								]}
 							/>
 
-						</FormGroupWrapper>
-					</Card>
+						</FormGroupWrapperComponent>
+					</CardComponent>
 
 
-					<Card title={__('Change Password', 'multivendorx')}>
-						<FormGroupWrapper>
+					<CardComponent title={__('Change Password', 'multivendorx')}>
+						<FormGroupWrapperComponent>
 
-							<FormGroup label={__('New Password', 'multivendorx')}>
-								<BasicInputUI
+							<FormGroupComponent label={__('New Password', 'multivendorx')}>
+								<TextInput
 									type="password"
 									value={formData.password || ''}
 									onChange={(val) => handleChange('password', val)}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup label={__('Confirm Password', 'multivendorx')}>
-								<BasicInputUI
+							<FormGroupComponent label={__('Confirm Password', 'multivendorx')}>
+								<TextInput
 									type="password"
 									value={formData.confirm_password || ''}
 									onChange={(val) => handleChange('confirm_password', val)}
@@ -145,9 +143,9 @@ const ProfileUpdate: React.FC = () => {
 										message: error
 									}}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<ButtonInputUI
+							<ButtonInput
 								position="right"
 								buttons={[
 									{
@@ -158,11 +156,11 @@ const ProfileUpdate: React.FC = () => {
 								]}
 							/>
 
-						</FormGroupWrapper>
-					</Card>
+						</FormGroupWrapperComponent>
+					</CardComponent>
 
-				</Column>
-			</Container>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

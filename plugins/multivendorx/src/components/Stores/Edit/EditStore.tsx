@@ -1,22 +1,20 @@
 /* global appLocalizer */
 import { __ } from '@wordpress/i18n';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+
+
+import { ToggleInput, ButtonInput, SelectInput } from '@zyra/inputs';
+import { getApiLink, useOutsideClick, useModules } from '@zyra/core';
 import {
-	ChoiceToggleUI,
-	getApiLink,
-	useModules,
-	FormGroupWrapper,
-	FormGroup,
-	Skeleton,
-	ButtonInputUI,
-	SelectInputUI,
-	SettingsNavigator,
-	PopupUI,
-	useOutsideClick,
-	ItemListUI,
-	Container,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	SkeletonComponent,
+	PopupComponent,
+	ListComponent,
+	ContainerComponent,
 	NoticeManager,
-} from 'zyra';
+	NavigatorComponent,
+} from '@zyra/components';
 
 import StoreSettings from './StoreSettings';
 import PaymentSettings from './PaymentSettings';
@@ -410,7 +408,7 @@ const EditStore = () => {
 	].filter(Boolean);
 	return (
 		<>
-			<SettingsNavigator
+			<NavigatorComponent
 				settingContent={visibleTabs}
 				currentSetting={currentTab}
 				getForm={getForm}
@@ -419,7 +417,7 @@ const EditStore = () => {
 				className="without-border"
 				settingTitleSection={
 					<>
-						<Container general>
+						<ContainerComponent general>
 							<div className="store-header">
 								<div
 									className="banner"
@@ -430,7 +428,7 @@ const EditStore = () => {
 									}}
 								>
 									{Object.keys(data).length === 0 ? (
-										<Skeleton
+										<SkeletonComponent
 											variant="rectangular"
 											width="100%"
 											height={12}
@@ -439,7 +437,7 @@ const EditStore = () => {
 										<div className="default-img-1500x900" />
 									) : null}
 
-									<PopupUI
+									<PopupComponent
 										position="menu-dropdown"
 										tooltipName={__(
 											'Banner',
@@ -448,7 +446,7 @@ const EditStore = () => {
 										tooltipPosition="end"
 										toggleIcon="edit theme-background"
 									>
-										<ItemListUI
+										<ListComponent
 											items={[
 												{
 													id: 'upload',
@@ -482,7 +480,7 @@ const EditStore = () => {
 												},
 											]}
 										/>
-									</PopupUI>
+									</PopupComponent>
 								</div>
 
 								<div className="logo-wrapper">
@@ -495,7 +493,7 @@ const EditStore = () => {
 										) : (
 											<div className="placeholder-400x400" />
 										)}
-										<PopupUI
+										<PopupComponent
 											position="menu-dropdown"
 											tooltipName={__(
 												'Logo',
@@ -504,7 +502,7 @@ const EditStore = () => {
 											tooltipPosition="top"
 											toggleIcon="edit theme-background"
 										>
-											<ItemListUI
+											<ListComponent
 												items={[
 													{
 														id: 'upload',
@@ -540,7 +538,7 @@ const EditStore = () => {
 													},
 												]}
 											/>
-										</PopupUI>
+										</PopupComponent>
 									</div>
 
 									<div className="tag-wrapper">
@@ -586,7 +584,7 @@ const EditStore = () => {
 												)}
 											</span>
 										) : (
-											<Skeleton width={6.25} />
+											<SkeletonComponent width={6.25} />
 										)}
 
 										{/* {modules.includes(
@@ -675,7 +673,7 @@ const EditStore = () => {
 														) : data?.name ? (
 															data.name
 														) : (
-															<Skeleton
+															<SkeletonComponent
 																width={9.375}
 															/>
 														)}
@@ -766,7 +764,7 @@ const EditStore = () => {
 																)}
 														</>
 													) : (
-														<Skeleton
+														<SkeletonComponent
 															width={6.25}
 														/>
 													)}
@@ -811,7 +809,7 @@ const EditStore = () => {
 													/>
 												) : Object.keys(data).length ===
 													0 ? (
-													<Skeleton width={9.375} />
+													<SkeletonComponent width={9.375} />
 												) : data?.description ? (
 													<div>
 														<span>
@@ -998,23 +996,23 @@ const EditStore = () => {
 									</div>
 								</div>
 							</div>
-						</Container>
+						</ContainerComponent>
 					</>
 				}
 				Link={Link}
 				settingName={'Store'}
 				action={
-					<PopupUI
+					<PopupComponent
 						position="menu-dropdown"
 						toggleIcon="more-vertical"
 						tooltipName={__('Settings', 'multivendorx')}
 						tooltipPosition="end"
 					>
-						<ItemListUI items={actionItems} />
-					</PopupUI>
+						<ListComponent items={actionItems} />
+					</PopupComponent>
 				}
 			/>
-			<PopupUI
+			<PopupComponent
 				open={deleteModal}
 				onClose={() => setDeleteModal(false)}
 				width={37.5}
@@ -1028,7 +1026,7 @@ const EditStore = () => {
 					),
 				}}
 				footer={
-					<ButtonInputUI
+					<ButtonInput
 						buttons={[
 							{
 								icon: 'close',
@@ -1051,12 +1049,12 @@ const EditStore = () => {
 				}
 			>
 				<>
-					<FormGroupWrapper>
-						<FormGroup
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							label={__('Deletion method', 'multivendorx')}
 							htmlFor="deletion-method"
 						>
-							<ChoiceToggleUI
+							<ToggleInput
 								options={[
 									{
 										value: 'set_store_owner',
@@ -1089,15 +1087,15 @@ const EditStore = () => {
 									setSelectedOwner(null);
 								}}
 							/>
-						</FormGroup>
+						</FormGroupComponent>
 						{deleteOption === 'set_store_owner' && (
-							<FormGroup
+							<FormGroupComponent
 								label={__(
 									'Assign new store owner',
 									'multivendorx'
 								)}
 							>
-								<SelectInputUI
+								<SelectInput
 									name="new_owner"
 									value={selectedOwner?.value}
 									options={appLocalizer.store_owners}
@@ -1107,11 +1105,11 @@ const EditStore = () => {
 										}
 									}}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 						)}
-					</FormGroupWrapper>
+					</FormGroupWrapperComponent>
 				</>
-			</PopupUI>
+			</PopupComponent>
 		</>
 	);
 };
