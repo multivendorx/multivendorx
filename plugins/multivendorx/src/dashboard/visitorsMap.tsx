@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { getApiLink } from 'zyra';
+import { getApiLink } from '@zyra/core';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import { formatLocalDate } from '@/services/commonFunction';
 

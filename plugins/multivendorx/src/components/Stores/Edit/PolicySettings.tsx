@@ -1,15 +1,15 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getApiLink } from '@zyra/core';
 import {
-	getApiLink,
-	Container,
-	Column,
-	Card,
-	FormGroupWrapper,
-	TextAreaUI,
+	ContainerComponent,
+	ColumnComponent,
+	CardComponent,
+	FormGroupWrapperComponent,
 	NoticeManager,
-} from 'zyra';
+} from '@zyra/components';
+import { TextAreaInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 interface StoreData {
 	payment_method?: string;
@@ -64,11 +64,11 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 	};
 
 	return (
-		<Container>
-			<Column row>
-				<Card title={__('Store policy', 'multivendorx')}>
-					<FormGroupWrapper>
-						<TextAreaUI
+		<ContainerComponent>
+			<ColumnComponent row>
+				<CardComponent title={__('Store policy', 'multivendorx')}>
+					<FormGroupWrapperComponent>
+						<TextAreaInput
 							name="store_policy"
 							value={formData.store_policy}
 							onChange={(value: string) =>
@@ -81,11 +81,11 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 								]['tinymce_api_section'] ?? ''
 							}
 						/>
-					</FormGroupWrapper>
-				</Card>
-				<Card title={__('Shipping policy', 'multivendorx')}>
-					<FormGroupWrapper>
-						<TextAreaUI
+					</FormGroupWrapperComponent>
+				</CardComponent>
+				<CardComponent title={__('Shipping policy', 'multivendorx')}>
+					<FormGroupWrapperComponent>
+						<TextAreaInput
 							name="shipping_policy"
 							value={formData.shipping_policy}
 							onChange={(value: string) =>
@@ -98,13 +98,13 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 								]['tinymce_api_section'] ?? ''
 							}
 						/>
-					</FormGroupWrapper>
-				</Card>
-			</Column>
-			<Column row>
-				<Card title={__('Refund policy', 'multivendorx')}>
-					<FormGroupWrapper>
-						<TextAreaUI
+					</FormGroupWrapperComponent>
+				</CardComponent>
+			</ColumnComponent>
+			<ColumnComponent row>
+				<CardComponent title={__('Refund policy', 'multivendorx')}>
+					<FormGroupWrapperComponent>
+						<TextAreaInput
 							name="refund_policy"
 							value={formData.refund_policy}
 							onChange={(value: string) =>
@@ -117,16 +117,16 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 								]['tinymce_api_section'] ?? ''
 							}
 						/>
-					</FormGroupWrapper>
-				</Card>
-				<Card
+					</FormGroupWrapperComponent>
+				</CardComponent>
+				<CardComponent
 					title={__(
 						'Cancellation / return / exchange policy',
 						'multivendorx'
 					)}
 				>
-					<FormGroupWrapper>
-						<TextAreaUI
+					<FormGroupWrapperComponent>
+						<TextAreaInput
 							name="cancellation_policy"
 							value={formData.cancellation_policy}
 							onChange={(value: string) =>
@@ -139,10 +139,10 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 								]['tinymce_api_section'] ?? ''
 							}
 						/>
-					</FormGroupWrapper>
-				</Card>
-			</Column>
-		</Container>
+					</FormGroupWrapperComponent>
+				</CardComponent>
+			</ColumnComponent>
+		</ContainerComponent>
 	);
 };
 

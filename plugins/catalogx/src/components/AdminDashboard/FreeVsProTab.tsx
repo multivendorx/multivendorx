@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Column, Container } from 'zyra';
+import { CardComponent, ColumnComponent, ContainerComponent } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 import CatalogxBrand from '../../assets/images/catalogx-brand.png';
 interface Feature {
@@ -368,9 +368,9 @@ const FreeVsProTab: React.FC<object> = () => {
 	};
 
 	return (
-		<Container>
-			<Column grid={8}>
-				<Card
+		<ContainerComponent>
+			<ColumnComponent grid={8}>
+				<CardComponent
 					title={__('Free vs Pro comparison', 'catalogx')}
 					desc={__(
 						'See what you get with catalogx Pro',
@@ -415,11 +415,11 @@ const FreeVsProTab: React.FC<object> = () => {
 							</table>
 						))}
 					</div>
-				</Card>
-			</Column>
+				</CardComponent>
+			</ColumnComponent>
 
-			<Column grid={4}>
-				<Card>
+			<ColumnComponent grid={4}>
+				<CardComponent>
 					<div className="right-pro-banner">
 						<div className="image-wrapper">
 							<img src={CatalogxBrand} alt="" />
@@ -486,9 +486,9 @@ const FreeVsProTab: React.FC<object> = () => {
 							</div>
 						</div>
 					</div>
-				</Card>
-			</Column>
-		</Container>
+				</CardComponent>
+			</ColumnComponent>
+		</ContainerComponent>
 	);
 };
 

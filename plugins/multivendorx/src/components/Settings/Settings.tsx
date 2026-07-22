@@ -3,13 +3,10 @@ import React, { useEffect, JSX } from 'react';
 import { __ } from '@wordpress/i18n';
 import { SettingProvider, useSetting } from '../../contexts/SettingContext';
 import { getTemplateData } from '../../services/templateService';
-import {
-	getAvailableSettings,
-	getSettingById,
-	RenderComponent,
-	useModules,
-	SettingsNavigator,
-} from 'zyra';
+
+import { InputRenderer } from '@zyra/inputs';
+import { getAvailableSettings, getSettingById, useModules } from '@zyra/core';
+import { NavigatorComponent } from '@zyra/components';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 import EventRules from './Notification/EventRules.tsx';
@@ -102,7 +99,7 @@ const Settings: React.FC<SettingsProps> = () => {
 		return (
 			<>
 				{settingName === currentTab ? (
-					<RenderComponent
+					<InputRenderer
 						settings={settingModal}
 						proSetting={appLocalizer.pro_settings_list}
 						setting={setting}
@@ -121,7 +118,7 @@ const Settings: React.FC<SettingsProps> = () => {
 
 	return (
 		<SettingProvider>
-			<SettingsNavigator
+			<NavigatorComponent
 				settingContent={settingsArray}
 				currentSetting={location.get('subtab') as string}
 				getForm={GetForm}

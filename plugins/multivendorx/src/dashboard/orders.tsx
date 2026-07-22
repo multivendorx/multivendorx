@@ -3,21 +3,17 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
+
+
+import { ButtonInput, SelectInput, TextInput } from '@zyra/inputs';
+import { getApiLink, useModules } from '@zyra/core';
 import {
-	PopupUI,
-	TableCard,
-	useModules,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-	NavigatorHeader,
-	ButtonInputUI,
-	getApiLink,
-	SelectInputUI,
-	BasicInputUI,
-	FormGroup,
-	FormGroupWrapper,
-} from 'zyra';
+	PopupComponent,
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	downloadCSV,
 	formatLocalDate,
@@ -494,7 +490,7 @@ const Orders: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Orders', 'multivendorx')}
 				headerDescription={__(
 					'View, track, and manage all your store orders and earnings in one place.',
@@ -562,17 +558,17 @@ const Orders: React.FC = () => {
 				}}
 			/>
 
-			<PopupUI
+			<PopupComponent
 				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
 				width={31.25}
 			>
 				{message}
-			</PopupUI>
+			</PopupComponent>
 
 			{tracking && (
-				<PopupUI
+				<PopupComponent
 					open={tracking}
 					onClose={() => setTracking(false)}
 					width={31.25}
@@ -582,7 +578,7 @@ const Orders: React.FC = () => {
 						title: __('Tracking', 'multivendorx'),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',
@@ -602,13 +598,13 @@ const Orders: React.FC = () => {
 						/>
 					}
 				>
-					<FormGroupWrapper>
-						<FormGroup
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							cols={6}
 							label={__('Shipping Providers', 'multivendorx')}
 							htmlFor="provider"
 						>
-							<SelectInputUI
+							<SelectInput
 								type="single-select"
 								name="provider"
 								value={formData.provider || ''}
@@ -617,48 +613,48 @@ const Orders: React.FC = () => {
 									handleChange('provider', selected)
 								}
 							/>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							cols={6}
 							label={__('Date', 'multivendorx')}
 							htmlFor="tracking_date"
 						>
-							<BasicInputUI
+							<TextInput
 								type="date"
 								value={formData.tracking_date}
 								onChange={(value: any) =>
 									handleChange('tracking_date', value)
 								}
 							/>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							cols={6}
 							label={__('Tracking URL', 'multivendorx')}
 							htmlFor="tracking_url"
 						>
-							<BasicInputUI
+							<TextInput
 								type="text"
 								value={formData.tracking_url}
 								onChange={(value: any) =>
 									handleChange('tracking_url', value)
 								}
 							/>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							cols={6}
 							label={__('Tracking Number', 'multivendorx')}
 							htmlFor="title"
 						>
-							<BasicInputUI
+							<TextInput
 								type="text"
 								value={formData.tracking_id}
 								onChange={(value: any) =>
 									handleChange('tracking_id', value)
 								}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</PopupUI>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</PopupComponent>
 			)}
 		</>
 	);

@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
-import { PopupUI } from 'zyra';
+import { PopupComponent } from '@zyra/components';
 import './index.scss';
 
 const AI_STORAGE_KEY = 'multivendorx_ai_product_suggestions';
@@ -95,7 +95,7 @@ const AIField: React.FC<AIFieldProps> = ({
 	);
 
 	return (
-		<PopupUI
+		<PopupComponent
 			position="menu-dropdown"
 			tooltipName="Suggestion"
 			toggleIcon="ai"
@@ -128,7 +128,7 @@ const AIField: React.FC<AIFieldProps> = ({
 					</div>
 				)}
 			</div>
-		</PopupUI>
+		</PopupComponent>
 	);
 };
 
