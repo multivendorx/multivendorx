@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import React, { useEffect, useMemo, useState } from 'react';
 import './EventRules.scss';
-import { getApiLink, renderBlocksToHTML, htmlToBlocks } from '@zyra/core';
+import { getApiLink } from '@zyra/core';
 import { FormGroupWrapperComponent, FormGroupComponent, PopupComponent, LayoutColumnComponent } from '@zyra/components';
 import {
 	TextInput,
@@ -10,7 +10,7 @@ import {
 	EmailListInput,
 } from '@zyra/inputs';
 import { TableCard, QueryProps } from '@zyra/table';
-import { BlockBuilderUI } from '@zyra/builders';
+import { BlockBuilderUI, renderBlocksToHTML, htmlToBlocks } from '@zyra/builders';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { salesReport } from '../../../assets/template/emailTemplate/salesReport';

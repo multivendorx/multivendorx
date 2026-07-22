@@ -324,7 +324,7 @@ const DashboardTab: React.FC<object> = () => {
 					</CardComponent>
 				)}
 				<CardComponent
-					title={__('ModuleGridComponent', 'multivendorx')}
+					title={__('Modules', 'multivendorx')}
 					action={
 						<ButtonInputUI
 							buttons={[

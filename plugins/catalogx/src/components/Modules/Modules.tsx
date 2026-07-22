@@ -12,7 +12,7 @@ const PluginModules = () => {
 		<>
 			<NavigatorHeaderComponent
 				headerIcon="module"
-				headerTitle={__('ModuleGridComponent', 'catalogx')}
+				headerTitle={__('Modules', 'catalogx')}
 				headerDescription={__(
 					'Manage marketplace features by enabling or disabling modules. Turning a module on activates its settings and workflows, while turning it off hides them from admin and stores.',
 					'catalogx'
