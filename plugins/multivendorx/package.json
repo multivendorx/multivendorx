@@ -16,6 +16,7 @@
     },
     "main": "index.js",
     "mainPluginFile": "dc_product_vendor.php",
+    "packageManager": "pnpm@10.34.1",
     "engines": {
         "node": "^22.22.3"
     },
@@ -112,7 +113,7 @@
         "react-router-dom": "^7.15.1",
         "react-simple-maps": "^3.0.0",
         "recharts": "^3.8.1",
-        "@multivendorx/zyra": "^1.0.9"
+        "@multivendorx/zyra": "^1.0.10"
     },
     "devDependencies": {
         "wireit": "^0.14.12"
