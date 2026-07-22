@@ -1,11 +1,12 @@
 /* global appLocalizer */
+
+import { useModules } from '@zyra/core';
 import {
-	useModules,
-	Container,
-	Column,
-	ComponentStatusView,
-	SettingsNavigator,
-} from 'zyra';
+	ContainerComponent,
+	ColumnComponent,
+	ModuleGuardComponent,
+	NavigatorComponent,
+} from '@zyra/components';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../AdminDashboard/AdminDashboard.scss';
@@ -103,7 +104,7 @@ const Compliance = () => {
 	return (
 		<>
 			{settingContent.length > 0 ? (
-				<SettingsNavigator
+				<NavigatorComponent
 					settingContent={settingContentWithCounts}
 					currentSetting={location.get('subtab') as string}
 					getForm={getForm}
@@ -122,9 +123,9 @@ const Compliance = () => {
 					)}
 				/>
 			) : (
-				<Container general>
-					<Column>
-						<ComponentStatusView
+				<ContainerComponent general>
+					<ColumnComponent>
+						<ModuleGuardComponent
 							title={__(
 								'Looks like the compliance module isn’t active yet!',
 								'multivendorx'
@@ -136,8 +137,8 @@ const Compliance = () => {
 							buttonText={__('Enable Now', 'multivendorx')}
 							buttonLink={`${appLocalizer.admin_dashboard_url}#&tab=modules&module=marketplace-compliance`}
 						/>
-					</Column>
-				</Container>
+					</ColumnComponent>
+				</ContainerComponent>
 			)}
 		</>
 	);

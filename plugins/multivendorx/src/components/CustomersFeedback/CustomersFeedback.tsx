@@ -1,11 +1,12 @@
 /* global appLocalizer */
+
+import { useModules } from '@zyra/core';
 import {
-	useModules,
-	Container,
-	Column,
-	ComponentStatusView,
-	SettingsNavigator,
-} from 'zyra';
+	ContainerComponent,
+	ColumnComponent,
+	ModuleGuardComponent,
+	NavigatorComponent,
+} from '@zyra/components';
 import '../AdminDashboard/AdminDashboard.scss';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -102,7 +103,7 @@ const CustomersFeedback = () => {
 	return (
 		<>
 			{settingContent.length > 0 ? (
-				<SettingsNavigator
+				<NavigatorComponent
 					settingContent={settingContentWithCounts}
 					currentSetting={location.get('subtab') as string}
 					getForm={getForm}
@@ -121,9 +122,9 @@ const CustomersFeedback = () => {
 					)}
 				/>
 			) : (
-				<Container general>
-					<Column>
-						<ComponentStatusView
+				<ContainerComponent general>
+					<ColumnComponent>
+						<ModuleGuardComponent
 							title={__(
 								'Looks like customer support isn’t set up yet!',
 								'multivendorx'
@@ -135,8 +136,8 @@ const CustomersFeedback = () => {
 							buttonText={__('Enable Now', 'multivendorx')}
 							buttonLink={`${appLocalizer.admin_dashboard_url}#&tab=modules&module=customer-queries`}
 						/>
-					</Column>
-				</Container>
+					</ColumnComponent>
+				</ContainerComponent>
 			)}
 		</>
 	);

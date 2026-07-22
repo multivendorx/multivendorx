@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
-import { SettingsNavigator } from 'zyra';
+import { NavigatorComponent } from '@zyra/components';
 import NotificationsTable from './notificationsTable';
 import ActivitiesTable from './activityTable';
 import AnnouncementsTable from './AnnouncementsTable';
@@ -74,7 +74,7 @@ const ViewNotifications = (React.FC = () => {
 	};
 	return (
 		<>
-			<SettingsNavigator
+			<NavigatorComponent
 				settingContent={settingContent}
 				currentSetting={currentTab}
 				headerTitle={__('Notifications', 'multivendorx')}

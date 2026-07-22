@@ -1,5 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
-import { Card, FormGroupWrapper, SelectInputUI } from 'zyra';
+import { CardComponent, FormGroupWrapperComponent } from '@zyra/components';
+import { SelectInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -18,9 +19,9 @@ const ProductTag = ({ product, setProduct }) => {
 	}, []);
 
 	return (
-		<Card title={__('Product tag', 'multivendorx')}>
-			<FormGroupWrapper>
-				<SelectInputUI
+		<CardComponent title={__('Product tag', 'multivendorx')}>
+			<FormGroupWrapperComponent>
+				<SelectInput
 					type="creatable-multi"
 					options={existingTags.map((tag) => ({
 						value: tag.name,
@@ -44,8 +45,8 @@ const ProductTag = ({ product, setProduct }) => {
 					placeholder={__('Type tag…', 'multivendorx')}
 					formatCreateLabel={(val) => `Add "${val}"`}
 				/>
-			</FormGroupWrapper>
-		</Card>
+			</FormGroupWrapperComponent>
+		</CardComponent>
 	);
 };
 

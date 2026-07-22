@@ -1,14 +1,15 @@
 /* global appLocalizer */
 import { useState } from 'react';
+import { getApiLink } from '@zyra/core';
+
 import {
-    Column,
-    Container,
-    InfoItem,
-    NavigatorHeader,
-    PopupUI,
-    TableCard,
-    getApiLink
-} from 'zyra';
+	ColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
@@ -79,7 +80,7 @@ const SubscribersList = () => {
         product: {
             label: __('Product', 'notifima'),
             render: (row) => (
-                <InfoItem
+                <InformationItemComponent
                     title={row.product}
                     avatar={{
                         iconClass: 'single-product',
@@ -189,7 +190,7 @@ const SubscribersList = () => {
     return (
         <>
             {openPopup && (
-                <PopupUI
+                <PopupComponent
                     position="lightbox"
                     open={openPopup}
                     onClose={() => setOpenPopup(false)}
@@ -197,9 +198,9 @@ const SubscribersList = () => {
                     height="auto"
                 >
                     <ShowProPopup />
-                </PopupUI>
+                </PopupComponent>
             )}
-            <NavigatorHeader
+            <NavigatorHeaderComponent
                 headerIcon="subscriber"
                 headerDescription={__(
                     'Manage product subscription requests, track subscriber statuses, and monitor email notifications sent to interested customers.',
@@ -214,11 +215,11 @@ const SubscribersList = () => {
                     },
                 ]}
             />
-            <Container general>
-                <Column>
+            <ContainerComponent general>
+                <ColumnComponent>
                     {renderTableContent()}
-                </Column>
-            </Container>
+                </ColumnComponent>
+            </ContainerComponent>
         </>
     );
 };

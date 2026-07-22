@@ -1,6 +1,6 @@
 /* global appLocalizer */
 import { useState, useEffect } from 'react';
-import { getApiLink } from 'zyra';
+import { getApiLink } from '@zyra/core';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 interface ConnectedProfiles {

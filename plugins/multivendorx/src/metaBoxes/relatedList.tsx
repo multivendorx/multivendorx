@@ -1,16 +1,12 @@
 import { addFilter } from '@wordpress/hooks';
-import {
-	BasicInputUI,
-	Card,
-	FormGroup,
-	FormGroupWrapper,
-} from 'zyra';
+import { CardComponent, FormGroupComponent, FormGroupWrapperComponent } from '@zyra/components';
+import { TextInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const RelatedList = ({ product, setProduct, handleChange }) => {
 	return (
 		<>
-			<Card
+			<CardComponent
 				title={__(
 					'Related products - Suggest other products from your shop',
 					'multivendorx'
@@ -20,8 +16,8 @@ const RelatedList = ({ product, setProduct, handleChange }) => {
 					'multivendorx'
 				)}
 			>
-				<FormGroupWrapper>
-					<FormGroup
+				<FormGroupWrapperComponent>
+					<FormGroupComponent
 						cols={6}
 						label={__(
 							'Recommend alongside this product',
@@ -32,13 +28,13 @@ const RelatedList = ({ product, setProduct, handleChange }) => {
 							'multivendorx'
 						)}
 					>
-						<BasicInputUI
+						<TextInput
 							name="name"
 							// value={product.name}
 							// onChange={(value) => handleChange('name', value)}
 						/>
-					</FormGroup>
-					<FormGroup
+					</FormGroupComponent>
+					<FormGroupComponent
 						cols={6}
 						label={__(
 							'Offer as an add-on at checkout',
@@ -49,14 +45,14 @@ const RelatedList = ({ product, setProduct, handleChange }) => {
 							'multivendorx'
 						)}
 					>
-						<BasicInputUI
+						<TextInput
 							name="name"
 							// value={product.name}
 							// onChange={(value) => handleChange('name', value)}
 						/>
-					</FormGroup>
-				</FormGroupWrapper>
-			</Card>
+					</FormGroupComponent>
+				</FormGroupWrapperComponent>
+			</CardComponent>
 		</>
 	);
 };

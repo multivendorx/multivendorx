@@ -2,7 +2,7 @@
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import PendingReportAbuse from './PendingAbuseReports';
-import { getApiLink } from 'zyra';
+import { getApiLink } from '@zyra/core';
 
 addFilter(
 	'multivendorx_compliance_api_configs',

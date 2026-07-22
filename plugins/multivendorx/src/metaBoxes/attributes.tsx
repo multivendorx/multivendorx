@@ -1,13 +1,11 @@
 import { addFilter, applyFilters } from '@wordpress/hooks';
+import { CardComponent, FormGroupComponent, FormGroupWrapperComponent } from '@zyra/components';
 import {
-    MultiCheckBoxUI,
-    SelectInputUI,
-    Card,
-    BasicInputUI,
-    FormGroup,
-    FormGroupWrapper,
-    ButtonInputUI,
-} from 'zyra';
+	MultiCheckboxInput,
+	SelectInput,
+	TextInput,
+	ButtonInput,
+} from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -184,7 +182,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
             .catch((err) => console.error('Attribute save error:', err));
     };
     return (
-        <Card
+        <CardComponent
             title={applyFilters(
                 'multivendorx_product_attributes_title',
                 __('Attributes', 'multivendorx')
@@ -200,7 +198,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                         {__('Attributes', 'multivendorx')}
                         <div className="add-dropdown-wrapper">
                             {!showAttributeSelect && (
-                                <ButtonInputUI
+                                <ButtonInput
                                     position="right"
                                     buttons={[
                                         {
@@ -215,7 +213,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
 
                             {showAttributeSelect && (
                                 <div className="search-field">
-                                    <SelectInputUI
+                                    <SelectInput
                                         name="attribute"
                                         type="single-select"
                                         size={12}
@@ -229,7 +227,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                             setSelectedAttribute({ label: match.name, value: match.id });
                                         }}
                                     />
-                                    <ButtonInputUI
+                                    <ButtonInput
                                         position="right"
                                         buttons={[
                                             {
@@ -252,7 +250,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                     <div className="variant-wrapper">
                         {variation.isEditing && (
                             <div className="edit-wrapper">
-                                <ButtonInputUI
+                                <ButtonInput
                                     wrapperClass="edit"
                                     buttons={[
                                         {
@@ -274,7 +272,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                     <div className="drag-icon">
                                         <i className="adminfont-drag"></i>
                                     </div>
-                                    <BasicInputUI
+                                    <TextInput
                                         placeholder="Add Attribute"
                                         value={variation.name}
                                         onChange={(value) => updateAttribute(vIndex, 'name', value)}
@@ -282,16 +280,16 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                 </div>
 
                                 <div className="option-wrapper">
-                                    <FormGroupWrapper>
-                                        <FormGroup label={__('Option value', 'multivendorx')} />
-                                    </FormGroupWrapper>
+                                    <FormGroupWrapperComponent>
+                                        <FormGroupComponent label={__('Option value', 'multivendorx')} />
+                                    </FormGroupWrapperComponent>
 
                                     {variation.options.map((opt, oIndex) => (
                                         <div className="variant" key={oIndex}>
                                             <div className="drag-icon">
                                                 <i className="adminfont-drag"></i>
                                             </div>
-                                            <BasicInputUI
+                                            <TextInput
                                                 value={opt}
                                                 onChange={(value) => {
                                                     const updated = [...variation.options];
@@ -316,7 +314,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                                 }
                                             }}
                                         >
-                                            <BasicInputUI
+                                            <TextInput
                                                 placeholder="Add another value"
                                                 value={tempOptions[vIndex] || ''}
                                                 onChange={(value) => handleTempOptionChange(vIndex, value)}
@@ -329,7 +327,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                             />
                                         </div>
 
-                                        <ButtonInputUI
+                                        <ButtonInput
                                             buttons={{
                                                 icon: 'plus',
                                                 text: __('Add New', 'multivendorx'),
@@ -357,7 +355,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                     </div>
                                 </div>
                                 <div className="right-section">
-                                    <ButtonInputUI
+                                    <ButtonInput
                                         buttons={{
                                             icon: 'edit',
                                             text: __('Edit', 'multivendorx'),
@@ -378,7 +376,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                 setProduct,
                 productFields,
             )}
-        </Card>
+        </CardComponent>
 
     );
 };

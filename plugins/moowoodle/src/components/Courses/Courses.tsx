@@ -4,16 +4,16 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';
+import { getApiLink } from '@zyra/core';
+
 import {
-	getApiLink,
-	TableCard,
-	NavigatorHeader,
-	QueryProps,
-	InfoItem,
-	PopupUI,
-	Container,
-	Column,
-} from 'zyra';
+	InformationItemComponent,
+	PopupComponent,
+	ContainerComponent,
+	ColumnComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard, QueryProps } from '@zyra/table';
 
 interface CourseRow {
 	id?: number;
@@ -64,7 +64,7 @@ const Course: React.FC = () => {
 		course_name: {
 			label: __('Course', 'moowoodle'),
 			render: (row: CourseRow) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.course_name}
 					titleLink={row.moodle_url}
 					avatar={{
@@ -244,7 +244,7 @@ const Course: React.FC = () => {
 	return (
 		<>
 			{openPopup && (
-				<PopupUI
+				<PopupComponent
 					position="lightbox"
 					open={openPopup}
 					onClose={() => setopenPopup(false)}
@@ -252,9 +252,9 @@ const Course: React.FC = () => {
 					height="auto"
 				>
 					<ShowProPopup />
-				</PopupUI>
+				</PopupComponent>
 			)}
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="subscription-courses"
 				headerDescription={__(
 					'Comprehensive course data is displayed here, including linked products, enrollment numbers, and related details.',
@@ -269,11 +269,11 @@ const Course: React.FC = () => {
 					{error}
 				</div>
 			)}
-			<Container general>
-				<Column>
+			<ContainerComponent general>
+				<ColumnComponent>
 					<TableCard {...tableProps} />
-				</Column>
-			</Container>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

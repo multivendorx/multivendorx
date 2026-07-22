@@ -1,6 +1,8 @@
 /* global appLocalizer */
 import { useState, useEffect } from 'react';
-import { SettingsNavigator, useModules, getApiLink } from 'zyra';
+
+import { getApiLink, useModules } from '@zyra/core';
+import { NavigatorComponent } from '@zyra/components';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { useLocation, Link } from 'react-router-dom';
@@ -263,7 +265,7 @@ const ApprovalQueue = () => {
 	};
 
 	return (
-		<SettingsNavigator
+		<NavigatorComponent
 			settingContent={settingContentWithCounts}
 			currentSetting={location.get('subtab') as string}
 			getForm={getForm}
