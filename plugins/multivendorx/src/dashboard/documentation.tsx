@@ -4,13 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { getApiLink } from '@zyra/core';
 
 import { ButtonInput } from '@zyra/inputs';
-import { AdminHeaderSearch } from '@zyra/admin';
 import {
 	CardComponent,
 	ModuleGuardComponent,
 	PopupComponent,
 	ListComponent,
 	NavigatorHeaderComponent,
+	HeaderSearchComponent,
 } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 import { truncateText } from '@/services/commonFunction';
@@ -106,7 +106,7 @@ const Documentation: React.FC = () => {
 			/>
 
 			<CardComponent>
-				<AdminHeaderSearch
+				<HeaderSearchComponent
 					// variant="mini-search"
 					search={{ placeholder: 'Search .....' }}
 					onQueryUpdate={(e) => {

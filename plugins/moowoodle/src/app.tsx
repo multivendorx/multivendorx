@@ -9,8 +9,7 @@ import { useState } from 'react';
 import { searchIndex, SearchItem } from './searchIndex';
 import MoowoodleLogo from './assets/images/moowoodle-logo.png';
 import { __ } from '@wordpress/i18n';
-import { NoticeComponent } from '@zyra/components';
-import { AdminHeader } from '@zyra/admin';
+import { NoticeComponent, HeaderComponent } from '@zyra/components';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import HelpSupport from './components/HelpSupport/HelpSupport';
 
@@ -136,7 +135,7 @@ const App = () => {
 	];
 	return (
 		<>
-			<AdminHeader
+			<HeaderComponent
 				brandImg={MoowoodleLogo}
 				results={results}
 				onQueryUpdate={handleSearchChange}

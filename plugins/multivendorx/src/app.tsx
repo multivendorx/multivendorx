@@ -1,8 +1,7 @@
 /* global appLocalizer */
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { AdminHeader } from '@zyra/admin';
-import { FormGroupComponent, FormGroupWrapperComponent, PopupComponent, NoticeComponent, TourComponent } from '@zyra/components';
+import { FormGroupComponent, FormGroupWrapperComponent, PopupComponent, NoticeComponent, TourComponent, HeaderComponent } from '@zyra/components';
 import { TaskExecutorInput } from '@zyra/inputs';
 
 import Brand from './assets/images/multivendorx-logo.png';
@@ -338,7 +337,7 @@ const App = () => {
 
 	return (
 		<>
-			<AdminHeader
+			<HeaderComponent
 				brandImg={Brand}
 				results={results}
 				search={{

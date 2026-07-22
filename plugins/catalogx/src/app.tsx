@@ -7,9 +7,8 @@ import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
 import WholesaleUser from './components/WholesaleUser/wholesaleUser.tsx';
 import Rules from './components/Rules/Rules';
 
-import { NoticeComponent, TourComponent } from '@zyra/components';
+import { NoticeComponent, TourComponent, HeaderComponent } from '@zyra/components';
 import { initializeModules } from '@zyra/core';
-import { AdminHeader } from '@zyra/admin';
 import { __ } from '@wordpress/i18n';
 import Brand from './assets/images/catalogx-logo.png';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
@@ -202,7 +201,7 @@ const App = () => {
 					}}
 				/>
 			)}
-			<AdminHeader
+			<HeaderComponent
 				brandImg={Brand}
 				results={results}
 				search={{

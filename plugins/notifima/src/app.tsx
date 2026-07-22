@@ -6,8 +6,7 @@ import { searchIndex, SearchItem } from './searchIndex';
 import Settings from './components/Settings/Settings';
 import SubscribersList from './components/SubscriberList/SubscribersList';
 import Managestock from './components/Managestock/Managestock';
-import { NoticeComponent } from '@zyra/components';
-import { AdminHeader } from '@zyra/admin';
+import { NoticeComponent, HeaderComponent } from '@zyra/components';
 import Brand from './assets/images/brand-logo.png';
 import { __ } from '@wordpress/i18n';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
@@ -165,7 +164,7 @@ const App = () => {
                     }}
                 />
             )}
-            <AdminHeader
+            <HeaderComponent
                 brandImg={Brand}
                 free={appLocalizer.free_version}
                 pro={appLocalizer.pro_data.version}

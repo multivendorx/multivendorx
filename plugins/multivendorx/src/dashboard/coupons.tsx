@@ -9,7 +9,7 @@ import {
 	SelectInput,
 	TextAreaInput,
 	ToggleInput,
-	InputKeyGenerator,
+	RandomkeyInput,
 	EmailInput,
 } from '@zyra/inputs';
 import {
@@ -836,7 +836,7 @@ const AllCoupon: React.FC = () => {
 										})
 									}
 								/>
-								<InputKeyGenerator
+								<RandomkeyInput
 									value={formData.title}
 									length={10}
 									onChange={(value) => {

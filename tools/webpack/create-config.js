@@ -433,22 +433,25 @@ module.exports = function createWebpackConfig(
 				// it so the ~292 existing `import ... from 'zyra'` call
 				// sites don't need a mass rename. The '@zyra/*' aliases
 				// let source files import from the more specific
-				// '@zyra/admin', '@zyra/inputs', etc. names for
+				// '@zyra/components', '@zyra/inputs', etc. names for
 				// readability without needing each sub-package installed
 				// separately — everything resolves to the one real
 				// dependency below.
 				zyra: '@multivendorx/zyra',
 				'@zyra/core': '@multivendorx/zyra',
-				'@zyra/admin': '@multivendorx/zyra',
 				// @zyra/components is the former @zyra/elements package
 				// (renamed upstream, itself formerly @zyra/primitives), and
 				// also absorbed the former @zyra/recaptcha package
 				// (RecaptchaUI, Recaptcha, CustomRecaptcha), the settings
-				// navigation/module list (Modules, SettingsNavigator,
-				// formerly @zyra/admin), and MapProvider/GuidedTourProvider
-				// (formerly @zyra/providers, now removed — don't re-add an
-				// alias for it; useModules/SettingProvider/ThemeProvider
-				// moved to @zyra/core instead).
+				// navigation/module list (Modules, SettingsNavigator), and
+				// MapProvider/GuidedTourProvider (formerly @zyra/providers,
+				// now removed — don't re-add an alias for it;
+				// useModules/SettingProvider/ThemeProvider moved to
+				// @zyra/core instead). It has also now fully absorbed
+				// @zyra/admin (HeaderComponent/HeaderSearchComponent,
+				// formerly AdminHeader/AdminHeaderSearch) — @zyra/admin no
+				// longer exists as a package, so don't re-add an alias for
+				// it either.
 				'@zyra/components': '@multivendorx/zyra',
 				'@zyra/inputs': '@multivendorx/zyra',
 				'@zyra/table': '@multivendorx/zyra',
