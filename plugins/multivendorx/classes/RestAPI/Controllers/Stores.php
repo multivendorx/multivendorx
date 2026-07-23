@@ -791,9 +791,12 @@ class Stores extends \WP_REST_Controller {
             }
 
             $primary_owner_id   = StoreUtil::get_primary_owner( $id );
-            $primary_owner_info = $primary_owner_id
-                ? get_userdata( $primary_owner_id )
-                : null;
+            $owner              = get_userdata( $primary_owner_id );
+            $primary_owner_info         = array(
+                'id'           => $owner->ID,
+                'display_name' => $owner->display_name,
+                'user_email'   => $owner->user_email,
+            );
 
             if ( $fetch_user ) {
                 $users = StoreUtil::get_store_users( $id );
