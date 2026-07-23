@@ -46,9 +46,9 @@ class ActionRunner {
     private ActivityLogRepository $activity_logs;
 
     /**
-     * @param ActionRegistry       $registry           Registry to resolve action ids from.
-     * @param SafeRequestSender    $request_sender      Sends a prompt through the safety-validate → provider chain → sanitize sequence.
-     * @param ActionRunRepository|null $runs           Defaults to a new instance (injectable for tests).
+     * @param ActionRegistry             $registry           Registry to resolve action ids from.
+     * @param SafeRequestSender          $request_sender      Sends a prompt through the safety-validate → provider chain → sanitize sequence.
+     * @param ActionRunRepository|null   $runs           Defaults to a new instance (injectable for tests).
      * @param ActivityLogRepository|null $activity_logs Defaults to a new instance (injectable for tests).
      */
     public function __construct(
@@ -69,7 +69,7 @@ class ActionRunner {
      * previews the result. Persists the outcome as a `pending_approval`
      * row — nothing about the site's actual content changes yet.
      *
-     * @param string   $action_id  e.g. 'generate-alt'.
+     * @param string               $action_id  e.g. 'generate-alt'.
      * @param array<string, mixed> $raw_input Raw input (REST params, or built from a Recommendation).
      * @return array{run_id: int, preview: array<string, mixed>}
      *

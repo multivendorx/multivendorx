@@ -62,8 +62,8 @@ class GeoAnalyzer {
      * class must be given that same instance, the same reason
      * AIActions\ActionRunner requires it too.
      *
-     * @param SafeRequestSender       $request_sender Sends a prompt through the safety-validate → provider chain → sanitize sequence.
-     * @param FindingRepository|null  $findings       Defaults to a new instance (injectable for tests).
+     * @param SafeRequestSender      $request_sender Sends a prompt through the safety-validate → provider chain → sanitize sequence.
+     * @param FindingRepository|null $findings       Defaults to a new instance (injectable for tests).
      */
     public function __construct( SafeRequestSender $request_sender, ?FindingRepository $findings = null ) {
         $this->request_sender = $request_sender;
@@ -86,9 +86,9 @@ class GeoAnalyzer {
             throw new \InvalidArgumentException( __( 'post_id must refer to a published post or page.', 'vulopilot' ) );
         }
 
-        $deterministic_score = $this->calculate_deterministic_score( $post_id );
-        $messages            = $this->build_prompt( $post, $deterministic_score );
-        $response            = $this->request_sender->send( $messages );
+        $deterministic_score       = $this->calculate_deterministic_score( $post_id );
+        $messages                  = $this->build_prompt( $post, $deterministic_score );
+        $response                  = $this->request_sender->send( $messages );
         $ai_scores_and_suggestions = $this->parse_response( $response );
 
         $overall_score = $this->calculate_overall_score( $deterministic_score, $ai_scores_and_suggestions['ai_scores'] );
@@ -259,7 +259,7 @@ class GeoAnalyzer {
      * history exists yet, the AI-judged average stands alone rather than
      * averaging in a fabricated deterministic number.
      *
-     * @param int|null $deterministic_score 0-100, or null.
+     * @param int|null                                                                                            $deterministic_score 0-100, or null.
      * @param array{entity_coverage: int, question_coverage: int, answer_completeness: int, llm_readability: int} $ai_scores Each 0-100.
      * @return int 0-100.
      */

@@ -2,11 +2,15 @@
 import { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { getApiLink, getApiResponse, sendApiResponse } from '@zyra/core';
-import { ModuleGuardComponent, NoticeManager } from '@zyra/components';
-import { ButtonInput } from '@zyra/inputs';
+import {
+	ColumnComponent,
+	ContainerComponent,
+	ModuleGuardComponent,
+	NavigatorHeaderComponent,
+	NoticeManager,
+} from '@zyra/components';
 import DashboardGrid from '../../dashboard-widgets/DashboardGrid';
 import { DashboardSummary } from '../../dashboard-widgets/types';
-import './Dashboard.scss';
 
 /**
  * Zero-filled shape so DashboardGrid always has a real DashboardSummary
@@ -33,6 +37,15 @@ const EMPTY_SUMMARY: DashboardSummary = {
 	automation_status: { enabled: 0, disabled: 0 },
 };
 
+/**
+ * Uses the same NavigatorHeaderComponent + ContainerComponent +
+ * ColumnComponent shape every other page in this plugin now uses (see
+ * Health.tsx's own docblock for why) — this page previously hand-rolled
+ * its own `.vulopilot-dashboard`/`.dashboard-page-header` markup with a
+ * bespoke Dashboard.scss that only ever defined a flex/gap layout, never
+ * the padding/card containment the shared components provide, which is
+ * exactly what made it look inconsistent with every other tab.
+ */
 const Dashboard = () => {
 	const [summary, setSummary] = useState<DashboardSummary>(EMPTY_SUMMARY);
 	const [isLoading, setIsLoading] = useState(true);
@@ -99,38 +112,57 @@ const Dashboard = () => {
 			.finally(() => setIsScanning(false));
 	};
 
+	const pageHeader = (
+		<NavigatorHeaderComponent
+			headerIcon="home"
+			headerTitle={__('Dashboard', 'vulopilot')}
+			headerDescription={__(
+				'Your site\'s overall health, at a glance.',
+				'vulopilot'
+			)}
+			buttons={[
+				{
+					label: isScanning
+						? __('Scanning…', 'vulopilot')
+						: __('Run scan', 'vulopilot'),
+					icon: 'search',
+					onClick: handleRunScan,
+				},
+			]}
+		/>
+	);
+
 	if (error) {
 		return (
-			<div className="vulopilot-dashboard">
-				<ModuleGuardComponent
-					icon="error"
-					title={__('Could not load the dashboard', 'vulopilot')}
-					desc={error}
-					buttonText={__('Retry', 'vulopilot')}
-					onButtonClick={loadDashboard}
-				/>
-			</div>
+			<>
+				{pageHeader}
+				<ContainerComponent general>
+					<ColumnComponent>
+						<ModuleGuardComponent
+							icon="error"
+							title={__(
+								'Could not load the dashboard',
+								'vulopilot'
+							)}
+							desc={error}
+							buttonText={__('Retry', 'vulopilot')}
+							onButtonClick={loadDashboard}
+						/>
+					</ColumnComponent>
+				</ContainerComponent>
+			</>
 		);
 	}
 
 	return (
-		<div className="vulopilot-dashboard">
-			<div className="dashboard-page-header">
-				<h1>{__('Dashboard', 'vulopilot')}</h1>
-				<ButtonInput
-					buttons={{
-						text: isScanning
-							? __('Scanning…', 'vulopilot')
-							: __('Run scan', 'vulopilot'),
-						icon: 'search',
-						onClick: handleRunScan,
-						disabled: isScanning,
-					}}
-				/>
-			</div>
-
-			<DashboardGrid summary={summary} isLoading={isLoading} />
-		</div>
+		<>
+			{pageHeader}
+			<ContainerComponent general>
+				<ColumnComponent>
+					<DashboardGrid summary={summary} isLoading={isLoading} />
+				</ColumnComponent>
+			</ContainerComponent>
+		</>
 	);
 };
 

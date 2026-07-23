@@ -23,7 +23,7 @@ require_once __DIR__ . '/vendor/autoload.php';
  *
  * @return \VuloPilot\VuloPilot
  */
-function VuloPilot() {
+function VuloPilot() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- PascalCase global accessor, same deliberate exception as MultiVendorX()/CatalogXPro() (naming-quality.md).
     return \VuloPilot\VuloPilot::init( __FILE__ );
 }
 

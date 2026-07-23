@@ -86,18 +86,18 @@ abstract class AbstractOpenAiCompatibleProvider implements AIProviderInterface {
      * @inheritDoc
      */
     public function send_streaming( AIRequest $request, callable $on_chunk ): AIResponse {
-        $content            = '';
-        $model              = $request->get_model();
-        $finish_reason      = 'stop';
-        $prompt_tokens      = 0;
-        $completion_tokens  = 0;
+        $content           = '';
+        $model             = $request->get_model();
+        $finish_reason     = 'stop';
+        $prompt_tokens     = 0;
+        $completion_tokens = 0;
 
         StreamingHttpClient::stream_post(
             $this->get_base_url() . '/chat/completions',
             $this->build_headers(),
             wp_json_encode( $this->build_body( $request, true ) ),
             function ( string $line ) use ( &$content, &$model, &$finish_reason, &$prompt_tokens, &$completion_tokens, $on_chunk ) {
-                if ( ! str_starts_with( $line, 'data:' ) ) {
+                if ( 0 !== strpos( $line, 'data:' ) ) {
                     return;
                 }
 
@@ -113,8 +113,8 @@ abstract class AbstractOpenAiCompatibleProvider implements AIProviderInterface {
                     return;
                 }
 
-                $model  = $event['model'] ?? $model;
-                $delta  = $event['choices'][0]['delta']['content'] ?? '';
+                $model = $event['model'] ?? $model;
+                $delta = $event['choices'][0]['delta']['content'] ?? '';
 
                 if ( '' !== $delta ) {
                     $content .= $delta;

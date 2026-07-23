@@ -103,7 +103,7 @@ class RobotsTxtScanner extends AbstractBasicScanner {
      * @return bool
      */
     private function blocks_all_crawlers( string $body ): bool {
-        $lines           = preg_split( '/\r\n|\r|\n/', $body );
+        $lines             = preg_split( '/\r\n|\r|\n/', $body );
         $in_wildcard_group = false;
 
         foreach ( (array) $lines as $line ) {

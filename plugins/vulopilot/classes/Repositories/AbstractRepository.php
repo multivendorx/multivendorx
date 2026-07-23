@@ -99,10 +99,10 @@ abstract class AbstractRepository implements RepositoryInterface {
         $where_sql = $where_clauses ? ( 'WHERE ' . implode( ' AND ', $where_clauses ) ) : '';
 
         if ( $where_values ) {
-            $count_sql = $wpdb->prepare( "SELECT COUNT(*) FROM {$table} {$where_sql}", $where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-            $rows_sql  = $wpdb->prepare(
+            $count_sql = $wpdb->prepare( "SELECT COUNT(*) FROM {$table} {$where_sql}", ...$where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- $where_sql's %s count matches $where_values' size at runtime; the sniff can't see that statically.
+            $rows_sql  = $wpdb->prepare( // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- same runtime-sized-array case as above.
                 "SELECT * FROM {$table} {$where_sql} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                array_merge( $where_values, array( $per_page, $offset ) )
+                ...array_merge( $where_values, array( $per_page, $offset ) )
             );
         } else {
             $count_sql = "SELECT COUNT(*) FROM {$table}"; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
@@ -113,8 +113,8 @@ abstract class AbstractRepository implements RepositoryInterface {
             );
         }
 
-        $total = (int) $wpdb->get_var( $count_sql );
-        $rows  = $wpdb->get_results( $rows_sql, ARRAY_A );
+        $total = (int) $wpdb->get_var( $count_sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $rows  = $wpdb->get_results( $rows_sql, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
         return array(
             'data'  => $rows ?: array(),

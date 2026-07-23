@@ -1,7 +1,14 @@
 /* global appLocalizer */
 import { __ } from '@wordpress/i18n';
 import { getApiLink, sendApiResponse } from '@zyra/core';
-import { CardComponent, ModuleGuardComponent, NoticeManager } from '@zyra/components';
+import {
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+	ModuleGuardComponent,
+	NavigatorHeaderComponent,
+	NoticeManager,
+} from '@zyra/components';
 import { TableCard, TableRow } from '@zyra/table';
 import { useApiList } from '../../services/useApiList';
 
@@ -54,79 +61,149 @@ const Automation = () => {
 		});
 	};
 
+	const handleRunNow = (row?: Record<string, unknown>) => {
+		if (!row) {
+			return;
+		}
+
+		sendApiResponse(
+			appLocalizer,
+			getApiLink(appLocalizer, `automations/${row.id}/run`),
+			{}
+		).then((response) => {
+			NoticeManager.add({
+				uniqueKey: `automation-run-${row.id}`,
+				type: response ? 'success' : 'error',
+				position: 'notice',
+				message: response
+					? __('Automation ran.', 'vulopilot')
+					: __(
+							'Could not run this automation — it may have no currently-matching recommendation to act on.',
+							'vulopilot'
+						),
+			});
+
+			if (response) {
+				refetch();
+			}
+		});
+	};
+
+	const pageHeader = (
+		<NavigatorHeaderComponent
+			headerIcon="automation"
+			headerTitle={__('Automation', 'vulopilot')}
+			headerDescription={__(
+				'React to scan findings automatically — send emails, resolve findings, or run an AI action.',
+				'vulopilot'
+			)}
+		/>
+	);
+
 	if (error) {
 		return (
-			<CardComponent title={__('Automation', 'vulopilot')}>
-				<ModuleGuardComponent
-					icon="warning"
-					title={__('Could not load automations', 'vulopilot')}
-					desc={error}
-					buttonText={__('Retry', 'vulopilot')}
-					onButtonClick={refetch}
-				/>
-			</CardComponent>
+			<>
+				{pageHeader}
+				<ContainerComponent general>
+					<ColumnComponent>
+						<CardComponent title={__('Automation', 'vulopilot')}>
+							<ModuleGuardComponent
+								icon="warning"
+								title={__(
+									'Could not load automations',
+									'vulopilot'
+								)}
+								desc={error}
+								buttonText={__('Retry', 'vulopilot')}
+								onButtonClick={refetch}
+							/>
+						</CardComponent>
+					</ColumnComponent>
+				</ContainerComponent>
+			</>
 		);
 	}
 
 	return (
-		<TableCard
-			title={__('Automation', 'vulopilot')}
-			headers={{
-				name: {
-					label: __('Automation', 'vulopilot'),
-					isSortable: true,
-				},
-				trigger_type: {
-					label: __('Trigger', 'vulopilot'),
-				},
-				status: {
-					label: __('Status', 'vulopilot'),
-					type: 'badge',
-					statusClass: (row: AutomationRow) => `status-${row.status}`,
-				},
-				last_triggered_at: {
-					label: __('Last run', 'vulopilot'),
-					type: 'date',
-					isSortable: true,
-					defaultSort: true,
-					defaultOrder: 'desc',
-				},
-				actions: {
-					label: __('Actions', 'vulopilot'),
-					type: 'action',
-					actions: [
-						{
-							label: (row?: Record<string, unknown>) =>
-								row?.status === 'enabled'
-									? __('Disable', 'vulopilot')
-									: __('Enable', 'vulopilot'),
-							icon: 'controls-repeat',
-							onClick: handleToggleStatus,
-						},
-					],
-				},
-			}}
-			rows={data}
-			ids={data.map((row) => row.id)}
-			totalRows={total}
-			isLoading={isLoading}
-			emptyMessage={__(
-				'No automations yet — create one to react to scan findings automatically.',
-				'vulopilot'
-			)}
-			filters={[
-				{
-					key: 'status',
-					label: __('Status', 'vulopilot'),
-					type: 'select',
-					size: 10,
-					options: [
-						{ label: __('Enabled', 'vulopilot'), value: 'enabled' },
-						{ label: __('Disabled', 'vulopilot'), value: 'disabled' },
-					],
-				},
-			]}
-		/>
+		<>
+			{pageHeader}
+			<ContainerComponent general>
+				<ColumnComponent>
+					<TableCard
+						title={__('Automation', 'vulopilot')}
+						headers={{
+							name: {
+								label: __('Automation', 'vulopilot'),
+								isSortable: true,
+							},
+							trigger_type: {
+								label: __('Trigger', 'vulopilot'),
+							},
+							status: {
+								label: __('Status', 'vulopilot'),
+								type: 'badge',
+								statusClass: (row: AutomationRow) =>
+									`status-${row.status}`,
+							},
+							last_triggered_at: {
+								label: __('Last run', 'vulopilot'),
+								type: 'date',
+								isSortable: true,
+								defaultSort: true,
+								defaultOrder: 'desc',
+							},
+							actions: {
+								label: __('Actions', 'vulopilot'),
+								type: 'action',
+								actions: [
+									{
+										label: (
+											row?: Record<string, unknown>
+										) =>
+											row?.status === 'enabled'
+												? __('Disable', 'vulopilot')
+												: __('Enable', 'vulopilot'),
+										icon: 'controls-repeat',
+										onClick: handleToggleStatus,
+									},
+									{
+										label: __('Run now', 'vulopilot'),
+										icon: 'controls-play',
+										onClick: handleRunNow,
+									},
+								],
+							},
+						}}
+						rows={data}
+						ids={data.map((row) => row.id)}
+						totalRows={total}
+						isLoading={isLoading}
+						emptyMessage={__(
+							'No automations yet — create one to react to scan findings automatically.',
+							'vulopilot'
+						)}
+						filters={[
+							{
+								key: 'status',
+								label: __('Status', 'vulopilot'),
+								type: 'select',
+								size: 10,
+								options: [
+									{
+										label: __('Enabled', 'vulopilot'),
+										value: 'enabled',
+									},
+									{
+										label: __('Disabled', 'vulopilot'),
+										value: 'disabled',
+									},
+								],
+							},
+						]}
+					/>
+				</ColumnComponent>
+			</ContainerComponent>
+		</>
 	);
 };
 
