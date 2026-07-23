@@ -106,6 +106,9 @@ class Install {
             $appearance_settings['display_subscription_form_as']  = 'inline';
 
             $mailchimp_settings = get_option( 'notifima_mailchimp_settings', array() );
+            if ( ! is_array( $mailchimp_settings ) ) {
+                $mailchimp_settings = array();
+            }
 
             update_option( Utill::NOTIFIMA_SETTINGS['automation'], array_merge( $appearance_settings, $mailchimp_settings ) );
 

@@ -219,8 +219,8 @@ const StoreReport: React.FC = () => {
 			render: (row) => (
 				<>
 					<InformationItemComponent
-						title={row.primary_owner?.data?.display_name}
-						titleLink={getUrl(row.primary_owner.data.ID, 'user')}
+						title={row.primary_owner?.display_name}
+						titleLink={getUrl(row.primary_owner?.ID, 'user')}
 						avatar={{
 							image: row.primary_owner_image,
 							iconClass: 'person',
@@ -229,7 +229,7 @@ const StoreReport: React.FC = () => {
 							{
 								label: __('Email', 'multivendorx'),
 								value:
-									row.primary_owner?.data?.user_email || '—',
+									row.primary_owner?.user_email || '—',
 							},
 						]}
 					/>

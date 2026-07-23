@@ -266,8 +266,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 							<CardComponent title="Submitted by">
 								<FormGroupWrapperComponent>
 									<FormGroupComponent row label="Display Name">
-										{formData.primary_owner_info?.data
-											?.display_name ||
+										{formData.primary_owner_info?.display_name ||
 											__('[Not Provided]', 'multivendorx')}
 									</FormGroupComponent>
 
@@ -275,8 +274,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 										row
 										label={__('Email', 'multivendorx')}
 									>
-										{formData.primary_owner_info?.data
-											?.user_email ?? (
+										{formData.primary_owner_info?.user_email ?? (
 											<SkeletonComponent width={9.375} />
 										)}
 									</FormGroupComponent>

@@ -53,10 +53,8 @@ interface StoreData {
 		commission_total?: number;
 	};
 	primary_owner_info?: {
-		data?: {
-			display_name?: string;
-			user_email?: string;
-		};
+		display_name?: string;
+		user_email?: string;
 	};
 	payment_methods?: Record<string, { primary?: boolean }>;
 }

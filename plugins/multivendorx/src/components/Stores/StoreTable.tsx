@@ -133,10 +133,9 @@ const StoreTable: React.FC = () => {
 		primary_owner: {
 			label: __('Primary Owner', 'multivendorx'),
 			render: (row) => {
-				const owner = row.primary_owner?.data;
 				return (
 					<InformationItemComponent
-						title={owner?.display_name}
+						title={row.primary_owner?.display_name}
 						titleLink={getUrl(row.id, 'store', 'edit')}
 						avatar={{
 							image: row.primary_owner_image,
@@ -145,7 +144,7 @@ const StoreTable: React.FC = () => {
 						descriptions={[
 							{
 								label: __('Email', 'multivendorx'),
-								value: owner?.user_email || '—',
+								value: row.primary_owner?.user_email || '—',
 							},
 						]}
 					/>

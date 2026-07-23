@@ -547,12 +547,12 @@ const Dashboard: React.FC = () => {
 	return (
 		<>
 			<NavigatorHeaderComponent
-				headerTitle={`${getGreeting()}, ${store?.primary_owner_info?.data?.display_name}!`}
+				headerTitle={`${getGreeting()}, ${store?.primary_owner_info?.display_name}!`}
 				headerDescription={
 					<>
 						{__('You’re viewing:', 'multivendorx')}{' '}
 						<b>
-							{store?.primary_owner_info?.data?.display_name}’s{' '}
+							{store?.primary_owner_info?.display_name}’s{' '}
 							{store?.name || '-'}
 						</b>
 					</>

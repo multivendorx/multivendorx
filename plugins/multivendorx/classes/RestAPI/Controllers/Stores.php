@@ -350,6 +350,11 @@ class Stores extends \WP_REST_Controller {
                 $store_meta         = Store::get_store( $store_id );
                 $owner_id           = StoreUtil::get_primary_owner( $store_id );
                 $owner              = get_userdata( $owner_id );
+                $owner_data         = array(
+                    'id'           => $owner->ID,
+                    'display_name' => $owner->display_name,
+                    'user_email'   => $owner->user_email,
+                );
                 $formatted_stores[] = apply_filters(
                     'multivendorx_stores_details',
                     array(
@@ -359,7 +364,7 @@ class Stores extends \WP_REST_Controller {
                         'status'              => $store['status'],
                         'email'               => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['store_email'] ]['primary'] ?? '',
                         'phone'               => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['phone'] ] ?? '',
-                        'primary_owner'       => $owner,
+                        'primary_owner'       => $owner_data,
                         'primary_owner_image' => get_avatar_url( $owner_id, 48 ),
                         'create_time'         => Utill::multivendorx_rest_prepare_date_response( $store['create_time'] ),
                         'create_time_gmt'     => Utill::multivendorx_rest_prepare_date_response( $store['create_time'], true ),
@@ -786,9 +791,12 @@ class Stores extends \WP_REST_Controller {
             }
 
             $primary_owner_id   = StoreUtil::get_primary_owner( $id );
-            $primary_owner_info = $primary_owner_id
-                ? get_userdata( $primary_owner_id )
-                : null;
+            $owner              = get_userdata( $primary_owner_id );
+            $primary_owner_info         = array(
+                'id'           => $owner->ID,
+                'display_name' => $owner->display_name,
+                'user_email'   => $owner->user_email,
+            );
 
             if ( $fetch_user ) {
                 $users = StoreUtil::get_store_users( $id );
