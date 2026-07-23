@@ -58,6 +58,7 @@ export default {
 			// 	},
 			// ],
 			category: ['marketplace_types', 'product_types'],
+			enableModules: ['variable'],
 		},
 		{
 			id: 'accommodation',
