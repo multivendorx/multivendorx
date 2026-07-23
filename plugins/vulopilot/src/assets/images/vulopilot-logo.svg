@@ -1,0 +1,5 @@
+<svg width="140" height="32" viewBox="0 0 140 32" xmlns="http://www.w3.org/2000/svg">
+	<path d="M16 2 L28 7 V15 C28 22.5 22.8 27.8 16 30 C9.2 27.8 4 22.5 4 15 V7 Z" fill="#4B227A" />
+	<path d="M11 15.5 L14.5 19 L21 11.5" stroke="#00EED0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+	<text x="36" y="21" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#02153D">VuloPilot</text>
+</svg>
