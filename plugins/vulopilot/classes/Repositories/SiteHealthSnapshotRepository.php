@@ -48,6 +48,31 @@ class SiteHealthSnapshotRepository extends AbstractRepository {
     }
 
     /**
+     * Snapshot rows within one explicit date range — what
+     * Reports\Types\HealthReport reads (a fixed report period), as opposed
+     * to get_recent()'s "last N days from today" used by the dashboard's
+     * trend chart.
+     *
+     * @param string $period_start Y-m-d, inclusive.
+     * @param string $period_end   Y-m-d, inclusive.
+     * @return array<int, array<string, mixed>> Ordered oldest first.
+     */
+    public function get_between( string $period_start, string $period_end ): array {
+        global $wpdb;
+
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT * FROM {$this->get_table()} WHERE snapshot_date BETWEEN %s AND %s ORDER BY snapshot_date ASC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                $period_start,
+                $period_end
+            ),
+            ARRAY_A
+        );
+
+        return $rows ?: array();
+    }
+
+    /**
      * Most recent single snapshot row, or null if no scan has completed
      * yet. Deliberately its own method rather than `get_recent(1)` —
      * get_recent() is a range query ordered ASC for a left-to-right trend

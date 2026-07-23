@@ -62,7 +62,7 @@ class StreamingHttpClient {
             )
         );
 
-        $handle = @fopen( $url, 'rb', false, $context ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+        $handle = @fopen( $url, 'rb', false, $context ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- opening an http(s):// stream for real-time reads, not a local file; WP_Filesystem has no streaming-read API.
 
         if ( false === $handle ) {
             throw new TransientProviderException(
@@ -74,9 +74,9 @@ class StreamingHttpClient {
 
         try {
             while ( ! feof( $handle ) ) {
-                $buffer .= fread( $handle, 2048 );
+                $buffer .= fread( $handle, 2048 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- reading from the http(s):// stream opened above, not a local file.
 
-                while ( false !== ( $newline_pos = strpos( $buffer, "\n" ) ) ) {
+                while ( false !== ( $newline_pos = strpos( $buffer, "\n" ) ) ) { // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition -- deliberate: pulls each buffered line out in turn, guarded by the explicit `false !==` check.
                     $line   = rtrim( substr( $buffer, 0, $newline_pos ), "\r" );
                     $buffer = substr( $buffer, $newline_pos + 1 );
 
@@ -86,7 +86,7 @@ class StreamingHttpClient {
                 }
             }
         } finally {
-            fclose( $handle );
+            fclose( $handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- closing the http(s):// stream opened above, not a local file.
         }
     }
 }

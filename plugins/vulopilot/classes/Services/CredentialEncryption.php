@@ -48,7 +48,7 @@ class CredentialEncryption {
         $iv         = random_bytes( openssl_cipher_iv_length( self::CIPHER ) );
         $ciphertext = openssl_encrypt( $plaintext, self::CIPHER, self::get_key(), OPENSSL_RAW_DATA, $iv );
 
-        return base64_encode( $iv . $ciphertext );
+        return base64_encode( $iv . $ciphertext ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- binary-to-text encoding of AES ciphertext, not code obfuscation.
     }
 
     /**
@@ -56,8 +56,8 @@ class CredentialEncryption {
      * @return string|null The original plaintext, or null if $encoded is malformed/undecryptable.
      */
     public static function decrypt( string $encoded ): ?string {
-        $raw        = base64_decode( $encoded, true );
-        $iv_length  = openssl_cipher_iv_length( self::CIPHER );
+        $raw       = base64_decode( $encoded, true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- reversing encrypt()'s binary-to-text encoding, not code obfuscation.
+        $iv_length = openssl_cipher_iv_length( self::CIPHER );
 
         if ( false === $raw || strlen( $raw ) <= $iv_length ) {
             return null;

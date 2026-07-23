@@ -46,8 +46,17 @@ export const useApiList = <T = Record<string, unknown>>(
 		setIsLoading(true);
 		setError(null);
 
-		const url =
-			getApiLink(appLocalizer, endpoint) + (query ? `?${query}` : '');
+		// getApiLink() already returns a URL containing its own `?` on
+		// sites with plain permalinks (rest_url() resolves to
+		// `index.php?rest_route=/…`) — appending another `?` here instead
+		// of `&` would fold `per_page=5` etc. into the *value* of the
+		// rest_route query var itself (`rest_route=/vulopilot/v1/reports?per_page=5`),
+		// which WordPress can't match to any registered route and 404s.
+		// Pretty-permalink sites (`/wp-json/…`, no `?` yet) still get a
+		// real `?`.
+		const baseUrl = getApiLink(appLocalizer, endpoint);
+		const separator = baseUrl.includes('?') ? '&' : '?';
+		const url = baseUrl + (query ? `${separator}${query}` : '');
 
 		getApiResponse<ListResponse<T>>(url, {
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },

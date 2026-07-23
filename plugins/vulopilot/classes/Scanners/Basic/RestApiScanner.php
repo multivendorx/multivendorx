@@ -9,6 +9,7 @@ namespace VuloPilot\Scanners\Basic;
 
 use VuloPilotCore\ValueObjects\Finding;
 use VuloPilotCore\ValueObjects\Severity;
+use VuloPilot\Utill;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -54,6 +55,18 @@ class RestApiScanner extends AbstractBasicScanner {
      */
     public function scan(): array {
         $findings = array();
+
+        $settings = wp_parse_args( get_option( Utill::VULOPILOT_SETTINGS_KEY, array() ), Utill::VULOPILOT_SETTINGS_DEFAULTS );
+
+        // Settings screen's Security tab — some site owners run this
+        // check's outbound HTTP request through a firewall/WAF that itself
+        // flags or blocks it, so it's the one scanner with its own
+        // explicit kill switch rather than only the category-level toggles
+        // the SEO/GEO/Accessibility/WooCommerce tabs use.
+        if ( empty( $settings['enable_rest_api_scanner'] ) ) {
+            return $findings;
+        }
+
         $response = wp_remote_get(
             rest_url( 'wp/v2/users' ),
             array(

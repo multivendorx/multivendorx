@@ -117,6 +117,13 @@ final class VuloPilot {
         $this->container['admin']           = new Admin();
         $this->container['frontendScripts'] = new FrontendScripts();
 
+        // Module loader (module-architecture.md) — loaded before every
+        // registry below so a module's own constructor (e.g. registering
+        // itself via `vulopilot_scanner_sources`) runs before those
+        // registries' own `init` priority 20 hooks read those filters.
+        $this->container['modules'] = new Modules();
+        $this->container['modules']->load_active_modules();
+
         $this->container['scanner_registry'] = new Scanners\ScannerRegistry();
         $this->container['scan_runner']      = new Scanners\ScanRunner( $this->container['scanner_registry'] );
 
@@ -124,7 +131,26 @@ final class VuloPilot {
         $this->container['rule_engine']   = new RuleEngine\RuleEngine( $this->container['rule_registry'] );
 
         $this->container['scan_persistence'] = new Services\ScanPersistenceListener();
-        $this->container['rest']             = new RestAPI\Rest();
+
+        $this->container['scheduler'] = new Scheduler\Scheduler( $this->container['scan_runner'] );
+
+        $this->container['automation_trigger_registry'] = new AutomationEngine\TriggerRegistry();
+        $this->container['automation_action_registry']  = new AutomationEngine\ActionRegistry();
+        $this->container['automation_engine']           = new AutomationEngine\AutomationEngine(
+            $this->container['automation_trigger_registry'],
+            $this->container['automation_action_registry'],
+            $this->container['rule_engine']
+        );
+
+        $this->container['report_type_registry']     = new Reports\ReportTypeRegistry();
+        $this->container['report_exporter_registry'] = new Reports\ReportExporterRegistry();
+        $this->container['report_generator']         = new Reports\ReportGenerator(
+            $this->container['report_type_registry'],
+            $this->container['report_exporter_registry']
+        );
+        $this->container['scheduled_report_runner']  = new Reports\ScheduledReportRunner( $this->container['report_generator'] );
+
+        $this->container['rest'] = new RestAPI\Rest();
 
         $this->container['ai_provider_registry'] = new AIProviders\ProviderRegistry();
         $this->container['ai_safety_validator']  = new AIProviders\Safety\AISafetyValidator();
@@ -142,6 +168,17 @@ final class VuloPilot {
         // GEO module (GEO-MODULE.md) — reuses the same ai_request_sender
         // every AIAction goes through, not a second AI-calling path.
         $this->container['geo_analyzer'] = new GeoAnalysis\GeoAnalyzer( $this->container['ai_request_sender'] );
+
+        // Extension SDK (ARCHITECTURE.md's Prompt 15) — vulopilot-pro and
+        // any third-party plugin register here (`vulopilot_extension_sources`),
+        // one tick before ScannerRegistry/RuleRegistry/etc. (all `init`
+        // priority 20) read the per-concern filters an extension's own
+        // register() call adds classes to.
+        $this->container['extension_manager'] = new Sdk\ExtensionManager();
+
+        if ( defined( 'WP_CLI' ) && WP_CLI ) {
+            add_action( 'cli_init', array( Cli\VuloPilotCommand::class, 'register' ) );
+        }
 
         $previous_version = get_option( Utill::VULOPILOT_OTHER_SETTINGS['plugin_db_version'], '' );
         if ( version_compare( $previous_version, $this->container['version'], '<' ) ) {

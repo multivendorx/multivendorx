@@ -33,8 +33,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class AnthropicProvider implements AIProviderInterface {
 
-    private const API_VERSION = '2023-06-01';
-    private const BASE_URL    = 'https://api.anthropic.com/v1';
+    private const API_VERSION        = '2023-06-01';
+    private const BASE_URL           = 'https://api.anthropic.com/v1';
     private const DEFAULT_MAX_TOKENS = 1024;
 
     private string $api_key;
@@ -116,7 +116,7 @@ class AnthropicProvider implements AIProviderInterface {
             $this->build_headers(),
             wp_json_encode( array_merge( $this->build_body( $request ), array( 'stream' => true ) ) ),
             function ( string $line ) use ( &$content, &$model, &$stop_reason, &$prompt_tokens, &$completion_tokens, $on_chunk ) {
-                if ( ! str_starts_with( $line, 'data:' ) ) {
+                if ( 0 !== strpos( $line, 'data:' ) ) {
                     return;
                 }
 
@@ -141,8 +141,8 @@ class AnthropicProvider implements AIProviderInterface {
                         break;
 
                     case 'message_delta':
-                        $stop_reason        = $event['delta']['stop_reason'] ?? $stop_reason;
-                        $completion_tokens  = (int) ( $event['usage']['output_tokens'] ?? $completion_tokens );
+                        $stop_reason       = $event['delta']['stop_reason'] ?? $stop_reason;
+                        $completion_tokens = (int) ( $event['usage']['output_tokens'] ?? $completion_tokens );
                         break;
                 }
             }

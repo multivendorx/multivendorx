@@ -29,8 +29,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class GeoChunkingScanner extends AbstractBasicScanner {
 
-    private const BATCH_SIZE                 = 50;
-    private const MAX_PARAGRAPH_WORD_COUNT   = 150;
+    private const BATCH_SIZE               = 50;
+    private const MAX_PARAGRAPH_WORD_COUNT = 150;
 
     /**
      * @inheritDoc

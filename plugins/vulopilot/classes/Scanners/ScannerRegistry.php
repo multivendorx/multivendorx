@@ -8,6 +8,7 @@
 namespace VuloPilot\Scanners;
 
 use VuloPilotCore\Contracts\Scanner\ScannerInterface;
+use VuloPilot\Utill;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -60,7 +61,8 @@ class ScannerRegistry {
      * @return void
      */
     public function register_scanners(): void {
-        $scanner_classes = apply_filters( 'vulopilot_scanner_sources', $this->get_default_scanner_classes() );
+        $scanner_classes     = apply_filters( 'vulopilot_scanner_sources', $this->get_default_scanner_classes() );
+        $disabled_categories = $this->get_disabled_categories();
 
         foreach ( $scanner_classes as $scanner_class ) {
             if ( ! is_string( $scanner_class ) || ! class_exists( $scanner_class ) ) {
@@ -73,8 +75,45 @@ class ScannerRegistry {
                 continue;
             }
 
+            if ( in_array( $scanner->get_category(), $disabled_categories, true ) ) {
+                continue;
+            }
+
             $this->scanners[ $scanner->get_id() ] = $scanner;
         }
+    }
+
+    /**
+     * Settings screen's SEO/GEO/Accessibility/WooCommerce tabs are
+     * category-level kill switches (SCANNERS.md's category list) rather
+     * than per-scanner toggles — disabling "WooCommerce" turns off both
+     * the original WooCommerceScanner and the 11 Product* scanners from
+     * the WooCommerce AI pass, since both share the `woocommerce` category
+     * string. Scanners not covered by one of these four toggles (security,
+     * performance, links, …) always run; only RestApiScanner has its own
+     * dedicated setting, see its own docblock for why.
+     *
+     * @return string[] Category strings currently disabled via settings.
+     */
+    private function get_disabled_categories(): array {
+        $settings = wp_parse_args( get_option( Utill::VULOPILOT_SETTINGS_KEY, array() ), Utill::VULOPILOT_SETTINGS_DEFAULTS );
+
+        $toggle_to_category = array(
+            'enable_seo_scanning'           => 'seo',
+            'enable_geo_scanning'           => 'geo',
+            'enable_accessibility_scanning' => 'accessibility',
+            'enable_woocommerce_scanning'   => 'woocommerce',
+        );
+
+        $disabled = array();
+
+        foreach ( $toggle_to_category as $setting_key => $category ) {
+            if ( empty( $settings[ $setting_key ] ) ) {
+                $disabled[] = $category;
+            }
+        }
+
+        return $disabled;
     }
 
     /**
@@ -122,6 +161,20 @@ class ScannerRegistry {
             Basic\GeoFaqOpportunityScanner::class,
             Basic\GeoChunkingScanner::class,
             Basic\GeoSemanticStructureScanner::class,
+            // WooCommerce AI's Product Intelligence pass (ARCHITECTURE.md's
+            // Prompt 11) — 11 additional checks alongside the original
+            // WooCommerceScanner (checkout page), category 'woocommerce'.
+            Basic\ProductMissingImagesScanner::class,
+            Basic\ProductMissingCategoriesScanner::class,
+            Basic\ProductMissingTagsScanner::class,
+            Basic\ProductMissingDescriptionScanner::class,
+            Basic\ProductMissingShortDescriptionScanner::class,
+            Basic\ProductSkuIssuesScanner::class,
+            Basic\ProductAttributesScanner::class,
+            Basic\ProductInventoryHealthScanner::class,
+            Basic\ProductPricingScanner::class,
+            Basic\ProductDuplicateScanner::class,
+            Basic\ProductCompletenessScanner::class,
         );
     }
 

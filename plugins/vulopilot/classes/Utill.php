@@ -27,19 +27,19 @@ class Utill {
      * @var array
      */
     const TABLES = array(
-        'scan'                => 'vulopilot_scans',
-        'scan_finding'        => 'vulopilot_scan_findings',
-        'rule'                => 'vulopilot_rules',
-        'automation'          => 'vulopilot_automations',
-        'automation_run'      => 'vulopilot_automation_runs',
-        'ai_job'              => 'vulopilot_ai_jobs',
-        'ai_history'          => 'vulopilot_ai_history',
-        'ai_provider_config'  => 'vulopilot_ai_provider_configs',
-        'report'              => 'vulopilot_reports',
-        'scheduled_job'       => 'vulopilot_scheduled_jobs',
-        'activity_log'        => 'vulopilot_activity_logs',
+        'scan'                 => 'vulopilot_scans',
+        'scan_finding'         => 'vulopilot_scan_findings',
+        'rule'                 => 'vulopilot_rules',
+        'automation'           => 'vulopilot_automations',
+        'automation_run'       => 'vulopilot_automation_runs',
+        'ai_job'               => 'vulopilot_ai_jobs',
+        'ai_history'           => 'vulopilot_ai_history',
+        'ai_provider_config'   => 'vulopilot_ai_provider_configs',
+        'report'               => 'vulopilot_reports',
+        'scheduled_job'        => 'vulopilot_scheduled_jobs',
+        'activity_log'         => 'vulopilot_activity_logs',
         'site_health_snapshot' => 'vulopilot_site_health_snapshots',
-        'ai_action_run'       => 'vulopilot_ai_action_runs',
+        'ai_action_run'        => 'vulopilot_ai_action_runs',
     );
 
     /**
@@ -48,8 +48,8 @@ class Utill {
      * @var array
      */
     const VULOPILOT_OTHER_SETTINGS = array(
-        'run_installer'      => 'vulopilot_run_installer',
-        'plugin_db_version'  => 'vulopilot_version',
+        'run_installer'     => 'vulopilot_run_installer',
+        'plugin_db_version' => 'vulopilot_version',
     );
 
     /**
@@ -69,8 +69,35 @@ class Utill {
      * @var array
      */
     const VULOPILOT_SETTINGS_DEFAULTS = array(
-        'scan_frequency'      => 'daily',
-        'notification_email'  => '',
+        // General.
+        'scan_frequency'                => 'daily',
+        // Notifications.
+        'notification_email'            => '',
+        'notify_on_critical_findings'   => false,
+        'email_from_name'               => '',
+        'email_from_address'            => '',
+        // Automation — replaces AutomationEngine's previously-hardcoded
+        // COOLDOWN_MINUTES constant (ARCHITECTURE.md's Prompt 12 pass
+        // shipped a fixed 60-minute rate limit as a pragmatic v1; this
+        // makes it a real, per-site setting instead).
+        'automation_cooldown_minutes'   => 60,
+        // Reports.
+        'default_report_format'         => 'pdf',
+        'default_report_period_days'    => 30,
+        // Security.
+        'enable_rest_api_scanner'       => true,
+        // Scanner-category kill switches — each gates every scanner
+        // registered under that category string (SCANNERS.md), not just
+        // one check, since that's what these settings-page groupings
+        // actually correspond to (e.g. disabling "WooCommerce" turns off
+        // both the original WooCommerceScanner and the 11 Product*
+        // scanners from the WooCommerce AI pass — all category `woocommerce`).
+        'enable_seo_scanning'           => true,
+        'enable_geo_scanning'           => true,
+        'enable_accessibility_scanning' => true,
+        'enable_woocommerce_scanning'   => true,
+        // Advanced / Debug.
+        'enable_debug_logging'          => false,
     );
 
     /**
@@ -112,4 +139,15 @@ class Utill {
      * @var string
      */
     const DASHBOARD_LAYOUT_META_KEY = 'vulopilot_dashboard_widget_layout';
+
+    /**
+     * Option name the active-modules list is stored under — mirrors
+     * MultiVendorX\Utill::ACTIVE_MODULES_DB_KEY's role for this product
+     * line's own `modules/` addon system (module-architecture.md's
+     * discovery/loading mechanism, added here for VuloPilot via
+     * `Modules::load_active_modules()`).
+     *
+     * @var string
+     */
+    const ACTIVE_MODULES_DB_KEY = 'vulopilot_all_active_module_list';
 }

@@ -101,8 +101,8 @@ class OrphanPageScanner extends AbstractBasicScanner {
     }
 
     /**
-     * @param \WP_Post    $target    The post being checked for inbound links.
-     * @param \WP_Post[]  $all_posts Every post in the sampled batch.
+     * @param \WP_Post     $target    The post being checked for inbound links.
+     * @param \WP_Post[]   $all_posts Every post in the sampled batch.
      * @param string|false $permalink The target's permalink.
      * @return bool
      */

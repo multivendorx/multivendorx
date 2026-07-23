@@ -4,11 +4,11 @@
 	gap: 1.5rem;
 	align-items: start;
 
-	@media (max-width: 1024px) {
+	@media (width <= 1024px) {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 
-	@media (max-width: 600px) {
+	@media (width <= 600px) {
 		grid-template-columns: 1fr;
 	}
 }
@@ -19,7 +19,7 @@
 	&.size-medium {
 		grid-column: span 2;
 
-		@media (max-width: 600px) {
+		@media (width <= 600px) {
 			grid-column: span 1;
 		}
 	}
@@ -27,11 +27,11 @@
 	&.size-large {
 		grid-column: span 4;
 
-		@media (max-width: 1024px) {
+		@media (width <= 1024px) {
 			grid-column: span 2;
 		}
 
-		@media (max-width: 600px) {
+		@media (width <= 600px) {
 			grid-column: span 1;
 		}
 	}

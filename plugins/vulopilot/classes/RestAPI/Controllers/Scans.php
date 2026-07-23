@@ -109,8 +109,8 @@ class Scans extends \WP_REST_Controller {
 
         return rest_ensure_response(
             array(
-                'success'      => true,
-                'scanner_ids'  => array_keys( $results ),
+                'success'     => true,
+                'scanner_ids' => array_keys( $results ),
             )
         );
     }
