@@ -1,4 +1,9 @@
 import { __ } from '@wordpress/i18n';
+import {
+	ColumnComponent,
+	ContainerComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
 import FindingsTable from '../../components/FindingsTable';
 import GeoScoreCard from './GeoScoreCard';
 import './GEO.scss';
@@ -13,18 +18,32 @@ import './GEO.scss';
  * before that pass existed (SCANNERS.md's original note on this page).
  */
 const GEO = () => (
-	<div className="vulopilot-geo-page">
-		<GeoScoreCard />
-
-		<FindingsTable
-			title={__('GEO findings', 'vulopilot')}
-			description={__(
-				'No GEO findings yet — run a scan to check how AI answer engines can discover and cite this site.',
+	<>
+		<NavigatorHeaderComponent
+			headerIcon="globe"
+			headerTitle={__('GEO', 'vulopilot')}
+			headerDescription={__(
+				'Generative Engine Optimization — how discoverable and citable this site is to AI answer engines.',
 				'vulopilot'
 			)}
-			category="geo"
 		/>
-	</div>
+		<ContainerComponent general>
+			<ColumnComponent>
+				<div className="vulopilot-geo-page">
+					<GeoScoreCard />
+
+					<FindingsTable
+						title={__('GEO findings', 'vulopilot')}
+						description={__(
+							'No GEO findings yet — run a scan to check how AI answer engines can discover and cite this site.',
+							'vulopilot'
+						)}
+						category="geo"
+					/>
+				</div>
+			</ColumnComponent>
+		</ContainerComponent>
+	</>
 );
 
 export default GEO;

@@ -43,7 +43,7 @@ class RetryingProvider implements AIProviderInterface {
      */
     public function __construct( AIProviderInterface $inner, int $max_attempts = 3, int $base_delay_ms = 500 ) {
         $this->inner         = $inner;
-        $this->max_attempts   = max( 1, $max_attempts );
+        $this->max_attempts  = max( 1, $max_attempts );
         $this->base_delay_ms = $base_delay_ms;
     }
 

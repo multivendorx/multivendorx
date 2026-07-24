@@ -30,7 +30,8 @@
     },
     "require": {
         "php": ">=8.0",
-        "multivendorx/vulopilot-core": "*"
+        "multivendorx/vulopilot-core": "*",
+        "dompdf/dompdf": "^3.1"
     },
     "config": {
         "platform": {

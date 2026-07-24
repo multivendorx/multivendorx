@@ -62,8 +62,8 @@ class UsageTrackingProvider implements AIProviderInterface {
      *                                          injected in tests to assert against a fake).
      */
     public function __construct( AIProviderInterface $inner, ?AiHistoryRepository $history = null ) {
-        $this->inner    = $inner;
-        $this->history  = $history ?? new AiHistoryRepository();
+        $this->inner   = $inner;
+        $this->history = $history ?? new AiHistoryRepository();
     }
 
     /**
@@ -129,13 +129,13 @@ class UsageTrackingProvider implements AIProviderInterface {
     private function record_success( AIResponse $response ): void {
         $this->history->insert(
             array(
-                'provider'           => $response->get_provider(),
-                'model'              => $response->get_model(),
-                'prompt_tokens'      => $response->get_prompt_tokens(),
-                'completion_tokens'  => $response->get_completion_tokens(),
-                'cost_estimate'      => $this->estimate_cost( $response ),
-                'status'             => 'success',
-                'requested_by'       => get_current_user_id(),
+                'provider'          => $response->get_provider(),
+                'model'             => $response->get_model(),
+                'prompt_tokens'     => $response->get_prompt_tokens(),
+                'completion_tokens' => $response->get_completion_tokens(),
+                'cost_estimate'     => $this->estimate_cost( $response ),
+                'status'            => 'success',
+                'requested_by'      => get_current_user_id(),
             )
         );
     }

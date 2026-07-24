@@ -25,8 +25,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class ThinContentScanner extends AbstractBasicScanner {
 
-    private const BATCH_SIZE           = 50;
-    private const MIN_WORD_COUNT       = 300;
+    private const BATCH_SIZE     = 50;
+    private const MIN_WORD_COUNT = 300;
 
     /**
      * @inheritDoc

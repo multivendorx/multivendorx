@@ -33,8 +33,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class BrokenLinksScanner extends AbstractBasicScanner {
 
-    private const POSTS_BATCH_SIZE = 20;
-    private const MAX_LINKS_PER_RUN = 40;
+    private const POSTS_BATCH_SIZE        = 20;
+    private const MAX_LINKS_PER_RUN       = 40;
     private const REQUEST_TIMEOUT_SECONDS = 5;
 
     /**
@@ -127,7 +127,7 @@ class BrokenLinksScanner extends AbstractBasicScanner {
                     break;
                 }
 
-                if ( ! str_starts_with( $url, 'http://' ) && ! str_starts_with( $url, 'https://' ) ) {
+                if ( 0 !== strpos( $url, 'http://' ) && 0 !== strpos( $url, 'https://' ) ) {
                     continue;
                 }
 

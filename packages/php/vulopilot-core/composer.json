@@ -1,0 +1,29 @@
+{
+    "name": "multivendorx/vulopilot-core",
+    "description": "VuloPilot's shared Free/Pro contract layer — interfaces and immutable value objects only, no WordPress dependency.",
+    "type": "library",
+    "homepage": "https://multivendorx.com/vulopilot/",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "MultiVendorX",
+            "email": "contact@multivendorx.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "VuloPilotCore\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "9.6.x-dev",
+        "yoast/phpunit-polyfills": "^4.0@dev"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    }
+}

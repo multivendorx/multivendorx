@@ -45,7 +45,11 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 		}
 	);
 
-	const handleResolve = (row?: Record<string, unknown>) => {
+	const handleSetStatus = (
+		row: Record<string, unknown> | undefined,
+		status: 'resolved' | 'ignored' | 'open',
+		successMessage: string
+	) => {
 		if (!row) {
 			return;
 		}
@@ -53,19 +57,19 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 		sendApiResponse(
 			appLocalizer,
 			getApiLink(appLocalizer, `findings/${row.id}`),
-			{ status: 'resolved' }
+			{ status }
 		).then((response) => {
 			if (response) {
 				NoticeManager.add({
-					uniqueKey: `finding-resolved-${row.id}`,
+					uniqueKey: `finding-${status}-${row.id}`,
 					type: 'success',
 					position: 'notice',
-					message: __('Finding marked as resolved.', 'vulopilot'),
+					message: successMessage,
 				});
 				refetch();
 			} else {
 				NoticeManager.add({
-					uniqueKey: `finding-resolve-failed-${row.id}`,
+					uniqueKey: `finding-${status}-failed-${row.id}`,
 					type: 'error',
 					position: 'notice',
 					message: __(
@@ -76,6 +80,19 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 			}
 		});
 	};
+
+	const handleResolve = (row?: Record<string, unknown>) =>
+		handleSetStatus(
+			row,
+			'resolved',
+			__('Finding marked as resolved.', 'vulopilot')
+		);
+
+	const handleIgnore = (row?: Record<string, unknown>) =>
+		handleSetStatus(row, 'ignored', __('Finding ignored.', 'vulopilot'));
+
+	const handleReopen = (row?: Record<string, unknown>) =>
+		handleSetStatus(row, 'open', __('Finding reopened.', 'vulopilot'));
 
 	if (error) {
 		return (
@@ -125,9 +142,25 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 			type: 'action',
 			actions: [
 				{
-					label: __('Mark resolved', 'vulopilot'),
+					label: (row?: Record<string, unknown>) =>
+						row?.status === 'open'
+							? __('Mark resolved', 'vulopilot')
+							: __('Resolved', 'vulopilot'),
 					icon: 'yes',
 					onClick: handleResolve,
+				},
+				{
+					label: (row?: Record<string, unknown>) =>
+						row?.status === 'ignored'
+							? __('Ignored', 'vulopilot')
+							: __('Ignore', 'vulopilot'),
+					icon: 'hidden',
+					onClick: handleIgnore,
+				},
+				{
+					label: __('Reopen', 'vulopilot'),
+					icon: 'controls-repeat',
+					onClick: handleReopen,
 				},
 			],
 		},

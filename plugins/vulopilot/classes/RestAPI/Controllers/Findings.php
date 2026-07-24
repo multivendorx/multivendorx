@@ -136,6 +136,11 @@ class Findings extends \WP_REST_Controller {
             return new \WP_Error( 'vulopilot_update_failed', __( 'Could not update this finding.', 'vulopilot' ), array( 'status' => 500 ) );
         }
 
-        return rest_ensure_response( array( 'success' => true, 'id' => $id ) );
+        return rest_ensure_response(
+            array(
+				'success' => true,
+				'id'      => $id,
+            )
+        );
     }
 }

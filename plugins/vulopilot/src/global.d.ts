@@ -1,3 +1,5 @@
+import type { ComponentType } from 'react';
+
 export {};
 
 declare global {
@@ -19,17 +21,19 @@ declare global {
 		date_format: string;
 	}
 
-	 
+
 	var appLocalizer: AppLocalizer;
 
+	/* eslint-disable no-unused-vars */
 	interface Window {
 		VULOPILOT_ROUTES: {
 			tab: string;
-			component: React.ComponentType<Record<string, unknown>>;
+			component: ComponentType<Record<string, unknown>>;
 		}[];
 		registerVuloPilotRoute: (route: {
 			tab: string;
-			component: React.ComponentType<Record<string, unknown>>;
+			component: ComponentType<Record<string, unknown>>;
 		}) => void;
 	}
+	/* eslint-enable no-unused-vars */
 }

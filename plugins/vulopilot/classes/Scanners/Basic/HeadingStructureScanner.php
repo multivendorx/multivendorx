@@ -26,8 +26,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class HeadingStructureScanner extends AbstractBasicScanner {
 
-    private const BATCH_SIZE               = 50;
-    private const MIN_WORD_COUNT_TO_CHECK  = 300;
+    private const BATCH_SIZE              = 50;
+    private const MIN_WORD_COUNT_TO_CHECK = 300;
 
     /**
      * @inheritDoc

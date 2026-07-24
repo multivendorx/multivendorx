@@ -93,6 +93,10 @@ class Admin {
                     'name'     => __( 'Activity', 'vulopilot' ),
                     'priority' => 90,
                 ),
+                'modules'      => array(
+                    'name'     => __( 'Modules', 'vulopilot' ),
+                    'priority' => 95,
+                ),
                 'settings'     => array(
                     'name'     => __( 'Settings', 'vulopilot' ),
                     'priority' => 100,

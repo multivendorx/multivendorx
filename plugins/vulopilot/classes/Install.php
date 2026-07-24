@@ -128,7 +128,7 @@ class Install {
         $sql_automations = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['automation'] . "` (
             `id`                bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             `name`              varchar(191) NOT NULL,
-            `rule_id`           bigint(20) unsigned NOT NULL,
+            `rule_id`           bigint(20) unsigned DEFAULT NULL,
             `trigger_type`      varchar(50) NOT NULL,
             `trigger_config`    longtext DEFAULT NULL,
             `actions`           longtext NOT NULL,
@@ -330,14 +330,36 @@ class Install {
      * Runs incremental, version-gated schema changes for upgrades from an
      * already-installed copy of VuloPilot. Additive only, per
      * .claude/rules/backward-compatibility.md — ADD COLUMN / ADD INDEX,
-     * never DROP. Empty today: the schema is still at its 1.0.0 baseline;
-     * the next schema change adds its own `version_compare( $previous_version, ... )`
-     * block here, following the exact precedent in MultiVendorX\Install::do_migration().
+     * never DROP.
      *
      * @param string $previous_version The version option value before this run.
      * @return void
      */
     public function do_migration( $previous_version ) {
-        // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+        if ( version_compare( $previous_version, '1.1.0', '<' ) ) {
+            $this->relax_automation_rule_id_to_nullable();
+        }
+    }
+
+    /**
+     * 1.1.0 (AutomationEngine, ARCHITECTURE.md's Prompt 12): `rule_id` was
+     * originally `NOT NULL`, a foreign key to the *separate*,
+     * still-unbuilt user-authored-custom-rules table (`vulopilot_rules`,
+     * see RULE-ENGINE.md's "What's not here yet") — but AutomationEngine
+     * binds an automation to one of the 19 code-defined RuleInterface
+     * rules by string id (`trigger_config.rule_key`), not a row in that
+     * table. Loosening `NOT NULL` to nullable is additive/non-destructive:
+     * this column has never actually been populated by any released
+     * version (Automations couldn't be created via REST until this
+     * version), so there is no existing data this could conflict with.
+     *
+     * @return void
+     */
+    private function relax_automation_rule_id_to_nullable() {
+        global $wpdb;
+
+        $table = $wpdb->prefix . Utill::TABLES['automation'];
+
+        $wpdb->query( "ALTER TABLE `{$table}` MODIFY `rule_id` bigint(20) unsigned DEFAULT NULL" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
     }
 }

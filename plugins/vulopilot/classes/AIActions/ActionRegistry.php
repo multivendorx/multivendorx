@@ -73,6 +73,18 @@ class ActionRegistry {
             // MissingSummaryBlockRule's fix loops.
             Actions\GenerateFaqAction::class,
             Actions\GenerateSummaryBlockAction::class,
+            // WooCommerce AI (ARCHITECTURE.md's Prompt 11) — closes the
+            // Missing*Rule fix loops for products, plus new suggestion-only
+            // actions with no corresponding Rule (cross-sell/upsell/bundle).
+            Actions\RewriteProductTitleAction::class,
+            Actions\WriteProductShortDescriptionAction::class,
+            Actions\WriteProductLongDescriptionAction::class,
+            Actions\WriteProductMetaDescriptionAction::class,
+            Actions\GenerateProductSchemaAction::class,
+            Actions\GenerateProductFaqAction::class,
+            Actions\GenerateProductCrossSellAction::class,
+            Actions\GenerateProductUpsellAction::class,
+            Actions\GenerateProductBundleSuggestionsAction::class,
         );
     }
 

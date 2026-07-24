@@ -3,9 +3,9 @@ Contributors: wcmp, purnendu
 Tags: marketplace, WooCommerce marketplace, multi vendor, multivendor, multivendor marketplace
 Donate link: http://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=multivendorxwporg
 Requires at least: 6.3
-Tested up to: 7.0.1
+Tested up to: 7.0.2
 Requires PHP: 8.0
-Stable tag: 5.0.10
+Stable tag: 5.0.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -245,6 +245,12 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 == Changelog ==
+
+= 5.0.11 - 2026-07-23 =
+* Added     - Compatibility with WordPress 7.0.2.
+* Fixed     - Stripe Connect redirection issue from the Store Dashboard.
+* Fixed     - Security vulnerabilities reported by Moshe Levi, Darius Sveikauskas, Farid Narimanov, Erwan Le Rousseau.
+* Updated   - Language file.
 
 = 5.0.10 - 2026-07-14 =
 * Added     - Compatibility with WordPress 7.0.1.

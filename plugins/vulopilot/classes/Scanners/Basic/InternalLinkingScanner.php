@@ -53,7 +53,7 @@ class InternalLinkingScanner extends AbstractBasicScanner {
      * @inheritDoc
      */
     public function scan(): array {
-        $findings = array();
+        $findings  = array();
         $home_host = wp_parse_url( home_url(), PHP_URL_HOST );
         $posts     = get_posts(
             array(

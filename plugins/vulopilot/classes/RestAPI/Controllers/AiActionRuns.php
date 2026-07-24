@@ -12,15 +12,15 @@ use VuloPilot\Repositories\ActionRunRepository;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * GET /ai-action-runs — read-only list of vulopilot_ai_action_runs rows
- * (AI-ACTIONS.md), backing the Dashboard's "Pending Approval" widget
- * today. Only get_items() exists here: propose/approve/reject/rollback
- * are AIActions\ActionRunner's job and each has side effects (an AI call,
- * a site mutation) that AI-ACTIONS.md's "What's not here yet" section
- * deliberately leaves as a separate, not-yet-built REST surface — a
- * plain list endpoint for an existing widget doesn't require building
- * that surface first, the same way Reports/AiHistory's read-only
- * get_items() didn't need their own write endpoints to exist yet either.
+ * GET /ai-action-runs backs the Dashboard's "Pending Approval" widget.
+ * POST /ai-action-runs/{id}/approve|reject|rollback complete the write
+ * side — AIActions\ActionRunner::approve()/reject()/rollback() have been
+ * fully implemented since AI-ACTIONS.md's own pass, but this controller
+ * used to only expose get_items(), leaving the entire Preview → Approval
+ * → Execution → Rollback lifecycle with no way to actually approve or
+ * reject anything from the UI. Each has real side effects (a site
+ * mutation, for approve/rollback), so each is its own POST route with its
+ * own permission check, not folded into a generic PATCH.
  *
  * @class       AiActionRuns controller
  * @version     1.0.0
@@ -48,6 +48,42 @@ class AiActionRuns extends \WP_REST_Controller {
                 ),
             )
         );
+
+        register_rest_route(
+            VuloPilot()->rest_namespace,
+            '/' . $this->rest_base . '/(?P<id>\d+)/approve',
+            array(
+                array(
+                    'methods'             => \WP_REST_Server::CREATABLE,
+                    'callback'            => array( $this, 'approve_item' ),
+                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                ),
+            )
+        );
+
+        register_rest_route(
+            VuloPilot()->rest_namespace,
+            '/' . $this->rest_base . '/(?P<id>\d+)/reject',
+            array(
+                array(
+                    'methods'             => \WP_REST_Server::CREATABLE,
+                    'callback'            => array( $this, 'reject_item' ),
+                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                ),
+            )
+        );
+
+        register_rest_route(
+            VuloPilot()->rest_namespace,
+            '/' . $this->rest_base . '/(?P<id>\d+)/rollback',
+            array(
+                array(
+                    'methods'             => \WP_REST_Server::CREATABLE,
+                    'callback'            => array( $this, 'rollback_item' ),
+                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                ),
+            )
+        );
     }
 
     /**
@@ -55,6 +91,65 @@ class AiActionRuns extends \WP_REST_Controller {
      */
     public function get_items_permissions_check( $request ) {
         return current_user_can( 'manage_options' );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function update_item_permissions_check( $request ) {
+        return current_user_can( 'manage_options' );
+    }
+
+    /**
+     * Approves and executes a pending AI action run.
+     *
+     * @param \WP_REST_Request $request Full details about the request.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function approve_item( $request ) {
+        try {
+            $result = VuloPilot()->ai_action_runner->approve( absint( $request->get_param( 'id' ) ) );
+        } catch ( \RuntimeException $exception ) {
+            return new \WP_Error( 'vulopilot_ai_action_not_pending', $exception->getMessage(), array( 'status' => 409 ) );
+        } catch ( \InvalidArgumentException $exception ) {
+            return new \WP_Error( 'vulopilot_ai_action_invalid', $exception->getMessage(), array( 'status' => 400 ) );
+        }
+
+        return rest_ensure_response( array_merge( array( 'success' => true ), $result ) );
+    }
+
+    /**
+     * Declines a pending AI action run without ever executing it.
+     *
+     * @param \WP_REST_Request $request Full details about the request.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function reject_item( $request ) {
+        try {
+            VuloPilot()->ai_action_runner->reject( absint( $request->get_param( 'id' ) ) );
+        } catch ( \RuntimeException $exception ) {
+            return new \WP_Error( 'vulopilot_ai_action_not_pending', $exception->getMessage(), array( 'status' => 409 ) );
+        }
+
+        return rest_ensure_response( array( 'success' => true ) );
+    }
+
+    /**
+     * Reverts a previously executed AI action run.
+     *
+     * @param \WP_REST_Request $request Full details about the request.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function rollback_item( $request ) {
+        try {
+            VuloPilot()->ai_action_runner->rollback( absint( $request->get_param( 'id' ) ) );
+        } catch ( \RuntimeException $exception ) {
+            return new \WP_Error( 'vulopilot_ai_action_not_rollbackable', $exception->getMessage(), array( 'status' => 409 ) );
+        } catch ( \InvalidArgumentException $exception ) {
+            return new \WP_Error( 'vulopilot_ai_action_invalid', $exception->getMessage(), array( 'status' => 400 ) );
+        }
+
+        return rest_ensure_response( array( 'success' => true ) );
     }
 
     /**
