@@ -166,6 +166,19 @@ class FrontendScripts {
                 // appLocalizer already, but nothing populated them yet.
                 'khali_dabba'    => VuloPilot()->util->is_khali_dabba(),
                 'active_modules' => VuloPilot()->modules->get_active_modules(),
+                'shop_url'       => VULOPILOT_PRO_SHOP_URL,
+                // 'version' defaults to false (Pro not installed) unless
+                // vulopilot-pro's own bootstrap overrides it — same
+                // shape/default as multivendorx's 'pro_data'/
+                // multivendorx_update_pro_data filter. Feeds the header's
+                // "Pro: …" version tag (app.tsx).
+                'pro_data'       => apply_filters(
+                    'vulopilot_update_pro_data',
+                    array(
+                        'version'         => false,
+                        'manage_plan_url' => VULOPILOT_PRO_SHOP_URL,
+                    )
+                ),
             )
         );
     }

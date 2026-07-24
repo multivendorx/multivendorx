@@ -1,3 +1,4 @@
+/* global appLocalizer */
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
@@ -9,6 +10,14 @@ import Brand from './assets/images/vulopilot-logo.svg';
 import { searchIndex, SearchItem } from './searchIndex';
 import './routeRegistry';
 import './routes';
+
+// Forces initializeModules() (called in index.tsx, right after this module
+// is imported) to actually fetch active modules from the server on every
+// load — without this, useModules()'s zustand store stays at its initial
+// `modules: []` forever and every moduleEnabled-gated field/module card
+// looks permanently locked, matching the multivendorx/catalogx app.tsx
+// pattern.
+localStorage.setItem('force_vulopilot_context_reload', 'true');
 
 /**
  * Reads the active tab from the URL hash (`?page=vulopilot#&tab=health`)
@@ -136,6 +145,8 @@ const App = () => {
 				}}
 				onQueryUpdate={handleQueryUpdate}
 				onResultClick={handleResultClick}
+				free={appLocalizer.version}
+				pro={appLocalizer.pro_data.version}
 			/>
 
 			<NoticeReceiverComponent position="notice" />

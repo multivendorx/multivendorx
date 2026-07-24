@@ -6,6 +6,7 @@ import {
 	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { getModuleData } from '../../services/templateService';
+import proPopupContent from '../Popup/Popup';
 
 /**
  * Mirrors the free multivendorx plugin's own
@@ -36,6 +37,7 @@ const Modules = () => {
 					appLocalizer={appLocalizer}
 					apiLink="modules"
 					pluginName="vulopilot"
+					proPopupContent={proPopupContent}
 				/>
 			</ContainerComponent>
 		</>

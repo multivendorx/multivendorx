@@ -23,6 +23,13 @@ declare global {
 		khali_dabba: boolean;
 		/** Kebab-case ids of every currently-active module (Free's own + any active vulopilot-pro modules) — feeds zyra's `moduleEnabled` settings-field gate and vulopilot-pro/src/index.tsx's per-module JS loading. */
 		active_modules: string[];
+		/** Where to send a user who wants to buy VuloPilot Pro — feeds zyra's configureZyra()/ZyraVariable.shop_url and the generic "Upgrade to Pro" popup's CTA link. */
+		shop_url: string;
+		/** VuloPilot Pro's own reported version/account-management link — `version: false` when Pro isn't installed/registered, populated via the `vulopilot_update_pro_data` filter Pro's own bootstrap hooks. Feeds the header's "Pro: …" version tag. */
+		pro_data: {
+			version: string | false;
+			manage_plan_url: string;
+		};
 	}
 
 

@@ -9,6 +9,7 @@ import { CardComponent, ModuleGuardComponent, NavigatorComponent } from '@zyra/c
 import { SettingProvider, useSetting } from '../../contexts/SettingContext';
 import getTemplateData from '../../services/templateService';
 import ImportExportPanel from '../../components/Settings/ImportExportPanel';
+import ShowProPopup from '../../components/Popup/Popup';
 
 /**
  * Built on zyra's real settings framework (`InputRenderer`/
@@ -109,7 +110,7 @@ const Settings = () => {
 						settings={settingModal}
 						setting={setting}
 						updateSetting={updateSetting}
-						Popup={() => null}
+						Popup={ShowProPopup}
 					/>
 				) : (
 					<>{__('Loading…', 'vulopilot')}</>
