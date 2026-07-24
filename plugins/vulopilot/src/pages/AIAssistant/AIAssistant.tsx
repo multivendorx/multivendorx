@@ -27,8 +27,8 @@ interface AiHistoryRow extends TableRow {
  * what VuloPilot's AI has done on their behalf.
  */
 const AIAssistant = () => {
-	const { data, total, isLoading, error, refetch } =
-		useApiList<AiHistoryRow>('ai-history', { per_page: 10 });
+	const { data, total, isLoading, error, refetch, onQueryUpdate } =
+		useApiList<AiHistoryRow>('ai-history');
 
 	const pageHeader = (
 		<NavigatorHeaderComponent
@@ -105,6 +105,7 @@ const AIAssistant = () => {
 						ids={data.map((row) => row.id)}
 						totalRows={total}
 						isLoading={isLoading}
+						onQueryUpdate={onQueryUpdate}
 						emptyMessage={__(
 							'No AI activity yet — VuloPilot will log every AI-assisted action here.',
 							'vulopilot'

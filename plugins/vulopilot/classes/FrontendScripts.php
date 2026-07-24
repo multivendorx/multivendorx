@@ -149,16 +149,23 @@ class FrontendScripts {
             $handle,
             'appLocalizer',
             array(
-                'apiUrl'      => untrailingslashit( get_rest_url() ),
-                'restUrl'     => VuloPilot()->rest_namespace,
-                'nonce'       => wp_create_nonce( 'wp_rest' ),
-                'plugin_url'  => VuloPilot()->plugin_url,
-                'admin_url'   => admin_url( 'admin.php?page=vulopilot' ),
-                'site_url'    => site_url(),
-                'version'     => VuloPilot()->version,
-                'plugin_slug' => VuloPilot()->plugin_slug,
-                'text_domain' => VULOPILOT_PLUGIN_TEXTDOMAIN,
-                'date_format' => get_option( 'date_format' ) . ' ' . get_option( 'time_format' ),
+                'apiUrl'         => untrailingslashit( get_rest_url() ),
+                'restUrl'        => VuloPilot()->rest_namespace,
+                'nonce'          => wp_create_nonce( 'wp_rest' ),
+                'plugin_url'     => VuloPilot()->plugin_url,
+                'admin_url'      => admin_url( 'admin.php?page=vulopilot' ),
+                'site_url'       => site_url(),
+                'version'        => VuloPilot()->version,
+                'plugin_slug'    => VuloPilot()->plugin_slug,
+                'text_domain'    => VULOPILOT_PLUGIN_TEXTDOMAIN,
+                'date_format'    => get_option( 'date_format' ) . ' ' . get_option( 'time_format' ),
+                // Feeds zyra's configureZyra()/ZyraVariable.khali_dabba (a
+                // proSetting field's Pro-tag/lock in InputRenderer) and
+                // vulopilot-pro's src/index.tsx (which module JS entries
+                // actually load) — both were reading these two keys off
+                // appLocalizer already, but nothing populated them yet.
+                'khali_dabba'    => VuloPilot()->util->is_khali_dabba(),
+                'active_modules' => VuloPilot()->modules->get_active_modules(),
             )
         );
     }

@@ -7,7 +7,7 @@
 
 namespace VuloPilot\Reports;
 
-use VuloPilotCore\Contracts\Report\ReportTypeInterface;
+use VuloPilot\Contracts\Report\ReportTypeInterface;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -38,7 +38,7 @@ abstract class AbstractReportType implements ReportTypeInterface {
     /**
      * @inheritDoc
      */
-    abstract public function generate( string $period_start, string $period_end ): \VuloPilotCore\ValueObjects\ReportResult;
+    abstract public function generate( string $period_start, string $period_end ): \VuloPilot\ValueObjects\ReportResult;
 
     /**
      * The date range immediately preceding [$period_start, $period_end],

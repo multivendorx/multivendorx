@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  * Persistence for vulopilot_automation_runs (DATABASE.md) — one row per
  * time AutomationEngine ran (or attempted to run) an automation's actions.
  * `result_log` stores the JSON-encoded array of
- * VuloPilotCore\ValueObjects\AutomationRunResult::to_array() entries, one
+ * VuloPilot\ValueObjects\AutomationRunResult::to_array() entries, one
  * per action executed.
  *
  * @class       AutomationRunRepository class

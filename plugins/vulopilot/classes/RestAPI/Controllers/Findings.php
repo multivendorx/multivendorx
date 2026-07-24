@@ -7,7 +7,7 @@
 
 namespace VuloPilot\RestAPI\Controllers;
 
-use VuloPilotCore\ValueObjects\Severity;
+use VuloPilot\ValueObjects\Severity;
 use VuloPilot\Repositories\FindingRepository;
 
 defined( 'ABSPATH' ) || exit;
@@ -93,13 +93,21 @@ class Findings extends \WP_REST_Controller {
         }
 
         return rest_ensure_response(
-            $repository->find_all(
-                array(
-                    'page'     => absint( $request->get_param( 'page' ) ) ?: 1,
-                    'per_page' => absint( $request->get_param( 'per_page' ) ) ?: 20,
-                    'category' => $category,
-                    'severity' => $severity,
-                    'status'   => $status,
+            // Lets a Pro module (vulopilot-pro's OneClickFix) annotate each
+            // row with a `fix_action_id` without Free knowing anything
+            // about AI-action-to-scanner mapping — same "register a
+            // source, don't modify the host" pattern as
+            // vulopilot_reports_advanced_panel/vulopilot_pro_dashboard_component.
+            apply_filters(
+                'vulopilot_finding_list_response',
+                $repository->find_all(
+                    array(
+                        'page'     => absint( $request->get_param( 'page' ) ) ?: 1,
+                        'per_page' => absint( $request->get_param( 'per_page' ) ) ?: 20,
+                        'category' => $category,
+                        'severity' => $severity,
+                        'status'   => $status,
+                    )
                 )
             )
         );

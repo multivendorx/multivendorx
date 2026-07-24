@@ -1,6 +1,7 @@
 /* global appLocalizer */
 import React from 'react';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { getApiLink, sendApiResponse } from '@zyra/core';
 import {
 	CardComponent,
@@ -17,6 +18,14 @@ export interface Finding extends TableRow {
 	category: string;
 	status: 'open' | 'resolved' | 'ignored' | 'snoozed';
 	created_at: string;
+	/**
+	 * Which AI action can fix this finding, e.g. 'generate-alt' — null/
+	 * undefined when this finding's scanner has no mapped fix, or when
+	 * vulopilot-pro's OneClickFix module isn't active (in which case this
+	 * field is never added to the response at all). See
+	 * VuloPilotPro\OneClickFix\ScannerFixMap.
+	 */
+	fix_action_id?: string | null;
 }
 
 interface FindingsTableProps {
@@ -37,13 +46,8 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 	description,
 	category,
 }) => {
-	const { data, total, isLoading, error, refetch } = useApiList<Finding>(
-		'findings',
-		{
-			category,
-			per_page: 10,
-		}
-	);
+	const { data, total, isLoading, error, refetch, onQueryUpdate } =
+		useApiList<Finding>('findings', { category });
 
 	const handleSetStatus = (
 		row: Record<string, unknown> | undefined,
@@ -140,7 +144,14 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 		actions: {
 			label: __('Actions', 'vulopilot'),
 			type: 'action',
-			actions: [
+			// vulopilot-pro's OneClickFix module injects a "Fix this" entry
+			// here (vulopilot_finding_actions filter) when it's active —
+			// Free has no AI-action-to-scanner mapping of its own and
+			// doesn't render one by default, matching the "register a
+			// source, don't modify the host" pattern this codebase already
+			// uses for vulopilot_reports_advanced_panel/
+			// vulopilot_pro_dashboard_component.
+			actions: applyFilters('vulopilot_finding_actions', [
 				{
 					label: (row?: Record<string, unknown>) =>
 						row?.status === 'open'
@@ -162,7 +173,7 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 					icon: 'controls-repeat',
 					onClick: handleReopen,
 				},
-			],
+			]) as any[],
 		},
 	};
 
@@ -174,6 +185,7 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 			ids={data.map((row) => row.id)}
 			totalRows={total}
 			isLoading={isLoading}
+			onQueryUpdate={onQueryUpdate}
 			emptyMessage={
 				description ||
 				__('No findings here yet — nothing to report.', 'vulopilot')

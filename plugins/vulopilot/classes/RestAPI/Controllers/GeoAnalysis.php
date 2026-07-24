@@ -11,11 +11,11 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * GET /geo-analysis/{post_id} reads back a previously generated GeoScore
- * (postmeta, no AI call, no cost) — what src/pages/GEO/GEO.tsx's score
- * card loads on mount. POST /geo-analysis/{post_id} runs a fresh
- * analysis through GeoAnalysis\GeoAnalyzer (a real AI call) and persists
- * it — separated into two routes/verbs specifically so loading the GEO
- * page never silently re-spends an AI call a site owner didn't ask for.
+ * (postmeta, no AI call, no cost) — what the GEO page's score card loads
+ * on mount. POST /geo-analysis/{post_id} runs a fresh analysis through
+ * GeoAnalysis\GeoAnalyzer (a real AI call) and persists it — separated
+ * into two routes/verbs specifically so loading the GEO page never
+ * silently re-spends an AI call a site owner didn't ask for.
  *
  * @class       GeoAnalysis controller
  * @version     1.0.0

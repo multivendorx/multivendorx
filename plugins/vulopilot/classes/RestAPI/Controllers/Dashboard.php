@@ -7,7 +7,7 @@
 
 namespace VuloPilot\RestAPI\Controllers;
 
-use VuloPilotCore\ValueObjects\Severity;
+use VuloPilot\ValueObjects\Severity;
 use VuloPilot\Repositories\ActionRunRepository;
 use VuloPilot\Repositories\AutomationRepository;
 use VuloPilot\Repositories\FindingRepository;

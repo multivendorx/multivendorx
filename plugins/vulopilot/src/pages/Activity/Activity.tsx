@@ -19,8 +19,8 @@ interface ActivityLogRow extends TableRow {
 }
 
 const Activity = () => {
-	const { data, total, isLoading, error, refetch } =
-		useApiList<ActivityLogRow>('activity-logs', { per_page: 20 });
+	const { data, total, isLoading, error, refetch, onQueryUpdate } =
+		useApiList<ActivityLogRow>('activity-logs');
 
 	const pageHeader = (
 		<NavigatorHeaderComponent
@@ -93,6 +93,7 @@ const Activity = () => {
 						ids={data.map((row) => row.id)}
 						totalRows={total}
 						isLoading={isLoading}
+						onQueryUpdate={onQueryUpdate}
 						emptyMessage={__(
 							'Nothing has happened yet — actions across VuloPilot will show up here.',
 							'vulopilot'

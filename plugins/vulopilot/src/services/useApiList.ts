@@ -9,6 +9,33 @@ export interface ApiListResult<T> {
 	isLoading: boolean;
 	error: string | null;
 	refetch: () => void;
+	/**
+	 * Pass straight through to TableCard's `onQueryUpdate` prop — TableCard
+	 * owns its own `{ paged, per_page, filter, ... }` state internally
+	 * (zyra's TableCard.tsx) and only ever hands it back out via this
+	 * callback. Without wiring it here, clicking a page number or a filter
+	 * only updates TableCard's own pagination UI; the underlying `rows`
+	 * prop (this hook's `data`) never changes, since nothing tells this
+	 * hook a new page/filter was requested.
+	 */
+	// Base no-unused-vars doesn't understand TS function-type parameter
+	// positions (no runtime binding to "use"); @typescript-eslint/no-unused-vars
+	// already handles this correctly.
+	// eslint-disable-next-line no-unused-vars
+	onQueryUpdate: (query: TableCardQuery) => void;
+}
+
+/**
+ * The subset of zyra TableCard's internal query state this hook forwards
+ * to the REST request — `orderby`/`order`/`categoryFilter`/`languageFilter`/
+ * `searchValue` aren't read (no vulopilot list endpoint supports server-side
+ * sort or those extra filter dimensions today), so they're intentionally
+ * left untyped/unread rather than modeled here.
+ */
+interface TableCardQuery {
+	paged?: number | string;
+	per_page?: number | string;
+	filter?: Record<string, string | string[]>;
 }
 
 type ListResponse<T> = T[] | { data?: T[]; total?: number };
@@ -22,7 +49,9 @@ type ListResponse<T> = T[] | { data?: T[]; total?: number };
  * re-implemented per page.
  *
  * @param endpoint REST resource path relative to the vulopilot/v1 namespace, e.g. 'findings'.
- * @param params   Optional query params (category filters, pagination, etc).
+ * @param params   Optional static query params (e.g. a fixed category for a
+ *                 category-scoped page). Pagination/per-page/select-filter
+ *                 params are owned by TableCard itself — see onQueryUpdate.
  */
 export const useApiList = <T = Record<string, unknown>>(
 	endpoint: string,
@@ -33,8 +62,28 @@ export const useApiList = <T = Record<string, unknown>>(
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [reloadToken, setReloadToken] = useState(0);
+	// Matches TableCard's own initial `{ paged: 1, per_page: 10 }` state
+	// (zyra's TableCard.tsx) — TableCard doesn't accept an initial per_page
+	// override from props, so seeding anything else here would just cause
+	// a mismatched first fetch followed by an immediate refetch once
+	// TableCard's own mount-time onQueryUpdate call corrects it.
+	const [tableQuery, setTableQuery] = useState<TableCardQuery>({
+		paged: 1,
+		per_page: 10,
+	});
 
-	const query = Object.entries(params)
+	const onQueryUpdate = useCallback((query: TableCardQuery) => {
+		setTableQuery(query);
+	}, []);
+
+	const mergedParams: Record<string, string | number | undefined> = {
+		...params,
+		page: tableQuery.paged,
+		per_page: tableQuery.per_page,
+		...tableQuery.filter,
+	};
+
+	const query = Object.entries(mergedParams)
 		.filter(([, value]) => value !== undefined && value !== '')
 		.map(
 			([key, value]) => `${key}=${encodeURIComponent(String(value))}`
@@ -102,5 +151,5 @@ export const useApiList = <T = Record<string, unknown>>(
 
 	const refetch = useCallback(() => setReloadToken((n) => n + 1), []);
 
-	return { data, total, isLoading, error, refetch };
+	return { data, total, isLoading, error, refetch, onQueryUpdate };
 };

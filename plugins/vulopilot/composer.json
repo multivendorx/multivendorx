@@ -11,15 +11,6 @@
         }
     ],
     "minimum-stability": "dev",
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../../packages/php/vulopilot-core",
-            "options": {
-                "symlink": false
-            }
-        }
-    ],
     "autoload": {
         "psr-4": {
             "VuloPilot\\": [
@@ -30,7 +21,6 @@
     },
     "require": {
         "php": ">=8.0",
-        "multivendorx/vulopilot-core": "*",
         "dompdf/dompdf": "^3.1"
     },
     "config": {

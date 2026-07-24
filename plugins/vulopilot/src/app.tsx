@@ -6,6 +6,7 @@ import {
 	NoticeReceiverComponent,
 } from '@zyra/components';
 import Brand from './assets/images/vulopilot-logo.svg';
+import { searchIndex, SearchItem } from './searchIndex';
 import './routeRegistry';
 import './routes';
 
@@ -44,6 +45,43 @@ const Route = () => {
 
 const App = () => {
 	const currentTabParams = new URLSearchParams(useLocation().hash);
+	const [results, setResults] = useState<SearchItem[]>([]);
+
+	const handleQueryUpdate = ({
+		searchValue,
+		searchAction,
+	}: {
+		searchValue: string;
+		searchAction?: string;
+	}) => {
+		if (!searchValue.trim()) {
+			setResults([]);
+			return;
+		}
+
+		const lower = searchValue.toLowerCase();
+
+		const filtered = searchIndex.filter((item) => {
+			if (
+				searchAction &&
+				searchAction !== 'all' &&
+				item.tab !== searchAction
+			) {
+				return false;
+			}
+
+			return (
+				item.name?.toLowerCase().includes(lower) ||
+				item.desc?.toLowerCase().includes(lower)
+			);
+		});
+
+		setResults(filtered);
+	};
+
+	const handleResultClick = (item: SearchItem) => {
+		window.location.hash = item.link;
+	};
 
 	// Highlight the active tab in the WP admin sidebar submenu.
 	useEffect(() => {
@@ -78,9 +116,26 @@ const App = () => {
 		<>
 			<HeaderComponent
 				brandImg={Brand}
-				onQueryUpdate={() => {}}
-				onResultClick={() => {}}
-				search={{ placeholder: __('Search…', 'vulopilot') }}
+				results={results}
+				search={{
+					placeholder: __('Search…', 'vulopilot'),
+					options: [
+						{
+							value: 'all',
+							label: __('Modules & Settings', 'vulopilot'),
+						},
+						{
+							value: 'modules',
+							label: __('Modules', 'vulopilot'),
+						},
+						{
+							value: 'settings',
+							label: __('Settings', 'vulopilot'),
+						},
+					],
+				}}
+				onQueryUpdate={handleQueryUpdate}
+				onResultClick={handleResultClick}
 			/>
 
 			<NoticeReceiverComponent position="notice" />

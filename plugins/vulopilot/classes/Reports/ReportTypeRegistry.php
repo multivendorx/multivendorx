@@ -7,7 +7,7 @@
 
 namespace VuloPilot\Reports;
 
-use VuloPilotCore\Contracts\Report\ReportTypeInterface;
+use VuloPilot\Contracts\Report\ReportTypeInterface;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -73,7 +73,10 @@ class ReportTypeRegistry {
     }
 
     /**
-     * Free's own always-available report types.
+     * Free's own always-available report types. Types\HealthReport moved
+     * to vulopilot-pro's AdvancedReports module (historical trend data is
+     * Pro business logic, see SiteHealthSnapshotRepository's own docblock)
+     * — it registers itself back in via `vulopilot_report_type_sources`.
      *
      * @return string[] Fully-qualified class names implementing ReportTypeInterface.
      */
@@ -84,7 +87,6 @@ class ReportTypeRegistry {
             Types\WooCommerceReport::class,
             Types\SecurityReport::class,
             Types\AccessibilityReport::class,
-            Types\HealthReport::class,
             Types\AutomationReport::class,
             Types\AiUsageReport::class,
         );

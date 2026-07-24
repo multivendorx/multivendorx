@@ -7,8 +7,8 @@
 
 namespace VuloPilot\AIProviders\Safety;
 
-use VuloPilotCore\Exceptions\UnsafePromptException;
-use VuloPilotCore\ValueObjects\AIResponse;
+use VuloPilot\Exceptions\UnsafePromptException;
+use VuloPilot\ValueObjects\AIResponse;
 
 defined( 'ABSPATH' ) || exit;
 

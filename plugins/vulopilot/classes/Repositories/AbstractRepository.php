@@ -7,7 +7,7 @@
 
 namespace VuloPilot\Repositories;
 
-use VuloPilotCore\Contracts\Repository\RepositoryInterface;
+use VuloPilot\Contracts\Repository\RepositoryInterface;
 use VuloPilot\Utill;
 
 defined( 'ABSPATH' ) || exit;

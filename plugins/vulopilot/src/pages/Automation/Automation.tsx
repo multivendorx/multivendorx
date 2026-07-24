@@ -21,8 +21,8 @@ interface AutomationRow extends TableRow {
 }
 
 const Automation = () => {
-	const { data, total, isLoading, error, refetch } =
-		useApiList<AutomationRow>('automations', { per_page: 10 });
+	const { data, total, isLoading, error, refetch, onQueryUpdate } =
+		useApiList<AutomationRow>('automations');
 
 	const handleToggleStatus = (row?: Record<string, unknown>) => {
 		if (!row) {
@@ -178,6 +178,7 @@ const Automation = () => {
 						ids={data.map((row) => row.id)}
 						totalRows={total}
 						isLoading={isLoading}
+						onQueryUpdate={onQueryUpdate}
 						emptyMessage={__(
 							'No automations yet — create one to react to scan findings automatically.',
 							'vulopilot'

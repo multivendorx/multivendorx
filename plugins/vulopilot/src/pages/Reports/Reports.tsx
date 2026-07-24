@@ -1,5 +1,6 @@
 /* global appLocalizer */
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { getApiLink, sendApiResponse } from '@zyra/core';
 import {
 	CardComponent,
@@ -11,6 +12,7 @@ import {
 } from '@zyra/components';
 import { ButtonInput } from '@zyra/inputs';
 import { TableCard, TableRow } from '@zyra/table';
+import type { ComponentType } from 'react';
 import { useApiList } from '../../services/useApiList';
 
 interface ReportRow extends TableRow {
@@ -24,11 +26,25 @@ interface ReportRow extends TableRow {
 	has_file: boolean;
 }
 
+/**
+ * Slot for vulopilot-pro's AdvancedReports module — recurring/scheduled
+ * reports and the custom report builder are Pro business logic (backed by
+ * REST routes `report-schedules` and `reports?report_type=custom`, both
+ * only registered when that module is active), so their management UI is
+ * injected here rather than built into Free's own bundle. Returns null
+ * (renders nothing) when Pro/AdvancedReports isn't active — the same
+ * "register a source, don't modify the host" pattern already used for
+ * dashboard widgets (`vulopilot_dashboard_widgets`) and settings tabs
+ * (`vulopilot_settings_context`).
+ */
+const AdvancedReportsPanel = applyFilters(
+	'vulopilot_reports_advanced_panel',
+	null
+) as ComponentType | null;
+
 const Reports = () => {
-	const { data, total, isLoading, error, refetch } = useApiList<ReportRow>(
-		'reports',
-		{ per_page: 10 }
-	);
+	const { data, total, isLoading, error, refetch, onQueryUpdate } =
+		useApiList<ReportRow>('reports');
 
 	const handleGenerateReport = () => {
 		sendApiResponse(appLocalizer, getApiLink(appLocalizer, 'reports'), {
@@ -181,6 +197,7 @@ const Reports = () => {
 						ids={data.map((row) => row.id)}
 						totalRows={total}
 						isLoading={isLoading}
+						onQueryUpdate={onQueryUpdate}
 						emptyMessage={__(
 							'No reports yet — generate your first compliance report.',
 							'vulopilot'
@@ -208,6 +225,7 @@ const Reports = () => {
 							},
 						]}
 					/>
+					{AdvancedReportsPanel && <AdvancedReportsPanel />}
 				</ColumnComponent>
 			</ContainerComponent>
 		</>
