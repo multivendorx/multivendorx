@@ -50,14 +50,15 @@ export default {
 				'https://multivendorx.com/docs/knowledgebase/subscription-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			//settingsLink: appLocalizer.site_url,
 			proModule: true,
-			reqPluging: [
-				{
-					name: 'WooCommerce Subscriptions',
-					slug: 'woocommerce-subscriptions/woocommerce-subscriptions.php',
-					link: 'https://woocommerce.com/products/woocommerce-subscriptions/',
-				},
-			],
+			// reqPluging: [
+			// 	{
+			// 		name: 'WooCommerce Subscriptions',
+			// 		slug: 'woocommerce-subscriptions/woocommerce-subscriptions.php',
+			// 		link: 'https://woocommerce.com/products/woocommerce-subscriptions/',
+			// 	},
+			// ],
 			category: ['marketplace_types', 'product_types'],
+			enableModules: ['variable'],
 		},
 		{
 			id: 'accommodation',

@@ -492,7 +492,8 @@ class FrontendScripts {
                             'placeholder_url  '        => wc_placeholder_img_src(),
                             'default_user_avatar'      => get_avatar_url( 0 ),
                             'order_statuses'           => $formatted,
-                            'active_modules'         => MultiVendorX()->modules->get_active_modules(),
+                            'active_modules'           => MultiVendorX()->modules->get_active_modules(),
+                            'active_plugins'           => get_option( 'active_plugins', array() ),
                         )
                     ),
                 ),
