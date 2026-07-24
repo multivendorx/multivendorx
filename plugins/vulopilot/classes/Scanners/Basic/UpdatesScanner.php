@@ -78,7 +78,7 @@ class UpdatesScanner extends AbstractBasicScanner {
                 sprintf(
                     /* translators: %s is the plugin name. */
                     __( 'Plugin update available: %s', 'vulopilot' ),
-                    $plugin_data->Name
+                    $plugin_data->Name // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- get_plugin_updates()'s own property name, not ours to rename.
                 ),
                 Severity::MEDIUM,
                 $this->get_category(),

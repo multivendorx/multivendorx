@@ -28,9 +28,9 @@ defined( 'ABSPATH' ) || exit;
  */
 class GeoSummaryBlockScanner extends AbstractBasicScanner {
 
-    private const BATCH_SIZE            = 50;
+    private const BATCH_SIZE              = 50;
     private const MIN_WORD_COUNT_TO_CHECK = 300;
-    private const SUMMARY_WINDOW_CHARS  = 600;
+    private const SUMMARY_WINDOW_CHARS    = 600;
 
     private const SUMMARY_MARKERS = array( 'tl;dr', 'tldr', 'key takeaways', 'in summary', 'quick summary', 'summary:' );
 
@@ -89,7 +89,7 @@ class GeoSummaryBlockScanner extends AbstractBasicScanner {
                 'post',
                 (string) $post->ID,
                 array(
-                    'word_count'          => $word_count,
+                    'word_count'            => $word_count,
                     'missing_summary_block' => true,
                 )
             );

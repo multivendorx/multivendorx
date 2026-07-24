@@ -59,7 +59,7 @@ class GeoTrustSignalsScanner extends AbstractBasicScanner {
      * @inheritDoc
      */
     public function scan(): array {
-        $findings   = array();
+        $findings    = array();
         $has_about   = $this->has_published_page_matching_slug( self::ABOUT_SLUGS );
         $has_contact = $this->has_published_page_matching_slug( self::CONTACT_SLUGS );
 
@@ -86,7 +86,10 @@ class GeoTrustSignalsScanner extends AbstractBasicScanner {
             __( 'AI answer engines and readers both use "who is behind this site" pages as a baseline trust signal before treating content as citable.', 'vulopilot' ),
             'url',
             home_url( '/' ),
-            array( 'has_about' => $has_about, 'has_contact' => $has_contact )
+            array(
+				'has_about'   => $has_about,
+				'has_contact' => $has_contact,
+            )
         );
 
         return $findings;

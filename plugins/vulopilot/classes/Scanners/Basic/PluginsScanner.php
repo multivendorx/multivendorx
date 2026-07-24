@@ -54,9 +54,9 @@ class PluginsScanner extends AbstractBasicScanner {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
 
-        $findings        = array();
-        $all_plugins     = get_plugins();
-        $active_plugins  = (array) get_option( 'active_plugins', array() );
+        $findings       = array();
+        $all_plugins    = get_plugins();
+        $active_plugins = (array) get_option( 'active_plugins', array() );
 
         foreach ( $all_plugins as $plugin_file => $plugin_data ) {
             if ( in_array( $plugin_file, $active_plugins, true ) ) {

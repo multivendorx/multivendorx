@@ -124,7 +124,7 @@ class GeminiProvider implements AIProviderInterface {
             array( 'Content-Type' => 'application/json' ),
             wp_json_encode( $this->build_body( $request ) ),
             function ( string $line ) use ( &$content, &$finish_reason, &$prompt_tokens, &$completion_tokens, $on_chunk ) {
-                if ( ! str_starts_with( $line, 'data:' ) ) {
+                if ( 0 !== strpos( $line, 'data:' ) ) {
                     return;
                 }
 

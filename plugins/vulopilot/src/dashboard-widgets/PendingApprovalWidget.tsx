@@ -1,6 +1,9 @@
-import React from 'react';
+/* global appLocalizer */
+import React, { useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import { ModuleGuardComponent } from '@zyra/components';
+import { getApiLink, sendApiResponse } from '@zyra/core';
+import { ModuleGuardComponent, NoticeManager } from '@zyra/components';
+import { ButtonInput } from '@zyra/inputs';
 import DashboardWidget from './DashboardWidget';
 import { useApiList } from '../services/useApiList';
 import { WidgetProps } from './types';
@@ -13,20 +16,49 @@ interface ActionRunRow {
 }
 
 /**
- * Read-only list of `vulopilot_ai_action_runs` rows awaiting approval
+ * `vulopilot_ai_action_runs` rows awaiting approval
  * (`/ai-action-runs?status=pending_approval`, Controllers/AiActionRuns.php).
- * Deliberately shows no Approve/Reject buttons — AIActions\ActionRunner's
- * approve()/reject() methods exist (AI-ACTIONS.md), but no REST route
- * calls them yet (its own "What's not here yet" section). Rendering
- * buttons that call a route which doesn't exist would be exactly the
- * placeholder-code this codebase's guidelines rule out; this widget is
- * honest about being visibility-only until that REST surface is built.
+ * Approve/Reject now call real REST routes
+ * (`POST /ai-action-runs/{id}/approve|reject`) — AIActions\ActionRunner's
+ * approve()/reject() methods have always existed, but nothing exposed
+ * them over REST, so this widget used to be visibility-only by necessity.
  */
 const PendingApprovalWidget: React.FC<WidgetProps> = ({ onHide }) => {
 	const { data, isLoading, error, refetch } = useApiList<ActionRunRow>(
 		'ai-action-runs',
 		{ status: 'pending_approval', per_page: 5 }
 	);
+	const [busyId, setBusyId] = useState<number | null>(null);
+
+	const handleDecision = (row: ActionRunRow, decision: 'approve' | 'reject') => {
+		setBusyId(row.id);
+
+		sendApiResponse(
+			appLocalizer,
+			getApiLink(appLocalizer, `ai-action-runs/${row.id}/${decision}`),
+			{}
+		)
+			.then((response) => {
+				NoticeManager.add({
+					uniqueKey: `ai-action-${decision}-${row.id}`,
+					type: response ? 'success' : 'error',
+					position: 'notice',
+					message: response
+						? decision === 'approve'
+							? __('Action approved and executed.', 'vulopilot')
+							: __('Action rejected.', 'vulopilot')
+						: __(
+								'Could not complete this action. Please try again.',
+								'vulopilot'
+							),
+				});
+
+				if (response) {
+					refetch();
+				}
+			})
+			.finally(() => setBusyId(null));
+	};
 
 	return (
 		<DashboardWidget
@@ -64,6 +96,26 @@ const PendingApprovalWidget: React.FC<WidgetProps> = ({ onHide }) => {
 							</span>
 							<span className="dashboard-widget-list-meta">
 								{row.created_at}
+							</span>
+							<span className="dashboard-widget-list-actions">
+								<ButtonInput
+									buttons={{
+										text: __('Approve', 'vulopilot'),
+										icon: 'yes',
+										onClick: () =>
+											handleDecision(row, 'approve'),
+										disabled: busyId === row.id,
+									}}
+								/>
+								<ButtonInput
+									buttons={{
+										text: __('Reject', 'vulopilot'),
+										icon: 'no',
+										onClick: () =>
+											handleDecision(row, 'reject'),
+										disabled: busyId === row.id,
+									}}
+								/>
 							</span>
 						</li>
 					))}
