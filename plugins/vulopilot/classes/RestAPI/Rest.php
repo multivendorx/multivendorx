@@ -62,8 +62,8 @@ class Rest {
             'reports'          => new Controllers\Reports(),
             'ai_history'       => new Controllers\AiHistory(),
             'ai_action_runs'   => new Controllers\AiActionRuns(),
-            'geo_analysis'     => new Controllers\GeoAnalysis(),
             'activity_logs'    => new Controllers\ActivityLogs(),
+            'automations'      => new Controllers\Automations(),
             'settings'         => new Controllers\Settings(),
         );
 

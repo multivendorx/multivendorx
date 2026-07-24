@@ -32,10 +32,38 @@ class FindingRepository extends AbstractRepository {
     protected array $filterable_columns = array( 'category', 'severity', 'status', 'object_type', 'object_ref' );
 
     /**
+     * @var string[]
+     */
+    protected array $searchable_columns = array( 'title', 'description' );
+
+    /**
      * @inheritDoc
      */
     protected function get_table_key(): string {
         return 'scan_finding';
+    }
+
+    /**
+     * Open/resolved/ignored/snoozed counts, zero-filled and optionally
+     * scoped to one category — backs the Health/SEO/GEO/WooCommerce
+     * findings tables' status-count pill bar. Delegates to
+     * AbstractRepository::count_by_column() rather than hand-rolling
+     * another grouped query (same reasoning as AutomationRepository's
+     * get_status_counts()).
+     *
+     * @param string|null $category One of the scanner category strings (SCANNERS.md), or null for every category.
+     * @return array{open: int, resolved: int, ignored: int, snoozed: int}
+     */
+    public function get_status_counts( ?string $category = null ): array {
+        return array_merge(
+            array(
+                'open'     => 0,
+                'resolved' => 0,
+                'ignored'  => 0,
+                'snoozed'  => 0,
+            ),
+            $this->count_by_column( 'status', null !== $category ? array( 'category' => $category ) : array() )
+        );
     }
 
     /**

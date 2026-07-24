@@ -42,7 +42,7 @@ const PendingApprovalWidget: React.FC<WidgetProps> = ({ onHide }) => {
 				NoticeManager.add({
 					uniqueKey: `ai-action-${decision}-${row.id}`,
 					type: response ? 'success' : 'error',
-					position: 'notice',
+					position: 'float',
 					message: response
 						? decision === 'approve'
 							? __('Action approved and executed.', 'vulopilot')

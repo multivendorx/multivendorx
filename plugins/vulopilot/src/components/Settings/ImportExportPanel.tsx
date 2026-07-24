@@ -52,7 +52,7 @@ const ImportExportPanel = () => {
 				NoticeManager.add({
 					uniqueKey: 'vulopilot-settings-import-invalid',
 					type: 'error',
-					position: 'notice',
+					position: 'float',
 					message: __(
 						'That file doesn\'t look like a valid VuloPilot settings export.',
 						'vulopilot'
@@ -71,7 +71,7 @@ const ImportExportPanel = () => {
 					NoticeManager.add({
 						uniqueKey: 'vulopilot-settings-import',
 						type: response ? 'success' : 'error',
-						position: 'notice',
+						position: 'float',
 						message: response
 							? __('Settings imported. Reload the page to see them.', 'vulopilot')
 							: __('Could not import settings. Please try again.', 'vulopilot'),
@@ -96,7 +96,7 @@ const ImportExportPanel = () => {
 				NoticeManager.add({
 					uniqueKey: 'vulopilot-settings-reset',
 					type: response ? 'success' : 'error',
-					position: 'notice',
+					position: 'float',
 					message: response
 						? __('Settings reset to defaults. Reload the page to see them.', 'vulopilot')
 						: __('Could not reset settings. Please try again.', 'vulopilot'),

@@ -62,6 +62,18 @@ class Findings extends \WP_REST_Controller {
                 ),
             )
         );
+
+        register_rest_route(
+            VuloPilot()->rest_namespace,
+            '/' . $this->rest_base . '/bulk',
+            array(
+                array(
+                    'methods'             => \WP_REST_Server::EDITABLE,
+                    'callback'            => array( $this, 'bulk_update_items' ),
+                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                ),
+            )
+        );
     }
 
     /**
@@ -87,10 +99,25 @@ class Findings extends \WP_REST_Controller {
         $category = sanitize_key( (string) $request->get_param( 'category' ) );
         $severity = sanitize_key( (string) $request->get_param( 'severity' ) );
         $status   = sanitize_key( (string) $request->get_param( 'status' ) );
+        $search   = sanitize_text_field( (string) $request->get_param( 'search' ) );
 
         if ( '' !== $severity && ! Severity::is_valid( $severity ) ) {
             return new \WP_Error( 'vulopilot_invalid_severity', __( 'Invalid severity filter.', 'vulopilot' ), array( 'status' => 400 ) );
         }
+
+        $result                  = $repository->find_all(
+            array(
+                'page'     => absint( $request->get_param( 'page' ) ) ?: 1,
+                'per_page' => absint( $request->get_param( 'per_page' ) ) ?: 20,
+                'category' => $category,
+                'severity' => $severity,
+                'status'   => $status,
+                'search'   => $search,
+                'orderby'  => sanitize_key( (string) $request->get_param( 'orderby' ) ),
+                'order'    => sanitize_key( (string) $request->get_param( 'order' ) ),
+            )
+        );
+        $result['status_counts'] = $repository->get_status_counts( '' !== $category ? $category : null );
 
         return rest_ensure_response(
             // Lets a Pro module (vulopilot-pro's OneClickFix) annotate each
@@ -98,18 +125,7 @@ class Findings extends \WP_REST_Controller {
             // about AI-action-to-scanner mapping — same "register a
             // source, don't modify the host" pattern as
             // vulopilot_reports_advanced_panel/vulopilot_pro_dashboard_component.
-            apply_filters(
-                'vulopilot_finding_list_response',
-                $repository->find_all(
-                    array(
-                        'page'     => absint( $request->get_param( 'page' ) ) ?: 1,
-                        'per_page' => absint( $request->get_param( 'per_page' ) ) ?: 20,
-                        'category' => $category,
-                        'severity' => $severity,
-                        'status'   => $status,
-                    )
-                )
-            )
+            apply_filters( 'vulopilot_finding_list_response', $result )
         );
     }
 
@@ -148,6 +164,43 @@ class Findings extends \WP_REST_Controller {
             array(
 				'success' => true,
 				'id'      => $id,
+            )
+        );
+    }
+
+    /**
+     * Backs FindingsTable.tsx's bulk Resolve/Ignore action — applies the
+     * same status update update_item() does, to every id in one request,
+     * via AbstractRepository::bulk_update()'s single-row-update loop.
+     *
+     * @param \WP_REST_Request $request Full request object.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function bulk_update_items( $request ) {
+        $ids    = array_map( 'absint', (array) $request->get_param( 'ids' ) );
+        $status = sanitize_key( (string) $request->get_param( 'status' ) );
+
+        if ( ! in_array( $status, array( 'resolved', 'ignored' ), true ) ) {
+            return new \WP_Error( 'vulopilot_invalid_status', __( 'Invalid bulk finding status.', 'vulopilot' ), array( 'status' => 400 ) );
+        }
+
+        if ( empty( $ids ) ) {
+            return new \WP_Error( 'vulopilot_no_ids', __( 'No findings selected.', 'vulopilot' ), array( 'status' => 400 ) );
+        }
+
+        $repository    = new FindingRepository();
+        $updated_count = $repository->bulk_update(
+            $ids,
+            array(
+                'status'      => $status,
+                'resolved_at' => 'resolved' === $status ? current_time( 'mysql', true ) : null,
+            )
+        );
+
+        return rest_ensure_response(
+            array(
+                'success' => true,
+                'updated' => $updated_count,
             )
         );
     }

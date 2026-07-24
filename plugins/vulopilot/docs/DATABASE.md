@@ -1,6 +1,5 @@
 # VuloPilot — database schema
 
-Companion to [`plugins/vulopilot-pro/ARCHITECTURE.md`](../../../plugins/vulopilot-pro/ARCHITECTURE.md).
 All tables below live in the **Free** plugin's schema (`Utill::TABLES`, created by Free's
 `Install.php`) — per `.claude/rules/database.md`, table ownership is centralized in the free
 plugin for every existing product line, and VuloPilot Pro has no independent database of its own.

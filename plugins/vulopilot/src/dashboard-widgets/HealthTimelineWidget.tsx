@@ -33,10 +33,17 @@ const HealthTimelineWidget: React.FC<WidgetProps> = ({ onHide }) => {
 	const {
 		data: snapshots,
 		isLoading,
-		error,
-		refetch,
 	} = useApiList<HealthSnapshot>('site-health-snapshots', { days: 30 });
 
+	/**
+	 * `/site-health-snapshots` only exists at all once vulopilot-pro's
+	 * AdvancedReports module registers it (via the vulopilot_rest_controllers
+	 * filter) — on a Free-only install this request 404s every time, which
+	 * is the expected, permanent state, not a transient failure a "Retry"
+	 * button could ever fix. So this widget deliberately treats "failed to
+	 * load" and "loaded zero rows" as the same friendly empty state rather
+	 * than surfacing an error+retry card for something retrying can't fix.
+	 */
 	return (
 		<DashboardWidget
 			title={__('Health timeline', 'vulopilot')}
@@ -44,15 +51,7 @@ const HealthTimelineWidget: React.FC<WidgetProps> = ({ onHide }) => {
 			isLoading={isLoading}
 			onHide={onHide}
 		>
-			{error ? (
-				<ModuleGuardComponent
-					icon="error"
-					title={__('Could not load the health timeline', 'vulopilot')}
-					desc={error}
-					buttonText={__('Retry', 'vulopilot')}
-					onButtonClick={refetch}
-				/>
-			) : snapshots.length === 0 ? (
+			{snapshots.length === 0 ? (
 				<ModuleGuardComponent
 					icon="analytics"
 					title={__('No trend data yet', 'vulopilot')}

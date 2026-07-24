@@ -17,12 +17,12 @@ const formatModuleName = (name: string): string => {
 };
 
 /**
- * The 5 real vulopilot-pro modules — same ids/copy as
+ * The 6 real vulopilot-pro modules — same ids/copy as
  * ../Modules/index.ts's catalog (Automation, SecurityMonitoring,
- * WooCommerceAi, AdvancedReports, OneClickFix per the plugin's own
- * readme.txt) — kept in sync with that file rather than invented
- * separately, since this is the same feature list, just rendered as an
- * upgrade pitch instead of a toggle grid.
+ * WooCommerceAi, AdvancedReports, OneClickFix, GeoInsights per the
+ * plugin's own readme.txt) — kept in sync with that file rather than
+ * invented separately, since this is the same feature list, just rendered
+ * as an upgrade pitch instead of a toggle grid.
  */
 const proPopupContent = {
 	messages: [
@@ -63,6 +63,14 @@ const proPopupContent = {
 			text: __('One-Click AI Fixes', 'vulopilot'),
 			des: __(
 				'Adds a "Fix this" action to findings that have a matching AI action — propose and approve a fix without leaving the Dashboard.',
+				'vulopilot'
+			),
+		},
+		{
+			icon: 'globe',
+			text: __('GEO Insights', 'vulopilot'),
+			des: __(
+				'Per-post AI scoring for AI-search-engine discoverability — entity coverage, question coverage, answer completeness, and AI suggestions.',
 				'vulopilot'
 			),
 		},

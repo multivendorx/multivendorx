@@ -178,6 +178,22 @@ class ScannerRegistry {
             Basic\ProductPricingScanner::class,
             Basic\ProductDuplicateScanner::class,
             Basic\ProductCompletenessScanner::class,
+            // Website Health Monitoring (readme) — closes the PHP Warning
+            // Detection/SSL Monitoring/Redirect Analysis/404 Detection gaps.
+            Basic\SslMonitoringScanner::class,
+            Basic\RedirectAnalysisScanner::class,
+            Basic\NotFoundScanner::class,
+            Basic\PhpWarningScanner::class,
+            // Website Performance (readme) — category 'performance', joins
+            // the original PerformanceScanner (autoload bloat).
+            Basic\SlowPageScanner::class,
+            Basic\LargeImagesScanner::class,
+            Basic\HeavyPluginsScanner::class,
+            Basic\CacheDetectionScanner::class,
+            // Accessibility Scanner (readme) — category 'accessibility',
+            // joins the original AccessibilityScanner (duplicate <h1>).
+            Basic\FormLabelsScanner::class,
+            Basic\AriaAttributesScanner::class,
         );
     }
 

@@ -1,7 +1,6 @@
 # VuloPilot — scanner architecture
 
-Companion to [`DATABASE.md`](DATABASE.md) and
-[`plugins/vulopilot-pro/ARCHITECTURE.md`](../../../plugins/vulopilot-pro/ARCHITECTURE.md).
+Companion to [`DATABASE.md`](DATABASE.md).
 Covers the contracts, the engine, the original 14 built-in scanners, and
 how a new scanner gets added — by this codebase, by a Pro module, or by a
 third-party developer. Two later passes added more scanners using this

@@ -24,6 +24,11 @@ class AutomationRepository extends AbstractRepository {
     protected array $filterable_columns = array( 'status' );
 
     /**
+     * @var string[]
+     */
+    protected array $searchable_columns = array( 'name' );
+
+    /**
      * @inheritDoc
      */
     protected function get_table_key(): string {
@@ -43,32 +48,22 @@ class AutomationRepository extends AbstractRepository {
     }
 
     /**
-     * Enabled/disabled counts in one grouped query — what the "Automation
-     * Status" dashboard widget reads, without a second round trip beyond
-     * count_enabled() (kept as-is since the existing dashboard stat card
-     * already reads it).
+     * Enabled/disabled counts, zero-filled — backs both the "Automation
+     * Status" dashboard widget and the Automation table's status-count
+     * pill bar. Delegates the actual grouped query to
+     * AbstractRepository::count_by_column() rather than running its own
+     * SQL (database.md: prefer one query over several, and don't duplicate
+     * query-building logic that already exists).
      *
      * @return array{enabled: int, disabled: int}
      */
     public function get_status_counts(): array {
-        global $wpdb;
-
-        $counts = array(
-            'enabled'  => 0,
-            'disabled' => 0,
+        return array_merge(
+            array(
+                'enabled'  => 0,
+                'disabled' => 0,
+            ),
+            $this->count_by_column( 'status' )
         );
-
-        $rows = $wpdb->get_results(
-            "SELECT status, COUNT(*) AS total FROM {$this->get_table()} GROUP BY status", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-            ARRAY_A
-        );
-
-        foreach ( (array) $rows as $row ) {
-            if ( array_key_exists( $row['status'], $counts ) ) {
-                $counts[ $row['status'] ] = (int) $row['total'];
-            }
-        }
-
-        return $counts;
     }
 }

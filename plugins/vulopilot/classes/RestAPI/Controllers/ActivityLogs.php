@@ -55,14 +55,19 @@ class ActivityLogs extends \WP_REST_Controller {
     public function get_items( $request ) {
         $repository = new ActivityLogRepository();
 
-        return rest_ensure_response(
-            $repository->find_all(
-                array(
-                    'page'       => absint( $request->get_param( 'page' ) ) ?: 1,
-                    'per_page'   => absint( $request->get_param( 'per_page' ) ) ?: 20,
-                    'actor_type' => sanitize_key( (string) $request->get_param( 'actor_type' ) ),
-                )
+        $result                      = $repository->find_all(
+            array(
+                'page'       => absint( $request->get_param( 'page' ) ) ?: 1,
+                'per_page'   => absint( $request->get_param( 'per_page' ) ) ?: 20,
+                'actor_type' => sanitize_key( (string) $request->get_param( 'actor_type' ) ),
+                'event_type' => sanitize_key( (string) $request->get_param( 'event_type' ) ),
+                'search'     => sanitize_text_field( (string) $request->get_param( 'search' ) ),
+                'orderby'    => sanitize_key( (string) $request->get_param( 'orderby' ) ),
+                'order'      => sanitize_key( (string) $request->get_param( 'order' ) ),
             )
         );
+        $result['actor_type_counts'] = $repository->get_actor_type_counts();
+
+        return rest_ensure_response( $result );
     }
 }

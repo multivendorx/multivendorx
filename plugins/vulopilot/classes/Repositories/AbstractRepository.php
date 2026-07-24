@@ -41,6 +41,11 @@ abstract class AbstractRepository implements RepositoryInterface {
     protected array $filterable_columns = array();
 
     /**
+     * @var string[] Text columns an incoming `search` arg is LIKE-matched against (OR'd together).
+     */
+    protected array $searchable_columns = array();
+
+    /**
      * @return string Utill::TABLES key this repository owns.
      */
     abstract protected function get_table_key(): string;
@@ -83,7 +88,7 @@ abstract class AbstractRepository implements RepositoryInterface {
         $page     = max( 1, (int) ( $args['page'] ?? 1 ) );
         $per_page = max( 1, min( 100, (int) ( $args['per_page'] ?? 20 ) ) );
         $offset   = ( $page - 1 ) * $per_page;
-        $orderby  = preg_replace( '/[^a-zA-Z_]/', '', (string) ( $args['orderby'] ?? 'id' ) );
+        $orderby  = preg_replace( '/[^a-zA-Z_]/', '', (string) ( ! empty( $args['orderby'] ) ? $args['orderby'] : 'id' ) );
         $order    = 'asc' === strtolower( (string) ( $args['order'] ?? 'desc' ) ) ? 'ASC' : 'DESC';
 
         $where_clauses = array();
@@ -94,6 +99,18 @@ abstract class AbstractRepository implements RepositoryInterface {
                 $where_clauses[] = "`{$column}` = %s";
                 $where_values[]  = (string) $args[ $column ];
             }
+        }
+
+        if ( ! empty( $args['search'] ) && $this->searchable_columns ) {
+            $like              = '%' . $wpdb->esc_like( (string) $args['search'] ) . '%';
+            $search_conditions = array();
+
+            foreach ( $this->searchable_columns as $column ) {
+                $search_conditions[] = "`{$column}` LIKE %s";
+                $where_values[]      = $like;
+            }
+
+            $where_clauses[] = '(' . implode( ' OR ', $search_conditions ) . ')';
         }
 
         $where_sql = $where_clauses ? ( 'WHERE ' . implode( ' AND ', $where_clauses ) ) : '';
@@ -123,6 +140,57 @@ abstract class AbstractRepository implements RepositoryInterface {
     }
 
     /**
+     * Row counts grouped by one column, scoped by any other already-declared
+     * filterable_columns present in $args (e.g. scoping a findings status
+     * breakdown to one category) — never scoped by $column itself (that's
+     * what's being counted) or by 'search' (count badges reflect the fixed
+     * dataset, not the search box, matching the sibling multivendorx plugin's
+     * StoreTable.tsx/Stores.php, which also computes its status counts
+     * unconditionally on every list fetch).
+     *
+     * @param string               $column Column to GROUP BY.
+     * @param array<string, mixed> $args   Same shape as find_all()'s $args.
+     * @return array<string, int> value => count, only for values with >=1 row.
+     */
+    public function count_by_column( string $column, array $args = array() ): array {
+        global $wpdb;
+
+        $table         = $this->get_table();
+        $safe_column   = preg_replace( '/[^a-zA-Z_]/', '', $column );
+        $where_clauses = array();
+        $where_values  = array();
+
+        foreach ( $this->filterable_columns as $filter_column ) {
+            if ( $filter_column === $column ) {
+                continue;
+            }
+
+            if ( isset( $args[ $filter_column ] ) && '' !== $args[ $filter_column ] ) {
+                $where_clauses[] = "`{$filter_column}` = %s";
+                $where_values[]  = (string) $args[ $filter_column ];
+            }
+        }
+
+        $where_sql = $where_clauses ? ( 'WHERE ' . implode( ' AND ', $where_clauses ) ) : '';
+
+        if ( $where_values ) {
+            $sql = $wpdb->prepare( "SELECT `{$safe_column}` AS bucket, COUNT(*) AS total FROM {$table} {$where_sql} GROUP BY `{$safe_column}`", ...$where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- $where_sql's %s count matches $where_values' size at runtime.
+        } else {
+            $sql = "SELECT `{$safe_column}` AS bucket, COUNT(*) AS total FROM {$table} GROUP BY `{$safe_column}`"; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        }
+
+        $rows = $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+
+        $counts = array();
+
+        foreach ( (array) $rows as $row ) {
+            $counts[ $row['bucket'] ] = (int) $row['total'];
+        }
+
+        return $counts;
+    }
+
+    /**
      * @inheritDoc
      */
     public function insert( array $data ): int {
@@ -142,6 +210,29 @@ abstract class AbstractRepository implements RepositoryInterface {
         unset( $this->cache[ $id ] );
 
         return false !== $wpdb->update( $this->get_table(), $data, array( 'id' => $id ) );
+    }
+
+    /**
+     * Applies the same update to a bounded set of rows (e.g. rows checked
+     * via a table's bulk-action UI) — loops the existing single-row
+     * update() rather than building a fresh bulk SQL statement, since the
+     * id list is always small (whatever fits on one page) and this reuses
+     * update()'s own cache-invalidation for free.
+     *
+     * @param int[]                $ids  Row ids to update.
+     * @param array<string, mixed> $data Column => value pairs to set on every row.
+     * @return int Number of rows actually updated.
+     */
+    public function bulk_update( array $ids, array $data ): int {
+        $updated_count = 0;
+
+        foreach ( $ids as $id ) {
+            if ( $this->update( (int) $id, $data ) ) {
+                ++$updated_count;
+            }
+        }
+
+        return $updated_count;
     }
 
     /**

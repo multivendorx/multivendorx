@@ -2,10 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
-import {
-	HeaderComponent,
-	NoticeReceiverComponent,
-} from '@zyra/components';
+import { HeaderComponent } from '@zyra/components';
 import Brand from './assets/images/vulopilot-logo.svg';
 import { searchIndex, SearchItem } from './searchIndex';
 import './routeRegistry';
@@ -148,8 +145,6 @@ const App = () => {
 				free={appLocalizer.version}
 				pro={appLocalizer.pro_data.version}
 			/>
-
-			<NoticeReceiverComponent position="notice" />
 
 			<Route />
 		</>

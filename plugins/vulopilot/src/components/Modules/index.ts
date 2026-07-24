@@ -6,20 +6,20 @@ import { __ } from '@wordpress/i18n';
  * (`{ category, tab, modules: [...] }`, a `type: 'separator'` entry per
  * section, each real module `{ id, name, desc, proModule?, category }`).
  *
- * These 5 ids match the kebab-case ids VuloPilot's Modules.php loader
+ * These 6 ids match the kebab-case ids VuloPilot's Modules.php loader
  * derives from vulopilot-pro's actual `modules/{Folder}/Module.php` folder
  * names (camel_to_kebab()) — Automation, SecurityMonitoring, WooCommerceAi,
- * AdvancedReports, OneClickFix. The plugin's readme.txt is the source of
- * truth for this split: Free covers Website Health Monitoring, SEO/GEO/
- * Accessibility/WooCommerce scanning and detection, and BYOK AI content
- * generation; these 5 Pro modules cover "AI Automation Workflows",
+ * AdvancedReports, OneClickFix, GeoInsights. The plugin's readme.txt is the
+ * source of truth for this split: Free covers Website Health Monitoring,
+ * SEO/GEO/Accessibility/WooCommerce scanning and detection, and BYOK AI
+ * content generation; these 6 Pro modules cover "AI Automation Workflows",
  * "Scheduled Website Scans", "Security Monitoring", "WooCommerce AI"/"AI
- * Product Optimization", "Historical Reports", and "One-Click AI Fixes"
- * respectively. `proModule: true` still shows the upsell framing for a
- * site without vulopilot-pro installed; `useModules()`'s zustand store
- * (ModuleGridComponent) already handles showing these as active/available
- * instead once Pro registers them via `vulopilot_module_sources` — no
- * separate "is this real" flag needed here.
+ * Product Optimization", "Historical Reports", "One-Click AI Fixes", and
+ * "GEO AI Scoring" respectively. `proModule: true` still shows the upsell
+ * framing for a site without vulopilot-pro installed; `useModules()`'s
+ * zustand store (ModuleGridComponent) already handles showing these as
+ * active/available instead once Pro registers them via
+ * `vulopilot_module_sources` — no separate "is this real" flag needed here.
  */
 export default {
 	category: true,
@@ -75,6 +75,16 @@ export default {
 			name: __('One-Click AI Fixes', 'vulopilot'),
 			desc: __(
 				'Adds a "Fix this" action to findings that have a matching AI action (missing alt text, thin content, missing meta description, and more) — proposes the fix with one click; approving it still goes through the same Dashboard review every AI action requires.',
+				'vulopilot'
+			),
+			proModule: true,
+			category: ['premium'],
+		},
+		{
+			id: 'geo-insights',
+			name: __('GEO Insights', 'vulopilot'),
+			desc: __(
+				'Per-post AI scoring for AI-search-engine discoverability — entity coverage, question coverage, answer completeness, LLM readability, and AI suggestions. The deterministic GEO findings table stays free; this AI-scored card is Pro.',
 				'vulopilot'
 			),
 			proModule: true,

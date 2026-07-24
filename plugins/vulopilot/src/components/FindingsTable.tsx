@@ -46,8 +46,27 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 	description,
 	category,
 }) => {
-	const { data, total, isLoading, error, refetch, onQueryUpdate } =
-		useApiList<Finding>('findings', { category });
+	/** Every finding status, in display order — reused for both the status-count pill bar and (previously) the status dropdown filter it now replaces. */
+	const statusOptions = [
+		{ label: __('Open', 'vulopilot'), value: 'open' },
+		{ label: __('Resolved', 'vulopilot'), value: 'resolved' },
+		{ label: __('Ignored', 'vulopilot'), value: 'ignored' },
+		{ label: __('Snoozed', 'vulopilot'), value: 'snoozed' },
+	];
+
+	const {
+		data,
+		total,
+		categoryCounts,
+		isLoading,
+		error,
+		refetch,
+		onQueryUpdate,
+	} = useApiList<Finding>(
+		'findings',
+		{ category },
+		{ key: 'status', options: statusOptions }
+	);
 
 	const handleSetStatus = (
 		row: Record<string, unknown> | undefined,
@@ -67,7 +86,7 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 				NoticeManager.add({
 					uniqueKey: `finding-${status}-${row.id}`,
 					type: 'success',
-					position: 'notice',
+					position: 'float',
 					message: successMessage,
 				});
 				refetch();
@@ -75,7 +94,7 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 				NoticeManager.add({
 					uniqueKey: `finding-${status}-failed-${row.id}`,
 					type: 'error',
-					position: 'notice',
+					position: 'float',
 					message: __(
 						'Could not update this finding. Please try again.',
 						'vulopilot'
@@ -178,46 +197,76 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 	};
 
 	return (
-		<TableCard
-			title={title}
-			headers={headers}
-			rows={data}
-			ids={data.map((row) => row.id)}
-			totalRows={total}
-			isLoading={isLoading}
-			onQueryUpdate={onQueryUpdate}
-			emptyMessage={
-				description ||
-				__('No findings here yet — nothing to report.', 'vulopilot')
-			}
-			filters={[
-				{
-					key: 'severity',
-					label: __('Severity', 'vulopilot'),
-					type: 'select',
-					size: 10,
-					options: [
-						{ label: __('Critical', 'vulopilot'), value: 'critical' },
-						{ label: __('High', 'vulopilot'), value: 'high' },
-						{ label: __('Medium', 'vulopilot'), value: 'medium' },
-						{ label: __('Low', 'vulopilot'), value: 'low' },
-						{ label: __('Info', 'vulopilot'), value: 'info' },
-					],
-				},
-				{
-					key: 'status',
-					label: __('Status', 'vulopilot'),
-					type: 'select',
-					size: 10,
-					options: [
-						{ label: __('Open', 'vulopilot'), value: 'open' },
-						{ label: __('Resolved', 'vulopilot'), value: 'resolved' },
-						{ label: __('Ignored', 'vulopilot'), value: 'ignored' },
-						{ label: __('Snoozed', 'vulopilot'), value: 'snoozed' },
-					],
-				},
-			]}
-		/>
+		<>
+			<TableCard
+				headers={headers}
+				rows={data}
+				ids={data.map((row) => row.id)}
+				totalRows={total}
+				categoryCounts={categoryCounts}
+				isLoading={isLoading}
+				onQueryUpdate={onQueryUpdate}
+				search={{
+					placeholder: __('Search findings…', 'vulopilot'),
+				}}
+				bulkActions={[
+					{
+						label: __('Mark resolved', 'vulopilot'),
+						value: 'resolved',
+					},
+					{ label: __('Ignore', 'vulopilot'), value: 'ignored' },
+				]}
+				onBulkActionApply={(action: string, ids: number[]) => {
+					sendApiResponse(
+						appLocalizer,
+						getApiLink(appLocalizer, 'findings/bulk'),
+						{ ids, status: action }
+					).then((response: unknown) => {
+						if (response) {
+							NoticeManager.add({
+								uniqueKey: 'findings-bulk-update',
+								type: 'success',
+								position: 'float',
+								message: __(
+									'Selected findings updated.',
+									'vulopilot'
+								),
+							});
+							refetch();
+						} else {
+							NoticeManager.add({
+								uniqueKey: 'findings-bulk-update-failed',
+								type: 'error',
+								position: 'float',
+								message: __(
+									'Could not update the selected findings. Please try again.',
+									'vulopilot'
+								),
+							});
+						}
+					});
+				}}
+				emptyMessage={
+					description ||
+					__('No findings here yet — nothing to report.', 'vulopilot')
+				}
+				filters={[
+					{
+						key: 'severity',
+						label: __('Severity', 'vulopilot'),
+						type: 'select',
+						size: 10,
+						options: [
+							{ label: __('Critical', 'vulopilot'), value: 'critical' },
+							{ label: __('High', 'vulopilot'), value: 'high' },
+							{ label: __('Medium', 'vulopilot'), value: 'medium' },
+							{ label: __('Low', 'vulopilot'), value: 'low' },
+							{ label: __('Info', 'vulopilot'), value: 'info' },
+						],
+					},
+				]}
+			/>
+		</>
 	);
 };
 

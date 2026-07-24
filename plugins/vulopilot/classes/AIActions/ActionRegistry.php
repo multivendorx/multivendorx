@@ -80,6 +80,13 @@ class ActionRegistry {
             // MissingSummaryBlockRule's fix loops.
             Actions\GenerateFaqAction::class,
             Actions\GenerateSummaryBlockAction::class,
+            // AI SEO Assistant / AI Content Assistant (readme) — closes
+            // SeoTitleRewriteRule's fix loop (write-meta-title) and adds
+            // the two content-generation actions with no matching scanner/
+            // rule (suggest-internal-links, generate-social-content).
+            Actions\WriteMetaTitleAction::class,
+            Actions\SuggestInternalLinksAction::class,
+            Actions\GenerateSocialContentAction::class,
         );
     }
 

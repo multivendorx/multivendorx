@@ -90,7 +90,7 @@ const Dashboard = () => {
 					NoticeManager.add({
 						uniqueKey: 'vulopilot-scan-started',
 						type: 'success',
-						position: 'notice',
+						position: 'float',
 						message: __(
 							'Scan started — results will appear here shortly.',
 							'vulopilot'
@@ -101,7 +101,7 @@ const Dashboard = () => {
 					NoticeManager.add({
 						uniqueKey: 'vulopilot-scan-failed',
 						type: 'error',
-						position: 'notice',
+						position: 'float',
 						message: __(
 							'Could not start a scan. Please try again.',
 							'vulopilot'

@@ -1,8 +1,6 @@
 # VuloPilot — Extension SDK
 
-Companion to [`ARCHITECTURE.md`](../../../plugins/vulopilot-pro/ARCHITECTURE.md) (whose "Extension
-system = the discovery-by-filter mechanism itself" cross-cutting decision this formalizes, not
-replaces), [`SCANNERS.md`](SCANNERS.md), [`RULE-ENGINE.md`](RULE-ENGINE.md), and
+Companion to [`SCANNERS.md`](SCANNERS.md), [`RULE-ENGINE.md`](RULE-ENGINE.md), and
 [`AI-ACTIONS.md`](AI-ACTIONS.md). Covers every real extension point in this plugin — PHP, REST,
 React, and CLI — and the `ExtensionInterface`/`ExtensionManager` layer that ties the PHP ones
 together with a real version-compatibility gate.

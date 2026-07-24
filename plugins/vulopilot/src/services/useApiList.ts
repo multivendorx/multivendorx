@@ -2,10 +2,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getApiResponse, getApiLink } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
+import type { CategoryCount } from '@zyra/table';
 
 export interface ApiListResult<T> {
 	data: T[];
 	total: number;
+	/**
+	 * `[{value: 'all', label, count}, ...]` — only populated when a
+	 * `categoryFilter` config is passed in; empty otherwise. Pass straight
+	 * through to TableCard's `categoryCounts` prop to render its status-count
+	 * pill bar.
+	 */
+	categoryCounts: CategoryCount[];
 	isLoading: boolean;
 	error: string | null;
 	refetch: () => void;
@@ -27,18 +35,36 @@ export interface ApiListResult<T> {
 
 /**
  * The subset of zyra TableCard's internal query state this hook forwards
- * to the REST request — `orderby`/`order`/`categoryFilter`/`languageFilter`/
- * `searchValue` aren't read (no vulopilot list endpoint supports server-side
- * sort or those extra filter dimensions today), so they're intentionally
- * left untyped/unread rather than modeled here.
+ * to the REST request. `languageFilter` isn't read (no vulopilot list
+ * endpoint has that dimension). `searchValue`/`categoryFilter`/`orderby`/
+ * `order` ARE read — every AbstractRepository-backed list endpoint now
+ * supports `search`, a status-count-driven category filter, and sorting.
  */
 interface TableCardQuery {
 	paged?: number | string;
 	per_page?: number | string;
 	filter?: Record<string, string | string[]>;
+	searchValue?: string;
+	categoryFilter?: string;
+	orderby?: string;
+	order?: string;
 }
 
-type ListResponse<T> = T[] | { data?: T[]; total?: number };
+/**
+ * A status-like categorical dimension a list page wants surfaced as a
+ * TableCard status-count pill bar (Findings' status, Automation's status,
+ * Activity's actor_type, etc.) — `options` excludes "All", which this hook
+ * always prepends itself. The REST param this maps `categoryFilter` onto,
+ * and the response field its counts are read from, are both `key`
+ * (`${key}_counts` in the response body) — see each controller's
+ * `get_items()` for the matching backend half of this contract.
+ */
+export interface CategoryFilterConfig {
+	key: string;
+	options: { label: string; value: string }[];
+}
+
+type ListResponse<T> = T[] | { data?: T[]; total?: number; [key: string]: unknown };
 
 /**
  * Fetches a VuloPilot REST list endpoint (`vulopilot/v1/{endpoint}`) and
@@ -48,17 +74,20 @@ type ListResponse<T> = T[] | { data?: T[]; total?: number };
  * empty-or-populated shape, so it lives here once instead of being
  * re-implemented per page.
  *
- * @param endpoint REST resource path relative to the vulopilot/v1 namespace, e.g. 'findings'.
- * @param params   Optional static query params (e.g. a fixed category for a
- *                 category-scoped page). Pagination/per-page/select-filter
- *                 params are owned by TableCard itself — see onQueryUpdate.
+ * @param endpoint       REST resource path relative to the vulopilot/v1 namespace, e.g. 'findings'.
+ * @param params         Optional static query params (e.g. a fixed category for a
+ *                       category-scoped page). Pagination/per-page/select-filter
+ *                       params are owned by TableCard itself — see onQueryUpdate.
+ * @param categoryFilter Optional status-count pill bar config — see CategoryFilterConfig.
  */
 export const useApiList = <T = Record<string, unknown>>(
 	endpoint: string,
-	params: Record<string, string | number | undefined> = {}
+	params: Record<string, string | number | undefined> = {},
+	categoryFilter?: CategoryFilterConfig
 ): ApiListResult<T> => {
 	const [data, setData] = useState<T[]>([]);
 	const [total, setTotal] = useState(0);
+	const [categoryCounts, setCategoryCounts] = useState<CategoryCount[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [reloadToken, setReloadToken] = useState(0);
@@ -80,6 +109,12 @@ export const useApiList = <T = Record<string, unknown>>(
 		...params,
 		page: tableQuery.paged,
 		per_page: tableQuery.per_page,
+		search: tableQuery.searchValue,
+		orderby: tableQuery.orderby,
+		order: tableQuery.order,
+		...(categoryFilter && tableQuery.categoryFilter !== 'all'
+			? { [categoryFilter.key]: tableQuery.categoryFilter }
+			: {}),
 		...tableQuery.filter,
 	};
 
@@ -124,19 +159,40 @@ export const useApiList = <T = Record<string, unknown>>(
 					);
 					setData([]);
 					setTotal(0);
+					setCategoryCounts([]);
 					return;
 				}
 
 				const list = Array.isArray(response)
 					? response
 					: (response.data ?? []);
+				const rowTotal = Array.isArray(response)
+					? list.length
+					: (response.total ?? list.length);
 
 				setData(list);
-				setTotal(
-					Array.isArray(response)
-						? list.length
-						: (response.total ?? list.length)
-				);
+				setTotal(rowTotal);
+
+				if (categoryFilter && !Array.isArray(response)) {
+					const counts =
+						(response[`${categoryFilter.key}_counts`] as Record<
+							string,
+							number
+						>) ?? {};
+
+					setCategoryCounts([
+						{
+							value: 'all',
+							label: __('All', 'vulopilot'),
+							count: rowTotal,
+						},
+						...categoryFilter.options.map((option) => ({
+							value: option.value,
+							label: option.label,
+							count: counts[option.value] ?? 0,
+						})),
+					]);
+				}
 			})
 			.finally(() => {
 				if (!cancelled) {
@@ -151,5 +207,13 @@ export const useApiList = <T = Record<string, unknown>>(
 
 	const refetch = useCallback(() => setReloadToken((n) => n + 1), []);
 
-	return { data, total, isLoading, error, refetch, onQueryUpdate };
+	return {
+		data,
+		total,
+		categoryCounts,
+		isLoading,
+		error,
+		refetch,
+		onQueryUpdate,
+	};
 };

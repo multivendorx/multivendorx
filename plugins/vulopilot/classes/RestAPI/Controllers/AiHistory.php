@@ -13,8 +13,9 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * GET /ai-history backs src/pages/AIAssistant/AIAssistant.tsx's table.
- * Read-only — rows are only ever written by the (not yet built)
- * AIProviders subsystem, never by this controller.
+ * Read-only — rows are only ever written by AIProviders\Decorators\
+ * UsageTrackingProvider (part of every real AI provider call's fallback
+ * chain), never by this controller.
  *
  * @class       AiHistory controller
  * @version     1.0.0
@@ -57,14 +58,19 @@ class AiHistory extends \WP_REST_Controller {
     public function get_items( $request ) {
         $repository = new AiHistoryRepository();
 
-        return rest_ensure_response(
-            $repository->find_all(
-                array(
-                    'page'     => absint( $request->get_param( 'page' ) ) ?: 1,
-                    'per_page' => absint( $request->get_param( 'per_page' ) ) ?: 20,
-                    'provider' => sanitize_key( (string) $request->get_param( 'provider' ) ),
-                )
+        $result                  = $repository->find_all(
+            array(
+                'page'     => absint( $request->get_param( 'page' ) ) ?: 1,
+                'per_page' => absint( $request->get_param( 'per_page' ) ) ?: 20,
+                'provider' => sanitize_key( (string) $request->get_param( 'provider' ) ),
+                'status'   => sanitize_key( (string) $request->get_param( 'status' ) ),
+                'search'   => sanitize_text_field( (string) $request->get_param( 'search' ) ),
+                'orderby'  => sanitize_key( (string) $request->get_param( 'orderby' ) ),
+                'order'    => sanitize_key( (string) $request->get_param( 'order' ) ),
             )
         );
+        $result['status_counts'] = $repository->get_status_counts();
+
+        return rest_ensure_response( $result );
     }
 }
