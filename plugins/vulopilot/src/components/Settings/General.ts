@@ -20,6 +20,12 @@ export default {
 				{ label: __('Daily', 'vulopilot'), value: 'daily' },
 				{ label: __('Weekly', 'vulopilot'), value: 'weekly' },
 			],
+			// The recurring wp-cron Scheduler this setting configures lives
+			// entirely in vulopilot-pro's Automation module ("Scheduled
+			// Website Scans" per the readme) — without that module active,
+			// Free only runs on-demand, manually-triggered scans and this
+			// value is inert.
+			moduleEnabled: 'automation',
 		},
 		{
 			key: 'dashboard_layout_notice',

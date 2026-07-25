@@ -7,7 +7,7 @@
 
 namespace VuloPilot\Sdk;
 
-use VuloPilotCore\Contracts\Extension\ExtensionInterface;
+use VuloPilot\Contracts\Extension\ExtensionInterface;
 use VuloPilot\Repositories\ActivityLogRepository;
 
 defined( 'ABSPATH' ) || exit;

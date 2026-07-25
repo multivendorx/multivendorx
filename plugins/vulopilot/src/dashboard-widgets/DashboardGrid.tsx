@@ -10,6 +10,8 @@ import './DashboardGrid.scss';
 interface DashboardGridProps {
 	summary: DashboardSummary;
 	isLoading: boolean;
+	/** Gates drag/hide affordances — see Dashboard.tsx's own state comment. */
+	isCustomizing: boolean;
 }
 
 /** What ReactSortable actually needs on every list item — see react-sortablejs's own usage in PanelEditor.tsx (Zyra's builders package) for this exact `list`/`setList` shape. */
@@ -34,10 +36,18 @@ const WIDGETS_BY_ID = new Map(
  * (`PanelEditor.tsx`) uses for its drag-and-drop block canvas, so this
  * follows the dominant drag-and-drop pattern already established in this
  * monorepo rather than introducing a different library.
+ *
+ * `isCustomizing` (Dashboard.tsx's "Customize dashboard" header toggle)
+ * gates whether any of this is reachable at all: when off, widgets render
+ * in the same saved order as a plain (non-sortable) grid with no drag
+ * handle/hide control and no hidden-widgets chip strip — a normal
+ * read-only dashboard. The saved layout itself and the REST calls that
+ * read/write it are unaffected either way.
  */
 const DashboardGrid: React.FC<DashboardGridProps> = ({
 	summary,
 	isLoading,
+	isCustomizing,
 }) => {
 	const [layout, setLayout] = useState<WidgetLayoutEntry[]>([]);
 	const [isLayoutLoading, setIsLayoutLoading] = useState(true);
@@ -102,6 +112,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({
 								summary={summary}
 								isLoading
 								onHide={() => {}}
+								isCustomizing={false}
 							/>
 						</div>
 					);
@@ -118,37 +129,46 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({
 		(entry) => !entry.enabled && WIDGETS_BY_ID.has(entry.id)
 	);
 
+	const renderWidgetCell = (entry: SortableEntry) => {
+		const widget = WIDGETS_BY_ID.get(entry.id);
+		if (!widget) {
+			return null;
+		}
+		const Widget = widget.component;
+		return (
+			<div
+				key={widget.id}
+				className={`dashboard-widget-cell size-${widget.size}`}
+			>
+				<Widget
+					summary={summary}
+					isLoading={isLoading}
+					onHide={() => handleHide(widget.id)}
+					isCustomizing={isCustomizing}
+				/>
+			</div>
+		);
+	};
+
 	return (
 		<>
-			<ReactSortable
-				list={visible}
-				setList={handleReorder}
-				handle=".widget-drag-handle"
-				animation={150}
-				className="dashboard-widget-grid"
-			>
-				{visible.map((entry) => {
-					const widget = WIDGETS_BY_ID.get(entry.id);
-					if (!widget) {
-						return null;
-					}
-					const Widget = widget.component;
-					return (
-						<div
-							key={widget.id}
-							className={`dashboard-widget-cell size-${widget.size}`}
-						>
-							<Widget
-								summary={summary}
-								isLoading={isLoading}
-								onHide={() => handleHide(widget.id)}
-							/>
-						</div>
-					);
-				})}
-			</ReactSortable>
+			{isCustomizing ? (
+				<ReactSortable
+					list={visible}
+					setList={handleReorder}
+					handle=".widget-drag-handle"
+					animation={150}
+					className="dashboard-widget-grid"
+				>
+					{visible.map(renderWidgetCell)}
+				</ReactSortable>
+			) : (
+				<div className="dashboard-widget-grid">
+					{visible.map(renderWidgetCell)}
+				</div>
+			)}
 
-			{hidden.length > 0 && (
+			{isCustomizing && hidden.length > 0 && (
 				<div className="dashboard-hidden-widgets">
 					<span className="dashboard-hidden-widgets-label">
 						{__('Hidden widgets:', 'vulopilot')}

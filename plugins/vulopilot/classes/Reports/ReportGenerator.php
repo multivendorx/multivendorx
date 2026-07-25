@@ -9,7 +9,7 @@ namespace VuloPilot\Reports;
 
 use VuloPilot\Repositories\ReportRepository;
 use VuloPilot\Utill;
-use VuloPilotCore\Contracts\Report\ReportTypeInterface;
+use VuloPilot\Contracts\Report\ReportTypeInterface;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -163,7 +163,20 @@ class ReportGenerator {
         if ( 'custom' === $report_type_id ) {
             $included_type_ids = array_map( 'sanitize_key', (array) ( $params['included_types'] ?? array() ) );
 
-            return new Types\CustomReport( $this->report_types, $included_type_ids );
+            /**
+             * The "custom report builder" (Types\CustomReport) is Pro
+             * business logic — it moved to vulopilot-pro's AdvancedReports
+             * module, which hooks this filter to build and return one.
+             * Free has nothing to fall back to, so 'custom' simply isn't a
+             * usable report_type_id without that module active — the
+             * caller sees "Unknown report type: custom", the same failure
+             * shape as requesting any other unregistered type id.
+             *
+             * @param ReportTypeInterface|null $custom_report An already-built CustomReport, or null.
+             * @param ReportTypeRegistry       $report_types  Registry to resolve each included type id against.
+             * @param string[]                 $included_type_ids Other report types' get_id() values to merge in.
+             */
+            return apply_filters( 'vulopilot_custom_report_type', null, $this->report_types, $included_type_ids );
         }
 
         return $this->report_types->get_report_type( $report_type_id );

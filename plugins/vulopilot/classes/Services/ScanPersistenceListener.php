@@ -7,13 +7,12 @@
 
 namespace VuloPilot\Services;
 
-use VuloPilotCore\ValueObjects\Finding;
-use VuloPilotCore\ValueObjects\ScanResult;
-use VuloPilotCore\ValueObjects\Severity;
+use VuloPilot\ValueObjects\Finding;
+use VuloPilot\ValueObjects\ScanResult;
+use VuloPilot\ValueObjects\Severity;
 use VuloPilot\Repositories\ActivityLogRepository;
 use VuloPilot\Repositories\FindingRepository;
 use VuloPilot\Repositories\ScanRepository;
-use VuloPilot\Repositories\SiteHealthSnapshotRepository;
 use VuloPilot\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -29,9 +28,11 @@ defined( 'ABSPATH' ) || exit;
  * nor RuleEngine has any idea this class exists — the hook is the only
  * coupling, same one-way-dependency shape used throughout.
  *
- * Also recalculates and upserts today's site-health snapshot after every
- * scan, so the dashboard's trend chart has something real to plot without
- * needing a separate scheduled job for it yet.
+ * Fires `vulopilot_scan_persisted` after its own persistence work — the
+ * seam vulopilot-pro's AdvancedReports module hooks to recalculate and
+ * upsert today's site-health snapshot (historical trend data is Pro
+ * business logic; this class only owns "did the scan's own rows get
+ * written," not what anyone else derives from that afterward).
  *
  * @class       ScanPersistenceListener class
  * @version     1.0.0
@@ -50,11 +51,6 @@ class ScanPersistenceListener {
     private FindingRepository $findings;
 
     /**
-     * @var SiteHealthSnapshotRepository
-     */
-    private SiteHealthSnapshotRepository $snapshots;
-
-    /**
      * @var ActivityLogRepository
      */
     private ActivityLogRepository $activity_logs;
@@ -65,7 +61,6 @@ class ScanPersistenceListener {
     public function __construct() {
         $this->scans         = new ScanRepository();
         $this->findings      = new FindingRepository();
-        $this->snapshots     = new SiteHealthSnapshotRepository();
         $this->activity_logs = new ActivityLogRepository();
 
         add_action( 'vulopilot_scan_completed', array( $this, 'handle_scan_completed' ) );
@@ -118,28 +113,20 @@ class ScanPersistenceListener {
             (string) $scan_id
         );
 
-        $this->refresh_todays_snapshot();
         $this->maybe_notify_critical_findings( $scan_result );
-    }
 
-    /**
-     * Recalculates today's overall health score from every currently
-     * open finding (not just this scan's) and upserts it. The weighting
-     * (critical costs the most, info costs nothing) is a deliberately
-     * simple, documented heuristic — not presented as a precise formula.
-     *
-     * @return void
-     */
-    private function refresh_todays_snapshot(): void {
-        $critical = $this->findings->count_by_severity( Severity::CRITICAL );
-        $high     = $this->findings->count_by_severity( Severity::HIGH );
-        $medium   = $this->findings->count_by_severity( Severity::MEDIUM );
-        $low      = $this->findings->count_by_severity( Severity::LOW );
-
-        $score = 100 - ( $critical * 15 ) - ( $high * 8 ) - ( $medium * 3 ) - ( $low * 1 );
-        $score = max( 0, min( 100, $score ) );
-
-        $this->snapshots->upsert_today( $score, $critical, $high, $medium, $low );
+        /**
+         * Fires after a scan's own rows are persisted — vulopilot-pro's
+         * AdvancedReports module hooks this to recalculate and upsert
+         * today's site-health snapshot (historical trend data). Free
+         * itself doesn't do anything with $scan_id beyond handing it out;
+         * a hooked callback can re-query FindingRepository itself for
+         * current open-finding counts, the same way this class used to.
+         *
+         * @param ScanResult $scan_result The completed scan.
+         * @param int        $scan_id     The just-inserted `vulopilot_scans` row id.
+         */
+        do_action( 'vulopilot_scan_persisted', $scan_result, $scan_id );
     }
 
     /**

@@ -1,16 +1,13 @@
 /* global appLocalizer */
+import { useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, sendApiResponse } from '@zyra/core';
-import {
-	CardComponent,
-	ColumnComponent,
-	ContainerComponent,
-	ModuleGuardComponent,
-	NavigatorHeaderComponent,
-	NoticeManager,
-} from '@zyra/components';
+import { applyFilters } from '@wordpress/hooks';
+import type { ComponentType } from 'react';
+import { PopupComponent } from '@zyra/components';
 import { TableCard, TableRow } from '@zyra/table';
 import { useApiList } from '../../services/useApiList';
+import TablePage from '../../components/TablePage/TablePage';
+import ShowProPopup from '../../components/Popup/Popup';
 
 interface AutomationRow extends TableRow {
 	id: number;
@@ -20,117 +17,78 @@ interface AutomationRow extends TableRow {
 	last_triggered_at: string | null;
 }
 
+/**
+ * The real management panel (list, enable/disable, create, run) lives in
+ * vulopilot-pro/modules/Automation's own React entry, registered into this
+ * slot — same "register a source, don't modify the host" pattern already
+ * used for Reports' `vulopilot_reports_advanced_panel`.
+ */
+const AutomationPanel = applyFilters(
+	'vulopilot_automation_panel',
+	null
+) as ComponentType | null;
+
 const Automation = () => {
-	const { data, total, isLoading, error, refetch } =
-		useApiList<AutomationRow>('automations', { per_page: 10 });
+	const [isProPopupOpen, setIsProPopupOpen] = useState(false);
 
-	const handleToggleStatus = (row?: Record<string, unknown>) => {
-		if (!row) {
-			return;
-		}
+	const statusOptions = [
+		{ label: __('Enabled', 'vulopilot'), value: 'enabled' },
+		{ label: __('Disabled', 'vulopilot'), value: 'disabled' },
+	];
 
-		const nextStatus = row.status === 'enabled' ? 'disabled' : 'enabled';
+	const {
+		data,
+		total,
+		categoryCounts,
+		isLoading,
+		error,
+		refetch,
+		onQueryUpdate,
+	} = useApiList<AutomationRow>(
+		'automations',
+		{},
+		{ key: 'status', options: statusOptions }
+	);
 
-		sendApiResponse(
-			appLocalizer,
-			getApiLink(appLocalizer, `automations/${row.id}`),
-			{ status: nextStatus }
-		).then((response) => {
-			if (response) {
-				NoticeManager.add({
-					uniqueKey: `automation-toggled-${row.id}`,
-					type: 'success',
-					position: 'notice',
-					message:
-						nextStatus === 'enabled'
-							? __('Automation enabled.', 'vulopilot')
-							: __('Automation disabled.', 'vulopilot'),
-				});
-				refetch();
-			} else {
-				NoticeManager.add({
-					uniqueKey: `automation-toggle-failed-${row.id}`,
-					type: 'error',
-					position: 'notice',
-					message: __(
-						'Could not update this automation. Please try again.',
-						'vulopilot'
-					),
-				});
-			}
-		});
-	};
+	const openProPopup = () => setIsProPopupOpen(true);
 
-	const handleRunNow = (row?: Record<string, unknown>) => {
-		if (!row) {
-			return;
-		}
-
-		sendApiResponse(
-			appLocalizer,
-			getApiLink(appLocalizer, `automations/${row.id}/run`),
-			{}
-		).then((response) => {
-			NoticeManager.add({
-				uniqueKey: `automation-run-${row.id}`,
-				type: response ? 'success' : 'error',
-				position: 'notice',
-				message: response
-					? __('Automation ran.', 'vulopilot')
-					: __(
-							'Could not run this automation — it may have no currently-matching recommendation to act on.',
-							'vulopilot'
-						),
-			});
-
-			if (response) {
-				refetch();
-			}
-		});
-	};
-
-	const pageHeader = (
-		<NavigatorHeaderComponent
+	return (
+		<TablePage
 			headerIcon="automation"
 			headerTitle={__('Automation', 'vulopilot')}
 			headerDescription={__(
 				'React to scan findings automatically — send emails, resolve findings, or run an AI action.',
 				'vulopilot'
 			)}
-		/>
-	);
-
-	if (error) {
-		return (
-			<>
-				{pageHeader}
-				<ContainerComponent general>
-					<ColumnComponent>
-						<CardComponent title={__('Automation', 'vulopilot')}>
-							<ModuleGuardComponent
-								icon="warning"
-								title={__(
-									'Could not load automations',
-									'vulopilot'
-								)}
-								desc={error}
-								buttonText={__('Retry', 'vulopilot')}
-								onButtonClick={refetch}
-							/>
-						</CardComponent>
-					</ColumnComponent>
-				</ContainerComponent>
-			</>
-		);
-	}
-
-	return (
-		<>
-			{pageHeader}
-			<ContainerComponent general>
-				<ColumnComponent>
+			error={error}
+			onRetry={refetch}
+			errorTitle={__('Could not load automations', 'vulopilot')}
+		>
+			{AutomationPanel ? (
+				<AutomationPanel />
+			) : (
+				<>
+					{/*
+					 * Pro isn't active (or the Automation module isn't) — the
+					 * table still renders with whatever Free's own baseline
+					 * `automations` REST controller returns (list/enable-disable
+					 * only, no create), but every action opens the Pro popup
+					 * instead of calling the API, since creating/running an
+					 * automation for real needs vulopilot-pro's engine.
+					 */}
 					<TableCard
-						title={__('Automation', 'vulopilot')}
+						search={{
+							placeholder: __(
+								'Search automations…',
+								'vulopilot'
+							),
+						}}
+						buttonActions={[
+							{
+								label: __('Create automation', 'vulopilot'),
+								onClick: openProPopup,
+							},
+						]}
 						headers={{
 							name: {
 								label: __('Automation', 'vulopilot'),
@@ -164,12 +122,12 @@ const Automation = () => {
 												? __('Disable', 'vulopilot')
 												: __('Enable', 'vulopilot'),
 										icon: 'controls-repeat',
-										onClick: handleToggleStatus,
+										onClick: openProPopup,
 									},
 									{
 										label: __('Run now', 'vulopilot'),
 										icon: 'controls-play',
-										onClick: handleRunNow,
+										onClick: openProPopup,
 									},
 								],
 							},
@@ -177,33 +135,32 @@ const Automation = () => {
 						rows={data}
 						ids={data.map((row) => row.id)}
 						totalRows={total}
+						categoryCounts={categoryCounts}
 						isLoading={isLoading}
+						onQueryUpdate={onQueryUpdate}
 						emptyMessage={__(
 							'No automations yet — create one to react to scan findings automatically.',
 							'vulopilot'
 						)}
-						filters={[
-							{
-								key: 'status',
-								label: __('Status', 'vulopilot'),
-								type: 'select',
-								size: 10,
-								options: [
-									{
-										label: __('Enabled', 'vulopilot'),
-										value: 'enabled',
-									},
-									{
-										label: __('Disabled', 'vulopilot'),
-										value: 'disabled',
-									},
-								],
-							},
-						]}
 					/>
-				</ColumnComponent>
-			</ContainerComponent>
-		</>
+					<PopupComponent
+						open={isProPopupOpen}
+						onClose={() => setIsProPopupOpen(false)}
+						width={31.25}
+						height="auto"
+						position="lightbox"
+					>
+						{appLocalizer.active_modules.includes(
+							'automation'
+						) ? (
+							<ShowProPopup moduleName="automation" />
+						) : (
+							<ShowProPopup />
+						)}
+					</PopupComponent>
+				</>
+			)}
+		</TablePage>
 	);
 };
 

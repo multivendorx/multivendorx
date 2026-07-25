@@ -7,7 +7,7 @@
 
 namespace VuloPilot\Scanners;
 
-use VuloPilotCore\Contracts\Scanner\ScannerInterface;
+use VuloPilot\Contracts\Scanner\ScannerInterface;
 use VuloPilot\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -117,7 +117,12 @@ class ScannerRegistry {
     }
 
     /**
-     * Free's own always-available scanners.
+     * Free's own always-available scanners — matches the readme's free
+     * feature list (Website Health Monitoring, SEO Optimization,
+     * Performance, Accessibility Scanner, WooCommerce Optimization).
+     * SecurityScanner/RestApiScanner are the one exception ("Security
+     * Monitoring" is Pro-only per the readme) — they moved to
+     * vulopilot-pro's SecurityMonitoring module instead.
      *
      * @return string[] Fully-qualified class names implementing ScannerInterface.
      */
@@ -129,14 +134,12 @@ class ScannerRegistry {
             Basic\SchemaScanner::class,
             Basic\PerformanceScanner::class,
             Basic\DatabaseScanner::class,
-            Basic\SecurityScanner::class,
             Basic\WooCommerceScanner::class,
             Basic\AccessibilityScanner::class,
             Basic\PluginsScanner::class,
             Basic\ThemesScanner::class,
             Basic\UpdatesScanner::class,
             Basic\CronScanner::class,
-            Basic\RestApiScanner::class,
             // SEO module (SEO-MODULE.md) — 13 additional checks alongside
             // the original SeoScanner (Titles) and SchemaScanner (Schema).
             Basic\MetaDescriptionScanner::class,
@@ -161,9 +164,9 @@ class ScannerRegistry {
             Basic\GeoFaqOpportunityScanner::class,
             Basic\GeoChunkingScanner::class,
             Basic\GeoSemanticStructureScanner::class,
-            // WooCommerce AI's Product Intelligence pass (ARCHITECTURE.md's
-            // Prompt 11) — 11 additional checks alongside the original
-            // WooCommerceScanner (checkout page), category 'woocommerce'.
+            // WooCommerce Optimization (readme) — 11 additional checks
+            // alongside the original WooCommerceScanner (checkout page),
+            // category 'woocommerce'.
             Basic\ProductMissingImagesScanner::class,
             Basic\ProductMissingCategoriesScanner::class,
             Basic\ProductMissingTagsScanner::class,
@@ -175,6 +178,22 @@ class ScannerRegistry {
             Basic\ProductPricingScanner::class,
             Basic\ProductDuplicateScanner::class,
             Basic\ProductCompletenessScanner::class,
+            // Website Health Monitoring (readme) — closes the PHP Warning
+            // Detection/SSL Monitoring/Redirect Analysis/404 Detection gaps.
+            Basic\SslMonitoringScanner::class,
+            Basic\RedirectAnalysisScanner::class,
+            Basic\NotFoundScanner::class,
+            Basic\PhpWarningScanner::class,
+            // Website Performance (readme) — category 'performance', joins
+            // the original PerformanceScanner (autoload bloat).
+            Basic\SlowPageScanner::class,
+            Basic\LargeImagesScanner::class,
+            Basic\HeavyPluginsScanner::class,
+            Basic\CacheDetectionScanner::class,
+            // Accessibility Scanner (readme) — category 'accessibility',
+            // joins the original AccessibilityScanner (duplicate <h1>).
+            Basic\FormLabelsScanner::class,
+            Basic\AriaAttributesScanner::class,
         );
     }
 

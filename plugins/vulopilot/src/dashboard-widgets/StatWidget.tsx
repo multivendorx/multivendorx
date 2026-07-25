@@ -30,6 +30,7 @@ interface StatWidgetProps {
 	summary: DashboardSummary;
 	isLoading: boolean;
 	onHide: () => void;
+	isCustomizing: boolean;
 }
 
 /**
@@ -47,12 +48,14 @@ export const createStatWidgetComponent = (
 		summary,
 		isLoading,
 		onHide,
+		isCustomizing,
 	}) => (
 		<StatWidget
 			config={config}
 			summary={summary}
 			isLoading={isLoading}
 			onHide={onHide}
+			isCustomizing={isCustomizing}
 		/>
 	);
 	Component.displayName = `StatWidget(${config.id})`;
@@ -72,6 +75,7 @@ const StatWidget: React.FC<StatWidgetProps> = ({
 	summary,
 	isLoading,
 	onHide,
+	isCustomizing,
 }) => {
 	const unavailable = config.getUnavailableState?.(summary);
 
@@ -81,6 +85,7 @@ const StatWidget: React.FC<StatWidgetProps> = ({
 			icon={config.icon}
 			isLoading={isLoading}
 			onHide={onHide}
+			isCustomizing={isCustomizing}
 		>
 			{unavailable ? (
 				<ModuleGuardComponent

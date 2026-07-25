@@ -22,6 +22,7 @@ const AutomationStatusWidget: React.FC<WidgetProps> = ({
 	summary,
 	isLoading,
 	onHide,
+	isCustomizing,
 }) => {
 	const {
 		data,
@@ -36,6 +37,7 @@ const AutomationStatusWidget: React.FC<WidgetProps> = ({
 			icon="controls-repeat"
 			isLoading={isLoading}
 			onHide={onHide}
+			isCustomizing={isCustomizing}
 		>
 			<div className="dashboard-widget-summary-line">
 				{sprintf(

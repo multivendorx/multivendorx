@@ -55,20 +55,16 @@ class Rest {
      */
     public function register_routes(): void {
         $this->controllers = array(
-            'dashboard'             => new Controllers\Dashboard(),
-            'dashboard_layout'      => new Controllers\DashboardLayout(),
-            'scans'                 => new Controllers\Scans(),
-            'findings'              => new Controllers\Findings(),
-            'site_health_snapshots' => new Controllers\SiteHealthSnapshots(),
-            'automations'           => new Controllers\Automations(),
-            'automation_runs'       => new Controllers\AutomationRuns(),
-            'reports'               => new Controllers\Reports(),
-            'report_schedules'      => new Controllers\ReportSchedules(),
-            'ai_history'            => new Controllers\AiHistory(),
-            'ai_action_runs'        => new Controllers\AiActionRuns(),
-            'geo_analysis'          => new Controllers\GeoAnalysis(),
-            'activity_logs'         => new Controllers\ActivityLogs(),
-            'settings'              => new Controllers\Settings(),
+            'dashboard'        => new Controllers\Dashboard(),
+            'dashboard_layout' => new Controllers\DashboardLayout(),
+            'scans'            => new Controllers\Scans(),
+            'findings'         => new Controllers\Findings(),
+            'reports'          => new Controllers\Reports(),
+            'ai_history'       => new Controllers\AiHistory(),
+            'ai_action_runs'   => new Controllers\AiActionRuns(),
+            'activity_logs'    => new Controllers\ActivityLogs(),
+            'automations'      => new Controllers\Automations(),
+            'settings'         => new Controllers\Settings(),
         );
 
         $extra_controllers = apply_filters( 'vulopilot_rest_controllers', array() );

@@ -7,10 +7,11 @@
 
 namespace VuloPilot\RuleEngine\Rules;
 
-use VuloPilotCore\ValueObjects\Finding;
-use VuloPilotCore\ValueObjects\Impact;
-use VuloPilotCore\ValueObjects\Recommendation;
-use VuloPilotCore\ValueObjects\RuleType;
+
+use VuloPilot\ValueObjects\Finding;
+use VuloPilot\ValueObjects\Impact;
+use VuloPilot\ValueObjects\Recommendation;
+use VuloPilot\ValueObjects\RuleType;
 
 defined( 'ABSPATH' ) || exit;
 

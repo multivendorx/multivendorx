@@ -7,8 +7,8 @@
 
 namespace VuloPilot\AIProviders\Support;
 
-use VuloPilotCore\ValueObjects\AIRequest;
-use VuloPilotCore\ValueObjects\AIResponse;
+use VuloPilot\ValueObjects\AIRequest;
+use VuloPilot\ValueObjects\AIResponse;
 use VuloPilot\AIProviders\ProviderRegistry;
 use VuloPilot\AIProviders\Safety\AISafetyValidator;
 
@@ -51,7 +51,7 @@ class SafeRequestSender {
      * @param array<int, array{role: string, content: string}> $messages Chat-style prompt messages.
      * @return AIResponse
      *
-     * @throws \VuloPilotCore\Exceptions\UnsafePromptException If the prompt fails safety validation.
+     * @throws \VuloPilot\Exceptions\UnsafePromptException If the prompt fails safety validation.
      * @throws \RuntimeException If no AI provider is configured.
      */
     public function send( array $messages ): AIResponse {

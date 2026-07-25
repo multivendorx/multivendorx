@@ -22,7 +22,10 @@ interface ActivityLogRow {
  * pass's "reusable widgets" requirement without misusing a component
  * outside the density it's meant for).
  */
-const RecentActivityWidget: React.FC<WidgetProps> = ({ onHide }) => {
+const RecentActivityWidget: React.FC<WidgetProps> = ({
+	onHide,
+	isCustomizing,
+}) => {
 	const { data, isLoading, error, refetch } = useApiList<ActivityLogRow>(
 		'activity-logs',
 		{ per_page: 5 }
@@ -34,6 +37,7 @@ const RecentActivityWidget: React.FC<WidgetProps> = ({ onHide }) => {
 			icon="clock"
 			isLoading={isLoading}
 			onHide={onHide}
+			isCustomizing={isCustomizing}
 		>
 			{error ? (
 				<ModuleGuardComponent

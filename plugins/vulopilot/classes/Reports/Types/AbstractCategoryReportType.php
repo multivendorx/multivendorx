@@ -9,7 +9,7 @@ namespace VuloPilot\Reports\Types;
 
 use VuloPilot\Reports\AbstractReportType;
 use VuloPilot\Repositories\FindingRepository;
-use VuloPilotCore\ValueObjects\ReportResult;
+use VuloPilot\ValueObjects\ReportResult;
 
 defined( 'ABSPATH' ) || exit;
 

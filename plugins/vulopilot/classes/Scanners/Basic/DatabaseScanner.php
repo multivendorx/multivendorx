@@ -7,8 +7,9 @@
 
 namespace VuloPilot\Scanners\Basic;
 
-use VuloPilotCore\ValueObjects\Finding;
-use VuloPilotCore\ValueObjects\Severity;
+
+use VuloPilot\ValueObjects\Finding;
+use VuloPilot\ValueObjects\Severity;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -7,9 +7,9 @@
 
 namespace VuloPilot\RuleEngine;
 
-use VuloPilotCore\ValueObjects\Finding;
-use VuloPilotCore\ValueObjects\Recommendation;
-use VuloPilotCore\ValueObjects\ScanResult;
+use VuloPilot\ValueObjects\Finding;
+use VuloPilot\ValueObjects\Recommendation;
+use VuloPilot\ValueObjects\ScanResult;
 
 defined( 'ABSPATH' ) || exit;
 

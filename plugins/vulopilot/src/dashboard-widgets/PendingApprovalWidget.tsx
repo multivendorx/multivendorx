@@ -23,7 +23,10 @@ interface ActionRunRow {
  * approve()/reject() methods have always existed, but nothing exposed
  * them over REST, so this widget used to be visibility-only by necessity.
  */
-const PendingApprovalWidget: React.FC<WidgetProps> = ({ onHide }) => {
+const PendingApprovalWidget: React.FC<WidgetProps> = ({
+	onHide,
+	isCustomizing,
+}) => {
 	const { data, isLoading, error, refetch } = useApiList<ActionRunRow>(
 		'ai-action-runs',
 		{ status: 'pending_approval', per_page: 5 }
@@ -42,7 +45,7 @@ const PendingApprovalWidget: React.FC<WidgetProps> = ({ onHide }) => {
 				NoticeManager.add({
 					uniqueKey: `ai-action-${decision}-${row.id}`,
 					type: response ? 'success' : 'error',
-					position: 'notice',
+					position: 'float',
 					message: response
 						? decision === 'approve'
 							? __('Action approved and executed.', 'vulopilot')
@@ -66,6 +69,7 @@ const PendingApprovalWidget: React.FC<WidgetProps> = ({ onHide }) => {
 			icon="approval"
 			isLoading={isLoading}
 			onHide={onHide}
+			isCustomizing={isCustomizing}
 		>
 			{error ? (
 				<ModuleGuardComponent

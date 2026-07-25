@@ -6,20 +6,28 @@ import { __ } from '@wordpress/i18n';
  * (`{ category, tab, modules: [...] }`, a `type: 'separator'` entry per
  * section, each real module `{ id, name, desc, proModule?, category }`).
  *
- * VuloPilot's own `modules/` folder-scan loader (module-architecture.md,
- * classes/Modules.php) has no real modules registered yet — free doesn't
- * ship any, and vulopilot-pro's own module registration is still deferred
- * (ARCHITECTURE.md's "What's deliberately NOT here yet": license gating +
- * `vulopilot_module_sources` registration both wait on Pro's `init_classes()`
- * landing). The five premium modules below are the ones ARCHITECTURE.md's
- * own Pro section already documents by name and behavior — shown here as
- * upsell cards (`proModule: true`) the same way multivendorx's own catalog
- * lists Pro-only modules a Free install doesn't have yet, not fabricated
- * feature ideas. `ComplianceReports` — originally documented as a Pro
- * module there — is deliberately NOT listed: the Reports Module (Reports
- * generation/exports/scheduling) shipped directly into Free during this
- * plugin's build, so listing it again here as a Pro upsell would be
- * inaccurate.
+ * These 6 ids match the kebab-case ids VuloPilot's Modules.php loader
+ * derives from vulopilot-pro's actual `modules/{Folder}/Module.php` folder
+ * names (camel_to_kebab()) — Automation, SecurityMonitoring, WooCommerceAi,
+ * AdvancedReports, OneClickFix, GeoInsights. The plugin's readme.txt is the
+ * source of truth for this split: Free covers Website Health Monitoring,
+ * SEO/GEO/Accessibility/WooCommerce scanning and detection, and BYOK AI
+ * content generation; these 6 Pro modules cover "AI Automation Workflows",
+ * "Scheduled Website Scans", "Security Monitoring", "WooCommerce AI"/"AI
+ * Product Optimization", "Historical Reports", "One-Click AI Fixes", and
+ * "GEO AI Scoring" respectively. `proModule: true` still shows the upsell
+ * framing for a site without vulopilot-pro installed; `useModules()`'s
+ * zustand store (ModuleGridComponent) already handles showing these as
+ * active/available instead once Pro registers them via
+ * `vulopilot_module_sources` — no separate "is this real" flag needed here.
+ *
+ * `miniModule: true` on every real entry (not the separator) is required
+ * for `ModuleGridComponent`'s `variant="mini-module"` — used by the
+ * Dashboard's compact Modules card (`pages/Dashboard/WelcomeSection.tsx`)
+ * — to render anything at all: that variant filters `modulesArray.modules`
+ * down to only `miniModule`-flagged entries, and this plugin's own
+ * standalone Modules page (`Modules.tsx`) doesn't pass `variant`, so it
+ * was never exercised until the Dashboard card needed it.
  */
 export default {
 	category: true,
@@ -31,54 +39,70 @@ export default {
 			label: __('Premium Modules', 'vulopilot'),
 		},
 		{
-			id: 'advanced-security-scanner',
-			name: __('Advanced Security Scanner', 'vulopilot'),
+			id: 'automation',
+			name: __('Automation', 'vulopilot'),
 			desc: __(
-				'Malware and file-integrity scanning across your entire WordPress install.',
+				'AI Automation Workflows and Scheduled Website Scans — the trigger→action engine (11 triggers, 4 actions) plus recurring wp-cron scanning. Free only runs on-demand, manually-triggered scans without this module.',
 				'vulopilot'
 			),
 			proModule: true,
 			category: ['premium'],
+			miniModule: true,
 		},
 		{
-			id: 'performance-optimizer',
-			name: __('Performance Optimizer', 'vulopilot'),
+			id: 'security-monitoring',
+			name: __('Security Monitoring', 'vulopilot'),
 			desc: __(
-				'Deeper performance scanning plus AI actions that can apply the fix automatically.',
+				'Checks for an admin account named "admin" and anonymous REST API user-enumeration exposure.',
 				'vulopilot'
 			),
 			proModule: true,
 			category: ['premium'],
+			miniModule: true,
 		},
 		{
-			id: 'multi-provider-ai',
-			name: __('Multi-Provider AI', 'vulopilot'),
+			id: 'woo-commerce-ai',
+			name: __('WooCommerce AI', 'vulopilot'),
 			desc: __(
-				'Connect OpenAI, Anthropic, and Gemini with automatic provider fallback and routing.',
+				'AI Product Optimization and Bulk AI Optimization — rewrites product titles, generates descriptions/FAQ/schema, and suggests cross-sell/upsell/bundles. Product detection scanning itself stays free; this closes the fix loop with AI.',
 				'vulopilot'
 			),
 			proModule: true,
 			category: ['premium'],
+			miniModule: true,
 		},
 		{
-			id: 'advanced-automation-recipes',
-			name: __('Advanced Automation Recipes', 'vulopilot'),
+			id: 'advanced-reports',
+			name: __('Advanced Reports', 'vulopilot'),
 			desc: __(
-				'Multi-step, conditional-branch automations built on top of the Automation Engine.',
+				'Historical Reports — recurring, emailed report schedules, a custom report builder that merges multiple report types, and historical site-health trend data.',
 				'vulopilot'
 			),
 			proModule: true,
 			category: ['premium'],
+			miniModule: true,
 		},
 		{
-			id: 'team-access',
-			name: __('Team Access', 'vulopilot'),
+			id: 'one-click-fix',
+			name: __('One-Click AI Fixes', 'vulopilot'),
 			desc: __(
-				'Delegate specific VuloPilot capabilities to other users on your team.',
+				'Adds a "Fix this" action to findings that have a matching AI action (missing alt text, thin content, missing meta description, and more) — proposes the fix with one click; approving it still goes through the same Dashboard review every AI action requires.',
 				'vulopilot'
 			),
 			proModule: true,
 			category: ['premium'],
+			miniModule: true,
+		},
+		{
+			id: 'geo-insights',
+			name: __('GEO Insights', 'vulopilot'),
+			desc: __(
+				'Per-post AI scoring for AI-search-engine discoverability — entity coverage, question coverage, answer completeness, LLM readability, and AI suggestions. The deterministic GEO findings table stays free; this AI-scored card is Pro.',
+				'vulopilot'
+			),
+			proModule: true,
+			category: ['premium'],
+			miniModule: true,
 		},
 	],
 };

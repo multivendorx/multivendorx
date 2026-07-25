@@ -1,6 +1,7 @@
 /* global appLocalizer */
 import React from 'react';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { getApiLink, sendApiResponse } from '@zyra/core';
 import {
 	CardComponent,
@@ -17,6 +18,14 @@ export interface Finding extends TableRow {
 	category: string;
 	status: 'open' | 'resolved' | 'ignored' | 'snoozed';
 	created_at: string;
+	/**
+	 * Which AI action can fix this finding, e.g. 'generate-alt' — null/
+	 * undefined when this finding's scanner has no mapped fix, or when
+	 * vulopilot-pro's OneClickFix module isn't active (in which case this
+	 * field is never added to the response at all). See
+	 * VuloPilotPro\OneClickFix\ScannerFixMap.
+	 */
+	fix_action_id?: string | null;
 }
 
 interface FindingsTableProps {
@@ -37,12 +46,26 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 	description,
 	category,
 }) => {
-	const { data, total, isLoading, error, refetch } = useApiList<Finding>(
+	/** Every finding status, in display order — reused for both the status-count pill bar and (previously) the status dropdown filter it now replaces. */
+	const statusOptions = [
+		{ label: __('Open', 'vulopilot'), value: 'open' },
+		{ label: __('Resolved', 'vulopilot'), value: 'resolved' },
+		{ label: __('Ignored', 'vulopilot'), value: 'ignored' },
+		{ label: __('Snoozed', 'vulopilot'), value: 'snoozed' },
+	];
+
+	const {
+		data,
+		total,
+		categoryCounts,
+		isLoading,
+		error,
+		refetch,
+		onQueryUpdate,
+	} = useApiList<Finding>(
 		'findings',
-		{
-			category,
-			per_page: 10,
-		}
+		{ category },
+		{ key: 'status', options: statusOptions }
 	);
 
 	const handleSetStatus = (
@@ -63,7 +86,7 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 				NoticeManager.add({
 					uniqueKey: `finding-${status}-${row.id}`,
 					type: 'success',
-					position: 'notice',
+					position: 'float',
 					message: successMessage,
 				});
 				refetch();
@@ -71,7 +94,7 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 				NoticeManager.add({
 					uniqueKey: `finding-${status}-failed-${row.id}`,
 					type: 'error',
-					position: 'notice',
+					position: 'float',
 					message: __(
 						'Could not update this finding. Please try again.',
 						'vulopilot'
@@ -140,7 +163,14 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 		actions: {
 			label: __('Actions', 'vulopilot'),
 			type: 'action',
-			actions: [
+			// vulopilot-pro's OneClickFix module injects a "Fix this" entry
+			// here (vulopilot_finding_actions filter) when it's active —
+			// Free has no AI-action-to-scanner mapping of its own and
+			// doesn't render one by default, matching the "register a
+			// source, don't modify the host" pattern this codebase already
+			// uses for vulopilot_reports_advanced_panel/
+			// vulopilot_pro_dashboard_component.
+			actions: applyFilters('vulopilot_finding_actions', [
 				{
 					label: (row?: Record<string, unknown>) =>
 						row?.status === 'open'
@@ -162,50 +192,81 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 					icon: 'controls-repeat',
 					onClick: handleReopen,
 				},
-			],
+			]) as any[],
 		},
 	};
 
 	return (
-		<TableCard
-			title={title}
-			headers={headers}
-			rows={data}
-			ids={data.map((row) => row.id)}
-			totalRows={total}
-			isLoading={isLoading}
-			emptyMessage={
-				description ||
-				__('No findings here yet — nothing to report.', 'vulopilot')
-			}
-			filters={[
-				{
-					key: 'severity',
-					label: __('Severity', 'vulopilot'),
-					type: 'select',
-					size: 10,
-					options: [
-						{ label: __('Critical', 'vulopilot'), value: 'critical' },
-						{ label: __('High', 'vulopilot'), value: 'high' },
-						{ label: __('Medium', 'vulopilot'), value: 'medium' },
-						{ label: __('Low', 'vulopilot'), value: 'low' },
-						{ label: __('Info', 'vulopilot'), value: 'info' },
-					],
-				},
-				{
-					key: 'status',
-					label: __('Status', 'vulopilot'),
-					type: 'select',
-					size: 10,
-					options: [
-						{ label: __('Open', 'vulopilot'), value: 'open' },
-						{ label: __('Resolved', 'vulopilot'), value: 'resolved' },
-						{ label: __('Ignored', 'vulopilot'), value: 'ignored' },
-						{ label: __('Snoozed', 'vulopilot'), value: 'snoozed' },
-					],
-				},
-			]}
-		/>
+		<>
+			<TableCard
+				headers={headers}
+				rows={data}
+				ids={data.map((row) => row.id)}
+				totalRows={total}
+				categoryCounts={categoryCounts}
+				isLoading={isLoading}
+				onQueryUpdate={onQueryUpdate}
+				search={{
+					placeholder: __('Search findings…', 'vulopilot'),
+				}}
+				bulkActions={[
+					{
+						label: __('Mark resolved', 'vulopilot'),
+						value: 'resolved',
+					},
+					{ label: __('Ignore', 'vulopilot'), value: 'ignored' },
+				]}
+				onBulkActionApply={(action: string, ids: number[]) => {
+					sendApiResponse(
+						appLocalizer,
+						getApiLink(appLocalizer, 'findings/bulk'),
+						{ ids, status: action }
+					).then((response: unknown) => {
+						if (response) {
+							NoticeManager.add({
+								uniqueKey: 'findings-bulk-update',
+								type: 'success',
+								position: 'float',
+								message: __(
+									'Selected findings updated.',
+									'vulopilot'
+								),
+							});
+							refetch();
+						} else {
+							NoticeManager.add({
+								uniqueKey: 'findings-bulk-update-failed',
+								type: 'error',
+								position: 'float',
+								message: __(
+									'Could not update the selected findings. Please try again.',
+									'vulopilot'
+								),
+							});
+						}
+					});
+				}}
+				emptyMessage={
+					description ||
+					__('No findings here yet — nothing to report.', 'vulopilot')
+				}
+				filters={[
+					{
+						key: 'severity',
+						label: __('Severity', 'vulopilot'),
+						type: 'select',
+						size: 10,
+						options: [
+							{ label: __('Critical', 'vulopilot'), value: 'critical' },
+							{ label: __('High', 'vulopilot'), value: 'high' },
+							{ label: __('Medium', 'vulopilot'), value: 'medium' },
+							{ label: __('Low', 'vulopilot'), value: 'low' },
+							{ label: __('Info', 'vulopilot'), value: 'info' },
+						],
+					},
+				]}
+			/>
+		</>
 	);
 };
 

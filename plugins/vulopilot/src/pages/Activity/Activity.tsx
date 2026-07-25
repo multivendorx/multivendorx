@@ -1,13 +1,7 @@
 import { __ } from '@wordpress/i18n';
-import {
-	CardComponent,
-	ColumnComponent,
-	ContainerComponent,
-	ModuleGuardComponent,
-	NavigatorHeaderComponent,
-} from '@zyra/components';
 import { TableCard, TableRow } from '@zyra/table';
 import { useApiList } from '../../services/useApiList';
+import TablePage from '../../components/TablePage/TablePage';
 
 interface ActivityLogRow extends TableRow {
 	id: number;
@@ -19,110 +13,79 @@ interface ActivityLogRow extends TableRow {
 }
 
 const Activity = () => {
-	const { data, total, isLoading, error, refetch } =
-		useApiList<ActivityLogRow>('activity-logs', { per_page: 20 });
+	const actorTypeOptions = [
+		{ label: __('User', 'vulopilot'), value: 'user' },
+		{ label: __('System', 'vulopilot'), value: 'system' },
+		{ label: __('Automation', 'vulopilot'), value: 'automation' },
+	];
 
-	const pageHeader = (
-		<NavigatorHeaderComponent
+	const {
+		data,
+		total,
+		categoryCounts,
+		isLoading,
+		error,
+		refetch,
+		onQueryUpdate,
+	} = useApiList<ActivityLogRow>(
+		'activity-logs',
+		{},
+		{ key: 'actor_type', options: actorTypeOptions }
+	);
+
+	return (
+		<TablePage
 			headerIcon="clock"
 			headerTitle={__('Activity', 'vulopilot')}
 			headerDescription={__(
 				'Every action VuloPilot has taken or logged, across scans, automations, and AI actions.',
 				'vulopilot'
 			)}
-		/>
-	);
-
-	if (error) {
-		return (
-			<>
-				{pageHeader}
-				<ContainerComponent general>
-					<ColumnComponent>
-						<CardComponent title={__('Activity', 'vulopilot')}>
-							<ModuleGuardComponent
-								icon="warning"
-								title={__(
-									'Could not load the activity log',
-									'vulopilot'
-								)}
-								desc={error}
-								buttonText={__('Retry', 'vulopilot')}
-								onButtonClick={refetch}
-							/>
-						</CardComponent>
-					</ColumnComponent>
-				</ContainerComponent>
-			</>
-		);
-	}
-
-	return (
-		<>
-			{pageHeader}
-			<ContainerComponent general>
-				<ColumnComponent>
-					<TableCard
-						title={__('Activity', 'vulopilot')}
-						headers={{
-							event_type: {
-								label: __('Event', 'vulopilot'),
-								isSortable: true,
-							},
-							message: {
-								label: __('Details', 'vulopilot'),
-							},
-							actor_type: {
-								label: __('Actor', 'vulopilot'),
-							},
-							severity: {
-								label: __('Severity', 'vulopilot'),
-								type: 'badge',
-								statusClass: (row: ActivityLogRow) =>
-									`severity-${row.severity}`,
-							},
-							created_at: {
-								label: __('When', 'vulopilot'),
-								type: 'date',
-								isSortable: true,
-								defaultSort: true,
-								defaultOrder: 'desc',
-							},
-						}}
-						rows={data}
-						ids={data.map((row) => row.id)}
-						totalRows={total}
-						isLoading={isLoading}
-						emptyMessage={__(
-							'Nothing has happened yet — actions across VuloPilot will show up here.',
-							'vulopilot'
-						)}
-						filters={[
-							{
-								key: 'actor_type',
-								label: __('Actor', 'vulopilot'),
-								type: 'select',
-								size: 10,
-								options: [
-									{
-										label: __('User', 'vulopilot'),
-										value: 'user',
-									},
-									{
-										label: __('System', 'vulopilot'),
-										value: 'system',
-									},
-									{
-										label: __('Automation', 'vulopilot'),
-										value: 'automation',
-									},
-								],
-							},
-						]}
-					/>
-				</ColumnComponent>
-			</ContainerComponent>
-		</>
+			error={error}
+			onRetry={refetch}
+			errorTitle={__('Could not load the activity log', 'vulopilot')}
+		>
+			<TableCard
+				search={{
+					placeholder: __('Search activity…', 'vulopilot'),
+				}}
+				headers={{
+					event_type: {
+						label: __('Event', 'vulopilot'),
+						isSortable: true,
+					},
+					message: {
+						label: __('Details', 'vulopilot'),
+					},
+					actor_type: {
+						label: __('Actor', 'vulopilot'),
+					},
+					severity: {
+						label: __('Severity', 'vulopilot'),
+						type: 'badge',
+						statusClass: (row: ActivityLogRow) =>
+							`severity-${row.severity}`,
+					},
+					created_at: {
+						label: __('When', 'vulopilot'),
+						type: 'date',
+						isSortable: true,
+						defaultSort: true,
+						defaultOrder: 'desc',
+					},
+				}}
+				rows={data}
+				ids={data.map((row) => row.id)}
+				totalRows={total}
+				categoryCounts={categoryCounts}
+				isLoading={isLoading}
+				onQueryUpdate={onQueryUpdate}
+				emptyMessage={__(
+					'Nothing has happened yet — actions across VuloPilot will show up here.',
+					'vulopilot'
+				)}
+			/>
+		</TablePage>
 	);
 };
 

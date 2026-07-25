@@ -7,11 +7,12 @@
 
 namespace VuloPilot\AIActions\Actions;
 
-use VuloPilotCore\Exceptions\InvalidActionInputException;
-use VuloPilotCore\Exceptions\InvalidActionOutputException;
-use VuloPilotCore\ValueObjects\ActionExecutionResult;
-use VuloPilotCore\ValueObjects\ActionPreview;
-use VuloPilotCore\ValueObjects\AIResponse;
+
+use VuloPilot\Exceptions\InvalidActionInputException;
+use VuloPilot\Exceptions\InvalidActionOutputException;
+use VuloPilot\ValueObjects\ActionExecutionResult;
+use VuloPilot\ValueObjects\ActionPreview;
+use VuloPilot\ValueObjects\AIResponse;
 
 defined( 'ABSPATH' ) || exit;
 

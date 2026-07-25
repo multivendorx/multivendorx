@@ -96,7 +96,7 @@ class Scans extends \WP_REST_Controller {
 
         $failed = array_filter(
             $results,
-            static fn( $result ) => null === $result || \VuloPilotCore\ValueObjects\ScanResult::STATUS_FAILED === $result->get_status()
+            static fn( $result ) => null === $result || \VuloPilot\ValueObjects\ScanResult::STATUS_FAILED === $result->get_status()
         );
 
         if ( count( $failed ) === count( $results ) && count( $results ) > 0 ) {

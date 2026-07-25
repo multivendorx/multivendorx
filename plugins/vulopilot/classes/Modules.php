@@ -176,6 +176,8 @@ class Modules {
         $validated_active = array();
 
         foreach ( $active_modules as $module_id ) {
+            $resolved = false;
+
             foreach ( $all_modules as $key => $module ) {
                 if ( empty( $module['id'] ) || $module['id'] !== $module_id ) {
                     continue;
@@ -196,9 +198,13 @@ class Modules {
                 }
 
                 do_action( "vulopilot_activated_module_{$module_id}", $this->container[ $key ] );
+
+                $resolved = true;
             }
 
-            $validated_active[] = $module_id;
+            if ( $resolved ) {
+                $validated_active[] = $module_id;
+            }
         }
 
         if ( $validated_active !== $active_modules ) {

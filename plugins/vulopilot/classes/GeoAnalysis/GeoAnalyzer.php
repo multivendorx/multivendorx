@@ -7,8 +7,8 @@
 
 namespace VuloPilot\GeoAnalysis;
 
-use VuloPilotCore\ValueObjects\GeoScore;
 use VuloPilot\AIProviders\Support\SafeRequestSender;
+use VuloPilot\ValueObjects\GeoScore;
 use VuloPilot\Repositories\FindingRepository;
 
 defined( 'ABSPATH' ) || exit;
@@ -204,12 +204,12 @@ class GeoAnalyzer {
     }
 
     /**
-     * @param \VuloPilotCore\ValueObjects\AIResponse $response Raw AI response.
+     * @param \VuloPilot\ValueObjects\AIResponse $response Raw AI response.
      * @return array{ai_scores: array{entity_coverage: int, question_coverage: int, answer_completeness: int, llm_readability: int}, suggestions: string[]}
      *
      * @throws \RuntimeException If the response isn't usable JSON in the expected shape.
      */
-    private function parse_response( \VuloPilotCore\ValueObjects\AIResponse $response ): array {
+    private function parse_response( \VuloPilot\ValueObjects\AIResponse $response ): array {
         $content = preg_replace( '/^```(?:json)?\s*|\s*```$/', '', trim( $response->get_content() ) );
         $decoded = json_decode( trim( (string) $content ), true );
 
