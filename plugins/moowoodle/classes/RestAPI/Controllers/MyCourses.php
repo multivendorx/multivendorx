@@ -69,6 +69,7 @@ class MyCourses extends \WP_REST_Controller {
             $per_page = max( 1, intval( $request->get_param( 'row' ) ?? 10 ) );
             $page     = max( 1, intval( $request->get_param( 'page' ) ?? 1 ) );
             $offset   = ( $page - 1 ) * $per_page;
+            $status = sanitize_text_field( $request->get_param( 'status' ) );
 
             // Allow pre-filtering by custom filters.
             $user_courses_details = apply_filters( 'moowoodle_user_courses_cohorts_groups_data', null, $request );
@@ -78,8 +79,11 @@ class MyCourses extends \WP_REST_Controller {
 
             $enrollment_query_args = array(
                 'user_id' => MooWoodle()->current_user_id,
-                'status'  => 'enrolled',
             );
+
+            if ( ! empty( $status ) ) {
+                $enrollment_query_args['status'] = $status;
+            }
 
             // Fetch paginated enrollments.
             $user_enrollments = MooWoodle()->enrollment->get_enrollments(
@@ -99,6 +103,29 @@ class MyCourses extends \WP_REST_Controller {
                 )
             );
             $response         = rest_ensure_response( array() );
+
+            $statuses = array( 'enrolled', 'expired', 'unenrolled' );
+
+            $status_counts = array();
+            $total         = 0;
+
+            foreach ( $statuses as $status ) {
+                $status_counts[ $status ] = MooWoodle()->enrollment->get_enrollments(
+                    array(
+                        'user_id' => MooWoodle()->current_user_id,
+                        'status'  => $status,
+                        'count'   => true,
+                    )
+                );
+
+                $total += $status_counts[ $status ];
+            }
+
+            $response->header( 'X-WP-Total', $total );
+            $response->header( 'X-WP-Enrolled', $status_counts['enrolled'] );
+            $response->header( 'X-WP-Expired', $status_counts['expired'] );
+            $response->header( 'X-WP-Unenrolled', $status_counts['unenrolled'] );
+
             if ( empty( $user_enrollments ) ) {
                 return $response;
             }
@@ -141,19 +168,9 @@ class MyCourses extends \WP_REST_Controller {
                 );
             }
 
-            $total_user_enrollments = MooWoodle()->enrollment->get_enrollments(
-                array_merge(
-                    $enrollment_query_args,
-                    array(
-                        'count' => true,
-                    )
-                )
-            );
-
             $response->set_data( $courses );
-            $response->header( 'X-WP-Total', $total_user_enrollments );
-
             return $response;
+
         } catch ( \Exception $e ) {
             return Util::server_error( $e );
         }
