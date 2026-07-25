@@ -17,7 +17,10 @@ interface ReportRow {
  * source) — same reasoning as RecentActivityWidget for using a plain list
  * instead of TableCard at this size.
  */
-const LatestReportsWidget: React.FC<WidgetProps> = ({ onHide }) => {
+const LatestReportsWidget: React.FC<WidgetProps> = ({
+	onHide,
+	isCustomizing,
+}) => {
 	const { data, isLoading, error, refetch } = useApiList<ReportRow>(
 		'reports',
 		{ per_page: 5 }
@@ -29,6 +32,7 @@ const LatestReportsWidget: React.FC<WidgetProps> = ({ onHide }) => {
 			icon="report"
 			isLoading={isLoading}
 			onHide={onHide}
+			isCustomizing={isCustomizing}
 		>
 			{error ? (
 				<ModuleGuardComponent

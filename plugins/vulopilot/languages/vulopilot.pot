@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-24T06:32:11+00:00\n"
+"POT-Creation-Date: 2026-07-24T13:14:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vulopilot\n"
@@ -38,58 +38,62 @@ msgstr ""
 msgid "https://multivendorx.com/"
 msgstr ""
 
-#: classes/Admin.php:61
+#: classes/Admin.php:65
+msgid "PRO"
+msgstr ""
+
+#: classes/Admin.php:71
 #: assets/js/index.js:1
 msgid "Dashboard"
 msgstr ""
 
-#: classes/Admin.php:65
+#: classes/Admin.php:75
 msgid "Health"
 msgstr ""
 
-#: classes/Admin.php:69
+#: classes/Admin.php:79
 #: classes/Scanners/Basic/SeoScanner.php:44
 #: assets/js/index.js:1
 msgid "SEO"
 msgstr ""
 
-#: classes/Admin.php:73
+#: classes/Admin.php:83
 #: assets/js/index.js:1
 msgid "GEO"
 msgstr ""
 
-#: classes/Admin.php:77
+#: classes/Admin.php:87
 #: classes/Scanners/Basic/WooCommerceScanner.php:41
 #: assets/js/index.js:1
 msgid "WooCommerce"
 msgstr ""
 
-#: classes/Admin.php:81
+#: classes/Admin.php:91
 #: assets/js/index.js:1
 msgid "Automation"
 msgstr ""
 
-#: classes/Admin.php:85
+#: classes/Admin.php:95
 #: assets/js/index.js:1
 msgid "Reports"
 msgstr ""
 
-#: classes/Admin.php:89
+#: classes/Admin.php:99
 #: assets/js/index.js:1
 msgid "AI Assistant"
 msgstr ""
 
-#: classes/Admin.php:93
+#: classes/Admin.php:103
 #: assets/js/index.js:1
 msgid "Activity"
 msgstr ""
 
-#: classes/Admin.php:97
+#: classes/Admin.php:107
 #: assets/js/index.js:1
 msgid "Modules"
 msgstr ""
 
-#: classes/Admin.php:101
+#: classes/Admin.php:111
 #: assets/js/index.js:1
 msgid "Settings"
 msgstr ""
@@ -162,6 +166,7 @@ msgstr ""
 #: classes/AIActions/Actions/GenerateSummaryBlockAction.php:60
 #: classes/AIActions/Actions/ImproveReadabilityAction.php:64
 #: classes/AIActions/Actions/WriteMetaDescriptionAction.php:64
+#: classes/AIActions/Actions/WriteMetaTitleAction.php:66
 msgid "post_id must refer to an existing post or page."
 msgstr ""
 
@@ -192,6 +197,8 @@ msgid "Generate structured data (JSON-LD)"
 msgstr ""
 
 #: classes/AIActions/Actions/GenerateSchemaAction.php:64
+#: classes/AIActions/Actions/GenerateSocialContentAction.php:59
+#: classes/AIActions/Actions/SuggestInternalLinksAction.php:66
 #: classes/GeoAnalysis/GeoAnalyzer.php:86
 msgid "post_id must refer to a published post or page."
 msgstr ""
@@ -202,6 +209,24 @@ msgstr ""
 
 #: classes/AIActions/Actions/GenerateSchemaAction.php:126
 msgid "Add structured data to this page"
+msgstr ""
+
+#: classes/AIActions/Actions/GenerateSocialContentAction.php:48
+msgid "Generate social media content"
+msgstr ""
+
+#: classes/AIActions/Actions/GenerateSocialContentAction.php:114
+msgid "The AI did not return any caption variants."
+msgstr ""
+
+#: classes/AIActions/Actions/GenerateSocialContentAction.php:119
+msgid "The AI returned an empty caption variant."
+msgstr ""
+
+#. translators: %d is the number of caption variants generated.
+#: classes/AIActions/Actions/GenerateSocialContentAction.php:133
+#, php-format
+msgid "Save %d social caption variant(s) for this page"
 msgstr ""
 
 #: classes/AIActions/Actions/GenerateSummaryBlockAction.php:49
@@ -249,6 +274,36 @@ msgstr ""
 msgid "Rewrite content for readability"
 msgstr ""
 
+#: classes/AIActions/Actions/SuggestInternalLinksAction.php:55
+msgid "Suggest internal links"
+msgstr ""
+
+#: classes/AIActions/Actions/SuggestInternalLinksAction.php:72
+msgid "No other published posts share a category or tag with this one to link to."
+msgstr ""
+
+#: classes/AIActions/Actions/SuggestInternalLinksAction.php:196
+msgid "The AI did not return any link suggestions."
+msgstr ""
+
+#: classes/AIActions/Actions/SuggestInternalLinksAction.php:203
+msgid "The AI returned an incomplete link suggestion."
+msgstr ""
+
+#: classes/AIActions/Actions/SuggestInternalLinksAction.php:207
+msgid "The AI suggested a URL that was not in the candidate list."
+msgstr ""
+
+#. translators: %d is the number of suggested internal links.
+#: classes/AIActions/Actions/SuggestInternalLinksAction.php:221
+#, php-format
+msgid "Add %d related-reading links to this page"
+msgstr ""
+
+#: classes/AIActions/Actions/SuggestInternalLinksAction.php:275
+msgid "Related reading"
+msgstr ""
+
 #: classes/AIActions/Actions/WriteMetaDescriptionAction.php:53
 msgid "Write meta description"
 msgstr ""
@@ -265,6 +320,22 @@ msgstr ""
 #: classes/AIActions/Actions/WriteMetaDescriptionAction.php:133
 #, php-format
 msgid "Set meta description for %s"
+msgstr ""
+
+#: classes/AIActions/Actions/WriteMetaTitleAction.php:55
+msgid "Write meta title"
+msgstr ""
+
+#: classes/AIActions/Actions/WriteMetaTitleAction.php:116
+msgid "The AI returned an empty title."
+msgstr ""
+
+#: classes/AIActions/Actions/WriteMetaTitleAction.php:120
+msgid "The AI returned a title that is too long."
+msgstr ""
+
+#: classes/AIActions/Actions/WriteMetaTitleAction.php:129
+msgid "Rewrite page title"
 msgstr ""
 
 #. translators: 1: provider id, 2: requests-per-minute limit.
@@ -330,32 +401,7 @@ msgid "Period"
 msgstr ""
 
 #: classes/Reports/Exporters/CsvExporter.php:51
-#: classes/Reports/Exporters/PdfExporter.php:68
 msgid "Summary"
-msgstr ""
-
-#: classes/Reports/Exporters/PdfExporter.php:75
-msgid "Trend vs. previous period"
-msgstr ""
-
-#: classes/Reports/Exporters/PdfExporter.php:76
-msgid "Metric"
-msgstr ""
-
-#: classes/Reports/Exporters/PdfExporter.php:76
-msgid "Current"
-msgstr ""
-
-#: classes/Reports/Exporters/PdfExporter.php:77
-msgid "Previous"
-msgstr ""
-
-#: classes/Reports/Exporters/PdfExporter.php:77
-msgid "Change"
-msgstr ""
-
-#: classes/Reports/Exporters/PdfExporter.php:103
-msgid "No data for this period."
 msgstr ""
 
 #: classes/Reports/Types/AccessibilityReport.php:32
@@ -390,6 +436,23 @@ msgstr ""
 msgid "Deleted automation"
 msgstr ""
 
+#: classes/RestAPI/Controllers/Automations.php:126
+msgid "Invalid automation status."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Automations.php:132
+#: classes/RestAPI/Controllers/Automations.php:155
+msgid "Automation not found."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Automations.php:136
+msgid "Could not update this automation."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Automations.php:160
+msgid "Manually running an automation isn't supported yet — automations currently only fire from their own configured trigger."
+msgstr ""
+
 #: classes/RestAPI/Controllers/DashboardLayout.php:90
 msgid "A widget layout array is required."
 msgstr ""
@@ -398,43 +461,47 @@ msgstr ""
 msgid "No valid widgets in the submitted layout."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Findings.php:92
+#: classes/RestAPI/Controllers/Findings.php:105
 msgid "Invalid severity filter."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Findings.php:126
+#: classes/RestAPI/Controllers/Findings.php:142
 msgid "Invalid finding status."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Findings.php:132
+#: classes/RestAPI/Controllers/Findings.php:148
 msgid "Finding not found."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Findings.php:144
+#: classes/RestAPI/Controllers/Findings.php:160
 msgid "Could not update this finding."
 msgstr ""
 
-#: classes/RestAPI/Controllers/GeoAnalysis.php:75
-msgid "No GEO analysis has been generated for this post yet."
+#: classes/RestAPI/Controllers/Findings.php:184
+msgid "Invalid bulk finding status."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Reports.php:159
+#: classes/RestAPI/Controllers/Findings.php:188
+msgid "No findings selected."
+msgstr ""
+
+#: classes/RestAPI/Controllers/Reports.php:174
 msgid "Unknown report format."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Reports.php:163
+#: classes/RestAPI/Controllers/Reports.php:178
 msgid "Unknown report type."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Reports.php:207
+#: classes/RestAPI/Controllers/Reports.php:222
 msgid "Report not found."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Reports.php:211
+#: classes/RestAPI/Controllers/Reports.php:226
 msgid "This report is not ready to download yet."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Reports.php:217
+#: classes/RestAPI/Controllers/Reports.php:232
 msgid "This report's file could not be found on disk."
 msgstr ""
 
@@ -742,6 +809,20 @@ msgstr ""
 msgid "Most themes already render the title as the page's <h1>. A second <h1> in the content creates a conflicting heading hierarchy for screen readers."
 msgstr ""
 
+#: classes/Scanners/Basic/AriaAttributesScanner.php:46
+msgid "ARIA Attributes"
+msgstr ""
+
+#. translators: 1: number of elements missing a role attribute, 2: the post/page title.
+#: classes/Scanners/Basic/AriaAttributesScanner.php:81
+#, php-format
+msgid "%1$d interactive element(s) missing a role attribute: %2$s"
+msgstr ""
+
+#: classes/Scanners/Basic/AriaAttributesScanner.php:87
+msgid "A <div> or <span> with a click handler but no role attribute is invisible to screen readers as an interactive element."
+msgstr ""
+
 #: classes/Scanners/Basic/BrokenLinksScanner.php:52
 msgid "Broken Links"
 msgstr ""
@@ -756,6 +837,18 @@ msgstr ""
 #: classes/Scanners/Basic/BrokenLinksScanner.php:86
 #, php-format
 msgid "Request failed with: %s"
+msgstr ""
+
+#: classes/Scanners/Basic/CacheDetectionScanner.php:54
+msgid "Cache Issues"
+msgstr ""
+
+#: classes/Scanners/Basic/CacheDetectionScanner.php:74
+msgid "No caching detected"
+msgstr ""
+
+#: classes/Scanners/Basic/CacheDetectionScanner.php:77
+msgid "No known caching plugin is active and the homepage response has no caching headers. A caching layer significantly reduces load time and server load."
 msgstr ""
 
 #: classes/Scanners/Basic/CanonicalUrlScanner.php:50
@@ -814,6 +907,20 @@ msgstr ""
 
 #: classes/Scanners/Basic/DuplicateContentScanner.php:107
 msgid "Multiple published posts share this exact title, which can split search ranking signal between them or confuse which one search engines show."
+msgstr ""
+
+#: classes/Scanners/Basic/FormLabelsScanner.php:44
+msgid "Form Labels"
+msgstr ""
+
+#. translators: 1: number of unlabeled form fields, 2: the post/page title.
+#: classes/Scanners/Basic/FormLabelsScanner.php:79
+#, php-format
+msgid "%1$d unlabeled form field(s): %2$s"
+msgstr ""
+
+#: classes/Scanners/Basic/FormLabelsScanner.php:85
+msgid "Every <input>/<textarea>/<select> needs an associated <label>, aria-label, or aria-labelledby so screen reader users know what it is for."
 msgstr ""
 
 #: classes/Scanners/Basic/GeoAuthorInfoScanner.php:43
@@ -950,6 +1057,20 @@ msgstr ""
 msgid "Breaking long content into sections with subheadings makes it easier for readers to scan and for search engines to understand its structure."
 msgstr ""
 
+#: classes/Scanners/Basic/HeavyPluginsScanner.php:45
+msgid "Heavy Plugins"
+msgstr ""
+
+#. translators: %d is the number of active plugins.
+#: classes/Scanners/Basic/HeavyPluginsScanner.php:70
+#, php-format
+msgid "%d active plugins"
+msgstr ""
+
+#: classes/Scanners/Basic/HeavyPluginsScanner.php:75
+msgid "A large number of active plugins increases the odds of conflicts and can slow down every admin and frontend request."
+msgstr ""
+
 #: classes/Scanners/Basic/ImagesScanner.php:44
 msgid "Images"
 msgstr ""
@@ -978,6 +1099,20 @@ msgstr ""
 msgid "Linking to other pages on this site helps search engines discover and rank content, and helps readers find related pages."
 msgstr ""
 
+#: classes/Scanners/Basic/LargeImagesScanner.php:48
+msgid "Large Images"
+msgstr ""
+
+#. translators: 1: image filename, 2: formatted file size, e.g. "1.4 MB".
+#: classes/Scanners/Basic/LargeImagesScanner.php:91
+#, php-format
+msgid "Large image: %1$s (%2$s)"
+msgstr ""
+
+#: classes/Scanners/Basic/LargeImagesScanner.php:97
+msgid "Large images slow down page loads, especially on mobile connections — consider compressing or resizing."
+msgstr ""
+
 #: classes/Scanners/Basic/MetaDescriptionScanner.php:46
 msgid "Meta Descriptions"
 msgstr ""
@@ -990,6 +1125,20 @@ msgstr ""
 
 #: classes/Scanners/Basic/MetaDescriptionScanner.php:84
 msgid "This post has no excerpt set. Most themes and SEO plugins fall back to the excerpt for the search-result description when no dedicated description is configured."
+msgstr ""
+
+#: classes/Scanners/Basic/NotFoundScanner.php:42
+msgid "404 Detection"
+msgstr ""
+
+#. translators: %s is the post/page title.
+#: classes/Scanners/Basic/NotFoundScanner.php:89
+#, php-format
+msgid "Published content returns a 404: %s"
+msgstr ""
+
+#: classes/Scanners/Basic/NotFoundScanner.php:94
+msgid "This page is published but its own URL does not resolve — often caused by a permalink structure or rewrite rule change."
 msgstr ""
 
 #: classes/Scanners/Basic/OpenGraphScanner.php:45
@@ -1033,6 +1182,20 @@ msgstr ""
 
 #: classes/Scanners/Basic/PerformanceScanner.php:78
 msgid "Autoloaded options are loaded into memory on every page request. A large autoload footprint slows down every request site-wide."
+msgstr ""
+
+#: classes/Scanners/Basic/PhpWarningScanner.php:46
+msgid "PHP Warning Detection"
+msgstr ""
+
+#. translators: 1: PHP error level (Warning, Notice, etc.), 2: the error message.
+#: classes/Scanners/Basic/PhpWarningScanner.php:88
+#, php-format
+msgid "PHP %1$s: %2$s"
+msgstr ""
+
+#: classes/Scanners/Basic/PhpWarningScanner.php:94
+msgid "Found in this site's own debug.log. Recurring warnings can indicate a plugin/theme compatibility issue."
 msgstr ""
 
 #: classes/Scanners/Basic/PluginsScanner.php:40
@@ -1239,6 +1402,24 @@ msgstr ""
 msgid "This SKU is shared by %d products, which breaks inventory tracking and any integration that relies on SKU uniqueness."
 msgstr ""
 
+#: classes/Scanners/Basic/RedirectAnalysisScanner.php:56
+msgid "Redirect Analysis"
+msgstr ""
+
+#: classes/Scanners/Basic/RedirectAnalysisScanner.php:109
+msgid "Homepage redirect did not resolve within the checked hop limit"
+msgstr ""
+
+#. translators: %d is the number of redirect hops.
+#: classes/Scanners/Basic/RedirectAnalysisScanner.php:112
+#, php-format
+msgid "Homepage redirects through %d hops before resolving"
+msgstr ""
+
+#: classes/Scanners/Basic/RedirectAnalysisScanner.php:117
+msgid "Long or looping redirect chains slow down every visit and hurt search engine crawling."
+msgstr ""
+
 #: classes/Scanners/Basic/RobotsTxtScanner.php:46
 msgid "Robots.txt"
 msgstr ""
@@ -1313,6 +1494,54 @@ msgstr ""
 
 #: classes/Scanners/Basic/SitemapScanner.php:69
 msgid "Neither /wp-sitemap.xml nor /sitemap.xml returned a successful response. A sitemap helps search engines discover and crawl every page on the site."
+msgstr ""
+
+#: classes/Scanners/Basic/SlowPageScanner.php:46
+msgid "Slow Pages"
+msgstr ""
+
+#. translators: %s is the response time in seconds, e.g. "3.42".
+#: classes/Scanners/Basic/SlowPageScanner.php:82
+#, php-format
+msgid "Homepage took %ss to respond"
+msgstr ""
+
+#: classes/Scanners/Basic/SlowPageScanner.php:87
+msgid "A slow homepage response affects every visit and is one of the biggest levers on perceived site speed."
+msgstr ""
+
+#: classes/Scanners/Basic/SslMonitoringScanner.php:51
+msgid "SSL Monitoring"
+msgstr ""
+
+#: classes/Scanners/Basic/SslMonitoringScanner.php:70
+msgid "Site is not served over HTTPS"
+msgstr ""
+
+#: classes/Scanners/Basic/SslMonitoringScanner.php:73
+msgid "Serving the site without SSL/TLS exposes visitor data in transit and is penalized by most search engines."
+msgstr ""
+
+#. translators: %s is the date the certificate expired.
+#: classes/Scanners/Basic/SslMonitoringScanner.php:157
+#, php-format
+msgid "SSL certificate expired on %s"
+msgstr ""
+
+#: classes/Scanners/Basic/SslMonitoringScanner.php:162
+msgid "Visitors and browsers will show a security warning until the certificate is renewed."
+msgstr ""
+
+#. translators: %s is the date the certificate expires.
+#: classes/Scanners/Basic/SslMonitoringScanner.php:178
+#, php-format
+msgid "SSL certificate expires soon: %s"
+msgstr ""
+
+#. translators: %d is the number of days remaining.
+#: classes/Scanners/Basic/SslMonitoringScanner.php:185
+#, php-format
+msgid "This certificate expires in %d day(s). Renew it before then to avoid a browser security warning."
 msgstr ""
 
 #: classes/Scanners/Basic/StructuredDataValidationScanner.php:44
@@ -1473,6 +1702,14 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Adds a \"Fix this\" action to findings that have a matching AI action (missing alt text, thin content, missing meta description, and more) — proposes the fix with one click; approving it still goes through the same Dashboard review every AI action requires."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "GEO Insights"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Per-post AI scoring for AI-search-engine discoverability — entity coverage, question coverage, answer completeness, LLM readability, and AI suggestions. The deterministic GEO findings table stays free; this AI-scored card is Pro."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -1704,6 +1941,10 @@ msgid "Something went wrong while loading this data."
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "All"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Overall health"
 msgstr ""
 
@@ -1769,10 +2010,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Health timeline"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Could not load the health timeline"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -1862,6 +2099,22 @@ msgid "Hidden widgets:"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Open"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Resolved"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Ignored"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Snoozed"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Could not update this finding. Please try again."
 msgstr ""
 
@@ -1898,15 +2151,7 @@ msgid "Mark resolved"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Resolved"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Finding marked as resolved."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Ignored"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -1923,6 +2168,18 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Finding reopened."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Search findings…"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Selected findings updated."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Could not update the selected findings. Please try again."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -1950,96 +2207,6 @@ msgid "Info"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Open"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Snoozed"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "GEO Score"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Score one post for AI-search-engine discoverability and get AI suggestions to improve it."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Post ID"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "The numeric ID of the post or page to analyze."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Load existing score"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Enter a valid post ID."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "No GEO analysis has been generated for this post yet — click \"Generate\" to run one."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Generating…"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Generate GEO score"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "GEO score generated."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Could not generate a GEO score. Make sure an AI provider is configured and try again."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "No score yet"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Overall GEO score"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Entity coverage"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Question coverage"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Answer completeness"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "LLM readability"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Structural checks (Semantic Structure, Chunking, FAQ Opportunities, etc.) haven't run for this site yet — run a scan to include them in the overall score."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "AI suggestions"
-msgstr ""
-
-#. translators: %s is when the score was generated.
-#: assets/js/index.js:1
-#, js-format
-msgid "Generated %s"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "AI Automation Workflows and Scheduled Website Scans — trigger→action rules plus recurring wp-cron scanning, not just on-demand scans."
 msgstr ""
 
@@ -2053,6 +2220,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Adds a \"Fix this\" action to findings that have a matching AI action — propose and approve a fix without leaving the Dashboard."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Per-post AI scoring for AI-search-engine discoverability — entity coverage, question coverage, answer completeness, and AI suggestions."
 msgstr ""
 
 #. translators: %s: Plugin name.
@@ -2100,6 +2271,22 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "What Pro adds"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Could not load this data"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "AI cost & provider breakdown"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "A per-provider cost, token, and success-rate breakdown of the history above."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Unlock with Pro"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -2171,7 +2358,23 @@ msgid "No WooCommerce findings yet — run a scan to check store settings, produ
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Enabled"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Disabled"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "React to scan findings automatically — send emails, resolve findings, or run an AI action."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Search automations…"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Create automation"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -2191,27 +2394,7 @@ msgid "Enable"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Automation enabled."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Automation disabled."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Could not update this automation. Please try again."
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Run now"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Automation ran."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Could not run this automation — it may have no currently-matching recommendation to act on."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -2219,11 +2402,15 @@ msgid "No automations yet — create one to react to scan findings automatically
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Enabled"
+msgid "Generating"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Disabled"
+msgid "Ready"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Failed"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -2267,15 +2454,11 @@ msgid "No reports yet — generate your first compliance report."
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Generating"
+msgid "Success"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Ready"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Failed"
+msgid "Failure"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -2284,6 +2467,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Could not load AI history"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Search AI history…"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -2315,11 +2502,23 @@ msgid "Default"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "User"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "System"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Every action VuloPilot has taken or logged, across scans, automations, and AI actions."
 msgstr ""
 
 #: assets/js/index.js:1
 msgid "Could not load the activity log"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Search activity…"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -2336,14 +2535,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Nothing has happened yet — actions across VuloPilot will show up here."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "User"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "System"
 msgstr ""
 
 #: assets/js/index.js:1

@@ -231,9 +231,6 @@ Unlock advanced AI-powered automation.
 * Security Monitoring
 * Historical Reports
 * Email Notifications
-* Team Management
-* White Label
-* Agency Dashboard
 
 ## Installation ##
 

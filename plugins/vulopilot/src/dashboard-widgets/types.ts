@@ -33,6 +33,8 @@ export interface WidgetProps {
 	isLoading: boolean;
 	/** Removes this widget from the visible grid — DashboardGrid.tsx supplies the real handler, which toggles `enabled: false` in the saved layout. */
 	onHide: () => void;
+	/** Whether Dashboard.tsx's "Customize dashboard" mode is on — forwarded through to DashboardWidget.tsx, which only renders the drag handle/hide button while this is true. */
+	isCustomizing: boolean;
 }
 
 /**

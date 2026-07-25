@@ -1,16 +1,18 @@
 /* global appLocalizer */
 import { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
+import { ButtonInput } from '@zyra/inputs';
 import { getApiLink, getApiResponse, sendApiResponse } from '@zyra/core';
 import {
 	ColumnComponent,
 	ContainerComponent,
 	ModuleGuardComponent,
-	NavigatorHeaderComponent,
 	NoticeManager,
 } from '@zyra/components';
 import DashboardGrid from '../../dashboard-widgets/DashboardGrid';
+import WelcomeSection from './WelcomeSection';
 import { DashboardSummary } from '../../dashboard-widgets/types';
+import './Dashboard.scss';
 
 /**
  * Zero-filled shape so DashboardGrid always has a real DashboardSummary
@@ -38,19 +40,29 @@ const EMPTY_SUMMARY: DashboardSummary = {
 };
 
 /**
- * Uses the same NavigatorHeaderComponent + ContainerComponent +
- * ColumnComponent shape every other page in this plugin now uses (see
- * Health.tsx's own docblock for why) — this page previously hand-rolled
- * its own `.vulopilot-dashboard`/`.dashboard-page-header` markup with a
- * bespoke Dashboard.scss that only ever defined a flex/gap layout, never
- * the padding/card containment the shared components provide, which is
- * exactly what made it look inconsistent with every other tab.
+ * The Welcome section (`WelcomeSection.tsx`) already carries this page's
+ * title/description, so the widget grid's own header is deliberately
+ * buttons-only — no second "Dashboard" title repeating what the welcome
+ * banner already said. It reuses zyra's real `.title-section` class
+ * (the same bordered/padded bar `NavigatorHeaderComponent` itself
+ * renders into, see zyra's `NavigatorComponent.tsx`) rather than a
+ * bespoke wrapper, so it still gets the same chrome every other page's
+ * header has — `NavigatorHeaderComponent` itself can't be reused here
+ * because it early-returns `null` whenever both `headerTitle` and
+ * `headerDescription` are empty, which would silently drop the buttons
+ * too.
  */
 const Dashboard = () => {
 	const [summary, setSummary] = useState<DashboardSummary>(EMPTY_SUMMARY);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [isScanning, setIsScanning] = useState(false);
+	// Local UI state only, never persisted — every fresh page load starts
+	// read-only, so a user can't accidentally drag/hide a widget just by
+	// having left customization mode on last time (DashboardGrid.tsx's
+	// own drag/hide REST calls already persist the *layout*; this only
+	// gates whether those controls are reachable at all).
+	const [isCustomizing, setIsCustomizing] = useState(false);
 
 	const loadDashboard = () => {
 		setIsLoading(true);
@@ -113,23 +125,27 @@ const Dashboard = () => {
 	};
 
 	const pageHeader = (
-		<NavigatorHeaderComponent
-			headerIcon="home"
-			headerTitle={__('Dashboard', 'vulopilot')}
-			headerDescription={__(
-				'Your site\'s overall health, at a glance.',
-				'vulopilot'
-			)}
-			buttons={[
-				{
-					label: isScanning
-						? __('Scanning…', 'vulopilot')
-						: __('Run scan', 'vulopilot'),
-					icon: 'search',
-					onClick: handleRunScan,
-				},
-			]}
-		/>
+		<div className="title-section dashboard-header-actions">
+			<ButtonInput
+				buttons={[
+					{
+						text: isCustomizing
+							? __('Done customizing', 'vulopilot')
+							: __('Customize dashboard', 'vulopilot'),
+						icon: isCustomizing ? 'yes' : 'edit',
+						color: 'border-purple',
+						onClick: () => setIsCustomizing(!isCustomizing),
+					},
+					{
+						text: isScanning
+							? __('Scanning…', 'vulopilot')
+							: __('Run scan', 'vulopilot'),
+						icon: 'search',
+						onClick: handleRunScan,
+					},
+				]}
+			/>
+		</div>
 	);
 
 	if (error) {
@@ -156,10 +172,16 @@ const Dashboard = () => {
 
 	return (
 		<>
+			<WelcomeSection />
+
 			{pageHeader}
 			<ContainerComponent general>
 				<ColumnComponent>
-					<DashboardGrid summary={summary} isLoading={isLoading} />
+					<DashboardGrid
+						summary={summary}
+						isLoading={isLoading}
+						isCustomizing={isCustomizing}
+					/>
 				</ColumnComponent>
 			</ContainerComponent>
 		</>

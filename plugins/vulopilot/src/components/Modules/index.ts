@@ -20,6 +20,14 @@ import { __ } from '@wordpress/i18n';
  * zustand store (ModuleGridComponent) already handles showing these as
  * active/available instead once Pro registers them via
  * `vulopilot_module_sources` — no separate "is this real" flag needed here.
+ *
+ * `miniModule: true` on every real entry (not the separator) is required
+ * for `ModuleGridComponent`'s `variant="mini-module"` — used by the
+ * Dashboard's compact Modules card (`pages/Dashboard/WelcomeSection.tsx`)
+ * — to render anything at all: that variant filters `modulesArray.modules`
+ * down to only `miniModule`-flagged entries, and this plugin's own
+ * standalone Modules page (`Modules.tsx`) doesn't pass `variant`, so it
+ * was never exercised until the Dashboard card needed it.
  */
 export default {
 	category: true,
@@ -39,6 +47,7 @@ export default {
 			),
 			proModule: true,
 			category: ['premium'],
+			miniModule: true,
 		},
 		{
 			id: 'security-monitoring',
@@ -49,6 +58,7 @@ export default {
 			),
 			proModule: true,
 			category: ['premium'],
+			miniModule: true,
 		},
 		{
 			id: 'woo-commerce-ai',
@@ -59,6 +69,7 @@ export default {
 			),
 			proModule: true,
 			category: ['premium'],
+			miniModule: true,
 		},
 		{
 			id: 'advanced-reports',
@@ -69,6 +80,7 @@ export default {
 			),
 			proModule: true,
 			category: ['premium'],
+			miniModule: true,
 		},
 		{
 			id: 'one-click-fix',
@@ -79,6 +91,7 @@ export default {
 			),
 			proModule: true,
 			category: ['premium'],
+			miniModule: true,
 		},
 		{
 			id: 'geo-insights',
@@ -89,6 +102,7 @@ export default {
 			),
 			proModule: true,
 			category: ['premium'],
+			miniModule: true,
 		},
 	],
 };

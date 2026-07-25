@@ -29,7 +29,10 @@ interface HealthSnapshot {
  * meant for (see Controllers/Dashboard.php's docblock on why list-shaped
  * widgets call their own endpoint).
  */
-const HealthTimelineWidget: React.FC<WidgetProps> = ({ onHide }) => {
+const HealthTimelineWidget: React.FC<WidgetProps> = ({
+	onHide,
+	isCustomizing,
+}) => {
 	const {
 		data: snapshots,
 		isLoading,
@@ -50,6 +53,7 @@ const HealthTimelineWidget: React.FC<WidgetProps> = ({ onHide }) => {
 			icon="analytics"
 			isLoading={isLoading}
 			onHide={onHide}
+			isCustomizing={isCustomizing}
 		>
 			{snapshots.length === 0 ? (
 				<ModuleGuardComponent
