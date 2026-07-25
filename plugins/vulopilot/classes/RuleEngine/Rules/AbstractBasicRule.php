@@ -7,8 +7,8 @@
 
 namespace VuloPilot\RuleEngine\Rules;
 
-use VuloPilotCore\Contracts\RuleEngine\RuleInterface;
-use VuloPilotCore\ValueObjects\Impact;
+use VuloPilot\Contracts\RuleEngine\RuleInterface;
+use VuloPilot\ValueObjects\Impact;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -100,10 +100,10 @@ abstract class AbstractBasicRule implements RuleInterface {
     /**
      * @inheritDoc
      */
-    abstract public function applies_to( \VuloPilotCore\ValueObjects\Finding $finding ): bool;
+    abstract public function applies_to( \VuloPilot\ValueObjects\Finding $finding ): bool;
 
     /**
      * @inheritDoc
      */
-    abstract public function get_recommendation( \VuloPilotCore\ValueObjects\Finding $finding ): \VuloPilotCore\ValueObjects\Recommendation;
+    abstract public function get_recommendation( \VuloPilot\ValueObjects\Finding $finding ): \VuloPilot\ValueObjects\Recommendation;
 }

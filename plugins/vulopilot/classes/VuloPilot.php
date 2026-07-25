@@ -132,15 +132,13 @@ final class VuloPilot {
 
         $this->container['scan_persistence'] = new Services\ScanPersistenceListener();
 
-        $this->container['scheduler'] = new Scheduler\Scheduler( $this->container['scan_runner'] );
-
-        $this->container['automation_trigger_registry'] = new AutomationEngine\TriggerRegistry();
-        $this->container['automation_action_registry']  = new AutomationEngine\ActionRegistry();
-        $this->container['automation_engine']           = new AutomationEngine\AutomationEngine(
-            $this->container['automation_trigger_registry'],
-            $this->container['automation_action_registry'],
-            $this->container['rule_engine']
-        );
+        // Scheduler (recurring scan cron) and the entire AutomationEngine
+        // (trigger→action workflows) are Pro business logic now — "Scheduled
+        // Website Scans" and "AI Automation Workflows" are both
+        // vulopilot-pro-only per the plugin's own readme. They live in
+        // vulopilot-pro's Automation module, constructed with this same
+        // rule_engine/scan_runner instance via VuloPilot()->rule_engine /
+        // VuloPilot()->scan_runner.
 
         $this->container['report_type_registry']     = new Reports\ReportTypeRegistry();
         $this->container['report_exporter_registry'] = new Reports\ReportExporterRegistry();
@@ -148,7 +146,10 @@ final class VuloPilot {
             $this->container['report_type_registry'],
             $this->container['report_exporter_registry']
         );
-        $this->container['scheduled_report_runner']  = new Reports\ScheduledReportRunner( $this->container['report_generator'] );
+        // Reports\ScheduledReportRunner (recurring/emailed reports) is Pro
+        // business logic now — it lives in vulopilot-pro's AdvancedReports
+        // module, constructed with this same report_generator instance via
+        // VuloPilot()->report_generator.
 
         $this->container['rest'] = new RestAPI\Rest();
 

@@ -24,10 +24,34 @@ class ActivityLogRepository extends AbstractRepository {
     protected array $filterable_columns = array( 'actor_type', 'event_type' );
 
     /**
+     * @var string[]
+     */
+    protected array $searchable_columns = array( 'message', 'event_type' );
+
+    /**
      * @inheritDoc
      */
     protected function get_table_key(): string {
         return 'activity_log';
+    }
+
+    /**
+     * User/system/automation counts, zero-filled — backs the Activity
+     * table's status-count pill bar. Activity has no true lifecycle status
+     * column, so actor_type is the closest existing categorical dimension
+     * (same reasoning as AutomationRepository::get_status_counts()).
+     *
+     * @return array{user: int, system: int, automation: int}
+     */
+    public function get_actor_type_counts(): array {
+        return array_merge(
+            array(
+                'user'       => 0,
+                'system'     => 0,
+                'automation' => 0,
+            ),
+            $this->count_by_column( 'actor_type' )
+        );
     }
 
     /**

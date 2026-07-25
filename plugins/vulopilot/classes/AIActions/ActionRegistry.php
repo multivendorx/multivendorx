@@ -7,7 +7,7 @@
 
 namespace VuloPilot\AIActions;
 
-use VuloPilotCore\Contracts\AI\AIActionInterface;
+use VuloPilot\Contracts\AI\AIActionInterface;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -59,6 +59,13 @@ class ActionRegistry {
     }
 
     /**
+     * Free's own always-available actions — the readme's "AI SEO
+     * Assistant"/"AI Content Assistant" (BYOK) feature set. The
+     * product-specific AI actions (rewrite/generate for WooCommerce
+     * products) are Pro business logic ("WooCommerce AI"/"AI Product
+     * Optimization" per the readme) — they moved to vulopilot-pro's
+     * WooCommerceAi module and register through this same filter.
+     *
      * @return string[]
      */
     private function get_default_action_classes(): array {
@@ -73,18 +80,13 @@ class ActionRegistry {
             // MissingSummaryBlockRule's fix loops.
             Actions\GenerateFaqAction::class,
             Actions\GenerateSummaryBlockAction::class,
-            // WooCommerce AI (ARCHITECTURE.md's Prompt 11) — closes the
-            // Missing*Rule fix loops for products, plus new suggestion-only
-            // actions with no corresponding Rule (cross-sell/upsell/bundle).
-            Actions\RewriteProductTitleAction::class,
-            Actions\WriteProductShortDescriptionAction::class,
-            Actions\WriteProductLongDescriptionAction::class,
-            Actions\WriteProductMetaDescriptionAction::class,
-            Actions\GenerateProductSchemaAction::class,
-            Actions\GenerateProductFaqAction::class,
-            Actions\GenerateProductCrossSellAction::class,
-            Actions\GenerateProductUpsellAction::class,
-            Actions\GenerateProductBundleSuggestionsAction::class,
+            // AI SEO Assistant / AI Content Assistant (readme) — closes
+            // SeoTitleRewriteRule's fix loop (write-meta-title) and adds
+            // the two content-generation actions with no matching scanner/
+            // rule (suggest-internal-links, generate-social-content).
+            Actions\WriteMetaTitleAction::class,
+            Actions\SuggestInternalLinksAction::class,
+            Actions\GenerateSocialContentAction::class,
         );
     }
 

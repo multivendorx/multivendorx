@@ -1,17 +1,15 @@
 /* global appLocalizer */
+import { useState } from 'react';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { getApiLink, sendApiResponse } from '@zyra/core';
-import {
-	CardComponent,
-	ColumnComponent,
-	ContainerComponent,
-	ModuleGuardComponent,
-	NavigatorHeaderComponent,
-	NoticeManager,
-} from '@zyra/components';
+import { NoticeManager, PopupComponent } from '@zyra/components';
 import { ButtonInput } from '@zyra/inputs';
 import { TableCard, TableRow } from '@zyra/table';
+import type { ComponentType } from 'react';
 import { useApiList } from '../../services/useApiList';
+import TablePage from '../../components/TablePage/TablePage';
+import ShowProPopup from '../../components/Popup/Popup';
 
 interface ReportRow extends TableRow {
 	id: number;
@@ -24,22 +22,59 @@ interface ReportRow extends TableRow {
 	has_file: boolean;
 }
 
+/**
+ * Slot for vulopilot-pro's AdvancedReports module — recurring/scheduled
+ * reports and the custom report builder are Pro business logic (backed by
+ * REST routes `report-schedules` and `reports?report_type=custom`, both
+ * only registered when that module is active), so their management UI is
+ * injected here rather than built into Free's own bundle. Returns null
+ * (renders nothing) when Pro/AdvancedReports isn't active — the same
+ * "register a source, don't modify the host" pattern already used for
+ * dashboard widgets (`vulopilot_dashboard_widgets`) and settings tabs
+ * (`vulopilot_settings_context`).
+ */
+const AdvancedReportsPanel = applyFilters(
+	'vulopilot_reports_advanced_panel',
+	null
+) as ComponentType | null;
+
 const Reports = () => {
-	const { data, total, isLoading, error, refetch } = useApiList<ReportRow>(
+	const [isProPopupOpen, setIsProPopupOpen] = useState(false);
+
+	const statusOptions = [
+		{ label: __('Generating', 'vulopilot'), value: 'generating' },
+		{ label: __('Ready', 'vulopilot'), value: 'ready' },
+		{ label: __('Failed', 'vulopilot'), value: 'failed' },
+	];
+
+	const {
+		data,
+		total,
+		categoryCounts,
+		isLoading,
+		error,
+		refetch,
+		onQueryUpdate,
+	} = useApiList<ReportRow>(
 		'reports',
-		{ per_page: 10 }
+		{},
+		{ key: 'status', options: statusOptions }
 	);
 
 	const handleGenerateReport = () => {
+		// 'csv' rather than 'pdf' — pdf is a Pro-only exporter (registered
+		// via vulopilot_report_exporter_sources by vulopilot-pro's
+		// AdvancedReports module), so a format Free always has registered
+		// is what this always-available button should generate.
 		sendApiResponse(appLocalizer, getApiLink(appLocalizer, 'reports'), {
 			report_type: 'scan_summary',
-			format: 'pdf',
+			format: 'csv',
 		}).then((response) => {
 			if (response) {
 				NoticeManager.add({
 					uniqueKey: 'vulopilot-report-queued',
 					type: 'success',
-					position: 'notice',
+					position: 'float',
 					message: __('Report generation started.', 'vulopilot'),
 				});
 				refetch();
@@ -47,7 +82,7 @@ const Reports = () => {
 				NoticeManager.add({
 					uniqueKey: 'vulopilot-report-failed',
 					type: 'error',
-					position: 'notice',
+					position: 'float',
 					message: __(
 						'Could not start report generation. Please try again.',
 						'vulopilot'
@@ -59,6 +94,20 @@ const Reports = () => {
 
 	const handleDownload = (row?: Record<string, unknown>) => {
 		if (!row || row.status !== 'ready' || !row.has_file) {
+			return;
+		}
+
+		// pdf is a Pro-only exporter (registered via
+		// vulopilot_report_exporter_sources by vulopilot-pro's
+		// AdvancedReports module) — a pdf-format row can still exist from
+		// when that module was active, so the row/action itself stays
+		// visible; clicking it opens the Pro popup instead of downloading
+		// once the module is no longer active.
+		if (
+			row.format === 'pdf' &&
+			!appLocalizer.active_modules.includes('advanced-reports')
+		) {
+			setIsProPopupOpen(true);
 			return;
 		}
 
@@ -86,131 +135,87 @@ const Reports = () => {
 		/>
 	);
 
-	const pageHeader = (
-		<NavigatorHeaderComponent
+	return (
+		<TablePage
 			headerIcon="report"
 			headerTitle={__('Reports', 'vulopilot')}
 			headerDescription={__(
 				'Generate and download scan summary, SEO, WooCommerce, security, and other compliance reports.',
 				'vulopilot'
 			)}
-		/>
-	);
-
-	if (error) {
-		return (
-			<>
-				{pageHeader}
-				<ContainerComponent general>
-					<ColumnComponent>
-						<CardComponent
-							title={__('Reports', 'vulopilot')}
-							action={pageHeaderAction}
-						>
-							<ModuleGuardComponent
-								icon="warning"
-								title={__(
-									'Could not load reports',
-									'vulopilot'
-								)}
-								desc={error}
-								buttonText={__('Retry', 'vulopilot')}
-								onButtonClick={refetch}
-							/>
-						</CardComponent>
-					</ColumnComponent>
-				</ContainerComponent>
-			</>
-		);
-	}
-
-	return (
-		<>
-			{pageHeader}
-			<ContainerComponent general>
-				<ColumnComponent>
-					<TableCard
-						title={__('Reports', 'vulopilot')}
-						buttonActions={[
+			headerAction={pageHeaderAction}
+			error={error}
+			onRetry={refetch}
+			errorTitle={__('Could not load reports', 'vulopilot')}
+		>
+			<TableCard
+				buttonActions={[
+					{
+						label: __('Generate report', 'vulopilot'),
+						onClick: handleGenerateReport,
+					},
+				]}
+				headers={{
+					report_type: {
+						label: __('Type', 'vulopilot'),
+					},
+					format: {
+						label: __('Format', 'vulopilot'),
+					},
+					status: {
+						label: __('Status', 'vulopilot'),
+						type: 'badge',
+						statusClass: (row: ReportRow) =>
+							`status-${row.status}`,
+					},
+					created_at: {
+						label: __('Generated', 'vulopilot'),
+						type: 'date',
+						isSortable: true,
+						defaultSort: true,
+						defaultOrder: 'desc',
+					},
+					actions: {
+						label: __('Actions', 'vulopilot'),
+						type: 'action',
+						actions: [
 							{
-								label: __('Generate report', 'vulopilot'),
-								onClick: handleGenerateReport,
+								label: (row?: Record<string, unknown>) =>
+									row?.status === 'ready'
+										? __('Download', 'vulopilot')
+										: __('Not ready yet', 'vulopilot'),
+								icon: 'download',
+								onClick: handleDownload,
 							},
-						]}
-						headers={{
-							report_type: {
-								label: __('Type', 'vulopilot'),
-							},
-							format: {
-								label: __('Format', 'vulopilot'),
-							},
-							status: {
-								label: __('Status', 'vulopilot'),
-								type: 'badge',
-								statusClass: (row: ReportRow) =>
-									`status-${row.status}`,
-							},
-							created_at: {
-								label: __('Generated', 'vulopilot'),
-								type: 'date',
-								isSortable: true,
-								defaultSort: true,
-								defaultOrder: 'desc',
-							},
-							actions: {
-								label: __('Actions', 'vulopilot'),
-								type: 'action',
-								actions: [
-									{
-										label: (
-											row?: Record<string, unknown>
-										) =>
-											row?.status === 'ready'
-												? __('Download', 'vulopilot')
-												: __(
-														'Not ready yet',
-														'vulopilot'
-													),
-										icon: 'download',
-										onClick: handleDownload,
-									},
-								],
-							},
-						}}
-						rows={data}
-						ids={data.map((row) => row.id)}
-						totalRows={total}
-						isLoading={isLoading}
-						emptyMessage={__(
-							'No reports yet — generate your first compliance report.',
-							'vulopilot'
-						)}
-						filters={[
-							{
-								key: 'status',
-								label: __('Status', 'vulopilot'),
-								type: 'select',
-								size: 10,
-								options: [
-									{
-										label: __('Generating', 'vulopilot'),
-										value: 'generating',
-									},
-									{
-										label: __('Ready', 'vulopilot'),
-										value: 'ready',
-									},
-									{
-										label: __('Failed', 'vulopilot'),
-										value: 'failed',
-									},
-								],
-							},
-						]}
-					/>
-				</ColumnComponent>
-			</ContainerComponent>
-		</>
+						],
+					},
+				}}
+				rows={data}
+				ids={data.map((row) => row.id)}
+				totalRows={total}
+				categoryCounts={categoryCounts}
+				isLoading={isLoading}
+				onQueryUpdate={onQueryUpdate}
+				emptyMessage={__(
+					'No reports yet — generate your first compliance report.',
+					'vulopilot'
+				)}
+			/>
+			{AdvancedReportsPanel && <AdvancedReportsPanel />}
+			<PopupComponent
+				open={isProPopupOpen}
+				onClose={() => setIsProPopupOpen(false)}
+				width={31.25}
+				height="auto"
+				position="lightbox"
+			>
+				{appLocalizer.active_modules.includes('advanced-reports') ? (
+					<ShowProPopup moduleName="advanced-reports" />
+				) : (
+					<ShowProPopup />
+				)}
+			</PopupComponent>
+		</TablePage>
 	);
 };
 

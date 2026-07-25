@@ -19,6 +19,12 @@ export default {
 			options: [
 				{ key: 'enabled', label: '', value: 'enabled' },
 			],
+			// Both scanners this category gates (the admin-username check
+			// and this REST API exposure check) live in vulopilot-pro's
+			// SecurityMonitoring module — unlike the seo/geo/accessibility/
+			// woocommerce categories, there's no free scanner under
+			// "security" at all today.
+			moduleEnabled: 'security-monitoring',
 		},
 	],
 };

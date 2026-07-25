@@ -21,13 +21,35 @@ class AiHistoryRepository extends AbstractRepository {
     /**
      * @var string[]
      */
-    protected array $filterable_columns = array( 'provider' );
+    protected array $filterable_columns = array( 'provider', 'status' );
+
+    /**
+     * @var string[]
+     */
+    protected array $searchable_columns = array( 'model', 'response_excerpt' );
 
     /**
      * @inheritDoc
      */
     protected function get_table_key(): string {
         return 'ai_history';
+    }
+
+    /**
+     * Success/failure counts, zero-filled — backs the AI Assistant table's
+     * status-count pill bar (same reasoning as
+     * AutomationRepository::get_status_counts()).
+     *
+     * @return array{success: int, failure: int}
+     */
+    public function get_status_counts(): array {
+        return array_merge(
+            array(
+                'success' => 0,
+                'failure' => 0,
+            ),
+            $this->count_by_column( 'status' )
+        );
     }
 
     /**

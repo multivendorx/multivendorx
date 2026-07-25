@@ -7,7 +7,7 @@
 
 namespace VuloPilot\RuleEngine;
 
-use VuloPilotCore\Contracts\RuleEngine\RuleInterface;
+use VuloPilot\Contracts\RuleEngine\RuleInterface;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -87,7 +87,7 @@ class RuleRegistry {
             // GEO module (GEO-MODULE.md).
             Rules\FaqOpportunityRule::class,
             Rules\MissingSummaryBlockRule::class,
-            // WooCommerce AI (ARCHITECTURE.md's Prompt 11).
+            // WooCommerce Optimization (readme).
             Rules\MissingProductDescriptionRule::class,
             Rules\MissingProductShortDescriptionRule::class,
             Rules\MissingProductAttributesRule::class,

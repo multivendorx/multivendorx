@@ -7,8 +7,8 @@
 
 namespace VuloPilot\Reports\Exporters;
 
-use VuloPilotCore\Contracts\Report\ReportExporterInterface;
-use VuloPilotCore\ValueObjects\ReportResult;
+use VuloPilot\Contracts\Report\ReportExporterInterface;
+use VuloPilot\ValueObjects\ReportResult;
 
 defined( 'ABSPATH' ) || exit;
 

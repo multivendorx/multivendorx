@@ -7,7 +7,7 @@
 
 namespace VuloPilot\AIProviders\Support;
 
-use VuloPilotCore\Exceptions\TransientProviderException;
+use VuloPilot\Exceptions\TransientProviderException;
 
 defined( 'ABSPATH' ) || exit;
 
