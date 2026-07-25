@@ -170,6 +170,16 @@ final class VuloPilot {
         // every AIAction goes through, not a second AI-calling path.
         $this->container['geo_analyzer'] = new GeoAnalysis\GeoAnalyzer( $this->container['ai_request_sender'] );
 
+        // llms.txt Generation & Management (readme.txt) — self-registers
+        // its own rewrite-rule/template_redirect hooks; unconditional
+        // construction, the enable_llms_txt setting only gates serving.
+        $this->container['llms_txt_generator'] = new GeoAnalysis\LlmsTxtGenerator();
+
+        // AI Crawler Traffic Monitoring (readme.txt) — self-registers its
+        // own template_redirect/cron hooks; unconditional construction,
+        // same shape as llms_txt_generator above.
+        $this->container['crawler_traffic_logger'] = new Services\CrawlerTrafficLogger();
+
         // Extension SDK (ARCHITECTURE.md's Prompt 15) — vulopilot-pro and
         // any third-party plugin register here (`vulopilot_extension_sources`),
         // one tick before ScannerRegistry/RuleRegistry/etc. (all `init`

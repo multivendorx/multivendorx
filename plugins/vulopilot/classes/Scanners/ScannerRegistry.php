@@ -155,7 +155,7 @@ class ScannerRegistry {
             Basic\OrphanPageScanner::class,
             Basic\SeoImagesScanner::class,
             Basic\StructuredDataValidationScanner::class,
-            // GEO module (GEO-MODULE.md) — 8 deterministic checks, category 'geo'.
+            // GEO module (GEO-MODULE.md) — 9 deterministic checks, category 'geo'.
             Basic\GeoAuthorInfoScanner::class,
             Basic\GeoEeatSignalsScanner::class,
             Basic\GeoTrustSignalsScanner::class,
@@ -164,6 +164,7 @@ class ScannerRegistry {
             Basic\GeoFaqOpportunityScanner::class,
             Basic\GeoChunkingScanner::class,
             Basic\GeoSemanticStructureScanner::class,
+            Basic\GeoEntityNamingConsistencyScanner::class,
             // WooCommerce Optimization (readme) — 11 additional checks
             // alongside the original WooCommerceScanner (checkout page),
             // category 'woocommerce'.

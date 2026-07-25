@@ -65,6 +65,8 @@ class Rest {
             'activity_logs'    => new Controllers\ActivityLogs(),
             'automations'      => new Controllers\Automations(),
             'settings'         => new Controllers\Settings(),
+            'llms_txt'         => new Controllers\LlmsTxt(),
+            'crawler_traffic'  => new Controllers\CrawlerTraffic(),
         );
 
         $extra_controllers = apply_filters( 'vulopilot_rest_controllers', array() );

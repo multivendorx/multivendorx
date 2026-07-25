@@ -5,6 +5,7 @@ import {
 	NavigatorHeaderComponent,
 } from '@zyra/components';
 import FindingsTable from '../../components/FindingsTable';
+import HealthScoreSummary from './HealthScoreSummary';
 
 /**
  * Every finding across every scanner category — the SEO/GEO/WooCommerce
@@ -17,6 +18,11 @@ import FindingsTable from '../../components/FindingsTable';
  * styling those two components provide, which is what made this page
  * (and every other page below it) look broken rather than an actual
  * data/functionality bug.
+ *
+ * HealthScoreSummary renders readme.txt's "Website Health Score"/"Health
+ * Score Trend Timeline" above the findings table — previously only the
+ * Dashboard surfaced that data, this page (the one the sidebar actually
+ * calls "Health") had none of it.
  */
 const Health = () => (
 	<>
@@ -30,6 +36,7 @@ const Health = () => (
 		/>
 		<ContainerComponent general>
 			<ColumnComponent>
+				<HealthScoreSummary />
 				<FindingsTable
 					title={__('Site health', 'vulopilot')}
 					description={__(

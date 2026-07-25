@@ -12,7 +12,7 @@ use VuloPilot\Contracts\Report\ReportTypeInterface;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Collects every registered report type and instantiates it. Free's own 8
+ * Collects every registered report type and instantiates it. Free's own
  * report types always exist; a premium/third-party report type is added on
  * top via the `vulopilot_report_type_sources` filter — same
  * discovery-by-filter shape as Scanners\ScannerRegistry/
@@ -77,6 +77,10 @@ class ReportTypeRegistry {
      * to vulopilot-pro's AdvancedReports module (historical trend data is
      * Pro business logic, see SiteHealthSnapshotRepository's own docblock)
      * — it registers itself back in via `vulopilot_report_type_sources`.
+     * AiVisibilityReport/PerformanceReport/UpdatesReport close 3 of
+     * readme.txt's 8 named "Reports" pillars that had no report type yet
+     * (the 4th, Brand Visibility, needs a real Ahrefs API integration and
+     * stays unimplemented).
      *
      * @return string[] Fully-qualified class names implementing ReportTypeInterface.
      */
@@ -89,6 +93,9 @@ class ReportTypeRegistry {
             Types\AccessibilityReport::class,
             Types\AutomationReport::class,
             Types\AiUsageReport::class,
+            Types\AiVisibilityReport::class,
+            Types\PerformanceReport::class,
+            Types\UpdatesReport::class,
         );
     }
 

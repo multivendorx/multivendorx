@@ -3,6 +3,7 @@ import { render } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import { configureZyra, initializeModules } from '@zyra/core';
 import App from './app';
+import './tailwind.pcss';
 
 configureZyra(appLocalizer);
 initializeModules('vulopilot', 'free', 'modules');

@@ -10,6 +10,7 @@ namespace VuloPilot\GeoAnalysis;
 use VuloPilot\AIProviders\Support\SafeRequestSender;
 use VuloPilot\ValueObjects\GeoScore;
 use VuloPilot\Repositories\FindingRepository;
+use VuloPilot\Scanners\Basic\GeoCitationOpportunityScanner;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -39,11 +40,11 @@ defined( 'ABSPATH' ) || exit;
 class GeoAnalyzer {
 
     /**
-     * The 7 GEO-MODULE.md scanners scoped to a single post, plus the one
+     * The 8 GEO-MODULE.md scanners scoped to a single post, plus the one
      * sitewide check (Trust Signals) that applies identically to every
-     * post — 8 total, matching GeoScore's docblock.
+     * post — 9 total, matching GeoScore's docblock.
      */
-    private const TOTAL_DETERMINISTIC_CHECKS = 8;
+    private const TOTAL_DETERMINISTIC_CHECKS = 9;
 
     public const META_KEY = '_vulopilot_geo_score';
 
@@ -87,16 +88,18 @@ class GeoAnalyzer {
         }
 
         $deterministic_score       = $this->calculate_deterministic_score( $post_id );
+        $sub_scores                = $this->calculate_sub_scores( $post_id, $post );
         $messages                  = $this->build_prompt( $post, $deterministic_score );
         $response                  = $this->request_sender->send( $messages );
         $ai_scores_and_suggestions = $this->parse_response( $response );
 
-        $overall_score = $this->calculate_overall_score( $deterministic_score, $ai_scores_and_suggestions['ai_scores'] );
+        $overall_score = $this->calculate_overall_score( $deterministic_score, $ai_scores_and_suggestions['ai_scores'], $sub_scores );
 
         $score = new GeoScore(
             $post_id,
             $deterministic_score,
             $ai_scores_and_suggestions['ai_scores'],
+            $sub_scores,
             $overall_score,
             $ai_scores_and_suggestions['suggestions'],
             current_time( 'mysql', true )
@@ -127,8 +130,8 @@ class GeoAnalyzer {
     }
 
     /**
-     * Percentage of GEO-MODULE.md's 8 deterministic checks that have no
-     * open finding for this post (7 per-post scanners) or sitewide (Trust
+     * Percentage of GEO-MODULE.md's 9 deterministic checks that have no
+     * open finding for this post (8 per-post scanners) or sitewide (Trust
      * Signals) — null if this site has no GEO scan history at all yet,
      * so an absence of problems is never confused with "never checked."
      *
@@ -171,6 +174,120 @@ class GeoAnalyzer {
     }
 
     /**
+     * The 6 readme.txt AI-Visibility sub-metrics that don't need an AI
+     * judgment call — either a direct or composite read of specific
+     * scanner-id findings (made queryable by FindingRepository's
+     * `scanner_id` filter), or a value computed straight from the post
+     * object already in hand. Each is 0-100, same coarse-tiering posture
+     * calculate_overall_score() already documents for the site as a
+     * whole — not a claim of scientific precision.
+     *
+     * @param int      $post_id Post to score.
+     * @param \WP_Post $post    Same post, already loaded by analyze().
+     * @return array{retrieval_score: int, citation_readiness: int, ai_summary_qa_detection: int, entity_naming_consistency: int, content_freshness: int, data_point_evidence_density: int}
+     */
+    private function calculate_sub_scores( int $post_id, \WP_Post $post ): array {
+        $ref = (string) $post_id;
+
+        $retrieval_checks = array( 'geo-chunking', 'geo-semantic-structure' );
+        $retrieval_passed = 0;
+        foreach ( $retrieval_checks as $scanner_id ) {
+            if ( ! $this->has_open_finding( $scanner_id, $ref ) ) {
+                ++$retrieval_passed;
+            }
+        }
+
+        $qa_checks = array( 'geo-summary-block', 'geo-faq-opportunity' );
+        $qa_passed = 0;
+        foreach ( $qa_checks as $scanner_id ) {
+            if ( ! $this->has_open_finding( $scanner_id, $ref ) ) {
+                ++$qa_passed;
+            }
+        }
+
+        return array(
+            'retrieval_score'             => (int) round( $retrieval_passed / count( $retrieval_checks ) * 100 ),
+            'citation_readiness'          => $this->has_open_finding( 'geo-citation-opportunities', $ref ) ? 0 : 100,
+            'ai_summary_qa_detection'     => (int) round( $qa_passed / count( $qa_checks ) * 100 ),
+            'entity_naming_consistency'   => $this->has_open_finding( 'geo-entity-naming-consistency', $ref ) ? 0 : 100,
+            'content_freshness'           => $this->calculate_content_freshness( $post ),
+            'data_point_evidence_density' => $this->calculate_evidence_density( $post ),
+        );
+    }
+
+    /**
+     * Whether one specific scanner has an open finding against one
+     * specific object — the per-check building block calculate_sub_scores()
+     * composes into named sub-metrics, made possible by FindingRepository
+     * exposing `scanner_id` as a filterable column.
+     *
+     * @param string $scanner_id One of the Geo*Scanner::get_id() strings.
+     * @param string $object_ref Post id (or home_url('/') for the sitewide Trust Signals check).
+     * @return bool
+     */
+    private function has_open_finding( string $scanner_id, string $object_ref ): bool {
+        return 0 < (int) $this->findings->find_all(
+            array(
+                'category'    => 'geo',
+                'status'      => 'open',
+                'scanner_id'  => $scanner_id,
+                'object_ref'  => $object_ref,
+                'per_page'    => 1,
+            )
+        )['total'];
+    }
+
+    /**
+     * Coarse recency tiering off `post_modified` — a genuinely different
+     * signal from GeoEeatSignalsScanner's binary "never edited" check,
+     * since this scores *how* stale, not just whether.
+     *
+     * @param \WP_Post $post Post being scored.
+     * @return int 0-100.
+     */
+    private function calculate_content_freshness( \WP_Post $post ): int {
+        $days_since_modified = ( current_time( 'timestamp', true ) - strtotime( $post->post_modified_gmt ) ) / DAY_IN_SECONDS;
+
+        if ( $days_since_modified <= 90 ) {
+            return 100;
+        }
+        if ( $days_since_modified <= 180 ) {
+            return 75;
+        }
+        if ( $days_since_modified <= 365 ) {
+            return 50;
+        }
+        return 25;
+    }
+
+    /**
+     * Reuses GeoCitationOpportunityScanner's own regex (one source of
+     * truth for "what a data point/citable claim looks like") but counts
+     * matches instead of just checking presence — "Data Point & Evidence
+     * Density" is about how much supporting evidence a piece has, not
+     * only whether it has any.
+     *
+     * @param \WP_Post $post Post being scored.
+     * @return int 0-100.
+     */
+    private function calculate_evidence_density( \WP_Post $post ): int {
+        $plain_text  = wp_strip_all_tags( $post->post_content );
+        $word_count  = str_word_count( $plain_text );
+        $match_count = preg_match_all( GeoCitationOpportunityScanner::CLAIM_PATTERN, $plain_text );
+        $match_count = false !== $match_count ? $match_count : 0;
+
+        $per_500_words = $word_count > 0 ? $match_count / ( $word_count / 500 ) : 0;
+
+        if ( $per_500_words >= 3 ) {
+            return 100;
+        }
+        if ( $per_500_words >= 1 ) {
+            return 60;
+        }
+        return 20;
+    }
+
+    /**
      * @param \WP_Post $post                Post being analyzed.
      * @param int|null $deterministic_score Already-known deterministic score, if any — given to the AI as context.
      * @return array<int, array{role: string, content: string}>
@@ -180,14 +297,19 @@ class GeoAnalyzer {
             array(
                 'role'    => 'system',
                 'content' => 'You evaluate web content for how well AI answer engines (like ChatGPT, Perplexity, and AI Overviews) '
-                    . 'can find, understand, and cite it. Score four dimensions from 0-100: '
+                    . 'can find, understand, and cite it. Score eight dimensions from 0-100: '
                     . '"entity_coverage" (does the content clearly name and explain the key people/products/concepts it discusses), '
                     . '"question_coverage" (does it directly answer the questions a reader would plausibly search for), '
                     . '"answer_completeness" (are answers self-contained rather than requiring outside context), '
-                    . '"llm_readability" (is it written in clear, extractable prose an AI system could quote directly). '
+                    . '"llm_readability" (is it written in clear, extractable prose an AI system could quote directly), '
+                    . '"purpose_clarity" (is it obvious within the first few sentences what this content is about and who it is for), '
+                    . '"conversation_readiness" (would the content still read naturally if voiced aloud as an answer to a follow-up question), '
+                    . '"knowledge_graph_coverage" (does the content name real, specific, well-known entities an AI system could cross-reference, rather than vague generalities), '
+                    . '"answer_first_structure" (does the content lead with the direct answer/conclusion before background or preamble). '
                     . 'Also give 3-5 concrete, specific suggestions to improve this content for AI answer engines. '
                     . 'Respond with ONLY raw JSON like {"entity_coverage": 70, "question_coverage": 60, "answer_completeness": 65, '
-                    . '"llm_readability": 80, "suggestions": ["...", "..."]} — no markdown fences, no commentary.',
+                    . '"llm_readability": 80, "purpose_clarity": 75, "conversation_readiness": 55, "knowledge_graph_coverage": 60, '
+                    . '"answer_first_structure": 65, "suggestions": ["...", "..."]} — no markdown fences, no commentary.',
             ),
             array(
                 'role'    => 'user',
@@ -205,7 +327,7 @@ class GeoAnalyzer {
 
     /**
      * @param \VuloPilot\ValueObjects\AIResponse $response Raw AI response.
-     * @return array{ai_scores: array{entity_coverage: int, question_coverage: int, answer_completeness: int, llm_readability: int}, suggestions: string[]}
+     * @return array{ai_scores: array{entity_coverage: int, question_coverage: int, answer_completeness: int, llm_readability: int, purpose_clarity: int, conversation_readiness: int, knowledge_graph_coverage: int, answer_first_structure: int}, suggestions: string[]}
      *
      * @throws \RuntimeException If the response isn't usable JSON in the expected shape.
      */
@@ -219,7 +341,7 @@ class GeoAnalyzer {
 
         $ai_scores = array();
 
-        foreach ( array( 'entity_coverage', 'question_coverage', 'answer_completeness', 'llm_readability' ) as $key ) {
+        foreach ( array( 'entity_coverage', 'question_coverage', 'answer_completeness', 'llm_readability', 'purpose_clarity', 'conversation_readiness', 'knowledge_graph_coverage', 'answer_first_structure' ) as $key ) {
             $value = $decoded[ $key ] ?? null;
 
             if ( ! is_int( $value ) && ! ( is_numeric( $value ) && (string) (int) $value === (string) $value ) ) {
@@ -255,21 +377,29 @@ class GeoAnalyzer {
     /**
      * Simple, documented average — not a claim of scientific precision,
      * the same posture Controllers/Dashboard.php's calculate_overall_score()
-     * already takes for the sitewide health score. If no deterministic
-     * history exists yet, the AI-judged average stands alone rather than
-     * averaging in a fabricated deterministic number.
+     * already takes for the sitewide health score. Blends up to 3
+     * components: the 9-check deterministic score (structural, may be
+     * null if this site has no GEO scan history yet), the average of the
+     * 8 AI-judged dimensions, and the average of the 6 computed sub-scores
+     * (calculate_sub_scores()) — whichever of the 3 are actually known are
+     * averaged together unweighted, same "coarse, not scientific" posture
+     * as before this method grew a third component.
      *
-     * @param int|null                                                                                            $deterministic_score 0-100, or null.
-     * @param array{entity_coverage: int, question_coverage: int, answer_completeness: int, llm_readability: int} $ai_scores Each 0-100.
+     * @param int|null $deterministic_score 0-100, or null.
+     * @param array    $ai_scores           8 keys, each 0-100.
+     * @param array    $sub_scores          6 keys, each 0-100 (calculate_sub_scores()'s return shape).
      * @return int 0-100.
      */
-    private function calculate_overall_score( ?int $deterministic_score, array $ai_scores ): int {
-        $ai_average = (int) round( array_sum( $ai_scores ) / count( $ai_scores ) );
+    private function calculate_overall_score( ?int $deterministic_score, array $ai_scores, array $sub_scores ): int {
+        $ai_average  = array_sum( $ai_scores ) / count( $ai_scores );
+        $sub_average = array_sum( $sub_scores ) / count( $sub_scores );
 
-        if ( null === $deterministic_score ) {
-            return $ai_average;
+        $components = array( $ai_average, $sub_average );
+
+        if ( null !== $deterministic_score ) {
+            $components[] = $deterministic_score;
         }
 
-        return (int) round( ( $deterministic_score + $ai_average ) / 2 );
+        return (int) round( array_sum( $components ) / count( $components ) );
     }
 }

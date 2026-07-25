@@ -29,7 +29,7 @@ class FindingRepository extends AbstractRepository {
     /**
      * @var string[]
      */
-    protected array $filterable_columns = array( 'category', 'severity', 'status', 'object_type', 'object_ref' );
+    protected array $filterable_columns = array( 'category', 'severity', 'status', 'object_type', 'object_ref', 'scanner_id' );
 
     /**
      * @var string[]

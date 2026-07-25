@@ -33,9 +33,12 @@ class GeoCitationOpportunityScanner extends AbstractBasicScanner {
     /**
      * Matches a percentage (e.g. "42%") or a number immediately followed
      * by one of a handful of words that typically introduce a
-     * fact/statistic worth sourcing.
+     * fact/statistic worth sourcing. Public so GeoAnalysis\GeoAnalyzer can
+     * reuse the exact same pattern for its "Data Point & Evidence Density"
+     * sub-score (a match *count*, unlike this scanner's presence-only
+     * check) instead of duplicating the regex.
      */
-    private const CLAIM_PATTERN = '/\d+\s*%|\d+\s+(?:percent|studies|study|survey|surveys|report|reports|research)/i';
+    public const CLAIM_PATTERN = '/\d+\s*%|\d+\s+(?:percent|studies|study|survey|surveys|report|reports|research)/i';
 
     /**
      * @inheritDoc

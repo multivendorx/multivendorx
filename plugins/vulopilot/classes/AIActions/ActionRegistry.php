@@ -87,6 +87,12 @@ class ActionRegistry {
             Actions\WriteMetaTitleAction::class,
             Actions\SuggestInternalLinksAction::class,
             Actions\GenerateSocialContentAction::class,
+            // AI Content Assistant (readme) — the 3 remaining generation
+            // types with no existing action: product descriptions,
+            // listing-page excerpts, and comparison pages.
+            Actions\GenerateProductDescriptionAction::class,
+            Actions\GenerateExcerptAction::class,
+            Actions\GenerateComparisonPageAction::class,
         );
     }
 

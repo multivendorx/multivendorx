@@ -39,9 +39,15 @@
 		"fix:php": "composer run-script phpfix",
 		"test": "pnpm run test:php",
 		"test:php": "./vendor/bin/phpunit -c phpunit.xml.dist",
-		"env:dev": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start --update",
-		"env:stop": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env stop",
-		"readme": "wp-readme-to-md",
+		"env:create": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start && pnpm run env:start:database",
+        "env:start": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start && pnpm run env:start:database",
+        "env:start:database": "node ../../tools/scripts/docker-compose.mjs && docker compose up -d",
+        "env:dev": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start --update && pnpm run env:start:database && pnpm --if-present --filter storybook run watch:build:storybook",
+        "env:stop": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env stop && docker compose down",
+        "env:restart": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env restart",
+        "env:clean": "pnpm wp-env clean",
+        "env:destroy": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env destroy && rimraf docker-compose.yml",
+        "readme": "wp-readme-to-md",
 		"clean": "node ../../tools/scripts/clean.mjs",
 		"minify": "node ../../tools/scripts/minify.mjs",
 		"move": "node ../../tools/scripts/move-files.mjs",
@@ -84,6 +90,7 @@
 		"@wordpress/hooks": "^4.46.0",
 		"@wordpress/i18n": "wp-6.6",
 		"axios": "^1.16.1",
+		"lucide-react": "^1.26.0",
 		"react": "19.2.6",
 		"react-dom": "19.2.6",
 		"react-router-dom": "^7.15.1",
@@ -93,6 +100,9 @@
 		"@multivendorx/zyra": "^1.0.10"
 	},
 	"devDependencies": {
+		"autoprefixer": "^10.5.4",
+		"postcss": "^8.5.23",
+		"tailwindcss": "^3.4.19",
 		"wireit": "^0.14.12"
 	}
 }

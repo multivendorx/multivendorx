@@ -56,26 +56,31 @@ class Settings extends \WP_REST_Controller {
      * @var array<string, array{type: string, options?: string[]}>
      */
     private const FIELD_TYPES = array(
-        'scan_frequency'                => array(
+        'scan_frequency'                  => array(
             'type'    => 'select',
             'options' => array( 'hourly', 'daily', 'weekly' ),
         ),
-        'notification_email'            => array( 'type' => 'email' ),
-        'notify_on_critical_findings'   => array( 'type' => 'checkbox' ),
-        'email_from_name'               => array( 'type' => 'text' ),
-        'email_from_address'            => array( 'type' => 'email' ),
-        'automation_cooldown_minutes'   => array( 'type' => 'number' ),
-        'default_report_format'         => array(
+        'notification_email'              => array( 'type' => 'email' ),
+        'notify_on_critical_findings'     => array( 'type' => 'checkbox' ),
+        'email_from_name'                 => array( 'type' => 'text' ),
+        'email_from_address'              => array( 'type' => 'email' ),
+        'automation_cooldown_minutes'     => array( 'type' => 'number' ),
+        'default_report_format'           => array(
             'type'    => 'select',
             'options' => array( 'csv', 'json', 'pdf' ),
         ),
-        'default_report_period_days'    => array( 'type' => 'number' ),
-        'enable_rest_api_scanner'       => array( 'type' => 'checkbox' ),
-        'enable_seo_scanning'           => array( 'type' => 'checkbox' ),
-        'enable_geo_scanning'           => array( 'type' => 'checkbox' ),
-        'enable_accessibility_scanning' => array( 'type' => 'checkbox' ),
-        'enable_woocommerce_scanning'   => array( 'type' => 'checkbox' ),
-        'enable_debug_logging'          => array( 'type' => 'checkbox' ),
+        'default_report_period_days'      => array( 'type' => 'number' ),
+        'enable_rest_api_scanner'         => array( 'type' => 'checkbox' ),
+        'enable_xmlrpc_scanner'           => array( 'type' => 'checkbox' ),
+        'enable_security_headers_scanner' => array( 'type' => 'checkbox' ),
+        'enable_exposed_files_scanner'    => array( 'type' => 'checkbox' ),
+        'enable_seo_scanning'             => array( 'type' => 'checkbox' ),
+        'enable_geo_scanning'             => array( 'type' => 'checkbox' ),
+        'enable_accessibility_scanning'   => array( 'type' => 'checkbox' ),
+        'enable_woocommerce_scanning'     => array( 'type' => 'checkbox' ),
+        'enable_llms_txt'                 => array( 'type' => 'checkbox' ),
+        'enable_crawler_tracking'         => array( 'type' => 'checkbox' ),
+        'enable_debug_logging'            => array( 'type' => 'checkbox' ),
     );
 
     /**

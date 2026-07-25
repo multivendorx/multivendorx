@@ -3,7 +3,10 @@ import { registerVuloPilotRoute } from './routeRegistry';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Health from './pages/Health/Health';
 import SEO from './pages/SEO/SEO';
+import Performance from './pages/Performance/Performance';
+import Accessibility from './pages/Accessibility/Accessibility';
 import GEO from './pages/GEO/GEO';
+import CrawlerTraffic from './pages/CrawlerTraffic/CrawlerTraffic';
 import WooCommerce from './pages/WooCommerce/WooCommerce';
 import Automation from './pages/Automation/Automation';
 import Reports from './pages/Reports/Reports';
@@ -15,7 +18,13 @@ import Modules from './components/Modules/Modules';
 registerVuloPilotRoute({ tab: 'dashboard', component: Dashboard });
 registerVuloPilotRoute({ tab: 'health', component: Health });
 registerVuloPilotRoute({ tab: 'seo', component: SEO });
+registerVuloPilotRoute({ tab: 'performance', component: Performance });
+registerVuloPilotRoute({ tab: 'accessibility', component: Accessibility });
 registerVuloPilotRoute({ tab: 'geo', component: GEO });
+registerVuloPilotRoute({
+	tab: 'crawler-traffic',
+	component: CrawlerTraffic,
+});
 registerVuloPilotRoute({ tab: 'woocommerce', component: WooCommerce });
 registerVuloPilotRoute({ tab: 'automation', component: Automation });
 registerVuloPilotRoute({ tab: 'reports', component: Reports });

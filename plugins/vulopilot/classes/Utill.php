@@ -40,6 +40,7 @@ class Utill {
         'activity_log'         => 'vulopilot_activity_logs',
         'site_health_snapshot' => 'vulopilot_site_health_snapshots',
         'ai_action_run'        => 'vulopilot_ai_action_runs',
+        'crawler_visit'        => 'vulopilot_crawler_visits',
     );
 
     /**
@@ -70,34 +71,41 @@ class Utill {
      */
     const VULOPILOT_SETTINGS_DEFAULTS = array(
         // General.
-        'scan_frequency'                => 'daily',
+        'scan_frequency'                  => 'daily',
         // Notifications.
-        'notification_email'            => '',
-        'notify_on_critical_findings'   => false,
-        'email_from_name'               => '',
-        'email_from_address'            => '',
+        'notification_email'              => '',
+        'notify_on_critical_findings'     => false,
+        'email_from_name'                 => '',
+        'email_from_address'              => '',
         // Automation — replaces AutomationEngine's previously-hardcoded
         // COOLDOWN_MINUTES constant (ARCHITECTURE.md's Prompt 12 pass
         // shipped a fixed 60-minute rate limit as a pragmatic v1; this
         // makes it a real, per-site setting instead).
-        'automation_cooldown_minutes'   => 60,
+        'automation_cooldown_minutes'     => 60,
         // Reports.
-        'default_report_format'         => 'pdf',
-        'default_report_period_days'    => 30,
+        'default_report_format'           => 'pdf',
+        'default_report_period_days'      => 30,
         // Security.
-        'enable_rest_api_scanner'       => true,
+        'enable_rest_api_scanner'         => true,
+        'enable_xmlrpc_scanner'           => true,
+        'enable_security_headers_scanner' => true,
+        'enable_exposed_files_scanner'    => true,
         // Scanner-category kill switches — each gates every scanner
         // registered under that category string (SCANNERS.md), not just
         // one check, since that's what these settings-page groupings
         // actually correspond to (e.g. disabling "WooCommerce" turns off
         // both the original WooCommerceScanner and the 11 Product*
         // scanners from the WooCommerce AI pass — all category `woocommerce`).
-        'enable_seo_scanning'           => true,
-        'enable_geo_scanning'           => true,
-        'enable_accessibility_scanning' => true,
-        'enable_woocommerce_scanning'   => true,
+        'enable_seo_scanning'             => true,
+        'enable_geo_scanning'             => true,
+        'enable_accessibility_scanning'   => true,
+        'enable_woocommerce_scanning'     => true,
+        // AI Visibility / GEO.
+        'enable_llms_txt'                 => true,
+        // AI Crawler Traffic Monitoring.
+        'enable_crawler_tracking'         => true,
         // Advanced / Debug.
-        'enable_debug_logging'          => false,
+        'enable_debug_logging'            => false,
     );
 
     /**
@@ -120,12 +128,16 @@ class Utill {
         'woocommerce',
         'accessibility',
         'ai-usage',
+        'geo',
         'recent-activity',
         'quick-fixes',
         'health-timeline',
         'latest-reports',
         'pending-approval',
         'automation-status',
+        'crawler-traffic',
+        'health-pillars',
+        'recent-issues',
     );
 
     /**
