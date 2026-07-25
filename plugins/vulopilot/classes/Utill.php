@@ -150,4 +150,41 @@ class Utill {
      * @var string
      */
     const ACTIVE_MODULES_DB_KEY = 'vulopilot_all_active_module_list';
+
+    /**
+     * Records an unexpected exception — Modules::load_active_modules()'s
+     * catch-and-skip path calls this so one broken module's constructor
+     * (Free's own, vulopilot-pro's, or a third party's) doesn't take the
+     * whole site down. Writes to PHP's own error log only when the
+     * Advanced tab's debug-logging setting is on — the same opt-in gate
+     * Reports\ReportGenerator::maybe_log_debug() already uses, kept
+     * consistent rather than introducing a second logging convention.
+     *
+     * @param \Throwable $exception The exception to record.
+     * @return void
+     */
+    public function log( \Throwable $exception ): void {
+        $settings = wp_parse_args( get_option( self::VULOPILOT_SETTINGS_KEY, array() ), self::VULOPILOT_SETTINGS_DEFAULTS );
+
+        if ( empty( $settings['enable_debug_logging'] ) ) {
+            return;
+        }
+
+        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- gated behind an explicit, opt-in admin setting (Advanced tab), matching Reports\ReportGenerator::maybe_log_debug()'s existing pattern.
+        error_log( sprintf( '[VuloPilot] %s', $exception->getMessage() ) );
+    }
+
+    /**
+     * Whether VuloPilot Pro is installed, active, and license-active —
+     * mirrors MultiVendorX\Utill::is_khali_dabba()'s role for this product
+     * line. VuloPilotPro::check_pro_active() is the only thing that ever
+     * hooks `kothay_dabba_vulopilot` (default false when Pro isn't
+     * present), same filter-based "ask Pro, don't check for it directly"
+     * pattern the multivendorx family uses.
+     *
+     * @return bool
+     */
+    public function is_khali_dabba(): bool {
+        return (bool) apply_filters( 'kothay_dabba_vulopilot', false );
+    }
 }

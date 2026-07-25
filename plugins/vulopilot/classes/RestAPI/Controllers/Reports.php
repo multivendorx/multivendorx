@@ -108,6 +108,8 @@ class Reports extends \WP_REST_Controller {
                 'page'     => absint( $request->get_param( 'page' ) ) ?: 1,
                 'per_page' => absint( $request->get_param( 'per_page' ) ) ?: 20,
                 'status'   => sanitize_key( (string) $request->get_param( 'status' ) ),
+                'orderby'  => sanitize_key( (string) $request->get_param( 'orderby' ) ),
+                'order'    => sanitize_key( (string) $request->get_param( 'order' ) ),
             )
         );
 
@@ -121,6 +123,8 @@ class Reports extends \WP_REST_Controller {
             },
             $result['data']
         );
+
+        $result['status_counts'] = $repository->get_status_counts();
 
         return rest_ensure_response( $result );
     }
@@ -152,8 +156,19 @@ class Reports extends \WP_REST_Controller {
     public function create_item( $request ) {
         $settings = wp_parse_args( get_option( Utill::VULOPILOT_SETTINGS_KEY, array() ), Utill::VULOPILOT_SETTINGS_DEFAULTS );
 
-        $report_type = sanitize_key( (string) $request->get_param( 'report_type' ) ) ?: 'scan_summary';
-        $format      = sanitize_key( (string) $request->get_param( 'format' ) ) ?: (string) $settings['default_report_format'];
+        $report_type      = sanitize_key( (string) $request->get_param( 'report_type' ) ) ?: 'scan_summary';
+        $requested_format = sanitize_key( (string) $request->get_param( 'format' ) );
+        $format           = $requested_format ?: (string) $settings['default_report_format'];
+
+        // Only the *settings default* falls back silently to 'csv' when its
+        // exporter isn't registered (e.g. the default was set to 'pdf' while
+        // vulopilot-pro's AdvancedReports module was active, then it was
+        // deactivated) — an explicitly requested format that isn't
+        // registered still errors below, since silently substituting a
+        // format the caller asked for by name would be surprising, not helpful.
+        if ( ! $requested_format && ! VuloPilot()->report_exporter_registry->get_exporter( $format ) ) {
+            $format = 'csv';
+        }
 
         if ( ! VuloPilot()->report_exporter_registry->get_exporter( $format ) ) {
             return new \WP_Error( 'vulopilot_invalid_format', __( 'Unknown report format.', 'vulopilot' ), array( 'status' => 400 ) );

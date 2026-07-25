@@ -7,7 +7,7 @@
 
 namespace VuloPilot\Scanners;
 
-use VuloPilotCore\ValueObjects\ScanResult;
+use VuloPilot\ValueObjects\ScanResult;
 
 defined( 'ABSPATH' ) || exit;
 

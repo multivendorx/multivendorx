@@ -7,10 +7,10 @@
 
 namespace VuloPilot\AIProviders\Decorators;
 
-use VuloPilotCore\Contracts\AI\AIProviderInterface;
-use VuloPilotCore\Exceptions\TransientProviderException;
-use VuloPilotCore\ValueObjects\AIRequest;
-use VuloPilotCore\ValueObjects\AIResponse;
+use VuloPilot\Contracts\AI\AIProviderInterface;
+use VuloPilot\Exceptions\TransientProviderException;
+use VuloPilot\ValueObjects\AIRequest;
+use VuloPilot\ValueObjects\AIResponse;
 
 defined( 'ABSPATH' ) || exit;
 

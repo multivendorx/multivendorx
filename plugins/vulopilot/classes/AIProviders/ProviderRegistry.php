@@ -7,7 +7,7 @@
 
 namespace VuloPilot\AIProviders;
 
-use VuloPilotCore\Contracts\AI\AIProviderInterface;
+use VuloPilot\Contracts\AI\AIProviderInterface;
 use VuloPilot\Repositories\AiProviderConfigRepository;
 use VuloPilot\Services\CredentialEncryption;
 

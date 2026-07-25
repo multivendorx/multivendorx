@@ -29,4 +29,22 @@ class ReportRepository extends AbstractRepository {
     protected function get_table_key(): string {
         return 'report';
     }
+
+    /**
+     * Generating/ready/failed counts, zero-filled — backs the Reports
+     * table's status-count pill bar (same reasoning as
+     * AutomationRepository::get_status_counts()).
+     *
+     * @return array{generating: int, ready: int, failed: int}
+     */
+    public function get_status_counts(): array {
+        return array_merge(
+            array(
+                'generating' => 0,
+                'ready'      => 0,
+                'failed'     => 0,
+            ),
+            $this->count_by_column( 'status' )
+        );
+    }
 }

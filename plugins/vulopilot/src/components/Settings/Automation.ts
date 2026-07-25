@@ -17,6 +17,10 @@ export default {
 				'How long an automation must wait after last firing before it can fire again — guards against the same automation re-triggering on every scan or every save of the same object.',
 				'vulopilot'
 			),
+			// The whole trigger→action AutomationEngine this cooldown
+			// guards lives in vulopilot-pro's Automation module — the
+			// setting has nothing to configure without it.
+			moduleEnabled: 'automation',
 		},
 	],
 };

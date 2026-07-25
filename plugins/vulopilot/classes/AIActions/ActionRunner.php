@@ -7,7 +7,7 @@
 
 namespace VuloPilot\AIActions;
 
-use VuloPilotCore\ValueObjects\Severity;
+use VuloPilot\ValueObjects\Severity;
 use VuloPilot\AIProviders\Support\SafeRequestSender;
 use VuloPilot\Repositories\ActionRunRepository;
 use VuloPilot\Repositories\ActivityLogRepository;
@@ -199,7 +199,7 @@ class ActionRunner {
 
     /**
      * @param string $action_id Action id to resolve.
-     * @return \VuloPilotCore\Contracts\AI\AIActionInterface
+     * @return \VuloPilot\Contracts\AI\AIActionInterface
      *
      * @throws \InvalidArgumentException If unregistered.
      */

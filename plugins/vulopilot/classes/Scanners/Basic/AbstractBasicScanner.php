@@ -7,7 +7,7 @@
 
 namespace VuloPilot\Scanners\Basic;
 
-use VuloPilotCore\Contracts\Scanner\ScannerInterface;
+use VuloPilot\Contracts\Scanner\ScannerInterface;
 
 defined( 'ABSPATH' ) || exit;
 

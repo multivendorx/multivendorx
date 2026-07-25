@@ -7,6 +7,7 @@ interface DashboardWidgetProps {
 	icon: string;
 	isLoading?: boolean;
 	onHide: () => void;
+	isCustomizing: boolean;
 	children: React.ReactNode;
 }
 
@@ -30,12 +31,20 @@ interface DashboardWidgetProps {
  * only implements what's inside `children` — the header, loading
  * skeleton, and drag/hide affordances are never re-implemented per
  * widget.
+ *
+ * `isCustomizing` gates the whole `action` block: outside customization
+ * mode there's no drag handle and no hide control at all (not just
+ * visually hidden — omitted from the `CardComponent` call the same way
+ * every non-dashboard `CardComponent` usage in this plugin already omits
+ * `action` when it has none), so a read-only dashboard can't be
+ * accidentally reordered or hidden by a stray click.
  */
 const DashboardWidget: React.FC<DashboardWidgetProps> = ({
 	title,
 	icon,
 	isLoading,
 	onHide,
+	isCustomizing,
 	children,
 }) => {
 	return (
@@ -49,25 +58,27 @@ const DashboardWidget: React.FC<DashboardWidgetProps> = ({
 			}
 			isLoading={isLoading}
 			action={
-				<div className="dashboard-widget-controls">
-					<i
-						className="adminfont-move widget-drag-handle"
-						title={__('Drag to reorder', 'vulopilot')}
-					/>
-					<i
-						className="adminfont-close"
-						title={__('Hide widget', 'vulopilot')}
-						role="button"
-						tabIndex={0}
-						onClick={onHide}
-						onKeyDown={(e) => {
-							if (e.key === 'Enter' || e.key === ' ') {
-								e.preventDefault();
-								onHide();
-							}
-						}}
-					/>
-				</div>
+				isCustomizing ? (
+					<div className="dashboard-widget-controls">
+						<i
+							className="adminfont-move widget-drag-handle"
+							title={__('Drag to reorder', 'vulopilot')}
+						/>
+						<i
+							className="adminfont-close"
+							title={__('Hide widget', 'vulopilot')}
+							role="button"
+							tabIndex={0}
+							onClick={onHide}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter' || e.key === ' ') {
+									e.preventDefault();
+									onHide();
+								}
+							}}
+						/>
+					</div>
+				) : undefined
 			}
 		>
 			{children}
