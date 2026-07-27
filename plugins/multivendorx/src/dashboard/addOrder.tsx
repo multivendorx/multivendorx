@@ -616,8 +616,6 @@ const AddOrder = () => {
 		setIsEditMode: (value: boolean) => void,
 		editRef: React.RefObject<HTMLDivElement | null>,
 		type: 'billing' | 'shipping'
-	) => {
-		const hasCustomer = !!selectedCustomer;
 
 		return (
 			<CardComponent
