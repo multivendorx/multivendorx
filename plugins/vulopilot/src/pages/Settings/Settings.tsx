@@ -9,6 +9,8 @@ import { CardComponent, ModuleGuardComponent, NavigatorComponent } from '@zyra/c
 import { SettingProvider, useSetting } from '../../contexts/SettingContext';
 import getTemplateData from '../../services/templateService';
 import ImportExportPanel from '../../components/Settings/ImportExportPanel';
+import AiProvidersPanel from '../../components/Settings/Account/AiProvidersPanel';
+import LlmsTxtCard from '../../components/Settings/Scanning/LlmsTxtCard';
 import ShowProPopup from '../../components/Popup/Popup';
 
 /**
@@ -103,15 +105,61 @@ const Settings = () => {
 			return <ImportExportPanel />;
 		}
 
+		// Same "special component" escape hatch as 'import-export' above —
+		// AI provider configs live in their own vulopilot_ai_provider_configs
+		// table (AI-ARCHITECTURE.md), not this tab's flat settings option,
+		// so they don't fit InputRenderer's per-field auto-save model either.
+		if (currentTab === 'ai-providers') {
+			return <AiProvidersPanel />;
+		}
+
+		// The mockup places the "live file / regenerate" row inside the
+		// llms.txt field group, before the AI summary/evidence/alerts
+		// sections below it — not after the whole tab. Splitting the one
+		// settingModal.modal array around that boundary and rendering
+		// InputRenderer twice (same setting/updateSetting/id/submitUrl)
+		// reuses the existing renderer rather than introducing a new one.
+		const llmsTxtSectionEnd = settingModal?.modal.findIndex(
+			(field: { key: string }) => field.key === 'geo-section-ai-summary'
+		);
+		const isGeoTabSplit =
+			currentTab === 'geo' &&
+			typeof llmsTxtSectionEnd === 'number' &&
+			llmsTxtSectionEnd > -1;
+
 		return (
 			<>
 				{settingName === currentTab ? (
-					<InputRenderer
-						settings={settingModal}
-						setting={setting}
-						updateSetting={updateSetting}
-						Popup={ShowProPopup}
-					/>
+					isGeoTabSplit ? (
+						<>
+							<InputRenderer
+								settings={{
+									...settingModal,
+									modal: settingModal.modal.slice(0, llmsTxtSectionEnd),
+								}}
+								setting={setting}
+								updateSetting={updateSetting}
+								Popup={ShowProPopup}
+							/>
+							<LlmsTxtCard />
+							<InputRenderer
+								settings={{
+									...settingModal,
+									modal: settingModal.modal.slice(llmsTxtSectionEnd),
+								}}
+								setting={setting}
+								updateSetting={updateSetting}
+								Popup={ShowProPopup}
+							/>
+						</>
+					) : (
+						<InputRenderer
+							settings={settingModal}
+							setting={setting}
+							updateSetting={updateSetting}
+							Popup={ShowProPopup}
+						/>
+					)
 				) : (
 					<>{__('Loading…', 'vulopilot')}</>
 				)}

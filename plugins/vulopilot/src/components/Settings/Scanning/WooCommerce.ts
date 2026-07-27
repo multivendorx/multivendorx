@@ -17,7 +17,7 @@ export default {
 				'vulopilot'
 			),
 			options: [
-				{ key: 'enabled', label: '', value: 'enabled' },
+				{ key: 'enable_woocommerce_scanning', label: '', value: 'enable_woocommerce_scanning' },
 			],
 		},
 	],

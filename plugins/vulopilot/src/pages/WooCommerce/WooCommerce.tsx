@@ -61,7 +61,10 @@ const WooCommerceAiLockedCard = () => {
 				height="auto"
 				position="lightbox"
 			>
-				{appLocalizer.active_modules.includes('woo-commerce-ai') ? (
+				{appLocalizer.khali_dabba ? (
+					// Pro is active — this specific module just isn't
+					// toggled on yet, so point at Modules rather than
+					// pitching an upgrade the user already has.
 					<ShowProPopup moduleName="woo-commerce-ai" />
 				) : (
 					<ShowProPopup />

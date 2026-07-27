@@ -10,12 +10,15 @@ namespace VuloPilot\RestAPI\Controllers;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * GET /llms-txt/preview backs src/pages/GEO/LlmsTxtCard.tsx's "Preview"
- * action — reuses GeoAnalysis\LlmsTxtGenerator::generate() directly so an
- * admin can see the current content without leaving wp-admin (the live
- * public `/llms.txt` route is served separately, by the same generator,
- * via LlmsTxtGenerator's own template_redirect hook — this controller
- * exists only so the preview doesn't have to fetch that public URL).
+ * GET /llms-txt/regenerate backs the "Regenerate" button on Settings → GEO
+ * (src/components/Settings/Scanning/LlmsTxtCard.tsx) — returns a fresh
+ * GeoAnalysis\LlmsTxtGenerator::generate() output (live pages/posts, not
+ * whatever's currently saved in llms_txt_content) so the button can
+ * discard a customized version and start over from what the site
+ * actually looks like today. This class previously also backed a
+ * "Preview" action; that's gone now that llms_txt_content is a plain
+ * auto-saving textarea (see Controllers\Settings), which is its own live
+ * preview.
  *
  * @class       LlmsTxt controller
  * @version     1.0.0
@@ -34,12 +37,12 @@ class LlmsTxt extends \WP_REST_Controller {
     public function register_routes() {
         register_rest_route(
             VuloPilot()->rest_namespace,
-            '/' . $this->rest_base . '/preview',
+            '/' . $this->rest_base . '/regenerate',
             array(
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
-                    'callback'            => array( $this, 'get_preview' ),
-                    'permission_callback' => array( $this, 'get_preview_permissions_check' ),
+                    'callback'            => array( $this, 'get_regenerated_content' ),
+                    'permission_callback' => array( $this, 'get_regenerated_content_permissions_check' ),
                 ),
             )
         );
@@ -49,7 +52,7 @@ class LlmsTxt extends \WP_REST_Controller {
      * @param \WP_REST_Request $request Full request object.
      * @return bool
      */
-    public function get_preview_permissions_check( $request ) {
+    public function get_regenerated_content_permissions_check( $request ) {
         return current_user_can( 'manage_options' );
     }
 
@@ -57,7 +60,7 @@ class LlmsTxt extends \WP_REST_Controller {
      * @param \WP_REST_Request $request Full request object.
      * @return \WP_REST_Response
      */
-    public function get_preview( $request ) {
+    public function get_regenerated_content( $request ) {
         return rest_ensure_response( array( 'content' => VuloPilot()->llms_txt_generator->generate() ) );
     }
 }

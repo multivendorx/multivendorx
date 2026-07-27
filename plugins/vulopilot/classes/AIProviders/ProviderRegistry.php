@@ -81,6 +81,42 @@ class ProviderRegistry {
     }
 
     /**
+     * Metadata for every registered adapter, configured or not — what the
+     * AI Providers settings panel (AI-ARCHITECTURE.md's "What's not here
+     * yet": "nothing yet writes to vulopilot_ai_provider_configs from the
+     * dashboard") reads to build its provider dropdown and per-provider
+     * model list, without a REST controller reaching into this class's
+     * private $adapter_classes or duplicating each adapter's own
+     * get_label()/get_available_models(). Instantiating with an empty
+     * credential is safe here specifically because every adapter
+     * constructor only stores the credential/base URL, it never makes a
+     * network call (see this class's own docblock and each adapter's,
+     * cross-referenced in AI-ARCHITECTURE.md's adapter table) — this
+     * method must not be used anywhere a real request could actually be
+     * sent, only for reading get_id()/get_label()/get_available_models().
+     *
+     * @return array<string, array{label: string, available_models: string[], requires_credential: bool}>
+     */
+    public function get_available_adapters(): array {
+        $adapters = array();
+
+        foreach ( $this->adapter_classes as $provider_id => $class ) {
+            $instance = new $class( '' );
+
+            $adapters[ $provider_id ] = array(
+                'label'               => $instance->get_label(),
+                'available_models'    => $instance->get_available_models(),
+                // Ollama is the one adapter with no API key at all (a base
+                // URL instead, defaulted by the adapter itself) — see
+                // AI-ARCHITECTURE.md's adapter table's "Auth" column.
+                'requires_credential' => 'ollama' !== $provider_id,
+            );
+        }
+
+        return $adapters;
+    }
+
+    /**
      * Builds one provider id's fully decorated adapter, or null if it
      * isn't registered, isn't configured, or is configured but disabled.
      *

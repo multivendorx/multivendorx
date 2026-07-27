@@ -1,5 +1,5 @@
 /* global appLocalizer */
-import React from 'react';
+import React, { useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { getApiLink, sendApiResponse } from '@zyra/core';
@@ -7,9 +7,11 @@ import {
 	CardComponent,
 	ModuleGuardComponent,
 	NoticeManager,
+	PopupComponent,
 } from '@zyra/components';
 import { TableCard, TableRow } from '@zyra/table';
 import { useApiList } from '../services/useApiList';
+import ShowProPopup from './Popup/Popup';
 
 export interface Finding extends TableRow {
 	id: number;
@@ -22,11 +24,58 @@ export interface Finding extends TableRow {
 	 * Which AI action can fix this finding, e.g. 'generate-alt' — null/
 	 * undefined when this finding's scanner has no mapped fix, or when
 	 * vulopilot-pro's OneClickFix module isn't active (in which case this
-	 * field is never added to the response at all). See
-	 * VuloPilotPro\OneClickFix\ScannerFixMap.
+	 * field is never added to the response at all). Read by the fix
+	 * handler vulopilot-pro's OneClickFix module registers (see the
+	 * `getFindingFixHandler` docblock below) — Free never inspects it itself.
+	 * See VuloPilotPro\OneClickFix\ScannerFixMap.
 	 */
 	fix_action_id?: string | null;
 }
+
+/**
+ * What a registered fix handler resolves to — Free displays this itself
+ * (see getFindingFixHandler's own docblock for why the handler can't just
+ * show its own notice) rather than caring what actually happened.
+ */
+interface FixOutcome {
+	success: boolean;
+	message: string;
+}
+
+/**
+ * The "Fix" row action's actual behavior — registered by vulopilot-pro's
+ * OneClickFix module (modules/OneClickFix/src/index.tsx) via this filter,
+ * replacing the `null` default with a function that calls
+ * `POST /findings/{id}/fix` and resolves what happened. Free never contains
+ * that REST call or any AI-action-to-scanner mapping itself: the "Fix"
+ * action below is always visible (register a source, don't modify the
+ * host — same pattern as vulopilot_woocommerce_ai_panel/
+ * vulopilot_pro_dashboard_component), but its onClick only ever does one of
+ * two things — call this handler, or open the Pro popup when it's null
+ * (Pro not installed/active, or Pro's OneClickFix module specifically
+ * isn't enabled — this module's own JS entry is itself gated on
+ * appLocalizer.active_modules, so a null handler covers both cases without
+ * Free needing to know which).
+ *
+ * The handler resolves a { success, message } outcome rather than showing
+ * its own notice: @multivendorx/zyra isn't in webpack's `externals` (only
+ * react/react-dom/@wordpress/* are — tools/webpack/create-config.js), so
+ * it's bundled separately per plugin. Free's and Pro's NoticeManager are
+ * two different in-memory singletons — a notice added from Pro's bundle is
+ * invisible to the NoticeReceiverComponent Free's own HeaderComponent
+ * mounted from Free's bundle. Free's onClick below shows the notice itself
+ * using ITS OWN NoticeManager, which the receiver actually subscribes to.
+ *
+ * Read fresh on every click rather than cached in a module-level constant:
+ * Pro's own script (vulopilot-pro-admin-script) is a separate, later
+ * <script> tag that depends on this one (it reads the `appLocalizer` global
+ * this script localizes), so it hasn't registered its addFilter() callback
+ * yet at the moment this module first evaluates — caching the result here
+ * would permanently capture `null` and always show the popup, active
+ * module or not. By click time both scripts have long finished running.
+ */
+const getFindingFixHandler = () =>
+	applyFilters('vulopilot_finding_fix_handler', null);
 
 interface FindingsTableProps {
 	title: string;
@@ -46,6 +95,8 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 	description,
 	category,
 }) => {
+	const [isProPopupOpen, setIsProPopupOpen] = useState(false);
+
 	/** Every finding status, in display order — reused for both the status-count pill bar and (previously) the status dropdown filter it now replaces. */
 	const statusOptions = [
 		{ label: __('Open', 'vulopilot'), value: 'open' },
@@ -163,14 +214,7 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 		actions: {
 			label: __('Actions', 'vulopilot'),
 			type: 'action',
-			// vulopilot-pro's OneClickFix module injects a "Fix this" entry
-			// here (vulopilot_finding_actions filter) when it's active —
-			// Free has no AI-action-to-scanner mapping of its own and
-			// doesn't render one by default, matching the "register a
-			// source, don't modify the host" pattern this codebase already
-			// uses for vulopilot_reports_advanced_panel/
-			// vulopilot_pro_dashboard_component.
-			actions: applyFilters('vulopilot_finding_actions', [
+			actions: [
 				{
 					label: (row?: Record<string, unknown>) =>
 						row?.status === 'open'
@@ -192,7 +236,47 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 					icon: 'controls-repeat',
 					onClick: handleReopen,
 				},
-			]) as any[],
+				// Always visible — Free itself has no AI-action-to-scanner
+				// mapping or fix REST call (see getFindingFixHandler's own
+				// docblock above); this is only ever the entry point + gate.
+				{
+					label: __('Fix', 'vulopilot'),
+					icon: 'admin-tools',
+					onClick: (row?: Record<string, unknown>) => {
+						const findingFixHandler = getFindingFixHandler();
+
+						if (typeof findingFixHandler === 'function') {
+							// Pro's handler applies the fix directly and
+							// resolves what happened (see its own docblock
+							// for why it can't show its own notice) — Free
+							// shows it here, then refetches so the row's
+							// status reflects the fix immediately rather
+							// than needing a manual page refresh.
+							Promise.resolve(
+								findingFixHandler(row) as
+									| Promise<FixOutcome>
+									| undefined
+							).then((outcome) => {
+								if (outcome?.message) {
+									NoticeManager.add({
+										uniqueKey: `finding-fix-${row?.id}`,
+										type: outcome.success
+											? 'success'
+											: 'error',
+										position: 'float',
+										message: outcome.message,
+									});
+								}
+
+								refetch();
+							});
+							return;
+						}
+
+						setIsProPopupOpen(true);
+					},
+				},
+			] as any[],
 		},
 	};
 
@@ -266,6 +350,22 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 					},
 				]}
 			/>
+			<PopupComponent
+				open={isProPopupOpen}
+				onClose={() => setIsProPopupOpen(false)}
+				width={31.25}
+				height="auto"
+				position="lightbox"
+			>
+				{appLocalizer.khali_dabba ? (
+					// Pro is active — OneClickFix specifically isn't
+					// enabled, so point at Modules rather than pitching
+					// an upgrade the user already has.
+					<ShowProPopup moduleName="one-click-fix" />
+				) : (
+					<ShowProPopup />
+				)}
+			</PopupComponent>
 		</>
 	);
 };

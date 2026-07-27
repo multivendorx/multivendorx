@@ -1,18 +1,192 @@
-import Overview from './Overview';
+/* global appLocalizer */
+import { useEffect, useState } from 'react';
+import { __ } from '@wordpress/i18n';
+import { ButtonInput } from '@zyra/inputs';
+import { getApiLink, getApiResponse, sendApiResponse } from '@zyra/core';
+import {
+	ColumnComponent,
+	ContainerComponent,
+	ModuleGuardComponent,
+	NoticeManager,
+} from '@zyra/components';
+import DashboardGrid from '../../dashboard-widgets/DashboardGrid';
+import WelcomeSection from './WelcomeSection';
+import { DashboardSummary } from '../../dashboard-widgets/types';
+import './Dashboard.scss';
 
 /**
- * Renders the redesigned "Website Health" layout (Overview.tsx) — a
- * fixed-section page (hero + pillar chips, tabbed "needs attention",
- * GEO/Brand Visibility spotlight, system status strip, timeline,
- * activity/reports/Pro) with its own collapsed-by-default "Customize
- * dashboard" section-visibility panel, rather than the previous
- * drag-and-drop widget grid (DashboardGrid.tsx/registry.ts) — the new
- * design has no grid/reorder concept, just show/hide. DashboardGrid,
- * registry.ts's widgets, and WelcomeSection.tsx are unchanged and still
- * exist (nothing was deleted), they're just no longer mounted from this
- * page; Overview.tsx reuses WelcomeSection's exported HELP_RESOURCES for
- * its own "Getting started" links rather than duplicating those URLs.
+ * Zero-filled shape so DashboardGrid always has a real DashboardSummary
+ * to pass to widgets while the first `/dashboard` request is in flight —
+ * widgets render their own skeleton via the `isLoading` prop rather than
+ * the page needing a separate "loading" screen state.
  */
-const Dashboard = () => <Overview />;
+const EMPTY_SUMMARY: DashboardSummary = {
+	overall_score: 0,
+	open_findings: 0,
+	critical_findings: 0,
+	active_automations: 0,
+	ai_jobs_used: 0,
+	ai_jobs_quota: 0,
+	category_scores: {
+		seo: 0,
+		performance: 0,
+		security: 0,
+		accessibility: 0,
+		woocommerce: null,
+		geo: 0,
+	},
+	quick_fixes: 0,
+	pending_approvals: 0,
+	automation_status: { enabled: 0, disabled: 0 },
+};
+
+/**
+ * The Welcome section (`WelcomeSection.tsx`) already carries this page's
+ * title/description, so the widget grid's own header is deliberately
+ * buttons-only — no second "Dashboard" title repeating what the welcome
+ * banner already said. It reuses zyra's real `.title-section` class
+ * (the same bordered/padded bar `NavigatorHeaderComponent` itself
+ * renders into, see zyra's `NavigatorComponent.tsx`) rather than a
+ * bespoke wrapper, so it still gets the same chrome every other page's
+ * header has — `NavigatorHeaderComponent` itself can't be reused here
+ * because it early-returns `null` whenever both `headerTitle` and
+ * `headerDescription` are empty, which would silently drop the buttons
+ * too.
+ */
+const Dashboard = () => {
+	const [summary, setSummary] = useState<DashboardSummary>(EMPTY_SUMMARY);
+	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+	const [isScanning, setIsScanning] = useState(false);
+	// Local UI state only, never persisted — every fresh page load starts
+	// read-only, so a user can't accidentally drag/hide a widget just by
+	// having left customization mode on last time (DashboardGrid.tsx's
+	// own drag/hide REST calls already persist the *layout*; this only
+	// gates whether those controls are reachable at all).
+	const [isCustomizing, setIsCustomizing] = useState(false);
+
+	const loadDashboard = () => {
+		setIsLoading(true);
+		setError(null);
+
+		getApiResponse<DashboardSummary>(
+			getApiLink(appLocalizer, 'dashboard'),
+			{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+		)
+			.then((response) => {
+				if (!response) {
+					setError(
+						__(
+							'Could not load the dashboard summary.',
+							'vulopilot'
+						)
+					);
+					return;
+				}
+
+				setSummary(response);
+			})
+			.finally(() => setIsLoading(false));
+	};
+
+	useEffect(loadDashboard, []);
+
+	const handleRunScan = () => {
+		setIsScanning(true);
+
+		sendApiResponse(appLocalizer, getApiLink(appLocalizer, 'scans'), {
+			scanner_id: 'all',
+			trigger_type: 'manual',
+		})
+			.then((response) => {
+				if (response) {
+					NoticeManager.add({
+						uniqueKey: 'vulopilot-scan-started',
+						type: 'success',
+						position: 'float',
+						message: __(
+							'Scan started — results will appear here shortly.',
+							'vulopilot'
+						),
+					});
+					loadDashboard();
+				} else {
+					NoticeManager.add({
+						uniqueKey: 'vulopilot-scan-failed',
+						type: 'error',
+						position: 'float',
+						message: __(
+							'Could not start a scan. Please try again.',
+							'vulopilot'
+						),
+					});
+				}
+			})
+			.finally(() => setIsScanning(false));
+	};
+
+	const pageHeader = (
+		<div className="title-section dashboard-header-actions">
+			<ButtonInput
+				buttons={[
+					{
+						text: isCustomizing
+							? __('Done customizing', 'vulopilot')
+							: __('Customize dashboard', 'vulopilot'),
+						icon: isCustomizing ? 'yes' : 'edit',
+						color: 'border-purple',
+						onClick: () => setIsCustomizing(!isCustomizing),
+					},
+					{
+						text: isScanning
+							? __('Scanning…', 'vulopilot')
+							: __('Run scan', 'vulopilot'),
+						icon: 'search',
+						onClick: handleRunScan,
+					},
+				]}
+			/>
+		</div>
+	);
+
+	if (error) {
+		return (
+			<>
+				{pageHeader}
+				<ContainerComponent general>
+					<ColumnComponent>
+						<ModuleGuardComponent
+							icon="error"
+							title={__(
+								'Could not load the dashboard',
+								'vulopilot'
+							)}
+							desc={error}
+							buttonText={__('Retry', 'vulopilot')}
+							onButtonClick={loadDashboard}
+						/>
+					</ColumnComponent>
+				</ContainerComponent>
+			</>
+		);
+	}
+
+	return (
+		<>
+			<WelcomeSection />
+
+			{pageHeader}
+			<ContainerComponent general>
+				<ColumnComponent>
+					<DashboardGrid
+						summary={summary}
+						isLoading={isLoading}
+						isCustomizing={isCustomizing}
+					/>
+				</ColumnComponent>
+			</ContainerComponent>
+		</>
+	);
+};
 
 export default Dashboard;

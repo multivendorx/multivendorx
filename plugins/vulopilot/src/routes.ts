@@ -14,6 +14,11 @@ import AIAssistant from './pages/AIAssistant/AIAssistant';
 import Activity from './pages/Activity/Activity';
 import Settings from './pages/Settings/Settings';
 import Modules from './components/Modules/Modules';
+import BrandVisibility from './pages/BrandVisibility/BrandVisibility';
+import Security from './pages/Security/Security';
+import AIContent from './pages/AIContent/AIContent';
+import Content from './pages/Content/Content';
+import Schema from './pages/Schema/Schema';
 
 registerVuloPilotRoute({ tab: 'dashboard', component: Dashboard });
 registerVuloPilotRoute({ tab: 'health', component: Health });
@@ -32,3 +37,11 @@ registerVuloPilotRoute({ tab: 'ai-assistant', component: AIAssistant });
 registerVuloPilotRoute({ tab: 'activity', component: Activity });
 registerVuloPilotRoute({ tab: 'modules', component: Modules });
 registerVuloPilotRoute({ tab: 'settings', component: Settings });
+registerVuloPilotRoute({
+	tab: 'brand-visibility',
+	component: BrandVisibility,
+});
+registerVuloPilotRoute({ tab: 'security', component: Security });
+registerVuloPilotRoute({ tab: 'ai-content', component: AIContent });
+registerVuloPilotRoute({ tab: 'content', component: Content });
+registerVuloPilotRoute({ tab: 'schema', component: Schema });

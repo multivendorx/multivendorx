@@ -31,7 +31,16 @@ class GeoSummaryBlockScanner extends AbstractBasicScanner {
 
     private const BATCH_SIZE              = 50;
     private const MIN_WORD_COUNT_TO_CHECK = 300;
-    private const SUMMARY_WINDOW_CHARS    = 600;
+
+    /**
+     * Rough average English word length (letters + trailing space) used
+     * to convert Scanning → GEO's `answer_first_words` setting (a word
+     * count, matching how the field is actually labeled/described to an
+     * admin) into the character-based window has_early_summary() scans —
+     * a real character count is needed since summary markers/list tags
+     * are found via substring/regex, not word-by-word parsing.
+     */
+    private const CHARS_PER_WORD = 6;
 
     private const SUMMARY_MARKERS = array( 'tl;dr', 'tldr', 'key takeaways', 'in summary', 'quick summary', 'summary:' );
 
@@ -60,6 +69,18 @@ class GeoSummaryBlockScanner extends AbstractBasicScanner {
      * @inheritDoc
      */
     public function scan(): array {
+        $settings = wp_parse_args( get_option( \VuloPilot\Utill::VULOPILOT_SETTINGS_KEY, array() ), \VuloPilot\Utill::VULOPILOT_SETTINGS_DEFAULTS );
+
+        // GEO has no whole-category kill switch (unlike SEO/Accessibility/
+        // WooCommerce) — this is this one scanner's own on/off switch,
+        // letting an admin turn off just this check while every other GEO
+        // check keeps running.
+        if ( empty( $settings['flag_missing_ai_summary'] ) ) {
+            return array();
+        }
+
+        $window_chars = absint( $settings['answer_first_words'] ?? 200 ) * self::CHARS_PER_WORD;
+
         $findings = array();
         $posts    = get_posts(
             array(
@@ -74,7 +95,7 @@ class GeoSummaryBlockScanner extends AbstractBasicScanner {
         foreach ( $posts as $post ) {
             $word_count = str_word_count( wp_strip_all_tags( $post->post_content ) );
 
-            if ( $word_count < self::MIN_WORD_COUNT_TO_CHECK || $this->has_early_summary( $post->post_content ) ) {
+            if ( $word_count < self::MIN_WORD_COUNT_TO_CHECK || $this->has_early_summary( $post->post_content, $window_chars ) ) {
                 continue;
             }
 
@@ -100,11 +121,12 @@ class GeoSummaryBlockScanner extends AbstractBasicScanner {
     }
 
     /**
-     * @param string $content Post content (raw HTML).
+     * @param string $content      Post content (raw HTML).
+     * @param int    $window_chars How many characters from the top count as "early".
      * @return bool
      */
-    private function has_early_summary( string $content ): bool {
-        $window = mb_substr( $content, 0, self::SUMMARY_WINDOW_CHARS );
+    private function has_early_summary( string $content, int $window_chars ): bool {
+        $window = mb_substr( $content, 0, $window_chars );
 
         if ( preg_match( '/<(ul|ol)[\s>]/i', $window ) ) {
             return true;

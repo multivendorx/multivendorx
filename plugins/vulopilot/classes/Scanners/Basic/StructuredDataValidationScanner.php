@@ -55,6 +55,12 @@ class StructuredDataValidationScanner extends AbstractBasicScanner {
      * @inheritDoc
      */
     public function scan(): array {
+        $settings = wp_parse_args( get_option( \VuloPilot\Utill::VULOPILOT_SETTINGS_KEY, array() ), \VuloPilot\Utill::VULOPILOT_SETTINGS_DEFAULTS );
+
+        if ( empty( $settings['flag_missing_schema'] ) ) {
+            return array();
+        }
+
         $findings = array();
         $response = wp_remote_get(
             home_url( '/' ),

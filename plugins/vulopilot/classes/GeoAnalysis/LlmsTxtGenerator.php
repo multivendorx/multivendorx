@@ -55,6 +55,7 @@ class LlmsTxtGenerator {
         add_action( 'init', array( $this, 'register_rewrite_rule' ) );
         add_filter( 'query_vars', array( $this, 'add_query_var' ) );
         add_action( 'template_redirect', array( $this, 'maybe_serve' ) );
+        add_action( 'init', array( $this, 'maybe_bootstrap_physical_file' ), 20 );
     }
 
     /**
@@ -88,18 +89,78 @@ class LlmsTxtGenerator {
         }
 
         header( 'Content-Type: text/plain; charset=utf-8' );
-        echo $this->generate(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- plain-text response, not HTML; generate() only interpolates get_bloginfo()/get_permalink()/get_the_title(), no user input.
+        // Prefer an admin's saved edits (Settings → GEO's llms_txt_content
+        // textarea) over the auto-generated version, same precedence
+        // write_file()/maybe_bootstrap_physical_file() use — this virtual
+        // route and the real on-disk file should never disagree.
+        echo empty( $settings['llms_txt_content'] ) ? $this->generate() : $settings['llms_txt_content']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Content-Type is text/plain (not HTML/JS), so raw Markdown content here can't execute in a browser regardless of escaping; generate()'s own output only interpolates get_bloginfo()/get_permalink()/get_the_title().
         exit;
     }
 
     /**
-     * Builds the llms.txt content — also called directly by
-     * RestAPI\Controllers\LlmsTxt for the admin "Preview" action, so the
-     * preview never needs to hit the live public URL.
+     * Writes the effective content straight to a real `/llms.txt` at the
+     * site root — so "View live file" (and any AI crawler fetching it
+     * directly) doesn't depend on the rewrite rule above ever having been
+     * flushed, which is the actual reason that link 404s on a site that
+     * had this plugin active before this feature existed (a rewrite rule
+     * added via add_rewrite_rule() only takes effect once WordPress's
+     * cached rewrite_rules option is flushed — see Install.php's own
+     * migration note on this exact gotcha). Best-effort: a locked-down
+     * host where ABSPATH isn't writable still has the setting saved and
+     * the virtual route above still serves it correctly, it just doesn't
+     * also get a static file.
+     *
+     * @param string $content Effective llms.txt content to persist.
+     * @return bool True if the file was written.
+     */
+    public function write_file( string $content ): bool {
+        if ( ! wp_is_writable( ABSPATH ) ) {
+            return false;
+        }
+
+        $file_path = trailingslashit( ABSPATH ) . 'llms.txt';
+
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- ABSPATH/llms.txt is a plain-text file at the site root (same convention as robots.txt/ads.txt), not a value that needs WP_Filesystem's FTP-credential fallback; matches the existing precedent in Reports/Exporters/JsonExporter.php.
+        return false !== file_put_contents( $file_path, $content );
+    }
+
+    /**
+     * Bootstraps a real `/llms.txt` on disk the first time it's missing —
+     * covers a fresh install (so the live file works immediately, not
+     * just once an admin visits Settings and saves) as well as an
+     * existing site that only just enabled the feature. Never overwrites
+     * an existing file (an admin's saved edits, or one written by a
+     * previous run), so this only ever fires once per site.
+     *
+     * @return void
+     */
+    public function maybe_bootstrap_physical_file(): void {
+        $settings = wp_parse_args( get_option( \VuloPilot\Utill::VULOPILOT_SETTINGS_KEY, array() ), \VuloPilot\Utill::VULOPILOT_SETTINGS_DEFAULTS );
+
+        if ( empty( $settings['enable_llms_txt'] ) ) {
+            return;
+        }
+
+        if ( file_exists( trailingslashit( ABSPATH ) . 'llms.txt' ) ) {
+            return;
+        }
+
+        $this->write_file( empty( $settings['llms_txt_content'] ) ? $this->generate() : $settings['llms_txt_content'] );
+    }
+
+    /**
+     * Builds the auto-generated llms.txt content from live WP_Query data —
+     * also called directly by Controllers\Settings::get_stored_settings()
+     * to pre-fill the Settings → GEO textarea before an admin has ever
+     * customized it, and by maybe_bootstrap_physical_file() to seed the
+     * initial on-disk file.
      *
      * @return string
      */
     public function generate(): string {
+        $settings      = wp_parse_args( get_option( \VuloPilot\Utill::VULOPILOT_SETTINGS_KEY, array() ), \VuloPilot\Utill::VULOPILOT_SETTINGS_DEFAULTS );
+        $include_types = (array) ( $settings['llms_include_types'] ?? array( 'pages', 'posts' ) );
+
         $lines = array(
             '# ' . get_bloginfo( 'name' ),
             '',
@@ -107,43 +168,55 @@ class LlmsTxtGenerator {
             '',
         );
 
-        $pages = get_posts(
-            array(
-                'post_type'      => 'page',
-                'post_status'    => 'publish',
-                'posts_per_page' => self::MAX_ITEMS_PER_SECTION,
-                'orderby'        => 'menu_order',
-                'order'          => 'ASC',
-            )
-        );
-
-        if ( $pages ) {
-            $lines[] = '## Pages';
-            $lines[] = '';
-            foreach ( $pages as $page ) {
-                $lines[] = sprintf( '- [%s](%s)', get_the_title( $page ), get_permalink( $page ) );
-            }
-            $lines[] = '';
+        if ( in_array( 'pages', $include_types, true ) ) {
+            $this->append_section( $lines, __( 'Pages', 'vulopilot' ), 'page', 'menu_order', 'ASC' );
         }
 
-        $posts = get_posts(
-            array(
-                'post_type'      => 'post',
-                'post_status'    => 'publish',
-                'posts_per_page' => self::MAX_ITEMS_PER_SECTION,
-                'orderby'        => 'date',
-                'order'          => 'DESC',
-            )
-        );
+        if ( in_array( 'posts', $include_types, true ) ) {
+            $this->append_section( $lines, __( 'Posts', 'vulopilot' ), 'post', 'date', 'DESC' );
+        }
 
-        if ( $posts ) {
-            $lines[] = '## Posts';
-            $lines[] = '';
-            foreach ( $posts as $post ) {
-                $lines[] = sprintf( '- [%s](%s)', get_the_title( $post ), get_permalink( $post ) );
-            }
+        if ( in_array( 'products', $include_types, true ) && post_type_exists( 'product' ) ) {
+            $this->append_section( $lines, __( 'Products', 'vulopilot' ), 'product', 'date', 'DESC' );
         }
 
         return implode( "\n", $lines );
+    }
+
+    /**
+     * Appends one `## Heading` + list-of-links section for one post type —
+     * the three sections in generate() only ever differ in post type,
+     * heading, and sort order, so this is the one place that shape lives.
+     *
+     * @param string[] $lines   Lines built so far, appended to by reference.
+     * @param string   $heading Markdown heading text (no leading `##`).
+     * @param string   $post_type WordPress post type to query.
+     * @param string   $orderby WP_Query orderby.
+     * @param string   $order   WP_Query order.
+     * @return void
+     */
+    private function append_section( array &$lines, string $heading, string $post_type, string $orderby, string $order ): void {
+        $items = get_posts(
+            array(
+                'post_type'      => $post_type,
+                'post_status'    => 'publish',
+                'posts_per_page' => self::MAX_ITEMS_PER_SECTION,
+                'orderby'        => $orderby,
+                'order'          => $order,
+            )
+        );
+
+        if ( ! $items ) {
+            return;
+        }
+
+        $lines[] = '## ' . $heading;
+        $lines[] = '';
+
+        foreach ( $items as $item ) {
+            $lines[] = sprintf( '- [%s](%s)', get_the_title( $item ), get_permalink( $item ) );
+        }
+
+        $lines[] = '';
     }
 }

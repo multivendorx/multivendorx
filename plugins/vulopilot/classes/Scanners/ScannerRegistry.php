@@ -84,14 +84,18 @@ class ScannerRegistry {
     }
 
     /**
-     * Settings screen's SEO/GEO/Accessibility/WooCommerce tabs are
-     * category-level kill switches (SCANNERS.md's category list) rather
-     * than per-scanner toggles — disabling "WooCommerce" turns off both
-     * the original WooCommerceScanner and the 11 Product* scanners from
-     * the WooCommerce AI pass, since both share the `woocommerce` category
-     * string. Scanners not covered by one of these four toggles (security,
-     * performance, links, …) always run; only RestApiScanner has its own
-     * dedicated setting, see its own docblock for why.
+     * Settings screen's Accessibility/WooCommerce tabs are category-level
+     * kill switches (SCANNERS.md's category list) rather than per-scanner
+     * toggles — disabling "WooCommerce" turns off both the original
+     * WooCommerceScanner and the 11 Product* scanners from the WooCommerce
+     * AI pass, since both share the `woocommerce` category string.
+     * Scanners not covered by one of these two toggles (security,
+     * performance, links, geo, seo, …) always run; only RestApiScanner has
+     * its own dedicated setting, see its own docblock for why. The `geo`
+     * and `seo` categories have no kill switch here — each of their
+     * scanners reads its own granular flag_* setting directly instead
+     * (Scanning → GEO and Scanning → SEO's settings screens have no
+     * whole-category "disable" toggle).
      *
      * @return string[] Category strings currently disabled via settings.
      */
@@ -99,8 +103,6 @@ class ScannerRegistry {
         $settings = wp_parse_args( get_option( Utill::VULOPILOT_SETTINGS_KEY, array() ), Utill::VULOPILOT_SETTINGS_DEFAULTS );
 
         $toggle_to_category = array(
-            'enable_seo_scanning'           => 'seo',
-            'enable_geo_scanning'           => 'geo',
             'enable_accessibility_scanning' => 'accessibility',
             'enable_woocommerce_scanning'   => 'woocommerce',
         );

@@ -27,7 +27,20 @@ export default {
 				'vulopilot'
 			),
 			options: [
-				{ key: 'enabled', label: '', value: 'enabled' },
+				{ key: 'notify_on_critical_findings', label: '', value: 'notify_on_critical_findings' },
+			],
+		},
+		{
+			key: 'email_on_geo_score_drop',
+			type: 'checkbox',
+			look: 'toggle',
+			label: __('Email me when GEO score drops', 'vulopilot'),
+			desc: __(
+				'Alerts when a post\'s GEO score falls by the threshold configured under Scanning → GEO.',
+				'vulopilot'
+			),
+			options: [
+				{ key: 'email_on_geo_score_drop', label: '', value: 'email_on_geo_score_drop' },
 			],
 		},
 		{

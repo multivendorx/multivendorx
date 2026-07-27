@@ -105,9 +105,72 @@ class GeoAnalyzer {
             current_time( 'mysql', true )
         );
 
+        $this->maybe_notify_score_drop( $post, $overall_score );
+
         update_post_meta( $post_id, self::META_KEY, wp_json_encode( $score->to_array() ) );
 
         return $score;
+    }
+
+    /**
+     * Compares this analysis's overall_score against the previously stored
+     * one (if any) and emails Settings → Notifications' recipient when it
+     * fell by at least Scanning → GEO's `geo_drop_threshold` — gated behind
+     * `email_on_geo_score_drop` (default off). Runs before the new score
+     * overwrites the old one in postmeta, since it needs to read the prior
+     * value first; only ever fires on an actual re-analysis of a post that
+     * already had a stored score, never on a post's first-ever analysis
+     * (there is nothing to have "dropped" from).
+     *
+     * @param \WP_Post $post          Post just analyzed.
+     * @param int      $overall_score The just-computed overall_score.
+     * @return void
+     */
+    private function maybe_notify_score_drop( \WP_Post $post, int $overall_score ): void {
+        $settings = wp_parse_args( get_option( \VuloPilot\Utill::VULOPILOT_SETTINGS_KEY, array() ), \VuloPilot\Utill::VULOPILOT_SETTINGS_DEFAULTS );
+
+        if ( empty( $settings['email_on_geo_score_drop'] ) ) {
+            return;
+        }
+
+        $previous = $this->get_stored_score( $post->ID );
+
+        if ( null === $previous || ! isset( $previous['overall_score'] ) ) {
+            return;
+        }
+
+        $threshold = absint( $settings['geo_drop_threshold'] ?? 5 );
+        $drop      = (int) $previous['overall_score'] - $overall_score;
+
+        if ( $drop < $threshold ) {
+            return;
+        }
+
+        $recipient = $settings['notification_email'] ?: get_option( 'admin_email' );
+        $headers   = array();
+
+        if ( ! empty( $settings['email_from_address'] ) && is_email( $settings['email_from_address'] ) ) {
+            $from_name = $settings['email_from_name'] ?: get_bloginfo( 'name' );
+            $headers[] = sprintf( 'From: %s <%s>', $from_name, $settings['email_from_address'] );
+        }
+
+        wp_mail(
+            $recipient,
+            sprintf(
+                /* translators: 1: site name, 2: post title. */
+                __( '[%1$s] GEO score dropped for "%2$s"', 'vulopilot' ),
+                get_bloginfo( 'name' ),
+                $post->post_title
+            ),
+            sprintf(
+                /* translators: 1: previous score, 2: new score, 3: post title. */
+                __( 'The GEO score for "%3$s" fell from %1$d to %2$d.', 'vulopilot' ),
+                (int) $previous['overall_score'],
+                $overall_score,
+                $post->post_title
+            ),
+            $headers
+        );
     }
 
     /**
@@ -240,21 +303,26 @@ class GeoAnalyzer {
     /**
      * Coarse recency tiering off `post_modified` — a genuinely different
      * signal from GeoEeatSignalsScanner's binary "never edited" check,
-     * since this scores *how* stale, not just whether.
+     * since this scores *how* stale, not just whether. Tier boundaries
+     * scale off Scanning → GEO's `stale_content_months` setting (the
+     * "flag as stale" point becomes the bottom tier) rather than the
+     * fixed 90/180/365-day boundaries this originally shipped with.
      *
      * @param \WP_Post $post Post being scored.
      * @return int 0-100.
      */
     private function calculate_content_freshness( \WP_Post $post ): int {
+        $settings           = wp_parse_args( get_option( \VuloPilot\Utill::VULOPILOT_SETTINGS_KEY, array() ), \VuloPilot\Utill::VULOPILOT_SETTINGS_DEFAULTS );
+        $stale_after_days   = absint( $settings['stale_content_months'] ?? 12 ) * 30;
         $days_since_modified = ( current_time( 'timestamp', true ) - strtotime( $post->post_modified_gmt ) ) / DAY_IN_SECONDS;
 
-        if ( $days_since_modified <= 90 ) {
+        if ( $days_since_modified <= $stale_after_days * 0.25 ) {
             return 100;
         }
-        if ( $days_since_modified <= 180 ) {
+        if ( $days_since_modified <= $stale_after_days * 0.5 ) {
             return 75;
         }
-        if ( $days_since_modified <= 365 ) {
+        if ( $days_since_modified <= $stale_after_days ) {
             return 50;
         }
         return 25;
@@ -265,12 +333,17 @@ class GeoAnalyzer {
      * truth for "what a data point/citable claim looks like") but counts
      * matches instead of just checking presence — "Data Point & Evidence
      * Density" is about how much supporting evidence a piece has, not
-     * only whether it has any.
+     * only whether it has any. The top-tier threshold is Scanning → GEO's
+     * `min_data_points` setting (matches per 500 words) rather than a
+     * fixed `>= 3`; the middle tier sits at half that.
      *
      * @param \WP_Post $post Post being scored.
      * @return int 0-100.
      */
     private function calculate_evidence_density( \WP_Post $post ): int {
+        $settings        = wp_parse_args( get_option( \VuloPilot\Utill::VULOPILOT_SETTINGS_KEY, array() ), \VuloPilot\Utill::VULOPILOT_SETTINGS_DEFAULTS );
+        $min_data_points = max( 1, absint( $settings['min_data_points'] ?? 3 ) );
+
         $plain_text  = wp_strip_all_tags( $post->post_content );
         $word_count  = str_word_count( $plain_text );
         $match_count = preg_match_all( GeoCitationOpportunityScanner::CLAIM_PATTERN, $plain_text );
@@ -278,10 +351,10 @@ class GeoAnalyzer {
 
         $per_500_words = $word_count > 0 ? $match_count / ( $word_count / 500 ) : 0;
 
-        if ( $per_500_words >= 3 ) {
+        if ( $per_500_words >= $min_data_points ) {
             return 100;
         }
-        if ( $per_500_words >= 1 ) {
+        if ( $per_500_words >= $min_data_points / 2 ) {
             return 60;
         }
         return 20;

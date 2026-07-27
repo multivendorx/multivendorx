@@ -426,6 +426,32 @@ class Install {
         // the same self-healing shape create_database_tables() already
         // uses for a fresh install.
         self::create_crawler_visits_table();
+
+        // The Geo module (modules/Geo/Module.php) didn't exist before this
+        // version either — a site upgrading in place needs it added to
+        // its active-module list the same way a fresh install gets it via
+        // VuloPilot::activate()'s add_option(), or its "Auto-regenerate on
+        // publish" setting would silently do nothing (the module governs
+        // that hook; GEO scanning itself and the llms.txt route are core
+        // and unaffected either way). Deliberately OUTSIDE the
+        // version_compare gate, same reasoning as the two migrations
+        // above; self-limiting after the first run since it only adds
+        // 'geo' when it isn't already present.
+        self::seed_geo_module_active();
+    }
+
+    /**
+     * @return void
+     */
+    private static function seed_geo_module_active(): void {
+        $active_modules = get_option( Utill::ACTIVE_MODULES_DB_KEY, array() );
+
+        if ( in_array( 'geo', $active_modules, true ) ) {
+            return;
+        }
+
+        $active_modules[] = 'geo';
+        update_option( Utill::ACTIVE_MODULES_DB_KEY, $active_modules );
     }
 
     /**

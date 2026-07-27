@@ -39,6 +39,13 @@ class BrokenLinksScanner extends AbstractBasicScanner {
     private const REQUEST_TIMEOUT_SECONDS = 5;
 
     /**
+     * Stores when this scanner last genuinely ran — see due_to_run()'s
+     * own docblock for why this scanner self-rate-limits instead of the
+     * cadence being scheduled externally.
+     */
+    private const LAST_RUN_OPTION = 'vulopilot_broken_links_last_checked';
+
+    /**
      * @inheritDoc
      */
     public function get_id(): string {
@@ -63,6 +70,16 @@ class BrokenLinksScanner extends AbstractBasicScanner {
      * @inheritDoc
      */
     public function scan(): array {
+        $settings = wp_parse_args( get_option( \VuloPilot\Utill::VULOPILOT_SETTINGS_KEY, array() ), \VuloPilot\Utill::VULOPILOT_SETTINGS_DEFAULTS );
+
+        if ( empty( $settings['flag_broken_links'] ) ) {
+            return array();
+        }
+
+        if ( ! $this->due_to_run( (string) ( $settings['broken_link_check_frequency'] ?? 'daily' ) ) ) {
+            return array();
+        }
+
         $findings = array();
         $links    = $this->extract_links_from_recent_content();
 
@@ -139,6 +156,32 @@ class BrokenLinksScanner extends AbstractBasicScanner {
         }
 
         return $links;
+    }
+
+    /**
+     * Self-rate-limits against Scanning → SEO's own "Broken link check
+     * frequency" setting — this codebase's scan scheduling is one shared
+     * cadence (`scan_frequency`, Utill.php), not a per-scanner cron, so a
+     * scanner that wants a slower cadence than the shared one has to skip
+     * its own check on the runs it isn't due, rather than the scan
+     * runner scheduling it separately. A WP option (not a transient,
+     * which can be evicted early under object-cache pressure on some
+     * hosts) records the last time this scanner genuinely ran.
+     *
+     * @param string $frequency 'daily' or 'weekly'.
+     * @return bool True if this run should actually check links.
+     */
+    private function due_to_run( string $frequency ): bool {
+        $interval_seconds = 'weekly' === $frequency ? WEEK_IN_SECONDS : DAY_IN_SECONDS;
+        $last_ran         = (int) get_option( self::LAST_RUN_OPTION, 0 );
+
+        if ( ( time() - $last_ran ) < $interval_seconds ) {
+            return false;
+        }
+
+        update_option( self::LAST_RUN_OPTION, time(), false );
+
+        return true;
     }
 
     /**
