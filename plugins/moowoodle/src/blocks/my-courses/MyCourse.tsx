@@ -19,6 +19,13 @@ const MyCourse: React.FC = () => {
 	const [rowsPerPage] = useState<number>(5);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string>('');
+	const [statusFilter, setStatusFilter] = useState<string>('');
+	const [statusCounts, setStatusCounts] = useState({
+		all: 0,
+		enrolled: 0,
+		expired: 0,
+		unenrolled: 0,
+	});
 
 	const totalPages = Math.ceil(totalRows / rowsPerPage);
 
@@ -32,21 +39,59 @@ const MyCourse: React.FC = () => {
 			params: {
 				page: currentPage,
 				row: rowsPerPage,
+				status: statusFilter,
 			},
 		})
 			.then((response) => {
 				setCourses(response.data || []);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				setStatusCounts({
+					all: Number(response.headers['x-wp-total']) || 0,
+					enrolled: Number(response.headers['x-wp-enrolled']) || 0,
+					expired: Number(response.headers['x-wp-expired']) || 0,
+					unenrolled: Number(response.headers['x-wp-unenrolled']) || 0,
+				});
 			})
 			.catch(() => {
 				setError(__('Failed to fetch courses.', 'moowoodle'));
 			})
 			.finally(() => setLoading(false));
-	}, [currentPage, rowsPerPage]);
+	}, [currentPage, rowsPerPage, statusFilter]);
 
 	useEffect(() => {
 		fetchCourses();
 	}, [fetchCourses]);
+
+	useEffect(() => {
+		setCurrentPage(1);
+	}, [statusFilter]);
+
+	const filters = [
+		{
+			key: '',
+			label: __('All', 'moowoodle'),
+			count: statusCounts.all,
+			icon: '📚',
+		},
+		{
+			key: 'enrolled',
+			label: __('Enrolled', 'moowoodle'),
+			count: statusCounts.enrolled,
+			icon: '✅',
+		},
+		{
+			key: 'expired',
+			label: __('Expired', 'moowoodle'),
+			count: statusCounts.expired,
+			icon: '⌛',
+		},
+		{
+			key: 'unenrolled',
+			label: __('Unenrolled', 'moowoodle'),
+			count: statusCounts.unenrolled,
+			icon: '❌',
+		},
+	];
 
 	const renderTableContent = () => {
 		if (loading) {
@@ -153,6 +198,22 @@ const MyCourse: React.FC = () => {
 
 	return (
 		<div className="moowoodle-my-courses woocommerce-js">
+			<div className="moowoodle-course-filters">
+				{filters.map((filter) => (
+					<div
+						key={filter.key || 'all'}
+						className={`filter-card ${statusFilter === filter.key ? 'active' : ''
+							}`}
+						onClick={() => setStatusFilter(filter.key)}
+						role="button"
+						tabIndex={0}
+					>
+						<div className="filter-icon">{filter.icon}</div>
+						<div className="filter-count">{filter.count}</div>
+						<div className="filter-label">{filter.label}</div>
+					</div>
+				))}
+			</div>
 			{courses.length ? (
 				<>
 					<table className="moowoodle-table shop_table shop_table_responsive my_account_orders">
