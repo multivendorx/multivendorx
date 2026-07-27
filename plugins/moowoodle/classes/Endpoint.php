@@ -76,6 +76,7 @@ class Endpoint {
 		if ( is_account_page() ) {
 			FrontendScripts::enqueue_script( 'moowoodle-my-courses' );
 			FrontendScripts::localize_scripts( 'moowoodle-my-courses' );
+			FrontendScripts::enqueue_style('moowoodle-my-courses');
 		}
 	}
 }
