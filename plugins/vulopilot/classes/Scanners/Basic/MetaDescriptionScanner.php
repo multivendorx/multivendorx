@@ -57,6 +57,12 @@ class MetaDescriptionScanner extends AbstractBasicScanner {
      * @inheritDoc
      */
     public function scan(): array {
+        $settings = wp_parse_args( get_option( \VuloPilot\Utill::VULOPILOT_SETTINGS_KEY, array() ), \VuloPilot\Utill::VULOPILOT_SETTINGS_DEFAULTS );
+
+        if ( empty( $settings['flag_missing_meta_description'] ) ) {
+            return array();
+        }
+
         $findings = array();
         $posts    = get_posts(
             array(

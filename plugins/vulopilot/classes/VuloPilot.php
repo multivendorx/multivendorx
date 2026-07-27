@@ -79,6 +79,11 @@ final class VuloPilot {
      */
     public function activate() {
         add_option( Utill::VULOPILOT_OTHER_SETTINGS['run_installer'], true );
+        // A no-op if this site already has an active-module list (e.g. a
+        // deactivate/reactivate cycle) — only seeds 'geo' as active for a
+        // genuinely fresh install, matching Install.php's own migration
+        // for sites upgrading in place instead.
+        add_option( Utill::ACTIVE_MODULES_DB_KEY, array( 'geo' ) );
         flush_rewrite_rules();
     }
 
@@ -169,6 +174,23 @@ final class VuloPilot {
         // GEO module (GEO-MODULE.md) — reuses the same ai_request_sender
         // every AIAction goes through, not a second AI-calling path.
         $this->container['geo_analyzer'] = new GeoAnalysis\GeoAnalyzer( $this->container['ai_request_sender'] );
+
+        // llms.txt Generation & Management (readme.txt) — self-registers
+        // its own rewrite-rule/template_redirect hooks; unconditional
+        // construction, the enable_llms_txt setting only gates serving.
+        $this->container['llms_txt_generator'] = new GeoAnalysis\LlmsTxtGenerator();
+
+        // AI Crawler Traffic Monitoring (readme.txt) — self-registers its
+        // own template_redirect/cron hooks; unconditional construction,
+        // same shape as llms_txt_generator above.
+        $this->container['crawler_traffic_logger'] = new Services\CrawlerTrafficLogger();
+
+        // Scanning → SEO's "XML Sitemap"/"Robots.txt" cards — both wrap
+        // WordPress core's own native sitemap/robots.txt rather than
+        // building either from scratch; self-register their own hooks,
+        // same unconditional-construction shape as the two services above.
+        $this->container['sitemap_manager']    = new Services\SitemapManager();
+        $this->container['robots_txt_manager'] = new Services\RobotsTxtManager();
 
         // Extension SDK (ARCHITECTURE.md's Prompt 15) — vulopilot-pro and
         // any third-party plugin register here (`vulopilot_extension_sources`),

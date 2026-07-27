@@ -17,7 +17,7 @@ export default {
 				'vulopilot'
 			),
 			options: [
-				{ key: 'enabled', label: '', value: 'enabled' },
+				{ key: 'enable_debug_logging', label: '', value: 'enable_debug_logging' },
 			],
 		},
 	],

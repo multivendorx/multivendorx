@@ -40,6 +40,7 @@ class Utill {
         'activity_log'         => 'vulopilot_activity_logs',
         'site_health_snapshot' => 'vulopilot_site_health_snapshots',
         'ai_action_run'        => 'vulopilot_ai_action_runs',
+        'crawler_visit'        => 'vulopilot_crawler_visits',
     );
 
     /**
@@ -70,34 +71,133 @@ class Utill {
      */
     const VULOPILOT_SETTINGS_DEFAULTS = array(
         // General.
-        'scan_frequency'                => 'daily',
+        'scan_frequency'                  => 'daily',
         // Notifications.
-        'notification_email'            => '',
-        'notify_on_critical_findings'   => false,
-        'email_from_name'               => '',
-        'email_from_address'            => '',
+        'notification_email'              => '',
+        'notify_on_critical_findings'     => array(),
+        // Read by GeoAnalysis\GeoAnalyzer::analyze() — compares the fresh
+        // overall_score against the previously-stored one and emails when
+        // it falls by at least Scanning → GEO's `geo_drop_threshold`.
+        'email_on_geo_score_drop'         => array(),
+        'email_from_name'                 => '',
+        'email_from_address'              => '',
         // Automation — replaces AutomationEngine's previously-hardcoded
         // COOLDOWN_MINUTES constant (ARCHITECTURE.md's Prompt 12 pass
         // shipped a fixed 60-minute rate limit as a pragmatic v1; this
         // makes it a real, per-site setting instead).
-        'automation_cooldown_minutes'   => 60,
+        'automation_cooldown_minutes'     => 60,
         // Reports.
-        'default_report_format'         => 'pdf',
-        'default_report_period_days'    => 30,
-        // Security.
-        'enable_rest_api_scanner'       => true,
+        'default_report_format'           => 'pdf',
+        'default_report_period_days'      => 30,
+        // Security. Checkbox-type defaults are zyra's own wire shape (an
+        // array containing the field's own key when on, or an empty array
+        // when off — matches every checkbox option's own `key`/`value` in
+        // the *.ts settings configs) rather than a PHP boolean — every PHP
+        // consumer already reads these with empty()/!empty(), which is
+        // true for a non-empty array and false for an empty one, so this
+        // shape works everywhere a boolean did.
+        'enable_rest_api_scanner'         => array( 'enable_rest_api_scanner' ),
+        'enable_xmlrpc_scanner'           => array( 'enable_xmlrpc_scanner' ),
+        'enable_security_headers_scanner' => array( 'enable_security_headers_scanner' ),
+        'enable_exposed_files_scanner'    => array( 'enable_exposed_files_scanner' ),
         // Scanner-category kill switches — each gates every scanner
         // registered under that category string (SCANNERS.md), not just
         // one check, since that's what these settings-page groupings
         // actually correspond to (e.g. disabling "WooCommerce" turns off
         // both the original WooCommerceScanner and the 11 Product*
         // scanners from the WooCommerce AI pass — all category `woocommerce`).
-        'enable_seo_scanning'           => true,
-        'enable_geo_scanning'           => true,
-        'enable_accessibility_scanning' => true,
-        'enable_woocommerce_scanning'   => true,
+        // SEO no longer has one of these — see the granular
+        // flag_*/Scanning/Seo.ts entries below, same "no whole-category
+        // switch, only granular ones" posture GEO already uses.
+        'enable_accessibility_scanning'   => array( 'enable_accessibility_scanning' ),
+        'enable_woocommerce_scanning'     => array( 'enable_woocommerce_scanning' ),
+        // Scanning > SEO — granular, per-check toggles (readme's SEO
+        // Optimization pillar), replacing the old whole-category
+        // enable_seo_scanning switch. Each is read directly by the one
+        // scanner it corresponds to; there's no "seo" category kill
+        // switch to fall back on above, same posture GEO's scanners
+        // already use.
+        'flag_missing_meta_description'   => array( 'flag_missing_meta_description' ),
+        'flag_duplicate_titles'           => array( 'flag_duplicate_titles' ),
+        'flag_orphan_pages'               => array( 'flag_orphan_pages' ),
+        // Read by Scanners\Basic\ThinContentScanner as its minimum word
+        // count instead of a hardcoded constant.
+        'thin_content_word_threshold'     => 300,
+        'flag_missing_featured_image'     => array( 'flag_missing_featured_image' ),
+        'flag_missing_alt_text'           => array( 'flag_missing_alt_text' ),
+        'flag_broken_links'               => array( 'flag_broken_links' ),
+        // Read by Scanners\Basic\BrokenLinksScanner to self-rate-limit —
+        // 'daily'/'weekly', since this codebase's scan scheduling is one
+        // global cadence (`scan_frequency` above), not a per-scanner cron;
+        // this setting doesn't change *when* the shared scan runs, only
+        // whether this specific scanner's own check actually re-runs that
+        // time or skips (based on when it last genuinely ran).
+        'broken_link_check_frequency'     => 'daily',
+        // Covers both SchemaScanner (presence) and
+        // StructuredDataValidationScanner (validity) — the mockup this
+        // was built from has one "Flag missing structured data" toggle
+        // for both, not two.
+        'flag_missing_schema'             => array( 'flag_missing_schema' ),
+        // Read by Services\SitemapManager — a real toggle over WordPress
+        // core's own `/wp-sitemap.xml` (via the `wp_sitemaps_enabled`
+        // filter), not a from-scratch sitemap generator; see that class's
+        // own docblock.
+        'sitemap_enabled'                 => array( 'sitemap_enabled' ),
+        'sitemap_ping_search_engines'     => array( 'sitemap_ping_search_engines' ),
+        // Read by Services\RobotsTxtManager — appends a `Sitemap:` line to
+        // WordPress core's own virtual robots.txt via the `robots_txt`
+        // filter; see that class's own docblock for why this isn't a
+        // from-scratch robots.txt file generator.
+        'robots_auto_generate'            => array( 'robots_auto_generate' ),
+        // Persisted, but not yet consumed anywhere: a real 301 redirect
+        // manager (a user-managed old-path -> new-path table, applied at
+        // request time) and a real 404-visit log (distinct from
+        // Scanners\Basic\NotFoundScanner, which only checks this site's
+        // OWN published permalinks for 404s, not visitor traffic to
+        // missing URLs) don't exist in this codebase yet — that's a
+        // separate, larger feature (new tables + REST + a Redirects page),
+        // not something these three toggles can honestly gate today.
+        // Kept here so the Settings screen round-trips and saves
+        // correctly rather than silently dropping these fields.
+        'enable_redirect_manager'         => array( 'enable_redirect_manager' ),
+        'auto_redirect_on_slug_change'    => array( 'auto_redirect_on_slug_change' ),
+        'log_404s'                        => array( 'log_404s' ),
+        // AI Visibility / GEO.
+        'enable_llms_txt'                 => array( 'enable_llms_txt' ),
+        // Empty means "not customized yet" — Controllers\Settings::get_stored_settings()
+        // fills this with GeoAnalysis\LlmsTxtGenerator::generate()'s live
+        // output for display until an admin edits and saves their own.
+        'llms_txt_content'                => '',
+        // Read by modules/Geo/Module.php's save_post hook — regenerates
+        // and re-writes llms.txt automatically on publish/update, only
+        // while the Geo module (Modules page) is active.
+        'llms_auto_regen'                 => array( 'llms_auto_regen' ),
+        // Read by GeoAnalysis\LlmsTxtGenerator::generate() to decide which
+        // sections to build at all.
+        'llms_include_types'              => array( 'pages', 'posts' ),
+        // Read by Scanners\Basic\GeoSummaryBlockScanner — GEO scanning has
+        // no whole-category kill switch (unlike SEO/Accessibility/
+        // WooCommerce above), so this is that scanner's only on/off switch.
+        'flag_missing_ai_summary'         => array( 'flag_missing_ai_summary' ),
+        // Read by Scanners\Basic\GeoSummaryBlockScanner — how many words
+        // from the top of a page/post its summary marker must appear
+        // within.
+        'answer_first_words'              => 200,
+        // Read by GeoAnalysis\GeoAnalyzer::calculate_evidence_density() —
+        // stats/citations per 500 words a page needs to score well on
+        // "Data Point & Evidence Density".
+        'min_data_points'                 => 3,
+        // Read by GeoAnalysis\GeoAnalyzer::calculate_content_freshness() —
+        // the "flag as stale" boundary its tiering scales against.
+        'stale_content_months'            => 12,
+        // Read by GeoAnalysis\GeoAnalyzer::analyze() — the minimum-points
+        // drop in overall_score, since the last analysis, that triggers
+        // Notifications' `email_on_geo_score_drop`.
+        'geo_drop_threshold'              => 5,
+        // AI Crawler Traffic Monitoring.
+        'enable_crawler_tracking'         => array( 'enable_crawler_tracking' ),
         // Advanced / Debug.
-        'enable_debug_logging'          => false,
+        'enable_debug_logging'            => array(),
     );
 
     /**
@@ -120,12 +220,16 @@ class Utill {
         'woocommerce',
         'accessibility',
         'ai-usage',
+        'geo',
         'recent-activity',
         'quick-fixes',
         'health-timeline',
         'latest-reports',
         'pending-approval',
         'automation-status',
+        'crawler-traffic',
+        'health-pillars',
+        'recent-issues',
     );
 
     /**

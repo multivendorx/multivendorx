@@ -68,7 +68,10 @@ const AiAnalyticsLockedCard = () => {
 				height="auto"
 				position="lightbox"
 			>
-				{appLocalizer.active_modules.includes('advanced-reports') ? (
+				{appLocalizer.khali_dabba ? (
+					// Pro is active — this specific module just isn't
+					// toggled on yet, so point at Modules rather than
+					// pitching an upgrade the user already has.
 					<ShowProPopup moduleName="advanced-reports" />
 				) : (
 					<ShowProPopup />

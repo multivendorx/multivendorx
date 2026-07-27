@@ -324,6 +324,53 @@ class Install {
         dbDelta( $sql_activity_logs );
         dbDelta( $sql_site_health_snapshots );
         dbDelta( $sql_ai_action_runs );
+
+        self::create_crawler_visits_table();
+    }
+
+    /**
+     * Creates `vulopilot_crawler_visits` — its own method (not inlined into
+     * create_database_tables() like the tables above) because, unlike
+     * those, this one also needs to run for sites *upgrading* in place
+     * (do_migration() calls this too) — added after those fresh-install-only
+     * table definitions were already written, per this class's own
+     * "additive only, ADD new things in do_migration(), never touch
+     * create_database_tables() for an upgrade" convention. No IP address or
+     * user column, ever — readme.txt's own FAQ promises AI Crawler Traffic
+     * Monitoring "does not track human visitors, IP addresses, or personal
+     * data," enforced by the schema itself, not just application code.
+     *
+     * @return void
+     */
+    private static function create_crawler_visits_table() {
+        global $wpdb;
+
+        // create_database_tables() already guarantees dbDelta() is loaded
+        // before its own calls, but do_migration() calls this method
+        // directly without going through that guard — confirmed fatal
+        // ("Call to undefined function dbDelta()") the moment the
+        // migration path actually ran on a real site, since
+        // wp-admin/includes/upgrade.php is never autoloaded outside
+        // wp-admin. Self-sufficient here so this method is safe to call
+        // from either context.
+        if ( ! function_exists( 'dbDelta' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        }
+
+        $collate = $wpdb->get_charset_collate();
+
+        $sql_crawler_visits = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['crawler_visit'] . "` (
+            `id`             bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            `bot_name`       varchar(50) NOT NULL,
+            `user_agent`     varchar(255) NOT NULL,
+            `requested_url`  varchar(255) NOT NULL,
+            `created_at`     timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`),
+            KEY `idx_bot` (`bot_name`),
+            KEY `idx_created` (`created_at`)
+        ) $collate;";
+
+        dbDelta( $sql_crawler_visits );
     }
 
     /**
@@ -339,6 +386,72 @@ class Install {
         if ( version_compare( $previous_version, '1.1.0', '<' ) ) {
             $this->relax_automation_rule_id_to_nullable();
         }
+
+        // llms.txt Generation & Management (readme.txt) added its own
+        // rewrite rule this version — sites upgrading in place need a
+        // flush to pick up '/llms.txt' without waiting for a deactivate/
+        // reactivate cycle (VuloPilot::activate() already flushes, but
+        // that only runs on a fresh activation). Deliberately OUTSIDE the
+        // version_compare gate above, same reasoning as
+        // create_crawler_visits_table() below: VULOPILOT_PLUGIN_VERSION
+        // was already '1.1.0' before this rewrite rule existed, so a site
+        // that had already recorded plugin_db_version=1.1.0 would never
+        // satisfy `< 1.1.0` again and would silently never get this flush.
+        //
+        // Deferred to a late 'init' priority rather than called directly
+        // here — confirmed via a real wp-env site that calling it
+        // synchronously still 404s on /llms.txt, because both places
+        // do_migration() ever runs from (init_plugin()'s plugins_loaded
+        // path, and init_classes()'s own 'init' priority 0 path) execute
+        // *before* GeoAnalysis\LlmsTxtGenerator's own 'init' (default
+        // priority 10) callback has added the rewrite rule this flush is
+        // supposed to pick up — flushing before the rule exists just
+        // bakes in a rule set without it. Priority 20 guarantees this
+        // runs after that priority-10 registration within the same 'init'
+        // pass, however do_migration() itself got triggered.
+        add_action( 'init', 'flush_rewrite_rules', 20 );
+
+        // AI Crawler Traffic Monitoring (readme.txt) needs its own new
+        // table for sites upgrading in place too — create_database_tables()
+        // only ever runs for a brand-new install. Deliberately OUTSIDE the
+        // version_compare gate above (unlike the two migrations inside it):
+        // VULOPILOT_PLUGIN_VERSION was already '1.1.0' before this table's
+        // migration code existed, so a site that had already recorded
+        // plugin_db_version=1.1.0 (from activating an earlier build still
+        // under this same version number) would never satisfy `< 1.1.0`
+        // again and would silently never get this table — confirmed via a
+        // real wp-env site hitting "Table ... doesn't exist" on every
+        // /crawler-traffic request. dbDelta()'s CREATE TABLE IF NOT EXISTS
+        // makes this safe to run unconditionally on every upgrade check,
+        // the same self-healing shape create_database_tables() already
+        // uses for a fresh install.
+        self::create_crawler_visits_table();
+
+        // The Geo module (modules/Geo/Module.php) didn't exist before this
+        // version either — a site upgrading in place needs it added to
+        // its active-module list the same way a fresh install gets it via
+        // VuloPilot::activate()'s add_option(), or its "Auto-regenerate on
+        // publish" setting would silently do nothing (the module governs
+        // that hook; GEO scanning itself and the llms.txt route are core
+        // and unaffected either way). Deliberately OUTSIDE the
+        // version_compare gate, same reasoning as the two migrations
+        // above; self-limiting after the first run since it only adds
+        // 'geo' when it isn't already present.
+        self::seed_geo_module_active();
+    }
+
+    /**
+     * @return void
+     */
+    private static function seed_geo_module_active(): void {
+        $active_modules = get_option( Utill::ACTIVE_MODULES_DB_KEY, array() );
+
+        if ( in_array( 'geo', $active_modules, true ) ) {
+            return;
+        }
+
+        $active_modules[] = 'geo';
+        update_option( Utill::ACTIVE_MODULES_DB_KEY, $active_modules );
     }
 
     /**

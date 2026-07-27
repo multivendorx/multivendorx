@@ -17,7 +17,7 @@ export default {
 				'vulopilot'
 			),
 			options: [
-				{ key: 'enabled', label: '', value: 'enabled' },
+				{ key: 'enable_rest_api_scanner', label: '', value: 'enable_rest_api_scanner' },
 			],
 			// Both scanners this category gates (the admin-username check
 			// and this REST API exposure check) live in vulopilot-pro's

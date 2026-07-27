@@ -65,6 +65,12 @@ class DuplicateContentScanner extends AbstractBasicScanner {
      * @inheritDoc
      */
     public function scan(): array {
+        $settings = wp_parse_args( get_option( \VuloPilot\Utill::VULOPILOT_SETTINGS_KEY, array() ), \VuloPilot\Utill::VULOPILOT_SETTINGS_DEFAULTS );
+
+        if ( empty( $settings['flag_duplicate_titles'] ) ) {
+            return array();
+        }
+
         global $wpdb;
 
         $findings = array();

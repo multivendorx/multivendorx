@@ -79,7 +79,7 @@ const TRACKED_EXTEND_PRODUCTS = [
  * correctly, matching the pattern `config.php`'s own
  * `VULOPILOT_PRO_SHOP_URL` already uses.
  */
-const HELP_RESOURCES = [
+export const HELP_RESOURCES = [
 	{
 		title: __('Documentation', 'vulopilot'),
 		desc: __(

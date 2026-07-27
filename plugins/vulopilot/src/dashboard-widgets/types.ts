@@ -19,6 +19,7 @@ export interface DashboardSummary {
 		security: number;
 		accessibility: number;
 		woocommerce: number | null;
+		geo: number;
 	};
 	quick_fixes: number;
 	pending_approvals: number;

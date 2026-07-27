@@ -26,8 +26,15 @@ defined( 'ABSPATH' ) || exit;
  */
 class ThinContentScanner extends AbstractBasicScanner {
 
-    private const BATCH_SIZE     = 50;
-    private const MIN_WORD_COUNT = 300;
+    private const BATCH_SIZE = 50;
+
+    /**
+     * Fallback only — the real threshold is Scanning → SEO's
+     * `thin_content_word_threshold` setting (Utill::VULOPILOT_SETTINGS_DEFAULTS
+     * defaults it to this same value), read fresh in scan() so a site
+     * owner's saved threshold takes effect without a code change.
+     */
+    private const DEFAULT_MIN_WORD_COUNT = 300;
 
     /**
      * @inheritDoc
@@ -54,6 +61,9 @@ class ThinContentScanner extends AbstractBasicScanner {
      * @inheritDoc
      */
     public function scan(): array {
+        $settings  = wp_parse_args( get_option( \VuloPilot\Utill::VULOPILOT_SETTINGS_KEY, array() ), \VuloPilot\Utill::VULOPILOT_SETTINGS_DEFAULTS );
+        $min_words = absint( $settings['thin_content_word_threshold'] ?? self::DEFAULT_MIN_WORD_COUNT ) ?: self::DEFAULT_MIN_WORD_COUNT;
+
         $findings = array();
         $posts    = get_posts(
             array(
@@ -68,7 +78,7 @@ class ThinContentScanner extends AbstractBasicScanner {
         foreach ( $posts as $post ) {
             $word_count = str_word_count( wp_strip_all_tags( $post->post_content ) );
 
-            if ( $word_count >= self::MIN_WORD_COUNT ) {
+            if ( $word_count >= $min_words ) {
                 continue;
             }
 
@@ -84,7 +94,7 @@ class ThinContentScanner extends AbstractBasicScanner {
                 sprintf(
                     /* translators: %d is the recommended minimum word count. */
                     __( 'Search engines generally rank substantive content higher. Consider expanding this to at least %d words.', 'vulopilot' ),
-                    self::MIN_WORD_COUNT
+                    $min_words
                 ),
                 'post',
                 (string) $post->ID,

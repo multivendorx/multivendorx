@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-24T13:14:51+00:00\n"
+"POT-Creation-Date: 2026-07-25T13:20:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: vulopilot\n"
@@ -43,57 +43,96 @@ msgid "PRO"
 msgstr ""
 
 #: classes/Admin.php:71
-#: assets/js/index.js:1
 msgid "Dashboard"
 msgstr ""
 
 #: classes/Admin.php:75
-msgid "Health"
+#: assets/js/index.js:1
+msgid "GEO"
 msgstr ""
 
 #: classes/Admin.php:79
+#: assets/js/index.js:1
+msgid "Brand Visibility"
+msgstr ""
+
+#: classes/Admin.php:83
 #: classes/Scanners/Basic/SeoScanner.php:44
 #: assets/js/index.js:1
 msgid "SEO"
 msgstr ""
 
-#: classes/Admin.php:83
-#: assets/js/index.js:1
-msgid "GEO"
+#: classes/Admin.php:87
+msgid "AI Content"
 msgstr ""
 
-#: classes/Admin.php:87
+#: classes/Admin.php:91
+#: classes/Scanners/Basic/PerformanceScanner.php:46
+#: assets/js/index.js:1
+msgid "Performance"
+msgstr ""
+
+#: classes/Admin.php:95
+#: classes/Scanners/Basic/AccessibilityScanner.php:46
+#: assets/js/index.js:1
+msgid "Accessibility"
+msgstr ""
+
+#: classes/Admin.php:99
+msgid "Content"
+msgstr ""
+
+#: classes/Admin.php:103
+#: classes/Scanners/Basic/SchemaScanner.php:40
+msgid "Schema"
+msgstr ""
+
+#: classes/Admin.php:107
+#: assets/js/index.js:1
+msgid "Crawler Traffic"
+msgstr ""
+
+#: classes/Admin.php:111
 #: classes/Scanners/Basic/WooCommerceScanner.php:41
 #: assets/js/index.js:1
 msgid "WooCommerce"
 msgstr ""
 
-#: classes/Admin.php:91
+#: classes/Admin.php:115
+#: assets/js/index.js:1
+msgid "Security"
+msgstr ""
+
+#: classes/Admin.php:126
+msgid "Health"
+msgstr ""
+
+#: classes/Admin.php:130
 #: assets/js/index.js:1
 msgid "Automation"
 msgstr ""
 
-#: classes/Admin.php:95
-#: assets/js/index.js:1
-msgid "Reports"
-msgstr ""
-
-#: classes/Admin.php:99
-#: assets/js/index.js:1
-msgid "AI Assistant"
-msgstr ""
-
-#: classes/Admin.php:103
-#: assets/js/index.js:1
-msgid "Activity"
-msgstr ""
-
-#: classes/Admin.php:107
+#: classes/Admin.php:134
 #: assets/js/index.js:1
 msgid "Modules"
 msgstr ""
 
-#: classes/Admin.php:111
+#: classes/Admin.php:138
+#: assets/js/index.js:1
+msgid "AI Assistant"
+msgstr ""
+
+#: classes/Admin.php:142
+#: assets/js/index.js:1
+msgid "Reports"
+msgstr ""
+
+#: classes/Admin.php:146
+#: assets/js/index.js:1
+msgid "Activity"
+msgstr ""
+
+#: classes/Admin.php:150
 #: assets/js/index.js:1
 msgid "Settings"
 msgstr ""
@@ -145,6 +184,8 @@ msgid "Please provide a topic of at least 5 characters."
 msgstr ""
 
 #: classes/AIActions/Actions/GenerateBlogAction.php:105
+#: classes/AIActions/Actions/GenerateComparisonPageAction.php:136
+#: classes/AIActions/Actions/GenerateProductDescriptionAction.php:118
 msgid "The AI response did not match the expected TITLE/BODY format."
 msgstr ""
 
@@ -158,16 +199,67 @@ msgstr ""
 msgid "Create a new draft post: %s"
 msgstr ""
 
-#: classes/AIActions/Actions/GenerateFaqAction.php:51
-msgid "Generate FAQ section"
+#: classes/AIActions/Actions/GenerateComparisonPageAction.php:55
+msgid "Generate comparison page"
 msgstr ""
 
+#: classes/AIActions/Actions/GenerateComparisonPageAction.php:66
+msgid "post_a_id and post_b_id must refer to two different items."
+msgstr ""
+
+#: classes/AIActions/Actions/GenerateComparisonPageAction.php:73
+msgid "post_a_id and post_b_id must both refer to existing posts, pages, or products."
+msgstr ""
+
+#: classes/AIActions/Actions/GenerateComparisonPageAction.php:77
+msgid "Both items need existing content to compare."
+msgstr ""
+
+#: classes/AIActions/Actions/GenerateComparisonPageAction.php:141
+msgid "The AI returned a comparison that is too short to be useful."
+msgstr ""
+
+#. translators: %s is the generated comparison page title.
+#: classes/AIActions/Actions/GenerateComparisonPageAction.php:152
+#, php-format
+msgid "Create a new draft comparison page: %s"
+msgstr ""
+
+#: classes/AIActions/Actions/GenerateExcerptAction.php:54
+msgid "Generate excerpt"
+msgstr ""
+
+#: classes/AIActions/Actions/GenerateExcerptAction.php:65
 #: classes/AIActions/Actions/GenerateFaqAction.php:62
 #: classes/AIActions/Actions/GenerateSummaryBlockAction.php:60
 #: classes/AIActions/Actions/ImproveReadabilityAction.php:64
 #: classes/AIActions/Actions/WriteMetaDescriptionAction.php:64
 #: classes/AIActions/Actions/WriteMetaTitleAction.php:66
 msgid "post_id must refer to an existing post or page."
+msgstr ""
+
+#: classes/AIActions/Actions/GenerateExcerptAction.php:69
+#: classes/AIActions/Actions/GenerateSummaryBlockAction.php:64
+#: classes/AIActions/Actions/WriteMetaDescriptionAction.php:68
+msgid "This post has no content to summarize."
+msgstr ""
+
+#: classes/AIActions/Actions/GenerateExcerptAction.php:120
+msgid "The AI returned an empty excerpt."
+msgstr ""
+
+#: classes/AIActions/Actions/GenerateExcerptAction.php:124
+msgid "The AI returned an excerpt that is too long."
+msgstr ""
+
+#. translators: %s is the post/page title.
+#: classes/AIActions/Actions/GenerateExcerptAction.php:135
+#, php-format
+msgid "Set excerpt for %s"
+msgstr ""
+
+#: classes/AIActions/Actions/GenerateFaqAction.php:51
+msgid "Generate FAQ section"
 msgstr ""
 
 #: classes/AIActions/Actions/GenerateFaqAction.php:66
@@ -192,6 +284,24 @@ msgstr ""
 msgid "Frequently Asked Questions"
 msgstr ""
 
+#: classes/AIActions/Actions/GenerateProductDescriptionAction.php:53
+msgid "Generate product description"
+msgstr ""
+
+#: classes/AIActions/Actions/GenerateProductDescriptionAction.php:64
+msgid "Please provide a product name of at least 3 characters."
+msgstr ""
+
+#: classes/AIActions/Actions/GenerateProductDescriptionAction.php:123
+msgid "The AI returned a description that is too short to be useful."
+msgstr ""
+
+#. translators: %s is the generated product title.
+#: classes/AIActions/Actions/GenerateProductDescriptionAction.php:134
+#, php-format
+msgid "Create a new draft product: %s"
+msgstr ""
+
 #: classes/AIActions/Actions/GenerateSchemaAction.php:53
 msgid "Generate structured data (JSON-LD)"
 msgstr ""
@@ -199,7 +309,7 @@ msgstr ""
 #: classes/AIActions/Actions/GenerateSchemaAction.php:64
 #: classes/AIActions/Actions/GenerateSocialContentAction.php:59
 #: classes/AIActions/Actions/SuggestInternalLinksAction.php:66
-#: classes/GeoAnalysis/GeoAnalyzer.php:86
+#: classes/GeoAnalysis/GeoAnalyzer.php:87
 msgid "post_id must refer to a published post or page."
 msgstr ""
 
@@ -231,11 +341,6 @@ msgstr ""
 
 #: classes/AIActions/Actions/GenerateSummaryBlockAction.php:49
 msgid "Generate summary block"
-msgstr ""
-
-#: classes/AIActions/Actions/GenerateSummaryBlockAction.php:64
-#: classes/AIActions/Actions/WriteMetaDescriptionAction.php:68
-msgid "This post has no content to summarize."
 msgstr ""
 
 #: classes/AIActions/Actions/GenerateSummaryBlockAction.php:117
@@ -382,17 +487,17 @@ msgstr ""
 msgid "No AI provider is configured."
 msgstr ""
 
-#: classes/GeoAnalysis/GeoAnalyzer.php:217
+#: classes/GeoAnalysis/GeoAnalyzer.php:339
 msgid "The AI did not return a usable GEO analysis."
 msgstr ""
 
 #. translators: %s is the missing/invalid score dimension.
-#: classes/GeoAnalysis/GeoAnalyzer.php:229
+#: classes/GeoAnalysis/GeoAnalyzer.php:351
 #, php-format
 msgid "The AI response is missing a valid \"%s\" score."
 msgstr ""
 
-#: classes/GeoAnalysis/GeoAnalyzer.php:246
+#: classes/GeoAnalysis/GeoAnalyzer.php:368
 msgid "The AI did not return any suggestions."
 msgstr ""
 
@@ -412,8 +517,16 @@ msgstr ""
 msgid "AI Usage Report"
 msgstr ""
 
+#: classes/Reports/Types/AiVisibilityReport.php:42
+msgid "AI Visibility Report"
+msgstr ""
+
 #: classes/Reports/Types/AutomationReport.php:38
 msgid "Automation Report"
+msgstr ""
+
+#: classes/Reports/Types/PerformanceReport.php:34
+msgid "Performance Report"
 msgstr ""
 
 #: classes/Reports/Types/ScanSummaryReport.php:39
@@ -426,6 +539,10 @@ msgstr ""
 
 #: classes/Reports/Types/SeoReport.php:33
 msgid "SEO Report"
+msgstr ""
+
+#: classes/Reports/Types/UpdatesReport.php:35
+msgid "Updates Report"
 msgstr ""
 
 #: classes/Reports/Types/WooCommerceReport.php:35
@@ -509,24 +626,24 @@ msgstr ""
 msgid "The scan could not be completed."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Settings.php:217
+#: classes/RestAPI/Controllers/Settings.php:222
 msgid "Settings saved."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Settings.php:251
+#: classes/RestAPI/Controllers/Settings.php:256
 #: assets/js/index.js:1
 msgid "That file doesn't look like a valid VuloPilot settings export."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Settings.php:269
+#: classes/RestAPI/Controllers/Settings.php:274
 msgid "Settings imported."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Settings.php:287
+#: classes/RestAPI/Controllers/Settings.php:292
 msgid "Settings reset to defaults."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Settings.php:365
+#: classes/RestAPI/Controllers/Settings.php:370
 msgid "No module id given."
 msgstr ""
 
@@ -794,11 +911,6 @@ msgstr ""
 msgid "This was flagged as critical and should be addressed as soon as possible."
 msgstr ""
 
-#: classes/Scanners/Basic/AccessibilityScanner.php:46
-#: assets/js/index.js:1
-msgid "Accessibility"
-msgstr ""
-
 #. translators: %s is the post/page title.
 #: classes/Scanners/Basic/AccessibilityScanner.php:79
 #, php-format
@@ -951,17 +1063,17 @@ msgstr ""
 msgid "AI answer engines retrieve and quote content in small chunks. A very long paragraph is harder to cleanly extract than the same information split into shorter ones."
 msgstr ""
 
-#: classes/Scanners/Basic/GeoCitationOpportunityScanner.php:51
+#: classes/Scanners/Basic/GeoCitationOpportunityScanner.php:54
 msgid "Citation Opportunities"
 msgstr ""
 
 #. translators: %s is the post/page title.
-#: classes/Scanners/Basic/GeoCitationOpportunityScanner.php:91
+#: classes/Scanners/Basic/GeoCitationOpportunityScanner.php:94
 #, php-format
 msgid "Statistic mentioned with no source link: %s"
 msgstr ""
 
-#: classes/Scanners/Basic/GeoCitationOpportunityScanner.php:96
+#: classes/Scanners/Basic/GeoCitationOpportunityScanner.php:99
 msgid "This content mentions a statistic or study but links to no external source. AI answer engines favor content that backs up factual claims with citations."
 msgstr ""
 
@@ -977,6 +1089,22 @@ msgstr ""
 
 #: classes/Scanners/Basic/GeoEeatSignalsScanner.php:86
 msgid "This content has no author bio and has never been updated since it was first published — two of the clearest signals AI engines use to judge expertise and trustworthiness are both missing."
+msgstr ""
+
+#: classes/Scanners/Basic/GeoEntityNamingConsistencyScanner.php:50
+msgid "Entity Naming Consistency"
+msgstr ""
+
+#. translators: %s is the post/page title.
+#: classes/Scanners/Basic/GeoEntityNamingConsistencyScanner.php:91
+#, php-format
+msgid "Brand name written inconsistently: %s"
+msgstr ""
+
+#. translators: %s is a comma-separated list of the different spellings found.
+#: classes/Scanners/Basic/GeoEntityNamingConsistencyScanner.php:98
+#, php-format
+msgid "This content refers to the site as multiple different spellings/casings (%s). AI answer engines resolve entities more reliably when a brand name is written the exact same way throughout."
 msgstr ""
 
 #: classes/Scanners/Basic/GeoFaqOpportunityScanner.php:45
@@ -1167,11 +1295,6 @@ msgstr ""
 
 #: classes/Scanners/Basic/OrphanPageScanner.php:95
 msgid "Among the recently modified content sampled by this scan, nothing links to this page. Pages with no inbound internal links are harder for search engines to discover."
-msgstr ""
-
-#: classes/Scanners/Basic/PerformanceScanner.php:46
-#: assets/js/index.js:1
-msgid "Performance"
 msgstr ""
 
 #. translators: %s is a formatted byte size, e.g. "1.4 MB".
@@ -1438,10 +1561,6 @@ msgstr ""
 
 #: classes/Scanners/Basic/RobotsTxtScanner.php:87
 msgid "robots.txt disallows every page for all crawlers (User-agent: * / Disallow: /). If unintentional, this removes the entire site from search results."
-msgstr ""
-
-#: classes/Scanners/Basic/SchemaScanner.php:40
-msgid "Schema"
 msgstr ""
 
 #: classes/Scanners/Basic/SchemaScanner.php:74
@@ -1901,10 +2020,6 @@ msgid "Turns every category \"geo\" scanner on or off — the 8 Generative Engin
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Security"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Check for anonymous REST API user exposure"
 msgstr ""
 
@@ -1929,281 +2044,11 @@ msgid "Turns every category \"woocommerce\" scanner on or off — the checkout-p
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Drag to reorder"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Hide widget"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Something went wrong while loading this data."
 msgstr ""
 
 #: assets/js/index.js:1
 msgid "All"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Overall health"
-msgstr ""
-
-#. translators: %d is the number of open findings.
-#: assets/js/index.js:1
-#, js-format
-msgid "%d open findings"
-msgstr ""
-
-#. translators: %d is the number of critical findings.
-#: assets/js/index.js:1
-#, js-format
-msgid "%d critical"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "WooCommerce not active"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Install and activate WooCommerce to see marketplace health here."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "AI usage"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "This month"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Quick fixes"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Fixable with one AI action"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Nothing to fix right now"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Recent activity"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Could not load recent activity"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Retry"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Nothing has happened yet"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Actions across VuloPilot will show up here."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Health timeline"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "No trend data yet"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Run your first scan to start building a health score history."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Latest reports"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Could not load reports"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "No reports yet"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Generate your first compliance report from the Reports page."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Pending approval"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Action approved and executed."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Action rejected."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Could not complete this action. Please try again."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Could not load pending AI actions"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Nothing waiting on you"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "AI actions that need your approval before they run will appear here."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Approve"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Reject"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Automation status"
-msgstr ""
-
-#. translators: 1: number of enabled automations, 2: number of disabled automations.
-#: assets/js/index.js:1
-#, js-format
-msgid "%1$d enabled · %2$d disabled"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Could not load automations"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "No automations yet"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Create one from the Automation page to react to scan findings automatically."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Hidden widgets:"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Open"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Resolved"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Ignored"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Snoozed"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Could not update this finding. Please try again."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Could not load findings"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Finding"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Category"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Severity"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Status"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Detected"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Actions"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Mark resolved"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Finding marked as resolved."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Ignore"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Finding ignored."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Reopen"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Finding reopened."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Search findings…"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Selected findings updated."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Could not update the selected findings. Please try again."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "No findings here yet — nothing to report."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Critical"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "High"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Medium"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Low"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Info"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -2274,35 +2119,87 @@ msgid "What Pro adds"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Could not load this data"
+msgid "CatalogX"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "AI cost & provider breakdown"
+msgid "Convert your WooCommerce store into a catalog website in a click."
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "A per-provider cost, token, and success-rate breakdown of the history above."
+msgid "Notifima"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Unlock with Pro"
+msgid "Boost sales with real-time stock alerts and simplified stock data management."
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Could not load the dashboard summary."
+msgid "Documentation"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Your site's overall health, at a glance."
+msgid "Step-by-step guides to set up and manage your website."
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Scanning…"
+msgid "Explore Docs"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Run scan"
+msgid "Expert consultation"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Get tailored advice from our team."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Book Consultation"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Developer community"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Connect with our team and fellow builders on Discord."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Join Discord"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Facebook group"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Share experiences and tips with other website owners."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Join Group"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Good"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Warning"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Critical"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "VuloPilot exclusive"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Off-site · via Ahrefs"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -2314,7 +2211,423 @@ msgid "Could not start a scan. Please try again."
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Could not load the dashboard"
+msgid "Scanning…"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Run scan"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Getting started"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Needs your attention"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "GEO & Brand Visibility"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "System status strip"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Health timeline"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Activity, reports & Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Website Health"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Your site's overall health, at a glance."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Customize dashboard"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Show or hide sections"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Welcome to VuloPilot — finish setup"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Extend: CatalogX, Notifima"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "/ 100"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Needs work"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "issues need attention across"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "pillars."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "critical"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Quick fixes"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Open issues"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Pending approval"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "No AI-fixable issues right now."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "One-Click Fix is a Pro module."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "No open issues — nice work."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Nothing waiting on you."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "AI actions that need approval before they run will appear here."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Top opportunities"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "GEO — AI Visibility"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "How well AI assistants can find, understand, and cite your site."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "GEO score"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Off-site mentions & share of voice — predicts AI citations better than backlinks."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Preview — connect Ahrefs to start tracking."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Issue distribution"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Other open"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Crawler traffic"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "No visits yet"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "0 enabled · 0 disabled"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Create one from Automation →"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "enabled"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "active"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Manage modules →"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Run your first scan to start building a health score history."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Overall"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Recent activity"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Nothing has happened yet."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "View all activity →"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Latest reports"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "No reports yet."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Generate your first compliance report →"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Free vs Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Pro unlocks one-click and AI-generated fixes."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Open"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Resolved"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Ignored"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Snoozed"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Could not update this finding. Please try again."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Could not load findings"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Retry"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Finding"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Category"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Severity"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Status"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Detected"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Actions"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Mark resolved"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Finding marked as resolved."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Ignore"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Finding ignored."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Reopen"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Finding reopened."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Search findings…"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Selected findings updated."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Could not update the selected findings. Please try again."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "No findings here yet — nothing to report."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "High"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Medium"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Low"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Info"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Website health score"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Overall health"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Open findings"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Critical findings"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Score by pillar"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Health score trend, last 30 days"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "No trend data yet"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "llms.txt"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "A Markdown index of your key pages, served at /llms.txt for AI systems to read instead of crawling your whole site."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enabled"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "On"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Off"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Loading…"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Preview"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "View live file"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "GEO Score"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Score one post for AI-search-engine discoverability and get AI suggestions to improve it."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Unlock with Pro"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Could not load this data"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Last seen"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Crawl volume, last 30 days"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Most-crawled pages"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Bulk AI optimization"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Rewrite titles, generate descriptions/FAQ/schema, and suggest cross-sell/upsell/bundles across a batch of products at once."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "AI cost & provider breakdown"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "A per-provider cost, token, and success-rate breakdown of the history above."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -2338,6 +2651,22 @@ msgid "No SEO findings yet — run a scan to check titles, meta descriptions, an
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Caching, heavy plugins, large images, and slow-page findings."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "No performance findings yet — run a scan to check caching, heavy plugins, large images, and slow pages."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Heading structure, ARIA attributes, and form label findings."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "No accessibility findings yet — run a scan to check heading structure, ARIA attributes, and form labels."
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Generative Engine Optimization — how discoverable and citable this site is to AI answer engines."
 msgstr ""
 
@@ -2350,6 +2679,70 @@ msgid "No GEO findings yet — run a scan to check how AI answer engines can dis
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "GPTBot (OpenAI)"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "ChatGPT-User (OpenAI)"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "ClaudeBot (Anthropic)"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "anthropic-ai (Anthropic)"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "PerplexityBot (Perplexity)"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Bytespider (ByteDance)"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "CCBot (Common Crawl)"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Google-CloudVertexBot (Google AI training)"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Amazonbot (Amazon)"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Which AI answer engines are reading your site, and what they request — no IP addresses or personal data, ever."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Could not load crawler traffic"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Search requested URLs…"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Bot"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Requested URL"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "When"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "No AI crawler visits detected yet."
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Store settings, product data, and checkout health findings."
 msgstr ""
 
@@ -2358,15 +2751,15 @@ msgid "No WooCommerce findings yet — run a scan to check store settings, produ
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Enabled"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Disabled"
 msgstr ""
 
 #: assets/js/index.js:1
 msgid "React to scan findings automatically — send emails, resolve findings, or run an AI action."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Could not load automations"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -2430,6 +2823,10 @@ msgid "Generate and download scan summary, SEO, WooCommerce, security, and other
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Could not load reports"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Type"
 msgstr ""
 
@@ -2490,10 +2887,6 @@ msgid "Completion tokens"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "When"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "No AI activity yet — VuloPilot will log every AI-assisted action here."
 msgstr ""
 
@@ -2547,10 +2940,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Could not load settings"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Loading…"
 msgstr ""
 
 #: assets/js/index.js:1

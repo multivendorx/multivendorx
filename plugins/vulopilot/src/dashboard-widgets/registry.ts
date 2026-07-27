@@ -6,6 +6,9 @@ import RecentActivityWidget from './RecentActivityWidget';
 import LatestReportsWidget from './LatestReportsWidget';
 import PendingApprovalWidget from './PendingApprovalWidget';
 import AutomationStatusWidget from './AutomationStatusWidget';
+import CrawlerTrafficWidget from './CrawlerTrafficWidget';
+import HealthPillarsWidget from './HealthPillarsWidget';
+import RecentIssuesWidget from './RecentIssuesWidget';
 import { WidgetDefinition } from './types';
 
 /**
@@ -80,6 +83,13 @@ const STAT_WIDGET_CONFIGS: StatWidgetConfig[] = [
 		getExtra: () => __('This month', 'vulopilot'),
 	},
 	{
+		id: 'geo',
+		title: __('GEO', 'vulopilot'),
+		icon: 'globe',
+		getNumber: (summary) => `${summary.category_scores.geo}/100`,
+		getExtra: () => __('Generative Engine Optimization', 'vulopilot'),
+	},
+	{
 		id: 'quick-fixes',
 		title: __('Quick fixes', 'vulopilot'),
 		icon: 'check',
@@ -91,8 +101,15 @@ const STAT_WIDGET_CONFIGS: StatWidgetConfig[] = [
 	},
 ];
 
-/** The six widgets with their own fetch and/or non-stat layout. */
+/** The widgets with their own fetch and/or non-stat layout. */
 const STANDALONE_WIDGETS: WidgetDefinition[] = [
+	{
+		id: 'health-pillars',
+		title: __('Health by pillar', 'vulopilot'),
+		icon: 'home',
+		size: 'large',
+		component: HealthPillarsWidget,
+	},
 	{
 		id: 'recent-activity',
 		title: __('Recent activity', 'vulopilot'),
@@ -128,6 +145,20 @@ const STANDALONE_WIDGETS: WidgetDefinition[] = [
 		size: 'medium',
 		component: AutomationStatusWidget,
 	},
+	{
+		id: 'crawler-traffic',
+		title: __('AI crawler traffic', 'vulopilot'),
+		icon: 'globe',
+		size: 'medium',
+		component: CrawlerTrafficWidget,
+	},
+	{
+		id: 'recent-issues',
+		title: __('Recent open issues', 'vulopilot'),
+		icon: 'warning',
+		size: 'medium',
+		component: RecentIssuesWidget,
+	},
 ];
 
 const STAT_WIDGETS: WidgetDefinition[] = STAT_WIDGET_CONFIGS.map(
@@ -152,5 +183,9 @@ const STAT_WIDGETS: WidgetDefinition[] = STAT_WIDGET_CONFIGS.map(
  */
 export const DEFAULT_DASHBOARD_WIDGETS: WidgetDefinition[] = applyFilters(
 	'vulopilot_dashboard_widgets',
-	[...STAT_WIDGETS, ...STANDALONE_WIDGETS]
+	// health-pillars leads (it's the "everything, at a glance" hero) —
+	// this only affects the default layout a never-customized install
+	// seeds; anyone who has already saved a layout keeps their own order
+	// (DashboardLayout.php persists that separately from this array).
+	[...STANDALONE_WIDGETS, ...STAT_WIDGETS]
 ) as WidgetDefinition[];
