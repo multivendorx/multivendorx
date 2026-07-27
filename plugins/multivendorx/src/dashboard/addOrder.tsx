@@ -340,13 +340,17 @@ const AddOrder = () => {
 				// },
 			],
 		};
-
-		axios
+		try {
+			await axios.post(`${appLocalizer.apiUrl}/wc/v3/orders`, orderData, {
 			.post(`${appLocalizer.apiUrl}/wc/v3/orders`, orderData, {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			})
-			.then(() => {
 				dashNavigate(navigate, ['orders']);
+			dashNavigate(navigate, ['orders']);
+		} catch (error: any) {
+			const message =
+				error?.response?.data?.message ||
+				__('Failed to create order. Please try again.', 'multivendorx');
+			window.alert(message);
+		}
 			});
 	};
 
