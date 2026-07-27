@@ -841,7 +841,7 @@ const AddOrder = () => {
 										<div className="row">
 											<span>
 												{__('Subtotal:', 'multivendorx')}
-											</span>
+											<span>{formatCurrency(subtotal)}</span>
 											<span>${subtotal.toFixed(2)}</span>
 										</div>
 
@@ -849,15 +849,14 @@ const AddOrder = () => {
 											<span>
 												{__('Tax:', 'multivendorx')}
 											</span>
-											<span>
-												$
-												{addedProducts
+												{formatCurrency(
+													addedProducts.reduce(
 													.reduce(
 														(sum, p) =>
 															sum +
 															(p.tax_amount || 0),
 														0
-													)
+												)}
 													.toFixed(2)}
 											</span>
 										</div>
@@ -875,7 +874,7 @@ const AddOrder = () => {
 											<strong>
 												{__('Grand Total:', 'multivendorx')}
 											</strong>
-											<strong>
+												{formatCurrency(grandTotal)}
 												${grandTotal.toFixed(2)}
 											</strong>
 										</div>
