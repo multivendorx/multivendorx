@@ -69,27 +69,53 @@ const MyCourse: React.FC = () => {
 	const filters = [
 		{
 			key: '',
-			label: __('All', 'moowoodle'),
+			label: __('All Courses', 'moowoodle'),
 			count: statusCounts.all,
-			icon: '📚',
+			icon: `
+				<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none">
+					<path
+						d="M12 10.4V20M12 10.4C12 8.15979 12 7.03969 11.564 6.18404C11.1805 5.43139 10.5686 4.81947 9.81596 4.43597C8.96031 4 7.84021 4 5.6 4H4.6C4.03995 4 3.75992 4 3.54601 4.10899C3.35785 4.20487 3.20487 4.35785 3.10899 4.54601C3 4.75992 3 5.03995 3 5.6V16.4C3 16.9601 3 17.2401 3.10899 17.454C3.20487 17.6422 3.35785 17.7951 3.54601 17.891C3.75992 18 4.03995 18 4.6 18H7.54668C8.08687 18 8.35696 18 8.61814 18.0466C8.84995 18.0879 9.0761 18.1563 9.29191 18.2506C9.53504 18.3567 9.75977 18.5065 10.2092 18.8062L12 20M12 10.4C12 8.15979 12 7.03969 12.436 6.18404C12.8195 5.43139 13.4314 4.81947 14.184 4.43597C15.0397 4 16.1598 4 18.4 4H19.4C19.9601 4 20.2401 4 20.454 4.10899C20.6422 4.20487 20.7951 4.35785 20.891 4.54601C21 4.75992 21 5.03995 21 5.6V16.4C21 16.9601 21 17.2401 20.891 17.454C20.7951 17.6422 20.6422 17.7951 20.454 17.891C20.2401 18 19.9601 18 19.4 18H16.4533C15.9131 18 15.643 18 15.3819 18.0466C15.15 18.0879 14.9239 18.1563 14.7081 18.2506C14.465 18.3567 14.2402 18.5065 13.7908 18.8062L12 20"
+						stroke="#000000"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					/>
+				</svg>
+			`,
 		},
 		{
 			key: 'enrolled',
-			label: __('Enrolled', 'moowoodle'),
+			label: __('Enrolled Courses', 'moowoodle'),
 			count: statusCounts.enrolled,
-			icon: '✅',
+			icon: `
+				<svg xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" viewBox="0 0 24 24" fill="none">
+					<circle cx="12" cy="12" r="10" stroke="#000" stroke-width="1.5"/>
+					<path d="M15.4137 10.941C16.1954 11.4026 16.1954 12.5974 15.4137 13.059L10.6935 15.8458C9.93371 16.2944 9 15.7105 9 14.7868L9 9.21316C9 8.28947 9.93371 7.70561 10.6935 8.15419L15.4137 10.941Z" stroke="#000" stroke-width="1.5"/>
+				</svg>
+			`,
 		},
 		{
 			key: 'expired',
-			label: __('Expired', 'moowoodle'),
+			label: __('Expired Courses', 'moowoodle'),
 			count: statusCounts.expired,
-			icon: '⌛',
+			icon: `
+				<svg xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" viewBox="0 0 24 24" fill="none">
+					<path d="M12 7V12L14.5 13.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+			`,
 		},
 		{
 			key: 'unenrolled',
 			label: __('Unenrolled', 'moowoodle'),
 			count: statusCounts.unenrolled,
-			icon: '❌',
+			icon: `
+				<svg xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" height="40px" width="40px" version="1.1" viewBox="0 0 24 24" xml:space="preserve">
+					<g id="inactive">
+						<path d="M13.6,23.9c-7.8,1-14.5-5.6-13.5-13.5c0.7-5.3,5-9.7,10.3-10.3c7.8-1,14.5,5.6,13.5,13.5C23.2,18.9,18.9,23.2,13.6,23.9z    M13.7,2.1C6.9,1,1,6.9,2.1,13.7c0.7,4.1,4,7.5,8.2,8.2C17.1,23,23,17.1,21.9,10.3C21.2,6.2,17.8,2.8,13.7,2.1z"/>
+						<polyline points="5.6,4.2 19.8,18.3 18.4,19.8 4.2,5.6  "/>
+					</g>
+				</svg>			
+			`,
 		},
 	];
 
@@ -107,16 +133,30 @@ const MyCourse: React.FC = () => {
 		return courses.map((course, index) => (
 			<tr key={index} className="woocommerce-orders-table__row">
 				<td
-					className="woocommerce-orders-table__cell"
-					data-label={__('Username', 'moowoodle')}
-				>
-					{course.user_name || __('N/A', 'moowoodle')}
-				</td>
-				<td
-					className="woocommerce-orders-table__cell"
+					className="woocommerce-orders-table__cell course-details"
 					data-label={__('Course Name', 'moowoodle')}
 				>
-					{course.course_name || __('Unknown Course', 'moowoodle')}
+					<div className='course-thumbnail'>
+					{course.product_image ? (
+							<img
+								src={course.product_image}
+								alt={course.course_name || __('Unknown Course', 'moowoodle')}
+								className="course-thumbnail"
+							/>
+						) : (
+							<svg xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" viewBox="0 0 24 24" fill="none" class="">
+								<path d="M12 10.4V20M12 10.4C12 8.15979 12 7.03969 11.564 6.18404C11.1805 5.43139 10.5686 4.81947 9.81596 4.43597C8.96031 4 7.84021 4 5.6 4H4.6C4.03995 4 3.75992 4 3.54601 4.10899C3.35785 4.20487 3.20487 4.35785 3.10899 4.54601C3 4.75992 3 5.03995 3 5.6V16.4C3 16.9601 3 17.2401 3.10899 17.454C3.20487 17.6422 3.35785 17.7951 3.54601 17.891C3.75992 18 4.03995 18 4.6 18H7.54668C8.08687 18 8.35696 18 8.61814 18.0466C8.84995 18.0879 9.0761 18.1563 9.29191 18.2506C9.53504 18.3567 9.75977 18.5065 10.2092 18.8062L12 20M12 10.4C12 8.15979 12 7.03969 12.436 6.18404C12.8195 5.43139 13.4314 4.81947 14.184 4.43597C15.0397 4 16.1598 4 18.4 4H19.4C19.9601 4 20.2401 4 20.454 4.10899C20.6422 4.20487 20.7951 4.35785 20.891 4.54601C21 4.75992 21 5.03995 21 5.6V16.4C21 16.9601 21 17.2401 20.891 17.454C20.7951 17.6422 20.6422 17.7951 20.454 17.891C20.2401 18 19.9601 18 19.4 18H16.4533C15.9131 18 15.643 18 15.3819 18.0466C15.15 18.0879 14.9239 18.1563 14.7081 18.2506C14.465 18.3567 14.2402 18.5065 13.7908 18.8062L12 20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						)
+					}
+					</div>
+					<div className="details">
+						{course.course_name || __('Unknown Course', 'moowoodle')}
+						<span>
+							{__('User Name: ', 'moowoodle')}
+							{course.user_name || __('N/A', 'moowoodle')}
+						</span>
+					</div>
 				</td>
 				<td
 					className="woocommerce-orders-table__cell"
@@ -147,7 +187,7 @@ const MyCourse: React.FC = () => {
 							{__(
 								course.status === 'expired'
 									? 'Renew'
-									: 'View',
+									: 'Open Course',
 								'moowoodle'
 							)}
 						</div>
@@ -208,9 +248,10 @@ const MyCourse: React.FC = () => {
 						role="button"
 						tabIndex={0}
 					>
-						<div className="filter-icon">{filter.icon}</div>
+						<div className="filter-icon" dangerouslySetInnerHTML={{ __html: filter.icon }}/>
 						<div className="filter-count">{filter.count}</div>
 						<div className="filter-label">{filter.label}</div>
+						<span>{__('View all →', 'moowoodle')} </span>
 					</div>
 				))}
 			</div>
@@ -219,9 +260,6 @@ const MyCourse: React.FC = () => {
 					<table className="moowoodle-table shop_table shop_table_responsive my_account_orders">
 						<thead>
 							<tr>
-								<th className="woocommerce-orders-table__header">
-									{__('Username', 'moowoodle')}
-								</th>
 								<th className="woocommerce-orders-table__header">
 									{__('Course Name', 'moowoodle')}
 								</th>

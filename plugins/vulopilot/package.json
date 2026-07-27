@@ -90,7 +90,7 @@
 		"react-sortablejs": "^6.1.4",
 		"recharts": "^3.8.1",
 		"sortablejs": "^1.15.6",
-		"@multivendorx/zyra": "^1.0.10"
+		"@multivendorx/zyra": "^1.0.14"
 	},
 	"devDependencies": {
 		"wireit": "^0.14.12"

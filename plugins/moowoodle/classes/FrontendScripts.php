@@ -143,7 +143,11 @@ class FrontendScripts {
         $version           = MooWoodle()->version;
         $registered_styles = apply_filters(
             'moowoodle_frontend_styles',
-            array()
+            array(
+                'moowoodle-my-courses' => array(
+                    'src'  => self::get_asset_path() . "styles/block/my-courses/index.css",
+                ),
+            )
         );
         foreach ( $registered_styles as $name => $style_config ) {
             self::register_style( $name, $style_config['src'], array(), $style_config['version'] ?? $version );
