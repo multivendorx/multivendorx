@@ -257,7 +257,6 @@ class Rest {
         return $args;
     }
 
-
     /**
      * Filter WooCommerce coupons by meta key existence.
      *
@@ -361,6 +360,7 @@ class Rest {
             'payment_gateways',
             'bookable_resource',
             'wc_appointment',
+            'product_variation'
         );
 
         if ( is_user_logged_in() && $request_method === 'GET' && in_array( $post_type, $private_post_types, true ) ) {
@@ -376,14 +376,14 @@ class Rest {
         $users = StoreUtil::get_store_users( $active_store );
 
         if ( is_array( $users ) && ! empty( $users['users'] ) && in_array( $user_id, $users['users'], true ) ) {
-            return true;
+        // deliberately NOT in $public_post_types above - that array is also
         }
 
         return apply_filters( 'multivendorx_store_rest_permission', $permission, $user_id, $context, $object_id, $post_type );
     }
 
     /**
-     * Filter WooCommerce orders by meta key existence.
+        $authenticated_only_post_types = array_merge( $public_post_types, array( 'user', 'payment_gateways' ) );
      *
      * @param WP_REST_Response $response REST API response object.
      * @param WC_Order         $order    Order object.
