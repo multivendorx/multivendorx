@@ -17,7 +17,7 @@ import { defaultCategoryCounts, dummyProducts } from './ManagestockUtil';
 
 
 const Managestock = () => {
-    const [openPopup, setopenPopup] = useState(false);
+    const [openPopup, setOpenPopup] = useState(false);
     let tableProps: any = {};
     const headers = {
         product: {
@@ -62,7 +62,7 @@ const Managestock = () => {
                     ]}
                     value={row.manage_stock ? ['enabled'] : []}
                     onChange={() => {
-                        setopenPopup(true);
+                        setOpenPopup(true);
                     }}
                 />
             ),
@@ -88,7 +88,7 @@ const Managestock = () => {
         {
             label: __('Download CSV', 'notifima'),
             icon: 'download',
-            onClickWithQuery: () => setopenPopup(true),
+            onClickWithQuery: () => setOpenPopup(true),
         },
     ];
 
@@ -125,11 +125,11 @@ const Managestock = () => {
                     value: '',
                 },
                 {
-                    label: __('product Name', 'notifima'),
+                    label: __('Product Name', 'notifima'),
                     value: 'name',
                 },
                 {
-                    label: __('Email', 'notifima'),
+                    label: __('SKU', 'notifima'),
                     value: 'sku',
                 },
             ],
@@ -147,7 +147,7 @@ const Managestock = () => {
     const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
             return (
-                <div className="demo-wrapper" onClick={() => setopenPopup(true)}>
+                <div className="demo-wrapper" onClick={() => setOpenPopup(true)}>
                     <div className="watermark">{__('This is sample Data','notifima' )}</div>
                     <TableCard {...tableProps} />
                 </div>
@@ -166,7 +166,7 @@ const Managestock = () => {
                 <PopupComponent
                     position="lightbox"
                     open={openPopup}
-                    onClose={() => setopenPopup(false)}
+                    onClose={() => setOpenPopup(false)}
                     width={31.25}
                     height="auto"
                 >
