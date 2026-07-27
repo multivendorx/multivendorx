@@ -340,7 +340,7 @@ class Admin {
                     array(
                         'id'         => 'multivendorx-store-tab-' . uniqid(),
                         'elType'     => 'widget',
-                        'widgetType' => 'multivendorx_Store_Tab',
+                        'widgetType' => 'multivendorx_store_tab',
                         'elements'   => array(),
                     ),
                 ),

@@ -26,7 +26,7 @@ class StoreTab extends Widget_Base {
 	 * @return string
 	 */
 	public function get_name() {
-		return 'multivendorx_Store_Tab';
+		return 'multivendorx_store_tab';
 	}
 
 	/**
