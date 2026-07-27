@@ -247,6 +247,17 @@ class Settings extends \WP_REST_Controller {
                     $response->set_data( $result );
                     break;
             }
+
+            /**
+             * Fires after a module's activation status has changed.
+             *
+             * @since 5.0.0
+             *
+             * @param string $module_id The module ID.
+             * @param string $action    The requested action. Possible values are 'activate' or 'deactivate'.
+             */
+            do_action( 'multivendorx_module_status_change', $module_id, $action );
+
             return $response;
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
