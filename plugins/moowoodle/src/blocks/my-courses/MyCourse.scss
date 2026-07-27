@@ -1,7 +1,108 @@
-.pagination{
-    display: flex;
+.pagination {
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
   justify-content: end;
+  gap: 0.5rem;
   margin-top: 1rem;
+}
+
+.moowoodle-course-filters {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 3rem;
+
+  .filter-card {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 1rem;
+    border: 0.063rem solid #00000047;
+    border-radius: 0.313rem;
+    cursor: pointer;
+
+    &:focus {
+      outline: 0 !important;
+    }
+
+    .filter-label {
+      width: 100%;
+      margin-top: 1.25rem;
+      font-size: 1rem;
+      line-height: 1;
+      font-weight: 400;
+    }
+
+    .filter-count {
+      font-size: 2.063rem;
+      line-height: 1;
+      font-weight: 500;
+    }
+
+    .filter-icon {
+      svg {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.313rem;
+        height: 1.313rem;
+        margin-right: 0.625rem;
+        padding: 0.5rem;
+        background: #0000000d;
+        border-radius: 0.313rem;
+      }
+    }
+
+    span {
+      width: 100%;
+      margin-top: 0.625rem;
+      font-size: 1rem;
+      font-weight: 400;
+      color: #5007aa;
+    }
+
+    &.active {
+      border-color: #5007aa;
+
+      .filter-icon {
+        svg {
+          background: #5007aa29;
+
+          path,
+          circle {
+            stroke: #5007aa;
+          }
+        }
+      }
+    }
   }
+}
+
+.course-details {
+  display: flex;
+
+  .course-thumbnail {
+    min-width: 3rem;
+    height: 3rem;
+    margin-right: 0.625rem;
+  }
+   span {
+      display: block;
+      font-size: 0.913rem;
+      line-height: 1;
+      font-weight: 500;
+    }
+  img,
+  svg {
+    width: 100%;
+    height: 100%;
+    padding: 0.313rem;
+    box-sizing: border-box;
+    border-radius: 0.313rem;
+    background: #5007aa29;
+
+    path {
+      stroke: #5007aa;
+    }
+  }
+}

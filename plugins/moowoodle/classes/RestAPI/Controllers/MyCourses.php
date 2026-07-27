@@ -145,10 +145,10 @@ class MyCourses extends \WP_REST_Controller {
                 $course = $course[0] ?? array();
 
                 $formatted_enrolled_date = '';
-                if ( ! empty( $enrollment['enrollment_date'] ) ) {
+               if ( ! empty( $enrollment['enrollment_date'] ) ) {
                     $timestamp = strtotime( $enrollment['enrollment_date'] );
                     if ( $timestamp ) {
-                        $formatted_enrolled_date = wp_date( 'M j, Y - H:i', $timestamp );
+                        $formatted_enrolled_date = wp_date( 'M j, Y', $timestamp );
                     }
                 }
 
@@ -158,6 +158,7 @@ class MyCourses extends \WP_REST_Controller {
                     'enrollment_date' => $formatted_enrolled_date,
                     'status'          => $enrollment['status'],
                     'product_url'     => get_permalink( $course['product_id'] ),
+                    'product_image'   => get_the_post_thumbnail_url( $course['product_id'], 'full' ) ?: '',
                     'moodle_url'      => ! empty( $course['moodle_course_id'] )
                         ? apply_filters(
                             'moodle_course_view_url',
