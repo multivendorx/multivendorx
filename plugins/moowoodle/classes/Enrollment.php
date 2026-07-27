@@ -364,7 +364,7 @@ class Enrollment {
 			$moodle_user_payload = array(
 				'email'          => $email,
 				'username'       => $username,
-				'createpassword' => 1,
+				'createpassword' => apply_filters( 'moowoodle_new_user_forcepasswordchange_value', 1 ),
 				'auth'           => apply_filters( 'moowoodle_new_user_auth_type', 'manual' ),
 				'firstname'      => sanitize_text_field( $user_details['first_name'] ?? 'User' ),
 				'lastname'       => sanitize_text_field( $user_details['last_name'] ?? 'User' ),
