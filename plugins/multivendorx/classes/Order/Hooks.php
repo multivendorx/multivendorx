@@ -25,7 +25,7 @@ class Hooks {
      */
     public function __construct() {
         add_action( 'woocommerce_checkout_create_order_line_item', array( $this, 'add_metadata_for_line_item' ), 10, 4 );
-        add_action( 'woocommerce_checkout_create_order_shipping_item', array( $this, 'add_metadate_for_shipping_item' ), 10, 4 );
+        add_action( 'woocommerce_checkout_create_order_shipping_item', array( $this, 'add_metadata_for_shipping_item' ), 10, 4 );
 
         if ( current_user_can( 'manage_options' ) ) {
             $analytics_hooks = array(
@@ -122,7 +122,7 @@ class Hooks {
      * @param mixed $order Order Object.
      * @return void
      */
-    public function add_metadate_for_shipping_item( $item, $package_key, $package, $order ) {
+    public function add_metadata_for_shipping_item( $item, $package_key, $package, $order ) {
         $store_id = $package['store_id'] ?? $package_key;
         if ( $order && $order->get_parent_id() === 0 ) {
             $item->add_meta_data( Utill::POST_META_SETTINGS['store_id'], $store_id, true );
