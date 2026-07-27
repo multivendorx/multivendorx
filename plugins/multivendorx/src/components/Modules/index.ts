@@ -57,6 +57,7 @@ export default {
 					link: 'https://woocommerce.com/products/woocommerce-subscriptions/',
 				},
 			],
+			forceActivate: true,
 			category: ['marketplace_types', 'product_types'],
 			enableModules: ['variable'],
 		},
