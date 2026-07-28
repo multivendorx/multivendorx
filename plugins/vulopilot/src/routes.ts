@@ -19,6 +19,7 @@ import Security from './pages/Security/Security';
 import AIContent from './pages/AIContent/AIContent';
 import Content from './pages/Content/Content';
 import Schema from './pages/Schema/Schema';
+import Redirects from './pages/Redirects/Redirects';
 
 registerVuloPilotRoute({ tab: 'dashboard', component: Dashboard });
 registerVuloPilotRoute({ tab: 'health', component: Health });
@@ -45,3 +46,4 @@ registerVuloPilotRoute({ tab: 'security', component: Security });
 registerVuloPilotRoute({ tab: 'ai-content', component: AIContent });
 registerVuloPilotRoute({ tab: 'content', component: Content });
 registerVuloPilotRoute({ tab: 'schema', component: Schema });
+registerVuloPilotRoute({ tab: 'redirects', component: Redirects });

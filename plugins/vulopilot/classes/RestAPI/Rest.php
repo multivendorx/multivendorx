@@ -68,6 +68,9 @@ class Rest {
             'settings'         => new Controllers\Settings(),
             'llms_txt'         => new Controllers\LlmsTxt(),
             'crawler_traffic'  => new Controllers\CrawlerTraffic(),
+            'post_seo'         => new Controllers\PostSeo(),
+            'redirects'        => new Controllers\Redirects(),
+            'not_found_logs'   => new Controllers\NotFoundLogs(),
         );
 
         $extra_controllers = apply_filters( 'vulopilot_rest_controllers', array() );

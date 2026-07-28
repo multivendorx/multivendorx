@@ -35,6 +35,25 @@ declare global {
 
 	var appLocalizer: AppLocalizer;
 
+	/**
+	 * Shape of the `vulopilotPostSeo` object localized by
+	 * Services\PostEditorAssets::enqueue_assets() — the post-editor SEO
+	 * metabox's own script handle, separate from `appLocalizer` since the
+	 * Block Editor screen doesn't guarantee the dashboard's own localized
+	 * script has run.
+	 */
+	interface VuloPilotPostSeoLocalizer {
+		apiUrl: string;
+		nonce: string;
+		/** Whether VuloPilot Pro is installed, active, and license-active — gates "Fix with AI"/"Generate with AI" buttons. */
+		isPro: boolean;
+		shopUrl: string;
+		/** Postmeta key strings, keyed by field name — Services\PostSeoMetaFields::META_KEYS plus 'schema_json' (AIActions\Actions\GenerateSchemaAction::META_KEY), so this bundle never hand-copies the literal strings. */
+		metaKeys: Record<string, string>;
+	}
+
+	var vulopilotPostSeo: VuloPilotPostSeoLocalizer;
+
 	/* eslint-disable no-unused-vars */
 	interface Window {
 		VULOPILOT_ROUTES: {
@@ -45,6 +64,7 @@ declare global {
 			tab: string;
 			component: ComponentType<Record<string, unknown>>;
 		}) => void;
+		vulopilotPostSeo: VuloPilotPostSeoLocalizer;
 	}
 	/* eslint-enable no-unused-vars */
 }

@@ -41,6 +41,8 @@ class Utill {
         'site_health_snapshot' => 'vulopilot_site_health_snapshots',
         'ai_action_run'        => 'vulopilot_ai_action_runs',
         'crawler_visit'        => 'vulopilot_crawler_visits',
+        'redirect'             => 'vulopilot_redirects',
+        'not_found_log'        => 'vulopilot_not_found_logs',
     );
 
     /**
@@ -149,16 +151,27 @@ class Utill {
         // filter; see that class's own docblock for why this isn't a
         // from-scratch robots.txt file generator.
         'robots_auto_generate'            => array( 'robots_auto_generate' ),
-        // Persisted, but not yet consumed anywhere: a real 301 redirect
+        // Read by Services\CanonicalUrlManager — WordPress core already
+        // outputs a canonical tag by default (rel_canonical() on wp_head),
+        // so this defaults OFF; it exists as a safety net a site owner (or
+        // vulopilot-pro's OneClickFix "Fix" action) can turn on when a
+        // theme/caching plugin is found to be stripping it, per
+        // Scanners\Basic\CanonicalUrlScanner's own finding.
+        'canonical_url_enabled'           => array(),
+        // Read by Services\SocialMetaTagsManager — outputs Open Graph +
+        // Twitter Card meta tags. Defaults OFF since many sites already
+        // have another plugin/theme outputting these; exists so
+        // vulopilot-pro's OneClickFix "Fix" action has something real to
+        // turn on for Scanners\Basic\OpenGraphScanner/TwitterCardScanner's
+        // findings.
+        'social_meta_tags_enabled'        => array(),
+        // Read by Services\RedirectManager (the first two) and
+        // Services\NotFoundLogger (the third) — a real 301 redirect
         // manager (a user-managed old-path -> new-path table, applied at
-        // request time) and a real 404-visit log (distinct from
-        // Scanners\Basic\NotFoundScanner, which only checks this site's
-        // OWN published permalinks for 404s, not visitor traffic to
-        // missing URLs) don't exist in this codebase yet — that's a
-        // separate, larger feature (new tables + REST + a Redirects page),
-        // not something these three toggles can honestly gate today.
-        // Kept here so the Settings screen round-trips and saves
-        // correctly rather than silently dropping these fields.
+        // request time via `vulopilot_redirects`) and a real 404-visit log
+        // (distinct from Scanners\Basic\NotFoundScanner, which only checks
+        // this site's OWN published permalinks for 404s, not visitor
+        // traffic to missing URLs), backed by `vulopilot_not_found_logs`.
         'enable_redirect_manager'         => array( 'enable_redirect_manager' ),
         'auto_redirect_on_slug_change'    => array( 'auto_redirect_on_slug_change' ),
         'log_404s'                        => array( 'log_404s' ),
