@@ -33,6 +33,7 @@ const EMPTY_SUMMARY: DashboardSummary = {
 		security: 0,
 		accessibility: 0,
 		woocommerce: null,
+		geo: 0,
 	},
 	quick_fixes: 0,
 	pending_approvals: 0,

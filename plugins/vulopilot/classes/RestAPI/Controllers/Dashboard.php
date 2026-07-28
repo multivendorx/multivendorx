@@ -116,7 +116,7 @@ class Dashboard extends \WP_REST_Controller {
      * @return array<string, int|null> Category id => 0-100 score, or null where the category doesn't apply to this site (WooCommerce inactive).
      */
     private function build_category_scores( FindingRepository $findings ): array {
-        $categories = array( 'seo', 'performance', 'security', 'accessibility' );
+        $categories = array( 'seo', 'performance', 'security', 'accessibility', 'geo' );
         $scores     = array();
 
         foreach ( $categories as $category ) {

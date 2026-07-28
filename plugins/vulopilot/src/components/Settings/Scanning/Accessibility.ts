@@ -17,7 +17,7 @@ export default {
 				'vulopilot'
 			),
 			options: [
-				{ key: 'enabled', label: '', value: 'enabled' },
+				{ key: 'enable_accessibility_scanning', label: '', value: 'enable_accessibility_scanning' },
 			],
 		},
 	],

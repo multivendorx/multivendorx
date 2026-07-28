@@ -30,6 +30,15 @@ defined( 'ABSPATH' ) || exit;
  * not an InputRenderer-driven one — see Settings.tsx's own docblock for
  * why those three actions don't fit the auto-save field pattern).
  *
+ * No per-field type/sanitization allowlist here — matches the sibling
+ * free plugins' own Settings controllers (multivendorx/catalogx/moowoodle,
+ * see their own RestAPI/Controllers/Settings.php), which likewise store
+ * whatever `{ setting }` the client sends with no server-side field-type
+ * validation. The only thing this class still does beyond that baseline
+ * is merge into the existing option rather than replace it outright,
+ * which is a consequence of the single-flat-option storage above, not a
+ * sanitization layer.
+ *
  * @class       Settings controller
  * @version     1.0.0
  * @author      MultiVendorX
@@ -45,38 +54,6 @@ class Settings extends \WP_REST_Controller {
      * @var string
      */
     protected $modules_base = 'modules';
-
-    /**
-     * Field type per settings key — the single source of truth
-     * update_item()/import_settings() sanitize against. `checkbox` fields
-     * are stored here as real PHP booleans (simpler for every other PHP
-     * consumer to read) and converted to zyra's checkbox-array wire shape
-     * (`[]`/`['enabled']`) only at the REST boundary — see to_wire_format().
-     *
-     * @var array<string, array{type: string, options?: string[]}>
-     */
-    private const FIELD_TYPES = array(
-        'scan_frequency'                => array(
-            'type'    => 'select',
-            'options' => array( 'hourly', 'daily', 'weekly' ),
-        ),
-        'notification_email'            => array( 'type' => 'email' ),
-        'notify_on_critical_findings'   => array( 'type' => 'checkbox' ),
-        'email_from_name'               => array( 'type' => 'text' ),
-        'email_from_address'            => array( 'type' => 'email' ),
-        'automation_cooldown_minutes'   => array( 'type' => 'number' ),
-        'default_report_format'         => array(
-            'type'    => 'select',
-            'options' => array( 'csv', 'json', 'pdf' ),
-        ),
-        'default_report_period_days'    => array( 'type' => 'number' ),
-        'enable_rest_api_scanner'       => array( 'type' => 'checkbox' ),
-        'enable_seo_scanning'           => array( 'type' => 'checkbox' ),
-        'enable_geo_scanning'           => array( 'type' => 'checkbox' ),
-        'enable_accessibility_scanning' => array( 'type' => 'checkbox' ),
-        'enable_woocommerce_scanning'   => array( 'type' => 'checkbox' ),
-        'enable_debug_logging'          => array( 'type' => 'checkbox' ),
-    );
 
     /**
      * @inheritDoc
@@ -174,7 +151,7 @@ class Settings extends \WP_REST_Controller {
      * @inheritDoc
      */
     public function get_items( $request ) {
-        return rest_ensure_response( $this->to_wire_format( $this->get_stored_settings() ) );
+        return rest_ensure_response( $this->get_stored_settings() );
     }
 
     /**
@@ -199,24 +176,27 @@ class Settings extends \WP_REST_Controller {
             $tab_fields = array();
         }
 
-        $updated = $this->get_stored_settings();
-
-        foreach ( $tab_fields as $key => $value ) {
-            if ( ! array_key_exists( $key, self::FIELD_TYPES ) ) {
-                continue;
-            }
-
-            $updated[ $key ] = $this->sanitize_field( $key, $value );
-        }
+        $updated = array_merge( $this->get_stored_settings(), $tab_fields );
 
         update_option( Utill::VULOPILOT_SETTINGS_KEY, $updated );
 
-        return rest_ensure_response(
-            array(
-                'success' => true,
-                'message' => __( 'Settings saved.', 'vulopilot' ),
-            )
+        $response = array(
+            'success' => true,
+            'message' => __( 'Settings saved.', 'vulopilot' ),
         );
+
+        // Editing llms.txt's content is meant to take effect immediately,
+        // not just on the next dynamic /llms.txt request — write the real
+        // file straight away so "View live file" reflects this save
+        // without the admin needing to trigger anything else. Reported
+        // honestly: a locked-down host where ABSPATH isn't writable still
+        // saves the setting (the virtual /llms.txt route still serves it),
+        // it just can't also write the static file.
+        if ( array_key_exists( 'llms_txt_content', $tab_fields ) ) {
+            $response['file_saved'] = VuloPilot()->llms_txt_generator->write_file( $updated['llms_txt_content'] );
+        }
+
+        return rest_ensure_response( $response );
     }
 
     /**
@@ -237,9 +217,7 @@ class Settings extends \WP_REST_Controller {
 
     /**
      * Restores settings from a previously-exported JSON payload — merges
-     * (same posture as update_item()) rather than replacing wholesale, and
-     * silently drops any key that isn't in FIELD_TYPES so an edited or
-     * stale export file can't inject arbitrary option keys.
+     * (same posture as update_item()) rather than replacing wholesale.
      *
      * @param \WP_REST_Request $request Full details about the request.
      * @return \WP_REST_Response|\WP_Error
@@ -251,15 +229,7 @@ class Settings extends \WP_REST_Controller {
             return new \WP_Error( 'vulopilot_invalid_import', __( 'That file doesn\'t look like a valid VuloPilot settings export.', 'vulopilot' ), array( 'status' => 400 ) );
         }
 
-        $current = $this->get_stored_settings();
-
-        foreach ( $payload as $key => $value ) {
-            if ( ! array_key_exists( $key, self::FIELD_TYPES ) ) {
-                continue;
-            }
-
-            $current[ $key ] = $this->sanitize_field( $key, $value );
-        }
+        $current = array_merge( $this->get_stored_settings(), $payload );
 
         update_option( Utill::VULOPILOT_SETTINGS_KEY, $current );
 
@@ -295,53 +265,33 @@ class Settings extends \WP_REST_Controller {
     private function get_stored_settings(): array {
         $saved = get_option( Utill::VULOPILOT_SETTINGS_KEY, array() );
 
-        return wp_parse_args( is_array( $saved ) ? $saved : array(), Utill::VULOPILOT_SETTINGS_DEFAULTS );
-    }
+        $settings = wp_parse_args( is_array( $saved ) ? $saved : array(), Utill::VULOPILOT_SETTINGS_DEFAULTS );
 
-    /**
-     * @param string $key   A FIELD_TYPES key.
-     * @param mixed  $value Raw value — either zyra's checkbox-array wire shape or a plain scalar (both from a live request or an imported export file).
-     * @return mixed Sanitized value, in PHP-native form (checkbox fields become real booleans).
-     */
-    private function sanitize_field( string $key, $value ) {
-        $type = self::FIELD_TYPES[ $key ]['type'] ?? 'text';
-
-        switch ( $type ) {
-            case 'checkbox':
-                // Accepts either zyra's own wire shape (an array containing
-                // 'enabled') or a plain boolean/truthy scalar, so this
-                // sanitizes correctly whether the value came from
-                // InputRenderer's auto-save, an imported export file, or a
-                // direct API call.
-                return is_array( $value ) ? in_array( 'enabled', $value, true ) : (bool) $value;
-
-            case 'number':
-                return absint( $value );
-
-            case 'email':
-                $email = sanitize_email( (string) $value );
-                return is_email( $email ) ? $email : '';
-
-            case 'select':
-                $options = self::FIELD_TYPES[ $key ]['options'] ?? array();
-                $value   = sanitize_key( (string) $value );
-                return in_array( $value, $options, true ) ? $value : ( $options[0] ?? '' );
-
-            case 'text':
-            default:
-                return sanitize_text_field( (string) $value );
-        }
-    }
-
-    /**
-     * @param array<string, mixed> $settings PHP-native settings (checkbox fields as real booleans).
-     * @return array<string, mixed> Wire format — checkbox fields as zyra's `[]`/`['enabled']` array shape.
-     */
-    private function to_wire_format( array $settings ): array {
-        foreach ( self::FIELD_TYPES as $key => $field ) {
-            if ( 'checkbox' === $field['type'] ) {
-                $settings[ $key ] = ! empty( $settings[ $key ] ) ? array( 'enabled' ) : array();
+        // Sites that saved a checkbox setting before this option's defaults
+        // moved to zyra's own wire shape still have a raw PHP boolean
+        // sitting in the stored option for that key — normalize it here
+        // rather than reintroducing a per-key type allowlist. This is
+        // driven by the value's own PHP type, not a field-by-field
+        // registry, so it stays consistent with dropping FIELD_TYPES: no
+        // setting other than a checkbox has ever stored a real boolean.
+        // The wire shape's "on" sentinel is the field's own key (matching
+        // every checkbox field's `options: [{ key, value }]` in the *.ts
+        // settings configs, e.g. `enable_seo_scanning`'s sole option is
+        // `{ key: 'enable_seo_scanning', value: 'enable_seo_scanning' }`),
+        // not a shared 'enabled' literal — so `$key` itself is correct here.
+        foreach ( $settings as $key => $value ) {
+            if ( is_bool( $value ) ) {
+                $settings[ $key ] = $value ? array( $key ) : array();
             }
+        }
+
+        // 'llms_txt_content' can't live in VULOPILOT_SETTINGS_DEFAULTS as
+        // anything but '' (a class const array can't call a method) — so
+        // an admin who has never customized it yet sees the real
+        // auto-generated content here, not a blank textarea, without that
+        // ever being persisted until they actually edit and save it.
+        if ( empty( $settings['llms_txt_content'] ) ) {
+            $settings['llms_txt_content'] = VuloPilot()->llms_txt_generator->generate();
         }
 
         return $settings;

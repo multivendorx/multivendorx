@@ -1,15 +1,20 @@
 /* global appLocalizer */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import { getApiLink, sendApiResponse } from '@zyra/core';
+import { getApiLink, getApiResponse, sendApiResponse } from '@zyra/core';
 import { NoticeManager, PopupComponent } from '@zyra/components';
-import { ButtonInput } from '@zyra/inputs';
+import { ButtonInput, SelectInput } from '@zyra/inputs';
 import { TableCard, TableRow } from '@zyra/table';
 import type { ComponentType } from 'react';
 import { useApiList } from '../../services/useApiList';
 import TablePage from '../../components/TablePage/TablePage';
 import ShowProPopup from '../../components/Popup/Popup';
+
+interface ReportTypeOption {
+	id: string;
+	label: string;
+}
 
 interface ReportRow extends TableRow {
 	id: number;
@@ -40,6 +45,24 @@ const AdvancedReportsPanel = applyFilters(
 
 const Reports = () => {
 	const [isProPopupOpen, setIsProPopupOpen] = useState(false);
+	const [reportTypes, setReportTypes] = useState<ReportTypeOption[]>([]);
+	const [selectedReportType, setSelectedReportType] =
+		useState<string>('scan_summary');
+
+	// GET /reports/types is fully dynamic (VuloPilot()->report_type_registry->get_all()),
+	// so this picks up AiVisibilityReport/PerformanceReport/UpdatesReport
+	// (and any Pro-registered type like 'health') automatically — no
+	// hardcoded list to keep in sync here.
+	useEffect(() => {
+		getApiResponse<ReportTypeOption[]>(
+			getApiLink(appLocalizer, 'reports/types'),
+			{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+		).then((response) => {
+			if (response && response.length > 0) {
+				setReportTypes(response);
+			}
+		});
+	}, []);
 
 	const statusOptions = [
 		{ label: __('Generating', 'vulopilot'), value: 'generating' },
@@ -67,7 +90,7 @@ const Reports = () => {
 		// AdvancedReports module), so a format Free always has registered
 		// is what this always-available button should generate.
 		sendApiResponse(appLocalizer, getApiLink(appLocalizer, 'reports'), {
-			report_type: 'scan_summary',
+			report_type: selectedReportType,
 			format: 'csv',
 		}).then((response) => {
 			if (response) {
@@ -126,13 +149,29 @@ const Reports = () => {
 	};
 
 	const pageHeaderAction = (
-		<ButtonInput
-			buttons={{
-				text: __('Generate report', 'vulopilot'),
-				icon: 'media-document',
-				onClick: handleGenerateReport,
-			}}
-		/>
+		<>
+			{reportTypes.length > 0 && (
+				<SelectInput
+					name="report_type"
+					value={selectedReportType}
+					options={reportTypes.map((type) => ({
+						label: type.label,
+						value: type.id,
+					}))}
+					onChange={(newValue) =>
+						setSelectedReportType(newValue as string)
+					}
+					size="12rem"
+				/>
+			)}
+			<ButtonInput
+				buttons={{
+					text: __('Generate report', 'vulopilot'),
+					icon: 'media-document',
+					onClick: handleGenerateReport,
+				}}
+			/>
+		</>
 	);
 
 	return (
@@ -209,7 +248,10 @@ const Reports = () => {
 				height="auto"
 				position="lightbox"
 			>
-				{appLocalizer.active_modules.includes('advanced-reports') ? (
+				{appLocalizer.khali_dabba ? (
+					// Pro is active — this specific module just isn't
+					// toggled on yet, so point at Modules rather than
+					// pitching an upgrade the user already has.
 					<ShowProPopup moduleName="advanced-reports" />
 				) : (
 					<ShowProPopup />

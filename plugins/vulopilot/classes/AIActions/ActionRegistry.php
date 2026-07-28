@@ -80,6 +80,16 @@ class ActionRegistry {
             // MissingSummaryBlockRule's fix loops.
             Actions\GenerateFaqAction::class,
             Actions\GenerateSummaryBlockAction::class,
+            // GEO module, second pass — closes the remaining 7 GEO
+            // scanners' fix loops (ScannerFixMap previously left these
+            // unmapped entirely; see that class's own docblock for why
+            // each one is now mapped).
+            Actions\GenerateAuthorBioAction::class,
+            Actions\CreateTrustPageAction::class,
+            Actions\SoftenUnsourcedClaimsAction::class,
+            Actions\SplitLongParagraphsAction::class,
+            Actions\FixHeadingHierarchyAction::class,
+            Actions\NormalizeEntityNamingAction::class,
             // AI SEO Assistant / AI Content Assistant (readme) — closes
             // SeoTitleRewriteRule's fix loop (write-meta-title) and adds
             // the two content-generation actions with no matching scanner/
@@ -87,6 +97,12 @@ class ActionRegistry {
             Actions\WriteMetaTitleAction::class,
             Actions\SuggestInternalLinksAction::class,
             Actions\GenerateSocialContentAction::class,
+            // AI Content Assistant (readme) — the 3 remaining generation
+            // types with no existing action: product descriptions,
+            // listing-page excerpts, and comparison pages.
+            Actions\GenerateProductDescriptionAction::class,
+            Actions\GenerateExcerptAction::class,
+            Actions\GenerateComparisonPageAction::class,
         );
     }
 

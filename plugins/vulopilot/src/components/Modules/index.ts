@@ -35,6 +35,21 @@ export default {
 	modules: [
 		{
 			type: 'separator',
+			id: 'free',
+			label: __('Free Modules', 'vulopilot'),
+		},
+		{
+			id: 'geo',
+			name: __('GEO', 'vulopilot'),
+			desc: __(
+				'Auto-regenerates llms.txt on publish/update (Settings → GEO). The GEO scanners and findings table themselves are core and run regardless of this module — this only covers that one automation.',
+				'vulopilot'
+			),
+			category: ['free'],
+			miniModule: true,
+		},
+		{
+			type: 'separator',
 			id: 'premium',
 			label: __('Premium Modules', 'vulopilot'),
 		},

@@ -32,7 +32,6 @@ class Admin {
     public function __construct() {
         add_action( 'admin_menu', array( $this, 'add_menus' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ) );
-        add_action( 'admin_head', array( $this, 'print_menu_badge_styles' ) );
     }
 
     /**
@@ -55,59 +54,89 @@ class Admin {
             56
         );
 
-        // A "PRO" pill on the Automation submenu label when the Automation
-        // module isn't active — the module (not a raw license flag) is the
-        // right signal here, since the actual management panel is
-        // registered by vulopilot-pro/modules/Automation's own React entry
-        // and only shows up once that module is active (module-architecture.md).
-        $automation_pro_tag = VuloPilot()->modules->is_active( 'automation' )
-            ? ''
-            : ' <span class="vulopilot-pro-tag">' . esc_html__( 'PRO', 'vulopilot' ) . '</span>';
-
         $submenus = apply_filters(
             'vulopilot_submenus',
             array(
-                'dashboard'    => array(
+                'dashboard'        => array(
                     'name'     => __( 'Dashboard', 'vulopilot' ),
                     'priority' => 10,
                 ),
-                'health'       => array(
-                    'name'     => __( 'Health', 'vulopilot' ),
+                'geo'              => array(
+                    'name'     => __( 'GEO', 'vulopilot' ),
                     'priority' => 20,
                 ),
-                'seo'          => array(
+                'brand-visibility' => array(
+                    'name'     => __( 'Brand Visibility', 'vulopilot' ),
+                    'priority' => 25,
+                ),
+                'seo'              => array(
                     'name'     => __( 'SEO', 'vulopilot' ),
                     'priority' => 30,
                 ),
-                'geo'          => array(
-                    'name'     => __( 'GEO', 'vulopilot' ),
+                'ai-content'       => array(
+                    'name'     => __( 'AI Content', 'vulopilot' ),
+                    'priority' => 32,
+                ),
+                'performance'      => array(
+                    'name'     => __( 'Performance', 'vulopilot' ),
+                    'priority' => 34,
+                ),
+                'accessibility'    => array(
+                    'name'     => __( 'Accessibility', 'vulopilot' ),
+                    'priority' => 36,
+                ),
+                'content'          => array(
+                    'name'     => __( 'Content', 'vulopilot' ),
+                    'priority' => 38,
+                ),
+                'schema'           => array(
+                    'name'     => __( 'Schema', 'vulopilot' ),
                     'priority' => 40,
                 ),
-                'woocommerce'  => array(
+                'crawler-traffic'  => array(
+                    'name'     => __( 'Crawler Traffic', 'vulopilot' ),
+                    'priority' => 45,
+                ),
+                'woocommerce'      => array(
                     'name'     => __( 'WooCommerce', 'vulopilot' ),
                     'priority' => 50,
                 ),
-                'automation'   => array(
-                    'name'     => __( 'Automation', 'vulopilot' ) . $automation_pro_tag,
+                'security'         => array(
+                    'name'     => __( 'Security', 'vulopilot' ),
+                    'priority' => 55,
+                ),
+                // 'health' has no row in the redesigned sidebar's own nav
+                // list, but it's a real, working page (score-by-category
+                // summary + the unfiltered findings list) — dropped from
+                // this specific mockup's IA, not something to delete from
+                // the product. Kept reachable, just given a low priority
+                // so it doesn't compete with the rows the new design
+                // actually calls out.
+                'health'           => array(
+                    'name'     => __( 'Health', 'vulopilot' ),
+                    'priority' => 58,
+                ),
+                'automation'       => array(
+                    'name'     => __( 'Automation', 'vulopilot' ),
                     'priority' => 60,
                 ),
-                'reports'      => array(
-                    'name'     => __( 'Reports', 'vulopilot' ),
+                'modules'          => array(
+                    'name'     => __( 'Modules', 'vulopilot' ),
                     'priority' => 70,
                 ),
-                'ai-assistant' => array(
+                'ai-assistant'     => array(
                     'name'     => __( 'AI Assistant', 'vulopilot' ),
                     'priority' => 80,
                 ),
-                'activity'     => array(
-                    'name'     => __( 'Activity', 'vulopilot' ),
+                'reports'          => array(
+                    'name'     => __( 'Reports', 'vulopilot' ),
                     'priority' => 90,
                 ),
-                'modules'      => array(
-                    'name'     => __( 'Modules', 'vulopilot' ),
+                'activity'         => array(
+                    'name'     => __( 'Activity', 'vulopilot' ),
                     'priority' => 95,
                 ),
-                'settings'     => array(
+                'settings'         => array(
                     'name'     => __( 'Settings', 'vulopilot' ),
                     'priority' => 100,
                 ),
@@ -136,20 +165,6 @@ class Admin {
         // it was auto-registered as by add_menu_page() — remove it so the
         // submenu list doesn't show "VuloPilot" twice.
         remove_submenu_page( 'vulopilot', 'vulopilot' );
-    }
-
-    /**
-     * A small always-loaded inline style for the "PRO" pill appended to a
-     * locked submenu label (see add_menus()). Inline rather than a new
-     * enqueued asset since the WP admin sidebar (unlike the rest of this
-     * plugin's own screen) renders on every wp-admin page, not just
-     * VuloPilot's own — `enqueue_admin_script()`'s handles are screen-gated
-     * and wouldn't reach it.
-     *
-     * @return void
-     */
-    public function print_menu_badge_styles() {
-        echo '<style>.vulopilot-pro-tag{background:#7c3aed;color:#fff;border-radius:10px;padding:1px 6px;margin-left:4px;font-size:9px;font-weight:600;vertical-align:middle;}</style>';
     }
 
     /**
