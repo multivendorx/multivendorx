@@ -82,18 +82,30 @@ interface FindingsTableProps {
 	description?: string;
 	/** Restricts the list to one finding category (e.g. 'seo', 'geo', 'woocommerce'). Omit to show every category (Health). */
 	category?: string;
+	/**
+	 * Further restricts the list to a specific set of scanner ids within
+	 * `category` — what SEO.tsx's per-section tables (e.g. "Titles & meta"
+	 * vs. "Images") use to split one category's findings into several
+	 * independent tables without duplicating this component's fetch/filter/
+	 * bulk-action/fix-action wiring per section. Omit to show every scanner
+	 * in `category` (every other page's single-table usage).
+	 */
+	scannerIds?: string[];
 }
 
 /**
  * Shared findings list — the Health, SEO, GEO, and WooCommerce pages are
  * all "vulopilot_scan_findings filtered to a category" (DATABASE.md), so
  * this one component serves all four rather than duplicating the same
- * table/filter/state wiring four times.
+ * table/filter/state wiring four times. SEO.tsx additionally scopes several
+ * instances of this same component to one `scannerIds` group each, for its
+ * per-section tables.
  */
 const FindingsTable: React.FC<FindingsTableProps> = ({
 	title,
 	description,
 	category,
+	scannerIds,
 }) => {
 	const [isProPopupOpen, setIsProPopupOpen] = useState(false);
 
@@ -115,7 +127,14 @@ const FindingsTable: React.FC<FindingsTableProps> = ({
 		onQueryUpdate,
 	} = useApiList<Finding>(
 		'findings',
-		{ category },
+		{
+			category,
+			// Comma-joined, not an array — useApiList's params are plain
+			// string|number values (see its own JSDoc); Findings::get_items()
+			// on the backend splits this back into a scanner_id list
+			// (see parse_scanner_ids()).
+			scanner_id: scannerIds?.length ? scannerIds.join(',') : undefined,
+		},
 		{ key: 'status', options: statusOptions }
 	);
 

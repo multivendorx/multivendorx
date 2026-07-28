@@ -19,10 +19,21 @@ fight the exact discovery mechanism (`vulopilot_scanner_sources`) already built 
 this. "The SEO module" is therefore not a new architectural layer — it's 13 new
 scanners, 3 new rules, and 1 new AI action, all registered through the engines that
 already exist, unified by sharing the `seo` category string. The Dashboard's
-existing SEO stat widget (`DASHBOARD-WIDGETS.md`) and the SEO admin page
-(`pages/SEO/SEO.tsx`, filtering `FindingsTable` by `category="seo"`) automatically
-pick up every one of these without any change, because both already key off that
-category, not a hardcoded scanner list.
+existing SEO stat widget (`DASHBOARD-WIDGETS.md`) automatically picks up every one
+of these without any change, since it keys off the category, not a hardcoded
+scanner list.
+
+**The SEO admin page no longer works this way.** `pages/SEO/SEO.tsx` used to be a
+single `FindingsTable` filtered to `category="seo"` (true when this doc was
+written); it's since been split into one `FindingsTable` per section — "Titles &
+meta", "Images", "Links & schema", "XML Sitemap", "Robots.txt" (plus a
+not-yet-backed "Redirects & 404s" placeholder) — each scoped to its own hardcoded
+`scannerIds` list, matching the same 6 groupings Settings → Scanning → SEO already
+presents these checks under (`components/Settings/Scanning/Seo.ts`). **A new SEO
+scanner's findings are still stored and counted normally, but won't appear on this
+page until its `get_id()` is added to the matching section's `scannerIds` array in
+`SEO.tsx`** — unlike before, category membership alone is no longer sufficient for
+a new scanner to show up here.
 
 ## The 15 SEO checks
 

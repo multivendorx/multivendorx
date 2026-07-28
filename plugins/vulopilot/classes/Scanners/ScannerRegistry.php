@@ -15,10 +15,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * VuloPilot ScannerRegistry class.
  *
- * Collects every registered scanner and instantiates it. Free's own 14
- * Basic scanners always run; Pro's premium scanners (and any third-party
- * scanner) are added on top via the `vulopilot_scanner_sources` filter —
- * see SCANNERS.md's "Extension strategy" for the full explanation.
+ * Collects every registered scanner and instantiates it. Most of Free's own
+ * Basic scanners always run; the 17 SEO ones are the one exception —
+ * they're registered by modules/Seo/Module.php instead of the hardcoded
+ * list below, so SEO scanning is genuinely module-dependent (Settings →
+ * Modules). Pro's premium scanners (and any third-party scanner) are added
+ * on top the same way, via the `vulopilot_scanner_sources` filter — see
+ * SCANNERS.md's "Extension strategy" for the full explanation.
  *
  * This intentionally does NOT copy Modules.php's folder-scan/reflection
  * discovery mechanism (module-architecture.md). A module is a whole
@@ -130,10 +133,13 @@ class ScannerRegistry {
      */
     private function get_default_scanner_classes(): array {
         return array(
-            Basic\BrokenLinksScanner::class,
-            Basic\ImagesScanner::class,
-            Basic\SeoScanner::class,
-            Basic\SchemaScanner::class,
+            // SEO (Titles, Schema, images/alt text, broken links, plus the
+            // 13 SEO-MODULE.md checks) moved out of this hardcoded list and
+            // into modules/Seo/Module.php's own `vulopilot_scanner_sources`
+            // registration — see that class's docblock for why: this is
+            // what makes SEO scanning genuinely module-dependent, the same
+            // way vulopilot-pro's AdvancedSeo module already adds its own 2
+            // extra SEO scanners on top.
             Basic\PerformanceScanner::class,
             Basic\DatabaseScanner::class,
             Basic\WooCommerceScanner::class,
@@ -142,21 +148,6 @@ class ScannerRegistry {
             Basic\ThemesScanner::class,
             Basic\UpdatesScanner::class,
             Basic\CronScanner::class,
-            // SEO module (SEO-MODULE.md) — 13 additional checks alongside
-            // the original SeoScanner (Titles) and SchemaScanner (Schema).
-            Basic\MetaDescriptionScanner::class,
-            Basic\CanonicalUrlScanner::class,
-            Basic\InternalLinkingScanner::class,
-            Basic\HeadingStructureScanner::class,
-            Basic\ThinContentScanner::class,
-            Basic\DuplicateContentScanner::class,
-            Basic\SitemapScanner::class,
-            Basic\RobotsTxtScanner::class,
-            Basic\OpenGraphScanner::class,
-            Basic\TwitterCardScanner::class,
-            Basic\OrphanPageScanner::class,
-            Basic\SeoImagesScanner::class,
-            Basic\StructuredDataValidationScanner::class,
             // GEO module (GEO-MODULE.md) — 9 deterministic checks, category 'geo'.
             Basic\GeoAuthorInfoScanner::class,
             Basic\GeoEeatSignalsScanner::class,
