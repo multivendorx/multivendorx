@@ -49,6 +49,16 @@ export default {
 			miniModule: true,
 		},
 		{
+			id: 'seo',
+			name: __('SEO', 'vulopilot'),
+			desc: __(
+				'All 17 SEO scanners (titles, meta descriptions, canonicals, sitemap, robots.txt, images/alt text, schema, and more) that feed the SEO page. Unlike GEO, turning this off actually stops new SEO findings from being produced — existing findings already on the SEO page stay as they are.',
+				'vulopilot'
+			),
+			category: ['free'],
+			miniModule: true,
+		},
+		{
 			type: 'separator',
 			id: 'premium',
 			label: __('Premium Modules', 'vulopilot'),

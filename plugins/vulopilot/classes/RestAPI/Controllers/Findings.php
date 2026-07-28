@@ -96,10 +96,11 @@ class Findings extends \WP_REST_Controller {
     public function get_items( $request ) {
         $repository = new FindingRepository();
 
-        $category = sanitize_key( (string) $request->get_param( 'category' ) );
-        $severity = sanitize_key( (string) $request->get_param( 'severity' ) );
-        $status   = sanitize_key( (string) $request->get_param( 'status' ) );
-        $search   = sanitize_text_field( (string) $request->get_param( 'search' ) );
+        $category    = sanitize_key( (string) $request->get_param( 'category' ) );
+        $severity    = sanitize_key( (string) $request->get_param( 'severity' ) );
+        $status      = sanitize_key( (string) $request->get_param( 'status' ) );
+        $search      = sanitize_text_field( (string) $request->get_param( 'search' ) );
+        $scanner_ids = $this->parse_scanner_ids( $request->get_param( 'scanner_id' ) );
 
         if ( '' !== $severity && ! Severity::is_valid( $severity ) ) {
             return new \WP_Error( 'vulopilot_invalid_severity', __( 'Invalid severity filter.', 'vulopilot' ), array( 'status' => 400 ) );
@@ -107,17 +108,18 @@ class Findings extends \WP_REST_Controller {
 
         $result                  = $repository->find_all(
             array(
-                'page'     => absint( $request->get_param( 'page' ) ) ?: 1,
-                'per_page' => absint( $request->get_param( 'per_page' ) ) ?: 20,
-                'category' => $category,
-                'severity' => $severity,
-                'status'   => $status,
-                'search'   => $search,
-                'orderby'  => sanitize_key( (string) $request->get_param( 'orderby' ) ),
-                'order'    => sanitize_key( (string) $request->get_param( 'order' ) ),
+                'page'       => absint( $request->get_param( 'page' ) ) ?: 1,
+                'per_page'   => absint( $request->get_param( 'per_page' ) ) ?: 20,
+                'category'   => $category,
+                'severity'   => $severity,
+                'status'     => $status,
+                'search'     => $search,
+                'scanner_id' => $scanner_ids ?? '',
+                'orderby'    => sanitize_key( (string) $request->get_param( 'orderby' ) ),
+                'order'      => sanitize_key( (string) $request->get_param( 'order' ) ),
             )
         );
-        $result['status_counts'] = $repository->get_status_counts( '' !== $category ? $category : null );
+        $result['status_counts'] = $repository->get_status_counts( '' !== $category ? $category : null, $scanner_ids );
 
         return rest_ensure_response(
             // Lets a Pro module (vulopilot-pro's OneClickFix) annotate each
@@ -127,6 +129,28 @@ class Findings extends \WP_REST_Controller {
             // vulopilot_reports_advanced_panel/vulopilot_pro_dashboard_component.
             apply_filters( 'vulopilot_finding_list_response', $result )
         );
+    }
+
+    /**
+     * SEO.tsx's per-section tables (e.g. "Titles & meta") pass a
+     * comma-separated `scanner_id` param covering every scanner id that
+     * section groups together, since FindingRepository::find_all()'s
+     * filterable_columns only exact-matches a single scalar per column
+     * value unless given an array (AbstractRepository::build_column_where_clause()).
+     * A single scanner id (no comma) still round-trips correctly as a
+     * one-element array.
+     *
+     * @param mixed $raw_param Raw `scanner_id` request param.
+     * @return string[]|null Sanitized scanner ids, or null when the param was empty/absent.
+     */
+    private function parse_scanner_ids( $raw_param ): ?array {
+        if ( empty( $raw_param ) ) {
+            return null;
+        }
+
+        $scanner_ids = array_filter( array_map( 'sanitize_key', explode( ',', (string) $raw_param ) ) );
+
+        return $scanner_ids ? array_values( $scanner_ids ) : null;
     }
 
     /**

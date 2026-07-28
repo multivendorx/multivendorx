@@ -79,6 +79,37 @@ abstract class AbstractRepository implements RepositoryInterface {
     }
 
     /**
+     * Builds one filterable-column WHERE clause, appending its bound
+     * value(s) to $where_values by reference. A plain scalar becomes an
+     * exact-match `= %s` (the original, only behavior this had); an array
+     * (e.g. a findings table section grouping several scanner_id values
+     * together, SEO.tsx) becomes `IN (%s, %s, ...)` instead — additive, so
+     * every existing scalar caller's query is unchanged.
+     *
+     * @param string                  $column       Column name (already restricted to $filterable_columns entries).
+     * @param string|int|array<mixed> $value        Raw filter value from $args.
+     * @param array<int, string|int>  $where_values Bound values accumulator, appended to by reference.
+     * @return string|null WHERE fragment, or null if $value had nothing usable in it.
+     */
+    private function build_column_where_clause( string $column, $value, array &$where_values ): ?string {
+        if ( is_array( $value ) ) {
+            $values = array_values( array_filter( array_map( 'strval', $value ), fn( $item ) => '' !== $item ) );
+
+            if ( ! $values ) {
+                return null;
+            }
+
+            array_push( $where_values, ...$values );
+
+            return "`{$column}` IN (" . implode( ', ', array_fill( 0, count( $values ), '%s' ) ) . ')';
+        }
+
+        $where_values[] = (string) $value;
+
+        return "`{$column}` = %s";
+    }
+
+    /**
      * @inheritDoc
      */
     public function find_all( array $args = array() ): array {
@@ -95,9 +126,14 @@ abstract class AbstractRepository implements RepositoryInterface {
         $where_values  = array();
 
         foreach ( $this->filterable_columns as $column ) {
-            if ( isset( $args[ $column ] ) && '' !== $args[ $column ] ) {
-                $where_clauses[] = "`{$column}` = %s";
-                $where_values[]  = (string) $args[ $column ];
+            if ( ! isset( $args[ $column ] ) || '' === $args[ $column ] ) {
+                continue;
+            }
+
+            $clause = $this->build_column_where_clause( $column, $args[ $column ], $where_values );
+
+            if ( null !== $clause ) {
+                $where_clauses[] = $clause;
             }
         }
 
@@ -165,9 +201,14 @@ abstract class AbstractRepository implements RepositoryInterface {
                 continue;
             }
 
-            if ( isset( $args[ $filter_column ] ) && '' !== $args[ $filter_column ] ) {
-                $where_clauses[] = "`{$filter_column}` = %s";
-                $where_values[]  = (string) $args[ $filter_column ];
+            if ( ! isset( $args[ $filter_column ] ) || '' === $args[ $filter_column ] ) {
+                continue;
+            }
+
+            $clause = $this->build_column_where_clause( $filter_column, $args[ $filter_column ], $where_values );
+
+            if ( null !== $clause ) {
+                $where_clauses[] = $clause;
             }
         }
 

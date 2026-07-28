@@ -437,20 +437,37 @@ class Install {
         // version_compare gate, same reasoning as the two migrations
         // above; self-limiting after the first run since it only adds
         // 'geo' when it isn't already present.
-        self::seed_geo_module_active();
+        self::seed_module_active( 'geo' );
+
+        // The Seo module (modules/Seo/Module.php) is a stricter case than
+        // Geo above: it's what now registers all 17 SEO scanner classes via
+        // `vulopilot_scanner_sources` (they were removed from
+        // ScannerRegistry::get_default_scanner_classes()'s hardcoded list).
+        // A site upgrading in place that doesn't get 'seo' added here would
+        // silently stop producing any new SEO findings the moment this
+        // version's code runs — not just lose a convenience automation like
+        // Geo's case. Same "deliberately outside the version_compare gate,
+        // self-limiting after the first run" reasoning.
+        self::seed_module_active( 'seo' );
     }
 
     /**
+     * Adds one module id to the stored active-module list if it isn't
+     * already present — shared by every "this module didn't exist before
+     * version X, sites upgrading in place need it added the same way a
+     * fresh install gets it via VuloPilot::activate()" migration step.
+     *
+     * @param string $module_id Module id to seed active, e.g. 'geo'/'seo'.
      * @return void
      */
-    private static function seed_geo_module_active(): void {
+    private static function seed_module_active( string $module_id ): void {
         $active_modules = get_option( Utill::ACTIVE_MODULES_DB_KEY, array() );
 
-        if ( in_array( 'geo', $active_modules, true ) ) {
+        if ( in_array( $module_id, $active_modules, true ) ) {
             return;
         }
 
-        $active_modules[] = 'geo';
+        $active_modules[] = $module_id;
         update_option( Utill::ACTIVE_MODULES_DB_KEY, $active_modules );
     }
 
