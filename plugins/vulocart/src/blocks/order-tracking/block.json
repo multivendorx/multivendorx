@@ -1,0 +1,14 @@
+{
+	"apiVersion": 3,
+	"name": "vulocart/order-tracking",
+	"title": "VuloCart Order Tracking",
+	"category": "widgets",
+	"icon": "search",
+	"description": "Lets a guest look up their own order's status using the order number and access token they were given at checkout.",
+	"editorScript": "file:./index.js",
+	"viewScript": "file:./view.js",
+	"textdomain": "vulocart",
+	"supports": {
+		"html": false
+	}
+}
