@@ -361,13 +361,16 @@ class Enrollment {
 			// Generate username from email.
 			$username = sanitize_user( explode( '@', $email )[0] );
 
-			$moodle_user_payload = array(
-				'email'          => $email,
-				'username'       => $username,
-				'createpassword' => apply_filters( 'moowoodle_new_user_forcepasswordchange_value', 1 ),
-				'auth'           => apply_filters( 'moowoodle_new_user_auth_type', 'manual' ),
-				'firstname'      => sanitize_text_field( $user_details['first_name'] ?? 'User' ),
-				'lastname'       => sanitize_text_field( $user_details['last_name'] ?? 'User' ),
+			$moodle_user_payload = apply_filters(
+				'moowoodle_moodle_user_payload',
+				array(
+					'email'          => $email,
+					'username'       => $username,
+					'createpassword' => 1,
+					'auth'           => 'manual',
+					'firstname'      => sanitize_text_field( $user_details['first_name'] ?? 'User' ),
+					'lastname'       => sanitize_text_field( $user_details['last_name'] ?? 'User' ),
+				)
 			);
 
 			$response = MooWoodle()->external_service->do_request( 'create_users', array( 'users' => array( $moodle_user_payload ) ) );
