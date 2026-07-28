@@ -369,7 +369,7 @@ class Subscriber {
         // Add vendor's email.
         if ( Utill::is_multivendorx_active() ) {
             $store_id = get_post_meta( $product->get_id(), 'multivendorx_store_id', true );
-            $store    = new MultiVendorX\Store\Store( $store_id );
+            $store    = new \MultiVendorX\Store\Store( $store_id );
 
             if ( $store ) {
                 $store_email       = sanitize_email( $store->get( 'email' ) );
