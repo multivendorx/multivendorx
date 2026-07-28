@@ -24,12 +24,15 @@ defined( 'ABSPATH' ) || exit;
  * written into `post_content` or any SEO plugin's own meta key.
  *
  * Pairs conceptually with Scanners\Basic\SchemaScanner, which flags pages
- * with no structured data at all — this is the fix for that finding.
+ * with no structured data at all, and is the mapped one-click fix for
+ * vulopilot-pro's sitewide-structured-data scanner (OneClickFix\ScannerFixMap) —
+ * a per-post JSON-LD presence check this action's post_id input matches
+ * directly.
  *
- * Actually *outputting* this JSON-LD on the frontend (a `wp_head` hook
- * reading `_vulopilot_schema_json`) isn't built yet — see AI-ACTIONS.md's
- * "What's not here yet". This action's job ends at saving valid schema
- * data; rendering it is a separate, still-needed piece.
+ * Actually *outputting* this JSON-LD on the frontend is
+ * Services\SchemaJsonLdRenderer's job (a `wp_head` hook reading
+ * `_vulopilot_schema_json`) — this action's own job ends at saving valid
+ * schema data.
  *
  * @class       GenerateSchemaAction class
  * @version     1.0.0
@@ -37,7 +40,13 @@ defined( 'ABSPATH' ) || exit;
  */
 class GenerateSchemaAction extends AbstractBasicAction {
 
-    private const META_KEY = '_vulopilot_schema_json';
+    /**
+     * Public (not private) since RestAPI\Controllers\PostSeo also reads/
+     * writes this exact key for the post-editor metabox's Schema tab's
+     * manual JSON field — one source of truth for the literal string
+     * rather than a second copy of it drifting out of sync.
+     */
+    public const META_KEY = '_vulopilot_schema_json';
 
     /**
      * @inheritDoc
