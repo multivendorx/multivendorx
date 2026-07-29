@@ -1,7 +1,0 @@
-// The widget grid's own header reuses zyra's global .title-section bar
-// (border-bottom, padding, margin — see Dashboard.tsx's docblock) but
-// with no .title-wrapper sibling to space against, so the button group
-// needs an explicit right-alignment override.
-.dashboard-header-actions {
-	justify-content: flex-end;
-}
