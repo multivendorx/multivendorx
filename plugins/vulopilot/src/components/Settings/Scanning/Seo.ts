@@ -17,6 +17,13 @@ import { __ } from '@wordpress/i18n';
  *   native sitemap (`/wp-sitemap.xml`, via Services\SitemapManager) and
  *   virtual robots.txt (via Services\RobotsTxtManager) — not a
  *   from-scratch generator for either.
+ * - "Add canonical URL tags" / "Add Open Graph & Twitter Card tags"
+ *   (Links & schema): real, independent tag output via
+ *   Services\CanonicalUrlManager/SocialMetaTagsManager — the mechanical
+ *   (non-AI) fixes vulopilot-pro's OneClickFix "Fix" action flips on for
+ *   CanonicalUrlScanner/OpenGraphScanner/TwitterCardScanner's findings.
+ *   Both default off; WordPress core (or another plugin) already covers
+ *   most sites.
  * - Redirects & 404s: persisted settings only — a real 301 redirect
  *   manager and a real 404-visit log (distinct from
  *   Scanners\Basic\NotFoundScanner, which only checks this site's OWN
@@ -170,6 +177,40 @@ export default {
 			),
 			options: [
 				{ key: 'flag_missing_schema', label: '', value: 'flag_missing_schema' },
+			],
+		},
+		{
+			key: 'canonical_url_enabled',
+			type: 'checkbox',
+			look: 'toggle',
+			label: __('Add canonical URL tags', 'vulopilot'),
+			desc: __(
+				'WordPress already adds these by default — only turn this on if the "Canonical URLs" finding shows them missing (usually a theme or caching plugin stripping them).',
+				'vulopilot'
+			),
+			options: [
+				{
+					key: 'canonical_url_enabled',
+					label: '',
+					value: 'canonical_url_enabled',
+				},
+			],
+		},
+		{
+			key: 'social_meta_tags_enabled',
+			type: 'checkbox',
+			look: 'toggle',
+			label: __('Add Open Graph & Twitter Card tags', 'vulopilot'),
+			desc: __(
+				'Adds preview tags (title, description, image) for Facebook, LinkedIn, and X/Twitter. Turn on only if the "Open Graph"/"Twitter Cards" findings show them missing.',
+				'vulopilot'
+			),
+			options: [
+				{
+					key: 'social_meta_tags_enabled',
+					label: '',
+					value: 'social_meta_tags_enabled',
+				},
 			],
 		},
 		{

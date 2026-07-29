@@ -1,0 +1,5 @@
+<svg width="140" height="32" viewBox="0 0 140 32" xmlns="http://www.w3.org/2000/svg">
+	<path d="M4 6 H12 L20 22 L28 6 H36 L22 30 H18 Z" fill="#111827" />
+	<circle cx="30" cy="8" r="3" fill="#00C48C" />
+	<text x="42" y="21" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">VuloCart</text>
+</svg>

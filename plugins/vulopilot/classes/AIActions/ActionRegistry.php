@@ -103,6 +103,14 @@ class ActionRegistry {
             Actions\GenerateProductDescriptionAction::class,
             Actions\GenerateExcerptAction::class,
             Actions\GenerateComparisonPageAction::class,
+            // One-Click Fix coverage pass for the SEO category (Pro's
+            // OneClickFix\ScannerFixMap) — closes HeadingStructureScanner's
+            // and DuplicateContentScanner's fix loops, the two remaining
+            // SEO findings with a genuine, safely-automatable single-post
+            // content fix (as opposed to a site-config/structural issue —
+            // see ScannerFixMap's own docblock for the rest).
+            Actions\AddSubheadingsAction::class,
+            Actions\DifferentiateDuplicateTitleAction::class,
         );
     }
 

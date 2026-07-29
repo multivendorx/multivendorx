@@ -7,6 +7,7 @@ import {
 	ModuleGuardComponent,
 	NavigatorHeaderComponent,
 } from '@zyra/components';
+import { ButtonInput } from '@zyra/inputs';
 import FindingsTable from '../../components/FindingsTable';
 
 /**
@@ -173,28 +174,44 @@ const SEO = () => (
 								/>
 							</CardComponent>
 						))}
-						{/* No scanner produces findings for this section yet
-						    — Settings → Scanning → SEO's "Redirects & 404s"
-						    card's three toggles are persisted settings only
-						    (see that file's own docblock); a real redirect
-						    manager/404 log is a separate, larger feature, so
-						    this stays an honest placeholder rather than a
-						    table that would silently show "no findings"
-						    forever. */}
+						{/* The redirect manager/404 log themselves (Settings →
+						    Scanning → SEO's three toggles) now have a real,
+						    dedicated page — this card is a pointer to it
+						    plus a home for RedirectAnalysisScanner's own
+						    findings (category 'redirects', a homepage
+						    redirect-chain health check that predates this
+						    page and had nowhere in the UI to appear until
+						    now — see that scanner's own docblock). */}
 						<CardComponent
 							title={__('Redirects & 404s', 'vulopilot')}
 							desc={__(
 								'301 redirects and 404 traffic logging.',
 								'vulopilot'
 							)}
+							action={
+								<ButtonInput
+									buttons={{
+										text: __(
+											'Manage redirects →',
+											'vulopilot'
+										),
+										onClick: () => {
+											window.open(
+												`${appLocalizer.admin_url}#&tab=redirects`,
+												'_self'
+											);
+										},
+									}}
+								/>
+							}
 						>
-							<ModuleGuardComponent
-								icon="info"
-								title={__('Not available yet', 'vulopilot')}
-								desc={__(
-									'A redirect manager and 404 traffic log are not built yet, so there are no findings to show here. The related toggles in Settings → Scanning → SEO are saved but not yet backed by a live feature.',
+							<FindingsTable
+								title={__('Redirect health', 'vulopilot')}
+								description={__(
+									'No redirect-chain issues found — run a scan to check the homepage for long or looping redirects.',
 									'vulopilot'
 								)}
+								scannerIds={['redirect-analysis']}
 							/>
 						</CardComponent>
 					</>

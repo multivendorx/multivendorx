@@ -1,0 +1,191 @@
+.vulocart-offering-edit-action {
+	display: inline-block;
+	border: 1px solid #d1d5db;
+	background-color: #ffffff;
+	border-radius: 4px;
+	padding: 4px 8px;
+	font-size: 12px;
+	cursor: pointer;
+	text-decoration: none;
+	color: inherit;
+	margin-right: 6px;
+
+	&:hover {
+		background-color: #f3f4f6;
+	}
+}
+
+.vulocart-back-link {
+	display: inline-block;
+	margin-bottom: 8px;
+	font-size: 13px;
+	text-decoration: none;
+}
+
+.vulocart-edit-page-title {
+	font-size: 22px;
+	margin: 0 0 4px;
+}
+
+.vulocart-saved-notice {
+	background-color: #ecfdf5;
+	border: 1px solid #10b981;
+	color: #065f46;
+	border-radius: 6px;
+	padding: 10px 14px;
+	margin-bottom: 16px;
+	font-size: 13px;
+}
+
+// --- Add/Edit Offering page (WooCommerce/Shopify-style 3-column layout) ---
+
+.vulocart-offering-loading {
+	padding: 24px;
+}
+
+.vulocart-offering-edit-page {
+	padding: 4px 4px 40px;
+}
+
+.vulocart-offering-edit-topbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 16px;
+}
+
+.vulocart-offering-edit-subtitle {
+	margin: 0;
+	font-size: 13px;
+	color: #6b7280;
+}
+
+.vulocart-offering-edit-grid {
+	display: grid;
+	grid-template-columns: 1fr 2fr 1fr;
+	gap: 20px;
+	align-items: start;
+}
+
+.vulocart-offering-edit-col {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	min-width: 0;
+}
+
+.vulocart-field-hint {
+	margin: 4px 0 0;
+	font-size: 12px;
+	color: #6b7280;
+}
+
+.vulocart-subsection-title {
+	font-size: 13px;
+	font-weight: 600;
+	margin: 16px 0 2px;
+}
+
+.vulocart-two-col-fields {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 16px;
+}
+
+.vulocart-three-col-fields {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 16px;
+	margin-top: 12px;
+}
+
+// Left column
+
+.vulocart-recommended-checklist {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+
+	li {
+		display: flex;
+		gap: 8px;
+		padding: 8px 0;
+		border-bottom: 1px solid #f3f4f6;
+
+		&:last-child {
+			border-bottom: none;
+		}
+
+		i {
+			margin-top: 2px;
+			color: #9ca3af;
+		}
+
+		strong {
+			display: block;
+			font-size: 13px;
+		}
+
+		p {
+			margin: 2px 0 0;
+			font-size: 11px;
+			color: #9ca3af;
+		}
+
+		&.is-done i {
+			color: #4f46e5;
+		}
+
+		&.is-done strong {
+			color: #111827;
+		}
+	}
+}
+
+// Center column
+
+.vulocart-variants-notice {
+	margin-top: 10px;
+}
+
+.vulocart-stock-toggle {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 12px;
+	color: #4b5563;
+}
+
+// Right column
+
+.vulocart-publishing-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	padding: 8px 0;
+	font-size: 13px;
+
+	span:first-child {
+		color: #6b7280;
+		flex: 0 0 auto;
+	}
+}
+
+.vulocart-featured-star {
+	border: none;
+	background: none;
+	cursor: pointer;
+	font-size: 16px;
+	color: #d1d5db;
+
+	&.is-featured {
+		color: #f59e0b;
+	}
+}
+
+.vulocart-category-checklist {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}

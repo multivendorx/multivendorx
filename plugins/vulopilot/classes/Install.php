@@ -326,6 +326,67 @@ class Install {
         dbDelta( $sql_ai_action_runs );
 
         self::create_crawler_visits_table();
+        self::create_redirect_tables();
+    }
+
+    /**
+     * Creates `vulopilot_redirects` and `vulopilot_not_found_logs` — same
+     * "own method, self-sufficient, callable from both a fresh install and
+     * do_migration()" shape as create_crawler_visits_table() below, for the
+     * same reason: these were added after this class's original table set,
+     * so sites upgrading in place need them created too, not just fresh
+     * installs.
+     *
+     * `vulopilot_redirects.source_path` is UNIQUE — Services\RedirectManager
+     * looks a request path up by exact match, and only one active target
+     * makes sense per source path (a second row for the same path would be
+     * ambiguous, not a legitimate A/B case this feature is for).
+     * `vulopilot_not_found_logs.requested_path` is likewise UNIQUE —
+     * Services\NotFoundLogger upserts (increment `hit_count`, bump
+     * `last_seen_at`) rather than inserting one row per visit, so repeat
+     * 404s to the same missing URL don't grow this table unboundedly the
+     * way a per-visit log would.
+     *
+     * @return void
+     */
+    private static function create_redirect_tables() {
+        global $wpdb;
+
+        if ( ! function_exists( 'dbDelta' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        }
+
+        $collate = $wpdb->get_charset_collate();
+
+        $sql_redirects = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['redirect'] . "` (
+            `id`            bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            `source_path`   varchar(255) NOT NULL,
+            `target_url`    varchar(255) NOT NULL,
+            `redirect_type` smallint(3) unsigned NOT NULL DEFAULT 301,
+            `hit_count`     int(10) unsigned NOT NULL DEFAULT 0,
+            `is_active`     tinyint(1) NOT NULL DEFAULT 1,
+            `created_by`    bigint(20) unsigned DEFAULT NULL,
+            `created_at`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `updated_at`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `uniq_source_path` (`source_path`),
+            KEY `idx_active` (`is_active`)
+        ) $collate;";
+
+        $sql_not_found_logs = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['not_found_log'] . "` (
+            `id`             bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            `requested_path` varchar(255) NOT NULL,
+            `referrer`       varchar(255) DEFAULT NULL,
+            `hit_count`      int(10) unsigned NOT NULL DEFAULT 1,
+            `last_seen_at`   datetime NOT NULL,
+            `created_at`     timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `uniq_requested_path` (`requested_path`),
+            KEY `idx_last_seen` (`last_seen_at`)
+        ) $collate;";
+
+        dbDelta( $sql_redirects );
+        dbDelta( $sql_not_found_logs );
     }
 
     /**
@@ -426,6 +487,12 @@ class Install {
         // the same self-healing shape create_database_tables() already
         // uses for a fresh install.
         self::create_crawler_visits_table();
+
+        // Redirects & 404 logging (readme.txt's "Redirects & 404s") needs
+        // its own two new tables for sites upgrading in place too — same
+        // "outside the version_compare gate, self-healing via CREATE TABLE
+        // IF NOT EXISTS" reasoning as create_crawler_visits_table() above.
+        self::create_redirect_tables();
 
         // The Geo module (modules/Geo/Module.php) didn't exist before this
         // version either — a site upgrading in place needs it added to

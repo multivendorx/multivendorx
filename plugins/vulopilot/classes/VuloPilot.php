@@ -192,6 +192,41 @@ final class VuloPilot {
         $this->container['sitemap_manager']    = new Services\SitemapManager();
         $this->container['robots_txt_manager'] = new Services\RobotsTxtManager();
 
+        // One-Click Fix coverage pass for the SEO category (vulopilot-pro's
+        // OneClickFix\ScannerFixMap) — the mechanical (non-AI) fixes for
+        // CanonicalUrlScanner/OpenGraphScanner/TwitterCardScanner just flip
+        // one of these two managers' own settings on; SchemaJsonLdRenderer
+        // is what makes AIActions\Actions\GenerateSchemaAction's saved
+        // JSON-LD actually reach the frontend. Same unconditional-
+        // construction, settings-gate-the-output shape as the two services
+        // above.
+        $this->container['canonical_url_manager']    = new Services\CanonicalUrlManager();
+        $this->container['social_meta_tags_manager'] = new Services\SocialMetaTagsManager();
+        $this->container['schema_json_ld_renderer']  = new Services\SchemaJsonLdRenderer();
+        // Sitewide counterpart to schema_json_ld_renderer, for
+        // SchemaScanner's homepage-level check — populated by
+        // vulopilot-pro's OneClickFix `generate-homepage-schema` fix.
+        $this->container['homepage_schema_renderer'] = new Services\HomepageSchemaRenderer();
+
+        // Post-editor SEO metabox ("Meta Box Appearing in Single Posts &
+        // Pages" — readme's research into rankmath.com/kb/on-page-seo/):
+        // Advanced tab's noindex/nofollow output (PostRobotsMetaManager)
+        // and the Block Editor sidebar's asset loader (PostEditorAssets).
+        // Both unconditional construction, same shape as every Services\*
+        // above — nothing to gate behind a setting, only per-post data.
+        $this->container['post_seo_meta_fields']     = new Services\PostSeoMetaFields();
+        $this->container['post_robots_meta_manager'] = new Services\PostRobotsMetaManager();
+        $this->container['post_editor_assets']       = new Services\PostEditorAssets();
+
+        // Redirects & 404s (readme.txt) — real functionality behind the
+        // enable_redirect_manager/auto_redirect_on_slug_change/log_404s
+        // settings, which previously only round-tripped through Settings
+        // with nothing reading them. Same unconditional-construction,
+        // settings-gate-the-hook-callback shape as every Services\* class
+        // above.
+        $this->container['redirect_manager'] = new Services\RedirectManager();
+        $this->container['not_found_logger'] = new Services\NotFoundLogger();
+
         // Extension SDK (ARCHITECTURE.md's Prompt 15) — vulopilot-pro and
         // any third-party plugin register here (`vulopilot_extension_sources`),
         // one tick before ScannerRegistry/RuleRegistry/etc. (all `init`

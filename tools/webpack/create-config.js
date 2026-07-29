@@ -180,6 +180,25 @@ function generateModuleEntries(rootDir) {
 	return moduleEntries;
 }
 
+/**
+ * Optional Block Editor sidebar entry — `src/post-editor/index.tsx`, not
+ * every plugin's own admin dashboard mount (`src/index.tsx`, always
+ * present). Guarded by existence, same "skip if the file doesn't exist"
+ * posture as the block/module entry generators above, so plugins without
+ * a post-editor integration (every plugin except vulopilot, today) are
+ * unaffected.
+ */
+function generatePostEditorEntry(rootDir) {
+	const entryFile = path.resolve(
+		rootDir,
+		'src/post-editor/index.tsx'
+	);
+
+	return fs.existsSync(entryFile)
+		? { 'post-editor': entryFile }
+		: {};
+}
+
 module.exports = function createWebpackConfig(
 	rootDir
 ) {
@@ -192,6 +211,9 @@ module.exports = function createWebpackConfig(
 	const moduleEntries =
 		generateModuleEntries(rootDir);
 
+	const postEditorEntry =
+		generatePostEditorEntry(rootDir);
+
 	return {
 		...defaultConfig,
 
@@ -203,6 +225,7 @@ module.exports = function createWebpackConfig(
 
 			...dynamicEntries,
 			...moduleEntries,
+			...postEditorEntry,
 		},
 
 		output: {
@@ -474,6 +497,12 @@ module.exports = function createWebpackConfig(
 			'@wordpress/plugins': ['wp', 'plugins'],
 			'@wordpress/blocks': ['wp', 'blocks'],
 			'@wordpress/block-editor': ['wp', 'blockEditor'],
+			// Only imported by vulopilot's src/post-editor/* (the
+			// PluginSidebar-based "Meta Box" — react-frontend.md doesn't
+			// cover this since it's this codebase's first Block Editor
+			// integration) — maps to the same `wp-edit-post` script handle
+			// every other @wordpress/edit-post consumer in WP core uses.
+			'@wordpress/edit-post': ['wp', 'editPost'],
 		},
 	};
 };
