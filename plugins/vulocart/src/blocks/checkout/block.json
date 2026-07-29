@@ -4,7 +4,7 @@
 	"title": "VuloCart Checkout",
 	"category": "widgets",
 	"icon": "cart",
-	"description": "A real, working single-page checkout: browse assets, adjust cart quantities, and place an order — no payment gateway yet, orders are created as 'pending'.",
+	"description": "A real, working single-page checkout: browse offerings, adjust cart quantities, and place an order — no payment gateway yet, orders are created as 'pending'.",
 	"editorScript": "file:./index.js",
 	"viewScript": "file:./view.js",
 	"textdomain": "vulocart",

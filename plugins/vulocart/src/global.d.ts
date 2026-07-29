@@ -35,10 +35,30 @@ interface VuloCartLocalizer {
  * wp-admin context, no nonce (Cart/Order's REST routes are deliberately
  * public — see classes/RestAPI/Controllers/Cart.php's own docblock), and
  * don't need zyra's config shape at all.
+ *
+ * `guestCheckoutEnabled`/`requireTermsAcceptance`/`checkoutTermsUrl`/
+ * `isLoggedIn` are the Settings screen's Commerce/Checkout tab
+ * (src/settings/Commerce/Checkout.ts) made real: src/blocks/checkout/
+ * Checkout.tsx enforces both client-side (also enforced again server-side
+ * by modules/Order/Rest.php's `create_item()` for `guestCheckoutEnabled` —
+ * a client-only check isn't real enforcement against a direct API call).
+ * `offeringsListingEnabled`/`cartCheckoutEnabled` are the General/
+ * Frontend tab (src/settings/General/Frontend.ts) made real, same file.
+ * `checkoutPageUrl`/`offeringsPageUrl` are auto-discovered (`Block.php`'s
+ * `find_page_url_with_block()`), not merchant-configured — null until a
+ * published page/post actually contains that block.
  */
 interface VuloCartFrontendData {
 	apiUrl: string;
 	restUrl: string;
+	guestCheckoutEnabled: boolean;
+	requireTermsAcceptance: boolean;
+	checkoutTermsUrl: string;
+	isLoggedIn: boolean;
+	offeringsListingEnabled: boolean;
+	cartCheckoutEnabled: boolean;
+	checkoutPageUrl: string | null;
+	offeringsPageUrl: string | null;
 }
 
 declare global {

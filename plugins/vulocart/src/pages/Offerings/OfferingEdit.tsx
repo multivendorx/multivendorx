@@ -8,18 +8,18 @@ import { TextInput, TextAreaInput, SelectInput, ButtonInput, MultiCheckboxInput,
 import './offerings-page.scss';
 
 /**
- * The 12 types Domain\Asset\AssetType declares (classes/Domain/Asset/AssetType.php)
+ * The 12 types Domain\Offering\OfferingType declares (classes/Domain/Offering/OfferingType.php)
  * — duplicated here rather than fetched, same tradeoff this file's
- * predecessor (AssetsPage.tsx) already accepted. Powers "What kind of
- * product is this?", and — via TYPE_FIELD_CONFIG/STOCK_TRACKED_TYPES/
+ * predecessor (OfferingsPage.tsx) already accepted. Powers "What kind of
+ * offering is this?", and — via TYPE_FIELD_CONFIG/STOCK_TRACKED_TYPES/
  * SHIPPABLE_TYPES below — which fields/sections the rest of the form
  * shows. 11 of these 12 (all but `license`) are this plugin's admin-UX
  * brief's explicit offering-type list; `license` predates that brief and
- * is kept only for backward compatibility with any asset already using
+ * is kept only for backward compatibility with any offering already using
  * it (naming-quality.md/backward-compatibility.md — not something to
  * silently drop), with no type-specific fields of its own.
  */
-const ASSET_TYPE_OPTIONS = [
+const OFFERING_TYPE_OPTIONS = [
 	'physical',
 	'digital',
 	'subscription',
@@ -34,7 +34,7 @@ const ASSET_TYPE_OPTIONS = [
 	'license',
 ].map( ( type ) => ( { label: type, value: type } ) );
 
-const ASSET_STATUS_OPTIONS = [
+const OFFERING_STATUS_OPTIONS = [
 	{ label: 'draft', value: 'draft' },
 	{ label: 'published', value: 'published' },
 	{ label: 'archived', value: 'archived' },
@@ -60,25 +60,52 @@ const CATALOG_VISIBILITY_OPTIONS = [
 	{ label: __( 'Hidden', 'vulocart' ), value: 'hidden' },
 ];
 
+interface CategoryTerm {
+	id: number;
+	name: string;
+	slug: string;
+	parent_id: number | null;
+}
+
 /**
- * A small, hand-maintained flat category list — same tradeoff
- * ASSET_TYPE_OPTIONS/OrderStatus's own list already accepts (small, stable,
- * hand-maintained) — there is no real category taxonomy/hierarchy backing
- * this yet (no `vulocart_categories` table, no parent/child relationships
- * anywhere in this codebase). Selections persist for real, in
- * `meta.categories` (Controllers/Assets.php's `sanitize_offering_meta()`),
- * but the parent/child indentation below is presentational only — a real
- * nested taxonomy (with its own admin CRUD) is a separate, larger feature.
+ * Real, DB-backed categories now (`GET /categories`,
+ * classes/RestAPI/Controllers/Terms.php) — managed from the Offerings
+ * menu's own "Categories" page (`src/pages/Terms/TermsPage.tsx`), no
+ * longer a hardcoded list. Selections persist in `meta.categories` by
+ * slug (Controllers/Offerings.php's `sanitize_offering_meta()`), unchanged;
+ * `formatCategoryOptions()` re-derives the "— " child-indentation
+ * presentation from each term's real `parent_id` instead of that being
+ * hand-typed per option.
+ *
+ * @param terms Categories fetched from `GET /categories`.
+ * @return { key: string; value: string; label: string }[]
  */
-const CATEGORY_OPTIONS = [
-	{ key: 'clothing', value: 'clothing', label: __( 'Clothing', 'vulocart' ) },
-	{ key: 'accessories', value: 'accessories', label: `— ${ __( 'Accessories', 'vulocart' ) }` },
-	{ key: 'hoodies', value: 'hoodies', label: `— ${ __( 'Hoodies', 'vulocart' ) }` },
-	{ key: 'tshirts', value: 'tshirts', label: `— ${ __( 'Tshirts', 'vulocart' ) }` },
-	{ key: 'decor', value: 'decor', label: __( 'Decor', 'vulocart' ) },
-	{ key: 'music', value: 'music', label: __( 'Music', 'vulocart' ) },
-	{ key: 'uncategorized', value: 'uncategorized', label: __( 'Uncategorized', 'vulocart' ) },
-];
+function formatCategoryOptions( terms: CategoryTerm[] ) {
+	const byParent = new Map< number | null, CategoryTerm[] >();
+
+	terms.forEach( ( term ) => {
+		const siblings = byParent.get( term.parent_id ) ?? [];
+		siblings.push( term );
+		byParent.set( term.parent_id, siblings );
+	} );
+
+	const options: { key: string; value: string; label: string }[] = [];
+
+	const appendChildren = ( parentId: number | null, depth: number ) => {
+		( byParent.get( parentId ) ?? [] ).forEach( ( term ) => {
+			options.push( {
+				key: term.slug,
+				value: term.slug,
+				label: depth > 0 ? `${ '— '.repeat( depth ) }${ term.name }` : term.name,
+			} );
+			appendChildren( term.id, depth + 1 );
+		} );
+	};
+
+	appendChildren( null, 0 );
+
+	return options;
+}
 
 /**
  * Every type's delivery nature is now derived from `type` itself rather
@@ -86,7 +113,7 @@ const CATEGORY_OPTIONS = [
  * 4-card section) — `type` already encodes physical vs. digital vs.
  * service, so asking the merchant to pick delivery *again* would just be
  * redundant. Still persisted to `meta.delivery_method`
- * (Controllers/Assets.php's `sanitize_offering_meta()`) for any future
+ * (Controllers/Offerings.php's `sanitize_offering_meta()`) for any future
  * code (search/filtering) that wants a coarse delivery bucket without
  * inspecting all 11 `type` values.
  */
@@ -130,8 +157,8 @@ interface TypeDetailField {
  * has no entry here — its "type-specific" behavior is the always-present
  * Stock & Inventory/Shipping cards, gated by STOCK_TRACKED_TYPES/
  * SHIPPABLE_TYPES above instead of this map. `license` (the 12th
- * AssetType constant, kept for backward compatibility — see
- * ASSET_TYPE_OPTIONS' docblock) has no entry either, since this plugin's
+ * OfferingType constant, kept for backward compatibility — see
+ * OFFERING_TYPE_OPTIONS' docblock) has no entry either, since this plugin's
  * admin-UX brief's 11-type list doesn't include it.
  */
 const TYPE_FIELD_CONFIG: Record< string, TypeDetailField[] > = {
@@ -320,8 +347,8 @@ interface OfferingFormState {
 	shippingPolicy: string;
 	refundPolicy: string;
 	cancellationPolicy: string;
-	relatedProducts: string;
-	addonProducts: string;
+	relatedOfferings: string;
+	addonOfferings: string;
 	featured: boolean;
 	catalogVisibility: string;
 	categories: string[];
@@ -351,8 +378,8 @@ const EMPTY_FORM: OfferingFormState = {
 	shippingPolicy: '',
 	refundPolicy: '',
 	cancellationPolicy: '',
-	relatedProducts: '',
-	addonProducts: '',
+	relatedOfferings: '',
+	addonOfferings: '',
 	featured: false,
 	catalogVisibility: 'shop_and_search',
 	categories: [],
@@ -373,17 +400,17 @@ interface OfferingEditProps {
  * Orders split (see Offerings.tsx's docblock).
  *
  * Deliberately kept to as few cards as the content allows, rather than one
- * card per WooCommerce/Shopify meta-box: left is a single "Product Setup"
- * card (type + recommended checklist); center is "Product Details" (name/
+ * card per WooCommerce/Shopify meta-box: left is a single "Offering Setup"
+ * card (type + recommended checklist); center is "Offering Details" (name/
  * description/pricing/attributes), an optional per-type "Type Details"
  * card, an optional combined "Inventory & Shipping" card, and "Policies &
- * Related Products"; right is "Publishing", a combined "Organization"
+ * Related Offerings"; right is "Publishing", a combined "Organization"
  * card (category + tags), and "Upload image". Subsections within a card
  * use a plain `<h4>` (`.vulocart-subsection-title`) rather than a new
  * `CardComponent`, so grouping related fields doesn't cost another box.
  *
- * Fields beyond title/type/sku/price/currency/status (Domain\Asset\Asset's
- * real columns) are stored in the Asset's existing generic `meta` JSON
+ * Fields beyond title/type/sku/price/currency/status (Domain\Offering\Offering's
+ * real columns) are stored in the Offering's existing generic `meta` JSON
  * column — no schema migration needed, same "extensible, type-specific
  * attributes" role `meta` already has for Cart/Order.
  *
@@ -400,10 +427,10 @@ interface OfferingEditProps {
  * (TYPE_TO_DELIVERY_METHOD) rather than a separate manual picker.
  *
  * Two things are deliberately NOT built as fully real features here:
- * "Attributes & Variations" (a real product-variant matrix needs its own
+ * "Attributes & Variations" (a real offering-variant matrix needs its own
  * schema — this button is honestly inert, not faked) and "Related
- * products"/"Offer as an add-on" (stored as simple comma-separated id
- * lists in meta, since there's no product-picker/search component yet —
+ * offerings"/"Offer as an add-on" (stored as simple comma-separated id
+ * lists in meta, since there's no offering-picker/search component yet —
  * real storage, simplified input).
  */
 export function OfferingEdit( { id }: OfferingEditProps ) {
@@ -416,9 +443,18 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 	const [ savedNotice, setSavedNotice ] = useState( false );
 	const [ createdAt, setCreatedAt ] = useState< string | null >( null );
 	const [ showVariantsNotice, setShowVariantsNotice ] = useState( false );
+	const [ categoryOptions, setCategoryOptions ] = useState< { key: string; value: string; label: string }[] >( [] );
 
 	const update = ( patch: Partial< OfferingFormState > ) =>
 		setFormData( ( prev ) => ( { ...prev, ...patch } ) );
+
+	useEffect( () => {
+		axios
+			.get< CategoryTerm[] >( getApiLink( vulocartLocalizer, 'categories' ), {
+				headers: { 'X-WP-Nonce': vulocartLocalizer.nonce },
+			} )
+			.then( ( response ) => setCategoryOptions( formatCategoryOptions( response.data ) ) );
+	}, [] );
 
 	useEffect( () => {
 		if ( ! isEditMode ) {
@@ -426,20 +462,20 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 		}
 
 		axios
-			.get( getApiLink( vulocartLocalizer, `assets/${ id }` ), {
+			.get( getApiLink( vulocartLocalizer, `offerings/${ id }` ), {
 				headers: { 'X-WP-Nonce': vulocartLocalizer.nonce },
 			} )
 			.then( ( response ) => {
-				const asset = response.data;
-				const meta = asset.meta || {};
+				const offering = response.data;
+				const meta = offering.meta || {};
 
 				setFormData( {
-					type: asset.type || 'physical',
-					title: asset.title || '',
-					sku: asset.sku || '',
-					price: asset.price !== null && asset.price !== undefined ? String( asset.price ) : '',
-					currency: asset.currency || 'USD',
-					status: asset.status || 'draft',
+					type: offering.type || 'physical',
+					title: offering.title || '',
+					sku: offering.sku || '',
+					price: offering.price !== null && offering.price !== undefined ? String( offering.price ) : '',
+					currency: offering.currency || 'USD',
+					status: offering.status || 'draft',
 					shortDescription: meta.short_description || '',
 					fullDescription: meta.full_description || '',
 					salePrice: meta.sale_price !== null && meta.sale_price !== undefined ? String( meta.sale_price ) : '',
@@ -453,8 +489,8 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 					shippingPolicy: meta.shipping_policy || '',
 					refundPolicy: meta.refund_policy || '',
 					cancellationPolicy: meta.cancellation_policy || '',
-					relatedProducts: meta.related_products || '',
-					addonProducts: meta.addon_products || '',
+					relatedOfferings: meta.related_offerings || '',
+					addonOfferings: meta.addon_offerings || '',
 					featured: !! meta.featured,
 					catalogVisibility: meta.catalog_visibility || 'shop_and_search',
 					categories: Array.isArray( meta.categories ) ? meta.categories : [],
@@ -464,7 +500,7 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 					typeDetails:
 						meta.type_details && 'object' === typeof meta.type_details ? meta.type_details : {},
 				} );
-				setCreatedAt( asset.created_at );
+				setCreatedAt( offering.created_at );
 				setIsLoadingInitial( false );
 			} )
 			.catch( () => {
@@ -478,8 +514,8 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 		const items = [
 			{
 				key: 'title',
-				label: __( 'Product Name', 'vulocart' ),
-				desc: __( 'A clear, descriptive title that helps customers find your product', 'vulocart' ),
+				label: __( 'Offering Name', 'vulocart' ),
+				desc: __( 'A clear, descriptive title that helps customers find your offering', 'vulocart' ),
 				done: !! formData.title,
 			},
 			{
@@ -505,14 +541,14 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 		items.push(
 			{
 				key: 'images',
-				label: __( 'Product Images', 'vulocart' ),
-				desc: __( 'High-quality photos showing your product from multiple angles', 'vulocart' ),
+				label: __( 'Offering Images', 'vulocart' ),
+				desc: __( 'High-quality photos showing your offering from multiple angles', 'vulocart' ),
 				done: !! formData.featuredImage,
 			},
 			{
 				key: 'category',
 				label: __( 'Category', 'vulocart' ),
-				desc: __( 'Organize your product to help customers browse your store', 'vulocart' ),
+				desc: __( 'Organize your offering to help customers browse your store', 'vulocart' ),
 				done: formData.categories.length > 0,
 			},
 			{
@@ -543,8 +579,8 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 		shipping_policy: formData.shippingPolicy || undefined,
 		refund_policy: formData.refundPolicy || undefined,
 		cancellation_policy: formData.cancellationPolicy || undefined,
-		related_products: formData.relatedProducts || undefined,
-		addon_products: formData.addonProducts || undefined,
+		related_offerings: formData.relatedOfferings || undefined,
+		addon_offerings: formData.addonOfferings || undefined,
 		featured: formData.featured,
 		catalog_visibility: formData.catalogVisibility,
 		categories: formData.categories,
@@ -573,10 +609,10 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 		};
 
 		const request = isEditMode
-			? axios.patch( getApiLink( vulocartLocalizer, `assets/${ id }` ), payload, {
+			? axios.patch( getApiLink( vulocartLocalizer, `offerings/${ id }` ), payload, {
 					headers: { 'X-WP-Nonce': vulocartLocalizer.nonce },
 			  } )
-			: axios.post( getApiLink( vulocartLocalizer, 'assets' ), payload, {
+			: axios.post( getApiLink( vulocartLocalizer, 'offerings' ), payload, {
 					headers: { 'X-WP-Nonce': vulocartLocalizer.nonce },
 			  } );
 
@@ -662,10 +698,10 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 						{ __( '← Back to Offerings', 'vulocart' ) }
 					</a>
 					<h1 className="vulocart-edit-page-title">
-						{ isEditMode ? __( 'Edit Product', 'vulocart' ) : __( 'Add Product', 'vulocart' ) }
+						{ isEditMode ? __( 'Edit Offering', 'vulocart' ) : __( 'Add Offering', 'vulocart' ) }
 					</h1>
 					<p className="vulocart-offering-edit-subtitle">
-						{ __( 'Enter your product details - name, price, stock, and image & publish.', 'vulocart' ) }
+						{ __( 'Enter your offering details - name, price, stock, and image & publish.', 'vulocart' ) }
 					</p>
 				</div>
 
@@ -693,13 +729,13 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 				{ /* Left column */ }
 				<div className="vulocart-offering-edit-col vulocart-offering-edit-col--left">
 					<CardComponent
-						title={ __( 'Product Setup', 'vulocart' ) }
+						title={ __( 'Offering Setup', 'vulocart' ) }
 						desc={ __( 'Choose the type that best describes what you are selling.', 'vulocart' ) }
 					>
 						<SelectInput
 							name="type"
 							type="single-select"
-							options={ ASSET_TYPE_OPTIONS }
+							options={ OFFERING_TYPE_OPTIONS }
 							value={ formData.type }
 							onChange={ ( value ) => update( { type: value as string } ) }
 						/>
@@ -724,11 +760,11 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 				{ /* Center column */ }
 				<div className="vulocart-offering-edit-col vulocart-offering-edit-col--center">
 					<CardComponent
-						title={ __( 'Product Details', 'vulocart' ) }
+						title={ __( 'Offering Details', 'vulocart' ) }
 						desc={ __( 'Tell customers what you are selling and what it costs.', 'vulocart' ) }
 					>
 						<FormGroupWrapperComponent>
-							<FormGroupComponent label={ __( 'Product name', 'vulocart' ) } htmlFor="vulocart-offering-title">
+							<FormGroupComponent label={ __( 'Offering name', 'vulocart' ) } htmlFor="vulocart-offering-title">
 								<TextInput
 									name="title"
 									value={ formData.title }
@@ -790,7 +826,7 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 						{ showVariantsNotice && (
 							<p className="vulocart-field-hint vulocart-variants-notice">
 								{ __(
-									'Product variants are not supported yet — this is planned for a future update.',
+									'Offering variants are not supported yet — this is planned for a future update.',
 									'vulocart'
 								) }
 							</p>
@@ -910,7 +946,7 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 					) }
 
 					<CardComponent
-						title={ __( 'Policies & Related Products', 'vulocart' ) }
+						title={ __( 'Policies & Related Offerings', 'vulocart' ) }
 						desc={ __( 'Set expectations up front and help customers discover more of what you sell.', 'vulocart' ) }
 					>
 						<FormGroupWrapperComponent>
@@ -953,13 +989,13 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 
 						<div className="vulocart-two-col-fields">
 							<FormGroupComponent
-								label={ __( 'Recommend alongside this product', 'vulocart' ) }
+								label={ __( 'Recommend alongside this offering', 'vulocart' ) }
 								htmlFor="vulocart-offering-related"
 							>
 								<TextInput
-									name="relatedProducts"
-									value={ formData.relatedProducts }
-									onChange={ ( value ) => update( { relatedProducts: value as string } ) }
+									name="relatedOfferings"
+									value={ formData.relatedOfferings }
+									onChange={ ( value ) => update( { relatedOfferings: value as string } ) }
 								/>
 								<p className="vulocart-field-hint">
 									{ __( '"You might also like". Comma-separated offering ids.', 'vulocart' ) }
@@ -970,9 +1006,9 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 								htmlFor="vulocart-offering-addon"
 							>
 								<TextInput
-									name="addonProducts"
-									value={ formData.addonProducts }
-									onChange={ ( value ) => update( { addonProducts: value as string } ) }
+									name="addonOfferings"
+									value={ formData.addonOfferings }
+									onChange={ ( value ) => update( { addonOfferings: value as string } ) }
 								/>
 								<p className="vulocart-field-hint">
 									{ __( 'Suggested at cart. Comma-separated offering ids.', 'vulocart' ) }
@@ -990,7 +1026,7 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 							<button
 								type="button"
 								className={ `vulocart-featured-star${ formData.featured ? ' is-featured' : '' }` }
-								aria-label={ __( 'Featured product', 'vulocart' ) }
+								aria-label={ __( 'Featured offering', 'vulocart' ) }
 								onClick={ () => update( { featured: ! formData.featured } ) }
 							>
 								<i className={ `adminfont-${ formData.featured ? 'star' : 'star-o' }` } />
@@ -1008,11 +1044,11 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 							/>
 						</div>
 						<div className="vulocart-publishing-row">
-							<span>{ __( 'Product Status', 'vulocart' ) }</span>
+							<span>{ __( 'Offering Status', 'vulocart' ) }</span>
 							<SelectInput
 								name="status"
 								type="single-select"
-								options={ ASSET_STATUS_OPTIONS }
+								options={ OFFERING_STATUS_OPTIONS }
 								value={ formData.status }
 								onChange={ ( value ) => update( { status: value as string } ) }
 							/>
@@ -1027,18 +1063,24 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 
 					<CardComponent
 						title={ __( 'Organization', 'vulocart' ) }
-						desc={ __( 'Where this product appears in your store, and how it\'s tagged.', 'vulocart' ) }
+						desc={ __( 'Where this offering appears in your store, and how it\'s tagged.', 'vulocart' ) }
 					>
 						<h4 className="vulocart-subsection-title">{ __( 'Category', 'vulocart' ) }</h4>
-						<MultiCheckboxInput
-							value={ formData.categories }
-							modules={ [] }
-							options={ CATEGORY_OPTIONS }
-							inputInnerWrapperClass="vulocart-category-checklist"
-							onChange={ ( values ) => update( { categories: values } ) }
-						/>
+						{ categoryOptions.length === 0 ? (
+							<p className="vulocart-empty-categories-notice">
+								{ __( 'No categories yet — add some from Offerings → Categories.', 'vulocart' ) }
+							</p>
+						) : (
+							<MultiCheckboxInput
+								value={ formData.categories }
+								modules={ [] }
+								options={ categoryOptions }
+								inputInnerWrapperClass="vulocart-category-checklist"
+								onChange={ ( values ) => update( { categories: values } ) }
+							/>
+						) }
 
-						<h4 className="vulocart-subsection-title">{ __( 'Product tag', 'vulocart' ) }</h4>
+						<h4 className="vulocart-subsection-title">{ __( 'Offering tag', 'vulocart' ) }</h4>
 						<TextInput
 							name="tags"
 							placeholder={ __( 'Type tag and press Enter…', 'vulocart' ) }
@@ -1069,7 +1111,7 @@ export function OfferingEdit( { id }: OfferingEditProps ) {
 							} }
 						/>
 
-						<h4 className="vulocart-subsection-title">{ __( 'Product gallery', 'vulocart' ) }</h4>
+						<h4 className="vulocart-subsection-title">{ __( 'Offering gallery', 'vulocart' ) }</h4>
 						<FileInput
 							name="gallery"
 							multiple

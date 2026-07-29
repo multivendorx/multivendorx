@@ -1,21 +1,21 @@
 <?php
 /**
- * Asset class file.
+ * Offering class file.
  *
  * @package VuloCart
  */
 
-namespace VuloCart\Domain\Asset;
+namespace VuloCart\Domain\Offering;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * VuloCart Asset entity.
+ * VuloCart Offering entity.
  *
  * Plain domain object — no `$wpdb`, no WordPress function calls, no REST
- * request handling. `Infrastructure\Database\WPDBAssetRepository` is the
- * only class that knows how an Asset is actually stored; everything above
- * it (Application\AssetService, RestAPI\Controllers\Assets) works with
+ * request handling. `Infrastructure\Database\WPDBOfferingRepository` is the
+ * only class that knows how an Offering is actually stored; everything above
+ * it (Application\OfferingService, RestAPI\Controllers\Offerings) works with
  * this object, never a raw row array.
  *
  * No constructor property promotion / named arguments (both PHP 8.0+) —
@@ -24,23 +24,23 @@ defined( 'ABSPATH' ) || exit;
  * throughout, matching every other class in this codebase despite
  * composer.json's own `>=8.0` platform requirement.
  *
- * @class       Asset class
+ * @class       Offering class
  * @version     1.0.0
  * @author      MultiVendorX
  */
-class Asset {
+class Offering {
 
     /**
-     * Asset id.
+     * Offering id.
      *
-     * @var int|null Null for an asset not yet persisted.
+     * @var int|null Null for an offering not yet persisted.
      */
     public $id;
 
     /**
-     * Asset type.
+     * Offering type.
      *
-     * @var string One of AssetType's constants.
+     * @var string One of OfferingType's constants.
      */
     public $type;
 
@@ -108,10 +108,10 @@ class Asset {
     public $updated_at;
 
     /**
-     * Asset constructor.
+     * Offering constructor.
      *
-     * @param int|null             $id         Null for an asset not yet persisted.
-     * @param string               $type       One of AssetType's constants.
+     * @param int|null             $id         Null for an offering not yet persisted.
+     * @param string               $type       One of OfferingType's constants.
      * @param string               $title      Display title.
      * @param string               $slug       URL-safe slug.
      * @param string|null          $sku        Stock-keeping unit, if any.

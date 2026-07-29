@@ -31,7 +31,7 @@ class WPDBOrderRepository implements OrderRepositoryInterface {
 
     /**
      * In-request cache of resolved orders, keyed by id — same pattern
-     * VuloCart\Infrastructure\Database\WPDBAssetRepository already uses.
+     * VuloCart\Infrastructure\Database\WPDBOfferingRepository already uses.
      *
      * @var array<int, Order|null>
      */
@@ -72,10 +72,12 @@ class WPDBOrderRepository implements OrderRepositoryInterface {
             $row['cart_token'],
             $row['customer_email'],
             $row['customer_name'],
-            $row['status'],
+            $row['payment_status'],
+            $row['fulfillment_status'],
             $row['currency'],
             (float) $row['subtotal'],
             (float) $row['total'],
+            null === $row['refunded_amount'] ? null : (float) $row['refunded_amount'],
             $items,
             $row['meta'] ? (array) json_decode( $row['meta'], true ) : array(),
             $row['created_at'],
@@ -93,7 +95,7 @@ class WPDBOrderRepository implements OrderRepositoryInterface {
         return new OrderItem(
             (int) $row['id'],
             (int) $row['order_id'],
-            (int) $row['asset_id'],
+            (int) $row['offering_id'],
             $row['title'],
             (int) $row['quantity'],
             (float) $row['unit_price'],
@@ -175,7 +177,7 @@ class WPDBOrderRepository implements OrderRepositoryInterface {
     /**
      * Returns a page of orders, optionally filtered.
      *
-     * @param array{page?: int, per_page?: int, status?: string, search?: string} $args Pagination/filter args.
+     * @param array{page?: int, per_page?: int, payment_status?: string, fulfillment_status?: string, search?: string, date_from?: string, date_to?: string} $args Pagination/filter args.
      * @return array{data: Order[], total: int}
      */
     public function paginate( array $args = array() ): array {
@@ -189,9 +191,24 @@ class WPDBOrderRepository implements OrderRepositoryInterface {
         $where_clauses = array();
         $where_values  = array();
 
-        if ( ! empty( $args['status'] ) ) {
-            $where_clauses[] = 'status = %s';
-            $where_values[]  = (string) $args['status'];
+        if ( ! empty( $args['payment_status'] ) ) {
+            $where_clauses[] = 'payment_status = %s';
+            $where_values[]  = (string) $args['payment_status'];
+        }
+
+        if ( ! empty( $args['fulfillment_status'] ) ) {
+            $where_clauses[] = 'fulfillment_status = %s';
+            $where_values[]  = (string) $args['fulfillment_status'];
+        }
+
+        if ( ! empty( $args['date_from'] ) ) {
+            $where_clauses[] = 'created_at >= %s';
+            $where_values[]  = gmdate( 'Y-m-d 00:00:00', strtotime( (string) $args['date_from'] ) );
+        }
+
+        if ( ! empty( $args['date_to'] ) ) {
+            $where_clauses[] = 'created_at <= %s';
+            $where_values[]  = gmdate( 'Y-m-d 23:59:59', strtotime( (string) $args['date_to'] ) );
         }
 
         // Matches order number, customer email, and customer name — the
@@ -209,8 +226,9 @@ class WPDBOrderRepository implements OrderRepositoryInterface {
 
         if ( $where_values ) {
             $count_sql = $wpdb->prepare( "SELECT COUNT(*) FROM {$table} {$where_sql}", ...$where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- $where_sql's %s count matches $where_values' size at runtime; the sniff can't see that statically.
-            $rows_sql  = $wpdb->prepare(
-                "SELECT * FROM {$table} {$where_sql} ORDER BY id DESC LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- $where_sql's own %s/%d count varies (0, 1, or 3 placeholders depending on which filters are active) and is included in $where_values' size at runtime; the sniff only sees the literal string's 2 placeholders statically.
+            // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- $where_sql's own %s/%d count varies (0 to 7 placeholders depending on which filters are active) and is included in $where_values' size at runtime; the sniff only sees the literal string's 2 placeholders statically.
+            $rows_sql = $wpdb->prepare(
+                "SELECT * FROM {$table} {$where_sql} ORDER BY id DESC LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 ...array_merge( $where_values, array( $per_page, $offset ) )
             );
         } else {
@@ -238,9 +256,34 @@ class WPDBOrderRepository implements OrderRepositoryInterface {
     }
 
     /**
+     * Counts orders in each FulfillmentStatus bucket, in one query —
+     * backs the admin grid's "saved view" tabs (TableCard's
+     * `categoryCounts`, OrdersList.tsx), which need real per-status
+     * counts rather than assuming every status is present.
+     *
+     * @return array<string, int> Status value => count.
+     */
+    public function count_by_fulfillment_status(): array {
+        global $wpdb;
+
+        $rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+            "SELECT fulfillment_status, COUNT(*) as total FROM {$this->get_orders_table()} GROUP BY fulfillment_status", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- static SQL, no user input.
+            ARRAY_A
+        );
+
+        $counts = array();
+
+        foreach ( $rows ? $rows : array() as $row ) {
+            $counts[ $row['fulfillment_status'] ] = (int) $row['total'];
+        }
+
+        return $counts;
+    }
+
+    /**
      * Persists a new order, then stamps its `order_number` from the
      * resulting auto-increment id (e.g. 'VC-000042') — a second update in
-     * the same spirit as WPDBAssetRepository::insert()'s find-after-insert,
+     * the same spirit as WPDBOfferingRepository::insert()'s find-after-insert,
      * since the number can't be known before the row exists.
      *
      * @param Order $order An order with $id === null.
@@ -252,16 +295,18 @@ class WPDBOrderRepository implements OrderRepositoryInterface {
         $wpdb->insert(
             $this->get_orders_table(),
             array(
-                'order_number'   => '',
-                'access_token'   => $order->access_token,
-                'cart_token'     => $order->cart_token,
-                'customer_email' => $order->customer_email,
-                'customer_name'  => $order->customer_name,
-                'status'         => $order->status,
-                'currency'       => $order->currency,
-                'subtotal'       => $order->subtotal,
-                'total'          => $order->total,
-                'meta'           => wp_json_encode( $order->meta ),
+                'order_number'       => '',
+                'access_token'       => $order->access_token,
+                'cart_token'         => $order->cart_token,
+                'customer_email'     => $order->customer_email,
+                'customer_name'      => $order->customer_name,
+                'status'             => $order->fulfillment_status,
+                'payment_status'     => $order->payment_status,
+                'fulfillment_status' => $order->fulfillment_status,
+                'currency'           => $order->currency,
+                'subtotal'           => $order->subtotal,
+                'total'              => $order->total,
+                'meta'               => wp_json_encode( $order->meta ),
             )
         );
 
@@ -285,8 +330,11 @@ class WPDBOrderRepository implements OrderRepositoryInterface {
         $wpdb->update(
             $this->get_orders_table(),
             array(
-                'status' => $order->status,
-                'meta'   => wp_json_encode( $order->meta ),
+                'status'             => $order->fulfillment_status,
+                'payment_status'     => $order->payment_status,
+                'fulfillment_status' => $order->fulfillment_status,
+                'refunded_amount'    => $order->refunded_amount,
+                'meta'               => wp_json_encode( $order->meta ),
             ),
             array( 'id' => $order->id )
         );
@@ -308,13 +356,13 @@ class WPDBOrderRepository implements OrderRepositoryInterface {
         $wpdb->insert(
             $this->get_order_items_table(),
             array(
-                'order_id'   => $item->order_id,
-                'asset_id'   => $item->asset_id,
-                'title'      => $item->title,
-                'quantity'   => $item->quantity,
-                'unit_price' => $item->unit_price,
-                'currency'   => $item->currency,
-                'meta'       => wp_json_encode( $item->meta ),
+                'order_id'    => $item->order_id,
+                'offering_id' => $item->offering_id,
+                'title'       => $item->title,
+                'quantity'    => $item->quantity,
+                'unit_price'  => $item->unit_price,
+                'currency'    => $item->currency,
+                'meta'        => wp_json_encode( $item->meta ),
             )
         );
 

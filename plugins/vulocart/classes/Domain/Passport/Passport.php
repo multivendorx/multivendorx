@@ -12,10 +12,10 @@ defined( 'ABSPATH' ) || exit;
 /**
  * VuloCart Passport value object.
  *
- * The vision: "Every Asset automatically owns a Passport" — authenticity,
+ * The vision: "Every Offering automatically owns a Passport" — authenticity,
  * serial number, manufacturer, warranty, carbon footprint, owner/service
  * history, and more, all "extensible". This class is only the shared
- * shape (an asset id plus an open `attributes` bag) so free-tier code can
+ * shape (an offering id plus an open `attributes` bag) so free-tier code can
  * type-hint against it; vulocart-pro's Passport module owns the actual
  * persistence (its own `vulocart_passports` table) and REST surface — see
  * plugins/vulocart-pro/ARCHITECTURE.md. Free does not persist Passport
@@ -28,11 +28,11 @@ defined( 'ABSPATH' ) || exit;
 class Passport {
 
     /**
-     * The Asset this passport belongs to.
+     * The Offering this passport belongs to.
      *
-     * @var int The Asset this passport belongs to.
+     * @var int The Offering this passport belongs to.
      */
-    public $asset_id;
+    public $offering_id;
 
     /**
      * Open bag of passport fields.
@@ -46,11 +46,11 @@ class Passport {
     /**
      * Passport constructor.
      *
-     * @param int                  $asset_id   The Asset this passport belongs to.
+     * @param int                  $offering_id   The Offering this passport belongs to.
      * @param array<string, mixed> $attributes Open bag of passport fields.
      */
-    public function __construct( $asset_id, $attributes = array() ) {
-        $this->asset_id   = $asset_id;
-        $this->attributes = $attributes;
+    public function __construct( $offering_id, $attributes = array() ) {
+        $this->offering_id = $offering_id;
+        $this->attributes  = $attributes;
     }
 }

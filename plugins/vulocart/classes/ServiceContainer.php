@@ -18,8 +18,8 @@ defined( 'ABSPATH' ) || exit;
  * constructed service instances, see php-wordpress.md). That array is a
  * service *locator*; this class is the actual seam the vision's "storage
  * engine is replaceable" principle needs: VuloCart::init_classes() binds
- * `Domain\Asset\AssetRepositoryInterface` to a closure building
- * `Infrastructure\Database\WPDBAssetRepository`, and `Application\AssetService`
+ * `Domain\Offering\OfferingRepositoryInterface` to a closure building
+ * `Infrastructure\Database\WPDBOfferingRepository`, and `Application\OfferingService`
  * only ever asks this container for that interface — never `new`s the
  * concrete repository itself. Swapping the storage engine later (e.g. a
  * future non-`$wpdb` implementation) is a one-line change to that single
@@ -75,7 +75,7 @@ class ServiceContainer {
     /**
      * Registers a factory whose result is built once and reused for every
      * subsequent make() call — what VuloCart::init_classes() uses for
-     * AssetRepositoryInterface, since a repository is safe (and cheap) to
+     * OfferingRepositoryInterface, since a repository is safe (and cheap) to
      * share for the lifetime of one request.
      *
      * @param string   $service_id Interface or class name being bound.

@@ -9,8 +9,8 @@ import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import './offerings-page.scss';
 
 /**
- * The listing half of Offerings — DB (vulocart_assets) → WPDBAssetRepository
- * → AssetService → REST (`GET /assets`) → this zyra `TableCard`. "Add
+ * The listing half of Offerings — DB (vulocart_offerings) → WPDBOfferingRepository
+ * → OfferingService → REST (`GET /offerings`) → this zyra `TableCard`. "Add
  * Offering" and per-row "Edit" are real navigations to
  * `admin.php?page=vulocart-offerings&action=add`/`...&action=edit&id={id}`
  * (plain `<a href>`, full page load) rather than a popup — matching
@@ -28,7 +28,7 @@ export function OfferingsList() {
 	const doRefreshTableData = ( query: QueryProps ) => {
 		setIsLoading( true );
 		axios
-			.get( getApiLink( vulocartLocalizer, 'assets' ), {
+			.get( getApiLink( vulocartLocalizer, 'offerings' ), {
 				headers: { 'X-WP-Nonce': vulocartLocalizer.nonce },
 				params: {
 					page: query.paged || 1,
@@ -95,14 +95,14 @@ export function OfferingsList() {
 						</a>
 						{
 							/**
-							 * `vulocart_asset_row_actions` — the extension point
+							 * `vulocart_offering_row_actions` — the extension point
 							 * vulocart-pro's Passport module registers into
 							 * (modules/Passport/src/index.tsx), same "Pro extends Free
 							 * via @wordpress/hooks filters" pattern react-frontend.md
 							 * documents for the multivendorx family. Renders nothing
 							 * when Passport isn't active.
 							 */
-							applyFilters( 'vulocart_asset_row_actions', null, row )
+							applyFilters( 'vulocart_offering_row_actions', null, row )
 						}
 					</>
 				),

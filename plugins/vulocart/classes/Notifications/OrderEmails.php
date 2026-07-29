@@ -7,6 +7,8 @@
 
 namespace VuloCart\Notifications;
 
+use VuloCart\Utill;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -19,8 +21,21 @@ defined( 'ABSPATH' ) || exit;
  * an order was created or changed status. Registered unconditionally from
  * VuloCart::init_classes() rather than gated on the Order module being
  * active — safe either way, since `vulocart_order_created`/
- * `vulocart_order_status_changed` only ever fire when the Order module
- * itself is active and dispatching them.
+ * `vulocart_order_payment_status_changed`/
+ * `vulocart_order_fulfillment_status_changed` only ever fire when the
+ * Order module itself is active and dispatching them. Order used to have
+ * one flat `status`; now that it's split into `payment_status`/
+ * `fulfillment_status` (PaymentStatus.php's/FulfillmentStatus.php's own
+ * docblocks), this class listens to both change events and sends an
+ * appropriately-worded email for whichever one fired, both still gated
+ * behind the same `send_status_update_email` setting.
+ *
+ * The Settings screen's Email tab (src/settings/Email.ts) controls both
+ * whether each email actually sends (`send_order_confirmation_email`/
+ * `send_status_update_email`) and the From address used
+ * (`notification_from_email`) — read fresh on every send rather than
+ * cached, since this class has no other lifecycle hook to invalidate a
+ * cached copy on save.
  *
  * @class       OrderEmails class
  * @version     1.0.0
@@ -33,7 +48,37 @@ class OrderEmails {
      */
     public function __construct() {
         add_action( 'vulocart_order_created', array( $this, 'send_order_confirmation' ) );
-        add_action( 'vulocart_order_status_changed', array( $this, 'send_status_update' ) );
+        add_action( 'vulocart_order_fulfillment_status_changed', array( $this, 'send_fulfillment_status_update' ) );
+        add_action( 'vulocart_order_payment_status_changed', array( $this, 'send_payment_status_update' ) );
+    }
+
+    /**
+     * Reads the stored settings option, defaults filled in — a small,
+     * local copy of RestAPI\Controllers\Settings::get_stored_settings()
+     * rather than a shared helper, since that method is `private` on a
+     * REST controller with a different lifecycle/responsibility.
+     *
+     * @return array Stored settings, defaults filled in for any never-saved key.
+     */
+    private function get_settings(): array {
+        return wp_parse_args( get_option( Utill::SETTINGS_KEY, array() ), Utill::SETTINGS_DEFAULTS );
+    }
+
+    /**
+     * `wp_mail()`'s optional headers array, carrying a `From:` header when
+     * the Email tab's `notification_from_email` is set — omitted entirely
+     * when blank so `wp_mail()` falls back to its own site-default sender
+     * rather than this class asserting an empty/invalid From address.
+     *
+     * @param array $settings Stored settings, from get_settings().
+     * @return string[]
+     */
+    private function get_mail_headers( array $settings ): array {
+        if ( empty( $settings['notification_from_email'] ) ) {
+            return array();
+        }
+
+        return array( sprintf( 'From: %s', sanitize_email( $settings['notification_from_email'] ) ) );
     }
 
     /**
@@ -75,6 +120,12 @@ class OrderEmails {
             return;
         }
 
+        $settings = $this->get_settings();
+
+        if ( empty( $settings['send_order_confirmation_email'] ) ) {
+            return;
+        }
+
         $subject = sprintf(
         /* translators: %s: order number, e.g. VC-000042. */
             __( 'Order %s confirmed', 'vulocart' ),
@@ -96,22 +147,65 @@ class OrderEmails {
             $order->access_token
         );
 
-        wp_mail( $order->customer_email, $subject, $body );
+        wp_mail( $order->customer_email, $subject, $body, $this->get_mail_headers( $settings ) );
     }
 
     /**
      * Sends the buyer a notice whenever an admin changes their order's
-     * status (Rest::update_item()/bulk_update_status()) — never fires for
-     * the initial pending status, since create_from_cart() sets that
-     * directly rather than going through update_status().
+     * fulfillment status (Rest::update_item()/bulk_update_fulfillment_status())
+     * — never fires for the initial pending status, since
+     * create_from_cart() sets that directly rather than going through
+     * update_fulfillment_status().
      *
      * @param array{order: object} $payload Order\Domain\Order under the 'order' key.
      * @return void
      */
-    public function send_status_update( $payload ) {
-        $order = $payload['order'];
+    public function send_fulfillment_status_update( $payload ) {
+        $this->send_status_update_email(
+            $payload['order'],
+            /* translators: 1: customer name or "there", 2: order number, 3: new fulfillment status. */
+            __( "Hi %1\$s,\n\nYour order %2\$s fulfillment status is now: %3\$s.", 'vulocart' ),
+            $payload['order']->fulfillment_status
+        );
+    }
 
+    /**
+     * Sends the buyer a notice whenever an admin changes their order's
+     * payment status (Rest::update_item()/bulk_update_payment_status()/
+     * refund_item()) — never fires for the initial pending status.
+     *
+     * @param array{order: object} $payload Order\Domain\Order under the 'order' key.
+     * @return void
+     */
+    public function send_payment_status_update( $payload ) {
+        $this->send_status_update_email(
+            $payload['order'],
+            /* translators: 1: customer name or "there", 2: order number, 3: new payment status. */
+            __( "Hi %1\$s,\n\nYour order %2\$s payment status is now: %3\$s.", 'vulocart' ),
+            $payload['order']->payment_status
+        );
+    }
+
+    /**
+     * Shared body for send_fulfillment_status_update()/
+     * send_payment_status_update() — same settings gate, same
+     * silent-no-op-without-an-email rule, only the (already fully
+     * translated, %1$s/%2$s/%3$s-placeholdered) body sentence and status
+     * word differ.
+     *
+     * @param object $order         Order\Domain\Order.
+     * @param string $body_template Translated body string with %1$s/%2$s/%3$s placeholders for name/order number/status.
+     * @param string $status        The new status value to report.
+     * @return void
+     */
+    private function send_status_update_email( $order, string $body_template, string $status ): void {
         if ( empty( $order->customer_email ) ) {
+            return;
+        }
+
+        $settings = $this->get_settings();
+
+        if ( empty( $settings['send_status_update_email'] ) ) {
             return;
         }
 
@@ -122,13 +216,12 @@ class OrderEmails {
         );
 
         $body = sprintf(
-            /* translators: 1: customer name or "there", 2: order number, 3: new order status. */
-            __( "Hi %1\$s,\n\nYour order %2\$s is now: %3\$s.", 'vulocart' ),
+            $body_template,
             $order->customer_name ? $order->customer_name : __( 'there', 'vulocart' ),
             $order->order_number,
-            $order->status
+            $status
         );
 
-        wp_mail( $order->customer_email, $subject, $body );
+        wp_mail( $order->customer_email, $subject, $body, $this->get_mail_headers( $settings ) );
     }
 }

@@ -110,7 +110,7 @@ class Settings extends \WP_REST_Controller {
         $sanitized = array();
 
         foreach ( $fields as $key => $value ) {
-            $sanitized[ sanitize_key( (string) $key ) ] = sanitize_text_field( (string) $value );
+            $sanitized[ sanitize_key( (string) $key ) ] = $this->sanitize_field_value( $value );
         }
 
         $updated = array_merge( $this->get_stored_settings(), $sanitized );
@@ -123,6 +123,29 @@ class Settings extends \WP_REST_Controller {
                 'message' => __( 'Settings saved.', 'vulocart' ),
             )
         );
+    }
+
+    /**
+     * Sanitizes one posted field value, array-aware.
+     *
+     * `type: 'checkbox', look: 'toggle'` fields (src/settings/*.ts) post an
+     * array (zyra's MultiCheckboxInput — the selected option's own value
+     * when on, `[]` when off; Utill::SETTINGS_DEFAULTS' docblock explains
+     * why this isn't a literal bool). Casting an array straight to string
+     * (the previous, scalar-only version of this method) silently
+     * corrupted every toggle field into the literal string `"Array"` on
+     * first save — caught live via a real save/reload round trip on the
+     * Email/MCP tabs.
+     *
+     * @param mixed $value Raw posted value for one field.
+     * @return string|string[]
+     */
+    private function sanitize_field_value( $value ) {
+        if ( is_array( $value ) ) {
+            return array_values( array_map( 'sanitize_text_field', array_map( 'strval', $value ) ) );
+        }
+
+        return sanitize_text_field( (string) $value );
     }
 
     /**

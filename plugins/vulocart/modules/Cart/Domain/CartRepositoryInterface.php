@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * The contract Application\CartService depends on — bound to a concrete
  * implementation only in Module::init_classes() (via VuloCart's own
- * ServiceContainer), same seam VuloCart\Domain\Asset\AssetRepositoryInterface
+ * ServiceContainer), same seam VuloCart\Domain\Offering\OfferingRepositoryInterface
  * already establishes for the storage-engine-is-replaceable principle.
  *
  * @class       CartRepositoryInterface interface
@@ -40,15 +40,15 @@ interface CartRepositoryInterface {
     public function insert( Cart $cart ): Cart;
 
     /**
-     * Finds the line item for a given asset already in a cart, if any —
+     * Finds the line item for a given offering already in a cart, if any —
      * lets Application\CartService increment quantity instead of inserting
-     * a duplicate row for the same asset.
+     * a duplicate row for the same offering.
      *
      * @param int $cart_id  Owning cart id.
-     * @param int $asset_id VuloCart\Domain\Asset\Asset id.
+     * @param int $offering_id VuloCart\Domain\Offering\Offering id.
      * @return CartItem|null
      */
-    public function find_item( int $cart_id, int $asset_id ): ?CartItem;
+    public function find_item( int $cart_id, int $offering_id ): ?CartItem;
 
     /**
      * Persists a new line item.
@@ -93,4 +93,18 @@ interface CartRepositoryInterface {
      * @return void
      */
     public function touch( int $cart_id ): void;
+
+    /**
+     * Deletes carts (and their items) whose `updated_at` is older than
+     * $days — backs the Settings screen's `cart_expiry_days`
+     * (Application\CartCleanupScheduler). Batched (a bounded `LIMIT` per
+     * call, looped until nothing more matches) rather than one unbounded
+     * `DELETE`, per performance.md's migration/backfill batching guidance
+     * — a store with a very large abandoned-cart backlog shouldn't be
+     * able to time out a single cron run.
+     *
+     * @param int $days Age threshold, in days.
+     * @return int Total number of carts deleted.
+     */
+    public function delete_expired( int $days ): int;
 }

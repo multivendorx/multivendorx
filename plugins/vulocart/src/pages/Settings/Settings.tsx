@@ -7,27 +7,25 @@ import { getApiLink, getApiResponse, getAvailableSettings, getSettingById } from
 import { InputRenderer } from '@zyra/inputs';
 import { CardComponent, NavigatorComponent } from '@zyra/components';
 import { SettingProvider, useSetting } from '../../contexts/SettingContext';
-import generalSettings from '../../settings/General';
+import { getTemplateData } from '../../services/templateService';
+import Popup from '../../components/Popup/Popup';
 
 /**
  * Ported from `vulopilot/src/pages/Settings/Settings.tsx`'s flat-option
  * structure (not multivendorx's per-tab-namespaced one, which doesn't
  * apply — VuloCart has one flat `wp_options` row, Utill::SETTINGS_KEY).
- * `getTemplateData()` below is a direct import rather than a
- * `require.context` scan — there's exactly one settings file today, the
- * same allowance vulopilot's own templateService.ts docblock notes for
- * that case.
+ * `getTemplateData()` now comes from `../../services/templateService.ts`,
+ * a `require.context` scan of `src/settings/*.ts` — the plugin's admin-UX
+ * brief calls for 12 real tabs (General/Catalog/Cart/Checkout/Payments/
+ * Shipping/Taxes/Email/API/MCP/AI/Advanced), so the one-file direct-import
+ * shortcut this page used to take no longer applies.
  */
-const getTemplateData = () => [
-	{ name: 'general', type: 'file' as const, content: generalSettings },
-];
-
 const Settings = () => {
 	const [ isLoading, setIsLoading ] = useState( true );
 	const [ error, setError ] = useState< string | null >( null );
 	const settingsRef = useRef< Record< string, unknown > >( {} );
 
-	const settingsArray = getAvailableSettings( getTemplateData(), [] );
+	const settingsArray = getAvailableSettings( getTemplateData( 'settings' ), [] );
 	const location = new URLSearchParams( useLocation().hash.substring( 1 ) );
 
 	const loadSettings = () => {
@@ -88,6 +86,7 @@ const Settings = () => {
 						settings={ settingModal }
 						setting={ setting }
 						updateSetting={ updateSetting }
+						Popup={ Popup }
 					/>
 				) : (
 					<>{ __( 'Loading…', 'vulocart' ) }</>

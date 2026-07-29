@@ -7,6 +7,14 @@ import { __ } from '@wordpress/i18n';
  * `InputRenderer` (react-frontend.md's "declarative settings-config
  * pattern"). Backed by `Utill::SETTINGS_KEY`/`SETTINGS_DEFAULTS`
  * (classes/Utill.php) via `classes/RestAPI/Controllers/Settings.php`.
+ *
+ * Lives under `src/settings/General/` alongside `Frontend.ts` — grouped
+ * into folders (General/Commerce/Integrations, `Advanced.ts` standalone)
+ * the same way the free `multivendorx` plugin's own
+ * `src/components/Settings/` tree groups its tabs (`StoreConfiguration/`,
+ * `Finance/`, `Marketing/`, etc.) — `services/templateService.ts`'s
+ * `require.context` scan already supports nested folders, this just
+ * started using that instead of one flat 12-tab row.
  */
 export default {
 	id: 'general',
@@ -20,16 +28,16 @@ export default {
 			type: 'text',
 			label: __( 'Default currency', 'vulocart' ),
 			desc: __(
-				'ISO 4217 code used when a new asset is created without an explicit currency.',
+				'ISO 4217 code used when a new offering is created without an explicit currency.',
 				'vulocart'
 			),
 		},
 		{
-			key: 'default_asset_status',
+			key: 'default_offering_status',
 			type: 'select',
-			label: __( 'Default asset status', 'vulocart' ),
+			label: __( 'Default offering status', 'vulocart' ),
 			desc: __(
-				'Status a new asset gets when none is specified.',
+				'Status a new offering gets when none is specified.',
 				'vulocart'
 			),
 			options: [
