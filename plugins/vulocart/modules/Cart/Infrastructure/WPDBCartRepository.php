@@ -79,7 +79,7 @@ class WPDBCartRepository implements CartRepositoryInterface {
         return new CartItem(
             (int) $row['id'],
             (int) $row['cart_id'],
-            (int) $row['asset_id'],
+            (int) $row['offering_id'],
             (int) $row['quantity'],
             (float) $row['unit_price'],
             $row['currency'],
@@ -152,20 +152,20 @@ class WPDBCartRepository implements CartRepositoryInterface {
     }
 
     /**
-     * Finds the line item for a given asset already in a cart, if any.
+     * Finds the line item for a given offering already in a cart, if any.
      *
      * @param int $cart_id  Owning cart id.
-     * @param int $asset_id VuloCart\Domain\Asset\Asset id.
+     * @param int $offering_id VuloCart\Domain\Offering\Offering id.
      * @return CartItem|null
      */
-    public function find_item( int $cart_id, int $asset_id ): ?CartItem {
+    public function find_item( int $cart_id, int $offering_id ): ?CartItem {
         global $wpdb;
 
         $row = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT * FROM {$this->get_cart_items_table()} WHERE cart_id = %d AND asset_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                "SELECT * FROM {$this->get_cart_items_table()} WHERE cart_id = %d AND offering_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 $cart_id,
-                $asset_id
+                $offering_id
             ),
             ARRAY_A
         );
@@ -185,12 +185,12 @@ class WPDBCartRepository implements CartRepositoryInterface {
         $wpdb->insert(
             $this->get_cart_items_table(),
             array(
-                'cart_id'    => $item->cart_id,
-                'asset_id'   => $item->asset_id,
-                'quantity'   => $item->quantity,
-                'unit_price' => $item->unit_price,
-                'currency'   => $item->currency,
-                'meta'       => wp_json_encode( $item->meta ),
+                'cart_id'     => $item->cart_id,
+                'offering_id' => $item->offering_id,
+                'quantity'    => $item->quantity,
+                'unit_price'  => $item->unit_price,
+                'currency'    => $item->currency,
+                'meta'        => wp_json_encode( $item->meta ),
             )
         );
 
@@ -271,5 +271,50 @@ class WPDBCartRepository implements CartRepositoryInterface {
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         $wpdb->query( $wpdb->prepare( "UPDATE {$this->get_carts_table()} SET updated_at = %s WHERE id = %d", current_time( 'mysql' ), $cart_id ) );
+    }
+
+    /**
+     * Deletes carts (and their items) whose `updated_at` is older than
+     * $days, in bounded batches — see the interface docblock for why.
+     *
+     * @param int $days Age threshold, in days.
+     * @return int Total number of carts deleted.
+     */
+    public function delete_expired( int $days ): int {
+        global $wpdb;
+
+        $batch_size    = 200;
+        $total_deleted = 0;
+
+        do {
+            $ids = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+                $wpdb->prepare(
+                    "SELECT id FROM {$this->get_carts_table()} WHERE updated_at < DATE_SUB(NOW(), INTERVAL %d DAY) LIMIT %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                    $days,
+                    $batch_size
+                )
+            );
+
+            $batch_count = count( $ids );
+
+            if ( 0 === $batch_count ) {
+                break;
+            }
+
+            $ids_placeholder = implode( ',', array_fill( 0, $batch_count, '%d' ) );
+
+            $wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- $ids_placeholder's %d count matches $ids' size, built just above; the sniff can't see the interpolated placeholder count statically.
+                $wpdb->prepare( "DELETE FROM {$this->get_cart_items_table()} WHERE cart_id IN ({$ids_placeholder})", $ids )
+            );
+            $wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- $ids_placeholder's %d count matches $ids' size, built just above; the sniff can't see the interpolated placeholder count statically.
+                $wpdb->prepare( "DELETE FROM {$this->get_carts_table()} WHERE id IN ({$ids_placeholder})", $ids )
+            );
+
+            $total_deleted += $batch_count;
+        } while ( $batch_count === $batch_size );
+
+        return $total_deleted;
     }
 }

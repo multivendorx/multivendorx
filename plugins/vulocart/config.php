@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 define( 'VULOCART_PLUGIN_TEXTDOMAIN', 'vulocart' );
-define( 'VULOCART_PLUGIN_VERSION', '1.2.0' );
+define( 'VULOCART_PLUGIN_VERSION', '1.0.0' );
 define( 'VULOCART_PLUGIN_SLUG', 'vulocart' );
 // Defined free-side (not by vulocart-pro) — same "where to buy Pro" pattern
 // as VULOPILOT_PRO_SHOP_URL in multivendorx/plugins/vulopilot/config.php:

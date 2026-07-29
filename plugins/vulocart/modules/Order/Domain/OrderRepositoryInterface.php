@@ -44,10 +44,17 @@ interface OrderRepositoryInterface {
     /**
      * Returns a page of orders, optionally filtered.
      *
-     * @param array{page?: int, per_page?: int, status?: string, search?: string} $args Pagination/filter args.
+     * @param array{page?: int, per_page?: int, payment_status?: string, fulfillment_status?: string, search?: string, date_from?: string, date_to?: string} $args Pagination/filter args.
      * @return array{data: Order[], total: int}
      */
     public function paginate( array $args = array() ): array;
+
+    /**
+     * Counts orders in each FulfillmentStatus bucket, in one query.
+     *
+     * @return array<string, int> Status value => count.
+     */
+    public function count_by_fulfillment_status(): array;
 
     /**
      * Persists a new order (without items — see insert_item()).

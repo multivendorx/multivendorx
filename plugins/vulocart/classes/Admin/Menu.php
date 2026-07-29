@@ -96,16 +96,19 @@ class Menu {
      * separate from the "VuloCart" menu above. Order management is
      * explicitly called out (per this plugin's admin-UX brief) as
      * deserving its own first-class space rather than being one more tab
-     * next to Assets/Modules/Settings — the same treatment WooCommerce
+     * next to Dashboard/Modules/Settings — the same treatment WooCommerce
      * gives "WooCommerce" (settings) vs. "Products"/"Orders" as separate
      * top-level menus, and MultiVendorX gives its own marketplace admin.
      *
-     * Only "All Orders" is registered as a real submenu today — Draft
-     * Orders/Returns/Refunds/Invoices/Shipments have no backing domain
-     * model yet (no draft-order state, no returns/refunds/invoicing/
-     * shipping modules exist), so adding nav items for them now would
-     * just be empty scaffolding. They're the natural next slices once
-     * those concepts actually exist, not something to fake today.
+     * "All Orders"/"Draft Orders"/"Refunds"/"Add New" are real submenus now
+     * — Order\Domain\FulfillmentStatus::DRAFT and Order\Domain\
+     * PaymentStatus::REFUNDED gave Draft Orders/Refunds a real backing
+     * value to filter on (same `&filter=`/`&action=add` query-string-on-
+     * one-slug technique add_offerings_menu() already uses, not three more
+     * registered WP pages). Returns/Invoices/Shipments still have no
+     * backing domain model (no returns/invoicing/shipping module exists),
+     * so they're still not scaffolded here — same reasoning as before,
+     * just a shorter list now that two of the five have real support.
      *
      * @return void
      */
@@ -128,6 +131,33 @@ class Menu {
             'vulocart-orders',
             array( $this, 'render_orders_admin_page' )
         );
+
+        add_submenu_page(
+            'vulocart-orders',
+            __( 'Add New', 'vulocart' ),
+            __( 'Add New', 'vulocart' ),
+            'manage_options',
+            'vulocart-orders&action=add',
+            array( $this, 'render_orders_admin_page' )
+        );
+
+        add_submenu_page(
+            'vulocart-orders',
+            __( 'Draft Orders', 'vulocart' ),
+            __( 'Draft Orders', 'vulocart' ),
+            'manage_options',
+            'vulocart-orders&filter=draft',
+            array( $this, 'render_orders_admin_page' )
+        );
+
+        add_submenu_page(
+            'vulocart-orders',
+            __( 'Refunds', 'vulocart' ),
+            __( 'Refunds', 'vulocart' ),
+            'manage_options',
+            'vulocart-orders&filter=refunds',
+            array( $this, 'render_orders_admin_page' )
+        );
     }
 
     /**
@@ -137,19 +167,24 @@ class Menu {
      * brief calls for WooCommerce/Shopify-style dedicated top-level spaces,
      * not one more settings-style tab).
      *
-     * "All Offerings" and "Add New" are real submenus, both pointing at the
-     * same `vulocart-offerings` slug (the `&action=add` suffix on the
-     * second is a query-string addition, not a distinct WP page — same
-     * technique WooCommerce itself uses so `admin.php?page=wc-orders`,
+     * "All Offerings" and "Add New" both point at the same
+     * `vulocart-offerings` slug (the `&action=add` suffix on the second is
+     * a query-string addition, not a distinct WP page — same technique
+     * WooCommerce itself uses so `admin.php?page=wc-orders`,
      * `...&action=new`, and `...&action=edit&id=123` are all one
      * registered admin page differentiated by query args the client reads,
      * rather than three separate `add_menu_page()`-registered screens).
-     * `src/pages/Offerings/Offerings.tsx` is what actually branches on
-     * `action`/`id` to decide List vs. Add vs. Edit. Categories/
-     * Collections/Brands/Attributes/Offering Types/Inventory/Reviews (this
-     * plugin's admin-UX brief lists these as Offerings submenus) have no
-     * backing domain model yet — not scaffolded here for the same reason
-     * add_orders_menu() doesn't scaffold Draft Orders/Returns/etc.
+     * Categories/Collections/Brands/Attributes/Offering Types/Inventory/
+     * Reviews use the same one-slug-many-query-strings technique via
+     * `&view=`, now that each has a real backing REST controller
+     * (classes/RestAPI/Controllers/Terms.php/Attributes.php/Reviews.php/
+     * Inventory.php/OfferingTypes.php) and admin page (`src/pages/Terms/`,
+     * `src/pages/Attributes/`, etc.) — `src/pages/Offerings/Offerings.tsx`
+     * is what actually branches on `action`/`id`/`view` to decide which
+     * one renders. Returns is the one item from this plugin's admin-UX
+     * brief still not scaffolded — a genuine RMA workflow (request →
+     * approve/reject → item returned → refund issued) is a distinct,
+     * larger domain model from a review or a term, not built in this pass.
      *
      * @return void
      */
@@ -181,6 +216,27 @@ class Menu {
             'vulocart-offerings&action=add',
             array( $this, 'render_offerings_admin_page' )
         );
+
+        $sub_views = array(
+            'categories'     => __( 'Categories', 'vulocart' ),
+            'collections'    => __( 'Collections', 'vulocart' ),
+            'brands'         => __( 'Brands', 'vulocart' ),
+            'attributes'     => __( 'Attributes', 'vulocart' ),
+            'offering-types' => __( 'Offering Types', 'vulocart' ),
+            'inventory'      => __( 'Inventory', 'vulocart' ),
+            'reviews'        => __( 'Reviews', 'vulocart' ),
+        );
+
+        foreach ( $sub_views as $slug => $label ) {
+            add_submenu_page(
+                'vulocart-offerings',
+                $label,
+                $label,
+                'manage_options',
+                'vulocart-offerings&view=' . $slug,
+                array( $this, 'render_offerings_admin_page' )
+            );
+        }
     }
 
     /**

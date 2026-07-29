@@ -63,6 +63,8 @@ const offeringsAdminRoot = document.getElementById( 'vulocart-offerings-admin-ro
 const urlParams = new URLSearchParams( window.location.search );
 const urlAction = urlParams.get( 'action' );
 const urlId = urlParams.get( 'id' ) ? Number( urlParams.get( 'id' ) ) : null;
+const urlFilter = urlParams.get( 'filter' );
+const urlView = urlParams.get( 'view' );
 
 if ( adminRoot ) {
 	render(
@@ -86,7 +88,7 @@ if ( ordersAdminRoot ) {
 				onResultClick={ () => {} }
 			/>
 			<div className="admin-main-wrapper">
-				<Orders action={ urlAction } id={ urlId } />
+				<Orders action={ urlAction } id={ urlId } filter={ urlFilter } />
 			</div>
 		</QueryClientProvider>,
 		ordersAdminRoot
@@ -104,7 +106,7 @@ if ( offeringsAdminRoot ) {
 				onResultClick={ () => {} }
 			/>
 			<div className="admin-main-wrapper">
-				<Offerings action={ urlAction } id={ urlId } />
+				<Offerings action={ urlAction } id={ urlId } view={ urlView } />
 			</div>
 		</QueryClientProvider>,
 		offeringsAdminRoot

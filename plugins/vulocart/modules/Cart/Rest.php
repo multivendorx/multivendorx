@@ -133,25 +133,25 @@ class Rest {
 
     /**
      * Converts a domain CartItem into the REST response shape, including
-     * a display title from its Asset — bounded by cart size (a handful of
-     * items), and AssetService's own in-request cache-by-id
-     * (performance.md) means this never re-queries the same asset twice.
+     * a display title from its Offering — bounded by cart size (a handful of
+     * items), and OfferingService's own in-request cache-by-id
+     * (performance.md) means this never re-queries the same offering twice.
      *
      * @param CartItem $item Cart item to convert to a REST response shape.
      * @return array<string, mixed>
      */
     private function format_cart_item_for_response( CartItem $item ): array {
-        $asset = VuloCart()->asset_service->get_asset( $item->asset_id );
+        $offering = VuloCart()->offering_service->get_offering( $item->offering_id );
 
         return array(
-            'id'         => $item->id,
-            'asset_id'   => $item->asset_id,
-            'title'      => $asset ? $asset->title : null,
-            'type'       => $asset ? $asset->type : null,
-            'quantity'   => $item->quantity,
-            'unit_price' => $item->unit_price,
-            'currency'   => $item->currency,
-            'subtotal'   => round( $item->unit_price * $item->quantity, 2 ),
+            'id'          => $item->id,
+            'offering_id' => $item->offering_id,
+            'title'       => $offering ? $offering->title : null,
+            'type'        => $offering ? $offering->type : null,
+            'quantity'    => $item->quantity,
+            'unit_price'  => $item->unit_price,
+            'currency'    => $item->currency,
+            'subtotal'    => round( $item->unit_price * $item->quantity, 2 ),
         );
     }
 
@@ -233,18 +233,18 @@ class Rest {
     }
 
     /**
-     * Adds a quantity of an asset to a cart.
+     * Adds a quantity of an offering to a cart.
      *
      * @param \WP_REST_Request $request Full request object.
      * @return \WP_REST_Response|\WP_Error
      */
     public function add_item( $request ) {
-        $asset_id = absint( $request->get_param( 'asset_id' ) );
+        $offering_id = absint( $request->get_param( 'offering_id' ) );
 
-        if ( ! $asset_id ) {
+        if ( ! $offering_id ) {
             return new \WP_Error(
-                'vulocart_missing_asset_id',
-                esc_html__( 'An asset_id is required.', 'vulocart' ),
+                'vulocart_missing_offering_id',
+                esc_html__( 'An offering_id is required.', 'vulocart' ),
                 array( 'status' => 400 )
             );
         }
@@ -254,11 +254,11 @@ class Rest {
         $token          = $this->resolve_token( $request );
 
         try {
-            $cart = VuloCart()->cart_service->add_item( $token, $asset_id, $quantity );
+            $cart = VuloCart()->cart_service->add_item( $token, $offering_id, $quantity );
         } catch ( \InvalidArgumentException $exception ) {
             return new \WP_Error(
-                'vulocart_invalid_asset',
-                esc_html__( 'Invalid asset.', 'vulocart' ),
+                'vulocart_invalid_offering',
+                esc_html__( 'Invalid offering.', 'vulocart' ),
                 array( 'status' => 400 )
             );
         }

@@ -7,7 +7,7 @@
 
 namespace VuloCart\Cart\Application;
 
-use VuloCart\Application\AssetService;
+use VuloCart\Application\OfferingService;
 use VuloCart\Cart\Domain\Cart;
 use VuloCart\Cart\Domain\CartItem;
 use VuloCart\Cart\Domain\CartRepositoryInterface;
@@ -20,10 +20,10 @@ defined( 'ABSPATH' ) || exit;
  * VuloCart Cart module CartService.
  *
  * Where Cart business logic actually lives — Rest calls only this class,
- * mirroring VuloCart\Application\AssetService's role for Assets. Depends
- * on the core plugin's AssetService (not the asset repository directly)
+ * mirroring VuloCart\Application\OfferingService's role for Offerings. Depends
+ * on the core plugin's OfferingService (not the offering repository directly)
  * so an added line item's price/currency is snapshotted through the same
- * business rules any other Asset consumer goes through.
+ * business rules any other Offering consumer goes through.
  *
  * @class       CartService class
  * @version     1.0.0
@@ -39,11 +39,11 @@ class CartService {
     private $repository;
 
     /**
-     * Used to validate an asset exists and to snapshot its current price.
+     * Used to validate an offering exists and to snapshot its current price.
      *
-     * @var AssetService
+     * @var OfferingService
      */
-    private $asset_service;
+    private $offering_service;
 
     /**
      * Broadcasts what happened after each mutation.
@@ -56,13 +56,13 @@ class CartService {
      * CartService constructor.
      *
      * @param CartRepositoryInterface $repository    Resolved via VuloCart's ServiceContainer, not `new`d directly.
-     * @param AssetService            $asset_service  Used to validate an asset exists and to snapshot its current price.
+     * @param OfferingService         $offering_service  Used to validate an offering exists and to snapshot its current price.
      * @param EventDispatcher         $events         Broadcasts what happened; never decides what should happen.
      */
-    public function __construct( CartRepositoryInterface $repository, AssetService $asset_service, EventDispatcher $events ) {
-        $this->repository    = $repository;
-        $this->asset_service = $asset_service;
-        $this->events        = $events;
+    public function __construct( CartRepositoryInterface $repository, OfferingService $offering_service, EventDispatcher $events ) {
+        $this->repository       = $repository;
+        $this->offering_service = $offering_service;
+        $this->events           = $events;
     }
 
     /**
@@ -96,26 +96,26 @@ class CartService {
     }
 
     /**
-     * Adds a quantity of an asset to a cart, or increments an existing
-     * line item for the same asset. Throws if the asset doesn't exist —
+     * Adds a quantity of an offering to a cart, or increments an existing
+     * line item for the same offering. Throws if the offering doesn't exist —
      * the caller (Rest) turns that into a 400 WP_Error rather than
      * silently adding a bogus line item.
      *
      * @param string $token    Opaque client-held cart identity.
-     * @param int    $asset_id VuloCart\Domain\Asset\Asset id.
+     * @param int    $offering_id VuloCart\Domain\Offering\Offering id.
      * @param int    $quantity Quantity to add (must be >= 1).
      * @return Cart
-     * @throws \InvalidArgumentException If no asset with $asset_id exists.
+     * @throws \InvalidArgumentException If no offering with $offering_id exists.
      */
-    public function add_item( $token, $asset_id, $quantity ) {
-        $asset = $this->asset_service->get_asset( $asset_id );
+    public function add_item( $token, $offering_id, $quantity ) {
+        $offering = $this->offering_service->get_offering( $offering_id );
 
-        if ( ! $asset ) {
-            throw new \InvalidArgumentException( 'Unknown asset.' );
+        if ( ! $offering ) {
+            throw new \InvalidArgumentException( 'Unknown offering.' );
         }
 
         $cart     = $this->get_or_create_cart( $token );
-        $existing = $this->repository->find_item( $cart->id, $asset_id );
+        $existing = $this->repository->find_item( $cart->id, $offering_id );
 
         if ( $existing ) {
             $existing->quantity += $quantity;
@@ -124,10 +124,10 @@ class CartService {
             $item = new CartItem(
                 null,
                 $cart->id,
-                $asset_id,
+                $offering_id,
                 $quantity,
-                null === $asset->price ? 0.0 : $asset->price,
-                $asset->currency ? $asset->currency : $cart->currency
+                null === $offering->price ? 0.0 : $offering->price,
+                $offering->currency ? $offering->currency : $cart->currency
             );
 
             $this->repository->insert_item( $item );
@@ -200,6 +200,19 @@ class CartService {
         $this->events->dispatch( 'cart_updated', array( 'cart_token' => $token ) );
 
         return $this->repository->find_by_token( $token );
+    }
+
+    /**
+     * Deletes carts that haven't been touched in over $days days — see
+     * CartRepositoryInterface::delete_expired()'s own docblock for the
+     * batching rationale. Called by Application\CartCleanupScheduler's
+     * daily cron, using the Settings screen's `cart_expiry_days`.
+     *
+     * @param int $days Age threshold, in days.
+     * @return int Total number of carts deleted.
+     */
+    public function delete_expired_carts( int $days ): int {
+        return $this->repository->delete_expired( $days );
     }
 
     /**

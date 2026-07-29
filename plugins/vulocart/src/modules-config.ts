@@ -11,6 +11,14 @@ import { __ } from '@wordpress/i18n';
  * module-architecture.md); `passport` ships in `vulocart-pro`
  * (`proModule: true` gates it behind `vulocartLocalizer.khali_dabba`, same
  * as every other proModule-flagged entry in the sibling plugins).
+ *
+ * `mcp`/`ai` also ship in this free plugin (`modules/Mcp`, `modules/Ai`)
+ * — deliberately minimal Module.php stubs today (see their own
+ * docblocks), whose entire purpose right now is to be a real toggle here
+ * and to gate `src/settings/Mcp.ts`'s/`Ai.ts`'s config fields via
+ * `moduleEnabled`, replacing the "Enable MCP server"/"Enable AI
+ * recommendations" Settings-tab toggles that used to duplicate this
+ * same on/off state.
  */
 export default {
 	category: false,
@@ -38,10 +46,28 @@ export default {
 			id: 'passport',
 			name: __( 'Passport', 'vulocart' ),
 			desc: __(
-				'Give every Asset a Digital Passport — serial number, manufacturer, warranty, and other provenance details.',
+				'Give every Offering a Digital Passport — serial number, manufacturer, warranty, and other provenance details.',
 				'vulocart'
 			),
 			proModule: true,
+		},
+		{
+			id: 'mcp',
+			name: __( 'MCP', 'vulocart' ),
+			desc: __(
+				'Model Context Protocol server — exposes VuloCart\'s catalog/orders to MCP-compatible AI clients.',
+				'vulocart'
+			),
+			proModule: false,
+		},
+		{
+			id: 'ai',
+			name: __( 'AI', 'vulocart' ),
+			desc: __(
+				'AI-generated offering/upsell recommendations.',
+				'vulocart'
+			),
+			proModule: false,
 		},
 	],
 };

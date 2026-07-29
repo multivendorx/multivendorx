@@ -118,23 +118,58 @@ final class VuloCart {
         $this->container['util'] = new Utill();
 
         // Dependency-injection seam (vision principle: "storage engine is
-        // replaceable") — AssetRepositoryInterface is bound to a concrete
-        // WPDBAssetRepository here, and only here; every other class asks
+        // replaceable") — OfferingRepositoryInterface is bound to a concrete
+        // WPDBOfferingRepository here, and only here; every other class asks
         // the container for the interface instead of `new`ing the concrete
         // class directly, so swapping storage engines later is a one-line
         // change to this binding.
         $this->container['service_container'] = new ServiceContainer();
         $this->container['service_container']->singleton(
-            Domain\Asset\AssetRepositoryInterface::class,
+            Domain\Offering\OfferingRepositoryInterface::class,
             function () {
-                return new Infrastructure\Database\WPDBAssetRepository();
+                return new Infrastructure\Database\WPDBOfferingRepository();
+            }
+        );
+        $this->container['service_container']->singleton(
+            Domain\Term\TermRepositoryInterface::class,
+            function () {
+                return new Infrastructure\Database\WPDBTermRepository();
+            }
+        );
+        $this->container['service_container']->singleton(
+            Domain\Attribute\AttributeRepositoryInterface::class,
+            function () {
+                return new Infrastructure\Database\WPDBAttributeRepository();
+            }
+        );
+        $this->container['service_container']->singleton(
+            Domain\Review\ReviewRepositoryInterface::class,
+            function () {
+                return new Infrastructure\Database\WPDBReviewRepository();
             }
         );
 
         $this->container['event_dispatcher'] = new Events\EventDispatcher();
 
-        $this->container['asset_service'] = new Application\AssetService(
-            $this->container['service_container']->make( Domain\Asset\AssetRepositoryInterface::class ),
+        $this->container['offering_service'] = new Application\OfferingService(
+            $this->container['service_container']->make( Domain\Offering\OfferingRepositoryInterface::class ),
+            $this->container['event_dispatcher']
+        );
+
+        // Categories/Brands/Collections/Attributes/Reviews (Offerings menu)
+        // — core, always-loaded infrastructure the same way Offering is, not
+        // a toggleable module (Install.php's own docblock).
+        $this->container['term_service']      = new Application\TermService(
+            $this->container['service_container']->make( Domain\Term\TermRepositoryInterface::class ),
+            $this->container['event_dispatcher']
+        );
+        $this->container['attribute_service'] = new Application\AttributeService(
+            $this->container['service_container']->make( Domain\Attribute\AttributeRepositoryInterface::class ),
+            $this->container['event_dispatcher']
+        );
+        $this->container['review_service']    = new Application\ReviewService(
+            $this->container['service_container']->make( Domain\Review\ReviewRepositoryInterface::class ),
+            $this->container['offering_service'],
             $this->container['event_dispatcher']
         );
 

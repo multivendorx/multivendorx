@@ -1,37 +1,37 @@
 <?php
 /**
- * Assets class file.
+ * Offerings class file.
  *
  * @package VuloCart
  */
 
 namespace VuloCart\RestAPI\Controllers;
 
-use VuloCart\Domain\Asset\Asset;
-use VuloCart\Domain\Asset\AssetType;
+use VuloCart\Domain\Offering\Offering;
+use VuloCart\Domain\Offering\OfferingType;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * VuloCart Assets REST controller.
+ * VuloCart Offerings REST controller.
  *
- * `GET /vulocart/v1/assets` (paginated) and `POST /vulocart/v1/assets`.
- * Calls VuloCart()->asset_service only — never
- * Infrastructure\Database\WPDBAssetRepository directly (rest-api.md +
+ * `GET /vulocart/v1/offerings` (paginated) and `POST /vulocart/v1/offerings`.
+ * Calls VuloCart()->offering_service only — never
+ * Infrastructure\Database\WPDBOfferingRepository directly (rest-api.md +
  * this plugin's own Application-layer convention).
  *
- * @class       Assets class
+ * @class       Offerings class
  * @version     1.0.0
  * @author      MultiVendorX
  */
-class Assets extends \WP_REST_Controller {
+class Offerings extends \WP_REST_Controller {
 
     /**
      * REST base for this controller's routes.
      *
      * @var string
      */
-    protected $rest_base = 'assets';
+    protected $rest_base = 'offerings';
 
     /**
      * The type-specific fields OfferingEdit.tsx's "Type Details" card shows
@@ -39,7 +39,7 @@ class Assets extends \WP_REST_Controller {
      * the generic fields every type already has (title/price/description/
      * etc.), matching how WooCommerce's simple/variable/grouped/external
      * product types each expose different meta-box fields. Keyed by
-     * AssetType constant, each value maps a field name to how it's
+     * OfferingType constant, each value maps a field name to how it's
      * sanitized: 'text' (sanitize_text_field), 'int' (absint-able,
      * nullable), 'float' (nullable), 'bool', or 'key' (sanitize_key,
      * for a small fixed option set the frontend's own SelectInput
@@ -47,7 +47,7 @@ class Assets extends \WP_REST_Controller {
      * type-specific fields — physical's "type-specific" behavior is
      * already the existing Stock/Shipping sections, and license has no
      * dedicated fields yet (kept only for backward compatibility with any
-     * asset created before this plugin's admin-UX brief specified its own
+     * offering created before this plugin's admin-UX brief specified its own
      * 11-type list, which doesn't include license).
      *
      * @var array<string, array<string, string>>
@@ -141,15 +141,15 @@ class Assets extends \WP_REST_Controller {
     }
 
     /**
-     * Whether asset listing is open to everyone — genuinely public read
+     * Whether offering listing is open to everyone — genuinely public read
      * access, same "cart token is the access control, not a nonce"
      * posture RestAPI\Controllers\Cart's docblock explains for a
      * different reason: a storefront checkout page (src/blocks/checkout)
-     * has no WordPress session at all and still needs to browse assets to
+     * has no WordPress session at all and still needs to browse offerings to
      * add them to a cart. get_items() itself is what keeps this safe —
      * it force-scopes results to `status = published` for anyone without
      * `manage_options`, so a logged-out visitor can never see (or infer
-     * the existence of) a draft/archived asset just by passing a
+     * the existence of) a draft/archived offering just by passing a
      * different `status` query param.
      *
      * @param \WP_REST_Request $request Full request object.
@@ -160,7 +160,7 @@ class Assets extends \WP_REST_Controller {
     }
 
     /**
-     * Checks whether the current user can create an asset.
+     * Checks whether the current user can create an offering.
      *
      * @param \WP_REST_Request $request Full request object.
      * @return bool
@@ -170,29 +170,29 @@ class Assets extends \WP_REST_Controller {
     }
 
     /**
-     * Converts a domain Asset into the REST response shape.
+     * Converts a domain Offering into the REST response shape.
      *
-     * @param Asset $asset Asset to convert to a REST response shape.
+     * @param Offering $offering Offering to convert to a REST response shape.
      * @return array<string, mixed>
      */
-    private function prepare_asset_for_response( Asset $asset ): array {
+    private function prepare_offering_for_response( Offering $offering ): array {
         return array(
-            'id'         => $asset->id,
-            'type'       => $asset->type,
-            'title'      => $asset->title,
-            'slug'       => $asset->slug,
-            'sku'        => $asset->sku,
-            'status'     => $asset->status,
-            'price'      => $asset->price,
-            'currency'   => $asset->currency,
-            'meta'       => $asset->meta,
-            'created_at' => $asset->created_at,
-            'updated_at' => $asset->updated_at,
+            'id'         => $offering->id,
+            'type'       => $offering->type,
+            'title'      => $offering->title,
+            'slug'       => $offering->slug,
+            'sku'        => $offering->sku,
+            'status'     => $offering->status,
+            'price'      => $offering->price,
+            'currency'   => $offering->currency,
+            'meta'       => $offering->meta,
+            'created_at' => $offering->created_at,
+            'updated_at' => $offering->updated_at,
         );
     }
 
     /**
-     * Lists assets, paginated.
+     * Lists offerings, paginated.
      *
      * @param \WP_REST_Request $request Full request object.
      * @return \WP_REST_Response
@@ -210,12 +210,12 @@ class Assets extends \WP_REST_Controller {
         // (see get_items_permissions_check()'s docblock) — force
         // `published` regardless of what `status` they passed, so a
         // logged-out visitor can never list/discover draft or archived
-        // assets by guessing a different status value.
+        // offerings by guessing a different status value.
         if ( ! current_user_can( 'manage_options' ) ) {
             $status = 'published';
         }
 
-        $result = VuloCart()->asset_service->list_assets(
+        $result = VuloCart()->offering_service->list_offerings(
             array(
                 'page'     => $page,
                 'per_page' => $per_page,
@@ -224,7 +224,7 @@ class Assets extends \WP_REST_Controller {
             )
         );
 
-        $response = rest_ensure_response( array_map( array( $this, 'prepare_asset_for_response' ), $result['data'] ) );
+        $response = rest_ensure_response( array_map( array( $this, 'prepare_offering_for_response' ), $result['data'] ) );
         $response->header( 'X-WP-Total', (string) $result['total'] );
         $response->header( 'X-WP-TotalPages', (string) ceil( $result['total'] / max( 1, $per_page ) ) );
 
@@ -232,7 +232,7 @@ class Assets extends \WP_REST_Controller {
     }
 
     /**
-     * Fetches one asset by id — backs the dedicated
+     * Fetches one offering by id — backs the dedicated
      * `src/pages/Offerings/OfferingEdit.tsx` page loading its initial data
      * directly from the URL's `id` query param (a real navigation, not a
      * client-side transition carrying the row already in memory — see
@@ -245,21 +245,21 @@ class Assets extends \WP_REST_Controller {
      * @return \WP_REST_Response|\WP_Error
      */
     public function get_item( $request ) {
-        $asset = VuloCart()->asset_service->get_asset( absint( $request->get_param( 'id' ) ) );
+        $offering = VuloCart()->offering_service->get_offering( absint( $request->get_param( 'id' ) ) );
 
-        if ( ! $asset ) {
-            return new \WP_Error( 'vulocart_asset_not_found', esc_html__( 'No offering exists with this id.', 'vulocart' ), array( 'status' => 404 ) );
+        if ( ! $offering ) {
+            return new \WP_Error( 'vulocart_offering_not_found', esc_html__( 'No offering exists with this id.', 'vulocart' ), array( 'status' => 404 ) );
         }
 
-        if ( ! current_user_can( 'manage_options' ) && 'published' !== $asset->status ) {
-            return new \WP_Error( 'vulocart_asset_not_found', esc_html__( 'No offering exists with this id.', 'vulocart' ), array( 'status' => 404 ) );
+        if ( ! current_user_can( 'manage_options' ) && 'published' !== $offering->status ) {
+            return new \WP_Error( 'vulocart_offering_not_found', esc_html__( 'No offering exists with this id.', 'vulocart' ), array( 'status' => 404 ) );
         }
 
-        return rest_ensure_response( $this->prepare_asset_for_response( $asset ) );
+        return rest_ensure_response( $this->prepare_offering_for_response( $offering ) );
     }
 
     /**
-     * Creates a new asset.
+     * Creates a new offering.
      *
      * @param \WP_REST_Request $request Full request object.
      * @return \WP_REST_Response|\WP_Error
@@ -267,10 +267,10 @@ class Assets extends \WP_REST_Controller {
     public function create_item( $request ) {
         $type = sanitize_key( (string) $request->get_param( 'type' ) );
 
-        if ( ! in_array( $type, AssetType::all(), true ) ) {
+        if ( ! in_array( $type, OfferingType::all(), true ) ) {
             return new \WP_Error(
-                'vulocart_invalid_asset_type',
-                esc_html__( 'Invalid asset type.', 'vulocart' ),
+                'vulocart_invalid_offering_type',
+                esc_html__( 'Invalid offering type.', 'vulocart' ),
                 array( 'status' => 400 )
             );
         }
@@ -279,8 +279,8 @@ class Assets extends \WP_REST_Controller {
 
         if ( '' === $title ) {
             return new \WP_Error(
-                'vulocart_missing_asset_title',
-                esc_html__( 'An asset title is required.', 'vulocart' ),
+                'vulocart_missing_offering_title',
+                esc_html__( 'An offering title is required.', 'vulocart' ),
                 array( 'status' => 400 )
             );
         }
@@ -310,19 +310,19 @@ class Assets extends \WP_REST_Controller {
             $data['meta'] = $this->sanitize_offering_meta( $request->get_param( 'meta' ), $type );
         }
 
-        $asset = VuloCart()->asset_service->create_asset( $data );
+        $offering = VuloCart()->offering_service->create_offering( $data );
 
-        $response = rest_ensure_response( $this->prepare_asset_for_response( $asset ) );
+        $response = rest_ensure_response( $this->prepare_offering_for_response( $offering ) );
         $response->set_status( 201 );
 
         return $response;
     }
 
     /**
-     * Updates an existing asset — backs the Assets table's inline cell
-     * editing (title/sku/status/price) in src/app/routes/AssetsPage.tsx.
+     * Updates an existing offering — backs the Offerings table's inline cell
+     * editing (title/sku/status/price) in src/app/routes/OfferingsPage.tsx.
      * Only ever touches the fields actually present on the request, via
-     * Application\AssetService::update_asset()'s own partial-update
+     * Application\OfferingService::update_offering()'s own partial-update
      * semantics — a cell edit for one field never clobbers the others.
      *
      * @param \WP_REST_Request $request Full request object.
@@ -331,12 +331,12 @@ class Assets extends \WP_REST_Controller {
     public function update_item( $request ) {
         $id = absint( $request->get_param( 'id' ) );
 
-        $existing_asset = VuloCart()->asset_service->get_asset( $id );
+        $existing_offering = VuloCart()->offering_service->get_offering( $id );
 
-        if ( ! $existing_asset ) {
+        if ( ! $existing_offering ) {
             return new \WP_Error(
-                'vulocart_asset_not_found',
-                esc_html__( 'No asset exists with this id.', 'vulocart' ),
+                'vulocart_offering_not_found',
+                esc_html__( 'No offering exists with this id.', 'vulocart' ),
                 array( 'status' => 404 )
             );
         }
@@ -346,10 +346,10 @@ class Assets extends \WP_REST_Controller {
         if ( null !== $request->get_param( 'type' ) ) {
             $type = sanitize_key( (string) $request->get_param( 'type' ) );
 
-            if ( ! in_array( $type, AssetType::all(), true ) ) {
+            if ( ! in_array( $type, OfferingType::all(), true ) ) {
                 return new \WP_Error(
-                    'vulocart_invalid_asset_type',
-                    esc_html__( 'Invalid asset type.', 'vulocart' ),
+                    'vulocart_invalid_offering_type',
+                    esc_html__( 'Invalid offering type.', 'vulocart' ),
                     array( 'status' => 400 )
                 );
             }
@@ -362,8 +362,8 @@ class Assets extends \WP_REST_Controller {
 
             if ( '' === $title ) {
                 return new \WP_Error(
-                    'vulocart_missing_asset_title',
-                    esc_html__( 'An asset title is required.', 'vulocart' ),
+                    'vulocart_missing_offering_title',
+                    esc_html__( 'An offering title is required.', 'vulocart' ),
                     array( 'status' => 400 )
                 );
             }
@@ -388,13 +388,13 @@ class Assets extends \WP_REST_Controller {
         }
 
         if ( is_array( $request->get_param( 'meta' ) ) ) {
-            $effective_type = isset( $data['type'] ) ? $data['type'] : $existing_asset->type;
+            $effective_type = isset( $data['type'] ) ? $data['type'] : $existing_offering->type;
             $data['meta']   = $this->sanitize_offering_meta( $request->get_param( 'meta' ), $effective_type );
         }
 
-        $asset = VuloCart()->asset_service->update_asset( $id, $data );
+        $offering = VuloCart()->offering_service->update_offering( $id, $data );
 
-        return rest_ensure_response( $this->prepare_asset_for_response( $asset ) );
+        return rest_ensure_response( $this->prepare_offering_for_response( $offering ) );
     }
 
     /**
@@ -405,7 +405,7 @@ class Assets extends \WP_REST_Controller {
      * safely. Backs `src/pages/Offerings/OfferingEdit.tsx`'s full
      * WooCommerce/Shopify-style edit screen — short/full description,
      * sale price, stock management, delivery method, package dimensions,
-     * policies, simple related/add-on product lists (comma-separated ids,
+     * policies, simple related/add-on offering lists (comma-separated ids,
      * no picker UI yet), featured/catalog-visibility flags, a small
      * hand-maintained category list (categories.tsx has no real taxonomy
      * behind it yet — see OfferingEdit.tsx's docblock), tags, and
@@ -425,7 +425,7 @@ class Assets extends \WP_REST_Controller {
 
         $sanitized = array();
 
-        $text_fields = array( 'weight', 'length', 'width', 'height', 'shipping_class', 'related_products', 'addon_products' );
+        $text_fields = array( 'weight', 'length', 'width', 'height', 'shipping_class', 'related_offerings', 'addon_offerings' );
 
         foreach ( $text_fields as $key ) {
             if ( isset( $meta[ $key ] ) ) {
@@ -453,6 +453,10 @@ class Assets extends \WP_REST_Controller {
             $sanitized['stock_status'] = $meta['stock_status'];
         }
 
+        if ( array_key_exists( 'stock_quantity', $meta ) ) {
+            $sanitized['stock_quantity'] = ( '' === $meta['stock_quantity'] || null === $meta['stock_quantity'] ) ? null : max( 0, absint( $meta['stock_quantity'] ) );
+        }
+
         if ( isset( $meta['delivery_method'] ) && in_array( $meta['delivery_method'], array( 'physical', 'downloadable', 'digital_service', 'other' ), true ) ) {
             $sanitized['delivery_method'] = $meta['delivery_method'];
         }
@@ -471,6 +475,19 @@ class Assets extends \WP_REST_Controller {
 
         if ( isset( $meta['tags'] ) && is_array( $meta['tags'] ) ) {
             $sanitized['tags'] = array_values( array_map( 'sanitize_text_field', $meta['tags'] ) );
+        }
+
+        // Brand/Collections — Domain\Term\Taxonomy::BRAND/COLLECTION,
+        // referenced by slug the same way `categories`/`tags` already are
+        // above (WPDBTermRepository::count_offerings_for_term()'s own
+        // docblock explains why a slug-in-meta reference, not a join
+        // table).
+        if ( array_key_exists( 'brand', $meta ) ) {
+            $sanitized['brand'] = ( '' === $meta['brand'] || null === $meta['brand'] ) ? null : sanitize_key( (string) $meta['brand'] );
+        }
+
+        if ( isset( $meta['collections'] ) && is_array( $meta['collections'] ) ) {
+            $sanitized['collections'] = array_values( array_map( 'sanitize_key', $meta['collections'] ) );
         }
 
         if ( array_key_exists( 'featured_image', $meta ) ) {
@@ -496,7 +513,7 @@ class Assets extends \WP_REST_Controller {
      * same "whitelist, not generic sanitize-whatever-shows-up" posture
      * sanitize_offering_meta() already documents.
      *
-     * @param string               $type    One of AssetType's constants.
+     * @param string               $type    One of OfferingType's constants.
      * @param array<string, mixed> $details Raw `type_details` payload.
      * @return array<string, mixed>
      */

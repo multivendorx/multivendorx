@@ -1,60 +1,60 @@
 <?php
 /**
- * WPDBAssetRepository class file.
+ * WPDBOfferingRepository class file.
  *
  * @package VuloCart
  */
 
 namespace VuloCart\Infrastructure\Database;
 
-use VuloCart\Domain\Asset\Asset;
-use VuloCart\Domain\Asset\AssetRepositoryInterface;
+use VuloCart\Domain\Offering\Offering;
+use VuloCart\Domain\Offering\OfferingRepositoryInterface;
 use VuloCart\Utill;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * VuloCart WPDBAssetRepository.
+ * VuloCart WPDBOfferingRepository.
  *
  * The only class in this codebase that runs SQL against
- * `vulocart_assets` — implements Domain\Asset\AssetRepositoryInterface,
+ * `vulocart_offerings` — implements Domain\Offering\OfferingRepositoryInterface,
  * bound in VuloCart::init_classes(). Every query goes through
  * `$wpdb->prepare()` (database.md); a static in-request cache-by-id
  * follows the same pattern `database.md` already documents (Store.php's
  * cache), so repeated find() calls for the same id within one request
  * don't re-query.
  *
- * @class       WPDBAssetRepository class
+ * @class       WPDBOfferingRepository class
  * @version     1.0.0
  * @author      MultiVendorX
  */
-class WPDBAssetRepository implements AssetRepositoryInterface {
+class WPDBOfferingRepository implements OfferingRepositoryInterface {
 
     /**
-     * In-request cache of resolved assets, keyed by id.
+     * In-request cache of resolved offerings, keyed by id.
      *
-     * @var array<int, Asset|null>
+     * @var array<int, Offering|null>
      */
     private $cache = array();
 
     /**
-     * Resolves the fully-prefixed `vulocart_assets` table name.
+     * Resolves the fully-prefixed `vulocart_offerings` table name.
      *
      * @return string
      */
     private function get_table() {
         global $wpdb;
-        return $wpdb->prefix . Utill::TABLES['asset'];
+        return $wpdb->prefix . Utill::TABLES['offering'];
     }
 
     /**
-     * Converts a raw `$wpdb` row into a domain Asset object.
+     * Converts a raw `$wpdb` row into a domain Offering object.
      *
-     * @param array<string, mixed> $row A raw `vulocart_assets` row.
-     * @return Asset
+     * @param array<string, mixed> $row A raw `vulocart_offerings` row.
+     * @return Offering
      */
     private function hydrate( $row ) {
-        return new Asset(
+        return new Offering(
             (int) $row['id'],
             $row['type'],
             $row['title'],
@@ -70,31 +70,31 @@ class WPDBAssetRepository implements AssetRepositoryInterface {
     }
 
     /**
-     * Converts a domain Asset object into a `$wpdb`-ready row.
+     * Converts a domain Offering object into a `$wpdb`-ready row.
      *
-     * @param Asset $asset Asset to convert to a `$wpdb`-ready row.
+     * @param Offering $offering Offering to convert to a `$wpdb`-ready row.
      * @return array<string, mixed>
      */
-    private function to_row( Asset $asset ) {
+    private function to_row( Offering $offering ) {
         return array(
-            'type'     => $asset->type,
-            'title'    => $asset->title,
-            'slug'     => $asset->slug,
-            'sku'      => $asset->sku,
-            'status'   => $asset->status,
-            'price'    => $asset->price,
-            'currency' => $asset->currency,
-            'meta'     => wp_json_encode( $asset->meta ),
+            'type'     => $offering->type,
+            'title'    => $offering->title,
+            'slug'     => $offering->slug,
+            'sku'      => $offering->sku,
+            'status'   => $offering->status,
+            'price'    => $offering->price,
+            'currency' => $offering->currency,
+            'meta'     => wp_json_encode( $offering->meta ),
         );
     }
 
     /**
-     * Finds one asset by id.
+     * Finds one offering by id.
      *
-     * @param int $id Asset id.
-     * @return Asset|null Null if no asset with this id exists.
+     * @param int $id Offering id.
+     * @return Offering|null Null if no offering with this id exists.
      */
-    public function find( int $id ): ?Asset {
+    public function find( int $id ): ?Offering {
         if ( array_key_exists( $id, $this->cache ) ) {
             return $this->cache[ $id ];
         }
@@ -112,10 +112,10 @@ class WPDBAssetRepository implements AssetRepositoryInterface {
     }
 
     /**
-     * Returns a page of assets, optionally filtered.
+     * Returns a page of offerings, optionally filtered.
      *
      * @param array{page?: int, per_page?: int, type?: string, status?: string} $args Pagination/filter args.
-     * @return array{data: Asset[], total: int}
+     * @return array{data: Offering[], total: int}
      */
     public function paginate( array $args = array() ): array {
         global $wpdb;
@@ -165,39 +165,39 @@ class WPDBAssetRepository implements AssetRepositoryInterface {
     }
 
     /**
-     * Persists a new asset.
+     * Persists a new offering.
      *
-     * @param Asset $asset An asset with $id === null.
-     * @return Asset The same asset, with $id (and timestamps) populated.
+     * @param Offering $offering An offering with $id === null.
+     * @return Offering The same offering, with $id (and timestamps) populated.
      */
-    public function insert( Asset $asset ): Asset {
+    public function insert( Offering $offering ): Offering {
         global $wpdb;
 
-        $wpdb->insert( $this->get_table(), $this->to_row( $asset ) );
+        $wpdb->insert( $this->get_table(), $this->to_row( $offering ) );
 
         return $this->find( (int) $wpdb->insert_id );
     }
 
     /**
-     * Persists changes to an existing asset.
+     * Persists changes to an existing offering.
      *
-     * @param Asset $asset An asset with a non-null $id.
-     * @return Asset The same asset, with $updated_at refreshed.
+     * @param Offering $offering An offering with a non-null $id.
+     * @return Offering The same offering, with $updated_at refreshed.
      */
-    public function update( Asset $asset ): Asset {
+    public function update( Offering $offering ): Offering {
         global $wpdb;
 
-        $wpdb->update( $this->get_table(), $this->to_row( $asset ), array( 'id' => $asset->id ) );
+        $wpdb->update( $this->get_table(), $this->to_row( $offering ), array( 'id' => $offering->id ) );
 
-        unset( $this->cache[ $asset->id ] );
+        unset( $this->cache[ $offering->id ] );
 
-        return $this->find( $asset->id );
+        return $this->find( $offering->id );
     }
 
     /**
-     * Deletes one asset by id.
+     * Deletes one offering by id.
      *
-     * @param int $id Asset id.
+     * @param int $id Offering id.
      * @return bool True if a row was deleted.
      */
     public function delete( int $id ): bool {
@@ -206,5 +206,24 @@ class WPDBAssetRepository implements AssetRepositoryInterface {
         unset( $this->cache[ $id ] );
 
         return false !== $wpdb->delete( $this->get_table(), array( 'id' => $id ) );
+    }
+
+    /**
+     * Counts offerings in each OfferingType bucket, in one query.
+     *
+     * @return array<string, int> Type value => count.
+     */
+    public function count_by_type(): array {
+        global $wpdb;
+
+        $rows = $wpdb->get_results( "SELECT type, COUNT(*) as total FROM {$this->get_table()} GROUP BY type", ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- static SQL, no user input.
+
+        $counts = array();
+
+        foreach ( $rows ? $rows : array() as $row ) {
+            $counts[ $row['type'] ] = (int) $row['total'];
+        }
+
+        return $counts;
     }
 }

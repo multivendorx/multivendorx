@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * Owns `vulocart_carts`/`vulocart_cart_items` — module-owned data, so
  * these tables are created here rather than in the plugin-level
- * `VuloCart\Install` (which only owns `vulocart_assets`, the plugin's
+ * `VuloCart\Install` (which only owns `vulocart_offerings`, the plugin's
  * always-on core entity). Same version-gated activation-hook pattern
  * `vulocart-pro`'s `Passport\Util` already establishes.
  *
@@ -80,7 +80,7 @@ class Install {
         // table rather than a JSON column on the cart row so quantity
         // updates/deletes on one line item don't require rewriting the
         // whole cart.
-        $sql_carts = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}vulocart_carts` (
+        $sql_carts = "CREATE TABLE `{$wpdb->prefix}vulocart_carts` (
             `id`         bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             `token`      varchar(64) NOT NULL,
             `currency`   varchar(10) DEFAULT NULL,
@@ -93,10 +93,10 @@ class Install {
 
         dbDelta( $sql_carts );
 
-        $sql_cart_items = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}vulocart_cart_items` (
+        $sql_cart_items = "CREATE TABLE `{$wpdb->prefix}vulocart_cart_items` (
             `id`         bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             `cart_id`    bigint(20) unsigned NOT NULL,
-            `asset_id`   bigint(20) unsigned NOT NULL,
+            `offering_id`   bigint(20) unsigned NOT NULL,
             `quantity`   int(10) unsigned NOT NULL DEFAULT 1,
             `unit_price` decimal(19,4) DEFAULT NULL,
             `currency`   varchar(10) DEFAULT NULL,
@@ -105,7 +105,7 @@ class Install {
             `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (`id`),
             KEY `idx_cart_id` (`cart_id`),
-            KEY `idx_asset_id` (`asset_id`)
+            KEY `idx_offering_id` (`offering_id`)
         ) $collate;";
 
         dbDelta( $sql_cart_items );

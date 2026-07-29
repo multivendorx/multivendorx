@@ -9,6 +9,7 @@ namespace VuloCart\Order;
 
 use VuloCart\Order\Domain\Order as OrderEntity;
 use VuloCart\Order\Domain\OrderItem;
+use VuloCart\Utill;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,10 +22,11 @@ defined( 'ABSPATH' ) || exit;
  * `GET /orders/track` are public, same "cart token is the access control"
  * reasoning VuloCart\Cart\Rest's docblock explains — a guest placing an
  * order and a guest checking on the order they just placed both need to
- * work with no WordPress session. `GET /orders`, `GET /orders/{id}`, and
- * `PATCH /orders/{id}` stay `manage_options`-gated, matching every other
- * admin-listing controller (rest-api.md) — order management (as opposed
- * to placing/tracking one's own order) is store-owner-only.
+ * work with no WordPress session. Every other route (listing, single-order
+ * read/update, manual order creation, refunds, bulk actions) stays
+ * `manage_options`-gated, matching every other admin-listing controller
+ * (rest-api.md) — order management (as opposed to placing/tracking one's
+ * own order) is store-owner-only.
  *
  * @class       Rest class
  * @version     1.0.0
@@ -64,6 +66,16 @@ class Rest {
 
         register_rest_route(
             VuloCart()->rest_namespace,
+            '/orders/manual',
+            array(
+                'methods'             => \WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'create_manual_item' ),
+                'permission_callback' => array( $this, 'admin_permissions_check' ),
+            )
+        );
+
+        register_rest_route(
+            VuloCart()->rest_namespace,
             '/orders/track',
             array(
                 'methods'             => \WP_REST_Server::READABLE,
@@ -74,10 +86,20 @@ class Rest {
 
         register_rest_route(
             VuloCart()->rest_namespace,
-            '/orders/bulk-status',
+            '/orders/bulk-fulfillment-status',
             array(
                 'methods'             => \WP_REST_Server::EDITABLE,
-                'callback'            => array( $this, 'bulk_update_status' ),
+                'callback'            => array( $this, 'bulk_update_fulfillment_status' ),
+                'permission_callback' => array( $this, 'admin_permissions_check' ),
+            )
+        );
+
+        register_rest_route(
+            VuloCart()->rest_namespace,
+            '/orders/bulk-payment-status',
+            array(
+                'methods'             => \WP_REST_Server::EDITABLE,
+                'callback'            => array( $this, 'bulk_update_payment_status' ),
                 'permission_callback' => array( $this, 'admin_permissions_check' ),
             )
         );
@@ -96,6 +118,16 @@ class Rest {
                     'callback'            => array( $this, 'update_item' ),
                     'permission_callback' => array( $this, 'admin_permissions_check' ),
                 ),
+            )
+        );
+
+        register_rest_route(
+            VuloCart()->rest_namespace,
+            '/orders/(?P<id>\d+)/refund',
+            array(
+                'methods'             => \WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'refund_item' ),
+                'permission_callback' => array( $this, 'admin_permissions_check' ),
             )
         );
     }
@@ -117,21 +149,23 @@ class Rest {
      */
     private function format_order_item_for_response( OrderItem $item ): array {
         return array(
-            'id'         => $item->id,
-            'asset_id'   => $item->asset_id,
-            'title'      => $item->title,
-            'quantity'   => $item->quantity,
-            'unit_price' => $item->unit_price,
-            'currency'   => $item->currency,
-            'subtotal'   => round( $item->unit_price * $item->quantity, 2 ),
+            'id'          => $item->id,
+            'offering_id' => $item->offering_id,
+            'title'       => $item->title,
+            'quantity'    => $item->quantity,
+            'unit_price'  => $item->unit_price,
+            'currency'    => $item->currency,
+            'subtotal'    => round( $item->unit_price * $item->quantity, 2 ),
         );
     }
 
     /**
      * Converts a domain Order into the REST response shape. `access_token`
-     * is only ever included right after creation (create_item()) — never
-     * on admin list/detail reads, so it can't leak to anyone browsing the
-     * admin order list.
+     * is only ever included right after creation (create_item()/
+     * create_manual_item()) — never on admin list/detail reads, so it
+     * can't leak to anyone browsing the admin order list. `item_count` is
+     * the sum of every line item's quantity — the admin grid's "Items"
+     * column (OrdersList.tsx).
      *
      * @param OrderEntity $order          Order to convert to a REST response shape.
      * @param bool        $include_token Whether to include access_token (only true right after creation).
@@ -139,17 +173,20 @@ class Rest {
      */
     private function prepare_order_for_response( OrderEntity $order, bool $include_token = false ): array {
         $response = array(
-            'id'             => $order->id,
-            'order_number'   => $order->order_number,
-            'customer_email' => $order->customer_email,
-            'customer_name'  => $order->customer_name,
-            'status'         => $order->status,
-            'currency'       => $order->currency,
-            'subtotal'       => $order->subtotal,
-            'total'          => $order->total,
-            'items'          => array_map( array( $this, 'format_order_item_for_response' ), $order->items ),
-            'created_at'     => $order->created_at,
-            'updated_at'     => $order->updated_at,
+            'id'                 => $order->id,
+            'order_number'       => $order->order_number,
+            'customer_email'     => $order->customer_email,
+            'customer_name'      => $order->customer_name,
+            'payment_status'     => $order->payment_status,
+            'fulfillment_status' => $order->fulfillment_status,
+            'refunded_amount'    => $order->refunded_amount,
+            'currency'           => $order->currency,
+            'subtotal'           => $order->subtotal,
+            'total'              => $order->total,
+            'item_count'         => array_sum( array_map( fn( $item ) => $item->quantity, $order->items ) ),
+            'items'              => array_map( array( $this, 'format_order_item_for_response' ), $order->items ),
+            'created_at'         => $order->created_at,
+            'updated_at'         => $order->updated_at,
         );
 
         if ( $include_token ) {
@@ -160,29 +197,42 @@ class Rest {
     }
 
     /**
-     * Lists orders, paginated — admin only.
+     * Lists orders, paginated — admin only. Also returns per-
+     * fulfillment-status counts as response headers (`X-WP-Count-{status}`)
+     * so the admin grid can render real "saved view" tab counts (TableCard's
+     * `categoryCounts`, OrdersList.tsx) without a second request.
      *
      * @param \WP_REST_Request $request Full request object.
      * @return \WP_REST_Response
      */
     public function get_items( $request ) {
-        $page     = absint( $request->get_param( 'page' ) ? $request->get_param( 'page' ) : 1 );
-        $per_page = absint( $request->get_param( 'per_page' ) ? $request->get_param( 'per_page' ) : 20 );
-        $status   = sanitize_key( (string) $request->get_param( 'status' ) );
-        $search   = sanitize_text_field( (string) $request->get_param( 'search' ) );
+        $page               = absint( $request->get_param( 'page' ) ? $request->get_param( 'page' ) : 1 );
+        $per_page           = absint( $request->get_param( 'per_page' ) ? $request->get_param( 'per_page' ) : 20 );
+        $payment_status     = sanitize_key( (string) $request->get_param( 'payment_status' ) );
+        $fulfillment_status = sanitize_key( (string) $request->get_param( 'fulfillment_status' ) );
+        $search             = sanitize_text_field( (string) $request->get_param( 'search' ) );
+        $date_from          = sanitize_text_field( (string) $request->get_param( 'date_from' ) );
+        $date_to            = sanitize_text_field( (string) $request->get_param( 'date_to' ) );
 
         $result = VuloCart()->order_service->list_orders(
             array(
-                'page'     => $page,
-                'per_page' => $per_page,
-                'status'   => $status,
-                'search'   => $search,
+                'page'               => $page,
+                'per_page'           => $per_page,
+                'payment_status'     => $payment_status,
+                'fulfillment_status' => $fulfillment_status,
+                'search'             => $search,
+                'date_from'          => $date_from,
+                'date_to'            => $date_to,
             )
         );
 
         $response = rest_ensure_response( array_map( array( $this, 'prepare_order_for_response' ), $result['data'] ) );
         $response->header( 'X-WP-Total', (string) $result['total'] );
         $response->header( 'X-WP-TotalPages', (string) ceil( $result['total'] / max( 1, $per_page ) ) );
+
+        foreach ( VuloCart()->order_service->count_orders_by_fulfillment_status() as $status => $count ) {
+            $response->header( 'X-WP-Count-' . $status, (string) $count );
+        }
 
         return $response;
     }
@@ -234,10 +284,28 @@ class Rest {
     /**
      * Creates an order from a cart. Public — see class docblock.
      *
+     * Gated on the Checkout tab's `guest_checkout_enabled` setting: when
+     * disabled, a request from a visitor with no active WordPress session
+     * is rejected rather than silently placing a guest order — the same
+     * enforcement `src/blocks/checkout/Checkout.tsx` also applies
+     * client-side (hiding the "Place Order" button), duplicated here since
+     * a client-side-only check is not real enforcement (a direct API call
+     * would bypass it).
+     *
      * @param \WP_REST_Request $request Full request object.
      * @return \WP_REST_Response|\WP_Error
      */
     public function create_item( $request ) {
+        $settings = wp_parse_args( get_option( Utill::SETTINGS_KEY, array() ), Utill::SETTINGS_DEFAULTS );
+
+        if ( empty( $settings['guest_checkout_enabled'] ) && ! is_user_logged_in() ) {
+            return new \WP_Error(
+                'vulocart_guest_checkout_disabled',
+                esc_html__( 'Guest checkout is disabled. Please log in to place an order.', 'vulocart' ),
+                array( 'status' => 401 )
+            );
+        }
+
         $cart_token = $request->get_header( 'X-Cart-Token' );
 
         if ( ! $cart_token ) {
@@ -270,18 +338,80 @@ class Rest {
     }
 
     /**
-     * Updates an order's status — admin only.
+     * Creates a draft order directly from a merchant-picked item list —
+     * admin only. Backs OrderAdd.tsx's "Add New" order page.
+     *
+     * @param \WP_REST_Request $request Full request object.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function create_manual_item( $request ) {
+        $items = $request->get_param( 'items' );
+
+        if ( ! is_array( $items ) || empty( $items ) ) {
+            return new \WP_Error( 'vulocart_missing_items', esc_html__( 'At least one item is required.', 'vulocart' ), array( 'status' => 400 ) );
+        }
+
+        $sanitized_items = array();
+
+        foreach ( $items as $item ) {
+            if ( ! is_array( $item ) || empty( $item['offering_id'] ) ) {
+                continue;
+            }
+
+            $sanitized_items[] = array(
+                'offering_id' => absint( $item['offering_id'] ),
+                'quantity'    => isset( $item['quantity'] ) ? absint( $item['quantity'] ) : 1,
+            );
+        }
+
+        $customer_email = $request->get_param( 'customer_email' ) ? sanitize_email( (string) $request->get_param( 'customer_email' ) ) : null;
+        $customer_name  = $request->get_param( 'customer_name' ) ? sanitize_text_field( (string) $request->get_param( 'customer_name' ) ) : null;
+
+        try {
+            $order = VuloCart()->order_service->create_manual_order( $sanitized_items, $customer_email, $customer_name );
+        } catch ( \InvalidArgumentException $exception ) {
+            return new \WP_Error( 'vulocart_invalid_manual_order', esc_html( $exception->getMessage() ), array( 'status' => 400 ) );
+        }
+
+        $response = rest_ensure_response( $this->prepare_order_for_response( $order ) );
+        $response->set_status( 201 );
+
+        return $response;
+    }
+
+    /**
+     * Updates an order's payment and/or fulfillment status — admin only.
+     * Either field alone is accepted (OrderEdit.tsx saves whichever
+     * changed), both together also works.
      *
      * @param \WP_REST_Request $request Full request object.
      * @return \WP_REST_Response|\WP_Error
      */
     public function update_item( $request ) {
-        $status = sanitize_key( (string) $request->get_param( 'status' ) );
+        $id = absint( $request->get_param( 'id' ) );
+
+        $order = null;
 
         try {
-            $order = VuloCart()->order_service->update_status( absint( $request->get_param( 'id' ) ), $status );
+            if ( null !== $request->get_param( 'fulfillment_status' ) ) {
+                $order = VuloCart()->order_service->update_fulfillment_status(
+                    $id,
+                    sanitize_key( (string) $request->get_param( 'fulfillment_status' ) )
+                );
+            }
+
+            if ( null !== $request->get_param( 'payment_status' ) ) {
+                $order = VuloCart()->order_service->update_payment_status(
+                    $id,
+                    sanitize_key( (string) $request->get_param( 'payment_status' ) )
+                );
+            }
         } catch ( \InvalidArgumentException $exception ) {
-            return new \WP_Error( 'vulocart_invalid_status', esc_html__( 'Invalid order status.', 'vulocart' ), array( 'status' => 400 ) );
+            return new \WP_Error( 'vulocart_invalid_status', esc_html( $exception->getMessage() ), array( 'status' => 400 ) );
+        }
+
+        if ( ! $order ) {
+            $order = VuloCart()->order_service->get_order( $id );
         }
 
         if ( ! $order ) {
@@ -292,14 +422,36 @@ class Rest {
     }
 
     /**
-     * Transitions many orders to the same status in one request — backs
-     * the admin grid's bulk-action dropdown. Admin only, same gate as
-     * every other order-management route.
+     * Issues a refund on an order — admin only.
      *
      * @param \WP_REST_Request $request Full request object.
      * @return \WP_REST_Response|\WP_Error
      */
-    public function bulk_update_status( $request ) {
+    public function refund_item( $request ) {
+        $amount = $request->get_param( 'amount' );
+
+        if ( null === $amount || ! is_numeric( $amount ) || (float) $amount <= 0 ) {
+            return new \WP_Error( 'vulocart_invalid_refund_amount', esc_html__( 'A positive refund amount is required.', 'vulocart' ), array( 'status' => 400 ) );
+        }
+
+        $order = VuloCart()->order_service->refund_order( absint( $request->get_param( 'id' ) ), (float) $amount );
+
+        if ( ! $order ) {
+            return new \WP_Error( 'vulocart_order_not_found', esc_html__( 'Order not found.', 'vulocart' ), array( 'status' => 404 ) );
+        }
+
+        return rest_ensure_response( $this->prepare_order_for_response( $order ) );
+    }
+
+    /**
+     * Transitions many orders to the same fulfillment status in one
+     * request — backs the admin grid's bulk-action dropdown. Admin only,
+     * same gate as every other order-management route.
+     *
+     * @param \WP_REST_Request $request Full request object.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function bulk_update_fulfillment_status( $request ) {
         $ids = $request->get_param( 'ids' );
 
         if ( ! is_array( $ids ) || empty( $ids ) ) {
@@ -310,9 +462,35 @@ class Rest {
         $status = sanitize_key( (string) $request->get_param( 'status' ) );
 
         try {
-            $updated = VuloCart()->order_service->bulk_update_status( $ids, $status );
+            $updated = VuloCart()->order_service->bulk_update_fulfillment_status( $ids, $status );
         } catch ( \InvalidArgumentException $exception ) {
-            return new \WP_Error( 'vulocart_invalid_status', esc_html__( 'Invalid order status.', 'vulocart' ), array( 'status' => 400 ) );
+            return new \WP_Error( 'vulocart_invalid_status', esc_html( $exception->getMessage() ), array( 'status' => 400 ) );
+        }
+
+        return rest_ensure_response( array( 'updated' => $updated ) );
+    }
+
+    /**
+     * Transitions many orders to the same payment status in one request —
+     * same reasoning as bulk_update_fulfillment_status().
+     *
+     * @param \WP_REST_Request $request Full request object.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function bulk_update_payment_status( $request ) {
+        $ids = $request->get_param( 'ids' );
+
+        if ( ! is_array( $ids ) || empty( $ids ) ) {
+            return new \WP_Error( 'vulocart_missing_order_ids', esc_html__( 'No order ids were provided.', 'vulocart' ), array( 'status' => 400 ) );
+        }
+
+        $ids    = array_map( 'absint', $ids );
+        $status = sanitize_key( (string) $request->get_param( 'status' ) );
+
+        try {
+            $updated = VuloCart()->order_service->bulk_update_payment_status( $ids, $status );
+        } catch ( \InvalidArgumentException $exception ) {
+            return new \WP_Error( 'vulocart_invalid_status', esc_html( $exception->getMessage() ), array( 'status' => 400 ) );
         }
 
         return rest_ensure_response( array( 'updated' => $updated ) );

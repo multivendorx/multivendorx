@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
  * per-feature").
  *
  * No cross-module dependency to defer here (unlike Order\Module, which
- * needs Cart's own service to already exist) — `asset_service` is
+ * needs Cart's own service to already exist) — `offering_service` is
  * constructed eagerly in `VuloCart::init_classes()` *before* any module
  * loads, so this module can wire everything synchronously in its own
  * constructor.
@@ -68,13 +68,14 @@ class Module {
 
         $this->container['service'] = new Application\CartService(
             VuloCart()->service_container->make( Domain\CartRepositoryInterface::class ),
-            VuloCart()->asset_service,
+            VuloCart()->offering_service,
             VuloCart()->event_dispatcher
         );
 
         VuloCart()->cart_service = $this->container['service'];
 
-        $this->container['rest'] = new Rest();
+        $this->container['rest']    = new Rest();
+        $this->container['cleanup'] = new Application\CartCleanupScheduler( $this->container['service'] );
     }
 
     /**

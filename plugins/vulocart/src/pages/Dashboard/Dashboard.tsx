@@ -11,19 +11,19 @@ import { getApiLink, getApiResponse } from '@zyra/core';
  * (stores/commissions/orders) VuloCart has no equivalent of yet. Same
  * `ContainerComponent`/`ColumnComponent` layout, `CardComponent` for
  * each stat, but showing genuinely available data instead of fabricated
- * widgets — total asset count (`GET /assets`'s `X-WP-Total` header,
- * already returned by Controllers\Assets::get_items()) and active module
+ * widgets — total offering count (`GET /offerings`'s `X-WP-Total` header,
+ * already returned by Controllers\Offerings::get_items()) and active module
  * count (the now-fixed `GET /modules`, a flat active-id array).
  */
 const Dashboard = () => {
-	const [ assetCount, setAssetCount ] = useState< number | null >( null );
+	const [ offeringCount, setOfferingCount ] = useState< number | null >( null );
 	const [ activeModuleCount, setActiveModuleCount ] = useState< number | null >( null );
 
 	useEffect( () => {
-		fetch( getApiLink( vulocartLocalizer, 'assets' ), {
+		fetch( getApiLink( vulocartLocalizer, 'offerings' ), {
 			headers: { 'X-WP-Nonce': vulocartLocalizer.nonce },
 		} ).then( ( response ) => {
-			setAssetCount( Number( response.headers.get( 'X-WP-Total' ) ?? 0 ) );
+			setOfferingCount( Number( response.headers.get( 'X-WP-Total' ) ?? 0 ) );
 		} );
 
 		getApiResponse< string[] >(
@@ -39,7 +39,7 @@ const Dashboard = () => {
 			<ColumnComponent>
 				<CardComponent title={ __( 'Total Offerings', 'vulocart' ) }>
 					<p className="vulocart-stat">
-						{ assetCount === null ? '—' : assetCount }
+						{ offeringCount === null ? '—' : offeringCount }
 					</p>
 				</CardComponent>
 			</ColumnComponent>

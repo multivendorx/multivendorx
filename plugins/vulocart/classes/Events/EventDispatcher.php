@@ -12,13 +12,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * VuloCart EventDispatcher.
  *
- * The vision: "Everything emits events" (AssetCreated, CartUpdated, ...).
+ * The vision: "Everything emits events" (OfferingCreated, CartUpdated, ...).
  * WordPress's own action hook system is used here purely as *transport* —
  * this class doesn't decide what happened or hold business logic itself,
- * it only broadcasts what Application\AssetService (or a future
+ * it only broadcasts what Application\OfferingService (or a future
  * Application service) already decided. A hook callback listening to
- * `vulocart_asset_created` is expected to *react* (send a webhook, update
- * a cache), never to *contain* the logic that decided the asset should be
+ * `vulocart_offering_created` is expected to *react* (send a webhook, update
+ * a cache), never to *contain* the logic that decided the offering should be
  * created — keeping "business logic must never exist inside WordPress
  * hooks" true even though hooks are the delivery mechanism.
  *
@@ -31,7 +31,7 @@ class EventDispatcher {
     /**
      * Broadcasts an event as a WordPress action.
      *
-     * @param string               $event   Short event name, e.g. 'asset_created' — prefixed to `vulocart_{$event}` before firing.
+     * @param string               $event   Short event name, e.g. 'offering_created' — prefixed to `vulocart_{$event}` before firing.
      * @param array<string, mixed> $payload Event data, passed through to listeners unchanged.
      * @return void
      */
