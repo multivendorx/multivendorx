@@ -360,7 +360,10 @@ class Rest {
             'payment_gateways',
             'bookable_resource',
             'wc_appointment',
-            'product_variation'
+            'product_variation',
+            'product_shipping_class',
+            'attributes',
+            'product_tag'
         );
 
         if ( is_user_logged_in() && $request_method === 'GET' && in_array( $post_type, $private_post_types, true ) ) {
