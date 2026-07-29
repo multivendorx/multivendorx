@@ -379,7 +379,7 @@ class Rest {
         $users = StoreUtil::get_store_users( $active_store );
 
         if ( is_array( $users ) && ! empty( $users['users'] ) && in_array( $user_id, $users['users'], true ) ) {
-        // deliberately NOT in $public_post_types above - that array is also
+            return true;
         }
 
         return apply_filters( 'multivendorx_store_rest_permission', $permission, $user_id, $context, $object_id, $post_type );
