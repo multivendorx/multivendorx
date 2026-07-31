@@ -315,7 +315,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                             }}
                                         >
                                             <TextInput
-                                                placeholder="Add another value"
+                                                placeholder={__('Add another value', 'multivendorx')}
                                                 value={tempOptions[vIndex] || ''}
                                                 onChange={(value) => handleTempOptionChange(vIndex, value)}
                                                 onKeyDown={(e) => {
