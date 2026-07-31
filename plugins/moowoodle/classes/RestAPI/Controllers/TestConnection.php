@@ -333,24 +333,18 @@ class TestConnection extends \WP_REST_Controller {
 	 * @return array
 	 */
 	private static function get_test_user_payload( $user_id = 0 ) {
-		$test_user_payload = array(
-			'email'       => 'moowoodletestuser@gmail.com',
-			'username'    => 'moowoodletestuser',
-			'createpassword' => 1,
-			'auth'        => apply_filters( 'moowoodle_new_user_auth_type', 'manual' ),
-			'firstname'   => 'moowoodle',
-			'lastname'    => 'testuser',
-			'city'        => 'moowoodlecity',
-			'country'     => 'IN',
-			'preferences' => array_merge(
-				array(
-					array(
-						'type'  => 'auth_forcepasswordchange',
-						'value' => apply_filters( 'moowoodle_new_user_forcepasswordchange_value', 1 ),
-					),
-				),
-				apply_filters( 'moowoodle_new_user_additional_preferences', array() )
-			),
+		$test_user_payload = apply_filters(
+			'moowoodle_moodle_user_payload',
+			array(
+				'email'          => 'moowoodletestuser@gmail.com',
+				'username'       => 'moowoodletestuser',
+				'createpassword' => 1,
+				'auth'           => 'manual',
+				'firstname'      => 'moowoodle',
+				'lastname'       => 'testuser',
+				'city'           => 'moowoodlecity',
+				'country'        => 'IN',
+			)
 		);
 
 		if ( $user_id > 0 ) {
