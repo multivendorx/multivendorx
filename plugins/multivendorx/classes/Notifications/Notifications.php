@@ -72,13 +72,13 @@ class Notifications {
 			array(
 				// Store Registration & Approval.
 				'store_pending_approval'              => array(
-					'name'                   => 'Store pending approval',
-					'desc'                   => 'Triggered when a new store application is submitted and placed under admin review.',
+					'name'                   => __( 'Store pending approval', 'multivendorx' ),
+					'desc'                   => __('Triggered when a new store application is submitted and placed under admin review.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
 					'system_enabled'         => true,
-					'email_subject'          => 'Your store application is under review',
+					'email_subject'          => __( 'Your store application is under review'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -106,18 +106,18 @@ class Notifications {
 						'[store_name]',
 						'[marketplace_name]',
 					),
-					'system_message'         => 'Your store is currently under admin review.',
+					'system_message'         => __('Your store is currently under admin review.'),
 					'tag'                    => 'Store',
 					'category'               => 'activity',
 				),
 				'store_rejected'                      => array(
-					'name'                   => 'Store rejected',
-					'desc'                   => 'Admin rejected the store application.',
+					'name'                   => __('Store rejected'),
+					'desc'                   => __('Admin rejected the store application.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Your store application was rejected',
+					'email_subject'          => __('Your store application was rejected'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -144,19 +144,19 @@ class Notifications {
 						'[store_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Store application rejected.',
-					'system_message'         => 'Your store application has been rejected.',
+					'sms_content'            => __('Store application rejected.'),
+					'system_message'         => __( 'Your store application has been rejected.'),
 					'tag'                    => 'Store',
 					'category'               => 'activity',
 				),
 				'store_permanently_rejected'          => array(
-					'name'                   => 'Store permanently rejected',
-					'desc'                   => 'Permanent rejection of a store application by the admin',
+					'name'                   => __('Store permanently rejected'),
+					'desc'                   => __( 'Permanent rejection of a store application by the admin'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
 					'system_enabled'         => true,
-					'email_subject'          => 'Your store application has been permanently rejected',
+					'email_subject'          => __( 'Your store application has been permanently rejected'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -183,19 +183,19 @@ class Notifications {
 						'[store_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Store application permanently rejected.',
-					'system_message'         => 'Your store application has been permanently rejected.',
+					'sms_content'            => __('Store application permanently rejected.'),
+					'system_message'         => __('Your store application has been permanently rejected.'),
 					'tag'                    => 'Store',
 					'category'               => 'activity',
 				),
 				'store_account_created_by_admin'      => array(
-					'name'                   => 'Store account created by admin',
-					'desc'                   => 'Admin manually created store account.',
+					'name'                   => __('Store account created by admin'),
+					'desc'                   => __('Admin manually created store account.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Your store account has been created – [store_name]',
+					'email_subject'          => __( 'Your store account has been created – [store_name]'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313;color:#703333'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -222,8 +222,8 @@ class Notifications {
 						'[store_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Your store account for [store_name] has been created. Please log in to get started.',
-					'system_message'         => 'Your store account for [store_name] has been created by the marketplace admin.',
+					'sms_content'            => __('Your store account for [store_name] has been created. Please log in to get started.'),
+					'system_message'         => __('Your store account for [store_name] has been created by the marketplace admin.'),
 					'tag'                    => 'Store',
 					'category'               => 'notification',
 				),
@@ -235,7 +235,7 @@ class Notifications {
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Your store "[store_name]" is now active',
+					'email_subject'          => __('Your store "[store_name]" is now active'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313;color:#703333'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -262,19 +262,19 @@ class Notifications {
 						'[store_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Store [store_name] is now active.',
-					'system_message'         => 'Your store has been activated.',
+					'sms_content'            => __('Store [store_name] is now active.'),
+					'system_message'         => __('Your store has been activated.'),
 					'tag'                    => 'Store',
 					'category'               => 'activity',
 				),
 				'store_under_review'                  => array(
-					'name'                   => 'Store under review',
-					'desc'                   => 'Store temporarily placed under admin review.',
+					'name'                   => __('Store under review'),
+					'desc'                   => __('Store temporarily placed under admin review.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
 					'system_enabled'         => true,
-					'email_subject'          => 'Your store "[store_name]" is under review',
+					'email_subject'          => __('Your store "[store_name]" is under review'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#fffce8;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -301,18 +301,18 @@ class Notifications {
 						'[store_name]',
 						'[marketplace_name]',
 					),
-					'system_message'         => 'Your store has been placed under review.',
+					'system_message'         => __('Your store has been placed under review.'),
 					'tag'                    => 'Store',
 					'category'               => 'activity',
 				),
 				'store_suspended'                     => array(
-					'name'                   => 'Store suspended',
-					'desc'                   => 'Store temporarily suspended by the admin.',
+					'name'                   => __('Store suspended'),
+					'desc'                   => __('Store temporarily suspended by the admin.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
 					'system_enabled'         => true,
-					'email_subject'          => 'Your store "[store_name]" has been suspended',
+					'email_subject'          => __('Your store "[store_name]" has been suspended'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e6f4ff;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -339,19 +339,19 @@ class Notifications {
 						'[store_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Store [store_name] suspended.',
-					'system_message'         => 'Your store has been suspended.',
+					'sms_content'            => __('Store [store_name] suspended.'),
+					'system_message'         => __('Your store has been suspended.'),
 					'tag'                    => 'Store',
 					'category'               => 'activity',
 				),
 				'store_permanently_deactivated'       => array(
-					'name'                   => 'Store permanently deactivated',
-					'desc'                   => 'Admin permanently deactivated the store.',
+					'name'                   => __('Store permanently deactivated'),
+					'desc'                   => __('Admin permanently deactivated the store.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
 					'system_enabled'         => true,
-					'email_subject'          => 'Your store "[store_name]" has been permanently deactivated',
+					'email_subject'          => __('Your store "[store_name]" has been permanently deactivated'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -378,19 +378,19 @@ class Notifications {
 						'[store_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Store [store_name] permanently deactivated.',
-					'system_message'         => 'Your store has been permanently deactivated.',
+					'sms_content'            => __('Store [store_name] permanently deactivated.'),
+					'system_message'         => __('Your store has been permanently deactivated.'),
 					'tag'                    => 'Store',
 					'category'               => 'activity',
 				),
 				'store_account_deactivation_request'  => array(
-					'name'                   => 'Store account deactivation request',
-					'desc'                   => 'Store owner requests deactivation of their store account.',
+					'name'                   => __('Store account deactivation request'),
+					'desc'                   => __('Store owner requests deactivation of their store account.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => false,
 					'admin_enabled'          => true,
 					'system_enabled'         => true,
-					'email_subject'          => 'Store deactivation request – [store_name]',
+					'email_subject'          => __('Store deactivation request – [store_name]'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -417,19 +417,19 @@ class Notifications {
 						'[store_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Store [store_name] requested account deactivation.',
-					'system_message'         => 'Store [store_name] has requested to deactivate their store account.',
+					'sms_content'            => __('Store [store_name] requested account deactivation.'),
+					'system_message'         => __('Store [store_name] has requested to deactivate their store account.'),
 					'tag'                    => 'Store',
 					'category'               => 'activity',
 				),
 				'store_deactivation_request_rejected' => array(
-					'name'                   => 'Store deactivation rejected',
-					'desc'                   => 'Store deactivation request rejected by the admin.',
+					'name'                   => __('Store deactivation rejected'),
+					'desc'                   => __('Store deactivation request rejected by the admin.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Your store "[store_name]" deactivation request has been rejected',
+					'email_subject'          => __('Your store "[store_name]" deactivation request has been rejected'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -455,20 +455,20 @@ class Notifications {
 					'available_placeholders' => array(
 						'[store_name]',
 					),
-					'sms_content'            => 'Store [store_name] deactivation request has been rejected',
-					'system_message'         => 'Your store deactivation request has been rejected.',
+					'sms_content'            => __('Store [store_name] deactivation request has been rejected'),
+					'system_message'         => __('Your store deactivation request has been rejected.'),
 					'tag'                    => 'Store',
 					'category'               => 'activity',
 				),
 				// ORDER NOTIFICATIONS.
 				'new_order_store'                     => array(
-					'name'                   => 'New order received',
-					'desc'                   => 'New order received by the store.',
+					'name'                   => __('New order received'),
+					'desc'                   => __('New order received by the store.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
 					'system_enabled'         => true,
-					'email_subject'          => 'New order received – Order #[order_id]',
+					'email_subject'          => __('New order received – Order #[order_id]'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -495,17 +495,17 @@ class Notifications {
 						'[store_name]',
 						'[order_id]',
 					),
-					'sms_content'            => 'New order #[order_id] received.',
-					'system_message'         => 'New order received.',
+					'sms_content'            => __('New order #[order_id] received.'),
+					'system_message'         =>  __('New order received.'),
 					'tag'                    => 'Order',
 					'category'               => 'activity',
 				),
 				'order_processing'                    => array(
-					'name'                   => 'Order processing',
-					'desc'                   => 'An order status is changed to processing.',
+					'name'                   =>  __('Order processing'),
+					'desc'                   =>  __('An order status is changed to processing.'),
 					'store_enabled'          => true,
 					'customer_enabled'       => true,
-					'email_subject'          => 'Order processing started',
+					'email_subject'          =>  __('Order processing started'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#fffce8;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -531,17 +531,17 @@ class Notifications {
 						'[store_name]',
 						'[order_id]',
 					),
-					'sms_content'            => 'Order [order_id] is now processing.',
-					'system_message'         => 'Order [order_id] status: Processing.',
+					'sms_content'            =>  __('Order [order_id] is now processing.'),
+					'system_message'         =>  __('Order [order_id] status: Processing.'),
 					'tag'                    => 'Order',
 					'category'               => 'activity',
 				),
 				'order_completed'                     => array(
-					'name'                   => 'Order completed',
-					'desc'                   => 'An order is completed successfully.',
+					'name'                   =>  __('Order completed'),
+					'desc'                   =>  __('An order is completed successfully.'),
 					'store_enabled'          => true,
 					'customer_enabled'       => true,
-					'email_subject'          => 'Order completed',
+					'email_subject'          =>  __('Order completed'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -569,18 +569,18 @@ class Notifications {
 						'[order_id]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Order [order_id] completed successfully.',
-					'system_message'         => 'Order [order_id] marked as completed.',
+					'sms_content'            =>  __('Order [order_id] completed successfully.'),
+					'system_message'         =>  __('Order [order_id] marked as completed.'),
 					'tag'                    => 'Order',
 					'category'               => 'activity',
 				),
 				'order_cancelled'                     => array(
-					'name'                   => 'Order cancelled',
-					'desc'                   => 'An order is cancelled by the customer or admin.',
+					'name'                   =>  __('Order cancelled'),
+					'desc'                   =>  __('An order is cancelled by the customer or admin.'),
 					'store_enabled'          => true,
 					'customer_enabled'       => true,
 					'admin_enabled'          => true,
-					'email_subject'          => 'Order cancelled',
+					'email_subject'          =>  __('Order cancelled'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -608,17 +608,17 @@ class Notifications {
 						'[order_id]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Order [order_id] cancelled successfully.',
-					'system_message'         => 'Order [order_id] cancelled.',
+					'sms_content'            =>  __('Order [order_id] cancelled successfully.'),
+					'system_message'         =>  __('Order [order_id] cancelled.'),
 					'tag'                    => 'Order',
 					'category'               => 'activity',
 				),
 				'order_refunded'                      => array(
-					'name'                   => 'Order refunded',
-					'desc'                   => 'A refund is issued for an order.',
+					'name'                   => __( 'Order refunded'),
+					'desc'                   =>  __('A refund is issued for an order.'),
 					'store_enabled'          => true,
 					'customer_enabled'       => true,
-					'email_subject'          => 'Order refunded',
+					'email_subject'          =>  __('Order refunded'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -646,20 +646,20 @@ class Notifications {
 						'[order_id]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Refund for [order_id] processed.',
-					'system_message'         => 'Order [order_id] refunded.',
+					'sms_content'            =>  __('Refund for [order_id] processed.'),
+					'system_message'         =>  __('Order [order_id] refunded.'),
 					'tag'                    => 'Order',
 					'category'               => 'activity',
 				),
 				// SHIPMENT TRACKING.
 				'shipment_tracking_added'             => array(
-					'name'                   => 'Shipment tracking added',
-					'desc'                   => 'Tracking details added for the order shipment.',
+					'name'                   =>  __('Shipment tracking added'),
+					'desc'                   =>  __('Tracking details added for the order shipment.'),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Tracking added – Order #[order_id]',
+					'email_subject'          =>  __('Tracking added – Order #[order_id]'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -689,20 +689,20 @@ class Notifications {
 						'[tracking_id]',
 						'[shipping_url]',
 					),
-					'sms_content'            => 'Tracking added for order #[order_id].',
-					'system_message'         => 'Tracking information added to your order.',
+					'sms_content'            =>  __('Tracking added for order #[order_id].'),
+					'system_message'         =>  __('Tracking information added to your order.'),
 					'tag'                    => 'Shipping',
 					'category'               => 'notification',
 				),
 				// Pro.
 				'order_delivered'                     => array(
-					'name'                   => 'Order delivered',
-					'desc'                   => 'Order marked as delivered.',
+					'name'                   =>  __('Order delivered'),
+					'desc'                   =>  __('Order marked as delivered.'),
 					'customer_enabled'       => true,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Order #[order_id] delivered',
+					'email_subject'          =>  __('Order #[order_id] delivered'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -730,20 +730,20 @@ class Notifications {
 						'[order_id]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Order #[order_id] delivered successfully.',
-					'system_message'         => 'Your order #[order_id] has been delivered.',
+					'sms_content'            =>  __('Order #[order_id] delivered successfully.'),
+					'system_message'         =>  __('Your order #[order_id] has been delivered.'),
 					'tag'                    => 'Shipping',
 					'category'               => 'notification',
 				),
 				// REFUND NOTIFICATIONS.
 				'refund_requested'                    => array(
-					'name'                   => 'Refund requested',
-					'desc'                   => 'Refund request submitted for the order.',
+					'name'                   =>  __('Refund requested'),
+					'desc'                   =>  __('Refund request submitted for the order.'),
 					'customer_enabled'       => true,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
 					'system_enabled'         => true,
-					'email_subject'          => 'Refund requested – Order #[order_id]',
+					'email_subject'          =>  __('Refund requested – Order #[order_id]'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -771,19 +771,19 @@ class Notifications {
 						'[order_id]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Refund requested for order #[order_id].',
-					'system_message'         => 'Refund request submitted.',
+					'sms_content'            =>  __('Refund requested for order #[order_id].'),
+					'system_message'         =>  __('Refund request submitted.'),
 					'tag'                    => 'Refund',
 					'category'               => 'activity',
 				),
 				'refund_accepted'                     => array(
-					'name'                   => 'Refund accepted',
-					'desc'                   => 'Refund request approved for the order.',
+					'name'                   =>  __('Refund accepted'),
+					'desc'                   => __( 'Refund request approved for the order.'),
 					'customer_enabled'       => true,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
 					'system_enabled'         => true,
-					'email_subject'          => 'Refund approved – Order #[order_id]',
+					'email_subject'          =>  __('Refund approved – Order #[order_id]'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -801,19 +801,19 @@ class Notifications {
 						'[order_id]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Refund approved for #[order_id].',
+					'sms_content'            =>  __('Refund approved for #[order_id].'),
 					'system_message'         => 'Refund approved.',
 					'tag'                    => 'Refund',
 					'category'               => 'activity',
 				),
 				'refund_rejected'                     => array(
-					'name'                   => 'Refund rejected',
-					'desc'                   => 'Refund request rejected for the order.',
+					'name'                   =>  __('Refund rejected'),
+					'desc'                   =>  __('Refund request rejected for the order.'),
 					'customer_enabled'       => true,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
 					'system_enabled'         => true,
-					'email_subject'          => 'Refund rejected – Order #[order_id]',
+					'email_subject'          =>  __('Refund rejected – Order #[order_id]'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -831,20 +831,20 @@ class Notifications {
 						'[order_id]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Refund rejected for #[order_id].',
-					'system_message'         => 'Refund rejected.',
+					'sms_content'            =>  __('Refund rejected for #[order_id].'),
+					'system_message'         =>  __('Refund rejected.'),
 					'tag'                    => 'Refund',
 					'category'               => 'activity',
 				),
 				// REVIEWS.
 				'new_store_review'                    => array(
-					'name'                   => 'New store review',
-					'desc'                   => 'New customer review submitted for the store.',
+					'name'                   =>  __('New store review'),
+					'desc'                   =>  __('New customer review submitted for the store.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'New review received for your store',
+					'email_subject'          =>  __('New review received for your store'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -861,19 +861,19 @@ class Notifications {
 						'[store_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'New review received for your store.',
-					'system_message'         => 'Your store received a new customer review.',
+					'sms_content'            => __( 'New review received for your store.'),
+					'system_message'         =>  __('Your store received a new customer review.'),
 					'tag'                    => 'Review',
 					'category'               => 'activity',
 				),
 				'review_reply'                        => array(
-					'name'                   => 'Admin replied to review',
-					'desc'                   => 'Marketplace admin replies to a review.',
+					'name'                   => __( 'Admin replied to review'),
+					'desc'                   => __( 'Marketplace admin replies to a review.'),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Marketplace response to your review – [product_name]',
+					'email_subject'          => __( 'Marketplace response to your review – [product_name]'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#fff7ec;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -891,20 +891,20 @@ class Notifications {
 						'[product_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Marketplace replied to your review.',
-					'system_message'         => 'Admin has replied to your review.',
+					'sms_content'            =>  __('Marketplace replied to your review.'),
+					'system_message'         =>  __('Admin has replied to your review.'),
 					'tag'                    => 'Review',
 					'category'               => 'activity',
 				),
 				// PRODUCT NOTIFICATIONS.
 				'product_submitted'                   => array(
-					'name'                   => 'Product submitted',
-					'desc'                   => 'Product submitted for admin review.',
+					'name'                   => __( 'Product submitted'),
+					'desc'                   =>  __('Product submitted for admin review.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
 					'system_enabled'         => true,
-					'email_subject'          => 'Product "[product_name]" submitted for approval',
+					'email_subject'          =>  __('Product "[product_name]" submitted for approval'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -922,19 +922,19 @@ class Notifications {
 						'[product_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Product [product_name] submitted for approval.',
-					'system_message'         => 'Your product has been submitted for admin review.',
+					'sms_content'            =>  __('Product [product_name] submitted for approval.'),
+					'system_message'         =>  __('Your product has been submitted for admin review.'),
 					'tag'                    => 'Product',
 					'category'               => 'activity',
 				),
 				'product_approved'                    => array(
-					'name'                   => 'Product approved',
-					'desc'                   => 'Product approved and published.',
+					'name'                   =>  __('Product approved'),
+					'desc'                   =>  __('Product approved and published.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Your product "[product_name]" has been approved',
+					'email_subject'          =>  __('Your product "[product_name]" has been approved'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -952,19 +952,19 @@ class Notifications {
 						'[product_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Product [product_name] approved.',
-					'system_message'         => 'Your product is now live.',
+					'sms_content'            =>  __('Product [product_name] approved.'),
+					'system_message'         =>  __('Your product is now live.'),
 					'tag'                    => 'Product',
 					'category'               => 'activity',
 				),
 				'product_rejected'                    => array(
-					'name'                   => 'Product rejected',
-					'desc'                   => 'Product rejected after review.',
+					'name'                   =>  __('Product rejected'),
+					'desc'                   =>  __('Product rejected after review.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Product "[product_name]" was rejected',
+					'email_subject'          =>  __('Product "[product_name]" was rejected'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -981,20 +981,20 @@ class Notifications {
 						'[product_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Product [product_name] rejected.',
-					'system_message'         => 'Your product submission was rejected.',
+					'sms_content'            =>  __('Product [product_name] rejected.'),
+					'system_message'         =>  __('Your product submission was rejected.'),
 					'tag'                    => 'Product',
 					'category'               => 'activity',
 				),
 				// PRO.
 				'product_low_stock'                   => array(
-					'name'                   => 'Product low stock',
-					'desc'                   => 'Product stock running low.',
+					'name'                   =>  __('Product low stock'),
+					'desc'                   =>  __('Product stock running low.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Low stock alert – [product_name]',
+					'email_subject'          =>  __('Low stock alert – [product_name]'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1012,20 +1012,20 @@ class Notifications {
 						'[product_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Low stock alert for [product_name].',
-					'system_message'         => 'Your product stock is running low.',
+					'sms_content'            =>  __('Low stock alert for [product_name].'),
+					'system_message'         =>  __('Your product stock is running low.'),
 					'tag'                    => 'Product',
 					'category'               => 'notification',
 				),
 				// PRO.
 				'product_out_of_stock'                => array(
-					'name'                   => 'Product out of stock',
-					'desc'                   => 'Product is currently unavailable due to no stock.',
+					'name'                   =>  __('Product out of stock'),
+					'desc'                   =>  __('Product is currently unavailable due to no stock.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Product out of stock – [product_name]',
+					'email_subject'          =>  __('Product out of stock – [product_name]'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1043,20 +1043,20 @@ class Notifications {
 						'[product_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Product [product_name] is out of stock.',
-					'system_message'         => 'Your product is currently out of stock.',
+					'sms_content'            =>  __('Product [product_name] is out of stock.'),
+					'system_message'         =>  __('Your product is currently out of stock.'),
 					'tag'                    => 'Product',
 					'category'               => 'notification',
 				),
 				// PRODUCT QUESTIONS (Q&A).
 				'product_question_submitted'          => array(
-					'name'                   => 'Product question submitted',
-					'desc'                   => 'Customer submits a question on a product.',
+					'name'                   =>  __('Product question submitted'),
+					'desc'                   =>  __('Customer submits a question on a product.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
 					'system_enabled'         => true,
-					'email_subject'          => 'New product question – [product_name]',
+					'email_subject'          =>  __('New product question – [product_name]'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1074,19 +1074,19 @@ class Notifications {
 						'[product_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'New product question.',
-					'system_message'         => 'Customer asked a question.',
+					'sms_content'            =>  __('New product question.'),
+					'system_message'         =>  __( 'Customer asked a question.'),
 					'tag'                    => 'Product',
 					'category'               => 'notification',
 				),
 				'product_question_reply'              => array(
-					'name'                   => 'Store replied to product question',
-					'desc'                   => 'Store owner replies to a product question.',
+					'name'                   =>  __('Store replied to product question'),
+					'desc'                   =>  __('Store owner replies to a product question.'),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Answer to your question – [product_name]',
+					'email_subject'          =>  __('Answer to your question – [product_name]'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e6f4ff;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1104,18 +1104,18 @@ class Notifications {
 						'[product_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Reply to your product question.',
-					'system_message'         => 'Question reply received.',
+					'sms_content'            =>  __('Reply to your product question.'),
+					'system_message'         =>  __('Question reply received.'),
 					'tag'                    => 'Product',
 					'category'               => 'notification',
 				),
 				// PAYOUT & WITHDRAWAL.
 				'payout_received'                     => array(
-					'name'                   => 'Payout received',
-					'desc'                   => 'A payment is received for an order.',
+					'name'                   =>  __('Payout received'),
+					'desc'                   =>  __('A payment is received for an order.'),
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
-					'email_subject'          => 'Payout received',
+					'email_subject'          =>  __('Payout received'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1133,16 +1133,16 @@ class Notifications {
 						'[marketplace_name]',
 						'[order_id]',
 					),
-					'sms_content'            => 'Payout received for [order_id].',
-					'system_message'         => 'Payout for [order_id] received.',
+					'sms_content'            =>  __('Payout received for [order_id].'),
+					'system_message'         =>  __('Payout for [order_id] received.'),
 					'tag'                    => 'Payment',
 					'category'               => 'activity',
 				),
 				'payout_failed'                       => array(
-					'name'                   => 'Payout failed',
-					'desc'                   => 'A payout processing attempt has failed.',
+					'name'                   =>  __('Payout failed'),
+					'desc'                   =>  __('A payout processing attempt has failed.'),
 					'admin_enabled'          => true,
-					'email_subject'          => 'Payout failed',
+					'email_subject'          =>  __('Payout failed'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1169,17 +1169,17 @@ class Notifications {
 						'[store_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Payout failed for [store_name].',
-					'system_message'         => 'Payout error for [store_name].',
+					'sms_content'            =>  __('Payout failed for [store_name].'),
+					'system_message'         =>  __('Payout error for [store_name].'),
 					'tag'                    => 'Payment',
 					'category'               => 'activity',
 				),
 				'withdrawal_requested'                => array(
-					'name'                   => 'Withdrawal requested',
-					'desc'                   => 'A withdrawal request is submitted by a store.',
+					'name'                   =>  __('Withdrawal requested'),
+					'desc'                   =>  __('A withdrawal request is submitted by a store.'),
 					'admin_enabled'          => true,
 					'store_enabled'          => true,
-					'email_subject'          => 'Withdrawal request submitted',
+					'email_subject'          =>  __('Withdrawal request submitted'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1207,16 +1207,16 @@ class Notifications {
 						'[marketplace_name]',
 						'[amount]',
 					),
-					'sms_content'            => 'Withdrawal request of [amount] submitted.',
-					'system_message'         => 'Withdrawal requested by [store_name].',
+					'sms_content'            =>  __('Withdrawal request of [amount] submitted.'),
+					'system_message'         =>  __('Withdrawal requested by [store_name].'),
 					'tag'                    => 'Payment',
 					'category'               => 'notification',
 				),
 				'withdrawal_released'                 => array(
-					'name'                   => 'Withdrawal released',
-					'desc'                   => 'A withdrawal is released successfully.',
+					'name'                   =>  __('Withdrawal released'),
+					'desc'                   =>  __('A withdrawal is released successfully.'),
 					'store_enabled'          => true,
-					'email_subject'          => 'Withdrawal released',
+					'email_subject'          =>  __('Withdrawal released'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1233,16 +1233,16 @@ class Notifications {
 						'[store_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Withdrawal released successfully.',
-					'system_message'         => 'Withdrawal released successfully.',
+					'sms_content'            =>  __('Withdrawal released successfully.'),
+					'system_message'         =>  __('Withdrawal released successfully.'),
 					'tag'                    => 'Payment',
 					'category'               => 'notification',
 				),
 				'withdrawl_rejected'                  => array(
-					'name'                   => 'Withdrawl rejected',
-					'desc'                   => 'A withdrawl request is rejected by the admin.',
+					'name'                   =>  __('Withdrawl rejected'),
+					'desc'                   =>  __('A withdrawl request is rejected by the admin.'),
 					'store_enabled'          => true,
-					'email_subject'          => 'Withdrawl rejected',
+					'email_subject'          =>  __('Withdrawl rejected'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1259,19 +1259,19 @@ class Notifications {
 						'[marketplace_name]',
 						'[amount]',
 					),
-					'sms_content'            => 'Withdrawl of [amount] rejected.',
-					'system_message'         => 'Withdrawl Payout rejected: [amount].',
+					'sms_content'            =>  __('Withdrawl of [amount] rejected.'),
+					'system_message'         =>  __('Withdrawl Payout rejected: [amount].'),
 					'tag'                    => 'Payment',
 					'category'               => 'activity',
 				),
 				// ========== REPORT ABUSE ==========
 				'report_abuse_submitted'              => array(
-					'name'                   => 'Report abuse submitted',
-					'desc'                   => 'A product is reported for abuse by a customer.',
+					'name'                   =>  __('Report abuse submitted'),
+					'desc'                   =>  __('A product is reported for abuse by a customer.'),
 					'admin_enabled'          => true,
 					'store_enabled'          => true,
 					'customer_enabled'       => true,
-					'email_subject'          => 'Product reported',
+					'email_subject'          =>  __('Product reported'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1299,18 +1299,18 @@ class Notifications {
 						'[product_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Product “[product_name]” reported.',
-					'system_message'         => 'Abuse report for “[product_name]” received.',
+					'sms_content'            =>  __('Product “[product_name]” reported.'),
+					'system_message'         =>  __('Abuse report for “[product_name]” received.'),
 					'tag'                    => 'Report',
 					'category'               => 'notification',
 				),
 				// ========== ANNOUNCEMENTS ==========
 				'system_announcement'                 => array(
-					'name'                   => 'System announcement',
-					'desc'                   => 'A system-wide announcement is published by the admin.',
+					'name'                   =>  __('System announcement'),
+					'desc'                   =>  __('A system-wide announcement is published by the admin.'),
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
-					'email_subject'          => 'New announcement',
+					'email_subject'          =>  __('New announcement'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#fff7ec;margin-bottom:3;border-radius:0.313;color:#d88c5c'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1337,20 +1337,20 @@ class Notifications {
 						'[announcement_message]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => '[announcement_message]',
-					'system_message'         => 'New announcement: [announcement_message]',
+					'sms_content'            =>  __('[announcement_message]'),
+					'system_message'         =>  __('New announcement: [announcement_message]'),
 					'tag'                    => 'System',
 					'category'               => 'notification',
 				),
 				// STORE FOLLOWER NOTIFICATIONS.
 				'store_followed'                      => array(
-					'name'                   => 'Store followed',
-					'desc'                   => 'Customer started following the store.',
+					'name'                   =>  __('Store followed'),
+					'desc'                   =>  __('Customer started following the store.'),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'You have a new store follower',
+					'email_subject'          =>  __('You have a new store follower'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1377,19 +1377,19 @@ class Notifications {
 						'[store_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'You have a new store follower.',
-					'system_message'         => 'A customer started following your store.',
+					'sms_content'            =>  __('You have a new store follower.'),
+					'system_message'         =>  __('A customer started following your store.'),
 					'tag'                    => 'Follower',
 					'category'               => 'activity',
 				),
 				'store_new_product_to_followers'      => array(
-					'name'                   => 'New product from followed store',
-					'desc'                   => 'New product published by a followed store.',
+					'name'                   =>  __('New product from followed store'),
+					'desc'                   =>  __('New product published by a followed store.'),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'New product from "[store_name]"',
+					'email_subject'          =>  __('New product from "[store_name]"'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1418,19 +1418,19 @@ class Notifications {
 						'[customer_name]',
 						'[product_name]',
 					),
-					'sms_content'            => 'New product from store you follow.',
-					'system_message'         => 'A followed store added a new product.',
+					'sms_content'            =>  __('New product from store you follow.'),
+					'system_message'         =>  __('A followed store added a new product.'),
 					'tag'                    => 'Follower',
 					'category'               => 'notification',
 				),
 				'store_new_coupon_to_followers'       => array(
-					'name'                   => 'New coupon from followed store',
-					'desc'                   => 'New coupon created by a followed store.',
+					'name'                   =>  __('New coupon from followed store'),
+					'desc'                   =>  __('New coupon created by a followed store.'),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'New coupon from "[store_name]"',
+					'email_subject'          =>  __('New coupon from "[store_name]"'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1459,20 +1459,20 @@ class Notifications {
 						'[customer_name]',
 						'[coupon_code]',
 					),
-					'sms_content'            => 'New coupon available from followed store.',
-					'system_message'         => 'A store you follow created a new coupon.',
+					'sms_content'            =>  __('New coupon available from followed store.'),
+					'system_message'         =>  __('A store you follow created a new coupon.'),
 					'tag'                    => 'Follower',
 					'category'               => 'notification',
 				),
 				// Pro.
 				'store_vacation_alert_to_followers'   => array(
-					'name'                   => 'Store vacation alert',
-					'desc'                   => 'Followed store marked as on vacation.',
+					'name'                   =>  __('Store vacation alert'),
+					'desc'                   =>  __('Followed store marked as on vacation.'),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Store "[store_name]" is on vacation',
+					'email_subject'          =>  __('Store "[store_name]" is on vacation'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#fffce8;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1499,20 +1499,20 @@ class Notifications {
 						'[store_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Store you follow is on vacation.',
-					'system_message'         => 'A store you follow is currently on vacation.',
+					'sms_content'            =>  __('Store you follow is on vacation.'),
+					'system_message'         =>  __('A store you follow is currently on vacation.'),
 					'tag'                    => 'Follower',
 					'category'               => 'notification',
 				),
 				// WHOLESALE BUYER.(PRO).
 				'wholesale_buyer_approved'            => array(
-					'name'                   => 'Wholesale buyer approved',
-					'desc'                   => 'User request for wholesale access has been approved.',
+					'name'                   =>  __('Wholesale buyer approved'),
+					'desc'                   =>  __('User request for wholesale access has been approved.'),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Your wholesale access has been approved',
+					'email_subject'          =>  __('Your wholesale access has been approved'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
 						<tr>
 							<td valign='top' style='padding:10px;'>
@@ -1539,19 +1539,19 @@ class Notifications {
 						'[customer_name]',
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Your wholesale access request has been approved. You can now view wholesale prices.',
-					'system_message'         => 'Your wholesale buyer request has been approved. Wholesale pricing is now available to you.',
+					'sms_content'            =>  __('Your wholesale access request has been approved. You can now view wholesale prices.'),
+					'system_message'         =>  __('Your wholesale buyer request has been approved. Wholesale pricing is now available to you.'),
 					'tag'                    => 'Wholesale',
 					'category'               => 'notification',
 				),
 				'wholesale_buyer_rejected'            => array(
-					'name'                   => 'Wholesale buyer rejected',
-					'desc'                   => 'User request for wholesale access has been rejected.',
+					'name'                   =>  __('Wholesale buyer rejected'),
+					'desc'                   => __('User request for wholesale access has been rejected.'),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
 					'system_enabled'         => true,
-					'email_subject'          => 'Wholesale access request not approved',
+					'email_subject'          => __('Wholesale access request not approved'),
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
 						<td>
 							<td valign='top' style='padding:10px;'>
@@ -1577,8 +1577,8 @@ class Notifications {
 					'available_placeholders' => array(
 						'[marketplace_name]',
 					),
-					'sms_content'            => 'Your wholesale buyer request was not approved. Please contact support for details.',
-					'system_message'         => 'Your wholesale buyer request has been rejected.',
+					'sms_content'            => __('Your wholesale buyer request was not approved. Please contact support for details.'),
+					'system_message'         => __('Your wholesale buyer request has been rejected.'),
 					'tag'                    => 'Wholesale',
 					'category'               => 'notification',
 				),
