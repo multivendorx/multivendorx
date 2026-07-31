@@ -119,9 +119,9 @@ final class CatalogX {
         }
 
         $strings = array(
-            'add_to_quote'    => 'Add to Quote',
-            'view_quote'      => 'View Quote',
-            'send_an_enquiry' => 'Send an enquiry',
+            'add_to_quote'    => __( 'Add to Quote', 'catalogx' ),
+            'view_quote'      => __( 'View Quote', 'catalogx' ),
+            'send_an_enquiry' => __( 'Send an enquiry', 'catalogx' ),
         );
 
         foreach ( $strings as $key => $value ) {
