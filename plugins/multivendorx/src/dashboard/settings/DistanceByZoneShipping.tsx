@@ -483,7 +483,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 								<TextInput
 									type="number"
 									name="localPickupCost"
-									placeholder="Enter cost"
+									placeholder={__("Enter cost",'multivendorx')}
 									value={formData.localPickupCost}
 									onChange={(val: string) =>
 										handleChange('localPickupCost', val)
@@ -572,7 +572,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 									<TextInput
 										type="number"
 										name="flatRateCost"
-										placeholder="Enter cost"
+										placeholder={__("Enter cost",'multivendorx')}
 										value={formData.flatRateCost}
 										onChange={(value) =>
 											handleChange('flatRateCost', value)
@@ -609,7 +609,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 									<TextInput
 										type="text"
 										name="flatRateClassCost"
-										placeholder="Enter class cost"
+										placeholder={__("Enter class cost",'multivendorx')}
 										value={formData.flatRateClassCost}
 										onChange={(value) =>
 											handleChange(
