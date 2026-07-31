@@ -2,10 +2,10 @@
 Contributors: wcmp, purnendu
 Tags: marketplace, WooCommerce marketplace, multi vendor, multivendor, multivendor marketplace
 Donate link: http://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=multivendorxwporg
-Requires at least: 6.3
+Requires at least: 6.4.0
 Tested up to: 7.0.2
 Requires PHP: 8.0
-Stable tag: 5.0.11
+Stable tag: 5.0.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -245,6 +245,12 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 == Changelog ==
+
+= 5.0.12 - 2026-07-31 =
+* Fixed     - Issue where shipping classes were not displayed in the Store Dashboard.
+* Fixed     - Issue where the exported CSV contained data for only 10 rows instead of all selected records. #2269
+* Fixed     - Multiple field-saving issues in the Store Dashboard. #2237
+* Updated   - Language file.
 
 = 5.0.11 - 2026-07-23 =
 * Added     - Compatibility with WordPress 7.0.2.

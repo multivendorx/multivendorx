@@ -16,7 +16,25 @@ const ShippingCard = ({
 }) => {
 	const { modules } = useModules();
 	const [shippingClasses, setShippingClasses] = useState([]);
-	const [productType, setProductType] = useState('physical');
+	const [productType, setProductType] = useState(['physical']);
+
+	useEffect(() => {
+		const selectedTypes = [];
+
+		if (product.downloadable) {
+			selectedTypes.push('downloadable');
+		}
+
+		if (product.virtual) {
+			selectedTypes.push('digital_product_service');
+		}
+
+		if (selectedTypes.length === 0) {
+			selectedTypes.push('physical');
+		}
+
+		setProductType(selectedTypes);
+	}, [product.downloadable, product.virtual]);
 
 	useEffect(() => {
 		axios
@@ -52,6 +70,7 @@ const ShippingCard = ({
 					<FormGroupComponent className="full-width">
 						<ToggleInput
 							width="49%"
+							multiSelect={true}
 							options={[
 								{
 									key: 'physical',
@@ -114,17 +133,29 @@ const ShippingCard = ({
 							custom={true}
 							value={productType}
 							onChange={(val) => {
-								setProductType(val);
-								if (val == 'physical') {
-									handleChange('virtual', false);
+								let selectedTypes = val.filter(
+									(type) => type !== 'physical' && type !== 'others'
+								);
+
+								if (selectedTypes.length === 0) {
+									selectedTypes = ['physical'];
 								}
-								if (val == 'downloadable') {
-									handleChange('downloadable', true);
-								}
+
+								setProductType(selectedTypes);
+
+								handleChange(
+									'downloadable',
+									selectedTypes.includes('downloadable')
+								);
+
+								handleChange(
+									'virtual',
+									selectedTypes.includes('digital_product_service')
+								);
 							}}
 						/>
 					</FormGroupComponent>
-					{productType === 'physical' &&
+					{productType.includes('physical') &&
 						<>
 							<SectionComponent
 								title={__(
@@ -237,7 +268,7 @@ const ShippingCard = ({
 							)}
 						</>
 					}
-					{productType === 'downloadable' &&
+					{productType.includes('downloadable') &&
 						applyFilters(
 							'product_downloadable',
 							null,

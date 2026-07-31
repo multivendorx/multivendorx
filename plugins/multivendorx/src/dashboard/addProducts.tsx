@@ -812,7 +812,7 @@ const AddProduct = () => {
 										<FileInput
 											imageSrc={galleryImages.map((img) => img.thumbnail)}
 											multiple={true}
-											openUploader="Add Gallery Image"
+											openUploader={__('Add Gallery Image', 'multivendorx')}
 											onChange={(val) => {
 												if (!val) {
 													setGalleryImages([]);

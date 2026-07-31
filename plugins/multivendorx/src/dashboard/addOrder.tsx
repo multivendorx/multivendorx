@@ -140,7 +140,7 @@ const AddOrder = () => {
 	}, []);
 
 	const customerOptions = [
-		{ label: 'Choose customer...', value: '' },
+		{ label: __('Choose customer...', 'multivendorx'), value: '' },
 		...(customers
 			? customers.map((c) => ({
 				label: `${c.first_name} ${c.last_name}`.trim() || c.email,
@@ -248,7 +248,7 @@ const AddOrder = () => {
 	);
 
 	const paymentOptions = [
-		{ label: 'Select Payment Method', value: '' },
+		{ label: __('Select Payment Method', 'multivendorx'), value: '' },
 		...paymentMethods,
 	];
 

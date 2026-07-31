@@ -280,7 +280,7 @@ const StoreCommission: React.FC = () => {
 		axios
 			.get(getApiLink(appLocalizer, 'commissions'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: { ids: selectedIds },
+				params: { ids: selectedIds, store_id: appLocalizer.store_id },
 			})
 			.then((response) => {
 				const rows = response.data || [];

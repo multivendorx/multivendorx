@@ -300,11 +300,11 @@ const OrderDetails: React.FC = () => {
 			});
 
 		const noteContent = `
-			Shipment Details:
-			Provider: ${shipmentData.provider}
-			Date: ${shipmentData.tracking_date}
-			Tracking URL: ${shipmentData.tracking_url}
-			Tracking ID: ${shipmentData.tracking_id}
+			${__('Shipment Details:', 'multivendorx')}
+			${__('Provider:', 'multivendorx')} ${shipmentData.provider}
+			${__('Date:', 'multivendorx')} ${shipmentData.tracking_date}
+			${__('Tracking URL:', 'multivendorx')} ${shipmentData.tracking_url}
+			${__('Tracking ID:', 'multivendorx')} ${shipmentData.tracking_id}
 			`;
 
 		axios.post(

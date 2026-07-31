@@ -72,7 +72,7 @@ class Notifications {
 			array(
 				// Store Registration & Approval.
 				'store_pending_approval'              => array(
-					'name'                   => 'Store pending approval',
+					'name' 				     => __( 'Store pending approval', 'multivendorx' ),
 					'desc'                   => 'Triggered when a new store application is submitted and placed under admin review.',
 					'customer_enabled'       => false,
 					'store_enabled'          => true,

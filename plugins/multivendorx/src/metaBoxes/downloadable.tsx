@@ -25,8 +25,8 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				onClick: ({ row, rowIndex, updateRow }) => {
 					const frame = wp.media({
-						title: 'Select or Upload File',
-						button: { text: 'Use this file' },
+						title: __('Select or Upload File', 'multivendorx'),
+						button: __('Use this file', 'multivendorx'),
 						multiple: false,
 					});
 
