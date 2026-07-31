@@ -45,7 +45,7 @@ export default {
 		{
 			id: 'subscription',
 			name: __('Subscription', 'multivendorx'),
-			desc: 'Offer recurring payment options (weekly, monthly, or yearly).',
+			desc: `Allow vendors to sell subscription-based products.</br></br><div class="ui-notice type-info display-notice"><i class="admin-font adminfont-info"></i><div class="notice-details"><div class="notice-desc">MultiVendorX Subscription is currently active. To use <a href="https://woocommerce.com/products/woocommerce-subscriptions/" target="_blank" rel="noopener noreferrer">WooCommerce Subscriptions</a> instead, install and activate the plugin.</div></div></div>`,			
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/subscription-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			//settingsLink: appLocalizer.site_url,
@@ -57,6 +57,7 @@ export default {
 					link: 'https://woocommerce.com/products/woocommerce-subscriptions/',
 				},
 			],
+			forceActivate: true,
 			category: ['marketplace_types', 'product_types'],
 			enableModules: ['variable'],
 		},
