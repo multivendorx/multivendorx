@@ -213,23 +213,22 @@ class Commissions extends \WP_REST_Controller {
                         break;
                 }
             }
+
+            if ( empty( $ids ) ) {
+                $filter['limit']  = $limit;
+                $filter['offset'] = ( $page - 1 ) * $limit;
+            }
+
             if ( $ids ) {
                 $filter['ID'] = $ids;
             }
+            
             // Default: latest first.
             $filter['order_by'] = $order_by ? $order_by : 'created_at';
             $filter['order']    = strtolower( $order ) === 'asc' ? 'ASC' : 'DESC';
 
             // Fetch commissions.
-            $commissions = CommissionUtil::get_commission_information(
-                array_merge(
-                    $filter,
-                    array(
-                        'limit'  => $limit,
-                        'offset' => ( $page - 1 ) * $limit,
-                    )
-                )
-            );
+            $commissions = CommissionUtil::get_commission_information( $filter );
 
             $formatted_commissions = array();
 
