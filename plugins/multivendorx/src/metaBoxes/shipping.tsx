@@ -133,8 +133,6 @@ const ShippingCard = ({
 							custom={true}
 							value={productType}
 							onChange={(val) => {
-								console.log('val', val);
-
 								let selectedTypes = val.filter(
 									(type) => type !== 'physical' && type !== 'others'
 								);
