@@ -114,7 +114,7 @@ const Dashboard = () => {
 			.post(
 				`${appLocalizer.apiUrl}/wc/v3/products/`,
 				{
-					name: 'Auto Draft',
+					name:__('Auto Draft', 'multivendorx'),
 					status: 'draft',
 					meta_data: [{ key: '_is_auto_draft', value: true }],
 				},
