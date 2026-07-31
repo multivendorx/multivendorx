@@ -102,7 +102,7 @@ class FrontEnd {
      * @return string HTML of subscription form.
      */
     public function get_subscription_form( $product, $variation = null ) {
-        if ( ! Subscriber::is_product_outofstock( $variation ? $variation : $product ) ) {
+        if ( ! $product->is_type( 'variable' ) && ! Subscriber::is_product_outofstock( $variation ? $variation : $product ) ) {
             return '';
         }
 

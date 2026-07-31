@@ -357,14 +357,17 @@ class Rest {
         $private_post_types = array(
             'shop_order',
             'user',
-            'payment_gateways',
             'bookable_resource',
             'wc_appointment',
-            'product_variation'
+            'product_variation',
         );
 
         if ( is_user_logged_in() && $request_method === 'GET' && in_array( $post_type, $private_post_types, true ) ) {
             return true;
+        }
+
+        if ( $request_method === 'GET' && 'payment_gateways' === $post_type ) {
+            return current_user_can( 'edit_stores' );
         }
 
         $user_id = MultiVendorX()->current_user_id;
