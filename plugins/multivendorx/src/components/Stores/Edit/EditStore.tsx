@@ -327,7 +327,7 @@ const EditStore = () => {
 		(tabId: string) => {
 			switch (tabId) {
 				case 'store-overview':
-					return <Overview id={editId} storeData={data} />;
+					return <Overview id={editId} storeData={data} onUpdate={handleUpdateData} />;
 				case 'store':
 					return (
 						<StoreSettings

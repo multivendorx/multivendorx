@@ -24,6 +24,7 @@ import { applyFilters } from '@wordpress/hooks';
 interface OverviewProps {
 	id: string | null;
 	storeData?: StoreData;
+	onUpdate: (data: Record<string, string>) => void;
 }
 
 interface Transaction {
@@ -80,7 +81,7 @@ const getPrimaryPaymentMethodId = (
 	}
 	return entries.length === 1 ? entries[0][0] : null;
 };
-const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
+const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 	const navigate = useNavigate();
 	const { modules } = useModules();
 
@@ -426,7 +427,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 						null,
 						id,
 						storeData,
-						modules
+						modules,
+						onUpdate
 					)}
 				</ColumnComponent>
 			</ContainerComponent>
