@@ -170,6 +170,7 @@ Manual installation method requires downloading the [Notifima] (https://wordpres
 == Changelog ==
 
 = 3.1.3 - 2026-08-04 =
+* Fixed     - Mobile layout issue in the subscription form popup.
 * Fixed     - Issue where the subscription form was not displayed for out-of-stock variations when other variations of the same product were in stock. #2260
 * Updated   - Language file.
 
