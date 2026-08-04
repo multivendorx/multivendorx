@@ -157,6 +157,7 @@ const Managestock = () => {
         return (
             <>
                 <TableCard {...tableProps} />
+                {applyFilters('notifima_bulk_action', tableProps)}
             </>
         );
     };
