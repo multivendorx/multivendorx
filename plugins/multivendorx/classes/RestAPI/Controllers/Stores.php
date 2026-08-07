@@ -44,7 +44,7 @@ class Stores extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => '__return_true',
                 ),
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
@@ -91,7 +91,7 @@ class Stores extends \WP_REST_Controller {
      * @param object $request Request data.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
+        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' ) || true;
     }
 
     /**
@@ -344,39 +344,12 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
+            $is_admin = current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
+
             $formatted_stores = array();
+
             foreach ( $stores as $store ) {
-                $store_id           = (int) $store['ID'];
-                $store_meta         = Store::get_store( $store_id );
-                $owner_id           = StoreUtil::get_primary_owner( $store_id );
-                $owner              = get_userdata( $owner_id );
-                $owner_data         = array(
-                    'id'           => $owner->ID,
-                    'display_name' => $owner->display_name,
-                    'user_email'   => $owner->user_email,
-                );
-                $formatted_stores[] = apply_filters(
-                    'multivendorx_stores_details',
-                    array(
-                        'id'                  => $store_id,
-                        'store_name'          => $store['name'],
-                        'store_slug'          => $store['slug'],
-                        'status'              => $store['status'],
-                        'email'               => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['store_email'] ]['primary'] ?? '',
-                        'phone'               => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['phone'] ] ?? '',
-                        'primary_owner'       => $owner_data,
-                        'primary_owner_image' => get_avatar_url( $owner_id, 48 ),
-                        'create_time'         => Utill::multivendorx_rest_prepare_date_response( $store['create_time'] ),
-                        'create_time_gmt'     => Utill::multivendorx_rest_prepare_date_response( $store['create_time'], true ),
-                        'store_image'         => $store_meta->meta_data['image'] ?? '',
-                        'store_banner'        => $store_meta->meta_data['banner'] ?? '',
-                        'address'             => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['address'] ] ?? '',
-                        'location_lat'        => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lat'] ] ?? '',
-                        'location_lng'        => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lng'] ] ?? '',
-                        'commission'          => CommissionUtil::get_commission_summary_for_store( $store_id ),
-                    ),
-                    $store_id
-                );
+                $formatted_stores[] = $this->prepare_store_response( $store, $is_admin );
             }
 
             // Prepare status filters.
@@ -1524,5 +1497,55 @@ class Stores extends \WP_REST_Controller {
         }
 
         return rest_ensure_response( $state_list );
+    }
+
+    /**
+     * Prepare store response.
+     *
+     * @param array $store    Store data.
+     * @param bool  $is_admin Whether to include admin-only fields.
+     * @return array Prepared store response.
+     */
+    private function prepare_store_response( $store, $is_admin = false ) {
+        $store_id   = (int) $store['ID'];
+        $store_meta = Store::get_store( $store_id );
+        $meta       = $store_meta->meta_data;
+        $keys       = Utill::STORE_SETTINGS_KEYS;
+
+        $response = array(
+            'id'           => $store_id,
+            'store_name'   => $store['name'],
+            'store_slug'   => $store['slug'],
+            'store_image'  => $meta['image'] ?? '',
+            'store_banner' => $meta['banner'] ?? '',
+            'address'      => $meta[ $keys['address'] ] ?? '',
+            'location_lat' => $meta[ $keys['location_lat'] ] ?? '',
+            'location_lng' => $meta[ $keys['location_lng'] ] ?? '',
+        );
+
+        if ( $is_admin ) {
+            $owner_id = StoreUtil::get_primary_owner( $store_id );
+            $owner    = get_userdata( $owner_id );
+
+            $response = array_merge(
+                $response,
+                array(
+                    'status'              => $store['status'],
+                    'email'               => $meta[ $keys['store_email'] ]['primary'] ?? '',
+                    'phone'               => $meta[ $keys['phone'] ] ?? '',
+                    'primary_owner'       => $owner ? array(
+                        'id'           => $owner->ID,
+                        'display_name' => $owner->display_name,
+                        'user_email'   => $owner->user_email,
+                    ) : null,
+                    'primary_owner_image' => $owner ? get_avatar_url( $owner_id, 48 ) : '',
+                    'create_time'         => Utill::multivendorx_rest_prepare_date_response( $store['create_time'] ),
+                    'create_time_gmt'     => Utill::multivendorx_rest_prepare_date_response( $store['create_time'], true ),
+                    'commission'          => CommissionUtil::get_commission_summary_for_store( $store_id ),
+                )
+            );
+        }
+
+        return apply_filters( 'multivendorx_stores_details', $response, $store_id );
     }
 }
