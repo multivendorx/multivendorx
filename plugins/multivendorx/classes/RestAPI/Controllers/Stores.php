@@ -91,7 +91,7 @@ class Stores extends \WP_REST_Controller {
      * @param object $request Request data.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' ) || true;
+        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
     }
 
     /**
