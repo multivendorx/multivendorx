@@ -122,6 +122,10 @@ const Commission: React.FC = () => {
 				</a>
 			),
 		},
+		store_name: {
+			label: __('Store Name', 'multivendorx'),
+			tableDisplay: false,
+		},
 		total_order_amount: {
 			label: __('Order Amount', 'multivendorx'),
 			isSortable: true,
