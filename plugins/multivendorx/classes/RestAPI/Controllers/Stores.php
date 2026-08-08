@@ -266,10 +266,8 @@ class Stores extends \WP_REST_Controller {
             $offset = ( $page - 1 ) * $limit;
             $args   = array();
 
-            if ( ! empty( $limit ) ) {
-                $args['limit'] = $limit;
-            }
-            if ( ! empty( $offset ) ) {
+            if ( $limit > 0 ) {
+                $args['limit']  = $limit;
                 $args['offset'] = $offset;
             }
 
@@ -323,7 +321,6 @@ class Stores extends \WP_REST_Controller {
                     unset( $args['order_by'], $args['order'] );
                 }
             }
-            
             // Fetch & format stores.
             $stores = StoreUtil::get_store_information( $args );
 
