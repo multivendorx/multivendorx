@@ -73,7 +73,7 @@ class Notifications {
 				// Store Registration & Approval.
 				'store_pending_approval'              => array(
 					'name' 				     => __( 'Store pending approval', 'multivendorx' ),
-					'desc'                   => 'Triggered when a new store application is submitted and placed under admin review.',
+					'desc'                   => __('Triggered when a new store application is submitted and placed under admin review.','multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -111,8 +111,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_rejected'                      => array(
-					'name'                   => 'Store rejected',
-					'desc'                   => 'Admin rejected the store application.',
+					'name'                   => __( 'Store rejected','multivendorx' ),
+					'desc'                   => __( 'Admin rejected the store application.','multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -150,8 +150,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_permanently_rejected'          => array(
-					'name'                   => 'Store permanently rejected',
-					'desc'                   => 'Permanent rejection of a store application by the admin',
+					'name'                   => __('Store permanently rejected','multivendorx' ),
+					'desc'                   => __('Permanent rejection of a store application by the admin','multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -189,8 +189,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_account_created_by_admin'      => array(
-					'name'                   => 'Store account created by admin',
-					'desc'                   => 'Admin manually created store account.',
+					'name'                   => __('Store account created by admin','multivendorx' ),
+					'desc'                   => __('Admin manually created store account.','multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -229,8 +229,8 @@ class Notifications {
 				),
 				// POST ACTIVATION FLOW.
 				'store_activated'                     => array(
-					'name'                   => 'Store activated',
-					'desc'                   => 'Store activated and ready to start selling.',
+					'name'                   => __('Store activated','multivendorx' ),
+					'desc'                   => __('Store activated and ready to start selling.','multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -268,8 +268,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_under_review'                  => array(
-					'name'                   => 'Store under review',
-					'desc'                   => 'Store temporarily placed under admin review.',
+					'name'                   => __('Store under review','multivendorx' ),
+					'desc'                   => __('Store temporarily placed under admin review.','multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -306,8 +306,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_suspended'                     => array(
-					'name'                   => 'Store suspended',
-					'desc'                   => 'Store temporarily suspended by the admin.',
+					'name'                   => __('Store suspended','multivendorx' ),
+					'desc'                   => __('Store temporarily suspended by the admin.','multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -345,8 +345,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_permanently_deactivated'       => array(
-					'name'                   => 'Store permanently deactivated',
-					'desc'                   => 'Admin permanently deactivated the store.',
+					'name'                   => __('Store permanently deactivated','multivendorx' ),
+					'desc'                   => __('Admin permanently deactivated the store.','multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -384,8 +384,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_account_deactivation_request'  => array(
-					'name'                   => 'Store account deactivation request',
-					'desc'                   => 'Store owner requests deactivation of their store account.',
+					'name'                   => __('Store account deactivation request','multivendorx' ),
+					'desc'                   => __('Store owner requests deactivation of their store account.','multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => false,
 					'admin_enabled'          => true,
@@ -423,8 +423,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_deactivation_request_rejected' => array(
-					'name'                   => 'Store deactivation rejected',
-					'desc'                   => 'Store deactivation request rejected by the admin.',
+					'name'                   => __('Store deactivation rejected','multivendorx' ),
+					'desc'                   => __('Store deactivation request rejected by the admin.','multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -462,8 +462,8 @@ class Notifications {
 				),
 				// ORDER NOTIFICATIONS.
 				'new_order_store'                     => array(
-					'name'                   => 'New order received',
-					'desc'                   => 'New order received by the store.',
+					'name'                   => __('New order received','multivendorx' ),
+					'desc'                   => __('New order received by the store.','multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -501,8 +501,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'order_processing'                    => array(
-					'name'                   => 'Order processing',
-					'desc'                   => 'An order status is changed to processing.',
+					'name'                   => __('Order processing','multivendorx' ),
+					'desc'                   => __('An order status is changed to processing.','multivendorx' ),
 					'store_enabled'          => true,
 					'customer_enabled'       => true,
 					'email_subject'          => 'Order processing started',
@@ -537,8 +537,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'order_completed'                     => array(
-					'name'                   => 'Order completed',
-					'desc'                   => 'An order is completed successfully.',
+					'name'                   => __('Order completed','multivendorx' ),
+					'desc'                   => __('An order is completed successfully.','multivendorx' ),
 					'store_enabled'          => true,
 					'customer_enabled'       => true,
 					'email_subject'          => 'Order completed',
@@ -575,8 +575,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'order_cancelled'                     => array(
-					'name'                   => 'Order cancelled',
-					'desc'                   => 'An order is cancelled by the customer or admin.',
+					'name'                   => __('Order cancelled','multivendorx' ),
+					'desc'                   => __('An order is cancelled by the customer or admin.','multivendorx' ),
 					'store_enabled'          => true,
 					'customer_enabled'       => true,
 					'admin_enabled'          => true,
@@ -614,8 +614,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'order_refunded'                      => array(
-					'name'                   => 'Order refunded',
-					'desc'                   => 'A refund is issued for an order.',
+					'name'                   => __('Order refunded','multivendorx' ),
+					'desc'                   => __('A refund is issued for an order.','multivendorx' ),
 					'store_enabled'          => true,
 					'customer_enabled'       => true,
 					'email_subject'          => 'Order refunded',
