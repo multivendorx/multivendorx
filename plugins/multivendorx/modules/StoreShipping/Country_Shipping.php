@@ -109,24 +109,8 @@ class Country_Shipping extends \WC_Shipping_Method {
 
         $amount = $this->calculate_per_seller( $products, $destination_country, $destination_state, $store_id );
 
-        // Calculate tax.
-        $tax_rate = ( 'none' === $this->tax_status ) ? false : '';
-        $tax_rate = apply_filters( 'multivendorx_is_apply_tax_on_shipping_rates', $tax_rate );
+        $this->add_store_shipping_rates( $store_id, $amount );
 
-        $label = ( $amount > 0 ) ? $this->title : __( 'Free Shipping', 'multivendorx' );
-
-        $rate = array(
-            'id'    => $this->id . ':' . $store_id,
-            'label' => $label,
-            'cost'  => $amount,
-            'taxes' => $tax_rate,
-        );
-
-        $this->add_rate( $rate );
-
-        // Step 5: Maybe add local pickup rate if available.
-        $this->maybe_add_local_pickup_rate( $store_id, $tax_rate );
-        // }
     }
 
     /**
@@ -283,32 +267,54 @@ class Country_Shipping extends \WC_Shipping_Method {
 
 
     /**
-     * Conditionally add a Local Pickup shipping rate for a specific store.
+     * Add shipping rates for a store.
      *
-     * Adds a "Pickup from Store" shipping rate if local pickup is enabled
-     * for the given store and a pickup cost is configured in store settings.
-     *
-     * @param int        $store_id Store ID for which the local pickup rate is evaluated.
-     * @param bool|array $tax_rate Optional tax rate(s) applied to the pickup cost.
+     * @param int   $store_id Store ID.
+     * @param float $amount   Shipping amount.
      *
      * @return void
      */
-    public function maybe_add_local_pickup_rate( $store_id, $tax_rate = false ) {
+    public function add_store_shipping_rates( $store_id, $amount ) {
         $store = new \MultiVendorX\Store\Store( $store_id );
-        $meta  = $store->meta_data; // All store meta data.
+        $meta  = $store->meta_data;
 
-        $local_pickup_cost = isset( $meta[ Utill::STORE_SETTINGS_KEYS['country_local_pickup_cost'] ] ) ? $meta[ Utill::STORE_SETTINGS_KEYS['country_local_pickup_cost'] ] : 0;
+        $tax_rate = ( 'none' === $this->tax_status ) ? false : '';
+        $tax_rate = apply_filters( 'multivendorx_is_apply_tax_on_shipping_rates', $tax_rate );
+
+        // Country-wise shipping.
+        if ( $amount > 0 ) {
+            $this->add_rate(
+                array(
+                    'id'    => $this->id . ':' . $store_id,
+                    'label' => $this->title,
+                    'cost'  => $amount,
+                    'taxes' => $tax_rate,
+                )
+            );
+        } elseif ( ! empty( $meta[ Utill::STORE_SETTINGS_KEYS['country_free_shipping_amount'] ] ) ) {
+            $this->add_rate(
+                array(
+                    'id'    => $this->id . ':' . $store_id,
+                    'label' => __( 'Free Shipping', 'multivendorx' ),
+                    'cost'  => 0,
+                    'taxes' => $tax_rate,
+                )
+            );
+        }
+
+        // Local pickup.
+        $local_pickup_cost = $meta[ Utill::STORE_SETTINGS_KEYS['country_local_pickup_cost'] ] ?? 0;
 
         if ( $local_pickup_cost ) {
-            $rate = array(
-                'id'    => 'local_pickup:' . $store_id,
-                'label' => __( 'Pickup from Store', 'multivendorx' ),
-                'cost'  => $local_pickup_cost,
-                'taxes' => $tax_rate,
+            $this->add_rate(
+                array(
+                    'id'    => 'local_pickup:' . $store_id,
+                    'label' => __( 'Pickup from Store', 'multivendorx' ),
+                    'cost'  => $local_pickup_cost,
+                    'taxes' => $tax_rate,
+                )
             );
-
-            // Register the rate.
-            $this->add_rate( $rate );
         }
     }
+
 }
