@@ -120,15 +120,77 @@ const MyCourse: React.FC = () => {
 	];
 
 	const renderTableContent = () => {
-		if (loading) {
-			return (
-				<tr className="woocommerce-orders-table__row">
-					<td className="woocommerce-orders-table__cell" colSpan={5}>
-						{__('Loading…', 'moowoodle')}
-					</td>
-				</tr>
-			);
-		}
+	if (loading) {
+		return (
+			<>
+				{Array.from({ length: rowsPerPage }).map((_, index) => (
+					<tr
+						key={index}
+						className="woocommerce-orders-table__row moowoodle-skeleton-row"
+					>
+						<td
+							className="woocommerce-orders-table__cell course-details"
+							data-label={__('Course Name', 'moowoodle')}
+						>
+							<div className="course-thumbnail">
+								<span
+									className="skeleton skeleton-circular"
+									style={{
+										width: '3rem',
+										height: '3rem',
+									}}
+								/>
+							</div>
+
+							<div className="details">
+								<span
+									className="skeleton skeleton-text"
+									style={{
+										width: '10rem',
+										height: '1rem',
+									}}
+								/>
+
+								<span
+									className="skeleton skeleton-text"
+									style={{
+										width: '7rem',
+										height: '0.75rem',
+									}}
+								/>
+							</div>
+						</td>
+
+						<td
+							className="woocommerce-orders-table__cell"
+							data-label={__('Enrolment Date', 'moowoodle')}
+						>
+							<span
+								className="skeleton skeleton-text"
+								style={{
+									width: '7rem',
+									height: '1rem',
+								}}
+							/>
+						</td>
+
+						<td
+							className="woocommerce-orders-table__cell"
+							data-label={__('Action', 'moowoodle')}
+						>
+							<span
+								className="skeleton skeleton-rectangular"
+								style={{
+									width: '7rem',
+									height: '2.25rem',
+								}}
+							/>
+						</td>
+					</tr>
+				))}
+			</>
+		);
+	}
 
 		return courses.map((course, index) => (
 			<tr key={index} className="woocommerce-orders-table__row">
@@ -242,20 +304,49 @@ const MyCourse: React.FC = () => {
 				{filters.map((filter) => (
 					<div
 						key={filter.key || 'all'}
-						className={`filter-card ${statusFilter === filter.key ? 'active' : ''
-							}`}
-						onClick={() => setStatusFilter(filter.key)}
+						className={`filter-card ${
+							statusFilter === filter.key ? 'active' : ''
+						}`}
+						onClick={() => !loading && setStatusFilter(filter.key)}
 						role="button"
 						tabIndex={0}
 					>
 						<div className="filter-icon" dangerouslySetInnerHTML={{ __html: filter.icon }}/>
-						<div className="filter-count">{filter.count}</div>
-						<div className="filter-label">{filter.label}</div>
-						<span>{__('View all →', 'moowoodle')} </span>
+						{loading ? (
+							<>
+								<span className="skeleton skeleton-text" style={{ width: '3rem', height: '1.5rem' }} />
+								<span className="skeleton skeleton-text" style={{ width: '7rem', height: '1rem' }} />
+								<span className="skeleton skeleton-text" style={{ width: '5rem', height: '0.875rem' }} />
+							</>
+						) : (
+							<>
+								<div className="filter-count">{filter.count}</div>
+								<div className="filter-label">{filter.label}</div>
+								<span>{__('View all →', 'moowoodle')}</span>
+							</>
+						)}
 					</div>
 				))}
 			</div>
-			{courses.length ? (
+			{loading ? (
+				<table className="moowoodle-table shop_table shop_table_responsive my_account_orders">
+					<thead>
+						<tr>
+							<th className="woocommerce-orders-table__header">
+								{__('Course Name', 'moowoodle')}
+							</th>
+							<th className="woocommerce-orders-table__header">
+								{__('Enrolment Date', 'moowoodle')}
+							</th>
+							<th className="woocommerce-orders-table__header">
+								{__('Action', 'moowoodle')}
+							</th>
+						</tr>
+					</thead>
+
+					<tbody>{renderTableContent()}</tbody>
+				</table>
+			) : courses.length > 0 ? (
 				<>
 					<table className="moowoodle-table shop_table shop_table_responsive my_account_orders">
 						<thead>
@@ -271,8 +362,10 @@ const MyCourse: React.FC = () => {
 								</th>
 							</tr>
 						</thead>
+
 						<tbody>{renderTableContent()}</tbody>
 					</table>
+
 					{renderPagination()}
 				</>
 			) : (
