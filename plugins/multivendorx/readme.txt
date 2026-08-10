@@ -3,9 +3,9 @@ Contributors: wcmp, purnendu
 Tags: marketplace, WooCommerce marketplace, multi vendor, multivendor, multivendor marketplace
 Donate link: http://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=multivendorxwporg
 Requires at least: 6.4.0
-Tested up to: 7.0.2
+Tested up to: 7.0.3
 Requires PHP: 8.0
-Stable tag: 5.0.12
+Stable tag: 5.0.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -245,6 +245,17 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 == Changelog ==
+
+= 5.0.13 - 2026-08-11 =
+* Added     - Compatibility with WooCommerce 11.0.0
+* Added     - Compatibility with WordPress 7.0.3
+* Added     - Store name in the downloaded commission CSV #2280
+* Added     - Translation support for several strings #2224
+* Added     - Support for Elementor Atomic Widgets #2076
+* Fixed     - Store not appearing for non-logged-in users on the Store List page #2278
+* Fixed     - Country-wise shipping-related issue #2285
+* Fixed     - Pagination issue on the Store List page in the admin dashboard
+* Updated   - Language file.
 
 = 5.0.12 - 2026-07-31 =
 * Fixed     - Issue where shipping classes were not displayed in the Store Dashboard.
