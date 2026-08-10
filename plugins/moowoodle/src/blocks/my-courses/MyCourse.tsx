@@ -380,6 +380,13 @@ const MyCourse: React.FC = () => {
 					</ul>
 				</div>
 			)}
+			{error && (
+				<div className="woocommerce-notices-wrapper">
+					<ul className="woocommerce-error" role="alert">
+						<li>{error}</li>
+					</ul>
+				</div>
+			)}
 		</div>
 	);
 };
