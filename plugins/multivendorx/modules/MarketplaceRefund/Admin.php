@@ -68,6 +68,44 @@ class Admin {
                 'label_count'               => _n_noop( 'Refund Rejected (%s)', 'Refund Rejected (%s)', 'multivendorx' ),
             )
         );
+        register_post_status(
+            'wc-return-requested',
+            array(
+                'label'                     => _x( 'Return Requested', 'Order status',
+                'multivendorx'),
+                'public'                    => true,
+                'exclude_from_search'       => false,
+                'show_in_admin_all_list'    => true,
+                'show_in_admin_status_list' => true,
+                'label_count'               => _n_noop('Return Requested (%s)',  'Return Requested (%s)', 'multivendorx' ),
+            )
+        );
+
+        register_post_status(
+            'wc-return-accepted',
+            array(
+                'label'                     => _x( 'Return Accepted', 'Order status',
+                'multivendorx'),
+                'public'                    => true,
+                'exclude_from_search'       => false,
+                'show_in_admin_all_list'    => true,
+                'show_in_admin_status_list' => true,
+                'label_count'               => _n_noop( 'Return Accepted (%s)', 'Return Accepted (%s)', 'multivendorx' ),
+            )
+        );
+
+        register_post_status(
+            'wc-return-rejected',
+             array(
+                'label'                     => _x( 'Return Rejected', 'Order status',
+                'multivendorx' ),
+                'public'                    => true,
+                'exclude_from_search'       => false,
+                'show_in_admin_all_list'    => true,
+                'show_in_admin_status_list' => true,
+                'label_count'               => _n_noop( 'Return Rejected (%s)', 'Return Rejected (%s)', 'multivendorx' ),
+            )
+        );
     }
 
     /**
@@ -86,6 +124,9 @@ class Admin {
                 $new_statuses['wc-refund-requested'] = _x( 'Refund Requested', 'Order status', 'multivendorx' );
                 $new_statuses['wc-refund-accepted']  = _x( 'Refund Accepted', 'Order status', 'multivendorx' );
                 $new_statuses['wc-refund-rejected']  = _x( 'Refund Rejected', 'Order status', 'multivendorx' );
+                $new_statuses['wc-return-requested'] = _x( 'Return Requested', 'Order status', 'multivendorx' );
+                $new_statuses['wc-return-accepted'] = _x( 'Return Accepted', 'Order status', 'multivendorx' );
+                $new_statuses['wc-return-rejected'] = _x( 'Return Rejected', 'Order status', 'multivendorx' );
             }
         }
 
