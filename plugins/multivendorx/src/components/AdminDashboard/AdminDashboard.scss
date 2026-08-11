@@ -1,5 +1,9 @@
 @use '../config.scss' as *;
 
+.admin-main-wrapper {
+    margin: 0!important;
+}
+
 // welcome section start
 .pro-banner-wrapper {
     height: 100%;

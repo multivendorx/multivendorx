@@ -302,6 +302,7 @@ class CommissionManager {
 
         $commission_values = apply_filters(
                 'multivendorx_calculate_commission_values',
+                false,
                 $items,
                 $order, $order_total
             );
@@ -524,6 +525,7 @@ class CommissionManager {
 
             $commission_values = apply_filters(
                     'multivendorx_calculate_commission_values_per_item',
+                    false,
                     $item,
                     $product_id, $store
                 );
