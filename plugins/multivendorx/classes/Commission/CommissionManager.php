@@ -33,6 +33,7 @@ class CommissionManager {
      */
     public function __construct() {
         $this->init_classes();
+        add_filter( 'multivendorx_calculate_commission_values', array( $this, 'multivendorx_default_commission_calculation' ), 10, 6 );
     }
 
     /**
@@ -303,44 +304,173 @@ class CommissionManager {
             $order_total -= (float) $this->get_item_refunded_total( $order );
         }
 
-        foreach ( $commission_per_store_order as $row ) {
-            if ( ! is_array( $row ) || ! array_key_exists( 'rule_type', $row ) ) {
+        /*
+        * Commission calculation filter.
+        */
+        return apply_filters(
+            'multivendorx_calculate_commission_values',
+            array(
+                'commission_amount' => 0,
+                'rules_array'       => $rules_array,
+                'handled'           => false,
+            ),
+            $items,
+            $order,
+            $order_total,
+            $is_refund,
+            $commission_per_store_order
+        );
+
+        // foreach ( $commission_per_store_order as $row ) {
+        //     if ( ! is_array( $row ) || ! array_key_exists( 'rule_type', $row ) ) {
+        //         continue;
+        //     }
+
+        //     switch ( $row['rule_type'] ) {
+        //         case 'order_value':
+        //             $base_val = (float) $row['order_value'];
+        //             if ( ( 'less_than' === $row['rule'] && $order_total <= $base_val ) ||
+        //                 ( 'more_than' === $row['rule'] && $order_total > $base_val ) ) {
+        //                 $commission_amount = $order_total > 0 ? ( $order_total * ( (float) $row['commission_percentage'] / 100 ) + (float) $row['commission_fixed'] ) : 0;
+
+        //                 $rules_array['commission_amount']['rules'][] = array(
+        //                     'rule_type'  => $row['rule_type'],
+        //                     'rule'       => $row['rule'],
+        //                     'value'      => $row['order_value'],
+        //                     'fixed'      => $row['commission_fixed'],
+        //                     'percentage' => $row['commission_percentage'],
+        //                 );
+        //                 return array(
+        //                     'commission_amount' => (float) $commission_amount,
+        //                     'rules_array'       => $rules_array,
+        //                 );
+        //             }
+        //             break;
+
+        //         case 'price':
+        //         case 'quantity':
+        //             foreach ( $items as $item_id => $item ) {
+        //                 $qty        = (float) $item['qty'];
+        //                 $line_total = (float) $order->get_item_total( $item, false, false ) * $qty;
+
+        //                 if ( $is_refund ) {
+        //                     $ref_amt    = $this->get_item_refunded_total( $order, $item_id );
+        //                     $line_total = max( 0, $line_total - (float) $ref_amt * $qty );
+        //                 }
+
+        //                 if ( 'price' === $row['rule_type'] ) {
+        //                     $compare_value = $line_total;
+        //                     $base_value    = (float) $row['product_price'];
+        //                 } else {
+        //                     $compare_value = $qty;
+        //                     $base_value    = (float) $row['product_qty'];
+        //                 }
+
+        //                 if ( ( 'less_than' === $row['rule'] && $compare_value <= $base_value ) ||
+        //                     ( 'more_than' === $row['rule'] && $compare_value > $base_value ) ) {
+        //                     $commission_amount += $line_total > 0 ? ( $line_total * ( (float) $row['commission_percentage'] / 100 ) + (float) $row['commission_fixed'] ) : 0;
+
+        //                     $rules_array['commission_amount']['rules'][] = array(
+        //                         $item['product_id'] => array(
+        //                             'rule_type'  => $row['rule_type'],
+        //                             'rule'       => $row['rule'],
+        //                             'value'      => $base_value,
+        //                             'fixed'      => $row['commission_fixed'],
+        //                             'percentage' => $row['commission_percentage'],
+        //                         ),
+        //                     );
+        //                 } else {
+        //                     $default            = reset( $commission_per_store_order );
+        //                     $commission_amount  += $line_total > 0 ? ( $line_total * ( (float) $default['commission_percentage'] / 100 ) + (float) $default['commission_fixed'] ) : 0;
+        //                     $rules_array['commission_amount']['rules'][] = array(
+        //                         'rule_type'  => 'global',
+        //                         'fixed'      => $default['commission_fixed'],
+        //                         'percentage' => $default['commission_percentage'],
+        //                     );
+        //                 }
+        //             }
+        //             if ( $commission_amount > 0 ) {
+        //                 return array(
+        //                     'commission_amount' => (float) $commission_amount,
+        //                     'rules_array'       => $rules_array,
+        //                 );
+        //             }
+        //             break;
+        //     }
+        // }
+
+        // $default                                     = reset( $commission_per_store_order );
+        // $commission_amount                           = $order_total > 0 ? ( $order_total * ( (float) $default['commission_percentage'] / 100 ) + (float) $default['commission_fixed'] ) : 0;
+        // $rules_array['commission_amount']['rules'][] = array(
+        //     'rule_type'  => 'global',
+        //     'fixed'      => $default['commission_fixed'],
+        //     'percentage' => $default['commission_percentage'],
+        // );
+
+        // return array(
+		// 	'commission_amount' => $commission_amount,
+		// 	'rules_array'       => $rules_array,
+		// );
+    }
+
+     public function multivendorx_default_commission_calculation( $commission_values, $items, $order, $order_total, $is_refund, $commission_per_store_order ) {
+        if (! empty($commission_values['handled']) && $commission_values['handled'] ) {
+            return $commission_values;
+        }
+
+        $commission_amount = 0;
+        foreach ($commission_per_store_order as $row) {
+            if (! is_array($row) || ! array_key_exists('rule_type', $row)) {
                 continue;
             }
 
-            switch ( $row['rule_type'] ) {
+            switch ($row['rule_type']) {
                 case 'order_value':
                     $base_val = (float) $row['order_value'];
-                    if ( ( 'less_than' === $row['rule'] && $order_total <= $base_val ) ||
-                        ( 'more_than' === $row['rule'] && $order_total > $base_val ) ) {
-                        $commission_amount = $order_total > 0 ? ( $order_total * ( (float) $row['commission_percentage'] / 100 ) + (float) $row['commission_fixed'] ) : 0;
 
-                        $rules_array['commission_amount']['rules'][] = array(
+                    if (
+                        ('less_than' === $row['rule'] && $order_total <= $base_val) ||
+                        ('more_than' === $row['rule'] && $order_total > $base_val)
+                    ) {
+                        $commission_amount = $order_total > 0
+                            ? (
+                                $order_total *
+                                ((float) $row['commission_percentage'] / 100)
+                            ) + (float) $row['commission_fixed']
+                            : 0;
+
+                        $commission_values['commission_amount'] = (float) $commission_amount;
+
+                        $commission_values['rules_array']['commission_amount']['rules'][] = array(
                             'rule_type'  => $row['rule_type'],
                             'rule'       => $row['rule'],
                             'value'      => $row['order_value'],
                             'fixed'      => $row['commission_fixed'],
-                            'percentage' => $row['commission_percentage'],
+                            'percentage' => $row['commission_percentage']
                         );
-                        return array(
-                            'commission_amount' => (float) $commission_amount,
-                            'rules_array'       => $rules_array,
-                        );
+
+                        $commission_values['handled'] = true;
+
+                        return $commission_values;
                     }
+
                     break;
 
                 case 'price':
                 case 'quantity':
-                    foreach ( $items as $item_id => $item ) {
+                    foreach ($items as $item_id => $item) {
                         $qty        = (float) $item['qty'];
-                        $line_total = (float) $order->get_item_total( $item, false, false ) * $qty;
+                        $line_total = (float) $order->get_item_total($item, false, false) * $qty;
 
-                        if ( $is_refund ) {
-                            $ref_amt    = $this->get_item_refunded_total( $order, $item_id );
-                            $line_total = max( 0, $line_total - (float) $ref_amt * $qty );
+                        if ($is_refund) {
+                            $ref_amt    = $this->get_item_refunded_total($order, $item_id);
+                            $line_total = max(
+                                0,
+                                $line_total - (float) $ref_amt * $qty
+                            );
                         }
 
-                        if ( 'price' === $row['rule_type'] ) {
+                        if ('price' === $row['rule_type']) {
                             $compare_value = $line_total;
                             $base_value    = (float) $row['product_price'];
                         } else {
@@ -348,11 +478,18 @@ class CommissionManager {
                             $base_value    = (float) $row['product_qty'];
                         }
 
-                        if ( ( 'less_than' === $row['rule'] && $compare_value <= $base_value ) ||
-                            ( 'more_than' === $row['rule'] && $compare_value > $base_value ) ) {
-                            $commission_amount += $line_total > 0 ? ( $line_total * ( (float) $row['commission_percentage'] / 100 ) + (float) $row['commission_fixed'] ) : 0;
+                        if (
+                            ('less_than' === $row['rule'] && $compare_value <= $base_value) ||
+                            ('more_than' === $row['rule'] && $compare_value > $base_value)
+                        ) {
+                            $commission_amount += $line_total > 0
+                                ? (
+                                    $line_total *
+                                    ((float) $row['commission_percentage'] / 100)
+                                ) + (float) $row['commission_fixed']
+                                : 0;
 
-                            $rules_array['commission_amount']['rules'][] = array(
+                            $commission_values['rules_array']['commission_amount']['rules'][] = array(
                                 $item['product_id'] => array(
                                     'rule_type'  => $row['rule_type'],
                                     'rule'       => $row['rule'],
@@ -362,37 +499,48 @@ class CommissionManager {
                                 ),
                             );
                         } else {
-                            $default            = reset( $commission_per_store_order );
-                            $commission_amount  += $line_total > 0 ? ( $line_total * ( (float) $default['commission_percentage'] / 100 ) + (float) $default['commission_fixed'] ) : 0;
-                            $rules_array['commission_amount']['rules'][] = array(
+                            $default = reset($commission_per_store_order);
+
+                            $commission_amount += $line_total > 0
+                                ? (
+                                    $line_total *
+                                    ((float) $default['commission_percentage'] / 100)
+                                ) + (float) $default['commission_fixed']
+                                : 0;
+
+                            $commission_values['rules_array']['commission_amount']['rules'][] = array(
                                 'rule_type'  => 'global',
                                 'fixed'      => $default['commission_fixed'],
                                 'percentage' => $default['commission_percentage'],
                             );
                         }
                     }
-                    if ( $commission_amount > 0 ) {
-                        return array(
-                            'commission_amount' => (float) $commission_amount,
-                            'rules_array'       => $rules_array,
-                        );
+
+                    if ($commission_amount > 0) {
+                        $commission_values['commission_amount'] = (float) $commission_amount;
+                        $commission_values['handled']           = true;
+
+                        return $commission_values;
                     }
+
                     break;
             }
         }
 
-        $default                                     = reset( $commission_per_store_order );
-        $commission_amount                           = $order_total > 0 ? ( $order_total * ( (float) $default['commission_percentage'] / 100 ) + (float) $default['commission_fixed'] ) : 0;
-        $rules_array['commission_amount']['rules'][] = array(
+        $default = reset($commission_per_store_order);
+        $commission_amount = $order_total > 0 ? ($order_total * ((float) $default['commission_percentage'] / 100) + (float) $default['commission_fixed']) : 0;
+
+        $commission_values['commission_amount'] = (float) $commission_amount;
+
+        $commission_values['rules_array']['commission_amount']['rules'][] = array(
             'rule_type'  => 'global',
             'fixed'      => $default['commission_fixed'],
             'percentage' => $default['commission_percentage'],
         );
 
-        return array(
-			'commission_amount' => $commission_amount,
-			'rules_array'       => $rules_array,
-		);
+        $commission_values['handled'] = true;
+
+        return $commission_values;
     }
 
     /**
