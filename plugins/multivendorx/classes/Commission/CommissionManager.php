@@ -299,6 +299,20 @@ class CommissionManager {
         );
 
         $order_total = (float) $order->get_subtotal() - (float) $order->get_discount_total();
+
+        $commission_values = apply_filters(
+                'multivendorx_calculate_commission_values',
+                $items,
+                $order, $order_total
+            );
+
+        if ( $commission_values ) {
+            return array(
+                'commission_amount' => $commission_values,
+                'rules_array'       => $rules_array,
+            );
+        }
+
         if ( $is_refund ) {
             $order_total -= (float) $this->get_item_refunded_total( $order );
         }
@@ -507,6 +521,16 @@ class CommissionManager {
         $product = wc_get_product( $product_id );
 
         if ( $product && $store ) {
+
+            $commission_values = apply_filters(
+                    'multivendorx_calculate_commission_values_per_item',
+                    $item,
+                    $product_id, $store
+                );
+
+            if ( $commission_values ) {
+                return $commission_values;
+            }
 
             // Variable Product.
             $data['commission_val']   = $product->get_meta( Utill::POST_META_SETTINGS['variable_product_percentage'], true );
