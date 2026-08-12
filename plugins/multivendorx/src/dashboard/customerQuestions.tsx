@@ -262,6 +262,7 @@ const CustomerQuestions: React.FC = () => {
 				categoryCounts={categoryCounts}
 				filters={filters}
 				format={appLocalizer.date_format}
+				showMenu={false}
 			/>
 			{selectedQueries && (
 				<PopupComponent

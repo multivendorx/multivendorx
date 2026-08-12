@@ -67,6 +67,7 @@ const StoreFollower: React.FC = () => {
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
+				showMenu={false}
 				onQueryUpdate={doRefreshTableData}
 				format={appLocalizer.date_format}
 			/>

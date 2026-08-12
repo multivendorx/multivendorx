@@ -49,7 +49,7 @@ export default {
 		},
 		{
 			key: 'store_banner_template',
-			type: 'color-setting',
+			type: 'picker-setting',
 			label: 'Shop banner section',
 			settingDescription:
 				'Choose how the store’s shop page appears, including banner, logo, and description.',
@@ -103,7 +103,7 @@ export default {
 		},
 		{
 			key: 'store_color_settings',
-			type: 'color-setting',
+			type: 'picker-setting',
 			label: 'Dashboard color scheme',
 			settingDescription:
 				'Choose a dashboard color scheme from predefined sets or customize your own. Each scheme defines the button style, and hover effects for a consistent look.',

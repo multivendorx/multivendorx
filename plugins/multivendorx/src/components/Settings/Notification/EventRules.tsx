@@ -19,7 +19,7 @@ const RECIPIENT_CONFIG: Record<string, { icon: string; badge: string }> = {
 	Store: { icon: 'storefront', badge: 'blue' },
 	Admin: { icon: 'person', badge: ' green' },
 	Customer: { icon: 'user-circle', badge: 'yellow' },
-	default: { icon: 'mail', badge: ' default-badge' },
+	default: { icon: 'mail', badge: 'yellow' },
 };
 
 const CHANNEL_CONFIG: Record<
