@@ -52,7 +52,6 @@ export default {
 		},
 		{
 			key: 'email_provider',
-			type: 'choice-toggle',
 			label: __('Email provider', 'multivendorx'),
 			desc: __(
 				'Use the WordPress-supported SMTP plugin, which you can find here: <a href="https://wordpress.org/plugins/tags/smtp/" target="_blank">WordPress SMTP Plugins</a>.<br><strong>Important:</strong> <strong>Sender Email Address</strong> configured in your SMTP plugin match the sender email set in your email delivery setup settings.<br>Otherwise, WordPress may fall back to its default mail method.',
@@ -158,7 +157,7 @@ export default {
 			type: 'text',
 			label: __('Account SID', 'multivendorx'),
 			desc: __(
-				'<ul> Send SMS notifications using Twilio.<br> Get your <strong>Account SID</strong> and <strong>Auth Token</strong> from your Twilio dashboard: <a href="https://www.twilio.com/console" target="_blank">Twilio Console</a>.<br> <strong>Important:</strong> Make sure the Account SID and Token you enter here match your Twilio account details exactly.<br> Follow Twilio’s setup instructions to complete the SMS gateway configuration. </ul>',
+				'Send SMS notifications using Twilio.<br> Get your <strong>Account SID</strong> and <strong>Auth Token</strong> from your Twilio dashboard: <a href="https://www.twilio.com/console" target="_blank">Twilio Console</a>.<br> <strong>Important:</strong> Make sure the Account SID and Token you enter here match your Twilio account details exactly.<br> Follow Twilio’s setup instructions to complete the SMS gateway configuration.',
 				'multivendorx'
 			),
 			dependent: {
