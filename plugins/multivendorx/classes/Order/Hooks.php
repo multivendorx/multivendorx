@@ -91,6 +91,7 @@ class Hooks {
         // If this order is a suborder.
         if ( $order->get_parent_id() ) {
             // Reset recorded sales flag so WooCommerce skips counting.
+            $order->get_data_store()->set_stock_reduced( $order_id, true );
             $order->get_data_store()->set_recorded_sales( $order, true );
         }
     }
