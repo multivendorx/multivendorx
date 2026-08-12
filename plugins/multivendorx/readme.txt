@@ -5,7 +5,7 @@ Donate link: http://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugind
 Requires at least: 6.4.0
 Tested up to: 7.0.3
 Requires PHP: 8.0
-Stable tag: 5.0.13
+Stable tag: 5.0.14
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -245,6 +245,13 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 == Changelog ==
+
+= 5.0.14 - 2026-08-12 =
+* Added     - Compatibility with WooCommerce 11.0.1
+* Fixed     - Minor CSS fixes in the admin panel.
+* Fixed     - Issue where product stock was being reduced separately for the main order and its suborders #2291
+* Fixed     - Several CSS issues in the store dashboard #2240
+* Updated   - Language file.
 
 = 5.0.13 - 2026-08-11 =
 * Added     - Compatibility with WooCommerce 11.0.0
