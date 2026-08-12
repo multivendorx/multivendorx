@@ -246,9 +246,11 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 
 == Changelog ==
 
-= 5.0.14 - 2026-08-11 =
+= 5.0.14 - 2026-08-12 =
 * Added     - Compatibility with WooCommerce 11.0.1
 * Fixed     - Minor CSS fixes in the admin panel.
+* Fixed     - Issue where product stock was being reduced separately for the main order and its suborders #2291
+* Fixed     - Several CSS issues in the store dashboard #2240
 * Updated   - Language file.
 
 = 5.0.13 - 2026-08-11 =
