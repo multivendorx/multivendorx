@@ -25,7 +25,7 @@ export default {
 			proModule: true,
 			proFeatures: [
 				__('Set availability rules by date and time slot', 'multivendorx'),
-				__('Approve or auto-confirm incoming bookings', 'multivendorx'),
+				__('Approve incoming bookings', 'multivendorx'),
 				__('Sync bookings to Google Calendar', 'multivendorx'),
 			],
 			category: ['marketplace_types', 'product_types'],
@@ -47,7 +47,6 @@ export default {
 			],
 			proFeatures: [
 				__('Interactive calendar for customers to pick a time', 'multivendorx'),
-				__('Assign appointments to staff or resources', 'multivendorx'),
 				__('Built-in rescheduling and cancellation controls', 'multivendorx'),
 			],
 			category: ['marketplace_types', 'product_types'],
@@ -377,7 +376,7 @@ export default {
 		},
 		{
 			id: 'privacy',
-			name: __('Policies', 'multivendorx'),
+			name: __('Privacy', 'multivendorx'),
 			desc: 'Hide sensitive store information from customers, including contact details, location, or other specified data.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/store-policy/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=privacy`,
@@ -910,8 +909,8 @@ export default {
 				},
 			],
 			proFeatures: [
-				__('Products and store pages in multiple languages', 'multivendorx'),
-				__('Language switcher on the storefront', 'multivendorx'),
+				__('Products pages in multiple languages', 'multivendorx'),
+				__('Language switcher', 'multivendorx'),
 				__('Works with WooCommerce Multilingual', 'multivendorx'),
 			],
 			category: 'integration',
