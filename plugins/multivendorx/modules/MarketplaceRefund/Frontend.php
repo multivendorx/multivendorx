@@ -24,6 +24,7 @@ class Frontend {
      */
     public function __construct() {
         add_action( 'woocommerce_order_details_after_order_table', array( $this, 'multivendorx_refund_btn_customer_my_account' ), 10 );
+        add_action( 'woocommerce_order_details_after_order_table', array( $this, 'multivendorx_return_btn_customer_my_account' ), 10 );
         add_action( 'wp_enqueue_scripts', array( $this, 'add_scripts' ) );
         add_action( 'wp', array( $this, 'multivendorx_handler_cust_requested_refund' ) );
         add_action( 'wp', array( $this, 'multivendorx_handler_cust_requested_return' ) );
@@ -239,17 +240,12 @@ class Frontend {
             return;
         }
 
-        $expiry_ts = strtotime( '+' . $return_days . ' days', $order_date->getTimestam () );
+        $expiry_ts = strtotime( '+' . $return_days . ' days', $order_date->getTimestamp () );
 
         if ( time() > $expiry_ts ) {
             return;
         }
     }
-
-    /*
-     * Don't show return button if a return
-     * request has already been processed.
-     */
         $return_status = $order->get_meta( '_customer_return_order', true );
 
         if ( in_array( $return_status, array( 'return_request', 'return_accept',
@@ -259,31 +255,31 @@ class Frontend {
 
     ?>
 
-    <p>
-        <button
-            type="button"
-            class="button wp-element-button"
-            id="cust-request-return-btn"
-        >
-            <?php esc_html_e( 'Request a return', 'multivendorx' ); ?>
-        </button>
-    </p>
+        <p>
+            <button
+                type="button"
+                class="button wp-element-button"
+                id="cust-request-return-btn"
+            >
+                <?php esc_html_e( 'Request a return', 'multivendorx' ); ?>
+            </button>
+        </p>
 
-    <div
+        <div
         id="multivendorx-myac-order-return-wrap"
         class="multivendorx-myac-order-return-wrap multivendorx-popup"
         style="display:none;"
-    >
-
-        <form
-            method="POST"
-            enctype="multipart/form-data"
-            class="multivendorx-popup-content"
         >
 
-            <span class="popup-close">
-                <i class="dashicons dashicons-no-alt"></i>
-            </span>
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                class="multivendorx-popup-content"
+            >
+
+                <span class="popup-close">
+                    <i class="dashicons dashicons-no-alt"></i>
+                </span>
 
             <?php
             wp_nonce_field( 'customer_request_return', 'cust-request-return-nonce' );
@@ -308,7 +304,7 @@ class Frontend {
                     }
                     ?>
 
-                    <div class="order-refund-product-list">
+                    <div class="order-return-product-list">
 
                         <input
                             class="product-select-tag"
@@ -341,8 +337,8 @@ class Frontend {
                     <?php
                     echo esc_html(
                         apply_filters(
-                            'multivendorx_my_account_refund_reason_label',
-                            __( 'Please mention your reason for refund', 'multivendorx' ),
+                            'multivendorx_my_account_return_reason_label',
+                            __( 'Please mention your reason for return', 'multivendorx' ),
                             $order
                         )
                     );
@@ -353,7 +349,7 @@ class Frontend {
                     foreach ( $return_reason_options as $index => $reason ) {
                         echo '<p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
                             <label class="return_reason_option" for="return_reason_option-' . esc_attr( $index ) . '">
-                                <input type="radio" class="woocommerce-Input input-radio" name="return_reason_option" id="return_reason_option-' . esc_attr( $index ) . '" value="' . esc_attr( $index ) . '" />
+                                <input type="radio" class="woocommerce-Input input-radio" name="return_reason_option" id="return_reason_option-' . esc_attr( $index ) . '" value="' . esc_attr( $reason['title']) . '" />
                                 ' . esc_html( $reason['title'] ) . '
                             </label></p>';
                     }
@@ -482,36 +478,30 @@ class Frontend {
                 $("#cust-request-refund-btn").click(function(){
                     $("#multivendorx-myac-order-refund-wrap").slideToggle();
                 });
-
-
-
-                $("#multivendorx-myac-order-return-wrap").hide();
-
-                $("#cust-request-return-btn").on("click", function () {
-                    $("#multivendorx-myac-order-return-wrap").slideDown();
+            } )( jQuery );'
+        );
+        wp_add_inline_script(
+            'woocommerce',
+            '( function( $ ) {
+                $("#multivendorx-myac-order-retun-wrap").hide();
+                $("#multivendorx-myac-order-return-wrap .cust-rr-other").hide();
+                
+                // Close popup on close icon
+                $("#multivendorx-myac-order-return-wrap .popup-close").on("click", function(){
+                    $("#multivendorx-myac-order-return-wrap").fadeOut();
                 });
-
-                $("#multivendorx-myac-order-return-wrap .popup-close").on(
-                    "click",
-                    function () {
+                
+                // Close popup outside click .multivendorx-popup-content
+                $("#multivendorx-myac-order-return-wrap").on("click", function(e){
+                    if($(e.target).is("#multivendorx-myac-order-return-wrap")){
                         $("#multivendorx-myac-order-return-wrap").fadeOut();
                     }
-                );
-
-                $("#multivendorx-myac-order-return-wrap").on(
-                    "click",
-                    function (e) {
-
-                        if (
-                            $(e.target).is(
-                                "#multivendorx-myac-order-return-wrap"
-                            )
-                        ) {
-                            $(this).fadeOut();
-                        }
-                    }
-                );
-
+                });
+                
+                $("#multivendorx-myac-order-return-wrap .multivendorx-popup-content").on("click", function(e){
+                    e.stopPropagation();
+                });
+                
                 $("#multivendorx-myac-order-return-wrap .return_reason_option input").on("click", function(){
                     var others_checked = $("input:radio[name=return_reason_option]:checked").val();
                     if(others_checked == "others"){
@@ -523,9 +513,6 @@ class Frontend {
                 
                 $("#cust-request-return-btn").click(function(){
                     $("#multivendorx-myac-order-return-wrap").slideToggle();
-                });
-
-                $("#multivendorx-myac-order-return-wrap .multivendorx-popup-content") . on("click", function (e) { e.stopPropagation();
                 });
             } )( jQuery );'
         );
@@ -799,13 +786,12 @@ class Frontend {
     }
 
     /**
- * Handle customer return request.
- *
- * @return void
- */
+    * Handle customer return request.
+    */
     public function multivendorx_handler_cust_requested_return() {
 
         global $wp;
+
 
         if ( empty( $_POST['cust_request_return_sbmt'] ) ) { 
             return; 
@@ -830,16 +816,12 @@ class Frontend {
             return;
         }
 
-    /*
-     * Verify order ownership.
-     */
+    
         if ( (int) $order->get_customer_id() !== (int) get_current_user_id() ) {
             return;
         }
 
-    /*
-     * Check allowed status.
-     */
+    
         $allowed_statuses = MultiVendorX()->setting->get_setting( 'customer_return_status', array() );
 
         if ( ! in_array( $order->get_status(), $allowed_statuses, true ) ) {
@@ -847,9 +829,7 @@ class Frontend {
             return;
         }
 
-    /*
-     * Check return period.
-     */
+    
         $return_days = absint( MultiVendorX()->setting->get_setting( 'refund_days', 0 ) );
 
         if ( $return_days > 0 ) {
@@ -870,9 +850,7 @@ class Frontend {
         }
     }
 
-    /*
-     * Products.
-     */
+   
         $return_products = isset( $_POST['return_product'] ) ? array_map( 'absint',
             (array) wp_unslash( $_POST['return_product'] ) ) : array();
 
@@ -882,35 +860,27 @@ class Frontend {
         return;
     }
 
-    /*
-     * Reason.
-     */
-        $return_reason = isset( $_POST['return_reason'] ) ? sanitize_textarea_field( wp_unslash( $_POST['return_reason'] ) ) : '';
+        $return_reason = isset( $_POST['return_reason_option'] ) ? sanitize_textarea_field( wp_unslash( $_POST['return_reason_option'] ) ) : '';
+
+        $additional_info = isset( $_POST['return_reason_other'] )
+        ? sanitize_textarea_field( wp_unslash( $_POST['return_reason_other'] ) ) : '';
+
+        if($return_reason === 'others' && $additional_info !== ''){
+            $return_reason = $additional_info;
+        }
 
         if ( empty( $return_reason ) ) {
 
         wc_add_notice( __('Kindly provide a return reason.', 'multivendorx' ), 'error' );
         return;
     }
-
-    /*
-     * Additional information.
-     */
-        $additional_info = isset( $_POST['return_additional_info'] )
-        ? sanitize_textarea_field( wp_unslash( $_POST['return_additional_info'] ) ) : '';
-
-    /*
-     * Image setting.
-     */
         $return_settings = MultiVendorX()->setting->get_setting( 'return', array() );
 
         $image_required = in_array( 'image_require', (array) $return_settings, true );
         $uploaded_urls = array();
         $attachment_ids = array();
 
-    /*
-     * Upload return images.
-     */
+    
         if ( ! empty( $_FILES['return_product_img'] ) ) {
 
             $files = $_FILES['return_product_img'];
@@ -995,34 +965,16 @@ class Frontend {
                                     'multivendorx' ), 'error' );
                 return;
             }
-
-        /*
-        * Save Return-specific metadata.
-        */
             $order->update_meta_data( '_customer_return_order', 'return_request' );
-
             $order->update_meta_data( '_customer_return_product', $return_products);
-
             $order->update_meta_data( '_customer_return_reason', $return_reason );
-
             $order->update_meta_data('_customer_return_additional_info',$additional_info );
-
             $order->update_meta_data( '_customer_return_product_imgs', $uploaded_urls );
-
-            $order->update_meta_data('_customer_return_product_img_ids', $attachment_ids
-            );
-
-        /*
-        * IMPORTANT:
-        * Return gets its own order status.
-        */
+            $order->update_meta_data('_customer_return_product_img_ids', $attachment_ids );
             $order->set_status( 'return-requested' );
-
             $order->save();
 
-        /*
-        * Store notification.
-        */
+
             $store_id = $order->get_meta( Utill::POST_META_SETTINGS['store_id'], true );
 
             if ( ! empty( $store_id ) ) {
@@ -1037,9 +989,6 @@ class Frontend {
                             );
             }
 
-        /*
-        * Order note.
-        */
             $comment_id = $order->add_order_note(
             sprintf( 'Customer requested a return for order %d.', $order_id ) );
 
@@ -1055,9 +1004,6 @@ class Frontend {
             );
         }
 
-        /*
-        * Parent order note.
-        */
             $parent_order_id = $order->get_parent_id();
 
             if ( $parent_order_id ) {
@@ -1139,7 +1085,7 @@ class Frontend {
             </h2>
 
             <address>
-                <!-- Category -->
+               
                 <p class="category-name">
                     <strong><?php esc_html_e( 'Category:', 'multivendorx' ); ?></strong><br/>
                     <span class="multivendorx-badge">
@@ -1147,7 +1093,7 @@ class Frontend {
                     </span>
                 </p>
 
-                <!-- Reason -->
+                
                 <address>
                     <?php
                     echo esc_html(
@@ -1157,7 +1103,7 @@ class Frontend {
                     );
                     ?>
                 </address>
-                <!-- Attachments -->
+                
                 <?php if ( ! empty( $refund_images ) ) : ?>
                     <p>
                         <strong><?php esc_html_e( 'Attached images:', 'multivendorx' ); ?></strong>

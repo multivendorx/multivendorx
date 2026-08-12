@@ -28,14 +28,16 @@ addFilter(
 	(configs, { appLocalizer }) => { 
 		configs.push({ 
 			id: 'return-requests', 
-			url: `${appLocalizer.apiUrl}/returns`, 
-			params: { 
-				page: 1, 
-				per_page: 1, 
-			}, 
-			header: 'x-wp-total', 
-		}); 
-		return configs; 
+			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
+			params: {
+				meta_key: 'multivendorx_store_id',
+				status: 'return-requested',
+				page: 1,
+				per_page: 1,
+			},
+			header: 'x-wp-total',
+		});
+		return configs;
 	} 
 );
 
