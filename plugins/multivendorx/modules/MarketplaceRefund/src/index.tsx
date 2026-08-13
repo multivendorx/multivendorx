@@ -6,7 +6,7 @@ import PendingReturn from './PendingReturn';
 
 addFilter(
 	'multivendorx_approval_queue_api_configs',
-	'multivendorx/refund-api',
+	'multivendorx/refund-and-return-api',
 	(configs, { appLocalizer }) => {
 		configs.push({
 			id: 'refund-requests',
@@ -19,14 +19,6 @@ addFilter(
 			},
 			header: 'x-wp-total',
 		});
-		return configs;
-	}
-);
-
-addFilter( 
-	'multivendorx_approval_queue_api_configs', 
-	'multivendorx/return-api', 
-	(configs, { appLocalizer }) => { 
 		configs.push({ 
 			id: 'return-requests', 
 			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
@@ -39,12 +31,12 @@ addFilter(
 			header: 'x-wp-total',
 		});
 		return configs;
-	} 
+	}
 );
 
 addFilter(
 	'multivendorx_approval_queue_tab',
-	'multivendorx/refund-tab',
+	'multivendorx/refund-or-return-tab',
 	(settingContent) => {
 		settingContent.push({
 			type: 'file',
@@ -61,14 +53,6 @@ addFilter(
 				headerIcon: 'marketplace-refund blue',
 			},
 		});
-
-		return settingContent;
-	}
-);
-
-addFilter( 'multivendorx_approval_queue_tab',
-	'multivendorx/return-tab', 
-	(settingContent) => { 
 		settingContent.push({ 
 			type: 'file', 
 			module: 'marketplace-refund', 
@@ -80,9 +64,9 @@ addFilter( 'multivendorx_approval_queue_tab',
 				settingSubTitle: __( 'Review, approve, or reject customer return requests.', 'multivendorx' ), 
 				headerIcon: 'marketplace-refund blue', 
 			}, 
-		}); 
-		return settingContent; 
-	} 
+		});
+		return settingContent;
+	}
 );
 
 addFilter(
@@ -92,17 +76,10 @@ addFilter(
 		if (tabId === 'refund-requests') {
 			return <PendingRefund />;
 		}
+		else if (tabId === 'return-requests') { 
+			return <PendingReturn />; 
+		}
 
 		return defaultForm;
 	}
-);
-
-addFilter( 'multivendorx_approval_queue_tab_content', 
-	'multivendorx/return-tab-content', 
-	(defaultForm, { tabId }) => { 
-		if (tabId === 'return-requests') { 
-			return <PendingReturn />; 
-		} 
-		return defaultForm;
-	} 
 );

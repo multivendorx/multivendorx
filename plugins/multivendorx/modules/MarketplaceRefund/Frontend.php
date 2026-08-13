@@ -245,7 +245,7 @@ class Frontend {
         if ( time() > $expiry_ts ) {
             return;
         }
-    }
+        }
         $return_status = $order->get_meta( '_customer_return_order', true );
 
         if ( in_array( $return_status, array( 'return_request', 'return_accept',
@@ -253,7 +253,7 @@ class Frontend {
             return;
         }
 
-    ?>
+        ?>
 
         <p>
             <button
@@ -436,86 +436,9 @@ class Frontend {
 
         </form>
 
-    </div>
+        </div>
 
-    <?php
-    }
-    /**
-     * Add scripts
-     */
-    public function add_scripts() {
-        wp_add_inline_script(
-            'woocommerce',
-            '( function( $ ) {
-                $("#multivendorx-myac-order-refund-wrap").hide();
-                $("#multivendorx-myac-order-refund-wrap .cust-rr-other").hide();
-                
-                // Close popup on close icon
-                $("#multivendorx-myac-order-refund-wrap .popup-close").on("click", function(){
-                    $("#multivendorx-myac-order-refund-wrap").fadeOut();
-                });
-                
-                // Close popup outside click .multivendorx-popup-content
-                $("#multivendorx-myac-order-refund-wrap").on("click", function(e){
-                    if($(e.target).is("#multivendorx-myac-order-refund-wrap")){
-                        $("#multivendorx-myac-order-refund-wrap").fadeOut();
-                    }
-                });
-                
-                $("#multivendorx-myac-order-refund-wrap .multivendorx-popup-content").on("click", function(e){
-                    e.stopPropagation();
-                });
-                
-                $("#multivendorx-myac-order-refund-wrap .refund_reason_option input").on("click", function(){
-                    var others_checked = $("input:radio[name=refund_reason_option]:checked").val();
-                    if(others_checked == "others"){
-                        $("#multivendorx-myac-order-refund-wrap .cust-rr-other").show();
-                    }else{
-                        $("#multivendorx-myac-order-refund-wrap .cust-rr-other").hide();
-                    }
-                });
-                
-                $("#cust-request-refund-btn").click(function(){
-                    $("#multivendorx-myac-order-refund-wrap").slideToggle();
-                });
-            } )( jQuery );'
-        );
-        wp_add_inline_script(
-            'woocommerce',
-            '( function( $ ) {
-                $("#multivendorx-myac-order-retun-wrap").hide();
-                $("#multivendorx-myac-order-return-wrap .cust-rr-other").hide();
-                
-                // Close popup on close icon
-                $("#multivendorx-myac-order-return-wrap .popup-close").on("click", function(){
-                    $("#multivendorx-myac-order-return-wrap").fadeOut();
-                });
-                
-                // Close popup outside click .multivendorx-popup-content
-                $("#multivendorx-myac-order-return-wrap").on("click", function(e){
-                    if($(e.target).is("#multivendorx-myac-order-return-wrap")){
-                        $("#multivendorx-myac-order-return-wrap").fadeOut();
-                    }
-                });
-                
-                $("#multivendorx-myac-order-return-wrap .multivendorx-popup-content").on("click", function(e){
-                    e.stopPropagation();
-                });
-                
-                $("#multivendorx-myac-order-return-wrap .return_reason_option input").on("click", function(){
-                    var others_checked = $("input:radio[name=return_reason_option]:checked").val();
-                    if(others_checked == "others"){
-                        $("#multivendorx-myac-order-return-wrap .cust-rr-other").show();
-                    }else{
-                        $("#multivendorx-myac-order-return-wrap .cust-rr-other").hide();
-                    }
-                });
-                
-                $("#cust-request-return-btn").click(function(){
-                    $("#multivendorx-myac-order-return-wrap").slideToggle();
-                });
-            } )( jQuery );'
-        );
+        <?php
     }
 
     /**
@@ -1005,6 +928,21 @@ class Frontend {
         }
 
         wc_add_notice( __( 'Return request successfully submitted.', 'multivendorx' ) );
+    }
+    /**
+     * Add scripts
+     */
+    public function add_scripts() {
+        if ( ! is_wc_endpoint_url( 'view-order' ) ) {
+            return;
+        }
+        wp_enqueue_script(
+            'multivendorx-order-request',
+            plugin_dir_url(__FILE__) . 'src/assets/frontend.js',
+            array('jquery'),
+            MULTIVENDORX_PLUGIN_VERSION,
+            true
+        );   
     }
 
     public function view_order_content( $order_id ) {

@@ -99,7 +99,7 @@ const PendingReturn: React.FC<object> = () => {
 		try {
 			await axios({
 				method: 'PUT',
-				url: `${appLocalizer.apiUrl}/multivendorx/v1/returns/${orderId}`,
+				url: `${getApiLink(appLocalizer, 'returns')}/${orderId}`,
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
@@ -120,6 +120,11 @@ const PendingReturn: React.FC<object> = () => {
 		} finally {
 			setIsSubmitting(false);
 		}
+	};
+
+	const getMetaValue = (metaData: OrderMeta[], key: string): string => {
+		const meta = metaData.find((m) => m.key === key);
+		return meta ? meta.value : '';
 	};
 
 	const headers = {
@@ -232,11 +237,6 @@ const PendingReturn: React.FC<object> = () => {
 			type: 'date',
 		},
 	];
-
-	const getMetaValue = (metaData: OrderMeta[], key: string): string => {
-		const meta = metaData.find((m) => m.key === key);
-		return meta ? meta.value : '';
-	};
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);

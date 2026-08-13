@@ -66,26 +66,31 @@ class Rest extends \WP_REST_Controller {
         );
         register_rest_route(
             MultiVendorX()->rest_namespace,
-            '/' . $this->rest_return_base,
+            '/' . $this->rest_return_base . '/',
             array(
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_return_items', ),
                     'permission_callback' => array( $this, 'get_items_permissions_check', ),
                 ),
-            )
-        );
-        register_rest_route(
-        MultiVendorX()->rest_namespace,
-        '/returns/(?P<id>\d+)',
-        array(
-            array(
+                array(
                 'methods'             => \WP_REST_Server::EDITABLE,
                 'callback'            => array( $this, 'return_update' ),
                 'permission_callback' => array( $this, 'update_item_permissions_check' ),
             ),
-        )
-    );
+            )
+        );
+    //     register_rest_route(
+    //     MultiVendorX()->rest_namespace,
+    //     '/returns/(?P<id>\d+)',
+    //     array(
+    //         array(
+    //             'methods'             => \WP_REST_Server::EDITABLE,
+    //             'callback'            => array( $this, 'return_update' ),
+    //             'permission_callback' => array( $this, 'update_item_permissions_check' ),
+    //         ),
+    //     )
+    // );
     }
 
     /**
@@ -324,7 +329,6 @@ class Rest extends \WP_REST_Controller {
 		return $error;
 	}
 	try {
-
 		// Parameters.
 		$limit = max( 1, (int) (
         $request->get_param( 'per_page' ) ?: $request->get_param( 'row' ) ?: 10 )
@@ -358,10 +362,7 @@ class Rest extends \WP_REST_Controller {
 
 		$status = 'return-requested';
 		$date_filter = '';
-		$normalized = Utill::normalize_date_range(
-			$start_date,
-			$end_date
-		);
+		$normalized = Utill::normalize_date_range( $start_date, $end_date );
         
 		if ( $normalized['start_date'] && $normalized['end_date'] ) {
 
@@ -525,13 +526,12 @@ class Rest extends \WP_REST_Controller {
 	        }
      }
 
-
     /**
      * Create a new refund.
      *
      * @param object $request Full data about the request.
      */
-    public function update_item( $request ) {
+        public function update_item( $request ) {
         $refund_info = $request->get_param( 'payload' );
 
         $order_id               = $refund_info['orderId'] ? absint( $refund_info['orderId'] ) : 0;
