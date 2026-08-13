@@ -22,6 +22,7 @@ addFilter(
 		return configs;
 	}
 );
+
 addFilter( 
 	'multivendorx_approval_queue_api_configs', 
 	'multivendorx/return-api', 

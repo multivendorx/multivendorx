@@ -321,10 +321,9 @@ class Rest extends \WP_REST_Controller {
 		if ( is_wp_error( $error ) ) {
 			MultiVendorX()->util->log( $error );
 		}
-
 		return $error;
 	}
-	    try {
+	try {
 
 		// Parameters.
 		$limit = max( 1, (int) (
@@ -340,61 +339,38 @@ class Rest extends \WP_REST_Controller {
 	    $order         = strtolower( $request->get_param( 'order' ) ) === 'asc' ? 'ASC' : 'DESC';
         $start_date = $request->get_param( 'start_date' );
 		$end_date   = $request->get_param( 'end_date' );
-
-		// Pagination offset.
+	
 		$offset = ( $page - 1 ) * $limit;
-
-		/*
-		 * Build meta query.
-		 *
-		 * Only orders belonging to a store are returned.
-		 */
 		$meta_query = array();
 
 		if ( ! empty( $store_id ) ) {
-
 			$meta_query[] = array(
 				'key'     => Utill::POST_META_SETTINGS['store_id'],
 				'value'   => $store_id,
 				'compare' => '=',
 			);
-
 		} else {
-
 			$meta_query[] = array(
 				'key'     => Utill::POST_META_SETTINGS['store_id'],
 				'compare' => 'EXISTS',
 			);
 		}
 
-		/*
-		 * Only return orders with a pending return request.
-		 *
-		 * This is the important difference from refunds.
-		 */
 		$status = 'return-requested';
-
-		/*
-		 * Date filter.
-		 */
 		$date_filter = '';
-
 		$normalized = Utill::normalize_date_range(
 			$start_date,
 			$end_date
 		);
-
+        
 		if ( $normalized['start_date'] && $normalized['end_date'] ) {
 
 			$date_filter = $normalized['start_date'] . '...' . $normalized['end_date'];
 		}
 
-		/*
-		 * Count query.
-		 */
 		$count_args = array(
 			'status'     => $status,
-			'meta_query' => $meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			'meta_query' => $meta_query,
 			'return'     => 'ids',
 		);
 
@@ -403,13 +379,9 @@ class Rest extends \WP_REST_Controller {
 		}
 
 		$total = count( wc_get_orders( $count_args ) );
-
-		/*
-		 * Main query.
-		 */
 		$args = array(
 			'status'     => $status,
-			'meta_query' => $meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			'meta_query' => $meta_query,
 			'limit'      => $limit,
 			'offset'     => $offset,
 			'return'     => 'objects',
@@ -420,28 +392,14 @@ class Rest extends \WP_REST_Controller {
             $args['date_created'] = $date_filter; 
         }
 
-		/*
-		 * Sorting.
-		 */
 		if ( in_array( $order_by, array( 'date', 'order_id', ), true ) ) {
 
 			$args['orderby'] = 'order_id' === $order_by ? 'ID' : 'date';
             $args['order'] = $order;
 		}
 
-		/*
-		 * Fetch return-requested orders.
-		 */
 		$orders = wc_get_orders( $args );
 
-		/*
-		 * Search filtering.
-		 *
-		 * Search is performed against:
-		 * - Order ID
-		 * - Customer name
-		 * - Customer email
-		 */
 		if ( $search_action && $search_value ) {
 
 			$orders = array_filter( $orders, function ( $order ) use (
@@ -456,25 +414,11 @@ class Rest extends \WP_REST_Controller {
 						case 'order_id': return ( string ) $order->get_id() === $search_value;
 
 						case 'customer':
-
 							$name = strtolower( $order->get_formatted_billing_full_name() );
-
 							$email = strtolower( $order->get_billing_email() );
-
-							return (
-								false !== strpos(
-									$name,
-									$search_value
-								)
-								||
-								false !== strpos(
-									$email,
-									$search_value
-								)
-							);
+							return ( false !== strpos( $name, $search_value ) || false !== strpos( $email, $search_value ) );
 
 						default:
-
 							return true;
 					}
 				}
@@ -483,63 +427,30 @@ class Rest extends \WP_REST_Controller {
 			$orders = array_values( $orders );
 		}
 
-		/*
-		 * Build response data.
-		 */
 		$return_list = array_map(
 			function ( $order ) {
-
 				$store_id = $order->get_meta(
 					Utill::POST_META_SETTINGS['store_id']
 				);
-
 				$store = new Store( $store_id );
-
-				$store_name = $store->exists()
-					? $store->get( 'name' )
-					: '';
-
+				$store_name = $store->exists() ? $store->get( 'name' ) : '';
 				$customer_id = $order->get_customer_id();
-
 				$customer_name = $order->get_formatted_billing_full_name();
-
 				$customer_email = $order->get_billing_email();
-
-				/*
-				 * Return products.
-				 */
 				$return_products = $order->get_meta( '_customer_return_product', true );
-
-				/*
-				 * Return reason.
-				 */
 				$return_reason = $order->get_meta( '_customer_return_reason', true );
-
-				/*
-				 * Additional information.
-				 */
 				$return_additional_info = $order->get_meta( '_customer_return_additional_info', true );
-
-				/*
-				 * Return images.
-				 */
 				$return_images = $order->get_meta( '_customer_return_product_imgs', true );
 
 				if ( ! is_array( $return_images ) ) {
-					$return_images = empty( $return_images )
-						? array()
-						: array( $return_images );
+					$return_images = empty( $return_images ) ? array() : array( $return_images );
 				}
 
-				/*
-				 * Build product details.
-				 */
 				$products = array();
 
 				if ( is_array( $return_products ) ) {
 
 					foreach ( $return_products as $product_id ) {
-
 						$product = wc_get_product( $product_id );
 
 						if ( ! $product ) {
@@ -578,63 +489,35 @@ class Rest extends \WP_REST_Controller {
 
                     'return_images' => $return_images,                         
                     'products' => $products,
-                    'date_created' => $order->get_date_created()
-                    ? Utill::multivendorx_rest_prepare_date_response(
-                    $order->get_date_created()->date_i18n( 'Y-m-d H:i:s' )
-                ) : '',
+                    'date_created' => $order->get_date_created() ? Utill::multivendorx_rest_prepare_date_response( 
+                    $order->get_date_created()->date_i18n( 'Y-m-d H:i:s' ) ) : '',
 
-                'date_created_gmt' => $order->get_date_created()
-                ? Utill::multivendorx_rest_prepare_date_response(
-                $order->get_date_created()->date_i18n( 'Y-m-d H:i:s' ),
-                true
-                ) : '',
+                    'date_created_gmt' => $order->get_date_created() ? Utill::multivendorx_rest_prepare_date_response(
+                    $order->get_date_created()->date_i18n( 'Y-m-d H:i:s' ), true ) : '',
 
-                'status' => $order->get_status(),
-                'customer_id' => $customer_id,
-                'customer_name' => $customer_name,
-                'customer_email' => $customer_email,
-                'customer_edit_link' => $customer_id
-                ? admin_url(
-                'user-edit.php?user_id=' . $customer_id
-                ): '',
-);
+                    'status' => $order->get_status(),
+                    'customer_id' => $customer_id,
+                    'customer_name' => $customer_name,
+                    'customer_email' => $customer_email,
+                    'customer_edit_link' => $customer_id ? admin_url( 'user-edit.php?user_id=' . $customer_id ): '',
+                );
 			},
 			$orders
 		);
 
-		/*
-		 * Manual sorting for order ID.
-		 */
 		if ( 'order_id' === $order_by ) {
-
 			usort(
 				$return_list,
-				fn ( $a, $b ) =>
-					( 'ASC' === $order )
-						? $a['order_id']
-							<=>
-							$b['order_id']
-						: $b['order_id']
-							<=>
-							$a['order_id']
+				fn ( $a, $b ) => ( 'ASC' === $order ) ? $a['order_id'] <=> $b['order_id'] : $b['order_id'] <=> $a['order_id']
 			);
 		}
-
-		/*
-		 * Build REST response.
-		 */
 		$response = rest_ensure_response( $return_list );
-
 		$response->header( 'X-WP-Total', $total );
-
 		$response->header( 'X-WP-TotalPages', (int) ceil( $total / $limit ) );
-
 		return $response;
-
 	    } catch ( \Exception $e ) {
 
 		MultiVendorX()->util->log( $e );
-
 		return new \WP_Error(
 			'server_error',
 			__( 'Unexpected server error', 'multivendorx' ),
@@ -775,35 +658,34 @@ class Rest extends \WP_REST_Controller {
 
         if ( ! in_array( $decision, array( 'approve', 'reject', ), true ) ) {
             return new \WP_Error( 'invalid_decision', __( 'Invalid return decision.','multivendorx' ),
-            array(
-                'status' => 400,
-            )
-        );
-    }
+                array(
+                    'status' => 400,
+                )
+            );
+        }
 
         $order = wc_get_order( $order_id );
 
         if ( ! $order ) {
             return new \WP_Error( 'order_not_found', __( 'Order not found.', 'multivendorx' ),
-            array(
-                'status' => 404,
-            )
-        );
-    }
+                array(
+                    'status' => 404,
+                )
+            );
+        }
 
         if ( 'return-requested' !== $order->get_status() ) {
             return new \WP_Error( 'invalid_status', __(
                 'This return request has already been processed.',
                 'multivendorx'
             ),
-            array(
-                'status' => 400,
-            )
-        );
-    }
+                array(
+                    'status' => 400,
+                )
+            );
+        }
 
         if ( 'approve' === $decision ) {
-
             $order->update_meta_data(
                 '_customer_return_order',
                 'return_accept'
@@ -811,7 +693,7 @@ class Rest extends \WP_REST_Controller {
 
             $order->update_meta_data(
                 '_customer_return_admin_note',
-            $note
+                $note
             );
 
             $order->set_status(
@@ -822,7 +704,7 @@ class Rest extends \WP_REST_Controller {
                 __(
                     'Site admin accepted the return request.',
                     'multivendorx'
-            )
+                )
             );
 
         } else {
@@ -848,7 +730,6 @@ class Rest extends \WP_REST_Controller {
                 )
             );
         }
-
             $order->save();
 
             return rest_ensure_response(

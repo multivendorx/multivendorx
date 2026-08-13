@@ -8,39 +8,39 @@ import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 import { getUrl, toWcIsoDate } from '../../../src/services/commonFunction';
 
-	interface OrderMeta {
-		key: string;
-		value: string;
-	}
+interface OrderMeta {
+	key: string;
+	value: string;
+}
 
-	interface ReturnOrder {
-		id: number;
-		meta_data: OrderMeta[];
-		return_images: string[];
-	}
+interface ReturnOrder {
+	id: number;
+	meta_data: OrderMeta[];
+	return_images: string[];
+}
 
-	interface StoreOption {
-		label: string;
-		value: number;
-	}
+interface StoreOption {
+	label: string;
+	value: number;
+}
 
-	interface StoreApi {
-		id: number;
-		store_name: string;
-	}
+interface StoreApi {
+	id: number;
+	store_name: string;
+}
 
-	interface OrderRow extends ReturnOrder {
-		store_name?: string;
-		total?: number;
-		commission_amount?: number;
-		date_created?: string;
-	}
+interface OrderRow extends ReturnOrder {
+	store_name?: string;
+	total?: number;
+	commission_amount?: number;
+	date_created?: string;
+}
 
-	const EMPTY_ORDER: ReturnOrder = {
-		id: 0,
-		meta_data: [],
-		return_images: [],
-	};
+const EMPTY_ORDER: ReturnOrder = {
+	id: 0,
+	meta_data: [],
+	return_images: [],
+};
 
 const PendingReturn: React.FC<object> = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);

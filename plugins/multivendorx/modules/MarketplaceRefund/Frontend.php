@@ -792,7 +792,6 @@ class Frontend {
 
         global $wp;
 
-
         if ( empty( $_POST['cust_request_return_sbmt'] ) ) { 
             return; 
         }
@@ -815,72 +814,63 @@ class Frontend {
         if ( ! $order ) {
             return;
         }
-
     
         if ( (int) $order->get_customer_id() !== (int) get_current_user_id() ) {
             return;
         }
 
-    
         $allowed_statuses = MultiVendorX()->setting->get_setting( 'customer_return_status', array() );
 
         if ( ! in_array( $order->get_status(), $allowed_statuses, true ) ) {
             wc_add_notice( __('Return is not allowed for this order status.','multivendorx' ), 'error' );
             return;
         }
-
     
         $return_days = absint( MultiVendorX()->setting->get_setting( 'refund_days', 0 ) );
 
         if ( $return_days > 0 ) {
 
-        $created = $order->get_date_created();
+            $created = $order->get_date_created();
 
-        if ( ! $created ) {
-            return;
-        }
+            if ( ! $created ) {
+                return;
+            }
 
-        $expiry = strtotime( '+' . $return_days . ' days', $created->getTimestamp() );
+            $expiry = strtotime( '+' . $return_days . ' days', $created->getTimestamp() );
 
-        if ( time() > $expiry ) {
+            if ( time() > $expiry ) {
 
             wc_add_notice( __( 'Your return period has expired.', 'multivendorx' ),
                 'error' );
             return;
+            }
         }
-    }
-
    
         $return_products = isset( $_POST['return_product'] ) ? array_map( 'absint',
             (array) wp_unslash( $_POST['return_product'] ) ) : array();
 
         if ( empty( $return_products ) ) {
-
-        wc_add_notice( __( 'Kindly choose a product.', 'multivendorx' ), 'error' );
-        return;
-    }
+            wc_add_notice( __( 'Kindly choose a product.', 'multivendorx' ), 'error' );
+            return;
+        }
 
         $return_reason = isset( $_POST['return_reason_option'] ) ? sanitize_textarea_field( wp_unslash( $_POST['return_reason_option'] ) ) : '';
 
-        $additional_info = isset( $_POST['return_reason_other'] )
-        ? sanitize_textarea_field( wp_unslash( $_POST['return_reason_other'] ) ) : '';
+        $additional_info = isset( $_POST['return_reason_other'] ) ? sanitize_textarea_field( wp_unslash( $_POST['return_reason_other'] ) ) : '';
 
         if($return_reason === 'others' && $additional_info !== ''){
             $return_reason = $additional_info;
         }
 
         if ( empty( $return_reason ) ) {
-
-        wc_add_notice( __('Kindly provide a return reason.', 'multivendorx' ), 'error' );
-        return;
-    }
+            wc_add_notice( __('Kindly provide a return reason.', 'multivendorx' ), 'error' );
+            return;
+        }
         $return_settings = MultiVendorX()->setting->get_setting( 'return', array() );
-
         $image_required = in_array( 'image_require', (array) $return_settings, true );
         $uploaded_urls = array();
         $attachment_ids = array();
 
-    
         if ( ! empty( $_FILES['return_product_img'] ) ) {
 
             $files = $_FILES['return_product_img'];
@@ -956,8 +946,8 @@ class Frontend {
                 $attachment_ids[] =
                     $attachment_id;
             }
+            }
         }
-    }
 
             if ( $image_required && empty( $uploaded_urls ) ) {
 
@@ -973,7 +963,6 @@ class Frontend {
             $order->update_meta_data('_customer_return_product_img_ids', $attachment_ids );
             $order->set_status( 'return-requested' );
             $order->save();
-
 
             $store_id = $order->get_meta( Utill::POST_META_SETTINGS['store_id'], true );
 
@@ -1001,8 +990,8 @@ class Frontend {
                             'comment_author' => sanitize_text_field( $user_info->user_login ), 
                             'comment_author_email' => sanitize_email( $user_info->user_email ),
                         )
-            );
-        }
+                    );
+            }
 
             $parent_order_id = $order->get_parent_id();
 
