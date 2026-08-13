@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 
+
 export default {
 	id: 'refunds',
 	priority: 5,
