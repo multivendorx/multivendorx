@@ -22,7 +22,6 @@ class Admin {
     public function __construct() {
         add_action( 'init', array( $this, 'register_status_for_refund' ) );
         add_filter( 'wc_order_statuses', array( $this, 'add_refund_requested_to_order_statuses' ) );
-
         add_action( 'woocommerce_process_shop_order_meta', array( $this, 'multivendorx_refund_order_status_save' ) );
     }
 
