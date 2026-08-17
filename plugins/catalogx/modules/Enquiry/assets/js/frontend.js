@@ -61,8 +61,9 @@ jQuery( document ).ready( function ( $ ) {
                 enquiryFrontend.ajaxurl,
                 {
                     action: 'add_variation_for_enquiry_mail',
+                    nonce: enquiryFrontend.nonce,
                     product_id: variationId,
-                    variation_data: variationData,
+                    variation_payload: variationData,
                 },
                 function ( response ) {
                     console.log( response );

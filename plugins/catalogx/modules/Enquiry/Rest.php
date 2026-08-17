@@ -145,8 +145,11 @@ class Rest {
                 'user_additional_fields' => serialize( $additional_fields ),
             );
 
-            $product_variations = get_transient( 'variation_list' ) ?: array();
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+            if ( ! WC()->session ) {
+                WC()->initialize_session();
+            }
+
+            $product_variations = WC()->session ? WC()->session->get( 'catalogx_variation_list', array() ) : array();            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
             $result = $wpdb->insert( "{$wpdb->prefix}" . Utill::TABLES['enquiry'], $enquiry_record );
 
             if ( $result ) {
