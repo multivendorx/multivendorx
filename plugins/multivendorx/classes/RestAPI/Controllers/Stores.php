@@ -131,177 +131,108 @@ class Stores extends \WP_REST_Controller {
         }
 
         try {
-            if ( $request->get_param( 'public' ) ) {
-                $args = $this->get_store_query_args( $request );
-                $stores = StoreUtil::get_store_information( $args );
-
-                if ( ! empty( $args['map_store_ids'] ) ) {
-                    $order = array_flip( array_map( 'intval', $args['map_store_ids'] ) );
-                    usort( $stores, fn( $a, $b ) => ( $order[ (int) $a['ID'] ] ?? PHP_INT_MAX ) <=> ( $order[ (int) $b['ID'] ] ?? PHP_INT_MAX ) );
-                }
-
-                $response = rest_ensure_response( array_map( array( $this, 'prepare_store_response' ), $stores ) );
-                $total_args = $args;
-                unset( $total_args['limit'], $total_args['offset'] );
-                $response->header( 'X-WP-Total', (int) StoreUtil::get_store_information( array_merge( $total_args, array( 'count' => true ) ) ) );
-
-                return $response;
-            }
-
-            if ( ! $this->get_items_permissions_check( $request ) ) {
-                return new \WP_Error(
-                    'rest_forbidden',
-                    __( 'Sorry, you are not allowed to access store data.', 'multivendorx' ),
-                    array( 'status' => rest_authorization_required_code() )
-                );
-            }
-
-            if ( $request->get_param( 'visitorMap' ) ) {
-                $store_id  = (int) $request->get_param( 'id' );
-                $cache_key = 'multivendorx_visitor_stats_data_' . $store_id;
-
-                $cached = get_transient( $cache_key );
-
-                if ( false !== $cached ) {
-                    return $cached;
-                }
-
-                $dates = Utill::normalize_date_range(
-                    $request->get_param( 'start_date' ),
-                    $request->get_param( 'end_date' )
-                );
-
-                $start = $dates['start_date'];
-                $end   = $dates['end_date'];
-                global $wpdb;
-                $table_name = $wpdb->prefix . Utill::TABLES['visitors_stats'];
-
-                // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                $rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-                    $wpdb->prepare(
-                        "SELECT country
-                        FROM {$table_name}
-                        WHERE store_id = %d
-                        AND created >= %s
-                        AND created <= %s",
-                        $store_id,
-                        $start,
-                        $end
-                    )
-                );
-                // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-
-                $map_stats = array();
-
-                foreach ( $rows as $row ) {
-                    $code               = strtolower( ! empty( $row->country ) ? $row->country : '' );
-                    $map_stats[ $code ] = ( $map_stats[ $code ] ?? 0 ) + 1;
-                }
-
-                arsort( $map_stats );
-
-                $colors = array();
-                $scale  = array( '#316fa8', '#3f7fb5', '#4c8fc1', '#5b9fcd', '#6bb0d9' );
-                $i      = 0;
-
-                foreach ( array_slice( $map_stats, 0, 5, true ) as $code => $count ) {
-                    $colors[ $code ] = $scale[ $i ] ?? '#316fa8';
-                    ++$i;
-                }
-
-                $data = array(
-                    'map_stats' => array_map(
-                        fn( $count ) => array( 'hits_count' => $count ),
-                        $map_stats
-                    ),
-                    'colors'    => $colors,
-                );
-
-                set_transient( $cache_key, $data, DAY_IN_SECONDS );
-
-                return rest_ensure_response( $data );
-            }
-
-            // Store registration (rejected stores).
-            if ( $request->get_param( 'store_registration' ) ) {
-                $rejected_stores = Store::get_store( 'rejected', 'primary_owner' );
-
-                $all_stores = array();
-                $response   = array();
-                $store_data = array();
-
-                foreach ( $rejected_stores as $store ) {
-                    $store_id     = (int) $store['ID'];
-                    $store_object = new Store( $store_id );
-                    if ( ! $store_object->exists() ) {
-                        continue;
-                    }
-                    $all_stores[] = array(
-                        'key'   => $store_id,
-                        'value' => $store_id,
-                        'label' => $store['name'],
-                    );
-
-                    $form_data  = StoreUtil::get_store_registration_form( $store_id );
-                    $response[] = $form_data['all_registration_data'] ?? array();
-
-                    $store_data[] = array(
-                        'id'   => $store_id,
-                        'note' => maybe_unserialize(
-                            $store_object->get_meta(
-                                Utill::STORE_SETTINGS_KEYS['store_reject_note']
-                            )
-                        ),
-                    );
-                }
-
-                return rest_ensure_response(
-                    compact( 'all_stores', 'response', 'store_data' )
-                );
-            }
-
-            // Slug existence check.
-            $slug = $request->get_param( 'slug' );
-            if ( ! empty( $slug ) ) {
-                $id     = (int) $request->get_param( 'id' );
-                $exists = Store::store_slug_exists( $slug, $id );
-                return rest_ensure_response( array( 'exists' => $exists > 0 ) );
-            }
-
-            // Early-return flags.
+            $permission = $this->get_items_permissions_check( $request );
             $flag_map = array(
-                'pending_withdraw' => 'get_stores_with_pending_withdraw',
-                'deactivate'       => 'get_stores_with_deactivate_requests',
-                'options'          => 'get_stores_dropdown',
-                'status'           => 'get_pending_stores',
+                'visitorMap'         => 'get_visitor_map_data',
+                'store_registration' => 'get_store_registration_data',
+                'slug'               => 'check_store_slug',
+                'pending_withdraw'   => 'get_stores_with_pending_withdraw',
+                'deactivate'         => 'get_stores_with_deactivate_requests',
+                'options'            => 'get_stores_dropdown',
+                'status'             => 'get_pending_stores',
             );
             $flag_map = apply_filters( 'multivendorx_rest_store_handlers', $flag_map );
-            foreach ( $flag_map as $param => $method ) {
-                if ( $request->get_param( $param ) ) {
+            if ( $permission ) {
+                foreach ( $flag_map as $param => $method ) {
+                    if ( ! $request->get_param( $param ) ) {
+                        continue;
+                    }
+
                     if ( method_exists( $this, $method ) ) {
                         return rest_ensure_response( $this->$method( $request ) );
                     }
+
                     return apply_filters( $method, rest_ensure_response( array() ), $request );
                 }
             }
 
             // Pagination & filters.
-            $args = $this->get_store_query_args( $request );
+            $limit  = $request->get_param( 'row' );
+            $page   = $request->get_param( 'page' );
+            $offset = ( $page - 1 ) * $limit;
+            $args   = array();
 
+            if ( $limit > 0 ) {
+                $args['limit']  = $limit;
+                $args['offset'] = $offset;
+            }
+
+            $search = sanitize_text_field( $request->get_param( 'search_value' ) );
+            if ( ! empty( $search ) ) {
+                $args['searchField'] = $search;
+            } else {
+                $dates = Utill::normalize_date_range(
+                    $request->get_param( 'start_date' ),
+                    $request->get_param( 'end_date' )
+                );
+
+                if ( ! empty( $dates['start_date'] ) ) {
+                    $args['start_date'] = $dates['start_date'];
+                }
+
+                if ( ! empty( $dates['end_date'] ) ) {
+                    $args['end_date'] = $dates['end_date'];
+                }
+            }
+
+            $status = $request->get_param( 'filter_status' );
+            if ( ! empty( $status ) ) {
+                $args['status'] = $status;
+            }
+
+            $exclude_ids = $request->get_param( 'exclude_ids' );
+            if ( ! empty( $exclude_ids ) ) {
+                $args['exclude_ids'] = $exclude_ids;
+            }
+            $order_by = $request->get_param( 'order_by' );
+            if ( ! empty( $order_by ) ) {
+                $args['order_by'] = sanitize_text_field( $order_by );
+                $args['order']    = sanitize_text_field( $request->get_param( 'order' ) );
+            }
+            $lat    = $request->get_param( 'location_lat' );
+            $lng    = $request->get_param( 'location_lng' );
+            $radius = $request->get_param( 'radius_max' );
+            $unit   = $request->get_param( 'radius_unit' );
+            if ( ! empty( $lat ) && ! empty( $lng ) && ! empty( $radius ) ) {
+                $store_ids = StoreUtil::get_stores_by_radius(
+                    floatval( $lat ),
+                    floatval( $lng ),
+                    floatval( $radius ),
+                    $unit
+                );
+
+                if ( ! empty( $store_ids ) ) {
+                    $args['ID'] = $store_ids;
+                    // Keep nearest-first order from radius query.
+                    unset( $args['order_by'], $args['order'] );
+                }
+            }
             // Fetch & format stores.
             $stores = StoreUtil::get_store_information( $args );
 
-            // Keep nearest-first order from radius query.
-            if ( ! empty( $args['map_store_ids'] ) ) {
-                $store_order = array_flip( array_map( 'intval', $args['map_store_ids'] ) );
-
+            if ( ! empty( $store_ids ) ) {
+                $store_order = array_flip( array_map( 'intval', $store_ids ) );
                 usort(
                     $stores,
                     function ( $a, $b ) use ( $store_order ) {
                         $a_pos = $store_order[ (int) $a['ID'] ] ?? PHP_INT_MAX;
                         $b_pos = $store_order[ (int) $b['ID'] ] ?? PHP_INT_MAX;
 
-                        return $a_pos <=> $b_pos;
+                        if ( $a_pos === $b_pos ) {
+                            return 0;
+                        }
+
+                        return ( $a_pos < $b_pos ) ? -1 : 1;
                     }
                 );
             }
@@ -309,7 +240,7 @@ class Stores extends \WP_REST_Controller {
             $formatted_stores = array();
 
             foreach ( $stores as $store ) {
-                $formatted_stores[] = $this->prepare_store_response( $store, true );
+                $formatted_stores[] = $this->prepare_store_response( $store, $permission );
             }
 
             // Prepare status filters.
@@ -1460,92 +1391,148 @@ class Stores extends \WP_REST_Controller {
     }
 
     /**
-     * Build store query arguments from REST request filters.
+     * Get visitor map statistics for a store.
      *
-     * Handles pagination, search, date range, status, excluded stores,
-     * ordering, and location-based radius filtering.
-     *
-     * @param \WP_REST_Request $request REST API request.
-     * @return array Store query arguments.
+     * @param object $request Request data.
+     * @return \WP_REST_Response
      */
-    private function get_store_query_args( $request ) {
-        $limit  = absint( $request->get_param( 'row' ) );
-        $page   = max( 1, absint( $request->get_param( 'page' ) ) );
-        $offset = ( $page - 1 ) * $limit;
-        $args   = array();
+    private function get_visitor_map_data( $request ) {
+        $store_id  = (int) $request->get_param( 'id' );
+        $cache_key = 'multivendorx_visitor_stats_data_' . $store_id;
 
-        // Pagination.
-        if ( $limit > 0 ) {
-            $args['limit']  = $limit;
-            $args['offset'] = $offset;
+        $cached = get_transient( $cache_key );
+
+        if ( false !== $cached ) {
+            return rest_ensure_response( $cached );
         }
 
-        // Search or date filter.
-        $search = sanitize_text_field( $request->get_param( 'search_value' ) );
+        $dates = Utill::normalize_date_range(
+            $request->get_param( 'start_date' ),
+            $request->get_param( 'end_date' )
+        );
 
-        if ( ! empty( $search ) ) {
-            $args['searchField'] = $search;
-        } else {
-            $dates = Utill::normalize_date_range(
-                $request->get_param( 'start_date' ),
-                $request->get_param( 'end_date' )
+        $start = $dates['start_date'];
+        $end   = $dates['end_date'];
+
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . Utill::TABLES['visitors_stats'];
+
+        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $wpdb->prepare(
+                "SELECT country
+                FROM {$table_name}
+                WHERE store_id = %d
+                AND created >= %s
+                AND created <= %s",
+                $store_id,
+                $start,
+                $end
+            )
+        );
+        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+        $map_stats = array();
+
+        foreach ( $rows as $row ) {
+            $code               = strtolower( ! empty( $row->country ) ? $row->country : '' );
+            $map_stats[ $code ] = ( $map_stats[ $code ] ?? 0 ) + 1;
+        }
+
+        arsort( $map_stats );
+
+        $colors = array();
+        $scale  = array(
+            '#316fa8',
+            '#3f7fb5',
+            '#4c8fc1',
+            '#5b9fcd',
+            '#6bb0d9',
+        );
+
+        $i = 0;
+
+        foreach ( array_slice( $map_stats, 0, 5, true ) as $code => $count ) {
+            $colors[ $code ] = $scale[ $i ] ?? '#316fa8';
+            ++$i;
+        }
+
+        $data = array(
+            'map_stats' => array_map(
+                fn( $count ) => array( 'hits_count' => $count ),
+                $map_stats
+            ),
+            'colors'    => $colors,
+        );
+
+        set_transient( $cache_key, $data, DAY_IN_SECONDS );
+
+        return rest_ensure_response( $data );
+    }
+
+    /**
+     * Get rejected store registration data.
+     *
+     * @param object $request Request data.
+     * @return \WP_REST_Response
+     */
+    private function get_store_registration_data( $request ) {
+        $rejected_stores = Store::get_store( 'rejected', 'primary_owner' );
+
+        $all_stores = array();
+        $response   = array();
+        $store_data = array();
+
+        foreach ( $rejected_stores as $store ) {
+            $store_id     = (int) $store['ID'];
+            $store_object = new Store( $store_id );
+
+            if ( ! $store_object->exists() ) {
+                continue;
+            }
+
+            $all_stores[] = array(
+                'key'   => $store_id,
+                'value' => $store_id,
+                'label' => $store['name'],
             );
 
-            if ( ! empty( $dates['start_date'] ) ) {
-                $args['start_date'] = $dates['start_date'];
-            }
+            $form_data  = StoreUtil::get_store_registration_form( $store_id );
+            $response[] = $form_data['all_registration_data'] ?? array();
 
-            if ( ! empty( $dates['end_date'] ) ) {
-                $args['end_date'] = $dates['end_date'];
-            }
-        }
-
-        // Status.
-        $status = $request->get_param( 'filter_status' );
-
-        if ( ! empty( $status ) ) {
-            $args['status'] = $status;
-        }
-
-        // Exclude stores.
-        $exclude_ids = $request->get_param( 'exclude_ids' );
-
-        if ( ! empty( $exclude_ids ) ) {
-            $args['exclude_ids'] = $exclude_ids;
-        }
-
-        // Ordering.
-        $order_by = $request->get_param( 'order_by' );
-
-        if ( ! empty( $order_by ) ) {
-            $args['order_by'] = sanitize_text_field( $order_by );
-            $args['order']    = sanitize_text_field( $request->get_param( 'order' ) );
-        }
-
-        // Location radius filter.
-        $lat    = $request->get_param( 'location_lat' );
-        $lng    = $request->get_param( 'location_lng' );
-        $radius = $request->get_param( 'radius_max' );
-        $unit   = $request->get_param( 'radius_unit' );
-
-        if ( ! empty( $lat ) && ! empty( $lng ) && ! empty( $radius ) ) {
-            $store_ids = StoreUtil::get_stores_by_radius(
-                floatval( $lat ),
-                floatval( $lng ),
-                floatval( $radius ),
-                $unit
+            $store_data[] = array(
+                'id'   => $store_id,
+                'note' => maybe_unserialize(
+                    $store_object->get_meta(
+                        Utill::STORE_SETTINGS_KEYS['store_reject_note']
+                    )
+                ),
             );
-
-            if ( ! empty( $store_ids ) ) {
-                $args['ID']            = $store_ids;
-                $args['map_store_ids'] = $store_ids;
-
-                // Radius query already returns nearest-first.
-                unset( $args['order_by'], $args['order'] );
-            }
         }
 
-        return $args;
+        return rest_ensure_response(
+            compact( 'all_stores', 'response', 'store_data' )
+        );
+    }
+
+    /**
+     * Check whether a store slug already exists.
+     *
+     * @param object $request Request data.
+     * @return \WP_REST_Response
+     */
+    private function check_store_slug( $request ) {
+        $slug = $request->get_param( 'slug' );
+        $id   = (int) $request->get_param( 'id' );
+
+        $exists = Store::store_slug_exists( $slug, $id );
+
+        return rest_ensure_response(
+            array(
+                'exists' => $exists > 0,
+            )
+        );
     }
 
     /**

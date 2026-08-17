@@ -171,7 +171,6 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 			url: getApiLink(storesList, 'stores'),
 			headers: { 'X-WP-Nonce': storesList.nonce },
 			params: {
-				public:true,
 				page: page,
 				row: perPage,
 				filters: true,
