@@ -186,7 +186,7 @@ export default {
 			desc: 'A product with variations, like different SKU, price, stock option, etc.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/variable-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
-			proModule: false,
+			proModule: true,
 			freeFeatures: [
 				__('Offer size, color, or format options on one listing', 'multivendorx'),
 				__('Each variation keeps its own price and stock', 'multivendorx'),
@@ -200,7 +200,7 @@ export default {
 			desc: 'List and describe products on your marketplace but sell them elsewhere.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/external-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
-			proModule: false,
+			proModule: true,
 			freeFeatures: [
 				__('Sends buyers to another site to complete checkout', 'multivendorx'),
 				__('Useful for affiliate or drop-ship style listings', 'multivendorx'),
@@ -214,7 +214,7 @@ export default {
 			desc: 'A collection of simple, related products that can be purchased individually.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/grouped-product/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
-			proModule: false,
+			proModule: true,
 			freeFeatures: [
 				__('Bundles related simple products under one listing', 'multivendorx'),
 				__('Customers buy items individually or as a set', 'multivendorx'),
@@ -616,7 +616,7 @@ export default {
 			desc: 'Reports on sales, orders, and revenue, with integration for Google Analytics.',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/store-analytics/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
-			proModule: false,
+			proModule: true,
 			freeFeatures: [
 				__('Google Analytics integration at the store level', 'multivendorx'),
 				__('Sales, order, and revenue reports per store', 'multivendorx'),
@@ -665,7 +665,7 @@ export default {
 			desc: 'Ensure stores meet marketplace requirements with automated policy checks.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/marketplace-compliance/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=compliance`,
-			proModule: true,
+			proModule: false,
 			proFeatures: [
 				__('Verified and featured store badges build trust', 'multivendorx'),
 				__('Identity, address, and social profile verification', 'multivendorx'),
@@ -710,7 +710,7 @@ export default {
 			desc: 'Set and manage platform fees for each order or store to cover operational costs',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/marketplace-fee/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
 			settingsLink: `${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=commissions`,
-			proModule: false,
+			proModule: true,
 			freeFeatures: [
 				__('Fixed, percentage, or combined platform fee models', 'multivendorx'),
 				__('Charge at checkout or deduct from vendor earnings', 'multivendorx'),
@@ -875,7 +875,7 @@ export default {
 			desc: 'Adds social networking features to stores (profiles, connections, messaging).',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/mvx-buddypress/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
-			proModule: true,
+			proModule: false,
 			reqPluging: [
 				{
 					name: 'BuddyPress',
@@ -895,7 +895,7 @@ export default {
 			name: __('WPML', 'multivendorx'),
 			desc: 'Multi-language support so products and stores can be displayed in different languages.',
 			docLink: 'https://multivendorx.com/docs/knowledgebase/mvx-wpml/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx',
-			proModule: true,
+			proModule: false,
 			reqPluging: [
 				{
 					name: 'WPML',
