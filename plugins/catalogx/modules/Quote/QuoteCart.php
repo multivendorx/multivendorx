@@ -87,7 +87,7 @@ class QuoteCart extends \WP_REST_Controller {
         }
 
         // Check if user is admin or customer for other authenticated requests.
-        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
+        return current_user_can( 'customer' ) || current_user_can( 'manage_options' );
     }
 
     /**
