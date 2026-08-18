@@ -156,67 +156,11 @@ class Stores extends \WP_REST_Controller {
                 }
             }
 
-            // Pagination & filters.
-            $limit  = $request->get_param( 'row' );
-            $page   = $request->get_param( 'page' );
-            $offset = ( $page - 1 ) * $limit;
-            $args   = array();
+            $args = $this->get_store_query_args( $request );
 
-            if ( $limit > 0 ) {
-                $args['limit']  = $limit;
-                $args['offset'] = $offset;
-            }
-
-            $search = sanitize_text_field( $request->get_param( 'search_value' ) );
-            if ( ! empty( $search ) ) {
-                $args['searchField'] = $search;
-            } else {
-                $dates = Utill::normalize_date_range(
-                    $request->get_param( 'start_date' ),
-                    $request->get_param( 'end_date' )
-                );
-
-                if ( ! empty( $dates['start_date'] ) ) {
-                    $args['start_date'] = $dates['start_date'];
-                }
-
-                if ( ! empty( $dates['end_date'] ) ) {
-                    $args['end_date'] = $dates['end_date'];
-                }
-            }
-
-            $status = $request->get_param( 'filter_status' );
-            if ( ! empty( $status ) ) {
-                $args['status'] = $status;
-            }
-
-            $exclude_ids = $request->get_param( 'exclude_ids' );
-            if ( ! empty( $exclude_ids ) ) {
-                $args['exclude_ids'] = $exclude_ids;
-            }
-            $order_by = $request->get_param( 'order_by' );
-            if ( ! empty( $order_by ) ) {
-                $args['order_by'] = sanitize_text_field( $order_by );
-                $args['order']    = sanitize_text_field( $request->get_param( 'order' ) );
-            }
-            $lat    = $request->get_param( 'location_lat' );
-            $lng    = $request->get_param( 'location_lng' );
-            $radius = $request->get_param( 'radius_max' );
-            $unit   = $request->get_param( 'radius_unit' );
-            if ( ! empty( $lat ) && ! empty( $lng ) && ! empty( $radius ) ) {
-                $store_ids = StoreUtil::get_stores_by_radius(
-                    floatval( $lat ),
-                    floatval( $lng ),
-                    floatval( $radius ),
-                    $unit
-                );
-
-                if ( ! empty( $store_ids ) ) {
-                    $args['ID'] = $store_ids;
-                    // Keep nearest-first order from radius query.
-                    unset( $args['order_by'], $args['order'] );
-                }
-            }
+            $store_ids = $args['nearest_store_ids'] ?? array();
+            unset( $args['nearest_store_ids'] );
+            
             // Fetch & format stores.
             $stores = StoreUtil::get_store_information( $args );
 
@@ -1533,6 +1477,92 @@ class Stores extends \WP_REST_Controller {
                 'exists' => $exists > 0,
             )
         );
+    }
+
+    /**
+     * Get store query arguments.
+     *
+     * @param object $request Request data.
+     * @return array
+     */
+    private function get_store_query_args( $request ) {
+        $limit = $request->get_param( 'row' );
+        $page  = $request->get_param( 'page' );
+        $args  = array();
+
+        // Pagination.
+        if ( $limit > 0 ) {
+            $args['limit']  = $limit;
+            $args['offset'] = ( $page - 1 ) * $limit;
+        }
+
+        // Search or date filter.
+        $search = sanitize_text_field( $request->get_param( 'search_value' ) );
+
+        if ( ! empty( $search ) ) {
+            $args['searchField'] = $search;
+        } else {
+            $dates = Utill::normalize_date_range(
+                $request->get_param( 'start_date' ),
+                $request->get_param( 'end_date' )
+            );
+
+            if ( ! empty( $dates['start_date'] ) ) {
+                $args['start_date'] = $dates['start_date'];
+            }
+
+            if ( ! empty( $dates['end_date'] ) ) {
+                $args['end_date'] = $dates['end_date'];
+            }
+        }
+
+        // Status.
+        $status = $request->get_param( 'filter_status' );
+
+        if ( ! empty( $status ) ) {
+            $args['status'] = $status;
+        }
+
+        // Exclude stores.
+        $exclude_ids = $request->get_param( 'exclude_ids' );
+
+        if ( ! empty( $exclude_ids ) ) {
+            $args['exclude_ids'] = $exclude_ids;
+        }
+
+        // Sorting.
+        $order_by = $request->get_param( 'order_by' );
+
+        if ( ! empty( $order_by ) ) {
+            $args['order_by'] = sanitize_text_field( $order_by );
+            $args['order']    = sanitize_text_field(
+                $request->get_param( 'order' )
+            );
+        }
+
+        // Radius filter.
+        $lat    = $request->get_param( 'location_lat' );
+        $lng    = $request->get_param( 'location_lng' );
+        $radius = $request->get_param( 'radius_max' );
+        $unit   = $request->get_param( 'radius_unit' );
+
+        if ( ! empty( $lat ) && ! empty( $lng ) && ! empty( $radius ) ) {
+            $store_ids = StoreUtil::get_stores_by_radius(
+                floatval( $lat ),
+                floatval( $lng ),
+                floatval( $radius ),
+                $unit
+            );
+
+            if ( ! empty( $store_ids ) ) {
+                $args['ID'] = $store_ids;
+                $args['nearest_store_ids'] = $store_ids;        
+                // Keep nearest-first order from radius query.
+                unset( $args['order_by'], $args['order'] );
+            }
+        }
+
+        return $args;
     }
 
     /**
