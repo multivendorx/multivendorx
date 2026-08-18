@@ -66,7 +66,7 @@ class Subscribers extends \WP_REST_Controller {
      * @param \WP_REST_Request The REST request object.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return current_user_can( 'manage_options' ) || current_user_can( 'store_owner' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
     }
 
     /**
@@ -103,6 +103,14 @@ class Subscribers extends \WP_REST_Controller {
             if ( ! $export ) {
                 $response = rest_ensure_response( array() );
                 return apply_filters( 'notifima_pro_subscribers_list', $response, $request );
+            }
+
+            if ( ! current_user_can( 'manage_options' ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'Sorry, you are not allowed to access this resource.', 'notifima' ),
+                    array( 'status' => 403 )
+                );
             }
 
             $query_args = array(
