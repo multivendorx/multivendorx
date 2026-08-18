@@ -160,7 +160,7 @@ class Stores extends \WP_REST_Controller {
 
             $store_ids = $args['nearest_store_ids'] ?? array();
             unset( $args['nearest_store_ids'] );
-            
+
             // Fetch & format stores.
             $stores = StoreUtil::get_store_information( $args );
 
@@ -1569,10 +1569,10 @@ class Stores extends \WP_REST_Controller {
      * Prepare store response.
      *
      * @param array $store    Store data.
-     * @param bool  $is_admin Whether to include admin-only fields.
+     * @param bool  $permission Whether to include admin-only fields.
      * @return array Prepared store response.
      */
-    private function prepare_store_response( $store, $is_admin = false ) {
+    private function prepare_store_response( $store, $permission = false ) {
         $store_id   = (int) $store['ID'];
         $store_meta = Store::get_store( $store_id );
         $meta       = $store_meta->meta_data;
@@ -1589,7 +1589,7 @@ class Stores extends \WP_REST_Controller {
             'location_lng' => $meta[ $keys['location_lng'] ] ?? '',
         );
 
-        if ( $is_admin ) {
+        if ( $permission ) {
             $owner_id = StoreUtil::get_primary_owner( $store_id );
             $owner    = get_userdata( $owner_id );
 
