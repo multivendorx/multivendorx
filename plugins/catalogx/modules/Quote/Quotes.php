@@ -57,7 +57,7 @@ class Quotes extends \WP_REST_Controller {
         }
 
         // Check if user is admin or customer.
-        return current_user_can( 'customer' ) || current_user_can( 'manage_options' );
+        return current_user_can( 'customer' ) || current_user_can( 'wholesale_user' ) || current_user_can( 'manage_options' );
     }
 
 
