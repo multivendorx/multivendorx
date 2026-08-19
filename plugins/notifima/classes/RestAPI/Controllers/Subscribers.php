@@ -66,23 +66,88 @@ class Subscribers extends \WP_REST_Controller {
      * @param \WP_REST_Request The REST request object.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
     /**
      * Check if a given request has access to update items.
      *
-     * @param \WP_REST_Request The REST request object.
+     * Every action reachable through this route (subscribe/unsubscribe)
+     * shares the same authorization rules, built on top of
+     * `Utill::current_user_has_capability()` - the same generic capability
+     * check every other permission_callback in this plugin uses:
+     *  - Site admins (`manage_options`) may act on any subscriber record.
+     *  - A logged-in, non-admin user may create their own subscription (the
+     *    `subscribe` action mirrors this plugin's guest opt-in flow: anyone
+     *    may request an alert for an email they type into the form), but may
+     *    only `unsubscribe` a record that belongs to their own account email
+     *    — this is what prevents one logged-in user from unsubscribing
+     *    another customer's subscription by simply passing their email in
+     *    the request body (CWE-862/CWE-639).
+     *  - A logged-out guest may act only when the store has explicitly
+     *    enabled guest subscriptions.
+     *
+     * The extra logic below (guest-setting gate, email-ownership match) is
+     * resource-ownership checking that a plain capability check can't
+     * express on its own, layered on top of the generic capability checks.
+     *
+     * @param \WP_REST_Request $request The REST request object.
+     * @return bool|\WP_Error
      */
     public function update_item_permissions_check( $request ) {
-        $user_id = Notifima()->current_user_id;
-        // For non-logged in user.
-        if ( 0 === $user_id && 'everyone' === Notifima()->setting->get_setting( 'is_guest_subscriptions_enable', '' ) ) {
+        // Site admins/store managers can always manage any subscriber record.
+        if ( true === Utill::current_user_has_capability( 'manage_options' ) ) {
             return true;
         }
 
-        // Check if user is admin or customer.
-        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
+        $user_id = Notifima()->current_user_id;
+
+        // Logged-out visitor: only allowed when the store opts in to guest subscriptions.
+        if ( 0 === $user_id ) {
+            if ( 'everyone' === Notifima()->setting->get_setting( 'is_guest_subscriptions_enable', '' ) ) {
+                return true;
+            }
+
+            return new \WP_Error(
+                'notifima_forbidden_subscriber_action',
+                __( 'You must be logged in to manage stock alert subscriptions.', 'notifima' ),
+                array( 'status' => 401 )
+            );
+        }
+
+        // Any logged-in user needs at least the base `read` capability.
+        $has_read_capability = Utill::current_user_has_capability( 'read' );
+
+        if ( is_wp_error( $has_read_capability ) ) {
+            return $has_read_capability;
+        }
+
+        // `subscribe` opts an email into alerts - same trust level as the
+        // guest flow above, not a mutation of someone else's existing data.
+        if ( 'unsubscribe' !== $request->get_param( 'action' ) ) {
+            return true;
+        }
+
+        // `unsubscribe` mutates an existing record - require the requester to
+        // own the target email address.
+        $customer_email = sanitize_email( (string) $request->get_param( 'customer_email' ) );
+
+        // No email supplied - the handler falls back to the requester's own email.
+        if ( empty( $customer_email ) ) {
+            return true;
+        }
+
+        $current_user = Notifima()->current_user;
+
+        if ( ! empty( $current_user->user_email ) && 0 === strcasecmp( $current_user->user_email, $customer_email ) ) {
+            return true;
+        }
+
+        return new \WP_Error(
+            'notifima_forbidden_subscriber_action',
+            __( 'You are not allowed to modify this subscription.', 'notifima' ),
+            array( 'status' => 403 )
+        );
     }
 
     /**
