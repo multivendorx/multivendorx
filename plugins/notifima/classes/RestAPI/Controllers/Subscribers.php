@@ -151,14 +151,10 @@ class Subscribers extends \WP_REST_Controller {
                 return apply_filters( 'notifima_pro_subscribers_list', $response, $request );
             }
 
-            $access = Utill::get_current_user_access();
+            $has_capability = Utill::current_user_has_capability( 'manage_options' );
 
-            if ( 'admin' !== $access ) {
-                return new \WP_Error(
-                    'rest_forbidden',
-                    __( 'Sorry, you are not allowed to access this resource.', 'notifima' ),
-                    array( 'status' => 403 )
-                );
+            if ( is_wp_error( $has_capability ) ) {
+                return $has_capability;
             }
 
             $query_args = array(

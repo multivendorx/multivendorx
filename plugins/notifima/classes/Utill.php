@@ -215,24 +215,4 @@ class Utill {
 
         return is_plugin_active( 'dc-woocommerce-multi-vendor/dc_product_vendor.php' );
     }
-    /**
-     * Get current user access.
-     *
-     * @return string User access type.
-     */
-    public static function get_current_user_access() {
-        if ( current_user_can( 'manage_options' ) ) {
-            return 'admin';
-        }
-
-        if ( current_user_can( 'store_owner' ) ) {
-            return 'store';
-        }
-
-        if ( current_user_can( 'customer' ) ) {
-            return 'customer';
-        }
-
-        return 'user';
-    }
 }
