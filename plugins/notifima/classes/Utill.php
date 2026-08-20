@@ -183,26 +183,61 @@ class Utill {
     }
 
     /**
-     * Get all subscribers by product IDs.
-     *
-     * @param array $product_ids Product IDs.
-     * @return array
-     */
-    public static function get_subscribers( $product_ids ) {
+	 * Get subscriber details based on filter options.
+	 *
+	 * Filters supported in $args:
+	 * - count, product_ids, email, status, startdate, enddate
+	 * - condition (AND/OR), limit, offset
+	 *
+	 * @param array $args Filter options.
+	 * @return array List of matching subscribers.
+	 */
+    public static function get_subscribers( $args ) {
         global $wpdb;
 
-        if ( empty( $product_ids ) ) {
-            return array();
+        $where        = array();
+        $limit_clause = '';
+        $table        = $wpdb->prefix . 'notifima_subscribers';
+
+        if ( isset( $args['product_ids'] ) ) {
+            $where[] = empty( $args['product_ids'] ) ? '0 = 1' : 'product_id IN (' . implode( ',', array_map( 'absint', $args['product_ids'] ) ) . ')';
         }
 
-        $table       = $wpdb->prefix . 'notifima_subscribers';
-        $product_ids = array_map( 'absint', $product_ids );
-        $in_clause   = implode( ',', $product_ids );
+        if ( ! empty( $args['email'] ) ) {
+            $where[] = $wpdb->prepare( 'email LIKE %s', '%' . $wpdb->esc_like( $args['email'] ) . '%' ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        }
 
-        $query = "SELECT * FROM {$table} WHERE product_id IN ({$in_clause}) ORDER BY id DESC";
+        if ( ! empty( $args['status'] ) && 'all' !== $args['status'] ) {
+            $where[] = $wpdb->prepare( 'status = %s', $args['status'] ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        }
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        return $wpdb->get_results( $query );
+        if ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) {
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $where[] = $wpdb->prepare(
+                'create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d)',
+                $args['start_date'],
+                $args['end_date']
+            );
+        }
+
+        if ( isset( $args['limit'], $args['offset'] ) ) {
+            $limit        = intval( $args['limit'] );
+            $offset       = intval( $args['offset'] );
+            $limit_clause = "LIMIT $limit OFFSET $offset";
+        }
+
+        $where_sql = ! empty( $where ) ? 'WHERE ' . implode( ' AND ', $where ) : '';
+
+        if ( ! empty( $args['count'] ) ) {
+            $query = "SELECT COUNT(*) FROM $table $where_sql";
+
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            return (int) $wpdb->get_var( $query );
+        }
+
+        $query = "SELECT * FROM $table $where_sql $limit_clause";
+
+        return $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
     }
 
     /**

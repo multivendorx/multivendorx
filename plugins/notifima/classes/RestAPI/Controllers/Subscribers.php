@@ -134,7 +134,7 @@ class Subscribers extends \WP_REST_Controller {
     /**
      * Retrieve subscribers.
      *
-     * @param \WP_REST_Request The request object.
+     * @param \WP_REST_Request $request The request object.
      */
     public function get_items( $request ) {
         $nonce_check = Utill::validate_nonce( $request );
@@ -144,29 +144,48 @@ class Subscribers extends \WP_REST_Controller {
         }
 
         try {
-            $export = rest_sanitize_boolean( $request->get_param( 'export' ) );
-
-            if ( ! $export ) {
-                $response = rest_ensure_response( array() );
-                return apply_filters( 'notifima_pro_subscribers_list', $response, $request );
-            }
-
-            $has_capability = Utill::current_user_has_capability( 'manage_options' );
-
-            if ( is_wp_error( $has_capability ) ) {
-                return $has_capability;
-            }
-
-            $query_args = array(
-                'post_type'      => array( 'product', 'product_variation' ),
-                'post_status'    => 'publish',
-                'posts_per_page' => -1,
-                'fields'         => 'ids',
+            $args = array(
+                'query' => array(
+                    'post_type'      => array( 'product', 'product_variation' ),
+                    'post_status'    => 'publish',
+                    'posts_per_page' => -1,
+                    'fields'         => 'ids',
+                ),
+                'subscribers' => array(),
             );
 
-            $product_ids = get_posts( $query_args );
+            $store_id = absint( $request->get_param( 'store_id' ) );
 
-            $subscriber_records = Utill::get_subscribers( $product_ids );
+            if ( $store_id ) {
+                $args['query']['meta_query'] = array(
+                    array(
+                        'key'     => 'multivendorx_store_id',
+                        'value'   => $store_id,
+                        'compare' => '=',
+                        'type'    => 'NUMERIC',
+                    ),
+                );
+            }
+
+            /**
+             * Allow Pro to modify product and subscriber arguments.
+             */
+            $args = apply_filters(
+                'notifima_subscribers_args',
+                $args,
+                $request
+            );
+
+            $product_ids = get_posts( $args['query'] );
+
+            $subscriber_args = array_merge(
+                array(
+                    'product_ids' => $product_ids,
+                ),
+                $args['subscribers']
+            );
+
+            $subscriber_records = Utill::get_subscribers( $subscriber_args );
 
             $subscriber_items = array();
 
@@ -174,7 +193,10 @@ class Subscribers extends \WP_REST_Controller {
                 $product = wc_get_product( $subscriber->product_id );
                 $image   = get_the_post_thumbnail_url( $subscriber->product_id, 'full' );
                 $user    = get_user_by( 'email', $subscriber->email );
-                $date    = wp_date( get_option( 'date_format' ), strtotime( $subscriber->create_time ) );
+                $date    = wp_date(
+                    get_option( 'date_format' ),
+                    strtotime( $subscriber->create_time )
+                );
 
                 $statuses = array(
                     'mailsent'     => __( 'Mail Sent', 'notifima' ),
@@ -203,12 +225,32 @@ class Subscribers extends \WP_REST_Controller {
                 );
             }
 
-            return rest_ensure_response( $subscriber_items );
+            $response = rest_ensure_response( $subscriber_items );
+
+            $total_subscribers = 0;
+
+            foreach ( array( 'subscribed', 'unsubscribed', 'mailsent' ) as $status ) {
+                $count = Utill::get_subscribers(
+                    array(
+                        'count'       => true,
+                        'product_ids' => $product_ids,
+                        'status'      => $status,
+                    )
+                );
+
+                $total_subscribers += $count;
+                $response->header( 'X-' . ucfirst( $status ), $count );
+            }
+
+            $response->header( 'X-Total', $total_subscribers );
+
+            return $response;
+
         } catch ( \Exception $e ) {
             return new \WP_Error(
                 'server_error',
                 __( 'Unexpected server error', 'notifima' ),
-                array( 'status' => 500 )
+                array( 'status' => 500 ),
             );
         }
     }
