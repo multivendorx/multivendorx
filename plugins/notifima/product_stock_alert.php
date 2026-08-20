@@ -6,7 +6,7 @@
  * Author: MultiVendorX
  * Version: 3.1.4
  * Requires at least: 6.4.0
- * Tested up to: 7.0.4
+ * Tested up to: 7.1.0
  * WC requires at least: 8.2.2
  * WC tested up to: 11.0.1
  * Author URI: https://multivendorx.com/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima
