@@ -58,6 +58,11 @@ const AddProduct = () => {
 				}
 
 				setGalleryImages(images.slice(1));
+
+				if (res.data.cost_of_goods_sold?.values?.[0]?.defined_value === null) {
+					res.data.cost_of_goods_sold.values[0].defined_value = 0;
+				}
+				
 				setProduct(res.data);
 			})
 			.catch((error) => {
@@ -315,136 +320,136 @@ const AddProduct = () => {
 						</FormGroupWrapperComponent>
 					</CardComponent>
 					<div className='sticky-card-wrapper'>
-					<CardComponent
-						title={__('Recommended', 'multivendorx')}
-						toggle={true}
-						action={
-							<div className="admin-badge blue">
-								{completedCount}/{totalCount}
+						<CardComponent
+							title={__('Recommended', 'multivendorx')}
+							toggle={true}
+							action={
+								<div className="admin-badge blue">
+									{completedCount}/{totalCount}
+								</div>
+							}
+							className="recommended-card"
+						>
+							<div className="checklist-wrapper">
+								<ul>
+									<li className={checklist.name ? 'checked' : ''}>
+										<div className="check-icon">
+											<span></span>
+										</div>
+										<div className="details">
+											<div className="title">
+												{__('Product Name', 'multivendorx')}
+											</div>
+											<div className="des">
+												{__('A clear, descriptive title that helps customers find your product', 'multivendorx')}
+											</div>
+										</div>
+									</li>
+									{product.type === 'simple' && (
+										<>
+											<li
+												className={
+													checklist.price ? 'checked' : ''
+												}
+											>
+												<div className="check-icon">
+													<span></span>
+												</div>
+												<div className="details">
+													<div className="title">
+														Price
+													</div>
+													<div className="des">
+														Set competitive prices
+														including any sale or
+														discount options
+													</div>
+												</div>
+											</li>
+
+											<li
+												className={
+													checklist.stock ? 'checked' : ''
+												}
+											>
+												<div className="check-icon">
+													<span></span>
+												</div>
+												<div className="details">
+													<div className="title">
+														Stock
+													</div>
+													<div className="des">
+														A clear, descriptive title
+														that helps customers find
+														your product
+													</div>
+												</div>
+											</li>
+										</>
+									)}
+									<li
+										className={checklist.image ? 'checked' : ''}
+									>
+										<div className="check-icon">
+											<span></span>
+										</div>
+										<div className="details">
+											<div className="title">
+												{__('Product Images', 'multivendorx')}
+											</div>
+											<div className="des">
+												{__('High-quality photos showing your product from multiple angles', 'multivendorx')}
+											</div>
+										</div>
+									</li>
+
+									<li
+										className={
+											checklist.categories ? 'checked' : ''
+										}
+									>
+										<div className="check-icon">
+											<span></span>
+										</div>
+										<div className="details">
+											<div className="title">{__('Category', 'multivendorx')}</div>
+											<div className="des">
+												{__('Organize your product to help customers browse your store', 'multivendorx')}
+											</div>
+										</div>
+									</li>
+
+									<li
+										className={
+											checklist.policies ? 'checked' : ''
+										}
+									>
+										<div className="check-icon">
+											<span></span>
+										</div>
+										<div className="details">
+											<div className="title">{__('Policies', 'multivendorx')}</div>
+											<div className="des">
+												{__('A clear, descriptive title that helps customers find your product', 'multivendorx')}
+											</div>
+										</div>
+									</li>
+
+									{applyFilters(
+										'product_checklist_items_render',
+										null,
+										checklist,
+										product
+									)}
+								</ul>
 							</div>
-						}
-						className="recommended-card"
-					>
-						<div className="checklist-wrapper">
-							<ul>
-								<li className={checklist.name ? 'checked' : ''}>
-									<div className="check-icon">
-										<span></span>
-									</div>
-									<div className="details">
-										<div className="title">
-											{__('Product Name', 'multivendorx')}
-										</div>
-										<div className="des">
-											{__('A clear, descriptive title that helps customers find your product', 'multivendorx')}
-										</div>
-									</div>
-								</li>
-								{product.type === 'simple' && (
-									<>
-										<li
-											className={
-												checklist.price ? 'checked' : ''
-											}
-										>
-											<div className="check-icon">
-												<span></span>
-											</div>
-											<div className="details">
-												<div className="title">
-													Price
-												</div>
-												<div className="des">
-													Set competitive prices
-													including any sale or
-													discount options
-												</div>
-											</div>
-										</li>
-
-										<li
-											className={
-												checklist.stock ? 'checked' : ''
-											}
-										>
-											<div className="check-icon">
-												<span></span>
-											</div>
-											<div className="details">
-												<div className="title">
-													Stock
-												</div>
-												<div className="des">
-													A clear, descriptive title
-													that helps customers find
-													your product
-												</div>
-											</div>
-										</li>
-									</>
-								)}
-								<li
-									className={checklist.image ? 'checked' : ''}
-								>
-									<div className="check-icon">
-										<span></span>
-									</div>
-									<div className="details">
-										<div className="title">
-											{__('Product Images', 'multivendorx')}
-										</div>
-										<div className="des">
-											{__('High-quality photos showing your product from multiple angles', 'multivendorx')}
-										</div>
-									</div>
-								</li>
-
-								<li
-									className={
-										checklist.categories ? 'checked' : ''
-									}
-								>
-									<div className="check-icon">
-										<span></span>
-									</div>
-									<div className="details">
-										<div className="title">{__('Category', 'multivendorx')}</div>
-										<div className="des">
-											{__('Organize your product to help customers browse your store', 'multivendorx')}
-										</div>
-									</div>
-								</li>
-
-								<li
-									className={
-										checklist.policies ? 'checked' : ''
-									}
-								>
-									<div className="check-icon">
-										<span></span>
-									</div>
-									<div className="details">
-										<div className="title">{__('Policies', 'multivendorx')}</div>
-										<div className="des">
-											{__('A clear, descriptive title that helps customers find your product', 'multivendorx')}
-										</div>
-									</div>
-								</li>
-
-								{applyFilters(
-									'product_checklist_items_render',
-									null,
-									checklist,
-									product
-								)}
-							</ul>
-						</div>
-					</CardComponent>
-					{applyFilters(
-						'multivendorx_product_sidebar_cards',
-						null,
-						product
-					)}
+						</CardComponent>
+						{applyFilters(
+							'multivendorx_product_sidebar_cards',
+							null,
+							product
+						)}
 					</div>
 				</ColumnComponent>
 
@@ -667,13 +672,14 @@ const AddProduct = () => {
 							>
 								<FormGroupWrapperComponent>
 									<FormGroupComponent
-										cols={6}
+										row
 										label={__(
 											'Regular price',
 											'multivendorx'
 										)}
 									>
 										<TextInput
+											size="10rem"
 											name="regular_price"
 											value={product.regular_price}
 											onChange={(value) =>
@@ -685,10 +691,11 @@ const AddProduct = () => {
 										/>
 									</FormGroupComponent>
 									<FormGroupComponent
-										cols={6}
+										row
 										label={__('Sale price', 'multivendorx')}
 									>
 										<TextInput
+											size="10rem"
 											name="sale_price"
 											value={product.sale_price}
 											onChange={(value) =>
@@ -699,6 +706,33 @@ const AddProduct = () => {
 											}
 										/>
 									</FormGroupComponent>
+									{Object.prototype.hasOwnProperty.call(
+										product,
+										'cost_of_goods_sold'
+									) && (
+											<FormGroupComponent
+												row
+												label={__(`Cost of goods ${appLocalizer.currency_symbol}`, 'multivendorx')}
+											>
+												<TextInput
+													size="10rem"
+													name="cost_of_goods_sold"
+													value={
+														product.cost_of_goods_sold?.values?.[0]
+															?.defined_value ?? ''
+													}
+													onChange={(value) =>
+														handleChange('cost_of_goods_sold', {
+															values: [
+																{
+																	defined_value: value,
+																},
+															],
+														})
+													}
+												/>
+											</FormGroupComponent>
+										)}
 								</FormGroupWrapperComponent>
 							</CardComponent>
 						)}
