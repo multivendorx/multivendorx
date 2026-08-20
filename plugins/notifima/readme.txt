@@ -169,7 +169,7 @@ Manual installation method requires downloading the [Notifima] (https://wordpres
 
 == Changelog ==
 
-= 3.1.4 - 2026-08-18 =
+= 3.1.4 - 2026-08-20 =
 * Added     - Compatibility of WordPress 7.0.4.
 * Added     - Compatibility of WooCommerce 11.0.1.
 * Fixed     - Security vulnerability reported by WordPress Community member Shikhali Jamalzade
