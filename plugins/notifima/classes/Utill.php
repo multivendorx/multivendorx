@@ -130,6 +130,35 @@ class Utill {
     }
 
     /**
+     * Generic REST API capability check, shared by every controller/route's
+     * `permission_callback` in this plugin (and notifima-pro's, which
+     * already depend on this class for `validate_nonce()`/`Subscriber`)
+     * instead of each one re-checking `current_user_can()` (and shaping its
+     * own error response) separately.
+     *
+     * Grants access when the current user has at least one of the given
+     * capabilities; otherwise returns a `WP_Error` with the correct 401
+     * (not logged in) or 403 (logged in, but lacking the capability) status.
+     *
+     * @param string|array $capabilities One capability, or an array of capabilities - access is granted if the current user has any one of them.
+     * @return true|\WP_Error
+     */
+    public static function current_user_has_capability( $capabilities, $context = '' ) {
+        $capabilities = apply_filters( 'notifima_permissions_check', $capabilities, $context );
+        foreach ( (array) $capabilities as $capability ) {
+            if ( current_user_can( $capability ) ) { // phpcs:ignore WordPress.WP.Capabilities.Unknown
+                return true;
+            }
+        }
+
+        return new \WP_Error(
+            'notifima_rest_forbidden',
+            __( 'You are not allowed to perform this action.', 'notifima' ),
+            array( 'status' => is_user_logged_in() ? 403 : 401 )
+        );
+    }
+
+    /**
      * Validate REST nonce.
      *
      * @param \WP_REST_Request $request Request object.
