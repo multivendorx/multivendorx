@@ -73,7 +73,7 @@ class Rest {
      * @param object $request The REST request object.
      */
     public function notifima_permission( $request ) {
-        return current_user_can( 'manage_options' );
+        return Utill::current_user_has_capability( 'manage_options' );
     }
 
     /**
