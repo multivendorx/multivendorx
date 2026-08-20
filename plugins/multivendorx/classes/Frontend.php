@@ -59,16 +59,18 @@ class Frontend {
         add_action( 'woocommerce_account_dashboard', array( $this, 'add_dashboard_button' ) );
 
         if (is_plugin_active( 'woocommerce-product-stock-alert/product_stock_alert.php' )) {
-            add_filter( 'notifima_permissions_check', array( $this, 'add_permission_capability' ), 10, 1 );
+            add_filter( 'notifima_permissions_check', array( $this, 'add_permission_capability' ), 10, 2 );
         }
     }
 
-    public function add_permission_capability($capability) {
-        $user_id = MultiVendorX()->current_user_id;
-        $active_store = MultiVendorX()->active_store;
-        if ( !empty($active_store) ) {
-            if ( StoreUtil::current_user_can_manage_store( $active_store ) ) {
-                $capability[] = 'edit_stores';
+    public function add_permission_capability($capability, $context) {
+        if ($context == 'get_subscribers') {
+            $user_id = MultiVendorX()->current_user_id;
+            $active_store = MultiVendorX()->active_store;
+            if ( !empty($active_store) ) {
+                if ( StoreUtil::current_user_can_manage_store( $active_store ) ) {
+                    $capability[] = 'edit_stores';
+                }
             }
         }
         return $capability;
