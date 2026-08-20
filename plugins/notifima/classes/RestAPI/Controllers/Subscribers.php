@@ -72,25 +72,6 @@ class Subscribers extends \WP_REST_Controller {
     /**
      * Check if a given request has access to update items.
      *
-     * Every action reachable through this route (subscribe/unsubscribe)
-     * shares the same authorization rules, built on top of
-     * `Utill::current_user_has_capability()` - the same generic capability
-     * check every other permission_callback in this plugin uses:
-     *  - Site admins (`manage_options`) may act on any subscriber record.
-     *  - A logged-in, non-admin user may create their own subscription (the
-     *    `subscribe` action mirrors this plugin's guest opt-in flow: anyone
-     *    may request an alert for an email they type into the form), but may
-     *    only `unsubscribe` a record that belongs to their own account email
-     *    — this is what prevents one logged-in user from unsubscribing
-     *    another customer's subscription by simply passing their email in
-     *    the request body (CWE-862/CWE-639).
-     *  - A logged-out guest may act only when the store has explicitly
-     *    enabled guest subscriptions.
-     *
-     * The extra logic below (guest-setting gate, email-ownership match) is
-     * resource-ownership checking that a plain capability check can't
-     * express on its own, layered on top of the generic capability checks.
-     *
      * @param \WP_REST_Request $request The REST request object.
      * @return bool|\WP_Error
      */
