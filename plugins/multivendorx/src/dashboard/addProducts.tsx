@@ -62,7 +62,7 @@ const AddProduct = () => {
 				if (res.data.cost_of_goods_sold?.values?.[0]?.defined_value === null) {
 					res.data.cost_of_goods_sold.values[0].defined_value = 0;
 				}
-				
+
 				setProduct(res.data);
 			})
 			.catch((error) => {
@@ -658,84 +658,80 @@ const AddProduct = () => {
 							</FormGroupComponent>
 						</FormGroupWrapperComponent>
 					</PopupComponent>
-					{product?.type === 'simple' &&
-						productFields.includes('general') && (
-							<CardComponent
-								title={__(
-									'Pricing - How much does it cost?',
-									'multivendorx'
+					{productFields.includes('general') && (
+						<CardComponent
+							title={__(
+								'Pricing - How much does it cost?',
+								'multivendorx'
+							)}
+							desc={__(
+								'Set your normal price. If you are running a promotion, you can add sale price',
+								'multivendorx'
+							)}
+						>
+							<FormGroupWrapperComponent>
+								{product?.type === 'simple' && (
+									<>
+										<FormGroupComponent
+											row
+											label={__('Regular price', 'multivendorx')}
+										>
+											<TextInput
+												size="10rem"
+												name="regular_price"
+												value={product.regular_price}
+												onChange={(value) =>
+													handleChange('regular_price', value)
+												}
+											/>
+										</FormGroupComponent>
+
+										<FormGroupComponent
+											row
+											label={__('Sale price', 'multivendorx')}
+										>
+											<TextInput
+												size="10rem"
+												name="sale_price"
+												value={product.sale_price}
+												onChange={(value) =>
+													handleChange('sale_price', value)
+												}
+											/>
+										</FormGroupComponent>
+									</>
 								)}
-								desc={__(
-									'Set your normal price. If you are running a promotion, you can add sale price',
-									'multivendorx'
-								)}
-							>
-								<FormGroupWrapperComponent>
-									<FormGroupComponent
-										row
-										label={__(
-											'Regular price',
-											'multivendorx'
-										)}
-									>
-										<TextInput
-											size="10rem"
-											name="regular_price"
-											value={product.regular_price}
-											onChange={(value) =>
-												handleChange(
-													'regular_price',
-													value
-												)
-											}
-										/>
-									</FormGroupComponent>
-									<FormGroupComponent
-										row
-										label={__('Sale price', 'multivendorx')}
-									>
-										<TextInput
-											size="10rem"
-											name="sale_price"
-											value={product.sale_price}
-											onChange={(value) =>
-												handleChange(
-													'sale_price',
-													value
-												)
-											}
-										/>
-									</FormGroupComponent>
-									{Object.prototype.hasOwnProperty.call(
+
+								{['simple', 'variable'].includes(product?.type) &&
+									Object.prototype.hasOwnProperty.call(
 										product,
 										'cost_of_goods_sold'
 									) && (
-											<FormGroupComponent
-												row
-												label={__(`Cost of goods ${appLocalizer.currency_symbol}`, 'multivendorx')}
-											>
-												<TextInput
-													size="10rem"
-													name="cost_of_goods_sold"
-													value={
-														product.cost_of_goods_sold?.values?.[0]
-															?.defined_value ?? ''
-													}
-													onChange={(value) =>
-														handleChange('cost_of_goods_sold', {
-															values: [
-																{
-																	defined_value: value,
-																},
-															],
-														})
-													}
-												/>
-											</FormGroupComponent>
-										)}
-								</FormGroupWrapperComponent>
-							</CardComponent>
-						)}
+										<FormGroupComponent
+											row
+											label={__(
+												`Cost of goods ${appLocalizer.currency_symbol}`,
+												'multivendorx'
+											)}
+										>
+											<TextInput
+												size="10rem"
+												name="cost_of_goods_sold"
+												value={
+													product.cost_of_goods_sold?.values?.[0]
+														?.defined_value ?? ''
+												}
+												onChange={(value) =>
+													handleChange('cost_of_goods_sold', {
+														values: [{ defined_value: value }],
+													})
+												}
+											/>
+										</FormGroupComponent>
+									)}
+							</FormGroupWrapperComponent>
+						</CardComponent>
+					)}
 					{applyFilters(
 						'multivendorx_add_product_middle_section',
 						null,
