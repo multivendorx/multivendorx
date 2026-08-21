@@ -61,18 +61,26 @@ class Frontend {
         if (is_plugin_active( 'woocommerce-product-stock-alert/product_stock_alert.php' )) {
             add_filter( 'notifima_permissions_check', array( $this, 'add_permission_capability' ), 10, 2 );
         }
+        if ( is_plugin_active( 'woocommerce-catalog-enquiry/woocommerce-catalog-enquiry.php' ) ) {
+            add_filter( 'catalogx_permissions_check', array( $this, 'add_permission_capability' ), 10, 2 );
+        }
     }
 
-    public function add_permission_capability($capability, $context) {
-        if ($context == 'get_subscribers') {
-            $user_id = MultiVendorX()->current_user_id;
-            $active_store = MultiVendorX()->active_store;
-            if ( !empty($active_store) ) {
-                if ( StoreUtil::current_user_can_manage_store( $active_store ) ) {
-                    $capability[] = 'edit_stores';
-                }
-            }
+    public function add_permission_capability( $capability, $context ) {
+        $active_store = MultiVendorX()->active_store;
+
+        if ( empty( $active_store ) || ! StoreUtil::current_user_can_manage_store( $active_store ) ) {
+            return $capability;
         }
+
+        if ( 'get_subscribers' === $context ) {
+            $capability[] = 'edit_stores';
+        }
+
+        if ( 'store_owner' === $context ) {
+            $capability[] = 'store_owner';
+        }
+
         return $capability;
     }
 
