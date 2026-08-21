@@ -3,7 +3,7 @@ Contributors: wcmp
 Tags: product catalog mode , product enquiry for woocommerce, request a quote, b2b ,  wholesale pricing
 Donate link: https://multivendorx.com/donate?utm_source=wporg&utm_medium=plugindescription&utm_campaign=catalogxwporg
 Requires at least: 6.4.0
-Tested up to: 7.0.4
+Tested up to: 7.1.0
 Requires PHP: 8.0
 Stable tag: 6.1.3
 License: GPLv2 or later
@@ -227,8 +227,8 @@ Answer: Simply enable the 'Product Enquiry Button When Product is Out Of Stock' 
 
 == Changelog ==
 
-= 6.1.3 - 2026-08-18 =
-* Added     - Compatibility of WordPress 7.0.4.
+= 6.1.3 - 2026-08-21 =
+* Added     - Compatibility of WordPress 7.1.0.
 * Added     - Compatibility with WooCommerce 11.0.1.
 * Fixed     - Security vulnerability reported by WordPress Community member Shikhali Jamalzade
 

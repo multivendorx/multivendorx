@@ -51,13 +51,14 @@ class Quotes extends \WP_REST_Controller {
      */
     public function create_item_permissions_check( $request ) {
         $user_id = CatalogX()->current_user_id;
-        // For non-logged in user.
-        if ( 0 === $user_id ) {
+
+        // Allow non-logged-in users.
+        if ( 0 === $user_id && 'everyone' === CatalogX()->setting->get_setting( 'quote_user_permission', 'everyone' ) ) {
             return true;
         }
 
-        // Check if user is admin or customer.
-        return current_user_can( 'customer' ) || current_user_can( 'wholesale_user' ) || current_user_can( 'manage_options' );
+        // Check if user is customer, wholesale user, or admin.
+        return Utill::current_user_has_capability( array( 'customer', 'wholesale_user', 'manage_options' ) );
     }
 
 

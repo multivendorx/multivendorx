@@ -76,18 +76,18 @@ class QuoteCart extends \WP_REST_Controller {
         $user_id = CatalogX()->current_user_id;
         $method  = $request->get_method();
 
-        // For non-logged in users, allow read-only access.
+        // For non-logged-in users, allow read-only access.
         if ( 0 === $user_id ) {
             return in_array( $method, array( 'GET', 'HEAD' ), true );
         }
 
         // Only admins can delete.
         if ( 'DELETE' === $method ) {
-            return current_user_can( 'manage_options' );
+            return Utill::current_user_has_capability( 'manage_options' );
         }
 
-        // Check if user is admin or customer for other authenticated requests.
-        return current_user_can( 'customer' ) || current_user_can( 'wholesale_user' ) || current_user_can( 'manage_options' );
+        // Check if user is customer, wholesale user, or admin.
+        return Utill::current_user_has_capability( array( 'customer', 'wholesale_user', 'manage_options' ) );
     }
 
     /**
