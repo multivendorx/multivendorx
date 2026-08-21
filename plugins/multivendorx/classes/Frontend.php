@@ -85,14 +85,13 @@ class Frontend {
      * @return array
      */
     public function get_subscribers_args( $args, $request ) {
-        $store_id = absint( MultiVendorX()->active_store );
+        $store_id =  MultiVendorX()->active_store;
 
         if ( $store_id ) {
             $args['query']['meta_query'][] = array(
                 'key'     => 'multivendorx_store_id',
                 'value'   => $store_id,
                 'compare' => '=',
-                'type'    => 'NUMERIC',
             );
         }
 
