@@ -3,7 +3,7 @@
 Contributors: wcmp
 Tags: stock manager, back in stock notifier, waitlist, inventory management, out of stock notification
 Requires at least: 6.4.0
-Tested up to: 7.0.4
+Tested up to: 7.1.0
 Requires PHP: 8.0
 Stable tag: 3.1.4
 Donate link: https://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=notifimawporg
