@@ -154,19 +154,6 @@ class Subscribers extends \WP_REST_Controller {
                 'subscribers' => array(),
             );
 
-            $store_id = absint( $request->get_param( 'store_id' ) );
-
-            if ( $store_id ) {
-                $args['query']['meta_query'] = array(
-                    array(
-                        'key'     => 'multivendorx_store_id',
-                        'value'   => $store_id,
-                        'compare' => '=',
-                        'type'    => 'NUMERIC',
-                    ),
-                );
-            }
-
             /**
              * Allow Pro to modify product and subscriber arguments.
              */
