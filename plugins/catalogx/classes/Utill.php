@@ -456,9 +456,21 @@ class Utill {
      *                                   current user has any one of them.
      * @param string       $context      Optional context used by the permissions
      *                                   filter.
+     * @param string       $setting_key  Optional setting key for additional access check.
      * @return true|\WP_Error
      */
-    public static function current_user_has_capability( $capabilities, $context = '' ) {
+    public static function current_user_has_capability( $capabilities, $context = '', $setting_key = '' ) {
+        $user_id = CatalogX()->current_user_id;
+
+        // Allow non-logged-in users when permission is set to everyone.
+        if (
+            0 === $user_id &&
+            ! empty( $setting_key ) &&
+            'everyone' === CatalogX()->setting->get_setting( $setting_key, 'everyone' )
+        ) {
+            return true;
+        }
+
         $capabilities = apply_filters( 'catalogx_permissions_check', $capabilities, $context );
 
         foreach ( (array) $capabilities as $capability ) {

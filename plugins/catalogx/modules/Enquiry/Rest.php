@@ -55,15 +55,7 @@ class Rest {
      * @return bool True if the user has permission, false otherwise.
      */
     public function create_item_permissions_check() {
-        $user_id = CatalogX()->current_user_id;
-
-        // Allow non-logged-in users when enquiry permission is set to everyone.
-        if ( 0 === $user_id && 'everyone' === CatalogX()->setting->get_setting( 'enquiry_user_permission', 'everyone' ) ) {
-            return true;
-        }
-
-        // Check if user is customer, wholesale user, or admin.
-        return Utill::current_user_has_capability( array( 'customer', 'wholesale_user', 'manage_options' ) );
+        return Utill::current_user_has_capability( array( 'customer', 'wholesale_user', 'manage_options' ), '', 'enquiry_user_permission' );
     }
 
     /**
