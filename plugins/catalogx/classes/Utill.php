@@ -463,11 +463,7 @@ class Utill {
         $user_id = CatalogX()->current_user_id;
 
         // Allow non-logged-in users when permission is set to everyone.
-        if (
-            0 === $user_id &&
-            ! empty( $setting_key ) &&
-            'everyone' === CatalogX()->setting->get_setting( $setting_key, 'everyone' )
-        ) {
+        if ( 0 === $user_id && ! empty( $setting_key ) && 'everyone' === CatalogX()->setting->get_setting( $setting_key, 'everyone' ) ) {
             return true;
         }
 
