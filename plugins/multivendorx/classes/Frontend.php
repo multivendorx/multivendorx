@@ -68,18 +68,18 @@ class Frontend {
     }
 
     public function add_permission_capability( $capability, $context ) {
+        if ( empty( $context ) ) {
+            return $capability;
+        }
+
         $active_store = MultiVendorX()->active_store;
 
         if ( empty( $active_store ) || ! StoreUtil::current_user_can_manage_store( $active_store ) ) {
             return $capability;
         }
 
-        if ( 'get_subscribers' === $context ) {
+        if ( in_array( $context, array( 'get_subscribers', 'get_enquiry_messages' ), true ) ) {
             $capability[] = 'edit_stores';
-        }
-
-        if ( 'store_owner' === $context ) {
-            $capability[] = 'store_owner';
         }
 
         return $capability;
