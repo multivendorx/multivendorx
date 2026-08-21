@@ -115,7 +115,6 @@ const SubscribersList = () => {
         axios
             .get(getApiLink(appLocalizer, 'subscribers'), {
                 headers: { 'X-WP-Nonce': appLocalizer.nonce },
-                params: { export: true },
             })
             .then((response) => {
                 const rows = response.data || [];
