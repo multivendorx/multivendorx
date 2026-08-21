@@ -62,7 +62,7 @@ class Frontend {
             add_filter( 'notifima_permissions_check', array( $this, 'add_permission_capability' ), 10, 2 );
             add_filter( 'notifima_subscribers_args', array( $this, 'get_subscribers_args' ), 10, 2 );
         }
-        if ( is_plugin_active( 'woocommerce-catalog-enquiry/woocommerce-catalog-enquiry.php' ) ) {
+        if ( is_plugin_active( 'woocommerce-catalog-enquiry/Woocommerce_Catalog_Enquiry.php' ) ) {
             add_filter( 'catalogx_permissions_check', array( $this, 'add_permission_capability' ), 10, 2 );
         }
     }
