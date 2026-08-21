@@ -441,4 +441,37 @@ class Utill {
             )
         );
     }
+
+    /**
+     * Generic REST API capability check, shared by CatalogX controllers/routes
+     * through their `permission_callback`, instead of each controller
+     * re-checking `current_user_can()` and building its own error response.
+     *
+     * Grants access when the current user has at least one of the given
+     * capabilities; otherwise returns a `WP_Error` with the appropriate
+     * 401 (not logged in) or 403 (logged in, but lacking the capability) status.
+     *
+     * @param string|array $capabilities One capability, or an array of
+     *                                   capabilities. Access is granted if the
+     *                                   current user has any one of them.
+     * @param string       $context      Optional context used by the permissions
+     *                                   filter.
+     * @return true|\WP_Error
+     */
+    public static function current_user_has_capability( $capabilities, $context = '' ) {
+        $capabilities = apply_filters( 'catalogx_permissions_check', $capabilities, $context );
+
+        foreach ( (array) $capabilities as $capability ) {
+            if ( current_user_can( $capability ) ) { // phpcs:ignore WordPress.WP.Capabilities.Unknown
+                return true;
+            }
+        }
+
+        return new \WP_Error(
+            'catalogx_rest_forbidden',
+            __( 'You are not allowed to perform this action.', 'catalogx' ),
+            array( 'status' => is_user_logged_in() ? 403 : 401 )
+        );
+    }
+
 }
