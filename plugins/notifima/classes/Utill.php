@@ -183,36 +183,33 @@ class Utill {
     }
 
     /**
-	 * Get subscriber details based on filter options.
-	 *
-	 * Filters supported in $args:
-	 * - count, product_ids, email, status, startdate, enddate
-	 * - condition (AND/OR), limit, offset
-	 *
-	 * @param array $args Filter options.
-	 * @return array List of matching subscribers.
-	 */
+     * Get subscriber details based on filter options.
+     *
+     * @param array $args Filter options.
+     * @return array|int List of matching subscribers or count.
+     */
     public static function get_subscribers( $args ) {
         global $wpdb;
 
-        $where        = array();
-        $limit_clause = '';
-        $table        = $wpdb->prefix . 'notifima_subscribers';
+        $table = $wpdb->prefix . 'notifima_subscribers';
+        $where = array();
 
         if ( isset( $args['product_ids'] ) ) {
-            $where[] = empty( $args['product_ids'] ) ? '0 = 1' : 'product_id IN (' . implode( ',', array_map( 'absint', $args['product_ids'] ) ) . ')';
+            $where[] = 'product_id IN (' . implode( ',', array_map( 'absint', $args['product_ids'] ) ) . ')';
         }
 
         if ( ! empty( $args['email'] ) ) {
-            $where[] = $wpdb->prepare( 'email LIKE %s', '%' . $wpdb->esc_like( $args['email'] ) . '%' ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $where[] = $wpdb->prepare(
+                'email LIKE %s',
+                '%' . $wpdb->esc_like( $args['email'] ) . '%'
+            );
         }
 
         if ( ! empty( $args['status'] ) && 'all' !== $args['status'] ) {
-            $where[] = $wpdb->prepare( 'status = %s', $args['status'] ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $where[] = $wpdb->prepare( 'status = %s', $args['status'] );
         }
 
         if ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) {
-            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             $where[] = $wpdb->prepare(
                 'create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d)',
                 $args['start_date'],
@@ -220,24 +217,23 @@ class Utill {
             );
         }
 
-        if ( isset( $args['limit'], $args['offset'] ) ) {
-            $limit        = intval( $args['limit'] );
-            $offset       = intval( $args['offset'] );
-            $limit_clause = "LIMIT $limit OFFSET $offset";
-        }
-
         $where_sql = ! empty( $where ) ? 'WHERE ' . implode( ' AND ', $where ) : '';
 
         if ( ! empty( $args['count'] ) ) {
-            $query = "SELECT COUNT(*) FROM $table $where_sql";
+            $query = "SELECT COUNT(*) FROM {$table} {$where_sql}";
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             return (int) $wpdb->get_var( $query );
         }
 
-        $query = "SELECT * FROM $table $where_sql $limit_clause";
+        $limit_clause = isset( $args['limit'], $args['offset'] )
+            ? $wpdb->prepare( 'LIMIT %d OFFSET %d', $args['limit'], $args['offset'] )
+            : '';
 
-        return $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        $query = "SELECT * FROM {$table} {$where_sql} {$limit_clause}";
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        return $wpdb->get_results( $query );
     }
 
     /**
