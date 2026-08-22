@@ -51,7 +51,7 @@ class Rest extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'create_item' ),
-					'permission_callback' => array( $this, 'create_item_permissions_check' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
 				),
 			)
         );
@@ -71,12 +71,12 @@ class Rest extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'update_item' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
 				),
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array( $this, 'delete_item' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
 					'args'                => array(
 						'id' => array( 'required' => true ),
 					),
@@ -95,23 +95,14 @@ class Rest extends \WP_REST_Controller {
     }
 
     /**
-     * Create shipping method permissions check
+     * Check permission for shipping method REST API requests.
      *
      * @param object $request Request object.
+     * @return true|\WP_Error
      */
-    public function create_item_permissions_check( $request ) {
-        return Utill::current_user_has_capability( array( 'create_stores' ) );
-    }
-
-    /**
-     * Update shipping method permissions check
-     *
-     * @param object $request Request object.
-     */
-    public function update_item_permissions_check( $request ) {
+    public function permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'edit_stores' ) );
     }
-
 
     /**
      * Get all shipping methods

@@ -46,35 +46,26 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
             )
         );
     }
 
-    /**
-     * Get all WPMLs filtered by store, search, and date.
-     *
-     * @param object $request Full details about the request.
-     */
-    public function get_items_permissions_check( $request ) {
+	/**
+	 * Check permission for WPML REST API requests.
+	 *
+	 * @param object $request Full details about the request.
+	 * @return true|\WP_Error
+	 */
+	public function permissions_check( $request ) {
 		return Utill::current_user_has_capability( array( 'edit_stores' ) );
-    }
-
-    /**
-     * Update an existing WPML.
-     *
-     * @param object $request Full details about the request.
-     */
-    public function update_item_permissions_check( $request ) {
-		return Utill::current_user_has_capability( array( 'edit_stores' ) );
-    }
-
+	}
 
 	/**
 	 * Get all WPMLs filtered by store, search, and date.

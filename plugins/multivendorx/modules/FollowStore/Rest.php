@@ -47,7 +47,7 @@ class Rest extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
 				),
 			)
         );
@@ -58,7 +58,7 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                     'args'                => array(
                         'id' => array( 'required' => true ),
                     ),
@@ -66,27 +66,19 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
             )
         );
     }
 
     /**
-     * Get items permissions check.
+     * Check permission for REST API requests.
      *
-     * @param  object $request Full data about the request.
+     * @param object $request Full data about the request.
+     * @return true|\WP_Error
      */
-    public function get_items_permissions_check( $request ) {
-        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
-    }
-
-    /**
-     * Update permissions check.
-     *
-     * @param  object $request Full data about the request.
-     */
-    public function update_item_permissions_check( $request ) {
+    public function permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 

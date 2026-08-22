@@ -53,12 +53,12 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'create_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
             )
         );
@@ -75,12 +75,12 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::DELETABLE,
                     'callback'            => array( $this, 'delete_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ), // Only admins can delete.
+                    'permission_callback' => array( $this, 'permissions_check' ), // Only admins can delete.
                 ),
             )
         );
@@ -96,20 +96,12 @@ class Rest extends \WP_REST_Controller {
     }
 
     /**
-     * Create item permissions check.
+     * Check permission for REST API requests.
      *
      * @param object $request The request object.
+     * @return true|\WP_Error
      */
-    public function create_item_permissions_check( $request ) {
-        return Utill::current_user_has_capability( array( 'manage_options' ) );
-    }
-
-    /**
-     * Update item permissions check.
-     *
-     * @param object $request The request object.
-     */
-    public function update_item_permissions_check( $request ) {
+    public function permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 

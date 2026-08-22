@@ -37,32 +37,24 @@ class Tour extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
 				),
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'create_item' ),
-					'permission_callback' => array( $this, 'create_item_permissions_check' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
 				),
 			)
         );
     }
 
     /**
-     * Get tour status
+     * Check permission for tour status REST API requests.
      *
      * @param mixed $request Request data.
+     * @return true|\WP_Error
      */
-    public function get_items_permissions_check( $request ) {
-        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
-    }
-
-    /**
-     * Create tour status
-     *
-     * @param mixed $request Request data.
-     */
-    public function create_item_permissions_check( $request ) {
+    public function permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 

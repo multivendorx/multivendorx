@@ -40,32 +40,24 @@ class Status extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
 				),
                 array(
                     'methods'             => 'POST',
                     'callback'            => array( $this, 'update_tools_action' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
 			)
         );
     }
 
     /**
-     * Get a single item from the collection
+     * Check permission for settings REST API requests.
      *
      * @param object $request Full details about the request.
+     * @return true|\WP_Error
      */
-    public function get_items_permissions_check( $request ) {
-        return Utill::current_user_has_capability( array( 'manage_options' ) );
-    }
-
-    /**
-     * Check if a given request has access to update settings.
-     *
-     * @param object $request The REST request object.
-     */
-    public function update_item_permissions_check( $request ) {
+    public function permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
