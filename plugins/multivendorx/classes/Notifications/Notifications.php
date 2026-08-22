@@ -1582,6 +1582,39 @@ class Notifications {
 					'tag'                    => 'Wholesale',
 					'category'               => 'notification',
 				),
+				'store_support_reply' => array(
+					'name'                   => __( 'Store replied to support ticket', 'multivendorx' ),
+					'desc'                   => __( 'Store owner replies to a support ticket.', 'multivendorx' ),
+					'customer_enabled'       => true,
+					'store_enabled'          => false,
+					'admin_enabled'          => false,
+					'system_enabled'         => true,
+					'email_subject'          => 'Reply to your support ticket – [subject]',
+					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e6f4ff;margin-bottom:3;border-radius:0.313'>
+						<tr>
+							<td valign='top' style='padding:10px;'>
+								<h1 style='color:#6e9fd1;background-color:#e6f4ff;font-size:1.313'>Store replied to your support ticket</h1>
+								<div style='color:#555555;font-size:0.95'></div>
+							</td>
+						</tr>
+					</table>
+					<h1 style='font-size:1.25;padding-bottom:1'>Hello [name],</h1>
+					<div style='font-size:1;line-height:1.25;padding-top:1.25'>The store has replied to your support ticket <strong>[subject]</strong>.</div>
+					<div style='background-color:#f7fafc;padding:15px;margin-top:15px;margin-bottom:15px;border-radius:0.313'>
+						<div style='font-size:0.95;font-weight:500;margin-bottom:8px'>Store reply:</div>
+						<div style='font-size:0.95;line-height:1.5'>[reply]</div>
+					</div>
+					<div style='color:#2d3748;font-size:1;margin-top:4;line-height:1.125;margin-bottom:3'>Thank you for contacting the store.</div>",
+					'available_placeholders' => array(
+						'[name]',
+						'[subject]',
+						'[reply]',
+					),
+					'sms_content'            => 'The store has replied to your support ticket: [reply]',
+					'system_message'         => 'Support ticket reply received.',
+					'tag'                    => 'Store Support',
+					'category'               => 'notification',
+				),
 			)
 		);
 
@@ -1656,7 +1689,6 @@ class Notifications {
 				$action_name
 			)
 		);
-
 		if ( $event->system_enabled ) {
 			$this->send_notifications( $event, $parameters );
 		}
