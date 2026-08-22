@@ -648,13 +648,7 @@ class Utill {
             }
         }
 
-        return new \WP_Error(
-            'multivendorx_rest_forbidden',
-            __( 'You are not allowed to perform this action.', 'multivendorx' ),
-            array(
-                'status' => is_user_logged_in() ? 403 : 401,
-            )
-        );
+        return false;
     }
 
 }
