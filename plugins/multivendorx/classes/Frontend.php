@@ -60,6 +60,7 @@ class Frontend {
 
         if (is_plugin_active( 'woocommerce-product-stock-alert/product_stock_alert.php' )) {
             add_filter( 'notifima_permissions_check', array( $this, 'add_permission_capability' ), 10, 2 );
+            add_filter( 'notifima_subscribers_args', array( $this, 'get_subscribers_args' ), 10, 2 );
         }
     }
 
@@ -74,6 +75,27 @@ class Frontend {
             }
         }
         return $capability;
+    }
+
+    /**
+     * Modify subscribers product query arguments.
+     *
+     * @param array            $args    Query arguments.
+     * @param \WP_REST_Request $request Request object.
+     * @return array
+     */
+    public function get_subscribers_args( $args, $request ) {
+        $store_id =  MultiVendorX()->active_store;
+
+        if ( $store_id ) {
+            $args['query']['meta_query'][] = array(
+                'key'     => 'multivendorx_store_id',
+                'value'   => $store_id,
+                'compare' => '=',
+            );
+        }
+
+        return $args;
     }
 
     public function modify_permissions( $permissions ) {
