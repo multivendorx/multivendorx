@@ -511,7 +511,7 @@ class StoreUtil {
 	 * @return bool
 	 */
 	public static function current_user_can_manage_store( $store_id ) {
-		if ( current_user_can( 'manage_options' ) ) {
+		if ( Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
 			return true;
 		}
 

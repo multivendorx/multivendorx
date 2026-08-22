@@ -76,7 +76,7 @@ class Commissions extends \WP_REST_Controller {
      * @return bool
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' ); // phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
     /**
@@ -86,7 +86,7 @@ class Commissions extends \WP_REST_Controller {
      * @return bool
      */
     public function update_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' ); // phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
     /**
@@ -359,7 +359,7 @@ class Commissions extends \WP_REST_Controller {
             $action   = $request->get_param( 'action' );
 
             if ( 'regenerate' === $action ) {
-                if ( ! current_user_can( 'manage_options' ) ) {
+                if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
                     return new \WP_Error(
                         'rest_forbidden',
                         __( 'You are not allowed to regenerate commissions.', 'multivendorx' ),

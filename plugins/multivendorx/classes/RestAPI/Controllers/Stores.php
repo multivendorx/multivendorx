@@ -91,7 +91,7 @@ class Stores extends \WP_REST_Controller {
      * @param object $request Request data.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
+        return Utill::current_user_has_capability( array( 'manage_options','edit_stores' ) );
     }
 
     /**
@@ -100,7 +100,7 @@ class Stores extends \WP_REST_Controller {
      * @param object $request Request data.
      */
     public function create_item_permissions_check( $request ) {
-        return current_user_can( 'create_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'edit_stores' ) );
     }
 
     /**
@@ -109,7 +109,7 @@ class Stores extends \WP_REST_Controller {
      * @param object $request Request data.
      */
     public function update_item_permissions_check( $request ) {
-        return current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'edit_stores' ) );
     }
 
     /**
@@ -131,7 +131,7 @@ class Stores extends \WP_REST_Controller {
         }
 
         try {
-            $permission = $this->get_items_permissions_check( $request );
+            $permission = Utill::current_user_has_capability( array( 'manage_options','edit_stores' ) );
             $flag_map = array(
                 'visitorMap'         => 'get_visitor_map_data',
                 'store_registration' => 'get_store_registration_data',
@@ -354,7 +354,7 @@ class Stores extends \WP_REST_Controller {
                 $store = new Store();
 
                 if (
-                    ! current_user_can( 'manage_options' ) &&
+                    ! Utill::current_user_has_capability( array( 'manage_options' ) ) &&
                     'manually' === MultiVendorX()->setting->get_setting( 'approve_store' )
                 ) {
                     $store_data['status'] = 'pending';
@@ -729,7 +729,7 @@ class Stores extends \WP_REST_Controller {
             $status = $request->get_param( 'action' );
 
             if ( ! empty( $ids ) && ! empty( $status ) ) {
-                if ( ! current_user_can( 'manage_options' ) ) {
+                if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
                     return new \WP_Error(
                         'rest_forbidden',
                         __( 'You are not allowed to change the status of these stores.', 'multivendorx' ),

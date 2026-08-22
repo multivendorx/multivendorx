@@ -52,7 +52,7 @@ class Tracking extends \WP_REST_Controller {
      * @param object $request Request data.
      */
     public function create_item_permissions_check( $request ) {
-        return current_user_can( 'create_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'create_stores' ) );
     }
 	/**
 	 * Send notification when a shipment tracking item is added.

@@ -93,7 +93,7 @@ class Rest extends \WP_REST_Controller {
      * @return bool
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'read' ) || current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'customer', 'edit_stores' ) );
     }
 	/**
 	 * Check if the current user can create an item.
@@ -102,7 +102,7 @@ class Rest extends \WP_REST_Controller {
 	 * @return bool True if the user has permission, false otherwise.
 	 */
     public function create_item_permissions_check( $request ) {
-        return current_user_can( 'read' ) || current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'customer', 'edit_stores' ) );
     }
 
     /**
@@ -112,7 +112,7 @@ class Rest extends \WP_REST_Controller {
      * @return bool
      */
     public function update_item_permissions_check( $request ) {
-        return current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'edit_stores' ) );
     }
 
     /**
@@ -210,7 +210,7 @@ class Rest extends \WP_REST_Controller {
             $base_args = $args;
             unset( $base_args['limit'], $base_args['offset'], $base_args['status'] );
 
-            if ( current_user_can( 'manage_options' ) ) {
+            if ( Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
                 unset( $base_args['store_id'] );
             }
 

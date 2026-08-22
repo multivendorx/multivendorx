@@ -77,7 +77,7 @@ class Notifications extends \WP_REST_Controller {
      * @param object $request WP_REST_Request object.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
+        return Utill::current_user_has_capability( array( 'manage_options','edit_stores' ) );
     }
 
     /**
@@ -86,7 +86,7 @@ class Notifications extends \WP_REST_Controller {
      * @param object $request WP_REST_Request object.
      */
     public function create_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
+        return Utill::current_user_has_capability( array( 'manage_options','edit_stores' ) );
     }
 
     /**
@@ -95,7 +95,7 @@ class Notifications extends \WP_REST_Controller {
      * @param object $request WP_REST_Request object.
      */
     public function update_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
+        return Utill::current_user_has_capability( array( 'manage_options','edit_stores' ) );
     }
 
     /**

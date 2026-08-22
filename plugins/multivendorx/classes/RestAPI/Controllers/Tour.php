@@ -54,7 +54,7 @@ class Tour extends \WP_REST_Controller {
      * @param mixed $request Request data.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
     /**
@@ -63,7 +63,7 @@ class Tour extends \WP_REST_Controller {
      * @param mixed $request Request data.
      */
     public function create_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
+        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
 

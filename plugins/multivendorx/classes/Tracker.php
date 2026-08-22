@@ -227,7 +227,7 @@ class Tracker {
     public function handle_form_submit(): void {
         check_ajax_referer( 'deactivation_nonce', 'security' );
 
-        if ( ! current_user_can( 'activate_plugins' ) ) {
+        if ( ! Utill::current_user_has_capability( array( 'activate_plugins' ) ) ) {
             wp_send_json_error( 'Insufficient permissions.', 403 );
         }
 

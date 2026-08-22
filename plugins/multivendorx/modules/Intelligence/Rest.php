@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\Intelligence;
 
+use MultiVendorX\Utill;
+
 defined( 'ABSPATH' ) || exit;
 
 class Rest extends \WP_REST_Controller {
@@ -32,7 +34,7 @@ class Rest extends \WP_REST_Controller {
     }
 
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'edit_products' );
+        return Utill::current_user_has_capability( array( 'edit_products' ) );
     }
 
     /**

@@ -209,7 +209,7 @@ class Shortcode {
      * Display store registration form
      */
     public function display_store_registration() {
-        if ( is_user_logged_in() && current_user_can( 'manage_options' ) && Utill::is_store_registration_page() ) {
+        if ( is_user_logged_in() && Utill::current_user_has_capability( array( 'manage_options' ) ) && Utill::is_store_registration_page() ) {
             wp_safe_redirect( admin_url() );
             exit;
         }

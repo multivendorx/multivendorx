@@ -57,7 +57,7 @@ class Status extends \WP_REST_Controller {
      * @param object $request Full details about the request.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' );
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
     /**
@@ -66,7 +66,7 @@ class Status extends \WP_REST_Controller {
      * @param object $request The REST request object.
      */
     public function update_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' );
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
     /**
