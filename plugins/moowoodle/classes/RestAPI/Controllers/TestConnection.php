@@ -42,15 +42,15 @@ class TestConnection extends \WP_REST_Controller {
         );
     }
 
-    /**
+	/**
 	 * Check request permissions.
 	 *
 	 * @param \WP_REST_Request $request REST request object.
 	 * @return bool
 	 */
-    public function permissions_check( $request ) {
-        return current_user_can( 'manage_options' );
-    }
+	public function permissions_check( $request ) {
+		return Util::current_user_has_capability( array( 'manage_options' ) );
+	}
 
     /**
      * Synchronization.
