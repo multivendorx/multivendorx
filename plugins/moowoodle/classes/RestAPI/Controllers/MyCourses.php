@@ -50,7 +50,7 @@ class MyCourses extends \WP_REST_Controller {
      */
     // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
     public function get_item_permissions_check( $request ) {
-        return current_user_can( 'customer' ) || current_user_can( 'manage_options' );
+        return Util::current_user_has_capability( array( 'customer', 'manage_options' ) );
     }
 
     /**
