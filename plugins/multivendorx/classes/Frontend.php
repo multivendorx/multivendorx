@@ -64,6 +64,7 @@ class Frontend {
         }
         if ( is_plugin_active( 'woocommerce-catalog-enquiry/Woocommerce_Catalog_Enquiry.php' ) ) {
             add_filter( 'catalogx_permissions_check', array( $this, 'add_permission_capability' ), 10, 2 );
+            add_filter( 'catalogx_enquiry_query_args', array( $this, 'get_enquiry_args' ), 10, 2 );
         }
     }
 
@@ -83,6 +84,37 @@ class Frontend {
         }
 
         return $capability;
+    }
+
+    /**
+     * Modify enquiry query arguments for the active store.
+     *
+     * @param array            $args    Query arguments.
+     * @param \WP_REST_Request $request Request object.
+     * @return array
+     */
+    public function get_enquiry_args( $args, $request ) {
+        $store_id = MultiVendorX()->active_store;
+
+        if ( $store_id ) {
+            $args['product_ids'] = get_posts(
+                array(
+                    'post_type'      => 'product',
+                    'post_status'    => 'any',
+                    'fields'         => 'ids',
+                    'posts_per_page' => -1,
+                    'meta_query'     => array(
+                        array(
+                            'key'     => 'multivendorx_store_id',
+                            'value'   => $store_id,
+                            'compare' => '=',
+                        ),
+                    ),
+                )
+            );
+        }
+
+        return $args;
     }
 
     /**
