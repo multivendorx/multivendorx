@@ -12,6 +12,7 @@ use CatalogX\Quote\Module as QuoteModule;
 use CatalogX\RestAPI\Controllers\Logs;
 use CatalogX\RestAPI\Controllers\Settings;
 use CatalogX\RestAPI\Controllers\Tour;
+use CatalogX\Utill;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -235,6 +236,6 @@ class Rest {
      * @return bool
      */
     public function catalogx_permission() {
-        return current_user_can( 'manage_options' );
+        return Utill::current_user_has_capability( 'manage_options' );
     }
 }

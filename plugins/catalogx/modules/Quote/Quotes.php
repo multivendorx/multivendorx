@@ -50,14 +50,7 @@ class Quotes extends \WP_REST_Controller {
      * @param object $request The request object.
      */
     public function create_item_permissions_check( $request ) {
-        $user_id = CatalogX()->current_user_id;
-        // For non-logged in user.
-        if ( 0 === $user_id ) {
-            return true;
-        }
-
-        // Check if user is admin or customer.
-        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
+        return Utill::current_user_has_capability( array( 'customer', 'wholesale_user', 'manage_options' ), '', 'quote_user_permission' );
     }
 
 

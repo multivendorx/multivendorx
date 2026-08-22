@@ -55,14 +55,7 @@ class Rest {
      * @return bool True if the user has permission, false otherwise.
      */
     public function create_item_permissions_check() {
-        $user_id = CatalogX()->current_user_id;
-        // For non-logged in user.
-        if ( 0 === $user_id && 'everyone' === CatalogX()->setting->get_setting( 'enquiry_user_permission', 'everyone' ) ) {
-            return true;
-        }
-
-        // Check if user is admin or customer.
-        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
+        return Utill::current_user_has_capability( array( 'customer', 'wholesale_user', 'manage_options' ), '', 'enquiry_user_permission' );
     }
 
     /**
@@ -145,8 +138,11 @@ class Rest {
                 'user_additional_fields' => serialize( $additional_fields ),
             );
 
-            $product_variations = get_transient( 'variation_list' ) ?: array();
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+            if ( ! WC()->session ) {
+                WC()->initialize_session();
+            }
+
+            $product_variations = WC()->session ? WC()->session->get( 'catalogx_variation_list', array() ) : array();            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
             $result = $wpdb->insert( "{$wpdb->prefix}" . Utill::TABLES['enquiry'], $enquiry_record );
 
             if ( $result ) {
