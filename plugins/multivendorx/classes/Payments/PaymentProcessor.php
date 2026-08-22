@@ -60,10 +60,12 @@ class PaymentProcessor {
 		}
 
 		if ( ! $order_id ) {
-			$withdrawals_fees  = MultiVendorX()->setting->get_setting( 'withdrawals_fees', array() );
-			$withdrawals_count = (int) $store->get_meta( Utill::STORE_SETTINGS_KEYS['withdrawals_count'] );
+				$withdrawals_fees = MultiVendorX()->setting->get_setting( 'withdrawals_fees', array() );
+				$withdrawals_fees = reset( $withdrawals_fees );
+				$free_withdrawals  = (int) ( $withdrawals_fees['free_withdrawals'] ?? 0 );
+				$withdrawals_count = (int) $store->get_meta( Utill::STORE_SETTINGS_KEYS['withdrawals_count'] );
 
-			if ( ! empty( $withdrawals_fees['free_withdrawals'] ) && ( (int) $withdrawals_fees['free_withdrawals'] < $withdrawals_count ) ) {
+				if ( $withdrawals_count > $free_withdrawals ) {
 				$deduct_amount = (float) $amount * ( (float) $withdrawals_fees['withdrawal_percentage'] / 100 ) + (float) $withdrawals_fees['withdrawal_fixed'];
 				$amount        = $amount - $deduct_amount;
 

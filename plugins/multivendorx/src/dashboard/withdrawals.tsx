@@ -214,25 +214,7 @@ const Withdrawals: React.FC = () => {
 											{formatCurrency(item.amount)}
 										</div>
 										<div className="des">
-											{item.payment_method ===
-												'stripe-connect' &&
-												__('Stripe', 'multivendorx')}
-											{item.payment_method ===
-												'bank-transfer' &&
-												__(
-													'Direct to Local Bank',
-													'multivendorx'
-												)}
-											{item.payment_method ===
-												'paypal-payout' &&
-												__('PayPal', 'multivendorx')}
-											{item.payment_method ===
-												'bank-transfer'
-												? __(
-													'Bank Transfer',
-													'multivendorx'
-												)
-												: ''}
+											{item.narration}
 										</div>
 									</div>
 									<div className="right">

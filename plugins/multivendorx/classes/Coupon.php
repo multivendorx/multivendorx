@@ -53,8 +53,10 @@ class Coupon {
             return $is_valid;
         }
 
+        $product_id = $product->is_type( 'variation' ) ? $product->get_parent_id(): $product->get_id();
+
         $product_store = get_post_meta(
-            $product->get_id(),
+            $product_id,
             Utill::POST_META_SETTINGS['store_id'],
             true
         );
