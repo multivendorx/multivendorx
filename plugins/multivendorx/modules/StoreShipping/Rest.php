@@ -8,6 +8,7 @@
 namespace MultiVendorX\StoreShipping;
 
 use MultiVendorX\StoreShipping\Util;
+use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -50,7 +51,7 @@ class Rest extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'create_item' ),
-					'permission_callback' => array( $this, 'create_item_permissions_check' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
 				),
 			)
         );
@@ -70,12 +71,12 @@ class Rest extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'update_item' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
 				),
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array( $this, 'delete_item' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
 					'args'                => array(
 						'id' => array( 'required' => true ),
 					),
@@ -90,27 +91,18 @@ class Rest extends \WP_REST_Controller {
      * @param object $request Request object.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
     /**
-     * Create shipping method permissions check
+     * Check permission for shipping method REST API requests.
      *
      * @param object $request Request object.
+     * @return true|\WP_Error
      */
-    public function create_item_permissions_check( $request ) {
-        return current_user_can( 'create_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+    public function permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'edit_stores' ) );
     }
-
-    /**
-     * Update shipping method permissions check
-     *
-     * @param object $request Request object.
-     */
-    public function update_item_permissions_check( $request ) {
-        return current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
-    }
-
 
     /**
      * Get all shipping methods

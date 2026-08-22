@@ -634,4 +634,21 @@ class Utill {
             )
         );
     }
+    /**
+     * Generic REST API capability check.
+     *
+     * @param string|array $capabilities One capability, or an array of capabilities.
+     *                                    Access is granted if the current user has any one of them.
+     * @return true|\WP_Error
+     */
+    public static function current_user_has_capability( $capabilities ) {
+        foreach ( (array) $capabilities as $capability ) {
+            if ( current_user_can( $capability ) ) { // phpcs:ignore WordPress.WP.Capabilities.Unknown
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

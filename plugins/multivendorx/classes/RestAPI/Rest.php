@@ -370,7 +370,7 @@ class Rest {
         }
 
         if ( $request_method === 'GET' && 'payment_gateways' === $post_type ) {
-            return current_user_can( 'edit_stores' );
+            return Utill::current_user_has_capability( array( 'edit_stores' ) );
         }
 
         $user_id = MultiVendorX()->current_user_id;
@@ -919,7 +919,7 @@ class Rest {
 						'items' => array( 'type' => 'string' ),
 					),
 					'auth_callback' => function () {
-						return current_user_can( 'edit_users' );
+                        return Utill::current_user_has_capability( array( 'edit_users' ) );
 					},
 				),
 			)

@@ -48,7 +48,7 @@ class Logs extends \WP_REST_Controller {
      * @param mixed $request all requests params from api.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' );
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
     /**

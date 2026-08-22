@@ -70,7 +70,7 @@ class Rest extends \WP_REST_Controller {
      * @param object $request Full details about the request.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'read_shop_orders' ) || current_user_can( 'edit_shop_orders' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'read_shop_orders', 'edit_shop_orders' ) );
     }
 
     /**
@@ -79,7 +79,7 @@ class Rest extends \WP_REST_Controller {
      * @param object $request Full details about the request.
      */
     public function update_item_permissions_check( $request ) {
-        return current_user_can( 'edit_shop_orders' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'edit_shop_orders' ) );
     }
 
 

@@ -463,7 +463,7 @@ class FrontendScripts {
                             'store_id'                 => MultiVendorX()->active_store,
                             'store_page_url'           => MultiVendorX()->store->storeutil->get_store_url( null, '', true ),
                             'admin_url'                => admin_url(),
-                            'edit_order_capability'    => current_user_can( 'edit_shop_orders' ),
+                            'edit_order_capability'    => Utill::current_user_has_capability( array( 'edit_shop_orders') ),
                             'permalink_structure'      => get_option( Utill::WORDPRESS_SETTINGS['permalink'] ) ? true : false,
                             'all_verification_methods' => MultiVendorX()->setting->get_setting( 'all_verification_methods' ),
                             'shipping_methods'         => apply_filters( 'multivendorx_store_shipping_options', array() ),

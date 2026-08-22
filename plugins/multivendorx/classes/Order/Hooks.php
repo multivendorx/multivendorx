@@ -27,7 +27,7 @@ class Hooks {
         add_action( 'woocommerce_checkout_create_order_line_item', array( $this, 'add_metadata_for_line_item' ), 10, 4 );
         add_action( 'woocommerce_checkout_create_order_shipping_item', array( $this, 'add_metadata_for_shipping_item' ), 10, 4 );
 
-        if ( current_user_can( 'manage_options' ) ) {
+        if ( Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
             $analytics_hooks = array(
                 // Orders & Revenue.
                 'woocommerce_analytics_clauses_where_orders_stats_total',

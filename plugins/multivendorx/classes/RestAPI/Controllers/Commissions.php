@@ -43,7 +43,7 @@ class Commissions extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
             )
         );
@@ -55,7 +55,7 @@ class Commissions extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                     'args'                => array(
                         'id' => array( 'required' => true ),
                     ),
@@ -63,30 +63,20 @@ class Commissions extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
             )
         );
     }
 
     /**
-     * GET permission check.
+     * Check permission for REST API requests.
      *
      * @param object $request Request data.
-     * @return bool
+     * @return true|\WP_Error
      */
-    public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' ); // phpcs:ignore WordPress.WP.Capabilities.Unknown
-    }
-
-    /**
-     * PUT permission check.
-     *
-     * @param object $request Request data.
-     * @return bool
-     */
-    public function update_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' ); // phpcs:ignore WordPress.WP.Capabilities.Unknown
+    public function permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
     /**
@@ -359,7 +349,7 @@ class Commissions extends \WP_REST_Controller {
             $action   = $request->get_param( 'action' );
 
             if ( 'regenerate' === $action ) {
-                if ( ! current_user_can( 'manage_options' ) ) {
+                if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
                     return new \WP_Error(
                         'rest_forbidden',
                         __( 'You are not allowed to regenerate commissions.', 'multivendorx' ),

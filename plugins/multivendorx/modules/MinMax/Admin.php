@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\MinMax;
 
+use MultiVendorX\Utill;
+
 /**
  * MultiVendorX MinMax Admin class
  *
@@ -28,7 +30,7 @@ class Admin {
 	 * @return void
 	 */
     public function add_meta_fields() {
-        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+        if ( ! Utill::current_user_has_capability( array( 'manage_woocommerce' ) ) ) {
             return;
         }
 

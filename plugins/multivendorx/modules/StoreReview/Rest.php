@@ -47,12 +47,12 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'create_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
             )
         );
@@ -64,7 +64,7 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                     'args'                => array(
                         'id' => array( 'required' => true ),
                     ),
@@ -87,22 +87,13 @@ class Rest extends \WP_REST_Controller {
     }
 
     /**
-     * GET permission.
+     * Check permission for REST API requests.
      *
      * @param object $request Request data.
-     * @return bool
+     * @return true|\WP_Error
      */
-    public function get_items_permissions_check( $request ) {
-        return current_user_can( 'read' ) || current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
-    }
-	/**
-	 * Check if the current user can create an item.
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return bool True if the user has permission, false otherwise.
-	 */
-    public function create_item_permissions_check( $request ) {
-        return current_user_can( 'read' ) || current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+    public function permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'customer', 'edit_stores' ) );
     }
 
     /**
@@ -112,7 +103,7 @@ class Rest extends \WP_REST_Controller {
      * @return bool
      */
     public function update_item_permissions_check( $request ) {
-        return current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'edit_stores' ) );
     }
 
     /**
@@ -210,7 +201,7 @@ class Rest extends \WP_REST_Controller {
             $base_args = $args;
             unset( $base_args['limit'], $base_args['offset'], $base_args['status'] );
 
-            if ( current_user_can( 'manage_options' ) ) {
+            if ( Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
                 unset( $base_args['store_id'] );
             }
 
