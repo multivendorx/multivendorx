@@ -296,7 +296,7 @@ export default {
                 'catalogx'
             ),
             desc: __(
-                'Hello, I am interested in this product from {site_name}.\n\nProduct: {product_name}\nProduct URL: {product_url}\n\nPlease share more details, pricing, availability, and other relevant information.\n\nThank you.',
+                'Use {site_name} to display the site name, {product_name} to display the product name, and {product_url} to display the product URL in the pre-filled message. You can edit the message text, but keep the placeholders if you want these details filled in automatically.',
                 'catalogx'
             ),
             moduleEnabled: 'enquiry',
