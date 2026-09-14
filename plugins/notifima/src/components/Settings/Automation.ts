@@ -402,11 +402,6 @@ export default {
                     value: 'ultramsg',
                 },
                 {
-                    key: 'chatapi',
-                    label: __('ChatAPI', 'notifima'),
-                    value: 'chatapi',
-                },
-                {
                     key: 'twilio',
                     label: __('Twilio', 'notifima'),
                     value: 'twilio',
@@ -456,29 +451,6 @@ export default {
             },
             proSetting: true,
         },
-
-        // ChatAPI
-        {
-            key: 'whatsapp_chatapi_auth_token',
-            type: 'text',
-            size: 40,
-            label: __('Auth Token', 'notifima'),
-            settingDescription: __(
-                'Enter your ChatAPI Auth Token.',
-                'notifima'
-            ),
-            desc: __(
-                'Enter the Auth Token provided by your ChatAPI account.',
-                'notifima'
-            ),
-            dependent: {
-                key: 'is_whatsapp_enable',
-                set: true,
-                value: 'chatapi',
-            },
-            proSetting: true,
-        },
-
         // Twilio
         {
             key: 'whatsapp_twilio_account_sid',
