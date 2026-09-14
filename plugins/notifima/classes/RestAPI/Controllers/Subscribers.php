@@ -337,20 +337,21 @@ class Subscribers extends \WP_REST_Controller {
                 'message' => '',
             ),
             $customer_email,
-            $product_id
+            $product_id,
+            $request
         );
 
         if ( ! $subscription_status['status'] ) {
             return rest_ensure_response( $subscription_status );
         }
 
-        Subscriber::insert_subscriber( $customer_email, $product_id );
+        $subscriber_id = Subscriber::insert_subscriber( $customer_email, $product_id );
         Subscriber::insert_subscriber_email_trigger(
             wc_get_product( $product_id ),
             $customer_email
         );
 
-        do_action( 'notifima_subscriber_added', $customer_email );
+        do_action( 'notifima_subscriber_added', $customer_email, $subscriber_id, $request );
 
         $message = str_replace(
             array( '%product_title%', '%customer_email%' ),
