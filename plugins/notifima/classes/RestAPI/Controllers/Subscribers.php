@@ -186,9 +186,9 @@ class Subscribers extends \WP_REST_Controller {
                 );
 
                 $statuses = array(
-                    'mailsent'     => __( 'Mail Sent', 'notifima' ),
-                    'subscribed'   => __( 'Subscribed', 'notifima' ),
-                    'unsubscribed' => __( 'Unsubscribed', 'notifima' ),
+                    'notification_sent' => __( 'Notification Sent', 'notifima' ),
+                    'subscribed'        => __( 'Subscribed', 'notifima' ),
+                    'unsubscribed'      => __( 'Unsubscribed', 'notifima' ),
                 );
 
                 $status_key        = $subscriber->status;
@@ -216,7 +216,7 @@ class Subscribers extends \WP_REST_Controller {
 
             $total_subscribers = 0;
 
-            foreach ( array( 'subscribed', 'unsubscribed', 'mailsent' ) as $status ) {
+            foreach ( array( 'subscribed', 'unsubscribed', 'notification_sent' ) as $status ) {
                 $count = Utill::get_subscribers(
                     array(
                         'count'       => true,

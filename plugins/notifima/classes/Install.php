@@ -169,6 +169,8 @@ class Install {
         }
         
         if ( version_compare( $previous_version, '3.1.6', '<' ) ) {
+            global $wpdb;
+            
             $automation_settings = get_option( Utill::NOTIFIMA_SETTINGS['automation'], array() );
 
             if ( 'out_of_stock' === $automation_settings['is_enable_backorders'] ) {
@@ -178,6 +180,25 @@ class Install {
             }
 
             update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
+
+            $table_name = $wpdb->prefix . 'notifima_subscribers';
+
+            // Add phone column.
+            $wpdb->query(
+                "ALTER TABLE `{$table_name}`
+                ADD COLUMN `phone` varchar(30) DEFAULT NULL AFTER `email`"
+            );
+
+            // Rename mailsent status to notification_sent.
+            $wpdb->query(
+                $wpdb->prepare(
+                    "UPDATE `{$table_name}`
+                    SET `status` = %s
+                    WHERE `status` = %s",
+                    'notification_sent',
+                    'mailsent'
+                )
+            );
         }
     }
 
@@ -291,6 +312,7 @@ class Install {
                 `product_id` bigint(20) NOT NULL,
                 `user_id` bigint(20) NOT NULL DEFAULT 0,
                 `email` varchar(50) NOT NULL,
+                `phone` varchar(30) DEFAULT NULL,
                 `status` varchar(20) NOT NULL,
                 `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE KEY unique_product_email_status (product_id, email, status),

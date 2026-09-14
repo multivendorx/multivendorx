@@ -370,6 +370,200 @@ export default {
                 value: 'mailchimp'
             },
             proSetting: true,
-        }
+        },
+
+
+
+
+
+        /////
+        // WhatsApp
+        {
+            key: 'section',
+            type: 'section',
+            title: __('WhatsApp Notifications', 'notifima'),
+            desc: __(
+                'Configure the WhatsApp service used to send product restock notifications.',
+                'notifima'
+            ),
+        },
+        {
+            key: 'is_whatsapp_enable',
+            type: 'choice-toggle',
+            label: __('WhatsApp provider', 'notifima'),
+            settingDescription: __(
+                'Choose the WhatsApp service you want to use for sending restock notifications.',
+                'notifima'
+            ),
+            options: [
+                {
+                    key: 'ultramsg',
+                    label: __('Ultramsg', 'notifima'),
+                    value: 'ultramsg',
+                },
+                {
+                    key: 'chatapi',
+                    label: __('ChatAPI', 'notifima'),
+                    value: 'chatapi',
+                },
+                {
+                    key: 'twilio',
+                    label: __('Twilio', 'notifima'),
+                    value: 'twilio',
+                },
+            ],
+            proSetting: true,
+        },
+
+        // Ultramsg
+        {
+            key: 'whatsapp_ultramsg_instance_id',
+            type: 'text',
+            size: 25,
+            label: __('Instance ID', 'notifima'),
+            settingDescription: __(
+                'Enter your Ultramsg Instance ID.',
+                'notifima'
+            ),
+            desc: __(
+                'Enter the Instance ID provided by your Ultramsg account.',
+                'notifima'
+            ),
+            dependent: {
+                key: 'is_whatsapp_enable',
+                set: true,
+                value: 'ultramsg',
+            },
+            proSetting: true,
+        },
+        {
+            key: 'whatsapp_ultramsg_auth_token',
+            type: 'text',
+            size: 40,
+            label: __('Auth Token', 'notifima'),
+            settingDescription: __(
+                'Enter your Ultramsg Auth Token.',
+                'notifima'
+            ),
+            desc: __(
+                'Enter the Auth Token associated with your Ultramsg instance.',
+                'notifima'
+            ),
+            dependent: {
+                key: 'is_whatsapp_enable',
+                set: true,
+                value: 'ultramsg',
+            },
+            proSetting: true,
+        },
+
+        // ChatAPI
+        {
+            key: 'whatsapp_chatapi_auth_token',
+            type: 'text',
+            size: 40,
+            label: __('Auth Token', 'notifima'),
+            settingDescription: __(
+                'Enter your ChatAPI Auth Token.',
+                'notifima'
+            ),
+            desc: __(
+                'Enter the Auth Token provided by your ChatAPI account.',
+                'notifima'
+            ),
+            dependent: {
+                key: 'is_whatsapp_enable',
+                set: true,
+                value: 'chatapi',
+            },
+            proSetting: true,
+        },
+
+        // Twilio
+        {
+            key: 'whatsapp_twilio_account_sid',
+            type: 'text',
+            size: 40,
+            label: __('Account SID', 'notifima'),
+            settingDescription: __(
+                'Enter your Twilio Account SID.',
+                'notifima'
+            ),
+            desc: __(
+                'Enter the Account SID provided by your Twilio account.',
+                'notifima'
+            ),
+            dependent: {
+                key: 'is_whatsapp_enable',
+                set: true,
+                value: 'twilio',
+            },
+            proSetting: true,
+        },
+        {
+            key: 'whatsapp_twilio_auth_token',
+            type: 'text',
+            size: 40,
+            label: __('Auth Token', 'notifima'),
+            settingDescription: __(
+                'Enter your Twilio Auth Token.',
+                'notifima'
+            ),
+            desc: __(
+                'Enter the Auth Token associated with your Twilio account.',
+                'notifima'
+            ),
+            dependent: {
+                key: 'is_whatsapp_enable',
+                set: true,
+                value: 'twilio',
+            },
+            proSetting: true,
+        },
+        {
+            key: 'whatsapp_twilio_sender_number',
+            type: 'text',
+            size: 25,
+            label: __('Sender Number', 'notifima'),
+            settingDescription: __(
+                'Enter the WhatsApp sender number configured in your Twilio account.',
+                'notifima'
+            ),
+            desc: __(
+                'Enter the WhatsApp number that will be used to send notifications.',
+                'notifima'
+            ),
+            dependent: {
+                key: 'is_whatsapp_enable',
+                set: true,
+                value: 'twilio',
+            },
+            proSetting: true,
+        },
+
+        // WhatsApp Message
+        {
+            key: 'notifima_whatsapp_message',
+            type: 'textarea',
+            size: 25,
+            label: __('WhatsApp Notification Message', 'notifima'),
+            settingDescription: __(
+                'Enter the message that will be sent when a product is back in stock.',
+                'notifima'
+            ),
+            desc: __(
+                'Use {product_name} for the product name and {product_url} for the product link.',
+                'notifima'
+            ),
+            placeholder: __(
+                'Good news! {product_name} is back in stock. Shop now: {product_url}',
+                'notifima'
+            ),
+            dependent: {
+                key: 'is_whatsapp_enable',
+                set: true,
+            },
+            proSetting: true,
+        },
     ],
 };

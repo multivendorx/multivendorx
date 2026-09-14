@@ -144,11 +144,18 @@ class Subscriber {
         $product_subscribers = self::get_product_subscribers_email( $product->get_id() );
 
         if ( ! empty( $product_subscribers ) ) {
+            /**
+             * Trigger notification for all product subscribers.
+             *
+             * @param int $product_id Product ID.
+             */
+            do_action( 'notifima_send_product_notification', $product->get_id());
+            
             $email = WC()->mailer()->emails['Product_Back_In_Stock_Email'];
 
             foreach ( $product_subscribers as $subscribe_id => $to ) {
                 $email->trigger( $to, $product );
-                self::update_subscriber( $subscribe_id, 'mailsent' );
+                self::update_subscriber( $subscribe_id, 'notification_sent' );
             }
 
             delete_post_meta( $product->get_id(), 'no_of_subscribers' );

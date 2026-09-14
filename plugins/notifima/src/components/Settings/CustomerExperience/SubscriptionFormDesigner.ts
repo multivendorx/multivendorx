@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { CountryCodes } from '@zyra/core';
 
 const REGISTRATION_BLOCK_GROUPS = [
     {
@@ -15,6 +16,14 @@ const REGISTRATION_BLOCK_GROUPS = [
                 placeholder: 'Enter your name here',
             },
             {
+                id: 'phone',
+                icon: 'form-phone',
+                type: 'text',
+                name: 'phone',
+                label: 'Phone',
+                placeholder: 'Enter your phone number here',
+            },
+            {
                 id: 'recaptcha',
                 icon: 'captcha-automatic-code',
                 value: 'recaptcha',
@@ -22,7 +31,7 @@ const REGISTRATION_BLOCK_GROUPS = [
                 fixedName: 'reCaptcha',
             },
         ],
-    }
+    },
 ];
 
 export default {
