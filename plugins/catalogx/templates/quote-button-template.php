@@ -13,6 +13,11 @@ $data_variations          = ( isset( $variations ) && ! empty( $variations ) ) ?
 $button_position_settings = CatalogX()->setting->get_setting( 'shop_page_button_position_setting', array() );
 $position                 = array_search( 'quote_button', $button_position_settings, true );
 $position                 = false !== $position ? $position : 0;
+
+if ( ! function_exists( 'icl_t' ) ) {
+	$args['label']        = __( $args['label'], 'catalogx' );
+	$args['label_browse'] = __( $args['label_browse'], 'catalogx' );
+}
 ?>
 <div class="catalogx-add-to-quote add-to-quote-<?php echo esc_attr( $args['product_id'] ); ?>" position = "<?php echo esc_attr( $position ); ?>">
 

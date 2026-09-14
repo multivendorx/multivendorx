@@ -8,6 +8,7 @@
 namespace CatalogX\Enquiry;
 
 use CatalogX\FrontendScripts;
+use CatalogX\Utill;
 
 /**
  * CatalogX Enquiry Module Frontend class
@@ -100,10 +101,10 @@ class Frontend {
             return;
         }
 
-        $button_text = \CatalogX\Utill::get_translated_string(
+        $button_text = Utill::get_translated_string(
             'catalogx',
             'send_an_enquiry',
-            'Send an enquiry'
+            __( 'Send an enquiry', 'catalogx' )
         );
         ?>
         <div id="catalogx-enquiry">
@@ -323,7 +324,7 @@ class Frontend {
             return;
         }
 
-        $button_text = \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
+        $button_text = Utill::get_translated_string( 'catalogx', 'send_an_enquiry', __('Send an enquiry','catalogx') );
         if ( is_shop() ) {
             $product_link = get_permalink( $product->get_id() );
             echo '<div class="catalogx-enquiry">';
