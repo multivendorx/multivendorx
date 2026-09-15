@@ -18,11 +18,10 @@ const REGISTRATION_BLOCK_GROUPS = [
             {
                 id: 'phone',
                 icon: 'form-phone',
-                type: 'text',
-                name: 'phone',
+                value: 'phone',
                 label: 'Phone',
-                placeholder: 'Enter your phone number here',
-                fixedName: 'Whatsapp',
+                fixedName: 'Phone',
+                placeholder: 'Enter your phone number',
             },
             {
                 id: 'recaptcha',
