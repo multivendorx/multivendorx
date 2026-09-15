@@ -4,6 +4,7 @@ export const subscriptions = [
 	{
 		date: 'June 2, 2026',
 		email: 'john.doe@gmail.com',
+		phone: '+1 202-555-0101',
 		status: 'Subscribed',
 		status_key: 'subscribed',
 		product: 'Classic White Coffee Mug',
@@ -12,6 +13,7 @@ export const subscriptions = [
 	{
 		date: 'June 5, 2026',
 		email: 'sarah.williams@yahoo.com',
+		phone: '+1 202-555-0102',
 		status: 'Subscribed',
 		status_key: 'subscribed',
 		product: "Father's Day Special Mug",
@@ -20,6 +22,7 @@ export const subscriptions = [
 	{
 		date: 'June 8, 2026',
 		email: 'michael.brown@outlook.com',
+		phone: '+1 202-555-0103',
 		status: 'Mail Sent',
 		status_key: 'mail-sent',
 		product: 'Personalised Name Mug',
@@ -28,6 +31,7 @@ export const subscriptions = [
 	{
 		date: 'June 10, 2026',
 		email: 'emma.johnson@gmail.com',
+		phone: '+1 202-555-0104',
 		status: 'Subscribed',
 		status_key: 'subscribed',
 		product: 'Black Printed Coffee Mug',
@@ -36,6 +40,7 @@ export const subscriptions = [
 	{
 		date: 'June 12, 2026',
 		email: 'alex.smith@test.com',
+		phone: '+1 202-555-0105',
 		status: 'Mail Sent',
 		status_key: 'mail-sent',
 		product: "Valentine's Day Special Mug",
@@ -44,6 +49,7 @@ export const subscriptions = [
 	{
 		date: 'June 14, 2026',
 		email: 'olivia.miller@gmail.com',
+		phone: '+1 202-555-0106',
 		status: 'Subscribed',
 		status_key: 'subscribed',
 		product: 'Travel Coffee Mug',
@@ -52,6 +58,7 @@ export const subscriptions = [
 	{
 		date: 'June 16, 2026',
 		email: 'david.wilson@test.com',
+		phone: '+1 202-555-0107',
 		status: 'Subscribed',
 		status_key: 'subscribed',
 		product: 'Premium Ceramic Mug',
@@ -60,6 +67,7 @@ export const subscriptions = [
 	{
 		date: 'June 18, 2026',
 		email: 'sophia.clark@yahoo.com',
+		phone: '+1 202-555-0108',
 		status: 'Mail Sent',
 		status_key: 'mail-sent',
 		product: 'Birthday Gift Mug',
@@ -68,6 +76,7 @@ export const subscriptions = [
 	{
 		date: 'June 20, 2026',
 		email: 'james.taylor@gmail.com',
+		phone: '+1 202-555-0109',
 		status: 'Subscribed',
 		status_key: 'subscribed',
 		product: 'Minimalist Coffee Cup',
@@ -76,12 +85,14 @@ export const subscriptions = [
 	{
 		date: 'June 21, 2026',
 		email: 'mia.anderson@test.com',
+		phone: '+1 202-555-0110',
 		status: 'Mail Sent',
 		status_key: 'mail-sent',
 		product: 'Office Desk Mug',
 		sku: 'MUG-010-OFD',
 	},
 ];
+
 
 export const defaultCategoryCounts = [
 	{

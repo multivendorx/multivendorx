@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { getApiLink } from '@zyra/core';
 
 import {
-	ColumnComponent,
-	ContainerComponent,
-	InformationItemComponent,
-	PopupComponent,
-	NavigatorHeaderComponent,
+    ColumnComponent,
+    ContainerComponent,
+    InformationItemComponent,
+    PopupComponent,
+    NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
@@ -102,6 +102,17 @@ const SubscribersList = () => {
                 );
             },
         },
+        phone: {
+            label: __('Phone Number', 'notifima'),
+            render: (row) => {
+                return (
+                    <div className="icon-wrapper">
+                        <i className="adminfont-phone yellow"></i>
+                        {row.phone}
+                    </div>
+                );
+            },
+        },
         date: { label: __('Date', 'notifima') },
         status: {
             label: __('Status', 'notifima'),
@@ -173,7 +184,7 @@ const SubscribersList = () => {
         if (!appLocalizer.khali_dabba) {
             return (
                 <div className="demo-wrapper" onClick={() => setOpenPopup(true)}>
-                     <div className="watermark">{__('This is sample Data','notifima' )}</div>
+                    <div className="watermark">{__('This is sample Data', 'notifima')}</div>
                     <TableCard {...tableProps} />
                 </div>
             );

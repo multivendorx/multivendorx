@@ -200,6 +200,7 @@ class Subscribers extends \WP_REST_Controller {
                         'id'         => $subscriber->id,
                         'date'       => $date,
                         'email'      => $subscriber->email,
+                        'phone'      => $subscriber->phone,
                         'status'     => $subscriber_status,
                         'status_key' => $status_key,
                         'reg_user'   => $user ? __( 'Yes', 'notifima' ) : __( 'No', 'notifima' ),
