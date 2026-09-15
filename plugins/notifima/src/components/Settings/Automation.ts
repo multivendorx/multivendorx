@@ -371,12 +371,6 @@ export default {
             },
             proSetting: true,
         },
-
-
-
-
-
-        /////
         // WhatsApp
         {
             key: 'section',
@@ -421,7 +415,7 @@ export default {
                 'notifima'
             ),
             desc: __(
-                'Enter the Instance ID provided by your Ultramsg account.',
+                'Enter the Instance ID provided by your Ultramsg account. <a href="https://user.ultramsg.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: {
@@ -441,7 +435,7 @@ export default {
                 'notifima'
             ),
             desc: __(
-                'Enter the Auth Token associated with your Ultramsg instance.',
+                'Enter the Auth Token associated with your Ultramsg instance. <a href="https://user.ultramsg.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: {
@@ -462,7 +456,7 @@ export default {
                 'notifima'
             ),
             desc: __(
-                'Enter the Account SID provided by your Twilio account.',
+                'Enter the Account SID provided by your Twilio account. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: {
@@ -482,7 +476,7 @@ export default {
                 'notifima'
             ),
             desc: __(
-                'Enter the Auth Token associated with your Twilio account.',
+                'Enter the Auth Token associated with your Twilio account. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: {
@@ -502,7 +496,7 @@ export default {
                 'notifima'
             ),
             desc: __(
-                'Enter the WhatsApp number that will be used to send notifications.',
+                'Enter the WhatsApp number that will be used to send notifications. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: {
@@ -512,7 +506,6 @@ export default {
             },
             proSetting: true,
         },
-
         // WhatsApp Message
         {
             key: 'notifima_whatsapp_message',

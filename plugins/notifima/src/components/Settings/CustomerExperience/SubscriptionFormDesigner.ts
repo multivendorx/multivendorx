@@ -22,6 +22,7 @@ const REGISTRATION_BLOCK_GROUPS = [
                 name: 'phone',
                 label: 'Phone',
                 placeholder: 'Enter your phone number here',
+                fixedName: 'Whatsapp',
             },
             {
                 id: 'recaptcha',
