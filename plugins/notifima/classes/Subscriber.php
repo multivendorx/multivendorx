@@ -175,18 +175,18 @@ class Subscriber {
         // Get current user id.
         $user_id = Notifima()->current_user_id;
 
-        // Check the email is already register or not.
+        // Check the email is already registered or not.
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $subscriber = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}notifima_subscribers 
+                "SELECT * FROM {$wpdb->prefix}notifima_subscribers
                 WHERE product_id = %d
                 AND email = %s",
                 array( $product_id, $subscriber_email )
             )
         );
 
-        // Update the status and create time of the subscriber row.
+        // Update existing subscriber.
         if ( $subscriber ) {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $response = $wpdb->update(
@@ -197,7 +197,8 @@ class Subscriber {
                 ),
                 array( 'id' => $subscriber->id )
             );
-            return $response;
+
+            return $response ? $subscriber->id : false;
         }
 
         // Insert new subscriber.
@@ -213,12 +214,13 @@ class Subscriber {
             )
         );
 
-        // Update the product subscriber count after new subscriber insert.
         if ( $response ) {
             self::update_product_subscriber_count( $product_id );
+
+            return $wpdb->insert_id;
         }
 
-        return $response;
+        return false;
     }
 
     /**

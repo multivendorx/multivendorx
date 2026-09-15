@@ -283,7 +283,7 @@ class Subscribers extends \WP_REST_Controller {
         $product_id     = absint( $request->get_param( 'product_id' ) );
         $product_title  = sanitize_text_field( $request->get_param( 'product_title' ) );
         $variation_id   = absint( $request->get_param( 'variation_id' ) );
-
+        $customer_phone = sanitize_text_field( $request->get_param( 'phone' ) );
         $settings_array = Utill::get_form_settings_array();
 
         do_action( 'notifima_before_subscribe_product', $customer_email, $product_id, $variation_id );
@@ -338,7 +338,7 @@ class Subscribers extends \WP_REST_Controller {
             ),
             $customer_email,
             $product_id,
-            $request
+            $customer_phone
         );
 
         if ( ! $subscription_status['status'] ) {
@@ -351,7 +351,7 @@ class Subscribers extends \WP_REST_Controller {
             $customer_email
         );
 
-        do_action( 'notifima_subscriber_added', $customer_email, $subscriber_id, $request );
+        do_action( 'notifima_subscriber_added', $customer_email, $subscriber_id, $customer_phone );
 
         $message = str_replace(
             array( '%product_title%', '%customer_email%' ),
