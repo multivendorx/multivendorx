@@ -37,7 +37,7 @@ class Frontend {
 
         add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_button_in_shop_page' ) );
 
-        if ( ! ( wp_is_block_theme() || file_exists( get_theme_file_path( 'theme.json' ) ) ) ) {
+        if ( ! wp_is_block_theme() ) {
             add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
         }
 
