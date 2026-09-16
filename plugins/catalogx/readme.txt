@@ -229,6 +229,7 @@ Answer: Simply enable the 'Product Enquiry Button When Product is Out Of Stock' 
 
 = 6.1.5 - 2026-09-16 =
 * Added     - Compatibility with WooCommerce 11.1.0.
+* Fixed     - Translation support issues for different strings.
 * Fixed     - Issue with the Setup Tour.
 
 = 6.1.4 - 2026-09-01 =
