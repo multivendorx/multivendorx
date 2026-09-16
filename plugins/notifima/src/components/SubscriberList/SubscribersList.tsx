@@ -79,6 +79,7 @@ const SubscribersList = () => {
     const headers = {
         product: {
             label: __('Product', 'notifima'),
+            width:"40%",
             render: (row) => (
                 <InformationItemComponent
                     title={row.product}
@@ -89,6 +90,12 @@ const SubscribersList = () => {
                         {
                             label: __('SKU', 'notifima'),
                             value: row.sku,
+                        },
+                    ]}
+                    badges={[
+                        {
+                            text: row.status,
+                            className: `badge-${row.status_key}`,
                         },
                     ]}
                 />
@@ -114,11 +121,6 @@ const SubscribersList = () => {
             },
         },
         date: { label: __('Date', 'notifima') },
-        status: {
-            label: __('Status', 'notifima'),
-            statusClass: (row) => `${row.status_key}`,
-            type: 'status',
-        },
     };
 
     const downloadCSVByQuery = () => {
