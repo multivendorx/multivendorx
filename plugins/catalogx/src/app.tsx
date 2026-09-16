@@ -143,7 +143,7 @@ const App = () => {
 		{
 			toggleIcon: 'admin-icon adminfont-user-circle',
 			tooltipName: __('Support', 'catalogx'),
-			tooltipPosition: 'end',
+			tooltipPosition: 'bottom',
 			items: profileItems,
 		},
 	];
