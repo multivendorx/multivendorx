@@ -229,6 +229,7 @@ Answer: Simply enable the 'Product Enquiry Button When Product is Out Of Stock' 
 
 = 6.1.5 - 2026-09-16 =
 * Added     - Compatibility with WooCommerce 11.1.0.
+* Fixed     - Issue with the Setup Tour.
 
 = 6.1.4 - 2026-09-01 =
 * Fixed     - Resolved an issue with the Enquiry button displaying incorrectly on the Shop page when using the Twenty Twenty-Five theme with Catalog Mode and an Access Rule exception enabled. #2325
