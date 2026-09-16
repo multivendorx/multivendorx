@@ -411,11 +411,11 @@ export default {
             size: 25,
             label: __('Instance ID', 'notifima'),
             settingDescription: __(
-                'Enter your Ultramsg Instance ID.',
+                `Your Ultramsg instance's unique identifier, used to route messages through the correct WhatsApp connection.`,
                 'notifima'
             ),
             desc: __(
-                'Enter the Instance ID provided by your Ultramsg account. <a href="https://user.ultramsg.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'Found in your Ultramsg Dashboard → Instances. <a href="https://user.ultramsg.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: {
@@ -431,11 +431,11 @@ export default {
             size: 40,
             label: __('Auth Token', 'notifima'),
             settingDescription: __(
-                'Enter your Ultramsg Auth Token.',
+                'Private token used to authenticate requests from your site to the Ultramsg API.',
                 'notifima'
             ),
             desc: __(
-                'Enter the Auth Token associated with your Ultramsg instance. <a href="https://user.ultramsg.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'Get the token details here <a href="https://user.ultramsg.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: {
@@ -452,11 +452,11 @@ export default {
             size: 40,
             label: __('Account SID', 'notifima'),
             settingDescription: __(
-                'Enter your Twilio Account SID.',
+                `Your Twilio account's unique identifier, used to authenticate API requests to Twilio.`,
                 'notifima'
             ),
             desc: __(
-                'Enter the Account SID provided by your Twilio account. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'Found in your Twilio Console → Account Info. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: {
@@ -472,11 +472,11 @@ export default {
             size: 40,
             label: __('Auth Token', 'notifima'),
             settingDescription: __(
-                'Enter your Twilio Auth Token.',
+                'Private token used to authenticate requests from your site to the Twilio API.',
                 'notifima'
             ),
             desc: __(
-                'Enter the Auth Token associated with your Twilio account. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'Get the token details here. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: {
@@ -492,11 +492,11 @@ export default {
             size: 25,
             label: __('Sender Number', 'notifima'),
             settingDescription: __(
-                'Enter the WhatsApp sender number configured in your Twilio account.',
+                'The WhatsApp-enabled Twilio number notifications will be sent from.',
                 'notifima'
             ),
             desc: __(
-                'Enter the WhatsApp number that will be used to send notifications. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'Must be a number activated for WhatsApp in your Twilio account. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: {
@@ -513,7 +513,7 @@ export default {
             size: 25,
             label: __('WhatsApp Notification Message', 'notifima'),
             settingDescription: __(
-                'Enter the message that will be sent when a product is back in stock.',
+                'Enter the message that will be sent to a customer when a product they requested is back in stock.',
                 'notifima'
             ),
             desc: __(
