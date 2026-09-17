@@ -356,22 +356,8 @@ class Rest {
             return true;
         }
 
-        // $private_post_types = array(
-        //     'user',
-        //     'bookable_resource',
-        //     'wc_appointment',
-        //     'product_variation',
-        //     'product_shipping_class',
-        //     'attributes',
-        //     'product_tag',
-        // );
-
-        // if ( is_user_logged_in() && 'read' === $context && in_array( $post_type, $private_post_types, true ) ) {
-        //     return true;
-        // }
-
         if ( 'read' === $context && 'payment_gateways' === $post_type ) {
-            return Utill::current_user_has_capability( array( 'edit_stores' ) );
+            return Utill::current_user_has_capability( array( 'edit_shop_orders' ) );
         }
 
         $user_id = MultiVendorX()->current_user_id;

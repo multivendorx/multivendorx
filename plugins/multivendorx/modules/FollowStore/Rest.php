@@ -212,8 +212,8 @@ class Rest extends \WP_REST_Controller {
         }
 
         try {
-            $store_id = $request->get_param( 'store_id' );
-            $user_id  = $request->get_param( 'user_id' );
+            $store_id = (int) MultiVendorX()->active_store;
+            $user_id  = (int) MultiVendorX()->current_user_id;
 
             if ( ! $store_id ) {
                 return new \WP_Error(
@@ -293,8 +293,8 @@ class Rest extends \WP_REST_Controller {
         }
 
         try {
-            $store_id = $request->get_param( 'store_id' );
-            $user_id  = $request->get_param( 'user_id' );
+            $store_id = (int) MultiVendorX()->active_store;
+            $user_id  = (int) MultiVendorX()->current_user_id;
 
             if ( ! $store_id || ! $user_id ) {
                 return new \WP_Error(

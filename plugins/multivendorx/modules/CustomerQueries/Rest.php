@@ -9,6 +9,7 @@ namespace MultiVendorX\CustomerQueries;
 
 use MultiVendorX\CustomerQueries\Util;
 use MultiVendorX\Store\Store;
+use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -47,7 +48,7 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
             )
         );
@@ -59,7 +60,7 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                     'args'                => array(
                         'id' => array( 'required' => true ),
                     ),
@@ -67,12 +68,15 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
+                    'args'                => array(
+                        'id' => array( 'required' => true ),
+                    ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::DELETABLE,
                     'callback'            => array( $this, 'delete_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'delete_item_permissions_check' ),
                     'args'                => array(
                         'id' => array( 'required' => true ),
                     ),
@@ -82,24 +86,22 @@ class Rest extends \WP_REST_Controller {
     }
 
     /**
-     * Get items permissions check.
+     *permissions check.
      *
      * @param  object $request Full data about the request.
      */
-    public function get_items_permissions_check( $request ) {
+    public function permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
-
     /**
-     * Update permissions check.
+     * Delete permissions check.
      *
      * @param  object $request Full data about the request.
      */
-    public function update_item_permissions_check( $request ) {
-        return Utill::current_user_has_capability( array( 'edit_stores' ) );
+    public function delete_item_permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
-
 
     /**
      * Get Queries items with optional pagination, date filters, and counters
@@ -279,18 +281,10 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            // Get question ID.
             $id = absint( $request->get_param( 'id' ) );
-            if ( ! $id ) {
-                return new \WP_Error(
-                    'invalid_id',
-                    __( 'Invalid question ID', 'multivendorx' ),
-                    array( 'status' => 400 )
-                );
-            }
-
             // Fetch the question.
             $q = reset( Util::get_question_information( array( 'id' => $id ) ) );
+
             if ( ! $q ) {
                 return new \WP_Error(
                     'not_found',
@@ -299,6 +293,13 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
+            if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) && (int) MultiVendorX()->active_store !== (int) $q['store_id'] ) {
+                return new \WP_Error(
+                    'forbidden',
+                    __( 'You cannot manage this question.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
             // Fields that can be updated.
             $question_text = $request->get_param( 'question_text' );
             $answer_text   = $request->get_param( 'answer_text' );
@@ -306,7 +307,7 @@ class Rest extends \WP_REST_Controller {
 
             $data_to_update = array();
 
-            if ( isset( $answer_text ) ) {
+            if ( isset( $question_text ) ) {
                 $data_to_update['question_text'] = sanitize_textarea_field( $question_text );
             }
 

@@ -7,6 +7,7 @@
 
 namespace MultiVendorX\StoreShipping;
 
+use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\StoreShipping\Util;
 use MultiVendorX\Utill;
 
@@ -151,6 +152,13 @@ class Rest extends \WP_REST_Controller {
         }
         try {
             $store_id  = intval( $request->get_param( 'store_id' ) );
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to manage this store.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
             $zone_id   = intval( $request->get_param( 'zone_id' ) );
             $method_id = sanitize_text_field( $request->get_param( 'method_id' ) );
             $settings  = $request->get_param( 'settings' );
@@ -280,6 +288,13 @@ class Rest extends \WP_REST_Controller {
         }
         try {
             $store_id  = intval( $request->get_param( 'store_id' ) );
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to manage this store.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
             $zone_id   = intval( $request->get_param( 'zone_id' ) );
             $method_id = sanitize_text_field( $request->get_param( 'method_id' ) );
             $settings  = $request->get_param( 'settings' );
@@ -355,6 +370,13 @@ class Rest extends \WP_REST_Controller {
         }
         try {
             $store_id  = intval( $request->get_param( 'store_id' ) );
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to manage this store.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
             $zone_id   = intval( $request->get_param( 'zone_id' ) );
             $method_id = sanitize_text_field( $request->get_param( 'method_id' ) );
 

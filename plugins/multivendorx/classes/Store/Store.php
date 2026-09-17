@@ -262,7 +262,7 @@ class Store {
         $meta = array();
 
         foreach ( $rows as $row ) {
-            $meta[ $row['meta_key'] ] = maybe_unserialize( $row['meta_value'] );
+            $meta[ $row['meta_key'] ] = unserialize( $row['meta_value'], array( 'allowed_classes' => false ) );
         }
 
         $this->meta_data = $meta;
