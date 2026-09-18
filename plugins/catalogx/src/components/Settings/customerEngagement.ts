@@ -10,10 +10,22 @@ export default {
         'Define how customers move from product browsing to purchasing across your store.',
         'catalogx'
     ),
+    groupBySections: true,
+    hideSettingHeader: true,
     headerIcon: 'cart',
     submitUrl: 'settings',
     modal: [
         //shopping
+        {
+            key: 'section',
+            type: 'section',
+            icon: 'web-page-website',
+            title: __('Enquiry & Quote', 'catalogx'),
+            desc: __(
+                'Define how customers move from product browsing to purchasing across your store.',
+                'catalogx'
+            ),
+        },
         {
             key: 'enable_cart_checkout',
             type: 'choice-toggle',
@@ -78,6 +90,7 @@ export default {
         {
             key: 'section',
             type: 'section',
+            icon: 'web-page-website',
             title: __('Enquiry journey', 'catalogx'),
             desc: __('Define the customer experience from enquiry initiation to submission.',
                 'catalogx'
@@ -311,6 +324,7 @@ export default {
         {
             key: 'section',
             type: 'section',
+            icon: 'web-page-website',
             desc: __('Control who can request quotations and how long quotations remain available.',
                 'catalogx'
             ),
@@ -400,6 +414,7 @@ export default {
         {
             key: 'section',
             type: 'section',
+            icon: 'web-page-website',
             desc: __('When a customer submits an enquiry or receives a quotation, choose whether a PDF should be available for download, attached to the email sent to them, or both.',
                 'catalogx'
             ),

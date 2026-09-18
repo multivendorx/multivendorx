@@ -8,9 +8,21 @@ export default {
         'Manage the endpoints for all pages on the site, ensuring proper routing and access.',
         'catalogx'
     ),
+    groupBySections: true,
+    hideSettingHeader: true,
     headerIcon: 'web-page-website',
     submitUrl: 'settings',
     modal: [
+        {
+            key: 'section',
+            type: 'section',
+            icon: 'web-page-website',
+            title: __('Pages & Shortcodes', 'catalogx'),
+            desc: __(
+                'Manage the endpoints for all pages on the site, ensuring proper routing and access.',
+                'catalogx'
+            ),
+        },
         {
             key: 'set_enquiry_cart_page',
             type: 'select',
@@ -50,6 +62,7 @@ export default {
         {
             key: 'section',
             type: 'section',
+            icon: 'web-page-website',
             title: __('Shortcode library', 'catalogx'),
         },
         {
