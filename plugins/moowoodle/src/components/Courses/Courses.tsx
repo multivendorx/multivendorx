@@ -63,6 +63,7 @@ const Course: React.FC = () => {
 	const headers = {
 		course_name: {
 			label: __('Course', 'moowoodle'),
+			width:'50%',
 			render: (row: CourseRow) => (
 				<InformationItemComponent
 					title={row.course_name}
@@ -71,17 +72,24 @@ const Course: React.FC = () => {
 						image: row.product_image,
 						iconClass: 'subscription-courses',
 					}}
+					badges={[
+						{
+							text: row.category_name,
+							className: 'badge-category',
+						},
+					]}
+					descriptions={[
+						{
+							label: 'Short name',
+							value: row.course_short_name,
+						},
+						{
+							label: 'Course duration',
+							value: row.date,
+						},
+					]}
 				/>
 			),
-		},
-		course_short_name: {
-			label: __('Short name', 'moowoodle'),
-		},
-		category_name: {
-			label: __('Category', 'moowoodle'),
-		},
-		date: {
-			label: __('Course duration', 'moowoodle'),
 		},
 		products: {
 			label: __('Product', 'moowoodle'),
@@ -137,9 +145,9 @@ const Course: React.FC = () => {
 					label: (row: CourseRow) => {
 						return row?.product_name
 							? __(
-									'Sync Course Data & Update Product',
-									'moowoodle'
-								)
+								'Sync Course Data & Update Product',
+								'moowoodle'
+							)
 							: __('Create Product', 'moowoodle');
 					},
 					icon: (row: CourseRow) => {

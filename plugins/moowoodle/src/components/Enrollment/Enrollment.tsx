@@ -43,6 +43,7 @@ const Enrollment: React.FC = () => {
 	const headers = {
 		learning_unit: {
 			label: __('Learning Unit', 'moowoodle'),
+			width: "65%",
 			render: (row: EnrollmentRow) => {
 				let title = '';
 
@@ -60,35 +61,34 @@ const Enrollment: React.FC = () => {
 						avatar={{
 							iconClass: 'document',
 						}}
+						badges={[
+							{
+								text: row.status,
+								className: `badge-${row.status}`,
+							},
+						]}
+						descriptions={[
+							{
+								icon: 'lock',
+								label: 'Enrollment Date',
+								value: row.enrollment_date,
+							},
+							{
+								icon: 'lock',
+								label: 'Student',
+								value: row.customer_name,
+							},
+						]}
 					/>
 				);
 			},
-		},
-		student: {
-			label: __('Student', 'moowoodle'),
-			render: (row: EnrollmentRow) => (
-				<InformationItemComponent
-					title={row.customer_name || '-'}
-					avatar={{
-						iconClass: 'person',
-					}}
-				/>
-			),
-		},
-		enrollment_date: {
-			label: __('Enrollment Date', 'moowoodle'),
-			type: 'date',
-		},
-		status: {
-			label: __('Status', 'moowoodle'),
-			type: 'status',
-			statusClass: (row) => `${row.status}`,
 		},
 		action: {
 			type: 'action',
 			label: __('Action', 'moowoodle'),
 			actions: [
-				{
+				{	
+					type: 'button',
 					label: (row: EnrollmentRow) => {
 						return row.status === 'enrolled'
 							? __('Unenroll Now', 'moowoodle')
@@ -97,6 +97,7 @@ const Enrollment: React.FC = () => {
 					onClick: (row: EnrollmentRow) => {
 						setOpenPopup(true);
 					},
+					color: 'text-purple',
 					icon: 'classroom-enrollment',
 				},
 			],
@@ -105,6 +106,7 @@ const Enrollment: React.FC = () => {
 
 	const defaultTableProps = {
 		headers,
+		hideHeader: true,		
 		rows: dummyEnrollments,
 		totalRows: dummyEnrollments.length,
 		search: {
@@ -156,7 +158,7 @@ const Enrollment: React.FC = () => {
 				<ColumnComponent>
 					<div className="demo-wrapper" onClick={handleTableWrapperClick}>
 						{!appLocalizer.khali_dabba && (
-							<div className="watermark">{__('This is sample Data','moowoodle' )}</div>
+							<div className="watermark">{__('This is sample Data', 'moowoodle')}</div>
 						)}
 						<TableCard {...tableProps} />
 						{tableProps.popup}
