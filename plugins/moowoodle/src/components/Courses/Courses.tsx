@@ -80,11 +80,11 @@ const Course: React.FC = () => {
 					]}
 					descriptions={[
 						{
-							label: 'Short name',
+							label: __('Short name', 'moowoodle'),
 							value: row.course_short_name,
 						},
 						{
-							label: 'Course duration',
+							label: __('Course duration', 'moowoodle'),
 							value: row.date,
 						},
 					]}
