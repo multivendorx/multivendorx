@@ -371,88 +371,71 @@ export default {
             },
             proSetting: true,
         },
-        // WhatsApp
+
+        
+        //
         {
-            key: 'section',
-            type: 'section',
-            title: __('WhatsApp Notifications', 'notifima'),
-            desc: __(
-                'Configure the WhatsApp service used to send product restock notifications.',
-                'notifima'
-            ),
-        },
-        {
-            key: 'is_whatsapp_enable',
+            key: 'notifima_notification_channel',
             type: 'choice-toggle',
-            label: __('WhatsApp provider', 'notifima'),
+            label: __('Notification Channel', 'notifima'),
             settingDescription: __(
-                'Choose the WhatsApp service you want to use for sending restock notifications.',
+                'Choose how product restock notifications should be sent to subscribers.',
                 'notifima'
             ),
             options: [
                 {
-                    key: 'ultramsg',
-                    label: __('Ultramsg', 'notifima'),
-                    value: 'ultramsg',
+                    key: 'sms',
+                    label: __('SMS', 'notifima'),
+                    value: 'sms',
                 },
+                {
+                    key: 'whatsapp',
+                    label: __('WhatsApp', 'notifima'),
+                    value: 'whatsapp',
+                },
+                {
+                    key: 'both',
+                    label: __('SMS & WhatsApp', 'notifima'),
+                    value: 'both',
+                },
+            ],
+            proSetting: true,
+        },
+        {
+            key: 'notifima_service_provider',
+            type: 'choice-toggle',
+            label: __('Service Provider', 'notifima'),
+            settingDescription: __(
+                'Choose the service provider you want to use for sending restock notifications.',
+                'notifima'
+            ),
+            options: [
                 {
                     key: 'twilio',
                     label: __('Twilio', 'notifima'),
                     value: 'twilio',
                 },
+                {
+                    key: 'vonage',
+                    label: __('Vonage', 'notifima'),
+                    value: 'vonage',
+                },
             ],
+            dependent: {
+                key: 'notifima_notification_channel',
+                set: true,
+            },
             proSetting: true,
         },
 
-        // Ultramsg
-        {
-            key: 'whatsapp_ultramsg_instance_id',
-            type: 'text',
-            size: 25,
-            label: __('Instance ID', 'notifima'),
-            settingDescription: __(
-                `Your Ultramsg instance's unique identifier, used to route messages through the correct WhatsApp connection.`,
-                'notifima'
-            ),
-            desc: __(
-                'Found in your Ultramsg Dashboard → Instances. <a href="https://user.ultramsg.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
-                'notifima'
-            ),
-            dependent: {
-                key: 'is_whatsapp_enable',
-                set: true,
-                value: 'ultramsg',
-            },
-            proSetting: true,
-        },
-        {
-            key: 'whatsapp_ultramsg_auth_token',
-            type: 'text',
-            size: 40,
-            label: __('Auth Token', 'notifima'),
-            settingDescription: __(
-                'Private token used to authenticate requests from your site to the Ultramsg API.',
-                'notifima'
-            ),
-            desc: __(
-                'Get the token details here <a href="https://user.ultramsg.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
-                'notifima'
-            ),
-            dependent: {
-                key: 'is_whatsapp_enable',
-                set: true,
-                value: 'ultramsg',
-            },
-            proSetting: true,
-        },
         // Twilio
         {
-            key: 'whatsapp_twilio_account_sid',
+            key: 'twilio_account_sid',
             type: 'text',
             size: 40,
             label: __('Account SID', 'notifima'),
             settingDescription: __(
-                `Your Twilio account's unique identifier, used to authenticate API requests to Twilio.`,
+                'Your Twilio account unique identifier used to authenticate API requests.',
                 'notifima'
             ),
             desc: __(
@@ -460,74 +443,232 @@ export default {
                 'notifima'
             ),
             dependent: {
-                key: 'is_whatsapp_enable',
-                set: true,
+                key: 'notifima_service_provider',
                 value: 'twilio',
             },
             proSetting: true,
         },
         {
-            key: 'whatsapp_twilio_auth_token',
+            key: 'twilio_auth_token',
             type: 'text',
             size: 40,
             label: __('Auth Token', 'notifima'),
             settingDescription: __(
-                'Private token used to authenticate requests from your site to the Twilio API.',
+                'Private token used to authenticate API requests to your Twilio account.',
                 'notifima'
             ),
             desc: __(
-                'Get the token details here. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'Found in your Twilio Console → Account Info. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: {
-                key: 'is_whatsapp_enable',
-                set: true,
+                key: 'notifima_service_provider',
                 value: 'twilio',
             },
             proSetting: true,
         },
         {
-            key: 'whatsapp_twilio_sender_number',
+            key: 'twilio_sms_sender_number',
             type: 'text',
             size: 25,
-            label: __('Sender Number', 'notifima'),
+            label: __('SMS Sender Number', 'notifima'),
             settingDescription: __(
-                'The WhatsApp-enabled Twilio number notifications will be sent from.',
+                'The Twilio phone number used to send SMS restock notifications.',
                 'notifima'
             ),
             desc: __(
-                'Must be a number activated for WhatsApp in your Twilio account. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'Enter a Twilio phone number capable of sending SMS messages.',
                 'notifima'
             ),
-            dependent: {
-                key: 'is_whatsapp_enable',
-                set: true,
-                value: 'twilio',
-            },
+            dependent: [
+                {
+                    key: 'notifima_service_provider',
+                    value: 'twilio',
+                },
+                {
+                    key: 'notifima_notification_channel',
+                    value: ['sms', 'both'],
+                },
+            ],
             proSetting: true,
         },
-        // WhatsApp Message
         {
-            key: 'notifima_whatsapp_message',
-            type: 'textarea',
+            key: 'twilio_whatsapp_sender_number',
+            type: 'text',
             size: 25,
-            label: __('WhatsApp Notification Message', 'notifima'),
+            label: __('WhatsApp Sender Number', 'notifima'),
             settingDescription: __(
-                'Enter the message that will be sent to a customer when a product they requested is back in stock.',
+                'The WhatsApp-enabled Twilio number used to send WhatsApp restock notifications.',
                 'notifima'
             ),
             desc: __(
-                'Use {product_name} for the product name and {product_url} for the product link.',
+                'Enter the WhatsApp-enabled sender number configured in your Twilio account.',
                 'notifima'
             ),
-            placeholder: __(
-                'Good news! {product_name} is back in stock. Shop now: {product_url}',
+            dependent: [
+                {
+                    key: 'notifima_service_provider',
+                    value: 'twilio',
+                },
+                {
+                    key: 'notifima_notification_channel',
+                    value: ['whatsapp', 'both'],
+                },
+            ],
+            proSetting: true,
+        },
+
+        // Vonage SMS
+        {
+            key: 'vonage_sms_api_key',
+            type: 'text',
+            size: 40,
+            label: __('API Key', 'notifima'),
+            settingDescription: __(
+                'Your Vonage API key used to authenticate SMS API requests.',
                 'notifima'
             ),
-            dependent: {
-                key: 'is_whatsapp_enable',
-                set: true,
-            },
+            desc: __(
+                'Found in your Vonage API dashboard. <a href="https://dashboard.nexmo.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'notifima'
+            ),
+            dependent: [
+                {
+                    key: 'notifima_service_provider',
+                    value: 'vonage',
+                },
+                {
+                    key: 'notifima_notification_channel',
+                    value: ['sms', 'both'],
+                },
+            ],
+            proSetting: true,
+        },
+        {
+            key: 'vonage_sms_api_secret',
+            type: 'text',
+            size: 40,
+            label: __('API Secret', 'notifima'),
+            settingDescription: __(
+                'Your Vonage API secret used to authenticate SMS API requests.',
+                'notifima'
+            ),
+            desc: __(
+                'Found in your Vonage API dashboard. <a href="https://dashboard.nexmo.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'notifima'
+            ),
+            dependent: [
+                {
+                    key: 'notifima_service_provider',
+                    value: 'vonage',
+                },
+                {
+                    key: 'notifima_notification_channel',
+                    value: ['sms', 'both'],
+                },
+            ],
+            proSetting: true,
+        },
+        {
+            key: 'vonage_sms_sender',
+            type: 'text',
+            size: 25,
+            label: __('SMS Sender', 'notifima'),
+            settingDescription: __(
+                'The sender name or number used to send SMS restock notifications.',
+                'notifima'
+            ),
+            desc: __(
+                'Enter the sender name or number configured for your Vonage SMS service.',
+                'notifima'
+            ),
+            dependent: [
+                {
+                    key: 'notifima_service_provider',
+                    value: 'vonage',
+                },
+                {
+                    key: 'notifima_notification_channel',
+                    value: ['sms', 'both'],
+                },
+            ],
+            proSetting: true,
+        },
+
+        // Vonage WhatsApp
+        {
+            key: 'vonage_whatsapp_application_id',
+            type: 'text',
+            size: 40,
+            label: __('Application ID', 'notifima'),
+            settingDescription: __(
+                'The Vonage Application ID used to authenticate WhatsApp Messages API requests.',
+                'notifima'
+            ),
+            desc: __(
+                'Found in your Vonage Developer Dashboard under Applications. <a href="https://dashboard.nexmo.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'notifima'
+            ),
+            dependent: [
+                {
+                    key: 'notifima_service_provider',
+                    value: 'vonage',
+                },
+                {
+                    key: 'notifima_notification_channel',
+                    value: ['whatsapp', 'both'],
+                },
+            ],
+            proSetting: true,
+        },
+        {
+            key: 'vonage_whatsapp_private_key',
+            type: 'textarea',
+            size: 40,
+            label: __('Private Key', 'notifima'),
+            settingDescription: __(
+                'The private key associated with your Vonage Application, used to authenticate WhatsApp Messages API requests.',
+                'notifima'
+            ),
+            desc: __(
+                'Use the private key generated for your Vonage Application. <a href="https://dashboard.nexmo.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'notifima'
+            ),
+            dependent: [
+                {
+                    key: 'notifima_service_provider',
+                    value: 'vonage',
+                },
+                {
+                    key: 'notifima_notification_channel',
+                    value: ['whatsapp', 'both'],
+                },
+            ],
+            proSetting: true,
+        },
+        {
+            key: 'vonage_whatsapp_sender_number',
+            type: 'text',
+            size: 25,
+            label: __('WhatsApp Sender Number', 'notifima'),
+            settingDescription: __(
+                'The WhatsApp-enabled Vonage number used to send WhatsApp restock notifications.',
+                'notifima'
+            ),
+            desc: __(
+                'Enter the WhatsApp sender number configured for your Vonage Messages application.',
+                'notifima'
+            ),
+            dependent: [
+                {
+                    key: 'notifima_service_provider',
+                    value: 'vonage',
+                },
+                {
+                    key: 'notifima_notification_channel',
+                    value: ['whatsapp', 'both'],
+                },
+            ],
             proSetting: true,
         },
     ],
