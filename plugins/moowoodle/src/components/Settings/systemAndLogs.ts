@@ -26,7 +26,7 @@ export default {
 		{
 			key: 'moodle_timeout',
 			type: 'text',
-			desc: __(
+			settingDescription: __(
 				'When WordPress sends a request to the Moodle server for data, communication delays might exceed the default server connection timeout. You can customize the timeout parameters by adjusting them here. <br>Default: 5 seconds.',
 				'moowoodle'
 			),
@@ -38,7 +38,7 @@ export default {
 		{
 			key: 'schedule_interval',
 			type: 'text',
-			desc: __(
+			settingDescription: __(
 				'Select the interval for the user synchronization process. Based on this schedule, the cron job will run to sync users between WordPress and Moodle.',
 				'moowoodle'
 			),
@@ -51,7 +51,7 @@ export default {
 			key: 'moowoodle_adv_log',
 			type: 'checkbox',
 			label: __('Advance log', 'moowoodle'),
-			desc: __(
+			settingDescription: __(
 				`<span class="highlighted-part">Activating this option will log more detailed error information. Enable it only when essential, as it may result in a larger log file.</span>`,
 				'moowoodle'
 			),

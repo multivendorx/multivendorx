@@ -19,7 +19,7 @@ export default {
 			type: 'section',
 			icon: 'subscription-courses',
 			title: __('Courses', 'moowoodle'),
-			desc: __(
+			settingDescription: __(
 				'Control how course information appears to customers',
 				'moowoodle'
 			),
@@ -27,7 +27,7 @@ export default {
 		{
 			key: 'start_end_date',
 			type: 'checkbox',
-			desc: __(
+			settingDescription: __(
 				'When enabled, the course duration, such as the start and end dates, will be visible on the shop page.',
 				'moowoodle'
 			),
@@ -44,7 +44,7 @@ export default {
 		{
 			key: 'my_courses_priority',
 			type: 'select',
-			desc: __(
+			settingDescription: __(
 				"'<b>My Course</b>' menu will appear beneath the selected menu on the WooCommerce 'My Account' page of customer dashboard.",
 				'moowoodle'
 			),
@@ -65,7 +65,7 @@ export default {
 			type: 'section',
 			icon: 'classroom-enrollment',
 			title: __('Enrollment & seat management', 'moowoodle'),
-			desc: __(
+			settingDescription: __(
 				'Configure how buyers enroll and manage course seats',
 				'moowoodle'
 			),
@@ -73,7 +73,7 @@ export default {
 		{
 			key: 'bulk_access_enable',
 			type: 'checkbox',
-			desc: __(
+			settingDescription: __(
 				'Allow buyers (e.g., teachers or managers) to purchase multiple seats and assign them to users.',
 				'moowoodle'
 			),
@@ -90,7 +90,7 @@ export default {
 		{
 			key: 'seat_reassignment',
 			type: 'checkbox',
-			desc: __(
+			settingDescription: __(
 				'Enable buyers to remove users and reassign seats when needed - great for managing rotating teams or classrooms.',
 				'moowoodle'
 			),
@@ -107,7 +107,7 @@ export default {
 		{
 			key: 'gift_someone',
 			type: 'checkbox',
-			desc: __(
+			settingDescription: __(
 				"Let buyers gift a course by entering someone else's details during checkout.",
 				'moowoodle'
 			),
@@ -126,7 +126,7 @@ export default {
 			type: 'section',
 			icon: 'notification',
 			title: __('Notifications', 'moowoodle'),
-			desc: __(
+			settingDescription: __(
 				'Emails sent to new and existing users when they get course access.',
 				'moowoodle'
 			),
@@ -134,7 +134,7 @@ export default {
 		{
 			key: 'moowoodle_create_user_custom_mail',
 			type: 'checkbox',
-			desc: sprintf(
+			settingDescription: sprintf(
 				/* translators: %s: URL to WooCommerce email settings */
 				__(
 					'If enabled, default WordPress new user registration emails will be disabled for both admin and user. <br>You can personalize the content of the MooWoodle New User email from <a href="%s" target="_blank" rel="noreferrer">here.</a>',

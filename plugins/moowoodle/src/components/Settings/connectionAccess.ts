@@ -19,7 +19,7 @@ export default {
 			type: 'section',
 			icon: 'setting',
 			title: __('Connection', 'moowoodle'),
-			desc: __(
+			settingDescription: __(
 				'Point this site at your Moodle instance and confirm the two can reach each other.',
 				'moowoodle'
 			),
@@ -27,7 +27,7 @@ export default {
 		{
 			key: 'moodle_url',
 			type: 'text',
-			desc: __(
+			settingDescription: __(
 				'Provide the URL of your Moodle site where the course will be hosted. Students will receive access to the course content on that site.',
 				'moowoodle'
 			),
@@ -39,7 +39,7 @@ export default {
 			type: 'text',
 			size: 25,
 			label: __('Moodle access token', 'moowoodle'),
-			desc: sprintf(
+			settingDescription: sprintf(
 				/* translators: %s: URL to Moodle token page */
 				__(
 					'Enter Moodle access token. You can generate the access token from <a href="%s" target="_blank" rel="noreferrer">here</a>. <br>Navigation: Dashboard → Site administration → Server → Manage tokens.',
@@ -125,7 +125,7 @@ export default {
 			type: 'section',
 			icon: 'setting',
 			title: __('Single sign-on', 'moowoodle'),
-			desc: __(
+			settingDescription: __(
 				'Let logged-in WordPress users open their Moodle courses without signing in again.',
 				'moowoodle'
 			),
@@ -133,7 +133,7 @@ export default {
 		{
 			key: 'moowoodle_sso_enable',
 			type: 'checkbox',
-			desc: __(
+			settingDescription: __(
 				'Buyers go straight from "My Course" into Moodle, no separate login.',
 				'moowoodle'
 			),
@@ -150,7 +150,7 @@ export default {
 		{
 			key: 'moowoodle_sso_secret_key',
 			type: 'text',
-			desc: sprintf(
+			settingDescription: sprintf(
 				/* translators: %s: URL to Moodle SSO settings page */
 				__(
 					'Generate a unique SSO secret key (must be at least 8 characters) and copy it. Then, go to your Moodle site and paste the copied SSO key <a href="%s" target="_blank" rel="noreferrer">there</a>.',
