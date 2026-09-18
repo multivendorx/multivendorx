@@ -262,7 +262,16 @@ class Store {
         $meta = array();
 
         foreach ( $rows as $row ) {
-            $meta[ $row['meta_key'] ] = unserialize( $row['meta_value'], array( 'allowed_classes' => false ) );
+            $value = $row['meta_value'];
+
+            if ( is_serialized( $value ) ) {
+                $meta[ $row['meta_key'] ] = unserialize(
+                    $value,
+                    array( 'allowed_classes' => false )
+                );
+            } else {
+                $meta[ $row['meta_key'] ] = $value;
+            }
         }
 
         $this->meta_data = $meta;
@@ -631,7 +640,6 @@ class Store {
 
     public function get_payment_method( $type = '' ) {
         $payment_methods = $this->meta_data['payment_methods'] ?? array();
-
         if ( empty( $payment_methods ) || ! is_array( $payment_methods ) ) {
             return array();
         }

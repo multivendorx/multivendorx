@@ -135,7 +135,7 @@ class Block {
         }
 
         // Only ship the shared vendor bundle on pages that actually contain one of our blocks.
-        if ( $has_multivendorx_block || Utill::is_store_page() ) {
+        if ( $has_multivendorx_block || Utill::is_store_page() || Utill::is_store_registration_page() ) {
             FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
         }
     }
