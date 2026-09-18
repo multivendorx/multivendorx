@@ -81,7 +81,7 @@ const Synchronization: React.FC<SettingsProps> = () => {
 				}
 				appLocalizer={appLocalizer}
 				Link={Link}
-				settingName={'synchronization'}
+				settingName={'Synchronization'}
 				className="admin-settings"
 			/>
 		</SettingProvider>

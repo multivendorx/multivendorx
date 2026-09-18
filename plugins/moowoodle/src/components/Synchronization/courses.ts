@@ -3,26 +3,14 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'synchronize-course',
 	priority: 10,
-	headerTitle: __('Courses Synchronization', 'moowoodle'),
+	headerTitle: __('Courses', 'moowoodle'),
 	headerDescription: __(
-		'Fetch Moodle courses & generate products on demand.',
+		'Manage how Moodle courses sync into WooCommerce products.',
 		'moowoodle'
 	),
 	headerIcon: 'bulk-course-sync',
 	submitUrl: 'settings',
-	// groupBySections: true,
-	// hideSettingHeader: true,
 	modal: [
-		// {
-		// 	key: 'section',
-		// 	type: 'section',
-		// 	icon: 'desktop-pc-valuation',
-		// 	title: __('System & Logs', 'moowoodle'),
-		// 	desc: __(
-		// 		'Fetch Moodle courses & generate products on demand.',
-		// 		'moowoodle'
-		// 	),
-		// },
 		{
 			key: 'sync_course_options',
 			type: 'checkbox',
@@ -75,12 +63,6 @@ export default {
 			],
 		},
 		{
-			key: 'section',
-			type: 'section',
-			// icon: 'per-product-shipping',
-			title: __('Product synchronization options', 'moowoodle'),
-		},
-		{
 			key: 'product_sync_option',
 			type: 'checkbox',
 			settingDescription: __(
@@ -112,12 +94,6 @@ export default {
 					value: 'update',
 				},
 			],
-		},
-		{
-			key: 'section',
-			type: 'section',
-			// icon:'bulk-course-sync',
-			title: __('On-demand synchronization', 'moowoodle'),
 		},
 		{
 			key: 'sync_course_btn',
