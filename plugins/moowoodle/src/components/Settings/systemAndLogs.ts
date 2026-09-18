@@ -69,7 +69,6 @@ export default {
 			classes: 'log-section full-width row',
 			apiLink: 'logs',
 			fileName: 'error.txt',
-			label: __('', 'moowoodle'),
 		},
 	],
 };
