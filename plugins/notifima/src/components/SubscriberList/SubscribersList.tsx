@@ -79,7 +79,7 @@ const SubscribersList = () => {
     const headers = {
         product: {
             label: __('Product', 'notifima'),
-            width:"40%",
+            width: '100%',
             render: (row) => (
                 <InformationItemComponent
                     title={row.product}
@@ -91,6 +91,18 @@ const SubscribersList = () => {
                             label: __('SKU', 'notifima'),
                             value: row.sku,
                         },
+                        {
+                            label: __('Email', 'notifima'),
+                            value: row.email,
+                        },
+                        {
+                            label: __('Phone Number', 'notifima'),
+                            value: row.phone,
+                        },
+                        {
+                            label: __('Date', 'notifima'),
+                            value: row.date,
+                        },
                     ]}
                     badges={[
                         {
@@ -101,26 +113,6 @@ const SubscribersList = () => {
                 />
             ),
         },
-        email: {
-            label: __('Email', 'notifima'),
-            render: (row) => {
-                return (
-                    <div className="icon-wrapper"><i className='adminfont-mail yellow'></i>{row.email}</div>
-                );
-            },
-        },
-        phone: {
-            label: __('Phone Number', 'notifima'),
-            render: (row) => {
-                return (
-                    <div className="icon-wrapper">
-                        <i className="adminfont-phone yellow"></i>
-                        {row.phone}
-                    </div>
-                );
-            },
-        },
-        date: { label: __('Date', 'notifima') },
     };
 
     const downloadCSVByQuery = () => {
