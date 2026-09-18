@@ -5,9 +5,17 @@ export default {
     headerTitle: __('Automation', 'notifima'),
     headerDescription: __('Set the automation rules that control customer subscriptions, restock notifications, and lead time behavior.', 'notifima'),
     headerIcon: 'appearance',
+    groupBySections: true,
+    hideSettingHeader: true,
     submitUrl: 'settings',
     modal: [
-
+        {
+            key: 'section',
+            type: 'section',
+            icon: 'appearance',
+            title: __('Automation', 'notifima'),
+            desc: __('Set the automation rules that control customer subscriptions, restock notifications, and lead time behavior.', 'notifima'),
+        },
         {
             key: 'is_guest_subscriptions_enable',
             type: 'choice-toggle',
@@ -63,6 +71,7 @@ export default {
         {
             key: 'section',
             type: 'section',
+            icon: 'appearance',
             title: __('Restock Timing (Lead Time)', 'notifima'),
             desc: __(
                 'When and how lead time is shown.',
@@ -153,6 +162,7 @@ export default {
         {
             key: 'section',
             type: 'section',
+            icon: 'appearance',
             title: __('Subscription Experience', 'notifima'),
             desc: __(
                 'Customize how customers interact with stock alert subscriptions across your store.',
@@ -299,6 +309,7 @@ export default {
         {
             key: 'section',
             type: 'section',
+            icon: 'appearance',
             title: __('Audience Synchronization', 'notifima'),
             desc: __('Choose where subscriber data is stored and automatically synchronize it with connected platforms.', 'notifima'),
         },
@@ -371,9 +382,16 @@ export default {
             },
             proSetting: true,
         },
-
-        
-        //
+        {
+            key: 'section',
+            type: 'section',
+            icon: 'whatsapp',
+            title: __('WhatsApp Audience Synchronization', 'notifima'),
+            desc: __(
+                'Choose where subscriber data is stored and automatically synchronize WhatsApp subscribers with connected platforms.',
+                'notifima'
+            ),
+        },
         {
             key: 'notifima_notification_channel',
             type: 'choice-toggle',
@@ -669,6 +687,44 @@ export default {
                     value: ['whatsapp', 'both'],
                 },
             ],
+            proSetting: true,
+        },
+
+        //
+        {
+            key: 'notifima_sms_message',
+            type: 'textarea',
+            label: __('SMS Message', 'notifima'),
+            settingDescription: __(
+                'Customize the message sent to subscribers when a product is back in stock.',
+                'notifima'
+            ),
+            desc: __(
+                'Available placeholders: {product_name}, {product_url}.',
+                'notifima'
+            ),
+            dependent: {
+                key: 'notifima_notification_channel',
+                value: ['sms', 'both'],
+            },
+            proSetting: true,
+        },
+        {
+            key: 'notifima_whatsapp_message',
+            type: 'textarea',
+            label: __('WhatsApp Message', 'notifima'),
+            settingDescription: __(
+                'Customize the WhatsApp message sent to subscribers when a product is back in stock.',
+                'notifima'
+            ),
+            desc: __(
+                'Available placeholders: {product_name}, {product_url}.',
+                'notifima'
+            ),
+            dependent: {
+                key: 'notifima_notification_channel',
+                value: ['whatsapp', 'both'],
+            },
             proSetting: true,
         },
     ],

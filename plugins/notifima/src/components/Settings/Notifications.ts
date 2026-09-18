@@ -6,9 +6,18 @@ export default {
     headerTitle: __('Notifications', 'notifima'),
     headerDescription: __('Control subscriber notifications, manage blocked email lists, and connect Notifima with your favorite marketing platforms.', 'notifima'),
     headerIcon: 'mail',
+    groupBySections: true,
+    hideSettingHeader: true,
     proDependent: true,
     submitUrl: 'settings',
     modal: [
+        {
+            key: 'section',
+            type: 'section',
+            icon: 'mail',
+            title: __('Notifications', 'notifima'),
+            desc: __('Control subscriber notifications, manage blocked email lists, and connect Notifima with your favorite marketing platforms.', 'notifima')
+        },
         {
             key: 'ban_email_domains',
             type: 'textarea',
@@ -77,8 +86,9 @@ export default {
         {
             key: 'section',
             type: 'section',
+            icon: 'mail',
             title: __('Admin Notifications', 'notifima'),
-            desc: __( 'Who on your team gets alerted', 'notifima' ),
+            desc: __('Who on your team gets alerted', 'notifima'),
         },
         {
             key: 'additional_alert_email',
