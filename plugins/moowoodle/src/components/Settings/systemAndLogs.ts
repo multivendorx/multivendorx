@@ -8,9 +8,21 @@ export default {
 		'Manage advanced settings for synchronization, error logging, and connection handling.',
 		'moowoodle'
 	),
+	groupBySections: true,
+	hideSettingHeader: true,
 	headerIcon: 'tools',
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'subscription-courses',
+			title: __('System & Logs', 'moowoodle'),
+			desc: __(
+				'Manage advanced settings for synchronization, error logging, and connection handling.',
+				'moowoodle'
+			),
+		},
 		{
 			key: 'moowoodle_adv_log',
 			type: 'checkbox',
@@ -30,6 +42,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'desktop-pc-valuation',
 			title: __('System Operations', 'moowoodle'),
 		},
 		{
@@ -59,10 +72,10 @@ export default {
 		{
 			key: 'moowoodle_adv_log',
 			type: 'log',
-			classes: 'log-section',
+			classes: 'log-section full-width row',
 			apiLink: 'logs',
 			fileName: 'error.txt',
-			label: __('Logs', 'moowoodle'),
+			label: __('', 'moowoodle'),
 		},
 	],
 };

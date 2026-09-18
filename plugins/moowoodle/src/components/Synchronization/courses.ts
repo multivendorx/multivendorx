@@ -10,7 +10,19 @@ export default {
 	),
 	headerIcon: 'bulk-course-sync',
 	submitUrl: 'settings',
+	groupBySections: true,
+	hideSettingHeader: true,
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'desktop-pc-valuation',
+			title: __('System & Logs', 'moowoodle'),
+			desc: __(
+				'Fetch Moodle courses & generate products on demand.',
+				'moowoodle'
+			),
+		},
 		{
 			key: 'sync_course_options',
 			type: 'checkbox',
@@ -65,6 +77,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'per-product-shipping',
 			title: __('Product synchronization options', 'moowoodle'),
 		},
 		{
@@ -103,6 +116,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon:'bulk-course-sync',
 			title: __('On-demand synchronization', 'moowoodle'),
 		},
 		{

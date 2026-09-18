@@ -9,9 +9,21 @@ export default {
 		'Control how course information appears to customers',
 		'moowoodle'
 	),
+	groupBySections: true,
+	hideSettingHeader: true,
 	headerIcon: 'cart',
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'subscription-courses',
+			title: __('Course & Enrollment', 'moowoodle'),
+			desc: __(
+				'Control how course information appears to customers',
+				'moowoodle'
+			),
+		},
 		{
 			key: 'start_end_date',
 			type: 'checkbox',
@@ -51,6 +63,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'classroom-enrollment',
 			title: __('Enrollment & seat management', 'moowoodle'),
 			desc: __(
 				'Configure how buyers enroll and manage course seats',
@@ -111,6 +124,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'notification',
 			title: __('User notifications', 'moowoodle'),
 			desc: __(
 				'Manage emails sent to new and existing users',
