@@ -1,5 +1,4 @@
 /* global appLocalizer */
-import { FontSizePicker } from '@wordpress/block-editor';
 import { __, sprintf } from '@wordpress/i18n';
 
 export default {
@@ -11,8 +10,20 @@ export default {
 		'moowoodle'
 	),
 	headerIcon: 'setting',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'setting',
+			title: __('Connection', 'moowoodle'),
+			desc: __(
+				'Point this site at your Moodle instance and confirm the two can reach each other.',
+				'moowoodle'
+			),
+		},
 		{
 			key: 'moodle_url',
 			type: 'text',
@@ -109,11 +120,21 @@ export default {
 				},
 			],
 		},
+				{
+			key: 'section',
+			type: 'section',
+			icon: 'setting',
+			title: __('Single sign-on', 'moowoodle'),
+			desc: __(
+				'Let logged-in WordPress users open their Moodle courses without signing in again.',
+				'moowoodle'
+			),
+		},
 		{
 			key: 'moowoodle_sso_enable',
 			type: 'checkbox',
 			desc: __(
-				'Enabling this option allows users to access Moodle courses directly, bypassing the need for login.',
+				'Buyers go straight from "My Course" into Moodle, no separate login.',
 				'moowoodle'
 			),
 			label: __('Single Sign On', 'moowoodle'),

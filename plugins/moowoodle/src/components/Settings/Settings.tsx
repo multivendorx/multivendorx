@@ -92,7 +92,7 @@ const Settings: React.FC<SettingsProps> = () => {
 				}
 				appLocalizer={appLocalizer}
 				Link={Link}
-				settingName={'settings'}
+				settingName={'Settings'}
 				className="admin-settings"
 			/>
 		</SettingProvider>

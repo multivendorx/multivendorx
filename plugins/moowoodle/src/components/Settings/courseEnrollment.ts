@@ -18,7 +18,7 @@ export default {
 			key: 'section',
 			type: 'section',
 			icon: 'subscription-courses',
-			title: __('Course & Enrollment', 'moowoodle'),
+			title: __('Courses', 'moowoodle'),
 			desc: __(
 				'Control how course information appears to customers',
 				'moowoodle'
@@ -49,7 +49,7 @@ export default {
 				'moowoodle'
 			),
 			size: 25,
-			label: __("Endpoint menu position - 'My Course'", 'moowoodle'),
+			label: __("'My Course' menu position", 'moowoodle'),
 			options: Object.entries(appLocalizer.account_menu).map(
 				([key, label], index) => {
 					return {
@@ -125,9 +125,9 @@ export default {
 			key: 'section',
 			type: 'section',
 			icon: 'notification',
-			title: __('User notifications', 'moowoodle'),
+			title: __('Notifications', 'moowoodle'),
 			desc: __(
-				'Manage emails sent to new and existing users',
+				'Emails sent to new and existing users when they get course access.',
 				'moowoodle'
 			),
 		},

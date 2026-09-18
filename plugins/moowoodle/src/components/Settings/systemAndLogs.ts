@@ -24,28 +24,6 @@ export default {
 			),
 		},
 		{
-			key: 'moowoodle_adv_log',
-			type: 'checkbox',
-			label: __('Advance log', 'moowoodle'),
-			desc: __(
-				`<span class="highlighted-part">Activating this option will log more detailed error information. Enable it only when essential, as it may result in a larger log file.</span>`,
-				'moowoodle'
-			),
-			options: [
-				{
-					key: 'moowoodle_adv_log',
-					value: 'moowoodle_adv_log',
-				},
-			],
-			look: 'toggle',
-		},
-		{
-			key: 'section',
-			type: 'section',
-			icon: 'desktop-pc-valuation',
-			title: __('System Operations', 'moowoodle'),
-		},
-		{
 			key: 'moodle_timeout',
 			type: 'text',
 			desc: __(
@@ -68,6 +46,22 @@ export default {
 			postInsideText: __('min', 'moowoodle'),
 			parameter: __('Minutes', 'moowoodle'),
 			label: __('Automatic synchronization frequency', 'moowoodle'),
+		},
+		{
+			key: 'moowoodle_adv_log',
+			type: 'checkbox',
+			label: __('Advance log', 'moowoodle'),
+			desc: __(
+				`<span class="highlighted-part">Activating this option will log more detailed error information. Enable it only when essential, as it may result in a larger log file.</span>`,
+				'moowoodle'
+			),
+			options: [
+				{
+					key: 'moowoodle_adv_log',
+					value: 'moowoodle_adv_log',
+				},
+			],
+			look: 'toggle',
 		},
 		{
 			key: 'moowoodle_adv_log',
