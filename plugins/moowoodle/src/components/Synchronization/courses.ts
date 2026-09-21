@@ -3,9 +3,9 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'synchronize-course',
 	priority: 10,
-	headerTitle: __('Courses Synchronization', 'moowoodle'),
+	headerTitle: __('Courses', 'moowoodle'),
 	headerDescription: __(
-		'Fetch Moodle courses & generate products on demand.',
+		'Manage how Moodle courses sync into WooCommerce products.',
 		'moowoodle'
 	),
 	headerIcon: 'bulk-course-sync',
@@ -63,11 +63,6 @@ export default {
 			],
 		},
 		{
-			key: 'section',
-			type: 'section',
-			title: __('Product synchronization options', 'moowoodle'),
-		},
-		{
 			key: 'product_sync_option',
 			type: 'checkbox',
 			settingDescription: __(
@@ -99,11 +94,6 @@ export default {
 					value: 'update',
 				},
 			],
-		},
-		{
-			key: 'section',
-			type: 'section',
-			title: __('On-demand synchronization', 'moowoodle'),
 		},
 		{
 			key: 'sync_course_btn',
