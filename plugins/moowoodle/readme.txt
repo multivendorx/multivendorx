@@ -233,6 +233,7 @@ This project might have bugs and may be lacking certain features. If you'd like 
 
 = 3.4.10 - 2026-09-22 =
 * Added     - Compatibility with WordPress 7.1.1.
+* Added     - Compatibility of WooCommerce 11.1.1.
 * Fixed     - Resolved UI bugs and improved the overall user interface.
 * Updated   - Language file.
 
