@@ -55,6 +55,7 @@ const SettingsFormRenderer: React.FC<SettingsFormRendererProps> = ({
 					appLocalizer={appLocalizer}
 					modules={modules}
 					Popup={ShowProPopup}
+					groupBySections={settingModal?.groupBySections}
 				/>
 			) : (
 				<>{__('Loading...', 'moowoodle')}</>
@@ -91,7 +92,7 @@ const Settings: React.FC<SettingsProps> = () => {
 				}
 				appLocalizer={appLocalizer}
 				Link={Link}
-				settingName={'settings'}
+				settingName={'Settings'}
 				className="admin-settings"
 			/>
 		</SettingProvider>
