@@ -231,7 +231,7 @@ This project might have bugs and may be lacking certain features. If you'd like 
 
 == Changelog ==
 
-= 3.4.10 - 2026-09-17 =
+= 3.4.10 - 2026-09-22 =
 
 * Fixed     - Resolved UI bugs and improved the overall user interface.
 * Updated   - Language file.
