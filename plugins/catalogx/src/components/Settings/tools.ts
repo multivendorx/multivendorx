@@ -16,7 +16,7 @@ export default {
             icon: 'paint-brush',
             title: __('System', 'catalogx'),
             desc: __(
-                'Review all system logs and errors',
+                'Logs, diagnostics - for troubleshooting, not day-to-day configuration.',
                 'catalogx'
             ),
         },
@@ -40,7 +40,7 @@ export default {
         {
             key: 'custom_css_product_page',
             type: 'textarea',
-            label: __('Custom CSS', 'catalogx'),
+            // label: __('Custom CSS', 'catalogx'),
             desc: __(
                 'Enter your custom CSS here to customize the enquiry form.',
                 'catalogx'

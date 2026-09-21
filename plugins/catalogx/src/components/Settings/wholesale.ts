@@ -6,8 +6,17 @@ export default {
     headerTitle: __('Wholesale', 'catalogx'),
     headerDescription: __('Wholesale sign up and registration management.', 'catalogx'),
     headerIcon: 'wholesale',
+    groupBySections: true,
+    hideSettingHeader: true,
     submitUrl: 'settings',
     modal: [
+        {
+            key: 'section',
+            type: 'section',
+            icon: 'wholesale',
+            title: __('Sign-up & offers', 'catalogx'),
+            desc: __('How new wholesale buyers get approved, and how their offers are handled.', 'catalogx'),
+        },
         {
             key: 'approve_wholesaler',
             type: 'choice-toggle',
@@ -16,13 +25,13 @@ export default {
                 'catalogx'
             ),
             settingDescription: __(
-                'Choose how new wholesale users should be approved after registration.',
+                'Review each signup yourself, or approve them the moment they register.',
                 'catalogx'
             ),
-            desc: __(
-                "Manual - Admin approves new wholesalers manually from 'Wholesaler Users' page. <br> Automatic - Instant wholesaler approval upon sign-up.",
-                'catalogx'
-            ),
+            // desc: __(
+            //     "Manual - Admin approves new wholesalers manually from 'Wholesaler Users' page. <br> Automatic - Instant wholesaler approval upon sign-up.",
+            //     'catalogx'
+            // ),
             options: [
                 {
                     key: 'manual',
@@ -43,13 +52,13 @@ export default {
             type: 'choice-toggle',
             label: __('How should coupons work with wholesale', 'catalogx'),
             settingDescription: __(
-                'Choose how coupons work for wholesale customers.',
+                'Let wholesale discounts stack with coupons, or keep them separate.',
                 'catalogx'
             ),
-            desc: __(
-                '<ul><li>Wholesale discount only - Wholesale discounts cannot be combined with coupons.</li><li>Wholesale discount + Coupons - Wholesale customers can apply coupons during checkout.</li></ul>',
-                'catalogx'
-            ),
+            // desc: __(
+            //     '<ul><li>Wholesale discount only - Wholesale discounts cannot be combined with coupons.</li><li>Wholesale discount + Coupons - Wholesale customers can apply coupons during checkout.</li></ul>',
+            //     'catalogx'
+            // ),
             options: [
                 {
                     key: 'restricted',
@@ -68,13 +77,13 @@ export default {
             type: 'choice-toggle',
             label: __('Wholesale offer visibility', 'catalogx'),
             settingDescription: __(
-                'Choose how wholesale pricing is presented to regular customers.',
+                'Keep wholesale pricing private, or show it to regular shoppers to encourage sign-ups.',
                 'catalogx'
             ),
-            desc: __(
-                '<ul><li>Keep wholesale offers private - Display retail pricing without wholesale discounts.</li><li>Promote wholesale savings - Show potential wholesale pricing to encourage wholesale registrations.</li></ul>',
-                'catalogx'
-            ),
+            // desc: __(
+            //     '<ul><li>Keep wholesale offers private - Display retail pricing without wholesale discounts.</li><li>Promote wholesale savings - Show potential wholesale pricing to encourage wholesale registrations.</li></ul>',
+            //     'catalogx'
+            // ),
             options: [
                 {
                     key: 'hidden',
@@ -92,17 +101,24 @@ export default {
             moduleEnabled: 'wholesale',
         },
         {
+            key: 'section',
+            type: 'section',
+            icon: 'wholesale',
+            title: __('Catalog & pricing', 'catalogx'),
+            desc: __('How wholesale products are browsed and priced.', 'catalogx'),
+        },
+        {
             key: 'enable_order_form',
             type: 'choice-toggle',
             label: __('Product browsing experience', 'catalogx'),
             settingDescription: __(
-                'Choose how wholesale customers discover wholesale products.',
+                'Show wholesale products inside the regular catalog, or on a dedicated page.',
                 'catalogx'
             ),
-            desc: __(
-                '<ul><li>Shared Product Catalog - Wholesale products appear within the regular catalog.</li><li>Dedicated Wholesale Catalog - Display all wholesale products on a dedicated page for wholesale customers.</li></ul>',
-                'catalogx'
-            ),
+            // desc: __(
+            //     '<ul><li>Shared Product Catalog - Wholesale products appear within the regular catalog.</li><li>Dedicated Wholesale Catalog - Display all wholesale products on a dedicated page for wholesale customers.</li></ul>',
+            //     'catalogx'
+            // ),
             options: [
                 {
                     key: 'shared',
@@ -124,13 +140,13 @@ export default {
             type: 'choice-toggle',
             label: __('How wholesale pricing is managed', 'catalogx'),
             settingDescription: __(
-                'Choose whether to set wholesale pricing for individual products or apply the same discount across all products.',
+                'Set pricing per product, or apply one discount across everything.',
                 'catalogx'
             ),
-            desc: __(
-                '<ul><li>Set prices for each product - Configure wholesale pricing separately for individual products.</li><li>Apply one discount to all products - Use a single discount rule for every wholesale product in your catalog.</li></ul>',
-                'catalogx'
-            ),
+            // desc: __(
+            //     '<ul><li>Set prices for each product - Configure wholesale pricing separately for individual products.</li><li>Apply one discount to all products - Use a single discount rule for every wholesale product in your catalog.</li></ul>',
+            //     'catalogx'
+            // ),
             options: [
                 {
                     key: 'product_level',

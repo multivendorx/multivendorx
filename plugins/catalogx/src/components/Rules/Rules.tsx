@@ -1,11 +1,12 @@
 import { useState } from 'react';
 
 import {
-	ColumnComponent,
-	ContainerComponent,
-	ModuleGuardComponent,
-	PopupComponent,
-	NavigatorHeaderComponent,
+    ColumnComponent,
+    ContainerComponent,
+    ModuleGuardComponent,
+    PopupComponent,
+    NavigatorHeaderComponent,
+    InformationItemComponent
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
@@ -39,8 +40,24 @@ const Rules = () => {
     const [openPopup, setopenPopup] = useState(false);
     let tableProps: any = {};
     const headers = {
-        name: {
+        // name: {
+        //     label: __('Name', 'catalogx'),
+        // },
+        order_id: {
             label: __('Name', 'catalogx'),
+            render: (row) => (
+                <InformationItemComponent
+                    title={`${row.name}`}
+                    badges={[
+                        {
+                            text: String(row.active) === '1'
+                                ? __('Active', 'catalogx')
+                                : __('Suspended', 'catalogx'),
+                            className: `badge-${String(row.active) === '1' ? 'active' : 'suspended'}`,
+                        },
+                    ]}
+                />
+            ),
         },
         applicable_for: {
             label: __('Applicable For', 'catalogx'),
@@ -117,13 +134,13 @@ const Rules = () => {
             }
         },
 
-        status: {
-            label: __('Status', 'catalogx'),
-            render: (row: RuleRow) =>
-                String(row.active) === '1'
-                    ? <span className='admin-badge green'>{__('Active', 'catalogx')} </span>
-                    : <span className='admin-badge red'>{__('Suspended', 'catalogx')} </span>,
-        },
+        // status: {
+        //     label: __('Status', 'catalogx'),
+        //     render: (row: RuleRow) =>
+        //         String(row.active) === '1'
+        //             ? <span className='admin-badge green'>{__('Active', 'catalogx')} </span>
+        //             : <span className='admin-badge red'>{__('Suspended', 'catalogx')} </span>,
+        // },
         action: {
             type: 'action',
             label: __('Action', 'catalogx'),
@@ -146,7 +163,7 @@ const Rules = () => {
             ],
         },
     };
-    
+
     const filters = [
         {
             key: 'applicable_for',
@@ -177,7 +194,7 @@ const Rules = () => {
         filters,
         rows: dummyRules,
         totalRows: dummyRules.length,
-        onRowReorder: () => {},
+        onRowReorder: () => { },
     };
 
     tableProps = applyFilters(
@@ -189,7 +206,7 @@ const Rules = () => {
         if (!appLocalizer.khali_dabba) {
             return (
                 <div className="demo-wrapper" onClick={() => setopenPopup(true)}>
-                    <div className="watermark">{__('This is sample Data','catalogx' )}</div>
+                    <div className="watermark">{__('This is sample Data', 'catalogx')}</div>
                     <TableCard {...tableProps} />
                 </div>
             );
