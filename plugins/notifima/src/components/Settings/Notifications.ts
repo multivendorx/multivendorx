@@ -23,11 +23,7 @@ export default {
             type: 'textarea',
             label: __('Block email domains', 'notifima'),
             settingDescription: __(
-                'Specify email domains that are not allowed to subscribe for stock notifications.',
-                'notifima'
-            ),
-            desc: __(
-                'Enter one or more email domains separated by commas. Customers using these domains will be prevented from subscribing.',
+                'Specify email domains that are not allowed to subscribe for stock notifications. Enter multiple domains separated by commas.',
                 'notifima'
             ),
             proSetting: true,
@@ -37,11 +33,7 @@ export default {
             type: 'textarea',
             label: __('Blocked domain alert message', 'notifima'),
             settingDescription: __(
-                'Customize the message displayed when a customer uses a blocked email domain.',
-                'notifima'
-            ),
-            desc: __(
-                'This message is shown when a subscription request is rejected because the email domain is blocked.',
+                'Customize the message shown when a subscription is rejected due to a blocked email domain.',
                 'notifima'
             ),
             proSetting: true,
@@ -51,11 +43,7 @@ export default {
             type: 'textarea',
             label: __('Blocked email addresses', 'notifima'),
             settingDescription: __(
-                'Specify individual email addresses that are not allowed to subscribe for stock notifications.',
-                'notifima'
-            ),
-            desc: __(
-                'Enter one or more email addresses separated by commas. Subscription requests from these email addresses will be rejected.',
+                'Specify email addresses that are not allowed to subscribe for stock notifications. Enter multiple addresses separated by commas.',
                 'notifima'
             ),
             proSetting: true,
@@ -65,11 +53,7 @@ export default {
             type: 'textarea',
             label: __('Blocked email alert message', 'notifima'),
             settingDescription: __(
-                'Customize the message displayed when a blocked email address attempts to subscribe.',
-                'notifima'
-            ),
-            desc: __(
-                'This message is shown when a subscription request is rejected because the email address is blocked.',
+                'Customize the message shown when a subscription is rejected due to a blocked email address.',
                 'notifima'
             ),
             proSetting: true,
@@ -88,18 +72,14 @@ export default {
             type: 'section',
             icon: 'mail',
             title: __('Admin Notifications', 'notifima'),
-            desc: __('Who on your team gets alerted', 'notifima'),
+            desc: __('Choose who on your team is alerted about new restock subscriptions.', 'notifima'),
         },
         {
             key: 'additional_alert_email',
             type: 'textarea',
             label: __('Recipient email for new subscriber', 'notifima'),
             settingDescription: __(
-                'Choose who should receive email notifications when customers subscribe for restock alerts.',
-                'notifima'
-            ),
-            desc: __(
-                '<ul><li>Separate multiple email addresses with commas.</li><li>By default, the site administrator receives these notifications.</li><li>Remove the administrator\'s email address from the list if you do not want the administrator to receive notifications.</li></ul>',
+                'Choose who receives email notifications when customers subscribe for restock alerts. Separate multiple email addresses with commas.',
                 'notifima'
             ),
         },

@@ -14,18 +14,14 @@ export default {
             type: 'section',
             icon: 'appearance',
             title: __('Automation', 'notifima'),
-            desc: __('Set the automation rules that control customer subscriptions, restock notifications, and lead time behavior.', 'notifima'),
+            desc: __('Control who can subscribe to restock alerts, when the form appears, and how restock times are shown.', 'notifima'),
         },
         {
             key: 'is_guest_subscriptions_enable',
             type: 'choice-toggle',
             label: __('Subscription access', 'notifima'),
             settingDescription: __(
-                'Choose which customers are allowed to subscribe for restock notifications.',
-                'notifima'
-            ),
-            desc: __(
-                '<ul><li>Everyone - Both guest visitors and logged-in customers can subscribe.</li><li>Logged-in customers only - Only authenticated customers can subscribe for restock notifications.</li></ul>',
+                'Choose who is allowed to sign up for restock alerts.',
                 'notifima'
             ),
             options: [
@@ -46,14 +42,9 @@ export default {
             type: 'checkbox',
             label: __('Show subscription form for', 'notifima'),
             settingDescription: __(
-                'Choose when the restock subscription form should be displayed.',
+                'Choose when the "notify me" form appears on a product page.',
                 'notifima'
             ),
-            desc: __(
-                '<ul><li>Out of stock - Display the subscription form when a product is out of stock.</li><li>On backorder - Display the subscription form when a product is available on backorder.</li></ul>',
-                'notifima'
-            ),
-
             options: [
                 {
                     key: 'outofstock',
@@ -74,7 +65,7 @@ export default {
             icon: 'appearance',
             title: __('Restock Timing (Lead Time)', 'notifima'),
             desc: __(
-                'When and how lead time is shown.',
+                'Control when and how the expected restock time is shown to shoppers.',
                 'notifima'
             ),
         },
@@ -83,11 +74,7 @@ export default {
             type: 'checkbox',
             label: __('Stock Status for Lead Time', 'notifima'),
             settingDescription: __(
-                'Choose which stock statuses should display the product lead time.',
-                'notifima'
-            ),
-            desc: __(
-                '<ul><li>Out of stock - Display the lead time only for out-of-stock products.</li><li>On backorder - Display the lead time for products available on backorder.</li></ul>',
+                'Choose which products show an expected restock time.',
                 'notifima'
             ),
             options: [
@@ -109,11 +96,7 @@ export default {
             type: 'choice-toggle',
             label: __('Lead Format', 'notifima'),
             settingDescription: __(
-                'Choose how lead time should be displayed on product pages.',
-                'notifima'
-            ),
-            desc: __(
-                '<ul><li>Static - Use the same lead time message for all applicable products.</li><li>Dynamic - Use a product-specific lead time message for each product.</li></ul>',
+                'Choose how the restock time message appears on product pages.',
                 'notifima'
             ),
             dependent: {
@@ -140,11 +123,7 @@ export default {
             type: 'text',
             label: __('Lead time default message', 'notifima'),
             settingDescription: __(
-                'Enter the default lead time message displayed for products using the static lead time format.',
-                'notifima'
-            ),
-            desc: __(
-                'This message is shown unless a product-specific lead time is available.',
+                'The message shoppers see when a product has no restock time of its own.',
                 'notifima'
             ),
             size: 20,
@@ -165,7 +144,7 @@ export default {
             icon: 'appearance',
             title: __('Subscription Experience', 'notifima'),
             desc: __(
-                'Customize how customers interact with stock alert subscriptions across your store.',
+                'Customize how customers sign up for and manage restock alerts.',
                 'notifima'
             ),
         },
@@ -174,11 +153,7 @@ export default {
             type: 'choice-toggle',
             label: __('Display subscription form as', 'notifima'),
             settingDescription: __(
-                'Choose how the subscription form is presented to customers.',
-                'notifima'
-            ),
-            desc: __(
-                '<ul><li>Popup Window - Open the subscription form in a modal popup.</li><li>Inline on Product Page - Display the subscription form directly within the product page.</li></ul>',
+                'Choose how the sign-up form is shown to customers.',
                 'notifima'
             ),
             options: [
@@ -202,11 +177,7 @@ export default {
                 'notifima'
             ),
             settingDescription: __(
-                'Choose whether the subscriber count should be displayed on product pages.',
-                'notifima'
-            ),
-            desc: __(
-                '<ul><li>Hide subscriber count - Customers will not see how many users have subscribed.</li><li>Show subscriber count - Display the current subscriber count on the product page.</li></ul>',
+                'Choose whether customers can see how many people have subscribed to a product.',
                 'notifima'
             ),
 
@@ -227,14 +198,10 @@ export default {
             key: 'shown_interest_text',
             type: 'textarea',
             label: __('Subscriber count notification message', 'notifima'),
-            settingDescription: __(
-                'Customize the message displayed alongside the subscriber count on product pages.',
-                'notifima'
-            ),
-            desc: __(
-                'Use <code>%no_of_subscribed%</code> to display the current number of subscribers. Example: "<code>%no_of_subscribed% customers are waiting for this product.</code>"',
-                'notifima'
-            ),
+settingDescription: __(
+    'Customize the message shown with the subscriber count on product pages. Use <code>%no_of_subscribed%</code> to display the current subscriber count.',
+    'notifima'
+),
             dependent: {
                 key: 'is_enable_no_interest',
                 set: true,
@@ -247,11 +214,7 @@ export default {
 
             label: __('Subscription confirmation', 'notifima'),
             settingDescription: __(
-                'Choose how customer subscriptions are confirmed.',
-                'notifima'
-            ),
-            desc: __(
-                '<ul><li>Subscribe immediately - Customers are subscribed as soon as they submit the form.</li><li>Confirm via email - Customers must verify their subscription through a confirmation email before it becomes active.</li></ul>',
+                'Choose how customer sign-ups are confirmed.',
                 'notifima'
             ),
             options: [
@@ -273,14 +236,10 @@ export default {
             key: 'double_opt_in_success',
             type: 'textarea',
             label: __('Subscription confirmation message', 'notifima'),
-            settingDescription: __(
-                'Customize the message displayed after a customer submits a subscription request.',
-                'notifima'
-            ),
-            desc: __(
-                'Used when email confirmation is enabled. Default: "Kindly check your inbox to confirm the subscription."',
-                'notifima'
-            ),
+settingDescription: __(
+    'Customize the message shown after a customer submits a subscription request. Used when email confirmation is enabled.',
+    'notifima'
+),
             dependent: {
                 key: 'is_double_optin',
                 set: true,
@@ -293,11 +252,7 @@ export default {
             type: 'text',
             label: __("'Unsubscribe' Button Caption", 'notifima'),
             settingDescription: __(
-                'Customize the text displayed on the unsubscribe button for subscribed users.',
-                'notifima'
-            ),
-            desc: __(
-                'Default: "Unsubscribe". Shown when a subscribed user revisits an out-of-stock product.',
+                'The text on the button subscribed customers click to stop alerts. If left blank, "Unsubscribe" is used.',
                 'notifima'
             ),
             size: 20,
@@ -311,18 +266,14 @@ export default {
             type: 'section',
             icon: 'appearance',
             title: __('Audience Synchronization', 'notifima'),
-            desc: __('Choose where subscriber data is stored and automatically synchronize it with connected platforms.', 'notifima'),
+            desc: __(`Choose where subscriber details are saved and whether they're sent to your marketing tools.`, 'notifima'),
         },
         {
             key: 'is_mailchimp_enable',
             type: 'choice-toggle',
             label: __('Marketing integration', 'notifima'),
             settingDescription: __(
-                'Choose whether to store subscribers locally or automatically sync them with your Mailchimp audience.',
-                'notifima'
-            ),
-            desc: __(
-                '<ul><li>Store only - Save subscriber information only within your website.</li><li>Mailchimp - Automatically add new subscribers to your Mailchimp audience. Enter your Mailchimp API key below to connect your account.</li></ul>',
+                'Connects your store to your Mailchimp account. Find it in Mailchimp under Account → Extras → API keys.',
                 'notifima'
             ),
             options: [
@@ -345,10 +296,6 @@ export default {
             size: 25,
             label: __('Mailchimp API key', 'notifima'),
             settingDescription: __(
-                'Enter your Mailchimp API key to connect your Mailchimp account.',
-                'notifima'
-            ),
-            desc: __(
                 'Generate an API key from your Mailchimp account and paste it here to enable audience synchronization. <a href="https://admin.mailchimp.com/account/api/" target="_blank" rel="noopener noreferrer">Get your API key</a>.',
                 'notifima'
             ),
@@ -371,10 +318,6 @@ export default {
                 'Connect your Mailchimp account and select the audience for new subscribers.',
                 'notifima'
             ),
-            desc: __(
-                'Start the connection process after entering a valid Mailchimp API key.',
-                'notifima'
-            ),
             dependent: {
                 key: 'is_mailchimp_enable',
                 set: true,
@@ -386,9 +329,9 @@ export default {
             key: 'section',
             type: 'section',
             icon: 'whatsapp',
-            title: __('WhatsApp Audience Synchronization', 'notifima'),
+            title: __('SMS & WhatsApp Notifications', 'notifima'),
             desc: __(
-                'Choose where subscriber data is stored and automatically synchronize WhatsApp subscribers with connected platforms.',
+                'Set up text and WhatsApp messages to notify customers when a product is back in stock.',
                 'notifima'
             ),
         },
@@ -453,11 +396,7 @@ export default {
             size: 40,
             label: __('Account SID', 'notifima'),
             settingDescription: __(
-                'Your Twilio account unique identifier used to authenticate API requests.',
-                'notifima'
-            ),
-            desc: __(
-                'Found in your Twilio Console → Account Info. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'Your Twilio Account SID. Find it in your Twilio Console → Account Info. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: {
@@ -472,11 +411,7 @@ export default {
             size: 40,
             label: __('Auth Token', 'notifima'),
             settingDescription: __(
-                'Private token used to authenticate API requests to your Twilio account.',
-                'notifima'
-            ),
-            desc: __(
-                'Found in your Twilio Console → Account Info. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'Private token used to authenticate API requests to your Twilio account. Find it in your Twilio Console → Account Info. <a href="https://console.twilio.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: {
@@ -491,11 +426,7 @@ export default {
             size: 25,
             label: __('SMS Sender Number', 'notifima'),
             settingDescription: __(
-                'The Twilio phone number used to send SMS restock notifications.',
-                'notifima'
-            ),
-            desc: __(
-                'Enter a Twilio phone number capable of sending SMS messages.',
+                'Twilio phone number used to send SMS restock notifications.',
                 'notifima'
             ),
             dependent: [
@@ -516,11 +447,7 @@ export default {
             size: 25,
             label: __('WhatsApp Sender Number', 'notifima'),
             settingDescription: __(
-                'The WhatsApp-enabled Twilio number used to send WhatsApp restock notifications.',
-                'notifima'
-            ),
-            desc: __(
-                'Enter the WhatsApp-enabled sender number configured in your Twilio account.',
+                'WhatsApp-enabled Twilio number used to send restock notifications.',
                 'notifima'
             ),
             dependent: [
@@ -543,11 +470,7 @@ export default {
             size: 40,
             label: __('API Key', 'notifima'),
             settingDescription: __(
-                'Your Vonage API key used to authenticate SMS API requests.',
-                'notifima'
-            ),
-            desc: __(
-                'Found in your Vonage API dashboard. <a href="https://dashboard.nexmo.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'Vonage API key used to authenticate SMS API requests. <a href="https://dashboard.nexmo.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: [
@@ -568,11 +491,7 @@ export default {
             size: 40,
             label: __('API Secret', 'notifima'),
             settingDescription: __(
-                'Your Vonage API secret used to authenticate SMS API requests.',
-                'notifima'
-            ),
-            desc: __(
-                'Found in your Vonage API dashboard. <a href="https://dashboard.nexmo.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'Vonage API secret used to authenticate SMS API requests. <a href="https://dashboard.nexmo.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: [
@@ -593,11 +512,7 @@ export default {
             size: 25,
             label: __('SMS Sender', 'notifima'),
             settingDescription: __(
-                'The sender name or number used to send SMS restock notifications.',
-                'notifima'
-            ),
-            desc: __(
-                'Enter the sender name or number configured for your Vonage SMS service.',
+                'Sender name or number used to send SMS restock notifications.',
                 'notifima'
             ),
             dependent: [
@@ -620,11 +535,7 @@ export default {
             size: 40,
             label: __('Application ID', 'notifima'),
             settingDescription: __(
-                'The Vonage Application ID used to authenticate WhatsApp Messages API requests.',
-                'notifima'
-            ),
-            desc: __(
-                'Found in your Vonage Developer Dashboard under Applications. <a href="https://dashboard.nexmo.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'Vonage Application ID used to authenticate WhatsApp Messages API requests. <a href="https://dashboard.nexmo.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: [
@@ -645,11 +556,7 @@ export default {
             size: 40,
             label: __('Private Key', 'notifima'),
             settingDescription: __(
-                'The private key associated with your Vonage Application, used to authenticate WhatsApp Messages API requests.',
-                'notifima'
-            ),
-            desc: __(
-                'Use the private key generated for your Vonage Application. <a href="https://dashboard.nexmo.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
+                'Private key for your Vonage Application, used to authenticate WhatsApp Messages API requests. <a href="https://dashboard.nexmo.com/" target="_blank" rel="noopener noreferrer">Get it here</a>.',
                 'notifima'
             ),
             dependent: [
@@ -670,11 +577,7 @@ export default {
             size: 25,
             label: __('WhatsApp Sender Number', 'notifima'),
             settingDescription: __(
-                'The WhatsApp-enabled Vonage number used to send WhatsApp restock notifications.',
-                'notifima'
-            ),
-            desc: __(
-                'Enter the WhatsApp sender number configured for your Vonage Messages application.',
+                'WhatsApp-enabled Vonage number used to send restock notifications.',
                 'notifima'
             ),
             dependent: [
@@ -696,11 +599,7 @@ export default {
             type: 'textarea',
             label: __('SMS Message', 'notifima'),
             settingDescription: __(
-                'Customize the message sent to subscribers when a product is back in stock.',
-                'notifima'
-            ),
-            desc: __(
-                'Available placeholders: {product_name}, {product_url}.',
+                'Customize the back-in-stock message sent to subscribers. Available placeholders: {product_name}, {product_url}.',
                 'notifima'
             ),
             dependent: {
@@ -714,11 +613,7 @@ export default {
             type: 'textarea',
             label: __('WhatsApp Message', 'notifima'),
             settingDescription: __(
-                'Customize the WhatsApp message sent to subscribers when a product is back in stock.',
-                'notifima'
-            ),
-            desc: __(
-                'Available placeholders: {product_name}, {product_url}.',
+                'Customize the WhatsApp back-in-stock message sent to subscribers. Available placeholders: {product_name}, {product_url}.',
                 'notifima'
             ),
             dependent: {

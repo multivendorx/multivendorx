@@ -79,7 +79,6 @@ const SubscribersList = () => {
     const headers = {
         product: {
             label: __('Product', 'notifima'),
-            width: '100%',
             render: (row) => (
                 <InformationItemComponent
                     title={row.product}
@@ -91,27 +90,23 @@ const SubscribersList = () => {
                             label: __('SKU', 'notifima'),
                             value: row.sku,
                         },
-                        {
-                            label: __('Email', 'notifima'),
-                            value: row.email,
-                        },
-                        {
-                            label: __('Phone Number', 'notifima'),
-                            value: row.phone,
-                        },
-                        {
-                            label: __('Date', 'notifima'),
-                            value: row.date,
-                        },
-                    ]}
-                    badges={[
-                        {
-                            text: row.status,
-                            className: `badge-${row.status_key}`,
-                        },
                     ]}
                 />
             ),
+        },
+        email: {
+            label: __('Email', 'notifima'),
+            render: (row) => {
+                return (
+                    <div className="icon-wrapper"><i className='adminfont-mail yellow'></i>{row.email}</div>
+                );
+            },
+        },
+        date: { label: __('Date', 'notifima') },
+        status: {
+            label: __('Status', 'notifima'),
+            statusClass: (row) => `${row.status_key}`,
+            type: 'status',
         },
     };
 
