@@ -121,13 +121,18 @@ class Rest extends \WP_REST_Controller {
                 return rest_ensure_response( array( 'error' => 'Store does not exists' ) );
             }
 
-            $followers = is_array( $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array() ) ? $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] : array();
+            $followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
 
-            // Convert to new format with id + empty date.
-            if ( ! empty( $followers[0] ) && is_int( $followers[0] ) ) {
+            // Make sure followers is always an array.
+            if ( ! is_array( $followers ) ) {
+                $followers = array();
+            }
+
+            // Convert old format to new format with id + empty date.
+            if ( ! empty( $followers ) && isset( $followers[0] ) && is_numeric( $followers[0] ) ) {
                 $followers = array_map(
                     fn( $uid ) => array(
-                        'id'   => $uid,
+                        'id'   => absint( $uid ),
                         'date' => '',
                     ),
                     $followers
@@ -140,8 +145,9 @@ class Rest extends \WP_REST_Controller {
             usort(
                 $followers,
                 function ( $a, $b ) {
-                    $date_a = ! empty( $a['date'] ) ? strtotime( $a['date'] ) : 0;
-                    $date_b = ! empty( $b['date'] ) ? strtotime( $b['date'] ) : 0;
+                    $date_a = ( is_array( $a ) && ! empty( $a['date'] ) ) ? strtotime( $a['date'] ) : 0;
+                    $date_b = ( is_array( $b ) && ! empty( $b['date'] ) ) ? strtotime( $b['date'] ) : 0;
+
                     return $date_b <=> $date_a;
                 }
             );
@@ -155,11 +161,17 @@ class Rest extends \WP_REST_Controller {
             $followers_page = array_slice( $followers, $offset, $limit );
 
             $formatted_followers = array();
+
             foreach ( $followers_page as $follower ) {
+                if ( ! is_array( $follower ) ) {
+                    continue;
+                }
+
                 $user_id     = $follower['id'] ?? 0;
                 $follow_date = $follower['date'] ?? '';
 
                 $user = get_userdata( $user_id );
+
                 if ( $user ) {
                     // Get first + last name.
                     $first_name = get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['first_name'], true );
@@ -167,6 +179,7 @@ class Rest extends \WP_REST_Controller {
 
                     // Combine names, fallback to display_name if empty.
                     $full_name = trim( "$first_name $last_name" );
+
                     if ( empty( $full_name ) ) {
                         $full_name = $user->display_name;
                     }
@@ -180,12 +193,19 @@ class Rest extends \WP_REST_Controller {
                     );
                 }
             }
+
             $response->set_data( $formatted_followers );
+
             return $response;
-        } catch ( \Exception $e ) {
+
+        } catch ( \Throwable $e ) {
             MultiVendorX()->util->log( $e );
 
-            return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
+            return new \WP_Error(
+                'server_error',
+                __( 'Unexpected server error', 'multivendorx' ),
+                array( 'status' => 500 )
+            );
         }
     }
 
@@ -212,7 +232,7 @@ class Rest extends \WP_REST_Controller {
         }
 
         try {
-            $store_id = (int) MultiVendorX()->active_store;
+            $store_id = intval( $request->get_param( 'store_id' ) );
             $user_id  = (int) MultiVendorX()->current_user_id;
 
             if ( ! $store_id ) {
@@ -293,7 +313,7 @@ class Rest extends \WP_REST_Controller {
         }
 
         try {
-            $store_id = (int) MultiVendorX()->active_store;
+            $store_id = intval( $request->get_param( 'store_id' ) );
             $user_id  = (int) MultiVendorX()->current_user_id;
 
             if ( ! $store_id || ! $user_id ) {
