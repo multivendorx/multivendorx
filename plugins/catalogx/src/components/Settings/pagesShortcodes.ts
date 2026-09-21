@@ -72,8 +72,6 @@ export default {
         {
             key: 'shortCode',
             type: 'shortcode-table',
-            // label: __('Available shortcodes', 'catalogx'),
-            desc: __('', 'catalogx'),
             optionLabel: [
                 __('Shortcodes and block', 'catalogx'),
                 __('Description', 'catalogx'),

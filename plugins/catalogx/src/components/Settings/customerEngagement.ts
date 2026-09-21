@@ -34,10 +34,6 @@ export default {
                 'Choose whether customers can browse products as a catalog or purchase them through your store.',
                 'catalogx'
             ),
-            // desc: __(
-            //     '<ul><li>Browse products only - Hide the Add to Cart button and disable purchasing across your store.</li><li>Browse & purchase products - Display the Add to Cart button and allow customers to add products to cart and complete purchases.</li></ul>',
-            //     'catalogx'
-            // ),
             options: [
                 {
                     key: 'catalog_only',
@@ -87,16 +83,6 @@ export default {
             moduleEnabled: 'catalog',
         },
         //enquiry
-        // {
-        //     key: 'section',
-        //     type: 'section',
-        //     icon: 'web-page-website',
-        //     title: __('Enquiry journey', 'catalogx'),
-        //     desc: __('Define the customer experience from enquiry initiation to submission.',
-        //         'catalogx'
-        //     ),
-        // },
-
         {
             key: 'enquiry_user_permission',
             type: 'choice-toggle',
@@ -107,9 +93,6 @@ export default {
             settingDescription: __('Control whether enquiries are available to all visitors or only logged-in customers.',
                 'catalogx'
             ),
-            // desc: __('<ul><li>Everyone - Any visitor can submit product enquiries.</li><li>Logged-in Customers - Only authenticated customers can submit enquiries.</li></ul>',
-            //     'catalogx'
-            // ),
             options: [
                 {
                     key: 'logged_in_only',
@@ -135,10 +118,6 @@ export default {
                 'Limit enquiries to products currently unavailable for purchase.',
                 'catalogx'
             ),
-            // desc: __(
-            //     '<ul><li>All Products - Display the enquiry button on every product, regardless of stock status.</li><li>Out-of-Stock Products Only - Display the enquiry button only for products that are currently unavailable or out of stock.</li></ul>',
-            //     'catalogx'
-            // ),
             options: [
                 {
                     key: 'all_products',
@@ -153,7 +132,6 @@ export default {
             ],
             moduleEnabled: 'enquiry',
         },
-        // This settings for notify me it works when only site off buying settings on and stock alert plugin active
         // popup - propopup, modulepopup
         {
             key: 'notify_me_button',
@@ -198,10 +176,6 @@ export default {
                 'A popup window, or inline on the product page.',
                 'catalogx'
             ),
-            // desc: __(
-            //     '<ul><li>Popup Window - Open the enquiry form in a modal popup.</li><li>Inline on Product Page - Display the enquiry form directly within the product page.</li></ul>',
-            //     'catalogx'
-            // ),
             options: [
                 {
                     key: 'popup',
@@ -220,10 +194,6 @@ export default {
             key: 'is_page_redirect',
             type: 'choice-toggle',
             label: __('What happens after enquiry submission?', 'catalogx'),
-            // desc: __(
-            //     '<ul><li>Stay on Current Page - Customers remain on the same page after submitting their enquiry.</li><li>Redirect to Another Page - Customers are redirected to a page of your choice, such as a thank-you page or contact page, after their enquiry is submitted.</li></ul>',
-            //     'catalogx'
-            // ),
             settingDescription: __(
                 'Keep the shopper on this page, or send them somewhere else.',
                 'catalogx'
@@ -272,10 +242,6 @@ export default {
                 "Separate several addresses with commas. Your admin address is included by default.",
                 'catalogx'
             ),
-            // desc: __(
-            //     "When a customer submits an enquiry for a product, the enquiry details will be sent to the email address(es) entered here. Add multiple email addresses separated by commas.<br/> <b>Default:</b> The site administrator's email is included by default. To stop the admin from receiving enquiry notifications, remove the admin email address from this list.",
-            //     'catalogx'
-            // ),
             label: __('Recipient email for product enquiries', 'catalogx'),
             moduleEnabled: 'enquiry',
         },
@@ -288,10 +254,6 @@ export default {
                 'Allow customers to contact you directly through WhatsApp for product enquiries.',
                 'catalogx'
             ),
-            // desc: __(
-            //     'Allow customers to contact you directly through WhatsApp for product enquiries.',
-            //     'catalogx'
-            // ),
             options: [
                 {
                     key: 'enable_whatsapp',
@@ -369,10 +331,6 @@ export default {
                 'Anyone, or logged-in customers only.',
                 'catalogx'
             ),
-            // desc: __(
-            //     '<ul><li>Everyone - Any visitor can submit quotation requests.</li><li>Logged-in users - Only authenticated customers can request quotations.</li></ul>',
-            //     'catalogx'
-            // ),
             options: [
                 {
                     key: 'everyone',
@@ -397,10 +355,6 @@ export default {
                 'Quotes stand forever, or expire after a set number of days.',
                 'catalogx'
             ),
-            // desc: __(
-            //     '<ul><li><strong>Lifetime</strong> – Quotations never expire automatically.</li><li><strong>Fixed duration</strong> – Quotations expire after the specified number of days.</li></ul>',
-            //     'catalogx'
-            // ),
             options: [
                 {
                     key: 'lifetime',
@@ -425,10 +379,6 @@ export default {
                 'Specify the number of days a quotation remains valid.',
                 'catalogx'
             ),
-            // desc: __(
-            //     'The quotation will automatically expire after the specified number of days from its creation.',
-            //     'catalogx'
-            // ),
             postText: __('days', 'catalogx'),
             proSetting: true,
             moduleEnabled: 'quote',

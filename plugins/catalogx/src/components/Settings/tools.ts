@@ -40,7 +40,6 @@ export default {
         {
             key: 'custom_css_product_page',
             type: 'textarea',
-            // label: __('Custom CSS', 'catalogx'),
             desc: __(
                 'Enter your custom CSS here to customize the enquiry form.',
                 'catalogx'

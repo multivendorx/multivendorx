@@ -40,9 +40,6 @@ const Rules = () => {
     const [openPopup, setopenPopup] = useState(false);
     let tableProps: any = {};
     const headers = {
-        // name: {
-        //     label: __('Name', 'catalogx'),
-        // },
         order_id: {
             label: __('Name', 'catalogx'),
             render: (row) => (
@@ -133,14 +130,6 @@ const Rules = () => {
                 return `${price} for min ${quantity || ''} quantity`;
             }
         },
-
-        // status: {
-        //     label: __('Status', 'catalogx'),
-        //     render: (row: RuleRow) =>
-        //         String(row.active) === '1'
-        //             ? <span className='admin-badge green'>{__('Active', 'catalogx')} </span>
-        //             : <span className='admin-badge red'>{__('Suspended', 'catalogx')} </span>,
-        // },
         action: {
             type: 'action',
             label: __('Action', 'catalogx'),

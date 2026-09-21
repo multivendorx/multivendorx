@@ -28,10 +28,6 @@ export default {
                 'Review each signup yourself, or approve them the moment they register.',
                 'catalogx'
             ),
-            // desc: __(
-            //     "Manual - Admin approves new wholesalers manually from 'Wholesaler Users' page. <br> Automatic - Instant wholesaler approval upon sign-up.",
-            //     'catalogx'
-            // ),
             options: [
                 {
                     key: 'manual',
@@ -55,10 +51,6 @@ export default {
                 'Let wholesale discounts stack with coupons, or keep them separate.',
                 'catalogx'
             ),
-            // desc: __(
-            //     '<ul><li>Wholesale discount only - Wholesale discounts cannot be combined with coupons.</li><li>Wholesale discount + Coupons - Wholesale customers can apply coupons during checkout.</li></ul>',
-            //     'catalogx'
-            // ),
             options: [
                 {
                     key: 'restricted',
@@ -80,10 +72,6 @@ export default {
                 'Keep wholesale pricing private, or show it to regular shoppers to encourage sign-ups.',
                 'catalogx'
             ),
-            // desc: __(
-            //     '<ul><li>Keep wholesale offers private - Display retail pricing without wholesale discounts.</li><li>Promote wholesale savings - Show potential wholesale pricing to encourage wholesale registrations.</li></ul>',
-            //     'catalogx'
-            // ),
             options: [
                 {
                     key: 'hidden',
@@ -115,10 +103,6 @@ export default {
                 'Show wholesale products inside the regular catalog, or on a dedicated page.',
                 'catalogx'
             ),
-            // desc: __(
-            //     '<ul><li>Shared Product Catalog - Wholesale products appear within the regular catalog.</li><li>Dedicated Wholesale Catalog - Display all wholesale products on a dedicated page for wholesale customers.</li></ul>',
-            //     'catalogx'
-            // ),
             options: [
                 {
                     key: 'shared',
@@ -143,10 +127,6 @@ export default {
                 'Set pricing per product, or apply one discount across everything.',
                 'catalogx'
             ),
-            // desc: __(
-            //     '<ul><li>Set prices for each product - Configure wholesale pricing separately for individual products.</li><li>Apply one discount to all products - Use a single discount rule for every wholesale product in your catalog.</li></ul>',
-            //     'catalogx'
-            // ),
             options: [
                 {
                     key: 'product_level',
