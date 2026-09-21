@@ -13,7 +13,7 @@ import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { defaultCategoryCounts, dummyQuotes } from './QuoteRequestsUtil';
-import { formatCurrency, formatDate } from '../../services/commonFunction';
+import { formatDate } from '../../services/commonFunction';
 export interface QuoteRow {
     id?: number;
     order_id?: string;
@@ -40,6 +40,10 @@ const QuoteRequests = () => {
                     descriptions={
                         [
                             {
+                                label: __('Date', 'catalogx'),
+                                value: formatDate(row.date),
+                            },
+                            {
                                 label: __('By', 'catalogx'),
                                 value: row.customer_name || '—',
                             },
@@ -47,7 +51,7 @@ const QuoteRequests = () => {
                 />
             ),
         },
-        date: { label: __('Date', 'catalogx'), type: 'date' },
+        // date: { label: __('Date', 'catalogx'), type: 'date' },
         status: {
             label: __('Status', 'catalogx'),
             type: 'status',

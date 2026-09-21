@@ -64,11 +64,15 @@ export default {
             type: 'section',
             icon: 'web-page-website',
             title: __('Shortcode library', 'catalogx'),
+            desc: __(
+                'View the available CatalogX shortcodes for adding enquiry, quote, wholesale, and product functionality to your store.',
+                'catalogx'
+            ),
         },
         {
             key: 'shortCode',
             type: 'shortcode-table',
-            label: __('Available shortcodes', 'catalogx'),
+            // label: __('Available shortcodes', 'catalogx'),
             desc: __('', 'catalogx'),
             optionLabel: [
                 __('Shortcodes and block', 'catalogx'),
