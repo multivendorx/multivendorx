@@ -151,7 +151,7 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $store_id  = intval( $request->get_param( 'store_id' ) );
+            $store_id = intval( $request->get_param( 'store_id' ) );
             if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
                 return new \WP_Error(
                     'rest_forbidden',
@@ -287,7 +287,7 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $store_id  = intval( $request->get_param( 'store_id' ) );
+            $store_id = intval( $request->get_param( 'store_id' ) );
             if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
                 return new \WP_Error(
                     'rest_forbidden',
@@ -369,7 +369,7 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $store_id  = intval( $request->get_param( 'store_id' ) );
+            $store_id = intval( $request->get_param( 'store_id' ) );
             if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
                 return new \WP_Error(
                     'rest_forbidden',

@@ -69,6 +69,11 @@ class Rest {
      * @param object $product  Product object.
      */
     public function prepare_product_add_store_data( $response, $product ) {
+        if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'store_owners' ) ) ) {
+			unset( $response->data['meta_data'] );
+			return $response;
+		}
+
         $product_id = $product->get_id();
         $store_id   = (int) get_post_meta(
             $product_id,
@@ -182,6 +187,9 @@ class Rest {
      * @return array Modified WP_Query arguments.
      */
     public function query_product_modify( $args, $request ) {
+		if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'store_owners' ) ) ) {
+				$args['post_status'] = array( 'publish' );
+		}
         if ( ! empty( $request['meta_value'] ) ) {
             $args['meta_query'][] = array(
                 'key'   => sanitize_text_field( $request['meta_key'] ),
@@ -264,6 +272,9 @@ class Rest {
      * @param array $request REST API request object.
      */
     public function query_shop_coupon_filter_meta( $args, $request ) {
+        if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'store_owners' ) ) ) {
+			$args['post_status'] = array( 'publish' );
+		}
         $meta_query = array();
         $meta_key   = $request['meta_key'] ?? '';
         $value      = $request['value'] ?? '';
@@ -499,7 +510,16 @@ class Rest {
      */
     public function prepare_shop_coupon_filter_meta( $response, $coupon, $request ) {
         unset( $request );
+		if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) {
+				$response->data = array(
+					'id'            => $coupon->get_id(),
+					'code'          => $coupon->get_code(),
+					'amount'        => $coupon->get_amount(),
+					'discount_type' => $coupon->get_discount_type(),
+				);
 
+				return $response;
+		}
         $store_id = $coupon->get_meta( Utill::POST_META_SETTINGS['store_id'] );
 
         if ( $store_id ) {

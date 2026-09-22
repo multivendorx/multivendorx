@@ -68,8 +68,8 @@ class Frontend {
      */
     public function localize_shared_listing_scripts( $scripts ) {
         $scripts['multivendorx-sharedlisting-frontend-script'] = array(
-            'object_name'  => 'sharedListing',
-            'data'         => array(
+            'object_name' => 'sharedListing',
+            'data'        => array(
                 'enableLocation' => 'shared_listing' === MultiVendorX()->setting->get_setting( 'store_selling_mode', 'default' ) && 'nearby_location' === MultiVendorX()->setting->get_setting( 'shared_listing_display', 'min_price' ),
             ),
         );

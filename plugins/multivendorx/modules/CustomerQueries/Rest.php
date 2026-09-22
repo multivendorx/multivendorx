@@ -86,7 +86,7 @@ class Rest extends \WP_REST_Controller {
     }
 
     /**
-     *permissions check.
+     * permissions check.
      *
      * @param  object $request Full data about the request.
      */

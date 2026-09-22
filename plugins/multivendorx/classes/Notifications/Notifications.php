@@ -2050,14 +2050,14 @@ class Notifications {
 	}
 
 	public function send_notification_helper( $type, $store = null, $order = null, $extra = array() ) {
-	$store_name     = '';
+		$store_name     = '';
 		$store_email    = '';
 		$store_phone    = '';
 		$customer_email = '';
 		$customer_phone = '';
 
 		if ( $store ) {
-			$store_name       = $store->get(Utill::STORE_SETTINGS_KEYS['name']);
+			$store_name       = $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
 			$store_email_meta = $store->get_meta( Utill::STORE_SETTINGS_KEYS['store_email'] );
 			$store_email      = $store_email_meta['primary'] ?? '';
 			$store_phone      = $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] );
