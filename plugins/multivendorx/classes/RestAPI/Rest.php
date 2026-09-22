@@ -69,7 +69,7 @@ class Rest {
      * @param object $product  Product object.
      */
     public function prepare_product_add_store_data( $response, $product ) {
-        if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'store_owners' ) ) ) {
+        if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) {
 			unset( $response->data['meta_data'] );
 			return $response;
 		}
@@ -187,7 +187,7 @@ class Rest {
      * @return array Modified WP_Query arguments.
      */
     public function query_product_modify( $args, $request ) {
-		if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'store_owners' ) ) ) {
+		if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) {
 				$args['post_status'] = array( 'publish' );
 		}
         if ( ! empty( $request['meta_value'] ) ) {
@@ -272,7 +272,7 @@ class Rest {
      * @param array $request REST API request object.
      */
     public function query_shop_coupon_filter_meta( $args, $request ) {
-        if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'store_owners' ) ) ) {
+        if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) {
 			$args['post_status'] = array( 'publish' );
 		}
         $meta_query = array();
