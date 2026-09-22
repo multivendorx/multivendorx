@@ -102,6 +102,7 @@ const SubscribersList = () => {
                 );
             },
         },
+        phone: { label: __('Phone', 'notifima') },
         date: { label: __('Date', 'notifima') },
         status: {
             label: __('Status', 'notifima'),
