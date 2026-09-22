@@ -16,7 +16,7 @@ export default {
             type: 'section',
             icon: 'mail',
             title: __('Notifications', 'notifima'),
-            desc: __('Control subscriber notifications, manage blocked email lists, and connect Notifima with your favorite marketing platforms.', 'notifima')
+            desc: __('Manage email restrictions and control which customers can subscribe to restock alerts.', 'notifima')
         },
         {
             key: 'ban_email_domains',
@@ -72,14 +72,14 @@ export default {
             type: 'section',
             icon: 'mail',
             title: __('Admin Notifications', 'notifima'),
-            desc: __('Choose who on your team is alerted about new restock subscriptions.', 'notifima'),
+            desc: __('Choose who on your team gets notified about new restock subscriptions.', 'notifima'),
         },
         {
             key: 'additional_alert_email',
             type: 'textarea',
             label: __('Recipient email for new subscriber', 'notifima'),
             settingDescription: __(
-                'Choose who receives email notifications when customers subscribe for restock alerts. Separate multiple email addresses with commas.',
+                'Set the email addresses that receive notifications when customers subscribe for restock alerts. Separate multiple email addresses with commas.',
                 'notifima'
             ),
         },

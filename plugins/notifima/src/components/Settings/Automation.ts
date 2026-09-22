@@ -14,7 +14,7 @@ export default {
             type: 'section',
             icon: 'appearance',
             title: __('Automation', 'notifima'),
-            desc: __('Control who can subscribe to restock alerts, when the form appears, and how restock times are shown.', 'notifima'),
+            desc: __('Control who can subscribe to restock alerts and when the subscription form is displayed.', 'notifima'),
         },
         {
             key: 'is_guest_subscriptions_enable',
@@ -198,10 +198,10 @@ export default {
             key: 'shown_interest_text',
             type: 'textarea',
             label: __('Subscriber count notification message', 'notifima'),
-settingDescription: __(
-    'Customize the message shown with the subscriber count on product pages. Use <code>%no_of_subscribed%</code> to display the current subscriber count.',
-    'notifima'
-),
+            settingDescription: __(
+                'Customize the message shown with the subscriber count on product pages. Use <code>%no_of_subscribed%</code> to display the current subscriber count.',
+                'notifima'
+            ),
             dependent: {
                 key: 'is_enable_no_interest',
                 set: true,
@@ -236,10 +236,10 @@ settingDescription: __(
             key: 'double_opt_in_success',
             type: 'textarea',
             label: __('Subscription confirmation message', 'notifima'),
-settingDescription: __(
-    'Customize the message shown after a customer submits a subscription request. Used when email confirmation is enabled.',
-    'notifima'
-),
+            settingDescription: __(
+                'Customize the message shown after a customer submits a subscription request.',
+                'notifima'
+            ),
             dependent: {
                 key: 'is_double_optin',
                 set: true,
@@ -273,7 +273,7 @@ settingDescription: __(
             type: 'choice-toggle',
             label: __('Marketing integration', 'notifima'),
             settingDescription: __(
-                'Connects your store to your Mailchimp account. Find it in Mailchimp under Account → Extras → API keys.',
+                'Choose whether to store subscribers locally or automatically sync them with your Mailchimp audience.',
                 'notifima'
             ),
             options: [
