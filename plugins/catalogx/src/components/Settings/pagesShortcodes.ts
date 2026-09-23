@@ -17,7 +17,7 @@ export default {
             key: 'section',
             type: 'section',
             icon: 'web-page-website',
-            title: __('Pages & Shortcodes', 'catalogx'),
+            title: __('Pages', 'catalogx'),
             desc: __(
                 'Manage the endpoints for all pages on the site, ensuring proper routing and access.',
                 'catalogx'
@@ -62,8 +62,9 @@ export default {
         {
             key: 'section',
             type: 'section',
-            icon: 'web-page-website',
+            icon: 'shortcode',
             title: __('Shortcode library', 'catalogx'),
+            className="full-width",
             desc: __(
                 'View the available CatalogX shortcodes for adding enquiry, quote, wholesale, and product functionality to your store.',
                 'catalogx'

@@ -91,7 +91,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            icon: 'wholesale',
+            icon: 'catalog',
             title: __('Catalog & pricing', 'catalogx'),
             desc: __('How wholesale products are browsed and priced.', 'catalogx'),
         },

@@ -7,13 +7,13 @@ export default {
     headerDescription: __('Review all system logs and errors', 'catalogx'),
     groupBySections: true,
     hideSettingHeader: true,
-    headerIcon: 'paint-brush',
+    headerIcon: 'desktop-pc-valuation',
     submitUrl: 'settings',
     modal: [
         {
             key: 'section',
             type: 'section',
-            icon: 'paint-brush',
+            icon: 'desktop-pc-valuation',
             title: __('System', 'catalogx'),
             desc: __(
                 'Logs, diagnostics - for troubleshooting, not day-to-day configuration.',
@@ -30,7 +30,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            icon: 'paint-brush',
+            icon: 'css',
             title: __('Additional CSS', 'catalogx'),
             desc: __(
                 'Add custom CSS to customize the appearance of the enquiry form.',

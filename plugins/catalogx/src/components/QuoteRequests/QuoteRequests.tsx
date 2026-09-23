@@ -30,6 +30,7 @@ const QuoteRequests = () => {
     const headers = {
         order_id: {
             label: __('Order', 'catalogx'),
+            width: '65%',
             render: (row: QuoteRow) => (
                 <InformationItemComponent
                     title={`#${row.order_id}`}
@@ -40,7 +41,7 @@ const QuoteRequests = () => {
                     descriptions={
                         [
                             {
-                                label: __('Date', 'catalogx'),
+                                label: __('Datdddde', 'catalogx'),
                                 value: formatDate(row.date),
                             },
                             {
@@ -51,7 +52,6 @@ const QuoteRequests = () => {
                 />
             ),
         },
-        // date: { label: __('Date', 'catalogx'), type: 'date' },
         status: {
             label: __('Status', 'catalogx'),
             type: 'status',

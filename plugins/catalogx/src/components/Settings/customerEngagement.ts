@@ -19,7 +19,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            icon: 'web-page-website',
+            icon: 'question',
             title: __('Who can enquire', 'catalogx'),
             desc: __(
                 'Decide who sees the enquiry option and on which products.',
@@ -161,7 +161,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            icon: 'web-page-website',
+            icon: 'form',
             title: __('Form behaviour', 'catalogx'),
             desc: __(
                 `How the enquiry form is presented and what happens after it's sent.`,
@@ -228,7 +228,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            icon: 'web-page-website',
+            icon: 'enquiry',
             title: __('Where enquiries are sent', 'catalogx'),
             desc: __(
                 'Email and WhatsApp routing for incoming enquiries.',
@@ -314,7 +314,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            icon: 'web-page-website',
+            icon: 'quote',
             desc: __('Who can ask for a quote, and how long it stays valid.',
                 'catalogx'
             ),
@@ -392,7 +392,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            icon: 'web-page-website',
+            icon: 'customer-support',
             desc: __('Configure how customers receive PDF documents for enquiries and quotations, including whether they can download them, receive them by email, or both.',
                 'catalogx'
             ),
