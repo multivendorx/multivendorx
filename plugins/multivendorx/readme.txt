@@ -248,13 +248,14 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 
 = 5.0.18 - 2026-09-23 =
 * Added     - Compatibility with WordPress 7.1.2
-* Added     - Compatibility with WooCommerce 11.1.1
+* Added     - Compatibility with WooCommerce 11.1.2
 * Fixed     - Issue with new order emails not showing the store names correctly #2346
 * Fixed     - Issue with WooCommerce currency positioning not being obeyed in the Store Dashboard #2344
 * Fixed     - Security vulnerabilities reported by the WordPress Community members
 * Fixed     - Issue with zone-wise data not being saved correctly in the Zone-wise Shipping functionality
 * Fixed     - Elementor Store template issue #2345
 * Fixed     - vendors.js loading issue on unnecessary pages, improving page load performance.
+* Fixed     - Geolocation script loading issue when the Geolocation module was disabled, preventing unnecessary location permission requests.
 * Updated   - Language file.
 
 = 5.0.17 - 2026-09-08 =

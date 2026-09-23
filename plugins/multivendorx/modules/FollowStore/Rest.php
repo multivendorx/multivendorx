@@ -197,7 +197,7 @@ class Rest extends \WP_REST_Controller {
             $response->set_data( $formatted_followers );
 
             return $response;
-        } catch ( \Throwable $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
 
             return new \WP_Error(
