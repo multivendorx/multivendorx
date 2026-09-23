@@ -4,7 +4,7 @@ export default {
     priority: 1,
     headerTitle: __('Automation', 'notifima'),
     headerDescription: __('Set the automation rules that control customer subscriptions, restock notifications, and lead time behavior.', 'notifima'),
-    headerIcon: 'appearance',
+    headerIcon: 'automation',
     groupBySections: true,
     hideSettingHeader: true,
     submitUrl: 'settings',
@@ -12,7 +12,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            icon: 'appearance',
+            icon: 'automation',
             title: __('Automation', 'notifima'),
             desc: __('Control who can subscribe to restock alerts and when the subscription form is displayed.', 'notifima'),
         },
@@ -62,7 +62,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            icon: 'appearance',
+            icon: 'clock',
             title: __('Restock Timing (Lead Time)', 'notifima'),
             desc: __(
                 'Control when and how the expected restock time is shown to shoppers.',
@@ -141,7 +141,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            icon: 'appearance',
+            icon: 'subscriber',
             title: __('Subscription Experience', 'notifima'),
             desc: __(
                 'Customize how customers sign up for and manage restock alerts.',
@@ -264,7 +264,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            icon: 'appearance',
+            icon: 'global-community',
             title: __('Audience Synchronization', 'notifima'),
             desc: __(`Choose where subscriber details are saved and whether they're sent to your marketing tools.`, 'notifima'),
         },
@@ -328,7 +328,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            icon: 'whatsapp',
+            icon: 'live-chat',
             title: __('SMS & WhatsApp Notifications', 'notifima'),
             desc: __(
                 'Set up text and WhatsApp messages to notify customers when a product is back in stock.',

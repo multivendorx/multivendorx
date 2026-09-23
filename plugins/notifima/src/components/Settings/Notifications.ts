@@ -70,7 +70,7 @@ export default {
         {
             key: 'section',
             type: 'section',
-            icon: 'mail',
+            icon: 'person',
             title: __('Admin Notifications', 'notifima'),
             desc: __('Choose who on your team gets notified about new restock subscriptions.', 'notifima'),
         },

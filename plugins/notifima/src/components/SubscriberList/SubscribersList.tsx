@@ -79,6 +79,7 @@ const SubscribersList = () => {
     const headers = {
         product: {
             label: __('Product', 'notifima'),
+            width: "100%",
             render: (row) => (
                 <InformationItemComponent
                     title={row.product}
@@ -90,24 +91,27 @@ const SubscribersList = () => {
                             label: __('SKU', 'notifima'),
                             value: row.sku,
                         },
+                        {
+                            label: __('Email', 'notifima'),
+                            value: row.email,
+                        },
+                         {
+                            label: __('Phone', 'notifima'),
+                            value: row.phone,
+                        },
+                    ]}
+                     badges={[
+                        {
+                            text: row.status,
+                            className: `badge-${row.status}`,
+                        },
+                        {
+                            text: row.date,
+                            className: `blue`,
+                        },
                     ]}
                 />
             ),
-        },
-        email: {
-            label: __('Email', 'notifima'),
-            render: (row) => {
-                return (
-                    <div className="icon-wrapper"><i className='adminfont-mail yellow'></i>{row.email}</div>
-                );
-            },
-        },
-        phone: { label: __('Phone', 'notifima') },
-        date: { label: __('Date', 'notifima') },
-        status: {
-            label: __('Status', 'notifima'),
-            statusClass: (row) => `${row.status_key}`,
-            type: 'status',
         },
     };
 
@@ -142,6 +146,7 @@ const SubscribersList = () => {
     const defaultTableProps = {
         headers,
         categoryCounts: defaultCategoryCounts,
+        hideHeader: true,
         filters,
         search: {
             placeholder: __('Search...', 'notifima'),
