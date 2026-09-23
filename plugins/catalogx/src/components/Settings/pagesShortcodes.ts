@@ -64,7 +64,6 @@ export default {
             type: 'section',
             icon: 'shortcode',
             title: __('Shortcode library', 'catalogx'),
-            className="full-width",
             desc: __(
                 'View the available CatalogX shortcodes for adding enquiry, quote, wholesale, and product functionality to your store.',
                 'catalogx'
@@ -73,6 +72,7 @@ export default {
         {
             key: 'shortCode',
             type: 'shortcode-table',
+            classes: "full-width",
             optionLabel: [
                 __('Shortcodes and block', 'catalogx'),
                 __('Description', 'catalogx'),
