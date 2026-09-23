@@ -156,7 +156,7 @@ class Shortcode {
             if ( ! in_array( $shortcode, $detected_shortcodes, true ) ) {
                 continue;
             }
-
+            FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
             foreach ( $assets['scripts'] ?? array() as $script ) {
                 if ( empty( $script['handle'] ) ) {
                     continue;
