@@ -518,7 +518,6 @@ class Rest {
                 'amount'             => $coupon->get_amount(),
                 'discount_type'      => $coupon->get_discount_type(),
                 'date_expires'       => $coupon->get_date_expires()? $coupon->get_date_expires()->date( 'Y-m-d\TH:i:s' ): null,
-                'date_expires_gmt'   => $coupon->get_date_expires()? $coupon->get_date_expires()->setTimezone( new DateTimeZone( 'GMT' ) )->date( 'Y-m-d\TH:i:s' ): null,
             );
 
             return $response;
