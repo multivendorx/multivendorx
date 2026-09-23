@@ -187,9 +187,6 @@ class Rest {
      * @return array Modified WP_Query arguments.
      */
     public function query_product_modify( $args, $request ) {
-		if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) {
-				$args['post_status'] = array( 'publish' );
-		}
         if ( ! empty( $request['meta_value'] ) ) {
             $args['meta_query'][] = array(
                 'key'   => sanitize_text_field( $request['meta_key'] ),
@@ -272,9 +269,6 @@ class Rest {
      * @param array $request REST API request object.
      */
     public function query_shop_coupon_filter_meta( $args, $request ) {
-        if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) {
-			$args['post_status'] = array( 'publish' );
-		}
         $meta_query = array();
         $meta_key   = $request['meta_key'] ?? '';
         $value      = $request['value'] ?? '';
@@ -364,8 +358,15 @@ class Rest {
         );
 
         if ( 'read' === $context && in_array( $post_type, $public_post_types, true ) ) {
-            return true;
-        }
+			if ( $object_id && ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) ) {
+				$post = get_post( $object_id );
+				if ( $post && 'publish' !== $post->post_status ) {
+					return false;
+				}
+			}
+
+			return true;
+		}
 
         if ( 'read' === $context && 'payment_gateways' === $post_type ) {
             return Utill::current_user_has_capability( array( 'edit_shop_orders' ) );
@@ -510,16 +511,18 @@ class Rest {
      */
     public function prepare_shop_coupon_filter_meta( $response, $coupon, $request ) {
         unset( $request );
-		if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) {
-				$response->data = array(
-					'id'            => $coupon->get_id(),
-					'code'          => $coupon->get_code(),
-					'amount'        => $coupon->get_amount(),
-					'discount_type' => $coupon->get_discount_type(),
-				);
+        if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) {
+            $response->data = array(
+                'id'                => $coupon->get_id(),
+                'code'              => $coupon->get_code(),
+                'amount'             => $coupon->get_amount(),
+                'discount_type'      => $coupon->get_discount_type(),
+                'date_expires'       => $coupon->get_date_expires()? $coupon->get_date_expires()->date( 'Y-m-d\TH:i:s' ): null,
+                'date_expires_gmt'   => $coupon->get_date_expires()? $coupon->get_date_expires()->setTimezone( new DateTimeZone( 'GMT' ) )->date( 'Y-m-d\TH:i:s' ): null,
+            );
 
-				return $response;
-		}
+            return $response;
+        }
         $store_id = $coupon->get_meta( Utill::POST_META_SETTINGS['store_id'] );
 
         if ( $store_id ) {
