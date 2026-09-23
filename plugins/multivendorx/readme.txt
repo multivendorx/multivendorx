@@ -3,7 +3,7 @@ Contributors: wcmp, purnendu
 Tags: marketplace, WooCommerce marketplace, multi vendor, multivendor, multivendor marketplace
 Donate link: http://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=multivendorxwporg
 Requires at least: 6.4.0
-Tested up to: 7.1.1
+Tested up to: 7.1.2
 Requires PHP: 8.0
 Stable tag: 5.0.18
 License: GPLv2 or later
@@ -246,14 +246,15 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 
 == Changelog ==
 
-= 5.0.17 - 2026-09-08 =
-* Added     - Compatibility with WordPress 7.1.1
+= 5.0.18 - 2026-09-23 =
+* Added     - Compatibility with WordPress 7.1.2
 * Added     - Compatibility with WooCommerce 11.1.1
 * Fixed     - Issue with new order emails not showing the store names correctly #2346
 * Fixed     - Issue with WooCommerce currency positioning not being obeyed in the Store Dashboard #2344
 * Fixed     - Security vulnerabilities reported by the WordPress Community members
 * Fixed     - Issue with zone-wise data not being saved correctly in the Zone-wise Shipping functionality
 * Fixed     - Elementor Store template issue #2345
+* Fixed     - vendors.js loading issue on unnecessary pages, improving page load performance.
 * Updated   - Language file.
 
 = 5.0.17 - 2026-09-08 =

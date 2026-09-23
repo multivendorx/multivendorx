@@ -7,7 +7,7 @@
  * Version: 5.0.18
  * Author URI: https://multivendorx.com/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx
  * Requires at least: 6.4.0
- * Tested up to: 7.1.1
+ * Tested up to: 7.1.2
  * WC requires at least: 8.2.0
  * WC tested up to: 11.1.1
  *
