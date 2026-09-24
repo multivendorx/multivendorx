@@ -8,15 +8,27 @@ export default {
         'Manage the endpoints for all pages on the site, ensuring proper routing and access.',
         'catalogx'
     ),
+    groupBySections: true,
+    hideSettingHeader: true,
     headerIcon: 'web-page-website',
     submitUrl: 'settings',
     modal: [
+        {
+            key: 'section',
+            type: 'section',
+            icon: 'web-page-website',
+            title: __('Pages', 'catalogx'),
+            desc: __(
+                'Manage the endpoints for all pages on the site, ensuring proper routing and access.',
+                'catalogx'
+            ),
+        },
         {
             key: 'set_enquiry_cart_page',
             type: 'select',
             label: __('Set enquiry cart page', 'catalogx'),
             size: 20,
-            desc: __(
+            settingDescription: __(
                 'Select the page on which you have inserted <code>[catalogx_enquiry_cart]</code> shortcode.',
                 'catalogx'
             ),
@@ -28,7 +40,7 @@ export default {
             type: 'select',
             label: __('Set request quote page', 'catalogx'),
             size: 20,
-            desc: __(
+            settingDescription: __(
                 'Select the page on which you have inserted <code>[catalogx_request_quote]</code> shortcode.',
                 'catalogx'
             ),
@@ -40,7 +52,7 @@ export default {
             type: 'select',
             size: 20,
             label: __('Set Wholesale Products Page', 'catalogx'),
-            desc: __(
+            settingDescription: __(
                 'Select the page on which you have inserted <code>[catalogx_wholesale_products]</code> shortcode.',
                 'catalogx'
             ),
@@ -50,13 +62,17 @@ export default {
         {
             key: 'section',
             type: 'section',
+            icon: 'shortcode',
             title: __('Shortcode library', 'catalogx'),
+            desc: __(
+                'View the available CatalogX shortcodes for adding enquiry, quote, wholesale, and product functionality to your store.',
+                'catalogx'
+            ),
         },
         {
             key: 'shortCode',
             type: 'shortcode-table',
-            label: __('Available shortcodes', 'catalogx'),
-            desc: __('', 'catalogx'),
+            classes: "full-width",
             optionLabel: [
                 __('Shortcodes and block', 'catalogx'),
                 __('Description', 'catalogx'),
