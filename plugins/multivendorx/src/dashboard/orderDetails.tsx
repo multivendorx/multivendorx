@@ -124,7 +124,54 @@ const OrderDetails: React.FC = () => {
 			return updated;
 		});
 	};
+	// const handleRefundSubmit = () => {
+	// 	if (isRefundLoading) {
+	// 		return;
+	// 	}
 
+	// 	setRefundError('');
+
+	// 	if (
+	// 		!refundDetails.refundAmount ||
+	// 		Number(refundDetails.refundAmount) <= 0
+	// 	) {
+	// 		setRefundError(__('Invalid refund amount', 'multivendorx'));
+	// 		return;
+	// 	}
+
+	// 	// Set loading state
+	// 	setIsRefundLoading(true);
+
+	// 	const payload = {
+	// 		orderId: orderId,
+	// 		items: refundItems,
+	// 		refundAmount: refundDetails.refundAmount,
+	// 		restock: refundDetails.restock,
+	// 		reason: refundDetails.reason,
+	// 	};
+
+	// 	axios({
+	// 		method: 'POST',
+	// 		url: getApiLink(appLocalizer, 'refund'),
+	// 		headers: { 'X-WP-Nonce': appLocalizer.nonce },
+	// 		data: { payload },
+	// 	})
+	// 		.then((response) => {
+	// 			if (response.data.success) {
+	// 				window.location.reload();
+	// 			}
+	// 		})
+	// 		.catch((err) => {
+	// 			const message =
+	// 				err?.response?.data?.message ||
+	// 				__('Refund failed. Please try again.', 'multivendorx');
+
+	// 			setRefundError(message);
+	// 		})
+	// 		.finally(() => {
+	// 			setIsRefundLoading(false);
+	// 		});
+	// };
 	const fetchOrder = () => {
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`, {
@@ -626,6 +673,178 @@ const OrderDetails: React.FC = () => {
 								)}
 
 								<div className="coupons-calculation-wrapper">
+									{/* <div className="left">
+										{modules.includes(
+											'marketplace-refund'
+										) &&
+											(!isRefund ? (
+												<ButtonInput
+													buttons={[
+														{
+															text: __(
+																'Refund',
+																'multivendorx'
+															),
+															color: 'purple',
+															onClick: () =>
+																setIsRefund(
+																	true
+																),
+														},
+													]}
+												/>
+											) : (
+												<ButtonInput
+													position="left"
+													buttons={[
+														{
+															text: `${__('Refund', 'multivendorx')} $${refundDetails.refundAmount.toFixed(2)} ${__('manually', 'multivendorx')}`,
+															color: 'green',
+															onClick:
+																handleRefundSubmit,
+															disabled:
+																isRefundLoading,
+														},
+														{
+															text: __(
+																'Cancel',
+																'multivendorx'
+															),
+															color: 'red',
+															onClick: () =>
+																setIsRefund(
+																	false
+																),
+														},
+													]}
+												/>
+											))}
+									</div> */}
+
+									{/* {isRefund && (
+										<div className="right">
+											<table className="refund-table">
+												<tbody>
+													<tr>
+														<td>
+															{__(
+																'Restock refunded items:',
+																'multivendorx'
+															)}
+														</td>
+														<td>
+															<input
+																type="checkbox"
+																checked={
+																	refundDetails.restock
+																}
+																onChange={(e) =>
+																	setRefundDetails(
+																		{
+																			...refundDetails,
+																			restock:
+																				e
+																					.target
+																					.checked,
+																		}
+																	)
+																}
+															/>
+														</td>
+													</tr>
+
+													<tr>
+														<td>
+															{__(
+																'Amount already refunded:',
+																'multivendorx'
+															)}
+														</td>
+														<td>
+															-{' '}
+															{formatCurrency(
+																totalRefunded
+															)}
+														</td>
+													</tr>
+
+													<tr>
+														<td>
+															{__(
+																'Total available to refund:',
+																'multivendorx'
+															)}
+														</td>
+														<td>
+															{formatCurrency(
+																orderData?.commission_total -
+																totalRefunded
+															)}
+														</td>
+													</tr>
+
+													<tr>
+														<td>
+															{__(
+																'Refund amount:',
+																'multivendorx'
+															)}
+														</td>
+														<td>
+															<TextInput
+																name="refund-amount"
+																type="number"
+																value={
+																	refundDetails.refundAmount
+																}
+																onChange={(
+																	value
+																) =>
+																	setRefundDetails(
+																		{
+																			...refundDetails,
+																			refundAmount:
+																				+value,
+																		}
+																	)
+																}
+															/>
+														</td>
+													</tr>
+
+													<tr>
+														<td>
+															{__(
+																'Reason for refund (optional):',
+																'multivendorx'
+															)}
+														</td>
+														<td>
+															<TextAreaInput
+																value={
+																	refundDetails.reason
+																}
+																placeholder={__(
+																	'Reason for refund',
+																	'multivendorx'
+																)}
+																onChange={(
+																	value
+																) =>
+																	setRefundDetails(
+																		{
+																			...refundDetails,
+																			reason: value,
+																		}
+																	)
+																}
+															/>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									)} */}
 									{!isRefund ? (
 										<div className="right">
 											<table>
