@@ -129,10 +129,10 @@ class Rest extends \WP_REST_Controller {
             }
 
             // Convert old format to new format with id + empty date.
-            if ( ! empty( $followers ) && isset( $followers[0] ) && is_numeric( $followers[0] ) ) {
+            if ( ! empty( $followers[0] ) && is_int( $followers[0] ) ) {
                 $followers = array_map(
                     fn( $uid ) => array(
-                        'id'   => absint( $uid ),
+                        'id'   => $uid,
                         'date' => '',
                     ),
                     $followers
@@ -145,9 +145,8 @@ class Rest extends \WP_REST_Controller {
             usort(
                 $followers,
                 function ( $a, $b ) {
-                    $date_a = ( is_array( $a ) && ! empty( $a['date'] ) ) ? strtotime( $a['date'] ) : 0;
-                    $date_b = ( is_array( $b ) && ! empty( $b['date'] ) ) ? strtotime( $b['date'] ) : 0;
-
+                    $date_a = ! empty( $a['date'] ) ? strtotime( $a['date'] ) : 0;
+                    $date_b = ! empty( $b['date'] ) ? strtotime( $b['date'] ) : 0;
                     return $date_b <=> $date_a;
                 }
             );
