@@ -22,7 +22,7 @@ const Managestock = () => {
     const headers = {
         product: {
             label: __('Product', 'notifima'),
-            width: '16rem',
+            width: "35%",
             render: (row) => (
                 <InformationItemComponent
                     title={row.name}
@@ -34,12 +34,19 @@ const Managestock = () => {
                             label: __('SKU', 'notifima'),
                             value: row.sku || '—',
                         },
+                        {
+                            label: __('Subscriber No', 'notifima'),
+                            value: row.subscriber_no || ' 0',
+                        },
+                    ]}
+                    badges={[
+                        {
+                            text: row.type,
+                            className: `badge-${row.type}`,
+                        }
                     ]}
                 />
             ),
-        },
-        type: {
-            label: __('Type', 'notifima'),
         },
 
         regular_price: {
@@ -77,10 +84,6 @@ const Managestock = () => {
         },
         stock_quantity: {
             label: __('Stock', 'notifima'),
-        },
-        subscriber_no: {
-            label: __('Subscriber No', 'notifima'),
-            isSortable: true,
         },
     };
 

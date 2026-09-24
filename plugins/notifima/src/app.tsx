@@ -83,7 +83,7 @@ const utilityList = [
     {
         toggleIcon: 'admin-icon adminfont-user-circle',
         tooltipName: __('Support', 'notifima'),
-        tooltipPosition: 'end',
+        tooltipPosition: 'bottom',
         items: profileItems,
     },
 ];
