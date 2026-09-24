@@ -110,7 +110,17 @@ const SubscribersList = () => {
             ),
         },
         date: {
-			label: __('Votes', 'multivendorx'),
+			label: __('Date', 'notifima'),
+			render: (row) => {
+				return (
+					<>
+						<div className='table-details'>
+							<span className='label'>{__('Date:', 'notifima')}</span>
+							{row.date || '-'}
+						</div>
+					</>
+				);
+			},
 		},
     };
 

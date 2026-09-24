@@ -23,3 +23,13 @@
 .variation-row .admin-column:first-child{
     min-width: 34%;
 }
+
+.table-details{
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    span{
+        font-weight: 600;
+    }
+}
