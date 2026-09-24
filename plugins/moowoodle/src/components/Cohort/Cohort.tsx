@@ -36,34 +36,38 @@ const Cohort: React.FC = () => {
 			render: (row: CohortRow) => (
 				<InformationItemComponent
 					title={row.cohort_name}
+					width="75%"
 					avatar={{ iconClass: 'cohort' }}
+					badges={[
+						{
+                            className: 'blue',
+                            text: `${row.enrolled_user || 0} Enrolled users`,
+                        },
+                    ]}
+					descriptions={[
+						{
+							icon: 'single-product',
+							label: __(
+								'Product',
+								'moowoodle'
+							),
+							value:
+								row.products && Object.keys(row.products).length
+									? Object.entries(row.products).map(([name], index) => (
+										<React.Fragment key={index}>
+											{name}
+										</React.Fragment>
+									))
+									: '-',
+						}
+					]}
 				/>
 			),
 		},
 
-		products: {
-			label: __('Product', 'moowoodle'),
-			render: (row: CohortRow) => (
-				<>
-					{row.products && Object.keys(row.products).length
-						? Object.entries(row.products).map(([name], index) => (
-							<React.Fragment key={index}>
-								{name}
-							</React.Fragment>
-						))
-						: '-'}
-				</>
-			),
-		},
-
-		enrolled_user: {
-			label: __('Enrolled users', 'moowoodle'),
-			render: (row: CohortRow) => <>{row.enrolled_user || 0}</>,
-		},
-
-		action: {
-			type: 'action',
-			label: __('Action', 'moowoodle'),
+action: {
+	type: 'action',
+		label: __('Action', 'moowoodle'),
 
 			actions: [
 				{
@@ -97,61 +101,61 @@ const Cohort: React.FC = () => {
 		},
 	};
 
-	const defaultTableProps = {
-		headers,
+const defaultTableProps = {
+	headers,
+	hideHeader: true, 
+	rows: dummyCohorts,
+	totalRows: dummyCohorts.length,
+	search: {
+		placeholder: __('Search...', 'moowoodle'),
+	},
+};
 
-		rows: dummyCohorts,
-		totalRows: dummyCohorts.length,
-		search: {
-			placeholder: __('Search...', 'moowoodle'),
-		},
-	};
+tableProps = applyFilters(
+	'moowoodle_cohort_table_props',
+	defaultTableProps
+);
 
-	tableProps = applyFilters(
-		'moowoodle_cohort_table_props',
-		defaultTableProps
-	);
+const handleTableWrapperClick = () => {
+	if (!appLocalizer.khali_dabba) {
+		setopenPopup(true);
+	}
+};
 
-	const handleTableWrapperClick = () => {
-		if (!appLocalizer.khali_dabba) {
-			setopenPopup(true);
-		}
-	};
+return (
+	<>
+		{openPopup && (
+			<PopupComponent
+				position="lightbox"
+				open={openPopup}
+				onClose={() => setopenPopup(false)}
+				width={31.25}
+				height="auto"
+			>
+				<ShowProPopup />
+			</PopupComponent>
+		)}
 
-	return (
-		<>
-			{openPopup && (
-				<PopupComponent
-					position="lightbox"
-					open={openPopup}
-					onClose={() => setopenPopup(false)}
-					width={31.25}
-					height="auto"
-				>
-					<ShowProPopup />
-				</PopupComponent>
+		<NavigatorHeaderComponent
+			headerIcon="cohort"
+			headerDescription={__(
+				'Cohort information is presented with associated products and student enrollments to support administrative actions.',
+				'moowoodle'
 			)}
-
-			<NavigatorHeaderComponent
-				headerIcon="cohort"
-				headerDescription={__(
-					'Cohort information is presented with associated products and student enrollments to support administrative actions.',
-					'moowoodle'
-				)}
-				headerTitle={__('Cohorts', 'moowoodle')}
-			/>
-			<ContainerComponent general>
-				<ColumnComponent>
-					<div className="demo-wrapper" onClick={handleTableWrapperClick}>
-						{!appLocalizer.khali_dabba && (
-							<div className="watermark">{__('This is sample Data', 'moowoodle')}</div>
-						)}
-						<TableCard {...tableProps} />
-					</div>
-				</ColumnComponent>
-			</ContainerComponent>
-		</>
-	);
+			headerTitle={__('Cohorts', 'moowoodle')}
+		/>
+		<ContainerComponent general>
+			<ColumnComponent>
+				<div className="demo-wrapper" onClick={handleTableWrapperClick}>
+					{!appLocalizer.khali_dabba && (
+						<div className="watermark">{__('This is sample Data', 'moowoodle')}</div>
+					)}
+					<TableCard {...tableProps} />
+				</div>
+			</ColumnComponent>
+		</ContainerComponent>
+	</>
+);
 };
 
 export default Cohort;
