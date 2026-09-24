@@ -1,5 +1,4 @@
 /* global appLocalizer */
-import { FontSizePicker } from '@wordpress/block-editor';
 import { __, sprintf } from '@wordpress/i18n';
 
 export default {
@@ -11,12 +10,24 @@ export default {
 		'moowoodle'
 	),
 	headerIcon: 'setting',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
 		{
+			key: 'section',
+			type: 'section',
+			icon: 'setting',
+			title: __('Connection', 'moowoodle'),
+			settingDescription: __(
+				'Point this site at your Moodle instance and confirm the two can reach each other.',
+				'moowoodle'
+			),
+		},
+		{
 			key: 'moodle_url',
 			type: 'text',
-			desc: __(
+			settingDescription: __(
 				'Provide the URL of your Moodle site where the course will be hosted. Students will receive access to the course content on that site.',
 				'moowoodle'
 			),
@@ -28,7 +39,7 @@ export default {
 			type: 'text',
 			size: 25,
 			label: __('Moodle access token', 'moowoodle'),
-			desc: sprintf(
+			settingDescription: sprintf(
 				/* translators: %s: URL to Moodle token page */
 				__(
 					'Enter Moodle access token. You can generate the access token from <a href="%s" target="_blank" rel="noreferrer">here</a>. <br>Navigation: Dashboard → Site administration → Server → Manage tokens.',
@@ -109,11 +120,21 @@ export default {
 				},
 			],
 		},
+				{
+			key: 'section',
+			type: 'section',
+			icon: 'setting',
+			title: __('Single sign-on', 'moowoodle'),
+			settingDescription: __(
+				'Let logged-in WordPress users open their Moodle courses without signing in again.',
+				'moowoodle'
+			),
+		},
 		{
 			key: 'moowoodle_sso_enable',
 			type: 'checkbox',
-			desc: __(
-				'Enabling this option allows users to access Moodle courses directly, bypassing the need for login.',
+			settingDescription: __(
+				'Buyers go straight from "My Course" into Moodle, no separate login.',
 				'moowoodle'
 			),
 			label: __('Single Sign On', 'moowoodle'),
@@ -129,7 +150,7 @@ export default {
 		{
 			key: 'moowoodle_sso_secret_key',
 			type: 'text',
-			desc: sprintf(
+			settingDescription: sprintf(
 				/* translators: %s: URL to Moodle SSO settings page */
 				__(
 					'Generate a unique SSO secret key (must be at least 8 characters) and copy it. Then, go to your Moodle site and paste the copied SSO key <a href="%s" target="_blank" rel="noreferrer">there</a>.',
