@@ -3,11 +3,11 @@ import { useState } from 'react';
 
 import { MultiCheckboxInput } from '@zyra/inputs';
 import {
-	ColumnComponent,
-	ContainerComponent,
-	InformationItemComponent,
-	PopupComponent,
-	NavigatorHeaderComponent,
+    ColumnComponent,
+    ContainerComponent,
+    InformationItemComponent,
+    PopupComponent,
+    NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
@@ -22,7 +22,7 @@ const Managestock = () => {
     const headers = {
         product: {
             label: __('Product', 'notifima'),
-            width: "35%",
+            width: '35%',
             render: (row) => (
                 <InformationItemComponent
                     title={row.name}
@@ -34,16 +34,17 @@ const Managestock = () => {
                             label: __('SKU', 'notifima'),
                             value: row.sku || '—',
                         },
-                        {
-                            label: __('Subscriber No', 'notifima'),
-                            value: row.subscriber_no || ' 0',
-                        },
                     ]}
                     badges={[
                         {
                             text: row.type,
-                            className: `badge-${row.type}`,
-                        }
+                            className: `badge-${row.type?.toLowerCase()}`,
+                        },
+                        {
+                            className: 'blue',
+                            text: `${row.subscriber_no || 0} ${row.subscriber_no === 1 ? 'Subscriber' : 'Subscribers'
+                                }`,
+                        },
                     ]}
                 />
             ),
@@ -151,7 +152,7 @@ const Managestock = () => {
         if (!appLocalizer.khali_dabba) {
             return (
                 <div className="demo-wrapper" onClick={() => setOpenPopup(true)}>
-                    <div className="watermark">{__('This is sample Data','notifima' )}</div>
+                    <div className="watermark">{__('This is sample Data', 'notifima')}</div>
                     <TableCard {...tableProps} />
                 </div>
             );
