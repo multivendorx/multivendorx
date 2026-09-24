@@ -47,10 +47,10 @@ const WholesaleUser = () => {
 						}
 					]}
 					descriptions={[
-						// {
-						// 	label: __('Date', 'catalogx'),
-						// 	value: formatDate(row.date),
-						// },
+						{
+							label: __('Date', 'catalogx'),
+							value: formatDate(row.date),
+						},
 						{
 							label: __('Email', 'catalogx'),
 							value: row.email || '—',
@@ -63,11 +63,6 @@ const WholesaleUser = () => {
 				/>
 			),
 		},
-		// status: {
-		// 	label: __('Status', 'catalogx'),
-		// 	type: 'status',
-		// 	statusClass: (row: WholesaleUserRow) => `${row.status}`
-		// },
 		date: {
 			label: __('Date', 'catalogx'),
 			type: 'date'
