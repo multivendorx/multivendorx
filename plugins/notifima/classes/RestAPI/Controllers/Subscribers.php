@@ -144,15 +144,7 @@ class Subscribers extends \WP_REST_Controller {
         }
 
         try {
-            $args = array(
-                'query'       => array(
-                    'post_type'      => array( 'product', 'product_variation' ),
-                    'post_status'    => 'publish',
-                    'posts_per_page' => -1,
-                    'fields'         => 'ids',
-                ),
-                'subscribers' => array(),
-            );
+            $args = array();
 
             /**
              * Allow Pro to modify product and subscriber arguments.
@@ -163,55 +155,10 @@ class Subscribers extends \WP_REST_Controller {
                 $request
             );
 
-            $product_ids = get_posts( $args['query'] );
+            $subscriber_data = Utill::get_subscriber_records( $args );
 
-            $subscriber_args = array_merge(
-                array(
-                    'product_ids' => $product_ids,
-                ),
-                $args['subscribers']
-            );
-
-            $subscriber_records = Utill::get_subscribers( $subscriber_args );
-
-            $subscriber_items = array();
-
-            foreach ( $subscriber_records as $subscriber ) {
-                $product = wc_get_product( $subscriber->product_id );
-                $image   = get_the_post_thumbnail_url( $subscriber->product_id, 'full' );
-                $user    = get_user_by( 'email', $subscriber->email );
-                $date    = wp_date(
-                    get_option( 'date_format' ),
-                    strtotime( $subscriber->create_time )
-                );
-
-                $statuses = array(
-                    'notification_sent' => __( 'Notification Sent', 'notifima' ),
-                    'subscribed'        => __( 'Subscribed', 'notifima' ),
-                    'unsubscribed'      => __( 'Unsubscribed', 'notifima' ),
-                );
-
-                $status_key        = $subscriber->status;
-                $subscriber_status = $statuses[ $status_key ] ?? '-';
-
-                $subscriber_items[] = apply_filters(
-                    'notifima_all_subscribers_list',
-                    array(
-                        'id'         => $subscriber->id,
-                        'date'       => $date,
-                        'email'      => $subscriber->email,
-                        'phone'      => $subscriber->phone,
-                        'status'     => $subscriber_status,
-                        'status_key' => $status_key,
-                        'reg_user'   => $user ? __( 'Yes', 'notifima' ) : __( 'No', 'notifima' ),
-                        'user_link'  => $user ? get_edit_user_link( $user->ID ) : '',
-                        'product'    => $product ? $product->get_name() : '',
-                        'product_id' => $product ? $product->get_id() : '',
-                        'image'      => $image ?: wc_placeholder_img_src(),
-                    ),
-                    $subscriber
-                );
-            }
+            $subscriber_items = $subscriber_data['items'];
+            $product_ids      = $subscriber_data['product_ids'];
 
             $response = rest_ensure_response( $subscriber_items );
 
