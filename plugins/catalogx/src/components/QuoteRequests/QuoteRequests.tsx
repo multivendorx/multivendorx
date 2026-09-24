@@ -51,18 +51,17 @@ const QuoteRequests = () => {
                                 value: formatDate(row.date),
                             },
                         ]}
-                        badges={[
-                        {
-                            text: row.status,
-                            className: `badge-${row.status?.toLowerCase()}`,
-                        },
-					]}
                 />
             ),
         },
         total: {
             label: __('Total', 'catalogx'),
             type: 'currency'
+        },
+        status: {
+            label: __('Status', 'catalogx'),
+            type: 'status',
+            statusClass: (row: QuoteRow) => `${row.status}`
         },
         action: {
             label: __('Action', 'catalogx-pro'),
