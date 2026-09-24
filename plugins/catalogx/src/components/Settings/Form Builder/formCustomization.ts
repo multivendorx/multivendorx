@@ -112,6 +112,14 @@ const REGISTRATION_BLOCK_GROUPS = [
                 label: 'Terms & Conditions',
                 fixedName: 'Terms & Conditions'
             },
+            {
+                id: 'phone',
+                icon: 'form-phone',
+                value: 'phone',
+                label: 'Phone',
+                fixedName: 'Phone',
+                placeholder: 'Enter your phone number',
+            },
         ],
     },
     // {
