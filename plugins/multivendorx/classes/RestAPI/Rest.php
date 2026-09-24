@@ -358,15 +358,12 @@ class Rest {
         );
 
         if ( 'read' === $context && in_array( $post_type, $public_post_types, true ) ) {
-			if ( $object_id && ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) ) {
-				$post = get_post( $object_id );
-				if ( $post && 'publish' !== $post->post_status ) {
-					return false;
-				}
-			}
+            if ( Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) {
+                return true;
+            }
 
-			return true;
-		}
+            return 'publish' === get_post_status( $object_id );
+        }
 
         if ( 'read' === $context && 'payment_gateways' === $post_type ) {
             return Utill::current_user_has_capability( array( 'edit_shop_orders' ) );
@@ -513,11 +510,11 @@ class Rest {
         unset( $request );
         if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) {
             $response->data = array(
-                'id'                => $coupon->get_id(),
-                'code'              => $coupon->get_code(),
-                'amount'             => $coupon->get_amount(),
-                'discount_type'      => $coupon->get_discount_type(),
-                'date_expires'       => $coupon->get_date_expires()? $coupon->get_date_expires()->date( 'Y-m-d\TH:i:s' ): null,
+                'id'            => $coupon->get_id(),
+                'code'          => $coupon->get_code(),
+                'amount'        => $coupon->get_amount(),
+                'discount_type' => $coupon->get_discount_type(),
+                'date_expires'  => $coupon->get_date_expires() ? $coupon->get_date_expires()->date( 'Y-m-d\TH:i:s' ) : null,
             );
 
             return $response;
