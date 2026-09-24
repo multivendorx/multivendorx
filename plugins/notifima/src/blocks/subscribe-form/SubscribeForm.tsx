@@ -46,19 +46,26 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
     ) => {
         setLoading(true);
 
+        let data = {
+            action: 'subscribe',
+            customer_email: submittedFormData.email,
+            product_id: productId,
+            variation_id: variationId,
+            product_title: productTitle,
+        };
+
+        data = applyFilters(
+            'notifima_subscribe_request_data',
+            data,
+            submittedFormData
+        ) as typeof data;
         axios({
             method: 'POST',
             url: getApiLink(subscription, `subscribers/${productId}`),
             headers: {
                 'X-WP-Nonce': subscription.nonce,
             },
-            data: {
-                action: 'subscribe',
-                customer_email: submittedFormData.email,
-                product_id: productId,
-                variation_id: variationId,
-                product_title: productTitle,
-            },
+            data,
         })
             .then(({ data }: { data: ApiResponse }) => {
                 setResponse(data);
@@ -70,7 +77,10 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
             .catch(() => {
                 setResponse({
                     status: false,
-                    message: __('Something went wrong. Please try again.', 'notifima'),
+                    message: __(
+                        'Something went wrong. Please try again.',
+                        'notifima'
+                    ),
                 });
             })
             .finally(() => {
@@ -191,7 +201,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                 >
                     {loading
                         ? __('Please wait...', 'notifima')
-                        : response.unsubscribe_button?.text ?? __('Unsubscribe',  'notifima')}
+                        : response.unsubscribe_button?.text ?? __('Unsubscribe', 'notifima')}
                 </button>
             )}
         </>
