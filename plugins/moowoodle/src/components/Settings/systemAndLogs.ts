@@ -8,21 +8,9 @@ export default {
 		'Manage advanced settings for synchronization, error logging, and connection handling.',
 		'moowoodle'
 	),
-	groupBySections: true,
-	hideSettingHeader: true,
 	headerIcon: 'tools',
 	submitUrl: 'settings',
 	modal: [
-		{
-			key: 'section',
-			type: 'section',
-			icon: 'subscription-courses',
-			title: __('System & Logs', 'moowoodle'),
-			desc: __(
-				'Manage advanced settings for synchronization, error logging, and connection handling.',
-				'moowoodle'
-			),
-		},
 		{
 			key: 'moodle_timeout',
 			type: 'text',

@@ -79,7 +79,7 @@ const SubscribersList = () => {
     const headers = {
         product: {
             label: __('Product', 'notifima'),
-            width: "100%",
+            width: "70%",
             render: (row) => (
                 <InformationItemComponent
                     title={row.product}
@@ -103,16 +103,15 @@ const SubscribersList = () => {
                      badges={[
                         {
                             text: row.status,
-                            className: `badge-${row.status}`,
-                        },
-                        {
-                            text: row.date,
-                            className: `blue`,
+                            className: `badge-${row.status_key}`,
                         },
                     ]}
                 />
             ),
         },
+        date: {
+			label: __('Votes', 'multivendorx'),
+		},
     };
 
     const downloadCSVByQuery = () => {

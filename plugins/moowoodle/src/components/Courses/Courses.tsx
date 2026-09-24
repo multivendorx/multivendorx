@@ -75,17 +75,17 @@ const Course: React.FC = () => {
 					badges={[
 						{
 							text: row.category_name,
-							className: 'badge-category',
+							className: 'yellow',
+						},
+						{
+							className: 'blue',
+							text: row.date,
 						},
 					]}
 					descriptions={[
 						{
 							label: __('Short name', 'moowoodle'),
 							value: row.course_short_name,
-						},
-						{
-							label: __('Course duration', 'moowoodle'),
-							value: row.date,
 						},
 					]}
 				/>
