@@ -69,12 +69,12 @@ const Enrollment: React.FC = () => {
 						]}
 						descriptions={[
 							{
-								icon: 'lock',
+								icon: 'calendar',
 								label: __('Enrollment Date', 'moowoodle'),
 								value: row.enrollment_date,
 							},
 							{
-								icon: 'lock',
+								icon: 'person',
 								label: __('Student', 'moowoodle'),
 								value: row.customer_name,
 							},
