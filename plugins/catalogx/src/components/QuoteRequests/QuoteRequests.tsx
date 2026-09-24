@@ -41,7 +41,7 @@ const QuoteRequests = () => {
                     descriptions={
                         [
                             {
-                                label: __('Datdddde', 'catalogx'),
+                                label: __('Date', 'catalogx'),
                                 value: formatDate(row.date),
                             },
                             {
