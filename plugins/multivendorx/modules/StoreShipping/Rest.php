@@ -172,7 +172,7 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
-            if ( null === $zone_id || '' === $zone_id ) {
+            if ( ! is_numeric( $zone_id ) || $zone_id < 0 ) {
                 return rest_ensure_response(
                     array(
                         'success' => false,
@@ -250,7 +250,7 @@ class Rest extends \WP_REST_Controller {
             $method_id = $request->get_param( 'method_id' );
             $zone_id   = $request->get_param( 'zone_id' );
             // Validate required params.
-            if ( empty( $store_id ) || empty( $method_id ) || null === $zone_id || '' === $zone_id ) {
+            if ( empty( $store_id ) || empty( $method_id ) || ! is_numeric( $zone_id ) || $zone_id < 0 ) {
                 return rest_ensure_response(
                     array(
                         'success' => false,
@@ -299,7 +299,7 @@ class Rest extends \WP_REST_Controller {
             $method_id = sanitize_text_field( $request->get_param( 'method_id' ) );
             $settings  = $request->get_param( 'settings' );
 
-            if ( ! $method_id || null === $zone_id || '' === $zone_id || ! $store_id || ! $settings ) {
+            if ( ! $method_id || is_numeric( $zone_id ) || $zone_id < 0 || ! $store_id || ! $settings ) {
                 return rest_ensure_response(
                     array(
                         'success' => false,
@@ -380,7 +380,7 @@ class Rest extends \WP_REST_Controller {
             $zone_id   = intval( $request->get_param( 'zone_id' ) );
             $method_id = sanitize_text_field( $request->get_param( 'method_id' ) );
 
-            if ( ! $store_id || null === $zone_id || '' === $zone_id || ! $method_id ) {
+            if ( ! $store_id || is_numeric( $zone_id ) || $zone_id < 0 || ! $method_id ) {
                 return rest_ensure_response(
                     array(
                         'success' => false,
