@@ -126,14 +126,14 @@ class Block {
             $block_name = $block_config['textdomain'] . '/' . $block_config['name'];
             if ( has_block( $block_name, $post ) ) {
                 $has_moowoodle_block = true;
-                $handle = $block_config['textdomain'] . '-' . $block_config['name'];
+                $handle              = $block_config['textdomain'] . '-' . $block_config['name'];
                 FrontendScripts::enqueue_script( $handle );
                 FrontendScripts::localize_scripts( $handle );
             }
         }
 
         if ( $has_moowoodle_block ) {
-           FrontendScripts::enqueue_script( 'moowoodle-vendor' );
+			FrontendScripts::enqueue_script( 'moowoodle-vendor' );
         }
     }
 
