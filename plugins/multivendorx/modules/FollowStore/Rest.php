@@ -123,10 +123,6 @@ class Rest extends \WP_REST_Controller {
 
             $followers = is_array( $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array() ) ? $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] : array();
 
-            // Make sure followers is always an array.
-            if ( ! is_array( $followers ) ) {
-                $followers = array();
-            }
 
             // Convert old format to new format with id + empty date.
             if ( ! empty( $followers[0] ) && is_int( $followers[0] ) ) {
