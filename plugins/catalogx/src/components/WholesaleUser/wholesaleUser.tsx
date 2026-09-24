@@ -43,18 +43,20 @@ const WholesaleUser = () => {
 					badges={[
 						{
 							text: row.status,
-							className: `badge-${row.status}`,
+							className: `badge-${row.status?.toLowerCase()}`,
 						}
 					]}
 					descriptions={[
 						{
-							label: __('Date', 'catalogx'),
-							value: formatDate(row.date),
-						},
-						{
 							label: __('Email', 'catalogx'),
+							icon: 'mail',
 							value: row.email || '—',
 						},
+						{
+							icon: 'calendar',
+							label: __('Date', 'catalogx'),
+							value: formatDate(row.date),
+						},						
 					]}
 					avatar={{
 						image: row.customer_img_url,
@@ -62,10 +64,6 @@ const WholesaleUser = () => {
 					}}
 				/>
 			),
-		},
-		date: {
-			label: __('Date', 'catalogx'),
-			type: 'date'
 		},
 		action: {
 			type: 'action',
@@ -98,7 +96,7 @@ const WholesaleUser = () => {
 	];
 	const defaultTableProps = {
 		headers,
-		// hideHeader: true,
+		hideHeader: true,
 		format: appLocalizer.date_format,
 		filters,
 		search: {
