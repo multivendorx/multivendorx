@@ -121,7 +121,7 @@ class Rest extends \WP_REST_Controller {
                 return rest_ensure_response( array( 'error' => 'Store does not exists' ) );
             }
 
-            $followers = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array();
+            $followers = is_array( $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array() ) ? $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] : array();
 
             // Make sure followers is always an array.
             if ( ! is_array( $followers ) ) {
