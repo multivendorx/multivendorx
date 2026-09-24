@@ -4,7 +4,15 @@
 .popup-content:has(.top-section) {
     overflow: hidden !important; // for overwrite zyra style
 }
+.table-details{
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 
+    span{
+        font-weight: 600;
+    }
+}
 .popup-wrapper {
     .top-section {
         padding: 2.5rem 2rem;

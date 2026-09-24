@@ -43,7 +43,7 @@ const Enrollment: React.FC = () => {
 	const headers = {
 		learning_unit: {
 			label: __('Learning Unit', 'moowoodle'),
-			width: "65%",
+			width: "50%",
 			render: (row: EnrollmentRow) => {
 				let title = '';
 
@@ -57,9 +57,9 @@ const Enrollment: React.FC = () => {
 
 				return (
 					<InformationItemComponent
-						title={title}
+						title={row.customer_name}
 						avatar={{
-							iconClass: 'document',
+							iconClass: 'person',
 						}}
 						badges={[
 							{
@@ -69,17 +69,25 @@ const Enrollment: React.FC = () => {
 						]}
 						descriptions={[
 							{
-								icon: 'calendar',
-								label: __('Enrollment Date', 'moowoodle'),
-								value: row.enrollment_date,
-							},
-							{
-								icon: 'person',
-								label: __('Student', 'moowoodle'),
-								value: row.customer_name,
+								icon: 'subscription-courses',
+								label: __('Course', 'moowoodle'),
+								value: title,
 							},
 						]}
 					/>
+				);
+			},
+		},
+		enrollment_date: {
+			label: __('Date', 'moowoodle'),
+			render: (row: EnrollmentRow) => {
+				return (
+					<>
+						<div className='table-details'>
+							<span className='label'>{__('Enrollment Date', 'moowoodle')}</span>
+							{row.enrollment_date || '-'}
+						</div>
+					</>
 				);
 			},
 		},
@@ -87,7 +95,7 @@ const Enrollment: React.FC = () => {
 			type: 'action',
 			label: __('Action', 'moowoodle'),
 			actions: [
-				{	
+				{
 					type: 'button',
 					label: (row: EnrollmentRow) => {
 						return row.status === 'enrolled'
@@ -97,7 +105,11 @@ const Enrollment: React.FC = () => {
 					onClick: (row: EnrollmentRow) => {
 						setOpenPopup(true);
 					},
-					color: 'text-purple',
+					color: (row: EnrollmentRow) => {
+						return row.status === 'enrolled'
+							? __('text-red', 'moowoodle')
+							: __('text-purple', 'moowoodle');
+					},
 					icon: 'classroom-enrollment',
 				},
 			],
@@ -106,7 +118,7 @@ const Enrollment: React.FC = () => {
 
 	const defaultTableProps = {
 		headers,
-		hideHeader: true,		
+		hideHeader: true,
 		rows: dummyEnrollments,
 		totalRows: dummyEnrollments.length,
 		search: {
