@@ -8,6 +8,7 @@
 namespace CatalogX\Enquiry;
 
 use CatalogX\FrontendScripts;
+use CatalogX\Utill;
 
 /**
  * CatalogX Enquiry Module Frontend class
@@ -36,7 +37,7 @@ class Frontend {
 
         add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_button_in_shop_page' ) );
 
-        if ( ! ( wp_is_block_theme() || file_exists( get_theme_file_path( 'theme.json' ) ) ) ) {
+        if ( ! wp_is_block_theme() ) {
             add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
         }
 
@@ -100,10 +101,10 @@ class Frontend {
             return;
         }
 
-        $button_text = \CatalogX\Utill::get_translated_string(
+        $button_text = Utill::get_translated_string(
             'catalogx',
             'send_an_enquiry',
-            'Send an enquiry'
+            __( 'Send an enquiry', 'catalogx' )
         );
         ?>
         <div id="catalogx-enquiry">
@@ -323,7 +324,7 @@ class Frontend {
             return;
         }
 
-        $button_text = \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
+        $button_text = Utill::get_translated_string( 'catalogx', 'send_an_enquiry', __('Send an enquiry','catalogx') );
         if ( is_shop() ) {
             $product_link = get_permalink( $product->get_id() );
             echo '<div class="catalogx-enquiry">';

@@ -497,6 +497,7 @@ const DashboardTab: React.FC<object> = () => {
 						{resources.map((res) => (
 							<ListComponent
 								className="mini-card list"
+								key={res.title}
 								border
 								items={[
 									{
