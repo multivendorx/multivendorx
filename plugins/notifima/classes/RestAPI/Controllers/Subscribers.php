@@ -144,14 +144,12 @@ class Subscribers extends \WP_REST_Controller {
         }
 
         try {
-            $args = array();
-
             /**
              * Allow Pro to modify product and subscriber arguments.
              */
             $args = apply_filters(
                 'notifima_subscribers_args',
-                $args,
+                array(),
                 $request
             );
 
