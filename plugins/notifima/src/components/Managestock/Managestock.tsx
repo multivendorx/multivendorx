@@ -120,6 +120,8 @@ const Managestock = () => {
         categoryCounts: defaultCategoryCounts,
         filters,
         expandable: true,
+        expandText: 'View variations',
+        expandedText: 'Viewing',
         search: {
             placeholder: __('Search...', 'notifima'),
             size: 8,
