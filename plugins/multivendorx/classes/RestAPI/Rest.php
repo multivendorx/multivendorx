@@ -52,7 +52,6 @@ class Rest {
         add_filter( 'woocommerce_rest_shop_order_object_query', array( $this, 'query_shop_order_modify' ), 10, 2 );
         add_filter( 'woocommerce_rest_product_object_query', array( $this, 'query_product_modify' ), 10, 2 );
         add_filter( 'woocommerce_rest_shop_coupon_object_query', array( $this, 'query_shop_coupon_filter_meta' ), 10, 2 );
-        add_filter( 'woocommerce_rest_prepare_product_object', array( $this, 'prepare_product_add_store_data' ), 10, 2 );
         add_filter( 'woocommerce_rest_prepare_shop_order_object', array( $this, 'prepare_shop_order_filter_meta' ), 10, 3 );
         add_filter( 'woocommerce_rest_prepare_shop_coupon_object', array( $this, 'prepare_shop_coupon_filter_meta' ), 10, 3 );
         add_filter( 'woocommerce_rest_pre_insert_shop_coupon_object', array( $this, 'pre_insert_shop_coupon_fix_status' ), 10, 3 );
@@ -60,44 +59,6 @@ class Rest {
         add_action( 'woocommerce_rest_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 10, 3 );
         add_action( 'woocommerce_rest_insert_shop_coupon_object', array( $this, 'send_notifications' ), 10, 2 );
         add_filter( 'woocommerce_rest_product_shipping_class_query', array( $this, 'filter_shipping_classes_by_meta' ), 10, 2 );
-    }
-
-    /**
-     * Add store data to WooCommerce product API response
-     *
-     * @param object $response API response.
-     * @param object $product  Product object.
-     */
-    public function prepare_product_add_store_data( $response, $product ) {
-        if ( ! is_user_logged_in() || ! Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) {
-			unset( $response->data['meta_data'] );
-			return $response;
-		}
-
-        $product_id = $product->get_id();
-        $store_id   = (int) get_post_meta(
-            $product_id,
-            Utill::POST_META_SETTINGS['store_id'],
-            true
-        );
-
-        // Default response values.
-        $response->data['store_id']   = '';
-        $response->data['store_name'] = '';
-        $response->data['store_slug'] = '';
-
-        if ( $store_id > 0 ) {
-            $store = new Store( $store_id );
-            if ( ! $store->exists() ) {
-                return;
-            }
-            $response->data['store_id']   = $store_id;
-            $response->data['store_name'] = (string) $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
-            $response->data['store_slug'] = (string) $store->get( Utill::STORE_SETTINGS_KEYS['slug'] );
-            apply_filters( 'multivendorx_rest_prepare_product_add_store_data', $response, $product, $store );
-        }
-
-        return $response;
     }
 
     /**
@@ -358,7 +319,7 @@ class Rest {
         );
 
         if ( 'read' === $context && in_array( $post_type, $public_post_types, true ) ) {
-            if ( Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) {
+            if ( empty( $object_id ) || Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) {
                 return true;
             }
 
@@ -528,12 +489,9 @@ class Rest {
                 return $response;
             }
             $store_name = $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
-            $store_slug = $store->get( Utill::STORE_SETTINGS_KEYS['slug'] );
 
             // Add store data to API response.
             $response->data['store_name'] = $store_name ? $store_name : '';
-            $response->data['store_slug'] = $store_slug ? $store_slug : '';
-            $response->data['store_id']   = $store_id;
         }
 
         return $response;

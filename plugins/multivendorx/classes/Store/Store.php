@@ -262,18 +262,8 @@ class Store {
         $meta = array();
 
         foreach ( $rows as $row ) {
-            $value = $row['meta_value'];
-
-            if ( is_serialized( $value ) ) {
-                $meta[ $row['meta_key'] ] = unserialize(
-                    $value,
-                    array( 'allowed_classes' => false )
-                );
-            } else {
-                $meta[ $row['meta_key'] ] = $value;
-            }
-        }
-
+			$meta[ $row['meta_key'] ] = is_serialized( $row['meta_value'] ) ? unserialize( $row['meta_value'], array( 'allowed_classes' => false ) ) : $row['meta_value'];
+		}
         $this->meta_data = $meta;
         return $this->meta_data;
     }

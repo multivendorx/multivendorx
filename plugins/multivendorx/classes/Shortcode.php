@@ -152,11 +152,13 @@ class Shortcode {
             )
         );
 
+        $load_vendor_script = false;
+
         foreach ( $shortcode_assets as $shortcode => $assets ) {
             if ( ! in_array( $shortcode, $detected_shortcodes, true ) ) {
                 continue;
             }
-            FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
+            $load_vendor_script = true;
             foreach ( $assets['scripts'] ?? array() as $script ) {
                 if ( empty( $script['handle'] ) ) {
                     continue;
@@ -171,6 +173,9 @@ class Shortcode {
             foreach ( $assets['styles'] ?? array() as $style_handle ) {
                 FrontendScripts::enqueue_style( $style_handle );
             }
+        }
+        if ( $load_vendor_script ) {
+            FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
         }
     }
 

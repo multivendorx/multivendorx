@@ -282,6 +282,13 @@ class Rest extends \WP_REST_Controller {
         }
         try {
             $id = absint( $request->get_param( 'id' ) );
+            if ( ! $id ) {
+                return new \WP_Error(
+                    'invalid_id',
+                    __( 'Invalid question ID', 'multivendorx' ),
+                    array( 'status' => 400 )
+                );
+            }
             // Fetch the question.
             $q = reset( Util::get_question_information( array( 'id' => $id ) ) );
 
@@ -307,15 +314,15 @@ class Rest extends \WP_REST_Controller {
 
             $data_to_update = array();
 
-            if ( isset( $question_text ) ) {
+            if ( ! empty( $question_text ) ) {
                 $data_to_update['question_text'] = sanitize_textarea_field( $question_text );
             }
 
-            if ( isset( $answer_text ) ) {
+            if ( ! empty( $answer_text ) ) {
                 $data_to_update['answer_text'] = sanitize_textarea_field( $answer_text );
             }
 
-            if ( isset( $visibility ) ) {
+            if ( ! empty( $visibility ) ) {
                 $allowed = array( 'public', 'private', 'hidden' );
                 if ( in_array( $visibility, $allowed, true ) ) {
                     $data_to_update['question_visibility'] = sanitize_text_field( $visibility );
