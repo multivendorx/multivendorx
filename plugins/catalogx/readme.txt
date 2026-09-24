@@ -5,7 +5,7 @@ Donate link: https://multivendorx.com/donate?utm_source=wporg&utm_medium=plugind
 Requires at least: 6.4.0
 Tested up to: 7.1.0
 Requires PHP: 8.0
-Stable tag: 6.1.4
+Stable tag: 6.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -226,6 +226,11 @@ Answer: Simply enable the 'Product Enquiry Button When Product is Out Of Stock' 
 7. Enquiry Dashboard
 
 == Changelog ==
+
+= 6.1.5 - 2026-09-17 =
+* Added     - Compatibility with WooCommerce 11.1.0.
+* Fixed     - Translation support issues for different strings.
+* Fixed     - Issue with the Setup Tour.
 
 = 6.1.4 - 2026-09-01 =
 * Fixed     - Resolved an issue with the Enquiry button displaying incorrectly on the Shop page when using the Twenty Twenty-Five theme with Catalog Mode and an Access Rule exception enabled. #2325

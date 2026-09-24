@@ -1,18 +1,19 @@
 import { useState } from 'react';
 
 import {
-	ColumnComponent,
-	ContainerComponent,
-	InformationItemComponent,
-	PopupComponent,
-	ModuleGuardComponent,
-	NavigatorHeaderComponent,
+    ColumnComponent,
+    ContainerComponent,
+    InformationItemComponent,
+    PopupComponent,
+    ModuleGuardComponent,
+    NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { defaultCategoryCounts, dummyQuotes } from './QuoteRequestsUtil';
+import { formatDate } from '../../services/commonFunction';
 export interface QuoteRow {
     id?: number;
     order_id?: string;
@@ -28,21 +29,29 @@ const QuoteRequests = () => {
     let tableProps: any = {};
     const headers = {
         order_id: {
-            label: __('Order ID', 'catalogx'),
+            label: __('Order', 'catalogx'),
+            width: '65%',
             render: (row: QuoteRow) => (
                 <InformationItemComponent
-                    title={`${row.order_id}`}
+                    title={`#${row.order_id}`}
                     titleLink={row.order_url || ''}
-                    descriptions={[
-                        {
-                            label: __('By', 'catalogx'),
-                            value: row.customer_name || '—',
-                        },
-                    ]}
+                    avatar={{
+                        iconClass: 'person',
+                    }}
+                    descriptions={
+                        [
+                            {
+                                label: __('Date', 'catalogx'),
+                                value: formatDate(row.date),
+                            },
+                            {
+                                label: __('By', 'catalogx'),
+                                value: row.customer_name || '—',
+                            },
+                        ]}
                 />
             ),
         },
-        date: { label: __('Date', 'catalogx'), type: 'date' },
         status: {
             label: __('Status', 'catalogx'),
             type: 'status',
@@ -133,7 +142,7 @@ const QuoteRequests = () => {
         if (!appLocalizer.khali_dabba) {
             return (
                 <div className="demo-wrapper" onClick={() => setopenPopup(true)}>
-                    <div className="watermark">{__('This is sample Data','catalogx' )}</div>
+                    <div className="watermark">{__('This is sample Data', 'catalogx')}</div>
                     <TableCard {...tableProps} />
                 </div>
             );
@@ -203,7 +212,7 @@ const QuoteRequests = () => {
                     },
                 ] : ''}
             />
-            { tableProps.addingNewRule && (
+            {tableProps.addingNewRule && (
                 tableProps.addNewRuleForm
             )}
             <ContainerComponent general>

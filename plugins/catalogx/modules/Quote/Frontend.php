@@ -38,7 +38,7 @@ class Frontend {
             return;
         }
 
-        if ( ! ( wp_is_block_theme() || file_exists( get_theme_file_path( 'theme.json' ) ) ) ) {
+        if ( ! wp_is_block_theme() ) {
             add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_quote_button' ) );
         }
 
