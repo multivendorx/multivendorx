@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { getApiLink } from '@zyra/core';
 
 import {
-	ColumnComponent,
-	ContainerComponent,
-	InformationItemComponent,
-	PopupComponent,
-	NavigatorHeaderComponent,
+    ColumnComponent,
+    ContainerComponent,
+    InformationItemComponent,
+    PopupComponent,
+    NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
@@ -79,6 +79,7 @@ const SubscribersList = () => {
     const headers = {
         product: {
             label: __('Product', 'notifima'),
+            width: "100%",
             render: (row) => (
                 <InformationItemComponent
                     title={row.product}
@@ -90,23 +91,27 @@ const SubscribersList = () => {
                             label: __('SKU', 'notifima'),
                             value: row.sku,
                         },
+                        {
+                            label: __('Email', 'notifima'),
+                            value: row.email,
+                        },
+                         {
+                            label: __('Phone', 'notifima'),
+                            value: row.phone,
+                        },
+                    ]}
+                     badges={[
+                        {
+                            text: row.status,
+                            className: `badge-${row.status}`,
+                        },
+                        {
+                            text: row.date,
+                            className: `blue`,
+                        },
                     ]}
                 />
             ),
-        },
-        email: {
-            label: __('Email', 'notifima'),
-            render: (row) => {
-                return (
-                    <div className="icon-wrapper"><i className='adminfont-mail yellow'></i>{row.email}</div>
-                );
-            },
-        },
-        date: { label: __('Date', 'notifima') },
-        status: {
-            label: __('Status', 'notifima'),
-            statusClass: (row) => `${row.status_key}`,
-            type: 'status',
         },
     };
 
@@ -141,6 +146,7 @@ const SubscribersList = () => {
     const defaultTableProps = {
         headers,
         categoryCounts: defaultCategoryCounts,
+        hideHeader: true,
         filters,
         search: {
             placeholder: __('Search...', 'notifima'),
@@ -173,7 +179,7 @@ const SubscribersList = () => {
         if (!appLocalizer.khali_dabba) {
             return (
                 <div className="demo-wrapper" onClick={() => setOpenPopup(true)}>
-                     <div className="watermark">{__('This is sample Data','notifima' )}</div>
+                    <div className="watermark">{__('This is sample Data', 'notifima')}</div>
                     <TableCard {...tableProps} />
                 </div>
             );

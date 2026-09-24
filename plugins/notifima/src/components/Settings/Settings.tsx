@@ -60,6 +60,7 @@ const Settings: React.FC<SettingsProps> = () => {
                         appLocalizer={appLocalizer}
                         modules={modules}
                         Popup={ShowProPopup}
+                        groupBySections={settingModal?.groupBySections}
                     />
                 ) : (
                     <>{__('Loading...', 'notifima')}</>

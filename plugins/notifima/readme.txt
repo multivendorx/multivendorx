@@ -169,6 +169,11 @@ Manual installation method requires downloading the [Notifima] (https://wordpres
 
 == Changelog ==
 
+= 3.1.6 - 2026-09-17 =
+* Added     - Compatibility of WooCommerce 11.1.0.
+* Updated   - Improved the settings structure for better organization and usability
+* Updated   - Language file.
+
 = 3.1.5 - 2026-09-01 =
 * Fixed     - Resolved an issue with the static lead time text not displaying correctly on the frontend product page. #2313
 * Updated   - Language file.

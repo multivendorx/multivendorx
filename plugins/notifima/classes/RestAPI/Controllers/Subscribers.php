@@ -186,9 +186,9 @@ class Subscribers extends \WP_REST_Controller {
                 );
 
                 $statuses = array(
-                    'mailsent'     => __( 'Mail Sent', 'notifima' ),
-                    'subscribed'   => __( 'Subscribed', 'notifima' ),
-                    'unsubscribed' => __( 'Unsubscribed', 'notifima' ),
+                    'notification_sent' => __( 'Notification Sent', 'notifima' ),
+                    'subscribed'        => __( 'Subscribed', 'notifima' ),
+                    'unsubscribed'      => __( 'Unsubscribed', 'notifima' ),
                 );
 
                 $status_key        = $subscriber->status;
@@ -200,6 +200,7 @@ class Subscribers extends \WP_REST_Controller {
                         'id'         => $subscriber->id,
                         'date'       => $date,
                         'email'      => $subscriber->email,
+                        'phone'      => $subscriber->phone,
                         'status'     => $subscriber_status,
                         'status_key' => $status_key,
                         'reg_user'   => $user ? __( 'Yes', 'notifima' ) : __( 'No', 'notifima' ),
@@ -216,7 +217,7 @@ class Subscribers extends \WP_REST_Controller {
 
             $total_subscribers = 0;
 
-            foreach ( array( 'subscribed', 'unsubscribed', 'mailsent' ) as $status ) {
+            foreach ( array( 'subscribed', 'unsubscribed', 'notification_sent' ) as $status ) {
                 $count = Utill::get_subscribers(
                     array(
                         'count'       => true,
@@ -283,7 +284,7 @@ class Subscribers extends \WP_REST_Controller {
         $product_id     = absint( $request->get_param( 'product_id' ) );
         $product_title  = sanitize_text_field( $request->get_param( 'product_title' ) );
         $variation_id   = absint( $request->get_param( 'variation_id' ) );
-
+        $customer_phone = sanitize_text_field( $request->get_param( 'phone' ) );
         $settings_array = Utill::get_form_settings_array();
 
         do_action( 'notifima_before_subscribe_product', $customer_email, $product_id, $variation_id );
@@ -337,20 +338,21 @@ class Subscribers extends \WP_REST_Controller {
                 'message' => '',
             ),
             $customer_email,
-            $product_id
+            $product_id,
+            $customer_phone
         );
 
         if ( ! $subscription_status['status'] ) {
             return rest_ensure_response( $subscription_status );
         }
 
-        Subscriber::insert_subscriber( $customer_email, $product_id );
+        $subscriber_id = Subscriber::insert_subscriber( $customer_email, $product_id );
         Subscriber::insert_subscriber_email_trigger(
             wc_get_product( $product_id ),
             $customer_email
         );
 
-        do_action( 'notifima_subscriber_added', $customer_email );
+        do_action( 'notifima_subscriber_added', $customer_email, $subscriber_id, $customer_phone );
 
         $message = str_replace(
             array( '%product_title%', '%customer_email%' ),
