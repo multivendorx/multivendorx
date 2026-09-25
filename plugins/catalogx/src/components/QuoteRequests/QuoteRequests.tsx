@@ -30,36 +30,38 @@ const QuoteRequests = () => {
     const headers = {
         order_id: {
             label: __('Order', 'catalogx'),
-            width: '65%',
+            width: '50%',
             render: (row: QuoteRow) => (
                 <InformationItemComponent
                     title={`#${row.order_id}`}
                     titleLink={row.order_url || ''}
                     avatar={{
-                        iconClass: 'person',
+                        iconClass: 'quote',
                     }}
                     descriptions={
                         [
                             {
-                                label: __('Date', 'catalogx'),
-                                value: formatDate(row.date),
+                                label: __('By', 'catalogx'),
+                                icon: 'person',
+                                value: row.customer_name || '—',
                             },
                             {
-                                label: __('By', 'catalogx'),
-                                value: row.customer_name || '—',
+                                icon: 'calendar',
+                                label: __('Date', 'catalogx'),
+                                value: formatDate(row.date),
                             },
                         ]}
                 />
             ),
         },
+        total: {
+            label: __('Total', 'catalogx'),
+            type: 'currency'
+        },
         status: {
             label: __('Status', 'catalogx'),
             type: 'status',
             statusClass: (row: QuoteRow) => `${row.status}`
-        },
-        total: {
-            label: __('Total', 'catalogx'),
-            type: 'currency'
         },
         action: {
             label: __('Action', 'catalogx-pro'),
@@ -96,6 +98,7 @@ const QuoteRequests = () => {
     const defaultTableProps = {
         headers,
         format: appLocalizer.date_format,
+        hideHeader: true,
         buttonActions,
         categoryCounts: defaultCategoryCounts,
         filters,

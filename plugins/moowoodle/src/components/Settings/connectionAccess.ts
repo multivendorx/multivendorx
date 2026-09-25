@@ -9,7 +9,7 @@ export default {
 		'Effortlessly configure and verify your WordPress-Moodle connection.',
 		'moowoodle'
 	),
-	headerIcon: 'setting',
+	headerIcon: 'centralized-connections',
 	groupBySections: true,
 	hideSettingHeader: true,
 	submitUrl: 'settings',
@@ -17,7 +17,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
-			icon: 'setting',
+			icon: 'centralized-connections',
 			title: __('Connection', 'moowoodle'),
 			settingDescription: __(
 				'Point this site at your Moodle instance and confirm the two can reach each other.',
@@ -123,7 +123,7 @@ export default {
 				{
 			key: 'section',
 			type: 'section',
-			icon: 'setting',
+			icon: 'sign-out',
 			title: __('Single sign-on', 'moowoodle'),
 			settingDescription: __(
 				'Let logged-in WordPress users open their Moodle courses without signing in again.',

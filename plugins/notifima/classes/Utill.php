@@ -247,4 +247,108 @@ class Utill {
 
         return is_plugin_active( 'dc-woocommerce-multi-vendor/dc_product_vendor.php' );
     }
+
+    /**
+     * Retrieve formatted subscriber records.
+     *
+     * @param array $args Query and subscriber arguments.
+     * @return array Subscriber items and product IDs.
+     */
+    public static function get_subscriber_records( $args ) {
+
+        $args = wp_parse_args(
+            $args,
+            array(
+                'query'       => array(),
+                'subscribers' => array(),
+            )
+        );
+
+        // Use provided product IDs, otherwise query products.
+        if ( ! empty( $args['subscribers']['product_ids'] ) ) {
+            $product_ids = array_map(
+                'absint',
+                $args['subscribers']['product_ids']
+            );
+        } else {
+            $args['query'] = wp_parse_args(
+                $args['query'],
+                array(
+                    'post_type'      => array( 'product', 'product_variation' ),
+                    'post_status'    => 'publish',
+                    'posts_per_page' => -1,
+                    'fields'         => 'ids',
+                )
+            );
+
+            $product_ids = get_posts( $args['query'] );
+        }
+
+        // No products means there can be no subscribers.
+        if ( empty( $product_ids ) ) {
+            return array(
+                'items'       => array(),
+                'product_ids' => array(),
+            );
+        }
+
+        $subscriber_args = array_merge(
+            array(
+                'product_ids' => $product_ids,
+            ),
+            $args['subscribers']
+        );
+
+        $subscriber_records = self::get_subscribers( $subscriber_args );
+
+        $subscriber_items = array();
+
+        $statuses = array(
+            'notification_sent' => __( 'Notification Sent', 'notifima' ),
+            'subscribed'        => __( 'Subscribed', 'notifima' ),
+            'unsubscribed'      => __( 'Unsubscribed', 'notifima' ),
+        );
+
+        foreach ( $subscriber_records as $subscriber ) {
+
+            $product = wc_get_product( $subscriber->product_id );
+            $image   = get_the_post_thumbnail_url(
+                $subscriber->product_id,
+                'full'
+            );
+            $user    = get_user_by( 'email', $subscriber->email );
+
+            $date = wp_date(
+                get_option( 'date_format' ),
+                strtotime( $subscriber->create_time )
+            );
+
+            $status_key        = $subscriber->status;
+            $subscriber_status = $statuses[ $status_key ] ?? '-';
+
+            $subscriber_items[] = apply_filters(
+                'notifima_all_subscribers_list',
+                array(
+                    'id'         => $subscriber->id,
+                    'date'       => $date,
+                    'email'      => $subscriber->email,
+                    'phone'      => $subscriber->phone,
+                    'status'     => $subscriber_status,
+                    'status_key' => $status_key,
+                    'reg_user'   => $user ? __( 'Yes', 'notifima' ) : __( 'No', 'notifima' ),
+                    'user_link'  => $user ? get_edit_user_link( $user->ID ) : '',
+                    'product'    => $product ? $product->get_name() : '',
+                    'product_id' => $product ? $product->get_id() : '',
+                    'image'      => $image ?: wc_placeholder_img_src(),
+                ),
+                $subscriber
+            );
+        }
+
+        return array(
+            'items'       => $subscriber_items,
+            'product_ids' => $product_ids,
+        );
+    }
+
 }
