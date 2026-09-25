@@ -123,17 +123,6 @@ class Rest extends \WP_REST_Controller {
 
             $followers = is_array( $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array() ) ? $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] : array();
 
-			// Convert to new format with id + empty date.
-            if ( ! empty( $followers[0] ) && is_int( $followers[0] ) ) {
-                $followers = array_map(
-                    fn( $uid ) => array(
-                        'id'   => $uid,
-                        'date' => '',
-                    ),
-                    $followers
-                );
-            }
-
             $response = rest_ensure_response( array() );
             $response->header( 'X-WP-Total', count( $followers ) );
 
@@ -145,7 +134,6 @@ class Rest extends \WP_REST_Controller {
                     return $date_b <=> $date_a;
                 }
             );
-
             // Pagination.
             $page   = max( intval( $request->get_param( 'page' ) ), 1 );
             $limit  = max( intval( $request->get_param( 'row' ) ), 10 );
