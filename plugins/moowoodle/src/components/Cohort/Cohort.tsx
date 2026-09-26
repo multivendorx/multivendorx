@@ -17,11 +17,13 @@ export interface CohortRow {
 	id?: number;
 	moodle_cohort_id?: number;
 	cohort_name?: string;
-	products?: Record<string, string>;
+	product_name?: string;
+	product_url?: string;
 	enrolled_user?: number;
 	view_users_url?: string;
 	product_image?: string;
 	status?: string;
+	date?: string;
 }
 
 const Cohort: React.FC = () => {
@@ -36,38 +38,34 @@ const Cohort: React.FC = () => {
 			render: (row: CohortRow) => (
 				<InformationItemComponent
 					title={row.cohort_name}
+					titleLink={row.product_url}
 					width="75%"
 					avatar={{ iconClass: 'cohort' }}
 					badges={[
 						{
-                            className: 'blue',
-                            text: `${row.enrolled_user || 0} Enrolled users`,
-                        },
-                    ]}
+							className: 'blue',
+							text: `${row.enrolled_user || 0} Enrolled users`,
+						},
+					]}
 					descriptions={[
 						{
 							icon: 'single-product',
-							label: __(
-								'Product',
-								'moowoodle'
-							),
-							value:
-								row.products && Object.keys(row.products).length
-									? Object.entries(row.products).map(([name], index) => (
-										<React.Fragment key={index}>
-											{name}
-										</React.Fragment>
-									))
-									: '-',
-						}
+							label: __('Product', 'moowoodle'),
+							value: row.product_name || '-',
+						},
+						{
+							icon: 'calendar',
+							label: __('Last sync', 'moowoodle'),
+							value: row.date || '-',
+						},
 					]}
 				/>
 			),
 		},
 
-action: {
-	type: 'action',
-		label: __('Action', 'moowoodle'),
+		action: {
+			type: 'action',
+			label: __('Action', 'moowoodle'),
 
 			actions: [
 				{
@@ -101,61 +99,61 @@ action: {
 		},
 	};
 
-const defaultTableProps = {
-	headers,
-	hideHeader: true, 
-	rows: dummyCohorts,
-	totalRows: dummyCohorts.length,
-	search: {
-		placeholder: __('Search...', 'moowoodle'),
-	},
-};
+	const defaultTableProps = {
+		headers,
+		hideHeader: true,
+		rows: dummyCohorts,
+		totalRows: dummyCohorts.length,
+		search: {
+			placeholder: __('Search...', 'moowoodle'),
+		},
+	};
 
-tableProps = applyFilters(
-	'moowoodle_cohort_table_props',
-	defaultTableProps
-);
+	tableProps = applyFilters(
+		'moowoodle_cohort_table_props',
+		defaultTableProps
+	);
 
-const handleTableWrapperClick = () => {
-	if (!appLocalizer.khali_dabba) {
-		setopenPopup(true);
-	}
-};
+	const handleTableWrapperClick = () => {
+		if (!appLocalizer.khali_dabba) {
+			setopenPopup(true);
+		}
+	};
 
-return (
-	<>
-		{openPopup && (
-			<PopupComponent
-				position="lightbox"
-				open={openPopup}
-				onClose={() => setopenPopup(false)}
-				width={31.25}
-				height="auto"
-			>
-				<ShowProPopup />
-			</PopupComponent>
-		)}
-
-		<NavigatorHeaderComponent
-			headerIcon="cohort"
-			headerDescription={__(
-				'Cohort information is presented with associated products and student enrollments to support administrative actions.',
-				'moowoodle'
+	return (
+		<>
+			{openPopup && (
+				<PopupComponent
+					position="lightbox"
+					open={openPopup}
+					onClose={() => setopenPopup(false)}
+					width={31.25}
+					height="auto"
+				>
+					<ShowProPopup />
+				</PopupComponent>
 			)}
-			headerTitle={__('Cohorts', 'moowoodle')}
-		/>
-		<ContainerComponent general>
-			<ColumnComponent>
-				<div className="demo-wrapper" onClick={handleTableWrapperClick}>
-					{!appLocalizer.khali_dabba && (
-						<div className="watermark">{__('This is sample Data', 'moowoodle')}</div>
-					)}
-					<TableCard {...tableProps} />
-				</div>
-			</ColumnComponent>
-		</ContainerComponent>
-	</>
-);
+
+			<NavigatorHeaderComponent
+				headerIcon="cohort"
+				headerDescription={__(
+					'Cohort information is presented with associated products and student enrollments to support administrative actions.',
+					'moowoodle'
+				)}
+				headerTitle={__('Cohorts', 'moowoodle')}
+			/>
+			<ContainerComponent general>
+				<ColumnComponent>
+					<div className="demo-wrapper" onClick={handleTableWrapperClick}>
+						{!appLocalizer.khali_dabba && (
+							<div className="watermark">{__('This is sample Data', 'moowoodle')}</div>
+						)}
+						<TableCard {...tableProps} />
+					</div>
+				</ColumnComponent>
+			</ContainerComponent>
+		</>
+	);
 };
 
 export default Cohort;
