@@ -121,7 +121,7 @@ class Rest extends \WP_REST_Controller {
                 return rest_ensure_response( array( 'error' => 'Store does not exists' ) );
             }
 
-            $followers = $store->get_meta(Utill::STORE_SETTINGS_KEYS['followers']) ?? array();
+            $followers = $store->get_meta( Utill::STORE_SETTINGS_KEYS['followers'] ) ?? array();
 
             $response = rest_ensure_response( array() );
             $response->header( 'X-WP-Total', count( $followers ) );
@@ -145,7 +145,7 @@ class Rest extends \WP_REST_Controller {
             $formatted_followers = array();
 
             foreach ( $followers_page as $follower ) {
-				if ( empty( $follower['id'] ) || empty( $follower['date'] ) ) {
+				if ( ! is_array( $follower ) || empty( $follower['id'] ) || empty( $follower['date'] ) ) {
 					continue;
 				}
 
@@ -157,7 +157,7 @@ class Rest extends \WP_REST_Controller {
 
 				$full_name = trim( $user->first_name . ' ' . $user->last_name );
 
-				if ( '' === $full_name ) {
+				if ( empty( $full_name ) ) {
 					$full_name = $user->display_name;
 				}
 
@@ -218,12 +218,12 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
-            $store = new \MultiVendorX\Store\Store( $store_id );
+            $store     = new \MultiVendorX\Store\Store( $store_id );
             $followers = $store->get_meta( Utill::STORE_SETTINGS_KEYS['followers'] ) ?? array();
 
             $follower_ids = array_column( $followers, 'id' );
 
-            $following = $user_id ? get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['following_stores'], true ): array();
+            $following = $user_id ? get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['following_stores'], true ) : array();
 
             return rest_ensure_response(
                 array(
