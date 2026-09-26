@@ -23,11 +23,6 @@ const nestedFields = [
 				label: 'User name',
 				value: 'username',
 			},
-			{
-				key: 'password',
-				label: 'Password',
-				value: 'password',
-			},
 		],
 		afterElement: {
 			type: 'preposttext',
@@ -54,11 +49,6 @@ const nestedFields = [
 				key: 'username',
 				label: 'User name',
 				value: 'username',
-			},
-			{
-				key: 'password',
-				label: 'Password',
-				value: 'password',
 			},
 		],
 	},
