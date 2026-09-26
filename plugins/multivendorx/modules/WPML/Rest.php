@@ -159,30 +159,28 @@ class Rest extends \WP_REST_Controller {
 			);
 		}
 	}
-
 	/**
 	 * Create a new translated product (WPML duplicate).
 	 *
 	 * @param \WP_REST_Request $request REST request object containing 'product_id' and 'lang'.
 	 * @return \WP_REST_Response|\WP_Error
-	 * @throws \Exception If translation creation fails.
 	 */
 	public function update_item( $request ) {
 		$nonce = $request->get_header( 'X-WP-Nonce' );
+
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 			return new \WP_Error(
-                'invalid_nonce',
-                __( 'Invalid nonce', 'multivendorx' ),
-                array( 'status' => 403 )
+				'invalid_nonce',
+				__( 'Invalid nonce', 'multivendorx' ),
+				array( 'status' => 403 )
 			);
 		}
 
-		// WPML check.
 		if ( ! defined( 'ICL_SITEPRESS_VERSION' ) ) {
 			return new \WP_Error(
-                'wpml_not_active',
-                __( 'WPML not active', 'multivendorx' ),
-                array( 'status' => 400 )
+				'wpml_not_active',
+				__( 'WPML not active', 'multivendorx' ),
+				array( 'status' => 400 )
 			);
 		}
 
@@ -193,58 +191,69 @@ class Rest extends \WP_REST_Controller {
 
 		if ( ! $product_id || ! $lang_code ) {
 			return new \WP_Error(
-                'invalid_data',
-                __( 'Missing product ID or language', 'multivendorx' ),
-                array( 'status' => 400 )
+				'invalid_data',
+				__( 'Missing product ID or language', 'multivendorx' ),
+				array( 'status' => 400 )
 			);
 		}
 
-		// Save current language to restore later.
+		if ( (int) get_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], true ) !== (int) MultiVendorX()->active_store ) {
+			return new \WP_Error(
+				'rest_forbidden',
+				__( 'You are not allowed to translate this product.', 'multivendorx' ),
+				array( 'status' => 403 )
+			);
+		}
+
 		$original_lang    = $sitepress->get_current_language();
 		$default_language = $sitepress->get_default_language();
 
 		try {
-			// Prevent duplicate creation if translation already exists.
-			$existing = $wpml_post_translations->element_id_in( $product_id, $lang_code );
-			if ( $existing ) {
+			// Prevent duplicate translation creation.
+			$existing_product_id = $wpml_post_translations->element_id_in(
+				$product_id,
+				$lang_code
+			);
+
+			if ( $existing_product_id ) {
 				return rest_ensure_response(
-                    array(
-						'product_id' => absint( $existing ),
+					array(
+						'product_id' => absint( $existing_product_id ),
 						'existing'   => true,
-                    )
+					)
 				);
 			}
 
-			// Create translated duplicate product.
+			// Create translated product.
 			$new_product_id = apply_filters(
-                'wpml_copy_post_to_language',
-                $product_id,
-                $lang_code,
-                false
+				'wpml_copy_post_to_language',
+				$product_id,
+				$lang_code,
+				false
 			);
 
 			if ( ! $new_product_id ) {
 				throw new \Exception( 'Failed to create translation' );
 			}
 
-			// MultiVendorX hook for post-creation logic.
 			do_action( 'multivendorx_after_translated_new_product', $new_product_id );
 
 			return rest_ensure_response(
-                array(
+				array(
 					'product_id' => absint( $new_product_id ),
 					'existing'   => false,
-                )
+				)
 			);
 		} catch ( \Exception $e ) {
 			return new \WP_Error(
-                'wpml_create_failed',
-                __( 'Failed to create translated product', 'multivendorx' ),
-                array( 'status' => 400 )
+				'wpml_create_failed',
+				__( 'Failed to create translated product', 'multivendorx' ),
+				array( 'status' => 400 )
 			);
 		} finally {
-			// Always restore original language.
-			$sitepress->switch_lang( $original_lang ? $original_lang : $default_language );
+			$sitepress->switch_lang(
+				$original_lang ? $original_lang : $default_language
+			);
 		}
 	}
 }

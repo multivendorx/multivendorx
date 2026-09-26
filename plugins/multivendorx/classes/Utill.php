@@ -232,8 +232,6 @@ class Utill {
 
     const USER_SETTINGS_KEYS = array(
         'active_store'                   => 'multivendorx_active_store',
-        'first_name'                     => 'first_name',
-        'last_name'                      => 'last_name',
         'social_verification'            => 'social_verification_connections',
         'following_stores'               => 'multivendorx_following_stores',
         'multivendorx_user_location_lat' => 'multivendorx_user_location_lat',

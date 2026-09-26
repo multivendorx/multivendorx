@@ -2050,12 +2050,14 @@ class Notifications {
 	}
 
 	public function send_notification_helper( $type, $store = null, $order = null, $extra = array() ) {
+		$store_name     = '';
 		$store_email    = '';
 		$store_phone    = '';
 		$customer_email = '';
 		$customer_phone = '';
 
 		if ( $store ) {
+			$store_name       = $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
 			$store_email_meta = $store->get_meta( Utill::STORE_SETTINGS_KEYS['store_email'] );
 			$store_email      = $store_email_meta['primary'] ?? '';
 			$store_phone      = $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] );
@@ -2070,6 +2072,7 @@ class Notifications {
 			array(
 				'admin_email'      => MultiVendorX()->setting->get_setting( 'receiver_email_address' ),
 				'admin_phone'      => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+				'store_name'       => $store_name,
 				'store_email'      => $store_email,
 				'store_phone'      => $store_phone,
 				'customer_email'   => $customer_email,

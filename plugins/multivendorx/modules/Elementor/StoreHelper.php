@@ -36,7 +36,7 @@ trait StoreHelper {
 			);
 		}
 
-		$slug = get_query_var( 'store' );
+		$slug = get_query_var( MultiVendorX()->setting->get_setting( 'store_url', 'store' ) );
 		if ( ! $slug ) {
 			return false;
 		}

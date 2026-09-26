@@ -8,6 +8,7 @@
 namespace MultiVendorX\MarketplaceCompliance;
 
 use MultiVendorX\MarketplaceCompliance\Util;
+use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -208,7 +209,13 @@ class Rest extends \WP_REST_Controller {
                     array( 'status' => 404 )
                 );
             }
-
+            if ( ! StoreUtil::current_user_can_manage_store( $report['store_id'] ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to delete this report.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
             // Delete via Util helper.
             $deleted = Util::delete_report_abuse( $id );
 

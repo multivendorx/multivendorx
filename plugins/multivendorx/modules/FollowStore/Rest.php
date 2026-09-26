@@ -121,18 +121,7 @@ class Rest extends \WP_REST_Controller {
                 return rest_ensure_response( array( 'error' => 'Store does not exists' ) );
             }
 
-            $followers = is_array( $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array() ) ? $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] : array();
-
-            // Convert to new format with id + empty date.
-            if ( ! empty( $followers[0] ) && is_int( $followers[0] ) ) {
-                $followers = array_map(
-                    fn( $uid ) => array(
-                        'id'   => $uid,
-                        'date' => '',
-                    ),
-                    $followers
-                );
-            }
+            $followers = $store->get_meta( Utill::STORE_SETTINGS_KEYS['followers'] ) ?? array();
 
             $response = rest_ensure_response( array() );
             $response->header( 'X-WP-Total', count( $followers ) );
@@ -145,7 +134,6 @@ class Rest extends \WP_REST_Controller {
                     return $date_b <=> $date_a;
                 }
             );
-
             // Pagination.
             $page   = max( intval( $request->get_param( 'page' ) ), 1 );
             $limit  = max( intval( $request->get_param( 'row' ) ), 10 );
@@ -155,37 +143,44 @@ class Rest extends \WP_REST_Controller {
             $followers_page = array_slice( $followers, $offset, $limit );
 
             $formatted_followers = array();
+
             foreach ( $followers_page as $follower ) {
-                $user_id     = $follower['id'] ?? 0;
-                $follow_date = $follower['date'] ?? '';
+				if ( ! is_array( $follower ) || empty( $follower['id'] ) || empty( $follower['date'] ) ) {
+					continue;
+				}
 
-                $user = get_userdata( $user_id );
-                if ( $user ) {
-                    // Get first + last name.
-                    $first_name = get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['first_name'], true );
-                    $last_name  = get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['last_name'], true );
+				$user = get_userdata( (int) $follower['id'] );
 
-                    // Combine names, fallback to display_name if empty.
-                    $full_name = trim( "$first_name $last_name" );
-                    if ( empty( $full_name ) ) {
-                        $full_name = $user->display_name;
-                    }
+				if ( ! $user ) {
+					continue;
+				}
 
-                    $formatted_followers[] = array(
-                        'id'                => $user_id,
-                        'name'              => $full_name,
-                        'email'             => $user->user_email,
-                        'date_followed'     => Utill::multivendorx_rest_prepare_date_response( $follow_date ),
-                        'date_followed_gmt' => Utill::multivendorx_rest_prepare_date_response( $follow_date, true ),
-                    );
-                }
-            }
+				$full_name = trim( $user->first_name . ' ' . $user->last_name );
+
+				if ( empty( $full_name ) ) {
+					$full_name = $user->display_name;
+				}
+
+				$formatted_followers[] = array(
+					'id'                => $user->ID,
+					'name'              => $full_name,
+					'email'             => $user->user_email,
+					'date_followed'     => Utill::multivendorx_rest_prepare_date_response( $follower['date'] ),
+					'date_followed_gmt' => Utill::multivendorx_rest_prepare_date_response( $follower['date'], true ),
+				);
+			}
+
             $response->set_data( $formatted_followers );
+
             return $response;
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
 
-            return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
+            return new \WP_Error(
+                'server_error',
+                __( 'Unexpected server error', 'multivendorx' ),
+                array( 'status' => 500 )
+            );
         }
     }
 
@@ -213,7 +208,7 @@ class Rest extends \WP_REST_Controller {
 
         try {
             $store_id = $request->get_param( 'store_id' );
-            $user_id  = $request->get_param( 'user_id' );
+            $user_id  = MultiVendorX()->current_user_id;
 
             if ( ! $store_id ) {
                 return new \WP_Error(
@@ -223,40 +218,16 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
-            $store = new \MultiVendorX\Store\Store( $store_id );
+            $store     = new \MultiVendorX\Store\Store( $store_id );
+            $followers = $store->get_meta( Utill::STORE_SETTINGS_KEYS['followers'] ) ?? array();
 
-            $followers = maybe_unserialize(
-                $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? array()
-            );
-
-            if ( ! is_array( $followers ) ) {
-                $followers = array();
-            }
-
-            if ( isset( $followers[0] ) && is_int( $followers[0] ) ) {
-                $followers = array_map(
-                    fn( $uid ) => array(
-                        'id'   => $uid,
-                        'date' => '',
-                    ),
-                    $followers
-                );
-            }
-            // Extract user IDs for comparison and count.
             $follower_ids = array_column( $followers, 'id' );
 
-            $following = $user_id
-                ? get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['following_stores'], true )
-                : array();
-
-            if ( ! is_array( $following ) ) {
-                $following = array();
-            }
-            $is_following = in_array( (int) $store_id, $following, true );
+            $following = $user_id ? get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['following_stores'], true ) : array();
 
             return rest_ensure_response(
                 array(
-					'follow'         => $is_following,
+					'follow'         => in_array( (int) $store_id, $following, true ),
 					'follower_count' => count( $follower_ids ),
                 )
             );
@@ -294,7 +265,7 @@ class Rest extends \WP_REST_Controller {
 
         try {
             $store_id = $request->get_param( 'store_id' );
-            $user_id  = $request->get_param( 'user_id' );
+            $user_id  = MultiVendorX()->current_user_id;
 
             if ( ! $store_id || ! $user_id ) {
                 return new \WP_Error(

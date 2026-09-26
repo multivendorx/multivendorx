@@ -120,15 +120,23 @@ class Block {
     public function enqueue_scripts() {
         global $post;
         FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
+
+        $has_multivendorx_block = false;
+
         foreach ( $this->get_blocks() as $block_script ) {
             $block_name = $block_script['textdomain'] . '/' . $block_script['name'];
 
             if ( has_block( $block_name, $post ) ) {
-                $handle = $block_script['textdomain'] . '-' . $block_script['name'] . '-view-script';
+                $has_multivendorx_block = true;
+                $handle                 = $block_script['textdomain'] . '-' . $block_script['name'] . '-view-script';
                 // FrontendScripts::enqueue_script( $handle );
                 FrontendScripts::localize_scripts( $handle );
             }
+        }
+
+        // Only ship the shared vendor bundle on pages that actually contain one of our blocks.
+        if ( $has_multivendorx_block || Utill::is_store_page() || Utill::is_store_registration_page() ) {
+            FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
         }
     }
 

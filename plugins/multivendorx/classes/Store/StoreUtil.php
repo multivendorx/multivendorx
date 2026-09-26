@@ -334,7 +334,9 @@ class StoreUtil {
 
         // Get registration form data (serialized meta).
 		$store_meta     = $store->get_meta( Utill::STORE_SETTINGS_KEYS['registration_data'] );
-		$submitted_data = ! empty( $store_meta ) ? maybe_unserialize( $store_meta ) : array();
+        $submitted_data = ! empty( $store_meta ) ? $store_meta : array();
+
+        $submitted_data = is_serialized( $submitted_data ) ? unserialize( $submitted_data, array( 'allowed_classes' => false ) ) : $submitted_data;
 
         $meta_keys = array(
             Utill::STORE_SETTINGS_KEYS['phone'],

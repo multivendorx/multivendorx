@@ -39,7 +39,7 @@ class Frontend {
         }
 
         add_filter( 'multivendorx_register_scripts', array( $this, 'register_script' ) );
-
+        add_filter( 'multivendorx_localize_scripts', array( $this, 'localize_shared_listing_scripts' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
     }
     /**
@@ -56,6 +56,27 @@ class Frontend {
 
         return $scripts;
     }
+    /**
+     * Localize shared listing frontend settings.
+     *
+     * Enables location-based functionality only when the store selling mode
+     * is set to Shared listing and the shared listing display priority is
+     * set to Nearby location.
+     *
+     * @param array $scripts Localized script data.
+     * @return array Updated localized script data.
+     */
+    public function localize_shared_listing_scripts( $scripts ) {
+        $scripts['multivendorx-sharedlisting-frontend-script'] = array(
+            'object_name' => 'sharedListing',
+            'data'        => array(
+                'enableLocation' => 'shared_listing' === MultiVendorX()->setting->get_setting( 'store_selling_mode', 'default' ) && 'nearby_location' === MultiVendorX()->setting->get_setting( 'shared_listing_display', 'min_price' ),
+            ),
+        );
+
+        return $scripts;
+    }
+
     /**
      * Filters duplicate products from the main WooCommerce query.
      *
@@ -332,6 +353,7 @@ class Frontend {
         if ( is_product() ) {
             FrontendScripts::load_scripts();
             FrontendScripts::enqueue_script( 'multivendorx-sharedlisting-frontend-script' );
+            FrontendScripts::localize_scripts( 'multivendorx-sharedlisting-frontend-script' );
         }
     }
 }
