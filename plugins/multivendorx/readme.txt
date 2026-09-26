@@ -246,7 +246,7 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 
 == Changelog ==
 
-= 5.0.18 - 2026-09-23 =
+= 5.0.18 - 2026-09-29 =
 * Added     - Compatibility with WordPress 7.1.2
 * Added     - Compatibility with WooCommerce 11.1.2
 * Fixed     - Issue with new order emails not showing the store names correctly #2346
