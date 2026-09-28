@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import { NavigatorHeaderComponent } from '@zyra/components';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
+import { formatDate } from '../services/commonFunction';
 
 const StoreFollower: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -14,17 +15,27 @@ const StoreFollower: React.FC = () => {
 	const headers = {
 		name: {
 			label: __('Name', 'multivendorx'),
-		},
-
-		email: {
-			label: __('Email', 'multivendorx'),
-		},
-
-		date_followed: {
-			label: __('Followed On', 'multivendorx'),
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'person',
+		info_descriptions: [
+			{
+				label: __('Email', 'multivendorx'),
+				icon: 'mail',
+				value: row.email || '—',
+			},
+		],
+		info_badges: [
+			{ text: formatDate(row.date_followed), color: 'gray' },
+		],
+	}));
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -64,7 +75,8 @@ const StoreFollower: React.FC = () => {
 
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				showMenu={false}

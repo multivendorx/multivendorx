@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { PopupComponent, InformationItemComponent } from '@zyra/components';
+import { PopupComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
-import { getUrl } from '../../../src/services/commonFunction';
+import { formatDate, getUrl } from '../../../src/services/commonFunction';
 
 interface StoreOption {
 	label: string;
@@ -85,43 +85,13 @@ const PendingReportAbuse: React.FC<object> = () => {
 	}, []);
 
 	const headers = {
-		product: {
+		product_name: {
 			label: __('Product', 'multivendorx'),
-			render: (row: ReportAbuse) => (
-				<InformationItemComponent
-					title={row.product?.name}
-					titleLink={getUrl(row.product?.id, 'product')}
-					avatar={{
-						image: row.product?.image,
-						iconClass: 'single-product',
-					}}
-					descriptions={[
-						{
-							label: 'SKU',
-							value: row.product?.sku || '—',
-						},
-						{
-							label: 'ID',
-							value: row.product?.id,
-						},
-						{
-							label: __('By', 'multivendorx'),
-							value: row.store?.name,
-						},
-					]}
-				/>
-			),
-		},
-		email: {
-			label: __('Reported By', 'multivendorx'),
-		},
-		reason: {
-			label: __('Reason', 'multivendorx'),
-		},
-		created_at: {
-			label: __('Date created', 'multivendorx'),
-			isSortable: true,
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			type: 'action',
@@ -138,6 +108,36 @@ const PendingReportAbuse: React.FC<object> = () => {
 			],
 		},
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		product_name: row.product?.name || '—',
+		info_icon: 'single-product',
+		info_link: getUrl(row.product?.id, 'product'),
+		info_descriptions: [
+			{
+				label: __('SKU', 'multivendorx'),
+				icon: 'single-product',
+				value: row.product?.sku || '—',
+			},
+			{
+				label: __('By', 'multivendorx'),
+				icon: 'storefront',
+				value: row.store?.name || '—',
+			},
+			{
+				label: __('Reported By', 'multivendorx'),
+				icon: 'mail',
+				value: row.email || '—',
+			},
+			{
+				label: __('Reason', 'multivendorx'),
+				icon: 'question',
+				value: row.reason || '—',
+			},
+		],
+		info_badges: [{ text: formatDate(row.created_at), color: 'gray' }],
+	}));
 
 	const filters = [
 		{
@@ -202,7 +202,8 @@ const PendingReportAbuse: React.FC<object> = () => {
 		<>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

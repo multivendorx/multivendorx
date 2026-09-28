@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import { NoticeManager } from '@zyra/components';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
+import { formatDate, formatStatusLabel } from '../services/commonFunction';
 
 const NotificationsTable = (React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -47,19 +48,28 @@ const NotificationsTable = (React.FC = () => {
 	const headers = {
 		title: {
 			label: __('Title', 'multivendorx'),
-		},
-		type: {
-			label: __('Type', 'multivendorx'),
-		},
-		date: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			badgesKey: 'info_badges',
 		},
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'notification',
+		info_badges: [
+			...(row.type
+				? [{ text: formatStatusLabel(row.type), color: 'blue' }]
+				: []),
+			{ text: formatDate(row.date), color: 'gray' },
+		],
+	}));
+
 	return (
 		<TableCard
 			headers={headers}
-			rows={rows}
+			variant="transparent"
+			rows={infoRows}
 			totalRows={totalRows}
 			isLoading={isLoading}
 			onQueryUpdate={doRefreshTableData}

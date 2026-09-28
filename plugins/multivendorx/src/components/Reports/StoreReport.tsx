@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { AnalyticsComponent, CardComponent, ColumnComponent, InformationItemComponent } from '@zyra/components';
+import { AnalyticsComponent, CardComponent, ColumnComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	Cell,
@@ -16,6 +16,7 @@ import axios from 'axios';
 import {
 	formatCurrency,
 	formatLocalDate,
+	formatStatusLabel,
 	getUrl,
 } from '../../services/commonFunction';
 import Counter from '@/services/Counter';
@@ -194,80 +195,66 @@ const StoreReport: React.FC = () => {
 	const headers = {
 		store_name: {
 			label: __('Store', 'multivendorx'),
-			width: 15,
-			render: (row: any) => (
-				<InformationItemComponent
-					title={row.store_name}
-					titleLink={getUrl(row.id, 'store')}
-					avatar={{
-						image: row.store_image,
-						iconClass: row.store_image ? '' : 'store-inventory',
-					}}
-					descriptions={[
-						{
-							label: __('Since', 'multivendorx'),
-							value: row.date || '—',
-						},
-					]}
-				/>
-			),
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
-		primary_owner: {
-			key: 'primary_owner',
-			label: __('Primary Owner', 'multivendorx'),
-			width: 15,
-			render: (row) => (
-				<>
-					<InformationItemComponent
-						title={row.primary_owner?.display_name}
-						titleLink={getUrl(row.primary_owner?.ID, 'user')}
-						avatar={{
-							image: row.primary_owner_image,
-							iconClass: 'person',
-						}}
-						descriptions={[
-							{
-								label: __('Email', 'multivendorx'),
-								value:
-									row.primary_owner?.user_email || '—',
-							},
-						]}
-					/>
-				</>
-			),
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
-		},
-		order_total: {
-			key: 'order_total',
-			label: __('Order Total', 'multivendorx'),
-			render: (row) => formatCurrency(row.commission?.total_order_amount),
-		},
-		shipping: {
-			key: 'shipping',
-			label: __('Shipping', 'multivendorx'),
-			render: (row) => formatCurrency(row.commission?.shipping_amount),
-		},
-		tax: {
-			label: __('Tax', 'multivendorx'),
-			render: (row) => formatCurrency(row.commission?.tax_amount),
-		},
-		store_ommission: {
-			label: __('Store Commission', 'multivendorx'),
-			render: (row) => formatCurrency(row.commission?.commission_total),
-		},
-		email: { label: __('Contact', 'multivendorx') },
-		admin_earning: {
-			label: __('Admin Earnings', 'multivendorx'),
-			render: (row) =>
-				formatCurrency(
+	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'store-inventory',
+		info_link: getUrl(row.id, 'store'),
+		info_descriptions: [
+			{
+				label: __('Primary Owner', 'multivendorx'),
+				icon: 'person',
+				value: row.primary_owner?.display_name || '—',
+			},
+			{
+				label: __('Contact', 'multivendorx'),
+				icon: 'mail',
+				value: row.email || '—',
+			},
+			{
+				label: __('Order Total', 'multivendorx'),
+				icon: 'cart',
+				value: formatCurrency(row.commission?.total_order_amount),
+			},
+			{
+				label: __('Shipping', 'multivendorx'),
+				icon: 'shipping',
+				value: formatCurrency(row.commission?.shipping_amount),
+			},
+			{
+				label: __('Tax', 'multivendorx'),
+				icon: 'tax-compliance',
+				value: formatCurrency(row.commission?.tax_amount),
+			},
+			{
+				label: __('Store Commission', 'multivendorx'),
+				icon: 'commission',
+				value: formatCurrency(row.commission?.commission_total),
+			},
+			{
+				label: __('Admin Earnings', 'multivendorx'),
+				icon: 'wallet',
+				value: formatCurrency(
 					Number(row.commission?.total_order_amount || 0) -
 						Number(row.commission?.commission_total || 0)
 				),
-		},
-	};
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			...(row.date ? [{ text: row.date, color: 'gray' }] : []),
+		],
+	}));
 
 	const filters = [
 		{
@@ -324,8 +311,9 @@ const StoreReport: React.FC = () => {
 
 			<TableCard
 				headers={headers}
+				variant="transparent"
 				title={__('Account Overview', 'multivendorx')}
-				rows={rows}
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

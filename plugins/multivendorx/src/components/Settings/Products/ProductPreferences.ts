@@ -9,8 +9,16 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'single-product',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'single-product',
+			title: __('Product/listing options', 'multivendorx'),
+		},
 		{
 			key: 'type_options',
 			type: 'checkbox',
@@ -108,6 +116,7 @@ export default {
 		{
 			key: 'separator_category_specific',
 			type: 'section',
+			icon: 'category',
 			desc: __(
 				'Control how stores select categories while adding products/listing.',
 				'multivendorx'
@@ -146,6 +155,7 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
+			icon: 'product',
 			desc: __(
 				'Control how SKUs are handled for products/listing.',
 				'multivendorx'
@@ -218,6 +228,7 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
+			icon: 'grouped',
 			desc: __(
 				'Products/listings similar in type, category, or stores are displayed as related items to guide customers toward additional purchases.',
 				'multivendorx'

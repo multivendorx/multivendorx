@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 
 
 import { getApiLink, useModules } from '@zyra/core';
-import { ListComponent, NavigatorHeaderComponent } from '@zyra/components';
+import { NavigatorHeaderComponent } from '@zyra/components';
 import { CategoryCount, QueryProps, TableCard, TableRow } from '@zyra/table';
 
 import ViewCommission from './viewCommission';
@@ -13,7 +13,9 @@ import {
 	dashNavigate,
 	downloadCSV,
 	formatCurrency,
+	formatDate,
 	formatLocalDate,
+	formatStatusLabel,
 } from '../services/commonFunction';
 import { useNavigate } from 'react-router-dom';
 
@@ -42,95 +44,31 @@ const StoreCommission: React.FC = () => {
 	const { modules } = useModules();
 
 	const rawHeaders = {
+		// Everything below folds into this one info column; the plain
+		// `tableDisplay: false` columns stay only for the CSV export.
+		commission_title: {
+			label: __('Commission', 'multivendorx'),
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
+			csvDisplay: false,
+		},
 		id: {
 			label: __('ID', 'multivendorx'),
-			type: 'id',
-			isSortable: true,
-			render: (row) => (
-				<span
-					onClick={() => {
-						setModalCommission(row);
-					}}
-				>
-					#{row.id}
-				</span>
-			),
+			tableDisplay: false,
 		},
 		order_id: {
 			label: __('Order', 'multivendorx'),
-			isSortable: true,
-			render: (row) => (
-				<span
-					className="link-item"
-					onClick={() =>
-						dashNavigate(navigate, [
-							'orders',
-							'view',
-							String(row.order_id),
-						])
-					}
-				>
-					#{row.order_id}
-				</span>
-			),
+			tableDisplay: false,
 		},
 		total_order_amount: {
 			label: __('Order Amount', 'multivendorx'),
-			isSortable: true,
-			type: 'currency',
-		},
-		commission_summary: {
-			label: __('Commission Summary', 'multivendorx'),
-			width: 20,
-			render: (row) => {
-				const earningItems = [
-					{
-						title: 'Store Earning',
-						display: true,
-						value: formatCurrency(row.store_earning),
-					},
-					{
-						title: 'Shipping Amount',
-						display: modules.includes('store-shipping'),
-						value: '+' + formatCurrency(row.shipping_amount),
-					},
-					{
-						title: 'Tax Amount',
-						display: appLocalizer.taxes_enabled === 'yes',
-						value: '+' + formatCurrency(row.tax_amount),
-					},
-					{
-						title: 'Gateway Fee',
-						display: modules.includes('payment-gateway-charge'),
-						value: '-' + formatCurrency(row.gateway_fee),
-					},
-					{
-						title: 'Marketplace Commission',
-						display: true,
-						value: '-' + formatCurrency(row.marketplace_commission),
-					},
-					{
-						title: 'Store Discount',
-						display: Number(row.store_discount) !== 0,
-						value: '-' + formatCurrency(row.store_discount),
-					},
-					{
-						title: 'Admin Discount',
-						display: Number(row.admin_discount) !== 0,
-						value: formatCurrency(row.admin_discount),
-					},
-				].filter((item) => item.display !== false);
-
-				return (
-					<ListComponent className="price-list" items={earningItems} />
-				);
-			},
-			csvDisplay: false
+			tableDisplay: false,
 		},
 		store_payable: {
 			label: __('Total Earned', 'multivendorx'),
-			isSortable: true,
-			type: 'currency',
+			tableDisplay: false,
 		},
 		tax_amount: {
 			label: __('Tax Amount', 'multivendorx'),
@@ -164,12 +102,11 @@ const StoreCommission: React.FC = () => {
 		},
 		created_at: {
 			label: __('Date', 'multivendorx'),
-			isSortable: true,
-			type: 'date',
+			tableDisplay: false,
 		},
 		status: {
 			label: __('Status', 'multivendorx'),
-			type: 'status', statusClass: (row) => `${row.status}`,
+			tableDisplay: false,
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
@@ -349,6 +286,50 @@ const StoreCommission: React.FC = () => {
 			onClickWithQuery: downloadCommissionsCSVByQuery,
 		},
 	];
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		commission_title: `#${row.id}`,
+		info_icon: 'commission',
+		info_descriptions: [
+			{
+				label: __('Order', 'multivendorx'),
+				icon: 'order',
+				value: (
+					<span
+						className="link-item"
+						onClick={() =>
+							dashNavigate(navigate, [
+								'orders',
+								'view',
+								String(row.order_id),
+							])
+						}
+					>
+						#{row.order_id}
+					</span>
+				),
+			},
+			{
+				label: __('Order Amount', 'multivendorx'),
+				icon: 'cart',
+				value: formatCurrency(row.total_order_amount),
+			},
+			{
+				label: __('Total Earned', 'multivendorx'),
+				icon: 'wallet',
+				value: formatCurrency(row.store_payable),
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.created_at), color: 'gray' },
+		],
+	}));
+
 	return (
 		<>
 			<NavigatorHeaderComponent
@@ -361,7 +342,8 @@ const StoreCommission: React.FC = () => {
 
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

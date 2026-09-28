@@ -2,10 +2,10 @@
 **Contributors:** [wcmp](https://profiles.wordpress.org/wcmp/), [purnendu](https://profiles.wordpress.org/purnendu/)  
 **Tags:** marketplace, WooCommerce marketplace, multi vendor, multivendor, multivendor marketplace  
 **Donate link:** http://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=multivendorxwporg  
-**Requires at least:** 6.3  
-**Tested up to:** 7.0.1  
+**Requires at least:** 6.4.0  
+**Tested up to:** 7.1.2  
 **Requires PHP:** 8.0  
-**Stable tag:** 5.0.10  
+**Stable tag:** 5.0.18  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -245,6 +245,73 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 ## Changelog ##
+
+### 5.0.18 - 2026-09-29 ###
+* Added     - Compatibility with WordPress 7.1.2
+* Added     - Compatibility with WooCommerce 11.1.2
+* Fixed     - Issue with new order emails not showing the store names correctly #2346
+* Fixed     - Issue with WooCommerce currency positioning not being obeyed in the Store Dashboard #2344
+* Fixed     - Security vulnerabilities reported by the WordPress Community members
+* Fixed     - Issue with zone-wise data not being saved correctly in the Zone-wise Shipping functionality
+* Fixed     - Elementor Store template issue #2345
+* Fixed     - vendors.js loading issue on unnecessary pages, improving page load performance.
+* Fixed     - Geolocation script loading issue when the Geolocation module was disabled, preventing unnecessary location permission requests.
+* Updated   - Language file.
+
+### 5.0.17 - 2026-09-08 ###
+* Fixed     - Structural CSS issues
+* Fixed     - Symbol static issue on the Order Details page for the Tax and Refund Amount fields
+* Updated   - Language file.
+
+### 5.0.16 - 2026-09-08 ###
+* Added     - Compatibility with WooCommerce 11.1.0
+* Fixed     - Issue with draft products being displayed on the store listing page #2329
+* Fixed     - Country-wise shipping issue where free shipping was being applied to countries that were not configured #2322
+* Fixed     - Data loading issue with pagination on the seller order list page #2340
+* Fixed     - Currency symbol being hardcoded as $ in Storefront Order Details #2339
+* Fixed     - Issue with store registration details not appearing in the admin dashboard for review #2336
+* Fixed     - Shipping method overlapping/loading issue for zone-wise shipping in the store dashboard #2335
+* Fixed     - Gallery image replacement flow issue
+* Fixed     - Security vulnerabilities reported by members of the WordPress community
+* Updated   - Language file.
+
+### 5.0.15 - 2026-08-26 ###
+* Added     - Compatibility with WordPress 7.1.0
+* Added     - Compatibility with the WooCommerce Cost of Goods field on the Edit Product page #2302
+* Fixed     - Issue where the extra fee was not charged once the free withdrawal limit was exhausted #2311
+* Fixed     - Issue with coupon application for product types other than Simple Products #2308
+* Fixed     - Security vulnerabilities reported by members of the WordPress community
+* Updated   - Language file.
+
+### 5.0.14 - 2026-08-12 ###
+* Added     - Compatibility with WooCommerce 11.0.1
+* Fixed     - Minor CSS fixes in the admin panel.
+* Fixed     - Issue where product stock was being reduced separately for the main order and its suborders #2291
+* Fixed     - Several CSS issues in the store dashboard #2240
+* Updated   - Language file.
+
+### 5.0.13 - 2026-08-11 ###
+* Added     - Compatibility with WooCommerce 11.0.0
+* Added     - Compatibility with WordPress 7.0.3
+* Added     - Store name in the downloaded commission CSV #2280
+* Added     - Translation support for several strings #2224
+* Added     - Support for Elementor Atomic Widgets #2076
+* Fixed     - Store not appearing for non-logged-in users on the Store List page #2278
+* Fixed     - Country-wise shipping-related issue #2285
+* Fixed     - Pagination issue on the Store List page in the admin dashboard
+* Updated   - Language file.
+
+### 5.0.12 - 2026-07-31 ###
+* Fixed     - Issue where shipping classes were not displayed in the Store Dashboard.
+* Fixed     - Issue where the exported CSV contained data for only 10 rows instead of all selected records. #2269
+* Fixed     - Multiple field-saving issues in the Store Dashboard. #2237
+* Updated   - Language file.
+
+### 5.0.11 - 2026-07-23 ###
+* Added     - Compatibility with WordPress 7.0.2.
+* Fixed     - Stripe Connect redirection issue from the Store Dashboard.
+* Fixed     - Security vulnerabilities reported by Moshe Levi, Darius Sveikauskas, Farid Narimanov, Erwan Le Rousseau.
+* Updated   - Language file.
 
 ### 5.0.10 - 2026-07-14 ###
 * Added     - Compatibility with WordPress 7.0.1.

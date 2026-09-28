@@ -296,75 +296,10 @@ const EventRules: React.FC = () => {
 	const headers = {
 		event: {
 			label: __('Event', 'multivendorx'),
-			width: '55%',
-			render: (row: Notification) => (
-				<div className="notification-details">
-					<span className={`notification-icon ${row.icon}`}></span>
-					<div className="details">
-						<div className="title">
-							{row.event}
-							{row.tag && (
-								<span
-									className={`admin-badge yellow ${row.tag}`}
-								>
-									{row.tag}
-								</span>
-							)}
-							{row.category && (
-								<span
-									className={`admin-badge blue ${row.category}`}
-								>
-									{row.category}
-								</span>
-							)}
-						</div>
-						<div className="des">{row.description}</div>
-					</div>
-				</div>
-			),
-		},
-		recipients: {
-			label: __('Recipients', 'multivendorx'),
-			width: '15%',
-			render: (row: Notification) => (
-				<div className="recipients-list">
-					{(row.recipients || []).map((recipient: Recipient) => (
-						<>
-							<RecipientBadge
-								key={recipient.id}
-								recipient={recipient}
-							/>
-						</>
-					))}
-				</div>
-			),
-		},
-		system: {
-			label: __('System', 'multivendorx'),
-			width: '10%',
-			render: (row: Notification) => (
-				<div className="system-column">
-					{Object.entries(row.channels || {}).map(
-						([channel, enabled]: [string, boolean]) => {
-							const cfg = CHANNEL_CONFIG[channel];
-							if (!cfg || !enabled) {
-								return null;
-							}
-							return (
-								<i
-									key={channel}
-									className={`adminfont-${cfg.icon} admin-badge ${cfg.badge}`}
-									onClick={(e) => {
-										e.stopPropagation();
-										setNotificationId(row.id);
-										openEditPannel(row.id, channel);
-									}}
-								/>
-							);
-						}
-					)}
-				</div>
-			),
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			type: 'action',
@@ -381,6 +316,57 @@ const EventRules: React.FC = () => {
 			],
 		},
 	};
+
+	const infoRows = filteredNotifications.map((row: Notification) => ({
+		...row,
+		info_icon: 'notification',
+		info_descriptions: [
+			{ value: row.description },
+			{
+				label: __('Recipients', 'multivendorx'),
+				value: (
+					<span className="recipients-list">
+						{(row.recipients || []).map((recipient: Recipient) => (
+							<RecipientBadge
+								key={recipient.id}
+								recipient={recipient}
+							/>
+						))}
+					</span>
+				),
+			},
+			{
+				label: __('System', 'multivendorx'),
+				value: (
+					<span className="system-column">
+						{Object.entries(row.channels || {}).map(
+							([channel, enabled]) => {
+								const cfg = CHANNEL_CONFIG[channel];
+								if (!cfg || !enabled) {
+									return null;
+								}
+								return (
+									<i
+										key={channel}
+										className={`adminfont-${cfg.icon} admin-badge ${cfg.badge}`}
+										onClick={(e) => {
+											e.stopPropagation();
+											setNotificationId(row.id);
+											openEditPannel(row.id, channel);
+										}}
+									/>
+								);
+							}
+						)}
+					</span>
+				),
+			},
+		],
+		info_badges: [
+			...(row.tag ? [{ text: row.tag, color: 'yellow' }] : []),
+			...(row.category ? [{ text: row.category, color: 'blue' }] : []),
+		],
+	}));
 
 	return (
 		<div
@@ -450,7 +436,8 @@ const EventRules: React.FC = () => {
 				<ColumnComponent>
 					<TableCard
 						headers={headers}
-						rows={filteredNotifications}
+						variant="transparent"
+						rows={infoRows}
 						showMenu={false}
 						isLoading={isLoading}
 						onQueryUpdate={fetchNotifications}

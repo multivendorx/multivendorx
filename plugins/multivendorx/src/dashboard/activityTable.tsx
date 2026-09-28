@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import { NoticeManager } from '@zyra/components';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
+import { formatDate } from '../services/commonFunction';
 
 const ActivitiesTable = (React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -13,15 +14,17 @@ const ActivitiesTable = (React.FC = () => {
 	const headers = {
 		title: {
 			label: __('Title', 'multivendorx'),
-		},
-		// type: {
-		// 	label: __('Type', 'multivendorx'),
-		// },
-		date: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			badgesKey: 'info_badges',
 		},
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'notification',
+		info_badges: [{ text: formatDate(row.date), color: 'gray' }],
+	}));
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -57,7 +60,8 @@ const ActivitiesTable = (React.FC = () => {
 	return (
 		<TableCard
 			headers={headers}
-			rows={rows}
+			variant="transparent"
+			rows={infoRows}
 			totalRows={totalRows}
 			isLoading={isLoading}
 			onQueryUpdate={doRefreshTableData}

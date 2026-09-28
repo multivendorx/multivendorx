@@ -7,7 +7,11 @@ import { FormGroupWrapperComponent, FormGroupComponent, PopupComponent } from '@
 import { ButtonInput, ToggleInput, TextAreaInput } from '@zyra/inputs';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
-import { formatLocalDate } from '../../../src/services/commonFunction';
+import {
+	formatDate,
+	formatLocalDate,
+	formatStatusLabel,
+} from '../../../src/services/commonFunction';
 
 type Review = {
 	id: number;
@@ -137,46 +141,10 @@ const StoreReviews: React.FC = () => {
 	const headers = {
 		customer_name: {
 			label: __('Customer', 'multivendorx'),
-		},
-		store_name: {
-			label: __('Store', 'multivendorx'),
-		},
-		details: {
-			label: __('Details', 'multivendorx'),
-			render: (row) => (
-				<div className="review-details">
-					<div className="review">
-						{[...Array(Math.round(row.overall_rating || 0))].map(
-							(_, i) => (
-								<i
-									key={`filled-${i}`}
-									className="star-icon adminfont-star"
-								/>
-							)
-						)}
-
-						{[
-							...Array(5 - Math.round(row.overall_rating || 0)),
-						].map((_, i) => (
-							<i
-								key={`empty-${i}`}
-								className="star-icon adminfont-star-o"
-							/>
-						))}
-					</div>
-					<div className="title">{row.review_title}</div>
-					<div className="desc">{row.review_content}</div>
-				</div>
-			),
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			sortable: true,
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
@@ -198,6 +166,57 @@ const StoreReviews: React.FC = () => {
 			],
 		},
 	};
+
+	const infoRows = rows.map((row: any) => {
+		const rating = Math.round(row.overall_rating || 0);
+		return {
+			...row,
+			info_icon: 'person',
+			info_descriptions: [
+				{
+					label: __('Store', 'multivendorx'),
+					icon: 'storefront',
+					value: row.store_name || '—',
+				},
+				{
+					label: __('Rating', 'multivendorx'),
+					value: (
+						<span className="review">
+							{[...Array(rating)].map((_, i) => (
+								<i
+									key={`filled-${i}`}
+									className="star-icon adminfont-star"
+								/>
+							))}
+							{[...Array(5 - rating)].map((_, i) => (
+								<i
+									key={`empty-${i}`}
+									className="star-icon adminfont-star-o"
+								/>
+							))}
+						</span>
+					),
+				},
+				{
+					label: __('Review', 'multivendorx'),
+					icon: 'store-review',
+					value: row.review_title || '—',
+				},
+				{
+					label: __('Details', 'multivendorx'),
+					icon: 'text',
+					value: row.review_content || '—',
+				},
+			],
+			info_badges: [
+				{
+					text: formatStatusLabel(row.status),
+					color: `badge-${row.status}`,
+				},
+				{ text: formatDate(row.date_created), color: 'gray' },
+			],
+		};
+	});
 
 	const filters = [
 		{
@@ -332,7 +351,8 @@ const StoreReviews: React.FC = () => {
 			</PopupComponent>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

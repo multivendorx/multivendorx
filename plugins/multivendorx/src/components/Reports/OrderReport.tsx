@@ -3,12 +3,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { InformationItemComponent } from '@zyra/components';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 
 import {
 	downloadCSV,
+	formatCurrency,
+	formatDate,
 	formatLocalDate,
+	formatStatusLabel,
 	getUrl,
 	toWcIsoDate,
 } from '../../services/commonFunction';
@@ -45,55 +47,64 @@ const OrderReport: React.FC = () => {
 	}, []);
 
 	const headers = {
-		id: {
+		order_title: {
 			label: __('Order', 'multivendorx'),
-
-			render: (row) => (
-				<a
-					href={getUrl(row.id, 'order')}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="link-item"
-				>
-					#{row.id}
-				</a>
-			),
-		},
-		store_name: {
-			label: __('Store', 'multivendorx'),
-			render: (row) => (
-				<InformationItemComponent
-					title={row.store_name}
-					titleLink={getUrl(row.store_id, 'store', 'edit')}
-					avatar={{
-						iconClass: 'store-inventory',
-					}}
-					descriptions={[
-						{
-							label: __('SKU', 'multivendorx'),
-							value: row.store_sku,
-						},
-					]}
-				/>
-			),
-		},
-		total: {
-			label: __('Amount', 'multivendorx'),
-			type: 'currency',
-		},
-		commission_total: {
-			label: __('Commission', 'multivendorx'),
-			type: 'currency',
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 	};
+
+	// The table folds these fields into one info column, so the CSV
+	// export lists its columns explicitly instead of reusing `headers`.
+	const csvHeaders = {
+		id: { label: __('Order', 'multivendorx') },
+		store_name: { label: __('Store', 'multivendorx') },
+		total: { label: __('Amount', 'multivendorx') },
+		commission_total: { label: __('Commission', 'multivendorx') },
+		date_created: { label: __('Date', 'multivendorx') },
+		status: { label: __('Status', 'multivendorx') },
+	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		order_title: `#${row.id}`,
+		info_icon: 'order',
+		info_link: getUrl(row.id, 'order'),
+		info_descriptions: [
+			{
+				label: __('Store', 'multivendorx'),
+				icon: 'storefront',
+				value: (
+					<a
+						href={getUrl(row.store_id, 'store', 'edit')}
+						className="link-item"
+					>
+						{row.store_name || '—'}
+					</a>
+				),
+			},
+			{
+				label: __('Amount', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.total),
+			},
+			{
+				label: __('Commission', 'multivendorx'),
+				icon: 'commission',
+				value: formatCurrency(row.commission_total),
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.date_created), color: 'gray' },
+		],
+	}));
 
 	const filters = [
 		{
@@ -121,7 +132,7 @@ const OrderReport: React.FC = () => {
 				const rows = response.data || [];
 
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`order-${formatLocalDate(new Date())}.csv`
 				);
@@ -197,7 +208,8 @@ const OrderReport: React.FC = () => {
 		<>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

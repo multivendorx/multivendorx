@@ -6,7 +6,13 @@ import { getApiLink } from '@zyra/core';
 import { FormGroupComponent, FormGroupWrapperComponent, PopupComponent } from '@zyra/components';
 import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
-import { getUrl, toWcIsoDate } from '../../../src/services/commonFunction';
+import {
+	formatCurrency,
+	formatDate,
+	formatStatusLabel,
+	getUrl,
+	toWcIsoDate,
+} from '../../../src/services/commonFunction';
 
 interface OrderMeta {
 	key: string;
@@ -30,6 +36,8 @@ interface StoreApi {
 }
 
 interface OrderRow extends RefundOrder {
+	store_id?: number;
+	status?: string;
 	store_name?: string;
 	total?: number;
 	commission_amount?: number;
@@ -135,57 +143,13 @@ const PendingRefund: React.FC<object> = () => {
 	};
 
 	const headers = {
-		id: {
+		order_title: {
 			label: __('Order', 'multivendorx'),
-			isSortable: true,
-			render: (row) => (
-				<a
-					href={getUrl(row.id, 'order')}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="link-item"
-				>
-					#{row.id}
-				</a>
-			),
-		},
-		store_name: {
-			label: __('Store', 'multivendorx'),
-			render: (row) => (
-				<a
-					href={getUrl(row.store_id, 'store', 'edit')}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="link-item"
-				>
-					{row.store_name}
-				</a>
-			),
-		},
-		total: {
-			label: __('Amount', 'multivendorx'),
-			type: 'currency',
-		},
-		commission_amount: {
-			label: __('Commission', 'multivendorx'),
-			type: 'currency',
-		},
-		reason: {
-			label: __('Refund Reason', 'multivendorx'),
-			render: (row: OrderRow) =>
-				getMetaValue(
-					row.meta_data,
-					appLocalizer.order_meta.customer_refund_reason
-				),
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			isSortable: true,
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
@@ -291,11 +255,61 @@ const PendingRefund: React.FC<object> = () => {
 			});
 	};
 
+	const infoRows = rows.map((row: OrderRow) => ({
+		...row,
+		order_title: `#${row.id}`,
+		info_icon: 'marketplace-refund',
+		info_link: getUrl(row.id, 'order'),
+		info_descriptions: [
+			{
+				label: __('Store', 'multivendorx'),
+				icon: 'storefront',
+				value: (
+					<a
+						href={getUrl(row.store_id, 'store', 'edit')}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="link-item"
+					>
+						{row.store_name}
+					</a>
+				),
+			},
+			{
+				label: __('Amount', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.total),
+			},
+			{
+				label: __('Commission', 'multivendorx'),
+				icon: 'commission',
+				value: formatCurrency(row.commission_amount),
+			},
+			{
+				label: __('Refund Reason', 'multivendorx'),
+				icon: 'question',
+				value:
+					getMetaValue(
+						row.meta_data,
+						appLocalizer.order_meta.customer_refund_reason
+					) || '—',
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.date_created), color: 'gray' },
+		],
+	}));
+
 	return (
 		<>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

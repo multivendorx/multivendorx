@@ -4,6 +4,11 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
+import {
+	formatDate,
+	formatStatusLabel,
+	truncateText,
+} from '../services/commonFunction';
 
 const AnnouncementsTable = (React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -13,19 +18,31 @@ const AnnouncementsTable = (React.FC = () => {
 	const headers = {
 		title: {
 			label: __('Title', 'multivendorx'),
-		},
-		content: {
-			label: __('Content', 'multivendorx'),
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'announcement',
+		info_descriptions: [
+			{
+				label: __('Content', 'multivendorx'),
+				icon: 'text',
+				value: truncateText(row.content, 20) || '—',
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.date_created), color: 'gray' },
+		],
+	}));
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 
@@ -59,7 +76,8 @@ const AnnouncementsTable = (React.FC = () => {
 		<>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

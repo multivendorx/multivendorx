@@ -11,8 +11,16 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'onboarding',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'onboarding',
+			title: __('New store approval', 'multivendorx'),
+		},
 		{
 			key: 'approve_store',
 			type: 'choice-toggle',
@@ -37,6 +45,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'setup',
 			title: __('Setup wizard for stores', 'multivendorx'),
 		},
 		{
@@ -152,6 +161,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'marketplace',
 			title: __('How stores sell products/listings', 'multivendorx'),
 		},
 		{

@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { ContainerComponent, ColumnComponent, InformationItemComponent, NoticeManager } from '@zyra/components';
+import { ContainerComponent, ColumnComponent, NoticeManager } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import { QueryProps, TableRow } from '@/services/type';
-import { getUrl } from '@/services/commonFunction';
+import { formatDate, getUrl } from '@/services/commonFunction';
 
 const ActivityTable = (React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -48,35 +48,35 @@ const ActivityTable = (React.FC = () => {
 	const headers = {
 		store_name: {
 			label: __('Store', 'multivendorx'),
-			render: (row) => (
-				<InformationItemComponent
-					title={row.store_name}
-					titleLink={getUrl(row.store_id, 'store', 'edit')}
-					avatar={{
-						iconClass: 'store-inventory',
-					}}
-				/>
-			),
-		},
-		title: {
-			label: __('Title', 'multivendorx'),
-		},
-		// type: {
-		// 	label: __('Type', 'multivendorx'),
-		// 	type: 'status' , statusClass: (row) => `${row.status}`,
-		// },
-		created_at: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'store-inventory',
+		info_link: getUrl(row.store_id, 'store', 'edit'),
+		info_descriptions: [
+			{
+				label: __('Title', 'multivendorx'),
+				icon: 'notification',
+				value: row.title || '—',
+			},
+		],
+		info_badges: [{ text: formatDate(row.created_at), color: 'gray' }],
+	}));
 
 	return (
 		<ContainerComponent>
 			<ColumnComponent>
 				<TableCard
 					headers={headers}
-					rows={rows}
+					variant="transparent"
+					rows={infoRows}
 					totalRows={totalRows}
 					isLoading={isLoading}
 					onQueryUpdate={doRefreshTableData}

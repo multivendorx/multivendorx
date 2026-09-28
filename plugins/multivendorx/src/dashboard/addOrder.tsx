@@ -581,15 +581,9 @@ const AddOrder = () => {
 	const taxTableHeaders = {
 		name: {
 			label: __('Rate name', 'multivendorx'),
-		},
-		class: {
-			label: __('Tax class', 'multivendorx'),
-		},
-		code: {
-			label: __('Rate code', 'multivendorx'),
-		},
-		rate: {
-			label: __('Rate %', 'multivendorx'),
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
 		},
 		action: {
 			type: 'action',
@@ -607,6 +601,25 @@ const AddOrder = () => {
 			],
 		},
 	};
+
+	const taxRateRows = taxRates.map((row: any) => ({
+		...row,
+		info_icon: 'tax-compliance',
+		info_descriptions: [
+			{
+				label: __('Tax class', 'multivendorx'),
+				value: row.class || '—',
+			},
+			{
+				label: __('Rate code', 'multivendorx'),
+				value: row.code || '—',
+			},
+			{
+				label: __('Rate %', 'multivendorx'),
+				value: row.rate ?? '—',
+			},
+		],
+	}));
 
 	// billing & shipping common card
 	const renderAddressCard = (
@@ -961,7 +974,8 @@ const AddOrder = () => {
 									<>
 										<TableCard
 											headers={taxTableHeaders}
-											rows={taxRates}
+											variant="transparent"
+											rows={taxRateRows}
 											ids={rowIds}
 											showMenu={false}
 										/>

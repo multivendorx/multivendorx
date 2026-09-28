@@ -11,8 +11,16 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'view-files',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'view-files',
+			title: __('Marketplace pages', 'multivendorx'),
+		},
 		{
 			key: 'store_registration_page',
 			type: 'select',
@@ -58,20 +66,22 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'invoice',
 			title: __(
-				'Customer-facing order presentation & invoicing',
+				'Customers will see information for',
+				'multivendorx'
+			),
+			desc: __(
+				'Choose which order statuses will send customers email notifications, PDF invoices, and display order details in their account.',
 				'multivendorx'
 			),
 		},
 		{
 			key: 'display_customer_order',
 			type: 'choice-toggle',
-			label: __('Customers will see information for', 'multivendorx'),
+			label: __('', 'multivendorx'),
 			custom: true,
-			settingDescription: __(
-				'Choose which order statuses will send customers email notifications, PDF invoices, and display order details in their account.',
-				'multivendorx'
-			),
+			
 			desc: __(
 				'In a multivendor setup, a <b>Main Order</b> is the parent order placed by the customer, while <b>Sub-orders</b> are created for each store.<br/><b>Enabling the Main Order is recommended</b>, as it allows you to send a single email that includes the Main Order and all related Sub-orders. Alternatively, you can send separate emails for the Main Order and each Sub-order.',
 				'multivendorx'
@@ -125,6 +135,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'editor-list',
 			title: __(
 				'Enable content styling tools for stores',
 				'multivendorx'
@@ -142,6 +153,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'shortcode',
 			title: __('Shortcode library', 'multivendorx'),
 		},
 		{

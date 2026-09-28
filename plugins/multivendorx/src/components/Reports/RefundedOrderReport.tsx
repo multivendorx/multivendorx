@@ -2,12 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { InformationItemComponent } from '@zyra/components';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
 import {
 	downloadCSV,
+	formatCurrency,
+	formatDate,
 	formatLocalDate,
+	formatStatusLabel,
 	getUrl,
 } from '../../services/commonFunction';
 
@@ -40,52 +42,70 @@ const RefundedOrderReport: React.FC = () => {
 	}, []);
 
 	const headers = {
-		order_id: {
+		order_title: {
 			label: __('Order', 'multivendorx'),
-			isSortable: true,
-			render: (row) => (
-				<a
-					href={getUrl(row.order_id, 'order')}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="link-item"
-				>
-					#{row.order_id}
-				</a>
-			),
-		},
-		customer_name: {
-			label: __('Customer', 'multivendorx'),
-		},
-		store_name: {
-			label: __('Store', 'multivendorx'),
-			render: (row) => (
-				<InformationItemComponent
-					title={row.store_name}
-					titleLink={getUrl(row.store_id, 'store', 'edit')}
-					avatar={{
-						iconClass: 'store-inventory',
-					}}
-				/>
-			),
-		},
-		amount: {
-			label: __('Refund Amount', 'multivendorx'),
-			type: 'currency',
-		},
-		customer_reason: {
-			label: __('Refund Reason', 'multivendorx'),
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
-			isSortable: true,
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 	};
+
+	// The table folds these fields into one info column, so the CSV
+	// export lists its columns explicitly instead of reusing `headers`.
+	const csvHeaders = {
+		order_id: { label: __('Order', 'multivendorx') },
+		customer_name: { label: __('Customer', 'multivendorx') },
+		store_name: { label: __('Store', 'multivendorx') },
+		amount: { label: __('Refund Amount', 'multivendorx') },
+		customer_reason: { label: __('Refund Reason', 'multivendorx') },
+		status: { label: __('Status', 'multivendorx') },
+		date_created: { label: __('Date', 'multivendorx') },
+	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		order_title: `#${row.order_id}`,
+		info_icon: 'marketplace-refund',
+		info_link: getUrl(row.order_id, 'order'),
+		info_descriptions: [
+			{
+				label: __('Customer', 'multivendorx'),
+				icon: 'person',
+				value: row.customer_name || '—',
+			},
+			{
+				label: __('Store', 'multivendorx'),
+				icon: 'storefront',
+				value: (
+					<a
+						href={getUrl(row.store_id, 'store', 'edit')}
+						className="link-item"
+					>
+						{row.store_name || '—'}
+					</a>
+				),
+			},
+			{
+				label: __('Refund Amount', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.amount),
+			},
+			{
+				label: __('Refund Reason', 'multivendorx'),
+				icon: 'question',
+				value: row.customer_reason || '—',
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.date_created), color: 'gray' },
+		],
+	}));
 
 	const filters = [
 		{
@@ -113,7 +133,7 @@ const RefundedOrderReport: React.FC = () => {
 				const rows = response.data || [];
 
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`refund-report-${formatLocalDate(new Date())}.csv`
 				);
@@ -189,7 +209,8 @@ const RefundedOrderReport: React.FC = () => {
 		<>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}
