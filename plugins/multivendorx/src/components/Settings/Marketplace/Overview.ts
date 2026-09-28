@@ -68,13 +68,10 @@ export default {
 			type: 'section',
 			icon: 'invoice',
 			title: __(
-				'Customers will see information for',
+				'Orders shown to customers',
 				'multivendorx'
 			),
-			desc: __(
-				'Choose which order statuses will send customers email notifications, PDF invoices, and display order details in their account.',
-				'multivendorx'
-			),
+			desc: __('','multivendorx'),
 		},
 		{
 			key: 'display_customer_order',
@@ -136,15 +133,12 @@ export default {
 			key: 'section',
 			type: 'section',
 			icon: 'editor-list',
-			title: __(
-				'Enable content styling tools for stores',
-				'multivendorx'
-			),
+			title: __('Enable store content styling with TinyMCE','multivendorx'),
 		},
 		{
 			key: 'tinymce_api_section',
 			type: 'text',
-			label: __('TinyMCE API', 'multivendorx'),
+			label: __('', 'multivendorx'),
 			desc: __(
 				'Get your <a href= "https://www.tiny.cloud/blog/how-to-get-tinymce-cloud-up-in-less-than-5-minutes/" target= "_blank">TinyMCE API key <i class="adminfont-external"></i></a> and paste it here, to unlock visual editing tools across the marketplace. Admin and stores can easily format text, add links, lists, and other styling to their store descriptions, announcements, knowledge base posts, and product/listing details-no coding needed.',
 				'multivendorx'
@@ -159,7 +153,7 @@ export default {
 		{
 			key: 'available_shortcodes',
 			type: 'shortcode-table',
-			label: __('Available shortcodes', 'multivendorx'),
+			label: __('', 'multivendorx'),
 			optionLabel: [
 				__('Shortcodes and block', 'multivendorx'),
 				__('Description', 'multivendorx'),

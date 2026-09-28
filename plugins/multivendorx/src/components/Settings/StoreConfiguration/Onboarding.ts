@@ -19,12 +19,12 @@ export default {
 			key: 'section',
 			type: 'section',
 			icon: 'onboarding',
-			title: __('New store approval', 'multivendorx'),
+			title: __('Store registration', 'multivendorx'),
 		},
 		{
 			key: 'approve_store',
 			type: 'choice-toggle',
-			label: __('New store registration approval', 'multivendorx'),
+			label: __('Approval method', 'multivendorx'),
 			desc: __(
 				'Decide how you want to approve new stores for your marketplace:<ul><li>Manual approval - Admin reviews each store request and decides whether to approve or reject it before granting access to the marketplace.</li><li>Automatic approval - Stores are instantly approved, gaining dashboard access right away to upload and sell products/listings.</li></ul>',
 				'multivendorx'

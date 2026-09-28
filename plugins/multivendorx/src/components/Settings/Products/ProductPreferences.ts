@@ -18,13 +18,18 @@ export default {
 			type: 'section',
 			icon: 'single-product',
 			title: __('Product/listing options', 'multivendorx'),
+			desc: __(
+				'Choose which product types and editing sections stores can use when creating or updating products.',
+				'multivendorx'
+			),
+			
 		},
 		{
 			key: 'type_options',
 			type: 'checkbox',
 			label: __('Allowed product/listing options', 'multivendorx'),
 			settingDescription: __(
-				'Select the product/listing fields stores can configure when adding or managing their products/listings.',
+				'',
 				'multivendorx'
 			),
 
@@ -51,7 +56,7 @@ export default {
 			type: 'checkbox',
 			label: __('Edit product/listing page blocks', 'multivendorx'),
 			settingDescription: __(
-				'Control which product/listing data fields are available to stores when creating or editing products/listing.',
+				'',
 				'multivendorx'
 			),
 
@@ -131,7 +136,7 @@ export default {
 			type: 'choice-toggle',
 			label: __('Product/listing category selection', 'multivendorx'),
 			settingDescription: __(
-				'Choose whether stores follow a guided category selection flow or freely choose multiple categories.',
+				'',
 				'multivendorx'
 			),
 			desc: __(
@@ -167,7 +172,7 @@ export default {
 			type: 'choice-toggle',
 			label: __('SKU management for products/listing', 'multivendorx'),
 			settingDescription: __(
-				'Choose how SKUs for simple, external, or parent products/listing are generated.',
+				'',
 				'multivendorx'
 			),
 			desc: __(
@@ -200,7 +205,7 @@ export default {
 			type: 'choice-toggle',
 			label: __('SKU space handling', 'multivendorx'),
 			settingDescription: __(
-				'Choose how spaces in attribute names should be handled when generating SKUs.',
+				'',
 				'multivendorx'
 			),
 			desc: __(
@@ -240,7 +245,7 @@ export default {
 			type: 'choice-toggle',
 			label: __('Recommendation source', 'multivendorx'),
 			settingDescription: __(
-				'Choose whether related products/listings are shown from the same store only or from the entire marketplace.',
+				'',
 				'multivendorx'
 			),
 			desc: __(
