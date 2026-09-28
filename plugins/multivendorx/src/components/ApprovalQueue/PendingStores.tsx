@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { FormGroupWrapperComponent, PopupComponent, InformationItemComponent } from '@zyra/components';
+import { FormGroupWrapperComponent, PopupComponent } from '@zyra/components';
 import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import { TableCard, QueryProps } from '@zyra/table';
 
-import { formatLocalDate, getUrl } from '@/services/commonFunction';
+import { formatDate, formatLocalDate, getUrl } from '@/services/commonFunction';
 
 const PendingStores: React.FC<object> = () => {
 	const [rows, setRows] = useState([]);
@@ -84,20 +84,10 @@ const PendingStores: React.FC<object> = () => {
 	const headers = {
 		store_name: {
 			label: __('Store', 'multivendorx'),
-			render: (row) => (
-				<InformationItemComponent
-					title={row.store_name}
-					titleLink={getUrl(row.id, 'store', 'edit')}
-					avatar={{
-						iconClass: 'store-inventory',
-					}}
-				/>
-			),
-		},
-		applied_on: {
-			label: __('Applied On', 'multivendorx'),
-			sortable: true,
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			key: 'action',
@@ -167,11 +157,20 @@ const PendingStores: React.FC<object> = () => {
 				setIsLoading(false);
 			});
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'store-inventory',
+		info_link: getUrl(row.id, 'store', 'edit'),
+		info_badges: [{ text: formatDate(row.applied_on), color: 'gray' }],
+	}));
+
 	return (
 		<>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

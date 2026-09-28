@@ -9,9 +9,17 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'identity-verification',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'identity-verification',
+			title: __('Verified badge', 'multivendorx'),
+		},
 		{
 			key: 'badge_img',
 			type: 'choice-toggle',
@@ -58,6 +66,7 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
+			icon: 'seller-verification',
 			title: __('Identity Verification', 'multivendorx'),
 			desc: __(
 				'Verify store identity using government-issued documents or facial recognition. Ensures authenticity of users.'
@@ -98,6 +107,7 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
+			icon: 'social-share',
 			title: __('Social Verification', 'multivendorx'),
 			desc: __(
 				'Allow stores to verify their identity by connecting social media accounts.'

@@ -6,7 +6,6 @@ import { getApiLink } from '@zyra/core';
 import {
 	FormGroupComponent,
 	FormGroupWrapperComponent,
-	InformationItemComponent,
 	NoticeComponent,
 	PopupComponent,
 	SectionComponent,
@@ -112,63 +111,87 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 	}, [commissionId]);
 
 	const popupColumns = {
-		id: {
+		name: {
 			label: __('Product', 'multivendorx'),
-			render: (row) => {
-				return (
-					<InformationItemComponent
-						title={row.name}
-						onClick={() =>
-							dashNavigate(navigate, [
-								'products',
-								'edit',
-								String(row.product_id),
-							])
-						}
-						avatar={{
-							image: row.image?.src || '',
-							iconClass: 'single-product',
-						}}
-						descriptions={[
-							{
-								label: __('SKU:', 'multivendorx'),
-								value: row.sku || '—',
-							},
-						]}
-					/>
-				);
-			},
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
 		},
-		price: {
-			label: __('Cost', 'multivendorx'),
-			type: 'currency',
-		},
-		quantity: {
-			label: __('Qty', 'multivendorx'),
-		},
-		total: {
-			label: __('Total', 'multivendorx'),
-			type: 'currency',
-		},
-		total_tax: {
-			label: __('Tax', 'multivendorx'),
-			type: 'currency',
+		action: {
+			type: 'action',
+			label: __('Action', 'multivendorx'),
+			actions: [
+				{
+					label: __('Edit Product', 'multivendorx'),
+					icon: 'edit',
+					onClick: (row) =>
+						dashNavigate(navigate, [
+							'products',
+							'edit',
+							String(row.product_id),
+						]),
+				},
+			],
 		},
 	};
+
+	const orderItemRows = orderItems.map((row: any) => ({
+		...row,
+		info_icon: 'single-product',
+		info_descriptions: [
+			{
+				label: __('SKU', 'multivendorx'),
+				icon: 'single-product',
+				value: row.sku || '—',
+			},
+			{
+				label: __('Cost', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.price),
+			},
+			{
+				label: __('Qty', 'multivendorx'),
+				icon: 'cart',
+				value: row.quantity ?? '—',
+			},
+			{
+				label: __('Total', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.total),
+			},
+			{
+				label: __('Tax', 'multivendorx'),
+				icon: 'tax-compliance',
+				value: formatCurrency(row.total_tax),
+			},
+		],
+	}));
 
 	const shippingColumns = {
 		method_title: {
 			label: __('Method', 'multivendorx'),
-		},
-		total: {
-			label: __('Amount', 'multivendorx'),
-			type: 'currency',
-		},
-		total_tax: {
-			label: __('Tax', 'multivendorx'),
-			type: 'currency',
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
 		},
 	};
+
+	const shippingRows = shippingItems.map((row: any) => ({
+		...row,
+		info_icon: 'shipping',
+		info_descriptions: [
+			{
+				label: __('Amount', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.total),
+			},
+			{
+				label: __('Tax', 'multivendorx'),
+				icon: 'tax-compliance',
+				value: formatCurrency(row.total_tax),
+			},
+		],
+	}));
 
 	return (
 		<PopupComponent
@@ -315,7 +338,8 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 					<SectionComponent title={__('Order Details', 'multivendorx')} />
 					<TableCard
 						headers={popupColumns}
-						rows={orderItems}
+						variant="transparent"
+						rows={orderItemRows}
 						isLoading={loading}
 						currency={{
 							currencySymbol: appLocalizer.currency_symbol,
@@ -332,7 +356,8 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 						<TableCard
 							title={__('Shipping', 'multivendorx')}
 							headers={shippingColumns}
-							rows={shippingItems}
+							variant="transparent"
+							rows={shippingRows}
 							isLoading={loading}
 							currency={{
 								currencySymbol:

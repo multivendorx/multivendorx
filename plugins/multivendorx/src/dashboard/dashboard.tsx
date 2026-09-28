@@ -36,6 +36,7 @@ import {
 	dashNavigate,
 	formatCurrency,
 	formatDate,
+	formatStatusLabel,
 	formatTimeAgo,
 	truncateText,
 } from '@/services/commonFunction';
@@ -95,103 +96,100 @@ const Dashboard: React.FC = () => {
 
 	// Table headers
 	const recentOrderHeaders = {
-		id: {
+		order_title: {
 			label: __('Order ID', 'multivendorx'),
-			render: (row) => (
-				<span
-					onClick={() =>
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
+		},
+		action: {
+			type: 'action',
+			label: __('Action', 'multivendorx'),
+			actions: [
+				{
+					label: __('View', 'multivendorx'),
+					icon: 'eye',
+					onClick: (row) =>
 						dashNavigate(navigate, [
 							'orders',
 							'view',
 							String(row.id),
-						])
-					}
-					className="link-item"
-				>
-					#{row.id}
-				</span>
-			),
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
-		},
-		products: {
-			label: __('Product Name', 'multivendorx'),
-			width: 14,
-			render: (row) =>
-				row.line_items?.length
-					? row.line_items.map((item) => (
-							<InformationItemComponent
-								key={item.id}
-								title={item.name}
-								onClick={() =>
-									dashNavigate(navigate, [
-										'products',
-										'edit',
-										String(item.product_id),
-									])
-								}
-								avatar={{
-									image: item.image?.src || '',
-									iconClass: item.image?.src
-										? ''
-										: 'single-product',
-								}}
-								descriptions={[
-									{
-										label: __('Qty:', 'multivendorx'),
-										value: item.quantity,
-									},
-								]}
-							/>
-						))
-					: '-',
-		},
-		total: {
-			label: __('Total', 'multivendorx'),
-			type: 'currency',
-		},
-		status: {
-			label: __('Order Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
+						]),
+				},
+			],
 		},
 	};
+
+	const recentOrderInfoRows = recentOrderRows.map((row: any) => ({
+		...row,
+		order_title: `#${row.id}`,
+		info_icon: 'order',
+		info_descriptions: [
+			{
+				label: __('Product Name', 'multivendorx'),
+				icon: 'single-product',
+				value: row.line_items?.length
+					? row.line_items
+							.map((item) => `${item.name} × ${item.quantity}`)
+							.join(', ')
+					: '—',
+			},
+			{
+				label: __('Total', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.total),
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.date_created), color: 'gray' },
+		],
+	}));
 	const topProductHeaders = {
 		name: {
 			label: __('Product Name', 'multivendorx'),
-			width: 18,
-			render: (row) => {
-				return (
-					<InformationItemComponent
-						title={row.name}
-						onClick={() =>
-							dashNavigate(navigate, [
-								'products',
-								'edit',
-								String(row.id),
-							])
-						}
-						avatar={{
-							image: row.images?.[0]?.src || '',
-							iconClass: row.images?.[0]?.src
-								? ''
-								: 'single-product',
-						}}
-						descriptions={[
-							{
-								label: __('SKU', 'multivendorx'),
-								value: row.sku || '—',
-							},
-						]}
-					/>
-				);
-			},
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
 		},
-		total_sales: {
-			label: __('Sales', 'multivendorx'),
+		action: {
+			type: 'action',
+			label: __('Action', 'multivendorx'),
+			actions: [
+				{
+					label: __('Edit', 'multivendorx'),
+					icon: 'edit',
+					onClick: (row) =>
+						dashNavigate(navigate, [
+							'products',
+							'edit',
+							String(row.id),
+						]),
+				},
+			],
 		},
 	};
+
+	const topProductInfoRows = topProductRows.map((row: any) => ({
+		...row,
+		info_icon: 'single-product',
+		info_descriptions: [
+			{
+				label: __('SKU', 'multivendorx'),
+				icon: 'single-product',
+				value: row.sku || '—',
+			},
+			{
+				label: __('Sales', 'multivendorx'),
+				icon: 'cart',
+				value: row.total_sales ?? 0,
+			},
+		],
+	}));
 	// Helper function to get dynamic greeting
 	const getGreeting = () => {
 		const hour = new Date().getHours();
@@ -744,10 +742,10 @@ const Dashboard: React.FC = () => {
 						{recentOrderRows.length > 0 ? (
 							<TableCard
 								headers={recentOrderHeaders}
-								rows={recentOrderRows}
+								variant="transparent"
+								rows={recentOrderInfoRows}
 								isLoading={isLoading}
 								ids={recentOrderIds}
-								className="transparent-table"
 								showMenu={false}
 								showColumnToggleIcon={false}
 								format={appLocalizer.date_format}
@@ -789,10 +787,10 @@ const Dashboard: React.FC = () => {
 						{topProductRows.length > 0 ? (
 							<TableCard
 								headers={topProductHeaders}
-								rows={topProductRows}
+								variant="transparent"
+								rows={topProductInfoRows}
 								isLoading={isLoading}
 								ids={topProductIds}
-								className="transparent-table"
 								showMenu={false}
 								showColumnToggleIcon={false}
 							/>

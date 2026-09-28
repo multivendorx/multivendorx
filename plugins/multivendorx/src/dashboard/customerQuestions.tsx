@@ -9,11 +9,15 @@ import {
 	FormGroupWrapperComponent,
 	FormGroupComponent,
 	PopupComponent,
-	InformationItemComponent,
 	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
-import { dashNavigate, formatLocalDate } from '@/services/commonFunction';
+import {
+	dashNavigate,
+	formatDate,
+	formatLocalDate,
+	formatStatusLabel,
+} from '@/services/commonFunction';
 import { useNavigate } from 'react-router-dom';
 
 type StoreQueriesRow = {
@@ -100,51 +104,10 @@ const CustomerQuestions: React.FC = () => {
 	const headers = {
 		product_name: {
 			label: __('Product', 'multivendorx'),
-			render: (row: any) => (
-				<InformationItemComponent
-					title={row.product_name}
-					onClick={() =>
-						dashNavigate(navigate, [
-							'products',
-							'edit',
-							String(row.id),
-						])
-					}
-					avatar={{
-						image: row.product_image,
-						iconClass: row.product_image ? '' : 'single-product',
-					}}
-					descriptions={[
-						{
-							label: __('By', 'multivendorx'),
-							value: row.store_name,
-						},
-					]}
-				/>
-			),
-		},
-		question_text: {
-			label: __('Question', 'multivendorx'),
-			render: (row: any) => (
-				<div className="question-wrapper">
-					<div className="question">Q: {row.question_text}</div>
-					{row.answer_text && (
-						<div className="answer">A: {row.answer_text}</div>
-					)}
-					<div className="desc">By {row.author_name}</div>
-				</div>
-			),
-		},
-		question_date: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
-		},
-		total_votes: {
-			label: __('Votes', 'multivendorx'),
-		},
-		question_visibility: {
-			label: __('Visibility', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			key: 'action',
@@ -156,9 +119,62 @@ const CustomerQuestions: React.FC = () => {
 					icon: 'answer',
 					onClick: (row) => fetchQueriesById(row.id),
 				},
+				{
+					label: __('Edit Product', 'multivendorx'),
+					icon: 'edit',
+					onClick: (row) =>
+						dashNavigate(navigate, [
+							'products',
+							'edit',
+							String(row.id),
+						]),
+				},
 			],
 		},
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'single-product',
+		info_descriptions: [
+			{
+				label: __('By', 'multivendorx'),
+				icon: 'storefront',
+				value: row.store_name || '—',
+			},
+			{
+				label: __('Question', 'multivendorx'),
+				icon: 'question',
+				value: row.question_text || '—',
+			},
+			...(row.answer_text
+				? [
+						{
+							label: __('Answer', 'multivendorx'),
+							icon: 'answer',
+							value: row.answer_text,
+						},
+					]
+				: []),
+			{
+				label: __('Asked By', 'multivendorx'),
+				icon: 'person',
+				value: row.author_name || '—',
+			},
+			{
+				label: __('Votes', 'multivendorx'),
+				icon: 'store-review',
+				value: row.total_votes ?? 0,
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.question_visibility),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.question_date), color: 'gray' },
+		],
+	}));
 	const filters = [
 		{
 			key: 'questionVisibility',
@@ -254,7 +270,8 @@ const CustomerQuestions: React.FC = () => {
 
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

@@ -11,8 +11,16 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'view-files',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'view-files',
+			title: __('Marketplace pages', 'multivendorx'),
+		},
 		{
 			key: 'store_registration_page',
 			type: 'select',
@@ -58,20 +66,19 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'invoice',
 			title: __(
-				'Customer-facing order presentation & invoicing',
+				'Orders shown to customers',
 				'multivendorx'
 			),
+			desc: __('','multivendorx'),
 		},
 		{
 			key: 'display_customer_order',
 			type: 'choice-toggle',
-			label: __('Customers will see information for', 'multivendorx'),
+			label: __('', 'multivendorx'),
 			custom: true,
-			settingDescription: __(
-				'Choose which order statuses will send customers email notifications, PDF invoices, and display order details in their account.',
-				'multivendorx'
-			),
+			
 			desc: __(
 				'In a multivendor setup, a <b>Main Order</b> is the parent order placed by the customer, while <b>Sub-orders</b> are created for each store.<br/><b>Enabling the Main Order is recommended</b>, as it allows you to send a single email that includes the Main Order and all related Sub-orders. Alternatively, you can send separate emails for the Main Order and each Sub-order.',
 				'multivendorx'
@@ -125,15 +132,13 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
-			title: __(
-				'Enable content styling tools for stores',
-				'multivendorx'
-			),
+			icon: 'editor-list',
+			title: __('Enable store content styling with TinyMCE','multivendorx'),
 		},
 		{
 			key: 'tinymce_api_section',
 			type: 'text',
-			label: __('TinyMCE API', 'multivendorx'),
+			label: __('', 'multivendorx'),
 			desc: __(
 				'Get your <a href= "https://www.tiny.cloud/blog/how-to-get-tinymce-cloud-up-in-less-than-5-minutes/" target= "_blank">TinyMCE API key <i class="adminfont-external"></i></a> and paste it here, to unlock visual editing tools across the marketplace. Admin and stores can easily format text, add links, lists, and other styling to their store descriptions, announcements, knowledge base posts, and product/listing details-no coding needed.',
 				'multivendorx'
@@ -142,12 +147,13 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'shortcode',
 			title: __('Shortcode library', 'multivendorx'),
 		},
 		{
 			key: 'available_shortcodes',
 			type: 'shortcode-table',
-			label: __('Available shortcodes', 'multivendorx'),
+			label: __('', 'multivendorx'),
 			optionLabel: [
 				__('Shortcodes and block', 'multivendorx'),
 				__('Description', 'multivendorx'),

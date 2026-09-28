@@ -4,6 +4,11 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
+import {
+	formatCurrency,
+	formatDate,
+	formatStatusLabel,
+} from '@/services/commonFunction';
 
 interface LatestRefundRequestProps {
 	store_id: number;
@@ -46,34 +51,51 @@ const LatestRefundRequest: React.FC<LatestRefundRequestProps> = ({
 	};
 
 	const headers = {
-		order_id: {
+		order_title: {
 			label: __('Order', 'multivendorx'),
-		},
-		customer_name: {
-			label: __('Customer', 'multivendorx'),
-		},
-		amount: {
-			type: 'currency',
-			label: __('Refund Amount', 'multivendorx'),
-		},
-		reason: {
-			label: __('Refund Reason', 'multivendorx'),
-		},
-		status: {
-			type: 'status' , statusClass: (row) => `${row.status}`,
-			label: __('Status', 'multivendorx'),
-		},
-		date_created: {
-			type: 'date',
-			label: __('Date', 'multivendorx'),
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		order_title: `#${row.order_id}`,
+		info_icon: 'marketplace-refund',
+		info_descriptions: [
+			{
+				label: __('Customer', 'multivendorx'),
+				icon: 'person',
+				value: row.customer_name || '—',
+			},
+			{
+				label: __('Refund Amount', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.amount),
+			},
+			{
+				label: __('Refund Reason', 'multivendorx'),
+				icon: 'question',
+				value: row.reason || '—',
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.date_created), color: 'gray' },
+		],
+	}));
 
 	return (
 		<>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}
 				showMenu={false}

@@ -3,12 +3,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { ContainerComponent, ColumnComponent, InformationItemComponent } from '@zyra/components';
+import { ContainerComponent, ColumnComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	formatCurrency,
 	formatDate,
 	formatLocalDate,
+	formatStatusLabel,
 	getUrl,
 } from '../../services/commonFunction';
 
@@ -106,54 +107,11 @@ const StoreTable: React.FC = () => {
 	const headers = {
 		store_name: {
 			label: __('Store', 'multivendorx'),
-			render: (row) => (
-				<InformationItemComponent
-					title={row.store_name}
-					titleLink={getUrl(row.id, 'store', 'edit')}
-					avatar={{
-						image: row.store_image,
-						iconClass: row.store_image ? '' : 'store-inventory',
-					}}
-					descriptions={[
-						{
-							label: __('Since', 'multivendorx'),
-							value: formatDate(row.create_time) || '—',
-						},
-					]}
-				/>
-			),
-		},
-		email: {
-			label: __('Contact', 'multivendorx'),
-		},
-		lifetime_earning: {
-			label: __('Lifetime Earning', 'multivendorx'),
-			render: (row) => formatCurrency(row.commission?.commission_total),
-		},
-		primary_owner: {
-			label: __('Primary Owner', 'multivendorx'),
-			render: (row) => {
-				return (
-					<InformationItemComponent
-						title={row.primary_owner?.display_name}
-						titleLink={getUrl(row.id, 'store', 'edit')}
-						avatar={{
-							image: row.primary_owner_image,
-							iconClass: row.primary_owner_image ? 'person' : '',
-						}}
-						descriptions={[
-							{
-								label: __('Email', 'multivendorx'),
-								value: row.primary_owner?.user_email || '—',
-							},
-						]}
-					/>
-				);
-			},
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			key: 'action',
@@ -211,12 +169,43 @@ const StoreTable: React.FC = () => {
 		{ label: __('Rejected', 'multivendorx'), value: 'rejected' },
 		{ label: __('Suspended', 'multivendorx'), value: 'suspended' },
 	];
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'store-inventory',
+		info_link: getUrl(row.id, 'store', 'edit'),
+		info_descriptions: [
+			{
+				label: __('Contact', 'multivendorx'),
+				icon: 'mail',
+				value: row.email || '—',
+			},
+			{
+				label: __('Primary Owner', 'multivendorx'),
+				icon: 'person',
+				value: row.primary_owner?.display_name || '—',
+			},
+			{
+				label: __('Lifetime Earning', 'multivendorx'),
+				icon: 'wallet',
+				value: formatCurrency(row.commission?.commission_total),
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.create_time), color: 'gray' },
+		],
+	}));
+
 	return (
 		<ContainerComponent general>
 			<ColumnComponent>
 				<TableCard
 					headers={headers}
-					rows={rows}
+					variant="transparent"
+					rows={infoRows}
 					totalRows={totalRows}
 					isLoading={isLoading}
 					onQueryUpdate={doRefreshTableData}

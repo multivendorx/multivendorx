@@ -108,6 +108,7 @@ const Settings: React.FC<SettingsProps> = () => {
 						modules={modules}
 						Popup={ShowProPopup}
 						storeTabSetting={storeTabSetting}
+						groupBySections={settingModal.groupBySections}
 					/>
 				) : (
 					<>{__('Loading...', 'multivendorx')}</>

@@ -11,8 +11,16 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'notification',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'notification',
+			title: __('Notification recipients', 'multivendorx'),
+		},
 		{
 			key: 'receiver_email_address',
 			type: 'email',
@@ -48,6 +56,7 @@ export default {
 		{
 			key: 'sms_section',
 			type: 'section',
+			icon: 'mail',
 			title: __('Email delivery settings', 'multivendorx'),
 		},
 		{
@@ -87,6 +96,7 @@ export default {
 		{
 			key: 'sms_section',
 			type: 'section',
+			icon: 'messaging',
 			title: __('SMS delivery settings', 'multivendorx'),
 		},
 		{
@@ -109,6 +119,7 @@ export default {
 		{
 			key: 'sms_section',
 			type: 'section',
+			icon: 'setting-fill',
 			title: __('SMS configuration', 'multivendorx'),
 		},
 		{

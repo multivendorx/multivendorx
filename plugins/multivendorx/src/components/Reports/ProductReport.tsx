@@ -24,6 +24,8 @@ import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import axios from 'axios';
 import {
 	downloadCSV,
+	formatCurrency,
+	formatDate,
 	formatLocalDate,
 	getUrl,
 	toWcIsoDate,
@@ -256,59 +258,65 @@ const ProductReport: React.FC = () => {
 	const headers = {
 		name: {
 			label: __('Product', 'multivendorx'),
-			render: (row) => {
-				return (
-					<InformationItemComponent
-						title={row.name}
-						titleLink={getUrl(row.id, 'product') || ''}
-						avatar={{
-							image: row.images?.[0]?.src || '',
-							iconClass: row.images?.[0]?.src
-								? ''
-								: 'single-product',
-						}}
-						descriptions={[
-							{
-								label: __('SKU:', 'multivendorx'),
-								value: row.sku || '—',
-							},
-						]}
-						isLoading={isDashboardLoading}
-					/>
-				);
-			},
-		},
-		store_name: {
-			label: __('Store', 'multivendorx'),
-			render: (row) => (
-				<InformationItemComponent
-					title={row.store_name}
-					titleLink={getUrl(row.store_id, 'store', 'edit')}
-					avatar={{
-						iconClass: 'store-inventory',
-					}}
-					isLoading={isDashboardLoading}
-				/>
-			),
-		},
-		total_sales: {
-			label: __('Items sold', 'multivendorx'),
-		},
-		price: {
-			label: __('Net sales', 'multivendorx'),
-			type: 'currency',
-		},
-		category: {
-			label: __('Category', 'multivendorx'),
-			render: (row) =>
-				row.categories?.map((cat) => cat.name).join(', ') || '-',
-		},
-		date_created: {
-			label: __('Date Created', 'multivendorx'),
-			isSortable: true,
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 	};
+
+	// The table folds these fields into one info column, so the CSV
+	// export lists its columns explicitly instead of reusing `headers`.
+	const csvHeaders = {
+		name: { label: __('Product', 'multivendorx') },
+		store_name: { label: __('Store', 'multivendorx') },
+		total_sales: { label: __('Items sold', 'multivendorx') },
+		price: { label: __('Net sales', 'multivendorx') },
+		date_created: { label: __('Date Created', 'multivendorx') },
+	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'single-product',
+		info_link: getUrl(row.id, 'product') || '',
+		info_descriptions: [
+			{
+				label: __('SKU', 'multivendorx'),
+				icon: 'single-product',
+				value: row.sku || '—',
+			},
+			{
+				label: __('Store', 'multivendorx'),
+				icon: 'storefront',
+				value: (
+					<a
+						href={getUrl(row.store_id, 'store', 'edit')}
+						className="link-item"
+					>
+						{row.store_name || '—'}
+					</a>
+				),
+			},
+			{
+				label: __('Items sold', 'multivendorx'),
+				icon: 'cart',
+				value: row.total_sales ?? '—',
+			},
+			{
+				label: __('Net sales', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.price),
+			},
+			{
+				label: __('Category', 'multivendorx'),
+				icon: 'category',
+				value:
+					row.categories?.map((cat) => cat.name).join(', ') || '—',
+			},
+		],
+		info_badges: [{ text: formatDate(row.date_created), color: 'gray' }],
+	}));
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsTableLoading(true);
@@ -365,7 +373,7 @@ const ProductReport: React.FC = () => {
 				const rows = response.data || [];
 
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`product-${formatLocalDate(new Date())}.csv`
 				);
@@ -538,7 +546,8 @@ const ProductReport: React.FC = () => {
 
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				title={__('Revenue Distribution', 'multivendorx')}
 				totalRows={totalRows}
 				isLoading={isTableLoading}

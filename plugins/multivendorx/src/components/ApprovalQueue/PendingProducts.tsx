@@ -3,10 +3,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { PopupComponent, InformationItemComponent } from '@zyra/components';
+import { PopupComponent } from '@zyra/components';
 import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import { TableCard, TableRow, QueryProps } from '@zyra/table';
-import { getUrl, toWcIsoDate } from '@/services/commonFunction';
+import {
+	formatCurrency,
+	formatDate,
+	getUrl,
+	toWcIsoDate,
+} from '@/services/commonFunction';
 
 type StoreOption = {
 	label: string;
@@ -98,45 +103,11 @@ const PendingProducts: React.FC<object> = () => {
 	const headers = {
 		name: {
 			label: __('Product Name', 'multivendorx'),
-			width: 18,
-			render: (row) => {
-				return (
-					<InformationItemComponent
-						title={row.name}
-						titleLink={getUrl(row.id, 'product') || ''}
-						avatar={{
-							image: row.images?.[0]?.src || '',
-							iconClass: row.images?.[0]?.src
-								? ''
-								: 'single-product',
-						}}
-						descriptions={[
-							{
-								label: __('SKU:', 'multivendorx'),
-								value: row.sku || '—',
-							},
-							{
-								label: __('By', 'multivendorx'),
-								value: row.store_name,
-							},
-						]}
-					/>
-				);
-			},
-		},
-		category: {
-			label: __('Category', 'multivendorx'),
-			render: (row) =>
-				row.categories?.map((cat) => cat.name).join(', ') || '-',
-		},
-		price: {
-			label: __('Price', 'multivendorx'),
-			type: 'currency',
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			isSortable: true,
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
@@ -231,11 +202,42 @@ const PendingProducts: React.FC<object> = () => {
 			});
 	};
 
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'single-product',
+		info_link: getUrl(row.id, 'product') || '',
+		info_descriptions: [
+			{
+				label: __('SKU', 'multivendorx'),
+				icon: 'single-product',
+				value: row.sku || '—',
+			},
+			{
+				label: __('By', 'multivendorx'),
+				icon: 'storefront',
+				value: row.store_name || '—',
+			},
+			{
+				label: __('Category', 'multivendorx'),
+				icon: 'category',
+				value:
+					row.categories?.map((cat) => cat.name).join(', ') || '—',
+			},
+			{
+				label: __('Price', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.price),
+			},
+		],
+		info_badges: [{ text: formatDate(row.date_created), color: 'gray' }],
+	}));
+
 	return (
 		<>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

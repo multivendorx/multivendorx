@@ -10,7 +10,6 @@ import { defaultCategoryCounts, dummyWholesalecustomer } from './WholesaleUserUt
 import {
 	ColumnComponent,
 	ContainerComponent,
-	InformationItemComponent,
 	PopupComponent,
 	ModuleGuardComponent,
 	NavigatorHeaderComponent,
@@ -18,7 +17,7 @@ import {
 import { TableCard } from '@zyra/table';
 
 import ShowProPopup from '../Popup/Popup';
-import { formatDate } from '../../services/commonFunction';
+import { formatDate, formatStatusLabel } from '../../services/commonFunction';
 
 export interface WholesaleUserRow {
 	id?: number;
@@ -27,6 +26,7 @@ export interface WholesaleUserRow {
 	status?: string;
 	date?: string;
 	action?: string;
+	customer_url?: string;
 }
 
 const WholesaleUser = () => {
@@ -34,36 +34,13 @@ const WholesaleUser = () => {
 	let tableProps: any = {};
 
 	const headers = {
-		user: {
+		customer: {
 			label: __('User', 'catalogx'),
-			render: (row: WholesaleUserRow) => (
-				<InformationItemComponent
-					title={row.customer}
-					titleLink={row.customer_url}
-					badges={[
-						{
-							text: row.status,
-							className: `badge-${row.status?.toLowerCase()}`,
-						}
-					]}
-					descriptions={[
-						{
-							label: __('Email', 'catalogx'),
-							icon: 'mail',
-							value: row.email || '—',
-						},
-						{
-							icon: 'calendar',
-							label: __('Date', 'catalogx'),
-							value: formatDate(row.date),
-						},						
-					]}
-					avatar={{
-						image: row.customer_img_url,
-						iconClass: 'person',
-					}}
-				/>
-			),
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'customer_url',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			type: 'action',
@@ -96,6 +73,7 @@ const WholesaleUser = () => {
 	];
 	const defaultTableProps = {
 		headers,
+		variant: 'transparent',
 		hideHeader: true,
 		format: appLocalizer.date_format,
 		filters,
@@ -113,6 +91,27 @@ const WholesaleUser = () => {
 		'catalogx_wholesale_user_table_component',
 		defaultTableProps
 	);
+	tableProps = {
+		...tableProps,
+		rows: (tableProps.rows || []).map((row: WholesaleUserRow) => ({
+			...row,
+			info_icon: 'person',
+			info_descriptions: [
+				{
+					label: __('Email', 'catalogx'),
+					icon: 'mail',
+					value: row.email || '—',
+				},
+			],
+			info_badges: [
+				{
+					text: formatStatusLabel(row.status),
+					color: `badge-${row.status?.toLowerCase()}`,
+				},
+				{ text: formatDate(row.date), color: 'gray' },
+			],
+		})),
+	};
 
 	const renderTableContent = () => {
 		if (!appLocalizer.khali_dabba) {

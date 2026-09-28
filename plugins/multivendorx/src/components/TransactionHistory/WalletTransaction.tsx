@@ -28,6 +28,7 @@ import {
 	formatCurrency,
 	formatDate,
 	formatLocalDate,
+	formatStatusLabel,
 	normalizeText
 } from '../../services/commonFunction';
 import ViewCommission from '../Commissions/ViewCommission';
@@ -197,37 +198,75 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	const fee = amount * (percentage / 100) + fixed;
 
 	const headers = {
-		id: { label: __('ID', 'multivendorx'), type: 'id' },
-		status: { label: __('Status', 'multivendorx'), type: 'status' , statusClass: (row) => `${row.status}` },
-		transaction_type: {
-			label: __('Transaction Type', 'multivendorx'),
-			render: (row) =>
-				row.transaction_type?.toLowerCase() === 'commission' &&
-				row.commission_id ? (
-					<span
-						className="link-item"
-						onClick={() => {
-							setSelectedCommissionId(row.commission_id);
-							setViewCommission(true);
-						}}
-					>
-						{`Commission #${row.commission_id}`}
-					</span>
-				) : (
-					<span>
-						{normalizeText(row.narration)}
-					</span>
-				),
-		},
-		created_at: { label: __('Date', 'multivendorx'), type: 'date' },
-		credit: { label: __('Credit', 'multivendorx'), type: 'currency' },
-		debit: { label: __('Debit', 'multivendorx'), type: 'currency' },
-		balance: {
-			label: __('Balance', 'multivendorx'),
-			isSortable: true,
-			type: 'currency',
+		transaction_title: {
+			label: __('Transaction', 'multivendorx'),
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 	};
+
+	// The table folds these fields into one info column, so the CSV
+	// export lists its columns explicitly instead of reusing `headers`.
+	const csvHeaders = {
+		id: { label: __('ID', 'multivendorx') },
+		status: { label: __('Status', 'multivendorx') },
+		transaction_type: { label: __('Transaction Type', 'multivendorx') },
+		created_at: { label: __('Date', 'multivendorx') },
+		credit: { label: __('Credit', 'multivendorx') },
+		debit: { label: __('Debit', 'multivendorx') },
+		balance: { label: __('Balance', 'multivendorx') },
+	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		transaction_title: `#${row.id}`,
+		info_icon: 'wallet',
+		info_descriptions: [
+			{
+				label: __('Transaction Type', 'multivendorx'),
+				icon: 'commission',
+				value:
+					row.transaction_type?.toLowerCase() === 'commission' &&
+					row.commission_id ? (
+						<span
+							className="link-item"
+							onClick={() => {
+								setSelectedCommissionId(row.commission_id);
+								setViewCommission(true);
+							}}
+						>
+							{`Commission #${row.commission_id}`}
+						</span>
+					) : (
+						normalizeText(row.narration)
+					),
+			},
+			{
+				label: __('Credit', 'multivendorx'),
+				icon: 'wallet-in',
+				value: formatCurrency(row.credit),
+			},
+			{
+				label: __('Debit', 'multivendorx'),
+				icon: 'withdraw',
+				value: formatCurrency(row.debit),
+			},
+			{
+				label: __('Balance', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.balance),
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.created_at), color: 'gray' },
+		],
+	}));
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -350,7 +389,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 			.then((response) => {
 				const rows = response.data || [];
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`selected-commissions-${formatLocalDate(new Date())}.csv`
 				);
@@ -371,7 +410,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 				const rows = response.data || [];
 
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`transaction-${formatLocalDate(new Date())}.csv`
 				);
@@ -792,7 +831,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 				<ColumnComponent>
 					<TableCard
 						headers={headers}
-						rows={rows}
+						variant="transparent"
+						rows={infoRows}
 						totalRows={totalRows}
 						isLoading={isLoading}
 						onQueryUpdate={doRefreshTableData}

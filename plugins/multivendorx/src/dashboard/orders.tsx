@@ -16,7 +16,10 @@ import {
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	downloadCSV,
+	formatCurrency,
+	formatDate,
 	formatLocalDate,
+	formatStatusLabel,
 	toWcIsoDate,
 	dashNavigate,
 } from '../services/commonFunction';
@@ -212,55 +215,15 @@ const Orders: React.FC = () => {
 		{ label: __('Failed', 'multivendorx'), value: 'failed' },
 	];
 
-	const privacyHeaders = privacy?.includes('name')
-		? {
-				customer: {
-					label: __('Customer', 'multivendorx'),
-					render: (row) =>
-						row.billing?.first_name
-							? `${row.billing.first_name} ${row.billing.last_name || ''}`
-							: 'Guest',
-				},
-			}
-		: {};
+	const showCustomer = Boolean(privacy?.includes('name'));
 
 	const headers = {
-		id: {
+		order_title: {
 			label: __('Order ID', 'multivendorx'),
-			render: (row) => (
-				<>
-					<span
-						onClick={() =>
-							dashNavigate(navigate, [
-								'orders',
-								'view',
-								String(row.id),
-							])
-						}
-						className="link-item"
-					>
-						#{row.id}
-					</span>
-					{applyFilters('multivendorx_order_badge', null, row)}
-				</>
-			),
-		},
-
-		...privacyHeaders,
-
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
-		},
-
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
-		},
-
-		total: {
-			label: __('Total', 'multivendorx'),
-			type: 'currency',
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 
 		action: {
@@ -304,6 +267,46 @@ const Orders: React.FC = () => {
 			]),
 		},
 	};
+
+	const infoRows = rows.map((row: any) => {
+		const orderBadge = applyFilters(
+			'multivendorx_order_badge',
+			null,
+			row
+		);
+		return {
+			...row,
+			order_title: `#${row.id}`,
+			info_icon: 'order',
+			info_descriptions: [
+				...(orderBadge ? [{ value: orderBadge }] : []),
+				...(showCustomer
+					? [
+							{
+								label: __('Customer', 'multivendorx'),
+								icon: 'person',
+								value: row.billing?.first_name
+									? `${row.billing.first_name} ${row.billing.last_name || ''}`
+									: __('Guest', 'multivendorx'),
+							},
+						]
+					: []),
+				{
+					label: __('Total', 'multivendorx'),
+					icon: 'dollar',
+					value: formatCurrency(row.total),
+				},
+			],
+			info_badges: [
+				{
+					text: formatStatusLabel(row.status),
+					color: `badge-${row.status}`,
+				},
+				{ text: formatDate(row.date_created), color: 'gray' },
+			],
+		};
+	});
+
 	const filters = [
 		{
 			key: 'created_at',
@@ -512,7 +515,8 @@ const Orders: React.FC = () => {
 			/>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

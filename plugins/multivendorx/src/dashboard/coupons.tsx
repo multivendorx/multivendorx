@@ -16,7 +16,6 @@ import {
 	FormGroupComponent,
 	FormGroupWrapperComponent,
 	PopupComponent,
-	InformationItemComponent,
 	NoticeComponent,
 	NavigatorHeaderComponent,
 	TabsComponent,
@@ -25,7 +24,12 @@ import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 
 import axios from 'axios';
 import Popup from '../components/Popup/Popup';
-import { toWcIsoDate } from '@/services/commonFunction';
+import {
+	formatCurrency,
+	formatDate,
+	formatStatusLabel,
+	toWcIsoDate,
+} from '@/services/commonFunction';
 
 const COUPON_STATUS_MAP: Record<string, string> = {
 	all: __('All', 'multivendorx'),
@@ -639,45 +643,10 @@ const AllCoupon: React.FC = () => {
 	const headers = {
 		code: {
 			label: __('Code', 'multivendorx'),
-			render: (row) => {
-				return (
-					<InformationItemComponent
-						title={row.code}
-						onClick={() => handleEditCoupon(row.id)}
-						descriptions={[
-							{
-								label: __('By', 'multivendorx'),
-								value: row.store_name,
-							},
-						]}
-					/>
-				);
-			},
-		},
-		discount_type: {
-			label: __('Discount Type', 'multivendorx'),
-		},
-		amount: {
-			label: __('Amount', 'multivendorx'),
-			type: 'currency',
-		},
-		description: {
-			label: __('Description', 'multivendorx'),
-		},
-		usage_limit: {
-			label: __('Usage / Limit', 'multivendorx'),
-		},
-		date_created: {
-			label: __('Date created', 'multivendorx'),
-			type: 'date',
-		},
-		date_expires: {
-			label: __('Expiry Date', 'multivendorx'),
-			type: 'date',
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status', statusClass: (row) => `${row.status}`,
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			type: 'action',
@@ -700,6 +669,54 @@ const AllCoupon: React.FC = () => {
 			],
 		},
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'coupon',
+		info_descriptions: [
+			{
+				label: __('By', 'multivendorx'),
+				icon: 'storefront',
+				value: row.store_name || '—',
+			},
+			{
+				label: __('Discount Type', 'multivendorx'),
+				icon: 'coupon',
+				value: row.discount_type || '—',
+			},
+			{
+				label: __('Amount', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.amount),
+			},
+			{
+				label: __('Usage / Limit', 'multivendorx'),
+				icon: 'cart',
+				value: row.usage_limit ?? '—',
+			},
+			...(row.description
+				? [
+						{
+							label: __('Description', 'multivendorx'),
+							icon: 'text',
+							value: row.description,
+						},
+					]
+				: []),
+			{
+				label: __('Expiry Date', 'multivendorx'),
+				icon: 'calendar',
+				value: formatDate(row.date_expires),
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.date_created), color: 'gray' },
+		],
+	}));
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -915,7 +932,8 @@ const AllCoupon: React.FC = () => {
 			)}
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

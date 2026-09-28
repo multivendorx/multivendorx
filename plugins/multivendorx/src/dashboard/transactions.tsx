@@ -6,7 +6,14 @@ import { getApiLink } from '@zyra/core';
 import { NavigatorHeaderComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import TransactionDetailsModal from './TransactionDetailsModal';
-import { downloadCSV, formatLocalDate, normalizeText } from '../services/commonFunction';
+import {
+	downloadCSV,
+	formatCurrency,
+	formatDate,
+	formatLocalDate,
+	formatStatusLabel,
+	normalizeText,
+} from '../services/commonFunction';
 import ViewCommission from './viewCommission';
 import { applyFilters } from '@wordpress/hooks';
 
@@ -37,33 +44,12 @@ const Transactions: React.FC = () => {
 	const [modalCommission, setModalCommission] =
 		useState<TransactionRow | null>(null);
 	const headers = {
-		id: { label: __('ID', 'multivendorx'), type: 'id' },
-		status: { label: __('Status', 'multivendorx'), type: 'status', statusClass: (row) => `${row.status}` },
-		created_at: { label: __('Date', 'multivendorx'), type: 'date' },
-		transaction_type: {
-			label: __('Transaction Type', 'multivendorx'),
-			render: (row) =>
-				row.transaction_type?.toLowerCase() === 'commission' &&
-					row.commission_id ? (
-					<span
-						className="link-item"
-						onClick={() => setModalCommission(row)}
-						style={{ cursor: 'pointer' }}
-					>
-						{`Commission #${row.commission_id}`}
-					</span>
-				) : (
-					<span>
-						{normalizeText(row.narration)}
-					</span>
-				),
-		},
-		credit: { label: __('Credit', 'multivendorx'), type: 'currency' },
-		debit: { label: __('Debit', 'multivendorx'), type: 'currency' },
-		balance: {
-			label: __('Balance', 'multivendorx'),
-			isSortable: true,
-			type: 'currency',
+		transaction_title: {
+			label: __('Transaction', 'multivendorx'),
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			type: 'action',
@@ -79,6 +65,66 @@ const Transactions: React.FC = () => {
 			],
 		},
 	};
+
+	// The table folds these fields into one info column, so the CSV
+	// export lists its columns explicitly instead of reusing `headers`.
+	const csvHeaders = {
+		id: { label: __('ID', 'multivendorx') },
+		status: { label: __('Status', 'multivendorx') },
+		created_at: { label: __('Date', 'multivendorx') },
+		transaction_type: { label: __('Transaction Type', 'multivendorx') },
+		credit: { label: __('Credit', 'multivendorx') },
+		debit: { label: __('Debit', 'multivendorx') },
+		balance: { label: __('Balance', 'multivendorx') },
+	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		transaction_title: `#${row.id}`,
+		info_icon: 'wallet',
+		info_descriptions: [
+			{
+				label: __('Transaction Type', 'multivendorx'),
+				icon: 'commission',
+				value:
+					row.transaction_type?.toLowerCase() === 'commission' &&
+					row.commission_id ? (
+						<span
+							className="link-item"
+							onClick={() => setModalCommission(row)}
+							style={{ cursor: 'pointer' }}
+						>
+							{`Commission #${row.commission_id}`}
+						</span>
+					) : (
+						normalizeText(row.narration)
+					),
+			},
+			{
+				label: __('Credit', 'multivendorx'),
+				icon: 'wallet-in',
+				value: formatCurrency(row.credit),
+			},
+			{
+				label: __('Debit', 'multivendorx'),
+				icon: 'withdraw',
+				value: formatCurrency(row.debit),
+			},
+			{
+				label: __('Balance', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.balance),
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.created_at), color: 'gray' },
+		],
+	}));
+
 	const filters = [
 		{
 			key: 'transactionType',
@@ -199,7 +245,7 @@ const Transactions: React.FC = () => {
 			.then((response) => {
 				const rows = response.data || [];
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`selected-commissions-${formatLocalDate(new Date())}.csv`
 				);
@@ -220,7 +266,7 @@ const Transactions: React.FC = () => {
 				const rows = response.data || [];
 
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`transaction-${formatLocalDate(new Date())}.csv`
 				);
@@ -276,7 +322,8 @@ const Transactions: React.FC = () => {
 
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

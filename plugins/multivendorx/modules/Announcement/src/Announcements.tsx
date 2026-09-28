@@ -21,7 +21,11 @@ import {
 } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
-import { formatLocalDate } from '../../../src/services/commonFunction';
+import {
+	formatDate,
+	formatLocalDate,
+	truncateText,
+} from '../../../src/services/commonFunction';
 type AnnouncementForm = {
 	title: string;
 	url: string;
@@ -274,11 +278,13 @@ export const Announcements: React.FC = () => {
 	];
 
 	const headers = {
-		title: { label: __('Title', 'multivendorx') },
-		content: { label: __('Content', 'multivendorx'), type: 'content' },
-		status_label: { label: __('Status', 'multivendorx'), type: 'status', statusClass: (row) => `${row.status}` },
-		store_name: { label: __('Recipients', 'multivendorx') },
-		date_created: { label: __('Date', 'multivendorx'), type: 'date' },
+		title: {
+			label: __('Title', 'multivendorx'),
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
+		},
 		action: {
 			type: 'action',
 			label: __('Action', 'multivendorx'),
@@ -300,6 +306,27 @@ export const Announcements: React.FC = () => {
 			],
 		},
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'announcement',
+		info_descriptions: [
+			{
+				label: __('Content', 'multivendorx'),
+				icon: 'text',
+				value: truncateText(row.content, 20) || '—',
+			},
+			{
+				label: __('Recipients', 'multivendorx'),
+				icon: 'storefront',
+				value: row.store_name || '—',
+			},
+		],
+		info_badges: [
+			{ text: row.status_label, color: `badge-${row.status}` },
+			{ text: formatDate(row.date_created), color: 'gray' },
+		],
+	}));
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -594,7 +621,8 @@ export const Announcements: React.FC = () => {
 				<ColumnComponent>
 					<TableCard
 						headers={headers}
-						rows={rows}
+						variant="transparent"
+						rows={infoRows}
 						totalRows={totalRows}
 						isLoading={isLoading}
 						onQueryUpdate={doRefreshTableData}

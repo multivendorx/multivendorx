@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import { ButtonInput } from '@zyra/inputs';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
+import { formatDate, getUrl } from '@/services/commonFunction';
 
 const PendingDeactivateRequests: React.FC<object> = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -32,14 +33,11 @@ const PendingDeactivateRequests: React.FC<object> = () => {
 	const headers = {
 		store_name: {
 			label: __('Store', 'multivendorx'),
-		},
-		reason: {
-			label: __('Reason', 'multivendorx'),
-		},
-		date: {
-			label: __('Date', 'multivendorx'),
-			isSortable: true,
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
@@ -104,10 +102,25 @@ const PendingDeactivateRequests: React.FC<object> = () => {
 			});
 	};
 
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'store-inventory',
+		info_link: getUrl(row.id, 'store', 'edit'),
+		info_descriptions: [
+			{
+				label: __('Reason', 'multivendorx'),
+				icon: 'question',
+				value: row.reason || '—',
+			},
+		],
+		info_badges: [{ text: formatDate(row.date), color: 'gray' }],
+	}));
+
 	return (
 		<TableCard
 			headers={headers}
-			rows={rows}
+			variant="transparent"
+			rows={infoRows}
 			totalRows={totalRows}
 			isLoading={isLoading}
 			onQueryUpdate={doRefreshTableData}

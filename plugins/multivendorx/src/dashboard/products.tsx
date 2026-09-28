@@ -4,11 +4,17 @@ import { __ } from '@wordpress/i18n';
 
 
 import { getApiLink, useModules } from '@zyra/core';
-import { InformationItemComponent, NoticeComponent, NavigatorHeaderComponent } from '@zyra/components';
+import { NoticeComponent, NavigatorHeaderComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { toWcIsoDate, dashNavigate } from '../services/commonFunction';
+import {
+	toWcIsoDate,
+	dashNavigate,
+	formatCurrency,
+	formatDate,
+	formatStatusLabel,
+} from '../services/commonFunction';
 import { applyFilters } from '@wordpress/hooks';
 
 const STATUS_LABELS: Record<string, string> = {
@@ -382,62 +388,10 @@ const AllProduct: React.FC = () => {
 	const headers = {
 		name: {
 			label: __('Product Name', 'multivendorx'),
-			width: 18,
-			render: (row) => {
-				const badge = applyFilters(
-		'multivendorx_product_badge',
-		'',
-		row
-	);
-				return (
-					<InformationItemComponent
-						title={<>{row.name} {badge && <span style={{ marginLeft: '8px', display: 'inline-flex', verticalAlign: 'middle' }}>{badge}</span>}</>}
-						onClick={() =>
-							dashNavigate(navigate, [
-								'products',
-								'edit',
-								String(row.id),
-							])
-						}
-						avatar={{
-							image: row.images?.[0]?.src || '',
-							iconClass: row.images?.[0]?.src
-								? ''
-								: 'single-product',
-						}}
-						descriptions={[
-							{
-								label: __('SKU', 'multivendorx'),
-								value: row.sku || '—',
-							},
-						]}
-					/>
-				);
-			},
-		},
-		price: {
-			label: __('Price', 'multivendorx'),
-			type: 'currency',
-		},
-		stock_status: {
-			label: __('Stock', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.stock_status}`,
-			ClassName: 'transparent-status',
-		},
-		categories: {
-			label: __('Categories', 'multivendorx'),
-			render: (row: ProductRow) =>
-				Array.isArray(row.categories) && row.categories.length
-					? row.categories.map((c) => c.name).join(', ')
-					: __('-', 'multivendorx'),
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			type: 'action',
@@ -479,6 +433,50 @@ const AllProduct: React.FC = () => {
 			),
 		},
 	};
+
+	const infoRows = rows.map((row: any) => {
+		const badge = applyFilters('multivendorx_product_badge', '', row);
+		return {
+			...row,
+			info_icon: 'single-product',
+			info_descriptions: [
+				...(badge ? [{ value: badge }] : []),
+				{
+					label: __('SKU', 'multivendorx'),
+					icon: 'single-product',
+					value: row.sku || '—',
+				},
+				{
+					label: __('Price', 'multivendorx'),
+					icon: 'dollar',
+					value: formatCurrency(row.price),
+				},
+				{
+					label: __('Categories', 'multivendorx'),
+					icon: 'category',
+					value:
+						Array.isArray(row.categories) && row.categories.length
+							? row.categories.map((c) => c.name).join(', ')
+							: '—',
+				},
+			],
+			info_badges: [
+				{
+					text: formatStatusLabel(row.status),
+					color: `badge-${row.status}`,
+				},
+				...(row.stock_status
+					? [
+							{
+								text: formatStatusLabel(row.stock_status),
+								color: `badge-${row.stock_status}`,
+							},
+						]
+					: []),
+				{ text: formatDate(row.date_created), color: 'gray' },
+			],
+		};
+	});
 
 	const handleQueryUpdate = (query: QueryProps) => {
 		const prevLang = prevQuery.languageFilter || 'all';
@@ -547,7 +545,8 @@ const AllProduct: React.FC = () => {
 			)}
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={handleQueryUpdate}
