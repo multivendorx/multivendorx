@@ -9,6 +9,8 @@ namespace MultiVendorX\Elementor;
 
 use MultiVendorX\Store\StoreUtil;
 
+defined( 'ABSPATH' ) || exit;
+
 trait StoreHelper {
     /**
      * Get store data for frontend or Elementor preview.
@@ -55,12 +57,14 @@ trait StoreHelper {
 		$is_edit_mode    = $elementor->editor->is_edit_mode();
 		$is_preview_mode = $elementor->preview->is_preview_mode();
 
-		// Fallback check (for edge cases).
-		if ( empty( $is_edit_mode ) && empty( $is_preview_mode ) ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		// Fallback for edge cases, gated on capability + a valid Elementor nonce.
+		if ( empty( $is_edit_mode ) && empty( $is_preview_mode )
+			&& current_user_can( 'edit_posts' )
+			&& isset( $_REQUEST['_nonce'] )
+			&& wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_nonce'] ) ), 'elementor_ajax' )
+		) {
 			if ( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['editor_post_id'] ) ) {
 				$is_edit_mode = true;
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			} elseif ( ! empty( $_REQUEST['preview'] ) && ! empty( $_REQUEST['theme_template_id'] ) ) {
 				$is_preview_mode = true;
 			}

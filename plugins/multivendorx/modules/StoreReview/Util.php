@@ -22,6 +22,102 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Util {
 
+	/**
+	 * Largest accepted review image, in bytes.
+	 */
+	const MAX_REVIEW_IMAGE_SIZE = 5 * MB_IN_BYTES;
+
+	/**
+	 * Sanitize submitted per-parameter ratings, dropping anything outside 1-5.
+	 *
+	 * @param mixed $ratings Raw ratings keyed by parameter name.
+	 * @return array Sanitized ratings (parameter => int 1-5).
+	 */
+	public static function sanitize_rating_values( $ratings ) {
+		$sanitized_ratings = array();
+
+		foreach ( (array) $ratings as $parameter => $rating ) {
+			$parameter = sanitize_text_field( (string) $parameter );
+			$rating    = absint( $rating );
+
+			if ( '' === $parameter || $rating < 1 || $rating > 5 ) {
+				continue;
+			}
+
+			$sanitized_ratings[ $parameter ] = $rating;
+		}
+
+		return $sanitized_ratings;
+	}
+
+	/**
+	 * Upload submitted review images (JPEG/PNG/GIF/WebP only, size-capped).
+	 *
+	 * @param array $review_images A $_FILES-style entry (name/tmp_name/error/size, each an array).
+	 * @return array URLs of the uploaded images.
+	 */
+	public static function upload_review_images( $review_images ) {
+		$review_images = (array) $review_images;
+		$file_names    = array_map( 'sanitize_file_name', (array) ( $review_images['name'] ?? array() ) );
+		$file_tmp      = array_map( 'sanitize_text_field', (array) ( $review_images['tmp_name'] ?? array() ) );
+		$file_errors   = array_map( 'absint', (array) ( $review_images['error'] ?? array() ) );
+		$file_sizes    = array_map( 'absint', (array) ( $review_images['size'] ?? array() ) );
+
+		if ( empty( $file_names ) ) {
+			return array();
+		}
+
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+
+		$allowed_image_mimes = array(
+			'jpg|jpeg|jpe' => 'image/jpeg',
+			'gif'          => 'image/gif',
+			'png'          => 'image/png',
+			'webp'         => 'image/webp',
+		);
+
+		$uploaded_image_urls = array();
+
+		foreach ( $file_names as $index => $file_name ) {
+			$tmp_path = $file_tmp[ $index ] ?? '';
+			$size     = $file_sizes[ $index ] ?? 0;
+
+			if ( '' === $file_name || '' === $tmp_path
+				|| UPLOAD_ERR_OK !== ( $file_errors[ $index ] ?? UPLOAD_ERR_NO_FILE )
+				|| $size > self::MAX_REVIEW_IMAGE_SIZE
+				|| ! is_uploaded_file( $tmp_path )
+			) {
+				continue;
+			}
+
+			// Check the real file contents, not the client-supplied type.
+			$file_type = wp_check_filetype_and_ext( $tmp_path, $file_name, $allowed_image_mimes );
+			if ( empty( $file_type['type'] ) ) {
+				continue;
+			}
+
+			$upload = wp_handle_upload(
+				array(
+					'name'     => $file_type['proper_filename'] ? $file_type['proper_filename'] : $file_name,
+					'type'     => $file_type['type'],
+					'tmp_name' => $tmp_path,
+					'error'    => UPLOAD_ERR_OK,
+					'size'     => $size,
+				),
+				array(
+					'test_form' => false,
+					'mimes'     => $allowed_image_mimes,
+				)
+			);
+
+			if ( empty( $upload['error'] ) && ! empty( $upload['url'] ) ) {
+				$uploaded_image_urls[] = esc_url_raw( $upload['url'] );
+			}
+		}
+
+		return $uploaded_image_urls;
+	}
+
     /**
      * Check if a user has purchased from a specific store
      *

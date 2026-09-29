@@ -9,6 +9,9 @@ namespace MultiVendorX\CustomerQueries;
 
 use MultiVendorX\Store\Store;
 use MultiVendorX\Utill;
+
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Questions Answers Ajax class
  *
@@ -22,13 +25,13 @@ class Ajax {
      * Constructor. Registers AJAX actions and enqueues dashicons.
      */
     public function __construct() {
-        add_action( 'wp_ajax_customer_queries_submit', array( $this, 'submit_question' ) );
-        add_action( 'wp_ajax_nopriv_customer_queries_submit', array( $this, 'submit_question' ) );
+        add_action( 'wp_ajax_multivendorx_customer_queries_submit', array( $this, 'submit_question' ) );
+        add_action( 'wp_ajax_nopriv_multivendorx_customer_queries_submit', array( $this, 'submit_question' ) );
 
-        add_action( 'wp_ajax_customer_queries_search', array( $this, 'search_questions' ) );
-        add_action( 'wp_ajax_nopriv_customer_queries_search', array( $this, 'search_questions' ) );
+        add_action( 'wp_ajax_multivendorx_customer_queries_search', array( $this, 'search_questions' ) );
+        add_action( 'wp_ajax_nopriv_multivendorx_customer_queries_search', array( $this, 'search_questions' ) );
 
-        add_action( 'wp_ajax_customer_queries_vote', array( $this, 'vote_question' ) );
+        add_action( 'wp_ajax_multivendorx_customer_queries_vote', array( $this, 'vote_question' ) );
 
         // Load dashicons on frontend so vote icons are visible.
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_dashicons' ) );

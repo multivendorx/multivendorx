@@ -136,6 +136,19 @@ class Rest extends \WP_REST_Controller {
             );
             $args                = array();
 
+            // Non-admins only ever see their own store's questions.
+            if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+                $store_id = (int) MultiVendorX()->active_store;
+
+                if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                    return new \WP_Error(
+                        'rest_forbidden',
+                        __( 'You are not allowed to view this store\'s customer questions.', 'multivendorx' ),
+                        array( 'status' => 403 )
+                    );
+                }
+            }
+
             if ( $store_id ) {
                 $args['store_id'] = intval( $store_id );
             }
@@ -255,6 +268,14 @@ class Rest extends \WP_REST_Controller {
         $question = reset( Util::get_question_information( array( 'id' => $id ) ) );
         if ( ! $question ) {
             return new \WP_Error( 'not_found', __( 'Question not found', 'multivendorx' ), array( 'status' => 404 ) );
+        }
+
+        if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) && (int) MultiVendorX()->active_store !== (int) $question['store_id'] ) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __( 'You are not allowed to view this question.', 'multivendorx' ),
+                array( 'status' => 403 )
+            );
         }
 
         return rest_ensure_response( $this->prepare_rest_item_for_response( $question ) );

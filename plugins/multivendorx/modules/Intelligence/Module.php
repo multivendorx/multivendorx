@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\Intelligence;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorXPro Intelligence Module class
  *

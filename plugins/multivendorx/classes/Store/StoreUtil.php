@@ -444,8 +444,24 @@ class StoreUtil {
 		require_once ABSPATH . 'wp-admin/includes/image.php';
 		require_once ABSPATH . 'wp-admin/includes/media.php';
 
-		// Handle the file upload.
+		$files_array = array(
+			'name'     => sanitize_file_name( (string) ( $files_array['name'] ?? '' ) ),
+			'type'     => sanitize_mime_type( (string) ( $files_array['type'] ?? '' ) ),
+			'tmp_name' => sanitize_text_field( (string) ( $files_array['tmp_name'] ?? '' ) ),
+			'error'    => absint( $files_array['error'] ?? UPLOAD_ERR_NO_FILE ),
+			'size'     => absint( $files_array['size'] ?? 0 ),
+		);
+
+		if ( UPLOAD_ERR_OK !== $files_array['error'] || ! is_uploaded_file( $files_array['tmp_name'] ) ) {
+			return 0;
+		}
+
+		// wp_handle_upload() also checks the real file type against allowed MIMEs.
 		$upload = wp_handle_upload( $files_array, array( 'test_form' => false ) );
+
+		if ( ! empty( $upload['error'] ) || empty( $upload['file'] ) ) {
+			return 0;
+		}
 
 		// Prepare the attachment.
 		$file_path = $upload['file'];

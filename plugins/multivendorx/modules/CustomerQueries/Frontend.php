@@ -9,6 +9,8 @@ namespace MultiVendorX\CustomerQueries;
 
 use MultiVendorX\FrontendScripts;
 
+defined( 'ABSPATH' ) || exit;
+
 
 /**
  * MultiVendorX Questions & Answers Frontend class

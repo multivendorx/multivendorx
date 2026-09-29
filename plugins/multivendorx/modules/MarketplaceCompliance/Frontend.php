@@ -9,6 +9,8 @@ namespace MultiVendorX\MarketplaceCompliance;
 
 use MultiVendorX\FrontendScripts;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Follow Store Frontend class
  *

@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\WPML;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX WPML Module class
  *

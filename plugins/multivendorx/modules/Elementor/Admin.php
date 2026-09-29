@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\Elementor;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Elementor Admin class.
  *

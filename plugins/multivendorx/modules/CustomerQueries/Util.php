@@ -9,6 +9,8 @@ namespace MultiVendorX\CustomerQueries;
 
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Questions Answers Util class
  *

@@ -645,9 +645,21 @@ class Frontend {
 		return ob_get_clean();
 	}
 
+    /**
+     * Scope the media library (Add Media modal) to the user's own store.
+     *
+     * @param array $query WP_Query args for the media library AJAX request.
+     * @return array
+     */
     public function multivendorx_restrict_store_media( $query ) {
-        if ( in_array( 'store_owner', MultiVendorX()->current_user->roles, true ) ) {
+        $roles       = (array) MultiVendorX()->current_user->roles;
+        $staff_roles = array( 'store_manager', 'product_manager', 'customer_support', 'order_assistant', 'inactive_staff' );
+
+        if ( in_array( 'store_owner', $roles, true ) ) {
             $query['author'] = MultiVendorX()->current_user_id;
+        } elseif ( array_intersect( $staff_roles, $roles ) ) {
+            $primary_owner   = StoreUtil::get_primary_owner( MultiVendorX()->active_store );
+            $query['author'] = $primary_owner ? (int) $primary_owner : 0;
         }
 
         return $query;

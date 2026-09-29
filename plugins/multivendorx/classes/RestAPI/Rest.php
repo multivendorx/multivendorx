@@ -59,6 +59,10 @@ class Rest {
         add_action( 'woocommerce_rest_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 10, 3 );
         add_action( 'woocommerce_rest_insert_shop_coupon_object', array( $this, 'send_notifications' ), 10, 2 );
         add_filter( 'woocommerce_rest_product_shipping_class_query', array( $this, 'filter_shipping_classes_by_meta' ), 10, 2 );
+        add_filter( 'rest_request_before_callbacks', array( $this, 'guard_store_member_woocommerce_routes' ), 10, 3 );
+        add_filter( 'woocommerce_rest_pre_insert_product_object', array( $this, 'assign_member_store_to_object' ), 20, 3 );
+        add_filter( 'woocommerce_rest_pre_insert_shop_coupon_object', array( $this, 'assign_member_store_to_object' ), 20, 3 );
+        add_filter( 'woocommerce_rest_prepare_payment_gateway', array( $this, 'hide_payment_gateway_settings' ), 10, 3 );
     }
 
     /**
@@ -90,6 +94,19 @@ class Rest {
      * @param object $request REST API request object.
      */
     public function query_shop_order_modify( $args, $request ) {
+        // Store members only ever list their own store's orders.
+        $member_store_id = $this->is_marketplace_admin() ? 0 : $this->get_current_member_store_id();
+        if ( $member_store_id ) {
+            /* phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_query */
+            $args['meta_query']   = $args['meta_query'] ?? array();
+            $args['meta_query'][] = array(
+                'key'     => Utill::POST_META_SETTINGS['store_id'],
+                'value'   => (string) $member_store_id,
+                'compare' => '=',
+            );
+            /* phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_query */
+        }
+
         if ( ! empty( $request['meta_value'] ) ) {
             $args['meta_query'][] = array(
                 'key'   => sanitize_text_field( $request['meta_key'] ),
@@ -148,6 +165,8 @@ class Rest {
      * @return array Modified WP_Query arguments.
      */
     public function query_product_modify( $args, $request ) {
+        $args = $this->limit_unpublished_to_own_store( $args, $request );
+
         if ( ! empty( $request['meta_value'] ) ) {
             $args['meta_query'][] = array(
                 'key'   => sanitize_text_field( $request['meta_key'] ),
@@ -224,15 +243,46 @@ class Rest {
     }
 
     /**
+     * Restrict non-admins to published items unless they list their own store.
+     *
+     * @param array            $args    WP_Query arguments.
+     * @param \WP_REST_Request $request REST API request object.
+     * @return array
+     */
+    private function limit_unpublished_to_own_store( $args, $request ) {
+        if ( $this->is_marketplace_admin() ) {
+            return $args;
+        }
+
+        $member_store_id    = $this->get_current_member_store_id();
+        $requested_store_id = Utill::POST_META_SETTINGS['store_id'] === ( $request['meta_key'] ?? '' ) ? absint( $request['value'] ?? 0 ) : 0;
+
+        if ( ! $member_store_id || $requested_store_id !== $member_store_id ) {
+            $args['post_status'] = 'publish';
+        }
+
+        return $args;
+    }
+
+    /**
      * Filter WooCommerce coupons by meta key existence.
      *
      * @param array $args    WP_Query arguments.
      * @param array $request REST API request object.
      */
     public function query_shop_coupon_filter_meta( $args, $request ) {
+        $args       = $this->limit_unpublished_to_own_store( $args, $request );
         $meta_query = array();
         $meta_key   = $request['meta_key'] ?? '';
         $value      = $request['value'] ?? '';
+
+        // Only store coupons are listed to non-admins.
+        if ( ! $this->is_marketplace_admin() ) {
+            $meta_query[] = array(
+                'key'     => Utill::POST_META_SETTINGS['store_id'],
+                'compare' => 'EXISTS',
+            );
+        }
 
         // Filter by store ID.
         if ( Utill::POST_META_SETTINGS['store_id'] === $meta_key ) {
@@ -300,53 +350,295 @@ class Rest {
     }
 
     /**
-     * Give permission based on active store and user role.
+     * Decide WooCommerce REST access for visitors and store members.
+     *
+     * Admins keep WooCommerce's own decision; store members are limited to
+     * objects belonging to their own store.
      *
      * @param bool   $permission Current permission status.
-     * @param string $context Request context.
-     * @param int    $object_id Object ID.
-     * @param string $post_type Post type.
+     * @param string $context    Request context: read, create, edit, delete or batch.
+     * @param int    $object_id  Object ID, 0 for collections.
+     * @param string $post_type  Post type, taxonomy, or WooCommerce object name.
+     * @return bool
      */
     public function grant_woocommerce_rest_permission( $permission, $context, $object_id, $post_type ) {
-        // Decide on $context (the effective operation WooCommerce is about to perform),
-        // not the raw transport verb — a client can dispatch a write through a request
-        // whose $_SERVER['REQUEST_METHOD'] is GET via _method / X-HTTP-Method-Override,
-        // and $context already reflects the real, post-override operation.
-        $public_post_types = array(
-            'product',
-            'shop_coupon',
-            'product_cat',
-        );
-
-        if ( 'read' === $context && in_array( $post_type, $public_post_types, true ) ) {
-            if ( empty( $object_id ) || Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) ) ) {
-                return true;
-            }
-
-            return 'publish' === get_post_status( $object_id );
+        if ( $this->is_marketplace_admin() ) {
+            return $permission;
         }
 
-        if ( 'read' === $context && 'payment_gateways' === $post_type ) {
-            return Utill::current_user_has_capability( array( 'edit_shop_orders' ) );
-        }
+        $object_id = absint( $object_id );
 
-        $user_id = MultiVendorX()->current_user_id;
-
-        // Fetch custom user meta.
-        $active_store = MultiVendorX()->active_store;
-
-        // Get all users for that store.
-        $users = StoreUtil::get_store_users( $active_store );
-
-        if ( is_array( $users ) && ! empty( $users['users'] ) && in_array( $user_id, $users['users'], true ) ) {
+        if ( 'read' === $context && $this->is_publicly_readable( $post_type, $object_id ) ) {
             return true;
         }
 
-        return apply_filters( 'multivendorx_store_rest_permission', $permission, $user_id, $context, $object_id, $post_type );
+        $store_id = $this->get_current_member_store_id();
+
+        if ( $store_id ) {
+            return $this->get_store_member_permission( $store_id, $context, $object_id, $post_type );
+        }
+
+        return apply_filters( 'multivendorx_store_rest_permission', $permission, MultiVendorX()->current_user_id, $context, $object_id, $post_type );
     }
 
     /**
-        $authenticated_only_post_types = array_merge( $public_post_types, array( 'user', 'payment_gateways' ) );
+     * Check whether the current user administers the whole marketplace.
+     *
+     * @return bool
+     */
+    private function is_marketplace_admin() {
+        return Utill::current_user_has_capability( array( 'manage_woocommerce' ) );
+    }
+
+    /**
+     * Get the current user's active store, if they belong to it.
+     *
+     * @return int Store ID, or 0.
+     */
+    private function get_current_member_store_id() {
+        $store_id = absint( MultiVendorX()->active_store );
+
+        if ( ! $store_id || ! MultiVendorX()->current_user_id ) {
+            return 0;
+        }
+
+        return StoreUtil::current_user_can_manage_store( $store_id ) ? $store_id : 0;
+    }
+
+    /**
+     * Check whether an object is publicly readable (catalogue data).
+     *
+     * @param string $post_type Post type or taxonomy.
+     * @param int    $object_id Object ID, 0 for collections.
+     * @return bool
+     */
+    private function is_publicly_readable( $post_type, $object_id ) {
+        if ( in_array( $post_type, array( 'product_cat', 'product_tag' ), true ) ) {
+            return true;
+        }
+
+        if ( ! in_array( $post_type, array( 'product', 'product_variation', 'shop_coupon' ), true ) ) {
+            return false;
+        }
+
+        // Collections are scoped separately, by the *_object_query filters.
+        if ( ! $object_id ) {
+            return true;
+        }
+
+        if ( 'publish' !== get_post_status( $object_id ) ) {
+            return false;
+        }
+
+        return 'shop_coupon' !== $post_type || $this->get_object_store_id( $post_type, $object_id ) > 0;
+    }
+
+    /**
+     * Decide access for a member of a store.
+     *
+     * @param int    $store_id  The member's active store ID.
+     * @param string $context   Request context.
+     * @param int    $object_id Object ID, 0 for collections and creation.
+     * @param string $post_type Post type, taxonomy, or WooCommerce object name.
+     * @return bool
+     */
+    private function get_store_member_permission( $store_id, $context, $object_id, $post_type ) {
+        // Store-owned objects: only the store's own items.
+        if ( in_array( $post_type, array( 'product', 'product_variation', 'shop_order', 'shop_coupon' ), true ) ) {
+            if ( ! $object_id ) {
+                return true;
+            }
+
+            return $this->get_object_store_id( $post_type, $object_id ) === $store_id;
+        }
+
+        // Customers: read/create/edit plain customers only, never other roles.
+        if ( 'user' === $post_type ) {
+            if ( in_array( $context, array( 'read', 'create' ), true ) && ! $object_id ) {
+                return true;
+            }
+
+            $customer = get_userdata( $object_id );
+            if ( ! $customer || ! in_array( 'customer', (array) $customer->roles, true ) ) {
+                return false;
+            }
+
+            return 'read' === $context || ( 'edit' === $context && $this->is_plain_customer( $object_id ) );
+        }
+
+        // Reference data the product and order editors read.
+        $readable_reference_data = array( 'product_shipping_class', 'attributes', 'settings', 'shipping_methods', 'payment_gateways' );
+
+        if ( 'read' === $context && ( in_array( $post_type, $readable_reference_data, true ) || 0 === strpos( (string) $post_type, 'pa_' ) ) ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the store an order, product, variation, or coupon belongs to.
+     *
+     * @param string $post_type Object type.
+     * @param int    $object_id Object ID.
+     * @return int Store ID, or 0 when unassigned.
+     */
+    private function get_object_store_id( $post_type, $object_id ) {
+        if ( 'shop_order' === $post_type ) {
+            $order = wc_get_order( $object_id );
+            return $order ? absint( $order->get_meta( Utill::POST_META_SETTINGS['store_id'] ) ) : 0;
+        }
+
+        if ( 'product_variation' === $post_type ) {
+            $object_id = wp_get_post_parent_id( $object_id );
+        }
+
+        return absint( get_post_meta( $object_id, Utill::POST_META_SETTINGS['store_id'], true ) );
+    }
+
+    /**
+     * Check whether a user is a customer with no other role.
+     *
+     * @param int $user_id User ID.
+     * @return bool
+     */
+    private function is_plain_customer( $user_id ) {
+        $user = get_userdata( $user_id );
+
+        return $user && array( 'customer' ) === array_values( (array) $user->roles );
+    }
+
+    /**
+     * Scope WooCommerce routes that WooCommerce's own permission check doesn't cover per object.
+     *
+     * @param mixed            $response Result to send to the client, usually unset.
+     * @param array            $handler  Route handler used for the request.
+     * @param \WP_REST_Request $request  Request used to generate the response.
+     * @return mixed
+     */
+    public function guard_store_member_woocommerce_routes( $response, $handler, $request ) {
+        unset( $handler );
+
+        $route = $request->get_route();
+
+        if ( 0 !== strpos( $route, '/wc/v3/' ) || $this->is_marketplace_admin() ) {
+            return $response;
+        }
+
+        $store_id = $this->get_current_member_store_id();
+        if ( ! $store_id ) {
+            return $response;
+        }
+
+        $forbidden = new \WP_Error(
+            'multivendorx_rest_forbidden',
+            __( 'You can only manage items that belong to your store.', 'multivendorx' ),
+            array( 'status' => 403 )
+        );
+
+        // Batch endpoints skip WooCommerce's per-item permission checks.
+        if ( preg_match( '#^/wc/v3/(products|orders|coupons)/batch/?$#', $route, $matches ) ) {
+            $object_type = array(
+                'products' => 'product',
+                'orders'   => 'shop_order',
+                'coupons'  => 'shop_coupon',
+            )[ $matches[1] ];
+
+            $object_ids = array_map( 'absint', (array) $request->get_param( 'delete' ) );
+            foreach ( (array) $request->get_param( 'update' ) as $update ) {
+                $object_ids[] = absint( $update['id'] ?? 0 );
+            }
+
+            foreach ( $object_ids as $object_id ) {
+                if ( $object_id && $this->get_object_store_id( $object_type, $object_id ) !== $store_id ) {
+                    return $forbidden;
+                }
+            }
+
+            return $response;
+        }
+
+        // Settings groups are marketplace-wide, not per-store.
+        if ( preg_match( '#^/wc/v3/settings#', $route ) ) {
+            return $forbidden;
+        }
+
+        // Order notes/variations: checked by WooCommerce without the parent ID.
+        if ( preg_match( '#^/wc/v3/orders/(\d+)/notes#', $route, $matches ) ) {
+            return $this->get_object_store_id( 'shop_order', absint( $matches[1] ) ) === $store_id ? $response : $forbidden;
+        }
+
+        if ( preg_match( '#^/wc/v3/products/(\d+)/variations#', $route, $matches ) ) {
+            return $this->get_object_store_id( 'product', absint( $matches[1] ) ) === $store_id ? $response : $forbidden;
+        }
+
+        // Customers: never let a store member change credentials or roles.
+        if ( preg_match( '#^/wc/v3/customers(/(\d+))?/?$#', $route, $matches ) ) {
+            if ( 'GET' === $request->get_method() ) {
+                $request->set_param( 'role', 'customer' );
+                return $response;
+            }
+
+            foreach ( array( 'password', 'role', 'username' ) as $credential_param ) {
+                $request->offsetUnset( $credential_param );
+            }
+
+            if ( ! empty( $matches[2] ) ) {
+                $request->offsetUnset( 'email' );
+            }
+        }
+
+        return $response;
+    }
+
+    /**
+     * Hide payment gateway settings (API keys, secrets) from non-admins.
+     *
+     * @param \WP_REST_Response   $response REST API response object.
+     * @param \WC_Payment_Gateway $gateway  Payment gateway object.
+     * @param \WP_REST_Request    $request  Request object.
+     * @return \WP_REST_Response
+     */
+    public function hide_payment_gateway_settings( $response, $gateway, $request ) {
+        unset( $gateway, $request );
+
+        if ( $this->is_marketplace_admin() || ! $response instanceof \WP_REST_Response ) {
+            return $response;
+        }
+
+        $gateway_data = $response->get_data();
+        unset( $gateway_data['settings'] );
+        $response->set_data( $gateway_data );
+
+        return $response;
+    }
+
+    /**
+     * Force store members' products and coupons to belong to their own store.
+     *
+     * @param \WC_Data         $wc_object Product or coupon about to be saved.
+     * @param \WP_REST_Request $request   Request object.
+     * @param bool             $creating  Whether the object is being created.
+     * @return \WC_Data
+     */
+    public function assign_member_store_to_object( $wc_object, $request, $creating ) {
+        unset( $request, $creating );
+
+        if ( $this->is_marketplace_admin() ) {
+            return $wc_object;
+        }
+
+        $store_id = $this->get_current_member_store_id();
+
+        if ( $store_id && $wc_object instanceof \WC_Data ) {
+            $wc_object->update_meta_data( Utill::POST_META_SETTINGS['store_id'], $store_id );
+        }
+
+        return $wc_object;
+    }
+
+    /**
+     * Add store info to WooCommerce order REST responses.
      *
      * @param WP_REST_Response $response REST API response object.
      * @param WC_Order         $order    Order object.

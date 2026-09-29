@@ -183,8 +183,9 @@ class StripeConnect {
                         'text'         => __( 'Disconnect', 'multivendorx' ),
                         'redirect_url' => apply_filters(
                             'multivendorx_stripe_disconnect_url',
-                            admin_url(
-                                'admin-post.php?action=multivendorx_disconnect_stripe'
+                            wp_nonce_url(
+                                admin_url( 'admin-post.php?action=multivendorx_disconnect_stripe' ),
+                                'multivendorx_disconnect_stripe'
                             )
                         ),
                         'class'        => 'multivendorx-stripe-disconnect-btn',
@@ -197,8 +198,9 @@ class StripeConnect {
                         'text'         => __( 'Connect', 'multivendorx' ),
                         'redirect_url' => apply_filters(
                             'multivendorx_stripe_connect_url',
-                            admin_url(
-                                'admin-post.php?action=multivendorx_connect_stripe'
+                            wp_nonce_url(
+                                admin_url( 'admin-post.php?action=multivendorx_connect_stripe' ),
+                                'multivendorx_connect_stripe'
                             )
                         ),
                         'class'        => 'multivendorx-stripe-connect-btn',
@@ -280,6 +282,8 @@ class StripeConnect {
         if ( ! is_user_logged_in() ) {
             return false;
         }
+
+        check_admin_referer( 'multivendorx_connect_stripe' );
 
         $store_id = MultiVendorX()->active_store;
         if ( empty( $store_id ) ) {
@@ -385,6 +389,8 @@ class StripeConnect {
         if ( ! is_user_logged_in() ) {
             return;
         }
+
+        check_admin_referer( 'multivendorx_disconnect_stripe' );
 
         $store_id = MultiVendorX()->active_store;
         if ( empty( $store_id ) ) {

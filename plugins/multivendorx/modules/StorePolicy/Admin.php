@@ -8,6 +8,9 @@
 namespace MultiVendorX\StorePolicy;
 
 use MultiVendorX\Utill;
+
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Store Policy Admin class
  *

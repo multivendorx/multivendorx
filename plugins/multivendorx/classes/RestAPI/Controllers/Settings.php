@@ -75,7 +75,8 @@ class Settings extends \WP_REST_Controller {
      * @param object $request The REST request object.
      */
     public function update_item_permissions_check( $request ) {
-        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
+        // Admin-only: edit_stores (granted to store_owner) isn't enough here.
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
     public function get_item_permissions_check( $request ) {
@@ -138,7 +139,7 @@ class Settings extends \WP_REST_Controller {
                 return;
             }
             $get_settings_data = $request->get_param( 'setting' );
-            $settingsname      = $request->get_param( 'settingName' );
+            $settingsname      = sanitize_key( (string) $request->get_param( 'settingName' ) );
             $settingsname      = str_replace( '-', '_', $settingsname );
             $optionname        = 'multivendorx_' . $settingsname . '_settings';
 
@@ -238,11 +239,11 @@ class Settings extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $module_id = $request->get_param( 'id' );
-            $action    = $request->get_param( 'action' );
+            $module_id = sanitize_key( (string) $request->get_param( 'id' ) );
+            $action    = sanitize_key( (string) $request->get_param( 'action' ) );
 
             // Setup wizard module.
-            $modules  = $request->get_param( 'modules' ) ?? array();
+            $modules  = array_filter( array_map( 'sanitize_key', (array) ( $request->get_param( 'modules' ) ?? array() ) ) );
             $response = rest_ensure_response( array() );
             $result   = MultiVendorX()->modules->activate_modules( $modules );
             $response->set_data( $result );

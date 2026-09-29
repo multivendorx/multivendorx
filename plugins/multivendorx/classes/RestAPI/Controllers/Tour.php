@@ -7,6 +7,7 @@
 
 namespace MultiVendorX\RestAPI\Controllers;
 
+use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Utill;
 defined( 'ABSPATH' ) || exit;
 
@@ -81,6 +82,14 @@ class Tour extends \WP_REST_Controller {
 
             // ✅ STORE CONTEXT
             if ( $store_id ) {
+                if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                    return new \WP_Error(
+                        'rest_forbidden',
+                        __( 'You are not allowed to view this store\'s tour status.', 'multivendorx' ),
+                        array( 'status' => 403 )
+                    );
+                }
+
                 $store  = new \MultiVendorX\Store\Store( $store_id );
                 $status = $store->get_meta( Utill::STORE_SETTINGS_KEYS['store_tour_completed'] );
 
@@ -90,6 +99,14 @@ class Tour extends \WP_REST_Controller {
             }
 
             // ✅ ADMIN CONTEXT
+            if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to view the admin tour status.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+
             $status = get_option(
                 Utill::MULTIVENDORX_OTHER_SETTINGS['tour_completed'],
                 false
@@ -128,6 +145,14 @@ class Tour extends \WP_REST_Controller {
 
             // ✅ STORE CONTEXT
             if ( $store_id ) {
+                if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                    return new \WP_Error(
+                        'rest_forbidden',
+                        __( 'You are not allowed to update this store\'s tour status.', 'multivendorx' ),
+                        array( 'status' => 403 )
+                    );
+                }
+
                 $store = new \MultiVendorX\Store\Store( $store_id );
                 $store->update_meta(
                     Utill::STORE_SETTINGS_KEYS['store_tour_completed'],
@@ -137,6 +162,14 @@ class Tour extends \WP_REST_Controller {
             }
 
             // ✅ ADMIN CONTEXT
+            if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to update the admin tour status.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+
             update_option(
                 Utill::MULTIVENDORX_OTHER_SETTINGS['tour_completed'],
                 $completed

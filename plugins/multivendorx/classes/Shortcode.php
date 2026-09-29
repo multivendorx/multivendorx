@@ -9,6 +9,8 @@ namespace MultiVendorX;
 
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Shortcode class.
  *

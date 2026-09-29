@@ -10,6 +10,8 @@ namespace MultiVendorX\StorePolicy;
 use MultiVendorX\FrontendScripts;
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Store Policy Frontend class
  *

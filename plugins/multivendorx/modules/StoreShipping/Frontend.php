@@ -10,6 +10,8 @@ namespace MultiVendorX\StoreShipping;
 use MultiVendorX\FrontendScripts;
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Store Review Frontend class
  *

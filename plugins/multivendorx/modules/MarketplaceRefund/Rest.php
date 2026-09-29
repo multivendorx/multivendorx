@@ -38,6 +38,12 @@ class Rest extends \WP_REST_Controller {
         add_filter( 'woocommerce_rest_shop_order_schema', array( $this, 'add_refund_status' ) );
     }
 
+    /**
+     * Add the "refund-requested" status to the order schema.
+     *
+     * @param array $schema Order REST schema.
+     * @return array
+     */
     public function add_refund_status( $schema ) {
         $schema['properties']['status']['enum'][] = 'refund-requested';
         return $schema;
@@ -56,11 +62,7 @@ class Rest extends \WP_REST_Controller {
                     'callback'            => array( $this, 'get_items' ),
                     'permission_callback' => array( $this, 'get_items_permissions_check' ),
                 ),
-                array(
-                    'methods'             => \WP_REST_Server::EDITABLE,
-                    'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
-                ),
+                // No EDITABLE route: update_item() below isn't implemented yet.
             )
         );
     }

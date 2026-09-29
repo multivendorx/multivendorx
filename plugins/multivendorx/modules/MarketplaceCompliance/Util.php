@@ -9,6 +9,8 @@ namespace MultiVendorX\MarketplaceCompliance;
 
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Marketplace Compliance Util class
  *
@@ -91,11 +93,11 @@ class Util {
 			$query .= ' WHERE ' . implode( ' AND ', $where );
 		}
 
-		// Order by.
+		// Order by (column and direction both allowlisted).
 		if ( empty( $args['count'] ) && ! empty( $args['order_by'] ) ) {
 			$allowed  = array( 'created_at', 'updated_at', 'id', 'store_id', 'product_id' );
 			$order_by = in_array( $args['order_by'], $allowed, true ) ? $args['order_by'] : 'created_at';
-			$order    = $args['order'] ?? 'DESC';
+			$order    = isset( $args['order'] ) && 'ASC' === strtoupper( $args['order'] ) ? 'ASC' : 'DESC';
 			$query   .= " ORDER BY $order_by $order";
 		}
 

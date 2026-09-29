@@ -1,6 +1,8 @@
 <?php
 namespace MultiVendorX\Intelligence;
 
+defined( 'ABSPATH' ) || exit;
+
 class Util {
 
     /**

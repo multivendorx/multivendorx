@@ -1,9 +1,16 @@
 <?php
+/**
+ * MultiVendorX Promotions class file.
+ *
+ * @package MultiVendorX
+ */
 
 namespace MultiVendorX;
 
 defined( 'ABSPATH' ) || exit;
 /**
+ * MultiVendorX Promotions class.
+ *
  * @class       MultiVendorX Promotions Class
  *
  * @version     PRODUCT_VERSION
@@ -11,10 +18,38 @@ defined( 'ABSPATH' ) || exit;
  * @author      MultiVendorX
  */
 class Promotions {
+
+    /**
+     * URL to leave a WordPress.org review.
+     *
+     * @var string
+     */
     private string $review_url;
+
+    /**
+     * Current free plugin version.
+     *
+     * @var string
+     */
     private string $plugin_version;
+
+    /**
+     * Current Pro plugin version, if Pro is active.
+     *
+     * @var string
+     */
     private string $pro_plugin_version;
+
+    /**
+     * Coupon-creation API endpoint.
+     *
+     * @var string
+     */
     private string $api_url;
+
+    /**
+     * Constructor. Registers admin-notice hooks.
+     */
     public function __construct() {
         $this->plugin_version     = MULTIVENDORX_PLUGIN_VERSION;
         $this->pro_plugin_version = defined( 'MULTIVENDORX_PRO_PLUGIN_VERSION' ) ? MULTIVENDORX_PRO_PLUGIN_VERSION : '';
@@ -26,14 +61,22 @@ class Promotions {
         add_action( 'admin_notices', array( $this, 'seek_site_information' ) );
         add_action( 'admin_notices', array( $this, 'seek_product_review' ) );
         add_action( 'admin_notices', array( $this, 'free_pro_admin_notice' ) );
-        add_action( 'wp_ajax_admin_notice_action', array( $this, 'admin_notice_action' ), 10 );
-        add_action( 'wp_ajax_dismiss_free_pro_notice', array( $this, 'dismiss_free_pro_notice' ) );
-        add_action( 'admin_print_footer_scripts', array( $this, 'notice_script' ) );
+        add_action( 'wp_ajax_multivendorx_admin_notice_action', array( $this, 'admin_notice_action' ), 10 );
+        add_action( 'wp_ajax_multivendorx_dismiss_free_pro_notice', array( $this, 'dismiss_free_pro_notice' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_notice_script' ) );
     }
 
+    /**
+     * Handle the review/site-info admin notice dismiss actions.
+     */
     public function admin_notice_action() {
         check_ajax_referer( 'admin_notice', 'nonce' );
-        $action_type = filter_input( INPUT_POST, 'admin_notice_action_type', FILTER_SANITIZE_STRING );
+
+        if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+            wp_send_json_error( null, 403 );
+        }
+
+        $action_type = sanitize_key( filter_input( INPUT_POST, 'admin_notice_action_type' ) ?? '' );
         $user_id     = get_current_user_id();
         if ( ! $action_type ) {
             wp_die();
@@ -54,6 +97,9 @@ class Promotions {
         wp_send_json_success();
     }
 
+    /**
+     * Show a "leave a review" admin notice, once, after enough time has passed.
+     */
     public function seek_product_review() {
         $user_id = get_current_user_id();
 
@@ -72,6 +118,9 @@ class Promotions {
         <?php
     }
 
+    /**
+     * Show the anonymous-usage-tracking opt-in admin notice and handle the yes/no response.
+     */
     public function seek_site_information() {
         if ( get_option( 'plugin_action_block_notice' ) ) {
             return;
@@ -114,7 +163,7 @@ class Promotions {
 
         if ( $plugin_action ) {
             update_option( 'plugin_action_block_notice', $plugin_action );
-            if ( $plugin_action === 'yes' ) {
+            if ( 'yes' === $plugin_action ) {
                 $body                     = MultiVendorX()->tracker->get_data();
                 $body['status']           = 'Deactivated';
                 $body['deactivated_date'] = time();
@@ -133,6 +182,12 @@ class Promotions {
         }
     }
 
+    /**
+     * Request a discount coupon from the MultiVendorX API for a user who opted into tracking.
+     *
+     * @param array $data Coupon recipient data (name, email).
+     * @return array|\WP_Error
+     */
     public function create_coupon_for_discount( $data = array() ) {
 		if ( empty( $data ) ) {
 			return new \WP_Error( 'missing_data', __( 'Coupon data is required.', 'multivendorx' ) );
@@ -143,7 +198,7 @@ class Promotions {
 			array(
 				'timeout'     => 30,
 				'headers'     => array(
-					'User-Agent' => 'MultiVendorX/' . $this->plugin_version ?? '1.0.0' . '; ' . home_url(),
+					'User-Agent' => 'MultiVendorX/' . $this->plugin_version ?? '1.0.0; ' . home_url(),
 				),
 				'body'        => $data,
 				'data_format' => 'body',
@@ -159,56 +214,80 @@ class Promotions {
 		return $response;
 	}
 
-    public function notice_script() {
-        ?>
-        <script>
-            jQuery(function ($) {
-                const ajaxData = {
-                    action: 'admin_notice_action',
-                    nonce: '<?php echo esc_js( wp_create_nonce( 'admin_notice' ) ); ?>'
-                };
-
-                $(document)
-                    .on('click', '.review-notice .button', function (e) {
-                        e.preventDefault();
-
-                        const actionType = $(this).data('action');
-                        const href = $(this).attr('href');
-
-                        $.post(ajaxurl, {
-                            ...ajaxData,
-                            admin_notice_action_type: actionType
-                        });
-
-                        $(this).closest('.notice').fadeOut();
-
-                        if (href && href !== '#') {
-                            window.open(href, '_blank', 'noopener');
-                        }
-                    })
-                    .on('click', '.review-notice .notice-dismiss', function () {
-                        $.post(ajaxurl, {
-                            ...ajaxData,
-                            admin_notice_action_type: 'review_closed'
-                        });
-                    })
-                    .on('click', '.tracking-toggle', function (e) {
-                        e.preventDefault();
-                        $('.tracking-details').slideToggle('fast');
-                    })
-
-                    // Free pro notice dismiss
-                    .on('click', '.free-pro-notice .notice-dismiss', function () {
-                        $.post(ajaxurl, {
-                            action: 'dismiss_free_pro_notice'
-                        });
-                    });
-
-            });
-        </script>
-        <?php
+    /**
+     * Enqueue the admin-notice dismiss/action handling script.
+     */
+    public function enqueue_notice_script() {
+        wp_register_script( 'multivendorx-admin-notices', false, array( 'jquery' ), $this->plugin_version, true );
+        wp_enqueue_script( 'multivendorx-admin-notices' );
+        wp_localize_script(
+            'multivendorx-admin-notices',
+            'multivendorxAdminNotices',
+            array(
+                'action' => 'multivendorx_admin_notice_action',
+                'nonce'  => wp_create_nonce( 'admin_notice' ),
+            )
+        );
+        wp_add_inline_script( 'multivendorx-admin-notices', $this->get_notice_script_js() );
     }
 
+    /**
+     * JS behavior for admin-notice dismiss/action handling, driven by the localized `multivendorxAdminNotices` object.
+     *
+     * @return string
+     */
+    private function get_notice_script_js(): string {
+        return <<<'JS'
+jQuery(function ($) {
+    const ajaxData = {
+        action: multivendorxAdminNotices.action,
+        nonce: multivendorxAdminNotices.nonce
+    };
+
+    $(document)
+        .on('click', '.review-notice .button', function (e) {
+            e.preventDefault();
+
+            const actionType = $(this).data('action');
+            const href = $(this).attr('href');
+
+            $.post(ajaxurl, {
+                ...ajaxData,
+                admin_notice_action_type: actionType
+            });
+
+            $(this).closest('.notice').fadeOut();
+
+            if (href && href !== '#') {
+                window.open(href, '_blank', 'noopener');
+            }
+        })
+        .on('click', '.review-notice .notice-dismiss', function () {
+            $.post(ajaxurl, {
+                ...ajaxData,
+                admin_notice_action_type: 'review_closed'
+            });
+        })
+        .on('click', '.tracking-toggle', function (e) {
+            e.preventDefault();
+            $('.tracking-details').slideToggle('fast');
+        })
+
+        // Free pro notice dismiss
+        .on('click', '.free-pro-notice .notice-dismiss', function () {
+            $.post(ajaxurl, {
+                action: 'multivendorx_dismiss_free_pro_notice',
+                nonce: ajaxData.nonce
+            });
+        });
+
+});
+JS;
+    }
+
+    /**
+     * Show a notice when the installed Pro plugin version is below the required minimum.
+     */
     public function free_pro_admin_notice() {
         if ( get_option( 'multivendorx_dismiss_free_pro_notice' ) ) {
             return;
@@ -235,8 +314,17 @@ class Promotions {
         }
     }
 
+    /**
+     * Dismiss the free/pro version-mismatch admin notice.
+     */
     public function dismiss_free_pro_notice() {
+        check_ajax_referer( 'admin_notice', 'nonce' );
+
+        if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+            wp_send_json_error( null, 403 );
+        }
+
         update_option( 'multivendorx_dismiss_free_pro_notice', true );
-        die();
+        wp_send_json_success();
     }
 }
