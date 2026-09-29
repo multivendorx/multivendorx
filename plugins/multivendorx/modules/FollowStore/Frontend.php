@@ -30,6 +30,7 @@ class Frontend {
 
         add_filter( 'multivendorx_register_scripts', array( $this, 'register_script' ) );
         add_filter( 'multivendorx_localize_scripts', array( $this, 'localize_scripts' ) );
+        add_filter( 'multivendorx_register_styles', array( $this, 'register_login_modal_style' ) );
         // Load scripts.
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_login_modal_style' ) );
@@ -37,17 +38,23 @@ class Frontend {
     }
 
     /**
+     * Register the login modal's stylesheet.
+     *
+     * @param array $styles Existing frontend styles.
+     * @return array
+     */
+    public function register_login_modal_style( $styles ) {
+        $styles['multivendorx-follow-store-login-modal'] = array(
+            'src' => FrontendScripts::get_asset_path() . 'styles/modules/FollowStore/' . MULTIVENDORX_PLUGIN_SLUG . '-login-modal.min.css',
+        );
+        return $styles;
+    }
+
+    /**
      * Enqueue the login modal's CSS.
      */
     public function enqueue_login_modal_style() {
-        wp_register_style( 'multivendorx-follow-store-login-modal', false, array(), MultiVendorX()->version );
-        wp_enqueue_style( 'multivendorx-follow-store-login-modal' );
-        wp_add_inline_style(
-            'multivendorx-follow-store-login-modal',
-            '.multivendorx-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; }'
-            . ' .multivendorx-modal-content { background:#fff; margin:10% auto; padding:20px; width:400px; border-radius:5px; position:relative; }'
-            . ' .multivendorx-close { position:absolute; top:10px; right:15px; cursor:pointer; font-size:20px; }'
-        );
+        FrontendScripts::enqueue_style( 'multivendorx-follow-store-login-modal' );
     }
 	/**
 	 * Register follow store frontend script

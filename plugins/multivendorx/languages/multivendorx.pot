@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-29T11:14:54+00:00\n"
+"POT-Creation-Date: 2026-09-29T12:50:43+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: multivendorx\n"
@@ -76,7 +76,7 @@ msgstr ""
 
 #: classes/Admin.php:125
 #: classes/RestAPI/Controllers/Dashboard.php:237
-#: classes/Tracker.php:135
+#: classes/Tracker.php:136
 #: assets/js/index.js:1
 msgid "Settings"
 msgstr ""
@@ -98,7 +98,7 @@ msgstr ""
 #: classes/Admin.php:191
 #: classes/Admin.php:192
 #: classes/MultiVendorX.php:260
-#: classes/Tracker.php:146
+#: classes/Tracker.php:147
 #: assets/js/index.js:1
 msgid "Upgrade to Pro"
 msgstr ""
@@ -189,54 +189,54 @@ msgstr ""
 msgid "Once Monthly"
 msgstr ""
 
-#: classes/Frontend.php:234
+#: classes/Frontend.php:233
 msgid "This product cannot be purchased at the moment."
 msgstr ""
 
-#: classes/Frontend.php:266
+#: classes/Frontend.php:265
 msgid "Checkout blocked: your cart contains products from a restricted store."
 msgstr ""
 
-#: classes/Frontend.php:326
-#: classes/Frontend.php:341
+#: classes/Frontend.php:325
+#: classes/Frontend.php:340
 msgid "Your cart has products from various stores. They’ll be processed and shipped individually, so expect more than one delivery."
 msgstr ""
 
 #. translators: %s: Current user display name
-#: classes/Frontend.php:623
+#: classes/Frontend.php:622
 #, php-format
 msgid " %s you're one step away from setting up your store. Fill in your business information below to get started."
 msgstr ""
 
-#: classes/Frontend.php:632
+#: classes/Frontend.php:631
 msgid "Step 1 of 2"
 msgstr ""
 
-#: classes/Frontend.php:633
+#: classes/Frontend.php:632
 msgid "Create your account"
 msgstr ""
 
-#: classes/Frontend.php:634
+#: classes/Frontend.php:633
 msgid "Start by setting up a free account. If you already have one, just sign in."
 msgstr ""
 
-#: classes/Frontend.php:636
+#: classes/Frontend.php:635
 msgid "Already have an account"
 msgstr ""
 
-#: classes/Frontend.php:637
+#: classes/Frontend.php:636
 msgid "New here? Sign up"
 msgstr ""
 
-#: classes/Frontend.php:716
+#: classes/Frontend.php:715
 msgid "Manage your store"
 msgstr ""
 
-#: classes/Frontend.php:718
+#: classes/Frontend.php:717
 msgid "To view orders, manage products, and access your full store settings, visit your store dashboard."
 msgstr ""
 
-#: classes/Frontend.php:721
+#: classes/Frontend.php:720
 msgid "Go to store dashboard"
 msgstr ""
 
@@ -901,15 +901,15 @@ msgstr ""
 msgid "Disconnect"
 msgstr ""
 
-#: classes/Payments/StripeConnect.php:197
+#: classes/Payments/StripeConnect.php:198
 msgid "Connect with Stripe"
 msgstr ""
 
-#: classes/Payments/StripeConnect.php:198
+#: classes/Payments/StripeConnect.php:199
 msgid "Connect"
 msgstr ""
 
-#: classes/Payments/StripeConnect.php:213
+#: classes/Payments/StripeConnect.php:215
 msgid "Stripe Connect"
 msgstr ""
 
@@ -917,55 +917,55 @@ msgstr ""
 msgid "— No change —"
 msgstr ""
 
-#: classes/Promotions.php:112
+#: classes/Promotions.php:113
 msgid "We appreciate you using MultiVendorX. If it has helped your business, please consider leaving a quick review."
 msgstr ""
 
-#: classes/Promotions.php:114
+#: classes/Promotions.php:115
 msgid "Remind me later"
 msgstr ""
 
-#: classes/Promotions.php:115
+#: classes/Promotions.php:116
 msgid "Review now"
 msgstr ""
 
-#: classes/Promotions.php:146
+#: classes/Promotions.php:147
 msgid "Want to help make <strong>MultiVendorX</strong> even better? Allow anonymous usage tracking and receive a <strong>10% discount coupon</strong> for premium extensions."
 msgstr ""
 
-#: classes/Promotions.php:147
+#: classes/Promotions.php:148
 msgid "What we collect."
 msgstr ""
 
-#: classes/Promotions.php:151
+#: classes/Promotions.php:152
 msgid "We collect non-sensitive diagnostic and usage data, including your site URL, WordPress and PHP versions, active plugins and themes, and your email address to send the discount coupon."
 msgstr ""
 
-#: classes/Promotions.php:155
+#: classes/Promotions.php:156
 msgid "Sure, I'd like to help"
 msgstr ""
 
-#: classes/Promotions.php:156
+#: classes/Promotions.php:157
 msgid "No Thanks"
 msgstr ""
 
-#: classes/Promotions.php:193
+#: classes/Promotions.php:194
 msgid "Coupon data is required."
 msgstr ""
 
-#: classes/Promotions.php:212
+#: classes/Promotions.php:213
 msgid "Unable to create coupon."
 msgstr ""
 
-#: classes/Promotions.php:304
+#: classes/Promotions.php:263
 msgid "MultivendorX Update Required"
 msgstr ""
 
-#: classes/Promotions.php:305
+#: classes/Promotions.php:264
 msgid "To ensure all the feature compatibility and accessibility, MultiVendorX Pro minimum v2.0.0 is required."
 msgstr ""
 
-#: classes/Promotions.php:309
+#: classes/Promotions.php:268
 msgid "Update Now"
 msgstr ""
 
@@ -1003,7 +1003,7 @@ msgstr ""
 #: modules/CustomerQueries/Rest.php:422
 #: modules/FollowStore/Rest.php:107
 #: modules/FollowStore/Rest.php:207
-#: modules/FollowStore/Rest.php:265
+#: modules/FollowStore/Rest.php:268
 #: modules/Knowledgebase/Rest.php:114
 #: modules/Knowledgebase/Rest.php:205
 #: modules/Knowledgebase/Rest.php:233
@@ -1056,8 +1056,8 @@ msgstr ""
 #: modules/CustomerQueries/Rest.php:244
 #: modules/CustomerQueries/Rest.php:405
 #: modules/FollowStore/Rest.php:191
-#: modules/FollowStore/Rest.php:249
-#: modules/FollowStore/Rest.php:361
+#: modules/FollowStore/Rest.php:252
+#: modules/FollowStore/Rest.php:364
 #: modules/Knowledgebase/Rest.php:191
 #: modules/Knowledgebase/Rest.php:310
 #: modules/Knowledgebase/Rest.php:386
@@ -1418,77 +1418,77 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: classes/Tracker.php:142
+#: classes/Tracker.php:143
 #: modules/StoreReview/assets/js/frontend.js:256
 msgid "Write a Review"
 msgstr ""
 
-#: classes/Tracker.php:214
+#: classes/Tracker.php:215
 msgid "Support Forum"
 msgstr ""
 
-#: classes/Tracker.php:218
+#: classes/Tracker.php:219
 msgid "Facebook Group"
 msgstr ""
 
-#: classes/Tracker.php:222
+#: classes/Tracker.php:223
 msgid "Book a Call"
 msgstr ""
 
-#: classes/Tracker.php:251
+#: classes/Tracker.php:252
 msgid "We collect non-sensitive diagnostic data and plugin usage information along with your feedback."
 msgstr ""
 
-#: classes/Tracker.php:256
+#: classes/Tracker.php:257
 msgid "Skip & Deactivate"
 msgstr ""
 
-#: classes/Tracker.php:257
+#: classes/Tracker.php:258
 msgid "Submit & Deactivate"
 msgstr ""
 
-#: classes/Tracker.php:282
+#: classes/Tracker.php:296
 msgid "Submitting…"
 msgstr ""
 
-#: classes/Tracker.php:384
+#: classes/Tracker.php:333
 msgid "We're sorry to see you leave 😔"
 msgstr ""
 
-#: classes/Tracker.php:385
+#: classes/Tracker.php:334
 msgid "Thinking about deactivating? We're here to help — contact us anytime."
 msgstr ""
 
-#: classes/Tracker.php:386
+#: classes/Tracker.php:335
 msgid "Would you quickly share your reason for deactivating?"
 msgstr ""
 
-#: classes/Tracker.php:388
+#: classes/Tracker.php:337
 msgid "I no longer need the plugin"
 msgstr ""
 
-#: classes/Tracker.php:390
+#: classes/Tracker.php:339
 msgid "I found a better plugin"
 msgstr ""
 
-#: classes/Tracker.php:391
+#: classes/Tracker.php:340
 msgid "Please share which plugin"
 msgstr ""
 
-#: classes/Tracker.php:393
+#: classes/Tracker.php:342
 msgid "I couldn't get the plugin to work"
 msgstr ""
 
-#: classes/Tracker.php:394
+#: classes/Tracker.php:343
 msgid "It's a temporary deactivation"
 msgstr ""
 
-#: classes/Tracker.php:396
+#: classes/Tracker.php:345
 #: modules/MarketplaceCompliance/Ajax.php:122
 msgid "Other"
 msgstr ""
 
-#: classes/Tracker.php:397
+#: classes/Tracker.php:346
 msgid "Please share the reason"
 msgstr ""
 
@@ -1555,7 +1555,7 @@ msgid "No products available in this store yet."
 msgstr ""
 
 #. translators: %d: Number of answered questions for this product
-#: modules/CustomerQueries/Frontend.php:106
+#: modules/CustomerQueries/Frontend.php:105
 #, php-format
 msgid "Customer Queries (%d)"
 msgstr ""
@@ -1641,7 +1641,7 @@ msgid "Address"
 msgstr ""
 
 #: modules/Elementor/Tags/StoreInfo.php:85
-#: modules/MarketplaceCompliance/Frontend.php:123
+#: modules/MarketplaceCompliance/Frontend.php:122
 #: assets/js/block/contact-info/index.js:1
 #: assets/js/index.js:1
 msgid "Email"
@@ -1735,14 +1735,14 @@ msgstr ""
 
 #: modules/Elementor/Widgets/StoreTab.php:118
 #: modules/StorePolicy/Admin.php:40
-#: modules/StorePolicy/Frontend.php:108
+#: modules/StorePolicy/Frontend.php:107
 #: assets/js/block/store-tabs/index.js:1
 #: assets/js/index.js:1
 msgid "Policy"
 msgstr ""
 
 #: modules/Elementor/Widgets/StoreTab.php:119
-#: modules/StoreReview/Frontend.php:128
+#: modules/StoreReview/Frontend.php:127
 #: assets/js/block/store-quick-info/view.js:1
 #: assets/js/block/store-tabs/index.js:1
 #: assets/js/index.js:1
@@ -1754,7 +1754,7 @@ msgstr ""
 msgid "You are not allowed to view this store's followers."
 msgstr ""
 
-#: modules/FollowStore/Rest.php:283
+#: modules/FollowStore/Rest.php:286
 msgid "Invalid data."
 msgstr ""
 
@@ -1819,29 +1819,29 @@ msgstr ""
 msgid "Knowledge Base article deleted successfully"
 msgstr ""
 
-#: modules/MarketplaceCompliance/Frontend.php:98
+#: modules/MarketplaceCompliance/Frontend.php:97
 msgid "Report Abuse"
 msgstr ""
 
 #. translators: %s: Product name for abuse report
-#: modules/MarketplaceCompliance/Frontend.php:109
+#: modules/MarketplaceCompliance/Frontend.php:108
 #, php-format
 msgid "Report abuse for \"%s\""
 msgstr ""
 
-#: modules/MarketplaceCompliance/Frontend.php:118
+#: modules/MarketplaceCompliance/Frontend.php:117
 #: assets/js/block/contact-info/index.js:1
 #: assets/js/block/marketplace-stores/index.js:1
 #: assets/js/index.js:1
 msgid "Name"
 msgstr ""
 
-#: modules/MarketplaceCompliance/Frontend.php:137
+#: modules/MarketplaceCompliance/Frontend.php:136
 #: assets/js/block/contact-info/index.js:1
 msgid "Message"
 msgstr ""
 
-#: modules/MarketplaceCompliance/Frontend.php:144
+#: modules/MarketplaceCompliance/Frontend.php:143
 msgid "Report"
 msgstr ""
 
@@ -2152,7 +2152,7 @@ msgstr ""
 msgid "Cancellation Policy."
 msgstr ""
 
-#: modules/StorePolicy/Frontend.php:138
+#: modules/StorePolicy/Frontend.php:137
 #: assets/js/index.js:1
 msgid "Policies"
 msgstr ""
@@ -2221,7 +2221,7 @@ msgstr ""
 msgid "No reviews yet — they'll show up here once received."
 msgstr ""
 
-#: modules/StoreReview/Frontend.php:180
+#: modules/StoreReview/Frontend.php:179
 msgid "Leave a Review"
 msgstr ""
 

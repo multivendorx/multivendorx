@@ -32,6 +32,7 @@ class Admin {
         // admin script and style.
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ), 20 );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_upgrade_menu_style' ) );
+        add_filter( 'admin_multivendorx_register_styles', array( $this, 'register_upgrade_menu_style' ) );
 
         // Allow URL.
         add_filter( 'allowed_redirect_hosts', array( $this, 'allow_multivendorx_redirect_host' ) );
@@ -202,6 +203,19 @@ class Admin {
     }
 
     /**
+     * Register the "Upgrade to Pro" admin menu item's stylesheet.
+     *
+     * @param array $styles Existing admin styles.
+     * @return array
+     */
+    public function register_upgrade_menu_style( $styles ) {
+        $styles['multivendorx-upgrade-menu'] = array(
+            'src' => FrontendScripts::get_asset_path() . 'styles/public/' . MULTIVENDORX_PLUGIN_SLUG . '-upgrade-menu.min.css',
+        );
+        return $styles;
+    }
+
+    /**
      * Enqueue the "Upgrade to Pro" admin menu item's styling.
      *
      * @return void
@@ -211,12 +225,7 @@ class Admin {
             return;
         }
 
-        wp_register_style( 'multivendorx-upgrade-menu', false, array(), MultiVendorX()->version );
-        wp_enqueue_style( 'multivendorx-upgrade-menu' );
-        wp_add_inline_style(
-            'multivendorx-upgrade-menu',
-            'a:has(.upgrade-to-pro){ background: linear-gradient(-28deg, #c4a9e8, #7848b9, #852aff) !important; color: white !important; padding: 5px 0; }'
-        );
+        FrontendScripts::enqueue_style( 'multivendorx-upgrade-menu' );
     }
 
     /**

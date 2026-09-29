@@ -115,6 +115,7 @@ class Tracker {
 
         add_filter( 'plugin_action_links_' . MultiVendorX()->plugin_base, array( $this, 'deactivate_action_links' ) );
         add_filter( 'admin_multivendorx_register_scripts', array( $this, 'register_deactivation_script' ) );
+        add_filter( 'admin_multivendorx_register_styles', array( $this, 'register_deactivation_style' ) );
         add_action( 'admin_print_footer_scripts-plugins.php', array( $this, 'print_deactivation_form' ) );
         add_action( 'admin_enqueue_scripts-plugins.php', array( $this, 'enqueue_deactivation_assets' ) );
         add_action( 'wp_ajax_deactivation_form_' . $this->slug, array( $this, 'handle_form_submit' ) );
@@ -276,15 +277,25 @@ class Tracker {
     }
 
     /**
+     * Register the deactivation modal's stylesheet.
+     *
+     * @param array $styles Existing admin styles.
+     * @return array
+     */
+    public function register_deactivation_style( $styles ) {
+        $styles['multivendorx-deactivation-modal'] = array(
+            'src' => FrontendScripts::get_asset_path() . 'styles/public/' . MULTIVENDORX_PLUGIN_SLUG . '-deactivation-modal.min.css',
+        );
+        return $styles;
+    }
+
+    /**
      * Enqueue the deactivation modal's styles and behavior on the Plugins screen.
      */
     public function enqueue_deactivation_assets(): void {
         $slug = $this->slug;
 
-        wp_register_style( 'multivendorx-deactivation-modal', false, array(), MultiVendorX()->version );
-        wp_enqueue_style( 'multivendorx-deactivation-modal' );
-        wp_add_inline_style( 'multivendorx-deactivation-modal', $this->get_deactivation_modal_css() );
-
+        FrontendScripts::enqueue_style( 'multivendorx-deactivation-modal' );
         FrontendScripts::enqueue_script( 'multivendorx-deactivation-modal' );
         wp_localize_script(
             'multivendorx-deactivation-modal',
@@ -471,103 +482,5 @@ class Tracker {
             update_option( $orig_url_key, $site_url, false );
             update_option( "{$slug}_{$sid}", $body, false );
         }
-    }
-
-    /**
-     * CSS for the deactivation modal, enqueued by enqueue_deactivation_assets().
-     *
-     * @return string
-     */
-    private function get_deactivation_modal_css(): string {
-        return <<<'CSS'
-.modal-wrap {
-    position: fixed; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    z-index: 99999;
-}
-.modal-bg {
-    position: absolute; inset: 0;
-    background: rgba(0,0,0,.75);
-}
-.modal-box {
-    position: relative; z-index: 1;
-    width: 35%; max-width: 90vw; max-height: 85vh;
-    background: #fff; border-radius: .375rem;
-    overflow-y: auto;
-    box-shadow: 0 .5rem 2rem rgba(0,0,0,.25);
-}
-
-.form-head {
-    padding: 1.25rem; text-align: center;
-    border-bottom: 0.063rem solid #eee; font-size: 1.625rem; color: #333;
-    font-weight: 600;
-}
-
-.form-body { padding: 1.25rem; color: #444; }
-.form-body p { margin: 0 0 1rem; font-size: .9rem; line-height: 1.5; }
-
-.support-cards {
-    display: flex; gap: .75rem;
-    margin-bottom: 1.25rem;
-}
-.support-card {
-    flex: 1 0 6rem; padding: 1rem .75rem;
-    border: 0.063rem solid #dbdbdb; border-radius: .25rem;
-    display: flex; flex-direction: column; align-items: center; gap: .5rem;
-    text-decoration: none; color: #5007aa; font-size: .8rem; text-align: center;
-    transition: background .2s;
-}
-.support-card  span{
-    font-size: 0.95rem;
-    font-weight: 500;
-}
-.support-card:hover { background: #f5f0fb; }
-.support-card:hover span{ color: #5007aa; }
-.support-card svg { width: 2rem; height: 2rem; fill: #5007aa; }
-
-/* ── Reasons list ── */
-.deactivation-reasons { margin: 0 0 1rem; padding: 0; list-style: none; }
-.deactivation-reasons li { margin-bottom: .75rem; }
-.deactivation-reasons label { margin-left: .4rem; color: #555; cursor: pointer; }
-.deactivation-reasons .extra-field {
-    display: block; margin-top: .5rem; margin-left: 1.4rem;
-    width: calc(100% - 1.4rem); padding: .4rem .5rem;
-    border: 0.063rem solid #ccc; border-radius: .25rem; font-size: .875rem;
-}
-.deactivation-reasons textarea.extra-field { height: 5rem; resize: vertical; }
-
-.data-notice {
-    border: .063rem solid #5007aa;
-    border-radius: .25rem;
-    box-sizing: border-box;
-    display: flex;
-    gap: .5rem;
-    padding: .5rem .8rem;
-    background: #ece2f9f1;
-    color: #5007aa;
-    font-size: 0.813rem;
-    font-weight: 500;
-}
-
-.form-footer {
-    display: flex; justify-content: flex-end; align-items: center; gap: .75rem;
-    padding: 1rem 1.25rem;
-    border-top: 0.063rem solid #eee;
-    position: sticky; bottom: 0; background: #fff;
-}
-.footer-button {
-    padding: .6rem 1.2rem; border-radius: .25rem;
-    font-size: .875rem; font-weight: 500; cursor: pointer;
-    text-decoration: none; border: none; display: inline-block;
-}
-.button-skip {
-    background: #fff3f1; color: #ef9587;
-}
-.button-skip:hover { background: #e0e0e0; color: #333; }
-.button-submit {
-    background: #5007aa;
-    color: #fff;
-}
-CSS;
     }
 }
