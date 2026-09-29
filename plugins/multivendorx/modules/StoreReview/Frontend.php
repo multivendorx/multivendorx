@@ -83,7 +83,6 @@ class Frontend {
      */
     public function enqueue_scripts() {
         if ( is_product() || Utill::is_store_page() ) {
-            FrontendScripts::load_scripts();
             FrontendScripts::enqueue_script( 'multivendorx-review-frontend-script' );
             FrontendScripts::localize_scripts( 'multivendorx-review-frontend-script' );
         }

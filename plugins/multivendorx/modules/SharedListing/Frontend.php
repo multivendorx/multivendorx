@@ -351,7 +351,6 @@ class Frontend {
      */
     public function load_scripts() {
         if ( is_product() ) {
-            FrontendScripts::load_scripts();
             FrontendScripts::enqueue_script( 'multivendorx-sharedlisting-frontend-script' );
             FrontendScripts::localize_scripts( 'multivendorx-sharedlisting-frontend-script' );
         }

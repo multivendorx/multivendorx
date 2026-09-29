@@ -86,7 +86,6 @@ class Frontend {
      */
     public function load_scripts() {
         if ( Utill::is_store_page() ) {
-            FrontendScripts::load_scripts();
             FrontendScripts::enqueue_script( 'multivendorx-follow-store-frontend-script' );
             FrontendScripts::localize_scripts( 'multivendorx-follow-store-frontend-script' );
         }

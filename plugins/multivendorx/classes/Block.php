@@ -119,7 +119,6 @@ class Block {
 	 */
     public function enqueue_scripts() {
         global $post;
-        FrontendScripts::load_scripts();
 
         $has_multivendorx_block = false;
 

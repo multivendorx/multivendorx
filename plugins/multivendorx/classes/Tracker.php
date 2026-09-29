@@ -114,6 +114,7 @@ class Tracker {
         $this->api_url            = 'https://multivendorx.com/wp-json/mvx_thirdparty/v1/users_database_update';
 
         add_filter( 'plugin_action_links_' . MultiVendorX()->plugin_base, array( $this, 'deactivate_action_links' ) );
+        add_filter( 'admin_multivendorx_register_scripts', array( $this, 'register_deactivation_script' ) );
         add_action( 'admin_print_footer_scripts-plugins.php', array( $this, 'print_deactivation_form' ) );
         add_action( 'admin_enqueue_scripts-plugins.php', array( $this, 'enqueue_deactivation_assets' ) );
         add_action( 'wp_ajax_deactivation_form_' . $this->slug, array( $this, 'handle_form_submit' ) );
@@ -261,6 +262,20 @@ class Tracker {
     }
 
     /**
+     * Register the deactivation modal's behavior script.
+     *
+     * @param array $scripts Existing admin scripts.
+     * @return array
+     */
+    public function register_deactivation_script( $scripts ) {
+        $scripts['multivendorx-deactivation-modal'] = array(
+            'src'  => FrontendScripts::get_asset_path() . 'js/public/' . MULTIVENDORX_PLUGIN_SLUG . '-deactivation-modal.min.js',
+            'deps' => array( 'jquery' ),
+        );
+        return $scripts;
+    }
+
+    /**
      * Enqueue the deactivation modal's styles and behavior on the Plugins screen.
      */
     public function enqueue_deactivation_assets(): void {
@@ -270,8 +285,7 @@ class Tracker {
         wp_enqueue_style( 'multivendorx-deactivation-modal' );
         wp_add_inline_style( 'multivendorx-deactivation-modal', $this->get_deactivation_modal_css() );
 
-        wp_register_script( 'multivendorx-deactivation-modal', false, array( 'jquery' ), MultiVendorX()->version, true );
-        wp_enqueue_script( 'multivendorx-deactivation-modal' );
+        FrontendScripts::enqueue_script( 'multivendorx-deactivation-modal' );
         wp_localize_script(
             'multivendorx-deactivation-modal',
             'multivendorxDeactivation',
@@ -282,71 +296,6 @@ class Tracker {
                 'submittingText' => __( 'Submitting…', 'multivendorx' ),
             )
         );
-        wp_add_inline_script( 'multivendorx-deactivation-modal', $this->get_deactivation_modal_js() );
-    }
-
-    /**
-     * JS behavior for the deactivation modal, driven by the localized `multivendorxDeactivation` object.
-     *
-     * @return string
-     */
-    private function get_deactivation_modal_js(): string {
-        return <<<'JS'
-jQuery(function($) {
-    var slug      = multivendorxDeactivation.slug;
-    var nonce     = multivendorxDeactivation.nonce;
-    var ajaxUrl   = multivendorxDeactivation.ajaxUrl;
-    var template  = $( '#form-template-' + slug ).html();
-
-    var $modal    = $( '#modal-' + slug );
-    var $box      = $( '#modal-box-' + slug );
-    var $bg       = $modal.find( '.modal-bg' );
-
-    // Populate box once
-    $box.html( template );
-    $box.find( '.extra-field' ).hide();
-    $modal.hide();
-
-    var deactivateUrl = '';
-
-    // Open modal
-    $( '#deactivate-link-' + slug ).on( 'click', function(e) {
-        e.preventDefault();
-        deactivateUrl = $( this ).attr( 'href' );
-        $modal.show();
-        $box.find( '.button-skip' ).attr( 'href', deactivateUrl );
-    });
-
-    // Show extra field when radio selected
-    $box.on( 'change', 'input[type="radio"]', function() {
-        $box.find( '.extra-field' ).hide();
-        $( this ).closest( 'li' ).find( '.extra-field' ).show();
-    });
-
-    // Submit
-    $box.on( 'click', '.button-submit', function() {
-        var $checked = $box.find( 'input[name="deactivate-reason"]:checked' );
-        var reason   = $checked.length ? $checked.val() : 'No Reason';
-        var details  = $checked.closest( 'li' ).find( '.extra-field' ).val() || '';
-
-        $box.find( '.form-body, .form-footer' ).hide();
-        $box.find( '.form-head' ).after( '<p><span class="spinner is-active"></span> ' + multivendorxDeactivation.submittingText + '</p>' );
-
-        $.post( ajaxUrl, {
-            action   : 'deactivation_form_' + slug,
-            values   : reason,
-            details  : details,
-            security : nonce
-        }).always(function() {
-            window.location.href = deactivateUrl;
-        });
-    });
-
-    $bg.on( 'click', function() {
-        $modal.hide();
-    });
-});
-JS;
     }
 
     /**

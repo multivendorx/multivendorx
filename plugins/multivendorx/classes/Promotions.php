@@ -63,6 +63,7 @@ class Promotions {
         add_action( 'admin_notices', array( $this, 'free_pro_admin_notice' ) );
         add_action( 'wp_ajax_multivendorx_admin_notice_action', array( $this, 'admin_notice_action' ), 10 );
         add_action( 'wp_ajax_multivendorx_dismiss_free_pro_notice', array( $this, 'dismiss_free_pro_notice' ) );
+        add_filter( 'admin_multivendorx_register_scripts', array( $this, 'register_notice_script' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_notice_script' ) );
     }
 
@@ -215,11 +216,24 @@ class Promotions {
 	}
 
     /**
+     * Register the admin-notice dismiss/action handling script.
+     *
+     * @param array $scripts Existing admin scripts.
+     * @return array
+     */
+    public function register_notice_script( $scripts ) {
+        $scripts['multivendorx-admin-notices'] = array(
+            'src'  => FrontendScripts::get_asset_path() . 'js/public/' . MULTIVENDORX_PLUGIN_SLUG . '-admin-notices.min.js',
+            'deps' => array( 'jquery' ),
+        );
+        return $scripts;
+    }
+
+    /**
      * Enqueue the admin-notice dismiss/action handling script.
      */
     public function enqueue_notice_script() {
-        wp_register_script( 'multivendorx-admin-notices', false, array( 'jquery' ), $this->plugin_version, true );
-        wp_enqueue_script( 'multivendorx-admin-notices' );
+        FrontendScripts::enqueue_script( 'multivendorx-admin-notices' );
         wp_localize_script(
             'multivendorx-admin-notices',
             'multivendorxAdminNotices',
@@ -228,61 +242,6 @@ class Promotions {
                 'nonce'  => wp_create_nonce( 'admin_notice' ),
             )
         );
-        wp_add_inline_script( 'multivendorx-admin-notices', $this->get_notice_script_js() );
-    }
-
-    /**
-     * JS behavior for admin-notice dismiss/action handling, driven by the localized `multivendorxAdminNotices` object.
-     *
-     * @return string
-     */
-    private function get_notice_script_js(): string {
-        return <<<'JS'
-jQuery(function ($) {
-    const ajaxData = {
-        action: multivendorxAdminNotices.action,
-        nonce: multivendorxAdminNotices.nonce
-    };
-
-    $(document)
-        .on('click', '.review-notice .button', function (e) {
-            e.preventDefault();
-
-            const actionType = $(this).data('action');
-            const href = $(this).attr('href');
-
-            $.post(ajaxurl, {
-                ...ajaxData,
-                admin_notice_action_type: actionType
-            });
-
-            $(this).closest('.notice').fadeOut();
-
-            if (href && href !== '#') {
-                window.open(href, '_blank', 'noopener');
-            }
-        })
-        .on('click', '.review-notice .notice-dismiss', function () {
-            $.post(ajaxurl, {
-                ...ajaxData,
-                admin_notice_action_type: 'review_closed'
-            });
-        })
-        .on('click', '.tracking-toggle', function (e) {
-            e.preventDefault();
-            $('.tracking-details').slideToggle('fast');
-        })
-
-        // Free pro notice dismiss
-        .on('click', '.free-pro-notice .notice-dismiss', function () {
-            $.post(ajaxurl, {
-                action: 'multivendorx_dismiss_free_pro_notice',
-                nonce: ajaxData.nonce
-            });
-        });
-
-});
-JS;
     }
 
     /**

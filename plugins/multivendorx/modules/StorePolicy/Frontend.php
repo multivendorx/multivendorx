@@ -56,7 +56,6 @@ class Frontend {
      */
     public function load_scripts() {
         if ( is_product() || Utill::is_store_page() ) {
-            FrontendScripts::load_scripts();
             FrontendScripts::enqueue_script( 'multivendorx-store-policy-frontend-script' );
         }
     }

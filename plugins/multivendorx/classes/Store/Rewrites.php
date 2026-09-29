@@ -298,7 +298,6 @@ class Rewrites {
         wp_enqueue_style( 'wc-blocks-style' );
         wp_enqueue_style( 'wc-blocks-style-all-reviews' );
 
-        FrontendScripts::load_scripts();
         FrontendScripts::enqueue_script( 'multivendorx-store-provider-script' );
         FrontendScripts::localize_scripts( 'multivendorx-store-provider-script' );
         FrontendScripts::enqueue_script( 'multivendorx-follow-store-view-script' );

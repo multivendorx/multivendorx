@@ -187,7 +187,6 @@ class Frontend {
 	 * @return void
 	 */
 	public function load_scripts() {
-		FrontendScripts::load_scripts();
 		FrontendScripts::enqueue_script( 'multivendorx-store-products-script' );
         if ( is_account_page() ) {
             FrontendScripts::enqueue_style( 'multivendorx-store-tabs-style' );

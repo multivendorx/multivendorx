@@ -42,7 +42,6 @@ class Shortcode {
      */
     public function frontend_scripts() {
         global $post;
-        FrontendScripts::load_scripts();
         FrontendScripts::enqueue_style( 'multivendorx-store-product-style' );
         $this->load_dashboard_assets();
         $this->load_registration_assets();
