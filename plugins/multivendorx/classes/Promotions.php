@@ -234,7 +234,7 @@ class Promotions {
      */
     public function enqueue_notice_script() {
         FrontendScripts::enqueue_script( 'multivendorx-admin-notices' );
-        wp_localize_script(
+        FrontendScripts::localize_script(
             'multivendorx-admin-notices',
             'multivendorxAdminNotices',
             array(

@@ -58,7 +58,7 @@ class Settings extends \WP_REST_Controller {
                 array(
                     'methods'             => 'POST',
                     'callback'            => array( $this, 'set_modules' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'set_modules_permissions_check' ),
                 ),
                 array(
                     'methods'             => 'GET',
@@ -75,7 +75,16 @@ class Settings extends \WP_REST_Controller {
      * @param object $request The REST request object.
      */
     public function update_item_permissions_check( $request ) {
-        // Admin-only: edit_stores (granted to store_owner) isn't enough here.
+        // Store owners save their own settings from the store dashboard, so edit_stores must be allowed.
+        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
+    }
+
+    /**
+     * Check if a given request has access to activate/deactivate marketplace modules.
+     *
+     * @param object $request The REST request object.
+     */
+    public function set_modules_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 

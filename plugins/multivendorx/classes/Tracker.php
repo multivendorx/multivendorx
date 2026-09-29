@@ -297,7 +297,7 @@ class Tracker {
 
         FrontendScripts::enqueue_style( 'multivendorx-deactivation-modal' );
         FrontendScripts::enqueue_script( 'multivendorx-deactivation-modal' );
-        wp_localize_script(
+        FrontendScripts::localize_script(
             'multivendorx-deactivation-modal',
             'multivendorxDeactivation',
             array(
@@ -399,7 +399,7 @@ class Tracker {
             'php_version'      => phpversion(),
             'multisite'        => is_multisite(),
             'text_direction'   => function_exists( 'is_rtl' ) ? ( is_rtl() ? 'RTL' : 'LTR' ) : 'NOT SET',
-            'server'           => sanitize_text_field( wp_unslash( $_SERVER['SERVER_SOFTWARE'] ?? '' ) ),
+            'server'           => sanitize_text_field( (string) ( filter_input( INPUT_SERVER, 'SERVER_SOFTWARE', FILTER_UNSAFE_RAW ) ?? getenv( 'SERVER_SOFTWARE' ) ) ),
             'email'            => implode(
                 ',',
                 array_filter(
@@ -448,7 +448,7 @@ class Tracker {
             return; // Already registered.
         }
 
-        $ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+        $ip = sanitize_text_field( (string) ( filter_input( INPUT_SERVER, 'REMOTE_ADDR', FILTER_VALIDATE_IP ) ?? getenv( 'REMOTE_ADDR' ) ) );
         if ( $ip && '127.0.0.1' !== $ip && filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
             $geo = wp_remote_get( 'https://ip-api.com/json/' . rawurlencode( $ip ) . '?fields=country' );
             if ( ! is_wp_error( $geo ) && wp_remote_retrieve_response_code( $geo ) === 200 ) {

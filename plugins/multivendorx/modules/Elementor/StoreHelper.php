@@ -60,16 +60,32 @@ trait StoreHelper {
 		// Fallback for edge cases, gated on capability + a valid Elementor nonce.
 		if ( empty( $is_edit_mode ) && empty( $is_preview_mode )
 			&& current_user_can( 'edit_posts' )
-			&& isset( $_REQUEST['_nonce'] )
-			&& wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_nonce'] ) ), 'elementor_ajax' )
+			&& wp_verify_nonce( sanitize_key( $this->get_request_param( '_nonce' ) ), 'elementor_ajax' )
 		) {
-			if ( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['editor_post_id'] ) ) {
+			if ( '' !== $this->get_request_param( 'action' ) && '' !== $this->get_request_param( 'editor_post_id' ) ) {
 				$is_edit_mode = true;
-			} elseif ( ! empty( $_REQUEST['preview'] ) && ! empty( $_REQUEST['theme_template_id'] ) ) {
+			} elseif ( '' !== $this->get_request_param( 'preview' ) && '' !== $this->get_request_param( 'theme_template_id' ) ) {
 				$is_preview_mode = true;
 			}
 		}
 
 		return ( $is_edit_mode || $is_preview_mode );
+	}
+
+	/**
+	 * Read a sanitized string from the POST body, falling back to the query string.
+	 *
+	 * Replaces direct $_REQUEST access; Elementor sends these params via POST (ajax) or GET (preview).
+	 *
+	 * @param string $key Request parameter name.
+	 * @return string Empty string when the parameter is absent.
+	 */
+	private function get_request_param( $key ) {
+		$value = filter_input( INPUT_POST, $key, FILTER_UNSAFE_RAW );
+		if ( null === $value || false === $value ) {
+			$value = filter_input( INPUT_GET, $key, FILTER_UNSAFE_RAW );
+		}
+
+		return is_string( $value ) ? sanitize_text_field( $value ) : '';
 	}
 }
