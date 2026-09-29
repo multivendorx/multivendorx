@@ -183,9 +183,10 @@ class StripeConnect {
                         'text'         => __( 'Disconnect', 'multivendorx' ),
                         'redirect_url' => apply_filters(
                             'multivendorx_stripe_disconnect_url',
-                            wp_nonce_url(
-                                admin_url( 'admin-post.php?action=multivendorx_disconnect_stripe' ),
-                                'multivendorx_disconnect_stripe'
+                            add_query_arg(
+                                '_wpnonce',
+                                wp_create_nonce( 'multivendorx_disconnect_stripe' ),
+                                admin_url( 'admin-post.php?action=multivendorx_disconnect_stripe' )
                             )
                         ),
                         'class'        => 'multivendorx-stripe-disconnect-btn',
@@ -198,9 +199,10 @@ class StripeConnect {
                         'text'         => __( 'Connect', 'multivendorx' ),
                         'redirect_url' => apply_filters(
                             'multivendorx_stripe_connect_url',
-                            wp_nonce_url(
-                                admin_url( 'admin-post.php?action=multivendorx_connect_stripe' ),
-                                'multivendorx_connect_stripe'
+                            add_query_arg(
+                                '_wpnonce',
+                                wp_create_nonce( 'multivendorx_connect_stripe' ),
+                                admin_url( 'admin-post.php?action=multivendorx_connect_stripe' )
                             )
                         ),
                         'class'        => 'multivendorx-stripe-connect-btn',

@@ -38,7 +38,8 @@
 		"wp-phpunit/wp-phpunit": "dev-master",
 		"yoast/phpunit-polyfills": "^4.0@dev",
 		"brain/monkey": "^2.0@dev",
-		"automattic/jetpack-changelogger": "^6.0@dev"
+		"automattic/jetpack-changelogger": "^6.0@dev",
+		"mockery/mockery": "1.6.15"
 	},
 	"scripts": {
         "phpcs": "vendor/bin/phpcs . --standard=../../phpcs.xml.dist -p -s",

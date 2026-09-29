@@ -234,6 +234,9 @@ class Rest extends \WP_REST_Controller {
             $follower_ids = array_column( $followers, 'id' );
 
             $following = $user_id ? get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['following_stores'], true ) : array();
+            if ( ! is_array( $following ) ) {
+                $following = array();
+            }
 
             return rest_ensure_response(
                 array(
