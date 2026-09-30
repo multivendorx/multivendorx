@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\PaymentGatewayCharge;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Marketplace Fee Module class
  *

@@ -238,13 +238,13 @@ class Rest extends \WP_REST_Controller {
         }
 
         try {
-            $data = $request->get_params();
+            $bulk_payload = $request->get_params();
             /** -----------------------------------------
              * BULK UPDATE
              * ----------------------------------------- */
-            if ( ! empty( $data['bulk'] ) && ! empty( $data['ids'] ) && ! empty( $data['action'] ) ) {
-                $action = sanitize_key( $data['action'] );
-                $ids    = array_map( 'absint', $data['ids'] );
+            if ( ! empty( $bulk_payload['bulk'] ) && ! empty( $bulk_payload['ids'] ) && ! empty( $bulk_payload['action'] ) ) {
+                $action = sanitize_key( $bulk_payload['action'] );
+                $ids    = array_map( 'absint', $bulk_payload['ids'] );
 
                 foreach ( $ids as $id ) {
                     switch ( $action ) {
@@ -328,7 +328,7 @@ class Rest extends \WP_REST_Controller {
         }
 
         try {
-            $data = $request->get_params();
+            $update_payload = $request->get_params();
 
             /** -----------------------------------------
              * SINGLE UPDATE
@@ -344,12 +344,12 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
-            $new_title   = isset( $data['title'] ) ? sanitize_text_field( $data['title'] ) : $post->post_title;
-            $new_content = isset( $data['content'] ) ? wp_kses_post( $data['content'] ) : $post->post_content;
+            $new_title   = isset( $update_payload['title'] ) ? sanitize_text_field( $update_payload['title'] ) : $post->post_title;
+            $new_content = isset( $update_payload['content'] ) ? wp_kses_post( $update_payload['content'] ) : $post->post_content;
 
             $valid_statuses = array( 'publish', 'pending', 'draft' );
-            $new_status     = isset( $data['status'] ) && in_array( $data['status'], $valid_statuses, true )
-                                ? $data['status']
+            $new_status     = isset( $update_payload['status'] ) && in_array( $update_payload['status'], $valid_statuses, true )
+                                ? $update_payload['status']
                                 : $post->post_status;
 
             $updated_id = wp_update_post(

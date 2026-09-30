@@ -9,6 +9,8 @@ namespace MultiVendorX\CustomerQueries;
 
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Questions Answers Util class
  *
@@ -20,36 +22,12 @@ class Util {
 
 
     /**
-     * Fetch questions & answers for a product
-     *
-     * @param int    $product_id Product id.
-     * @param string $search Search term.
-     * @return array An array of questions with their details.
-     */
-    public static function get_questions( $product_id, $search = '' ) {
-        global $wpdb;
-        $table = $wpdb->prefix . Utill::TABLES['customer_queries'];
-
-        $query  = "SELECT * FROM $table WHERE product_id=%d AND question_visibility='public'";
-        $params = array( $product_id );
-
-        if ( $search ) {
-            $query   .= ' AND (question_text LIKE %s OR answer_text LIKE %s)';
-            $like     = '%' . $wpdb->esc_like( $search ) . '%';
-            $params[] = $like;
-            $params[] = $like;
-        }
-
-        return $wpdb->get_results( $wpdb->prepare( $query, ...$params ) );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-    }
-
-    /**
      * Fetch question information from database
      * Supports filtering by product, store, answer status, date, and count
      *
      * @param array $args The arguments to filter the questions.
      */
-    public static function get_question_information( $args ) {
+    public static function query_questions( $args ) {
         global $wpdb;
         $where = array();
 
@@ -103,9 +81,9 @@ class Util {
 
         // Build query.
         if ( isset( $args['count'] ) ) {
-            $query = "SELECT COUNT(*) FROM $table";
+            $query = $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table );
         } else {
-            $query = "SELECT * FROM $table";
+            $query = $wpdb->prepare( 'SELECT * FROM %i', $table );
         }
 
         if ( ! empty( $where ) ) {
@@ -145,22 +123,22 @@ class Util {
     /**
      * Insert a new question
      *
-     * @param array $data Question data.
+     * @param array $question_data Question data.
      * @return int|false Inserted question ID or false on failure.
      */
-    public static function insert_question( $data ) {
+    public static function insert_question( $question_data ) {
         global $wpdb;
         $table = $wpdb->prefix . Utill::TABLES['customer_queries'];
 
-        if ( empty( $data['product_id'] ) || empty( $data['question_text'] ) || empty( $data['question_by'] ) ) {
+        if ( empty( $question_data['product_id'] ) || empty( $question_data['question_text'] ) || empty( $question_data['question_by'] ) ) {
             return false;
         }
 
         $insert_data = array(
-            'product_id'          => intval( $data['product_id'] ),
-            'store_id'            => intval( $data['store_id'] ),
-            'question_text'       => sanitize_textarea_field( $data['question_text'] ),
-            'question_by'         => intval( $data['question_by'] ),
+            'product_id'          => intval( $question_data['product_id'] ),
+            'store_id'            => intval( $question_data['store_id'] ),
+            'question_text'       => sanitize_textarea_field( $question_data['question_text'] ),
+            'question_by'         => intval( $question_data['question_by'] ),
             'total_votes'         => 0,
             'voters'              => maybe_serialize( array() ),
             'answer_text'         => '',
@@ -190,15 +168,15 @@ class Util {
     /**
      * Update a question by ID
      *
-     * @param int   $id   The ID of the question to be updated.
-     * @param array $data The data to be updated.
+     * @param int   $id                The ID of the question to be updated.
+     * @param array $fields_to_update  The data to be updated.
      */
-    public static function update_question( $id, $data ) {
+    public static function update_question( $id, $fields_to_update ) {
         global $wpdb;
 
         $table = $wpdb->prefix . Utill::TABLES['customer_queries'];
 
-        if ( empty( $data ) ) {
+        if ( empty( $fields_to_update ) ) {
             return false;
         }
 
@@ -206,39 +184,39 @@ class Util {
         $update_format = array();
 
         // Update answer text.
-        if ( isset( $data['question_text'] ) ) {
-            $update_data['question_text'] = sanitize_textarea_field( $data['question_text'] );
+        if ( isset( $fields_to_update['question_text'] ) ) {
+            $update_data['question_text'] = sanitize_textarea_field( $fields_to_update['question_text'] );
             $update_format[]              = '%s';
         }
 
         // Update answer text.
-        if ( isset( $data['answer_text'] ) ) {
-            $update_data['answer_text'] = sanitize_textarea_field( $data['answer_text'] );
+        if ( isset( $fields_to_update['answer_text'] ) ) {
+            $update_data['answer_text'] = sanitize_textarea_field( $fields_to_update['answer_text'] );
             $update_format[]            = '%s';
         }
 
         // Update question visibility.
-        if ( isset( $data['question_visibility'] ) ) {
-            $update_data['question_visibility'] = sanitize_text_field( $data['question_visibility'] );
+        if ( isset( $fields_to_update['question_visibility'] ) ) {
+            $update_data['question_visibility'] = sanitize_text_field( $fields_to_update['question_visibility'] );
             $update_format[]                    = '%s';
         }
 
         // Update answer_by and always set current date.
-        if ( isset( $data['answer_by'] ) ) {
-            $update_data['answer_by'] = intval( $data['answer_by'] );
+        if ( isset( $fields_to_update['answer_by'] ) ) {
+            $update_data['answer_by'] = intval( $fields_to_update['answer_by'] );
             $update_format[]          = '%d';
 
             // Always set the current date/time.
             $update_data['answer_date'] = current_time( 'mysql' );
             $update_format[]            = '%s';
         }
-        if ( isset( $data['total_votes'] ) ) {
-            $update_data['total_votes'] = intval( $data['total_votes'] );
+        if ( isset( $fields_to_update['total_votes'] ) ) {
+            $update_data['total_votes'] = intval( $fields_to_update['total_votes'] );
             $update_format[]            = '%d';
         }
 
-        if ( isset( $data['voters'] ) ) {
-            $update_data['voters'] = maybe_serialize( $data['voters'] );
+        if ( isset( $fields_to_update['voters'] ) ) {
+            $update_data['voters'] = maybe_serialize( $fields_to_update['voters'] );
             $update_format[]       = '%s';
         }
 

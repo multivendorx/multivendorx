@@ -11,6 +11,8 @@ use MultiVendorX\MarketplaceCompliance\Util;
 use MultiVendorX\Utill;
 use MultiVendorX\Store\Store;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Marketplace Compliance Module.
  *
@@ -25,8 +27,8 @@ class Ajax {
     public function __construct() {
         add_action( 'wp_ajax_multivendorx_submit_report_abuse', array( $this, 'handle_report_abuse' ) );
         add_action( 'wp_ajax_nopriv_multivendorx_submit_report_abuse', array( $this, 'handle_report_abuse' ) );
-        add_action( 'wp_ajax_get_report_reasons', array( $this, 'get_report_reasons' ) );
-        add_action( 'wp_ajax_nopriv_get_report_reasons', array( $this, 'get_report_reasons' ) );
+        add_action( 'wp_ajax_multivendorx_get_report_reasons', array( $this, 'get_report_reasons' ) );
+        add_action( 'wp_ajax_nopriv_multivendorx_get_report_reasons', array( $this, 'get_report_reasons' ) );
     }
 
     /**
@@ -46,8 +48,17 @@ class Ajax {
             wp_send_json_error( 'All fields are required.' );
         }
 
+        if ( ! is_email( $email ) ) {
+            wp_send_json_error( 'Please enter a valid email address.' );
+        }
+
+        $product = wc_get_product( $product_id );
+        if ( ! $product ) {
+            wp_send_json_error( 'Invalid product.' );
+        }
+
         // Get store_id from product meta.
-        $store_id = get_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], true ) ?? 0;
+        $store_id = absint( get_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], true ) );
 
         // Check if this user (email) already reported this product.
         $existing_reports = Util::get_report_abuse_information(
@@ -76,8 +87,7 @@ class Ajax {
             wp_send_json_error( 'Something went wrong, please try again.' );
         }
 
-        $store   = new Store( $store_id );
-        $product = wc_get_product( $product_id );
+        $store = new Store( $store_id );
 
         do_action(
             'multivendorx_notify_report_abuse_submitted',

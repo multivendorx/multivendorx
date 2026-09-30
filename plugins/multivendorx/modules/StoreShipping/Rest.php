@@ -123,8 +123,15 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $store_id = $request->get_param( 'store_id' );
-            $zones    = Util::get_zones( $store_id );
+            $store_id = intval( $request->get_param( 'store_id' ) );
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to view this store\'s shipping settings.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+            $zones = Util::get_zones( $store_id );
             return rest_ensure_response( $zones );
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
@@ -246,8 +253,8 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $store_id  = $request->get_param( 'store_id' );
-            $method_id = $request->get_param( 'method_id' );
+            $store_id  = intval( $request->get_param( 'store_id' ) );
+            $method_id = sanitize_text_field( $request->get_param( 'method_id' ) );
             $zone_id   = $request->get_param( 'zone_id' );
             // Validate required params.
             if ( empty( $store_id ) || empty( $method_id ) || ! is_numeric( $zone_id ) || $zone_id < 0 ) {
@@ -259,7 +266,15 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
-            $method = Util::get_shipping_method( $store_id, $method_id, $zone_id );
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to view this store\'s shipping settings.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+
+            $method = Util::get_shipping_method( $store_id, $method_id, intval( $zone_id ) );
 
             return rest_ensure_response( $method );
         } catch ( \Exception $e ) {

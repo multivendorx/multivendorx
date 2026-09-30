@@ -157,9 +157,11 @@ do_action( 'multivendorx_before_store_tabs', $store_id );
                                 <?php woocommerce_product_loop_end(); ?>
                                 
                                 <?php
-                                echo paginate_links( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                                    array(
-                                        'total' => $products->max_num_pages,
+                                echo wp_kses_post(
+                                    paginate_links(
+                                        array(
+                                            'total' => (int) $products->max_num_pages,
+                                        )
                                     )
                                 );
                                 ?>

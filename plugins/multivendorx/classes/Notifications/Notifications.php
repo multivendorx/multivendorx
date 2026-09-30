@@ -1621,7 +1621,7 @@ class Notifications {
 		if ( ! $is_new ) {
 			$table = $wpdb->prefix . Utill::TABLES['system_events'];
 			$count = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-				"SELECT COUNT(*) FROM {$table}" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table )
 			);
 
 			if ( $count > 0 ) {
@@ -1685,7 +1685,8 @@ class Notifications {
 		$table = $wpdb->prefix . Utill::TABLES['system_events'];
 		$event = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE system_action = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'SELECT * FROM %i WHERE system_action = %s',
+				$table,
 				$action_name
 			)
 		);
@@ -1805,12 +1806,13 @@ class Notifications {
 		if ( ! empty( $id ) ) {
 			$events = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 				$wpdb->prepare(
-					"SELECT * FROM $table WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					'SELECT * FROM %i WHERE id = %d',
+					$table,
 					$id
 				)
 			);
 		} else {
-			$events = $wpdb->get_results( "SELECT * FROM $table" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$events = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i', $table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		}
 
 		return $events;
@@ -1826,7 +1828,7 @@ class Notifications {
 
 		$table = "{$wpdb->prefix}" . Utill::TABLES['system_events'];
 
-		return $wpdb->query( "DELETE FROM $table" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->query( $wpdb->prepare( 'DELETE FROM %i', $table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**
@@ -1929,42 +1931,43 @@ class Notifications {
 		global $wpdb;
 		$table = $wpdb->prefix . Utill::TABLES['notifications'];
 
-		$events = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-			$wpdb->prepare(
-				"SELECT * FROM $table WHERE is_dismissed = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				0
-			)
-		);
-
 		if ( ! empty( $args ) ) {
-			$where = array();
+			$where  = array();
+			$params = array();
 
 			if ( isset( $args['ID'] ) ) {
-				$ids     = is_array( $args['ID'] ) ? $args['ID'] : array( $args['ID'] );
-				$ids     = implode( ',', array_map( 'intval', $ids ) );
-				$where[] = "ID IN ($ids)"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$ids          = is_array( $args['ID'] ) ? $args['ID'] : array( $args['ID'] );
+				$ids          = array_map( 'intval', $ids );
+				$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+				$where[]      = "ID IN ($placeholders)";
+				$params       = array_merge( $params, $ids );
 			}
 
 			if ( isset( $args['category'] ) ) {
-				$where[] = "category = '" . esc_sql( $args['category'] ) . "'";
+				$where[]  = 'category = %s';
+				$params[] = $args['category'];
 			}
 
 			if ( isset( $args['store_id'] ) && ! empty( $args['store_id'] ) ) {
-				$where[] = "store_id = '" . esc_sql( $args['store_id'] ) . "'";
+				$where[]  = 'store_id = %d';
+				$params[] = intval( $args['store_id'] );
 			}
 
 			if ( isset( $args['start_date'] ) && isset( $args['end_date'] ) ) {
-				$where[] = "created_at BETWEEN '" . esc_sql( $args['start_date'] ) . "' AND '" . esc_sql( $args['end_date'] ) . "'";
+				$where[]  = 'created_at BETWEEN %s AND %s';
+				$params[] = $args['start_date'];
+				$params[] = $args['end_date'];
 			}
 
-			$table   = $wpdb->prefix . Utill::TABLES['notifications'];
 			$where[] = 'is_dismissed = 0 AND is_read = 0';
 
 			if ( isset( $args['count'] ) ) {
-				$query = "SELECT COUNT(*) FROM {$table}"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$query = 'SELECT COUNT(*) FROM %i';
 			} else {
-				$query = "SELECT * FROM {$table}"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$query = 'SELECT * FROM %i';
 			}
+
+			array_unshift( $params, $table );
 
 			if ( ! empty( $where ) ) {
 				$condition = $args['condition'] ?? ' AND ';
@@ -1973,10 +1976,12 @@ class Notifications {
 
 			// Keep your pagination logic.
 			if ( isset( $args['limit'] ) && isset( $args['offset'] ) && empty( $args['count'] ) ) {
-				$limit  = intval( $args['limit'] );
-				$offset = intval( $args['offset'] );
-				$query .= $wpdb->prepare( ' LIMIT %d OFFSET %d', $limit, $offset );
+				$query   .= ' LIMIT %d OFFSET %d';
+				$params[] = intval( $args['limit'] );
+				$params[] = intval( $args['offset'] );
 			}
+
+			$query = $wpdb->prepare( $query, ...$params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 			if ( isset( $args['count'] ) ) {
 				$results = $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
@@ -1986,6 +1991,15 @@ class Notifications {
 				return $results ?? array();
 			}
 		}
+
+		// No filters requested: fall back to the plain, non-dismissed list.
+		$events = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$wpdb->prepare(
+				'SELECT * FROM %i WHERE is_dismissed = %d',
+				$table,
+				0
+			)
+		);
 
 		return $events;
 	}
@@ -2005,18 +2019,17 @@ class Notifications {
 
 		$current_date = current_time( 'mysql' );
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$query = $wpdb->prepare(
-			"
-		DELETE FROM {$table}
+			'
+		DELETE FROM %i
 		WHERE (expires_at IS NOT NULL AND expires_at < %s)
 		OR (created_at < DATE_SUB(%s, INTERVAL %d DAY))
-		",
+		',
+			$table,
 			$current_date,
 			$current_date,
 			$days
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		$wpdb->query( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 	}
@@ -2049,6 +2062,19 @@ class Notifications {
 		return false;
 	}
 
+	/**
+	 * Build the common notification payload and fire the event's trigger hook.
+	 *
+	 * Merges admin/store/customer contact info derived from $store and $order
+	 * with any event-specific $extra data, then fires
+	 * `multivendorx_notify_{$type}` for `register_notification_hooks()` to pick up.
+	 *
+	 * @param string      $type  Event key (system_action), e.g. 'order_processing'.
+	 * @param object|null $store Store object, if the event is store-scoped.
+	 * @param object|null $order WC_Order object, if the event is order-scoped.
+	 * @param array       $extra Additional payload fields merged in (e.g. 'order_id', 'category').
+	 * @return void
+	 */
 	public function send_notification_helper( $type, $store = null, $order = null, $extra = array() ) {
 		$store_name     = '';
 		$store_email    = '';

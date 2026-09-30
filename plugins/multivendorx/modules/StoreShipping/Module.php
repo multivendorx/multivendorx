@@ -9,6 +9,8 @@ namespace MultiVendorX\StoreShipping;
 
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Module class
  *

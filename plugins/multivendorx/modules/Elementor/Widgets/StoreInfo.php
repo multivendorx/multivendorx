@@ -354,7 +354,7 @@ class StoreInfo extends Widget_Icon_List {
                         <# if ( item.link && item.link.url ) { #>
                             <a href="{{ item.link.url }}">
                         <# } #>
-                        {{{ item.text }}}
+                        {{ item.text }}
                         <# if ( item.link && item.link.url ) { #>
                             </a>
                         <# } #>

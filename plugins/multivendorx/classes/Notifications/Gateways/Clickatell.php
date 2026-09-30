@@ -12,6 +12,8 @@ namespace MultiVendorX\Notifications\Gateways;
 
 use WP_Error;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Clickatell SMS Gateway Class.
  */
