@@ -330,15 +330,15 @@ class Rest extends \WP_REST_Controller {
         }
 
         try {
-            $data = $request->get_params();
+            $bulk_data = $request->get_params();
             /**
              * ----------------------------------------------------------
              *  BULK UPDATE
              * ----------------------------------------------------------
              */
-            if ( isset( $data['bulk'] ) && ! empty( $data['ids'] ) && ! empty( $data['action'] ) ) {
-                $action = sanitize_key( $data['action'] );
-                $ids    = array_map( 'absint', $data['ids'] );
+            if ( isset( $bulk_data['bulk'] ) && ! empty( $bulk_data['ids'] ) && ! empty( $bulk_data['action'] ) ) {
+                $action = sanitize_key( $bulk_data['action'] );
+                $ids    = array_map( 'absint', $bulk_data['ids'] );
 
                 foreach ( $ids as $id ) {
                     switch ( $action ) {
@@ -474,9 +474,9 @@ class Rest extends \WP_REST_Controller {
         }
 
         try {
-            $data   = $request->get_params();
-            $stores = $request->get_param( 'stores' );
-            $stores = is_array( $stores ) ? $stores : array();
+            $announcement_data = $request->get_params();
+            $stores            = $request->get_param( 'stores' );
+            $stores            = is_array( $stores ) ? $stores : array();
 
             /**
              * ----------------------------------------------------------
@@ -499,12 +499,12 @@ class Rest extends \WP_REST_Controller {
             $updated_id = wp_update_post(
                 array(
                     'ID'           => $post_id,
-                    'post_title'   => sanitize_text_field( $data['title'] ?? '' ),
-                    'post_content' => sanitize_textarea_field( $data['content'] ?? '' ),
-                    'post_status'  => ( isset( $data['status'] ) &&
-                        in_array( $data['status'], array( 'publish', 'pending', 'draft' ), true )
+                    'post_title'   => sanitize_text_field( $announcement_data['title'] ?? '' ),
+                    'post_content' => sanitize_textarea_field( $announcement_data['content'] ?? '' ),
+                    'post_status'  => ( isset( $announcement_data['status'] ) &&
+                        in_array( $announcement_data['status'], array( 'publish', 'pending', 'draft' ), true )
                     )
-                        ? $data['status']
+                        ? $announcement_data['status']
                         : 'draft',
                 ),
                 true
@@ -530,8 +530,8 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'success' => true,
                     'id'      => $post_id,
-                    'title'   => $data['title'] ?? '',
-                    'content' => $data['content'] ?? '',
+                    'title'   => $announcement_data['title'] ?? '',
+                    'content' => $announcement_data['content'] ?? '',
                     'status'  => get_post_status( $post_id ),
                     'stores'  => $stores,
                 )

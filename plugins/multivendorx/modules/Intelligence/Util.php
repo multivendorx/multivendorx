@@ -33,7 +33,7 @@ class Util {
 			),
         );
 
-        $data = self::request(
+        $api_response = self::request(
             $url,
             array(
 				'headers' => array( 'Content-Type' => 'application/json' ),
@@ -42,8 +42,8 @@ class Util {
             )
         );
 
-        $text = $data['candidates'][0]['content']['parts'][0]['text'] ?? '';
-        return $text ? self::clean( $text ) : $data;
+        $text = $api_response['candidates'][0]['content']['parts'][0]['text'] ?? '';
+        return $text ? self::clean( $text ) : $api_response;
     }
 
     public static function call_openai_api( $key, $prompt ) {
@@ -63,7 +63,7 @@ class Util {
 			),
 		);
 
-        $data = self::request(
+        $api_response = self::request(
             $url,
             array(
 				'headers' => array(
@@ -75,8 +75,8 @@ class Util {
             )
         );
 
-        if ( ! is_wp_error( $data ) && ! empty( $data['output'] ) ) {
-            foreach ( $data['output'] as $item ) {
+        if ( ! is_wp_error( $api_response ) && ! empty( $api_response['output'] ) ) {
+            foreach ( $api_response['output'] as $item ) {
                 foreach ( (array) ( $item['content'] ?? array() ) as $content ) {
                     if ( isset( $content['text'] ) ) {
 						return self::clean( $content['text'] );
@@ -84,7 +84,7 @@ class Util {
                 }
             }
         }
-        return $data;
+        return $api_response;
     }
 
     public static function call_openrouter_api( $key, $prompt ) {
@@ -105,7 +105,7 @@ class Util {
             'response_format' => array( 'type' => 'json_object' ),
         );
 
-        $data = self::request(
+        $api_response = self::request(
             $url,
             array(
 				'headers' => array(
@@ -118,7 +118,7 @@ class Util {
 				'timeout' => 30,
             )
         );
-        $text = $data['choices'][0]['message']['content'] ?? '';
-        return $text ? self::clean( $text ) : $data;
+        $text = $api_response['choices'][0]['message']['content'] ?? '';
+        return $text ? self::clean( $text ) : $api_response;
     }
 }

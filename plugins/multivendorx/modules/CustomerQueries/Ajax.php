@@ -64,7 +64,7 @@ class Ajax {
 
         $store_id = intval( get_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], true ) ?? 0 );
 
-        $data = array(
+        $question_data = array(
             'product_id'    => $product_id,
             'store_id'      => $store_id,
             'question_text' => $question,
@@ -74,7 +74,7 @@ class Ajax {
             'answer_text'   => '',
         );
         // Insert question using Util class.
-        $inserted = Util::insert_question( $data );
+        $inserted = Util::insert_question( $question_data );
         if ( $inserted ) {
             $store   = new Store( $store_id );
             $product = wc_get_product( $product_id );
@@ -109,7 +109,7 @@ class Ajax {
             wp_send_json_error( array( 'html' => '<li>Invalid product ID.</li>' ) );
         }
 
-        $questions = Util::get_question_information(
+        $questions = Util::query_questions(
             array(
 				'product_ids'         => array( $product_id ),
 				'has_answer'          => true,
@@ -173,7 +173,7 @@ class Ajax {
             wp_send_json_error( array( 'message' => 'Invalid question ID.' ) );
         }
 
-        $row = Util::get_question_information( array( 'id' => $queries_id ) )[0] ?? null;
+        $row = Util::query_questions( array( 'id' => $queries_id ) )[0] ?? null;
 
         if ( ! $row ) {
             wp_send_json_error( array( 'message' => 'Question not found.' ) );

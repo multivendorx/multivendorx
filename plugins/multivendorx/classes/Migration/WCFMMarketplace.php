@@ -292,7 +292,7 @@ class WCFMMarketplace {
                 $amount           = $row->debit;
             }
 
-            $data = array(
+            $transaction_data = array(
                 'store_id'         => (int) $store_id,
                 'order_id'         => (int) $matched_suborder->get_id(),
                 'commission_id'    => (int) $matched_suborder->get_meta( 'multivendorx_commission_id', true ),
@@ -308,7 +308,7 @@ class WCFMMarketplace {
             $format = array( '%d', '%d', '%d', '%s', '%s', '%f', '%s', '%s', '%s', '%s' );
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-            $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $data, $format );
+            $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $transaction_data, $format );
         }
         $this->deactive_previous_multivendor();
         wp_clear_scheduled_hook( 'multivendorx_order_migration' );

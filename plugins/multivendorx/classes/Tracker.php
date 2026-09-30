@@ -180,7 +180,7 @@ class Tracker {
         }
 
         $slug                         = $this->slug;
-        $body                         = $this->get_data();
+        $body                         = $this->get_tracking_payload();
         $body['status']               = 'Deactivated';
         $body['deactivated_date']     = time();
         $body['deactivation_reason']  = get_option( 'deactivation_reason_' . $slug, '' );
@@ -368,7 +368,7 @@ class Tracker {
      *
      * @return array
      */
-    public function get_data(): array {
+    public function get_tracking_payload(): array {
         if ( ! function_exists( 'get_plugins' ) ) {
             require_once ABSPATH . '/wp-admin/includes/plugin.php';
         }

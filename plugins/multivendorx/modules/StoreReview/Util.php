@@ -416,7 +416,7 @@ class Util {
      *
      * @param array $args Query arguments.
      */
-    public static function get_review_information( $args ) {
+    public static function query_reviews( $args ) {
         global $wpdb;
         $where = array();
 
@@ -528,33 +528,33 @@ class Util {
 	/**
 	 * Update a review.
 	 *
-	 * @param int   $id   The review ID to update.
-	 * @param array $data The data to update.
+	 * @param int   $id               The review ID to update.
+	 * @param array $fields_to_update The data to update.
 	 */
-	public static function update_review( $id, $data ) {
+	public static function update_review( $id, $fields_to_update ) {
 		global $wpdb;
 
 		$table = $wpdb->prefix . Utill::TABLES['review'];
 
-		if ( empty( $data ) ) {
+		if ( empty( $fields_to_update ) ) {
 			return false;
 		}
 
 		$update_data   = array();
 		$update_format = array();
 
-		if ( isset( $data['reply'] ) ) {
-			$update_data['reply'] = sanitize_textarea_field( $data['reply'] );
+		if ( isset( $fields_to_update['reply'] ) ) {
+			$update_data['reply'] = sanitize_textarea_field( $fields_to_update['reply'] );
 			$update_format[]      = '%s';
 		}
 
-		if ( isset( $data['reply_date'] ) ) {
-			$update_data['reply_date'] = sanitize_text_field( $data['reply_date'] );
+		if ( isset( $fields_to_update['reply_date'] ) ) {
+			$update_data['reply_date'] = sanitize_text_field( $fields_to_update['reply_date'] );
 			$update_format[]           = '%s';
 		}
 
-		if ( isset( $data['status'] ) ) {
-			$update_data['status'] = sanitize_text_field( $data['status'] );
+		if ( isset( $fields_to_update['status'] ) ) {
+			$update_data['status'] = sanitize_text_field( $fields_to_update['status'] );
 			$update_format[]       = '%s';
 		}
 

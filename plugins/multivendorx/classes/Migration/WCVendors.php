@@ -227,7 +227,7 @@ class WCVendors {
                 $status           = 'Completed';
             }
 
-            $data = array(
+            $transaction_data = array(
                 'store_id'         => (int) $store_id,
                 'order_id'         => (int) $suborder->get_id(),
                 'commission_id'    => (int) $insert_id,
@@ -243,7 +243,7 @@ class WCVendors {
             $format = array( '%d', '%d', '%d', '%s', '%s', '%f', '%s', '%s', '%s', '%s' );
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-            $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $data, $format );
+            $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $transaction_data, $format );
         }
 
         $this->deactive_previous_multivendor();

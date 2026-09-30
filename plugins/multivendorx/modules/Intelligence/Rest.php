@@ -102,14 +102,14 @@ class Rest extends \WP_REST_Controller {
             return $this->error_response( $response['error']['code'], $response['error']['message'], $response['error']['status'] );
         }
 
-        $data = json_decode( $response, true );
+        $ai_response = json_decode( $response, true );
 
         return rest_ensure_response(
             array(
 				'success'            => true,
-				'productName'        => array_slice( (array) ( $data['productName'] ?? array() ), 0, 3 ),
-				'shortDescription'   => array_slice( (array) ( $data['shortDescription'] ?? array() ), 0, 3 ),
-				'productDescription' => array_slice( (array) ( $data['productDescription'] ?? array() ), 0, 3 ),
+				'productName'        => array_slice( (array) ( $ai_response['productName'] ?? array() ), 0, 3 ),
+				'shortDescription'   => array_slice( (array) ( $ai_response['shortDescription'] ?? array() ), 0, 3 ),
+				'productDescription' => array_slice( (array) ( $ai_response['productDescription'] ?? array() ), 0, 3 ),
             )
         );
     }

@@ -317,7 +317,7 @@ class Frontend {
         global $wp;
 
         // Sanitize POST data.
-        $data = filter_input_array(
+        $refund_request_input = filter_input_array(
             INPUT_POST,
             array(
                 'cust-request-refund-nonce' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
@@ -331,18 +331,18 @@ class Frontend {
             )
         );
 
-        $nonce_value = $data['cust-request-refund-nonce'] ?? '';
+        $nonce_value = $refund_request_input['cust-request-refund-nonce'] ?? '';
 
         if ( ! wp_verify_nonce( $nonce_value, 'customer_request_refund' ) ) {
             return;
         }
 
-        if ( empty( $data['refund_product'] ) ) {
+        if ( empty( $refund_request_input['refund_product'] ) ) {
             wc_add_notice( __( 'Kindly choose a product', 'multivendorx' ), 'error' );
             return;
         }
 
-        if ( empty( $data['refund_reason_option'] ) ) {
+        if ( empty( $refund_request_input['refund_reason_option'] ) ) {
             wc_add_notice( __( 'Kindly choose a refund reason', 'multivendorx' ), 'error' );
             return;
         }
@@ -360,10 +360,10 @@ class Frontend {
         }
 
         // Clean request values.
-        $reason_option            = wc_clean( $data['refund_reason_option'] ?? '' );
-        $refund_reason_other      = wc_clean( $data['refund_reason_other'] ?? '' );
-        $refund_request_addi_info = wc_clean( $data['refund_request_addi_info'] ?? '' );
-        $refund_product           = array_map( 'wc_clean', (array) ( $data['refund_product'] ?? array() ) );
+        $reason_option            = wc_clean( $refund_request_input['refund_reason_option'] ?? '' );
+        $refund_reason_other      = wc_clean( $refund_request_input['refund_reason_other'] ?? '' );
+        $refund_request_addi_info = wc_clean( $refund_request_input['refund_request_addi_info'] ?? '' );
+        $refund_product           = array_map( 'wc_clean', (array) ( $refund_request_input['refund_product'] ?? array() ) );
 
         // Build refund reason.
         $refund_reason_options = MultiVendorX()->setting->get_setting( 'refund_reasons', array() );

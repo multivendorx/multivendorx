@@ -90,13 +90,13 @@ class Frontend {
             return;
         }
 
-        $data = $this->get_excluded_product();
+        $listing_exclusions = $this->get_excluded_product();
 
-        if ( empty( $data['exclude'] ) ) {
+        if ( empty( $listing_exclusions['exclude'] ) ) {
             return;
         }
 
-        $query->set( 'post__not_in', $data['exclude'] );
+        $query->set( 'post__not_in', $listing_exclusions['exclude'] );
     }
     /**
      * Get primary and excluded products based on MultiVendorX mapping.

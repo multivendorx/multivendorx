@@ -165,7 +165,7 @@ class Promotions {
         if ( $plugin_action ) {
             update_option( 'plugin_action_block_notice', $plugin_action );
             if ( 'yes' === $plugin_action ) {
-                $body                     = MultiVendorX()->tracker->get_data();
+                $body                     = MultiVendorX()->tracker->get_tracking_payload();
                 $body['status']           = 'Deactivated';
                 $body['deactivated_date'] = time();
                 MultiVendorX()->tracker->send_data( $body );
@@ -186,11 +186,11 @@ class Promotions {
     /**
      * Request a discount coupon from the MultiVendorX API for a user who opted into tracking.
      *
-     * @param array $data Coupon recipient data (name, email).
+     * @param array $recipient_data Coupon recipient data (name, email).
      * @return array|\WP_Error
      */
-    public function create_coupon_for_discount( $data = array() ) {
-		if ( empty( $data ) ) {
+    public function create_coupon_for_discount( $recipient_data = array() ) {
+		if ( empty( $recipient_data ) ) {
 			return new \WP_Error( 'missing_data', __( 'Coupon data is required.', 'multivendorx' ) );
 		}
 
@@ -201,7 +201,7 @@ class Promotions {
 				'headers'     => array(
 					'User-Agent' => 'MultiVendorX/' . $this->plugin_version,
 				),
-				'body'        => $data,
+				'body'        => $recipient_data,
 				'data_format' => 'body',
 			)
 		);

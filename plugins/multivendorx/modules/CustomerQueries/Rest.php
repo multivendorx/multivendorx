@@ -209,7 +209,7 @@ class Rest extends \WP_REST_Controller {
                 $args['question_visibility'] = $question_visibility;
             }
             // --- Step 7: Fetch Question Data ---
-            $questions = Util::get_question_information( $args );
+            $questions = Util::query_questions( $args );
 
             $formatted = array_map( array( $this, 'prepare_rest_item_for_response' ), $questions );
 
@@ -220,17 +220,17 @@ class Rest extends \WP_REST_Controller {
 
             // Prepare counts.
             $base_args['count'] = true;
-            $all_count          = Util::get_question_information( $base_args );
+            $all_count          = Util::query_questions( $base_args );
 
             // Answered count.
             $answered_args               = $base_args;
             $answered_args['has_answer'] = true;
-            $answered_count              = Util::get_question_information( $answered_args );
+            $answered_count              = Util::query_questions( $answered_args );
 
             // Unanswered count.
             $unanswered_args              = $base_args;
             $unanswered_args['no_answer'] = true;
-            $unanswered_count             = Util::get_question_information( $unanswered_args );
+            $unanswered_count             = Util::query_questions( $unanswered_args );
 
             // Set headers.
             $response->header( 'X-WP-Total', (int) $all_count );
@@ -265,7 +265,7 @@ class Rest extends \WP_REST_Controller {
             return new \WP_Error( 'invalid_id', __( 'Invalid ID', 'multivendorx' ), array( 'status' => 400 ) );
         }
 
-        $question = reset( Util::get_question_information( array( 'id' => $id ) ) );
+        $question = reset( Util::query_questions( array( 'id' => $id ) ) );
         if ( ! $question ) {
             return new \WP_Error( 'not_found', __( 'Question not found', 'multivendorx' ), array( 'status' => 404 ) );
         }
@@ -311,7 +311,7 @@ class Rest extends \WP_REST_Controller {
                 );
             }
             // Fetch the question.
-            $q = reset( Util::get_question_information( array( 'id' => $id ) ) );
+            $q = reset( Util::query_questions( array( 'id' => $id ) ) );
 
             if ( ! $q ) {
                 return new \WP_Error(
@@ -435,7 +435,7 @@ class Rest extends \WP_REST_Controller {
         }
 
         // Fetch the question.
-        $q = reset( Util::get_question_information( array( 'id' => $id ) ) );
+        $q = reset( Util::query_questions( array( 'id' => $id ) ) );
         if ( ! $q ) {
             return new \WP_Error(
                 'not_found',

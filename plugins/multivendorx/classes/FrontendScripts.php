@@ -608,35 +608,35 @@ class FrontendScripts {
         $localize_scripts = apply_filters( 'multivendorx_localize_scripts', $localize_scripts );
         $config           = $localize_scripts[ $handle ] ?? array();
 
-        $data = array();
+        $localized_data = array();
 
         if ( ! empty( $config['use_ajax'] ) && ! empty( $config['use_rest'] ) ) {
             $base_ajax = self::get_base_ajax_data( $handle );
             unset( $base_ajax['nonce'] );
-            $data = array_merge( $data, $base_ajax );
+            $localized_data = array_merge( $localized_data, $base_ajax );
         } else {
-            $data = array_merge( $data, self::get_base_ajax_data( $handle ) );
+            $localized_data = array_merge( $localized_data, self::get_base_ajax_data( $handle ) );
         }
 
         if ( ! empty( $config['use_rest'] ) ) {
-            $data = array_merge( $data, $base_rest );
+            $localized_data = array_merge( $localized_data, $base_rest );
         }
 
         if ( ! empty( $config['use_currency'] ) ) {
-            $data = array_merge( $data, $currency_data );
+            $localized_data = array_merge( $localized_data, $currency_data );
         }
 
         if ( ! empty( $config['use_settings'] ) ) {
-            $data = array_merge( $data, $settings_data );
+            $localized_data = array_merge( $localized_data, $settings_data );
         }
 
         if ( ! empty( $config['data'] ) ) {
-            $data = array_merge( $data, $config['data'] );
+            $localized_data = array_merge( $localized_data, $config['data'] );
         }
 
         if ( isset( $localize_scripts[ $handle ] ) ) {
             $props = $localize_scripts[ $handle ];
-            self::localize_script( $handle, $props['object_name'], $data );
+            self::localize_script( $handle, $props['object_name'], $localized_data );
         }
     }
 

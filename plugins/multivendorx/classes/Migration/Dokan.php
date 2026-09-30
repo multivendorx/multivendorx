@@ -262,7 +262,7 @@ class Dokan {
 				$amount           = $row->credit;
 			}
 
-            $data = array(
+            $transaction_data = array(
                 'store_id'         => (int) $store_id,
                 'order_id'         => (int) $order_id,
                 'commission_id'    => (int) $order->get_meta( 'multivendorx_commission_id', true ),
@@ -278,7 +278,7 @@ class Dokan {
             $format = array( '%d', '%d', '%d', '%s', '%s', '%f', '%s', '%s', '%s', '%s' );
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-            $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $data, $format );
+            $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $transaction_data, $format );
         }
         $this->deactive_previous_multivendor();
 

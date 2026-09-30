@@ -263,7 +263,7 @@ class Frontend {
 				'status' => 'pending',
 			)
         );
-        $pending_count = Util::get_review_information( $pending_args );
+        $pending_count = Util::query_reviews( $pending_args );
         return (int) $total + $pending_count;
     }
 }

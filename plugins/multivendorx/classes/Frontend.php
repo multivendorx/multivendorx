@@ -598,9 +598,9 @@ class Frontend {
 	 *
 	 * @since 3.0.0
 	 * @param int   $store_id Store ID.
-	 * @param array $data     Visitor data object.
+	 * @param array $visitor_data     Visitor data object.
 	 */
-	public function multivendorx_save_visitor_stats( $store_id, $data ) {
+	public function multivendorx_save_visitor_stats( $store_id, $visitor_data ) {
 		global $wpdb;
 
 		$table_name = $wpdb->prefix . Utill::TABLES['visitors_stats'];
@@ -608,7 +608,7 @@ class Frontend {
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "INSERT INTO {$table_name} 
+                "INSERT INTO {$table_name}
             ( store_id
             , user_id
             , user_cookie
@@ -632,7 +632,7 @@ class Frontend {
             , %s
             , %s
             , %s
-            , %s 
+            , %s
             , %s
             , %s
             , %s
@@ -641,20 +641,20 @@ class Frontend {
             , %s
             ) ON DUPLICATE KEY UPDATE `created` = now()",
                 $store_id,
-                $data->user_id,
-                $data->user_cookie,
-                $data->session_id,
-                $data->query,
-                $data->lat,
-                $data->lon,
-                $data->city,
-                $data->zip,
-                $data->region,
-                $data->regionName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-                $data->countryCode, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-                $data->country,
-                $data->isp,
-                $data->timezone
+                $visitor_data->user_id,
+                $visitor_data->user_cookie,
+                $visitor_data->session_id,
+                $visitor_data->query,
+                $visitor_data->lat,
+                $visitor_data->lon,
+                $visitor_data->city,
+                $visitor_data->zip,
+                $visitor_data->region,
+                $visitor_data->regionName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+                $visitor_data->countryCode, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+                $visitor_data->country,
+                $visitor_data->isp,
+                $visitor_data->timezone
             )
 		);
 		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -723,16 +723,16 @@ class Frontend {
     /**
      * Attribute a staff-uploaded attachment to the store's primary owner and track media usage.
      *
-     * @param array $data Attachment data to be inserted.
+     * @param array $attachment_data Attachment data to be inserted.
      * @return array
      */
-    public function attach_store_owner_id( $data ) {
+    public function attach_store_owner_id( $attachment_data ) {
         if ( ! empty( array_intersect( array( 'store_manager', 'product_manager', 'customer_support', 'order_assistant', 'inactive_staff' ), MultiVendorX()->current_user->roles ) ) ) {
             $store         = new Store( MultiVendorX()->active_store );
             $primary_owner = StoreUtil::get_primary_owner( MultiVendorX()->active_store );
 
             if ( ! empty( $primary_owner ) ) {
-                $data['post_author'] = (int) $primary_owner;
+                $attachment_data['post_author'] = (int) $primary_owner;
             }
 
             $total_size = $this->get_user_media_space_used( $primary_owner );
@@ -740,7 +740,7 @@ class Frontend {
                 $store->update_meta( 'media_space_used', $total_size );
             }
         }
-        return $data;
+        return $attachment_data;
     }
 
     /**

@@ -23,20 +23,20 @@ class Util {
 	/**
 	 * Create a new report abuse record.
 	 *
-	 * @param array $data The data for the new report abuse record.
+	 * @param array $report_data The data for the new report abuse record.
 	 * @return int|false The ID of the new record, or false on failure.
 	 */
-	public static function create_report_abuse( $data = array() ) {
+	public static function create_report_abuse( $report_data = array() ) {
 		global $wpdb;
 
 		$table = $wpdb->prefix . Utill::TABLES['report_abuse'];
 
 		$insert_data = array(
-			'store_id'   => isset( $data['store_id'] ) ? intval( $data['store_id'] ) : 0,
-			'product_id' => isset( $data['product_id'] ) ? intval( $data['product_id'] ) : 0,
-			'name'       => isset( $data['name'] ) ? sanitize_text_field( $data['name'] ) : '',
-			'email'      => isset( $data['email'] ) ? sanitize_email( $data['email'] ) : '',
-			'message'    => isset( $data['message'] ) ? sanitize_textarea_field( $data['message'] ) : '',
+			'store_id'   => isset( $report_data['store_id'] ) ? intval( $report_data['store_id'] ) : 0,
+			'product_id' => isset( $report_data['product_id'] ) ? intval( $report_data['product_id'] ) : 0,
+			'name'       => isset( $report_data['name'] ) ? sanitize_text_field( $report_data['name'] ) : '',
+			'email'      => isset( $report_data['email'] ) ? sanitize_email( $report_data['email'] ) : '',
+			'message'    => isset( $report_data['message'] ) ? sanitize_textarea_field( $report_data['message'] ) : '',
 		);
 
 		$inserted = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
